@@ -22,7 +22,8 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
     <img alt="Conchoidd" src="./images/geometry/conchoid.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/spiral">Paul Bourke&apos;s parametrization</a>
-  was used to generate this seashell.</figcaption>
+  was used to generate this seashell. For more geometrical shapes like this, 
+  visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
 
