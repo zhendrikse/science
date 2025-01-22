@@ -1,0 +1,191 @@
+<a name="quantum"></a>
+# Particle and quantum physics
+<div style="border-top: 2px solid #cccccc"><br/></div>
+
+<blockquote>
+If you think you understand quantum mechanics, you don't understand quantum mechanics.
+&mdash; <a href="https://en.wikipedia.org/wiki/Richard_Feynman">Richard P. Feynman</a> 
+</blockquote><br/>
+
+
+The code pertaining to the demos in this section is available under the 
+[quantum tab](https://glowscript.org/#/user/zeger.hendrikse/folder/Quantum/)
+on [glowscript.org](https://glowscript.org).
+
+### Visualizing plane waves $\psi(x, t) = A \cdot e^{i(k x - \omega t)}$ &amp; spherical harmonics
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div style="display: flex; align-items: flex-end;">
+<figure style="float: left; width: 50%; text-align: center">
+  <a href="glowscript/Planewave.html">
+    <img alt="Complex wave" src="./images/plane_wave.png" title="Click to animate"/>
+  </a>
+  <figcaption>Complex plane waves play a pivotal role in quantum mechanics!</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/AtomicOrbitals.html">
+    <img alt="Spherical harmonics" src="./images/atomic_orbitals.png" title="Click to animate"/>
+  </a>
+  <figcaption>Spherical harmonics are solutions of the Schr&#246;dinger equation for the hydrogen atom.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+
+<details>
+  <summary><a>&dArr; For a plane wave, we can easily derive the Schr&#246;dinger equation &uArr;</a></summary>
+
+According to <a href="https://en.wikipedia.org/wiki/Matter_wave">De Broglie</a> we have:
+
+$$p = \dfrac{h}{\lambda} = \dfrac{h}{2\pi} \dfrac{2\pi}{\lambda} = \hbar k \Rightarrow \hbar k = \hbar \dfrac{\partial}{\partial x} \psi(x,t) = p \psi(x, t) \Rightarrow p = \hbar \dfrac{\partial}{\partial x}$$
+
+The Kinetic energy can be expressed as:
+
+$$K = \dfrac{p^2}{2m} = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \psi(x,t)$$
+
+The total energy is given by the <a href="https://en.wikipedia.org/wiki/Planck_relation">Planck-Einstein relation</a>:
+
+$$E = hf = \dfrac{h}{2\pi}\dfrac{2\pi}{T} = \hbar \omega \Rightarrow -i\hbar\dfrac{\partial}{\partial t} \psi(x,t) = E \psi(x,t) \Rightarrow E = -i\hbar\dfrac{\partial}{\partial t}$$
+
+From this we arrive at the <a href="https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation">Schr&#246;dinger equation</a>:
+
+$$(KE + PE)\Psi(x,,t) = E\Psi(x,t) = -i\hbar \dfrac{\partial}{\partial t}\Psi(x, t) = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \Psi(x,t) + V(x)\Psi(x,t)$$
+
+In three-dimensional space this is then generalized to:
+
+$$i\hbar\dfrac{\partial}{\partial t}\Psi(\vec{r}, t) = \left(-\frac{\hbar^2}{2m}\nabla^2 + V(\vec{r, t}\right)\Psi(\vec{r}, t)$$
+</details>
+
+<p><br/></p>
+
+<details>
+  <summary><a>&dArr; Python code snippet for plotting spherical harmonics &uArr;</a></summary>
+
+The spherical harmonic function is given by
+
+$$\begin{cases} \rho &amp; = 4 \cos^2(2\theta)\sin^2(\phi) \\  \theta &amp; = [0, 2\pi] \\ \phi &amp; = [0, \pi]  \end{cases}$$
+
+This can then easily be translated to the graphing software, that can also be 
+seen in the mathematics section on this page:
+
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">sphere_harmonics</span><span class="p">():</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.1</span> <span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">U</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+    
+    <span class="n">R1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="mi">2</span><span class="p">)).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="n">R2</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">V</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">R1</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">R2</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">U</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">V</span><span class="p">)).</span><span class="n">multiply</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">U</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">V</span><span class="p">)).</span><span class="n">multiply</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">U</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+
+<span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span> <span class="o">=</span> <span class="n">sphere_harmonics</span><span class="p">()</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">Plot3D</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+</details>
+<p><br clear="all"/></p>
+
+### One-dimensional quantum particle bound by an infinite square well
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<figure>
+  <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Quantum/program/Infinitesquarewell">
+    <img alt="Complex wave" width="50%" height="50%" src="./images/infinite_square_well.png" title="Click to animate"/>
+  </a>
+</figure>
+
+<details>
+<summary><a>&dArr; Background: particle in a box, i.e. confined by a infinite square well &uArr;</a></summary>
+<p>
+Although the one-dimensional particle-in-a-box problem does not correspond to any
+real-world system, it illustrates quite well some (fundamental) 
+quantum mechanical features nonetheless.
+</p>
+
+<p>
+The box is modeled by an infinite square well, so that the particle cannot escape 
+beyond the boundaries of the box.
+</p>
+
+Inside the box, the potential energy $V$ is zero (or constant). Substituting this together with the
+formula for the plane wave $\psi(x,t) = Ae^{ik x}e^{-i\omega t}$ into the Schrödinger equation, we get:
+
+$$\dfrac{\partial^2\psi}{\partial x^2} + \dfrac{8\pi^2m}{h^2}(E - 0)\psi=0 \Rightarrow \bigg(\dfrac{-h^2}{8\pi^2m}\bigg)\dfrac{\partial^2\psi}{\partial x^2}=E\psi$$
+
+Which function does give itself (times $E$) when differentiated twice _and_ is zero at both boundaries of the box?
+
+$$\psi = A\sin(ax) \Rightarrow \dfrac{h^2a^2}{8\pi^2m}\psi=E\psi \Rightarrow E=\dfrac{h^2a^2}{8\pi^2m}$$
+
+To get $a$, we note that the wave function equals zero at the box boundaries:
+
+$$\psi=A\sin(ax) = 0 \Rightarrow a=\dfrac{n\pi}{L} \Rightarrow \psi_n = A\sin\bigg(\dfrac{n\pi x}{L}\bigg) \Rightarrow E_n=\dfrac{h^2n^2}{8mL^2}$$
+
+Normalizing the wave function results in an expression for $A$:
+
+$$\int_0^L \psi \cdot  \psi dx = 1 \Rightarrow A^2 \int_0^L\sin^2\bigg(\dfrac{n\pi x}{L}\bigg) dx=1 \Rightarrow A^2\bigg(\dfrac{L}{2}\bigg)=1 \Rightarrow A=\sqrt{\dfrac{2}{L}}$$
+
+So summarizing, we have
+
+$$E=\dfrac{h^2a^2}{8\pi^2m} \text{ and } \psi_n=\sqrt{\dfrac{2}{L}}\sin(nkx), \text{where } k=\dfrac{\pi}{L}$$
+
+These energy eigenstates (and superpositions thereof) are used in the visualization software.
+</details>
+
+<p></p>
+
+### The quantum harmonic oscillator
+<div style="border-top: 1px solid #999999"><br/></div>
+
+The quantum harmonic oscillator is visualized in a semi-classical way below.
+
+<figure>
+  <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Quantum/program/Quantumoscillator">
+    <img alt="Quantum oscillator" width="50%" height="50%" src="./images/quantum_oscillator.png" title="Click to animate"/>
+  </a>
+</figure>
+
+### Charged particle moving in two electric fields
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div style="display: flex; align-items: flex-end;">
+<figure style="float: left; width: 50%; text-align: center">
+  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Chargedring">
+    <img alt="Electron spinning around charged ring" src="./images/electron_and_charged_ring.png" title="Click to animate"/>
+  </a>
+  <figcaption>If the atomic nucleus were a charged ring, as opposed to a point, then ...</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Movingcharge">
+    <img alt="Particle in electric field" src="./images/particle_in_electric_field.png" title="Click to animate"/>
+  </a>
+  <figcaption>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+### Rutherford scattering & charged particle in magnetic field
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div style="display: flex; align-items: flex-end;">
+<figure style="float: left; width: 50%; text-align: center">
+  <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Rutherfordscattering">
+    <img alt="Rutherford scattering" src="./images/rutherford_scattering.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Rutherford_scattering_experiments#Rutherford_scattering">Rutherford scattering</a>,
+  which lead to the first atomic model with a nucleus and electrons spinning around it.</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Helicalmotion">
+    <img alt="Helical motion" src="./images/helical_motion.png" title="Click to animate"/>
+  </a>
+  <figcaption>Playfully discover how a charged particle behaves in a magnetic field.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+

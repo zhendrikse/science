@@ -1,0 +1,42 @@
+<a name="references"></a>
+# References &amp; acknowledgements
+<div style="border-top: 2px solid #cccccc"><br/></div>
+
+### Mathematics &amp; geometry
+
+- [Geometry, Surfaces, Curves, Polyhedra](https://paulbourke.net/geometry/) on 
+  [Paul Bourke](https://paulbourke.net/geometry/)&apos; web site
+- [Manim](https://github.com/3b1b/manim), an animation engine for explanatory math videos
+- [Sage](https://doc.sagemath.org/html/en/index.html), an open source MatLab equivalent,
+  see also the [Sage GitHub repository](https://doc.sagemath.org/html/en/index.html) and the
+  [parametric plots page](https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html)
+
+### Other VPython apps
+
+- [Glowscript apps](https://www.glowscript.org/#/user/matterandinteractions/folder/matterandinteractions/) belonging to the book [Matter and Interactions](https://matterandinteractions.org/)
+- Glowscript apps written by [Bob Salgado](https://www.glowscript.org/#/user/Rob_Salgado/folder/My_Programs/), 
+  [Steve Spicklemire](https://www.glowscript.org/#/user/spicklemire/), [Dr Harrell Pane](https://www.glowscript.org/#/user/dr.harrell.pane/), [X9Z3](https://glowscript.org/#/user/X9Z3/folder/X9Z3Publications/), 
+  and by [priisdk](https://glowscript.org/#/user/priisdk/)
+- Some [Glowscript games](https://glowscript.org/#/user/Guhan/folder/MyPrograms/) 
+- [VPython user contributed programs](https://vpython.org/contents/contributed.html)
+- [Physics simulations GitHub repository](https://github.com/Humboldt-Penguin/Physics_Simulations) of [Humboldt-Penguin](https://github.com/Humboldt-Penguin/)
+- [Physics through Glowscript - An introductory course](https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course), an excellent tutorial!
+- [VPython lecture demos](https://lectdemo.github.io/virtual/index.html) (based on deprecated (V)Python versions)
+
+### Other resources
+
+- [3D Modeling with VPython](https://rsehosting.reading.ac.uk/courses/py3d-basic/)
+- [Hydrogen wavefunctions](https://github.com/ssebastianmag/hydrogen-wavefunctions)
+- [VPython Applications for Teaching Physics](https://www.visualrelativity.com/vpython/) by Rob Salgado
+- Check this out &rarr; [QMsolve: A module for solving and visualizing the Schrödinger equation](https://github.com/quantum-visualizations/qmsolve)
+- [MyScript](https://webdemo.myscript.com/): enter text, equations, or diagrams by hand, and effortlessly convert 
+  it to MathML, LaTeX, etc.!
+- Just for fun: [online electric circuit construction kit](https://phet.colorado.edu/sims/html/circuit-construction-kit-ac/latest/circuit-construction-kit-ac_all.html).
+  Make sure to check it out, it simply is brilliant.
+
+### Acknowledgements
+
+- [Ruth Chabay and Bruce Sherwood](https://www.aapt.org/aboutaapt/Chabay_Sherwood_2014-Halliday-Resnick-Award.cfm)
+- [Rhett Allain](https://en.wikipedia.org/wiki/Rhett_Allain)
+- [Rob Salgado](https://www.linkedin.com/in/robertobsalgado)
+- [Steve Spicklemire](https://github.com/sspickle)

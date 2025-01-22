@@ -26,7 +26,7 @@ that I have written in VPython.
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
+    <img alt="Twisted torus" src="./images/geometry/trefoil_knot.png" title="Click to animate"/>
   </a>
   <figcaption>A twisted torus.</figcaption>
 </figure>
@@ -72,6 +72,13 @@ that I have written in VPython.
 ## Spirals
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
+<!--details>
+  <summary><a>&dArr; Click for more information on these geometric objects &uArr;</a></summary>
+  Dini&apos;s spiral, Dini&apos;s surface, or twisted pseudo-sphere 
+  is characterized by a surface of constant (negative) curvature 
+  and is named after Ulisse Dini.
+</details-->
+
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
@@ -81,18 +88,13 @@ that I have written in VPython.
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Bubbles shape" src="./images/geometry/bubbles.png" title="Click to animate"/>
+    <img alt="Bubbles shape" src="./images/geometry/conchoid.png" title="Click to animate"/>
   </a>
-  <figcaption>Lemniscate of Gerono, defined by $x^4 - x^2 + y^2 + z^2 = 0$.</figcaption>
+  <figcaption>Mathematical seashell.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
-<details>
-  <summary><a>&dArr; Click for more information on these geometric objects &uArr;</a></summary>
-  Dini&apos;s spiral, Dini&apos;s surface, or twisted pseudo-sphere 
-  is characterized by a surface of constant (negative) curvature 
-  and is named after Ulisse Dini.
-</details>
+
 
 ## Miscellaneous
 <div style="border-top: 2px solid #cccccc"><br/></div>
@@ -113,9 +115,37 @@ that I have written in VPython.
 </div>
 <p style="clear: both;"></p>
 
-# References
-<div style="border-top: 2px solid #cccccc"><br/></div>
+<div style="display: flex; align-items: flex-end;">
+<figure style="float: left; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Self-intersecting plane" src="./images/geometry/self_intersecting_plane.png" title="Click to animate"/>
+  </a>
+  <figcaption>Self-intersecting plane.</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Ball and torus" src="./images/geometry/ball_in_torus.png" title="Click to animate"/>
+  </a>
+  <figcaption>Combined ball and torus.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
 
-- [Geometry, Surfaces, Curves, Polyhedra](https://paulbourke.net/geometry/) on 
-  [Paul Bourke](https://paulbourke.net/geometry/)&apos; web site
-- [Parametric plots](https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html)
+<div style="display: flex; align-items: flex-end;">
+<figure style="float: left; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Dini&apos;s spiral" src="./images/geometry/dini_spiral.png" title="Click to animate"/>
+  </a>
+  <figcaption>Dini&apos;s spiral, Dini&apos;s surface, or twisted pseudo-sphere.</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Bubbles shape" src="./images/geometry/bubbles.png" title="Click to animate"/>
+  </a>
+  <figcaption>Lemniscate of Gerono, defined by $x^4 - x^2 + y^2 + z^2 = 0$.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+
+{% include_relative footer.md %}
