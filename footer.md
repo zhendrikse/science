@@ -7,14 +7,15 @@
 - [Geometry, Surfaces, Curves, Polyhedra](https://paulbourke.net/geometry/) on 
   [Paul Bourke](https://paulbourke.net/geometry/)&apos; web site
 - [Manim](https://github.com/3b1b/manim), an animation engine for explanatory math videos
-- [Sage](https://doc.sagemath.org/html/en/index.html), an open source MatLab equivalent,
-  see also the [Sage GitHub repository](https://doc.sagemath.org/html/en/index.html) and the
-  [parametric plots page](https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html)
+- [Sage](https://doc.sagemath.org/html/en/index.html), an open source MatLab
+  on [GitHub](https://doc.sagemath.org/html/en/index.html).
+  [Here](https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html) 
+  are some 3D-plot examples.
 
 ### Other VPython apps
 
 - [Glowscript apps](https://www.glowscript.org/#/user/matterandinteractions/folder/matterandinteractions/) belonging to the book [Matter and Interactions](https://matterandinteractions.org/)
-- Glowscript apps written by [Bob Salgado](https://www.glowscript.org/#/user/Rob_Salgado/folder/My_Programs/), 
+- Apps by [Bob Salgado](https://www.glowscript.org/#/user/Rob_Salgado/folder/My_Programs/), 
   [Steve Spicklemire](https://www.glowscript.org/#/user/spicklemire/), [Dr Harrell Pane](https://www.glowscript.org/#/user/dr.harrell.pane/), [X9Z3](https://glowscript.org/#/user/X9Z3/folder/X9Z3Publications/), 
   and by [priisdk](https://glowscript.org/#/user/priisdk/)
 - Some [Glowscript games](https://glowscript.org/#/user/Guhan/folder/MyPrograms/) 
@@ -28,10 +29,9 @@
 - [3D Modeling with VPython](https://rsehosting.reading.ac.uk/courses/py3d-basic/)
 - [Hydrogen wavefunctions](https://github.com/ssebastianmag/hydrogen-wavefunctions)
 - [VPython Applications for Teaching Physics](https://www.visualrelativity.com/vpython/) by Rob Salgado
-- Check this out &rarr; [QMsolve: A module for solving and visualizing the Schrödinger equation](https://github.com/quantum-visualizations/qmsolve)
-- [MyScript](https://webdemo.myscript.com/): enter text, equations, or diagrams by hand, and effortlessly convert 
-  it to MathML, LaTeX, etc.!
-- Just for fun: [online electric circuit construction kit](https://phet.colorado.edu/sims/html/circuit-construction-kit-ac/latest/circuit-construction-kit-ac_all.html).
+- [QMsolve: A module for solving and visualizing the Schrödinger equation](https://github.com/quantum-visualizations/qmsolve)
+- [MyScript](https://webdemo.myscript.com/): automatic conversion of text, equations, and to MathML, LaTeX, etc.!
+- [Online electric circuit construction kit](https://phet.colorado.edu/sims/html/circuit-construction-kit-ac/latest/circuit-construction-kit-ac_all.html).
   Make sure to check it out, it simply is brilliant.
 
 ### Acknowledgements
