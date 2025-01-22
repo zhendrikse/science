@@ -22,7 +22,7 @@ that I have written in VPython.
   <a href="glowscript/GeometricShapes.html">
     <img alt="Torus" src="./images/geometry/torus.png" title="Click to animate"/>
   </a>
-  <figcaption>A torus, a connected orientable surface of 
+  <figcaption>A torus, a well-known example of a connected orientable surface of 
     <a href="https://en.wikipedia.org/wiki/Genus_%28mathematics%29">genus one</a>.
   </figcaption>
 </figure>
@@ -31,7 +31,7 @@ that I have written in VPython.
     <img alt="Trefoil knot" src="./images/geometry/trefoil_knot.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Trefoil_knot">Trefoil knot</a>, the simplest
-  (non-trivial) knot.</figcaption>
+  example of a (non-trivial) knot.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
