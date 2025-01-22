@@ -53,6 +53,9 @@ that I have written in VPython.
 ## Non-orientable surfaces
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
+### Möbius strip &amp; Klein&apos;s bottle
+<div style="border-top: 1px solid #999999"><br/></div>
+
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
@@ -64,10 +67,32 @@ that I have written in VPython.
   <a href="glowscript/GeometricShapes.html">
     <img alt="Klein&aps;s bottle" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
   </a>
-  <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a>.</figcaption>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a> can be
+  obtained by gluing two Möbius strips together.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
+
+### The real projective plane
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div style="display: flex; align-items: flex-end;">
+<figure style="float: left; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Self-intersecting plane" src="./images/geometry/self_intersecting_plane.png" title="Click to animate"/>
+  </a>
+  <figcaption>Self-intersecting plane.</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Cross capp" src="./images/geometry/self_intersecting_plane.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://paulbourke.net/geometry/crosscap/">Paul Bourke&apos;s parametrization></a> 
+  for the <a href="https://mathworld.wolfram.com/Cross-Cap.html">cross cap</a>.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 
 ## Spirals
 <div style="border-top: 2px solid #cccccc"><br/></div>
@@ -84,13 +109,14 @@ that I have written in VPython.
   <a href="glowscript/GeometricShapes.html">
     <img alt="Dini&apos;s spiral" src="./images/geometry/dini_spiral.png" title="Click to animate"/>
   </a>
-  <figcaption>Dini&apos;s spiral, Dini&apos;s surface, or twisted pseudo-sphere.</figcaption>
+  <figcaption>Dini&apos;s spiral, <a href="https://en.wikipedia.org/wiki/Dini%27s_surface">Dini&apos;s surface</a>, or twisted pseudo-sphere.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
     <img alt="Conchoidd" src="./images/geometry/conchoid.png" title="Click to animate"/>
   </a>
-  <figcaption>Mathematical seashell.</figcaption>
+  <figcaption><a href="https://paulbourke.net/geometry/spiral">Paul Bourke&apos;s parametrization</a>
+  was used to generate this seashell.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -118,25 +144,9 @@ that I have written in VPython.
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Self-intersecting plane" src="./images/geometry/self_intersecting_plane.png" title="Click to animate"/>
-  </a>
-  <figcaption>Self-intersecting plane.</figcaption>
-</figure>
-<figure style="float: right; width: 50%; text-align: center">
-  <a href="glowscript/GeometricShapes.html">
     <img alt="Ball and torus" src="./images/geometry/ball_in_torus.png" title="Click to animate"/>
   </a>
   <figcaption>Combined ball and torus.</figcaption>
-</figure>
-</div>
-<p style="clear: both;"></p>
-
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
-  <a href="glowscript/GeometricShapes.html">
-    <img alt="Dini&apos;s spiral" src="./images/geometry/dini_spiral.png" title="Click to animate"/>
-  </a>
-  <figcaption>Dini&apos;s spiral, Dini&apos;s surface, or twisted pseudo-sphere.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
