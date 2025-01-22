@@ -22,13 +22,16 @@ that I have written in VPython.
   <a href="glowscript/GeometricShapes.html">
     <img alt="Torus" src="./images/geometry/torus.png" title="Click to animate"/>
   </a>
-  <figcaption>A torus.</figcaption>
+  <figcaption>A torus, a connected orientable surface of 
+    <a href="https://en.wikipedia.org/wiki/Genus_%28mathematics%29">genus one</a>.
+  </figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
     <img alt="Trefoil knot" src="./images/geometry/trefoil_knot.png" title="Click to animate"/>
   </a>
-  <figcaption><a href="https://en.wikipedia.org/wiki/Trefoil_knot">Trefoil knot</a>.</figcaption>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Trefoil_knot">Trefoil knot</a>, the simplest
+  (non-trivial) knot.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -61,7 +64,8 @@ that I have written in VPython.
   <a href="glowscript/GeometricShapes.html">
     <img alt="Möbius strip" src="./images/geometry/mobius_strip.png" title="Click to animate"/>
   </a>
-  <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/M%C3%B6bius_strip">Möbius strip.</a></figcaption>
+  <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/M%C3%B6bius_strip">Möbius strip</a>,
+  perhaps the most well-known non-orientable surface.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">

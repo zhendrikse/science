@@ -27,7 +27,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   <a href="glowscript/Complexfunctionplot.html">
     <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
   </a>
-  <figcaption>Plotting <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a> 
+  <figcaption>Three-dimensional visualization of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a> 
   $F(z) \rightarrow \mathbb{C}, z \in \mathbb{C}$.</figcaption>
 </figure>
 </div>

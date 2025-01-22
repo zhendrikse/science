@@ -26,9 +26,11 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
+<p style="clear: both;"></p>
 
 ### Mathematical seashell
 <div style="border-top: 1px solid #999999"><br/></div>
+
 <figure style="float: left; width: 45%; text-align: center">
   <a href="glowscript/Raindrops.html">
     <img alt="Raindrops" src="./images/raindrops.png" title="Click to animate"/>
@@ -47,8 +49,4 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   -->
 </figure>
 </div>
-
-<figure style="float: left; text-align: center;">
-</figure>
-
 <p style="clear: both;"></p>
