@@ -6,7 +6,7 @@ The code pertaining to the demos in this section is available under the
 [miscellaneous tab](https://www.glowscript.org/#/user/zeger.hendrikse/folder/MyPrograms/)
 on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 
-### Flocking birds &amp; falling raindrops
+### Flocking birds &amp; seashells
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div style="display: flex; align-items: flex-end;">
@@ -27,7 +27,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 </div>
 <p style="clear: both;"></p>
 
-### Mathematical seashell
+### Modelling falling raindrops
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <figure style="float: left; width: 45%; text-align: center">
