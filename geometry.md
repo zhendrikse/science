@@ -26,9 +26,9 @@ that I have written in VPython.
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Twisted torus" src="./images/geometry/trefoil_knot.png" title="Click to animate"/>
+    <img alt="Trefoil knot" src="./images/geometry/trefoil_knot.png" title="Click to animate"/>
   </a>
-  <figcaption>A twisted torus.</figcaption>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Trefoil_knot">Trefoil knot</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -88,7 +88,7 @@ that I have written in VPython.
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Bubbles shape" src="./images/geometry/conchoid.png" title="Click to animate"/>
+    <img alt="Conchoidd" src="./images/geometry/conchoid.png" title="Click to animate"/>
   </a>
   <figcaption>Mathematical seashell.</figcaption>
 </figure>
