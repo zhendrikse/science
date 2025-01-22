@@ -30,7 +30,8 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion">Kepler&apos;s laws</a>
     of planetary motion: "I believe the geometric proportion served the creator as an idea when He 
-    introduced the continuous generation of similar objects from similar objects" &mdash; Johannes Kepler.
+    introduced the continuous generation of similar objects from similar objects" &mdash; 
+    <a href="https://en.wikipedia.org/wiki/Johannes_Kepler">Johannes Kepler</a>.
   </figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
@@ -38,7 +39,9 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
     <img alt="Three body problem" src="./images/three_body.png" title="Click to animate"/>
   </a>
   <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/Three-body_problem">three-body problem</a>,
-  for which there exists no analytical solution, hence numerical methods to the rescue!</figcaption>
+  for which there exists no analytical solution, hence numerical methods to the rescue! 
+  <a href="https://en.wikipedia.org/wiki/Euler%27s_three-body_problem">Euler&apos;s version</a>
+  of the three-body problem is exactly solvable though.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
