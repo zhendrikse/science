@@ -84,11 +84,13 @@ that I have written in VPython.
   <figcaption>Self-intersecting plane.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
+  <!--
   <a href="glowscript/GeometricShapes.html">
     <img alt="Cross capp" src="./images/geometry/self_intersecting_plane.png" title="Click to animate"/>
   </a>
-  <figcaption><a href="https://paulbourke.net/geometry/crosscap/">Paul Bourke&apos;s parametrization></a> 
+  <figcaption><a href="https://paulbourke.net/geometry/crosscap/">Paul Bourke&apos;s parametrization</a> 
   for the <a href="https://mathworld.wolfram.com/Cross-Cap.html">cross cap</a>.</figcaption>
+  -->
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -109,7 +111,9 @@ that I have written in VPython.
   <a href="glowscript/GeometricShapes.html">
     <img alt="Dini&apos;s spiral" src="./images/geometry/dini_spiral.png" title="Click to animate"/>
   </a>
-  <figcaption>Dini&apos;s spiral, <a href="https://en.wikipedia.org/wiki/Dini%27s_surface">Dini&apos;s surface</a>, or twisted pseudo-sphere.</figcaption>
+  <figcaption>Dini&apos;s spiral, <a href="https://en.wikipedia.org/wiki/Dini%27s_surface">Dini&apos;s surface</a>, 
+  or twisted pseudo-sphere is characterized by a surface of constant (negative) curvature and 
+  is named after Ulisse Dini.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
