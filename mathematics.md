@@ -27,14 +27,14 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   <a href="glowscript/Complexfunctionplot.html">
     <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
   </a>
-  <figcaption>Three-dimensional visualization of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a> 
+  <figcaption>3D-visualizations of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a> 
   $F(z) \rightarrow \mathbb{C}, z \in \mathbb{C}$.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
 
 <details>
-  <summary><a>&dArr; Python code snippets with which to generate the plots &uArr;</a></summary>
+  <summary><a>&dArr; Code snippets used for these plots &uArr;</a></summary>
 
 The formula for the above image is given by:
 
