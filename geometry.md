@@ -116,15 +116,16 @@ that I have written in VPython.
     <img alt="Dini&apos;s spiral" src="./images/geometry/dini_spiral.png" title="Click to animate"/>
   </a>
   <figcaption>Dini&apos;s spiral, <a href="https://en.wikipedia.org/wiki/Dini%27s_surface">Dini&apos;s surface</a>, 
-  or twisted pseudo-sphere is characterized by a surface of constant (negative) curvature and 
-  is named after Ulisse Dini.</figcaption>
+  or twisted pseudo-sphere: characterized by a surface of constant (negative) curvature, 
+  named after Ulisse Dini.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
     <img alt="Conchoidd" src="./images/geometry/conchoid.png" title="Click to animate"/>
   </a>
-  <figcaption><a href="https://paulbourke.net/geometry/spiral">Paul Bourke&apos;s parametrization</a>
-  was used to generate this seashell.</figcaption>
+  <figcaption>Nature meets mathematics: a purely mathematically generated seashell, with the parametrization 
+  found on <a href="https://paulbourke.net/geometry/spiral">Paul Bourke&apos;s</a> site.
+  </figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
