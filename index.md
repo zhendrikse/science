@@ -41,6 +41,8 @@ finest that music and poetry can deliver. &mdash;
     <figcaption>Illustration of the doppler effect.</figcaption>
 </figure>
 
+{% include_relative thermodynamics.md %}
+
 {% include_relative relativity.md %}
 
 {% include_relative kinematics.md %}

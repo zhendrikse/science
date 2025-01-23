@@ -64,7 +64,7 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
   <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Chargeddisk">
-    <img alt="Charged disk" src="./images/charged_disk.png" title="Click to animate"/>
+    <img alt="Charged disk" width="70%" src="./images/charged_disk.png" title="Click to animate"/>
   </a>
   <figcaption>Visualization of the electric field around a disk.</figcaption>
 </figure>
@@ -95,34 +95,3 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
 </figure>
 </div>
 <p style="clear: both;"></p>
-
-<a name="thermodynamics"></a>
-# Thermodynamics
-<div style="border-top: 2px solid #cccccc"><br/></div>
-
-The code pertaining to the demos in this section is available under the 
-[thermodynamics tab](https://glowscript.org/#/user/zeger.hendrikse/folder/Thermodynamics/)
-on [glowscript.org](https://glowscript.org).
-
-### Boltzmann gas &amp; cubic symmetry planes
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<figure>
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Thermodynamics/program/Hardspheregas">
-    <img alt="Hard sphere gas" width="40%" height="40%" src="./images/hard_sphere_gas.png" title="Click to animate"/>
-  </a>
-  <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Crystalsymmetryplanes">
-    <img alt="Symmetry planes" width="45%" height="45%" src="./images/crystal_planes.png" title="Click to animate"/>
-  </a>
-</figure>
-
-### Two-dimensional Ising spin model
-<div style="border-top: 1px solid #999999"><br/></div>
-
-This demo models the magnetization at various temperatures using a two-dimensional Ising spin lattice.
-
-<figure>
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Thermodynamics/program/Isingspin">
-    <img alt="Ising spin model" width="40%" height="40%" src="./images/ising_spin_model.png" title="Click to animate"/>
-  </a>
-</figure>
