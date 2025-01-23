@@ -176,14 +176,14 @@ as the [Möbius strip](geomettry#non_orientables) and
   <a href="glowscript/PolarCoordinates">
     <img alt="Polar coordinates" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
   </a>
-  <figcaption>A twisted torus. For more surfaces, visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+  <figcaption>A twisted torus. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
     <img alt="Möbius strip" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a>.
-  For more surfaces, visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+  For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
