@@ -21,8 +21,8 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   <a href="glowscript/GeometricShapes.html">
     <img alt="Conchoidd" src="./images/geometry/conchoid.png" title="Click to animate"/>
   </a>
-  <figcaption>An example of mathematical beauty reflected in mere seashells. For more geometrical 
-  shapes like this, visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+  <figcaption>Mathematical beauty reflected in mere seashells. For more  
+  surfaces, visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

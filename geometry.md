@@ -99,16 +99,17 @@ that I have written in VPython.
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Self-intersecting plane" src="./images/geometry/self_intersecting_disk.png" title="Click to animate"/>
-  </a>
-  <figcaption>Self-intersecting disk.</figcaption>
-</figure>
-<figure style="float: right; width: 50%; text-align: center">
-  <a href="glowscript/GeometricShapes.html">
-    <img alt="Cross capp" src="./images/geometry/cross_cap.png" title="Click to animate"/>
+    <img alt="Cross capp" src="./images/geometry/cross_cap.png" width="80%" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/crosscap/">Paul Bourke&apos;s parametrization</a> 
   for the <a href="https://mathworld.wolfram.com/Cross-Cap.html">cross cap</a>.</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Self-intersecting plane" src="./images/geometry/self_intersecting_disk.png" title="Click to animate"/>
+  </a>
+  <figcaption>A sliced cross-capped disk is 
+  <a href="https://en.wikipedia.org/wiki/Homeomorphism">homeomorphic</a> to a self-intersecting disk.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -175,7 +176,7 @@ that I have written in VPython.
   <a href="glowscript/GeometricShapes.html">
     <img alt="Bubbles shape" src="./images/geometry/bubbles.png" title="Click to animate"/>
   </a>
-  <figcaption>Lemniscate of Gerono, defined by $x^4 - x^2 + y^2 + z^2 = 0$.</figcaption>
+  <figcaption>A surface of revolution.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

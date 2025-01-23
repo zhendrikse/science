@@ -110,8 +110,6 @@ Polar coordinates not only enable us to much more easily solve spherically symme
 both physics and mathematics, they also provide us a way to parameterize complex topological surfaces, 
 such  as [Klein&apos;s bottle](geometry#non_orientables) (shown below in the topology subsection). 
 
-Get further enchanted in my [Math Art Gallery](geometry.html)! 
-
 
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
@@ -171,7 +169,6 @@ Polar coordinates not only enable us to much more easily solve spherically symme
 both physics and mathematics, they also provide us a way to parameterize complex geometrical shapes, such
 as the [Möbius strip](geomettry#non_orientables) and 
 [Klein&apos;s bottle](geometry#non_orientables). 
-Get further enchanted in my [Math Art Gallery](geometry.html)! 
 
 
 <div style="display: flex; align-items: flex-end;">
