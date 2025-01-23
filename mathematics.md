@@ -165,22 +165,16 @@ seen in the mathematics section on this page:
 ### [Topology](geometry.html)
 <div style="border-top: 1px solid #999999"><br/></div>
 
-Polar coordinates not only enable us to much more easily solve spherically symmetric problems in 
-both physics and mathematics, they also provide us a way to parameterize complex geometrical shapes, such
-as the [Möbius strip](geomettry#non_orientables) and 
-[Klein&apos;s bottle](geometry#non_orientables). 
-
-
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes">
-    <img alt="Polar coordinates" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
+    <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
   </a>
   <figcaption>A twisted torus. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Möbius strip" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
+    <img alt="Klein&apos;s bottle" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a>.
   For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
