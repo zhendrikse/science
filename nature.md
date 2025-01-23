@@ -19,10 +19,10 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 </figure>
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Conchoidd" src="./images/geometry/conchoid.png" title="Click to animate"/>
+    <img alt="Conchoidd" src="./images/geometry/conchoid.png" width="90%" title="Click to animate"/>
   </a>
-  <figcaption>Mathematical beauty reflected in mere seashells. For more  
-  surfaces, visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+  <figcaption>"As water finds its way back to the sea, I find a way 
+  back to me &mdash; <a href="https://ktolnoe.com/en-nl">K. Tolnoe</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

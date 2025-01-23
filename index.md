@@ -28,7 +28,7 @@ finest that music and poetry can deliver. &mdash;
 {% include_relative electromagnetism.md %}
 
 <a name="waves"></a>
-# Waves
+# Vibrations &amp; Waves
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
 ### Doppler effect
