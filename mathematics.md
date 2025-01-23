@@ -164,7 +164,7 @@ seen in the mathematics section on this page:
 </details>
 <p style="clear: both;"></p>
 
-### Topology
+### [Topology](geometry.html)
 <div style="border-top: 1px solid #999999"><br/></div>
 
 Polar coordinates not only enable us to much more easily solve spherically symmetric problems in 
