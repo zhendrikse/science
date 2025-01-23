@@ -173,7 +173,7 @@ as the [Möbius strip](geomettry#non_orientables) and
 
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
-  <a href="glowscript/PolarCoordinates">
+  <a href="glowscript/GeometricShapes">
     <img alt="Polar coordinates" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
   </a>
   <figcaption>A twisted torus. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
