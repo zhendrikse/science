@@ -37,6 +37,22 @@ that I have written in VPython.
 <p style="clear: both;"></p>
 
 <div style="display: flex; align-items: flex-end;">
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Limpet Torus" src="./images/geometry/limpet_torus.png" title="Click to animate"/>
+  </a>
+  <figcaption>The limpet torus.</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Elliptic torus" src="./images/geometry/elliptic_torus.png" title="Click to animate"/>
+  </a>
+  <figcaption>Elliptic torus.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+<div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
     <img alt="Double torus" src="./images/geometry/double_torus.png" title="Click to animate"/>
@@ -83,18 +99,16 @@ that I have written in VPython.
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Self-intersecting plane" src="./images/geometry/self_intersecting_plane.png" title="Click to animate"/>
+    <img alt="Self-intersecting plane" src="./images/geometry/self_intersecting_disk.png" title="Click to animate"/>
   </a>
-  <figcaption>Self-intersecting plane.</figcaption>
+  <figcaption>Self-intersecting disk.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
-  <!--
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Cross capp" src="./images/geometry/self_intersecting_plane.png" title="Click to animate"/>
+    <img alt="Cross capp" src="./images/geometry/cross_cap.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/crosscap/">Paul Bourke&apos;s parametrization</a> 
   for the <a href="https://mathworld.wolfram.com/Cross-Cap.html">cross cap</a>.</figcaption>
-  -->
 </figure>
 </div>
 <p style="clear: both;"></p>

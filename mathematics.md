@@ -103,7 +103,68 @@ $$\begin{pmatrix} x \\ y \\ z\end{pmatrix}=\begin{pmatrix} (c + a \cos(v))\cdot\
 
 <p></p>
 
-### Polar coordinates &amp; [geometrical shapes](geometry.html)
+### Polar coordinates &amp; spherical harmonics
+<div style="border-top: 1px solid #999999"><br/></div>
+
+Polar coordinates not only enable us to much more easily solve spherically symmetric problems in 
+both physics and mathematics, they also provide us a way to parameterize complex topological surfaces, 
+such  as [Klein&apos;s bottle](geometry#non_orientables) (shown below in the topology subsection). 
+
+Get further enchanted in my [Math Art Gallery](geometry.html)! 
+
+
+<div style="display: flex; align-items: flex-end;">
+<figure style="float: left; width: 50%; text-align: center">
+  <a href="glowscript/PolarCoordinates">
+    <img alt="Polar coordinates" src="./images/polar_coordinates.png" title="Click to animate"/>
+  </a>
+  <figcaption>Polar coordinates frequently simplify the tackling of rotationally symmetric problems.</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/AtomicOrbitals.html">
+    <img alt="Spherical harmonics" src="./images/geometry/spherical_harmonics.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Spherical_harmonics">Spherical harmonics</a> 
+  play an important role in both physics and mathematics.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+
+<details>
+  <summary><a>&dArr; Python code snippet for plotting spherical harmonics &uArr;</a></summary>
+
+The spherical harmonic function is given by
+
+$$\begin{cases} \rho &amp; = 4 \cos^2(2\theta)\sin^2(\phi) \\  \theta &amp; = [0, 2\pi] \\ \phi &amp; = [0, \pi]  \end{cases}$$
+
+This can then easily be translated to the graphing software, that can also be 
+seen in the mathematics section on this page:
+
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">sphere_harmonics</span><span class="p">():</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">1.1</span> <span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">U</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+    
+    <span class="n">R1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="mi">2</span><span class="p">)).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="n">R2</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">V</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">R1</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">R2</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">U</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">V</span><span class="p">)).</span><span class="n">multiply</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">U</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">V</span><span class="p">)).</span><span class="n">multiply</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">U</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+
+<span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span> <span class="o">=</span> <span class="n">sphere_harmonics</span><span class="p">()</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">Plot3D</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+</details>
+<p style="clear: both;"></p>
+
+### Topology
 <div style="border-top: 1px solid #999999"><br/></div>
 
 Polar coordinates not only enable us to much more easily solve spherically symmetric problems in 
@@ -116,17 +177,16 @@ Get further enchanted in my [Math Art Gallery](geometry.html)!
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/PolarCoordinates">
-    <img alt="Polar coordinates" src="./images/polar_coordinates.png" title="Click to animate"/>
+    <img alt="Polar coordinates" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
   </a>
-  <figcaption>Polar coordinates frequently simplify the tackling of rotationally symmetric problems.</figcaption>
+  <figcaption>A twisted torus. For more surfaces, visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
-    <img alt="Möbius strip" src="./images/geometry/mobius_strip.png" title="Click to animate"/>
+    <img alt="Möbius strip" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
   </a>
-  <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/M%C3%B6bius_strip">Möbius strip</a>.
-  For more geometrical shapes like this, visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a>.
+  For more surfaces, visit my <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
-
