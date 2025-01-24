@@ -31,7 +31,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 ### Modelling falling raindrops and the DNA
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<figure style="float: left; width: 40%; text-align: center">
+<figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/Raindrops.html">
     <img alt="Raindrops" src="./images/raindrops.png" title="Click to animate"/>
   </a>
@@ -39,7 +39,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   That's why the rain is thin" &mdash; Spike Milligan.</figcaption>
 </figure>
 <div style="display: flex; align-items: flex-end;">
-<figure style="float: right; width: 55%; text-align: center">
+<figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/Dna.html">
     <img alt="DNA" src="./images/dna.png" title="Click to animate"/>
   </a>
