@@ -37,9 +37,9 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   <a href="glowscript/Raindrops.html">
     <img alt="Raindrops" src="./images/raindrops.png" title="Click to animate"/>
   </a>
-  <figcaption>"There are holes in the sky. Where the rain gets in. But they're ever so small. 
+  <figcaption><br/>"There are holes in the sky. Where the rain gets in. But they're ever so small. 
   That's why the rain is thin" &mdash; 
-  <a href="https://en.wikipedia.org/wiki/Spike_Milligan">Spike Milligan</a>.<br/>
+  <a href="https://en.wikipedia.org/wiki/Spike_Milligan">Spike Milligan</a>.
   </figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
