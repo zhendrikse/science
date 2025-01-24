@@ -31,20 +31,26 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 ### Modelling falling raindrops and the DNA
 <div style="border-top: 1px solid #999999"><br/></div>
 
+<div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/Raindrops.html">
-    <img alt="Raindrops" src="./images/raindrops.png" width="70%" title="Click to animate"/>
+    <img alt="Raindrops" src="./images/raindrops.png" title="Click to animate"/>
   </a>
   <figcaption>"There are holes in the sky. Where the rain gets in. But they're ever so small. 
   That's why the rain is thin" &mdash; Spike Milligan.</figcaption>
 </figure>
-<div style="display: flex; align-items: flex-end;">
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/Dna.html">
     <img alt="DNA" src="./images/dna.png" title="Click to animate"/>
   </a>
-  <figcaption>"It has not escaped our notice that the specific pairing we have postulated immediately suggests a possible copying mechanism for the genetic material."
-James Watson Francis Crick. </figcaption>
+  <figcaption>"It has not escaped our notice that the specific 
+  pairing we have postulated immediately suggests a possible copying mechanism for the genetic material" &mdash;
+  <a href="https://www.sciencehistory.org/education/scientific-biographies/james-watson-francis-crick-maurice-wilkins-and-rosalind-franklin/">James Watson Francis Crick</a>
+  </figcaption>
 </figure>
+</div>
+<p style="clear: both;"></p>
+
+<div style="display: flex; align-items: flex-end;">
 </div>
 <p style="clear: both;"></p>
