@@ -1,0 +1,435 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title_text, animation, amino_colors, _GS_1, dna, speed_slider;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "10";
+    title_text = "Simulation of a DNA molecule\n\n&#x2022; <a href=\"https://trinket.io/glowscript/7ba54885924b\">Original idea and code<\/a> by Francisco Adeil Gomes Araujo\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/physics-in-python/blob/main/src/glowscript/misc/dna.py\">dna.py</a> \n\n";
+    "12";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title_text, width: 800, height: 600, range: 4, center: vector(0, 3, 0), background: color.gray(.1)})]);
+    "16";
+    amino_colors = ρσ_list_decorate([ color.red, color.blue, color.green, color.yellow ]);
+    "19";
+    function Nucleotide() {;
+    }
+    Nucleotide.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var colour = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        "21";
+        self._amino = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, color: colour})]);
+    };
+    if (!Nucleotide.prototype.__init__.__defaults__) Object.defineProperties(Nucleotide.prototype.__init__, {
+        __defaults__ : {value: {radius:.1}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "colour", "radius"]},
+        __module__ : {value: null}
+    });
+    Nucleotide.__argnames__ = Nucleotide.prototype.__init__.__argnames__;
+    Nucleotide.__handles_kwarg_interpolation__ = Nucleotide.prototype.__init__.__handles_kwarg_interpolation__;
+    Nucleotide.prototype.pos = async function pos() {
+        var self = this;
+        "24";
+        return self._amino.pos;
+    };
+    if (!Nucleotide.prototype.pos.__module__) Object.defineProperties(Nucleotide.prototype.pos, {
+        __module__ : {value: null}
+    });
+    Nucleotide.prototype.rotate = async function rotate() {
+        var self = this;
+        var angle = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.angle : arguments[0];
+        var axis = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.axis : arguments[1];
+        var origin = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.origin : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "angle")){
+            angle = ρσ_kwargs_obj.angle;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "axis")){
+            axis = ρσ_kwargs_obj.axis;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "origin")){
+            origin = ρσ_kwargs_obj.origin;
+        }
+        "27";
+        ρσ_interpolate_kwargs.call(self._amino, self._amino.rotate, [ρσ_desugar_kwargs({angle: angle, axis: axis, origin: origin})]);
+    };
+    if (!Nucleotide.prototype.rotate.__defaults__) Object.defineProperties(Nucleotide.prototype.rotate, {
+        __defaults__ : {value: {angle:.01, axis:vector(0, 1, 0), origin:vector(0, 0, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["angle", "axis", "origin"]},
+        __module__ : {value: null}
+    });
+    Nucleotide.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Nucleotide.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Nucleotide.prototype, "__bases__", {value: []});
+
+
+
+
+    "30";
+    function NucleotidePair() {;
+    }
+    NucleotidePair.prototype.__init__ = async function __init__(index, helix_angle, helix_radius, nucleotide_height) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, x, y, z, position_nucleotide_1, position_nucleotide_2, _GS_1;
+        "32";
+        ρσ_unpack = [cos(index["*"](helix_angle)), index["*"](nucleotide_height), sin(index["*"](helix_angle))];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        z = ρσ_unpack[2];
+        "33";
+        position_nucleotide_1 = helix_radius["*"](vector(x, y, z));
+        "34";
+        position_nucleotide_2 = helix_radius["*"](vector(1["-u"]()["*"](x), y, 1["-u"]()["*"](z)));
+        "36";
+        _GS_1 = new Nucleotide;
+        (await _GS_1.__init__(position_nucleotide_1, ρσ_getitem(amino_colors, index["%"](4))));
+        self._nucleotide_1 = _GS_1;
+        "37";
+        _GS_1 = new Nucleotide;
+        (await _GS_1.__init__(position_nucleotide_2, ρσ_getitem(amino_colors, index["+"](2)["%"](4))));
+        self._nucleotide_2 = _GS_1;
+        "38";
+        self._connection = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position_nucleotide_1, axis: (await self.distance()), radius: .05, color: color.white})]);
+    };
+    if (!NucleotidePair.prototype.__init__.__argnames__) Object.defineProperties(NucleotidePair.prototype.__init__, {
+        __argnames__ : {value: ["index", "helix_angle", "helix_radius", "nucleotide_height"]},
+        __module__ : {value: null}
+    });
+    NucleotidePair.__argnames__ = NucleotidePair.prototype.__init__.__argnames__;
+    NucleotidePair.__handles_kwarg_interpolation__ = NucleotidePair.prototype.__init__.__handles_kwarg_interpolation__;
+    NucleotidePair.prototype.rotate = async function rotate() {
+        var self = this;
+        var angle = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.angle : arguments[0];
+        var axis = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.axis : arguments[1];
+        var origin = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.origin : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "angle")){
+            angle = ρσ_kwargs_obj.angle;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "axis")){
+            axis = ρσ_kwargs_obj.axis;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "origin")){
+            origin = ρσ_kwargs_obj.origin;
+        }
+        "41";
+        ρσ_interpolate_kwargs.call(self._nucleotide_1, self._nucleotide_1.rotate, [ρσ_desugar_kwargs({angle: angle, axis: axis, origin: origin})]);
+        "42";
+        ρσ_interpolate_kwargs.call(self._nucleotide_2, self._nucleotide_2.rotate, [ρσ_desugar_kwargs({angle: angle, axis: axis, origin: origin})]);
+        "43";
+        ρσ_interpolate_kwargs.call(self._connection, self._connection.rotate, [ρσ_desugar_kwargs({angle: angle, axis: axis, origin: origin})]);
+    };
+    if (!NucleotidePair.prototype.rotate.__defaults__) Object.defineProperties(NucleotidePair.prototype.rotate, {
+        __defaults__ : {value: {angle:.01, axis:vector(0, 1, 0), origin:vector(0, 0, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["angle", "axis", "origin"]},
+        __module__ : {value: null}
+    });
+    NucleotidePair.prototype.nucleotide_1_pos = async function nucleotide_1_pos() {
+        var self = this;
+        "46";
+        return (await self._nucleotide_1.pos());
+    };
+    if (!NucleotidePair.prototype.nucleotide_1_pos.__module__) Object.defineProperties(NucleotidePair.prototype.nucleotide_1_pos, {
+        __module__ : {value: null}
+    });
+    NucleotidePair.prototype.nucleotide_2_pos = async function nucleotide_2_pos() {
+        var self = this;
+        "49";
+        return (await self._nucleotide_2.pos());
+    };
+    if (!NucleotidePair.prototype.nucleotide_2_pos.__module__) Object.defineProperties(NucleotidePair.prototype.nucleotide_2_pos, {
+        __module__ : {value: null}
+    });
+    NucleotidePair.prototype.distance = async function distance() {
+        var self = this;
+        "52";
+        return (await self._nucleotide_2.pos())["-"](1["*"]((await self._nucleotide_1.pos())));
+    };
+    if (!NucleotidePair.prototype.distance.__module__) Object.defineProperties(NucleotidePair.prototype.distance, {
+        __module__ : {value: null}
+    });
+    NucleotidePair.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    NucleotidePair.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(NucleotidePair.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "55";
+    function Dna() {;
+    }
+    Dna.prototype.__init__ = async function __init__() {
+        var self = this;
+        var number_of_pairs = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.number_of_pairs : arguments[0];
+        var omega = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.omega : arguments[1];
+        var nucleotide_height = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.nucleotide_height : arguments[2];
+        var helix_radius = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.helix_radius : arguments[3];
+        var helix_angle = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.helix_angle : arguments[4];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "number_of_pairs")){
+            number_of_pairs = ρσ_kwargs_obj.number_of_pairs;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "omega")){
+            omega = ρσ_kwargs_obj.omega;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "nucleotide_height")){
+            nucleotide_height = ρσ_kwargs_obj.nucleotide_height;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "helix_radius")){
+            helix_radius = ρσ_kwargs_obj.helix_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "helix_angle")){
+            helix_angle = ρσ_kwargs_obj.helix_angle;
+        }
+        "57";
+        self._connections = ρσ_list_decorate([]);
+        "58";
+        self._nucleotide_pairs = ρσ_list_decorate([]);
+        "59";
+        self._omega = omega;
+        "60";
+        (await self._new_helix_with(number_of_pairs, nucleotide_height, helix_radius, helix_angle));
+    };
+    if (!Dna.prototype.__init__.__defaults__) Object.defineProperties(Dna.prototype.__init__, {
+        __defaults__ : {value: {number_of_pairs:12, omega:.01, nucleotide_height:.4, helix_radius:1, helix_angle:pi["/"](6)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["number_of_pairs", "omega", "nucleotide_height", "helix_radius", "helix_angle"]},
+        __module__ : {value: null}
+    });
+    Dna.__argnames__ = Dna.prototype.__init__.__argnames__;
+    Dna.__handles_kwarg_interpolation__ = Dna.prototype.__init__.__handles_kwarg_interpolation__;
+    Dna.prototype._new_connection_between = async function _new_connection_between(initial_position, final_position) {
+        var self = this;
+        "63";
+        return ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: initial_position, axis: final_position["-"](1["*"](initial_position)), radius: .05, color: color.white})]);
+    };
+    if (!Dna.prototype._new_connection_between.__argnames__) Object.defineProperties(Dna.prototype._new_connection_between, {
+        __argnames__ : {value: ["initial_position", "final_position"]},
+        __module__ : {value: null}
+    });
+    Dna.prototype._new_helix_connection = async function _new_helix_connection() {
+        var self = this;
+        var ρσ_ls, last_pair, pair_before_last_pair, connection_1, connection_2;
+        "66";
+        last_pair = ρσ_getitem(self._nucleotide_pairs, 1["-u"]()["*"](1));
+        "67";
+        pair_before_last_pair = ρσ_getitem(self._nucleotide_pairs, 1["-u"]()["*"](2));
+        "68";
+        connection_1 = (await self._new_connection_between((await last_pair.nucleotide_1_pos()), (await pair_before_last_pair.nucleotide_1_pos())));
+        "70";
+        connection_2 = (await self._new_connection_between((await last_pair.nucleotide_2_pos()), (await pair_before_last_pair.nucleotide_2_pos())));
+        "72";
+        self._connections.append(connection_1);
+        "73";
+        self._connections.append(connection_2);
+    };
+    if (!Dna.prototype._new_helix_connection.__module__) Object.defineProperties(Dna.prototype._new_helix_connection, {
+        __module__ : {value: null}
+    });
+    Dna.prototype._new_connected_pair_with = async function _new_connected_pair_with(index, nucleotide_height, helix_radius, helix_angle) {
+        var self = this;
+        var ρσ_ls, _GS_1;
+        "76";
+        _GS_1 = new NucleotidePair;
+        (await _GS_1.__init__(index, helix_angle, helix_radius, nucleotide_height));
+        self._nucleotide_pairs.append(_GS_1);
+        "77";
+        if (index[">"](0)) {
+            (await self._new_helix_connection());
+        }
+    };
+    if (!Dna.prototype._new_connected_pair_with.__argnames__) Object.defineProperties(Dna.prototype._new_connected_pair_with, {
+        __argnames__ : {value: ["index", "nucleotide_height", "helix_radius", "helix_angle"]},
+        __module__ : {value: null}
+    });
+    Dna.prototype._new_helix_with = async function _new_helix_with(number_of_pairs, nucleotide_height, helix_radius, helix_angle) {
+        var self = this;
+        var ρσ_ls, i;
+        "80";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](number_of_pairs); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "81";
+            (await self._new_connected_pair_with(i, nucleotide_height, helix_radius, helix_angle));
+        }
+    };
+    if (!Dna.prototype._new_helix_with.__argnames__) Object.defineProperties(Dna.prototype._new_helix_with, {
+        __argnames__ : {value: ["number_of_pairs", "nucleotide_height", "helix_radius", "helix_angle"]},
+        __module__ : {value: null}
+    });
+    Dna.prototype.rotate = async function rotate() {
+        var self = this;
+        var axis = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.axis : arguments[0];
+        var origin = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.origin : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "axis")){
+            axis = ρσ_kwargs_obj.axis;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "origin")){
+            origin = ρσ_kwargs_obj.origin;
+        }
+        var ρσ_ls, pair, connection;
+        "84";
+        var ρσ_Iter2 = self._nucleotide_pairs;
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            pair = ρσ_Index2;
+            "85";
+            ρσ_interpolate_kwargs.call(pair, pair.rotate, [ρσ_desugar_kwargs({angle: self._omega, axis: axis, origin: origin})]);
+        }
+        "86";
+        var ρσ_Iter3 = self._connections;
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            connection = ρσ_Index3;
+            "87";
+            ρσ_interpolate_kwargs.call(connection, connection.rotate, [ρσ_desugar_kwargs({angle: self._omega, axis: axis, origin: origin})]);
+        }
+    };
+    if (!Dna.prototype.rotate.__defaults__) Object.defineProperties(Dna.prototype.rotate, {
+        __defaults__ : {value: {axis:vector(0, 1, 0), origin:vector(0, 0, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["axis", "origin"]},
+        __module__ : {value: null}
+    });
+    Dna.prototype.set_omega_to = async function set_omega_to(value) {
+        var self = this;
+        "90";
+        self._omega = value;
+    };
+    if (!Dna.prototype.set_omega_to.__argnames__) Object.defineProperties(Dna.prototype.set_omega_to, {
+        __argnames__ : {value: ["value"]},
+        __module__ : {value: null}
+    });
+    Dna.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Dna.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Dna.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+    "93";
+    async function change_rotation_speed() {
+        "94";
+        (await dna.set_omega_to(speed_slider.value));
+    };
+    if (!change_rotation_speed.__module__) Object.defineProperties(change_rotation_speed, {
+        __module__ : {value: null}
+    });
+
+    "97";
+    animation.append_to_caption("\nRotation speed ");
+    "98";
+    _GS_1 = new Dna;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({number_of_pairs: 16, omega: .01})]);
+    dna = _GS_1;
+    "99";
+    speed_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({bind: change_rotation_speed, value: .01, min: 0, max: .1})]);
+    "101";
+    while (true) {
+        "102";
+        (await dna.rotate());
+        "103";
+        (await rate(30));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

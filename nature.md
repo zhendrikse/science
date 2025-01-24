@@ -28,10 +28,10 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 </div>
 <p style="clear: both;"></p>
 
-### Modelling falling raindrops
+### Modelling falling raindrops and the DNA
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<figure style="float: left; width: 45%; text-align: center">
+<figure style="float: left; width: 40%; text-align: center">
   <a href="glowscript/Raindrops.html">
     <img alt="Raindrops" src="./images/raindrops.png" title="Click to animate"/>
   </a>
@@ -39,14 +39,12 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   That's why the rain is thin" &mdash; Spike Milligan.</figcaption>
 </figure>
 <div style="display: flex; align-items: flex-end;">
-<figure style="float: right; width: 45%; text-align: center">
-  <!--
-  <a href="glowscript/Raindrops.html">
-    <img alt="Raindrops" src="./images/raindrops.png" title="Click to animate"/>
+<figure style="float: right; width: 55%; text-align: center">
+  <a href="glowscript/Dna.html">
+    <img alt="DNA" src="./images/dna.png" title="Click to animate"/>
   </a>
-  <figcaption>"There are holes in the sky. Where the rain gets in. But they're ever so small. 
-  That's why the rain is thin" &mdash; Spike Milligan.</figcaption>
-  -->
+  <figcaption>"It has not escaped our notice that the specific pairing we have postulated immediately suggests a possible copying mechanism for the genetic material."
+James Watson Francis Crick. Nature, 171: 737. April 25, 1953.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
