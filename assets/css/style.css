@@ -2,5 +2,4 @@
 ---
 
 @import "{{ site.theme }}";
-
-science_style.css
+@import science_style.css;
