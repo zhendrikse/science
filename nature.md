@@ -15,7 +15,8 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
     <img alt="Flocking birds" src="./images/flocking_birds.png" title="Click to animate"/>
   </a>
   <figcaption>Simulation of a flock of birds: "Eagles commonly fly alone. They are crows, daws, 
-  and starlings that flock together" &mdash; John Webster </figcaption>
+  and starlings that flock together" &mdash; 
+  <a href="https://en.wikipedia.org/wiki/John_Webster">John Webster</a></figcaption>
 </figure>
 <figure style="float: left; width: 50%; text-align: center">
   <a href="glowscript/GeometricShapes.html">
@@ -37,7 +38,8 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
     <img alt="Raindrops" src="./images/raindrops.png" title="Click to animate"/>
   </a>
   <figcaption>"There are holes in the sky. Where the rain gets in. But they're ever so small. 
-  That's why the rain is thin" &mdash; Spike Milligan.</figcaption>
+  That's why the rain is thin" &mdash; <a href="https://en.wikipedia.org/wiki/Spike_Milligan">Spike Milligan</a>.
+  </figcaption>
 </figure>
 <figure style="float: right; width: 50%; text-align: center">
   <a href="glowscript/Dna.html">
