@@ -93,6 +93,23 @@ that I have written in VPython.
 </div>
 <p style="clear: both;"></p>
 
+<div style="display: flex; align-items: flex-end;">
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Figure-8 Klein bottle" src="./images/geometry/figure_8_klein_bottle.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a> also can be
+  obtained by gluing two Möbius strips together.</figcaption>
+</figure>
+<figure style="float: right; width: 50%; text-align: center">
+  <a href="glowscript/GeometricShapes.html">
+    <img alt="Gray&aps;s Klein bottle" src="./images/geometry/grays_klein_bottle.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://www.blendswap.com/blend/8068">Grays Klein&apos;s bottle</a>.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 ### The real projective plane
 <div style="border-top: 1px solid #999999"><br/></div>
 
