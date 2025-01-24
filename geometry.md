@@ -7,7 +7,9 @@ in a dark labyrinth. &mdash;
 <a href="https://en.wikipedia.org/wiki/Galileo_Galilei">Galileo Galilei</a> (1623).
 </blockquote>
 
-<p><br clear="all"/></p>
+<p style="clear: both;"></p>
+
+{% include_relative header.md %}
 
 # Welcome to my Math Art Gallery 
 
