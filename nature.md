@@ -48,7 +48,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   </a>
   <figcaption>"[...] the specific pairing we have postulated immediately suggests 
   a possible copying mechanism for the genetic material" &mdash;
-  <a href="https://www.sciencehistory.org/education/scientific-biographies/james-watson-francis-crick-maurice-wilkins-and-rosalind-franklin/">James Watson Francis Crick</a>
+  <a href="https://www.sciencehistory.org/education/scientific-biographies/james-watson-francis-crick-maurice-wilkins-and-rosalind-franklin/">J. Watson &amp; F. Crick</a>
   </figcaption>
 </figure>
 </div>
