@@ -83,6 +83,22 @@ such  as [Klein&apos;s bottle](geometry#non_orientables) (shown below in the top
 </div>
 <p style="clear: both;"></p>
 
+```python
+def p_orbitals():
+    theta = np.linspace(-1.1 * pi, pi, 100)
+    phi = np.linspace(0, pi, 100)
+    U, V = np.meshgrid(theta, phi)
+    
+    R1 = np.cos(U.multiply(2)).multiply(np.cos(U.multiply(2)))
+    R2 = np.sin(V).multiply(np.sin(V))
+    R = R1.multiply(R2).multiply(4)
+    
+    X = np.sin(U).multiply(np.cos(V)).multiply(R)
+    Y = np.sin(U).multiply(np.sin(V)).multiply(R)
+    Z = np.cos(U).multiply(R)
+    return X, Y, Z, None, None
+```
+
 
 <details>
   <summary><a>&dArr; Python code snippet for plotting spherical harmonics &uArr;</a></summary>
