@@ -1,6 +1,6 @@
 <a name="quantum"></a>
 # Particle and quantum physics
-<div style="border-top: 2px solid #cccccc"><br/></div>
+<div class="header_line"><br/></div>
 
 <blockquote>
 If you think you understand quantum mechanics, you don't understand quantum mechanics.
@@ -15,16 +15,16 @@ on [glowscript.org](https://glowscript.org).
 ###  Plane waves &amp; the particle in a box
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
-  <a href="glowscript/Planewave.html">
+<div class="double_image">
+<figure class="left_image">
+  <a href="quantumphysics/plane_wave.html">
     <img alt="Complex wave" src="./images/plane_wave.png" title="Click to animate"/>
   </a>
   <figcaption>Visualizing plane waves $\psi(x, t) = A \cdot e^{i(k x - \omega t)}$, which 
   play a pivotal role in quantum mechanics!</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
-  <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Quantum/program/Infinitesquarewell">
+<figure class="right_image">
+  <a href="quantumphysics/infinite_squarewell.html">
     <img alt="Particle in a box" src="./images/infinite_square_well.png" title="Click to animate"/>
   </a>
   <figcaption>One-dimensional quantum particle bound by an infinite square well.</figcaption>
@@ -111,14 +111,14 @@ The quantum harmonic oscillator is visualized in a semi-classical way below.
 ### Charged particle moving in two electric fields
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Chargedring">
     <img alt="Electron spinning around charged ring" src="./images/electron_and_charged_ring.png" title="Click to animate"/>
   </a>
   <figcaption>If the atomic nucleus were a charged ring, as opposed to a point, then ...</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Movingcharge">
     <img alt="Particle in electric field" src="./images/particle_in_electric_field.png" title="Click to animate"/>
   </a>
@@ -130,15 +130,15 @@ The quantum harmonic oscillator is visualized in a semi-classical way below.
 ### Rutherford scattering & charged particle in magnetic field
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Rutherfordscattering">
     <img alt="Rutherford scattering" src="./images/rutherford_scattering.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Rutherford_scattering_experiments#Rutherford_scattering">Rutherford scattering</a>,
   which lead to the first atomic model with a nucleus and electrons spinning around it.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Helicalmotion">
     <img alt="Helical motion" src="./images/helical_motion.png" title="Click to animate"/>
   </a>

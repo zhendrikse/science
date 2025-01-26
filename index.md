@@ -16,7 +16,7 @@ finest that music and poetry can deliver. &mdash;
 
 {% include_relative nature/nature.md %}
 
-{% include_relative quantumphysics.md %}
+{% include_relative quantumphysics/quantumphysics.md %}
 
 {% include_relative electromagnetism.md %}
 

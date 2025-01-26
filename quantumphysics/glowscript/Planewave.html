@@ -1,7 +1,6 @@
 <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
@@ -70,22 +69,22 @@ async function __main__() {
     strings();
     "6";
     (await get_library("https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js"));
-    "15";
-    title = "Visualization of plane waves $\\psi(x, t) = A \\cdot e^{i(k x - \\omega t)}$\n\n&#x2022; From <a href=\"https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247\">Visualizing Quantum Mechanics with Python<\/a>\n&#x2022; Modified by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>, located in this <a href=\"https://github.com/zhendrikse/physics-in-python/\">GitHub repository</a>\n&#x2022; The motion and x-axis represent the parameters \\(t \\text{ and } x\\) respectively\n&#x2022; The colors represent the wave number \\( k \\)\n\n";
-    "35";
+    "14";
+    title = "\n&#x2022; From <a href=\"https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247\">Visualizing Quantum Mechanics with Python<\/a>\n&#x2022; Modified by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>, located in this <a href=\"https://github.com/zhendrikse/physics-in-python/\">GitHub repository</a>\n&#x2022; The motion and x-axis represent the parameters \\(t \\text{ and } x\\) respectively\n&#x2022; The colors represent the wave number \\( k \\)\n\n";
+    "34";
     info = "\n    <b>Concise derivation of the Schr&#246;dinger equation</b>\n    \n    According to <a href=\"https://en.wikipedia.org/wiki/Matter_wave\">De Broglie</a> we have:\n    \n    $p = \\dfrac{h}{\\lambda} = \\dfrac{h}{2\\pi} \\dfrac{2\\pi}{\\lambda} = \\hbar k \\Rightarrow \\hbar k = \\hbar \\dfrac{\\partial}{\\partial x} \\psi(x,t) = p \\psi(x, t) \\Rightarrow p = \\hbar \\dfrac{\\partial}{\\partial x}$\n    \n    The Kinetic energy can be expressed as:\n    \n    $K = \\dfrac{p^2}{2m} = -\\dfrac{\\hbar^2}{2m}\\dfrac{\\partial^2}{\\partial x^2} \\psi(x,t)$\n    \n    The total energy is given by the <a href=\"https://en.wikipedia.org/wiki/Planck_relation\">Planck-Einstein relation</a>:\n    \n    $E = hf = \\dfrac{h}{2\\pi}\\dfrac{2\\pi}{T} = \\hbar \\omega \\Rightarrow -i\\hbar\\dfrac{\\partial}{\\partial t} \\psi(x,t) = E \\psi(x,t) \\Rightarrow E = -i\\hbar\\dfrac{\\partial}{\\partial t}$\n    \n    From this we arrive at the <a href=\"https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation\">Schr&#246;dinger equation</a>:\n    \n    $(KE + PE)\\Psi(x,,t) = E\\Psi(x,t) = -i\\hbar \\dfrac{\\partial}{\\partial t}\\Psi(x, t) = -\\dfrac{\\hbar^2}{2m}\\dfrac{\\partial^2}{\\partial x^2} \\Psi(x,t) + V(x)\\Psi(x,t)$\n";
-    "37";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({align: "top", forward: vec(.37, 1["-u"]()["*"](.55), 1["-u"]()["*"](.75)), width: 600, height: 450, background: color.black, title: title, range: 11.5})]);
-    "40";
+    "36";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({align: "top", forward: vec(.37, 1["-u"]()["*"](.55), 1["-u"]()["*"](.75)), background: color.gray(.14), title: title, range: 11.5})]);
+    "39";
     function Numpy() {;
     }
     Numpy.prototype.__init__ = async function __init__() {
         var self = this;
-        "42";
+        "41";
         self.array = self._array;
-        "43";
+        "42";
         self.linspace = self._linspace;
-        "44";
+        "43";
         self.len = self._len;
     };
     if (!Numpy.prototype.__init__.__module__) Object.defineProperties(Numpy.prototype.__init__, {
@@ -95,7 +94,7 @@ async function __main__() {
     Numpy.__handles_kwarg_interpolation__ = Numpy.prototype.__init__.__handles_kwarg_interpolation__;
     Numpy.prototype._array = async function _array(an_array) {
         var self = this;
-        "47";
+        "46";
         return nj.array(an_array);
     };
     if (!Numpy.prototype._array.__argnames__) Object.defineProperties(Numpy.prototype._array, {
@@ -104,7 +103,7 @@ async function __main__() {
     });
     Numpy.prototype._linspace = async function _linspace(start, stop, num) {
         var self = this;
-        "50";
+        "49";
         return (await self._array((function() {
             var ρσ_Iter = range(start, stop, stop["-"](1["*"](start))["/"](num["-"](1["*"](1)))), ρσ_Result = [], x;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -140,28 +139,28 @@ async function __main__() {
 
 
 
-    "55";
+    "54";
     _GS_1 = new Numpy;
     (await _GS_1.__init__());
     np = _GS_1;
-    "57";
+    "56";
     x_hat = vec(1, 0, 0);
-    "58";
+    "57";
     y_hat = vec(0, 1, 0);
-    "59";
+    "58";
     z_hat = vec(0, 0, 1);
-    "60";
+    "59";
     label_text = ["X", "Re(ψ)", "Im(ψ)"];
-    "62";
+    "61";
     function Space() {;
     }
     Space.prototype.__init__ = async function __init__(linspace_x, linspace_y, linspace_z) {
         var self = this;
-        "64";
+        "63";
         self.linspace_x = linspace_x;
-        "65";
+        "64";
         self.linspace_y = linspace_y;
-        "66";
+        "65";
         self.linspace_z = linspace_z;
     };
     if (!Space.prototype.__init__.__argnames__) Object.defineProperties(Space.prototype.__init__, {
@@ -179,7 +178,7 @@ async function __main__() {
     Object.defineProperty(Space.prototype, "__bases__", {value: []});
 
 
-    "69";
+    "68";
     function Base() {;
     }
     Base.prototype.__init__ = async function __init__() {
@@ -204,69 +203,69 @@ async function __main__() {
             axis_labels = ρσ_kwargs_obj.axis_labels;
         }
         var ρσ_ls, x_, y_, z_, scale, delta_x, delta_y, delta_z, range_x, range_y, range_z, ρσ_unpack, pos_x_y, pos_x_z, pos_y_z, pos, j;
-        "71";
+        "70";
         x_ = space.linspace_x;
-        "72";
+        "71";
         y_ = space.linspace_y;
-        "73";
+        "72";
         z_ = space.linspace_z;
-        "74";
+        "73";
         scale = .005["*"](x_.get(1["-u"]()["*"](1))["-"](1["*"](x_.get(0))));
-        "75";
+        "74";
         delta_x = x_.get(1)["-"](1["*"](x_.get(0)));
-        "76";
+        "75";
         delta_y = y_.get(1)["-"](1["*"](y_.get(0)));
-        "77";
+        "76";
         delta_z = z_.get(1)["-"](1["*"](z_.get(0)));
-        "78";
+        "77";
         range_x = x_.get(1["-u"]()["*"](1))["-"](1["*"](x_.get(0)));
-        "79";
+        "78";
         range_y = y_.get(1["-u"]()["*"](1))["-"](1["*"](y_.get(0)));
-        "80";
+        "79";
         range_z = z_.get(1["-u"]()["*"](1))["-"](1["*"](z_.get(0)));
-        "81";
+        "80";
         self._axis = (await self._make_axis(x_, y_, z_, delta_x, delta_y, delta_z, axis_color, axis_labels, scale));
-        "82";
+        "81";
         self._tick_marks = (await self._make_tick_marks(x_, y_, z_, tick_marks_color, scale));
-        "84";
+        "83";
         ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([])];
         self._xy_mesh = ρσ_unpack[0];
         self._xz_mesh = ρσ_unpack[1];
         self._yz_mesh = ρσ_unpack[2];
-        "85";
+        "84";
         var ρσ_Iter1 = range((await np.len(x_)));
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             j = ρσ_Index1;
-            "86";
+            "85";
             pos_x_y = x_hat["*"](x_.get(0))["+"](y_hat["*"](y_.get(0)));
-            "87";
+            "86";
             pos_x_z = x_hat["*"](x_.get(0))["+"](z_hat["*"](z_.get(0)));
-            "88";
+            "87";
             pos_y_z = y_hat["*"](y_.get(0))["+"](z_hat["*"](z_.get(0)));
-            "89";
+            "88";
             self._xy_mesh=self._xy_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](pos_x_y)["+"](x_hat["*"](j)["*"](delta_x)), axis: y_hat["*"](range_y), color: color.gray(.5), radius: scale["*"](.5), visible: false})]) ]));
-            "90";
+            "89";
             self._xy_mesh=self._xy_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](pos_x_y)["+"](y_hat["*"](j)["*"](delta_y)), axis: x_hat["*"](range_x), color: color.gray(.5), radius: scale["*"](.5), visible: false})]) ]));
-            "91";
+            "90";
             pos = position["+"](x_.get(0)["+"](.5["*"](range_x))["*"](x_hat))["+"](y_.get(0)["+"](.5["*"](range_y))["*"](y_hat));
-            "92";
+            "91";
             self._xy_mesh=self._xy_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: pos, length: range_x, width: scale, height: range_y, opacity: .15, visible: false})]) ]));
-            "93";
+            "92";
             self._xz_mesh=self._xz_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](pos_x_z)["+"](x_hat["*"](j)["*"](delta_x)), axis: z_hat["*"](range_z), color: color.gray(.5), radius: scale["*"](.5), visible: false})]) ]));
-            "94";
+            "93";
             self._xz_mesh=self._xz_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](pos_x_z)["+"](z_hat["*"](j)["*"](delta_z)), axis: x_hat["*"](range_x), color: color.gray(.5), radius: scale["*"](.5), visible: false})]) ]));
-            "95";
+            "94";
             pos = position["+"](x_.get(0)["+"](.5["*"](range_x))["*"](x_hat))["+"](z_.get(0)["+"](.5["*"](range_z))["*"](z_hat));
-            "96";
+            "95";
             self._xz_mesh=self._xz_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: pos, length: range_x, width: range_z, height: scale, opacity: .15, visible: false})]) ]));
-            "97";
+            "96";
             self._yz_mesh=self._yz_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](pos_y_z)["+"](y_hat["*"](j)["*"](delta_y)), axis: z_hat["*"](range_z), color: color.gray(.5), radius: scale["*"](.5), visible: false})]) ]));
-            "98";
+            "97";
             self._yz_mesh=self._yz_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](pos_y_z)["+"](z_hat["*"](j)["*"](delta_z)), axis: y_hat["*"](range_y), color: color.gray(.5), radius: scale["*"](.5), visible: false})]) ]));
-            "99";
+            "98";
             pos = position["+"](y_.get(0)["+"](.5["*"](range_y))["*"](y_hat))["+"](z_.get(0)["+"](.5["*"](range_z))["*"](z_hat));
-            "100";
+            "99";
             self._yz_mesh=self._yz_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: pos, length: scale, width: range_z, height: range_y, opacity: .15, visible: false})]) ]));
         }
     };
@@ -281,25 +280,25 @@ async function __main__() {
     Base.prototype._make_axis = async function _make_axis(x_, y_, z_, delta_x, delta_y, delta_z, axis_color, axis_labels, scale) {
         var self = this;
         var ρσ_ls, c1, c2, c3, a1, a2, a3, l1, l2, l3;
-        "103";
+        "102";
         c1 = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: x_hat["*"](x_.get(0)), axis: x_hat["*"](x_.get(1["-u"]()["*"](1))["-"](1["*"](x_.get(0)))), color: axis_color, radius: scale})]);
-        "104";
+        "103";
         c2 = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: y_hat["*"](y_.get(0)), axis: y_hat["*"](y_.get(1["-u"]()["*"](1))["-"](1["*"](y_.get(0)))), color: axis_color, radius: scale})]);
-        "105";
+        "104";
         c3 = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: z_hat["*"](z_.get(0)), axis: z_hat["*"](z_.get(1["-u"]()["*"](1))["-"](1["*"](z_.get(0)))), color: axis_color, radius: scale})]);
-        "106";
+        "105";
         a1 = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: x_hat["*"](x_.get(1["-u"]()["*"](1))), color: axis_color, shaftwidth: scale["*"](2), axis: 2["*"](delta_x)["*"](x_hat), round: true})]);
-        "107";
+        "106";
         a2 = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: y_hat["*"](y_.get(1["-u"]()["*"](1))), color: axis_color, shaftwidth: scale["*"](2), axis: 2["*"](delta_y)["*"](y_hat), round: true})]);
-        "108";
+        "107";
         a3 = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: z_hat["*"](z_.get(1["-u"]()["*"](1))), color: axis_color, shaftwidth: scale["*"](2), axis: 2["*"](delta_z)["*"](z_hat), round: true})]);
-        "109";
+        "108";
         l1 = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({pos: x_hat["*"](x_.get(1["-u"]()["*"](1))["+"](2["*"](delta_x)))["-"](1["*"](vec(0, scale, 0))), text: ρσ_getitem(axis_labels, 0), color: axis_color, height: scale["*"](7), billboard: true, emissive: true})]);
-        "111";
+        "110";
         l2 = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({pos: y_hat["*"](y_.get(1["-u"]()["*"](1))["+"](2["*"](delta_y)))["-"](1["*"](vec(0, scale, 0))), text: ρσ_getitem(axis_labels, 1), color: axis_color, height: scale["*"](7), billboard: true, emissive: true})]);
-        "113";
+        "112";
         l3 = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({pos: z_hat["*"](z_.get(1["-u"]()["*"](1))["+"](2["*"](delta_z)))["-"](1["*"](vec(0, scale, 0))), text: ρσ_getitem(axis_labels, 2), color: axis_color, height: scale["*"](7), billboard: true, emissive: true})]);
-        "115";
+        "114";
         return ρσ_list_decorate([ c1, c2, c3, a1, a2, a3, l1, l2, l3 ]);
     };
     if (!Base.prototype._make_axis.__argnames__) Object.defineProperties(Base.prototype._make_axis, {
@@ -309,41 +308,41 @@ async function __main__() {
     Base.prototype._make_tick_marks = async function _make_tick_marks(x_dim, y_dim, z_dim, tick_marks_color, scale) {
         var self = this;
         var ρσ_ls, tick_marks, a_box, i;
-        "118";
+        "117";
         tick_marks = ρσ_list_decorate([]);
-        "119";
+        "118";
         var ρσ_Iter2 = range((await np.len(x_dim)));
         ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
         for (var ρσ_Index2 of ρσ_Iter2) {
             i = ρσ_Index2;
-            "120";
+            "119";
             a_box = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: x_hat["*"](x_dim.get(i)), width: scale["*"](2), height: scale["*"](5), length: scale["*"](2), color: tick_marks_color})]);
-            "121";
+            "120";
             tick_marks.append(a_box);
         }
-        "122";
+        "121";
         var ρσ_Iter3 = range((await np.len(z_dim)));
         ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
         for (var ρσ_Index3 of ρσ_Iter3) {
             i = ρσ_Index3;
-            "123";
+            "122";
             a_box = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: z_hat["*"](z_dim.get(i)), width: scale["*"](2), height: scale["*"](5), length: scale["*"](2), color: tick_marks_color})]);
-            "124";
+            "123";
             tick_marks.append(a_box);
         }
-        "125";
+        "124";
         var ρσ_Iter4 = range((await np.len(y_dim)));
         ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
         for (var ρσ_Index4 of ρσ_Iter4) {
             i = ρσ_Index4;
-            "126";
+            "125";
             a_box = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: y_hat["*"](y_dim.get(i)), width: scale["*"](2), height: scale["*"](5), length: scale["*"](2), color: tick_marks_color})]);
-            "127";
+            "126";
             ρσ_interpolate_kwargs.call(a_box, a_box.rotate, [ρσ_desugar_kwargs({angle: .5["*"](pi), axis: vec(0, 0, 1)})]);
-            "128";
+            "127";
             tick_marks.append(a_box);
         }
-        "129";
+        "128";
         return tick_marks;
     };
     if (!Base.prototype._make_tick_marks.__argnames__) Object.defineProperties(Base.prototype._make_tick_marks, {
@@ -353,12 +352,12 @@ async function __main__() {
     Base.prototype.axis_visibility_is = async function axis_visibility_is(visible) {
         var self = this;
         var ρσ_ls, i;
-        "132";
+        "131";
         var ρσ_Iter5 = range(len(self._axis));
         ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
         for (var ρσ_Index5 of ρσ_Iter5) {
             i = ρσ_Index5;
-            "133";
+            "132";
             ρσ_getitem(self._axis, i).visible = visible;
         }
     };
@@ -369,12 +368,12 @@ async function __main__() {
     Base.prototype.tick_marks_visibility_is = async function tick_marks_visibility_is(visible) {
         var self = this;
         var ρσ_ls, tick_mark;
-        "136";
+        "135";
         var ρσ_Iter6 = self._tick_marks;
         ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
         for (var ρσ_Index6 of ρσ_Iter6) {
             tick_mark = ρσ_Index6;
-            "137";
+            "136";
             tick_mark.visible = visible;
         }
     };
@@ -385,12 +384,12 @@ async function __main__() {
     Base.prototype.xy_mesh_visibility_is = async function xy_mesh_visibility_is(visible) {
         var self = this;
         var ρσ_ls, i;
-        "140";
+        "139";
         var ρσ_Iter7 = range(len(self._xy_mesh));
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             i = ρσ_Index7;
-            "141";
+            "140";
             ρσ_getitem(self._xy_mesh, i).visible = visible;
         }
     };
@@ -401,12 +400,12 @@ async function __main__() {
     Base.prototype.xz_mesh_visibility_is = async function xz_mesh_visibility_is(visible) {
         var self = this;
         var ρσ_ls, i;
-        "144";
+        "143";
         var ρσ_Iter8 = range(len(self._xz_mesh));
         ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
         for (var ρσ_Index8 of ρσ_Iter8) {
             i = ρσ_Index8;
-            "145";
+            "144";
             ρσ_getitem(self._xz_mesh, i).visible = visible;
         }
     };
@@ -417,12 +416,12 @@ async function __main__() {
     Base.prototype.yz_mesh_visibility_is = async function yz_mesh_visibility_is(visible) {
         var self = this;
         var ρσ_ls, i;
-        "148";
+        "147";
         var ρσ_Iter9 = range(len(self._xz_mesh));
         ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
         for (var ρσ_Index9 of ρσ_Iter9) {
             i = ρσ_Index9;
-            "149";
+            "148";
             ρσ_getitem(self._yz_mesh, i).visible = visible;
         }
     };
@@ -446,7 +445,7 @@ async function __main__() {
 
 
 
-    "151";
+    "150";
     function PlaneWave() {;
     }
     PlaneWave.prototype.__init__ = async function __init__() {
@@ -466,7 +465,7 @@ async function __main__() {
             amplitude = ρσ_kwargs_obj.amplitude;
         }
         var ρσ_ls, x;
-        "153";
+        "152";
         self._arrows = (function() {
             var ρσ_Iter = range(1["-u"]()["*"](10), 10, .3), ρσ_Result = [], x;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -477,11 +476,11 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })();
-        "154";
+        "153";
         self._amplitude = amplitude;
-        "155";
+        "154";
         self._k = k;
-        "156";
+        "155";
         self._omega = omega;
     };
     if (!PlaneWave.prototype.__init__.__defaults__) Object.defineProperties(PlaneWave.prototype.__init__, {
@@ -494,7 +493,7 @@ async function __main__() {
     PlaneWave.__handles_kwarg_interpolation__ = PlaneWave.prototype.__init__.__handles_kwarg_interpolation__;
     PlaneWave.prototype.set_k_to = async function set_k_to(value) {
         var self = this;
-        "159";
+        "158";
         self._k = value;
     };
     if (!PlaneWave.prototype.set_k_to.__argnames__) Object.defineProperties(PlaneWave.prototype.set_k_to, {
@@ -503,7 +502,7 @@ async function __main__() {
     });
     PlaneWave.prototype.set_omega_to = async function set_omega_to(value) {
         var self = this;
-        "162";
+        "161";
         self._omega = value;
     };
     if (!PlaneWave.prototype.set_omega_to.__argnames__) Object.defineProperties(PlaneWave.prototype.set_omega_to, {
@@ -512,7 +511,7 @@ async function __main__() {
     });
     PlaneWave.prototype.set_amplitude_to = async function set_amplitude_to(value) {
         var self = this;
-        "165";
+        "164";
         self._amplitude = value;
     };
     if (!PlaneWave.prototype.set_amplitude_to.__argnames__) Object.defineProperties(PlaneWave.prototype.set_amplitude_to, {
@@ -522,30 +521,30 @@ async function __main__() {
     PlaneWave.prototype.update = async function update(t) {
         var self = this;
         var ρσ_ls, x, k, w, phase, cycles, cphase, arrow_;
-        "168";
+        "167";
         var ρσ_Iter10 = self._arrows;
         ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
         for (var ρσ_Index10 of ρσ_Iter10) {
             arrow_ = ρσ_Index10;
-            "169";
+            "168";
             x = arrow_.pos.x;
-            "170";
+            "169";
             k = self._k;
-            "171";
+            "170";
             w = self._omega;
-            "172";
+            "171";
             phase = k["*"](x)["-"](1["*"](w)["*"](t));
-            "173";
+            "172";
             cycles = phase["/"](2["*"](pi));
-            "174";
+            "173";
             cycles=cycles["-"](floor(cycles));
-            "175";
+            "174";
             cphase = 2["*"](pi)["*"](cycles);
-            "177";
+            "176";
             arrow_.axis.z = 1["-u"]()["*"](cos(phase))["*"](self._amplitude);
-            "178";
+            "177";
             arrow_.axis.y = 1["-u"]()["*"](sin(phase))["*"](self._amplitude);
-            "179";
+            "178";
             arrow_.color = color.hsv_to_rgb(vec(1["-"](1["*"](cphase)["/"](2["*"](pi))), 1, 1));
         }
     };
@@ -566,11 +565,11 @@ async function __main__() {
 
 
 
-    "182";
+    "181";
     animation.append_to_caption("\n");
-    "184";
+    "183";
     async function toggle_tick_marks(event) {
-        "185";
+        "184";
         (await axis.tick_marks_visibility_is(event.checked));
     };
     if (!toggle_tick_marks.__argnames__) Object.defineProperties(toggle_tick_marks, {
@@ -578,9 +577,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "187";
+    "186";
     async function toggle_yz_mesh(event) {
-        "188";
+        "187";
         (await axis.yz_mesh_visibility_is(event.checked));
     };
     if (!toggle_yz_mesh.__argnames__) Object.defineProperties(toggle_yz_mesh, {
@@ -588,9 +587,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "190";
+    "189";
     async function toggle_xz_mesh(event) {
-        "191";
+        "190";
         (await axis.xz_mesh_visibility_is(event.checked));
     };
     if (!toggle_xz_mesh.__argnames__) Object.defineProperties(toggle_xz_mesh, {
@@ -598,9 +597,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "193";
+    "192";
     async function toggle_xy_mesh(event) {
-        "194";
+        "193";
         (await axis.xy_mesh_visibility_is(event.checked));
     };
     if (!toggle_xy_mesh.__argnames__) Object.defineProperties(toggle_xy_mesh, {
@@ -608,9 +607,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "196";
+    "195";
     async function toggle_axis(event) {
-        "197";
+        "196";
         (await axis.axis_visibility_is(event.checked));
     };
     if (!toggle_axis.__argnames__) Object.defineProperties(toggle_axis, {
@@ -618,19 +617,19 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "199";
+    "198";
     async function toggle_info(event) {
-        "200";
+        "199";
         if (event.checked) {
-            "202";
+            "201";
             animation.caption = info;
-            "203";
+            "202";
             MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-            "204";
+            "203";
         } else {
-            "206";
+            "205";
             animation.caption = "";
-            "207";
+            "206";
             MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
         }
     };
@@ -639,106 +638,106 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "209";
+    "208";
     async function adjust_k() {
-        "210";
+        "209";
         (await complex_function.set_k_to(k_slider.value));
-        "211";
+        "210";
         k_slider_text.text = str(round(k_slider.value["/"](pi), 2))["+"](" * π");
     };
     if (!adjust_k.__module__) Object.defineProperties(adjust_k, {
         __module__ : {value: null}
     });
 
-    "213";
+    "212";
     async function adjust_amplitude() {
-        "214";
+        "213";
         (await complex_function.set_amplitude_to(amplitude_slider.value));
-        "215";
+        "214";
         amplitude_slider_text.text = str(amplitude_slider.value)["+"](" units");
     };
     if (!adjust_amplitude.__module__) Object.defineProperties(adjust_amplitude, {
         __module__ : {value: null}
     });
 
-    "217";
+    "216";
     async function adjust_omega() {
-        "218";
+        "217";
         (await complex_function.set_omega_to(omega_slider.value));
-        "219";
+        "218";
         omega_slider_text.text = str(round(omega_slider.value["/"](pi), 2))["+"](" * π");
     };
     if (!adjust_omega.__module__) Object.defineProperties(adjust_omega, {
         __module__ : {value: null}
     });
 
-    "221";
+    "220";
     omega_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({pos: animation.title_anchor, min: 0, max: 6["*"](pi), value: 2["*"](pi), bind: adjust_omega})]);
-    "222";
+    "221";
     animation.append_to_title(" Omega = ");
-    "223";
+    "222";
     omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({pos: animation.title_anchor, text: "2 * π"})]);
-    "224";
+    "223";
     animation.append_to_title("\n\n");
-    "226";
+    "225";
     k_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({pos: animation.title_anchor, min: 1["-u"]()["*"](2)["*"](pi)["/"](3), max: 2["*"](pi)["/"](3), value: 2["*"](pi)["/"](5), bind: adjust_k})]);
-    "227";
+    "226";
     animation.append_to_title(" Wave number k = ");
-    "228";
+    "227";
     k_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({pos: animation.title_anchor, text: "2 * π  / 5"})]);
-    "229";
+    "228";
     animation.append_to_title("\n\n");
-    "231";
+    "230";
     amplitude_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({pos: animation.title_anchor, min: 1, max: 6, value: 3, bind: adjust_amplitude})]);
-    "232";
+    "231";
     animation.append_to_title(" Amplitude = ");
-    "233";
+    "232";
     amplitude_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({pos: animation.title_anchor, text: "3 units"})]);
-    "234";
+    "233";
     animation.append_to_title("\n\n");
-    "236";
+    "235";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({pos: animation.title_anchor, text: "Tick marks", bind: toggle_tick_marks, checked: false})]);
-    "237";
+    "236";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({pos: animation.title_anchor, text: "YZ mesh", bind: toggle_yz_mesh, checked: false})]);
-    "238";
+    "237";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({pos: animation.title_anchor, text: "XZ mesh", bind: toggle_xz_mesh, checked: true})]);
-    "239";
+    "238";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({pos: animation.title_anchor, text: "XY mesh", bind: toggle_xy_mesh, checked: false})]);
-    "240";
+    "239";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({pos: animation.title_anchor, text: "Axis", bind: toggle_axis, checked: true})]);
-    "241";
+    "240";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({pos: animation.title_anchor, text: "Show info", bind: toggle_info, checked: false})]);
-    "242";
+    "241";
     animation.append_to_title("\n\n");
-    "244";
+    "243";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "247";
+    "246";
     _GS_1 = new Space;
     (await _GS_1.__init__((await np.linspace(1["-u"]()["*"](10), 10, 11)), (await np.linspace(1["-u"]()["*"](6), 6, 11)), (await np.linspace(1["-u"]()["*"](6), 6, 11))));
     space = _GS_1;
-    "248";
+    "247";
     _GS_1 = new Base;
     (await _GS_1.__init__(space));
     axis = _GS_1;
-    "249";
+    "248";
     (await axis.tick_marks_visibility_is(false));
-    "250";
+    "249";
     (await axis.xz_mesh_visibility_is(true));
-    "251";
+    "250";
     _GS_1 = new PlaneWave;
     (await _GS_1.__init__());
     complex_function = _GS_1;
-    "254";
+    "253";
     dt = .01;
-    "255";
+    "254";
     t = 0;
-    "256";
+    "255";
     while (true) {
-        "257";
+        "256";
         (await rate(30));
-        "258";
+        "257";
         (await complex_function.update(t));
-        "259";
+        "258";
         t=t["+"](dt);
     }
 };
