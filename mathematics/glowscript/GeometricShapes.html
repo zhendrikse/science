@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
 
-    var version, print, arange, __name__, type, ρσ_ls, spiral_title, torus_title, twisted_torus_title, mobius_title, bubbles_title, trefoil_knot_title, arc_title, dented_title, conchoid_title, self_intersecting_disk_title, cross_cap_title, limpet_torus_title, elliptic_torus_title, figure_8_klein_title, grays_klein_title, klein_title, caption, animation, _GS_1, np, offset_slider, gradient_slider, omega_slider, omega_slider_text, opacity_slider, shininess_slider, radio_buttons, ρσ_unpack, x, y, z, figure, time, dt, run;
+    var version, print, arange, __name__, type, ρσ_ls, spiral_title, torus_title, twisted_torus_title, mobius_title, bubbles_title, trefoil_knot_title, arc_title, dented_title, conchoid_title, self_intersecting_disk_title, cross_cap_title, limpet_torus_title, elliptic_torus_title, figure_8_klein_title, grays_klein_title, klein_title, caption, animation, _GS_1, np, offset_slider, hue_offset_text, gradient_slider, hue_gradient_text, omega_slider, omega_slider_text, opacity_slider, opcity_text, shininess_slider, shininess_text, radio_buttons, ρσ_unpack, x, y, z, figure, time, dt, run;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -102,7 +102,7 @@ async function __main__() {
     "37";
     caption = "\n&#x2022; Written by <a href=\"http://www.hendrikse.name/\">Zeger Hendrikse</a> and <a href=\"https://www.glowscript.org/#/user/X9Z3/\">Maximillian DeMarr</a>\n&#x2022; Source code can be found <a href=\"https://github.com/zhendrikse/physics-in-python/blob/main/src/glowscript/mathematics/geometric_shapes.py\">here</a>\n&#x2022; Inspired on <a href=\"https://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/program/Plot3D\">Plot3D</a> by adding the following features: \n  &#x2022; Numpy linspace and meshgrid syntax\n  &#x2022; Multiple subplots per figure\n  &#x2022; Non-uniform coloring\n\n";
     "39";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({align: "top", background: color.gray(.075), center: vec(0, 5, 0), forward: vec(1["-u"]()["*"](.9), 1["-u"]()["*"](.5), 1["-u"]()["*"](.8)), title: arc_title["+"]("\n\n")})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({align: "top", background: color.gray(.14), center: vec(0, 5, 0), forward: vec(1["-u"]()["*"](.9), 1["-u"]()["*"](.5), 1["-u"]()["*"](.8)), title: arc_title["+"]("\n\n")})]);
     "42";
     function Numpy() {;
     }
@@ -1887,130 +1887,156 @@ async function __main__() {
     async function adjust_opacity() {
         "584";
         (await figure.set_opacity_to(opacity_slider.value));
+        "585";
+        opcity_text.text = "{:1.2f}".format(opacity_slider.value, 2);
     };
     if (!adjust_opacity.__module__) Object.defineProperties(adjust_opacity, {
         __module__ : {value: null}
     });
 
-    "586";
+    "587";
     async function adjust_shininess() {
-        "587";
+        "588";
         (await figure.set_shininess_to(shininess_slider.value));
+        "589";
+        shininess_text.text = "{:1.2f}".format(shininess_slider.value, 2);
     };
     if (!adjust_shininess.__module__) Object.defineProperties(adjust_shininess, {
         __module__ : {value: null}
     });
 
-    "589";
+    "591";
     async function adjust_omega() {
-        "590";
+        "592";
         (await figure.set_omega_to(omega_slider.value));
-        "591";
-        omega_slider_text.text = "= sin({:1.2f}".format(omega_slider.value["/"](pi), 2)["+"](" π)");
+        "593";
+        omega_slider_text.text = "sin({:1.2f}".format(omega_slider.value["/"](pi), 2)["+"](" π)");
     };
     if (!adjust_omega.__module__) Object.defineProperties(adjust_omega, {
         __module__ : {value: null}
     });
 
-    "593";
+    "595";
     async function adjust_gradient() {
-        "594";
+        "596";
         (await figure.set_hue_gradient_to(gradient_slider.value));
+        "597";
+        hue_gradient_text.text = "{:1.2f}".format(gradient_slider.value, 2);
     };
     if (!adjust_gradient.__module__) Object.defineProperties(adjust_gradient, {
         __module__ : {value: null}
     });
 
-    "597";
+    "599";
     async function adjust_offset() {
-        "598";
+        "600";
         (await figure.set_hue_offset_to(offset_slider.value));
+        "601";
+        hue_offset_text.text = "{:1.2f}".format(offset_slider.value, 2);
     };
     if (!adjust_offset.__module__) Object.defineProperties(adjust_offset, {
         __module__ : {value: null}
     });
 
-    "600";
-    animation.append_to_caption("\nHue offset  ");
-    "601";
-    offset_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .25, bind: adjust_offset})]);
     "603";
-    animation.append_to_caption("\n\nHue gradient  ");
+    animation.append_to_caption("\n");
     "604";
-    gradient_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .25, bind: adjust_gradient})]);
+    offset_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .25, bind: adjust_offset})]);
+    "605";
+    animation.append_to_caption("hue offset = ");
     "606";
-    animation.append_to_caption("\n\nAnimation speed ");
-    "607";
-    omega_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 3["*"](pi), value: 0, bind: adjust_omega})]);
+    hue_offset_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.25"})]);
     "608";
-    omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0"})]);
-    "610";
-    animation.append_to_caption("\n\nOpacity ");
-    "611";
-    opacity_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: 1, bind: adjust_opacity})]);
-    "613";
-    animation.append_to_caption("\n\nShininess ");
-    "614";
-    shininess_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .6, bind: adjust_shininess})]);
-    "616";
     animation.append_to_caption("\n\n");
-    "617";
+    "609";
+    gradient_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .25, bind: adjust_gradient})]);
+    "610";
+    animation.append_to_caption("hue gradient = ");
+    "611";
+    hue_gradient_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.25"})]);
+    "613";
+    animation.append_to_caption("\n\n");
+    "614";
+    omega_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 3["*"](pi), value: 0, bind: adjust_omega})]);
+    "615";
+    animation.append_to_caption("animation speed = ");
+    "616";
+    omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "sin(0 π)"})]);
+    "618";
+    animation.append_to_caption("\n\n");
+    "619";
+    opacity_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: 1, bind: adjust_opacity})]);
+    "620";
+    animation.append_to_caption("opacity = ");
+    "621";
+    opcity_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "1.0"})]);
+    "623";
+    animation.append_to_caption("\n\n");
+    "624";
+    shininess_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .6, bind: adjust_shininess})]);
+    "625";
+    animation.append_to_caption("shininess = ");
+    "626";
+    shininess_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.6"})]);
+    "628";
+    animation.append_to_caption("\n\n");
+    "629";
     _GS_1 = new RadioButtons;
     (await _GS_1.__init__());
     radio_buttons = _GS_1;
-    "618";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Arc ", name: "arc"})]), arc, arc_title));
-    "619";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Bubbles ", name: "bubbles"})]), bubbles, bubbles_title));
-    "620";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Conchoid ", name: "conchoid"})]), conchoid, conchoid_title));
-    "621";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Cross cap ", name: "cross_cap"})]), cross_cap, cross_cap_title));
-    "622";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Dented surface ", name: "dented"})]), dented, dented_title));
-    "623";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Dini&apos;s spiral", name: "dinis_spiral"})]), dinis_spiral, spiral_title));
-    "625";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Elliptic torus ", name: "elliptic_torus"})]), elliptic_torus, elliptic_torus_title));
-    "626";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Figure-8 Klein bottle ", name: "figure_8_klein_bottle"})]), figure_8_klein_bottle, figure_8_klein_title));
-    "627";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Grays Klein bottle ", name: "grays_klein_bottle"})]), grays_klein_bottle, grays_klein_title));
-    "628";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Klein bottle ", name: "klein_bottle"})]), klein_bottle, klein_title));
-    "629";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Limpet torus ", name: "limpet_torus"})]), limpet_torus, limpet_torus_title));
     "630";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Mobius strip ", name: "mobius"})]), mobius_strip, mobius_title));
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Arc ", name: "arc"})]), arc, arc_title));
     "631";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Self-intersecting disk ", name: "self_intersecting_disk"})]), self_intersecting_disk, self_intersecting_disk_title));
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Bubbles ", name: "bubbles"})]), bubbles, bubbles_title));
     "632";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Torus", name: "torus"})]), torus, torus_title));
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Conchoid ", name: "conchoid"})]), conchoid, conchoid_title));
     "633";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Trefoil Knot ", name: "trefoil_knot"})]), trefoil_knot, trefoil_knot_title));
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Cross cap ", name: "cross_cap"})]), cross_cap, cross_cap_title));
     "634";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Twisted torus", name: "twisted_torus"})]), twisted_torus, twisted_torus_title));
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Dented surface ", name: "dented"})]), dented, dented_title));
+    "635";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Dini&apos;s spiral", name: "dinis_spiral"})]), dinis_spiral, spiral_title));
     "637";
-    animation.append_to_caption("\n"["+"](caption)["+"]("\n"));
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Elliptic torus ", name: "elliptic_torus"})]), elliptic_torus, elliptic_torus_title));
+    "638";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Figure-8 Klein bottle ", name: "figure_8_klein_bottle"})]), figure_8_klein_bottle, figure_8_klein_title));
     "639";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Grays Klein bottle ", name: "grays_klein_bottle"})]), grays_klein_bottle, grays_klein_title));
+    "640";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Klein bottle ", name: "klein_bottle"})]), klein_bottle, klein_title));
+    "641";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Limpet torus ", name: "limpet_torus"})]), limpet_torus, limpet_torus_title));
+    "642";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Mobius strip ", name: "mobius"})]), mobius_strip, mobius_title));
+    "643";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Self-intersecting disk ", name: "self_intersecting_disk"})]), self_intersecting_disk, self_intersecting_disk_title));
+    "644";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Torus", name: "torus"})]), torus, torus_title));
+    "645";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Trefoil Knot ", name: "trefoil_knot"})]), trefoil_knot, trefoil_knot_title));
+    "646";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Twisted torus", name: "twisted_torus"})]), twisted_torus, twisted_torus_title));
+    "649";
+    animation.append_to_caption("\n"["+"](caption)["+"]("\n"));
+    "651";
     async function on_key_press(key) {
-        "640";
+        "652";
         if ((key === "b" || typeof key === "object" && ρσ_equals(key, "b"))) {
-            "641";
+            "653";
             animation.background = ((animation.background === color.black || typeof animation.background === "object" && ρσ_equals(animation.background, color.black))) ? color.white : color.black;
-            "642";
+            "654";
         }
         if ((key === "s" || typeof key === "object" && ρσ_equals(key, "s"))) {
-            "643";
+            "655";
             (await animation.capture((await radio_buttons.get_selected_button_name())));
-            "644";
+            "656";
         }
         if ((key === "v" || typeof key === "object" && ρσ_equals(key, "v"))) {
-            "645";
+            "657";
             print("scene.center="["+"](str(animation.center)));
-            "646";
+            "658";
             print("scene.forward="["+"](str(animation.forward)));
-            "647";
+            "659";
             print("scene.range="["+"](str(animation.range)));
         }
     };
@@ -2019,12 +2045,12 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "650";
+    "662";
     async function key_pressed(event) {
         var ρσ_ls, key;
-        "651";
+        "663";
         key = event.key;
-        "652";
+        "664";
         (await on_key_press(key));
     };
     if (!key_pressed.__argnames__) Object.defineProperties(key_pressed, {
@@ -2032,12 +2058,12 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "655";
+    "667";
     animation.bind("keydown", key_pressed);
-    "658";
+    "670";
     async function running(ev) {
-        "659";
-        "660";
+        "671";
+        "672";
         run = !run;
     };
     if (!running.__argnames__) Object.defineProperties(running, {
@@ -2045,37 +2071,37 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "663";
+    "675";
     animation.bind("mousedown", running);
-    "664";
+    "676";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "666";
+    "678";
     ρσ_unpack = (await arc());
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
     x = ρσ_unpack[0];
     y = ρσ_unpack[1];
     z = ρσ_unpack[2];
-    "667";
+    "679";
     _GS_1 = new Figure;
     (await _GS_1.__init__());
     figure = _GS_1;
-    "668";
+    "680";
     (await figure.add_subplot(x, y, z));
-    "670";
+    "682";
     time = 0;
-    "671";
+    "683";
     dt = .02;
-    "672";
+    "684";
     run = true;
-    "673";
+    "685";
     while (true) {
-        "674";
+        "686";
         (await rate(30));
-        "675";
+        "687";
         (await figure.render(time));
-        "676";
+        "688";
         if (run) {
-            "677";
+            "689";
             time=time["+"](dt);
         }
     }

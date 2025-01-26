@@ -132,14 +132,14 @@ The quantum harmonic oscillator is visualized in a semi-classical way below.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Rutherfordscattering">
+  <a href="quantumphysics/rutherford_scattering.html">
     <img alt="Rutherford scattering" src="./images/rutherford_scattering.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Rutherford_scattering_experiments#Rutherford_scattering">Rutherford scattering</a>,
   which lead to the first atomic model with a nucleus and electrons spinning around it.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Helicalmotion">
+  <a href="quantumphysics/helical_motion.html">
     <img alt="Helical motion" src="./images/helical_motion.png" title="Click to animate"/>
   </a>
   <figcaption>Playfully discover how a charged particle behaves in a magnetic field.</figcaption>
