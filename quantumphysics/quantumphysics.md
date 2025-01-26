@@ -113,7 +113,7 @@ The quantum harmonic oscillator is visualized in a semi-classical way below.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="qunatumphysics/charged_ring.html">
+  <a href="quantumphysics/charged_ring.html">
     <img alt="Electron spinning around charged ring" src="./images/electron_and_charged_ring.png" title="Click to animate"/>
   </a>
   <figcaption>If the atomic nucleus were a charged ring, as opposed to a point, then ...</figcaption>
