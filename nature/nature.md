@@ -11,7 +11,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="glowscript/Flockingbirds.html">
+  <a href="nature/glowscript/Flockingbirds.html">
     <img alt="Flocking birds" src="./images/flocking_birds.png" title="Click to animate"/>
   </a>
   <figcaption>Simulation of a flock of birds: "Eagles commonly fly alone. They are crows, daws, 
@@ -34,7 +34,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="glowscript/Raindrops.html">
+  <a href="nature/glowscript/Raindrops.html">
     <img alt="Raindrops" src="./images/raindrops.png" title="Click to animate"/>
   </a>
   <figcaption><br/>"There are holes in the sky. Where the rain gets in. But they're ever so small. 
@@ -43,7 +43,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="glowscript/Dna.html">
+  <a href="nature/glowscript/Dna.html">
     <img alt="DNA" src="./images/dna.png" title="Click to animate"/>
   </a>
   <figcaption>"[...] the specific pairing we have postulated immediately suggests 
