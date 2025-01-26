@@ -39,9 +39,9 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
     <img alt="Three body problem" src="./images/three_body.png" title="Click to animate"/>
   </a>
   <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/Three-body_problem">three-body problem</a>,
-  for which there exists no analytical solution, hence numerical methods to the rescue! 
+  for which there exists no analytical solution. 
   <a href="https://en.wikipedia.org/wiki/Euler%27s_three-body_problem">Euler&apos;s version</a>
-  of the three-body problem is exactly solvable though.</figcaption>
+  is exactly solvable though.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
