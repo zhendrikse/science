@@ -94,7 +94,7 @@ async function __main__() {
     "28";
     caption = "\n&#x2022; Source code can be found <a href=\"https://github.com/zhendrikse/physics-in-python/blob/main/src/glowscript/mathematics/complex_function_plots.py\">here</a>\n&#x2022; Inspired on <a href=\"https://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/program/Plot3D\">Plot3D</a> by adding the following features: \n  &#x2022; Numpy linspace and meshgrid syntax\n  &#x2022; Configurable base and mesh background\n  &#x2022; Non-uniform coloring\n  &#x2022; Complex numbers and functions\n\n";
     "29";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({align: "top", width: 600, height: 600, center: vec(0, 5, 0), forward: vec(1["-u"]()["*"](.9), 1["-u"]()["*"](.5), 1["-u"]()["*"](.8)), title: z_2_title["+"]("\n"), range: 75})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({align: "top", background: color.gray(.14), center: vec(0, 5, 0), forward: vec(1["-u"]()["*"](.9), 1["-u"]()["*"](.5), 1["-u"]()["*"](.8)), title: z_2_title["+"]("\n"), range: 75})]);
     "32";
     function Numpy() {;
     }
@@ -1379,48 +1379,50 @@ async function __main__() {
     });
 
     "488";
+    animation.append_to_caption("\n");
+    "489";
     wave_choices = ρσ_list_decorate([ "f(z,t) = z * z + 2", "f(z,t) = |z| * |z|", "f(z,t) = z * z * z + 2", "f(z,t) = z + 1 / z - 1", "f(z,t) = .5 * (z + 1/z)", "f(z,t) = sin(z)", "f(z,t) = log(z)", "f(z,t) = exp(-z * z)", "f(z,t) = sqrt(z)" ]);
-    "498";
-    _ = ρσ_interpolate_kwargs.call(this, menu, [ρσ_desugar_kwargs({choices: wave_choices, bind: switch_function})]);
     "499";
-    animation.append_to_caption("  ");
+    _ = ρσ_interpolate_kwargs.call(this, menu, [ρσ_desugar_kwargs({choices: wave_choices, bind: switch_function})]);
     "500";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "YZ mesh", bind: toggle_yz_mesh, checked: true})]);
+    animation.append_to_caption("    ");
     "501";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "XZ mesh", bind: toggle_xz_mesh, checked: true})]);
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "YZ mesh", bind: toggle_yz_mesh, checked: true})]);
     "502";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "XY mesh", bind: toggle_xy_mesh, checked: true})]);
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "XZ mesh", bind: toggle_xz_mesh, checked: true})]);
     "503";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "XY mesh", bind: toggle_xy_mesh, checked: true})]);
+    "504";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks", bind: toggle_tick_marks, checked: true})]);
-    "505";
-    animation.append_to_caption("\n\n");
     "506";
-    omega_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 6["*"](pi), value: 2["*"](pi), bind: adjust_omega})]);
+    animation.append_to_caption("\n\n");
     "507";
-    animation.append_to_caption("Omega = ");
+    omega_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 6["*"](pi), value: 2["*"](pi), bind: adjust_omega})]);
     "508";
-    omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "2 * π"})]);
+    animation.append_to_caption("Omega = ");
     "509";
-    animation.append_to_caption("\n\n"["+"](caption)["+"]("\n"));
-    "511";
+    omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "2 * π"})]);
+    "510";
+    animation.append_to_caption("\n"["+"](caption)["+"]("\n"));
+    "512";
     async function on_key_press(key) {
-        "512";
+        "513";
         if ((key === "b" || typeof key === "object" && ρσ_equals(key, "b"))) {
-            "513";
-            animation.background = ((animation.background === color.black || typeof animation.background === "object" && ρσ_equals(animation.background, color.black))) ? color.white : color.black;
             "514";
+            animation.background = ((animation.background === color.black || typeof animation.background === "object" && ρσ_equals(animation.background, color.black))) ? color.white : color.black;
+            "515";
         }
         if ((key === "s" || typeof key === "object" && ρσ_equals(key, "s"))) {
-            "515";
-            (await animation.capture("3d_complex_function_plot"));
             "516";
+            (await animation.capture("3d_complex_function_plot"));
+            "517";
         }
         if ((key === "v" || typeof key === "object" && ρσ_equals(key, "v"))) {
-            "517";
-            print("scene.center="["+"](str(animation.center)));
             "518";
-            print("scene.forward="["+"](str(animation.forward)));
+            print("scene.center="["+"](str(animation.center)));
             "519";
+            print("scene.forward="["+"](str(animation.forward)));
+            "520";
             print("scene.range="["+"](str(animation.range)));
         }
     };
@@ -1429,12 +1431,12 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "521";
+    "522";
     async function key_pressed(event) {
         var ρσ_ls, key;
-        "522";
-        key = event.key;
         "523";
+        key = event.key;
+        "524";
         (await on_key_press(key));
     };
     if (!key_pressed.__argnames__) Object.defineProperties(key_pressed, {
@@ -1442,12 +1444,12 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "526";
+    "527";
     animation.bind("keydown", key_pressed);
-    "528";
+    "529";
     async function running(ev) {
-        "529";
         "530";
+        "531";
         run = !run;
     };
     if (!running.__argnames__) Object.defineProperties(running, {
@@ -1455,29 +1457,29 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "535";
-    animation.bind("mousedown", running);
     "536";
+    animation.bind("mousedown", running);
+    "537";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "538";
-    time = 0;
     "539";
-    dt = .01;
+    time = 0;
     "540";
-    run = true;
+    dt = .01;
     "541";
+    run = true;
+    "542";
     _GS_1 = new Plot3D;
     (await _GS_1.__init__(ρσ_getitem((await z_squared()), 0), ρσ_getitem((await z_squared()), 1), ρσ_getitem((await z_squared()), 2), ρσ_getitem((await z_squared()), 3)));
     plot = _GS_1;
-    "542";
+    "543";
     while (true) {
-        "543";
-        (await rate(1["/"](dt)));
         "544";
+        (await rate(1["/"](dt)));
+        "545";
         if (run) {
-            "545";
-            (await plot.render(time));
             "546";
+            (await plot.render(time));
+            "547";
             time=time["+"](dt);
         }
     }
