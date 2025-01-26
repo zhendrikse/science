@@ -12,7 +12,7 @@ figcaption {
 }
 
 iframe {
-  height: 800px;
+  height: 100%;
   width: 600px;
   resize: both;
   overflow: auto;
@@ -24,8 +24,8 @@ iframe {
 }
 
 .double_image {
-    style="display: flex;
-    align-items:
+    display: flex;
+    align-items;
     flex-end;
 }
 
