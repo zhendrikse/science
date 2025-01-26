@@ -103,7 +103,7 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 The quantum harmonic oscillator is visualized in a semi-classical way below.
 
 <figure>
-  <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Quantum/program/Quantumoscillator">
+  <a href="quantumphysics/harmonic_oscillator.html">
     <img alt="Quantum oscillator" width="50%" height="50%" src="./images/quantum_oscillator.png" title="Click to animate"/>
   </a>
 </figure>
@@ -113,13 +113,13 @@ The quantum harmonic oscillator is visualized in a semi-classical way below.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Chargedring">
+  <a href="qunatumphysics/charged_ring.html">
     <img alt="Electron spinning around charged ring" src="./images/electron_and_charged_ring.png" title="Click to animate"/>
   </a>
   <figcaption>If the atomic nucleus were a charged ring, as opposed to a point, then ...</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Movingcharge">
+  <a href="quantumphysics/moving_charge.html">
     <img alt="Particle in electric field" src="./images/particle_in_electric_field.png" title="Click to animate"/>
   </a>
   <figcaption>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>

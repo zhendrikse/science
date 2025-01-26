@@ -1,0 +1,569 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, ec, k, animation, _GS_1, capacitor, moving_charge, velocity_slider, velocity_slider_text, charge_slider, charge_slider_text, dt, pop_up, field, coulomb_force;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "11";
+    title = "Moving charge through electric field between two plates\n\n&#x2022; Based on <a href=\"https://github.com/Physics-Morris/Physics-Vpython/blob/master/8_Charge_Motion.py\">8_Charge_Motion.py<\/a>\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>\n&#x2022; Located in the <a href=\"https://github.com/zhendrikse/physics-in-python/\">Physics in Python GitHub repository</a>\n\n";
+    "13";
+    ec = 1.6e-19;
+    "14";
+    k = 9e9;
+    "17";
+    function FieldArrow() {;
+    }
+    FieldArrow.prototype.__init__ = async function __init__(position, field) {
+        var self = this;
+        var ρσ_ls, colour, arrow_length;
+        "19";
+        colour = (await self.mapping(field));
+        "20";
+        arrow_length = 3e-14;
+        "21";
+        ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: hat(field)["*"](arrow_length), color: vec(1, colour, 0)})]);
+    };
+    if (!FieldArrow.prototype.__init__.__argnames__) Object.defineProperties(FieldArrow.prototype.__init__, {
+        __argnames__ : {value: ["position", "field"]},
+        __module__ : {value: null}
+    });
+    FieldArrow.__argnames__ = FieldArrow.prototype.__init__.__argnames__;
+    FieldArrow.__handles_kwarg_interpolation__ = FieldArrow.prototype.__init__.__handles_kwarg_interpolation__;
+    FieldArrow.prototype.mapping = async function mapping(field) {
+        var self = this;
+        var ρσ_ls, a;
+        "24";
+        a = 1e-17;
+        "25";
+        return 1["-"](1["*"](exp(1["-u"]()["*"](a)["*"](mag(field)))));
+    };
+    if (!FieldArrow.prototype.mapping.__argnames__) Object.defineProperties(FieldArrow.prototype.mapping, {
+        __argnames__ : {value: ["field"]},
+        __module__ : {value: null}
+    });
+    FieldArrow.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    FieldArrow.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(FieldArrow.prototype, "__bases__", {value: []});
+
+
+
+    "28";
+    function Charge() {;
+    }
+    Charge.prototype.__init__ = async function __init__() {
+        var self = this;
+        var mass = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[0];
+        var position = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[1];
+        var velocity = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.velocity : arguments[2];
+        var radius = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[3];
+        var coulomb = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.coulomb : arguments[4];
+        var charge_color = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.charge_color : arguments[5];
+        var make_trail = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.make_trail : arguments[6];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
+            mass = ρσ_kwargs_obj.mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "velocity")){
+            velocity = ρσ_kwargs_obj.velocity;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "coulomb")){
+            coulomb = ρσ_kwargs_obj.coulomb;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "charge_color")){
+            charge_color = ρσ_kwargs_obj.charge_color;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "make_trail")){
+            make_trail = ρσ_kwargs_obj.make_trail;
+        }
+        var ρσ_ls, colour;
+        "30";
+        colour = charge_color;
+        "31";
+        if (colour === null) {
+            "32";
+            colour = (coulomb[">"](0)) ? color.blue : color.red;
+        }
+        "34";
+        self._sphere = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({mass: mass, pos: position, radius: radius, color: colour, make_trail: make_trail})]);
+        "35";
+        self._charge = coulomb;
+        "36";
+        self._velocity = velocity;
+        "37";
+        self._position = position;
+        "38";
+        self._radius = radius;
+        "39";
+        self._mass = mass;
+        "40";
+        self._initial_position = position;
+        "41";
+        self._initial_velocity = velocity;
+    };
+    if (!Charge.prototype.__init__.__defaults__) Object.defineProperties(Charge.prototype.__init__, {
+        __defaults__ : {value: {mass:1.6e-27, position:vec(0, 0, 0), velocity:vec(0, 0, 0), radius:1, coulomb:ec, charge_color:null, make_trail:false}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["mass", "position", "velocity", "radius", "coulomb", "charge_color", "make_trail"]},
+        __module__ : {value: null}
+    });
+    Charge.__argnames__ = Charge.prototype.__init__.__argnames__;
+    Charge.__handles_kwarg_interpolation__ = Charge.prototype.__init__.__handles_kwarg_interpolation__;
+    Charge.prototype.reset = async function reset() {
+        var self = this;
+        "44";
+        self._position = self._initial_position;
+        "45";
+        self._velocity = self._initial_velocity;
+        "46";
+        self._sphere.clear_trail();
+        "47";
+        self._sphere.pos = self._position;
+    };
+    if (!Charge.prototype.reset.__module__) Object.defineProperties(Charge.prototype.reset, {
+        __module__ : {value: null}
+    });
+    Charge.prototype.field_at = async function field_at(position) {
+        var self = this;
+        "50";
+        return hat(position["-"](1["*"](self._position)))["*"](k)["*"](self._charge)["/"](Math.pow(mag(position["-"](1["*"](self._position))), 2));
+    };
+    if (!Charge.prototype.field_at.__argnames__) Object.defineProperties(Charge.prototype.field_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    Charge.prototype.radius = async function radius() {
+        var self = this;
+        "53";
+        return self._radius;
+    };
+    if (!Charge.prototype.radius.__module__) Object.defineProperties(Charge.prototype.radius, {
+        __module__ : {value: null}
+    });
+    Charge.prototype.position = async function position() {
+        var self = this;
+        "56";
+        return self._position;
+    };
+    if (!Charge.prototype.position.__module__) Object.defineProperties(Charge.prototype.position, {
+        __module__ : {value: null}
+    });
+    Charge.prototype.charge = async function charge() {
+        var self = this;
+        "59";
+        return self._charge;
+    };
+    if (!Charge.prototype.charge.__module__) Object.defineProperties(Charge.prototype.charge, {
+        __module__ : {value: null}
+    });
+    Charge.prototype.set_initial_x_velocity = async function set_initial_x_velocity(velocity_x) {
+        var self = this;
+        "62";
+        self._initial_velocity = vec(velocity_x, 0, 0);
+    };
+    if (!Charge.prototype.set_initial_x_velocity.__argnames__) Object.defineProperties(Charge.prototype.set_initial_x_velocity, {
+        __argnames__ : {value: ["velocity_x"]},
+        __module__ : {value: null}
+    });
+    Charge.prototype.set_charge_to = async function set_charge_to(value) {
+        var self = this;
+        "65";
+        self._charge = value;
+    };
+    if (!Charge.prototype.set_charge_to.__argnames__) Object.defineProperties(Charge.prototype.set_charge_to, {
+        __argnames__ : {value: ["value"]},
+        __module__ : {value: null}
+    });
+    Charge.prototype.coulomb_force_in = async function coulomb_force_in(electric_field) {
+        var self = this;
+        "68";
+        return electric_field["*"](self._charge);
+    };
+    if (!Charge.prototype.coulomb_force_in.__argnames__) Object.defineProperties(Charge.prototype.coulomb_force_in, {
+        __argnames__ : {value: ["electric_field"]},
+        __module__ : {value: null}
+    });
+    Charge.prototype.update = async function update(coulomb_force, dt) {
+        var self = this;
+        "72";
+        self._velocity=self._velocity["+"](coulomb_force["/"](self._mass)["*"](dt));
+        "73";
+        self._position=self._position["+"](self._velocity["*"](dt));
+        "74";
+        self._sphere.pos = self._position;
+    };
+    if (!Charge.prototype.update.__argnames__) Object.defineProperties(Charge.prototype.update, {
+        __argnames__ : {value: ["coulomb_force", "dt"]},
+        __module__ : {value: null}
+    });
+    Charge.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Charge.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Charge.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+
+
+    "77";
+    function Field() {;
+    }
+    Field.prototype.__init__ = async function __init__() {
+        var self = this;
+        var charges = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.charges : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "charges")){
+            charges = ρσ_kwargs_obj.charges;
+        }
+        "79";
+        self._charges = charges;
+        "80";
+        self._field_arrows = ρσ_list_decorate([]);
+    };
+    if (!Field.prototype.__init__.__defaults__) Object.defineProperties(Field.prototype.__init__, {
+        __defaults__ : {value: {charges:ρσ_list_decorate([])}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["charges"]},
+        __module__ : {value: null}
+    });
+    Field.__argnames__ = Field.prototype.__init__.__argnames__;
+    Field.__handles_kwarg_interpolation__ = Field.prototype.__init__.__handles_kwarg_interpolation__;
+    Field.prototype.show = async function show(x_range, y_range, z_range) {
+        var self = this;
+        var ρσ_ls, z, y, x;
+        "83";
+        self._field_arrows = ρσ_list_decorate([]);
+        "84";
+        var ρσ_Iter1 = x_range;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            x = ρσ_Index1;
+            "85";
+            var ρσ_Iter2 = y_range;
+            ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+            for (var ρσ_Index2 of ρσ_Iter2) {
+                y = ρσ_Index2;
+                "86";
+                var ρσ_Iter3 = z_range;
+                ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+                for (var ρσ_Index3 of ρσ_Iter3) {
+                    z = ρσ_Index3;
+                    "87";
+                    self._field_arrows.append((await self._field_arrow(x, y, z)));
+                }
+            }
+        }
+    };
+    if (!Field.prototype.show.__argnames__) Object.defineProperties(Field.prototype.show, {
+        __argnames__ : {value: ["x_range", "y_range", "z_range"]},
+        __module__ : {value: null}
+    });
+    Field.prototype._field_arrow = async function _field_arrow(x, y, z) {
+        var self = this;
+        var ρσ_ls, point, _GS_1;
+        "90";
+        point = vec(x, y, z)["*"]((await self._charge_radius()));
+        "91";
+        _GS_1 = new FieldArrow;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: point, field: (await self.field_at(point))})]);
+        return _GS_1;
+    };
+    if (!Field.prototype._field_arrow.__argnames__) Object.defineProperties(Field.prototype._field_arrow, {
+        __argnames__ : {value: ["x", "y", "z"]},
+        __module__ : {value: null}
+    });
+    Field.prototype._charge_radius = async function _charge_radius() {
+        var self = this;
+        "94";
+        return (await ρσ_getitem(self._charges, 0).radius());
+    };
+    if (!Field.prototype._charge_radius.__module__) Object.defineProperties(Field.prototype._charge_radius, {
+        __module__ : {value: null}
+    });
+    Field.prototype.field_at = async function field_at(position) {
+        var self = this;
+        var ρσ_ls, field, charge;
+        "97";
+        field = vec(0, 0, 0);
+        "98";
+        var ρσ_Iter4 = self._charges;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            charge = ρσ_Index4;
+            "99";
+            field=field["+"]((await charge.field_at(position)));
+        }
+        "100";
+        return field;
+    };
+    if (!Field.prototype.field_at.__argnames__) Object.defineProperties(Field.prototype.field_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    Field.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Field.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Field.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "103";
+    function Capacitor() {;
+    }
+    Capacitor.prototype.__init__ = async function __init__() {
+        var self = this;
+        var pos = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.pos : arguments[0];
+        var size = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.size : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "pos")){
+            pos = ρσ_kwargs_obj.pos;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "size")){
+            size = ρσ_kwargs_obj.size;
+        }
+        var ρσ_ls, top_plate_y_pos, bottom_plate_y_pos, charges, mu, _GS_1, z, y, x;
+        "106";
+        top_plate_y_pos = vec(0, 1e-13, 0).y;
+        "107";
+        bottom_plate_y_pos = 1["-u"]()["*"](vec(0, 1e-13, 0).y);
+        "108";
+        charges = ρσ_list_decorate([]);
+        "109";
+        for (var ρσ_Index5 = 1["-u"]()["*"](20); ρσ_Index5["<"](22); ρσ_Index5=ρσ_Index5["+"](2)) {
+            x = ρσ_Index5;
+            "110";
+            var ρσ_Iter6 = ρσ_list_decorate([ top_plate_y_pos, bottom_plate_y_pos ]);
+            ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+            for (var ρσ_Index6 of ρσ_Iter6) {
+                y = ρσ_Index6;
+                "111";
+                for (var ρσ_Index7 = 1["-u"]()["*"](20); ρσ_Index7["<"](22); ρσ_Index7=ρσ_Index7["+"](2)) {
+                    z = ρσ_Index7;
+                    "113";
+                    mu = (y[">"](0)) ? 1 : 1["-u"]()["*"](1);
+                    "114";
+                    _GS_1 = new Charge;
+                    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(x["*"](1e-14), y, z["*"](1e-14)), radius: 1e-14, coulomb: mu["*"](ec)})]);
+                    charges.append(_GS_1);
+                }
+            }
+        }
+        "116";
+        _GS_1 = new Field;
+        (await _GS_1.__init__(charges));
+        self._field = _GS_1;
+        "117";
+        ρσ_interpolate_kwargs.call(self._field, self._field.show, [ρσ_desugar_kwargs({x_range: range(1["-u"]()["*"](18), 18, 8), y_range: range(1["-u"]()["*"](9), 9, 4), z_range: range(1["-u"]()["*"](18), 18, 8)})]);
+    };
+    if (!Capacitor.prototype.__init__.__defaults__) Object.defineProperties(Capacitor.prototype.__init__, {
+        __defaults__ : {value: {pos:vec(0, 1e-13, 0), size:vec(4e-13, 4e-16, 4e-13)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["pos", "size"]},
+        __module__ : {value: null}
+    });
+    Capacitor.__argnames__ = Capacitor.prototype.__init__.__argnames__;
+    Capacitor.__handles_kwarg_interpolation__ = Capacitor.prototype.__init__.__handles_kwarg_interpolation__;
+    Capacitor.prototype.show_field = async function show_field(x_range, y_range, z_range) {
+        var self = this;
+        "120";
+        (await self._field.show(x_range, y_range, z_range));
+    };
+    if (!Capacitor.prototype.show_field.__argnames__) Object.defineProperties(Capacitor.prototype.show_field, {
+        __argnames__ : {value: ["x_range", "y_range", "z_range"]},
+        __module__ : {value: null}
+    });
+    Capacitor.prototype.field_at = async function field_at(position) {
+        var self = this;
+        "123";
+        return (await self._field.field_at(position));
+    };
+    if (!Capacitor.prototype.field_at.__argnames__) Object.defineProperties(Capacitor.prototype.field_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    Capacitor.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Capacitor.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Capacitor.prototype, "__bases__", {value: []});
+
+
+
+
+    "126";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), align: "top", range: 3e-13, forward: vec(.35, 1["-u"]()["*"](.2), 1["-u"]()["*"](.9)), title: title})]);
+    "127";
+    _GS_1 = new Capacitor;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({pos: vec(0, 1e-13, 0), size: vec(4e-13, 4e-16, 4e-13)})]);
+    capacitor = _GS_1;
+    "128";
+    ρσ_interpolate_kwargs.call(capacitor, capacitor.show_field, [ρσ_desugar_kwargs({x_range: range(1["-u"]()["*"](18), 18, 8), y_range: range(1["-u"]()["*"](9), 9, 4), z_range: range(1["-u"]()["*"](18), 18, 8)})]);
+    "129";
+    _GS_1 = new Charge;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(1["-u"]()["*"](4e-13), 5e-14, 0), velocity: vec(1.5e-13, 0, 0), radius: 1.2e-14, coulomb: 5e-42["*"](ec), charge_color: color.green, make_trail: true})]);
+    moving_charge = _GS_1;
+    "131";
+    animation.append_to_caption("\n");
+    "134";
+    async function adjust_velocity() {
+        "135";
+        (await moving_charge.set_initial_x_velocity(velocity_slider.value["*"](1e-13)));
+        "136";
+        velocity_slider_text.text = velocity_slider.value["+"](" 1E-13 m/s");
+    };
+    if (!adjust_velocity.__module__) Object.defineProperties(adjust_velocity, {
+        __module__ : {value: null}
+    });
+
+    "139";
+    async function adjust_q() {
+        "140";
+        (await moving_charge.set_charge_to(charge_slider.value["*"](ec)["*"](5e-42)));
+        "141";
+        charge_slider_text.text = charge_slider.value["+"](" electron charge(s)");
+    };
+    if (!adjust_q.__module__) Object.defineProperties(adjust_q, {
+        __module__ : {value: null}
+    });
+
+    "144";
+    velocity_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: 5, step: .1, value: 1.5, bind: adjust_velocity})]);
+    "145";
+    animation.append_to_caption(" Velocity in x-direction = ");
+    "146";
+    velocity_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "1.5 E-13 m/s"})]);
+    "147";
+    animation.append_to_caption("\n\n");
+    "149";
+    charge_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 5, step: .1, value: 1, bind: adjust_q})]);
+    "150";
+    animation.append_to_caption(" Q = ");
+    "151";
+    charge_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "1 electron charge"})]);
+    "152";
+    animation.append_to_caption("\n\n");
+    "154";
+    dt = .01;
+    "155";
+    pop_up = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(0, 2e-13, 0), text: "Click mouse button to repeat", visible: false})]);
+    "156";
+    while (true) {
+        "157";
+        while ((await moving_charge.position()).x["<"](6e-13)) {
+            "158";
+            (await rate(1["/"](dt)));
+            "159";
+            field = (await capacitor.field_at((await moving_charge.position())));
+            "160";
+            coulomb_force = (await moving_charge.coulomb_force_in(field));
+            "161";
+            (await moving_charge.update(coulomb_force, dt));
+        }
+        "163";
+        pop_up.visible = true;
+        "164";
+        (await animation.waitfor("click"));
+        "165";
+        pop_up.visible = false;
+        "166";
+        (await moving_charge.reset());
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
