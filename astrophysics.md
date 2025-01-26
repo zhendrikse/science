@@ -1,6 +1,6 @@
 <a name="astrophysics"></a>
 # Astrophysics
-<div style="border-top: 2px solid #cccccc"><br/></div>
+<div class="header_line"><br/></div>
 
 The code pertaining to the demos in this section is also available under the 
 [astrophysics tab](https://glowscript.org/#/user/zeger.hendrikse/folder/Astrophysics/)

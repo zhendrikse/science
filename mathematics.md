@@ -1,6 +1,6 @@
 <a name="mathematics"></a>
 # Mathematics
-<div style="border-top: 2px solid #cccccc"><br/></div>
+<div class="header_line"><br/></div>
 
 <blockquote>
 Mathematics directs the flow of the universe, lurks behind its shapes and curves, 
@@ -15,16 +15,16 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 ### Dynamic 3D-plots of multivariate and complex functions
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
-  <a href="glowscript/NumpyMatplot3D.html">
+<div class="double_image">
+<figure class="left_image">
+  <a href="mathematics/multivariate_functions.html">
     <img alt="Multivariate functions" src="./images/3d_plot.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;
   <figcaption>Plotting <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a> 
   where $F(x, y) \rightarrow \mathbb{R}, (x, y) \in \mathbb{R} $.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
-  <a href="glowscript/Complexfunctionplot.html">
+<figure class="right_image">
+  <a href="mathematics/complex_functions.html">
     <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
   </a>
   <figcaption>3D-visualizations of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a> 
@@ -65,15 +65,15 @@ both physics and mathematics, they also provide us a way to parameterize complex
 such  as [Klein&apos;s bottle](geometry#non_orientables) (shown below in the topology subsection). 
 
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
-  <a href="glowscript/PolarCoordinates">
+<div class="double_image">
+<figure class="left_image">
+  <a href="mathematics/polar_coordinates.html">
     <img alt="Polar coordinates" src="./images/polar_coordinates.png" title="Click to animate"/>
   </a>
   <figcaption>Polar coordinates frequently simplify the tackling of rotationally symmetric problems.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
-  <a href="glowscript/AtomicOrbitals.html">
+<figure class="right_image">
+  <a href="mathematics/spherical_harmonics.html">
     <img alt="Spherical harmonics" src="./images/geometry/spherical_harmonics.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Spherical_harmonics">Spherical harmonics</a> 
@@ -112,15 +112,15 @@ seen in the mathematics section on this page:
 ### [Topology](geometry.html)
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
-  <a href="glowscript/GeometricShapes">
+<div class="double_image">
+<figure class="left_image">
+  <a href="mathematics/topology.html">
     <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
   </a>
   <figcaption>A twisted torus. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
-  <a href="glowscript/GeometricShapes.html">
+<figure class="right_image">
+  <a href="mathematics/topology.html">
     <img alt="Klein&apos;s bottle" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a>.
