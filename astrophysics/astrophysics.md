@@ -11,7 +11,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 
 
 <figure style="float: center; text-align: center;">
-  <a href="glowscript/DaylightVariations.html">
+  <a href="astrophysics/daylight_variations.html">
     <img alt="Daylight variations" width="100%" height="100%" src="./images/daylight_variations.png" title="Click to animate"/>
   </a>
   <figcaption>A not accurate to scale sun-earth-moon model, but very detailed and instructive!
@@ -25,7 +25,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="glowscript/KeplersLaw.html">
+  <a href="astrophysics/keplers_law.html">
     <img alt="Kepler's laws" src="./images/keplers_law.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion">Kepler&apos;s laws</a>
@@ -35,7 +35,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="glowscript/ThreeBody.html">
+  <a href="astrophysics/three_body.html">
     <img alt="Three body problem" src="./images/three_body.png" title="Click to animate"/>
   </a>
   <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/Three-body_problem">three-body problem</a>,
