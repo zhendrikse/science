@@ -67,7 +67,7 @@ async function __main__() {
     "12";
     title = "Kepler's law of equal areas\nPlots the orbit of a planet in an eccentric orbit to illustrate\nthe sweeping out of equal areas in equal times, with sun at focus.\nThe eccentricity of the orbit is random and determined by the \ninitial velocity. The program uses normalised units (G =1).\n\n&#x2022; Original by program by Peter Borcherds, University of Birmingham, England\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse<\/a> in this <a href=\"https://github.com/zhendrikse/physics-in-python/\">GitHub repository</a>\n\n";
     "16";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 800, height: 600, range: 1, forward: vector(.0222862, .928369, 1["-u"]()["*"](.370991))})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.144), forward: vector(.0222862, .928369, 1["-u"]()["*"](.370991))})]);
     "20";
     function Planet() {;
     }

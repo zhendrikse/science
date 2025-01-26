@@ -75,7 +75,7 @@ async function __main__() {
     "28";
     moon_orbit_rate = 13;
     "30";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, height: 300, width: 1200, range: astronomical_unit["/"](4), fov: (await radians(10))})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.144), fov: (await radians(20))})]);
     "32";
     function EarthArrows() {;
     }
@@ -178,11 +178,11 @@ async function __main__() {
         return this.__repr__();
     };
     Object.defineProperty(EarthArrows.prototype, "__bases__", {value: []});
-    
-    
-    
-    
-    
+
+
+
+
+
 
     "69";
     function SunEarthMoonSystem() {;
@@ -331,16 +331,16 @@ async function __main__() {
         return this.__repr__();
     };
     Object.defineProperty(SunEarthMoonSystem.prototype, "__bases__", {value: []});
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
 
     "136";
     async function on_mouse_click() {
@@ -397,7 +397,7 @@ async function __main__() {
     (await _GS_1.__init__());
     sun_earth_moon = _GS_1;
     "154";
-    animation.append_to_caption("\nAdjust the speed of the simulation using the slider\n");
+    animation.append_to_caption("\nAdjust the speed of the simulation using the slider\n\n");
     "155";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: on_radio_button, text: "white background", name: "background", checked: false})]);
     "156";
@@ -419,7 +419,7 @@ async function __main__() {
     "171";
     graph_width = 480;
     "172";
-    daylight_graph = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: graph_width, height: graph_height["*"](4), title: "Hours with daylight", xmax: 365, ymin: 5, ymax: 17})]);
+    daylight_graph = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: graph_width, height: graph_height["*"](4), title: "Hours with daylight", xmax: 365, ymin: 5, ymax: 17, background: color.gray(.144)})]);
     "173";
     daylight_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: daylight_graph, color: color.red})]);
     "174";
@@ -467,10 +467,10 @@ async function __main__() {
         }
         if ((await sun_earth_moon.day_count())[">"](month_counter["*"](new_graph_interval))) {
             "195";
-            energy_graph = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Sunlight in "["+"](ρσ_getitem(list_of_months, month_counter["%"](12))), width: graph_width, height: graph_height, xmin: month_counter["*"](new_graph_interval), xmax: month_counter["+"](1)["*"](new_graph_interval), ymin: 1["-u"]()["*"](.1), ymax: 1})]);
-            "197";
-            energy_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: energy_graph, interval: 1})]);
+            energy_graph = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Sunlight in "["+"](ρσ_getitem(list_of_months, month_counter["%"](12))), width: graph_width, height: graph_height, xmin: month_counter["*"](new_graph_interval), xmax: month_counter["+"](1)["*"](new_graph_interval), ymin: 1["-u"]()["*"](.1), ymax: 1, background: color.gray(.144)})]);
             "198";
+            energy_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: energy_graph, interval: 1})]);
+            "199";
             month_counter=month_counter["+"](1);
         }
     }
@@ -484,4 +484,3 @@ if (!__main__.__module__) Object.defineProperties(__main__, {
 
 //--><!]]></script>
 </div>
-

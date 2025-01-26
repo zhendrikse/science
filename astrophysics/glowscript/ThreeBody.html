@@ -49,6 +49,8 @@ async function __main__() {
     var display = canvas;
     var scene = canvas();
 
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
     var version, print, arange, __name__, type, ρσ_ls, caption, title, animation, G, astronomical_unit, mass, rA, rB, vA, _GS_1, sphere_A, sphere_B, sphere_C, force_BA, force_CB, force_AC, t;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
@@ -66,7 +68,7 @@ async function __main__() {
     "12";
     title = "<h3>Click mouse to start animation</h3>";
     "14";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: "800", height: "600", caption: caption})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.144), caption: caption})]);
     "16";
     G = 6.67e-11;
     "17";
