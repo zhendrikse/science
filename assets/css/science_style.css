@@ -10,3 +10,7 @@ figcaption {
   padding: 2px;
   text-align: center;
 }
+
+.header_line {
+  border-top: 2px solid #cccccc;
+}
