@@ -55,7 +55,7 @@ You may be surprised though to find out what happens when you drop such a simple
   <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Newtonscannon">
     <img alt="Newton's cannon" src="./images/newtons_cannon.png" title="Click to animate"/>
   </a>
-  <figcaption>Which velocity is needed to shoot a cannon ball into orbit?</figcaption>
+  <figcaption>Which velocity is needed to shoot a cannonball into orbit?</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
