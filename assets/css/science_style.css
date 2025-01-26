@@ -11,6 +11,32 @@ figcaption {
   text-align: center;
 }
 
+iframe {
+  height: 800px;
+  width: 600px;
+  resize: both;
+  overflow: auto;
+  border: none
+}
+
 .header_line {
   border-top: 2px solid #cccccc;
+}
+
+.double_image {
+    style="display: flex;
+    align-items:
+    flex-end;
+}
+
+.left_image {
+    float: left;
+    width: 50%;
+    text-align: center
+}
+
+.right_image {
+    float: right;
+    width: 50%;
+    text-align: center
 }

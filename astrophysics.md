@@ -23,8 +23,8 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 ###  Kepler's law &amp; the three-body problem
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="glowscript/KeplersLaw.html">
     <img alt="Kepler's laws" src="./images/keplers_law.png" title="Click to animate"/>
   </a>
@@ -34,7 +34,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
     <a href="https://en.wikipedia.org/wiki/Johannes_Kepler">Johannes Kepler</a>.
   </figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="glowscript/ThreeBody.html">
     <img alt="Three body problem" src="./images/three_body.png" title="Click to animate"/>
   </a>
