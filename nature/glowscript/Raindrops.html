@@ -1,7 +1,6 @@
 <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
@@ -255,7 +254,9 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, compound, cone, curve, cylinder, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    fontloading();
+    await waitforfonts();
+    var arrow, compound, cone, curve, cylinder, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, download, radians, degrees, get_library, read_local_file
     var version, print, arange, __name__, type, ρσ_ls, title, animation, toggle, dropheight, worldsize, max_dropsize, floor, _GS_1, cloud, pop_up, delta_t;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
@@ -273,7 +274,7 @@ async function __main__() {
     "12";
     title = "Splatting raindrops\n\n&#x2022; Original version written by Lenore Horner, 2009\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse<\/a>\n&#x2022; Reset the scene by reloading the browser. \n&#x2022; Click mouse button to start\n\n";
     "14";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.14)})]);
     "16";
     toggle = 0;
     "18";
@@ -507,7 +508,7 @@ async function __main__() {
     (await _GS_1.__init__(worldsize["/"](2)["-"](1["*"](max_dropsize))));
     cloud = _GS_1;
     "91";
-    pop_up = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), text: "Click mouse to start", box: false, color: color.yellow})]);
+    pop_up = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](worldsize)["/"](2)["+"](2), 0, 0), text: "Click mouse to start", height: 2, color: color.yellow, billboard: true})]);
     "92";
     (await animation.waitfor("click"));
     "93";

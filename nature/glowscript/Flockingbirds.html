@@ -1,7 +1,6 @@
 <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
@@ -66,9 +65,9 @@ async function __main__() {
 
     strings();
     "12";
-    title = "Flock of Birds\n\n&#x2022; Original version created by B. Philhour 10/9/17 \n&#x2022; Inspired by Gary Flake's <a href=\"https://www.amazon.com/Computational-Beauty-Nature-Explorations-Adaptation/dp/0262561271\">Computational Beauty of Nature<\/a>\n&#x2022; 1998 MIT Press ISBN-13 978-0-262-56127-3\n&#x2022; Maintained by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in this <a href=\"https://github.com/zhendrikse/physics-in-python/\">GitHub repository</a>\n\n";
+    title = "\n\n&#x2022; Original version created by B. Philhour 10/9/17 \n&#x2022; Inspired by Gary Flake's <a href=\"https://www.amazon.com/Computational-Beauty-Nature-Explorations-Adaptation/dp/0262561271\">Computational Beauty of Nature<\/a>\n&#x2022; 1998 MIT Press ISBN-13 978-0-262-56127-3\n&#x2022; Maintained by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in this <a href=\"https://github.com/zhendrikse/physics-in-python/\">GitHub repository</a>\n\n";
     "14";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 450, background: color.black, title: title})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.14), title: title})]);
     "16";
     spread = 3;
     "17";
@@ -160,12 +159,12 @@ async function __main__() {
         return this.__repr__();
     };
     Object.defineProperty(Bird.prototype, "__bases__", {value: []});
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 
     "46";
     function Flock() {;
@@ -357,16 +356,16 @@ async function __main__() {
         return this.__repr__();
     };
     Object.defineProperty(Flock.prototype, "__bases__", {value: []});
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
 
     "109";
     _GS_1 = new Flock;
@@ -443,4 +442,3 @@ if (!__main__.__module__) Object.defineProperties(__main__, {
 
 //--><!]]></script>
 </div>
-
