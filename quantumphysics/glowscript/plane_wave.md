@@ -10,8 +10,8 @@ get_library('https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.mi
 title = """
 &#x2022; From <a href="https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247">Visualizing Quantum Mechanics with Python</a>
 &#x2022; Modified by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
-&#x2022; The motion and x-axis represent the parameters \\(t \\text{ and } x\\) respectively
-&#x2022; The colors represent the wave number \\( k \\)
+&#x2022; The motion and x-axis represent the parameters $t$ and $x$ respectively
+&#x2022; The colors represent the wave number $k$
 
 """
 

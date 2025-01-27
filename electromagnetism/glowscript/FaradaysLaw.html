@@ -1,0 +1,579 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var dt;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var compound, cone, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, caption, color_scheme, background_color, dimmed_colors_electric_field, electric_field_colors, faraday_color, animation, showFaraday, dimFields, magnetic_field_vector_positions, magnetic_field_vectors, arrow_pos, N, dBdt, electric_field_vectors, electric_field_vector_tails, faraday_vectors, faraday_loop_positions, n, faraday_loop, _GS_1, wire, _, t, dt, count, mag_vector;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "22";
+    title = "\nFaraday's law: changing-Bs are associated with curly-Es\n\n&#x2022; Written by Rob Salgado (salgado@physics.syr.edu)\n&#x2022; Modified by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a>\n\nThe thick green vector representing d|B|/dt, i.e. the rate of change of the magnitude \nof the magnetic field) is associated with the spatial arrangement of the electric field \naccording to the Faraday Law (as evaluated on the green loop). The sense of circulation \non the green loop (by the RightHandRule) determines the direction of change of the magnetic \nfield, which is opposite to your thumb.\n\n&lt;v&gt; &rarr; verbose output\n&lt;s&gt; &rarr; screenshot\n&lt;mouse click&gt; &rarr; zoom to selected point\n\n";
+    "27";
+    caption = "\n\\( \\Phi_B = \\iint_{\\Sigma(t)} \\vec{B}(t) \\cdot d\\vec{A} \\),\n where \\(d\\vec{A}\\) is an element of area vector of the moving surface Σ(t), and \\(\\vec{B}\\) is the magnetic field.\"\n\n";
+    "29";
+    color_scheme = 0;
+    "30";
+    background_color = ρσ_list_decorate([ color.gray(.075), color.white ]);
+    "31";
+    dimmed_colors_electric_field = ρσ_list_decorate([ vector(0, 0, .4), vector(.5, .5, 1) ]);
+    "32";
+    electric_field_colors = ρσ_list_decorate([ color.blue, [.5, .5, 1], color.green ]);
+    "33";
+    ρσ_setitem(electric_field_colors, 1, ρσ_getitem(dimmed_colors_electric_field, color_scheme));
+    "34";
+    faraday_color = ρσ_getitem(electric_field_colors, 2);
+    "36";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, range: 2.5, forward: vector(1["-u"]()["*"](.75), 1["-u"]()["*"](.1), 1["-u"]()["*"](.65)), background: ρσ_getitem(background_color, color_scheme)})]);
+    "38";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "40";
+    electric_field_colors = ρσ_list_decorate([ color.blue, vector(0, 0, .4), color.green ]);
+    "42";
+    showFaraday = 0;
+    "43";
+    dimFields = 0;
+    "45";
+    magnetic_field_vector_positions = ρσ_list_decorate([ vector(.25, 0, 0), vector(1["-u"]()["*"](.25), 0, 0), vector(0, .25, 0), vector(0, 1["-u"]()["*"](.25), 0), vector(.25, 0, 1["-u"]()["*"](2)), vector(1["-u"]()["*"](.25), 0, 1["-u"]()["*"](2)), vector(0, .25, 1["-u"]()["*"](2)), vector(0, 1["-u"]()["*"](.25), 1["-u"]()["*"](2)) ]);
+    "55";
+    magnetic_field_vectors = (function() {
+        var ρσ_Iter = magnetic_field_vector_positions, ρσ_Result = [], arrow_pos;
+        ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+        for (var ρσ_Index of ρσ_Iter) {
+            arrow_pos = ρσ_Index;
+            ρσ_Result.push(ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: arrow_pos, axis: vector(0, 0, .001), shaftwidth: .04, fixedwidth: 1, color: color.red})]));
+        }
+        ρσ_Result = ρσ_list_constructor(ρσ_Result);
+        return ρσ_Result;
+    })();
+    "57";
+    N = 8;
+    "58";
+    dBdt = .2;
+    "61";
+    async function get_electric_field_vectors() {
+        var count = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? get_electric_field_vectors.__defaults__.count : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "count")){
+            count = ρσ_kwargs_obj.count;
+        }
+        var ρσ_ls, vectors, theta, theta_hat, electric_field, index, r, z;
+        "62";
+        vectors = ρσ_list_decorate([]);
+        "63";
+        var ρσ_Iter1 = ρσ_list_decorate([ 0, 1["-u"]()["*"](.5), .5, 1["-u"]()["*"](1), 1 ]);
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            z = ρσ_Index1;
+            "64";
+            var ρσ_Iter2 = ρσ_list_decorate([ .5, 1, 1.5 ]);
+            ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+            for (var ρσ_Index2 of ρσ_Iter2) {
+                r = ρσ_Index2;
+                "65";
+                for (var ρσ_Index3 = 0; ρσ_Index3["<"](count); ρσ_Index3++) {
+                    index = ρσ_Index3;
+                    "66";
+                    theta = 2["*"](pi)["*"](index)["/"](count);
+                    "67";
+                    theta_hat = vector(1["-u"]()["*"](sin(theta)), cos(theta), 0);
+                    "68";
+                    electric_field = 1["-u"]()["*"](dBdt)["*"](theta_hat)["/"](r);
+                    "69";
+                    vectors.append(ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vector(r["*"](cos(theta)), r["*"](sin(theta)), z), axis: electric_field, shaftwidth: .04, fixedwidth: 1, color: color.blue})]));
+                }
+            }
+        }
+        "73";
+        return vectors;
+    };
+    if (!get_electric_field_vectors.__defaults__) Object.defineProperties(get_electric_field_vectors, {
+        __defaults__ : {value: {count:N}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["count"]},
+        __module__ : {value: null}
+    });
+
+    "76";
+    async function get_tails_for(electric_field_vector_array) {
+        "77";
+        return (function() {
+            var ρσ_Iter = electric_field_vector_array, ρσ_Result = [], field_vec;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                field_vec = ρσ_Index;
+                ρσ_Result.push(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: field_vec.pos["+"](field_vec.axis["/"](4)), axis: field_vec.axis, length: mag(field_vec.axis)["/"](2), height: .04, width: .04, color: color.blue})]));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+    };
+    if (!get_tails_for.__argnames__) Object.defineProperties(get_tails_for, {
+        __argnames__ : {value: ["electric_field_vector_array"]},
+        __module__ : {value: null}
+    });
+
+    "83";
+    async function get_faraday_vectors_from(magnetic_field_vector_array) {
+        var ρσ_ls, faraday_vecs, field_vec;
+        "84";
+        faraday_vecs = ρσ_list_decorate([]);
+        "85";
+        var ρσ_Iter4 = magnetic_field_vectors;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            field_vec = ρσ_Index4;
+            "86";
+            faraday_vecs.append(ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: field_vec.pos["+"](field_vec.axis), axis: dBdt["*"](norm(field_vec.axis)), fixedwidth: 1, color: faraday_color, shaftwidth: .07, headwidth: .14, visible: false})]));
+        }
+        "90";
+        return faraday_vecs;
+    };
+    if (!get_faraday_vectors_from.__argnames__) Object.defineProperties(get_faraday_vectors_from, {
+        __argnames__ : {value: ["magnetic_field_vector_array"]},
+        __module__ : {value: null}
+    });
+
+    "93";
+    function Wire() {;
+    }
+    Wire.prototype.__init__ = async function __init__() {
+        var self = this;
+        var charge_count = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.charge_count : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "charge_count")){
+            charge_count = ρσ_kwargs_obj.charge_count;
+        }
+        var ρσ_ls, i;
+        "95";
+        self._wire = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .04, pos: vector(0, 0, 1["-u"]()["*"](2)), axis: vector(0, 0, 4), color: color.yellow})]);
+        "96";
+        self._charge_count = charge_count;
+        "97";
+        self._charge_positions = (function() {
+            var ρσ_Iter = range(charge_count), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(vector(self._wire.pos["+"](self._wire.axis["*"](i)["/"](N))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "98";
+        self._charges = (function() {
+            var ρσ_Iter = range(charge_count), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: ρσ_getitem(self._charge_positions, i), radius: .05, color: self._wire.color})]));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+    };
+    if (!Wire.prototype.__init__.__defaults__) Object.defineProperties(Wire.prototype.__init__, {
+        __defaults__ : {value: {charge_count:N}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["charge_count"]},
+        __module__ : {value: null}
+    });
+    Wire.__argnames__ = Wire.prototype.__init__.__argnames__;
+    Wire.__handles_kwarg_interpolation__ = Wire.prototype.__init__.__handles_kwarg_interpolation__;
+    Wire.prototype.update = async function update(t) {
+        var self = this;
+        var ρσ_ls, i;
+        "102";
+        for (var ρσ_Index5 = 0; ρσ_Index5["<"](self._charge_count); ρσ_Index5++) {
+            i = ρσ_Index5;
+            "103";
+            ρσ_getitem(self._charges, i).pos = ρσ_getitem(self._charge_positions, i)["+"](t["%"](4)["*"](vector(0, 0, .125)));
+        }
+    };
+    if (!Wire.prototype.update.__argnames__) Object.defineProperties(Wire.prototype.update, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+    Wire.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Wire.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Wire.prototype, "__bases__", {value: []});
+
+
+
+    "106";
+    electric_field_vectors = (await get_electric_field_vectors(N));
+    "107";
+    electric_field_vector_tails = (await get_tails_for(electric_field_vectors));
+    "108";
+    faraday_vectors = (await get_faraday_vectors_from(magnetic_field_vectors));
+    "109";
+    faraday_loop_positions = (function() {
+        var ρσ_Iter = range(40), ρσ_Result = [], n;
+        ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+        for (var ρσ_Index of ρσ_Iter) {
+            n = ρσ_Index;
+            ρσ_Result.push(mag(ρσ_getitem(electric_field_vectors, 0).pos)["*"](vector(cos(2["*"](pi)["*"](n)["/"](40)), sin(2["*"](pi)["*"](n)["/"](40)), 0)));
+        }
+        ρσ_Result = ρσ_list_constructor(ρσ_Result);
+        return ρσ_Result;
+    })();
+    "110";
+    faraday_loop = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: faraday_color, pos: faraday_loop_positions, visible: false})]);
+    "111";
+    _GS_1 = new Wire;
+    (await _GS_1.__init__());
+    wire = _GS_1;
+    "114";
+    async function toggle_show_faraday() {
+        var show = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? toggle_show_faraday.__defaults__.show : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "show")){
+            show = ρσ_kwargs_obj.show;
+        }
+        var ρσ_ls, k, l;
+        "115";
+        faraday_loop.visible = show;
+        "116";
+        var ρσ_Iter6 = faraday_vectors;
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            k = ρσ_Index6;
+            "117";
+            k.visible = show;
+            "119";
+        }
+        if (show) {
+            "120";
+            for (var ρσ_Index7 = 0; ρσ_Index7["<"](N); ρσ_Index7++) {
+                l = ρσ_Index7;
+                "121";
+                ρσ_getitem(electric_field_vectors, l).color = faraday_color;
+                "122";
+                ρσ_getitem(electric_field_vector_tails, l).color = faraday_color;
+                "123";
+            }
+        } else {
+            "124";
+            for (var ρσ_Index8 = 0; ρσ_Index8["<"](N); ρσ_Index8++) {
+                l = ρσ_Index8;
+                "125";
+                ρσ_getitem(electric_field_vectors, l).color = color.blue;
+                "126";
+                ρσ_getitem(electric_field_vector_tails, l).color = color.blue;
+            }
+        }
+    };
+    if (!toggle_show_faraday.__defaults__) Object.defineProperties(toggle_show_faraday, {
+        __defaults__ : {value: {show:true}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["show"]},
+        __module__ : {value: null}
+    });
+
+    "129";
+    async function toggle_show_fields() {
+        var show = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? toggle_show_fields.__defaults__.show : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "show")){
+            show = ρσ_kwargs_obj.show;
+        }
+        var ρσ_ls, i;
+        "130";
+        var ρσ_Iter9 = range(N, len(electric_field_vectors));
+        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+        for (var ρσ_Index9 of ρσ_Iter9) {
+            i = ρσ_Index9;
+            "131";
+            ρσ_getitem(electric_field_vectors, i).color = ρσ_getitem(electric_field_colors, show);
+            "132";
+            ρσ_getitem(electric_field_vector_tails, i).color = ρσ_getitem(electric_field_colors, show);
+        }
+        "133";
+        for (var ρσ_Index10 = 1; ρσ_Index10["<"](4["*"](N)["+"](1)); ρσ_Index10++) {
+            i = ρσ_Index10;
+            "134";
+            ρσ_getitem(electric_field_vectors, 1["-u"]()["*"](i)).visible = 1["-"](1["*"](show));
+            "135";
+            ρσ_getitem(electric_field_vector_tails, 1["-u"]()["*"](i)).visible = 1["-"](1["*"](show));
+        }
+    };
+    if (!toggle_show_fields.__defaults__) Object.defineProperties(toggle_show_fields, {
+        __defaults__ : {value: {show:0}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["show"]},
+        __module__ : {value: null}
+    });
+
+    "138";
+    async function toggle_color_scheme() {
+        var color_scheme = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? toggle_color_scheme.__defaults__.color_scheme : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "color_scheme")){
+            color_scheme = ρσ_kwargs_obj.color_scheme;
+        }
+        var ρσ_ls, i;
+        "139";
+        animation.background = ρσ_getitem(background_color, color_scheme);
+        "140";
+        ρσ_setitem(electric_field_colors, 1, ρσ_getitem(dimmed_colors_electric_field, color_scheme));
+        "141";
+        animation.background = ρσ_getitem(background_color, color_scheme);
+        "143";
+        var ρσ_Iter11 = range(N, len(electric_field_vectors));
+        ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
+        for (var ρσ_Index11 of ρσ_Iter11) {
+            i = ρσ_Index11;
+            "144";
+            ρσ_getitem(electric_field_vectors, i).color = ρσ_getitem(electric_field_colors, dimFields);
+            "145";
+            ρσ_getitem(electric_field_vector_tails, i).color = ρσ_getitem(electric_field_colors, dimFields);
+        }
+        "146";
+        for (var ρσ_Index12 = 1; ρσ_Index12["<"](4["*"](N)["+"](1)); ρσ_Index12++) {
+            i = ρσ_Index12;
+            "147";
+            ρσ_getitem(electric_field_vectors, 1["-u"]()["*"](i)).visible = 1["-"](1["*"](dimFields));
+            "148";
+            ρσ_getitem(electric_field_vector_tails, 1["-u"]()["*"](i)).visible = 1["-"](1["*"](dimFields));
+        }
+    };
+    if (!toggle_color_scheme.__defaults__) Object.defineProperties(toggle_color_scheme, {
+        __defaults__ : {value: {color_scheme:0}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["color_scheme"]},
+        __module__ : {value: null}
+    });
+
+    "151";
+    async function pause_animation() {
+        "152";
+        "153";
+        dt=dt["+"](1);
+        "154";
+        dt %= 2;
+    };
+    if (!pause_animation.__module__) Object.defineProperties(pause_animation, {
+        __module__ : {value: null}
+    });
+
+    "157";
+    async function on_key_press(key) {
+        "158";
+        if ((key === "s" || typeof key === "object" && ρσ_equals(key, "s"))) {
+            "159";
+            (await animation.capture("faradays_law"));
+            "160";
+        }
+        if ((key === "v" || typeof key === "object" && ρσ_equals(key, "v"))) {
+            "161";
+            print("scene.center="["+"](str(animation.center)));
+            "162";
+            print("scene.forward="["+"](str(animation.forward)));
+            "163";
+            print("scene.range="["+"](str(animation.range)));
+            "164";
+            print("t="["+"](str(t))["+"]("\n"));
+        }
+    };
+    if (!on_key_press.__argnames__) Object.defineProperties(on_key_press, {
+        __argnames__ : {value: ["key"]},
+        __module__ : {value: null}
+    });
+
+    "166";
+    async function key_pressed(event) {
+        var ρσ_ls, key;
+        "167";
+        key = event.key;
+        "168";
+        (await on_key_press(key));
+    };
+    if (!key_pressed.__argnames__) Object.defineProperties(key_pressed, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "171";
+    animation.bind("keydown", key_pressed);
+    "174";
+    async function on_mouse_click() {
+        var ρσ_ls, selected_object, temp_color, target, step, _;
+        "175";
+        selected_object = animation.mouse.pick();
+        "176";
+        if (!selected_object) {
+            "177";
+            return;
+        }
+        "179";
+        temp_color = vector(selected_object.color.x, selected_object.color.y, selected_object.color.z);
+        "180";
+        selected_object.color = color.yellow;
+        "181";
+        target = selected_object.pos;
+        "182";
+        step = target["-"](1["*"](animation.center))["/"](20);
+        "183";
+        for (var ρσ_Index13 = 1; ρσ_Index13["<"](20); ρσ_Index13=ρσ_Index13["+"](1)) {
+            _ = ρσ_Index13;
+            "184";
+            (await rate(20));
+            "185";
+            animation.center=animation.center["+"](step);
+            "186";
+            animation.range=animation.range["/"](1.037);
+        }
+        "188";
+        selected_object.color = temp_color;
+    };
+    if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
+        __module__ : {value: null}
+    });
+
+    "191";
+    animation.bind("click", on_mouse_click);
+    "194";
+    async function show_faraday(event) {
+        "195";
+        (await toggle_show_faraday(event.checked));
+    };
+    if (!show_faraday.__argnames__) Object.defineProperties(show_faraday, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "198";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: show_faraday, text: "Show Faraday loop", checked: false})]);
+    "201";
+    async function dim_electric_field(event) {
+        "202";
+        (await toggle_show_fields((event.checked) ? 1 : 0));
+    };
+    if (!dim_electric_field.__argnames__) Object.defineProperties(dim_electric_field, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "205";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: dim_electric_field, text: "Dim electric field", checked: false})]);
+    "208";
+    async function dark_background(event) {
+        "209";
+        (await toggle_color_scheme((event.checked) ? 0 : 1));
+    };
+    if (!dark_background.__argnames__) Object.defineProperties(dark_background, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "212";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: dark_background, text: "Dark color scheme", checked: true})]);
+    "213";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: pause_animation, text: "Pause animation", checked: false})]);
+    "215";
+    animation.append_to_caption("\n\n"["+"](caption));
+    "217";
+    t = 9.5;
+    "218";
+    dt = 1;
+    "219";
+    while (1) {
+        "220";
+        (await rate(10));
+        "221";
+        t=t["+"](dt);
+        "222";
+        (await wire.update(t));
+        "224";
+        count = 0;
+        "225";
+        var ρσ_Iter14 = magnetic_field_vectors;
+        ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
+        for (var ρσ_Index14 of ρσ_Iter14) {
+            mag_vector = ρσ_Index14;
+            "226";
+            mag_vector.length = t["%"](20)["/"](10)["+"](.001);
+            "227";
+            ρσ_getitem(faraday_vectors, count).pos = mag_vector.pos["+"](mag_vector.axis);
+            "228";
+            count=count["+"](1);
+        }
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

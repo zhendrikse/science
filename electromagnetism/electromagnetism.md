@@ -63,13 +63,13 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Faradayslaw">
+  <a href="glowscript/faradays_law.html">
     <img alt="Faraday's law" src="./images/faradays_law.png" title="Click to animate"/>
   </a>
   <figcaption>Visualization of Faraday's law by running an electric current (of electric charges) through a wire.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Chargedrings">
+  <a href="glowscript/charged_rings.html">
     <img alt="Charged rings" src="./images/charged_rings.png" title="Click to animate"/>
   </a>  
   <figcaption>Visualization of an electric field inside a series of charged rings.</figcaption>
