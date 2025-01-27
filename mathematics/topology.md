@@ -1,4 +1,4 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; topology.html  
+[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [topology.py](glowscript/topology.html)  
 
 # Topology
 <div class="header_line"><br/></div>
