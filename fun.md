@@ -2,7 +2,9 @@
 All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedia.org/wiki/Proverb">old proverb</a>
 </blockquote>
 
-<p><br clear="all"/></p>
+<p style="clear: both;"></p>
+
+{% include_relative header.md %}
 
 # Fun stuff with [VPython](https://vpython.org/) 
 

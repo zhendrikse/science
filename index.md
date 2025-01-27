@@ -18,7 +18,7 @@ finest that music and poetry can deliver. &mdash;
 
 {% include_relative quantumphysics/quantumphysics.md %}
 
-{% include_relative electromagnetism.md %}
+{% include_relative electromagnetism/electromagnetism.md %}
 
 <a name="waves"></a>
 # Vibrations &amp; Waves

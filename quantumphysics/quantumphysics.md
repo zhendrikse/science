@@ -108,26 +108,7 @@ The quantum harmonic oscillator is visualized in a semi-classical way below.
   </a>
 </figure>
 
-### Charged particle moving in two electric fields
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="qunatumphysics/charged_ring.html">
-    <img alt="Electron spinning around charged ring" src="./images/electron_and_charged_ring.png" title="Click to animate"/>
-  </a>
-  <figcaption>If the atomic nucleus were a charged ring, as opposed to a point, then ...</figcaption>
-</figure>
-<figure class="right_image">
-  <a href="quantumphysics/moving_charge.html">
-    <img alt="Particle in electric field" src="./images/particle_in_electric_field.png" title="Click to animate"/>
-  </a>
-  <figcaption>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>
-</figure>
-</div>
-<p style="clear: both;"></p>
-
-### Rutherford scattering & charged particle in magnetic field
+### Rutherford scattering & ring-shaped nucleus
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -139,10 +120,10 @@ The quantum harmonic oscillator is visualized in a semi-classical way below.
   which lead to the first atomic model with a nucleus and electrons spinning around it.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="quantumphysics/helical_motion.html">
-    <img alt="Helical motion" src="./images/helical_motion.png" title="Click to animate"/>
+  <a href="qunatumphysics/charged_ring.html">
+    <img alt="Electron spinning around charged ring" src="./images/electron_and_charged_ring.png" title="Click to animate"/>
   </a>
-  <figcaption>Playfully discover how a charged particle behaves in a magnetic field.</figcaption>
+  <figcaption>If the atomic nucleus were a charged ring, as opposed to a point, then ...</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
