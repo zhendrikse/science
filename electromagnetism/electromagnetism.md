@@ -78,13 +78,13 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Chargeddisk">
+  <a href="electromagnetism/charged_disk.html">
     <img alt="Charged disk" width="70%" src="./images/charged_disk.png" title="Click to animate"/>
   </a>
   <figcaption>Visualization of the electric field around a disk.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Chargeddiskbuilder">
+  <a href="electromagnetism/disk_builder.html">
     <img alt="Charged disk builder" src="./images/charged_disk_builder.png" title="Click to animate"/>
   </a>
   <figcaption>Build up an electric field yourself by incrementally adding a charged rings.</figcaption>

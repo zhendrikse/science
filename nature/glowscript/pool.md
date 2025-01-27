@@ -14,13 +14,14 @@ Lx, Ly = 3, 2
 dx, dy = 0.05, 0.05
 animation = canvas(forward=vector(-3.25, 0, -2.0), center=vector(Lx / 2, Ly / 2, 0),
                    up=vector(0, 0, 1), title=title,
-                   background=color.gray(0.075), range=2.25)
+                   background=color.gray(0.075), range=2.0)
 
 class Wave:
     def __init__(self, x, y):
         self._x = x
         self._y = y
         self._time = 0
+        self._disturbance_magnitude = 0.5
         self._initialize_wave_data()
         self._old, self._new, self._now = [], [], []
 
@@ -50,10 +51,12 @@ class Wave:
                 self._now[i][j] = self._new[i][j]
 
         if abs(self._time - 0.25) < dt:  # introducing a disturbance
-            disturbance_magnitude = 0.5
-            self._now[len(self._x) // 2][len(self._y) // 2] += disturbance_magnitude
+            self._now[len(self._x) // 2][len(self._y) // 2] += self._disturbance_magnitude
 
         self._time += dt
+        
+    def set_disturbance_magnitude_to(self, new_value):
+      self._disturbance_magnitude = new_value
 
     def current_values(self):
         return self._now
@@ -65,7 +68,7 @@ class Pool:
     def __init__(self, x, y):
         self._x, self._y = x, y
         self._surface = []
-        self._hue = .55
+        self._hue = 1.5
         self._init_pool()
         self._init_droplets()
 
@@ -76,7 +79,7 @@ class Pool:
             droplets_row = []
             for j in range(len(self._y)):
                 position = vector(self._x[i], self._y[j], 0)
-                droplets_row.append(sphere(pos=position, radius=0.025, visible=True,
+                droplets_row.append(sphere(pos=position, radius=.015, visible=True,
                                   color=color.hsv_to_rgb(vec(self._hue, 1, 1))))
             self._surface.append(droplets_row)
 
@@ -103,18 +106,42 @@ class Pool:
                 self._surface[i][j].color = color.hsv_to_rgb(vec(new_values[i][j] + self._hue, 1, 1))
 
     def set_hue_value_to(self, new_hue_value):
-        self._hue = new_hue_value
+        self._hue = 1.5 + new_hue_value
+        
+    def set_droplet_radius_to(self, new_radius):
+        for i in range(len(self._x)):
+            for j in range(len(self._y)):
+                self._surface[i][j].radius = new_radius * .01
 
 
 def adjust_offset():
     pool.set_hue_value_to(offset_slider.value)
     hue_offset_text.text = "{:1.2f}".format(offset_slider.value, 2)
 
+def adjust_disturbance():
+    wave.set_disturbance_magnitude_to(disturbance_slider.value)
+    disturbance_text.text = "{:1.2f}".format(disturbance_slider.value, 2)
+
+def adjust_droplet_radius():
+    pool.set_droplet_radius_to(radius_slider.value)
+    droplet_radius_text.text = "{:1.2f}".format(radius_slider.value, 2)
 
 animation.append_to_caption("\n")
-offset_slider = slider(min=0, max=1, value=.6, bind=adjust_offset)
+radius_slider = slider(min=1, max=4, value=1.5, step=.1, bind=adjust_droplet_radius)
+animation.append_to_caption("droplet radius = ")
+droplet_radius_text = wtext(text="2.0")
+
+animation.append_to_caption("\n\n")
+offset_slider = slider(min=0, max=1, value=0, bind=adjust_offset)
 animation.append_to_caption("hue offset = ")
-hue_offset_text = wtext(text="0.55")
+hue_offset_text = wtext(text="0.0")
+
+animation.append_to_caption("\n\n")
+disturbance_slider = slider(min=0.1, max=1, value=.5, bind=adjust_disturbance)
+animation.append_to_caption("disturbance magnitude = ")
+disturbance_text = wtext(text="0.5")
+
+
 popup = text(text="Click mouse to start", pos=vec(-Lx / 2, 0, Ly / 3), billboard=True, color=color.yellow, height=.3)
 animation_duration = 4  # seconds
 
@@ -135,11 +162,9 @@ while True:
     wave.reset()
     pool.reset()
     for _ in range(int(animation_duration / dt)):
-        rate(1 / (4 * dt))
+        rate(1 / (5 * dt))
         wave.update_by(dt)
         pool.update_by(dt)
         clock.text = "{:1.2f}".format(animation_duration - wave.get_time(), 2)
-
-
 
 ```
