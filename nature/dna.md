@@ -1,4 +1,4 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; dna.html 
+[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [dna.py](glowscript/dna.html) 
 
 # Simulation of a DNA double helix
 <div class="header_line"><br/></div>
