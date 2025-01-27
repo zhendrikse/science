@@ -10,11 +10,11 @@ title = """
 
 """
 
-Lx, Ly = 2, 4
+Lx, Ly = 4, 3
 dx, dy = 0.05, 0.05
 animation = canvas(forward=vector(-3.25, 0, -2.0), center=vector(Lx / 2, Ly / 2, 0),
                    up=vector(0, 0, 1), title=title,
-                   background=color.gray(0.075), range=2)
+                   background=color.gray(0.075), range=2.25)
 
 class Wave:
     def __init__(self, x, y):
@@ -135,10 +135,11 @@ while True:
     wave.reset()
     pool.reset()
     for _ in range(int(animation_duration / dt)):
-        rate(1 / (2 * dt))
+        rate(1 / (4 * dt))
         wave.update_by(dt)
         pool.update_by(dt)
         clock.text = "{:1.2f}".format(animation_duration - wave.get_time(), 2)
+
 
 
 ```

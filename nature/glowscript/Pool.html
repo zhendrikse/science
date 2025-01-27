@@ -68,7 +68,7 @@ async function __main__() {
     "10";
     title = "\n&#x2022; Original idea (and <a href=\"https://jexpearce.github.io/jex/Wavepropagation.html\">code<\/a>) by <a href=\"https://jexpearce.github.io/jex/\">Jex Pearce</a>\n&#x2022; Refactored and extended by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n&#x2022; Based on a <a href=\"\"https://en.wikipedia.org/wiki/Finite_difference_method\">finite difference mehtod</a>\n\n";
     "12";
-    ρσ_unpack = [2, 4];
+    ρσ_unpack = [4, 3];
     Lx = ρσ_unpack[0];
     Ly = ρσ_unpack[1];
     "13";
@@ -76,7 +76,7 @@ async function __main__() {
     dx = ρσ_unpack[0];
     dy = ρσ_unpack[1];
     "14";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](3.25), 0, 1["-u"]()["*"](2)), center: vector(Lx["/"](2), Ly["/"](2), 0), up: vector(0, 0, 1), title: title, background: color.gray(.075), range: 2})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](3.25), 0, 1["-u"]()["*"](2)), center: vector(Lx["/"](2), Ly["/"](2), 0), up: vector(0, 0, 1), title: title, background: color.gray(.075), range: 2.25})]);
     "18";
     function Wave() {;
     }
@@ -480,7 +480,7 @@ async function __main__() {
         for (var ρσ_Index11 of ρσ_Iter11) {
             _ = ρσ_Index11;
             "137";
-            (await rate(1["/"](2["*"](dt))));
+            (await rate(1["/"](4["*"](dt))));
             "138";
             (await wave.update_by(dt));
             "139";
