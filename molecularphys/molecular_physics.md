@@ -10,7 +10,8 @@
   <a href="molecularphys/cubic_crystal.html">
     <img alt="Cubic lattice" src="./images/crystal_planes.png" title="Click to animate"/>
   </a>
-  <figcaption><br/>Planes of symmetry in a cubic lattice.
+  <figcaption>“There’s poetry in nature. A symmetry. It&apos;s like our senses are fused.” &mdash; 
+  Saffron A. Kent, Gods & Monsters.
   </figcaption>
 </figure>
 <figure class="right_image">
