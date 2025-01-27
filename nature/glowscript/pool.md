@@ -10,7 +10,7 @@ title = """
 
 """
 
-Lx, Ly = 4, 3
+Lx, Ly = 3, 2
 dx, dy = 0.05, 0.05
 animation = canvas(forward=vector(-3.25, 0, -2.0), center=vector(Lx / 2, Ly / 2, 0),
                    up=vector(0, 0, 1), title=title,
