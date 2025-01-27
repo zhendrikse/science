@@ -460,29 +460,23 @@ async function __main__() {
     "137";
     while (true) {
         "138";
-        print("scene.center="["+"](str(animation.center)));
-        "139";
-        print("scene.forward="["+"](str(animation.forward)));
-        "140";
-        print("scene.range="["+"](str(animation.range)));
-        "141";
         popup.visible = true;
-        "142";
+        "139";
         (await animation.waitfor("click"));
-        "143";
+        "140";
         popup.visible = false;
-        "144";
+        "141";
         (await pool.reset());
-        "145";
+        "142";
         var ρσ_Iter13 = range(int(animation_duration["/"](dt)));
         ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
         for (var ρσ_Index13 of ρσ_Iter13) {
             _ = ρσ_Index13;
-            "146";
+            "143";
             (await rate(30));
-            "147";
+            "144";
             (await pool.update_by(dt));
-            "148";
+            "145";
             clock.text = "{:1.2f}".format(animation_duration["-"](1["*"]((await wave.get_time()))), 2);
         }
     }
