@@ -147,7 +147,7 @@ def change_view():  # define a new function by name
 
 def on_radio_button(event):
     if event.text == 'white background':
-        animation.background = color.white if event.checked else color.black
+        animation.background = color.white if event.checked else color.gray(0.075)
     elif event.text == 'earth arrows':
         sun_earth_moon.show_earth_arrows() if event.checked else sun_earth_moon.hide_earth_arrows()
 

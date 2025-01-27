@@ -30,13 +30,13 @@ on [glowscript.org](https://glowscript.org).
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Pointchargefield">
+  <a href="electromagnetism/point_charge.html">
     <img alt="Electric field of point charge" src="./images/point_charge.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Electric_dipole_moment">Electric field around a point charge.</a></figcaption>
 </figure>
 <figure class="right_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Electricdipolefield">
+  <a href="electromagnetism/dipole_field.html">
     <img alt="Electric field of a dipole" src="./images/dipole_field.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Electric_dipole_moment">Electric dipole moment.</a></figcaption>

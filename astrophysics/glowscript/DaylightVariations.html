@@ -65,7 +65,7 @@ async function __main__() {
 
     strings();
     "17";
-    title = "<b>Not<\/b> to scale Earth-Sun-Moon simulator\nIt does not include gravitational physics or Newtonian analysis &mdash; just circular motion\n\n&#x2022; Based on the <a href=\"https://trinket.io/embed/glowscript/575a4ed5d362597041cd6f84\">Sun-Earth-Moon model by B. Philhour</a>\n&#x2022; Modified by <a href=\"https://www.glowscript.org/#/user/Rob_Salgado/folder/My_Programs/program/SunshineOnTheEarth\">Rob Salgado</a> to model the sunshine seen by the United Kingdom\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in this <a href=\"https://github.com/zhendrikse/physics-in-python/\">GitHub repository</a>\n\n&#x2022; The red arrow points \"upward from the UK\" (at 52 degrees latitude [from the equator])\n&#x2022; The cyan arrow is the rotational axis of the earth, tilted at 23 degrees from vertical\n&#x2022; The yellow arrow points from the earth to the sun\n&#x2022; Click on sun or earth to change the camera perspective\n\n";
+    title = "<b>Not<\/b> to scale Earth-Sun-Moon simulator\nIt does not include gravitational physics or Newtonian analysis &mdash; just circular motion\n\n&#x2022; Based on the <a href=\"https://trinket.io/embed/glowscript/575a4ed5d362597041cd6f84\">Sun-Earth-Moon model by B. Philhour</a>\n&#x2022; Modified by <a href=\"https://www.glowscript.org/#/user/Rob_Salgado/folder/My_Programs/program/SunshineOnTheEarth\">Rob Salgado</a> to model the sunshine seen by the United Kingdom\n&#x2022; Refactored and extended by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n&#x2022; The red arrow points \"upward from the UK\" (at 52 degrees latitude [from the equator])\n&#x2022; The cyan arrow is the rotational axis of the earth, tilted at 23 degrees from vertical\n&#x2022; The yellow arrow points from the earth to the sun\n&#x2022; Click on sun or earth to change the camera perspective\n\n";
     "19";
     list_of_months = ρσ_list_decorate([ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]);
     "24";
@@ -75,7 +75,7 @@ async function __main__() {
     "28";
     moon_orbit_rate = 13;
     "30";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, height: 300, background: color.gray(.075), fov: (await radians(20))})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.144), fov: (await radians(20))})]);
     "32";
     function EarthArrows() {;
     }
@@ -380,7 +380,7 @@ async function __main__() {
         "148";
         if ((event.text === "white background" || typeof event.text === "object" && ρσ_equals(event.text, "white background"))) {
             "149";
-            animation.background = (event.checked) ? color.white : color.black;
+            animation.background = (event.checked) ? color.white : color.gray(.075);
             "150";
         } else if ((event.text === "earth arrows" || typeof event.text === "object" && ρσ_equals(event.text, "earth arrows"))) {
             "151";

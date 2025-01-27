@@ -1,8 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; keplers_law.html 
+[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [keplers_law.py](glowscript/keplers_law.html) 
 
 # Kepler&apos;s law
 <div class="header_line"><br/></div>
 
-### [keplers_law.py](glowscript/keplers_law.py)
 
 {% include_relative glowscript/KeplersLaw.html %}

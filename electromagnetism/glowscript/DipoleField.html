@@ -1,0 +1,423 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, caption, ec, k, animation, _GS_1;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "11";
+    title = "Electric field of a dipole\n\n    &#x2022; Based on <a href=\"https://github.com/Physics-Morris/Physics-Vpython/blob/master/7_Dipole.py\">7_Dipole.py<\/a>\n    &#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>\n    &#x2022; Select an object with mouse to zoom in'\n\n";
+    "15";
+    caption = "\nElectric field $\\vec{E} ( \\vec{r} ) = -\\dfrac {1} {4\\pi\\epsilon_0} \\nabla \\bigg( \\dfrac{\\vec{r}  \\cdot \\vec{p}} {r^3} \\bigg)$, where $\\vec{p}=+q(\\vec{r}_+) + -q(\\vec{r}_-)$\n";
+    "17";
+    ec = 1.6e-19;
+    "18";
+    k = 9e9;
+    "20";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), align: "top", range: 3e-13, title: title, caption: caption})]);
+    "21";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "23";
+    function FieldArrow() {;
+    }
+    FieldArrow.prototype.__init__ = async function __init__(position, field) {
+        var self = this;
+        var ρσ_ls, colour, arrow_length;
+        "25";
+        colour = (await self.mapping(field));
+        "26";
+        arrow_length = log(mag(field))["*"](1e-15);
+        "27";
+        ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: hat(field)["*"](arrow_length), color: vec(1, colour, 0)})]);
+    };
+    if (!FieldArrow.prototype.__init__.__argnames__) Object.defineProperties(FieldArrow.prototype.__init__, {
+        __argnames__ : {value: ["position", "field"]},
+        __module__ : {value: null}
+    });
+    FieldArrow.__argnames__ = FieldArrow.prototype.__init__.__argnames__;
+    FieldArrow.__handles_kwarg_interpolation__ = FieldArrow.prototype.__init__.__handles_kwarg_interpolation__;
+    FieldArrow.prototype.mapping = async function mapping(field) {
+        var self = this;
+        var ρσ_ls, a;
+        "30";
+        a = 1e-17;
+        "31";
+        return 1["-"](1["*"](exp(1["-u"]()["*"](a)["*"](mag(field)))));
+    };
+    if (!FieldArrow.prototype.mapping.__argnames__) Object.defineProperties(FieldArrow.prototype.mapping, {
+        __argnames__ : {value: ["field"]},
+        __module__ : {value: null}
+    });
+    FieldArrow.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    FieldArrow.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(FieldArrow.prototype, "__bases__", {value: []});
+
+
+
+    "34";
+    function Field() {;
+    }
+    Field.prototype.__init__ = async function __init__() {
+        var self = this;
+        var charges = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.charges : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "charges")){
+            charges = ρσ_kwargs_obj.charges;
+        }
+        "36";
+        self._charges = charges;
+        "37";
+        self._field_arrows = ρσ_list_decorate([]);
+    };
+    if (!Field.prototype.__init__.__defaults__) Object.defineProperties(Field.prototype.__init__, {
+        __defaults__ : {value: {charges:ρσ_list_decorate([])}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["charges"]},
+        __module__ : {value: null}
+    });
+    Field.__argnames__ = Field.prototype.__init__.__argnames__;
+    Field.__handles_kwarg_interpolation__ = Field.prototype.__init__.__handles_kwarg_interpolation__;
+    Field.prototype.show = async function show(x_range, y_range, z_range) {
+        var self = this;
+        var ρσ_ls, z, y, x;
+        "40";
+        self._field_arrows = ρσ_list_decorate([]);
+        "41";
+        var ρσ_Iter1 = x_range;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            x = ρσ_Index1;
+            "42";
+            var ρσ_Iter2 = y_range;
+            ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+            for (var ρσ_Index2 of ρσ_Iter2) {
+                y = ρσ_Index2;
+                "43";
+                var ρσ_Iter3 = z_range;
+                ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+                for (var ρσ_Index3 of ρσ_Iter3) {
+                    z = ρσ_Index3;
+                    "44";
+                    self._field_arrows=self._field_arrows["+"](ρσ_list_decorate([ (await self._field_arrow(x, y, z)) ]));
+                }
+            }
+        }
+    };
+    if (!Field.prototype.show.__argnames__) Object.defineProperties(Field.prototype.show, {
+        __argnames__ : {value: ["x_range", "y_range", "z_range"]},
+        __module__ : {value: null}
+    });
+    Field.prototype._field_arrow = async function _field_arrow(x, y, z) {
+        var self = this;
+        var ρσ_ls, point, _GS_1;
+        "47";
+        point = vec(x, y, z)["*"]((await self._charge_radius()));
+        "48";
+        _GS_1 = new FieldArrow;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: point, field: (await self.field_at(point))})]);
+        return _GS_1;
+    };
+    if (!Field.prototype._field_arrow.__argnames__) Object.defineProperties(Field.prototype._field_arrow, {
+        __argnames__ : {value: ["x", "y", "z"]},
+        __module__ : {value: null}
+    });
+    Field.prototype._charge_radius = async function _charge_radius() {
+        var self = this;
+        "51";
+        return (await ρσ_getitem(self._charges, 0).radius());
+    };
+    if (!Field.prototype._charge_radius.__module__) Object.defineProperties(Field.prototype._charge_radius, {
+        __module__ : {value: null}
+    });
+    Field.prototype.field_at = async function field_at(position) {
+        var self = this;
+        var ρσ_ls, field, charge;
+        "54";
+        field = vec(0, 0, 0);
+        "55";
+        var ρσ_Iter4 = self._charges;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            charge = ρσ_Index4;
+            "56";
+            field=field["+"]((await charge.field_at(position)));
+        }
+        "57";
+        return field;
+    };
+    if (!Field.prototype.field_at.__argnames__) Object.defineProperties(Field.prototype.field_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    Field.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Field.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Field.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "60";
+    function Charge() {;
+    }
+    Charge.prototype.__init__ = async function __init__() {
+        var self = this;
+        var mass = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[0];
+        var position = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[1];
+        var velocity = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.velocity : arguments[2];
+        var radius = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[3];
+        var coulomb = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.coulomb : arguments[4];
+        var colour = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[5];
+        var make_trail = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.make_trail : arguments[6];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
+            mass = ρσ_kwargs_obj.mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "velocity")){
+            velocity = ρσ_kwargs_obj.velocity;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "coulomb")){
+            coulomb = ρσ_kwargs_obj.coulomb;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "make_trail")){
+            make_trail = ρσ_kwargs_obj.make_trail;
+        }
+        "63";
+        self._charge = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({mass: mass, pos: position, v: velocity, radius: radius, coulomb: coulomb, color: colour, make_trail: make_trail})]);
+        "65";
+        self._field_arrows = ρσ_list_decorate([]);
+    };
+    if (!Charge.prototype.__init__.__defaults__) Object.defineProperties(Charge.prototype.__init__, {
+        __defaults__ : {value: {mass:1.6e-27, position:vec(0, 0, 0), velocity:vec(0, 0, 0), radius:1, coulomb:ec, colour:color.red, make_trail:false}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["mass", "position", "velocity", "radius", "coulomb", "colour", "make_trail"]},
+        __module__ : {value: null}
+    });
+    Charge.__argnames__ = Charge.prototype.__init__.__argnames__;
+    Charge.__handles_kwarg_interpolation__ = Charge.prototype.__init__.__handles_kwarg_interpolation__;
+    Charge.prototype.field_at = async function field_at(position) {
+        var self = this;
+        "68";
+        return hat(position["-"](1["*"](self._charge.pos)))["*"](k)["*"](self._charge.coulomb)["/"](Math.pow(mag(position["-"](1["*"](self._charge.pos))), 2));
+    };
+    if (!Charge.prototype.field_at.__argnames__) Object.defineProperties(Charge.prototype.field_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    Charge.prototype.radius = async function radius() {
+        var self = this;
+        "71";
+        return self._charge.radius;
+    };
+    if (!Charge.prototype.radius.__module__) Object.defineProperties(Charge.prototype.radius, {
+        __module__ : {value: null}
+    });
+    Charge.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Charge.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Charge.prototype, "__bases__", {value: []});
+
+
+
+
+    "74";
+    function Dipole() {;
+    }
+    Dipole.prototype.__init__ = async function __init__() {
+        var self = this;
+        var radius = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        var ρσ_ls, position, _GS_1;
+        "76";
+        position = vec(10["*"](radius), 0, 0);
+        "77";
+        self._charges = ρσ_list_decorate([]);
+        "78";
+        _GS_1 = new Charge;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: position, radius: radius, coulomb: ec, colour: color.blue})]);
+        self._charges=self._charges["+"](ρσ_list_decorate([ _GS_1 ]));
+        "79";
+        _GS_1 = new Charge;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: 1["-u"]()["*"](position), radius: radius, coulomb: 1["-u"]()["*"](ec)})]);
+        self._charges=self._charges["+"](ρσ_list_decorate([ _GS_1 ]));
+    };
+    if (!Dipole.prototype.__init__.__defaults__) Object.defineProperties(Dipole.prototype.__init__, {
+        __defaults__ : {value: {radius:1.2e-14}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["radius"]},
+        __module__ : {value: null}
+    });
+    Dipole.__argnames__ = Dipole.prototype.__init__.__argnames__;
+    Dipole.__handles_kwarg_interpolation__ = Dipole.prototype.__init__.__handles_kwarg_interpolation__;
+    Dipole.prototype.show_field = async function show_field() {
+        var self = this;
+        var ρσ_ls, _GS_1;
+        "82";
+        _GS_1 = new Field;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({charges: self._charges})]);
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.show, [ρσ_desugar_kwargs({x_range: range(1["-u"]()["*"](22), 22, 5), y_range: range(1["-u"]()["*"](22), 22, 5), z_range: range(1["-u"]()["*"](12), 12, 5)})]);
+    };
+    if (!Dipole.prototype.show_field.__module__) Object.defineProperties(Dipole.prototype.show_field, {
+        __module__ : {value: null}
+    });
+    Dipole.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Dipole.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Dipole.prototype, "__bases__", {value: []});
+
+
+
+    "85";
+    async function zoom_in_on(selected_object) {
+        var ρσ_ls, temp_color, target, step, _;
+        "86";
+        if (!selected_object) {
+            "87";
+            return;
+        }
+        "89";
+        temp_color = vec(selected_object.color.x, selected_object.color.y, selected_object.color.z);
+        "90";
+        selected_object.color = color.yellow;
+        "91";
+        target = selected_object.pos;
+        "92";
+        step = target["-"](1["*"](animation.center))["/"](20);
+        "93";
+        for (var ρσ_Index5 = 1; ρσ_Index5["<"](20); ρσ_Index5=ρσ_Index5["+"](1)) {
+            _ = ρσ_Index5;
+            "94";
+            (await rate(20));
+            "95";
+            animation.center=animation.center["+"](step);
+            "96";
+            animation.range=animation.range["/"](1.037);
+        }
+        "98";
+        selected_object.color = temp_color;
+    };
+    if (!zoom_in_on.__argnames__) Object.defineProperties(zoom_in_on, {
+        __argnames__ : {value: ["selected_object"]},
+        __module__ : {value: null}
+    });
+
+    "101";
+    async function on_mouse_click() {
+        "102";
+        (await zoom_in_on(animation.mouse.pick()));
+    };
+    if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
+        __module__ : {value: null}
+    });
+
+    "104";
+    animation.bind("click", on_mouse_click);
+    "106";
+    _GS_1 = new Dipole;
+    (await _GS_1.__init__());
+    (await _GS_1.show_field());
+    "108";
+    while (true) {
+        "109";
+        (await rate(10));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
