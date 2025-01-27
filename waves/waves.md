@@ -7,7 +7,7 @@
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="doppler.html">
+  <a href="waves/doppler.html">
     <img alt="Doppler effect" src="./images/doppler_effect.png" title="Click to animate"/>
   </a>
   <figcaption><br/><br/>Visualisation of the Doppler effect for sound waves.</figcaption>

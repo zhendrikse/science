@@ -39,7 +39,7 @@
   </figcaption>
 </figure>
 <figure class="left_image">
-  <a href="water_sprinkler.html">
+  <a href="nature/water_sprinkler.html">
     <img alt="Water sprinkler" src="./images/water_sprinkler.png" title="Click to animate"/>
   </a>
   <figcaption><br />A model of a water sprinkler, based on the original article and code in 
