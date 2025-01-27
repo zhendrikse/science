@@ -12,29 +12,17 @@ finest that music and poetry can deliver. &mdash;
 
 {% include_relative astrophysics/astrophysics.md %}
 
-{% include_relative mathematics/mathematics.md %}
-
 {% include_relative nature/nature.md %}
 
+{% include_relative mathematics/mathematics.md %}
+
 {% include_relative molecularphys/molecular_physics.md %}
+
+{% include_relative waves/waves.md %}
 
 {% include_relative quantumphysics/quantumphysics.md %}
 
 {% include_relative electromagnetism/electromagnetism.md %}
-
-<a name="waves"></a>
-# Vibrations &amp; Waves
-<div style="border-top: 2px solid #cccccc"><br/></div>
-
-### Doppler effect
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<figure style="float: center; text-align: center;">
-    <a href="https://www.glowscript.org/#/user/zeger.hendrikse/folder/Quantum/program/Dopplereffect">
-      <img alt="Doppler effect" width="50%" height="50%" src="./images/doppler_effect.png" title="Click to animate"/>
-    </a>
-    <figcaption>Illustration of the doppler effect.</figcaption>
-</figure>
 
 {% include_relative thermodynamics.md %}
 

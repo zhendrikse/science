@@ -25,7 +25,7 @@
 </div>
 <p style="clear: both;"></p>
 
-### Rain and swimming pool: modelling water droplets
+### Modelling water droplets &mdash; rain &amp; water sprinkler
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -38,13 +38,11 @@
   <a href="https://en.wikipedia.org/wiki/Spike_Milligan">Spike Milligan</a>.
   </figcaption>
 </figure>
-<figure class="right_image">
-  <a href="nature/pool.html">
-    <img alt="Swimming pool" src="./images/pool.png" title="Click to animate"/>
+<figure class="left_image">
+  <a href="water_sprinkler.html">
+    <img alt="Water sprinkler" src="./images/water_sprinkler.png" title="Click to animate"/>
   </a>
-  <figcaption>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
-  <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
-  </figcaption>
+  <figcaption>Simulation of a water sprinkler.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

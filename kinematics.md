@@ -86,22 +86,15 @@ You may be surprised though to find out what happens when you drop such a simple
 <p style="clear: both;"></p>
 
 
-### Water sprinkler and floating block
+### Model of floating block
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 60%; text-align: center">
+<figure>
   <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Floatingblock">
     <img alt="Floating block" src="./images/floating_block.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <figcaption>Movement of a floating block in water.</figcaption>
 </figure>
-<figure style="float: right; width: 40%; text-align: center">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Watersprinkler">
-    <img alt="Water sprinkler" src="./images/water_sprinkler.png" title="Click to animate"/>
-  </a>
-  <figcaption>Simulation of a water sprinkler</figcaption>
-</figure>
-</div>
+
 <p style="clear: both;"></p>
 

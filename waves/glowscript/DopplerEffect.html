@@ -1,0 +1,336 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var source_receiver_distance_sign;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
+    var version, print, arange, __name__, type, ρσ_ls, title, velocity_source, velocity_receiver, velocity_wind, scene, source, receiver, source_receiver_distance_sign, wind_velocity_vector, nudge, nudgev, velocity_source_arrow, velocity_receiver_arrow, velocity_wind_arrow, source_label_text, velocity_source_label, receiver_label_text, velocity_receiver_label, wind_label_text, velocity_wind_label, tmax, dt, twopi, N, ball, ball0flag, source_label, received_label, told, i, new_label_text, j, t;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "9";
+    title = "\n&#x2022; Original doppler-Wavefront.py by <a href=\"http://physics.syr.edu/~salgado/\">Rob Salgado<\/a> (salgado@physics.syr.edu)\n&#x2022; Updated by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "11";
+    velocity_source = .2;
+    "12";
+    velocity_receiver = 1["-u"]()["*"](.3);
+    "13";
+    velocity_wind = .1;
+    "15";
+    scene = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), title: title})]);
+    (await sleep(.1));
+    "16";
+    scene.autoscale = 0;
+    "18";
+    source = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .2, pos: vector(0, 0, 0), vel: vector(velocity_source, 0, 0), color: color.red})]);
+    "19";
+    receiver = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .2, pos: vector(3, 0, 0), vel: vector(velocity_receiver, 0, 0), color: color.green})]);
+    "22";
+    async function source_receiver_distance() {
+        "23";
+        return receiver.pos.x["-"](1["*"](source.pos.x));
+    };
+    if (!source_receiver_distance.__module__) Object.defineProperties(source_receiver_distance, {
+        __module__ : {value: null}
+    });
+
+    "26";
+    async function sign_of_source_receiver_distance() {
+        "27";
+        if ((source_receiver_distance === 0 || typeof source_receiver_distance === "object" && ρσ_equals(source_receiver_distance, 0))) {
+            "28";
+            return 0;
+            "29";
+        } else if (ρσ_equals(source_receiver_distance, abs((await source_receiver_distance())))) {
+            "30";
+            return 1;
+            "31";
+        } else {
+            "32";
+            return 1["-u"]()["*"](1);
+        }
+    };
+    if (!sign_of_source_receiver_distance.__module__) Object.defineProperties(sign_of_source_receiver_distance, {
+        __module__ : {value: null}
+    });
+
+    "35";
+    source_receiver_distance_sign = (await sign_of_source_receiver_distance());
+    "37";
+    wind_velocity_vector = vector(velocity_wind, 0, 0);
+    "39";
+    nudge = vector(0, 6, 0);
+    "40";
+    nudgev = vector(0, .5, 0);
+    "42";
+    velocity_source_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: source.pos["+"](nudge), axis: 5["*"](vector(velocity_source, 0, 0)), fixedwidth: 1, shaftwidth: .1, color: source.color})]);
+    "44";
+    velocity_receiver_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: receiver.pos["+"](nudge)["-"](1["*"](nudgev)), axis: 5["*"](vector(velocity_receiver, 0, 0)), fixedwidth: 1, shaftwidth: .1, color: receiver.color})]);
+    "47";
+    velocity_wind_arrow = null;
+    "48";
+    if ((velocity_wind !== 0 && (typeof velocity_wind !== "object" || ρσ_not_equals(velocity_wind, 0)))) {
+        "49";
+        velocity_wind_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: nudge["+"](2["*"](vector(0, 1, 0))), axis: 5["*"](vector(velocity_wind, 0, 0)), fixedwidth: 1, shaftwidth: .1, color: color.cyan})]);
+    }
+    "53";
+    source_label_text = "velocity="["+"](str(velocity_source));
+    "54";
+    velocity_source_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: velocity_source_arrow.pos["+"](nudge), text: source_label_text, color: source.color, box: 1})]);
+    "55";
+    receiver_label_text = "velocity="["+"](str(velocity_receiver));
+    "56";
+    velocity_receiver_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: velocity_receiver_arrow.pos["-"](1["*"](nudgev)), text: receiver_label_text, color: receiver.color})]);
+    "58";
+    if ((velocity_wind !== 0 && (typeof velocity_wind !== "object" || ρσ_not_equals(velocity_wind, 0)))) {
+        "59";
+        wind_label_text = "wind speed = "["+"](str(velocity_wind));
+        "60";
+        velocity_wind_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: velocity_wind_arrow.pos["+"](vector(0, 1, 0)), text: wind_label_text, color: velocity_wind_arrow.color})]);
+    }
+    "63";
+    tmax = 12;
+    "64";
+    dt = .005;
+    "65";
+    twopi = 2["*"](pi);
+    "66";
+    N = 32;
+    "68";
+    ball = ρσ_list_decorate([]);
+    "69";
+    ball0flag = ρσ_list_decorate([]);
+    "70";
+    source_label = ρσ_list_decorate([]);
+    "71";
+    received_label = ρσ_list_decorate([]);
+    "74";
+    async function new_wave(t) {
+        var ρσ_ls, theta, j, source_label_text;
+        "75";
+        ball0flag.append(0);
+        "76";
+        ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .05, pos: source.pos, color: vec(.5, 0, 0)})]);
+        "77";
+        ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .05, pos: receiver.pos, color: vec(0, .5, 0)})]);
+        "79";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](N); ρσ_Index1++) {
+            j = ρσ_Index1;
+            "80";
+            theta = twopi["*"](j)["/"](float(N));
+            "81";
+            ball.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .1, pos: source.pos, vel: vector(cos(theta), sin(theta), 0)})]));
+        }
+        "83";
+        source_label_text = "time = "["+"](str(round(t, 2)));
+        "84";
+        source_label.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: ρσ_getitem(ball, int(N["*"](len(ball0flag)["-"](1["*"](1)))["+"](3["*"](N)["/"](4)))).pos, text: source_label_text, color: source.color, linecolor: source.color})]));
+    };
+    if (!new_wave.__argnames__) Object.defineProperties(new_wave, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+
+    "88";
+    async function meeting(t) {
+        var ρσ_ls, label_text;
+        "89";
+        "90";
+        label_text = "time = "["+"](str(round(t, 2)));
+        "91";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: source.pos["+"](nudge)["-"](1["*"](nudgev)["/"](2)), text: label_text, color: color.white, linecolor: color.white})]);
+        "93";
+        print(label_text);
+        "94";
+        source_receiver_distance_sign = 2;
+    };
+    if (!meeting.__argnames__) Object.defineProperties(meeting, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+
+    "97";
+    async function on_mouse_click() {
+        var ρσ_ls, newPick, target, step, i;
+        "99";
+        newPick = ρσ_interpolate_kwargs.call(scene.mouse, scene.mouse.project, [ρσ_desugar_kwargs({normal: vec(0, 1, 0), point: vec(0, 2, 0)})]);
+        "100";
+        if (!newPick === null) {
+            "107";
+            target = newPick;
+            "108";
+            step = target["-"](1["*"](scene.center))["/"](20);
+            "109";
+            for (var ρσ_Index2 = 1; ρσ_Index2["<"](20); ρσ_Index2=ρσ_Index2["+"](1)) {
+                i = ρσ_Index2;
+                "110";
+                (await rate(10));
+                "111";
+                scene.center=scene.center["+"](step);
+                "112";
+                scene.range=scene.range["/"](1.037);
+            }
+        }
+    };
+    if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
+        __module__ : {value: null}
+    });
+
+    "116";
+    scene.bind("click", on_mouse_click);
+    "120";
+    while (true) {
+        "121";
+        (await rate(100));
+        "122";
+        print("successive wavefronts received at time...");
+        "123";
+        (await new_wave(0));
+        "124";
+        told = 0;
+        "126";
+        var ρσ_Iter3 = range(0, tmax["+"](dt), dt);
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            t = ρσ_Index3;
+            "127";
+            (await rate(100));
+            "130";
+            if (t["%"](1)["<"](told["%"](1))) {
+                "131";
+                print("t="["+"](str(round(t, 2)))["+"](", len=")["+"](str(len(ball))));
+                "132";
+                (await new_wave(t));
+            }
+            "134";
+            told = t;
+            "136";
+            if ((source_receiver_distance_sign === 0 || typeof source_receiver_distance_sign === "object" && ρσ_equals(source_receiver_distance_sign, 0))) {
+                "137";
+                if (abs((await source_receiver_distance()))[">"](0)) {
+                    (await meeting(t));
+                }
+                "138";
+            } else if ((source_receiver_distance_sign === 1 || typeof source_receiver_distance_sign === "object" && ρσ_equals(source_receiver_distance_sign, 1))) {
+                "139";
+                if ((await source_receiver_distance())["<="](0)) {
+                    (await meeting(t));
+                }
+                "140";
+            } else if (ρσ_equals(source_receiver_distance_sign, 1["-u"]()["*"](1))) {
+                "141";
+                if ((await source_receiver_distance())[">="](0)) {
+                    (await meeting(t));
+                }
+            }
+            "143";
+            var ρσ_Iter4 = range(len(ball));
+            ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+            for (var ρσ_Index4 of ρσ_Iter4) {
+                i = ρσ_Index4;
+                "144";
+                ρσ_getitem(ball, i).pos=ρσ_getitem(ball, i).pos["+"](ρσ_getitem(ball, i).vel["+"](wind_velocity_vector)["*"](dt));
+            }
+            "145";
+            source.pos=source.pos["+"](source.vel["*"](dt));
+            "146";
+            receiver.pos=receiver.pos["+"](receiver.vel["*"](dt));
+            "148";
+            velocity_source_arrow.pos = source.pos["+"](nudge);
+            "149";
+            velocity_receiver_arrow.pos = receiver.pos["+"](nudge)["-"](1["*"](nudgev));
+            "151";
+            velocity_source_label.pos = velocity_source_arrow.pos["+"](nudgev);
+            "152";
+            velocity_receiver_label.pos = velocity_receiver_arrow.pos["-"](1["*"](nudgev));
+            "154";
+            var ρσ_Iter5 = range(len(ball0flag));
+            ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+            for (var ρσ_Index5 of ρσ_Iter5) {
+                j = ρσ_Index5;
+                "155";
+                ρσ_getitem(source_label, j).pos = ρσ_getitem(ball, int(N["*"](j)["+"](3["*"](N)["/"](4)))).pos;
+                "156";
+                if ((ρσ_getitem(ball0flag, j) === 0 || typeof ρσ_getitem(ball0flag, j) === "object" && ρσ_equals(ρσ_getitem(ball0flag, j), 0)) && (source.pos.x["<="](ρσ_cond_temp = receiver.pos.x) && ρσ_cond_temp["<="](ρσ_getitem(ball, N["*"](j)).pos.x) || source.pos.x[">="](ρσ_cond_temp = receiver.pos.x) && ρσ_cond_temp[">"](ρσ_getitem(ball, int(N["*"](j)["+"](N["/"](2)))).pos.x))) {
+                    "157";
+                    ρσ_setitem(ball0flag, j, 1);
+                    "158";
+                    print("t="["+"](str(round(t, 2))));
+                    "159";
+                    new_label_text = "t="["+"](str(round(t, 2)));
+                    "160";
+                    received_label.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: ρσ_getitem(ball, int(N["*"](j)["+"](N["-"](1["*"](3))))).pos, text: new_label_text, color: receiver.color, linecolor: receiver.color})]));
+                    "162";
+                } else if ((ρσ_getitem(ball0flag, j) === 1 || typeof ρσ_getitem(ball0flag, j) === "object" && ρσ_equals(ρσ_getitem(ball0flag, j), 1))) {
+                    "163";
+                    ρσ_getitem(received_label, j).pos = ρσ_getitem(ball, N["*"](j)["+"](N["-"](1["*"](3)))).pos;
+                }
+            }
+        }
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

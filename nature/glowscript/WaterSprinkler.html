@@ -1,0 +1,332 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
+    var version, print, arange, __name__, type, ρσ_ls, title, omega, shoot_outward, frequency, water_velocity, dt, origin, _GS_1, sprinkler, t;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "\n&#x2022; Original by <a href=\"https://rhettallain.com/2019/11/12/modeling-a-spinning-sprinkler/\">Rhett Allain<\/a>\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>\n\n";
+    "9";
+    omega = 2["*"](pi)["/"](2);
+    "10";
+    shoot_outward = true;
+    "11";
+    frequency = 15;
+    "12";
+    water_velocity = .3;
+    "14";
+    dt = .01;
+    "15";
+    origin = vector(0, 0, 0);
+    "17";
+    function WaterBeam() {;
+    }
+    WaterBeam.prototype.__init__ = async function __init__() {
+        var self = this;
+        "19";
+        self._droplets = ρσ_list_decorate([]);
+    };
+    if (!WaterBeam.prototype.__init__.__module__) Object.defineProperties(WaterBeam.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    WaterBeam.__argnames__ = WaterBeam.prototype.__init__.__argnames__;
+    WaterBeam.__handles_kwarg_interpolation__ = WaterBeam.prototype.__init__.__handles_kwarg_interpolation__;
+    WaterBeam.prototype.add = async function add(droplet) {
+        var self = this;
+        "22";
+        self._droplets=self._droplets["+"](ρσ_list_decorate([ droplet ]));
+    };
+    if (!WaterBeam.prototype.add.__argnames__) Object.defineProperties(WaterBeam.prototype.add, {
+        __argnames__ : {value: ["droplet"]},
+        __module__ : {value: null}
+    });
+    WaterBeam.prototype.update = async function update(dt, out_of_sight_threshold) {
+        var self = this;
+        var ρσ_ls, droplet;
+        "25";
+        var ρσ_Iter1 = self._droplets;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            droplet = ρσ_Index1;
+            "26";
+            (await droplet.update(dt, out_of_sight_threshold));
+        }
+    };
+    if (!WaterBeam.prototype.update.__argnames__) Object.defineProperties(WaterBeam.prototype.update, {
+        __argnames__ : {value: ["dt", "out_of_sight_threshold"]},
+        __module__ : {value: null}
+    });
+    WaterBeam.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    WaterBeam.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(WaterBeam.prototype, "__bases__", {value: []});
+
+
+
+
+    "30";
+    function Droplet() {;
+    }
+    Droplet.prototype.__init__ = async function __init__(position, velocity, radius) {
+        var self = this;
+        "32";
+        self._droplet = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, color: color.cyan, v: velocity, make_trail: false})]);
+    };
+    if (!Droplet.prototype.__init__.__argnames__) Object.defineProperties(Droplet.prototype.__init__, {
+        __argnames__ : {value: ["position", "velocity", "radius"]},
+        __module__ : {value: null}
+    });
+    Droplet.__argnames__ = Droplet.prototype.__init__.__argnames__;
+    Droplet.__handles_kwarg_interpolation__ = Droplet.prototype.__init__.__handles_kwarg_interpolation__;
+    Droplet.prototype.update = async function update(dt, out_of_sight_threshold) {
+        var self = this;
+        "35";
+        self._droplet.pos=self._droplet.pos["+"](self._droplet.v["*"](dt));
+        "36";
+        if (self._droplet.pos.mag[">"](out_of_sight_threshold)) {
+            "37";
+            self._droplet.v = origin;
+            "38";
+            self._droplet.visible = false;
+        }
+        "40";
+        return self;
+    };
+    if (!Droplet.prototype.update.__argnames__) Object.defineProperties(Droplet.prototype.update, {
+        __argnames__ : {value: ["dt", "out_of_sight_threshold"]},
+        __module__ : {value: null}
+    });
+    Droplet.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Droplet.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Droplet.prototype, "__bases__", {value: []});
+
+
+
+    "42";
+    function Sprinkler() {;
+    }
+    Sprinkler.prototype.__init__ = async function __init__() {
+        var self = this;
+        var length = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.length : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "length")){
+            length = ρσ_kwargs_obj.length;
+        }
+        var ρσ_ls, _GS_1, _GS_2;
+        "44";
+        self._length = length;
+        "46";
+        self._clock_ticks = 0;
+        "47";
+        self._theta = 0;
+        "49";
+        self._stick = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: origin, size: vector(length, .05["*"](length), .05["*"](length)), color: color.yellow})]);
+        "50";
+        self._center = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: origin, radius: .03["*"](length), color: color.red})]);
+        "51";
+        self._space = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(4["*"](length), 0, 0), radius: .001})]);
+        "53";
+        _GS_1 = new WaterBeam;
+        (await _GS_1.__init__());
+        _GS_2 = new WaterBeam;
+        (await _GS_2.__init__());
+        self._water_beams = ρσ_list_decorate([ _GS_1, _GS_2 ]);
+    };
+    if (!Sprinkler.prototype.__init__.__defaults__) Object.defineProperties(Sprinkler.prototype.__init__, {
+        __defaults__ : {value: {length:.1}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["length"]},
+        __module__ : {value: null}
+    });
+    Sprinkler.__argnames__ = Sprinkler.prototype.__init__.__argnames__;
+    Sprinkler.__handles_kwarg_interpolation__ = Sprinkler.prototype.__init__.__handles_kwarg_interpolation__;
+    Sprinkler.prototype.rotate = async function rotate(angle) {
+        var self = this;
+        "56";
+        self._theta=self._theta["+"](angle);
+        "57";
+        ρσ_interpolate_kwargs.call(self._stick, self._stick.rotate, [ρσ_desugar_kwargs({angle: angle, axis: vector(0, 0, 1), origin: origin})]);
+    };
+    if (!Sprinkler.prototype.rotate.__argnames__) Object.defineProperties(Sprinkler.prototype.rotate, {
+        __argnames__ : {value: ["angle"]},
+        __module__ : {value: null}
+    });
+    Sprinkler.prototype.shed_water = async function shed_water(dt) {
+        var self = this;
+        "60";
+        if (self._clock_ticks[">="](1["/"](frequency))) {
+            "61";
+            (await self._let_out_new_droplet());
+            "62";
+            self._clock_ticks = 0;
+        }
+        "64";
+        (await ρσ_getitem(self._water_beams, 0).update(dt, 3["*"](self._length)));
+        "65";
+        (await ρσ_getitem(self._water_beams, 1).update(dt, 3["*"](self._length)));
+        "67";
+        self._clock_ticks=self._clock_ticks["+"](dt);
+    };
+    if (!Sprinkler.prototype.shed_water.__argnames__) Object.defineProperties(Sprinkler.prototype.shed_water, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Sprinkler.prototype._let_out_new_droplet = async function _let_out_new_droplet() {
+        var self = this;
+        var ρσ_ls, radius, _GS_1;
+        "70";
+        radius = .04["*"](self._length);
+        "71";
+        _GS_1 = new Droplet;
+        (await _GS_1.__init__(ρσ_getitem((await self._endpoint_positions()), 0), ρσ_getitem((await self._endpoint_velocities()), 0), radius));
+        (await ρσ_getitem(self._water_beams, 0).add(_GS_1));
+        "72";
+        _GS_1 = new Droplet;
+        (await _GS_1.__init__(ρσ_getitem((await self._endpoint_positions()), 1), ρσ_getitem((await self._endpoint_velocities()), 1), radius));
+        (await ρσ_getitem(self._water_beams, 1).add(_GS_1));
+    };
+    if (!Sprinkler.prototype._let_out_new_droplet.__module__) Object.defineProperties(Sprinkler.prototype._let_out_new_droplet, {
+        __module__ : {value: null}
+    });
+    Sprinkler.prototype._endpoint_positions = async function _endpoint_positions() {
+        var self = this;
+        var ρσ_ls, r;
+        "75";
+        r = self._length["/"](2)["*"](vector(cos(self._theta), sin(self._theta), 0));
+        "76";
+        return ρσ_list_decorate([ r, 1["-u"]()["*"](r) ]);
+    };
+    if (!Sprinkler.prototype._endpoint_positions.__module__) Object.defineProperties(Sprinkler.prototype._endpoint_positions, {
+        __module__ : {value: null}
+    });
+    Sprinkler.prototype._endpoint_velocities = async function _endpoint_velocities() {
+        var self = this;
+        var ρσ_ls, a, position_1, position_2, velocity_1, velocity_2;
+        "79";
+        a = (shoot_outward) ? 1 : 1["-u"]()["*"](1);
+        "80";
+        position_1 = ρσ_getitem((await self._endpoint_positions()), 0);
+        "81";
+        position_2 = ρσ_getitem((await self._endpoint_positions()), 1);
+        "82";
+        velocity_1 = 1["-u"]()["*"](1)["*"](cross(position_1, vector(0, 0, omega)))["+"](a["*"](water_velocity)["*"](position_1.hat));
+        "83";
+        velocity_2 = 1["-u"]()["*"](1)["*"](cross(position_2, vector(0, 0, omega)))["+"](a["*"](water_velocity)["*"](position_2.hat));
+        "84";
+        return ρσ_list_decorate([ velocity_1, velocity_2 ]);
+    };
+    if (!Sprinkler.prototype._endpoint_velocities.__module__) Object.defineProperties(Sprinkler.prototype._endpoint_velocities, {
+        __module__ : {value: null}
+    });
+    Sprinkler.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Sprinkler.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Sprinkler.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "86";
+    scene.title = title;
+    "87";
+    scene.background = color.gray(.075);
+    "88";
+    _GS_1 = new Sprinkler;
+    (await _GS_1.__init__());
+    sprinkler = _GS_1;
+    "89";
+    t = 0;
+    "90";
+    while (t["<"](10)) {
+        "91";
+        (await rate(100));
+        "92";
+        (await sprinkler.shed_water(dt));
+        "93";
+        (await sprinkler.rotate(omega["*"](dt)));
+        "94";
+        t=t["+"](dt);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
