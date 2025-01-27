@@ -1,7 +1,7 @@
 [Zeger's home page](https://www.hendrikse.name/) &mdash;
 [Science home page](https://www.hendrikse.name/science/) &mdash; [Astrophysics](#astrophysics) &mdash; 
 [Electromagnetism](#electromagnetism) &mdash; [Kinematics](#kinematics) &mdash; [Mathematics](#mathematics) &mdash;
-[Math Art Gallery](geometry.html) &mdash; [Nature models](#nature) &mdash;
-[Quantum and particle physics](#quantum) &mdash; [Special relativity](#relativity) &mdash;
-[Thermodynamics](#thermodynamics) &mdash;[Waves](#waves) &mdash; [Fun stuff](fun.html) &mdash;
-[References &amp; acknowledgements](#references).
+[Math Art Gallery](geometry.html) &mdash; [Atomic and molecular physics](#molecularphys) &mdash;
+[Nature models](#nature) &mdash; [Quantum and particle physics](#quantum) &mdash; 
+[Special relativity](#relativity) &mdash; [Thermodynamics](#thermodynamics) &mdash;[Waves](#waves) &mdash; 
+[Fun stuff](fun.html) &mdash; [References](#references).
