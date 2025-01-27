@@ -68,7 +68,7 @@ async function __main__() {
     "10";
     title = "\n&#x2022; Original idea (and <a href=\"https://jexpearce.github.io/jex/Wavepropagation.html\">code<\/a>) by <a href=\"https://jexpearce.github.io/jex/\">Jex Pearce</a>\n&#x2022; Refactored and extended by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n&#x2022; Based on a <a href=\"\"https://en.wikipedia.org/wiki/Finite_difference_method\">finite difference mehtod</a>\n\n";
     "12";
-    ρσ_unpack = [3, 3];
+    ρσ_unpack = [2, 4];
     Lx = ρσ_unpack[0];
     Ly = ρσ_unpack[1];
     "13";
@@ -76,7 +76,7 @@ async function __main__() {
     dx = ρσ_unpack[0];
     dy = ρσ_unpack[1];
     "14";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](3.25), 0, 1["-u"]()["*"](2.3)), center: vector(Lx["/"](2), Ly["/"](2), 0), up: vector(0, 0, 1), title: title, background: color.gray(.075), range: 1.9})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](3.25), 0, 1["-u"]()["*"](2)), center: vector(Lx["/"](2), Ly["/"](2), 0), up: vector(0, 0, 1), title: title, background: color.gray(.075), range: 2})]);
     "18";
     function Wave() {;
     }
@@ -334,13 +334,13 @@ async function __main__() {
         "83";
         water = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(Lx["/"](2), Ly["/"](2), 1["-u"]()["*"](.1)), width: .15, length: Lx, height: Ly, color: vec(0, .6, 1), opacity: .6})]);
         "84";
-        back = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(dx, Ly["/"](2)["+"](dy), 0), width: .4, length: .04, height: Ly, color: color.yellow})]);
+        back = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](dx), Ly["/"](2), 0), width: .4, length: .04, height: Ly["+"](2["*"](dy)), color: color.yellow})]);
         "85";
-        left = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(Lx["/"](2), 0, 0), width: .4, length: .04, height: Ly["+"](dy), color: color.yellow})]);
+        left = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(Lx["/"](2), 1["-u"]()["*"](dy), 0), width: .4, length: .04, height: Lx["+"](dx), color: color.yellow})]);
         "86";
         ρσ_interpolate_kwargs.call(left, left.rotate, [ρσ_desugar_kwargs({angle: (await radians(90)), axis: vec(0, 0, 1)})]);
         "87";
-        right = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(Lx["/"](2), Ly, 0), width: .4, length: .04, height: Ly["+"](dy), color: color.yellow})]);
+        right = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(Lx["/"](2), Ly["+"](dy), 0), width: .4, length: .04, height: Lx["+"](dx), color: color.yellow})]);
         "88";
         ρσ_interpolate_kwargs.call(right, right.rotate, [ρσ_desugar_kwargs({angle: (await radians(90)), axis: vec(0, 0, 1)})]);
         "89";
@@ -383,7 +383,7 @@ async function __main__() {
         for (var ρσ_Index9 of ρσ_Iter9) {
             i = ρσ_Index9;
             "100";
-            var ρσ_Iter10 = range(1, len(self._x)["-"](1["*"](1)));
+            var ρσ_Iter10 = range(1, len(self._y)["-"](1["*"](1)));
             ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
             for (var ρσ_Index10 of ρσ_Iter10) {
                 j = ρσ_Index10;

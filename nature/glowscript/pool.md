@@ -10,11 +10,11 @@ title = """
 
 """
 
-Lx, Ly = 3, 3
+Lx, Ly = 2, 4
 dx, dy = 0.05, 0.05
-animation = canvas(forward=vector(-3.25, 0, -2.3), center=vector(Lx / 2, Ly / 2, 0),
+animation = canvas(forward=vector(-3.25, 0, -2.0), center=vector(Lx / 2, Ly / 2, 0),
                    up=vector(0, 0, 1), title=title,
-                   background=color.gray(0.075), range=1.9)
+                   background=color.gray(0.075), range=2)
 
 class Wave:
     def __init__(self, x, y):
@@ -82,10 +82,10 @@ class Pool:
 
     def _init_pool(self):
         water = box(pos=vec(Lx / 2, Ly / 2, -.1), width=.15, length=Lx, height=Ly, color=vec(0, .6, 1), opacity=0.6)
-        back = box(pos=vec(dx, Ly / 2 + dy, 0), width=.4, length=.04, height=Ly, color=color.yellow)
-        left = box(pos=vec(Lx / 2, 0, 0), width=.4, length=.04, height=Ly + dy, color=color.yellow)
+        back = box(pos=vec(-dx, Ly / 2, 0), width=.4, length=.04, height=Ly+2*dy, color=color.yellow)
+        left = box(pos=vec(Lx / 2, -dy, 0), width=.4, length=.04, height=Lx + dx, color=color.yellow)
         left.rotate(angle=radians(90), axis=vec(0, 0, 1))
-        right = box(pos=vec(Lx / 2, Ly, 0), width=.4, length=.04, height=Ly + dy, color=color.yellow)
+        right = box(pos=vec(Lx / 2, Ly+dy, 0), width=.4, length=.04, height=Lx + dx, color=color.yellow)
         right.rotate(angle=radians(90), axis=vec(0, 0, 1))
         bottom = box(pos=vec(Lx / 2, Ly / 2, -.2), width=0.04, length=Lx + dx, height=Ly + dy, color=color.yellow)
 
@@ -98,7 +98,7 @@ class Pool:
     def update_by(self, dt):
         new_values = wave.current_values()
         for i in range(1, len(self._x) - 1):
-            for j in range(1, len(self._x) - 1):
+            for j in range(1, len(self._y) - 1):
                 self._surface[i][j].pos.z = new_values[i][j]  # Updating the z position of the surface points
                 self._surface[i][j].color = color.hsv_to_rgb(vec(new_values[i][j] + self._hue, 1, 1))
 
@@ -139,7 +139,6 @@ while True:
         wave.update_by(dt)
         pool.update_by(dt)
         clock.text = "{:1.2f}".format(animation_duration - wave.get_time(), 2)
-
 
 
 ```
