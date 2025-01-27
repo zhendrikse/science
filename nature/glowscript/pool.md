@@ -1,6 +1,5 @@
 ```python
-#Web VPython 3.2
-from vpython import *
+#from vpython import *
 
 title = """
 &#x2022; Original idea (and <a href="https://jexpearce.github.io/jex/Wavepropagation.html">code</a>) by <a href="https://jexpearce.github.io/jex/">Jex Pearce</a>
@@ -9,11 +8,11 @@ title = """
 
 """
 
-Lx, Ly = 2, 2
-dx, dy = 0.025, 0.025
-animation = canvas(forward=vector(-3.5, 0, -1), center=vector(Lx / 2, Ly / 2, 0),
+Lx, Ly = 3, 3
+dx, dy = 0.05, 0.05
+animation = canvas(forward=vector(-3.5, 0, -2.0), center=vector(Lx / 2, Ly / 2, 0),
                    up=vector(0, 0, 1), title=title,
-                   background=color.gray(0.075), height="300", range=1.2)
+                   background=color.gray(0.075), range=2)
 
 
 class Wave:
@@ -123,8 +122,8 @@ animation.append_to_caption("\n")
 offset_slider = slider(min=0, max=1, value=.6, bind=adjust_offset)
 animation.append_to_caption("hue offset = ")
 hue_offset_text = wtext(text="0.6")
-popup = label(text="Click mouse to start", pos=vec(0, Lx / 2, 1), box=False)
-animation_duration = 3  # seconds
+popup = text(text="Click mouse to start", pos=vec(-Lx / 2, 0, Ly / 3), billboard=True, color=color.yellow, height=.3)
+animation_duration = 4  # seconds
 
 animation.append_to_caption("\n\n  Remaining animation time = ")
 clock = wtext(text="{:1.2f}".format(animation_duration, 2))
@@ -144,6 +143,5 @@ while True:
         pool.update_by(dt)
         clock.text = "{:1.2f}".format(animation_duration - wave.get_time(), 2)
 
-    pool.reset()
 
 ```

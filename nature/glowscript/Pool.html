@@ -50,6 +50,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
+    fontloading();
+    await waitforfonts();
 
     var version, print, arange, __name__, type, ρσ_ls, title, ρσ_unpack, Lx, Ly, dx, dy, animation, offset_slider, hue_offset_text, popup, animation_duration, clock, _GS_1, wave, pool, dt, _;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
@@ -66,15 +68,15 @@ async function __main__() {
     "10";
     title = "\n&#x2022; Original idea (and <a href=\"https://jexpearce.github.io/jex/Wavepropagation.html\">code<\/a>) by <a href=\"https://jexpearce.github.io/jex/\">Jex Pearce</a>\n&#x2022; Refactored and extended by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n&#x2022; Based on a <a href=\"\"https://en.wikipedia.org/wiki/Finite_difference_method\">finite difference mehtod</a>\n\n";
     "12";
-    ρσ_unpack = [2, 2];
+    ρσ_unpack = [3, 3];
     Lx = ρσ_unpack[0];
     Ly = ρσ_unpack[1];
     "13";
-    ρσ_unpack = [.025, .025];
+    ρσ_unpack = [.05, .05];
     dx = ρσ_unpack[0];
     dy = ρσ_unpack[1];
     "14";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](3.5), 0, 1["-u"]()["*"](1)), center: vector(Lx["/"](2), Ly["/"](2), 0), up: vector(0, 0, 1), title: title, background: color.gray(.075), height: "300", range: 1.2})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](3.6), 0, 1["-u"]()["*"](1.75)), center: vector(Lx["/"](2), Ly["/"](2), 0), up: vector(0, 0, 1), title: title, background: color.gray(.075), range: 2})]);
     "19";
     function Wave() {;
     }
@@ -438,9 +440,9 @@ async function __main__() {
     "125";
     hue_offset_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.6"})]);
     "126";
-    popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({text: "Click mouse to start", pos: vec(0, Lx["/"](2), 1), box: false})]);
+    popup = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "Click mouse to start", pos: vec(1["-u"]()["*"](Lx)["/"](2), 0, Ly["/"](3)), billboard: true, color: color.yellow, height: .3})]);
     "127";
-    animation_duration = 3;
+    animation_duration = 4;
     "129";
     animation.append_to_caption("\n\n  Remaining animation time = ");
     "130";
@@ -458,27 +460,31 @@ async function __main__() {
     "137";
     while (true) {
         "138";
-        popup.visible = true;
+        print("scene.center="["+"](str(animation.center)));
         "139";
-        (await animation.waitfor("click"));
+        print("scene.forward="["+"](str(animation.forward)));
         "140";
-        popup.visible = false;
+        print("scene.range="["+"](str(animation.range)));
         "141";
-        (await pool.reset());
+        popup.visible = true;
         "142";
+        (await animation.waitfor("click"));
+        "143";
+        popup.visible = false;
+        "144";
+        (await pool.reset());
+        "145";
         var ρσ_Iter13 = range(int(animation_duration["/"](dt)));
         ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
         for (var ρσ_Index13 of ρσ_Iter13) {
             _ = ρσ_Index13;
-            "143";
+            "146";
             (await rate(30));
-            "144";
+            "147";
             (await pool.update_by(dt));
-            "145";
+            "148";
             clock.text = "{:1.2f}".format(animation_duration["-"](1["*"]((await wave.get_time()))), 2);
         }
-        "147";
-        (await pool.reset());
     }
 };
 if (!__main__.__module__) Object.defineProperties(__main__, {

@@ -17,7 +17,7 @@
   <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Thermodynamics/program/Isingspin">
     <img alt="Ising spin model" src="./images/ising_spin_model.png" title="Click to animate"/>
   </a>
-  <figcaption>A two-dimensional Ising spin model showing the magnetization as function of the temperature.
+  <figcaption><br/>A two-dimensional Ising spin model showing the magnetization as function of the temperature.
   </figcaption>
 </figure>
 </div>
