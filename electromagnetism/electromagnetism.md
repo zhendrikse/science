@@ -10,7 +10,7 @@
   <a href="electromagnetism/moving_charge.html">
     <img alt="Particle in electric field" src="./images/particle_in_electric_field.png" title="Click to animate"/>
   </a>
-  <figcaption>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>
+  <figcaption><br/>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="electromagnetism/helical_motion.html">
