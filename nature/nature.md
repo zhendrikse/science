@@ -42,7 +42,7 @@
   <a href="nature/pool.html">
     <img alt="Swimming pool" src="./images/pool.png" title="Click to animate"/>
   </a>
-  <figcaption>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
+  <figcaption><br/>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
   <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
   </figcaption>
 </figure>

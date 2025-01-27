@@ -35,7 +35,7 @@
     <img alt="Three body problem" src="./images/three_body.png" title="Click to animate"/>
   </a>
   <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/Three-body_problem">three-body problem</a>,
-  for which there exists no analytical solution. 
+  for which there exists no analytical solution, so we have to solve it numerically. 
   <a href="https://en.wikipedia.org/wiki/Euler%27s_three-body_problem">Euler&apos;s version</a>
   is exactly solvable though.</figcaption>
 </figure>

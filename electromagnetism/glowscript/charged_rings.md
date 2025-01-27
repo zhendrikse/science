@@ -1,84 +1,122 @@
 ```python
-Web VPython 3.2
+WWeb VPython 3.2
+from vpython import canvas, arange, pi, sphere, vector, sin, cos, ring, vec, arrow, color, mag, norm, rate, checkbox
 
-from vpython import pi, box, vec, color, sin, cos, rate, sphere, hat, mag, canvas
+title = """Electric field inside charged rings. 
 
-title="""
-
-&#x2022; Based on original <a href="https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/1-introduction-objects-parameters-and-the-3d-environment/optional-scale-models
-#">example</a>
+&#x2022; Original <a href="https://lectdemo.github.io/virtual/18-Erings.html">18-Erings.html</a>
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; &lt;s&gt; &rarr; screenshot
+&#x2022; &lt;v&gt; &rarr; verbose output
 
 """
 
-Q = 1.6E-19  # charge magnitude of electron
-k = 9E9  # Coulomb's law constant
+animation = canvas(title=title, background=color.gray(0.075), forward=vec(0.18, 0.35, -0.95))
 
-animation = canvas(title=title, forward=vec(-0.55, -0.65, -0.55), range=1e-10, background=color.gray(0.075))
-animation.append_to_caption("If it isn't doing anything interesting, either wait or run again to randomize start position.")
+scale_factor = 2e-11
+L = 6e-3
+dL = 1e-3
 
 class ChargedRing:
-    def __init__(self, number_of_ring_segments=60, radius=0.5e-10, render=True, charge=-Q):
-        self._segments = []  # array holding all the segments
-        self._radius = radius
-        self._charge = charge
+    def __init__(self, ring_radius=10., point_charges_amount=20, totalq=1e-9, xx=0.):
+        self._charges = []
+        self._ring_radius = ring_radius
+        dtheta = 2 * pi / point_charges_amount
+        for theta in arange(0, 2 * pi, dtheta):
+            charge = sphere(pos=vector(xx, ring_radius * sin(theta), ring_radius * cos(theta)), radius=ring_radius / 15)
+            self._charges.append(charge)
+            charge.q = totalq / point_charges_amount
+            saturation = 1.5 * abs(totalq) / 1e-8 # 4.5e-9
+            hue = 0.0
+            if totalq > 1e-15:
+                hue = 0.0
+            elif totalq < 0:
+                hue = (240 / 360)
+            elif totalq == 0:
+                saturation = 0
+            charge.color = color.hsv_to_rgb(vec(hue, saturation, 1.0))
+            ring(pos=vector(xx, 0, 0), axis=vector(1, 0, 0), radius=ring_radius, thickness=ring_radius / 75., color=charge.color)
 
-        dx = 2 * pi * radius / number_of_ring_segments  # width of ring segment
-        for i in range(0, number_of_ring_segments):
-            theta = i * (2 * pi / number_of_ring_segments)  # angular position on ring
-            x = radius * cos(theta)
-            y = radius * sin(theta)
-            if render:
-                self._segments.append(box(pos=vec(x, y, 0), size=vec(dx, dx, dx), color=color.green))
-                self._segments[i].rotate(axis=vec(0, 0, 1), angle=theta)
+    def visible_is(self, visible):
+        for charge in self._charges:
+            charge.visible = visible
 
-    def field_at(self, position):
-        dq = self._charge / len(self._segments)  # charge of ring segment
-        electric_field = vec(0, 0, 0)
-        for segment in self._segments:
-            r = segment.pos - position
-            electric_field += k * dq * r.norm() / r.mag2
-        return electric_field
+    def electric_field_at(self, location):
+        E = vector(0, 0, 0)
+        oof = 9e9
+        for charge in self._charges:
+            r = location - charge.pos
+            E = E + (oof * charge.q / mag(r) ** 2) * norm(r)
+        return E
 
+    def radius(self):
+        return self._ring_radius
 
-class Electron:
-    def __init__(self, mass=9.1093837E-31, position=vec(0, 0, 0), velocity=vec(0, 0, 0), radius=2.8179E-15, charge=Q, colour=None, make_trail=False, retain=-1, draw=True):
-        colour = colour if colour is not None else color.blue if charge > 0 else color.red
-        self._ball = sphere(mass=mass, pos=position, radius=radius, color=colour, make_trail=make_trail, retain=retain) if draw else None
-        self._velocity = velocity
-        self._position = position
-        self._radius = radius
-        self._charge = charge
-        self._mass = mass
+class Field:
+    def __init__(self, rings):
+        self._field_arrows = []
+        for x in arange((-L + dL), L - dL, dL / 2):
+            for y in arange(-(2 / 3) * rings.radius(), rings.radius(), rings.radius() / 3.):
+                location = vector(x, y, 0)
+                E = rings.field_at(location)
+                self._field_arrows += [arrow(pos=location, axis=E * scale_factor, color=color.cyan, shaftwidth=rings.radius() / 20.)]
 
-    def render(self):
-        if self._ball:
-            self._ball.pos = self._position
+    def visible_is(self, visible):
+        for field_arrow in self._field_arrows:
+            field_arrow.visible = visible
 
-    def field_at(self, position):
-        return hat(position - self._ball.pos) * k * self._charge / mag(position - self._ball.pos) ** 2
+class Rings:
+    def __init__(self, ring_radius=2e-3, dQ=5e-10):
+        ##for x in arange (-L,1.1*L,dL):
+        self._radius = ring_radius
+        self._rings = []
+        total_charge = -3 * dQ # Charge of left ring
+        count = 0
+        for x in arange(-2 * L, 2.5 * L, dL):
+            self._rings.append(ChargedRing(ring_radius, point_charges_amount=20, totalq=total_charge, xx=x))
+            total_charge = total_charge + dQ
+            count += 1
 
-    def coulomb_force_in(self, electric_field):
-        return electric_field * self._charge
+    def field_at(self, location):
+        field = vec(0, 0, 0)
+        for a_ring in self._rings:
+            field += a_ring.electric_field_at(location)
+        return field
 
-    def update(self, coulomb_force, dt):
-        self._velocity += coulomb_force / self._mass * dt
-        self._position += self._velocity * dt
-        self.render()
+    def charges_visible_is(self, visible):
+        for ring in self._rings:
+            ring.visible_is(visible)
 
-    def position(self):
-        return self._position
+    def radius(self):
+        return self._radius
 
+rings = Rings(ring_radius=2e-3)
+electric_field = Field(rings)
 
-radius = 0.5e-10
-ring = ChargedRing(radius=radius)
-electron = Electron(position=vec(0, 0, radius) + 1.5 * radius * vec.random(), radius=radius / 20, charge=-Q, make_trail=True, retain=150)
+def toggle_charges(event):
+    rings.charges_visible_is(event.checked)
 
-dt = 1e-18  # time step
+def toggle_field(event):
+    electric_field.visible_is(event.checked)
+
+def toggle_background(event):
+    animation.background = color.gray(0.075) if event.checked else color.white
+
+def on_key_press(event):
+    if event.key == 's':
+        animation.capture("electric_field_of_charged_rings")
+    if event.key == 'v':
+        print("scene.center=" + str(animation.center))
+        print("scene.forward=" + str(animation.forward))
+        print("scene.range=" + str(animation.range))
+
+animation.append_to_caption("\n")
+background_box = checkbox(text="Dark background", checked=True, bind=toggle_background)
+field_box = checkbox(text="Show field", checked=True, bind=toggle_field)
+charges_box = checkbox(text="Show charges", checked=True, bind=toggle_charges)
+animation.bind("keydown", on_key_press)
+
 while True:
-    rate(100)
-    field = ring.field_at(electron.position())
-    force = electron.coulomb_force_in(field)
-    electron.update(force, dt)
+    rate(50)
 
 ```
