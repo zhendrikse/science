@@ -7,11 +7,6 @@ If you think you understand quantum mechanics, you don't understand quantum mech
 &mdash; <a href="https://en.wikipedia.org/wiki/Richard_Feynman">Richard P. Feynman</a> 
 </blockquote><br/>
 
-
-The code pertaining to the demos in this section is available under the 
-[quantum tab](https://glowscript.org/#/user/zeger.hendrikse/folder/Quantum/)
-on [glowscript.org](https://glowscript.org).
-
 ###  Plane waves &amp; the particle in a box
 <div style="border-top: 1px solid #999999"><br/></div>
 

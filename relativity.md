@@ -7,10 +7,6 @@
 We should make things as simple as possible, but not simpler. &mdash; Albert Einstein
 </blockquote><br/>
 
-The code pertaining to the demos in this section is available under the 
-[relativity tab](https://glowscript.org/#/user/zeger.hendrikse/folder/Relativity/)
-on [glowscript.org](https://glowscript.org).
-
 ### Lightcone animation and electric field of a fast moving proton
 <div style="border-top: 1px solid #999999"><br/></div>
 

@@ -8,10 +8,6 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 <a href="https://en.wikipedia.org/wiki/Edward_Frenkel">Edward Frenkel</a>
 </blockquote><br/>
 
-The code pertaining to the demos in this section is available under the 
-[mathematics tab](https://glowscript.org/#/user/zeger.hendrikse/folder/Math/)
-on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
-
 ### Dynamic 3D-plots of multivariate and complex functions
 <div style="border-top: 1px solid #999999"><br/></div>
 

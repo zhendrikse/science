@@ -2,10 +2,6 @@
 # Electromagnetism
 <div class="header_line"><br/></div>
 
-The code pertaining to the demos in this section is available under the 
-[electromagnetism tab](https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/)
-on [glowscript.org](https://glowscript.org).
-
 ### Charged particle behaviour in magnetic and electric fields
 <div style="border-top: 1px solid #999999"><br/></div>
 

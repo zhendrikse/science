@@ -2,10 +2,6 @@
 # Astrophysics
 <div class="header_line"><br/></div>
 
-The code pertaining to the demos in this section is also available under the 
-[astrophysics tab](https://glowscript.org/#/user/zeger.hendrikse/folder/Astrophysics/)
-on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
-
 ### Daylight variations &mdash; sun-earth-moon model
 <div style="border-top: 1px solid #999999"><br/></div>
 

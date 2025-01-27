@@ -1,0 +1,315 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, _GS_1, cube, crystal, symmetry_planes;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "14";
+    title = "Symmetry planes in a cubic crystal\n\n&#x2022; Original <a href=\"https://lectdemo.github.io/virtual/24_crystal_planes.html\">24_crystal_planes.py<\/a> by Ruth Chabay Spring 2001\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n&#x2022; &lt;c&gt; &rarr; toggle wireframe cube\n&#x2022; &lt;s&gt; &rarr; screenshot\n&#x2022; &lt;v&gt; &rarr; verbose output\n&#x2022; &lt;space&gt; &rarr; toggle background color\n&#x2022; &lt;mouse click&gt; &rarr; toggle between different symmetry planes\n\n";
+    "16";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), forard: vector(1, 1["-u"]()["*"](.8), 1["-u"]()["*"](2)), title: title})]);
+    "18";
+    function WireFrame() {;
+    }
+    WireFrame.prototype.__init__ = async function __init__() {
+        var self = this;
+        var s = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.s : arguments[0];
+        var box_color = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.box_color : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "s")){
+            s = ρσ_kwargs_obj.s;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "box_color")){
+            box_color = ρσ_kwargs_obj.box_color;
+        }
+        var ρσ_ls, pts;
+        "20";
+        pts = ρσ_list_decorate([ vector(1["-u"]()["*"](s), 1["-u"]()["*"](s), 1["-u"]()["*"](s)), vector(1["-u"]()["*"](s), 1["-u"]()["*"](s), s), vector(1["-u"]()["*"](s), s, s), vector(1["-u"]()["*"](s), s, 1["-u"]()["*"](s)), vector(1["-u"]()["*"](s), 1["-u"]()["*"](s), 1["-u"]()["*"](s)), vector(s, 1["-u"]()["*"](s), 1["-u"]()["*"](s)), vector(s, s, 1["-u"]()["*"](s)), vector(1["-u"]()["*"](s), s, 1["-u"]()["*"](s)), vector(s, s, 1["-u"]()["*"](s)), vector(s, s, s), vector(1["-u"]()["*"](s), s, s), vector(s, s, s), vector(s, 1["-u"]()["*"](s), s), vector(1["-u"]()["*"](s), 1["-u"]()["*"](s), s), vector(s, 1["-u"]()["*"](s), s), vector(s, 1["-u"]()["*"](s), 1["-u"]()["*"](s)) ]);
+        "25";
+        self._cube = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: box_color, radius: .05, pos: pts})]);
+    };
+    if (!WireFrame.prototype.__init__.__defaults__) Object.defineProperties(WireFrame.prototype.__init__, {
+        __defaults__ : {value: {s:5, box_color:vector(0, 1, 1)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["s", "box_color"]},
+        __module__ : {value: null}
+    });
+    WireFrame.__argnames__ = WireFrame.prototype.__init__.__argnames__;
+    WireFrame.__handles_kwarg_interpolation__ = WireFrame.prototype.__init__.__handles_kwarg_interpolation__;
+    WireFrame.prototype.set_visibility_to = async function set_visibility_to(true_or_false) {
+        var self = this;
+        "28";
+        self._cube.visible = true_or_false;
+    };
+    if (!WireFrame.prototype.set_visibility_to.__argnames__) Object.defineProperties(WireFrame.prototype.set_visibility_to, {
+        __argnames__ : {value: ["true_or_false"]},
+        __module__ : {value: null}
+    });
+    WireFrame.prototype.toggle_visibility = async function toggle_visibility() {
+        var self = this;
+        "31";
+        self._cube.visible = !self._cube.visible;
+    };
+    if (!WireFrame.prototype.toggle_visibility.__module__) Object.defineProperties(WireFrame.prototype.toggle_visibility, {
+        __module__ : {value: null}
+    });
+    WireFrame.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    WireFrame.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(WireFrame.prototype, "__bases__", {value: []});
+
+
+
+
+    "34";
+    function SymmetryPlanes() {;
+    }
+    SymmetryPlanes.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, _;
+        "36";
+        self._planes = (function() {
+            var ρσ_Iter = range(3), ρσ_Result = [], _;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                _ = ρσ_Index;
+                ρσ_Result.push(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), size: vector(6, .01, 6), color: color.gray(.8), visible: false})]));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "38";
+        self._current_plane = 1["-u"]()["*"](1);
+        "39";
+        (ρσ_expr_temp = ρσ_getitem(self._planes, 1), ρσ_interpolate_kwargs.call(ρσ_expr_temp, ρσ_expr_temp.rotate, [ρσ_desugar_kwargs({axis: vector(0, 0, 1), angle: (await radians(45))})]));
+        "40";
+        (ρσ_expr_temp = ρσ_getitem(self._planes, 2), ρσ_interpolate_kwargs.call(ρσ_expr_temp, ρσ_expr_temp.rotate, [ρσ_desugar_kwargs({axis: vector(0, 0, 1), angle: (await radians(90))})]));
+    };
+    if (!SymmetryPlanes.prototype.__init__.__module__) Object.defineProperties(SymmetryPlanes.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    SymmetryPlanes.__argnames__ = SymmetryPlanes.prototype.__init__.__argnames__;
+    SymmetryPlanes.__handles_kwarg_interpolation__ = SymmetryPlanes.prototype.__init__.__handles_kwarg_interpolation__;
+    SymmetryPlanes.prototype.toggle_visibility = async function toggle_visibility() {
+        var self = this;
+        var ρσ_ls, index;
+        "43";
+        self._current_plane = (self._current_plane["+"](1)[">"](3)) ? 0 : self._current_plane["+"](1);
+        "44";
+        var ρσ_Iter1 = range(len(self._planes));
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            index = ρσ_Index1;
+            "45";
+            ρσ_getitem(self._planes, index).visible = (self._current_plane === index || typeof self._current_plane === "object" && ρσ_equals(self._current_plane, index));
+        }
+        "46";
+        (await cube.set_visibility_to((self._current_plane === 3 || typeof self._current_plane === "object" && ρσ_equals(self._current_plane, 3))));
+    };
+    if (!SymmetryPlanes.prototype.toggle_visibility.__module__) Object.defineProperties(SymmetryPlanes.prototype.toggle_visibility, {
+        __module__ : {value: null}
+    });
+    SymmetryPlanes.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    SymmetryPlanes.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(SymmetryPlanes.prototype, "__bases__", {value: []});
+
+
+
+    "49";
+    function Crystal() {;
+    }
+    Crystal.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, y, z, x;
+        "51";
+        for (var ρσ_Index2 = 1["-u"]()["*"](2); ρσ_Index2["<"](3); ρσ_Index2=ρσ_Index2["+"](2)) {
+            x = ρσ_Index2;
+            "52";
+            for (var ρσ_Index3 = 1["-u"]()["*"](2); ρσ_Index3["<"](3); ρσ_Index3=ρσ_Index3["+"](2)) {
+                z = ρσ_Index3;
+                "53";
+                for (var ρσ_Index4 = 1["-u"]()["*"](2); ρσ_Index4["<"](3); ρσ_Index4=ρσ_Index4["+"](2)) {
+                    y = ρσ_Index4;
+                    "54";
+                    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(x, y, z), radius: .3, color: vector(1, 0, 1)})]);
+                }
+            }
+        }
+        "56";
+        for (var ρσ_Index5 = 1["-u"]()["*"](1); ρσ_Index5["<"](3); ρσ_Index5=ρσ_Index5["+"](2)) {
+            x = ρσ_Index5;
+            "57";
+            for (var ρσ_Index6 = 1["-u"]()["*"](1); ρσ_Index6["<"](3); ρσ_Index6=ρσ_Index6["+"](2)) {
+                z = ρσ_Index6;
+                "58";
+                for (var ρσ_Index7 = 1["-u"]()["*"](1); ρσ_Index7["<"](3); ρσ_Index7=ρσ_Index7["+"](2)) {
+                    y = ρσ_Index7;
+                    "59";
+                    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(x, y, z), radius: .3, color: vector(0, 1, 1)})]);
+                }
+            }
+        }
+    };
+    if (!Crystal.prototype.__init__.__module__) Object.defineProperties(Crystal.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    Crystal.__argnames__ = Crystal.prototype.__init__.__argnames__;
+    Crystal.__handles_kwarg_interpolation__ = Crystal.prototype.__init__.__handles_kwarg_interpolation__;
+    Crystal.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Crystal.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Crystal.prototype, "__bases__", {value: []});
+
+
+    "62";
+    _GS_1 = new WireFrame;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({s: 1, box_color: vector(.8, .8, .8)})]);
+    cube = _GS_1;
+    "63";
+    _GS_1 = new Crystal;
+    (await _GS_1.__init__());
+    crystal = _GS_1;
+    "64";
+    _GS_1 = new SymmetryPlanes;
+    (await _GS_1.__init__());
+    symmetry_planes = _GS_1;
+    "67";
+    async function toggle_background() {
+        "68";
+        animation.background = (animation.background === color.white) ? color.gray(.075) : color.white;
+    };
+    if (!toggle_background.__module__) Object.defineProperties(toggle_background, {
+        __module__ : {value: null}
+    });
+
+    "70";
+    async function toggle_symmetry_planes() {
+        "71";
+        (await symmetry_planes.toggle_visibility());
+    };
+    if (!toggle_symmetry_planes.__module__) Object.defineProperties(toggle_symmetry_planes, {
+        __module__ : {value: null}
+    });
+
+    "73";
+    async function on_key_press(event) {
+        "74";
+        if ((event.key === "c" || typeof event.key === "object" && ρσ_equals(event.key, "c"))) {
+            "75";
+            (await cube.toggle_visibility());
+            "76";
+        }
+        if ((event.key === " " || typeof event.key === "object" && ρσ_equals(event.key, " "))) {
+            "77";
+            (await toggle_background());
+            "78";
+        }
+        if ((event.key === "s" || typeof event.key === "object" && ρσ_equals(event.key, "s"))) {
+            "79";
+            (await scene.capture("crystal_planes"));
+            "80";
+        }
+        if ((event.key === "v" || typeof event.key === "object" && ρσ_equals(event.key, "v"))) {
+            "81";
+            print("scene.center="["+"](str(scene.center)));
+            "82";
+            print("scene.forward="["+"](str(scene.forward)));
+            "83";
+            print("scene.range="["+"](str(scene.range)));
+        }
+    };
+    if (!on_key_press.__argnames__) Object.defineProperties(on_key_press, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "86";
+    animation.bind("keydown", on_key_press);
+    "87";
+    animation.bind("click", toggle_symmetry_planes);
+    "89";
+    while (1) {
+        "90";
+        (await rate(10));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

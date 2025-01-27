@@ -2,10 +2,6 @@
 # Nature models
 <div class="header_line"><br/></div>
 
-The code pertaining to the demos in this section is available under the 
-[miscellaneous tab](https://www.glowscript.org/#/user/zeger.hendrikse/folder/MyPrograms/)
-on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
-
 ### Flocking birds &amp; seashells
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -29,7 +25,7 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
 </div>
 <p style="clear: both;"></p>
 
-### Modelling falling raindrops and the DNA
+### Modelling water droplets
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -37,23 +33,18 @@ on [glowscript.org](https://glowscript.org/#/user/zeger.hendrikse/).
   <a href="nature/raindrops.html">
     <img alt="Raindrops" src="./images/raindrops.png" title="Click to animate"/>
   </a>
-  <figcaption><br/>"There are holes in the sky. Where the rain gets in. But they're ever so small. 
+  <figcaption>"There are holes in the sky. Where the rain gets in. But they're ever so small. 
   That's why the rain is thin" &mdash; 
   <a href="https://en.wikipedia.org/wiki/Spike_Milligan">Spike Milligan</a>.
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="nature/dna.html">
-    <img alt="DNA" src="./images/dna.png" title="Click to animate"/>
+  <a href="nature/pool.html">
+    <img alt="Swimming pool" src="./images/pool.png" title="Click to animate"/>
   </a>
-  <figcaption>"[...] the specific pairing we have postulated immediately suggests 
-  a possible copying mechanism for the genetic material" &mdash;
-  <a href="https://www.sciencehistory.org/education/scientific-biographies/james-watson-francis-crick-maurice-wilkins-and-rosalind-franklin/">J. Watson &amp; F. Crick</a>
+  <figcaption>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
+  <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
   </figcaption>
 </figure>
-</div>
-<p style="clear: both;"></p>
-
-<div style="display: flex; align-items: flex-end;">
 </div>
 <p style="clear: both;"></p>

@@ -2,10 +2,6 @@
 # Kinematics
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
-The code pertaining to the demos in this section is available under the 
-[kinematics tab](https://glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/)
-on [glowscript.org](https://glowscript.org).
-
 ### Fun with springs
 <div style="border-top: 1px solid #999999"><br/></div>
 
