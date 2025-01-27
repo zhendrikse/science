@@ -42,7 +42,9 @@
   <a href="water_sprinkler.html">
     <img alt="Water sprinkler" src="./images/water_sprinkler.png" title="Click to animate"/>
   </a>
-  <figcaption>Simulation of a water sprinkler.</figcaption>
+  <figcaption><br />A model of a water sprinkler, based on the original article and code in 
+  <a href="https://rhettallain.com/2019/11/12/modeling-a-spinning-sprinkler/Simulation">
+  Modelling a spinning Sprinkler</a> by <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

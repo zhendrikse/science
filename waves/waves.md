@@ -10,7 +10,7 @@
   <a href="doppler.html">
     <img alt="Doppler effect" src="./images/doppler_effect.png" title="Click to animate"/>
   </a>
-  <figcaption>Visualisation of the Doppler effect.</figcaption>
+  <figcaption><br/><br/>Visualisation of the Doppler effect for sound waves.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="waves/pool.html">
