@@ -2,6 +2,11 @@
 # Vibrations &amp; Waves
 <div class="header_line"><br/></div>
 
+<blockquote>
+Bring forward what is true. Write it so that it is clear. Defend it to your last breath. &mdash;
+<a href="https://en.wikipedia.org/wiki/Ludwig_Boltzmann">Ludwig Boltzmann</a>
+</blockquote><br/>
+
 ### Wave behaviour in water and air
 <div style="border-top: 1px solid #999999"><br/></div>
 
