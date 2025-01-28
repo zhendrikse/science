@@ -7,7 +7,7 @@ Bring forward what is true. Write it so that it is clear. Defend it to your last
 <a href="https://en.wikipedia.org/wiki/Ludwig_Boltzmann">Ludwig Boltzmann</a>
 </blockquote><br/>
 
-### Wave behaviour in water and air
+### Wave propagation in a pool
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -20,10 +20,30 @@ Bring forward what is true. Write it so that it is clear. Defend it to your last
   </figcaption>
 </figure>
 <figure class="right_image">
+  <a href="waves/pool_with_obstacles.html">
+    <img alt="Swimming pool" src="./images/pool_with_obstacles.png" title="Click to animate"/>
+  </a>
+  <figcaption>Finite difference method in action modelling wave propagation in a pool with obstruction. 
+  </figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+
+### The Doppler effect for sound waves
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
   <a href="waves/doppler.html">
     <img alt="Doppler effect" src="./images/doppler_effect.png" title="Click to animate"/>
   </a>
-  <figcaption><br/><br/>Visualisation of the Doppler effect for sound waves.</figcaption>
+  <figcaption>Visualisation of the Doppler effect for sound waves.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- Space reserved for future picture
+  <figcaption>For the future.</figcaption>
+  -->
 </figure>
 </div>
 <p style="clear: both;"></p>
