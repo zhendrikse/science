@@ -24,7 +24,7 @@ finest that music and poetry can deliver. &mdash;
 
 {% include_relative electromagnetism/electromagnetism.md %}
 
-{% include_relative thermodynamics.md %}
+{% include_relative thermodynamics/thermodynamics.md %}
 
 {% include_relative relativity.md %}
 

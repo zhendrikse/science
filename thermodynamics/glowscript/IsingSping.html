@@ -1,0 +1,354 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, caption, mag_plot, mag_curve, temperature, RELAX_SWEEPS, lattice_size, sweeps, _GS_1, spins, mag, sweep;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "9";
+    title = "\n&#x2022; Written by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a>\n&#x2022; Based on <a href=\"https://stackoverflow.com/questions/36585517/ising-model-in-python\">Ising spin model</a> on Stackoverflow.\n\n";
+    "11";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), center: vec(0, 0, 0), forward: vec(.06, 1["-u"]()["*"](.5), 1["-u"]()["*"](.85)), range: 11, title: title})]);
+    "13";
+    caption = "\\(  H(\\sigma) = \\sum\\limits_{\\langle ij \\rangle} J_{ij} \\sigma_i \\sigma_j - \\mu \\sum\\limits_{j} h_{j} \\sigma_j \\)\n";
+    "15";
+    function Spin() {;
+    }
+    Spin.prototype.__init__ = async function __init__() {
+        var self = this;
+        var x = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var y = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var draw = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.draw : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "draw")){
+            draw = ρσ_kwargs_obj.draw;
+        }
+        "17";
+        self._spin_axis = vec(0, .8, 0);
+        "18";
+        self._x = x;
+        "19";
+        self._y = y;
+        "20";
+        self._spin = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(x, ((await self.is_up())) ? 0 : abs(self._spin_axis.y), y), axis: self._spin_axis, color: color.cyan})]);
+    };
+    if (!Spin.prototype.__init__.__defaults__) Object.defineProperties(Spin.prototype.__init__, {
+        __defaults__ : {value: {draw:true}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["x", "y", "draw"]},
+        __module__ : {value: null}
+    });
+    Spin.__argnames__ = Spin.prototype.__init__.__argnames__;
+    Spin.__handles_kwarg_interpolation__ = Spin.prototype.__init__.__handles_kwarg_interpolation__;
+    Spin.prototype._draw = async function _draw() {
+        var self = this;
+        "24";
+        if (self._spin) {
+            "25";
+            self._spin.axis = self._spin_axis;
+            "26";
+            self._spin.pos = vec(self._x, ((await self.is_up())) ? 0 : abs(self._spin_axis.y), self._y);
+            "27";
+            self._spin.color = ((await self.is_up())) ? color.cyan : color.red;
+        }
+    };
+    if (!Spin.prototype._draw.__module__) Object.defineProperties(Spin.prototype._draw, {
+        __module__ : {value: null}
+    });
+    Spin.prototype.is_up = async function is_up() {
+        var self = this;
+        "30";
+        return self._spin_axis.y[">"](0);
+    };
+    if (!Spin.prototype.is_up.__module__) Object.defineProperties(Spin.prototype.is_up, {
+        __module__ : {value: null}
+    });
+    Spin.prototype.energy = async function energy() {
+        var self = this;
+        "33";
+        return ((await self.is_up())) ? 1 : 1["-u"]()["*"](1);
+    };
+    if (!Spin.prototype.energy.__module__) Object.defineProperties(Spin.prototype.energy, {
+        __module__ : {value: null}
+    });
+    Spin.prototype.flip = async function flip() {
+        var self = this;
+        "36";
+        self._spin_axis = 1["-u"]()["*"](self._spin_axis);
+        "37";
+        (await self._draw());
+    };
+    if (!Spin.prototype.flip.__module__) Object.defineProperties(Spin.prototype.flip, {
+        __module__ : {value: null}
+    });
+    Spin.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Spin.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Spin.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "40";
+    function SpinLattice() {;
+    }
+    SpinLattice.prototype.__init__ = async function __init__() {
+        var self = this;
+        var size = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.size : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "size")){
+            size = ρσ_kwargs_obj.size;
+        }
+        var ρσ_ls, spin_row, _GS_1, column, row;
+        "42";
+        self._spins = ρσ_list_decorate([]);
+        "43";
+        self._size = size;
+        "45";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](size); ρσ_Index1++) {
+            row = ρσ_Index1;
+            "46";
+            spin_row = ρσ_list_decorate([]);
+            "47";
+            for (var ρσ_Index2 = 0; ρσ_Index2["<"](size); ρσ_Index2++) {
+                column = ρσ_Index2;
+                "48";
+                _GS_1 = new Spin;
+                (await _GS_1.__init__(1["-u"]()["*"](size)["/"](2)["+"](row), 1["-u"]()["*"](size)["/"](2)["+"](column)));
+                spin_row.append(_GS_1);
+            }
+            "49";
+            self._spins.append(spin_row);
+        }
+    };
+    if (!SpinLattice.prototype.__init__.__defaults__) Object.defineProperties(SpinLattice.prototype.__init__, {
+        __defaults__ : {value: {size:10}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["size"]},
+        __module__ : {value: null}
+    });
+    SpinLattice.__argnames__ = SpinLattice.prototype.__init__.__argnames__;
+    SpinLattice.__handles_kwarg_interpolation__ = SpinLattice.prototype.__init__.__handles_kwarg_interpolation__;
+    SpinLattice.prototype.flip_at = async function flip_at(x, y) {
+        var self = this;
+        "52";
+        (await ρσ_getitem(ρσ_getitem(self._spins, x), y).flip());
+    };
+    if (!SpinLattice.prototype.flip_at.__argnames__) Object.defineProperties(SpinLattice.prototype.flip_at, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    SpinLattice.prototype.find_neighbors = async function find_neighbors(x, y) {
+        var self = this;
+        var ρσ_ls, left, right, top, bottom;
+        "55";
+        left = [x, y["-"](1["*"](1))];
+        "56";
+        right = [x, y["+"](1)["%"](self._size)];
+        "57";
+        top = [x["-"](1["*"](1)), y];
+        "58";
+        bottom = [x["+"](1)["%"](self._size), y];
+        "60";
+        return ρσ_list_decorate([ (await ρσ_getitem(ρσ_getitem(self._spins, ρσ_getitem(left, 0)), ρσ_getitem(left, 1)).energy()), (await ρσ_getitem(ρσ_getitem(self._spins, ρσ_getitem(right, 0)), ρσ_getitem(right, 1)).energy()), (await ρσ_getitem(ρσ_getitem(self._spins, ρσ_getitem(top, 0)), ρσ_getitem(top, 1)).energy()), (await ρσ_getitem(ρσ_getitem(self._spins, ρσ_getitem(bottom, 0)), ρσ_getitem(bottom, 1)).energy()) ]);
+    };
+    if (!SpinLattice.prototype.find_neighbors.__argnames__) Object.defineProperties(SpinLattice.prototype.find_neighbors, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    SpinLattice.prototype.energy = async function energy(x, y) {
+        var self = this;
+        "66";
+        return 2["*"]((await ρσ_getitem(ρσ_getitem(self._spins, x), y).energy()))["*"]((await sum((await self.find_neighbors(x, y)))));
+    };
+    if (!SpinLattice.prototype.energy.__argnames__) Object.defineProperties(SpinLattice.prototype.energy, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    SpinLattice.prototype.sweep = async function sweep() {
+        var self = this;
+        var ρσ_ls, e, column, row, energy;
+        "69";
+        for (var ρσ_Index3 = 0; ρσ_Index3["<"](self._size); ρσ_Index3++) {
+            row = ρσ_Index3;
+            "70";
+            for (var ρσ_Index4 = 0; ρσ_Index4["<"](self._size); ρσ_Index4++) {
+                column = ρσ_Index4;
+                "71";
+                e = (await spins.energy(row, column));
+                "72";
+                if (e["<="](0)) {
+                    "73";
+                    (await spins.flip_at(row, column));
+                    "74";
+                } else if (exp(1["-u"]()["*"](1)["*"](e)["/"](temperature))[">"](random())) {
+                    "75";
+                    (await spins.flip_at(row, column));
+                }
+            }
+        }
+        "77";
+        energy = 0;
+        "78";
+        for (var ρσ_Index5 = 0; ρσ_Index5["<"](self._size); ρσ_Index5++) {
+            row = ρσ_Index5;
+            "79";
+            for (var ρσ_Index6 = 0; ρσ_Index6["<"](self._size); ρσ_Index6++) {
+                column = ρσ_Index6;
+                "80";
+                energy=energy["+"]((await self.energy(row, column))["/"](self._size["*"](self._size)));
+            }
+        }
+        "82";
+        return energy;
+    };
+    if (!SpinLattice.prototype.sweep.__module__) Object.defineProperties(SpinLattice.prototype.sweep, {
+        __module__ : {value: null}
+    });
+    SpinLattice.prototype.reset = async function reset() {
+        var self = this;
+        var ρσ_ls, column, row;
+        "85";
+        for (var ρσ_Index7 = 0; ρσ_Index7["<"](self._size); ρσ_Index7++) {
+            row = ρσ_Index7;
+            "86";
+            for (var ρσ_Index8 = 0; ρσ_Index8["<"](self._size); ρσ_Index8++) {
+                column = ρσ_Index8;
+                "87";
+                if (!ρσ_getitem(ρσ_getitem(self._spins, row), column).is_up()) {
+                    "88";
+                    (await ρσ_getitem(ρσ_getitem(self._spins, row), column).flip());
+                }
+            }
+        }
+    };
+    if (!SpinLattice.prototype.reset.__module__) Object.defineProperties(SpinLattice.prototype.reset, {
+        __module__ : {value: null}
+    });
+    SpinLattice.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    SpinLattice.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(SpinLattice.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "91";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "93";
+    mag_plot = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Magnetization", xtitle: "Temperature", ytitle: "Magnetization", width: 400, height: 250})]);
+    "94";
+    mag_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.red})]);
+    "96";
+    temperature = 2;
+    "98";
+    RELAX_SWEEPS = 50;
+    "99";
+    lattice_size = 20;
+    "100";
+    sweeps = 100;
+    "101";
+    _GS_1 = new SpinLattice;
+    (await _GS_1.__init__(lattice_size));
+    spins = _GS_1;
+    "102";
+    for (var ρσ_Index9 = .1; ρσ_Index9["<"](5); ρσ_Index9=ρσ_Index9["+"](.1)) {
+        temperature = ρσ_Index9;
+        "103";
+        mag = ρσ_list_decorate([]);
+        "104";
+        for (var ρσ_Index10 = 0; ρσ_Index10["<"](sweeps["+"](RELAX_SWEEPS)); ρσ_Index10++) {
+            sweep = ρσ_Index10;
+            "105";
+            mag.append((await spins.sweep()));
+            "106";
+            (await rate(250));
+            "107";
+            (await spins.reset());
+        }
+        "109";
+        mag_curve.plot(temperature, (await sum(mag.slice(RELAX_SWEEPS)))["/"](sweeps));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
