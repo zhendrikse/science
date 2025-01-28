@@ -66,8 +66,5 @@ while t < 1.02:
     spring.pos = ball1.position()
     spring.axis = spring_length
     t += dt
-print("scene.center=" + str(animation.center))
-print("scene.forward=" + str(animation.forward))
-print("scene.range=" + str(animation.range))
 
 ```
