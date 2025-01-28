@@ -122,9 +122,9 @@ animation.append_to_caption("hue offset = ")
 hue_offset_text = wtext(text="0.0")
 
 animation.append_to_caption("\n\n")
-disturbance_slider = slider(min=0.1, max=1, value=.3, bind=adjust_disturbance)
+disturbance_slider = slider(min=0.1, max=1, value=.2, bind=adjust_disturbance)
 animation.append_to_caption("disturbance magnitude = ")
-disturbance_text = wtext(text="0.3")
+disturbance_text = wtext(text="0.2")
 
 popup = text(text="Click mouse to start", pos=vec(-Lx, 0, 0), billboard=True, color=color.yellow, height=.3)
 animation_duration = 3.5  # seconds
