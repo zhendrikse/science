@@ -7,14 +7,14 @@
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Thermodynamics/program/Hardspheregas">
+  <a href="thermodynamics/boltzmann_gas.html">
     <img alt="Hard sphere gas" src="./images/hard_sphere_gas.png" title="Click to animate"/>
   </a>
   <figcaption>A simulation that shows how the average velocity distribution approaches the theoretically 
   obtained curve.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Thermodynamics/program/Isingspin">
+  <a href="thermodynamics/ising_spin.html">
     <img alt="Ising spin model" src="./images/ising_spin_model.png" title="Click to animate"/>
   </a>
   <figcaption><br/>A two-dimensional Ising spin model showing the magnetization as function of the temperature.

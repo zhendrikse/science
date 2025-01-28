@@ -1,3 +1,4 @@
+```python
 # Web VPython 3.2
 
 from vpython import arrow, canvas, vec, random, color, rate, graph, gcurve, arange, exp
@@ -108,3 +109,5 @@ for temperature in arange(0.1, 5, 0.1):
 
     mag_curve.plot(temperature, sum(mag[RELAX_SWEEPS:]) / sweeps)
 
+
+```

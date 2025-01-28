@@ -1,0 +1,632 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, tan, acos, atan, atan2, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, L, cube_edge_in_meters, atomic_mass, T, room_temperature_in_kelvin, total_number_of_atoms, atoms_per_cubic_meter, avogadro_number, size_helium_atom, universal_gas_constant, k, boltzmann_constant, moles_per_cubic_meter_at_room_temp, conversion_factor_to_real_number_of_atoms, real_number_of_atoms, real_mole_amount, gray, mass, animation, s, _GS_1, box, gas, velocity_binning, total_bins, histogram, gg, theoretical_curve, dv, v, accum, i, vdist, time_counter, sample_size, hit_counter, dt, P;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "5";
+    L = cube_edge_in_meters = 1;
+    "6";
+    atomic_mass = .004;
+    "7";
+    T = room_temperature_in_kelvin = 300;
+    "8";
+    total_number_of_atoms = 200;
+    "9";
+    atoms_per_cubic_meter = 200;
+    "11";
+    avogadro_number = 6.022e23;
+    "12";
+    size_helium_atom = 101325;
+    "13";
+    universal_gas_constant = 8.314;
+    "14";
+    k = boltzmann_constant = 1.3806e-23;
+    "16";
+    moles_per_cubic_meter_at_room_temp = size_helium_atom["*"](1)["/"](universal_gas_constant["*"](room_temperature_in_kelvin));
+    "17";
+    conversion_factor_to_real_number_of_atoms = avogadro_number["*"](moles_per_cubic_meter_at_room_temp)["/"](atoms_per_cubic_meter);
+    "19";
+    real_number_of_atoms = total_number_of_atoms["*"](conversion_factor_to_real_number_of_atoms);
+    "20";
+    real_mole_amount = real_number_of_atoms["/"](avogadro_number);
+    "22";
+    print(moles_per_cubic_meter_at_room_temp, "moles in 1 cubic meter");
+    "23";
+    print(real_number_of_atoms, "atoms in 1 cubic meter");
+    "26";
+    gray = color.gray(.7);
+    "27";
+    mass = atomic_mass["/"](avogadro_number);
+    "29";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), align: "left", height: "500"})]);
+    "30";
+    animation.range = L;
+    "35";
+    animation.title = "\n&#x2022; A \"hard-sphere\" gas, written by Bruce Sherwood, modified by Rob Salgado\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a>.\n\n";
+    "46";
+    s = "  Theoretical and averaged speed distributions (meters/sec).\n  Initially all atoms have the same speed, but collisions\n  change the speeds of the colliding atoms. One of the atoms is\n  marked and leaves a trail so you can follow its path.\n  The theoretical probability function for the velocities in \n  a tiny volume dV is given by the Maxwell-Boltzmann distribution\n  \\(  \nf(\\vec{v}) d^3\\vec{v} = \\bigg [ \\dfrac{m}{2\\pi k_b T} \\bigg ]^{3/2} \\exp \\bigg (-\\dfrac{mv^2}{2 k_b T} \\bigg) d^3\\vec{v} \\) \n  for a system containing a large number of identical non-interacting, \n  non-relativistic classical particles in thermodynamic equilibrium.\n";
+    "47";
+    animation.caption = s;
+    "48";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "50";
+    function Box() {;
+    }
+    Box.prototype.__init__ = async function __init__() {
+        var self = this;
+        var length = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.length : arguments[0];
+        var gas_atom_radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.gas_atom_radius : arguments[1];
+        var vertex_radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.vertex_radius : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "length")){
+            length = ρσ_kwargs_obj.length;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "gas_atom_radius")){
+            gas_atom_radius = ρσ_kwargs_obj.gas_atom_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "vertex_radius")){
+            vertex_radius = ρσ_kwargs_obj.vertex_radius;
+        }
+        var ρσ_ls, dist, box_bottom, box_top, vert1, vert2, vert3, vert4;
+        "52";
+        self._length = length;
+        "53";
+        dist = length["/"](2)["+"](gas_atom_radius);
+        "54";
+        box_bottom = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
+        "55";
+        box_bottom.append(ρσ_list_decorate([ vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), dist), vector(dist, 1["-u"]()["*"](dist), dist), vector(dist, 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)) ]));
+        "57";
+        box_top = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
+        "58";
+        box_top.append(ρσ_list_decorate([ vector(1["-u"]()["*"](dist), dist, 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), dist, dist), vector(dist, dist, dist), vector(dist, dist, 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), dist, 1["-u"]()["*"](dist)) ]));
+        "61";
+        vert1 = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
+        "62";
+        vert2 = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
+        "63";
+        vert3 = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
+        "64";
+        vert4 = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
+        "65";
+        vert1.append(ρσ_list_decorate([ vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), dist, 1["-u"]()["*"](dist)) ]));
+        "66";
+        vert2.append(ρσ_list_decorate([ vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), dist), vector(1["-u"]()["*"](dist), dist, dist) ]));
+        "67";
+        vert3.append(ρσ_list_decorate([ vector(dist, 1["-u"]()["*"](dist), dist), vector(dist, dist, dist) ]));
+        "68";
+        vert4.append(ρσ_list_decorate([ vector(dist, 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)), vector(dist, dist, 1["-u"]()["*"](dist)) ]));
+    };
+    if (!Box.prototype.__init__.__defaults__) Object.defineProperties(Box.prototype.__init__, {
+        __defaults__ : {value: {length:L, gas_atom_radius:.03, vertex_radius:.005}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["length", "gas_atom_radius", "vertex_radius"]},
+        __module__ : {value: null}
+    });
+    Box.__argnames__ = Box.prototype.__init__.__argnames__;
+    Box.__handles_kwarg_interpolation__ = Box.prototype.__init__.__handles_kwarg_interpolation__;
+    Box.prototype.length = async function length() {
+        var self = this;
+        "71";
+        return self._length;
+    };
+    if (!Box.prototype.length.__module__) Object.defineProperties(Box.prototype.length, {
+        __module__ : {value: null}
+    });
+    Box.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Box.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Box.prototype, "__bases__", {value: []});
+
+
+
+    "74";
+    function Gas() {;
+    }
+    Gas.prototype.__init__ = async function __init__() {
+        var self = this;
+        var atom_mass = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.atom_mass : arguments[0];
+        var atom_radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.atom_radius : arguments[1];
+        var number_of_atoms = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.number_of_atoms : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "atom_mass")){
+            atom_mass = ρσ_kwargs_obj.atom_mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "atom_radius")){
+            atom_radius = ρσ_kwargs_obj.atom_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "number_of_atoms")){
+            number_of_atoms = ρσ_kwargs_obj.number_of_atoms;
+        }
+        "76";
+        self._mass = atom_mass;
+        "77";
+        self._number_of_atoms = number_of_atoms;
+        "78";
+        self._atom_radius = atom_radius;
+        "79";
+        self._atoms = ρσ_list_decorate([]);
+        "80";
+        self._atom_momenta = ρσ_list_decorate([]);
+        "81";
+        self._atom_positions = ρσ_list_decorate([]);
+        "82";
+        self._average_kinetic_energy = sqrt(2["*"](atom_mass)["*"](1.5)["*"](k)["*"](T));
+    };
+    if (!Gas.prototype.__init__.__defaults__) Object.defineProperties(Gas.prototype.__init__, {
+        __defaults__ : {value: {atom_mass:mass, atom_radius:.03, number_of_atoms:200}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["atom_mass", "atom_radius", "number_of_atoms"]},
+        __module__ : {value: null}
+    });
+    Gas.__argnames__ = Gas.prototype.__init__.__argnames__;
+    Gas.__handles_kwarg_interpolation__ = Gas.prototype.__init__.__handles_kwarg_interpolation__;
+    Gas.prototype.is_confined_to_a = async function is_confined_to_a(cube) {
+        var self = this;
+        var ρσ_ls, x, y, z, atom_position, theta, phi, p_x, p_y, p_z, i;
+        "86";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](self._number_of_atoms); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "87";
+            x = (await cube.length())["*"](random())["-"](1["*"]((await cube.length()))["/"](2));
+            "88";
+            y = (await cube.length())["*"](random())["-"](1["*"]((await cube.length()))["/"](2));
+            "89";
+            z = (await cube.length())["*"](random())["-"](1["*"]((await cube.length()))["/"](2));
+            "90";
+            atom_position = vec(x, y, z);
+            "91";
+            self._atom_positions.append(atom_position);
+            "93";
+            if ((i === 0 || typeof i === "object" && ρσ_equals(i, 0))) {
+                "94";
+                self._atoms.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: atom_position, radius: self._atom_radius, color: color.cyan, make_trail: true, retain: 100, trail_radius: .3["*"](self._atom_radius)})]));
+                "97";
+            } else {
+                "98";
+                self._atoms.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: atom_position, radius: self._atom_radius, color: gray})]));
+            }
+            "100";
+            theta = pi["*"](random());
+            "101";
+            phi = 2["*"](pi)["*"](random());
+            "102";
+            p_x = self._average_kinetic_energy["*"](sin(theta))["*"](cos(phi));
+            "103";
+            p_y = self._average_kinetic_energy["*"](sin(theta))["*"](sin(phi));
+            "104";
+            p_z = self._average_kinetic_energy["*"](cos(theta));
+            "105";
+            self._atom_momenta.append(vector(p_x, p_y, p_z));
+        }
+    };
+    if (!Gas.prototype.is_confined_to_a.__argnames__) Object.defineProperties(Gas.prototype.is_confined_to_a, {
+        __argnames__ : {value: ["cube"]},
+        __module__ : {value: null}
+    });
+    Gas.prototype.average_kinetic_energy = async function average_kinetic_energy() {
+        var self = this;
+        "108";
+        return self._average_kinetic_energy;
+    };
+    if (!Gas.prototype.average_kinetic_energy.__module__) Object.defineProperties(Gas.prototype.average_kinetic_energy, {
+        __module__ : {value: null}
+    });
+    Gas.prototype.update_with_timestep = async function update_with_timestep(dt) {
+        var self = this;
+        var ρσ_ls, i;
+        "111";
+        var ρσ_Iter2 = range(len(self._atoms));
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            i = ρσ_Index2;
+            "112";
+            ρσ_getitem(self._atoms, i).pos = ρσ_setitem(self._atom_positions, i, ρσ_getitem(self._atom_positions, i)["+"](ρσ_getitem(self._atom_momenta, i)["/"](self._mass)["*"](dt)));
+        }
+    };
+    if (!Gas.prototype.update_with_timestep.__argnames__) Object.defineProperties(Gas.prototype.update_with_timestep, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Gas.prototype.count_collisions_with = async function count_collisions_with(cube) {
+        var self = this;
+        var ρσ_ls, hit_counter, loc, index;
+        "116";
+        hit_counter = 0;
+        "117";
+        var ρσ_Iter3 = range(len(self._atoms));
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            index = ρσ_Index3;
+            "118";
+            loc = ρσ_getitem(self._atom_positions, index);
+            "119";
+            if (abs(loc.x)[">"]((await cube.length())["/"](2))) {
+                "120";
+                if (loc.x["<"](0)) {
+                    "121";
+                    ρσ_getitem(self._atom_momenta, index).x = abs(ρσ_getitem(self._atom_momenta, index).x);
+                    "122";
+                } else {
+                    "123";
+                    ρσ_getitem(self._atom_momenta, index).x = 1["-u"]()["*"](abs(ρσ_getitem(self._atom_momenta, index).x));
+                    "124";
+                    hit_counter=hit_counter["+"](abs(2["*"](ρσ_getitem(self._atom_momenta, index).x)));
+                    "126";
+                }
+            }
+            if (abs(loc.y)[">"]((await cube.length())["/"](2))) {
+                "127";
+                if (loc.y["<"](0)) {
+                    "128";
+                    ρσ_getitem(self._atom_momenta, index).y = abs(ρσ_getitem(self._atom_momenta, index).y);
+                    "129";
+                } else {
+                    "130";
+                    ρσ_getitem(self._atom_momenta, index).y = 1["-u"]()["*"](abs(ρσ_getitem(self._atom_momenta, index).y));
+                    "131";
+                    hit_counter=hit_counter["+"](abs(2["*"](ρσ_getitem(self._atom_momenta, index).y)));
+                    "133";
+                }
+            }
+            if (abs(loc.z)[">"]((await cube.length())["/"](2))) {
+                "134";
+                if (loc.z["<"](0)) {
+                    "135";
+                    ρσ_getitem(self._atom_momenta, index).z = abs(ρσ_getitem(self._atom_momenta, index).z);
+                    "136";
+                } else {
+                    "137";
+                    ρσ_getitem(self._atom_momenta, index).z = 1["-u"]()["*"](abs(ρσ_getitem(self._atom_momenta, index).z));
+                    "138";
+                    hit_counter=hit_counter["+"](abs(2["*"](ρσ_getitem(self._atom_momenta, index).z)));
+                }
+            }
+        }
+        "140";
+        return hit_counter;
+    };
+    if (!Gas.prototype.count_collisions_with.__argnames__) Object.defineProperties(Gas.prototype.count_collisions_with, {
+        __argnames__ : {value: ["cube"]},
+        __module__ : {value: null}
+    });
+    Gas.prototype._check_collisions = async function _check_collisions() {
+        var self = this;
+        var ρσ_ls, hit_list, r2, distance, j, index;
+        "143";
+        hit_list = ρσ_list_decorate([]);
+        "144";
+        r2 = 2["*"](self._atom_radius);
+        "145";
+        r2=r2["*"](r2);
+        "146";
+        var ρσ_Iter4 = range(len(self._atoms));
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            index = ρσ_Index4;
+            "147";
+            for (var ρσ_Index5 = 0; ρσ_Index5["<"](index); ρσ_Index5++) {
+                j = ρσ_Index5;
+                "148";
+                distance = ρσ_getitem(self._atom_positions, index)["-"](1["*"](ρσ_getitem(self._atom_positions, j)));
+                "149";
+                if (mag2(distance)["<"](r2)) {
+                    "150";
+                    hit_list.append(ρσ_list_decorate([ index, j ]));
+                }
+            }
+        }
+        "151";
+        return hit_list;
+    };
+    if (!Gas.prototype._check_collisions.__module__) Object.defineProperties(Gas.prototype._check_collisions, {
+        __module__ : {value: null}
+    });
+    Gas.prototype._collide = async function _collide(atom_index_1, atom_index_2) {
+        var self = this;
+        var ρσ_ls, total_momentum, position_i, position_j, velocity_i, velocity_j, difference_in_velocity, atoms_distance, dx, dy, alpha, d, deltat, total_mass, pcmi, pcmj;
+        "154";
+        total_momentum = ρσ_getitem(self._atom_momenta, atom_index_1)["+"](ρσ_getitem(self._atom_momenta, atom_index_2));
+        "155";
+        position_i = ρσ_getitem(self._atom_positions, atom_index_1);
+        "156";
+        position_j = ρσ_getitem(self._atom_positions, atom_index_2);
+        "157";
+        velocity_i = ρσ_getitem(self._atom_momenta, atom_index_1)["/"](mass);
+        "158";
+        velocity_j = ρσ_getitem(self._atom_momenta, atom_index_2)["/"](mass);
+        "160";
+        difference_in_velocity = velocity_j["-"](1["*"](velocity_i));
+        "161";
+        if ((difference_in_velocity.mag2 === 0 || typeof difference_in_velocity.mag2 === "object" && ρσ_equals(difference_in_velocity.mag2, 0))) {
+            "162";
+            return;
+        }
+        "164";
+        atoms_distance = position_i["-"](1["*"](position_j));
+        "165";
+        if (atoms_distance.mag[">"](self._atom_radius)) {
+            "166";
+            return;
+        }
+        "169";
+        dx = dot(atoms_distance, difference_in_velocity.hat);
+        "170";
+        dy = cross(atoms_distance, difference_in_velocity.hat).mag;
+        "173";
+        alpha = asin(dy["/"](2["*"](self._atom_radius)));
+        "174";
+        d = 2["*"](self._atom_radius)["*"](cos(alpha))["-"](1["*"](dx));
+        "175";
+        deltat = d["/"](difference_in_velocity.mag);
+        "177";
+        position_i = position_i["-"](1["*"](velocity_i)["*"](deltat));
+        "178";
+        position_j = position_j["-"](1["*"](velocity_j)["*"](deltat));
+        "179";
+        total_mass = 2["*"](mass);
+        "182";
+        pcmi = ρσ_getitem(self._atom_momenta, atom_index_1)["-"](1["*"](total_momentum)["*"](mass)["/"](total_mass));
+        "183";
+        pcmj = ρσ_getitem(self._atom_momenta, atom_index_2)["-"](1["*"](total_momentum)["*"](mass)["/"](total_mass));
+        "186";
+        pcmi = pcmi["-"](1["*"](2)["*"](pcmi.dot(norm(atoms_distance)))["*"](norm(atoms_distance)));
+        "187";
+        pcmj = pcmj["-"](1["*"](2)["*"](pcmj.dot(norm(atoms_distance)))["*"](norm(atoms_distance)));
+        "188";
+        ρσ_setitem(self._atom_momenta, atom_index_1, pcmi["+"](total_momentum["*"](mass)["/"](total_mass)));
+        "190";
+        ρσ_setitem(self._atom_momenta, atom_index_2, pcmj["+"](total_momentum["*"](mass)["/"](total_mass)));
+        "191";
+        ρσ_setitem(self._atom_positions, atom_index_1, position_i["+"](ρσ_getitem(self._atom_momenta, atom_index_1)["/"](mass)["*"](deltat)));
+        "193";
+        ρσ_setitem(self._atom_positions, atom_index_2, position_j["+"](ρσ_getitem(self._atom_momenta, atom_index_2)["/"](mass)["*"](deltat)));
+        "194";
+        (await swap_between_bins(velocity_i.mag, ρσ_getitem(self._atom_momenta, atom_index_1).mag["/"](mass)));
+        "195";
+        (await swap_between_bins(velocity_j.mag, ρσ_getitem(self._atom_momenta, atom_index_2).mag["/"](mass)));
+    };
+    if (!Gas.prototype._collide.__argnames__) Object.defineProperties(Gas.prototype._collide, {
+        __argnames__ : {value: ["atom_index_1", "atom_index_2"]},
+        __module__ : {value: null}
+    });
+    Gas.prototype.update_momenta_of_colliding_atoms = async function update_momenta_of_colliding_atoms() {
+        var self = this;
+        var ρσ_ls, ij;
+        "198";
+        var ρσ_Iter6 = (await self._check_collisions());
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            ij = ρσ_Index6;
+            "199";
+            (await self._collide(ρσ_getitem(ij, 0), ρσ_getitem(ij, 1)));
+        }
+    };
+    if (!Gas.prototype.update_momenta_of_colliding_atoms.__module__) Object.defineProperties(Gas.prototype.update_momenta_of_colliding_atoms, {
+        __module__ : {value: null}
+    });
+    Gas.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Gas.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Gas.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+    "202";
+    _GS_1 = new Box;
+    (await _GS_1.__init__());
+    box = _GS_1;
+    "203";
+    _GS_1 = new Gas;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({number_of_atoms: total_number_of_atoms})]);
+    gas = _GS_1;
+    "204";
+    (await gas.is_confined_to_a(box));
+    "206";
+    velocity_binning = 100;
+    "207";
+    async function bin_number_of(velocity) {
+        "208";
+        return int(velocity["/"](velocity_binning));
+    };
+    if (!bin_number_of.__argnames__) Object.defineProperties(bin_number_of, {
+        __argnames__ : {value: ["velocity"]},
+        __module__ : {value: null}
+    });
+
+    "211";
+    total_bins = int(4500["/"](velocity_binning));
+    "212";
+    histogram = ρσ_list_decorate([ 0 ])["*"](total_bins);
+    "213";
+    ρσ_setitem(histogram, (await bin_number_of((await gas.average_kinetic_energy())["/"](mass))), total_number_of_atoms);
+    "215";
+    gg = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 500, height: .4["*"](500), xmax: 3e3, align: "left", xtitle: "speed, m/s", ytitle: "Number of atoms", ymax: total_number_of_atoms["*"](velocity_binning)["/"](1e3)})]);
+    "218";
+    theoretical_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.blue, width: 2})]);
+    "219";
+    dv = 10;
+    "220";
+    var ρσ_Iter7 = range(0, 3001["+"](dv), dv);
+    ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+    for (var ρσ_Index7 of ρσ_Iter7) {
+        v = ρσ_Index7;
+        "221";
+        theoretical_curve.plot(v, velocity_binning["/"](dv)["*"](total_number_of_atoms)["*"](4)["*"](pi)["*"](Math.pow((mass["/"](2["*"](pi)["*"](k)["*"](T))), 1.5))["*"](exp(1["-u"]()["*"](.5)["*"](mass)["*"](Math.pow(v, 2))["/"](k["*"](T))))["*"](Math.pow(v, 2))["*"](dv));
+    }
+    "224";
+    accum = ρσ_list_decorate([]);
+    "225";
+    var ρσ_Iter8 = range(int(3e3["/"](velocity_binning)));
+    ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+    for (var ρσ_Index8 of ρσ_Iter8) {
+        i = ρσ_Index8;
+        "226";
+        accum.append(ρσ_list_decorate([ velocity_binning["*"](i["+"](.5)), 0 ]));
+    }
+    "227";
+    vdist = ρσ_interpolate_kwargs.call(this, gvbars, [ρσ_desugar_kwargs({color: color.red, delta: velocity_binning})]);
+    "230";
+    async function swap_between_bins(velocity_1, velocity_2) {
+        var ρσ_ls, bin_1, bin_2;
+        "231";
+        bin_1 = (await bin_number_of(velocity_1));
+        "232";
+        bin_2 = (await bin_number_of(velocity_2));
+        "233";
+        if ((bin_1 === bin_2 || typeof bin_1 === "object" && ρσ_equals(bin_1, bin_2))) {
+            "234";
+            return;
+            "235";
+        }
+        if (bin_1[">="](len(histogram)) || bin_2[">="](len(histogram))) {
+            "236";
+            return;
+        }
+        "237";
+        ρσ_setitem(histogram, bin_1, ρσ_getitem(histogram, bin_1)["-"](1));
+        "238";
+        ρσ_setitem(histogram, bin_2, ρσ_getitem(histogram, bin_2)["+"](1));
+    };
+    if (!swap_between_bins.__argnames__) Object.defineProperties(swap_between_bins, {
+        __argnames__ : {value: ["velocity_1", "velocity_2"]},
+        __module__ : {value: null}
+    });
+
+    "241";
+    total_bins = 0;
+    "242";
+    time_counter = 0;
+    "243";
+    sample_size = 1e3;
+    "244";
+    hit_counter = 0;
+    "246";
+    print("N,T,V,P, PV/(NT)");
+    "247";
+    dt = 1e-5;
+    "249";
+    while (true) {
+        "250";
+        (await rate(300));
+        "252";
+        time_counter=time_counter["+"](1);
+        "255";
+        var ρσ_Iter9 = range(len(accum));
+        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+        for (var ρσ_Index9 of ρσ_Iter9) {
+            i = ρσ_Index9;
+            "256";
+            ρσ_setitem(ρσ_getitem(accum, i), 1, total_bins["*"](ρσ_getitem(ρσ_getitem(accum, i), 1))["+"](ρσ_getitem(histogram, i))["/"](total_bins["+"](1)));
+            "257";
+        }
+        if (ρσ_equals(total_bins["%"](10), 0)) {
+            "258";
+            vdist.data = accum;
+        }
+        "259";
+        total_bins=total_bins["+"](1);
+        "261";
+        (await gas.update_with_timestep(dt));
+        "262";
+        (await gas.update_momenta_of_colliding_atoms());
+        "263";
+        hit_counter=hit_counter["+"]((await gas.count_collisions_with(box)));
+        "265";
+        if ((time_counter === sample_size || typeof time_counter === "object" && ρσ_equals(time_counter, sample_size))) {
+            "267";
+            P = 1["/"](3)["*"](conversion_factor_to_real_number_of_atoms)["*"](hit_counter["/"](Math.pow(L, 2)))["/"](dt["*"](sample_size));
+            "268";
+            time_counter = 0;
+            "269";
+            hit_counter = 0;
+            "271";
+            print("[", total_number_of_atoms, "(", round(real_mole_amount, 4), ")", ",", T, ",", Math.pow(L, 3), ",", round(P, 4), "(", round(P["/"](size_helium_atom), 4), ")", ",", P["*"](Math.pow(L, 3))["/"](real_number_of_atoms["*"](T)), "]");
+        }
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
