@@ -18,9 +18,8 @@
   <a href="molecularphys/dna.html">
     <img alt="DNA" src="./images/dna.png" title="Click to animate"/>
   </a>
-  <figcaption>"[...] the specific pairing we have postulated immediately suggests 
-  a possible copying mechanism for the genetic material" &mdash;
-  <a href="https://www.sciencehistory.org/education/scientific-biographies/james-watson-francis-crick-maurice-wilkins-and-rosalind-franklin/">J. Watson &amp; F. Crick</a>
+  <figcaption>"Thermodynamics, correctly interpreted, does not just allow Darwinian evolution; it favors it. &mdash; 
+  <a href="https://en.wikipedia.org/wiki/Ludwig_Boltzmann">Ludwig Boltzmann</a>
   </figcaption>
 </figure>
 </div>

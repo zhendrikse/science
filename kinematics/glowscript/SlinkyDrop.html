@@ -1,0 +1,247 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, cone, curve, ellipsoid, extrusion, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, g, L0, k, _GS_1, ball1, ball2, ball3, stick, stick2, floor, spring, c, t, dt, spring_length, spring_force, force_on_ball_1, force_on_ball_2;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "11";
+    title = "Click to drop slinky and ball\n\n&#x2022; Original by <a href=\"https://trinket.io/glowscript/e5f14ebee1\">Rhett Allain<\/a>\n&#x2022; Belongs to <a href=\"https://rhettallain.com/2019/02/06/modeling-a-falling-slinky/\">this article</a> \n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "13";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, center: vector(0, 1["-u"]()["*"](3.25), 1.2), forward: vector(.25, 1["-u"]()["*"](.15), 1["-u"]()["*"](.95)), range: 5.4, background: color.gray(.075)})]);
+    "15";
+    g = vector(0, 1["-u"]()["*"](9.8), 0);
+    "16";
+    L0 = 2;
+    "17";
+    k = 100;
+    "19";
+    function Ball() {;
+    }
+    Ball.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
+        var mass = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[1];
+        var radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[2];
+        var colour = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[3];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
+            mass = ρσ_kwargs_obj.mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        "21";
+        self._mass = mass;
+        "22";
+        self._velocity = vector(0, 0, 0);
+        "23";
+        self._ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, color: colour})]);
+    };
+    if (!Ball.prototype.__init__.__defaults__) Object.defineProperties(Ball.prototype.__init__, {
+        __defaults__ : {value: {position:vector(0, 0, 0), mass:5, radius:.25, colour:color.red}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "mass", "radius", "colour"]},
+        __module__ : {value: null}
+    });
+    Ball.__argnames__ = Ball.prototype.__init__.__argnames__;
+    Ball.__handles_kwarg_interpolation__ = Ball.prototype.__init__.__handles_kwarg_interpolation__;
+    Ball.prototype.distance_to = async function distance_to(other) {
+        var self = this;
+        "26";
+        return (await other.position())["-"](1["*"]((await self.position())));
+    };
+    if (!Ball.prototype.distance_to.__argnames__) Object.defineProperties(Ball.prototype.distance_to, {
+        __argnames__ : {value: ["other"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.position = async function position() {
+        var self = this;
+        "29";
+        return self._ball.pos;
+    };
+    if (!Ball.prototype.position.__module__) Object.defineProperties(Ball.prototype.position, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.mass = async function mass() {
+        var self = this;
+        "32";
+        return self._mass;
+    };
+    if (!Ball.prototype.mass.__module__) Object.defineProperties(Ball.prototype.mass, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.move = async function move() {
+        var self = this;
+        var force__vector = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? move.__defaults__.force__vector : arguments[0];
+        var dt = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? move.__defaults__.dt : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "force__vector")){
+            force__vector = ρσ_kwargs_obj.force__vector;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "dt")){
+            dt = ρσ_kwargs_obj.dt;
+        }
+        var ρσ_ls, acceleration_vector;
+        "36";
+        acceleration_vector = force__vector["/"]((await self.mass()));
+        "37";
+        self._velocity=self._velocity["+"](acceleration_vector["*"](dt));
+        "38";
+        self._ball.pos=self._ball.pos["+"](self._velocity["*"](dt));
+    };
+    if (!Ball.prototype.move.__defaults__) Object.defineProperties(Ball.prototype.move, {
+        __defaults__ : {value: {force__vector:vector(0, 0, 0), dt:.01}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["force__vector", "dt"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Ball.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Ball.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "41";
+    _GS_1 = new Ball;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vector(0, L0["/"](2), 0)})]);
+    ball1 = _GS_1;
+    "42";
+    _GS_1 = new Ball;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: (await ball1.position())["+"](vector(0, 1["-u"]()["*"](L0)["-"](1["*"]((await ball1.mass()))["*"](mag(g))["/"](k)), 0))})]);
+    ball2 = _GS_1;
+    "43";
+    _GS_1 = new Ball;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: (await ball2.position())["+"](vector(L0, 0, 0)), colour: color.yellow})]);
+    ball3 = _GS_1;
+    "45";
+    stick = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: (await ball2.position())["-"](1["*"](vector(L0, 2.75["*"](L0), 0))), axis: vector(0, 3["*"](L0), 0), radius: L0["/"](15), color: color.cyan})]);
+    "46";
+    stick2 = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: (await ball2.position())["-"](1["*"](vector(L0, 0, 0))), axis: vector(L0["/"](2), 0, 0), radius: L0["/"](15), color: color.cyan})]);
+    "47";
+    floor = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(0, 1["-u"]()["*"](3.5)["*"](L0), 0), length: 5["*"](L0), width: L0, height: .1, color: color.magenta})]);
+    "49";
+    spring = ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: (await ball1.position()), axis: (await ball1.distance_to(ball2)), radius: .2, thickness: .05, coils: 15})]);
+    "51";
+    c = .5;
+    "52";
+    t = 0;
+    "53";
+    dt = .01;
+    "55";
+    (await animation.waitfor("click"));
+    "56";
+    while (t["<"](1.02)) {
+        "57";
+        (await rate(25));
+        "58";
+        spring_length = (await ball1.distance_to(ball2));
+        "59";
+        spring_force = 1["-u"]()["*"](k)["*"](mag(spring_length)["-"](1["*"](L0)))["*"](norm(spring_length));
+        "60";
+        force_on_ball_1 = (await ball1.mass())["*"](g)["-"](1["*"](spring_force));
+        "61";
+        force_on_ball_2 = (await ball2.mass())["*"](g)["+"](spring_force);
+        "62";
+        (await ball1.move(force_on_ball_1, dt));
+        "63";
+        (await ball2.move(force_on_ball_2, dt));
+        "64";
+        (await ball3.move(g["*"]((await ball3.mass())), dt));
+        "65";
+        spring.pos = (await ball1.position());
+        "66";
+        spring.axis = spring_length;
+        "67";
+        t=t["+"](dt);
+    }
+    "68";
+    print("scene.center="["+"](str(animation.center)));
+    "69";
+    print("scene.forward="["+"](str(animation.forward)));
+    "70";
+    print("scene.range="["+"](str(animation.range)));
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

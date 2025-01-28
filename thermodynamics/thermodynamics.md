@@ -2,6 +2,12 @@
 # Thermodynamics
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
+<blockquote>
+Available energy is the main object at stake in the struggle for existence 
+and the evolution of the world. &mdash; 
+<a href="https://en.wikipedia.org/wiki/Ludwig_Boltzmann">Ludwig Boltzmann</a>
+</blockquote>
+
 ### Boltzmann gas &amp a two-dimensional Ising spin model
 <div style="border-top: 1px solid #999999"><br/></div>
 

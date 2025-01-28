@@ -28,7 +28,7 @@ finest that music and poetry can deliver. &mdash;
 
 {% include_relative relativity.md %}
 
-{% include_relative kinematics.md %}
+{% include_relative kinematics/kinematics.md %}
 
 {% include_relative footer.md %}
 
