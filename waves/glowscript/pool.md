@@ -23,7 +23,7 @@ class Wave:
         self._y = y
         self._hue = 2.55
         self._radius = 0.03
-        self._disturbance_magnitude = 0.3
+        self._disturbance_magnitude = 0.2
         self._time = 0
         self._initialize_wave_data()
         self._old, self._new, self._surface = [], [], []
