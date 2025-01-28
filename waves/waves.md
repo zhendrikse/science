@@ -20,7 +20,7 @@ Bring forward what is true. Write it so that it is clear. Defend it to your last
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="waves/pool_with_obstacles.html">
+  <a href="waves/pool_with_obstacle.html">
     <img alt="Swimming pool" src="./images/pool_with_obstacles.png" title="Click to animate"/>
   </a>
   <figcaption>Finite difference method in action modelling wave propagation in a pool with obstruction. 
