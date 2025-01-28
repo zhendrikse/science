@@ -11,12 +11,6 @@ Hoe vertaalt dit zich in HTML?
 
 <br/><br/>
 
-<details>
-<summary>Kan ik hier includen</summary>
-
-{% include_relative glowscript/ising_spin.py %}
-
-</details>
 
 {% include_relative glowscript/IsingSpin.html %}
 
