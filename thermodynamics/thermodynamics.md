@@ -6,9 +6,9 @@
 Available energy is the main object at stake in the struggle for existence 
 and the evolution of the world. &mdash; 
 <a href="https://en.wikipedia.org/wiki/Ludwig_Boltzmann">Ludwig Boltzmann</a>
-</blockquote>
+</blockquote><br/>
 
-### Boltzmann gas &amp a two-dimensional Ising spin model
+### Boltzmann gas &amp; a two-dimensional Ising spin model
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
