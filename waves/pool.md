@@ -5,6 +5,3 @@
 
 {% include_relative glowscript/Pool.html %}
 
-# Wave propagation around an obstacle
-
-{% include_relative glowscript/PoolWithObstacle.html %}
