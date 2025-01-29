@@ -1,6 +1,11 @@
 <a name="nature"></a>
-# Nature models
+# Our daily environment
 <div class="header_line"><br/></div>
+
+<blockquote>
+If I have ever made any valuable discoveries, it has been due more to patient attention, than to any other talent.
+&mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
+</blockquote><br/>
 
 ### Flocking birds &amp; seashells
 <div style="border-top: 1px solid #999999"><br/></div>
@@ -45,6 +50,30 @@
   <figcaption><br />A model of a water sprinkler, based on the original article and code in 
   <a href="https://rhettallain.com/2019/11/12/modeling-a-spinning-sprinkler/Simulation">
   Modelling a spinning Sprinkler</a> by <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+### Swimming pool &amp; falling chain
+
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="nature/pool.html">
+    <img alt="Swimming pool" src="./images/pool.png" title="Click to animate"/>
+  </a>
+  <figcaption>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
+  <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
+  </figcaption>
+</figure>
+<figure class="left_image">
+  <a href="nature/chain_drop">
+    <img alt="Chain from table" src="./images/chain_from_table.png" title="Click to animate"/>
+  </a>
+  <figcaption>Chain falling from table, based on the original 
+  <a href="https://www.youtube.com/watch?v=vXp1hW_t-bo">video</a> by 
+  <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

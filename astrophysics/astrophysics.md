@@ -2,6 +2,11 @@
 # Astrophysics
 <div class="header_line"><br/></div>
 
+<blockquote>
+You have to make the rules, not follow them.
+&mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
+</blockquote><br/>
+
 ### Daylight variations &mdash; sun-earth-moon model
 <div style="border-top: 1px solid #999999"><br/></div>
 

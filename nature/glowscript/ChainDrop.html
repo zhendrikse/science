@@ -1,0 +1,294 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+    fontloading();
+    await waitforfonts();
+
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, gravitational_force_vector, amount_hanging_over_edge, _GS_1, chain, table_length, table_height, table, corner, le, be, t, dt, popup;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "8";
+    title = "\n&#x2022; Based on original by <a href=\"https://trinket.io/glowscript/bbe791bbfe7d\">Rhett Allain<\/a>\n&#x2022; Belongs to <a href=\"https://www.youtube.com/watch?v=vXp1hW_t-bo\">this video</a> \n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "10";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, color: color.gray(.075), center: vec(.031, 1["-u"]()["*"](.58), 1["-u"]()["*"](.19)), forward: vec(1["-u"]()["*"](.32), 1["-u"]()["*"](.7), 1["-u"]()["*"](.64)), range: 1})]);
+    "12";
+    gravitational_force_vector = vector(0, 1["-u"]()["*"](9.8), 0);
+    "14";
+    function Chain() {;
+    }
+    Chain.prototype.__init__ = async function __init__() {
+        var self = this;
+        var amount_hanging_over_edge = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.amount_hanging_over_edge : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "amount_hanging_over_edge")){
+            amount_hanging_over_edge = ρσ_kwargs_obj.amount_hanging_over_edge;
+        }
+        var ρσ_ls, total_spring_constant, rt;
+        "16";
+        self._balls = ρσ_list_decorate([]);
+        "17";
+        total_spring_constant = 300;
+        "18";
+        self._total_amount_balls = 20;
+        "19";
+        self._individual_spring_constant = total_spring_constant["/"](self._total_amount_balls);
+        "20";
+        self._mass = .1;
+        "21";
+        self._length = 1;
+        "22";
+        self._inter_ball_chain_length = self._length["/"](self._total_amount_balls["-"](1["*"](1)));
+        "24";
+        rt = vector(0, 0, 0);
+        "25";
+        while (rt.x[">"](1["-u"]()["*"](self._length["-"](1["*"](amount_hanging_over_edge))))) {
+            "26";
+            rt=rt["+"](vector(1["-u"]()["*"](self._inter_ball_chain_length), 0, 0));
+        }
+        "28";
+        rt=rt["+"](vector(self._inter_ball_chain_length, 0, 0));
+        "29";
+        while (rt.x["<="](0)) {
+            "30";
+            self._balls=self._balls["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: rt, radius: (await self.ball_radius()), m: self._mass["/"](self._total_amount_balls), p: vector(0, 0, 0), on: true})]) ]));
+            "31";
+            rt=rt["+"](vector(self._inter_ball_chain_length, 0, 0));
+        }
+        "33";
+        ρσ_getitem(self._balls, 1["-u"]()["*"](1)).on = false;
+        "35";
+        rt=rt["+"](vector(1["-u"]()["*"](self._inter_ball_chain_length), 0, 0));
+        "36";
+        while (rt.y[">"](1["-u"]()["*"](amount_hanging_over_edge))) {
+            "37";
+            rt=rt["+"](vector(0, 1["-u"]()["*"](self._inter_ball_chain_length), 0));
+            "38";
+            self._balls = self._balls["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: rt, radius: (await self.ball_radius()), m: self._mass["/"](self._total_amount_balls), p: vector(0, 0, 0), on: false})]) ]));
+        }
+    };
+    if (!Chain.prototype.__init__.__defaults__) Object.defineProperties(Chain.prototype.__init__, {
+        __defaults__ : {value: {amount_hanging_over_edge:.2}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["amount_hanging_over_edge"]},
+        __module__ : {value: null}
+    });
+    Chain.__argnames__ = Chain.prototype.__init__.__argnames__;
+    Chain.__handles_kwarg_interpolation__ = Chain.prototype.__init__.__handles_kwarg_interpolation__;
+    Chain.prototype.total_balls = async function total_balls() {
+        var self = this;
+        "41";
+        return self._total_amount_balls;
+    };
+    if (!Chain.prototype.total_balls.__module__) Object.defineProperties(Chain.prototype.total_balls, {
+        __module__ : {value: null}
+    });
+    Chain.prototype.ball_radius = async function ball_radius() {
+        var self = this;
+        "44";
+        return self._length["/"](50);
+    };
+    if (!Chain.prototype.ball_radius.__module__) Object.defineProperties(Chain.prototype.ball_radius, {
+        __module__ : {value: null}
+    });
+    Chain.prototype.length = async function length() {
+        var self = this;
+        "47";
+        return self._length;
+    };
+    if (!Chain.prototype.length.__module__) Object.defineProperties(Chain.prototype.length, {
+        __module__ : {value: null}
+    });
+    Chain.prototype.update = async function update(dt) {
+        var self = this;
+        var ρσ_ls, ball;
+        "50";
+        (await self._update_forces());
+        "51";
+        var ρσ_Iter1 = self._balls;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            ball = ρσ_Index1;
+            "52";
+            ball.p = ball.p["+"](ball.F["*"](dt));
+            "53";
+            ball.pos = ball.pos["+"](ball.p["*"](dt)["/"](ball.m));
+        }
+    };
+    if (!Chain.prototype.update.__argnames__) Object.defineProperties(Chain.prototype.update, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Chain.prototype._update_forces = async function _update_forces() {
+        var self = this;
+        var ρσ_ls, position_right_ball, position_left_ball, force_to_left, force_to_right, gravitational_force, i, position_vector, ball;
+        "56";
+        position_right_ball = ρσ_getitem(self._balls, 1).pos["-"](1["*"](ρσ_getitem(self._balls, 0).pos));
+        "57";
+        position_left_ball = ρσ_getitem(self._balls, 1["-u"]()["*"](2)).pos["-"](1["*"](ρσ_getitem(self._balls, 1["-u"]()["*"](1)).pos));
+        "59";
+        ρσ_getitem(self._balls, 0).F = self._individual_spring_constant["*"](mag(position_right_ball)["-"](1["*"](self._inter_ball_chain_length)))["*"](norm(position_right_ball))["+"](ρσ_getitem(self._balls, 0).m["*"](gravitational_force_vector));
+        "61";
+        ρσ_getitem(self._balls, 1["-u"]()["*"](1)).F = self._individual_spring_constant["*"](mag(position_left_ball)["-"](1["*"](self._inter_ball_chain_length)))["*"](norm(position_left_ball))["+"](ρσ_getitem(self._balls, 1["-u"]()["*"](1)).m["*"](gravitational_force_vector));
+        "64";
+        for (var ρσ_Index2 = 1; ρσ_Index2["<"](self._total_amount_balls["-"](1["*"](1))); ρσ_Index2++) {
+            i = ρσ_Index2;
+            "65";
+            position_left_ball = ρσ_getitem(self._balls, i["-"](1["*"](1))).pos["-"](1["*"](ρσ_getitem(self._balls, i).pos));
+            "66";
+            position_right_ball = ρσ_getitem(self._balls, i["+"](1)).pos["-"](1["*"](ρσ_getitem(self._balls, i).pos));
+            "68";
+            force_to_left = self._individual_spring_constant["*"](mag(position_left_ball)["-"](1["*"](self._inter_ball_chain_length)))["*"](norm(position_left_ball));
+            "69";
+            force_to_right = self._individual_spring_constant["*"](mag(position_right_ball)["-"](1["*"](self._inter_ball_chain_length)))["*"](norm(position_right_ball));
+            "70";
+            gravitational_force = ρσ_getitem(self._balls, i).m["*"](gravitational_force_vector);
+            "72";
+            ρσ_getitem(self._balls, i).F = force_to_left["+"](force_to_right)["+"](gravitational_force);
+        }
+        "76";
+        var ρσ_Iter3 = self._balls;
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            ball = ρσ_Index3;
+            "77";
+            position_vector = vector(0, 0, 0);
+            "78";
+            if (ball.pos.y["<"](0) && ball.pos.y[">"](1["-u"]()["*"](self._inter_ball_chain_length)["/"](2)) && ball.pos.x["<"](1["-u"]()["*"](self._inter_ball_chain_length)["/"](2))) {
+                "79";
+                position_vector = vector(0, 1["-u"]()["*"](ball.pos.y), 0);
+                "80";
+            }
+            if (ball.pos.x["<"](0) && ball.pos.x[">"](1["-u"]()["*"](self._inter_ball_chain_length)["/"](2)) && ball.pos.y["<"](1["-u"]()["*"](self._inter_ball_chain_length)["/"](2))) {
+                "81";
+                position_vector = vector(1["-u"]()["*"](ball.pos.x), 0, 0);
+                "82";
+            }
+            if (ball.pos.x["<"](0) && ball.pos.x[">"](1["-u"]()["*"](self._inter_ball_chain_length)["/"](2)) && ball.pos.y["<"](0) && ball.pos.y[">"](1["-u"]()["*"](self._inter_ball_chain_length)["/"](2))) {
+                "83";
+                position_vector = vector(1["-u"]()["*"](ball.pos.x), 1["-u"]()["*"](ball.pos.y), 0);
+            }
+            "84";
+            ball.F=ball.F["+"]((await self.total_balls())["/"](2)["*"](self._individual_spring_constant)["*"](position_vector));
+        }
+    };
+    if (!Chain.prototype._update_forces.__module__) Object.defineProperties(Chain.prototype._update_forces, {
+        __module__ : {value: null}
+    });
+    Chain.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Chain.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Chain.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "86";
+    amount_hanging_over_edge = .2;
+    "87";
+    _GS_1 = new Chain;
+    (await _GS_1.__init__(amount_hanging_over_edge));
+    chain = _GS_1;
+    "89";
+    table_length = 1;
+    "90";
+    table_height = .1;
+    "91";
+    table = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](table_length)["/"](2)["-"](1["*"](.01)), 1["-u"]()["*"](table_height)["/"](2)["-"](1["*"](.01)), 0), size: vector(table_length, table_height, 3["*"](table_height)), opacity: .3})]);
+    "93";
+    corner = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, (await chain.length())["/"](10), 0), radius: (await chain.ball_radius())["/"](2), color: color.yellow})]);
+    "94";
+    le = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"]((await chain.length())["-"](1["*"](amount_hanging_over_edge))), (await chain.length())["/"](10), 0), radius: (await chain.ball_radius())["/"](2), color: color.magenta})]);
+    "95";
+    be = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector((await chain.length())["/"](10), 1["-u"]()["*"](amount_hanging_over_edge), 0), radius: (await chain.ball_radius())["/"](2), color: color.cyan})]);
+    "97";
+    t = 0;
+    "98";
+    dt = 1e-4;
+    "101";
+    popup = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "Click mouse to start", pos: vec(1["-u"]()["*"](1.5), 1["-u"]()["*"](2), 0), billboard: true, color: color.yellow, height: .25})]);
+    "102";
+    (await animation.waitfor("click"));
+    "103";
+    popup.visible = false;
+    "104";
+    while (t["<"](1)) {
+        "105";
+        (await rate(1e3));
+        "106";
+        (await chain.update(dt));
+        "107";
+        t=t["+"](dt);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

@@ -62,16 +62,6 @@ You may be surprised though to find out what happens when you drop such a simple
 </div>
 <p style="clear: both;"></p>
 
-### Model of chain drop from table
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<figure>
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Chainfromtable">
-    <img alt="Chain from table" width="40%" height="40%" src="./images/chain_from_table.png" title="Click to animate"/>
-  </a>
-</figure>
-
-
 ### Ball on sliding ramp &amp; ball hitting block
 <div style="border-top: 1px solid #999999"><br/></div>
 

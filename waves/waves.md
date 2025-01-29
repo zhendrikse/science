@@ -12,19 +12,21 @@ Bring forward what is true. Write it so that it is clear. Defend it to your last
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="waves/pool.html">
-    <img alt="Swimming pool" src="./images/pool.png" title="Click to animate"/>
-  </a>
-  <figcaption>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
-  <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
-  </figcaption>
-</figure>
-<figure class="right_image">
   <a href="waves/pool_with_obstacle.html">
     <img alt="Swimming pool" src="./images/pool_with_obstacle.png" title="Click to animate"/>
   </a>
-  <figcaption><br/><a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">Central finite difference</a> 
-  method used to model wave propagation in a pool with an obstruction. 
+  <figcaption><br/>
+  <a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">Central finite difference method</a> 
+  used to model wave propagation in a pool with an obstruction. 
+  </figcaption>
+</figure>
+<figure class="right_image">
+  <a href="waves/pool_with_moving_obstacle.html">
+    <img alt="Swimming pool" src="./images/pool_with_moving_obstacle.png" title="Click to animate"/>
+  </a>
+  <figcaption><br/>
+  <a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">Central finite difference method</a> 
+  used to model wave propagation in a pool with a moving obstruction. 
   </figcaption>
 </figure>
 </div>
