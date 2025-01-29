@@ -1,20 +1,28 @@
 ```python
 Web VPython 3.2
 
-title="""Kepler's law of equal areas
+title="""
 Plots the orbit of a planet in an eccentric orbit to illustrate
 the sweeping out of equal areas in equal times, with sun at focus.
 The eccentricity of the orbit is random and determined by the 
 initial velocity. The program uses normalised units (G =1).
 
 &#x2022; Original by program by Peter Borcherds, University of Birmingham, England
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in this <a href="https://github.com/zhendrikse/physics-in-python/">GitHub repository</a>
 
+"""
+
+caption = """<ol><li>The shape of each orbit is an ellipse, with the sun at one focus of the ellipse.</li>
+  <li>The planets move faster when they are closer to the sun, in such a way that a
+ line drawn from the sun to any planet sweeps out equal areas in equal times.</li>
+  <li>The outer planets move slower than the inner ones, in such a way that the
+ cube of the length of the ellipses semimajor axis is proportional to the square
+ of the period of the orbit</li></ol>
 """
 
 from vpython import *
 
-animation = canvas(title=title, background=color.gray(0.144), forward=vector(0.0222862, 0.928369, -0.370991))
+animation = canvas(title=title, width=800, height=600, range=1, forward=vector(0.0222862, 0.928369, -0.370991), caption=caption)
 
 # Default velocity gives a satisfactory range of eccentricities
 # velocity = -vector(0.984,0,0)   # gives period of 12.0 "months"
