@@ -18,8 +18,8 @@
   <a href="mathematics/topology.html">
     <img alt="Conchoid" src="./images/geometry/conchoid.png" width="90%" title="Click to animate"/>
   </a>
-  <figcaption>"As water finds its way back to the sea, I find a way 
-  back to me &mdash; <a href="https://ktolnoe.com/en-nl">K. Tolnoe</a>.
+  <figcaption>"What we know is a drop, what we don't know is an ocean.”
+  &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
   For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>

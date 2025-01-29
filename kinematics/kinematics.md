@@ -2,6 +2,11 @@
 # Kinematics
 <div class="header_line"><br/></div>
 
+<blockquote>
+I can calculate the motion of heavenly bodies but not the madness of people.
+&mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
+</blockquote><br/>
+
 ### Fun with springs
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -45,7 +50,8 @@ You may be surprised though to find out what happens when you drop such a simple
   <a href="kinematics/newtons_pendulum.html">
     <img alt="Newton's pendulum" src="./images/newtons_pendulum.png" title="Click to animate" align="top"/>
   </a>
-  <figcaption>Newton&apos; pendulum.</figcaption>
+  <figcaption>"[...] and to every action there is always an equal and opposite or contrary, reaction”
+  &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="kinematics/newtons_cannonball.html">
