@@ -24,9 +24,9 @@ Bring forward what is true. Write it so that it is clear. Defend it to your last
   <a href="waves/pool_with_moving_obstacle.html">
     <img alt="Swimming pool" src="./images/pool_with_moving_obstacle.png" title="Click to animate"/>
   </a>
-  <figcaption><br/>
-  <a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">Central finite difference method</a> 
-  used to model wave propagation in a pool with a moving obstruction. 
+  <figcaption>The same
+  <a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">central finite difference method</a> 
+  applied to a moving obstruction. 
   </figcaption>
 </figure>
 </div>
