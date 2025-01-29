@@ -42,13 +42,13 @@ You may be surprised though to find out what happens when you drop such a simple
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Newtonspendulum">
+  <a href="kinematics/newtons_pendulum.html">
     <img alt="Newton's pendulum" src="./images/newtons_pendulum.png" title="Click to animate" align="top"/>
   </a>
   <figcaption>Newton&apos; pendulum.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Newtonscannon">
+  <a href="kinematics/newtons_cannonball.html">
     <img alt="Newton's cannon" src="./images/newtons_cannon.png" title="Click to animate"/>
   </a>
   <figcaption>Which velocity is needed to shoot a cannonball into orbit?</figcaption>
