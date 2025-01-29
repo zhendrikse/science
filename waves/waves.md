@@ -25,8 +25,8 @@ Bring forward what is true. Write it so that it is clear. Defend it to your last
     <img alt="Swimming pool" src="./images/pool_with_moving_obstacle.png" title="Click to animate"/>
   </a>
   <figcaption>The same
-  <a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">central finite difference method</a> 
-  applied to a moving obstruction. 
+  <a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">finite difference method</a> 
+  applied to wave propagation in a pool with a moving obstruction. 
   </figcaption>
 </figure>
 </div>
