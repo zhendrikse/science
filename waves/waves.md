@@ -23,7 +23,8 @@ Bring forward what is true. Write it so that it is clear. Defend it to your last
   <a href="waves/pool_with_obstacle.html">
     <img alt="Swimming pool" src="./images/pool_with_obstacle.png" title="Click to animate"/>
   </a>
-  <figcaption>Finite difference method used to model wave propagation in a pool with an obstruction. 
+  <figcaption><a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">Central finite difference</a> 
+  method used to model wave propagation in a pool with an obstruction. 
   </figcaption>
 </figure>
 </div>
