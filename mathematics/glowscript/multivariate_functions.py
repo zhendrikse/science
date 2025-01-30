@@ -95,11 +95,11 @@ base = [x_hat, y_hat, z_hat]
 
 class Base:
     def __init__(self, xx, yy, zz, axis_color, tick_marks_color, num_tick_marks):
-        base_ = [[x for x in arange(0, len(xx), len(xx) / (num_tick_marks + 1))] + [len(xx)],
-                 [y for y in arange(0, len(yy[0]), len(yy[0]) / (num_tick_marks + 1))] + [len(yy[0])],
-                 [z for z in arange(0, len(zz), len(zz) / (num_tick_marks + 1))] + [len(zz)]]
+        base_ = [[x for x in arange(0, len(xx), len(xx) / num_tick_marks)] + [len(xx)],
+                 [y for y in arange(0, len(yy[0]), len(yy[0]) / num_tick_marks)] + [len(yy[0])],
+                 [z for z in arange(0, len(zz), len(zz) / num_tick_marks)] + [len(zz)]]
         scale = .01 * len(xx)
-        delta_ = [len(xx) / (num_tick_marks + 1), len(yy[0]) / (num_tick_marks + 1), len(zz) / (num_tick_marks + 1)]
+        delta_ = [len(xx) / num_tick_marks, len(yy[0]) / num_tick_marks, len(zz) / num_tick_marks]
         self._tick_marks, self._mesh, self._axis = [], [], []
 
         self._make_tick_marks(base_, xx, yy, zz, tick_marks_color, scale, num_tick_marks)
