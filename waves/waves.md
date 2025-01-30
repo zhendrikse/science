@@ -31,6 +31,126 @@ Bring forward what is true. Write it so that it is clear. Defend it to your last
 </div>
 <p style="clear: both;"></p>
 
+<details>
+  <summary><a>&dArr; The central finite difference method &uArr;</a></summary>
+
+<p>According to the explanation <a href="https://jexpearce.github.io/jex/Wavepropagation.html">on this page</a>
+the one-dimensional wave equation is given by:</p>
+<p>
+$$\frac{\partial^2 f}{\partial t^2} = c^2 \frac{\partial^2
+f}{\partial x^2}$$
+</p>
+<p>and the two-dimensional wave equation is given by:</p>
+<p>
+$$\frac{\partial^2 f}{\partial t^2} = c^2 \left(
+\frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial
+y^2} \right)$$
+</p>
+<p>
+Here, $c$ is the wave speed, $x$ and $y$ are spatial
+coordinates, $t$ is time.
+</p>
+<p>Next, we need to discretize the space and time. Why?</p>
+<p>
+Continuous mathematical models involve an infinite number of
+points in space and time, making this numerically impossible for
+a computer to handle. Discretizing those aforementioned
+variables essentially reduces the problem to a finite number of
+points, making the desired computation achievable.
+</p>
+<p>
+For example, in a 1D domain from 0 to L with N points, grid
+spacing is: $(\frac{L}{N-1})$
+</p>
+<p>
+In 2D, a rectangular domain of size $(L_x \times L_y)$ With
+$(N_x \times N_y)$ Points have spacings: $(dx =
+\frac{L_x}{N_x-1})$ and $(dy = \frac{L_y}{N_y-1})$
+</p>
+<p>
+Dividing the time duration into discrete time steps where each
+step represents a specific moment in time. For total time T, and
+time steps M, we have: $(dt = \frac{T}{M} )$
+</p>
+<p>
+For 2D, representing wave amplitude at the grid point $ (i,j) $
+at time step $n$ , we have: $ f^{n}_{i,j} $ and $ x_i = i \cdot
+dx $ for $ i = 0, 1, \ldots, N_x - 1 $ and $ y_j = j \cdot dy $
+for $ j = 0, 1, \ldots, N_y - 1 $
+</p>
+<p>
+This ensures, that when the future for-loop acting on $i$ or
+$j$ reaches $N_x - 1$ or $N_y - 1$, notice that in the previous
+$dx$ or $dy$, the denominator cancels out, leaving simply $L_x$
+or $L_y$, the longest designated length, essentially reaching
+the end of the wave and ensuring that it does not continue to
+infinity.
+</p>
+<p>
+Time steps: $t^n = n \cdot dt$ for $ n = 0, 1, \ldots, M$,
+again, ensuring that when the for-loop reaches final time step
+$M$, terms cancel out, and we are left with the total time $T$
+</p>
+
+<p>
+The central difference formula is a way to estimate the slope
+(derivative) of a function at a specific point by using points
+on either side of that point. It gives a better approximation
+than just looking ahead or behind the point, due to symmetry.
+When graphing the wave, when finding the new point (next point
+on the wave), it looks at the current point, and the previous
+point.
+</p>
+
+<p>
+In one dimension, starting simple, to find the slope of a
+function at a point $x$:
+</p>
+<p>
+Take two points: one just before $x$ ,lets call it $(x - h)$ and
+one just after $x$ can call it $(x + h)$. Calculate the
+difference in the function values at these points: $f(x + h)$
+and $f(x - h)$. Divide this difference by the distance between
+the points which is $2h$.
+</p>
+<p>So we get a formula looks like this:</p>
+<p>$$f'(x) \approx \frac{f(x + h) - f(x - h)}{2h} $$</p>
+<p>Second Derivative:</p>
+<p>To estimate the curvature (second derivative) at point $x$:</p>
+<p>
+Use the function values at the points $(x + h)$, $x$, and $(x -
+h)$. Combining these values in the following way:
+</p>
+<p>$$f''(x) \approx \frac{f(x + h) - 2f(x) + f(x - h)}{h^2} $$</p>
+<p>
+Written out in terms of the wave equation, for the second
+derivative of time:
+</p>
+<p>
+$$\frac{\partial^2 f}{\partial t^2} \approx \frac{f(x, t + h) -
+2f(x, t) + f(x, t - h)}{h^2}$$
+</p>
+<p>
+In 1D, with only $x$, the spacial second derivative of $x$ is
+$$\frac{\partial^2 f}{\partial x^2} \approx \frac{f(x + h, t) -
+2f(x, t) + f(x - h, t)}{h^2}$$
+</p>
+<p>
+We want to find $f(x+h,t)$, the 'new' point. Using the 1D Wave
+Equation and plugging in the values into: $$\frac{\partial^2
+f}{\partial t^2} = c^2 \frac{\partial^2 f}{\partial x^2}$$
+</p>
+<p>
+We get $$f(x+h,t) = 2f(x,t) - f(x-h,t) + c^2 \frac{h^2}{\Delta
+t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
+</p>
+<p>
+To find the 'new', we need to use both the 'old' and the
+'current'. Creating empty lists for all 3 terms:
+</p>
+
+</details>
+<p></p>
 
 ### The Doppler effect for sound waves
 <div style="border-top: 1px solid #999999"><br/></div>
