@@ -1,5 +1,4 @@
-{{ "{% highlight html linenos "}}%}
-<div>
+{% highlight python %}
 Web VPython 3.2
 
 from vpython import *
@@ -594,4 +593,4 @@ while True:
         time += dt
 
 </div>
-{{ "{% endhighlight "}}%}
+{% endhighlight %}
