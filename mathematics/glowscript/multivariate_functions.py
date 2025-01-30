@@ -42,7 +42,7 @@ polynomial_title = "<h3>$F(x, y) =  (yx^3 - xy^3)$</h3>"
 cosine_of_abs_title = "<h3>$F(x, y) = \\cos(|x| + |y|)$</h3>"
 ripple_title = "<h3>$F(x, y) =  \\sin\\big(3 (x^2 + y^2)\\big)$</h3>"
 exponential_title = "<h3>$F(x, y) = \\sin(x^2 + y^2) e^{ -x^2 - y^2}$</h3>"
-mexican_hat_title = "<h3>Polar coordinates for Mexican hat</h3>$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} r\\cos(\\phi) \\\\ r\\sin(\\phi)) \\\\ z (r^2 - 1)^2 \\end{pmatrix}$"
+mexican_hat_title = "<h3>Polar coordinates for Mexican hat</h3>$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} r\\cos(\\phi) \\\\ r\\sin(\\phi)) \\\\ (r^2 - 1)^2 \\end{pmatrix}$"
 
 animation = canvas(height=500, align="top", center=vec(0, -10, 0), background=color.gray(0.075),
                    forward=vec(-0.9, -0.85, -.8), title=sine_sqrt_title + "\n", range=75)
