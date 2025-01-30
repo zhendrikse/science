@@ -641,7 +641,7 @@ radio_buttons = RadioButtons()
 radio_buttons.add(radio(bind=toggle, text=" F=sin(sqrt(x*x + y*y)) ", name="sin_sqrt"), sin_sqrt, sine_sqrt_title)
 radio_buttons.add(radio(bind=toggle, text=" F=sin(x) * cos(y) ", name="sine_cosine"), sine_cosine, sine_cosine_title)
 radio_buttons.add(radio(bind=toggle, text=" F=x*x*x*y - y*y*y*x ", name="polynomial"), polynomial, polynomial_title)
-radio_buttons.add(radio(bind=toggle, text=" F=cos(abs(x) + abs(y) ", name="abs_cosine"), cosine_of_abs,
+radio_buttons.add(radio(bind=toggle, text=" F=cos(abs(x) + abs(y)) ", name="cosine_of_abs"), cosine_of_abs,
                   cosine_of_abs_title)
 radio_buttons.add(radio(bind=toggle, text=" F=sin(x*x + y*y) ", name="the_ripple"), ripple, ripple_title)
 radio_buttons.add(radio(bind=toggle, text=" F=(x*x+y*y)exp(sin(-x*x-y*y)) ", name="exp_sine"), exp_sine,
