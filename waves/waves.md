@@ -34,46 +34,27 @@ Bring forward what is true. Write it so that it is clear. Defend it to your last
 <details>
   <summary><a>&dArr; The central finite difference method &uArr;</a></summary>
 
-<p>According to the explanation <a href="https://jexpearce.github.io/jex/Wavepropagation.html">on this page</a>
-the one-dimensional wave equation is given by:</p>
+<p>The two-dimensional <a href="https://en.wikipedia.org/wiki/Wave_equation">scalar wave equation</a> is given by:</p>
 <p>
-$$\frac{\partial^2 f}{\partial t^2} = c^2 \frac{\partial^2
-f}{\partial x^2}$$
+$$\frac{\partial^2 u}{\partial t^2} = c^2 \left(
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} \right)$$
 </p>
-<p>and the two-dimensional wave equation is given by:</p>
+<p>where</p>
+<ul>
+  <li>$c$ designates the speed of the wave</li>
+  <li>$u$ is a scalar field representing the displacement</li>
+  <li>$x$, $y$ are the two spatial coordinates and t the time coordinate.
 <p>
-$$\frac{\partial^2 f}{\partial t^2} = c^2 \left(
-\frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial
-y^2} \right)$$
-</p>
-<p>
-Here, $c$ is the wave speed, $x$ and $y$ are spatial
-coordinates, $t$ is time.
-</p>
-<p>Next, we need to discretize the space and time. Why?</p>
-<p>
-Continuous mathematical models involve an infinite number of
-points in space and time, making this numerically impossible for
-a computer to handle. Discretizing those aforementioned
-variables essentially reduces the problem to a finite number of
-points, making the desired computation achievable.
+To solve this equation numerically, we create a grid of size $L_x \times L_y$
+with with spacings $dx =\dfrac{L_x}{N_x-1}$ and $dy = \dfrac{L_y}{N_y-1}$.
+There is a balance to be struck between the number of points $N_x$ and $N_y$
+(the resolution) on the one hand and the computation time on the other.
 </p>
 <p>
-For example, in a 1D domain from 0 to L with N points, grid
-spacing is: $(\frac{L}{N-1})$
+Of course, the same holds for the time increment $dt$.
 </p>
 <p>
-In 2D, a rectangular domain of size $(L_x \times L_y)$ With
-$(N_x \times N_y)$ Points have spacings: $(dx =
-\frac{L_x}{N_x-1})$ and $(dy = \frac{L_y}{N_y-1})$
-</p>
-<p>
-Dividing the time duration into discrete time steps where each
-step represents a specific moment in time. For total time T, and
-time steps M, we have: $(dt = \frac{T}{M} )$
-</p>
-<p>
-For 2D, representing wave amplitude at the grid point $ (i,j) $
+The magnitude of $u$ at $ (i,j) $
 at time step $n$ , we have: $ f^{n}_{i,j} $ and $ x_i = i \cdot
 dx $ for $ i = 0, 1, \ldots, N_x - 1 $ and $ y_j = j \cdot dy $
 for $ j = 0, 1, \ldots, N_y - 1 $
