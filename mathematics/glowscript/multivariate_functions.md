@@ -1,4 +1,5 @@
-<pre><code>
+{{ "{% highlight html linenos "}}%}
+<div>
 Web VPython 3.2
 
 from vpython import *
@@ -12,7 +13,7 @@ ricker_title = """<a href="https://en.wikipedia.org/wiki/Ricker_wavelet">Ricker 
 $F(x,y) = \dfrac{1}{\pi\sigma^4} \\bigg(1 - \dfrac{1}{2} \\bigg( \dfrac{x^2 + y^2}{\sigma^2} \\bigg) \\bigg) e^{-\\dfrac{x^2+y^2}{2\sigma^2}}$
 """
 
-mexican_hat_title = "<h3>Polar coordinates for Mexican hat</h3>$\\begin{cases} x & = r\\cos(\\phi) \\\\ y & = r\\sin(\\phi)) \\\\ z & = (r^2 - 1)^2 \\end{cases}$"
+mexican_hat_title = "<h3>Polar coordinates for Mexican hat</h3>$$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} r\\cos(\\phi) \\\\ r\\sin(\\phi)) \\\\ z (r^2 - 1)^2 \\end{pmatrix}$"
 spiral_title = "<h3>Polar coordinates for Dini&apos;s spiral</h3>$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta)\cdot\\sin(\\phi) \\\\  \\sin(\\theta)\\cdot\\sin(\\phi) \\\\ (\\cos(\\phi)+\\log(\\tan(\\phi/2)))) + 0.2\\theta \\end{pmatrix}\\text{, } \\begin{cases} 0 < \\theta < 12.4 \\\\ 0.1 < \\phi < 2\\end{cases}$"
 torus_title = "<h3>Polar coordinates for torus</h3>$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (c + a \\cos(\\phi))\cdot\\cos(\\theta) \\\\  (c + a \\cos(\\phi))\cdot\\sin(\\theta) \\\\ a \\sin(\\phi) \\end{pmatrix}\\text{, } \\theta, \\phi \\in [-\\pi, \\pi]$"
 twisted_torus_title = "<h3>Polar coordinates for twisted torus</h3>$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (3 + \\sin(\\phi) + \\cos(\\theta)) \cdot \\cos(2\\phi) \\\\  (3 + \\sin(\\phi) + \\cos(\\theta))\cdot\\sin(2\\phi) \\\\ \\sin(\\theta)+2\\cos(\\phi) \\end{pmatrix}\\text{, } \\theta, \\phi \\in [-\\pi, \\pi]\\text{, } \\theta, \\phi \\in [-\\pi, \\pi]$"
@@ -33,8 +34,6 @@ caption = """
 
 animation = canvas(align="top", center=vec(0, 5, 0), background=vec(0.075, 0.075, 0.075), 
                    forward=vec(-0.9, -0.5, -.8), title=ricker_title + "\n", range=75)
-MathJax.Hub.Queue(["Typeset", MathJax.Hub])
-
 
 class Numpy:
     def __init__(self):
@@ -594,4 +593,5 @@ while True:
     if run:
         time += dt
 
-</code></pre>
+</div>
+{{ "{% endhighlight "}}%}
