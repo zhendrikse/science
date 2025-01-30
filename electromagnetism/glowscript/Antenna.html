@@ -1,0 +1,319 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var show_decrease;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, show_decrease, lambda_, c, omega, d, L, antenna, ds, dt, dist_to_screen, slit1, _, field_slider, field_text, _GS_1, electromagnetic_wave, t, i_hat;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "10";
+    title = "\n&#x2022; <a href=\"https://lectdemo.github.io/virtual/23_antenna.html\">23_antenna.py<\/a> by Ruth Chabay Spring 2001\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name\">Zeger Hendrikse</a>\n&#x2022; &lt;s&gt; &rarr; screenshot\n&#x2022; &lt;v&gt; &rarr; verbose output\n\n";
+    "12";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), forward: vector(1["-u"]()["*"](.1), 1["-u"]()["*"](.4), 1["-u"]()["*"](.9)), range: 10})]);
+    "14";
+    show_decrease = true;
+    "15";
+    lambda_ = 2;
+    "16";
+    c = 3e8;
+    "17";
+    omega = 2["*"](pi)["*"](c)["/"](lambda_);
+    "18";
+    d = 2["*"](lambda_);
+    "19";
+    L = 2["*"](lambda_);
+    "20";
+    antenna = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vector(0, 1["-u"]()["*"](L)["/"](2), 0), axis: vector(0, L, 0), color: vector(.7, .7, .7), radius: .5})]);
+    "23";
+    ds = lambda_["/"](20);
+    "24";
+    dt = lambda_["/"](c)["/"](100);
+    "25";
+    dist_to_screen = 4["*"](lambda_);
+    "27";
+    slit1 = vector(0, 0, 1["-u"]()["*"](d)["/"](2));
+    "28";
+    function ElectromagneticWave() {;
+    }
+    ElectromagneticWave.prototype.__init__ = async function __init__() {
+        var self = this;
+        var E0 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.E0 : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "E0")){
+            E0 = ρσ_kwargs_obj.E0;
+        }
+        var ρσ_ls, dtheta, dr1, rr1, axis, electric_arrow, magnetic_arrow, ct, r1;
+        "30";
+        self._E0 = E0;
+        "31";
+        self._electric_field = ρσ_list_decorate([]);
+        "32";
+        self._magnetic_field = ρσ_list_decorate([]);
+        "33";
+        dtheta = pi["/"](3);
+        "34";
+        var ρσ_Iter1 = (function() {
+            var ρσ_Iter = range(0, 2["*"](pi), dtheta), ρσ_Result = [], theta;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                theta = ρσ_Index;
+                ρσ_Result.push(dist_to_screen["*"](vector(cos(theta), 0, sin(theta))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            r1 = ρσ_Index1;
+            "35";
+            dr1 = ds["*"](norm(r1));
+            "36";
+            rr1 = slit1["+"](10["*"](dr1));
+            "37";
+            for (var ρσ_Index2 = 0; ρσ_Index2["<"](120); ρσ_Index2++) {
+                ct = ρσ_Index2;
+                "38";
+                axis = vector(0, self._E0["*"](cos(2["*"](pi)["*"](mag(rr1["-"](1["*"](slit1))))))["/"](lambda_), 0);
+                "39";
+                electric_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: rr1, axis: axis, color: color.orange, shaftwidth: lambda_["/"](40)})]);
+                "40";
+                magnetic_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: rr1, axis: vector(0, 0, 0), color: color.cyan, shaftwidth: lambda_["/"](40)})]);
+                "41";
+                self._magnetic_field.append(magnetic_arrow);
+                "42";
+                self._electric_field.append(electric_arrow);
+                "43";
+                rr1=rr1["+"](dr1);
+            }
+        }
+    };
+    if (!ElectromagneticWave.prototype.__init__.__defaults__) Object.defineProperties(ElectromagneticWave.prototype.__init__, {
+        __defaults__ : {value: {E0:lambda_["*"](5)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["E0"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.__argnames__ = ElectromagneticWave.prototype.__init__.__argnames__;
+    ElectromagneticWave.__handles_kwarg_interpolation__ = ElectromagneticWave.prototype.__init__.__handles_kwarg_interpolation__;
+    ElectromagneticWave.prototype.update = async function update() {
+        var self = this;
+        var ρσ_ls, field_arrow, decrease, index;
+        "46";
+        var ρσ_Iter3 = range(len(self._electric_field));
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            index = ρσ_Index3;
+            "47";
+            field_arrow = ρσ_getitem(self._electric_field, index);
+            "48";
+            decrease = (show_decrease) ? 1["/"](mag(field_arrow.pos)["+"](lambda_["/"](20))) : 1;
+            "49";
+            field_arrow.axis = vector(0, decrease["*"](self._E0)["*"](cos(omega["*"](t)["-"](1["*"](2)["*"](pi)["*"](mag(field_arrow.pos["-"](1["*"](slit1))))["/"](lambda_)))), 0);
+            "50";
+            ρσ_getitem(self._magnetic_field, index).axis = 1["-u"]()["*"](cross(field_arrow.axis, i_hat))["*"](.7);
+        }
+    };
+    if (!ElectromagneticWave.prototype.update.__module__) Object.defineProperties(ElectromagneticWave.prototype.update, {
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.toggle_magnetic_field = async function toggle_magnetic_field() {
+        var self = this;
+        var ρσ_ls, field_vector;
+        "53";
+        var ρσ_Iter4 = self._magnetic_field;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            field_vector = ρσ_Index4;
+            "54";
+            field_vector.visible = !field_vector.visible;
+        }
+    };
+    if (!ElectromagneticWave.prototype.toggle_magnetic_field.__module__) Object.defineProperties(ElectromagneticWave.prototype.toggle_magnetic_field, {
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.set_field_strength_to = async function set_field_strength_to(new_value) {
+        var self = this;
+        "57";
+        self._E0 = new_value;
+    };
+    if (!ElectromagneticWave.prototype.set_field_strength_to.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.set_field_strength_to, {
+        __argnames__ : {value: ["new_value"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    ElectromagneticWave.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(ElectromagneticWave.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "59";
+    async function toggle_magnetic_field() {
+        "60";
+        (await electromagnetic_wave.toggle_magnetic_field());
+    };
+    if (!toggle_magnetic_field.__module__) Object.defineProperties(toggle_magnetic_field, {
+        __module__ : {value: null}
+    });
+
+    "62";
+    async function toggle_background() {
+        "63";
+        animation.background = ((animation.background === color.white || typeof animation.background === "object" && ρσ_equals(animation.background, color.white))) ? color.gray(.075) : color.white;
+    };
+    if (!toggle_background.__module__) Object.defineProperties(toggle_background, {
+        __module__ : {value: null}
+    });
+
+    "65";
+    async function toggle_decrease() {
+        "66";
+        "67";
+        show_decrease = !show_decrease;
+    };
+    if (!toggle_decrease.__module__) Object.defineProperties(toggle_decrease, {
+        __module__ : {value: null}
+    });
+
+    "69";
+    async function adjust_field() {
+        "70";
+        (await electromagnetic_wave.set_field_strength_to(field_slider.value["*"](lambda_)));
+        "71";
+        field_text.text = "{:1.2f}".format(field_slider.value, 2);
+    };
+    if (!adjust_field.__module__) Object.defineProperties(adjust_field, {
+        __module__ : {value: null}
+    });
+
+    "73";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_background, text: "Dark color scheme", checked: true})]);
+    "74";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_decrease, text: "Show decrease", checked: true})]);
+    "75";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_magnetic_field, text: "Show magnetic field", checked: true})]);
+    "77";
+    animation.append_to_caption("\n\n");
+    "78";
+    field_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 10, value: 5, bind: adjust_field})]);
+    "79";
+    animation.append_to_caption(" Field strength = ");
+    "80";
+    field_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "5"})]);
+    "83";
+    async function on_key_press(event) {
+        "84";
+        "85";
+        if ((event.key === "s" || typeof event.key === "object" && ρσ_equals(event.key, "s"))) {
+            "86";
+            (await scene.capture("antenna_waves"));
+            "87";
+        }
+        if ((event.key === "v" || typeof event.key === "object" && ρσ_equals(event.key, "v"))) {
+            "88";
+            print("scene.center="["+"](str(animation.center)));
+            "89";
+            print("scene.forward="["+"](str(animation.forward)));
+            "90";
+            print("scene.range="["+"](str(animation.range)));
+        }
+    };
+    if (!on_key_press.__argnames__) Object.defineProperties(on_key_press, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "92";
+    _GS_1 = new ElectromagneticWave;
+    (await _GS_1.__init__());
+    electromagnetic_wave = _GS_1;
+    "93";
+    animation.bind("keydown", on_key_press);
+    "95";
+    t = 0;
+    "96";
+    i_hat = vector(1, 0, 0);
+    "97";
+    while (1) {
+        "98";
+        (await rate(50));
+        "99";
+        t = t["+"](dt);
+        "100";
+        (await electromagnetic_wave.update());
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

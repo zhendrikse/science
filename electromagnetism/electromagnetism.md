@@ -102,7 +102,7 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Antenna">
+  <a href="electromagnetism/antenna.html">
     <img alt="Antenna" src="./images/antenna.png" title="Click to animate"/>
   </a>
   <figcaption>Electromagnetic waves propagating from an antenna.</figcaption>
