@@ -21,7 +21,7 @@ caption = """<ol><li>The shape of each orbit is an ellipse, with the sun at one 
 
 from vpython import *
 
-animation = canvas(title=title, width=800, height=600, range=1, forward=vector(0.0222862, 0.928369, -0.370991), caption=caption)
+animation = canvas(title=title, background=color.gray(0.075), forward=vector(0.0222862, 0.928369, -0.370991), caption=caption)
 
 # Default velocity gives a satisfactory range of eccentricities
 # velocity = -vector(0.984,0,0)   # gives period of 12.0 "months"

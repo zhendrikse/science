@@ -27,7 +27,7 @@ earth_orbit_rate = 1
 # the moon orbits the Earth at about 13 degrees per day
 moon_orbit_rate = 13
 
-animation = canvas(title=title, background=color.gray(0.144), fov=radians(20))
+animation = canvas(title=title, background=color.gray(0.075), fov=radians(20))
 
 class EarthArrows:
     def __init__(self, radius_earth, axis_earth, scale=0.5, latitude=52):

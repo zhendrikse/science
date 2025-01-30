@@ -11,7 +11,7 @@ caption = """
 
 title = "<h3>Click mouse to start animation</h3>"
 
-animation = canvas(title=title, background=color.gray(0.144), caption=caption)
+animation = canvas(title=title, background=color.gray(0.075), caption=caption)
 
 G = 6.67e-11
 astronomical_unit = 1.49e11
