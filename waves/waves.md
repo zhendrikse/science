@@ -45,78 +45,46 @@ $$\frac{\partial^2 u}{\partial t^2} = c^2 \left(
   <li>$u$ is a scalar field representing the displacement</li>
   <li>$x$, $y$ are the two spatial coordinates and t the time coordinate.</li>
 </ul>
-<p>
-To solve this equation numerically, we create a grid of size $L_x \times L_y$
-with with spacings $dx =\dfrac{L_x}{N_x-1}$ and $dy = \dfrac{L_y}{N_y-1}$.
-There is a balance to be struck between the number of points $N_x$ and $N_y$
+
+<p>To solve this equation numerically, we create a grid of size $L_x \times L_y$
+with equal spacings </p>
+<p>$$dx =\frac{L_x}{N_x-1}$ \text{ and } $dy = \frac{L_y}{N_y-1}$$</p>
+
+<p>There is a balance to be struck between the number of points $N_x$ and $N_y$
 (the resolution) on the one hand and the computation time on the other.
-</p>
-<p>
-Of course, the same holds for the time increment $dt$.
-</p>
-<p>
-The magnitude of $u$ at $ (i,j) $
-at time step $n$ , we have: $ f^{n}_{i,j} $ and $ x_i = i \cdot
-dx $ for $ i = 0, 1, \ldots, N_x - 1 $ and $ y_j = j \cdot dy $
-for $ j = 0, 1, \ldots, N_y - 1 $
-</p>
-<p>
-This ensures, that when the future for-loop acting on $i$ or
-$j$ reaches $N_x - 1$ or $N_y - 1$, notice that in the previous
-$dx$ or $dy$, the denominator cancels out, leaving simply $L_x$
-or $L_y$, the longest designated length, essentially reaching
-the end of the wave and ensuring that it does not continue to
-infinity.
-</p>
-<p>
-Time steps: $t^n = n \cdot dt$ for $ n = 0, 1, \ldots, M$,
-again, ensuring that when the for-loop reaches final time step
-$M$, terms cancel out, and we are left with the total time $T$
-</p>
+Of course, the same holds for the time increment $dt$.</p>
 
-<p>
-The central difference formula is a way to estimate the slope
-(derivative) of a function at a specific point by using points
-on either side of that point. It gives a better approximation
-than just looking ahead or behind the point, due to symmetry.
-When graphing the wave, when finding the new point (next point
-on the wave), it looks at the current point, and the previous
-point.
-</p>
+<p>We denote the magnitude of $u$ at point $(i, j)$ on the grid at any given
+time $n$ by $ u^{n}_{i, j}$, where $x_i = idx$ and $y_i = jdy$ for 
+$i \in [0, \ldots, N_x)$ and $ j \in [0, 1, \ldots, N_y)$.</p>
 
-<p>
-In one dimension, starting simple, to find the slope of a
-function at a point $x$:
-</p>
-<p>
-Take two points: one just before $x$ ,lets call it $(x - h)$ and
-one just after $x$ can call it $(x + h)$. Calculate the
-difference in the function values at these points: $f(x + h)$
-and $f(x - h)$. Divide this difference by the distance between
-the points which is $2h$.
-</p>
-<p>So we get a formula looks like this:</p>
+<p>Note that the round brackets imply that in our code our for-next loops 
+will only run to $N_x - 1$ and $N_y - 1$. This ensures that we arrive 
+exactly at the endpoints $L_x$ and $L_y$ respectively.</p>
+
+<p>As opposed to the <a href="https://en.wikipedia.org/wiki/Euler_method">Euler algorithm</a>,
+that only uses the slope of a function at each point,
+the central difference formula estimates the slope
+by using points on either side of that point. Due to symmetry,
+this results in a more accurate approximation.
+So for each time step, we find a new scalar value by looking at 
+the current point, and the previous point.</p>
+
+<p>Bearing in mind the definition of a derivative of a function (in one dimension, so only dependent on $x$)</p>
+<p>$$f'(x)=\lim_{h \rightarrow 0} \dfrac{f(x + h) - f(x)}{h}$$</p>
+
+<p>we find for each point $x$ at a distance $h$ to both left and right:</p>
 <p>$$f'(x) \approx \frac{f(x + h) - f(x - h)}{2h} $$</p>
-<p>Second Derivative:</p>
-<p>To estimate the curvature (second derivative) at point $x$:</p>
-<p>
-Use the function values at the points $(x + h)$, $x$, and $(x -
-h)$. Combining these values in the following way:
-</p>
+
+<p>This implies that an estimate for the second derivative is given by:</p>
 <p>$$f''(x) \approx \frac{f(x + h) - 2f(x) + f(x - h)}{h^2} $$</p>
-<p>
-Written out in terms of the wave equation, for the second
-derivative of time:
-</p>
-<p>
-$$\frac{\partial^2 f}{\partial t^2} \approx \frac{f(x, t + h) -
-2f(x, t) + f(x, t - h)}{h^2}$$
-</p>
-<p>
-In 1D, with only $x$, the spacial second derivative of $x$ is
-$$\frac{\partial^2 f}{\partial x^2} \approx \frac{f(x + h, t) -
-2f(x, t) + f(x - h, t)}{h^2}$$
-</p>
+
+<p>Our wave equation contains these second derivatives both in time</p>
+<p>$$\frac{\partial^2 f}{\partial t^2} \approx \frac{f(x, t + h) - 2f(x, t) + f(x, t - h)}{h^2}$$</p>
+
+<p>as well as in spatial coordinates:</p>
+<p>$$\frac{\partial^2 f}{\partial x^2} \approx \frac{f(x + h, t) - 2f(x, t) + f(x - h, t)}{h^2}$$</p>
+
 <p>
 We want to find $f(x+h,t)$, the 'new' point. Using the 1D Wave
 Equation and plugging in the values into: $$\frac{\partial^2
@@ -126,11 +94,6 @@ f}{\partial t^2} = c^2 \frac{\partial^2 f}{\partial x^2}$$
 We get $$f(x+h,t) = 2f(x,t) - f(x-h,t) + c^2 \frac{h^2}{\Delta
 t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 </p>
-<p>
-To find the 'new', we need to use both the 'old' and the
-'current'. Creating empty lists for all 3 terms:
-</p>
-
 </details>
 <p></p>
 
