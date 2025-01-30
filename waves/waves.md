@@ -43,7 +43,8 @@ $$\frac{\partial^2 u}{\partial t^2} = c^2 \left(
 <ul>
   <li>$c$ designates the speed of the wave</li>
   <li>$u$ is a scalar field representing the displacement</li>
-  <li>$x$, $y$ are the two spatial coordinates and t the time coordinate.
+  <li>$x$, $y$ are the two spatial coordinates and t the time coordinate.</li>
+</ul>
 <p>
 To solve this equation numerically, we create a grid of size $L_x \times L_y$
 with with spacings $dx =\dfrac{L_x}{N_x-1}$ and $dy = \dfrac{L_y}{N_y-1}$.
