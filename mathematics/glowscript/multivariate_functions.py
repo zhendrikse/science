@@ -280,7 +280,7 @@ class SubPlot:
         range_z = z_max - z_min
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
-                f_x_y = self._zz[x][y] * (1 - cos(self._omega * t)) * .5
+                f_x_y = self._zz[x][y] * (1 - cos(self._omega * t)) * .4
                 value = (f_x_y - z_min) * len(self._zz) / range_z
                 self._update_vertex(x, y, value)
 
