@@ -138,14 +138,11 @@ that I have written in VPython.
 ### Spherical harmonics
 <div style="border-top: 1px solid #999999"><br/></div>
 
-Spherical harmonics are of the form
-
-$$r = \sin^{m_0}(m_1\phi) + \cos^{m_2}(m_3\phi) + \sin^{m_4}(m_5\theta) + \cos^{m_6}(m_7\theta)$$ 
-
+Spherical harmonics are of the form 
+$r = \sin(m_1\phi)^{m_0} + \cos(m_3\phi)^{m_2} + \sin(m_5\theta)^{m_4} + \cos(m_7\theta)^{m_6}$
 where 
 - the angles $\phi \in [0, \pi]$ (latitude), and $\theta \in [0, 2\pi]$ (longitude), 
-- the parameters $m_0$, $m_1$, $m_2$, $m_3$, $m_4$, $m_5$, $m_6$, and $m_7$ are all integers 
-  greater than or equal to 0, 
+- the parameters $m_0$, $m_1$, $m_2$, $m_3$, $m_4$, $m_5$, $m_6$, and $m_7$ are all integers and $\geq 0$,
 - and where $r$ is the radius.  
 
 <div style="display: flex; align-items: flex-end;">
