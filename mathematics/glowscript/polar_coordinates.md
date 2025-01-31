@@ -1,4 +1,4 @@
-### [polar_coordinates.py](polar_coordinates.py)
+The [`polar_coordinates.py` source code](polar_coordinates.py) is shown below.
 <p></p>
 
 {% highlight python %}

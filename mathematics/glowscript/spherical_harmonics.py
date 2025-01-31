@@ -583,7 +583,7 @@ gradient_slider = slider(min=0, max=1, value=.5, bind=adjust_gradient)
 
 animation.append_to_caption("\n\nAnimation speed ")
 omega_slider = slider(min=0, max=2 * pi, value=pi, bind=adjust_omega)
-omega_slider_text = wtext(text="= 0.8 * π")
+omega_slider_text = wtext(text="= π")
 
 animation.append_to_caption("\n\nOpacity ")
 opacity_slider = slider(min=0, max=1, step=0.01, value=1, bind=adjust_opacity)
