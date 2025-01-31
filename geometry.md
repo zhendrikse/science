@@ -139,7 +139,7 @@ that I have written in VPython.
 <div style="border-top: 1px solid #999999"><br/></div>
 
 Spherical harmonics are of the form
-$$ r = \sin^{m_0}(m_1\phi) + \cos^{m_2}(m_3\phi) + \sin^{m_4}(m_5\theta) + \cos^{m_6}(m_7\theta)$$ 
+$$r = \sin^{m_0}(m_1\phi) + \cos^{m_2}(m_3\phi) + \sin^{m_4}(m_5\theta) + \cos^{m_6}(m_7\theta)$$ 
 where 
 - $\phi \in [0, \pi]$ (latitude), $\theta \in [0, 2\pi]$ (longitude), 
 - the parameters $m_0$, $m_1$, $m_2$, $m_3$, $m_4$, $m_5$, $m_6$, and $m_7$ are all integers 
@@ -153,7 +153,7 @@ where
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>
 </figure>
-<figure style="float: right; width: 45%; text-align: center">
+<figure style="float: right; width: 42%; text-align: center">
   <a href="mathematics/topology.html">
     <img alt="Self-intersecting plane" src="./images/geometry/spherical_harmonic_2.png" title="Click to animate"/>
   </a>
