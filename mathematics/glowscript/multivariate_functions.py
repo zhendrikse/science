@@ -40,7 +40,7 @@ np = Numpy()
 
 ricker_title = "<h3><a href=\"https://en.wikipedia.org/wiki/Ricker_wavelet\">Ricker / Mexican hat / Marr wavelet</a></h3>&nbsp;&nbsp;$F(x,y) = \\dfrac{1}{\pi\sigma^4} \\bigg(1 - \dfrac{1}{2} \\bigg( \dfrac{x^2 + y^2}{\sigma^2} \\bigg) \\bigg) e^{-\\dfrac{x^2+y^2}{2\sigma^2}}$"
 sine_cosine_title = "<h3>$F(x, y) = \\sin(\\pi x)\\cos(\\pi y)$</h3>"
-sine_sqrt_title = "<h3>$F(x, y) = \\sqrt{x^2+y^2}$</h3>"
+sine_sqrt_title = "<h3>$F(x, y) = \\sin\\left(\\sqrt{x^2+y^2}\\right)$</h3>"
 polynomial_title = "<h3>$F(x, y) =  (yx^3 - xy^3)$</h3>"
 cosine_of_abs_title = "<h3>$F(x, y) = \\cos(|x| + |y|)$</h3>"
 ripple_title = "<h3>$F(x, y) =  \\sin\\big(3 (x^2 + y^2)\\big)$</h3>"
