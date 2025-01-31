@@ -139,11 +139,14 @@ that I have written in VPython.
 <div style="border-top: 1px solid #999999"><br/></div>
 
 Spherical harmonics are of the form
+
 $$r = \sin^{m_0}(m_1\phi) + \cos^{m_2}(m_3\phi) + \sin^{m_4}(m_5\theta) + \cos^{m_6}(m_7\theta)$$ 
+
 where 
-- $\phi \in [0, \pi]$ (latitude), $\theta \in [0, 2\pi]$ (longitude), 
+- the angles $\phi \in [0, \pi]$ (latitude), and $\theta \in [0, 2\pi]$ (longitude), 
 - the parameters $m_0$, $m_1$, $m_2$, $m_3$, $m_4$, $m_5$, $m_6$, and $m_7$ are all integers 
-  greater than or equal to 0. Finally, $r$ is the radius.  
+  greater than or equal to 0, 
+- and where $r$ is the radius.  
 
 <div style="display: flex; align-items: flex-end;">
 <figure style="float: left; width: 55%; text-align: center">
