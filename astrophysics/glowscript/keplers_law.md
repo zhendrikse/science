@@ -1,4 +1,4 @@
-[keplers_law.py](keplers_law.py)
+The [`keplers_law.py` source code](keplers_law.py) is shown below.
 <p></p>
 
 {% highlight python %}

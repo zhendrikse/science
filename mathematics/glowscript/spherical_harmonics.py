@@ -42,7 +42,7 @@ import numpy as np
 #############
 
 animation = canvas(height=500, align="top", center=vec(0, -10, 0), background=color.gray(0.075),
-                   forward=vec(-0.9, -0.85, -.8), range=225)
+                   forward=vec(-0.9, -0.85, -.8), range=150)
 
 
 class NumpyWrapper:
@@ -484,7 +484,7 @@ class SphericalHarmonicParameters:
 # Functions F(x, y) => R
 #
 
-def spherical_harmonics(spherical_harmonic, resolution=150):
+def spherical_harmonics(spherical_harmonic, resolution=100):
     m = spherical_harmonic.coefficients
     def r(xx, yy, i, j):
         return sin(m[0] * xx[i][j]) ** m[1] + cos(m[2] * xx[i][j]) ** m[3] + sin(m[4] * yy[i][j]) ** m[5] + cos(m[6] * yy[i][j]) ** m[7]
@@ -508,16 +508,14 @@ def spherical_harmonics(spherical_harmonic, resolution=150):
     return NumpyWrapper(-1.1 * pi, pi, 0, 1.01 * pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 def create_title(spherical_parameters):
-    animation_title = "$\\begin{pmatrix} \\theta \\\\ \\phi \\\\ \\rho \\end{pmatrix} = \\begin{pmatrix} [0, 2\\pi] \\\\ [0,\\pi] \\\\ "
-    animation_title += "\\sin(" + str(spherical_parameters.coefficients[0]) + "\\phi) +"
-    animation_title += "^{" + str(spherical_parameters.coefficients[1]) + "}"
-    animation_title += "\\cos(" + str(spherical_parameters.coefficients[2]) + "\\phi) +"
-    animation_title += "^{" + str(spherical_parameters.coefficients[3]) + "}"
-    animation_title += "\\sin(" + str(spherical_parameters.coefficients[4]) + "\\theta) +"
-    animation_title += "^{" + str(spherical_parameters.coefficients[5]) + "}"
-    animation_title += "\\cos(" + str(spherical_parameters.coefficients[6]) + "\\theta)"
-    animation_title += "^{" + str(spherical_parameters.coefficients[7]) + "}\\end{pmatrix}$"
-    animation.title = animation_title + "\n\n"
+    animation_title = "$\\rho = \\sin(m_0\\phi)^{m_1} + \\cos(m_2\\phi)^{m_3} + \\sin(m_4\\theta)^{m_5} + \\cos(m_6\\theta)^{m_7}$\n\n"
+    animation_title += "$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\rho\\sin(\\phi)\\cos(\\theta) \\\\ \\rho\\cos(\\phi) \\\\ \\rho\\sin(\\phi)\\sin(\\theta)\\end{pmatrix}$"
+    animation_title += "\n\nwhere\n\n$"
+    for i in range(len(spherical_parameters.coefficients)):
+        animation_title += "m_" + str(i) + "=" + str(spherical_parameters.coefficients[i])
+        animation_title += "" if i == len(spherical_parameters.coefficients) - 1 else ", "
+    animation.title = animation_title + "$\n\n"
+
     ##########################
     # COMMENT OUT IN VPYTHON #
     ##########################

@@ -167,7 +167,7 @@ async function __main__() {
     (await _GS_1.__init__());
     np = _GS_1;
     "44";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({height: 500, align: "top", center: vec(0, 1["-u"]()["*"](10), 0), background: color.gray(.075), forward: vec(1["-u"]()["*"](.9), 1["-u"]()["*"](.85), 1["-u"]()["*"](.8)), range: 225})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({height: 500, align: "top", center: vec(0, 1["-u"]()["*"](10), 0), background: color.gray(.075), forward: vec(1["-u"]()["*"](.9), 1["-u"]()["*"](.85), 1["-u"]()["*"](.8)), range: 150})]);
     "48";
     function NumpyWrapper() {;
     }
@@ -1553,7 +1553,7 @@ async function __main__() {
         return (await _GS_1.get_plot_data(f_x, f_y, f_z));
     };
     if (!spherical_harmonics.__defaults__) Object.defineProperties(spherical_harmonics, {
-        __defaults__ : {value: {resolution:150}},
+        __defaults__ : {value: {resolution:100}},
         __handles_kwarg_interpolation__ : {value: true},
         __argnames__ : {value: ["spherical_harmonic", "resolution"]},
         __module__ : {value: null}
@@ -1561,28 +1561,26 @@ async function __main__() {
 
     "510";
     async function create_title(spherical_parameters) {
-        var ρσ_ls, animation_title;
+        var ρσ_ls, animation_title, i;
         "511";
-        animation_title = "$\\begin{pmatrix} \\theta \\\\ \\phi \\\\ \\rho \\end{pmatrix} = \\begin{pmatrix} [0, 2\\pi] \\\\ [0,\\pi] \\\\ ";
+        animation_title = "$\\rho = \\sin(m_0\\phi)^{m_1} + \\cos(m_2\\phi)^{m_3} + \\sin(m_4\\theta)^{m_5} + \\cos(m_6\\theta)^{m_7}$\n\n";
         "512";
-        animation_title=animation_title["+"]("\\sin("["+"](str(ρσ_getitem(spherical_parameters.coefficients, 0)))["+"]("\\phi)+"));
+        animation_title=animation_title["+"]("$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\rho\\sin(\\phi)\\cos(\\theta) \\\\ \\rho\\cos(\\phi) \\\\ \\rho\\sin(\\phi)\\sin(\\theta)\\end{pmatrix}$");
         "513";
-        animation_title=animation_title["+"]("^{"["+"](str(ρσ_getitem(spherical_parameters.coefficients, 1)))["+"]("}"));
+        animation_title=animation_title["+"]("\n\nwhere\n\n$");
         "514";
-        animation_title=animation_title["+"]("\\cos("["+"](str(ρσ_getitem(spherical_parameters.coefficients, 2)))["+"]("\\phi)+"));
-        "515";
-        animation_title=animation_title["+"]("^{"["+"](str(ρσ_getitem(spherical_parameters.coefficients, 3)))["+"]("}"));
-        "516";
-        animation_title=animation_title["+"]("\\sin("["+"](str(ρσ_getitem(spherical_parameters.coefficients, 4)))["+"]("\\theta)+"));
+        var ρσ_Iter35 = range(len(spherical_parameters.coefficients));
+        ρσ_Iter35 = ((typeof ρσ_Iter35[Symbol.iterator] === "function") ? (ρσ_Iter35 instanceof Map ? ρσ_Iter35.keys() : ρσ_Iter35) : Object.keys(ρσ_Iter35));
+        for (var ρσ_Index35 of ρσ_Iter35) {
+            i = ρσ_Index35;
+            "515";
+            animation_title=animation_title["+"]("m_"["+"](str(i))["+"]("=")["+"](str(ρσ_getitem(spherical_parameters.coefficients, i))));
+            "516";
+            animation_title=animation_title["+"]((ρσ_equals(i, len(spherical_parameters.coefficients)["-"](1["*"](1)))) ? "" : ", ");
+        }
         "517";
-        animation_title=animation_title["+"]("^{"["+"](str(ρσ_getitem(spherical_parameters.coefficients, 5)))["+"]("}"));
-        "518";
-        animation_title=animation_title["+"]("\\cos("["+"](str(ρσ_getitem(spherical_parameters.coefficients, 6)))["+"]("\\theta)"));
-        "519";
-        animation_title=animation_title["+"]("^{"["+"](str(ρσ_getitem(spherical_parameters.coefficients, 7)))["+"]("}\\end{pmatrix}$"));
-        "520";
-        animation.title = animation_title["+"]("\n\n");
-        "524";
+        animation.title = animation_title["+"]("$\n\n");
+        "522";
         MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     };
     if (!create_title.__argnames__) Object.defineProperties(create_title, {
@@ -1590,56 +1588,56 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "529";
+    "527";
     async function adjust_opacity() {
-        "530";
+        "528";
         (await figure.set_opacity_to(opacity_slider.value));
     };
     if (!adjust_opacity.__module__) Object.defineProperties(adjust_opacity, {
         __module__ : {value: null}
     });
 
-    "533";
+    "531";
     async function adjust_shininess() {
-        "534";
+        "532";
         (await figure.set_shininess_to(shininess_slider.value));
     };
     if (!adjust_shininess.__module__) Object.defineProperties(adjust_shininess, {
         __module__ : {value: null}
     });
 
-    "537";
+    "535";
     async function adjust_omega() {
-        "538";
+        "536";
         (await figure.set_omega_to(omega_slider.value));
-        "539";
+        "537";
         omega_slider_text.text = "= {:1.2f}".format(omega_slider.value["/"](pi), 2)["+"](" π");
     };
     if (!adjust_omega.__module__) Object.defineProperties(adjust_omega, {
         __module__ : {value: null}
     });
 
-    "542";
+    "540";
     async function adjust_gradient() {
-        "543";
+        "541";
         (await figure.set_hue_gradient_to(gradient_slider.value));
     };
     if (!adjust_gradient.__module__) Object.defineProperties(adjust_gradient, {
         __module__ : {value: null}
     });
 
-    "546";
+    "544";
     async function adjust_offset() {
-        "547";
+        "545";
         (await figure.set_hue_offset_to(offset_slider.value));
     };
     if (!adjust_offset.__module__) Object.defineProperties(adjust_offset, {
         __module__ : {value: null}
     });
 
-    "550";
+    "548";
     async function toggle_tick_marks(event) {
-        "551";
+        "549";
         (await figure.tick_marks_visibility_is(event.checked));
     };
     if (!toggle_tick_marks.__argnames__) Object.defineProperties(toggle_tick_marks, {
@@ -1647,9 +1645,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "554";
+    "552";
     async function toggle_axis_labels(event) {
-        "555";
+        "553";
         (await figure.axis_labels_visibility_is(event.checked));
     };
     if (!toggle_axis_labels.__argnames__) Object.defineProperties(toggle_axis_labels, {
@@ -1657,9 +1655,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "558";
+    "556";
     async function toggle_axis(event) {
-        "559";
+        "557";
         (await figure.axis_visibility_is(event.checked));
     };
     if (!toggle_axis.__argnames__) Object.defineProperties(toggle_axis, {
@@ -1667,9 +1665,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "562";
+    "560";
     async function toggle_mesh(event) {
-        "563";
+        "561";
         (await figure.mesh_visibility_is(event.checked));
     };
     if (!toggle_mesh.__argnames__) Object.defineProperties(toggle_mesh, {
@@ -1677,10 +1675,10 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "566";
+    "564";
     async function toggle_animate(event) {
-        "567";
-        "568";
+        "565";
+        "566";
         dt = (event.checked) ? .01 : 0;
     };
     if (!toggle_animate.__argnames__) Object.defineProperties(toggle_animate, {
@@ -1688,50 +1686,50 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "571";
+    "569";
     animation.append_to_caption("\n");
-    "572";
+    "570";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Mesh ", bind: toggle_mesh, checked: true})]);
-    "573";
+    "571";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis ", bind: toggle_axis, checked: true})]);
-    "574";
+    "572";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis labels ", bind: toggle_axis_labels, checked: false})]);
-    "575";
+    "573";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks ", bind: toggle_tick_marks, checked: true})]);
-    "576";
+    "574";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Animate ", bind: toggle_animate, checked: false})]);
-    "578";
+    "576";
     animation.append_to_caption("\n\nHue offset  ");
-    "579";
+    "577";
     offset_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .8, bind: adjust_offset})]);
-    "581";
+    "579";
     animation.append_to_caption("\n\nHue gradient  ");
-    "582";
+    "580";
     gradient_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .5, bind: adjust_gradient})]);
-    "584";
+    "582";
     animation.append_to_caption("\n\nAnimation speed ");
-    "585";
+    "583";
     omega_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 2["*"](pi), value: pi, bind: adjust_omega})]);
+    "584";
+    omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= π"})]);
     "586";
-    omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.8 * π"})]);
-    "588";
     animation.append_to_caption("\n\nOpacity ");
-    "589";
+    "587";
     opacity_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: 1, bind: adjust_opacity})]);
-    "591";
+    "589";
     animation.append_to_caption("\n\nShininess ");
-    "592";
+    "590";
     shininess_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .6, bind: adjust_shininess})]);
-    "594";
+    "592";
     _GS_1 = new SphericalHarmonicParameters;
     (await _GS_1.__init__());
     parameters = _GS_1;
-    "596";
+    "594";
     async function toggle_parameter(event) {
         var ρσ_ls, button_array_index;
-        "597";
+        "595";
         button_array_index = int(ρσ_getitem(event.name.split(","), 0));
-        "598";
+        "596";
         (await ρσ_getitem(radio_button_array, button_array_index).toggle(event.name));
     };
     if (!toggle_parameter.__argnames__) Object.defineProperties(toggle_parameter, {
@@ -1739,59 +1737,59 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "600";
+    "598";
     animation.append_to_caption("\n\n");
-    "601";
+    "599";
     radio_button_array = ρσ_list_decorate([]);
-    "602";
-    var ρσ_Iter35 = range(len(parameters.coefficients));
-    ρσ_Iter35 = ((typeof ρσ_Iter35[Symbol.iterator] === "function") ? (ρσ_Iter35 instanceof Map ? ρσ_Iter35.keys() : ρσ_Iter35) : Object.keys(ρσ_Iter35));
-    for (var ρσ_Index35 of ρσ_Iter35) {
-        j = ρσ_Index35;
-        "603";
+    "600";
+    var ρσ_Iter36 = range(len(parameters.coefficients));
+    ρσ_Iter36 = ((typeof ρσ_Iter36[Symbol.iterator] === "function") ? (ρσ_Iter36 instanceof Map ? ρσ_Iter36.keys() : ρσ_Iter36) : Object.keys(ρσ_Iter36));
+    for (var ρσ_Index36 of ρσ_Iter36) {
+        j = ρσ_Index36;
+        "601";
         animation.append_to_caption("Choose $m_"["+"](str(j))["+"]("=$"));
-        "604";
+        "602";
         _GS_1 = new RadioButtons;
         (await _GS_1.__init__(parameters));
         radio_buttons = _GS_1;
-        "605";
-        for (var ρσ_Index36 = 0; ρσ_Index36["<"](7); ρσ_Index36++) {
-            i = ρσ_Index36;
-            "606";
+        "603";
+        for (var ρσ_Index37 = 0; ρσ_Index37["<"](7); ρσ_Index37++) {
+            i = ρσ_Index37;
+            "604";
             radio_button = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle_parameter, text: str(i)["+"](" "), name: str(j)["+"](",")["+"](str(i))})]);
-            "607";
+            "605";
             (await radio_buttons.add(radio_button, spherical_harmonics));
         }
-        "608";
+        "606";
         radio_button_array=radio_button_array["+"](ρσ_list_decorate([ radio_buttons ]));
     }
-    "613";
+    "611";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "615";
+    "613";
     (await create_title(parameters));
-    "616";
+    "614";
     _GS_1 = new Figure;
     (await _GS_1.__init__());
     figure = _GS_1;
-    "617";
+    "615";
     ρσ_unpack = (await spherical_harmonics(parameters));
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
     xx_ = ρσ_unpack[0];
     yy_ = ρσ_unpack[1];
     zz_ = ρσ_unpack[2];
-    "618";
+    "616";
     (await figure.add_subplot(xx_, yy_, zz_));
-    "620";
+    "618";
     dt = 0;
-    "621";
+    "619";
     time = 1;
-    "622";
+    "620";
     while (true) {
-        "623";
+        "621";
         (await rate(10));
-        "624";
+        "622";
         (await figure.render(time));
-        "625";
+        "623";
         time=time["+"](dt);
     }
 };

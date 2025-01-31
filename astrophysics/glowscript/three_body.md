@@ -1,4 +1,4 @@
-[three_body.py](three_body.py)
+The [`three_body.py` source code](three_body.py) is shown below.
 <p></p>
 
 {% highlight python %}

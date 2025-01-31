@@ -1,4 +1,4 @@
-[daylight_variations.py](daylight_variations.py)
+The [`daylight_variations.py` source code](daylight_variations.py) is shown below.
 <p></p>
 
 {% highlight python %}
