@@ -139,7 +139,9 @@ that I have written in VPython.
 <div style="border-top: 1px solid #999999"><br/></div>
 
 Spherical harmonics are of the form 
+
 $$r = \sin(m_1\phi)^{m_0} + \cos(m_3\phi)^{m_2} + \sin(m_5\theta)^{m_4} + \cos(m_7\theta)^{m_6}$$
+
 where 
 - the angles $\phi \in [0, \pi]$ (latitude), and $\theta \in [0, 2\pi]$ (longitude), 
 - the parameters $m_0$, $m_1$, $m_2$, $m_3$, $m_4$, $m_5$, $m_6$, and $m_7$ are all integers and $\geq 0$,
@@ -156,6 +158,24 @@ where
 <figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_2.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
+  that was generated for .....</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="mathematics/topology.html">
+    <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_3.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
+  that was generated for .....</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="mathematics/topology.html">
+    <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_4.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>

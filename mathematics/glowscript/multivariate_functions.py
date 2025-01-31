@@ -7,6 +7,8 @@ from vpython import *
 #####################################
 # https://github.com/nicolaspanel/numjs
 get_library('https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js')
+
+
 # get_library("https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.0.1/math.js")
 class Numpy:
     def __init__(self):
@@ -28,6 +30,7 @@ class Numpy:
                 temp.append(linspace_2.get(i))
         yy = nj.array(temp).reshape(linspace_2.shape[0], linspace_2.shape[0])
         return xx, yy
+
 
 np = Numpy()
 #############
@@ -100,26 +103,30 @@ class Base:
                  [z for z in arange(0, len(zz), len(zz) / num_tick_marks)] + [len(zz)]]
         scale = .01 * len(xx)
         delta_ = [len(xx) / num_tick_marks, len(yy[0]) / num_tick_marks, len(zz) / num_tick_marks]
-        self._tick_marks, self._mesh, self._axis = [], [], []
+        self._tick_marks, self._mesh, self._axis, self._axis_labels = [], [], [], []
 
         self._make_tick_marks(base_, xx, yy, zz, tick_marks_color, scale, num_tick_marks)
         self._make_mesh(base_, delta_, scale)
         self._make_axis(base_, delta_, axis_color, scale)
+        self._make_axis_labels(base_, delta_, axis_color, scale)
 
-    def _make_axis(self, base_, delta_, axis_color, scale):
+    def _make_axis_labels(self, base_, delta_, axis_color, scale):
         pos = x_hat * (base_[0][-1] + 2 * delta_[0]) - vec(0, scale, -30)
         l_y = label(pos=pos, text="Y-axis", color=axis_color, box=False)
         pos = z_hat * (base_[2][-1] + 2 * delta_[2]) + y_hat * (.625 * base_[1][-1])
         l_z = label(pos=pos, text="Z-axis", color=axis_color, box=False)
         pos = x_hat * (base_[0][-1] / 2) + z_hat * (base_[2][-1] + 3 * delta_[2])
         l_x = label(pos=pos, text="X-axis", color=axis_color, box=False)
+        self._axis_labels += [l_x, l_y, l_z]
+
+    def _make_axis(self, base_, delta_, axis_color, scale):
         c_x = cylinder(pos=x_hat * base_[0][0], axis=x_hat * (base_[0][-1] - base_[0][0]), color=axis_color,
                        radius=scale)
         c_y = cylinder(pos=z_hat * base_[2][0], axis=z_hat * (base_[2][-1] - base_[2][0]), color=axis_color,
                        radius=scale)
         c_z = cylinder(pos=y_hat * base_[1][0], axis=y_hat * (base_[1][-1] - base_[1][0]), color=axis_color,
                        radius=scale)
-        self._axis += [c_x, c_y, c_z, l_x, l_y, l_z]
+        self._axis += [c_x, c_y, c_z]
 
     def _make_mesh(self, base_, delta_, scale):
         range_ = [i[-1] - i[0] for i in base_]
@@ -187,6 +194,10 @@ class Base:
         for i in range(len(self._axis)):
             self._axis[i].visible = visible
 
+    def axis_labels_visibility_is(self, visible):
+        for i in range(len(self._axis_labels)):
+            self._axis_labels[i].visible = visible
+
 
 # This class is only meant to be used from within the Figure class.
 class SubPlot:
@@ -196,7 +207,7 @@ class SubPlot:
         self._opacity = 1
         self._shininess = 0.6
         self._hue_gradient = .5
-        self._omega = pi / 2
+        self._omega = .8 * pi
         self._vertices, self._quads = [], []
         self._create_vertices()
         self._create_quads()
@@ -315,21 +326,23 @@ class Figure:
         self._subplots = []
         self._hue_offset = .8
         self._hue_gradient = .5
-        self._omega = pi / 2
+        self._omega = .8 * pi
         self._opacity = 1
         self._shininess = 0.6
         self._axis_color = axis_color
         self._tick_marks_color = tick_marks_color
         self._num_tick_marks = num_tick_marks
         self._base = None
-        self._tick_marks_visible = False
+        self._tick_marks_visible = True
         self._mesh_visible = True
         self._axis_visible = True
+        self._axis_labels_visible = False
 
     def _create_base(self, xx, yy, zz):
         axis = Base(xx, yy, zz, self._axis_color, self._tick_marks_color, self._num_tick_marks)
         axis.mesh_visibility_is(self._mesh_visible)
         axis.axis_visibility_is(self._axis_visible)
+        axis.axis_labels_visibility_is(self._axis_labels_visible)
         axis.tick_marks_visibility_is(self._tick_marks_visible)
         return axis
 
@@ -369,6 +382,10 @@ class Figure:
     def mesh_visibility_is(self, visible):
         self._mesh_visible = visible
         self._base.mesh_visibility_is(visible)
+
+    def axis_labels_visibility_is(self, visible):
+        self._axis_labels_visible = visible
+        self._base.axis_labels_visibility_is(visible)
 
     def axis_visibility_is(self, visible):
         self._axis_visible = visible
@@ -596,6 +613,10 @@ def toggle_tick_marks(event):
     figure.tick_marks_visibility_is(event.checked)
 
 
+def toggle_axis_labels(event):
+    figure.axis_labels_visibility_is(event.checked)
+
+
 def toggle_axis(event):
     figure.axis_visibility_is(event.checked)
 
@@ -614,9 +635,10 @@ def toggle(event):
 
 
 animation.append_to_caption("\n")
-_ = checkbox(text='Show mesh ', bind=toggle_mesh, checked=True)
-_ = checkbox(text='Show axis ', bind=toggle_axis, checked=True)
-_ = checkbox(text='Show tick marks ', bind=toggle_tick_marks, checked=False)
+_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
+_ = checkbox(text='Axis ', bind=toggle_axis, checked=True)
+_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=False)
+_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
 _ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
 
 animation.append_to_caption("\n\nHue offset  ")
@@ -626,8 +648,8 @@ animation.append_to_caption("\n\nHue gradient  ")
 gradient_slider = slider(min=0, max=1, value=.5, bind=adjust_gradient)
 
 animation.append_to_caption("\n\nAnimation speed ")
-omega_slider = slider(min=0, max=2 * pi, value=pi / 2, bind=adjust_omega)
-omega_slider_text = wtext(text="= π/2")
+omega_slider = slider(min=0, max=2 * pi, value=.8 * pi, bind=adjust_omega)
+omega_slider_text = wtext(text="= 0.8 * π")
 
 animation.append_to_caption("\n\nOpacity ")
 opacity_slider = slider(min=0, max=1, step=0.01, value=1, bind=adjust_opacity)
