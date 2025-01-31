@@ -19,8 +19,8 @@ that I have written in VPython.
 ## Toroids
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
     <img alt="Torus" src="./images/geometry/torus.png" title="Click to animate"/>
   </a>
@@ -28,7 +28,7 @@ that I have written in VPython.
     <a href="https://en.wikipedia.org/wiki/Genus_%28mathematics%29">genus one</a>.
   </figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Trefoil knot" src="./images/geometry/trefoil_knot.png" title="Click to animate"/>
   </a>
@@ -38,14 +38,14 @@ that I have written in VPython.
 </div>
 <p style="clear: both;"></p>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: right; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
     <img alt="Limpet Torus" src="./images/geometry/limpet_torus.png" title="Click to animate"/>
   </a>
   <figcaption>The limpet torus.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Elliptic torus" src="./images/geometry/elliptic_torus.png" title="Click to animate"/>
   </a>
@@ -54,14 +54,14 @@ that I have written in VPython.
 </div>
 <p style="clear: both;"></p>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
     <img alt="Double torus" src="./images/geometry/double_torus.png" title="Click to animate"/>
   </a>
   <figcaption>Double torus.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
   </a>
@@ -77,15 +77,15 @@ that I have written in VPython.
 ### Möbius strip &amp; Klein&apos;s bottle
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: right; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
     <img alt="Möbius strip" src="./images/geometry/mobius_strip.png" title="Click to animate"/>
   </a>
   <figcaption>The famous <a href="https://en.wikipedia.org/wiki/M%C3%B6bius_strip">Möbius strip</a>,
   perhaps the most well-known non-orientable surface.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Klein&aps;s bottle" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
   </a>
@@ -96,15 +96,15 @@ that I have written in VPython.
 </div>
 <p style="clear: both;"></p>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: right; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
     <img alt="Figure-8 Klein bottle" src="./images/geometry/figure_8_klein_bottle.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a> also can be
   obtained by gluing two Möbius strips together.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Gray&aps;s Klein bottle" src="./images/geometry/grays_klein_bottle.png" title="Click to animate"/>
   </a>
@@ -116,15 +116,15 @@ that I have written in VPython.
 ### The real projective plane
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
     <img alt="Cross capp" src="./images/geometry/cross_cap.png" width="80%" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/crosscap/">Paul Bourke&apos;s parametrization</a> 
   for the <a href="https://mathworld.wolfram.com/Cross-Cap.html">cross cap</a>.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Self-intersecting plane" src="./images/geometry/self_intersecting_disk.png" title="Click to animate"/>
   </a>
@@ -139,23 +139,23 @@ that I have written in VPython.
 <div style="border-top: 1px solid #999999"><br/></div>
 
 Spherical harmonics are of the form 
-$r = \sin(m_1\phi)^{m_0} + \cos(m_3\phi)^{m_2} + \sin(m_5\theta)^{m_4} + \cos(m_7\theta)^{m_6}$
+$$r = \sin(m_1\phi)^{m_0} + \cos(m_3\phi)^{m_2} + \sin(m_5\theta)^{m_4} + \cos(m_7\theta)^{m_6}$$
 where 
 - the angles $\phi \in [0, \pi]$ (latitude), and $\theta \in [0, 2\pi]$ (longitude), 
 - the parameters $m_0$, $m_1$, $m_2$, $m_3$, $m_4$, $m_5$, $m_6$, and $m_7$ are all integers and $\geq 0$,
 - and where $r$ is the radius.  
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 55%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
-    <img alt="Cross capp" src="./images/geometry/spherical_harmonic_1.png" width="80%" title="Click to animate"/>
+    <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_1.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>
 </figure>
-<figure style="float: right; width: 42%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
-    <img alt="Self-intersecting plane" src="./images/geometry/spherical_harmonic_2.png" title="Click to animate"/>
+    <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_2.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>
@@ -173,8 +173,8 @@ where
   and is named after Ulisse Dini.
 </details-->
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
     <img alt="Dini&apos;s spiral" src="./images/geometry/dini_spiral.png" title="Click to animate"/>
   </a>
@@ -182,7 +182,7 @@ where
   or twisted pseudo-sphere: characterized by a surface of constant (negative) curvature, 
   named after Ulisse Dini.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Conchoidd" src="./images/geometry/conchoid.png" title="Click to animate"/>
   </a>
@@ -197,14 +197,14 @@ where
 ## Miscellaneous
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
     <img alt="Dented object" src="./images/geometry/dented_object.png" title="Click to animate"/>
   </a>
   <figcaption>A dented object.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Arc shape" src="./images/geometry/arc.png" title="Click to animate"/>
   </a>
@@ -213,14 +213,14 @@ where
 </div>
 <p style="clear: both;"></p>
 
-<div style="display: flex; align-items: flex-end;">
-<figure style="float: left; width: 50%; text-align: center">
+<div class="double_image">
+<figure class="left_image">
   <a href="mathematics/topology.html">
     <img alt="Ball and torus" src="./images/geometry/ball_in_torus.png" title="Click to animate"/>
   </a>
   <figcaption>Combined ball and torus.</figcaption>
 </figure>
-<figure style="float: right; width: 50%; text-align: center">
+<figure class="right_image">
   <a href="mathematics/topology.html">
     <img alt="Bubbles shape" src="./images/geometry/bubbles.png" title="Click to animate"/>
   </a>

@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 from vpython import canvas, color, arrow, vector, vec, slider, button, rate, random, norm
 
@@ -145,5 +144,3 @@ while True:
     flock.update(dt)
     rate(1 / dt)
     # scene.center = center
-
-```
