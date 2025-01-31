@@ -509,11 +509,11 @@ def spherical_harmonics(spherical_harmonic, resolution=150):
 
 def create_title(spherical_parameters):
     animation_title = "$\\begin{pmatrix} \\theta \\\\ \\phi \\\\ \\rho \\end{pmatrix} = \\begin{pmatrix} [0, 2\\pi] \\\\ [0,\\pi] \\\\ "
-    animation_title += "\\sin(" + str(spherical_parameters.coefficients[0]) + "\\phi)"
+    animation_title += "\\sin(" + str(spherical_parameters.coefficients[0]) + "\\phi) +"
     animation_title += "^{" + str(spherical_parameters.coefficients[1]) + "}"
-    animation_title += "\\cos(" + str(spherical_parameters.coefficients[2]) + "\\phi)"
+    animation_title += "\\cos(" + str(spherical_parameters.coefficients[2]) + "\\phi) +"
     animation_title += "^{" + str(spherical_parameters.coefficients[3]) + "}"
-    animation_title += "\\sin(" + str(spherical_parameters.coefficients[4]) + "\\theta)"
+    animation_title += "\\sin(" + str(spherical_parameters.coefficients[4]) + "\\theta) +"
     animation_title += "^{" + str(spherical_parameters.coefficients[5]) + "}"
     animation_title += "\\cos(" + str(spherical_parameters.coefficients[6]) + "\\theta)"
     animation_title += "^{" + str(spherical_parameters.coefficients[7]) + "}\\end{pmatrix}$"
