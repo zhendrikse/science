@@ -16,6 +16,7 @@ h1 {
   text-decoration-color: #cccccc;
   text-decoration-style: solid;
   text-decoration-thickness: 3px;
+  text-underline-offset: 3px
 }
 
 h2 {
@@ -23,6 +24,7 @@ h2 {
   text-decoration-color: #cccccc;
   text-decoration-style: solid;
   text-decoration-thickness: 2px;
+  text-underline-offset: 3px
 }
 
 h3 {
@@ -30,6 +32,7 @@ h3 {
   text-decoration-color: #999999;
   text-decoration-style: solid;
   text-decoration-thickness: 1px;
+  text-underline-offset: 3px
 }
 
 
