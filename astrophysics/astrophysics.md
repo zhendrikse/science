@@ -1,14 +1,12 @@
 <a name="astrophysics"></a>
 # Astrophysics
-<div class="header_line"><br/></div>
 
 <blockquote>
 You have to make the rules, not follow them.
 &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
 </blockquote><br/>
 
-### Daylight variations &mdash; sun-earth-moon model
-<div style="border-top: 1px solid #999999"><br/></div>
+## Daylight variations &mdash; sun-earth-moon model
 
 
 <figure style="float: center; text-align: center;">
@@ -22,7 +20,6 @@ You have to make the rules, not follow them.
 <p style="clear: both;"></p>
 
 ###  Kepler's law &amp; the three-body problem
-<div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
