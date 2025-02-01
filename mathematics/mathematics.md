@@ -18,15 +18,15 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
   </a>&nbsp;&nbsp;&nbsp;
   <figcaption>Surface plots for
   <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a> 
-  $f(x, y) \rightarrow \mathbb{R}$ where $(x, y) \in \mathbb{R}$.</figcaption>
+  $f(x, y) \rightarrow \mathbb{R} \text{ where } (x, y) \in \mathbb{R}$.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/multivariate_contour_plot.html">
     <img alt="Complex functions" src="./images/multivariate_contour_plot.png" title="Click to animate"/>
   </a>
-  <figcaption>Contour plots for
+  <figcaption><br/>Contour plots for
   <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a> 
-  $f(x, y) \rightarrow \mathbb{R}$ where $(x, y) \in \mathbb{R}$.</figcaption>
+  $f(x, y) \rightarrow \mathbb{R} \text{ where } (x, y) \in \mathbb{R}$.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
