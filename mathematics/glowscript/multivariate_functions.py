@@ -1,3 +1,4 @@
+
 #Web VPython 3.2
 
 from vpython import *
@@ -6,7 +7,6 @@ from vpython import *
 # COMMENT IN THESE IMPORTS IN VPYTHON #
 #######################################
 import numpy as np
-
 #####################################
 # COMMENT OUT THIS CLASS IN VPYTHON #
 #####################################
@@ -53,6 +53,7 @@ mexican_hat_title = "<h3>Polar coordinates for Mexican hat</h3>$\\begin{pmatrix}
 
 animation = canvas(height=500, align="top", center=vec(0, -10, 0), background=color.gray(0.075),
                    forward=vec(-0.9, -0.85, -.8), title=sine_sqrt_title + "\n", range=75)
+
 
 class NumpyWrapper:
     def __init__(self, start_1, stop_1, start_2, stop_2, resolution):
@@ -355,7 +356,9 @@ class SurfacePlot(Plot):
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
                 position = self._get_x_y_z_plot_values(x, y, t)
-                self._update_vertex(x, y, t, position.z)
+                f_x_y = self._zz[x][y] * (1 - cos(self._omega * t)) * .4
+                value = (f_x_y - self._z_min) * len(self._zz) / self._range_z
+                self._update_vertex(x, y, t, value)
 
     def _get_vertex(self, x, y):
         return self._vertices[x * len(self._yy[0]) + y]
@@ -526,9 +529,9 @@ class RadioButtons:
         return self._selected_button.name()
 
 
-#######################################
-# Multivariate functions F(x, y) => R #
-#######################################
+##########################
+# Functions F(x, y) => R #
+##########################
 
 def ricker(resolution=50):
     def f_x(xx, yy, i, j):
@@ -628,142 +631,17 @@ def polynomial(resolution=50):
 
 
 def ripple(resolution=100):
-    def f_x(x, y, i, j):
+    def f_x(x, yy, i, j):
         return x[i][j]
 
-    def f_y(x, y, i, j):
-        return y[i][j]
+    def f_y(xx, yy, i, j):
+        return yy[i][j]
 
-    def f_z(x, y, i, j):
-        return sin(.75 * x[i][j] * x[i][j] + y[i][j] * y[i][j])
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-###################################
-# Topological / volumetric shapes #
-###################################
-
-def arc(resolution=50):
-    def f_x(x, y, i, j):
-        return cos(x[i][j])
-
-    def f_y(x, y, i, j):
-        return sin(x[i][j]) + cos(y[i][j])
-
-    def f_z(x, y, i, j):
-        return 3 * sin(y[i][j])
-
-    return NumpyWrapper(0, pi, 0, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-def dented(resolution=50):
-    def f_x(x, y, i, j):
-        return cos(x[i][j])
-
-    def f_y(x, y, i, j):
-        return sin(x[i][j]) + cos(y[i][j])
-
-    def f_z(x, y, i, j):
-        return 1.5 * sin(y[i][j])
-
-    return NumpyWrapper(-pi, pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def dinis_spiral(resolution=75):
-    def f_x(x, y, i, j):
-        return cos(x[i][j]) * sin(y[i][j])
-
-    def f_y(x, y, i, j):
-        return sin(x[i][j]) * sin(y[i][j])
-
-    def f_z(x, y, i, j):
-        return 0.2 * x[i][j] + log(tan(0.5 * y[i][j]) + cos(y[i][j]))
-
-    return NumpyWrapper(0, 20, 0.1, 2, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-    # xx = np.cos(u).multiply(np.sin(v))
-    # yy = np.sin(u).multiply(np.sin(v))
-    # term = np.log(np.tan(v.multiply(0.5))).add(np.cos(v))
-    # zz = u.multiply(0.2).add(term)
-
-def limpet_torus(resolution=50):
-    def f_x(x, y, i, j):
-        return cos(x[i][j]) / (sin(y[i][j]) + sqrt(2))
-
-    def f_y(x, y, i, j):
-        return sin(x[i][j]) / (sin(y[i][j]) + sqrt(2))
-
-    def f_z(x, y, i, j):
-        return 1 / (cos(y[i][j]) + sqrt(2))
+    def f_z(xx, yy, i, j):
+        return sin(.75 * xx[i][j] * xx[i][j] + yy[i][j] * yy[i][j])
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
-def mobius_strip(resolution=50):
-    def f_x(x, y, i, j):
-        factor = cos(.5 * x[i][j]) * y[i][j] + 1
-        return factor * cos(x[i][j])
-
-    def f_y(x, y, i, j):
-        factor = cos(.5 * x[i][j]) * y[i][j] + 1
-        return factor * sin(x[i][j])
-
-    def f_z(x, y, i, j):
-        return .5 * y[i][j] * sin(.5 * x[i][j])
-
-    return NumpyWrapper(-pi, pi, -1, 1, resolution).get_plot_data(f_x, f_y, f_z)
-
-# https://en.wikipedia.org/wiki/Real_projective_plane
-def self_intersecting_disk(r=1, resolution=75):
-    def f_x(x, y, i, j):
-        return r * y[i][j] * cos(2 * x[i][j])
-
-    def f_y(x, y, i, j):
-        return r * y[i][j] * sin(2 * x[i][j])
-
-    def f_z(x, y, i, j):
-        return -r * y[i][j] * cos(x[i][j])
-
-    return NumpyWrapper(0, 2 * pi, 0, 1, resolution).get_plot_data(f_x, f_y, f_z)
-
-# https://www.mattiagiuri.com/2020/11/20/plotting-a-torus-with-python/
-def torus(a=.7, c=2, resolution=75):
-    def f_x(x, y, i, j):
-        return (c + a * cos(y[i][j])) * cos(x[i][j])
-
-    def f_y(x, y, i, j):
-        return (c + a * cos(y[i][j])) * sin(x[i][j])
-
-    def f_z(x, y, i, j):
-        return a * sin(y[i][j])
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def trefoil_knot(resolution=50):
-    def f_x(x, y, i, j):
-        factor = 4* (.25 * sin(3 * y[i][j]) + 1) + cos(x[i][j])
-        return factor * cos(2 * y[i][j])
-
-    def f_y(x, y, i, j):
-        factor = 4* (.25 * sin(3 * y[i][j]) + 1) + cos(x[i][j])
-        return factor * sin(2 * y[i][j])
-
-    def f_z(x, y, i, j):
-        return sin(x[i][j]) + 2 * cos(3 * y[i][j])
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-def twisted_torus(resolution=50):
-    def f_x(x, y, i, j):
-        return (3 + sin(y[i][j]) + cos(x[i][j])) * cos(2 * y[i][j])
-
-    def f_y(x, y, i, j):
-        return (3 + sin(y[i][j]) + cos(x[i][j])) * sin(2 * y[i][j])
-
-    def f_z(x, y, i, j):
-        return 2 * (cos(y[i][j]) + sin(x[i][j]))
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 ################
 # GUI controls #
@@ -851,13 +729,13 @@ radio_buttons.add(radio(bind=toggle, text=" Mexican hat ", name="mexican_hat"), 
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 figure = Figure()
-xx, yy, zz = dinis_spiral()
+xx_, yy_, zz_ = sin_sqrt(50)
 
 ##########################################
 # ENABLE THIS FOR CONTOUR PLOTS          #
 # figure.add_contour_plot(xx_, yy_, zz_) #
 ##########################################
-figure.add_contour_plot(xx, yy, zz)
+figure.add_surface_plot(xx_, yy_, zz_)
 dt = 0.0
 time = 1
 while True:
