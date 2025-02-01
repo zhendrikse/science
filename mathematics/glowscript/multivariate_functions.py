@@ -1,7 +1,8 @@
-# Web VPython 3.2
+#Web VPython 3.2
 
 from vpython import *
 
+# import numpy as np
 #####################################
 # COMMENT OUT THIS CLASS IN VPYTHON #
 #####################################
@@ -37,8 +38,7 @@ np = Numpy()
 # TILL HERE #
 #############
 
-
-ricker_title = "<h3><a href=\"https://en.wikipedia.org/wiki/Ricker_wavelet\">Ricker / Mexican hat / Marr wavelet</a></h3>&nbsp;&nbsp;$F(x,y) = \\dfrac{1}{\pi\sigma^4} \\bigg(1 - \dfrac{1}{2} \\bigg( \dfrac{x^2 + y^2}{\sigma^2} \\bigg) \\bigg) e^{-\\dfrac{x^2+y^2}{2\sigma^2}}$"
+ricker_title = "<h3><a href=\"https://en.wikipedia.org/wiki/Ricker_wavelet\">Ricker / Mexican hat / Marr wavelet</a></h3>&nbsp;&nbsp;$F(x,y) = \\dfrac{1}{\\pi\\sigma^4} \\bigg(1 - \\dfrac{1}{2} \\bigg( \\dfrac{x^2 + y^2}{\\sigma^2} \\bigg) \\bigg) e^{-\\dfrac{x^2+y^2}{2\\sigma^2}}$"
 sine_cosine_title = "<h3>$F(x, y) = \\sin(\\pi x)\\cos(\\pi y)$</h3>"
 sine_sqrt_title = "<h3>$F(x, y) = \\sin\\left(\\sqrt{x^2+y^2}\\right)$</h3>"
 polynomial_title = "<h3>$F(x, y) =  (yx^3 - xy^3)$</h3>"
@@ -78,10 +78,10 @@ class NumpyWrapper:
         for x in range(numpy_array.shape[0]):
             temp = []
             for y in range(numpy_array.shape[1]):
-                #################################
-                # REPLACE THIS IN LOCAL VPYTHON #
-                # temp += [numpy_array[x, y]]   #
-                temp += [numpy_array.get(x, y)]
+                ###################################
+                # REPLACE THIS IN LOCAL VPYTHON   #
+                # temp += [numpy_array[x, y]]     #
+                temp += [numpy_array.get(x, y)]  #
             result += [temp]
         return result
 
@@ -103,11 +103,10 @@ class Base:
                  [z for z in arange(0, len(zz), len(zz) / num_tick_marks)] + [len(zz)]]
         scale = .01 * len(xx)
         delta_ = [len(xx) / num_tick_marks, len(yy[0]) / num_tick_marks, len(zz) / num_tick_marks]
-        self._tick_marks, self._mesh, self._axis, self._axis_labels = [], [], [], []
+        self._tick_marks, self._mesh, self._axis_labels = [], [], []
 
         self._make_tick_marks(base_, xx, yy, zz, tick_marks_color, scale, num_tick_marks)
         self._make_mesh(base_, delta_, scale)
-        self._make_axis(base_, delta_, axis_color, scale)
         self._make_axis_labels(base_, delta_, axis_color, scale)
 
     def _make_axis_labels(self, base_, delta_, axis_color, scale):
@@ -118,15 +117,6 @@ class Base:
         pos = x_hat * (base_[0][-1] / 2) + z_hat * (base_[2][-1] + 3 * delta_[2])
         l_x = label(pos=pos, text="X-axis", color=axis_color, box=False)
         self._axis_labels += [l_x, l_y, l_z]
-
-    def _make_axis(self, base_, delta_, axis_color, scale):
-        c_x = cylinder(pos=x_hat * base_[0][0], axis=x_hat * (base_[0][-1] - base_[0][0]), color=axis_color,
-                       radius=scale)
-        c_y = cylinder(pos=z_hat * base_[2][0], axis=z_hat * (base_[2][-1] - base_[2][0]), color=axis_color,
-                       radius=scale)
-        c_z = cylinder(pos=y_hat * base_[1][0], axis=y_hat * (base_[1][-1] - base_[1][0]), color=axis_color,
-                       radius=scale)
-        self._axis += [c_x, c_y, c_z]
 
     def _make_mesh(self, base_, delta_, scale):
         range_ = [i[-1] - i[0] for i in base_]
@@ -190,24 +180,102 @@ class Base:
         for i in range(len(self._mesh)):
             self._mesh[i].visible = visible
 
-    def axis_visibility_is(self, visible):
-        for i in range(len(self._axis)):
-            self._axis[i].visible = visible
-
     def axis_labels_visibility_is(self, visible):
         for i in range(len(self._axis_labels)):
             self._axis_labels[i].visible = visible
 
 
-# This class is only meant to be used from within the Figure class.
-class SubPlot:
+class Plot:
     def __init__(self, xx, yy, zz):
         self._xx, self._yy, self._zz = xx, yy, zz
+        self._omega = .8 * pi
+        self._x_min, x_max = min(map(min, self._xx)), max(map(max, self._xx))
+        self._y_min, y_max = min(map(min, self._yy)), max(map(max, self._yy))
+        self._z_min, z_max = min(map(min, self._zz)), max(map(max, self._zz))
+        self._range_x = x_max - self._x_min
+        self._range_y = y_max - self._y_min
+        self._range_z = z_max - self._z_min
         self._hue_offset = .8
+        self._hue_gradient = .5
         self._opacity = 1
         self._shininess = 0.6
-        self._hue_gradient = .5
-        self._omega = .8 * pi
+
+    def _get_x_y_z_plot_values(self, x, y, t):
+        value = self._zz[x][y] * (1 - cos(self._omega * t)) * .4
+        xx = (self._xx[x][y] - self._x_min) * len(self._xx) / self._range_x
+        yy = (self._yy[x][y] - self._y_min) * len(self._yy[0]) / self._range_y
+        zz = (value - self._z_min) * len(self._zz) / self._range_z
+        return vector(xx, zz, yy)
+
+    def _get_color_at(self, x, y, t):
+        position = self._get_x_y_z_plot_values(x, y, t)
+        hue = 1 / len(self._zz) * self._hue_gradient * abs(position.y) + self._hue_offset
+        return color.hsv_to_rgb(vec(hue, 1, 1.25))
+
+    def set_omega_to(self, omega):
+        self._omega = omega
+
+    def set_hue_offset_to(self, offset):
+        self._hue_offset = offset
+
+    def set_hue_gradient_to(self, gradient):
+        self._hue_gradient = gradient
+
+    def set_opacity_to(self, opacity):
+        self._opacity = opacity
+
+    def set_shininess_to(self, shininess):
+        self._shininess = shininess
+
+    def get_axis_information(self):
+        return self._xx, self._yy, self._zz
+
+
+class ContourPlot(Plot):
+    def __init__(self, xx, yy, zz):
+        Plot.__init__(self, xx, yy, zz)
+        self._x_contours, self._y_contours = [], []
+        self._initialize_contour_curves()
+
+    def _initialize_contour_curves(self, t=1):
+        positions = []
+        position_col = [[] for j in range(len(self._yy[0]))]
+        for i in range(len(self._xx)):
+            position_row = []
+            for j in range(len(self._yy[0])):
+                position = self._get_x_y_z_plot_values(i, j, t)
+                position_row.append(position)
+                position_col[j].append(position)
+            positions.append(position_row)
+            self._x_contours.append(curve(pos=position_row, radius=.1))
+
+        for i in range(len(position_col)):
+            self._y_contours.append(curve(pos=position_col[i], radius=.1))
+
+    def _render_contours(self, x, y, t):
+        position = self._get_x_y_z_plot_values(x, y, t)
+        hue = 1 / len(self._zz) * self._hue_gradient * abs(position.z) + self._hue_offset
+        self._x_contours[x].modify(y, color=self._get_color_at(x, y, t))
+        self._y_contours[y].modify(x, color=self._get_color_at(x, y, t))
+        self._x_contours[x].modify(y, pos=position)
+        self._y_contours[y].modify(x, pos=position)
+
+    def render(self, t):
+        for x in range(len(self._xx)):
+            for y in range(len(self._yy[0])):
+                self._render_contours(x, y, t)
+
+    def hide_plot(self):
+        for i in range(len(self._xx)):
+            for j in range(len(self._yy[0])):
+                self._x_contours[i].modify(j, visible=False)
+                self._y_contours[j].modify(i, visible=False)
+
+
+# This class is only meant to be used from within the Figure class.
+class SurfacePlot(Plot):
+    def __init__(self, xx, yy, zz):
+        Plot.__init__(self, xx, yy, zz)
         self._vertices, self._quads = [], []
         self._create_vertices()
         self._create_quads()
@@ -218,17 +286,11 @@ class SubPlot:
         for vertex_ in self._vertices:
             vertex_.visible = False
 
-    def _create_vertices(self):
-        x_min, x_max = min(map(min, self._xx)), max(map(max, self._xx))
-        y_min, y_max = min(map(min, self._yy)), max(map(max, self._yy))
-        range_x = x_max - x_min
-        range_y = y_max - y_min
-
+    def _create_vertices(self, t=1):
         for x in range(len(self._xx)):
             for y in range(len(self._yy[1])):
-                x_ = (self._xx[x][y] - x_min) * len(self._xx) / range_x
-                y_ = (self._yy[x][y] - y_min) * len(self._yy[0]) / range_y
-                self._vertices.append(vertex(pos=vec(x_, 0, y_), normal=vec(0, 1, 0)))
+                position = self._get_x_y_z_plot_values(x, y, t)
+                self._vertices.append(vertex(pos=position, normal=vec(0, 1, 0)))
 
     def _create_quad(self, x, y):
         _neighbor_increment_x, _neighbor_increment_y = 1, 1
@@ -248,8 +310,8 @@ class SubPlot:
     # When removing the "-1", opposite ends will be glued together
     #
     def _create_quads(self):
-        for x in range(len(self._xx) - 2):
-            for y in range(len(self._yy[0]) - 2):
+        for x in range(len(self._xx) - 1):
+            for y in range(len(self._yy[0]) - 1):
                 self._create_quad(x, y)
 
     def _set_vertex_normal_for(self, x, y):
@@ -274,26 +336,25 @@ class SubPlot:
     # Set the normal for each vertex to be perpendicular to the lower left corner of the quad.
     # The vectors a and b point to the right and up around a vertex in the xy plane.
     def _make_normals(self):
-        for x in range(len(self._xx) - 2):
-            for y in range(len(self._yy[0]) - 2):
+        for x in range(len(self._xx) - 1):
+            for y in range(len(self._yy[0]) - 1):
                 self._set_vertex_normal_for(x, y)
 
-    def _update_vertex(self, x, y, value):
+    def _update_vertex(self, x, y, t, value):
         hue = 1 / len(self._zz) * self._hue_gradient * abs(value) + self._hue_offset
         vertex_ = self._get_vertex(x, y)
         vertex_.pos.y = value
-        vertex_.color = color.hsv_to_rgb(vec(hue, 1, 1))
+        vertex_.color = self._get_color_at(x, y, t)
         vertex_.opacity = self._opacity
         vertex_.shininess = self._shininess
 
     def _update_vertices(self, t):
-        z_min, z_max = min(map(min, self._zz)), max(map(max, self._zz))
-        range_z = z_max - z_min
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
+                position = self._get_x_y_z_plot_values(x, y, t)
                 f_x_y = self._zz[x][y] * (1 - cos(self._omega * t)) * .4
-                value = (f_x_y - z_min) * len(self._zz) / range_z
-                self._update_vertex(x, y, value)
+                value = (f_x_y - self._z_min) * len(self._zz) / self._range_z
+                self._update_vertex(x, y, t, value)
 
     def _get_vertex(self, x, y):
         return self._vertices[x * len(self._yy[0]) + y]
@@ -301,24 +362,6 @@ class SubPlot:
     def render(self, t):
         self._update_vertices(t)
         self._make_normals()
-
-    def set_omega_to(self, omega):
-        self._omega = omega
-
-    def set_hue_offset_to(self, offset):
-        self._hue_offset = offset
-
-    def set_hue_gradient_to(self, gradient):
-        self._hue_gradient = gradient
-
-    def set_opacity_to(self, opacity):
-        self._opacity = opacity
-
-    def set_shininess_to(self, shininess):
-        self._shininess = shininess
-
-    def get_axis_information(self):
-        return self._xx, self._yy, self._zz
 
 
 class Figure:
@@ -335,13 +378,11 @@ class Figure:
         self._base = None
         self._tick_marks_visible = True
         self._mesh_visible = True
-        self._axis_visible = True
         self._axis_labels_visible = False
 
     def _create_base(self, xx, yy, zz):
         axis = Base(xx, yy, zz, self._axis_color, self._tick_marks_color, self._num_tick_marks)
         axis.mesh_visibility_is(self._mesh_visible)
-        axis.axis_visibility_is(self._axis_visible)
         axis.axis_labels_visibility_is(self._axis_labels_visible)
         axis.tick_marks_visibility_is(self._tick_marks_visible)
         return axis
@@ -349,6 +390,10 @@ class Figure:
     def render(self, t):
         for subplot in self._subplots:
             subplot.render(t)
+
+    def render_contour(self, t):
+        for subplot in self._subplots:
+            subplot.render_contour(t)
 
     def set_omega_to(self, omega):
         self._omega = omega
@@ -387,14 +432,9 @@ class Figure:
         self._axis_labels_visible = visible
         self._base.axis_labels_visibility_is(visible)
 
-    def axis_visibility_is(self, visible):
-        self._axis_visible = visible
-        self._base.axis_visibility_is(visible)
-
     def _hide_axis(self):
         self._base.tick_marks_visibility_is(False)
         self._base.mesh_visibility_is(False)
-        self._base.axis_visibility_is(False)
 
     def reset(self):
         for subplot in self._subplots:
@@ -403,8 +443,15 @@ class Figure:
         self._subplots = []
         self._hide_axis()
 
-    def add_subplot(self, x, y, z):
-        subplot = SubPlot(x, y, z)
+    def add_contour_plot(self, x, y, z):
+        subplot = ContourPlot(x, y, z)
+        self._subplots.append(subplot)
+        if len(self._subplots) == 1:
+            xx, yy, zz = subplot.get_axis_information()
+            self._base = self._create_base(xx, yy, zz)
+
+    def add_surface_plot(self, x, y, z):
+        subplot = SurfacePlot(x, y, z)
         subplot.set_omega_to(self._omega)
         subplot.set_opacity_to(self._opacity)
         subplot.set_hue_offset_to(self._hue_offset)
@@ -427,9 +474,16 @@ class RadioButton:
     def push(self):
         xx, yy, zz = self._function()
         figure.reset()
-        figure.add_subplot(xx, yy, zz)
-        animation.title = self._explanation + "\n\n"
+        figure.add_surface_plot(xx, yy, zz)
+        #######################################
+        # ENABLE THIS FOR CONTOUR PLOTS       #
+        # figure.add_contour_plot(xx, yy, zz) #
+        #######################################
+        animation.title = self._explanation + "\n"
         animation.range = 1.5 * len(xx)
+
+        #################################
+        # COMMENT OUT IN LOCAL VPYTHON  #
         MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
     def check(self):
@@ -471,9 +525,9 @@ class RadioButtons:
         return self._selected_button.name()
 
 
-#
-# Functions F(x, y) => R
-#
+##########################
+# Functions F(x, y) => R #
+##########################
 
 def ricker(resolution=50):
     def f_x(xx, yy, i, j):
@@ -506,7 +560,7 @@ def mexican_hat(resolution=50):
     return NumpyWrapper(0, 1.25, -pi, pi * 1.05, resolution).get_plot_data(f_x, f_y, f_z)
 
 
-def exp_sine(resolution=100):
+def exp_sine(resolution=75):
     def f_x(xx, yy, i, j):
         return xx[i][j]
 
@@ -546,7 +600,7 @@ def sine_cosine(resolution=50):
     return NumpyWrapper(-2 * pi / 3, 2 * pi / 3, -2 * pi / 3, 2 * pi / 3, resolution).get_plot_data(f_x, f_y, f_z)
 
 
-def cosine_of_abs(resolution=75):
+def cosine_of_abs(resolution=50):
     def f_x(x, yy, i, j):
         return x[i][j]
 
@@ -582,12 +636,12 @@ def ripple(resolution=100):
     def f_z(xx, yy, i, j):
         return sin(.75 * xx[i][j] * xx[i][j] + yy[i][j] * yy[i][j])
 
-    return NumpyWrapper(-4 * pi / 3, 4 * pi / 3, -4 * pi / 3, 4 * pi / 3, resolution).get_plot_data(f_x, f_y, f_z)
+    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 
-#
-# GUI controls
-#
+################
+# GUI controls #
+################
 def adjust_opacity():
     figure.set_opacity_to(opacity_slider.value)
 
@@ -617,10 +671,6 @@ def toggle_axis_labels(event):
     figure.axis_labels_visibility_is(event.checked)
 
 
-def toggle_axis(event):
-    figure.axis_visibility_is(event.checked)
-
-
 def toggle_mesh(event):
     figure.mesh_visibility_is(event.checked)
 
@@ -636,7 +686,6 @@ def toggle(event):
 
 animation.append_to_caption("\n")
 _ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
-_ = checkbox(text='Axis ', bind=toggle_axis, checked=True)
 _ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=False)
 _ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
 _ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
@@ -670,21 +719,19 @@ radio_buttons.add(radio(bind=toggle, text=" F=(x*x+y*y)exp(sin(-x*x-y*y)) ", nam
                   exponential_title)
 radio_buttons.add(radio(bind=toggle, text=" Ricker wavelet ", name="ricker"), ricker, ricker_title)
 radio_buttons.add(radio(bind=toggle, text=" Mexican hat ", name="mexican_hat"), mexican_hat, mexican_hat_title)
+
+#################################
+# COMMENT OUT IN LOCAL VPYTHON  #
 MathJax.Hub.Queue(["Typeset", MathJax.Hub])
-
-# Results in Arc shape
-# def f_x(theta, phi, i, j):
-#     return cos(theta[i][j])
-#
-# def f_y(theta, phi, i, j):
-#     return sin(theta[i][j]) + cos(phi[i][j])
-#
-
 
 figure = Figure()
 xx_, yy_, zz_ = sin_sqrt(50)
-figure.add_subplot(xx_, yy_, zz_)
 
+##########################################
+# ENABLE THIS FOR CONTOUR PLOTS          #
+# figure.add_contour_plot(xx_, yy_, zz_) #
+##########################################
+figure.add_surface_plot(xx_, yy_, zz_)
 dt = 0.0
 time = 1
 while True:

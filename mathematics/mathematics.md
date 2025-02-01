@@ -8,23 +8,48 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 <a href="https://en.wikipedia.org/wiki/Edward_Frenkel">Edward Frenkel</a>
 </blockquote><br/>
 
+### Dynamic 3D-plots of functions $f(x, y) \rightarrow \mathbb{R}$
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="mathematics/multivariate_surface_plot.html">
+    <img alt="Multivariate functions" src="./images/multivariate_surface_plot.png" title="Click to animate"/>
+  </a>&nbsp;&nbsp;&nbsp;
+  <figcaption>Surface plots for
+  <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a> 
+  $f(x, y) \rightarrow \mathbb{R}$ where $(x, y) \in \mathbb{R}$.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="mathematics/multivariate_contour_plot.html">
+    <img alt="Complex functions" src="./images/multivariate_contour_plot.png" title="Click to animate"/>
+  </a>
+  <figcaption>Contour plots for
+  <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a> 
+  $f(x, y) \rightarrow \mathbb{R}$ where $(x, y) \in \mathbb{R}$.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 ### Dynamic 3D-plots of multivariate and complex functions
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="mathematics/multivariate_functions.html">
-    <img alt="Multivariate functions" src="./images/3d_plot.png" title="Click to animate"/>
-  </a>&nbsp;&nbsp;&nbsp;
-  <figcaption>Plotting <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a> 
-  where $F(x, y) \rightarrow \mathbb{R}, (x, y) \in \mathbb{R} $.</figcaption>
-</figure>
-<figure class="right_image">
   <a href="mathematics/complex_functions.html">
     <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
   </a>
   <figcaption>3D-visualizations of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a> 
-  where $F(z) \rightarrow \mathbb{C}, z \in \mathbb{C}$.</figcaption>
+  where $f(z) \rightarrow \mathbb{C}, z \in \mathbb{C}$.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR COMPLEX FUNCTION CONTOUR PLOTS
+  <a href="mathematics/complex_functions.html">
+    <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
+  </a>
+  <figcaption>3D-visualizations of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a> 
+  where $f(z) \rightarrow \mathbb{C}, z \in \mathbb{C}$.</figcaption>
+  -->
 </figure>
 </div>
 <p style="clear: both;"></p>
