@@ -31,7 +31,7 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 </div>
 <p style="clear: both;"></p>
 
-### Dynamic 3D-plots of multivariate and complex functions
+### Dynamic 3D-plots of functions $f(z) \rightarrow \mathbb{C}$
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
