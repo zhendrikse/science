@@ -17,16 +17,14 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
     <img alt="Multivariate functions" src="./images/multivariate_surface_plot.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;
   <figcaption>Surface plots for
-  <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a> 
-  $f(x, y) \rightarrow \mathbb{R} \text{ where } (x, y) \in \mathbb{R}$.</figcaption>
+  <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a></figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/multivariate_contour_plot.html">
     <img alt="Complex functions" src="./images/multivariate_contour_plot.png" title="Click to animate"/>
   </a>
   <figcaption><br/>Contour plots for
-  <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a> 
-  $f(x, y) \rightarrow \mathbb{R} \text{ where } (x, y) \in \mathbb{R}$.</figcaption>
+  <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a></figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -39,8 +37,7 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
   <a href="mathematics/complex_functions.html">
     <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
   </a>
-  <figcaption>3D-visualizations of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a> 
-  where $f(z) \rightarrow \mathbb{C}, z \in \mathbb{C}$.</figcaption>
+  <figcaption>3D-visualizations of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a>.</figcaption>
 </figure>
 <figure class="right_image">
   <!-- RESERVED FOR COMPLEX FUNCTION CONTOUR PLOTS
