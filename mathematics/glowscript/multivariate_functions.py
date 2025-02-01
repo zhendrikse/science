@@ -355,9 +355,7 @@ class SurfacePlot(Plot):
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
                 position = self._get_x_y_z_plot_values(x, y, t)
-                f_x_y = self._zz[x][y] * (1 - cos(self._omega * t)) * .4
-                value = (f_x_y - self._z_min) * len(self._zz) / self._range_z
-                self._update_vertex(x, y, t, value)
+                self._update_vertex(x, y, t, position.z)
 
     def _get_vertex(self, x, y):
         return self._vertices[x * len(self._yy[0]) + y]
