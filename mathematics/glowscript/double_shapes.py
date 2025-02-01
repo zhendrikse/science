@@ -527,245 +527,45 @@ class RadioButtons:
     def get_selected_button_name(self):
         return self._selected_button.name()
 
+#####################################
+# Definitions of geometrical shapes #
+#####################################
 
-#######################################
-# Multivariate functions F(x, y) => R #
-#######################################
+#
+# Double torus parametrization found on:
+# https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html
+#
 
-def ricker(resolution=50):
-    def f_x(xx, yy, i, j):
-        return xx[i][j]
+def double_torus_1(a=3, b=4, resolution=50):
+    def f_x(x, y, i, j):
+        return b + (a + cos(y[i][j])) * sin(x[i][j])
 
-    def f_y(xx, yy, i, j):
-        return yy[i][j]
+    def f_y(x, y, i, j):
+        return b + (a + cos(y[i][j])) * cos(x[i][j])
 
-    sigma = .7
-    sigma_2 = sigma * sigma
-    factor = 1 / (pi * sigma_2 * sigma_2)
-
-    def f_z(xx, yy, i, j):
-        x_2_plus_y_2 = yy[i][j] * yy[i][j] + xx[i][j] * xx[i][j]
-        return factor * (1 - 2 * x_2_plus_y_2 / sigma_2) * exp(-2 * x_2_plus_y_2 / sigma_2)
-
-    return NumpyWrapper(-1.25, 1.25, -1.25, 1.25, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def mexican_hat(resolution=50):
-    def f_x(xx, yy, i, j):
-        return xx[i][j] * cos(yy[i][j])
-
-    def f_y(xx, yy, i, j):
-        return xx[i][j] * sin(yy[i][j])
-
-    def f_z(xx, yy, i, j):
-        return (xx[i][j] * xx[i][j] - 1) * (xx[i][j] * xx[i][j] - 1)
-
-    return NumpyWrapper(0, 1.25, -pi, pi * 1.05, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def exp_sine(resolution=75):
-    def f_x(xx, yy, i, j):
-        return xx[i][j]
-
-    def f_y(xx, yy, i, j):
-        return yy[i][j]
-
-    def f_z(xx, yy, i, j):
-        x_2_plus_y_2 = yy[i][j] * yy[i][j] + xx[i][j] * xx[i][j]
-        return sin(x_2_plus_y_2) * exp(-x_2_plus_y_2)
+    def f_z(x, y, i, j):
+        return b + sin(y[i][j])
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
+    # x = np.cos(phi).add(a).multiply(np.sin(theta)).add(b)
+    # y = np.cos(phi).add(a).multiply(np.cos(theta)).add(b)
+    # z = np.sin(phi).add(b)
 
 
-def sin_sqrt(resolution=50):
-    def f_x(xx, yy, i, j):
-        return xx[i][j]
-
-    def f_y(xx, yy, i, j):
-        return yy[i][j]
-
-    def f_z(xx, yy, i, j):
-        return sin(sqrt(yy[i][j] * yy[i][j] + xx[i][j] * xx[i][j]))
-
-    return NumpyWrapper(-2 * pi, 2 * pi, -2 * pi, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def sine_cosine(resolution=50):
-    def f_x(x, yy, i, j):
-        return x[i][j]
-
-    def f_y(xx, yy, i, j):
-        return yy[i][j]
-
-    def f_z(xx, yy, i, j):
-        return sin(xx[i][j] * pi) * cos(yy[i][j] * pi)
-
-    return NumpyWrapper(-2 * pi / 3, 2 * pi / 3, -2 * pi / 3, 2 * pi / 3, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def cosine_of_abs(resolution=50):
-    def f_x(x, yy, i, j):
-        return x[i][j]
-
-    def f_y(xx, yy, i, j):
-        return yy[i][j]
-
-    def f_z(xx, yy, i, j):
-        return cos(abs(xx[i][j]) + abs(yy[i][j]))
-
-    return NumpyWrapper(-2 * pi, 2 * pi, -2 * pi, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def polynomial(resolution=50):
-    def f_x(x, yy, i, j):
-        return x[i][j]
-
-    def f_y(xx, yy, i, j):
-        return yy[i][j]
-
-    def f_z(xx, yy, i, j):
-        return xx[i][j] * xx[i][j] * xx[i][j] * yy[i][j] - yy[i][j] * yy[i][j] * yy[i][j] * xx[i][j]
-
-    return NumpyWrapper(-1.75, 1.75, -1.75, 1.75, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def ripple(resolution=100):
+def double_torus_2(a=3, b=4, resolution=50):
     def f_x(x, y, i, j):
-        return x[i][j]
+        return 2 * b + (a + cos(y[i][j])) * cos(x[i][j])
 
     def f_y(x, y, i, j):
-        return y[i][j]
+        return a + sin(y[i][j])
 
     def f_z(x, y, i, j):
-        return sin(.75 * x[i][j] * x[i][j] + y[i][j] * y[i][j])
+        return b + (a + cos(y[i][j])) * sin(x[i][j])
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-###################################
-# Topological / volumetric shapes #
-###################################
-
-def arc(resolution=50):
-    def f_x(x, y, i, j):
-        return cos(x[i][j])
-
-    def f_y(x, y, i, j):
-        return sin(x[i][j]) + cos(y[i][j])
-
-    def f_z(x, y, i, j):
-        return 3 * sin(y[i][j])
-
-    return NumpyWrapper(0, pi, 0, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-def dented(resolution=50):
-    def f_x(x, y, i, j):
-        return cos(x[i][j])
-
-    def f_y(x, y, i, j):
-        return sin(x[i][j]) + cos(y[i][j])
-
-    def f_z(x, y, i, j):
-        return 1.5 * sin(y[i][j])
-
-    return NumpyWrapper(-pi, pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def dinis_spiral(resolution=75):
-    def f_x(x, y, i, j):
-        return cos(x[i][j]) * sin(y[i][j])
-
-    def f_y(x, y, i, j):
-        return sin(x[i][j]) * sin(y[i][j])
-
-    def f_z(x, y, i, j):
-        return 0.2 * x[i][j] + log(tan(0.5 * y[i][j]) + cos(y[i][j]))
-
-    return NumpyWrapper(0, 20, 0.1, 2, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-    # xx = np.cos(u).multiply(np.sin(v))
-    # yy = np.sin(u).multiply(np.sin(v))
-    # term = np.log(np.tan(v.multiply(0.5))).add(np.cos(v))
-    # zz = u.multiply(0.2).add(term)
-
-def limpet_torus(resolution=50):
-    def f_x(x, y, i, j):
-        return cos(x[i][j]) / (sin(y[i][j]) + sqrt(2))
-
-    def f_y(x, y, i, j):
-        return sin(x[i][j]) / (sin(y[i][j]) + sqrt(2))
-
-    def f_z(x, y, i, j):
-        return 1 / (cos(y[i][j]) + sqrt(2))
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-def mobius_strip(resolution=50):
-    def f_x(x, y, i, j):
-        factor = cos(.5 * x[i][j]) * y[i][j] + 1
-        return factor * cos(x[i][j])
-
-    def f_y(x, y, i, j):
-        factor = cos(.5 * x[i][j]) * y[i][j] + 1
-        return factor * sin(x[i][j])
-
-    def f_z(x, y, i, j):
-        return .5 * y[i][j] * sin(.5 * x[i][j])
-
-    return NumpyWrapper(-pi, pi, -1, 1, resolution).get_plot_data(f_x, f_y, f_z)
-
-# https://en.wikipedia.org/wiki/Real_projective_plane
-def self_intersecting_disk(r=1, resolution=75):
-    def f_x(x, y, i, j):
-        return r * y[i][j] * cos(2 * x[i][j])
-
-    def f_y(x, y, i, j):
-        return r * y[i][j] * sin(2 * x[i][j])
-
-    def f_z(x, y, i, j):
-        return -r * y[i][j] * cos(x[i][j])
-
-    return NumpyWrapper(0, 2 * pi, 0, 1, resolution).get_plot_data(f_x, f_y, f_z)
-
-# https://www.mattiagiuri.com/2020/11/20/plotting-a-torus-with-python/
-def torus(a=.7, c=2, resolution=75):
-    def f_x(x, y, i, j):
-        return (c + a * cos(y[i][j])) * cos(x[i][j])
-
-    def f_y(x, y, i, j):
-        return (c + a * cos(y[i][j])) * sin(x[i][j])
-
-    def f_z(x, y, i, j):
-        return a * sin(y[i][j])
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-def trefoil_knot(resolution=50):
-    def f_x(x, y, i, j):
-        factor = 4* (.25 * sin(3 * y[i][j]) + 1) + cos(x[i][j])
-        return factor * cos(2 * y[i][j])
-
-    def f_y(x, y, i, j):
-        factor = 4* (.25 * sin(3 * y[i][j]) + 1) + cos(x[i][j])
-        return factor * sin(2 * y[i][j])
-
-    def f_z(x, y, i, j):
-        return sin(x[i][j]) + 2 * cos(3 * y[i][j])
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-def twisted_torus(resolution=50):
-    def f_x(x, y, i, j):
-        return (3 + sin(y[i][j]) + cos(x[i][j])) * cos(2 * y[i][j])
-
-    def f_y(x, y, i, j):
-        return (3 + sin(y[i][j]) + cos(x[i][j])) * sin(2 * y[i][j])
-
-    def f_z(x, y, i, j):
-        return 2 * (cos(y[i][j]) + sin(x[i][j]))
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
+    # x = np.cos(phi).add(a).multiply(np.cos(theta)).add(2 * b)
+    # y = np.sin(phi).add(a)
+    # z = np.cos(phi).add(a).multiply(np.sin(theta)).add(b)
 
 ################
 # GUI controls #
@@ -836,30 +636,32 @@ shininess_slider = slider(min=0, max=1, step=0.01, value=0.6, bind=adjust_shinin
 
 animation.append_to_caption("\n\n")
 
-radio_buttons = RadioButtons()
-radio_buttons.add(radio(bind=toggle, text=" F=sin(sqrt(x*x + y*y)) ", name="sin_sqrt"), sin_sqrt, sine_sqrt_title)
-radio_buttons.add(radio(bind=toggle, text=" F=sin(x) * cos(y) ", name="sine_cosine"), sine_cosine, sine_cosine_title)
-radio_buttons.add(radio(bind=toggle, text=" F=x*x*x*y - y*y*y*x ", name="polynomial"), polynomial, polynomial_title)
-radio_buttons.add(radio(bind=toggle, text=" F=cos(abs(x) + abs(y)) ", name="cosine_of_abs"), cosine_of_abs,
-                  cosine_of_abs_title)
-radio_buttons.add(radio(bind=toggle, text=" F=sin(x*x + y*y) ", name="the_ripple"), ripple, ripple_title)
-radio_buttons.add(radio(bind=toggle, text=" F=(x*x+y*y)exp(sin(-x*x-y*y)) ", name="exp_sine"), exp_sine,
-                  exponential_title)
-radio_buttons.add(radio(bind=toggle, text=" Ricker wavelet ", name="ricker"), ricker, ricker_title)
-radio_buttons.add(radio(bind=toggle, text=" Mexican hat ", name="mexican_hat"), mexican_hat, mexican_hat_title)
+# radio_buttons = RadioButtons()
+# radio_buttons.add(radio(bind=toggle, text=" F=sin(sqrt(x*x + y*y)) ", name="sin_sqrt"), sin_sqrt, sine_sqrt_title)
+# radio_buttons.add(radio(bind=toggle, text=" F=sin(x) * cos(y) ", name="sine_cosine"), sine_cosine, sine_cosine_title)
+# radio_buttons.add(radio(bind=toggle, text=" F=x*x*x*y - y*y*y*x ", name="polynomial"), polynomial, polynomial_title)
+# radio_buttons.add(radio(bind=toggle, text=" F=cos(abs(x) + abs(y)) ", name="cosine_of_abs"), cosine_of_abs,
+#                   cosine_of_abs_title)
+# radio_buttons.add(radio(bind=toggle, text=" F=sin(x*x + y*y) ", name="the_ripple"), ripple, ripple_title)
+# radio_buttons.add(radio(bind=toggle, text=" F=(x*x+y*y)exp(sin(-x*x-y*y)) ", name="exp_sine"), exp_sine,
+#                   exponential_title)
+# radio_buttons.add(radio(bind=toggle, text=" Ricker wavelet ", name="ricker"), ricker, ricker_title)
+# radio_buttons.add(radio(bind=toggle, text=" Mexican hat ", name="mexican_hat"), mexican_hat, mexican_hat_title)
 
 #################################
 # COMMENT OUT IN LOCAL VPYTHON  #
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 figure = Figure()
-xx, yy, zz = dinis_spiral()
+x1, y1, z1 = double_torus_1()
+x2, y2, z2 = double_torus_2()
 
 ##########################################
 # ENABLE THIS FOR CONTOUR PLOTS          #
 # figure.add_contour_plot(xx_, yy_, zz_) #
 ##########################################
-figure.add_contour_plot(xx, yy, zz)
+figure.add_surface_plot(x1, y1, z1)
+figure.add_surface_plot(x2, y2, z2)
 dt = 0.0
 time = 1
 while True:
