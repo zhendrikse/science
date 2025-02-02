@@ -42,9 +42,7 @@ import numpy as np
 # TILL HERE #
 #############
 
-animation = canvas(height=500, align="top", center=vec(-6, -3.5, -4.3), background=color.gray(0.075),
-                   forward=vec(-1.0, -0.71, -.78))
-
+animation = canvas(height=500, background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
 
 class NumpyWrapper:
     def __init__(self, start_1, stop_1, start_2, stop_2, resolution):
@@ -90,7 +88,6 @@ y_hat = vec(0, 1, 0)
 z_hat = vec(0, 0, 1)
 base = [x_hat, y_hat, z_hat]
 
-
 class Base:
     def __init__(self, xx, yy, zz, axis_color, tick_marks_color, num_tick_marks):
         x_min, x_max = min(map(min, xx)), max(map(max, xx))
@@ -101,10 +98,6 @@ class Base:
         delta = max_of_base / num_tick_marks
         position = vec(x_min, z_min, y_min)
         radius = max_of_base / 200
-
-        animation.range = max_of_base
-        print("Range is now", animation.range)
-        print(len(xx), max_of_base)
 
         self._mesh = []
         self._create_mesh(delta, max_of_base, num_tick_marks, position, radius)
@@ -344,12 +337,13 @@ class SurfacePlot(Plot):
 
 
 class Figure:
-    def __init__(self, axis_color=color.yellow, tick_marks_color=vec(0.4, 0.8, 0.4), num_tick_marks=10):
+    def __init__(self, canvas_, axis_color=color.yellow, tick_marks_color=vec(0.4, 0.8, 0.4), num_tick_marks=10):
         self._subplots = []
         self._hue_offset, self._hue_gradient, self._omega, self._opacity, self._shininess = .3, .5, pi, 1, .6
         self._axis_color, self._tick_marks_color, self._num_tick_marks = axis_color, tick_marks_color, num_tick_marks
         self._base = None
         self._tick_marks_visible, self._mesh_visible, self._axis_labels_visible, self._plot_contours = True, True, False, False
+        self._canvas = canvas_
 
     def _create_base(self, xx, yy, zz):
         axis = Base(xx, yy, zz, self._axis_color, self._tick_marks_color, self._num_tick_marks)
@@ -418,15 +412,20 @@ class Figure:
         self._plot_contours = bool_value
 
     def add_subplot(self, x, y, z):
-        subplot = ContourPlot(x, y, z) if self._plot_contours else SurfacePlot(x, y, z)
+        self._canvas.delete()
+        self._canvas = canvas(x=0, y=0, height=600, background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
+
+        if self._plot_contours:
+            subplot = ContourPlot(x, y, z)
+        else:
+            subplot = SurfacePlot(x, y, z)
+
         subplot.set_hue_offset_to(self._hue_offset)
         subplot.set_hue_gradient_to(self._hue_gradient)
         subplot.set_omega_to(self._omega)
+        subplot.set_opacity_to(self._opacity)
+        subplot.set_shininess_to(self._shininess)
         self._subplots.append(subplot)
-
-        if not self._plot_contours:
-            subplot.set_opacity_to(self._opacity)
-            subplot.set_shininess_to(self._shininess)
 
         if len(self._subplots) == 1:
             xx, yy, zz = subplot.get_axis_information()
@@ -437,7 +436,7 @@ class RadioButton:
     def __init__(self, button_, function_, title_text):
         self._button = button_
         self._function = function_
-        self._explanation = title_text + "\n\n"
+        self._explanation = title_text
 
     def uncheck(self):
         self._button.checked = False
@@ -446,7 +445,7 @@ class RadioButton:
         xx, yy, zz = self._function()
         figure.reset()
         figure.add_subplot(xx, yy, zz) #
-        animation.title = self._explanation
+        animation.title = self._explanation + "\n\n"
 
         #################################
         # COMMENT OUT IN LOCAL VPYTHON  #
@@ -467,7 +466,7 @@ class RadioButtons:
     def add(self, button_, function_, title_text):
         self._radio_buttons.append(RadioButton(button_, function_, title_text))
 
-        if (len(self._radio_buttons) % 2) == 0:
+        if (len(self._radio_buttons) % 3) == 0:
             animation.append_to_caption("\n\n")
 
         if (len(self._radio_buttons)) == 1:
@@ -495,7 +494,7 @@ class RadioButtons:
 # Multivariate functions F(x, y) => R #
 #######################################
 
-ricker_title = "<h3><a href=\"https://en.wikipedia.org/wiki/Ricker_wavelet\">Ricker / Mexican hat / Marr wavelet</a></h3>&nbsp;&nbsp;$F(x,y) = \\dfrac{1}{\\pi\\sigma^4} \\bigg(1 - \\dfrac{1}{2} \\bigg( \\dfrac{x^2 + y^2}{\\sigma^2} \\bigg) \\bigg) e^{-\\dfrac{x^2+y^2}{2\\sigma^2}}$"
+ricker_title = "<a href=\"https://en.wikipedia.org/wiki/Ricker_wavelet\">Ricker / Mexican hat / Marr wavelet</a></h3>&nbsp;&nbsp;$f(x,y) = \\dfrac{1}{\\pi\\sigma^4} \\bigg(1 - \\dfrac{1}{2} \\bigg( \\dfrac{x^2 + y^2}{\\sigma^2} \\bigg) \\bigg) e^{-\\dfrac{x^2+y^2}{2\\sigma^2}}$"
 def ricker(resolution=50):
     def f_x(x, _, i, j):
         return x[i][j]
@@ -513,7 +512,7 @@ def ricker(resolution=50):
 
     return NumpyWrapper(-1.25, 1.25, -1.25, 1.25, resolution).get_plot_data(f_x, f_y, f_z)
 
-mexican_hat_title = "<h3>Polar coordinates for Mexican hat</h3>$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} r\\cos(\\phi) \\\\ r\\sin(\\phi)) \\\\ (r^2 - 1)^2 \\end{pmatrix}$"
+mexican_hat_title = "Polar coordinates for Mexican hat$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} r\\cos(\\phi) \\\\ r\\sin(\\phi)) \\\\ (r^2 - 1)^2 \\end{pmatrix}$"
 def mexican_hat(resolution=50):
     def f_x(x, y, i, j):
         return x[i][j] * cos(y[i][j])
@@ -526,7 +525,7 @@ def mexican_hat(resolution=50):
 
     return NumpyWrapper(0, 1.25, -pi, pi * 1.05, resolution).get_plot_data(f_x, f_y, f_z)
 
-sine_exp_title = "<h3>$F(x, y) = \\sin(x^2 + y^2) e^{ -x^2 - y^2}$</h3>"
+sine_exp_title = "$f(x, y) = \\sin(x^2 + y^2) e^{ -x^2 - y^2}$"
 def exp_sine(resolution=75):
     def f_x(xx, _, i, j):
         return xx[i][j]
@@ -540,7 +539,7 @@ def exp_sine(resolution=75):
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
-sine_sqrt_title = "<h3>$F(x, y) = \\sin\\left(\\sqrt{x^2+y^2}\\right)$</h3>"
+sine_sqrt_title = "$f(x, y) = \\sin\\left(\\sqrt{x^2+y^2}\\right)$"
 def sin_sqrt(resolution=50):
     def f_x(xx, _, i, j):
         return xx[i][j]
@@ -553,7 +552,7 @@ def sin_sqrt(resolution=50):
 
     return NumpyWrapper(-2 * pi, 2 * pi, -2 * pi, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
 
-sine_cosine_title = "<h3>$F(x, y) = \\sin(\\pi x)\\cos(\\pi y)$</h3>"
+sine_cosine_title = "$f(x, y) = \\sin(\\pi x)\\cos(\\pi y)$"
 def sine_cosine(resolution=50):
     def f_x(x, _, i, j):
         return x[i][j]
@@ -566,7 +565,7 @@ def sine_cosine(resolution=50):
 
     return NumpyWrapper(-2 * pi / 3, 2 * pi / 3, -2 * pi / 3, 2 * pi / 3, resolution).get_plot_data(f_x, f_y, f_z)
 
-cosine_of_abs_title = "<h3>$F(x, y) = \\cos(|x| + |y|)$</h3>"
+cosine_of_abs_title = "$f(x, y) = \\cos(|x| + |y|)$"
 def cosine_of_abs(resolution=50):
     def f_x(x, _, i, j):
         return x[i][j]
@@ -579,7 +578,7 @@ def cosine_of_abs(resolution=50):
 
     return NumpyWrapper(-2 * pi, 2 * pi, -2 * pi, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
 
-polynomial_title = "<h3>$F(x, y) =  (yx^3 - xy^3)$</h3>"
+polynomial_title = "$f(x, y) =  (yx^3 - xy^3)$"
 def polynomial(resolution=50):
     def f_x(x, _, i, j):
         return x[i][j]
@@ -592,7 +591,7 @@ def polynomial(resolution=50):
 
     return NumpyWrapper(-1.75, 1.75, -1.75, 1.75, resolution).get_plot_data(f_x, f_y, f_z)
 
-ripple_title = "<h3>$F(x, y) =  \\sin\\big(3 (x^2 + y^2)\\big)$</h3>"
+ripple_title = "$f(x, y) =  \\sin\\big(3 (x^2 + y^2)\\big)$"
 def ripple(resolution=100):
     def f_x(x, _, i, j):
         return x[i][j]
@@ -728,6 +727,21 @@ def twisted_torus(resolution=50):
 ################
 # GUI controls #
 ################
+
+def toggle(event):
+    radio_buttons.toggle(event.name)
+
+radio_buttons = RadioButtons()
+radio_buttons.add(radio(bind=toggle, text=" F=sin(sqrt(x*x + y*y)) ", name="sin_sqrt"), sin_sqrt, sine_sqrt_title)
+radio_buttons.add(radio(bind=toggle, text=" F=sin(x) * cos(y) ", name="sine_cosine"), sine_cosine, sine_cosine_title)
+radio_buttons.add(radio(bind=toggle, text=" F=x*x*x*y - y*y*y*x ", name="polynomial"), polynomial, polynomial_title)
+radio_buttons.add(radio(bind=toggle, text=" F=cos(abs(x) + abs(y)) ", name="cosine_of_abs"), cosine_of_abs, cosine_of_abs_title)
+radio_buttons.add(radio(bind=toggle, text=" F=sin(x*x + y*y) ", name="the_ripple"), ripple, ripple_title)
+radio_buttons.add(radio(bind=toggle, text=" F=(x*x+y*y)exp(sin(-x*x-y*y)) ", name="exp_sine"), exp_sine, sine_exp_title)
+radio_buttons.add(radio(bind=toggle, text=" Ricker wavelet ", name="ricker"), ricker, ricker_title)
+radio_buttons.add(radio(bind=toggle, text=" Mexican hat ", name="mexican_hat"), mexican_hat, mexican_hat_title)
+
+
 def adjust_opacity():
     figure.set_opacity_to(opacity_slider.value)
     opacity_slider_text.text = "= {:1.2f}".format(opacity_slider.value, 2)
@@ -752,38 +766,6 @@ def adjust_offset():
     figure.set_hue_offset_to(offset_slider.value)
     offset_slider_text.text = "= {:1.2f}".format(offset_slider.value, 2)
 
-
-def toggle_tick_marks(event):
-    figure.tick_marks_visibility_is(event.checked)
-
-
-def toggle_axis_labels(event):
-    figure.axis_labels_visibility_is(event.checked)
-
-
-def toggle_mesh(event):
-    figure.mesh_visibility_is(event.checked)
-
-
-def toggle_animate(event):
-    global dt
-    dt = 0.01 if event.checked else 0
-
-
-def toggle(event):
-    radio_buttons.toggle(event.name)
-
-def toggle_plot_type(event):
-    figure.plot_contours_is(event.checked)
-
-
-animation.append_to_caption("\n")
-_ = checkbox(text="Contour", bind=toggle_plot_type, checked=False) #, enable=False)
-_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
-_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=False)
-_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
-_ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
-
 animation.append_to_caption("\n\nHue offset  ")
 offset_slider = slider(min=0, max=1, step=0.01, value=.3, bind=adjust_offset)
 offset_slider_text = wtext(text="= 0.3")
@@ -804,24 +786,41 @@ animation.append_to_caption("\n\nShininess ")
 shininess_slider = slider(min=0, max=1, step=0.01, value=0.6, bind=adjust_shininess)
 shininess_slider_text = wtext(text="= 0.6")
 
+
+def toggle_tick_marks(event):
+    figure.tick_marks_visibility_is(event.checked)
+
+
+def toggle_axis_labels(event):
+    figure.axis_labels_visibility_is(event.checked)
+
+
+def toggle_mesh(event):
+    figure.mesh_visibility_is(event.checked)
+
+
+def toggle_animate(event):
+    global dt
+    dt = 0.01 if event.checked else 0
+
+def toggle_plot_type(event):
+    figure.plot_contours_is(event.checked)
+
+
+animation.append_to_caption("\n\n")
+_ = checkbox(text="Contour", bind=toggle_plot_type, checked=False)
+_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
+_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=False)
+_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
+_ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
 animation.append_to_caption("\n\n")
 
-radio_buttons = RadioButtons()
-radio_buttons.add(radio(bind=toggle, text=" F=sin(sqrt(x*x + y*y)) ", name="sin_sqrt"), sin_sqrt, sine_sqrt_title)
-radio_buttons.add(radio(bind=toggle, text=" F=sin(x) * cos(y) ", name="sine_cosine"), sine_cosine, sine_cosine_title)
-radio_buttons.add(radio(bind=toggle, text=" F=x*x*x*y - y*y*y*x ", name="polynomial"), polynomial, polynomial_title)
-radio_buttons.add(radio(bind=toggle, text=" F=cos(abs(x) + abs(y)) ", name="cosine_of_abs"), cosine_of_abs, cosine_of_abs_title)
-radio_buttons.add(radio(bind=toggle, text=" F=sin(x*x + y*y) ", name="the_ripple"), ripple, ripple_title)
-radio_buttons.add(radio(bind=toggle, text=" F=(x*x+y*y)exp(sin(-x*x-y*y)) ", name="exp_sine"), exp_sine, sine_exp_title)
-radio_buttons.add(radio(bind=toggle, text=" Ricker wavelet ", name="ricker"), ricker, ricker_title)
-radio_buttons.add(radio(bind=toggle, text=" Mexican hat ", name="mexican_hat"), mexican_hat, mexican_hat_title)
-
-animation.title = sine_sqrt_title + "\n"
+animation.title = sine_sqrt_title + "\n\n"
 #################################
 # COMMENT OUT IN LOCAL VPYTHON  #
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
-figure = Figure()
+figure = Figure(animation)
 xx_, yy_, zz_ = sin_sqrt(50)
 figure.add_subplot(xx_, yy_, zz_)
 
