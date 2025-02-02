@@ -8,7 +8,7 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 <a href="https://en.wikipedia.org/wiki/Edward_Frenkel">Edward Frenkel</a>
 </blockquote><br/>
 
-### Dynamic 3D-plots of functions $f(x, y) \rightarrow \mathbb{R}$
+### Dynamic surface and contour plots for $f(x, y) \rightarrow \mathbb{R}$
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -16,15 +16,13 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
   <a href="mathematics/multivariate_surface_plot.html">
     <img alt="Multivariate functions" src="./images/multivariate_surface_plot.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;
-  <figcaption>Surface plots for
-  <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a></figcaption>
+  <figcaption>Surface plot for $f(x, y) = 5\sin\left(\sqrt{x^2+y^2}\right)$.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/multivariate_contour_plot.html">
     <img alt="Complex functions" src="./images/multivariate_contour_plot.png" title="Click to animate"/>
   </a>
-  <figcaption><br/>Contour plots for
-  <a href="https://en.wikipedia.org/wiki/Function_of_several_real_variables">multivariate functions</a></figcaption>
+  <figcaption><br/>Contour plot for $f(x, y) = \sin(\pi x)\cos(\pi y)$.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
