@@ -145,8 +145,7 @@ seen in the mathematics section on this page:
 </div>
 <p style="clear: both;"></p>
 
-## [Double shapes](geometry.html)
-<div style="border-top: 1px solid #999999"><br/></div>
+### [Double shapes](geometry.html)
 
 <div class="double_image">
 <figure class="left_image">
