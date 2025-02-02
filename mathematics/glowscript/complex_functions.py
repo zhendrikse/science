@@ -350,7 +350,7 @@ class Figure:
         self._omega, self._opacity, self._shininess = pi, 1, .6
         self._axis_color, self._tick_marks_color, self._num_tick_marks = axis_color, tick_marks_color, num_tick_marks
         self._base = None
-        self._tick_marks_visible, self._mesh_visible, self._axis_labels_visible, self._plot_contours = True, True, False, True
+        self._tick_marks_visible, self._mesh_visible, self._axis_labels_visible, self._plot_contours = True, True, False, False
         self._canvas = canvas_
 
     def _create_base(self, xx, yy, zz):
@@ -533,6 +533,19 @@ def z_cubed(resolution=50):
 
     return NumpyWrapper(-2, 2, -2, 2, resolution).get_plot_data(f_x, f_y, f_z)
 
+def log_z(resolution=50):
+    def f_x(xx, _, i, j):
+        return xx[i][j]
+
+    def f_y(_, yy, i, j):
+        return yy[i][j]
+
+    def f_z(xx, yy, i, j):
+        z = math.complex(xx[i][j], yy[i][j])
+        return math.complex(log(z.abs()), atan2(z.im(), z.re()))
+
+    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
+
 ################
 # GUI controls #
 ################
@@ -614,7 +627,7 @@ animation.title = "DIT MOET NOG GEDAAN" + "\n\n"
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 figure = Figure(animation)
-xx_, yy_, zz_ = z_squared_plus_2()
+xx_, yy_, zz_ = log_z()
 figure.add_subplot(xx_, yy_, zz_)
 
 dt = 0.0
