@@ -732,12 +732,12 @@ def toggle(event):
     radio_buttons.toggle(event.name)
 
 radio_buttons = RadioButtons()
-radio_buttons.add(radio(bind=toggle, text=" F=sin(sqrt(x*x + y*y)) ", name="sin_sqrt"), sin_sqrt, sine_sqrt_title)
-radio_buttons.add(radio(bind=toggle, text=" F=sin(x) * cos(y) ", name="sine_cosine"), sine_cosine, sine_cosine_title)
-radio_buttons.add(radio(bind=toggle, text=" F=x*x*x*y - y*y*y*x ", name="polynomial"), polynomial, polynomial_title)
-radio_buttons.add(radio(bind=toggle, text=" F=cos(abs(x) + abs(y)) ", name="cosine_of_abs"), cosine_of_abs, cosine_of_abs_title)
-radio_buttons.add(radio(bind=toggle, text=" F=sin(x*x + y*y) ", name="the_ripple"), ripple, ripple_title)
-radio_buttons.add(radio(bind=toggle, text=" F=(x*x+y*y)exp(sin(-x*x-y*y)) ", name="exp_sine"), exp_sine, sine_exp_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\sin(\\sqrt(x^2 + y^2))$ ", name="sin_sqrt"), sin_sqrt, sine_sqrt_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\sin(x) \\cos(y)$ ", name="sine_cosine"), sine_cosine, sine_cosine_title)
+radio_buttons.add(radio(bind=toggle, text=" $x^3y - y^3x$ ", name="polynomial"), polynomial, polynomial_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\cos(|x| + |y|)$ ", name="cosine_of_abs"), cosine_of_abs, cosine_of_abs_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\sin(x^2 + y^2)$ ", name="the_ripple"), ripple, ripple_title)
+radio_buttons.add(radio(bind=toggle, text=" $(x^2+y^2)\\exp(\\sin(-x^2-y^2))$ ", name="exp_sine"), exp_sine, sine_exp_title)
 radio_buttons.add(radio(bind=toggle, text=" Ricker wavelet ", name="ricker"), ricker, ricker_title)
 radio_buttons.add(radio(bind=toggle, text=" Mexican hat ", name="mexican_hat"), mexican_hat, mexican_hat_title)
 
