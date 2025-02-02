@@ -16,13 +16,13 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
   <a href="mathematics/multivariate_surface_plot.html">
     <img alt="Multivariate functions" src="./images/multivariate_surface_plot.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;
-  <figcaption>Surface plot for $f(x, y) = 5\sin\left(\sqrt{x^2+y^2}\right)$.</figcaption>
+  <figcaption>Surface plot for $f(x, y) = \sin(\pi x)\cos(\pi y)$.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/multivariate_contour_plot.html">
     <img alt="Complex functions" src="./images/multivariate_contour_plot.png" title="Click to animate"/>
   </a>
-  <figcaption><br/>Contour plot for $f(x, y) = \sin(\pi x)\cos(\pi y)$.</figcaption>
+  <figcaption><br/>Contour plot for $f(x, y) = \sin(\sqrt{x^2+y^2})$.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
