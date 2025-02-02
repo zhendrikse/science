@@ -27,7 +27,7 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 </div>
 <p style="clear: both;"></p>
 
-### Dynamic 3D-plots of functions $f(z) \rightarrow \mathbb{C}$
+### Dynamic surface and contour plots for $f(z) \rightarrow \mathbb{C}$
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -35,16 +35,13 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
   <a href="mathematics/complex_functions.html">
     <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
   </a>
-  <figcaption>3D-visualizations of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a>.</figcaption>
+  <figcaption>Surface plot for $f(z) = \log(z)$.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR COMPLEX FUNCTION CONTOUR PLOTS
   <a href="mathematics/complex_functions.html">
-    <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
+    <img alt="Complex functions" src="./images/complex_function_contour_plot.png" title="Click to animate"/>
   </a>
-  <figcaption>3D-visualizations of <a href="https://en.wikipedia.org/wiki/Complex_analysis">complex functions</a> 
-  where $f(z) \rightarrow \mathbb{C}, z \in \mathbb{C}$.</figcaption>
-  -->
+  <figcaption>Contour plot for $f(z) = z^2 + 2$.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

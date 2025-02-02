@@ -195,10 +195,6 @@ class Plot:
     def set_shininess_to(self, shininess):
         self._shininess = shininess
 
-    def get_axis_information(self):
-        return self._xx, self._yy, self._zz
-
-
 class ContourPlot(Plot):
     def __init__(self, xx, yy, zz):
         Plot.__init__(self, xx, yy, zz)
@@ -232,12 +228,6 @@ class ContourPlot(Plot):
             for y in range(len(self._yy[0])):
                 self._render_contours(x, y, t)
 
-    def hide_plot(self):
-        for i in range(len(self._xx)):
-            for j in range(len(self._yy[0])):
-                self._x_contours[i].modify(j, visible=False)
-                self._y_contours[j].modify(i, visible=False)
-
 
 # This class is only meant to be used from within the Figure class.
 class SurfacePlot(Plot):
@@ -246,12 +236,6 @@ class SurfacePlot(Plot):
         self._vertices, self._quads = [], []
         self._create_vertices()
         self._create_quads()
-
-    def hide_plot(self):
-        for quad_ in self._quads:
-            quad_.visible = False
-        for vertex_ in self._vertices:
-            vertex_.visible = False
 
     def _create_vertices(self, t=1):
         for x in range(len(self._xx)):
@@ -397,16 +381,8 @@ class Figure:
         self._axis_labels_visible = visible
         self._base.axis_labels_visibility_is(visible)
 
-    def _hide_axis(self):
-        self._base.tick_marks_visibility_is(False)
-        self._base.mesh_visibility_is(False)
-
     def reset(self):
-        for subplot in self._subplots:
-            subplot.hide_plot()
-
         self._subplots = []
-        self._hide_axis()
 
     def plot_contours_is(self, bool_value):
         self._plot_contours = bool_value
@@ -428,8 +404,7 @@ class Figure:
         self._subplots.append(subplot)
 
         if len(self._subplots) == 1:
-            xx, yy, zz = subplot.get_axis_information()
-            self._base = self._create_base(xx, yy, zz)
+            self._base = self._create_base(x, y, z)
 
 
 class RadioButton:
