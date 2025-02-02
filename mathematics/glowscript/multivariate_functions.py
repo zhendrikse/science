@@ -102,6 +102,10 @@ class Base:
         position = vec(x_min, z_min, y_min)
         radius = max_of_base / 200
 
+        animation.range = max_of_base
+        print("Range is now", animation.range)
+        print(len(xx), max_of_base)
+
         self._mesh = []
         self._create_mesh(delta, max_of_base, num_tick_marks, position, radius)
 
@@ -170,7 +174,7 @@ class Base:
 class Plot:
     def __init__(self, xx, yy, zz):
         self._xx, self._yy, self._zz = xx, yy, zz
-        self._hue_offset, self._hue_gradient, self._omega, self._opacity, self._shininess = .8, .5, pi, 1, .6
+        self._hue_offset, self._hue_gradient, self._omega, self._opacity, self._shininess = .3, .5, pi, 1, .6
         x_min, x_max = min(map(min, xx)), max(map(max, xx))
         y_min, y_max = min(map(min, yy)), max(map(max, yy))
         z_min, z_max = min(map(min, zz)), max(map(max, zz))
@@ -180,8 +184,8 @@ class Plot:
     def _get_values_for_plot(self, x, y, t):
         value = self._zz[x][y] * (1 - cos(self._omega * t)) * .5
         new_position = vector(self._xx[x][y], value, self._yy[x][y])
-        hue = 2 * self._hue_gradient * abs(new_position.y) / self._max_range + self._hue_offset
-        return new_position, color.hsv_to_rgb(vec(hue, 1, 1.25))
+        hue = self._hue_gradient * abs(new_position.y) / self._max_range + self._hue_offset
+        return new_position, color.hsv_to_rgb(vec(hue, 1, 1.1))
 
     def set_omega_to(self, omega):
         self._omega = omega
@@ -210,7 +214,7 @@ class ContourPlot(Plot):
 
     def _initialize_contour_curves(self, t=1):
         positions = []
-        position_col = [[] for j in range(len(self._yy[0]))]
+        position_col = [[] for _ in range(len(self._yy[0]))]
         for i in range(len(self._xx)):
             position_row = []
             for j in range(len(self._yy[0])):
@@ -280,11 +284,19 @@ class SurfacePlot(Plot):
     # When removing the "-1", opposite ends will be glued together
     #
     def _create_quads(self):
-        for x in range(len(self._xx) - 1):
-            for y in range(len(self._yy[0]) - 1):
+        for x in range(len(self._xx) - 2):
+            for y in range(len(self._yy[0]) - 2):
                 self._create_quad(x, y)
 
     def _set_vertex_normal_for(self, x, y):
+        # OLD NORMAL ALGORITHM
+        # if x == len(self._xx) - 1 or y == len(self._yy[0]) - 1: return
+        # v = self._get_vertex(x, y)
+        # a = self._get_vertex(x, y + 1).pos - v.pos
+        # b = self._get_vertex(x + 1, y).pos - v.pos
+        # v.normal = cross(a, b)
+
+        # NEW NORMAL ALGORITH
         _neighbor_increment_x, _neighbor_increment_y = 1, 1
         if x == (len(self._xx) - 1):
             _neighbor_increment_x = -x
@@ -292,16 +304,16 @@ class SurfacePlot(Plot):
             _neighbor_increment_y = -y
 
         vertex_ = self._get_vertex(x, y)
-        # normal_total_ = self._get_vertex(x, y + _neighbor_increment_y).normal
-        # normal_total_ += self._get_vertex(x + _neighbor_increment_x, y).normal
+        # # normal_total_ = self._get_vertex(x, y + _neighbor_increment_y).normal
+        # # normal_total_ += self._get_vertex(x + _neighbor_increment_x, y).normal
         vec_1 = self._get_vertex(x, y + _neighbor_increment_y).pos - vertex_.pos
         vec_2 = self._get_vertex(x + _neighbor_increment_x, y).pos - vertex_.pos
-        """
-        Further work to focus on this area of the normal calculations
-        """
+        # """
+        # Further work to focus on this area of the normal calculations
+        # """
         vertex_.normal = cross(vec_1, vec_2)
-        # normal_total_ += cross(vec_1, vec_2)
-        # vertex_.normal = normal_total_/2
+        # # normal_total_ += cross(vec_1, vec_2)
+        # # vertex_.normal = normal_total_/2
 
     # Set the normal for each vertex to be perpendicular to the lower left corner of the quad.
     # The vectors a and b point to the right and up around a vertex in the xy plane.
@@ -310,7 +322,7 @@ class SurfacePlot(Plot):
             for y in range(len(self._yy[0])):
                 self._set_vertex_normal_for(x, y)
 
-    def _update_vertex(self, x, y, t, value, colour):
+    def _update_vertex(self, x, y, value, colour):
         vertex_ = self._get_vertex(x, y)
         vertex_.pos.y = value
         vertex_.color = colour
@@ -321,7 +333,7 @@ class SurfacePlot(Plot):
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
                 position, colour = self._get_values_for_plot(x, y, t)
-                self._update_vertex(x, y, t, position.y, colour)
+                self._update_vertex(x, y, position.y, colour)
 
     def _get_vertex(self, x, y):
         return self._vertices[x * len(self._yy[0]) + y]
@@ -334,7 +346,7 @@ class SurfacePlot(Plot):
 class Figure:
     def __init__(self, axis_color=color.yellow, tick_marks_color=vec(0.4, 0.8, 0.4), num_tick_marks=10):
         self._subplots = []
-        self._hue_offset, self._hue_gradient, self._omega, self._opacity, self._shininess = .8, .5, pi, 1, .6
+        self._hue_offset, self._hue_gradient, self._omega, self._opacity, self._shininess = .3, .5, pi, 1, .6
         self._axis_color, self._tick_marks_color, self._num_tick_marks = axis_color, tick_marks_color, num_tick_marks
         self._base = None
         self._tick_marks_visible, self._mesh_visible, self._axis_labels_visible, self._plot_contours = True, True, False, False
@@ -420,11 +432,12 @@ class Figure:
             xx, yy, zz = subplot.get_axis_information()
             self._base = self._create_base(xx, yy, zz)
 
+
 class RadioButton:
     def __init__(self, button_, function_, title_text):
         self._button = button_
         self._function = function_
-        self._explanation = title_text
+        self._explanation = title_text + "\n\n"
 
     def uncheck(self):
         self._button.checked = False
@@ -433,7 +446,7 @@ class RadioButton:
         xx, yy, zz = self._function()
         figure.reset()
         figure.add_subplot(xx, yy, zz) #
-        animation.title = self._explanation + "\n"
+        animation.title = self._explanation
 
         #################################
         # COMMENT OUT IN LOCAL VPYTHON  #
@@ -484,11 +497,11 @@ class RadioButtons:
 
 ricker_title = "<h3><a href=\"https://en.wikipedia.org/wiki/Ricker_wavelet\">Ricker / Mexican hat / Marr wavelet</a></h3>&nbsp;&nbsp;$F(x,y) = \\dfrac{1}{\\pi\\sigma^4} \\bigg(1 - \\dfrac{1}{2} \\bigg( \\dfrac{x^2 + y^2}{\\sigma^2} \\bigg) \\bigg) e^{-\\dfrac{x^2+y^2}{2\\sigma^2}}$"
 def ricker(resolution=50):
-    def f_x(xx, yy, i, j):
-        return xx[i][j]
+    def f_x(x, _, i, j):
+        return x[i][j]
 
-    def f_y(xx, yy, i, j):
-        return yy[i][j]
+    def f_y(_, y, i, j):
+        return y[i][j]
 
     sigma = .7
     sigma_2 = sigma * sigma
@@ -502,23 +515,23 @@ def ricker(resolution=50):
 
 mexican_hat_title = "<h3>Polar coordinates for Mexican hat</h3>$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} r\\cos(\\phi) \\\\ r\\sin(\\phi)) \\\\ (r^2 - 1)^2 \\end{pmatrix}$"
 def mexican_hat(resolution=50):
-    def f_x(xx, yy, i, j):
-        return xx[i][j] * cos(yy[i][j])
+    def f_x(x, y, i, j):
+        return x[i][j] * cos(y[i][j])
 
-    def f_y(xx, yy, i, j):
-        return xx[i][j] * sin(yy[i][j])
+    def f_y(x, y, i, j):
+        return x[i][j] * sin(y[i][j])
 
-    def f_z(xx, yy, i, j):
-        return 3 * (xx[i][j] * xx[i][j] - 1) * (xx[i][j] * xx[i][j] - 1)
+    def f_z(x, _, i, j):
+        return 3 * (x[i][j] * x[i][j] - 1) * (x[i][j] * x[i][j] - 1)
 
     return NumpyWrapper(0, 1.25, -pi, pi * 1.05, resolution).get_plot_data(f_x, f_y, f_z)
 
 sine_exp_title = "<h3>$F(x, y) = \\sin(x^2 + y^2) e^{ -x^2 - y^2}$</h3>"
 def exp_sine(resolution=75):
-    def f_x(xx, yy, i, j):
+    def f_x(xx, _, i, j):
         return xx[i][j]
 
-    def f_y(xx, yy, i, j):
+    def f_y(_, yy, i, j):
         return yy[i][j]
 
     def f_z(xx, yy, i, j):
@@ -529,10 +542,10 @@ def exp_sine(resolution=75):
 
 sine_sqrt_title = "<h3>$F(x, y) = \\sin\\left(\\sqrt{x^2+y^2}\\right)$</h3>"
 def sin_sqrt(resolution=50):
-    def f_x(xx, yy, i, j):
+    def f_x(xx, _, i, j):
         return xx[i][j]
 
-    def f_y(xx, yy, i, j):
+    def f_y(_, yy, i, j):
         return yy[i][j]
 
     def f_z(xx, yy, i, j):
@@ -542,10 +555,10 @@ def sin_sqrt(resolution=50):
 
 sine_cosine_title = "<h3>$F(x, y) = \\sin(\\pi x)\\cos(\\pi y)$</h3>"
 def sine_cosine(resolution=50):
-    def f_x(x, yy, i, j):
+    def f_x(x, _, i, j):
         return x[i][j]
 
-    def f_y(xx, yy, i, j):
+    def f_y(_, yy, i, j):
         return yy[i][j]
 
     def f_z(xx, yy, i, j):
@@ -555,10 +568,10 @@ def sine_cosine(resolution=50):
 
 cosine_of_abs_title = "<h3>$F(x, y) = \\cos(|x| + |y|)$</h3>"
 def cosine_of_abs(resolution=50):
-    def f_x(x, yy, i, j):
+    def f_x(x, _, i, j):
         return x[i][j]
 
-    def f_y(xx, yy, i, j):
+    def f_y(_, yy, i, j):
         return yy[i][j]
 
     def f_z(xx, yy, i, j):
@@ -568,10 +581,10 @@ def cosine_of_abs(resolution=50):
 
 polynomial_title = "<h3>$F(x, y) =  (yx^3 - xy^3)$</h3>"
 def polynomial(resolution=50):
-    def f_x(x, yy, i, j):
+    def f_x(x, _, i, j):
         return x[i][j]
 
-    def f_y(xx, yy, i, j):
+    def f_y(_, yy, i, j):
         return yy[i][j]
 
     def f_z(xx, yy, i, j):
@@ -581,10 +594,10 @@ def polynomial(resolution=50):
 
 ripple_title = "<h3>$F(x, y) =  \\sin\\big(3 (x^2 + y^2)\\big)$</h3>"
 def ripple(resolution=100):
-    def f_x(x, y, i, j):
+    def f_x(x, _, i, j):
         return x[i][j]
 
-    def f_y(x, y, i, j):
+    def f_y(_, y, i, j):
         return y[i][j]
 
     def f_z(x, y, i, j):
@@ -597,25 +610,25 @@ def ripple(resolution=100):
 ###################################
 
 def arc(resolution=50):
-    def f_x(x, y, i, j):
+    def f_x(x, _, i, j):
         return cos(x[i][j])
 
     def f_y(x, y, i, j):
         return sin(x[i][j]) + cos(y[i][j])
 
-    def f_z(x, y, i, j):
+    def f_z(_, y, i, j):
         return 3 * sin(y[i][j])
 
     return NumpyWrapper(0, pi, 0, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 def dented(resolution=50):
-    def f_x(x, y, i, j):
+    def f_x(x, _, i, j):
         return cos(x[i][j])
 
     def f_y(x, y, i, j):
         return sin(x[i][j]) + cos(y[i][j])
 
-    def f_z(x, y, i, j):
+    def f_z(_, y, i, j):
         return 1.5 * sin(y[i][j])
 
     return NumpyWrapper(-pi, pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
@@ -640,7 +653,7 @@ def limpet_torus(resolution=50):
     def f_y(x, y, i, j):
         return sin(x[i][j]) / (sin(y[i][j]) + sqrt(2))
 
-    def f_z(x, y, i, j):
+    def f_z(_, y, i, j):
         return 1 / (cos(y[i][j]) + sqrt(2))
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
@@ -680,7 +693,7 @@ def torus(a=.7, c=2, resolution=75):
     def f_y(x, y, i, j):
         return (c + a * cos(y[i][j])) * sin(x[i][j])
 
-    def f_z(x, y, i, j):
+    def f_z(_, y, i, j):
         return a * sin(y[i][j])
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
@@ -717,10 +730,12 @@ def twisted_torus(resolution=50):
 ################
 def adjust_opacity():
     figure.set_opacity_to(opacity_slider.value)
+    opacity_slider_text.text = "= {:1.2f}".format(opacity_slider.value, 2)
 
 
 def adjust_shininess():
     figure.set_shininess_to(shininess_slider.value)
+    shininess_slider_text.text = "= {:1.2f}".format(shininess_slider.value, 2)
 
 
 def adjust_omega():
@@ -730,10 +745,12 @@ def adjust_omega():
 
 def adjust_gradient():
     figure.set_hue_gradient_to(gradient_slider.value)
+    gradient_slider_text.text = "= {:1.2f}".format(gradient_slider.value, 2)
 
 
 def adjust_offset():
     figure.set_hue_offset_to(offset_slider.value)
+    offset_slider_text.text = "= {:1.2f}".format(offset_slider.value, 2)
 
 
 def toggle_tick_marks(event):
@@ -768,10 +785,12 @@ _ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
 _ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
 
 animation.append_to_caption("\n\nHue offset  ")
-offset_slider = slider(min=0, max=1, value=.8, bind=adjust_offset)
+offset_slider = slider(min=0, max=1, step=0.01, value=.3, bind=adjust_offset)
+offset_slider_text = wtext(text="= 0.3")
 
 animation.append_to_caption("\n\nHue gradient  ")
-gradient_slider = slider(min=0, max=1, value=.5, bind=adjust_gradient)
+gradient_slider = slider(min=0, max=1, step=0.01, value=.5, bind=adjust_gradient)
+gradient_slider_text = wtext(text="= 0.5")
 
 animation.append_to_caption("\n\nAnimation speed ")
 omega_slider = slider(min=0, max=2 * pi, value=pi, bind=adjust_omega)
@@ -779,9 +798,11 @@ omega_slider_text = wtext(text="= π")
 
 animation.append_to_caption("\n\nOpacity ")
 opacity_slider = slider(min=0, max=1, step=0.01, value=1, bind=adjust_opacity)
+opacity_slider_text = wtext(text="= 1")
 
 animation.append_to_caption("\n\nShininess ")
 shininess_slider = slider(min=0, max=1, step=0.01, value=0.6, bind=adjust_shininess)
+shininess_slider_text = wtext(text="= 0.6")
 
 animation.append_to_caption("\n\n")
 
