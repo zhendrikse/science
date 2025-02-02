@@ -137,9 +137,9 @@ seen in the mathematics section on this page:
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology.html">
-    <img alt="Klein&apos;s bottle" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
+    <img alt="Klein&apos;s bottle" src="./images/geometry/self_intersecting_disk_contour.png" title="Click to animate"/>
   </a>
-  <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a>.
+  <figcaption><a href="https://en.wikipedia.org/wiki/Real_projective_plane">Self-intersecting disk</a>.
   For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
