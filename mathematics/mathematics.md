@@ -30,12 +30,16 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 ### Dynamic surface and contour plots for $f(z) \rightarrow \mathbb{C}$
 <div style="border-top: 1px solid #999999"><br/></div>
 
+The colors in the 3D renderings of complex functions represent 
+the phase of the complex function values, hence colors can't be
+modified by the user.
+
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/complex_surface_plot.html">
     <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
   </a>
-  <figcaption>Surface plot for $f(z) = \log(z)$.</figcaption>
+  <figcaption>Surface plot for $f(z) = \exp(-z^2)$.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/complex_contour_plot.html">
@@ -46,29 +50,44 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 </div>
 <p style="clear: both;"></p>
 
-<details>
-  <summary><a>&dArr; Code snippets used for these plots &uArr;</a></summary>
+### Topology and my [Math Art Gallery](geometry.html)
+<div style="border-top: 1px solid #999999"><br/></div>
 
-The formula for the above image is given by:
+<div class="double_image">
+<figure class="left_image">
+  <a href="mathematics/topology.html">
+    <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
+  </a>
+  <figcaption>Surface plot of twisted torus. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="mathematics/topology.html">
+    <img alt="Self-intersecting disk" src="./images/geometry/self_intersecting_disk_contour.png" title="Click to animate"/>
+  </a>
+  <figcaption>Contour plot of <a href="https://en.wikipedia.org/wiki/Real_projective_plane">self-intersecting disk</a>.
+  For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
 
-$$\psi(x, y, t) = \sin\left(\sqrt{x^2+y^2}\right)$$
+### [Double shapes](geometry.html)
 
-<p>The following Python code was used to plot the graph belonging to this multivariate function:<br/></p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">sine_sqrt</span><span class="p">():</span>
-    <span class="n">resolution</span> <span class="o">=</span> <span class="mi">50</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="n">resolution</span><span class="p">)</span>
-    <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="n">x_2_plus_y_2</span> <span class="o">=</span> <span class="n">xx</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">xx</span><span class="p">).</span><span class="n">add</span><span class="p">(</span><span class="n">yy</span><span class="p">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">yy</span><span class="p">))</span>
-    <span class="n">zz</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_2_plus_y_2</span><span class="p">)).</span><span class="n">multiply</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span><br/>
-<span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span> <span class="o">=</span> <span class="n">sine_sqrt</span><span class="p">()</span>
-<span class="n">plot</span> <span class="o">=</span> <span class="n">Plot3D</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span><span class="p">)</span>
-</code></pre></div></div>
-
-</details>
-
-<p></p>
+<div class="double_image">
+<figure class="left_image">
+  <a href="mathematics/topology.html">
+    <img alt="Klein&apos;s bottle" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a>.
+  For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="mathematics/topology.html">
+    <img alt="Double torus" src="./images/geometry/double_torus_contour.png" title="Click to animate"/>
+  </a>
+  <figcaption>Double torus contour plot. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
 
 ### Polar coordinates &amp; spherical harmonics
 <div style="border-top: 1px solid #999999"><br/></div>
@@ -122,66 +141,3 @@ seen in the mathematics section on this page:
 </details>
 <p style="clear: both;"></p>
 
-### [Topology](geometry.html)
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="mathematics/topology.html">
-    <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
-  </a>
-  <figcaption>Surface plot of twisted torus. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
-</figure>
-<figure class="right_image">
-  <a href="mathematics/topology.html">
-    <img alt="Self-intersecting disk" src="./images/geometry/self_intersecting_disk_contour.png" title="Click to animate"/>
-  </a>
-  <figcaption>Contour plot of <a href="https://en.wikipedia.org/wiki/Real_projective_plane">self-intersecting disk</a>.
-  For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
-</figure>
-</div>
-<p style="clear: both;"></p>
-
-### [Double shapes](geometry.html)
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="mathematics/topology.html">
-    <img alt="Klein&apos;s bottle" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
-  </a>
-  <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a>.
-  For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
-</figure>
-<figure class="right_image">
-  <a href="mathematics/topology.html">
-    <img alt="Double torus" src="./images/geometry/double_torus_contour.png" title="Click to animate"/>
-  </a>
-  <figcaption>Double torus contour plot. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
-</figure>
-</div>
-<p style="clear: both;"></p>
-
-<details>
-  <summary><a>&dArr; Code snippets for topological shapes &uArr;</a></summary>
-
-<p>Geometric shapes such as a <a href="https://www.mattiagiuri.com/2020/11/20/plotting-a-torus-with-python/">torus</a> 
-can be parameterized using polar coordinates as well:</p>
-
-$$\begin{pmatrix} x \\ y \\ z\end{pmatrix}=\begin{pmatrix} (c + a \cos(v))\cdot\cos(u) \\ (c + a \cos(v))\cdot\sin(u) \\ a \sin(v) \end{pmatrix}$$
-
-<p><br/>This leads to the following Python code<br/></p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">torus</span><span class="p">():</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">xx</span> <span class="o">=</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span> <span class="mf">1.05</span> <span class="o">*</span> <span class="n">pi</span><span class="p">,</span> <span class="mi">75</span><span class="p">)</span>
-    <span class="n">U</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">)</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">V</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">).</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="p">)).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">U</span><span class="p">))</span>
-    <span class="n">Y</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">cos</span><span class="p">(</span><span class="n">V</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">).</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="p">)).</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">U</span><span class="p">))</span>
-    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="n">V</span><span class="p">).</span><span class="n">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><br/>
-<span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span> <span class="o">=</span> <span class="n">torus</span><span class="p">()</span>
-<span class="n">plot</span> <span class="o">=</span> <span class="n">Plot3D</span><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">zz</span><span class="p">)</span>
-</code></pre></div></div>
-
-</details>
