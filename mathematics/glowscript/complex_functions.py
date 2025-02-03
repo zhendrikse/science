@@ -16,19 +16,23 @@ class ComplexNumber:
     def im(self): return self._im
     def phase(self): return atan2(self.im(), self.re())
     def abs(self): return sqrt(self.re() * self.re() + self.im() * self.im())
-    def conj(self): return ComplexNumber(self.re(), -self.im())
 
 class MathWrapper:
     def __init__(self):
-        self.complex = self._complex
-        self.add, self.subtract, self.multiply, self.divide = self._add, self._subtract, self._multiply, self._divide
-        self.sqrt, self.log, self.exp, self.sin, self.cos = self._sqrt, self._log, self._exp, self._sin, self._cos
+      self.complex = self._complex
+      self.add, self.subtract, self.multiply, self.divide = self._add, self._subtract, self._multiply, self._divide
+      self.sqrt, self.log, self.exp, self.sin, self.cos = self._sqrt, self._log, self._exp, self._sin, self._cos
 
-    def _complex(self, re, im): return ComplexNumber(re, im)
-    def _add(self, z1, z2): return ComplexNumber(z1.re() + z2.re(), z1.im() + z2.im())
-    def _subtract(self, z1, z2): return ComplexNumber(z1.re() - z2.re(), z1.im() - z2.im())
-    def _log(self, z): return ComplexNumber(log(z.abs()), atan2(z.im(), z.re()))
-    def _exp(self, z): return ComplexNumber(exp(z.re()) * cos(z.im()), exp(z.re()) * sin(z.im()))
+    def _complex(self, re, im):
+      return ComplexNumber(re, im)
+    def _add(self, z1, z2):
+      return ComplexNumber(z1.re() + z2.re(), z1.im() + z2.im())
+    def _subtract(self, z1, z2):
+      return ComplexNumber(z1.re() - z2.re(), z1.im() - z2.im())
+    def _log(self, z):
+      return ComplexNumber(log(z.abs()), atan2(z.im(), z.re()))
+    def _exp(self, z):
+      return ComplexNumber(exp(z.re()) * cos(z.im()), exp(z.re()) * sin(z.im()))
     def _sin(self, z):
         i_z = self.multiply(z, ComplexNumber(0, 1))
         min_i_z = self.multiply(z, ComplexNumber(0, -1))
@@ -51,6 +55,7 @@ class MathWrapper:
     def _sqrt(self, z):
         factor = sqrt((z.abs() + z.re())/2)
         return ComplexNumber(factor, factor * (z.im() / abs(z.im())))
+
 
 #####################################
 # COMMENT OUT THIS CLASS IN VPYTHON #
@@ -484,7 +489,7 @@ class RadioButtons:
     def add(self, button_, function_, title_text):
         self._radio_buttons.append(RadioButton(button_, function_, title_text))
 
-        if (len(self._radio_buttons) % 3) == 0:
+        if (len(self._radio_buttons) % 5) == 0:
             animation.append_to_caption("\n\n")
 
         if (len(self._radio_buttons)) == 1:
@@ -531,7 +536,7 @@ def z_abs_squared(resolution=50):
 
     def f_z(x, y, i, j):
         z = math.complex(x[i][j], y[i][j])
-        return math.multiply(math.multiply(z, z.conj()), math.complex(0.5, 0))
+        return math.multiply(math.multiply(z, ComplexNumber(z.re(), -z.im())), math.complex(0.5, 0))
 
     return NumpyWrapper(-2, 2, -2, 2, resolution).get_plot_data(f_x, f_y, f_z)
 
@@ -622,15 +627,15 @@ def toggle(event):
 
 
 radio_buttons = RadioButtons()
-radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = z^2 + 2$ ", name="z_squared_plus_2"), z_squared_plus_2, z_squared_plus_2_title)
-radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = z\\bar{z}$ ", name="z_abs_squared"), z_abs_squared, z_abs_squared_title)
-radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\z^3 + 2$ ", name="z_cubed"), z_cubed, z_cubed_title)
-radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\dfrac{z + 1}{z - 1}$ ", name="z_plus_1_divided_by_z_min_1"), z_plus_1_divided_by_z_min_1, z_plus_1_divided_by_z_min_1_title)
-radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\z + \\dfrac{1}{z})$", name="z_plus_one_over_z"), z_plus_one_over_z, z_plus_one_over_z_title)
-radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\sin(z)$ ", name="sine"), sin_z, sine_z_title)
-radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\log(z)$ ", name="log"), log_z, log_z_title)
-radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\exp(z)$ ", name="exp"), exp_z, exp_z_title)
-radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\sqrt(z)$ ", name="sqrt"), sqrt_z, sqrt_z_title)
+radio_buttons.add(radio(bind=toggle, text=" $z^2 + 2$ ", name="z_squared_plus_2"), z_squared_plus_2, z_squared_plus_2_title)
+radio_buttons.add(radio(bind=toggle, text=" $z\\bar{z}$ ", name="z_abs_squared"), z_abs_squared, z_abs_squared_title)
+radio_buttons.add(radio(bind=toggle, text=" $z^3 + 2$ ", name="z_cubed"), z_cubed, z_cubed_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\dfrac{z + 1}{z - 1}$ ", name="z_plus_1_divided_by_z_min_1"), z_plus_1_divided_by_z_min_1, z_plus_1_divided_by_z_min_1_title)
+radio_buttons.add(radio(bind=toggle, text=" $z + \\dfrac{1}{z}$", name="z_plus_one_over_z"), z_plus_one_over_z, z_plus_one_over_z_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\sin(z)$ ", name="sine"), sin_z, sine_z_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\log(z)$ ", name="log"), log_z, log_z_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\exp(z)$ ", name="exp"), exp_z, exp_z_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\sqrt{z}$ ", name="sqrt"), sqrt_z, sqrt_z_title)
 
 
 def adjust_opacity():
@@ -647,7 +652,7 @@ def adjust_omega():
     figure.set_omega_to(omega_slider.value)
     omega_slider_text.text = "= {:1.2f}".format(omega_slider.value / pi, 2) + " π"
 
-animation.append_to_caption("Animation speed ")
+animation.append_to_caption("\n\nAnimation speed ")
 omega_slider = slider(min=0, max=2 * pi, value=pi, bind=adjust_omega)
 omega_slider_text = wtext(text="= π")
 

@@ -32,13 +32,13 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="mathematics/complex_functions.html">
+  <a href="mathematics/complex_surface_plot.html">
     <img alt="Complex functions" src="./images/complex_function_plot.png" title="Click to animate"/>
   </a>
   <figcaption>Surface plot for $f(z) = \log(z)$.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="mathematics/complex_functions.html">
+  <a href="mathematics/complex_contour_plot.html">
     <img alt="Complex functions" src="./images/complex_function_contour_plot.png" title="Click to animate"/>
   </a>
   <figcaption>Contour plot for $f(z) = z^2 + 2$.</figcaption>
