@@ -45,7 +45,7 @@ modified by the user.
   <a href="mathematics/complex_contour_plot.html">
     <img alt="Complex functions" src="./images/complex_function_contour_plot.png" title="Click to animate"/>
   </a>
-  <figcaption>Contour plot for $f(z) = z^2 + 2$.</figcaption>
+  <figcaption>Contour plot for $f(z) = log(z)$.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
