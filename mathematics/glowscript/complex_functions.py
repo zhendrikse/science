@@ -7,7 +7,6 @@ from vpython import *
 #######################################
 import numpy as np
 
-
 class ComplexNumber:
     def __init__(self, re, im):
         self._re = re
@@ -58,29 +57,27 @@ class MathWrapper:
 #####################################
 # https://github.com/nicolaspanel/numjs
 # get_library('https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js')
-# get_library("https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.0.1/math.js")
-#
 #
 # class Numpy:
-#     def __init__(self):
-#         self.array = self._array
-#         self.linspace = self._linspace
-#         self.meshgrid = self._meshgrid
+#   def __init__(self):
+#      self.array = self._array
+#      self.linspace = self._linspace
+#      self.meshgrid = self._meshgrid
 #
-#     def _array(self, an_array):
-#         return nj.array(an_array)
+#   def _array(self, an_array):
+#      return nj.array(an_array)
 #
-#     def _linspace(self, start, stop, num):
-#         return self._array([x for x in arange(start, stop, (stop - start) / (num - 1))] + [stop])
+#   def _linspace(self, start, stop, num):
+#      return self._array([x for x in arange(start, stop, (stop - start) / (num - 1))] + [stop])
 #
-#     def _meshgrid(self, linspace_1, linspace_2):
-#         xx = nj.stack([linspace_1 for _ in range(linspace_1.shape)])
-#         temp = []
-#         for i in range(linspace_2.shape[0]):
-#             for j in range(linspace_2.shape[0]):
-#                 temp.append(linspace_2.get(i))
-#         yy = nj.array(temp).reshape(linspace_2.shape[0], linspace_2.shape[0])
-#         return xx, yy
+#   def _meshgrid(self, linspace_1, linspace_2):
+#      xx = nj.stack([linspace_1 for _ in range(linspace_1.shape)])
+#      temp = []
+#      for i in range(linspace_2.shape[0]):
+#          for j in range(linspace_2.shape[0]):
+#              temp.append(linspace_2.get(i))
+#      yy = nj.array(temp).reshape(linspace_2.shape[0], linspace_2.shape[0])
+#      return xx, yy
 #
 #
 # np = Numpy()
@@ -121,7 +118,7 @@ class NumpyWrapper:
                 ###################################
                 # REPLACE THIS IN LOCAL VPYTHON   #
                 temp += [numpy_array[x, y]]     #
-                # temp += [numpy_array.get(x, y)]  #
+                #temp += [numpy_array.get(x, y)]  #
             result += [temp]
         return result
 
@@ -436,7 +433,7 @@ class Figure:
 
     def add_subplot(self, x, y, z):
         self._canvas.delete()
-        self._canvas = canvas(x=0, y=0, height=600, background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
+        self._canvas = canvas(x=0, y=0, height=500, center=vec(0, 1, 0), background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
         abs_z, phase_z = self._transform(z)
 
         if self._plot_contours:
@@ -650,7 +647,7 @@ def adjust_omega():
     figure.set_omega_to(omega_slider.value)
     omega_slider_text.text = "= {:1.2f}".format(omega_slider.value / pi, 2) + " π"
 
-animation.append_to_caption("\n\nAnimation speed ")
+animation.append_to_caption("Animation speed ")
 omega_slider = slider(min=0, max=2 * pi, value=pi, bind=adjust_omega)
 omega_slider_text = wtext(text="= π")
 
@@ -692,13 +689,13 @@ _ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
 _ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
 animation.append_to_caption("\n\n")
 
-animation.title = "DIT MOET NOG GEDAAN" + "\n\n"
+animation.title = z_squared_plus_2_title + "\n\n"
 #################################
 # COMMENT OUT IN LOCAL VPYTHON  #
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 figure = Figure(animation)
-xx_, yy_, zz_ = sqrt_z()
+xx_, yy_, zz_ = z_squared_plus_2()
 figure.add_subplot(xx_, yy_, zz_)
 
 dt = 0.0
