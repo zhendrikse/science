@@ -55,13 +55,13 @@ modified by the user.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="mathematics/topology.html">
+  <a href="mathematics/topology_surface_plot.html">
     <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
   </a>
   <figcaption>Surface plot of twisted torus. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="mathematics/topology.html">
+  <a href="mathematics/topology_contour_plot.html">
     <img alt="Self-intersecting disk" src="./images/geometry/self_intersecting_disk_contour.png" title="Click to animate"/>
   </a>
   <figcaption>Contour plot of <a href="https://en.wikipedia.org/wiki/Real_projective_plane">self-intersecting disk</a>.
