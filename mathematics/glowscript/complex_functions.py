@@ -21,15 +21,37 @@ class ComplexNumber:
 
 class MathWrapper:
     def __init__(self):
-        self.multiply = self._multiply
         self.complex = self._complex
-        self.add = self._add
+        self.add, self.subtract, self.multiply, self.divide = self._add, self._subtract, self._multiply, self._divide
+        self.sqrt, self.log, self.exp, self.sin, self.cos = self._sqrt, self._log, self._exp, self._sin, self._cos
 
     def _complex(self, re, im): return ComplexNumber(re, im)
     def _add(self, z1, z2): return ComplexNumber(z1.re() + z2.re(), z1.im() + z2.im())
+    def _subtract(self, z1, z2): return ComplexNumber(z1.re() - z2.re(), z1.im() - z2.im())
+    def _log(self, z): return ComplexNumber(log(z.abs()), atan2(z.im(), z.re()))
+    def _exp(self, z): return ComplexNumber(exp(z.re()) * cos(z.im()), exp(z.re()) * sin(z.im()))
+    def _sin(self, z):
+        i_z = self.multiply(z, ComplexNumber(0, 1))
+        min_i_z = self.multiply(z, ComplexNumber(0, -1))
+        return math.multiply(ComplexNumber(0, -.5), self.exp(self.subtract(i_z, min_i_z)))
+
+    def _cos(self, z):
+        i_z = self.multiply(z, ComplexNumber(0, 1))
+        min_i_z = self.multiply(z, ComplexNumber(0, -1))
+        return math.multiply(ComplexNumber(.5, 0), self.exp(self.add(i_z, min_i_z)))
 
     def _multiply(self, z1, z2):
         return ComplexNumber(z1.re() * z2.re() - z1.im() * z2.im(), z1.im() * z2.re() + z1.re() * z2.im())
+
+    def _divide(self, z1, z2):
+        denominator = z2.re() * z2.re() + z2.im() * z2.im()
+        re = z1.re() * z2.re() + z1.im() * z2.im()
+        im = z1.im() * z2.re() - z1.re() * z2.im()
+        return ComplexNumber(re / denominator, im / denominator)
+
+    def _sqrt(self, z):
+        factor = sqrt((z.abs() + z.re())/2)
+        return ComplexNumber(factor, factor * (z.im() / abs(z.im())))
 
 #####################################
 # COMMENT OUT THIS CLASS IN VPYTHON #
@@ -204,7 +226,7 @@ class Plot:
         phase = self._phase_z[x][y] + self._omega * t
         phase += 2 * pi if phase < 0 else 0
         phase /= 2 * pi
-        colour = color.hsv_to_rgb(vec(phase, 1, 1.1))
+        colour = color.hsv_to_rgb(vec(phase, 1, 1.2))
 
         new_position = vector(self._xx[x][y], self._abs_z[x][y], self._yy[x][y])
         return new_position, colour
@@ -493,58 +515,106 @@ class RadioButtons:
 # Complex functions F(z) => C #
 ###############################
 
+z_squared_plus_2_title = "$\\psi(z) = \\big(z^2 + 2\\big)$"
 def z_squared_plus_2(resolution=40):
-    def f_x(xx, _, i, j):
-        return xx[i][j]
+    def f_x(x, _, i, j): return x[i][j]
+    def f_y(_, y, i, j): return y[i][j]
 
-    def f_y(_, yy, i, j):
-        return yy[i][j]
-
-    def f_z(xx, yy, i, j):
-        z = math.complex(xx[i][j], yy[i][j])
+    def f_z(x, y, i, j):
+        z = math.complex(x[i][j], y[i][j])
         return math.multiply(math.add(math.multiply(z, z), math.complex(2, 0)), math.complex(.5, 0))
 
     return NumpyWrapper(-2, 2, -2, 2, resolution).get_plot_data(f_x, f_y, f_z)
 
 
+z_abs_squared_title = "$\\psi(z) = z\\bar{z}$"
 def z_abs_squared(resolution=50):
-    def f_x(xx, _, i, j):
-        return xx[i][j]
+    def f_x(x, _, i, j): return x[i][j]
+    def f_y(_, y, i, j): return y[i][j]
 
-    def f_y(_, yy, i, j):
-        return yy[i][j]
-
-    def f_z(xx, yy, i, j):
-        z = math.complex(xx[i][j], yy[i][j])
+    def f_z(x, y, i, j):
+        z = math.complex(x[i][j], y[i][j])
         return math.multiply(math.multiply(z, z.conj()), math.complex(0.5, 0))
 
     return NumpyWrapper(-2, 2, -2, 2, resolution).get_plot_data(f_x, f_y, f_z)
 
+z_cubed_title = "$\\psi(z) = \\big(z^3 + 2\\big)$"
 def z_cubed(resolution=50):
-    def f_x(xx, _, i, j):
-        return xx[i][j]
+    def f_x(x, _, i, j): return x[i][j]
+    def f_y(_, y, i, j): return y[i][j]
 
-    def f_y(_, yy, i, j):
-        return yy[i][j]
-
-    def f_z(xx, yy, i, j):
-        z = math.complex(xx[i][j], yy[i][j])
-        return math.multiply(math.multiply(z, math.multiply(z, z)), math.complex(0.25, 0))
+    def f_z(x, y, i, j):
+        z = math.complex(x[i][j], y[i][j])
+        return math.multiply(math.add(math.multiply(z, math.multiply(z, z)), ComplexNumber(2, 0)), math.complex(0.2, 0))
 
     return NumpyWrapper(-2, 2, -2, 2, resolution).get_plot_data(f_x, f_y, f_z)
 
+log_z_title = "$\\psi(z) = \\log{(z)}$"
 def log_z(resolution=50):
-    def f_x(xx, _, i, j):
-        return xx[i][j]
+    def f_x(x, _, i, j): return x[i][j]
+    def f_y(_, y, i, j): return y[i][j]
 
-    def f_y(_, yy, i, j):
-        return yy[i][j]
-
-    def f_z(xx, yy, i, j):
-        z = math.complex(xx[i][j], yy[i][j])
-        return math.complex(log(z.abs()), atan2(z.im(), z.re()))
+    def f_z(x, y, i, j):
+        z = math.complex(x[i][j], y[i][j])
+        return math.log(z)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
+
+exp_z_title = "$\\psi(z) = e^{-z^2}$"
+def exp_z(resolution=50):
+    def f_x(x, _, i, j): return x[i][j]
+    def f_y(_, y, i, j): return y[i][j]
+
+    def f_z(x, y, i, j):
+        z = math.complex(x[i][j], y[i][j])
+        return math.exp(math.multiply(math.multiply(z, z), math.complex(-1, 0)))
+
+    return NumpyWrapper(-1, 1, -1, 1, resolution).get_plot_data(f_x, f_y, f_z)
+
+sqrt_z_title = "$\\psi(z) = \\sqrt{z}$"
+def sqrt_z(resolution=50):
+    def f_x(x, _, i, j): return x[i][j]
+    def f_y(_, y, i, j): return y[i][j]
+
+    def f_z(x, y, i, j):
+        z = math.complex(x[i][j], y[i][j])
+        return math.sqrt(z)
+
+    return NumpyWrapper(-1, 1, -1, 1, resolution).get_plot_data(f_x, f_y, f_z)
+
+sine_z_title = "$\\psi(z) = \\sin{(z)}$"
+def sin_z(resolution=50):
+    def f_x(x, _, i, j): return x[i][j]
+    def f_y(_, y, i, j): return y[i][j]
+
+    def f_z(x, y, i, j):
+        z = math.complex(x[i][j], y[i][j])
+        return math.multiply(ComplexNumber(.025, 0), math.sin(z))
+
+    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
+
+z_plus_one_over_z_title = "$\\psi(z) = \\dfrac{1}[2}\\left(z + \\dfrac{1}{z}\\right)$"
+def z_plus_one_over_z(resolution=50):
+    def f_x(x, _, i, j): return x[i][j]
+    def f_y(_, y, i, j): return y[i][j]
+
+    def f_z(x, y, i, j):
+        z = math.complex(x[i][j], y[i][j])
+        return math.multiply(math.complex(.5, 0), math.add(z, math.divide(math.complex(1, 0), z)))
+
+    return NumpyWrapper(-3, 3, -3, 3, resolution).get_plot_data(f_x, f_y, f_z)
+
+z_plus_1_divided_by_z_min_1_title = "$\\psi(z, t) = \\bigg(\\dfrac{z + 1}{z - 1} \\bigg)$"
+def z_plus_1_divided_by_z_min_1(resolution=50):
+    def f_x(x, _, i, j): return x[i][j]
+    def f_y(_, y, i, j): return y[i][j]
+
+    def f_z(x, y, i, j):
+        z = math.complex(x[i][j], y[i][j])
+        value = math.add(math.complex(1, 0), z)
+        return math.multiply(ComplexNumber(0.4, 0), math.divide(value, math.add(math.complex(-1, 0), z)))
+
+    return NumpyWrapper(-4, 4, -4, 4, resolution).get_plot_data(f_x, f_y, f_z)
 
 ################
 # GUI controls #
@@ -554,15 +624,16 @@ def toggle(event):
     radio_buttons.toggle(event.name)
 
 
-# radio_buttons = RadioButtons()
-# radio_buttons.add(radio(bind=toggle, text=" $\\sin(\\sqrt(x^2 + y^2))$ ", name="sin_sqrt"), sin_sqrt, sine_sqrt_title)
-# radio_buttons.add(radio(bind=toggle, text=" $\\sin(x) \\cos(y)$ ", name="sine_cosine"), sine_cosine, sine_cosine_title)
-# radio_buttons.add(radio(bind=toggle, text=" $x^3y - y^3x$ ", name="polynomial"), polynomial, polynomial_title)
-# radio_buttons.add(radio(bind=toggle, text=" $\\cos(|x| + |y|)$ ", name="cosine_of_abs"), cosine_of_abs, cosine_of_abs_title)
-# radio_buttons.add(radio(bind=toggle, text=" $\\sin(x^2 + y^2)$ ", name="the_ripple"), ripple, ripple_title)
-# radio_buttons.add(radio(bind=toggle, text=" $(x^2+y^2)\\exp(\\sin(-x^2-y^2))$ ", name="exp_sine"), exp_sine, sine_exp_title)
-# radio_buttons.add(radio(bind=toggle, text=" Ricker wavelet ", name="ricker"), ricker, ricker_title)
-# radio_buttons.add(radio(bind=toggle, text=" Mexican hat ", name="mexican_hat"), mexican_hat, mexican_hat_title)
+radio_buttons = RadioButtons()
+radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = z^2 + 2$ ", name="z_squared_plus_2"), z_squared_plus_2, z_squared_plus_2_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = z\\bar{z}$ ", name="z_abs_squared"), z_abs_squared, z_abs_squared_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\z^3 + 2$ ", name="z_cubed"), z_cubed, z_cubed_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\dfrac{z + 1}{z - 1}$ ", name="z_plus_1_divided_by_z_min_1"), z_plus_1_divided_by_z_min_1, z_plus_1_divided_by_z_min_1_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\z + \\dfrac{1}{z})$", name="z_plus_one_over_z"), z_plus_one_over_z, z_plus_one_over_z_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\sin(z)$ ", name="sine"), sin_z, sine_z_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\log(z)$ ", name="log"), log_z, log_z_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\exp(z)$ ", name="exp"), exp_z, exp_z_title)
+radio_buttons.add(radio(bind=toggle, text=" $\\psi(z) = \\sqrt(z)$ ", name="sqrt"), sqrt_z, sqrt_z_title)
 
 
 def adjust_opacity():
@@ -627,7 +698,7 @@ animation.title = "DIT MOET NOG GEDAAN" + "\n\n"
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 figure = Figure(animation)
-xx_, yy_, zz_ = log_z()
+xx_, yy_, zz_ = sqrt_z()
 figure.add_subplot(xx_, yy_, zz_)
 
 dt = 0.0

@@ -178,7 +178,7 @@ class Plot:
         value = self._zz[x][y] * (1 - cos(self._omega * t)) * .5
         new_position = vector(self._xx[x][y], value, self._yy[x][y])
         hue = self._hue_gradient * abs(new_position.y) / self._max_range + self._hue_offset
-        return new_position, color.hsv_to_rgb(vec(hue, 1, 1.1))
+        return new_position, color.hsv_to_rgb(vec(hue, 1, 1.2))
 
     def set_omega_to(self, omega):
         self._omega = omega
