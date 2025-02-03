@@ -74,13 +74,13 @@ modified by the user.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="mathematics/double_shapes_contour_plot.html">
+  <a href="mathematics/double_shapes_surface_plot.html">
     <img alt="Double torus" src="./images/geometry/double_torus.png" title="Click to animate"/>
   </a>
   <figcaption>Double torus contour plot. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="mathematics/double_shapes_surface_plot.html">
+  <a href="mathematics/double_shapes_contour_plot.html">
     <img alt="Klein&apos;s bottle" src="./images/geometry/klein_bottle_contour.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a>.
