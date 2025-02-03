@@ -595,7 +595,7 @@ def sin_z(resolution=50):
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
-z_plus_one_over_z_title = "$\\psi(z) = \\dfrac{1}[2}\\bigg(z + \\dfrac{1}{z}\\bigg)$"
+z_plus_one_over_z_title = "$\\psi(z) = z + \\bigg(\\dfrac{1}{z}\\bigg)$"
 def z_plus_one_over_z(resolution=50):
     def f_x(x, _, i, j): return x[i][j]
     def f_y(_, y, i, j): return y[i][j]
@@ -606,7 +606,7 @@ def z_plus_one_over_z(resolution=50):
 
     return NumpyWrapper(-3, 3, -3, 3, resolution).get_plot_data(f_x, f_y, f_z)
 
-z_plus_1_divided_by_z_min_1_title = "$\\psi(z, t) = \\bigg(\\dfrac{z + 1}{z - 1} \\bigg)$"
+z_plus_1_divided_by_z_min_1_title = "$\\psi(z) = \\bigg(\\dfrac{z + 1}{z - 1} \\bigg)$"
 def z_plus_1_divided_by_z_min_1(resolution=50):
     def f_x(x, _, i, j): return x[i][j]
     def f_y(_, y, i, j): return y[i][j]
