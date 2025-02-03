@@ -1937,11 +1937,13 @@ return this.__repr__();
 
         "559";
         async function f_z(x, y, i, j) {
-            var ρσ_ls, z;
+            var ρσ_ls, z, _GS_1;
             "560";
             z = (await math.complex(ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)));
             "561";
-            return (await math.log(z));
+            _GS_1 = new ComplexNumber;
+            (await _GS_1.__init__(2, 0));
+            return (await math.multiply(_GS_1, (await math.log(z))));
         };
         if (!f_z.__argnames__) Object.defineProperties(f_z, {
             __argnames__ : {value: ["x", "y", "i", "j"]},
@@ -2125,7 +2127,7 @@ return this.__repr__();
     });
 
     "598";
-    z_plus_one_over_z_title = "$\\psi(z) = z + \\bigg(\\dfrac{1}{z}\\bigg)$";
+    z_plus_one_over_z_title = "$\\psi(z) = \\dfrac{1}[2}\\left(z + \\dfrac{1}{z}\\right)$";
     "599";
     async function z_plus_one_over_z() {
         var resolution = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? z_plus_one_over_z.__defaults__.resolution : arguments[0];

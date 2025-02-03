@@ -558,7 +558,7 @@ def log_z(resolution=50):
 
     def f_z(x, y, i, j):
         z = math.complex(x[i][j], y[i][j])
-        return math.log(z)
+        return math.multiply(ComplexNumber(2, 0), math.log(z))
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
