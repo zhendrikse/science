@@ -421,6 +421,8 @@ class Figure:
 
     def reset(self):
         self._subplots = []
+        self._canvas.delete()
+        self._canvas = canvas(x=0, y=0, height=500, center=vec(0, 1, 0), background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
 
     def plot_contours_is(self, bool_value):
         self._plot_contours = bool_value
@@ -437,8 +439,6 @@ class Figure:
         return abs_z, phase_z
 
     def add_subplot(self, x, y, z):
-        self._canvas.delete()
-        self._canvas = canvas(x=0, y=0, height=500, center=vec(0, 1, 0), background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
         abs_z, phase_z = self._transform(z)
 
         if self._plot_contours:
@@ -700,6 +700,8 @@ animation.title = z_squared_plus_2_title + "\n\n"
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 figure = Figure(animation)
+figure.reset() # To make the GUI controls appear on top
+
 xx_, yy_, zz_ = z_squared_plus_2()
 figure.add_subplot(xx_, yy_, zz_)
 

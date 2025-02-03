@@ -5,38 +5,41 @@ from vpython import *
 #######################################
 # COMMENT IN THESE IMPORTS IN VPYTHON #
 #######################################
-#import numpy as np
+import numpy as np
 #####################################
 # COMMENT OUT THIS CLASS IN VPYTHON #
 #####################################
 # https://github.com/nicolaspanel/numjs
-get_library('https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js')
-
-
-# get_library("https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.0.1/math.js")
-class Numpy:
-    def __init__(self):
-        self.array = self._array
-        self.linspace = self._linspace
-        self.meshgrid = self._meshgrid
-
-    def _array(self, an_array):
-        return nj.array(an_array)
-
-    def _linspace(self, start, stop, num):
-        return self._array([x for x in arange(start, stop, (stop - start) / (num - 1))] + [stop])
-
-    def _meshgrid(self, linspace_1, linspace_2):
-        xx = nj.stack([linspace_1 for _ in range(linspace_1.shape)])
-        temp = []
-        for i in range(linspace_2.shape[0]):
-            for j in range(linspace_2.shape[0]):
-                temp.append(linspace_2.get(i))
-        yy = nj.array(temp).reshape(linspace_2.shape[0], linspace_2.shape[0])
-        return xx, yy
-
-
-np = Numpy()
+# get_library('https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js')
+#
+#
+# # get_library("https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.0.1/math.js")
+# class Numpy:
+#     def __init__(self):
+#         self.array = self._array
+#         self.linspace = self._linspace
+#         self.meshgrid = self._meshgrid
+#         self.concatenate = self._concatenate
+#
+#     def _array(self, an_array):
+#         return nj.array(an_array)
+#
+#     def _linspace(self, start, stop, num):
+#         return self._array([x for x in arange(start, stop, (stop - start) / (num - 1))] + [stop])
+#
+#     def _meshgrid(self, linspace_1, linspace_2):
+#         xx = nj.stack([linspace_1 for _ in range(linspace_1.shape)])
+#         temp = []
+#         for i in range(linspace_2.shape[0]):
+#             for j in range(linspace_2.shape[0]):
+#                 temp.append(linspace_2.get(i))
+#         yy = nj.array(temp).reshape(linspace_2.shape[0], linspace_2.shape[0])
+#         return xx, yy
+#
+#      def _concatenate(self, numpy_array_1, numpy_array_2): return nj.concatenate(numpy_array_1, numpy_array_2)
+#
+#
+# np = Numpy()
 #############
 # TILL HERE #
 #############
@@ -72,8 +75,8 @@ class NumpyWrapper:
             for y in range(numpy_array.shape[1]):
                 ###################################
                 # REPLACE THIS IN LOCAL VPYTHON   #
-                #temp += [numpy_array[x, y]]     #
-                temp += [numpy_array.get(x, y)]  #
+                temp += [numpy_array[x, y]]     #
+                #temp += [numpy_array.get(x, y)]  #
             result += [temp]
         return result
 
@@ -314,7 +317,7 @@ class Figure:
         self._hue_offset, self._hue_gradient, self._omega, self._opacity, self._shininess = .3, .5, pi, 1, .6
         self._axis_color, self._tick_marks_color, self._num_tick_marks = axis_color, tick_marks_color, num_tick_marks
         self._base = None
-        self._tick_marks_visible, self._mesh_visible, self._axis_labels_visible, self._plot_contours = False, False, False, False
+        self._tick_marks_visible, self._mesh_visible, self._axis_labels_visible, self._plot_contours = False, False, False, True
         self._canvas = canvas_
 
     def _create_base(self, xx, yy, zz):
@@ -404,14 +407,15 @@ class RadioButton:
         self._button.checked = False
 
     def push(self):
-        xx, yy, zz = self._function()
+        x1, y1, z1, x2, y2, z2 = self._function()
         figure.reset()
-        figure.add_subplot(xx, yy, zz) #
+        figure.add_subplot(x1, y1, z1)
+        figure.add_subplot(x2, y2, z2)
         animation.title = self._explanation + "\n\n"
 
         #################################
         # COMMENT OUT IN LOCAL VPYTHON  #
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+        #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
     def check(self):
         self._button.checked = True
@@ -428,7 +432,7 @@ class RadioButtons:
     def add(self, button_, function_, title_text):
         self._radio_buttons.append(RadioButton(button_, function_, title_text))
 
-        if (len(self._radio_buttons) % 6) == 0:
+        if (len(self._radio_buttons) % 5) == 0:
             animation.append_to_caption("\n\n")
 
         if (len(self._radio_buttons)) == 1:
@@ -456,288 +460,132 @@ class RadioButtons:
 # Topological / volumetric shapes #
 ###################################
 
-arc_title = "Parametrization for arc $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta) \\\\  \\sin(\\theta)+\\cos(\\phi) \\\\ 3\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, \\pi] \\\\ \\phi \\in [0, \\pi] \\end{cases}$"
-def arc(resolution=50):
-    def f_x(x, _, i, j):
-        theta = x[i][j]
-        return cos(theta)
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return sin(theta) + cos(phi)
-
-    def f_z(_, y, i, j):
-        phi = y[i][j]
-        return 3 * sin(phi)
-
-    return NumpyWrapper(0, pi, 0, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-bow_curve_title = "<a href=\"https://paulbourke.net/geometry/spiral/\">Paul Bourke&apos;s</a> parametrization for Bow curve $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (2 + T \\sin(2 \\pi \\theta)) \\sin(4 \\pi \\phi) \\\\  (2 + T \\sin(2 \\pi \\theta)) \\cos(4 \\pi \\phi) \\\\ T \\cos(2 \\pi \\theta) + 3 \\cos(2 \\pi \\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 1] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
-def bow_curve(resolution=100, t=1):
+def torus_1(a=3, b=4, resolution=50):
     def f_x(x, y, i, j):
         theta, phi = x[i][j], y[i][j]
-        return (3 + t * sin(2 * pi * theta)) * sin(4 * pi * phi)
+        return 4 + (3 + cos(phi)) * sin(theta)
 
     def f_y(x, y, i, j):
         theta, phi = x[i][j], y[i][j]
-        return (3 + t * sin(2 * pi * theta)) * cos(4 * pi * phi)
-
-    def f_z(x, y, i, j):
-       theta, phi = x[i][j], y[i][j]
-       return t * cos(2 * pi * theta) + 3 * cos(2 * pi * phi)
-
-    return NumpyWrapper(0, 1, 0, 1, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-# https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html
-boys_surface_title = "With $K = \\dfrac{\\cos(\\theta)}{\\sqrt{2} - \\cos(2\\theta)\\sin(3\\phi)}$, $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} K (\\cos(\\theta)\\cos(2\\phi)+\\sqrt{2}\\sin(\\theta)\\cos(\\phi)) \\\\  K (\\cos(\\theta)\\sin(2\\phi)-\\sqrt{2}\\sin(\\theta)sin(\\phi)) \\\\ 3K \\cos(\\theta) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-2\\pi, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
-def boys_surface(resolution=100):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        k = cos(theta) / (sqrt(2) - cos(2 * theta)*sin(3 * phi))
-        return k * (cos(theta) * cos(2 * phi) + sqrt(2) * sin(theta) * cos(phi))
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        k = cos(theta) / (sqrt(2) - cos(2 * theta)*sin(3 * phi))
-        return k * (cos(theta) * sin(2 * phi) - sqrt(2) * sin(theta) * sin(phi))
+        return 4 + (3 + cos(phi)) * cos(theta)
 
     def f_z(x, y, i, j):
         theta, phi = x[i][j], y[i][j]
-        k = cos(theta) / (sqrt(2) - cos(2 * theta)*sin(3 * phi))
-        return 1 * k * cos(theta)
-
-    return NumpyWrapper(-2 * pi, 2 * pi, 0, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-bubbles_title = "Parametrization for bubbles $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta)\\sin(2\\phi) \\\\  \\sin(\\theta)\\sin(2\\phi) \\\\ \\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
-def bubbles(resolution=50):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return cos(theta) * sin(2 * phi)
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return sin(theta) * sin(2 * phi)
-
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return sin(phi)
-
-    return NumpyWrapper(-pi / 4, 3.01 * pi / 4, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-# https://paulbourke.net/geometry/spiral/
-conchoidal_title = "<a href=\"https://paulbourke.net/geometry/spiral/\">Paul Bourke&apos;s</a> parametrization for a conchoidal$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} a\\left(1-\\dfrac{\\theta}{2\\pi}\\right)\\cos(n\\theta)(1+\\cos(\\phi))+c\\cos(n\\theta) \\\\  a\\left(1-\\dfrac{\\theta}{2\\pi}\\right)\\sin(n\\theta)(1+\\cos(\\phi))+c\\sin(n\\theta) \\\\ b\\dfrac{\\theta}{2\\pi}+a\\left(1-\\frac{\\theta}{2\\pi}\\right)\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
-def conchoidal(resolution=100, num_spirals=3, r_final=2, height=6.5, r_inner=.5):
-    def f_x(x, y, i, j):
-        s, t = x[i][j], y[i][j]
-        return r_final * (1 - t / (2 * pi)) * cos(num_spirals * t) * (1 + cos(s)) + r_inner * cos(num_spirals * t)
-
-    def f_y(x, y, i, j):
-        s, t = x[i][j], y[i][j]
-        return r_final * (1 - t / (2 * pi)) * sin(num_spirals * t) * (1 + cos(s)) + r_inner * sin(num_spirals * t)
-
-    def f_z(x, y, i, j):
-        s, t = x[i][j], y[i][j]
-        return (height * t / (2 * pi)) + r_final * (1 - t / (2 * pi)) * sin(s)
-
-    return NumpyWrapper(0, 2 * pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-conchoidal_2_title = "Conchoidal $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} a\\left(1-\\dfrac{\\theta}{2\\pi}\\right)\\cos(n\\theta)(1+\\cos(\\phi))+c\\cos(n\\theta) \\\\  a\\left(1-\\dfrac{\\theta}{2\\pi}\\right)\\sin(n\\theta)(1+\\cos(\\phi))+c\\sin(n\\theta) \\\\ b\\dfrac{\\theta}{2\\pi}+a\\left(1-\\frac{\\theta}{2\\pi}\\right)\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
-def conchoidal_2(resolution=100, k=1.2, k_2=1.2, a=1.5):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return k ** theta * (1 + cos(phi)) * cos(theta)
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return k ** theta * (1 + cos(phi)) * sin(theta)
-
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return k ** theta * sin(phi) - a * k_2 ** theta
-
-    return NumpyWrapper(0, 6 * pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-cross_cap_title = "<a href=\"https://paulbourke.net/geometry/crosscap/\">Paul Bourke&apos;s parametrization</a> for a <a href=\"https://mathworld.wolfram.com/Cross-Cap.html\">cross cap</a> $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta) \\sin(2\\phi) \\\\  \\sin(\\theta) \\sin(2\\phi) \\\\ \\cos(\\phi)\\cos(\\phi) - \\cos(\\theta)\\cos(\\theta)\\sin(\\phi)\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, \\pi] \\\\ \\phi \\in [-pi, \\pi] \\end{cases}$"
-def cross_cap(resolution=50):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return .5 * cos(theta) * sin(2 * phi)
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return .5 * sin(theta) * sin(2 * phi)
-
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return .5 * cos(phi) * cos(phi) -.5  * cos(theta) * cos(theta) * sin(phi) * sin(phi)
-
-    return NumpyWrapper(-pi, pi, 0, pi/2, resolution).get_plot_data(f_x, f_y, f_z)
-
-dented_title = "Parametrization for dented surface $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta) \\\\  \\sin(\\theta)+\\cos(\\phi) \\\\ 3\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
-def dented(resolution=50):
-    def f_x(x, _, i, j):
-        theta = x[i][j]
-        return cos(theta)
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return sin(theta) + cos(phi)
-
-    def f_z(_, y, i, j):
-        phi = y[i][j]
-        return 1.5 * sin(phi)
-
-    return NumpyWrapper(-pi, pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-spiral_title = "Parametrization for <a href=\"https://en.wikipedia.org/wiki/Dini%27s_surface\">Dini&apos;s spiral</a> $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta)\\sin(\\phi) \\\\  \\sin(\\theta)\\sin(\\phi) \\\\  \\cos(\\phi)+\\log(\\tan(\\phi/2)) + 0.2\\theta \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 12.4] \\\\ \\phi \\in [0.1, 2] \\end{cases}$"
-def dinis_spiral(resolution=100, k=.5):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return 2 * cos(theta) * sin(phi)
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return 2 * sin(theta) * sin(phi)
-
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return cos(phi) + log(tan(k * phi)) + .2 * theta
-
-    return NumpyWrapper(0, 12.4, 0.1, 2, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-elliptic_torus_title = "<a href=\"https://paulbourke.net/geometry/toroidal/\">Paul Bourke&apos;s parametrization</a> for an elliptic torus $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (c + \\cos(\\phi)) \\cos(\\theta) \\\\  (c + \\cos(\\phi)) \\sin(\\theta) \\\\ \\sin(\\phi) + \\cos(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-pi, \\pi] \\end{cases}$"
-def elliptic_torus(a=1.2, c=3.5, resolution=50):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return (a * cos(phi) + c) * cos(theta)
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return (a * cos(phi) + c) * sin(theta)
-
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return a * (sin(phi) + cos(phi))
+        return 4 + sin(phi)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
-limpet_torus_title = "<a href=\"https://paulbourke.net/geometry/toroidal/\">Paul Bourke&apos;s parametrization</a> for a limpet torus $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta) / (\\sqrt{2} + \\sin(\\phi)) \\\\  \\sin(\\theta) / (\\sqrt{2} + \\sin(\\phi)) \\\\ 1 / (\\sqrt{2} + \\cos(\\phi)) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-pi, \\pi] \\end{cases}$"
-def limpet_torus(resolution=50):
+
+def torus_2(a=3, b=4, resolution=50):
     def f_x(x, y, i, j):
-        return cos(x[i][j]) / (sin(y[i][j]) + sqrt(2))
+        theta, phi = x[i][j], y[i][j]
+        return 2 * b + (a + cos(phi)) * cos(theta)
 
     def f_y(x, y, i, j):
-        return sin(x[i][j]) / (sin(y[i][j]) + sqrt(2))
+        theta, phi = x[i][j], y[i][j]
+        return a + sin(phi)
 
-    def f_z(_, y, i, j):
-        return 1 / (cos(y[i][j]) + sqrt(2))
+    def f_z(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        return b + (a + cos(phi)) * sin(theta)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
-mobius_title = "Parametrization for <a href=\"https://en.wikipedia.org/wiki/M%C3%B6bius_strip\">Möbius strip</a> $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta)(1+\\phi\\cos(\\theta/2)) \\\\  \\sin(\\theta)(1+\\phi\\cos(\\theta/2)) \\\\ 0.2\\phi\\sin(\\theta/2) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 4\\pi + 0.5] \\\\ \\phi \\in [0, 0.3] \\end{cases}$"
-def mobius_strip(resolution=50):
+def double_torus(resolution=50):
+    x1, y1, z1 = torus_1(resolution=resolution)
+    x2, y2, z2 = torus_2(resolution=resolution)
+    return x1, y1, z1, x2, y2, z2
+
+# https://www.mattiagiuri.com/2020/11/20/plotting-a-torus-with-python/
+def ball_and_torus_1(a=1.5, c=8, resolution=75):
     def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return (cos(.5 * theta) * phi + 1) * cos(theta)
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return (cos(.5 * theta) * phi + 1) * sin(theta)
-
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return phi * sin(.5 * theta)
-
-    return NumpyWrapper(-pi, pi, -1.001, 1.001, resolution).get_plot_data(f_x, f_y, f_z)
-
-self_intersecting_disk_title = "Parametrization for a <a href=\"https://en.wikipedia.org/wiki/Real_projective_plane\">self-intersecting disk</a> $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} r\\phi\\cos(2\\theta) \\\\  r\\phi\\sin(2\\theta) \\\\ r\\phi\\cos(\\theta) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-pi, \\pi] \\end{cases}$"
-def self_intersecting_disk(r=1, resolution=75):
-    def f_x(x, y, i, j):
-
-        return r * y[i][j] * cos(2 * x[i][j])
-
-    def f_y(x, y, i, j):
-        return r * y[i][j] * sin(2 * x[i][j])
-
-    def f_z(x, y, i, j):
-        return -r * y[i][j] * cos(x[i][j])
-
-    return NumpyWrapper(0, 2 * pi, 0, 1, resolution).get_plot_data(f_x, f_y, f_z)
-
-# https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html
-def star_of_david(resolution=100):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        k = (abs(cos(theta))**200+abs(sin(theta))**200)**(-1.0/200)
-        return cos(theta) * cos(phi) * (abs(cos(3*phi/4))^500+abs(sin(3*phi/4))**500)**(-1/260) * k
-
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        k = (abs(cos(theta))**200+abs(sin(theta))**200)**(-1.0/200)
-        return cos(theta) * sin(phi) * (abs(cos(3*phi/4))^500+abs(sin(3*phi/4))**500)**(-1/260) * k
-
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        k = (abs(cos(theta))**200+abs(sin(theta))**200)**(-1.0/200)
-        return k * sin(theta)
-
-    return NumpyWrapper(-pi, pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-torus_title = "Parametrization for torus $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (c + a \\cos(\\phi))\\cos(\\theta) \\\\  (c + a \\cos(\\phi))\\sin(\\theta) \\\\ a \\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-\\pi, \\pi] \\end{cases}$"
-def torus(a=.7, c=2, height=2, resolution=75):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return (c + a * cos(phi)) * cos(theta)
-
-    def f_y(x, y, i, j):
         theta, phi = x[i][j], y[i][j]
         return (c + a * cos(phi)) * sin(theta)
 
-    def f_z(_, y, i, j):
-        phi = y[i][j]
-        return height * a * sin(phi)
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-
-trefoil_knot_title = "Parametrization for the <a href=\"https://en.wikipedia.org/wiki/Trefoil_knot\">trefoil knot</a> $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (4(1+0.25\\sin(3\\phi))+\\cos(\\theta))\\cos(2\\phi) \\\\  \\sin(\\theta)(1+\\phi\\cos(\\theta/2)) \\\\ 0.2\\phi\\sin(\\theta/2) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 4\\pi + 0.5] \\\\ \\phi \\in [0, 0.3] \\end{cases}$"
-def trefoil_knot(resolution=50):
-    def f_x(x, y, i, j):
-        factor = 4* (.25 * sin(3 * y[i][j]) + 1) + cos(x[i][j])
-        return factor * cos(2 * y[i][j])
-
-    def f_y(x, y, i, j):
-        factor = 4* (.25 * sin(3 * y[i][j]) + 1) + cos(x[i][j])
-        return factor * sin(2 * y[i][j])
-
-    def f_z(x, y, i, j):
-        return sin(x[i][j]) + 2 * cos(3 * y[i][j])
-
-    return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
-
-# https://www.mattiagiuri.com/2020/11/20/plotting-a-torus-with-python/
-# https://en.wikipedia.org/wiki/Real_projective_plane
-# figure_8_klein_title = "<h3><a href=\"https://paulbourke.net/geometry/toroidal/\">Paul Bourke&apos;s parametrization</a> for a figure-8 Klein bottle</h3>$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta) (a + \\sin(\\phi) \\cos(\\theta/2) - \\sin(2\\phi) \\sin(\\theta/2)/2) \\\\ \\sin(\\theta) (a + \\sin(\\phi) \\cos(\\theta/2) - \\sin(2\\phi) \\sin(\\theta/2)/2) \\\\ \\sin(\\theta/2) \\sin(\\phi) + \\cos(\\theta/2) \\sin(2\\phi)/2 \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [-pi, \\pi] \\end{cases}$"
-# grays_klein_title = "<h3><a href=\"https://paulbourke.net/geometry/toroidal/\">Paul Bourke&apos;s parametrization</a> for Gray&apos;s Klein bottle</h3>$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} \\cos(\\theta) (a + \\cos(n\\theta/2) \\sin(\\phi) - \\sin(n\\theta/2) \\sin(2\\phi))\\cos(m\\theta/2) \\\\ (a + \\cos(n\\theta/2) \\sin(\\phi) - \\sin(n\\theta/2) \\sin(2\\phi))\\sin(m\\theta/2) \\\\ \\sin(n\\theta/2) \\sin(\\phi) + \\cos(n\\theta/2) \\sin(2\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 4\\pi] \\\\ \\phi \\in [-pi, \\pi] \\end{cases}$"
-
-twisted_torus_title = "Parametrization for twisted torus $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (3 + \\sin(\\phi) + \\cos(\\theta)) \\cos(2\\phi) \\\\  (3 + \\sin(\\phi) + \\cos(\\theta))\\sin(2\\phi) \\\\ \\sin(\\theta)+2\\cos(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-\\pi, \\pi] \\end{cases}$"
-def twisted_torus(resolution=100):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        return (3 + sin(phi) + cos(theta)) * cos(2 * phi)
-
     def f_y(x, y, i, j):
         theta, phi = x[i][j], y[i][j]
-        return (3 + sin(phi) + cos(theta)) * sin(2 * phi)
+        return (c + a * cos(phi)) * cos(theta)
 
     def f_z(x, y, i, j):
         theta, phi = x[i][j], y[i][j]
-        return 2 * (cos(phi) + sin(theta))
+        return a * sin(phi)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
+
+
+def ball_and_torus_2(r=5, resolution=75):
+    def f_x(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        return r * cos(phi) * sin(theta)
+
+    def f_y(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        return r * sin(phi) * sin(theta)
+
+    def f_z(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        return r * cos(theta)
+
+    return NumpyWrapper(-pi, pi, -pi/2, pi/2, resolution).get_plot_data(f_x, f_y, f_z)
+
+def ball_and_torus(resolution=50):
+    x1, y1, z1 = ball_and_torus_1(resolution=resolution)
+    x2, y2, z2 = ball_and_torus_2(resolution=resolution)
+    return x1, y1, z1, x2, y2, z2
+
+def klein_bottle_1(resolution=50):
+    def f_x(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        r = 4 * ( 1 - cos(theta) /2)
+        return 6 * cos(theta) * (1 + sin(theta)) + r * cos(theta) *  cos(phi)
+
+    def f_y(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        r = 4 * ( 1 - cos(theta) /2)
+        return 16 * sin(theta) + r * sin(theta) * cos(phi)
+
+    def f_z(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        r = 4 * ( 1 - cos(theta) /2)
+        return r * sin(phi)
+
+    return NumpyWrapper(0, pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
+
+def klein_bottle_2(resolution=50):
+    def f_x(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        r = 4 * ( 1 - cos(theta) /2)
+        return 6 * cos(theta) * (1 + sin(theta)) + r * cos(phi + pi)
+
+    def f_y(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        r = 4 * ( 1 - cos(theta) /2)
+        return 16 * sin(theta)
+
+    def f_z(x, y, i, j):
+        theta, phi = x[i][j], y[i][j]
+        r = 4 * ( 1 - cos(theta) /2)
+        return r * sin(phi)
+
+    return NumpyWrapper(pi, 2 * pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
+
+klein_title = "<a href=\"https://paulbourke.net/geometry/toroidal/\">Paul Bourke&apos;s parametrization</a> for Klein&apos;s bottle\n\n $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}="
+klein_title += "\\begin{pmatrix}\\begin{cases} 6\\cos(\\theta)(1+\\sin(\\theta)) + r\\cos(\\theta)\\cos(\\phi), 0 \\leq \\theta &lt; \\pi \\\\ 6\\cos(\\theta)(1+\\sin(\\theta)) + r\\cos(\\phi+\\pi), \\pi &lt; \\theta \\leq 2\\pi \\end{cases} \\\\ "
+klein_title += "\\begin{cases} 16\\sin(\\theta)+r\\sin(\\theta)\\cos(\\phi), 0 \\leq \\theta \\leq \\pi  \\\\ 16\\sin(\\theta), \\pi \\leq \\theta \\leq 2\\pi \\end{cases} \\\\ "
+klein_title += "r\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
+
+def klein_bottle(resolution=50):
+    x1, y1, z1 = klein_bottle_1(resolution=resolution)
+    x2, y2, z2 = klein_bottle_2(resolution=resolution)
+    return x1, y1, z1, x2, y2, z2
+
+# def klein_bottle(resolution=50):
+#     x1, y1, z1 = klein_bottle_1(resolution)
+#     x2, y2, z2 = klein_bottle_2(resolution)
+#     x1, x2, y1, y2 = np.array(x1), np.array(x2), np.array(y1), np.array(y2)
+#     x_stitch, y_stitch, z_stitch = np.concatenate(x1, x2), np.concatenate(y1, y2), np.concatenate(z1, z2)
+#     # NUMPY --> x_stitch, y_stitch, z_stitch = np.concatenate((x1, x2)), np.concatenate((y1, y2)), np.concatenate((z1, z2))
+#     return x_stitch, y_stitch, z_stitch
 
 ################
 # GUI controls #
@@ -747,24 +595,9 @@ def toggle(event):
     radio_buttons.toggle(event.name)
 
 radio_buttons = RadioButtons()
-radio_buttons.add(radio(bind=toggle, text=" Arc ", name="arc"), arc, arc_title)
-radio_buttons.add(radio(bind=toggle, text=" Bow curve ", name="bow_curve"), bow_curve, bow_curve_title)
-radio_buttons.add(radio(bind=toggle, text=" Boy&apos;s surface ", name="boys_surface"), boys_surface, boys_surface_title)
-radio_buttons.add(radio(bind=toggle, text=" Bubbles ", name="bubbles"), bubbles, bubbles_title)
-radio_buttons.add(radio(bind=toggle, text=" Conchoid ", name="conchoid"), conchoidal, conchoidal_title)
-radio_buttons.add(radio(bind=toggle, text=" Conchoid 2 ", name="conchoid_2"), conchoidal_2, conchoidal_2_title)
-radio_buttons.add(radio(bind=toggle, text=" Cross cap ", name="cross_cap"), cross_cap, cross_cap_title)
-radio_buttons.add(radio(bind=toggle, text=" Dented surface ", name="dented"), dented, dented_title)
-radio_buttons.add(radio(bind=toggle, text=" Dini&apos;s spiral ", name="dinis_spiral"), dinis_spiral, spiral_title)
-radio_buttons.add(radio(bind=toggle, text=" Elliptic torus ", name="elliptic_torus"), elliptic_torus, elliptic_torus_title)
-# radio_buttons.add(radio(bind=toggle, text=" Figure-8 Klein bottle ", name="figure_8_klein_bottle"), figure_8_klein_bottle, figure_8_klein_title)
-# radio_buttons.add(radio(bind=toggle, text=" Grays Klein bottle ", name="grays_klein_bottle"), grays_klein_bottle, grays_klein_title)
-radio_buttons.add(radio(bind=toggle, text=" Limpet torus ", name="limpet_torus"), limpet_torus, limpet_torus_title)
-radio_buttons.add(radio(bind=toggle, text=" Mobius strip ", name="mobius"), mobius_strip, mobius_title)
-radio_buttons.add(radio(bind=toggle, text=" Self-intersecting disk ", name="self_intersecting_disk"), self_intersecting_disk, self_intersecting_disk_title)
-radio_buttons.add(radio(bind=toggle, text=" Torus ", name="torus"), torus, torus_title)
-radio_buttons.add(radio(bind=toggle, text=" Trefoil Knot ", name="trefoil_knot"), trefoil_knot, trefoil_knot_title)
-radio_buttons.add(radio(bind=toggle, text=" Twisted torus ", name="twisted_torus"), twisted_torus, twisted_torus_title)
+radio_buttons.add(radio(bind=toggle, text=" Double torus ", name="double_torus"), double_torus, "")
+radio_buttons.add(radio(bind=toggle, text=" Ball and torus ", name="ball_and_torus"), ball_and_torus, "")
+radio_buttons.add(radio(bind=toggle, text=" Klein&apos;s bottle ", name="klein_bottle"), klein_bottle, klein_title)
 
 def adjust_opacity():
     figure.set_opacity_to(opacity_slider.value)
@@ -832,23 +665,24 @@ def toggle_plot_type(event):
 
 
 animation.append_to_caption("\n\n")
-_ = checkbox(text="Contour", bind=toggle_plot_type, checked=False)
+_ = checkbox(text="Contour", bind=toggle_plot_type, checked=True)
 _ = checkbox(text='Mesh ', bind=toggle_mesh, checked=False)
 _ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=False)
 _ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=False)
 _ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
 animation.append_to_caption("\n\n")
 
-animation.title = arc_title + "\n\n"
+animation.title = "" + "\n\n"
 #################################
 # COMMENT OUT IN LOCAL VPYTHON  #
-MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 figure = Figure(animation)
 figure.reset() # To make the GUI controls appear on top
-
-xx_, yy_, zz_ = arc()
-figure.add_subplot(xx_, yy_, zz_)
+x1, y1, z1 = torus_1()
+x2, y2, z2 = torus_2()
+figure.add_subplot(x1, y1, z1)
+figure.add_subplot(x2, y2, z2)
 
 dt = 0.0
 time = 1
