@@ -9,7 +9,7 @@ in a dark labyrinth. &mdash;
 
 <p style="clear: both;"></p>
 
-{% include_relative header.md %}
+{% include_relative ../header.md %}
 
 # Welcome to my Math Art Gallery 
 
@@ -249,4 +249,4 @@ where
 <p style="clear: both;"></p>
 
 
-{% include_relative footer.md %}
+{% include_relative ../footer.md %}
