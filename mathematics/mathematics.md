@@ -50,7 +50,7 @@ modified by the user.
 </div>
 <p style="clear: both;"></p>
 
-### Topology and my [Math Art Gallery](mathematics/geometry.html)
+### Topology and my [Math Art Gallery](eometry.html)
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -58,14 +58,14 @@ modified by the user.
   <a href="mathematics/topology_surface_plot.html">
     <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
   </a>
-  <figcaption>Surface plot of twisted torus. For more surfaces, visit the <a href="mathematics/geometry.html">Math Art Gallery</a>.</figcaption>
+  <figcaption>Surface plot of twisted torus. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_contour_plot.html">
     <img alt="Self-intersecting disk" src="./images/geometry/self_intersecting_disk_contour.png" title="Click to animate"/>
   </a>
   <figcaption>Contour plot of <a href="https://en.wikipedia.org/wiki/Real_projective_plane">self-intersecting disk</a>.
-  For more surfaces, visit the <a href="mathematics/geometry.html">Math Art Gallery</a>.</figcaption>
+  For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -77,14 +77,14 @@ modified by the user.
   <a href="mathematics/double_shapes_surface_plot.html">
     <img alt="Double torus" src="./images/geometry/double_torus.png" title="Click to animate"/>
   </a>
-  <figcaption>Double torus surface plot. For more surfaces, visit the <a href="mathematics/geometry.html">Math Art Gallery</a>.</figcaption>
+  <figcaption>Double torus surface plot. For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/double_shapes_contour_plot.html">
     <img alt="Klein&apos;s bottle" src="./images/geometry/klein_bottle_contour.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a> contour plot.
-  For more surfaces, visit the <a href="mathematics/geometry.html">Math Art Gallery</a>.</figcaption>
+  For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
