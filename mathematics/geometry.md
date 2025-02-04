@@ -9,7 +9,7 @@ in a dark labyrinth. &mdash;
 
 <p style="clear: both;"></p>
 
-{% include_relative ../header.md %}
+{% include_relative "../header.md" %}
 
 # Welcome to my Math Art Gallery 
 
@@ -87,7 +87,7 @@ that I have written in VPython.
 </figure>
 <figure class="right_image">
   <a href="mathematics/double_shapes_surface_plot.html">
-    <img alt="Klein&aps;s bottle" src="../images/geometry/klein_bottle.png" title="Click to animate"/>
+    <img alt="Klein&apos;s bottle" src="../images/geometry/klein_bottle.png" title="Click to animate"/>
   </a>
   <figcaption>The most well-known embedding of 
   <a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a> 
@@ -106,7 +106,7 @@ that I have written in VPython.
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Gray&aps;s Klein bottle" src="../images/geometry/grays_klein_bottle.png" title="Click to animate"/>
+    <img alt="Gray&apos;s Klein bottle" src="../images/geometry/grays_klein_bottle.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://www.blendswap.com/blend/8068">Grays Klein&apos;s bottle</a>.</figcaption>
 </figure>
@@ -249,4 +249,4 @@ where
 <p style="clear: both;"></p>
 
 
-{% include_relative ../footer.md %}
+{% include_relative "../footer.md" %}
