@@ -50,7 +50,7 @@ modified by the user.
 </div>
 <p style="clear: both;"></p>
 
-### Topology and my [Math Art Gallery](eometry.html)
+### Topology and my [Math Art Gallery](geometry.html)
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
