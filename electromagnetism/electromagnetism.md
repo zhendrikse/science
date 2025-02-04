@@ -92,7 +92,7 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
   <a href="electromagnetism/charged_ring.html">
     <img alt="Electron spinning around charged ring" src="./images/electron_and_charged_ring.png" title="Click to animate"/>
   </a>
-  <figcaption>If the atomic nucleus were a charged ring, as opposed to a point, then ...</figcaption>
+  <figcaption>If the atomic nucleus were a charged ring&#x2026;</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

@@ -98,7 +98,7 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 <div class="double_image">
 <figure class="left_image">
   <a href="quantumphysics/harmonic_oscillator.html">
-    <img alt="Quantum oscillator" width="50%" height="50%" src="./images/quantum_oscillator.png" title="Click to animate"/>
+    <img alt="Quantum oscillator" src="./images/quantum_oscillator.png" title="Click to animate"/>
   </a>
   <figcaption>The quantum harmonic oscillator is visualized in a semi-classical way below.</figcaption>
 </figure>
