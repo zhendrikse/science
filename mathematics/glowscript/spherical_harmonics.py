@@ -58,9 +58,9 @@ class NumpyWrapper:
         for i in range(len(self._x)):
             x_, y_, z_ = [], [], []
             for j in range(len(self._y[0])):
-                x_ += [f_x(self._x, self._y, i, j)]
-                y_ += [f_y(self._x, self._y, i, j)]
-                z_ += [f_z(self._x, self._y, i, j)]
+                x_ += [f_x(self._x[i][j], self._y[i][j])]
+                y_ += [f_y(self._x[i][j], self._y[i][j])]
+                z_ += [f_z(self._x[i][j], self._y[i][j])]
             x += [x_]
             y += [y_]
             z += [z_]
@@ -480,14 +480,10 @@ class SphericalHarmonicParameters:
     def __init__(self):
         self.coefficients = [4, 4, 4, 4, 4, 4, 4, 4]
 
-#
-# Functions F(x, y) => R
-#
-
 def spherical_harmonics(spherical_harmonic, resolution=100):
     m = spherical_harmonic.coefficients
-    def r(xx, yy, i, j):
-        return sin(m[0] * xx[i][j]) ** m[1] + cos(m[2] * xx[i][j]) ** m[3] + sin(m[4] * yy[i][j]) ** m[5] + cos(m[6] * yy[i][j]) ** m[7]
+    def r(theta, phi):
+        return sin(m[0] * theta) ** m[1] + cos(m[2] * theta) ** m[3] + sin(m[4] * phi) ** m[5] + cos(m[6] * phi) ** m[7]
         # BEAUTIFUL
         # return sin(4*xx[i][j]) * sin(4*xx[i][j]) + cos(4*xx[i][j]) + sin(4*yy[i][j]) * sin(4*yy[i][j]) + cos(4*yy[i][j])
 
@@ -496,14 +492,14 @@ def spherical_harmonics(spherical_harmonic, resolution=100):
 
         # return sin(2*xx[i][j]) * sin(2*xx[i][j]) + cos(2*yy[i][j]) * cos(2*yy[i][j])
 
-    def f_x(xx, yy, i, j):
-        return r(xx, yy, i, j) * sin(xx[i][j]) * cos(yy[i][j])
+    def f_x(theta, phi):
+        return r(theta, phi) * sin(theta) * cos(phi)
 
-    def f_y(xx, yy, i, j):
-        return r(xx, yy, i, j) * cos(xx[i][j])
+    def f_y(theta, phi):
+        return r(theta, phi) * cos(theta)
 
-    def f_z(xx, yy, i, j):
-        return r(xx, yy, i, j) * sin(xx[i][j]) * sin(yy[i][j])
+    def f_z(theta, phi):
+        return r(theta, phi) * sin(theta) * sin(phi)
 
     return NumpyWrapper(-1.1 * pi, pi, 0, 1.01 * pi, resolution).get_plot_data(f_x, f_y, f_z)
 
@@ -597,11 +593,11 @@ def toggle_parameter(event):
 
 animation.append_to_caption("\n\n")
 radio_button_array = []
-for j in range(len(parameters.coefficients)):
-    animation.append_to_caption("Choose $m_" + str(j) + "=$")
+for row in range(len(parameters.coefficients)):
+    animation.append_to_caption("Choose $m_" + str(row) + "=$")
     radio_buttons = RadioButtons(parameters)
-    for i in range(7):
-        radio_button = radio(bind=toggle_parameter, text=str(i) +" ", name=str(j) + "," + str(i))
+    for column in range(7):
+        radio_button = radio(bind=toggle_parameter, text=str(column) + " ", name=str(row) + "," + str(column))
         radio_buttons.add(radio_button, spherical_harmonics)
     radio_button_array += [radio_buttons]
 
