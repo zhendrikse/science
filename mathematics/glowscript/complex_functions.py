@@ -106,9 +106,9 @@ class NumpyWrapper:
         for i in range(len(self._x)):
             x_, y_, z_ = [], [], []
             for j in range(len(self._y[0])):
-                x_ += [f_x(self._x, self._y, i, j)]
-                y_ += [f_y(self._x, self._y, i, j)]
-                z_ += [f_z(self._x, self._y, i, j)]
+                x_ += [f_x(self._x[i][j], self._y[i][j])]
+                y_ += [f_y(self._x[i][j], self._y[i][j])]
+                z_ += [f_z(self._x[i][j], self._y[i][j])]
             x += [x_]
             y += [y_]
             z += [z_]
@@ -519,11 +519,14 @@ class RadioButtons:
 
 z_squared_plus_2_title = "$\\psi(z) = \\big(z^2 + 2\\big)$"
 def z_squared_plus_2(resolution=40):
-    def f_x(x, _, i, j): return x[i][j]
-    def f_y(_, y, i, j): return y[i][j]
+    def f_x(re, _):
+        return re
 
-    def f_z(x, y, i, j):
-        z = math.complex(x[i][j], y[i][j])
+    def f_y(_, im):
+        return im
+
+    def f_z(re, im):
+        z = math.complex(re, im)
         return math.multiply(math.add(math.multiply(z, z), math.complex(2, 0)), math.complex(.5, 0))
 
     return NumpyWrapper(-2, 2, -2, 2, resolution).get_plot_data(f_x, f_y, f_z)
@@ -531,88 +534,112 @@ def z_squared_plus_2(resolution=40):
 
 z_abs_squared_title = "$\\psi(z) = z\\bar{z}$"
 def z_abs_squared(resolution=50):
-    def f_x(x, _, i, j): return x[i][j]
-    def f_y(_, y, i, j): return y[i][j]
+    def f_x(re, _):
+        return re
 
-    def f_z(x, y, i, j):
-        z = math.complex(x[i][j], y[i][j])
+    def f_y(_, im):
+        return im
+
+    def f_z(re, im):
+        z = math.complex(re, im)
         return math.multiply(math.multiply(z, ComplexNumber(z.re(), -z.im())), math.complex(0.5, 0))
 
     return NumpyWrapper(-2, 2, -2, 2, resolution).get_plot_data(f_x, f_y, f_z)
 
 z_cubed_title = "$\\psi(z) = \\big(z^3 + 2\\big)$"
 def z_cubed(resolution=50):
-    def f_x(x, _, i, j): return x[i][j]
-    def f_y(_, y, i, j): return y[i][j]
+    def f_x(re, _):
+        return re
 
-    def f_z(x, y, i, j):
-        z = math.complex(x[i][j], y[i][j])
+    def f_y(_, im):
+        return im
+
+    def f_z(re, im):
+        z = math.complex(re, im)
         return math.multiply(math.add(math.multiply(z, math.multiply(z, z)), ComplexNumber(2, 0)), math.complex(0.2, 0))
 
     return NumpyWrapper(-2, 2, -2, 2, resolution).get_plot_data(f_x, f_y, f_z)
 
 log_z_title = "$\\psi(z) = \\log{(z)}$"
 def log_z(resolution=50):
-    def f_x(x, _, i, j): return x[i][j]
-    def f_y(_, y, i, j): return y[i][j]
+    def f_x(re, _):
+        return re
 
-    def f_z(x, y, i, j):
-        z = math.complex(x[i][j], y[i][j])
+    def f_y(_, im):
+        return im
+
+    def f_z(re, im):
+        z = math.complex(re, im)
         return math.multiply(ComplexNumber(2, 0), math.log(z))
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 exp_z_title = "$\\psi(z) = e^{-z^2}$"
 def exp_z(resolution=50):
-    def f_x(x, _, i, j): return x[i][j]
-    def f_y(_, y, i, j): return y[i][j]
+    def f_x(re, _):
+        return re
 
-    def f_z(x, y, i, j):
-        z = math.complex(x[i][j], y[i][j])
+    def f_y(_, im):
+        return im
+
+    def f_z(re, im):
+        z = math.complex(re, im)
         return math.exp(math.multiply(math.multiply(z, z), math.complex(-1, 0)))
 
     return NumpyWrapper(-1, 1, -1, 1, resolution).get_plot_data(f_x, f_y, f_z)
 
 sqrt_z_title = "$\\psi(z) = \\sqrt{z}$"
 def sqrt_z(resolution=50):
-    def f_x(x, _, i, j): return x[i][j]
-    def f_y(_, y, i, j): return y[i][j]
+    def f_x(re, _):
+        return re
 
-    def f_z(x, y, i, j):
-        z = math.complex(x[i][j], y[i][j])
+    def f_y(_, im):
+        return im
+
+    def f_z(re, im):
+        z = math.complex(re, im)
         return math.sqrt(z)
 
     return NumpyWrapper(-1, 1, -1, 1, resolution).get_plot_data(f_x, f_y, f_z)
 
 sine_z_title = "$\\psi(z) = \\sin{(z)}$"
 def sin_z(resolution=50):
-    def f_x(x, _, i, j): return x[i][j]
-    def f_y(_, y, i, j): return y[i][j]
+    def f_x(re, _):
+        return re
 
-    def f_z(x, y, i, j):
-        z = math.complex(x[i][j], y[i][j])
+    def f_y(_, im):
+        return im
+
+    def f_z(re, im):
+        z = math.complex(re, im)
         return math.multiply(ComplexNumber(.025, 0), math.sin(z))
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 z_plus_one_over_z_title = "$\\psi(z) = z + \\bigg(\\dfrac{1}{z}\\bigg)$"
 def z_plus_one_over_z(resolution=50):
-    def f_x(x, _, i, j): return x[i][j]
-    def f_y(_, y, i, j): return y[i][j]
+    def f_x(re, _):
+        return re
 
-    def f_z(x, y, i, j):
-        z = math.complex(x[i][j], y[i][j])
+    def f_y(_, im):
+        return im
+
+    def f_z(re, im):
+        z = math.complex(re, im)
         return math.multiply(math.complex(.5, 0), math.add(z, math.divide(math.complex(1, 0), z)))
 
     return NumpyWrapper(-3, 3, -3, 3, resolution).get_plot_data(f_x, f_y, f_z)
 
 z_plus_1_divided_by_z_min_1_title = "$\\psi(z) = \\bigg(\\dfrac{z + 1}{z - 1} \\bigg)$"
 def z_plus_1_divided_by_z_min_1(resolution=50):
-    def f_x(x, _, i, j): return x[i][j]
-    def f_y(_, y, i, j): return y[i][j]
+    def f_x(re, _):
+        return re
 
-    def f_z(x, y, i, j):
-        z = math.complex(x[i][j], y[i][j])
+    def f_y(_, im):
+        return im
+
+    def f_z(re, im):
+        z = math.complex(re, im)
         value = math.add(math.complex(1, 0), z)
         return math.multiply(ComplexNumber(0.4, 0), math.divide(value, math.add(math.complex(-1, 0), z)))
 

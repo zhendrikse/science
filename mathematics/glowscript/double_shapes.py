@@ -59,9 +59,9 @@ class NumpyWrapper:
         for i in range(len(self._x)):
             x_, y_, z_ = [], [], []
             for j in range(len(self._y[0])):
-                x_ += [f_x(self._x, self._y, i, j)]
-                y_ += [f_y(self._x, self._y, i, j)]
-                z_ += [f_z(self._x, self._y, i, j)]
+                x_ += [f_x(self._x[i][j], self._y[i][j])]
+                y_ += [f_y(self._x[i][j], self._y[i][j])]
+                z_ += [f_z(self._x[i][j], self._y[i][j])]
             x += [x_]
             y += [y_]
             z += [z_]
@@ -461,32 +461,26 @@ class RadioButtons:
 ###################################
 
 def torus_1(a=3, b=4, resolution=50):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_x(theta, phi):
         return 4 + (3 + cos(phi)) * sin(theta)
 
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_y(theta, phi):
         return 4 + (3 + cos(phi)) * cos(theta)
 
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_z(_, phi):
         return 4 + sin(phi)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 
 def torus_2(a=3, b=4, resolution=50):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_x(theta, phi):
         return 2 * b + (a + cos(phi)) * cos(theta)
 
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_y(_, phi):
         return a + sin(phi)
 
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_z(theta, phi):
         return b + (a + cos(phi)) * sin(theta)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
@@ -498,32 +492,26 @@ def double_torus(resolution=50):
 
 # https://www.mattiagiuri.com/2020/11/20/plotting-a-torus-with-python/
 def ball_and_torus_1(a=1.5, c=8, resolution=75):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_x(theta, phi):
         return (c + a * cos(phi)) * sin(theta)
 
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_y(theta, phi):
         return (c + a * cos(phi)) * cos(theta)
 
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_z(theta, phi):
         return a * sin(phi)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 
 def ball_and_torus_2(r=5, resolution=75):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_x(theta, phi):
         return r * cos(phi) * sin(theta)
 
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_y(theta, phi):
         return r * sin(phi) * sin(theta)
 
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
+    def f_z(theta, phi):
         return r * cos(theta)
 
     return NumpyWrapper(-pi, pi, -pi/2, pi/2, resolution).get_plot_data(f_x, f_y, f_z)
@@ -534,37 +522,31 @@ def ball_and_torus(resolution=50):
     return x1, y1, z1, x2, y2, z2
 
 def klein_bottle_1(resolution=50):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        r = 4 * ( 1 - cos(theta) /2)
+    def f_x(theta, phi):
+        r = 4 * ( 1 - cos(theta) / 2)
         return 6 * cos(theta) * (1 + sin(theta)) + r * cos(theta) *  cos(phi)
 
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        r = 4 * ( 1 - cos(theta) /2)
+    def f_y(theta, phi):
+        r = 4 * ( 1 - cos(theta) / 2)
         return 16 * sin(theta) + r * sin(theta) * cos(phi)
 
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        r = 4 * ( 1 - cos(theta) /2)
+    def f_z(theta, phi):
+        r = 4 * ( 1 - cos(theta) / 2)
         return r * sin(phi)
 
     return NumpyWrapper(0, pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 def klein_bottle_2(resolution=50):
-    def f_x(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        r = 4 * ( 1 - cos(theta) /2)
+    def f_x(theta, phi):
+        r = 4 * ( 1 - cos(theta) / 2)
         return 6 * cos(theta) * (1 + sin(theta)) + r * cos(phi + pi)
 
-    def f_y(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        r = 4 * ( 1 - cos(theta) /2)
+    def f_y(theta, phi):
+        r = 4 * ( 1 - cos(theta) / 2)
         return 16 * sin(theta)
 
-    def f_z(x, y, i, j):
-        theta, phi = x[i][j], y[i][j]
-        r = 4 * ( 1 - cos(theta) /2)
+    def f_z(theta, phi):
+        r = 4 * ( 1 - cos(theta) / 2)
         return r * sin(phi)
 
     return NumpyWrapper(pi, 2 * pi, 0, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)

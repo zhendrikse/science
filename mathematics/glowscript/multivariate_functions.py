@@ -44,6 +44,7 @@ import numpy as np
 
 animation = canvas(height=500, background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
 
+
 class NumpyWrapper:
     def __init__(self, start_1, stop_1, start_2, stop_2, resolution):
         self._resolution = resolution
@@ -57,9 +58,9 @@ class NumpyWrapper:
         for i in range(len(self._x)):
             x_, y_, z_ = [], [], []
             for j in range(len(self._y[0])):
-                x_ += [f_x(self._x, self._y, i, j)]
-                y_ += [f_y(self._x, self._y, i, j)]
-                z_ += [f_z(self._x, self._y, i, j)]
+                x_ += [f_x(self._x[i][j], self._y[i][j])]
+                y_ += [f_y(self._x[i][j], self._y[i][j])]
+                z_ += [f_z(self._x[i][j], self._y[i][j])]
             x += [x_]
             y += [y_]
             z += [z_]
@@ -470,111 +471,111 @@ class RadioButtons:
 
 ricker_title = "<a href=\"https://en.wikipedia.org/wiki/Ricker_wavelet\">Ricker / Mexican hat / Marr wavelet</a></h3>&nbsp;&nbsp;$f(x,y) = \\dfrac{1}{\\pi\\sigma^4} \\bigg(1 - \\dfrac{1}{2} \\bigg( \\dfrac{x^2 + y^2}{\\sigma^2} \\bigg) \\bigg) e^{-\\dfrac{x^2+y^2}{2\\sigma^2}}$"
 def ricker(resolution=50):
-    def f_x(x, _, i, j):
-        return x[i][j]
+    def f_x(x, _):
+        return x
 
-    def f_y(_, y, i, j):
-        return y[i][j]
+    def f_y(_, y):
+        return y
 
     sigma = .7
     sigma_2 = sigma * sigma
     factor = 1 / (pi * sigma_2 * sigma_2)
 
-    def f_z(xx, yy, i, j):
-        x_2_plus_y_2 = yy[i][j] * yy[i][j] + xx[i][j] * xx[i][j]
+    def f_z(x, y):
+        x_2_plus_y_2 = x * x + y * y
         return 1.4 * factor * (1 - 2 * x_2_plus_y_2 / sigma_2) * exp(-2 * x_2_plus_y_2 / sigma_2)
 
     return NumpyWrapper(-1.25, 1.25, -1.25, 1.25, resolution).get_plot_data(f_x, f_y, f_z)
 
 mexican_hat_title = "Polar coordinates for Mexican hat$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} r\\cos(\\phi) \\\\ r\\sin(\\phi)) \\\\ (r^2 - 1)^2 \\end{pmatrix}$"
 def mexican_hat(resolution=50):
-    def f_x(x, y, i, j):
-        return x[i][j] * cos(y[i][j])
+    def f_x(x, y):
+        return x * cos(y)
 
-    def f_y(x, y, i, j):
-        return x[i][j] * sin(y[i][j])
+    def f_y(x, y):
+        return x * sin(y)
 
-    def f_z(x, _, i, j):
-        return 3 * (x[i][j] * x[i][j] - 1) * (x[i][j] * x[i][j] - 1)
+    def f_z(x, _):
+        return 3 * (x * x - 1) * (x * x - 1)
 
     return NumpyWrapper(0, 1.25, -pi, pi * 1.05, resolution).get_plot_data(f_x, f_y, f_z)
 
 sine_exp_title = "$f(x, y) = \\sin(x^2 + y^2) e^{ -x^2 - y^2}$"
 def exp_sine(resolution=75):
-    def f_x(xx, _, i, j):
-        return xx[i][j]
+    def f_x(x, _):
+        return x
 
-    def f_y(_, yy, i, j):
-        return yy[i][j]
+    def f_y(_, y):
+        return y
 
-    def f_z(xx, yy, i, j):
-        x_2_plus_y_2 = yy[i][j] * yy[i][j] + xx[i][j] * xx[i][j]
+    def f_z(x, y):
+        x_2_plus_y_2 = x * x + y * y
         return 10 * sin(x_2_plus_y_2) * exp(-x_2_plus_y_2)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 sine_sqrt_title = "$f(x, y) = \\sin\\left(\\sqrt{x^2+y^2}\\right)$"
 def sin_sqrt(resolution=50):
-    def f_x(xx, _, i, j):
-        return xx[i][j]
+    def f_x(x, _):
+        return x
 
-    def f_y(_, yy, i, j):
-        return yy[i][j]
+    def f_y(_, y):
+        return y
 
-    def f_z(xx, yy, i, j):
-        return 5 * sin(sqrt(yy[i][j] * yy[i][j] + xx[i][j] * xx[i][j]))
+    def f_z(x, y):
+        return 5 * sin(sqrt(y * y + x * x))
 
     return NumpyWrapper(-2 * pi, 2 * pi, -2 * pi, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 sine_cosine_title = "$f(x, y) = \\sin(\\pi x)\\cos(\\pi y)$"
 def sine_cosine(resolution=50):
-    def f_x(x, _, i, j):
-        return x[i][j]
+    def f_x(x, _):
+        return x
 
-    def f_y(_, yy, i, j):
-        return yy[i][j]
+    def f_y(_, y):
+        return y
 
-    def f_z(xx, yy, i, j):
-        return sin(xx[i][j] * pi) * cos(yy[i][j] * pi)
+    def f_z(x, y):
+        return sin(x * pi) * cos(y * pi)
 
     return NumpyWrapper(-2 * pi / 3, 2 * pi / 3, -2 * pi / 3, 2 * pi / 3, resolution).get_plot_data(f_x, f_y, f_z)
 
 cosine_of_abs_title = "$f(x, y) = \\cos(|x| + |y|)$"
 def cosine_of_abs(resolution=50):
-    def f_x(x, _, i, j):
-        return x[i][j]
+    def f_x(x, _):
+        return x
 
-    def f_y(_, yy, i, j):
-        return yy[i][j]
+    def f_y(_, y):
+        return y
 
-    def f_z(xx, yy, i, j):
-        return 3 * cos(abs(xx[i][j]) + abs(yy[i][j]))
+    def f_z(x, y):
+        return 3 * cos(abs(x) + abs(y))
 
     return NumpyWrapper(-2 * pi, 2 * pi, -2 * pi, 2 * pi, resolution).get_plot_data(f_x, f_y, f_z)
 
 polynomial_title = "$f(x, y) =  (yx^3 - xy^3)$"
 def polynomial(resolution=50):
-    def f_x(x, _, i, j):
-        return x[i][j]
+    def f_x(x, _):
+        return x
 
-    def f_y(_, yy, i, j):
-        return yy[i][j]
+    def f_y(_, y):
+        return y
 
-    def f_z(xx, yy, i, j):
-        return .3 * (xx[i][j] * xx[i][j] * xx[i][j] * yy[i][j] - yy[i][j] * yy[i][j] * yy[i][j] * xx[i][j])
+    def f_z(x, y):
+        return .3 * (x * x * x * y - y * y * y * x)
 
     return NumpyWrapper(-1.75, 1.75, -1.75, 1.75, resolution).get_plot_data(f_x, f_y, f_z)
 
 ripple_title = "$f(x, y) =  \\sin\\big(3 (x^2 + y^2)\\big)$"
 def ripple(resolution=100):
-    def f_x(x, _, i, j):
-        return x[i][j]
+    def f_x(x, _):
+        return x
 
-    def f_y(_, y, i, j):
-        return y[i][j]
+    def f_y(_, y):
+        return y
 
-    def f_z(x, y, i, j):
-        return sin(.75 * x[i][j] * x[i][j] + y[i][j] * y[i][j])
+    def f_z(x, y):
+        return sin(.75 * x * x + y * y)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
