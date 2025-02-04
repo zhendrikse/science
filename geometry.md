@@ -9,7 +9,7 @@ in a dark labyrinth. &mdash;
 
 <p style="clear: both;"></p>
 
-{% include_relative "../header.md" %}
+{% include_relative header.md %}
 
 # Welcome to my Math Art Gallery 
 
@@ -22,7 +22,7 @@ that I have written in VPython.
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Torus" src="../images/geometry/torus.png" title="Click to animate"/>
+    <img alt="Torus" src="./images/geometry/torus.png" title="Click to animate"/>
   </a>
   <figcaption>A torus, a trivial example of a connected orientable surface of 
     <a href="https://en.wikipedia.org/wiki/Genus_%28mathematics%29">genus one</a>.
@@ -30,7 +30,7 @@ that I have written in VPython.
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Trefoil knot" src="../images/geometry/trefoil_knot.png" title="Click to animate"/>
+    <img alt="Trefoil knot" src="./images/geometry/trefoil_knot.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Trefoil_knot">Trefoil knot</a>, the simplest
   example of a (non-trivial) knot.</figcaption>
@@ -41,13 +41,13 @@ that I have written in VPython.
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Limpet Torus" src="../images/geometry/limpet_torus.png" title="Click to animate"/>
+    <img alt="Limpet Torus" src="./images/geometry/limpet_torus.png" title="Click to animate"/>
   </a>
   <figcaption>The limpet torus.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Elliptic torus" src="../images/geometry/elliptic_torus.png" title="Click to animate"/>
+    <img alt="Elliptic torus" src="./images/geometry/elliptic_torus.png" title="Click to animate"/>
   </a>
   <figcaption>Elliptic torus.</figcaption>
 </figure>
@@ -57,13 +57,13 @@ that I have written in VPython.
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Double torus" src="../images/geometry/double_torus.png" title="Click to animate"/>
+    <img alt="Double torus" src="./images/geometry/double_torus.png" title="Click to animate"/>
   </a>
   <figcaption>Double torus.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Twisted torus" src="../images/geometry/twisted_torus.png" title="Click to animate"/>
+    <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
   </a>
   <figcaption>A twisted torus.</figcaption>
 </figure>
@@ -80,14 +80,14 @@ that I have written in VPython.
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Möbius strip" src="../images/geometry/mobius_strip.png" title="Click to animate"/>
+    <img alt="Möbius strip" src="./images/geometry/mobius_strip.png" title="Click to animate"/>
   </a>
   <figcaption>The famous <a href="https://en.wikipedia.org/wiki/M%C3%B6bius_strip">Möbius strip</a>,
   perhaps the most well-known non-orientable surface.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/double_shapes_surface_plot.html">
-    <img alt="Klein&apos;s bottle" src="../images/geometry/klein_bottle.png" title="Click to animate"/>
+    <img alt="Klein&apos;s bottle" src="./images/geometry/klein_bottle.png" title="Click to animate"/>
   </a>
   <figcaption>The most well-known embedding of 
   <a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a> 
@@ -99,14 +99,14 @@ that I have written in VPython.
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Figure-8 Klein bottle" src="../images/geometry/figure_8_klein_bottle.png" title="Click to animate"/>
+    <img alt="Figure-8 Klein bottle" src="./images/geometry/figure_8_klein_bottle.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a> also can be
   obtained by gluing two Möbius strips together.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Gray&apos;s Klein bottle" src="../images/geometry/grays_klein_bottle.png" title="Click to animate"/>
+    <img alt="Gray&apos;s Klein bottle" src="./images/geometry/grays_klein_bottle.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://www.blendswap.com/blend/8068">Grays Klein&apos;s bottle</a>.</figcaption>
 </figure>
@@ -119,14 +119,14 @@ that I have written in VPython.
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Cross capp" src="../images/geometry/cross_cap.png" width="80%" title="Click to animate"/>
+    <img alt="Cross capp" src="./images/geometry/cross_cap.png" width="80%" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/crosscap/">Paul Bourke&apos;s parametrization</a> 
   for the <a href="https://mathworld.wolfram.com/Cross-Cap.html">cross cap</a>.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Self-intersecting plane" src="../images/geometry/self_intersecting_disk.png" title="Click to animate"/>
+    <img alt="Self-intersecting plane" src="./images/geometry/self_intersecting_disk.png" title="Click to animate"/>
   </a>
   <figcaption>A sliced cross-capped disk is 
   <a href="https://en.wikipedia.org/wiki/Homeomorphism">homeomorphic</a> to a self-intersecting disk.</figcaption>
@@ -149,14 +149,14 @@ where
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/spherical_harmonics.html">
-    <img alt="Spherical harmonic" src="../images/geometry/spherical_harmonic_1.png" title="Click to animate"/>
+    <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_1.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/spherical_harmonics.html">
-    <img alt="Spherical harmonic" src="../images/geometry/spherical_harmonic_2.png" title="Click to animate"/>
+    <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_2.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>
@@ -167,14 +167,14 @@ where
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/spherical_harmonics.html">
-    <img alt="Spherical harmonic" src="../images/geometry/spherical_harmonic_3.png" title="Click to animate"/>
+    <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_3.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/spherical_harmonics.html">
-    <img alt="Spherical harmonic" src="../images/geometry/spherical_harmonic_4.png" title="Click to animate"/>
+    <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_4.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>
@@ -195,7 +195,7 @@ where
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Dini&apos;s spiral" src="../images/geometry/dini_spiral.png" title="Click to animate"/>
+    <img alt="Dini&apos;s spiral" src="./images/geometry/dini_spiral.png" title="Click to animate"/>
   </a>
   <figcaption>Dini&apos;s spiral, <a href="https://en.wikipedia.org/wiki/Dini%27s_surface">Dini&apos;s surface</a>, 
   or twisted pseudo-sphere: characterized by a surface of constant (negative) curvature, 
@@ -203,7 +203,7 @@ where
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Conchoidd" src="../images/geometry/conchoid.png" title="Click to animate"/>
+    <img alt="Conchoidd" src="./images/geometry/conchoid.png" title="Click to animate"/>
   </a>
   <figcaption>Nature meets mathematics: a purely mathematically generated seashell, with the parametrization 
   found on <a href="https://paulbourke.net/geometry/spiral">Paul Bourke&apos;s</a> site.
@@ -219,13 +219,13 @@ where
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Dented object" src="../images/geometry/dented_object.png" title="Click to animate"/>
+    <img alt="Dented object" src="./images/geometry/dented_object.png" title="Click to animate"/>
   </a>
   <figcaption>A dented object.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Arc shape" src="../images/geometry/arc.png" title="Click to animate"/>
+    <img alt="Arc shape" src="./images/geometry/arc.png" title="Click to animate"/>
   </a>
   <figcaption>Arc.</figcaption>
 </figure>
@@ -235,13 +235,13 @@ where
 <div class="double_image">
 <figure class="left_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Ball and torus" src="../images/geometry/ball_in_torus.png" title="Click to animate"/>
+    <img alt="Ball and torus" src="./images/geometry/ball_in_torus.png" title="Click to animate"/>
   </a>
   <figcaption>Combined ball and torus.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="mathematics/topology_surface_plot.html">
-    <img alt="Bubbles shape" src="../images/geometry/bubbles.png" title="Click to animate"/>
+    <img alt="Bubbles shape" src="./images/geometry/bubbles.png" title="Click to animate"/>
   </a>
   <figcaption>A surface of revolution.</figcaption>
 </figure>
@@ -249,4 +249,4 @@ where
 <p style="clear: both;"></p>
 
 
-{% include_relative "../footer.md" %}
+{% include_relative footer.md %}
