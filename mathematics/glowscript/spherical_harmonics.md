@@ -1,3 +1,5 @@
+Both the contour and surface plots are generated with the same code!
+
 The [`spherical_harmonics.py` source code](spherical_harmonics.py) is shown below.
 <p></p>
 

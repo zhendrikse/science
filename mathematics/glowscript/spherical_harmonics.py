@@ -90,92 +90,68 @@ y_hat = vec(0, 1, 0)
 z_hat = vec(0, 0, 1)
 base = [x_hat, y_hat, z_hat]
 
-
 class Base:
     def __init__(self, xx, yy, zz, axis_color, tick_marks_color, num_tick_marks):
-        base_ = [[x for x in arange(0, len(xx), len(xx) / num_tick_marks)] + [len(xx)],
-                 [y for y in arange(0, len(yy[0]), len(yy[0]) / num_tick_marks)] + [len(yy[0])],
-                 [z for z in arange(0, len(zz), len(zz) / num_tick_marks)] + [len(zz)]]
-        scale = .01 * len(xx)
-        delta_ = [len(xx) / num_tick_marks, len(yy[0]) / num_tick_marks, len(zz) / num_tick_marks]
-        self._tick_marks, self._mesh, self._axis, self._axis_labels = [], [], [], []
-
-        self._make_tick_marks(base_, xx, yy, zz, tick_marks_color, scale, num_tick_marks)
-        self._make_mesh(base_, delta_, scale)
-        self._make_axis(base_, delta_, axis_color, scale)
-        self._make_axis_labels(base_, delta_, axis_color, scale)
-
-    def _make_axis_labels(self, base_, delta_, axis_color, scale):
-        pos = x_hat * (base_[0][-1] + 2 * delta_[0]) - vec(0, scale, -30)
-        l_y = label(pos=pos, text="Y-axis", color=axis_color, box=False)
-        pos = z_hat * (base_[2][-1] + 2 * delta_[2]) + y_hat * (.625 * base_[1][-1])
-        l_z = label(pos=pos, text="Z-axis", color=axis_color, box=False)
-        pos = x_hat * (base_[0][-1] / 2) + z_hat * (base_[2][-1] + 3 * delta_[2])
-        l_x = label(pos=pos, text="X-axis", color=axis_color, box=False)
-        self._axis_labels += [l_x, l_y, l_z]
-
-    def _make_axis(self, base_, delta_, axis_color, scale):
-        c_x = cylinder(pos=x_hat * base_[0][0], axis=x_hat * (base_[0][-1] - base_[0][0]), color=axis_color,
-                       radius=scale)
-        c_y = cylinder(pos=z_hat * base_[2][0], axis=z_hat * (base_[2][-1] - base_[2][0]), color=axis_color,
-                       radius=scale)
-        c_z = cylinder(pos=y_hat * base_[1][0], axis=y_hat * (base_[1][-1] - base_[1][0]), color=axis_color,
-                       radius=scale)
-        self._axis += [c_x, c_y, c_z]
-
-    def _make_mesh(self, base_, delta_, scale):
-        range_ = [i[-1] - i[0] for i in base_]
-        for j in range(len(base_[0])):
-            pos_x_y = x_hat * base_[0][0] + y_hat * base_[1][0]
-            pos_x_z = x_hat * base_[0][0] + z_hat * base_[2][0]
-            pos_y_z = y_hat * base_[1][0] + z_hat * base_[2][0]
-            # XY mesh
-            self._mesh += [cylinder(pos=pos_x_y + x_hat * j * delta_[0], axis=y_hat * range_[1])]
-            self._mesh += [cylinder(pos=pos_x_y + y_hat * j * delta_[1], axis=x_hat * range_[0])]
-            pos = (base_[0][0] + .5 * range_[0]) * x_hat + (base_[1][0] + .5 * range_[1]) * y_hat
-            self._mesh += [box(pos=pos, length=range_[0], width=scale, height=range_[1], opacity=0.1)]
-
-            # XZ mesh
-            self._mesh += [cylinder(pos=pos_x_z + x_hat * j * delta_[0], axis=z_hat * range_[2])]
-            self._mesh += [cylinder(pos=pos_x_z + z_hat * j * delta_[2], axis=x_hat * range_[0])]
-            pos = (base_[0][0] + .5 * range_[0]) * x_hat + (base_[2][0] + .5 * range_[2]) * z_hat
-            self._mesh += [box(pos=pos, length=range_[0], width=range_[2], height=scale, opacity=0.1)]
-
-            # YZ mesh
-            self._mesh += [cylinder(pos=pos_y_z + y_hat * j * delta_[1], axis=z_hat * range_[2])]
-            self._mesh += [cylinder(pos=pos_y_z + z_hat * j * delta_[2], axis=y_hat * range_[1])]
-            pos = (base_[1][0] + .5 * range_[1]) * y_hat + (base_[2][0] + .5 * range_[2]) * z_hat
-            self._mesh += [box(pos=pos, length=scale, width=range_[2], height=range_[1], opacity=0.1)]
-
-        for item_ in self._mesh:
-            item_.color = color.gray(.5)
-            item_.radius = scale * .5
-            item_.visible = False
-
-    def _make_tick_marks(self, base_, xx, yy, zz, tick_marks_color, scale, num_tick_marks):
         x_min, x_max = min(map(min, xx)), max(map(max, xx))
-        increment = (x_max - x_min) / num_tick_marks
-        for i in range(1, len(base_[2]), 2):
-            label_text = '{:1.2f}'.format(x_min + i * increment, 2)
-            pos = z_hat * base_[2][i] + x_hat * (base_[0][-1] + 5 * scale)
-            x_label = label(pos=pos, text=label_text, color=tick_marks_color, box=False)
-            self._tick_marks.append(x_label)
-
         y_min, y_max = min(map(min, yy)), max(map(max, yy))
-        increment = (y_max - y_min) / num_tick_marks
-        for i in range(0, len(base_[0]), 2):
-            label_text = '{:1.2f}'.format(y_min + i * increment, 2)
-            pos = x_hat * base_[0][i] + z_hat * (base_[2][-1] + 5 * scale)
-            y_label = label(pos=pos, text=label_text, color=tick_marks_color, box=False)
-            self._tick_marks.append(y_label)
-
         z_min, z_max = min(map(min, zz)), max(map(max, zz))
-        increment = (z_max - z_min) / num_tick_marks
-        for i in range(1, len(base_[1]), 2):
+        range_x, range_y, range_z = x_max - x_min, y_max - y_min, z_max - z_min
+        max_of_base = max(range_x, range_y, range_z)
+        delta = max_of_base / num_tick_marks
+        position = vec(x_min, z_min, y_min)
+        radius = max_of_base / 200
+
+        self._mesh = []
+        self._create_mesh(delta, max_of_base, num_tick_marks, position, radius)
+
+        self._tick_marks = []
+        self._create_tick_marks(delta, max_of_base, num_tick_marks, position, tick_marks_color, x_min, y_min, z_min)
+
+        self._axis_labels = []
+        pos = position + x_hat * (max_of_base + 2.5 * delta) + .5 * max_of_base * z_hat
+        self._axis_labels += [label(pos=pos, text="Y-axis", color=axis_color, box=False)]
+        pos = position + z_hat * (max_of_base + 2.5 * delta) + .5 * max_of_base * y_hat
+        self._axis_labels += [label(pos=pos, text="Z-axis", color=axis_color, box=False)]
+        pos = position + z_hat * (max_of_base + 2.5 * delta) + .5 * max_of_base * x_hat
+        self._axis_labels += [label(pos=pos, text="X-axis", color=axis_color, box=False)]
+
+    def _create_tick_marks(self, delta, max_of_base, num_tick_marks, position, tick_marks_color, x_min, y_min, z_min):
+        increment = max_of_base / num_tick_marks
+        for i in range(1, num_tick_marks, 2):
+            # Tick marks X
+            label_text = '{:1.2f}'.format(x_min + i * increment, 2)
+            pos = position + x_hat * i * delta + z_hat * (max_of_base + .75 * delta)
+            self._tick_marks.append(label(pos=pos, text=label_text, color=tick_marks_color, box=False))
+            # Tick marks Y
+            label_text = '{:1.2f}'.format(y_min + i * increment, 2)
+            pos = position + z_hat * i * delta + x_hat * (max_of_base + .75 * delta)
+            self._tick_marks.append(label(pos=pos, text=label_text, color=tick_marks_color, box=False))
+            # Tick marks Z
             label_text = '{:1.2f}'.format(z_min + i * increment, 2)
-            pos = y_hat * base_[1][i] + z_hat * (base_[2][-1] + 5 * scale)
-            z_label = label(pos=pos, text=label_text, color=tick_marks_color, box=False)
-            self._tick_marks.append(z_label)
+            pos = position + y_hat * i * delta + z_hat * (max_of_base + .75 * delta)
+            self._tick_marks.append(label(pos=pos, text=label_text, color=tick_marks_color, box=False))
+
+    def _create_mesh(self, delta, max_of_base, num_tick_marks, position, radius):
+        for i in range(num_tick_marks + 1):
+            # XY-mesh (lies in VPython xz-plane)
+            self._mesh += [cylinder(pos=position + z_hat * delta * i, axis=max_of_base * x_hat)]
+            self._mesh += [cylinder(pos=position + x_hat * delta * i, axis=max_of_base * z_hat)]
+            # YZ-mesh (lies in VPython zy-plane)
+            self._mesh += [cylinder(pos=position + z_hat * delta * i, axis=max_of_base * y_hat)]
+            self._mesh += [cylinder(pos=position + y_hat * delta * i, axis=max_of_base * z_hat)]
+            # XZ-mesh (lies in VPython xy-plane)
+            self._mesh += [cylinder(pos=position + x_hat * delta * i, axis=max_of_base * y_hat)]
+            self._mesh += [cylinder(pos=position + y_hat * delta * i, axis=max_of_base * x_hat)]
+        for item in self._mesh:
+            item.color = color.gray(.5)
+            item.radius = radius
+
+        pos = position + (x_hat + y_hat) * .5 * max_of_base
+        self._mesh += [box(pos=pos, length=max_of_base, width=radius, height=max_of_base,opacity=0.05)]
+        pos = position + (x_hat + z_hat) * .5 * max_of_base
+        self._mesh += [box(pos=pos, length=max_of_base, width=max_of_base, height=radius, opacity=0.05)]
+        pos = position + (y_hat + z_hat) * .5 * max_of_base
+        self._mesh += [box(pos=pos, length=radius, width=max_of_base, height=max_of_base, opacity=0.05)]
 
     def tick_marks_visibility_is(self, visible):
         for tick_mark in self._tick_marks:
@@ -185,45 +161,89 @@ class Base:
         for i in range(len(self._mesh)):
             self._mesh[i].visible = visible
 
-    def axis_visibility_is(self, visible):
-        for i in range(len(self._axis)):
-            self._axis[i].visible = visible
-
     def axis_labels_visibility_is(self, visible):
         for i in range(len(self._axis_labels)):
             self._axis_labels[i].visible = visible
 
 
-# This class is only meant to be used from within the Figure class.
-class SubPlot:
+class Plot:
     def __init__(self, xx, yy, zz):
         self._xx, self._yy, self._zz = xx, yy, zz
-        self._hue_offset = .8
-        self._opacity = 1
-        self._shininess = 0.6
-        self._hue_gradient = .5
-        self._omega = pi
+        self._hue_offset, self._hue_gradient, self._omega, self._opacity, self._shininess = .3, .5, pi, 1, .6
+        x_min, x_max = min(map(min, xx)), max(map(max, xx))
+        y_min, y_max = min(map(min, yy)), max(map(max, yy))
+        z_min, z_max = min(map(min, zz)), max(map(max, zz))
+        range_x, range_y, range_z = x_max - x_min, y_max - y_min, z_max - z_min
+        self._max_range = max(range_x, range_y, range_z)
+
+    def _get_values_for_plot(self, x, y, t):
+        value = self._zz[x][y] * (1 - cos(self._omega * t)) * .5
+        new_position = vector(self._xx[x][y], value, self._yy[x][y])
+        hue = self._hue_gradient * abs(new_position.y) / self._max_range + self._hue_offset
+        return new_position, color.hsv_to_rgb(vec(hue, 1, 1.2))
+
+    def set_omega_to(self, omega):
+        self._omega = omega
+
+    def set_hue_offset_to(self, offset):
+        self._hue_offset = offset
+
+    def set_hue_gradient_to(self, gradient):
+        self._hue_gradient = gradient
+
+    def set_opacity_to(self, opacity):
+        self._opacity = opacity
+
+    def set_shininess_to(self, shininess):
+        self._shininess = shininess
+
+class ContourPlot(Plot):
+    def __init__(self, xx, yy, zz):
+        Plot.__init__(self, xx, yy, zz)
+        self._x_contours, self._y_contours = [], []
+        self._initialize_contour_curves()
+
+    def _initialize_contour_curves(self, t=1):
+        positions = []
+        position_col = [[] for _ in range(len(self._yy[0]))]
+        for i in range(len(self._xx)):
+            position_row = []
+            for j in range(len(self._yy[0])):
+                position, _ = self._get_values_for_plot(i, j, t)
+                position_row.append(position)
+                position_col[j].append(position)
+            positions.append(position_row)
+            self._x_contours.append(curve(pos=position_row, radius=self._max_range/250))
+
+        for i in range(len(position_col)):
+            self._y_contours.append(curve(pos=position_col[i], radius=self._max_range/250))
+
+    def _render_contours(self, x, y, t):
+        position, colour = self._get_values_for_plot(x, y, t)
+        self._x_contours[x].modify(y, color=colour)
+        self._y_contours[y].modify(x, color=colour)
+        self._x_contours[x].modify(y, pos=position)
+        self._y_contours[y].modify(x, pos=position)
+
+    def render(self, t):
+        for x in range(len(self._xx)):
+            for y in range(len(self._yy[0])):
+                self._render_contours(x, y, t)
+
+
+# This class is only meant to be used from within the Figure class.
+class SurfacePlot(Plot):
+    def __init__(self, xx, yy, zz):
+        Plot.__init__(self, xx, yy, zz)
         self._vertices, self._quads = [], []
         self._create_vertices()
         self._create_quads()
 
-    def hide_plot(self):
-        for quad_ in self._quads:
-            quad_.visible = False
-        for vertex_ in self._vertices:
-            vertex_.visible = False
-
-    def _create_vertices(self):
-        x_min, x_max = min(map(min, self._xx)), max(map(max, self._xx))
-        y_min, y_max = min(map(min, self._yy)), max(map(max, self._yy))
-        range_x = x_max - x_min
-        range_y = y_max - y_min
-
+    def _create_vertices(self, t=1):
         for x in range(len(self._xx)):
-            for y in range(len(self._yy[1])):
-                x_ = (self._xx[x][y] - x_min) * len(self._xx) / range_x
-                y_ = (self._yy[x][y] - y_min) * len(self._yy[0]) / range_y
-                self._vertices.append(vertex(pos=vec(x_, 0, y_), normal=vec(0, 1, 0)))
+            for y in range(len(self._yy[0])):
+                position, _ = self._get_values_for_plot(x, y, t)
+                self._vertices.append(vertex(pos=position, normal=vec(0, 1, 0)))
 
     def _create_quad(self, x, y):
         _neighbor_increment_x, _neighbor_increment_y = 1, 1
@@ -239,12 +259,9 @@ class SubPlot:
         self._quads.append(quad(vs=[v0, v1, v2, v3]))
 
     # Create the quad objects, based on the vertex objects already created.
-    #
-    # When removing the "-1", opposite ends will be glued together
-    #
     def _create_quads(self):
-        for x in range(len(self._xx) - 2):
-            for y in range(len(self._yy[0]) - 2):
+        for x in range(len(self._xx) - 1):
+            for y in range(len(self._yy[0]) - 1):
                 self._create_quad(x, y)
 
     def _set_vertex_normal_for(self, x, y):
@@ -269,26 +286,22 @@ class SubPlot:
     # Set the normal for each vertex to be perpendicular to the lower left corner of the quad.
     # The vectors a and b point to the right and up around a vertex in the xy plane.
     def _make_normals(self):
-        for x in range(len(self._xx) - 2):
-            for y in range(len(self._yy[0]) - 2):
+        for x in range(len(self._xx)):
+            for y in range(len(self._yy[0])):
                 self._set_vertex_normal_for(x, y)
 
-    def _update_vertex(self, x, y, value):
-        hue = 1 / len(self._zz) * self._hue_gradient * abs(value) + self._hue_offset
+    def _update_vertex(self, x, y, value, colour):
         vertex_ = self._get_vertex(x, y)
         vertex_.pos.y = value
-        vertex_.color = color.hsv_to_rgb(vec(hue, 1, 1))
+        vertex_.color = colour
         vertex_.opacity = self._opacity
         vertex_.shininess = self._shininess
 
     def _update_vertices(self, t):
-        z_min, z_max = min(map(min, self._zz)), max(map(max, self._zz))
-        range_z = z_max - z_min
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
-                f_x_y = self._zz[x][y] * (1 - cos(self._omega * t)) * .4
-                value = (f_x_y - z_min) * len(self._zz) / range_z
-                self._update_vertex(x, y, value)
+                position, colour = self._get_values_for_plot(x, y, t)
+                self._update_vertex(x, y, position.y, colour)
 
     def _get_vertex(self, x, y):
         return self._vertices[x * len(self._yy[0]) + y]
@@ -297,46 +310,19 @@ class SubPlot:
         self._update_vertices(t)
         self._make_normals()
 
-    def set_omega_to(self, omega):
-        self._omega = omega
-
-    def set_hue_offset_to(self, offset):
-        self._hue_offset = offset
-
-    def set_hue_gradient_to(self, gradient):
-        self._hue_gradient = gradient
-
-    def set_opacity_to(self, opacity):
-        self._opacity = opacity
-
-    def set_shininess_to(self, shininess):
-        self._shininess = shininess
-
-    def get_axis_information(self):
-        return self._xx, self._yy, self._zz
-
 
 class Figure:
-    def __init__(self, axis_color=color.yellow, tick_marks_color=vec(0.4, 0.8, 0.4), num_tick_marks=10):
+    def __init__(self, canvas_, axis_color=color.yellow, tick_marks_color=vec(0.4, 0.8, 0.4), num_tick_marks=10):
         self._subplots = []
-        self._hue_offset = .8
-        self._hue_gradient = .5
-        self._omega = pi
-        self._opacity = 1
-        self._shininess = 0.6
-        self._axis_color = axis_color
-        self._tick_marks_color = tick_marks_color
-        self._num_tick_marks = num_tick_marks
+        self._hue_offset, self._hue_gradient, self._omega, self._opacity, self._shininess = .3, .5, pi, 1, .6
+        self._axis_color, self._tick_marks_color, self._num_tick_marks = axis_color, tick_marks_color, num_tick_marks
         self._base = None
-        self._tick_marks_visible = True
-        self._mesh_visible = True
-        self._axis_visible = True
-        self._axis_labels_visible = False
+        self._tick_marks_visible, self._mesh_visible, self._axis_labels_visible, self._plot_contours = False, False, False, False
+        self._canvas = canvas_
 
     def _create_base(self, xx, yy, zz):
         axis = Base(xx, yy, zz, self._axis_color, self._tick_marks_color, self._num_tick_marks)
         axis.mesh_visibility_is(self._mesh_visible)
-        axis.axis_visibility_is(self._axis_visible)
         axis.axis_labels_visibility_is(self._axis_labels_visible)
         axis.tick_marks_visibility_is(self._tick_marks_visible)
         return axis
@@ -344,6 +330,10 @@ class Figure:
     def render(self, t):
         for subplot in self._subplots:
             subplot.render(t)
+
+    def render_contour(self, t):
+        for subplot in self._subplots:
+            subplot.render_contour(t)
 
     def set_omega_to(self, omega):
         self._omega = omega
@@ -382,33 +372,29 @@ class Figure:
         self._axis_labels_visible = visible
         self._base.axis_labels_visibility_is(visible)
 
-    def axis_visibility_is(self, visible):
-        self._axis_visible = visible
-        self._base.axis_visibility_is(visible)
-
-    def _hide_axis(self):
-        self._base.tick_marks_visibility_is(False)
-        self._base.mesh_visibility_is(False)
-        self._base.axis_visibility_is(False)
-
     def reset(self):
-        for subplot in self._subplots:
-            subplot.hide_plot()
-
         self._subplots = []
-        self._hide_axis()
+        self._canvas.delete()
+        self._canvas = canvas(x=0, y=0, height=600, background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
+
+    def plot_contours_is(self, bool_value):
+        self._plot_contours = bool_value
 
     def add_subplot(self, x, y, z):
-        subplot = SubPlot(x, y, z)
-        subplot.set_omega_to(self._omega)
-        subplot.set_opacity_to(self._opacity)
+        if self._plot_contours:
+            subplot = ContourPlot(x, y, z)
+        else:
+            subplot = SurfacePlot(x, y, z)
+
         subplot.set_hue_offset_to(self._hue_offset)
         subplot.set_hue_gradient_to(self._hue_gradient)
+        subplot.set_omega_to(self._omega)
+        subplot.set_opacity_to(self._opacity)
+        subplot.set_shininess_to(self._shininess)
         self._subplots.append(subplot)
-        if len(self._subplots) == 1:
-            xx, yy, zz = subplot.get_axis_information()
-            self._base = self._create_base(xx, yy, zz)
 
+        if len(self._subplots) == 1:
+            self._base = self._create_base(x, y, z)
 
 class RadioButton:
     def __init__(self, button_, function_):
@@ -479,18 +465,12 @@ class RadioButtons:
 class SphericalHarmonicParameters:
     def __init__(self):
         self.coefficients = [4, 4, 4, 4, 4, 4, 4, 4]
+        self.resolution = 100
 
 def spherical_harmonics(spherical_harmonic, resolution=100):
     m = spherical_harmonic.coefficients
     def r(theta, phi):
         return sin(m[0] * theta) ** m[1] + cos(m[2] * theta) ** m[3] + sin(m[4] * phi) ** m[5] + cos(m[6] * phi) ** m[7]
-        # BEAUTIFUL
-        # return sin(4*xx[i][j]) * sin(4*xx[i][j]) + cos(4*xx[i][j]) + sin(4*yy[i][j]) * sin(4*yy[i][j]) + cos(4*yy[i][j])
-
-        # BEAUTIFUL nummer 2
-        # return sin(4*xx[i][j]) * sin(4*xx[i][j]) + cos(2*xx[i][j]) * cos(2*xx[i][j]) + sin(2*yy[i][j]) * sin(2*yy[i][j]) + cos(2*yy[i][j]) * cos(2*yy[i][j])
-
-        # return sin(2*xx[i][j]) * sin(2*xx[i][j]) + cos(2*yy[i][j]) * cos(2*yy[i][j])
 
     def f_x(theta, phi):
         return r(theta, phi) * sin(theta) * cos(phi)
@@ -549,10 +529,6 @@ def toggle_axis_labels(event):
     figure.axis_labels_visibility_is(event.checked)
 
 
-def toggle_axis(event):
-    figure.axis_visibility_is(event.checked)
-
-
 def toggle_mesh(event):
     figure.mesh_visibility_is(event.checked)
 
@@ -561,12 +537,15 @@ def toggle_animate(event):
     global dt
     dt = 0.01 if event.checked else 0
 
+def toggle_plot_type(event):
+    figure.plot_contours_is(event.checked)
+    parameters.resolution = 50 if event.checked else 100
 
 animation.append_to_caption("\n")
-_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
-_ = checkbox(text='Axis ', bind=toggle_axis, checked=True)
+_ = checkbox(text="Contour", bind=toggle_plot_type, checked=False)
+_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=False)
 _ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=False)
-_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
+_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=False)
 _ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
 
 animation.append_to_caption("\n\nHue offset  ")
@@ -607,7 +586,8 @@ for row in range(len(parameters.coefficients)):
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 create_title(parameters)
-figure = Figure()
+figure = Figure(animation)
+figure.reset() # To make the GUI controls appear on top
 xx_, yy_, zz_ = spherical_harmonics(parameters)
 figure.add_subplot(xx_, yy_, zz_)
 
