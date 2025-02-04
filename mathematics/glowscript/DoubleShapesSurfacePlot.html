@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
 
-    var version, print, arange, __name__, type, ρσ_ls, _GS_1, np, animation, x_hat, y_hat, z_hat, base, klein_title, radio_buttons, offset_slider, offset_slider_text, gradient_slider, gradient_slider_text, omega_slider, omega_slider_text, opacity_slider, opacity_slider_text, shininess_slider, shininess_slider_text, _, figure, ρσ_unpack, x1, y1, z1, x2, y2, z2, dt, time;
+    var version, print, arange, __name__, type, ρσ_ls, _GS_1, np, animation, x_hat, y_hat, z_hat, base, double_torus_title, ball_and_torus_title, klein_title, radio_buttons, offset_slider, offset_slider_text, gradient_slider, gradient_slider_text, omega_slider, omega_slider_text, opacity_slider, opacity_slider_text, shininess_slider, shininess_slider_text, _, figure, ρσ_unpack, x_1, y_1, z_1, x_2, y_2, z_2, dt, time;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -229,11 +229,11 @@ async function __main__() {
             for (var ρσ_Index4 of ρσ_Iter4) {
                 j = ρσ_Index4;
                 "62";
-                x_=x_["+"](ρσ_list_decorate([ (await f_x(self._x, self._y, i, j)) ]));
+                x_=x_["+"](ρσ_list_decorate([ (await f_x(ρσ_getitem(ρσ_getitem(self._x, i), j), ρσ_getitem(ρσ_getitem(self._y, i), j))) ]));
                 "63";
-                y_=y_["+"](ρσ_list_decorate([ (await f_y(self._x, self._y, i, j)) ]));
+                y_=y_["+"](ρσ_list_decorate([ (await f_y(ρσ_getitem(ρσ_getitem(self._x, i), j), ρσ_getitem(ρσ_getitem(self._y, i), j))) ]));
                 "64";
-                z_=z_["+"](ρσ_list_decorate([ (await f_z(self._x, self._y, i, j)) ]));
+                z_=z_["+"](ρσ_list_decorate([ (await f_z(ρσ_getitem(ρσ_getitem(self._x, i), j), ρσ_getitem(ρσ_getitem(self._y, i), j))) ]));
             }
             "65";
             x=x["+"](ρσ_list_decorate([ x_ ]));
@@ -1540,51 +1540,36 @@ return this.__repr__();
         }
         var ρσ_ls, _GS_1;
         "464";
-        async function f_x(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
+        async function f_x(theta, phi) {
             "465";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "466";
-            return 4["+"](3["+"](cos(phi))["*"](sin(theta)));
+            return b["+"](a["+"](cos(phi))["*"](sin(theta)));
         };
         if (!f_x.__argnames__) Object.defineProperties(f_x, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
-        "468";
-        async function f_y(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "469";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "470";
-            return 4["+"](3["+"](cos(phi))["*"](cos(theta)));
+        "467";
+        async function f_y(theta, phi) {
+            "468";
+            return b["+"](a["+"](cos(phi))["*"](cos(theta)));
         };
         if (!f_y.__argnames__) Object.defineProperties(f_y, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
-        "472";
-        async function f_z(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "473";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "474";
-            return 4["+"](sin(phi));
+        "470";
+        async function f_z(_, phi) {
+            "471";
+            return b["+"](sin(phi));
         };
         if (!f_z.__argnames__) Object.defineProperties(f_z, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["_", "phi"]},
             __module__ : {value: null}
         });
 
-        "476";
+        "473";
         _GS_1 = new NumpyWrapper;
         (await _GS_1.__init__(1["-u"]()["*"](pi), pi, 1["-u"]()["*"](pi), pi, resolution));
         return (await _GS_1.get_plot_data(f_x, f_y, f_z));
@@ -1596,7 +1581,7 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "479";
+    "476";
     async function torus_2() {
         var a = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? torus_2.__defaults__.a : arguments[0];
         var b = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? torus_2.__defaults__.b : arguments[1];
@@ -1613,52 +1598,37 @@ return this.__repr__();
             resolution = ρσ_kwargs_obj.resolution;
         }
         var ρσ_ls, _GS_1;
-        "480";
-        async function f_x(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "481";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "482";
+        "477";
+        async function f_x(theta, phi) {
+            "478";
             return 2["*"](b)["+"](a["+"](cos(phi))["*"](cos(theta)));
         };
         if (!f_x.__argnames__) Object.defineProperties(f_x, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
-        "484";
-        async function f_y(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "485";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "486";
+        "480";
+        async function f_y(_, phi) {
+            "481";
             return a["+"](sin(phi));
         };
         if (!f_y.__argnames__) Object.defineProperties(f_y, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["_", "phi"]},
             __module__ : {value: null}
         });
 
-        "488";
-        async function f_z(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "489";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "490";
+        "483";
+        async function f_z(theta, phi) {
+            "484";
             return b["+"](a["+"](cos(phi))["*"](sin(theta)));
         };
         if (!f_z.__argnames__) Object.defineProperties(f_z, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
-        "492";
+        "486";
         _GS_1 = new NumpyWrapper;
         (await _GS_1.__init__(1["-u"]()["*"](pi), pi, 1["-u"]()["*"](pi), pi, resolution));
         return (await _GS_1.get_plot_data(f_x, f_y, f_z));
@@ -1670,7 +1640,15 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "494";
+    "488";
+    double_torus_title = "Parametrization for <a href=\"https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html\">double torus<\/a>\n\n ";
+    "489";
+    double_torus_title=double_torus_title["+"]("$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} 4+(3+\\cos(\\phi))\\sin(\\theta) \\\\  4+(3+\\cos(\\phi))\\cos(\\theta) \\\\ 4+\\sin(\\phi) \\end{pmatrix} +");
+    "490";
+    double_torus_title=double_torus_title["+"]("\\begin{pmatrix} 8+(3+\\cos(\\phi))\\cos(\\theta) \\\\  3+\\sin(\\phi) \\\\ 4+(3+\\cos(\\phi))\\sin(\\theta) \\end{pmatrix}");
+    "491";
+    double_torus_title=double_torus_title["+"]("\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-\\pi, \\pi] \\end{cases}$");
+    "492";
     async function double_torus() {
         var resolution = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? double_torus.__defaults__.resolution : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
@@ -1679,19 +1657,19 @@ return this.__repr__();
             resolution = ρσ_kwargs_obj.resolution;
         }
         var ρσ_ls, ρσ_unpack, x1, y1, z1, x2, y2, z2;
-        "495";
+        "493";
         ρσ_unpack = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, torus_1, [ρσ_desugar_kwargs({resolution: resolution})]));
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
         x1 = ρσ_unpack[0];
         y1 = ρσ_unpack[1];
         z1 = ρσ_unpack[2];
-        "496";
+        "494";
         ρσ_unpack = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, torus_2, [ρσ_desugar_kwargs({resolution: resolution})]));
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
         x2 = ρσ_unpack[0];
         y2 = ρσ_unpack[1];
         z2 = ρσ_unpack[2];
-        "497";
+        "495";
         return [x1, y1, z1, x2, y2, z2];
     };
     if (!double_torus.__defaults__) Object.defineProperties(double_torus, {
@@ -1701,7 +1679,7 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "500";
+    "498";
     async function ball_and_torus_1() {
         var a = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? ball_and_torus_1.__defaults__.a : arguments[0];
         var c = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? ball_and_torus_1.__defaults__.c : arguments[1];
@@ -1718,52 +1696,37 @@ return this.__repr__();
             resolution = ρσ_kwargs_obj.resolution;
         }
         var ρσ_ls, _GS_1;
-        "501";
-        async function f_x(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "502";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "503";
+        "499";
+        async function f_x(theta, phi) {
+            "500";
             return c["+"](a["*"](cos(phi)))["*"](sin(theta));
         };
         if (!f_x.__argnames__) Object.defineProperties(f_x, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
+            __module__ : {value: null}
+        });
+
+        "502";
+        async function f_y(theta, phi) {
+            "503";
+            return c["+"](a["*"](cos(phi)))["*"](cos(theta));
+        };
+        if (!f_y.__argnames__) Object.defineProperties(f_y, {
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
         "505";
-        async function f_y(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
+        async function f_z(_, phi) {
             "506";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "507";
-            return c["+"](a["*"](cos(phi)))["*"](cos(theta));
-        };
-        if (!f_y.__argnames__) Object.defineProperties(f_y, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
-            __module__ : {value: null}
-        });
-
-        "509";
-        async function f_z(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "510";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "511";
             return a["*"](sin(phi));
         };
         if (!f_z.__argnames__) Object.defineProperties(f_z, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["_", "phi"]},
             __module__ : {value: null}
         });
 
-        "513";
+        "508";
         _GS_1 = new NumpyWrapper;
         (await _GS_1.__init__(1["-u"]()["*"](pi), pi, 1["-u"]()["*"](pi), pi, resolution));
         return (await _GS_1.get_plot_data(f_x, f_y, f_z));
@@ -1775,7 +1738,7 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "516";
+    "511";
     async function ball_and_torus_2() {
         var r = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? ball_and_torus_2.__defaults__.r : arguments[0];
         var resolution = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? ball_and_torus_2.__defaults__.resolution : arguments[1];
@@ -1788,52 +1751,37 @@ return this.__repr__();
             resolution = ρσ_kwargs_obj.resolution;
         }
         var ρσ_ls, _GS_1;
-        "517";
-        async function f_x(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "518";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "519";
+        "512";
+        async function f_x(theta, phi) {
+            "513";
             return r["*"](cos(phi))["*"](sin(theta));
         };
         if (!f_x.__argnames__) Object.defineProperties(f_x, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
+            __module__ : {value: null}
+        });
+
+        "515";
+        async function f_y(theta, phi) {
+            "516";
+            return r["*"](sin(phi))["*"](sin(theta));
+        };
+        if (!f_y.__argnames__) Object.defineProperties(f_y, {
+            __argnames__ : {value: ["theta", "phi"]},
+            __module__ : {value: null}
+        });
+
+        "518";
+        async function f_z(theta, _) {
+            "519";
+            return r["*"](cos(theta));
+        };
+        if (!f_z.__argnames__) Object.defineProperties(f_z, {
+            __argnames__ : {value: ["theta", "_"]},
             __module__ : {value: null}
         });
 
         "521";
-        async function f_y(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "522";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "523";
-            return r["*"](sin(phi))["*"](sin(theta));
-        };
-        if (!f_y.__argnames__) Object.defineProperties(f_y, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
-            __module__ : {value: null}
-        });
-
-        "525";
-        async function f_z(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi;
-            "526";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "527";
-            return r["*"](cos(theta));
-        };
-        if (!f_z.__argnames__) Object.defineProperties(f_z, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
-            __module__ : {value: null}
-        });
-
-        "529";
         _GS_1 = new NumpyWrapper;
         (await _GS_1.__init__(1["-u"]()["*"](pi), pi, 1["-u"]()["*"](pi)["/"](2), pi["/"](2), resolution));
         return (await _GS_1.get_plot_data(f_x, f_y, f_z));
@@ -1845,7 +1793,15 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "531";
+    "523";
+    ball_and_torus_title = "Parametrization for ball and torus</a> \n\n";
+    "524";
+    ball_and_torus_title=ball_and_torus_title["+"]("$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (c + a \\cos(\\phi)) \\sin(\\theta) \\\\  (c + a \\cos(\\phi)) \\cos(\\theta) \\\\ a\\sin(\\phi) \\end{pmatrix} +");
+    "525";
+    ball_and_torus_title=ball_and_torus_title["+"]("\\begin{pmatrix} r \\cos(phi) \\sin(\\theta) \\\\  r \\sin(\\phi) \\sin(\\theta) \\\\ r\\cos(\\theta) \\end{pmatrix}");
+    "526";
+    ball_and_torus_title=ball_and_torus_title["+"]("\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-\\pi/2, \\pi/2] \\end{cases}$");
+    "527";
     async function ball_and_torus() {
         var resolution = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? ball_and_torus.__defaults__.resolution : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
@@ -1854,19 +1810,19 @@ return this.__repr__();
             resolution = ρσ_kwargs_obj.resolution;
         }
         var ρσ_ls, ρσ_unpack, x1, y1, z1, x2, y2, z2;
-        "532";
+        "528";
         ρσ_unpack = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, ball_and_torus_1, [ρσ_desugar_kwargs({resolution: resolution})]));
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
         x1 = ρσ_unpack[0];
         y1 = ρσ_unpack[1];
         z1 = ρσ_unpack[2];
-        "533";
+        "529";
         ρσ_unpack = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, ball_and_torus_2, [ρσ_desugar_kwargs({resolution: resolution})]));
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
         x2 = ρσ_unpack[0];
         y2 = ρσ_unpack[1];
         z2 = ρσ_unpack[2];
-        "534";
+        "530";
         return [x1, y1, z1, x2, y2, z2];
     };
     if (!ball_and_torus.__defaults__) Object.defineProperties(ball_and_torus, {
@@ -1876,7 +1832,7 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "536";
+    "532";
     async function klein_bottle_1() {
         var resolution = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? klein_bottle_1.__defaults__.resolution : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
@@ -1885,58 +1841,46 @@ return this.__repr__();
             resolution = ρσ_kwargs_obj.resolution;
         }
         var ρσ_ls, _GS_1;
-        "537";
-        async function f_x(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi, r;
-            "538";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "539";
+        "533";
+        async function f_x(theta, phi) {
+            var ρσ_ls, r;
+            "534";
             r = 4["*"](1["-"](1["*"](cos(theta))["/"](2)));
-            "540";
+            "535";
             return 6["*"](cos(theta))["*"](1["+"](sin(theta)))["+"](r["*"](cos(theta))["*"](cos(phi)));
         };
         if (!f_x.__argnames__) Object.defineProperties(f_x, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
-        "542";
-        async function f_y(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi, r;
-            "543";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "544";
+        "537";
+        async function f_y(theta, phi) {
+            var ρσ_ls, r;
+            "538";
             r = 4["*"](1["-"](1["*"](cos(theta))["/"](2)));
-            "545";
+            "539";
             return 16["*"](sin(theta))["+"](r["*"](sin(theta))["*"](cos(phi)));
         };
         if (!f_y.__argnames__) Object.defineProperties(f_y, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
-        "547";
-        async function f_z(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi, r;
-            "548";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "549";
+        "541";
+        async function f_z(theta, phi) {
+            var ρσ_ls, r;
+            "542";
             r = 4["*"](1["-"](1["*"](cos(theta))["/"](2)));
-            "550";
+            "543";
             return r["*"](sin(phi));
         };
         if (!f_z.__argnames__) Object.defineProperties(f_z, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
-        "552";
+        "545";
         _GS_1 = new NumpyWrapper;
         (await _GS_1.__init__(0, pi, 0, 2["*"](pi), resolution));
         return (await _GS_1.get_plot_data(f_x, f_y, f_z));
@@ -1948,7 +1892,7 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "554";
+    "547";
     async function klein_bottle_2() {
         var resolution = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? klein_bottle_2.__defaults__.resolution : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
@@ -1957,58 +1901,43 @@ return this.__repr__();
             resolution = ρσ_kwargs_obj.resolution;
         }
         var ρσ_ls, _GS_1;
-        "555";
-        async function f_x(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi, r;
-            "556";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "557";
+        "548";
+        async function f_x(theta, phi) {
+            var ρσ_ls, r;
+            "549";
             r = 4["*"](1["-"](1["*"](cos(theta))["/"](2)));
-            "558";
+            "550";
             return 6["*"](cos(theta))["*"](1["+"](sin(theta)))["+"](r["*"](cos(phi["+"](pi))));
         };
         if (!f_x.__argnames__) Object.defineProperties(f_x, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
-        "560";
-        async function f_y(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi, r;
-            "561";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "562";
-            r = 4["*"](1["-"](1["*"](cos(theta))["/"](2)));
-            "563";
+        "552";
+        async function f_y(theta, _) {
+            "553";
             return 16["*"](sin(theta));
         };
         if (!f_y.__argnames__) Object.defineProperties(f_y, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "_"]},
             __module__ : {value: null}
         });
 
-        "565";
-        async function f_z(x, y, i, j) {
-            var ρσ_ls, ρσ_unpack, theta, phi, r;
-            "566";
-            ρσ_unpack = [ρσ_getitem(ρσ_getitem(x, i), j), ρσ_getitem(ρσ_getitem(y, i), j)];
-            theta = ρσ_unpack[0];
-            phi = ρσ_unpack[1];
-            "567";
+        "555";
+        async function f_z(theta, phi) {
+            var ρσ_ls, r;
+            "556";
             r = 4["*"](1["-"](1["*"](cos(theta))["/"](2)));
-            "568";
+            "557";
             return r["*"](sin(phi));
         };
         if (!f_z.__argnames__) Object.defineProperties(f_z, {
-            __argnames__ : {value: ["x", "y", "i", "j"]},
+            __argnames__ : {value: ["theta", "phi"]},
             __module__ : {value: null}
         });
 
-        "570";
+        "559";
         _GS_1 = new NumpyWrapper;
         (await _GS_1.__init__(pi, 2["*"](pi), 0, 2["*"](pi), resolution));
         return (await _GS_1.get_plot_data(f_x, f_y, f_z));
@@ -2020,15 +1949,15 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "572";
-    klein_title = "<a href=\"https://paulbourke.net/geometry/toroidal/\">Paul Bourke&apos;s parametrization<\/a> for Klein&apos;s bottle \n\n$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=";
-    "573";
+    "561";
+    klein_title = "<a href=\"https://paulbourke.net/geometry/toroidal/\">Paul Bourke&apos;s parametrization</a> for Klein&apos;s bottle\n\n $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=";
+    "562";
     klein_title=klein_title["+"]("\\begin{pmatrix}\\begin{cases} 6\\cos(\\theta)(1+\\sin(\\theta)) + r\\cos(\\theta)\\cos(\\phi), 0 \\leq \\theta &lt; \\pi \\\\ 6\\cos(\\theta)(1+\\sin(\\theta)) + r\\cos(\\phi+\\pi), \\pi &lt; \\theta \\leq 2\\pi \\end{cases} \\\\ ");
-    "574";
+    "563";
     klein_title=klein_title["+"]("\\begin{cases} 16\\sin(\\theta)+r\\sin(\\theta)\\cos(\\phi), 0 \\leq \\theta \\leq \\pi  \\\\ 16\\sin(\\theta), \\pi \\leq \\theta \\leq 2\\pi \\end{cases} \\\\ ");
-    "575";
+    "564";
     klein_title=klein_title["+"]("r\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$");
-    "577";
+    "565";
     async function klein_bottle() {
         var resolution = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? klein_bottle.__defaults__.resolution : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
@@ -2037,19 +1966,19 @@ return this.__repr__();
             resolution = ρσ_kwargs_obj.resolution;
         }
         var ρσ_ls, ρσ_unpack, x1, y1, z1, x2, y2, z2;
-        "578";
+        "566";
         ρσ_unpack = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, klein_bottle_1, [ρσ_desugar_kwargs({resolution: resolution})]));
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
         x1 = ρσ_unpack[0];
         y1 = ρσ_unpack[1];
         z1 = ρσ_unpack[2];
-        "579";
+        "567";
         ρσ_unpack = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, klein_bottle_2, [ρσ_desugar_kwargs({resolution: resolution})]));
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
         x2 = ρσ_unpack[0];
         y2 = ρσ_unpack[1];
         z2 = ρσ_unpack[2];
-        "580";
+        "568";
         return [x1, y1, z1, x2, y2, z2];
     };
     if (!klein_bottle.__defaults__) Object.defineProperties(klein_bottle, {
@@ -2059,9 +1988,9 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "594";
+    "582";
     async function toggle(event) {
-        "595";
+        "583";
         (await radio_buttons.toggle(event.name));
     };
     if (!toggle.__argnames__) Object.defineProperties(toggle, {
@@ -2069,104 +1998,104 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "597";
+    "585";
     _GS_1 = new RadioButtons;
     (await _GS_1.__init__());
     radio_buttons = _GS_1;
-    "598";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Double torus ", name: "double_torus"})]), double_torus, ""));
-    "599";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Ball and torus ", name: "ball_and_torus"})]), ball_and_torus, ""));
-    "600";
+    "586";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Double torus ", name: "double_torus"})]), double_torus, double_torus_title));
+    "587";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Ball and torus ", name: "ball_and_torus"})]), ball_and_torus, ball_and_torus_title));
+    "588";
     (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Klein&apos;s bottle ", name: "klein_bottle"})]), klein_bottle, klein_title));
-    "602";
+    "590";
     async function adjust_opacity() {
-        "603";
+        "591";
         (await figure.set_opacity_to(opacity_slider.value));
-        "604";
+        "592";
         opacity_slider_text.text = "= {:1.2f}".format(opacity_slider.value, 2);
     };
     if (!adjust_opacity.__module__) Object.defineProperties(adjust_opacity, {
         __module__ : {value: null}
     });
 
-    "607";
+    "595";
     async function adjust_shininess() {
-        "608";
+        "596";
         (await figure.set_shininess_to(shininess_slider.value));
-        "609";
+        "597";
         shininess_slider_text.text = "= {:1.2f}".format(shininess_slider.value, 2);
     };
     if (!adjust_shininess.__module__) Object.defineProperties(adjust_shininess, {
         __module__ : {value: null}
     });
 
-    "612";
+    "600";
     async function adjust_omega() {
-        "613";
+        "601";
         (await figure.set_omega_to(omega_slider.value));
-        "614";
+        "602";
         omega_slider_text.text = "= {:1.2f}".format(omega_slider.value["/"](pi), 2)["+"](" π");
     };
     if (!adjust_omega.__module__) Object.defineProperties(adjust_omega, {
         __module__ : {value: null}
     });
 
-    "617";
+    "605";
     async function adjust_gradient() {
-        "618";
+        "606";
         (await figure.set_hue_gradient_to(gradient_slider.value));
-        "619";
+        "607";
         gradient_slider_text.text = "= {:1.2f}".format(gradient_slider.value, 2);
     };
     if (!adjust_gradient.__module__) Object.defineProperties(adjust_gradient, {
         __module__ : {value: null}
     });
 
-    "622";
+    "610";
     async function adjust_offset() {
-        "623";
+        "611";
         (await figure.set_hue_offset_to(offset_slider.value));
-        "624";
+        "612";
         offset_slider_text.text = "= {:1.2f}".format(offset_slider.value, 2);
     };
     if (!adjust_offset.__module__) Object.defineProperties(adjust_offset, {
         __module__ : {value: null}
     });
 
-    "626";
+    "614";
     animation.append_to_caption("\n\nHue offset  ");
-    "627";
+    "615";
     offset_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .3, bind: adjust_offset})]);
-    "628";
+    "616";
     offset_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.3"})]);
-    "630";
+    "618";
     animation.append_to_caption("\n\nHue gradient  ");
-    "631";
+    "619";
     gradient_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .5, bind: adjust_gradient})]);
-    "632";
+    "620";
     gradient_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.5"})]);
-    "634";
+    "622";
     animation.append_to_caption("\n\nAnimation speed ");
-    "635";
+    "623";
     omega_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 2["*"](pi), value: pi, bind: adjust_omega})]);
-    "636";
+    "624";
     omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= π"})]);
-    "638";
+    "626";
     animation.append_to_caption("\n\nOpacity ");
-    "639";
+    "627";
     opacity_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: 1, bind: adjust_opacity})]);
-    "640";
+    "628";
     opacity_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 1"})]);
-    "642";
+    "630";
     animation.append_to_caption("\n\nShininess ");
-    "643";
+    "631";
     shininess_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .6, bind: adjust_shininess})]);
-    "644";
+    "632";
     shininess_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.6"})]);
-    "647";
+    "635";
     async function toggle_tick_marks(event) {
-        "648";
+        "636";
         (await figure.tick_marks_visibility_is(event.checked));
     };
     if (!toggle_tick_marks.__argnames__) Object.defineProperties(toggle_tick_marks, {
@@ -2174,9 +2103,9 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "651";
+    "639";
     async function toggle_axis_labels(event) {
-        "652";
+        "640";
         (await figure.axis_labels_visibility_is(event.checked));
     };
     if (!toggle_axis_labels.__argnames__) Object.defineProperties(toggle_axis_labels, {
@@ -2184,9 +2113,9 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "655";
+    "643";
     async function toggle_mesh(event) {
-        "656";
+        "644";
         (await figure.mesh_visibility_is(event.checked));
     };
     if (!toggle_mesh.__argnames__) Object.defineProperties(toggle_mesh, {
@@ -2194,10 +2123,10 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "659";
+    "647";
     async function toggle_animate(event) {
-        "660";
-        "661";
+        "648";
+        "649";
         dt = (event.checked) ? .01 : 0;
     };
     if (!toggle_animate.__argnames__) Object.defineProperties(toggle_animate, {
@@ -2205,9 +2134,9 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "663";
+    "651";
     async function toggle_plot_type(event) {
-        "664";
+        "652";
         (await figure.plot_contours_is(event.checked));
     };
     if (!toggle_plot_type.__argnames__) Object.defineProperties(toggle_plot_type, {
@@ -2215,57 +2144,57 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "667";
+    "655";
     animation.append_to_caption("\n\n");
-    "668";
+    "656";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Contour", bind: toggle_plot_type, checked: false})]);
-    "669";
+    "657";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Mesh ", bind: toggle_mesh, checked: false})]);
-    "670";
+    "658";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis labels ", bind: toggle_axis_labels, checked: false})]);
-    "671";
+    "659";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks ", bind: toggle_tick_marks, checked: false})]);
-    "672";
+    "660";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Animate ", bind: toggle_animate, checked: false})]);
-    "673";
+    "661";
     animation.append_to_caption("\n\n");
-    "675";
-    animation.title = ""["+"]("\n\n");
-    "678";
+    "663";
+    animation.title = double_torus_title["+"]("\n\n");
+    "666";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "680";
+    "668";
     _GS_1 = new Figure;
     (await _GS_1.__init__(animation));
     figure = _GS_1;
-    "681";
+    "669";
     (await figure.reset());
-    "682";
+    "670";
     ρσ_unpack = (await torus_1());
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
-    x1 = ρσ_unpack[0];
-    y1 = ρσ_unpack[1];
-    z1 = ρσ_unpack[2];
-    "683";
+    x_1 = ρσ_unpack[0];
+    y_1 = ρσ_unpack[1];
+    z_1 = ρσ_unpack[2];
+    "671";
     ρσ_unpack = (await torus_2());
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
-    x2 = ρσ_unpack[0];
-    y2 = ρσ_unpack[1];
-    z2 = ρσ_unpack[2];
-    "684";
-    (await figure.add_subplot(x1, y1, z1));
-    "685";
-    (await figure.add_subplot(x2, y2, z2));
-    "687";
+    x_2 = ρσ_unpack[0];
+    y_2 = ρσ_unpack[1];
+    z_2 = ρσ_unpack[2];
+    "672";
+    (await figure.add_subplot(x_1, y_1, z_1));
+    "673";
+    (await figure.add_subplot(x_2, y_2, z_2));
+    "675";
     dt = 0;
-    "688";
+    "676";
     time = 1;
-    "689";
+    "677";
     while (true) {
-        "690";
+        "678";
         (await rate(10));
-        "691";
+        "679";
         (await figure.render(time));
-        "692";
+        "680";
         time=time["+"](dt);
     }
 };

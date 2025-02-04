@@ -462,13 +462,13 @@ class RadioButtons:
 
 def torus_1(a=3, b=4, resolution=50):
     def f_x(theta, phi):
-        return 4 + (3 + cos(phi)) * sin(theta)
+        return b + (a + cos(phi)) * sin(theta)
 
     def f_y(theta, phi):
-        return 4 + (3 + cos(phi)) * cos(theta)
+        return b + (a + cos(phi)) * cos(theta)
 
     def f_z(_, phi):
-        return 4 + sin(phi)
+        return b + sin(phi)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
@@ -485,6 +485,10 @@ def torus_2(a=3, b=4, resolution=50):
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
 
+double_torus_title = "Parametrization for <a href=\"https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html\">double torus</a>\n\n "
+double_torus_title += "$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} 4+(3+\\cos(\\phi))\\sin(\\theta) \\\\  4+(3+\\cos(\\phi))\\cos(\\theta) \\\\ 4+\\sin(\\phi) \\end{pmatrix} +"
+double_torus_title += "\\begin{pmatrix} 8+(3+\\cos(\\phi))\\cos(\\theta) \\\\  3+\\sin(\\phi) \\\\ 4+(3+\\cos(\\phi))\\sin(\\theta) \\end{pmatrix}"
+double_torus_title += "\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-\\pi, \\pi] \\end{cases}$"
 def double_torus(resolution=50):
     x1, y1, z1 = torus_1(resolution=resolution)
     x2, y2, z2 = torus_2(resolution=resolution)
@@ -498,7 +502,7 @@ def ball_and_torus_1(a=1.5, c=8, resolution=75):
     def f_y(theta, phi):
         return (c + a * cos(phi)) * cos(theta)
 
-    def f_z(theta, phi):
+    def f_z(_, phi):
         return a * sin(phi)
 
     return NumpyWrapper(-pi, pi, -pi, pi, resolution).get_plot_data(f_x, f_y, f_z)
@@ -511,11 +515,15 @@ def ball_and_torus_2(r=5, resolution=75):
     def f_y(theta, phi):
         return r * sin(phi) * sin(theta)
 
-    def f_z(theta, phi):
+    def f_z(theta, _):
         return r * cos(theta)
 
     return NumpyWrapper(-pi, pi, -pi/2, pi/2, resolution).get_plot_data(f_x, f_y, f_z)
 
+ball_and_torus_title = "Parametrization for ball and torus</a> \n\n"
+ball_and_torus_title += "$\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (c + a \\cos(\\phi)) \\sin(\\theta) \\\\  (c + a \\cos(\\phi)) \\cos(\\theta) \\\\ a\\sin(\\phi) \\end{pmatrix} +"
+ball_and_torus_title += "\\begin{pmatrix} r \\cos(phi) \\sin(\\theta) \\\\  r \\sin(\\phi) \\sin(\\theta) \\\\ r\\cos(\\theta) \\end{pmatrix}"
+ball_and_torus_title += "\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-\\pi/2, \\pi/2] \\end{cases}$"
 def ball_and_torus(resolution=50):
     x1, y1, z1 = ball_and_torus_1(resolution=resolution)
     x2, y2, z2 = ball_and_torus_2(resolution=resolution)
@@ -541,8 +549,7 @@ def klein_bottle_2(resolution=50):
         r = 4 * ( 1 - cos(theta) / 2)
         return 6 * cos(theta) * (1 + sin(theta)) + r * cos(phi + pi)
 
-    def f_y(theta, phi):
-        r = 4 * ( 1 - cos(theta) / 2)
+    def f_y(theta, _):
         return 16 * sin(theta)
 
     def f_z(theta, phi):
@@ -555,7 +562,6 @@ klein_title = "<a href=\"https://paulbourke.net/geometry/toroidal/\">Paul Bourke
 klein_title += "\\begin{pmatrix}\\begin{cases} 6\\cos(\\theta)(1+\\sin(\\theta)) + r\\cos(\\theta)\\cos(\\phi), 0 \\leq \\theta &lt; \\pi \\\\ 6\\cos(\\theta)(1+\\sin(\\theta)) + r\\cos(\\phi+\\pi), \\pi &lt; \\theta \\leq 2\\pi \\end{cases} \\\\ "
 klein_title += "\\begin{cases} 16\\sin(\\theta)+r\\sin(\\theta)\\cos(\\phi), 0 \\leq \\theta \\leq \\pi  \\\\ 16\\sin(\\theta), \\pi \\leq \\theta \\leq 2\\pi \\end{cases} \\\\ "
 klein_title += "r\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
-
 def klein_bottle(resolution=50):
     x1, y1, z1 = klein_bottle_1(resolution=resolution)
     x2, y2, z2 = klein_bottle_2(resolution=resolution)
@@ -577,8 +583,8 @@ def toggle(event):
     radio_buttons.toggle(event.name)
 
 radio_buttons = RadioButtons()
-radio_buttons.add(radio(bind=toggle, text=" Double torus ", name="double_torus"), double_torus, "")
-radio_buttons.add(radio(bind=toggle, text=" Ball and torus ", name="ball_and_torus"), ball_and_torus, "")
+radio_buttons.add(radio(bind=toggle, text=" Double torus ", name="double_torus"), double_torus, double_torus_title)
+radio_buttons.add(radio(bind=toggle, text=" Ball and torus ", name="ball_and_torus"), ball_and_torus, ball_and_torus_title)
 radio_buttons.add(radio(bind=toggle, text=" Klein&apos;s bottle ", name="klein_bottle"), klein_bottle, klein_title)
 
 def adjust_opacity():
@@ -654,17 +660,17 @@ _ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=False)
 _ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
 animation.append_to_caption("\n\n")
 
-animation.title = "" + "\n\n"
+animation.title = double_torus_title + "\n\n"
 #################################
 # COMMENT OUT IN LOCAL VPYTHON  #
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 figure = Figure(animation)
 figure.reset() # To make the GUI controls appear on top
-x1, y1, z1 = torus_1()
-x2, y2, z2 = torus_2()
-figure.add_subplot(x1, y1, z1)
-figure.add_subplot(x2, y2, z2)
+x_1, y_1, z_1 = torus_1()
+x_2, y_2, z_2 = torus_2()
+figure.add_subplot(x_1, y_1, z_1)
+figure.add_subplot(x_2, y_2, z_2)
 
 dt = 0.0
 time = 1
