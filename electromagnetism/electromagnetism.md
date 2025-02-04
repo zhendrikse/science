@@ -84,7 +84,7 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
 <div class="double_image">
 <figure class="left_image">
   <a href="electromagnetism/charged_sheet.html">
-    <img alt="Charged sheet" width="70%" src="./images/charged_sheet.png" title="Click to animate"/>
+    <img alt="Charged sheet" src="./images/charged_sheet.png" title="Click to animate"/>
   </a>
   <figcaption>Electron moving around a charged sheet.</figcaption>
 </figure>
