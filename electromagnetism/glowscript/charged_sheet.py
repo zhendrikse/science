@@ -47,7 +47,7 @@ class ChargedSheet:
                     # don't move forward if we are embedded in the shell itself
                     if z * z <= dx_squared: continue  # avoid infinities
 
-                    electric_field = charged_sheet.field_at(position)
+                    electric_field = self.field_at(position)
                     arrow(axis=-electric_field / fieldScale, pos=position)
 
 

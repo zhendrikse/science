@@ -78,7 +78,7 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
 </div>
 <p style="clear: both;"></p>
 
-### Electric fields around flat charged objects
+### Electron movement in electric fields
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -89,10 +89,10 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
   <figcaption>Electron moving around a charged sheet.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="electromagnetism/disk_builder.html">
-    <img alt="Charged disk builder" src="./images/charged_disk_builder.png" title="Click to animate"/>
+  <a href="electromagnetism/charged_ring.html">
+    <img alt="Electron spinning around charged ring" src="./images/electron_and_charged_ring.png" title="Click to animate"/>
   </a>
-  <figcaption>Build up an electric field yourself by incrementally adding a charged rings.</figcaption>
+  <figcaption>If the atomic nucleus were a charged ring, as opposed to a point, then ...</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

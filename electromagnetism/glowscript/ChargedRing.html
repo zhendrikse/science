@@ -51,8 +51,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, Q, k, animation, radius, _GS_1, ring, electron, dt, field, force;
+    var compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, Q, k, fieldScale, animation, radius, _GS_1, ring, electron, dt, field, force;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,17 +64,17 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "11";
-    title = "\n\n&#x2022; Based on original <a href=\"https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/1-introduction-objects-parameters-and-the-3d-environment/optional-scale-models\n#\">example<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
-    "13";
-    Q = 1.6e-19;
+    "12";
+    title = "\n&#x2022; Based on original <a href=\"https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/1-introduction-objects-parameters-and-the-3d-environment/optional-scale-models\n#\">example<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\nIf it isn't doing anything interesting, either wait or run again to randomize start position.\n\n";
     "14";
+    Q = 1.6e-19;
+    "15";
     k = 9e9;
     "16";
+    fieldScale = 1e23;
+    "18";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, forward: vec(1["-u"]()["*"](.55), 1["-u"]()["*"](.65), 1["-u"]()["*"](.55)), range: 1e-10, background: color.gray(.075)})]);
-    "17";
-    animation.append_to_caption("If it isn't doing anything interesting, either wait or run again to randomize start position.");
-    "19";
+    "20";
     function ChargedRing() {;
     }
     ChargedRing.prototype.__init__ = async function __init__() {
@@ -98,31 +98,33 @@ async function __main__() {
             charge = ρσ_kwargs_obj.charge;
         }
         var ρσ_ls, dx, theta, x, y, i;
-        "21";
-        self._segments = ρσ_list_decorate([]);
         "22";
-        self._radius = radius;
+        self._segments = ρσ_list_decorate([]);
         "23";
+        self._radius = radius;
+        "24";
         self._charge = charge;
-        "25";
-        dx = 2["*"](pi)["*"](radius)["/"](number_of_ring_segments);
         "26";
+        dx = 2["*"](pi)["*"](radius)["/"](number_of_ring_segments);
+        "27";
         for (var ρσ_Index1 = 0; ρσ_Index1["<"](number_of_ring_segments); ρσ_Index1++) {
             i = ρσ_Index1;
-            "27";
-            theta = i["*"](2["*"](pi)["/"](number_of_ring_segments));
             "28";
-            x = radius["*"](cos(theta));
+            theta = i["*"](2["*"](pi)["/"](number_of_ring_segments));
             "29";
-            y = radius["*"](sin(theta));
+            x = radius["*"](cos(theta));
             "30";
+            y = radius["*"](sin(theta));
+            "31";
             if (render) {
-                "31";
-                self._segments.append(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(x, y, 0), size: vec(dx, dx, dx), color: color.green})]));
                 "32";
+                self._segments.append(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(x, y, 0), size: vec(dx, dx, dx), color: color.green})]));
+                "33";
                 (ρσ_expr_temp = ρσ_getitem(self._segments, i), ρσ_interpolate_kwargs.call(ρσ_expr_temp, ρσ_expr_temp.rotate, [ρσ_desugar_kwargs({axis: vec(0, 0, 1), angle: theta})]));
             }
         }
+        "35";
+        self._dx = dx;
     };
     if (!ChargedRing.prototype.__init__.__defaults__) Object.defineProperties(ChargedRing.prototype.__init__, {
         __defaults__ : {value: {number_of_ring_segments:60, radius:5e-11, render:true, charge:1["-u"]()["*"](Q)}},
@@ -135,25 +137,62 @@ async function __main__() {
     ChargedRing.prototype.field_at = async function field_at(position) {
         var self = this;
         var ρσ_ls, dq, electric_field, r, segment;
-        "35";
+        "38";
         dq = self._charge["/"](len(self._segments));
-        "36";
+        "39";
         electric_field = vec(0, 0, 0);
-        "37";
+        "40";
         var ρσ_Iter2 = self._segments;
         ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
         for (var ρσ_Index2 of ρσ_Iter2) {
             segment = ρσ_Index2;
-            "38";
+            "41";
             r = segment.pos["-"](1["*"](position));
-            "39";
+            "42";
             electric_field=electric_field["+"](k["*"](dq)["*"](r.norm())["/"](r.mag2));
         }
-        "40";
+        "43";
         return electric_field;
     };
     if (!ChargedRing.prototype.field_at.__argnames__) Object.defineProperties(ChargedRing.prototype.field_at, {
         __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    ChargedRing.prototype.display_field = async function display_field() {
+        var self = this;
+        var ρσ_ls, dx_squared, position, electric_field, z, y, x;
+        "46";
+        dx_squared = self._dx["*"](self._dx);
+        "47";
+        var ρσ_Iter3 = range(1["-u"]()["*"](self._radius)["*"](1.5), self._radius["*"](1.5), self._radius["/"](4));
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            x = ρσ_Index3;
+            "48";
+            var ρσ_Iter4 = range(1["-u"]()["*"](self._radius)["*"](1.5), self._radius["*"](1.5), self._radius["/"](4));
+            ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+            for (var ρσ_Index4 of ρσ_Iter4) {
+                y = ρσ_Index4;
+                "49";
+                var ρσ_Iter5 = range(1["-u"]()["*"](self._radius)["*"](1.5), self._radius["*"](1.5), self._radius["/"](6));
+                ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+                for (var ρσ_Index5 of ρσ_Iter5) {
+                    z = ρσ_Index5;
+                    "50";
+                    position = vec(x, y, z);
+                    "52";
+                    if (z["*"](z)["<="](dx_squared)) {
+                        continue;
+                    }
+                    "54";
+                    electric_field = (await self.field_at(position));
+                    "55";
+                    ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({axis: 1["-u"]()["*"](electric_field)["/"](fieldScale), pos: position, color: color.yellow})]);
+                }
+            }
+        }
+    };
+    if (!ChargedRing.prototype.display_field.__module__) Object.defineProperties(ChargedRing.prototype.display_field, {
         __module__ : {value: null}
     });
     ChargedRing.prototype.__repr__ = async function __repr__() {
@@ -163,10 +202,11 @@ async function __main__() {
         return this.__repr__();
     };
     Object.defineProperty(ChargedRing.prototype, "__bases__", {value: []});
-    
-    
 
-    "43";
+
+
+
+    "57";
     function Electron() {;
     }
     Electron.prototype.__init__ = async function __init__() {
@@ -209,19 +249,19 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "draw")){
             draw = ρσ_kwargs_obj.draw;
         }
-        "45";
+        "59";
         colour = (colour !== null) ? colour : (charge[">"](0)) ? color.blue : color.red;
-        "46";
+        "60";
         self._ball = (draw) ? ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({mass: mass, pos: position, radius: radius, color: colour, make_trail: make_trail, retain: retain})]) : null;
-        "47";
+        "61";
         self._velocity = velocity;
-        "48";
+        "62";
         self._position = position;
-        "49";
+        "63";
         self._radius = radius;
-        "50";
+        "64";
         self._charge = charge;
-        "51";
+        "65";
         self._mass = mass;
     };
     if (!Electron.prototype.__init__.__defaults__) Object.defineProperties(Electron.prototype.__init__, {
@@ -234,9 +274,9 @@ async function __main__() {
     Electron.__handles_kwarg_interpolation__ = Electron.prototype.__init__.__handles_kwarg_interpolation__;
     Electron.prototype.render = async function render() {
         var self = this;
-        "54";
+        "68";
         if (self._ball) {
-            "55";
+            "69";
             self._ball.pos = self._position;
         }
     };
@@ -245,7 +285,7 @@ async function __main__() {
     });
     Electron.prototype.field_at = async function field_at(position) {
         var self = this;
-        "58";
+        "72";
         return hat(position["-"](1["*"](self._ball.pos)))["*"](k)["*"](self._charge)["/"](Math.pow(mag(position["-"](1["*"](self._ball.pos))), 2));
     };
     if (!Electron.prototype.field_at.__argnames__) Object.defineProperties(Electron.prototype.field_at, {
@@ -254,7 +294,7 @@ async function __main__() {
     });
     Electron.prototype.coulomb_force_in = async function coulomb_force_in(electric_field) {
         var self = this;
-        "61";
+        "75";
         return electric_field["*"](self._charge);
     };
     if (!Electron.prototype.coulomb_force_in.__argnames__) Object.defineProperties(Electron.prototype.coulomb_force_in, {
@@ -263,11 +303,11 @@ async function __main__() {
     });
     Electron.prototype.update = async function update(coulomb_force, dt) {
         var self = this;
-        "64";
+        "78";
         self._velocity=self._velocity["+"](coulomb_force["/"](self._mass)["*"](dt));
-        "65";
+        "79";
         self._position=self._position["+"](self._velocity["*"](dt));
-        "66";
+        "80";
         (await self.render());
     };
     if (!Electron.prototype.update.__argnames__) Object.defineProperties(Electron.prototype.update, {
@@ -276,7 +316,7 @@ async function __main__() {
     });
     Electron.prototype.position = async function position() {
         var self = this;
-        "69";
+        "83";
         return self._position;
     };
     if (!Electron.prototype.position.__module__) Object.defineProperties(Electron.prototype.position, {
@@ -289,34 +329,36 @@ async function __main__() {
         return this.__repr__();
     };
     Object.defineProperty(Electron.prototype, "__bases__", {value: []});
-    
-    
-    
-    
-    
-    
 
-    "72";
+
+
+
+
+
+
+    "86";
     radius = 5e-11;
-    "73";
+    "87";
     _GS_1 = new ChargedRing;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({radius: radius})]);
     ring = _GS_1;
-    "74";
+    "88";
+    (await ring.display_field());
+    "89";
     _GS_1 = new Electron;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(0, 0, radius)["+"](1.5["*"](radius)["*"](vec.random())), radius: radius["/"](20), charge: 1["-u"]()["*"](Q), make_trail: true, retain: 150})]);
     electron = _GS_1;
-    "76";
+    "91";
     dt = 1e-18;
-    "77";
+    "92";
     while (true) {
-        "78";
+        "93";
         (await rate(100));
-        "79";
+        "94";
         field = (await ring.field_at((await electron.position())));
-        "80";
+        "95";
         force = (await electron.coulomb_force_in(field));
-        "81";
+        "96";
         (await electron.update(force, dt));
     }
 };

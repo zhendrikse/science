@@ -29,3 +29,25 @@ I... a universe of atoms, an atom in the universe. &mdash;
 </figure>
 </div>
 <p style="clear: both;"></p>
+
+
+### Rutherford scattering & ring-shaped nucleus
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="molecularphys/rutherford_scattering.html">
+    <img alt="Rutherford scattering" src="./images/rutherford_scattering.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Rutherford_scattering_experiments#Rutherford_scattering">Rutherford scattering</a>,
+  which lead to the first atomic model with a nucleus and electrons spinning around it.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="molecularphys/molecules.html">
+    <img alt="Molecules" src="./images/water_molecule.png" title="Click to animate"/>
+  </a>
+  <figcaption>Visualization of various organic molecules.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+

@@ -3,4 +3,4 @@
 # Electron spinning around a charged ring
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/Chargedring.html %}
+{% include_relative glowscript/ChargedRing.html %}

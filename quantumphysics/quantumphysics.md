@@ -95,31 +95,17 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 ### The quantum harmonic oscillator
 <div style="border-top: 1px solid #999999"><br/></div>
 
-The quantum harmonic oscillator is visualized in a semi-classical way below.
-
-<figure>
+<div class="double_image">
+<figure class="left_image">
   <a href="quantumphysics/harmonic_oscillator.html">
     <img alt="Quantum oscillator" width="50%" height="50%" src="./images/quantum_oscillator.png" title="Click to animate"/>
   </a>
+  <figcaption>The quantum harmonic oscillator is visualized in a semi-classical way below.</figcaption>
 </figure>
-
-### Rutherford scattering & ring-shaped nucleus
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="quantumphysics/rutherford_scattering.html">
-    <img alt="Rutherford scattering" src="./images/rutherford_scattering.png" title="Click to animate"/>
-  </a>
-  <figcaption><a href="https://en.wikipedia.org/wiki/Rutherford_scattering_experiments#Rutherford_scattering">Rutherford scattering</a>,
-  which lead to the first atomic model with a nucleus and electrons spinning around it.</figcaption>
-</figure>
+<!-- SPACE RESERVED FOR FUTURE APPLICATION
 <figure class="right_image">
-  <a href="quantumphysics/charged_ring.html">
-    <img alt="Electron spinning around charged ring" src="./images/electron_and_charged_ring.png" title="Click to animate"/>
-  </a>
-  <figcaption>If the atomic nucleus were a charged ring, as opposed to a point, then ...</figcaption>
-</figure>
+</figure> -->
 </div>
 <p style="clear: both;"></p>
+
 
