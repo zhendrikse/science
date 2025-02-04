@@ -78,15 +78,15 @@ $$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r
 </div>
 <p style="clear: both;"></p>
 
-### Charged disk and accompanying builder
+### Electric fields around flat charged objects
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="electromagnetism/charged_disk.html">
-    <img alt="Charged disk" width="70%" src="./images/charged_disk.png" title="Click to animate"/>
+  <a href="electromagnetism/charged_sheet.html">
+    <img alt="Charged sheet" width="70%" src="./images/charged_sheet.png" title="Click to animate"/>
   </a>
-  <figcaption>Visualization of the electric field around a disk.</figcaption>
+  <figcaption>Electron moving around a charged sheet.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="electromagnetism/disk_builder.html">

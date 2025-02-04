@@ -1,0 +1,271 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, R, Q, k, fieldScale, N, dx, dx_squared, dq, dt, _GS_1, charged_sheet, electron, force_on_electron;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "12";
+    title = "\n&#x2022; Original <a href=\"https://trinket.io/glowscript/38fbc7b2d01d\">code<\/a> by Byron Philhour\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\nIf it isn't doing anything interesting, either wait or run again to randomize start position. \nTwo-finger drag to change perspective.\n\n";
+    "14";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, forward: vector(.34, .7, 1["-u"]()["*"](.6)), background: color.gray(.075)})]);
+    "16";
+    R = 5e-11;
+    "17";
+    Q = 1.6e-19;
+    "18";
+    k = 9e9;
+    "19";
+    fieldScale = 5e23;
+    "21";
+    N = 60;
+    "23";
+    dx = R["/"](N);
+    "24";
+    dx_squared = dx["*"](dx);
+    "25";
+    dq = Q["/"](N["*"](N));
+    "26";
+    dt = 1e-18;
+    "29";
+    function ChargedSheet() {;
+    }
+    ChargedSheet.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, index, ρσ_unpack, x, y, j, i;
+        "31";
+        self._sheet_segments = ρσ_list_decorate([]);
+        "32";
+        index = 0;
+        "33";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](N); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "34";
+            for (var ρσ_Index2 = 0; ρσ_Index2["<"](N); ρσ_Index2++) {
+                j = ρσ_Index2;
+                "35";
+                ρσ_unpack = [1["-u"]()["*"](.5)["*"](R)["+"](i["*"](dx)), 1["-u"]()["*"](.5)["*"](R)["+"](j["*"](dx))];
+                x = ρσ_unpack[0];
+                y = ρσ_unpack[1];
+                "36";
+                self._sheet_segments=self._sheet_segments["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(x, y, 0), size: vec(dx, dx, dx), color: color.red})]) ]));
+            }
+        }
+    };
+    if (!ChargedSheet.prototype.__init__.__module__) Object.defineProperties(ChargedSheet.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    ChargedSheet.__argnames__ = ChargedSheet.prototype.__init__.__argnames__;
+    ChargedSheet.__handles_kwarg_interpolation__ = ChargedSheet.prototype.__init__.__handles_kwarg_interpolation__;
+    ChargedSheet.prototype.field_at = async function field_at(position) {
+        var self = this;
+        var ρσ_ls, E, r, sheet_segment;
+        "39";
+        E = vec(0, 0, 0);
+        "40";
+        var ρσ_Iter3 = self._sheet_segments;
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            sheet_segment = ρσ_Index3;
+            "41";
+            r = sheet_segment.pos["-"](1["*"](position));
+            "42";
+            E=E["+"](k["*"](dq)["*"](r.norm())["/"](r.mag2));
+        }
+        "44";
+        return E;
+    };
+    if (!ChargedSheet.prototype.field_at.__argnames__) Object.defineProperties(ChargedSheet.prototype.field_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    ChargedSheet.prototype.display_field = async function display_field() {
+        var self = this;
+        var ρσ_ls, position, electric_field, z, y, x;
+        "47";
+        var ρσ_Iter4 = range(1["-u"]()["*"](R), R, R["/"](8));
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            x = ρσ_Index4;
+            "48";
+            var ρσ_Iter5 = range(1["-u"]()["*"](R), R, R["/"](8));
+            ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+            for (var ρσ_Index5 of ρσ_Iter5) {
+                y = ρσ_Index5;
+                "49";
+                var ρσ_Iter6 = range(1["-u"]()["*"](R), R, R["/"](12));
+                ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+                for (var ρσ_Index6 of ρσ_Iter6) {
+                    z = ρσ_Index6;
+                    "50";
+                    position = vec(x, y, z);
+                    "52";
+                    if (z["*"](z)["<="](dx_squared)) {
+                        continue;
+                    }
+                    "54";
+                    electric_field = (await charged_sheet.field_at(position));
+                    "55";
+                    ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({axis: 1["-u"]()["*"](electric_field)["/"](fieldScale), pos: position})]);
+                }
+            }
+        }
+    };
+    if (!ChargedSheet.prototype.display_field.__module__) Object.defineProperties(ChargedSheet.prototype.display_field, {
+        __module__ : {value: null}
+    });
+    ChargedSheet.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    ChargedSheet.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(ChargedSheet.prototype, "__bases__", {value: []});
+
+
+
+
+    "58";
+    function Electron() {;
+    }
+    Electron.prototype.__init__ = async function __init__() {
+        var self = this;
+        var mass = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
+            mass = ρσ_kwargs_obj.mass;
+        }
+        "60";
+        self._ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(0, 0, R)["+"](R["/"](2)["*"](vector.random())), radius: R["/"](40), color: color.yellow, make_trail: true, retain: 150})]);
+        "62";
+        self._velocity = vec(0, 0, 0);
+        "63";
+        self._mass = mass;
+    };
+    if (!Electron.prototype.__init__.__defaults__) Object.defineProperties(Electron.prototype.__init__, {
+        __defaults__ : {value: {mass:9.11e-31}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["mass"]},
+        __module__ : {value: null}
+    });
+    Electron.__argnames__ = Electron.prototype.__init__.__argnames__;
+    Electron.__handles_kwarg_interpolation__ = Electron.prototype.__init__.__handles_kwarg_interpolation__;
+    Electron.prototype.increment_by = async function increment_by(force, dt) {
+        var self = this;
+        "66";
+        self._velocity=self._velocity["+"](force["*"](dt)["/"](self._mass));
+        "67";
+        self._ball.pos=self._ball.pos["+"](self._velocity["*"](dt));
+    };
+    if (!Electron.prototype.increment_by.__argnames__) Object.defineProperties(Electron.prototype.increment_by, {
+        __argnames__ : {value: ["force", "dt"]},
+        __module__ : {value: null}
+    });
+    Electron.prototype.position = async function position() {
+        var self = this;
+        "70";
+        return self._ball.pos;
+    };
+    if (!Electron.prototype.position.__module__) Object.defineProperties(Electron.prototype.position, {
+        __module__ : {value: null}
+    });
+    Electron.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Electron.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Electron.prototype, "__bases__", {value: []});
+
+
+
+
+    "73";
+    _GS_1 = new ChargedSheet;
+    (await _GS_1.__init__());
+    charged_sheet = _GS_1;
+    "74";
+    (await charged_sheet.display_field());
+    "75";
+    _GS_1 = new Electron;
+    (await _GS_1.__init__());
+    electron = _GS_1;
+    "77";
+    while (true) {
+        "78";
+        (await rate(100));
+        "80";
+        force_on_electron = Q["*"]((await charged_sheet.field_at((await electron.position()))));
+        "81";
+        (await electron.increment_by(force_on_electron, dt));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
