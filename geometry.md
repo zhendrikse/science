@@ -148,14 +148,14 @@ where
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="mathematics/spherical_harmonics.html">
+  <a href="mathematics/spherical_harmonics_surface_plot.html">
     <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_1.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="mathematics/spherical_harmonics.html">
+  <a href="mathematics/spherical_harmonics_surface_plot.html">
     <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_2.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
@@ -166,14 +166,14 @@ where
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="mathematics/spherical_harmonics.html">
+  <a href="mathematics/spherical_harmonics_surface_plot.html">
     <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_3.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
   that was generated for .....</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="mathematics/spherical_harmonics.html">
+  <a href="mathematics/spherical_harmonics_surface_plot.html">
     <img alt="Spherical harmonic" src="./images/geometry/spherical_harmonic_4.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://paulbourke.net/geometry/sphericalh/">Spherical harmonic</a> 
