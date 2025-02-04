@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+# Web VPython 3.2
 from vpython import local_light, sphere, cylinder, vec, vector, mag, rate, canvas, color, curve, cos, pi, sqrt
 from random import uniform
 
@@ -109,5 +108,3 @@ for nalpha in range(1000):
     trails.append(trail)
     if len(trails) > 3:
         trails.pop(0).visible = 0
-
-```
