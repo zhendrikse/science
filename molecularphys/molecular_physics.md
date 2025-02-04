@@ -31,7 +31,7 @@ I... a universe of atoms, an atom in the universe. &mdash;
 <p style="clear: both;"></p>
 
 
-### Rutherford scattering & ring-shaped nucleus
+### Rutherford scattering & some organic molecules
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
