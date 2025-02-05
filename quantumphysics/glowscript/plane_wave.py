@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 from vpython import canvas, scene, arrow, color, vec, pi, floor, arange, cos, sin, rate, cylinder, box, label, checkbox, \
     wtext, slider, text, get_library
@@ -7,8 +6,7 @@ from vpython import canvas, scene, arrow, color, vec, pi, floor, arange, cos, si
 # https://github.com/nicolaspanel/numjs
 get_library('https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js')
 
-title = """
-&#x2022; From <a href="https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247">Visualizing Quantum Mechanics with Python</a>
+title = """&#x2022; From <a href="https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247">Visualizing Quantum Mechanics with Python</a>
 &#x2022; Modified by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 &#x2022; The motion and x-axis represent the parameters $t$ and $x$ respectively
 &#x2022; The colors represent the wave number $k$
@@ -285,4 +283,4 @@ while True:
     rate(30)
     complex_function.update(t)
     t += dt
-```
+
