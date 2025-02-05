@@ -13,7 +13,7 @@ All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedi
 <div class="double_image">
 <figure class="left_image">
   <a href="/science/fun/rubiks_cube.html">
-    <img alt="Rubik&apos;s cube" src="/science/images/rubiks_cube.png.png" title="Click to animate"/>
+    <img alt="Rubik&apos;s cube" src="/science/images/rubiks_cube.png" title="Click to animate"/>
   </a>
   <figcaption><br/>“If you are curious, you'll find the puzzles around you 
   If you are determined, you will solve them. &mdash; Erno Rubik.” &mdash; </figcaption>
