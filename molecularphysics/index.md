@@ -12,16 +12,16 @@ I... a universe of atoms, an atom in the universe. &mdash;
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="molecularphys/cubic_crystal.html">
-    <img alt="Cubic lattice" src="./images/crystal_planes.png" title="Click to animate"/>
+  <a href="/science/molecularphysics/glowscript/cubic_crystal.html">
+    <img alt="Cubic lattice" src="/science/images/crystal_planes.png" title="Click to animate"/>
   </a>
   <figcaption><br/>“There’s poetry in nature. A symmetry. It&apos;s like our senses are fused.” &mdash; 
   Saffron A. Kent, Gods & Monsters.
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="molecularphys/dna.html">
-    <img alt="DNA" src="./images/dna.png" title="Click to animate"/>
+  <a href="/science/molecularphysics/glowscript/dna.html">
+    <img alt="DNA" src="/science/images/dna.png" title="Click to animate"/>
   </a>
   <figcaption>"Thermodynamics, correctly interpreted, does not just allow Darwinian evolution; it favors it. &mdash; 
   <a href="https://en.wikipedia.org/wiki/Ludwig_Boltzmann">Ludwig Boltzmann</a>
@@ -36,15 +36,15 @@ I... a universe of atoms, an atom in the universe. &mdash;
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="molecularphys/rutherford_scattering.html">
-    <img alt="Rutherford scattering" src="./images/rutherford_scattering.png" title="Click to animate"/>
+  <a href="/science/molecularphysics/glowscript/rutherford_scattering.html">
+    <img alt="Rutherford scattering" src="/science/images/rutherford_scattering.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Rutherford_scattering_experiments#Rutherford_scattering">Rutherford scattering</a>,
   which lead to the first atomic model with a nucleus and electrons spinning around it.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="molecularphys/molecules.html">
-    <img alt="Molecules" src="./images/water_molecule.png" title="Click to animate"/>
+  <a href="/science/molecularphysics/glowscript/molecules.html">
+    <img alt="Molecules" src="/science/images/water_molecule.png" title="Click to animate"/>
   </a>
   <figcaption>Visualization of various organic molecules. Other molecules will be added soon.</figcaption>
 </figure>
