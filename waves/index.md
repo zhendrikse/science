@@ -1,3 +1,5 @@
+{% include breadcrumbs.html %}
+
 <a name="waves"></a>
 # Vibrations &amp; Waves
 <div class="header_line"><br/></div>
