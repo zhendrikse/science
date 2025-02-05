@@ -10,7 +10,7 @@ I... a universe of atoms, an atom in the universe. &mdash;
 </blockquote><br/>
 
 ### A cubic lattice and the double helix
-<div style="border-top: 1px solid #999999"><br/></div>
+<div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
@@ -34,7 +34,7 @@ I... a universe of atoms, an atom in the universe. &mdash;
 
 
 ### Rutherford scattering & some organic molecules
-<div style="border-top: 1px solid #999999"><br/></div>
+<div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
@@ -51,6 +51,10 @@ I... a universe of atoms, an atom in the universe. &mdash;
   <figcaption>Visualization of various organic molecules. Other molecules will be added soon.</figcaption>
 </figure>
 </div>
+
 <p style="clear: both;"></p>
+
+<!-- End of this chapter -->
+<div class="subsection_header_line"><br/></div>
 
 

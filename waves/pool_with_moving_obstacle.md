@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [pool_with_moving_obstacle.py](glowscript/pool_with_moving_obstacle.html)
-
+{% include breadcrumbs.html %}
 
 # Wave propagation around a moving obstacle
+<div class="header_line"><br/></div>
 
-{% include_relative glowscript/PoolWithMovingObstacle.html %}
+Download the [pool_with_moving_obstacle.py](code/pool_with_moving_obstacle.py) source code
+{% include_relative code/PoolWithMovingObstacle.html %}

@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [doppler_effect.py](glowscript/doppler_effect.html)
+{% include breadcrumbs.html %}
 
 # Visualization of the Doppler effect for sound
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/DopplerEffect.html %}
+Download the [doppler_effect.py](code/doppler_effect.py) source code
+{% include_relative code/DopplerEffect.html %}

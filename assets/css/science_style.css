@@ -31,3 +31,7 @@ figcaption {
     width: 50%;
     text-align: center
 }
+
+.subsection_header_line {
+    border-top: 1px solid #999999;
+}

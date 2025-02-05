@@ -16,7 +16,7 @@ finest that music and poetry can deliver. &mdash;
 
 {% include_relative mathematics/mathematics.md %}
 
-{% include_relative waves/waves.md %}
+{% include_relative waves/index.md %}
 
 {% include_relative molecularphysics/index.md %}
 

@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 from vpython import *
 
@@ -162,5 +161,3 @@ while True:
                                             color=receiver.color, linecolor=receiver.color))
             elif ball0flag[j] == 1:
                 received_label[j].pos = ball[N * j + (N - 3)].pos
-
-```
