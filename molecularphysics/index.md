@@ -2,6 +2,8 @@
 # Atomic &amp; molecular physics
 <div class="header_line"><br/></div>
 
+{% include breadcrumbs.html %}
+
 <blockquote>
 I... a universe of atoms, an atom in the universe. &mdash;
 <a href="https://en.wikipedia.org/wiki/Richard_Feynman">Richard P. Feynman</a> 
@@ -51,5 +53,4 @@ I... a universe of atoms, an atom in the universe. &mdash;
 </div>
 <p style="clear: both;"></p>
 
-Back to &rArr; {% include breadcrumbs.html %} &lArr;
 
