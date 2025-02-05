@@ -5,7 +5,7 @@
 <div class="header_line"><br/></div>
 
 Download the [boltzmann_gas.py](boltzmann_gas.py) source code
-{% include_relative glowscript/BoltzmannGas.html %}
+{% include_relative BoltzmannGas.html %}
 
 
 
