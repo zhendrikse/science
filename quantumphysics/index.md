@@ -12,15 +12,15 @@ If you think you understand quantum mechanics, you don't understand quantum mech
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="/quantumphysics/plane_wave.html">
-    <img alt="Complex wave" src="/images/plane_wave.png" title="Click to animate"/>
+  <a href="/science/quantumphysics/glowscript/plane_wave.html">
+    <img alt="Complex wave" src="/science/images/plane_wave.png" title="Click to animate"/>
   </a>
   <figcaption>Visualizing plane waves $\psi(x, t) = A e^{i(k x - \omega t)}$, which 
   play a pivotal role in quantum mechanics!</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="/quantumphysics/infinite_squarewell.html">
-    <img alt="Particle in a box" src="/images/infinite_square_well.png" title="Click to animate"/>
+  <a href="/science/quantumphysics/glowscript/infinite_squarewell.html">
+    <img alt="Particle in a box" src="/science/images/infinite_square_well.png" title="Click to animate"/>
   </a>
   <figcaption>One-dimensional quantum particle bound by an infinite square well.</figcaption>
 </figure>
@@ -97,8 +97,8 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="/quantumphysics/harmonic_oscillator.html">
-    <img alt="Quantum oscillator" src="/images/quantum_oscillator.png" title="Click to animate"/>
+  <a href="/science/quantumphysics/glowscript/quantum_oscillator.html">
+    <img alt="Quantum oscillator" src="/science/images/quantum_oscillator.png" title="Click to animate"/>
   </a>
   <figcaption>The quantum harmonic oscillator is visualized in a semi-classical way below.</figcaption>
 </figure>

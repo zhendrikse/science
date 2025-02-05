@@ -1,8 +1,11 @@
 {% include breadcrumbs.html %}
 
-The [`infinite_squarewell.py` source code](infinite_squarewell.py) is shown below.
-<p></p>
+## A one-dimensional particle in a box
+<div class="header_line"><br/></div>
 
-{% highlight python %}
-{% include_relative infinite_squarewell.py %}
-{% endhighlight %}
+Download the [infinite_squarewell.py](infinite_squarewell.py) source code
+{% include_relative glowscript/InfiniteSquarewell.html %}
+
+
+
+    

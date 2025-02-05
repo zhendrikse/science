@@ -1,8 +1,11 @@
 {% include breadcrumbs.html %}
 
-The [`plane_wave.py` source code](plane_wave.py) is shown below.
-<p></p>
+## Plane waves of the form $\psi(x, t) = Ae^{i(k x - \omega t)}$
+<div class="header_line"><br/></div>
 
-{% highlight python %}
-{% include_relative plane_wave.py %}
-{% endhighlight %}
+Download the [plane_wave.py](plane_wave.py) source code
+{% include_relative glowscript/Planewave.html %}
+
+
+
+    

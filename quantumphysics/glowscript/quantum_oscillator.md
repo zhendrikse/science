@@ -1,8 +1,10 @@
 {% include breadcrumbs.html %}
 
-The [`quantum_oscillator.py` source code](quantum_oscillator.py) is shown below.
-<p></p>
+## The quantum harmonic oscillator
+<div class="header_line"><br/></div>
 
-{% highlight python %}
-{% include_relative quantum_oscillator.py %}
-{% endhighlight %}
+Download the [quantum_oscillator.py](quantum_oscillator.py) source code
+{% include_relative glowscript/Quantumoscillator.html %}
+
+
+
