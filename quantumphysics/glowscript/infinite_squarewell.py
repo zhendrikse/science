@@ -218,7 +218,7 @@ def toggle_info(event):
         MathJax.Hub.Queue(["Typeset", MathJax.Hub])  # , animation.title])  # LaTeX formatting
 
 
-_ = checkbox(pos=animation.title_anchor, text="Show more background information in the caption", bind=toggle_info,
+_ = checkbox(pos=animation.title_anchor, text="\nShow more background information in the caption", bind=toggle_info,
              checked=False)
 animation.append_to_title("\n\n$\\Psi = \\sin(kx)e^{-i\\omega t}$")
 ground_state_slider = slider(pos=animation.title_anchor, text="Ground state", value=1.0, min=0, max=1,

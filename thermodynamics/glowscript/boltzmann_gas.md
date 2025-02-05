@@ -1,8 +1,11 @@
 {% include breadcrumbs.html %}
 
-The [`boltzmann_gas.py` source code](boltzmann_gas.py) is shown below.
-<p></p>
+# Ideal gas velocity distribution
 
-{% highlight python %}
-{% include_relative boltzmann_gas.py %}
-{% endhighlight %}
+<div class="header_line"><br/></div>
+
+Download the [boltzmann_gas.py](boltzmann_gas.py) source code
+{% include_relative glowscript/BoltzmannGas.html %}
+
+
+

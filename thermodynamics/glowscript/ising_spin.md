@@ -1,8 +1,10 @@
 {% include breadcrumbs.html %}
 
-The [`ising_spin.py` source code](ising_spin.py) is shown below.
-<p></p>
+# Ising spin model
+<div class="header_line"><br/></div>
 
-{% highlight python %}
-{% include_relative ising_spin.py %}
-{% endhighlight %}
+Download the [ising_spin.py](ising_spin.py) source code
+{% include_relative glowscript/IsingSpin.html %}
+
+
+

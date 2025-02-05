@@ -2,8 +2,7 @@
 
 from vpython import arrow, canvas, vec, random, color, rate, graph, gcurve, arange, exp
 
-title = """
-&#x2022; Written by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+title = """&#x2022; Written by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 &#x2022; Based on <a href="https://stackoverflow.com/questions/36585517/ising-model-in-python">Ising spin model</a> on Stackoverflow.
 
 """
