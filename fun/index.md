@@ -39,3 +39,6 @@ All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedi
       <img alt="Odysseus" width="85%" height="85%" src="/science/images/odysseus.png" title="Click to animate"/>
     </a>
 </figure>
+
+<!-- End of this chapter -->
+<div class="subsection_header_line"><br/></div>

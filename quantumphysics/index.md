@@ -1,3 +1,5 @@
+{% include breadcrumbs.html %}
+
 <a name="quantum"></a>
 # Particle and quantum physics
 <div class="header_line"><br/></div>
@@ -108,4 +110,6 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 </div>
 <p style="clear: both;"></p>
 
+<!-- End of this chapter -->
+<div class="subsection_header_line"><br/></div>
 
