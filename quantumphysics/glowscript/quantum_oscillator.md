@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 Download the [quantum_oscillator.py](quantum_oscillator.py) source code
-{% include_relative glowscript/Quantumoscillator.html %}
+{% include_relative Quantumoscillator.html %}
 
 
 

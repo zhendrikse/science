@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 Download the [infinite_squarewell.py](infinite_squarewell.py) source code
-{% include_relative glowscript/InfiniteSquarewell.html %}
+{% include_relative InfiniteSquarewell.html %}
 
 
 
