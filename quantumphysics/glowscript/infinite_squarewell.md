@@ -1,3 +1,5 @@
+{% include breadcrumbs.html %}
+
 The [`infinite_squarewell.py` source code](infinite_squarewell.py) is shown below.
 <p></p>
 

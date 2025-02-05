@@ -1,4 +1,4 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [harmonic_oscillator.py](glowscript/harmonic_oscillator.html)
+{% include breadcrumbs.html %}
 
 # The quantum harmonic oscillator
 <div class="header_line"><br/></div>
