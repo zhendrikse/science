@@ -7,7 +7,7 @@ I... a universe of atoms, an atom in the universe. &mdash;
 <a href="https://en.wikipedia.org/wiki/Richard_Feynman">Richard P. Feynman</a> 
 </blockquote><br/>
 
-&rArr; {% include breadcrumbs.html %} &lArr;
+{% include breadcrumbs.html %}
 
 ### A cubic lattice and the double helix
 <div style="border-top: 1px solid #999999"><br/></div>
