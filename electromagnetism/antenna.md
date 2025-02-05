@@ -1,10 +1,6 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [antenna.py](glowscript/antenna.html) 
+The [`antenna.py` source code](antenna.py) is shown below.
+<p></p>
 
-# Electromagnetic waves emanating from an antenna
-<div class="header_line"><br/></div>
-
-{% include_relative glowscript/Antenna.html %}
-
-
-
-
+{% highlight python %}
+{% include_relative antenna.py %}
+{% endhighlight %}

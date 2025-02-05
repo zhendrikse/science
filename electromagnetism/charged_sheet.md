@@ -1,9 +1,6 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [charged_sheet.py](glowscript/charged_sheet.html) 
+The [`charged_sheet.py` source code](charged_sheet.py) is shown below.
+<p></p>
 
-# Electric field of charged sheet
-<div class="header_line"><br/></div>
-
-{% include_relative glowscript/ChargedSheet.html %}
-
-
-
+{% highlight python %}
+{% include_relative charged_sheet.py %}
+{% endhighlight %}

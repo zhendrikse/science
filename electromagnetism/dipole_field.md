@@ -1,9 +1,6 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [dipole_field.py](glowscript/dipole_field.html) 
+The [`dipole_field.py` source code](dipole_field.py) is shown below.
+<p></p>
 
-# Electric field of a dipole
-<div class="header_line"><br/></div>
-
-{% include_relative glowscript/DipoleField.html %}
-
-
-
+{% highlight python %}
+{% include_relative dipole_field.py %}
+{% endhighlight %}

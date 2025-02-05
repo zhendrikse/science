@@ -1,9 +1,6 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [charged_rings.py](glowscript/charged_rings.html) 
+The [`charged_rings.py` source code](charged_rings.py) is shown below.
+<p></p>
 
-# Electric field within charged rings
-<div class="header_line"><br/></div>
-
-{% include_relative glowscript/ChargedRings.html %}
-
-
-
+{% highlight python %}
+{% include_relative charged_rings.py %}
+{% endhighlight %}
