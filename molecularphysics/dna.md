@@ -4,4 +4,4 @@
 <div class="header_line"><br/></div>
 
 Download the [dna.py](code/dna.py) source code
-{% include_relative Dna.html %}
+{% include_relative code/Dna.html %}
