@@ -4,7 +4,6 @@
 <div class="header_line"><br/></div>
 
 Download the [plane_wave.py](glowscript/plane_wave.html) source code
-
 {% include_relative glowscript/Planewave.html %}
 
 
