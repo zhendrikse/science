@@ -3,5 +3,5 @@
 # Visualization of some organic molecules
 <div class="header_line"><br/></div>
 
-Download the [molecules.py](molecules.py) source code
-{% include_relative Molecules.html %}
+Download the [molecules.py](code/molecules.py) source code
+{% include_relative code/Molecules.html %}

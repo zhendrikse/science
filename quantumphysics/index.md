@@ -1,5 +1,3 @@
-{% include breadcrumbs.html %}
-
 <a name="quantum"></a>
 # Particle and quantum physics
 <div class="header_line"><br/></div>
