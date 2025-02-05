@@ -1,5 +1,7 @@
 {% include breadcrumbs.html %}
 
+### [plane_wave.py](glowscript/source/plane_wave.html)
+
 # Plane waves of the form $\psi(x, t) = Ae^{i(k x - \omega t)}$
 <div class="header_line"><br/></div>
 
@@ -7,3 +9,4 @@
 
 
 
+    
