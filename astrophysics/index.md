@@ -23,7 +23,8 @@ You have to make the rules, not follow them.
 
 <p style="clear: both;"></p>
 
-###  Kepler's law &amp; the three-body problem
+### Kepler's law &amp; the three-body problem
+<div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
