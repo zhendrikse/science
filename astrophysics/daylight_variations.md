@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [daylight_variations.py](glowscript/daylight_variations.html) 
+{% include breadcrumbs.html %}
 
-# Daylight variations 
+## Daylight variations
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/DaylightVariations.html %}
+Download the [daylight_variations.py](code/daylight_variations.py) source code
+{% include_relative code/DaylightVariations.html %}

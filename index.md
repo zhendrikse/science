@@ -10,7 +10,7 @@ finest that music and poetry can deliver. &mdash;
 
 {% include_relative header.md %}
 
-{% include_relative astrophysics/astrophysics.md %}
+{% include_relative astrophysics/index.md %}
 
 {% include_relative nature/nature.md %}
 

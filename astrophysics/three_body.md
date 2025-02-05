@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [three_body.py](glowscript/three_body.html) 
+{% include breadcrumbs.html %}
 
-# The three-body problem
+## The three-body problem
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/ThreeBody.html %}
+Download the [three_body.py](code/three_body.py) source code
+{% include_relative code/ThreeBody.html %}

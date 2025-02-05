@@ -19,8 +19,8 @@ conversion_factor_to_real_number_of_atoms = avogadro_number * moles_per_cubic_me
 real_number_of_atoms = total_number_of_atoms * conversion_factor_to_real_number_of_atoms
 real_mole_amount = real_number_of_atoms / avogadro_number
 
-print(moles_per_cubic_meter_at_room_temp, "moles in 1 cubic meter")
-print(real_number_of_atoms, "atoms in 1 cubic meter")
+#print(moles_per_cubic_meter_at_room_temp, "moles in 1 cubic meter")
+#print(real_number_of_atoms, "atoms in 1 cubic meter")
 
 # Typical values
 gray = color.gray(0.7)  # color of edges of container
@@ -44,7 +44,6 @@ f(\\vec{v}) d^3\\vec{v} = \\bigg [ \dfrac{m}{2\\pi k_b T} \\bigg ]^{3/2} \\exp \
   non-relativistic classical particles in thermodynamic equilibrium.
 """
 animation.caption = s
-MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 class Box:
     def __init__(self, length=L, gas_atom_radius=0.03, vertex_radius=0.005):
@@ -236,13 +235,14 @@ def swap_between_bins(velocity_1, velocity_2):  # remove from v1 bar, add to v2 
     histogram[bin_1] -= 1
     histogram[bin_2] += 1
 
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 total_bins = 0  # number of histogram snapshots to average
 time_counter = 0
 sample_size = 1000
 hit_counter = 0
 
-print("N,T,V,P, PV/(NT)")
+#print("N,T,V,P, PV/(NT)")
 dt = 1E-5
 
 while True:
@@ -267,6 +267,6 @@ while True:
         time_counter = 0
         hit_counter = 0
 
-        print("[", total_number_of_atoms, "(", round(real_mole_amount, 4), ")", ",", T, ",", L ** 3, ",", round(P, 4), "(",
-              round(P / size_helium_atom, 4), ")", ",",
-              P * L ** 3 / (real_number_of_atoms * T), "]")
+#        print("[", total_number_of_atoms, "(", round(real_mole_amount, 4), ")", ",", T, ",", L ** 3, ",", round(P, 4), "(",
+#              round(P / size_helium_atom, 4), ")", ",",
+#              P * L ** 3 / (real_number_of_atoms * T), "]")

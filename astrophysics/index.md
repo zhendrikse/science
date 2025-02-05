@@ -1,3 +1,5 @@
+{% include breadcrumbs.html %}
+
 <a name="astrophysics"></a>
 # Astrophysics
 <div class="header_line"><br/></div>
@@ -12,8 +14,8 @@ You have to make the rules, not follow them.
 
 
 <figure style="float: center; text-align: center;">
-  <a href="astrophysics/daylight_variations.html">
-    <img alt="Daylight variations" width="100%" height="100%" src="./images/daylight_variations.png" title="Click to animate"/>
+  <a href="/science/astrophysics/daylight_variations.html">
+    <img alt="Daylight variations" width="100%" height="100%" src="/science/images/daylight_variations.png" title="Click to animate"/>
   </a>
   <figcaption>A not accurate to scale sun-earth-moon model, but very detailed and instructive!
   It&apos;s main goal is visualizing the change in day length during the course of a year.</figcaption>
@@ -25,8 +27,8 @@ You have to make the rules, not follow them.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="astrophysics/keplers_law.html">
-    <img alt="Kepler's laws" src="./images/keplers_law.png" title="Click to animate"/>
+  <a href="/science/astrophysics/keplers_law.html">
+    <img alt="Kepler's laws" src="/science/images/keplers_law.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion">Kepler&apos;s laws</a>
     of planetary motion: "I believe the geometric proportion served the creator as an idea when He 
@@ -35,8 +37,8 @@ You have to make the rules, not follow them.
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="astrophysics/three_body.html">
-    <img alt="Three body problem" src="./images/three_body.png" title="Click to animate"/>
+  <a href="/science/astrophysics/three_body.html">
+    <img alt="Three body problem" src="/science/images/three_body.png" title="Click to animate"/>
   </a>
   <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/Three-body_problem">three-body problem</a>,
   for which there exists no analytical solution, so we have to solve it numerically. 
@@ -45,3 +47,6 @@ You have to make the rules, not follow them.
 </figure>
 </div>
 <p style="clear: both;"></p>
+
+<!-- End of this chapter -->
+<div class="subsection_header_line"><br/></div>

@@ -91,10 +91,6 @@ async function __main__() {
     real_number_of_atoms = total_number_of_atoms["*"](conversion_factor_to_real_number_of_atoms);
     "20";
     real_mole_amount = real_number_of_atoms["/"](avogadro_number);
-    "22";
-    print(moles_per_cubic_meter_at_room_temp, "moles in 1 cubic meter");
-    "23";
-    print(real_number_of_atoms, "atoms in 1 cubic meter");
     "26";
     gray = color.gray(.7);
     "27";
@@ -103,15 +99,13 @@ async function __main__() {
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), align: "left", height: "500"})]);
     "30";
     animation.range = L;
-    "35";
+    "34";
     animation.title = "&#x2022; A \"hard-sphere\" gas, written by Bruce Sherwood, modified by Rob Salgado\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a>.\n\n";
-    "46";
+    "45";
     s = "  Theoretical and averaged speed distributions (meters/sec).\n  Initially all atoms have the same speed, but collisions\n  change the speeds of the colliding atoms. One of the atoms is\n  marked and leaves a trail so you can follow its path.\n  The theoretical probability function for the velocities in \n  a tiny volume dV is given by the Maxwell-Boltzmann distribution\n  \\(  \nf(\\vec{v}) d^3\\vec{v} = \\bigg [ \\dfrac{m}{2\\pi k_b T} \\bigg ]^{3/2} \\exp \\bigg (-\\dfrac{mv^2}{2 k_b T} \\bigg) d^3\\vec{v} \\) \n  for a system containing a large number of identical non-interacting, \n  non-relativistic classical particles in thermodynamic equilibrium.\n";
-    "47";
+    "46";
     animation.caption = s;
     "48";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "50";
     function Box() {;
     }
     Box.prototype.__init__ = async function __init__() {
@@ -131,33 +125,33 @@ async function __main__() {
             vertex_radius = ρσ_kwargs_obj.vertex_radius;
         }
         var ρσ_ls, dist, box_bottom, box_top, vert1, vert2, vert3, vert4;
-        "52";
+        "50";
         self._length = length;
-        "53";
+        "51";
         dist = length["/"](2)["+"](gas_atom_radius);
-        "54";
+        "52";
         box_bottom = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
-        "55";
+        "53";
         box_bottom.append(ρσ_list_decorate([ vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), dist), vector(dist, 1["-u"]()["*"](dist), dist), vector(dist, 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)) ]));
-        "57";
+        "55";
         box_top = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
-        "58";
+        "56";
         box_top.append(ρσ_list_decorate([ vector(1["-u"]()["*"](dist), dist, 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), dist, dist), vector(dist, dist, dist), vector(dist, dist, 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), dist, 1["-u"]()["*"](dist)) ]));
-        "61";
+        "59";
         vert1 = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
-        "62";
+        "60";
         vert2 = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
-        "63";
+        "61";
         vert3 = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
-        "64";
+        "62";
         vert4 = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: gray, radius: vertex_radius})]);
-        "65";
+        "63";
         vert1.append(ρσ_list_decorate([ vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)), vector(1["-u"]()["*"](dist), dist, 1["-u"]()["*"](dist)) ]));
-        "66";
+        "64";
         vert2.append(ρσ_list_decorate([ vector(1["-u"]()["*"](dist), 1["-u"]()["*"](dist), dist), vector(1["-u"]()["*"](dist), dist, dist) ]));
-        "67";
+        "65";
         vert3.append(ρσ_list_decorate([ vector(dist, 1["-u"]()["*"](dist), dist), vector(dist, dist, dist) ]));
-        "68";
+        "66";
         vert4.append(ρσ_list_decorate([ vector(dist, 1["-u"]()["*"](dist), 1["-u"]()["*"](dist)), vector(dist, dist, 1["-u"]()["*"](dist)) ]));
     };
     if (!Box.prototype.__init__.__defaults__) Object.defineProperties(Box.prototype.__init__, {
@@ -170,7 +164,7 @@ async function __main__() {
     Box.__handles_kwarg_interpolation__ = Box.prototype.__init__.__handles_kwarg_interpolation__;
     Box.prototype.length = async function length() {
         var self = this;
-        "71";
+        "69";
         return self._length;
     };
     if (!Box.prototype.length.__module__) Object.defineProperties(Box.prototype.length, {
@@ -186,7 +180,7 @@ async function __main__() {
 
 
 
-    "74";
+    "72";
     function Gas() {;
     }
     Gas.prototype.__init__ = async function __init__() {
@@ -205,19 +199,19 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "number_of_atoms")){
             number_of_atoms = ρσ_kwargs_obj.number_of_atoms;
         }
-        "76";
+        "74";
         self._mass = atom_mass;
-        "77";
+        "75";
         self._number_of_atoms = number_of_atoms;
-        "78";
+        "76";
         self._atom_radius = atom_radius;
-        "79";
+        "77";
         self._atoms = ρσ_list_decorate([]);
-        "80";
+        "78";
         self._atom_momenta = ρσ_list_decorate([]);
-        "81";
+        "79";
         self._atom_positions = ρσ_list_decorate([]);
-        "82";
+        "80";
         self._average_kinetic_energy = sqrt(2["*"](atom_mass)["*"](1.5)["*"](k)["*"](T));
     };
     if (!Gas.prototype.__init__.__defaults__) Object.defineProperties(Gas.prototype.__init__, {
@@ -231,39 +225,39 @@ async function __main__() {
     Gas.prototype.is_confined_to_a = async function is_confined_to_a(cube) {
         var self = this;
         var ρσ_ls, x, y, z, atom_position, theta, phi, p_x, p_y, p_z, i;
-        "86";
+        "84";
         for (var ρσ_Index1 = 0; ρσ_Index1["<"](self._number_of_atoms); ρσ_Index1++) {
             i = ρσ_Index1;
-            "87";
+            "85";
             x = (await cube.length())["*"](random())["-"](1["*"]((await cube.length()))["/"](2));
-            "88";
+            "86";
             y = (await cube.length())["*"](random())["-"](1["*"]((await cube.length()))["/"](2));
-            "89";
+            "87";
             z = (await cube.length())["*"](random())["-"](1["*"]((await cube.length()))["/"](2));
-            "90";
+            "88";
             atom_position = vec(x, y, z);
-            "91";
+            "89";
             self._atom_positions.append(atom_position);
-            "93";
+            "91";
             if ((i === 0 || typeof i === "object" && ρσ_equals(i, 0))) {
-                "94";
+                "92";
                 self._atoms.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: atom_position, radius: self._atom_radius, color: color.cyan, make_trail: true, retain: 100, trail_radius: .3["*"](self._atom_radius)})]));
-                "97";
+                "95";
             } else {
-                "98";
+                "96";
                 self._atoms.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: atom_position, radius: self._atom_radius, color: gray})]));
             }
-            "100";
+            "98";
             theta = pi["*"](random());
-            "101";
+            "99";
             phi = 2["*"](pi)["*"](random());
-            "102";
+            "100";
             p_x = self._average_kinetic_energy["*"](sin(theta))["*"](cos(phi));
-            "103";
+            "101";
             p_y = self._average_kinetic_energy["*"](sin(theta))["*"](sin(phi));
-            "104";
+            "102";
             p_z = self._average_kinetic_energy["*"](cos(theta));
-            "105";
+            "103";
             self._atom_momenta.append(vector(p_x, p_y, p_z));
         }
     };
@@ -273,7 +267,7 @@ async function __main__() {
     });
     Gas.prototype.average_kinetic_energy = async function average_kinetic_energy() {
         var self = this;
-        "108";
+        "106";
         return self._average_kinetic_energy;
     };
     if (!Gas.prototype.average_kinetic_energy.__module__) Object.defineProperties(Gas.prototype.average_kinetic_energy, {
@@ -282,12 +276,12 @@ async function __main__() {
     Gas.prototype.update_with_timestep = async function update_with_timestep(dt) {
         var self = this;
         var ρσ_ls, i;
-        "111";
+        "109";
         var ρσ_Iter2 = range(len(self._atoms));
         ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
         for (var ρσ_Index2 of ρσ_Iter2) {
             i = ρσ_Index2;
-            "112";
+            "110";
             ρσ_getitem(self._atoms, i).pos = ρσ_setitem(self._atom_positions, i, ρσ_getitem(self._atom_positions, i)["+"](ρσ_getitem(self._atom_momenta, i)["/"](self._mass)["*"](dt)));
         }
     };
@@ -298,59 +292,59 @@ async function __main__() {
     Gas.prototype.count_collisions_with = async function count_collisions_with(cube) {
         var self = this;
         var ρσ_ls, hit_counter, loc, index;
-        "116";
+        "114";
         hit_counter = 0;
-        "117";
+        "115";
         var ρσ_Iter3 = range(len(self._atoms));
         ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
         for (var ρσ_Index3 of ρσ_Iter3) {
             index = ρσ_Index3;
-            "118";
+            "116";
             loc = ρσ_getitem(self._atom_positions, index);
-            "119";
+            "117";
             if (abs(loc.x)[">"]((await cube.length())["/"](2))) {
-                "120";
+                "118";
                 if (loc.x["<"](0)) {
-                    "121";
+                    "119";
                     ρσ_getitem(self._atom_momenta, index).x = abs(ρσ_getitem(self._atom_momenta, index).x);
-                    "122";
+                    "120";
                 } else {
-                    "123";
+                    "121";
                     ρσ_getitem(self._atom_momenta, index).x = 1["-u"]()["*"](abs(ρσ_getitem(self._atom_momenta, index).x));
-                    "124";
+                    "122";
                     hit_counter=hit_counter["+"](abs(2["*"](ρσ_getitem(self._atom_momenta, index).x)));
-                    "126";
+                    "124";
                 }
             }
             if (abs(loc.y)[">"]((await cube.length())["/"](2))) {
-                "127";
+                "125";
                 if (loc.y["<"](0)) {
-                    "128";
+                    "126";
                     ρσ_getitem(self._atom_momenta, index).y = abs(ρσ_getitem(self._atom_momenta, index).y);
-                    "129";
+                    "127";
                 } else {
-                    "130";
+                    "128";
                     ρσ_getitem(self._atom_momenta, index).y = 1["-u"]()["*"](abs(ρσ_getitem(self._atom_momenta, index).y));
-                    "131";
+                    "129";
                     hit_counter=hit_counter["+"](abs(2["*"](ρσ_getitem(self._atom_momenta, index).y)));
-                    "133";
+                    "131";
                 }
             }
             if (abs(loc.z)[">"]((await cube.length())["/"](2))) {
-                "134";
+                "132";
                 if (loc.z["<"](0)) {
-                    "135";
+                    "133";
                     ρσ_getitem(self._atom_momenta, index).z = abs(ρσ_getitem(self._atom_momenta, index).z);
-                    "136";
+                    "134";
                 } else {
-                    "137";
+                    "135";
                     ρσ_getitem(self._atom_momenta, index).z = 1["-u"]()["*"](abs(ρσ_getitem(self._atom_momenta, index).z));
-                    "138";
+                    "136";
                     hit_counter=hit_counter["+"](abs(2["*"](ρσ_getitem(self._atom_momenta, index).z)));
                 }
             }
         }
-        "140";
+        "138";
         return hit_counter;
     };
     if (!Gas.prototype.count_collisions_with.__argnames__) Object.defineProperties(Gas.prototype.count_collisions_with, {
@@ -360,30 +354,30 @@ async function __main__() {
     Gas.prototype._check_collisions = async function _check_collisions() {
         var self = this;
         var ρσ_ls, hit_list, r2, distance, j, index;
-        "143";
+        "141";
         hit_list = ρσ_list_decorate([]);
-        "144";
+        "142";
         r2 = 2["*"](self._atom_radius);
-        "145";
+        "143";
         r2=r2["*"](r2);
-        "146";
+        "144";
         var ρσ_Iter4 = range(len(self._atoms));
         ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
         for (var ρσ_Index4 of ρσ_Iter4) {
             index = ρσ_Index4;
-            "147";
+            "145";
             for (var ρσ_Index5 = 0; ρσ_Index5["<"](index); ρσ_Index5++) {
                 j = ρσ_Index5;
-                "148";
+                "146";
                 distance = ρσ_getitem(self._atom_positions, index)["-"](1["*"](ρσ_getitem(self._atom_positions, j)));
-                "149";
+                "147";
                 if (mag2(distance)["<"](r2)) {
-                    "150";
+                    "148";
                     hit_list.append(ρσ_list_decorate([ index, j ]));
                 }
             }
         }
-        "151";
+        "149";
         return hit_list;
     };
     if (!Gas.prototype._check_collisions.__module__) Object.defineProperties(Gas.prototype._check_collisions, {
@@ -392,65 +386,65 @@ async function __main__() {
     Gas.prototype._collide = async function _collide(atom_index_1, atom_index_2) {
         var self = this;
         var ρσ_ls, total_momentum, position_i, position_j, velocity_i, velocity_j, difference_in_velocity, atoms_distance, dx, dy, alpha, d, deltat, total_mass, pcmi, pcmj;
-        "154";
+        "152";
         total_momentum = ρσ_getitem(self._atom_momenta, atom_index_1)["+"](ρσ_getitem(self._atom_momenta, atom_index_2));
-        "155";
+        "153";
         position_i = ρσ_getitem(self._atom_positions, atom_index_1);
-        "156";
+        "154";
         position_j = ρσ_getitem(self._atom_positions, atom_index_2);
-        "157";
+        "155";
         velocity_i = ρσ_getitem(self._atom_momenta, atom_index_1)["/"](mass);
-        "158";
+        "156";
         velocity_j = ρσ_getitem(self._atom_momenta, atom_index_2)["/"](mass);
-        "160";
+        "158";
         difference_in_velocity = velocity_j["-"](1["*"](velocity_i));
-        "161";
+        "159";
         if ((difference_in_velocity.mag2 === 0 || typeof difference_in_velocity.mag2 === "object" && ρσ_equals(difference_in_velocity.mag2, 0))) {
-            "162";
+            "160";
             return;
         }
-        "164";
+        "162";
         atoms_distance = position_i["-"](1["*"](position_j));
-        "165";
+        "163";
         if (atoms_distance.mag[">"](self._atom_radius)) {
-            "166";
+            "164";
             return;
         }
-        "169";
+        "167";
         dx = dot(atoms_distance, difference_in_velocity.hat);
-        "170";
+        "168";
         dy = cross(atoms_distance, difference_in_velocity.hat).mag;
-        "173";
+        "171";
         alpha = asin(dy["/"](2["*"](self._atom_radius)));
-        "174";
+        "172";
         d = 2["*"](self._atom_radius)["*"](cos(alpha))["-"](1["*"](dx));
-        "175";
+        "173";
         deltat = d["/"](difference_in_velocity.mag);
-        "177";
+        "175";
         position_i = position_i["-"](1["*"](velocity_i)["*"](deltat));
-        "178";
+        "176";
         position_j = position_j["-"](1["*"](velocity_j)["*"](deltat));
-        "179";
+        "177";
         total_mass = 2["*"](mass);
-        "182";
+        "180";
         pcmi = ρσ_getitem(self._atom_momenta, atom_index_1)["-"](1["*"](total_momentum)["*"](mass)["/"](total_mass));
-        "183";
+        "181";
         pcmj = ρσ_getitem(self._atom_momenta, atom_index_2)["-"](1["*"](total_momentum)["*"](mass)["/"](total_mass));
-        "186";
+        "184";
         pcmi = pcmi["-"](1["*"](2)["*"](pcmi.dot(norm(atoms_distance)))["*"](norm(atoms_distance)));
-        "187";
+        "185";
         pcmj = pcmj["-"](1["*"](2)["*"](pcmj.dot(norm(atoms_distance)))["*"](norm(atoms_distance)));
-        "188";
+        "186";
         ρσ_setitem(self._atom_momenta, atom_index_1, pcmi["+"](total_momentum["*"](mass)["/"](total_mass)));
-        "190";
+        "188";
         ρσ_setitem(self._atom_momenta, atom_index_2, pcmj["+"](total_momentum["*"](mass)["/"](total_mass)));
-        "191";
+        "189";
         ρσ_setitem(self._atom_positions, atom_index_1, position_i["+"](ρσ_getitem(self._atom_momenta, atom_index_1)["/"](mass)["*"](deltat)));
-        "193";
+        "191";
         ρσ_setitem(self._atom_positions, atom_index_2, position_j["+"](ρσ_getitem(self._atom_momenta, atom_index_2)["/"](mass)["*"](deltat)));
-        "194";
+        "192";
         (await swap_between_bins(velocity_i.mag, ρσ_getitem(self._atom_momenta, atom_index_1).mag["/"](mass)));
-        "195";
+        "193";
         (await swap_between_bins(velocity_j.mag, ρσ_getitem(self._atom_momenta, atom_index_2).mag["/"](mass)));
     };
     if (!Gas.prototype._collide.__argnames__) Object.defineProperties(Gas.prototype._collide, {
@@ -460,12 +454,12 @@ async function __main__() {
     Gas.prototype.update_momenta_of_colliding_atoms = async function update_momenta_of_colliding_atoms() {
         var self = this;
         var ρσ_ls, ij;
-        "198";
+        "196";
         var ρσ_Iter6 = (await self._check_collisions());
         ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
         for (var ρσ_Index6 of ρσ_Iter6) {
             ij = ρσ_Index6;
-            "199";
+            "197";
             (await self._collide(ρσ_getitem(ij, 0), ρσ_getitem(ij, 1)));
         }
     };
@@ -488,21 +482,21 @@ async function __main__() {
 
 
 
-    "202";
+    "200";
     _GS_1 = new Box;
     (await _GS_1.__init__());
     box = _GS_1;
-    "203";
+    "201";
     _GS_1 = new Gas;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({number_of_atoms: total_number_of_atoms})]);
     gas = _GS_1;
-    "204";
+    "202";
     (await gas.is_confined_to_a(box));
-    "206";
+    "204";
     velocity_binning = 100;
-    "207";
+    "205";
     async function bin_number_of(velocity) {
-        "208";
+        "206";
         return int(velocity["/"](velocity_binning));
     };
     if (!bin_number_of.__argnames__) Object.defineProperties(bin_number_of, {
@@ -510,58 +504,58 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "211";
+    "209";
     total_bins = int(4500["/"](velocity_binning));
-    "212";
+    "210";
     histogram = ρσ_list_decorate([ 0 ])["*"](total_bins);
-    "213";
+    "211";
     ρσ_setitem(histogram, (await bin_number_of((await gas.average_kinetic_energy())["/"](mass))), total_number_of_atoms);
-    "215";
+    "213";
     gg = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 500, height: .4["*"](500), xmax: 3e3, align: "left", xtitle: "speed, m/s", ytitle: "Number of atoms", ymax: total_number_of_atoms["*"](velocity_binning)["/"](1e3)})]);
-    "218";
+    "216";
     theoretical_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.blue, width: 2})]);
-    "219";
+    "217";
     dv = 10;
-    "220";
+    "218";
     var ρσ_Iter7 = range(0, 3001["+"](dv), dv);
     ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
     for (var ρσ_Index7 of ρσ_Iter7) {
         v = ρσ_Index7;
-        "221";
+        "219";
         theoretical_curve.plot(v, velocity_binning["/"](dv)["*"](total_number_of_atoms)["*"](4)["*"](pi)["*"](Math.pow((mass["/"](2["*"](pi)["*"](k)["*"](T))), 1.5))["*"](exp(1["-u"]()["*"](.5)["*"](mass)["*"](Math.pow(v, 2))["/"](k["*"](T))))["*"](Math.pow(v, 2))["*"](dv));
     }
-    "224";
+    "222";
     accum = ρσ_list_decorate([]);
-    "225";
+    "223";
     var ρσ_Iter8 = range(int(3e3["/"](velocity_binning)));
     ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
     for (var ρσ_Index8 of ρσ_Iter8) {
         i = ρσ_Index8;
-        "226";
+        "224";
         accum.append(ρσ_list_decorate([ velocity_binning["*"](i["+"](.5)), 0 ]));
     }
-    "227";
+    "225";
     vdist = ρσ_interpolate_kwargs.call(this, gvbars, [ρσ_desugar_kwargs({color: color.red, delta: velocity_binning})]);
-    "230";
+    "228";
     async function swap_between_bins(velocity_1, velocity_2) {
         var ρσ_ls, bin_1, bin_2;
-        "231";
+        "229";
         bin_1 = (await bin_number_of(velocity_1));
-        "232";
+        "230";
         bin_2 = (await bin_number_of(velocity_2));
-        "233";
+        "231";
         if ((bin_1 === bin_2 || typeof bin_1 === "object" && ρσ_equals(bin_1, bin_2))) {
-            "234";
+            "232";
             return;
-            "235";
+            "233";
         }
         if (bin_1[">="](len(histogram)) || bin_2[">="](len(histogram))) {
-            "236";
+            "234";
             return;
         }
-        "237";
+        "235";
         ρσ_setitem(histogram, bin_1, ρσ_getitem(histogram, bin_1)["-"](1));
-        "238";
+        "236";
         ρσ_setitem(histogram, bin_2, ρσ_getitem(histogram, bin_2)["+"](1));
     };
     if (!swap_between_bins.__argnames__) Object.defineProperties(swap_between_bins, {
@@ -569,55 +563,53 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "241";
+    "238";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "240";
     total_bins = 0;
-    "242";
+    "241";
     time_counter = 0;
-    "243";
+    "242";
     sample_size = 1e3;
-    "244";
+    "243";
     hit_counter = 0;
     "246";
-    print("N,T,V,P, PV/(NT)");
-    "247";
     dt = 1e-5;
-    "249";
+    "248";
     while (true) {
-        "250";
+        "249";
         (await rate(300));
-        "252";
+        "251";
         time_counter=time_counter["+"](1);
-        "255";
+        "254";
         var ρσ_Iter9 = range(len(accum));
         ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
         for (var ρσ_Index9 of ρσ_Iter9) {
             i = ρσ_Index9;
-            "256";
+            "255";
             ρσ_setitem(ρσ_getitem(accum, i), 1, total_bins["*"](ρσ_getitem(ρσ_getitem(accum, i), 1))["+"](ρσ_getitem(histogram, i))["/"](total_bins["+"](1)));
-            "257";
+            "256";
         }
         if (ρσ_equals(total_bins["%"](10), 0)) {
-            "258";
+            "257";
             vdist.data = accum;
         }
-        "259";
+        "258";
         total_bins=total_bins["+"](1);
-        "261";
+        "260";
         (await gas.update_with_timestep(dt));
-        "262";
+        "261";
         (await gas.update_momenta_of_colliding_atoms());
-        "263";
+        "262";
         hit_counter=hit_counter["+"]((await gas.count_collisions_with(box)));
-        "265";
+        "264";
         if ((time_counter === sample_size || typeof time_counter === "object" && ρσ_equals(time_counter, sample_size))) {
-            "267";
+            "266";
             P = 1["/"](3)["*"](conversion_factor_to_real_number_of_atoms)["*"](hit_counter["/"](Math.pow(L, 2)))["/"](dt["*"](sample_size));
-            "268";
+            "267";
             time_counter = 0;
-            "269";
+            "268";
             hit_counter = 0;
-            "271";
-            print("[", total_number_of_atoms, "(", round(real_mole_amount, 4), ")", ",", T, ",", Math.pow(L, 3), ",", round(P, 4), "(", round(P["/"](size_helium_atom), 4), ")", ",", P["*"](Math.pow(L, 3))["/"](real_number_of_atoms["*"](T)), "]");
         }
     }
 };
