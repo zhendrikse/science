@@ -4,4 +4,4 @@
 [Math Art Gallery](geometry.html) &mdash; 
 [Quantum &amp; particle physics](#quantum) &mdash; 
 [Special relativity](#relativity) &mdash; [Thermodynamics](#thermodynamics) &mdash;[Waves](#waves) &mdash; 
-[Fun stuff](fun.html) &mdash; [References](#references).
+[Fun stuff](fun/index.html) &mdash; [References](#references).
