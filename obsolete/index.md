@@ -22,3 +22,22 @@
 </div>
 <p style="clear: both;"></p>
 
+
+### Charged disk and accompanying builder
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="charged_disk.html">
+    <img alt="Charged disk" width="70%" src="../images/charged_disk.png" title="Click to animate"/>
+  </a>
+  <figcaption>Visualization of the electric field around a disk.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="disk_builder.html">
+    <img alt="Charged disk builder" src="../images/charged_disk_builder.png" title="Click to animate"/>
+  </a>
+  <figcaption>Build up an electric field yourself by incrementally adding a charged rings.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>

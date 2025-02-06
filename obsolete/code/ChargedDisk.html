@@ -1,0 +1,251 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, w, R, d, Q, kel, scale_factor_electric_Field, r, N, dtheta, arc, dr, _GS_1, charged_disk;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "12";
+    title = "\n&#x2022; Original <a href=\"https://lectdemo.github.io/virtual/15_E_disk.html\">15_E_disk.py<\/a> by Ruth Chabay 2004\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n&#x2022; &lt;s&gt; &rarr; screenshot\n&#x2022; &lt;space&gt; &rarr; toggle background color\n&#x2022; &lt;mouse click&gt; &rarr; toggle display of electric field\n\n";
+    "14";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, forward: vector(.34, .7, 1["-u"]()["*"](.6)), background: color.gray(.075)})]);
+    "17";
+    w = .18;
+    "18";
+    R = w["*"](50);
+    "19";
+    d = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vector(0, 0, 1["-u"]()["*"](w)["/"](2)), radius: R, axis: vector(0, 0, w), color: color.red})]);
+    "20";
+    Q = 1e-7;
+    "21";
+    kel = 9e9;
+    "22";
+    scale_factor_electric_Field = .2;
+    "23";
+    r = .9["*"](R);
+    "24";
+    N = 60;
+    "25";
+    dtheta = 2["*"](pi)["/"](N);
+    "26";
+    arc = r["*"](dtheta);
+    "27";
+    dr = arc;
+    "29";
+    function ChargedDisk() {;
+    }
+    ChargedDisk.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, N, dtheta, p, theta, r, _, dx, observer_location, electric_field, index, x;
+        "31";
+        self._sources = ρσ_list_decorate([]);
+        "32";
+        var ρσ_Iter1 = range(1["*"](R), .01["*"](R), 1["-u"]()["*"](dr));
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            r = ρσ_Index1;
+            "33";
+            N = 2["*"](pi)["*"](r)["/"](arc);
+            "34";
+            dtheta = 2["*"](pi)["/"](N);
+            "35";
+            var ρσ_Iter2 = range(0, 2["*"](pi)["-"](1["*"](dtheta)["/"](2)), dtheta);
+            ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+            for (var ρσ_Index2 of ρσ_Iter2) {
+                theta = ρσ_Index2;
+                "36";
+                p = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(r["*"](cos(theta)), r["*"](sin(theta)), w["/"](2)), radius: .2, color: color.blue})]);
+                "38";
+                self._sources.append(p);
+            }
+        }
+        "40";
+        self._charges = (function() {
+            var ρσ_Iter = self._sources, ρσ_Result = [], _;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                _ = ρσ_Index;
+                ρσ_Result.push(Q["/"](float(len(self._sources))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "42";
+        self._field = ρσ_list_decorate([]);
+        "43";
+        self._show_field = false;
+        "44";
+        dx = R["/"](10);
+        "45";
+        var ρσ_Iter3 = range(1["-u"]()["*"](1.1)["*"](R), 1.1["*"](R)["+"](dr), dx);
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            x = ρσ_Index3;
+            "46";
+            observer_location = vector(x, 0, 5["*"](w));
+            "47";
+            electric_field = vector(0, 0, 0);
+            "48";
+            var ρσ_Iter4 = range(len(self._sources));
+            ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+            for (var ρσ_Index4 of ρσ_Iter4) {
+                index = ρσ_Index4;
+                "49";
+                r = observer_location["-"](1["*"](ρσ_getitem(self._sources, index).pos));
+                "50";
+                electric_field=electric_field["+"](kel["*"](norm(r))["*"](ρσ_getitem(self._charges, index))["/"](Math.pow(mag(r), 2)));
+            }
+            "52";
+            self._field.append(ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: observer_location, color: vector(1, .5, 0), axis: scale_factor_electric_Field["*"](electric_field), shaftwidth: .4})]));
+        }
+    };
+    if (!ChargedDisk.prototype.__init__.__module__) Object.defineProperties(ChargedDisk.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    ChargedDisk.__argnames__ = ChargedDisk.prototype.__init__.__argnames__;
+    ChargedDisk.__handles_kwarg_interpolation__ = ChargedDisk.prototype.__init__.__handles_kwarg_interpolation__;
+    ChargedDisk.prototype.toggle_field = async function toggle_field() {
+        var self = this;
+        var ρσ_ls, field_arrow;
+        "55";
+        self._show_field = !self._show_field;
+        "56";
+        var ρσ_Iter5 = self._field;
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            field_arrow = ρσ_Index5;
+            "57";
+            field_arrow.visible = self._show_field;
+        }
+    };
+    if (!ChargedDisk.prototype.toggle_field.__module__) Object.defineProperties(ChargedDisk.prototype.toggle_field, {
+        __module__ : {value: null}
+    });
+    ChargedDisk.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    ChargedDisk.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(ChargedDisk.prototype, "__bases__", {value: []});
+
+
+
+    "59";
+    async function toggle_background() {
+        "60";
+        animation.background = ((animation.background === color.white || typeof animation.background === "object" && ρσ_equals(animation.background, color.white))) ? color.gray(.075) : color.white;
+    };
+    if (!toggle_background.__module__) Object.defineProperties(toggle_background, {
+        __module__ : {value: null}
+    });
+
+    "62";
+    async function toggle_field() {
+        "63";
+        (await charged_disk.toggle_field());
+    };
+    if (!toggle_field.__module__) Object.defineProperties(toggle_field, {
+        __module__ : {value: null}
+    });
+
+    "65";
+    async function on_key_press(event) {
+        "66";
+        if ((event.key === " " || typeof event.key === "object" && ρσ_equals(event.key, " "))) {
+            "67";
+            (await toggle_background());
+            "68";
+        }
+        if ((event.key === "s" || typeof event.key === "object" && ρσ_equals(event.key, "s"))) {
+            "69";
+            (await animation.capture("electric_field_of_charged_disk"));
+        }
+    };
+    if (!on_key_press.__argnames__) Object.defineProperties(on_key_press, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "71";
+    animation.bind("click", toggle_field);
+    "72";
+    animation.bind("keydown", on_key_press);
+    "74";
+    _GS_1 = new ChargedDisk;
+    (await _GS_1.__init__());
+    charged_disk = _GS_1;
+    "76";
+    while (true) {
+        "77";
+        (await rate(60));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

@@ -405,6 +405,18 @@ finest that music and poetry can deliver. &mdash;
        </a>
       </figure>
     </div>
+    <div class="double_image">
+      <figure class="left_image">
+       <a href="obsolete/charged_disk.html">
+         <img alt="Point charge" src="images/charged_disk.png" title="Click to animate"/>
+       </a>
+      </figure>
+      <figure class="right_image">
+       <a href="obsolete/disk_builder.html">
+         <img alt="Relativistic proton" src="images/disk_builder.png" title="Click to animate"/>
+       </a>
+      </figure>
+    </div>
   </div>
   <p style="clear: both;"></p>
 </div>
