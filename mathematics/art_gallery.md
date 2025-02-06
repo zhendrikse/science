@@ -1,3 +1,5 @@
+{% include breadcrumbs.html %}
+
 <blockquote>
 Philosophy is written in this grand book &mdash; I mean universe &mdash; which stands continuously open to our gaze, 
 but which cannot be understood unless one first learns to comprehend the language in which it is written. 
@@ -8,8 +10,6 @@ in a dark labyrinth. &mdash;
 </blockquote>
 
 <p style="clear: both;"></p>
-
-{% include_relative header.md %}
 
 # Welcome to my Math Art Gallery 
 
