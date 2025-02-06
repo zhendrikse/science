@@ -44,24 +44,24 @@ finest that music and poetry can deliver. &mdash;
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/topology_surface_plot.html">
-          <img alt="Twisted torus" src="./images/geometry/twisted_torus.png" title="Click to animate"/>
+          <img alt="Twisted torus" src="./mathematics/gallery/images/twisted_torus.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
         <a href="mathematics/topology_contour_plot.html">
-          <img alt="Self-intersecting disk" src="./images/geometry/self_intersecting_disk_contour.png" title="Click to animate"/>
+          <img alt="Self-intersecting disk" src="./mathematics/gallery/images/self_intersecting_disk_contour.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/double_shapes_surface_plot.html">
-          <img alt="Double torus" src="./images/geometry/double_torus.png" title="Click to animate"/>
+          <img alt="Double torus" src="./mathematics/gallery/images/double_torus.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
         <a href="mathematics/double_shapes_contour_plot.html">
-          <img alt="Klein&apos;s bottle" src="./images/geometry/klein_bottle_contour.png" title="Click to animate"/>
+          <img alt="Klein&apos;s bottle" src="./mathematics/gallery/images/klein_bottle_contour.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
