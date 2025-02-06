@@ -401,19 +401,19 @@ finest that music and poetry can deliver. &mdash;
       </figure>
       <figure class="right_image">
        <a href="obsolete/relativistic_proton.html">
-         <img alt="Relativistic proton" src="images/relativistic_proton.png" title="Click to animate"/>
+         <img alt="Relativistic proton" width="75%" src="images/relativistic_proton.png" title="Click to animate"/>
        </a>
       </figure>
     </div>
     <div class="double_image">
       <figure class="left_image">
        <a href="obsolete/charged_disk.html">
-         <img alt="Point charge" src="images/charged_disk.png" title="Click to animate"/>
+         <img alt="Charged disk" src="images/charged_disk.png" title="Click to animate"/>
        </a>
       </figure>
       <figure class="right_image">
        <a href="obsolete/disk_builder.html">
-         <img alt="Relativistic proton" src="images/disk_builder.png" title="Click to animate"/>
+         <img alt="Disk builder" src="images/charged_disk_builder.png" title="Click to animate"/>
        </a>
       </figure>
     </div>
