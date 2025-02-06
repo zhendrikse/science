@@ -37,6 +37,7 @@ finest that music and poetry can deliver. &mdash;
           <img alt="Complex functions" src="./images/complex_function_contour_plot.png" title="Click to animate"/>
         </a>
       </figure>
+      <p><a style="font-color: red; font-weight: bold;">href="mathematics/index.html">Learn more &#x2026;</a></p>
     </div>
   </div>
   <div class="column" style="background-color:#004444;">
