@@ -240,7 +240,7 @@ finest that music and poetry can deliver. &mdash;
     <h2><a href="thermodynamics/index.html">Statistical physics</a></h2>
     <div class="double_image">
       <figure class="left_image">
-       <a href="waves/boltzmann_gas.html">
+       <a href="thermodynamics/boltzmann_gas.html">
          <img alt="Swimming pool" src="images/hard_sphere_gas.png" title="Click to animate"/>
        </a>
       </figure>
