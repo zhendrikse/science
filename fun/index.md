@@ -7,7 +7,7 @@
 All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedia.org/wiki/Proverb">old proverb</a>
 </blockquote><br/>
 
-### Rubik&apos;s cube &amps; vturtle robot
+### Rubik&apos;s cube &amp; turtle robot
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
@@ -16,7 +16,7 @@ All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedi
     <img alt="Rubik&apos;s cube" src="../images/rubiks_cube.png" title="Click to animate"/>
   </a>
   <figcaption><br/>“If you are curious, you'll find the puzzles around you 
-  If you are determined, you will solve them. &mdash; Erno Rubik.” &mdash; </figcaption>
+  If you are determined, you will solve them. &mdash; Erno Rubik.” </figcaption>
 </figure>
 <figure class="right_image">
   <a href="robot.html">
@@ -45,10 +45,7 @@ All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedi
     <a href="odysseus.html">
       <img alt="Odysseus" src="../images/odysseus.png" title="Click to animate"/>
     </a>
-  <figcaption><br/>
-  <a href="https://github.com/possibly-wrong/vturtle">VPython-based robot simulator and turtle graphics engine</a>
-  ported from installed VPython to the web.
-  </figcaption>
+  <figcaption>Odysseus, created by Maximillian DeMarr.</figcaption>
 </figure>
 </div>
 
