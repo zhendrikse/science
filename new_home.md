@@ -1,4 +1,4 @@
-# [Mathematics](mathematics/index.html)
+# Mathematics
 <div class="header_line"><br/></div>
 
 <div class="row">
@@ -16,6 +16,7 @@
         </a>
       </figure>
     </div>
+    <p style="clear: both;"></p>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/complex_surface_plot.html">
@@ -28,6 +29,7 @@
         </a>
       </figure>
     </div>
+    <p style="clear: both;"></p>
   </div>
   <div class="column" style="background-color:#004444;">
     <h2><a href="mathematics/index.html">Topological surfaces</a></h2>
@@ -43,6 +45,7 @@
         </a>
       </figure>
     </div>
+    <p style="clear: both;"></p>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/double_shapes_surface_plot.html">
@@ -55,9 +58,11 @@
         </a>
       </figure>
     </div>
+    <p style="clear: both;"></p>
   </div>
 </div>
 
+<p style="clear: both;"></p>
 # Physics
 <div class="header_line"><br/></div>
 
@@ -76,6 +81,7 @@
         </a>
       </figure>
     </div>
+    <p style="clear: both;"></p>
     <div class="double_image">
       <figure class="left_image">
         <a href="/science/astrophysics/three_body.html">
@@ -86,6 +92,7 @@
         <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
+    <p style="clear: both;"></p>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h2>
@@ -101,6 +108,7 @@
        </a>
       </figure>
     </div>
+    <p style="clear: both;"></p>
     <div class="double_image">
       <figure class="left_image">
         <a href="molecularphysics/rutherford_scattering.html">
@@ -113,6 +121,7 @@
         </a>
       </figure>
     </div>
+    <p style="clear: both;"></p>
   </div>
 </div>
 
@@ -120,8 +129,7 @@
 
 <div class="row">
   <div class="column" style="background-color:#004444;">
-    <h2>Atomic &amp; molecular physics</h2>
-    <p>Some text..</p>
+    <h2><a href="electromagnetism/index.html">Electromagnetism</a></h2>
     <div class="double_image">
       <figure class="left_image">
         <a href="electromagnetism/charged_sheet.html">
@@ -134,10 +142,127 @@
         </a>
       </figure>
     </div>
+    <p style="clear: both;"></p>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="electromagnetism/charged_sheet.html">
+          <img alt="Charged sheet" src="images/charged_sheet.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="electromagnetism/charged_ring.html">
+          <img alt="Electron spinning around charged ring" src="images/electron_and_charged_ring.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <p style="clear: both;"></p>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="electromagnetism/moving_charge.html">
+          <img alt="Moving charge" src="images/particle_in_electric_field.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="electromagnetism/helical_motion.html">
+          <img alt="Helical motion" src="images/helical_motion.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <p style="clear: both;"></p>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="electromagnetism/point_charge.html">
+          <img alt="Point charge" src="images/point_charge.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="electromagnetism/dipole_field.html">
+          <img alt="Electric dipole field" src="images/dipole_field.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <p style="clear: both;"></p>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="electromagnetism/faradays_law.html">
+          <img alt="Faraday&apos;s law" src="images/faradays_law.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="electromagnetism/charged_rings.html">
+          <img alt="Charged rings" src="images/charged_rings.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <p style="clear: both;"></p>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2>Atomic &amp; molecular physics</h2>
-    <p>Some text..</p>
+    <h2><a href="kinematics/index.html">Kinematics</a></h2>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="kinematics/ball_drop_on_spring.html">
+          <img alt="Ball drop" src="images/ball_falling_on_spring.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="kinematics/slinky_drop.html">
+          <img alt="Slinky drop" src="images/slinky_drop.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <p style="clear: both;"></p>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="kinematics/n_body_oscillator.html">
+          <img alt="N-Body oscillator" src="images/n_body_coupled_oscillator.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="kinematics/floating_block.html">
+          <img alt="Slinky drop" src="images/floating_block.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <p style="clear: both;"></p>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="kinematics/n_body_oscillator.html">
+          <img alt="N-Body oscillator" src="images/n_body_coupled_oscillator.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="kinematics/floating_block.html">
+          <img alt="Floating block" src="images/floating_block.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <p style="clear: both;"></p>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="kinematics/newtons_pendulum.html">
+          <img alt="Newton&apos;s pendulum" src="images/newtons_pendulum.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="kinematics/newtons_cannonball.html">
+          <img alt="Newton&apos;s cannonball" src="images/newtons_cannon.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <p style="clear: both;"></p>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="kinematics/ball_on_sliding_ramp.html">
+          <img alt="Block on sliding ramp" src="images/ball_on_sliding_ramp.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="kinematics/block_rotation.html">
+          <img alt="Block rotation" src="images/block_rotation.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <p style="clear: both;"></p>
   </div>
 </div>
 
