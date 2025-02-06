@@ -1,7 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [pool.py](glowscript/pool.html)
+{% include breadcrumbs.html %}
 
-# Free wave propagation in a pool
+## Free wave propagation in a pool
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/Pool.html %}
-
+Download the [pool.py](code/pool.py) source code
+{% include_relative code/Pool.html %}

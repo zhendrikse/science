@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [water_sprinkler.py](glowscript/water_sprinkler.html)
+{% include breadcrumbs.html %}
 
-# Flocking birds
+## Water sprinkler
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/WaterSprinkler.html %}
+Download the [water_sprinkler.py](code/water_sprinkler.py) source code
+{% include_relative code/WaterSrpinkler.html %}

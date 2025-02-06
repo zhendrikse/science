@@ -1,7 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [chain_drop.py](glowscript/chain_drop.html)
+{% include breadcrumbs.html %}
 
-# Modelling a chain drop from table
+## Modelling a chain drop from table
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/ChainDrop.html %}
-
+Download the [chain_drop.py](code/chain_drop.py) source code
+{% include_relative code/ChainDrop.html %}

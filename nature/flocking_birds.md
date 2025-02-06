@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [flocking_birds.py](glowscript/flocking_birds.html)
+{% include breadcrumbs.html %}
 
-# Flocking birds
+## Flocking birds
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/Flockingbirds.html %}
+Download the [flocking_birds.py](code/flocking_birds.py) source code
+{% include_relative code/FlockingBirds.html %}

@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [raindrops.py](glowscript/raindrops.html)
+{% include breadcrumbs.html %}
 
-# Falling &amp; splatting raindrops
+## Falling &amp; splatting raindrops
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/Raindrops.html %}
+Download the [raindrops.py](code/raindrops.py) source code
+{% include_relative code/Raindrops.html %}
