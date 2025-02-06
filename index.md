@@ -20,7 +20,7 @@ finest that music and poetry can deliver. &mdash;
 
 {% include_relative molecularphysics/index.md %}
 
-{% include_relative electromagnetism/electromagnetism.md %}
+{% include_relative electromagnetism/index.md %}
 
 {% include_relative quantumphysics/index.md %}
 

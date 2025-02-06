@@ -3,7 +3,8 @@
 ## Python and Glowscript source code directory
 <div class="header_line"><br/></div>
 
-- [`ising_spin.py` source code](ising_spin.py)
-- [`boltzmann_gas.py` source code](boltzmann_gas.py)
+- [`doppler_effect.py` source code](doppler_effect.py)
+- [`pool_with_moving_obstacle.py` source code](pool_with_moving_obstacle.py)
+- [`pool_with_obstacle.py` source code](pool_with_obstacle.py)
 
 

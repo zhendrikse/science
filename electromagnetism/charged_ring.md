@@ -1,6 +1,7 @@
-The [`charged_ring.py` source code](charged_ring.py) is shown below.
-<p></p>
+{% include breadcrumbs.html %}
 
-{% highlight python %}
-{% include_relative charged_ring.py %}
-{% endhighlight %}
+## Electron movement in electric field of a charged ring
+<div class="header_line"><br/></div>
+
+Download the [charged_ring.py](code/charged_ring.py) source code
+{% include_relative code/ChargedRing.html %}

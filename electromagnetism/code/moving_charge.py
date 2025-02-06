@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 from vpython import arrow, hat, vec, exp, sphere, mag, color, wtext, canvas, rate, label, slider
 
@@ -164,5 +163,3 @@ while True:
     animation.waitfor("click")
     pop_up.visible = False
     moving_charge.reset()
-
-```

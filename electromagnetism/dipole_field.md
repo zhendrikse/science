@@ -1,6 +1,7 @@
-The [`dipole_field.py` source code](dipole_field.py) is shown below.
-<p></p>
+{% include breadcrumbs.html %}
 
-{% highlight python %}
-{% include_relative dipole_field.py %}
-{% endhighlight %}
+## Electric dipole field
+<div class="header_line"><br/></div>
+
+Download the [dipole_field.py](code/dipole_field.py) source code
+{% include_relative code/DipoleField.html %}

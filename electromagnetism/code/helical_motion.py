@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 from vpython import canvas, box, vector, sphere, sin, cos, rate, pi, arrow, slider, wtext, cross, color, vec, cylinder, \
     text, label, box, checkbox, radians, get_library
@@ -7,7 +6,7 @@ from vpython import canvas, box, vector, sphere, sin, cos, rate, pi, arrow, slid
 title = """Helical motion of charged particle in magnetic field
 
 &#x2022; Based on <a href="https://towardsdatascience.com/simple-physics-animations-using-vpython-1fce0284606">Simple Physics Animations Using VPython</a> by Zhiheng Jiang
-&#x2022; Refactored and extended by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a>
+&#x2022; Refactored and extended by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 
 """
 
@@ -265,5 +264,3 @@ angle_text = wtext(text="10 degrees")
 
 while True:
     rate(10)
-    
-```

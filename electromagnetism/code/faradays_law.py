@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 from vpython import canvas, color, vector, rate, arrow, pi, box, sphere, cos, sin, arange, curve, mag, cylinder, norm, \
     checkbox
@@ -22,8 +21,7 @@ field, which is opposite to your thumb.
 
 """
 
-caption = """
-\\( \\Phi_B = \\iint_{\\Sigma(t)} \\vec{B}(t) \\cdot d\\vec{A} \\),\n where \\(d\\vec{A}\\) is an element of area vector of the moving surface Σ(t), and \\(\\vec{B}\\) is the magnetic field."
+caption = """$\\Phi_B = \\iint_{\\Sigma(t)} \\vec{B}(t) \\cdot d\\vec{A} \\),\n where \\(d\\vec{A}$ is an element of area vector of the moving surface Σ(t), and $\\vec{B}$ is the magnetic field."
 
 """
 
@@ -227,5 +225,3 @@ while 1:
         mag_vector.length = (t % 20) / 10. + 1e-3
         faraday_vectors[count].pos = mag_vector.pos + mag_vector.axis
         count += 1
-
-```

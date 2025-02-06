@@ -48,7 +48,7 @@ I... a universe of atoms, an atom in the universe. &mdash;
   <a href="/science/molecularphysics/molecules.html">
     <img alt="Molecules" src="/science/images/water_molecule.png" title="Click to animate"/>
   </a>
-  <figcaption>Visualization of various organic molecules. Other molecules will be added soon.</figcaption>
+  <figcaption>Visualization of various organic molecules. </figcaption>
 </figure>
 </div>
 
