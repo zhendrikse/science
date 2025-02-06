@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [complex_functions.py](glowscript/complex_functions.html)  
+{% include breadcrumbs.html %}
 
-# Surface plots of complex functions
+## Surface plots of complex functions
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/ComplexSurfacePlot.html %}
+Download the [complex_functions.py](code/complex_functions.py) source code
+{% include_relative code/ComplexSurfacePlot.html %}

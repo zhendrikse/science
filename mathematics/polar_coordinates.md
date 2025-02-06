@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [polar_coordinates.py](glowscript/polar_coordinates.html)
+{% include breadcrumbs.html %}
 
-# Polar coordinates
+## Polar coordinates
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/PolarCoordinates.html %}
+Download the [polar_coordinates.py](code/polar_coordinates.py) source code
+{% include_relative code/PolarCoordinates.html %}

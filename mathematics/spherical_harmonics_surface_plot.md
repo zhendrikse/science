@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [spherical_harmonics.py](glowscript/spherical_harmonics.html)
+{% include breadcrumbs.html %}
 
-# Spherical harmonics surface plots
+## Spherical harmonics surface plots
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/SphericalHarmonicsSurfacePlot.html %}
+Download the [spherical_harmonics.py](code/spherical_harmonics.py) source code
+{% include_relative code/SphericalHarmonicsSurfacePlot.html %}

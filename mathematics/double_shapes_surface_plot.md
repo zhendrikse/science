@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [double_shapes.py](glowscript/double_shapes.html)  
+{% include breadcrumbs.html %}
 
-# Surface plots of topological shapes
+## Surface plots of topological shapes
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/DoubleShapesSurfacePlot.html %}
+Download the [double_shapes.py](code/double_shapes.py) source code
+{% include_relative code/DoubleShapesSurfacePlot.html %}

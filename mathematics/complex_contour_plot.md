@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [complex_functions.py](glowscript/complex_functions.html)  
+{% include breadcrumbs.html %}
 
-# Contour plots of complex functions
+## Contour plots of complex functions
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/ComplexContourPlot.html %}
+Download the [complex_functions.py](code/complex_functions.py) source code
+{% include_relative code/ComplexContourPlot.html %}

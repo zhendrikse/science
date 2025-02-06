@@ -48,6 +48,3 @@ You have to make the rules, not follow them.
 </figure>
 </div>
 <p style="clear: both;"></p>
-
-<!-- End of this chapter -->
-<div class="subsection_header_line"><br/></div>
