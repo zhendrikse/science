@@ -290,8 +290,8 @@ finest that music and poetry can deliver. &mdash;
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="electromagnetism/point_charge.html">
-          <img alt="Point charge" src="images/point_charge.png" title="Click to animate"/>
+        <a href="electromagnetism/antenna.html">
+          <img alt="Point charge" src="images/antenna.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
@@ -391,21 +391,21 @@ finest that music and poetry can deliver. &mdash;
       </figure>
     </div>
   </div>
-  <!--div class="column" style="background-color:#444400;">
-    <h2><a href="thermodynamics/index.html">Statistical physics</a></h2>
+  <div class="column" style="background-color:#4c3340;">
+    <h2><a href="obsolete/index.html">Obsolete</a></h2>
     <div class="double_image">
       <figure class="left_image">
-       <a href="waves/boltzmann_gas.html">
-         <img alt="Swimming pool" src="images/hard_sphere_gas.png" title="Click to animate"/>
+       <a href="obsolete/point_charge.html">
+         <img alt="Point charge" src="images/point_charge.png" title="Click to animate"/>
        </a>
       </figure>
       <figure class="right_image">
-       <a href="thermodynamics/ising_spin.html">
-         <img alt="Swimming pool" src="images/ising_spin_model.png" title="Click to animate"/>
+       <a href="obsolete/relativistic_proton.html">
+         <img alt="Relativistic proton" src="images/relativistic_proton.png" title="Click to animate"/>
        </a>
       </figure>
     </div>
-  </div-->
+  </div>
   <p style="clear: both;"></p>
 </div>
 
