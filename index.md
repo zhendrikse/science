@@ -212,22 +212,22 @@ finest that music and poetry can deliver. &mdash;
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
-    <h2><a href="quantum/index.html">Quantum physics</a></h2>
+    <h2><a href="quantumphysics/index.html">Quantum physics</a></h2>
     <div class="double_image">
       <figure class="left_image">
-        <a href="quantum/plane_wave.html">
+        <a href="quantumphysics/plane_wave.html">
           <img alt="Plane wave" src="images/plane_wave.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
-        <a href="quantum/infinite_squarewell.html">
+        <a href="quantumphysics/infinite_squarewell.html">
           <img alt="Infinite square well" src="images/infinite_square_well.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="quantum/quantum_oscillator.html">
+        <a href="quantumphysics/quantum_oscillator.html">
           <img alt="Quantum oscillator" src="images/quantum_oscillator.png" title="Click to animate"/>
         </a>
       </figure>
