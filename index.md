@@ -37,8 +37,10 @@ finest that music and poetry can deliver. &mdash;
           <img alt="Complex functions" src="./images/complex_function_contour_plot.png" title="Click to animate"/>
         </a>
       </figure>
-      <p><a style="font-color: red; font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a></p>
     </div>
+    <p style="clear: both;">
+      <a style="color: red; font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
   <div class="column" style="background-color:#004444;">
     <h2><a href="mathematics/gallery/index.html">Topological surfaces</a></h2>
@@ -66,6 +68,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <p style="clear: both;">
+      <a style="color: red; font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
   <p style="clear: both;"></p>
 </div>
