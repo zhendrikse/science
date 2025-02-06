@@ -7,7 +7,7 @@
 All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedia.org/wiki/Proverb">old proverb</a>
 </blockquote><br/>
 
-### A cubic lattice and the double helix
+### Rubik&apos;s cube &amps; vturtle robot
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
@@ -31,11 +31,26 @@ All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedi
 
 <p style="clear: both;"></p>
 
-## Odysseus
+### Chessboard & Odysseus
 <div class="subsection_header_line"><br/></div>
 
-<figure>
-    <a href="odysseus.html">
-      <img alt="Odysseus" width="85%" height="85%" src="../images/odysseus.png" title="Click to animate"/>
-    </a>
+<div class="double_image">
+<figure class="left_image">
+  <a href="chessboard.html">
+    <img alt="Chessboard" src="../images/chessboard.png" title="Click to animate"/>
+  </a>
+  <figcaption>Simple chess game with moving pieces.</figcaption>
 </figure>
+<figure class="right_image">
+    <a href="odysseus.html">
+      <img alt="Odysseus" src="../images/odysseus.png" title="Click to animate"/>
+    </a>
+  <figcaption><br/>
+  <a href="https://github.com/possibly-wrong/vturtle">VPython-based robot simulator and turtle graphics engine</a>
+  ported from installed VPython to the web.
+  </figcaption>
+</figure>
+</div>
+
+<p style="clear: both;"></p>
+

@@ -382,6 +382,16 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="fun/chessboard.html">
+          <img alt="Chessboard" src="images/chessboard.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <!-- RESERVED FOR FUTURE APPLICATION -->
+      </figure>
+    </div>
   </div>
   <div class="column" style="background-color:#4c3340;">
     <h2><a href="obsolete/index.html">Obsolete</a></h2>

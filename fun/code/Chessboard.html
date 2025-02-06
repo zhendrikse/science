@@ -1,0 +1,527 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, _GS_1, thisBoard;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "8";
+    title = "&#x2022; Based on <a href=\"https://vpython.org/contents/contributed/chessboard.py\">chessboard.py<\/a> by Shaun Press\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "9";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), center: vec(3.5, 0, 3.5), forward: vec(0, 1["-u"]()["*"](.636537), 1["-u"]()["*"](.771246))})]);
+    "11";
+    function Piece() {;
+    }
+    Piece.prototype.__init__ = async function __init__() {
+        var self = this;
+        "13";
+        self.base = null;
+    };
+    if (!Piece.prototype.__init__.__module__) Object.defineProperties(Piece.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    Piece.__argnames__ = Piece.prototype.__init__.__argnames__;
+    Piece.__handles_kwarg_interpolation__ = Piece.prototype.__init__.__handles_kwarg_interpolation__;
+    Piece.prototype.move = async function move(newPos) {
+        var self = this;
+        "16";
+        self.base.pos = newPos;
+    };
+    if (!Piece.prototype.move.__argnames__) Object.defineProperties(Piece.prototype.move, {
+        __argnames__ : {value: ["newPos"]},
+        __module__ : {value: null}
+    });
+    Piece.prototype.set_visible = async function set_visible(state) {
+        var self = this;
+        var ρσ_ls, obj;
+        "20";
+        if ((await hasattr(self.base, "objects"))) {
+            "21";
+            var ρσ_Iter1 = self.base.objects;
+            ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+            for (var ρσ_Index1 of ρσ_Iter1) {
+                obj = ρσ_Index1;
+                "22";
+                obj.visible = state;
+                "23";
+            }
+        } else {
+            "24";
+            self.base.visible = state;
+        }
+    };
+    if (!Piece.prototype.set_visible.__argnames__) Object.defineProperties(Piece.prototype.set_visible, {
+        __argnames__ : {value: ["state"]},
+        __module__ : {value: null}
+    });
+    Piece.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Piece.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Piece.prototype, "__bases__", {value: []});
+
+
+
+
+    "26";
+    function Pawn() {;
+    }
+    ρσ_extends(Pawn, Piece);
+    Pawn.prototype.__init__ = async function __init__(spos, sColor) {
+        var self = this;
+        "28";
+        Piece.prototype.__init__.call(self);
+        "29";
+        self.base = ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: spos, radius: .4, axis: vec(0, 1, 0), color: sColor})]);
+    };
+    if (!Pawn.prototype.__init__.__argnames__) Object.defineProperties(Pawn.prototype.__init__, {
+        __argnames__ : {value: ["spos", "sColor"]},
+        __module__ : {value: null}
+    });
+    Pawn.__argnames__ = Pawn.prototype.__init__.__argnames__;
+    Pawn.__handles_kwarg_interpolation__ = Pawn.prototype.__init__.__handles_kwarg_interpolation__;
+    Pawn.prototype.__repr__ = async function __repr__() {
+        if(Piece.prototype.__repr__) return Piece.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Pawn.prototype.__str__ = async function __str__() {
+        if(Piece.prototype.__str__) return Piece.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Pawn.prototype, "__bases__", {value: [Piece]});
+
+
+    "31";
+    function Rook() {;
+    }
+    ρσ_extends(Rook, Piece);
+    Rook.prototype.__init__ = async function __init__(spos, sColor) {
+        var self = this;
+        "33";
+        Piece.prototype.__init__.call(self);
+        "34";
+        self.base = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: spos, radius: .4, length: 1, axis: vec(0, 1, 0), color: sColor})]);
+    };
+    if (!Rook.prototype.__init__.__argnames__) Object.defineProperties(Rook.prototype.__init__, {
+        __argnames__ : {value: ["spos", "sColor"]},
+        __module__ : {value: null}
+    });
+    Rook.__argnames__ = Rook.prototype.__init__.__argnames__;
+    Rook.__handles_kwarg_interpolation__ = Rook.prototype.__init__.__handles_kwarg_interpolation__;
+    Rook.prototype.__repr__ = async function __repr__() {
+        if(Piece.prototype.__repr__) return Piece.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Rook.prototype.__str__ = async function __str__() {
+        if(Piece.prototype.__str__) return Piece.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Rook.prototype, "__bases__", {value: [Piece]});
+
+
+    "37";
+    function Knight() {;
+    }
+    ρσ_extends(Knight, Piece);
+    Knight.prototype.__init__ = async function __init__(spos, sColor) {
+        var self = this;
+        "39";
+        Piece.prototype.__init__.call(self);
+        "40";
+        self.base = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: spos["+"](vec(0, .3, 0)), width: .4, length: .8, height: .4, axis: vec(0, 1, 0), color: sColor})]);
+        "41";
+        ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: spos["+"](vec(0, .6, 0)), radius: .2, axis: vec(0, 1, 0), color: sColor})]);
+    };
+    if (!Knight.prototype.__init__.__argnames__) Object.defineProperties(Knight.prototype.__init__, {
+        __argnames__ : {value: ["spos", "sColor"]},
+        __module__ : {value: null}
+    });
+    Knight.__argnames__ = Knight.prototype.__init__.__argnames__;
+    Knight.__handles_kwarg_interpolation__ = Knight.prototype.__init__.__handles_kwarg_interpolation__;
+    Knight.prototype.__repr__ = async function __repr__() {
+        if(Piece.prototype.__repr__) return Piece.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Knight.prototype.__str__ = async function __str__() {
+        if(Piece.prototype.__str__) return Piece.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Knight.prototype, "__bases__", {value: [Piece]});
+
+
+    "44";
+    function Bishop() {;
+    }
+    ρσ_extends(Bishop, Piece);
+    Bishop.prototype.__init__ = async function __init__(spos, sColor) {
+        var self = this;
+        "46";
+        Piece.prototype.__init__.call(self);
+        "47";
+        self.base = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: spos, radius: .2, length: .8, axis: vec(0, 1, 0), color: sColor})]);
+        "48";
+        ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: spos["+"](vec(0, .8, 0)), radius: .2, axis: vec(0, 1, 0), color: sColor})]);
+    };
+    if (!Bishop.prototype.__init__.__argnames__) Object.defineProperties(Bishop.prototype.__init__, {
+        __argnames__ : {value: ["spos", "sColor"]},
+        __module__ : {value: null}
+    });
+    Bishop.__argnames__ = Bishop.prototype.__init__.__argnames__;
+    Bishop.__handles_kwarg_interpolation__ = Bishop.prototype.__init__.__handles_kwarg_interpolation__;
+    Bishop.prototype.__repr__ = async function __repr__() {
+        if(Piece.prototype.__repr__) return Piece.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Bishop.prototype.__str__ = async function __str__() {
+        if(Piece.prototype.__str__) return Piece.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Bishop.prototype, "__bases__", {value: [Piece]});
+
+
+    "51";
+    function Queen() {;
+    }
+    ρσ_extends(Queen, Piece);
+    Queen.prototype.__init__ = async function __init__(spos, sColor) {
+        var self = this;
+        "53";
+        Piece.prototype.__init__.call(self);
+        "54";
+        self.base = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: spos, radius: .4, length: 1, axis: vec(0, 1, 0), color: sColor})]);
+        "55";
+        ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .4, pos: spos["+"](vec(0, 1.4, 0)), color: sColor})]);
+    };
+    if (!Queen.prototype.__init__.__argnames__) Object.defineProperties(Queen.prototype.__init__, {
+        __argnames__ : {value: ["spos", "sColor"]},
+        __module__ : {value: null}
+    });
+    Queen.__argnames__ = Queen.prototype.__init__.__argnames__;
+    Queen.__handles_kwarg_interpolation__ = Queen.prototype.__init__.__handles_kwarg_interpolation__;
+    Queen.prototype.__repr__ = async function __repr__() {
+        if(Piece.prototype.__repr__) return Piece.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Queen.prototype.__str__ = async function __str__() {
+        if(Piece.prototype.__str__) return Piece.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Queen.prototype, "__bases__", {value: [Piece]});
+
+
+    "58";
+    function King() {;
+    }
+    ρσ_extends(King, Piece);
+    King.prototype.__init__ = async function __init__(spos, sColor) {
+        var self = this;
+        "60";
+        Piece.prototype.__init__.call(self);
+        "61";
+        self.base = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: spos, radius: .4, length: 1.2, axis: vec(0, 1, 0), color: sColor})]);
+        "62";
+        ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({height: .6, width: .6, length: .6, pos: spos["+"](vec(0, 1.5, 0)), color: sColor})]);
+    };
+    if (!King.prototype.__init__.__argnames__) Object.defineProperties(King.prototype.__init__, {
+        __argnames__ : {value: ["spos", "sColor"]},
+        __module__ : {value: null}
+    });
+    King.__argnames__ = King.prototype.__init__.__argnames__;
+    King.__handles_kwarg_interpolation__ = King.prototype.__init__.__handles_kwarg_interpolation__;
+    King.prototype.__repr__ = async function __repr__() {
+        if(Piece.prototype.__repr__) return Piece.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    King.prototype.__str__ = async function __str__() {
+        if(Piece.prototype.__str__) return Piece.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(King.prototype, "__bases__", {value: [Piece]});
+
+
+    "65";
+    function Board() {;
+    }
+    Board.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, i;
+        "70";
+        self.squares = ρσ_list_decorate([]);
+        "71";
+        for (var ρσ_Index2 = 0; ρσ_Index2["<"](64); ρσ_Index2++) {
+            i = ρσ_Index2;
+            "72";
+            self.squares.append(null);
+        }
+        "73";
+        (await self.make_board());
+        "74";
+        (await self.place_pieces());
+    };
+    if (!Board.prototype.__init__.__module__) Object.defineProperties(Board.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    Board.__argnames__ = Board.prototype.__init__.__argnames__;
+    Board.__handles_kwarg_interpolation__ = Board.prototype.__init__.__handles_kwarg_interpolation__;
+    Board.prototype.add_piece = async function add_piece(x, y, piece) {
+        var self = this;
+        "77";
+        ρσ_setitem(self.squares, y["*"](8)["+"](x), piece);
+    };
+    if (!Board.prototype.add_piece.__argnames__) Object.defineProperties(Board.prototype.add_piece, {
+        __argnames__ : {value: ["x", "y", "piece"]},
+        __module__ : {value: null}
+    });
+    Board.prototype.move_piece = async function move_piece(fx, fy, tx, ty) {
+        var self = this;
+        var ρσ_ls, piece, to_piece;
+        "84";
+        piece = ρσ_getitem(self.squares, fy["*"](8)["+"](fx));
+        "85";
+        if (piece === null) {
+            "86";
+            print("eh?");
+            "87";
+            return;
+        }
+        "88";
+        to_piece = ρσ_getitem(self.squares, ty["*"](8)["+"](tx));
+        "89";
+        if (to_piece !== null) {
+            "90";
+            to_piece.setvisible(0);
+        }
+        "91";
+        (await piece.move(vec(tx, 0, ty)));
+        "92";
+        ρσ_setitem(self.squares, ty["*"](8)["+"](tx), piece);
+        "93";
+        ρσ_setitem(self.squares, fy["*"](8)["+"](fx), null);
+    };
+    if (!Board.prototype.move_piece.__argnames__) Object.defineProperties(Board.prototype.move_piece, {
+        __argnames__ : {value: ["fx", "fy", "tx", "ty"]},
+        __module__ : {value: null}
+    });
+    Board.prototype.parse_string = async function parse_string(pMove) {
+        var self = this;
+        var ρσ_ls, fx, fy, tx, ty;
+        "101";
+        fx = 7["-"](1["*"](ord(ρσ_getitem(pMove, 0))["-"](1["*"](ord("a")))));
+        "102";
+        fy = ord(ρσ_getitem(pMove, 1))["-"](1["*"](ord("1")));
+        "103";
+        tx = 7["-"](1["*"](ord(ρσ_getitem(pMove, 2))["-"](1["*"](ord("a")))));
+        "104";
+        ty = ord(ρσ_getitem(pMove, 3))["-"](1["*"](ord("1")));
+        "105";
+        (await self.move_piece(fx, fy, tx, ty));
+    };
+    if (!Board.prototype.parse_string.__argnames__) Object.defineProperties(Board.prototype.parse_string, {
+        __argnames__ : {value: ["pMove"]},
+        __module__ : {value: null}
+    });
+    Board.prototype.make_board = async function make_board() {
+        var self = this;
+        var ρσ_ls, sColor, j, i;
+        "108";
+        for (var ρσ_Index3 = 0; ρσ_Index3["<"](8); ρσ_Index3++) {
+            i = ρσ_Index3;
+            "109";
+            for (var ρσ_Index4 = 0; ρσ_Index4["<"](8); ρσ_Index4++) {
+                j = ρσ_Index4;
+                "110";
+                if (ρσ_equals(i["+"](j)["%"](2), 1)) {
+                    "111";
+                    sColor = color.blue;
+                    "112";
+                } else {
+                    "113";
+                    sColor = color.white;
+                }
+                "114";
+                ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(i, 1["-u"]()["*"](.1), j), length: 1, height: .1, width: 1, color: sColor})]);
+            }
+        }
+    };
+    if (!Board.prototype.make_board.__module__) Object.defineProperties(Board.prototype.make_board, {
+        __module__ : {value: null}
+    });
+    Board.prototype.place_pieces = async function place_pieces() {
+        var self = this;
+        var ρσ_ls, _GS_1, i;
+        "117";
+        for (var ρσ_Index5 = 0; ρσ_Index5["<"](8); ρσ_Index5++) {
+            i = ρσ_Index5;
+            "118";
+            _GS_1 = new Pawn;
+            (await _GS_1.__init__(vec(i, 0, 1), color.white));
+            (await self.add_piece(i, 1, _GS_1));
+            "119";
+            _GS_1 = new Pawn;
+            (await _GS_1.__init__(vec(i, 0, 6), color.red));
+            (await self.add_piece(i, 6, _GS_1));
+        }
+        "121";
+        _GS_1 = new Rook;
+        (await _GS_1.__init__(vec(0, 0, 0), color.white));
+        (await self.add_piece(0, 0, _GS_1));
+        "122";
+        _GS_1 = new Rook;
+        (await _GS_1.__init__(vec(7, 0, 0), color.white));
+        (await self.add_piece(7, 0, _GS_1));
+        "123";
+        _GS_1 = new Rook;
+        (await _GS_1.__init__(vec(0, 0, 7), color.red));
+        (await self.add_piece(0, 7, _GS_1));
+        "124";
+        _GS_1 = new Rook;
+        (await _GS_1.__init__(vec(7, 0, 7), color.red));
+        (await self.add_piece(7, 7, _GS_1));
+        "125";
+        _GS_1 = new Knight;
+        (await _GS_1.__init__(vec(1, 0, 0), color.white));
+        (await self.add_piece(1, 0, _GS_1));
+        "126";
+        _GS_1 = new Knight;
+        (await _GS_1.__init__(vec(6, 0, 0), color.white));
+        (await self.add_piece(6, 0, _GS_1));
+        "127";
+        _GS_1 = new Knight;
+        (await _GS_1.__init__(vec(1, 0, 7), color.red));
+        (await self.add_piece(1, 7, _GS_1));
+        "128";
+        _GS_1 = new Knight;
+        (await _GS_1.__init__(vec(6, 0, 7), color.red));
+        (await self.add_piece(6, 7, _GS_1));
+        "129";
+        _GS_1 = new Bishop;
+        (await _GS_1.__init__(vec(2, 0, 0), color.white));
+        (await self.add_piece(2, 0, _GS_1));
+        "130";
+        _GS_1 = new Bishop;
+        (await _GS_1.__init__(vec(5, 0, 0), color.white));
+        (await self.add_piece(5, 0, _GS_1));
+        "131";
+        _GS_1 = new Bishop;
+        (await _GS_1.__init__(vec(2, 0, 7), color.red));
+        (await self.add_piece(2, 7, _GS_1));
+        "132";
+        _GS_1 = new Bishop;
+        (await _GS_1.__init__(vec(5, 0, 7), color.red));
+        (await self.add_piece(5, 7, _GS_1));
+        "133";
+        _GS_1 = new Queen;
+        (await _GS_1.__init__(vec(4, 0, 0), color.white));
+        (await self.add_piece(4, 0, _GS_1));
+        "134";
+        _GS_1 = new Queen;
+        (await _GS_1.__init__(vec(4, 0, 7), color.red));
+        (await self.add_piece(4, 7, _GS_1));
+        "135";
+        _GS_1 = new King;
+        (await _GS_1.__init__(vec(3, 0, 0), color.white));
+        (await self.add_piece(3, 0, _GS_1));
+        "136";
+        _GS_1 = new King;
+        (await _GS_1.__init__(vec(3, 0, 7), color.red));
+        (await self.add_piece(3, 7, _GS_1));
+    };
+    if (!Board.prototype.place_pieces.__module__) Object.defineProperties(Board.prototype.place_pieces, {
+        __module__ : {value: null}
+    });
+    Board.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Board.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Board.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "139";
+    _GS_1 = new Board;
+    (await _GS_1.__init__());
+    thisBoard = _GS_1;
+    "141";
+    (await thisBoard.parse_string("e2e4"));
+    "143";
+    while (true) {
+        "144";
+        (await rate(10));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
