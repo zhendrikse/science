@@ -135,9 +135,9 @@ finest that music and poetry can deliver. &mdash;
         <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
-    <p style="clear: both; font-weight: bold; display: flex; flex-direction: column; justify-content: flex-end;"><br/>
-      <a href="waves/index.html">Learn more &#x2026;</a>
-    </p>
+    <div style="display: flex; flex-direction: column; justify-content: flex-end;">
+      <p style="clear: both;"><br/><a href="waves/index.html">Learn more &#x2026;</a></p>
+    </div>
   </div>
 </div>
 
