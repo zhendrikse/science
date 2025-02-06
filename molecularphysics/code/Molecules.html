@@ -52,7 +52,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, checkbox, checkbox, text, download, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, animation, _GS_1, _GS_2, _GS_3, _GS_4, molecules, molecule, radio_buttons, name, radius_slider, wt;
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, _GS_1, _GS_2, _GS_3, _GS_4, _GS_5, molecules, molecule, radio_buttons, name, radius_slider, wt;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -620,103 +620,134 @@ return this.__repr__();
     ρσ_extends(LacticAcid, Molecule);
     LacticAcid.prototype.__init__ = async function __init__() {
         var self = this;
-        var ρσ_ls, rC, rO, rH, rbond, nC, nO, nH, Carray, Oarray, Harray, sqrt3, sqrt3h, sinphi, cosphi, i;
+        var carbon_radius = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.carbon_radius : arguments[0];
+        var oxygen_radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.oxygen_radius : arguments[1];
+        var hydrogen_radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.hydrogen_radius : arguments[2];
+        var bond_radius = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.bond_radius : arguments[3];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "carbon_radius")){
+            carbon_radius = ρσ_kwargs_obj.carbon_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "oxygen_radius")){
+            oxygen_radius = ρσ_kwargs_obj.oxygen_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "hydrogen_radius")){
+            hydrogen_radius = ρσ_kwargs_obj.hydrogen_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "bond_radius")){
+            bond_radius = ρσ_kwargs_obj.bond_radius;
+        }
+        var ρσ_ls, sqrt3, sqrt3h, sin_phi, cos_phi, carbon_positions, _GS_1, position, hydrogen_positions, oxygen_positions;
         "147";
         Molecule.prototype.__init__.call(self);
         "148";
-        rC = .25;
-        "149";
-        rO = .3;
-        "150";
-        rH = .2;
-        "151";
-        rbond = .05;
-        "153";
-        nC = 3;
-        "154";
-        nO = 3;
-        "155";
-        nH = 6;
-        "157";
-        Carray = ρσ_list_decorate([]);
-        "158";
-        Oarray = ρσ_list_decorate([]);
-        "159";
-        Harray = ρσ_list_decorate([]);
-        "161";
         sqrt3 = sqrt(3);
-        "162";
+        "149";
         sqrt3h = sqrt3["/"](2);
-        "163";
-        sinphi = 1["/"](3);
-        "164";
-        cosphi = 2["*"](sqrt(2))["/"](3);
-        "166";
-        for (var ρσ_Index15 = 0; ρσ_Index15["<"](nC); ρσ_Index15++) {
-            i = ρσ_Index15;
-            "167";
-            Carray.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: rC, color: color.black})]));
+        "150";
+        sin_phi = 1["/"](3);
+        "151";
+        cos_phi = 2["*"](sqrt(2))["/"](3);
+        "153";
+        carbon_positions = ρσ_list_decorate([ vec(1["-u"]()["*"](1), 0, 0), vec(0, 0, 0), vec(sin_phi, 1["-u"]()["*"](cos_phi)["/"](2), 1["-u"]()["*"](sqrt3h)["*"](cos_phi)) ]);
+        "154";
+        var ρσ_Iter15 = carbon_positions;
+        ρσ_Iter15 = ((typeof ρσ_Iter15[Symbol.iterator] === "function") ? (ρσ_Iter15 instanceof Map ? ρσ_Iter15.keys() : ρσ_Iter15) : Object.keys(ρσ_Iter15));
+        for (var ρσ_Index15 of ρσ_Iter15) {
+            position = ρσ_Index15;
+            "155";
+            _GS_1 = new Atom;
+            (await _GS_1.__init__(carbon_radius, color.black, position));
+            self._atoms.append(_GS_1);
         }
-        "168";
-        for (var ρσ_Index16 = 0; ρσ_Index16["<"](nH); ρσ_Index16++) {
-            i = ρσ_Index16;
-            "169";
-            Harray.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: rH, color: color.white})]));
+        "157";
+        hydrogen_positions = ρσ_list_decorate([ vec(1["-u"]()["*"](1)["-"](1["*"](sin_phi)), 1["-u"]()["*"](cos_phi), 0), vec(1["-u"]()["*"](1)["-"](1["*"](sin_phi)), cos_phi["/"](2), sqrt3h["*"](cos_phi)) ]);
+        "158";
+        hydrogen_positions=hydrogen_positions["+"](ρσ_list_decorate([ vec(1["-u"]()["*"](1)["-"](1["*"](sin_phi)), cos_phi["/"](2), 1["-u"]()["*"](sqrt3h)["*"](cos_phi)), vec(sin_phi, 1["-u"]()["*"](cos_phi)["/"](2), 0["+"](sqrt3h["*"](cos_phi))) ]));
+        "159";
+        hydrogen_positions=hydrogen_positions["+"](ρσ_list_decorate([ vec(1.25["+"](sin_phi), 1["-u"]()["*"](.5)["-"](1["*"](cos_phi)["/"](2)), 1["-u"]()["*"](1.25)["-"](1["*"](sqrt3h)["*"](cos_phi))) ]));
+        "160";
+        hydrogen_positions=hydrogen_positions["+"](ρσ_list_decorate([ vec(.75["-"](1["*"](sin_phi)), 1["+"](cos_phi["/"](2)), sqrt3h["*"](cos_phi)) ]));
+        "161";
+        var ρσ_Iter16 = hydrogen_positions;
+        ρσ_Iter16 = ((typeof ρσ_Iter16[Symbol.iterator] === "function") ? (ρσ_Iter16 instanceof Map ? ρσ_Iter16.keys() : ρσ_Iter16) : Object.keys(ρσ_Iter16));
+        for (var ρσ_Index16 of ρσ_Iter16) {
+            position = ρσ_Index16;
+            "162";
+            _GS_1 = new Atom;
+            (await _GS_1.__init__(hydrogen_radius, color.white, position));
+            self._atoms.append(_GS_1);
+        }
+        "164";
+        oxygen_positions = ρσ_list_decorate([ vec(.75, 1, 0) ]);
+        "165";
+        oxygen_positions=oxygen_positions["+"](ρσ_list_decorate([ vec(1.25, 1["-u"]()["*"](.5), 1["-u"]()["*"](1.25)) ]));
+        "166";
+        oxygen_positions=oxygen_positions["+"](ρσ_list_decorate([ vec(.25, 1["-u"]()["*"](1.25), 1["-u"]()["*"](1.25)) ]));
+        "167";
+        var ρσ_Iter17 = oxygen_positions;
+        ρσ_Iter17 = ((typeof ρσ_Iter17[Symbol.iterator] === "function") ? (ρσ_Iter17 instanceof Map ? ρσ_Iter17.keys() : ρσ_Iter17) : Object.keys(ρσ_Iter17));
+        for (var ρσ_Index17 of ρσ_Iter17) {
+            position = ρσ_Index17;
+            "168";
+            _GS_1 = new Atom;
+            (await _GS_1.__init__(oxygen_radius, color.red, position));
+            self._atoms.append(_GS_1);
         }
         "170";
-        for (var ρσ_Index17 = 0; ρσ_Index17["<"](nO); ρσ_Index17++) {
-            i = ρσ_Index17;
-            "171";
-            Oarray.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: rO, color: color.red})]));
-        }
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 1), ρσ_getitem(hydrogen_positions, 3)));
+        self._bonds.append(_GS_1);
+        "171";
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 1), ρσ_getitem(oxygen_positions, 0)));
+        self._bonds.append(_GS_1);
+        "172";
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 2), ρσ_getitem(oxygen_positions, 1)));
+        self._bonds.append(_GS_1);
         "173";
-        ρσ_getitem(Carray, 0).pos = vec(1["-u"]()["*"](1), 0, 0);
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(2.5["*"](bond_radius), ρσ_getitem(carbon_positions, 2), ρσ_getitem(oxygen_positions, 2)));
+        self._bonds.append(_GS_1);
         "174";
-        ρσ_getitem(Carray, 1).pos = vec(0, 0, 0);
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(oxygen_positions, 1), ρσ_getitem(hydrogen_positions, 4)));
+        self._bonds.append(_GS_1);
         "175";
-        ρσ_getitem(Carray, 2).pos = vec(sinphi, 1["-u"]()["*"](cosphi)["/"](2), 1["-u"]()["*"](sqrt3h)["*"](cosphi));
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 2), ρσ_getitem(oxygen_positions, 1)));
+        self._bonds.append(_GS_1);
+        "176";
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(hydrogen_positions, 5), ρσ_getitem(oxygen_positions, 0)));
+        self._bonds.append(_GS_1);
         "177";
-        ρσ_getitem(Harray, 0).pos = vec(1["-u"]()["*"](1)["-"](1["*"](sinphi)), 1["-u"]()["*"](cosphi), 0);
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 0), ρσ_getitem(hydrogen_positions, 0)));
+        self._bonds.append(_GS_1);
         "178";
-        ρσ_getitem(Harray, 1).pos = vec(1["-u"]()["*"](1)["-"](1["*"](sinphi)), cosphi["/"](2), sqrt3h["*"](cosphi));
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 0), ρσ_getitem(hydrogen_positions, 1)));
+        self._bonds.append(_GS_1);
         "179";
-        ρσ_getitem(Harray, 2).pos = vec(1["-u"]()["*"](1)["-"](1["*"](sinphi)), cosphi["/"](2), 1["-u"]()["*"](sqrt3h)["*"](cosphi));
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 0), ρσ_getitem(hydrogen_positions, 2)));
+        self._bonds.append(_GS_1);
         "180";
-        ρσ_getitem(Harray, 3).pos = vec(sinphi, 1["-u"]()["*"](cosphi)["/"](2), 0["+"](sqrt3h["*"](cosphi)));
-        "182";
-        ρσ_getitem(Harray, 4).pos = vec(1.25["+"](sinphi), 1["-u"]()["*"](.5)["-"](1["*"](cosphi)["/"](2)), 1["-u"]()["*"](1.25)["-"](1["*"](sqrt3h)["*"](cosphi)));
-        "183";
-        ρσ_getitem(Harray, 5).pos = vec(.75["-"](1["*"](sinphi)), 1["+"](cosphi["/"](2)), sqrt3h["*"](cosphi));
-        "185";
-        ρσ_getitem(Oarray, 0).pos = vec(.75, 1, 0);
-        "186";
-        ρσ_getitem(Oarray, 1).pos = vec(1.25, 1["-u"]()["*"](.5), 1["-u"]()["*"](1.25));
-        "187";
-        ρσ_getitem(Oarray, 2).pos = vec(.25, 1["-u"]()["*"](1.25), 1["-u"]()["*"](1.25));
-        "189";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 1).pos, ρσ_getitem(Harray, 3).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
-        "190";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 1).pos, ρσ_getitem(Oarray, 0).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
-        "191";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 2).pos, ρσ_getitem(Oarray, 1).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
-        "192";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 2).pos, ρσ_getitem(Oarray, 2).pos ]), radius: 2.5["*"](rbond), color: vec(.2, .2, .2)})]);
-        "193";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Oarray, 1).pos, ρσ_getitem(Harray, 4).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
-        "194";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 2).pos, ρσ_getitem(Oarray, 1).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
-        "195";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Harray, 5).pos, ρσ_getitem(Oarray, 0).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
-        "196";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 0).pos, ρσ_getitem(Harray, 0).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
-        "197";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 0).pos, ρσ_getitem(Harray, 1).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
-        "198";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 0).pos, ρσ_getitem(Harray, 2).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
-        "199";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 0).pos, ρσ_getitem(Carray, 1).pos, ρσ_getitem(Carray, 2).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 0), ρσ_getitem(carbon_positions, 1)));
+        self._bonds.append(_GS_1);
+        "181";
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 1), ρσ_getitem(carbon_positions, 2)));
+        self._bonds.append(_GS_1);
     };
-    if (!LacticAcid.prototype.__init__.__module__) Object.defineProperties(LacticAcid.prototype.__init__, {
+    if (!LacticAcid.prototype.__init__.__defaults__) Object.defineProperties(LacticAcid.prototype.__init__, {
+        __defaults__ : {value: {carbon_radius:.25, oxygen_radius:.3, hydrogen_radius:.2, bond_radius:.05}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["carbon_radius", "oxygen_radius", "hydrogen_radius", "bond_radius"]},
         __module__ : {value: null}
     });
     LacticAcid.__argnames__ = LacticAcid.prototype.__init__.__argnames__;
@@ -732,14 +763,14 @@ return this.__repr__();
     Object.defineProperty(LacticAcid.prototype, "__bases__", {value: [Molecule]});
 
 
-    "201";
+    "183";
     function RadioButton() {;
     }
     RadioButton.prototype.__init__ = async function __init__(button_, molecule_) {
         var self = this;
-        "203";
+        "185";
         self._button = button_;
-        "204";
+        "186";
         self._molecule = molecule_;
     };
     if (!RadioButton.prototype.__init__.__argnames__) Object.defineProperties(RadioButton.prototype.__init__, {
@@ -750,7 +781,7 @@ return this.__repr__();
     RadioButton.__handles_kwarg_interpolation__ = RadioButton.prototype.__init__.__handles_kwarg_interpolation__;
     RadioButton.prototype.uncheck = async function uncheck() {
         var self = this;
-        "207";
+        "189";
         self._button.checked = false;
     };
     if (!RadioButton.prototype.uncheck.__module__) Object.defineProperties(RadioButton.prototype.uncheck, {
@@ -758,7 +789,7 @@ return this.__repr__();
     });
     RadioButton.prototype.push = async function push(button_name) {
         var self = this;
-        "210";
+        "192";
         (await self._molecule.show());
     };
     if (!RadioButton.prototype.push.__argnames__) Object.defineProperties(RadioButton.prototype.push, {
@@ -767,7 +798,7 @@ return this.__repr__();
     });
     RadioButton.prototype.check = async function check() {
         var self = this;
-        "213";
+        "195";
         self._button.checked = true;
     };
     if (!RadioButton.prototype.check.__module__) Object.defineProperties(RadioButton.prototype.check, {
@@ -775,7 +806,7 @@ return this.__repr__();
     });
     RadioButton.prototype.name = async function name() {
         var self = this;
-        "216";
+        "198";
         return self._button.name;
     };
     if (!RadioButton.prototype.name.__module__) Object.defineProperties(RadioButton.prototype.name, {
@@ -794,14 +825,14 @@ return this.__repr__();
 
 
 
-    "218";
+    "200";
     function RadioButtons() {;
     }
     RadioButtons.prototype.__init__ = async function __init__() {
         var self = this;
-        "220";
+        "202";
         self._radio_buttons = ρσ_list_decorate([]);
-        "221";
+        "203";
         self._selected_button = null;
     };
     if (!RadioButtons.prototype.__init__.__module__) Object.defineProperties(RadioButtons.prototype.__init__, {
@@ -812,20 +843,20 @@ return this.__repr__();
     RadioButtons.prototype.add = async function add(button_, molecule_) {
         var self = this;
         var ρσ_ls, _GS_1;
-        "224";
+        "206";
         _GS_1 = new RadioButton;
         (await _GS_1.__init__(button_, molecule_));
         self._radio_buttons.append(_GS_1);
-        "226";
+        "208";
         if (ρσ_equals(len(self._radio_buttons)["%"](5), 0)) {
-            "227";
+            "209";
             animation.append_to_caption("\n\n");
-            "229";
+            "211";
         }
         if (ρσ_equals(len(self._radio_buttons), 1)) {
-            "230";
+            "212";
             (await ρσ_getitem(self._radio_buttons, 0).check());
-            "231";
+            "213";
             self._selected_button = ρσ_getitem(self._radio_buttons, 0);
         }
     };
@@ -836,12 +867,12 @@ return this.__repr__();
     RadioButtons.prototype._uncheck_buttons_except = async function _uncheck_buttons_except(button_name) {
         var self = this;
         var ρσ_ls, button_;
-        "234";
+        "216";
         var ρσ_Iter18 = self._radio_buttons;
         ρσ_Iter18 = ((typeof ρσ_Iter18[Symbol.iterator] === "function") ? (ρσ_Iter18 instanceof Map ? ρσ_Iter18.keys() : ρσ_Iter18) : Object.keys(ρσ_Iter18));
         for (var ρσ_Index18 of ρσ_Iter18) {
             button_ = ρσ_Index18;
-            "235";
+            "217";
             if (ρσ_not_equals((await button_.name()), button_name)) {
                 (await button_.uncheck());
             }
@@ -854,12 +885,12 @@ return this.__repr__();
     RadioButtons.prototype._get_button_by = async function _get_button_by(button_name) {
         var self = this;
         var ρσ_ls, button_;
-        "238";
+        "220";
         var ρσ_Iter19 = self._radio_buttons;
         ρσ_Iter19 = ((typeof ρσ_Iter19[Symbol.iterator] === "function") ? (ρσ_Iter19 instanceof Map ? ρσ_Iter19.keys() : ρσ_Iter19) : Object.keys(ρσ_Iter19));
         for (var ρσ_Index19 of ρσ_Iter19) {
             button_ = ρσ_Index19;
-            "239";
+            "221";
             if (ρσ_equals((await button_.name()), button_name)) {
                 return button_;
             }
@@ -871,11 +902,11 @@ return this.__repr__();
     });
     RadioButtons.prototype.toggle = async function toggle(button_name) {
         var self = this;
-        "242";
+        "224";
         (await self._uncheck_buttons_except(button_name));
-        "243";
+        "225";
         self._selected_button = (await self._get_button_by(button_name));
-        "244";
+        "226";
         (await self._selected_button.push(button_name));
     };
     if (!RadioButtons.prototype.toggle.__argnames__) Object.defineProperties(RadioButtons.prototype.toggle, {
@@ -884,7 +915,7 @@ return this.__repr__();
     });
     RadioButtons.prototype.get_selected_button_name = async function get_selected_button_name() {
         var self = this;
-        "247";
+        "229";
         return (await self._selected_button.name());
     };
     if (!RadioButtons.prototype.get_selected_button_name.__module__) Object.defineProperties(RadioButtons.prototype.get_selected_button_name, {
@@ -904,7 +935,7 @@ return this.__repr__();
 
 
 
-    "249";
+    "231";
     _GS_1 = new Water;
     (await _GS_1.__init__());
     _GS_2 = new Methane;
@@ -913,36 +944,39 @@ return this.__repr__();
     (await _GS_3.__init__());
     _GS_4 = new Ethanol;
     (await _GS_4.__init__());
+    _GS_5 = new LacticAcid;
+    (await _GS_5.__init__());
     molecules = (function(){
         var ρσ_d = ρσ_dict();
         ρσ_d.set("Water", _GS_1);
         ρσ_d.set("Methane", _GS_2);
         ρσ_d.set("Ammonia", _GS_3);
         ρσ_d.set("Ethanol", _GS_4);
+        ρσ_d.set("Lactic acid", _GS_5);
         return ρσ_d;
     }).call(this);
-    "251";
+    "233";
     var ρσ_Iter20 = molecules.values();
     ρσ_Iter20 = ((typeof ρσ_Iter20[Symbol.iterator] === "function") ? (ρσ_Iter20 instanceof Map ? ρσ_Iter20.keys() : ρσ_Iter20) : Object.keys(ρσ_Iter20));
     for (var ρσ_Index20 of ρσ_Iter20) {
         molecule = ρσ_Index20;
-        "252";
+        "234";
         (await molecule.hide());
     }
-    "254";
+    "236";
     (await ρσ_getitem(molecules, "Water").show());
-    "260";
+    "242";
     async function toggle(event) {
         var ρσ_ls, molecule_;
-        "261";
+        "243";
         var ρσ_Iter21 = molecules.values();
         ρσ_Iter21 = ((typeof ρσ_Iter21[Symbol.iterator] === "function") ? (ρσ_Iter21 instanceof Map ? ρσ_Iter21.keys() : ρσ_Iter21) : Object.keys(ρσ_Iter21));
         for (var ρσ_Index21 of ρσ_Iter21) {
             molecule_ = ρσ_Index21;
-            "262";
+            "244";
             (await molecule_.hide());
         }
-        "263";
+        "245";
         (await radio_buttons.toggle(event.name));
     };
     if (!toggle.__argnames__) Object.defineProperties(toggle, {
@@ -950,17 +984,17 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "265";
+    "247";
     async function on_radius_change(s) {
         var ρσ_ls, molecule_;
-        "266";
+        "248";
         wt.text = "Atomic radius scale factor: {:1.2f}".format(s.value);
-        "267";
+        "249";
         var ρσ_Iter22 = molecules.values();
         ρσ_Iter22 = ((typeof ρσ_Iter22[Symbol.iterator] === "function") ? (ρσ_Iter22 instanceof Map ? ρσ_Iter22.keys() : ρσ_Iter22) : Object.keys(ρσ_Iter22));
         for (var ρσ_Index22 of ρσ_Iter22) {
             molecule_ = ρσ_Index22;
-            "268";
+            "250";
             (await molecule_.scale_atomic_radius_by(radius_slider.value));
         }
     };
@@ -969,27 +1003,27 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "270";
+    "252";
     _GS_1 = new RadioButtons;
     (await _GS_1.__init__());
     radio_buttons = _GS_1;
-    "271";
+    "253";
     var ρσ_Iter23 = molecules.keys();
     ρσ_Iter23 = ((typeof ρσ_Iter23[Symbol.iterator] === "function") ? (ρσ_Iter23 instanceof Map ? ρσ_Iter23.keys() : ρσ_Iter23) : Object.keys(ρσ_Iter23));
     for (var ρσ_Index23 of ρσ_Iter23) {
         name = ρσ_Index23;
-        "272";
+        "254";
         (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: name["+"](" "), name: name})]), ρσ_getitem(molecules, name)));
     }
-    "274";
+    "256";
     animation.append_to_caption("\n\n");
-    "275";
+    "257";
     radius_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .5, max: 3, value: 1, bind: on_radius_change})]);
-    "276";
+    "258";
     wt = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: " Atomic radius scale factor: {:1.2f}".format(radius_slider.value)})]);
-    "278";
+    "260";
     while (true) {
-        "279";
+        "261";
         (await rate(10));
     }
 };

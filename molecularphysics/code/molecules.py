@@ -143,60 +143,42 @@ class Ethanol(Molecule):
         self._bonds.append(Bond(bond_radius, carbon_positions[0], oxygen_position))
 
 class LacticAcid(Molecule):
-    def __init__(self):
+    def __init__(self, carbon_radius=0.25, oxygen_radius=0.3, hydrogen_radius=0.2, bond_radius=0.05):
         Molecule.__init__(self)
-        rC = 0.25
-        rO = 0.3
-        rH = 0.2
-        rbond = 0.05
-
-        nC = 3
-        nO = 3
-        nH = 6
-
-        Carray=[]
-        Oarray=[]
-        Harray=[]
-
         sqrt3=sqrt(3)
         sqrt3h=sqrt3/2
-        sinphi=1/3
-        cosphi=2*sqrt(2)/3
+        sin_phi=1/3
+        cos_phi=2*sqrt(2)/3
 
-        for i in range(0,nC):
-            Carray.append(sphere(radius=rC, color=color.black))
-        for i in range(0,nH):
-            Harray.append(sphere(radius=rH, color=color.white))
-        for i in range(0,nO):
-            Oarray.append(sphere(radius=rO, color=color.red))
+        carbon_positions = [vec(-1, 0, 0), vec(0 ,0, 0), vec(sin_phi, -cos_phi / 2, -sqrt3h * cos_phi)]
+        for position in carbon_positions:
+            self._atoms.append(Atom(carbon_radius, color.black, position))
 
-        Carray[0].pos=vec(-1,0,0)
-        Carray[1].pos=vec(0,0,0)
-        Carray[2].pos=vec(sinphi,-cosphi/2,-sqrt3h*cosphi)
+        hydrogen_positions = [vec(-1 - sin_phi, -cos_phi, 0), vec(-1 - sin_phi, cos_phi / 2,sqrt3h * cos_phi)]
+        hydrogen_positions += [vec(-1 - sin_phi,cos_phi / 2, -sqrt3h * cos_phi), vec(sin_phi, -cos_phi / 2, 0 + sqrt3h * cos_phi)]
+        hydrogen_positions += [vec(1.25 + sin_phi,-0.5 - cos_phi / 2, -1.25 - sqrt3h * cos_phi)] #Denne her sidder på O[1]
+        hydrogen_positions += [vec(0.75 - sin_phi, 1 + cos_phi / 2, +sqrt3h * cos_phi)] # Denne her sidder på det ensomme O-atom O[0]
+        for position in hydrogen_positions:
+            self._atoms.append(Atom(hydrogen_radius, color.white, position))
 
-        Harray[0].pos=vec(-1-sinphi,-cosphi,0)
-        Harray[1].pos=vec(-1-sinphi,cosphi/2,sqrt3h*cosphi)
-        Harray[2].pos=vec(-1-sinphi,cosphi/2,-sqrt3h*cosphi)
-        Harray[3].pos=vec(sinphi,-cosphi/2,0+sqrt3h*cosphi)#Denne er nu OK
+        oxygen_positions = [vec(0.75, 1, 0)]
+        oxygen_positions += [vec(1.25, -0.5, -1.25)]
+        oxygen_positions += [vec(0.25, -1.25, -1.25)] # Double bond is located here
+        for position in oxygen_positions:
+            self._atoms.append(Atom(oxygen_radius, color.red, position))
 
-        Harray[4].pos=vec(1.25+sinphi,-0.5-cosphi/2,-1.25-sqrt3h*cosphi) #Denne her sidder på O[1]
-        Harray[5].pos=vec(0.75-sinphi,1+cosphi/2,+sqrt3h*cosphi)# Denne her sidder på det ensomme O-atom O[0]
-
-        Oarray[0].pos=vec(0.75,1,0)
-        Oarray[1].pos=vec(1.25,-0.5,-1.25)
-        Oarray[2].pos=vec(0.25,-1.25,-1.25)# Den med dobbeltbindingen
-
-        curve(pos=[Carray[1].pos,Harray[3].pos],radius=rbond,color=vec(0.5,0.5,0.5))
-        curve(pos=[Carray[1].pos,Oarray[0].pos],radius=rbond,color=vec(0.5,0.5,0.5))
-        curve(pos=[Carray[2].pos,Oarray[1].pos],radius=rbond,color=vec(0.5,0.5,0.5))
-        curve(pos=[Carray[2].pos,Oarray[2].pos],radius=2.5*rbond,color=vec(0.2,0.2,0.2))
-        curve(pos=[Oarray[1].pos,Harray[4].pos],radius=rbond,color=vec(0.5,0.5,0.5))
-        curve(pos=[Carray[2].pos,Oarray[1].pos],radius=rbond,color=vec(0.5,0.5,0.5))
-        curve(pos=[Harray[5].pos,Oarray[0].pos],radius=rbond,color=vec(0.5,0.5,0.5))
-        curve(pos=[Carray[0].pos,Harray[0].pos],radius=rbond,color=vec(0.5,0.5,0.5))
-        curve(pos=[Carray[0].pos,Harray[1].pos],radius=rbond,color=vec(0.5,0.5,0.5))
-        curve(pos=[Carray[0].pos,Harray[2].pos],radius=rbond,color=vec(0.5,0.5,0.5))
-        curve(pos=[Carray[0].pos,Carray[1].pos,Carray[2].pos],radius=rbond,color=vec(0.5,0.5,0.5))
+        self._bonds.append(Bond(bond_radius, carbon_positions[1], hydrogen_positions[3]))
+        self._bonds.append(Bond(bond_radius, carbon_positions[1], oxygen_positions[0]))
+        self._bonds.append(Bond(bond_radius, carbon_positions[2], oxygen_positions[1]))
+        self._bonds.append(Bond(2.5 * bond_radius, carbon_positions[2], oxygen_positions[2]))
+        self._bonds.append(Bond(bond_radius, oxygen_positions[1], hydrogen_positions[4]))
+        self._bonds.append(Bond(bond_radius, carbon_positions[2], oxygen_positions[1]))
+        self._bonds.append(Bond(bond_radius, hydrogen_positions[5], oxygen_positions[0]))
+        self._bonds.append(Bond(bond_radius, carbon_positions[0], hydrogen_positions[0]))
+        self._bonds.append(Bond(bond_radius, carbon_positions[0], hydrogen_positions[1]))
+        self._bonds.append(Bond(bond_radius, carbon_positions[0], hydrogen_positions[2]))
+        self._bonds.append(Bond(bond_radius, carbon_positions[0], carbon_positions[1]))
+        self._bonds.append(Bond(bond_radius, carbon_positions[1], carbon_positions[2]))
 
 class RadioButton:
     def __init__(self, button_, molecule_):
@@ -246,7 +228,7 @@ class RadioButtons:
     def get_selected_button_name(self):
         return self._selected_button.name()
 
-molecules = {"Water": Water(), "Methane": Methane(), "Ammonia": Ammonia(), "Ethanol": Ethanol()}
+molecules = {"Water": Water(), "Methane": Methane(), "Ammonia": Ammonia(), "Ethanol": Ethanol(), "Lactic acid": LacticAcid()}
 
 for molecule in molecules.values():
     molecule.hide()

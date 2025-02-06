@@ -146,7 +146,7 @@ finest that music and poetry can deliver. &mdash;
       </figure>
       <figure class="right_image">
         <a href="mathematics/topology.html">
-          <img alt="Conchoidal" src="images/geometry/conchoid.png" title="Click to animate"/>
+          <img alt="Conchoidal" src="mathematics/gallery/images/conchoid.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
