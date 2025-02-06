@@ -145,7 +145,7 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <a href="mathematics/topology.html">
+        <a href="mathematics/gallery/index.html">
           <img alt="Conchoidal" src="mathematics/gallery/images/conchoid.png" title="Click to animate"/>
         </a>
       </figure>
@@ -367,5 +367,45 @@ finest that music and poetry can deliver. &mdash;
   <p style="clear: both;"></p>
 </div>
 
+<p style="clear: both;"></p>
+# Fun
+<div class="header_line"><br/></div>
 
+<!--           -->
+<!-- Fun stuff -->
+<!--           -->
+
+<div class="row">
+  <div class="column" style="background-color:#4c3340;">
+    <h2><a href="fun/index.html">Fun stuff</a></h2>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="fun/rubiks_cube.html">
+          <img alt="Rubik&apos;s cube" src="images/rubiks_cube.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="fun/robot.html">
+          <img alt="Turtle robot" src="images/robot.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+  </div>
+  <!--div class="column" style="background-color:#444400;">
+    <h2><a href="thermodynamics/index.html">Statistical physics</a></h2>
+    <div class="double_image">
+      <figure class="left_image">
+       <a href="waves/boltzmann_gas.html">
+         <img alt="Swimming pool" src="images/hard_sphere_gas.png" title="Click to animate"/>
+       </a>
+      </figure>
+      <figure class="right_image">
+       <a href="thermodynamics/ising_spin.html">
+         <img alt="Swimming pool" src="images/ising_spin_model.png" title="Click to animate"/>
+       </a>
+      </figure>
+    </div>
+  </div-->
+  <p style="clear: both;"></p>
+</div>
 
