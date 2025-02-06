@@ -51,8 +51,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, animation, _GS_1, water, atomic_radius, wt;
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, checkbox, checkbox, text, download, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, _GS_1, _GS_2, _GS_3, _GS_4, molecules, molecule, radio_buttons, name, radius_slider, wt;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,136 +64,932 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "9";
-    title = "\n&#x2022; Based on <a href=\"https://glowscript.org/#/user/priisdk/folder/molecules/\">this original code and idea<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
-    "11";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.05), forward: vec(10, 1["-u"]()["*"](8), 5), center: vec(0, 0, 0), range: 1.25})]);
-    "15";
-    function WaterMolecule() {;
+    "8";
+    title = "&#x2022; Based on <a href=\"https://glowscript.org/#/user/priisdk/folder/molecules/\">this original code and idea<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "10";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: vec(.3, .2, .25), forward: vec(10, 1["-u"]()["*"](8), 5), center: vec(0, 0, 0)})]);
+    "13";
+    function Atom() {;
     }
-    WaterMolecule.prototype.__init__ = async function __init__() {
+    Atom.prototype.__init__ = async function __init__() {
         var self = this;
-        var oxygen_atom_count = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.oxygen_atom_count : arguments[0];
-        var hydrogen_atom_count = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.hydrogen_atom_count : arguments[1];
+        var radius = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var colour = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var position = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        "15";
+        self._sphere = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, color: colour})]);
+        "16";
+        self._radius = radius;
+    };
+    if (!Atom.prototype.__init__.__defaults__) Object.defineProperties(Atom.prototype.__init__, {
+        __defaults__ : {value: {position:vec(0, 0, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["radius", "colour", "position"]},
+        __module__ : {value: null}
+    });
+    Atom.__argnames__ = Atom.prototype.__init__.__argnames__;
+    Atom.__handles_kwarg_interpolation__ = Atom.prototype.__init__.__handles_kwarg_interpolation__;
+    Atom.prototype.hide = async function hide() {
+        var self = this;
+        "19";
+        self._sphere.visible = false;
+    };
+    if (!Atom.prototype.hide.__module__) Object.defineProperties(Atom.prototype.hide, {
+        __module__ : {value: null}
+    });
+    Atom.prototype.show = async function show() {
+        var self = this;
+        "22";
+        self._sphere.visible = true;
+    };
+    if (!Atom.prototype.show.__module__) Object.defineProperties(Atom.prototype.show, {
+        __module__ : {value: null}
+    });
+    Atom.prototype.scale_by = async function scale_by(scale_factor) {
+        var self = this;
+        "25";
+        self._sphere.radius = self._radius["*"](scale_factor);
+    };
+    if (!Atom.prototype.scale_by.__argnames__) Object.defineProperties(Atom.prototype.scale_by, {
+        __argnames__ : {value: ["scale_factor"]},
+        __module__ : {value: null}
+    });
+    Atom.prototype.pos = async function pos() {
+        var self = this;
+        "28";
+        return self._sphere.pos;
+    };
+    if (!Atom.prototype.pos.__module__) Object.defineProperties(Atom.prototype.pos, {
+        __module__ : {value: null}
+    });
+    Atom.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Atom.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Atom.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "30";
+    function Bond() {;
+    }
+    Bond.prototype.__init__ = async function __init__(radius, from_, to_) {
+        var self = this;
+        "32";
+        self._bond = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ from_, to_ ]), radius: radius, color: color.gray(.5)})]);
+    };
+    if (!Bond.prototype.__init__.__argnames__) Object.defineProperties(Bond.prototype.__init__, {
+        __argnames__ : {value: ["radius", "from_", "to_"]},
+        __module__ : {value: null}
+    });
+    Bond.__argnames__ = Bond.prototype.__init__.__argnames__;
+    Bond.__handles_kwarg_interpolation__ = Bond.prototype.__init__.__handles_kwarg_interpolation__;
+    Bond.prototype.hide = async function hide() {
+        var self = this;
+        "35";
+        self._bond.visible = false;
+    };
+    if (!Bond.prototype.hide.__module__) Object.defineProperties(Bond.prototype.hide, {
+        __module__ : {value: null}
+    });
+    Bond.prototype.show = async function show() {
+        var self = this;
+        "38";
+        self._bond.visible = true;
+    };
+    if (!Bond.prototype.show.__module__) Object.defineProperties(Bond.prototype.show, {
+        __module__ : {value: null}
+    });
+    Bond.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Bond.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Bond.prototype, "__bases__", {value: []});
+
+
+
+
+    "40";
+    function Molecule() {;
+    }
+    Molecule.prototype.__init__ = async function __init__() {
+        var self = this;
+        "42";
+        self._atoms = ρσ_list_decorate([]);
+        "43";
+        self._bonds = ρσ_list_decorate([]);
+    };
+    if (!Molecule.prototype.__init__.__module__) Object.defineProperties(Molecule.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    Molecule.__argnames__ = Molecule.prototype.__init__.__argnames__;
+    Molecule.__handles_kwarg_interpolation__ = Molecule.prototype.__init__.__handles_kwarg_interpolation__;
+    Molecule.prototype.scale_atomic_radius_by = async function scale_atomic_radius_by(scale) {
+        var self = this;
+        var ρσ_ls, atom;
+        "46";
+        var ρσ_Iter1 = self._atoms;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            atom = ρσ_Index1;
+            "47";
+            (await atom.scale_by(scale));
+        }
+    };
+    if (!Molecule.prototype.scale_atomic_radius_by.__argnames__) Object.defineProperties(Molecule.prototype.scale_atomic_radius_by, {
+        __argnames__ : {value: ["scale"]},
+        __module__ : {value: null}
+    });
+    Molecule.prototype.show = async function show() {
+        var self = this;
+        var ρσ_ls, atom, bond;
+        "50";
+        var ρσ_Iter2 = self._atoms;
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            atom = ρσ_Index2;
+            "51";
+            (await atom.show());
+        }
+        "52";
+        var ρσ_Iter3 = self._bonds;
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            bond = ρσ_Index3;
+            "53";
+            (await bond.show());
+        }
+    };
+    if (!Molecule.prototype.show.__module__) Object.defineProperties(Molecule.prototype.show, {
+        __module__ : {value: null}
+    });
+    Molecule.prototype.hide = async function hide() {
+        var self = this;
+        var ρσ_ls, atom, bond;
+        "56";
+        var ρσ_Iter4 = self._atoms;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            atom = ρσ_Index4;
+            "57";
+            (await atom.hide());
+        }
+        "58";
+        var ρσ_Iter5 = self._bonds;
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            bond = ρσ_Index5;
+            "59";
+            (await bond.hide());
+        }
+    };
+    if (!Molecule.prototype.hide.__module__) Object.defineProperties(Molecule.prototype.hide, {
+        __module__ : {value: null}
+    });
+    Molecule.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Molecule.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Molecule.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "61";
+    function Ammonia() {;
+    }
+    ρσ_extends(Ammonia, Molecule);
+    Ammonia.prototype.__init__ = async function __init__() {
+        var self = this;
+        var bond_radius = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.bond_radius : arguments[0];
+        var hydrogen_radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.hydrogen_radius : arguments[1];
+        var nitrogen_radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.nitrogen_radius : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "bond_radius")){
+            bond_radius = ρσ_kwargs_obj.bond_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "hydrogen_radius")){
+            hydrogen_radius = ρσ_kwargs_obj.hydrogen_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "nitrogen_radius")){
+            nitrogen_radius = ρσ_kwargs_obj.nitrogen_radius;
+        }
+        var ρσ_ls, r0, phi, zN, positions, _GS_1, position, hydrogen;
+        "63";
+        Molecule.prototype.__init__.call(self);
+        "65";
+        r0 = 2;
+        "66";
+        phi = (await radians(107));
+        "67";
+        zN = sqrt(1["+"](2["*"](cos(phi)))["/"](1["-"](1["*"](cos(phi))))["/"](2))["*"](r0);
+        "69";
+        positions = ρσ_list_decorate([ vec(r0, 0, 1["-u"]()["*"](zN)["/"](2)) ]);
+        "70";
+        positions=positions["+"](ρσ_list_decorate([ vec(1["-u"]()["*"](r0)["/"](2), sqrt(3)["*"](r0)["/"](2), 1["-u"]()["*"](zN)["/"](2)) ]));
+        "71";
+        positions=positions["+"](ρσ_list_decorate([ vec(1["-u"]()["*"](r0)["/"](2), 1["-u"]()["*"](sqrt(3))["*"](r0)["/"](2), 1["-u"]()["*"](zN)["/"](2)) ]));
+        "72";
+        var ρσ_Iter6 = positions;
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            position = ρσ_Index6;
+            "73";
+            _GS_1 = new Atom;
+            (await _GS_1.__init__(hydrogen_radius, color.white, position));
+            self._atoms.append(_GS_1);
+        }
+        "75";
+        position = vec(0, 0, zN["/"](2));
+        "76";
+        var ρσ_Iter7 = self._atoms;
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            hydrogen = ρσ_Index7;
+            "77";
+            _GS_1 = new Bond;
+            (await _GS_1.__init__(bond_radius, position, (await hydrogen.pos())));
+            self._bonds.append(_GS_1);
+        }
+        "79";
+        _GS_1 = new Atom;
+        (await _GS_1.__init__(nitrogen_radius, color.blue, position));
+        self._atoms.append(_GS_1);
+    };
+    if (!Ammonia.prototype.__init__.__defaults__) Object.defineProperties(Ammonia.prototype.__init__, {
+        __defaults__ : {value: {bond_radius:.1, hydrogen_radius:.53, nitrogen_radius:.65}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["bond_radius", "hydrogen_radius", "nitrogen_radius"]},
+        __module__ : {value: null}
+    });
+    Ammonia.__argnames__ = Ammonia.prototype.__init__.__argnames__;
+    Ammonia.__handles_kwarg_interpolation__ = Ammonia.prototype.__init__.__handles_kwarg_interpolation__;
+    Ammonia.prototype.__repr__ = async function __repr__() {
+        if(Molecule.prototype.__repr__) return Molecule.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Ammonia.prototype.__str__ = async function __str__() {
+        if(Molecule.prototype.__str__) return Molecule.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Ammonia.prototype, "__bases__", {value: [Molecule]});
+
+
+    "82";
+    function Methane() {;
+    }
+    ρσ_extends(Methane, Molecule);
+    Methane.prototype.__init__ = async function __init__() {
+        var self = this;
+        var carbon_radius = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.carbon_radius : arguments[0];
+        var hydrogen_radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.hydrogen_radius : arguments[1];
         var bond_radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.bond_radius : arguments[2];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
         if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "oxygen_atom_count")){
-            oxygen_atom_count = ρσ_kwargs_obj.oxygen_atom_count;
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "carbon_radius")){
+            carbon_radius = ρσ_kwargs_obj.carbon_radius;
         }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "hydrogen_atom_count")){
-            hydrogen_atom_count = ρσ_kwargs_obj.hydrogen_atom_count;
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "hydrogen_radius")){
+            hydrogen_radius = ρσ_kwargs_obj.hydrogen_radius;
         }
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "bond_radius")){
             bond_radius = ρσ_kwargs_obj.bond_radius;
         }
-        var ρσ_ls, phi, phi_hydrogen, sin_phi, cos_phi, i;
-        "17";
-        phi = (await radians(104.5));
-        "18";
-        phi_hydrogen = phi["/"](2);
-        "19";
-        sin_phi = sin(phi_hydrogen);
-        "20";
-        cos_phi = cos(phi_hydrogen);
-        "22";
-        self._oxygen_atoms = ρσ_list_decorate([]);
-        "23";
-        self._hydrogen_atoms = ρσ_list_decorate([]);
-        "24";
-        self._oxygen_radius = .3;
-        "25";
-        self._hydrogen_radius = .2;
-        "27";
-        for (var ρσ_Index1 = 0; ρσ_Index1["<"](oxygen_atom_count); ρσ_Index1++) {
-            i = ρσ_Index1;
-            "28";
-            self._oxygen_atoms.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: self._oxygen_radius, color: color.blue})]));
+        var ρσ_ls, sin_phi, cos_phi, positions, _GS_1, position, hydrogen;
+        "84";
+        Molecule.prototype.__init__.call(self);
+        "85";
+        sin_phi = 1["/"](3);
+        "86";
+        cos_phi = 2["*"](sqrt(2))["/"](3);
+        "88";
+        positions = ρσ_list_decorate([ vec(0, 1, 0) ]);
+        "89";
+        positions=positions["+"](ρσ_list_decorate([ vec(cos_phi, 1["-u"]()["*"](sin_phi), 0) ]));
+        "90";
+        positions=positions["+"](ρσ_list_decorate([ vec(1["-u"]()["*"](cos_phi)["/"](2), 1["-u"]()["*"](sin_phi), sqrt(3)["/"](2)["*"](cos_phi)) ]));
+        "91";
+        positions=positions["+"](ρσ_list_decorate([ vec(1["-u"]()["*"](cos_phi)["/"](2), 1["-u"]()["*"](sin_phi), 1["-u"]()["*"](sqrt(3))["/"](2)["*"](cos_phi)) ]));
+        "92";
+        var ρσ_Iter8 = positions;
+        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+        for (var ρσ_Index8 of ρσ_Iter8) {
+            position = ρσ_Index8;
+            "93";
+            _GS_1 = new Atom;
+            (await _GS_1.__init__(hydrogen_radius, color.white, position));
+            self._atoms.append(_GS_1);
         }
-        "29";
-        for (var ρσ_Index2 = 0; ρσ_Index2["<"](hydrogen_atom_count); ρσ_Index2++) {
-            i = ρσ_Index2;
-            "30";
-            self._hydrogen_atoms.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: self._hydrogen_radius, color: color.red})]));
+        "95";
+        position = vec(0, 0, 0);
+        "96";
+        var ρσ_Iter9 = self._atoms;
+        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+        for (var ρσ_Index9 of ρσ_Iter9) {
+            hydrogen = ρσ_Index9;
+            "97";
+            _GS_1 = new Bond;
+            (await _GS_1.__init__(bond_radius, position, (await hydrogen.pos())));
+            self._bonds.append(_GS_1);
         }
-        "32";
-        ρσ_getitem(self._oxygen_atoms, 0).pos = vec(0, 0, 0);
-        "33";
-        ρσ_getitem(self._hydrogen_atoms, 0).pos = vec(0, cos_phi, sin_phi);
-        "34";
-        ρσ_getitem(self._hydrogen_atoms, 1).pos = vec(0, cos_phi, 1["-u"]()["*"](sin_phi));
-        "36";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(self._oxygen_atoms, 0).pos, ρσ_getitem(self._hydrogen_atoms, 0).pos ]), radius: bond_radius, color: vec(.5, .5, .5)})]);
-        "37";
-        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(self._oxygen_atoms, 0).pos, ρσ_getitem(self._hydrogen_atoms, 1).pos ]), radius: bond_radius, color: vec(.5, .5, .5)})]);
+        "99";
+        _GS_1 = new Atom;
+        (await _GS_1.__init__(carbon_radius, color.black, position));
+        self._atoms.append(_GS_1);
     };
-    if (!WaterMolecule.prototype.__init__.__defaults__) Object.defineProperties(WaterMolecule.prototype.__init__, {
-        __defaults__ : {value: {oxygen_atom_count:1, hydrogen_atom_count:2, bond_radius:.05}},
+    if (!Methane.prototype.__init__.__defaults__) Object.defineProperties(Methane.prototype.__init__, {
+        __defaults__ : {value: {carbon_radius:.25, hydrogen_radius:.2, bond_radius:.05}},
         __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["oxygen_atom_count", "hydrogen_atom_count", "bond_radius"]},
+        __argnames__ : {value: ["carbon_radius", "hydrogen_radius", "bond_radius"]},
         __module__ : {value: null}
     });
-    WaterMolecule.__argnames__ = WaterMolecule.prototype.__init__.__argnames__;
-    WaterMolecule.__handles_kwarg_interpolation__ = WaterMolecule.prototype.__init__.__handles_kwarg_interpolation__;
-    WaterMolecule.prototype.scale_atomic_radius_by = async function scale_atomic_radius_by(scale) {
-        var self = this;
-        var ρσ_ls, oxygen, hydrogen;
-        "40";
-        var ρσ_Iter3 = self._oxygen_atoms;
-        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-        for (var ρσ_Index3 of ρσ_Iter3) {
-            oxygen = ρσ_Index3;
-            "41";
-            oxygen.radius = self._oxygen_radius["*"](scale);
-        }
-        "42";
-        var ρσ_Iter4 = self._hydrogen_atoms;
-        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-        for (var ρσ_Index4 of ρσ_Iter4) {
-            hydrogen = ρσ_Index4;
-            "43";
-            hydrogen.radius = self._hydrogen_radius["*"](scale);
-        }
+    Methane.__argnames__ = Methane.prototype.__init__.__argnames__;
+    Methane.__handles_kwarg_interpolation__ = Methane.prototype.__init__.__handles_kwarg_interpolation__;
+    Methane.prototype.__repr__ = async function __repr__() {
+        if(Molecule.prototype.__repr__) return Molecule.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
     };
-    if (!WaterMolecule.prototype.scale_atomic_radius_by.__argnames__) Object.defineProperties(WaterMolecule.prototype.scale_atomic_radius_by, {
-        __argnames__ : {value: ["scale"]},
+    Methane.prototype.__str__ = async function __str__() {
+        if(Molecule.prototype.__str__) return Molecule.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Methane.prototype, "__bases__", {value: [Molecule]});
+
+
+    "102";
+    function Water() {;
+    }
+    ρσ_extends(Water, Molecule);
+    Water.prototype.__init__ = async function __init__() {
+        var self = this;
+        var oxygen_radius = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.oxygen_radius : arguments[0];
+        var hydrogen_radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.hydrogen_radius : arguments[1];
+        var bond_radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.bond_radius : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "oxygen_radius")){
+            oxygen_radius = ρσ_kwargs_obj.oxygen_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "hydrogen_radius")){
+            hydrogen_radius = ρσ_kwargs_obj.hydrogen_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "bond_radius")){
+            bond_radius = ρσ_kwargs_obj.bond_radius;
+        }
+        var ρσ_ls, phi_hydrogen, sin_phi, cos_phi, positions, _GS_1, position, hydrogen;
+        "104";
+        Molecule.prototype.__init__.call(self);
+        "106";
+        phi_hydrogen = (await radians(104.5))["/"](2);
+        "107";
+        sin_phi = sin(phi_hydrogen);
+        "108";
+        cos_phi = cos(phi_hydrogen);
+        "110";
+        positions = ρσ_list_decorate([ vec(0, cos_phi, sin_phi), vec(0, cos_phi, 1["-u"]()["*"](sin_phi)) ]);
+        "111";
+        var ρσ_Iter10 = positions;
+        ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+        for (var ρσ_Index10 of ρσ_Iter10) {
+            position = ρσ_Index10;
+            "112";
+            _GS_1 = new Atom;
+            (await _GS_1.__init__(hydrogen_radius, color.red, position));
+            self._atoms.append(_GS_1);
+        }
+        "114";
+        position = vec(0, 0, 0);
+        "115";
+        var ρσ_Iter11 = self._atoms;
+        ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
+        for (var ρσ_Index11 of ρσ_Iter11) {
+            hydrogen = ρσ_Index11;
+            "116";
+            _GS_1 = new Bond;
+            (await _GS_1.__init__(bond_radius, position, (await hydrogen.pos())));
+            self._bonds.append(_GS_1);
+        }
+        "118";
+        _GS_1 = new Atom;
+        (await _GS_1.__init__(oxygen_radius, color.blue, position));
+        self._atoms.append(_GS_1);
+    };
+    if (!Water.prototype.__init__.__defaults__) Object.defineProperties(Water.prototype.__init__, {
+        __defaults__ : {value: {oxygen_radius:.3, hydrogen_radius:.2, bond_radius:.05}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["oxygen_radius", "hydrogen_radius", "bond_radius"]},
         __module__ : {value: null}
     });
-    WaterMolecule.prototype.__repr__ = async function __repr__() {
+    Water.__argnames__ = Water.prototype.__init__.__argnames__;
+    Water.__handles_kwarg_interpolation__ = Water.prototype.__init__.__handles_kwarg_interpolation__;
+    Water.prototype.__repr__ = async function __repr__() {
+        if(Molecule.prototype.__repr__) return Molecule.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Water.prototype.__str__ = async function __str__() {
+        if(Molecule.prototype.__str__) return Molecule.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Water.prototype, "__bases__", {value: [Molecule]});
+
+
+    "120";
+    function Ethanol() {;
+    }
+    ρσ_extends(Ethanol, Molecule);
+    Ethanol.prototype.__init__ = async function __init__() {
+        var self = this;
+        var carbon_radius = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.carbon_radius : arguments[0];
+        var oxygen_radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.oxygen_radius : arguments[1];
+        var hydrogen_radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.hydrogen_radius : arguments[2];
+        var bond_radius = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.bond_radius : arguments[3];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "carbon_radius")){
+            carbon_radius = ρσ_kwargs_obj.carbon_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "oxygen_radius")){
+            oxygen_radius = ρσ_kwargs_obj.oxygen_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "hydrogen_radius")){
+            hydrogen_radius = ρσ_kwargs_obj.hydrogen_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "bond_radius")){
+            bond_radius = ρσ_kwargs_obj.bond_radius;
+        }
+        var ρσ_ls, hydrogen_positions, _GS_1, position, carbon_positions, carbon_position, i, oxygen_position;
+        "122";
+        Molecule.prototype.__init__.call(self);
+        "124";
+        hydrogen_positions = ρσ_list_decorate([ vec(1, 1["-u"]()["*"](1)["/"](2), 1["-u"]()["*"](1)["/"](2)), vec(1, 1["-u"]()["*"](1)["/"](2), 1["/"](2)) ]);
+        "125";
+        hydrogen_positions=hydrogen_positions["+"](ρσ_list_decorate([ vec(1["-u"]()["*"](1.25), 1["/"](2), 1["-u"]()["*"](1)["/"](2)), vec(1["-u"]()["*"](1.25), 1["/"](2), 1["/"](2)) ]));
+        "126";
+        hydrogen_positions=hydrogen_positions["+"](ρσ_list_decorate([ vec(1["-u"]()["*"](1.1), 1["-u"]()["*"](1)["/"](2), 0), vec(1.75, .75, 0) ]));
+        "127";
+        var ρσ_Iter12 = hydrogen_positions;
+        ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
+        for (var ρσ_Index12 of ρσ_Iter12) {
+            position = ρσ_Index12;
+            "128";
+            _GS_1 = new Atom;
+            (await _GS_1.__init__(hydrogen_radius, color.white, position));
+            self._atoms.append(_GS_1);
+        }
+        "130";
+        carbon_positions = ρσ_list_decorate([ vec(1["/"](2), 0, 0), vec(1["-u"]()["*"](1)["/"](2), 0, 0) ]);
+        "131";
+        var ρσ_Iter13 = carbon_positions;
+        ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
+        for (var ρσ_Index13 of ρσ_Iter13) {
+            position = ρσ_Index13;
+            "132";
+            _GS_1 = new Atom;
+            (await _GS_1.__init__(carbon_radius, color.black, position));
+            self._atoms.append(_GS_1);
+        }
+        "133";
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 1), ρσ_getitem(carbon_positions, 0)));
+        self._bonds.append(_GS_1);
+        "135";
+        var ρσ_Iter14 = range(len(hydrogen_positions)["-"](1["*"](1)));
+        ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
+        for (var ρσ_Index14 of ρσ_Iter14) {
+            i = ρσ_Index14;
+            "136";
+            carbon_position = ((i === 0 || typeof i === "object" && ρσ_equals(i, 0)) || (i === 1 || typeof i === "object" && ρσ_equals(i, 1))) ? ρσ_getitem(carbon_positions, 0) : ρσ_getitem(carbon_positions, 1);
+            "137";
+            _GS_1 = new Bond;
+            (await _GS_1.__init__(bond_radius, carbon_position, ρσ_getitem(hydrogen_positions, i)));
+            self._bonds.append(_GS_1);
+        }
+        "139";
+        oxygen_position = vec(1, 1, 0);
+        "140";
+        _GS_1 = new Atom;
+        (await _GS_1.__init__(oxygen_radius, color.red, oxygen_position));
+        self._atoms.append(_GS_1);
+        "142";
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(hydrogen_positions, 5), oxygen_position));
+        self._bonds.append(_GS_1);
+        "143";
+        _GS_1 = new Bond;
+        (await _GS_1.__init__(bond_radius, ρσ_getitem(carbon_positions, 0), oxygen_position));
+        self._bonds.append(_GS_1);
+    };
+    if (!Ethanol.prototype.__init__.__defaults__) Object.defineProperties(Ethanol.prototype.__init__, {
+        __defaults__ : {value: {carbon_radius:.25, oxygen_radius:.3, hydrogen_radius:.2, bond_radius:.05}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["carbon_radius", "oxygen_radius", "hydrogen_radius", "bond_radius"]},
+        __module__ : {value: null}
+    });
+    Ethanol.__argnames__ = Ethanol.prototype.__init__.__argnames__;
+    Ethanol.__handles_kwarg_interpolation__ = Ethanol.prototype.__init__.__handles_kwarg_interpolation__;
+    Ethanol.prototype.__repr__ = async function __repr__() {
+        if(Molecule.prototype.__repr__) return Molecule.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Ethanol.prototype.__str__ = async function __str__() {
+        if(Molecule.prototype.__str__) return Molecule.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Ethanol.prototype, "__bases__", {value: [Molecule]});
+
+
+    "145";
+    function LacticAcid() {;
+    }
+    ρσ_extends(LacticAcid, Molecule);
+    LacticAcid.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, rC, rO, rH, rbond, nC, nO, nH, Carray, Oarray, Harray, sqrt3, sqrt3h, sinphi, cosphi, i;
+        "147";
+        Molecule.prototype.__init__.call(self);
+        "148";
+        rC = .25;
+        "149";
+        rO = .3;
+        "150";
+        rH = .2;
+        "151";
+        rbond = .05;
+        "153";
+        nC = 3;
+        "154";
+        nO = 3;
+        "155";
+        nH = 6;
+        "157";
+        Carray = ρσ_list_decorate([]);
+        "158";
+        Oarray = ρσ_list_decorate([]);
+        "159";
+        Harray = ρσ_list_decorate([]);
+        "161";
+        sqrt3 = sqrt(3);
+        "162";
+        sqrt3h = sqrt3["/"](2);
+        "163";
+        sinphi = 1["/"](3);
+        "164";
+        cosphi = 2["*"](sqrt(2))["/"](3);
+        "166";
+        for (var ρσ_Index15 = 0; ρσ_Index15["<"](nC); ρσ_Index15++) {
+            i = ρσ_Index15;
+            "167";
+            Carray.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: rC, color: color.black})]));
+        }
+        "168";
+        for (var ρσ_Index16 = 0; ρσ_Index16["<"](nH); ρσ_Index16++) {
+            i = ρσ_Index16;
+            "169";
+            Harray.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: rH, color: color.white})]));
+        }
+        "170";
+        for (var ρσ_Index17 = 0; ρσ_Index17["<"](nO); ρσ_Index17++) {
+            i = ρσ_Index17;
+            "171";
+            Oarray.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: rO, color: color.red})]));
+        }
+        "173";
+        ρσ_getitem(Carray, 0).pos = vec(1["-u"]()["*"](1), 0, 0);
+        "174";
+        ρσ_getitem(Carray, 1).pos = vec(0, 0, 0);
+        "175";
+        ρσ_getitem(Carray, 2).pos = vec(sinphi, 1["-u"]()["*"](cosphi)["/"](2), 1["-u"]()["*"](sqrt3h)["*"](cosphi));
+        "177";
+        ρσ_getitem(Harray, 0).pos = vec(1["-u"]()["*"](1)["-"](1["*"](sinphi)), 1["-u"]()["*"](cosphi), 0);
+        "178";
+        ρσ_getitem(Harray, 1).pos = vec(1["-u"]()["*"](1)["-"](1["*"](sinphi)), cosphi["/"](2), sqrt3h["*"](cosphi));
+        "179";
+        ρσ_getitem(Harray, 2).pos = vec(1["-u"]()["*"](1)["-"](1["*"](sinphi)), cosphi["/"](2), 1["-u"]()["*"](sqrt3h)["*"](cosphi));
+        "180";
+        ρσ_getitem(Harray, 3).pos = vec(sinphi, 1["-u"]()["*"](cosphi)["/"](2), 0["+"](sqrt3h["*"](cosphi)));
+        "182";
+        ρσ_getitem(Harray, 4).pos = vec(1.25["+"](sinphi), 1["-u"]()["*"](.5)["-"](1["*"](cosphi)["/"](2)), 1["-u"]()["*"](1.25)["-"](1["*"](sqrt3h)["*"](cosphi)));
+        "183";
+        ρσ_getitem(Harray, 5).pos = vec(.75["-"](1["*"](sinphi)), 1["+"](cosphi["/"](2)), sqrt3h["*"](cosphi));
+        "185";
+        ρσ_getitem(Oarray, 0).pos = vec(.75, 1, 0);
+        "186";
+        ρσ_getitem(Oarray, 1).pos = vec(1.25, 1["-u"]()["*"](.5), 1["-u"]()["*"](1.25));
+        "187";
+        ρσ_getitem(Oarray, 2).pos = vec(.25, 1["-u"]()["*"](1.25), 1["-u"]()["*"](1.25));
+        "189";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 1).pos, ρσ_getitem(Harray, 3).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        "190";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 1).pos, ρσ_getitem(Oarray, 0).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        "191";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 2).pos, ρσ_getitem(Oarray, 1).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        "192";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 2).pos, ρσ_getitem(Oarray, 2).pos ]), radius: 2.5["*"](rbond), color: vec(.2, .2, .2)})]);
+        "193";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Oarray, 1).pos, ρσ_getitem(Harray, 4).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        "194";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 2).pos, ρσ_getitem(Oarray, 1).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        "195";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Harray, 5).pos, ρσ_getitem(Oarray, 0).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        "196";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 0).pos, ρσ_getitem(Harray, 0).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        "197";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 0).pos, ρσ_getitem(Harray, 1).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        "198";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 0).pos, ρσ_getitem(Harray, 2).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+        "199";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(Carray, 0).pos, ρσ_getitem(Carray, 1).pos, ρσ_getitem(Carray, 2).pos ]), radius: rbond, color: vec(.5, .5, .5)})]);
+    };
+    if (!LacticAcid.prototype.__init__.__module__) Object.defineProperties(LacticAcid.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    LacticAcid.__argnames__ = LacticAcid.prototype.__init__.__argnames__;
+    LacticAcid.__handles_kwarg_interpolation__ = LacticAcid.prototype.__init__.__handles_kwarg_interpolation__;
+    LacticAcid.prototype.__repr__ = async function __repr__() {
+        if(Molecule.prototype.__repr__) return Molecule.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    LacticAcid.prototype.__str__ = async function __str__() {
+        if(Molecule.prototype.__str__) return Molecule.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(LacticAcid.prototype, "__bases__", {value: [Molecule]});
+
+
+    "201";
+    function RadioButton() {;
+    }
+    RadioButton.prototype.__init__ = async function __init__(button_, molecule_) {
+        var self = this;
+        "203";
+        self._button = button_;
+        "204";
+        self._molecule = molecule_;
+    };
+    if (!RadioButton.prototype.__init__.__argnames__) Object.defineProperties(RadioButton.prototype.__init__, {
+        __argnames__ : {value: ["button_", "molecule_"]},
+        __module__ : {value: null}
+    });
+    RadioButton.__argnames__ = RadioButton.prototype.__init__.__argnames__;
+    RadioButton.__handles_kwarg_interpolation__ = RadioButton.prototype.__init__.__handles_kwarg_interpolation__;
+    RadioButton.prototype.uncheck = async function uncheck() {
+        var self = this;
+        "207";
+        self._button.checked = false;
+    };
+    if (!RadioButton.prototype.uncheck.__module__) Object.defineProperties(RadioButton.prototype.uncheck, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.push = async function push(button_name) {
+        var self = this;
+        "210";
+        (await self._molecule.show());
+    };
+    if (!RadioButton.prototype.push.__argnames__) Object.defineProperties(RadioButton.prototype.push, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.check = async function check() {
+        var self = this;
+        "213";
+        self._button.checked = true;
+    };
+    if (!RadioButton.prototype.check.__module__) Object.defineProperties(RadioButton.prototype.check, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.name = async function name() {
+        var self = this;
+        "216";
+        return self._button.name;
+    };
+    if (!RadioButton.prototype.name.__module__) Object.defineProperties(RadioButton.prototype.name, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.__repr__ = async function __repr__() {
                 return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
     };
-    WaterMolecule.prototype.__str__ = async function __str__() {
+    RadioButton.prototype.__str__ = async function __str__() {
         return this.__repr__();
     };
-    Object.defineProperty(WaterMolecule.prototype, "__bases__", {value: []});
+    Object.defineProperty(RadioButton.prototype, "__bases__", {value: []});
 
 
 
-    "46";
-    _GS_1 = new WaterMolecule;
+
+
+
+    "218";
+    function RadioButtons() {;
+    }
+    RadioButtons.prototype.__init__ = async function __init__() {
+        var self = this;
+        "220";
+        self._radio_buttons = ρσ_list_decorate([]);
+        "221";
+        self._selected_button = null;
+    };
+    if (!RadioButtons.prototype.__init__.__module__) Object.defineProperties(RadioButtons.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    RadioButtons.__argnames__ = RadioButtons.prototype.__init__.__argnames__;
+    RadioButtons.__handles_kwarg_interpolation__ = RadioButtons.prototype.__init__.__handles_kwarg_interpolation__;
+    RadioButtons.prototype.add = async function add(button_, molecule_) {
+        var self = this;
+        var ρσ_ls, _GS_1;
+        "224";
+        _GS_1 = new RadioButton;
+        (await _GS_1.__init__(button_, molecule_));
+        self._radio_buttons.append(_GS_1);
+        "226";
+        if (ρσ_equals(len(self._radio_buttons)["%"](5), 0)) {
+            "227";
+            animation.append_to_caption("\n\n");
+            "229";
+        }
+        if (ρσ_equals(len(self._radio_buttons), 1)) {
+            "230";
+            (await ρσ_getitem(self._radio_buttons, 0).check());
+            "231";
+            self._selected_button = ρσ_getitem(self._radio_buttons, 0);
+        }
+    };
+    if (!RadioButtons.prototype.add.__argnames__) Object.defineProperties(RadioButtons.prototype.add, {
+        __argnames__ : {value: ["button_", "molecule_"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype._uncheck_buttons_except = async function _uncheck_buttons_except(button_name) {
+        var self = this;
+        var ρσ_ls, button_;
+        "234";
+        var ρσ_Iter18 = self._radio_buttons;
+        ρσ_Iter18 = ((typeof ρσ_Iter18[Symbol.iterator] === "function") ? (ρσ_Iter18 instanceof Map ? ρσ_Iter18.keys() : ρσ_Iter18) : Object.keys(ρσ_Iter18));
+        for (var ρσ_Index18 of ρσ_Iter18) {
+            button_ = ρσ_Index18;
+            "235";
+            if (ρσ_not_equals((await button_.name()), button_name)) {
+                (await button_.uncheck());
+            }
+        }
+    };
+    if (!RadioButtons.prototype._uncheck_buttons_except.__argnames__) Object.defineProperties(RadioButtons.prototype._uncheck_buttons_except, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype._get_button_by = async function _get_button_by(button_name) {
+        var self = this;
+        var ρσ_ls, button_;
+        "238";
+        var ρσ_Iter19 = self._radio_buttons;
+        ρσ_Iter19 = ((typeof ρσ_Iter19[Symbol.iterator] === "function") ? (ρσ_Iter19 instanceof Map ? ρσ_Iter19.keys() : ρσ_Iter19) : Object.keys(ρσ_Iter19));
+        for (var ρσ_Index19 of ρσ_Iter19) {
+            button_ = ρσ_Index19;
+            "239";
+            if (ρσ_equals((await button_.name()), button_name)) {
+                return button_;
+            }
+        }
+    };
+    if (!RadioButtons.prototype._get_button_by.__argnames__) Object.defineProperties(RadioButtons.prototype._get_button_by, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype.toggle = async function toggle(button_name) {
+        var self = this;
+        "242";
+        (await self._uncheck_buttons_except(button_name));
+        "243";
+        self._selected_button = (await self._get_button_by(button_name));
+        "244";
+        (await self._selected_button.push(button_name));
+    };
+    if (!RadioButtons.prototype.toggle.__argnames__) Object.defineProperties(RadioButtons.prototype.toggle, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype.get_selected_button_name = async function get_selected_button_name() {
+        var self = this;
+        "247";
+        return (await self._selected_button.name());
+    };
+    if (!RadioButtons.prototype.get_selected_button_name.__module__) Object.defineProperties(RadioButtons.prototype.get_selected_button_name, {
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    RadioButtons.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(RadioButtons.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "249";
+    _GS_1 = new Water;
     (await _GS_1.__init__());
-    water = _GS_1;
-    "48";
+    _GS_2 = new Methane;
+    (await _GS_2.__init__());
+    _GS_3 = new Ammonia;
+    (await _GS_3.__init__());
+    _GS_4 = new Ethanol;
+    (await _GS_4.__init__());
+    molecules = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("Water", _GS_1);
+        ρσ_d.set("Methane", _GS_2);
+        ρσ_d.set("Ammonia", _GS_3);
+        ρσ_d.set("Ethanol", _GS_4);
+        return ρσ_d;
+    }).call(this);
+    "251";
+    var ρσ_Iter20 = molecules.values();
+    ρσ_Iter20 = ((typeof ρσ_Iter20[Symbol.iterator] === "function") ? (ρσ_Iter20 instanceof Map ? ρσ_Iter20.keys() : ρσ_Iter20) : Object.keys(ρσ_Iter20));
+    for (var ρσ_Index20 of ρσ_Iter20) {
+        molecule = ρσ_Index20;
+        "252";
+        (await molecule.hide());
+    }
+    "254";
+    (await ρσ_getitem(molecules, "Water").show());
+    "260";
+    async function toggle(event) {
+        var ρσ_ls, molecule_;
+        "261";
+        var ρσ_Iter21 = molecules.values();
+        ρσ_Iter21 = ((typeof ρσ_Iter21[Symbol.iterator] === "function") ? (ρσ_Iter21 instanceof Map ? ρσ_Iter21.keys() : ρσ_Iter21) : Object.keys(ρσ_Iter21));
+        for (var ρσ_Index21 of ρσ_Iter21) {
+            molecule_ = ρσ_Index21;
+            "262";
+            (await molecule_.hide());
+        }
+        "263";
+        (await radio_buttons.toggle(event.name));
+    };
+    if (!toggle.__argnames__) Object.defineProperties(toggle, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "265";
     async function on_radius_change(s) {
-        "49";
+        var ρσ_ls, molecule_;
+        "266";
         wt.text = "Atomic radius scale factor: {:1.2f}".format(s.value);
-        "50";
-        (await water.scale_atomic_radius_by(atomic_radius.value));
+        "267";
+        var ρσ_Iter22 = molecules.values();
+        ρσ_Iter22 = ((typeof ρσ_Iter22[Symbol.iterator] === "function") ? (ρσ_Iter22 instanceof Map ? ρσ_Iter22.keys() : ρσ_Iter22) : Object.keys(ρσ_Iter22));
+        for (var ρσ_Index22 of ρσ_Iter22) {
+            molecule_ = ρσ_Index22;
+            "268";
+            (await molecule_.scale_atomic_radius_by(radius_slider.value));
+        }
     };
     if (!on_radius_change.__argnames__) Object.defineProperties(on_radius_change, {
         __argnames__ : {value: ["s"]},
         __module__ : {value: null}
     });
 
-    "52";
-    animation.append_to_caption("\n");
-    "53";
-    atomic_radius = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .5, max: 2.75, value: 1, bind: on_radius_change})]);
-    "54";
-    wt = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Atomic radius scale factor: {:1.2f}".format(atomic_radius.value)})]);
-    "56";
+    "270";
+    _GS_1 = new RadioButtons;
+    (await _GS_1.__init__());
+    radio_buttons = _GS_1;
+    "271";
+    var ρσ_Iter23 = molecules.keys();
+    ρσ_Iter23 = ((typeof ρσ_Iter23[Symbol.iterator] === "function") ? (ρσ_Iter23 instanceof Map ? ρσ_Iter23.keys() : ρσ_Iter23) : Object.keys(ρσ_Iter23));
+    for (var ρσ_Index23 of ρσ_Iter23) {
+        name = ρσ_Index23;
+        "272";
+        (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: name["+"](" "), name: name})]), ρσ_getitem(molecules, name)));
+    }
+    "274";
+    animation.append_to_caption("\n\n");
+    "275";
+    radius_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .5, max: 3, value: 1, bind: on_radius_change})]);
+    "276";
+    wt = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: " Atomic radius scale factor: {:1.2f}".format(radius_slider.value)})]);
+    "278";
     while (true) {
-        "57";
+        "279";
         (await rate(10));
     }
 };
