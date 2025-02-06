@@ -38,9 +38,6 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
   <div class="column" style="background-color:#004444;">
     <h2><a href="mathematics/gallery/index.html">Topological surfaces</a></h2>
@@ -68,9 +65,6 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
 </div>
 
@@ -107,9 +101,6 @@ finest that music and poetry can deliver. &mdash;
         <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="astrophysics/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="waves/index.html">Waves</a></h2>
@@ -134,9 +125,6 @@ finest that music and poetry can deliver. &mdash;
       <figure class="right_image">
         <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
-    </div>
-    <div style="display: flex; flex-direction: column; justify-content: flex-end;">
-      <p style="clear: both;"><br/><a href="waves/index.html">Learn more &#x2026;</a></p>
     </div>
   </div>
 </div>
@@ -184,9 +172,6 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="nature/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h2>
@@ -214,9 +199,6 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="molecularphysics/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
 </div>
 
@@ -250,9 +232,6 @@ finest that music and poetry can deliver. &mdash;
         <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="quantumphysics/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="thermodynamics/index.html">Statistical physics</a></h2>
@@ -268,18 +247,12 @@ finest that music and poetry can deliver. &mdash;
        </a>
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="thermodynamics/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
 </div>
-
-
 
 <!--                                 -->
 <!-- Electromagnetism and kinematics -->
 <!--                                 -->
-
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
@@ -332,9 +305,6 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="electromagnetism/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="kinematics/index.html">Kinematics</a></h2>
@@ -386,9 +356,6 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="kinematics/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
 </div>
 
@@ -415,9 +382,6 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="fun/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
   <div class="column" style="background-color:#4c3340;">
     <h2><a href="obsolete/index.html">Obsolete</a></h2>
@@ -445,9 +409,6 @@ finest that music and poetry can deliver. &mdash;
        </a>
       </figure>
     </div>
-    <p style="clear: both;"><br/>
-      <a style="font-weight: bold;" href="obsolete/index.html">Learn more &#x2026;</a>
-    </p>
   </div>
 </div>
 
