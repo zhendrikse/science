@@ -136,7 +136,7 @@ finest that music and poetry can deliver. &mdash;
       </figure>
     </div>
     <p style="clear: both;"><br/>
-      <a style="font-weight: bold; display: flex; align-items: flex-end;" href="waves/index.html">Learn more &#x2026;</a>
+      <a style="font-weight: bold; position: absolute; bottom: 0;" href="waves/index.html">Learn more &#x2026;</a>
     </p>
   </div>
 </div>
