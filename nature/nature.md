@@ -68,7 +68,7 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   </figcaption>
 </figure>
 <figure class="left_image">
-  <a href="nature/chain_drop">
+  <a href="nature/chain_drop.html">
     <img alt="Chain from table" src="./images/chain_from_table.png" title="Click to animate"/>
   </a>
   <figcaption>Chain falling from table, based on the original 
