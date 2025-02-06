@@ -38,8 +38,8 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <p style="clear: both;">
-      <a style="color: red; font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
     </p>
   </div>
   <div class="column" style="background-color:#004444;">
@@ -68,11 +68,10 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <p style="clear: both;">
-      <a style="color: red; font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
     </p>
   </div>
-  <p style="clear: both;"></p>
 </div>
 
 <p style="clear: both;"></p>
@@ -108,6 +107,9 @@ finest that music and poetry can deliver. &mdash;
         <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="waves/index.html">Waves</a></h2>
@@ -133,8 +135,10 @@ finest that music and poetry can deliver. &mdash;
         <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
-  <p style="clear: both;"></p>
 </div>
 
 <!--                              -->
@@ -180,6 +184,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h2>
@@ -207,8 +214,10 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
-  <p style="clear: both;"></p>
 </div>
 
 
@@ -241,6 +250,9 @@ finest that music and poetry can deliver. &mdash;
         <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="thermodynamics/index.html">Statistical physics</a></h2>
@@ -256,8 +268,10 @@ finest that music and poetry can deliver. &mdash;
        </a>
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
-  <p style="clear: both;"></p>
 </div>
 
 
@@ -318,6 +332,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="kinematics/index.html">Kinematics</a></h2>
@@ -369,8 +386,10 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
-  <p style="clear: both;"></p>
 </div>
 
 <p style="clear: both;"></p>
@@ -396,6 +415,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
   <div class="column" style="background-color:#4c3340;">
     <h2><a href="obsolete/index.html">Obsolete</a></h2>
@@ -423,7 +445,9 @@ finest that music and poetry can deliver. &mdash;
        </a>
       </figure>
     </div>
+    <p style="clear: both;"><br/>
+      <a style="font-weight: bold;" href="mathematics/index.html">Learn more &#x2026;</a>
+    </p>
   </div>
-  <p style="clear: both;"></p>
 </div>
 
