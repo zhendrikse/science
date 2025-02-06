@@ -1,1 +1,1 @@
-### Repository belonging to [zhendrikse.github.io/science](https://zhendrikse.github.io/science)
+### Repository belonging to [www.hendrikse.name/science](https://www.hendrikse.name/science).
