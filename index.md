@@ -40,7 +40,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#004444;">
-    <h2><a href="mathematics/index.html">Topological surfaces</a></h2>
+    <h2><a href="mathematics/gallery/index.html">Topological surfaces</a></h2>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/topology_surface_plot.html">
