@@ -1,10 +1,12 @@
+{% include breadcrumbs.html %}
+
 <blockquote>
 The feeling of awed wonder that science can give us is one of the highest experiences 
 of which the human psyche is capable. It is a deep aesthetic passion to rank with the 
 finest that music and poetry can deliver. &mdash;
 <a href="https://en.wikipedia.org/wiki/Richard_Dawkins">Richard Dawkins</a> in 
 <a href="https://en.wikipedia.org/wiki/Unweaving_the_Rainbow">Unweaving the Rainbow</a>, 1998.
-</blockquote>
+</blockquote><br/>
 
 # Mathematics
 <div class="header_line"><br/></div>
@@ -73,7 +75,7 @@ finest that music and poetry can deliver. &mdash;
 
 <!--                 -->
 <!-- Astro and Waves -->
-<!-                  -->
+<!--                 -->
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
@@ -206,7 +208,7 @@ finest that music and poetry can deliver. &mdash;
 
 <!--                            -->
 <!-- Quantum and thermodynamics -->
-<!-                             -->
+<!--                            -->
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
