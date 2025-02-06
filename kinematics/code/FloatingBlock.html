@@ -1,0 +1,155 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, fluid, floating_object, graphs, buoyance_curve, drag_force_curve, dragCoefficient, g, t, dt, mass, gravitational_force, drag_force, buoyance_force, net_force, acceleration;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "10";
+    title = "Floating block\n\n&#x2022; Based on original <a href=\"https://github.com/gcschmit/vpython-physics/blob/master/buoyancy/buoyancy.py\">buoyancy.py<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "12";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), forward: vector(1["-u"]()["*"](.52), 1["-u"]()["*"](.67), 1["-u"]()["*"](.52)), range: 2})]);
+    "14";
+    async function submerged_volume(object, fluid) {
+        var ρσ_ls, top_of_fluid, top_of_object, bottom_of_object, height_submerged;
+        "15";
+        top_of_fluid = fluid.pos.y["+"](fluid.size.y["/"](2));
+        "16";
+        top_of_object = object.pos.y["+"](object.size.y["/"](2));
+        "17";
+        bottom_of_object = object.pos.y["-"](1["*"](object.size.y)["/"](2));
+        "19";
+        if (top_of_object["<="](top_of_fluid)) {
+            "20";
+            height_submerged = object.size.y;
+            "21";
+        } else if (bottom_of_object[">="](top_of_fluid)) {
+            "22";
+            height_submerged = 0;
+            "23";
+        } else {
+            "24";
+            height_submerged = top_of_fluid["-"](1["*"](bottom_of_object));
+        }
+        "26";
+        return object.size.x["*"](height_submerged)["*"](object.size.z);
+    };
+    if (!submerged_volume.__argnames__) Object.defineProperties(submerged_volume, {
+        __argnames__ : {value: ["object", "fluid"]},
+        __module__ : {value: null}
+    });
+
+    "29";
+    fluid = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({size: vector(2, 2, .75), color: color.green, opacity: .3, density: 1e3})]);
+    "30";
+    floating_object = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), v: vector(0, 0, 0), color: color.red, density: 500, size: vector(.4, .4, .1)})]);
+    "32";
+    graphs = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Buyoancy"})]);
+    "33";
+    buoyance_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.magenta})]);
+    "34";
+    drag_force_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.blue})]);
+    "36";
+    dragCoefficient = vector(0, 1["-u"]()["*"](5), 0);
+    "37";
+    g = vector(0, 1["-u"]()["*"](9.8), 0);
+    "39";
+    t = 0;
+    "40";
+    dt = .001;
+    "41";
+    while (t["<"](20) && floating_object.pos.y[">"](fluid.pos.y["-"](1["*"](fluid.size.y)["/"](2)))) {
+        "42";
+        (await rate(1["/"](dt)));
+        "44";
+        mass = floating_object.density["*"](floating_object.size.x)["*"](floating_object.size.y)["*"](floating_object.size.z);
+        "46";
+        gravitational_force = mass["*"](g);
+        "47";
+        drag_force = dragCoefficient["*"](floating_object.v.y);
+        "48";
+        buoyance_force = fluid.density["*"](1["-u"]())["*"](g)["*"]((await submerged_volume(floating_object, fluid)));
+        "50";
+        net_force = buoyance_force["+"](gravitational_force)["+"](drag_force);
+        "51";
+        acceleration = net_force["/"](mass);
+        "52";
+        floating_object.v=floating_object.v["+"](acceleration["*"](dt));
+        "53";
+        floating_object.pos=floating_object.pos["+"](floating_object.v["*"](dt));
+        "55";
+        buoyance_curve.plot(t, buoyance_force.y);
+        "56";
+        drag_force_curve.plot(t, drag_force.y);
+        "58";
+        t=t["+"](dt);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

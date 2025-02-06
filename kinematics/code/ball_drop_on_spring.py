@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 title = """
 &#x2022; Based on <a href="https://trinket.io/glowscript/58d3d4ba0b">original code</a> presented in <a href="https://www.youtube.com/watch?v=ExxDuRTIe0E">this video</a>.
@@ -68,5 +67,3 @@ while True:
     t += dt
     
   label(pos=vector(0, 7, 0), text="Click mouse to restart", color=color.yellow)
-
-```

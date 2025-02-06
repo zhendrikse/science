@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 from vpython import sphere, cylinder, box, vector, helix, canvas, rate, mag, norm, color
 
@@ -66,5 +65,3 @@ while t < 1.02:
     spring.pos = ball1.position()
     spring.axis = spring_length
     t += dt
-
-```

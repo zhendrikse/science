@@ -67,13 +67,13 @@ You may be surprised though to find out what happens when you drop such a simple
 
 <div class="double_image">
 <figure class="left_image">
-    <a href="https://zegerh-6085.trinket.io/sites/ball_on_sliding_ramp">
+    <a href="sliding_ramp.html">
       <img alt="Ball on sliding ramp" src="../images/ball_on_sliding_ramp.png" title="Click to animate"/>
     </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <figcaption>Simulating a ball on a sliding ramp, including friction!</figcaption>
 </figure>
 <figure class="right_image">
-    <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Blockrotation">
+    <a href="block_rotation.html">
       <img alt="Block rotation"  src="../images/block_rotation.png" title="Click to animate"/>
     </a>
     <figcaption>Demonstration of angular momentum.</figcaption>
@@ -86,7 +86,7 @@ You may be surprised though to find out what happens when you drop such a simple
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <figure>
-  <a href="https://glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Floatingblock">
+  <a href="floating_block.html">
     <img alt="Floating block" src="../images/floating_block.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <figcaption>Movement of a floating block in water.</figcaption>

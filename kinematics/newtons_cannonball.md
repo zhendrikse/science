@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [newtons_cannonball.py](glowscript/newtons_cannonball.html)
+{% include breadcrumbs.html %}
 
-# Newton&apos;s cannonball
+## Newton&apos;s cannonball
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/NewtonsCannonball.html %}
+Download the [newtons_cannonball.py](code/newtons_cannonball.py) source code
+{% include_relative code/NewtonsCannonball.html %}

@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [ball_drop_on_spring.py](glowscript/ball_drop_on_spring.html)
+{% include breadcrumbs.html %}
 
-# Ball dropped onto a spring
+## Ball dropped onto a spring
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/BalldropOnSpring.html %}
+Download the [ball_drop_on_spring.py](code/ball_drop_on_spring.py) source code
+{% include_relative code/BalldropOnSpring.html %}

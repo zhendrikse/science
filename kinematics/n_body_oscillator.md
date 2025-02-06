@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [n_body_oscillator.py](glowscript/n_body_oscillator.html)
+{% include breadcrumbs.html %}
 
-# Ball dropped onto a spring
+## $N$-body oscillator
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/NBodyCoupledOscillator.html %}
+Download the [n_body_oscillator.py](code/n_body_oscillator.py) source code
+{% include_relative code/NBodyCoupledOscillator.html %}

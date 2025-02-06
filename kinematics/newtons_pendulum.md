@@ -1,6 +1,7 @@
-[Zeger's home page](https://www.hendrikse.name/) &mdash; [Science home page](https://www.hendrikse.name/science/) &mdash; [newtons_pendulum.py](glowscript/newtons_pendulum.html)
+{% include breadcrumbs.html %}
 
-# Newton&apos;s pendulum
+## Newton&apos;s pendulum
 <div class="header_line"><br/></div>
 
-{% include_relative glowscript/NewtonsPendulum.html %}
+Download the [newtons_pendulum.py](code/newtons_pendulum.py) source code
+{% include_relative code/NewtonsPendulum.html %}

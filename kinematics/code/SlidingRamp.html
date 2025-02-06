@@ -1,0 +1,592 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var scene, running, t;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
+    function input(arg) {
+    	arg = arg || {}
+    	if (arg.prompt !== undefined && arg.prompt != '') return prompt(arg.prompt)
+    	else if (typeof arg === 'string') return prompt(arg)
+    	else return prompt()
+    }
+
+    var version, print, arange, __name__, type, ρσ_ls, title, ρσ_unpack, ball_mass, grav_constant, theta, friction_constant, running, _GS_1, wedge, b1, b2, wedge_mass_input_field, ball_mass_input_field, theta_input_field, friction_input_field, floor, ball, g1, g2, plot_ball_velocity_x, plot_wedge_velocity_x, plot_energy_ball, plot_energy_wedge, plot_energy_total, dt, t, tmp_M, tmp_m, K, U;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "Ball rolling from sliding ramp with friction\n\n&#x2022; Based on original <a href=\"https://github.com/Physics-Morris/Physics-Vpython/blob/master/1_Moving_Wedge.py\">1_Moving_Wedge.py<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "9";
+    ρσ_unpack = [1, 9.8, 45, 0];
+    ball_mass = ρσ_unpack[0];
+    grav_constant = ρσ_unpack[1];
+    theta = ρσ_unpack[2];
+    friction_constant = ρσ_unpack[3];
+    "11";
+    function Wedge() {;
+    }
+    Wedge.prototype.__init__ = async function __init__() {
+        var self = this;
+        var mass = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[0];
+        var ball_mass = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.ball_mass : arguments[1];
+        var theta = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.theta : arguments[2];
+        var friction_constant = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.friction_constant : arguments[3];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
+            mass = ρσ_kwargs_obj.mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "ball_mass")){
+            ball_mass = ρσ_kwargs_obj.ball_mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "theta")){
+            theta = ρσ_kwargs_obj.theta;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "friction_constant")){
+            friction_constant = ρσ_kwargs_obj.friction_constant;
+        }
+        var ρσ_ls, A, B, C, D, E, F, T1, T2, Q1, Q2, Q3;
+        "13";
+        self._mass = mass;
+        "14";
+        self._theta = (await radians(theta));
+        "15";
+        self._ball_mass = ball_mass;
+        "16";
+        self._friction = friction_constant;
+        "18";
+        A = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), color: color.orange, v: vec(0, 0, 0), a: vec((await self._acceleration_x()), 0, 0)})]);
+        "19";
+        B = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(10["/"](tan((await radians(theta)))), 0, 0), color: color.purple, v: vec(0, 0, 0), a: vec((await self._acceleration_x()), 0, 0)})]);
+        "20";
+        C = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(10["/"](tan((await radians(theta)))), 0, 10), color: color.green, v: vec(0, 0, 0), a: vec((await self._acceleration_x()), 0, 0)})]);
+        "21";
+        D = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(0, 0, 10), color: color.blue, v: vec(0, 0, 0), a: vec((await self._acceleration_x()), 0, 0)})]);
+        "22";
+        E = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(0, 10, 10), color: color.cyan, v: vec(0, 0, 0), a: vec((await self._acceleration_x()), 0, 0)})]);
+        "23";
+        F = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(0, 10, 0), color: color.red, v: vec(0, 0, 0), a: vec((await self._acceleration_x()), 0, 0)})]);
+        "25";
+        self._apex = ρσ_list_decorate([ A, B, C, D, E, F ]);
+        "27";
+        T1 = ρσ_interpolate_kwargs.call(this, triangle, [ρσ_desugar_kwargs({v0: E, v1: D, v2: C})]);
+        "28";
+        T2 = ρσ_interpolate_kwargs.call(this, triangle, [ρσ_desugar_kwargs({v0: F, v1: A, v2: B})]);
+        "29";
+        Q1 = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({v0: F, v1: E, v2: D, v3: A})]);
+        "30";
+        Q2 = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({v0: F, v1: E, v2: C, v3: B})]);
+        "31";
+        Q3 = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({v0: A, v1: B, v2: C, v3: D})]);
+    };
+    if (!Wedge.prototype.__init__.__defaults__) Object.defineProperties(Wedge.prototype.__init__, {
+        __defaults__ : {value: {mass:3, ball_mass:1, theta:45, friction_constant:0}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["mass", "ball_mass", "theta", "friction_constant"]},
+        __module__ : {value: null}
+    });
+    Wedge.__argnames__ = Wedge.prototype.__init__.__argnames__;
+    Wedge.__handles_kwarg_interpolation__ = Wedge.prototype.__init__.__handles_kwarg_interpolation__;
+    Wedge.prototype.update = async function update(dt) {
+        var self = this;
+        var ρσ_ls, i;
+        "34";
+        var ρσ_Iter1 = range(0, len(self._apex));
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            i = ρσ_Index1;
+            "35";
+            ρσ_getitem(self._apex, i).v.x=ρσ_getitem(self._apex, i).v.x["+"](ρσ_getitem(self._apex, i).a.x["*"](dt));
+            "36";
+            ρσ_getitem(self._apex, i).pos.x=ρσ_getitem(self._apex, i).pos.x["+"](ρσ_getitem(self._apex, i).v.x["*"](dt));
+        }
+    };
+    if (!Wedge.prototype.update.__argnames__) Object.defineProperties(Wedge.prototype.update, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Wedge.prototype.zero_acceleration = async function zero_acceleration() {
+        var self = this;
+        var ρσ_ls, i;
+        "39";
+        var ρσ_Iter2 = range(0, len(self._apex));
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            i = ρσ_Index2;
+            "40";
+            ρσ_getitem(self._apex, i).a = vec(0, 0, 0);
+        }
+    };
+    if (!Wedge.prototype.zero_acceleration.__module__) Object.defineProperties(Wedge.prototype.zero_acceleration, {
+        __module__ : {value: null}
+    });
+    Wedge.prototype.acceleration_ball = async function acceleration_ball() {
+        var self = this;
+        var ρσ_ls, acceleration_ball_x, acceleration_ball_y;
+        "43";
+        acceleration_ball_x = (await self._acceleration_ball())["*"](cos(self._theta))["+"]((await self._acceleration_x()));
+        "44";
+        acceleration_ball_y = 1["-u"]()["*"]((await self._acceleration_ball()))["*"](sin(self._theta));
+        "46";
+        return vec(acceleration_ball_x, acceleration_ball_y, 0);
+    };
+    if (!Wedge.prototype.acceleration_ball.__module__) Object.defineProperties(Wedge.prototype.acceleration_ball, {
+        __module__ : {value: null}
+    });
+    Wedge.prototype._acceleration_ball = async function _acceleration_ball() {
+        var self = this;
+        var ρσ_ls, theta, total_mass, net_mass;
+        "49";
+        theta = self._theta;
+        "50";
+        total_mass = self._ball_mass["+"](self._mass);
+        "51";
+        net_mass = self._mass["*"](cos(theta)["*"](cos(theta))["+"](self._friction["*"](sin(theta))["*"](cos(theta))))["/"](total_mass)["/"](sin(theta)["-"](1["*"](self._friction)["*"](cos(theta))))["+"](sin(theta));
+        "52";
+        return grav_constant["/"](net_mass);
+    };
+    if (!Wedge.prototype._acceleration_ball.__module__) Object.defineProperties(Wedge.prototype._acceleration_ball, {
+        __module__ : {value: null}
+    });
+    Wedge.prototype._acceleration_x = async function _acceleration_x() {
+        var self = this;
+        var ρσ_ls, total_mass, force_on_wedge;
+        "55";
+        total_mass = self._ball_mass["+"](self._mass);
+        "57";
+        if (self._friction[">="](tan(self._theta))) {
+            "58";
+            return 0;
+        }
+        "60";
+        force_on_wedge = 1["-u"]()["*"]((await self._acceleration_ball()))["*"](self._ball_mass)["*"](cos(self._theta));
+        "61";
+        return force_on_wedge["/"](total_mass);
+    };
+    if (!Wedge.prototype._acceleration_x.__module__) Object.defineProperties(Wedge.prototype._acceleration_x, {
+        __module__ : {value: null}
+    });
+    Wedge.prototype.with_new_parameters = async function with_new_parameters(theta, friction, mass_wedge, mass_ball) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, i;
+        "64";
+        self._friction = friction;
+        "65";
+        self._ball_mass = mass_ball;
+        "66";
+        self._mass = mass_wedge;
+        "67";
+        self._theta = (await radians(theta));
+        "68";
+        ρσ_unpack = [vec(0, 0, 0), vec(10["/"](tan((await radians(theta)))), 0, 0), vec(10["/"](tan((await radians(theta)))), 0, 10),
+        vec(0, 0, 10), vec(0, 10, 10), vec(0, 10, 0)];
+        ρσ_getitem(self._apex, 0).pos = ρσ_unpack[0];
+        ρσ_getitem(self._apex, 1).pos = ρσ_unpack[1];
+        ρσ_getitem(self._apex, 2).pos = ρσ_unpack[2];
+        ρσ_getitem(self._apex, 3).pos = ρσ_unpack[3];
+        ρσ_getitem(self._apex, 4).pos = ρσ_unpack[4];
+        ρσ_getitem(self._apex, 5).pos = ρσ_unpack[5];
+        "70";
+        var ρσ_Iter3 = range(0, len(self._apex));
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            i = ρσ_Index3;
+            "71";
+            ρσ_getitem(self._apex, i).a.x = (await self._acceleration_x());
+            "72";
+            ρσ_getitem(self._apex, i).v = vec(0, 0, 0);
+        }
+    };
+    if (!Wedge.prototype.with_new_parameters.__argnames__) Object.defineProperties(Wedge.prototype.with_new_parameters, {
+        __argnames__ : {value: ["theta", "friction", "mass_wedge", "mass_ball"]},
+        __module__ : {value: null}
+    });
+    Wedge.prototype.velocity = async function velocity() {
+        var self = this;
+        "75";
+        return ρσ_getitem(self._apex, 0).v.x;
+    };
+    if (!Wedge.prototype.velocity.__module__) Object.defineProperties(Wedge.prototype.velocity, {
+        __module__ : {value: null}
+    });
+    Wedge.prototype.kinetic_energy = async function kinetic_energy() {
+        var self = this;
+        "78";
+        return .5["*"](self._mass)["*"]((await self.velocity()))["*"]((await self.velocity()));
+    };
+    if (!Wedge.prototype.kinetic_energy.__module__) Object.defineProperties(Wedge.prototype.kinetic_energy, {
+        __module__ : {value: null}
+    });
+    Wedge.prototype.mass = async function mass() {
+        var self = this;
+        "81";
+        return self._mass;
+    };
+    if (!Wedge.prototype.mass.__module__) Object.defineProperties(Wedge.prototype.mass, {
+        __module__ : {value: null}
+    });
+    Wedge.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Wedge.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Wedge.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+
+
+    "83";
+    async function set_scene() {
+        "84";
+        "85";
+        scene = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075)})]);
+        "86";
+        scene.camera.pos = vec(30, 10, 40);
+        "87";
+        scene.camera.axis = vec(1["-u"]()["*"](5), 1["-u"]()["*"](10), 1["-u"]()["*"](30));
+    };
+    if (!set_scene.__module__) Object.defineProperties(set_scene, {
+        __module__ : {value: null}
+    });
+
+    "89";
+    async function Run(r) {
+        "90";
+        "91";
+        running = !running;
+        "92";
+        if (running) {
+            "93";
+            r.text = "Pause";
+            "94";
+        } else {
+            "95";
+            r.text = "Run";
+        }
+    };
+    if (!Run.__argnames__) Object.defineProperties(Run, {
+        __argnames__ : {value: ["r"]},
+        __module__ : {value: null}
+    });
+
+    "97";
+    async function restart() {
+        var ρσ_ls, ρσ_unpack, theta_tmp, friction_tmp, M_tmp, m_tmp;
+        "98";
+        ρσ_unpack = [theta_input_field.number, friction_input_field.number, wedge_mass_input_field.number,
+        ball_mass_input_field.number];
+        theta_tmp = ρσ_unpack[0];
+        friction_tmp = ρσ_unpack[1];
+        M_tmp = ρσ_unpack[2];
+        m_tmp = ρσ_unpack[3];
+        "99";
+        if ((theta_tmp === null || typeof theta_tmp === "object" && ρσ_equals(theta_tmp, null))) {
+            theta_tmp = theta;
+        }
+        "100";
+        if ((friction_tmp === null || typeof friction_tmp === "object" && ρσ_equals(friction_tmp, null))) {
+            friction_tmp = friction_constant;
+        }
+        "101";
+        if ((M_tmp === null || typeof M_tmp === "object" && ρσ_equals(M_tmp, null))) {
+            M_tmp = (await wedge.mass());
+        }
+        "102";
+        if ((m_tmp === null || typeof m_tmp === "object" && ρσ_equals(m_tmp, null))) {
+            m_tmp = ball_mass;
+        }
+        "104";
+        "105";
+        "106";
+        running = false;
+        "107";
+        b1.text = "Run";
+        "108";
+        t = 0;
+        "109";
+        plot_ball_velocity_x.remove();
+        "110";
+        plot_wedge_velocity_x.remove();
+        "113";
+        plot_energy_total.remove();
+        "114";
+        plot_energy_ball.remove();
+        "115";
+        plot_energy_wedge.remove();
+        "117";
+        (await wedge.with_new_parameters(theta_tmp, friction_tmp, M_tmp, m_tmp));
+        "118";
+        ρσ_unpack = [vec(0, 0, 0), vec(1.5["/"](sin((await radians(theta_tmp)))), 10, 5), (await wedge.acceleration_ball()).x,
+        (await wedge.acceleration_ball()).y];
+        ball.v = ρσ_unpack[0];
+        ball.pos = ρσ_unpack[1];
+        ball.a.x = ρσ_unpack[2];
+        ball.a.y = ρσ_unpack[3];
+    };
+    if (!restart.__module__) Object.defineProperties(restart, {
+        __module__ : {value: null}
+    });
+
+    "120";
+    async function get_parameter_values() {
+        var ρσ_ls, ρσ_unpack, theta_tmp, friction_tmp, M_tmp, m_tmp;
+        "121";
+        ρσ_unpack = [theta_input_field.number, friction_input_field.number, wedge_mass_input_field.number,
+        ball_mass_input_field.number];
+        theta_tmp = ρσ_unpack[0];
+        friction_tmp = ρσ_unpack[1];
+        M_tmp = ρσ_unpack[2];
+        m_tmp = ρσ_unpack[3];
+        "122";
+        if ((theta_tmp === null || typeof theta_tmp === "object" && ρσ_equals(theta_tmp, null))) {
+            theta_tmp = theta;
+        }
+        "123";
+        if ((friction_tmp === null || typeof friction_tmp === "object" && ρσ_equals(friction_tmp, null))) {
+            friction_tmp = friction_constant;
+        }
+        "124";
+        if ((M_tmp === null || typeof M_tmp === "object" && ρσ_equals(M_tmp, null))) {
+            M_tmp = (await wedge.mass());
+        }
+        "125";
+        if ((m_tmp === null || typeof m_tmp === "object" && ρσ_equals(m_tmp, null))) {
+            m_tmp = ball_mass;
+        }
+        "126";
+        if (theta_tmp[">"](80) || theta_tmp["<"](10)) {
+            theta_tmp = theta;
+        }
+        "127";
+        return [theta_tmp, friction_tmp, M_tmp, m_tmp];
+    };
+    if (!get_parameter_values.__module__) Object.defineProperties(get_parameter_values, {
+        __module__ : {value: null}
+    });
+
+    "129";
+    async function new_parameter_value() {
+        var ρσ_ls, ρσ_unpack, theta_tmp, friction_tmp, M_tmp, m_tmp;
+        "130";
+        ρσ_unpack = (await get_parameter_values());
+ρσ_unpack = ρσ_unpack_asarray(4, ρσ_unpack);
+        theta_tmp = ρσ_unpack[0];
+        friction_tmp = ρσ_unpack[1];
+        M_tmp = ρσ_unpack[2];
+        m_tmp = ρσ_unpack[3];
+        "131";
+        (await wedge.with_new_parameters(theta_tmp, friction_tmp, M_tmp, m_tmp));
+        "132";
+        ball.pos.x = 1.5["/"](sin((await radians(theta_tmp))));
+        "133";
+        ρσ_unpack = [(await wedge.acceleration_ball()).x, (await wedge.acceleration_ball()).y];
+        ball.a.x = ρσ_unpack[0];
+        ball.a.y = ρσ_unpack[1];
+    };
+    if (!new_parameter_value.__module__) Object.defineProperties(new_parameter_value, {
+        __module__ : {value: null}
+    });
+
+    "135";
+    (await set_scene());
+    "137";
+    running = false;
+    "138";
+    _GS_1 = new Wedge;
+    (await _GS_1.__init__());
+    wedge = _GS_1;
+    "140";
+    scene.append_to_caption("      ");
+    "141";
+    b1 = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Run", bind: Run, background: color.cyan})]);
+    "143";
+    scene.append_to_caption("      ");
+    "144";
+    b2 = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Restart", bind: restart, background: color.cyan})]);
+    "146";
+    scene.append_to_caption("\n\nM =     ");
+    (await sleep(.1));
+    "147";
+    wedge_mass_input_field = ρσ_interpolate_kwargs.call(this, winput, [ρσ_desugar_kwargs({bind: new_parameter_value, type: "numeric"})]);
+    "149";
+    scene.append_to_caption("\n\nm =     ");
+    (await sleep(.1));
+    "150";
+    ball_mass_input_field = ρσ_interpolate_kwargs.call(this, winput, [ρσ_desugar_kwargs({bind: new_parameter_value, type: "numeric"})]);
+    "152";
+    scene.append_to_caption("\n\nAngle of wedge(10~80):");
+    (await sleep(.1));
+    "153";
+    theta_input_field = ρσ_interpolate_kwargs.call(this, winput, [ρσ_desugar_kwargs({bind: new_parameter_value, type: "numeric"})]);
+    "155";
+    scene.append_to_caption(" Degree\n");
+    "157";
+    scene.append_to_caption("\n\nCoefficient of friction on the slope: ");
+    (await sleep(.1));
+    "158";
+    friction_input_field = ρσ_interpolate_kwargs.call(this, winput, [ρσ_desugar_kwargs({bind: new_parameter_value, type: "numeric"})]);
+    "160";
+    scene.append_to_caption("<i>\n\n(Please press enter after setting each parameter, otherwise \n it will run on default parameter)</i>");
+    "161";
+    scene.append_to_caption("\n\n\n\n\n");
+    "164";
+    floor = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), size: vec(300, 1, 30), color: color.blue, v: vec(0, 0, 0), a: vec(0, 0, 0)})]);
+    "167";
+    ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(1.5["/"](sin((await radians(theta)))), 10, 5), radius: 1.5, v: vec(0, 0, 0), a: (await wedge.acceleration_ball()), texture: textures.wood})]);
+    "171";
+    g1 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "<b>Velocity (x direction), ball=red, wedge=green</b>", xtitle: "<b>time</b>", ytitle: "<b>P</b>", align: "left", width: 500, height: 300})]);
+    "175";
+    g2 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "<b>Energy, ball=blue, wedge=red, total=green<b>", xtitle: "<b>time</b>", ytitle: "<b>E</b>", align: "left", width: 500, height: 300})]);
+    "178";
+    plot_ball_velocity_x = ρσ_interpolate_kwargs.call(this, gdots, [ρσ_desugar_kwargs({graph: g1, color: color.red})]);
+    "179";
+    plot_wedge_velocity_x = ρσ_interpolate_kwargs.call(this, gdots, [ρσ_desugar_kwargs({graph: g1, color: color.green})]);
+    "180";
+    plot_energy_ball = ρσ_interpolate_kwargs.call(this, gdots, [ρσ_desugar_kwargs({graph: g2, color: color.blue})]);
+    "181";
+    plot_energy_wedge = ρσ_interpolate_kwargs.call(this, gdots, [ρσ_desugar_kwargs({graph: g2, color: color.red})]);
+    "182";
+    plot_energy_total = ρσ_interpolate_kwargs.call(this, gdots, [ρσ_desugar_kwargs({graph: g2, color: color.green})]);
+    "184";
+    dt = .01;
+    "185";
+    t = 0;
+    "186";
+    while (true) {
+        "187";
+        (await rate(1["/"](dt)));
+        "188";
+        running = (ball.pos.x["<"](50)) ? running : false;
+        "190";
+        if (running) {
+            "191";
+            ball.v=ball.v["+"](ball.a["*"](dt));
+            "192";
+            ball.pos=ball.pos["+"](ball.v["*"](dt));
+            "193";
+            (await wedge.update(dt));
+            "195";
+            if (ball.pos.y["<="](ball.radius["+"](floor.size.y["/"](2)))) {
+                "197";
+                ball.v = vec(mag(ball.v), 0, 0);
+                "198";
+                ball.a = vec(0, 0, 0);
+                "199";
+                ball.up = vec(0, 1, 0);
+                "200";
+                ball.pos=ball.pos["+"](ball.v["*"](dt));
+                "202";
+                (await wedge.zero_acceleration());
+                "203";
+                (await wedge.update(dt));
+                "206";
+            }
+            if ((wedge_mass_input_field.number === null || typeof wedge_mass_input_field.number === "object" && ρσ_equals(wedge_mass_input_field.number, null))) {
+                tmp_M = (await wedge.mass());
+            } else {
+                tmp_M = wedge_mass_input_field.number;
+            }
+            "208";
+            if ((ball_mass_input_field.number === null || typeof ball_mass_input_field.number === "object" && ρσ_equals(ball_mass_input_field.number, null))) {
+                tmp_m = ball_mass;
+            } else {
+                tmp_m = ball_mass_input_field.number;
+            }
+            "211";
+            ρσ_interpolate_kwargs.call(plot_ball_velocity_x, plot_ball_velocity_x.plot, [ρσ_desugar_kwargs({pos: [t,
+            ball.v.x]})]);
+            "212";
+            ρσ_interpolate_kwargs.call(plot_wedge_velocity_x, plot_wedge_velocity_x.plot, [ρσ_desugar_kwargs({pos: [t,
+            (await wedge.velocity())]})]);
+            "214";
+            K = .5["*"](tmp_m)["*"](Math.pow(ball.v.x, 2)["+"](Math.pow(ball.v.y, 2)))["+"]((await wedge.kinetic_energy()));
+            "215";
+            U = tmp_m["*"](grav_constant)["*"](ball.pos.y["-"](1["*"](ball.radius["+"](floor.size.y["/"](2)))));
+            "217";
+            ρσ_interpolate_kwargs.call(plot_energy_ball, plot_energy_ball.plot, [ρσ_desugar_kwargs({pos: [t,
+            K]})]);
+            "218";
+            ρσ_interpolate_kwargs.call(plot_energy_wedge, plot_energy_wedge.plot, [ρσ_desugar_kwargs({pos: [t,
+            U]})]);
+            "219";
+            ρσ_interpolate_kwargs.call(plot_energy_total, plot_energy_total.plot, [ρσ_desugar_kwargs({pos: [t,
+            K["+"](U)]})]);
+            "221";
+            t=t["+"](dt);
+        }
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

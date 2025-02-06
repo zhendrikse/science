@@ -26,7 +26,7 @@ real_mole_amount = real_number_of_atoms / avogadro_number
 gray = color.gray(0.7)  # color of edges of container
 mass = atomic_mass / avogadro_number  # helium mass
 
-animation = canvas(background=color.gray(0.075), align='left', height="500")
+animation = canvas(background=color.gray(0.075), align='top', height="500")
 animation.range = L
 animation.title = """&#x2022; A "hard-sphere" gas, written by Bruce Sherwood, modified by Rob Salgado
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>.

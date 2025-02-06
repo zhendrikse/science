@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 title = """
 &#x2022; Written by <a href="http://www.hendrikse.name/">Zeger Hendrikse</a>
@@ -116,4 +115,3 @@ while True:
   for ball_i in range(0, balls):
     curve[ball_i].plot(t/dt, oscillator.ball_position(ball_i).x - ball_i + balls / 2)
   t += dt
-```

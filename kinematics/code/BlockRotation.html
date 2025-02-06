@@ -1,0 +1,884 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var scene, ball_counter;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
+    var version, print, arange, __name__, type, ρσ_ls, title, zero_force, ρσ_unpack, theta, v0, e, g, balls, ball_counter, _GS_1, target_building, shooting_tower, g1, w, t, dt, timer, ball;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "11";
+    title = "Balls from shooting tower hitting a block\n\n&#x2022; Based on original <a href=\"https://github.com/Physics-Morris/Physics-Vpython/blob/master/3_Block_Rotation.py\">3_Block_rotation.py<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "13";
+    zero_force = vector(0, 0, 0);
+    "16";
+    ρσ_unpack = [45, 100, .9];
+    theta = ρσ_unpack[0];
+    v0 = ρσ_unpack[1];
+    e = ρσ_unpack[2];
+    "17";
+    g = 98;
+    "20";
+    function Timer() {;
+    }
+    Timer.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
+        var use_scientific = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.use_scientific : arguments[1];
+        var relative_to = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.relative_to : arguments[2];
+        var timer_color = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.timer_color : arguments[3];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "use_scientific")){
+            use_scientific = ρσ_kwargs_obj.use_scientific;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "relative_to")){
+            relative_to = ρσ_kwargs_obj.relative_to;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "timer_color")){
+            timer_color = ρσ_kwargs_obj.timer_color;
+        }
+        "22";
+        self._use_scientific = use_scientific;
+        "23";
+        self._relative_to = relative_to;
+        "24";
+        self._distance_to_attached_object = (relative_to) ? relative_to.position["-"](1["*"](position)) : 0;
+        "25";
+        if (use_scientific) {
+            "26";
+            self._timer_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position, text: "00E01", box: false, color: timer_color})]);
+            "27";
+        } else {
+            "28";
+            self._timer_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position, text: "00:00:00.00", box: false, color: timer_color})]);
+        }
+    };
+    if (!Timer.prototype.__init__.__defaults__) Object.defineProperties(Timer.prototype.__init__, {
+        __defaults__ : {value: {position:vector(0, 0, 0), use_scientific:false, relative_to:null, timer_color:color.white}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "use_scientific", "relative_to", "timer_color"]},
+        __module__ : {value: null}
+    });
+    Timer.__argnames__ = Timer.prototype.__init__.__argnames__;
+    Timer.__handles_kwarg_interpolation__ = Timer.prototype.__init__.__handles_kwarg_interpolation__;
+    Timer.prototype.update = async function update(t) {
+        var self = this;
+        var ρσ_ls, hours, minutes, secs, frac;
+        "32";
+        if (self._relative_to) {
+            "33";
+            self._timer_label.pos = self._distance_to_attached_object["+"](self._relative_to.position);
+            "35";
+        }
+        if (self._use_scientific) {
+            "36";
+            self._timer_label.text = "%.4E".format(t);
+            "37";
+            return;
+        }
+        "39";
+        hours = int(t["/"](3600));
+        "40";
+        minutes = int(t["/"](60)["%"](60));
+        "41";
+        secs = int(t["%"](60));
+        "42";
+        frac = int(round(100["*"](t["%"](1))));
+        "43";
+        if ((frac === 100 || typeof frac === "object" && ρσ_equals(frac, 100))) {
+            "44";
+            frac = 0;
+            "45";
+            secs = secs["+"](1);
+        }
+        "47";
+        self._timer_label.text = "{:02d}:".format(hours)["+"]("{:02d}:".format(minutes))["+"]("{:02d}.".format(secs))["+"]("{:02d}".format(frac));
+    };
+    if (!Timer.prototype.update.__argnames__) Object.defineProperties(Timer.prototype.update, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+    Timer.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Timer.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Timer.prototype, "__bases__", {value: []});
+
+
+
+    "49";
+    function Building() {;
+    }
+    Building.prototype.__init__ = async function __init__() {
+        var self = this;
+        var mass = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[0];
+        var position = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[1];
+        var length = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.length : arguments[2];
+        var height = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.height : arguments[3];
+        var width = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.width : arguments[4];
+        var color = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.color : arguments[5];
+        var up = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.up : arguments[6];
+        var velocity = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.velocity : arguments[7];
+        var omega = (arguments[8] === undefined || ( 8 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.omega : arguments[8];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
+            mass = ρσ_kwargs_obj.mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "length")){
+            length = ρσ_kwargs_obj.length;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "height")){
+            height = ρσ_kwargs_obj.height;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "width")){
+            width = ρσ_kwargs_obj.width;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "color")){
+            color = ρσ_kwargs_obj.color;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "up")){
+            up = ρσ_kwargs_obj.up;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "velocity")){
+            velocity = ρσ_kwargs_obj.velocity;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "omega")){
+            omega = ρσ_kwargs_obj.omega;
+        }
+        "51";
+        self._building = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({mass: mass, pos: position, length: length, height: height, width: width, color: color, up: up, velocity: velocity})]);
+        "52";
+        self._position_in_rest = position;
+        "53";
+        self._position = position;
+        "54";
+        self._length = length;
+        "55";
+        self._height = height;
+        "56";
+        self._width = width;
+        "57";
+        self._velocity = velocity;
+        "58";
+        self._up = up;
+        "59";
+        self._w = omega;
+        "60";
+        self._mass = mass;
+    };
+    if (!Building.prototype.__init__.__defaults__) Object.defineProperties(Building.prototype.__init__, {
+        __defaults__ : {value: {mass:10, position:vec(0, 0, 0), length:20, height:100, width:50, color:color.orange, up:vec(0, 1, 0), velocity:vec(0, 0, 0), omega:0}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["mass", "position", "length", "height", "width", "color", "up", "velocity", "omega"]},
+        __module__ : {value: null}
+    });
+    Building.__argnames__ = Building.prototype.__init__.__argnames__;
+    Building.__handles_kwarg_interpolation__ = Building.prototype.__init__.__handles_kwarg_interpolation__;
+    Building.prototype._angular_acceleration = async function _angular_acceleration() {
+        var self = this;
+        var ρσ_ls, center, r, omega;
+        "63";
+        if (ρσ_equals((await self.position()), self._position_in_rest)) {
+            "64";
+            return 0;
+        }
+        "66";
+        center = (await self.position()).x;
+        "67";
+        r = abs((await self.position()).x["+"]((await self.H()))["+"]((await self.L())["/"](2)));
+        "68";
+        omega = g["*"](r)["/"]((await self.moment_of_inertia()));
+        "69";
+        if (1["-u"]()["*"]((await self.H()))["-"](1["*"](center))[">"](10)) {
+            "70";
+            return 1["-u"]()["*"](omega);
+            "71";
+        } else if (1["-u"]()["*"]((await self.H()))["-"](1["*"](center))["<="](10)) {
+            "72";
+            return omega;
+            "73";
+        } else {
+            "74";
+            return 0;
+        }
+    };
+    if (!Building.prototype._angular_acceleration.__module__) Object.defineProperties(Building.prototype._angular_acceleration, {
+        __module__ : {value: null}
+    });
+    Building.prototype.collide_with = async function collide_with(ball) {
+        var self = this;
+        var ρσ_ls, velocity, radius, omega;
+        "78";
+        velocity = (await ball.mass())["*"]((await ball.velocity()).x)["+"]((await self.mass())["*"]((await self.velocity()).x))["+"]((await ball.elasticity())["*"]((await ball.mass()))["*"]((await ball.velocity()).x["-"](1["*"]((await self.velocity()).x))))["/"]((await ball.mass())["+"]((await self.mass())));
+        "80";
+        radius = (await ball.position()).y["-"](1["*"](.5));
+        "81";
+        omega = velocity["/"](radius);
+        "82";
+        self._w = omega;
+    };
+    if (!Building.prototype.collide_with.__argnames__) Object.defineProperties(Building.prototype.collide_with, {
+        __argnames__ : {value: ["ball"]},
+        __module__ : {value: null}
+    });
+    Building.prototype._lies_flat_on_ground = async function _lies_flat_on_ground() {
+        var self = this;
+        "85";
+        return (await self.position()).y["<="]((await self.L())["/"](2)["+"](.5));
+    };
+    if (!Building.prototype._lies_flat_on_ground.__module__) Object.defineProperties(Building.prototype._lies_flat_on_ground, {
+        __module__ : {value: null}
+    });
+    Building.prototype.update = async function update(dt) {
+        var self = this;
+        var ρσ_ls, dtheta;
+        "88";
+        self._w=self._w["+"]((await self._angular_acceleration())["*"](dt));
+        "89";
+        dtheta = 1["-u"]()["*"](self._w)["*"](dt);
+        "91";
+        if ((await self._lies_flat_on_ground())) {
+            "92";
+            self._w = 0;
+            "93";
+            self._up = vec(1["-u"]()["*"](1), 0, 0);
+            "94";
+            dtheta = 0;
+        }
+        "96";
+        (await self.rotate(dtheta));
+    };
+    if (!Building.prototype.update.__argnames__) Object.defineProperties(Building.prototype.update, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Building.prototype.rotate = async function rotate(dtheta) {
+        var self = this;
+        "99";
+        if (self._building) {
+            "100";
+            self._building.up = self._up;
+            "101";
+            ρσ_interpolate_kwargs.call(self._building, self._building.rotate, [ρσ_desugar_kwargs({origin: vec(1["-u"]()["*"]((await self.L()))["/"](2)["-"](1["*"]((await self.H()))), 0, 0), axis: vec(0, 0, 1), angle: dtheta})]);
+            "102";
+            self._up = self._building.up;
+            "103";
+            self._position = self._building.pos;
+        }
+    };
+    if (!Building.prototype.rotate.__argnames__) Object.defineProperties(Building.prototype.rotate, {
+        __argnames__ : {value: ["dtheta"]},
+        __module__ : {value: null}
+    });
+    Building.prototype.mass = async function mass() {
+        var self = this;
+        "106";
+        return self._mass;
+    };
+    if (!Building.prototype.mass.__module__) Object.defineProperties(Building.prototype.mass, {
+        __module__ : {value: null}
+    });
+    Building.prototype.velocity = async function velocity() {
+        var self = this;
+        "109";
+        return self._velocity;
+    };
+    if (!Building.prototype.velocity.__module__) Object.defineProperties(Building.prototype.velocity, {
+        __module__ : {value: null}
+    });
+    Building.prototype.H = async function H() {
+        var self = this;
+        "112";
+        return self._height;
+    };
+    if (!Building.prototype.H.__module__) Object.defineProperties(Building.prototype.H, {
+        __module__ : {value: null}
+    });
+    Building.prototype.position = async function position() {
+        var self = this;
+        "115";
+        return self._position;
+    };
+    if (!Building.prototype.position.__module__) Object.defineProperties(Building.prototype.position, {
+        __module__ : {value: null}
+    });
+    Building.prototype.L = async function L() {
+        var self = this;
+        "118";
+        return self._length;
+    };
+    if (!Building.prototype.L.__module__) Object.defineProperties(Building.prototype.L, {
+        __module__ : {value: null}
+    });
+    Building.prototype.omega = async function omega() {
+        var self = this;
+        "121";
+        return self._w;
+    };
+    if (!Building.prototype.omega.__module__) Object.defineProperties(Building.prototype.omega, {
+        __module__ : {value: null}
+    });
+    Building.prototype.W = async function W() {
+        var self = this;
+        "124";
+        return self._width;
+    };
+    if (!Building.prototype.W.__module__) Object.defineProperties(Building.prototype.W, {
+        __module__ : {value: null}
+    });
+    Building.prototype.up = async function up() {
+        var self = this;
+        "127";
+        return self._up;
+    };
+    if (!Building.prototype.up.__module__) Object.defineProperties(Building.prototype.up, {
+        __module__ : {value: null}
+    });
+    Building.prototype.moment_of_inertia = async function moment_of_inertia() {
+        var self = this;
+        var ρσ_ls, h, l, m;
+        "131";
+        h = (await self.H());
+        "132";
+        l = (await self.L());
+        "133";
+        m = (await self.mass());
+        "134";
+        return m["/"](12)["*"](h["*"](h)["+"](l["*"](l)));
+    };
+    if (!Building.prototype.moment_of_inertia.__module__) Object.defineProperties(Building.prototype.moment_of_inertia, {
+        __module__ : {value: null}
+    });
+    Building.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Building.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Building.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "137";
+    function Ball() {;
+    }
+    Ball.prototype.__init__ = async function __init__() {
+        var self = this;
+        var mass = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[0];
+        var position = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[1];
+        var velocity = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.velocity : arguments[2];
+        var radius = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[3];
+        var color = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.color : arguments[4];
+        var elasticity = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.elasticity : arguments[5];
+        var make_trail = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.make_trail : arguments[6];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
+            mass = ρσ_kwargs_obj.mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "velocity")){
+            velocity = ρσ_kwargs_obj.velocity;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "color")){
+            color = ρσ_kwargs_obj.color;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "elasticity")){
+            elasticity = ρσ_kwargs_obj.elasticity;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "make_trail")){
+            make_trail = ρσ_kwargs_obj.make_trail;
+        }
+        "139";
+        self._ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, color: color, velocity: velocity, mass: mass, elasticity: elasticity, make_trail: make_trail})]);
+        "140";
+        self._mass = mass;
+        "141";
+        self._radius = radius;
+        "142";
+        self._velocity = velocity;
+        "143";
+        self._elasticity = elasticity;
+        "144";
+        self._position = position;
+    };
+    if (!Ball.prototype.__init__.__defaults__) Object.defineProperties(Ball.prototype.__init__, {
+        __defaults__ : {value: {mass:1.5, position:vector(0, 0, 0), velocity:vector(0, 0, 0), radius:.1, color:color.yellow, elasticity:1, make_trail:false}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["mass", "position", "velocity", "radius", "color", "elasticity", "make_trail"]},
+        __module__ : {value: null}
+    });
+    Ball.__argnames__ = Ball.prototype.__init__.__argnames__;
+    Ball.__handles_kwarg_interpolation__ = Ball.prototype.__init__.__handles_kwarg_interpolation__;
+    Ball.prototype._draw = async function _draw() {
+        var self = this;
+        "147";
+        if (self._ball) {
+            "148";
+            self._ball.pos = (await self.position());
+            "149";
+            self._ball.velocity = (await self.velocity());
+        }
+    };
+    if (!Ball.prototype._draw.__module__) Object.defineProperties(Ball.prototype._draw, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.move = async function move() {
+        var self = this;
+        var force__vector = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? move.__defaults__.force__vector : arguments[0];
+        var dt = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? move.__defaults__.dt : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "force__vector")){
+            force__vector = ρσ_kwargs_obj.force__vector;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "dt")){
+            dt = ρσ_kwargs_obj.dt;
+        }
+        var ρσ_ls, acceleration_vector;
+        "153";
+        acceleration_vector = force__vector["/"]((await self.mass()));
+        "154";
+        self._velocity=self._velocity["+"](acceleration_vector["*"](dt));
+        "155";
+        self._position=self._position["+"](self._velocity["*"](dt));
+        "156";
+        (await self._draw());
+    };
+    if (!Ball.prototype.move.__defaults__) Object.defineProperties(Ball.prototype.move, {
+        __defaults__ : {value: {force__vector:vector(0, 0, 0), dt:.01}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["force__vector", "dt"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.shift = async function shift(delta) {
+        var self = this;
+        "159";
+        self._position=self._position["+"](delta);
+        "160";
+        (await self._draw());
+    };
+    if (!Ball.prototype.shift.__argnames__) Object.defineProperties(Ball.prototype.shift, {
+        __argnames__ : {value: ["delta"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.distance_to = async function distance_to(other) {
+        var self = this;
+        "163";
+        return (await other.position())["-"](1["*"]((await self._position())));
+    };
+    if (!Ball.prototype.distance_to.__argnames__) Object.defineProperties(Ball.prototype.distance_to, {
+        __argnames__ : {value: ["other"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.has_collided_with = async function has_collided_with(other_ball) {
+        var self = this;
+        "166";
+        return mag((await self.distance_to(other_ball)))["<"]((await self.radius())["+"]((await other_ball.radius())));
+    };
+    if (!Ball.prototype.has_collided_with.__argnames__) Object.defineProperties(Ball.prototype.has_collided_with, {
+        __argnames__ : {value: ["other_ball"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.rotate = async function rotate() {
+        var self = this;
+        var angle = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var origin = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.origin : arguments[1];
+        var axis = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? rotate.__defaults__.axis : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "origin")){
+            origin = ρσ_kwargs_obj.origin;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "axis")){
+            axis = ρσ_kwargs_obj.axis;
+        }
+        "169";
+        ρσ_interpolate_kwargs.call(self._ball, self._ball.rotate, [ρσ_desugar_kwargs({origin: origin, axis: axis, angle: angle})]);
+    };
+    if (!Ball.prototype.rotate.__defaults__) Object.defineProperties(Ball.prototype.rotate, {
+        __defaults__ : {value: {origin:vector(0, 0, 0), axis:vector(0, 1, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["angle", "origin", "axis"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.lies_on_floor = async function lies_on_floor() {
+        var self = this;
+        "172";
+        return (await self.position()).y["-"](1["*"]((await self.radius())))["<="](.5);
+    };
+    if (!Ball.prototype.lies_on_floor.__module__) Object.defineProperties(Ball.prototype.lies_on_floor, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.bounce_from_floor = async function bounce_from_floor(dt) {
+        var self = this;
+        "175";
+        self._velocity.y=self._velocity.y["*"](1["-u"]()["*"]((await self.elasticity())));
+        "176";
+        self._position=self._position["+"](self._velocity["*"](dt));
+        "179";
+        if (self._velocity.y["<="](.1)) {
+            "180";
+            self._position.y = (await self.radius())["+"]((await self.radius())["/"](10));
+        }
+        "182";
+        (await self._draw());
+    };
+    if (!Ball.prototype.bounce_from_floor.__argnames__) Object.defineProperties(Ball.prototype.bounce_from_floor, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype._is_approaching_from_the_right = async function _is_approaching_from_the_right(right_side) {
+        var self = this;
+        "185";
+        return (await self.velocity()).x["<"](0) && (await self.position()).x[">"](right_side);
+    };
+    if (!Ball.prototype._is_approaching_from_the_right.__argnames__) Object.defineProperties(Ball.prototype._is_approaching_from_the_right, {
+        __argnames__ : {value: ["right_side"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype._is_approaching_from_the_left = async function _is_approaching_from_the_left(left_side) {
+        var self = this;
+        "188";
+        return (await self.velocity()).x[">"](0) && (await self.position()).x["<"](left_side);
+    };
+    if (!Ball.prototype._is_approaching_from_the_left.__argnames__) Object.defineProperties(Ball.prototype._is_approaching_from_the_left, {
+        __argnames__ : {value: ["left_side"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.hits = async function hits(building) {
+        var self = this;
+        var ρσ_ls, right_side, left_side;
+        "191";
+        right_side = (await building.position()).x["+"]((await building.L())["/"](2));
+        "192";
+        left_side = (await building.position()).x["-"](1["*"]((await building.L()))["/"](2));
+        "194";
+        if ((await self._is_approaching_from_the_right(right_side))) {
+            "195";
+            return (await self.position()).x["<="](right_side["+"]((await self.radius()))) && (await self.position()).y["<="]((await building.H()));
+            "197";
+        }
+        if ((await self._is_approaching_from_the_left(left_side))) {
+            "198";
+            return (await self.position()).x[">="](left_side["-"](1["*"]((await self.radius())))) && (await self.position()).y["<="]((await building.H()));
+        }
+        "200";
+        return false;
+    };
+    if (!Ball.prototype.hits.__argnames__) Object.defineProperties(Ball.prototype.hits, {
+        __argnames__ : {value: ["building"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.collide_with = async function collide_with(building) {
+        var self = this;
+        var ρσ_ls, momentum_ball, momentum_building;
+        "203";
+        (await building.collide_with(self));
+        "205";
+        momentum_ball = (await self.mass())["*"]((await self.velocity()).x);
+        "206";
+        momentum_building = (await building.mass())["*"]((await building.velocity()).x);
+        "207";
+        self._velocity.x = momentum_ball["+"](momentum_building)["+"]((await self.elasticity())["*"]((await building.mass()))["*"]((await building.velocity()).x["-"](1["*"]((await self.velocity()).x))))["/"]((await self.mass())["+"]((await building.mass())));
+        "209";
+        (await self._draw());
+    };
+    if (!Ball.prototype.collide_with.__argnames__) Object.defineProperties(Ball.prototype.collide_with, {
+        __argnames__ : {value: ["building"]},
+        __module__ : {value: null}
+    });
+    Ball.prototype.momentum = async function momentum() {
+        var self = this;
+        "212";
+        return (await self.velocity())["*"]((await self.mass()));
+    };
+    if (!Ball.prototype.momentum.__module__) Object.defineProperties(Ball.prototype.momentum, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.kinetic_energy = async function kinetic_energy() {
+        var self = this;
+        "215";
+        return mag((await self.momentum()))["*"](mag((await self.momentum())))["/"](2["*"]((await self.mass())));
+    };
+    if (!Ball.prototype.kinetic_energy.__module__) Object.defineProperties(Ball.prototype.kinetic_energy, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.position = async function position() {
+        var self = this;
+        "218";
+        return self._position;
+    };
+    if (!Ball.prototype.position.__module__) Object.defineProperties(Ball.prototype.position, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.velocity = async function velocity() {
+        var self = this;
+        "221";
+        return self._velocity;
+    };
+    if (!Ball.prototype.velocity.__module__) Object.defineProperties(Ball.prototype.velocity, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.mass = async function mass() {
+        var self = this;
+        "224";
+        return self._mass;
+    };
+    if (!Ball.prototype.mass.__module__) Object.defineProperties(Ball.prototype.mass, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.radius = async function radius() {
+        var self = this;
+        "227";
+        return self._radius;
+    };
+    if (!Ball.prototype.radius.__module__) Object.defineProperties(Ball.prototype.radius, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.elasticity = async function elasticity() {
+        var self = this;
+        "230";
+        return self._elasticity;
+    };
+    if (!Ball.prototype.elasticity.__module__) Object.defineProperties(Ball.prototype.elasticity, {
+        __module__ : {value: null}
+    });
+    Ball.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Ball.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Ball.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "233";
+    async function set_scene() {
+        var ρσ_ls, floor;
+        "234";
+        "235";
+        scene = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: vec(0, .6, .6), align: "top", range: 200})]);
+        "236";
+        floor = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), size: vec(1e3, 1, 1e3), color: color.blue})]);
+        "237";
+        scene.camera.pos = vec(0, 60, 200);
+        "238";
+        scene.caption = " Moment of intertia \\( I = \\dfrac{M} {12} (L^2 + H^2) \\),\n Angular momentum \\( \\omega=\\dfrac{L}{I}=\\dfrac{\\vec{F} \\times \\vec{r}}{I}=\\dfrac{M\\vec{a} \\times \\vec{r}}{I} \\)\n\n\n\n";
+        "239";
+        MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    };
+    if (!set_scene.__module__) Object.defineProperties(set_scene, {
+        __module__ : {value: null}
+    });
+
+    "241";
+    async function create_ball(velocity) {
+        var ρσ_ls, _GS_1, a;
+        "242";
+        "243";
+        _GS_1 = new Ball;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({mass: 1, position: vec(100, 105, 0), radius: 5, color: vec(random(), random(), random()), velocity: velocity, elasticity: e})]);
+        a = _GS_1;
+        "244";
+        balls.append(a);
+        "245";
+        ball_counter=ball_counter["+"](1);
+    };
+    if (!create_ball.__argnames__) Object.defineProperties(create_ball, {
+        __argnames__ : {value: ["velocity"]},
+        __module__ : {value: null}
+    });
+
+    "248";
+    (await set_scene());
+    "249";
+    balls = ρσ_list_decorate([]);
+    "250";
+    ball_counter = 0;
+    "251";
+    (await create_ball(v0["*"](vec(1["-u"]()["*"](cos((await radians(theta)))), sin((await radians(theta))), 0))));
+    "253";
+    _GS_1 = new Building;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({mass: 10, position: vec(1["-u"]()["*"](100), 50.5, 0)})]);
+    target_building = _GS_1;
+    "254";
+    _GS_1 = new Building;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({mass: 30, position: vec(100, 50, 0), length: 10, height: 100, width: 10, color: color.cyan})]);
+    shooting_tower = _GS_1;
+    "257";
+    g1 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "<b>Angular Velocity (for block)</b>", xtitle: "<b>time</b>", ytitle: "<b>Angular Velocity</b>", width: 500, height: 300})]);
+    "261";
+    w = ρσ_interpolate_kwargs.call(this, gdots, [ρσ_desugar_kwargs({graph: g1})]);
+    "264";
+    async function increment_time_for(ball, dt) {
+        "265";
+        if ((await ball.lies_on_floor())) {
+            "266";
+            (await ball.bounce_from_floor(dt));
+            "267";
+            return;
+            "269";
+        }
+        if ((await ball.hits(shooting_tower))) {
+            "270";
+            (await ball.collide_with(shooting_tower));
+            "271";
+        } else if ((await ball.hits(target_building))) {
+            "272";
+            (await ball.collide_with(target_building));
+            "273";
+            (await target_building.rotate(1["-u"]()["*"]((await target_building.omega()))["*"](dt)));
+        }
+        "276";
+        (await target_building.update(dt));
+        "277";
+        (await ball.move(vec(0, 1["-u"]()["*"](g), 0)["*"]((await ball.mass())), dt));
+    };
+    if (!increment_time_for.__argnames__) Object.defineProperties(increment_time_for, {
+        __argnames__ : {value: ["ball", "dt"]},
+        __module__ : {value: null}
+    });
+
+    "280";
+    ρσ_unpack = [0, .01];
+    t = ρσ_unpack[0];
+    dt = ρσ_unpack[1];
+    "281";
+    _GS_1 = new Timer;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(0, 1["-u"]()["*"](25), 0)})]);
+    timer = _GS_1;
+    "282";
+    while (true) {
+        "283";
+        (await rate(2["/"](dt)));
+        "284";
+        (await timer.update(t));
+        "285";
+        var ρσ_Iter1 = balls;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            ball = ρσ_Index1;
+            "286";
+            (await increment_time_for(ball, dt));
+        }
+        "287";
+        t=t["+"](dt);
+        "288";
+        ρσ_interpolate_kwargs.call(w, w.plot, [ρσ_desugar_kwargs({pos: [t, (await target_building.omega())]})]);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

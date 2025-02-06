@@ -1,4 +1,3 @@
-```python
 #Web VPython 3.2
 from vpython import text, vec, sphere, color, mag, vector, canvas, cos, sin, radians, textures, rate, norm, label, slider, wtext
 
@@ -130,5 +129,3 @@ while True:
     uniform_earth_center_ball.reset()
     popup.visible = False
     info.visible = False
-
-```

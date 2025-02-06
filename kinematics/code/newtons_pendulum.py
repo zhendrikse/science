@@ -1,5 +1,4 @@
-```python
-Web VPython 3.2
+#Web VPython 3.2
 
 from vpython import vector, cos, sin, cylinder, sphere, box, color, rate, canvas, sqrt
 
@@ -67,4 +66,3 @@ while True:
     rate(200)
     right = position(right, t)
     t += dt
-```
