@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-# Visualization of the Doppler effect for sound
+# The normal modes of a vibrating membrane
 <div class="header_line"><br/></div>
 
 Download the [vibrating_membrane.py](code/vibrating_membrane.py) source code

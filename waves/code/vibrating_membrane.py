@@ -107,7 +107,7 @@ class RadioButtons:
         return self._selected_button.name()
 
 
-omega = 1.5 * sqrt(5)
+omega = 2 * sqrt(5)
 
 def mode_1_1(x, y, t):
     return cos(omega * t) * sin(1 * x / 3) * sin(1 * y / 3)
