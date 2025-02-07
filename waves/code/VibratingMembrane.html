@@ -1,0 +1,611 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, ρσ_unpack, Lx, Ly, dx, dy, animation, omega, x_range, y_range, modes, _GS_1, membrane, radius_slider, droplet_radius_text, offset_slider, hue_offset_text, amplitude_slider, amplitude_text, radio_buttons, j, i, time, dt;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "8";
+    title = "&#x2022; Written by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a>\n&#x2022; Visualization concept with spheres by <a href=\"https://jexpearce.github.io/jex/\">Jex Pearce</a>\n\n";
+    "10";
+    ρσ_unpack = [3["*"](pi), 3["*"](pi)];
+    Lx = ρσ_unpack[0];
+    Ly = ρσ_unpack[1];
+    "11";
+    ρσ_unpack = [.1, .1];
+    dx = ρσ_unpack[0];
+    dy = ρσ_unpack[1];
+    "12";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vec(1["-u"]()["*"](2.5), 1["-u"]()["*"](2.2), 1["-u"]()["*"](2.2)), center: vec(5.5, 5.3, 1["-u"]()["*"](2.25)), up: vec(0, 0, 1), title: title, background: color.gray(.075), range: 5.5})]);
+    "17";
+    function Membrane() {;
+    }
+    Membrane.prototype.__init__ = async function __init__(x, y, f_x_y_t) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack;
+        "19";
+        ρσ_unpack = [x, y, f_x_y_t];
+        self._x = ρσ_unpack[0];
+        self._y = ρσ_unpack[1];
+        self._f_x_y_t = ρσ_unpack[2];
+        "21";
+        self._hue = .1;
+        "22";
+        self._radius = .075;
+        "23";
+        self._amplitude = 1;
+        "25";
+        (await self._init_droplets());
+    };
+    if (!Membrane.prototype.__init__.__argnames__) Object.defineProperties(Membrane.prototype.__init__, {
+        __argnames__ : {value: ["x", "y", "f_x_y_t"]},
+        __module__ : {value: null}
+    });
+    Membrane.__argnames__ = Membrane.prototype.__init__.__argnames__;
+    Membrane.__handles_kwarg_interpolation__ = Membrane.prototype.__init__.__handles_kwarg_interpolation__;
+    Membrane.prototype._init_droplets = async function _init_droplets() {
+        var self = this;
+        var ρσ_ls, droplets_row, colour, position, j, i;
+        "28";
+        self._surface = ρσ_list_decorate([]);
+        "29";
+        var ρσ_Iter1 = range(len(self._x));
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            i = ρσ_Index1;
+            "30";
+            droplets_row = ρσ_list_decorate([]);
+            "31";
+            var ρσ_Iter2 = range(len(self._y));
+            ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+            for (var ρσ_Index2 of ρσ_Iter2) {
+                j = ρσ_Index2;
+                "32";
+                colour = color.hsv_to_rgb(vec(self._hue, 1, 1));
+                "33";
+                position = vec(ρσ_getitem(self._x, i), ρσ_getitem(self._y, j), 0);
+                "34";
+                droplets_row.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: self._radius, color: colour})]));
+            }
+            "35";
+            self._surface.append(droplets_row);
+        }
+    };
+    if (!Membrane.prototype._init_droplets.__module__) Object.defineProperties(Membrane.prototype._init_droplets, {
+        __module__ : {value: null}
+    });
+    Membrane.prototype.update = async function update(t) {
+        var self = this;
+        var ρσ_ls, j, i;
+        "38";
+        var ρσ_Iter3 = range(0, len(self._x));
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            i = ρσ_Index3;
+            "39";
+            var ρσ_Iter4 = range(0, len(self._y));
+            ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+            for (var ρσ_Index4 of ρσ_Iter4) {
+                j = ρσ_Index4;
+                "40";
+                ρσ_getitem(ρσ_getitem(self._surface, i), j).pos.z = self._amplitude["*"]((await self._f_x_y_t(ρσ_getitem(self._x, i), ρσ_getitem(self._y, j), t)));
+                "41";
+                ρσ_getitem(ρσ_getitem(self._surface, i), j).color = color.hsv_to_rgb(vec(.1["*"](abs(ρσ_getitem(ρσ_getitem(self._surface, i), j).pos.z))["+"](self._hue), 1, 1));
+            }
+        }
+    };
+    if (!Membrane.prototype.update.__argnames__) Object.defineProperties(Membrane.prototype.update, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+    Membrane.prototype.set_hue_value_to = async function set_hue_value_to(new_hue_value) {
+        var self = this;
+        "44";
+        self._hue = new_hue_value;
+    };
+    if (!Membrane.prototype.set_hue_value_to.__argnames__) Object.defineProperties(Membrane.prototype.set_hue_value_to, {
+        __argnames__ : {value: ["new_hue_value"]},
+        __module__ : {value: null}
+    });
+    Membrane.prototype.set_amplitude_to = async function set_amplitude_to(new_value) {
+        var self = this;
+        "47";
+        self._amplitude = new_value;
+    };
+    if (!Membrane.prototype.set_amplitude_to.__argnames__) Object.defineProperties(Membrane.prototype.set_amplitude_to, {
+        __argnames__ : {value: ["new_value"]},
+        __module__ : {value: null}
+    });
+    Membrane.prototype.set_wave_function_to = async function set_wave_function_to(normal_mode) {
+        var self = this;
+        "50";
+        self._f_x_y_t = normal_mode;
+    };
+    if (!Membrane.prototype.set_wave_function_to.__argnames__) Object.defineProperties(Membrane.prototype.set_wave_function_to, {
+        __argnames__ : {value: ["normal_mode"]},
+        __module__ : {value: null}
+    });
+    Membrane.prototype.set_droplet_radius_to = async function set_droplet_radius_to(new_radius) {
+        var self = this;
+        var ρσ_ls, j, i;
+        "53";
+        self._radius = new_radius;
+        "54";
+        var ρσ_Iter5 = range(len(self._x));
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            i = ρσ_Index5;
+            "55";
+            var ρσ_Iter6 = range(len(self._y));
+            ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+            for (var ρσ_Index6 of ρσ_Iter6) {
+                j = ρσ_Index6;
+                "56";
+                ρσ_getitem(ρσ_getitem(self._surface, i), j).radius = new_radius;
+            }
+        }
+    };
+    if (!Membrane.prototype.set_droplet_radius_to.__argnames__) Object.defineProperties(Membrane.prototype.set_droplet_radius_to, {
+        __argnames__ : {value: ["new_radius"]},
+        __module__ : {value: null}
+    });
+    Membrane.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Membrane.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Membrane.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+    "59";
+    function RadioButton() {;
+    }
+    RadioButton.prototype.__init__ = async function __init__(button_, membrane_) {
+        var self = this;
+        "61";
+        self._button = button_;
+        "62";
+        self._membrane = membrane_;
+    };
+    if (!RadioButton.prototype.__init__.__argnames__) Object.defineProperties(RadioButton.prototype.__init__, {
+        __argnames__ : {value: ["button_", "membrane_"]},
+        __module__ : {value: null}
+    });
+    RadioButton.__argnames__ = RadioButton.prototype.__init__.__argnames__;
+    RadioButton.__handles_kwarg_interpolation__ = RadioButton.prototype.__init__.__handles_kwarg_interpolation__;
+    RadioButton.prototype.uncheck = async function uncheck() {
+        var self = this;
+        "65";
+        self._button.checked = false;
+    };
+    if (!RadioButton.prototype.uncheck.__module__) Object.defineProperties(RadioButton.prototype.uncheck, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.push = async function push(button_name) {
+        var self = this;
+        var ρσ_ls, i, j;
+        "68";
+        i = int(ρσ_getitem(button_name, 0));
+        "69";
+        j = int(ρσ_getitem(button_name, 1["-u"]()["*"](1)));
+        "70";
+        (await self._membrane.set_wave_function_to(ρσ_getitem(ρσ_getitem(modes, i), j)));
+    };
+    if (!RadioButton.prototype.push.__argnames__) Object.defineProperties(RadioButton.prototype.push, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.check = async function check() {
+        var self = this;
+        "73";
+        self._button.checked = true;
+    };
+    if (!RadioButton.prototype.check.__module__) Object.defineProperties(RadioButton.prototype.check, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.name = async function name() {
+        var self = this;
+        "76";
+        return self._button.name;
+    };
+    if (!RadioButton.prototype.name.__module__) Object.defineProperties(RadioButton.prototype.name, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    RadioButton.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(RadioButton.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "78";
+    function RadioButtons() {;
+    }
+    RadioButtons.prototype.__init__ = async function __init__() {
+        var self = this;
+        "80";
+        self._radio_buttons = ρσ_list_decorate([]);
+        "81";
+        self._selected_button = null;
+    };
+    if (!RadioButtons.prototype.__init__.__module__) Object.defineProperties(RadioButtons.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    RadioButtons.__argnames__ = RadioButtons.prototype.__init__.__argnames__;
+    RadioButtons.__handles_kwarg_interpolation__ = RadioButtons.prototype.__init__.__handles_kwarg_interpolation__;
+    RadioButtons.prototype.add = async function add(button_, membrane_) {
+        var self = this;
+        var ρσ_ls, _GS_1;
+        "84";
+        _GS_1 = new RadioButton;
+        (await _GS_1.__init__(button_, membrane_));
+        self._radio_buttons.append(_GS_1);
+        "86";
+        if (ρσ_equals(len(self._radio_buttons)["%"](3), 0)) {
+            "87";
+            animation.append_to_caption("\n\n");
+            "89";
+        }
+        if (ρσ_equals(len(self._radio_buttons), 1)) {
+            "90";
+            (await ρσ_getitem(self._radio_buttons, 0).check());
+            "91";
+            self._selected_button = ρσ_getitem(self._radio_buttons, 0);
+        }
+    };
+    if (!RadioButtons.prototype.add.__argnames__) Object.defineProperties(RadioButtons.prototype.add, {
+        __argnames__ : {value: ["button_", "membrane_"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype._uncheck_buttons_except = async function _uncheck_buttons_except(button_name) {
+        var self = this;
+        var ρσ_ls, button_;
+        "94";
+        var ρσ_Iter7 = self._radio_buttons;
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            button_ = ρσ_Index7;
+            "95";
+            if (ρσ_not_equals((await button_.name()), button_name)) {
+                (await button_.uncheck());
+            }
+        }
+    };
+    if (!RadioButtons.prototype._uncheck_buttons_except.__argnames__) Object.defineProperties(RadioButtons.prototype._uncheck_buttons_except, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype._get_button_by = async function _get_button_by(button_name) {
+        var self = this;
+        var ρσ_ls, button_;
+        "98";
+        var ρσ_Iter8 = self._radio_buttons;
+        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+        for (var ρσ_Index8 of ρσ_Iter8) {
+            button_ = ρσ_Index8;
+            "99";
+            if (ρσ_equals((await button_.name()), button_name)) {
+                return button_;
+            }
+        }
+    };
+    if (!RadioButtons.prototype._get_button_by.__argnames__) Object.defineProperties(RadioButtons.prototype._get_button_by, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype.toggle = async function toggle(button_name) {
+        var self = this;
+        "102";
+        (await self._uncheck_buttons_except(button_name));
+        "103";
+        self._selected_button = (await self._get_button_by(button_name));
+        "104";
+        (await self._selected_button.push(button_name));
+    };
+    if (!RadioButtons.prototype.toggle.__argnames__) Object.defineProperties(RadioButtons.prototype.toggle, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype.get_selected_button_name = async function get_selected_button_name() {
+        var self = this;
+        "107";
+        return (await self._selected_button.name());
+    };
+    if (!RadioButtons.prototype.get_selected_button_name.__module__) Object.defineProperties(RadioButtons.prototype.get_selected_button_name, {
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    RadioButtons.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(RadioButtons.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "110";
+    omega = 1.5["*"](sqrt(5));
+    "112";
+    async function mode_1_1(x, y, t) {
+        "113";
+        return cos(omega["*"](t))["*"](sin(1["*"](x)["/"](3)))["*"](sin(1["*"](y)["/"](3)));
+    };
+    if (!mode_1_1.__argnames__) Object.defineProperties(mode_1_1, {
+        __argnames__ : {value: ["x", "y", "t"]},
+        __module__ : {value: null}
+    });
+
+    "115";
+    async function mode_2_1(x, y, t) {
+        "116";
+        return cos(omega["*"](t))["*"](sin(2["*"](x)["/"](3)))["*"](sin(1["*"](y)["/"](3)));
+    };
+    if (!mode_2_1.__argnames__) Object.defineProperties(mode_2_1, {
+        __argnames__ : {value: ["x", "y", "t"]},
+        __module__ : {value: null}
+    });
+
+    "118";
+    async function mode_3_1(x, y, t) {
+        "119";
+        return cos(omega["*"](t))["*"](sin(x))["*"](sin(1["*"](y)["/"](3)));
+    };
+    if (!mode_3_1.__argnames__) Object.defineProperties(mode_3_1, {
+        __argnames__ : {value: ["x", "y", "t"]},
+        __module__ : {value: null}
+    });
+
+    "121";
+    async function mode_1_2(x, y, t) {
+        "122";
+        return cos(omega["*"](t))["*"](sin(1["*"](x)["/"](3)))["*"](sin(2["*"](y)["/"](3)));
+    };
+    if (!mode_1_2.__argnames__) Object.defineProperties(mode_1_2, {
+        __argnames__ : {value: ["x", "y", "t"]},
+        __module__ : {value: null}
+    });
+
+    "124";
+    async function mode_2_2(x, y, t) {
+        "125";
+        return cos(omega["*"](t))["*"](sin(2["*"](x)["/"](3)))["*"](sin(2["*"](y)["/"](3)));
+    };
+    if (!mode_2_2.__argnames__) Object.defineProperties(mode_2_2, {
+        __argnames__ : {value: ["x", "y", "t"]},
+        __module__ : {value: null}
+    });
+
+    "127";
+    async function mode_3_2(x, y, t) {
+        "128";
+        return cos(omega["*"](t))["*"](sin(x))["*"](sin(2["*"](y)["/"](3)));
+    };
+    if (!mode_3_2.__argnames__) Object.defineProperties(mode_3_2, {
+        __argnames__ : {value: ["x", "y", "t"]},
+        __module__ : {value: null}
+    });
+
+    "130";
+    async function mode_1_3(x, y, t) {
+        "131";
+        return cos(omega["*"](t))["*"](sin(1["*"](x)["/"](3)))["*"](sin(y));
+    };
+    if (!mode_1_3.__argnames__) Object.defineProperties(mode_1_3, {
+        __argnames__ : {value: ["x", "y", "t"]},
+        __module__ : {value: null}
+    });
+
+    "133";
+    async function mode_2_3(x, y, t) {
+        "134";
+        return cos(omega["*"](t))["*"](sin(2["*"](x)["/"](3)))["*"](sin(y));
+    };
+    if (!mode_2_3.__argnames__) Object.defineProperties(mode_2_3, {
+        __argnames__ : {value: ["x", "y", "t"]},
+        __module__ : {value: null}
+    });
+
+    "136";
+    async function mode_3_3(x, y, t) {
+        "137";
+        return cos(omega["*"](t))["*"](sin(x))["*"](sin(y));
+    };
+    if (!mode_3_3.__argnames__) Object.defineProperties(mode_3_3, {
+        __argnames__ : {value: ["x", "y", "t"]},
+        __module__ : {value: null}
+    });
+
+    "139";
+    x_range = range(0, Lx["+"](dx), dx);
+    "140";
+    y_range = range(0, Ly["+"](dy), dy);
+    "141";
+    modes = ρσ_list_decorate([ ρσ_list_decorate([ mode_1_1, mode_2_1, mode_3_1 ]), ρσ_list_decorate([ mode_1_2, mode_2_2, mode_3_2 ]), ρσ_list_decorate([ mode_1_3, mode_2_3, mode_3_3 ]) ]);
+    "142";
+    _GS_1 = new Membrane;
+    (await _GS_1.__init__(x_range, y_range, ρσ_getitem(ρσ_getitem(modes, 0), 0)));
+    membrane = _GS_1;
+    "148";
+    async function adjust_offset() {
+        "149";
+        (await membrane.set_hue_value_to(offset_slider.value));
+        "150";
+        hue_offset_text.text = "{:1.2f}".format(offset_slider.value, 2);
+    };
+    if (!adjust_offset.__module__) Object.defineProperties(adjust_offset, {
+        __module__ : {value: null}
+    });
+
+    "153";
+    async function adjust_amplitude() {
+        "154";
+        (await membrane.set_amplitude_to(amplitude_slider.value));
+        "155";
+        amplitude_text.text = "{:1.2f}".format(amplitude_slider.value, 2);
+    };
+    if (!adjust_amplitude.__module__) Object.defineProperties(adjust_amplitude, {
+        __module__ : {value: null}
+    });
+
+    "158";
+    async function adjust_droplet_radius() {
+        "159";
+        (await membrane.set_droplet_radius_to(radius_slider.value["*"](.01)));
+        "160";
+        droplet_radius_text.text = "{:1.2f}".format(radius_slider.value, 2);
+    };
+    if (!adjust_droplet_radius.__module__) Object.defineProperties(adjust_droplet_radius, {
+        __module__ : {value: null}
+    });
+
+    "163";
+    async function toggle(event) {
+        "164";
+        (await radio_buttons.toggle(event.name));
+    };
+    if (!toggle.__argnames__) Object.defineProperties(toggle, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "166";
+    animation.append_to_caption("\n");
+    "167";
+    radius_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 10, value: 7.5, step: .1, bind: adjust_droplet_radius})]);
+    "168";
+    animation.append_to_caption("droplet radius = ");
+    "169";
+    droplet_radius_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "7.50"})]);
+    "171";
+    animation.append_to_caption("\n\n");
+    "172";
+    offset_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .1, bind: adjust_offset})]);
+    "173";
+    animation.append_to_caption("hue offset = ");
+    "174";
+    hue_offset_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.10"})]);
+    "176";
+    animation.append_to_caption("\n\n");
+    "177";
+    amplitude_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: 2, value: 1, bind: adjust_amplitude})]);
+    "178";
+    animation.append_to_caption("Amplitude = ");
+    "179";
+    amplitude_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "1.00"})]);
+    "181";
+    animation.append_to_caption("\n\n");
+    "182";
+    _GS_1 = new RadioButtons;
+    (await _GS_1.__init__());
+    radio_buttons = _GS_1;
+    "183";
+    for (var ρσ_Index9 = 0; ρσ_Index9["<"](3); ρσ_Index9++) {
+        i = ρσ_Index9;
+        "184";
+        for (var ρσ_Index10 = 0; ρσ_Index10["<"](3); ρσ_Index10++) {
+            j = ρσ_Index10;
+            "185";
+            (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Mode "["+"](str(i["+"](1)))["+"](",")["+"](str(j["+"](1))), name: str(i)["+"]("_")["+"](str(j))})]), membrane));
+        }
+    }
+    "189";
+    time = 0;
+    "190";
+    dt = .025;
+    "191";
+    while (true) {
+        "192";
+        (await rate(20));
+        "193";
+        (await membrane.update(time));
+        "194";
+        time=time["+"](dt);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

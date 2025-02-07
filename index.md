@@ -123,7 +123,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <!-- RESERVED FOR FUTURE APPLICATION -->
+        <a href="waves/vibrating_membrane.html">
+          <img alt="vibrating membrane" src="images/vibrating_membrane.png" title="Click to animate"/>
+        </a>
       </figure>
     </div>
   </div>
