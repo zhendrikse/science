@@ -1,21 +1,22 @@
-#Web VPython 3.2
+# Web VPython 3.2
+
 from vpython import sphere, rate, color, vec, arange, canvas, sqrt, sin, cos, slider, wtext, pi
 
-title="""Vibrating membrane / standing 2D-wave
+title="""Written by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Visualization concept with spheres by <a href="https://jexpearce.github.io/jex/">Jex Pearce</a>
 
-By Zeger Hendrikse
 """
 
-Lx, Ly = 3*pi, 3*pi
-dx, dy = 0.1, 0.1
+Lx, Ly = 3 * pi, 3 * pi
+dx, dy = 0.075, 0.075
 animation = canvas(forward=vec(-2.5, -2.2, -2.2), center=vec(5.5, 5.3, -2.25),
                    up=vec(0, 0, 1), title=title,
                    background=color.gray(0.075), range=5)
 
 
 class Membrane:
-    def __init__(self, x, y):
-        self._x, self._y = x, y
+    def __init__(self, x, y, f_x_y_t):
+        self._x, self._y, self._f_x_y_t = x, y, f_x_y_t
 
         self._hue = 0.5
         self._radius = 0.05
@@ -28,20 +29,15 @@ class Membrane:
         for i in range(len(self._x)):
             droplets_row = []
             for j in range(len(self._y)):
-                #show = False if i == len(self._x) - 1 else True
-                show = True
                 colour = color.hsv_to_rgb(vec(self._hue, 1, 1))
                 position = vec(self._x[i], self._y[j], 0)
-                droplets_row.append(
-                    sphere(pos=position, visible=show, radius=self._radius, color=colour))
+                droplets_row.append(sphere(pos=position, radius=self._radius, color=colour))
             self._surface.append(droplets_row)
 
     def update(self, t):
-        c = 1.5
-        sqrt_5 = sqrt(5)
         for i in range(0, len(self._x)):
             for j in range(0, len(self._y)):
-                self._surface[i][j].pos.z = self._amplitude * cos(c * sqrt_5 * t) * sin(2 * self._x[i]) * sin(self._y[j])
+                self._surface[i][j].pos.z = self._amplitude * self._f_x_y_t(self._x[i], self._y[j], t)
                 self._surface[i][j].color = color.hsv_to_rgb(vec(.1 * abs(self._surface[i][j].pos.z) + self._hue, 1, 1))
 
     def set_hue_value_to(self, new_hue_value):
@@ -90,7 +86,10 @@ amplitude_text = wtext(text="1.0")
 x_range = arange(0, Lx + dx, dx)
 y_range = arange(0, Ly + dy, dy)
 
-membrane = Membrane(x_range, y_range)
+def f_x_y_t(x, y, t):
+    return cos(1.5 * sqrt(5) * t) * sin(2 * x) * sin(y)
+
+membrane = Membrane(x_range, y_range, f_x_y_t)
 
 t = 0
 dt = 0.1

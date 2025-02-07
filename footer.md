@@ -1,9 +1,10 @@
-<a name="references"></a>
-# References &amp; acknowledgements
+## References &amp; acknowledgements
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
-### Mathematics &amp; geometry
+### Mathematics &amp; computational Physics
 
+- [Computational Physics](https://github.com/rubinhlandau/CompPhysicsNotebooks/blob/master/CP01.ipynb),
+  a freely available online book!
 - [Geometry, Surfaces, Curves, Polyhedra](https://paulbourke.net/geometry/) on 
   [Paul Bourke](https://paulbourke.net/geometry/)&apos; web site
 - [Manim](https://github.com/3b1b/manim), an animation engine for explanatory math videos
