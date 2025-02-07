@@ -422,5 +422,6 @@ finest that music and poetry can deliver. &mdash;
   </div>
 </div>
 
+<p style="clear: both;"><br/></p>
 {% include_relative footer.md %}
 

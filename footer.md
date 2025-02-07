@@ -1,4 +1,3 @@
-## References &amp; acknowledgements
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
 ### Mathematics &amp; computational Physics
