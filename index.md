@@ -174,7 +174,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h2>
+    <h3><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h3>
     <div class="double_image">
       <figure class="left_image">
        <a href="molecularphysics/cubic_crystal.html">
