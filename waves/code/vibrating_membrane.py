@@ -182,7 +182,7 @@ animation.append_to_caption("\n\n")
 radio_buttons = RadioButtons()
 for i in range(3):
     for j in range(3):
-        radio_buttons.add(radio(bind=toggle, text="Mode " + str(i + 1) + "," + str(j + 1), name=str(i) + "_" + str(j)), membrane)
+        radio_buttons.add(radio(bind=toggle, text=" Mode " + str(i + 1) + "," + str(j + 1) + " ", name=str(i) + "_" + str(j)), membrane)
 
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
