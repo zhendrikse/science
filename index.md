@@ -240,13 +240,23 @@ finest that music and poetry can deliver. &mdash;
     <div class="double_image">
       <figure class="left_image">
        <a href="thermodynamics/boltzmann_gas.html">
-         <img alt="Swimming pool" src="images/hard_sphere_gas.png" title="Click to animate"/>
+         <img alt="Hard-sphere gas" src="images/hard_sphere_gas.png" title="Click to animate"/>
        </a>
       </figure>
       <figure class="right_image">
        <a href="thermodynamics/ising_spin.html">
-         <img alt="Swimming pool" src="images/ising_spin_model.png" title="Click to animate"/>
+         <img alt="Ising spin model" src="images/ising_spin_model.png" title="Click to animate"/>
        </a>
+      </figure>
+    </div>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="thermodynamics/fluid_layers.html">
+          <img alt="Quantum oscillator" src="images/fluid_layers.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
   </div>
