@@ -141,14 +141,12 @@ finest that music and poetry can deliver. &mdash;
     <div class="double_image">
       <figure class="left_image">
         <a href="nature/flocking_birds.html">
-          <div class="tooltip"><img alt="Flocking birds" src="images/flocking_birds.png"/>
-          <span class="tooltiptext">Flocking birds</span></div>
+          <img alt="Flocking birds" src="images/flocking_birds.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
         <a href="mathematics/gallery/index.html">
-          <div class="tooltip"><img alt="Conchoidal" src="mathematics/gallery/images/conchoid.png"/>
-          <span class="tooltiptext">Mathematical seashell</span></div>
+          <img alt="Conchoidal" src="mathematics/gallery/images/conchoid.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
