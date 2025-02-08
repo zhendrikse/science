@@ -350,7 +350,7 @@ async function __main__() {
         "104";
         (await sprinkler.set_omega_to(omega_slider.value));
         "105";
-        omega_slider_text.text = "= {:1.2f}".format(omega_slider.value["/"](pi), 2)["+"](" π");
+        omega_slider_text.text = "{:1.2f}".format(omega_slider.value["/"](pi), 2)["+"](" π");
     };
     if (!adjust_omega.__module__) Object.defineProperties(adjust_omega, {
         __module__ : {value: null}
@@ -361,7 +361,7 @@ async function __main__() {
         "108";
         (await sprinkler.set_droplet_frequency_to(droplet_frequency_slider.value));
         "109";
-        droplet_frequency_text.text = "= {:1.2f}".format(droplet_frequency_slider.value, 2);
+        droplet_frequency_text.text = "{:1.2f}".format(droplet_frequency_slider.value, 2);
     };
     if (!adjust_droplet_frequency.__module__) Object.defineProperties(adjust_droplet_frequency, {
         __module__ : {value: null}
@@ -372,7 +372,7 @@ async function __main__() {
         "112";
         (await sprinkler.set_water_velocity_to(water_velocity_slider.value));
         "113";
-        water_velocity_text.text = "= {:1.2f}".format(water_velocity_slider.value, 2);
+        water_velocity_text.text = "{:1.2f}".format(water_velocity_slider.value, 2);
     };
     if (!adjust_water_velocity.__module__) Object.defineProperties(adjust_water_velocity, {
         __module__ : {value: null}

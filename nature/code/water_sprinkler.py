@@ -102,15 +102,15 @@ class Sprinkler:
 
 def adjust_omega():
     sprinkler.set_omega_to(omega_slider.value)
-    omega_slider_text.text = "= {:1.2f}".format(omega_slider.value / pi, 2) + " π"
+    omega_slider_text.text = "{:1.2f}".format(omega_slider.value / pi, 2) + " π"
 
 def adjust_droplet_frequency():
     sprinkler.set_droplet_frequency_to(droplet_frequency_slider.value)
-    droplet_frequency_text.text = "= {:1.2f}".format(droplet_frequency_slider.value, 2)
+    droplet_frequency_text.text = "{:1.2f}".format(droplet_frequency_slider.value, 2)
 
 def adjust_water_velocity():
     sprinkler.set_water_velocity_to(water_velocity_slider.value)
-    water_velocity_text.text = "= {:1.2f}".format(water_velocity_slider.value, 2)
+    water_velocity_text.text = "{:1.2f}".format(water_velocity_slider.value, 2)
 
 def toggle_shoot_outward(event):
     sprinkler.set_shoot_outward_to(event.checked)
