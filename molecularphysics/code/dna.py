@@ -1,6 +1,6 @@
 #Web VPython 3.2
 
-from vpython import canvas, vector, color, cos, sin, cylinder, sphere, pi, rate, slider
+from vpython import canvas, vector, color, cos, sin, cylinder, sphere, pi, rate, slider, wtext
 
 title_text ="""
 
@@ -17,7 +17,7 @@ amino_colors = [color.red, color.blue, color.green, color.yellow]
 
 
 class Nucleotide:
-    def __init__(self, position, colour, radius=0.1):
+    def __init__(self, position, colour, radius=0.2):
         self._amino = sphere(pos=position, radius=radius, color=colour)
 
     def pos(self):
@@ -25,6 +25,9 @@ class Nucleotide:
 
     def rotate(self, angle=0.01, axis=vector(0, 1, 0), origin=vector(0, 0, 0)):
         self._amino.rotate(angle=angle, axis=axis, origin=origin)
+
+    def set_radius_to(self, value):
+        self._amino.radius = value
 
 
 class NucleotidePair:
@@ -47,6 +50,10 @@ class NucleotidePair:
 
     def nucleotide_2_pos(self):
         return self._nucleotide_2.pos()
+
+    def set_radius_to(self, value):
+        self._nucleotide_1.set_radius_to(value)
+        self._nucleotide_2.set_radius_to(value)
 
     def distance(self):
         return self._nucleotide_2.pos() - self._nucleotide_1.pos()
@@ -89,14 +96,29 @@ class Dna:
     def set_omega_to(self, value):
         self._omega = value
 
+    def set_radius_to(self, value):
+        for nucleotide_pair in self._nucleotide_pairs:
+            nucleotide_pair.set_radius_to(value)
 
-def change_rotation_speed():
-    dna.set_omega_to(speed_slider.value)
 
+def change_rotation_speed(event):
+    speed_text.text = '{:1.2f}'.format(event.value)
+    dna.set_omega_to(event.value)
 
-animation.append_to_caption("\nRotation speed ")
+def on_radius_change(event):
+    radius_text.text = '{:1.2f}'.format(event.value)
+    dna.set_radius_to(event.value)
+
+animation.append_to_caption("\n")
 dna = Dna(number_of_pairs=16, omega=0.01)
 speed_slider = slider(bind=change_rotation_speed, value=0.01, min=0.0, max=.1)
+animation.append_to_caption("Rotation speed  = ")
+speed_text = wtext(text='{:1.2f}'.format(speed_slider.value))
+
+animation.append_to_caption("\n\n")
+radius_slider = slider(min=0.1, max=.3, value=.2, bind=on_radius_change)
+animation.append_to_caption("Atomic radius = ")
+radius_text = wtext(text='{:1.2f}'.format(radius_slider.value))
 
 while True:
     dna.rotate()

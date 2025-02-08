@@ -100,17 +100,17 @@ class Sprinkler:
       self._shoot_outward = boolean_value
 
 
-def adjust_omega():
-    sprinkler.set_omega_to(omega_slider.value)
-    omega_slider_text.text = "{:1.2f}".format(omega_slider.value / pi, 2) + " π"
+def adjust_omega(event):
+    sprinkler.set_omega_to(event.value)
+    omega_slider_text.text = "{:1.2f}".format(event.value / pi, 2) + " π"
 
-def adjust_droplet_frequency():
-    sprinkler.set_droplet_frequency_to(droplet_frequency_slider.value)
-    droplet_frequency_text.text = "{:1.2f}".format(droplet_frequency_slider.value, 2)
+def adjust_droplet_frequency(event):
+    sprinkler.set_droplet_frequency_to(event.value)
+    droplet_frequency_text.text = "{:1.2f}".format(event.value, 2)
 
-def adjust_water_velocity():
-    sprinkler.set_water_velocity_to(water_velocity_slider.value)
-    water_velocity_text.text = "{:1.2f}".format(water_velocity_slider.value, 2)
+def adjust_water_velocity(event):
+    sprinkler.set_water_velocity_to(event.value)
+    water_velocity_text.text = "{:1.2f}".format(event.value, 2)
 
 def toggle_shoot_outward(event):
     sprinkler.set_shoot_outward_to(event.checked)
@@ -119,17 +119,17 @@ animation.append_to_caption("\n")
 _ = checkbox(text="Shoot outward ", bind=toggle_shoot_outward, checked=True)
 
 animation.append_to_caption("\n\n")
-omega_slider = slider(min=0.0, max=pi, value=pi, bind=adjust_omega)
+_ = slider(min=0.0, max=pi, value=pi, bind=adjust_omega)
 animation.append_to_caption("rotation speed = ")
 omega_slider_text = wtext(text="π")
 
 animation.append_to_caption("\n\n")
-droplet_frequency_slider = slider(min=10.0, max=30, value=15, bind=adjust_droplet_frequency)
+_ = slider(min=10.0, max=30, value=15, bind=adjust_droplet_frequency)
 animation.append_to_caption("droplet frequency = ")
 droplet_frequency_text = wtext(text="15")
 
 animation.append_to_caption("\n\n")
-water_velocity_slider = slider(min=0.0, max=1.0, value=0.3, bind=adjust_water_velocity)
+_ = slider(min=0.0, max=1.0, value=0.3, bind=adjust_water_velocity)
 animation.append_to_caption("water velocity = ")
 water_velocity_text = wtext(text="0.3")
 

@@ -665,30 +665,30 @@ radio_buttons.add(radio(bind=toggle, text=" $\\exp(z)$ ", name="exp"), exp_z, ex
 radio_buttons.add(radio(bind=toggle, text=" $\\sqrt{z}$ ", name="sqrt"), sqrt_z, sqrt_z_title)
 
 
-def adjust_opacity():
-    figure.set_opacity_to(opacity_slider.value)
-    opacity_slider_text.text = "= {:1.2f}".format(opacity_slider.value, 2)
+def adjust_opacity(event):
+    figure.set_opacity_to(event.value)
+    opacity_slider_text.text = "= {:1.2f}".format(event.value, 2)
 
 
-def adjust_shininess():
-    figure.set_shininess_to(shininess_slider.value)
-    shininess_slider_text.text = "= {:1.2f}".format(shininess_slider.value, 2)
+def adjust_shininess(event):
+    figure.set_shininess_to(event.value)
+    shininess_slider_text.text = "= {:1.2f}".format(event.value, 2)
 
 
-def adjust_omega():
-    figure.set_omega_to(omega_slider.value)
-    omega_slider_text.text = "= {:1.2f}".format(omega_slider.value / pi, 2) + " π"
+def adjust_omega(event):
+    figure.set_omega_to(event.value)
+    omega_slider_text.text = "= {:1.2f}".format(event.value / pi, 2) + " π"
 
 animation.append_to_caption("\n\nAnimation speed ")
-omega_slider = slider(min=0, max=2 * pi, value=pi, bind=adjust_omega)
+_ = slider(min=0, max=2 * pi, value=pi, bind=adjust_omega)
 omega_slider_text = wtext(text="= π")
 
 animation.append_to_caption("\n\nOpacity ")
-opacity_slider = slider(min=0, max=1, step=0.01, value=1, bind=adjust_opacity)
+_ = slider(min=0, max=1, step=0.01, value=1, bind=adjust_opacity)
 opacity_slider_text = wtext(text="= 1")
 
 animation.append_to_caption("\n\nShininess ")
-shininess_slider = slider(min=0, max=1, step=0.01, value=0.6, bind=adjust_shininess)
+_ = slider(min=0, max=1, step=0.01, value=0.6, bind=adjust_shininess)
 shininess_slider_text = wtext(text="= 0.6")
 
 

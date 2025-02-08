@@ -500,25 +500,25 @@ def create_title(spherical_parameters):
 #
 # GUI controls
 #
-def adjust_opacity():
-    figure.set_opacity_to(opacity_slider.value)
+def adjust_opacity(event):
+    figure.set_opacity_to(event.value)
 
 
-def adjust_shininess():
-    figure.set_shininess_to(shininess_slider.value)
+def adjust_shininess(event):
+    figure.set_shininess_to(event.value)
 
 
-def adjust_omega():
-    figure.set_omega_to(omega_slider.value)
-    omega_slider_text.text = "= {:1.2f}".format(omega_slider.value / pi, 2) + " π"
+def adjust_omega(event):
+    figure.set_omega_to(event.value)
+    omega_slider_text.text = "= {:1.2f}".format(event.value / pi, 2) + " π"
 
 
-def adjust_gradient():
-    figure.set_hue_gradient_to(gradient_slider.value)
+def adjust_gradient(event):
+    figure.set_hue_gradient_to(event.value)
 
 
-def adjust_offset():
-    figure.set_hue_offset_to(offset_slider.value)
+def adjust_offset(event):
+    figure.set_hue_offset_to(event.value)
 
 
 def toggle_tick_marks(event):
@@ -549,20 +549,20 @@ _ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=False)
 _ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
 
 animation.append_to_caption("\n\nHue offset  ")
-offset_slider = slider(min=0, max=1, value=.8, bind=adjust_offset)
+_ = slider(min=0, max=1, value=.8, bind=adjust_offset)
 
 animation.append_to_caption("\n\nHue gradient  ")
-gradient_slider = slider(min=0, max=1, value=.5, bind=adjust_gradient)
+_ = slider(min=0, max=1, value=.5, bind=adjust_gradient)
 
 animation.append_to_caption("\n\nAnimation speed ")
-omega_slider = slider(min=0, max=2 * pi, value=pi, bind=adjust_omega)
+_ = slider(min=0, max=2 * pi, value=pi, bind=adjust_omega)
 omega_slider_text = wtext(text="= π")
 
 animation.append_to_caption("\n\nOpacity ")
-opacity_slider = slider(min=0, max=1, step=0.01, value=1, bind=adjust_opacity)
+_ = slider(min=0, max=1, step=0.01, value=1, bind=adjust_opacity)
 
 animation.append_to_caption("\n\nShininess ")
-shininess_slider = slider(min=0, max=1, step=0.01, value=0.6, bind=adjust_shininess)
+_ = slider(min=0, max=1, step=0.01, value=0.6, bind=adjust_shininess)
 
 parameters = SphericalHarmonicParameters()
 
