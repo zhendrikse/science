@@ -17,10 +17,11 @@ animation = canvas(forward=vec(-2.5, -2.2, -2.2), center=vec(5.5, 5.3, -2.25),
 class Membrane:
     def __init__(self, x, y, f_x_y_t):
         self._x, self._y, self._f_x_y_t = x, y, f_x_y_t
-
+        self._opacity = 1
         self._hue = 0.1
         self._radius = 0.075
         self._amplitude = 1.0
+        self._omega = 2 * pi
 
         self._init_droplets()
 
@@ -37,7 +38,7 @@ class Membrane:
     def update(self, t):
         for i in range(0, len(self._x)):
             for j in range(0, len(self._y)):
-                self._surface[i][j].pos.z = self._amplitude * self._f_x_y_t(self._x[i], self._y[j], t)
+                self._surface[i][j].pos.z = self._amplitude * self._f_x_y_t(self._x[i], self._y[j], self._omega, t)
                 self._surface[i][j].color = color.hsv_to_rgb(vec(.1 * abs(self._surface[i][j].pos.z) + self._hue, 1, 1))
 
     def set_hue_value_to(self, new_hue_value):
@@ -45,6 +46,9 @@ class Membrane:
 
     def set_amplitude_to(self, new_value):
         self._amplitude = new_value
+
+    def set_omega_to(self, new_value):
+        self._omega = new_value
 
     def set_wave_function_to(self, normal_mode):
         self._f_x_y_t = normal_mode
@@ -54,6 +58,12 @@ class Membrane:
         for i in range(len(self._x)):
             for j in range(len(self._y)):
                 self._surface[i][j].radius = new_radius
+
+    def set_opacity_to(self, new_value):
+        self._opacity = new_value
+        for i in range(len(self._x)):
+            for j in range(len(self._y)):
+                self._surface[i][j].opacity = new_value
 
 
 class RadioButton:
@@ -107,33 +117,31 @@ class RadioButtons:
         return self._selected_button.name()
 
 
-omega = 2 * sqrt(5)
-
-def mode_1_1(x, y, t):
+def mode_1_1(x, y, omega, t):
     return cos(omega * t) * sin(1 * x / 3) * sin(1 * y / 3)
 
-def mode_2_1(x, y, t):
+def mode_2_1(x, y, omega, t):
     return cos(omega * t) * sin(2 * x / 3) * sin(1 * y / 3)
 
-def mode_3_1(x, y, t):
+def mode_3_1(x, y, omega, t):
     return cos(omega * t) * sin(x) * sin(1 * y / 3)
 
-def mode_1_2(x, y, t):
+def mode_1_2(x, y, omega, t):
     return cos(omega * t) * sin(1 * x / 3) * sin(2 * y / 3)
 
-def mode_2_2(x, y, t):
+def mode_2_2(x, y, omega, t):
     return cos(omega * t) * sin(2 * x / 3) * sin(2 * y / 3)
 
-def mode_3_2(x, y, t):
+def mode_3_2(x, y, omega, t):
     return cos(omega * t) * sin(x) * sin(2 * y / 3)
 
-def mode_1_3(x, y, t):
+def mode_1_3(x, y, omega, t):
     return cos(omega * t) * sin(1 * x / 3) * sin(y)
 
-def mode_2_3(x, y, t):
+def mode_2_3(x, y, omega, t):
     return cos(omega * t) * sin(2 * x / 3) * sin(y)
 
-def mode_3_3(x, y, t):
+def mode_3_3(x, y, omega, t):
     return cos(omega * t) * sin(x) * sin(y)
 
 x_range = arange(0, Lx + dx, dx)
@@ -159,6 +167,14 @@ def adjust_droplet_radius():
     membrane.set_droplet_radius_to(radius_slider.value * .01)
     droplet_radius_text.text = "{:1.2f}".format(radius_slider.value, 2)
 
+def adjust_omega():
+    membrane.set_omega_to(omega_slider.value)
+    omega_slider_text.text = "= {:1.2f}".format(omega_slider.value / pi, 2) + " π"
+
+def adjust_opacity():
+    membrane.set_opacity_to(opacity_slider.value)
+    opacity_text.text = "= {:1.2f}".format(opacity_slider.value, 2)
+
 
 def toggle(event):
     radio_buttons.toggle(event.name)
@@ -174,9 +190,18 @@ animation.append_to_caption("hue offset = ")
 hue_offset_text = wtext(text="0.10")
 
 animation.append_to_caption("\n\n")
+omega_slider = slider(min=0, max=2 * pi, value=2 * pi, bind=adjust_omega)
+omega_slider_text = wtext(text="omega = 2π")
+
+animation.append_to_caption("\n\n")
 amplitude_slider = slider(min=0.1, max=2, value=1, bind=adjust_amplitude)
-animation.append_to_caption("Amplitude = ")
+animation.append_to_caption("amplitude = ")
 amplitude_text = wtext(text="1.00")
+
+animation.append_to_caption("\n\n")
+opacity_slider = slider(min=0, max=1, step=0.01, value=1, bind=adjust_opacity)
+animation.append_to_caption("opacity = ")
+opacity_text = wtext(text="1.00")
 
 animation.append_to_caption("\n\n")
 radio_buttons = RadioButtons()

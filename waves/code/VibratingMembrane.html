@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, ρσ_unpack, Lx, Ly, dx, dy, animation, omega, x_range, y_range, modes, _GS_1, membrane, radius_slider, droplet_radius_text, offset_slider, hue_offset_text, amplitude_slider, amplitude_text, radio_buttons, j, i, time, dt;
+    var version, print, arange, __name__, type, ρσ_ls, title, ρσ_unpack, Lx, Ly, dx, dy, animation, x_range, y_range, modes, _GS_1, membrane, radius_slider, droplet_radius_text, offset_slider, hue_offset_text, omega_slider, omega_slider_text, amplitude_slider, amplitude_text, radio_buttons, j, i, time, dt;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -94,7 +94,9 @@ async function __main__() {
         self._radius = .075;
         "23";
         self._amplitude = 1;
-        "25";
+        "24";
+        self._omega = 2["*"](pi);
+        "26";
         (await self._init_droplets());
     };
     if (!Membrane.prototype.__init__.__argnames__) Object.defineProperties(Membrane.prototype.__init__, {
@@ -106,28 +108,28 @@ async function __main__() {
     Membrane.prototype._init_droplets = async function _init_droplets() {
         var self = this;
         var ρσ_ls, droplets_row, colour, position, j, i;
-        "28";
-        self._surface = ρσ_list_decorate([]);
         "29";
+        self._surface = ρσ_list_decorate([]);
+        "30";
         var ρσ_Iter1 = range(len(self._x));
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             i = ρσ_Index1;
-            "30";
-            droplets_row = ρσ_list_decorate([]);
             "31";
+            droplets_row = ρσ_list_decorate([]);
+            "32";
             var ρσ_Iter2 = range(len(self._y));
             ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
             for (var ρσ_Index2 of ρσ_Iter2) {
                 j = ρσ_Index2;
-                "32";
-                colour = color.hsv_to_rgb(vec(self._hue, 1, 1));
                 "33";
-                position = vec(ρσ_getitem(self._x, i), ρσ_getitem(self._y, j), 0);
+                colour = color.hsv_to_rgb(vec(self._hue, 1, 1));
                 "34";
+                position = vec(ρσ_getitem(self._x, i), ρσ_getitem(self._y, j), 0);
+                "35";
                 droplets_row.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: self._radius, color: colour})]));
             }
-            "35";
+            "36";
             self._surface.append(droplets_row);
         }
     };
@@ -137,19 +139,19 @@ async function __main__() {
     Membrane.prototype.update = async function update(t) {
         var self = this;
         var ρσ_ls, j, i;
-        "38";
+        "39";
         var ρσ_Iter3 = range(0, len(self._x));
         ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
         for (var ρσ_Index3 of ρσ_Iter3) {
             i = ρσ_Index3;
-            "39";
+            "40";
             var ρσ_Iter4 = range(0, len(self._y));
             ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
             for (var ρσ_Index4 of ρσ_Iter4) {
                 j = ρσ_Index4;
-                "40";
-                ρσ_getitem(ρσ_getitem(self._surface, i), j).pos.z = self._amplitude["*"]((await self._f_x_y_t(ρσ_getitem(self._x, i), ρσ_getitem(self._y, j), t)));
                 "41";
+                ρσ_getitem(ρσ_getitem(self._surface, i), j).pos.z = self._amplitude["*"]((await self._f_x_y_t(ρσ_getitem(self._x, i), ρσ_getitem(self._y, j), self._omega, t)));
+                "42";
                 ρσ_getitem(ρσ_getitem(self._surface, i), j).color = color.hsv_to_rgb(vec(.1["*"](abs(ρσ_getitem(ρσ_getitem(self._surface, i), j).pos.z))["+"](self._hue), 1, 1));
             }
         }
@@ -160,7 +162,7 @@ async function __main__() {
     });
     Membrane.prototype.set_hue_value_to = async function set_hue_value_to(new_hue_value) {
         var self = this;
-        "44";
+        "45";
         self._hue = new_hue_value;
     };
     if (!Membrane.prototype.set_hue_value_to.__argnames__) Object.defineProperties(Membrane.prototype.set_hue_value_to, {
@@ -169,16 +171,25 @@ async function __main__() {
     });
     Membrane.prototype.set_amplitude_to = async function set_amplitude_to(new_value) {
         var self = this;
-        "47";
+        "48";
         self._amplitude = new_value;
     };
     if (!Membrane.prototype.set_amplitude_to.__argnames__) Object.defineProperties(Membrane.prototype.set_amplitude_to, {
         __argnames__ : {value: ["new_value"]},
         __module__ : {value: null}
     });
+    Membrane.prototype.set_omega_to = async function set_omega_to(new_value) {
+        var self = this;
+        "51";
+        self._omega = new_value;
+    };
+    if (!Membrane.prototype.set_omega_to.__argnames__) Object.defineProperties(Membrane.prototype.set_omega_to, {
+        __argnames__ : {value: ["new_value"]},
+        __module__ : {value: null}
+    });
     Membrane.prototype.set_wave_function_to = async function set_wave_function_to(normal_mode) {
         var self = this;
-        "50";
+        "54";
         self._f_x_y_t = normal_mode;
     };
     if (!Membrane.prototype.set_wave_function_to.__argnames__) Object.defineProperties(Membrane.prototype.set_wave_function_to, {
@@ -188,19 +199,19 @@ async function __main__() {
     Membrane.prototype.set_droplet_radius_to = async function set_droplet_radius_to(new_radius) {
         var self = this;
         var ρσ_ls, j, i;
-        "53";
+        "57";
         self._radius = new_radius;
-        "54";
+        "58";
         var ρσ_Iter5 = range(len(self._x));
         ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
         for (var ρσ_Index5 of ρσ_Iter5) {
             i = ρσ_Index5;
-            "55";
+            "59";
             var ρσ_Iter6 = range(len(self._y));
             ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
             for (var ρσ_Index6 of ρσ_Iter6) {
                 j = ρσ_Index6;
-                "56";
+                "60";
                 ρσ_getitem(ρσ_getitem(self._surface, i), j).radius = new_radius;
             }
         }
@@ -224,14 +235,15 @@ async function __main__() {
 
 
 
-    "59";
+
+    "63";
     function RadioButton() {;
     }
     RadioButton.prototype.__init__ = async function __init__(button_, membrane_) {
         var self = this;
-        "61";
+        "65";
         self._button = button_;
-        "62";
+        "66";
         self._membrane = membrane_;
     };
     if (!RadioButton.prototype.__init__.__argnames__) Object.defineProperties(RadioButton.prototype.__init__, {
@@ -242,7 +254,7 @@ async function __main__() {
     RadioButton.__handles_kwarg_interpolation__ = RadioButton.prototype.__init__.__handles_kwarg_interpolation__;
     RadioButton.prototype.uncheck = async function uncheck() {
         var self = this;
-        "65";
+        "69";
         self._button.checked = false;
     };
     if (!RadioButton.prototype.uncheck.__module__) Object.defineProperties(RadioButton.prototype.uncheck, {
@@ -251,11 +263,11 @@ async function __main__() {
     RadioButton.prototype.push = async function push(button_name) {
         var self = this;
         var ρσ_ls, i, j;
-        "68";
+        "72";
         i = int(ρσ_getitem(button_name, 0));
-        "69";
+        "73";
         j = int(ρσ_getitem(button_name, 1["-u"]()["*"](1)));
-        "70";
+        "74";
         (await self._membrane.set_wave_function_to(ρσ_getitem(ρσ_getitem(modes, i), j)));
     };
     if (!RadioButton.prototype.push.__argnames__) Object.defineProperties(RadioButton.prototype.push, {
@@ -264,7 +276,7 @@ async function __main__() {
     });
     RadioButton.prototype.check = async function check() {
         var self = this;
-        "73";
+        "77";
         self._button.checked = true;
     };
     if (!RadioButton.prototype.check.__module__) Object.defineProperties(RadioButton.prototype.check, {
@@ -272,7 +284,7 @@ async function __main__() {
     });
     RadioButton.prototype.name = async function name() {
         var self = this;
-        "76";
+        "80";
         return self._button.name;
     };
     if (!RadioButton.prototype.name.__module__) Object.defineProperties(RadioButton.prototype.name, {
@@ -291,14 +303,14 @@ async function __main__() {
 
 
 
-    "78";
+    "82";
     function RadioButtons() {;
     }
     RadioButtons.prototype.__init__ = async function __init__() {
         var self = this;
-        "80";
+        "84";
         self._radio_buttons = ρσ_list_decorate([]);
-        "81";
+        "85";
         self._selected_button = null;
     };
     if (!RadioButtons.prototype.__init__.__module__) Object.defineProperties(RadioButtons.prototype.__init__, {
@@ -309,20 +321,20 @@ async function __main__() {
     RadioButtons.prototype.add = async function add(button_, membrane_) {
         var self = this;
         var ρσ_ls, _GS_1;
-        "84";
+        "88";
         _GS_1 = new RadioButton;
         (await _GS_1.__init__(button_, membrane_));
         self._radio_buttons.append(_GS_1);
-        "86";
+        "90";
         if (ρσ_equals(len(self._radio_buttons)["%"](3), 0)) {
-            "87";
+            "91";
             animation.append_to_caption("\n\n");
-            "89";
+            "93";
         }
         if (ρσ_equals(len(self._radio_buttons), 1)) {
-            "90";
+            "94";
             (await ρσ_getitem(self._radio_buttons, 0).check());
-            "91";
+            "95";
             self._selected_button = ρσ_getitem(self._radio_buttons, 0);
         }
     };
@@ -333,12 +345,12 @@ async function __main__() {
     RadioButtons.prototype._uncheck_buttons_except = async function _uncheck_buttons_except(button_name) {
         var self = this;
         var ρσ_ls, button_;
-        "94";
+        "98";
         var ρσ_Iter7 = self._radio_buttons;
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             button_ = ρσ_Index7;
-            "95";
+            "99";
             if (ρσ_not_equals((await button_.name()), button_name)) {
                 (await button_.uncheck());
             }
@@ -351,12 +363,12 @@ async function __main__() {
     RadioButtons.prototype._get_button_by = async function _get_button_by(button_name) {
         var self = this;
         var ρσ_ls, button_;
-        "98";
+        "102";
         var ρσ_Iter8 = self._radio_buttons;
         ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
         for (var ρσ_Index8 of ρσ_Iter8) {
             button_ = ρσ_Index8;
-            "99";
+            "103";
             if (ρσ_equals((await button_.name()), button_name)) {
                 return button_;
             }
@@ -368,11 +380,11 @@ async function __main__() {
     });
     RadioButtons.prototype.toggle = async function toggle(button_name) {
         var self = this;
-        "102";
+        "106";
         (await self._uncheck_buttons_except(button_name));
-        "103";
+        "107";
         self._selected_button = (await self._get_button_by(button_name));
-        "104";
+        "108";
         (await self._selected_button.push(button_name));
     };
     if (!RadioButtons.prototype.toggle.__argnames__) Object.defineProperties(RadioButtons.prototype.toggle, {
@@ -381,7 +393,7 @@ async function __main__() {
     });
     RadioButtons.prototype.get_selected_button_name = async function get_selected_button_name() {
         var self = this;
-        "107";
+        "111";
         return (await self._selected_button.name());
     };
     if (!RadioButtons.prototype.get_selected_button_name.__module__) Object.defineProperties(RadioButtons.prototype.get_selected_button_name, {
@@ -401,144 +413,153 @@ async function __main__() {
 
 
 
-    "110";
-    omega = 2.0["*"](sqrt(5));
-    "112";
-    async function mode_1_1(x, y, t) {
-        "113";
+    "114";
+    async function mode_1_1(x, y, omega, t) {
+        "115";
         return cos(omega["*"](t))["*"](sin(1["*"](x)["/"](3)))["*"](sin(1["*"](y)["/"](3)));
     };
     if (!mode_1_1.__argnames__) Object.defineProperties(mode_1_1, {
-        __argnames__ : {value: ["x", "y", "t"]},
+        __argnames__ : {value: ["x", "y", "omega", "t"]},
         __module__ : {value: null}
     });
 
-    "115";
-    async function mode_2_1(x, y, t) {
-        "116";
+    "117";
+    async function mode_2_1(x, y, omega, t) {
+        "118";
         return cos(omega["*"](t))["*"](sin(2["*"](x)["/"](3)))["*"](sin(1["*"](y)["/"](3)));
     };
     if (!mode_2_1.__argnames__) Object.defineProperties(mode_2_1, {
-        __argnames__ : {value: ["x", "y", "t"]},
+        __argnames__ : {value: ["x", "y", "omega", "t"]},
         __module__ : {value: null}
     });
 
-    "118";
-    async function mode_3_1(x, y, t) {
-        "119";
+    "120";
+    async function mode_3_1(x, y, omega, t) {
+        "121";
         return cos(omega["*"](t))["*"](sin(x))["*"](sin(1["*"](y)["/"](3)));
     };
     if (!mode_3_1.__argnames__) Object.defineProperties(mode_3_1, {
-        __argnames__ : {value: ["x", "y", "t"]},
+        __argnames__ : {value: ["x", "y", "omega", "t"]},
         __module__ : {value: null}
     });
 
-    "121";
-    async function mode_1_2(x, y, t) {
-        "122";
+    "123";
+    async function mode_1_2(x, y, omega, t) {
+        "124";
         return cos(omega["*"](t))["*"](sin(1["*"](x)["/"](3)))["*"](sin(2["*"](y)["/"](3)));
     };
     if (!mode_1_2.__argnames__) Object.defineProperties(mode_1_2, {
-        __argnames__ : {value: ["x", "y", "t"]},
+        __argnames__ : {value: ["x", "y", "omega", "t"]},
         __module__ : {value: null}
     });
 
-    "124";
-    async function mode_2_2(x, y, t) {
-        "125";
+    "126";
+    async function mode_2_2(x, y, omega, t) {
+        "127";
         return cos(omega["*"](t))["*"](sin(2["*"](x)["/"](3)))["*"](sin(2["*"](y)["/"](3)));
     };
     if (!mode_2_2.__argnames__) Object.defineProperties(mode_2_2, {
-        __argnames__ : {value: ["x", "y", "t"]},
+        __argnames__ : {value: ["x", "y", "omega", "t"]},
         __module__ : {value: null}
     });
 
-    "127";
-    async function mode_3_2(x, y, t) {
-        "128";
+    "129";
+    async function mode_3_2(x, y, omega, t) {
+        "130";
         return cos(omega["*"](t))["*"](sin(x))["*"](sin(2["*"](y)["/"](3)));
     };
     if (!mode_3_2.__argnames__) Object.defineProperties(mode_3_2, {
-        __argnames__ : {value: ["x", "y", "t"]},
+        __argnames__ : {value: ["x", "y", "omega", "t"]},
         __module__ : {value: null}
     });
 
-    "130";
-    async function mode_1_3(x, y, t) {
-        "131";
+    "132";
+    async function mode_1_3(x, y, omega, t) {
+        "133";
         return cos(omega["*"](t))["*"](sin(1["*"](x)["/"](3)))["*"](sin(y));
     };
     if (!mode_1_3.__argnames__) Object.defineProperties(mode_1_3, {
-        __argnames__ : {value: ["x", "y", "t"]},
+        __argnames__ : {value: ["x", "y", "omega", "t"]},
         __module__ : {value: null}
     });
 
-    "133";
-    async function mode_2_3(x, y, t) {
-        "134";
+    "135";
+    async function mode_2_3(x, y, omega, t) {
+        "136";
         return cos(omega["*"](t))["*"](sin(2["*"](x)["/"](3)))["*"](sin(y));
     };
     if (!mode_2_3.__argnames__) Object.defineProperties(mode_2_3, {
-        __argnames__ : {value: ["x", "y", "t"]},
+        __argnames__ : {value: ["x", "y", "omega", "t"]},
         __module__ : {value: null}
     });
 
-    "136";
-    async function mode_3_3(x, y, t) {
-        "137";
+    "138";
+    async function mode_3_3(x, y, omega, t) {
+        "139";
         return cos(omega["*"](t))["*"](sin(x))["*"](sin(y));
     };
     if (!mode_3_3.__argnames__) Object.defineProperties(mode_3_3, {
-        __argnames__ : {value: ["x", "y", "t"]},
+        __argnames__ : {value: ["x", "y", "omega", "t"]},
         __module__ : {value: null}
     });
 
-    "139";
-    x_range = range(0, Lx["+"](dx), dx);
-    "140";
-    y_range = range(0, Ly["+"](dy), dy);
     "141";
-    modes = ρσ_list_decorate([ ρσ_list_decorate([ mode_1_1, mode_2_1, mode_3_1 ]), ρσ_list_decorate([ mode_1_2, mode_2_2, mode_3_2 ]), ρσ_list_decorate([ mode_1_3, mode_2_3, mode_3_3 ]) ]);
+    x_range = range(0, Lx["+"](dx), dx);
     "142";
+    y_range = range(0, Ly["+"](dy), dy);
+    "143";
+    modes = ρσ_list_decorate([ ρσ_list_decorate([ mode_1_1, mode_2_1, mode_3_1 ]), ρσ_list_decorate([ mode_1_2, mode_2_2, mode_3_2 ]), ρσ_list_decorate([ mode_1_3, mode_2_3, mode_3_3 ]) ]);
+    "144";
     _GS_1 = new Membrane;
     (await _GS_1.__init__(x_range, y_range, ρσ_getitem(ρσ_getitem(modes, 0), 0)));
     membrane = _GS_1;
-    "148";
+    "150";
     async function adjust_offset() {
-        "149";
+        "151";
         (await membrane.set_hue_value_to(offset_slider.value));
-        "150";
+        "152";
         hue_offset_text.text = "{:1.2f}".format(offset_slider.value, 2);
     };
     if (!adjust_offset.__module__) Object.defineProperties(adjust_offset, {
         __module__ : {value: null}
     });
 
-    "153";
+    "155";
     async function adjust_amplitude() {
-        "154";
+        "156";
         (await membrane.set_amplitude_to(amplitude_slider.value));
-        "155";
+        "157";
         amplitude_text.text = "{:1.2f}".format(amplitude_slider.value, 2);
     };
     if (!adjust_amplitude.__module__) Object.defineProperties(adjust_amplitude, {
         __module__ : {value: null}
     });
 
-    "158";
+    "160";
     async function adjust_droplet_radius() {
-        "159";
+        "161";
         (await membrane.set_droplet_radius_to(radius_slider.value["*"](.01)));
-        "160";
+        "162";
         droplet_radius_text.text = "{:1.2f}".format(radius_slider.value, 2);
     };
     if (!adjust_droplet_radius.__module__) Object.defineProperties(adjust_droplet_radius, {
         __module__ : {value: null}
     });
 
-    "163";
+    "164";
+    async function adjust_omega() {
+        "165";
+        (await membrane.set_omega_to(omega_slider.value));
+        "166";
+        omega_slider_text.text = "= {:1.2f}".format(omega_slider.value["/"](pi), 2)["+"](" π");
+    };
+    if (!adjust_omega.__module__) Object.defineProperties(adjust_omega, {
+        __module__ : {value: null}
+    });
+
+    "169";
     async function toggle(event) {
-        "164";
+        "170";
         (await radio_buttons.toggle(event.name));
     };
     if (!toggle.__argnames__) Object.defineProperties(toggle, {
@@ -546,57 +567,63 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "166";
-    animation.append_to_caption("\n");
-    "167";
-    radius_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 10, value: 7.5, step: .1, bind: adjust_droplet_radius})]);
-    "168";
-    animation.append_to_caption("droplet radius = ");
-    "169";
-    droplet_radius_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "7.50"})]);
-    "171";
-    animation.append_to_caption("\n\n");
     "172";
-    offset_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .1, bind: adjust_offset})]);
+    animation.append_to_caption("\n");
     "173";
-    animation.append_to_caption("hue offset = ");
+    radius_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 10, value: 7.5, step: .1, bind: adjust_droplet_radius})]);
     "174";
-    hue_offset_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.10"})]);
-    "176";
-    animation.append_to_caption("\n\n");
+    animation.append_to_caption("droplet radius = ");
+    "175";
+    droplet_radius_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "7.50"})]);
     "177";
-    amplitude_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: 2, value: 1, bind: adjust_amplitude})]);
-    "178";
-    animation.append_to_caption("Amplitude = ");
-    "179";
-    amplitude_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "1.00"})]);
-    "181";
     animation.append_to_caption("\n\n");
+    "178";
+    offset_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .1, bind: adjust_offset})]);
+    "179";
+    animation.append_to_caption("hue offset = ");
+    "180";
+    hue_offset_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.10"})]);
     "182";
+    animation.append_to_caption("\n\n");
+    "183";
+    omega_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 2["*"](pi), value: 2["*"](pi), bind: adjust_omega})]);
+    "184";
+    omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "omega = 2π"})]);
+    "186";
+    animation.append_to_caption("\n\n");
+    "187";
+    amplitude_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: 2, value: 1, bind: adjust_amplitude})]);
+    "188";
+    animation.append_to_caption("amplitude = ");
+    "189";
+    amplitude_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "1.00"})]);
+    "191";
+    animation.append_to_caption("\n\n");
+    "192";
     _GS_1 = new RadioButtons;
     (await _GS_1.__init__());
     radio_buttons = _GS_1;
-    "183";
+    "193";
     for (var ρσ_Index9 = 0; ρσ_Index9["<"](3); ρσ_Index9++) {
         i = ρσ_Index9;
-        "184";
+        "194";
         for (var ρσ_Index10 = 0; ρσ_Index10["<"](3); ρσ_Index10++) {
             j = ρσ_Index10;
-            "185";
+            "195";
             (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Mode "["+"](str(i["+"](1)))["+"](",")["+"](str(j["+"](1)))["+"](" "), name: str(i)["+"]("_")["+"](str(j))})]), membrane));
         }
     }
-    "189";
+    "199";
     time = 0;
-    "190";
+    "200";
     dt = .025;
-    "191";
+    "201";
     while (true) {
-        "192";
+        "202";
         (await rate(20));
-        "193";
+        "203";
         (await membrane.update(time));
-        "194";
+        "204";
         time=time["+"](dt);
     }
 };

@@ -21,7 +21,8 @@ class Wave:
     def __init__(self, x, y, obstacle):
         self._x, self._y, self._obstacle = x, y, obstacle
         self._hue = 2.55
-        self._radius = 0.03
+        self._opacity = 0.35
+        self._radius = 0.035
         self._time = 0
         self._initialize_wave_data()
         self._old, self._new, self._surface = [], [], []
@@ -38,7 +39,7 @@ class Wave:
                 colour = color.hsv_to_rgb(vec(self._hue, 1, 1))
                 position = vector(self._x[i], self._y[j], 0)
                 droplets_row.append(
-                    sphere(pos=position, visible=show, radius=self._radius, color=colour))
+                    sphere(pos=position, visible=show, radius=self._radius, opacity=self._opacity, color=colour))
             self._surface.append(droplets_row)
 
     def _initialize_wave_data(self):
@@ -69,12 +70,18 @@ class Wave:
         for i in range(1, len(self._x) - 1):
             for j in range(1, len(self._y) - 1):
                 self._surface[i][j].pos.z = self._new[i][j]  # Updating the z position of the surface points
-                self._surface[i][j].color = color.hsv_to_rgb(vec(self._new[i][j] * 2 + self._hue, 1, 1))
+                self._surface[i][j].color = color.hsv_to_rgb(vec(self._new[i][j] * 1.5 + self._hue, 1, 1))
 
         self._time += dt
 
     def get_time(self):
         return self._time
+
+    def set_opacity_to(self, new_value):
+        self._opacity = new_value
+        for i in range(len(self._x)):
+            for j in range(len(self._y)):
+                self._surface[i][j].opacity = new_value
 
     def set_hue_value_to(self, new_hue_value):
         self._hue = new_hue_value
@@ -160,16 +167,24 @@ def adjust_droplet_radius():
     wave.set_droplet_radius_to(radius_slider.value * .01)
     droplet_radius_text.text = "{:1.2f}".format(radius_slider.value, 2)
 
+def adjust_opacity():
+    wave.set_opacity_to(opacity_slider.value)
+    opacity_text.text = "= {:1.2f}".format(opacity_slider.value, 2)
 
 animation.append_to_caption("\n")
-radius_slider = slider(min=1, max=4, value=3.0, step=.1, bind=adjust_droplet_radius)
+radius_slider = slider(min=1, max=4, value=3.5, step=.1, bind=adjust_droplet_radius)
 animation.append_to_caption("droplet radius = ")
-droplet_radius_text = wtext(text="3.0")
+droplet_radius_text = wtext(text="3.5")
 
 animation.append_to_caption("\n\n")
 offset_slider = slider(min=0, max=1, value=0, bind=adjust_offset)
 animation.append_to_caption("hue offset = ")
 hue_offset_text = wtext(text="0.0")
+
+animation.append_to_caption("\n\n")
+opacity_slider = slider(min=0, max=1, step=0.01, value=0.35, bind=adjust_opacity)
+animation.append_to_caption("opacity = ")
+opacity_text = wtext(text="0.35")
 
 animation.append_to_caption("\n\n")
 speed_slider = slider(min=0.7, max=1.2, value=.8, bind=adjust_speed)
