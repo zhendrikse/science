@@ -2,7 +2,7 @@
 
 from vpython import rate, sphere, vec, vector, box, canvas, color, random, sqrt, log, cos, pi, mag, norm
 
-title = """ &#x2022; Based on original <a href="https://trinket.io/glowscript/d2383d5473?e=1">code on Trinket</a>
+title = """ &#x2022; Based on original <a href="https://trinket.io/glowscript/d2383d5473?e=1">code on Trinket</a> and <a href="https://www.youtube.com/watch?v=62bcHdgz7xs">this video</a>
  &#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a>
 
 """
