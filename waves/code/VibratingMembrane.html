@@ -800,18 +800,14 @@ async function __main__() {
     });
 
     "259";
-    animation.append_to_caption("\n\n");
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Mesh ", bind: toggle_mesh, checked: true})]);
     "260";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Mesh ", bind: toggle_mesh, checked: false})]);
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis labels ", bind: toggle_axis_labels, checked: true})]);
     "261";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis labels ", bind: toggle_axis_labels, checked: false})]);
-    "262";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks ", bind: toggle_tick_marks, checked: false})]);
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks ", bind: toggle_tick_marks, checked: true})]);
     "263";
-    animation.append_to_caption("\n\n");
-    "265";
     async function toggle(event) {
-        "266";
+        "264";
         (await radio_buttons.toggle(event.name));
     };
     if (!toggle.__argnames__) Object.defineProperties(toggle, {
@@ -819,63 +815,63 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "268";
-    animation.append_to_caption("\n");
-    "269";
+    "266";
+    animation.append_to_caption("\n\n");
+    "267";
     radius_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 10, value: 7.5, step: .1, bind: adjust_droplet_radius})]);
-    "270";
+    "268";
     animation.append_to_caption("droplet radius = ");
-    "271";
+    "269";
     droplet_radius_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "7.50"})]);
-    "273";
+    "271";
     animation.append_to_caption("\n\n");
-    "274";
+    "272";
     offset_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: 0, bind: adjust_offset})]);
-    "275";
+    "273";
     animation.append_to_caption("hue offset = ");
-    "276";
+    "274";
     hue_offset_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.00"})]);
-    "278";
+    "276";
     animation.append_to_caption("\n\n");
-    "279";
+    "277";
     omega_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 2["*"](pi), value: 2["*"](pi), bind: adjust_omega})]);
-    "280";
+    "278";
     omega_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "omega = 2π"})]);
-    "282";
+    "280";
     animation.append_to_caption("\n\n");
-    "283";
+    "281";
     amplitude_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: 3, value: 2, bind: adjust_amplitude})]);
-    "284";
+    "282";
     animation.append_to_caption("amplitude = ");
-    "285";
+    "283";
     amplitude_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "2.00"})]);
-    "287";
+    "285";
     animation.append_to_caption("\n\n");
-    "288";
+    "286";
     _GS_1 = new RadioButtons;
     (await _GS_1.__init__());
     radio_buttons = _GS_1;
-    "289";
+    "287";
     for (var ρσ_Index15 = 0; ρσ_Index15["<"](3); ρσ_Index15++) {
         i = ρσ_Index15;
-        "290";
+        "288";
         for (var ρσ_Index16 = 0; ρσ_Index16["<"](3); ρσ_Index16++) {
             j = ρσ_Index16;
-            "291";
+            "289";
             (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Mode "["+"](str(i["+"](1)))["+"](",")["+"](str(j["+"](1)))["+"](" "), name: str(i)["+"]("_")["+"](str(j))})]), membrane));
         }
     }
-    "295";
+    "293";
     time = 0;
-    "296";
+    "294";
     dt = .025;
-    "297";
+    "295";
     while (true) {
-        "298";
+        "296";
         (await rate(20));
-        "299";
+        "297";
         (await membrane.update(time));
-        "300";
+        "298";
         time=time["+"](dt);
     }
 };

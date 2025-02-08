@@ -256,16 +256,14 @@ def toggle_mesh(event):
     axis.mesh_visibility_is(event.checked)
 
 
-animation.append_to_caption("\n\n")
-_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=False)
-_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=False)
-_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=False)
-animation.append_to_caption("\n\n")
+_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
+_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=True)
+_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
 
 def toggle(event):
     radio_buttons.toggle(event.name)
 
-animation.append_to_caption("\n")
+animation.append_to_caption("\n\n")
 radius_slider = slider(min=1, max=10, value=7.5, step=.1, bind=adjust_droplet_radius)
 animation.append_to_caption("droplet radius = ")
 droplet_radius_text = wtext(text="7.50")

@@ -90,9 +90,9 @@ async function __main__() {
         "22";
         self._hue = 2.55;
         "23";
-        self._opacity = .35;
+        self._opacity = 1;
         "24";
-        self._radius = .035;
+        self._radius = .03;
         "25";
         self._disturbance_magnitude = .2;
         "26";
@@ -443,7 +443,7 @@ async function __main__() {
         "130";
         (await wave.set_opacity_to(opacity_slider.value));
         "131";
-        opacity_text.text = "= {:1.2f}".format(opacity_slider.value, 2);
+        opacity_text.text = "{:1.2f}".format(opacity_slider.value, 2);
     };
     if (!adjust_opacity.__module__) Object.defineProperties(adjust_opacity, {
         __module__ : {value: null}
@@ -452,11 +452,11 @@ async function __main__() {
     "133";
     animation.append_to_caption("\n");
     "134";
-    radius_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 4, value: 3.5, step: .1, bind: adjust_droplet_radius})]);
+    radius_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 4, value: 3, step: .1, bind: adjust_droplet_radius})]);
     "135";
     animation.append_to_caption("droplet radius = ");
     "136";
-    droplet_radius_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "3.5"})]);
+    droplet_radius_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "3.0"})]);
     "138";
     animation.append_to_caption("\n\n");
     "139";
@@ -476,11 +476,11 @@ async function __main__() {
     "148";
     animation.append_to_caption("\n\n");
     "149";
-    opacity_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .35, bind: adjust_opacity})]);
+    opacity_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: 1, bind: adjust_opacity})]);
     "150";
     animation.append_to_caption("opacity = ");
     "151";
-    opacity_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.35"})]);
+    opacity_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "1.0"})]);
     "153";
     popup = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "Click mouse to start", pos: vec(1["-u"]()["*"](Lx), 0, 0), billboard: true, color: color.yellow, height: .3})]);
     "154";
