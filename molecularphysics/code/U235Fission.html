@@ -1,0 +1,428 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
+    var version, print, arange, __name__, type, ρσ_ls, title, amu, nucradius, z235, a235, z238, a238, frac235, aTOT, akg, cubeside, volume, udensity, N, sidenum, side, nucscale, fiverow, animation, neutrons, dt, time, _GS_1, lattice, neutron;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "10";
+    title = "&#x2022; Original <a href=\"https://trinket.io/embed/glowscript/f61cab61ca\">code<\/a> by Byron Philhour\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n&#x2022; <span style=\"color: green;\">Green</span> = oxide ions, <span style=\"color: blue;\">Blue</span> = uranium 238 ions, <span style=\"color: red;\">Red</span> = uranium 235 ions\n&#x2022; <span style=\"color: yellow;\">Yellow</span> = reaction product (Ba / Kr), <span style=\"color: gray(0.5);\">Gray</span> = thermal neutron\n&#x2022; U235 nuclear collision cross-section exaggerated.\n";
+    "13";
+    amu = 1.66e-23;
+    "14";
+    nucradius = 1.5e-14;
+    "17";
+    z235 = 92;
+    "18";
+    a235 = 235;
+    "21";
+    z238 = 92;
+    "22";
+    a238 = 238;
+    "26";
+    frac235 = .035;
+    "29";
+    aTOT = frac235["*"](a235)["+"](1["-"](1["*"](frac235))["*"](a238));
+    "30";
+    akg = amu["*"](aTOT);
+    "31";
+    cubeside = 1.4e-7;
+    "32";
+    volume = Math.pow(cubeside, 3);
+    "33";
+    udensity = 19.3;
+    "35";
+    N = 13;
+    "36";
+    sidenum = 4;
+    "37";
+    side = cubeside["/"](sidenum);
+    "38";
+    nucscale = side["/"](nucradius)["/"](3);
+    "40";
+    fiverow = true;
+    "42";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), range: .4["/"](nucscale)})]);
+    "44";
+    function UraniumOxideLattice() {;
+    }
+    UraniumOxideLattice.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, z, y, x, atom;
+        "46";
+        ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]),
+        ρσ_list_decorate([])];
+        self._nucleus = ρσ_unpack[0];
+        self._oxide = ρσ_unpack[1];
+        self._urad = ρσ_unpack[2];
+        self._flashes = ρσ_unpack[3];
+        self._products = ρσ_unpack[4];
+        "47";
+        self._nindex = self._oindex = self._remaining = 0;
+        "48";
+        var ρσ_Iter1 = range(0, cubeside, side);
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            x = ρσ_Index1;
+            "49";
+            var ρσ_Iter2 = range(0, cubeside, side);
+            ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+            for (var ρσ_Index2 of ρσ_Iter2) {
+                y = ρσ_Index2;
+                "50";
+                var ρσ_Iter3 = range(0, cubeside, side);
+                ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+                for (var ρσ_Index3 of ρσ_Iter3) {
+                    z = ρσ_Index3;
+                    "51";
+                    (await self._init_lattice(x, y, z));
+                }
+            }
+        }
+        "53";
+        var ρσ_Iter4 = self._oxide;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            atom = ρσ_Index4;
+            "54";
+            atom.radius = nucradius["*"](nucscale)["*"](.7);
+            "55";
+            atom.color = color.green;
+        }
+        "56";
+        var ρσ_Iter5 = self._nucleus;
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            atom = ρσ_Index5;
+            "57";
+            atom.radius = nucradius["*"](nucscale);
+            "58";
+            atom.color = color.blue;
+        }
+        "61";
+        var ρσ_Iter6 = self._nucleus;
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            atom = ρσ_Index6;
+            "62";
+            if (random()["<"](frac235)) {
+                "63";
+                atom.color = color.red;
+                "64";
+                self._urad.append(atom);
+            }
+        }
+        "66";
+        animation.caption = "Radioactive nuclei remaining: "["+"](str(len(self._urad)));
+        "67";
+        self._remaining = len(self._urad);
+        "69";
+        animation.title=animation.title["+"]("&#x2022; N = "["+"](str(self._nindex["+"](self._oindex)))["+"]("\n\n"));
+    };
+    if (!UraniumOxideLattice.prototype.__init__.__module__) Object.defineProperties(UraniumOxideLattice.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    UraniumOxideLattice.__argnames__ = UraniumOxideLattice.prototype.__init__.__argnames__;
+    UraniumOxideLattice.__handles_kwarg_interpolation__ = UraniumOxideLattice.prototype.__init__.__handles_kwarg_interpolation__;
+    UraniumOxideLattice.prototype._init_lattice = async function _init_lattice(x, y, z) {
+        var self = this;
+        var ρσ_ls, offset;
+        "73";
+        offset = vec(4["*"](x), 4["*"](y), 4["*"](z))["-"](1["*"](2)["*"](cubeside)["*"](vec(1, 1, 1)));
+        "74";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset})]) ]));
+        "75";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(4["*"](side), 0, 0))})]) ]));
+        "76";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(4["*"](side), 0, 4["*"](side)))})]) ]));
+        "77";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(2["*"](side), 0, 2["*"](side)))})]) ]));
+        "78";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(0, 0, 4["*"](side)))})]) ]));
+        "79";
+        self._oindex=self._oindex["+"](5);
+        "81";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(0, 2["*"](side), 2["*"](side)))})]) ]));
+        "82";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(2["*"](side), 2["*"](side), 0))})]) ]));
+        "83";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(4["*"](side), 2["*"](side), 2["*"](side)))})]) ]));
+        "84";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(2["*"](side), 2["*"](side), 4["*"](side)))})]) ]));
+        "85";
+        self._oindex=self._oindex["+"](4);
+        "87";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(0, 4["*"](side), 0))})]) ]));
+        "88";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(4["*"](side), 4["*"](side), 0))})]) ]));
+        "89";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(2["*"](side), 4["*"](side), 2["*"](side)))})]) ]));
+        "90";
+        self._oxide=self._oxide["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(0, 4["*"](side), 4["*"](side)))})]) ]));
+        "91";
+        self._oindex=self._oindex["+"](4);
+        "93";
+        self._nucleus=self._nucleus["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(side, side, side))})]) ]));
+        "94";
+        self._nucleus=self._nucleus["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(side, 3["*"](side), side))})]) ]));
+        "95";
+        self._nucleus=self._nucleus["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(3["*"](side), side, side))})]) ]));
+        "96";
+        self._nucleus=self._nucleus["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(3["*"](side), 3["*"](side), side))})]) ]));
+        "97";
+        self._nucleus=self._nucleus["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(side, side, 3["*"](side)))})]) ]));
+        "98";
+        self._nucleus=self._nucleus["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(side, 3["*"](side), 3["*"](side)))})]) ]));
+        "99";
+        self._nucleus=self._nucleus["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: offset["+"](vec(3["*"](side), side, 3["*"](side)))})]) ]));
+        "100";
+        self._nindex=self._nindex["+"](7);
+    };
+    if (!UraniumOxideLattice.prototype._init_lattice.__argnames__) Object.defineProperties(UraniumOxideLattice.prototype._init_lattice, {
+        __argnames__ : {value: ["x", "y", "z"]},
+        __module__ : {value: null}
+    });
+    UraniumOxideLattice.prototype._process_collision = async function _process_collision(uranium) {
+        var self = this;
+        var ρσ_ls, prodnum, k;
+        "104";
+        prodnum = len(self._products);
+        "105";
+        if ((uranium.color.mag === color.red.mag || typeof uranium.color.mag === "object" && ρσ_equals(uranium.color.mag, color.red.mag))) {
+            "106";
+            uranium.color = color.yellow;
+            "107";
+            uranium.visible = false;
+            "108";
+            self._remaining=self._remaining["-"](1);
+            "109";
+            animation.caption = "\nRadioactive nuclei remaining: "["+"](str(self._remaining));
+            "110";
+            self._flashes.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: uranium.pos, radius: nucradius["*"](nucscale)["*"](.01), color: color.yellow, opacity: .6})]));
+            "112";
+            ρσ_getitem(self._flashes, 1["-u"]()["*"](1)).vel = 5e3["*"](random())["+"](5e3);
+            "113";
+            for (var ρσ_Index7 = 0; ρσ_Index7["<"](2); ρσ_Index7++) {
+                k = ρσ_Index7;
+                "114";
+                neutrons.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: uranium.pos, radius: nucradius["*"](nucscale)["*"](.2), color: vec(.8, .8, .8), make_trail: true, retain: 10})]));
+                "116";
+                ρσ_getitem(neutrons, 1["-u"]()["*"](1)).vel = 2200["*"](vector.random());
+            }
+            "118";
+            self._products.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: uranium.pos, radius: nucradius["*"](nucscale), color: color.yellow, make_trail: false, retain: 10})]));
+            "120";
+            ρσ_getitem(self._products, 1["-u"]()["*"](1)).vel = 500["*"](vector.random());
+            "121";
+            self._products.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: uranium.pos, radius: nucradius["*"](nucscale), color: color.yellow, make_trail: false, retain: 10})]));
+            "123";
+            ρσ_getitem(self._products, 1["-u"]()["*"](1)).vel = 1["-u"]()["*"](ρσ_getitem(self._products, prodnum).vel);
+        }
+    };
+    if (!UraniumOxideLattice.prototype._process_collision.__argnames__) Object.defineProperties(UraniumOxideLattice.prototype._process_collision, {
+        __argnames__ : {value: ["uranium"]},
+        __module__ : {value: null}
+    });
+    UraniumOxideLattice.prototype.collisions_with = async function collisions_with(neutron_) {
+        var self = this;
+        var ρσ_ls, uranium;
+        "126";
+        var ρσ_Iter8 = self._urad;
+        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+        for (var ρσ_Index8 of ρσ_Iter8) {
+            uranium = ρσ_Index8;
+            "127";
+            if ((neutron_.pos["-"](1["*"](uranium.pos))).mag["<"](uranium.radius)) {
+                "128";
+                (await self._process_collision(uranium));
+            }
+        }
+    };
+    if (!UraniumOxideLattice.prototype.collisions_with.__argnames__) Object.defineProperties(UraniumOxideLattice.prototype.collisions_with, {
+        __argnames__ : {value: ["neutron_"]},
+        __module__ : {value: null}
+    });
+    UraniumOxideLattice.prototype.has_remaining_nuclei = async function has_remaining_nuclei() {
+        var self = this;
+        "131";
+        return self._remaining[">"](0);
+    };
+    if (!UraniumOxideLattice.prototype.has_remaining_nuclei.__module__) Object.defineProperties(UraniumOxideLattice.prototype.has_remaining_nuclei, {
+        __module__ : {value: null}
+    });
+    UraniumOxideLattice.prototype.update_products = async function update_products(dt) {
+        var self = this;
+        var ρσ_ls, product;
+        "134";
+        var ρσ_Iter9 = self._products;
+        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+        for (var ρσ_Index9 of ρσ_Iter9) {
+            product = ρσ_Index9;
+            "135";
+            product.pos=product.pos["+"](product.vel["*"](dt));
+            "137";
+            if (product.pos.mag[">"](3["*"](cubeside))) {
+                "139";
+                product.visible = false;
+            }
+        }
+    };
+    if (!UraniumOxideLattice.prototype.update_products.__argnames__) Object.defineProperties(UraniumOxideLattice.prototype.update_products, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    UraniumOxideLattice.prototype.update_flashes = async function update_flashes(dt) {
+        var self = this;
+        var ρσ_ls, flash;
+        "142";
+        var ρσ_Iter10 = self._flashes;
+        ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+        for (var ρσ_Index10 of ρσ_Iter10) {
+            flash = ρσ_Index10;
+            "143";
+            flash.radius=flash.radius["+"](flash.vel["*"](dt));
+            "144";
+            flash.opacity = 1["-"](1["*"](flash.radius)["/"](2["*"](cubeside)));
+            "145";
+            if (flash.radius[">"](2["*"](cubeside))) {
+                "146";
+                flash.visible = false;
+                "147";
+                flash.vel = 0;
+            }
+        }
+    };
+    if (!UraniumOxideLattice.prototype.update_flashes.__argnames__) Object.defineProperties(UraniumOxideLattice.prototype.update_flashes, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    UraniumOxideLattice.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    UraniumOxideLattice.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(UraniumOxideLattice.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+    "150";
+    neutrons = ρσ_list_decorate([]);
+    "151";
+    neutrons=neutrons["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: nucradius["*"](nucscale)["*"](.2), color: vec(.8, .8, .8), make_trail: true, retain: 15})]) ]));
+    "152";
+    ρσ_getitem(neutrons, 0).vel = 2200["*"](vector.random());
+    "154";
+    dt = 1e-12;
+    "155";
+    time = 0;
+    "156";
+    _GS_1 = new UraniumOxideLattice;
+    (await _GS_1.__init__());
+    lattice = _GS_1;
+    "157";
+    while ((await lattice.has_remaining_nuclei())) {
+        "158";
+        (await rate(1e3));
+        "159";
+        time = time["+"](dt);
+        "160";
+        var ρσ_Iter11 = neutrons;
+        ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
+        for (var ρσ_Index11 of ρσ_Iter11) {
+            neutron = ρσ_Index11;
+            "161";
+            if (neutron.pos.x[">"](2["*"](cubeside)) || neutron.pos.x["<"](1["-u"]()["*"](2)["*"](cubeside))) {
+                neutron.vel.x = 1["-u"]()["*"](neutron.vel.x);
+            }
+            "162";
+            if (neutron.pos.y[">"](2["*"](cubeside)) || neutron.pos.y["<"](1["-u"]()["*"](2)["*"](cubeside))) {
+                neutron.vel.y = 1["-u"]()["*"](neutron.vel.y);
+            }
+            "163";
+            if (neutron.pos.z[">"](2["*"](cubeside)) || neutron.pos.z["<"](1["-u"]()["*"](2)["*"](cubeside))) {
+                neutron.vel.z = 1["-u"]()["*"](neutron.vel.z);
+            }
+            "165";
+            (await lattice.collisions_with(neutron));
+            "166";
+            neutron.pos=neutron.pos["+"](neutron.vel["*"](dt));
+        }
+        "168";
+        (await lattice.update_products(dt));
+        "169";
+        (await lattice.update_flashes(dt));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
