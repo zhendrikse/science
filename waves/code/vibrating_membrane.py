@@ -1,6 +1,6 @@
-# Web VPython 3.2
+#Web VPython 3.2
 
-from vpython import sphere, rate, color, vec, arange, canvas, sqrt, sin, cos, slider, wtext, pi, radio
+from vpython import sphere, rate, color, vec, arange, canvas, cylinder, box, label, sin, cos, slider, wtext, pi, radio, checkbox
 
 title="""&#x2022; Written by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 &#x2022; Visualization concept with spheres by <a href="https://jexpearce.github.io/jex/">Jex Pearce</a>
@@ -9,18 +9,97 @@ title="""&#x2022; Written by <a href="https://www.hendrikse.name/">Zeger Hendrik
 
 Lx, Ly = 3 * pi, 3 * pi
 dx, dy = 0.1, 0.1
-animation = canvas(forward=vec(-2.5, -2.2, -2.2), center=vec(5.5, 5.3, -2.25),
-                   up=vec(0, 0, 1), title=title,
-                   background=color.gray(0.075), range=5.5)
+animation = canvas(forward=vec(-2.5, -2.2, -2.2), center=vec(5.5, 4, 3),
+                   up=vec(0, 0, 1), title=title, height=500,
+                   background=color.gray(0.075), range=9)
+
+x_hat = vec(0, 1, 0)
+y_hat = vec(0, 0, 1)
+z_hat = vec(1, 0, 0)
+base = [x_hat, y_hat, z_hat]
+
+class Base:
+    def __init__(self, xx, yy, zz, axis_color, tick_marks_color, num_tick_marks):
+        x_min, x_max = min(xx), max(xx)
+        y_min, y_max = min(yy), max(yy)
+        z_min, z_max = min(zz), max(zz)
+        range_x, range_y, range_z = x_max - x_min, y_max - y_min, z_max - z_min
+        max_of_base = max(range_x, range_y, range_z)
+        delta = max_of_base / num_tick_marks
+        position = vec(x_min, z_min, y_min)
+        radius = max_of_base / 200
+
+        self._mesh = []
+        self._create_mesh(delta, max_of_base, num_tick_marks, position, radius)
+
+        self._tick_marks = []
+        self._create_tick_marks(delta, max_of_base, num_tick_marks, position, tick_marks_color, x_min, y_min, z_min)
+
+        self._axis_labels = []
+        pos = position + x_hat * (max_of_base + 2.5 * delta) + .5 * max_of_base * z_hat
+        self._axis_labels += [label(pos=pos, text="Y-axis", color=axis_color, box=False)]
+        pos = position + z_hat * (max_of_base + 2.5 * delta) + .5 * max_of_base * y_hat
+        self._axis_labels += [label(pos=pos, text="Z-axis", color=axis_color, box=False)]
+        pos = position + z_hat * (max_of_base + 2.5 * delta) + .5 * max_of_base * x_hat
+        self._axis_labels += [label(pos=pos, text="X-axis", color=axis_color, box=False)]
+
+    def _create_tick_marks(self, delta, max_of_base, num_tick_marks, position, tick_marks_color, x_min, y_min, z_min):
+        increment = max_of_base / num_tick_marks
+        for i in range(1, num_tick_marks, 2):
+            # Tick marks X
+            label_text = '{:1.2f}'.format(x_min + i * increment, 2)
+            pos = position + x_hat * i * delta + z_hat * (max_of_base + .75 * delta)
+            self._tick_marks.append(label(pos=pos, text=label_text, color=tick_marks_color, box=False))
+            # Tick marks Y
+            label_text = '{:1.2f}'.format(y_min + i * increment, 2)
+            pos = position + z_hat * i * delta + x_hat * (max_of_base + .75 * delta)
+            self._tick_marks.append(label(pos=pos, text=label_text, color=tick_marks_color, box=False))
+            # Tick marks Z
+            label_text = '{:1.2f}'.format(z_min + i * increment, 2)
+            pos = position + y_hat * i * delta + z_hat * (max_of_base + .75 * delta)
+            self._tick_marks.append(label(pos=pos, text=label_text, color=tick_marks_color, box=False))
+
+    def _create_mesh(self, delta, max_of_base, num_tick_marks, position, radius):
+        for i in range(num_tick_marks + 1):
+            # XY-mesh (lies in VPython xz-plane)
+            self._mesh += [cylinder(pos=position + z_hat * delta * i, axis=max_of_base * x_hat)]
+            self._mesh += [cylinder(pos=position + x_hat * delta * i, axis=max_of_base * z_hat)]
+            # YZ-mesh (lies in VPython zy-plane)
+            self._mesh += [cylinder(pos=position + z_hat * delta * i, axis=max_of_base * y_hat)]
+            self._mesh += [cylinder(pos=position + y_hat * delta * i, axis=max_of_base * z_hat)]
+            # XZ-mesh (lies in VPython xy-plane)
+            self._mesh += [cylinder(pos=position + x_hat * delta * i, axis=max_of_base * y_hat)]
+            self._mesh += [cylinder(pos=position + y_hat * delta * i, axis=max_of_base * x_hat)]
+        for item in self._mesh:
+            item.color = color.gray(.5)
+            item.radius = radius
+
+        pos = position + (x_hat + z_hat) * .5 * max_of_base
+        self._mesh += [box(pos=pos, length=max_of_base, width=radius, height=max_of_base,opacity=0.05)]
+        pos = position + (z_hat + y_hat) * .5 * max_of_base
+        self._mesh += [box(pos=pos, length=max_of_base, width=max_of_base, height=radius, opacity=0.05)]
+        pos = position + (y_hat + x_hat) * .5 * max_of_base
+        self._mesh += [box(pos=pos, length=radius, width=max_of_base, height=max_of_base, opacity=0.05)]
+
+    def tick_marks_visibility_is(self, visible):
+        for tick_mark in self._tick_marks:
+            tick_mark.visible = visible
+
+    def mesh_visibility_is(self, visible):
+        for i in range(len(self._mesh)):
+            self._mesh[i].visible = visible
+
+    def axis_labels_visibility_is(self, visible):
+        for i in range(len(self._axis_labels)):
+            self._axis_labels[i].visible = visible
 
 
 class Membrane:
     def __init__(self, x, y, f_x_y_t):
         self._x, self._y, self._f_x_y_t = x, y, f_x_y_t
-        self._opacity = 1
-        self._hue = 0.1
+        self._hue = 0.
         self._radius = 0.075
-        self._amplitude = 1.0
+        self._amplitude = 2.0
         self._omega = 2 * pi
 
         self._init_droplets()
@@ -31,15 +110,15 @@ class Membrane:
             droplets_row = []
             for j in range(len(self._y)):
                 colour = color.hsv_to_rgb(vec(self._hue, 1, 1))
-                position = vec(self._x[i], self._y[j], 0)
+                position = vec(self._x[i], self._y[j]-1, Lx/2)
                 droplets_row.append(sphere(pos=position, radius=self._radius, color=colour))
             self._surface.append(droplets_row)
 
     def update(self, t):
         for i in range(0, len(self._x)):
             for j in range(0, len(self._y)):
-                self._surface[i][j].pos.z = self._amplitude * self._f_x_y_t(self._x[i], self._y[j], self._omega, t)
-                self._surface[i][j].color = color.hsv_to_rgb(vec(.1 * abs(self._surface[i][j].pos.z) + self._hue, 1, 1))
+                self._surface[i][j].pos.z = Lx/2 + self._amplitude * self._f_x_y_t(self._x[i], self._y[j], self._omega, t)
+                self._surface[i][j].color = color.hsv_to_rgb(vec(.05 * abs(self._surface[i][j].pos.z) + self._hue, 1, 1))
 
     def set_hue_value_to(self, new_hue_value):
         self._hue = new_hue_value
@@ -58,13 +137,6 @@ class Membrane:
         for i in range(len(self._x)):
             for j in range(len(self._y)):
                 self._surface[i][j].radius = new_radius
-
-    def set_opacity_to(self, new_value):
-        self._opacity = new_value
-        for i in range(len(self._x)):
-            for j in range(len(self._y)):
-                self._surface[i][j].opacity = new_value
-
 
 class RadioButton:
     def __init__(self, button_, membrane_):
@@ -148,6 +220,7 @@ x_range = arange(0, Lx + dx, dx)
 y_range = arange(0, Ly + dy, dy)
 modes = [[mode_1_1, mode_2_1, mode_3_1], [mode_1_2, mode_2_2, mode_3_2], [mode_1_3, mode_2_3, mode_3_3]]
 membrane = Membrane(x_range, y_range, modes[0][0])
+axis = Base(x_range, y_range, arange(-1, 1, dx), color.yellow, color.green, 10)
 
 ################
 # GUI controls #
@@ -171,10 +244,23 @@ def adjust_omega():
     membrane.set_omega_to(omega_slider.value)
     omega_slider_text.text = "= {:1.2f}".format(omega_slider.value / pi, 2) + " π"
 
-def adjust_opacity():
-    membrane.set_opacity_to(opacity_slider.value)
-    opacity_text.text = "= {:1.2f}".format(opacity_slider.value, 2)
+def toggle_tick_marks(event):
+    axis.tick_marks_visibility_is(event.checked)
 
+
+def toggle_axis_labels(event):
+    axis.axis_labels_visibility_is(event.checked)
+
+
+def toggle_mesh(event):
+    axis.mesh_visibility_is(event.checked)
+
+
+animation.append_to_caption("\n\n")
+_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=False)
+_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=False)
+_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=False)
+animation.append_to_caption("\n\n")
 
 def toggle(event):
     radio_buttons.toggle(event.name)
@@ -185,23 +271,18 @@ animation.append_to_caption("droplet radius = ")
 droplet_radius_text = wtext(text="7.50")
 
 animation.append_to_caption("\n\n")
-offset_slider = slider(min=0, max=1, value=0.1, bind=adjust_offset)
+offset_slider = slider(min=0, max=1, value=0.0, bind=adjust_offset)
 animation.append_to_caption("hue offset = ")
-hue_offset_text = wtext(text="0.10")
+hue_offset_text = wtext(text="0.00")
 
 animation.append_to_caption("\n\n")
 omega_slider = slider(min=0, max=2 * pi, value=2 * pi, bind=adjust_omega)
 omega_slider_text = wtext(text="omega = 2π")
 
 animation.append_to_caption("\n\n")
-amplitude_slider = slider(min=0.1, max=2, value=1, bind=adjust_amplitude)
+amplitude_slider = slider(min=0.1, max=3, value=2, bind=adjust_amplitude)
 animation.append_to_caption("amplitude = ")
-amplitude_text = wtext(text="1.00")
-
-animation.append_to_caption("\n\n")
-opacity_slider = slider(min=0, max=1, step=0.01, value=1, bind=adjust_opacity)
-animation.append_to_caption("opacity = ")
-opacity_text = wtext(text="1.00")
+amplitude_text = wtext(text="2.00")
 
 animation.append_to_caption("\n\n")
 radio_buttons = RadioButtons()
