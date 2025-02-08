@@ -1,5 +1,5 @@
 <a name="kinematics"></a>
-# Kinematics
+# Classical mechanics
 <div class="header_line"><br/></div>
 
 <blockquote>

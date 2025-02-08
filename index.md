@@ -319,7 +319,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2><a href="kinematics/index.html">Kinematics</a></h2>
+    <h2><a href="kinematics/index.html">Classical mechanics</a></h2>
     <div class="double_image">
       <figure class="left_image">
         <a href="kinematics/ball_drop_on_spring.html">
