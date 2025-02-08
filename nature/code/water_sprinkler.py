@@ -6,7 +6,7 @@ title = """
 
 """
 
-from vpython import vector, vec, sphere, pi, box, rate, cross, cos, sin, color, canvas, pi
+from vpython import vector, vec, sphere, pi, box, rate, cross, cos, sin, color, canvas, pi, slider, wtext, checkbox
 
 animation = canvas(title=title, background = color.gray(0.075))
 
@@ -41,9 +41,9 @@ class Droplet:
 class Sprinkler:
   def __init__(self, length = 0.1):
     self._length = length
-    self._omega = 2 * pi / 2  # CHANGE THIS - rotation rate of sprinkler
-    self._shoot_outward = True  # CHANGE THIS to false to make balls shoot IN
-    self._frequency = 15  # CHANGE THIS - water ball production rate per second
+    self._omega = pi
+    self._shoot_outward = True
+    self._frequency = 15
     self._water_velocity = .3
 
     self._clock_ticks = 0
@@ -86,7 +86,53 @@ class Sprinkler:
     velocity_1 = -1 * cross(position_1, vector(0, 0, self._omega)) + a * self._water_velocity * position_1.hat
     velocity_2 = -1 * cross(position_2, vector(0, 0, self._omega)) + a * self._water_velocity * position_2.hat
     return [velocity_1, velocity_2]
-     
+
+  def set_omega_to(self, new_value):
+      self._omega = new_value
+
+  def set_droplet_frequency_to(self, new_value):
+      self._frequency = new_value
+
+  def set_water_velocity_to(self, value):
+      self._water_velocity = value
+
+  def set_shoot_outward_to(self, boolean_value):
+      self._shoot_outward = boolean_value
+
+
+def adjust_omega():
+    sprinkler.set_omega_to(omega_slider.value)
+    omega_slider_text.text = "= {:1.2f}".format(omega_slider.value / pi, 2) + " π"
+
+def adjust_droplet_frequency():
+    sprinkler.set_droplet_frequency_to(droplet_frequency_slider.value)
+    droplet_frequency_text.text = "= {:1.2f}".format(droplet_frequency_slider.value, 2)
+
+def adjust_water_velocity():
+    sprinkler.set_water_velocity_to(water_velocity_slider.value)
+    water_velocity_text.text = "= {:1.2f}".format(water_velocity_slider.value, 2)
+
+def toggle_shoot_outward(event):
+    sprinkler.set_shoot_outward_to(event.checked)
+
+animation.append_to_caption("\n")
+_ = checkbox(text="Shoot outward ", bind=toggle_shoot_outward, checked=True)
+
+animation.append_to_caption("\n\n")
+omega_slider = slider(min=0.0, max=pi, value=pi, bind=adjust_omega)
+animation.append_to_caption("rotation speed = ")
+omega_slider_text = wtext(text="π")
+
+animation.append_to_caption("\n\n")
+droplet_frequency_slider = slider(min=10.0, max=30, value=15, bind=adjust_droplet_frequency)
+animation.append_to_caption("droplet frequency = ")
+droplet_frequency_text = wtext(text="15")
+
+animation.append_to_caption("\n\n")
+water_velocity_slider = slider(min=0.0, max=1.0, value=0.3, bind=adjust_water_velocity)
+animation.append_to_caption("water velocity = ")
+water_velocity_text = wtext(text="0.3")
+
 sprinkler = Sprinkler()
 t = 0
 while True:
