@@ -55,12 +55,13 @@ class Sprinkler:
 
     self._water_beams = [WaterBeam(), WaterBeam()]
 
-  def rotate(self, angle):
-    self._theta += angle * self._omega
+  def rotate(self, dt):
+    angle = self._omega * dt
+    self._theta += angle
     self._stick.rotate(angle=angle, axis=vector(0, 0, 1), origin=origin)
 
   def shed_water(self, dt):
-    if self._clock_ticks >= 1 / frequency:
+    if self._clock_ticks >= 1 / self._frequency:
       self._let_out_new_droplet()
       self._clock_ticks = 0
 
@@ -91,5 +92,5 @@ t = 0
 while True:
     rate(100) #  not do any more than 100 loops per second        
     sprinkler.shed_water(dt)
-    sprinkler.rotate(omega * dt)
+    sprinkler.rotate(dt)
     t += dt
