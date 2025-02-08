@@ -203,7 +203,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="u235_fission.html">
+        <a href="molecularphysics/u235_fission.html">
           <img alt="Uranium 235 fission" src="images/u235_fission.png" title="Click to animate"/>
         </a>
       </figure>
