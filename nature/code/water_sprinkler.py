@@ -10,12 +10,6 @@ from vpython import vector, vec, sphere, pi, box, rate, cross, cos, sin, color, 
 
 animation = canvas(title=title, background = color.gray(0.075))
 
-
-omega = 2 * pi / 2   # CHANGE THIS - rotation rate of sprinkler
-shoot_outward = True # CHANGE THIS to false to make balls shoot IN 
-frequency = 15       # CHANGE THIS - water ball production rate per second
-water_velocity = .3
-
 dt = 0.01
 origin = vector(0, 0, 0)
 
@@ -47,6 +41,10 @@ class Droplet:
 class Sprinkler:
   def __init__(self, length = 0.1):
     self._length = length
+    self._omega = 2 * pi / 2  # CHANGE THIS - rotation rate of sprinkler
+    self._shoot_outward = True  # CHANGE THIS to false to make balls shoot IN
+    self._frequency = 15  # CHANGE THIS - water ball production rate per second
+    self._water_velocity = .3
 
     self._clock_ticks = 0
     self._theta = 0 # Rotation angle of sprinkler
@@ -58,7 +56,7 @@ class Sprinkler:
     self._water_beams = [WaterBeam(), WaterBeam()]
 
   def rotate(self, angle):
-    self._theta += angle
+    self._theta += angle * self._omega
     self._stick.rotate(angle=angle, axis=vector(0, 0, 1), origin=origin)
 
   def shed_water(self, dt):
@@ -81,16 +79,16 @@ class Sprinkler:
     return [r, -r]
 
   def _endpoint_velocities(self):
-    a = 1 if shoot_outward else -1
+    a = 1 if self._shoot_outward else -1
     position_1 = self._endpoint_positions()[0]
     position_2 = self._endpoint_positions()[1]
-    velocity_1 = -1 * cross(position_1, vector(0, 0, omega)) + a * water_velocity * position_1.hat
-    velocity_2 = -1 * cross(position_2, vector(0, 0, omega)) + a * water_velocity * position_2.hat
+    velocity_1 = -1 * cross(position_1, vector(0, 0, self._omega)) + a * self._water_velocity * position_1.hat
+    velocity_2 = -1 * cross(position_2, vector(0, 0, self._omega)) + a * self._water_velocity * position_2.hat
     return [velocity_1, velocity_2]
      
 sprinkler = Sprinkler()
 t = 0
-while t < 10:
+while True:
     rate(100) #  not do any more than 100 loops per second        
     sprinkler.shed_water(dt)
     sprinkler.rotate(omega * dt)
