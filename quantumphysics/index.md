@@ -110,6 +110,5 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 </div>
 <p style="clear: both;"></p>
 
-<!-- End of this chapter -->
-<div class="subsection_header_line"><br/></div>
 
+{% include share_buttons.html %}

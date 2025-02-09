@@ -49,5 +49,4 @@ and the evolution of the world. &mdash;
 </div>
 <p style="clear: both;"></p>
 
-<!-- End of this chapter -->
-<div class="subsection_header_line"><br/></div>
+{% include share_buttons.html %}

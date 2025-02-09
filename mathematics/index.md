@@ -143,3 +143,5 @@ seen in the mathematics section on this page:
 </details>
 <p style="clear: both;"></p>
 
+
+{% include share_buttons.html %}

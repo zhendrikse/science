@@ -94,3 +94,4 @@ You may be surprised though to find out what happens when you drop such a simple
 
 <p style="clear: both;"></p>
 
+{% include share_buttons.html %}

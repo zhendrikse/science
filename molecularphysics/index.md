@@ -70,4 +70,6 @@ I... a universe of atoms, an atom in the universe. &mdash;
 
 <p style="clear: both;"></p>
 
+{% include share_buttons.html %}
+
 

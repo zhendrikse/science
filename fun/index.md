@@ -51,3 +51,6 @@ All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedi
 
 <p style="clear: both;"></p>
 
+
+{% include share_buttons.html %}
+

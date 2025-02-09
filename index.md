@@ -8,6 +8,8 @@ finest that music and poetry can deliver. &mdash;
 <a href="https://en.wikipedia.org/wiki/Unweaving_the_Rainbow">Unweaving the Rainbow</a>, 1998.
 </blockquote><br/>
 
+{% include share_buttons.html %}
+
 # Mathematics
 <div class="header_line"><br/></div>
 

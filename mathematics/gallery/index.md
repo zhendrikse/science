@@ -248,3 +248,5 @@ where
 </div>
 <p style="clear: both;"></p>
 
+{% include share_buttons.html %}
+
