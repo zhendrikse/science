@@ -1,10 +1,10 @@
 #Web VPython 3.2
 
-from vpython import sphere, vector, rate, cylinder, mag, norm, color, canvas, box, gcurve, graph
+from vpython import sphere, vector, rate, cylinder, mag, norm, color, canvas, box, gcurve
 
 title = """ 
 &#x2022; Original by <a href="https://trinket.io/glowscript/e5cf69a641">code</a> by Rhett Allain
-&#x2022; See also his accompanying <a href="https://www.youtube.com/watch?v=BdskNTgzpAo">video</a>
+&#x2022; See also his accompanying <a href="https://trinket.io/glowscript/e5cf69a641">video</a>
 &#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a>
 
 """
@@ -81,13 +81,18 @@ class String:
 
         return chord_length
 
-left_pole = cylinder(pos=vector(-0.01, -.275, 0), axis=vector(0, .3, 0), radius=0.0075, color=color.gray(0.4))
-second_pole = cylinder(pos=vector(0.2 + 0.0125, -.275, 0), axis=vector(0, .3, 0), radius=0.0075, color=color.gray(0.4))
-chord_1 = String()
-third_pole = cylinder(pos=vector(0.4 + 0.04, -.275, 0), axis=vector(0, .3, 0), radius=0.0075, color=color.gray(0.4))
-chord_2 = String(left_end=vector(0.2 + 0.025, 0, 0))
-grass = box(pos=vector(.5, -.3, -.5), color=color.green, height=0.01, length=2, width=2)
+left_pole = cylinder(pos=vector(-0.02, -.275, 0), axis=vector(0, .3, 0), radius=0.0075, color=color.gray(0.4))
+cylinder(pos=vector(-.05, .011, 0), axis=vector(0.06, 0, 0), radius=0.004, color=color.gray(0.5))
 
+second_pole = cylinder(pos=vector(0.2 + 0.02, -.275, 0), axis=vector(0, .3, 0), radius=0.0075, color=color.gray(0.4))
+cylinder(pos=vector(.19, .011, 0), axis=vector(0.06, 0, 0), radius=0.004, color=color.gray(0.5))
+chord_1 = String()
+
+third_pole = cylinder(pos=vector(0.460, -.275, 0), axis=vector(0, .3, 0), radius=0.0075, color=color.gray(0.4))
+cylinder(pos=vector(.428, .011, 0), axis=vector(0.06, 0, 0), radius=0.004, color=color.gray(0.5))
+chord_2 = String(left_end=vector(0.242, 0, 0))
+
+grass = box(pos=vector(.5, -.3, -.5), color=color.green, height=0.01, length=2, width=2)
 animation.append_to_caption("\n\n")
 
 graph_ = graph(title="Chord length as function of time", xtitle="Time", ytitle="Length",  background=color.black)

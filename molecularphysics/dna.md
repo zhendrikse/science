@@ -5,3 +5,5 @@
 
 Download the [dna.py](code/dna.py) source code
 {% include_relative code/Dna.html %}
+
+{% include share_buttons.html %}

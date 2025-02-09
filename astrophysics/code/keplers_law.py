@@ -1,4 +1,4 @@
-# Web VPython 3.2
+#Web VPython 3.2
 
 title="""
 Plots the orbit of a planet in an eccentric orbit to illustrate
@@ -11,17 +11,9 @@ initial velocity. The program uses normalised units (G =1).
 
 """
 
-caption = """<ol><li>The shape of each orbit is an ellipse, with the sun at one focus of the ellipse.</li>
-  <li>The planets move faster when they are closer to the sun, in such a way that a
- line drawn from the sun to any planet sweeps out equal areas in equal times.</li>
-  <li>The outer planets move slower than the inner ones, in such a way that the
- cube of the length of the ellipses semimajor axis is proportional to the square
- of the period of the orbit</li></ol>
-"""
-
 from vpython import *
 
-animation = canvas(title=title, background=color.gray(0.075), forward=vector(0.0222862, 0.928369, -0.370991), caption=caption)
+animation = canvas(title=title, background=color.gray(0.075), forward=vector(0.0222862, 0.928369, -0.370991))
 
 # Default velocity gives a satisfactory range of eccentricities
 # velocity = -vector(0.984,0,0)   # gives period of 12.0 "months"

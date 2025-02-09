@@ -6,5 +6,6 @@
 Download the [rutherford_scattering.py](code/rutherford_scattering.py) source code
 {% include_relative code/Rutherfordscattering.html %}
 
+{% include share_buttons.html %}
 
 

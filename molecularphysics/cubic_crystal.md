@@ -5,3 +5,5 @@
 
 Download the [cubic_crystal.py](code/cubic_crystal.py) source code
 {% include_relative code/CubicCrystal.html %}
+
+{% include share_buttons.html %}

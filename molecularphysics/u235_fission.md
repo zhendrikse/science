@@ -5,3 +5,5 @@
 
 Download the [u235_fission.py](code/u235_fission.py) source code
 {% include_relative code/U235Fission.html %}
+
+{% include share_buttons.html %}

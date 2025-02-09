@@ -5,3 +5,5 @@
 
 Download the [molecules.py](code/molecules.py) source code
 {% include_relative code/Molecules.html %}
+
+{% include share_buttons.html %}
