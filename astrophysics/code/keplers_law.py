@@ -1,13 +1,7 @@
 #Web VPython 3.2
 
-title="""
-Plots the orbit of a planet in an eccentric orbit to illustrate
-the sweeping out of equal areas in equal times, with sun at focus.
-The eccentricity of the orbit is random and determined by the 
-initial velocity. The program uses normalised units (G =1).
-
-&#x2022; Original by program by Peter Borcherds, University of Birmingham, England
-&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in this <a href="https://github.com/zhendrikse/physics-in-python/">GitHub repository</a>
+title="""&#x2022; Original by program by Peter Borcherds, University of Birmingham, England
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 
 """
 

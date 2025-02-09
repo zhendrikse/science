@@ -3,8 +3,6 @@
 ## Kepler&apos;s law of equal areas
 <div class="header_line"><br/></div>
 
-Download the [keplers_law.py](code/keplers_law.py) source code
-
 [Johannes Kepler](https://en.wikipedia.org/wiki/Johannes_Kepler) is without doubt one
 of the founding fathers of astronomy. Above all, he became famous for his three laws:
 
@@ -15,6 +13,13 @@ of the founding fathers of astronomy. Above all, he became famous for his three 
     cube of the length of the ellipses semi-major axis is proportional to the square
     of the period of the orbit.
 
+This app plots the orbit of a planet in an eccentric orbit to illustrate
+the sweeping out of equal areas in equal times, with sun at focus.
+The eccentricity of the orbit is random and determined by the 
+initial velocity. The program uses normalised units ($G =1$).
+
 {% include_relative code/KeplersLaw.html %}
+
+Download the [keplers_law.py](code/keplers_law.py) source code
 
 {% include share_buttons.html %}
