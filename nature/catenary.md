@@ -5,4 +5,3 @@
 
 Download the [catenary.py](code/catenary.py) source code
 {% include_relative code/Catenary.html %}
-{% include new_window_fix.html %}

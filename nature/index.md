@@ -99,3 +99,5 @@ If I have ever made any valuable discoveries, it has been due more to patient at
 </figure>
 </div>
 <p style="clear: both;"></p>
+
+{% include share_buttons.html %}
