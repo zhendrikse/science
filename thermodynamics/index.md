@@ -31,7 +31,7 @@ and the evolution of the world. &mdash;
 </div>
 <p style="clear: both;"></p>
 
-### Fluid simulation
+### Fluid simulation and adiabatic compression of an ideal gas
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -42,9 +42,10 @@ and the evolution of the world. &mdash;
   <figcaption>A simulation that shows the separation of non-mixing fluids.</figcaption>
 </figure>
 <figure class="right_image">
-  <!--
-    SPACE RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="piston.html">
+    <img alt="Adiabatic compression" src="../images/piston.png" title="Click to animate"/>
+  </a>
+  <figcaption>Adiabatic compression of an ideal gas.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

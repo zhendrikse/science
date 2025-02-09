@@ -20,6 +20,8 @@ initial velocity. The program uses normalised units ($G =1$).
 
 {% include_relative code/KeplersLaw.html %}
 
+<p style="clear:both;"></p>
+
 Download the [keplers_law.py](code/keplers_law.py) source code
 
 {% include share_buttons.html %}
