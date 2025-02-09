@@ -455,7 +455,8 @@ finest that music and poetry can deliver. &mdash;
 </div>
 
 <p style="clear: both;"></p>
-<div style="border-top: 1px solid #999999"><br/></div>
+## References &amp; acknowledgements
+<div class="header_line"><br/></div>
 
 {% include_relative footer.md %}
 
