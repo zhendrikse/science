@@ -276,7 +276,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <!-- RESERVED FOR FUTURE APPLICATION -->
+        <a href="thermodynamics/piston.html">
+          <img alt="Quantum oscillator" src="images/piston.png" title="Click to animate"/>
+        </a>
       </figure>
     </div>
   </div>
