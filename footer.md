@@ -1,5 +1,3 @@
-<div class="header_line"><br/></div>
-
 ### Mathematics &amp; computational Physics
 
 - [Computational Physics](https://github.com/rubinhlandau/CompPhysicsNotebooks/blob/master/CP01.ipynb),

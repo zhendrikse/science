@@ -8,8 +8,6 @@ finest that music and poetry can deliver. &mdash;
 <a href="https://en.wikipedia.org/wiki/Unweaving_the_Rainbow">Unweaving the Rainbow</a>, 1998.
 </blockquote><br/>
 
-{% include share_buttons.html %}
-
 # Mathematics
 <div class="header_line"><br/></div>
 
@@ -457,5 +455,9 @@ finest that music and poetry can deliver. &mdash;
 </div>
 
 <p style="clear: both;"></p>
+<div style="border-top: 1px solid #999999"><br/></div>
+
 {% include_relative footer.md %}
+
+{% include share_buttons.html %}
 
