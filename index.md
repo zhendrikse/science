@@ -174,6 +174,16 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="nature/catenary.html">
+          <img alt="Overhead power lines" src="images/catenary.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <!-- RESERVED FOR FUTURE APPLICATION -->
+      </figure>
+    </div>
   </div>
   <div class="column" style="background-color:#444400;">
     <h2><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h2>

@@ -79,3 +79,23 @@ If I have ever made any valuable discoveries, it has been due more to patient at
 </figure>
 </div>
 <p style="clear: both;"></p>
+
+### Overhead power lines
+
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="catenary.html">
+    <img alt="Overhead power lines" src="../images/catenary.png" title="Click to animate"/>
+  </a>
+  <figcaption>Modelling a catenary shape, based on the original 
+  <a href="https://www.youtube.com/watch?v=BdskNTgzpAo">video</a> by 
+  <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
+</figure>
+<figure class="left_image">
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+<p style="clear: both;"></p>
