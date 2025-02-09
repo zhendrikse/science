@@ -7,7 +7,7 @@ title="""&#x2022; Original code by Byron Philhour
 
 tube_length = 0.15  # size scale of system in meters
 lid_length = tube_length / 40
-animation = canvas(title=title, range = 25 * lid_length, color=color.gray(0.075))
+animation = canvas(title=title, range = 25 * lid_length, background=color.gray(0.075))
 
 num = 350  # number of molecules / atoms
 crest = 0.99  # coefficient of restitution
