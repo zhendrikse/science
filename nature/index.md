@@ -27,7 +27,7 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   </a>
   <figcaption>"What we know is a drop, what we don't know is an ocean.”
   &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
-  For more surfaces, visit the <a href="geometry.html">Math Art Gallery</a>.</figcaption>
+  For more surfaces, visit the <a href="../mathematics/gallery/index.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

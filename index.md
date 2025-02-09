@@ -380,7 +380,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="kinematics/ball_on_sliding_ramp.html">
+        <a href="kinematics/sliding_ramp.html">
           <img alt="Block on sliding ramp" src="images/ball_on_sliding_ramp.png" title="Click to animate"/>
         </a>
       </figure>
