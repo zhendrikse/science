@@ -7,6 +7,26 @@
 All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedia.org/wiki/Proverb">old proverb</a>
 </blockquote><br/>
 
+### Chessboard & animated face
+<div class="subsection_header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+    <a href="face.html">
+      <img alt="Face" src="../images/face.png" title="Click to animate"/>
+    </a>
+  <figcaption>Animated face.</figcaption>
+</figure>
+<figure class="left_image">
+  <a href="right_image.html">
+    <img alt="Chessboard" src="../images/chessboard.png" title="Click to animate"/>
+  </a>
+  <figcaption>Simple chess game with moving pieces.</figcaption>
+</figure>
+</div>
+
+<p style="clear: both;"></p>
+
 ### Rubik&apos;s cube &amp; turtle robot
 <div class="subsection_header_line"><br/></div>
 
@@ -31,34 +51,13 @@ All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedi
 
 <p style="clear: both;"></p>
 
-### Chessboard & animated face
-<div class="subsection_header_line"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="chessboard.html">
-    <img alt="Chessboard" src="../images/chessboard.png" title="Click to animate"/>
-  </a>
-  <figcaption>Simple chess game with moving pieces.</figcaption>
-</figure>
-<figure class="right_image">
-    <a href="face.html">
-      <img alt="Face" src="../images/face.png" title="Click to animate"/>
-    </a>
-  <figcaption>Animated face.</figcaption>
-</figure>
-</div>
-
-<p style="clear: both;"></p>
-
-
 ### Odysseus
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<figure class="right_image">
-    <a href="odysseus.html">
-      <img alt="Odysseus" src="../images/odysseus.png" title="Click to animate"/>
-    </a>
+<figure>
+  <a href="odysseus.html">
+    <img alt="Odysseus" src="../images/odysseus.png" title="Click to animate"/>
+  </a>
   <figcaption>Odysseus, created by Maximillian DeMarr.</figcaption>
 </figure>
 

@@ -406,6 +406,18 @@ finest that music and poetry can deliver. &mdash;
     <h2><a href="fun/index.html">Fun stuff</a></h2>
     <div class="double_image">
       <figure class="left_image">
+        <a href="fun/face.html">
+          <img alt="Face" src="images/face.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="fun/chessboard.html">
+          <img alt="Chessboard" src="images/chessboard.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <div class="double_image">
+      <figure class="left_image">
         <a href="fun/rubiks_cube.html">
           <img alt="Rubik&apos;s cube" src="images/rubiks_cube.png" title="Click to animate"/>
         </a>
@@ -413,18 +425,6 @@ finest that music and poetry can deliver. &mdash;
       <figure class="right_image">
         <a href="fun/robot.html">
           <img alt="Turtle robot" src="images/robot.png" title="Click to animate"/>
-        </a>
-      </figure>
-    </div>
-    <div class="double_image">
-      <figure class="left_image">
-        <a href="fun/chessboard.html">
-          <img alt="Chessboard" src="images/chessboard.png" title="Click to animate"/>
-        </a>
-      </figure>
-      <figure class="right_image">
-        <a href="fun/face.html">
-          <img alt="Face" src="images/face.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
