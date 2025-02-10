@@ -8,4 +8,4 @@ Download the [sliding_ramp.py](code/sliding_ramp.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}

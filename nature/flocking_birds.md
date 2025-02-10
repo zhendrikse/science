@@ -8,4 +8,4 @@ Download the [flocking_birds.py](code/flocking_birds.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}

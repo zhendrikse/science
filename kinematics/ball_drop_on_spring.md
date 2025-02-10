@@ -8,4 +8,4 @@ Download the [ball_drop_on_spring.py](code/ball_drop_on_spring.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}

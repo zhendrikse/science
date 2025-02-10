@@ -8,4 +8,4 @@ Download the [pool.py](code/pool.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}

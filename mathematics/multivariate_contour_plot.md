@@ -8,4 +8,4 @@ Download the [multivariate_functions.py](code/multivariate_functions.py) source 
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}

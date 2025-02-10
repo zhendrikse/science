@@ -8,4 +8,4 @@ Download the [floating_block.py](code/floating_block.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}

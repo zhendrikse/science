@@ -8,4 +8,4 @@ Download the [disk_builder.py](code/disk_builder.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}

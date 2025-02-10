@@ -8,4 +8,4 @@ Download the [charged_disk.py](code/charged_disk.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}

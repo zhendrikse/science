@@ -8,4 +8,4 @@ Download the [slinky_drop.py](code/slinky_drop.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}

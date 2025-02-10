@@ -8,4 +8,4 @@ Download the [double_shapes.py](code/double_shapes.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}
