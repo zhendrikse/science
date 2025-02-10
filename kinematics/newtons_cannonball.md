@@ -8,4 +8,4 @@ Download the [newtons_cannonball.py](code/newtons_cannonball.py) source code
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}
