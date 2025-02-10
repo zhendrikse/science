@@ -101,7 +101,7 @@ such  as [Klein&apos;s bottle](geometry#non_orientables) (shown below in the top
 
 <div class="double_image">
 <figure class="left_image">
-  <a href=polar_coordinates.html">
+  <a href="polar_coordinates.html">
     <img alt="Polar coordinates" src="../images/polar_coordinates.png" title="Click to animate"/>
   </a>
   <figcaption>Polar coordinates frequently simplify the tackling of rotationally symmetric problems.</figcaption>
