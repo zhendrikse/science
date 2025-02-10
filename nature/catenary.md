@@ -14,4 +14,4 @@ divided over the number springs $N - 1$ in between.
 
 <p style="clear: both;"></p>
 
-{% include share_butt
+{% include share_buttons.html %}
