@@ -1,0 +1,191 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, cylinder, extrusion, helix, points, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, eye_length, eye_width, eye_height, left_eye, right_eye, left_eyebrow, right_eyebrow, nose, mouth, eyebrow_x1, eyebrow_x2, eyebrow_x3, eyebrow_x4, eyebrow_x5, eyebrow_y1, eyebrow_y2, eyebrow_y3, eyebrow_y4, eyebrow_y5, ang, red_component, green_component, switcher, blue_component;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; Original <a href=\"https://vpython.org/contents/contributed/face.py\">face.py<\/a> by Joel Kahn, 2004\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/fun/code/face.py\">face.py</a>\n\n";
+    "9";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), range: 4})]);
+    "11";
+    eye_length = .8;
+    "12";
+    eye_width = .4;
+    "13";
+    eye_height = .5;
+    "15";
+    left_eye = ρσ_interpolate_kwargs.call(this, ellipsoid, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](1), .9, 0), length: eye_length, width: eye_width, height: eye_height, color: color.blue})]);
+    "16";
+    right_eye = ρσ_interpolate_kwargs.call(this, ellipsoid, [ρσ_desugar_kwargs({pos: vec(1, .9, 0), length: eye_length, width: eye_width, height: eye_height, color: color.blue})]);
+    "18";
+    left_eyebrow = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({radius: .09, color: vec(.91, .7, .15)})]);
+    "19";
+    right_eyebrow = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({radius: .09, color: vec(.91, .7, .15)})]);
+    "21";
+    nose = ρσ_interpolate_kwargs.call(this, pyramid, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), axis: vec(0, 0, 1), width: .8, height: .8, length: 1.7})]);
+    "23";
+    mouth = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({radius: .2, color: color.red})]);
+    "25";
+    eyebrow_x1 = 1.4;
+    "26";
+    eyebrow_x2 = 1.1;
+    "27";
+    eyebrow_x3 = 1;
+    "28";
+    eyebrow_x4 = .9;
+    "29";
+    eyebrow_x5 = .6;
+    "31";
+    eyebrow_y1 = 1.25;
+    "32";
+    eyebrow_y2 = 1.39;
+    "33";
+    eyebrow_y3 = 1.41;
+    "34";
+    eyebrow_y4 = 1.39;
+    "35";
+    eyebrow_y5 = 1.25;
+    "37";
+    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x1), eyebrow_y1, 0)})]);
+    "38";
+    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x2), eyebrow_y2, 0)})]);
+    "39";
+    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x3), eyebrow_y3, 0)})]);
+    "40";
+    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x4), eyebrow_y4, 0)})]);
+    "41";
+    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x5), eyebrow_y5, 0)})]);
+    "43";
+    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x1, eyebrow_y1, 0)})]);
+    "44";
+    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x2, eyebrow_y2, 0)})]);
+    "45";
+    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x3, eyebrow_y3, 0)})]);
+    "46";
+    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x4, eyebrow_y4, 0)})]);
+    "47";
+    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x5, eyebrow_y5, 0)})]);
+    "49";
+    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](1.5), 1["-u"]()["*"](.5), 0)})]);
+    "50";
+    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.5), 1["-u"]()["*"](1.3), 0)})]);
+    "51";
+    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](1.4), 0)})]);
+    "52";
+    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(.5, 1["-u"]()["*"](1.3), 0)})]);
+    "53";
+    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(1.5, 1["-u"]()["*"](.5), 0)})]);
+    "55";
+    ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({axis: vec(0, 0, 1), size: vec(.1, 6.5, 6.5), thickness: .1, color: color.yellow})]);
+    "57";
+    ang = .05;
+    "58";
+    red_component = .001;
+    "59";
+    green_component = 0;
+    "61";
+    switcher = 1;
+    "62";
+    while (true) {
+        "63";
+        (await rate(100));
+        "64";
+        ρσ_interpolate_kwargs.call(mouth, mouth.rotate, [ρσ_desugar_kwargs({angle: ang, axis: vec(1["-u"]()["*"](1), 0, 0), origin: vec(0, 1["-u"]()["*"](1.19), 0)})]);
+        "65";
+        ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.rotate, [ρσ_desugar_kwargs({angle: ang, axis: vec(1["-u"]()["*"](1), 0, 0), origin: vec(0, 1.36, 0)})]);
+        "66";
+        ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.rotate, [ρσ_desugar_kwargs({angle: ang, axis: vec(1["-u"]()["*"](1), 0, 0), origin: vec(0, 1.36, 0)})]);
+        "67";
+        ρσ_interpolate_kwargs.call(nose, nose.rotate, [ρσ_desugar_kwargs({angle: ang, axis: vec(ang, ang, 1)})]);
+        "69";
+        if (red_component[">"](.999)) {
+            switcher = 1["-u"]()["*"](1);
+        }
+        "70";
+        if (red_component["<"](.001)) {
+            switcher = 1;
+        }
+        "71";
+        red_component = red_component["+"](switcher["*"](ang));
+        "72";
+        green_component = green_component["+"](1);
+        "73";
+        if (green_component[">"](red_component)) {
+            green_component = 0;
+        }
+        "74";
+        blue_component = 1["-"](1["*"](red_component));
+        "75";
+        nose.color = vec(red_component, green_component, blue_component);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

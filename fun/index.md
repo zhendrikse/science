@@ -31,7 +31,7 @@ All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedi
 
 <p style="clear: both;"></p>
 
-### Chessboard & Odysseus
+### Chessboard & animated face
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
@@ -42,15 +42,27 @@ All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedi
   <figcaption>Simple chess game with moving pieces.</figcaption>
 </figure>
 <figure class="right_image">
-    <a href="odysseus.html">
-      <img alt="Odysseus" src="../images/odysseus.png" title="Click to animate"/>
+    <a href="face.html">
+      <img alt="Face" src="../images/face.png" title="Click to animate"/>
     </a>
-  <figcaption>Odysseus, created by Maximillian DeMarr.</figcaption>
+  <figcaption>Animated face.</figcaption>
 </figure>
 </div>
 
 <p style="clear: both;"></p>
 
+
+### Odysseus
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<figure class="right_image">
+    <a href="odysseus.html">
+      <img alt="Odysseus" src="../images/odysseus.png" title="Click to animate"/>
+    </a>
+  <figcaption>Odysseus, created by Maximillian DeMarr.</figcaption>
+</figure>
+
+<p style="clear: both;"></p>
 
 {% include share_buttons.html %}
 

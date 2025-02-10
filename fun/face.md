@@ -1,9 +1,9 @@
 {% include breadcrumbs.html %}
 
-## Chessboard without artificial/computer player
+## Animated face
 <div class="header_line"><br/></div>
 
-{% include_relative code/Chessboard.html %}
+{% include_relative code/Face.html %}
 
 <p style="clear: both;"></p>
 

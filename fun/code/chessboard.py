@@ -3,7 +3,7 @@
 from vpython import cone, box, rate, vec, color, cylinder, canvas, sphere
 
 title = """&#x2022; Based on <a href="https://vpython.org/contents/contributed/chessboard.py">chessboard.py</a> by Shaun Press
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/fun/code/chessboard.py">chessboard.py</a>
 
 """
 animation = canvas(title=title, background=color.gray(0.075), center = vec(3.5, 0, 3.5), forward=vec(0, -0.636537, -0.771246))

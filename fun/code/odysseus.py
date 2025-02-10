@@ -3,7 +3,7 @@
 from vpython import *
 
 title = """&#x2022; <a href="https://glowscript.org/#/user/X9Z3/folder/X9Z3Publications/program/Odysseus">Original version</a> created by Maximillian DeMarr
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/fun/code/odysseus.py">odysseus.py</a>
 &#x2022; Pan around by holding shift, left-clicking, and dragging.
 &#x2022; Reset the scene by reloading the browser. 
 &#x2022; Click mouse button to pause

@@ -1,6 +1,6 @@
 #Web VPython 3.2
 
-title = """&#x2022; Based on <a href="https://github.com/mtking2/VPython-Rubiks-Cube/blob/master/PyCube.py">PyCube.py</a> and updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+title = """&#x2022; Based on <a href="https://github.com/mtking2/VPython-Rubiks-Cube/blob/master/PyCube.py">PyCube.py</a> and updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/fun/code/rubiks_cube.py">rubiks_cube.py</a>
 
 &#x2022; &lt;u&gt; and &lt;U&gt; &rarr; rotate top face (clockwise and counterclockwise)
 &#x2022; &lt;d&gt; and &lt;D&gt; &rarr; rotate bottom face (clockwise and counterclockwise)

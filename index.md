@@ -422,10 +422,15 @@ finest that music and poetry can deliver. &mdash;
           <img alt="Chessboard" src="images/chessboard.png" title="Click to animate"/>
         </a>
       </figure>
-      <figure class="right_image">
-        <!-- RESERVED FOR FUTURE APPLICATION -->
-      </figure>
+        <a href="fun/face.html">
+          <img alt="Face" src="images/face.png" title="Click to animate"/>
+        </a>
     </div>
+    <figure>
+      <a href="fun/odysseus.html">
+        <img alt="Odysseus" src="images/odysseus.png" title="Click to animate"/>
+      </a>
+    </figure>
   </div>
   <div class="column" style="background-color:#4c3340;">
     <h2><a href="obsolete/index.html">Obsolete</a></h2>

@@ -8,7 +8,7 @@
 from vpython import *
 
 title = """&#x2022; Based on <a href="https://github.com/possibly-wrong/vturtle/">this GitHub repo</a>, owned by Maximillian DeMarr
-&#x2022; Ported to Web VPython by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Ported to Web VPython by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>  in <a href="https://github.com/zhendrikse/science/blob/main/fun/code/robot.py">robot.py</a>
 
 """
 animation = canvas(title=title, autoscale=False, background=color.gray(0.075), forward=vec(0, .74, -.67), range=135)
