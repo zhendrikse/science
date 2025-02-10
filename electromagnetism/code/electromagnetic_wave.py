@@ -312,16 +312,6 @@ if 1:
 ##########################################################################################################
 
 def keyInput(evt):
-    global AmpereLoop, dEdt, dEdtlabel, BField, fi, ddtcolor
-    global FaradayLoop, dBdt, dBdtLabel, Efield, labelFontSizes, labelFontSizeSelected
-    global showNeighboringWaves
-    global verbose, calculus
-    global showGauss, GaussElements
-    global colorScheme, gaussSurface, Gcolor_boundary
-    global animation, colorBackground, Ecolor, Bcolor
-    global frontFrame, front, front2, Frontcolor
-    global highlightfield
-
     if 1:  # evt.event== 'click': #CLICK TOGGLE PAUSE
 
         #        scene.waitfor('click')

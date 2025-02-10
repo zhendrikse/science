@@ -2,12 +2,10 @@
 
 from vpython import sphere, color, vec, arrow, slider, sin, pi, arange, cos, canvas, rate
 
-# https://ocw.mit.edu/courses/nuclear-engineering/22-105-electromagnetic-interactions-fall-2005/readings/chap4.pdf
-
 title = """
 &#x2022; Taken from <a href="https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/5-vectors-fields-and-functions-electricity-and-magnetism/law-of-biot-savart-magnetism-playground">this tutorial</a> by B. Philhour
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/electromagnetic_wave_quiver.py">electromagnetic_wave_quiver.py</a>
-&#x2022; Read more on <a href="https://ocw.mit.edu/courses/22-105-electromagnetic-interactions-fall-2005/pages/readings/">electromagnetic interactions</a> on MIT OpenCourseWare
+&#x2022; Read more on <a href="https://ocw.mit.edu/courses/22-105-electromagnetic-interactions-fall-2005/pages/readings/chap4.pdf">electromagnetic interactions</a> on MIT OpenCourseWare
 
 """
 
