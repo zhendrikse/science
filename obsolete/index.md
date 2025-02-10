@@ -42,4 +42,25 @@
 </div>
 <p style="clear: both;"></p>
 
+
+### Cubic crystal symmetry
+<div class="subsection_header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="cubic_crystal.html">
+    <img alt="Cubic lattice" src="../images/crystal_planes.png" title="Click to animate"/>
+  </a>
+  <figcaption><br/>“There’s poetry in nature. A symmetry. It&apos;s like our senses are fused.” &mdash; 
+  Saffron A. Kent, Gods & Monsters.
+  </figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}

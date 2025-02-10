@@ -72,9 +72,9 @@ finest that music and poetry can deliver. &mdash;
 # Physics
 <div class="header_line"><br/></div>
 
-<!--                 -->
-<!-- Astro and Waves -->
-<!--                 -->
+<!--                             -->
+<!-- Astro and Molecular physics -->
+<!--                             -->
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
@@ -103,47 +103,37 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2><a href="waves/index.html">Waves</a></h2>
+    <h2><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h2>
     <div class="double_image">
       <figure class="left_image">
-       <a href="waves/pool_with_obstacle.html">
-         <img alt="Swimming pool" src="images/pool_with_obstacle.png" title="Click to animate"/>
-       </a>
+        <a href="molecularphysics/u235_fission.html">
+          <img alt="Uranium 235 fission" src="images/u235_fission.png" title="Click to animate"/>
+        </a>
       </figure>
       <figure class="right_image">
-       <a href="waves/pool_with_moving_obstacle.html">
-         <img alt="Swimming pool" src="images/pool_with_moving_obstacle.png" title="Click to animate"/>
+       <a href="molecularphysics/dna.html">
+         <img alt="DNA" src="images/dna.png" title="Click to animate"/>
        </a>
       </figure>
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="waves/doppler.html">
-          <img alt="Doppler effect" src="images/doppler_effect.png" title="Click to animate"/>
+        <a href="molecularphysics/rutherford_scattering.html">
+          <img alt="Rutherford scattering" src="images/rutherford_scattering.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
-        <a href="waves/vibrating_membrane.html">
-          <img alt="vibrating membrane" src="images/vibrating_membrane.png" title="Click to animate"/>
+        <a href="molecularphysics/molecules.html">
+          <img alt="Molecules" src="images/water_molecule.png" title="Click to animate"/>
         </a>
-      </figure>
-    </div>
-    <div class="double_image">
-      <figure class="left_image">
-        <a href="waves/traveling_wave.html">
-          <img alt="Traveling wave" src="images/traveling_wave.png" title="Click to animate"/>
-        </a>
-      </figure>
-      <figure class="right_image">
-        <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
   </div>
 </div>
 
-<!--                              -->
-<!-- Nature and molecular physics -->
-<!--                              -->
+<!--                                 -->
+<!-- Our daily environment and waves -->
+<!--                                 -->
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
@@ -196,35 +186,35 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h2>
+    <h2><a href="waves/index.html">Waves</a></h2>
     <div class="double_image">
       <figure class="left_image">
-       <a href="molecularphysics/cubic_crystal.html">
-         <img alt="Cubic lattice" src="images/crystal_planes.png" title="Click to animate"/>
+       <a href="waves/pool_with_obstacle.html">
+         <img alt="Swimming pool" src="images/pool_with_obstacle.png" title="Click to animate"/>
        </a>
       </figure>
       <figure class="right_image">
-       <a href="molecularphysics/dna.html">
-         <img alt="DNA" src="images/dna.png" title="Click to animate"/>
+       <a href="waves/pool_with_moving_obstacle.html">
+         <img alt="Swimming pool" src="images/pool_with_moving_obstacle.png" title="Click to animate"/>
        </a>
       </figure>
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="molecularphysics/rutherford_scattering.html">
-          <img alt="Rutherford scattering" src="images/rutherford_scattering.png" title="Click to animate"/>
+        <a href="waves/doppler.html">
+          <img alt="Doppler effect" src="images/doppler_effect.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
-        <a href="molecularphysics/molecules.html">
-          <img alt="Molecules" src="images/water_molecule.png" title="Click to animate"/>
+        <a href="waves/vibrating_membrane.html">
+          <img alt="vibrating membrane" src="images/vibrating_membrane.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="molecularphysics/u235_fission.html">
-          <img alt="Uranium 235 fission" src="images/u235_fission.png" title="Click to animate"/>
+        <a href="waves/traveling_wave.html">
+          <img alt="Traveling wave" src="images/traveling_wave.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
@@ -461,6 +451,16 @@ finest that music and poetry can deliver. &mdash;
        <a href="obsolete/disk_builder.html">
          <img alt="Disk builder" src="images/charged_disk_builder.png" title="Click to animate"/>
        </a>
+      </figure>
+    </div>
+    <div class="double_image">
+      <figure class="left_image">
+       <a href="obsolete/cubic_crystal.html">
+         <img alt="Cubic lattice" src="images/crystal_planes.png" title="Click to animate"/>
+       </a>
+      </figure>
+      <figure class="right_image">
+        <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
   </div>
