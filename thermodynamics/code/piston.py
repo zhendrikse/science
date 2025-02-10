@@ -9,17 +9,10 @@ tube_length = 0.15  # size scale of system in meters
 lid_length = tube_length / 40
 animation = canvas(title=title, range = 25 * lid_length, background=color.gray(0.075))
 
-num = 350  # number of molecules / atoms
-crest = 0.99  # coefficient of restitution
-
-# create container # T stands for Tube
 tube_radius = tube_length / 10
 tube = cylinder(radius=tube_radius + tube_length / 200, axis=vec(0, tube_length, 0), pos=vec(0, -tube_length / 2, 0), opacity=0.2)
 
-# create lid # L stands for Lid
-
-#atomR = tube_length / 200  # visual radius of atoms
-sizeMult = 1.0  # multiply above for actual radius in particle-particle collisions
+crest = 0.99  # coefficient of restitution
 
 class Lid:
     def __init__(self, position, frequency, lid_radius=tube_radius, length=lid_length):
@@ -76,12 +69,12 @@ class Atom:
     def update_by(self, dt):
         self._atom.pos += self._velocity * dt
 
-    def when_at_bottom_then_bounce_by(self, distance):
+    def bounce_when_arrived_at(self, distance):
         if self._atom.pos.y < -distance:
             self._velocity.y = - crest * self._velocity.y
             self._atom.pos.y = -distance
 
-    def when_at_side_then_bounce(self):
+    def bounce_when_arrived_at_side(self):
         r = vec(self._atom.pos.x, 0, self._atom.pos.z)
         if r.mag + self.radius() > tube_radius:
             velocity = vec(self._velocity.x, 0, self._velocity.z)
@@ -89,7 +82,7 @@ class Atom:
             self._velocity = crest * self._velocity.rotate(angle=pi - 2 * theta, axis=vec(0, 1, 0))
             self._atom.pos = (tube_radius - self.radius()) * r.norm() + vec(0, self._atom.pos.y, 0)
 
-    def when_at_lid_then_bounce(self, lid):
+    def bounce_when_arrived_at_lid(self, lid):
         # lid (treat as elastic with infinite lid mass)
         if self._atom.pos.y + self.radius() > (lid.pos().y - lid.length() / 2):
             self._velocity = 2 * lid.velocity() - self._velocity
@@ -97,7 +90,8 @@ class Atom:
 
     def handle_collision_when_collided_with(self, other_atom):
         sep = self._atom.pos - other_atom.pos()
-        if sep.mag < sizeMult * 2.0 * self.radius():  # two atoms overlapping
+        size_multiplier = 1.0  # multiply above for actual radius in particle-particle collisions
+        if sep.mag < size_multiplier * 2.0 * self.radius():  # two atoms overlapping
             v_rel = (self._velocity - other_atom.velocity()).dot(sep.norm())
             self._velocity -= v_rel * sep.norm()
             other_atom._velocity += v_rel * sep.norm()
@@ -126,12 +120,12 @@ class Gas:
 
         for i in range(len(self._atoms)):
             atom = self._atoms[i]
-            atom.when_at_bottom_then_bounce_by(tube_length / 2)
-            atom.when_at_side_then_bounce()
-            atom.when_at_lid_then_bounce(lid)
+            atom.bounce_when_arrived_at(tube_length / 2)
+            atom.bounce_when_arrived_at_side()
+            atom.bounce_when_arrived_at_lid(lid)
 
             # check for collisions with other (equal mass) atoms
-            for j in range(num):
+            for j in range(len(self._atoms)):
                 if j == i or self._atoms[j].has_collided() or atom.has_collided():
                     continue
                 atom.handle_collision_when_collided_with(self._atoms[j])
@@ -143,10 +137,13 @@ class Gas:
         bins = [0 for j in range(bin_amount)]
         for jj in range(bin_amount):
             bins[jj] = 0
-            for ii in range(num):
+            for ii in range(len(self._atoms)):
                 if ((tube_length / 2) - (jj + 1) * seg) < self._atoms[ii].pos().y < ((tube_length / 2) - jj * seg):
                     bins[jj] += 1
         return bins
+
+    def num_atoms(self):
+        return len(self._atoms)
 
 
 gas = Gas()
@@ -196,12 +193,12 @@ def update_graph():
     average /= num_bins
 
     graphAxis.clear()
-    graphAxis.append(pos=vec(-3 * tube_lid.radius() - average / num, tube_length / 2, 0))
-    graphAxis.append(pos=vec(-3 * tube_lid.radius() - average / num, -tube_length / 2, 0))
-    graphLabel.pos = vec(-3 * tube_lid.radius() - average / num, (tube_length / 2) + lid_length, 0)
+    graphAxis.append(pos=vec(-3 * tube_lid.radius() - average / gas.num_atoms(), tube_length / 2, 0))
+    graphAxis.append(pos=vec(-3 * tube_lid.radius() - average / gas.num_atoms(), -tube_length / 2, 0))
+    graphLabel.pos = vec(-3 * tube_lid.radius() - average / gas.num_atoms(), (tube_length / 2) + lid_length, 0)
 
     for k in range(num_bins):
-        curve_.append(pos=vec(-3 * tube_lid.radius() - ((position_bins[k]) / num), (tube_length / 2) - k * seg, 0))
+        curve_.append(pos=vec(-3 * tube_lid.radius() - ((position_bins[k]) / gas.num_atoms()), (tube_length / 2) - k * seg, 0))
 
 delta_t = 2e-6
 time = 0
