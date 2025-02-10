@@ -29,7 +29,7 @@ mass = atomic_mass / avogadro_number  # helium mass
 animation = canvas(background=color.gray(0.075), align='top', height="500")
 animation.range = L
 animation.title = """&#x2022; A "hard-sphere" gas, written by Bruce Sherwood, modified by Rob Salgado
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>.
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/boltzmann_gas.py">boltzmann_gas.py</a>
 
 """
 s="""  Theoretical and averaged speed distributions (meters/sec).
