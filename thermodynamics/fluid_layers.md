@@ -6,6 +6,8 @@
 
 {% include_relative code/FluidLayers.html %}
 
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}
 
 

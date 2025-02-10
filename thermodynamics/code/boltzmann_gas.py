@@ -32,17 +32,6 @@ animation.title = """&#x2022; A "hard-sphere" gas, written by Bruce Sherwood, mo
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/boltzmann_gas.py">boltzmann_gas.py</a>
 
 """
-s="""  Theoretical and averaged speed distributions (meters/sec).
-  Initially all atoms have the same speed, but collisions
-  change the speeds of the colliding atoms. One of the atoms is
-  marked and leaves a trail so you can follow its path.
-  The theoretical probability function for the velocities in 
-  a tiny volume $dV$ is given by the Maxwell-Boltzmann distribution
-  $f(\\vec{v}) d^3\\vec{v} = \\bigg [ \dfrac{m}{2\\pi k_b T} \\bigg ]^{3/2} \\exp \\bigg (-\\dfrac{mv^2}{2 k_b T} \\bigg) d^3\\vec{v}$ 
-  for a system containing a large number of identical non-interacting, 
-  non-relativistic classical particles in thermodynamic equilibrium.
-"""
-animation.caption = s
 
 class Box:
     def __init__(self, length=L, gas_atom_radius=0.03, vertex_radius=0.005):
@@ -209,7 +198,7 @@ total_bins = int(4500 / velocity_binning)
 histogram = [0.0] * total_bins
 histogram[bin_number_of(gas.average_kinetic_energy() / mass)] = total_number_of_atoms
 
-gg = graph(width=500, height=0.4 * 500, xmax=3000, align='left',
+gg = graph(width=500, height=0.4 * 500, xmax=3000, align='left', background=color.black,
            xtitle='speed, m/s', ytitle='Number of atoms', ymax=total_number_of_atoms * velocity_binning / 1000)
 
 theoretical_curve = gcurve(color=color.blue, width=2)

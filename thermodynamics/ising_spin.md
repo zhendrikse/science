@@ -5,6 +5,8 @@
 
 {% include_relative code/IsingSpin.html %}
 
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}
 
 
