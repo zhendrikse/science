@@ -1,6 +1,7 @@
 #Web VPython 3.2
 
 from vpython import cone, box, rate, vec, color, cylinder, canvas, sphere
+import chess
 
 title = """&#x2022; Based on <a href="https://vpython.org/contents/contributed/chessboard.py">chessboard.py</a> by Shaun Press
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/fun/code/chessboard.py">chessboard.py</a>
@@ -75,8 +76,9 @@ KINGS_TABLE = [
 ]
 
 class Piece:
-    def __init__(self, base, top=None, base_offset=vec(0, 0, 0), top_offset=vec(0, 0, 0)):
+    def __init__(self, type_, base, top=None, base_offset=vec(0, 0, 0), top_offset=vec(0, 0, 0)):
         self._base = base
+        self._type = type_
         self._base.pos += base_offset
         self._top = top
         if self._has_top():
@@ -105,55 +107,43 @@ class Piece:
         return self._base.color
 
     def type(self):
-        if type(self._base) is cone:
-            return "PAWN"
-        elif type(self._base) is box:
-            return "KNIGHT"
-        else:
-            if not self._has_top():
-                return "ROOK"
-            elif type(self._top) is cone:
-                return "BISHOP"
-            elif type(self._top) is box:
-                return "KING"
-            else:
-                return "QUEEN"
+        return self._type
 
 class Pawn(Piece):
     def __init__(self, spos, colour):
-        Piece.__init__(self, cone(pos=spos, radius=0.4, axis=vec(0, 1, 0), color=colour))
+        Piece.__init__(self, "PAWN", cone(pos=spos, radius=0.4, axis=vec(0, 1, 0), color=colour))
 
 class Rook(Piece):
     def __init__(self, spos, colour):
-        Piece.__init__(self, cylinder(pos=spos, radius=0.4, length=1, axis=vec(0, 1, 0), color=colour))
+        Piece.__init__(self, "ROOK", cylinder(pos=spos, radius=0.4, length=1, axis=vec(0, 1, 0), color=colour))
 
 
 class Knight(Piece):
     def __init__(self, spos, colour):
         base = box(pos=spos, width=0.4, length=0.8, height=0.4, axis=vec(0, 1, 0), color=colour)
         top = cone(pos=spos, radius=0.2, axis=vec(0, 1, 0), color=colour)
-        Piece.__init__(self, base, top, vec(0, .3, 0), vec(0, 0.6, 0))
+        Piece.__init__(self, "KNIGHT", base, top, vec(0, .3, 0), vec(0, 0.6, 0))
 
 
 class Bishop(Piece):
     def __init__(self, spos, colour):
         base = cylinder(pos=spos, radius=0.2, length=0.8, axis=vec(0, 1, 0), color=colour)
         top = cone(pos=spos, radius=0.2, axis=vec(0, 1, 0), color=colour)
-        Piece.__init__(self, base, top, top_offset=vec(0, 0.8, 0))
+        Piece.__init__(self, "BISHOP", base, top, top_offset=vec(0, 0.8, 0))
 
 
 class Queen(Piece):
     def __init__(self, spos, colour):
         base = cylinder(pos=spos, radius=0.4, length=1.0, axis=vec(0, 1, 0), color=colour)
         top = sphere(radius=0.4, pos=spos, color=colour)
-        Piece.__init__(self, base, top, top_offset= + vec(0, 1.4, 0))
+        Piece.__init__(self, "QUEEN", base, top, top_offset= + vec(0, 1.4, 0))
 
 
 class King(Piece):
     def __init__(self, spos, colour):
         base = cylinder(pos=spos, radius=0.4, length=1.2, axis=vec(0, 1, 0), color=colour)
         top = box(height=0.6, width=0.6, length=0.6, pos=spos, color=colour)
-        Piece.__init__(self, base, top, top_offset=vec(0, 1.5, 0))
+        Piece.__init__(self, "King", base, top, top_offset=vec(0, 1.5, 0))
 
 
 class Board:

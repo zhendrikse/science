@@ -61,29 +61,29 @@ for pt in observer_location_2:
     arr2.append(aa)
 
 def toggle_background():
-    scene.background = color.white if scene.background is color.black else color.black
+    animation.background = color.white if animation.background is color.black else color.black
 
 def on_key_press(event):
     if event.key == " ":
         toggle_background()
     if event.key == 's':
-        scene.capture("electric_field_of_charged_disk")
+        animation.capture("electric_field_of_charged_disk")
     if event.key == 'v':
-        print("scene.center=" + str(scene.center))
-        print("scene.forward=" + str(scene.forward))
-        print("scene.range=" + str(scene.range))
+        print("scene.center=" + str(animation.center))
+        print("scene.forward=" + str(animation.forward))
+        print("scene.range=" + str(animation.range))
 
 def on_mouse_click():
     for ee in arr2:
         ee.visible = not ee.visible
 
 
-scene.title=title
-scene.background = color.gray(0.075)
-scene.bind("keydown", on_key_press)
-scene.bind("click", on_mouse_click)
-scene.forward=vector(-2.40482, -0.795294, -4.537)
-scene.range=5.2e-11
+animation.title=title
+animation.background = color.gray(0.075)
+animation.bind("keydown", on_key_press)
+animation.bind("click", on_mouse_click)
+animation.forward=vector(-2.40482, -0.795294, -4.537)
+animation.range=5.2e-11
 
 while 1:
     rate(50)

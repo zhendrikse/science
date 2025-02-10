@@ -77,11 +77,11 @@ def on_key_press(event):
     if event.key == " ":
         toggle_background()
     if event.key == 's':
-        scene.capture("crystal_planes")
+        animation.capture("crystal_planes")
     if event.key == 'v':
-        print("scene.center=" + str(scene.center))
-        print("scene.forward=" + str(scene.forward))
-        print("scene.range=" + str(scene.range))
+        print("scene.center=" + str(animation.center))
+        print("scene.forward=" + str(animation.forward))
+        print("scene.range=" + str(animation.range))
 
 
 animation.bind("keydown", on_key_press)

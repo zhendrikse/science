@@ -127,23 +127,23 @@ class Base:
 
 
 def toggle_background():
-    scene.background = color.gray(0.075) if scene.background == color.white else color.white
+    animation.background = color.gray(0.075) if animation.background == color.white else color.white
 
 
 def on_key_press(event):
     if event.key == " ":
         toggle_background()
     if event.key == 's':
-        scene.capture("electric_field_of_charged_disk")
+        animation.capture("electric_field_of_charged_disk")
 
 
-scene.title = title
-scene.background = color.gray(0.075)
-scene.forward = vector(-0.5, -0.60, -0.65)
-scene.range = 8.0
+animation.title = title
+animation.background = color.gray(0.075)
+animation.forward = vector(-0.5, -0.60, -0.65)
+animation.range = 8.0
 # scene.autoscale = 0
 ##scene.caption = "\\(  \\)"
-scene.bind('keydown', on_key_press)
+animation.bind('keydown', on_key_press)
 
 axes = Base(length=10)
 axes.show_xz_mesh()
@@ -153,7 +153,7 @@ observer_location = vector(0, 0, 0)
 scale_factor = 1
 electric_field_arrow = arrow(pos=observer_location, axis=vector(0, 0, 0), shaftwidth=0.3, color=color.orange)
 for ring_radius in arange(0.2, 5, 0.2):
-    scene.waitfor("click")
+    animation.waitfor("click")
     ring(pos=vector(-3, 0, 0), radius=ring_radius, color=color.red, thickness=0.09)
     x = observer_location.x
     electric_field_magnitude = 2 * pi * ring_radius / (ring_radius * ring_radius + (x + 2) * (x + 2)) ** 1.5

@@ -12,8 +12,8 @@ velocity_source = 0.20  # velocity of the source
 velocity_receiver = -0.30  # velocity of the receiver
 velocity_wind = 0.10  # velocity of the wind
 
-scene = canvas(background=color.gray(0.075), title=title)
-scene.autoscale = 0
+animation = canvas(background=color.gray(0.075), title=title)
+animation.autoscale = 0
 
 source = sphere(radius=0.2, pos=vector(0, 0, 0), vel=vector(velocity_source, 0, 0), color=color.red)
 receiver = sphere(radius=0.2, pos=vector(3, 0, 0), vel=vector(velocity_receiver, 0, 0), color=color.green)
@@ -96,7 +96,7 @@ def meeting(t):
 
 def on_mouse_click():
     # newPick = scene.mouse(pick=sphere)
-    newPick = scene.mouse.project(normal=vec(0, 1, 0), point=vec(0, 2, 0))
+    newPick = animation.mouse.project(normal=vec(0, 1, 0), point=vec(0, 2, 0))
     if not newPick is None:
         #temp_color = newPick.color
         #newPick.color = color.yellow
@@ -105,15 +105,15 @@ def on_mouse_click():
         # label(pos=newPick.pos,text=string,xoffset=-5,yoffset=5)
 
         target = newPick
-        step = (target - scene.center) / 20.
+        step = (target - animation.center) / 20.
         for i in arange(1, 20, 1):
             rate(10)
-            scene.center += step
-            scene.range /= 1.037  # (1.037**19=1.99)
+            animation.center += step
+            animation.range /= 1.037  # (1.037**19=1.99)
         #newPick.color = temp_color
 
 
-scene.bind('click', on_mouse_click)
+animation.bind('click', on_mouse_click)
 
 # Now... WHEN AN OBJECT IS PICKED,
 # TRANSLATE THE scene.center TO THE OBJECT'S POSITION, THEN ZOOM
