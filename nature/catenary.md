@@ -11,3 +11,7 @@ is divided over the number of beads $N$, while the length of the catenary is
 divided over the number springs $N - 1$ in between.
 
 {% include_relative code/Catenary.html %}
+
+<p style="clear: both;"></p>
+
+{% include share_butt

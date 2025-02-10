@@ -5,3 +5,7 @@
 
 Download the [floating_block.py](code/floating_block.py) source code
 {% include_relative code/FloatingBlock.html %}
+
+<p style="clear: both;"></p>
+
+{% include share_butt

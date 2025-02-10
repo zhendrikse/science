@@ -5,3 +5,7 @@
 
 Download the [double_shapes.py](code/double_shapes.py) source code
 {% include_relative code/DoubleShapesContourPlot.html %}
+
+<p style="clear: both;"></p>
+
+{% include share_butt

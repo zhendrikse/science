@@ -5,3 +5,7 @@
 
 Download the [ball_drop_on_spring.py](code/ball_drop_on_spring.py) source code
 {% include_relative code/BalldropOnSpring.html %}
+
+<p style="clear: both;"></p>
+
+{% include share_butt
