@@ -576,10 +576,13 @@ while 1:
                 for x in arange(0, gxsize):
                     amp = sin(k * (x + gposx + gxleft) - omega * t)
                     # print(x+ gposx+gxleft,GYfSeg[i][0].pos)
-                    GYfSeg[s * gxsize + i][0].opacity = abs(amp)
-                    GYfSeg[s * gxsize + i][1].opacity = abs(amp)
-                    GZfSeg[s * gxsize + i][0].opacity = abs(amp)
-                    GZfSeg[s * gxsize + i][1].opacity = abs(amp)
+                    #
+                    # TODO Quads don't have opacity, so move this operation to the vertices instead
+                    #
+                    # GYfSeg[s * gxsize + i][0].opacity = abs(amp)
+                    # GYfSeg[s * gxsize + i][1].opacity = abs(amp)
+                    # GZfSeg[s * gxsize + i][0].opacity = abs(amp)
+                    # GZfSeg[s * gxsize + i][1].opacity = abs(amp)
                     if (1 - 2 * s) * amp > 0:
                         GYfSeg[s * gxsize + i][0].color = Ecolor[0]
                         GYfSeg[s * gxsize + i][1].color = Ecolor[0]
