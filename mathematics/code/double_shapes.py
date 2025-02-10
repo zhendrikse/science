@@ -563,8 +563,8 @@ klein_title += "\\begin{pmatrix}\\begin{cases} 6\\cos(\\theta)(1+\\sin(\\theta))
 klein_title += "\\begin{cases} 16\\sin(\\theta)+r\\sin(\\theta)\\cos(\\phi), 0 \\leq \\theta \\leq \\pi  \\\\ 16\\sin(\\theta), \\pi \\leq \\theta \\leq 2\\pi \\end{cases} \\\\ "
 klein_title += "r\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
 def klein_bottle(resolution=50):
-    x1, y1, z1 = klein_bottle_1(resolution=resolution)
-    x2, y2, z2 = klein_bottle_2(resolution=resolution)
+    x2, y2, z2 = klein_bottle_1(resolution=resolution)
+    x1, y1, z1 = klein_bottle_2(resolution=resolution)
     return x1, y1, z1, x2, y2, z2
 
 # def klein_bottle(resolution=50):
