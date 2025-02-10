@@ -3,8 +3,7 @@
 ## Electromagnetic wave
 <div class="header_line"><br/></div>
 
-$\bigg ( v^2\nabla^2 - \dfrac {\partial^2}{{\partial t}^2} \bigg) \vec{E} = 0, \bigg ( v^2\nabla^2 - \dfrac {\partial^2}{{\partial t}^2} \bigg) \vec{B} = 0, v=\dfrac {1} {\sqrt {\mu \epsilon}}$ 
-
+$\bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{E} = 0, \bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{B} = 0, v=\dfrac {1} {\sqrt {\mu \epsilon}}$
 where $v$ is the speed of light (i.e. phase velocity) in a medium with permeability $\mu$, and permittivity $\epsilon$.
 
 {% include_relative code/ElectromagneticWaveQuiver.html %}
