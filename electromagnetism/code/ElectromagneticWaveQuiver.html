@@ -1,0 +1,233 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var frequency, amplitude;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, refresh_rate, q, k, c, frequency, amplitude, step, scale, electric_field_scale, magnetic_field_scale, electron, proton, dt, time, electric_field, magnetic_field, index, z, y, x, frequencySlider, ampSlider, r, vel, acc, kappa, E, B, i;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "12";
+    title = "\n&#x2022; Taken from <a href=\"https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/5-vectors-fields-and-functions-electricity-and-magnetism/law-of-biot-savart-magnetism-playground\">this tutorial<\/a> by B. Philhour\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electromagnetism/code/electromagnetic_wave_quiver.py\">electromagnetic_wave_quiver.py</a>\n&#x2022; Read more on <a href=\"https://ocw.mit.edu/courses/22-105-electromagnetic-interactions-fall-2005/pages/readings/\">electromagnetic interactions</a> on MIT OpenCourseWare\n\n";
+    "14";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), forward: vec(1["-u"]()["*"](1), 0, 1["-u"]()["*"](1)), title: title})]);
+    "16";
+    refresh_rate = 750;
+    "17";
+    q = 1.6e-19;
+    "18";
+    k = 9e9;
+    "19";
+    c = 3e8;
+    "20";
+    frequency = 8e16;
+    "21";
+    amplitude = 1e-10;
+    "22";
+    step = c["/"](frequency)["/"](4);
+    "23";
+    scale = 6["*"](step);
+    "24";
+    electric_field_scale = 8e-18;
+    "25";
+    magnetic_field_scale = .75["*"](c)["*"](electric_field_scale);
+    "27";
+    electron = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: step["/"](5), color: color.red})]);
+    "28";
+    electron.vel = vec(0, 0, 0);
+    "29";
+    electron.acc = vec(0, 0, 0);
+    "31";
+    proton = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: step["/"](5), color: color.yellow})]);
+    "32";
+    proton.vel = vec(0, 0, 0);
+    "33";
+    proton.acc = vec(0, 0, 0);
+    "35";
+    dt = 2e-19;
+    "36";
+    time = 0;
+    "38";
+    electric_field = ρσ_list_decorate([]);
+    "39";
+    magnetic_field = ρσ_list_decorate([]);
+    "40";
+    index = 0;
+    "42";
+    var ρσ_Iter1 = range(1["-u"]()["*"](scale), scale, step);
+    ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+    for (var ρσ_Index1 of ρσ_Iter1) {
+        x = ρσ_Index1;
+        "43";
+        var ρσ_Iter2 = range(1["-u"]()["*"](scale), scale, step);
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            y = ρσ_Index2;
+            "44";
+            var ρσ_Iter3 = range(1["-u"]()["*"](scale), scale, step);
+            ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+            for (var ρσ_Index3 of ρσ_Iter3) {
+                z = ρσ_Index3;
+                "45";
+                electric_field=electric_field["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(x, y, z), axis: vec(0, 0, 0), color: color.yellow})]) ]));
+                "46";
+                magnetic_field=magnetic_field["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(x, y, z), axis: vec(0, 0, 0), color: color.cyan})]) ]));
+            }
+        }
+    }
+    "49";
+    async function change_frequency(event) {
+        "50";
+        "51";
+        frequency = event.value;
+    };
+    if (!change_frequency.__argnames__) Object.defineProperties(change_frequency, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "54";
+    animation.append_to_caption("\n");
+    "55";
+    frequencySlider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({bind: change_frequency, min: 0, max: 5["*"](frequency), value: frequency, left: 10})]);
+    "56";
+    animation.append_to_caption("frequency");
+    "59";
+    async function change_amplitude(event) {
+        "60";
+        "61";
+        amplitude = event.value["*"](1e-10);
+    };
+    if (!change_amplitude.__argnames__) Object.defineProperties(change_amplitude, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "64";
+    animation.append_to_caption("\n\n");
+    "65";
+    ampSlider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({bind: change_amplitude, min: 0, max: 5, value: 1, left: 10})]);
+    "66";
+    animation.append_to_caption("amplitude");
+    "68";
+    while (true) {
+        "69";
+        (await rate(refresh_rate));
+        "70";
+        time=time["+"](dt);
+        "72";
+        electron.pos.y = amplitude["*"](sin(2["*"](pi)["*"](frequency)["*"](time)));
+        "73";
+        proton.pos.y = 1["-u"]()["*"](amplitude)["*"](sin(2["*"](pi)["*"](frequency)["*"](time)));
+        "75";
+        var ρσ_Iter4 = range(len(electric_field));
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            i = ρσ_Index4;
+            "78";
+            r = ρσ_getitem(electric_field, i).pos["-"](1["*"](vec(0, amplitude["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0)));
+            "79";
+            vel = vec(0, 2["*"](pi)["*"](frequency)["*"](amplitude)["*"](cos(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
+            "80";
+            acc = vec(0, 1["-u"]()["*"](4)["*"](Math.pow(pi, 2))["*"](Math.pow(frequency, 2))["*"](Math.pow(amplitude, 2))["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
+            "82";
+            if (r.mag["<="](1.5["*"](step))) {
+                "83";
+                ρσ_getitem(electric_field, i).axis = vec(0, 0, 0);
+                "84";
+                ρσ_getitem(magnetic_field, i).axis = vec(0, 0, 0);
+                "85";
+                continue;
+            }
+            "86";
+            kappa = 1["-"](1["*"](r.norm().dot(vel))["/"](c));
+            "87";
+            E = k["*"](1["-u"]())["*"](q)["*"](1["/"](r.mag2["*"](Math.pow(kappa, 3)))["*"](r.norm()["-"](1["*"](vel["/"](c))))["*"](1["-"](1["*"](vel.mag2["/"](Math.pow(c, 2)))))["+"](1["/"](c["*"](Math.pow(kappa, 3))["*"](r.mag))["*"](r.norm().cross((r.norm()["-"](1["*"](vel["/"](c)))).cross(acc["/"](c))))));
+            "89";
+            B = 1["/"](c)["*"](r.norm().cross(E));
+            "92";
+            r = ρσ_getitem(electric_field, i).pos["-"](1["*"](vec(0, 1["-u"]()["*"](amplitude)["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0)));
+            "93";
+            vel = vec(0, 1["-u"]()["*"](2)["*"](pi)["*"](frequency)["*"](amplitude)["*"](cos(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
+            "94";
+            acc = vec(0, 4["*"](Math.pow(pi, 2))["*"](Math.pow(frequency, 2))["*"](Math.pow(amplitude, 2))["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
+            "96";
+            kappa = 1["-"](1["*"](r.norm().dot(vel))["/"](c));
+            "97";
+            E=E["+"](k["*"](q)["*"](1["/"](r.mag2["*"](Math.pow(kappa, 3)))["*"](r.norm()["-"](1["*"](vel["/"](c))))["*"](1["-"](1["*"](vel.mag2["/"](Math.pow(c, 2)))))["+"](1["/"](c["*"](Math.pow(kappa, 3))["*"](r.mag))["*"](r.norm().cross((r.norm()["-"](1["*"](vel["/"](c)))).cross(acc["/"](c)))))));
+            "99";
+            B=B["+"](1["/"](c)["*"](r.norm().cross(E)));
+            "101";
+            ρσ_getitem(electric_field, i).axis = E["*"](electric_field_scale);
+            "102";
+            ρσ_getitem(magnetic_field, i).axis = B["*"](magnetic_field_scale);
+        }
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

@@ -3,71 +3,33 @@
 ### Rob Salgado
 ### (2022) robertoBsalgado@gmail.com
 
-### previous VPython version: http://www.visualrelativity.com/vpython/EMWave-Maxwell_v277.py
-###
-### v0.5  2001-11-07 tested on Windows 2000
-### v0.51 2003-02-16 tested on Windows 2000
-###         with Python-2.1.1.exe and VPython-2001-10-31.exe
-### v1.00 2004-03-21 tested on Windows 2000
-###         with Python-2.3.3.exe and VPython-2003-10-15.exe
-### v2.00 2006-04-30 tested on Windows 2000
-### v2.50 2006-06-01 tested on Windows 2000/XP-TabletPC
-###         with Python-2.3.4.exe and VPython-2003-10-15.exe
-### v2.51 2006-06-13 tested on Windows 2000/XP-TabletPC
-###         with Python-2.3.4.exe and VPython-2003-10-15.exe #fixed minor loop color problem
-
-### v2.75 2008-01-18 tested on Windows XP
-###         with Python-2.3.4.exe and VPython-2003-10-15.exe #colors adjusted (key 'n'), keys 'e' and 'b'
-###  Updated 3/24/2009 by mmason to run under Vpython 2.4
-###
-###       Thanks mmason!!! --rs
-
-### v2.77 2009-05-06 modifed minor text labels; appears to work with Python 2.5
-### v2.80 2015-10-31 corrected by scene.ambient (works on Python 2.6)
-### v3.00 2021-04-10 converted to Glowscript 3.0
-### v3.50 2022-04-05 revised color schemes
-
 from vpython import *
 
+title = """EM Wave by Rob Salgado
+
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/electromagnetic_wave.py">electromagnetic_wave.py</a>
+
+"""
+
 calculus = 1  # key c
-verbose = True  # key v
+verbose = 0  # key v
 
 showNeighboringWaves = 1  # key s
-showWavefronts = 0  # key w
 showGauss = 2  # key g
-showE = 1  # key e
-showB = 1  # key b
 
 # INITIALrange=10
 # INITIALforward=vec( 2.2012, -2.3109, -2.89429    )  #see below
 
 
-dimFields = 0  # key d
 colorScheme = 0  # key n (negative background color)
 
 highlightAmpere = 1
 highlightFaraday = 1
 highlightField = 1
 
-instructions = """
-Electromagnetic Plane Wave visualization 
-(v3.00) 2021-04-09 RS  [ Glowscript 3.0 ] 
-(v2.80) 2015-10-31 RS  [ VPython 2.6] 
-(v0.50) 2001-11-07     [ VPython 2001-10-31/Windows 2000]
-Rob Salgado
-
-
-      MOVE the mouse to reposition the loops
-      TAP SPACEBAR to start and stop the animation
-      TOGGLE: (a)mpere     (f)araday  (g)auss  (w)avefront
-              (d)im-fields (s)how-neighboring-waves
-              (c)alculus   (v)erbose  (n) color-scheme (z) fontSize
-
-"""
-
 initial_range = 10
 initial_forward = vec(2.2012, -2.3109, -2.89429)  # see below
-animation = canvas(background=color.gray(0.075), forward=initial_forward, range=initial_range, title="EM Wave v3.00 (Rob Salgado)")
+animation = canvas(background=color.gray(0.075), forward=initial_forward, range=initial_range, title=title)
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 colorBackground = [color.gray(0.075) * 0, color.white]
@@ -141,22 +103,22 @@ fQ = quad(vs=[fa, fb, fc, fd])
 FRONT = compound([fQ])
 FRONT.opacity = 0.75
 FRONT.shininess = 1
-FRONT.visible = showWavefronts
+FRONT.visible = False
 FRONT.color = Frontcolor[colorScheme]
 
 FRONT2 = FRONT.clone(pos=vec(fi + wavelength, 0, 0))
-FRONT2.visible = showWavefronts
+FRONT2.visible = False
 
 ######################################################################################################
 
 
 ## FIELDS
 for i in arange(-S, S):
-    Ev = arrow(pos=vec(i, 0, 0), axis=vec(0, 0, 0), color=Ecolor[dimFields], shaftwidth=0.2, fixedwidth=1, nbw=0)
+    Ev = arrow(pos=vec(i, 0, 0), axis=vec(0, 0, 0), color=Ecolor[0], shaftwidth=0.2, fixedwidth=1, nbw=0)
     EField.append(Ev)
 
 for i in arange(-S, S):
-    Bv = arrow(pos=vec(i, 0, 0), axis=vec(0, 0, 0), color=Bcolor[dimFields], shaftwidth=0.2, fixedwidth=1, nbw=0)
+    Bv = arrow(pos=vec(i, 0, 0), axis=vec(0, 0, 0), color=Bcolor[0], shaftwidth=0.2, fixedwidth=1, nbw=0)
     BField.append(Bv)
 
 if showNeighboringWaves >= 0:
@@ -180,20 +142,20 @@ if showNeighboringWaves >= 0:
 
     for j in arange(1, 3):
         for i in arange(-S, S):
-            Ev = arrow(pos=vec(i, 0, j * sep), axis=vec(0, 0, 0), color=Ecolor[dimFields], shaftwidth=0.2, fixedwidth=1,
+            Ev = arrow(pos=vec(i, 0, j * sep), axis=vec(0, 0, 0), color=Ecolor[0], shaftwidth=0.2, fixedwidth=1,
                        nbw=1, visible=showNeighboringWaves)
             EField.append(Ev)
         for i in arange(-S, S):
-            Bv = arrow(pos=vec(i, 0, j * sep), axis=vec(0, 0, 0), color=Bcolor[dimFields], shaftwidth=0.2, fixedwidth=1,
+            Bv = arrow(pos=vec(i, 0, j * sep), axis=vec(0, 0, 0), color=Bcolor[0], shaftwidth=0.2, fixedwidth=1,
                        nbw=1, visible=showNeighboringWaves)
             BField.append(Bv)
 
         for i in arange(-S, S):
-            Ev = arrow(pos=vec(i, 0, -j * sep), axis=vec(0, 0, 0), color=Ecolor[dimFields], shaftwidth=0.2,
+            Ev = arrow(pos=vec(i, 0, -j * sep), axis=vec(0, 0, 0), color=Ecolor[0], shaftwidth=0.2,
                        fixedwidth=1, nbw=1, visible=showNeighboringWaves)
             EField.append(Ev)
         for i in arange(-S, S):
-            Bv = arrow(pos=vec(i, 0, -j * sep), axis=vec(0, 0, 0), color=Bcolor[dimFields], shaftwidth=0.2,
+            Bv = arrow(pos=vec(i, 0, -j * sep), axis=vec(0, 0, 0), color=Bcolor[0], shaftwidth=0.2,
                        fixedwidth=1, nbw=1, visible=showNeighboringWaves)
             BField.append(Bv)
 
@@ -350,11 +312,11 @@ if 1:
 ##########################################################################################################
 
 def keyInput(evt):
-    global AmpereLoop, dEdt, dEdtlabel, BField, fi, ddtcolor, dimFields
+    global AmpereLoop, dEdt, dEdtlabel, BField, fi, ddtcolor
     global FaradayLoop, dBdt, dBdtLabel, Efield, labelFontSizes, labelFontSizeSelected
-    global showE, showB, showNeighboringWaves
+    global showNeighboringWaves
     global verbose, calculus
-    global showWavefronts, showGauss, GaussElements
+    global showGauss, GaussElements
     global colorScheme, gaussSurface, Gcolor_boundary
     global animation, colorBackground, Ecolor, Bcolor
     global frontFrame, front, front2, Frontcolor
@@ -368,18 +330,6 @@ def keyInput(evt):
         #    else:  #process key instead
         s = evt.key
 
-        # print(" ki",s)
-        # if 0: if scene.kb.keys: # is there an event waiting to be processed?
-        # s = scene.kb.getkey() # obtain keyboard information
-
-
-        if s == 'v':
-            verbose += 1
-            verbose %= len(prefixAmpere);
-            dBdtlabel.visible = showFaraday * min(verbose, 1)
-            dEdtlabel.visible = showAmpere * min(verbose, 1)
-
-
         if s == 'x':
             print("scene.center=", animation.center)
             print("scene.forward=", animation.forward)
@@ -389,8 +339,8 @@ def keyInput(evt):
         if faraday_checkbox.checked: EField[S + fi - 1].color = EField[S + fi + 1].color = ddtcolor[0]
         if ampere_checkbox.checked:  BField[S + fi - 1].color = BField[S + fi + 1].color = ddtcolor[1]
         if highlightField:
-            BField[S + fi].color = Bcolor[0] if faraday_checkbox.checked else Bcolor[dimFields]
-            EField[S + fi].color = Ecolor[0] if ampere_checkbox.checked else Ecolor[dimFields]
+            BField[S + fi].color = Bcolor[0] if faraday_checkbox.checked else Bcolor[1 if dim_fields_checkbox.checked else 0]
+            EField[S + fi].color = Ecolor[0] if ampere_checkbox.checked else Ecolor[1 if dim_fields_checkbox.checked else 0]
 
 
 # scene.bind('keydown click', keyInput)
@@ -403,46 +353,39 @@ def toggle_font_size(event):
     dBdtlabel.height = labelFontSizes[labelFontSizeSelected]
     dEdtlabel.height = labelFontSizes[labelFontSizeSelected]
 
-def toggle_calculus(event):
+def toggle_technical_labels(event):
     global calculus
-    calculus += 1
-    calculus %= 2
+    calculus = 1 if event.checked else 0
 
-def toggle_wavefronts(event):
-    global showWavefronts
-    showWavefronts += 1
-    showWavefronts %= 2
-    FRONT.visible = showWavefronts
-    FRONT2.visible = showWavefronts
+def toggle_wave_fronts(event):
+    FRONT.visible = event.checked
+    FRONT2.visible = event.checked
+
+def toggle_verbose(event):
+    global verbose
+    verbose += 1
+    verbose %= len(prefixAmpere)
+    dBdtlabel.visible = (1 if faraday_checkbox.checked else 0) * min(verbose, 1)
+    dEdtlabel.visible = (1 if ampere_checkbox.checked else 0) * min(verbose, 1)
+
 
 def toggle_dim_fields(event):
-    global dimFields
-    dimFields += 1
-    dimFields %= 2
-
-    for i in EField:
-        i.color = Ecolor[dimFields]
-    for i in BField:
-        i.color = Bcolor[dimFields]
+    for field in EField:
+        field.color = Ecolor[1 if event.checked else 0]
+    for field in BField:
+        field.color = Bcolor[1 if event.checked else 0]
 
 def toggle_show_electric_field(event):
-    global showE
-    showE += 1
-    showE %= 2
-
-    for i in EField:
-        i.visible = showE * (1 - showNeighboringWaves * (i.nbw % 2))
+    for field in EField:
+        field.visible = event.checked #and field.nbw
 
 def toggle_show_magnetic_field(event):
-    global showB
-    showB += 1
-    showB %= 2
-
-    for i in BField:
-        i.visible = showB * (1 - showNeighboringWaves * (i.nbw % 2))
+    for field in BField:
+        field.visible = event.checked #and field.nbw
 
 def toggle_show_neighbouring_waves(event):
     global showNeighboringWaves
+    showNeighboringWaves = 0 if event.checked else 1
     for i in arange(0, len(EField)):
         EField[i].visible = 1 - showNeighboringWaves * (EField[i].nbw % 2)
         BField[i].visible = 1 - showNeighboringWaves * (BField[i].nbw % 2)
@@ -451,7 +394,6 @@ def toggle_show_neighbouring_waves(event):
 
 def toggle_show_gauss(event):
     global  showGauss
-    print("Ik kom hier", showGauss)
     showGauss += 1
     showGauss %= 3
     for i in GYflux + GZflux:
@@ -495,31 +437,43 @@ def toggle_run(event):
 
 def toggle_faraday(event):
     FaradayLoop.visible = dBdt.visible = event.checked
-    dBdtlabel.visible = faraday_checkbox.checked and verbose
+    dBdtlabel.visible = event.checked and verbose
     if event.checked:
         EField[S + fi - 1].color = ddtcolor[1]
         EField[S + fi + 1].color = ddtcolor[1]
     else:
-        EField[S + fi - 1].color = Ecolor[dimFields]
-        EField[S + fi + 1].color = Ecolor[dimFields]
+        EField[S + fi - 1].color = Ecolor[1 if dim_fields_checkbox.checked else 0]
+        EField[S + fi + 1].color = Ecolor[1 if dim_fields_checkbox.checked else 0]
 
 
 def toggle_ampere(event):
     AmpereLoop.visible = dEdt.visible = event.checked
-    dEdtlabel.visible = ampere_checkbox.checked and verbose
+    dEdtlabel.visible = event.checked and verbose
     if event.checked:
         BField[S + fi - 1].color = ddtcolor[0]
         BField[S + fi + 1].color = ddtcolor[0]
     else:
-        BField[S + fi - 1].color = Bcolor[dimFields]
-        BField[S + fi + 1].color = Bcolor[dimFields]
+        BField[S + fi - 1].color = Bcolor[1 if dim_fields_checkbox.checked else 0]
+        BField[S + fi + 1].color = Bcolor[1 if dim_fields_checkbox.checked else 0]
 
-ampere_checkbox = checkbox(text="Show Ampere ", bind=toggle_ampere, checked=True)
-faraday_checkbox = checkbox(text="Show Faraday ", bind=toggle_faraday, checked=True)
+animation.append_to_caption("\n")
+ampere_checkbox = checkbox(text="Ampere ", bind=toggle_ampere, checked=True)
+faraday_checkbox = checkbox(text="Faraday ", bind=toggle_faraday, checked=True)
 pause_checkbox = checkbox(text="Pause ", bind=toggle_run, checked=False)
+technical_labels_checkbox = checkbox(text="Technical labels ", bind=toggle_technical_labels, checked=True)
 dark_background_checkbox = checkbox(text="Dark background", bind=toggle_color_scheme, checked=True)
+
 animation.append_to_caption("\n\n")
-show_gauss_button = button(text="Show Gauss", bind=toggle_show_gauss)
+electric_field_checkbox = checkbox(text="Electric field ", bind=toggle_show_magnetic_field, checked=True)
+magnetic_field_checkbox = checkbox(text="Magnetic field ", bind=toggle_show_electric_field, checked=True)
+dim_fields_checkbox = checkbox(text="Dim fields ", bind=toggle_dim_fields, checked=False)
+wave_front_checkbox = checkbox(text="Wave front ", bind=toggle_wave_fronts, checked=False)
+neighbouring_waves = checkbox(text="Neighbouring waves ", bind=toggle_show_neighbouring_waves, checked=True)
+
+animation.append_to_caption("\n\n")
+show_gauss_button = button(text=" Show Gauss", bind=toggle_show_gauss)
+font_size_button= button(text=" Font size ", bind=toggle_font_size)
+verbose_button= button(text=" Verbose ", bind=toggle_verbose)
 
 phase0 = wavelength / 4.
 fi = 0
@@ -531,12 +485,12 @@ while 1:
 
     phase = k * (newfi - S) - omega * t
     if fi != newfi:  # MOVE THE LOOPS
-        EField[S + fi - 1].color = EField[S + fi + 1].color = Ecolor[dimFields]
-        BField[S + fi - 1].color = BField[S + fi + 1].color = Bcolor[dimFields]
+        EField[S + fi - 1].color = EField[S + fi + 1].color = Ecolor[1 if dim_fields_checkbox.checked else 0]
+        BField[S + fi - 1].color = BField[S + fi + 1].color = Bcolor[1 if dim_fields_checkbox.checked else 0]
 
         if highlightField == 1:
-            if faraday_checkbox.checked: BField[S + fi].color = Bcolor[dimFields]
-            if ampere_checkbox.checked:  EField[S + fi].color = Ecolor[dimFields]
+            if faraday_checkbox.checked: BField[S + fi].color = Bcolor[1 if dim_fields_checkbox.checked else 0]
+            if ampere_checkbox.checked:  EField[S + fi].color = Ecolor[1 if dim_fields_checkbox.checked else 0]
         fi = newfi
         if faraday_checkbox.checked: EField[S + fi - 1].color = EField[S + fi + 1].color = ddtcolor[0]
         if ampere_checkbox.checked:  BField[S + fi - 1].color = BField[S + fi + 1].color = ddtcolor[1]
@@ -583,16 +537,17 @@ while 1:
                     # GYfSeg[s * gxsize + i][1].opacity = abs(amp)
                     # GZfSeg[s * gxsize + i][0].opacity = abs(amp)
                     # GZfSeg[s * gxsize + i][1].opacity = abs(amp)
-                    if (1 - 2 * s) * amp > 0:
-                        GYfSeg[s * gxsize + i][0].color = Ecolor[0]
-                        GYfSeg[s * gxsize + i][1].color = Ecolor[0]
-                        GZfSeg[s * gxsize + i][0].color = Bcolor[0]
-                        GZfSeg[s * gxsize + i][1].color = Bcolor[0]
-                    else:
-                        GYfSeg[s * gxsize + i][0].color = Ecolor[1]
-                        GYfSeg[s * gxsize + i][1].color = Ecolor[1]
-                        GZfSeg[s * gxsize + i][0].color = Bcolor[1]
-                        GZfSeg[s * gxsize + i][1].color = Bcolor[1]
+                    # TODO Quads don't have color, so move this operation to the vertices instead
+                    # if (1 - 2 * s) * amp > 0:
+                    #     GYfSeg[s * gxsize + i][0].color = Ecolor[0]
+                    #     GYfSeg[s * gxsize + i][1].color = Ecolor[0]
+                    #     GZfSeg[s * gxsize + i][0].color = Bcolor[0]
+                    #     GZfSeg[s * gxsize + i][1].color = Bcolor[0]
+                    # else:
+                    #     GYfSeg[s * gxsize + i][0].color = Ecolor[1]
+                    #     GYfSeg[s * gxsize + i][1].color = Ecolor[1]
+                    #     GZfSeg[s * gxsize + i][0].color = Bcolor[1]
+                    #     GZfSeg[s * gxsize + i][1].color = Bcolor[1]
 
                     i += 1
         else:
@@ -600,30 +555,38 @@ while 1:
                 amp = sin(k * (x + gposx + gxleft) - omega * t)
 
                 ###
-                GYflux[0 + 2 * x].opacity = abs(amp)
-                if amp > 0:
-                    GYflux[0 + 2 * x].color = Ecolor[0]
-                else:
-                    GYflux[0 + 2 * x].color = Ecolor[1]
+                # TODO Quads don't have opacity, so move this operation to the vertices instead
+                #GYflux[0 + 2 * x].opacity = abs(amp)
+                # TODO Quads don't have color, so move this operation to the vertices instead
+                # if amp > 0:
+                #     GYflux[0 + 2 * x].color = Ecolor[0]
+                # else:
+                #     GYflux[0 + 2 * x].color = Ecolor[1]
 
-                GYflux[1 + 2 * x].opacity = abs(amp)
-                if (-amp) > 0:
-                    GYflux[1 + 2 * x].color = Ecolor[0]
-                else:
-                    GYflux[1 + 2 * x].color = Ecolor[1]
+                # TODO Quads don't have opacity, so move this operation to the vertices instead
+                #GYflux[1 + 2 * x].opacity = abs(amp)
+                # TODO Quads don't have color, so move this operation to the vertices instead
+                # if (-amp) > 0:
+                #     GYflux[1 + 2 * x].color = Ecolor[0]
+                # else:
+                #     GYflux[1 + 2 * x].color = Ecolor[1]
 
                 ###
-                GZflux[0 + 2 * x].opacity = abs(amp)
-                if amp > 0:
-                    GZflux[0 + 2 * x].color = Bcolor[0]
-                else:
-                    GZflux[0 + 2 * x].color = Bcolor[1]
+                # TODO Quads don't have opacity, so move this operation to the vertices instead
+                #GZflux[0 + 2 * x].opacity = abs(amp)
+                # TODO Quads don't have color, so move this operation to the vertices instead
+                # if amp > 0:
+                #     GZflux[0 + 2 * x].color = Bcolor[0]
+                # else:
+                #     GZflux[0 + 2 * x].color = Bcolor[1]
 
-                GZflux[1 + 2 * x].opacity = abs(amp)
-                if (-amp) > 0:
-                    GZflux[1 + 2 * x].color = Bcolor[0]
-                else:
-                    GZflux[1 + 2 * x].color = Bcolor[1]
+                # TODO Quads don't have opacity, so move this operation to the vertices instead
+                #GZflux[1 + 2 * x].opacity = abs(amp)
+                # TODO Quads don't have color, so move this operation to the vertices instead
+                # if (-amp) > 0:
+                #     GZflux[1 + 2 * x].color = Bcolor[0]
+                # else:
+                #     GZflux[1 + 2 * x].color = Bcolor[1]
 
     ####################################################################################
     ####################################################################################

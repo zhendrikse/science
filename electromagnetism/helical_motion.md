@@ -5,3 +5,7 @@
 
 Download the [helical motion.py](code/helical_motion.py) source code
 {% include_relative code/HelicalMotion.html %}
+
+<p style="clear: both;"></p>
+
+{% include share_buttons.html %}

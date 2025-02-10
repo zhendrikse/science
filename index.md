@@ -317,6 +317,18 @@ finest that music and poetry can deliver. &mdash;
     </div>
     <div class="double_image">
       <figure class="left_image">
+        <a href="electromagnetism/electromagnetic_wave_quiver.html">
+          <img alt="Electromagnetic wave" src="images/electromagnetic_wave_quiver.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="electromagnetism/electromagnetic_wave.html">
+          <img alt="Electromagnetic wave" src="images/electromagnetic_wave.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <div class="double_image">
+      <figure class="left_image">
         <a href="electromagnetism/antenna.html">
           <img alt="Point charge" src="images/antenna.png" title="Click to animate"/>
         </a>

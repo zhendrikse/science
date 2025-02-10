@@ -4,7 +4,7 @@ from vpython import canvas, vec, color, sphere, vector, box, mag, arrow, rate, a
 
 title = """
 &#x2022; Original <a href="https://trinket.io/glowscript/38fbc7b2d01d">code</a> by Byron Philhour
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/charged_sheet.py">charged_sheet.py</a>
 
 If it isn't doing anything interesting, either wait or run again to randomize start position. 
 Two-finger drag to change perspective.

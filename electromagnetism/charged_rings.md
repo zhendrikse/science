@@ -5,3 +5,7 @@
 
 Download the [charged_rings.py](code/charged_rings.py) source code
 {% include_relative code/ChargedRings.html %}
+
+<p style="clear: both;"></p>
+
+{% include share_buttons.html %}

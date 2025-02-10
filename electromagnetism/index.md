@@ -49,7 +49,26 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
 </div>
 <p style="clear: both;"></p>
 
-### Electric dipole and electromagnetic waves
+### Two ways to visualize electromagnetic waves
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="electromagnetic_wave_quiver.html">
+    <img alt="Electric field of a dipole" src="../images/electromagnetic_wave_quiver.png" title="Click to animate"/>
+  </a>
+  <figcaption>Electromagnetic waves.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="electromagnetic_wave.html">
+    <img alt="Antenna" src="../images/electromagnetic_wave.png" title="Click to animate"/>
+  </a>
+  <figcaption>Electromagnetic waves.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+### Electric dipole and antenna waves
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -68,19 +87,7 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
 </div>
 <p style="clear: both;"></p>
 
-<details>
-  <summary><a>&dArr; Background: electric fields around dipoles and point charges &dArr;</a></summary>
 
-For dipoles the field is given by
-
-$$\vec{E} ( \vec{r} ) = \dfrac {1} {4\pi\epsilon_0} \dfrac {Q} {r^2} \hat{r}, \text{ with } \vec{F}(\vec{r}) = q \vec{E} (\vec{r}) = \dfrac {1} {4\pi\epsilon_{0}} \dfrac {qQ} {r^2}\hat{r} \text{ }$$
-
-and for point charges by
-
-$$\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r}  \cdot \vec{p}} {r^3} \bigg), \text{ where } \vec{p} = +q(\vec{r_{+}}) + -q(\vec{r_{-})}$$
-</details>
-
-<p></p>
 
 ### Electric and magnetic fields
 <div style="border-top: 1px solid #999999"><br/></div>
