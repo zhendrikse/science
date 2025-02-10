@@ -4,7 +4,7 @@ from vpython import *
 
 title="""
 &#x2022; Original doppler-Wavefront.py by <a href="http://physics.syr.edu/~salgado/">Rob Salgado</a> (salgado@physics.syr.edu)
-&#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/waves/code/doppler_effect.py">doppler_effect.py</a>
 
 """
 

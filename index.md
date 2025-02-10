@@ -128,6 +128,16 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="waves/traveling_wave.html">
+          <img alt="Traveling wave" src="images/traveling_wave.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <!-- RESERVED FOR FUTURE APPLICATION -->
+      </figure>
+    </div>
   </div>
 </div>
 

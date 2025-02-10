@@ -2,7 +2,7 @@
 
 from vpython import sphere, rate, color, vec, arange, canvas, cylinder, box, label, sin, cos, slider, wtext, pi, radio, checkbox
 
-title="""&#x2022; Written by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+title="""&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/waves/code/vibrating_membrane.py">vibrating_membrane.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 &#x2022; Visualization concept with spheres by <a href="https://jexpearce.github.io/jex/">Jex Pearce</a>
 
 """

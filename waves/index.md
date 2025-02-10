@@ -118,5 +118,22 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 </div>
 <p style="clear: both;"></p>
 
-<!-- End of this chapter -->
-<div class="subsection_header_line"><br/></div>
+### Traveling waves
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="traveling_wave.html">
+    <img alt="Traveling wave" src="../images/traveling_wave.png" title="Click to animate"/>
+  </a>
+  <figcaption>A simulation of a traveling wave in a string.</figcaption>
+</figure>
+<figure class="right_image">
+  <!--
+    RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+{% include share_buttons.html %}
