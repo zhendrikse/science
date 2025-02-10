@@ -5,6 +5,7 @@
 
 - [`ball_drop_on_spring.py` source code](ball_drop_on_spring.py)
 - [`block_rotation.py` source code](block_rotation.py)
+- [`chain_drop.py` source code](point_charge.py)
 - [`floating_block.py` source code](floating_block.py)
 - [`n_body_oscillator.py` source code](n_body_oscillator.py)
 - [`newtons_cannonball.py` source code](newtons_cannonball.py)

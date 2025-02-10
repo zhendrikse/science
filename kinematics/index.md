@@ -29,16 +29,24 @@ You may be surprised though to find out what happens when you drop such a simple
 <p style="clear: both;"></p>
 
 
-### The $N$-body coupled oscillator with adjustable $N$
+### The $N$-body coupled oscillator &amp; chain drop from table
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<figure style="float: center; text-align: center;">
-  <a href="n_body_oscillator.html">
-    <img alt="N-body coupled oscillator" src="../images/n_body_coupled_oscillator.png" title="Click to animate"/>
-  </a>
-  <figcaption>Discover what happens by changing the number of bodies.</figcaption>
-</figure>
-
+<div class="double_image">
+  <figure class="left_image">
+    <a href="n_body_oscillator.html">
+      <img alt="N-body coupled oscillator" src="../images/n_body_coupled_oscillator.png" title="Click to animate"/>
+    </a>
+    <figcaption>Discover what happens by changing the number of bodies.</figcaption>
+  </figure>
+  <figure class="right_image">
+    <a href="chain_drop.html">
+      <img alt="Chain from table" src="../images/chain_from_table.png" title="Click to animate"/>
+    </a>
+    <figcaption>Chain falling from table, based on the original <a href="https://www.youtube.com/watch?v=vXp1hW_t-bo">video</a> by 
+    <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
+  </figure>
+</div>
 <p style="clear: both;"></p>
 
 
@@ -85,12 +93,18 @@ You may be surprised though to find out what happens when you drop such a simple
 ### Model of floating block
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<figure>
+<div class="double_image">
+<figure class="left_image">
   <a href="floating_block.html">
     <img alt="Floating block" src="../images/floating_block.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <figcaption>Movement of a floating block in water.</figcaption>
 </figure>
+<figure class="right_image">
+    <!-- RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
 
 <p style="clear: both;"></p>
 

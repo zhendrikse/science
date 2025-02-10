@@ -169,19 +169,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <a href="nature/chain_drop.html">
-          <img alt="Chain drop from table" src="images/chain_from_table.png" title="Click to animate"/>
-        </a>
-      </figure>
-    </div>
-    <div class="double_image">
-      <figure class="left_image">
         <a href="nature/catenary.html">
           <img alt="Overhead power lines" src="images/catenary.png" title="Click to animate"/>
         </a>
-      </figure>
-      <figure class="right_image">
-        <!-- RESERVED FOR FUTURE APPLICATION -->
       </figure>
     </div>
   </div>
@@ -373,8 +363,8 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <a href="kinematics/floating_block.html">
-          <img alt="Slinky drop" src="images/floating_block.png" title="Click to animate"/>
+        <a href="kinematics/chain_drop.html">
+          <img alt="Chain drop from table" src="images/chain_from_table.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
@@ -400,6 +390,17 @@ finest that music and poetry can deliver. &mdash;
         <a href="kinematics/block_rotation.html">
           <img alt="Block rotation" src="images/block_rotation.png" title="Click to animate"/>
         </a>
+      </figure>
+    </div>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="kinematics/floating_block.html">
+          <img alt="Floating block" src="images/floating_block.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <!-- RESERVED FOR FUTURE APPLICATION
+          -->
       </figure>
     </div>
   </div>

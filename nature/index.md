@@ -69,14 +69,6 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
   </figcaption>
 </figure>
-<figure class="left_image">
-  <a href="chain_drop.html">
-    <img alt="Chain from table" src="../images/chain_from_table.png" title="Click to animate"/>
-  </a>
-  <figcaption>Chain falling from table, based on the original 
-  <a href="https://www.youtube.com/watch?v=vXp1hW_t-bo">video</a> by 
-  <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
-</figure>
 </div>
 <p style="clear: both;"></p>
 

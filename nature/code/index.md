@@ -3,7 +3,6 @@
 ## Python and Glowscript source code directory
 <div class="header_line"><br/></div>
 
-- [`chain_drop.py` source code](point_charge.py)
 - [`catenary.py` source code](catenary.py)
 - [`flocking_birds.py` source code](relativistic_proton.py)
 - [`pool.py` source code](point_charge.py)
