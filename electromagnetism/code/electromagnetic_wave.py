@@ -398,9 +398,9 @@ class FaradayAmpereLoop:
             central_electromagnetic_wave.set_color_magnetic_field_arrow(S + self._field_index - 1, ddtcolor[1])
 
         if highlightField == 1 and faraday_checkbox.checked:
-            central_electromagnetic_wave.set_color_magnetic_field_arrow(S + self._field_index, Bcolor[0])
+            central_electromagnetic_wave.set_color_magnetic_field_arrow(S + self._field_index, ddtcolor[1])
         if highlightField == 1 and ampere_checkbox.checked:
-            central_electromagnetic_wave.set_color_electric_field_arrow(S + self._field_index, Ecolor[0])
+            central_electromagnetic_wave.set_color_electric_field_arrow(S + self._field_index, ddtcolor[0])
 
         self._FaradayLoop.modify(0, x=self._field_index - 1)
         self._FaradayLoop.modify(1, x=self._field_index - 1)
