@@ -42,7 +42,6 @@ ddtcolor = [Bcolor[2 + colorScheme], Ecolor[2 + colorScheme]]  # for Ampere and 
 Gcolor1 = vec(0.0, 0.27e-9, 0.0)
 Gcolor2 = Gcolor1
 Gcolor_boundary = [color.white, color.black]  # GAUSS
-Frontcolor = [vec(0.5, 0.5, 0.5), vec(0.6, 1, 1)]
 
 ambient = [0.3, 0.7]
 animation.ambient = vec(.4, .4, .4)
@@ -85,19 +84,36 @@ phase0 = 0
 phase1 = field_index
 phase2 = field_index + wavelength
 
-fa = vertex(pos=vec(field_index, -sep * a, -sep * a))
-fb = vertex(pos=vec(field_index, -sep * a, sep * a))
-fc = vertex(pos=vec(field_index, sep * a, sep * a))
-fd = vertex(pos=vec(field_index, sep * a, -sep * a))
-fQ = quad(vs=[fa, fb, fc, fd])
-FRONT = compound([fQ])
-FRONT.opacity = 0.75
-FRONT.shininess = 1
-FRONT.visible = False
-FRONT.color = Frontcolor[colorScheme]
+class WaveFront:
+    def __init__(self):
+        self._front_color = [vec(0.5, 0.5, 0.5), vec(0.6, 1, 1)]
 
-FRONT2 = FRONT.clone(pos=vec(field_index + wavelength, 0, 0))
-FRONT2.visible = False
+        fa = vertex(pos=vec(field_index, -sep * a, -sep * a))
+        fb = vertex(pos=vec(field_index, -sep * a, sep * a))
+        fc = vertex(pos=vec(field_index, sep * a, sep * a))
+        fd = vertex(pos=vec(field_index, sep * a, -sep * a))
+        fQ = quad(vs=[fa, fb, fc, fd])
+        self._front = compound([fQ])
+        self._front.opacity = 0.75
+        self._front.shininess = 1
+        self._front.visible = False
+        self._front.color = self._front_color[colorScheme]
+
+        self._front_2 = self._front.clone(pos=vec(field_index + wavelength, 0, 0))
+        self._front_2.visible = False
+
+    def set_visibility_to(self, visible):
+        self._front.visible = visible
+        self._front_2.visible = visible
+
+    def set_color_to_color_scheme(self, color_scheme):
+        self._front.color = self._front_color[color_scheme]
+        self._front_2.color = self._front_color[color_scheme]
+
+    def update_by(self, t):
+        self._front.pos = vec((phase0 + (omega / k) * t) % (2 * S) - S, 0, 0)
+        self._front_2.pos = vec((phase0 + wavelength + (omega / k) * t) % (2 * S) - S, 0, 0)
+
 
 class ElectromagneticWave:
     def __init__(self, wave_num, offset=vec(0, 0, 0)):
@@ -142,8 +158,218 @@ class ElectromagneticWave:
     def set_color_magnetic_field_arrow(self, index, colour):
         self._magnetic_field[index].color = colour
 
+#
+# Gaussian surface tiled into strips, each strip centered on field-vector evaluation point
+#
+class GaussSurface:
+    def __init__(self):
+        self._gposx = 15  # x-center of Gaussian (centered on a field-vector evaluation point)
+        gdx = 1  # width of xstrip spacing (x-spacing of field vectors)
+        self._gxsize = 5  # choose an odd number (number of xstrips)
+        self._gxleft = -(self._gxsize / 2 - gdx / 2)  # displacement to center of left xstrip
+        gxright = self._gxleft + (self._gxsize - 1)  # displacement to center of right xstrip
 
+        self._GXflux = []
+        self._GYflux = []
+        self._GZflux = []
+
+        GYfSeg = []
+        GZfSeg = []
+        self._GSegFlux = []
+
+        for s in [1, -1]:
+            for x in arange(self._gposx + self._gxleft, self._gposx + self._gxleft + self._gxsize):
+                Ax = x - 0 * gdx / 2
+                Ap = sep
+                Bx = Ax + gdx
+                Bp = -sep
+
+                GYfSeg.append([vertex(pos=vector(Ax, s * sep, Ap), color=Ecolor[0]),
+                               vertex(pos=vector(Ax, s * sep, Bp), color=Ecolor[0])])
+                GZfSeg.append([vertex(pos=vector(Ax, Ap, s * sep), color=Bcolor[0]),
+                               vertex(pos=vector(Ax, Bp, s * sep), color=Bcolor[0])])
+
+        sz = len(GYfSeg) / 2
+        for s in [0, 1]:
+            for i in arange(1, sz):
+                Q = quad(
+                    vs=[GYfSeg[int(s * sz + (i - 1))][0], GYfSeg[int(s * sz + (i - 1))][1], GYfSeg[int(s * sz + i)][1],
+                        GYfSeg[int(s * sz + i)][0]])
+                Q.visible = (showGauss == 2)
+                self._GSegFlux.append(Q)
+                Q = quad(
+                    vs=[GZfSeg[int(s * sz + (i - 1))][0], GZfSeg[int(s * sz + (i - 1))][1], GZfSeg[int(s * sz + i)][1],
+                        GZfSeg[int(s * sz + i)][0]])
+                Q.visible = (showGauss == 2)
+                self._GSegFlux.append(Q)
+
+        for x in arange(self._gposx + self._gxleft, self._gposx + self._gxleft + self._gxsize):
+            Ax = x - gdx / 2
+            Ap = sep
+            Bx = Ax + gdx
+            Bp = -sep
+
+            #########################################################
+
+            gYplus = quad(vs=[vertex(pos=vector(Ax, sep, Ap)),
+                              vertex(pos=vector(Bx, sep, Ap)),
+                              vertex(pos=vector(Bx, sep, Bp)),
+                              vertex(pos=vector(Ax, sep, Bp))])
+            gYP = gYplus  # compound([gYplus])
+            gYP.visible = (showGauss == 1)
+
+            gYminus = quad(vs=[vertex(pos=vector(Ax, -sep, Ap)),
+                               vertex(pos=vector(Bx, -sep, Ap)),
+                               vertex(pos=vector(Bx, -sep, Bp)),
+                               vertex(pos=vector(Ax, -sep, Bp))])
+            gYM = gYminus  # compound([gYminus])
+            gYM.visible = (showGauss == 1)
+
+            self._GYflux.append(gYP)
+            self._GYflux.append(gYM)
+
+            #########################################################
+
+            gZplus = quad(vs=[vertex(pos=vector(Ax, Ap, sep)),
+                              vertex(pos=vector(Bx, Ap, sep)),
+                              vertex(pos=vector(Bx, Bp, sep)),
+                              vertex(pos=vector(Ax, Bp, sep))])
+            gZP = gZplus  # compound([gZplus])
+            gZP.visible = (showGauss == 1)
+
+            gZminus = quad(vs=[vertex(pos=vector(Ax, Ap, -sep)),
+                               vertex(pos=vector(Bx, Ap, -sep)),
+                               vertex(pos=vector(Bx, Bp, -sep)),
+                               vertex(pos=vector(Ax, Bp, -sep))])
+            gZM = gZminus  # compound([gZminus])
+            gZM.visible = (showGauss == 1)
+
+            self._GZflux.append(gZP)
+            self._GZflux.append(gZM)
+
+            #################################################  ########
+
+        Ax = self._gposx + gxright + gdx / 2
+        Ap = sep
+        Bx = Ax + gdx
+        Bp = -sep
+        gfa = vertex(pos=vector(Ax, Ap, sep))
+        gfb = vertex(pos=vector(Ax, Ap, -sep))
+        gfc = vertex(pos=vector(Ax, Bp, -sep))
+        gfd = vertex(pos=vector(Ax, Bp, sep))
+        gfQ = quad(vs=[gfa, gfb, gfc, gfd])
+        gFORW = compound([gfQ])
+        gFORW.opacity = 0.1
+        gFORW.shininess = 1
+        gFORW.color = color.white
+        gFORW.visible = (showGauss > 0)
+        gFORW.pos1 = vec(Ax, 0, 0)
+        gFORW.pos2 = vec(Ax - gdx / 2, 0, 0)
+
+        Ax = self._gposx + self._gxleft - gdx / 2
+        Ap = sep
+        Bx = Ax + gdx
+        Bp = -sep
+        gba = vertex(pos=vector(Ax, Ap, sep))
+        gbb = vertex(pos=vector(Ax, Ap, -sep))
+        gbc = vertex(pos=vector(Ax, Bp, -sep))
+        gbd = vertex(pos=vector(Ax, Bp, sep))
+        gbQ = quad(vs=[gba, gbb, gbc, gbd])
+        gBACK = compound([gbQ])
+        gBACK.opacity = 0.1
+        gBACK.shininess = 1
+        gBACK.color = color.white
+        gBACK.visible = (showGauss > 0)
+        gBACK.pos1 = vec(Ax, 0, 0)
+        gBACK.pos2 = vec(Ax + gdx / 2, 0, 0)
+
+        self._GXflux.append(gFORW)
+        self._GXflux.append(gBACK)
+
+    def toggle_visibility(self):
+        for i in self._GYflux + self._GZflux:
+            i.visible = (showGauss == 1)
+        for i in self._GSegFlux:
+            i.visible = (showGauss == 2)
+        for i in self._GXflux:
+            i.visible = (showGauss > 0)
+        if showGauss == 1:
+            self._GXflux[0].pos = self._GXflux[0].pos1
+            self._GXflux[1].pos = self._GXflux[1].pos1
+        else:
+            self._GXflux[0].pos = self._GXflux[0].pos2
+            self._GXflux[1].pos = self._GXflux[1].pos2
+
+    def update_by(self, t):
+        if showGauss > 0 and showGauss == 2:
+            for s in [0, 1]:
+                i = 0
+                for x in arange(0, self._gxsize):
+                    amp = sin(k * (x + self._gposx + self._gxleft) - omega * t)
+                    # print(x+ gposx+gxleft,GYfSeg[i][0].pos)
+                    #
+                    # TODO Quads don't have opacity, so move this operation to the vertices instead
+                    #
+                    # GYfSeg[s * gxsize + i][0].opacity = abs(amp)
+                    # GYfSeg[s * gxsize + i][1].opacity = abs(amp)
+                    # GZfSeg[s * gxsize + i][0].opacity = abs(amp)
+                    # GZfSeg[s * gxsize + i][1].opacity = abs(amp)
+                    # TODO Quads don't have color, so move this operation to the vertices instead
+                    # if (1 - 2 * s) * amp > 0:
+                    #     GYfSeg[s * gxsize + i][0].color = Ecolor[0]
+                    #     GYfSeg[s * gxsize + i][1].color = Ecolor[0]
+                    #     GZfSeg[s * gxsize + i][0].color = Bcolor[0]
+                    #     GZfSeg[s * gxsize + i][1].color = Bcolor[0]
+                    # else:
+                    #     GYfSeg[s * gxsize + i][0].color = Ecolor[1]
+                    #     GYfSeg[s * gxsize + i][1].color = Ecolor[1]
+                    #     GZfSeg[s * gxsize + i][0].color = Bcolor[1]
+                    #     GZfSeg[s * gxsize + i][1].color = Bcolor[1]
+
+                    i += 1
+            else:
+                for x in arange(0, self._gxsize):
+                    amp = sin(k * (x + self._gposx + self._gxleft) - omega * t)
+
+                    ###
+                    # TODO Quads don't have opacity, so move this operation to the vertices instead
+                    # GYflux[0 + 2 * x].opacity = abs(amp)
+                    # TODO Quads don't have color, so move this operation to the vertices instead
+                    # if amp > 0:
+                    #     GYflux[0 + 2 * x].color = Ecolor[0]
+                    # else:
+                    #     GYflux[0 + 2 * x].color = Ecolor[1]
+
+                    # TODO Quads don't have opacity, so move this operation to the vertices instead
+                    # GYflux[1 + 2 * x].opacity = abs(amp)
+                    # TODO Quads don't have color, so move this operation to the vertices instead
+                    # if (-amp) > 0:
+                    #     GYflux[1 + 2 * x].color = Ecolor[0]
+                    # else:
+                    #     GYflux[1 + 2 * x].color = Ecolor[1]
+
+                    ###
+                    # TODO Quads don't have opacity, so move this operation to the vertices instead
+                    # GZflux[0 + 2 * x].opacity = abs(amp)
+                    # TODO Quads don't have color, so move this operation to the vertices instead
+                    # if amp > 0:
+                    #     GZflux[0 + 2 * x].color = Bcolor[0]
+                    # else:
+                    #     GZflux[0 + 2 * x].color = Bcolor[1]
+
+                    # TODO Quads don't have opacity, so move this operation to the vertices instead
+                    # GZflux[1 + 2 * x].opacity = abs(amp)
+                    # TODO Quads don't have color, so move this operation to the vertices instead
+                    # if (-amp) > 0:
+                    #     GZflux[1 + 2 * x].color = Bcolor[0]
+                    # else:
+                    #     GZflux[1 + 2 * x].color = Bcolor[1]
+
+
+wave_front = WaveFront()
+gauss_surface = GaussSurface()
 central_electromagnetic_wave = ElectromagneticWave(0)
+
 neighbouring_electromagnetic_waves = [ElectromagneticWave(3, vec(0, sep, 0))]
 neighbouring_electromagnetic_waves += [ElectromagneticWave(3, vec(0, -sep, 0))]
 for j in arange(1, 3):
@@ -171,135 +397,9 @@ dEdtlabel = label(pos=vector(field_index, 0, 0), text='dE/dt', color=Ecolor[2], 
                   background=labelABackground[colorScheme], xoffset=20, yoffset=12,
                   height=labelFontSizes[labelFontSizeSelected], border=6, font="sans")
 
-#
-# Gaussian surface tiled into strips, each strip centered on field-vector evaluation point
-#
 
 
-gposx = 15  # x-center of Gaussian (centered on a field-vector evaluation point)
-gdx = 1  # width of xstrip spacing (x-spacing of field vectors)
-gxsize = 5  # choose an odd number (number of xstrips)
-gxleft = -(gxsize / 2 - gdx / 2)  # displacement to center of left xstrip
-gxright = gxleft + (gxsize - 1)  # displacement to center of right xstrip
 
-GXflux = []
-GYflux = []
-GZflux = []
-
-GYfSeg = []
-GZfSeg = []
-GSegFlux = []
-
-for s in [1, -1]:
-    for x in arange(gposx + gxleft, gposx + gxleft + gxsize):
-        Ax = x - 0 * gdx / 2
-        Ap = sep
-        Bx = Ax + gdx
-        Bp = -sep
-
-        GYfSeg.append([vertex(pos=vector(Ax, s * sep, Ap), color=Ecolor[0]),
-                       vertex(pos=vector(Ax, s * sep, Bp), color=Ecolor[0])])
-        GZfSeg.append([vertex(pos=vector(Ax, Ap, s * sep), color=Bcolor[0]),
-                       vertex(pos=vector(Ax, Bp, s * sep), color=Bcolor[0])])
-
-sz = len(GYfSeg) / 2
-for s in [0, 1]:
-    for i in arange(1, sz):
-        Q = quad(
-            vs=[GYfSeg[int(s * sz + (i - 1))][0], GYfSeg[int(s * sz + (i - 1))][1], GYfSeg[int(s * sz + i)][1], GYfSeg[int(s * sz + i)][0]])
-        Q.visible = (showGauss == 2)
-        GSegFlux.append(Q)
-        Q = quad(
-            vs=[GZfSeg[int(s * sz + (i - 1))][0], GZfSeg[int(s * sz + (i - 1))][1], GZfSeg[int(s * sz + i)][1], GZfSeg[int(s * sz + i)][0]])
-        Q.visible = (showGauss == 2)
-        GSegFlux.append(Q)
-
-for x in arange(gposx + gxleft, gposx + gxleft + gxsize):
-    Ax = x - gdx / 2
-    Ap = sep
-    Bx = Ax + gdx
-    Bp = -sep
-
-    #########################################################
-
-    gYplus = quad(vs=[vertex(pos=vector(Ax, sep, Ap)),
-                      vertex(pos=vector(Bx, sep, Ap)),
-                      vertex(pos=vector(Bx, sep, Bp)),
-                      vertex(pos=vector(Ax, sep, Bp))])
-    gYP = gYplus  # compound([gYplus])
-    gYP.visible = (showGauss == 1)
-
-    gYminus = quad(vs=[vertex(pos=vector(Ax, -sep, Ap)),
-                       vertex(pos=vector(Bx, -sep, Ap)),
-                       vertex(pos=vector(Bx, -sep, Bp)),
-                       vertex(pos=vector(Ax, -sep, Bp))])
-    gYM = gYminus  # compound([gYminus])
-    gYM.visible = (showGauss == 1)
-
-    GYflux.append(gYP)
-    GYflux.append(gYM)
-
-    #########################################################
-
-    gZplus = quad(vs=[vertex(pos=vector(Ax, Ap, sep)),
-                      vertex(pos=vector(Bx, Ap, sep)),
-                      vertex(pos=vector(Bx, Bp, sep)),
-                      vertex(pos=vector(Ax, Bp, sep))])
-    gZP = gZplus  # compound([gZplus])
-    gZP.visible = (showGauss == 1)
-
-    gZminus = quad(vs=[vertex(pos=vector(Ax, Ap, -sep)),
-                       vertex(pos=vector(Bx, Ap, -sep)),
-                       vertex(pos=vector(Bx, Bp, -sep)),
-                       vertex(pos=vector(Ax, Bp, -sep))])
-    gZM = gZminus  # compound([gZminus])
-    gZM.visible = (showGauss == 1)
-
-    GZflux.append(gZP)
-    GZflux.append(gZM)
-
-    #################################################  ########
-
-Ax = gposx + gxright + gdx / 2
-Ap = sep
-Bx = Ax + gdx
-Bp = -sep
-gfa = vertex(pos=vector(Ax, Ap, sep))
-gfb = vertex(pos=vector(Ax, Ap, -sep))
-gfc = vertex(pos=vector(Ax, Bp, -sep))
-gfd = vertex(pos=vector(Ax, Bp, sep))
-gfQ = quad(vs=[gfa, gfb, gfc, gfd])
-gFORW = compound([gfQ])
-gFORW.opacity = 0.1
-gFORW.shininess = 1
-gFORW.color = color.white
-gFORW.visible = (showGauss > 0)
-gFORW.pos1 = vec(Ax, 0, 0)
-gFORW.pos2 = vec(Ax - gdx / 2, 0, 0)
-
-Ax = gposx + gxleft - gdx / 2
-Ap = sep
-Bx = Ax + gdx
-Bp = -sep
-gba = vertex(pos=vector(Ax, Ap, sep))
-gbb = vertex(pos=vector(Ax, Ap, -sep))
-gbc = vertex(pos=vector(Ax, Bp, -sep))
-gbd = vertex(pos=vector(Ax, Bp, sep))
-gbQ = quad(vs=[gba, gbb, gbc, gbd])
-gBACK = compound([gbQ])
-gBACK.opacity = 0.1
-gBACK.shininess = 1
-gBACK.color = color.white
-gBACK.visible = (showGauss > 0)
-gBACK.pos1 = vec(Ax, 0, 0)
-gBACK.pos2 = vec(Ax + gdx / 2, 0, 0)
-
-GXflux.append(gFORW)
-GXflux.append(gBACK)
-
-
-##########################################################################################################
-##########################################################################################################
 
 def keyInput(evt):
     #        scene.waitfor('click')
@@ -337,8 +437,7 @@ def toggle_technical_labels(event):
     calculus = 1 if event.checked else 0
 
 def toggle_wave_fronts(event):
-    FRONT.visible = event.checked
-    FRONT2.visible = event.checked
+    wave_front.set_visibility_to(event.checked)
 
 def toggle_verbose(event):
     global verbose
@@ -377,18 +476,7 @@ def toggle_show_gauss(event):
     global  showGauss
     showGauss += 1
     showGauss %= 3
-    for i in GYflux + GZflux:
-        i.visible = (showGauss == 1)
-    for i in GSegFlux:
-        i.visible = (showGauss == 2)
-    for i in GXflux:
-        i.visible = (showGauss > 0)
-    if showGauss == 1:
-        GXflux[0].pos = GXflux[0].pos1
-        GXflux[1].pos = GXflux[1].pos1
-    else:
-        GXflux[0].pos = GXflux[0].pos2
-        GXflux[1].pos = GXflux[1].pos2
+    gauss_surface.toggle_visibility()
 
 def toggle_color_scheme(event):
     global colorScheme
@@ -408,9 +496,7 @@ def toggle_color_scheme(event):
     dEdt.color = ddtcolor[1]
     dEdtlabel.color = Ecolor[2]  # using ddtcolor[0] will have darker text
 
-    FRONT.color = Frontcolor[colorScheme]
-    FRONT2.color = Frontcolor[colorScheme]
-
+    wave_front.set_color_to_color_scheme(colorScheme)
     animation.ambient = vector(1, 1, 1) - vector(animation.ambient)
 
 def toggle_run(event):
@@ -460,7 +546,7 @@ verbose_button= button(text=" Verbose ", bind=toggle_verbose)
 
 phase0 = wavelength / 4.
 field_index = 0
-while 1:
+while True:
     rate(60)
 
     new_field_index = int(animation.mouse.pos.x)
@@ -504,92 +590,12 @@ while 1:
         #    gaussPos0[i][0] +=(newfi-fi)
         #    gaussPos1[i][0] +=(newfi-fi)
 
-    # UPDATE THE FIELDS
     central_electromagnetic_wave.update_with(t)
     for wave in neighbouring_electromagnetic_waves:
         wave.update_with(t)
 
-    central_electromagnetic_wave.update_with(t)
-
-    #        print (i%(2*S)-S), EField[i].pos[0]
-
-    # UPDATE THE FLUX
-
-    if showGauss > 0:
-        if showGauss == 2:
-            for s in [0, 1]:
-                i = 0
-                for x in arange(0, gxsize):
-                    amp = sin(k * (x + gposx + gxleft) - omega * t)
-                    # print(x+ gposx+gxleft,GYfSeg[i][0].pos)
-                    #
-                    # TODO Quads don't have opacity, so move this operation to the vertices instead
-                    #
-                    # GYfSeg[s * gxsize + i][0].opacity = abs(amp)
-                    # GYfSeg[s * gxsize + i][1].opacity = abs(amp)
-                    # GZfSeg[s * gxsize + i][0].opacity = abs(amp)
-                    # GZfSeg[s * gxsize + i][1].opacity = abs(amp)
-                    # TODO Quads don't have color, so move this operation to the vertices instead
-                    # if (1 - 2 * s) * amp > 0:
-                    #     GYfSeg[s * gxsize + i][0].color = Ecolor[0]
-                    #     GYfSeg[s * gxsize + i][1].color = Ecolor[0]
-                    #     GZfSeg[s * gxsize + i][0].color = Bcolor[0]
-                    #     GZfSeg[s * gxsize + i][1].color = Bcolor[0]
-                    # else:
-                    #     GYfSeg[s * gxsize + i][0].color = Ecolor[1]
-                    #     GYfSeg[s * gxsize + i][1].color = Ecolor[1]
-                    #     GZfSeg[s * gxsize + i][0].color = Bcolor[1]
-                    #     GZfSeg[s * gxsize + i][1].color = Bcolor[1]
-
-                    i += 1
-        else:
-            for x in arange(0, gxsize):
-                amp = sin(k * (x + gposx + gxleft) - omega * t)
-
-                ###
-                # TODO Quads don't have opacity, so move this operation to the vertices instead
-                #GYflux[0 + 2 * x].opacity = abs(amp)
-                # TODO Quads don't have color, so move this operation to the vertices instead
-                # if amp > 0:
-                #     GYflux[0 + 2 * x].color = Ecolor[0]
-                # else:
-                #     GYflux[0 + 2 * x].color = Ecolor[1]
-
-                # TODO Quads don't have opacity, so move this operation to the vertices instead
-                #GYflux[1 + 2 * x].opacity = abs(amp)
-                # TODO Quads don't have color, so move this operation to the vertices instead
-                # if (-amp) > 0:
-                #     GYflux[1 + 2 * x].color = Ecolor[0]
-                # else:
-                #     GYflux[1 + 2 * x].color = Ecolor[1]
-
-                ###
-                # TODO Quads don't have opacity, so move this operation to the vertices instead
-                #GZflux[0 + 2 * x].opacity = abs(amp)
-                # TODO Quads don't have color, so move this operation to the vertices instead
-                # if amp > 0:
-                #     GZflux[0 + 2 * x].color = Bcolor[0]
-                # else:
-                #     GZflux[0 + 2 * x].color = Bcolor[1]
-
-                # TODO Quads don't have opacity, so move this operation to the vertices instead
-                #GZflux[1 + 2 * x].opacity = abs(amp)
-                # TODO Quads don't have color, so move this operation to the vertices instead
-                # if (-amp) > 0:
-                #     GZflux[1 + 2 * x].color = Bcolor[0]
-                # else:
-                #     GZflux[1 + 2 * x].color = Bcolor[1]
-
-    ####################################################################################
-    ####################################################################################
-
-    FRONT.pos = vec((phase0 + (omega / k) * t) % (2 * S) - S, 0, 0)
-    FRONT2.pos = vec((phase0 + wavelength + (omega / k) * t) % (2 * S) - S, 0, 0)
-
-    ###############################################################
-    ###############################################################
-
-    # FARADAY & AMPERE
+    gauss_surface.update_by(t)
+    wave_front.update_by(t)
 
     # UPDATE THE dB/dt
     phase = k * (new_field_index - S) - omega * t
