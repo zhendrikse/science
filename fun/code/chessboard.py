@@ -77,6 +77,15 @@ KINGS_TABLE = [
 
 class ChessLibrary:
     def __init__(self):
+        self.PAWN = chess.PAWN
+        self.ROOK = chess.ROOK
+        self.KNIGHT = chess.KNIGHT
+        self.BISHOP = chess.BISHOP
+        self.QUEEN = chess.QUEEN
+        self.KING = chess.KING
+        self.WHITE = chess.WHITE
+        self.BLACK = chess.BLACK
+
         self._board = chess.Board()
 
     def is_game_over(self):
@@ -253,9 +262,6 @@ class Board:
         return square ^ 0x38
 
     def evaluate(self):
-
-        boardvalue = 0
-
         wp = len(self._chess_library.pieces(chess.PAWN, chess.WHITE))
         bp = len(self._chess_library.pieces(chess.PAWN, chess.BLACK))
         wn = len(self._chess_library.pieces(chess.KNIGHT, chess.WHITE))
@@ -269,84 +275,50 @@ class Board:
 
         material = 100 * (wp - bp) + 300 * (wn - bn) + 300 * (wb - bb) + 500 * (wr - br) + 900 * (wq - bq)
 
-        pawn_sum = sum([PAWN_TABLE[i] for i in self._chess_library.pieces(chess.PAWN, chess.WHITE)])
-        pawn_sum = pawn_sum + sum([-PAWN_TABLE[chess.square_mirror(i)] for i in self._chess_library.pieces(chess.PAWN, chess.BLACK)])
-        knight_sum = sum([KNIGHTS_TABLE[i] for i in self._chess_library.pieces(chess.KNIGHT, chess.WHITE)])
-        knight_sum = knight_sum + sum(
-            [-KNIGHTS_TABLE[chess.square_mirror(i)] for i in self._chess_library.pieces(chess.KNIGHT, chess.BLACK)])
-        bishop_sum = sum([BISHOPS_TABLE[i] for i in self._chess_library.pieces(chess.BISHOP, chess.WHITE)])
-        bishop_sum = bishop_sum + sum(
-            [-BISHOPS_TABLE[chess.square_mirror(i)] for i in self._chess_library.pieces(chess.BISHOP, chess.BLACK)])
-        rook_sum = sum([ROOKS_TABLE[i] for i in self._chess_library.pieces(chess.ROOK, chess.WHITE)])
-        rook_sum = rook_sum + sum([-ROOKS_TABLE[chess.square_mirror(i)] for i in self._chess_library.pieces(chess.ROOK, chess.BLACK)])
-        queens_sum = sum([QUEENS_TABLE[i] for i in self._chess_library.pieces(chess.QUEEN, chess.WHITE)])
-        queens_sum = queens_sum + sum(
-            [-QUEENS_TABLE[chess.square_mirror(i)] for i in self._chess_library.pieces(chess.QUEEN, chess.BLACK)])
-        kings_sum = sum([KINGS_TABLE[i] for i in self._chess_library.pieces(chess.KING, chess.WHITE)])
-        kings_sum = kings_sum + sum(
-            [-KINGS_TABLE[chess.square_mirror(i)] for i in self._chess_library.pieces(chess.KING, chess.BLACK)])
+        pawn_sum = 0
+        for i in self._chess_library.pieces(self._chess_library.PAWN, self._chess_library.WHITE):
+            pawn_sum += PAWN_TABLE[i]
+
+        for i in self._chess_library.pieces(self._chess_library.PAWN, self._chess_library.BLACK):
+            pawn_sum += -PAWN_TABLE[self._square_mirror(i)]
+
+        knight_sum = 0
+        for i in self._chess_library.pieces(self._chess_library.KNIGHT, self._chess_library.WHITE):
+            knight_sum += KNIGHTS_TABLE[i]
+
+        for i in self._chess_library.pieces(self._chess_library.KNIGHT, self._chess_library.BLACK):
+            knight_sum += -KNIGHTS_TABLE[self._square_mirror(i)]
+
+        bishop_sum = 0
+        for i in self._chess_library.pieces(self._chess_library.BISHOP, self._chess_library.WHITE):
+            bishop_sum += BISHOPS_TABLE[i]
+
+        for i in self._chess_library.pieces(self._chess_library.BISHOP, self._chess_library.BLACK):
+            bishop_sum += -BISHOPS_TABLE[self._square_mirror(i)]
+
+        rook_sum = 0
+        for i in self._chess_library.pieces(self._chess_library.ROOK, self._chess_library.WHITE):
+            rook_sum += ROOKS_TABLE[i]
+
+        for i in self._chess_library.pieces(self._chess_library.ROOK, self._chess_library.BLACK):
+            rook_sum += -ROOKS_TABLE[self._square_mirror(i)]
+
+        queens_sum = 0
+        for i in self._chess_library.pieces(self._chess_library.QUEEN, self._chess_library.WHITE):
+            queens_sum += QUEENS_TABLE[i]
+
+        for i in self._chess_library.pieces(self._chess_library.QUEEN, self._chess_library.BLACK):
+            queens_sum += -QUEENS_TABLE[self._square_mirror(i)]
+
+        kings_sum = 0
+        for i in self._chess_library.pieces(self._chess_library.KING, self._chess_library.WHITE):
+            kings_sum += KINGS_TABLE[i]
+
+        for i in self._chess_library.pieces(self._chess_library.KING, self._chess_library.BLACK):
+            kings_sum += -KINGS_TABLE[self._square_mirror(i)]
 
         boardvalue = material + pawn_sum + knight_sum + bishop_sum + rook_sum + queens_sum + kings_sum
-
         return boardvalue
-
-    # def evaluate(self):
-    #     wp = len(self._pieces("PAWN", color.white))
-    #     bp = len(self._pieces("PAWN", color.blue))
-    #     wn = len(self._pieces("KNIGHT", color.white))
-    #     bn = len(self._pieces("KNIGHT", color.blue))
-    #     wb = len(self._pieces("BISHOP", color.white))
-    #     bb = len(self._pieces("BISHOP", color.blue))
-    #     wr = len(self._pieces("ROOK", color.white))
-    #     br = len(self._pieces("ROOK", color.blue))
-    #     wq = len(self._pieces("QUEEN", color.white))
-    #     bq = len(self._pieces("QUEEN", color.blue))
-    #     material = 100 * (wp - bp) + 300 * (wn - bn) + 300 * (wb - bb) + 500 * (wr - br) + 900 * (wq - bq)
-    #
-    #     pawn_sum = 0
-    #     for i in self._pieces("PAWN", color.white):
-    #         pawn_sum += PAWN_TABLE[i]
-    #
-    #     for i in self._pieces("PAWN", color.blue):
-    #         pawn_sum += -PAWN_TABLE[self._square_mirror(i)]
-    #
-    #     knight_sum = 0
-    #     for i in self._pieces("KNIGHT", color.white):
-    #         knight_sum += KNIGHTS_TABLE[i]
-    #
-    #     for i in self._pieces("KNIGHT", color.blue):
-    #         knight_sum += -KNIGHTS_TABLE[self._square_mirror(i)]
-    #
-    #     bishop_sum = 0
-    #     for i in self._pieces("BISHOP", color.white):
-    #         bishop_sum += BISHOPS_TABLE[i]
-    #
-    #     for i in self._pieces("BISHOP", color.blue):
-    #         bishop_sum += -BISHOPS_TABLE[self._square_mirror(i)]
-    #
-    #     rook_sum = 0
-    #     for i in self._pieces("ROOK", color.white):
-    #         rook_sum += ROOKS_TABLE[i]
-    #
-    #     for i in self._pieces("ROOK", color.blue):
-    #         rook_sum += -ROOKS_TABLE[self._square_mirror(i)]
-    #
-    #     queens_sum = 0
-    #     for i in self._pieces("QUEEN", color.white):
-    #         queens_sum += QUEENS_TABLE[i]
-    #
-    #     for i in self._pieces("QUEEN", color.blue):
-    #         queens_sum += -QUEENS_TABLE[self._square_mirror(i)]
-    #
-    #     kings_sum = 0
-    #     for i in self._pieces("KING", color.white):
-    #         kings_sum += KINGS_TABLE[i]
-    #
-    #     for i in self._pieces("KING", color.blue):
-    #         kings_sum += -KINGS_TABLE[self._square_mirror(i)]
-    #
-    #     board_value = material + pawn_sum + knight_sum + bishop_sum + rook_sum + queens_sum + kings_sum
-    #     return board_value
 
     def determine_best_move(self, is_white, depth=3):
         best_move = -100000 if is_white else 100000
