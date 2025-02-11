@@ -1,9 +1,9 @@
 # We VPython 3.2
-from vpython import vector, canvas, color, cylinder, arrow, rate, sin, cos, checkbox, pi, norm, mag, cross, slider, arange
+from vpython import vector, canvas, color, cylinder, arrow, rate, sin, cos, checkbox, pi, norm, mag, cross, slider, arange, wtext
 
 title = """ 
 &#x2022; <a href="https://lectdemo.github.io/virtual/23_antenna.html">23_antenna.py</a> by Ruth Chabay Spring 2001
-&#x2022; Refactored by <a href="https://www.hendrikse.name">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/antenna.py">antenna.py</a>
 &#x2022; &lt;s&gt; &rarr; screenshot
 &#x2022; &lt;v&gt; &rarr; verbose output
 
@@ -90,11 +90,11 @@ field_text = wtext(text="5")
 def on_key_press(event):
     global show_decrease
     if event.key == 's':
-        scene.capture("antenna_waves")
+        animation.capture("antenna_waves")
     if event.key == 'v':
-        print("scene.center=" + str(animation.center))
-        print("scene.forward=" + str(animation.forward))
-        print("scene.range=" + str(animation.range))
+        print("animation.center=" + str(animation.center))
+        print("animation.forward=" + str(animation.forward))
+        print("animation.range=" + str(animation.range))
 
 
 electromagnetic_wave = ElectromagneticWave()

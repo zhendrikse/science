@@ -6,7 +6,7 @@ from vpython import canvas, box, vector, sphere, sin, cos, rate, pi, arrow, slid
 title = """Helical motion of charged particle in magnetic field
 
 &#x2022; Based on <a href="https://towardsdatascience.com/simple-physics-animations-using-vpython-1fce0284606">Simple Physics Animations Using VPython</a> by Zhiheng Jiang
-&#x2022; Refactored and extended by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored and extended by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/helical_motion.py">helical_motion.py</a>
 
 """
 

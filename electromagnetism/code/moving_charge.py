@@ -5,7 +5,7 @@ from vpython import arrow, hat, vec, exp, sphere, mag, color, wtext, canvas, rat
 title = """Moving charge through electric field between two plates 
 
 &#x2022; Based on <a href="https://github.com/Physics-Morris/Physics-Vpython/blob/master/8_Charge_Motion.py">8_Charge_Motion.py</a>
-&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/moving_charge.py">moving_charge.py</a>
 
 """
 

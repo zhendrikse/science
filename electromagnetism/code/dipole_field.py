@@ -5,7 +5,7 @@ from vpython import arrow, canvas, log, hat, vec, exp, mag, rate, color, sphere,
 title = """Electric field of a dipole 
 
     &#x2022; Based on <a href="https://github.com/Physics-Morris/Physics-Vpython/blob/master/7_Dipole.py">7_Dipole.py</a>
-    &#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a>
+    &#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/dipole_field.py">dipole_field.py</a>
     &#x2022; Select an object with mouse to zoom in'
 
 """

@@ -4,7 +4,7 @@ from vpython import pi, box, vec, color, sin, cos, rate, sphere, hat, mag, canva
 
 title="""
 &#x2022; Based on original <a href="https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/1-introduction-objects-parameters-and-the-3d-environment/optional-scale-models#">example</a>
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/charged_ring.py">charged_ring.py</a>
 
 If it isn't doing anything interesting, either wait or run again to randomize start position.
 

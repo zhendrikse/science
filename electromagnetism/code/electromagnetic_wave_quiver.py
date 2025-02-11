@@ -107,6 +107,7 @@ def change_amplitude(event):
 animation.append_to_caption("\n\n")
 ampSlider = slider(bind=change_amplitude, min=0.0, max=5, value=1, left=10)
 animation.append_to_caption("amplitude")
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 dt = 2e-19
 time = 0

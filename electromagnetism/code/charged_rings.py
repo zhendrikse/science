@@ -4,7 +4,7 @@ from vpython import canvas, arange, pi, sphere, vector, sin, cos, ring, vec, arr
 title = """Electric field inside charged rings. 
 
 &#x2022; Original <a href="https://lectdemo.github.io/virtual/18-Erings.html">18-Erings.html</a>
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/charged_rings.py">charged_rings.py</a>
 &#x2022; &lt;s&gt; &rarr; screenshot
 &#x2022; &lt;v&gt; &rarr; verbose output
 

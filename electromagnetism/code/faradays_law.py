@@ -7,7 +7,7 @@ title = """
 Faraday's law: changing-Bs are associated with curly-Es
 
 &#x2022; Written by Rob Salgado (salgado@physics.syr.edu)
-&#x2022; Modified by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Modified by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/faradays_law.py">faradays_law.py</a>
 
 The thick green vector representing d|B|/dt, i.e. the rate of change of the magnitude 
 of the magnetic field) is associated with the spatial arrangement of the electric field 

@@ -1,6 +1,7 @@
 <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
@@ -167,57 +168,59 @@ async function __main__() {
     ampSlider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({bind: change_amplitude, min: 0, max: 5, value: 1, left: 10})]);
     "66";
     animation.append_to_caption("amplitude");
-    "68";
+    "67";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "69";
     while (true) {
-        "69";
-        (await rate(refresh_rate));
         "70";
+        (await rate(refresh_rate));
+        "71";
         time=time["+"](dt);
-        "72";
-        electron.pos.y = amplitude["*"](sin(2["*"](pi)["*"](frequency)["*"](time)));
         "73";
+        electron.pos.y = amplitude["*"](sin(2["*"](pi)["*"](frequency)["*"](time)));
+        "74";
         proton.pos.y = 1["-u"]()["*"](amplitude)["*"](sin(2["*"](pi)["*"](frequency)["*"](time)));
-        "75";
+        "76";
         var ρσ_Iter4 = range(len(electric_field));
         ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
         for (var ρσ_Index4 of ρσ_Iter4) {
             i = ρσ_Index4;
-            "78";
-            r = ρσ_getitem(electric_field, i).pos["-"](1["*"](vec(0, amplitude["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0)));
             "79";
-            vel = vec(0, 2["*"](pi)["*"](frequency)["*"](amplitude)["*"](cos(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
+            r = ρσ_getitem(electric_field, i).pos["-"](1["*"](vec(0, amplitude["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0)));
             "80";
+            vel = vec(0, 2["*"](pi)["*"](frequency)["*"](amplitude)["*"](cos(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
+            "81";
             acc = vec(0, 1["-u"]()["*"](4)["*"](Math.pow(pi, 2))["*"](Math.pow(frequency, 2))["*"](Math.pow(amplitude, 2))["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
-            "82";
+            "83";
             if (r.mag["<="](1.5["*"](step))) {
-                "83";
-                ρσ_getitem(electric_field, i).axis = vec(0, 0, 0);
                 "84";
-                ρσ_getitem(magnetic_field, i).axis = vec(0, 0, 0);
+                ρσ_getitem(electric_field, i).axis = vec(0, 0, 0);
                 "85";
+                ρσ_getitem(magnetic_field, i).axis = vec(0, 0, 0);
+                "86";
                 continue;
             }
-            "86";
-            kappa = 1["-"](1["*"](r.norm().dot(vel))["/"](c));
             "87";
-            E = k["*"](1["-u"]())["*"](q)["*"](1["/"](r.mag2["*"](Math.pow(kappa, 3)))["*"](r.norm()["-"](1["*"](vel["/"](c))))["*"](1["-"](1["*"](vel.mag2["/"](Math.pow(c, 2)))))["+"](1["/"](c["*"](Math.pow(kappa, 3))["*"](r.mag))["*"](r.norm().cross((r.norm()["-"](1["*"](vel["/"](c)))).cross(acc["/"](c))))));
-            "89";
-            B = 1["/"](c)["*"](r.norm().cross(E));
-            "92";
-            r = ρσ_getitem(electric_field, i).pos["-"](1["*"](vec(0, 1["-u"]()["*"](amplitude)["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0)));
-            "93";
-            vel = vec(0, 1["-u"]()["*"](2)["*"](pi)["*"](frequency)["*"](amplitude)["*"](cos(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
-            "94";
-            acc = vec(0, 4["*"](Math.pow(pi, 2))["*"](Math.pow(frequency, 2))["*"](Math.pow(amplitude, 2))["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
-            "96";
             kappa = 1["-"](1["*"](r.norm().dot(vel))["/"](c));
+            "88";
+            E = k["*"](1["-u"]())["*"](q)["*"](1["/"](r.mag2["*"](Math.pow(kappa, 3)))["*"](r.norm()["-"](1["*"](vel["/"](c))))["*"](1["-"](1["*"](vel.mag2["/"](Math.pow(c, 2)))))["+"](1["/"](c["*"](Math.pow(kappa, 3))["*"](r.mag))["*"](r.norm().cross((r.norm()["-"](1["*"](vel["/"](c)))).cross(acc["/"](c))))));
+            "90";
+            B = 1["/"](c)["*"](r.norm().cross(E));
+            "93";
+            r = ρσ_getitem(electric_field, i).pos["-"](1["*"](vec(0, 1["-u"]()["*"](amplitude)["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0)));
+            "94";
+            vel = vec(0, 1["-u"]()["*"](2)["*"](pi)["*"](frequency)["*"](amplitude)["*"](cos(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
+            "95";
+            acc = vec(0, 4["*"](Math.pow(pi, 2))["*"](Math.pow(frequency, 2))["*"](Math.pow(amplitude, 2))["*"](sin(2["*"](pi)["*"](frequency)["*"](time["-"](1["*"](ρσ_getitem(electric_field, i).pos.mag)["/"](c))))), 0);
             "97";
+            kappa = 1["-"](1["*"](r.norm().dot(vel))["/"](c));
+            "98";
             E=E["+"](k["*"](q)["*"](1["/"](r.mag2["*"](Math.pow(kappa, 3)))["*"](r.norm()["-"](1["*"](vel["/"](c))))["*"](1["-"](1["*"](vel.mag2["/"](Math.pow(c, 2)))))["+"](1["/"](c["*"](Math.pow(kappa, 3))["*"](r.mag))["*"](r.norm().cross((r.norm()["-"](1["*"](vel["/"](c)))).cross(acc["/"](c)))))));
-            "99";
+            "100";
             B=B["+"](1["/"](c)["*"](r.norm().cross(E)));
-            "101";
-            ρσ_getitem(electric_field, i).axis = E["*"](electric_field_scale);
             "102";
+            ρσ_getitem(electric_field, i).axis = E["*"](electric_field_scale);
+            "103";
             ρσ_getitem(magnetic_field, i).axis = B["*"](magnetic_field_scale);
         }
     }
