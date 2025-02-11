@@ -2,8 +2,7 @@
 
 from vpython import *
 
-title = """EM Wave by Rob Salgado (2022), robertoBsalgado@gmail.com
-
+title = """&#x2022; EM Wave by Rob Salgado (2022), robertoBsalgado@gmail.com
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/electromagnetic_wave.py">electromagnetic_wave.py</a>
 
 """
@@ -22,7 +21,7 @@ initial_range = 10
 initial_forward = vec(2.2012, -2.3109, -2.89429)  # see below
 animation = canvas(background=color.gray(0.075), forward=initial_forward, range=initial_range, title=title)
 
-colorBackground = [color.gray(0.075) * 0, color.white]
+colorBackground = [color.gray(0.075), color.white]
 labelABackground = [color.black, 0.2 * vec(1, 1, 1)]  # opacity
 labelFBackground = [0.0 * vec(1, 1, 1), vec(1, 1, 1)]  # opacity
 labelAOpacity = [0.66, 0.9]  # opacity
