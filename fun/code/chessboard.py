@@ -1,13 +1,13 @@
 #Web VPython 3.2
 
-from vpython import cone, box, rate, vec, color, cylinder, canvas, sphere
+from vpython import cone, box, winput, vec, color, cylinder, canvas, sphere, rate
 import chess
 
 title = """&#x2022; Based on <a href="https://vpython.org/contents/contributed/chessboard.py">chessboard.py</a> by Shaun Press
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/fun/code/chessboard.py">chessboard.py</a>
+&#x2022; Refactored and extended by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/fun/code/chessboard.py">chessboard.py</a>
 
 """
-animation = canvas(title=title, background=color.gray(0.075), center = vec(3.5, 0, 3.5), forward=vec(0, -0.636537, -0.771246))
+animation = canvas(title=title, background=color.gray(0.075), center = vec(3.5, 0, 3.5), forward=vec(-0.0011868, -0.666869, 0.745173))
 
 PAWN_TABLE = [
     0,  0,  0,  0,  0,  0,  0,  0,
@@ -75,6 +75,28 @@ KINGS_TABLE = [
     -50,-30,-30,-30,-30,-30,-30,-50
 ]
 
+class ChessLibrary:
+    def __init__(self):
+        self._board = chess.Board()
+
+    def is_game_over(self):
+        return self._board.is_game_over()
+
+    def parse_san(self, input_):
+        return self._board.parse_san(input_)
+
+    def push(self, move):
+        return self._board.push(move)
+
+    def legal_moves(self):
+        return self._board.legal_moves
+
+    def pop(self):
+        return self._board.pop()
+
+    def remove_piece_at(self, square):
+        self._board.remove_piece_at(square)
+
 class Piece:
     def __init__(self, type_, base, top=None, base_offset=vec(0, 0, 0), top_offset=vec(0, 0, 0)):
         self._base = base
@@ -96,12 +118,9 @@ class Piece:
             self._top.pos = new_pos + self._top_offset
 
     def set_visible(self, state):
-        """Makes more complex shapes invisible"""
-        if hasattr(self._base, 'objects'):
-            for obj in self._base.objects:
-                obj.visible = state
-        else:
-            self._base.visible = state
+        self._base.visible = state
+        if self._has_top():
+            self._top.visible = state
 
     def colour(self):
         return self._base.color
@@ -153,6 +172,7 @@ class Board:
             self.squares.append(None)
         self._make_board()
         self._place_pieces()
+        self._chess_library = ChessLibrary()
 
     def add_piece(self, x, y, piece):
         self.squares[y * 8 + x] = piece
@@ -167,8 +187,11 @@ class Board:
             print('eh?')
             return
         to_piece = self.squares[ty * 8 + tx]
+
         if to_piece is not None:
-            to_piece.setvisible(0)
+            to_piece.set_visible(False)
+            self._chess_library.remove_piece_at(tx + 8 * ty)
+
         piece.move(vec(tx, 0, ty))
         self.squares[ty * 8 + tx] = piece
         self.squares[fy * 8 + fx] = None
@@ -236,61 +259,75 @@ class Board:
         br = len(self._pieces("ROOK", color.blue))
         wq = len(self._pieces("QUEEN", color.white))
         bq = len(self._pieces("QUEEN", color.blue))
-
         material = 100 * (wp - bp) + 300 * (wn - bn) + 300 * (wb - bb) + 500 * (wr - br) + 900 * (wq - bq)
 
-        pawn_sum = sum([PAWN_TABLE[i] for i in self._pieces("PAWN", color.white)])
-        pawn_sum = pawn_sum + sum([-PAWN_TABLE[self._square_mirror(i)] for i in self._pieces("PAWN", color.blue)])
-        knight_sum = sum([KNIGHTS_TABLE[i] for i in self._pieces("KNIGHT", color.white)])
-        knight_sum = knight_sum + sum(
-            [-KNIGHTS_TABLE[self._square_mirror(i)] for i in self._pieces("KNIGHT", color.blue)])
-        bishop_sum = sum([BISHOPS_TABLE[i] for i in self._pieces("BISHOP", color.white)])
-        bishop_sum = bishop_sum + sum(
-            [-BISHOPS_TABLE[self._square_mirror(i)] for i in self._pieces("BISHOP", color.blue)])
-        rook_sum = sum([ROOKS_TABLE[i] for i in self._pieces("ROOK", color.white)])
-        rook_sum = rook_sum + sum([-ROOKS_TABLE[self._square_mirror(i)] for i in self._pieces("ROOK", color.blue)])
-        queens_sum = sum([QUEENS_TABLE[i] for i in self._pieces("QUEEN", color.white)])
-        queens_sum = queens_sum + sum(
-            [-QUEENS_TABLE[self._square_mirror(i)] for i in self._pieces("QUEEN", color.blue)])
-        kings_sum = sum([KINGS_TABLE[i] for i in self._pieces("KING", color.white)])
-        kings_sum = kings_sum + sum([-KINGS_TABLE[self._square_mirror(i)] for i in self._pieces("KING", color.blue)])
+        pawn_sum = 0
+        for i in self._pieces("PAWN", color.white):
+            pawn_sum += PAWN_TABLE[i]
+
+        for i in self._pieces("PAWN", color.blue):
+            pawn_sum += -PAWN_TABLE[self._square_mirror(i)]
+
+        knight_sum = 0
+        for i in self._pieces("KNIGHT", color.white):
+            knight_sum += KNIGHTS_TABLE[i]
+
+        for i in self._pieces("KNIGHT", color.blue):
+            knight_sum += -KNIGHTS_TABLE[self._square_mirror(i)]
+
+        bishop_sum = 0
+        for i in self._pieces("BISHOP", color.white):
+            bishop_sum += BISHOPS_TABLE[i]
+
+        for i in self._pieces("BISHOP", color.blue):
+            bishop_sum += -BISHOPS_TABLE[self._square_mirror(i)]
+
+        rook_sum = 0
+        for i in self._pieces("ROOK", color.white):
+            rook_sum += ROOKS_TABLE[i]
+
+        for i in self._pieces("ROOK", color.blue):
+            rook_sum += -ROOKS_TABLE[self._square_mirror(i)]
+
+        queens_sum = 0
+        for i in self._pieces("QUEEN", color.white):
+            queens_sum += QUEENS_TABLE[i]
+
+        for i in self._pieces("QUEEN", color.blue):
+            queens_sum += -QUEENS_TABLE[self._square_mirror(i)]
+
+        kings_sum = 0
+        for i in self._pieces("KING", color.white):
+            kings_sum += KINGS_TABLE[i]
+
+        for i in self._pieces("KING", color.blue):
+            kings_sum += -KINGS_TABLE[self._square_mirror(i)]
 
         board_value = material + pawn_sum + knight_sum + bishop_sum + rook_sum + queens_sum + kings_sum
         return board_value
 
-    def _determine_best_move(self, is_white, depth = 3):
-        """Given a board, determines the best move.
-
-        Args:
-            board (chess.Board): A chess board.
-            is_white (bool): Whether the particular move is for white or black.
-            depth (int, optional): The number of moves looked ahead.
-
-        Returns:
-            chess.Move: The best predicated move.
-        """
-
+    def determine_best_move(self, is_white, depth = 3):
         best_move = -100000 if is_white else 100000
         best_final = None
-        for move in board.legal_moves:
-            board.push(move)
+        for move in self._chess_library.legal_moves():
+            self._chess_library.push(move)
             value = self._minimax_helper(depth - 1, -10000, 10000, not is_white)
-            board.pop()
+            self._chess_library.pop()
             if (is_white and value > best_move) or (not is_white and value < best_move):
                 best_move = value
                 best_final = move
         return best_final
 
     def _minimax_helper(self, depth, alpha, beta, is_maximizing):
-        if depth <= 0 or board.is_game_over():
+        if depth <= 0 or self._chess_library.is_game_over():
             return self.evaluate()
 
         if is_maximizing:
             best_move = -100000
-            for move in board.legal_moves:
-                board.push(move)
+            for move in self._chess_library.legal_moves():
+                self._chess_library.push(move)
                 value = self._minimax_helper(depth - 1, alpha, beta, False)
-                board.pop()
+                self._chess_library.pop()
                 best_move = max(best_move, value)
                 alpha = max(alpha, best_move)
                 if beta <= alpha:
@@ -298,89 +335,45 @@ class Board:
             return best_move
         else:
             best_move = 100000
-            for move in board.legal_moves:
-                board.push(move)
+            for move in self._chess_library.legal_moves():
+                self._chess_library.push(move)
                 value = self._minimax_helper(depth - 1, alpha, beta, True)
-                board.pop()
+                self._chess_library.pop()
                 best_move = min(best_move, value)
                 beta = min(beta, best_move)
                 if beta <= alpha:
                     break
             return best_move
 
+    def is_game_over(self):
+        return self._chess_library.is_game_over()
+
+    def parse_san(self, input):
+        return self._chess_library.parse_san(input)
+
+    def push(self, move):
+        self._chess_library.push(move)
+
+
 my_board = Board()
-print(my_board.evaluate())
-my_board.parse_string('b1c3')
-print(my_board.evaluate())
+
+def handle_user_move(event):
+    try:
+        user_move = event.text
+        move = my_board.parse_san(user_move)
+        my_board.push(move)
+        my_board.parse_string(user_move)
+        user_input.text = ""
+
+        move = my_board.determine_best_move(False)
+        my_board.push(move)
+        my_board.parse_string(str(move))
+    except ValueError:
+        pass # Silently ignore garbage input
+
+animation.append_to_caption("\nUser move: ")
+user_input = winput(bind=handle_user_move, type="string")
 
 while True:
     rate(10)
 
-
-# class console_colors:
-#     HEADER = '\033[95m'
-#     OKBLUE = '\033[94m'
-#     OKCYAN = '\033[96m'
-#     OKGREEN = '\033[92m'
-#     WARNING = '\033[93m'
-#     FAIL = '\033[91m'
-#     ENDC = '\033[0m'
-#     BOLD = '\033[1m'
-#     UNDERLINE = '\033[4m'
-#
-#
-# print(console_colors.HEADER + f'==================================================' + console_colors.ENDC)
-# print(console_colors.HEADER + f'                   Chess Engine                   ' + console_colors.ENDC)
-# print(console_colors.HEADER + f'==================================================' + console_colors.ENDC)
-# print()
-#
-# is_white = input(console_colors.OKBLUE + 'Will you be playing as white or black (white/black)? ' + console_colors.ENDC).lower()[0] == "w"
-#
-# my_board = Board()
-# print()
-# print(console_colors.HEADER + f'= Board State =' + console_colors.ENDC)
-# print(my_board)
-#
-# if is_white:
-#     while not my_board.is_game_over():
-#         print()
-#         while True:
-#             try:
-#                 move = my_board.parse_san(input(console_colors.OKGREEN + 'Enter your move: ' + console_colors.ENDC))
-#             except ValueError:
-#                 print(console_colors.FAIL + f'That is not a valid move!' + console_colors.ENDC)
-#                 continue
-#             break
-#         my_board.push(move)
-#
-#         move = my_board._determine_best_move(False)
-#         my_board.push(move)
-#
-#         print()
-#         print(console_colors.FAIL + f'Black made the move: {move}' + console_colors.ENDC)
-#         print()
-#         print(console_colors.HEADER + f'= Board State =' + console_colors.ENDC)
-#         print(my_board)
-#         print()
-# else:
-#     while not my_board.is_game_over():
-#         move = my_board._determine_best_move(True)
-#         my_board.push(move)
-#
-#         print()
-#         print(console_colors.FAIL + f'White made the move: {move}' + console_colors.ENDC)
-#         print()
-#         print(console_colors.HEADER + f'= Board State =' + console_colors.ENDC)
-#         print(my_board)
-#
-#         print()
-#         while True:
-#             try:
-#                 move = my_board.parse_san(input(console_colors.OKGREEN + 'Enter your move: ' + console_colors.ENDC))
-#             except ValueError:
-#                 print(console_colors.FAIL + f'That is not a valid move!' + console_colors.ENDC)
-#                 continue
-#             break
-#         my_board.push(move)
-#
-# print(console_colors.HEADER + f'The game is over!' + console_colors.ENDC)
