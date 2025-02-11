@@ -28,6 +28,12 @@ You have to make the rules, not follow them.
 
 <div class="double_image">
 <figure class="left_image">
+  <a href="planets.html">
+    <img alt="Our planets" src="../images/planets.png" title="Click to animate"/>
+  </a>
+  <figcaption>The eight planets that make up our own solar system.</figcaption>
+</figure>
+<figure class="right_image">
   <a href="keplers_law.html">
     <img alt="Kepler's laws" src="../images/keplers_law.png" title="Click to animate"/>
   </a>
@@ -37,7 +43,14 @@ You have to make the rules, not follow them.
     <a href="https://en.wikipedia.org/wiki/Johannes_Kepler">Johannes Kepler</a>.
   </figcaption>
 </figure>
-<figure class="right_image">
+</div>
+<p style="clear: both;"></p>
+
+### Kepler's law &amp; the three-body problem
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
   <a href="three_body.html">
     <img alt="Three body problem" src="../images/three_body.png" title="Click to animate"/>
   </a>
@@ -45,6 +58,10 @@ You have to make the rules, not follow them.
   for which there exists no analytical solution, so we have to solve it numerically. 
   <a href="https://en.wikipedia.org/wiki/Euler%27s_three-body_problem">Euler&apos;s version</a>
   is exactly solvable though.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVED FOR FUTURE APP
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>

@@ -1,0 +1,191 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, SUN, mercury, venus, earth, mars, jupiter, saturn, saturn_ring_1, saturn_ring_2, saturn_ring_3, uranus, neptune, theta1, theta2, theta3, theta4, theta5, theta6, theta7, theta8;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; <a href=\"https://www.glowscript.org/#/user/PHYS172x/folder/MyPrograms/program/Solar-System-Planets\">Original code<\/a> written by Ergi Bufasi\n&#x2022; Updated textures by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/planets.py\">planets.py</a>\n\n";
+    "9";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), range: 19, center: vector(1["-u"]()["*"](4.8), 3.55, 0), title: title})]);
+    "11";
+    SUN = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](50), 30, 1["-u"]()["*"](30)), texture: "https://i.imgur.com/yoEzbtg.jpg", flipx: false, shininess: .9, radius: 7})]);
+    "13";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](50), 20, 1["-u"]()["*"](30)), text: "Sun"})]);
+    "15";
+    mercury = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 9, 0), texture: "https://i.imgur.com/SLgVbwD.jpeg", radius: 3})]);
+    "17";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 3.5, 0), text: "Mercury"})]);
+    "18";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 15, 0), text: "θ = 0°", box: false})]);
+    "19";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 13.5, 0), text: "58d 15.5h", box: false})]);
+    "21";
+    venus = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 9, 0), texture: "https://i.imgur.com/YuK3CzJ.jpeg", opacity: .7, emissive: true, radius: 3})]);
+    "23";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 3.5, 0), text: "Venus"})]);
+    "24";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 15, 0), text: "θ = 177.3°", box: false})]);
+    "25";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 13.5, 0), text: "243d 26m", box: false})]);
+    "27";
+    earth = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(6, 9, 0), texture: textures.earth, radius: 3})]);
+    "28";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 3.5, 0), text: "Earth"})]);
+    "29";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 15, 0), text: "θ = 23.4°", box: false})]);
+    "30";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 13.5, 0), text: "23h 56m", box: false})]);
+    "33";
+    mars = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(18, 9, 0), texture: "https://i.imgur.com/Mwsa16j.jpeg", opacity: .7, emissive: true, radius: 3})]);
+    "34";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 3.5, 0), text: "Mars"})]);
+    "35";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 15, 0), text: "θ = 25.2°", box: false})]);
+    "36";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 13.5, 0), text: "1d 36m", box: false})]);
+    "38";
+    jupiter = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 1["-u"]()["*"](7), 0), texture: "https://i.imgur.com/RMMtt0K.jpeg", opacity: .7, emissive: true, radius: 3})]);
+    "41";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](19), 1["-u"]()["*"](12.5), 0), text: "Jupiter"})]);
+    "42";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](19), 1["-u"]()["*"](1), 0), text: "θ = 3.1°", box: false})]);
+    "43";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](19), 1["-u"]()["*"](2.5), 0), text: "9h 55m", box: false})]);
+    "45";
+    saturn = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), texture: "https://i.imgur.com/02Kt4gyb.jpg", opacity: .7, emissive: true, radius: 3})]);
+    "48";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](12.5), 0), text: "Saturn"})]);
+    "49";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](1), 0), text: "θ = 26.7°", box: false})]);
+    "50";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](2.5), 0), text: "10h 40m", box: false})]);
+    "51";
+    saturn_ring_1 = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), axis: vector(2, 1["-u"]()["*"](3), 0), radius: 6, thickness: .09, texture: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Saturn_%28planet%29_large.jpg"})]);
+    "53";
+    saturn_ring_2 = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), axis: vector(2, 1["-u"]()["*"](3), 0), radius: 6.5, thickness: .07, texture: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Saturn_%28planet%29_large.jpg"})]);
+    "55";
+    saturn_ring_3 = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), axis: vector(2, 1["-u"]()["*"](3), 0), radius: 5.5, thickness: .07, texture: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Saturn_%28planet%29_large.jpg"})]);
+    "58";
+    uranus = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(6, 1["-u"]()["*"](7), 0), texture: "https://i.imgur.com/2kZNvFw.jpeg", opacity: .7, emissive: true, radius: 3})]);
+    "60";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 1["-u"]()["*"](12.5), 0), text: "Uranus"})]);
+    "61";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 1["-u"]()["*"](1), 0), text: "θ = 97.8°", box: false})]);
+    "62";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 1["-u"]()["*"](2.5), 0), text: "17h 14m", box: false})]);
+    "64";
+    neptune = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(18, 1["-u"]()["*"](7), 0), texture: "https://i.imgur.com/lyLpoMk.jpeg", opacity: .7, emissive: true, radius: 3})]);
+    "67";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 1["-u"]()["*"](12.5), 0), text: "Neptune"})]);
+    "68";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 1["-u"]()["*"](1), 0), text: "θ = 28.3°", box: false})]);
+    "69";
+    ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 1["-u"]()["*"](2.5), 0), text: "16h", box: false})]);
+    "71";
+    theta1 = .0035;
+    "72";
+    theta2 = .00244;
+    "73";
+    theta3 = .0408;
+    "74";
+    theta4 = .0439;
+    "75";
+    theta5 = .0541;
+    "76";
+    theta6 = .046;
+    "77";
+    theta7 = .075;
+    "78";
+    theta8 = .049;
+    "80";
+    while (true) {
+        "81";
+        (await rate(20));
+        "82";
+        ρσ_interpolate_kwargs.call(mercury, mercury.rotate, [ρσ_desugar_kwargs({angle: theta1, axis: vector(0, 1, 0), origin: mercury.pos})]);
+        "83";
+        ρσ_interpolate_kwargs.call(venus, venus.rotate, [ρσ_desugar_kwargs({angle: theta2, axis: vector(0, 1, 0), origin: venus.pos})]);
+        "84";
+        ρσ_interpolate_kwargs.call(earth, earth.rotate, [ρσ_desugar_kwargs({angle: theta3, axis: vector(0, 1, 0), origin: earth.pos})]);
+        "85";
+        ρσ_interpolate_kwargs.call(mars, mars.rotate, [ρσ_desugar_kwargs({angle: theta4, axis: vector(0, 1, 0), origin: mars.pos})]);
+        "86";
+        ρσ_interpolate_kwargs.call(jupiter, jupiter.rotate, [ρσ_desugar_kwargs({angle: theta5, axis: vector(0, 1, 0), origin: jupiter.pos})]);
+        "87";
+        ρσ_interpolate_kwargs.call(saturn, saturn.rotate, [ρσ_desugar_kwargs({angle: theta6, axis: vector(0, 1, 0), origin: saturn.pos})]);
+        "88";
+        ρσ_interpolate_kwargs.call(uranus, uranus.rotate, [ρσ_desugar_kwargs({angle: theta7, axis: vector(0, 1, 0), origin: uranus.pos})]);
+        "89";
+        ρσ_interpolate_kwargs.call(neptune, neptune.rotate, [ρσ_desugar_kwargs({angle: theta8, axis: vector(0, 1, 0), origin: neptune.pos})]);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

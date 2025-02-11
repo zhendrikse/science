@@ -93,12 +93,14 @@ finest that music and poetry can deliver. &mdash;
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="astrophysics/three_body.html">
-          <img alt="Three body problem" src="images/three_body.png" title="Click to animate"/>
+        <a href="astrophysics/planets.html">
+          <img alt="The planets" src="images/planets.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
-        <!-- RESERVED FOR FUTURE APPLICATION -->
+        <a href="astrophysics/three_body.html">
+          <img alt="Three body problem" src="images/three_body.png" title="Click to animate"/>
+        </a>
       </figure>
     </div>
   </div>
