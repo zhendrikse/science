@@ -366,36 +366,41 @@ class FaradayAmpereLoop:
                      headwidth=0.7, fixedwidth=1)
         self._dEdt = arrow(pos=vector(field_index, 0, 0), axis=vec(0, 0, 0), color=ddtcolor[1], shaftwidth=0.35,
                      headwidth=0.7, fixedwidth=1)
-        self._dBdtlabel = label(pos=vector(field_index, 0, 0) + label_epsV, text='dB/dt', color=Bcolor[2],
+        self._dBdt_label = label(pos=vector(field_index, 0, 0) + label_epsV, text='dB/dt', color=Bcolor[2],
                           opacity=labelFOpacity[colorScheme],
                           background=labelFBackground[colorScheme], xoffset=20, yoffset=12,
                           height=labelFontSizes[labelFontSizeSelected], border=6, font="sans")
-        self._dEdtlabel = label(pos=vector(field_index, 0, 0), text='dE/dt', color=Ecolor[2],
+        self._dEdt_label = label(pos=vector(field_index, 0, 0), text='dE/dt', color=Ecolor[2],
                           opacity=labelAOpacity[colorScheme],
                           background=labelABackground[colorScheme], xoffset=20, yoffset=12,
                           height=labelFontSizes[labelFontSizeSelected], border=6, font="sans")
         self._field_index = field_index
 
-    def shift(self, field_index, new_field_index):
-        central_electromagnetic_wave.set_color_electric_field_arrow(S + field_index - 1, Ecolor[color_index])
-        central_electromagnetic_wave.set_color_electric_field_arrow(S + field_index + 1, Ecolor[color_index])
-        central_electromagnetic_wave.set_color_magnetic_field_arrow(S + field_index - 1, Bcolor[color_index])
-        central_electromagnetic_wave.set_color_magnetic_field_arrow(S + field_index + 1, Bcolor[color_index])
+    def shift(self, new_field_index):
+        central_electromagnetic_wave.set_color_electric_field_arrow(S + self._field_index - 1, Ecolor[color_index])
+        central_electromagnetic_wave.set_color_electric_field_arrow(S + self._field_index + 1, Ecolor[color_index])
 
-        if highlightField == 1:
-            if faraday_checkbox.checked:
-                central_electromagnetic_wave.set_color_magnetic_field_arrow(S + field_index, Bcolor[color_index])
-                central_electromagnetic_wave.set_color_electric_field_arrow(S + field_index, Ecolor[color_index])
-        self._field_index = new_field_index
-        if faraday_checkbox.checked:
-            central_electromagnetic_wave.set_color_electric_field_arrow(S + field_index + 1, ddtcolor[0])
-        if ampere_checkbox.checked:
-            central_electromagnetic_wave.set_color_magnetic_field_arrow(S + field_index + 1, ddtcolor[1])
+        central_electromagnetic_wave.set_color_magnetic_field_arrow(S + self._field_index - 1, Bcolor[color_index])
+        central_electromagnetic_wave.set_color_magnetic_field_arrow(S + self._field_index + 1, Bcolor[color_index])
 
         if highlightField == 1 and faraday_checkbox.checked:
-            central_electromagnetic_wave.set_color_magnetic_field_arrow(S + field_index, Bcolor[0])
+            central_electromagnetic_wave.set_color_magnetic_field_arrow(S + self._field_index, Bcolor[color_index])
         if highlightField == 1 and ampere_checkbox.checked:
-            central_electromagnetic_wave.set_color_electric_field_arrow(S + field_index, Ecolor[0])
+            central_electromagnetic_wave.set_color_electric_field_arrow(S + self._field_index, Ecolor[color_index])
+
+        self._field_index = new_field_index
+
+        if faraday_checkbox.checked:
+            central_electromagnetic_wave.set_color_electric_field_arrow(S + self._field_index + 1, ddtcolor[0])
+            central_electromagnetic_wave.set_color_electric_field_arrow(S + self._field_index - 1, ddtcolor[0])
+        if ampere_checkbox.checked:
+            central_electromagnetic_wave.set_color_magnetic_field_arrow(S + self._field_index + 1, ddtcolor[1])
+            central_electromagnetic_wave.set_color_magnetic_field_arrow(S + self._field_index - 1, ddtcolor[1])
+
+        if highlightField == 1 and faraday_checkbox.checked:
+            central_electromagnetic_wave.set_color_magnetic_field_arrow(S + self._field_index, Bcolor[0])
+        if highlightField == 1 and ampere_checkbox.checked:
+            central_electromagnetic_wave.set_color_electric_field_arrow(S + self._field_index, Ecolor[0])
 
         self._FaradayLoop.modify(0, x=self._field_index - 1)
         self._FaradayLoop.modify(1, x=self._field_index - 1)
@@ -417,20 +422,20 @@ class FaradayAmpereLoop:
         dot_prod = dot(field_at_right - field_at_left, vector(0, 1, 0))
 
         self._dBdt.axis.z = magnify * omega * Emax * abs(cos(phase)) * -sign(dot_prod)
-        self._dBdtlabel.text = prefixFaraday[verbose]
+        self._dBdt_label.text = prefixFaraday[verbose]
 
         magnetic_field, pos = central_electromagnetic_wave.magnetic_field_arrow_at(S + self._field_index)
         dot_prod = dot(self._dBdt.axis, magnetic_field)
         if dot_prod > 0:
-            self._dBdtlabel.text += dBdtpos_text[calculus]
+            self._dBdt_label.text += dBdtpos_text[calculus]
             self._dBdt.pos = vector(self._field_index, 0, magnetic_field.z) + 0 * label_epsV  # TODO epsV ?
         elif dot_prod < 0:
-            self._dBdtlabel.text += dBdtneg_text[calculus]
+            self._dBdt_label.text += dBdtneg_text[calculus]
             self._dBdt.pos = vector(self._field_index, 0, magnetic_field.z - self._dBdt.axis.z) + 0 * label_epsV  # TODO epsV?
         else:
-            self._dBdtlabel.text += dBdtzer_text[calculus]
+            self._dBdt_label.text += dBdtzer_text[calculus]
             self._dBdt.pos = vector(self._field_index, 0, magnetic_field.z)
-        self._dBdtlabel.pos = pos + magnetic_field + 0 * label_epsV  # TODO epsV?
+        self._dBdt_label.pos = pos + magnetic_field + 0 * label_epsV  # TODO epsV?
 
         # UPDATE THE dE/dt
         field_at_right, _ = central_electromagnetic_wave.magnetic_field_arrow_at(S + self._field_index + 1)
@@ -438,53 +443,53 @@ class FaradayAmpereLoop:
         dot_prod = dot(field_at_right - field_at_left, vector(0, 0, -1))
 
         self._dEdt.axis.y = magnify * omega * Emax * abs(cos(phase)) * sign(dot_prod)
-        self._dEdtlabel.text = prefixAmpere[verbose]
+        self._dEdt_label.text = prefixAmpere[verbose]
 
         electric_field, pos = central_electromagnetic_wave.electric_field_arrow_at(S + self._field_index)
         dot_prod = dot(self._dEdt.axis, electric_field)
         if dot_prod > 0:
-            self._dEdtlabel.text += dEdtpos_text[calculus]
+            self._dEdt_label.text += dEdtpos_text[calculus]
             self._dEdt.pos = vector(self._field_index, electric_field.y, 0)
         elif dot_prod < 0:
-            self._dEdtlabel.text += dEdtneg_text[calculus]
+            self._dEdt_label.text += dEdtneg_text[calculus]
             self._dEdt.pos = vector(self._field_index, electric_field.y - self._dEdt.axis.y, 0)
         else:
-            self._dEdtlabel.text += dEdtzer_text[calculus]
+            self._dEdt_label.text += dEdtzer_text[calculus]
             self._dEdt.pos = vector(self._field_index, electric_field.y, 0)
-        self._dEdtlabel.pos = pos + electric_field
+        self._dEdt_label.pos = pos + electric_field
 
     def adjust_font_size_to(self, font_size_index):
-        self._dBdtlabel.height = labelFontSizes[font_size_index]
-        self._dEdtlabel.height = labelFontSizes[font_size_index]
+        self._dBdt_label.height = labelFontSizes[font_size_index]
+        self._dEdt_label.height = labelFontSizes[font_size_index]
 
     def set_visibility_to(self, visible):
-        self._dBdtlabel.visible = visible
-        self._dEdtlabel.visible = visible
+        self._dBdt_label.visible = visible
+        self._dEdt_label.visible = visible
 
     def set_color_scheme_to(self, color_scheme):
-        self._dEdtlabel.background = labelABackground[color_scheme]
-        self._dBdtlabel.background = labelFBackground[color_scheme]
-        self._dEdtlabel.opacity = labelAOpacity[color_scheme]
-        self._dBdtlabel.opacity = labelFOpacity[color_scheme]
+        self._dEdt_label.background = labelABackground[color_scheme]
+        self._dBdt_label.background = labelFBackground[color_scheme]
+        self._dEdt_label.opacity = labelAOpacity[color_scheme]
+        self._dBdt_label.opacity = labelFOpacity[color_scheme]
         ddtcolor[0] = Bcolor[2 + color_scheme]
         ddtcolor[1] = Ecolor[2 + color_scheme]
 
         self._FaradayLoop.color = ddtcolor[0]
         self._dBdt.color = ddtcolor[0]
-        self._dBdtlabel.color = Bcolor[2]  # using ddtcolor[1] will have darker text
+        self._dBdt_label.color = Bcolor[2]  # using ddtcolor[1] will have darker text
         self._AmpereLoop.color = ddtcolor[1]
         self._dEdt.color = ddtcolor[1]
-        self._dEdtlabel.color = Ecolor[2]  # using ddtcolor[0] will have darker text
+        self._dEdt_label.color = Ecolor[2]  # using ddtcolor[0] will have darker text
 
     def set_faraday_visibility_to(self, visible):
         self._FaradayLoop.visible = visible
         self._dBdt.visible = visible
-        self._dBdtlabel.visible = visible and verbose
+        self._dBdt_label.visible = visible and verbose
 
     def set_ampere_visibility_to(self, visible):
         self._AmpereLoop.visible = visible
         self._dEdt.visible = visible
-        self._dEdtlabel.visible = visible and verbose
+        self._dEdt_label.visible = visible and verbose
 
     def get_field_index(self):
         return self._field_index
@@ -631,7 +636,6 @@ font_size_button= button(text=" Font size ", bind=toggle_font_size)
 verbose_button= button(text=" Verbose ", bind=toggle_verbose)
 
 phase0 = wavelength / 4.
-field_arrow_index = int(wavelength / 2)
 
 time = 1
 while True:
@@ -641,8 +645,8 @@ while True:
     new_field_arrow_index = max(min(new_field_arrow_index, S - 2), -(S - 2))
 
     color_index = 1 if dim_fields_checkbox.checked else 0
-    if field_arrow_index != new_field_arrow_index:  # MOVE THE LOOPS
-        loop.shift(field_arrow_index, new_field_arrow_index)
+    if loop.get_field_index() != new_field_arrow_index:  # MOVE THE LOOPS
+        loop.shift(new_field_arrow_index)
         field_arrow_index = new_field_arrow_index
 
     # for i in arange(0,len(gaussPos)):
