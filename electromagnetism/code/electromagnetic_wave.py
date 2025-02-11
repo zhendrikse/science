@@ -313,43 +313,43 @@ class GaussSurface:
                     #     GZfSeg[s * gxsize + i][1].color = Bcolor[1]
 
                     i += 1
-            else:
-                for x in arange(0, self._gxsize):
-                    amp = sin(k * (x + self._gposx + self._gxleft) - omega * t)
+        else:
+            for x in arange(0, self._gxsize):
+                amp = sin(k * (x + self._gposx + self._gxleft) - omega * t)
 
-                    ###
-                    # TODO Quads don't have opacity, so move this operation to the vertices instead
-                    # GYflux[0 + 2 * x].opacity = abs(amp)
-                    # TODO Quads don't have color, so move this operation to the vertices instead
-                    # if amp > 0:
-                    #     GYflux[0 + 2 * x].color = Ecolor[0]
-                    # else:
-                    #     GYflux[0 + 2 * x].color = Ecolor[1]
+                ###
+                # TODO Quads don't have opacity, so move this operation to the vertices instead
+                # GYflux[0 + 2 * x].opacity = abs(amp)
+                # TODO Quads don't have color, so move this operation to the vertices instead
+                # if amp > 0:
+                #     GYflux[0 + 2 * x].color = Ecolor[0]
+                # else:
+                #     GYflux[0 + 2 * x].color = Ecolor[1]
 
-                    # TODO Quads don't have opacity, so move this operation to the vertices instead
-                    # GYflux[1 + 2 * x].opacity = abs(amp)
-                    # TODO Quads don't have color, so move this operation to the vertices instead
-                    # if (-amp) > 0:
-                    #     GYflux[1 + 2 * x].color = Ecolor[0]
-                    # else:
-                    #     GYflux[1 + 2 * x].color = Ecolor[1]
+                # TODO Quads don't have opacity, so move this operation to the vertices instead
+                # GYflux[1 + 2 * x].opacity = abs(amp)
+                # TODO Quads don't have color, so move this operation to the vertices instead
+                # if (-amp) > 0:
+                #     GYflux[1 + 2 * x].color = Ecolor[0]
+                # else:
+                #     GYflux[1 + 2 * x].color = Ecolor[1]
 
-                    ###
-                    # TODO Quads don't have opacity, so move this operation to the vertices instead
-                    # GZflux[0 + 2 * x].opacity = abs(amp)
-                    # TODO Quads don't have color, so move this operation to the vertices instead
-                    # if amp > 0:
-                    #     GZflux[0 + 2 * x].color = Bcolor[0]
-                    # else:
-                    #     GZflux[0 + 2 * x].color = Bcolor[1]
+                ###
+                # TODO Quads don't have opacity, so move this operation to the vertices instead
+                # GZflux[0 + 2 * x].opacity = abs(amp)
+                # TODO Quads don't have color, so move this operation to the vertices instead
+                # if amp > 0:
+                #     GZflux[0 + 2 * x].color = Bcolor[0]
+                # else:
+                #     GZflux[0 + 2 * x].color = Bcolor[1]
 
-                    # TODO Quads don't have opacity, so move this operation to the vertices instead
-                    # GZflux[1 + 2 * x].opacity = abs(amp)
-                    # TODO Quads don't have color, so move this operation to the vertices instead
-                    # if (-amp) > 0:
-                    #     GZflux[1 + 2 * x].color = Bcolor[0]
-                    # else:
-                    #     GZflux[1 + 2 * x].color = Bcolor[1]
+                # TODO Quads don't have opacity, so move this operation to the vertices instead
+                # GZflux[1 + 2 * x].opacity = abs(amp)
+                # TODO Quads don't have color, so move this operation to the vertices instead
+                # if (-amp) > 0:
+                #     GZflux[1 + 2 * x].color = Bcolor[0]
+                # else:
+                #     GZflux[1 + 2 * x].color = Bcolor[1]
 
 class FaradayAmpereLoop:
     def __init__(self):

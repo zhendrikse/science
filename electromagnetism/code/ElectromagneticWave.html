@@ -11,7 +11,7 @@
 // START JAVASCRIPT
 ;(function() {;
 var ρσ_modules = {};
-var AmpereLoop, dEdt, dEdtlabel, BField, fi, ddtcolor, FaradayLoop, dBdt, dBdtLabel, Efield, labelFontSizes, labelFontSizeSelected, showNeighboringWaves, verbose, calculus, showGauss, GaussElements, colorScheme, gaussSurface, Gcolor_boundary, animation, colorBackground, Ecolor, Bcolor, frontFrame, front, front2, Frontcolor, highlightfield;
+var labelFontSizeSelected, calculus, verbose, showNeighboringWaves, showGauss, colorScheme;
 ρσ_modules.pythonize = {};
 
 (function(){
@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
 
-    var version, print, arange, __name__, type, ρσ_ls, title, calculus, verbose, showNeighboringWaves, showGauss, colorScheme, highlightAmpere, highlightFaraday, highlightField, initial_range, initial_forward, animation, colorBackground, labelABackground, labelFBackground, labelAOpacity, labelFOpacity, label_epsV, Ecolor, Bcolor, ddtcolor, Gcolor1, Gcolor2, Gcolor_boundary, Frontcolor, ambient, EField, EField2, BField, BField2, Emax, sep, magnify, S, omega, wavelength, k, t, fi, prefixAmpere, prefixFaraday, dBdtpos_text, dBdtneg_text, dBdtzer_text, dEdtpos_text, dEdtneg_text, dEdtzer_text, labelFontSizeSelected, labelFontSizes, a, phase0, phase1, phase2, fa, fb, fc, fd, fQ, FRONT, FRONT2, Ev, i, Bv, j, height, FaradayLoop, AmpereLoop, dBdt, dEdt, dBdtlabel, dEdtlabel, gposx, gdx, gxsize, gxleft, gxright, GXflux, GYflux, GZflux, GYfSeg, GZfSeg, GSegFlux, Ax, Ap, Bx, Bp, x, s, sz, Q, gYplus, gYP, gYminus, gYM, gZplus, gZP, gZminus, gZM, gfa, gfb, gfc, gfd, gfQ, gFORW, gba, gbb, gbc, gbd, gbQ, gBACK, ampere_checkbox, faraday_checkbox, pause_checkbox, technical_labels_checkbox, dark_background_checkbox, electric_field_checkbox, magnetic_field_checkbox, dim_fields_checkbox, wave_front_checkbox, neighbouring_waves, show_gauss_button, font_size_button, verbose_button, newfi, phase, amp;
+    var version, print, arange, __name__, type, ρσ_ls, title, calculus, verbose, showNeighboringWaves, showGauss, colorScheme, highlightAmpere, highlightFaraday, highlightField, initial_range, initial_forward, animation, colorBackground, labelABackground, labelFBackground, labelAOpacity, labelFOpacity, label_epsV, Ecolor, Bcolor, ddtcolor, Gcolor1, Gcolor2, Gcolor_boundary, ambient, Emax, sep, magnify, S, omega, wavelength, k, prefixAmpere, prefixFaraday, dBdtpos_text, dBdtneg_text, dBdtzer_text, dEdtpos_text, dEdtneg_text, dEdtzer_text, labelFontSizeSelected, labelFontSizes, _GS_1, loop, wave_front, gauss_surface, central_electromagnetic_wave, neighbouring_electromagnetic_waves, j, ampere_checkbox, faraday_checkbox, pause_checkbox, technical_labels_checkbox, dark_background_checkbox, electric_field_checkbox, magnetic_field_checkbox, dim_fields_checkbox, wave_front_checkbox, neighbouring_waves, show_gauss_button, font_size_button, verbose_button, phase0, time, new_field_arrow_index, color_index, field_arrow_index, wave;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -65,470 +65,1007 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "12";
-    title = "EM Wave by Rob Salgado\n\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electromagnetism/code/electromagnetic_wave.py\">electromagnetic_wave.py</a>\n\n";
-    "14";
+    "9";
+    title = "EM Wave by Rob Salgado (2022), robertoBsalgado@gmail.com\n\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electromagnetism/code/electromagnetic_wave.py\">electromagnetic_wave.py</a>\n\n";
+    "11";
     calculus = 1;
-    "15";
-    verbose = 0;
-    "17";
+    "12";
+    verbose = 1;
+    "14";
     showNeighboringWaves = 1;
-    "18";
+    "15";
     showGauss = 2;
-    "24";
+    "17";
     colorScheme = 0;
-    "26";
+    "19";
     highlightAmpere = 1;
-    "27";
+    "20";
     highlightFaraday = 1;
-    "28";
+    "21";
     highlightField = 1;
-    "30";
+    "23";
     initial_range = 10;
-    "31";
+    "24";
     initial_forward = vec(2.2012, 1["-u"]()["*"](2.3109), 1["-u"]()["*"](2.89429));
-    "32";
+    "25";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), forward: initial_forward, range: initial_range, title: title})]);
-    "33";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "35";
+    "28";
     colorBackground = ρσ_list_decorate([ color.gray(.075)["*"](0), color.white ]);
-    "36";
+    "29";
     labelABackground = ρσ_list_decorate([ color.black, .2["*"](vec(1, 1, 1)) ]);
-    "37";
+    "30";
     labelFBackground = ρσ_list_decorate([ 0["*"](vec(1, 1, 1)), vec(1, 1, 1) ]);
-    "38";
+    "31";
     labelAOpacity = ρσ_list_decorate([ .66, .9 ]);
-    "39";
+    "32";
     labelFOpacity = ρσ_list_decorate([ .9, .9 ]);
-    "40";
+    "33";
     label_epsV = vector(.1, .1, .1);
-    "42";
+    "35";
     Ecolor = ρσ_list_decorate([ color.orange, vec(.4, 0, 0), color.yellow, vec(0, 1, 0) ]);
-    "43";
+    "36";
     Bcolor = ρσ_list_decorate([ color.cyan, vec(0, 0, .4), color.magenta, vec(1, 0, 1) ]);
-    "44";
+    "37";
     ddtcolor = ρσ_list_decorate([ ρσ_getitem(Bcolor, 2["+"](colorScheme)), ρσ_getitem(Ecolor, 2["+"](colorScheme)) ]);
-    "46";
+    "39";
     Gcolor1 = vec(0, 2.7e-10, 0);
-    "47";
+    "40";
     Gcolor2 = Gcolor1;
-    "48";
+    "41";
     Gcolor_boundary = ρσ_list_decorate([ color.white, color.black ]);
-    "49";
-    Frontcolor = ρσ_list_decorate([ vec(.5, .5, .5), vec(.6, 1, 1) ]);
-    "51";
+    "43";
     ambient = ρσ_list_decorate([ .3, .7 ]);
-    "52";
+    "44";
     animation.ambient = vec(.4, .4, .4);
-    "53";
+    "45";
     animation.background = ρσ_getitem(colorBackground, colorScheme);
-    "55";
-    EField = ρσ_list_decorate([]);
-    "56";
-    EField2 = ρσ_list_decorate([]);
-    "58";
-    BField = ρσ_list_decorate([]);
-    "59";
-    BField2 = ρσ_list_decorate([]);
-    "60";
+    "47";
     Emax = 4;
-    "61";
+    "48";
     sep = 10;
-    "63";
+    "50";
     magnify = 2.5;
-    "64";
+    "51";
     S = 20;
-    "65";
+    "52";
     omega = .1;
-    "66";
+    "53";
     wavelength = S;
-    "67";
+    "54";
     k = 2["*"](pi)["/"](wavelength);
-    "69";
-    t = 1;
-    "70";
-    fi = 0["+"](wavelength["/"](2));
-    "72";
+    "57";
     prefixAmpere = ρσ_list_decorate([ "", "Ampere says\n", "Ampere:\nCurly-Bs say\n", "" ]);
-    "73";
+    "58";
     prefixFaraday = ρσ_list_decorate([ "", "Faraday says\n", "Faraday:\nanti-Curly-Es say\n", "" ]);
-    "75";
+    "60";
     dBdtpos_text = ρσ_list_decorate([ " |B| is increasing ", " d|B|/dt >0 " ]);
-    "76";
+    "61";
     dBdtneg_text = ρσ_list_decorate([ " |B| is decreasing ", " d|B|/dt <0 " ]);
-    "77";
+    "62";
     dBdtzer_text = ρσ_list_decorate([ " |B| is maintained ", " d|B|/dt =0 " ]);
-    "79";
+    "64";
     dEdtpos_text = ρσ_list_decorate([ " |E| is increasing ", " d|E|/dt >0 " ]);
-    "80";
+    "65";
     dEdtneg_text = ρσ_list_decorate([ " |E| is decreasing ", " d|E|/dt <0 " ]);
-    "81";
+    "66";
     dEdtzer_text = ρσ_list_decorate([ " |E| is maintained ", " d|E|/dt =0 " ]);
-    "83";
+    "68";
     labelFontSizeSelected = 4;
-    "84";
+    "69";
     labelFontSizes = ρσ_list_decorate([ 8, 12, 16, 20, 24, 30 ]);
-    "91";
-    fi = wavelength["/"](2);
-    "92";
-    a = 1;
-    "94";
-    phase0 = 0;
-    "95";
-    phase1 = fi;
-    "96";
-    phase2 = fi["+"](wavelength);
-    "98";
-    fa = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(fi, 1["-u"]()["*"](sep)["*"](a), 1["-u"]()["*"](sep)["*"](a))})]);
-    "99";
-    fb = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(fi, 1["-u"]()["*"](sep)["*"](a), sep["*"](a))})]);
-    "100";
-    fc = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(fi, sep["*"](a), sep["*"](a))})]);
-    "101";
-    fd = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(fi, sep["*"](a), 1["-u"]()["*"](sep)["*"](a))})]);
-    "102";
-    fQ = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ fa, fb, fc, fd ])})]);
-    "103";
-    FRONT = compound(ρσ_list_decorate([ fQ ]));
+    "71";
+    function WaveFront() {;
+    }
+    WaveFront.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, field_index, a, fa, fb, fc, fd, fQ;
+        "73";
+        self._front_color = ρσ_list_decorate([ vec(.5, .5, .5), vec(.6, 1, 1) ]);
+        "75";
+        field_index = wavelength["/"](2);
+        "76";
+        a = 1;
+        "77";
+        fa = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(field_index, 1["-u"]()["*"](sep)["*"](a), 1["-u"]()["*"](sep)["*"](a))})]);
+        "78";
+        fb = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(field_index, 1["-u"]()["*"](sep)["*"](a), sep["*"](a))})]);
+        "79";
+        fc = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(field_index, sep["*"](a), sep["*"](a))})]);
+        "80";
+        fd = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vec(field_index, sep["*"](a), 1["-u"]()["*"](sep)["*"](a))})]);
+        "81";
+        fQ = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ fa, fb, fc, fd ])})]);
+        "82";
+        self._front = compound(ρσ_list_decorate([ fQ ]));
+        "83";
+        self._front.opacity = .75;
+        "84";
+        self._front.shininess = 1;
+        "85";
+        self._front.visible = false;
+        "86";
+        self._front.color = ρσ_getitem(self._front_color, colorScheme);
+        "88";
+        self._front_2 = ρσ_interpolate_kwargs.call(self._front, self._front.clone, [ρσ_desugar_kwargs({pos: vec(field_index["+"](wavelength), 0, 0)})]);
+        "89";
+        self._front_2.visible = false;
+    };
+    if (!WaveFront.prototype.__init__.__module__) Object.defineProperties(WaveFront.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    WaveFront.__argnames__ = WaveFront.prototype.__init__.__argnames__;
+    WaveFront.__handles_kwarg_interpolation__ = WaveFront.prototype.__init__.__handles_kwarg_interpolation__;
+    WaveFront.prototype.set_visibility_to = async function set_visibility_to(visible) {
+        var self = this;
+        "92";
+        self._front.visible = visible;
+        "93";
+        self._front_2.visible = visible;
+    };
+    if (!WaveFront.prototype.set_visibility_to.__argnames__) Object.defineProperties(WaveFront.prototype.set_visibility_to, {
+        __argnames__ : {value: ["visible"]},
+        __module__ : {value: null}
+    });
+    WaveFront.prototype.set_color_to_color_scheme = async function set_color_to_color_scheme(color_scheme) {
+        var self = this;
+        "96";
+        self._front.color = ρσ_getitem(self._front_color, color_scheme);
+        "97";
+        self._front_2.color = ρσ_getitem(self._front_color, color_scheme);
+    };
+    if (!WaveFront.prototype.set_color_to_color_scheme.__argnames__) Object.defineProperties(WaveFront.prototype.set_color_to_color_scheme, {
+        __argnames__ : {value: ["color_scheme"]},
+        __module__ : {value: null}
+    });
+    WaveFront.prototype.update_by = async function update_by(t) {
+        var self = this;
+        "100";
+        self._front.pos = vec(phase0["+"](omega["/"](k)["*"](t))["%"](2["*"](S))["-"](1["*"](S)), 0, 0);
+        "101";
+        self._front_2.pos = vec(phase0["+"](wavelength)["+"](omega["/"](k)["*"](t))["%"](2["*"](S))["-"](1["*"](S)), 0, 0);
+    };
+    if (!WaveFront.prototype.update_by.__argnames__) Object.defineProperties(WaveFront.prototype.update_by, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+    WaveFront.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    WaveFront.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(WaveFront.prototype, "__bases__", {value: []});
+
+
+
+
+
     "104";
-    FRONT.opacity = .75;
-    "105";
-    FRONT.shininess = 1;
-    "106";
-    FRONT.visible = false;
-    "107";
-    FRONT.color = ρσ_getitem(Frontcolor, colorScheme);
-    "109";
-    FRONT2 = ρσ_interpolate_kwargs.call(FRONT, FRONT.clone, [ρσ_desugar_kwargs({pos: vec(fi["+"](wavelength), 0, 0)})]);
-    "110";
-    FRONT2.visible = false;
-    "116";
-    for (var ρσ_Index1 = 1["-u"]()["*"](S); ρσ_Index1["<"](S); ρσ_Index1++) {
-        i = ρσ_Index1;
-        "117";
-        Ev = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, 0, 0), axis: vec(0, 0, 0), color: ρσ_getitem(Ecolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 0})]);
-        "118";
-        EField.append(Ev);
+    function ElectromagneticWave() {;
     }
-    "120";
-    for (var ρσ_Index2 = 1["-u"]()["*"](S); ρσ_Index2["<"](S); ρσ_Index2++) {
-        i = ρσ_Index2;
-        "121";
-        Bv = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, 0, 0), axis: vec(0, 0, 0), color: ρσ_getitem(Bcolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 0})]);
+    ElectromagneticWave.prototype.__init__ = async function __init__() {
+        var self = this;
+        var wave_num = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var offset = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.offset : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "offset")){
+            offset = ρσ_kwargs_obj.offset;
+        }
+        var ρσ_ls, ρσ_unpack, index;
+        "106";
+        ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([])];
+        self._magnetic_field = ρσ_unpack[0];
+        self._electric_field = ρσ_unpack[1];
+        "107";
+        self._neighboring_wave_num = wave_num;
+        "108";
+        for (var ρσ_Index1 = 1["-u"]()["*"](S); ρσ_Index1["<"](S); ρσ_Index1++) {
+            index = ρσ_Index1;
+            "109";
+            self._electric_field.append((await self._field_arrow_at(vec(index, 0, 0)["+"](offset), ρσ_getitem(Ecolor, 0), wave_num)));
+            "110";
+            self._magnetic_field.append((await self._field_arrow_at(vec(index, 0, 0)["+"](offset), ρσ_getitem(Bcolor, 0), wave_num)));
+        }
+    };
+    if (!ElectromagneticWave.prototype.__init__.__defaults__) Object.defineProperties(ElectromagneticWave.prototype.__init__, {
+        __defaults__ : {value: {offset:vec(0, 0, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["wave_num", "offset"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.__argnames__ = ElectromagneticWave.prototype.__init__.__argnames__;
+    ElectromagneticWave.__handles_kwarg_interpolation__ = ElectromagneticWave.prototype.__init__.__handles_kwarg_interpolation__;
+    ElectromagneticWave.prototype._field_arrow_at = async function _field_arrow_at(position, colour, wave_num) {
+        var self = this;
+        "113";
+        return ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vec(0, 0, 0), color: colour, shaftwidth: .2, fixedwidth: 1, nbw: wave_num})]);
+    };
+    if (!ElectromagneticWave.prototype._field_arrow_at.__argnames__) Object.defineProperties(ElectromagneticWave.prototype._field_arrow_at, {
+        __argnames__ : {value: ["position", "colour", "wave_num"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.update_with = async function update_with(t) {
+        var self = this;
+        var ρσ_ls, amplitude_, index;
+        "116";
+        var ρσ_Iter2 = range(0, len(self._electric_field));
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            index = ρσ_Index2;
+            "117";
+            amplitude_ = Emax["*"](sin(k["*"](index["%"](2["*"](S))["-"](1["*"](S)))["-"](1["*"](omega)["*"](t))));
+            "118";
+            ρσ_getitem(self._electric_field, index).axis.y = amplitude_;
+            "119";
+            ρσ_getitem(self._magnetic_field, index).axis.z = amplitude_;
+        }
+    };
+    if (!ElectromagneticWave.prototype.update_with.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.update_with, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.set_color_to = async function set_color_to(color_index) {
+        var self = this;
+        var ρσ_ls, field;
         "122";
-        BField.append(Bv);
+        var ρσ_Iter3 = self._electric_field;
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            field = ρσ_Index3;
+            "123";
+            field.color = ρσ_getitem(Ecolor, color_index);
+        }
         "124";
+        var ρσ_Iter4 = self._magnetic_field;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            field = ρσ_Index4;
+            "125";
+            field.color = ρσ_getitem(Bcolor, color_index);
+        }
+    };
+    if (!ElectromagneticWave.prototype.set_color_to.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.set_color_to, {
+        __argnames__ : {value: ["color_index"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.show_electric_field_is = async function show_electric_field_is(visible) {
+        var self = this;
+        var ρσ_ls, field;
+        "128";
+        var ρσ_Iter5 = self._electric_field;
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            field = ρσ_Index5;
+            "129";
+            field.visible = visible;
+        }
+    };
+    if (!ElectromagneticWave.prototype.show_electric_field_is.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.show_electric_field_is, {
+        __argnames__ : {value: ["visible"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.show_magnetic_field_is = async function show_magnetic_field_is(visible) {
+        var self = this;
+        var ρσ_ls, field;
+        "132";
+        var ρσ_Iter6 = self._magnetic_field;
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            field = ρσ_Index6;
+            "133";
+            field.visible = visible;
+        }
+    };
+    if (!ElectromagneticWave.prototype.show_magnetic_field_is.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.show_magnetic_field_is, {
+        __argnames__ : {value: ["visible"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.electric_field_arrow_at = async function electric_field_arrow_at(index) {
+        var self = this;
+        "136";
+        return [ρσ_getitem(self._electric_field, index).axis, ρσ_getitem(self._electric_field, index).pos];
+    };
+    if (!ElectromagneticWave.prototype.electric_field_arrow_at.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.electric_field_arrow_at, {
+        __argnames__ : {value: ["index"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.magnetic_field_arrow_at = async function magnetic_field_arrow_at(index) {
+        var self = this;
+        "139";
+        return [ρσ_getitem(self._magnetic_field, index).axis, ρσ_getitem(self._magnetic_field, index).pos];
+    };
+    if (!ElectromagneticWave.prototype.magnetic_field_arrow_at.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.magnetic_field_arrow_at, {
+        __argnames__ : {value: ["index"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.set_color_electric_field_arrow = async function set_color_electric_field_arrow(index, colour) {
+        var self = this;
+        "142";
+        ρσ_getitem(self._electric_field, index).color = colour;
+    };
+    if (!ElectromagneticWave.prototype.set_color_electric_field_arrow.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.set_color_electric_field_arrow, {
+        __argnames__ : {value: ["index", "colour"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.set_color_magnetic_field_arrow = async function set_color_magnetic_field_arrow(index, colour) {
+        var self = this;
+        "145";
+        ρσ_getitem(self._magnetic_field, index).color = colour;
+    };
+    if (!ElectromagneticWave.prototype.set_color_magnetic_field_arrow.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.set_color_magnetic_field_arrow, {
+        __argnames__ : {value: ["index", "colour"]},
+        __module__ : {value: null}
+    });
+    ElectromagneticWave.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    ElectromagneticWave.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(ElectromagneticWave.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+
+
+    "150";
+    function GaussSurface() {;
     }
-    if (showNeighboringWaves[">="](0)) {
-        "125";
-        for (var ρσ_Index3 = 1["-u"]()["*"](S); ρσ_Index3["<"](S); ρσ_Index3++) {
-            i = ρσ_Index3;
-            "126";
-            Ev = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, sep, 0), axis: vec(0, 0, 0), color: ρσ_getitem(Ecolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 3, visible: showNeighboringWaves})]);
-            "128";
-            EField.append(Ev);
-        }
-        "129";
-        for (var ρσ_Index4 = 1["-u"]()["*"](S); ρσ_Index4["<"](S); ρσ_Index4++) {
-            i = ρσ_Index4;
-            "130";
-            Bv = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, sep, 0), axis: vec(0, 0, 0), color: ρσ_getitem(Bcolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 3, visible: showNeighboringWaves})]);
-            "132";
-            BField.append(Bv);
-        }
-        "134";
-        for (var ρσ_Index5 = 1["-u"]()["*"](S); ρσ_Index5["<"](S); ρσ_Index5++) {
-            i = ρσ_Index5;
-            "135";
-            Ev = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, 1["-u"]()["*"](sep), 0), axis: vec(0, 0, 0), color: ρσ_getitem(Ecolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 3, visible: showNeighboringWaves})]);
-            "137";
-            EField.append(Ev);
-        }
-        "138";
-        for (var ρσ_Index6 = 1["-u"]()["*"](S); ρσ_Index6["<"](S); ρσ_Index6++) {
-            i = ρσ_Index6;
-            "139";
-            Bv = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, 1["-u"]()["*"](sep), 0), axis: vec(0, 0, 0), color: ρσ_getitem(Bcolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 3, visible: showNeighboringWaves})]);
-            "141";
-            BField.append(Bv);
-        }
-        "143";
-        for (var ρσ_Index7 = 1; ρσ_Index7["<"](3); ρσ_Index7++) {
-            j = ρσ_Index7;
-            "144";
-            for (var ρσ_Index8 = 1["-u"]()["*"](S); ρσ_Index8["<"](S); ρσ_Index8++) {
-                i = ρσ_Index8;
-                "145";
-                Ev = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, 0, j["*"](sep)), axis: vec(0, 0, 0), color: ρσ_getitem(Ecolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 1, visible: showNeighboringWaves})]);
-                "147";
-                EField.append(Ev);
+    GaussSurface.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, gdx, gxright, GYfSeg, GZfSeg, Ax, Ap, Bx, Bp, x, s, sz, Q, i, gYplus, gYP, gYminus, gYM, gZplus, gZP, gZminus, gZM, gfa, gfb, gfc, gfd, gfQ, gFORW, gba, gbb, gbc, gbd, gbQ, gBACK;
+        "152";
+        self._gposx = 15;
+        "153";
+        gdx = 1;
+        "154";
+        self._gxsize = 5;
+        "155";
+        self._gxleft = 1["-u"]()["*"](self._gxsize["/"](2)["-"](1["*"](gdx)["/"](2)));
+        "156";
+        gxright = self._gxleft["+"](self._gxsize["-"](1["*"](1)));
+        "158";
+        self._GXflux = ρσ_list_decorate([]);
+        "159";
+        self._GYflux = ρσ_list_decorate([]);
+        "160";
+        self._GZflux = ρσ_list_decorate([]);
+        "162";
+        GYfSeg = ρσ_list_decorate([]);
+        "163";
+        GZfSeg = ρσ_list_decorate([]);
+        "164";
+        self._GSegFlux = ρσ_list_decorate([]);
+        "166";
+        var ρσ_Iter7 = ρσ_list_decorate([ 1, 1["-u"]()["*"](1) ]);
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            s = ρσ_Index7;
+            "167";
+            for (var ρσ_Index8 = self._gposx["+"](self._gxleft); ρσ_Index8["<"](self._gposx["+"](self._gxleft)["+"](self._gxsize)); ρσ_Index8++) {
+                x = ρσ_Index8;
+                "168";
+                Ax = x["-"](1["*"](0)["*"](gdx)["/"](2));
+                "169";
+                Ap = sep;
+                "170";
+                Bx = Ax["+"](gdx);
+                "171";
+                Bp = 1["-u"]()["*"](sep);
+                "173";
+                GYfSeg.append(ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, s["*"](sep), Ap), color: ρσ_getitem(Ecolor, 0)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, s["*"](sep), Bp), color: ρσ_getitem(Ecolor, 0)})]) ]));
+                "175";
+                GZfSeg.append(ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, s["*"](sep)), color: ρσ_getitem(Bcolor, 0)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, s["*"](sep)), color: ρσ_getitem(Bcolor, 0)})]) ]));
             }
-            "148";
-            for (var ρσ_Index9 = 1["-u"]()["*"](S); ρσ_Index9["<"](S); ρσ_Index9++) {
-                i = ρσ_Index9;
-                "149";
-                Bv = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, 0, j["*"](sep)), axis: vec(0, 0, 0), color: ρσ_getitem(Bcolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 1, visible: showNeighboringWaves})]);
-                "151";
-                BField.append(Bv);
-            }
-            "153";
-            for (var ρσ_Index10 = 1["-u"]()["*"](S); ρσ_Index10["<"](S); ρσ_Index10++) {
+        }
+        "178";
+        sz = len(GYfSeg)["/"](2);
+        "179";
+        var ρσ_Iter9 = ρσ_list_decorate([ 0, 1 ]);
+        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+        for (var ρσ_Index9 of ρσ_Iter9) {
+            s = ρσ_Index9;
+            "180";
+            for (var ρσ_Index10 = 1; ρσ_Index10["<"](sz); ρσ_Index10++) {
                 i = ρσ_Index10;
-                "154";
-                Ev = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, 0, 1["-u"]()["*"](j)["*"](sep)), axis: vec(0, 0, 0), color: ρσ_getitem(Ecolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 1, visible: showNeighboringWaves})]);
-                "156";
-                EField.append(Ev);
-            }
-            "157";
-            for (var ρσ_Index11 = 1["-u"]()["*"](S); ρσ_Index11["<"](S); ρσ_Index11++) {
-                i = ρσ_Index11;
-                "158";
-                Bv = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i, 0, 1["-u"]()["*"](j)["*"](sep)), axis: vec(0, 0, 0), color: ρσ_getitem(Bcolor, 0), shaftwidth: .2, fixedwidth: 1, nbw: 1, visible: showNeighboringWaves})]);
-                "160";
-                BField.append(Bv);
+                "181";
+                Q = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_getitem(ρσ_getitem(GYfSeg, int(s["*"](sz)["+"](i["-"](1["*"](1))))), 0), ρσ_getitem(ρσ_getitem(GYfSeg, int(s["*"](sz)["+"](i["-"](1["*"](1))))), 1), ρσ_getitem(ρσ_getitem(GYfSeg, int(s["*"](sz)["+"](i))), 1), ρσ_getitem(ρσ_getitem(GYfSeg, int(s["*"](sz)["+"](i))), 0) ])})]);
+                "184";
+                Q.visible = (showGauss === 2 || typeof showGauss === "object" && ρσ_equals(showGauss, 2));
+                "185";
+                self._GSegFlux.append(Q);
+                "186";
+                Q = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_getitem(ρσ_getitem(GZfSeg, int(s["*"](sz)["+"](i["-"](1["*"](1))))), 0), ρσ_getitem(ρσ_getitem(GZfSeg, int(s["*"](sz)["+"](i["-"](1["*"](1))))), 1), ρσ_getitem(ρσ_getitem(GZfSeg, int(s["*"](sz)["+"](i))), 1), ρσ_getitem(ρσ_getitem(GZfSeg, int(s["*"](sz)["+"](i))), 0) ])})]);
+                "189";
+                Q.visible = (showGauss === 2 || typeof showGauss === "object" && ρσ_equals(showGauss, 2));
+                "190";
+                self._GSegFlux.append(Q);
             }
         }
-    }
-    "166";
-    height = sep["/"](2);
-    "167";
-    FaradayLoop = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](1), 1["-u"]()["*"](height), 0), vec(1["-u"]()["*"](1), height, 0), vec(1, height, 0), vec(1, 1["-u"]()["*"](height), 0), vec(1["-u"]()["*"](1), 1["-u"]()["*"](height), 0) ]), color: ρσ_getitem(ddtcolor, 0)})]);
-    "170";
-    AmpereLoop = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](1), 0, 1["-u"]()["*"](height)), vec(1["-u"]()["*"](1), 0, height), vec(1, 0, height), vec(1, 0, 1["-u"]()["*"](height)), vec(1["-u"]()["*"](1), 0, 1["-u"]()["*"](height)) ]), color: ρσ_getitem(ddtcolor, 1)})]);
-    "174";
-    dBdt = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vector(fi, 0, 0), axis: vec(0, 0, 0), color: ρσ_getitem(ddtcolor, 0), shaftwidth: .35, headwidth: .7, fixedwidth: 1})]);
-    "175";
-    dEdt = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vector(fi, 0, 0), axis: vec(0, 0, 0), color: ρσ_getitem(ddtcolor, 1), shaftwidth: .35, headwidth: .7, fixedwidth: 1})]);
-    "176";
-    dBdtlabel = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(fi, 0, 0)["+"](label_epsV), text: "dB/dt", color: ρσ_getitem(Bcolor, 2), opacity: ρσ_getitem(labelFOpacity, colorScheme), background: ρσ_getitem(labelFBackground, colorScheme), xoffset: 20, yoffset: 12, height: ρσ_getitem(labelFontSizes, labelFontSizeSelected), border: 6, font: "sans"})]);
-    "179";
-    dEdtlabel = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(fi, 0, 0), text: "dE/dt", color: ρσ_getitem(Ecolor, 2), opacity: ρσ_getitem(labelAOpacity, colorScheme), background: ρσ_getitem(labelABackground, colorScheme), xoffset: 20, yoffset: 12, height: ρσ_getitem(labelFontSizes, labelFontSizeSelected), border: 6, font: "sans"})]);
-    "188";
-    gposx = 15;
-    "189";
-    gdx = 1;
-    "190";
-    gxsize = 5;
-    "191";
-    gxleft = 1["-u"]()["*"](gxsize["/"](2)["-"](1["*"](gdx)["/"](2)));
-    "192";
-    gxright = gxleft["+"](gxsize["-"](1["*"](1)));
-    "194";
-    GXflux = ρσ_list_decorate([]);
-    "195";
-    GYflux = ρσ_list_decorate([]);
-    "196";
-    GZflux = ρσ_list_decorate([]);
-    "198";
-    GYfSeg = ρσ_list_decorate([]);
-    "199";
-    GZfSeg = ρσ_list_decorate([]);
-    "200";
-    GSegFlux = ρσ_list_decorate([]);
-    "202";
-    var ρσ_Iter12 = ρσ_list_decorate([ 1, 1["-u"]()["*"](1) ]);
-    ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
-    for (var ρσ_Index12 of ρσ_Iter12) {
-        s = ρσ_Index12;
-        "203";
-        for (var ρσ_Index13 = gposx["+"](gxleft); ρσ_Index13["<"](gposx["+"](gxleft)["+"](gxsize)); ρσ_Index13++) {
-            x = ρσ_Index13;
-            "204";
-            Ax = x["-"](1["*"](0)["*"](gdx)["/"](2));
-            "205";
+        "192";
+        for (var ρσ_Index11 = self._gposx["+"](self._gxleft); ρσ_Index11["<"](self._gposx["+"](self._gxleft)["+"](self._gxsize)); ρσ_Index11++) {
+            x = ρσ_Index11;
+            "193";
+            Ax = x["-"](1["*"](gdx)["/"](2));
+            "194";
             Ap = sep;
-            "206";
+            "195";
             Bx = Ax["+"](gdx);
-            "207";
+            "196";
             Bp = 1["-u"]()["*"](sep);
-            "209";
-            GYfSeg.append(ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, s["*"](sep), Ap), color: ρσ_getitem(Ecolor, 0)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, s["*"](sep), Bp), color: ρσ_getitem(Ecolor, 0)})]) ]));
+            "200";
+            gYplus = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, sep, Ap)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, sep, Ap)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, sep, Bp)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, sep, Bp)})]) ])})]);
+            "204";
+            gYP = gYplus;
+            "205";
+            gYP.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
+            "207";
+            gYminus = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, 1["-u"]()["*"](sep), Ap)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, 1["-u"]()["*"](sep), Ap)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, 1["-u"]()["*"](sep), Bp)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, 1["-u"]()["*"](sep), Bp)})]) ])})]);
             "211";
-            GZfSeg.append(ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, s["*"](sep)), color: ρσ_getitem(Bcolor, 0)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, s["*"](sep)), color: ρσ_getitem(Bcolor, 0)})]) ]));
-        }
-    }
-    "214";
-    sz = len(GYfSeg)["/"](2);
-    "215";
-    var ρσ_Iter14 = ρσ_list_decorate([ 0, 1 ]);
-    ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
-    for (var ρσ_Index14 of ρσ_Iter14) {
-        s = ρσ_Index14;
-        "216";
-        for (var ρσ_Index15 = 1; ρσ_Index15["<"](sz); ρσ_Index15++) {
-            i = ρσ_Index15;
-            "217";
-            Q = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_getitem(ρσ_getitem(GYfSeg, int(s["*"](sz)["+"](i["-"](1["*"](1))))), 0), ρσ_getitem(ρσ_getitem(GYfSeg, int(s["*"](sz)["+"](i["-"](1["*"](1))))), 1), ρσ_getitem(ρσ_getitem(GYfSeg, int(s["*"](sz)["+"](i))), 1), ρσ_getitem(ρσ_getitem(GYfSeg, int(s["*"](sz)["+"](i))), 0) ])})]);
+            gYM = gYminus;
+            "212";
+            gYM.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
+            "214";
+            self._GYflux.append(gYP);
+            "215";
+            self._GYflux.append(gYM);
             "219";
-            Q.visible = (showGauss === 2 || typeof showGauss === "object" && ρσ_equals(showGauss, 2));
-            "220";
-            GSegFlux.append(Q);
-            "221";
-            Q = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_getitem(ρσ_getitem(GZfSeg, int(s["*"](sz)["+"](i["-"](1["*"](1))))), 0), ρσ_getitem(ρσ_getitem(GZfSeg, int(s["*"](sz)["+"](i["-"](1["*"](1))))), 1), ρσ_getitem(ρσ_getitem(GZfSeg, int(s["*"](sz)["+"](i))), 1), ρσ_getitem(ρσ_getitem(GZfSeg, int(s["*"](sz)["+"](i))), 0) ])})]);
+            gZplus = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, sep)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, Ap, sep)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, Bp, sep)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, sep)})]) ])})]);
             "223";
-            Q.visible = (showGauss === 2 || typeof showGauss === "object" && ρσ_equals(showGauss, 2));
+            gZP = gZplus;
             "224";
-            GSegFlux.append(Q);
+            gZP.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
+            "226";
+            gZminus = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, 1["-u"]()["*"](sep))})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, Ap, 1["-u"]()["*"](sep))})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, Bp, 1["-u"]()["*"](sep))})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, 1["-u"]()["*"](sep))})]) ])})]);
+            "230";
+            gZM = gZminus;
+            "231";
+            gZM.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
+            "233";
+            self._GZflux.append(gZP);
+            "234";
+            self._GZflux.append(gZM);
         }
-    }
-    "226";
-    for (var ρσ_Index16 = gposx["+"](gxleft); ρσ_Index16["<"](gposx["+"](gxleft)["+"](gxsize)); ρσ_Index16++) {
-        x = ρσ_Index16;
-        "227";
-        Ax = x["-"](1["*"](gdx)["/"](2));
-        "228";
-        Ap = sep;
-        "229";
-        Bx = Ax["+"](gdx);
-        "230";
-        Bp = 1["-u"]()["*"](sep);
-        "234";
-        gYplus = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, sep, Ap)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, sep, Ap)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, sep, Bp)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, sep, Bp)})]) ])})]);
         "238";
-        gYP = gYplus;
+        Ax = self._gposx["+"](gxright)["+"](gdx["/"](2));
         "239";
-        gYP.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
+        Ap = sep;
+        "240";
+        Bx = Ax["+"](gdx);
         "241";
-        gYminus = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, 1["-u"]()["*"](sep), Ap)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, 1["-u"]()["*"](sep), Ap)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, 1["-u"]()["*"](sep), Bp)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, 1["-u"]()["*"](sep), Bp)})]) ])})]);
-        "245";
-        gYM = gYminus;
-        "246";
-        gYM.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
-        "248";
-        GYflux.append(gYP);
-        "249";
-        GYflux.append(gYM);
-        "253";
-        gZplus = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, sep)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, Ap, sep)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, Bp, sep)})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, sep)})]) ])})]);
-        "257";
-        gZP = gZplus;
-        "258";
-        gZP.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
-        "260";
-        gZminus = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, 1["-u"]()["*"](sep))})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, Ap, 1["-u"]()["*"](sep))})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Bx, Bp, 1["-u"]()["*"](sep))})]), ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, 1["-u"]()["*"](sep))})]) ])})]);
-        "264";
-        gZM = gZminus;
-        "265";
-        gZM.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
-        "267";
-        GZflux.append(gZP);
-        "268";
-        GZflux.append(gZM);
-        "272";
-    }
-    if (1) {
-        "273";
-        Ax = gposx["+"](gxright)["+"](gdx["/"](2));
-        "274";
-        Ap = sep;
-        "275";
-        Bx = Ax["+"](gdx);
-        "276";
         Bp = 1["-u"]()["*"](sep);
-        "277";
+        "242";
         gfa = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, sep)})]);
-        "278";
+        "243";
         gfb = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, 1["-u"]()["*"](sep))})]);
-        "279";
+        "244";
         gfc = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, 1["-u"]()["*"](sep))})]);
-        "280";
+        "245";
         gfd = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, sep)})]);
-        "281";
+        "246";
         gfQ = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ gfa, gfb, gfc, gfd ])})]);
-        "282";
+        "247";
         gFORW = compound(ρσ_list_decorate([ gfQ ]));
-        "283";
+        "248";
         gFORW.opacity = .1;
-        "284";
+        "249";
         gFORW.shininess = 1;
-        "285";
+        "250";
         gFORW.color = color.white;
-        "286";
+        "251";
         gFORW.visible = showGauss[">"](0);
-        "287";
+        "252";
         gFORW.pos1 = vec(Ax, 0, 0);
-        "288";
+        "253";
         gFORW.pos2 = vec(Ax["-"](1["*"](gdx)["/"](2)), 0, 0);
-        "290";
-        Ax = gposx["+"](gxleft)["-"](1["*"](gdx)["/"](2));
-        "291";
+        "255";
+        Ax = self._gposx["+"](self._gxleft)["-"](1["*"](gdx)["/"](2));
+        "256";
         Ap = sep;
-        "292";
+        "257";
         Bx = Ax["+"](gdx);
-        "293";
+        "258";
         Bp = 1["-u"]()["*"](sep);
-        "294";
+        "259";
         gba = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, sep)})]);
-        "295";
+        "260";
         gbb = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Ap, 1["-u"]()["*"](sep))})]);
-        "296";
+        "261";
         gbc = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, 1["-u"]()["*"](sep))})]);
-        "297";
+        "262";
         gbd = ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: vector(Ax, Bp, sep)})]);
-        "298";
+        "263";
         gbQ = ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ gba, gbb, gbc, gbd ])})]);
-        "299";
+        "264";
         gBACK = compound(ρσ_list_decorate([ gbQ ]));
-        "300";
+        "265";
         gBACK.opacity = .1;
-        "301";
+        "266";
         gBACK.shininess = 1;
-        "302";
+        "267";
         gBACK.color = color.white;
-        "303";
+        "268";
         gBACK.visible = showGauss[">"](0);
-        "304";
+        "269";
         gBACK.pos1 = vec(Ax, 0, 0);
-        "305";
+        "270";
         gBACK.pos2 = vec(Ax["+"](gdx["/"](2)), 0, 0);
-        "307";
-        GXflux.append(gFORW);
-        "308";
-        GXflux.append(gBACK);
+        "272";
+        self._GXflux.append(gFORW);
+        "273";
+        self._GXflux.append(gBACK);
+    };
+    if (!GaussSurface.prototype.__init__.__module__) Object.defineProperties(GaussSurface.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    GaussSurface.__argnames__ = GaussSurface.prototype.__init__.__argnames__;
+    GaussSurface.__handles_kwarg_interpolation__ = GaussSurface.prototype.__init__.__handles_kwarg_interpolation__;
+    GaussSurface.prototype.toggle_visibility = async function toggle_visibility() {
+        var self = this;
+        var ρσ_ls, i;
+        "276";
+        var ρσ_Iter12 = self._GYflux["+"](self._GZflux);
+        ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
+        for (var ρσ_Index12 of ρσ_Iter12) {
+            i = ρσ_Index12;
+            "277";
+            i.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
+        }
+        "278";
+        var ρσ_Iter13 = self._GSegFlux;
+        ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
+        for (var ρσ_Index13 of ρσ_Iter13) {
+            i = ρσ_Index13;
+            "279";
+            i.visible = (showGauss === 2 || typeof showGauss === "object" && ρσ_equals(showGauss, 2));
+        }
+        "280";
+        var ρσ_Iter14 = self._GXflux;
+        ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
+        for (var ρσ_Index14 of ρσ_Iter14) {
+            i = ρσ_Index14;
+            "281";
+            i.visible = showGauss[">"](0);
+            "282";
+        }
+        if ((showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1))) {
+            "283";
+            ρσ_getitem(self._GXflux, 0).pos = ρσ_getitem(self._GXflux, 0).pos1;
+            "284";
+            ρσ_getitem(self._GXflux, 1).pos = ρσ_getitem(self._GXflux, 1).pos1;
+            "285";
+        } else {
+            "286";
+            ρσ_getitem(self._GXflux, 0).pos = ρσ_getitem(self._GXflux, 0).pos2;
+            "287";
+            ρσ_getitem(self._GXflux, 1).pos = ρσ_getitem(self._GXflux, 1).pos2;
+        }
+    };
+    if (!GaussSurface.prototype.toggle_visibility.__module__) Object.defineProperties(GaussSurface.prototype.toggle_visibility, {
+        __module__ : {value: null}
+    });
+    GaussSurface.prototype.update_by = async function update_by(t) {
+        var self = this;
+        var ρσ_ls, i, amp, x, s;
+        "290";
+        if (showGauss[">"](0) && (showGauss === 2 || typeof showGauss === "object" && ρσ_equals(showGauss, 2))) {
+            "291";
+            var ρσ_Iter15 = ρσ_list_decorate([ 0, 1 ]);
+            ρσ_Iter15 = ((typeof ρσ_Iter15[Symbol.iterator] === "function") ? (ρσ_Iter15 instanceof Map ? ρσ_Iter15.keys() : ρσ_Iter15) : Object.keys(ρσ_Iter15));
+            for (var ρσ_Index15 of ρσ_Iter15) {
+                s = ρσ_Index15;
+                "292";
+                i = 0;
+                "293";
+                for (var ρσ_Index16 = 0; ρσ_Index16["<"](self._gxsize); ρσ_Index16++) {
+                    x = ρσ_Index16;
+                    "294";
+                    amp = sin(k["*"](x["+"](self._gposx)["+"](self._gxleft))["-"](1["*"](omega)["*"](t)));
+                    "315";
+                    i=i["+"](1);
+                    "316";
+                }
+            }
+        } else {
+            "317";
+            for (var ρσ_Index17 = 0; ρσ_Index17["<"](self._gxsize); ρσ_Index17++) {
+                x = ρσ_Index17;
+                "318";
+                amp = sin(k["*"](x["+"](self._gposx)["+"](self._gxleft))["-"](1["*"](omega)["*"](t)));
+            }
+        }
+    };
+    if (!GaussSurface.prototype.update_by.__argnames__) Object.defineProperties(GaussSurface.prototype.update_by, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+    GaussSurface.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    GaussSurface.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(GaussSurface.prototype, "__bases__", {value: []});
+
+
+
+
+    "354";
+    function FaradayAmpereLoop() {;
     }
-    "314";
+    FaradayAmpereLoop.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, height, field_index;
+        "356";
+        height = sep["/"](2);
+        "357";
+        field_index = int(wavelength["/"](2));
+        "358";
+        self._FaradayLoop = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](1), 1["-u"]()["*"](height), 0), vec(1["-u"]()["*"](1), height, 0), vec(1, height, 0), vec(1, 1["-u"]()["*"](height), 0), vec(1["-u"]()["*"](1), 1["-u"]()["*"](height), 0) ]), color: ρσ_getitem(ddtcolor, 0)})]);
+        "361";
+        self._AmpereLoop = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](1), 0, 1["-u"]()["*"](height)), vec(1["-u"]()["*"](1), 0, height), vec(1, 0, height), vec(1, 0, 1["-u"]()["*"](height)), vec(1["-u"]()["*"](1), 0, 1["-u"]()["*"](height)) ]), color: ρσ_getitem(ddtcolor, 1)})]);
+        "365";
+        self._dBdt = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vector(field_index, 0, 0), axis: vec(0, 0, 0), color: ρσ_getitem(ddtcolor, 0), shaftwidth: .35, headwidth: .7, fixedwidth: 1})]);
+        "367";
+        self._dEdt = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vector(field_index, 0, 0), axis: vec(0, 0, 0), color: ρσ_getitem(ddtcolor, 1), shaftwidth: .35, headwidth: .7, fixedwidth: 1})]);
+        "369";
+        self._dBdt_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(field_index, 0, 0)["+"](label_epsV), text: "dB/dt", color: ρσ_getitem(Bcolor, 2), opacity: ρσ_getitem(labelFOpacity, colorScheme), background: ρσ_getitem(labelFBackground, colorScheme), xoffset: 20, yoffset: 12, height: ρσ_getitem(labelFontSizes, labelFontSizeSelected), border: 6, font: "sans"})]);
+        "373";
+        self._dEdt_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(field_index, 0, 0), text: "dE/dt", color: ρσ_getitem(Ecolor, 2), opacity: ρσ_getitem(labelAOpacity, colorScheme), background: ρσ_getitem(labelABackground, colorScheme), xoffset: 20, yoffset: 12, height: ρσ_getitem(labelFontSizes, labelFontSizeSelected), border: 6, font: "sans"})]);
+        "377";
+        self._field_index = field_index;
+    };
+    if (!FaradayAmpereLoop.prototype.__init__.__module__) Object.defineProperties(FaradayAmpereLoop.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    FaradayAmpereLoop.__argnames__ = FaradayAmpereLoop.prototype.__init__.__argnames__;
+    FaradayAmpereLoop.__handles_kwarg_interpolation__ = FaradayAmpereLoop.prototype.__init__.__handles_kwarg_interpolation__;
+    FaradayAmpereLoop.prototype.shift = async function shift(new_field_index) {
+        var self = this;
+        "380";
+        (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](self._field_index)["-"](1["*"](1)), ρσ_getitem(Ecolor, color_index)));
+        "381";
+        (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](self._field_index)["+"](1), ρσ_getitem(Ecolor, color_index)));
+        "383";
+        (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](self._field_index)["-"](1["*"](1)), ρσ_getitem(Bcolor, color_index)));
+        "384";
+        (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](self._field_index)["+"](1), ρσ_getitem(Bcolor, color_index)));
+        "386";
+        if ((highlightField === 1 || typeof highlightField === "object" && ρσ_equals(highlightField, 1)) && faraday_checkbox.checked) {
+            "387";
+            (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](self._field_index), ρσ_getitem(Bcolor, color_index)));
+            "388";
+        }
+        if ((highlightField === 1 || typeof highlightField === "object" && ρσ_equals(highlightField, 1)) && ampere_checkbox.checked) {
+            "389";
+            (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](self._field_index), ρσ_getitem(Ecolor, color_index)));
+        }
+        "391";
+        self._field_index = new_field_index;
+        "393";
+        if (faraday_checkbox.checked) {
+            "394";
+            (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](self._field_index)["+"](1), ρσ_getitem(ddtcolor, 0)));
+            "395";
+            (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](self._field_index)["-"](1["*"](1)), ρσ_getitem(ddtcolor, 0)));
+            "396";
+        }
+        if (ampere_checkbox.checked) {
+            "397";
+            (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](self._field_index)["+"](1), ρσ_getitem(ddtcolor, 1)));
+            "398";
+            (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](self._field_index)["-"](1["*"](1)), ρσ_getitem(ddtcolor, 1)));
+            "400";
+        }
+        if ((highlightField === 1 || typeof highlightField === "object" && ρσ_equals(highlightField, 1)) && faraday_checkbox.checked) {
+            "401";
+            (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](self._field_index), ρσ_getitem(ddtcolor, 1)));
+            "402";
+        }
+        if ((highlightField === 1 || typeof highlightField === "object" && ρσ_equals(highlightField, 1)) && ampere_checkbox.checked) {
+            "403";
+            (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](self._field_index), ρσ_getitem(ddtcolor, 0)));
+        }
+        "405";
+        ρσ_interpolate_kwargs.call(self._FaradayLoop, self._FaradayLoop.modify, [0].concat([ρσ_desugar_kwargs({x: self._field_index["-"](1["*"](1))})]));
+        "406";
+        ρσ_interpolate_kwargs.call(self._FaradayLoop, self._FaradayLoop.modify, [1].concat([ρσ_desugar_kwargs({x: self._field_index["-"](1["*"](1))})]));
+        "407";
+        ρσ_interpolate_kwargs.call(self._FaradayLoop, self._FaradayLoop.modify, [2].concat([ρσ_desugar_kwargs({x: self._field_index["+"](1)})]));
+        "408";
+        ρσ_interpolate_kwargs.call(self._FaradayLoop, self._FaradayLoop.modify, [3].concat([ρσ_desugar_kwargs({x: self._field_index["+"](1)})]));
+        "409";
+        ρσ_interpolate_kwargs.call(self._FaradayLoop, self._FaradayLoop.modify, [4].concat([ρσ_desugar_kwargs({x: self._field_index["-"](1["*"](1))})]));
+        "411";
+        ρσ_interpolate_kwargs.call(self._AmpereLoop, self._AmpereLoop.modify, [0].concat([ρσ_desugar_kwargs({x: self._field_index["-"](1["*"](1))})]));
+        "412";
+        ρσ_interpolate_kwargs.call(self._AmpereLoop, self._AmpereLoop.modify, [1].concat([ρσ_desugar_kwargs({x: self._field_index["-"](1["*"](1))})]));
+        "413";
+        ρσ_interpolate_kwargs.call(self._AmpereLoop, self._AmpereLoop.modify, [2].concat([ρσ_desugar_kwargs({x: self._field_index["+"](1)})]));
+        "414";
+        ρσ_interpolate_kwargs.call(self._AmpereLoop, self._AmpereLoop.modify, [3].concat([ρσ_desugar_kwargs({x: self._field_index["+"](1)})]));
+        "415";
+        ρσ_interpolate_kwargs.call(self._AmpereLoop, self._AmpereLoop.modify, [4].concat([ρσ_desugar_kwargs({x: self._field_index["-"](1["*"](1))})]));
+    };
+    if (!FaradayAmpereLoop.prototype.shift.__argnames__) Object.defineProperties(FaradayAmpereLoop.prototype.shift, {
+        __argnames__ : {value: ["new_field_index"]},
+        __module__ : {value: null}
+    });
+    FaradayAmpereLoop.prototype.update_by = async function update_by(t) {
+        var self = this;
+        var ρσ_ls, phase, ρσ_unpack, field_at_right, _, field_at_left, dot_prod, magnetic_field, pos, electric_field;
+        "419";
+        phase = k["*"](self._field_index["-"](1["*"](S)))["-"](1["*"](omega)["*"](t));
+        "420";
+        ρσ_unpack = (await central_electromagnetic_wave.electric_field_arrow_at(S["+"](self._field_index)["+"](1)));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        field_at_right = ρσ_unpack[0];
+        _ = ρσ_unpack[1];
+        "421";
+        ρσ_unpack = (await central_electromagnetic_wave.electric_field_arrow_at(S["+"](self._field_index)["-"](1["*"](1))));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        field_at_left = ρσ_unpack[0];
+        _ = ρσ_unpack[1];
+        "422";
+        dot_prod = dot(field_at_right["-"](1["*"](field_at_left)), vector(0, 1, 0));
+        "424";
+        self._dBdt.axis.z = magnify["*"](omega)["*"](Emax)["*"](abs(cos(phase)))["*"](1["-u"]())["*"](sign(dot_prod));
+        "425";
+        self._dBdt_label.text = ρσ_getitem(prefixFaraday, verbose);
+        "427";
+        ρσ_unpack = (await central_electromagnetic_wave.magnetic_field_arrow_at(S["+"](self._field_index)));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        magnetic_field = ρσ_unpack[0];
+        pos = ρσ_unpack[1];
+        "428";
+        dot_prod = dot(self._dBdt.axis, magnetic_field);
+        "429";
+        if (dot_prod[">"](0)) {
+            "430";
+            self._dBdt_label.text=self._dBdt_label.text["+"](ρσ_getitem(dBdtpos_text, calculus));
+            "431";
+            self._dBdt.pos = vector(self._field_index, 0, magnetic_field.z)["+"](0["*"](label_epsV));
+            "432";
+        } else if (dot_prod["<"](0)) {
+            "433";
+            self._dBdt_label.text=self._dBdt_label.text["+"](ρσ_getitem(dBdtneg_text, calculus));
+            "434";
+            self._dBdt.pos = vector(self._field_index, 0, magnetic_field.z["-"](1["*"](self._dBdt.axis.z)))["+"](0["*"](label_epsV));
+            "435";
+        } else {
+            "436";
+            self._dBdt_label.text=self._dBdt_label.text["+"](ρσ_getitem(dBdtzer_text, calculus));
+            "437";
+            self._dBdt.pos = vector(self._field_index, 0, magnetic_field.z);
+        }
+        "438";
+        self._dBdt_label.pos = pos["+"](magnetic_field)["+"](0["*"](label_epsV));
+        "441";
+        ρσ_unpack = (await central_electromagnetic_wave.magnetic_field_arrow_at(S["+"](self._field_index)["+"](1)));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        field_at_right = ρσ_unpack[0];
+        _ = ρσ_unpack[1];
+        "442";
+        ρσ_unpack = (await central_electromagnetic_wave.magnetic_field_arrow_at(S["+"](self._field_index)["-"](1["*"](1))));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        field_at_left = ρσ_unpack[0];
+        _ = ρσ_unpack[1];
+        "443";
+        dot_prod = dot(field_at_right["-"](1["*"](field_at_left)), vector(0, 0, 1["-u"]()["*"](1)));
+        "445";
+        self._dEdt.axis.y = magnify["*"](omega)["*"](Emax)["*"](abs(cos(phase)))["*"](sign(dot_prod));
+        "446";
+        self._dEdt_label.text = ρσ_getitem(prefixAmpere, verbose);
+        "448";
+        ρσ_unpack = (await central_electromagnetic_wave.electric_field_arrow_at(S["+"](self._field_index)));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        electric_field = ρσ_unpack[0];
+        pos = ρσ_unpack[1];
+        "449";
+        dot_prod = dot(self._dEdt.axis, electric_field);
+        "450";
+        if (dot_prod[">"](0)) {
+            "451";
+            self._dEdt_label.text=self._dEdt_label.text["+"](ρσ_getitem(dEdtpos_text, calculus));
+            "452";
+            self._dEdt.pos = vector(self._field_index, electric_field.y, 0);
+            "453";
+        } else if (dot_prod["<"](0)) {
+            "454";
+            self._dEdt_label.text=self._dEdt_label.text["+"](ρσ_getitem(dEdtneg_text, calculus));
+            "455";
+            self._dEdt.pos = vector(self._field_index, electric_field.y["-"](1["*"](self._dEdt.axis.y)), 0);
+            "456";
+        } else {
+            "457";
+            self._dEdt_label.text=self._dEdt_label.text["+"](ρσ_getitem(dEdtzer_text, calculus));
+            "458";
+            self._dEdt.pos = vector(self._field_index, electric_field.y, 0);
+        }
+        "459";
+        self._dEdt_label.pos = pos["+"](electric_field);
+    };
+    if (!FaradayAmpereLoop.prototype.update_by.__argnames__) Object.defineProperties(FaradayAmpereLoop.prototype.update_by, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+    FaradayAmpereLoop.prototype.adjust_font_size_to = async function adjust_font_size_to(font_size_index) {
+        var self = this;
+        "462";
+        self._dBdt_label.height = ρσ_getitem(labelFontSizes, font_size_index);
+        "463";
+        self._dEdt_label.height = ρσ_getitem(labelFontSizes, font_size_index);
+    };
+    if (!FaradayAmpereLoop.prototype.adjust_font_size_to.__argnames__) Object.defineProperties(FaradayAmpereLoop.prototype.adjust_font_size_to, {
+        __argnames__ : {value: ["font_size_index"]},
+        __module__ : {value: null}
+    });
+    FaradayAmpereLoop.prototype.set_visibility_to = async function set_visibility_to(visible) {
+        var self = this;
+        "466";
+        self._dBdt_label.visible = visible;
+        "467";
+        self._dEdt_label.visible = visible;
+    };
+    if (!FaradayAmpereLoop.prototype.set_visibility_to.__argnames__) Object.defineProperties(FaradayAmpereLoop.prototype.set_visibility_to, {
+        __argnames__ : {value: ["visible"]},
+        __module__ : {value: null}
+    });
+    FaradayAmpereLoop.prototype.set_color_scheme_to = async function set_color_scheme_to(color_scheme) {
+        var self = this;
+        "470";
+        self._dEdt_label.background = ρσ_getitem(labelABackground, color_scheme);
+        "471";
+        self._dBdt_label.background = ρσ_getitem(labelFBackground, color_scheme);
+        "472";
+        self._dEdt_label.opacity = ρσ_getitem(labelAOpacity, color_scheme);
+        "473";
+        self._dBdt_label.opacity = ρσ_getitem(labelFOpacity, color_scheme);
+        "474";
+        ρσ_setitem(ddtcolor, 0, ρσ_getitem(Bcolor, 2["+"](color_scheme)));
+        "475";
+        ρσ_setitem(ddtcolor, 1, ρσ_getitem(Ecolor, 2["+"](color_scheme)));
+        "477";
+        self._FaradayLoop.color = ρσ_getitem(ddtcolor, 0);
+        "478";
+        self._dBdt.color = ρσ_getitem(ddtcolor, 0);
+        "479";
+        self._dBdt_label.color = ρσ_getitem(Bcolor, 2);
+        "480";
+        self._AmpereLoop.color = ρσ_getitem(ddtcolor, 1);
+        "481";
+        self._dEdt.color = ρσ_getitem(ddtcolor, 1);
+        "482";
+        self._dEdt_label.color = ρσ_getitem(Ecolor, 2);
+    };
+    if (!FaradayAmpereLoop.prototype.set_color_scheme_to.__argnames__) Object.defineProperties(FaradayAmpereLoop.prototype.set_color_scheme_to, {
+        __argnames__ : {value: ["color_scheme"]},
+        __module__ : {value: null}
+    });
+    FaradayAmpereLoop.prototype.set_faraday_visibility_to = async function set_faraday_visibility_to(visible) {
+        var self = this;
+        "485";
+        self._FaradayLoop.visible = visible;
+        "486";
+        self._dBdt.visible = visible;
+        "487";
+        self._dBdt_label.visible = visible && verbose;
+    };
+    if (!FaradayAmpereLoop.prototype.set_faraday_visibility_to.__argnames__) Object.defineProperties(FaradayAmpereLoop.prototype.set_faraday_visibility_to, {
+        __argnames__ : {value: ["visible"]},
+        __module__ : {value: null}
+    });
+    FaradayAmpereLoop.prototype.set_ampere_visibility_to = async function set_ampere_visibility_to(visible) {
+        var self = this;
+        "490";
+        self._AmpereLoop.visible = visible;
+        "491";
+        self._dEdt.visible = visible;
+        "492";
+        self._dEdt_label.visible = visible && verbose;
+    };
+    if (!FaradayAmpereLoop.prototype.set_ampere_visibility_to.__argnames__) Object.defineProperties(FaradayAmpereLoop.prototype.set_ampere_visibility_to, {
+        __argnames__ : {value: ["visible"]},
+        __module__ : {value: null}
+    });
+    FaradayAmpereLoop.prototype.get_field_index = async function get_field_index() {
+        var self = this;
+        "495";
+        return self._field_index;
+    };
+    if (!FaradayAmpereLoop.prototype.get_field_index.__module__) Object.defineProperties(FaradayAmpereLoop.prototype.get_field_index, {
+        __module__ : {value: null}
+    });
+    FaradayAmpereLoop.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    FaradayAmpereLoop.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(FaradayAmpereLoop.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+
+    "498";
+    _GS_1 = new FaradayAmpereLoop;
+    (await _GS_1.__init__());
+    loop = _GS_1;
+    "499";
+    _GS_1 = new WaveFront;
+    (await _GS_1.__init__());
+    wave_front = _GS_1;
+    "500";
+    _GS_1 = new GaussSurface;
+    (await _GS_1.__init__());
+    gauss_surface = _GS_1;
+    "501";
+    _GS_1 = new ElectromagneticWave;
+    (await _GS_1.__init__(0));
+    central_electromagnetic_wave = _GS_1;
+    "503";
+    _GS_1 = new ElectromagneticWave;
+    (await _GS_1.__init__(3, vec(0, sep, 0)));
+    neighbouring_electromagnetic_waves = ρσ_list_decorate([ _GS_1 ]);
+    "504";
+    _GS_1 = new ElectromagneticWave;
+    (await _GS_1.__init__(3, vec(0, 1["-u"]()["*"](sep), 0)));
+    neighbouring_electromagnetic_waves=neighbouring_electromagnetic_waves["+"](ρσ_list_decorate([ _GS_1 ]));
+    "505";
+    for (var ρσ_Index18 = 1; ρσ_Index18["<"](3); ρσ_Index18++) {
+        j = ρσ_Index18;
+        "506";
+        _GS_1 = new ElectromagneticWave;
+        (await _GS_1.__init__(1, vec(0, 0, j["*"](sep))));
+        neighbouring_electromagnetic_waves=neighbouring_electromagnetic_waves["+"](ρσ_list_decorate([ _GS_1 ]));
+        "507";
+        _GS_1 = new ElectromagneticWave;
+        (await _GS_1.__init__(1, vec(0, 0, 1["-u"]()["*"](j)["*"](sep))));
+        neighbouring_electromagnetic_waves=neighbouring_electromagnetic_waves["+"](ρσ_list_decorate([ _GS_1 ]));
+    }
+    "510";
     async function keyInput(evt) {
         var ρσ_ls, s;
-        "315";
-        "316";
-        "317";
-        "318";
-        "319";
-        "320";
-        "321";
-        "322";
-        "323";
-        "325";
-        if (1) {
-            "331";
-            s = evt.key;
-            "333";
-            if ((s === "x" || typeof s === "object" && ρσ_equals(s, "x"))) {
-                "334";
-                print("scene.center=", animation.center);
-                "335";
-                print("scene.forward=", animation.forward);
-                "336";
-                print("scene.range=", animation.range);
-                "337";
-                print("t={}\n".format(t));
-                "339";
-            }
-            if (faraday_checkbox.checked) {
-                ρσ_getitem(EField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(EField, S["+"](fi)["+"](1)).color = ρσ_getitem(ddtcolor, 0);
-            }
-            "340";
-            if (ampere_checkbox.checked) {
-                ρσ_getitem(BField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(BField, S["+"](fi)["+"](1)).color = ρσ_getitem(ddtcolor, 1);
-            }
-            "341";
-            if (highlightField) {
-                "342";
-                ρσ_getitem(BField, S["+"](fi)).color = (faraday_checkbox.checked) ? ρσ_getitem(Bcolor, 0) : ρσ_getitem(Bcolor, (dim_fields_checkbox.checked) ? 1 : 0);
-                "343";
-                ρσ_getitem(EField, S["+"](fi)).color = (ampere_checkbox.checked) ? ρσ_getitem(Ecolor, 0) : ρσ_getitem(Ecolor, (dim_fields_checkbox.checked) ? 1 : 0);
-            }
+        "515";
+        s = evt.key;
+        "517";
+        if ((s === "x" || typeof s === "object" && ρσ_equals(s, "x"))) {
+            "518";
+            print("scene.center=", animation.center);
+            "519";
+            print("scene.forward=", animation.forward);
+            "520";
+            print("scene.range=", animation.range);
+            "521";
+            print("t={}\n".format(t));
+            "524";
+        }
+        if (faraday_checkbox.checked) {
+            ρσ_getitem(EField, S["+"](field_index)["-"](1["*"](1))).color = ρσ_getitem(EField, S["+"](field_index)["+"](1)).color = ρσ_getitem(ddtcolor, 0);
+        }
+        "525";
+        if (ampere_checkbox.checked) {
+            ρσ_getitem(BField, S["+"](field_index)["-"](1["*"](1))).color = ρσ_getitem(BField, S["+"](field_index)["+"](1)).color = ρσ_getitem(ddtcolor, 1);
+        }
+        "526";
+        if (highlightField) {
+            "527";
+            ρσ_getitem(BField, S["+"](field_index)).color = (faraday_checkbox.checked) ? ρσ_getitem(Bcolor, 0) : ρσ_getitem(Bcolor, (dim_fields_checkbox.checked) ? 1 : 0);
+            "528";
+            ρσ_getitem(EField, S["+"](field_index)).color = (ampere_checkbox.checked) ? ρσ_getitem(Ecolor, 0) : ρσ_getitem(Ecolor, (dim_fields_checkbox.checked) ? 1 : 0);
         }
     };
     if (!keyInput.__argnames__) Object.defineProperties(keyInput, {
@@ -536,29 +1073,27 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "347";
+    "532";
     animation.bind("keydown", keyInput);
-    "349";
+    "534";
     async function toggle_font_size(event) {
-        "350";
-        "351";
+        "535";
+        "536";
         labelFontSizeSelected=labelFontSizeSelected["+"](1);
-        "352";
+        "537";
         labelFontSizeSelected %= len(labelFontSizes);
-        "353";
-        dBdtlabel.height = ρσ_getitem(labelFontSizes, labelFontSizeSelected);
-        "354";
-        dEdtlabel.height = ρσ_getitem(labelFontSizes, labelFontSizeSelected);
+        "538";
+        (await loop.adjust_font_size_to(labelFontSizeSelected));
     };
     if (!toggle_font_size.__argnames__) Object.defineProperties(toggle_font_size, {
         __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
 
-    "356";
+    "540";
     async function toggle_technical_labels(event) {
-        "357";
-        "358";
+        "541";
+        "542";
         calculus = (event.checked) ? 1 : 0;
     };
     if (!toggle_technical_labels.__argnames__) Object.defineProperties(toggle_technical_labels, {
@@ -566,53 +1101,43 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "360";
+    "544";
     async function toggle_wave_fronts(event) {
-        "361";
-        FRONT.visible = event.checked;
-        "362";
-        FRONT2.visible = event.checked;
+        "545";
+        (await wave_front.set_visibility_to(event.checked));
     };
     if (!toggle_wave_fronts.__argnames__) Object.defineProperties(toggle_wave_fronts, {
         __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
 
-    "364";
+    "547";
     async function toggle_verbose(event) {
-        "365";
-        "366";
+        "548";
+        "549";
         verbose=verbose["+"](1);
-        "367";
+        "550";
         verbose %= len(prefixAmpere);
-        "368";
-        dBdtlabel.visible = (faraday_checkbox.checked) ? 1 : 0["*"](min(verbose, 1));
-        "369";
-        dEdtlabel.visible = (ampere_checkbox.checked) ? 1 : 0["*"](min(verbose, 1));
+        "551";
+        (await loop.set_visibility_to((faraday_checkbox.checked) ? 1 : 0["*"](min(verbose, 1))));
     };
     if (!toggle_verbose.__argnames__) Object.defineProperties(toggle_verbose, {
         __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
 
-    "372";
+    "554";
     async function toggle_dim_fields(event) {
-        var ρσ_ls, field;
-        "373";
-        var ρσ_Iter17 = EField;
-        ρσ_Iter17 = ((typeof ρσ_Iter17[Symbol.iterator] === "function") ? (ρσ_Iter17 instanceof Map ? ρσ_Iter17.keys() : ρσ_Iter17) : Object.keys(ρσ_Iter17));
-        for (var ρσ_Index17 of ρσ_Iter17) {
-            field = ρσ_Index17;
-            "374";
-            field.color = ρσ_getitem(Ecolor, (event.checked) ? 1 : 0);
-        }
-        "375";
-        var ρσ_Iter18 = BField;
-        ρσ_Iter18 = ((typeof ρσ_Iter18[Symbol.iterator] === "function") ? (ρσ_Iter18 instanceof Map ? ρσ_Iter18.keys() : ρσ_Iter18) : Object.keys(ρσ_Iter18));
-        for (var ρσ_Index18 of ρσ_Iter18) {
-            field = ρσ_Index18;
-            "376";
-            field.color = ρσ_getitem(Bcolor, (event.checked) ? 1 : 0);
+        var ρσ_ls, wave;
+        "555";
+        (await central_electromagnetic_wave.set_color_to((event.checked) ? 1 : 0));
+        "556";
+        var ρσ_Iter19 = neighbouring_electromagnetic_waves;
+        ρσ_Iter19 = ((typeof ρσ_Iter19[Symbol.iterator] === "function") ? (ρσ_Iter19 instanceof Map ? ρσ_Iter19.keys() : ρσ_Iter19) : Object.keys(ρσ_Iter19));
+        for (var ρσ_Index19 of ρσ_Iter19) {
+            wave = ρσ_Index19;
+            "557";
+            (await wave.set_color_to((event.checked) ? 1 : 0));
         }
     };
     if (!toggle_dim_fields.__argnames__) Object.defineProperties(toggle_dim_fields, {
@@ -620,16 +1145,18 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "378";
+    "559";
     async function toggle_show_electric_field(event) {
-        var ρσ_ls, field;
-        "379";
-        var ρσ_Iter19 = EField;
-        ρσ_Iter19 = ((typeof ρσ_Iter19[Symbol.iterator] === "function") ? (ρσ_Iter19 instanceof Map ? ρσ_Iter19.keys() : ρσ_Iter19) : Object.keys(ρσ_Iter19));
-        for (var ρσ_Index19 of ρσ_Iter19) {
-            field = ρσ_Index19;
-            "380";
-            field.visible = event.checked;
+        var ρσ_ls, wave;
+        "560";
+        (await central_electromagnetic_wave.show_electric_field_is(event.checked));
+        "561";
+        var ρσ_Iter20 = neighbouring_electromagnetic_waves;
+        ρσ_Iter20 = ((typeof ρσ_Iter20[Symbol.iterator] === "function") ? (ρσ_Iter20 instanceof Map ? ρσ_Iter20.keys() : ρσ_Iter20) : Object.keys(ρσ_Iter20));
+        for (var ρσ_Index20 of ρσ_Iter20) {
+            wave = ρσ_Index20;
+            "562";
+            (await wave.show_electric_field_is(event.checked));
         }
     };
     if (!toggle_show_electric_field.__argnames__) Object.defineProperties(toggle_show_electric_field, {
@@ -637,16 +1164,18 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "382";
+    "564";
     async function toggle_show_magnetic_field(event) {
-        var ρσ_ls, field;
-        "383";
-        var ρσ_Iter20 = BField;
-        ρσ_Iter20 = ((typeof ρσ_Iter20[Symbol.iterator] === "function") ? (ρσ_Iter20 instanceof Map ? ρσ_Iter20.keys() : ρσ_Iter20) : Object.keys(ρσ_Iter20));
-        for (var ρσ_Index20 of ρσ_Iter20) {
-            field = ρσ_Index20;
-            "384";
-            field.visible = event.checked;
+        var ρσ_ls, wave;
+        "565";
+        (await central_electromagnetic_wave.show_magnetic_field_is(event.checked));
+        "566";
+        var ρσ_Iter21 = neighbouring_electromagnetic_waves;
+        ρσ_Iter21 = ((typeof ρσ_Iter21[Symbol.iterator] === "function") ? (ρσ_Iter21 instanceof Map ? ρσ_Iter21.keys() : ρσ_Iter21) : Object.keys(ρσ_Iter21));
+        for (var ρσ_Index21 of ρσ_Iter21) {
+            wave = ρσ_Index21;
+            "567";
+            (await wave.show_magnetic_field_is(event.checked));
         }
     };
     if (!toggle_show_magnetic_field.__argnames__) Object.defineProperties(toggle_show_magnetic_field, {
@@ -654,119 +1183,53 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "386";
+    "569";
     async function toggle_show_neighbouring_waves(event) {
-        var ρσ_ls, i;
-        "387";
-        "388";
-        showNeighboringWaves = (event.checked) ? 0 : 1;
-        "389";
-        var ρσ_Iter21 = range(0, len(EField));
-        ρσ_Iter21 = ((typeof ρσ_Iter21[Symbol.iterator] === "function") ? (ρσ_Iter21 instanceof Map ? ρσ_Iter21.keys() : ρσ_Iter21) : Object.keys(ρσ_Iter21));
-        for (var ρσ_Index21 of ρσ_Iter21) {
-            i = ρσ_Index21;
-            "390";
-            ρσ_getitem(EField, i).visible = 1["-"](1["*"](showNeighboringWaves)["*"](ρσ_getitem(EField, i).nbw["%"](2)));
-            "391";
-            ρσ_getitem(BField, i).visible = 1["-"](1["*"](showNeighboringWaves)["*"](ρσ_getitem(BField, i).nbw["%"](2)));
+        var ρσ_ls, wave;
+        "570";
+        "571";
+        var ρσ_Iter22 = neighbouring_electromagnetic_waves;
+        ρσ_Iter22 = ((typeof ρσ_Iter22[Symbol.iterator] === "function") ? (ρσ_Iter22 instanceof Map ? ρσ_Iter22.keys() : ρσ_Iter22) : Object.keys(ρσ_Iter22));
+        for (var ρσ_Index22 of ρσ_Iter22) {
+            wave = ρσ_Index22;
+            "572";
+            (await wave.show_magnetic_field_is(event.checked));
+            "573";
+            (await wave.show_electric_field_is(event.checked));
         }
-        "392";
-        showNeighboringWaves=showNeighboringWaves["+"](1);
-        "393";
-        showNeighboringWaves %= 2;
     };
     if (!toggle_show_neighbouring_waves.__argnames__) Object.defineProperties(toggle_show_neighbouring_waves, {
         __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
 
-    "395";
+    "579";
     async function toggle_show_gauss(event) {
-        var ρσ_ls, i;
-        "396";
-        "397";
+        "580";
+        "581";
         showGauss=showGauss["+"](1);
-        "398";
+        "582";
         showGauss %= 3;
-        "399";
-        var ρσ_Iter22 = GYflux["+"](GZflux);
-        ρσ_Iter22 = ((typeof ρσ_Iter22[Symbol.iterator] === "function") ? (ρσ_Iter22 instanceof Map ? ρσ_Iter22.keys() : ρσ_Iter22) : Object.keys(ρσ_Iter22));
-        for (var ρσ_Index22 of ρσ_Iter22) {
-            i = ρσ_Index22;
-            "400";
-            i.visible = (showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1));
-        }
-        "401";
-        var ρσ_Iter23 = GSegFlux;
-        ρσ_Iter23 = ((typeof ρσ_Iter23[Symbol.iterator] === "function") ? (ρσ_Iter23 instanceof Map ? ρσ_Iter23.keys() : ρσ_Iter23) : Object.keys(ρσ_Iter23));
-        for (var ρσ_Index23 of ρσ_Iter23) {
-            i = ρσ_Index23;
-            "402";
-            i.visible = (showGauss === 2 || typeof showGauss === "object" && ρσ_equals(showGauss, 2));
-        }
-        "403";
-        var ρσ_Iter24 = GXflux;
-        ρσ_Iter24 = ((typeof ρσ_Iter24[Symbol.iterator] === "function") ? (ρσ_Iter24 instanceof Map ? ρσ_Iter24.keys() : ρσ_Iter24) : Object.keys(ρσ_Iter24));
-        for (var ρσ_Index24 of ρσ_Iter24) {
-            i = ρσ_Index24;
-            "404";
-            i.visible = showGauss[">"](0);
-            "405";
-        }
-        if ((showGauss === 1 || typeof showGauss === "object" && ρσ_equals(showGauss, 1))) {
-            "406";
-            ρσ_getitem(GXflux, 0).pos = ρσ_getitem(GXflux, 0).pos1;
-            "407";
-            ρσ_getitem(GXflux, 1).pos = ρσ_getitem(GXflux, 1).pos1;
-            "408";
-        } else {
-            "409";
-            ρσ_getitem(GXflux, 0).pos = ρσ_getitem(GXflux, 0).pos2;
-            "410";
-            ρσ_getitem(GXflux, 1).pos = ρσ_getitem(GXflux, 1).pos2;
-        }
+        "583";
+        (await gauss_surface.toggle_visibility());
     };
     if (!toggle_show_gauss.__argnames__) Object.defineProperties(toggle_show_gauss, {
         __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
 
-    "412";
+    "585";
     async function toggle_color_scheme(event) {
-        "413";
-        "414";
+        "586";
+        "587";
         colorScheme = (event.checked) ? 0 : 1;
-        "415";
+        "588";
         animation.background = ρσ_getitem(colorBackground, colorScheme);
-        "416";
-        dEdtlabel.background = ρσ_getitem(labelABackground, colorScheme);
-        "417";
-        dBdtlabel.background = ρσ_getitem(labelFBackground, colorScheme);
-        "418";
-        dEdtlabel.opacity = ρσ_getitem(labelAOpacity, colorScheme);
-        "419";
-        dBdtlabel.opacity = ρσ_getitem(labelFOpacity, colorScheme);
-        "420";
-        ρσ_setitem(ddtcolor, 0, ρσ_getitem(Bcolor, 2["+"](colorScheme)));
-        "421";
-        ρσ_setitem(ddtcolor, 1, ρσ_getitem(Ecolor, 2["+"](colorScheme)));
-        "423";
-        FaradayLoop.color = ρσ_getitem(ddtcolor, 0);
-        "424";
-        dBdt.color = ρσ_getitem(ddtcolor, 0);
-        "425";
-        dBdtlabel.color = ρσ_getitem(Bcolor, 2);
-        "426";
-        AmpereLoop.color = ρσ_getitem(ddtcolor, 1);
-        "427";
-        dEdt.color = ρσ_getitem(ddtcolor, 1);
-        "428";
-        dEdtlabel.color = ρσ_getitem(Ecolor, 2);
-        "430";
-        FRONT.color = ρσ_getitem(Frontcolor, colorScheme);
-        "431";
-        FRONT2.color = ρσ_getitem(Frontcolor, colorScheme);
-        "433";
+        "589";
+        (await loop.set_color_scheme_to(colorScheme));
+        "590";
+        (await wave_front.set_color_to_color_scheme(colorScheme));
+        "591";
         animation.ambient = vector(1, 1, 1)["-"](1["*"](vector(animation.ambient)));
     };
     if (!toggle_color_scheme.__argnames__) Object.defineProperties(toggle_color_scheme, {
@@ -774,33 +1237,36 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "435";
+    "593";
     async function toggle_run(event) {
-        "436";
+        "594";
     };
     if (!toggle_run.__argnames__) Object.defineProperties(toggle_run, {
         __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
 
-    "438";
+    "596";
     async function toggle_faraday(event) {
-        "439";
-        FaradayLoop.visible = dBdt.visible = event.checked;
-        "440";
-        dBdtlabel.visible = event.checked && verbose;
-        "441";
+        var ρσ_ls, field_index, colour;
+        "597";
+        (await loop.set_faraday_visibility_to(event.checked));
+        "598";
+        field_index = (await loop.get_field_index());
+        "599";
         if (event.checked) {
-            "442";
-            ρσ_getitem(EField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(ddtcolor, 1);
-            "443";
-            ρσ_getitem(EField, S["+"](fi)["+"](1)).color = ρσ_getitem(ddtcolor, 1);
-            "444";
+            "600";
+            (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](field_index)["-"](1["*"](1)), ρσ_getitem(ddtcolor, 1)));
+            "601";
+            (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](field_index)["+"](1), ρσ_getitem(ddtcolor, 1)));
+            "602";
         } else {
-            "445";
-            ρσ_getitem(EField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(Ecolor, (dim_fields_checkbox.checked) ? 1 : 0);
-            "446";
-            ρσ_getitem(EField, S["+"](fi)["+"](1)).color = ρσ_getitem(Ecolor, (dim_fields_checkbox.checked) ? 1 : 0);
+            "603";
+            colour = ρσ_getitem(Ecolor, (dim_fields_checkbox.checked) ? 1 : 0);
+            "604";
+            (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](field_index)["-"](1["*"](1)), colour));
+            "605";
+            (await central_electromagnetic_wave.set_color_electric_field_arrow(S["+"](field_index)["+"](1), colour));
         }
     };
     if (!toggle_faraday.__argnames__) Object.defineProperties(toggle_faraday, {
@@ -808,24 +1274,27 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "449";
+    "608";
     async function toggle_ampere(event) {
-        "450";
-        AmpereLoop.visible = dEdt.visible = event.checked;
-        "451";
-        dEdtlabel.visible = event.checked && verbose;
-        "452";
+        var ρσ_ls, field_index, colour;
+        "609";
+        (await loop.set_ampere_visibility_to(event.checked));
+        "610";
+        field_index = (await loop.get_field_index());
+        "611";
         if (event.checked) {
-            "453";
-            ρσ_getitem(BField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(ddtcolor, 0);
-            "454";
-            ρσ_getitem(BField, S["+"](fi)["+"](1)).color = ρσ_getitem(ddtcolor, 0);
-            "455";
+            "612";
+            (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](field_index)["-"](1["*"](1)), ρσ_getitem(ddtcolor, 0)));
+            "613";
+            (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](field_index)["+"](1), ρσ_getitem(ddtcolor, 0)));
+            "614";
         } else {
-            "456";
-            ρσ_getitem(BField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(Bcolor, (dim_fields_checkbox.checked) ? 1 : 0);
-            "457";
-            ρσ_getitem(BField, S["+"](fi)["+"](1)).color = ρσ_getitem(Bcolor, (dim_fields_checkbox.checked) ? 1 : 0);
+            "615";
+            colour = ρσ_getitem(Bcolor, (dim_fields_checkbox.checked) ? 1 : 0);
+            "616";
+            (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](field_index)["-"](1["*"](1)), colour));
+            "617";
+            (await central_electromagnetic_wave.set_color_magnetic_field_arrow(S["+"](field_index)["+"](1), colour));
         }
     };
     if (!toggle_ampere.__argnames__) Object.defineProperties(toggle_ampere, {
@@ -833,210 +1302,79 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "459";
+    "619";
     animation.append_to_caption("\n");
-    "460";
+    "620";
     ampere_checkbox = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Ampere ", bind: toggle_ampere, checked: true})]);
-    "461";
+    "621";
     faraday_checkbox = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Faraday ", bind: toggle_faraday, checked: true})]);
-    "462";
+    "622";
     pause_checkbox = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Pause ", bind: toggle_run, checked: false})]);
-    "463";
+    "623";
     technical_labels_checkbox = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Technical labels ", bind: toggle_technical_labels, checked: true})]);
-    "464";
+    "624";
     dark_background_checkbox = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Dark background", bind: toggle_color_scheme, checked: true})]);
-    "466";
+    "626";
     animation.append_to_caption("\n\n");
-    "467";
+    "627";
     electric_field_checkbox = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Electric field ", bind: toggle_show_magnetic_field, checked: true})]);
-    "468";
+    "628";
     magnetic_field_checkbox = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Magnetic field ", bind: toggle_show_electric_field, checked: true})]);
-    "469";
+    "629";
     dim_fields_checkbox = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Dim fields ", bind: toggle_dim_fields, checked: false})]);
-    "470";
+    "630";
     wave_front_checkbox = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Wave front ", bind: toggle_wave_fronts, checked: false})]);
-    "471";
+    "631";
     neighbouring_waves = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Neighbouring waves ", bind: toggle_show_neighbouring_waves, checked: true})]);
-    "473";
+    "633";
     animation.append_to_caption("\n\n");
-    "474";
+    "634";
     show_gauss_button = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: " Show Gauss", bind: toggle_show_gauss})]);
-    "475";
+    "635";
     font_size_button = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: " Font size ", bind: toggle_font_size})]);
-    "476";
+    "636";
     verbose_button = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: " Verbose ", bind: toggle_verbose})]);
-    "477";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "479";
+    "638";
     phase0 = wavelength["/"](4);
-    "480";
-    fi = 0;
-    "481";
-    while (1) {
-        "482";
+    "640";
+    time = 1;
+    "641";
+    while (true) {
+        "642";
         (await rate(60));
-        "484";
-        newfi = int(animation.mouse.pos.x);
-        "485";
-        newfi = max(min(newfi, S["-"](1["*"](2))), 1["-u"]()["*"](S["-"](1["*"](2))));
-        "487";
-        phase = k["*"](newfi["-"](1["*"](S)))["-"](1["*"](omega)["*"](t));
-        "488";
-        if ((fi !== newfi && (typeof fi !== "object" || ρσ_not_equals(fi, newfi)))) {
-            "489";
-            ρσ_getitem(EField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(EField, S["+"](fi)["+"](1)).color = ρσ_getitem(Ecolor, (dim_fields_checkbox.checked) ? 1 : 0);
-            "490";
-            ρσ_getitem(BField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(BField, S["+"](fi)["+"](1)).color = ρσ_getitem(Bcolor, (dim_fields_checkbox.checked) ? 1 : 0);
-            "492";
-            if ((highlightField === 1 || typeof highlightField === "object" && ρσ_equals(highlightField, 1))) {
-                "493";
-                if (faraday_checkbox.checked) {
-                    ρσ_getitem(BField, S["+"](fi)).color = ρσ_getitem(Bcolor, (dim_fields_checkbox.checked) ? 1 : 0);
-                }
-                "494";
-                if (ampere_checkbox.checked) {
-                    ρσ_getitem(EField, S["+"](fi)).color = ρσ_getitem(Ecolor, (dim_fields_checkbox.checked) ? 1 : 0);
-                }
-            }
-            "495";
-            fi = newfi;
-            "496";
-            if (faraday_checkbox.checked) {
-                ρσ_getitem(EField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(EField, S["+"](fi)["+"](1)).color = ρσ_getitem(ddtcolor, 0);
-            }
-            "497";
-            if (ampere_checkbox.checked) {
-                ρσ_getitem(BField, S["+"](fi)["-"](1["*"](1))).color = ρσ_getitem(BField, S["+"](fi)["+"](1)).color = ρσ_getitem(ddtcolor, 1);
-            }
-            "499";
-            if ((highlightField === 1 || typeof highlightField === "object" && ρσ_equals(highlightField, 1)) && faraday_checkbox.checked) {
-                ρσ_getitem(BField, S["+"](fi)).color = ρσ_getitem(Bcolor, 0);
-            }
-            "500";
-            if ((highlightField === 1 || typeof highlightField === "object" && ρσ_equals(highlightField, 1)) && ampere_checkbox.checked) {
-                ρσ_getitem(EField, S["+"](fi)).color = ρσ_getitem(Ecolor, 0);
-            }
-            "502";
-            ρσ_interpolate_kwargs.call(FaradayLoop, FaradayLoop.modify, [0].concat([ρσ_desugar_kwargs({x: fi["-"](1["*"](1))})]));
-            "503";
-            ρσ_interpolate_kwargs.call(FaradayLoop, FaradayLoop.modify, [1].concat([ρσ_desugar_kwargs({x: fi["-"](1["*"](1))})]));
-            "504";
-            ρσ_interpolate_kwargs.call(FaradayLoop, FaradayLoop.modify, [2].concat([ρσ_desugar_kwargs({x: fi["+"](1)})]));
-            "505";
-            ρσ_interpolate_kwargs.call(FaradayLoop, FaradayLoop.modify, [3].concat([ρσ_desugar_kwargs({x: fi["+"](1)})]));
-            "506";
-            ρσ_interpolate_kwargs.call(FaradayLoop, FaradayLoop.modify, [4].concat([ρσ_desugar_kwargs({x: fi["-"](1["*"](1))})]));
-            "508";
-            ρσ_interpolate_kwargs.call(AmpereLoop, AmpereLoop.modify, [0].concat([ρσ_desugar_kwargs({x: fi["-"](1["*"](1))})]));
-            "509";
-            ρσ_interpolate_kwargs.call(AmpereLoop, AmpereLoop.modify, [1].concat([ρσ_desugar_kwargs({x: fi["-"](1["*"](1))})]));
-            "510";
-            ρσ_interpolate_kwargs.call(AmpereLoop, AmpereLoop.modify, [2].concat([ρσ_desugar_kwargs({x: fi["+"](1)})]));
-            "511";
-            ρσ_interpolate_kwargs.call(AmpereLoop, AmpereLoop.modify, [3].concat([ρσ_desugar_kwargs({x: fi["+"](1)})]));
-            "512";
-            ρσ_interpolate_kwargs.call(AmpereLoop, AmpereLoop.modify, [4].concat([ρσ_desugar_kwargs({x: fi["-"](1["*"](1))})]));
+        "644";
+        new_field_arrow_index = int(animation.mouse.pos.x);
+        "645";
+        new_field_arrow_index = max(min(new_field_arrow_index, S["-"](1["*"](2))), 1["-u"]()["*"](S["-"](1["*"](2))));
+        "647";
+        color_index = (dim_fields_checkbox.checked) ? 1 : 0;
+        "648";
+        if (ρσ_not_equals((await loop.get_field_index()), new_field_arrow_index)) {
+            "649";
+            (await loop.shift(new_field_arrow_index));
+            "650";
+            field_arrow_index = new_field_arrow_index;
         }
-        "519";
-        var ρσ_Iter25 = range(0, len(EField));
-        ρσ_Iter25 = ((typeof ρσ_Iter25[Symbol.iterator] === "function") ? (ρσ_Iter25 instanceof Map ? ρσ_Iter25.keys() : ρσ_Iter25) : Object.keys(ρσ_Iter25));
-        for (var ρσ_Index25 of ρσ_Iter25) {
-            i = ρσ_Index25;
-            "520";
-            amp = Emax["*"](sin(k["*"](i["%"](2["*"](S))["-"](1["*"](S)))["-"](1["*"](omega)["*"](t))));
-            "521";
-            ρσ_getitem(EField, i).axis.y = amp;
-            "522";
-            ρσ_getitem(BField, i).axis.z = amp;
-            "527";
+        "656";
+        (await central_electromagnetic_wave.update_with(time));
+        "657";
+        var ρσ_Iter23 = neighbouring_electromagnetic_waves;
+        ρσ_Iter23 = ((typeof ρσ_Iter23[Symbol.iterator] === "function") ? (ρσ_Iter23 instanceof Map ? ρσ_Iter23.keys() : ρσ_Iter23) : Object.keys(ρσ_Iter23));
+        for (var ρσ_Index23 of ρσ_Iter23) {
+            wave = ρσ_Index23;
+            "658";
+            (await wave.update_with(time));
         }
-        if (showGauss[">"](0)) {
-            "528";
-            if ((showGauss === 2 || typeof showGauss === "object" && ρσ_equals(showGauss, 2))) {
-                "529";
-                var ρσ_Iter26 = ρσ_list_decorate([ 0, 1 ]);
-                ρσ_Iter26 = ((typeof ρσ_Iter26[Symbol.iterator] === "function") ? (ρσ_Iter26 instanceof Map ? ρσ_Iter26.keys() : ρσ_Iter26) : Object.keys(ρσ_Iter26));
-                for (var ρσ_Index26 of ρσ_Iter26) {
-                    s = ρσ_Index26;
-                    "530";
-                    i = 0;
-                    "531";
-                    for (var ρσ_Index27 = 0; ρσ_Index27["<"](gxsize); ρσ_Index27++) {
-                        x = ρσ_Index27;
-                        "532";
-                        amp = sin(k["*"](x["+"](gposx)["+"](gxleft))["-"](1["*"](omega)["*"](t)));
-                        "553";
-                        i=i["+"](1);
-                        "554";
-                    }
-                }
-            } else {
-                "555";
-                for (var ρσ_Index28 = 0; ρσ_Index28["<"](gxsize); ρσ_Index28++) {
-                    x = ρσ_Index28;
-                    "556";
-                    amp = sin(k["*"](x["+"](gposx)["+"](gxleft))["-"](1["*"](omega)["*"](t)));
-                }
-            }
-        }
-        "595";
-        FRONT.pos = vec(phase0["+"](omega["/"](k)["*"](t))["%"](2["*"](S))["-"](1["*"](S)), 0, 0);
-        "596";
-        FRONT2.pos = vec(phase0["+"](wavelength)["+"](omega["/"](k)["*"](t))["%"](2["*"](S))["-"](1["*"](S)), 0, 0);
-        "604";
-        dBdt.axis.z = magnify["*"](omega)["*"](Emax)["*"](abs(cos(phase)))["*"](1["-u"]())["*"](sign(dot(ρσ_getitem(EField, S["+"](newfi)["+"](1)).axis["-"](1["*"](ρσ_getitem(EField, S["+"](newfi)["-"](1["*"](1))).axis)), vector(0, 1, 0))));
-        "606";
-        dBdtlabel.text = ρσ_getitem(prefixFaraday, verbose);
-        "607";
-        if (dot(dBdt.axis, ρσ_getitem(BField, S["+"](newfi)).axis)[">"](0)) {
-            "608";
-            dBdtlabel.text=dBdtlabel.text["+"](ρσ_getitem(dBdtpos_text, calculus));
-            "609";
-            dBdt.pos = vector(newfi, 0, ρσ_getitem(BField, S["+"](newfi)).axis.z)["+"](0["*"](label_epsV));
-            "610";
-        } else if (dot(dBdt.axis, ρσ_getitem(BField, S["+"](newfi)).axis)["<"](0)) {
-            "611";
-            dBdtlabel.text=dBdtlabel.text["+"](ρσ_getitem(dBdtneg_text, calculus));
-            "612";
-            dBdt.pos = vector(newfi, 0, ρσ_getitem(BField, S["+"](newfi)).axis.z["-"](1["*"](dBdt.axis.z)))["+"](0["*"](label_epsV));
-            "613";
-        } else {
-            "614";
-            dBdtlabel.text=dBdtlabel.text["+"](ρσ_getitem(dBdtzer_text, calculus));
-            "615";
-            dBdt.pos = vector(newfi, 0, ρσ_getitem(BField, S["+"](newfi)).axis.z);
-        }
-        "616";
-        dBdtlabel.pos = ρσ_getitem(BField, S["+"](newfi)).pos["+"](ρσ_getitem(BField, S["+"](newfi)).axis)["+"](0["*"](label_epsV));
-        "619";
-        dEdt.axis.y = magnify["*"](omega)["*"](Emax)["*"](abs(cos(phase)))["*"](sign(dot(ρσ_getitem(BField, S["+"](newfi)["+"](1)).axis["-"](1["*"](ρσ_getitem(BField, S["+"](newfi)["-"](1["*"](1))).axis)), vector(0, 0, 1["-u"]()["*"](1)))));
-        "621";
-        dEdtlabel.text = ρσ_getitem(prefixAmpere, verbose);
-        "622";
-        if (dot(dEdt.axis, ρσ_getitem(EField, S["+"](newfi)).axis)[">"](0)) {
-            "623";
-            dEdtlabel.text=dEdtlabel.text["+"](ρσ_getitem(dEdtpos_text, calculus));
-            "624";
-            dEdt.pos = vector(newfi, ρσ_getitem(EField, S["+"](newfi)).axis.y, 0);
-            "625";
-        } else if (dot(dEdt.axis, ρσ_getitem(EField, S["+"](newfi)).axis)["<"](0)) {
-            "626";
-            dEdtlabel.text=dEdtlabel.text["+"](ρσ_getitem(dEdtneg_text, calculus));
-            "627";
-            dEdt.pos = vector(newfi, ρσ_getitem(EField, S["+"](newfi)).axis.y["-"](1["*"](dEdt.axis.y)), 0);
-            "628";
-        } else {
-            "629";
-            dEdtlabel.text=dEdtlabel.text["+"](ρσ_getitem(dEdtzer_text, calculus));
-            "630";
-            dEdt.pos = vector(newfi, ρσ_getitem(EField, S["+"](newfi)).axis.y, 0);
-        }
-        "631";
-        dEdtlabel.pos = ρσ_getitem(EField, S["+"](newfi)).pos["+"](ρσ_getitem(EField, S["+"](newfi)).axis);
-        "633";
+        "660";
+        (await gauss_surface.update_by(time));
+        "661";
+        (await wave_front.update_by(time));
+        "662";
+        (await loop.update_by(time));
+        "664";
         if (!pause_checkbox.checked) {
-            "634";
-            t=t["+"](.1);
+            "665";
+            time=time["+"](.1);
         }
     }
 };
