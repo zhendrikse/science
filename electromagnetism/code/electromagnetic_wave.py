@@ -9,17 +9,18 @@ title = """&#x2022; EM Wave by Rob Salgado (2022), robertoBsalgado@gmail.com
 
 calculus = 1  # key c
 verbose = 1  # key v
-
+highlightField = 1
 showNeighboringWaves = 1  # key s
 showGauss = 2  # key g
 
 colorScheme = 0  # key n (negative background color)
 
-highlightField = 1
-
 initial_range = 10
 initial_forward = vec(2.2012, -2.3109, -2.89429)  # see below
 animation = canvas(background=color.gray(0.075), forward=initial_forward, range=initial_range, title=title)
+ambient = [0.3, 0.7]
+animation.ambient = vec(.4, .4, .4)
+animation.background = colorBackground[colorScheme]
 
 colorBackground = [color.gray(0.075), color.white]
 labelABackground = [color.black, 0.2 * vec(1, 1, 1)]  # opacity
@@ -31,22 +32,13 @@ Ecolor = [color.orange, vec(.4, 0, .0), color.yellow, vec(0, 1, 0)]
 Bcolor = [color.cyan, vec(0, 0, .4), color.magenta, vec(1, 0., 1.0)]
 ddtcolor = [Bcolor[2 + colorScheme], Ecolor[2 + colorScheme]]  # for Ampere and Faraday
 
-
-ambient = [0.3, 0.7]
-animation.ambient = vec(.4, .4, .4)
-animation.background = colorBackground[colorScheme]
-
 Emax = 4.
 sep = 10.
-
 magnify = 2.5
 S = 20
 omega = 0.1
 wavelength = S
 k = 2 * pi / wavelength
-
-
-
 
 labelFontSizeSelected = 4
 labelFontSizes = [8, 12, 16, 20, 24, 30]
@@ -602,7 +594,3 @@ while True:
 
     if not pause_checkbox.checked:
         time += 0.1
-
-
-
-
