@@ -51,7 +51,7 @@ mouth.append (pos = vec(0.0, -1.4, 0.0))
 mouth.append (pos = vec(0.5, -1.3, 0.0))
 mouth.append (pos = vec(1.5, -0.5, 0.0))
 
-ring(axis=vec(0, 0, 1), size=vec(0.1, 6.5, 6.5), thickness=.1, color=color.yellow)
+ring(axis=vec(0, 0, 1), size=vec(0.1, 6.5, 6.5), thickness=.1, color=color.gray(0.75))
 
 ang = 0.05
 red_component = 0.001
