@@ -5,6 +5,12 @@
 <div class="header_line"><br/></div>
 
 <blockquote>
+We can allow satellites, planets, suns, universe, nay whole systems of universes, 
+to be governed by laws, but the smallest insect, we wish to be created at once by 
+special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Charles Darwin</a>
+</blockquote>
+
+<blockquote>
 You have to make the rules, not follow them.
 &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
 </blockquote><br/>
@@ -31,7 +37,9 @@ You have to make the rules, not follow them.
   <a href="planets.html">
     <img alt="Our planets" src="../images/planets.png" title="Click to animate"/>
   </a>
-  <figcaption>The eight planets that make up our own solar system.</figcaption>
+  <figcaption>"You teach your daughters the diameters of the planets and wonder when 
+  you are done that they do not delight in your company." &mdash; 
+  <a href="https://en.wikipedia.org/wiki/Samuel_Johnson">Samuel Johnson</a></figcaption>
 </figure>
 <figure class="right_image">
   <a href="keplers_law.html">
