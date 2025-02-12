@@ -67,13 +67,25 @@ finest that music and poetry can deliver. &mdash;
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="mathematics/double_shapes_surface_plot.html">
-          <img alt="Double torus" src="./mathematics/gallery/images/double_torus.png" title="Click to animate"/>
+        <a href="mathematics/topology_surface_plot.html">
+          <img alt="Möbius strip" src="./mathematics/gallery/images/mobius_strip.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
         <a href="mathematics/double_shapes_contour_plot.html">
           <img alt="Klein&apos;s bottle" src="./mathematics/gallery/images/klein_bottle_contour.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="mathematics/topology_surface_plot.html">
+          <img alt="Dini&apos;s spiral" src="./mathematics/gallery/images/dini_spiral.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="mathematics/double_shapes_contour_plot.html">
+          <img alt="Double torus" src="./mathematics/gallery/images/double_torus_contour.png" title="Click to animate"/>
         </a>
       </figure>
     </div>

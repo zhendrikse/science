@@ -224,7 +224,7 @@ where
 <div class="double_image">
 <figure class="left_image">
   <a href="../topology_surface_plot.html">
-    <img alt="Conchoid" src="./images/conchoid.png" title="Click to animate"/>
+    <img alt="Conchoidal" src="./images/conchoid.png" title="Click to animate"/>
   </a>
   <figcaption>Nature meets mathematics: a purely mathematically generated seashell, with the parametrization 
   found on <a href="https://paulbourke.net/geometry/spiral">Paul Bourke&apos;s</a> site.
@@ -232,10 +232,9 @@ where
 </figure>
 <figure class="right_image">
   <a href="../topology_surface_plot.html">
-    <img alt="Conchoid" src="./images/conchoid.png" title="Click to animate"/>
+    <img alt="Conchoidal" src="./images/conchoid_contour.png" title="Click to animate"/>
   </a>
-  <figcaption>Nature meets mathematics: a purely mathematically generated seashell, with the parametrization 
-  found on <a href="https://paulbourke.net/geometry/spiral">Paul Bourke&apos;s</a> site.
+  <figcaption>Another seashell, rendered with contours and generated with another parametrization from the website of <a href="https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_surface.html">Sage Math</a>.
   </figcaption>
 </figure>
 </div>
