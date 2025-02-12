@@ -21,11 +21,28 @@ that I have written in VPython.
 
 <div class="double_image">
 <figure class="left_image">
+  <a href="../topology_contour_plot.html">
+    <img alt="Torus" src="./images/torus_contour.png" title="Click to animate"/>
+  </a>
+  <figcaption>The torus is the simplest toroid and hence is frequently seen in topological contexts.</figcaption>
+</figure>
+<figure class="right_image">
   <a href="../topology_surface_plot.html">
     <img alt="Torus" src="./images/torus.png" title="Click to animate"/>
   </a>
   <figcaption>A torus, a trivial example of a connected orientable surface of 
     <a href="https://en.wikipedia.org/wiki/Genus_%28mathematics%29">genus one</a>.
+  </figcaption>
+</figure>
+</div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="../topology_surface_plot.html">
+    <img alt="Torus" src="./images/bow_curve.png" title="Click to animate"/>
+  </a>
+  <figcaption>The 
+    <a href="https://en.wikipedia.org/wiki/Bow_Curve">Bow curve</a>.
   </figcaption>
 </figure>
 <figure class="right_image">
