@@ -2,7 +2,7 @@ from vpython import arange, arrow, vec, sin, cos, pi, sqrt, color, rate, canvas,
 
 title="https://krajit.github.io/sympy/vectorFields/vectorFields.html"
 
-animation = canvas(forward=vec(-2.5, -2.2, -2.2), up=vec(0, 0, 1), title=title, background=color.gray(0.075), range=2.0)
+animation = canvas(forward=vec(-2.5, -2.2, -2.2), center=vec(0, 0, -.5), up=vec(0, 0, 1), title=title, background=color.gray(0.075), range=2.0)
 
 x_hat = vec(0, 1, 0)
 y_hat = vec(0, 0, 1)
@@ -84,19 +84,53 @@ class Base:
         for i in range(len(self._axis_labels)):
             self._axis_labels[i].visible = visible
 
-def display_field(x, y, z):
-    for x_ in x:
-        for y_ in y:
-            for z_ in z:
-                position = vec(x_, y_, z_)
-                u = sin(pi * x_) * cos(pi * y_) * cos(pi * z_)
-                v = -cos(pi * x_) * sin(pi * y_) * cos(pi * z_)
-                w = (sqrt(2.0 / 3.0) * cos(pi * x_) * cos(pi * y_) * sin(pi * z_))
+class Plot:
+    def __init__(self, x, y, z, f_x_y_z):
+        self._x, self._y, self._z, self._f_x_y_z = x, y, z, f_x_y_z
+        self._arrows = []
+        for x in self._x:
+            for y in self._y:
+                for z in self._z:
+                    self._arrows.append(arrow(axis=self._f_x_y_z(x, y, z) * .25, pos=vec(x, y, z), color=color.yellow, make_trail=True))
 
-                arrow(axis=vec(u, v, w) * .25, pos=position, color=color.yellow)
+    def reset(self):
+        index = 0
+        for x in self._x:
+            for y in self._y:
+                for z in self._z:
+                    self._arrows[index].pos=vec(x, y, z)
+                    self._arrows[index].axis = self._f_x_y_z(x, y, z) * .25
+                    self._arrows[index].clear_trail()
+                    index += 1
 
-display_field(arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.8))
-axis = Base(arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.8), color.yellow, color.green, 10)
+    def update(self, dt=0.):
+        index = 0
+        for _ in range(len(self._arrows)):
+            position = self._arrows[index].pos
+            axis = self._arrows[index].axis
+            new_position = position + axis * dt
+            self._arrows[index].pos = new_position
+            self._arrows[index].axis = self._f_x_y_z(position.x, position.y, position.z) * .25
+            index += 1
+
+def vector_field(x, y, z):
+    u = sin(pi * x) * cos(pi * y) * cos(pi * z)
+    v = -cos(pi * x) * sin(pi * y) * cos(pi * z)
+    w = (sqrt(2.0 / 3.0) * cos(pi * x) * cos(pi * y) * sin(pi * z))
+    return vec(u, v, w)
+
+
+plot = Plot(arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.8), vector_field)
+plot_base = Base(arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.8), color.yellow, color.green, 10)
+
+dt =.01
+t = 0.0
 while True:
-    rate(5)
+    rate(30)
+    plot.update(dt)
+    t += dt
+    if t >=2:
+        plot.reset()
+        t = 0.0
+
 
