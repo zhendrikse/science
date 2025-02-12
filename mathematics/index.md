@@ -57,7 +57,7 @@ modified by the user.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="vector_field.html">
+  <a href="vector_fields.html">
     <img alt="Vector field" src="../images/vector_field.png" title="Click to animate"/>
   </a>
   <figcaption>Rendering of 3D vector field and implied flow.</figcaption>
