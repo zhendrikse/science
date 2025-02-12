@@ -45,8 +45,8 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <a href="mathematics/double_shapes_contour_plot.html">
-          <img alt="Torus contour plot" src="./images/torus_contour.png" title="Click to animate"/>
+        <a href="mathematics/spherical_harmonics_surface_plot.html">
+          <img alt="Torus contour plot" src=".mathematics/gallery/images/spherical_harmonics.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
