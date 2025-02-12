@@ -1,6 +1,9 @@
 from vpython import arange, arrow, vec, sin, cos, pi, sqrt, color, rate, canvas, cylinder, label, box
 
-title="https://krajit.github.io/sympy/vectorFields/vectorFields.html"
+title="""<a href="https://krajit.github.io/sympy/vectorFields/vectorFields.html">Vector field</a>:
+$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$
+
+"""
 
 animation = canvas(forward=vec(-2.5, -2.2, -2.2), center=vec(0, 0, -.5), up=vec(0, 0, 1), title=title, background=color.gray(0.075), range=2.0)
 
@@ -119,6 +122,7 @@ def vector_field(x, y, z):
     w = (sqrt(2.0 / 3.0) * cos(pi * x) * cos(pi * y) * sin(pi * z))
     return vec(u, v, w)
 
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 plot = Plot(arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.8), vector_field)
 plot_base = Base(arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.8), color.yellow, color.green, 10)
