@@ -724,7 +724,7 @@ radio_buttons.add(radio(bind=toggle, text=" Trefoil Knot ", name="trefoil_knot")
 radio_buttons.add(radio(bind=toggle, text=" Twisted torus ", name="twisted_torus"), twisted_torus, twisted_torus_title)
 
 def adjust_opacity(event):
-    figure.set_opacity_to(opacity_slider.value)
+    figure.set_opacity_to(event.value)
     opacity_slider_text.text = "= {:1.2f}".format(event.value, 2)
 
 

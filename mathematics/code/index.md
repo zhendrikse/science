@@ -8,5 +8,6 @@
 - [`polar_coordinates.py` source code](polar_coordinates.py)
 - [`spherical_harmonics.py` source code](spherical_harmonics.py)
 - [`topology.py` source code](topology.py)
+- [`vector_fields.py` source code](vector_fields.py)
 
 

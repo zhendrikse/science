@@ -38,6 +38,18 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="mathematics/vector_fields.html">
+          <img alt="3D vector fields" src="./images/vector_field.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="mathematics/double_shapes_contour_plot.html">
+          <img alt="Torus contour plot" src="./images/torus_contour.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
   </div>
   <div class="column" style="background-color:#004444;">
     <h2><a href="mathematics/gallery/index.html">Topological surfaces</a></h2>

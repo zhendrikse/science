@@ -1,11 +1,15 @@
-from vpython import arange, arrow, vec, sin, cos, pi, sqrt, color, rate, canvas, cylinder, label, box
+#Web VPython 3.2
+from vpython import arange, arrow, vec, sin, cos, pi, sqrt, color, rate, canvas, cylinder, label, checkbox, button
 
-title="""<a href="https://krajit.github.io/sympy/vectorFields/vectorFields.html">Vector field</a>:
+title="""&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/vector_fields.py">vector_fields.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+
+&#x2022; Shown below is the <a href="https://krajit.github.io/sympy/vectorFields/vectorFields.html">vector field</a>:
+
 $\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$
 
 """
 
-animation = canvas(forward=vec(-2.5, -2.2, -2.2), center=vec(0, 0, -.5), up=vec(0, 0, 1), title=title, background=color.gray(0.075), range=2.0)
+animation = canvas(height=500, forward=vec(-2.5, -2.2, -2.2), center=vec(0, 0, -.5), up=vec(0, 0, 1), title=title, background=color.gray(0.075), range=2.0)
 
 x_hat = vec(0, 1, 0)
 y_hat = vec(0, 0, 1)
@@ -68,12 +72,6 @@ class Base:
             item.color = color.gray(.25)
             item.radius = radius
 
-        # pos = position + (x_hat + z_hat) * .5 * max_of_base
-        # self._mesh += [box(pos=pos, length=max_of_base, width=radius, height=max_of_base,opacity=0.05)]
-        # pos = position + (z_hat + y_hat) * .5 * max_of_base
-        # self._mesh += [box(pos=pos, length=max_of_base, width=max_of_base, height=radius, opacity=0.05)]
-        # pos = position + (y_hat + x_hat) * .5 * max_of_base
-        # self._mesh += [box(pos=pos, length=radius, width=max_of_base, height=max_of_base, opacity=0.05)]
 
     def tick_marks_visibility_is(self, visible):
         for tick_mark in self._tick_marks:
@@ -94,7 +92,9 @@ class Plot:
         for x in self._x:
             for y in self._y:
                 for z in self._z:
-                    self._arrows.append(arrow(axis=self._f_x_y_z(x, y, z) * .25, pos=vec(x, y, z), color=color.yellow, make_trail=True))
+                    arrow_ = arrow(axis=self._f_x_y_z(x, y, z) * .25, pos=vec(x, y, z), make_trail=True, color=color.gray(0.85))
+                    arrow_.color = color.yellow
+                    self._arrows.append(arrow_)
 
     def reset(self):
         index = 0
@@ -116,18 +116,53 @@ class Plot:
             self._arrows[index].axis = self._f_x_y_z(position.x, position.y, position.z) * .25
             index += 1
 
+    def make_trail(self, boolean_value):
+        for arrow_ in self._arrows:
+            arrow_.make_trail = boolean_value
+
 def vector_field(x, y, z):
     u = sin(pi * x) * cos(pi * y) * cos(pi * z)
     v = -cos(pi * x) * sin(pi * y) * cos(pi * z)
     w = (sqrt(2.0 / 3.0) * cos(pi * x) * cos(pi * y) * sin(pi * z))
     return vec(u, v, w)
 
-#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+def toggle_tick_marks(event):
+    plot_base.tick_marks_visibility_is(event.checked)
+
+
+def toggle_axis_labels(event):
+    plot_base.axis_labels_visibility_is(event.checked)
+
+
+def toggle_mesh(event):
+    plot_base.mesh_visibility_is(event.checked)
+
+def toggle_trail(event):
+    plot.make_trail(event.checked)
+
+
+def toggle_animate(event):
+    global dt
+    dt = 0.01 if event.checked else 0
+
+def reset():
+    plot.reset()
+
+_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
+_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=True)
+_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
+_ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
+_ = checkbox(text='Leave trail  ', bind=toggle_trail, checked=True)
+_ = button(text="Reset", bind=reset)
+
+animation.append_to_caption("\n")
+
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 plot = Plot(arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.8), vector_field)
 plot_base = Base(arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.8), color.yellow, color.green, 10)
 
-dt =.01
+dt =.0
 t = 0.0
 while True:
     rate(30)

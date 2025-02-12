@@ -52,6 +52,23 @@ modified by the user.
 </div>
 <p style="clear: both;"></p>
 
+### Rendering vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="vector_field.html">
+    <img alt="Vector field" src="../images/vector_field.png" title="Click to animate"/>
+  </a>
+  <figcaption>Rendering of 3D vector field and implied flow.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVER FOR FUTURE APPLICATION 
+    -->
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 ### Topology and my [Math Art Gallery](gallery/index.html)
 <div style="border-top: 1px solid #999999"><br/></div>
 
