@@ -65,7 +65,8 @@ You may be surprised though to find out what happens when you drop such a simple
   <a href="newtons_cannonball.html">
     <img alt="Newton's cannon" src="../images/newtons_cannon.png" title="Click to animate"/>
   </a>
-  <figcaption>Which velocity is needed to shoot a cannonball into orbit?</figcaption>
+  <figcaption>You have to make the rules, not follow them.
+  &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

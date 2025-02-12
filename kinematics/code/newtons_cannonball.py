@@ -1,14 +1,13 @@
 #Web VPython 3.2
 from vpython import text, vec, sphere, color, mag, vector, canvas, cos, sin, radians, textures, rate, norm, label, slider, wtext
 
-title = """
-&#x2022; Based on <a href="https://www.siue.edu/~lhorner/VPython/Newton-Cannon2.py">Newton-Cannon2.py</a> by Lenore Horner SIUE October 22, 2009
+title = """&#x2022; Based on <a href="https://www.siue.edu/~lhorner/VPython/Newton-Cannon2.py">Newton-Cannon2.py</a> by Lenore Horner SIUE October 22, 2009
 &#x2022; Version 2 - March 26, 2010: real radius, can start from arbitrary position, show time to crash in
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/newtons_cannonball.py">newtons_cannonball.py</a>
 
-&#x2022; Cyan cannon ball is coming out of Newton's cannon
-&#x2022; Red ball is dropped through the center of the earth
-&#x2022; Green ball is dropped toward an earth-equivalent point mass at earth's center
+&#x2022; <span style="color: cyan;">Cyan</span> cannon ball is coming out of Newton's cannon
+&#x2022; <span style="color: red;">Red</span> ball is dropped through the center of the earth
+&#x2022; <span style="color: green;">Green</span> ball is dropped toward an earth-equivalent point mass at earth's center
 &#x2022; Speeds of around 8000 send cannonball into orbit
 
 """

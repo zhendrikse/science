@@ -66,19 +66,19 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "14";
-    title = "\n&#x2022; Based on <a href=\"https://www.siue.edu/~lhorner/VPython/Newton-Cannon2.py\">Newton-Cannon2.py<\/a> by Lenore Horner SIUE October 22, 2009\n&#x2022; Version 2 - March 26, 2010: real radius, can start from arbitrary position, show time to crash in\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n&#x2022; Cyan cannon ball is coming out of Newton's cannon\n&#x2022; Red ball is dropped through the center of the earth\n&#x2022; Green ball is dropped toward an earth-equivalent point mass at earth's center\n&#x2022; Speeds of around 8000 send cannonball into orbit\n\n";
-    "17";
+    "13";
+    title = "&#x2022; Based on <a href=\"https://www.siue.edu/~lhorner/VPython/Newton-Cannon2.py\">Newton-Cannon2.py<\/a> by Lenore Horner SIUE October 22, 2009\n&#x2022; Version 2 - March 26, 2010: real radius, can start from arbitrary position, show time to crash in\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/kinematics/code/newtons_cannonball.py\">newtons_cannonball.py</a>\n\n&#x2022; <span style=\"color: cyan;\">Cyan</span> cannon ball is coming out of Newton's cannon\n&#x2022; <span style=\"color: red;\">Red</span> ball is dropped through the center of the earth\n&#x2022; <span style=\"color: green;\">Green</span> ball is dropped toward an earth-equivalent point mass at earth's center\n&#x2022; Speeds of around 8000 send cannonball into orbit\n\n";
+    "16";
     angle = 90;
-    "19";
+    "18";
     earth_radius = 6371e3;
-    "20";
+    "19";
     ball_radius = .02["*"](earth_radius);
-    "22";
+    "21";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), fov: .001, range: 1.25["*"](earth_radius), title: title})]);
-    "23";
+    "22";
     earth = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), radius: earth_radius, opacity: .3, texture: textures.earth})]);
-    "26";
+    "25";
     function Cannonball() {;
     }
     Cannonball.prototype.__init__ = async function __init__() {
@@ -89,13 +89,13 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "speed")){
             speed = ρσ_kwargs_obj.speed;
         }
-        "28";
+        "27";
         self._speed = speed;
-        "29";
+        "28";
         self._initial_position = earth_radius["*"](1.05)["*"](vector(cos((await radians(90))), sin((await radians(90))), 0));
-        "30";
+        "29";
         self._ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(self._initial_position), radius: ball_radius, color: color.cyan, make_trail: true})]);
-        "31";
+        "30";
         (await self._initial_speed());
     };
     if (!Cannonball.prototype.__init__.__defaults__) Object.defineProperties(Cannonball.prototype.__init__, {
@@ -108,7 +108,7 @@ async function __main__() {
     Cannonball.__handles_kwarg_interpolation__ = Cannonball.prototype.__init__.__handles_kwarg_interpolation__;
     Cannonball.prototype._initial_speed = async function _initial_speed() {
         var self = this;
-        "34";
+        "33";
         self._velocity = 1["-u"]()["*"](self._speed)["*"](vector(self._initial_position.y, 1["-u"]()["*"](self._initial_position.x), self._initial_position.z))["/"](mag(self._initial_position));
     };
     if (!Cannonball.prototype._initial_speed.__module__) Object.defineProperties(Cannonball.prototype._initial_speed, {
@@ -117,11 +117,11 @@ async function __main__() {
     Cannonball.prototype.update = async function update(dt) {
         var self = this;
         var ρσ_ls, acceleration;
-        "37";
+        "36";
         acceleration = 1["-u"]()["*"](9.8)["*"](norm(self._ball.pos));
-        "38";
+        "37";
         self._velocity=self._velocity["+"](acceleration["*"](dt));
-        "39";
+        "38";
         self._ball.pos=self._ball.pos["+"](self._velocity["*"](dt)["+"](.5["*"](acceleration)["*"](dt)["*"](dt)));
     };
     if (!Cannonball.prototype.update.__argnames__) Object.defineProperties(Cannonball.prototype.update, {
@@ -130,7 +130,7 @@ async function __main__() {
     });
     Cannonball.prototype.pos = async function pos() {
         var self = this;
-        "42";
+        "41";
         return self._ball.pos;
     };
     if (!Cannonball.prototype.pos.__module__) Object.defineProperties(Cannonball.prototype.pos, {
@@ -138,9 +138,9 @@ async function __main__() {
     });
     Cannonball.prototype.initial_speed_becomes = async function initial_speed_becomes(new_speed) {
         var self = this;
-        "45";
+        "44";
         self._speed = new_speed;
-        "46";
+        "45";
         (await self._initial_speed());
     };
     if (!Cannonball.prototype.initial_speed_becomes.__argnames__) Object.defineProperties(Cannonball.prototype.initial_speed_becomes, {
@@ -149,11 +149,11 @@ async function __main__() {
     });
     Cannonball.prototype.reset = async function reset() {
         var self = this;
-        "49";
+        "48";
         self._ball.clear_trail();
-        "50";
+        "49";
         self._ball.pos = self._initial_position;
-        "51";
+        "50";
         (await self._initial_speed());
     };
     if (!Cannonball.prototype.reset.__module__) Object.defineProperties(Cannonball.prototype.reset, {
@@ -173,16 +173,16 @@ async function __main__() {
 
 
 
-    "53";
+    "52";
     function UniformEarthCenterBall() {;
     }
     UniformEarthCenterBall.prototype.__init__ = async function __init__() {
         var self = this;
-        "55";
+        "54";
         self._velocity = vector(0, 0, 0);
-        "56";
+        "55";
         self._initial_position = earth_radius["*"](1.05)["*"](vector(cos((await radians(90))), sin((await radians(90))), 0));
-        "57";
+        "56";
         self._ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(self._initial_position), radius: ball_radius, color: color.red, make_trail: true})]);
     };
     if (!UniformEarthCenterBall.prototype.__init__.__module__) Object.defineProperties(UniformEarthCenterBall.prototype.__init__, {
@@ -192,7 +192,7 @@ async function __main__() {
     UniformEarthCenterBall.__handles_kwarg_interpolation__ = UniformEarthCenterBall.prototype.__init__.__handles_kwarg_interpolation__;
     UniformEarthCenterBall.prototype._acceleration = async function _acceleration() {
         var self = this;
-        "62";
+        "61";
         return 1["-u"]()["*"](9.8)["*"](Math.pow((min(mag(self._ball.pos), earth_radius)["/"](earth_radius)), 3))["*"](self._ball.pos)["/"](mag(self._ball.pos));
     };
     if (!UniformEarthCenterBall.prototype._acceleration.__module__) Object.defineProperties(UniformEarthCenterBall.prototype._acceleration, {
@@ -200,9 +200,9 @@ async function __main__() {
     });
     UniformEarthCenterBall.prototype.update = async function update(dt) {
         var self = this;
-        "65";
+        "64";
         self._velocity=self._velocity["+"]((await self._acceleration())["*"](dt));
-        "66";
+        "65";
         self._ball.pos=self._ball.pos["+"](self._velocity["*"](dt)["+"](.5["*"]((await self._acceleration()))["*"](dt)["*"](dt)));
     };
     if (!UniformEarthCenterBall.prototype.update.__argnames__) Object.defineProperties(UniformEarthCenterBall.prototype.update, {
@@ -211,11 +211,11 @@ async function __main__() {
     });
     UniformEarthCenterBall.prototype.reset = async function reset() {
         var self = this;
-        "69";
+        "68";
         self._ball.clear_trail();
-        "70";
+        "69";
         self._ball.pos = self._initial_position;
-        "71";
+        "70";
         self._velocity = vector(0, 0, 0);
     };
     if (!UniformEarthCenterBall.prototype.reset.__module__) Object.defineProperties(UniformEarthCenterBall.prototype.reset, {
@@ -233,16 +233,16 @@ async function __main__() {
 
 
 
-    "73";
+    "72";
     function PointMassEarthCenterBall() {;
     }
     PointMassEarthCenterBall.prototype.__init__ = async function __init__() {
         var self = this;
-        "75";
+        "74";
         self._velocity = vector(0, 0, 0);
-        "76";
+        "75";
         self._initial_position = earth_radius["*"](1.05)["*"](vector(cos((await radians(90))), sin((await radians(90))), 0));
-        "77";
+        "76";
         self._ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(self._initial_position), radius: ball_radius, color: color.green, make_trail: true})]);
     };
     if (!PointMassEarthCenterBall.prototype.__init__.__module__) Object.defineProperties(PointMassEarthCenterBall.prototype.__init__, {
@@ -252,7 +252,7 @@ async function __main__() {
     PointMassEarthCenterBall.__handles_kwarg_interpolation__ = PointMassEarthCenterBall.prototype.__init__.__handles_kwarg_interpolation__;
     PointMassEarthCenterBall.prototype._acceleration = async function _acceleration() {
         var self = this;
-        "81";
+        "80";
         return 1["-u"]()["*"](9.8)["*"](self._ball.pos)["/"](mag(self._ball.pos));
     };
     if (!PointMassEarthCenterBall.prototype._acceleration.__module__) Object.defineProperties(PointMassEarthCenterBall.prototype._acceleration, {
@@ -260,9 +260,9 @@ async function __main__() {
     });
     PointMassEarthCenterBall.prototype.update = async function update(dt) {
         var self = this;
-        "84";
+        "83";
         self._velocity=self._velocity["+"]((await self._acceleration())["*"](dt));
-        "85";
+        "84";
         self._ball.pos=self._ball.pos["+"](self._velocity["*"](dt)["+"](.5["*"]((await self._acceleration()))["*"](dt)["*"](dt)));
     };
     if (!PointMassEarthCenterBall.prototype.update.__argnames__) Object.defineProperties(PointMassEarthCenterBall.prototype.update, {
@@ -271,11 +271,11 @@ async function __main__() {
     });
     PointMassEarthCenterBall.prototype.reset = async function reset() {
         var self = this;
-        "88";
+        "87";
         self._ball.clear_trail();
-        "89";
+        "88";
         self._ball.pos = self._initial_position;
-        "90";
+        "89";
         self._velocity = vector(0, 0, 0);
     };
     if (!PointMassEarthCenterBall.prototype.reset.__module__) Object.defineProperties(PointMassEarthCenterBall.prototype.reset, {
@@ -293,81 +293,81 @@ async function __main__() {
 
 
 
-    "94";
+    "93";
     _GS_1 = new UniformEarthCenterBall;
     (await _GS_1.__init__());
     uniform_earth_center_ball = _GS_1;
-    "96";
+    "95";
     _GS_1 = new PointMassEarthCenterBall;
     (await _GS_1.__init__());
     point_mass_earth_center_ball = _GS_1;
-    "97";
+    "96";
     _GS_1 = new Cannonball;
     (await _GS_1.__init__());
     cannonball = _GS_1;
-    "99";
+    "98";
     async function adjust_shoot_velocity() {
-        "100";
+        "99";
         (await cannonball.initial_speed_becomes(speed_slider.value["*"](1e3)));
-        "101";
+        "100";
         speed_slider_text.text = "{:1.2f}".format(speed_slider.value, 2)["+"](" * 1000");
     };
     if (!adjust_shoot_velocity.__module__) Object.defineProperties(adjust_shoot_velocity, {
         __module__ : {value: null}
     });
 
-    "103";
+    "102";
     animation.append_to_caption("\n");
-    "104";
+    "103";
     speed_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 10, value: 7.8, step: .1, bind: adjust_shoot_velocity})]);
-    "105";
+    "104";
     animation.append_to_caption("speed cannonball = ");
-    "106";
+    "105";
     speed_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "7.8 * 1000"})]);
-    "109";
+    "108";
     popup = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "Click mouse to start", pos: vec(1["-u"]()["*"](earth_radius), 0, 0), billboard: true, color: color.yellow, height: earth_radius["/"](5)})]);
-    "110";
+    "109";
     popup.visible = true;
-    "111";
+    "110";
     (await animation.waitfor("click"));
-    "112";
+    "111";
     popup.visible = false;
-    "113";
+    "112";
     dt = 5;
-    "114";
+    "113";
     time_elapsed = 0;
-    "115";
+    "114";
     while (true) {
-        "116";
+        "115";
         while (mag((await cannonball.pos()))[">="](earth_radius)) {
-            "117";
+            "116";
             (await rate(100));
-            "118";
+            "117";
             (await cannonball.update(dt));
-            "119";
+            "118";
             (await uniform_earth_center_ball.update(dt));
-            "120";
+            "119";
             (await point_mass_earth_center_ball.update(dt));
-            "121";
+            "120";
             time_elapsed=time_elapsed["+"](dt);
         }
-        "123";
+        "122";
         total_time = time_elapsed["/"](60);
-        "124";
+        "123";
         info = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(earth_radius["*"](1.1), earth_radius["*"](1.1), 0), text: "elapsed time = "["+"](str(round(total_time, 3)))["+"](" minutes"), box: false})]);
-        "125";
+        "124";
         popup.visible = true;
-        "126";
+        "125";
         (await animation.waitfor("click"));
-        "127";
+        "126";
         (await cannonball.reset());
-        "128";
+        "127";
         (await point_mass_earth_center_ball.reset());
-        "129";
+        "128";
         (await uniform_earth_center_ball.reset());
-        "130";
+        "129";
         popup.visible = false;
-        "131";
+        "130";
         info.visible = false;
     }
 };

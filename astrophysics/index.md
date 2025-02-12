@@ -8,13 +8,6 @@
 We can allow satellites, planets, suns, universe, nay whole systems of universes, 
 to be governed by laws, but the smallest insect, we wish to be created at once by 
 special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Charles Darwin</a>
-</blockquote>
-
-<p style="clear:both;"></p>
-
-<blockquote>
-You have to make the rules, not follow them.
-&mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
 </blockquote><br/>
 
 ### Daylight variations &mdash; sun-earth-moon model
