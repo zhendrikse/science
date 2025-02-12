@@ -39,7 +39,7 @@ that I have written in VPython.
 <div class="double_image">
 <figure class="left_image">
   <a href="../topology_surface_plot.html">
-    <img alt="Torus" src="./images/bow_curve.png" title="Click to animate"/>
+    <img alt="Bow curve" src="./images/bow_curve.png" title="Click to animate"/>
   </a>
   <figcaption>The 
     <a href="https://en.wikipedia.org/wiki/Bow_Curve">Bow curve</a>.
@@ -202,13 +202,6 @@ where
 ## Spirals
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
-<!--details>
-  <summary><a>&dArr; Click for more information on these geometric objects &uArr;</a></summary>
-  Dini&apos;s spiral, Dini&apos;s surface, or twisted pseudo-sphere 
-  is characterized by a surface of constant (negative) curvature 
-  and is named after Ulisse Dini.
-</details-->
-
 <div class="double_image">
 <figure class="left_image">
   <a href="../topology_surface_plot.html">
@@ -220,7 +213,26 @@ where
 </figure>
 <figure class="right_image">
   <a href="../topology_surface_plot.html">
-    <img alt="Conchoidd" src="./images/conchoid.png" title="Click to animate"/>
+    <img alt="Dini&apos;s spiral" src="./images/dini_spiral_contour.png" title="Click to animate"/>
+  </a>
+  <figcaption>Contour plot of Dini&apos;s spiral, where this time the scope of the parameter $\phi$ 
+  has been enlarged to generate more stages.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="../topology_surface_plot.html">
+    <img alt="Conchoid" src="./images/conchoid.png" title="Click to animate"/>
+  </a>
+  <figcaption>Nature meets mathematics: a purely mathematically generated seashell, with the parametrization 
+  found on <a href="https://paulbourke.net/geometry/spiral">Paul Bourke&apos;s</a> site.
+  </figcaption>
+</figure>
+<figure class="right_image">
+  <a href="../topology_surface_plot.html">
+    <img alt="Conchoid" src="./images/conchoid.png" title="Click to animate"/>
   </a>
   <figcaption>Nature meets mathematics: a purely mathematically generated seashell, with the parametrization 
   found on <a href="https://paulbourke.net/geometry/spiral">Paul Bourke&apos;s</a> site.
