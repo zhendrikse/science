@@ -45,40 +45,34 @@ class Body:
     def __init__(self, pos=vector(0, 0, 0), radius=0, velocity=vector(0, 0, 0), colour=color.white):
         #sphere.__init__(self, color=color, radius=radius, pos=pos)
         self._sphere = sphere(pos=pos, color=colour, radius=radius)
-        self.radius = radius
-        self.velocity = velocity
-
-    def __eq__(self, other):
-        return self._sphere.pos == other._shere.pos
-
-    def velocity(self):
-        return self.velocity
-
-    def set_velocity_to(self, value):
-        self.velocity = value
+        self._radius = radius
+        self._velocity = velocity
 
     def volume(self):
-        return 4 / 3 * pi * self.radius ** 3
+        return 4 / 3 * pi * self._radius * self._radius * self._radius
 
     def mass(self):
         return self.volume()  # uniform density of 1 kg/m^3
 
-    # def momentum(self):
-    #     return self.mass * self.velocity
+    def pos(self):
+        return self._sphere.pos
 
-    # def set_momentum(self, value):
-    #     self.velocity = value / self.mass
+    def set_pos(self, pos):
+        self._sphere.pos = pos
+
+    def radius(self):
+        return self._radius
 
     def collide_edge(self):
-        if abs(self._sphere.pos.x) > BOX_SIZE:
+        if abs(self.pos().x) > BOX_SIZE:
             self._sphere.pos.x *= -1
-        if abs(self._sphere.pos.y) > BOX_SIZE:
+        if abs(self.pos().y) > BOX_SIZE:
             self._sphere.pos.y *= -1
-        if abs(self._sphere.pos.z) > BOX_SIZE:
+        if abs(self.pos().z) > BOX_SIZE:
             self._sphere.pos.z *= -1
 
     def tick(self, objects, start, dt):
-        self._sphere.pos += self.velocity * dt
+        self._sphere.pos += self._velocity * dt
         self.collide_edge()
 
         if P2P:
@@ -89,15 +83,14 @@ class Body:
         for i in other_particles:
             o = objects[PARTICLES - i]
 
-            # determine whether the two objects are colliding, using mag2 for
-            #  performance
-            tot_radius = self.radius + o.radius
-            intersect_amount = tot_radius ** 2 - mag2(self._sphere.pos - o._sphere.pos)
+            # determine whether the two objects are colliding, using mag2 for performance
+            tot_radius = self.radius() + o.radius()
+            intersect_amount = tot_radius * tot_radius - mag2(self.pos() - o.pos())
             if intersect_amount > 1e-3:
                 # the amount of overlap between the two colliding objects
-                intersect_amount = tot_radius - mag(self._sphere.pos - o._sphere.pos)
+                intersect_amount = tot_radius - mag(self.pos() - o.pos())
                 # the vector from self to o
-                r = o._sphere.pos - self._sphere.pos
+                r = o.pos() - self.pos()
 
                 # adjust the objects so they are no longer intersecting
                 # if the radii of the objects are the same (i.e. two Particles)
@@ -110,32 +103,32 @@ class Body:
                 self_adjust = .5
                 o_adjust = .5
 
-                if self.radius > o.radius:
+                if self.radius() > o.radius():
                     self_adjust = 0
                     o_adjust = 1
-                elif self.radius < o.radius:
+                elif self.radius() < o.radius():
                     self_adjust = 1
                     o_adjust = 0
 
-                self._sphere.pos -= norm(r) * self_adjust * intersect_amount
-                o._sphere.pos += norm(r) * o_adjust * intersect_amount
+                self.set_pos(self.pos() -  norm(r) * self_adjust * intersect_amount)
+                o.set_pos(o.pos() + norm(r) * o_adjust * intersect_amount)
 
                 # switch into the frame of reference of the other object
-                frame = vector(o.velocity)
+                frame = vector(o._velocity)
 
-                self.velocity -= frame
-                o.velocity -= frame
+                self._velocity -= frame
+                o._velocity -= frame
 
-                p = proj(self.velocity, r)
+                p = proj(self._velocity, r)
 
                 # calculate the new velocities for the two objects
                 total_mass = (self.mass() + o.mass())
-                self.velocity = (self.velocity - p) + (p * (self.mass() - o.mass()) / total_mass)
-                o.velocity = p * ((2 * self.mass()) / total_mass)
+                self._velocity = (self._velocity - p) + (p * (self.mass() - o.mass()) / total_mass)
+                o._velocity = p * ((2 * self.mass()) / total_mass)
 
                 # switch back into the original frame of reference
-                self.velocity += frame
-                o.velocity += frame
+                self._velocity += frame
+                o._velocity += frame
 
 
 class Particle(Body):
@@ -145,14 +138,16 @@ class Particle(Body):
 
     def __init__(self, objects):
         Body.__init__(self, colour=color.yellow, radius=Particle.RADIUS)
-        self.velocity = self.generate_velocity()
-        self._sphere.pos = self.generate_position(objects)
+        self.generate_velocity()
+        self.generate_position(objects)
 
     def generate_velocity(self):
-        return uniform(Particle.MIN_SPEED, Particle.MAX_SPEED) * norm(
+        velocity = uniform(Particle.MIN_SPEED, Particle.MAX_SPEED) * norm(
             vector(uniform(-1, 1),
                    0 if d1 else uniform(-1, 1),
                    0 if d2 or d1 else uniform(-1, 1)))
+
+        self._velocity = velocity
 
     def generate_position(self, objects):
         if P2P:
@@ -160,17 +155,20 @@ class Particle(Body):
         else:
             other_particles = range(len(objects) - 1, len(objects))
 
-        while True:
+        candidate = vector(0, 0, 0)
+        found_candidate = False
+        while not found_candidate:
             candidate = vector(uniform(-BOX_SIZE, BOX_SIZE),
                                0 if d1 else uniform(-BOX_SIZE, BOX_SIZE),
                                0 if d1 or d2 else uniform(-BOX_SIZE, BOX_SIZE))
 
             for i in other_particles:
                 o = objects[len(objects) - i - 1]
-                if mag(candidate - o._sphere.pos) <= o.radius + Particle.RADIUS:
+                if mag(candidate - o.pos()) <= o.radius() + Particle.RADIUS:
                     break
                 else:
-                    return candidate
+                    found_candidate = True
+        self.set_pos(candidate)
 
 
 class Mass(Body):
@@ -178,23 +176,22 @@ class Mass(Body):
 
     def __init__(self):
         Body.__init__(self, colour=color.blue, radius=Mass.RADIUS)
-        self.trace = curve(color=color.red)
-        self.velocity = vector(0, 0, 0)  # FIXME: why is this necessary?
+        self._trace = curve(color=color.red)
 
     def collide_edge(self):
-        if self._sphere.pos.x + self.radius > BOX_SIZE or self._sphere.pos.x - self.radius < -BOX_SIZE:
-            self._sphere.pos.x = BOX_SIZE - self.radius if self._sphere.pos.x > 0 else -BOX_SIZE + self.radius
-            self.velocity.x *= -1
-        if self._sphere.pos.y + self.radius > BOX_SIZE or self._sphere.pos.y - self.radius < -BOX_SIZE:
-            self._sphere.pos.y = BOX_SIZE - self.radius if self._sphere.pos.y > 0 else -BOX_SIZE + self.radius
-            self.velocity.y *= -1
-        if self._sphere.pos.z + self.radius > BOX_SIZE or self._sphere.pos.z - self.radius < -BOX_SIZE:
-            self._sphere.pos.z = BOX_SIZE - self.radius if self._sphere.pos.z > 0 else -BOX_SIZE + self.radius
-            self.velocity.z *= -1
+        if self.pos().x + self.radius() > BOX_SIZE or self.pos().x - self._radius < -BOX_SIZE:
+            self.pos().x = BOX_SIZE - self.radius() if self.pos().x > 0 else -BOX_SIZE + self.radius()
+            self._velocity.x *= -1
+        if self.pos().y + self.radius() > BOX_SIZE or self.pos().y - self._radius < -BOX_SIZE:
+            self.pos().y = BOX_SIZE - self.radius() if self.pos().y > 0 else -BOX_SIZE + self.radius()
+            self._velocity.y *= -1
+        if self.pos().z + self.radius() > BOX_SIZE or self.pos().z - self._radius < -BOX_SIZE:
+            self.pos().z = BOX_SIZE - self.radius() if self.pos().z > 0 else -BOX_SIZE + self.radius()
+            self._velocity.z *= -1
 
     def tick(self, objects, start, dt):
         Body.tick(self, objects, start, dt)
-        self.trace.append(self._sphere.pos)
+        self._trace.append(self.pos())
 
 
 def run_sim(total_time=-1):
@@ -212,8 +209,7 @@ def run_sim(total_time=-1):
 
         t += dt
 
-        if scene.visible:
-            time.sleep(SLEEP)
+        rate(400)
 
     return mag(mass._sphere.pos)
 
@@ -238,24 +234,27 @@ else:
     sd /= len(distances)
     sd = sqrt(sd)
 
-    datetime = time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
-    filename = "data/data-" + str(datetime) + ".txt"
-    f = open(filename, 'w')
-    f.write("Brownian Motion Simulation\n")
-    f.write(datetime + "\n\n")
-    f.write("Simulation Parameters:\n")
-    f.write("   times run: " + str(NUM_SIMS) + "\n")
-    f.write("   number of particles: " + str(PARTICLES) + "\n")
-    f.write("   simulation time (s): " + str(SIM_TIME) + "\n")
-    f.write("   dt (s): " + str(dt) + "\n")
-    f.write("   box size (m): " + str(BOX_SIZE) + "\n")
-    f.write("   mass radius: " + str(Mass.RADIUS) + "\n")
-    f.write("   particle radius: " + str(Particle.RADIUS) + "\n")
-    f.write("   particle speed interval: [" + str(Particle.MIN_SPEED) + "," + str(Particle.MAX_SPEED) + "]\n")
-    f.write("\n")
-    f.write("Average displacement: " + str(avg) + "\n")
-    f.write("Standard deviation: " + str(sd) + "\n\n")
-    f.write("Displacement data:\n")
+    #
+    # This writes the output to file
+    #
+    # datetime = time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+    # filename = "data/data-" + str(datetime) + ".txt"
+    # f = open(filename, 'w')
+    # f.write("Brownian Motion Simulation\n")
+    # f.write(datetime + "\n\n")
+    # f.write("Simulation Parameters:\n")
+    # f.write("   times run: " + str(NUM_SIMS) + "\n")
+    # f.write("   number of particles: " + str(PARTICLES) + "\n")
+    # f.write("   simulation time (s): " + str(SIM_TIME) + "\n")
+    # f.write("   dt (s): " + str(dt) + "\n")
+    # f.write("   box size (m): " + str(BOX_SIZE) + "\n")
+    # f.write("   mass radius: " + str(Mass.RADIUS) + "\n")
+    # f.write("   particle radius: " + str(Particle.RADIUS) + "\n")
+    # f.write("   particle speed interval: [" + str(Particle.MIN_SPEED) + "," + str(Particle.MAX_SPEED) + "]\n")
+    # f.write("\n")
+    # f.write("Average displacement: " + str(avg) + "\n")
+    # f.write("Standard deviation: " + str(sd) + "\n\n")
+    # f.write("Displacement data:\n")
 
     # for d in distances:
     #     f.write(str(d) + "\n")
