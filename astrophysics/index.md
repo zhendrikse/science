@@ -10,6 +10,8 @@ to be governed by laws, but the smallest insect, we wish to be created at once b
 special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Charles Darwin</a>
 </blockquote>
 
+<p style="clear:both;"></p>
+
 <blockquote>
 You have to make the rules, not follow them.
 &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
