@@ -3,7 +3,7 @@
 ## Visualization of 3D vector fields and implied flow
 <div class="header_line"><br/></div>
 
-{% include_relative code/VectorField.html %}
+{% include_relative code/VectorFields.html %}
 
 <p style="clear: both;"></p>
 
