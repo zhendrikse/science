@@ -1,7 +1,8 @@
-from vpython import sphere, label, vector, textures, ring, rate, canvas, color
+from vpython import sphere, label, vector, textures, ring, rate, canvas, color, arange, button
 
 title = """&#x2022; <a href="https://www.glowscript.org/#/user/PHYS172x/folder/MyPrograms/program/Solar-System-Planets">Original code</a> written by Ergi Bufasi
-&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/planets.py">planets.py</a>
+&#x2022; Refactored and extended by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/planets.py">planets.py</a>
+&#x2022; Click on a planet to zoom in, use the reset button to reset the scene
 
 """
 
@@ -99,6 +100,29 @@ class Neptune(Planet):
         label(pos=vector(18, -12.5, 0), text='Neptune')
         label(pos=vector(18, -1, 0), text='θ = 28.3°', box=False)
         label(pos=vector(18, -2.5, 0), text='16h', box=False)
+
+def zoom_in_on(selected_object):
+    if not selected_object:
+        return
+
+    target = selected_object.pos
+    step = (target - animation.center) / 20.0
+    for _ in arange(1, 20, 1):
+        rate(20)
+        animation.center += step
+        animation.range /= 1.037  # (1.037**19=1.99)
+
+def on_mouse_click():
+    zoom_in_on(animation.mouse.pick)
+
+animation.bind('click', on_mouse_click)
+
+def on_reset():
+    animation.center = vector(-4.8, 3.55, 0)
+    animation.range = 19
+
+animation.append_to_caption("\n")
+_ = button(text='Reset', bind=on_reset)
 
 planets = [Mercury(), Venus(), Earth(), Mars(), Jupiter(), Saturn(), Uranus(), Neptune()]
 while True:

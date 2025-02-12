@@ -178,7 +178,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2><a href="waves/index.html">Waves</a></h2>
+    <h2><a href="waves/index.html">Waves &amp; vibrations</a></h2>
     <div class="double_image">
       <figure class="left_image">
        <a href="waves/pool_with_obstacle.html">
@@ -282,7 +282,7 @@ finest that music and poetry can deliver. &mdash;
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
-    <h2><a href="electromagnetism/index.html">Electric &amp; magnetic fields</a></h2>
+    <h2><a href="electromagnetism/index.html">Electromagnetism</a></h2>
     <div class="double_image">
       <figure class="left_image">
         <a href="electromagnetism/charged_sheet.html">
