@@ -6,7 +6,7 @@ from random import uniform
 title = """Splatting raindrops 
 
 &#x2022; Original version written by Lenore Horner, 2009
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/raindrops.py">raindrops.py</a>
 &#x2022; Reset the scene by reloading the browser. 
 &#x2022; Click mouse button to start
 

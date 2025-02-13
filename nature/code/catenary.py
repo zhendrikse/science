@@ -5,7 +5,7 @@ from vpython import sphere, vector, rate, cylinder, mag, norm, color, canvas, bo
 title = """ 
 &#x2022; Original by <a href="https://trinket.io/glowscript/e5cf69a641">code</a> by Rhett Allain
 &#x2022; See also his accompanying <a href="https://trinket.io/glowscript/e5cf69a641">video</a>
-&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/catenary.py">catenary.py</a>
 
 """
 

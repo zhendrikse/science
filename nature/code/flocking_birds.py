@@ -7,7 +7,7 @@ title="""
 &#x2022; Original version created by B. Philhour 10/9/17 
 &#x2022; Inspired by Gary Flake's <a href="https://www.amazon.com/Computational-Beauty-Nature-Explorations-Adaptation/dp/0262561271">Computational Beauty of Nature</a>
 &#x2022; 1998 MIT Press ISBN-13 978-0-262-56127-3
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/flocking_birds.py">flocking_birds.py</a>
 
 """
 

@@ -3,8 +3,6 @@
 ## Overhead power lines
 <div class="header_line"><br/></div>
 
-Download the [catenary.py](code/catenary.py) source code
-
 Overhead power lines (and in fact any catenary) can be modelled as
 a string of beads connected by springs. The total mass of the catenary
 is divided over the number of beads $N$, while the length of the catenary is

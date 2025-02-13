@@ -2,7 +2,7 @@
 
 title = """ 
 &#x2022; Original by <a href="https://rhettallain.com/2019/11/12/modeling-a-spinning-sprinkler/">Rhett Allain</a>
-&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/water_sprinkler.py">water_sprinkler.py</a>
 
 """
 

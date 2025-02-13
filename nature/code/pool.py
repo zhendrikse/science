@@ -4,7 +4,7 @@ from vpython import *
 
 title = """
 &#x2022; Original idea (and <a href="https://jexpearce.github.io/jex/Wavepropagation.html">code</a>) by <a href="https://jexpearce.github.io/jex/">Jex Pearce</a>
-&#x2022; Refactored and extended by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored and extended by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/pool.py">pool.py</a>
 &#x2022; Based on a <a href=""https://en.wikipedia.org/wiki/Finite_difference_method">finite difference mehtod</a>
 
 """
