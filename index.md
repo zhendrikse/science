@@ -40,7 +40,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="mathematics/vector_fields.html">
+        <a href="mathematics/quiver_plot.html">
           <img alt="3D vector fields" src="./images/vector_field.png" title="Click to animate"/>
         </a>
       </figure>
