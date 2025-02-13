@@ -93,7 +93,7 @@ class Plot:
             for y in self._y:
                 for z in self._z:
                     axis, colour = self._arrow_properties(x, y, z)
-                    arrow_ = arrow(pos=vec(x, y, z), make_trail=True, trail_radius=0.1 * self._scale_factor, color=color.white)
+                    arrow_ = arrow(pos=vec(x, y, z), make_trail=True, color=color.white)
                     arrow_.axis, arrow_.color = axis, colour
                     self._arrows.append(arrow_)
 
@@ -143,7 +143,7 @@ class RadioButton:
     def push(self):
         plot.reset(self._function)
         animation.title = title_header + self._title + "\n\n"
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+        #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
     def check(self):
         self._button.checked = True
@@ -244,7 +244,7 @@ radio_buttons.add(radio(bind=toggle, text=" Example 2 ", name="example_2"), vect
 
 plot = Plot(arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.4), vector_field_1)
 animation.title = title_header + title_field_1 + "\n\n"
-MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 plot_base = Base(arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.8), color.yellow, color.green, 10)
 
 dt =.0
