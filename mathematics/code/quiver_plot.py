@@ -93,7 +93,8 @@ class Plot:
             for y in self._y:
                 for z in self._z:
                     axis, colour = self._arrow_properties(x, y, z)
-                    arrow_ = arrow(axis=axis, pos=vec(x, y, z), make_trail=True, color=colour)
+                    arrow_ = arrow(pos=vec(x, y, z), make_trail=True, trail_radius=0.1 * self._scale_factor, color=color.white)
+                    arrow_.axis, arrow_.color = axis, colour
                     self._arrows.append(arrow_)
 
     def _arrow_properties(self, x, y, z):
@@ -161,7 +162,7 @@ def toggle_trail(event):
 
 def toggle_animate(event):
     global dt
-    dt = 0.01 if event.checked else 0
+    dt = 0.02 if event.checked else 0
 
 def reset():
     plot.reset()
@@ -194,7 +195,7 @@ while True:
     rate(30)
     plot.update(dt)
     t += dt
-    if t >=2:
+    if t >= 3:
         plot.reset()
         t = 0.0
 
