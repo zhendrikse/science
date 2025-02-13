@@ -1,5 +1,5 @@
 #Web VPython 3.2
-from vpython import arange, arrow, vec, sin, cos, pi, sqrt, color, rate, canvas, cylinder, label, checkbox, button, mag, slider, wtext
+from vpython import arange, arrow, vec, sin, cos, pi, sqrt, color, rate, canvas, cylinder, label, checkbox, button, mag, slider, wtext, radio
 
 title_header = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/vector_fields.py">vector_fields.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 
@@ -88,7 +88,7 @@ class Plot:
     def __init__(self, x, y, z, f_x_y_z):
         self._x, self._y, self._z, self._f_x_y_z = x, y, z, f_x_y_z
         self._arrows = []
-        self._scale_factor = 0.1
+        self._scale_factor = 0.25
         for x in self._x:
             for y in self._y:
                 for z in self._z:
@@ -102,7 +102,8 @@ class Plot:
         colour = color.hsv_to_rgb(vec(mag(axis), 1, 1))
         return axis, colour
 
-    def reset(self):
+    def reset(self, new_f_x_y_z=None):
+        if new_f_x_y_z is not None: self._f_x_y_z = new_f_x_y_z
         index = 0
         for x in self._x:
             for y in self._y:
@@ -130,6 +131,56 @@ class Plot:
             arrow_.color = colour
             arrow._axis = axis
 
+class RadioButton:
+    def __init__(self, button_, function_, title):
+        self._button = button_
+        self._function = function_
+        self._title = title
+
+    def uncheck(self):
+        self._button.checked = False
+
+    def push(self):
+        plot.reset(self._function)
+        animation.title = title_header + self._title + "\n\n"
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+
+    def check(self):
+        self._button.checked = True
+
+    def name(self):
+        return self._button.name
+
+class RadioButtons:
+    def __init__(self):
+        self._radio_buttons = []
+        self._selected_button = None
+
+    def add(self, button_, function_, title_text):
+        self._radio_buttons.append(RadioButton(button_, function_, title_text))
+
+        if (len(self._radio_buttons) % 3) == 0:
+            animation.append_to_caption("\n\n")
+
+        if (len(self._radio_buttons)) == 1:
+            self._radio_buttons[0].check()
+            self._selected_button = self._radio_buttons[0]
+
+    def _uncheck_buttons_except(self, button_name):
+        for button_ in self._radio_buttons:
+            if button_.name() != button_name: button_.uncheck()
+
+    def _get_button_by(self, button_name):
+        for button_ in self._radio_buttons:
+            if button_.name() == button_name: return button_
+
+    def toggle(self, button_name):
+        self._uncheck_buttons_except(button_name)
+        self._selected_button = self._get_button_by(button_name)
+        self._selected_button.push()
+
+    def get_selected_button_name(self):
+        return self._selected_button.name()
 
 title_field_2 = "$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$"
 def vector_field_2(x, y, z):
@@ -175,7 +226,7 @@ _ = checkbox(text='Leave trail  ', bind=toggle_trail, checked=True)
 _ = button(text="Reset", bind=reset)
 
 def adjust_scale(event):
-    plot.set_scale_factor_to(event.value / 4.)
+    plot.set_scale_factor_to(event.value / 2.)
     scale_slider_text.text = "= {:1.2f}".format(event.value, 2)
 
 animation.append_to_caption("\n\nScale factor  ")
@@ -183,10 +234,17 @@ _ = slider(min=0, max=1, step=0.01, value=.5, bind=adjust_scale)
 scale_slider_text = wtext(text="= 0.5")
 
 
-#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+def toggle(event):
+    radio_buttons.toggle(event.name)
+
+radio_buttons = RadioButtons()
+animation.append_to_caption("\n\n")
+radio_buttons.add(radio(bind=toggle, text=" Example 1 ", name="example_1"), vector_field_1, title_field_1)
+radio_buttons.add(radio(bind=toggle, text=" Example 2 ", name="example_2"), vector_field_2, title_field_2)
 
 plot = Plot(arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.2), arange(-0.8, 1, 0.4), vector_field_1)
-animation.title = title=title_header + title_field_1 + "\n\n"
+animation.title = title_header + title_field_1 + "\n\n"
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 plot_base = Base(arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.2), arange(-1, 1.2, 0.8), color.yellow, color.green, 10)
 
 dt =.0
