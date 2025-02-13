@@ -6,6 +6,9 @@
 Download the [infinite_squarewell.py](code/infinite_squarewell.py) source code
 {% include_relative code/InfiniteSquarewell.html %}
 
+<p style="clear: both;"></p>
+
+{% include share_buttons.html %}
 
 
     

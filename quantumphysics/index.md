@@ -14,15 +14,15 @@ If you think you understand quantum mechanics, you don't understand quantum mech
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="/science/quantumphysics/plane_wave.html">
-    <img alt="Complex wave" src="/science/images/plane_wave.png" title="Click to animate"/>
+  <a href="plane_wave.html">
+    <img alt="Complex wave" src="../images/plane_wave.png" title="Click to animate"/>
   </a>
   <figcaption>Visualizing plane waves $\psi(x, t) = A e^{i(k x - \omega t)}$, which 
   play a pivotal role in quantum mechanics!</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="/science/quantumphysics/infinite_squarewell.html">
-    <img alt="Particle in a box" src="/science/images/infinite_square_well.png" title="Click to animate"/>
+  <a href="infinite_squarewell.html">
+    <img alt="Particle in a box" src="../images/infinite_square_well.png" title="Click to animate"/>
   </a>
   <figcaption>One-dimensional quantum particle bound by an infinite square well.</figcaption>
 </figure>
@@ -94,19 +94,22 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 
 <p></p>
 
-### The quantum harmonic oscillator
+### The quantum harmonic oscillator and &amp; slit experiment
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="/science/quantumphysics/quantum_oscillator.html">
-    <img alt="Quantum oscillator" src="/science/images/quantum_oscillator.png" title="Click to animate"/>
+  <a href="quantum_oscillator.html">
+    <img alt="Quantum oscillator" src="../images/quantum_oscillator.png" title="Click to animate"/>
   </a>
   <figcaption>The quantum harmonic oscillator is visualized in a semi-classical way below.</figcaption>
 </figure>
-<!-- SPACE RESERVED FOR FUTURE APPLICATION
 <figure class="right_image">
-</figure> -->
+  <a href="double_slit.html">
+    <img alt="Double slit" src="../images/double_slit.png" title="Click to animate"/>
+  </a>
+  <figcaption>The double slit experiment, showing the wave-particle duality.</figcaption>
+</figure> 
 </div>
 <p style="clear: both;"></p>
 

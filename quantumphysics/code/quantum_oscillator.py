@@ -5,7 +5,7 @@ from vpython import vector, vec, sphere, helix, mag, color, cylinder, curve, can
 title = """Semi-classical visualization of quantum oscillator
 
 &#x2022; Original <a href="https://lectdemo.github.io/virtual/06_oscillator.html">06_oscillator.py</a> by Ruth Chabay 2004
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/quantumphysics/code/quantum_oscillator.py">quantum_oscillator.py</a>
 
 Click on an energy level to put the oscillator into that state
 

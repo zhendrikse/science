@@ -267,7 +267,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <!-- RESERVED FOR FUTURE APPLICATION -->
+        <a href="quantumphysics/double_slit.html">
+          <img alt="Quantum oscillator" src="images/double_slit.png" title="Click to animate"/>
+        </a>
       </figure>
     </div>
   </div>
