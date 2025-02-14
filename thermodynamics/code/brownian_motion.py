@@ -1,6 +1,6 @@
 #Web VPython 3.2
 from random import uniform
-from vpython import *
+from vpython import box, simple_sphere, color, vec, vector, pi, mag, mag2, norm, rate, sqrt, proj, curve, canvas
 
 title="""Written by Jackson Bahr and Dominic Zirbel for Matter and Interactions I at Carnegie Mellon University, Fall 2013.
 &#x2022; Repaired by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/brownian_motion.py">brownian_motion.py</a>
@@ -24,9 +24,9 @@ P2P = True  # toggle whether particles collide with other particles (as opposed 
 d2 = False  # set to true to simulate in 2 dimensions (all z-fields are 0)
 d1 = False  # set to true to simulate in 1 dimension (all y- and z-fields are 0)
 
-scene.visible = False
-scene.fullscreen = True
-scene.visible = DEMO
+animation.visible = False
+animation.fullscreen = True
+animation.visible = DEMO
 
 if DEMO:
     box_bottom = box(pos=vec(0, -BOX_SIZE, 0), length=2 * BOX_SIZE, width=2 * BOX_SIZE, height=0.01, color=color.cyan,
@@ -44,7 +44,7 @@ if DEMO:
 class Body:
     def __init__(self, pos=vector(0, 0, 0), radius=0, velocity=vector(0, 0, 0), colour=color.white):
         #sphere.__init__(self, color=color, radius=radius, pos=pos)
-        self._sphere = sphere(pos=pos, color=colour, radius=radius)
+        self._sphere = simple_sphere(pos=pos, color=colour, radius=radius)
         self._radius = radius
         self._velocity = velocity
 

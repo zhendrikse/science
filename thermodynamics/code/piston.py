@@ -1,4 +1,4 @@
-from vpython import sphere, vector, cylinder, canvas, rate, cos, random, sin, color, vec, pi, button, slider, acos, curve, label
+from vpython import simple_sphere, vector, cylinder, canvas, rate, cos, random, sin, color, vec, pi, button, slider, acos, curve, label
 
 title="""&#x2022; Original code by Byron Philhour
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/piston.py">piston.py</a>
@@ -54,7 +54,7 @@ class Atom:
     def __init__(self, radius, initial_speed_meter_sec=550):
         angle = 2 * pi * random()
         pos = vector(tube_radius * cos(angle) * random(), (tube_length / 2) - tube_length * random(), tube_radius * sin(angle) * random())
-        atom = sphere(pos=pos, radius=radius, color=vector.random())
+        atom = simple_sphere(pos=pos, radius=radius, color=vector.random())
         #self._mass = 0.1  # in kg
         self._velocity = initial_speed_meter_sec * vector.random()
         self._atom = atom

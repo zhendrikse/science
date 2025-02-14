@@ -106,7 +106,7 @@ async function __main__() {
         "34";
         pos = vector(tube_radius["*"](cos(angle))["*"](random()), tube_length["/"](2)["-"](1["*"](tube_length)["*"](random())), tube_radius["*"](sin(angle))["*"](random()));
         "35";
-        atom = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: pos, radius: radius, color: vector.random()})]);
+        atom = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos, radius: radius, color: vector.random()})]);
         "37";
         self._velocity = speed["*"](vector.random());
         "38";

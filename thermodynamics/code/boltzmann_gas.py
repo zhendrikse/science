@@ -1,5 +1,5 @@
 #Web VPython 3.2
-from vpython import canvas, color, vector, vec, curve, random, sqrt, pi, sphere, cos, sin, rate, mag2, graph, gcurve, \
+from vpython import canvas, color, vector, vec, curve, random, sqrt, pi, simple_sphere, cos, sin, rate, mag2, graph, gcurve, \
     gvbars, dot, cross, norm, asin, exp
 
 L = cube_edge_in_meters = 1
@@ -78,10 +78,10 @@ class Gas:
 
             if i == 0:
                 self._atoms.append(
-                    sphere(pos=atom_position, radius=self._atom_radius, color=color.cyan, make_trail=True, retain=100,
+                    simple_sphere(pos=atom_position, radius=self._atom_radius, color=color.cyan, make_trail=True, retain=100,
                            trail_radius=0.3 * self._atom_radius))
             else:
-                self._atoms.append(sphere(pos=atom_position, radius=self._atom_radius, color=gray))
+                self._atoms.append(simple_sphere(pos=atom_position, radius=self._atom_radius, color=gray))
 
             theta = pi * random()
             phi = 2 * pi * random()
@@ -223,7 +223,7 @@ def swap_between_bins(velocity_1, velocity_2):  # remove from v1 bar, add to v2 
     histogram[bin_1] -= 1
     histogram[bin_2] += 1
 
-MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 total_bins = 0  # number of histogram snapshots to average
 time_counter = 0

@@ -1,6 +1,6 @@
 #Web VPython 3.2
 
-from vpython import rate, sphere, vec, vector, box, canvas, color, random, sqrt, log, cos, pi, mag, norm
+from vpython import rate, simple_sphere, vec, vector, box, canvas, color, random, sqrt, log, cos, pi, mag, norm
 
 title = """ &#x2022; Based on original <a href="https://trinket.io/glowscript/d2383d5473?e=1">code on Trinket</a> and <a href="https://www.youtube.com/watch?v=62bcHdgz7xs">this video</a>
  &#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/fluid_layers.py">fluid_layers.py</a>
@@ -30,7 +30,7 @@ def normal_distribution(average, standard_deviation):
 
 class Particle:
     def __init__(self, position, radius, colour, mass=0.3):
-        self._sphere = sphere(pos=position, radius=radius, color=colour)
+        self._sphere = simple_sphere(pos=position, radius=radius, color=colour)
         self._q0 = 1e-4
         self._mass = mass
         self._momentum = vec(0, 0, 0)
