@@ -269,50 +269,58 @@ async function __main__() {
     strings();
     var uniform = ρσ_modules.random.uniform;
 
+    "5";
+    title = "&#x2022; The original <a href=\"https://github.com/dzirbel/brownian-motion/blob/master/main.py\">main.py<\/a> ";
+    "6";
+    title=title["+"]("was written by Jackson Bahr and Dominic Zirbel for <a href=\"https://matterandinteractions.org/\">Matter and Interactions</a> ");
+    "7";
+    title=title["+"]("I at Carnegie Mellon University, Fall 2013.\n");
     "8";
-    title = "&#x2022; Written by Jackson Bahr and Dominic Zirbel for Matter and Interactions I at Carnegie Mellon University, Fall 2013.\n&#x2022; Repaired by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse<\/a> in <a href=\"https://github.com/zhendrikse/science/blob/main/thermodynamics/code/brownian_motion.py\">brownian_motion.py</a>\n\n";
-    "12";
+    title=title["+"]("&#x2022; Repaired and refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> ");
+    "9";
+    title=title["+"]("in <a href=\"https://github.com/zhendrikse/science/blob/main/thermodynamics/code/brownian_motion.py\">brownian_motion.py</a>\n\n");
+    "11";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075)})]);
-    "14";
+    "13";
     BOX_SIZE = 500;
-    "15";
+    "14";
     PARTICLES = 200;
-    "16";
+    "15";
     dt = .25;
-    "17";
+    "16";
     SLEEP = .001;
-    "18";
+    "17";
     NUM_SIMS = 250;
-    "19";
+    "18";
     SIM_TIME = 100;
-    "20";
+    "19";
     DEMO = true;
-    "21";
+    "20";
     P2P = true;
-    "24";
+    "23";
     d2 = false;
-    "25";
+    "24";
     d1 = false;
-    "27";
+    "26";
     animation.visible = false;
-    "28";
+    "27";
     animation.fullscreen = true;
-    "29";
+    "28";
     animation.visible = DEMO;
-    "31";
+    "30";
     if (DEMO) {
-        "32";
+        "31";
         box_bottom = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](BOX_SIZE), 0), length: 2["*"](BOX_SIZE), width: 2["*"](BOX_SIZE), height: .01, color: color.cyan, opacity: .2})]);
-        "34";
+        "33";
         box_top = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, BOX_SIZE, 0), length: 2["*"](BOX_SIZE), width: 2["*"](BOX_SIZE), height: .01, color: color.cyan, opacity: .2})]);
-        "36";
+        "35";
         box_left = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](BOX_SIZE), 0, 0), length: .01, width: 2["*"](BOX_SIZE), height: 2["*"](BOX_SIZE), color: color.cyan, opacity: .2})]);
-        "38";
+        "37";
         box_right = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(BOX_SIZE, 0, 0), length: .01, width: 2["*"](BOX_SIZE), height: 2["*"](BOX_SIZE), color: color.cyan, opacity: .2})]);
-        "40";
+        "39";
         box_back = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 0, 1["-u"]()["*"](BOX_SIZE)), length: 2["*"](BOX_SIZE), width: .01, height: 2["*"](BOX_SIZE), color: color.cyan, opacity: .2})]);
     }
-    "44";
+    "43";
     function Body() {;
     }
     Body.prototype.__init__ = async function __init__() {
@@ -335,11 +343,11 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
             colour = ρσ_kwargs_obj.colour;
         }
-        "47";
+        "46";
         self._sphere = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos, color: colour, radius: radius})]);
-        "48";
+        "47";
         self._radius = radius;
-        "49";
+        "48";
         self._velocity = velocity;
     };
     if (!Body.prototype.__init__.__defaults__) Object.defineProperties(Body.prototype.__init__, {
@@ -352,7 +360,7 @@ async function __main__() {
     Body.__handles_kwarg_interpolation__ = Body.prototype.__init__.__handles_kwarg_interpolation__;
     Body.prototype.volume = async function volume() {
         var self = this;
-        "52";
+        "51";
         return 4["/"](3)["*"](pi)["*"](self._radius)["*"](self._radius)["*"](self._radius);
     };
     if (!Body.prototype.volume.__module__) Object.defineProperties(Body.prototype.volume, {
@@ -360,7 +368,7 @@ async function __main__() {
     });
     Body.prototype.mass = async function mass() {
         var self = this;
-        "55";
+        "54";
         return (await self.volume());
     };
     if (!Body.prototype.mass.__module__) Object.defineProperties(Body.prototype.mass, {
@@ -368,7 +376,7 @@ async function __main__() {
     });
     Body.prototype.pos = async function pos() {
         var self = this;
-        "58";
+        "57";
         return self._sphere.pos;
     };
     if (!Body.prototype.pos.__module__) Object.defineProperties(Body.prototype.pos, {
@@ -376,7 +384,7 @@ async function __main__() {
     });
     Body.prototype.set_pos = async function set_pos(pos) {
         var self = this;
-        "61";
+        "60";
         self._sphere.pos = pos;
     };
     if (!Body.prototype.set_pos.__argnames__) Object.defineProperties(Body.prototype.set_pos, {
@@ -385,7 +393,7 @@ async function __main__() {
     });
     Body.prototype.radius = async function radius() {
         var self = this;
-        "64";
+        "63";
         return self._radius;
     };
     if (!Body.prototype.radius.__module__) Object.defineProperties(Body.prototype.radius, {
@@ -393,19 +401,19 @@ async function __main__() {
     });
     Body.prototype.collide_edge = async function collide_edge() {
         var self = this;
-        "67";
+        "66";
         if (abs((await self.pos()).x)[">"](BOX_SIZE)) {
-            "68";
+            "67";
             self._sphere.pos.x=self._sphere.pos.x["*"](1["-u"]()["*"](1));
-            "69";
+            "68";
         }
         if (abs((await self.pos()).y)[">"](BOX_SIZE)) {
-            "70";
+            "69";
             self._sphere.pos.y=self._sphere.pos.y["*"](1["-u"]()["*"](1));
-            "71";
+            "70";
         }
         if (abs((await self.pos()).z)[">"](BOX_SIZE)) {
-            "72";
+            "71";
             self._sphere.pos.z=self._sphere.pos.z["*"](1["-u"]()["*"](1));
         }
     };
@@ -415,74 +423,74 @@ async function __main__() {
     Body.prototype.tick = async function tick(objects, start, dt) {
         var self = this;
         var ρσ_ls, other_particles, o, tot_radius, intersect_amount, r, self_adjust, o_adjust, frame, p, total_mass, i;
-        "75";
+        "74";
         self._sphere.pos=self._sphere.pos["+"](self._velocity["*"](dt));
-        "76";
+        "75";
         (await self.collide_edge());
-        "78";
+        "77";
         if (P2P) {
-            "79";
+            "78";
             other_particles = range(PARTICLES["+"](1)["-"](1["*"](start)));
-            "80";
+            "79";
         } else {
-            "81";
+            "80";
             other_particles = range(PARTICLES, PARTICLES["+"](1));
         }
-        "83";
+        "82";
         var ρσ_Iter6 = other_particles;
         ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
         for (var ρσ_Index6 of ρσ_Iter6) {
             i = ρσ_Index6;
-            "84";
+            "83";
             o = ρσ_getitem(objects, PARTICLES["-"](1["*"](i)));
-            "87";
+            "86";
             tot_radius = (await self.radius())["+"]((await o.radius()));
-            "88";
+            "87";
             intersect_amount = tot_radius["*"](tot_radius)["-"](1["*"](mag2((await self.pos())["-"](1["*"]((await o.pos()))))));
-            "89";
+            "88";
             if (intersect_amount[">"](.001)) {
-                "91";
+                "90";
                 intersect_amount = tot_radius["-"](1["*"](mag((await self.pos())["-"](1["*"]((await o.pos()))))));
-                "93";
+                "92";
                 r = (await o.pos())["-"](1["*"]((await self.pos())));
-                "103";
+                "102";
                 self_adjust = .5;
-                "104";
+                "103";
                 o_adjust = .5;
-                "106";
+                "105";
                 if ((await self.radius())[">"]((await o.radius()))) {
-                    "107";
+                    "106";
                     self_adjust = 0;
-                    "108";
+                    "107";
                     o_adjust = 1;
-                    "109";
+                    "108";
                 } else if ((await self.radius())["<"]((await o.radius()))) {
-                    "110";
+                    "109";
                     self_adjust = 1;
-                    "111";
+                    "110";
                     o_adjust = 0;
                 }
-                "113";
+                "112";
                 (await self.set_pos((await self.pos())["-"](1["*"](norm(r))["*"](self_adjust)["*"](intersect_amount))));
-                "114";
+                "113";
                 (await o.set_pos((await o.pos())["+"](norm(r)["*"](o_adjust)["*"](intersect_amount))));
-                "117";
+                "116";
                 frame = vector(o._velocity);
-                "119";
+                "118";
                 self._velocity=self._velocity["-"](frame);
-                "120";
+                "119";
                 o._velocity=o._velocity["-"](frame);
-                "122";
+                "121";
                 p = proj(self._velocity, r);
-                "125";
+                "124";
                 total_mass = (await self.mass())["+"]((await o.mass()));
-                "126";
+                "125";
                 self._velocity = self._velocity["-"](1["*"](p))["+"](p["*"]((await self.mass())["-"](1["*"]((await o.mass()))))["/"](total_mass));
-                "127";
+                "126";
                 o._velocity = p["*"](2["*"]((await self.mass()))["/"](total_mass));
-                "130";
+                "129";
                 self._velocity=self._velocity["+"](frame);
-                "131";
+                "130";
                 o._velocity=o._velocity["+"](frame);
             }
         }
@@ -507,17 +515,17 @@ async function __main__() {
 
 
 
-    "134";
+    "133";
     function Particle() {;
     }
     ρσ_extends(Particle, Body);
     Particle.prototype.__init__ = async function __init__(objects) {
         var self = this;
-        "140";
+        "139";
         ρσ_interpolate_kwargs.call(this, Body.prototype.__init__, [self].concat([ρσ_desugar_kwargs({pos: vector(0, 0, 0), radius: Particle.prototype.RADIUS, velocity: vector(0, 0, 0), colour: color.yellow})]));
-        "141";
+        "140";
         (await self.generate_velocity());
-        "142";
+        "141";
         (await self.generate_position(objects));
     };
     if (!Particle.prototype.__init__.__argnames__) Object.defineProperties(Particle.prototype.__init__, {
@@ -529,9 +537,9 @@ async function __main__() {
     Particle.prototype.generate_velocity = async function generate_velocity() {
         var self = this;
         var ρσ_ls, velocity;
-        "145";
+        "144";
         velocity = (await uniform(Particle.prototype.MIN_SPEED, Particle.prototype.MAX_SPEED))["*"](norm(vector((await uniform(1["-u"]()["*"](1), 1)), (d1) ? 0 : (await uniform(1["-u"]()["*"](1), 1)), (d2 || d1) ? 0 : (await uniform(1["-u"]()["*"](1), 1)))));
-        "150";
+        "149";
         self._velocity = velocity;
     };
     if (!Particle.prototype.generate_velocity.__module__) Object.defineProperties(Particle.prototype.generate_velocity, {
@@ -540,42 +548,42 @@ async function __main__() {
     Particle.prototype.generate_position = async function generate_position(objects) {
         var self = this;
         var ρσ_ls, other_particles, candidate, found_candidate, o, i;
-        "153";
+        "152";
         if (P2P) {
-            "154";
+            "153";
             other_particles = range(len(objects));
-            "155";
+            "154";
         } else {
-            "156";
+            "155";
             other_particles = range(len(objects)["-"](1["*"](1)), len(objects));
         }
-        "158";
+        "157";
         candidate = vector(0, 0, 0);
-        "159";
+        "158";
         found_candidate = false;
-        "160";
+        "159";
         while (!found_candidate) {
-            "161";
+            "160";
             candidate = vector((await uniform(1["-u"]()["*"](BOX_SIZE), BOX_SIZE)), (d1) ? 0 : (await uniform(1["-u"]()["*"](BOX_SIZE), BOX_SIZE)), (d1 || d2) ? 0 : (await uniform(1["-u"]()["*"](BOX_SIZE), BOX_SIZE)));
-            "165";
+            "164";
             var ρσ_Iter7 = other_particles;
             ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
             for (var ρσ_Index7 of ρσ_Iter7) {
                 i = ρσ_Index7;
-                "166";
+                "165";
                 o = ρσ_getitem(objects, len(objects)["-"](1["*"](i))["-"](1["*"](1)));
-                "167";
+                "166";
                 if (mag(candidate["-"](1["*"]((await o.pos()))))["<="]((await o.radius())["+"](Particle.prototype.RADIUS))) {
-                    "168";
+                    "167";
                     break;
-                    "169";
+                    "168";
                 } else {
-                    "170";
+                    "169";
                     found_candidate = true;
                 }
             }
         }
-        "171";
+        "170";
         (await self.set_pos(candidate));
     };
     if (!Particle.prototype.generate_position.__argnames__) Object.defineProperties(Particle.prototype.generate_position, {
@@ -601,15 +609,15 @@ return this.__repr__();
 
 
 
-    "174";
+    "173";
     function Mass() {;
     }
     ρσ_extends(Mass, Body);
     Mass.prototype.__init__ = async function __init__() {
         var self = this;
-        "178";
+        "177";
         ρσ_interpolate_kwargs.call(this, Body.prototype.__init__, [self].concat([ρσ_desugar_kwargs({pos: vector(0, 0, 0), radius: Mass.prototype.RADIUS, velocity: vector(0, 0, 0), colour: color.blue})]));
-        "179";
+        "178";
         self._trace = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: color.red})]);
     };
     if (!Mass.prototype.__init__.__module__) Object.defineProperties(Mass.prototype.__init__, {
@@ -619,25 +627,25 @@ return this.__repr__();
     Mass.__handles_kwarg_interpolation__ = Mass.prototype.__init__.__handles_kwarg_interpolation__;
     Mass.prototype.collide_edge = async function collide_edge() {
         var self = this;
-        "182";
+        "181";
         if ((await self.pos()).x["+"]((await self.radius()))[">"](BOX_SIZE) || (await self.pos()).x["-"](1["*"](self._radius))["<"](1["-u"]()["*"](BOX_SIZE))) {
-            "183";
+            "182";
             (await self.pos()).x = ((await self.pos()).x[">"](0)) ? BOX_SIZE["-"](1["*"]((await self.radius()))) : 1["-u"]()["*"](BOX_SIZE)["+"]((await self.radius()));
-            "184";
+            "183";
             self._velocity.x=self._velocity.x["*"](1["-u"]()["*"](1));
-            "185";
+            "184";
         }
         if ((await self.pos()).y["+"]((await self.radius()))[">"](BOX_SIZE) || (await self.pos()).y["-"](1["*"](self._radius))["<"](1["-u"]()["*"](BOX_SIZE))) {
-            "186";
+            "185";
             (await self.pos()).y = ((await self.pos()).y[">"](0)) ? BOX_SIZE["-"](1["*"]((await self.radius()))) : 1["-u"]()["*"](BOX_SIZE)["+"]((await self.radius()));
-            "187";
+            "186";
             self._velocity.y=self._velocity.y["*"](1["-u"]()["*"](1));
-            "188";
+            "187";
         }
         if ((await self.pos()).z["+"]((await self.radius()))[">"](BOX_SIZE) || (await self.pos()).z["-"](1["*"](self._radius))["<"](1["-u"]()["*"](BOX_SIZE))) {
-            "189";
+            "188";
             (await self.pos()).z = ((await self.pos()).z[">"](0)) ? BOX_SIZE["-"](1["*"]((await self.radius()))) : 1["-u"]()["*"](BOX_SIZE)["+"]((await self.radius()));
-            "190";
+            "189";
             self._velocity.z=self._velocity.z["*"](1["-u"]()["*"](1));
         }
     };
@@ -646,9 +654,9 @@ return this.__repr__();
     });
     Mass.prototype.tick = async function tick(objects, start, dt) {
         var self = this;
-        "193";
+        "192";
         Body.prototype.tick.call(self, objects, start, dt);
-        "194";
+        "193";
         self._trace.append((await self.pos()));
     };
     if (!Mass.prototype.tick.__argnames__) Object.defineProperties(Mass.prototype.tick, {
@@ -670,7 +678,7 @@ return this.__repr__();
 
 
 
-    "197";
+    "196";
     async function run_sim() {
         var total_time = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? run_sim.__defaults__.total_time : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
@@ -679,42 +687,42 @@ return this.__repr__();
             total_time = ρσ_kwargs_obj.total_time;
         }
         var ρσ_ls, objects, _GS_1, mass, _, t, i;
-        "198";
+        "197";
         objects = list();
-        "199";
+        "198";
         _GS_1 = new Mass;
         (await _GS_1.__init__());
         mass = _GS_1;
-        "200";
+        "199";
         objects.append(mass);
-        "201";
+        "200";
         for (var ρσ_Index8 = 0; ρσ_Index8["<"](PARTICLES); ρσ_Index8++) {
             _ = ρσ_Index8;
-            "202";
+            "201";
             _GS_1 = new Particle;
             (await _GS_1.__init__(objects));
             objects.append(_GS_1);
         }
-        "204";
+        "203";
         t = 0;
-        "206";
+        "205";
         while (total_time["<"](0) || t["<"](total_time)) {
-            "207";
+            "206";
             var ρσ_Iter9 = range(len(objects));
             ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
             for (var ρσ_Index9 of ρσ_Iter9) {
                 i = ρσ_Index9;
-                "208";
+                "207";
                 (await ρσ_getitem(objects, i).tick(objects, i["+"](1), dt));
             }
-            "210";
+            "209";
             t=t["+"](dt);
-            "212";
+            "211";
             (await rate(400));
         }
-        "214";
+        "213";
         return mag(mass._sphere.pos);
-        "217";
+        "216";
     };
     if (!run_sim.__defaults__) Object.defineProperties(run_sim, {
         __defaults__ : {value: {total_time:1["-u"]()["*"](1)}},
@@ -724,45 +732,45 @@ return this.__repr__();
     });
 
     if (DEMO) {
-        "218";
+        "217";
         (await run_sim());
-        "219";
+        "218";
     } else {
-        "220";
+        "219";
         distances = list();
-        "221";
+        "220";
         for (var ρσ_Index10 = 0; ρσ_Index10["<"](NUM_SIMS); ρσ_Index10++) {
             i = ρσ_Index10;
-            "222";
+            "221";
             print("running simulation "["+"](str(i["+"](1)))["+"]("/")["+"](str(NUM_SIMS)));
-            "223";
+            "222";
             distances.append((await run_sim(SIM_TIME)));
         }
-        "225";
+        "224";
         avg = 0;
-        "227";
+        "226";
         var ρσ_Iter11 = distances;
         ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
         for (var ρσ_Index11 of ρσ_Iter11) {
             d = ρσ_Index11;
-            "228";
+            "227";
             avg=avg["+"](d);
         }
-        "229";
+        "228";
         avg=avg["/"](len(distances));
-        "231";
+        "230";
         sd = 0;
-        "232";
+        "231";
         var ρσ_Iter12 = distances;
         ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
         for (var ρσ_Index12 of ρσ_Iter12) {
             d = ρσ_Index12;
-            "233";
+            "232";
             sd=sd["+"](Math.pow((d["-"](1["*"](avg))), 2));
         }
-        "234";
+        "233";
         sd=sd["/"](len(distances));
-        "235";
+        "234";
         sd = sqrt(sd);
     }
 };
