@@ -10,7 +10,7 @@ title = """Electric field inside charged rings.
 
 """
 
-animation = canvas(title=title, background=color.gray(0.075), forward=vec(0.18, 0.35, -0.95))
+animation = canvas(title=title, background=color.gray(0.075), forward=vec(0.18, 0.35, -0.95), range=0.015)
 
 scale_factor = 2e-11
 L = 6e-3
@@ -89,6 +89,7 @@ class Rings:
     def radius(self):
         return self._radius
 
+sphere(pos=vec(0, 0, 0),texture="https://i.imgur.com/1nVWbbd.jpg",radius=.1,shininess=0,opacity=0.5)
 rings = Rings(ring_radius=2e-3)
 electric_field = Field(rings)
 
@@ -115,5 +116,23 @@ field_box = checkbox(text="Show field", checked=True, bind=toggle_field)
 charges_box = checkbox(text="Show charges", checked=True, bind=toggle_charges)
 animation.bind("keydown", on_key_press)
 
+n_max = 100
+n_rot = 10
+R_camera = mag(animation.camera.pos)
+theta_camera = pi/2
+phi_camera = 0
+d_theta_camera = -pi/(5 * n_max)
+d_phi_camera = pi / (5 * n_max) * 2
+theta_camera_max = 2*pi/3
+theta_camera_min = pi/3
+
 while True:
-    rate(50)
+   rate(20)
+   if theta_camera > theta_camera_max or theta_camera < theta_camera_min:
+       d_theta_camera *= -1
+   theta_camera += d_theta_camera
+   phi_camera += d_phi_camera
+   animation.camera.pos = R_camera*vec(sin(theta_camera)*sin(phi_camera),cos(theta_camera),sin(theta_camera)*cos(phi_camera))
+   animation.camera.axis = -animation.camera.pos
+
+

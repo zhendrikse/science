@@ -52,7 +52,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, animation, scale_factor, L, dL, _GS_1, rings, electric_field, background_box, field_box, charges_box;
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, scale_factor, L, dL, _GS_1, rings, electric_field, background_box, field_box, charges_box, n_max, n_rot, R_camera, theta_camera, phi_camera, d_theta_camera, d_phi_camera, theta_camera_max, theta_camera_min;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -67,7 +67,7 @@ async function __main__() {
     "11";
     title = "Electric field inside charged rings.\n\n&#x2022; Original <a href=\"https://lectdemo.github.io/virtual/18-Erings.html\">18-Erings.html<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electromagnetism/code/charged_rings.py\">charged_rings.py</a>\n&#x2022; &lt;s&gt; &rarr; screenshot\n&#x2022; &lt;v&gt; &rarr; verbose output\n\n";
     "13";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), forward: vec(.18, .35, 1["-u"]()["*"](.95))})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), forward: vec(.18, .35, 1["-u"]()["*"](.95)), range: .015})]);
     "15";
     scale_factor = 2e-11;
     "16";
@@ -369,16 +369,18 @@ async function __main__() {
 
 
     "92";
+    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: .1, shininess: 0, opacity: .5})]);
+    "93";
     _GS_1 = new Rings;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({ring_radius: .002})]);
     rings = _GS_1;
-    "93";
+    "94";
     _GS_1 = new Field;
     (await _GS_1.__init__(rings));
     electric_field = _GS_1;
-    "95";
+    "96";
     async function toggle_charges(event) {
-        "96";
+        "97";
         (await rings.charges_visible_is(event.checked));
     };
     if (!toggle_charges.__argnames__) Object.defineProperties(toggle_charges, {
@@ -386,9 +388,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "98";
+    "99";
     async function toggle_field(event) {
-        "99";
+        "100";
         (await electric_field.visible_is(event.checked));
     };
     if (!toggle_field.__argnames__) Object.defineProperties(toggle_field, {
@@ -396,9 +398,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "101";
+    "102";
     async function toggle_background(event) {
-        "102";
+        "103";
         animation.background = (event.checked) ? color.gray(.075) : color.white;
     };
     if (!toggle_background.__argnames__) Object.defineProperties(toggle_background, {
@@ -406,21 +408,21 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "104";
+    "105";
     async function on_key_press(event) {
-        "105";
+        "106";
         if ((event.key === "s" || typeof event.key === "object" && ρσ_equals(event.key, "s"))) {
-            "106";
-            (await animation.capture("electric_field_of_charged_rings"));
             "107";
+            (await animation.capture("electric_field_of_charged_rings"));
+            "108";
         }
         if ((event.key === "v" || typeof event.key === "object" && ρσ_equals(event.key, "v"))) {
-            "108";
-            print("scene.center="["+"](str(animation.center)));
             "109";
-            print("scene.forward="["+"](str(animation.forward)));
+            print("animation.center="["+"](str(animation.center)));
             "110";
-            print("scene.range="["+"](str(animation.range)));
+            print("animation.forward="["+"](str(animation.forward)));
+            "111";
+            print("animation.range="["+"](str(animation.range)));
         }
     };
     if (!on_key_press.__argnames__) Object.defineProperties(on_key_press, {
@@ -428,20 +430,51 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "112";
-    animation.append_to_caption("\n");
     "113";
-    background_box = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Dark background", checked: true, bind: toggle_background})]);
+    animation.append_to_caption("\n");
     "114";
-    field_box = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Show field", checked: true, bind: toggle_field})]);
+    background_box = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Dark background", checked: true, bind: toggle_background})]);
     "115";
-    charges_box = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Show charges", checked: true, bind: toggle_charges})]);
+    field_box = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Show field", checked: true, bind: toggle_field})]);
     "116";
+    charges_box = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Show charges", checked: true, bind: toggle_charges})]);
+    "117";
     animation.bind("keydown", on_key_press);
-    "118";
+    "119";
+    n_max = 100;
+    "120";
+    n_rot = 10;
+    "121";
+    R_camera = mag(animation.camera.pos);
+    "122";
+    theta_camera = pi["/"](2);
+    "123";
+    phi_camera = 0;
+    "124";
+    d_theta_camera = 1["-u"]()["*"](pi)["/"](5["*"](n_max));
+    "125";
+    d_phi_camera = pi["/"](5["*"](n_max))["*"](2);
+    "126";
+    theta_camera_max = 2["*"](pi)["/"](3);
+    "127";
+    theta_camera_min = pi["/"](3);
+    "129";
     while (true) {
-        "119";
-        (await rate(50));
+        "130";
+        (await rate(20));
+        "131";
+        if (theta_camera[">"](theta_camera_max) || theta_camera["<"](theta_camera_min)) {
+            "132";
+            d_theta_camera=d_theta_camera["*"](1["-u"]()["*"](1));
+        }
+        "133";
+        theta_camera=theta_camera["+"](d_theta_camera);
+        "134";
+        phi_camera=phi_camera["+"](d_phi_camera);
+        "135";
+        animation.camera.pos = R_camera["*"](vec(sin(theta_camera)["*"](sin(phi_camera)), cos(theta_camera), sin(theta_camera)["*"](cos(phi_camera))));
+        "136";
+        animation.camera.axis = 1["-u"]()["*"](animation.camera.pos);
     }
 };
 if (!__main__.__module__) Object.defineProperties(__main__, {

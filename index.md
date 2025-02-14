@@ -476,7 +476,7 @@ finest that music and poetry can deliver. &mdash;
     </figure>
   </div>
   <div class="column" style="background-color:#4c3340;">
-    <h2><a href="obsolete/index.html">Obsolete</a></h2>
+    <h2><a href="obsolete/index.html">Superseded</a></h2>
     <div class="double_image">
       <figure class="left_image">
        <a href="obsolete/point_charge.html">
