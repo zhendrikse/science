@@ -1,5 +1,5 @@
 # We VPython 3.2
-from vpython import vector, canvas, color, cylinder, arrow, rate, sin, cos, checkbox, pi, norm, mag, cross, slider, arange, wtext
+from vpython import vector, canvas, color, cylinder, arrow, rate, sin, cos, checkbox, pi, norm, mag, cross, slider, arange, wtext, sphere
 
 title = """ 
 &#x2022; <a href="https://lectdemo.github.io/virtual/23_antenna.html">23_antenna.py</a> by Ruth Chabay Spring 2001
@@ -96,7 +96,7 @@ def on_key_press(event):
         print("animation.forward=" + str(animation.forward))
         print("animation.range=" + str(animation.range))
 
-
+sphere(pos=vector(0, 0, 0),texture="https://i.imgur.com/1nVWbbd.jpg",radius=30,shininess=0,opacity=0.5)
 electromagnetic_wave = ElectromagneticWave()
 animation.bind("keydown", on_key_press)
 

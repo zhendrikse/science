@@ -126,6 +126,7 @@ animation = canvas(background=color.gray(.075), align='top', range=3E-13, forwar
 capacitor = Capacitor(pos=vec(0, 1E-13, 0), size=vec(4E-13, 4E-16, 4E-13))
 capacitor.show_field(x_range=range(-18, 18, 8), y_range=range(-9, 9, 4), z_range=range(-18, 18, 8))
 moving_charge = Charge(position=vec(-4E-13, 5E-14, 0), velocity=vec(1.5E-13, 0, 0), radius=1.2E-14, coulomb=5E-42 * ec, charge_color=color.green, make_trail=True)
+sphere(pos=vec(0, 0, 0),texture="https://i.imgur.com/1nVWbbd.jpg",radius=2e-12,shininess=0,opacity=0.5)
 
 animation.append_to_caption("\n")
 

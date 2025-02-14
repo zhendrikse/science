@@ -52,7 +52,7 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, text, download, radians, degrees, get_library, read_local_file
+    var box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, text, download, radians, degrees, get_library, read_local_file
     var version, print, arange, __name__, type, ρσ_ls, title, animation, show_decrease, lambda_, c, omega, d, L, antenna, ds, dt, dist_to_screen, slit1, _, field_slider, field_text, _GS_1, electromagnetic_wave, t, i_hat;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
@@ -83,15 +83,15 @@ async function __main__() {
     L = 2["*"](lambda_);
     "20";
     antenna = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vector(0, 1["-u"]()["*"](L)["/"](2), 0), axis: vector(0, L, 0), color: vector(.7, .7, .7), radius: .5})]);
-    "23";
+    "22";
     ds = lambda_["/"](20);
-    "24";
+    "23";
     dt = lambda_["/"](c)["/"](100);
-    "25";
+    "24";
     dist_to_screen = 4["*"](lambda_);
-    "27";
+    "26";
     slit1 = vector(0, 0, 1["-u"]()["*"](d)["/"](2));
-    "28";
+    "29";
     function ElectromagneticWave() {;
     }
     ElectromagneticWave.prototype.__init__ = async function __init__() {
@@ -103,15 +103,15 @@ async function __main__() {
             E0 = ρσ_kwargs_obj.E0;
         }
         var ρσ_ls, dtheta, dr1, rr1, axis, electric_arrow, magnetic_arrow, ct, r1;
-        "30";
-        self._E0 = E0;
         "31";
-        self._electric_field = ρσ_list_decorate([]);
+        self._E0 = E0;
         "32";
-        self._magnetic_field = ρσ_list_decorate([]);
+        self._electric_field = ρσ_list_decorate([]);
         "33";
-        dtheta = pi["/"](3);
+        self._magnetic_field = ρσ_list_decorate([]);
         "34";
+        dtheta = pi["/"](3);
+        "35";
         var ρσ_Iter1 = (function() {
             var ρσ_Iter = range(0, 2["*"](pi), dtheta), ρσ_Result = [], theta;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -125,24 +125,24 @@ async function __main__() {
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             r1 = ρσ_Index1;
-            "35";
-            dr1 = ds["*"](norm(r1));
             "36";
-            rr1 = slit1["+"](10["*"](dr1));
+            dr1 = ds["*"](norm(r1));
             "37";
+            rr1 = slit1["+"](10["*"](dr1));
+            "38";
             for (var ρσ_Index2 = 0; ρσ_Index2["<"](120); ρσ_Index2++) {
                 ct = ρσ_Index2;
-                "38";
-                axis = vector(0, self._E0["*"](cos(2["*"](pi)["*"](mag(rr1["-"](1["*"](slit1))))))["/"](lambda_), 0);
                 "39";
-                electric_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: rr1, axis: axis, color: color.orange, shaftwidth: lambda_["/"](40)})]);
+                axis = vector(0, self._E0["*"](cos(2["*"](pi)["*"](mag(rr1["-"](1["*"](slit1))))))["/"](lambda_), 0);
                 "40";
-                magnetic_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: rr1, axis: vector(0, 0, 0), color: color.cyan, shaftwidth: lambda_["/"](40)})]);
+                electric_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: rr1, axis: axis, color: color.orange, shaftwidth: lambda_["/"](40)})]);
                 "41";
-                self._magnetic_field.append(magnetic_arrow);
+                magnetic_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: rr1, axis: vector(0, 0, 0), color: color.cyan, shaftwidth: lambda_["/"](40)})]);
                 "42";
-                self._electric_field.append(electric_arrow);
+                self._magnetic_field.append(magnetic_arrow);
                 "43";
+                self._electric_field.append(electric_arrow);
+                "44";
                 rr1=rr1["+"](dr1);
             }
         }
@@ -158,18 +158,18 @@ async function __main__() {
     ElectromagneticWave.prototype.update = async function update() {
         var self = this;
         var ρσ_ls, field_arrow, decrease, index;
-        "46";
+        "47";
         var ρσ_Iter3 = range(len(self._electric_field));
         ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
         for (var ρσ_Index3 of ρσ_Iter3) {
             index = ρσ_Index3;
-            "47";
-            field_arrow = ρσ_getitem(self._electric_field, index);
             "48";
-            decrease = (show_decrease) ? 1["/"](mag(field_arrow.pos)["+"](lambda_["/"](20))) : 1;
+            field_arrow = ρσ_getitem(self._electric_field, index);
             "49";
-            field_arrow.axis = vector(0, decrease["*"](self._E0)["*"](cos(omega["*"](t)["-"](1["*"](2)["*"](pi)["*"](mag(field_arrow.pos["-"](1["*"](slit1))))["/"](lambda_)))), 0);
+            decrease = (show_decrease) ? 1["/"](mag(field_arrow.pos)["+"](lambda_["/"](20))) : 1;
             "50";
+            field_arrow.axis = vector(0, decrease["*"](self._E0)["*"](cos(omega["*"](t)["-"](1["*"](2)["*"](pi)["*"](mag(field_arrow.pos["-"](1["*"](slit1))))["/"](lambda_)))), 0);
+            "52";
             ρσ_getitem(self._magnetic_field, index).axis = 1["-u"]()["*"](cross(field_arrow.axis, i_hat))["*"](.7);
         }
     };
@@ -179,12 +179,12 @@ async function __main__() {
     ElectromagneticWave.prototype.toggle_magnetic_field = async function toggle_magnetic_field() {
         var self = this;
         var ρσ_ls, field_vector;
-        "53";
+        "55";
         var ρσ_Iter4 = self._magnetic_field;
         ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
         for (var ρσ_Index4 of ρσ_Iter4) {
             field_vector = ρσ_Index4;
-            "54";
+            "56";
             field_vector.visible = !field_vector.visible;
         }
     };
@@ -193,7 +193,7 @@ async function __main__() {
     });
     ElectromagneticWave.prototype.set_field_strength_to = async function set_field_strength_to(new_value) {
         var self = this;
-        "57";
+        "59";
         self._E0 = new_value;
     };
     if (!ElectromagneticWave.prototype.set_field_strength_to.__argnames__) Object.defineProperties(ElectromagneticWave.prototype.set_field_strength_to, {
@@ -207,79 +207,79 @@ async function __main__() {
         return this.__repr__();
     };
     Object.defineProperty(ElectromagneticWave.prototype, "__bases__", {value: []});
+    
+    
+    
+    
 
-
-
-
-
-    "59";
+    "62";
     async function toggle_magnetic_field() {
-        "60";
+        "63";
         (await electromagnetic_wave.toggle_magnetic_field());
     };
     if (!toggle_magnetic_field.__module__) Object.defineProperties(toggle_magnetic_field, {
         __module__ : {value: null}
     });
 
-    "62";
+    "66";
     async function toggle_background() {
-        "63";
+        "67";
         animation.background = ((animation.background === color.white || typeof animation.background === "object" && ρσ_equals(animation.background, color.white))) ? color.gray(.075) : color.white;
     };
     if (!toggle_background.__module__) Object.defineProperties(toggle_background, {
         __module__ : {value: null}
     });
 
-    "65";
+    "70";
     async function toggle_decrease() {
-        "66";
-        "67";
+        "71";
+        "72";
         show_decrease = !show_decrease;
     };
     if (!toggle_decrease.__module__) Object.defineProperties(toggle_decrease, {
         __module__ : {value: null}
     });
 
-    "69";
+    "75";
     async function adjust_field() {
-        "70";
+        "76";
         (await electromagnetic_wave.set_field_strength_to(field_slider.value["*"](lambda_)));
-        "71";
+        "77";
         field_text.text = "{:1.2f}".format(field_slider.value, 2);
     };
     if (!adjust_field.__module__) Object.defineProperties(adjust_field, {
         __module__ : {value: null}
     });
 
-    "73";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_background, text: "Dark color scheme", checked: true})]);
-    "74";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_decrease, text: "Show decrease", checked: true})]);
-    "75";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_magnetic_field, text: "Show magnetic field", checked: true})]);
-    "77";
-    animation.append_to_caption("\n\n");
-    "78";
-    field_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 10, value: 5, bind: adjust_field})]);
-    "79";
-    animation.append_to_caption(" Field strength = ");
     "80";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_background, text: "Dark color scheme", checked: true})]);
+    "81";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_decrease, text: "Show decrease", checked: true})]);
+    "82";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_magnetic_field, text: "Show magnetic field", checked: true})]);
+    "84";
+    animation.append_to_caption("\n\n");
+    "85";
+    field_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 10, value: 5, bind: adjust_field})]);
+    "86";
+    animation.append_to_caption(" Field strength = ");
+    "87";
     field_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "5"})]);
-    "83";
+    "90";
     async function on_key_press(event) {
-        "84";
-        "85";
+        "91";
+        "92";
         if ((event.key === "s" || typeof event.key === "object" && ρσ_equals(event.key, "s"))) {
-            "86";
+            "93";
             (await animation.capture("antenna_waves"));
-            "87";
+            "94";
         }
         if ((event.key === "v" || typeof event.key === "object" && ρσ_equals(event.key, "v"))) {
-            "88";
+            "95";
             print("animation.center="["+"](str(animation.center)));
-            "89";
+            "96";
             print("animation.forward="["+"](str(animation.forward)));
-            "90";
+            "97";
             print("animation.range="["+"](str(animation.range)));
         }
     };
@@ -288,23 +288,25 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "92";
+    "99";
+    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 30, shininess: 0, opacity: .5})]);
+    "100";
     _GS_1 = new ElectromagneticWave;
     (await _GS_1.__init__());
     electromagnetic_wave = _GS_1;
-    "93";
+    "101";
     animation.bind("keydown", on_key_press);
-    "95";
+    "103";
     t = 0;
-    "96";
+    "104";
     i_hat = vector(1, 0, 0);
-    "97";
+    "105";
     while (1) {
-        "98";
+        "106";
         (await rate(50));
-        "99";
+        "107";
         t = t["+"](dt);
-        "100";
+        "108";
         (await electromagnetic_wave.update());
     }
 };
