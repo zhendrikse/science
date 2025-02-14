@@ -89,18 +89,14 @@ class Plot:
         self._x, self._y, self._z, self._f_x_y_z = x, y, z, f_x_y_z
         self._arrows = []
         self._scale_factor = 0.25
+        self._hue = 0.5
         for x in self._x:
             for y in self._y:
                 for z in self._z:
-                    axis, colour = self._arrow_properties(x, y, z)
-                    arrow_ = arrow(pos=vec(x, y, z), make_trail=True, color=color.white)
-                    arrow_.axis, arrow_.color = axis, colour
+                    axis = self._f_x_y_z(x, y, z) * self._scale_factor
+                    arrow_ = arrow(pos=vec(x, y, z), make_trail=True, color=color.gray(0.9))
+                    arrow_.axis, arrow_.color = axis, color.hsv_to_rgb(vec(self._hue, 1, 1))
                     self._arrows.append(arrow_)
-
-    def _arrow_properties(self, x, y, z):
-        axis = self._f_x_y_z(x, y, z) * self._scale_factor
-        colour = color.hsv_to_rgb(vec(mag(axis), 1, 1))
-        return axis, colour
 
     def reset(self, new_f_x_y_z=None):
         if new_f_x_y_z is not None: self._f_x_y_z = new_f_x_y_z
@@ -109,16 +105,14 @@ class Plot:
             for y in self._y:
                 for z in self._z:
                     self._arrows[index].pos=vec(x, y, z)
-                    self._arrows[index].axis, self._arrows[index].color = self._arrow_properties(x, y, z)
+                    self._arrows[index].axis = self._f_x_y_z(x, y, z) * self._scale_factor
                     self._arrows[index].clear_trail()
                     index += 1
 
     def update(self, dt=0.):
         for arrow_ in self._arrows:
             arrow_.pos += arrow_.axis * dt
-            axis, colour = self._arrow_properties(arrow_.pos.x, arrow_.pos.y, arrow_.pos.z)
-            arrow_.axis = axis
-            arrow_.color = colour
+            arrow_.axis = self._f_x_y_z(arrow_.pos.x, arrow_.pos.y, arrow_.pos.z) * self._scale_factor
 
     def make_trail(self, boolean_value):
         for arrow_ in self._arrows:
@@ -127,9 +121,12 @@ class Plot:
     def set_scale_factor_to(self, value):
         self._scale_factor = value
         for arrow_ in self._arrows:
-            axis, colour = self._arrow_properties(arrow_.pos.x, arrow_.pos.y, arrow_.pos.z)
-            arrow_.color = colour
-            arrow._axis = axis
+            arrow_.axis = self._f_x_y_z(arrow_.pos.x, arrow_.pos.y, arrow_.pos.z) * self._scale_factor
+
+    def set_hue_to(self, value):
+        self._hue = value
+        for arrow_ in self._arrows:
+            arrow_.color = color.hsv_to_rgb(vec(self._hue, 1, 1))
 
 class RadioButton:
     def __init__(self, button_, function_, title):
@@ -229,9 +226,17 @@ def adjust_scale(event):
     plot.set_scale_factor_to(event.value / 2.)
     scale_slider_text.text = "= {:1.2f}".format(event.value, 2)
 
+def adjust_hue(event):
+    plot.set_hue_to(event.value)
+    hue_slider_text.text = "= {:1.2f}".format(event.value, 2)
+
 animation.append_to_caption("\n\nScale factor  ")
 _ = slider(min=0, max=1, step=0.01, value=.5, bind=adjust_scale)
 scale_slider_text = wtext(text="= 0.5")
+
+animation.append_to_caption("\n\nHue  ")
+_ = slider(min=0, max=1, step=0.01, value=.5, bind=adjust_hue)
+hue_slider_text = wtext(text="= 0.5")
 
 
 def toggle(event):
@@ -253,7 +258,7 @@ while True:
     rate(30)
     plot.update(dt)
     t += dt
-    if t >= 3:
+    if t >= 2:
         plot.reset()
         t = 0.0
 

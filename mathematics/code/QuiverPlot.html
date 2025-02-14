@@ -54,7 +54,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title_header, animation, x_hat, y_hat, z_hat, base, title_field_2, title_field_1, _, scale_slider_text, _GS_1, radio_buttons, plot, plot_base, dt, t;
+    var version, print, arange, __name__, type, ρσ_ls, title_header, animation, x_hat, y_hat, z_hat, base, title_field_2, title_field_1, _, scale_slider_text, hue_slider_text, _GS_1, radio_buttons, plot, plot_base, dt, t;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -271,7 +271,7 @@ async function __main__() {
     }
     Plot.prototype.__init__ = async function __init__(x, y, z, f_x_y_z) {
         var self = this;
-        var ρσ_ls, ρσ_unpack, axis, colour, arrow_;
+        var ρσ_ls, ρσ_unpack, axis, arrow_;
         "89";
         ρσ_unpack = [x, y, z, f_x_y_z];
         self._x = ρσ_unpack[0];
@@ -283,32 +283,31 @@ async function __main__() {
         "91";
         self._scale_factor = .25;
         "92";
+        self._hue = .5;
+        "93";
         var ρσ_Iter7 = self._x;
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             x = ρσ_Index7;
-            "93";
+            "94";
             var ρσ_Iter8 = self._y;
             ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
             for (var ρσ_Index8 of ρσ_Iter8) {
                 y = ρσ_Index8;
-                "94";
+                "95";
                 var ρσ_Iter9 = self._z;
                 ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
                 for (var ρσ_Index9 of ρσ_Iter9) {
                     z = ρσ_Index9;
-                    "95";
-                    ρσ_unpack = (await self._arrow_properties(x, y, z));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    axis = ρσ_unpack[0];
-                    colour = ρσ_unpack[1];
                     "96";
-                    arrow_ = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(x, y, z), make_trail: true, color: color.white})]);
+                    axis = (await self._f_x_y_z(x, y, z))["*"](self._scale_factor);
                     "97";
-                    ρσ_unpack = [axis, colour];
+                    arrow_ = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(x, y, z), make_trail: true, color: color.gray(.9)})]);
+                    "98";
+                    ρσ_unpack = [axis, color.hsv_to_rgb(vec(self._hue, 1, 1))];
                     arrow_.axis = ρσ_unpack[0];
                     arrow_.color = ρσ_unpack[1];
-                    "98";
+                    "99";
                     self._arrows.append(arrow_);
                 }
             }
@@ -320,20 +319,6 @@ async function __main__() {
     });
     Plot.__argnames__ = Plot.prototype.__init__.__argnames__;
     Plot.__handles_kwarg_interpolation__ = Plot.prototype.__init__.__handles_kwarg_interpolation__;
-    Plot.prototype._arrow_properties = async function _arrow_properties(x, y, z) {
-        var self = this;
-        var ρσ_ls, axis, colour;
-        "101";
-        axis = (await self._f_x_y_z(x, y, z))["*"](self._scale_factor);
-        "102";
-        colour = color.hsv_to_rgb(vec(mag(axis), 1, 1));
-        "103";
-        return [axis, colour];
-    };
-    if (!Plot.prototype._arrow_properties.__argnames__) Object.defineProperties(Plot.prototype._arrow_properties, {
-        __argnames__ : {value: ["x", "y", "z"]},
-        __module__ : {value: null}
-    });
     Plot.prototype.reset = async function reset() {
         var self = this;
         var new_f_x_y_z = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? reset.__defaults__.new_f_x_y_z : arguments[0];
@@ -342,38 +327,35 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "new_f_x_y_z")){
             new_f_x_y_z = ρσ_kwargs_obj.new_f_x_y_z;
         }
-        var ρσ_ls, index, ρσ_unpack, z, y, x;
-        "106";
+        var ρσ_ls, index, z, y, x;
+        "102";
         if (new_f_x_y_z !== null) {
             self._f_x_y_z = new_f_x_y_z;
         }
-        "107";
+        "103";
         index = 0;
-        "108";
+        "104";
         var ρσ_Iter10 = self._x;
         ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
         for (var ρσ_Index10 of ρσ_Iter10) {
             x = ρσ_Index10;
-            "109";
+            "105";
             var ρσ_Iter11 = self._y;
             ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
             for (var ρσ_Index11 of ρσ_Iter11) {
                 y = ρσ_Index11;
-                "110";
+                "106";
                 var ρσ_Iter12 = self._z;
                 ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
                 for (var ρσ_Index12 of ρσ_Iter12) {
                     z = ρσ_Index12;
-                    "111";
+                    "107";
                     ρσ_getitem(self._arrows, index).pos = vec(x, y, z);
-                    "112";
-                    ρσ_unpack = (await self._arrow_properties(x, y, z));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    ρσ_getitem(self._arrows, index).axis = ρσ_unpack[0];
-                    ρσ_getitem(self._arrows, index).color = ρσ_unpack[1];
-                    "113";
+                    "108";
+                    ρσ_getitem(self._arrows, index).axis = (await self._f_x_y_z(x, y, z))["*"](self._scale_factor);
+                    "109";
                     ρσ_getitem(self._arrows, index).clear_trail();
-                    "114";
+                    "110";
                     index=index["+"](1);
                 }
             }
@@ -393,23 +375,16 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "dt")){
             dt = ρσ_kwargs_obj.dt;
         }
-        var ρσ_ls, ρσ_unpack, axis, colour, arrow_;
-        "117";
+        var ρσ_ls, arrow_;
+        "113";
         var ρσ_Iter13 = self._arrows;
         ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
         for (var ρσ_Index13 of ρσ_Iter13) {
             arrow_ = ρσ_Index13;
-            "118";
+            "114";
             arrow_.pos=arrow_.pos["+"](arrow_.axis["*"](dt));
-            "119";
-            ρσ_unpack = (await self._arrow_properties(arrow_.pos.x, arrow_.pos.y, arrow_.pos.z));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-            axis = ρσ_unpack[0];
-            colour = ρσ_unpack[1];
-            "120";
-            arrow_.axis = axis;
-            "121";
-            arrow_.color = colour;
+            "115";
+            arrow_.axis = (await self._f_x_y_z(arrow_.pos.x, arrow_.pos.y, arrow_.pos.z))["*"](self._scale_factor);
         }
     };
     if (!Plot.prototype.update.__defaults__) Object.defineProperties(Plot.prototype.update, {
@@ -421,12 +396,12 @@ async function __main__() {
     Plot.prototype.make_trail = async function make_trail(boolean_value) {
         var self = this;
         var ρσ_ls, arrow_;
-        "124";
+        "118";
         var ρσ_Iter14 = self._arrows;
         ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
         for (var ρσ_Index14 of ρσ_Iter14) {
             arrow_ = ρσ_Index14;
-            "125";
+            "119";
             arrow_.make_trail = boolean_value;
         }
     };
@@ -436,26 +411,37 @@ async function __main__() {
     });
     Plot.prototype.set_scale_factor_to = async function set_scale_factor_to(value) {
         var self = this;
-        var ρσ_ls, ρσ_unpack, axis, colour, arrow_;
-        "128";
+        var ρσ_ls, arrow_;
+        "122";
         self._scale_factor = value;
-        "129";
+        "123";
         var ρσ_Iter15 = self._arrows;
         ρσ_Iter15 = ((typeof ρσ_Iter15[Symbol.iterator] === "function") ? (ρσ_Iter15 instanceof Map ? ρσ_Iter15.keys() : ρσ_Iter15) : Object.keys(ρσ_Iter15));
         for (var ρσ_Index15 of ρσ_Iter15) {
             arrow_ = ρσ_Index15;
-            "130";
-            ρσ_unpack = (await self._arrow_properties(arrow_.pos.x, arrow_.pos.y, arrow_.pos.z));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-            axis = ρσ_unpack[0];
-            colour = ρσ_unpack[1];
-            "131";
-            arrow_.color = colour;
-            "132";
-            arrow._axis = axis;
+            "124";
+            arrow_.axis = (await self._f_x_y_z(arrow_.pos.x, arrow_.pos.y, arrow_.pos.z))["*"](self._scale_factor);
         }
     };
     if (!Plot.prototype.set_scale_factor_to.__argnames__) Object.defineProperties(Plot.prototype.set_scale_factor_to, {
+        __argnames__ : {value: ["value"]},
+        __module__ : {value: null}
+    });
+    Plot.prototype.set_hue_to = async function set_hue_to(value) {
+        var self = this;
+        var ρσ_ls, arrow_;
+        "127";
+        self._hue = value;
+        "128";
+        var ρσ_Iter16 = self._arrows;
+        ρσ_Iter16 = ((typeof ρσ_Iter16[Symbol.iterator] === "function") ? (ρσ_Iter16 instanceof Map ? ρσ_Iter16.keys() : ρσ_Iter16) : Object.keys(ρσ_Iter16));
+        for (var ρσ_Index16 of ρσ_Iter16) {
+            arrow_ = ρσ_Index16;
+            "129";
+            arrow_.color = color.hsv_to_rgb(vec(self._hue, 1, 1));
+        }
+    };
+    if (!Plot.prototype.set_hue_to.__argnames__) Object.defineProperties(Plot.prototype.set_hue_to, {
         __argnames__ : {value: ["value"]},
         __module__ : {value: null}
     });
@@ -473,16 +459,16 @@ async function __main__() {
 
 
 
-    "134";
+    "131";
     function RadioButton() {;
     }
     RadioButton.prototype.__init__ = async function __init__(button_, function_, title) {
         var self = this;
-        "136";
+        "133";
         self._button = button_;
-        "137";
+        "134";
         self._function = function_;
-        "138";
+        "135";
         self._title = title;
     };
     if (!RadioButton.prototype.__init__.__argnames__) Object.defineProperties(RadioButton.prototype.__init__, {
@@ -493,7 +479,7 @@ async function __main__() {
     RadioButton.__handles_kwarg_interpolation__ = RadioButton.prototype.__init__.__handles_kwarg_interpolation__;
     RadioButton.prototype.uncheck = async function uncheck() {
         var self = this;
-        "141";
+        "138";
         self._button.checked = false;
     };
     if (!RadioButton.prototype.uncheck.__module__) Object.defineProperties(RadioButton.prototype.uncheck, {
@@ -501,11 +487,11 @@ async function __main__() {
     });
     RadioButton.prototype.push = async function push() {
         var self = this;
-        "144";
+        "141";
         (await plot.reset(self._function));
-        "145";
+        "142";
         animation.title = title_header["+"](self._title)["+"]("\n\n");
-        "146";
+        "143";
         MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     };
     if (!RadioButton.prototype.push.__module__) Object.defineProperties(RadioButton.prototype.push, {
@@ -513,7 +499,7 @@ async function __main__() {
     });
     RadioButton.prototype.check = async function check() {
         var self = this;
-        "149";
+        "146";
         self._button.checked = true;
     };
     if (!RadioButton.prototype.check.__module__) Object.defineProperties(RadioButton.prototype.check, {
@@ -521,7 +507,7 @@ async function __main__() {
     });
     RadioButton.prototype.name = async function name() {
         var self = this;
-        "152";
+        "149";
         return self._button.name;
     };
     if (!RadioButton.prototype.name.__module__) Object.defineProperties(RadioButton.prototype.name, {
@@ -540,14 +526,14 @@ async function __main__() {
 
 
 
-    "154";
+    "151";
     function RadioButtons() {;
     }
     RadioButtons.prototype.__init__ = async function __init__() {
         var self = this;
-        "156";
+        "153";
         self._radio_buttons = ρσ_list_decorate([]);
-        "157";
+        "154";
         self._selected_button = null;
     };
     if (!RadioButtons.prototype.__init__.__module__) Object.defineProperties(RadioButtons.prototype.__init__, {
@@ -558,20 +544,20 @@ async function __main__() {
     RadioButtons.prototype.add = async function add(button_, function_, title_text) {
         var self = this;
         var ρσ_ls, _GS_1;
-        "160";
+        "157";
         _GS_1 = new RadioButton;
         (await _GS_1.__init__(button_, function_, title_text));
         self._radio_buttons.append(_GS_1);
-        "162";
+        "159";
         if (ρσ_equals(len(self._radio_buttons)["%"](3), 0)) {
-            "163";
+            "160";
             animation.append_to_caption("\n\n");
-            "165";
+            "162";
         }
         if (ρσ_equals(len(self._radio_buttons), 1)) {
-            "166";
+            "163";
             (await ρσ_getitem(self._radio_buttons, 0).check());
-            "167";
+            "164";
             self._selected_button = ρσ_getitem(self._radio_buttons, 0);
         }
     };
@@ -582,12 +568,12 @@ async function __main__() {
     RadioButtons.prototype._uncheck_buttons_except = async function _uncheck_buttons_except(button_name) {
         var self = this;
         var ρσ_ls, button_;
-        "170";
-        var ρσ_Iter16 = self._radio_buttons;
-        ρσ_Iter16 = ((typeof ρσ_Iter16[Symbol.iterator] === "function") ? (ρσ_Iter16 instanceof Map ? ρσ_Iter16.keys() : ρσ_Iter16) : Object.keys(ρσ_Iter16));
-        for (var ρσ_Index16 of ρσ_Iter16) {
-            button_ = ρσ_Index16;
-            "171";
+        "167";
+        var ρσ_Iter17 = self._radio_buttons;
+        ρσ_Iter17 = ((typeof ρσ_Iter17[Symbol.iterator] === "function") ? (ρσ_Iter17 instanceof Map ? ρσ_Iter17.keys() : ρσ_Iter17) : Object.keys(ρσ_Iter17));
+        for (var ρσ_Index17 of ρσ_Iter17) {
+            button_ = ρσ_Index17;
+            "168";
             if (ρσ_not_equals((await button_.name()), button_name)) {
                 (await button_.uncheck());
             }
@@ -600,12 +586,12 @@ async function __main__() {
     RadioButtons.prototype._get_button_by = async function _get_button_by(button_name) {
         var self = this;
         var ρσ_ls, button_;
-        "174";
-        var ρσ_Iter17 = self._radio_buttons;
-        ρσ_Iter17 = ((typeof ρσ_Iter17[Symbol.iterator] === "function") ? (ρσ_Iter17 instanceof Map ? ρσ_Iter17.keys() : ρσ_Iter17) : Object.keys(ρσ_Iter17));
-        for (var ρσ_Index17 of ρσ_Iter17) {
-            button_ = ρσ_Index17;
-            "175";
+        "171";
+        var ρσ_Iter18 = self._radio_buttons;
+        ρσ_Iter18 = ((typeof ρσ_Iter18[Symbol.iterator] === "function") ? (ρσ_Iter18 instanceof Map ? ρσ_Iter18.keys() : ρσ_Iter18) : Object.keys(ρσ_Iter18));
+        for (var ρσ_Index18 of ρσ_Iter18) {
+            button_ = ρσ_Index18;
+            "172";
             if (ρσ_equals((await button_.name()), button_name)) {
                 return button_;
             }
@@ -617,11 +603,11 @@ async function __main__() {
     });
     RadioButtons.prototype.toggle = async function toggle(button_name) {
         var self = this;
-        "178";
+        "175";
         (await self._uncheck_buttons_except(button_name));
-        "179";
+        "176";
         self._selected_button = (await self._get_button_by(button_name));
-        "180";
+        "177";
         (await self._selected_button.push());
     };
     if (!RadioButtons.prototype.toggle.__argnames__) Object.defineProperties(RadioButtons.prototype.toggle, {
@@ -630,7 +616,7 @@ async function __main__() {
     });
     RadioButtons.prototype.get_selected_button_name = async function get_selected_button_name() {
         var self = this;
-        "183";
+        "180";
         return (await self._selected_button.name());
     };
     if (!RadioButtons.prototype.get_selected_button_name.__module__) Object.defineProperties(RadioButtons.prototype.get_selected_button_name, {
@@ -650,18 +636,18 @@ async function __main__() {
 
 
 
-    "185";
+    "182";
     title_field_2 = "$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$";
-    "186";
+    "183";
     async function vector_field_2(x, y, z) {
         var ρσ_ls, u, v, w;
-        "187";
+        "184";
         u = x;
-        "188";
+        "185";
         v = y;
-        "189";
+        "186";
         w = z;
-        "190";
+        "187";
         return vec(u, v, w);
     };
     if (!vector_field_2.__argnames__) Object.defineProperties(vector_field_2, {
@@ -669,18 +655,18 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "192";
+    "189";
     title_field_1 = "$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$";
-    "193";
+    "190";
     async function vector_field_1(x, y, z) {
         var ρσ_ls, u, v, w;
-        "194";
+        "191";
         u = sin(pi["*"](x))["*"](cos(pi["*"](y)))["*"](cos(pi["*"](z)));
-        "195";
+        "192";
         v = 1["-u"]()["*"](cos(pi["*"](x)))["*"](sin(pi["*"](y)))["*"](cos(pi["*"](z)));
-        "196";
+        "193";
         w = sqrt(2["/"](3))["*"](cos(pi["*"](x)))["*"](cos(pi["*"](y)))["*"](sin(pi["*"](z)));
-        "197";
+        "194";
         return vec(u, v, w);
     };
     if (!vector_field_1.__argnames__) Object.defineProperties(vector_field_1, {
@@ -688,9 +674,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "199";
+    "196";
     async function toggle_tick_marks(event) {
-        "200";
+        "197";
         (await plot_base.tick_marks_visibility_is(event.checked));
     };
     if (!toggle_tick_marks.__argnames__) Object.defineProperties(toggle_tick_marks, {
@@ -698,9 +684,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "203";
+    "200";
     async function toggle_axis_labels(event) {
-        "204";
+        "201";
         (await plot_base.axis_labels_visibility_is(event.checked));
     };
     if (!toggle_axis_labels.__argnames__) Object.defineProperties(toggle_axis_labels, {
@@ -708,9 +694,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "207";
+    "204";
     async function toggle_mesh(event) {
-        "208";
+        "205";
         (await plot_base.mesh_visibility_is(event.checked));
     };
     if (!toggle_mesh.__argnames__) Object.defineProperties(toggle_mesh, {
@@ -718,9 +704,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "210";
+    "207";
     async function toggle_trail(event) {
-        "211";
+        "208";
         (await plot.make_trail(event.checked));
     };
     if (!toggle_trail.__argnames__) Object.defineProperties(toggle_trail, {
@@ -728,10 +714,10 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "214";
+    "211";
     async function toggle_animate(event) {
-        "215";
-        "216";
+        "212";
+        "213";
         dt = (event.checked) ? .02 : 0;
     };
     if (!toggle_animate.__argnames__) Object.defineProperties(toggle_animate, {
@@ -739,32 +725,32 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "218";
+    "215";
     async function reset() {
-        "219";
+        "216";
         (await plot.reset());
     };
     if (!reset.__module__) Object.defineProperties(reset, {
         __module__ : {value: null}
     });
 
-    "221";
+    "218";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Mesh ", bind: toggle_mesh, checked: true})]);
-    "222";
+    "219";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis labels ", bind: toggle_axis_labels, checked: true})]);
-    "223";
+    "220";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks ", bind: toggle_tick_marks, checked: true})]);
-    "224";
+    "221";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Animate ", bind: toggle_animate, checked: false})]);
-    "225";
+    "222";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Leave trail  ", bind: toggle_trail, checked: true})]);
-    "226";
+    "223";
     _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Reset", bind: reset})]);
-    "228";
+    "225";
     async function adjust_scale(event) {
-        "229";
+        "226";
         (await plot.set_scale_factor_to(event.value["/"](2)));
-        "230";
+        "227";
         scale_slider_text.text = "= {:1.2f}".format(event.value, 2);
     };
     if (!adjust_scale.__argnames__) Object.defineProperties(adjust_scale, {
@@ -772,15 +758,33 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "232";
-    animation.append_to_caption("\n\nScale factor  ");
+    "229";
+    async function adjust_hue(event) {
+        "230";
+        (await plot.set_hue_to(event.value));
+        "231";
+        hue_slider_text.text = "= {:1.2f}".format(event.value, 2);
+    };
+    if (!adjust_hue.__argnames__) Object.defineProperties(adjust_hue, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
     "233";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .5, bind: adjust_scale})]);
+    animation.append_to_caption("\n\nScale factor  ");
     "234";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .5, bind: adjust_scale})]);
+    "235";
     scale_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.5"})]);
     "237";
+    animation.append_to_caption("\n\nHue  ");
+    "238";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .5, bind: adjust_hue})]);
+    "239";
+    hue_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.5"})]);
+    "241";
     async function toggle(event) {
-        "238";
+        "242";
         (await radio_buttons.toggle(event.name));
     };
     if (!toggle.__argnames__) Object.defineProperties(toggle, {
@@ -788,45 +792,45 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "240";
+    "244";
     _GS_1 = new RadioButtons;
     (await _GS_1.__init__());
     radio_buttons = _GS_1;
-    "241";
-    animation.append_to_caption("\n\n");
-    "242";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Example 1 ", name: "example_1"})]), vector_field_1, title_field_1));
-    "243";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Example 2 ", name: "example_2"})]), vector_field_2, title_field_2));
     "245";
+    animation.append_to_caption("\n\n");
+    "246";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Example 1 ", name: "example_1"})]), vector_field_1, title_field_1));
+    "247";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: " Example 2 ", name: "example_2"})]), vector_field_2, title_field_2));
+    "249";
     _GS_1 = new Plot;
     (await _GS_1.__init__(range(1["-u"]()["*"](.8), 1, .2), range(1["-u"]()["*"](.8), 1, .2), range(1["-u"]()["*"](.8), 1, .4), vector_field_1));
     plot = _GS_1;
-    "246";
+    "250";
     animation.title = title_header["+"](title_field_1)["+"]("\n\n");
-    "247";
+    "251";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "248";
+    "252";
     _GS_1 = new Base;
     (await _GS_1.__init__(range(1["-u"]()["*"](1), 1.2, .2), range(1["-u"]()["*"](1), 1.2, .2), range(1["-u"]()["*"](1), 1.2, .8), color.yellow, color.green, 10));
     plot_base = _GS_1;
-    "250";
+    "254";
     dt = 0;
-    "251";
+    "255";
     t = 0;
-    "252";
+    "256";
     while (true) {
-        "253";
+        "257";
         (await rate(30));
-        "254";
+        "258";
         (await plot.update(dt));
-        "255";
+        "259";
         t=t["+"](dt);
-        "256";
-        if (t[">="](3)) {
-            "257";
+        "260";
+        if (t[">="](2)) {
+            "261";
             (await plot.reset());
-            "258";
+            "262";
             t = 0;
         }
     }
