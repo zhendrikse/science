@@ -50,4 +50,23 @@ and the evolution of the world. &mdash;
 </div>
 <p style="clear: both;"></p>
 
+### Three-dimensional Brownian motion
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="brownian_motion.html">
+    <img alt="Brownian motion" src="../images/brownian_motion.png" title="Click to animate"/>
+  </a>
+  <figcaption>This random motion was first described by the Scottish botanist 
+  <a href="Robert Brown">https://en.wikipedia.org/wiki/Robert_Brown_(botanist,_born_1773)</a>, who
+  observed these motions while looking at pollen through his microscope.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}

@@ -299,6 +299,17 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="thermodynamics/brownian_motion.html">
+          <img alt="Brownian motion" src="images/brownian_motion.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <!-- SPACE RESERVED FOR FUTURE APPLICATION
+          -->
+      </figure>
+    </div>
   </div>
 </div>
 

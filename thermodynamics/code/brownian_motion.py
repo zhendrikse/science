@@ -2,7 +2,7 @@
 from random import uniform
 from vpython import box, simple_sphere, color, vec, vector, pi, mag, mag2, norm, rate, sqrt, proj, curve, canvas
 
-title="""Written by Jackson Bahr and Dominic Zirbel for Matter and Interactions I at Carnegie Mellon University, Fall 2013.
+title="""&#x2022; Written by Jackson Bahr and Dominic Zirbel for Matter and Interactions I at Carnegie Mellon University, Fall 2013.
 &#x2022; Repaired by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/brownian_motion.py">brownian_motion.py</a>
 
 """
@@ -137,7 +137,7 @@ class Particle(Body):
     MIN_SPEED = 15  # the minimum magnitude of the velocity of a Particle when it is created, in meters/second
 
     def __init__(self, objects):
-        Body.__init__(self, colour=color.yellow, radius=Particle.RADIUS)
+        Body.__init__(self, pos=vector(0, 0, 0), radius=Particle.RADIUS, velocity=vector(0, 0, 0), colour=color.yellow)
         self.generate_velocity()
         self.generate_position(objects)
 
@@ -175,7 +175,7 @@ class Mass(Body):
     RADIUS = 100  # radius of the Mass, in meters
 
     def __init__(self):
-        Body.__init__(self, colour=color.blue, radius=Mass.RADIUS)
+        Body.__init__(self, pos=vector(0, 0, 0), radius=Mass.RADIUS, velocity=vector(0, 0, 0), colour=color.blue)
         self._trace = curve(color=color.red)
 
     def collide_edge(self):
