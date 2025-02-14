@@ -1,6 +1,6 @@
 #Web VPython 3.2
 
-from vpython import sphere, rate, color, vec, arange, canvas, cylinder, box, label, sin, cos, slider, wtext, pi, radio, checkbox
+from vpython import simple_sphere, rate, color, vec, arange, canvas, cylinder, box, label, sin, cos, slider, wtext, pi, radio, checkbox
 
 title="""&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/waves/code/vibrating_membrane.py">vibrating_membrane.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 &#x2022; Visualization concept with spheres by <a href="https://jexpearce.github.io/jex/">Jex Pearce</a>
@@ -111,7 +111,7 @@ class Membrane:
             for j in range(len(self._y)):
                 colour = color.hsv_to_rgb(vec(self._hue, 1, 1))
                 position = vec(self._x[i], self._y[j]-1, Lx/2)
-                droplets_row.append(sphere(pos=position, radius=self._radius, color=colour))
+                droplets_row.append(simple_sphere(pos=position, radius=self._radius, color=colour))
             self._surface.append(droplets_row)
 
     def update(self, t):

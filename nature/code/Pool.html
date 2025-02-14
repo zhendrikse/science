@@ -137,7 +137,7 @@ async function __main__() {
                 "38";
                 position = vector(ρσ_getitem(self._x, i), ρσ_getitem(self._y, j), 0);
                 "39";
-                droplets_row.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, visible: show, radius: self._radius, opacity: self._opacity, color: colour})]));
+                droplets_row.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, visible: show, radius: self._radius, opacity: self._opacity, color: colour})]));
             }
             "41";
             self._surface.append(droplets_row);

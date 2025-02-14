@@ -37,7 +37,7 @@ class Wave:
                 colour = color.hsv_to_rgb(vec(self._hue, 1, 1))
                 position = vector(self._x[i], self._y[j], 0)
                 droplets_row.append(
-                    sphere(pos=position, visible=show, radius=self._radius, opacity=self._opacity, color=colour))
+                    simple_sphere(pos=position, visible=show, radius=self._radius, opacity=self._opacity, color=colour))
             self._surface.append(droplets_row)
 
     def _initialize_wave_data(self):
