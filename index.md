@@ -282,9 +282,9 @@ finest that music and poetry can deliver. &mdash;
        </a>
       </figure>
       <figure class="right_image">
-       <a href="thermodynamics/ising_spin.html">
-         <img alt="Ising spin model" src="images/ising_spin_model.png" title="Click to animate"/>
-       </a>
+        <a href="thermodynamics/brownian_motion.html">
+          <img alt="Brownian motion" src="images/brownian_motion.png" title="Click to animate"/>
+        </a>
       </figure>
     </div>
     <div class="double_image">
@@ -301,9 +301,9 @@ finest that music and poetry can deliver. &mdash;
     </div>
     <div class="double_image">
       <figure class="left_image">
-        <a href="thermodynamics/brownian_motion.html">
-          <img alt="Brownian motion" src="images/brownian_motion.png" title="Click to animate"/>
-        </a>
+       <a href="thermodynamics/ising_spin.html">
+         <img alt="Ising spin model" src="images/ising_spin_model.png" title="Click to animate"/>
+       </a>
       </figure>
       <figure class="right_image">
         <!-- SPACE RESERVED FOR FUTURE APPLICATION
