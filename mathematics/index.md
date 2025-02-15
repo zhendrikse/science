@@ -160,5 +160,21 @@ seen in the mathematics section on this page:
 </details>
 <p style="clear: both;"></p>
 
+## References
+<div class="header_line"><br/></div>
+
+### Computational Physics
+
+- [Computational Physics](https://github.com/rubinhlandau/CompPhysicsNotebooks/blob/master/CP01.ipynb), a freely available online book!
+
+### Mathematics
+
+- [Geometry, Surfaces, Curves, Polyhedra](https://paulbourke.net/geometry/) on 
+  [Paul Bourke](https://paulbourke.net/geometry/)&apos;s website.
+- [Manim](https://github.com/3b1b/manim), an animation engine for explanatory math videos.
+- [Sage](https://doc.sagemath.org/html/en/index.html), an open source MatLab
+  on [GitHub](https://doc.sagemath.org/html/en/index.html).
+  [Here](https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html) 
+  are some 3D-plot examples.
 
 {% include share_buttons.html %}
