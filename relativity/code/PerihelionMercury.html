@@ -44,14 +44,15 @@ var ρσ_modules = {};
 
     ρσ_modules.pythonize.strings = strings;
 })();
+
 async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-
-    var version, print, arange, __name__, type, ρσ_ls, title, animation, rM0, vM0, c_a, rS, rL2, vec_rM0, vec_vM0, mercurius, sun, dt, alpha, beta, time, max_time, ρσ_unpack;
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, sin, cos, tan, asin, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, rM0, vM0, c_a, sun_schwarzschild_radius, rL2, initial_position, initial_velocity, sun, _GS_1, mercurius, _, max_turns, graph_, dots_, curve_, dt, time, turns, vec_r_last, perihelion_list, sum_angle, vec_r_before_last;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -63,80 +64,217 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "7";
-    title = "&#x2022; Based on the original <a href=\"https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py\">base_solution.py<\/a> code\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/perihelion_mercury.py\">perihelion_mercury.py</a>\n \n";
-    "9";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), center: vector(0, 1["-u"]()["*"](1), 0), range: 7})]);
-    "12";
-    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 15, shininess: 0, opacity: .5})]);
-    "14";
+    "8";
+    title = "&#x2022; Based on the original <a href=\"https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py\">base_solution.py<\/a> code\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/perihelion_mercury.py\">perihelion_mercury.py</a>\n&#x2022; Values are computed using the <a href=\"https://nssdc.gsfc.nasa.gov/planetary/factsheet\">NASA fact sheet</a>\n\n";
+    "10";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, forward: vector(0, .5, 1["-u"]()["*"](.85)), background: color.gray(.075), center: vector(0, 1["-u"]()["*"](1), 0), range: 7})]);
+    "11";
+    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 30, shininess: 0, opacity: .5})]);
+    "13";
     rM0 = 4.6;
-    "15";
+    "14";
     vM0 = .51;
-    "16";
+    "15";
     c_a = .99;
+    "16";
+    sun_schwarzschild_radius = 2.95e-7;
     "17";
-    rS = 2.95e-7;
-    "18";
     rL2 = 8.19e-7;
-    "22";
-    vec_rM0 = vector(0, rM0, 0);
+    "20";
+    initial_position = vector(0, rM0, 0);
+    "21";
+    initial_velocity = vector(vM0, 0, 0);
     "23";
-    vec_vM0 = vector(vM0, 0, 0);
-    "25";
-    mercurius = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec_rM0, radius: .5, texture: "https://i.imgur.com/SLgVbwD.jpeg"})]);
-    "26";
     sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), radius: 1.5, texture: "https://i.imgur.com/yoEzbtg.jpg"})]);
-    "28";
-    mercurius.velocity = vec_vM0;
-    "29";
+    "24";
     sun.velocity = vector(0, 0, 0);
-    "32";
-    mercurius.trajectory = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({radius: .01, color: color.yellow})]);
-    "34";
-    async function evolve_mercury(old_position_vector, old_velocity_vector, alpha, beta) {
-        var ρσ_ls, old_position_vector_magnitude_squared, fact, acceleration_magnitude, acceleration_vector, new_velocity, new_position;
-        "35";
-        old_position_vector_magnitude_squared = old_position_vector.mag["*"](old_position_vector.mag);
-        "37";
-        fact = 1["+"](alpha["*"](rS)["/"](old_position_vector.mag))["+"](beta["*"](rL2)["/"](old_position_vector_magnitude_squared));
-        "39";
-        acceleration_magnitude = c_a["*"](fact)["/"](old_position_vector_magnitude_squared);
-        "40";
-        acceleration_vector = 1["-u"]()["*"](acceleration_magnitude)["*"](old_position_vector["/"](old_position_vector.mag));
-        "41";
-        new_velocity = old_velocity_vector["+"](acceleration_vector["*"](dt));
-        "42";
-        new_position = old_position_vector["+"](new_velocity["*"](dt));
-        "43";
-        return [new_position, new_velocity];
+    "26";
+    function Mercury() {;
+    }
+    Mercury.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
+        var velocity = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.velocity : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "velocity")){
+            velocity = ρσ_kwargs_obj.velocity;
+        }
+        "28";
+        self._mercurius = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: .5, texture: "https://i.imgur.com/SLgVbwD.jpeg"})]);
+        "29";
+        self._velocity = velocity;
+        "30";
+        self._trajectory = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({radius: .01, color: color.yellow})]);
+        "31";
+        self._alpha = 1e6;
+        "32";
+        self._beta = 1e5;
     };
-    if (!evolve_mercury.__argnames__) Object.defineProperties(evolve_mercury, {
-        __argnames__ : {value: ["old_position_vector", "old_velocity_vector", "alpha", "beta"]},
+    if (!Mercury.prototype.__init__.__defaults__) Object.defineProperties(Mercury.prototype.__init__, {
+        __defaults__ : {value: {position:initial_position, velocity:initial_velocity}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "velocity"]},
+        __module__ : {value: null}
+    });
+    Mercury.__argnames__ = Mercury.prototype.__init__.__argnames__;
+    Mercury.__handles_kwarg_interpolation__ = Mercury.prototype.__init__.__handles_kwarg_interpolation__;
+    Mercury.prototype.update_by = async function update_by(dt) {
+        var self = this;
+        var ρσ_ls, current_pos, old_position_vector_magnitude_squared, fact, acceleration_magnitude, acceleration_vector;
+        "35";
+        current_pos = self._mercurius.pos;
+        "37";
+        ρσ_interpolate_kwargs.call(self._trajectory, self._trajectory.append, [ρσ_desugar_kwargs({pos: current_pos})]);
+        "38";
+        old_position_vector_magnitude_squared = current_pos.mag["*"](current_pos.mag);
+        "41";
+        fact = 1["+"](self._alpha["*"](sun_schwarzschild_radius)["/"](current_pos.mag))["+"](self._beta["*"](rL2)["/"](old_position_vector_magnitude_squared));
+        "43";
+        acceleration_magnitude = c_a["*"](fact)["/"](old_position_vector_magnitude_squared);
+        "44";
+        acceleration_vector = 1["-u"]()["*"](acceleration_magnitude)["*"](current_pos["/"](current_pos.mag));
+        "46";
+        self._velocity=self._velocity["+"](acceleration_vector["*"](dt));
+        "47";
+        self._mercurius.pos=self._mercurius.pos["+"](self._velocity["*"](dt));
+    };
+    if (!Mercury.prototype.update_by.__argnames__) Object.defineProperties(Mercury.prototype.update_by, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Mercury.prototype.set_alpha = async function set_alpha(bool_value) {
+        var self = this;
+        "51";
+        self._alpha = (bool_value) ? 1e6 : 0;
+    };
+    if (!Mercury.prototype.set_alpha.__argnames__) Object.defineProperties(Mercury.prototype.set_alpha, {
+        __argnames__ : {value: ["bool_value"]},
+        __module__ : {value: null}
+    });
+    Mercury.prototype.set_beta = async function set_beta(bool_value) {
+        var self = this;
+        "55";
+        self._beta = (bool_value) ? 1e5 : 0;
+    };
+    if (!Mercury.prototype.set_beta.__argnames__) Object.defineProperties(Mercury.prototype.set_beta, {
+        __argnames__ : {value: ["bool_value"]},
+        __module__ : {value: null}
+    });
+    Mercury.prototype.pos = async function pos() {
+        var self = this;
+        "58";
+        return self._mercurius.pos;
+    };
+    if (!Mercury.prototype.pos.__module__) Object.defineProperties(Mercury.prototype.pos, {
+        __module__ : {value: null}
+    });
+    Mercury.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Mercury.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Mercury.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "61";
+    _GS_1 = new Mercury;
+    (await _GS_1.__init__());
+    mercurius = _GS_1;
+    "63";
+    async function set_alpha(event) {
+        "64";
+        (await mercurius.set_alpha(event.checked));
+    };
+    if (!set_alpha.__argnames__) Object.defineProperties(set_alpha, {
+        __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
 
-    "46";
+    "66";
+    async function set_beta(event) {
+        "67";
+        (await mercurius.set_beta(event.checked));
+    };
+    if (!set_beta.__argnames__) Object.defineProperties(set_beta, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "69";
+    animation.append_to_caption("\n");
+    "70";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Alpha term ", bind: set_alpha, checked: true})]);
+    "71";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Beta term ", bind: set_beta, checked: true})]);
+    "72";
+    animation.append_to_caption("\n");
+    "74";
+    async function angle_between(v1, v2) {
+        "76";
+        return acos(dot(v1, v2)["/"](v1.mag["*"](v2.mag)))["*"](180)["/"](pi);
+    };
+    if (!angle_between.__argnames__) Object.defineProperties(angle_between, {
+        __argnames__ : {value: ["v1", "v2"]},
+        __module__ : {value: null}
+    });
+
+    "78";
+    max_turns = 10;
+    "79";
+    graph_ = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Perihelion growth", background: color.black, xtitle: "Number of turns", ytitle: "Angle between perihelions (degrees)", xmin: 2, xmax: max_turns, ymin: 0, ymax: 90})]);
+    "80";
+    dots_ = ρσ_interpolate_kwargs.call(this, gdots, [ρσ_desugar_kwargs({color: color.green})]);
+    "81";
+    curve_ = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.cyan})]);
+    "84";
     dt = 2["*"](vM0)["/"](c_a)["/"](20);
-    "47";
-    alpha = 1e6;
-    "48";
-    beta = 0;
-    "49";
+    "85";
     time = 0;
-    "50";
-    max_time = 1e3["*"](dt);
-    "53";
-    while (time["<"](max_time)) {
-        "55";
+    "86";
+    turns = 0;
+    "87";
+    vec_r_last = initial_position;
+    "88";
+    perihelion_list = list();
+    "89";
+    sum_angle = 0;
+    "90";
+    while (turns["<"](max_turns)) {
+        "91";
+        vec_r_before_last = vec_r_last;
+        "92";
+        vec_r_last = vector((await mercurius.pos()));
+        "93";
         (await rate(200));
-        "57";
-        ρσ_interpolate_kwargs.call(mercurius.trajectory, mercurius.trajectory.append, [ρσ_desugar_kwargs({pos: mercurius.pos})]);
-        "59";
-        ρσ_unpack = (await evolve_mercury(mercurius.pos, mercurius.velocity, alpha, beta));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-        mercurius.pos = ρσ_unpack[0];
-        mercurius.velocity = ρσ_unpack[1];
+        "94";
+        (await mercurius.update_by(dt));
+        "96";
+        if (vec_r_before_last.mag[">"](ρσ_cond_temp = vec_r_last.mag) && ρσ_cond_temp["<"]((await mercurius.pos()).mag)) {
+            "97";
+            turns = turns["+"](1);
+            "98";
+            perihelion_list.append(vec_r_last);
+            "99";
+            if (turns[">"](1)) {
+                "101";
+                ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({color: color.green, radius: .2, pos: vec_r_last})]);
+                "102";
+                sum_angle=sum_angle["+"]((await angle_between(ρσ_getitem(perihelion_list, 1["-u"]()["*"](2)), ρσ_getitem(perihelion_list, 1["-u"]()["*"](1)))));
+                "103";
+                dots_.plot(turns, (await angle_between(ρσ_getitem(perihelion_list, 1["-u"]()["*"](2)), ρσ_getitem(perihelion_list, 1["-u"]()["*"](1)))));
+                "104";
+                curve_.plot(turns, sum_angle);
+            }
+        }
     }
 };
 if (!__main__.__module__) Object.defineProperties(__main__, {
