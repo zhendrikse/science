@@ -26,6 +26,26 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+  </div>
+  <div class="column" style="background-color:#004444;">
+    <h3><a href="mathematics/gallery/index.html#toroids">Toroids</a></h3>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="mathematics/topology_surface_plot.html">
+          <img alt="Bow curve" src="./mathematics/gallery/images/bow_curve.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="mathematics/double_shapes_contour_plot.html">
+          <img alt="Double torus" src="./mathematics/gallery/images/double_torus_contour.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="column" style="background-color:#004444;">
     <h3><a href="mathematics/index.html#complex_functions">$f(z) \rightarrow \mathbb{C}$</a></h3>
     <div class="double_image">
       <figure class="left_image">
@@ -39,6 +59,26 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+  </div>
+  <div class="column" style="background-color:#004444;">
+    <h3><a href="mathematics/gallery/index.html#non_orientables">Non-orientable surfaces</a></h3>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="mathematics/topology_surface_plot.html">
+          <img alt="Möbius strip" src="./mathematics/gallery/images/mobius_strip.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="mathematics/double_shapes_contour_plot.html">
+          <img alt="Klein&apos;s bottle" src="./mathematics/gallery/images/klein_bottle_contour.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="column" style="background-color:#004444;">
     <h3><a href="mathematics/index.html#fields">$f(x, y, z) \rightarrow \mathbb{R}^3$</a></h3>
     <div class="double_image">
       <figure class="left_image">
@@ -47,27 +87,64 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <!-- 
-        <a href="mathematics/spherical_harmonics_surface_plot.html">
-          <img alt="Spherical harmonics" src="./mathematics/gallery/images/spherical_harmonics.png" title="Click to animate"/>
-        </a>
+        <!-- SCALAR FIELDS ARE GOING HERE
         -->
       </figure>
     </div>
-    <h3><a href="mathematics/gallery/index.html#toroids#spherical_harmonics">Spherical harmonics</a></h3>
+  </div>
+  <div class="column" style="background-color:#004444;">
+    <h3><a href="mathematics/gallery/index.html#spirals">Spirals</a></h3>
     <div class="double_image">
       <figure class="left_image">
-        <a href="mathematics/spherical_harmonics_surface_plot.html">
-          <img alt="Spherical harmonics" src="./mathematics/gallery/images/spherical_harmonics.png" title="Click to animate"/>
+        <a href="mathematics/topology_surface_plot.html">
+          <img alt="Dini&apos;s spiral" src="./mathematics/gallery/images/dini_spiral.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
-        <a href="mathematics/quiver_plot.html">
-          <img alt="3D vector fields" src="./mathematics/gallery/images/spherical_harmonic_3.png" title="Click to animate"/>
+        <a href="mathematics/topology_contour_plot.html">
+          <img alt="Seashell" src="./mathematics/gallery/images/conchoid_contour.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
   </div>
+</div>
+
+<div class="row">
+  <div class="column" style="background-color:#004444;">
+    <h3><a href="mathematics/gallery/index.html#toroids#spherical_harmonics">Spherical harmonics</a></h3>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="mathematics/spherical_harmonics_surface_plot.html">
+          <img alt="Spherical harmonics" src="./mathematics/gallery/images/spherical_harmonic_1.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="mathematics/spherical_harmonics_contour_plot.html">
+          <img alt="Spherical harmonics" src="./mathematics/gallery/images/spherical_harmonic_contour_1.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+  </div>
+  <div class="column" style="background-color:#004444;">
+    <h3><a href="mathematics/gallery/index.html#real_projective_plane">The real project plane</a></h3>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="mathematics/topology_surface_plot.html">
+          <img alt="Cross cap" src="./mathematics/gallery/images/cross_cap.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="mathematics/topology_contour_plot.html">
+          <img alt="Self-intersecting disk" src="./mathematics/gallery/images/self_intersecting_disk_contour.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+  </div>
+</div>
+
+
+
+
   <div class="column" style="background-color:#004444;">
     <h3><a href="mathematics/gallery/index.html#toroids">Toroids</a></h3>
     <div class="double_image">
@@ -95,34 +172,6 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-    <h3><a href="mathematics/gallery/index.html#spirals">Spirals</a></h3>
-    <div class="double_image">
-      <figure class="left_image">
-        <a href="mathematics/topology_surface_plot.html">
-          <img alt="Dini&apos;s spiral" src="./mathematics/gallery/images/dini_spiral.png" title="Click to animate"/>
-        </a>
-      </figure>
-      <figure class="right_image">
-        <a href="mathematics/topology_contour_plot.html">
-          <img alt="Seashell" src="./mathematics/gallery/images/conchoid_contour.png" title="Click to animate"/>
-        </a>
-      </figure>
-    </div>
-    <h3><a href="mathematics/gallery/index.html#real_projective_plane">The real project plane</a></h3>
-    <div class="double_image">
-      <figure class="left_image">
-        <a href="mathematics/topology_surface_plot.html">
-          <img alt="Cross cap" src="./mathematics/gallery/images/cross_cap.png" title="Click to animate"/>
-        </a>
-      </figure>conchoid_contour
-      <figure class="right_image">
-        <a href="mathematics/topology_contour_plot.html">
-          <img alt="Self-intersecting disk" src="./mathematics/gallery/images/self_intersecting_disk_contour.png" title="Click to animate"/>
-        </a>
-      </figure>
-    </div>
-  </div>
-</div>
 
 <p style="clear: both;"></p>
 # Physics
