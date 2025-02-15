@@ -14,6 +14,7 @@ finest that music and poetry can deliver. &mdash;
 <div class="row">
   <div class="column" style="background-color:#004444;">
     <h2><a href="mathematics/index.html">3D function plots</a></h2>
+    <h3>$f(x, y) \rightarrow \mathbb{R}$</h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/multivariate_surface_plot.html">
@@ -26,6 +27,7 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <h3>$f(z) \rightarrow \mathbb{C}$</h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/complex_surface_plot.html">
