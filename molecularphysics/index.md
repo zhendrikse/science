@@ -41,8 +41,10 @@ I... a universe of atoms, an atom in the universe. &mdash;
   <a href="rutherford_scattering.html">
     <img alt="Rutherford scattering" src="../images/rutherford_scattering.png" title="Click to animate"/>
   </a>
-  <figcaption><a href="https://en.wikipedia.org/wiki/Rutherford_scattering_experiments#Rutherford_scattering">Rutherford scattering</a>,
-  which lead to the first atomic model with a nucleus and electrons spinning around it.</figcaption>
+  <figcaption>It was quite the most incredible event that has ever happened to me in my life. 
+  It was almost as incredible as if you fired a 15-inch shell at a piece of tissue paper and 
+  it came back and hit you &mdash; 
+  <a href="https://en.wikipedia.org/wiki/Ernest_Rutherford">Ernest Rutherford</a></figcaption>
 </figure>
 <figure class="right_image">
   <a href="molecules.html">
