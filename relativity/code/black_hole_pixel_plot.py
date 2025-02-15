@@ -184,8 +184,8 @@ bh = BlackHole(c_focus, 80)
 # You can specify a texture file for the accretion disk with `texture='filename.png'` or a color by `color=Color('#ffffff') (default)`
 disk = Disk(c_focus, 4.5 * bh.radius, 16.2 * bh.radius, colour=vector(0.75, 0.15, 0.15))
 
-scene = Scene(width=x_resolution, height=x_resolution // 2, camera=Camera(c_origin, c_focus - c_origin, 1.2),
-              blackhole=bh, disk=disk)
+camera_ = Camera(c_origin, c_focus - c_origin, 1.2)
+scene = Scene(width=x_resolution, height=x_resolution // 2, camera=camera_, blackhole=bh, disk=disk)
 
 engine = Engine(scene)
 engine.render()
