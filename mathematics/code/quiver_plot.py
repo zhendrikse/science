@@ -181,9 +181,9 @@ class RadioButtons:
 
 title_field_2 = "$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$"
 def vector_field_2(x, y, z):
-    u = x #sin(pi * x) * cos(pi * y) * cos(pi * z)
-    v = y # -cos(pi * x) * sin(pi * y) * cos(pi * z)
-    w = z #(sqrt(2.0 / 3.0) * cos(pi * x) * cos(pi * y) * sin(pi * z))
+    u = x
+    v = y
+    w = z
     return vec(u, v, w)
 
 title_field_1 = "$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$"
