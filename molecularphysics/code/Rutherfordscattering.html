@@ -269,25 +269,25 @@ async function __main__() {
     strings();
     var uniform = ρσ_modules.random.uniform;
 
-    "11";
-    title = "Disk source of alpha particles which scatter off gold nucleus.\nGold nucleus is repositioned after each event.\n\n&#x2022; Original <a href=\"https://lectdemo.github.io/virtual/scripts/08_Rutherford_dist.py\">08_Rutherford_dist.py<\/a> by Ruth Chabay Spring 2000\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
-    "13";
+    "8";
+    title = "&#x2022; Original <a href=\"https://lectdemo.github.io/virtual/scripts/08_Rutherford_dist.py\">08_Rutherford_dist.py<\/a> by Ruth Chabay Spring 2000\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/molecularphysics/code/rutherford_scattering.py\">rutherford_scattering.py</a>\n\n";
+    "10";
     xMax = 1e-13;
-    "14";
+    "11";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({x: 0, y: 0, background: color.gray(.075), range: xMax["*"](2.5), title: title})]);
-    "15";
+    "13";
     ρσ_interpolate_kwargs.call(this, local_light, [ρσ_desugar_kwargs({pos: vec(1, 0, 1)})]);
-    "18";
+    "16";
     dt = 5e-23;
-    "19";
+    "17";
     k = 9e9;
-    "20";
+    "18";
     K0 = 1e7["*"](1.6e-19);
-    "21";
+    "19";
     alpha_mass = .004["/"](6.12e23);
-    "22";
+    "20";
     alpha_color = vector(.2, 1, 1);
-    "24";
+    "22";
     function Particle() {;
     }
     Particle.prototype.__init__ = async function __init__() {
@@ -303,17 +303,17 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
             colour = ρσ_kwargs_obj.colour;
         }
-        "26";
+        "24";
         self._particle = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, color: colour})]);
-        "27";
+        "25";
         self._mass = mass;
-        "28";
+        "26";
         self._momentum = momentum;
-        "29";
+        "27";
         self._charge = charge;
-        "30";
+        "28";
         self._initial_position = position;
-        "31";
+        "29";
         self._initial_momentum = momentum;
     };
     if (!Particle.prototype.__init__.__defaults__) Object.defineProperties(Particle.prototype.__init__, {
@@ -326,7 +326,7 @@ async function __main__() {
     Particle.__handles_kwarg_interpolation__ = Particle.prototype.__init__.__handles_kwarg_interpolation__;
     Particle.prototype.position = async function position() {
         var self = this;
-        "34";
+        "32";
         return self._particle.pos;
     };
     if (!Particle.prototype.position.__module__) Object.defineProperties(Particle.prototype.position, {
@@ -334,7 +334,7 @@ async function __main__() {
     });
     Particle.prototype.charge = async function charge() {
         var self = this;
-        "37";
+        "35";
         return self._charge;
     };
     if (!Particle.prototype.charge.__module__) Object.defineProperties(Particle.prototype.charge, {
@@ -342,7 +342,7 @@ async function __main__() {
     });
     Particle.prototype.momentum = async function momentum() {
         var self = this;
-        "40";
+        "38";
         return self._momentum;
     };
     if (!Particle.prototype.momentum.__module__) Object.defineProperties(Particle.prototype.momentum, {
@@ -350,7 +350,7 @@ async function __main__() {
     });
     Particle.prototype.colour = async function colour() {
         var self = this;
-        "43";
+        "41";
         return self._particle.color;
     };
     if (!Particle.prototype.colour.__module__) Object.defineProperties(Particle.prototype.colour, {
@@ -358,7 +358,7 @@ async function __main__() {
     });
     Particle.prototype.colour_is = async function colour_is(colour) {
         var self = this;
-        "46";
+        "44";
         self._particle.color = colour;
     };
     if (!Particle.prototype.colour_is.__argnames__) Object.defineProperties(Particle.prototype.colour_is, {
@@ -368,9 +368,9 @@ async function __main__() {
     Particle.prototype.force_between = async function force_between(other_particle) {
         var self = this;
         var ρσ_ls, r;
-        "49";
+        "47";
         r = (await self.distance_to(other_particle));
-        "50";
+        "48";
         return k["*"]((await other_particle.charge()))["*"]((await self.charge()))["*"](r)["/"](Math.pow(mag(r), 3));
     };
     if (!Particle.prototype.force_between.__argnames__) Object.defineProperties(Particle.prototype.force_between, {
@@ -379,7 +379,7 @@ async function __main__() {
     });
     Particle.prototype.distance_to = async function distance_to(other_particle) {
         var self = this;
-        "53";
+        "51";
         return (await other_particle.position())["-"](1["*"]((await self.position())));
     };
     if (!Particle.prototype.distance_to.__argnames__) Object.defineProperties(Particle.prototype.distance_to, {
@@ -388,9 +388,9 @@ async function __main__() {
     });
     Particle.prototype.update_with = async function update_with(force, dt) {
         var self = this;
-        "56";
+        "54";
         self._momentum=self._momentum["+"](force["*"](dt));
-        "57";
+        "55";
         self._particle.pos=self._particle.pos["+"](self._momentum["/"](self._mass)["*"](dt));
     };
     if (!Particle.prototype.update_with.__argnames__) Object.defineProperties(Particle.prototype.update_with, {
@@ -399,9 +399,9 @@ async function __main__() {
     });
     Particle.prototype.reset = async function reset() {
         var self = this;
-        "60";
+        "58";
         self._particle.pos = self._initial_position;
-        "61";
+        "59";
         self._momentum = self._initial_momentum;
     };
     if (!Particle.prototype.reset.__module__) Object.defineProperties(Particle.prototype.reset, {
@@ -425,7 +425,7 @@ async function __main__() {
 
 
 
-    "63";
+    "61";
     function Source() {;
     }
     Source.prototype.__init__ = async function __init__() {
@@ -441,11 +441,11 @@ async function __main__() {
             radius = ρσ_kwargs_obj.radius;
         }
         var ρσ_ls, _;
-        "65";
+        "63";
         self._position = position;
-        "66";
+        "64";
         self._radius = radius;
-        "67";
+        "65";
         _ = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position, axis: vector(1["-u"]()["*"](radius)["*"](.1), 0, 0), radius: radius, color: color.gray(.6)})]);
     };
     if (!Source.prototype.__init__.__defaults__) Object.defineProperties(Source.prototype.__init__, {
@@ -459,15 +459,15 @@ async function __main__() {
     Source.prototype.beam = async function beam() {
         var self = this;
         var ρσ_ls, yy, zz;
-        "70";
+        "68";
         while (true) {
-            "71";
+            "69";
             yy = (await uniform(1["-u"]()["*"](self._radius), self._radius));
-            "72";
+            "70";
             zz = (await uniform(1["-u"]()["*"](self._radius), self._radius));
-            "73";
+            "71";
             if (yy["*"](yy)["+"](zz["*"](zz))["<="](self._radius["*"](self._radius))) {
-                "74";
+                "72";
                 return vector(1["-u"]()["*"](xMax)["*"](1.5), yy, zz);
             }
         }
@@ -477,7 +477,7 @@ async function __main__() {
     });
     Source.prototype.position = async function position() {
         var self = this;
-        "77";
+        "75";
         return self._position;
     };
     if (!Source.prototype.position.__module__) Object.defineProperties(Source.prototype.position, {
@@ -494,72 +494,72 @@ async function __main__() {
 
 
 
-    "79";
+    "77";
     _GS_1 = new Source;
     (await _GS_1.__init__(vector(1["-u"]()["*"](xMax)["*"](2), 0, 0)));
     source = _GS_1;
-    "80";
+    "78";
     _GS_1 = new Particle;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(0, 0, 0), radius: 6e-15, colour: color.yellow, mass: .197["/"](6.02e23), charge: 79["*"](1.6e-19), momentum: vector(0, 0, 0)})]);
     gold = _GS_1;
-    "82";
+    "80";
     trails = ρσ_list_decorate([]);
-    "83";
+    "81";
     for (var ρσ_Index6 = 0; ρσ_Index6["<"](1e3); ρσ_Index6++) {
         nalpha = ρσ_Index6;
-        "84";
+        "82";
         (await rate(5));
-        "85";
+        "83";
         _GS_1 = new Particle;
         ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: (await source.beam()), radius: 4e-15, colour: vector(.2, 1, 1), mass: alpha_mass, charge: 2["*"](1.6e-19), momentum: vector(sqrt(2["*"](alpha_mass)["*"](K0)), 0, 0)})]);
         alpha_particle = _GS_1;
-        "86";
+        "84";
         departure_spot = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vector((await source.position()).x, (await alpha_particle.position()).y, (await alpha_particle.position()).z), radius: 2e-15, axis: vector(1e-15, 0, 0), color: alpha_color})]);
-        "88";
+        "86";
         trail = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: alpha_color, pos: ρσ_list_decorate([ departure_spot.pos ])})]);
-        "89";
+        "87";
         (await gold.reset());
-        "91";
+        "89";
         while (mag((await alpha_particle.position()))["<"](1.8e-13)) {
-            "92";
+            "90";
             F = (await gold.force_between(alpha_particle));
-            "93";
+            "91";
             (await alpha_particle.update_with(F, dt));
-            "94";
+            "92";
             (await gold.update_with(F, dt));
-            "95";
+            "93";
             ρσ_interpolate_kwargs.call(trail, trail.append, [ρσ_desugar_kwargs({pos: (await alpha_particle.position())})]);
-            "97";
+            "95";
         }
         if ((await alpha_particle.momentum()).x["/"](mag((await alpha_particle.momentum())))["<="](cos(pi["/"](2)))) {
-            "98";
+            "96";
             (await alpha_particle.colour_is(color.red));
-            "99";
+            "97";
             trail.color = (await alpha_particle.colour())["/"](1.5);
-            "100";
+            "98";
             departure_spot.color = (await alpha_particle.colour())["/"](1.5);
-            "101";
+            "99";
         } else if ((await alpha_particle.momentum()).x["/"](mag((await alpha_particle.momentum())))["<="](cos(pi["/"](4)))) {
-            "102";
+            "100";
             (await alpha_particle.colour_is(color.blue));
-            "103";
+            "101";
             trail.color = (await alpha_particle.colour());
-            "104";
+            "102";
             departure_spot.color = (await alpha_particle.colour());
         }
-        "106";
+        "104";
         var ρσ_Iter7 = trails;
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             a_trail = ρσ_Index7;
-            "107";
+            "105";
             a_trail.color=a_trail.color["/"](2);
         }
-        "108";
+        "106";
         trails.append(trail);
-        "109";
+        "107";
         if (len(trails)[">"](3)) {
-            "110";
+            "108";
             trails.pypop(0).visible = 0;
         }
     }

@@ -2,16 +2,14 @@
 from vpython import local_light, sphere, cylinder, vec, vector, mag, rate, canvas, color, curve, cos, pi, sqrt
 from random import uniform
 
-title = """Disk source of alpha particles which scatter off gold nucleus.
-Gold nucleus is repositioned after each event.
-
-&#x2022; Original <a href="https://lectdemo.github.io/virtual/scripts/08_Rutherford_dist.py">08_Rutherford_dist.py</a> by Ruth Chabay Spring 2000
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+title = """&#x2022; Original <a href="https://lectdemo.github.io/virtual/scripts/08_Rutherford_dist.py">08_Rutherford_dist.py</a> by Ruth Chabay Spring 2000
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/molecularphysics/code/rutherford_scattering.py">rutherford_scattering.py</a>
 
 """
 
 xMax = 1e-13
 animation = canvas(x=0, y=0, background=color.gray(0.075), range=xMax * 2.5, title=title)
+
 local_light(pos=vec(1, 0, 1))
 
 
