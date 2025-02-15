@@ -39,7 +39,7 @@ class Color:
 
 class Texture:
   def __init__(self, im_file, width, height):
-    self.pixels = points()#np.array(pil.Image.open(im_file))
+    self.pixels = None#np.array(pil.Image.open(im_file))
     self.width = width
     self.height = height
     self.im_width = width#self.pixels.shape[0]
