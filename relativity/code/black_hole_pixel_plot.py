@@ -82,7 +82,7 @@ class Image:
   def set_pixel(self, x, y, colour):
     #self.pixels[y, x] = color.value
     color_ = colour.to_list()
-    self.pixels.append(pos=(x, y, 0), color=vector(color_[0], color_[1], color_[2])/2.55)
+    self.pixels.append(pos=vector(x, y, 0), color=vector(color_[0], color_[1], color_[2])/2.55)
 
 class Scene:
   def __init__(self, camera, blackhole, disk, width, height):
