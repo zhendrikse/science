@@ -64,13 +64,11 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "12";
-    title = "\nPlots the orbit of a planet in an eccentric orbit to illustrate\nthe sweeping out of equal areas in equal times, with sun at focus.\nThe eccentricity of the orbit is random and determined by the \ninitial velocity. The program uses normalised units (G =1).\n\n&#x2022; Original by program by Peter Borcherds, University of Birmingham, England\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/keplers_law.py\">keplers_law.py</a>\n\n";
-    "16";
+    "6";
+    title = "&#x2022; Original by program by Peter Borcherds, University of Birmingham, England\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/keplers_law.py\"></a>\n\n";
+    "10";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), forward: vector(.0222862, .928369, 1["-u"]()["*"](.370991)), range: .75})]);
-    "17";
-    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 5, shininess: 0, opacity: .5})]);
-    "21";
+    "14";
     function Planet() {;
     }
     Planet.prototype.__init__ = async function __init__() {
@@ -86,13 +84,13 @@ async function __main__() {
             velocity = ρσ_kwargs_obj.velocity;
         }
         var ρσ_ls, poss;
-        "23";
+        "16";
         poss = vector(0, scale, 0);
-        "24";
+        "17";
         self._velocity = velocity;
-        "25";
+        "18";
         self._planet = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: poss, color: color.cyan, radius: .05})]);
-        "26";
+        "19";
         self._last_position = poss;
     };
     if (!Planet.prototype.__init__.__defaults__) Object.defineProperties(Planet.prototype.__init__, {
@@ -117,21 +115,21 @@ async function __main__() {
             whole = ρσ_kwargs_obj.whole;
         }
         var ρσ_ls, label_text;
-        "29";
-        "30";
+        "22";
+        "23";
         if (whole) {
-            "31";
+            "24";
             label_text = str(int(time["*"](2)["+"](dt)));
-            "33";
+            "26";
         } else {
-            "34";
+            "27";
             label_text = str("Period: ")["+"](str(round(time["*"](2), 2)))["+"](" \"months\"\n Initial speed: ")["+"](str(round((await self.speed()), 3)));
-            "36";
+            "29";
             colour = color.white;
         }
-        "37";
+        "30";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: (await self.pos()), text: label_text, color: colour, xoffset: offset["*"]((await self.pos()).x), yoffset: offset["*"]((await self.pos()).y)})]);
-        "39";
+        "32";
         return vector(.5["*"](1["+"](random())), random(), random());
     };
     if (!Planet.prototype.month_step.__defaults__) Object.defineProperties(Planet.prototype.month_step, {
@@ -143,38 +141,38 @@ async function __main__() {
     Planet.prototype.revolve_one_period = async function revolve_one_period() {
         var self = this;
         var ρσ_ls, steps, step, time;
-        "42";
+        "35";
         steps = 20;
-        "43";
+        "36";
         step = 0;
-        "44";
+        "37";
         time = 0;
-        "45";
-        "46";
+        "38";
+        "39";
         while (!((self._last_position.x[">"](ρσ_cond_temp = 0) && ρσ_cond_temp[">"]((await self.pos()).x)))) {
-            "48";
+            "41";
             (await rate(steps["*"](2)));
-            "49";
+            "42";
             time=time["+"](dt);
-            "50";
+            "43";
             (await planet.update());
-            "52";
+            "45";
             step=step["+"](1);
-            "53";
+            "46";
             if ((step === steps || typeof step === "object" && ρσ_equals(step, steps))) {
-                "54";
+                "47";
                 step = 0;
-                "55";
+                "48";
                 colour = (await self.month_step(time));
-                "56";
+                "49";
                 ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ sun.pos, (await self.pos()) ]), color: color.white})]);
-                "57";
+                "50";
                 continue;
             }
-            "60";
+            "53";
             ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ sun.pos, (await self.pos()) ]), color: colour})]);
         }
-        "62";
+        "55";
         (await planet.month_step(time, 50, 0));
     };
     if (!Planet.prototype.revolve_one_period.__module__) Object.defineProperties(Planet.prototype.revolve_one_period, {
@@ -183,15 +181,15 @@ async function __main__() {
     Planet.prototype.update = async function update() {
         var self = this;
         var ρσ_ls, denominator;
-        "65";
+        "58";
         self._last_position = vector(self._planet.pos);
-        "67";
+        "60";
         ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ self._last_position, self._planet.pos ]), color: color.red})]);
-        "69";
+        "62";
         denominator = Math.pow(mag(self._planet.pos), 3);
-        "70";
+        "63";
         self._velocity=self._velocity["-"](self._planet.pos["*"](dt)["/"](denominator));
-        "71";
+        "64";
         self._planet.pos=self._planet.pos["+"](self._velocity["*"](dt));
     };
     if (!Planet.prototype.update.__module__) Object.defineProperties(Planet.prototype.update, {
@@ -199,7 +197,7 @@ async function __main__() {
     });
     Planet.prototype.pos = async function pos() {
         var self = this;
-        "74";
+        "67";
         return self._planet.pos;
     };
     if (!Planet.prototype.pos.__module__) Object.defineProperties(Planet.prototype.pos, {
@@ -207,7 +205,7 @@ async function __main__() {
     });
     Planet.prototype.speed = async function speed() {
         var self = this;
-        "77";
+        "70";
         return mag(self._velocity);
     };
     if (!Planet.prototype.speed.__module__) Object.defineProperties(Planet.prototype.speed, {
@@ -227,38 +225,40 @@ async function __main__() {
 
 
 
-    "80";
+    "73";
     sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({color: color.yellow, radius: .1, texture: "http://i.imgur.com/yoEzbtg.jpg"})]);
-    "81";
+    "74";
     colour = color.white;
-    "83";
+    "76";
     dt = .025;
-    "84";
+    "77";
     while (true) {
-        "85";
+        "78";
+        ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 10, shininess: 0, opacity: .5})]);
+        "79";
         _GS_1 = new Planet;
         ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({velocity: 1["-u"]()["*"](vector(.7["+"](.5["*"](random())), 0, 0))})]);
         planet = _GS_1;
-        "86";
+        "80";
         colour = (await planet.month_step(0));
-        "87";
+        "81";
         ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ sun.pos, (await planet.pos()) ]), color: colour})]);
-        "89";
+        "83";
         (await planet.revolve_one_period());
-        "91";
+        "85";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(2.5, 1["-u"]()["*"](2.5), 0), text: "Click for another orbit"})]);
-        "92";
+        "86";
         _ = (await animation.waitfor("click"));
-        "94";
+        "88";
         var ρσ_Iter1 = animation.objects;
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             obj = ρσ_Index1;
-            "95";
+            "89";
             if (obj === sun || obj === planet) {
                 continue;
             }
-            "96";
+            "90";
             obj.visible = 0;
         }
     }

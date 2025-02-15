@@ -8,7 +8,6 @@ title="""&#x2022; Original by program by Peter Borcherds, University of Birmingh
 from vpython import *
 
 animation = canvas(title=title, background=color.gray(0.075), forward=vector(0.0222862, 0.928369, -0.370991), range=0.75)
-sphere(pos=vector(0, 0, 0),texture="https://i.imgur.com/1nVWbbd.jpg",radius=5,shininess=0,opacity=0.5)
 
 # Default velocity gives a satisfactory range of eccentricities
 # velocity = -vector(0.984,0,0)   # gives period of 12.0 "months"
@@ -76,6 +75,7 @@ colour = color.white
 
 dt = 0.025
 while True:
+    sphere(pos=vector(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=10, shininess=0, opacity=0.5)
     planet = Planet(velocity=-vector(0.7 + 0.5 * random(), 0, 0)  )
     colour = planet.month_step(0)
     curve(pos=[sun.pos, planet.pos()], color=colour)
