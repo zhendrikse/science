@@ -3,7 +3,7 @@ from random import uniform
 from vpython import box, simple_sphere, color, vec, vector, pi, mag, mag2, norm, rate, sqrt, proj, curve, canvas
 
 title = "&#x2022; The original <a href=\"https://github.com/dzirbel/brownian-motion/blob/master/main.py\">main.py</a> "
-title += "was written by Jackson Bahr and Dominic Zirbel for <a href=\"https://matterandinteractions.org/\">Matter and Interactions</a> "
+title += "was written by Jackson Bahr and Dominic Zirbel for \n   <a href=\"https://matterandinteractions.org/\">Matter and Interactions</a> "
 title += "I at Carnegie Mellon University, Fall 2013.\n"
 title += "&#x2022; Repaired and refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> "
 title += "in <a href=\"https://github.com/zhendrikse/science/blob/main/thermodynamics/code/brownian_motion.py\">brownian_motion.py</a>\n\n"
