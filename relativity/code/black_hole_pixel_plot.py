@@ -194,8 +194,8 @@ engine.render()
 def download():
     engine.save("black_hole.png")
 
-
+animation.append_to_caption("\n")
 _ = button(text="Download image", bind=download)
-# engine.save('images/blackhole.png')
+
 while True:
     rate(10)
