@@ -170,13 +170,13 @@ axis_green_car.hide_unit_vectors()
 
 space_time_graph_red = graph(width=350, height=150, title="Space-time graph for red inertial frame", xtitle="Position",
                              ytitle="Time", ymax=2 * animation_time,
-                             xmin=-animation_time, xmax=animation_time)
+                             xmin=-animation_time, xmax=animation_time, background=color.black)
 red_curve_green_car = gcurve(graph=space_time_graph_red, color=color.green)
 red_curve_red_car = gcurve(graph=space_time_graph_red, color=color.red)
 
 space_time_graph_green = graph(width=350, height=150, title="Space-time for green inertial frame", xtitle="Position",
                                ytitle="Time", ymax=2 * animation_time,
-                               xmin=-animation_time, xmax=animation_time)
+                               xmin=-animation_time, xmax=animation_time, background=color.black)
 green_curve_green_car = gcurve(graph=space_time_graph_green, color=color.green)
 green_curve_red_car = gcurve(graph=space_time_graph_green, color=color.red)
 

@@ -1,9 +1,5 @@
 {% include breadcrumbs.html %}
 
-# Relativity
-<div class="header_line"><br/></div>
-
-
 <a name="special_relativity"></a>
 ## Special relativity
 <div style="border-top: 2px solid #cccccc"><br/></div>
