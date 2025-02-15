@@ -8,7 +8,7 @@ title = """&#x2022; Based on the original <a href="https://github.com/ckoerber/p
 """
 
 animation = canvas(title=title, forward=vector(0, .5, -0.85), background=color.gray(0.075), center=vector(0, -1, 0), range=7)
-sphere(pos=vector(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=30, shininess=0, opacity=0.5)
+sphere(pos=vector(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=40, shininess=0, opacity=0.5)
 
 rM0 = 4.60  # Initial radius of Mercury orbit, in units of R0
 vM0 = 5.10e-1  # Initial orbital speed of Mercury, in units of R0/T0
