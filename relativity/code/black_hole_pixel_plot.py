@@ -1,4 +1,4 @@
-from vpython import rate, canvas, vector, color, points, vector, sin, cos, pi, sqrt
+from vpython import rate, canvas, color, points, vector, button
 
 title = """&#x2022; Based on the original <a href="https://github.com/silvaan/blackhole_raytracer/tree/master">blackhole_raytracer</a> project by Arman T, Casper Y, Lulu W
 &#x2022; See also their accompanying <a href="https://cyang2020.github.io/BlackHoleRayTracer/">GitHub pages</a> and <a href="https://www.youtube.com/watch?v=VTodu1YTURY">video</a>
@@ -8,7 +8,7 @@ title = """&#x2022; Based on the original <a href="https://github.com/silvaan/bl
 
 x_resolution = 300
 y_resolution = x_resolution // 2
-animation = canvas(title=title, height=y_resolution, width=x_resolution * 1.25, fov=0.01,
+animation = canvas(title=title, height=y_resolution, width=x_resolution * 1.05, fov=0.01,
                    center=vector(x_resolution / 2, x_resolution / 4, 0),
                    range=x_resolution / 4, background=color.gray(0.075))
 
@@ -128,8 +128,8 @@ class Camera:
 
 
 class Engine:
-    def __init__(self, scene, n_iter=200, dt=0.002):
-        self.scene = scene
+    def __init__(self, scene_, n_iter=200, dt=0.002):
+        self.scene = scene_
         self.n_iter = n_iter
         self.dt = dt
 
@@ -172,7 +172,7 @@ class Engine:
         return colour
 
     def save(self, filename):
-        animation.capture("black_hole.png")
+        animation.capture(filename)
     # self.output.save(filename)
 
 
@@ -184,17 +184,18 @@ bh = BlackHole(c_focus, 80)
 # You can specify a texture file for the accretion disk with `texture='filename.png'` or a color by `color=Color('#ffffff') (default)`
 disk = Disk(c_focus, 4.5 * bh.radius, 16.2 * bh.radius, colour=vector(0.75, 0.15, 0.15))
 
-scene = Scene(
-    width=x_resolution,
-    height=x_resolution // 2,
-    camera=Camera(c_origin, c_focus - c_origin, 1.2),
-    blackhole=bh,
-    disk=disk
-)
+scene = Scene(width=x_resolution, height=x_resolution // 2, camera=Camera(c_origin, c_focus - c_origin, 1.2),
+              blackhole=bh, disk=disk)
 
 engine = Engine(scene)
 engine.render()
 
+
+def download():
+    engine.save("black_hole.png")
+
+
+_ = button(text="Download image", bind=download)
 # engine.save('images/blackhole.png')
 while True:
     rate(10)
