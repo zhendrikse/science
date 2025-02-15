@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var compound, cone, curve, ellipsoid, extrusion, helix, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title_header, animation, animation_time, _GS_1, green_car, red_car, axis_green_car, axis_red_car, space_time_graph_red, red_curve_green_car, red_curve_red_car, space_time_graph_green, green_curve_green_car, green_curve_red_car, timer, dt, t;
+    var version, print, arange, __name__, type, ρσ_ls, title_header, animation, animation_time, _GS_1, green_car, red_car, axis_green_car, axis_red_car, space_time_graph_red, red_curve_green_car, red_curve_red_car, space_time_graph_green, green_curve_green_car, green_curve_red_car, popup, timer, dt, t;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -72,8 +72,6 @@ async function __main__() {
     "11";
     animation.caption = "\nGalilean transformation $\\begin{pmatrix} x' \\\\ t'\\end{pmatrix} = \\begin{pmatrix} 1 & -v \\\\ 0 & 1 \\end{pmatrix} \\begin{pmatrix} x \\\\ t \\end{pmatrix}$\n\n";
     "13";
-    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 20, shininess: 0, opacity: .5})]);
-    "15";
     function Timer() {;
     }
     Timer.prototype.__init__ = async function __init__() {
@@ -96,19 +94,19 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "timer_color")){
             timer_color = ρσ_kwargs_obj.timer_color;
         }
-        "18";
+        "16";
         self._use_scientific = use_scientific;
-        "19";
+        "17";
         self._relative_to = relative_to;
-        "20";
+        "18";
         self._distance_to_attached_object = (relative_to) ? relative_to.position["-"](1["*"](position)) : 0;
-        "21";
+        "19";
         if (use_scientific) {
-            "22";
+            "20";
             self._timer_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position, text: "00E01", box: false, color: timer_color})]);
-            "23";
+            "21";
         } else {
-            "24";
+            "22";
             self._timer_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position, text: "00:00:00.00", box: false, color: timer_color})]);
         }
     };
@@ -123,34 +121,34 @@ async function __main__() {
     Timer.prototype.update = async function update(t) {
         var self = this;
         var ρσ_ls, hours, minutes, secs, frac;
-        "28";
+        "26";
         if (self._relative_to) {
-            "29";
+            "27";
             self._timer_label.pos = self._distance_to_attached_object["+"](self._relative_to.position);
-            "31";
+            "29";
         }
         if (self._use_scientific) {
-            "32";
+            "30";
             self._timer_label.text = "%.4E".format(t);
-            "33";
+            "31";
             return;
         }
-        "35";
+        "33";
         hours = int(t["/"](3600));
-        "36";
+        "34";
         minutes = int(t["/"](60)["%"](60));
-        "37";
+        "35";
         secs = int(t["%"](60));
-        "38";
+        "36";
         frac = int(round(100["*"](t["%"](1))));
-        "39";
+        "37";
         if ((frac === 100 || typeof frac === "object" && ρσ_equals(frac, 100))) {
-            "40";
+            "38";
             frac = 0;
-            "41";
+            "39";
             secs = secs["+"](1);
         }
-        "43";
+        "41";
         self._timer_label.text = "{:02d}:".format(hours)["+"]("{:02d}:".format(minutes))["+"]("{:02d}.".format(secs))["+"]("{:02d}".format(frac));
     };
     if (!Timer.prototype.update.__argnames__) Object.defineProperties(Timer.prototype.update, {
@@ -167,7 +165,7 @@ async function __main__() {
 
 
 
-    "47";
+    "45";
     function Axis() {;
     }
     Axis.prototype.__init__ = async function __init__() {
@@ -207,19 +205,19 @@ async function __main__() {
             offset = ρσ_kwargs_obj.offset;
         }
         var ρσ_ls, tick_positions, tick_increment, tick_position, label_value, label_text, i;
-        "49";
+        "47";
         self._axis = ((orientation === "x" || typeof orientation === "object" && ρσ_equals(orientation, "x"))) ? vec(1, 0, 0) : vec(0, 1, 0);
-        "50";
+        "48";
         self._start = 1["-u"]()["*"](self._axis)["*"](length)["/"](2)["+"](position);
-        "51";
+        "49";
         self._end = self._axis["*"](length)["/"](2)["+"](position);
-        "53";
+        "51";
         self._num_tick_marks = num_tick_marks;
-        "54";
+        "52";
         self._length = length;
-        "55";
+        "53";
         self._offset = offset;
-        "56";
+        "54";
         self._label_shifts = (function(){
             var ρσ_d = ρσ_dict();
             ρσ_d.set("up", vector(0, 1["-u"]()["*"](.05)["*"](self._length), 0));
@@ -228,56 +226,56 @@ async function __main__() {
             ρσ_d.set("right", vector(.1["*"](self._length), 0, 0));
             return ρσ_d;
         }).call(this);
-        "62";
+        "60";
         self._label_shift = vector(0, 1["-u"]()["*"](.05)["*"](self._length), 0);
-        "63";
+        "61";
         if ((label_orientation === "up" || typeof label_orientation === "object" && ρσ_equals(label_orientation, "up"))) {
-            "64";
+            "62";
             self._label_shift = vector(0, .05["*"](self._length), 0);
-            "65";
+            "63";
         } else if ((label_orientation === "left" || typeof label_orientation === "object" && ρσ_equals(label_orientation, "left"))) {
-            "66";
+            "64";
             self._label_shift = vector(1["-u"]()["*"](.1)["*"](self._length), 0, 0);
-            "67";
+            "65";
         } else if ((label_orientation === "right" || typeof label_orientation === "object" && ρσ_equals(label_orientation, "right"))) {
-            "68";
+            "66";
             self._label_shift = vector(.1["*"](self._length), 0, 0);
         }
-        "70";
+        "68";
         tick_positions = ρσ_list_decorate([]);
-        "71";
+        "69";
         self._tick_labels = ρσ_list_decorate([]);
-        "72";
+        "70";
         tick_increment = self._end["-"](1["*"](self._start))["/"](num_tick_marks["-"](1["*"](1)));
-        "73";
+        "71";
         for (var ρσ_Index1 = 0; ρσ_Index1["<"](num_tick_marks); ρσ_Index1++) {
             i = ρσ_Index1;
-            "74";
+            "72";
             tick_position = self._start["+"](i["*"](tick_increment));
-            "75";
+            "73";
             tick_positions=tick_positions["+"](ρσ_list_decorate([ tick_position ]));
-            "76";
+            "74";
             label_value = ((orientation === "x" || typeof orientation === "object" && ρσ_equals(orientation, "x"))) ? offset["+"](tick_position.x) : tick_position.y;
-            "77";
+            "75";
             label_text = str(round(label_value, 2));
-            "78";
+            "76";
             self._tick_labels=self._tick_labels["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: tick_position["+"](self._label_shift), text: label_text, box: false})]) ]));
         }
-        "80";
+        "78";
         self._ticks = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({pos: tick_positions, radius: 10, color: tick_marks_color})]);
-        "81";
+        "79";
         self._cylinder = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._start, axis: self._end["-"](1["*"](self._start)), radius: self._ticks.radius["/"](100), color: axis_color})]);
-        "84";
+        "82";
         self._x_axis = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vec(2, 0, 0), color: axis_color, shaftwidth: .15})]);
-        "85";
+        "83";
         self._y_axis = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vec(0, 2, 0), color: axis_color, shaftwidth: .15})]);
-        "86";
+        "84";
         self._z_axis = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vec(0, 0, 2), color: axis_color, shaftwidth: .15})]);
-        "87";
+        "85";
         self._x_axis_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position["+"](vec(2, 0, 0)), text: "x", box: false, color: tick_marks_color})]);
-        "88";
+        "86";
         self._y_axis_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position["+"](vec(0, 2, 0)), text: "y", box: false, color: tick_marks_color})]);
-        "89";
+        "87";
         self._z_axis_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position["+"](vec(0, 0, 2)), text: "z", box: false, color: tick_marks_color})]);
     };
     if (!Axis.prototype.__init__.__defaults__) Object.defineProperties(Axis.prototype.__init__, {
@@ -291,37 +289,37 @@ async function __main__() {
     Axis.prototype.reorient_with = async function reorient_with(other_object) {
         var self = this;
         var ρσ_ls, other_objects_position, tick_increment, tick_position, i;
-        "92";
+        "90";
         other_objects_position = (await other_object.position());
-        "93";
+        "91";
         self._start = 1["-u"]()["*"](self._axis)["*"](self._length)["/"](2)["+"](other_objects_position);
-        "94";
+        "92";
         self._end = self._axis["*"](self._length)["/"](2)["+"](other_objects_position);
-        "95";
+        "93";
         tick_increment = self._end["-"](1["*"](self._start))["/"](self._num_tick_marks["-"](1["*"](1)));
-        "96";
+        "94";
         for (var ρσ_Index2 = 0; ρσ_Index2["<"](self._num_tick_marks); ρσ_Index2++) {
             i = ρσ_Index2;
-            "97";
+            "95";
             tick_position = self._start["+"](i["*"](tick_increment));
-            "98";
+            "96";
             ρσ_interpolate_kwargs.call(self._ticks, self._ticks.modify, [i].concat([ρσ_desugar_kwargs({pos: tick_position})]));
-            "99";
+            "97";
             ρσ_getitem(self._tick_labels, i).pos = tick_position["+"](self._label_shift);
         }
-        "101";
+        "99";
         self._cylinder.pos = self._start;
-        "102";
+        "100";
         self._x_axis.pos = other_objects_position;
-        "103";
+        "101";
         self._y_axis.pos = other_objects_position;
-        "104";
+        "102";
         self._z_axis.pos = other_objects_position;
-        "105";
+        "103";
         self._x_axis_label.pos = other_objects_position["+"](vec(2, 0, 0));
-        "106";
+        "104";
         self._y_axis_label.pos = other_objects_position["+"](vec(0, 2, 0));
-        "107";
+        "105";
         self._z_axis_label.pos = other_objects_position["+"](vec(0, 0, 2));
     };
     if (!Axis.prototype.reorient_with.__argnames__) Object.defineProperties(Axis.prototype.reorient_with, {
@@ -330,17 +328,17 @@ async function __main__() {
     });
     Axis.prototype.show_unit_vectors = async function show_unit_vectors() {
         var self = this;
-        "110";
+        "108";
         self._x_axis.visible = true;
-        "111";
+        "109";
         self._y_axis.visible = true;
-        "112";
+        "110";
         self._z_axis.visible = true;
-        "113";
+        "111";
         self._x_axis_label.visible = true;
-        "114";
+        "112";
         self._y_axis_label.visible = true;
-        "115";
+        "113";
         self._z_axis_label.visible = true;
     };
     if (!Axis.prototype.show_unit_vectors.__module__) Object.defineProperties(Axis.prototype.show_unit_vectors, {
@@ -348,17 +346,17 @@ async function __main__() {
     });
     Axis.prototype.hide_unit_vectors = async function hide_unit_vectors() {
         var self = this;
-        "118";
+        "116";
         self._x_axis.visible = false;
-        "119";
+        "117";
         self._y_axis.visible = false;
-        "120";
+        "118";
         self._z_axis.visible = false;
-        "121";
+        "119";
         self._x_axis_label.visible = false;
-        "122";
+        "120";
         self._y_axis_label.visible = false;
-        "123";
+        "121";
         self._z_axis_label.visible = false;
     };
     if (!Axis.prototype.hide_unit_vectors.__module__) Object.defineProperties(Axis.prototype.hide_unit_vectors, {
@@ -376,7 +374,7 @@ async function __main__() {
 
 
 
-    "126";
+    "124";
     function Car() {;
     }
     Car.prototype.__init__ = async function __init__() {
@@ -399,13 +397,13 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "draw")){
             draw = ρσ_kwargs_obj.draw;
         }
-        "128";
+        "126";
         self._position = self._start_position = position;
-        "129";
+        "127";
         self._velocity = velocity;
-        "130";
+        "128";
         self._car = (draw) ? ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: position, length: 2.5, height: 1, width: 1, color: colour})]) : null;
-        "131";
+        "129";
         self._label = (draw) ? ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(position.x, position.y["+"](1.52), position.z), text: "Select my perspective", color: colour, line: true})]) : null;
     };
     if (!Car.prototype.__init__.__defaults__) Object.defineProperties(Car.prototype.__init__, {
@@ -418,7 +416,7 @@ async function __main__() {
     Car.__handles_kwarg_interpolation__ = Car.prototype.__init__.__handles_kwarg_interpolation__;
     Car.prototype.reset = async function reset() {
         var self = this;
-        "135";
+        "133";
         self._position = self._start_position;
     };
     if (!Car.prototype.reset.__module__) Object.defineProperties(Car.prototype.reset, {
@@ -426,7 +424,7 @@ async function __main__() {
     });
     Car.prototype.show_label = async function show_label() {
         var self = this;
-        "138";
+        "136";
         self._label.visible = true;
     };
     if (!Car.prototype.show_label.__module__) Object.defineProperties(Car.prototype.show_label, {
@@ -434,7 +432,7 @@ async function __main__() {
     });
     Car.prototype.hide_label = async function hide_label() {
         var self = this;
-        "141";
+        "139";
         self._label.visible = false;
     };
     if (!Car.prototype.hide_label.__module__) Object.defineProperties(Car.prototype.hide_label, {
@@ -442,11 +440,11 @@ async function __main__() {
     });
     Car.prototype._draw = async function _draw() {
         var self = this;
-        "144";
+        "142";
         if (self._label) {
-            "145";
+            "143";
             self._car.pos = self._position;
-            "146";
+            "144";
             self._label.pos = vec(self._position.x, self._position.y["+"](1.5), self._position.z);
         }
     };
@@ -455,9 +453,9 @@ async function __main__() {
     });
     Car.prototype.move = async function move(dt) {
         var self = this;
-        "149";
+        "147";
         self._position=self._position["+"](self._velocity["*"](dt));
-        "150";
+        "148";
         (await self._draw());
     };
     if (!Car.prototype.move.__argnames__) Object.defineProperties(Car.prototype.move, {
@@ -466,7 +464,7 @@ async function __main__() {
     });
     Car.prototype.position = async function position() {
         var self = this;
-        "153";
+        "151";
         return self._position;
     };
     if (!Car.prototype.position.__module__) Object.defineProperties(Car.prototype.position, {
@@ -474,7 +472,7 @@ async function __main__() {
     });
     Car.prototype.velocity = async function velocity() {
         var self = this;
-        "156";
+        "154";
         return self._velocity;
     };
     if (!Car.prototype.velocity.__module__) Object.defineProperties(Car.prototype.velocity, {
@@ -496,77 +494,77 @@ async function __main__() {
 
 
 
-    "159";
+    "157";
     animation_time = 15;
-    "161";
+    "159";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "163";
+    "161";
     _GS_1 = new Car;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(1["-u"]()["*"](10), 0, 1["-u"]()["*"](5)), velocity: vec(1, 0, 0)})]);
     green_car = _GS_1;
-    "164";
+    "162";
     _GS_1 = new Car;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(0, 0, 5), colour: color.red})]);
     red_car = _GS_1;
-    "165";
+    "163";
     (await red_car.hide_label());
-    "167";
+    "165";
     _GS_1 = new Axis;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({num_tick_marks: 11, length: 30, position: vec(1["-u"]()["*"](10), 0, 1["-u"]()["*"](5)), offset: 10})]);
     axis_green_car = _GS_1;
-    "168";
+    "166";
     _GS_1 = new Axis;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({num_tick_marks: 11, length: 30, position: vec(0, 0, 5), offset: 0})]);
     axis_red_car = _GS_1;
-    "169";
+    "167";
     (await axis_green_car.hide_unit_vectors());
-    "171";
-    space_time_graph_red = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 350, height: 150, title: "Space-time graph for red inertial frame", background: color.black, xtitle: "Position", ytitle: "Time", ymax: 2["*"](animation_time), xmin: 1["-u"]()["*"](animation_time), xmax: animation_time})]);
-    "174";
+    "169";
+    space_time_graph_red = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 350, height: 150, title: "Space-time graph for red inertial frame", xtitle: "Position", ytitle: "Time", ymax: 2["*"](animation_time), xmin: 1["-u"]()["*"](animation_time), xmax: animation_time, background: color.black})]);
+    "172";
     red_curve_green_car = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: space_time_graph_red, color: color.green})]);
-    "175";
+    "173";
     red_curve_red_car = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: space_time_graph_red, color: color.red})]);
-    "177";
-    space_time_graph_green = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 350, height: 150, title: "Space-time for green inertial frame", background: color.black, xtitle: "Position", ytitle: "Time", ymax: 2["*"](animation_time), xmin: 1["-u"]()["*"](animation_time), xmax: animation_time})]);
-    "180";
+    "175";
+    space_time_graph_green = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 350, height: 150, title: "Space-time for green inertial frame", xtitle: "Position", ytitle: "Time", ymax: 2["*"](animation_time), xmin: 1["-u"]()["*"](animation_time), xmax: animation_time, background: color.black})]);
+    "178";
     green_curve_green_car = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: space_time_graph_green, color: color.green})]);
-    "181";
+    "179";
     green_curve_red_car = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: space_time_graph_green, color: color.red})]);
-    "184";
+    "182";
     async function select_car_in(my_scene) {
         var ρσ_ls, selected_object;
-        "185";
+        "183";
         selected_object = my_scene.mouse.pick();
-        "186";
+        "184";
         if (selected_object === null) {
-            "187";
+            "185";
             return;
         }
-        "188";
+        "186";
         my_scene.camera.follow(selected_object);
-        "189";
+        "187";
         if ((selected_object.color === color.green || typeof selected_object.color === "object" && ρσ_equals(selected_object.color, color.green))) {
-            "191";
+            "189";
             animation.range = 17;
-            "192";
+            "190";
             (await green_car.hide_label());
-            "193";
+            "191";
             (await red_car.show_label());
-            "194";
+            "192";
             (await axis_green_car.show_unit_vectors());
-            "195";
+            "193";
             (await axis_red_car.hide_unit_vectors());
-            "196";
+            "194";
         } else if ((selected_object.color === color.red || typeof selected_object.color === "object" && ρσ_equals(selected_object.color, color.red))) {
-            "198";
+            "196";
             animation.range = 11;
-            "199";
+            "197";
             (await red_car.hide_label());
-            "200";
+            "198";
             (await green_car.show_label());
-            "201";
+            "199";
             (await axis_red_car.show_unit_vectors());
-            "202";
+            "200";
             (await axis_green_car.hide_unit_vectors());
         }
     };
@@ -575,27 +573,31 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "205";
+    "203";
     async function on_mouse_click() {
-        "206";
+        "204";
         (await select_car_in(animation));
     };
     if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
         __module__ : {value: null}
     });
 
-    "208";
+    "206";
     animation.bind("click", on_mouse_click);
-    "210";
+    "207";
+    popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(0, 7, 0), text: "Click mouse to restart", color: color.yellow})]);
+    "209";
     _GS_1 = new Timer;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(0, 5, 0)})]);
     timer = _GS_1;
-    "211";
+    "210";
     dt = .01;
-    "212";
+    "211";
     while (true) {
-        "213";
+        "212";
         t = 0;
+        "214";
+        popup.visible = false;
         "215";
         while ((await green_car.position()).x["<="](animation_time)) {
             "216";
@@ -618,7 +620,7 @@ async function __main__() {
             t=t["+"](dt);
         }
         "229";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(0, 7, 0), text: "Click mouse to restart", color: color.yellow})]);
+        popup.visible = true;
         "230";
         (await animation.waitfor("click"));
         "231";

@@ -10,8 +10,6 @@ title_header = """&#x2022; Relative motion: click on car to change perspective!
 animation = canvas(forward = vec(0, -0.35, -1), center=vec(0, 0, 0), background=color.gray(0.075), range=11)
 animation.caption = "\nGalilean transformation $\\begin{pmatrix} x' \\\\ t'\\end{pmatrix} = \\begin{pmatrix} 1 & -v \\\\ 0 & 1 \\end{pmatrix} \\begin{pmatrix} x \\\\ t \\end{pmatrix}$\n\n"
 
-sphere(pos=vector(0, 0, 0),texture="https://i.imgur.com/1nVWbbd.jpg",radius=20,shininess=0,opacity=0.5)
-
 class Timer:
 
     def __init__(self, position=vector(0, 0, 0), use_scientific=False, relative_to=None, timer_color=color.white):
@@ -206,12 +204,14 @@ def on_mouse_click():
     select_car_in(animation)
 
 animation.bind('click', on_mouse_click)
+popup = label(pos=vec(0, 7, 0), text="Click mouse to restart", color=color.yellow)
 
 timer = Timer(position=vec(0, 5, 0))
 dt = 0.01
 while True:
     t = 0
 
+    popup.visible = False
     while green_car.position().x <= animation_time:
         rate(1 / dt)
         green_car.move(dt)
@@ -226,7 +226,7 @@ while True:
 
         t += dt
 
-    label(pos=vec(0, 7, 0), text="Click mouse to restart", color=color.yellow)
+    popup.visible = True
     animation.waitfor('click')
     green_car.reset()
     red_car.reset()
