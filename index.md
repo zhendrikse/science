@@ -126,7 +126,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#004444;">
-    <h3><a href="mathematics/gallery/index.html#real_projective_plane">The real project plane</a></h3>
+    <h3><a href="mathematics/gallery/index.html#real_projective_plane">The real projective plane</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/topology_surface_plot.html">
