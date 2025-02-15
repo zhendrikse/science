@@ -10,7 +10,9 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 <a href="https://en.wikipedia.org/wiki/Edward_Frenkel">Edward Frenkel</a>
 </blockquote><br/>
 
+<a name="multivariate_functions">
 ### Dynamic surface and contour plots for $f(x, y) \rightarrow \mathbb{R}$
+</a>
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -29,7 +31,9 @@ holds the reins of everything from tiny atoms to the biggest stars. &mdash;
 </div>
 <p style="clear: both;"></p>
 
+<a name="complex_functions">
 ### Dynamic surface and contour plots for $f(z) \rightarrow \mathbb{C}$
+</a>
 <div style="border-top: 1px solid #999999"><br/></div>
 
 The colors in the 3D renderings of complex functions represent 
@@ -52,7 +56,9 @@ modified by the user.
 </div>
 <p style="clear: both;"></p>
 
+<a name="fields">
 ### Rendering vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$
+</a>
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">

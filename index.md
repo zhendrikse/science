@@ -13,7 +13,7 @@ finest that music and poetry can deliver. &mdash;
 
 <div class="row">
   <div class="column" style="background-color:#004444;">
-    <h2>$f(x, y) \rightarrow \mathbb{R}$</h2>
+    <h3><a href="mathematics/index.html#multivariate_functions">$f(x, y) \rightarrow \mathbb{R}$</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/multivariate_surface_plot.html">
@@ -26,9 +26,7 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
-  </div>
-  <div class="column" style="background-color:#004444;"> 
-    <h2>$f(z) \rightarrow \mathbb{C}$</h2>
+    <h3><a href="mathematics/index.html#complex_functions">$f(z) \rightarrow \mathbb{C}$</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/complex_surface_plot.html">
@@ -41,6 +39,7 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
     </div>
+    <h3><a href="mathematics/index.html#fields">$f(x, y, z) \rightarrow \mathbb{R}^3$</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/quiver_plot.html">
@@ -48,9 +47,11 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
+        <!-- 
         <a href="mathematics/spherical_harmonics_surface_plot.html">
           <img alt="Spherical harmonics" src="./mathematics/gallery/images/spherical_harmonics.png" title="Click to animate"/>
         </a>
+        -->
       </figure>
     </div>
   </div>
