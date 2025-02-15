@@ -1,0 +1,642 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var compound, cone, curve, ellipsoid, extrusion, helix, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title_header, animation, animation_time, _GS_1, green_car, red_car, axis_green_car, axis_red_car, space_time_graph_red, red_curve_green_car, red_curve_red_car, space_time_graph_green, green_curve_green_car, green_curve_red_car, timer, dt, t;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "8";
+    title_header = "&#x2022; Relative motion: click on car to change perspective!\n&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/galilean_space_time.py\">galilean_space_time.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "10";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vec(0, 1["-u"]()["*"](.35), 1["-u"]()["*"](1)), center: vec(0, 0, 0), background: color.gray(.075), range: 11})]);
+    "11";
+    animation.caption = "\nGalilean transformation $\\begin{pmatrix} x' \\\\ t'\\end{pmatrix} = \\begin{pmatrix} 1 & -v \\\\ 0 & 1 \\end{pmatrix} \\begin{pmatrix} x \\\\ t \\end{pmatrix}$\n\n";
+    "13";
+    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 20, shininess: 0, opacity: .5})]);
+    "15";
+    function Timer() {;
+    }
+    Timer.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
+        var use_scientific = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.use_scientific : arguments[1];
+        var relative_to = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.relative_to : arguments[2];
+        var timer_color = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.timer_color : arguments[3];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "use_scientific")){
+            use_scientific = ρσ_kwargs_obj.use_scientific;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "relative_to")){
+            relative_to = ρσ_kwargs_obj.relative_to;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "timer_color")){
+            timer_color = ρσ_kwargs_obj.timer_color;
+        }
+        "18";
+        self._use_scientific = use_scientific;
+        "19";
+        self._relative_to = relative_to;
+        "20";
+        self._distance_to_attached_object = (relative_to) ? relative_to.position["-"](1["*"](position)) : 0;
+        "21";
+        if (use_scientific) {
+            "22";
+            self._timer_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position, text: "00E01", box: false, color: timer_color})]);
+            "23";
+        } else {
+            "24";
+            self._timer_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position, text: "00:00:00.00", box: false, color: timer_color})]);
+        }
+    };
+    if (!Timer.prototype.__init__.__defaults__) Object.defineProperties(Timer.prototype.__init__, {
+        __defaults__ : {value: {position:vector(0, 0, 0), use_scientific:false, relative_to:null, timer_color:color.white}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "use_scientific", "relative_to", "timer_color"]},
+        __module__ : {value: null}
+    });
+    Timer.__argnames__ = Timer.prototype.__init__.__argnames__;
+    Timer.__handles_kwarg_interpolation__ = Timer.prototype.__init__.__handles_kwarg_interpolation__;
+    Timer.prototype.update = async function update(t) {
+        var self = this;
+        var ρσ_ls, hours, minutes, secs, frac;
+        "28";
+        if (self._relative_to) {
+            "29";
+            self._timer_label.pos = self._distance_to_attached_object["+"](self._relative_to.position);
+            "31";
+        }
+        if (self._use_scientific) {
+            "32";
+            self._timer_label.text = "%.4E".format(t);
+            "33";
+            return;
+        }
+        "35";
+        hours = int(t["/"](3600));
+        "36";
+        minutes = int(t["/"](60)["%"](60));
+        "37";
+        secs = int(t["%"](60));
+        "38";
+        frac = int(round(100["*"](t["%"](1))));
+        "39";
+        if ((frac === 100 || typeof frac === "object" && ρσ_equals(frac, 100))) {
+            "40";
+            frac = 0;
+            "41";
+            secs = secs["+"](1);
+        }
+        "43";
+        self._timer_label.text = "{:02d}:".format(hours)["+"]("{:02d}:".format(minutes))["+"]("{:02d}.".format(secs))["+"]("{:02d}".format(frac));
+    };
+    if (!Timer.prototype.update.__argnames__) Object.defineProperties(Timer.prototype.update, {
+        __argnames__ : {value: ["t"]},
+        __module__ : {value: null}
+    });
+    Timer.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Timer.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Timer.prototype, "__bases__", {value: []});
+
+
+
+    "47";
+    function Axis() {;
+    }
+    Axis.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
+        var axis_color = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.axis_color : arguments[1];
+        var tick_marks_color = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.tick_marks_color : arguments[2];
+        var num_tick_marks = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.num_tick_marks : arguments[3];
+        var length = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.length : arguments[4];
+        var orientation = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.orientation : arguments[5];
+        var label_orientation = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.label_orientation : arguments[6];
+        var offset = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.offset : arguments[7];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "axis_color")){
+            axis_color = ρσ_kwargs_obj.axis_color;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "tick_marks_color")){
+            tick_marks_color = ρσ_kwargs_obj.tick_marks_color;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "num_tick_marks")){
+            num_tick_marks = ρσ_kwargs_obj.num_tick_marks;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "length")){
+            length = ρσ_kwargs_obj.length;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "orientation")){
+            orientation = ρσ_kwargs_obj.orientation;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "label_orientation")){
+            label_orientation = ρσ_kwargs_obj.label_orientation;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "offset")){
+            offset = ρσ_kwargs_obj.offset;
+        }
+        var ρσ_ls, tick_positions, tick_increment, tick_position, label_value, label_text, i;
+        "49";
+        self._axis = ((orientation === "x" || typeof orientation === "object" && ρσ_equals(orientation, "x"))) ? vec(1, 0, 0) : vec(0, 1, 0);
+        "50";
+        self._start = 1["-u"]()["*"](self._axis)["*"](length)["/"](2)["+"](position);
+        "51";
+        self._end = self._axis["*"](length)["/"](2)["+"](position);
+        "53";
+        self._num_tick_marks = num_tick_marks;
+        "54";
+        self._length = length;
+        "55";
+        self._offset = offset;
+        "56";
+        self._label_shifts = (function(){
+            var ρσ_d = ρσ_dict();
+            ρσ_d.set("up", vector(0, 1["-u"]()["*"](.05)["*"](self._length), 0));
+            ρσ_d.set("down", vector(0, .05["*"](self._length), 0));
+            ρσ_d.set("left", vector(1["-u"]()["*"](.1)["*"](self._length), 0, 0));
+            ρσ_d.set("right", vector(.1["*"](self._length), 0, 0));
+            return ρσ_d;
+        }).call(this);
+        "62";
+        self._label_shift = vector(0, 1["-u"]()["*"](.05)["*"](self._length), 0);
+        "63";
+        if ((label_orientation === "up" || typeof label_orientation === "object" && ρσ_equals(label_orientation, "up"))) {
+            "64";
+            self._label_shift = vector(0, .05["*"](self._length), 0);
+            "65";
+        } else if ((label_orientation === "left" || typeof label_orientation === "object" && ρσ_equals(label_orientation, "left"))) {
+            "66";
+            self._label_shift = vector(1["-u"]()["*"](.1)["*"](self._length), 0, 0);
+            "67";
+        } else if ((label_orientation === "right" || typeof label_orientation === "object" && ρσ_equals(label_orientation, "right"))) {
+            "68";
+            self._label_shift = vector(.1["*"](self._length), 0, 0);
+        }
+        "70";
+        tick_positions = ρσ_list_decorate([]);
+        "71";
+        self._tick_labels = ρσ_list_decorate([]);
+        "72";
+        tick_increment = self._end["-"](1["*"](self._start))["/"](num_tick_marks["-"](1["*"](1)));
+        "73";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](num_tick_marks); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "74";
+            tick_position = self._start["+"](i["*"](tick_increment));
+            "75";
+            tick_positions=tick_positions["+"](ρσ_list_decorate([ tick_position ]));
+            "76";
+            label_value = ((orientation === "x" || typeof orientation === "object" && ρσ_equals(orientation, "x"))) ? offset["+"](tick_position.x) : tick_position.y;
+            "77";
+            label_text = str(round(label_value, 2));
+            "78";
+            self._tick_labels=self._tick_labels["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: tick_position["+"](self._label_shift), text: label_text, box: false})]) ]));
+        }
+        "80";
+        self._ticks = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({pos: tick_positions, radius: 10, color: tick_marks_color})]);
+        "81";
+        self._cylinder = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._start, axis: self._end["-"](1["*"](self._start)), radius: self._ticks.radius["/"](100), color: axis_color})]);
+        "84";
+        self._x_axis = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vec(2, 0, 0), color: axis_color, shaftwidth: .15})]);
+        "85";
+        self._y_axis = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vec(0, 2, 0), color: axis_color, shaftwidth: .15})]);
+        "86";
+        self._z_axis = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vec(0, 0, 2), color: axis_color, shaftwidth: .15})]);
+        "87";
+        self._x_axis_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position["+"](vec(2, 0, 0)), text: "x", box: false, color: tick_marks_color})]);
+        "88";
+        self._y_axis_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position["+"](vec(0, 2, 0)), text: "y", box: false, color: tick_marks_color})]);
+        "89";
+        self._z_axis_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: position["+"](vec(0, 0, 2)), text: "z", box: false, color: tick_marks_color})]);
+    };
+    if (!Axis.prototype.__init__.__defaults__) Object.defineProperties(Axis.prototype.__init__, {
+        __defaults__ : {value: {position:vec(0, 0, 0), axis_color:color.yellow, tick_marks_color:color.red, num_tick_marks:11, length:10, orientation:"x", label_orientation:"down", offset:0}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "axis_color", "tick_marks_color", "num_tick_marks", "length", "orientation", "label_orientation", "offset"]},
+        __module__ : {value: null}
+    });
+    Axis.__argnames__ = Axis.prototype.__init__.__argnames__;
+    Axis.__handles_kwarg_interpolation__ = Axis.prototype.__init__.__handles_kwarg_interpolation__;
+    Axis.prototype.reorient_with = async function reorient_with(other_object) {
+        var self = this;
+        var ρσ_ls, other_objects_position, tick_increment, tick_position, i;
+        "92";
+        other_objects_position = (await other_object.position());
+        "93";
+        self._start = 1["-u"]()["*"](self._axis)["*"](self._length)["/"](2)["+"](other_objects_position);
+        "94";
+        self._end = self._axis["*"](self._length)["/"](2)["+"](other_objects_position);
+        "95";
+        tick_increment = self._end["-"](1["*"](self._start))["/"](self._num_tick_marks["-"](1["*"](1)));
+        "96";
+        for (var ρσ_Index2 = 0; ρσ_Index2["<"](self._num_tick_marks); ρσ_Index2++) {
+            i = ρσ_Index2;
+            "97";
+            tick_position = self._start["+"](i["*"](tick_increment));
+            "98";
+            ρσ_interpolate_kwargs.call(self._ticks, self._ticks.modify, [i].concat([ρσ_desugar_kwargs({pos: tick_position})]));
+            "99";
+            ρσ_getitem(self._tick_labels, i).pos = tick_position["+"](self._label_shift);
+        }
+        "101";
+        self._cylinder.pos = self._start;
+        "102";
+        self._x_axis.pos = other_objects_position;
+        "103";
+        self._y_axis.pos = other_objects_position;
+        "104";
+        self._z_axis.pos = other_objects_position;
+        "105";
+        self._x_axis_label.pos = other_objects_position["+"](vec(2, 0, 0));
+        "106";
+        self._y_axis_label.pos = other_objects_position["+"](vec(0, 2, 0));
+        "107";
+        self._z_axis_label.pos = other_objects_position["+"](vec(0, 0, 2));
+    };
+    if (!Axis.prototype.reorient_with.__argnames__) Object.defineProperties(Axis.prototype.reorient_with, {
+        __argnames__ : {value: ["other_object"]},
+        __module__ : {value: null}
+    });
+    Axis.prototype.show_unit_vectors = async function show_unit_vectors() {
+        var self = this;
+        "110";
+        self._x_axis.visible = true;
+        "111";
+        self._y_axis.visible = true;
+        "112";
+        self._z_axis.visible = true;
+        "113";
+        self._x_axis_label.visible = true;
+        "114";
+        self._y_axis_label.visible = true;
+        "115";
+        self._z_axis_label.visible = true;
+    };
+    if (!Axis.prototype.show_unit_vectors.__module__) Object.defineProperties(Axis.prototype.show_unit_vectors, {
+        __module__ : {value: null}
+    });
+    Axis.prototype.hide_unit_vectors = async function hide_unit_vectors() {
+        var self = this;
+        "118";
+        self._x_axis.visible = false;
+        "119";
+        self._y_axis.visible = false;
+        "120";
+        self._z_axis.visible = false;
+        "121";
+        self._x_axis_label.visible = false;
+        "122";
+        self._y_axis_label.visible = false;
+        "123";
+        self._z_axis_label.visible = false;
+    };
+    if (!Axis.prototype.hide_unit_vectors.__module__) Object.defineProperties(Axis.prototype.hide_unit_vectors, {
+        __module__ : {value: null}
+    });
+    Axis.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Axis.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Axis.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "126";
+    function Car() {;
+    }
+    Car.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
+        var velocity = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.velocity : arguments[1];
+        var colour = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[2];
+        var draw = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.draw : arguments[3];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "velocity")){
+            velocity = ρσ_kwargs_obj.velocity;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "draw")){
+            draw = ρσ_kwargs_obj.draw;
+        }
+        "128";
+        self._position = self._start_position = position;
+        "129";
+        self._velocity = velocity;
+        "130";
+        self._car = (draw) ? ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: position, length: 2.5, height: 1, width: 1, color: colour})]) : null;
+        "131";
+        self._label = (draw) ? ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(position.x, position.y["+"](1.52), position.z), text: "Select my perspective", color: colour, line: true})]) : null;
+    };
+    if (!Car.prototype.__init__.__defaults__) Object.defineProperties(Car.prototype.__init__, {
+        __defaults__ : {value: {position:vec(0, 0, 0), velocity:vec(0, 0, 0), colour:color.green, draw:true}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "velocity", "colour", "draw"]},
+        __module__ : {value: null}
+    });
+    Car.__argnames__ = Car.prototype.__init__.__argnames__;
+    Car.__handles_kwarg_interpolation__ = Car.prototype.__init__.__handles_kwarg_interpolation__;
+    Car.prototype.reset = async function reset() {
+        var self = this;
+        "135";
+        self._position = self._start_position;
+    };
+    if (!Car.prototype.reset.__module__) Object.defineProperties(Car.prototype.reset, {
+        __module__ : {value: null}
+    });
+    Car.prototype.show_label = async function show_label() {
+        var self = this;
+        "138";
+        self._label.visible = true;
+    };
+    if (!Car.prototype.show_label.__module__) Object.defineProperties(Car.prototype.show_label, {
+        __module__ : {value: null}
+    });
+    Car.prototype.hide_label = async function hide_label() {
+        var self = this;
+        "141";
+        self._label.visible = false;
+    };
+    if (!Car.prototype.hide_label.__module__) Object.defineProperties(Car.prototype.hide_label, {
+        __module__ : {value: null}
+    });
+    Car.prototype._draw = async function _draw() {
+        var self = this;
+        "144";
+        if (self._label) {
+            "145";
+            self._car.pos = self._position;
+            "146";
+            self._label.pos = vec(self._position.x, self._position.y["+"](1.5), self._position.z);
+        }
+    };
+    if (!Car.prototype._draw.__module__) Object.defineProperties(Car.prototype._draw, {
+        __module__ : {value: null}
+    });
+    Car.prototype.move = async function move(dt) {
+        var self = this;
+        "149";
+        self._position=self._position["+"](self._velocity["*"](dt));
+        "150";
+        (await self._draw());
+    };
+    if (!Car.prototype.move.__argnames__) Object.defineProperties(Car.prototype.move, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Car.prototype.position = async function position() {
+        var self = this;
+        "153";
+        return self._position;
+    };
+    if (!Car.prototype.position.__module__) Object.defineProperties(Car.prototype.position, {
+        __module__ : {value: null}
+    });
+    Car.prototype.velocity = async function velocity() {
+        var self = this;
+        "156";
+        return self._velocity;
+    };
+    if (!Car.prototype.velocity.__module__) Object.defineProperties(Car.prototype.velocity, {
+        __module__ : {value: null}
+    });
+    Car.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Car.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Car.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+    "159";
+    animation_time = 15;
+    "161";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "163";
+    _GS_1 = new Car;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(1["-u"]()["*"](10), 0, 1["-u"]()["*"](5)), velocity: vec(1, 0, 0)})]);
+    green_car = _GS_1;
+    "164";
+    _GS_1 = new Car;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(0, 0, 5), colour: color.red})]);
+    red_car = _GS_1;
+    "165";
+    (await red_car.hide_label());
+    "167";
+    _GS_1 = new Axis;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({num_tick_marks: 11, length: 30, position: vec(1["-u"]()["*"](10), 0, 1["-u"]()["*"](5)), offset: 10})]);
+    axis_green_car = _GS_1;
+    "168";
+    _GS_1 = new Axis;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({num_tick_marks: 11, length: 30, position: vec(0, 0, 5), offset: 0})]);
+    axis_red_car = _GS_1;
+    "169";
+    (await axis_green_car.hide_unit_vectors());
+    "171";
+    space_time_graph_red = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 350, height: 150, title: "Space-time graph for red inertial frame", xtitle: "Position", ytitle: "Time", ymax: 2["*"](animation_time), xmin: 1["-u"]()["*"](animation_time), xmax: animation_time})]);
+    "174";
+    red_curve_green_car = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: space_time_graph_red, color: color.green})]);
+    "175";
+    red_curve_red_car = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: space_time_graph_red, color: color.red})]);
+    "177";
+    space_time_graph_green = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 350, height: 150, title: "Space-time for green inertial frame", xtitle: "Position", ytitle: "Time", ymax: 2["*"](animation_time), xmin: 1["-u"]()["*"](animation_time), xmax: animation_time})]);
+    "180";
+    green_curve_green_car = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: space_time_graph_green, color: color.green})]);
+    "181";
+    green_curve_red_car = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: space_time_graph_green, color: color.red})]);
+    "184";
+    async function select_car_in(my_scene) {
+        var ρσ_ls, selected_object;
+        "185";
+        selected_object = my_scene.mouse.pick();
+        "186";
+        if (selected_object === null) {
+            "187";
+            return;
+        }
+        "188";
+        my_scene.camera.follow(selected_object);
+        "189";
+        if ((selected_object.color === color.green || typeof selected_object.color === "object" && ρσ_equals(selected_object.color, color.green))) {
+            "191";
+            animation.range = 17;
+            "192";
+            (await green_car.hide_label());
+            "193";
+            (await red_car.show_label());
+            "194";
+            (await axis_green_car.show_unit_vectors());
+            "195";
+            (await axis_red_car.hide_unit_vectors());
+            "196";
+        } else if ((selected_object.color === color.red || typeof selected_object.color === "object" && ρσ_equals(selected_object.color, color.red))) {
+            "198";
+            animation.range = 11;
+            "199";
+            (await red_car.hide_label());
+            "200";
+            (await green_car.show_label());
+            "201";
+            (await axis_red_car.show_unit_vectors());
+            "202";
+            (await axis_green_car.hide_unit_vectors());
+        }
+    };
+    if (!select_car_in.__argnames__) Object.defineProperties(select_car_in, {
+        __argnames__ : {value: ["my_scene"]},
+        __module__ : {value: null}
+    });
+
+    "205";
+    async function on_mouse_click() {
+        "206";
+        (await select_car_in(animation));
+    };
+    if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
+        __module__ : {value: null}
+    });
+
+    "208";
+    animation.bind("click", on_mouse_click);
+    "210";
+    _GS_1 = new Timer;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(0, 5, 0)})]);
+    timer = _GS_1;
+    "211";
+    dt = .01;
+    "212";
+    while (true) {
+        "213";
+        t = 0;
+        "215";
+        while ((await green_car.position()).x["<="](animation_time)) {
+            "216";
+            (await rate(1["/"](dt)));
+            "217";
+            (await green_car.move(dt));
+            "218";
+            red_curve_green_car.plot((await green_car.position()).x, t);
+            "219";
+            red_curve_red_car.plot((await red_car.position()).x, t);
+            "221";
+            green_curve_red_car.plot(1["-u"]()["*"]((await green_car.position()).x), t);
+            "222";
+            green_curve_green_car.plot(1["-u"]()["*"]((await red_car.position()).x), t);
+            "224";
+            (await timer.update(t));
+            "225";
+            (await axis_green_car.reorient_with(green_car));
+            "227";
+            t=t["+"](dt);
+        }
+        "229";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(0, 7, 0), text: "Click mouse to restart", color: color.yellow})]);
+        "230";
+        (await animation.waitfor("click"));
+        "231";
+        (await green_car.reset());
+        "232";
+        (await red_car.reset());
+        "233";
+        (await axis_green_car.reorient_with(green_car));
+        "234";
+        (await axis_red_car.reorient_with(red_car));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

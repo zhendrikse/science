@@ -1,28 +1,22 @@
-#Web VPython 3.2
-"""
-The solution to the base problem.
-
-https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py
-
-Values computed using https://nssdc.gsfc.nasa.gov/planetary/factsheet
-
-This code simulates the movement of Mercury and displays its position and
-trajectory at regular intervals.
-The additional terms $\\alpha/r^3$ and  $\\beta/r^4$ are included in the force.
-In order to simulate without it, simply set alpha=0=beta before the while loop.
-"""
-
-# Import everything from vpython (need graphics output, vectors, etc.)
+# Web VPython 3.2
 from vpython import *
 
-animation = canvas(background = color.gray(0.075), center=vector(0, -2, 0))
+title = """&#x2022; Based on the original <a href="https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py">base_solution.py</a> code
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/perihelion_mercury.py">perihelion_mercury.py</a>
+&#x2022; Values are computed using the <a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet">NASA fact sheet</a>
 
-rM0 = 4.60    # Initial radius of Mercury orbit, in units of R0
-vM0 = 5.10e-1 # Initial orbital speed of Mercury, in units of R0/T0
-c_a = 9.90e-1 # Base acceleration of Mercury, in units of R0**3/T0**2
-rS  = 2.95e-7 # Schwarzschild radius of Sun,in units of R0
-rL2 = 8.19e-7 # Specific angular momentum, in units of R0**2
+"""
 
+animation = canvas(title=title, background=color.gray(0.075), center=vector(0, -1, 0), range=7)
+
+##animation = canvas(title=title, forward=vec(-0.25, -0.48, -0.83), range=14, background=color.gray(0.075))
+sphere(pos=vector(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=15, shininess=0, opacity=0.5)
+
+rM0 = 4.60  # Initial radius of Mercury orbit, in units of R0
+vM0 = 5.10e-1  # Initial orbital speed of Mercury, in units of R0/T0
+c_a = 9.90e-1  # Base acceleration of Mercury, in units of R0**3/T0**2
+rS = 2.95e-7  # Schwarzschild radius of Sun,in units of R0
+rL2 = 8.19e-7  # Specific angular momentum, in units of R0**2
 
 # Initialize distance and velocity vectors of Mercury (at perihelion)
 vec_rM0 = vector(0, rM0, 0)
@@ -37,6 +31,7 @@ sun.velocity = vector(0, 0, 0)
 # Add a visible trajectory to Mercury
 mercurius.trajectory = curve(radius=0.01, color=color.yellow)
 
+
 def evolve_mercury(old_position_vector, old_velocity_vector, alpha, beta):
     old_position_vector_magnitude_squared = (old_position_vector.mag * old_position_vector.mag)
     # Compute the factor coming from General Relativity
@@ -48,17 +43,18 @@ def evolve_mercury(old_position_vector, old_velocity_vector, alpha, beta):
     new_position = old_position_vector + new_velocity * dt
     return new_position, new_velocity
 
+
 # Define run parameters
 dt = 2. * vM0 / c_a / 20  # Time step
-alpha = 1.e6              # Strength of 1/r**3 term
-beta = 0 #1.e5            # Strength of 1/r**4 term
-time = 0                  # Current simulation time
-max_time = 1000*dt        # Maximum simulation time
+alpha = 1.e6  # Strength of 1/r**3 term
+beta = 0  # 1.e5            # Strength of 1/r**4 term
+time = 0  # Current simulation time
+max_time = 1000 * dt  # Maximum simulation time
 
 # Run the simulation for a given time and draw trajectory
 while time < max_time:
     # Set the frame rate: shows four earth days at once
-    rate(100)
+    rate(200)
     # Update the drawn trajectory with the current position
     mercurius.trajectory.append(pos=mercurius.pos)
     # Update the velocity and position
