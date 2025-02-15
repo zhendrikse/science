@@ -1,8 +1,10 @@
 from vpython import rate, canvas, vector, color, points, vector, sin, cos, pi, sqrt
 
-#
-# https://github.com/silvaan/blackhole_raytracer/tree/master
-#
+title = """&#x2022; Based on the original <a href="https://github.com/silvaan/blackhole_raytracer/tree/master">blackhole_raytracer</a> project by Arman T, Casper Y, Lulu W
+&#x2022; See also their accompanying <a href="https://cyang2020.github.io/BlackHoleRayTracer/">GitHub pages</a> and <a href="https://www.youtube.com/watch?v=VTodu1YTURY">video</a>
+&#x2022; Ported to VPython by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/black_hole_pixel_plot.py">black_hole_pixel_plot.py</a>
+
+"""
 
 x_resolution = 150
 y_resolution = x_resolution // 2

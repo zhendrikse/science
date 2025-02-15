@@ -392,8 +392,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <!-- SPACE FOR FUTURE APPLICATION
-          -->
+        <a href="relativity/black_hole_pixel_plot.html">
+          <img alt="Perihelion Mercury" src="images/black_hole_pixel_plot.png" title="Click to animate"/>
+        </a>
       </figure>
     </div>
   </div>

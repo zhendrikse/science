@@ -41,12 +41,15 @@ We should make things as simple as possible, but not simpler. &mdash; Albert Ein
     <a href="lightcone.html">
       <img alt="Light cone" src="../images/perihelion_mercury.png" title="Click to animate"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <figcaption>In Euclidean space-time, we use the classic Galilean transformation between 
-    different inertial frames.</figcaption>
+    <figcaption>One of the most well-known tests of general relativity: 
+    the perihelion precession of Mercury&apos;s orbit.</figcaption>
   </figure>
   <figure class="right_image">
-    <!-- RESERVED FOR FUTURE APPLICATION 
-      -->
+    <a href="black_hole_pixel_plot.html">
+      <img alt="Black hole" src="../images/black_hole_pixel_plot.png" title="Click to animate"/>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <figcaption>Black hole image generated with ray tracing techniques, hence it 
+    may take time for the page to render!</figcaption>
   </figure>
 </div>
 <p style="clear: both;"></p>
