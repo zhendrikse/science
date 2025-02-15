@@ -9,17 +9,16 @@ I... a universe of atoms, an atom in the universe. &mdash;
 <a href="https://en.wikipedia.org/wiki/Richard_Feynman">Richard P. Feynman</a> 
 </blockquote><br/>
 
-### A cubic lattice and the double helix
+
+### Uranium 235 fission &amp; the double helix
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="cubic_crystal.html">
-    <img alt="Cubic lattice" src="../images/crystal_planes.png" title="Click to animate"/>
+  <a href="u235_fission.html">
+    <img alt="Uranium 235 fission" src="../images/u235_fission.png" title="Click to animate"/>
   </a>
-  <figcaption><br/>“There’s poetry in nature. A symmetry. It&apos;s like our senses are fused.” &mdash; 
-  Saffron A. Kent, Gods & Monsters.
-  </figcaption>
+  <figcaption>Fission of radio active uranium 235.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="dna.html">
@@ -50,23 +49,9 @@ I... a universe of atoms, an atom in the universe. &mdash;
   <a href="molecules.html">
     <img alt="Molecules" src="../images/water_molecule.png" title="Click to animate"/>
   </a>
-  <figcaption>Visualization of various organic molecules. </figcaption>
-</figure>
-</div>
-
-### Uranium 235 fission
-<div class="subsection_header_line"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="u235_fission.html">
-    <img alt="Uranium 235 fission" src="../images/u235_fission.png" title="Click to animate"/>
-  </a>
-  <figcaption>Fission of radio active uranium 235.</figcaption>
-</figure>
-<figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
+  <figcaption>The magnitude of the atomic weight determines the character 
+  of the element, just as the magnitude of the molecule determines the character 
+  of a compound body. &mdash; <a href="https://en.wikipedia.org/wiki/Dmitri_Mendeleev">Dmitri Mendeleev</a>.</figcaption>
 </figure>
 </div>
 
