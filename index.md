@@ -152,7 +152,7 @@ finest that music and poetry can deliver. &mdash;
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
-    <h2><a href="astrophysics/index.html">Astrophysics</a></h2>
+    <h3><a href="astrophysics/index.html">Astrophysics</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="astrophysics/daylight_variations.html">
@@ -179,7 +179,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h2>
+    <h3><a href="molecularphysics/index.html">Atomic &amp; molecular physics</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="molecularphysics/u235_fission.html">
@@ -213,7 +213,7 @@ finest that music and poetry can deliver. &mdash;
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
-    <h2><a href="nature/index.html">Our daily environment</a></h2>
+    <h3><a href="nature/index.html">Our daily environment</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="nature/flocking_birds.html">
@@ -252,7 +252,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2><a href="waves/index.html">Waves &amp; vibrations</a></h2>
+    <h3><a href="waves/index.html">Waves &amp; vibrations</a></h3>
     <div class="double_image">
       <figure class="left_image">
        <a href="waves/pool_with_obstacle.html">
@@ -297,7 +297,7 @@ finest that music and poetry can deliver. &mdash;
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
-    <h2><a href="quantumphysics/index.html">Quantum physics</a></h2>
+    <h3><a href="quantumphysics/index.html">Quantum physics</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="quantumphysics/plane_wave.html">
@@ -324,7 +324,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2><a href="thermodynamics/index.html">Statistical physics</a></h2>
+    <h3><a href="thermodynamics/index.html">Statistical physics</a></h3>
     <div class="double_image">
       <figure class="left_image">
        <a href="thermodynamics/boltzmann_gas.html">
@@ -369,7 +369,7 @@ finest that music and poetry can deliver. &mdash;
 
 <div class="row">
   <div class="column" style="background-color:#444400;">
-    <h2><a href="electromagnetism/index.html">Electromagnetism</a></h2>
+    <h3><a href="electromagnetism/index.html">Electromagnetism</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="electromagnetism/charged_sheet.html">
@@ -432,7 +432,7 @@ finest that music and poetry can deliver. &mdash;
     </div>
   </div>
   <div class="column" style="background-color:#444400;">
-    <h2><a href="kinematics/index.html">Classical mechanics</a></h2>
+    <h3><a href="kinematics/index.html">Classical mechanics</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="kinematics/ball_drop_on_spring.html">
@@ -505,7 +505,7 @@ finest that music and poetry can deliver. &mdash;
 
 <div class="row">
   <div class="column" style="background-color:#4c3340;">
-    <h2><a href="fun/index.html">Fun stuff</a></h2>
+    <h3><a href="fun/index.html">Fun stuff</a></h3>
     <div class="double_image">
       <figure class="left_image">
         <a href="fun/face.html">
@@ -537,7 +537,7 @@ finest that music and poetry can deliver. &mdash;
     </figure>
   </div>
   <div class="column" style="background-color:#4c3340;">
-    <h2><a href="obsolete/index.html">Superseded</a></h2>
+    <h3><a href="obsolete/index.html">Superseded</a></h3>
     <div class="double_image">
       <figure class="left_image">
        <a href="obsolete/point_charge.html">
