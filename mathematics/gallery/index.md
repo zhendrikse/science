@@ -16,6 +16,7 @@ in a dark labyrinth. &mdash;
 All geometric shapes below were created with basically the same plotting software 
 that I have written in VPython.
 
+<a name="toroids"></a>
 ## Toroids
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
@@ -130,6 +131,7 @@ that I have written in VPython.
 </div>
 <p style="clear: both;"></p>
 
+<a name="real_projective_plane"></a>
 ### The real projective plane
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -152,6 +154,7 @@ that I have written in VPython.
 <p style="clear: both;"></p>
 
 
+<a name="spherical_harmonics"></a>
 ### Spherical harmonics
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -199,6 +202,7 @@ where
 </div>
 <p style="clear: both;"></p>
 
+<a name="spirals"></a>
 ## Spirals
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
