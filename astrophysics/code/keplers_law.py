@@ -1,13 +1,14 @@
 #Web VPython 3.2
 
 title="""&#x2022; Original by program by Peter Borcherds, University of Birmingham, England
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/keplers_law.py">keplers_law.py</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/keplers_law.py"></a>
 
 """
 
 from vpython import *
 
-animation = canvas(title=title, background=color.gray(0.075), forward=vector(0.0222862, 0.928369, -0.370991))
+animation = canvas(title=title, background=color.gray(0.075), forward=vector(0.0222862, 0.928369, -0.370991), range=0.75)
+sphere(pos=vector(0, 0, 0),texture="https://i.imgur.com/1nVWbbd.jpg",radius=5,shininess=0,opacity=0.5)
 
 # Default velocity gives a satisfactory range of eccentricities
 # velocity = -vector(0.984,0,0)   # gives period of 12.0 "months"
