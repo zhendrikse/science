@@ -5,9 +5,6 @@ title: Interactive physics simulations
 description: Visualizing the beauty in physics and mathematics
 show_downloads: false
 
-github:
-  is_project_page: false
-
 url: "https://www.hendrikse.name/" # the base hostname & protocol for your site
 plugins:
   - jekyll-remote-theme
