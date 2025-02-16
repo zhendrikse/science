@@ -38,7 +38,7 @@ We should make things as simple as possible, but not simpler. &mdash; Albert Ein
 
 <div class="double_image">
   <figure class="left_image">
-    <a href="lightcone.html">
+    <a href="perihelion_mercury.html">
       <img alt="Light cone" src="../images/perihelion_mercury.png" title="Click to animate"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <figcaption>One of the most well-known tests of general relativity: 
