@@ -1,3 +1,5 @@
+#Web VPython 3.2
+
 from vpython import rate, canvas, color, points, vector, button
 
 title = """&#x2022; Based on the original <a href="https://github.com/silvaan/blackhole_raytracer/tree/master">blackhole_raytracer</a> project by Arman T, Casper Y, Lulu W
@@ -34,6 +36,9 @@ class Texture:
     def get_color(self, x, y):
         x = min(int(round(x * (self.im_width - 1) / self.width)), self.im_width - 1)
         y = min(int(round(y * (self.im_height - 1) / self.height)), self.im_height - 1)
+        #
+        # The next line needs to be commented out on glowscript.org and trinket.io
+        #
         return vector(self.pixels[x, y])
 
 
