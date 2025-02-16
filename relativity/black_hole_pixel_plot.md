@@ -1,14 +1,14 @@
 {% include breadcrumbs.html %}
 
 ## Rendering a black hole using ray tracing
-
 <div class="header_line"><br/></div>
 
 {% include_relative code/BlackHolePixelPlot.html %}
 
 <p style="clear: both;"></p>
 
-## Background information
+For comparison, below are some real images of black holes, 
+showing a bright ring formed as light bends in the intense gravity around a black hole.
 
 <div class="double_image">
   <figure class="left_image">
@@ -29,9 +29,11 @@
 </div>
 <p style="clear: both;"></p>
 
-The above images show a bright ring formed as light bends in the intense gravity around a black hole.
+## Background information
+<div class="header_line"><br/></div>
 
-### History
+### Black holes history
+<div style="border-top: 1px solid #999999"><br/></div>
 
 Black holes are an outcome of the 
 [Einstein field equations (EFE)](https://en.wikipedia.org/wiki/Einstein_field_equations):
@@ -39,13 +41,16 @@ Black holes are an outcome of the
 $R_{\mu\nu} -\frac{1}{2}R G_{\mu\nu} + \lambda g_{\mu\nu} = k T_{\mu\nu}$
 
 <blockquote>
+<p>
 The expression on the left represents the curvature of spacetime as determined by the metric; 
 the expression on the right represents the stress–energy–momentum content of spacetime. 
 The EFE can then be interpreted as a set of equations dictating how stress–energy–momentum 
-determines the curvature of spacetime. 
+determines the curvature of spacetime.
+</p>
 
-[&hellip;]
+<p>[&hellip;]</p>
 
+<p>
 The equations are more complex than they appear. Given a specified distribution of matter and energy 
 in the form of a stress–energy tensor, the EFE are understood to be equations for the 
 metric tensor $g_{\mu\nu}$, since both the Ricci tensor and scalar curvature depend on 
@@ -54,6 +59,7 @@ system of ten coupled, nonlinear, hyperbolic-elliptic
 <a href="https://en.wikipedia.org/wiki/Partial_differential_equation">partial differential equations</a>.
 &mdash;
 <a href="https://en.wikipedia.org/wiki/Einstein_field_equations">Wikipedia</a>
+</p>
 </blockquote><br/>
 
 This led [John Archibald Wheeler](https://en.wikipedia.org/wiki/John_Archibald_Wheeler), the 
