@@ -1,7 +1,7 @@
 #Web VPython 3.2
 from vpython import arange, arrow, vec, sin, cos, pi, sqrt, color, rate, canvas, cylinder, label, checkbox, button, mag, slider, wtext, radio
 
-title_header = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/vector_fields.py">vector_fields.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+title_header = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/quiver_plot.py">quiver_plot.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 
 &#x2022; Shown below is the vector field:
 

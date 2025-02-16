@@ -3,7 +3,7 @@
 ## Surface plots of multivariate functions
 <div class="header_line"><br/></div>
 
-Download the [multivariate_functions.py](code/multivariate_functions.py) source code
+The images are generated with [multivariate_functions.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/multivariate_functions.py).
 {% include_relative code/MultivariateSurfacePlot.html %}
 
 <p style="clear: both;"></p>

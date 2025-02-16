@@ -3,7 +3,7 @@
 ## Surface plots of topological shapes
 <div class="header_line"><br/></div>
 
-Download the [topology.py](code/topology.py) source code
+The images are generated with [topology.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/topology.py).
 {% include_relative code/TopologySurfacePlot.html %}
 
 <p style="clear: both;"></p>
