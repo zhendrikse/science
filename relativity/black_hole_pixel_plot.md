@@ -6,6 +6,7 @@
 {% include_relative code/BlackHolePixelPlot.html %}
 
 <p style="clear: both;"></p>
+<div style="border-top: 1px solid #999999"><br/></div>
 
 For comparison, below are some real images of black holes, 
 showing a bright ring formed as light bends in the intense gravity around a black hole.
