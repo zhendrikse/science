@@ -66,7 +66,7 @@ system of ten coupled, nonlinear, hyperbolic-elliptic
 This led [John Archibald Wheeler](https://en.wikipedia.org/wiki/John_Archibald_Wheeler), the 
 "hero of the black hole story" according to 
 [Steven Hawking](https://en.wikipedia.org/wiki/Stephen_Hawking) and the first to
-coin the term [Black Hole](https://en.wikipedia.org/wiki/Black_hole), to state that
+coin the term [black hole](https://en.wikipedia.org/wiki/Black_hole), to state that
 
 <blockquote>
 Spacetime tells matter how to move; matter tells spacetime how to curve.
@@ -74,20 +74,21 @@ Spacetime tells matter how to move; matter tells spacetime how to curve.
 
 Back in 1915, [Karl Schwarzschild ](https://en.wikipedia.org/wiki/Karl_Schwarzschild) was the first to 
 actually derive an exact solution to these equations, which is quite an achievement, 
-even more so when you realize he accomplished
-this feat while he was serving in the German army during the first world war.
-He left hints in his work, hints that are now well-known as the Schwarzschild Radius 
+even more so when you consider that he accomplished
+this feat while he was serving in the German army during World War I.
+He left clues in his work, clues that are now known as the 
+[Schwarzschild radius](https://en.wikipedia.org/wiki/Schwarzschild_radius) 
 and the existence of singularities.
 
 Around the same time, Einstein was theorizing about the existence of what we now call black holes, when 
-he tried to prove that celestial objects that are so dense that their gravity prevents even light to escape, 
-could not exist.
+he tried to prove that celestial objects that are so dense that their gravity prevents even light from 
+escaping, could not exist.
 
-However, in 1939, physicists [J. Robert Oppenheimer](https://en.wikipedia.org/wiki/J._Robert_Oppenheimer)
-(on whom the famous movie wa made) and [Hartland Snyder](https://en.wikipedia.org/wiki/Hartland_Snyder) 
-published a paper under the name "On Continued Gravitational Contraction", that contains a 
-solution to the EFE based on the Schwarzschild metric describing the collapse of an object 
-of extreme mass into a black hole.
+But in 1939, physicists [J. Robert Oppenheimer](https://en.wikipedia.org/wiki/J._Robert_Oppenheimer)
+(about whom the famous movie was made) and [Hartland Snyder](https://en.wikipedia.org/wiki/Hartland_Snyder) 
+published a paper called "On Continued Gravitational Contraction", which provided a 
+solution to the EFE based on the [Schwarzschild metric](https://en.wikipedia.org/wiki/Schwarzschild_metric), 
+which describes the collapse of an extremely massive object into a black hole.
 
 
 {% include share_buttons.html %}
