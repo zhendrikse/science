@@ -163,7 +163,7 @@ finest that music and poetry can deliver. &mdash;
     <div class="double_image">
       <figure class="left_image">
         <a href="mathematics/mandelbrot.html">
-          <img alt="Cross cap" src="./mandelbrot.png" title="Click to animate"/>
+          <img alt="Mandelbrot" src="./images/mandelbrot.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
