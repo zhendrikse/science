@@ -142,6 +142,38 @@ finest that music and poetry can deliver. &mdash;
   </div>
 </div>
 
+<div class="row">
+  <div class="column" style="background-color:#004444;">
+    <h3><a href="mathematics/index.html#polar_coordinates">Polar coordinates</a></h3>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="mathematics/polar_coordinates.html">
+          <img alt="Polar coordinates" src="./images/polar_coordinates.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <a href="mathematics/integration_with_polar_coordinates.html">
+          <img alt="Numeric integration" src="./images/integration_with_polar_coordinates.png" title="Click to animate"/>
+        </a>
+      </figure>
+    </div>
+  </div>
+  <div class="column" style="background-color:#004444;">
+    <h3><a href="mathematics/index.html#mandelbrot">Mandelbrot sets</a></h3>
+    <div class="double_image">
+      <figure class="left_image">
+        <a href="mathematics/mandelbrot.html">
+          <img alt="Cross cap" src="./mandelbrot.png" title="Click to animate"/>
+        </a>
+      </figure>
+      <figure class="right_image">
+        <!-- RESERVED FOR FUTURE APPLICATION 
+          -->
+      </figure>
+    </div>
+  </div>
+</div>
+
 <p style="clear: both;"></p>
 # Physics
 <div class="header_line"><br/></div>

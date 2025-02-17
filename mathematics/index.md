@@ -114,12 +114,13 @@ modified by the user.
 </div>
 <p style="clear: both;"></p>
 
-### Polar coordinates &amp; spherical harmonics
+<a name="polar_coordinates"></a>
+### Polar coordinates &amp; numeric integration
 <div style="border-top: 1px solid #999999"><br/></div>
 
 Polar coordinates not only enable us to much more easily solve spherically symmetric problems in 
 both physics and mathematics, they also provide us a way to parameterize complex topological surfaces, 
-such  as [Klein&apos;s bottle](geometry#non_orientables) (shown below in the topology subsection). 
+such  as [Klein&apos;s bottle](gallery/index.html#non_orientables). 
 
 
 <div class="double_image">
@@ -130,8 +131,52 @@ such  as [Klein&apos;s bottle](geometry#non_orientables) (shown below in the top
   <figcaption>Polar coordinates frequently simplify the tackling of rotationally symmetric problems.</figcaption>
 </figure>
 <figure class="right_image">
+  <a href="integration_with_polar_coordinates.html">
+    <img alt="Numeric integration" src="../images/integration_with_polar_coordinates.png" title="Click to animate"/>
+  </a>
+  <figcaption>Illustration of using polar coordinates when numerically integrating spherically symmetric functions.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+<a name="mandelbrot"></a>
+### Generating Mandelbrot images using VPython
+<div style="border-top: 1px solid #999999"><br/></div>
+
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="mandelbrot.html">
+    <img alt="Mandelbrot" src="../images/mandelbrot.png" title="Click to animate"/>
+  </a>
+  <figcaption>VPython can also be used to generated Mandelbrot images!</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR FUTURE APPLICATION 
+    -->
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+### Spherical harmonics
+<div style="border-top: 1px solid #999999"><br/></div>
+
+Polar coordinates not only enable us to much more easily solve spherically symmetric problems in 
+both physics and mathematics, they also provide us a way to parameterize complex topological surfaces, 
+such  as [Klein&apos;s bottle](geometry#non_orientables) (shown below in the topology subsection). 
+
+
+<div class="double_image">
+<figure class="left_image">
   <a href="spherical_harmonics_surface_plot.html">
     <img alt="Spherical harmonics" src="gallery/images/spherical_harmonics.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Spherical_harmonics">Spherical harmonics</a> 
+  play an important role in both physics and mathematics.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="spherical_harmonics_surface_plot.html">
+    <img alt="Spherical harmonics" src="gallery/images/spherical_harmonic_3.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Spherical_harmonics">Spherical harmonics</a> 
   play an important role in both physics and mathematics.</figcaption>

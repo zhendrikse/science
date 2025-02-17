@@ -1,0 +1,137 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, resolution, animation, pixels, max_iteration, x, x0, y, y0, iteration, x_temp, y_temp, colour, nx, ny;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "10";
+    title = "&#x2022; Based on the original <a href=\"https://vpython.org/contents/contributed/pixelplot.py\">pixelplot.py<\/a> by Bruce Sherwood, Jan. 1, 2008\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/mandelbrot.py\">mandelbrot.py</a>\n\n";
+    "12";
+    resolution = 700;
+    "14";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: resolution, fov: .01, center: vector(resolution["/"](2), resolution["/"](2), 0), range: resolution["/"](2), background: color.gray(.075)})]);
+    "15";
+    animation.height = resolution["+"](60);
+    "17";
+    pixels = points();
+    "19";
+    async function set_color_for_pixel_at(nx, ny, colour) {
+        "20";
+        ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vector(nx, ny, 0), color: colour})]);
+    };
+    if (!set_color_for_pixel_at.__argnames__) Object.defineProperties(set_color_for_pixel_at, {
+        __argnames__ : {value: ["nx", "ny", "colour"]},
+        __module__ : {value: null}
+    });
+
+    "30";
+    max_iteration = 100;
+    "31";
+    for (var ρσ_Index1 = 0; ρσ_Index1["<"](resolution); ρσ_Index1++) {
+        ny = ρσ_Index1;
+        "32";
+        for (var ρσ_Index2 = 0; ρσ_Index2["<"](resolution); ρσ_Index2++) {
+            nx = ρσ_Index2;
+            "33";
+            x = x0 = 1["-u"]()["*"](2)["+"](nx["*"](3)["/"](resolution));
+            "34";
+            y = y0 = 1["-u"]()["*"](1.5)["+"](ny["*"](3)["/"](resolution));
+            "35";
+            iteration = 0;
+            "36";
+            while (x["*"](x)["+"](y["*"](y))["<"](4) && iteration["<"](max_iteration)) {
+                "37";
+                x_temp = x["*"](x)["-"](1["*"](y)["*"](y))["+"](x0);
+                "38";
+                y_temp = 2["*"](x)["*"](y)["+"](y0);
+                "39";
+                x = x_temp;
+                "40";
+                y = y_temp;
+                "41";
+                iteration=iteration["+"](1);
+                "43";
+            }
+            if (.1["<"](ρσ_cond_temp = iteration["/"](max_iteration)) && ρσ_cond_temp["<"](1)) {
+                "44";
+                colour = color.hsv_to_rgb(vector(iteration["/"](max_iteration)["-"](1["*"](.1)), 1, 1));
+                "45";
+                (await set_color_for_pixel_at(nx, ny, colour));
+            }
+        }
+    }
+    "47";
+    while (true) {
+        "48";
+        (await rate(20));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
