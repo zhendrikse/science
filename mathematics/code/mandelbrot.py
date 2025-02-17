@@ -9,7 +9,7 @@ title = """&#x2022; Based on the original <a href="https://vpython.org/contents/
 
 """
 
-resolution = 700  # x and y range over 0 to XMAX
+resolution = 600  # x and y range over 0 to XMAX
 
 animation = canvas(title=title, width=resolution, fov=0.01, center=vector(resolution / 2, resolution / 2, 0), range=resolution / 2, background=color.gray(0.075))
 animation.height = resolution + 60  # titlebar plus toolbar 60 pixels high
