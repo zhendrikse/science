@@ -177,6 +177,9 @@ finest that music and poetry can deliver. &mdash;
 
 <p style="clear: both;"></p>
 
+# Physics
+<div class="header_line"><br/></div>
+
 <blockquote>
 The important thing is not to stop questioning. 
 Curiosity has its own reason for existence. 
@@ -186,9 +189,6 @@ structure of reality. It is enough if one tries
 merely to comprehend a little of this mystery 
 each day. &mdash; <a href="https://en.wikipedia.org/wiki/Albert_Einstein">Albert Einstein</a>
 </blockquote><br/>
-
-# Physics
-<div class="header_line"><br/></div>
 
 <!--                             -->
 <!-- Astro and Molecular physics -->
