@@ -1,7 +1,7 @@
 #Web VPython 3.2
 
 title="""&#x2022; Original by program by Peter Borcherds, University of Birmingham, England
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/keplers_law.py"></a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/keplers_law.py">keplers_law</a>
 
 """
 
