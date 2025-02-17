@@ -1,7 +1,7 @@
 markdown: kramdown
 
 remote_theme: pages-themes/midnight@v0.2.0
-title: Interactive physics simulations
+title: Interactive three-dimensional simulations
 description: Visualizing the beauty in physics and mathematics
 show_downloads: false
 
