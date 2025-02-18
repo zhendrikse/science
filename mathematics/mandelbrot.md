@@ -29,6 +29,20 @@ The Mandelbrot set illustrates the same principle as
 [Conway&apos;s Game of Life](https://conwaylife.com/), namely
 that complex structures can emerge from an astonishingly small and simple set of rules.
 
+In addition, this set demonstrates another principle that is well-known from
+[chaos theory](https://en.wikipedia.org/wiki/Chaos_theory), namely the so-called
+[butterfly-effect](https://en.wikipedia.org/wiki/Butterfly_effect): a slight change 
+in a value (in this case of the constant $c$)
+causes the function to either diverge to infinity or remain bounded.
+
+The butterfly-effect is more rigorously is defined as a deterministic 
+non-linear response of system that for its future state(s) is (extremely) 
+sensitive on one or more of its initial conditions, such as a distant butterfly 
+flapping its wings a few weeks ago, causing a tornado’s route to change its course.
+
+### Some history
+<div style="border-top: 1px solid #999999"><br/></div>
+
 Robert W. Brooks &amp; Peter Matelski first described and illustrated this set in 
 1978 as a part of a study on Kleinian groups. Two years later, 
 [Benoît Mandelbrot](https://en.wikipedia.org/wiki/Benoit_Mandelbrot) managed to create 
@@ -47,11 +61,15 @@ such as clouds or shorelines, actually had a "degree of order". &mdash;
 The term fractal was coined by [Benoît Mandelbrot](https://en.wikipedia.org/wiki/Benoit_Mandelbrot) 
 himself, and is derived from the Latin word ‘fractus’, which means broken or fractured.
 
-
 ### Implementation in VPython / Glowscript
 <div style="border-top: 1px solid #999999"><br/></div>
 
-The implementation is based on an extremely simple technique, namely by representing
+A so-called escape-time algorithm is used to generate the visualizations. This is a very
+straight forward algorithm, that simply counts the number of 
+iterations that is needed to detect whether a divergence has occurred or not.
+This value is subsequently used for color-coding the pixels.
+
+The Visualization with VPython is based on an extremely simple technique, namely by representing
 each dot as coordinate in the `points()` object. Everytime the divergence of 
 a pixel has been calculated, it is simply added to this `points()` object 
 with the appropriate color coding:
