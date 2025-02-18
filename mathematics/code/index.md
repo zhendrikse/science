@@ -4,6 +4,8 @@
  
 - [`complex_functions.py` source code](complex_functions.py)
 - [`double_shapes.py` source code](double_shapes.py)
+- [`integration_with_polar_coordinates.py` source code](integration_with_polar_coordinates.py)
+- [`mandelbrot.py` source code](mandelbrot.py)
 - [`multivariate_functions.py` source code](multivariate_functions.py)
 - [`polar_coordinates.py` source code](polar_coordinates.py)
 - [`quiver_plot.py` source code](quiver_plot.py)
