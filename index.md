@@ -79,16 +79,16 @@ finest that music and poetry can deliver. &mdash;
 
 <div class="row">
   <div class="column" style="background-color:#004444;">
-    <h3><a href="mathematics/index.html#fields">$f(x, y, z) \rightarrow \mathbb{R}^3$</a></h3>
+    <h3><a href="mathematics/index.html#fields">$f(x, y, z) \rightarrow \mathbb{R}, f(x, y, z) \rightarrow \mathbb{R}^3$</a></h3>
     <div class="double_image">
       <figure class="left_image">
-        <a href="mathematics/quiver_plot.html">
-          <img alt="3D vector fields" src="./images/vector_field.png" title="Click to animate"/>
+        <a href="mathematics/scalar_plot.html">
+          <img alt="3D scalar fields" src="./images/scalar_plot.png" title="Click to animate"/>
         </a>
       </figure>
       <figure class="right_image">
-        <a href="mathematics/scalar_plot.html">
-          <img alt="3D scalar fields" src="./images/scalar_plot.png" title="Click to animate"/>
+        <a href="mathematics/quiver_plot.html">
+          <img alt="3D vector fields" src="./images/vector_field.png" title="Click to animate"/>
         </a>
       </figure>
     </div>
