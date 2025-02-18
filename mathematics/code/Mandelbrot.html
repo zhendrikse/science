@@ -52,8 +52,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, resolution, display, _GS_1, radio_buttons, mandelbrot;
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, resolution, display, _GS_1, radio_buttons, _, mandelbrot;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -86,22 +86,24 @@ async function __main__() {
     "18";
     function RadioButton() {;
     }
-    RadioButton.prototype.__init__ = async function __init__(button_, function_) {
+    RadioButton.prototype.__init__ = async function __init__(button_, function_, max_iterations) {
         var self = this;
         "20";
         self._button = button_;
         "21";
         self._function = function_;
+        "22";
+        self._max_iterations = max_iterations;
     };
     if (!RadioButton.prototype.__init__.__argnames__) Object.defineProperties(RadioButton.prototype.__init__, {
-        __argnames__ : {value: ["button_", "function_"]},
+        __argnames__ : {value: ["button_", "function_", "max_iterations"]},
         __module__ : {value: null}
     });
     RadioButton.__argnames__ = RadioButton.prototype.__init__.__argnames__;
     RadioButton.__handles_kwarg_interpolation__ = RadioButton.prototype.__init__.__handles_kwarg_interpolation__;
     RadioButton.prototype.uncheck = async function uncheck() {
         var self = this;
-        "24";
+        "25";
         self._button.checked = false;
     };
     if (!RadioButton.prototype.uncheck.__module__) Object.defineProperties(RadioButton.prototype.uncheck, {
@@ -109,7 +111,9 @@ async function __main__() {
     });
     RadioButton.prototype.push = async function push() {
         var self = this;
-        "27";
+        "28";
+        (await mandelbrot.set_max_iterations_to(self._max_iterations));
+        "29";
         (await mandelbrot.render(self._function));
     };
     if (!RadioButton.prototype.push.__module__) Object.defineProperties(RadioButton.prototype.push, {
@@ -117,7 +121,7 @@ async function __main__() {
     });
     RadioButton.prototype.check = async function check() {
         var self = this;
-        "30";
+        "32";
         self._button.checked = true;
     };
     if (!RadioButton.prototype.check.__module__) Object.defineProperties(RadioButton.prototype.check, {
@@ -125,7 +129,7 @@ async function __main__() {
     });
     RadioButton.prototype.name = async function name() {
         var self = this;
-        "33";
+        "35";
         return self._button.name;
     };
     if (!RadioButton.prototype.name.__module__) Object.defineProperties(RadioButton.prototype.name, {
@@ -144,14 +148,14 @@ async function __main__() {
 
 
 
-    "36";
+    "38";
     function RadioButtons() {;
     }
     RadioButtons.prototype.__init__ = async function __init__() {
         var self = this;
-        "38";
+        "40";
         self._radio_buttons = ρσ_list_decorate([]);
-        "39";
+        "41";
         self._selected_button = null;
     };
     if (!RadioButtons.prototype.__init__.__module__) Object.defineProperties(RadioButtons.prototype.__init__, {
@@ -159,39 +163,39 @@ async function __main__() {
     });
     RadioButtons.__argnames__ = RadioButtons.prototype.__init__.__argnames__;
     RadioButtons.__handles_kwarg_interpolation__ = RadioButtons.prototype.__init__.__handles_kwarg_interpolation__;
-    RadioButtons.prototype.add = async function add(button_, function_) {
+    RadioButtons.prototype.add = async function add(button_, function_, max_iterations) {
         var self = this;
         var ρσ_ls, _GS_1;
-        "42";
-        _GS_1 = new RadioButton;
-        (await _GS_1.__init__(button_, function_));
-        self._radio_buttons.append(_GS_1);
         "44";
+        _GS_1 = new RadioButton;
+        (await _GS_1.__init__(button_, function_, max_iterations));
+        self._radio_buttons.append(_GS_1);
+        "46";
         if (ρσ_equals(len(self._radio_buttons)["%"](5), 0)) {
-            "45";
-            display.append_to_caption("\n\n");
             "47";
+            display.append_to_caption("\n\n");
+            "49";
         }
         if (ρσ_equals(len(self._radio_buttons), 1)) {
-            "48";
+            "50";
             (await ρσ_getitem(self._radio_buttons, 0).check());
-            "49";
+            "51";
             self._selected_button = ρσ_getitem(self._radio_buttons, 0);
         }
     };
     if (!RadioButtons.prototype.add.__argnames__) Object.defineProperties(RadioButtons.prototype.add, {
-        __argnames__ : {value: ["button_", "function_"]},
+        __argnames__ : {value: ["button_", "function_", "max_iterations"]},
         __module__ : {value: null}
     });
     RadioButtons.prototype._uncheck_buttons_except = async function _uncheck_buttons_except(button_name) {
         var self = this;
         var ρσ_ls, button_;
-        "52";
+        "54";
         var ρσ_Iter1 = self._radio_buttons;
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             button_ = ρσ_Index1;
-            "53";
+            "55";
             if (ρσ_not_equals((await button_.name()), button_name)) {
                 (await button_.uncheck());
             }
@@ -204,12 +208,12 @@ async function __main__() {
     RadioButtons.prototype._get_button_by = async function _get_button_by(button_name) {
         var self = this;
         var ρσ_ls, button_;
-        "56";
+        "58";
         var ρσ_Iter2 = self._radio_buttons;
         ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
         for (var ρσ_Index2 of ρσ_Iter2) {
             button_ = ρσ_Index2;
-            "57";
+            "59";
             if (ρσ_equals((await button_.name()), button_name)) {
                 return button_;
             }
@@ -221,11 +225,11 @@ async function __main__() {
     });
     RadioButtons.prototype.toggle = async function toggle(button_name) {
         var self = this;
-        "60";
-        (await self._uncheck_buttons_except(button_name));
-        "61";
-        self._selected_button = (await self._get_button_by(button_name));
         "62";
+        (await self._uncheck_buttons_except(button_name));
+        "63";
+        self._selected_button = (await self._get_button_by(button_name));
+        "64";
         (await self._selected_button.push());
     };
     if (!RadioButtons.prototype.toggle.__argnames__) Object.defineProperties(RadioButtons.prototype.toggle, {
@@ -234,7 +238,7 @@ async function __main__() {
     });
     RadioButtons.prototype.get_selected_button_name = async function get_selected_button_name() {
         var self = this;
-        "65";
+        "67";
         return (await self._selected_button.name());
     };
     if (!RadioButtons.prototype.get_selected_button_name.__module__) Object.defineProperties(RadioButtons.prototype.get_selected_button_name, {
@@ -254,24 +258,33 @@ async function __main__() {
 
 
 
-    "67";
+    "69";
     function Mandelbrot() {;
     }
     Mandelbrot.prototype.__init__ = async function __init__() {
         var self = this;
-        "69";
+        var max_iterations = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.max_iterations : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "max_iterations")){
+            max_iterations = ρσ_kwargs_obj.max_iterations;
+        }
+        "71";
         self._pixels = points();
-        "70";
-        self._max_iteration = 100;
+        "72";
+        self._max_iteration = max_iterations;
     };
-    if (!Mandelbrot.prototype.__init__.__module__) Object.defineProperties(Mandelbrot.prototype.__init__, {
+    if (!Mandelbrot.prototype.__init__.__defaults__) Object.defineProperties(Mandelbrot.prototype.__init__, {
+        __defaults__ : {value: {max_iterations:100}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["max_iterations"]},
         __module__ : {value: null}
     });
     Mandelbrot.__argnames__ = Mandelbrot.prototype.__init__.__argnames__;
     Mandelbrot.__handles_kwarg_interpolation__ = Mandelbrot.prototype.__init__.__handles_kwarg_interpolation__;
     Mandelbrot.prototype.set_color_for_pixel_at = async function set_color_for_pixel_at(x, y, colour) {
         var self = this;
-        "73";
+        "75";
         ρσ_interpolate_kwargs.call(self._pixels, self._pixels.append, [ρσ_desugar_kwargs({pos: vector(x, y, 0), color: colour})]);
     };
     if (!Mandelbrot.prototype.set_color_for_pixel_at.__argnames__) Object.defineProperties(Mandelbrot.prototype.set_color_for_pixel_at, {
@@ -280,7 +293,7 @@ async function __main__() {
     });
     Mandelbrot.prototype.z_squared_minus_c = async function z_squared_minus_c(z_, c_) {
         var self = this;
-        "76";
+        "78";
         return [ρσ_getitem(z_, 0)["*"](ρσ_getitem(z_, 0))["-"](1["*"](ρσ_getitem(z_, 1))["*"](ρσ_getitem(z_, 1)))["+"](ρσ_getitem(c_, 0)),
         2["*"](ρσ_getitem(z_, 0))["*"](ρσ_getitem(z_, 1))["+"](ρσ_getitem(c_, 1))];
     };
@@ -290,7 +303,7 @@ async function __main__() {
     });
     Mandelbrot.prototype.abs_z_squared = async function abs_z_squared(z_) {
         var self = this;
-        "79";
+        "81";
         return ρσ_getitem(z_, 0)["*"](ρσ_getitem(z_, 0))["+"](ρσ_getitem(z_, 1)["*"](ρσ_getitem(z_, 1)));
     };
     if (!Mandelbrot.prototype.abs_z_squared.__argnames__) Object.defineProperties(Mandelbrot.prototype.abs_z_squared, {
@@ -300,16 +313,16 @@ async function __main__() {
     Mandelbrot.prototype.iteration_count = async function iteration_count(z_, c_) {
         var self = this;
         var ρσ_ls, iteration;
-        "82";
+        "84";
         iteration = 0;
-        "83";
+        "85";
         while ((await self.abs_z_squared(z_))["<"](4) && iteration["<"](self._max_iteration)) {
-            "84";
+            "86";
             z_ = (await self.z_squared_minus_c(z_, c_));
-            "85";
+            "87";
             iteration=iteration["+"](1);
         }
-        "86";
+        "88";
         return iteration;
     };
     if (!Mandelbrot.prototype.iteration_count.__argnames__) Object.defineProperties(Mandelbrot.prototype.iteration_count, {
@@ -319,26 +332,26 @@ async function __main__() {
     Mandelbrot.prototype.render = async function render(set_) {
         var self = this;
         var ρσ_ls, ρσ_unpack, z, c, iterations, colour, nx, ny;
-        "90";
+        "92";
         self._pixels = points();
-        "91";
+        "93";
         for (var ρσ_Index3 = 0; ρσ_Index3["<"](resolution); ρσ_Index3++) {
             ny = ρσ_Index3;
-            "92";
+            "94";
             for (var ρσ_Index4 = 0; ρσ_Index4["<"](resolution); ρσ_Index4++) {
                 nx = ρσ_Index4;
-                "93";
+                "95";
                 ρσ_unpack = (await set_(nx, ny));
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
                 z = ρσ_unpack[0];
                 c = ρσ_unpack[1];
-                "96";
+                "98";
                 iterations = (await self.iteration_count(z, c));
-                "97";
+                "99";
                 if (.1["<"](ρσ_cond_temp = iterations["/"](self._max_iteration)) && ρσ_cond_temp["<"](1)) {
-                    "98";
+                    "100";
                     colour = color.hsv_to_rgb(vector(iterations["/"](self._max_iteration)["-"](1["*"](.1)), 1, 1));
-                    "99";
+                    "101";
                     (await self.set_color_for_pixel_at(nx, ny, colour));
                 }
             }
@@ -346,6 +359,15 @@ async function __main__() {
     };
     if (!Mandelbrot.prototype.render.__argnames__) Object.defineProperties(Mandelbrot.prototype.render, {
         __argnames__ : {value: ["set_"]},
+        __module__ : {value: null}
+    });
+    Mandelbrot.prototype.set_max_iterations_to = async function set_max_iterations_to(max_iterations) {
+        var self = this;
+        "104";
+        self._max_iteration = max_iterations;
+    };
+    if (!Mandelbrot.prototype.set_max_iterations_to.__argnames__) Object.defineProperties(Mandelbrot.prototype.set_max_iterations_to, {
+        __argnames__ : {value: ["max_iterations"]},
         __module__ : {value: null}
     });
     Mandelbrot.prototype.__repr__ = async function __repr__() {
@@ -362,9 +384,10 @@ async function __main__() {
 
 
 
-    "102";
+
+    "107";
     async function complex_(re, im) {
-        "103";
+        "108";
         return [re, im];
     };
     if (!complex_.__argnames__) Object.defineProperties(complex_, {
@@ -372,44 +395,44 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "105";
-    async function set_1(x, y) {
-        var ρσ_ls, z, c;
-        "107";
-        z = (await complex_(1["-u"]()["*"](2)["+"](x["*"](3)["/"](resolution)), 1["-u"]()["*"](2)["+"](y["*"](3)["/"](resolution))));
-        "108";
-        c = (await complex_(1["-u"]()["*"](2)["+"](x["*"](3)["/"](resolution)), 1["-u"]()["*"](2)["+"](y["*"](3)["/"](resolution))));
-        "109";
-        return [z, c];
-    };
-    if (!set_1.__argnames__) Object.defineProperties(set_1, {
-        __argnames__ : {value: ["x", "y"]},
-        __module__ : {value: null}
-    });
-
-    "111";
-    async function set_2(x, y) {
+    "110";
+    async function fractal_1(x, y) {
         var ρσ_ls, z, c;
         "112";
-        z = (await complex_(1["-u"]()["*"](1.5)["+"](x["*"](3)["/"](resolution)), 1["-u"]()["*"](2)["+"](y["*"](3)["/"](resolution))));
+        z = (await complex_(1["-u"]()["*"](2.15)["+"](x["*"](3)["/"](resolution)), 1["-u"]()["*"](1.75)["+"](y["*"](3)["/"](resolution))));
         "113";
-        c = (await complex_(.0019["*"](ρσ_getitem(z, 0)["-"](1["*"](resolution)["/"](2))), .0019["*"](ρσ_getitem(z, 1)["-"](1["*"](resolution)["/"](2)))));
+        c = (await complex_(1["-u"]()["*"](2.15)["+"](x["*"](3)["/"](resolution)), 1["-u"]()["*"](1.75)["+"](y["*"](3)["/"](resolution))));
         "114";
         return [z, c];
     };
-    if (!set_2.__argnames__) Object.defineProperties(set_2, {
+    if (!fractal_1.__argnames__) Object.defineProperties(fractal_1, {
         __argnames__ : {value: ["x", "y"]},
         __module__ : {value: null}
     });
 
     "116";
-    async function toggle(event) {
+    async function fractal_2(x, y) {
+        var ρσ_ls, z, c;
         "117";
+        z = (await complex_(1["-u"]()["*"](1.5)["+"](x["/"](200)), 1["-u"]()["*"](1.5)["+"](y["/"](200))));
         "118";
-        display.remove();
+        c = (await complex_(.0019["*"](ρσ_getitem(z, 0)["-"](1["*"](300))), .0019["*"](ρσ_getitem(z, 1)["-"](1["*"](300)))));
         "119";
+        return [z, c];
+    };
+    if (!fractal_2.__argnames__) Object.defineProperties(fractal_2, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+
+    "121";
+    async function toggle(event) {
+        "122";
+        "123";
+        display.remove();
+        "124";
         display = (await create_canvas(resolution));
-        "120";
+        "125";
         (await radio_buttons.toggle(event.name));
     };
     if (!toggle.__argnames__) Object.defineProperties(toggle, {
@@ -417,27 +440,40 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "122";
+    "127";
+    async function download() {
+        "128";
+        (await display.capture("fractal"));
+    };
+    if (!download.__module__) Object.defineProperties(download, {
+        __module__ : {value: null}
+    });
+
+    "130";
     _GS_1 = new RadioButtons;
     (await _GS_1.__init__());
     radio_buttons = _GS_1;
-    "123";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Set 1", name: "set_1"})]), set_1));
-    "124";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Set 2", name: "set_2"})]), set_2));
-    "126";
-    display.remove();
-    "127";
-    display = (await create_canvas(resolution));
-    "129";
-    _GS_1 = new Mandelbrot;
-    (await _GS_1.__init__());
-    mandelbrot = _GS_1;
-    "130";
-    (await mandelbrot.render(set_1));
+    "131";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 1 ", name: "1"})]), fractal_1, 100));
     "132";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 1a ", name: "1a"})]), fractal_1, 25));
+    "133";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 2   ", name: "2"})]), fractal_2, 100));
+    "134";
+    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Download", bind: download, align: "right"})]);
+    "136";
+    display.remove();
+    "137";
+    display = (await create_canvas(resolution));
+    "139";
+    _GS_1 = new Mandelbrot;
+    (await _GS_1.__init__(100));
+    mandelbrot = _GS_1;
+    "140";
+    (await mandelbrot.render(fractal_1));
+    "142";
     while (true) {
-        "133";
+        "143";
         (await rate(20));
     }
 };
