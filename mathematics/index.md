@@ -57,22 +57,22 @@ modified by the user.
 <p style="clear: both;"></p>
 
 <a name="fields"></a>
-### Vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$ and scalar fields $f(x, y, z) \rightarrow \mathbb{R}$
+### Scalar fields $f(x, y, z) \rightarrow \mathbb{R}$ and vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$
 
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
+  <a href="scalar_plot.html">
+    <img alt="Scalar field" src="../images/scalar_plot.png" title="Click to animate"/>
+  </a>
+  <figcaption>Rendition of a 3D temperature/scalar field.</figcaption>
+</figure>
+<figure class="right_image">
   <a href="quiver_plot.html">
     <img alt="Vector field" src="../images/vector_field.png" title="Click to animate"/>
   </a>
   <figcaption>Rendering of 3D vector field and implied flow.</figcaption>
-</figure>
-<figure class="right_image">
-  <a href="scalar_plot.html">
-    <img alt="Scalar field" src="../images/scalar_field.png" title="Click to animate"/>
-  </a>
-  <figcaption>Rendition of a 3D temperature/scalar field.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
