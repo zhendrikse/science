@@ -66,13 +66,13 @@ modified by the user.
   <a href="scalar_plot.html">
     <img alt="Scalar field" src="../images/scalar_plot.png" title="Click to animate"/>
   </a>
-  <figcaption>Rendition of a 3D temperature/scalar field.</figcaption>
+  <figcaption>Rendering a temperature distribution as a 3D scalar field.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="quiver_plot.html">
     <img alt="Vector field" src="../images/vector_field.png" title="Click to animate"/>
   </a>
-  <figcaption>Rendering of 3D vector field and implied flow.</figcaption>
+  <figcaption>Rendering of three-dimensional vector field and implied flow.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
