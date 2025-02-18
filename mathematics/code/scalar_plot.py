@@ -1,6 +1,6 @@
 #Web VPython 3.2
 
-from vpython import simple_sphere, vec, color, rate, label, canvas, cylinder, vector, arange, exp, checkbox
+from vpython import simple_sphere, vec, color, rate, label, canvas, cylinder, vector, arange, exp, checkbox, slider, wtext
 
 title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py">scalar_plot.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 
@@ -87,10 +87,10 @@ class Base:
 
 
 class Scalar:
-    def __init__(self, position, radius, value):
+    def __init__(self, position, radius, opacity, value):
         self._position = position
         self._value = value
-        self._sphere = simple_sphere(pos=position, radius=radius, opacity=0.3)
+        self._sphere = simple_sphere(pos=position, radius=radius, opacity=opacity)
 
     def set_color(self, colour):
         self._sphere.color = colour
@@ -98,23 +98,27 @@ class Scalar:
     def value(self):
         return self._value
 
+    def set_opacity_to(self, value):
+        self._sphere.opacity = value
+
 
 class ScalarField:
     def __init__(self, x_min, x_max, dx, f_x_y_z):
+        self._opacity = 0.3
         locations = arange(x_min, x_max, dx)
         field_values = []
-        scalar_field = []
+        self._scalar_field = []
         for x in locations:
             for y in locations:
                 for z in locations:
                     position = vector(x, y, z)
                     field_value = f_x_y_z(position)
                     field_values.append(field_value)
-                    scalar_field.append(Scalar(position, dx / 4, field_value))
+                    self._scalar_field.append(Scalar(position, dx / 4, self._opacity, field_value))
         self._max_value = max(field_values)
         self._min_value = min(field_values)
 
-        for scalar in scalar_field:
+        for scalar in self._scalar_field:
             scalar.set_color(self._color_for(scalar.value()))
 
     def _color_for(self, value):
@@ -130,6 +134,12 @@ class ScalarField:
 
     def max_value(self):
         return self._max_value
+
+    def set_opacity_to(self, value):
+        self._opacity = value
+        for scalar in self._scalar_field:
+            scalar.set_opacity_to(value)
+
 
 def temperature_at(position):
     alpha = 4e-1
@@ -148,15 +158,23 @@ def toggle_axis_labels(event):
 def toggle_mesh(event):
     plot_base.mesh_visibility_is(event.checked)
 
+def adjust_opacity(event):
+    field.set_opacity_to(event.value)
+    opacity_slider_text.text = "= {:1.2f}".format(event.value, 2)
+
 display.append_to_caption("\n")
 _ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
 _ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=True)
 _ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
 
+display.append_to_caption("\n\nOpacity ")
+_ = slider(min=0, max=1, step=0.01, value=.3, bind=adjust_opacity)
+opacity_slider_text = wtext(text="= 0.3")
+
 x_max = 3
-field = ScalarField(-x_max, x_max, 1 * x_max / 10, temperature_at)
-plot_base = Base(arange(-3, 3, 0.2), arange(-3, 3, 0.2), arange(-3, 3, 0.2), color.yellow, color.green, 10)
-MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+field = ScalarField(-x_max, x_max, 1.5 * x_max / 10, temperature_at)
+plot_base = Base(arange(-3.25, 3.25, 0.2), arange(-3.25, 3.25, 0.2), arange(-3.25, 3.25, 0.2), color.yellow, color.green, 10)
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 while True:
     rate(10)
