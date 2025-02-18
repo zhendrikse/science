@@ -43,7 +43,7 @@ class RadioButtons:
     def add(self, button_, function_, max_iterations):
         self._radio_buttons.append(RadioButton(button_, function_, max_iterations))
 
-        if (len(self._radio_buttons) % 5) == 0:
+        if (len(self._radio_buttons) % 4) == 0:
             display.append_to_caption("\n\n")
 
         if (len(self._radio_buttons)) == 1:
@@ -118,6 +118,21 @@ def fractal_2(x, y):
     c = complex_(0.0019 * (z[0] - 300), 0.0019 * (z[1] - 300))
     return z, c
 
+def fractal_3(x, y):
+    z = complex_(-1.50 + x * 3 / resolution, -1.50 + y * 3 / resolution)
+    c = complex_(-0.5251993,  -0.5251993)
+    return z, c
+
+def fractal_4(x, y):
+    z = complex_(-1.5 + x * 3 / resolution, -1.5 + y * 3 / resolution)
+    c = complex_( 0.285,0.0035)
+    return z, c
+
+def fractal_5(x, y):
+    z = complex_(-1.5 + x * 3 / resolution, -1.5 + y * 3 / resolution)
+    c = complex_(-0.8, 0.156)
+    return z, c
+
 def toggle(event):
     global display
     display.delete()
@@ -128,10 +143,16 @@ def download():
     display.capture("fractal")
 
 radio_buttons = RadioButtons()
-radio_buttons.add(radio(bind=toggle, text="Fractal 1 ", name="1"), fractal_1, 100)
-radio_buttons.add(radio(bind=toggle, text="Fractal 1a ", name="1a"), fractal_1, 25)
-radio_buttons.add(radio(bind=toggle, text="Fractal 2   ", name="2"), fractal_2, 100)
+radio_buttons.add(radio(bind=toggle, text="Fractal 1", name="1"), fractal_1, 100)
+radio_buttons.add(radio(bind=toggle, text="Fractal 1a", name="1a"), fractal_1, 25)
+radio_buttons.add(radio(bind=toggle, text="Fractal 2", name="2"), fractal_2, 100)
+radio_buttons.add(radio(bind=toggle, text="Fractal 3", name="3"), fractal_3, 100)
+radio_buttons.add(radio(bind=toggle, text="Fractal 3a", name="3a"), fractal_3, 25)
+radio_buttons.add(radio(bind=toggle, text="Fractal 4", name="4"), fractal_4, 100)
+radio_buttons.add(radio(bind=toggle, text="Fractal 5", name="5"), fractal_5, 100)
+radio_buttons.add(radio(bind=toggle, text="Fractal 5a", name="5a"), fractal_5, 25)
 _ = button(text="Download", bind=download, align="right")
+display.append_to_caption("\n\n")
 
 display.delete()
 display = create_canvas(resolution)

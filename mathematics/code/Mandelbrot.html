@@ -171,7 +171,7 @@ async function __main__() {
         (await _GS_1.__init__(button_, function_, max_iterations));
         self._radio_buttons.append(_GS_1);
         "46";
-        if (ρσ_equals(len(self._radio_buttons)["%"](5), 0)) {
+        if (ρσ_equals(len(self._radio_buttons)["%"](4), 0)) {
             "47";
             display.append_to_caption("\n\n");
             "49";
@@ -426,13 +426,58 @@ async function __main__() {
     });
 
     "121";
-    async function toggle(event) {
+    async function fractal_3(x, y) {
+        var ρσ_ls, z, c;
         "122";
+        z = (await complex_(1["-u"]()["*"](1.5)["+"](x["*"](3)["/"](resolution)), 1["-u"]()["*"](1.5)["+"](y["*"](3)["/"](resolution))));
         "123";
-        display.remove();
+        c = (await complex_(1["-u"]()["*"](.5251993), 1["-u"]()["*"](.5251993)));
         "124";
+        return [z, c];
+    };
+    if (!fractal_3.__argnames__) Object.defineProperties(fractal_3, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+
+    "126";
+    async function fractal_4(x, y) {
+        var ρσ_ls, z, c;
+        "127";
+        z = (await complex_(1["-u"]()["*"](1.5)["+"](x["*"](3)["/"](resolution)), 1["-u"]()["*"](1.5)["+"](y["*"](3)["/"](resolution))));
+        "128";
+        c = (await complex_(.285, .0035));
+        "129";
+        return [z, c];
+    };
+    if (!fractal_4.__argnames__) Object.defineProperties(fractal_4, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+
+    "131";
+    async function fractal_5(x, y) {
+        var ρσ_ls, z, c;
+        "132";
+        z = (await complex_(1["-u"]()["*"](1.5)["+"](x["*"](3)["/"](resolution)), 1["-u"]()["*"](1.5)["+"](y["*"](3)["/"](resolution))));
+        "133";
+        c = (await complex_(1["-u"]()["*"](.8), .156));
+        "134";
+        return [z, c];
+    };
+    if (!fractal_5.__argnames__) Object.defineProperties(fractal_5, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+
+    "136";
+    async function toggle(event) {
+        "137";
+        "138";
+        display.remove();
+        "139";
         display = (await create_canvas(resolution));
-        "125";
+        "140";
         (await radio_buttons.toggle(event.name));
     };
     if (!toggle.__argnames__) Object.defineProperties(toggle, {
@@ -440,40 +485,52 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "127";
+    "142";
     async function download() {
-        "128";
+        "143";
         (await display.capture("fractal"));
     };
     if (!download.__module__) Object.defineProperties(download, {
         __module__ : {value: null}
     });
 
-    "130";
+    "145";
     _GS_1 = new RadioButtons;
     (await _GS_1.__init__());
     radio_buttons = _GS_1;
-    "131";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 1 ", name: "1"})]), fractal_1, 100));
-    "132";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 1a ", name: "1a"})]), fractal_1, 25));
-    "133";
-    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 2   ", name: "2"})]), fractal_2, 100));
-    "134";
+    "146";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 1", name: "1"})]), fractal_1, 100));
+    "147";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 1a", name: "1a"})]), fractal_1, 25));
+    "148";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 2", name: "2"})]), fractal_2, 100));
+    "149";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 3", name: "3"})]), fractal_3, 100));
+    "150";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 3a", name: "3a"})]), fractal_3, 25));
+    "151";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 4", name: "4"})]), fractal_4, 100));
+    "152";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 5", name: "5"})]), fractal_5, 100));
+    "153";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "Fractal 5a", name: "5a"})]), fractal_5, 25));
+    "154";
     _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Download", bind: download, align: "right"})]);
-    "136";
+    "155";
+    display.append_to_caption("\n\n");
+    "157";
     display.remove();
-    "137";
+    "158";
     display = (await create_canvas(resolution));
-    "139";
+    "160";
     _GS_1 = new Mandelbrot;
     (await _GS_1.__init__(100));
     mandelbrot = _GS_1;
-    "140";
+    "161";
     (await mandelbrot.render(fractal_1));
-    "142";
+    "163";
     while (true) {
-        "143";
+        "164";
         (await rate(20));
     }
 };
