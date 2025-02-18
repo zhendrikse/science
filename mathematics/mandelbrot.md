@@ -3,6 +3,10 @@
 ## Generating Mandelbrot images using VPython
 <div class="header_line"><br/></div>
 
+{% include_relative code/Mandelbrot.html %}
+
+<p style="clear: both;"></p>
+
 The term fractal was coined by [Benoit Mandelbrot](https://en.wikipedia.org/wiki/Benoit_Mandelbrot) 
 from the Latin ‘fractus’, which means broken or fractured.
 
@@ -14,9 +18,5 @@ He said that things typically considered to be "rough", a "mess", or "chaotic",
 such as clouds or shorelines, actually had a "degree of order". &mdash; 
 <a href="https://en.wikipedia.org/wiki/Benoit_Mandelbrot">Wikipedia</a>
 </blockquote><br/>
-
-{% include_relative code/Mandelbrot.html %}
-
-<p style="clear: both;"></p>
 
 {% include share_buttons.html %}
