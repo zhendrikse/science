@@ -5,7 +5,7 @@ from vpython import simple_sphere, vec, color, rate, label, canvas, cylinder, ve
 title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py">scalar_plot.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 
 &#x2022; Shown below is the vector field:
-<h3>$f(x, y, z) = \\exp^{-\\alpha (x^2 + y^2 + z^2)}$</h3>
+<h3>$f(x, y, z) = e^{-\\alpha (x^2 + y^2 + z^2)}$</h3>
 """
 
 display = canvas(title=title, height=500, forward=vec(-2.5, -2.2, -2.2), center=vec(0, 0, -.5), up=vec(0, 0, 1), background=color.gray(0.075), range=6.0)
