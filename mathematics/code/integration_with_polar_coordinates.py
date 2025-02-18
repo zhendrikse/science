@@ -9,7 +9,7 @@ title = """&#x2022; Based on original <a href="https://www.glowscript.org/#/user
 
 """
 
-animation = canvas(title=title, background=color.gray(0.075), height=500, forward=vec(-.4, -.7, -.6), up=vec(0, 0, 1), center=vec(0, .35, -.40))
+display = canvas(title=title, background=color.gray(0.075), height=500, forward=vec(-.4, -.7, -.6), up=vec(0, 0, 1), center=vec(0, .35, -.40))
 
 x_hat = vec(0, 1, 0)
 y_hat = vec(0, 0, 1)
@@ -111,8 +111,8 @@ def f(theta, phi):
 R = 1
 
 class Element:
-    def __init__(self, position, size, theta, phi, f_theta_phi):
-        self._element = box(pos=position, opacity=0.35, size=size)
+    def __init__(self, position, size, opacity, theta, phi, f_theta_phi):
+        self._element = box(pos=position, opacity=opacity, size=size)
         self._theta = theta
         self._phi = phi
         self._f_theta_phi = f_theta_phi
@@ -134,11 +134,15 @@ class Element:
     def set_color(self, colour):
         self._element.color = colour
 
+    def set_opacity_to(self, value):
+        self._element.opacity = value
+
 
 # t = theta, azimuthal angle
 # p = phi, planar angle
 class Sphere:
     def __init__(self, theta_min, theta_max, phi_min, phi_max):
+        self._opacity = 0.35
         self._theta_min, self._theta_max, self._phi_min, self._phi_max = theta_min, theta_max, phi_min, phi_max
         self._cells = []
 
@@ -149,7 +153,7 @@ class Sphere:
             while phi <= phi_max:
                 f_values.append(f(theta, phi))
                 pos = R * vector(R * sin(theta) * cos(phi), R * sin(theta) * sin(phi), R * cos(theta))
-                self._cells.append(Element(pos, da * vector(1, 1, 1), theta, phi, f(theta, phi)))
+                self._cells.append(Element(pos, da * vector(1, 1, 1), self._opacity, theta, phi, f(theta, phi)))
                 phi += da
             theta += da
 
@@ -201,27 +205,32 @@ class Sphere:
             integral += cell.value()
         return integral * R ** 2 * da ** 2 * sign(self._theta_max - self._theta_min) * sign(self._phi_max - self._phi_min)
 
+    def set_opacity_to(self, value):
+        self._opacity = value
+        for element in self._cells:
+            element.set_opacity_to(value)
+
 
 sphere_ = Sphere(0, pi, 0, 2 * pi)
 
 def set_theta_min(event):
     sphere_.set_theta_min_to(event.value)
-    tmin_text.text = 'θ_min = ' + '{:1.2f}'.format(event.value) + "\n\n"
+    theta_min_text.text = 'θ_min = ' + '{:1.2f}'.format(event.value) + "\n\n"
     make_caption()
 
 def set_theta_max(event):
     sphere_.set_theta_max_to(event.value)
-    tmax_text.text = 'θ_max = ' + '{:1.2f}'.format(event.value) + "\n\n"
+    theta_max_text.text = 'θ_max = ' + '{:1.2f}'.format(event.value) + "\n\n"
     make_caption()
 
 def set_phi_min(event):
     sphere_.set_phi_min_to(event.value)
-    pmin_text.text = 'φ_min = ' + '{:1.2f}'.format(event.value) + "\n\n"
+    phi_min_text.text = 'φ_min = ' + '{:1.2f}'.format(event.value) + "\n\n"
     make_caption()
 
 def set_phi_max(event):
     sphere_.set_phi_max_to(event.value)
-    pmax_text.text = 'φ_max = ' + '{:1.2f}'.format(event.value) + "\n\n"
+    phi_max_text.text = 'φ_max = ' + '{:1.2f}'.format(event.value) + "\n\n"
     make_caption()
 
 
@@ -240,26 +249,33 @@ def toggle_axis_labels(event):
 def toggle_mesh(event):
     axis.mesh_visibility_is(event.checked)
 
+def adjust_opacity(event):
+    sphere_.set_opacity_to(event.value)
+    opacity_slider_text.text = "= {:1.2f}".format(event.value, 2)
 
 _ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
 _ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=True)
 _ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
+
+display.append_to_caption("\n\nOpacity")
+_ = slider(min=0, max=1, step=0.01, value=.35, bind=adjust_opacity)
+opacity_slider_text = wtext(text="= 0.35")
 
 def make_caption():
     int_text.text = 'Integral = ' + '{:1.2f}'.format(integrate())
     return
 
 
-animation.append_to_caption("\n\nSet the integration range below.\n\n")
+display.append_to_caption("\n\nSet the integration range below.\n\n")
 
 _ = slider(min=0, max=pi, value=0, length=220, bind=set_theta_min, right=15)
-tmin_text = wtext(text='θ_min = ' + '{:1.2f}'.format(0) + "\n\n")
+theta_min_text = wtext(text='θ_min = ' + '{:1.2f}'.format(0) + "\n\n")
 _ = slider(min=0, max=pi, value=pi, length=220, bind=set_theta_max, right=15)
-tmax_text = wtext(text='θ_max = ' + '{:1.2f}'.format(pi) + "\n\n")
+theta_max_text = wtext(text='θ_max = ' + '{:1.2f}'.format(pi) + "\n\n")
 _ = slider(min=0, max=2 * pi, value=0, length=220, bind=set_phi_min, right=15)
-pmin_text = wtext(text='φ_min = ' + '{:1.2f}'.format(0) + "\n\n")
+phi_min_text = wtext(text='φ_min = ' + '{:1.2f}'.format(0) + "\n\n")
 _ = slider(min=0, max=2 * pi, value=2 * pi, length=220, bind=set_phi_max, right=15)
-pmax_text = wtext(text='φ_max = ' + '{:1.2f}'.format(2 * pi) + "\n\n")
+phi_max_text = wtext(text='φ_max = ' + '{:1.2f}'.format(2 * pi) + "\n\n")
 
 int_text = wtext(text='Integral = ' + '{:1.2f}'.format(integrate()))
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
