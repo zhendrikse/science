@@ -57,7 +57,7 @@ modified by the user.
 <p style="clear: both;"></p>
 
 <a name="fields"></a>
-### Rendering vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$
+### Vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$ and scalar fields $f(x, y, z) \rightarrow \mathbb{R}$
 
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -69,8 +69,10 @@ modified by the user.
   <figcaption>Rendering of 3D vector field and implied flow.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVER FOR FUTURE APPLICATION 
-    -->
+  <a href="scalar_plot.html">
+    <img alt="Scalar field" src="../images/scalar_field.png" title="Click to animate"/>
+  </a>
+  <figcaption>Rendition of a 3D temperature/scalar field.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
