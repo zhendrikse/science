@@ -5,14 +5,13 @@ title = """
 
 """
 
-animation = canvas(forward=vec(0.37, -0.55, -0.75), background=color.gray(0.14), title=title)
+from vpython import cylinder, box, text, checkbox, pi, arange, sphere, vec, arrow, color, sin, cos, ring, curve, cross, label, canvas, norm, slider, radians, rate, get_library
 
-#from vpython import sphere, vec, arrow, color, sin, cos, ring, curve, cross, label, scene, norm, slider, radians, rate
+animation = canvas(forward=vec(0.37, -0.55, -0.75), background=color.gray(0.14), title=title)
 
 theta = 45
 phi = 45
 radius = 4
-
 
 # https://github.com/nicolaspanel/numjs
 get_library('https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js')
