@@ -18,7 +18,7 @@ A Mandelbrot set is defined as a two-dimensional set in the complex plane $\math
 for which an infinite sequence of numbers $z_n$, defined by the
 recursive relation
 
-$$z_{n+1} = z_n^2 +c, z_0 = 0$$
+$z_{n+1} = z_n^2 + c, z_0 = 0$
 
 does _not_ diverge to infinity. The complex numbers that do remain bounded 
 make up the inner glowing regions of the Mandelbrot set. Particularly interesting 
@@ -31,7 +31,7 @@ that complex structures can emerge from an astonishingly small and simple set of
 
 Robert W. Brooks &amp; Peter Matelski first described and illustrated this set in 
 1978 as a part of a study on Kleinian groups. Two years later, 
-[Benoit Mandelbrot](https://en.wikipedia.org/wiki/Benoit_Mandelbrot) managed to create 
+[Benoît Mandelbrot](https://en.wikipedia.org/wiki/Benoit_Mandelbrot) managed to create 
 the first now well-known visualizations of the set, 
 while working at IBM’s Thomas J. Watson Research Center in New York:
 
@@ -44,7 +44,7 @@ such as clouds or shorelines, actually had a "degree of order". &mdash;
 <a href="https://en.wikipedia.org/wiki/Benoit_Mandelbrot">Wikipedia</a>
 </blockquote><br/>
 
-The term fractal was coined by [Benoit Mandelbrot](https://en.wikipedia.org/wiki/Benoit_Mandelbrot) 
+The term fractal was coined by [Benoît Mandelbrot](https://en.wikipedia.org/wiki/Benoit_Mandelbrot) 
 himself, and is derived from the Latin word ‘fractus’, which means broken or fractured.
 
 
@@ -57,6 +57,7 @@ a pixel has been calculated, it is simply added to this `points()` object
 with the appropriate color coding:
 
 ```python
+from vpython import points, vector
 
 class Mandelbrot:
     def __init__(self, max_iterations=100):
