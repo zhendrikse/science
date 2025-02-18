@@ -87,8 +87,9 @@ finest that music and poetry can deliver. &mdash;
         </a>
       </figure>
       <figure class="right_image">
-        <!-- SCALAR FIELDS ARE GOING HERE
-        -->
+        <a href="mathematics/scalar_plot.html">
+          <img alt="3D scalar fields" src="./images/scalar_plot.png" title="Click to animate"/>
+        </a>
       </figure>
     </div>
   </div>
