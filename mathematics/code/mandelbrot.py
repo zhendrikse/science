@@ -1,4 +1,4 @@
-#Web VPython 3.2
+Web VPython 3.2
 from vpython import vector, canvas, points, color, rate, radio, button
 
 title = """&#x2022; Based on the original <a href="https://vpython.org/contents/contributed/pixelplot.py">pixelplot.py</a> by Bruce Sherwood, Jan. 1, 2008
@@ -9,8 +9,10 @@ title = """&#x2022; Based on the original <a href="https://vpython.org/contents/
 resolution = 600  # x and y range over 0 to XMAX
 
 def create_canvas(resolution_):
-    return canvas(width=resolution_, fov=0.01, center=vector(resolution_ / 2, 3 * resolution_ / 5, 0),
+    new_display = canvas(width=resolution_, fov=0.01, center=vector(resolution_ / 2, 3 * resolution_ / 5, 0),
            height=resolution_, range=resolution_ / 2, background=color.gray(0.075))
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+    return new_display
 
 display = create_canvas(resolution)
 display.title = title
