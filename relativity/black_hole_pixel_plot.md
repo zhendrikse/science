@@ -42,8 +42,8 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 </div>
 <p style="clear: both;"></p>
 
-### A concise history
-<div style="border-top: 1px solid #999999"><br/></div>
+## A concise history
+<div class="header_line"><br/></div>
 
 Black holes are an outcome of the 
 [Einstein field equations (EFE)](https://en.wikipedia.org/wiki/Einstein_field_equations):
