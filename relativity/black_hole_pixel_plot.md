@@ -17,6 +17,8 @@
    <figcaption>Black hole picture explained (<a href="https://svs.gsfc.nasa.gov/13326">nasa.gov</a>)</figcaption>
 </figure>
 
+<p style="clear: both;"></p>
+
 ### Real images of black holes
 <div style="border-top: 1px solid #999999"><br/></div>
 
