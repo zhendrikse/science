@@ -5,11 +5,11 @@ The purpose of computing is insight, not numbers. &mdash;
 <a href="https://en.wikipedia.org/wiki/Richard_Hamming">Richard Hamming</a>
 </blockquote><br/>
 
-{% include mathematics.html %}
+{% include_relative mathematics.html %}
 
-{% include physics.html %}
+{% include_relative physics.html %}
 
-{% include fun.html %}
+{% include_relative fun.html %}
 
 {% include_relative footer.md %}
 
