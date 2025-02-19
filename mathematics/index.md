@@ -17,6 +17,10 @@ Yet, if I said “I never learned to read,” they’d say I was an illiterate d
 ### Dynamic surface and contour plots for $f(x, y) \rightarrow \mathbb{R}$
 <div style="border-top: 1px solid #999999"><br/></div>
 
+The application below let's one render functions in two real variables $x$ and $y$.
+The color-coding below is associated with the height of the object and
+is added purely for aesthetical purposes.
+
 <div class="double_image">
 <figure class="left_image">
   <a href="multivariate_surface_plot.html">
