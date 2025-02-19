@@ -2,57 +2,35 @@
 
 from vpython import *
 
-#######################################
-# COMMENT IN THESE IMPORTS IN VPYTHON #
-#######################################
-import numpy as np
-#####################################
-# COMMENT OUT THIS CLASS IN VPYTHON #
-#####################################
-# https://github.com/nicolaspanel/numjs
-# get_library('https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js')
-#
-#
-# # get_library("https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.0.1/math.js")
-# class Numpy:
-#     def __init__(self):
-#         self.array = self._array
-#         self.linspace = self._linspace
-#         self.meshgrid = self._meshgrid
-#         self.concatenate = self._concatenate
-#
-#     def _array(self, an_array):
-#         return nj.array(an_array)
-#
-#     def _linspace(self, start, stop, num):
-#         return self._array([x for x in arange(start, stop, (stop - start) / (num - 1))] + [stop])
-#
-#     def _meshgrid(self, linspace_1, linspace_2):
-#         xx = nj.stack([linspace_1 for _ in range(linspace_1.shape)])
-#         temp = []
-#         for i in range(linspace_2.shape[0]):
-#             for j in range(linspace_2.shape[0]):
-#                 temp.append(linspace_2.get(i))
-#         yy = nj.array(temp).reshape(linspace_2.shape[0], linspace_2.shape[0])
-#         return xx, yy
-#
-#      def _concatenate(self, numpy_array_1, numpy_array_2): return nj.concatenate(numpy_array_1, numpy_array_2)
-#
-#
-# np = Numpy()
-#############
-# TILL HERE #
-#############
-
 animation = canvas(height=500, background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
 
 class NumpyWrapper:
     def __init__(self, start_1, stop_1, start_2, stop_2, resolution):
         self._resolution = resolution
-        x = np.linspace(start_1, stop_1, resolution)
-        y = np.linspace(start_2, stop_2, resolution)
-        self._x, self._y = np.meshgrid(x, y)
-        self._convert_back_to_python_arrays()
+        x = self._linspace(start_1, stop_1, resolution)
+        y = self._linspace(start_2, stop_2, resolution)
+        self._x, self._y = self._meshgrid(x, y)
+        #self._convert_back_to_python_arrays()
+
+    def _linspace(self, start, stop, num):
+        return [x for x in arange(start, stop, (stop - start) / (num - 1))] + [stop]
+
+    def _meshgrid(self, x, y):
+        # Create empty lists to hold the grid arrays
+        X = []
+        Y = []
+
+        # Create the 2D grid arrays
+        for i in range(len(y)):
+            X.append(x)  # Repeat x for each row (to get the same x values)
+
+        for j in range(len(x)):
+            Y.append([y[i] for i in range(len(y))])  # Repeat y for each column (to get the same y values)
+
+        # Transpose Y to match the structure of numpy's meshgrid
+        Y = list(map(list, zip(*Y)))
+
+        return X, Y
 
     def get_plot_data(self, f_x, f_y, f_z):
         x, y, z = [], [], []
@@ -67,22 +45,6 @@ class NumpyWrapper:
             z += [z_]
 
         return x, y, z
-
-    def _convert_back_to_python_array(self, numpy_array):
-        result = []
-        for x in range(numpy_array.shape[0]):
-            temp = []
-            for y in range(numpy_array.shape[1]):
-                ###################################
-                # REPLACE THIS IN LOCAL VPYTHON   #
-                temp += [numpy_array[x, y]]     #
-                #temp += [numpy_array.get(x, y)]  #
-            result += [temp]
-        return result
-
-    def _convert_back_to_python_arrays(self):
-        self._x = self._convert_back_to_python_array(self._x)
-        self._y = self._convert_back_to_python_array(self._y)
 
 
 x_hat = vec(1, 0, 0)
