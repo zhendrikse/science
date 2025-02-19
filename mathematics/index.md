@@ -10,9 +10,6 @@ Yet, if I said “I never learned to read,” they’d say I was an illiterate d
 # Mathematics
 <div class="header_line"><br/></div>
 
-## Three-dimensional surface &amp; contour plots
-<div class="header_line"><br/></div>
-
 <a name="multivariate_functions"></a>
 ### Dynamic surface and contour plots for $f(x, y) \rightarrow \mathbb{R}$
 <div style="border-top: 1px solid #999999"><br/></div>
@@ -62,8 +59,8 @@ modified by the user.
 <p style="clear: both;"></p>
 
 <a name="fields"></a>
-## Scalar fields $f(x, y, z) \rightarrow \mathbb{R}$ and vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$
-<div class="header_line"><br/></div>
+### Scalar fields $f(x, y, z) \rightarrow \mathbb{R}$ and vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$
+<div style="border-top: 1px solid #999999"><br/></div>
 
 A field is an algebraic structure that is defined as a non-empty collection with two 
 ([binary](https://en.wikipedia.org/wiki/Binary_operation)) operations: 
@@ -228,7 +225,7 @@ seen in the mathematics section on this page:
 </details>
 <p style="clear: both;"></p>
 
-# References
+## References
 <div class="header_line"><br/></div>
 
 ### Computational Physics
