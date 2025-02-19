@@ -8,6 +8,6 @@ The images are generated with [multivariate_functions.py](https://github.com/zhe
 
 <p style="clear: both;"></p>
 
-{% include_relative multivariate_shared_content.html %}
+{% include_relative multivariate_shared_content.md %}
 
 {% include share_buttons.html %}
