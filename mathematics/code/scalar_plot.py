@@ -4,7 +4,7 @@ from vpython import simple_sphere, vec, color, rate, label, canvas, cylinder, ve
 
 title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py">scalar_plot.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 
-&#x2022; Shown below is the vector field:
+&#x2022; Shown below is the scalar field:
 
 <h3>$f(x, y, z) = e^{-\\alpha (x^2 + y^2 + z^2)}$</h3>
 """
