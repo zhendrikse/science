@@ -1,12 +1,20 @@
 {% include breadcrumbs.html %}
 
+<blockquote>
+Somehow it’s okay for people to chuckle about not being good at math. 
+Yet, if I said “I never learned to read,” they’d say I was an illiterate dolt. &mdash;
+<a href="https://en.wikipedia.org/wiki/Neil_deGrasse_Tyson">Neil deGrasse Tyson</a>
+</blockquote><br/>
+
 <a name="mathematics"></a>
 # Mathematics
 <div class="header_line"><br/></div>
 
+## Three-dimensional surface &amp; contour plots
+<div class="header_line"><br/></div>
+
 <a name="multivariate_functions"></a>
 ### Dynamic surface and contour plots for $f(x, y) \rightarrow \mathbb{R}$
-
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -27,7 +35,6 @@
 
 <a name="complex_functions"></a>
 ### Dynamic surface and contour plots for $f(z) \rightarrow \mathbb{C}$
-
 <div style="border-top: 1px solid #999999"><br/></div>
 
 The colors in the 3D renderings of complex functions represent 
@@ -51,8 +58,8 @@ modified by the user.
 <p style="clear: both;"></p>
 
 <a name="fields"></a>
-### Scalar fields $f(x, y, z) \rightarrow \mathbb{R}$ and vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$
-<div style="border-top: 1px solid #999999"><br/></div>
+## Scalar fields $f(x, y, z) \rightarrow \mathbb{R}$ and vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$
+<div class="header_line"><br/></div>
 
 A field is an algebraic structure that is defined as a non-empty collection with two 
 ([binary](https://en.wikipedia.org/wiki/Binary_operation)) operations: 
@@ -67,7 +74,6 @@ The applications below render two such fields, that are abundant in physics, nam
 [scalar fields](https://en.wikipedia.org/wiki/Scalar_field) and [vector fields](https://en.wikipedia.org/wiki/Vector_field).
 The former assigns a value (scalar) to every point in space (e.g. the temperature
 in a room), the latter a vector (e.g. the force and direction of the wind).
-
 
 <div class="double_image">
 <figure class="left_image">
@@ -85,8 +91,8 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 </div>
 <p style="clear: both;"></p>
 
-### Topology and my [Math Art Gallery](gallery/index.html)
-<div style="border-top: 1px solid #999999"><br/></div>
+## Topology and my [Math Art Gallery](gallery/index.html)
+<div class="header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
@@ -106,6 +112,7 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 <p style="clear: both;"></p>
 
 ### Double shapes
+<div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
@@ -125,8 +132,8 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 <p style="clear: both;"></p>
 
 <a name="polar_coordinates"></a>
-### Polar coordinates &amp; numeric integration
-<div style="border-top: 1px solid #999999"><br/></div>
+## Polar coordinates &amp; numeric integration
+<div class="header_line"><br/></div>
 
 Polar coordinates not only enable us to much more easily solve spherically symmetric problems in 
 both physics and mathematics, they also provide us a way to parameterize complex topological surfaces, 
@@ -150,9 +157,8 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 <p style="clear: both;"></p>
 
 <a name="mandelbrot"></a>
-### Generating Mandelbrot images using VPython
-<div style="border-top: 1px solid #999999"><br/></div>
-
+## Generating Mandelbrot images using VPython
+<div class="header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
@@ -168,12 +174,9 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 </div>
 <p style="clear: both;"></p>
 
-### Spherical harmonics
-<div style="border-top: 1px solid #999999"><br/></div>
-
-Polar coordinates not only enable us to much more easily solve spherically symmetric problems in 
-both physics and mathematics, they also provide us a way to parameterize complex topological surfaces, 
-such  as [Klein&apos;s bottle](geometry#non_orientables) (shown below in the topology subsection). 
+<a name="spherical_harmonics"></a>
+## Spherical harmonics
+<div class="header_line"><br/></div>
 
 
 <div class="double_image">
@@ -221,7 +224,7 @@ seen in the mathematics section on this page:
 </details>
 <p style="clear: both;"></p>
 
-## References
+# References
 <div class="header_line"><br/></div>
 
 ### Computational Physics
