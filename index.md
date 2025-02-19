@@ -2,7 +2,7 @@
 
 <blockquote>
 The purpose of computing is insight, not numbers. &mdash; 
-<a href="https://en.wikipedia.org/wiki/Richard_Hamming">"Richard Hamming</a>
+<a href="https://en.wikipedia.org/wiki/Richard_Hamming">Richard Hamming</a>
 </blockquote><br/>
 
 {% include mathematics.html %}
