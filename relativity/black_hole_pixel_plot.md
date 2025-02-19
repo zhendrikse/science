@@ -33,6 +33,16 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 ## Background information
 <div class="header_line"><br/></div>
 
+### Image rendition explained
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<figure>
+   <a href="https://svs.gsfc.nasa.gov/13326">
+     <img alt="Black hole explained" src="../images/black_hole_explained.jpg"/>
+   </a>
+   <figcaption>Black hole picture explained (<a href="https://svs.gsfc.nasa.gov/13326">nasa.gov</a>)</figcaption>
+</figure>
+
 ### Black holes history
 <div style="border-top: 1px solid #999999"><br/></div>
 
