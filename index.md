@@ -1,15 +1,18 @@
 {% include breadcrumbs.html %}
 
 <blockquote>
-The feeling of awed wonder that science can give us is one of the highest experiences 
-of which the human psyche is capable. It is a deep aesthetic passion to rank with the 
-finest that music and poetry can deliver. &mdash;
-<a href="https://en.wikipedia.org/wiki/Richard_Dawkins">Richard Dawkins</a> in 
-<a href="https://en.wikipedia.org/wiki/Unweaving_the_Rainbow">Unweaving the Rainbow</a>, 1998.
-</blockquote><br/>
+The purpose of computing is insight, not numbers. &mdash; 
+<a href="https://en.wikipedia.org/wiki/Richard_Hamming">"Richard Hamming</a>
+</blockquote>
 
 # Mathematics
 <div class="header_line"><br/></div>
+
+<blockquote>
+Mathematics directs the flow of the universe, lurks behind its shapes and curves, 
+holds the reins of everything from tiny atoms to the biggest stars. &mdash; 
+<a href="https://en.wikipedia.org/wiki/Edward_Frenkel">Edward Frenkel</a>
+</blockquote><br/>
 
 <div class="row">
   <div class="column" style="background-color:#004444;">
@@ -182,14 +185,13 @@ finest that music and poetry can deliver. &mdash;
 <div class="header_line"><br/></div>
 
 <blockquote>
-The important thing is not to stop questioning. 
-Curiosity has its own reason for existence. 
-One cannot help but be in awe when he contemplates 
-the mysteries of eternity, of life, of the marvelous 
-structure of reality. It is enough if one tries 
-merely to comprehend a little of this mystery 
-each day. &mdash; <a href="https://en.wikipedia.org/wiki/Albert_Einstein">Albert Einstein</a>
+The feeling of awed wonder that science can give us is one of the highest experiences 
+of which the human psyche is capable. It is a deep aesthetic passion to rank with the 
+finest that music and poetry can deliver. &mdash;
+<a href="https://en.wikipedia.org/wiki/Richard_Dawkins">Richard Dawkins</a> in 
+<a href="https://en.wikipedia.org/wiki/Unweaving_the_Rainbow">Unweaving the Rainbow</a>, 1998.
 </blockquote><br/>
+
 
 <!--                             -->
 <!-- Astro and Molecular physics -->
@@ -580,6 +582,10 @@ each day. &mdash; <a href="https://en.wikipedia.org/wiki/Albert_Einstein">Albert
 <p style="clear: both;"></p>
 # Fun
 <div class="header_line"><br/></div>
+
+<blockquote>
+All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedia.org/wiki/Proverb">old proverb</a>
+</blockquote><br/>
 
 <!--           -->
 <!-- Fun stuff -->

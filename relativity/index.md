@@ -5,7 +5,13 @@
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
 <blockquote>
-We should make things as simple as possible, but not simpler. &mdash; Albert Einstein
+The important thing is not to stop questioning. 
+Curiosity has its own reason for existence. 
+One cannot help but be in awe when he contemplates 
+the mysteries of eternity, of life, of the marvelous 
+structure of reality. It is enough if one tries 
+merely to comprehend a little of this mystery 
+each day. &mdash; <a href="https://en.wikipedia.org/wiki/Albert_Einstein">Albert Einstein</a>
 </blockquote><br/>
 
 ### Galilean transformations &amp; lightcone animation 
@@ -32,6 +38,10 @@ We should make things as simple as possible, but not simpler. &mdash; Albert Ein
 <a name="general_relativity"></a>
 ## General relativity
 <div style="border-top: 2px solid #cccccc"><br/></div>
+
+<blockquote>
+We should make things as simple as possible, but not simpler. &mdash; Albert Einstein
+</blockquote><br/>
 
 ### Perihelion precession of Mercury&apos;s orbit
 <div style="border-top: 1px solid #999999"><br/></div>

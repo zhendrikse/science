@@ -3,10 +3,6 @@
 # Fun stuff with [VPython](https://vpython.org/) 
 <div class="header_line"><br/></div>
 
-<blockquote>
-All work and no play makes Jack a dull boy. &mdash; <a href="https://en.wikipedia.org/wiki/Proverb">old proverb</a>
-</blockquote><br/>
-
 ### Chessboard & animated face
 <div class="subsection_header_line"><br/></div>
 

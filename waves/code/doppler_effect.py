@@ -60,7 +60,7 @@ if velocity_wind != 0:
     velocity_wind_label = label(pos=velocity_wind_arrow.pos + vector(0, 1, 0), text=wind_label_text,
                                 color=velocity_wind_arrow.color)
 
-tmax = 12.0
+theta_max = 12.0
 dt = 0.005
 twopi = 2 * pi
 N = 32
@@ -123,7 +123,7 @@ while True:
     new_wave(0)
     told = 0
     # clock=label()
-    for t in arange(0, tmax + dt, dt):
+    for t in arange(0, theta_max + dt, dt):
         rate(100)
 
         #    clock.text="%f" % (t%1.0)

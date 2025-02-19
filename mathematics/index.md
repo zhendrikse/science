@@ -4,12 +4,6 @@
 # Mathematics
 <div class="header_line"><br/></div>
 
-<blockquote>
-Mathematics directs the flow of the universe, lurks behind its shapes and curves, 
-holds the reins of everything from tiny atoms to the biggest stars. &mdash; 
-<a href="https://en.wikipedia.org/wiki/Edward_Frenkel">Edward Frenkel</a>
-</blockquote><br/>
-
 <a name="multivariate_functions"></a>
 ### Dynamic surface and contour plots for $f(x, y) \rightarrow \mathbb{R}$
 
@@ -58,8 +52,22 @@ modified by the user.
 
 <a name="fields"></a>
 ### Scalar fields $f(x, y, z) \rightarrow \mathbb{R}$ and vector fields $f(x, y, z) \rightarrow \mathbb{R}^3$
-
 <div style="border-top: 1px solid #999999"><br/></div>
+
+A field is an algebraic structure that is defined as a non-empty collection with two 
+([binary](https://en.wikipedia.org/wiki/Binary_operation)) operations: 
+addition, $a+b$, and multiplication, $a\cdot b$. 
+
+These operations are accurately defined by 
+[the conditions they must suffice](https://math.libretexts.org/Bookshelves/Analysis/Mathematical_Analysis_(Zakon)/02%3A_Real_Numbers_and_Fields/2.01%3A_Axioms_and_Basic_Definitions), 
+but roughly speaking they should behave similarly as we know them already from the
+rational numbers $\mathbb{Q}$ and real numbers $\mathbb{R}$.
+
+The applications below render two such fields, that are abundant in physics, namely 
+[scalar fields](https://en.wikipedia.org/wiki/Scalar_field) and [vector fields](https://en.wikipedia.org/wiki/Vector_field).
+The former assigns a value (scalar) to every point in space (e.g. the temperature
+in a room), the latter a vector (e.g. the force and direction of the wind).
+
 
 <div class="double_image">
 <figure class="left_image">
