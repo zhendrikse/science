@@ -7,7 +7,7 @@ from vpython import *
 # Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
 # Time-stamp: <2015-09-06 16:45:52 (jmiller)>
 
-display = canvas( title = "Local Space-Time", background=color.gray(0.075))
+display = canvas( title = "Local Space-Time", background=color.gray(0.075), center=vec(1.5, 1.2, 0), range=2)#, forward=vec(0, 1, 0))
 #earth = sphere(texture=textures.earth)
 
 def sinh(x):
@@ -57,19 +57,15 @@ class NumpyWrapper:
 
         return x, y, z
 
-
-class SurfacePlot:
+class Plot:
     def __init__(self, xx, yy, zz):
-        self._hue_offset, self._hue_gradient, self._opacity, self._shininess = .3, .5, 1, .6
+        self._xx, self._yy, self._zz = xx, yy, zz
+        self._hue_offset, self._hue_gradient, self._opacity, self._shininess = .3, 1, 1, .6
         x_min, x_max = min(map(min, xx)), max(map(max, xx))
         y_min, y_max = min(map(min, yy)), max(map(max, yy))
         z_min, z_max = min(map(min, zz)), max(map(max, zz))
         range_x, range_y, range_z = x_max - x_min, y_max - y_min, z_max - z_min
         self._max_range = max(range_x, range_y, range_z)
-        self._xx, self._yy, self._zz = xx, yy, zz
-        self._vertices, self._quads = [], []
-        self._create_vertices()
-        self._create_quads()
 
     def _get_values_for_plot(self, x, y):
         value = self._zz[x][y]
@@ -77,11 +73,63 @@ class SurfacePlot:
         hue = self._hue_gradient * abs(new_position.y) / self._max_range + self._hue_offset
         return new_position, color.hsv_to_rgb(vec(hue, 1, 1.2))
 
-    def _create_vertices(self, t=1):
+    def set_hue_offset_to(self, offset):
+        self._hue_offset = offset
+
+    def set_hue_gradient_to(self, gradient):
+        self._hue_gradient = gradient
+
+    def set_opacity_to(self, opacity):
+        self._opacity = opacity
+
+    def set_shininess_to(self, shininess):
+        self._shininess = shininess
+
+class ContourPlot(Plot):
+    def __init__(self, xx, yy, zz):
+        Plot.__init__(self, xx, yy, zz)
+        self._x_contours, self._y_contours = [], []
+        self._initialize_contour_curves()
+
+    def _initialize_contour_curves(self):
+        positions = []
+        position_col = [[] for _ in range(len(self._yy[0]))]
+        for i in range(len(self._xx)):
+            position_row = []
+            for j in range(len(self._yy[0])):
+                position, _ = self._get_values_for_plot(i, j)
+                position_row.append(position)
+                position_col[j].append(position)
+            positions.append(position_row)
+            self._x_contours.append(curve(pos=position_row, radius=self._max_range/500))
+
+        for i in range(len(position_col)):
+            self._y_contours.append(curve(pos=position_col[i], radius=self._max_range/500))
+
+    def _render_contours(self, x, y):
+        position, colour = self._get_values_for_plot(x, y)
+        self._x_contours[x].modify(y, color=colour)
+        self._y_contours[y].modify(x, color=colour)
+        self._x_contours[x].modify(y, pos=position)
+        self._y_contours[y].modify(x, pos=position)
+
+    def render(self):
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
-                position, _ = self._get_values_for_plot(x, y)
-                self._vertices.append(vertex(pos=position, normal=vec(0, 1, 0)))
+                self._render_contours(x, y)
+
+class SurfacePlot(Plot):
+    def __init__(self, xx, yy, zz):
+        Plot.__init__(self, xx, yy, zz)
+        self._vertices, self._quads = [], []
+        self._create_vertices()
+        self._create_quads()
+
+    def _create_vertices(self):
+        for x in range(len(self._xx)):
+            for y in range(len(self._yy[0])):
+                position, colour = self._get_values_for_plot(x, y)
+                self._vertices.append(vertex(pos=position, normal=vec(0, 1, 0), color=colour))
 
     def _create_quad(self, x, y):
         _neighbor_increment_x, _neighbor_increment_y = 1, 1
@@ -101,8 +149,8 @@ class SurfacePlot:
     # When removing the "-1", opposite ends will be glued together
     #
     def _create_quads(self):
-        for x in range(len(self._xx) - 2):
-            for y in range(len(self._yy[0]) - 2):
+        for x in range(len(self._xx) - 1):
+            for y in range(len(self._yy[0]) - 1):
                 self._create_quad(x, y)
 
     def _set_vertex_normal_for(self, x, y):
@@ -159,103 +207,103 @@ class SurfacePlot:
         self._update_vertices()
         self._make_normals()
 
+class GaussianQuadrature:
+    def __init__(self):
+        # Precompute the roots and weights for a given n
+        self._roots_cache = {}
+        self._weights_cache = {}
 
-# Function to evaluate Legendre polynomial P_n(x) and its derivative
-def legendre_poly(n, x):
-    if n == 0:
-        return 1
-    elif n == 1:
+    # Function to evaluate Legendre polynomial P_n(x) and its derivative
+    def _legendre_poly(self, n, x):
+        if n == 0:
+            return 1
+        elif n == 1:
+            return x
+        else:
+            P0 = 1
+            P1 = x
+            for k in range(2, n + 1):
+                Pn = ((2 * k - 1) * x * P1 - (k - 1) * P0) / k
+                P0 = P1
+                P1 = Pn
+            return Pn
+
+
+    def _legendre_poly_derivative(self, n, x):
+        if n == 0:
+            return 0
+        elif n == 1:
+            return 1
+        else:
+            P0 = 1
+            P1 = x
+            for k in range(2, n + 1):
+                Pn = ((2 * k - 1) * x * P1 - (k - 1) * P0) / k
+                P0 = P1
+                P1 = Pn
+            return n * (P0 - x * P1) / (1 - (x * x))
+
+
+    # Function to find the roots (x) of the Legendre polynomial P_n(x) using Newton's method
+    def _find_roots(self, n, tol=1e-14, max_iter=100):
+        # Initial guess for the roots (x) are the Chebyshev nodes
+        x = [cos(pi * (4 * i - 1) / (2 * n)) for i in range(1, n + 1)]
+        for i in range(n):
+            xi = x[i]
+            for j in range(max_iter):
+                # Calculate Legendre polynomial and its derivative at x_i
+                Pn = self._legendre_poly(n, xi)
+                Pn_prime = self._legendre_poly_derivative(n, xi)
+                # Newton-Raphson update
+                xi_new = xi - Pn / Pn_prime
+                # Check for convergence
+                if abs(xi_new - xi) < tol:
+                    break
+                xi = xi_new
+            x[i] = xi
         return x
-    else:
-        P0 = 1
-        P1 = x
-        for k in range(2, n + 1):
-            Pn = ((2 * k - 1) * x * P1 - (k - 1) * P0) / k
-            P0 = P1
-            P1 = Pn
-        return Pn
 
 
-def legendre_poly_derivative(n, x):
-    if n == 0:
-        return 0
-    elif n == 1:
-        return 1
-    else:
-        P0 = 1
-        P1 = x
-        for k in range(2, n + 1):
-            Pn = ((2 * k - 1) * x * P1 - (k - 1) * P0) / k
-            P0 = P1
-            P1 = Pn
-        return n * (P0 - x * P1) / (1 - (x * x))
+    # Function to find the weights for Gaussian quadrature
+    def _gauss_legendre_weights(self, roots):
+        weights = []
+        for xi in roots:
+            # Weight is calculated using the derivative of the Legendre polynomial
+            Pn_prime = self._legendre_poly_derivative(len(roots), xi)
+            weight = 2 / ((1 - xi * xi) * (Pn_prime * Pn_prime))
+            weights.append(weight)
+        return weights
 
 
-# Function to find the roots (x) of the Legendre polynomial P_n(x) using Newton's method
-def find_roots(n, tol=1e-14, max_iter=100):
-    # Initial guess for the roots (x) are the Chebyshev nodes
-    x = [cos(pi * (4 * i - 1) / (2 * n)) for i in range(1, n + 1)]
-    for i in range(n):
-        xi = x[i]
-        for j in range(max_iter):
-            # Calculate Legendre polynomial and its derivative at x_i
-            Pn = legendre_poly(n, xi)
-            Pn_prime = legendre_poly_derivative(n, xi)
-            # Newton-Raphson update
-            xi_new = xi - Pn / Pn_prime
-            # Check for convergence
-            if abs(xi_new - xi) < tol:
-                break
-            xi = xi_new
-        x[i] = xi
-    return x
+    def _precompute_roots_and_weights(self, n):
+        if n not in self._roots_cache:
+            # Find the roots using the method we previously used
+            roots = self._find_roots(n)
+            weights = self._gauss_legendre_weights(roots)
+            self._roots_cache[n] = roots
+            self._weights_cache[n] = weights
+        return self._roots_cache[n], self._weights_cache[n]
 
+    # Gaussian quadrature integration
+    def gaussian_quadrature(self, function_, from_, to_, n):
+        # Find the roots and weights for the standard interval [-1, 1]
+        roots, weights = self._precompute_roots_and_weights(n)
 
-# Function to find the weights for Gaussian quadrature
-def gauss_legendre_weights(roots):
-    weights = []
-    for xi in roots:
-        # Weight is calculated using the derivative of the Legendre polynomial
-        Pn_prime = legendre_poly_derivative(len(roots), xi)
-        weight = 2 / ((1 - xi * xi) * (Pn_prime * Pn_prime))
-        weights.append(weight)
-    return weights
+        # Transform roots from [-1, 1] to [a, b]
+        transformed_roots = [(to_ - from_) / 2 * xi + (to_ + from_) / 2 for xi in roots]
 
-# Precompute the roots and weights for a given n
-roots_cache = {}
-weights_cache = {}
+        # Calculate the integral using the transformed roots and weights
+        integral = 0
+        for xi, weight in zip(transformed_roots, weights):
+            integral += weight * function_(xi)
 
-def precompute_roots_and_weights(n):
-    if n not in roots_cache:
-        # Find the roots using the method we previously used
-        roots = find_roots(n)
-        weights = gauss_legendre_weights(roots)
-        roots_cache[n] = roots
-        weights_cache[n] = weights
-    return roots_cache[n], weights_cache[n]
-
-# Gaussian quadrature integration
-def gaussian_quadrature(function_, from_, to_, n):
-    # Find the roots and weights for the standard interval [-1, 1]
-    roots, weights = precompute_roots_and_weights(n)
-
-    # Transform roots from [-1, 1] to [a, b]
-    transformed_roots = [(to_ - from_) / 2 * xi + (to_ + from_) / 2 for xi in roots]
-
-    # Calculate the integral using the transformed roots and weights
-    integral = 0
-    for xi, weight in zip(transformed_roots, weights):
-        integral += weight * function_(xi)
-
-    integral *= (to_ - from_) / 2
-    return integral
+        integral *= (to_ - from_) / 2
+        return integral
 
 def integrand(x):
     temp = (1 - x) * (1 - x)
     temp *= temp
     return sqrt( (  (1 / temp) - 1 ) / x )
-
-
 
 def local_space_time(resolution=100):
     def f_x(f, s):
@@ -266,7 +314,7 @@ def local_space_time(resolution=100):
 
     def f_z(_, s):
         upper_bound = 0.25 * s * s
-        return gaussian_quadrature(integrand, 0, upper_bound, resolution)
+        return integration.gaussian_quadrature(integrand, 0, upper_bound, resolution)
 
     f_max = 1.2
     f_min = -f_max
@@ -274,9 +322,12 @@ def local_space_time(resolution=100):
     r_max = 1.44
     return NumpyWrapper(f_min, f_max, r_earth, r_max, resolution).get_plot_data(f_x, f_y, f_z)
 
-xx, yy, zz = local_space_time()
-plot = SurfacePlot(xx, yy, zz)
+integration = GaussianQuadrature()
+x, y, z = local_space_time()
+SurfacePlot(x, y, z).render()
+x, y, z = local_space_time(20)
+ContourPlot(x, y, z).render()
 
 while True:
-    plot.render()
+    #print(display.forward, display.range, display.center)
     rate(10)
