@@ -30,7 +30,9 @@ showing a bright ring formed as light bends in the intense gravity around a blac
     <a href="https://cdn.mos.cms.futurecdn.net/F2qM9GBVYhTWeZ9W3C7Eij.jpg.html">
       <img alt="Sagittarius A*" src="../images/sagittarius_a.png"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <figcaption>On May 12, 2022, the Event Horizon Telescope managed to reveal Sagittarius A*, 
+    <figcaption>On May 12, 2022, the 
+    <a href="https://eventhorizontelescope.org/">Event Horizon Telescope</a> 
+    managed to reveal Sagittarius A*, 
     the supermassive black hole at the center of our Milky Way.</figcaption>
   </figure>
   <figure class="right_image">
@@ -39,7 +41,7 @@ showing a bright ring formed as light bends in the intense gravity around a blac
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <figcaption>Another supermassive black hole, at the center of the galaxy M87, 
     that is 6.5 billion times more massive than the sun, taken 
-    by the same Event Horizon Telescope. </figcaption>
+    by the same <a href="https://eventhorizontelescope.org/">Event Horizon Telescope</a>.</figcaption>
   </figure>
 </div>
 <p style="clear: both;"></p>
