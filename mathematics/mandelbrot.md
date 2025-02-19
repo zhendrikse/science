@@ -36,7 +36,7 @@ in a value (in this case of the constant $c$)
 causes the function to either diverge to infinity or remain bounded.
 
 The butterfly-effect is more rigorously is defined as a deterministic 
-non-linear response of system that for its future state(s) is (extremely) 
+non-linear response of a system that for its future state(s) is (extremely) 
 sensitive on one or more of its initial conditions, such as a distant butterfly 
 flapping its wings a few weeks ago, causing a tornado’s route to change its course.
 
