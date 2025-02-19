@@ -6,6 +6,18 @@
 {% include_relative code/BlackHolePixelPlot.html %}
 
 <p style="clear: both;"></p>
+
+### Image rendition explained
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<figure>
+   <a href="https://svs.gsfc.nasa.gov/13326">
+     <img alt="Black hole explained" src="../images/black_hole_explained.jpg"/>
+   </a>
+   <figcaption>Black hole picture explained (<a href="https://svs.gsfc.nasa.gov/13326">nasa.gov</a>)</figcaption>
+</figure>
+
+### Real images of black holes
 <div style="border-top: 1px solid #999999"><br/></div>
 
 For comparison, below are some real images of black holes, 
@@ -30,20 +42,7 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 </div>
 <p style="clear: both;"></p>
 
-## Background information
-<div class="header_line"><br/></div>
-
-### Image rendition explained
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<figure>
-   <a href="https://svs.gsfc.nasa.gov/13326">
-     <img alt="Black hole explained" src="../images/black_hole_explained.jpg"/>
-   </a>
-   <figcaption>Black hole picture explained (<a href="https://svs.gsfc.nasa.gov/13326">nasa.gov</a>)</figcaption>
-</figure>
-
-### Black holes history
+### A concise history
 <div style="border-top: 1px solid #999999"><br/></div>
 
 Black holes are an outcome of the 
