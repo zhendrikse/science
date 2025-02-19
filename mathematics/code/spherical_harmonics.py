@@ -12,7 +12,6 @@ class NumpyWrapper:
         x = self._linspace(start_1, stop_1, resolution)
         y = self._linspace(start_2, stop_2, resolution)
         self._x, self._y = self._meshgrid(x, y)
-        #self._convert_back_to_python_arrays()
 
     def _linspace(self, start, stop, num):
         return [x for x in arange(start, stop, (stop - start) / (num - 1))] + [stop]
@@ -242,7 +241,7 @@ class SurfacePlot(Plot):
         """
         Further work to focus on this area of the normal calculations
         """
-        vertex_.normal_distribution = cross(vec_1, vec_2)
+        vertex_.normal = cross(vec_1, vec_2)
 
     #        normal_total_ += cross(vec_1, vec_2)
     #        vertex_.normal = normal_total_/2
