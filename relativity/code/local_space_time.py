@@ -1,20 +1,34 @@
-from vpython import *
-#!/usr/bin/env python
+# Web VPython 3.2
 
-# https://github.com/Yurlungur/our-local-spacetime/blob/master/local_spacetime.py
-# https://www.thephysicsmill.com/2015/09/06/our-local-spacetime/
+from vpython import canvas, rate, exp, arange, quad, vertex, vec, vector, color, cross, curve, sqrt, cos, pi, textures, \
+    sphere, checkbox
 
-# Author: Jonah Miller (jonah.maxwell.miller@gmail.com)
-# Time-stamp: <2015-09-06 16:45:52 (jmiller)>
+title = """&#x2022; The <span style="color: red">red lines</span> represent the time axis, running from the bottom to the top.
+&#x2022; The black lines are a spatial coordinate, pointing towards the Earth.
+&#x2022; The Earth can be shown, but does <em>not</em> do justice to the <em>time</em> coordinate, of course!
+&#x2022; Likewise, a background with stars can be enabled, but <em>violates the time coordinate</em> in a similar way!
 
-display = canvas( title = "Local Space-Time", background=color.gray(0.075), center=vec(1.5, 1.2, 0), range=2)#, forward=vec(0, 1, 0))
-#earth = sphere(texture=textures.earth)
+&#x2022; Original <a href="https://github.com/Yurlungur/our-local-spacetime/blob/master/local_spacetime.py">local_spacetime.py</a> by Jonah Miller (jonah.maxwell.miller@gmail.com).
+&#x2022; Ported to VPython by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>, see <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/local_space_time.py">local_space_time.py</a>
+&#x2022; Learn more about this visualization in Jonah Miller&apos;s elaborate article <a href="https://www.thephysicsmill.com/2015/09/06/our-local-spacetime/">Our Local Spacetime</a>.
+&#x2022; Credits to ChatGPT for helping out with the optimization of the Gaussian quadrature.
+
+"""
+
+display = canvas(title=title, width=650, height=650, background=color.gray(0.075), center=vec(.18, -.37, 1.7),
+                 range=4.25, forward=vec(-0.8, -.15, -.55))
+earth = sphere(texture=textures.earth, visible=False)
+stars = sphere(pos=vec(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=10, shininess=0, opacity=0.5,
+               visible=False)
+
 
 def sinh(x):
-    return .5 * ( exp(x) - exp(-x))
+    return .5 * (exp(x) - exp(-x))
+
 
 def cosh(x):
-    return .5 * ( exp(x) + exp(-x))
+    return .5 * (exp(x) + exp(-x))
+
 
 class NumpyWrapper:
     def __init__(self, start_1, stop_1, start_2, stop_2, resolution):
@@ -28,20 +42,20 @@ class NumpyWrapper:
 
     def _meshgrid(self, x, y):
         # Create empty lists to hold the grid arrays
-        X = []
-        Y = []
+        xx = []
+        yy = []
 
         # Create the 2D grid arrays
         for i in range(len(y)):
-            X.append(x)  # Repeat x for each row (to get the same x values)
+            xx.append(x)  # Repeat x for each row (to get the same x values)
 
         for j in range(len(x)):
-            Y.append([y[i] for i in range(len(y))])  # Repeat y for each column (to get the same y values)
+            yy.append([y[i] for i in range(len(y))])  # Repeat y for each column (to get the same y values)
 
         # Transpose Y to match the structure of numpy's meshgrid
-        Y = list(map(list, zip(*Y)))
+        yy = list(map(list, zip(*yy)))
 
-        return X, Y
+        return xx, yy
 
     def get_plot_data(self, f_x, f_y, f_z):
         x, y, z = [], [], []
@@ -57,21 +71,16 @@ class NumpyWrapper:
 
         return x, y, z
 
+
 class Plot:
     def __init__(self, xx, yy, zz):
         self._xx, self._yy, self._zz = xx, yy, zz
-        self._hue_offset, self._hue_gradient, self._opacity, self._shininess = .3, 1, 1, .6
+        self._hue_offset, self._hue_gradient, self._opacity, self._shininess = .3, .5, 1, .6
         x_min, x_max = min(map(min, xx)), max(map(max, xx))
         y_min, y_max = min(map(min, yy)), max(map(max, yy))
         z_min, z_max = min(map(min, zz)), max(map(max, zz))
         range_x, range_y, range_z = x_max - x_min, y_max - y_min, z_max - z_min
         self._max_range = max(range_x, range_y, range_z)
-
-    def _get_values_for_plot(self, x, y):
-        value = self._zz[x][y]
-        new_position = vector(self._xx[x][y], value, self._yy[x][y])
-        hue = self._hue_gradient * abs(new_position.y) / self._max_range + self._hue_offset
-        return new_position, color.hsv_to_rgb(vec(hue, 1, 1.2))
 
     def set_hue_offset_to(self, offset):
         self._hue_offset = offset
@@ -85,6 +94,7 @@ class Plot:
     def set_shininess_to(self, shininess):
         self._shininess = shininess
 
+
 class ContourPlot(Plot):
     def __init__(self, xx, yy, zz):
         Plot.__init__(self, xx, yy, zz)
@@ -97,26 +107,25 @@ class ContourPlot(Plot):
         for i in range(len(self._xx)):
             position_row = []
             for j in range(len(self._yy[0])):
-                position, _ = self._get_values_for_plot(i, j)
-                position_row.append(position)
-                position_col[j].append(position)
+                position_row.append(vector(self._xx[i][j], self._zz[i][j], self._yy[i][j]))
+                position_col[j].append(vector(self._xx[i][j], self._zz[i][j], self._yy[i][j]))
             positions.append(position_row)
-            self._x_contours.append(curve(pos=position_row, radius=self._max_range/500))
+            self._x_contours.append(curve(pos=position_row, radius=.01))
 
         for i in range(len(position_col)):
-            self._y_contours.append(curve(pos=position_col[i], radius=self._max_range/500))
+            self._y_contours.append(curve(pos=position_col[i], radius=.01))
 
     def _render_contours(self, x, y):
-        position, colour = self._get_values_for_plot(x, y)
-        self._x_contours[x].modify(y, color=colour)
-        self._y_contours[y].modify(x, color=colour)
-        self._x_contours[x].modify(y, pos=position)
-        self._y_contours[y].modify(x, pos=position)
+        self._x_contours[x].modify(y, color=color.magenta)  # Color red fixed for time coordinate
+        self._y_contours[y].modify(x, color=color.black)  # Color black fixed for space coordinate
+        self._x_contours[x].modify(y, pos=vector(self._xx[x][y], self._zz[x][y], self._yy[x][y]))
+        self._y_contours[y].modify(x, pos=vector(self._xx[x][y], self._zz[x][y], self._yy[x][y]))
 
     def render(self):
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
                 self._render_contours(x, y)
+
 
 class SurfacePlot(Plot):
     def __init__(self, xx, yy, zz):
@@ -128,8 +137,8 @@ class SurfacePlot(Plot):
     def _create_vertices(self):
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
-                position, colour = self._get_values_for_plot(x, y)
-                self._vertices.append(vertex(pos=position, normal=vec(0, 1, 0), color=colour))
+                position = vector(self._xx[x][y], self._zz[x][y], self._yy[x][y])
+                self._vertices.append(vertex(pos=position, normal=vec(0, 1, 0), color=color.green))
 
     def _create_quad(self, x, y):
         _neighbor_increment_x, _neighbor_increment_y = 1, 1
@@ -145,23 +154,12 @@ class SurfacePlot(Plot):
         self._quads.append(quad(vs=[v0, v1, v2, v3]))
 
     # Create the quad objects, based on the vertex objects already created.
-    #
-    # When removing the "-1", opposite ends will be glued together
-    #
     def _create_quads(self):
         for x in range(len(self._xx) - 1):
             for y in range(len(self._yy[0]) - 1):
                 self._create_quad(x, y)
 
     def _set_vertex_normal_for(self, x, y):
-        # OLD NORMAL ALGORITHM
-        # if x == len(self._xx) - 1 or y == len(self._yy[0]) - 1: return
-        # v = self._get_vertex(x, y)
-        # a = self._get_vertex(x, y + 1).pos - v.pos
-        # b = self._get_vertex(x + 1, y).pos - v.pos
-        # v.normal = cross(a, b)
-
-        # NEW NORMAL ALGORITH
         _neighbor_increment_x, _neighbor_increment_y = 1, 1
         if x == (len(self._xx) - 1):
             _neighbor_increment_x = -x
@@ -169,36 +167,35 @@ class SurfacePlot(Plot):
             _neighbor_increment_y = -y
 
         vertex_ = self._get_vertex(x, y)
-        # # normal_total_ = self._get_vertex(x, y + _neighbor_increment_y).normal
-        # # normal_total_ += self._get_vertex(x + _neighbor_increment_x, y).normal
+        normal_total_ = self._get_vertex(x, y + _neighbor_increment_y).normal
+        normal_total_ += self._get_vertex(x + _neighbor_increment_x, y).normal
         vec_1 = self._get_vertex(x, y + _neighbor_increment_y).pos - vertex_.pos
         vec_2 = self._get_vertex(x + _neighbor_increment_x, y).pos - vertex_.pos
         # """
         # Further work to focus on this area of the normal calculations
         # """
-        vertex_.normal = cross(vec_1, vec_2)
-        # # normal_total_ += cross(vec_1, vec_2)
-        # # vertex_.normal = normal_total_/2
+        # vertex_.normal = cross(vec_1, vec_2)
+        normal_total_ += cross(vec_1, vec_2)
+        vertex_.normal = normal_total_ / 2
 
     # Set the normal for each vertex to be perpendicular to the lower left corner of the quad.
     # The vectors a and b point to the right and up around a vertex in the xy plane.
     def _make_normals(self):
-        for x in range(len(self._xx) ):
+        for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
                 self._set_vertex_normal_for(x, y)
 
-    def _update_vertex(self, x, y, value, colour):
+    def _update_vertex(self, x, y, value):
         vertex_ = self._get_vertex(x, y)
         vertex_.pos.y = value
-        vertex_.color = colour
+        vertex_.color = color.green
         vertex_.opacity = self._opacity
         vertex_.shininess = self._shininess
 
     def _update_vertices(self):
         for x in range(len(self._xx)):
             for y in range(len(self._yy[0])):
-                position, colour = self._get_values_for_plot(x, y)
-                self._update_vertex(x, y, position.y, colour)
+                self._update_vertex(x, y, self._zz[x][y])
 
     def _get_vertex(self, x, y):
         return self._vertices[x * len(self._yy[0]) + y]
@@ -206,6 +203,7 @@ class SurfacePlot(Plot):
     def render(self):
         self._update_vertices()
         self._make_normals()
+
 
 class GaussianQuadrature:
     def __init__(self):
@@ -228,7 +226,6 @@ class GaussianQuadrature:
                 P1 = Pn
             return Pn
 
-
     def _legendre_poly_derivative(self, n, x):
         if n == 0:
             return 0
@@ -242,7 +239,6 @@ class GaussianQuadrature:
                 P0 = P1
                 P1 = Pn
             return n * (P0 - x * P1) / (1 - (x * x))
-
 
     # Function to find the roots (x) of the Legendre polynomial P_n(x) using Newton's method
     def _find_roots(self, n, tol=1e-14, max_iter=100):
@@ -263,7 +259,6 @@ class GaussianQuadrature:
             x[i] = xi
         return x
 
-
     # Function to find the weights for Gaussian quadrature
     def _gauss_legendre_weights(self, roots):
         weights = []
@@ -273,7 +268,6 @@ class GaussianQuadrature:
             weight = 2 / ((1 - xi * xi) * (Pn_prime * Pn_prime))
             weights.append(weight)
         return weights
-
 
     def _precompute_roots_and_weights(self, n):
         if n not in self._roots_cache:
@@ -285,7 +279,7 @@ class GaussianQuadrature:
         return self._roots_cache[n], self._weights_cache[n]
 
     # Gaussian quadrature integration
-    def gaussian_quadrature(self, function_, from_, to_, n):
+    def gaussian_quadrature(self, f_x, from_, to_, n):
         # Find the roots and weights for the standard interval [-1, 1]
         roots, weights = self._precompute_roots_and_weights(n)
 
@@ -295,26 +289,29 @@ class GaussianQuadrature:
         # Calculate the integral using the transformed roots and weights
         integral = 0
         for xi, weight in zip(transformed_roots, weights):
-            integral += weight * function_(xi)
+            integral += weight * f_x(xi)
 
         integral *= (to_ - from_) / 2
         return integral
 
+
 def integrand(x):
     temp = (1 - x) * (1 - x)
     temp *= temp
-    return sqrt( (  (1 / temp) - 1 ) / x )
+    return sqrt(((1 / temp) - 1) / x)
+
 
 def local_space_time(resolution=100):
     def f_x(f, s):
         return s * cosh(f)
 
-    def f_y(f, s):
+    def f_z(f, s):
         return s * sinh(f)
 
-    def f_z(_, s):
+    def f_y(_, s):
         upper_bound = 0.25 * s * s
-        return integration.gaussian_quadrature(integrand, 0, upper_bound, resolution)
+        visual_scaling_factor = 3.
+        return visual_scaling_factor * integration.gaussian_quadrature(integrand, 0, upper_bound, resolution)
 
     f_max = 1.2
     f_min = -f_max
@@ -322,12 +319,27 @@ def local_space_time(resolution=100):
     r_max = 1.44
     return NumpyWrapper(f_min, f_max, r_earth, r_max, resolution).get_plot_data(f_x, f_y, f_z)
 
+
 integration = GaussianQuadrature()
 x, y, z = local_space_time()
 SurfacePlot(x, y, z).render()
 x, y, z = local_space_time(20)
 ContourPlot(x, y, z).render()
 
+
+def toggle_earth():
+    earth.visible = not earth.visible
+
+
+def toggle_stars():
+    stars.visible = not stars.visible
+
+
+display.append_to_caption("\n")
+_ = checkbox(text="Show Earth ", bind=toggle_earth)
+_ = checkbox(text="Show stars ", bind=toggle_stars)
+
 while True:
-    #print(display.forward, display.range, display.center)
     rate(10)
+
+

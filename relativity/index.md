@@ -51,15 +51,33 @@ We should make things as simple as possible, but not simpler. &mdash; Albert Ein
     <a href="perihelion_mercury.html">
       <img alt="Light cone" src="../images/perihelion_mercury.png" title="Click to animate"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <figcaption>One of the most well-known tests of general relativity: 
-    the perihelion precession of Mercury&apos;s orbit.</figcaption>
+    <figcaption>One of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) 
+    of general relativity: Mercury&apos;s perihelion precession.</figcaption>
   </figure>
   <figure class="right_image">
     <a href="black_hole_pixel_plot.html">
       <img alt="Black hole" src="../images/black_hole_pixel_plot.png" title="Click to animate"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <figcaption>Black hole image generated with ray tracing techniques, hence it 
-    may take time for the page to render!</figcaption>
+    may take some time for the page to render!</figcaption>
+  </figure>
+</div>
+<p style="clear: both;"></p>
+
+### Local space-time near Earth
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+  <figure class="left_image">
+    <a href="local_space_time.html">
+      <img alt="Light cone" src="../images/local_space_time.png" title="Click to animate"/>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <figcaption>Local space-time near Earth. This really is space-<em>time</em>, i.e.  
+    the black lines represent a spatial coordinate, whereas the
+    <span style="color: red">red lines</span> the time axis!</figcaption>
+  </figure>
+  <figure class="right_image">
+    <!-- RESERVED FOR FUTURE APPLICATION -->
   </figure>
 </div>
 <p style="clear: both;"></p>

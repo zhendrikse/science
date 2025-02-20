@@ -1,0 +1,1068 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, triangle, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sin, tan, asin, acos, atan, atan2, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, earth, stars, _GS_1, integration, ρσ_unpack, x, y, z, _;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "15";
+    title = "&#x2022; The <span style=\"color: red\">red lines<\/span> represent the time axis, running from the bottom to the top\n&#x2022; The black lines are a spatial coordinate, pointing towards the Earth\n&#x2022; The Earth can be shown, but does <em>not</em> do justice to the <em>time</em> coordinate, of course!\n&#x2022; Likewise, a background with stars can be enabled, but <em>violates the time coordinate</em> in a similar way!\n\n&#x2022; Original <a href=\"https://github.com/Yurlungur/our-local-spacetime/blob/master/local_spacetime.py\">local_spacetime.py</a> by Jonah Miller (jonah.maxwell.miller@gmail.com).\n&#x2022; Ported to VPython by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>, see <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/local_space_time.py\">local_space_time.py</a>.\n&#x2022; Learn more about this visualization in Jonah Miller&apos;s elaborate article <a href=\"https://www.thephysicsmill.com/2015/09/06/our-local-spacetime/\">Our Local Spacetime</a>.\n&#x2022; Credits to ChatGPT for helping out with the optimization of the Gaussian quadrature.\n\n";
+    "17";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 650, height: 650, background: color.gray(.075), center: vec(.18, 1["-u"]()["*"](.37), 1.7), range: 4.25, forward: vec(1["-u"]()["*"](.8), 1["-u"]()["*"](.15), 1["-u"]()["*"](.55))})]);
+    "18";
+    earth = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({texture: textures.earth, visible: false})]);
+    "19";
+    stars = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 10, shininess: 0, opacity: .5, visible: false})]);
+    "21";
+    async function sinh(x) {
+        "22";
+        return .5["*"](exp(x)["-"](1["*"](exp(1["-u"]()["*"](x)))));
+    };
+    if (!sinh.__argnames__) Object.defineProperties(sinh, {
+        __argnames__ : {value: ["x"]},
+        __module__ : {value: null}
+    });
+
+    "24";
+    async function cosh(x) {
+        "25";
+        return .5["*"](exp(x)["+"](exp(1["-u"]()["*"](x))));
+    };
+    if (!cosh.__argnames__) Object.defineProperties(cosh, {
+        __argnames__ : {value: ["x"]},
+        __module__ : {value: null}
+    });
+
+    "27";
+    function NumpyWrapper() {;
+    }
+    NumpyWrapper.prototype.__init__ = async function __init__(start_1, stop_1, start_2, stop_2, resolution) {
+        var self = this;
+        var ρσ_ls, x, y, ρσ_unpack;
+        "29";
+        self._resolution = resolution;
+        "30";
+        x = (await self._linspace(start_1, stop_1, resolution));
+        "31";
+        y = (await self._linspace(start_2, stop_2, resolution));
+        "32";
+        ρσ_unpack = (await self._meshgrid(x, y));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        self._x = ρσ_unpack[0];
+        self._y = ρσ_unpack[1];
+    };
+    if (!NumpyWrapper.prototype.__init__.__argnames__) Object.defineProperties(NumpyWrapper.prototype.__init__, {
+        __argnames__ : {value: ["start_1", "stop_1", "start_2", "stop_2", "resolution"]},
+        __module__ : {value: null}
+    });
+    NumpyWrapper.__argnames__ = NumpyWrapper.prototype.__init__.__argnames__;
+    NumpyWrapper.__handles_kwarg_interpolation__ = NumpyWrapper.prototype.__init__.__handles_kwarg_interpolation__;
+    NumpyWrapper.prototype._linspace = async function _linspace(start, stop, num) {
+        var self = this;
+        "35";
+        return (function() {
+            var ρσ_Iter = range(start, stop, stop["-"](1["*"](start))["/"](num["-"](1["*"](1)))), ρσ_Result = [], x;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                x = ρσ_Index;
+                ρσ_Result.push(x);
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })()["+"](ρσ_list_decorate([ stop ]));
+    };
+    if (!NumpyWrapper.prototype._linspace.__argnames__) Object.defineProperties(NumpyWrapper.prototype._linspace, {
+        __argnames__ : {value: ["start", "stop", "num"]},
+        __module__ : {value: null}
+    });
+    NumpyWrapper.prototype._meshgrid = async function _meshgrid(x, y) {
+        var self = this;
+        var ρσ_ls, X, Y, i, j;
+        "39";
+        X = ρσ_list_decorate([]);
+        "40";
+        Y = ρσ_list_decorate([]);
+        "43";
+        var ρσ_Iter1 = range(len(y));
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            i = ρσ_Index1;
+            "44";
+            X.append(x);
+        }
+        "46";
+        var ρσ_Iter2 = range(len(x));
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            j = ρσ_Index2;
+            "47";
+            Y.append((function() {
+                var ρσ_Iter = range(len(y)), ρσ_Result = [], i;
+                ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                for (var ρσ_Index of ρσ_Iter) {
+                    i = ρσ_Index;
+                    ρσ_Result.push(ρσ_getitem(y, i));
+                }
+                ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                return ρσ_Result;
+            })());
+        }
+        "50";
+        Y = list((await map(list, zip.apply(this, Y))));
+        "52";
+        return [X, Y];
+    };
+    if (!NumpyWrapper.prototype._meshgrid.__argnames__) Object.defineProperties(NumpyWrapper.prototype._meshgrid, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    NumpyWrapper.prototype.get_plot_data = async function get_plot_data(f_x, f_y, f_z) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, x, y, z, x_, y_, z_, j, i;
+        "55";
+        ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([])];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        z = ρσ_unpack[2];
+        "56";
+        var ρσ_Iter3 = range(len(self._x));
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            i = ρσ_Index3;
+            "57";
+            ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([])];
+            x_ = ρσ_unpack[0];
+            y_ = ρσ_unpack[1];
+            z_ = ρσ_unpack[2];
+            "58";
+            var ρσ_Iter4 = range(len(ρσ_getitem(self._y, 0)));
+            ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+            for (var ρσ_Index4 of ρσ_Iter4) {
+                j = ρσ_Index4;
+                "59";
+                x_=x_["+"](ρσ_list_decorate([ (await f_x(ρσ_getitem(ρσ_getitem(self._x, i), j), ρσ_getitem(ρσ_getitem(self._y, i), j))) ]));
+                "60";
+                y_=y_["+"](ρσ_list_decorate([ (await f_y(ρσ_getitem(ρσ_getitem(self._x, i), j), ρσ_getitem(ρσ_getitem(self._y, i), j))) ]));
+                "61";
+                z_=z_["+"](ρσ_list_decorate([ (await f_z(ρσ_getitem(ρσ_getitem(self._x, i), j), ρσ_getitem(ρσ_getitem(self._y, i), j))) ]));
+            }
+            "62";
+            x=x["+"](ρσ_list_decorate([ x_ ]));
+            "63";
+            y=y["+"](ρσ_list_decorate([ y_ ]));
+            "64";
+            z=z["+"](ρσ_list_decorate([ z_ ]));
+        }
+        "66";
+        return [x, y, z];
+    };
+    if (!NumpyWrapper.prototype.get_plot_data.__argnames__) Object.defineProperties(NumpyWrapper.prototype.get_plot_data, {
+        __argnames__ : {value: ["f_x", "f_y", "f_z"]},
+        __module__ : {value: null}
+    });
+    NumpyWrapper.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    NumpyWrapper.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(NumpyWrapper.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "68";
+    function Plot() {;
+    }
+    Plot.prototype.__init__ = async function __init__(xx, yy, zz) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, x_min, x_max, y_min, y_max, z_min, z_max, range_x, range_y, range_z;
+        "70";
+        ρσ_unpack = [xx, yy, zz];
+        self._xx = ρσ_unpack[0];
+        self._yy = ρσ_unpack[1];
+        self._zz = ρσ_unpack[2];
+        "71";
+        ρσ_unpack = [.3, .5, 1, .6];
+        self._hue_offset = ρσ_unpack[0];
+        self._hue_gradient = ρσ_unpack[1];
+        self._opacity = ρσ_unpack[2];
+        self._shininess = ρσ_unpack[3];
+        "72";
+        ρσ_unpack = [min((await map(min, xx))), max((await map(max, xx)))];
+        x_min = ρσ_unpack[0];
+        x_max = ρσ_unpack[1];
+        "73";
+        ρσ_unpack = [min((await map(min, yy))), max((await map(max, yy)))];
+        y_min = ρσ_unpack[0];
+        y_max = ρσ_unpack[1];
+        "74";
+        ρσ_unpack = [min((await map(min, zz))), max((await map(max, zz)))];
+        z_min = ρσ_unpack[0];
+        z_max = ρσ_unpack[1];
+        "75";
+        ρσ_unpack = [x_max["-"](1["*"](x_min)), y_max["-"](1["*"](y_min)), z_max["-"](1["*"](z_min))];
+        range_x = ρσ_unpack[0];
+        range_y = ρσ_unpack[1];
+        range_z = ρσ_unpack[2];
+        "76";
+        self._max_range = max(range_x, range_y, range_z);
+    };
+    if (!Plot.prototype.__init__.__argnames__) Object.defineProperties(Plot.prototype.__init__, {
+        __argnames__ : {value: ["xx", "yy", "zz"]},
+        __module__ : {value: null}
+    });
+    Plot.__argnames__ = Plot.prototype.__init__.__argnames__;
+    Plot.__handles_kwarg_interpolation__ = Plot.prototype.__init__.__handles_kwarg_interpolation__;
+    Plot.prototype.set_hue_offset_to = async function set_hue_offset_to(offset) {
+        var self = this;
+        "79";
+        self._hue_offset = offset;
+    };
+    if (!Plot.prototype.set_hue_offset_to.__argnames__) Object.defineProperties(Plot.prototype.set_hue_offset_to, {
+        __argnames__ : {value: ["offset"]},
+        __module__ : {value: null}
+    });
+    Plot.prototype.set_hue_gradient_to = async function set_hue_gradient_to(gradient) {
+        var self = this;
+        "82";
+        self._hue_gradient = gradient;
+    };
+    if (!Plot.prototype.set_hue_gradient_to.__argnames__) Object.defineProperties(Plot.prototype.set_hue_gradient_to, {
+        __argnames__ : {value: ["gradient"]},
+        __module__ : {value: null}
+    });
+    Plot.prototype.set_opacity_to = async function set_opacity_to(opacity) {
+        var self = this;
+        "85";
+        self._opacity = opacity;
+    };
+    if (!Plot.prototype.set_opacity_to.__argnames__) Object.defineProperties(Plot.prototype.set_opacity_to, {
+        __argnames__ : {value: ["opacity"]},
+        __module__ : {value: null}
+    });
+    Plot.prototype.set_shininess_to = async function set_shininess_to(shininess) {
+        var self = this;
+        "88";
+        self._shininess = shininess;
+    };
+    if (!Plot.prototype.set_shininess_to.__argnames__) Object.defineProperties(Plot.prototype.set_shininess_to, {
+        __argnames__ : {value: ["shininess"]},
+        __module__ : {value: null}
+    });
+    Plot.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Plot.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Plot.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "90";
+    function ContourPlot() {;
+    }
+    ρσ_extends(ContourPlot, Plot);
+    ContourPlot.prototype.__init__ = async function __init__(xx, yy, zz) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack;
+        "92";
+        Plot.prototype.__init__.call(self, xx, yy, zz);
+        "93";
+        ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([])];
+        self._x_contours = ρσ_unpack[0];
+        self._y_contours = ρσ_unpack[1];
+        "94";
+        (await self._initialize_contour_curves());
+    };
+    if (!ContourPlot.prototype.__init__.__argnames__) Object.defineProperties(ContourPlot.prototype.__init__, {
+        __argnames__ : {value: ["xx", "yy", "zz"]},
+        __module__ : {value: null}
+    });
+    ContourPlot.__argnames__ = ContourPlot.prototype.__init__.__argnames__;
+    ContourPlot.__handles_kwarg_interpolation__ = ContourPlot.prototype.__init__.__handles_kwarg_interpolation__;
+    ContourPlot.prototype._initialize_contour_curves = async function _initialize_contour_curves() {
+        var self = this;
+        var ρσ_ls, positions, position_col, _, position_row, j, i;
+        "97";
+        positions = ρσ_list_decorate([]);
+        "98";
+        position_col = (function() {
+            var ρσ_Iter = range(len(ρσ_getitem(self._yy, 0))), ρσ_Result = [], _;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                _ = ρσ_Index;
+                ρσ_Result.push(ρσ_list_decorate([]));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "99";
+        var ρσ_Iter5 = range(len(self._xx));
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            i = ρσ_Index5;
+            "100";
+            position_row = ρσ_list_decorate([]);
+            "101";
+            var ρσ_Iter6 = range(len(ρσ_getitem(self._yy, 0)));
+            ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+            for (var ρσ_Index6 of ρσ_Iter6) {
+                j = ρσ_Index6;
+                "102";
+                position_row.append(vector(ρσ_getitem(ρσ_getitem(self._xx, i), j), ρσ_getitem(ρσ_getitem(self._zz, i), j), ρσ_getitem(ρσ_getitem(self._yy, i), j)));
+                "103";
+                ρσ_getitem(position_col, j).append(vector(ρσ_getitem(ρσ_getitem(self._xx, i), j), ρσ_getitem(ρσ_getitem(self._zz, i), j), ρσ_getitem(ρσ_getitem(self._yy, i), j)));
+            }
+            "104";
+            positions.append(position_row);
+            "105";
+            self._x_contours.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: position_row, radius: .01})]));
+        }
+        "107";
+        var ρσ_Iter7 = range(len(position_col));
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            i = ρσ_Index7;
+            "108";
+            self._y_contours.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_getitem(position_col, i), radius: .01})]));
+        }
+    };
+    if (!ContourPlot.prototype._initialize_contour_curves.__module__) Object.defineProperties(ContourPlot.prototype._initialize_contour_curves, {
+        __module__ : {value: null}
+    });
+    ContourPlot.prototype._render_contours = async function _render_contours(x, y) {
+        var self = this;
+        "111";
+        (ρσ_expr_temp = ρσ_getitem(self._x_contours, x), ρσ_interpolate_kwargs.call(ρσ_expr_temp, ρσ_expr_temp.modify, [y].concat([ρσ_desugar_kwargs({color: color.magenta})])));
+        "112";
+        (ρσ_expr_temp = ρσ_getitem(self._y_contours, y), ρσ_interpolate_kwargs.call(ρσ_expr_temp, ρσ_expr_temp.modify, [x].concat([ρσ_desugar_kwargs({color: color.black})])));
+        "113";
+        (ρσ_expr_temp = ρσ_getitem(self._x_contours, x), ρσ_interpolate_kwargs.call(ρσ_expr_temp, ρσ_expr_temp.modify, [y].concat([ρσ_desugar_kwargs({pos: vector(ρσ_getitem(ρσ_getitem(self._xx, x), y), ρσ_getitem(ρσ_getitem(self._zz, x), y), ρσ_getitem(ρσ_getitem(self._yy, x), y))})])));
+        "114";
+        (ρσ_expr_temp = ρσ_getitem(self._y_contours, y), ρσ_interpolate_kwargs.call(ρσ_expr_temp, ρσ_expr_temp.modify, [x].concat([ρσ_desugar_kwargs({pos: vector(ρσ_getitem(ρσ_getitem(self._xx, x), y), ρσ_getitem(ρσ_getitem(self._zz, x), y), ρσ_getitem(ρσ_getitem(self._yy, x), y))})])));
+    };
+    if (!ContourPlot.prototype._render_contours.__argnames__) Object.defineProperties(ContourPlot.prototype._render_contours, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    ContourPlot.prototype.render = async function render() {
+        var self = this;
+        var ρσ_ls, y, x;
+        "117";
+        var ρσ_Iter8 = range(len(self._xx));
+        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+        for (var ρσ_Index8 of ρσ_Iter8) {
+            x = ρσ_Index8;
+            "118";
+            var ρσ_Iter9 = range(len(ρσ_getitem(self._yy, 0)));
+            ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+            for (var ρσ_Index9 of ρσ_Iter9) {
+                y = ρσ_Index9;
+                "119";
+                (await self._render_contours(x, y));
+            }
+        }
+    };
+    if (!ContourPlot.prototype.render.__module__) Object.defineProperties(ContourPlot.prototype.render, {
+        __module__ : {value: null}
+    });
+    ContourPlot.prototype.__repr__ = async function __repr__() {
+        if(Plot.prototype.__repr__) return Plot.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    ContourPlot.prototype.__str__ = async function __str__() {
+        if(Plot.prototype.__str__) return Plot.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(ContourPlot.prototype, "__bases__", {value: [Plot]});
+
+
+
+
+
+    "121";
+    function SurfacePlot() {;
+    }
+    ρσ_extends(SurfacePlot, Plot);
+    SurfacePlot.prototype.__init__ = async function __init__(xx, yy, zz) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack;
+        "123";
+        Plot.prototype.__init__.call(self, xx, yy, zz);
+        "124";
+        ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([])];
+        self._vertices = ρσ_unpack[0];
+        self._quads = ρσ_unpack[1];
+        "125";
+        (await self._create_vertices());
+        "126";
+        (await self._create_quads());
+    };
+    if (!SurfacePlot.prototype.__init__.__argnames__) Object.defineProperties(SurfacePlot.prototype.__init__, {
+        __argnames__ : {value: ["xx", "yy", "zz"]},
+        __module__ : {value: null}
+    });
+    SurfacePlot.__argnames__ = SurfacePlot.prototype.__init__.__argnames__;
+    SurfacePlot.__handles_kwarg_interpolation__ = SurfacePlot.prototype.__init__.__handles_kwarg_interpolation__;
+    SurfacePlot.prototype._create_vertices = async function _create_vertices() {
+        var self = this;
+        var ρσ_ls, position, y, x;
+        "129";
+        var ρσ_Iter10 = range(len(self._xx));
+        ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+        for (var ρσ_Index10 of ρσ_Iter10) {
+            x = ρσ_Index10;
+            "130";
+            var ρσ_Iter11 = range(len(ρσ_getitem(self._yy, 0)));
+            ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
+            for (var ρσ_Index11 of ρσ_Iter11) {
+                y = ρσ_Index11;
+                "131";
+                position = vector(ρσ_getitem(ρσ_getitem(self._xx, x), y), ρσ_getitem(ρσ_getitem(self._zz, x), y), ρσ_getitem(ρσ_getitem(self._yy, x), y));
+                "132";
+                self._vertices.append(ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: position, normal: vec(0, 1, 0), color: color.green})]));
+            }
+        }
+    };
+    if (!SurfacePlot.prototype._create_vertices.__module__) Object.defineProperties(SurfacePlot.prototype._create_vertices, {
+        __module__ : {value: null}
+    });
+    SurfacePlot.prototype._create_quad = async function _create_quad(x, y) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, _neighbor_increment_x, _neighbor_increment_y, v0, v1, v2, v3;
+        "135";
+        ρσ_unpack = [1, 1];
+        _neighbor_increment_x = ρσ_unpack[0];
+        _neighbor_increment_y = ρσ_unpack[1];
+        "136";
+        if (ρσ_equals(x, len(self._xx)["-"](1["*"](1)))) {
+            "137";
+            _neighbor_increment_x = 1["-u"]()["*"](x);
+            "138";
+        }
+        if (ρσ_equals(y, len(ρσ_getitem(self._yy, 0))["-"](1["*"](1)))) {
+            "139";
+            _neighbor_increment_y = 1["-u"]()["*"](y);
+        }
+        "141";
+        v0 = (await self._get_vertex(x, y));
+        "142";
+        v1 = (await self._get_vertex(x["+"](_neighbor_increment_x), y));
+        "143";
+        v2 = (await self._get_vertex(x["+"](_neighbor_increment_x), y["+"](_neighbor_increment_y)));
+        "144";
+        v3 = (await self._get_vertex(x, y["+"](_neighbor_increment_y)));
+        "145";
+        self._quads.append(ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ v0, v1, v2, v3 ])})]));
+    };
+    if (!SurfacePlot.prototype._create_quad.__argnames__) Object.defineProperties(SurfacePlot.prototype._create_quad, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    SurfacePlot.prototype._create_quads = async function _create_quads() {
+        var self = this;
+        var ρσ_ls, y, x;
+        "152";
+        var ρσ_Iter12 = range(len(self._xx)["-"](1["*"](1)));
+        ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
+        for (var ρσ_Index12 of ρσ_Iter12) {
+            x = ρσ_Index12;
+            "153";
+            var ρσ_Iter13 = range(len(ρσ_getitem(self._yy, 0))["-"](1["*"](1)));
+            ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
+            for (var ρσ_Index13 of ρσ_Iter13) {
+                y = ρσ_Index13;
+                "154";
+                (await self._create_quad(x, y));
+            }
+        }
+    };
+    if (!SurfacePlot.prototype._create_quads.__module__) Object.defineProperties(SurfacePlot.prototype._create_quads, {
+        __module__ : {value: null}
+    });
+    SurfacePlot.prototype._set_vertex_normal_for = async function _set_vertex_normal_for(x, y) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, _neighbor_increment_x, _neighbor_increment_y, vertex_, normal_total_, vec_1, vec_2;
+        "165";
+        ρσ_unpack = [1, 1];
+        _neighbor_increment_x = ρσ_unpack[0];
+        _neighbor_increment_y = ρσ_unpack[1];
+        "166";
+        if (ρσ_equals(x, len(self._xx)["-"](1["*"](1)))) {
+            "167";
+            _neighbor_increment_x = 1["-u"]()["*"](x);
+            "168";
+        }
+        if (ρσ_equals(y, len(ρσ_getitem(self._yy, 0))["-"](1["*"](1)))) {
+            "169";
+            _neighbor_increment_y = 1["-u"]()["*"](y);
+        }
+        "171";
+        vertex_ = (await self._get_vertex(x, y));
+        "172";
+        normal_total_ = (await self._get_vertex(x, y["+"](_neighbor_increment_y))).normal;
+        "173";
+        normal_total_=normal_total_["+"]((await self._get_vertex(x["+"](_neighbor_increment_x), y)).normal);
+        "174";
+        vec_1 = (await self._get_vertex(x, y["+"](_neighbor_increment_y))).pos["-"](1["*"](vertex_.pos));
+        "175";
+        vec_2 = (await self._get_vertex(x["+"](_neighbor_increment_x), y)).pos["-"](1["*"](vertex_.pos));
+        "180";
+        normal_total_=normal_total_["+"](cross(vec_1, vec_2));
+        "181";
+        vertex_.normal = normal_total_["/"](2);
+    };
+    if (!SurfacePlot.prototype._set_vertex_normal_for.__argnames__) Object.defineProperties(SurfacePlot.prototype._set_vertex_normal_for, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    SurfacePlot.prototype._make_normals = async function _make_normals() {
+        var self = this;
+        var ρσ_ls, y, x;
+        "186";
+        var ρσ_Iter14 = range(len(self._xx));
+        ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
+        for (var ρσ_Index14 of ρσ_Iter14) {
+            x = ρσ_Index14;
+            "187";
+            var ρσ_Iter15 = range(len(ρσ_getitem(self._yy, 0)));
+            ρσ_Iter15 = ((typeof ρσ_Iter15[Symbol.iterator] === "function") ? (ρσ_Iter15 instanceof Map ? ρσ_Iter15.keys() : ρσ_Iter15) : Object.keys(ρσ_Iter15));
+            for (var ρσ_Index15 of ρσ_Iter15) {
+                y = ρσ_Index15;
+                "188";
+                (await self._set_vertex_normal_for(x, y));
+            }
+        }
+    };
+    if (!SurfacePlot.prototype._make_normals.__module__) Object.defineProperties(SurfacePlot.prototype._make_normals, {
+        __module__ : {value: null}
+    });
+    SurfacePlot.prototype._update_vertex = async function _update_vertex(x, y, value) {
+        var self = this;
+        var ρσ_ls, vertex_;
+        "191";
+        vertex_ = (await self._get_vertex(x, y));
+        "192";
+        vertex_.pos.y = value;
+        "193";
+        vertex_.color = color.green;
+        "194";
+        vertex_.opacity = self._opacity;
+        "195";
+        vertex_.shininess = self._shininess;
+    };
+    if (!SurfacePlot.prototype._update_vertex.__argnames__) Object.defineProperties(SurfacePlot.prototype._update_vertex, {
+        __argnames__ : {value: ["x", "y", "value"]},
+        __module__ : {value: null}
+    });
+    SurfacePlot.prototype._update_vertices = async function _update_vertices() {
+        var self = this;
+        var ρσ_ls, y, x;
+        "198";
+        var ρσ_Iter16 = range(len(self._xx));
+        ρσ_Iter16 = ((typeof ρσ_Iter16[Symbol.iterator] === "function") ? (ρσ_Iter16 instanceof Map ? ρσ_Iter16.keys() : ρσ_Iter16) : Object.keys(ρσ_Iter16));
+        for (var ρσ_Index16 of ρσ_Iter16) {
+            x = ρσ_Index16;
+            "199";
+            var ρσ_Iter17 = range(len(ρσ_getitem(self._yy, 0)));
+            ρσ_Iter17 = ((typeof ρσ_Iter17[Symbol.iterator] === "function") ? (ρσ_Iter17 instanceof Map ? ρσ_Iter17.keys() : ρσ_Iter17) : Object.keys(ρσ_Iter17));
+            for (var ρσ_Index17 of ρσ_Iter17) {
+                y = ρσ_Index17;
+                "200";
+                (await self._update_vertex(x, y, ρσ_getitem(ρσ_getitem(self._zz, x), y)));
+            }
+        }
+    };
+    if (!SurfacePlot.prototype._update_vertices.__module__) Object.defineProperties(SurfacePlot.prototype._update_vertices, {
+        __module__ : {value: null}
+    });
+    SurfacePlot.prototype._get_vertex = async function _get_vertex(x, y) {
+        var self = this;
+        "203";
+        return ρσ_getitem(self._vertices, x["*"](len(ρσ_getitem(self._yy, 0)))["+"](y));
+    };
+    if (!SurfacePlot.prototype._get_vertex.__argnames__) Object.defineProperties(SurfacePlot.prototype._get_vertex, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    SurfacePlot.prototype.render = async function render() {
+        var self = this;
+        "206";
+        (await self._update_vertices());
+        "207";
+        (await self._make_normals());
+    };
+    if (!SurfacePlot.prototype.render.__module__) Object.defineProperties(SurfacePlot.prototype.render, {
+        __module__ : {value: null}
+    });
+    SurfacePlot.prototype.__repr__ = async function __repr__() {
+        if(Plot.prototype.__repr__) return Plot.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    SurfacePlot.prototype.__str__ = async function __str__() {
+        if(Plot.prototype.__str__) return Plot.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(SurfacePlot.prototype, "__bases__", {value: [Plot]});
+
+
+
+
+
+
+
+
+
+
+
+    "209";
+    function GaussianQuadrature() {;
+    }
+    GaussianQuadrature.prototype.__init__ = async function __init__() {
+        var self = this;
+        "212";
+        self._roots_cache = ρσ_dict();
+        "213";
+        self._weights_cache = ρσ_dict();
+    };
+    if (!GaussianQuadrature.prototype.__init__.__module__) Object.defineProperties(GaussianQuadrature.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    GaussianQuadrature.__argnames__ = GaussianQuadrature.prototype.__init__.__argnames__;
+    GaussianQuadrature.__handles_kwarg_interpolation__ = GaussianQuadrature.prototype.__init__.__handles_kwarg_interpolation__;
+    GaussianQuadrature.prototype._legendre_poly = async function _legendre_poly(n, x) {
+        var self = this;
+        var ρσ_ls, P0, P1, Pn, k;
+        "217";
+        if ((n === 0 || typeof n === "object" && ρσ_equals(n, 0))) {
+            "218";
+            return 1;
+            "219";
+        } else if ((n === 1 || typeof n === "object" && ρσ_equals(n, 1))) {
+            "220";
+            return x;
+            "221";
+        } else {
+            "222";
+            P0 = 1;
+            "223";
+            P1 = x;
+            "224";
+            for (var ρσ_Index18 = 2; ρσ_Index18["<"](n["+"](1)); ρσ_Index18++) {
+                k = ρσ_Index18;
+                "225";
+                Pn = 2["*"](k)["-"](1["*"](1))["*"](x)["*"](P1)["-"](1["*"](k["-"](1["*"](1)))["*"](P0))["/"](k);
+                "226";
+                P0 = P1;
+                "227";
+                P1 = Pn;
+            }
+            "228";
+            return Pn;
+        }
+    };
+    if (!GaussianQuadrature.prototype._legendre_poly.__argnames__) Object.defineProperties(GaussianQuadrature.prototype._legendre_poly, {
+        __argnames__ : {value: ["n", "x"]},
+        __module__ : {value: null}
+    });
+    GaussianQuadrature.prototype._legendre_poly_derivative = async function _legendre_poly_derivative(n, x) {
+        var self = this;
+        var ρσ_ls, P0, P1, Pn, k;
+        "232";
+        if ((n === 0 || typeof n === "object" && ρσ_equals(n, 0))) {
+            "233";
+            return 0;
+            "234";
+        } else if ((n === 1 || typeof n === "object" && ρσ_equals(n, 1))) {
+            "235";
+            return 1;
+            "236";
+        } else {
+            "237";
+            P0 = 1;
+            "238";
+            P1 = x;
+            "239";
+            for (var ρσ_Index19 = 2; ρσ_Index19["<"](n["+"](1)); ρσ_Index19++) {
+                k = ρσ_Index19;
+                "240";
+                Pn = 2["*"](k)["-"](1["*"](1))["*"](x)["*"](P1)["-"](1["*"](k["-"](1["*"](1)))["*"](P0))["/"](k);
+                "241";
+                P0 = P1;
+                "242";
+                P1 = Pn;
+            }
+            "243";
+            return n["*"](P0["-"](1["*"](x)["*"](P1)))["/"](1["-"](1["*"](x)["*"](x)));
+        }
+    };
+    if (!GaussianQuadrature.prototype._legendre_poly_derivative.__argnames__) Object.defineProperties(GaussianQuadrature.prototype._legendre_poly_derivative, {
+        __argnames__ : {value: ["n", "x"]},
+        __module__ : {value: null}
+    });
+    GaussianQuadrature.prototype._find_roots = async function _find_roots() {
+        var self = this;
+        var n = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var tol = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _find_roots.__defaults__.tol : arguments[1];
+        var max_iter = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _find_roots.__defaults__.max_iter : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "tol")){
+            tol = ρσ_kwargs_obj.tol;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "max_iter")){
+            max_iter = ρσ_kwargs_obj.max_iter;
+        }
+        var ρσ_ls, x, i, xi, Pn, Pn_prime, xi_new, j;
+        "249";
+        x = (function() {
+            var ρσ_Iter = range(1, n["+"](1)), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(cos(pi["*"](4["*"](i)["-"](1["*"](1)))["/"](2["*"](n))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "250";
+        for (var ρσ_Index20 = 0; ρσ_Index20["<"](n); ρσ_Index20++) {
+            i = ρσ_Index20;
+            "251";
+            xi = ρσ_getitem(x, i);
+            "252";
+            for (var ρσ_Index21 = 0; ρσ_Index21["<"](max_iter); ρσ_Index21++) {
+                j = ρσ_Index21;
+                "254";
+                Pn = (await self._legendre_poly(n, xi));
+                "255";
+                Pn_prime = (await self._legendre_poly_derivative(n, xi));
+                "257";
+                xi_new = xi["-"](1["*"](Pn)["/"](Pn_prime));
+                "259";
+                if (abs(xi_new["-"](1["*"](xi)))["<"](tol)) {
+                    "260";
+                    break;
+                }
+                "261";
+                xi = xi_new;
+            }
+            "262";
+            ρσ_setitem(x, i, xi);
+        }
+        "263";
+        return x;
+    };
+    if (!GaussianQuadrature.prototype._find_roots.__defaults__) Object.defineProperties(GaussianQuadrature.prototype._find_roots, {
+        __defaults__ : {value: {tol:1e-14, max_iter:100}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["n", "tol", "max_iter"]},
+        __module__ : {value: null}
+    });
+    GaussianQuadrature.prototype._gauss_legendre_weights = async function _gauss_legendre_weights(roots) {
+        var self = this;
+        var ρσ_ls, weights, Pn_prime, weight, xi;
+        "268";
+        weights = ρσ_list_decorate([]);
+        "269";
+        var ρσ_Iter22 = roots;
+        ρσ_Iter22 = ((typeof ρσ_Iter22[Symbol.iterator] === "function") ? (ρσ_Iter22 instanceof Map ? ρσ_Iter22.keys() : ρσ_Iter22) : Object.keys(ρσ_Iter22));
+        for (var ρσ_Index22 of ρσ_Iter22) {
+            xi = ρσ_Index22;
+            "271";
+            Pn_prime = (await self._legendre_poly_derivative(len(roots), xi));
+            "272";
+            weight = 2["/"](1["-"](1["*"](xi)["*"](xi))["*"](Pn_prime)["*"](Pn_prime));
+            "273";
+            weights.append(weight);
+        }
+        "274";
+        return weights;
+    };
+    if (!GaussianQuadrature.prototype._gauss_legendre_weights.__argnames__) Object.defineProperties(GaussianQuadrature.prototype._gauss_legendre_weights, {
+        __argnames__ : {value: ["roots"]},
+        __module__ : {value: null}
+    });
+    GaussianQuadrature.prototype._precompute_roots_and_weights = async function _precompute_roots_and_weights(n) {
+        var self = this;
+        var ρσ_ls, roots, weights;
+        "278";
+        if (!ρσ_in(n, self._roots_cache)) {
+            "280";
+            roots = (await self._find_roots(n));
+            "281";
+            weights = (await self._gauss_legendre_weights(roots));
+            "282";
+            ρσ_setitem(self._roots_cache, n, roots);
+            "283";
+            ρσ_setitem(self._weights_cache, n, weights);
+        }
+        "284";
+        return [ρσ_getitem(self._roots_cache, n), ρσ_getitem(self._weights_cache, n)];
+    };
+    if (!GaussianQuadrature.prototype._precompute_roots_and_weights.__argnames__) Object.defineProperties(GaussianQuadrature.prototype._precompute_roots_and_weights, {
+        __argnames__ : {value: ["n"]},
+        __module__ : {value: null}
+    });
+    GaussianQuadrature.prototype.gaussian_quadrature = async function gaussian_quadrature(f_x, from_, to_, n) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, roots, weights, transformed_roots, xi, integral, weight;
+        "289";
+        ρσ_unpack = (await self._precompute_roots_and_weights(n));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        roots = ρσ_unpack[0];
+        weights = ρσ_unpack[1];
+        "292";
+        transformed_roots = (function() {
+            var ρσ_Iter = roots, ρσ_Result = [], xi;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                xi = ρσ_Index;
+                ρσ_Result.push(to_["-"](1["*"](from_))["/"](2)["*"](xi)["+"](to_["+"](from_)["/"](2)));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "295";
+        integral = 0;
+        "296";
+        var ρσ_Iter23 = (await zip(transformed_roots, weights));
+        ρσ_Iter23 = ((typeof ρσ_Iter23[Symbol.iterator] === "function") ? (ρσ_Iter23 instanceof Map ? ρσ_Iter23.keys() : ρσ_Iter23) : Object.keys(ρσ_Iter23));
+        for (var ρσ_Index23 of ρσ_Iter23) {
+            ρσ_unpack = ρσ_Index23;
+            xi = ρσ_unpack[0];
+            weight = ρσ_unpack[1];
+            "297";
+            integral=integral["+"](weight["*"]((await f_x(xi))));
+        }
+        "299";
+        integral=integral["*"](to_["-"](1["*"](from_))["/"](2));
+        "300";
+        return integral;
+    };
+    if (!GaussianQuadrature.prototype.gaussian_quadrature.__argnames__) Object.defineProperties(GaussianQuadrature.prototype.gaussian_quadrature, {
+        __argnames__ : {value: ["f_x", "from_", "to_", "n"]},
+        __module__ : {value: null}
+    });
+    GaussianQuadrature.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    GaussianQuadrature.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(GaussianQuadrature.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+    "302";
+    async function integrand(x) {
+        var ρσ_ls, temp;
+        "303";
+        temp = 1["-"](1["*"](x))["*"](1["-"](1["*"](x)));
+        "304";
+        temp=temp["*"](temp);
+        "305";
+        return sqrt(1["/"](temp)["-"](1["*"](1))["/"](x));
+    };
+    if (!integrand.__argnames__) Object.defineProperties(integrand, {
+        __argnames__ : {value: ["x"]},
+        __module__ : {value: null}
+    });
+
+    "307";
+    async function local_space_time() {
+        var resolution = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? local_space_time.__defaults__.resolution : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "resolution")){
+            resolution = ρσ_kwargs_obj.resolution;
+        }
+        var ρσ_ls, f_max, f_min, r_earth, r_max, _GS_1;
+        "308";
+        async function f_x(f, s) {
+            "309";
+            return s["*"]((await cosh(f)));
+        };
+        if (!f_x.__argnames__) Object.defineProperties(f_x, {
+            __argnames__ : {value: ["f", "s"]},
+            __module__ : {value: null}
+        });
+
+        "311";
+        async function f_z(f, s) {
+            "312";
+            return s["*"]((await sinh(f)));
+        };
+        if (!f_z.__argnames__) Object.defineProperties(f_z, {
+            __argnames__ : {value: ["f", "s"]},
+            __module__ : {value: null}
+        });
+
+        "314";
+        async function f_y(_, s) {
+            var ρσ_ls, upper_bound, visual_scaling_factor;
+            "315";
+            upper_bound = .25["*"](s)["*"](s);
+            "316";
+            visual_scaling_factor = 3;
+            "317";
+            return visual_scaling_factor["*"]((await integration.gaussian_quadrature(integrand, 0, upper_bound, resolution)));
+        };
+        if (!f_y.__argnames__) Object.defineProperties(f_y, {
+            __argnames__ : {value: ["_", "s"]},
+            __module__ : {value: null}
+        });
+
+        "319";
+        f_max = 1.2;
+        "320";
+        f_min = 1["-u"]()["*"](f_max);
+        "321";
+        r_earth = .4;
+        "322";
+        r_max = 1.44;
+        "323";
+        _GS_1 = new NumpyWrapper;
+        (await _GS_1.__init__(f_min, f_max, r_earth, r_max, resolution));
+        return (await _GS_1.get_plot_data(f_x, f_y, f_z));
+    };
+    if (!local_space_time.__defaults__) Object.defineProperties(local_space_time, {
+        __defaults__ : {value: {resolution:100}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["resolution"]},
+        __module__ : {value: null}
+    });
+
+    "325";
+    _GS_1 = new GaussianQuadrature;
+    (await _GS_1.__init__());
+    integration = _GS_1;
+    "326";
+    ρσ_unpack = (await local_space_time());
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+    x = ρσ_unpack[0];
+    y = ρσ_unpack[1];
+    z = ρσ_unpack[2];
+    "327";
+    _GS_1 = new SurfacePlot;
+    (await _GS_1.__init__(x, y, z));
+    (await _GS_1.render());
+    "328";
+    ρσ_unpack = (await local_space_time(20));
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+    x = ρσ_unpack[0];
+    y = ρσ_unpack[1];
+    z = ρσ_unpack[2];
+    "329";
+    _GS_1 = new ContourPlot;
+    (await _GS_1.__init__(x, y, z));
+    (await _GS_1.render());
+    "331";
+    async function toggle_earth() {
+        "332";
+        earth.visible = !earth.visible;
+    };
+    if (!toggle_earth.__module__) Object.defineProperties(toggle_earth, {
+        __module__ : {value: null}
+    });
+
+    "334";
+    async function toggle_stars() {
+        "335";
+        stars.visible = !stars.visible;
+    };
+    if (!toggle_stars.__module__) Object.defineProperties(toggle_stars, {
+        __module__ : {value: null}
+    });
+
+    "337";
+    display.append_to_caption("\n");
+    "338";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Show Earth ", bind: toggle_earth})]);
+    "339";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Show stars ", bind: toggle_stars})]);
+    "341";
+    while (true) {
+        "342";
+        (await rate(10));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
