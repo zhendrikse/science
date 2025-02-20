@@ -6,7 +6,7 @@ from vpython import canvas, rate, exp, arange, quad, vertex, vec, vector, color,
 title = """&#x2022; The <span style="color: red">red lines</span> represent the time axis, running from the bottom to the top.
 &#x2022; The black lines are a spatial coordinate, pointing towards the Earth.
 &#x2022; The Earth can be shown, but does <em>not</em> do justice to the <em>time</em> coordinate, of course!
-&#x2022; Likewise, a background with stars can be enabled, but <em>violates the time coordinate</em> in a similar way!
+&#x2022; A background with stars can be enabled, but <em>violates the time coordinate</em> in a similar way!
 
 &#x2022; Original <a href="https://github.com/Yurlungur/our-local-spacetime/blob/master/local_spacetime.py">local_spacetime.py</a> by Jonah Miller (jonah.maxwell.miller@gmail.com).
 &#x2022; Ported to VPython by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>, see <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/local_space_time.py">local_space_time.py</a>
@@ -338,6 +338,7 @@ def toggle_stars():
 display.append_to_caption("\n")
 _ = checkbox(text="Show Earth ", bind=toggle_earth)
 _ = checkbox(text="Show stars ", bind=toggle_stars)
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 while True:
     rate(10)
