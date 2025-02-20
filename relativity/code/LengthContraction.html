@@ -1,0 +1,284 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, c, _GS_1, space_time, relativistic_particle, graph_, pos_graph, vel_graph, delta_t, time;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "10";
+    title = "&#x2022; <a href=\"https://www.glowscript.org/#/user/wlane/folder/AAPT-visual/program/length-contraction\">Original code<\/a> by <a href=\"https://www.youtube.com/@LetsCodePhysics\">Let&apos;s code physics</a>\n&#x2022; See also <a href=\"https://www.youtube.com/watch?v=yuECZzO0ZAE\">his accompanying video</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/quantumphysics/code/length_contraction.py\">length_contraction.py</a>\n\n";
+    "13";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), width: 650, height: 650, forward: vector(1["-u"]()["*"](.7), 0, 1["-u"]()["*"](.75))})]);
+    "15";
+    c = 1;
+    "17";
+    function SpaceTime() {;
+    }
+    SpaceTime.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, z, y, x;
+        "19";
+        self._scenery = ρσ_list_decorate([]);
+        "20";
+        for (var ρσ_Index1 = 1["-u"]()["*"](30); ρσ_Index1["<"](30); ρσ_Index1=ρσ_Index1["+"](2)) {
+            x = ρσ_Index1;
+            "21";
+            for (var ρσ_Index2 = 5; ρσ_Index2["<"](30); ρσ_Index2=ρσ_Index2["+"](5)) {
+                y = ρσ_Index2;
+                "22";
+                for (var ρσ_Index3 = 1["-u"]()["*"](10); ρσ_Index3["<"](10); ρσ_Index3=ρσ_Index3["+"](5)) {
+                    z = ρσ_Index3;
+                    "23";
+                    (await self._create_box(vector(1, 1, 1), vector(x, y, z), color.yellow));
+                    "24";
+                    (await self._create_box(vector(1, 1, 1), vector(x, 1["-u"]()["*"](y), z), color.yellow));
+                }
+            }
+        }
+    };
+    if (!SpaceTime.prototype.__init__.__module__) Object.defineProperties(SpaceTime.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    SpaceTime.__argnames__ = SpaceTime.prototype.__init__.__argnames__;
+    SpaceTime.__handles_kwarg_interpolation__ = SpaceTime.prototype.__init__.__handles_kwarg_interpolation__;
+    SpaceTime.prototype._create_box = async function _create_box(size, pos, col) {
+        var self = this;
+        "28";
+        self._scenery.append(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: pos, size: size, color: col, restPos: pos, restSiz: size, opacity: .5})]));
+    };
+    if (!SpaceTime.prototype._create_box.__argnames__) Object.defineProperties(SpaceTime.prototype._create_box, {
+        __argnames__ : {value: ["size", "pos", "col"]},
+        __module__ : {value: null}
+    });
+    SpaceTime.prototype.transform_with = async function transform_with(gamma) {
+        var self = this;
+        var ρσ_ls, box_;
+        "31";
+        var ρσ_Iter4 = self._scenery;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            box_ = ρσ_Index4;
+            "32";
+            box_.size.x = box_.restSiz.x["/"](gamma.x);
+            "33";
+            box_.size.y = box_.restSiz.y["/"](gamma.y);
+            "34";
+            box_.size.z = box_.restSiz.z["/"](gamma.z);
+            "35";
+            box_.pos.x = box_.restPos.x["/"](gamma.x);
+            "36";
+            box_.pos.y = box_.restPos.y["/"](gamma.y);
+            "37";
+            box_.pos.z = box_.restPos.z["/"](gamma.z);
+        }
+    };
+    if (!SpaceTime.prototype.transform_with.__argnames__) Object.defineProperties(SpaceTime.prototype.transform_with, {
+        __argnames__ : {value: ["gamma"]},
+        __module__ : {value: null}
+    });
+    SpaceTime.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    SpaceTime.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(SpaceTime.prototype, "__bases__", {value: []});
+
+
+
+
+    "39";
+    function Particle() {;
+    }
+    Particle.prototype.__init__ = async function __init__() {
+        var self = this;
+        "41";
+        self._sphere = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .5, pos: vector(0, 3, 0), color: color.red, make_trail: true, retain: 100})]);
+        "42";
+        self._momentum = vector(1["-u"]()["*"](1), 0, 0);
+        "43";
+        self._mass = 1;
+    };
+    if (!Particle.prototype.__init__.__module__) Object.defineProperties(Particle.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    Particle.__argnames__ = Particle.prototype.__init__.__argnames__;
+    Particle.__handles_kwarg_interpolation__ = Particle.prototype.__init__.__handles_kwarg_interpolation__;
+    Particle.prototype._relativity_factor = async function _relativity_factor() {
+        var self = this;
+        "46";
+        return 1["/"](sqrt(1["+"](Math.pow(mag(self._momentum), 2)["/"](self._mass["*"](self._mass)["*"](c)["*"](c)))));
+    };
+    if (!Particle.prototype._relativity_factor.__module__) Object.defineProperties(Particle.prototype._relativity_factor, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.update_by = async function update_by(dt) {
+        var self = this;
+        var ρσ_ls, k, force;
+        "49";
+        k = .2;
+        "50";
+        force = 1["-u"]()["*"](k)["*"](self._sphere.pos);
+        "51";
+        self._momentum=self._momentum["+"](force["*"](dt));
+        "52";
+        self._sphere.pos=self._sphere.pos["+"]((await self._relativity_factor())["*"](self._momentum)["/"](self._mass)["*"](dt));
+    };
+    if (!Particle.prototype.update_by.__argnames__) Object.defineProperties(Particle.prototype.update_by, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Particle.prototype.velocity = async function velocity() {
+        var self = this;
+        "55";
+        return self._momentum["/"](self._mass)["*"]((await self._relativity_factor()));
+    };
+    if (!Particle.prototype.velocity.__module__) Object.defineProperties(Particle.prototype.velocity, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.gamma = async function gamma() {
+        var self = this;
+        var ρσ_ls, velocity, gamma_;
+        "58";
+        velocity = (await self.velocity());
+        "59";
+        gamma_ = vector(1["/"](sqrt(1["-"](1["*"](Math.pow((velocity.x["/"](c)), 2))))), 1["/"](sqrt(1["-"](1["*"](Math.pow((velocity.y["/"](c)), 2))))), 1["/"](sqrt(1["-"](1["*"](Math.pow((velocity.z["/"](c)), 2))))));
+        "61";
+        return gamma_;
+    };
+    if (!Particle.prototype.gamma.__module__) Object.defineProperties(Particle.prototype.gamma, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.position = async function position() {
+        var self = this;
+        "64";
+        return self._sphere.pos;
+    };
+    if (!Particle.prototype.position.__module__) Object.defineProperties(Particle.prototype.position, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Particle.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Particle.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "67";
+    _GS_1 = new SpaceTime;
+    (await _GS_1.__init__());
+    space_time = _GS_1;
+    "68";
+    _GS_1 = new Particle;
+    (await _GS_1.__init__());
+    relativistic_particle = _GS_1;
+    "70";
+    display.camera.follow(relativistic_particle._sphere);
+    "72";
+    display.append_to_caption("\n");
+    "73";
+    graph_ = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Particle position (red) and velocity (magenta)", width: "650", height: "2", background: color.black, xtitle: "x-direction", ytitle: "time"})]);
+    "74";
+    pos_graph = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.red})]);
+    "75";
+    vel_graph = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.magenta})]);
+    "76";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "78";
+    delta_t = .01;
+    "79";
+    time = 0;
+    "80";
+    while (true) {
+        "81";
+        (await rate(250));
+        "82";
+        (await relativistic_particle.update_by(delta_t));
+        "83";
+        (await space_time.transform_with((await relativistic_particle.gamma())));
+        "84";
+        time=time["+"](delta_t);
+        "85";
+        ρσ_interpolate_kwargs.call(pos_graph, pos_graph.plot, [ρσ_desugar_kwargs({pos: [time,
+        (await relativistic_particle.position()).x]})]);
+        "86";
+        ρσ_interpolate_kwargs.call(vel_graph, vel_graph.plot, [ρσ_desugar_kwargs({pos: [time,
+        (await relativistic_particle.velocity()).x]})]);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
