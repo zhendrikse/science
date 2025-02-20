@@ -3,7 +3,7 @@
 ## Space-time curvature near the Earth
 <div class="header_line"><br/></div>
 
-{% include_relative code/LocalSpacetime.html %}
+{% include_relative code/LocalSpaceTime.html %}
 
 <p style="clear: both;"></p>
 
