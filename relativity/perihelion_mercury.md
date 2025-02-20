@@ -6,6 +6,7 @@ out such a conclusive clarification of the Mercury anomaly. &mdash;
 <a href="https://etienneklein.fr/wp-content/uploads/2016/01/Relativit%C3%A9-g%C3%A9n%C3%A9rale.pdf">Letter from K Schwarzschild to A Einstein</a>,
 22 December 1915.
 </blockquote>
+<p style="clear: both;"></p>
 
 ## [Precession of the perihelion of Mercury](https://en.wikipedia.org/wiki/Tests_of_general_relativity) 
 <div class="header_line"><br/></div>
@@ -54,6 +55,7 @@ by Newton’s law. It turned out that the difference was subtle, but it was defi
 Most importantly, it had already been measured. &mdash; 
 <a href="https://courses.lumenlearning.com/suny-astronomy/chapter/tests-of-general-relativity/">Tests of General Relativity</a>
 </blockquote>
+<p style="clear: both;"></p>
 
 Various scientists had already tried to explain this subtle difference.
 
@@ -64,6 +66,7 @@ however, it was observed that the actual advance is 574 arcsec per century.
 The discrepancy was first pointed out in 1859 by Urbain Le Verrier, the codiscoverer of Neptune. &mdash;
 <a href="https://courses.lumenlearning.com/suny-astronomy/chapter/tests-of-general-relativity/">Tests of General Relativity</a>
 </blockquote>
+<p style="clear: both;"></p>
 
 However, the discrepancy of the final 43 arc seconds remained inexplicable, and inspired Einstein
 [to make a calculation](https://etienneklein.fr/wp-content/uploads/2016/01/Relativit%C3%A9-g%C3%A9n%C3%A9rale.pdf) 
@@ -80,6 +83,7 @@ The relativistic advance of perihelion was later also observed in the orbits of
 several asteroids that come close to the Sun.&mdash;
 <a href="https://courses.lumenlearning.com/suny-astronomy/chapter/tests-of-general-relativity/">Tests of General Relativity</a>
 </blockquote>
+<p style="clear: both;"></p>
 
 
 {% include share_buttons.html %}
