@@ -12,7 +12,7 @@
 
 <figure>
    <a href="https://svs.gsfc.nasa.gov/13326">
-     <img alt="Black hole explained" src="../images/black_hole_explained.jpg"/>
+     <img alt="Black hole explained" src="images/black_hole_explained.jpg"/>
    </a>
    <figcaption>Black hole picture explained (<a href="https://svs.gsfc.nasa.gov/13326">nasa.gov</a>)</figcaption>
 </figure>
@@ -28,7 +28,7 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 <div class="double_image">
   <figure class="left_image">
     <a href="https://cdn.mos.cms.futurecdn.net/F2qM9GBVYhTWeZ9W3C7Eij.jpg.html">
-      <img alt="Sagittarius A*" src="../images/sagittarius_a.png"/>
+      <img alt="Sagittarius A*" src="images/sagittarius_a.png"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <figcaption>On May 12, 2022, the 
     <a href="https://eventhorizontelescope.org/">Event Horizon Telescope</a> 
@@ -37,7 +37,7 @@ showing a bright ring formed as light bends in the intense gravity around a blac
   </figure>
   <figure class="right_image">
     <a href="https://www.jpl.nasa.gov/edu/resources/teachable-moment/how-scientists-captured-the-first-image-of-a-black-hole/">
-      <img alt="Black hole M87" src="../images/galaxy_M87_black_hole.png"/>
+      <img alt="Black hole M87" src="images/galaxy_M87_black_hole.png"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <figcaption>Another supermassive black hole, at the center of the galaxy M87, 
     that is 6.5 billion times more massive than the sun, taken 
