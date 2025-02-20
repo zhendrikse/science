@@ -135,5 +135,13 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 </figure>
 </div>
 <p style="clear: both;"></p>
+<p style="clear: both;"></p>
+
+## References
+<div class="header_line"><br/></div>
+
+- [Acoustics and Vibration animations](https://www.acs.psu.edu/drussell/demos.html), by Dr. Daniel A. Russell!
+- [The classic wave equation](https://chem.libretexts.org/Courses/Grinnell_College/CHM_364%3A_Physical_Chemistry_2_(Grinnell_College)/02%3A_The_Classical_Wave_Equation) in LibreTexts Chemistry
+
 
 {% include share_buttons.html %}
