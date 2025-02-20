@@ -1,9 +1,5 @@
 {% include breadcrumbs.html %}
 
-<a name="special_relativity"></a>
-## Special relativity
-<div style="border-top: 2px solid #cccccc"><br/></div>
-
 <blockquote>
 The important thing is not to stop questioning. 
 Curiosity has its own reason for existence. 
@@ -12,6 +8,17 @@ the mysteries of eternity, of life, of the marvelous
 structure of reality. It is enough if one tries 
 merely to comprehend a little of this mystery 
 each day. &mdash; <a href="https://en.wikipedia.org/wiki/Albert_Einstein">Albert Einstein</a>
+</blockquote><br/>
+
+<a name="special_relativity"></a>
+## Special relativity
+<div style="border-top: 2px solid #cccccc"><br/></div>
+
+<blockquote>
+Henceforth space by itself, and time by itself,
+are doomed to fade away into mere shadows,
+and only a kind of union of the two will preserve an independent reality.
+&mdash; <a href="https://en.wikipedia.org/wiki/Hermann_Minkowski">Hermann Minkowski.</a>
 </blockquote><br/>
 
 ### Galilean transformations &amp; lightcone animation 
@@ -56,7 +63,8 @@ each day. &mdash; <a href="https://en.wikipedia.org/wiki/Albert_Einstein">Albert
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
 <blockquote>
-We should make things as simple as possible, but not simpler. &mdash; Albert Einstein
+Since the mathematicians have invaded the theory of relativity,
+I do not understand it myself anymore. &mdash; Albert Einstein
 </blockquote><br/>
 
 ### Perihelion precession of Mercury&apos;s orbit
