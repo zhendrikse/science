@@ -70,7 +70,7 @@ We should make things as simple as possible, but not simpler. &mdash; Albert Ein
 <div class="double_image">
   <figure class="left_image">
     <a href="local_space_time.html">
-      <img alt="Light cone" src="../images/local_space_time.png" title="Click to animate"/>
+      <img alt="Local space-time" src="../images/local_space_time.png" title="Click to animate"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <figcaption>Local space-time near Earth. This really is space-<em>time</em>, i.e.  
     the black lines represent a spatial coordinate, whereas the
