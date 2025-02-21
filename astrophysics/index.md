@@ -16,7 +16,7 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 
 <figure style="float: center; text-align: center;">
   <a href="daylight_variations.html">
-    <img alt="Daylight variations" width="100%" height="100%" src="../images/daylight_variations.png" title="Click to animate"/>
+    <img alt="Daylight variations" width="100%" height="100%" src="images/daylight_variations.png" title="Click to animate"/>
   </a>
   <figcaption>A not accurate to scale sun-earth-moon model, but very detailed and instructive!
   It&apos;s main goal is visualizing the change in day length during the course of a year.</figcaption>
@@ -30,7 +30,7 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 <div class="double_image">
 <figure class="left_image">
   <a href="planets.html">
-    <img alt="Our planets" src="../images/planets.png" title="Click to animate"/>
+    <img alt="Our planets" src="images/planets.png" title="Click to animate"/>
   </a>
   <figcaption>"You teach your daughters the diameters of the planets and wonder when 
   you are done that they do not delight in your company." &mdash; 
@@ -38,7 +38,7 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 </figure>
 <figure class="right_image">
   <a href="keplers_law.html">
-    <img alt="Kepler's laws" src="../images/keplers_law.png" title="Click to animate"/>
+    <img alt="Kepler's laws" src="images/keplers_law.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion">Kepler&apos;s laws</a>
     of planetary motion: "I believe the geometric proportion served the creator as an idea when He 
@@ -55,7 +55,7 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 <div class="double_image">
 <figure class="left_image">
   <a href="three_body.html">
-    <img alt="Three body problem" src="../images/three_body.png" title="Click to animate"/>
+    <img alt="Three body problem" src="images/three_body.png" title="Click to animate"/>
   </a>
   <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/Three-body_problem">three-body problem</a>,
   for which there exists no analytical solution, so we have to solve it numerically. 
@@ -63,8 +63,10 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
   is exactly solvable though.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APP
-    -->
+  <a href="galactic_collision.html">
+    <img alt="Three body problem" src="images/galactic_collision.png" title="Click to animate"/>
+  </a>
+  <figcaption>The future collision between our own Milky Way and the Andromeda galaxy.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
