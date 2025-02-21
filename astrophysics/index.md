@@ -49,7 +49,7 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 </div>
 <p style="clear: both;"></p>
 
-### Kepler's law &amp; the three-body problem
+### The three-body problem &amp; galactic collision
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
