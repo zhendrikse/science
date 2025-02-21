@@ -1,5 +1,5 @@
 # Web VPython 3.2
-from vpython import canvas, color, vector, random, simple_sphere, pi, cos, sqrt, log, fsum, rate, slider, wtext, sphere
+from vpython import canvas, color, vector, random, simple_sphere, pi, cos, sqrt, log, rate, slider, wtext, sphere
 
 title = """&#x2022; <a href="https://github.com/SamirOmarov/galactic-collision">Original code</a> written by <a href="https://github.com/SamirOmarov/Personal-Website">Samir Omarov</a>
 &#x2022; Ported to Glowscript <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/galactic_collision.py">galactic_collision.py</a>
@@ -115,7 +115,7 @@ class Galaxy:
             masses += [clamp(normal_distribution(mu=AVG_SOLAR_MASS, sigma=sigma_mass), MIN_SOLAR_MASS, MAX_SOLAR_MASS)]
 
         # Galaxy mass is sum of all stars
-        self._mass = fsum(masses)
+        self._mass = sum(masses)
 
         # Gaussian distribution of positions
         sigma_x = radius * 0.1

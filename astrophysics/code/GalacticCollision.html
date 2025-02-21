@@ -1,0 +1,428 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var frame_rate;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sin, tan, asin, acos, atan, atan2, exp, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, stars, G, SOLAR_MASS, MIN_SOLAR_MASS, MAX_SOLAR_MASS, AVG_SOLAR_MASS, DIST_SCALE, MAX_ORBITAL_RADIUS, MIN_ORBITAL_RADIUS, MILKY_WAY_GALAXY_THICKNESS, ANDROMEDA_GALAXY_THICKNESS, NUM_STARS_MILKY_WAY, NUM_STARS_ANDROMEDA, STAR_RADIUS, _GS_1, milky_way_galaxy, andromeda_galaxy, _, speed_slider_text, delta_t, frame_rate;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; <a href=\"https://github.com/SamirOmarov/galactic-collision\">Original code<\/a> written by <a href=\"https://github.com/SamirOmarov/Personal-Website\">Samir Omarov</a>\n&#x2022; Ported to Glowscript <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/galactic_collision.py\">galactic_collision.py</a>\n\n";
+    "9";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), width: 650, range: 5, forward: vector(.33, 1["-u"]()["*"](.36), 1["-u"]()["*"](.85)), title: title, center: vector(1["-u"]()["*"](1.5), 1["-u"]()["*"](.35), 1["-u"]()["*"](.45))})]);
+    "10";
+    stars = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 10, shininess: 0, opacity: .5, center: vector(1["-u"]()["*"](1.5), 1["-u"]()["*"](.35), 1["-u"]()["*"](.45))})]);
+    "13";
+    G = 6.673e-11;
+    "16";
+    SOLAR_MASS = 2e30;
+    "19";
+    MIN_SOLAR_MASS = SOLAR_MASS["*"](.5);
+    "20";
+    MAX_SOLAR_MASS = SOLAR_MASS["*"](250);
+    "21";
+    AVG_SOLAR_MASS = SOLAR_MASS["*"](3);
+    "24";
+    DIST_SCALE = 1e20;
+    "27";
+    MAX_ORBITAL_RADIUS = DIST_SCALE["*"](10);
+    "28";
+    MIN_ORBITAL_RADIUS = DIST_SCALE["*"](.15);
+    "30";
+    MILKY_WAY_GALAXY_THICKNESS = DIST_SCALE["*"](.9);
+    "31";
+    ANDROMEDA_GALAXY_THICKNESS = DIST_SCALE["*"](.2);
+    "34";
+    NUM_STARS_MILKY_WAY = 700;
+    "36";
+    NUM_STARS_ANDROMEDA = 1400;
+    "39";
+    STAR_RADIUS = .025;
+    "43";
+    async function clamp(x, lower, upper) {
+        "44";
+        return max(min(x, upper), lower);
+    };
+    if (!clamp.__argnames__) Object.defineProperties(clamp, {
+        __argnames__ : {value: ["x", "lower", "upper"]},
+        __module__ : {value: null}
+    });
+
+    "48";
+    async function gravity(mass1, mass2, radius) {
+        "49";
+        return G["*"](mass1)["*"](mass2)["/"](radius)["*"](radius);
+    };
+    if (!gravity.__argnames__) Object.defineProperties(gravity, {
+        __argnames__ : {value: ["mass1", "mass2", "radius"]},
+        __module__ : {value: null}
+    });
+
+    "53";
+    async function g_accel(mass, radius) {
+        "55";
+        radius = max(radius, MIN_ORBITAL_RADIUS);
+        "56";
+        return G["*"](mass)["/"](radius)["/"](radius);
+    };
+    if (!g_accel.__argnames__) Object.defineProperties(g_accel, {
+        __argnames__ : {value: ["mass", "radius"]},
+        __module__ : {value: null}
+    });
+
+    "60";
+    async function accel(obj, galaxy) {
+        var ρσ_ls, r_galaxy;
+        "61";
+        r_galaxy = (await galaxy.position())["-"](1["*"]((await obj.position())));
+        "63";
+        return r_galaxy.norm()["*"]((await g_accel((await galaxy.mass()), r_galaxy.mag)));
+    };
+    if (!accel.__argnames__) Object.defineProperties(accel, {
+        __argnames__ : {value: ["obj", "galaxy"]},
+        __module__ : {value: null}
+    });
+
+    "67";
+    async function normal_distribution(mu, sigma) {
+        var ρσ_ls, u1, u2, vt;
+        "68";
+        u1 = random();
+        "69";
+        u2 = random();
+        "70";
+        vt = sqrt(1["-u"]()["*"](2)["*"](log(u1)))["*"](cos(2["*"](pi)["*"](u2)));
+        "71";
+        vt=vt["*"](sigma["+"](mu));
+        "72";
+        return vt;
+    };
+    if (!normal_distribution.__argnames__) Object.defineProperties(normal_distribution, {
+        __argnames__ : {value: ["mu", "sigma"]},
+        __module__ : {value: null}
+    });
+
+    "75";
+    function Star() {;
+    }
+    Star.prototype.__init__ = async function __init__(mass, radius, pos, vel, colour) {
+        var self = this;
+        "77";
+        self._obj = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos["/"](DIST_SCALE), radius: radius, color: colour})]);
+        "78";
+        self._mass = mass;
+        "79";
+        self._velocity = vel;
+        "80";
+        self._pos = pos;
+    };
+    if (!Star.prototype.__init__.__argnames__) Object.defineProperties(Star.prototype.__init__, {
+        __argnames__ : {value: ["mass", "radius", "pos", "vel", "colour"]},
+        __module__ : {value: null}
+    });
+    Star.__argnames__ = Star.prototype.__init__.__argnames__;
+    Star.__handles_kwarg_interpolation__ = Star.prototype.__init__.__handles_kwarg_interpolation__;
+    Star.prototype.position = async function position() {
+        var self = this;
+        "83";
+        return self._pos;
+    };
+    if (!Star.prototype.position.__module__) Object.defineProperties(Star.prototype.position, {
+        __module__ : {value: null}
+    });
+    Star.prototype.__str__ = async function __str__() {
+        var self = this;
+        "87";
+        return "Mass: "["+"](str(self._mass))["+"]("\nPos: ")["+"](str(self._pos))["+"]("\nVel: ")["+"](str(self._velocity));
+    };
+    if (!Star.prototype.__str__.__module__) Object.defineProperties(Star.prototype.__str__, {
+        __module__ : {value: null}
+    });
+    Star.prototype.update_by = async function update_by(dt, milky_way, andromeda) {
+        var self = this;
+        var ρσ_ls, mag_difference;
+        "90";
+        self._velocity=self._velocity["+"]((await accel(self, milky_way))["*"](dt));
+        "91";
+        self._velocity=self._velocity["+"]((await accel(self, andromeda))["*"](dt));
+        "92";
+        self._pos=self._pos["+"](self._velocity["*"](dt));
+        "94";
+        self._obj.pos = self._pos["/"](DIST_SCALE);
+        "96";
+        mag_difference = (await milky_way.position()).mag["-"](1["*"]((await andromeda.position()).mag));
+        "97";
+        if (1["-u"]()["*"](6)["+"](18)[">"](mag_difference) && mag_difference[">"](1["-u"]()["*"](5e18))) {
+            "98";
+            self._obj.color = vector(1, .5, 0);
+        }
+    };
+    if (!Star.prototype.update_by.__argnames__) Object.defineProperties(Star.prototype.update_by, {
+        __argnames__ : {value: ["dt", "milky_way", "andromeda"]},
+        __module__ : {value: null}
+    });
+    Star.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Object.defineProperty(Star.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "103";
+    function Galaxy() {;
+    }
+    Galaxy.prototype.__init__ = async function __init__(num_stars, pos, vel, radius, thickness, colour) {
+        var self = this;
+        var ρσ_ls, sigma_mass, masses, i, sigma_x, sigma_y, sigma_z, positions, up, absolute_pos, relative_pos, vec, relative_vel, absolute_vel, _GS_1;
+        "105";
+        self._pos = pos;
+        "106";
+        self._mass = 0;
+        "107";
+        self._velocity = vel;
+        "108";
+        self._radius = radius;
+        "109";
+        self._stars = ρσ_list_decorate([]);
+        "112";
+        sigma_mass = AVG_SOLAR_MASS["/"](3);
+        "113";
+        masses = ρσ_list_decorate([]);
+        "114";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](num_stars); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "115";
+            masses=masses["+"](ρσ_list_decorate([ (await clamp(await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, normal_distribution, [ρσ_desugar_kwargs({mu: AVG_SOLAR_MASS, sigma: sigma_mass})])), MIN_SOLAR_MASS, MAX_SOLAR_MASS)) ]));
+        }
+        "118";
+        self._mass = (await sum(masses));
+        "121";
+        sigma_x = radius["*"](.1);
+        "122";
+        sigma_y = thickness["*"](.1);
+        "123";
+        sigma_z = radius["*"](.1);
+        "126";
+        positions = ρσ_list_decorate([]);
+        "127";
+        for (var ρσ_Index2 = 0; ρσ_Index2["<"](num_stars); ρσ_Index2++) {
+            i = ρσ_Index2;
+            "128";
+            pos = vector((await clamp(await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, normal_distribution, [ρσ_desugar_kwargs({mu: 0, sigma: sigma_x})])), 1["-u"]()["*"](radius), radius)), (await clamp(await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, normal_distribution, [ρσ_desugar_kwargs({mu: 0, sigma: sigma_y})])), 1["-u"]()["*"](thickness), thickness)), (await clamp(await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, normal_distribution, [ρσ_desugar_kwargs({mu: 0, sigma: sigma_z})])), 1["-u"]()["*"](radius), radius)));
+            "133";
+            if (pos.mag["<"](MIN_ORBITAL_RADIUS)) {
+                "134";
+                pos.mag = MIN_ORBITAL_RADIUS;
+            }
+            "136";
+            positions.append(pos);
+        }
+        "139";
+        up = vector(0, 1, 0);
+        "140";
+        for (var ρσ_Index3 = 0; ρσ_Index3["<"](num_stars); ρσ_Index3++) {
+            i = ρσ_Index3;
+            "142";
+            absolute_pos = ρσ_getitem(positions, i)["+"](self._pos);
+            "143";
+            relative_pos = ρσ_getitem(positions, i);
+            "144";
+            vec = relative_pos.cross(up).norm();
+            "145";
+            relative_vel = vec["*"]((await self._calc_orbital_velocity(relative_pos.mag)));
+            "146";
+            absolute_vel = relative_vel["+"](vel);
+            "148";
+            _GS_1 = new Star;
+            ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({mass: ρσ_getitem(masses, i), radius: STAR_RADIUS, pos: absolute_pos, vel: absolute_vel, colour: colour})]);
+            self._stars.append(_GS_1);
+        }
+    };
+    if (!Galaxy.prototype.__init__.__argnames__) Object.defineProperties(Galaxy.prototype.__init__, {
+        __argnames__ : {value: ["num_stars", "pos", "vel", "radius", "thickness", "colour"]},
+        __module__ : {value: null}
+    });
+    Galaxy.__argnames__ = Galaxy.prototype.__init__.__argnames__;
+    Galaxy.__handles_kwarg_interpolation__ = Galaxy.prototype.__init__.__handles_kwarg_interpolation__;
+    Galaxy.prototype._calc_orbital_velocity = async function _calc_orbital_velocity(radius_) {
+        var self = this;
+        "151";
+        return sqrt(G["*"](self._mass)["/"](radius_));
+    };
+    if (!Galaxy.prototype._calc_orbital_velocity.__argnames__) Object.defineProperties(Galaxy.prototype._calc_orbital_velocity, {
+        __argnames__ : {value: ["radius_"]},
+        __module__ : {value: null}
+    });
+    Galaxy.prototype.update_stars_by = async function update_stars_by(dt, other_galaxy) {
+        var self = this;
+        var ρσ_ls, star;
+        "154";
+        var ρσ_Iter4 = self._stars;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            star = ρσ_Index4;
+            "155";
+            (await star.update_by(dt, self, other_galaxy));
+        }
+    };
+    if (!Galaxy.prototype.update_stars_by.__argnames__) Object.defineProperties(Galaxy.prototype.update_stars_by, {
+        __argnames__ : {value: ["dt", "other_galaxy"]},
+        __module__ : {value: null}
+    });
+    Galaxy.prototype.update_by = async function update_by(dt, galaxy) {
+        var self = this;
+        "158";
+        self._velocity=self._velocity["+"]((await accel(self, galaxy))["*"](dt));
+        "159";
+        self._pos=self._pos["+"](self._velocity["*"](dt));
+    };
+    if (!Galaxy.prototype.update_by.__argnames__) Object.defineProperties(Galaxy.prototype.update_by, {
+        __argnames__ : {value: ["dt", "galaxy"]},
+        __module__ : {value: null}
+    });
+    Galaxy.prototype.position = async function position() {
+        var self = this;
+        "162";
+        return self._pos;
+    };
+    if (!Galaxy.prototype.position.__module__) Object.defineProperties(Galaxy.prototype.position, {
+        __module__ : {value: null}
+    });
+    Galaxy.prototype.mass = async function mass() {
+        var self = this;
+        "165";
+        return self._mass;
+    };
+    if (!Galaxy.prototype.mass.__module__) Object.defineProperties(Galaxy.prototype.mass, {
+        __module__ : {value: null}
+    });
+    Galaxy.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Galaxy.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Galaxy.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "168";
+    _GS_1 = new Galaxy;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({num_stars: NUM_STARS_MILKY_WAY, pos: vector(1["-u"]()["*"](5), 0, 0)["*"](DIST_SCALE), vel: vector(0, 0, 0), radius: MAX_ORBITAL_RADIUS, thickness: MILKY_WAY_GALAXY_THICKNESS, colour: vector(.9, .9, 1)})]);
+    milky_way_galaxy = _GS_1;
+    "169";
+    _GS_1 = new Galaxy;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({num_stars: NUM_STARS_ANDROMEDA, pos: vector(3, 0, 0)["*"](DIST_SCALE), vel: vector(0, 3, 0), radius: MAX_ORBITAL_RADIUS, thickness: ANDROMEDA_GALAXY_THICKNESS, colour: vector(0, .5, 1)})]);
+    andromeda_galaxy = _GS_1;
+    "171";
+    async function set_animation_speed(event) {
+        "172";
+        "173";
+        frame_rate = event.value;
+        "174";
+        speed_slider_text.text = " = "["+"](str(event.value));
+    };
+    if (!set_animation_speed.__argnames__) Object.defineProperties(set_animation_speed, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "177";
+    display.append_to_caption("\nAnimation speed");
+    "178";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({value: 10, min: 1, max: 100, bind: set_animation_speed})]);
+    "179";
+    speed_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: " = 10"})]);
+    "183";
+    delta_t = 1e17;
+    "184";
+    frame_rate = 10;
+    "185";
+    while (true) {
+        "186";
+        (await rate(frame_rate));
+        "188";
+        (await milky_way_galaxy.update_stars_by(delta_t, andromeda_galaxy));
+        "189";
+        (await andromeda_galaxy.update_stars_by(delta_t, milky_way_galaxy));
+        "190";
+        (await milky_way_galaxy.update_by(delta_t, andromeda_galaxy));
+        "191";
+        (await andromeda_galaxy.update_by(delta_t, milky_way_galaxy));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
