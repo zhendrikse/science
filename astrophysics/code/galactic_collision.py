@@ -6,10 +6,8 @@ title = """&#x2022; <a href="https://github.com/SamirOmarov/galactic-collision">
 
 """
 
-display = canvas(background=color.gray(0.075), width=650, range=5, forward=vector(.33, -.36, -.85), title=title,
-                 center=vector(-1.5, -.35, -.45))
-stars = sphere(pos=vector(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=10, shininess=0, opacity=0.5,
-               center=vector(-1.5, -.35, -.45))
+display = canvas(background=color.gray(0.075), width=650, range=5, forward=vector(.33, -.36, -.85), title=title, center=vector(-1.5, -.35, -.45))
+stars = sphere(pos=vector(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=10, shininess=0, opacity=0.5, center=vector(-1.5, -.35, -.45))
 
 # Universal gravitational constant
 G = 6.673e-11
@@ -105,8 +103,10 @@ class Star:
 class Galaxy:
     def __init__(self, num_stars, pos, vel, radius, thickness, colour):
         self._pos = pos
+        self._mass = 0
         self._velocity = vel
         self._radius = radius
+        self._stars = []
 
         # Gaussian distributions
         sigma_mass = AVG_SOLAR_MASS / 3.0
@@ -135,21 +135,24 @@ class Galaxy:
 
             positions.append(pos)
 
-        def calc_orbital_velocity(center_mass, radius_):
-            return sqrt(G * center_mass / radius_)
-
         # Generate list of all stars
-        self.stars = []
         up = vector(0.0, 1.0, 0.0)
         for i in range(num_stars):
             # Find normalized vector along direction of travel
             absolute_pos = positions[i] + self._pos
             relative_pos = positions[i]
             vec = relative_pos.cross(up).norm()
-            relative_vel = vec * calc_orbital_velocity(self._mass, relative_pos.mag)
+            relative_vel = vec * self._calc_orbital_velocity(relative_pos.mag)
             absolute_vel = relative_vel + vel
 
-            self.stars.append(Star(mass=masses[i], radius=STAR_RADIUS, pos=absolute_pos, vel=absolute_vel, colour=colour))
+            self._stars.append(Star(mass=masses[i], radius=STAR_RADIUS, pos=absolute_pos, vel=absolute_vel, colour=colour))
+
+    def _calc_orbital_velocity(self, radius_):
+        return sqrt(G * self._mass / radius_)
+
+    def update_stars_by(self, dt, other_galaxy):
+        for star in self._stars:
+            star.update_by(dt, self, other_galaxy)
 
     def update_by(self, dt, galaxy):
         self._velocity += accel(self, galaxy) * dt
@@ -161,16 +164,9 @@ class Galaxy:
     def mass(self):
         return self._mass
 
-    def update_stars_by(self, dt, other_galaxy):
-        for star in self.stars:
-            star.update_by(dt, self, other_galaxy)
 
-
-milky_way_galaxy = Galaxy(num_stars=NUM_STARS_MILKY_WAY, pos=vector(-5, 0, 0) * DIST_SCALE, vel=vector(0, 0, 0),
-                          radius=MAX_ORBITAL_RADIUS, thickness=MILKY_WAY_GALAXY_THICKNESS, colour=vector(0.9, 0.9, 1))
-andromeda_galaxy = Galaxy(num_stars=NUM_STARS_ANDROMEDA, pos=vector(3, 0, 0) * DIST_SCALE, vel=vector(0, 3, 0),
-                          radius=MAX_ORBITAL_RADIUS, thickness=ANDROMEDA_GALAXY_THICKNESS, colour=vector(0, 0.5, 1))
-
+milky_way_galaxy = Galaxy(num_stars=NUM_STARS_MILKY_WAY, pos=vector(-5, 0, 0) * DIST_SCALE, vel=vector(0, 0, 0), radius=MAX_ORBITAL_RADIUS, thickness=MILKY_WAY_GALAXY_THICKNESS, colour=vector(0.9, 0.9, 1))
+andromeda_galaxy = Galaxy(num_stars=NUM_STARS_ANDROMEDA, pos=vector(3, 0, 0) * DIST_SCALE, vel=vector(0, 3, 0), radius=MAX_ORBITAL_RADIUS, thickness=ANDROMEDA_GALAXY_THICKNESS, colour=vector(0, 0.5, 1))
 
 def set_animation_speed(event):
     global frame_rate
