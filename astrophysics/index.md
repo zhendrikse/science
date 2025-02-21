@@ -64,7 +64,7 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 </figure>
 <figure class="right_image">
   <a href="galactic_collision.html">
-    <img alt="Three body problem" src="images/galactic_collision.png" title="Click to animate"/>
+    <img alt="Galactic collision" src="images/galactic_collision.png" title="Click to animate"/>
   </a>
   <figcaption>The future collision between our own Milky Way and the Andromeda galaxy.</figcaption>
 </figure>
