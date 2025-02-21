@@ -97,7 +97,7 @@ class Star:
 
         mag_difference = milky_way.position().mag - andromeda.position().mag
         if -6 + 18 > mag_difference > -5e+18:
-            star._obj.color = vector(1, 0.5, 0)
+            self._obj.color = vector(1, 0.5, 0)
         # if andromeda.position().mag < 1.1920057081525512e+20:
         #    self._obj.color = vector(1, 0.5, 0)
 
@@ -149,8 +149,7 @@ class Galaxy:
             relative_vel = vec * calc_orbital_velocity(self._mass, relative_pos.mag)
             absolute_vel = relative_vel + vel
 
-            self.stars.append(
-                Star(mass=masses[i], radius=STAR_RADIUS, pos=absolute_pos, vel=absolute_vel, colour=colour))
+            self.stars.append(Star(mass=masses[i], radius=STAR_RADIUS, pos=absolute_pos, vel=absolute_vel, colour=colour))
 
     def update_by(self, dt, galaxy):
         self._velocity += accel(self, galaxy) * dt
@@ -161,6 +160,10 @@ class Galaxy:
 
     def mass(self):
         return self._mass
+
+    def update_stars_by(self, dt, other_galaxy):
+        for star in self.stars:
+            star.update_by(dt, self, other_galaxy)
 
 
 milky_way_galaxy = Galaxy(num_stars=NUM_STARS_MILKY_WAY, pos=vector(-5, 0, 0) * DIST_SCALE, vel=vector(0, 0, 0),
@@ -186,11 +189,7 @@ frame_rate = 10
 while True:
     rate(frame_rate)
 
-    for star in milky_way_galaxy.stars:
-        star.update_by(delta_t, milky_way_galaxy, andromeda_galaxy)
-
-    for star in andromeda_galaxy.stars:
-        star.update_by(delta_t, milky_way_galaxy, andromeda_galaxy)
-
+    milky_way_galaxy.update_stars_by(delta_t, andromeda_galaxy)
+    andromeda_galaxy.update_stars_by(delta_t, milky_way_galaxy)
     milky_way_galaxy.update_by(delta_t, andromeda_galaxy)
     andromeda_galaxy.update_by(delta_t, milky_way_galaxy)
