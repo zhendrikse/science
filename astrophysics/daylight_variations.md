@@ -14,4 +14,6 @@ model help?
 
 {% include_relative code/DaylightVariations.html %}
 
+<p style="clear:both;"></p>
+
 {% include share_buttons.html %}

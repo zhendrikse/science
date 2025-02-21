@@ -7,7 +7,7 @@ title = """&#x2022; <a href="https://github.com/SamirOmarov/galactic-collision">
 """
 
 display = canvas(background=color.gray(0.075), width=650, range=5, forward=vector(.33, -.36, -.85), title=title, center=vector(-1.5, -.35, -.45))
-stars = sphere(pos=vector(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=10, shininess=0, opacity=0.5, center=vector(-1.5, -.35, -.45))
+stars = sphere(pos=vector(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=15, shininess=0, opacity=0.5, center=vector(-1.5, -.35, -.45))
 
 # Universal gravitational constant
 G = 6.673e-11

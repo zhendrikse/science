@@ -5,4 +5,6 @@
 
 {% include_relative code/GalacticCollision.html %}
 
+<p style="clear:both;"></p>
+
 {% include share_buttons.html %}
