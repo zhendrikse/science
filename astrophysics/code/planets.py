@@ -8,7 +8,8 @@ title = """&#x2022; <a href="https://www.glowscript.org/#/user/PHYS172x/folder/M
 
 animation = canvas(background=color.gray(0.075), range=19, center=vector(-4.8, 3.55, 0), title=title)
 
-SUN = sphere(pos=vector(-50, 30, -30), texture="https://i.imgur.com/yoEzbtg.jpg", flipx=False, shininess=0.9, radius=7)
+sun = sphere(pos=vector(-50, 30, -30), texture="https://www.hendrikse.name/science/astrophysics/images/sun.jpg", flipx=False, shininess=0.9, radius=7)
+# sun = sphere(pos=vector(-50, 30, -30), texture="https://i.imgur.com/yoEzbtg.jpg", flipx=False, shininess=0.9, radius=7)
 # SUN=sphere( pos=vector(-50,30,-30),texture="https://upload.wikimedia.org/wikipedia/commons/b/b4/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg",flipx = False , shininess = 0.9,radius=7 )
 label(pos=vector(-50, 20, -30), text='Sun')
 
@@ -22,7 +23,8 @@ class Planet:
 
 class Mercury(Planet):
     def __init__(self):
-        Planet.__init__(self, vector(-18, 9, 0), "https://i.imgur.com/SLgVbwD.jpeg", 0.00350)
+        Planet.__init__(self, vector(-18, 9, 0), "https://www.hendrikse.name/science/astrophysics/images/mercury.jpg", 0.00350)
+        # Planet.__init__(self, vector(-18, 9, 0), "https://i.imgur.com/SLgVbwD.jpeg", 0.00350)
         # Mercury=sphere( pos=vector(-18,9,0),texture="https://upload.wikimedia.org/wikipedia/commons/3/30/Mercury_in_color_-_Prockter07_centered.jpg",radius=3 )
         label(pos=vector(-18, 3.5, 0), text='Mercury')
         label(pos=vector(-18, 15, 0), text='θ = 0°', box=False)
@@ -31,10 +33,11 @@ class Mercury(Planet):
 
 class Venus(Planet):
     def __init__(self):
-        Planet.__init__(self, vector(-6, 9, 0), "https://i.imgur.com/YuK3CzJ.jpeg", 0.00244)
+        Planet.__init__(self, vector(-6, 9, 0), "https://www.hendrikse.name/science/astrophysics/images/venus.jpg", 0.00244)
+        #Planet.__init__(self, vector(-6, 9, 0), "https://i.imgur.com/YuK3CzJ.jpeg", 0.00244)
+        # Venus=sphere( pos=vector(-6,9,0),texture="https://upload.wikimedia.org/wikipedia/commons/1/19/Cylindrical_Map_of_Venus.jpg", opacity = 0.7, emissive = True,radius=3 )
         self._sphere.opacity=0.7
         self._sphere.emissive=True
-        # Venus=sphere( pos=vector(-6,9,0),texture="https://upload.wikimedia.org/wikipedia/commons/1/19/Cylindrical_Map_of_Venus.jpg", opacity = 0.7, emissive = True,radius=3 )
         label(pos=vector(-6, 3.5, 0), text='Venus')
         label(pos=vector(-6, 15, 0), text='θ = 177.3°', box=False)
         label(pos=vector(-6, 13.5, 0), text='243d 26m', box=False)
@@ -48,7 +51,8 @@ class Earth(Planet):
 
 class Mars(Planet):
     def __init__(self):
-        Planet.__init__(self, vector(18, 9, 0), "https://i.imgur.com/Mwsa16j.jpeg", 0.0439)
+        Planet.__init__(self, vector(18, 9, 0), "https://www.hendrikse.name/science/astrophysics/images/mars.jpg", 0.0439)
+        #Planet.__init__(self, vector(18, 9, 0), "https://i.imgur.com/Mwsa16j.jpeg", 0.0439)
         self._sphere.opacity = 0.7
         self._sphere.emissive = True
         # Mars=sphere( pos=vector(18,9,0),texture="https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg",opacity = 0.7, emissive = True,radius=3 )
@@ -58,7 +62,8 @@ class Mars(Planet):
 
 class Jupiter(Planet):
     def __init__(self):
-        Planet.__init__(self, vector(-18, -7, 0), "https://i.imgur.com/RMMtt0K.jpeg", 0.0541)
+        Planet.__init__(self, vector(-18, -7, 0), "https://www.hendrikse.name/science/astrophysics/images/jupiter.jpg", 0.0541)
+        #Planet.__init__(self, vector(-18, -7, 0), "https://i.imgur.com/RMMtt0K.jpeg", 0.0541)
         # Jupiter=sphere( pos=vector(-18,-7,0),texture="https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg",opacity = 0.7, emissive = True,radius=3 )
         self._sphere.opacity = 0.7
         self._sphere.emissive = True
@@ -68,7 +73,8 @@ class Jupiter(Planet):
 
 class Saturn(Planet):
     def __init__(self):
-        Planet.__init__(self, vector(-6, -7, 0), "https://i.imgur.com/02Kt4gyb.jpg", 0.0640)
+        Planet.__init__(self, vector(-6, -7, 0), "https://www.hendrikse.name/science/astrophysics/images/saturn.jpg", 0.0640)
+        #Planet.__init__(self, vector(-6, -7, 0), "https://i.imgur.com/02Kt4gyb.jpg", 0.0640)
         self._sphere.opacity = 0.7
         self._sphere.emissive = True
         # Saturn=sphere( pos=vector(-6,-7,0),texture="https://i.imgur.com/5Pur4IE.jpeg",opacity = 0.7, emissive = True,radius=3 )
@@ -85,7 +91,8 @@ class Saturn(Planet):
 
 class Uranus(Planet):
     def __init__(self):
-        Planet.__init__(self, vector(6, -7, 0), "https://i.imgur.com/2kZNvFw.jpeg", 0.0750)
+        Planet.__init__(self, vector(6, -7, 0), "https://www.hendrikse.name/science/astrophysics/images/uranus.jpg", 0.0750)
+        #Planet.__init__(self, vector(6, -7, 0), "https://i.imgur.com/2kZNvFw.jpeg", 0.0750)
         # Uranus=sphere( pos=vector(6,-7,0),texture="https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg",opacity = 0.7, emissive = True,radius=3 )
         label(pos=vector(6, -12.5, 0), text='Uranus')
         label(pos=vector(6, -1, 0), text='θ = 97.8°', box=False)
@@ -93,7 +100,8 @@ class Uranus(Planet):
 
 class Neptune(Planet):
     def __init__(self):
-        Planet.__init__(self, vector(18, -7, 0), "https://i.imgur.com/lyLpoMk.jpeg", 0.0490)
+        Planet.__init__(self, vector(18, -7, 0), "https://www.hendrikse.name/science/astrophysics/images/neptune.jpg", 0.0490)
+        #Planet.__init__(self, vector(18, -7, 0), "https://i.imgur.com/lyLpoMk.jpeg", 0.0490)
         # Neptune=sphere( pos=vector(18,-7,0),texture="https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg",opacity = 0.7, emissive = True,radius=3 )
         self._sphere.opacity = 0.7
         self._sphere.emissive = True

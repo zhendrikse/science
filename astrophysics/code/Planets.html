@@ -52,7 +52,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, animation, SUN, _, _GS_1, _GS_2, _GS_3, _GS_4, _GS_5, _GS_6, _GS_7, _GS_8, planets, planet;
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, sun, _, _GS_1, _GS_2, _GS_3, _GS_4, _GS_5, _GS_6, _GS_7, _GS_8, planets, planet;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,12 +64,12 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "9";
+    "8";
     title = "&#x2022; <a href=\"https://www.glowscript.org/#/user/PHYS172x/folder/MyPrograms/program/Solar-System-Planets\">Original code<\/a> written by Ergi Bufasi\n&#x2022; Refactored and extended by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/planets.py\">planets.py</a>\n&#x2022; Click on a planet to zoom in, use the reset button to reset the scene\n\n";
-    "11";
+    "10";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), range: 19, center: vector(1["-u"]()["*"](4.8), 3.55, 0), title: title})]);
-    "13";
-    SUN = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](50), 30, 1["-u"]()["*"](30)), texture: "https://i.imgur.com/yoEzbtg.jpg", flipx: false, shininess: .9, radius: 7})]);
+    "12";
+    sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](50), 30, 1["-u"]()["*"](30)), texture: "https://www.hendrikse.name/science/astrophysics/images/sun.jpg", flipx: false, shininess: .9, radius: 7})]);
     "15";
     ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](50), 20, 1["-u"]()["*"](30)), text: "Sun"})]);
     "17";
@@ -113,12 +113,12 @@ async function __main__() {
     Mercury.prototype.__init__ = async function __init__() {
         var self = this;
         "27";
-        Planet.prototype.__init__.call(self, vector(1["-u"]()["*"](18), 9, 0), "https://i.imgur.com/SLgVbwD.jpeg", .0035);
-        "29";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 3.5, 0), text: "Mercury"})]);
+        Planet.prototype.__init__.call(self, vector(1["-u"]()["*"](18), 9, 0), "https://www.hendrikse.name/science/astrophysics/images/mercury.jpg", .0035);
         "30";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 15, 0), text: "θ = 0°", box: false})]);
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 3.5, 0), text: "Mercury"})]);
         "31";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 15, 0), text: "θ = 0°", box: false})]);
+        "32";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](18), 13.5, 0), text: "58d 15.5h", box: false})]);
     };
     if (!Mercury.prototype.__init__.__module__) Object.defineProperties(Mercury.prototype.__init__, {
@@ -137,23 +137,23 @@ return this.__repr__();
     Object.defineProperty(Mercury.prototype, "__bases__", {value: [Planet]});
 
 
-    "34";
+    "35";
     function Venus() {;
     }
     ρσ_extends(Venus, Planet);
     Venus.prototype.__init__ = async function __init__() {
         var self = this;
-        "36";
-        Planet.prototype.__init__.call(self, vector(1["-u"]()["*"](6), 9, 0), "https://i.imgur.com/YuK3CzJ.jpeg", .00244);
         "37";
-        self._sphere.opacity = .7;
-        "38";
-        self._sphere.emissive = true;
+        Planet.prototype.__init__.call(self, vector(1["-u"]()["*"](6), 9, 0), "https://www.hendrikse.name/science/astrophysics/images/venus.jpg", .00244);
         "40";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 3.5, 0), text: "Venus"})]);
+        self._sphere.opacity = .7;
         "41";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 15, 0), text: "θ = 177.3°", box: false})]);
+        self._sphere.emissive = true;
         "42";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 3.5, 0), text: "Venus"})]);
+        "43";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 15, 0), text: "θ = 177.3°", box: false})]);
+        "44";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 13.5, 0), text: "243d 26m", box: false})]);
     };
     if (!Venus.prototype.__init__.__module__) Object.defineProperties(Venus.prototype.__init__, {
@@ -172,19 +172,19 @@ return this.__repr__();
     Object.defineProperty(Venus.prototype, "__bases__", {value: [Planet]});
 
 
-    "44";
+    "46";
     function Earth() {;
     }
     ρσ_extends(Earth, Planet);
     Earth.prototype.__init__ = async function __init__() {
         var self = this;
-        "46";
-        Planet.prototype.__init__.call(self, vector(6, 9, 0), textures.earth, .0408);
-        "47";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 3.5, 0), text: "Earth"})]);
         "48";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 15, 0), text: "θ = 23.4°", box: false})]);
+        Planet.prototype.__init__.call(self, vector(6, 9, 0), textures.earth, .0408);
         "49";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 3.5, 0), text: "Earth"})]);
+        "50";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 15, 0), text: "θ = 23.4°", box: false})]);
+        "51";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 13.5, 0), text: "23h 56m", box: false})]);
     };
     if (!Earth.prototype.__init__.__module__) Object.defineProperties(Earth.prototype.__init__, {
@@ -203,23 +203,23 @@ return this.__repr__();
     Object.defineProperty(Earth.prototype, "__bases__", {value: [Planet]});
 
 
-    "51";
+    "53";
     function Mars() {;
     }
     ρσ_extends(Mars, Planet);
     Mars.prototype.__init__ = async function __init__() {
         var self = this;
-        "53";
-        Planet.prototype.__init__.call(self, vector(18, 9, 0), "https://i.imgur.com/Mwsa16j.jpeg", .0439);
-        "54";
-        self._sphere.opacity = .7;
         "55";
-        self._sphere.emissive = true;
+        Planet.prototype.__init__.call(self, vector(18, 9, 0), "https://www.hendrikse.name/science/astrophysics/images/mars.jpg", .0439);
         "57";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 3.5, 0), text: "Mars"})]);
+        self._sphere.opacity = .7;
         "58";
+        self._sphere.emissive = true;
+        "60";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 3.5, 0), text: "Mars"})]);
+        "61";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 15, 0), text: "θ = 25.2°", box: false})]);
-        "59";
+        "62";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 13.5, 0), text: "1d 36m", box: false})]);
     };
     if (!Mars.prototype.__init__.__module__) Object.defineProperties(Mars.prototype.__init__, {
@@ -238,23 +238,23 @@ return this.__repr__();
     Object.defineProperty(Mars.prototype, "__bases__", {value: [Planet]});
 
 
-    "61";
+    "64";
     function Jupiter() {;
     }
     ρσ_extends(Jupiter, Planet);
     Jupiter.prototype.__init__ = async function __init__() {
         var self = this;
-        "63";
-        Planet.prototype.__init__.call(self, vector(1["-u"]()["*"](18), 1["-u"]()["*"](7), 0), "https://i.imgur.com/RMMtt0K.jpeg", .0541);
-        "65";
-        self._sphere.opacity = .7;
         "66";
-        self._sphere.emissive = true;
-        "67";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](19), 1["-u"]()["*"](12.5), 0), text: "Jupiter"})]);
-        "68";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](19), 1["-u"]()["*"](1), 0), text: "θ = 3.1°", box: false})]);
+        Planet.prototype.__init__.call(self, vector(1["-u"]()["*"](18), 1["-u"]()["*"](7), 0), "https://www.hendrikse.name/science/astrophysics/images/jupiter.jpg", .0541);
         "69";
+        self._sphere.opacity = .7;
+        "70";
+        self._sphere.emissive = true;
+        "71";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](19), 1["-u"]()["*"](12.5), 0), text: "Jupiter"})]);
+        "72";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](19), 1["-u"]()["*"](1), 0), text: "θ = 3.1°", box: false})]);
+        "73";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](19), 1["-u"]()["*"](2.5), 0), text: "9h 55m", box: false})]);
     };
     if (!Jupiter.prototype.__init__.__module__) Object.defineProperties(Jupiter.prototype.__init__, {
@@ -273,30 +273,30 @@ return this.__repr__();
     Object.defineProperty(Jupiter.prototype, "__bases__", {value: [Planet]});
 
 
-    "71";
+    "75";
     function Saturn() {;
     }
     ρσ_extends(Saturn, Planet);
     Saturn.prototype.__init__ = async function __init__() {
         var self = this;
         var ρσ_ls, saturn_ring_1, saturn_ring_2, saturn_ring_3;
-        "73";
-        Planet.prototype.__init__.call(self, vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), "https://i.imgur.com/02Kt4gyb.jpg", .064);
-        "74";
-        self._sphere.opacity = .7;
-        "75";
-        self._sphere.emissive = true;
-        "78";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](12.5), 0), text: "Saturn"})]);
+        "77";
+        Planet.prototype.__init__.call(self, vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), "https://www.hendrikse.name/science/astrophysics/images/saturn.jpg", .064);
         "79";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](1), 0), text: "θ = 26.7°", box: false})]);
+        self._sphere.opacity = .7;
         "80";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](2.5), 0), text: "10h 40m", box: false})]);
-        "81";
-        saturn_ring_1 = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), axis: vector(2, 1["-u"]()["*"](3), 0), radius: 6, thickness: .09, texture: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Saturn_%28planet%29_large.jpg"})]);
+        self._sphere.emissive = true;
         "83";
-        saturn_ring_2 = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), axis: vector(2, 1["-u"]()["*"](3), 0), radius: 6.5, thickness: .07, texture: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Saturn_%28planet%29_large.jpg"})]);
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](12.5), 0), text: "Saturn"})]);
+        "84";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](1), 0), text: "θ = 26.7°", box: false})]);
         "85";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](2.5), 0), text: "10h 40m", box: false})]);
+        "86";
+        saturn_ring_1 = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), axis: vector(2, 1["-u"]()["*"](3), 0), radius: 6, thickness: .09, texture: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Saturn_%28planet%29_large.jpg"})]);
+        "88";
+        saturn_ring_2 = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), axis: vector(2, 1["-u"]()["*"](3), 0), radius: 6.5, thickness: .07, texture: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Saturn_%28planet%29_large.jpg"})]);
+        "90";
         saturn_ring_3 = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](6), 1["-u"]()["*"](7), 0), axis: vector(2, 1["-u"]()["*"](3), 0), radius: 5.5, thickness: .07, texture: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Saturn_%28planet%29_large.jpg"})]);
     };
     if (!Saturn.prototype.__init__.__module__) Object.defineProperties(Saturn.prototype.__init__, {
@@ -315,19 +315,19 @@ return this.__repr__();
     Object.defineProperty(Saturn.prototype, "__bases__", {value: [Planet]});
 
 
-    "88";
+    "93";
     function Uranus() {;
     }
     ρσ_extends(Uranus, Planet);
     Uranus.prototype.__init__ = async function __init__() {
         var self = this;
-        "90";
-        Planet.prototype.__init__.call(self, vector(6, 1["-u"]()["*"](7), 0), "https://i.imgur.com/2kZNvFw.jpeg", .075);
-        "92";
+        "95";
+        Planet.prototype.__init__.call(self, vector(6, 1["-u"]()["*"](7), 0), "https://www.hendrikse.name/science/astrophysics/images/uranus.jpg", .075);
+        "98";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 1["-u"]()["*"](12.5), 0), text: "Uranus"})]);
-        "93";
+        "99";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 1["-u"]()["*"](1), 0), text: "θ = 97.8°", box: false})]);
-        "94";
+        "100";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(6, 1["-u"]()["*"](2.5), 0), text: "17h 14m", box: false})]);
     };
     if (!Uranus.prototype.__init__.__module__) Object.defineProperties(Uranus.prototype.__init__, {
@@ -346,23 +346,23 @@ return this.__repr__();
     Object.defineProperty(Uranus.prototype, "__bases__", {value: [Planet]});
 
 
-    "96";
+    "102";
     function Neptune() {;
     }
     ρσ_extends(Neptune, Planet);
     Neptune.prototype.__init__ = async function __init__() {
         var self = this;
-        "98";
-        Planet.prototype.__init__.call(self, vector(18, 1["-u"]()["*"](7), 0), "https://i.imgur.com/lyLpoMk.jpeg", .049);
-        "100";
-        self._sphere.opacity = .7;
-        "101";
-        self._sphere.emissive = true;
-        "102";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 1["-u"]()["*"](12.5), 0), text: "Neptune"})]);
-        "103";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 1["-u"]()["*"](1), 0), text: "θ = 28.3°", box: false})]);
         "104";
+        Planet.prototype.__init__.call(self, vector(18, 1["-u"]()["*"](7), 0), "https://www.hendrikse.name/science/astrophysics/images/neptune.jpg", .049);
+        "107";
+        self._sphere.opacity = .7;
+        "108";
+        self._sphere.emissive = true;
+        "109";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 1["-u"]()["*"](12.5), 0), text: "Neptune"})]);
+        "110";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 1["-u"]()["*"](1), 0), text: "θ = 28.3°", box: false})]);
+        "111";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(18, 1["-u"]()["*"](2.5), 0), text: "16h", box: false})]);
     };
     if (!Neptune.prototype.__init__.__module__) Object.defineProperties(Neptune.prototype.__init__, {
@@ -381,26 +381,26 @@ return this.__repr__();
     Object.defineProperty(Neptune.prototype, "__bases__", {value: [Planet]});
 
 
-    "106";
+    "113";
     async function zoom_in_on(selected_object) {
         var ρσ_ls, target, step, _;
-        "107";
+        "114";
         if (!selected_object) {
-            "108";
+            "115";
             return;
         }
-        "110";
+        "117";
         target = selected_object.pos;
-        "111";
+        "118";
         step = target["-"](1["*"](animation.center))["/"](20);
-        "112";
+        "119";
         for (var ρσ_Index1 = 1; ρσ_Index1["<"](20); ρσ_Index1=ρσ_Index1["+"](1)) {
             _ = ρσ_Index1;
-            "113";
+            "120";
             (await rate(20));
-            "114";
+            "121";
             animation.center=animation.center["+"](step);
-            "115";
+            "122";
             animation.range=animation.range["/"](1.037);
         }
     };
@@ -409,33 +409,33 @@ return this.__repr__();
         __module__ : {value: null}
     });
 
-    "117";
+    "124";
     async function on_mouse_click() {
-        "118";
+        "125";
         (await zoom_in_on(animation.mouse.pick()));
     };
     if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
         __module__ : {value: null}
     });
 
-    "120";
+    "127";
     animation.bind("click", on_mouse_click);
-    "122";
+    "129";
     async function on_reset() {
-        "123";
+        "130";
         animation.center = vector(1["-u"]()["*"](4.8), 3.55, 0);
-        "124";
+        "131";
         animation.range = 19;
     };
     if (!on_reset.__module__) Object.defineProperties(on_reset, {
         __module__ : {value: null}
     });
 
-    "126";
+    "133";
     animation.append_to_caption("\n");
-    "127";
+    "134";
     _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Reset", bind: on_reset})]);
-    "129";
+    "136";
     _GS_1 = new Mercury;
     (await _GS_1.__init__());
     _GS_2 = new Venus;
@@ -453,16 +453,16 @@ return this.__repr__();
     _GS_8 = new Neptune;
     (await _GS_8.__init__());
     planets = ρσ_list_decorate([ _GS_1, _GS_2, _GS_3, _GS_4, _GS_5, _GS_6, _GS_7, _GS_8 ]);
-    "130";
+    "137";
     while (true) {
-        "131";
+        "138";
         (await rate(20));
-        "132";
+        "139";
         var ρσ_Iter2 = planets;
         ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
         for (var ρσ_Index2 of ρσ_Iter2) {
             planet = ρσ_Index2;
-            "133";
+            "140";
             (await planet.rotate());
         }
     }

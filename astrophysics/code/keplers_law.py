@@ -70,12 +70,13 @@ class Planet:
         return mag(self._velocity)
 
 
-sun = sphere(color=color.yellow, radius=0.1, texture="http://i.imgur.com/yoEzbtg.jpg")  # motion of sun is ignored (or centre of mass coordinates)
+# motion of sun is ignored (or centre of mass coordinates)
+sun = sphere(color=color.yellow, radius=0.1, texture="https://www.hendrikse.name/science/astrophysics/images/sun.jpg")
 colour = color.white
 
 dt = 0.025
 while True:
-    sphere(pos=vector(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=10, shininess=0, opacity=0.5)
+    sphere(pos=vector(0, 0, 0), texture="https://www.hendrikse.name/science/astrophysics/images/universe.jpg", radius=10, shininess=0, opacity=0.5)
     planet = Planet(velocity=-vector(0.7 + 0.5 * random(), 0, 0)  )
     colour = planet.month_step(0)
     curve(pos=[sun.pos, planet.pos()], color=colour)
