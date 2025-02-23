@@ -31,9 +31,9 @@ MILKY_WAY_GALAXY_THICKNESS = DIST_SCALE * 0.9
 ANDROMEDA_GALAXY_THICKNESS = DIST_SCALE * 0.2
 
 # Milky Way contains about 300 billion stars
-NUM_STARS_MILKY_WAY = 700
+NUM_STARS_MILKY_WAY = 1400
 # Andromeda Galaxy contains about 1 trillion (10^12) stars
-NUM_STARS_ANDROMEDA = 1400
+NUM_STARS_ANDROMEDA = 2800
 
 # Graphical constants
 STAR_RADIUS = 0.025
