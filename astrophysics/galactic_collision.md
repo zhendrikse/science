@@ -1,8 +1,7 @@
 {% include breadcrumbs.html %}
 
-## Future collision between our Milky Way &amp; Andromeda
+## Andromeda Milky Way collision
 <div class="header_line"><br/></div>
-
 
 In roughly four and a half billion years, our Milky Way galaxy 
 [will collide](https://en.wikipedia.org/wiki/Andromeda%E2%80%93Milky_Way_collision) with our nearest
@@ -14,7 +13,7 @@ The demo below simulates this future collision. It is based on a very simple mod
 - No [super-massive black holes](https://en.wikipedia.org/wiki/Supermassive_black_hole) at the center of either galaxy
 - The masses of the stars and their positions are randomly picked from a normal distribution, 
   generated from a uniform distribution using a [Box-Müller transform](https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform).
-- VPython&apos;s [`simple_sphere`](https://www.glowscript.org/docs/VPythonDocs/sphere.html#simple-sphere) 
+- [VPython](https://vpython.org/)&apos;s [`simple_sphere`](https://www.glowscript.org/docs/VPythonDocs/sphere.html#simple-sphere) 
   objects are used to optimize performance.
 
 
