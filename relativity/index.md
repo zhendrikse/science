@@ -67,28 +67,7 @@ Since the mathematicians have invaded the theory of relativity,
 I do not understand it myself anymore. &mdash; Albert Einstein
 </blockquote><br/>
 
-### Perihelion precession of Mercury&apos;s orbit
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<div class="double_image">
-  <figure class="left_image">
-    <a href="perihelion_mercury.html">
-      <img alt="Light cone" src="images/perihelion_mercury.png" title="Click to animate"/>
-    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <figcaption>One of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) 
-    of general relativity: Mercury&apos;s perihelion precession.</figcaption>
-  </figure>
-  <figure class="right_image">
-    <a href="black_hole_pixel_plot.html">
-      <img alt="Black hole" src="images/black_hole_pixel_plot.png" title="Click to animate"/>
-    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <figcaption>Black hole image generated with ray tracing techniques, hence it 
-    may take some time for the page to render!</figcaption>
-  </figure>
-</div>
-<p style="clear: both;"></p>
-
-### Local space-time near Earth
+### Local space-time near Earth &amp; Mercury&apos;s perihelion precession
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -101,6 +80,20 @@ I do not understand it myself anymore. &mdash; Albert Einstein
     <span style="color: red">red lines</span> the time axis!</figcaption>
   </figure>
   <figure class="right_image">
+    <a href="perihelion_mercury.html">
+      <img alt="Light cone" src="images/perihelion_mercury.png" title="Click to animate"/>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <figcaption>One of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) 
+    of general relativity: Mercury&apos;s perihelion precession.</figcaption>
+  </figure>
+</div>
+<p style="clear: both;"></p>
+
+### Spaghettification &amp; black hole ray tracing 
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+  <figure class="left_image">
     <a href="spaghettification.html">
       <img alt="Spaghettification" src="images/spaghettification.png" title="Click to animate"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -108,6 +101,13 @@ I do not understand it myself anymore. &mdash; Albert Einstein
     &mdash; <a href="https://en.wikipedia.org/wiki/Stephen_Hawking">Stephen Hawking</a>, from 
     <a href="https://en.wikipedia.org/wiki/A_Brief_History_of_Time">A Brief History of Time</a>. 
     </figcaption>
+  </figure>
+  <figure class="right_image">
+    <a href="black_hole_pixel_plot.html">
+      <img alt="Black hole" src="images/black_hole_pixel_plot.png" title="Click to animate"/>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <figcaption>Black hole image generated with ray tracing techniques, hence it 
+    may take some time for the page to render!</figcaption>
   </figure>
 </div>
 <p style="clear: both;"></p>
