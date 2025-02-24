@@ -99,7 +99,7 @@ I do not understand it myself anymore. &mdash; Albert Einstein
     <a href="perihelion_mercury.html">
       <img alt="Light cone" src="images/perihelion_mercury.png" title="Click to animate"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <figcaption>One of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) 
+    <figcaption>One of the <a href="https://en.wikipedia.org/wiki/Tests_of_general_relativity">three classic tests</a> 
     of general relativity: Mercury&apos;s perihelion precession.</figcaption>
   </figure>
   <figure class="right_image">
