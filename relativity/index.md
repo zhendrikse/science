@@ -80,11 +80,13 @@ I do not understand it myself anymore. &mdash; Albert Einstein
     <span style="color: red">red lines</span> the time axis!</figcaption>
   </figure>
   <figure class="right_image">
-    <a href="perihelion_mercury.html">
-      <img alt="Light cone" src="images/perihelion_mercury.png" title="Click to animate"/>
+    <a href="spaghettification.html">
+      <img alt="Spaghettification" src="images/spaghettification.png" title="Click to animate"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <figcaption>One of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) 
-    of general relativity: Mercury&apos;s perihelion precession.</figcaption>
+    <figcaption>A fictional astronaut, passing within a black hole's event horizon, is "stretched like spaghetti". 
+    &mdash; <a href="https://en.wikipedia.org/wiki/Stephen_Hawking">Stephen Hawking</a>, from 
+    <a href="https://en.wikipedia.org/wiki/A_Brief_History_of_Time">A Brief History of Time</a>. 
+    </figcaption>
   </figure>
 </div>
 <p style="clear: both;"></p>
@@ -94,13 +96,11 @@ I do not understand it myself anymore. &mdash; Albert Einstein
 
 <div class="double_image">
   <figure class="left_image">
-    <a href="spaghettification.html">
-      <img alt="Spaghettification" src="images/spaghettification.png" title="Click to animate"/>
+    <a href="perihelion_mercury.html">
+      <img alt="Light cone" src="images/perihelion_mercury.png" title="Click to animate"/>
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <figcaption>A fictional astronaut, passing within a black hole's event horizon, is "stretched like spaghetti". 
-    &mdash; <a href="https://en.wikipedia.org/wiki/Stephen_Hawking">Stephen Hawking</a>, from 
-    <a href="https://en.wikipedia.org/wiki/A_Brief_History_of_Time">A Brief History of Time</a>. 
-    </figcaption>
+    <figcaption>One of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) 
+    of general relativity: Mercury&apos;s perihelion precession.</figcaption>
   </figure>
   <figure class="right_image">
     <a href="black_hole_pixel_plot.html">
