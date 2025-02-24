@@ -87,8 +87,12 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
   &mdash; <a href="https://en.wikipedia.org/wiki/Pulsar">Wikipedia</a></figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="xray_binary.html">
+    <img alt="X-ray binary" src="images/xray_binary.png" title="Click to animate"/>
+  </a>
+  <figcaption>"X-ray binaries are a class of binary stars that are luminous in 
+  <a href="https://en.wikipedia.org/wiki/X-ray">X-rays</a>." 
+  &mdash; <a href="https://en.wikipedia.org/wiki/X-ray_binary">Wikipedia</a></figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
