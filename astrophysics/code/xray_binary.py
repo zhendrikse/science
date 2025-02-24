@@ -6,7 +6,7 @@ title="""&#x2022; Original <a href="https://www.mso.anu.edu.au/pfrancis/simulati
 """
 
 display = canvas(title=title, range=.5, width=650, height=400, forward=vector(0.2, 0.6, -1.0))
-stars = sphere(pos=vector(0, 0, 0), texture="https://www.hendrikse.name/science/astrophysics/images/universe.jpg", radius=3, shininess=0, opacity=0.5)
+stars = sphere(pos=vector(0, 0, 0), texture="https://www.hendrikse.name/science/astrophysics/images/textures/universe.jpg", radius=3, shininess=0, opacity=0.5)
 
 display.lights = []
 display.ambient = 0.3 * vector(0.7, 0.5, 0.2)

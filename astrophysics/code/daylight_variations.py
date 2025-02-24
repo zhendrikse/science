@@ -79,9 +79,9 @@ class SunEarthMoonSystem:
         # Angle in degrees representing the Moon's month-long motion around the Earth - so use 0 to 360 (default 0)
         self._moon_angle = 0
 
-        self._sun = sphere(radius=sun_radius, opacity=0.7, emissive=True, texture="http://i.imgur.com/yoEzbtg.jpg")
+        self._sun = sphere(radius=sun_radius, opacity=0.7, emissive=True, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg")
         self._earth = sphere(radius=self._earth_radius, texture=textures.earth, flipx=False, shininess=0.9)
-        self._moon = sphere(radius=moon_radius, texture="http://i.imgur.com/YPg4RPU.jpg", flipx=True, flipy=True, shininess=0.9)
+        self._moon = sphere(radius=moon_radius, texture="https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg", flipx=True, flipy=True, shininess=0.9)
 
         self._earth_arrows = EarthArrows(radius_earth=self._earth_radius, axis_earth=self._earth_axis, latitude=52)  # UK latitude, -38 for melbourne
 
@@ -155,7 +155,8 @@ speed_slider = slider(bind=set_speed, value=sun_earth_moon.simulation_speed(), m
 animation.append_to_caption("\n\n")
 
 
-# animation.lights = []    # this gets rid of all the ambient scene lights so that the Sun is the source / the command here blanks an array
+animation.lights = []    # this gets rid of all the ambient scene lights so that the Sun is the source / the command here blanks an array
+animation.ambient = color.gray(0.75)
 sun_earth_moon.follow_sun(animation.camera) # have the camera default to centering on the sun
 animation.bind("mousedown", change_view)  # allow mouse clicks to call the changeView function
 

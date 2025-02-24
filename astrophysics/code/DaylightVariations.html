@@ -64,19 +64,19 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "17";
-    title = "&#x2022; Based on the <a href=\"https://trinket.io/embed/glowscript/575a4ed5d362597041cd6f84\">Sun-Earth-Moon model by B. Philhour</a>\n&#x2022; Modified by <a href=\"https://www.glowscript.org/#/user/Rob_Salgado/folder/My_Programs/program/SunshineOnTheEarth\">Rob Salgado</a> to model the sunshine seen by the United Kingdom\n&#x2022; Refactored and extended by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/daylight_variations.py\">daylight_variations.py</a>\n\n&#x2022; The red arrow points \"upward from the UK\" (at 52 degrees latitude [from the equator])\n&#x2022; The cyan arrow is the rotational axis of the earth, tilted at 23 degrees from vertical\n&#x2022; The yellow arrow points from the earth to the sun\n&#x2022; Click on sun or earth to change the camera perspective\n\n";
-    "19";
+    "14";
+    title = "&#x2022; Based on the <a href=\"https://trinket.io/embed/glowscript/575a4ed5d362597041cd6f84\">Sun-Earth-Moon model by B. Philhour<\/a>\n&#x2022; Modified by <a href=\"https://www.glowscript.org/#/user/Rob_Salgado/folder/My_Programs/program/SunshineOnTheEarth\">Rob Salgado</a> to model the sunshine seen by the United Kingdom\n&#x2022; Refactored and extended by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/daylight_variations.py\">daylight_variations.py</a>\n\n&#x2022; The red arrow points \"upward from the UK\" (at 52 degrees latitude [from the equator])\n&#x2022; The cyan arrow is the rotational axis of the earth, tilted at 23 degrees from vertical\n&#x2022; The yellow arrow points from the earth to the sun\n&#x2022; Click on sun or earth to change the camera perspective\n\n";
+    "16";
     list_of_months = ρσ_list_decorate([ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ]);
-    "24";
+    "21";
     astronomical_unit = 4;
-    "26";
+    "23";
     earth_orbit_rate = 1;
-    "28";
+    "25";
     moon_orbit_rate = 13;
-    "30";
+    "27";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), fov: (await radians(20))})]);
-    "32";
+    "29";
     function EarthArrows() {;
     }
     EarthArrows.prototype.__init__ = async function __init__() {
@@ -94,19 +94,19 @@ async function __main__() {
             latitude = ρσ_kwargs_obj.latitude;
         }
         var ρσ_ls, axis;
-        "34";
+        "31";
         self._scale = scale;
-        "35";
+        "32";
         self._earth_axis = axis_earth;
-        "36";
+        "33";
         axis = scale["*"](vec(sin((await radians(0["-"](1["*"](90["-"](1["*"](latitude))))))), cos((await radians(0["-"](1["*"](90["-"](1["*"](latitude))))))), 0));
-        "37";
+        "34";
         self._from_uk_up_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({shaftwidth: radius_earth["/"](5), axis: axis, color: color.red})]);
-        "39";
+        "36";
         ρσ_interpolate_kwargs.call(self._from_uk_up_arrow, self._from_uk_up_arrow.rotate, [ρσ_desugar_kwargs({angle: (await radians(90)), axis: vec(0, 1, 0)})]);
-        "41";
+        "38";
         self._earth_sun_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({shaftwidth: radius_earth["/"](3), color: color.yellow})]);
-        "43";
+        "40";
         self._earth_axis_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({shaftwidth: radius_earth["/"](5), axis: axis_earth["*"](scale), color: color.cyan})]);
     };
     if (!EarthArrows.prototype.__init__.__defaults__) Object.defineProperties(EarthArrows.prototype.__init__, {
@@ -119,15 +119,15 @@ async function __main__() {
     EarthArrows.__handles_kwarg_interpolation__ = EarthArrows.prototype.__init__.__handles_kwarg_interpolation__;
     EarthArrows.prototype.update = async function update(position, rotation_angle) {
         var self = this;
-        "46";
+        "43";
         self._earth_axis_arrow.pos = position;
-        "47";
+        "44";
         self._earth_sun_arrow.pos = position;
-        "48";
+        "45";
         self._from_uk_up_arrow.pos = position;
-        "49";
+        "46";
         ρσ_interpolate_kwargs.call(self._from_uk_up_arrow, self._from_uk_up_arrow.rotate, [ρσ_desugar_kwargs({angle: rotation_angle, axis: self._earth_axis})]);
-        "50";
+        "47";
         self._earth_sun_arrow.axis = 1["-u"]()["*"](norm(position));
     };
     if (!EarthArrows.prototype.update.__argnames__) Object.defineProperties(EarthArrows.prototype.update, {
@@ -137,11 +137,11 @@ async function __main__() {
     EarthArrows.prototype.sun_energy_transfer = async function sun_energy_transfer() {
         var self = this;
         var ρσ_ls, dot_product, energy_transfer;
-        "54";
+        "51";
         dot_product = dot(self._from_uk_up_arrow.axis, self._earth_sun_arrow.axis);
-        "56";
+        "53";
         energy_transfer = (dot_product["<="](0)) ? 0 : dot_product["/"](self._scale);
-        "57";
+        "54";
         return energy_transfer;
     };
     if (!EarthArrows.prototype.sun_energy_transfer.__module__) Object.defineProperties(EarthArrows.prototype.sun_energy_transfer, {
@@ -149,11 +149,11 @@ async function __main__() {
     });
     EarthArrows.prototype.show = async function show() {
         var self = this;
-        "60";
+        "57";
         self._earth_axis_arrow.visible = true;
-        "61";
+        "58";
         self._from_uk_up_arrow.visible = true;
-        "62";
+        "59";
         self._earth_sun_arrow.visible = true;
     };
     if (!EarthArrows.prototype.show.__module__) Object.defineProperties(EarthArrows.prototype.show, {
@@ -161,11 +161,11 @@ async function __main__() {
     });
     EarthArrows.prototype.hide = async function hide() {
         var self = this;
-        "65";
+        "62";
         self._earth_axis_arrow.visible = false;
-        "66";
+        "63";
         self._from_uk_up_arrow.visible = false;
-        "67";
+        "64";
         self._earth_sun_arrow.visible = false;
     };
     if (!EarthArrows.prototype.hide.__module__) Object.defineProperties(EarthArrows.prototype.hide, {
@@ -184,7 +184,7 @@ async function __main__() {
 
 
 
-    "69";
+    "66";
     function SunEarthMoonSystem() {;
     }
     SunEarthMoonSystem.prototype.__init__ = async function __init__() {
@@ -200,27 +200,27 @@ async function __main__() {
             tilt = ρσ_kwargs_obj.tilt;
         }
         var ρσ_ls, sun_radius, moon_radius, _GS_1;
-        "72";
+        "69";
         sun_radius = .2;
-        "74";
+        "71";
         self._earth_radius = sun_radius["*"](.5);
-        "75";
+        "72";
         self._earth_axis = vec(sin((await radians(tilt))), cos((await radians(tilt))), 0);
-        "77";
+        "74";
         moon_radius = self._earth_radius["*"](.27);
-        "78";
+        "75";
         self._simulation_speed = min(simulation_speed, 1["/"](24));
-        "81";
+        "78";
         self._earth_angle = 0;
-        "83";
+        "80";
         self._moon_angle = 0;
-        "85";
-        self._sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: sun_radius, opacity: .7, emissive: true, texture: "http://i.imgur.com/yoEzbtg.jpg"})]);
-        "86";
+        "82";
+        self._sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: sun_radius, opacity: .7, emissive: true, texture: "https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg"})]);
+        "83";
         self._earth = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: self._earth_radius, texture: textures.earth, flipx: false, shininess: .9})]);
-        "87";
-        self._moon = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: moon_radius, texture: "http://i.imgur.com/YPg4RPU.jpg", flipx: true, flipy: true, shininess: .9})]);
-        "89";
+        "84";
+        self._moon = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: moon_radius, texture: "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg", flipx: true, flipy: true, shininess: .9})]);
+        "86";
         _GS_1 = new EarthArrows;
         ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({radius_earth: self._earth_radius, axis_earth: self._earth_axis, latitude: 52})]);
         self._earth_arrows = _GS_1;
@@ -236,15 +236,15 @@ async function __main__() {
     SunEarthMoonSystem.prototype.update = async function update() {
         var self = this;
         var ρσ_ls, earth_moon_distance;
-        "93";
+        "90";
         earth_moon_distance = self._earth_radius["*"](6);
-        "96";
+        "93";
         self._earth.pos = astronomical_unit["*"](vec(cos((await radians(self._earth_angle))), 0, sin((await radians(self._earth_angle)))));
-        "97";
+        "94";
         self._moon.pos = self._earth.pos["+"](earth_moon_distance["*"](vec(cos((await radians(self._moon_angle))), 0, sin((await radians(self._moon_angle))))));
-        "98";
+        "95";
         (await self._earth_arrows.update(self._earth.pos, (await radians(self._simulation_speed["*"](365)))));
-        "99";
+        "96";
         (await self._rotate());
     };
     if (!SunEarthMoonSystem.prototype.update.__module__) Object.defineProperties(SunEarthMoonSystem.prototype.update, {
@@ -252,15 +252,15 @@ async function __main__() {
     });
     SunEarthMoonSystem.prototype._rotate = async function _rotate() {
         var self = this;
-        "103";
+        "100";
         self._earth_angle=self._earth_angle["-"](earth_orbit_rate["*"](self._simulation_speed));
-        "104";
+        "101";
         self._moon_angle=self._moon_angle["-"](moon_orbit_rate["*"](self._simulation_speed));
-        "108";
+        "105";
         ρσ_interpolate_kwargs.call(self._earth, self._earth.rotate, [ρσ_desugar_kwargs({angle: (await radians(self._simulation_speed["*"](365))), axis: self._earth_axis})]);
-        "111";
+        "108";
         ρσ_interpolate_kwargs.call(self._moon, self._moon.rotate, [ρσ_desugar_kwargs({angle: (await radians(self._simulation_speed["*"](moon_orbit_rate))), axis: vec(0, 1, 0)})]);
-        "113";
+        "110";
         ρσ_interpolate_kwargs.call(self._sun, self._sun.rotate, [ρσ_desugar_kwargs({angle: (await radians(self._simulation_speed["*"](16))), axis: vec(0, 1, 0)})]);
     };
     if (!SunEarthMoonSystem.prototype._rotate.__module__) Object.defineProperties(SunEarthMoonSystem.prototype._rotate, {
@@ -268,7 +268,7 @@ async function __main__() {
     });
     SunEarthMoonSystem.prototype.follow_sun = async function follow_sun(camera) {
         var self = this;
-        "116";
+        "113";
         camera.follow(self._sun);
     };
     if (!SunEarthMoonSystem.prototype.follow_sun.__argnames__) Object.defineProperties(SunEarthMoonSystem.prototype.follow_sun, {
@@ -277,7 +277,7 @@ async function __main__() {
     });
     SunEarthMoonSystem.prototype.day_count = async function day_count() {
         var self = this;
-        "119";
+        "116";
         return abs(self._earth_angle);
     };
     if (!SunEarthMoonSystem.prototype.day_count.__module__) Object.defineProperties(SunEarthMoonSystem.prototype.day_count, {
@@ -285,7 +285,7 @@ async function __main__() {
     });
     SunEarthMoonSystem.prototype.show_earth_arrows = async function show_earth_arrows() {
         var self = this;
-        "122";
+        "119";
         (await self._earth_arrows.show());
     };
     if (!SunEarthMoonSystem.prototype.show_earth_arrows.__module__) Object.defineProperties(SunEarthMoonSystem.prototype.show_earth_arrows, {
@@ -293,7 +293,7 @@ async function __main__() {
     });
     SunEarthMoonSystem.prototype.hide_earth_arrows = async function hide_earth_arrows() {
         var self = this;
-        "125";
+        "122";
         (await self._earth_arrows.hide());
     };
     if (!SunEarthMoonSystem.prototype.hide_earth_arrows.__module__) Object.defineProperties(SunEarthMoonSystem.prototype.hide_earth_arrows, {
@@ -301,7 +301,7 @@ async function __main__() {
     });
     SunEarthMoonSystem.prototype.sun_energy_transfer = async function sun_energy_transfer() {
         var self = this;
-        "128";
+        "125";
         return (await self._earth_arrows.sun_energy_transfer());
     };
     if (!SunEarthMoonSystem.prototype.sun_energy_transfer.__module__) Object.defineProperties(SunEarthMoonSystem.prototype.sun_energy_transfer, {
@@ -309,7 +309,7 @@ async function __main__() {
     });
     SunEarthMoonSystem.prototype.simulation_speed = async function simulation_speed() {
         var self = this;
-        "131";
+        "128";
         return self._simulation_speed;
     };
     if (!SunEarthMoonSystem.prototype.simulation_speed.__module__) Object.defineProperties(SunEarthMoonSystem.prototype.simulation_speed, {
@@ -317,7 +317,7 @@ async function __main__() {
     });
     SunEarthMoonSystem.prototype.set_simulation_speed_to = async function set_simulation_speed_to(value) {
         var self = this;
-        "134";
+        "131";
         self._simulation_speed = value;
     };
     if (!SunEarthMoonSystem.prototype.set_simulation_speed_to.__argnames__) Object.defineProperties(SunEarthMoonSystem.prototype.set_simulation_speed_to, {
@@ -342,32 +342,32 @@ async function __main__() {
 
 
 
-    "136";
+    "133";
     async function on_mouse_click() {
-        "137";
+        "134";
         (await change_view());
     };
     if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
         __module__ : {value: null}
     });
 
-    "139";
+    "136";
     async function set_speed() {
-        "140";
+        "137";
         (await sun_earth_moon.set_simulation_speed_to(speed_slider.value));
     };
     if (!set_speed.__module__) Object.defineProperties(set_speed, {
         __module__ : {value: null}
     });
 
-    "142";
+    "139";
     async function change_view() {
         var ρσ_ls, chosen_object;
-        "143";
+        "140";
         chosen_object = animation.mouse.pick();
-        "144";
+        "141";
         if (chosen_object !== null) {
-            "145";
+            "142";
             animation.camera.follow(chosen_object);
         }
     };
@@ -375,15 +375,15 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "147";
+    "144";
     async function on_radio_button(event) {
-        "148";
+        "145";
         if ((event.text === "white background" || typeof event.text === "object" && ρσ_equals(event.text, "white background"))) {
-            "149";
+            "146";
             animation.background = (event.checked) ? color.white : color.gray(.075);
-            "150";
+            "147";
         } else if ((event.text === "earth arrows" || typeof event.text === "object" && ρσ_equals(event.text, "earth arrows"))) {
-            "151";
+            "148";
             (event.checked) ? (await sun_earth_moon.show_earth_arrows()) : (await sun_earth_moon.hide_earth_arrows());
         }
     };
@@ -392,39 +392,43 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "153";
+    "150";
     _GS_1 = new SunEarthMoonSystem;
     (await _GS_1.__init__());
     sun_earth_moon = _GS_1;
-    "154";
+    "151";
     animation.append_to_caption("\nAdjust the speed of the simulation using the slider\n\n");
-    "155";
+    "152";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: on_radio_button, text: "white background", name: "background", checked: false})]);
-    "156";
+    "153";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: on_radio_button, text: "earth arrows", name: "arrows", checked: true})]);
-    "157";
+    "154";
     speed_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({bind: set_speed, value: (await sun_earth_moon.simulation_speed()), min: 0, max: 1["/"](24)})]);
-    "158";
+    "155";
     animation.append_to_caption("\n\n");
-    "162";
+    "158";
+    animation.lights = ρσ_list_decorate([]);
+    "159";
+    animation.ambient = color.gray(.75);
+    "160";
     (await sun_earth_moon.follow_sun(animation.camera));
-    "163";
+    "161";
     animation.bind("mousedown", change_view);
-    "166";
+    "164";
     sunlight = ρσ_interpolate_kwargs.call(this, local_light, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), color: color.white})]);
-    "167";
+    "165";
     more_sunlight = ρσ_interpolate_kwargs.call(this, local_light, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), color: color.white})]);
-    "170";
+    "168";
     graph_height = 70;
-    "171";
+    "169";
     graph_width = 480;
-    "172";
+    "170";
     daylight_graph = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: graph_width, height: graph_height["*"](4), title: "Hours with daylight", xmax: 365, ymin: 5, ymax: 17, background: color.gray(.144)})]);
-    "173";
+    "171";
     daylight_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: daylight_graph, color: color.red})]);
-    "174";
+    "172";
     equator_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: daylight_graph, color: color.cyan})]);
-    "175";
+    "173";
     _ = (function() {
         var ρσ_Iter = range(365), ρσ_Result = [], day;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -435,42 +439,42 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "176";
+    "174";
     energy_curve = gcurve();
-    "178";
+    "176";
     new_graph_interval = 30;
-    "179";
+    "177";
     month_counter = 0;
-    "180";
+    "178";
     daylight = 0;
-    "181";
+    "179";
     while ((await sun_earth_moon.day_count())["<="](365)) {
-        "182";
+        "180";
         (await rate(100));
-        "183";
+        "181";
         (await sun_earth_moon.update());
-        "185";
+        "183";
         sun_energy_transfer = (await sun_earth_moon.sun_energy_transfer());
-        "186";
+        "184";
         energy_curve.plot((await sun_earth_moon.day_count()), sun_energy_transfer);
-        "188";
+        "186";
         daylight=daylight["+"](sun_energy_transfer);
-        "189";
+        "187";
         if ((sun_energy_transfer === 0 || typeof sun_energy_transfer === "object" && ρσ_equals(sun_energy_transfer, 0)) && (daylight !== 0 && (typeof daylight !== "object" || ρσ_not_equals(daylight, 0)))) {
-            "190";
+            "188";
             daylight = daylight["*"]((await sun_earth_moon.simulation_speed()));
-            "191";
+            "189";
             daylight_curve.plot((await sun_earth_moon.day_count()), daylight["*"](35)["+"](4.25));
-            "192";
+            "190";
             daylight = 0;
-            "194";
+            "192";
         }
         if ((await sun_earth_moon.day_count())[">"](month_counter["*"](new_graph_interval))) {
-            "195";
+            "193";
             energy_graph = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Sunlight in "["+"](ρσ_getitem(list_of_months, month_counter["%"](12))), width: graph_width, height: graph_height, xmin: month_counter["*"](new_graph_interval), xmax: month_counter["+"](1)["*"](new_graph_interval), ymin: 1["-u"]()["*"](.1), ymax: 1, background: color.gray(.144)})]);
-            "198";
+            "196";
             energy_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: energy_graph, interval: 1})]);
-            "199";
+            "197";
             month_counter=month_counter["+"](1);
         }
     }

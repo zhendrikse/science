@@ -45,13 +45,14 @@ var colour;
 
     ρσ_modules.pythonize.strings = strings;
 })();
+
 async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
     var version, print, arange, __name__, type, ρσ_ls, title, animation, sun, colour, dt, _GS_1, planet, _, obj;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
@@ -64,11 +65,11 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "7";
+    "6";
     title = "&#x2022; Original by program by Peter Borcherds, University of Birmingham, England\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse<\/a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/keplers_law.py\">keplers_law.py</a>\n\n";
-    "11";
+    "10";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), forward: vector(.0222862, .928369, 1["-u"]()["*"](.370991)), range: .75})]);
-    "15";
+    "14";
     function Planet() {;
     }
     Planet.prototype.__init__ = async function __init__() {
@@ -84,13 +85,13 @@ async function __main__() {
             velocity = ρσ_kwargs_obj.velocity;
         }
         var ρσ_ls, poss;
-        "17";
+        "16";
         poss = vector(0, scale, 0);
-        "18";
+        "17";
         self._velocity = velocity;
-        "19";
+        "18";
         self._planet = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: poss, color: color.cyan, radius: .05})]);
-        "20";
+        "19";
         self._last_position = poss;
     };
     if (!Planet.prototype.__init__.__defaults__) Object.defineProperties(Planet.prototype.__init__, {
@@ -115,21 +116,21 @@ async function __main__() {
             whole = ρσ_kwargs_obj.whole;
         }
         var ρσ_ls, label_text;
+        "22";
         "23";
-        "24";
         if (whole) {
-            "25";
+            "24";
             label_text = str(int(time["*"](2)["+"](dt)));
-            "27";
+            "26";
         } else {
-            "28";
+            "27";
             label_text = str("Period: ")["+"](str(round(time["*"](2), 2)))["+"](" \"months\"\n Initial speed: ")["+"](str(round((await self.speed()), 3)));
-            "30";
+            "29";
             colour = color.white;
         }
-        "31";
+        "30";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: (await self.pos()), text: label_text, color: colour, xoffset: offset["*"]((await self.pos()).x), yoffset: offset["*"]((await self.pos()).y)})]);
-        "33";
+        "32";
         return vector(.5["*"](1["+"](random())), random(), random());
     };
     if (!Planet.prototype.month_step.__defaults__) Object.defineProperties(Planet.prototype.month_step, {
@@ -141,38 +142,38 @@ async function __main__() {
     Planet.prototype.revolve_one_period = async function revolve_one_period() {
         var self = this;
         var ρσ_ls, steps, step, time;
-        "36";
+        "35";
         steps = 20;
-        "37";
+        "36";
         step = 0;
-        "38";
+        "37";
         time = 0;
+        "38";
         "39";
-        "40";
         while (!((self._last_position.x[">"](ρσ_cond_temp = 0) && ρσ_cond_temp[">"]((await self.pos()).x)))) {
-            "42";
+            "41";
             (await rate(steps["*"](2)));
-            "43";
+            "42";
             time=time["+"](dt);
-            "44";
+            "43";
             (await planet.update());
-            "46";
+            "45";
             step=step["+"](1);
-            "47";
+            "46";
             if ((step === steps || typeof step === "object" && ρσ_equals(step, steps))) {
-                "48";
+                "47";
                 step = 0;
-                "49";
+                "48";
                 colour = (await self.month_step(time));
-                "50";
+                "49";
                 ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ sun.pos, (await self.pos()) ]), color: color.white})]);
-                "51";
+                "50";
                 continue;
             }
-            "54";
+            "53";
             ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ sun.pos, (await self.pos()) ]), color: colour})]);
         }
-        "56";
+        "55";
         (await planet.month_step(time, 50, 0));
     };
     if (!Planet.prototype.revolve_one_period.__module__) Object.defineProperties(Planet.prototype.revolve_one_period, {
@@ -181,15 +182,15 @@ async function __main__() {
     Planet.prototype.update = async function update() {
         var self = this;
         var ρσ_ls, denominator;
-        "59";
+        "58";
         self._last_position = vector(self._planet.pos);
-        "61";
+        "60";
         ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ self._last_position, self._planet.pos ]), color: color.red})]);
-        "63";
+        "62";
         denominator = Math.pow(mag(self._planet.pos), 3);
-        "64";
+        "63";
         self._velocity=self._velocity["-"](self._planet.pos["*"](dt)["/"](denominator));
-        "65";
+        "64";
         self._planet.pos=self._planet.pos["+"](self._velocity["*"](dt));
     };
     if (!Planet.prototype.update.__module__) Object.defineProperties(Planet.prototype.update, {
@@ -197,7 +198,7 @@ async function __main__() {
     });
     Planet.prototype.pos = async function pos() {
         var self = this;
-        "68";
+        "67";
         return self._planet.pos;
     };
     if (!Planet.prototype.pos.__module__) Object.defineProperties(Planet.prototype.pos, {
@@ -205,7 +206,7 @@ async function __main__() {
     });
     Planet.prototype.speed = async function speed() {
         var self = this;
-        "71";
+        "70";
         return mag(self._velocity);
     };
     if (!Planet.prototype.speed.__module__) Object.defineProperties(Planet.prototype.speed, {
@@ -225,40 +226,40 @@ async function __main__() {
 
 
 
+    "74";
+    sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({color: color.yellow, radius: .1, texture: "https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg"})]);
     "75";
-    sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({color: color.yellow, radius: .1, texture: "https://www.hendrikse.name/science/astrophysics/images/sun.jpg"})]);
-    "76";
     colour = color.white;
-    "78";
+    "77";
     dt = .025;
-    "79";
+    "78";
     while (true) {
+        "79";
+        ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://www.hendrikse.name/science/astrophysics/images/textures/universe.jpg", radius: 10, shininess: 0, opacity: .5})]);
         "80";
-        ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://www.hendrikse.name/science/astrophysics/images/universe.jpg", radius: 10, shininess: 0, opacity: .5})]);
-        "81";
         _GS_1 = new Planet;
         ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({velocity: 1["-u"]()["*"](vector(.7["+"](.5["*"](random())), 0, 0))})]);
         planet = _GS_1;
-        "82";
+        "81";
         colour = (await planet.month_step(0));
-        "83";
+        "82";
         ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ sun.pos, (await planet.pos()) ]), color: colour})]);
-        "85";
+        "84";
         (await planet.revolve_one_period());
-        "87";
+        "86";
         ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vector(2.5, 1["-u"]()["*"](2.5), 0), text: "Click for another orbit"})]);
-        "88";
+        "87";
         _ = (await animation.waitfor("click"));
-        "90";
+        "89";
         var ρσ_Iter1 = animation.objects;
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             obj = ρσ_Index1;
-            "91";
+            "90";
             if (obj === sun || obj === planet) {
                 continue;
             }
-            "92";
+            "91";
             obj.visible = 0;
         }
     }
