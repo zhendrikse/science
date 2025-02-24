@@ -52,7 +52,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, animation, sun_textures, sun, _, radio_1, radio_2, radio_3, _GS_1, _GS_2, _GS_3, _GS_4, _GS_5, _GS_6, _GS_7, _GS_8, planets, planet;
+    var version, print, arange, __name__, type, ρσ_ls, title, animation, sun_textures, sun, radio_1, radio_2, radio_3, _, _GS_1, _GS_2, _GS_3, _GS_4, _GS_5, _GS_6, _GS_7, _GS_8, planets, planet;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -388,7 +388,7 @@ return this.__repr__();
         var self = this;
         var ρσ_ls, textures_;
         "132";
-        textures_ = ρσ_list_decorate([ "https://i.imgur.com/lyLpoMk.jpeg", "https://www.hendrikse.name/science/astrophysics/images/textures/neptune.jpg", "https://https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg" ]);
+        textures_ = ρσ_list_decorate([ "https://i.imgur.com/lyLpoMk.jpeg", "https://www.hendrikse.name/science/astrophysics/images/textures/neptune.jpg", "https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg" ]);
         "137";
         Planet.prototype.__init__.call(self, vector(18, 1["-u"]()["*"](7), 0), textures_, .049);
         "138";
@@ -525,13 +525,13 @@ return this.__repr__();
     "181";
     animation.append_to_caption("\n");
     "182";
-    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Reset", bind: on_reset})]);
+    radio_1 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Imgur textures ", checked: true, name: "imgur", bind: toggle_textures})]);
     "183";
-    radio_1 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Imgur textures", checked: true, name: "imgur", bind: toggle_textures})]);
+    radio_2 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Local textures ", checked: false, name: "local", bind: toggle_textures})]);
     "184";
-    radio_2 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Local textures", checked: false, name: "local", bind: toggle_textures})]);
+    radio_3 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Nasa textures   ", checked: false, name: "nasa", bind: toggle_textures})]);
     "185";
-    radio_3 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Nasa textures", checked: false, name: "nasa", bind: toggle_textures})]);
+    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Reset", bind: on_reset})]);
     "187";
     _GS_1 = new Mercury;
     (await _GS_1.__init__());

@@ -131,7 +131,7 @@ class Neptune(Planet):
         textures_ = [
             "https://i.imgur.com/lyLpoMk.jpeg",
             "https://www.hendrikse.name/science/astrophysics/images/textures/neptune.jpg",
-            "https://https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg"
+            "https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg"
         ]
         Planet.__init__(self, vector(18, -7, 0), textures_, 0.0490)
         self._sphere.opacity = 0.7
@@ -178,10 +178,10 @@ def toggle_textures(event):
         radio_1.checked = radio_2.checked = False
 
 animation.append_to_caption("\n")
+radio_1 = radio(text="Imgur textures ", checked=True, name="imgur", bind=toggle_textures)
+radio_2 = radio(text="Local textures ", checked=False, name="local", bind=toggle_textures)
+radio_3 = radio(text="Nasa textures   ", checked=False, name="nasa", bind=toggle_textures)
 _ = button(text='Reset', bind=on_reset)
-radio_1 = radio(text="Imgur textures", checked=True, name="imgur", bind=toggle_textures)
-radio_2 = radio(text="Local textures", checked=False, name="local", bind=toggle_textures)
-radio_3 = radio(text="Nasa textures", checked=False, name="nasa", bind=toggle_textures)
 
 planets = [Mercury(), Venus(), Earth(), Mars(), Jupiter(), Saturn(), Uranus(), Neptune()]
 while True:
