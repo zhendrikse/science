@@ -91,7 +91,11 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
     <img alt="X-ray binary" src="images/xray_binary.png" title="Click to animate"/>
   </a>
   <figcaption>"X-ray binaries are a class of binary stars that are luminous in 
-  <a href="https://en.wikipedia.org/wiki/X-ray">X-rays</a>." 
+  <a href="https://en.wikipedia.org/wiki/X-ray">X-rays</a>. The X-rays are produced by matter falling 
+  from one component, called the donor (usually a relatively common 
+  <a href="https://en.wikipedia.org/wiki/Main_sequence">main sequence</a> star), to the other component, 
+  called the accretor, which is either a <a href="https://en.wikipedia.org/wiki/Neutron_star">neutron star</a> 
+  or <a href="https://en.wikipedia.org/wiki/Black_hole">black hole.</a>" 
   &mdash; <a href="https://en.wikipedia.org/wiki/X-ray_binary">Wikipedia</a></figcaption>
 </figure>
 </div>
