@@ -5,7 +5,8 @@
 
 <blockquote>
 Most neutron stars are observed as pulsars. 
-Pulsars are rotating neutron stars observed to have pulses of radiation at very regular intervals 
+Pulsars are rotating <a href="https://en.wikipedia.org/wiki/Neutron_star">neutron stars</a> 
+observed to have pulses of radiation at very regular intervals 
 that typically range from milliseconds to seconds. Pulsars have very strong magnetic fields 
 which funnel jets of particles out along the two magnetic poles. These accelerated particles 
 produce very powerful beams of light. Often, the magnetic field is not aligned with the spin axis, 
@@ -17,6 +18,13 @@ we see pulsars turn on and off as the beam sweeps over Earth. &mdash;
 <p style="clear:both;"></p>
 
 {% include_relative code/Pulsar.html %}
+
+<p style="clear:both;"></p>
+
+### Artist impression of a pulsar
+<div style="border-top: 1px solid #999999"><br/></div>
+
+![Pulsar](https://assets.iflscience.com/assets/articleNo/64624/aImg/56994/artist-impression-of-a-pulsar-image-credit-michaeltaylor-shutterstock-com-l.webp)
 
 <p style="clear:both;"></p>
 

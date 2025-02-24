@@ -17,12 +17,10 @@ where the material that is falling toward it is heated to very high temperatures
 
 <p style="clear:both;"></p>
 
-### Additional information
+### Artist impression of an X-ray binary system
 <div style="border-top: 1px solid #999999"><br/></div>
 
-- Below you see a more detailed artist impression (source [Wikipedia](https://en.wikipedia.org/wiki/X-ray)).
-  
-  [![pictures](images/accretion_disk.jpg)](https://en.wikipedia.org/wiki/X-ray)
+[![pictures](images/accretion_disk.jpg)](https://en.wikipedia.org/wiki/X-ray)
 
 <p style="clear:both;"></p>
 
