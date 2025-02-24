@@ -101,7 +101,13 @@ I do not understand it myself anymore. &mdash; Albert Einstein
     <span style="color: red">red lines</span> the time axis!</figcaption>
   </figure>
   <figure class="right_image">
-    <!-- RESERVED FOR FUTURE APPLICATION -->
+    <a href="spaghettification.html">
+      <img alt="Spaghettification" src="images/spaghettification.png" title="Click to animate"/>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <figcaption>A fictional astronaut, passing within a black hole's event horizon, is "stretched like spaghetti". 
+    &mdash; <a href="https://en.wikipedia.org/wiki/Stephen_Hawking">Stephen Hawking</a>, from 
+    <a href="https://en.wikipedia.org/wiki/A_Brief_History_of_Time">A Brief History of Time</a>. 
+    </figcaption>
   </figure>
 </div>
 <p style="clear: both;"></p>
