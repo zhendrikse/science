@@ -1,0 +1,399 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+    var arrow, box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, color, paths, shapes, vertex, triangle, quad, label, distant_light, attach_trail, attach_arrow, attach_light, sqrt, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, stars, _GS_1, white_dwarf, accretion_disk, main_star, roche_bulge_1, roche_bulge_2, stream_, d_theta, angle;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; Original <a href=\"https://www.mso.anu.edu.au/pfrancis/simulations/XRB.py\">XRB.py<\/a> by <a href=\"http://www.mso.anu.edu.au/pfrancis/simulations/\">Paul Francis</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/xray_binary.py\">xray_binary.py</a>\n\n";
+    "9";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, range: .5, width: 650, height: 400, forward: vector(.2, .6, 1["-u"]()["*"](1))})]);
+    "10";
+    stars = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://www.hendrikse.name/science/astrophysics/images/universe.jpg", radius: 3, shininess: 0, opacity: .5})]);
+    "12";
+    display.lights = ρσ_list_decorate([]);
+    "13";
+    display.ambient = .3["*"](vector(.7, .5, .2));
+    "15";
+    function WhiteDwarf() {;
+    }
+    WhiteDwarf.prototype.__init__ = async function __init__() {
+        var self = this;
+        var distance = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var position = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var colour = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        "17";
+        self._distance = distance;
+        "18";
+        self._light1 = ρσ_interpolate_kwargs.call(this, local_light, [ρσ_desugar_kwargs({pos: distance["*"](position)["+"](vector(0, .01, 0)), color: colour})]);
+        "19";
+        self._light2 = ρσ_interpolate_kwargs.call(this, local_light, [ρσ_desugar_kwargs({pos: distance["*"](position)["-"](1["*"](vector(0, .01, 0))), color: colour})]);
+        "20";
+        self._sphere = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: distance["*"](position), radius: .002, color: colour, emissive: true})]);
+    };
+    if (!WhiteDwarf.prototype.__init__.__defaults__) Object.defineProperties(WhiteDwarf.prototype.__init__, {
+        __defaults__ : {value: {colour:vector(.8, .4, 1)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["distance", "position", "colour"]},
+        __module__ : {value: null}
+    });
+    WhiteDwarf.__argnames__ = WhiteDwarf.prototype.__init__.__argnames__;
+    WhiteDwarf.__handles_kwarg_interpolation__ = WhiteDwarf.prototype.__init__.__handles_kwarg_interpolation__;
+    WhiteDwarf.prototype.position = async function position() {
+        var self = this;
+        "23";
+        return self._sphere.pos;
+    };
+    if (!WhiteDwarf.prototype.position.__module__) Object.defineProperties(WhiteDwarf.prototype.position, {
+        __module__ : {value: null}
+    });
+    WhiteDwarf.prototype.move = async function move(theta) {
+        var self = this;
+        var ρσ_ls, wdpos;
+        "26";
+        wdpos = self._distance["*"](vector(cos(theta), 0, sin(theta)));
+        "27";
+        self._sphere.pos = wdpos;
+        "28";
+        self._light1.pos = wdpos["+"](vector(0, .01, 0));
+        "29";
+        self._light2.pos = wdpos["-"](1["*"](vector(0, .01, 0)));
+    };
+    if (!WhiteDwarf.prototype.move.__argnames__) Object.defineProperties(WhiteDwarf.prototype.move, {
+        __argnames__ : {value: ["theta"]},
+        __module__ : {value: null}
+    });
+    WhiteDwarf.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    WhiteDwarf.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(WhiteDwarf.prototype, "__bases__", {value: []});
+
+
+
+
+    "31";
+    function AccretionDisk() {;
+    }
+    AccretionDisk.prototype.__init__ = async function __init__(distance, position) {
+        var self = this;
+        "33";
+        self._disk = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: distance["*"](position), radius: .08, axis: vector(0, .002, 0), opacity: .8, color: vector(.7, .9, 1)})]);
+    };
+    if (!AccretionDisk.prototype.__init__.__argnames__) Object.defineProperties(AccretionDisk.prototype.__init__, {
+        __argnames__ : {value: ["distance", "position"]},
+        __module__ : {value: null}
+    });
+    AccretionDisk.__argnames__ = AccretionDisk.prototype.__init__.__argnames__;
+    AccretionDisk.__handles_kwarg_interpolation__ = AccretionDisk.prototype.__init__.__handles_kwarg_interpolation__;
+    AccretionDisk.prototype.radius = async function radius() {
+        var self = this;
+        "37";
+        return self._disk.radius;
+    };
+    if (!AccretionDisk.prototype.radius.__module__) Object.defineProperties(AccretionDisk.prototype.radius, {
+        __module__ : {value: null}
+    });
+    AccretionDisk.prototype.color = async function color() {
+        var self = this;
+        "40";
+        return self._disk.color;
+    };
+    if (!AccretionDisk.prototype.color.__module__) Object.defineProperties(AccretionDisk.prototype.color, {
+        __module__ : {value: null}
+    });
+    AccretionDisk.prototype.move = async function move(param) {
+        var self = this;
+        "43";
+        self._disk.pos = param;
+    };
+    if (!AccretionDisk.prototype.move.__argnames__) Object.defineProperties(AccretionDisk.prototype.move, {
+        __argnames__ : {value: ["param"]},
+        __module__ : {value: null}
+    });
+    AccretionDisk.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    AccretionDisk.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(AccretionDisk.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "46";
+    function Star() {;
+    }
+    Star.prototype.__init__ = async function __init__(distance, position) {
+        var self = this;
+        "48";
+        self._distance = distance;
+        "49";
+        self._star = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: distance["*"](position), radius: .185, color: .5["*"](vector(.9, .5, .2))})]);
+    };
+    if (!Star.prototype.__init__.__argnames__) Object.defineProperties(Star.prototype.__init__, {
+        __argnames__ : {value: ["distance", "position"]},
+        __module__ : {value: null}
+    });
+    Star.__argnames__ = Star.prototype.__init__.__argnames__;
+    Star.__handles_kwarg_interpolation__ = Star.prototype.__init__.__handles_kwarg_interpolation__;
+    Star.prototype.move = async function move(theta) {
+        var self = this;
+        "52";
+        self._star.pos = self._distance["*"](vector(cos(theta), 0, sin(theta)));
+    };
+    if (!Star.prototype.move.__argnames__) Object.defineProperties(Star.prototype.move, {
+        __argnames__ : {value: ["theta"]},
+        __module__ : {value: null}
+    });
+    Star.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Star.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Star.prototype, "__bases__", {value: []});
+
+
+
+    "55";
+    function RocheBulge() {;
+    }
+    RocheBulge.prototype.__init__ = async function __init__(distance, position, radius) {
+        var self = this;
+        "57";
+        self._distance = distance;
+        "58";
+        self._bulge = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: distance["*"](position), radius: radius, color: .5["*"](vector(.9, .5, .2))})]);
+    };
+    if (!RocheBulge.prototype.__init__.__argnames__) Object.defineProperties(RocheBulge.prototype.__init__, {
+        __argnames__ : {value: ["distance", "position", "radius"]},
+        __module__ : {value: null}
+    });
+    RocheBulge.__argnames__ = RocheBulge.prototype.__init__.__argnames__;
+    RocheBulge.__handles_kwarg_interpolation__ = RocheBulge.prototype.__init__.__handles_kwarg_interpolation__;
+    RocheBulge.prototype.radius = async function radius() {
+        var self = this;
+        "61";
+        return self._bulge.radius;
+    };
+    if (!RocheBulge.prototype.radius.__module__) Object.defineProperties(RocheBulge.prototype.radius, {
+        __module__ : {value: null}
+    });
+    RocheBulge.prototype.move = async function move(theta) {
+        var self = this;
+        "64";
+        self._bulge.pos = self._distance["*"](vector(cos(theta), 0, sin(theta)));
+    };
+    if (!RocheBulge.prototype.move.__argnames__) Object.defineProperties(RocheBulge.prototype.move, {
+        __argnames__ : {value: ["theta"]},
+        __module__ : {value: null}
+    });
+    RocheBulge.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    RocheBulge.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(RocheBulge.prototype, "__bases__", {value: []});
+
+
+
+
+    "66";
+    function Stream() {;
+    }
+    Stream.prototype.__init__ = async function __init__() {
+        var self = this;
+        var colour = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        "68";
+        self._stream = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({color: colour, radius: radius})]);
+        "69";
+        (await self._set_position_and_axis());
+    };
+    if (!Stream.prototype.__init__.__defaults__) Object.defineProperties(Stream.prototype.__init__, {
+        __defaults__ : {value: {radius:.002}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["colour", "radius"]},
+        __module__ : {value: null}
+    });
+    Stream.__argnames__ = Stream.prototype.__init__.__argnames__;
+    Stream.__handles_kwarg_interpolation__ = Stream.prototype.__init__.__handles_kwarg_interpolation__;
+    Stream.prototype._set_position_and_axis = async function _set_position_and_axis() {
+        var self = this;
+        var theta = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _set_position_and_axis.__defaults__.theta : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "theta")){
+            theta = ρσ_kwargs_obj.theta;
+        }
+        var ρσ_ls, spotangle, dstart, streamstart, streamend;
+        "72";
+        spotangle = .15;
+        "73";
+        dstart = .05["-"](1["*"]((await roche_bulge_2.radius())))["+"](.01);
+        "74";
+        streamstart = vector(1["-u"]()["*"](dstart)["*"](cos(theta)), 0, 1["-u"]()["*"](dstart)["*"](sin(theta)));
+        "75";
+        streamend = (await white_dwarf.position())["-"](1["*"](vector((await accretion_disk.radius())["*"](cos(theta["-"](1["*"](spotangle)))), 0, (await accretion_disk.radius())["*"](sin(theta["-"](1["*"](spotangle)))))));
+        "77";
+        self._stream.pos = streamstart;
+        "78";
+        self._stream.axis = streamend["-"](1["*"](streamstart));
+    };
+    if (!Stream.prototype._set_position_and_axis.__defaults__) Object.defineProperties(Stream.prototype._set_position_and_axis, {
+        __defaults__ : {value: {theta:0}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["theta"]},
+        __module__ : {value: null}
+    });
+    Stream.prototype.move = async function move(theta) {
+        var self = this;
+        "81";
+        (await self._set_position_and_axis(theta));
+    };
+    if (!Stream.prototype.move.__argnames__) Object.defineProperties(Stream.prototype.move, {
+        __argnames__ : {value: ["theta"]},
+        __module__ : {value: null}
+    });
+    Stream.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Stream.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Stream.prototype, "__bases__", {value: []});
+
+
+
+
+    "84";
+    _GS_1 = new WhiteDwarf;
+    (await _GS_1.__init__(.12, vector(cos(0), 0, sin(0))));
+    white_dwarf = _GS_1;
+    "85";
+    _GS_1 = new AccretionDisk;
+    (await _GS_1.__init__(.12, vector(cos(0), 0, sin(0))));
+    accretion_disk = _GS_1;
+    "86";
+    _GS_1 = new Star;
+    (await _GS_1.__init__(1["-u"]()["*"](.2), vector(cos(0), 0, sin(0))));
+    main_star = _GS_1;
+    "87";
+    _GS_1 = new RocheBulge;
+    (await _GS_1.__init__(1["-u"]()["*"](.09), vector(cos(0), 0, sin(0)), .085));
+    roche_bulge_1 = _GS_1;
+    "88";
+    _GS_1 = new RocheBulge;
+    (await _GS_1.__init__(1["-u"]()["*"](.05), vector(cos(0), 0, sin(0)), .049));
+    roche_bulge_2 = _GS_1;
+    "89";
+    _GS_1 = new Stream;
+    (await _GS_1.__init__((await accretion_disk.color())));
+    stream_ = _GS_1;
+    "91";
+    d_theta = 1["-u"]()["*"](.003);
+    "92";
+    angle = 0;
+    "93";
+    while (1) {
+        "94";
+        (await rate(100));
+        "95";
+        angle=angle["+"](d_theta);
+        "96";
+        (await white_dwarf.move(angle));
+        "97";
+        (await accretion_disk.move((await white_dwarf.position())));
+        "98";
+        (await main_star.move(angle));
+        "99";
+        (await roche_bulge_1.move(angle));
+        "100";
+        (await roche_bulge_2.move(angle));
+        "101";
+        (await stream_.move(angle));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

@@ -8,5 +8,6 @@
 - [`planets.py` source code](planets.py)
 - [`pulsar.py` source code](pulsar.py)
 - [`three_body.py` source code](three_body.py)
+- [`xray_binary.py` source code](xray_binary.py)
 
 
