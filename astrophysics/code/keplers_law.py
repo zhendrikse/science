@@ -1,11 +1,11 @@
 #Web VPython 3.2
 
 title="""&#x2022; Original by program by Peter Borcherds, University of Birmingham, England
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/keplers_law.py">keplers_law</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/keplers_law.py">keplers_law.py</a>
 
 """
 
-from vpython import *
+from vpython import canvas, color, vector, sphere, label, random, rate, curve, mag
 
 animation = canvas(title=title, background=color.gray(0.075), forward=vector(0.0222862, 0.928369, -0.370991), range=0.75)
 

@@ -6,6 +6,7 @@
 - [`galactic_collision.py` source code](galactic_collision.py)
 - [`keplers_law.py` source code](keplers_law.py)
 - [`planets.py` source code](planets.py)
+- [`pulsar.py` source code](pulsar.py)
 - [`three_body.py` source code](three_body.py)
 
 

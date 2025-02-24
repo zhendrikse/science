@@ -1,0 +1,230 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var d_theta;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, attach_trail, attach_arrow, attach_light, sqrt, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, _, speed_slider_text, _GS_1, neutron_star, d_theta, theta;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "6";
+    title = "&#x2022; Original <a href=\"https://www.mso.anu.edu.au/pfrancis/simulations/pulsar.py\">plusar.py<\/a> by <a href=\"http://www.mso.anu.edu.au/pfrancis/simulations/\">Paul Francis</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/pulsar.py\">pulsar.py</a>\n\n";
+    "10";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), range: 1, width: 700, height: 400, forward: vec(.2, .6, 1["-u"]()["*"](1))})]);
+    "12";
+    display.lights = ρσ_list_decorate([]);
+    "13";
+    display.ambient = color.gray(.2);
+    "16";
+    function NeutronStar() {;
+    }
+    NeutronStar.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
+        var radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[1];
+        var colour = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        var ρσ_ls, beam_position;
+        "18";
+        self._star = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, color: colour})]);
+        "19";
+        self._beam_length = 20;
+        "20";
+        self._beam_offset = 1.5["*"](self._beam_length);
+        "21";
+        self._light_frac = .005;
+        "22";
+        beam_position = (await self._beam_position(0));
+        "24";
+        self._beam1 = ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: beam_position, axis: 1["-u"]()["*"](1)["*"](beam_position), color: vec(.5, .4, 1), opacity: .3, width: 1, emissive: true})]);
+        "26";
+        self._beam1light = ρσ_interpolate_kwargs.call(this, local_light, [ρσ_desugar_kwargs({pos: self._light_frac["*"](beam_position), color: vec(1, .2, 1)})]);
+        "28";
+        self._beam2 = ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: 1["-u"]()["*"](1)["*"](beam_position), axis: beam_position, color: vec(.5, .4, 1), opacity: .1, width: 1, emissive: true})]);
+        "30";
+        self._beam2light = ρσ_interpolate_kwargs.call(this, local_light, [ρσ_desugar_kwargs({pos: 1["-u"]()["*"](1)["*"](self._light_frac)["*"](beam_position), color: vec(1, .2, 1)})]);
+        "32";
+        self._flare = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: 1["-u"]()["*"](1)["*"](display.forward), axis: 1["-u"]()["*"](1)["*"](display.forward), width: 10, height: 10, color: vec(1, .2, 1), visible: false})]);
+    };
+    if (!NeutronStar.prototype.__init__.__defaults__) Object.defineProperties(NeutronStar.prototype.__init__, {
+        __defaults__ : {value: {position:vector(0, 0, 0), radius:.1, colour:color.gray(.4)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "radius", "colour"]},
+        __module__ : {value: null}
+    });
+    NeutronStar.__argnames__ = NeutronStar.prototype.__init__.__argnames__;
+    NeutronStar.__handles_kwarg_interpolation__ = NeutronStar.prototype.__init__.__handles_kwarg_interpolation__;
+    NeutronStar.prototype._beam_position = async function _beam_position(theta) {
+        var self = this;
+        "36";
+        return vector(self._beam_length["*"](cos(theta)), self._beam_length["*"](sin(theta)), self._beam_offset);
+    };
+    if (!NeutronStar.prototype._beam_position.__argnames__) Object.defineProperties(NeutronStar.prototype._beam_position, {
+        __argnames__ : {value: ["theta"]},
+        __module__ : {value: null}
+    });
+    NeutronStar.prototype.update = async function update(theta) {
+        var self = this;
+        var ρσ_ls, beam_position, angle;
+        "39";
+        beam_position = (await self._beam_position(theta));
+        "40";
+        self._beam1.pos = beam_position;
+        "41";
+        self._beam1.axis = 1["-u"]()["*"](1)["*"](beam_position);
+        "42";
+        self._beam1light.pos = self._light_frac["*"](beam_position);
+        "43";
+        angle = diff_angle(self._beam1.axis, display.forward);
+        "44";
+        self._beam1.opacity = .8["*"](cos(angle));
+        "45";
+        if (angle["<"](.05)) {
+            "46";
+            self._flare.visible = true;
+            "47";
+            display.ambient = color.gray(1);
+            "48";
+        } else {
+            "49";
+            self._flare.visible = false;
+            "50";
+            display.ambient = color.gray(.2);
+        }
+        "51";
+        self._beam2.pos = 1["-u"]()["*"](1)["*"](beam_position);
+        "52";
+        self._beam2.axis = beam_position;
+        "53";
+        self._beam2light.pos = 1["-u"]()["*"](1)["*"](self._light_frac)["*"](beam_position);
+    };
+    if (!NeutronStar.prototype.update.__argnames__) Object.defineProperties(NeutronStar.prototype.update, {
+        __argnames__ : {value: ["theta"]},
+        __module__ : {value: null}
+    });
+    NeutronStar.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    NeutronStar.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(NeutronStar.prototype, "__bases__", {value: []});
+
+
+
+
+    "56";
+    async function set_animation_speed(event) {
+        "57";
+        "58";
+        d_theta = event.value;
+        "59";
+        speed_slider_text.text = " = "["+"](str(event.value));
+    };
+    if (!set_animation_speed.__argnames__) Object.defineProperties(set_animation_speed, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "62";
+    display.append_to_caption("\nAnimation speed");
+    "63";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({value: .03, min: .01, max: .1, bind: set_animation_speed})]);
+    "64";
+    speed_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: " = .03"})]);
+    "68";
+    _GS_1 = new NeutronStar;
+    (await _GS_1.__init__());
+    neutron_star = _GS_1;
+    "69";
+    d_theta = .03;
+    "70";
+    theta = 0;
+    "71";
+    while (1) {
+        "72";
+        (await rate(100));
+        "73";
+        theta=theta["+"](d_theta);
+        "74";
+        (await neutron_star.update(theta));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

@@ -71,4 +71,26 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 </div>
 <p style="clear: both;"></p>
 
+### Pulsar
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="pulsar.html">
+    <img alt="Pulsar" src="images/pulsar.png" title="Click to animate"/>
+  </a>
+  <figcaption>"A pulsar (pulsating star, on the model of quasar) is a highly magnetized rotating 
+  neutron star that emits beams of 
+  <a href="https://en.wikipedia.org/wiki/Electromagnetic_radiation">electromagnetic radiation</a>
+  out of its 
+  <a href="https://en.wikipedia.org/wiki/Poles_of_astronomical_bodies#Magnetic_poles">magnetic poles.</a>" 
+  &mdash; <a href="https://en.wikipedia.org/wiki/Pulsar">Wikipedia</a></figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}
