@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Fern IFS fractal
+## [Barnsley fern](https://rosettacode.org/wiki/Barnsley_fern) (IFS fractal)
 <div class="header_line"><br/></div>
 
 <blockquote>
