@@ -158,7 +158,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 <p style="clear: both;"></p>
 
 <a name="mandelbrot"></a>
-## Generating Mandelbrot images using VPython
+## Rendering Mandelbrot &amp; Lorenz attractor in VPython
 <div class="header_line"><br/></div>
 
 <div class="double_image">
@@ -166,11 +166,13 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <a href="mandelbrot.html">
     <img alt="Mandelbrot" src="../images/mandelbrot.png" title="Click to animate"/>
   </a>
-  <figcaption>VPython can also be used to generated Mandelbrot images!</figcaption>
+  <figcaption>VPython can also be used to generate Mandelbrot images!</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION 
-    -->
+  <a href="lorenz_attractor.html">
+    <img alt="Lorenz attractor" src="./images/lorenz_attractor.png" title="Click to animate"/>
+  </a>
+  <figcaption>VPython program that renders the Lorenz attractor.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
