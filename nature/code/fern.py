@@ -11,7 +11,7 @@ title = """&#x2022; Based on <a href="https://code.activestate.com/recipes/57713
 
 imgx = 512
 imgy = 512
-display = canvas(title=title, background=color.gray(0.075), width=1.5*imgx, height=1.5*imgy, center=vector(imgx // 2, -imgy // 2, 0), forward=vector(0, 0, -1), range=imgx //2)
+display = canvas(title=title, background=color.gray(0.075), width=600, center=vector(imgx // 2, -imgy // 2, 0), forward=vector(0, 0, -1), range=imgx //2)
 
 #image = Image.new("L", (imgx, imgy))
 
