@@ -162,18 +162,18 @@ def on_reset():
 
 def toggle_textures(event):
     if event.name == "imgur":
-        for planet in planets:
-            planet.set_texture(0)
+        for planet_ in planets:
+            planet_.set_texture(0)
         sun.texture = sun_textures[0]
         radio_2.checked = radio_3.checked = False
     if event.name == "local":
-        for planet in planets:
-            planet.set_texture(1)
+        for planet_ in planets:
+            planet_.set_texture(1)
         sun.texture = sun_textures[1]
         radio_1.checked = radio_3.checked = False
     if event.name == "nasa":
-        for planet in planets:
-            planet.set_texture(2)
+        for planet_ in planets:
+            planet_.set_texture(2)
         sun.texture = sun_textures[2]
         radio_1.checked = radio_2.checked = False
 
