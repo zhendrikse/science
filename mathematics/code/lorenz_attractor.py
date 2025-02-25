@@ -86,6 +86,7 @@ class Base:
 class LorenzAttractor:
     def __init__(self):
         self._lines, self._dots = [], []
+        self._max_distance = 1.9027419876572438
 
     def hide_lines(self):
         for line_ in self._lines:
@@ -104,13 +105,11 @@ class LorenzAttractor:
             dot_.visible = True
 
     def _color(self, skip, dist):
-        dmaxx = 1.90274198766  # get this from print max_distance
-        hue = saturation = value = 0
-        if skip > 100:
-            hue, saturation, value = dist / dmaxx, 1, 1
-        return color.hsv_to_rgb(vec(hue, saturation, value))
+        hue = dist / self._max_distance if skip > 100 else 0
+        return color.hsv_to_rgb(vec(hue, 1, 1))
 
-    def generate(self, a, b, c, N=150, h=0.004):
+    def generate(self, a, b, c, N=150, h=0.004, max_dist=1.9027419876572438):
+        self._max_distance = max_dist
         old_pos = vec(0.1, 0.0, 0.0)
         skip = max_distance = dist = 0
         for i in range(N):
@@ -127,6 +126,7 @@ class LorenzAttractor:
                 self._dots += [simple_sphere(pos=new_pos, color=self._color(skip, dist), radius=0.35, visible=False)]
                 skip += 1
                 old_pos = new_pos
+
 
 def toggle_tick_marks(event):
     axis.tick_marks_visibility_is(event.checked)
@@ -176,16 +176,12 @@ def toggle_a_b_c(event):
     radio_1.checked = True
     radio_2.checked = False
 
-def toggle_background(event):
-    display.background = color.gray(0.075) if display.background == color.gray(0.75) else color.gray(0.75)
-
 display.append_to_caption("\n")
 _ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=False)
 _ = checkbox(text='YZ-mesh ', bind=toggle_yz_mesh, checked=False)
 _ = checkbox(text='XZ-mesh ', bind=toggle_xz_mesh, checked=False)
 _ = checkbox(text='XY-mesh ', bind=toggle_xy_mesh, checked=False)
 _ = checkbox(text='Axis', bind=toggle_axis, checked=True)
-_ = checkbox(text='Dark background', bind=toggle_background, checked=True)
 display.append_to_caption("\n\n")
 radio_1 = radio(text="Lines ", checked=True, name="lines", bind=toggle_line_type)
 radio_2 = radio(text="Dots ", checked=False, name="dots", bind=toggle_line_type)
@@ -199,20 +195,19 @@ def linspace(start, stop, num):
 
 
 space = Space(linspace(-35, 35, 11), linspace(-35, 35, 11), linspace(0, 50, 11))
-axis = Base(space, axis_color=vec(0.7, 0.7, 0.7))
+axis = Base(space, axis_color=vec(0.8, 0.8, 0.8))
 
 lorenz_1 = LorenzAttractor()
 lorenz_1.generate(10.0, 28.0, 8.0 / 3.0)
 lorenz_1.show_lines()
 
 lorenz_2 = LorenzAttractor()
-lorenz_2.generate(28, 46.92, 4.)
+lorenz_2.generate(28, 46.92, 4., max_dist=7.243645818599864)
 
 current_lorenz = lorenz_1
 
 #################################
 # COMMENT OUT IN LOCAL VPYTHON  #
 # MathJax.Hub.Queue(["Typeset", MathJax.Hub])
-#print(max_distance)
 while True:
     rate(10)
