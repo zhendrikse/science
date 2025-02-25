@@ -164,7 +164,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 <div class="double_image">
 <figure class="left_image">
   <a href="mandelbrot.html">
-    <img alt="Mandelbrot" src="../images/mandelbrot.png" title="Click to animate"/>
+    <img alt="Mandelbrot" src="./images/mandelbrot.png" title="Click to animate"/>
   </a>
   <figcaption>VPython can also be used to generate Mandelbrot images!</figcaption>
 </figure>
