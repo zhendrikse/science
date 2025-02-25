@@ -1,9 +1,6 @@
 #Web VPython 3.2
-#   http://fractalart.gallery/lorenz-attractor/ ‎
-#   based on http://paulbourke.net/fractals/lorenz/
 
 from vpython import simple_sphere, canvas, curve, vec, color, sqrt, rate, arange, cylinder, label, box, pi, arrow, checkbox
-
 
 title = """&#x2022; Based on <a href="https://prettymathpics.com/lorenz-attractor/">Lorenz Attractor</a> blog and code contained therein
 &#x2022; Refactored and extended to <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/lorenz_attractor.py">lorenz_attractor.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
@@ -11,7 +8,6 @@ title = """&#x2022; Based on <a href="https://prettymathpics.com/lorenz-attracto
 """
 
 display = canvas(range=47, title=title, width=600, height=600, background=color.gray(0.075), forward=vec(-.14, -.2, -1))
-
 
 x_hat = vec(1, 0, 0)
 y_hat = vec(0, 1, 0)
@@ -58,13 +54,13 @@ class Base:
 
     def _make_tick_marks(self, x_dim, y_dim, z_dim, tick_marks_color, scale):
         for i in range(len(x_dim)):
-            self._tick_marks.append(box(pos=x_hat * x_dim[i], width=scale * 2, height=scale * 5, length=scale * 2, color=tick_marks_color))
+            self._tick_marks.append(box(pos=x_hat * x_dim[i], width=scale * 2, height=scale * 5, length=scale * 2, color=tick_marks_color, visible=False))
 
         for i in range(len(z_dim)):
-            self._tick_marks.append(box(pos=z_hat * z_dim[i], width=scale * 2, height=scale * 5, length=scale * 2, color=tick_marks_color))
+            self._tick_marks.append(box(pos=z_hat * z_dim[i], width=scale * 2, height=scale * 5, length=scale * 2, color=tick_marks_color, visible=False))
 
         for i in range(len(y_dim)):
-            self._tick_marks.append(box(pos=y_hat * y_dim[i], width=scale * 2, height=scale * 5, length=scale * 2, color=tick_marks_color))
+            self._tick_marks.append(box(pos=y_hat * y_dim[i], width=scale * 2, height=scale * 5, length=scale * 2, color=tick_marks_color, visible=False))
             self._tick_marks[-1].rotate(angle=0.5 * pi, axis=vec(0, 0, 1))
 
     def axis_visibility_is(self, visible):
@@ -122,7 +118,6 @@ def linspace(start, stop, num):
 
 space = Space(linspace(-30, 30, 11), linspace(-30, 30, 11), linspace(0, 50, 11))
 axis = Base(space, axis_color=vec(0.8, 0.8, 0))
-axis.tick_marks_visibility_is(False)
 
 
 hue_increment = .00005  # hue increment
