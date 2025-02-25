@@ -3,6 +3,13 @@
 ## Lorenz attractor
 <div class="header_line"><br/></div>
 
+{% include_relative code/LorenzAttractor.html %}
+
+<p style="clear: both;"></p>
+
+### Lorenz attractor explained
+<div style="border-top: 1px solid #999999"><br/></div>
+
 According to [Paul Bourke](https://paulbourke.net/fractals/lorenz/):
 
 The lorenz attractor was first studied by Ed N. Lorenz, 
@@ -23,10 +30,6 @@ Prandtl number and $b$ the Rayleigh number.
 The series does not form limit cycles nor does it ever reach a steady state. Instead, 
 it is an example of deterministic chaos. As with other chaotic systems the Lorenz system is sensitive 
 to the initial conditions, two initial states no matter how close will diverge, usually sooner rather than later. 
-
-<p style="clear: both;"></p>
-
-{% include_relative code/LorenzAttractor.html %}
 
 <p style="clear: both;"></p>
 
