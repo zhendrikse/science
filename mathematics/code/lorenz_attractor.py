@@ -108,17 +108,21 @@ class LorenzAttractor:
         hue = dist / self._max_distance if skip > 100 else 0
         return color.hsv_to_rgb(vec(hue, 1, 1))
 
-    def generate(self, a, b, c, N=150, h=0.004, max_dist=1.9027419876572438):
+    def _lorenz(self, old_pos, sigma, rho, beta):
+        x_dot = sigma * (old_pos.y - old_pos.x)
+        y_dot = old_pos.x * (rho - old_pos.z) - old_pos.y
+        z_dot = old_pos.x * old_pos.y - beta * old_pos.z
+        return vec(x_dot, y_dot, z_dot)
+
+    def generate(self, a, b, c, N=150, dt=0.004, max_dist=1.9027419876572438):
         self._max_distance = max_dist
         old_pos = vec(0.1, 0.0, 0.0)
         skip = max_distance = dist = 0
         for i in range(N):
             self._lines += [curve(pos=old_pos, color=self._color(skip, dist), radius=0.1, visible=False)]
             for j in range(N):
-                x = old_pos.x + h * a * (old_pos.y - old_pos.x)
-                y = old_pos.y + h * (old_pos.x * (b - old_pos.z) - old_pos.y)
-                z = old_pos.z + h * (old_pos.x * old_pos.y - c * old_pos.z)
-                new_pos = vec(x, y, z)
+                derivative = self._lorenz(old_pos, a, b, c)
+                new_pos = old_pos + dt * derivative
 
                 dist = (new_pos - old_pos).mag
                 if dist > max_distance: max_distance = dist
