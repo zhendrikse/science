@@ -5,6 +5,7 @@
 
 - [`ball_drop_on_spring.py` source code](ball_drop_on_spring.py)
 - [`block_rotation.py` source code](block_rotation.py)
+- [`cart_on_spring.py` source code](cart_on_spring.py)
 - [`chain_drop.py` source code](chain_drop.py)
 - [`floating_block.py` source code](floating_block.py)
 - [`n_body_oscillator.py` source code](n_body_oscillator.py)

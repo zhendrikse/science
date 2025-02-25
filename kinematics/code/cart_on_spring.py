@@ -1,18 +1,21 @@
-# GlowScript 3.2 VPython
+# Web VPython 3.2
 
 from vpython import canvas, vec, cylinder, box, color, textures, compound, helix, rate, arrow
 
 title = """
-https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/1-introduction-objects-parameters-and-the-3d-environment/optional-compound-objects
+&#x2022; Based on <a href="https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/1-introduction-objects-parameters-and-the-3d-environment/optional-compound-objects">this example</a> from tutorial by B. Philhour
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/cart_on_spring.py">cart_on_spring.py</a>
+&#x2022; Pull on cart with your mouse!
+
 """
 
-animation = canvas(title=title, background=color.gray(0.075))
+animation = canvas(width=600, height=400, title=title, background=color.gray(0.075), forward=vec(-.5, -.3, -.7),
+                   center=vec(.07, -.025, 0), range=.175)
 
 g = 9.8
 
 
 class Cart:
-
     def __init__(self, body_color):
         self.L = 0.10
         self.W = 0.05
@@ -56,12 +59,12 @@ class SpringElement:
         # then drag, which helps with things getting out of hand
         self._force -= drag * self._velocity
 
-    def update_force_left_fixed(self, neighbor, k, top):
+    def update_left_element(self, neighbor, k, top):
         self._force += k * (neighbor.axis() - self._length * neighbor.axis().norm())
         self._element.pos = top
         self._element.axis = neighbor.position() - self._element.pos
 
-    def update_force_right_fixed(self, neighbor, k, bottom):
+    def update_right_element(self, neighbor, k, bottom):
         self._force -= k * (neighbor.axis() - self._length * neighbor.axis().norm())
         self._element.pos = bottom
         self._element.axis = vec(0, 0, 0)
@@ -72,10 +75,21 @@ class SpringElement:
     def position(self):
         return self._element.pos
 
-class String:
+    def force(self):
+        return self._force
 
+    def update_with(self, left_neighbor, right_neighbor, k, dt):
+        self._force -= k * (left_neighbor.axis() - self._length * left_neighbor.axis().norm())
+        self._force += k * (self.axis() - self._length * self.axis().norm())
+        tension = k * (self.axis() - self._length * self.axis().norm()).mag
+        self._velocity += (self._force / self._mass) * dt
+        self._element.pos += self._velocity * dt
+        self._element.axis = right_neighbor.position() - self._element.pos
+        return tension
+
+
+class Spring:
     def __init__(self, N, M, k, drag, topPos, botPos, initial_width):
-
         self.L = (topPos - botPos).mag
         self.N = N
         self.elemLength = self.L / N
@@ -90,33 +104,29 @@ class String:
         self.tension = 0.0
 
         for i in range(self.N):
-            self.element.append(SpringElement(topPos + (i / N) * self.line, self.elemLength *  self.line.norm(), self.width / 2, self.elemMass, self.elemLength))
+            self.element.append(
+                SpringElement(topPos + (i / N) * self.line, self.elemLength * self.line.norm(), self.width / 2,
+                              self.elemMass, self.elemLength))
 
-    def process(self, dt):
+    def update_by(self, dt):
+        for i in range(self.N):
+            self.element[i].update_gravitational_force(self.drag)
 
         self.tension = 0.0
 
-        self.element[0].update_gravitational_force(self.drag)
-        self.element[self.N - 1].update_gravitational_force(self.drag)
-        self.element[0].update_force_left_fixed(self.element[1], self.k, self.topPos)
+        self.element[0].update_left_element(self.element[1], self.k, self.topPos)
         for i in range(1, self.N - 1):
-            self.element[i].update_gravitational_force(self.drag)
-            self.element[i]._force -= self.k * (self.element[i - 1]._element.axis - self.elemLength * self.element[i - 1]._element.axis.norm())
-            self.element[i]._force += self.k * (self.element[i]._element.axis - self.elemLength * self.element[i]._element.axis.norm())
-            self.tension += self.k * (self.element[i]._element.axis - self.elemLength * self.element[i]._element.axis.norm()).mag
-            self.element[i]._velocity += (self.element[i]._force / self.element[i]._mass) * dt
-            self.element[i]._element.pos += self.element[i]._velocity * dt
-            self.element[i]._element.axis = self.element[i + 1]._element.pos - self.element[i]._element.pos
+            self.tension += self.element[i].update_with(self.element[i - 1], self.element[i + 1], self.k, dt)
+        self.element[self.N - 1].update_right_element(self.element[self.N - 2], self.k, self.botPos)
 
-        self.element[self.N - 1].update_force_right_fixed(self.element[self.N - 2], self.k, self.botPos)
         self.tension /= self.N
+
+    def force_on_last_element(self):
+        return self.element[self.N - 1].force()
 
 
 # string parameters are N, M, k, drag, topPos, botPos):
-A = String(20, 0.1, 2500, 0.5, stop.pos, myCart.body.pos - vec(myCart.L / 2, 0, 0), 0.01)
-
-##########################################
-# handle mouse interactions
+spring = Spring(20, 0.1, 2500, 0.5, stop.pos, myCart.body.pos - vec(myCart.L / 2, 0, 0), 0.01)
 
 pull = False
 chosenObject = None
@@ -148,12 +158,11 @@ animation.bind("mousedown", down)
 animation.bind("mousemove", move)
 animation.bind("mouseup", up)
 
-dt = 0.001
+delta_t = 0.001
 
 while True:
-
-    rate(1 / dt)
-    netForce = vec(0.1, 0, 0) + A.element[A.N - 1]._force
+    rate(1 / delta_t)
+    netForce = vec(0.1, 0, 0) + spring.force_on_last_element()
     # note above: I added a small rightward force to compensate for weight of spring
     if pull:
         netForce = netForce + 50 * forceArrow.axis
@@ -161,7 +170,7 @@ while True:
     if myCart.body.pos.x < stop.pos.x + myCart.L / 2:
         myCart.vel.x = -0.5 * myCart.vel.x
         myCart.body.pos.x = stop.pos.x + myCart.L / 2
-    myCart.process(netForce, dt)
-    A.botPos = myCart.body.pos + vec(-myCart.L / 2, myCart.H / 4, 0)
-    A.process(dt)
+    myCart.process(netForce, delta_t)
+    spring.botPos = myCart.body.pos + vec(-myCart.L / 2, myCart.H / 4, 0)
+    spring.update_by(delta_t)
     forceArrow.pos = myCart.body.pos
