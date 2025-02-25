@@ -1,4 +1,4 @@
-Web VPython 3.2
+#Web VPython 3.2
 from vpython import vector, canvas, points, color, rate, radio, button
 
 title = """&#x2022; Based on the original <a href="https://vpython.org/contents/contributed/pixelplot.py">pixelplot.py</a> by Bruce Sherwood, Jan. 1, 2008
