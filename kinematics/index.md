@@ -29,15 +29,15 @@ You may be surprised though to find out what happens when you drop such a simple
 <p style="clear: both;"></p>
 
 
-### The $N$-body coupled oscillator &amp; chain drop from table
+### Cart on spring &amp; chain drop from table
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
   <figure class="left_image">
-    <a href="n_body_oscillator.html">
-      <img alt="N-body coupled oscillator" src="images/n_body_coupled_oscillator.png" title="Click to animate"/>
-    </a>
-    <figcaption>Discover what happens by changing the number of bodies.</figcaption>
+    <a href="cart_on_spring.html">
+      <img alt="Cart on spring" src="images/cart_on_spring.png" title="Click to animate"/>
+    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <figcaption>Pull the cart and find out what happens!.</figcaption>
   </figure>
   <figure class="right_image">
     <a href="chain_drop.html">
@@ -102,10 +102,8 @@ You may be surprised though to find out what happens when you drop such a simple
   <figcaption>Movement of a floating block in water.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="cart_on_spring.html">
-    <img alt="Cart on spring" src="images/cart_on_spring.png" title="Click to animate"/>
-  </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <figcaption>Pull the cart and find out what happens!.</figcaption>
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 
