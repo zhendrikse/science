@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## X-ray Binary Stars
+## Spaghettification
 <div class="header_line"><br/></div>
 
 <blockquote>
