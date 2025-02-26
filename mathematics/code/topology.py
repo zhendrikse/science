@@ -596,15 +596,15 @@ def self_intersecting_disk(r=1, resolution=75):
 
     return NumpyWrapper(0, 2 * pi, 0, 1, resolution).get_plot_data(f_x, f_y, f_z)
 
-# https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html
+star_of_david_title="Parametrization for a <a href=\"https://doc.sagemath.org/html/en/reference/plot3d/sage/plot/plot3d/parametric_plot3d.html\">Star of David</a> $\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} K\\cos(\\theta) \\cos(\\phi) \\bigg(|\\cos(3\\phi/4)|^{500}+|\\sin(3\\phi/4)|^{500}\\bigg)^{-1/260} \\\\  K\\cos(\\theta) \\sin(\\phi)\\bigg(|\\cos(3\\phi/4)|^{500}+|\\sin(3\\phi/4)|^{500}\\bigg)^{-1/260} \\\\ K\\sin(\\theta) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}$"
 def star_of_david(resolution=100):
     def f_x(theta, phi):
         k = (abs(cos(theta))**200+abs(sin(theta))**200)**(-1.0/200)
-        return cos(theta) * cos(phi) * (abs(cos(3*phi/4))^500+abs(sin(3*phi/4))**500)**(-1/260) * k
+        return cos(theta) * cos(phi) * (abs(cos(3*phi/4))**500+abs(sin(3*phi/4))**500)**(-1/260) * k
 
     def f_y(theta, phi):
         k = (abs(cos(theta))**200+abs(sin(theta))**200)**(-1.0/200)
-        return cos(theta) * sin(phi) * (abs(cos(3*phi/4))^500+abs(sin(3*phi/4))**500)**(-1/260) * k
+        return cos(theta) * sin(phi) * (abs(cos(3*phi/4))**500+abs(sin(3*phi/4))**500)**(-1/260) * k
 
     def f_z(theta, phi):
         k = (abs(cos(theta))**200+abs(sin(theta))**200)**(-1.0/200)
@@ -682,6 +682,7 @@ radio_buttons.add(radio(bind=toggle, text=" Elliptic torus ", name="elliptic_tor
 radio_buttons.add(radio(bind=toggle, text=" Limpet torus ", name="limpet_torus"), limpet_torus, limpet_torus_title)
 radio_buttons.add(radio(bind=toggle, text=" Mobius strip ", name="mobius"), mobius_strip, mobius_title)
 radio_buttons.add(radio(bind=toggle, text=" Self-intersecting disk ", name="self_intersecting_disk"), self_intersecting_disk, self_intersecting_disk_title)
+radio_buttons.add(radio(bind=toggle, text=" Star of David ", name="star_of_david"), star_of_david, star_of_david_title)
 radio_buttons.add(radio(bind=toggle, text=" Torus ", name="torus"), torus, torus_title)
 radio_buttons.add(radio(bind=toggle, text=" Trefoil Knot ", name="trefoil_knot"), trefoil_knot, trefoil_knot_title)
 radio_buttons.add(radio(bind=toggle, text=" Twisted torus ", name="twisted_torus"), twisted_torus, twisted_torus_title)
