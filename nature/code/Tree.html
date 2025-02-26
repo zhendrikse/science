@@ -1,0 +1,121 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, spread, ρσ_unpack, width, height, max_recursion_depth, branch_length, lines;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "6";
+    title = "&#x2022; Based on <a href=\"http://rosettacode.org/wiki/Fractal_tree#Python\">Fractal_tree<\/a> via <a href=\"https://prettymathpics.com/fractal-tree/\">prettymathpics.com</a>\n&#x2022; Original authors: Alan Richmond, Python3.codes, and others at <a href=\"http://rosettacode.org/\">rosettacode.org</a>\n&#x2022; Adapted to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/tree.py\">tree.py</a>\n\n";
+    "10";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(0.075), width: 600, height: 400, range: 380, center: vec(300, 1["-u"]()["*"](18), 1["-u"]()["*"](70)), forward: vec(1["-u"]()["*"](.45), 1["-u"]()["*"](.2), 1["-u"]()["*"](.87))})]);
+    "12";
+    spread = 17;
+    "13";
+    ρσ_unpack = [512, 400];
+    width = ρσ_unpack[0];
+    height = ρσ_unpack[1];
+    "14";
+    max_recursion_depth = 12;
+    "15";
+    branch_length = 8;
+    "17";
+    lines = ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vec(width["/"](2), height["*"](.9), 0)})]) ]);
+    "21";
+    async function draw_tree(x1, y1, angle, depth) {
+        var ρσ_ls, x2, y2, colour;
+        "22";
+        if (depth[">"](0)) {
+            "24";
+            x2 = x1["+"](int(cos((await radians(angle)))["*"](depth)["*"](branch_length)));
+            "25";
+            y2 = y1["+"](int(sin((await radians(angle)))["*"](depth)["*"](branch_length)));
+            "28";
+            colour = color.hsv_to_rgb(vec(float(depth)["/"](max_recursion_depth), 1, 1));
+            "31";
+            lines.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(x1, 1["-u"]()["*"](y1), 0), vec(x2, 1["-u"]()["*"](y2), 0) ]), color: colour})]));
+            "34";
+            (await draw_tree(x2, y2, angle["-"](1["*"](spread)), depth["-"](1["*"](1))));
+            "35";
+            (await draw_tree(x2, y2, angle["+"](spread), depth["-"](1["*"](1))));
+        }
+    };
+    if (!draw_tree.__argnames__) Object.defineProperties(draw_tree, {
+        __argnames__ : {value: ["x1", "y1", "angle", "depth"]},
+        __module__ : {value: null}
+    });
+
+    "39";
+    (await draw_tree(width["/"](2), height["*"](.9), 1["-u"]()["*"](90), max_recursion_depth));
+    "41";
+    while (true) {
+        "42";
+        (await rate(10));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
