@@ -118,7 +118,7 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 </div>
 <p style="clear: both;"></p>
 
-### Traveling waves
+### Traveling and longitudinal waves
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -133,6 +133,24 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
       <img alt="N-body coupled oscillator" src="images/n_body_coupled_oscillator.png" title="Click to animate"/>
     </a>
     <figcaption>Discover what happens by changing the number of bodies.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+<p style="clear: both;"></p>
+
+### Pendulum wave
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="pendulum_wave.html">
+    <img alt="Pendulum wave" src="images/pendulum_wave.png" title="Click to animate"/>
+  </a>
+  <figcaption>A simulation of a wave with pendulums.</figcaption>
+</figure>
+<figure class="right_image">
+    <!-- RESERVED FOR FUTURE APPLICATION
+      -->
 </figure>
 </div>
 <p style="clear: both;"></p>
