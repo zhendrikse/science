@@ -95,8 +95,13 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   </figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="tree.html">
+    <img alt="Tree" src="images/tree.png" title="Click to animate"/>
+  </a>
+  <figcaption>"People looks at trees and they think it comes out of the ground, that
+  plants come out of the ground. &mdash;
+  <a href="https://www.youtube.com/watch?v=ifk6iuLQk28">Richard Feynman in "Biology of a tree"</a>.
+  </figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
