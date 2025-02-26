@@ -18,20 +18,22 @@ lines = [curve(pos=vec(width / 2, height * 0.9, 0))]  # , radius=0.1, visible=Fa
 
 # This function calls itself to add sub-trees
 def draw_tree(x1, y1, angle, depth):
-    if depth > 0:
-        # compute this branch's next endpoint
-        x2 = x1 + int(cos(radians(angle)) * depth * branch_length)
-        y2 = y1 + int(sin(radians(angle)) * depth * branch_length)
+    if depth <= 0:
+        return
 
-        # https://docs.python.org/2/library/colorsys.html
-        colour = color.hsv_to_rgb(vec(float(depth) / max_recursion_depth, 1.0, 1.0))
+    # compute this branch's next endpoint
+    x2 = x1 + int(cos(radians(angle)) * depth * branch_length)
+    y2 = y1 + int(sin(radians(angle)) * depth * branch_length)
 
-        # draw the branch
-        lines.append(curve(pos=[vec(x1, -y1, 0), vec(x2, -y2, 0)], color=colour))
+    # https://docs.python.org/2/library/colorsys.html
+    colour = color.hsv_to_rgb(vec(float(depth) / max_recursion_depth, 1.0, 1.0))
 
-        # and append 2 trees by recursion
-        draw_tree(x2, y2, angle - spread, depth - 1)
-        draw_tree(x2, y2, angle + spread, depth - 1)
+    # draw the branch
+    lines.append(curve(pos=[vec(x1, -y1, 0), vec(x2, -y2, 0)], color=colour))
+
+    # and append 2 trees by recursion
+    draw_tree(x2, y2, angle - spread, depth - 1)
+    draw_tree(x2, y2, angle + spread, depth - 1)
 
 
 #   Start drawing!
