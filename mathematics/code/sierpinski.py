@@ -2,8 +2,8 @@
 
 from vpython import curve, color, vec, canvas, rate
 
-title = """&#x2022; Inspired by <a href="https://isoptera.lcsc.edu/~seth/cs111/project5.pdf">this student assignment</a> by <a href="https://isoptera.lcsc.edu/~seth/">S. Seth Long</a> 
-&#x2022; Written by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/sierpinsky.py">sierpinsky.py</a>
+title = """&#x2022; Inspired by <a href="https://isoptera.lcsc.edu/~seth/cs111/project5.pdf">a student assignment</a> by <a href="https://isoptera.lcsc.edu/~seth/">S. Seth Long</a> 
+&#x2022; Written by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/sierpinski.py">sierpinski.py</a>
 
 """
 
