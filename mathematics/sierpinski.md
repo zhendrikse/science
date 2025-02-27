@@ -7,16 +7,19 @@
 
 <p style="clear: both;"></p>
 
-### Original [student assignment](https://isoptera.lcsc.edu/~seth/cs111/project5.pdf) by [S. Seth Long](https://isoptera.lcsc.edu/~seth/)
+## Original [student assignment](https://isoptera.lcsc.edu/~seth/cs111/project5.pdf) by [S. Seth Long](https://isoptera.lcsc.edu/~seth/)
+<div class="header_line"><br/></div>
 
 Below you find a copy of the original student assignment written by S. Seth Long.
 
-#### Introduction 
+### 3D Fractals 
+<div style="border-top: 1px solid #999999"><br/></div>
 
 Fractals are generated figures which can be highly complex, but are created using algorithms which are
 somewhat simplistic. For this project, write a program that uses vpython to generate a Pyramid fractal.
 
-#### The Pyramid Fractal
+### The Pyramid Fractal
+<div style="border-top: 1px solid #999999"><br/></div>
 
 \[ &hellip; reference to reading material on recursion &hellip; \]
 
