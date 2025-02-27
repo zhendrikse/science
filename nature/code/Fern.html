@@ -254,7 +254,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
 
-    var version, print, arange, __name__, type, ρσ_ls, title, imgx, imgy, display, pixels, mat, xa, xb, ya, yb, x, y, p, i, x0, jx, jy, k;
+    var version, print, arange, __name__, type, ρσ_ls, title, img_x, img_y, display, pixels, _GS_1, fern;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -266,21 +266,21 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    var random = ρσ_modules.random;
+    var uniform = ρσ_modules.random.uniform;
 
-    "11";
-    title = "&#x2022; Based on <a href=\"https://code.activestate.com/recipes/577134-fern-ifs-fractal\">Fern IFS Fractal<\/a> via <a href=\"https://prettymathpics.com/fractal-generating-python-programs/\">prettymathpics.com</a>\n&#x2022; See also this <a href=\"https://www.youtube.com/watch?v=km-ctEk8-lE\">video</a> on integrated function systems (IFS)\n&#x2022; Adapted to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/fern.py\">fern.py</a>\n\n";
+    "10";
+    title = "&#x2022; Based on <a href=\"https://rosettacode.org/wiki/Barnsley_fern#Python\">this example<\/a> (an alternative <a href=\"https://code.activestate.com/recipes/577134-fern-ifs-fractal\">here</a>)\n&#x2022; See also this <a href=\"https://www.youtube.com/watch?v=km-ctEk8-lE\">video</a> on integrated function systems (IFS)\n&#x2022; Adapted to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/fern.py\">fern.py</a>\n\n";
+    "12";
+    img_x = 512;
     "13";
-    imgx = 512;
+    img_y = 512;
     "14";
-    imgy = 512;
-    "15";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), width: 600, center: vector(Math.floor(imgx["/"](2)), Math.floor(1["-u"]()["*"](imgy)["/"](2)), 0), forward: vector(0, 0, 1["-u"]()["*"](1)), range: Math.floor(imgx["/"](2))})]);
-    "19";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), height: 600, center: vector(0, 5, 0), fov: .01})]);
+    "16";
     pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: .85})]);
-    "20";
+    "19";
     async function set_color_for_pixel_at(x, y, colour) {
-        "21";
+        "20";
         ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vector(x, y, 0), color: colour})]);
     };
     if (!set_color_for_pixel_at.__argnames__) Object.defineProperties(set_color_for_pixel_at, {
@@ -288,60 +288,121 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "24";
-    mat = ρσ_list_decorate([ ρσ_list_decorate([ 0, 0, 0, .16, 0, 0, .01 ]), ρσ_list_decorate([ .85, .04, 1["-u"]()["*"](.04), .85, 0, 1.6, .85 ]), ρσ_list_decorate([ .2, 1["-u"]()["*"](.26), .23, .22, 0, 1.6, .07 ]), ρσ_list_decorate([ 1["-u"]()["*"](.15), .28, .26, .24, 0, .44, .07 ]) ]);
-    "29";
-    xa = 1["-u"]()["*"](5.5);
-    "30";
-    xb = 6.5;
-    "31";
-    ya = 1["-u"]()["*"](.5);
-    "32";
-    yb = 10.5;
-    "34";
-    x = 0;
-    "35";
-    y = 0;
-    "36";
-    for (var ρσ_Index6 = 0; ρσ_Index6["<"](imgx["*"](imgy)); ρσ_Index6++) {
-        k = ρσ_Index6;
-        "38";
-        p = random.random();
-        "39";
-        if (p["<="](ρσ_getitem(ρσ_getitem(mat, 0), 6))) {
-            "40";
-            i = 0;
-            "41";
-        } else if (p["<="](ρσ_getitem(ρσ_getitem(mat, 0), 6)["+"](ρσ_getitem(ρσ_getitem(mat, 1), 6)))) {
-            "42";
-            i = 1;
-            "43";
-        } else if (p["<="](ρσ_getitem(ρσ_getitem(mat, 0), 6)["+"](ρσ_getitem(ρσ_getitem(mat, 1), 6))["+"](ρσ_getitem(ρσ_getitem(mat, 2), 6)))) {
-            "44";
-            i = 2;
-            "45";
-        } else {
-            "46";
-            i = 3;
+    "23";
+    function BarnsleyFern() {;
+    }
+    BarnsleyFern.prototype.__init__ = async function __init__() {
+        var self = this;
+        var img_width = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var img_height = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var paint_color = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.paint_color : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "paint_color")){
+            paint_color = ρσ_kwargs_obj.paint_color;
         }
-        "48";
-        x0 = x["*"](ρσ_getitem(ρσ_getitem(mat, i), 0))["+"](y["*"](ρσ_getitem(ρσ_getitem(mat, i), 1)))["+"](ρσ_getitem(ρσ_getitem(mat, i), 4));
-        "49";
-        y = x["*"](ρσ_getitem(ρσ_getitem(mat, i), 2))["+"](y["*"](ρσ_getitem(ρσ_getitem(mat, i), 3)))["+"](ρσ_getitem(ρσ_getitem(mat, i), 5));
+        var ρσ_ls, ρσ_unpack;
+        "25";
+        ρσ_unpack = [img_width, img_height];
+        self.img_width = ρσ_unpack[0];
+        self.img_height = ρσ_unpack[1];
+        "26";
+        self.paint_color = paint_color;
+        "27";
+        ρσ_unpack = [0, 0];
+        self.x = ρσ_unpack[0];
+        self.y = ρσ_unpack[1];
+        "28";
+        self.age = 0;
+    };
+    if (!BarnsleyFern.prototype.__init__.__defaults__) Object.defineProperties(BarnsleyFern.prototype.__init__, {
+        __defaults__ : {value: {paint_color:vec(0, .8, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["img_width", "img_height", "paint_color"]},
+        __module__ : {value: null}
+    });
+    BarnsleyFern.__argnames__ = BarnsleyFern.prototype.__init__.__argnames__;
+    BarnsleyFern.__handles_kwarg_interpolation__ = BarnsleyFern.prototype.__init__.__handles_kwarg_interpolation__;
+    BarnsleyFern.prototype.scale = async function scale(x, y) {
+        var self = this;
+        var ρσ_ls, h, k;
+        "31";
+        h = x["+"](2.182)["*"](self.img_width["-"](1["*"](1)))["/"](4.8378);
+        "32";
+        k = 9.9983["-"](1["*"](y))["*"](self.img_height["-"](1["*"](1)))["/"](9.9983);
+        "33";
+        return [h, k];
+    };
+    if (!BarnsleyFern.prototype.scale.__argnames__) Object.defineProperties(BarnsleyFern.prototype.scale, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    BarnsleyFern.prototype.transform = async function transform(x, y) {
+        var self = this;
+        var ρσ_ls, rand;
+        "36";
+        rand = (await uniform(0, 100));
+        "37";
+        if (rand["<"](1)) {
+            "38";
+            return [0, .16["*"](y)];
+            "39";
+        } else if (1["<="](rand) && rand["<"](86)) {
+            "40";
+            return [.85["*"](x)["+"](.04["*"](y)), 1["-u"]()["*"](.04)["*"](x)["+"](.85["*"](y))["+"](1.6)];
+            "41";
+        } else if (86["<="](rand) && rand["<"](93)) {
+            "42";
+            return [.2["*"](x)["-"](1["*"](.26)["*"](y)), .23["*"](x)["+"](.22["*"](y))["+"](1.6)];
+            "43";
+        } else {
+            "44";
+            return [1["-u"]()["*"](.15)["*"](x)["+"](.28["*"](y)), .26["*"](x)["+"](.24["*"](y))["+"](.44)];
+        }
+    };
+    if (!BarnsleyFern.prototype.transform.__argnames__) Object.defineProperties(BarnsleyFern.prototype.transform, {
+        __argnames__ : {value: ["x", "y"]},
+        __module__ : {value: null}
+    });
+    BarnsleyFern.prototype.iterate = async function iterate(iterations) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, _;
+        "47";
+        for (var ρσ_Index6 = 0; ρσ_Index6["<"](iterations); ρσ_Index6++) {
+            _ = ρσ_Index6;
+            "48";
+            ρσ_unpack = (await self.transform(self.x, self.y));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+            self.x = ρσ_unpack[0];
+            self.y = ρσ_unpack[1];
+            "49";
+            (await set_color_for_pixel_at(self.x, self.y, self.paint_color));
+        }
         "50";
-        x = x0;
-        "51";
-        jx = int(x["-"](1["*"](xa))["/"](xb["-"](1["*"](xa)))["*"](imgx["-"](1["*"](1))));
-        "52";
-        jy = imgy["-"](1["*"](1))["-"](1["*"](int(y["-"](1["*"](ya))["/"](yb["-"](1["*"](ya)))["*"](imgy["-"](1["*"](1))))));
-        "54";
-        (await set_color_for_pixel_at(jx, 1["-u"]()["*"](jy), color.green));
-    }
-    "56";
-    while (true) {
-        "57";
-        (await rate(5));
-    }
+        self.age=self.age["+"](iterations);
+    };
+    if (!BarnsleyFern.prototype.iterate.__argnames__) Object.defineProperties(BarnsleyFern.prototype.iterate, {
+        __argnames__ : {value: ["iterations"]},
+        __module__ : {value: null}
+    });
+    BarnsleyFern.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    BarnsleyFern.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(BarnsleyFern.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "53";
+    _GS_1 = new BarnsleyFern;
+    (await _GS_1.__init__(img_x, img_y));
+    fern = _GS_1;
+    "54";
+    (await fern.iterate(1e5));
 };
 if (!__main__.__module__) Object.defineProperties(__main__, {
     __module__ : {value: null}
