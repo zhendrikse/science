@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Sierpinski pyramid
+## Sierpiński pyramid
 <div class="header_line"><br/></div>
 
 {% include_relative code/Sierpinski.html %}
