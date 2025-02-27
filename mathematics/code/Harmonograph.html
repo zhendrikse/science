@@ -1,0 +1,380 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var draw;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
+    var version, print, arange, __name__, type, ρσ_ls, title, ρσ_unpack, width, height, mx, display, _GS_1, harmonograph, draw;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "11";
+    title = "3D Spectral Harmonographs   Copyright 2014 Alan Richmond (Tuxar.uk)\n&#x2022; Original <a href=\"https://www.glowscript.org/#/user/Mandrian/folder/My_Programs/program/Harmonograph3D\">Harmonograph3D<\/a> found via <a href=\"https://prettymathpics.com/online-3d-spectral-harmonograph/\">prettymathpics.com</a>\n&#x2022; Refurbished in <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/harmonograph.py\">harmonograph.py</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>\n&#x2022; Click with mouse to create another harmonograph!\n&#x2022; MIT License.\n\n";
+    "15";
+    ρσ_unpack = [600, 600];
+    width = ρσ_unpack[0];
+    height = ρσ_unpack[1];
+    "16";
+    mx = 4;
+    "18";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: width, height: height, background: color.gray(.075)})]);
+    (await sleep(.1));
+    "19";
+    display.autoscale = false;
+    "22";
+    async function randint(m, n) {
+        "23";
+        return int(random()["*"](n["-"](1["*"](m)))["+"](m));
+    };
+    if (!randint.__argnames__) Object.defineProperties(randint, {
+        __argnames__ : {value: ["m", "n"]},
+        __module__ : {value: null}
+    });
+
+    "26";
+    async function gauss(average, standard_deviation) {
+        var ρσ_ls, u1, u2, vt;
+        "27";
+        u1 = random();
+        "28";
+        u2 = random();
+        "29";
+        vt = sqrt(1["-u"]()["*"](2)["*"](log(u1)))["*"](cos(2["*"](pi)["*"](u2)));
+        "30";
+        vt=vt["*"](standard_deviation["+"](average));
+        "31";
+        return vt;
+    };
+    if (!gauss.__argnames__) Object.defineProperties(gauss, {
+        __argnames__ : {value: ["average", "standard_deviation"]},
+        __module__ : {value: null}
+    });
+
+    "33";
+    async function uniform(a, b) {
+        "34";
+        return random()["*"](b);
+    };
+    if (!uniform.__argnames__) Object.defineProperties(uniform, {
+        __argnames__ : {value: ["a", "b"]},
+        __module__ : {value: null}
+    });
+
+    "37";
+    async function scale(length) {
+        var ρσ_ls, scale_factor, ρσ_unpack, a1, a2, max;
+        "38";
+        scale_factor = 90;
+        "39";
+        while (true) {
+            "40";
+            ρσ_unpack = [(await randint(1["-u"]()["*"](mx), mx)), (await randint(1["-u"]()["*"](mx), mx))];
+            a1 = ρσ_unpack[0];
+            a2 = ρσ_unpack[1];
+            "41";
+            max = abs(a1)["+"](abs(a2));
+            "42";
+            if (max[">"](0)) {
+                break;
+            }
+        }
+        "43";
+        return [a1, a2, length["/"](scale_factor["*"](max))];
+    };
+    if (!scale.__argnames__) Object.defineProperties(scale, {
+        __argnames__ : {value: ["length"]},
+        __module__ : {value: null}
+    });
+
+    "47";
+    function Harmonograph() {;
+    }
+    Harmonograph.prototype.__init__ = async function __init__() {
+        var self = this;
+        var depth = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.depth : arguments[0];
+        var trail_thickness = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.trail_thickness : arguments[1];
+        var hue_increment = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.hue_increment : arguments[2];
+        var decay_factor = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.decay_factor : arguments[3];
+        var iters = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.iters : arguments[4];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "depth")){
+            depth = ρσ_kwargs_obj.depth;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "trail_thickness")){
+            trail_thickness = ρσ_kwargs_obj.trail_thickness;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "hue_increment")){
+            hue_increment = ρσ_kwargs_obj.hue_increment;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "decay_factor")){
+            decay_factor = ρσ_kwargs_obj.decay_factor;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "iters")){
+            iters = ρσ_kwargs_obj.iters;
+        }
+        "49";
+        self._drawing = true;
+        "50";
+        self._depth = depth;
+        "51";
+        self._iters = iters;
+        "52";
+        self._trail_thickness = trail_thickness;
+        "53";
+        self._hue_increment = hue_increment;
+        "54";
+        self._decay_factor = decay_factor;
+        "55";
+        self._trail = curve();
+    };
+    if (!Harmonograph.prototype.__init__.__defaults__) Object.defineProperties(Harmonograph.prototype.__init__, {
+        __defaults__ : {value: {depth:width, trail_thickness:.02, hue_increment:.159, decay_factor:.9999, iters:150}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["depth", "trail_thickness", "hue_increment", "decay_factor", "iters"]},
+        __module__ : {value: null}
+    });
+    Harmonograph.__argnames__ = Harmonograph.prototype.__init__.__argnames__;
+    Harmonograph.__handles_kwarg_interpolation__ = Harmonograph.prototype.__init__.__handles_kwarg_interpolation__;
+    Harmonograph.prototype.is_drawing = async function is_drawing() {
+        var self = this;
+        "58";
+        return self._drawing;
+    };
+    if (!Harmonograph.prototype.is_drawing.__module__) Object.defineProperties(Harmonograph.prototype.is_drawing, {
+        __module__ : {value: null}
+    });
+    Harmonograph.prototype.start_drawing = async function start_drawing() {
+        var self = this;
+        "61";
+        self._drawing = true;
+        "62";
+        (await self.draw());
+    };
+    if (!Harmonograph.prototype.start_drawing.__module__) Object.defineProperties(Harmonograph.prototype.start_drawing, {
+        __module__ : {value: null}
+    });
+    Harmonograph.prototype.stop_drawing = async function stop_drawing() {
+        var self = this;
+        "65";
+        self._drawing = false;
+    };
+    if (!Harmonograph.prototype.stop_drawing.__module__) Object.defineProperties(Harmonograph.prototype.stop_drawing, {
+        __module__ : {value: null}
+    });
+    Harmonograph.prototype.draw = async function draw() {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, ax1, ax2, xscale, ay1, ay2, yscale, az1, az2, zscale, sd, fx1, fx2, fy1, fy2, fz1, fz2, px1, px2, py1, py2, pz1, pz2, first, x, y, z, k, hue, t, dt, i, j;
+        "68";
+        self._trail.visible = true;
+        "70";
+        ρσ_unpack = (await scale(width));
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+        ax1 = ρσ_unpack[0];
+        ax2 = ρσ_unpack[1];
+        xscale = ρσ_unpack[2];
+        "71";
+        ρσ_unpack = (await scale(height));
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+        ay1 = ρσ_unpack[0];
+        ay2 = ρσ_unpack[1];
+        yscale = ρσ_unpack[2];
+        "72";
+        ρσ_unpack = (await scale(self._depth));
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+        az1 = ρσ_unpack[0];
+        az2 = ρσ_unpack[1];
+        zscale = ρσ_unpack[2];
+        "74";
+        sd = .002;
+        "75";
+        ρσ_unpack = [(await randint(1, mx))["+"]((await gauss(0, sd))), (await randint(1, mx))["+"]((await gauss(0, sd)))];
+        fx1 = ρσ_unpack[0];
+        fx2 = ρσ_unpack[1];
+        "76";
+        ρσ_unpack = [(await randint(1, mx))["+"]((await gauss(0, sd))), (await randint(1, mx))["+"]((await gauss(0, sd)))];
+        fy1 = ρσ_unpack[0];
+        fy2 = ρσ_unpack[1];
+        "77";
+        ρσ_unpack = [(await randint(1, mx))["+"]((await gauss(0, sd))), (await randint(1, mx))["+"]((await gauss(0, sd)))];
+        fz1 = ρσ_unpack[0];
+        fz2 = ρσ_unpack[1];
+        "79";
+        ρσ_unpack = [(await uniform(0, 2["*"](pi))), (await uniform(0, 2["*"](pi)))];
+        px1 = ρσ_unpack[0];
+        px2 = ρσ_unpack[1];
+        "80";
+        ρσ_unpack = [(await uniform(0, 2["*"](pi))), (await uniform(0, 2["*"](pi)))];
+        py1 = ρσ_unpack[0];
+        py2 = ρσ_unpack[1];
+        "81";
+        ρσ_unpack = [(await uniform(0, 2["*"](pi))), (await uniform(0, 2["*"](pi)))];
+        pz1 = ρσ_unpack[0];
+        pz2 = ρσ_unpack[1];
+        "83";
+        first = true;
+        "84";
+        x = y = z = 0;
+        "85";
+        k = 1;
+        "86";
+        hue = 0;
+        "88";
+        t = 0;
+        "89";
+        dt = .02;
+        "94";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](self._iters); ρσ_Index1++) {
+            j = ρσ_Index1;
+            "95";
+            if (!first) {
+                "96";
+                self._trail = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vector(x, y, z), color: color.hsv_to_rgb(vector(hue, 1, 1)), radius: self._trail_thickness})]);
+            }
+            "97";
+            for (var ρσ_Index2 = 0; ρσ_Index2["<"](self._iters); ρσ_Index2++) {
+                i = ρσ_Index2;
+                "100";
+                x = xscale["*"](k)["*"](ax1["*"](sin(t["*"](fx1)["+"](px1)))["+"](ax2["*"](sin(t["*"](fx2)["+"](px2)))));
+                "101";
+                y = yscale["*"](k)["*"](ay1["*"](sin(t["*"](fy1)["+"](py1)))["+"](ay2["*"](sin(t["*"](fy2)["+"](py2)))));
+                "102";
+                z = zscale["*"](k)["*"](az1["*"](sin(t["*"](fz1)["+"](pz1)))["+"](az2["*"](sin(t["*"](fz2)["+"](pz2)))));
+                "103";
+                ρσ_interpolate_kwargs.call(self._trail, self._trail.append, [ρσ_desugar_kwargs({pos: vector(x, y, z), color: color.hsv_to_rgb(vector(hue, 1, 1)), radius: self._trail_thickness})]);
+                "106";
+                hue = hue["+"](dt["*"](self._hue_increment))["%"](360);
+                "107";
+                t=t["+"](dt);
+                "108";
+                k=k["*"](self._decay_factor);
+            }
+            "109";
+            first = false;
+        }
+        "110";
+        self._drawing = false;
+    };
+    if (!Harmonograph.prototype.draw.__module__) Object.defineProperties(Harmonograph.prototype.draw, {
+        __module__ : {value: null}
+    });
+    Harmonograph.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Harmonograph.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Harmonograph.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "112";
+    _GS_1 = new Harmonograph;
+    (await _GS_1.__init__());
+    harmonograph = _GS_1;
+    "113";
+    (await harmonograph.draw());
+    "115";
+    async function on_mouse_click() {
+        var ρσ_ls, obj;
+        "116";
+        "117";
+        if ((await harmonograph.is_drawing())) {
+            "118";
+            (await harmonograph.stop_drawing());
+            "119";
+        } else {
+            "120";
+            var ρσ_Iter3 = display.objects;
+            ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+            for (var ρσ_Index3 of ρσ_Iter3) {
+                obj = ρσ_Index3;
+                "121";
+                obj.visible = false;
+            }
+            "122";
+            (await harmonograph.start_drawing());
+        }
+    };
+    if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
+        __module__ : {value: null}
+    });
+
+    "124";
+    display.bind("click", on_mouse_click);
+    "127";
+    draw = true;
+    "128";
+    while (true) {
+        "129";
+        (await rate(60));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
