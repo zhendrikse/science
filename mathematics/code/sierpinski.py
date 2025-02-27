@@ -113,8 +113,8 @@ def toggle_pyramids(event):
 
 
 display.append_to_caption("\n")
-pyramid_radio = radio(text="Pyramids", checked=True, name="pyramids", bind=toggle_pyramids)
-tetrahedron_radio = radio(text="Tetrahedron", checked=False, name="tetrahedron", bind=toggle_pyramids)
+pyramid_radio = radio(text="Pyramids ", checked=True, name="pyramids", bind=toggle_pyramids)
+tetrahedron_radio = radio(text="Tetrahedron ", checked=False, name="tetrahedron", bind=toggle_pyramids)
 
 sierpinski_pyramid(initial_pyramid, 5)
 
