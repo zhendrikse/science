@@ -1,0 +1,177 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, n, points_, pixels, ρσ_unpack, x, y, i;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; Based on <a href=\"https://github.com/jeffvun/fractals/blob/main/DragonCurve.py\">DragonCurve.py<\/a> code\n&#x2022; Ported to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/dragon_curve.py\">dragon_curve.py</a>\n\n";
+    "9";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), range: .54, center: vec(.42, 1["-u"]()["*"](.173), 0), title: title})]);
+    "11";
+    async function dragon_curve(n) {
+        var ρσ_ls, prev_points, new_points, ρσ_unpack, x1, y1, x2, y2, dx, dy, new_dx, new_dy, new_x, new_y, i;
+        "12";
+        if ((n === 0 || typeof n === "object" && ρσ_equals(n, 0))) {
+            "13";
+            return ρσ_list_decorate([ [0, 0], [1, 0] ]);
+            "14";
+        } else {
+            "15";
+            prev_points = (await dragon_curve(n["-"](1["*"](1))));
+            "16";
+            new_points = ρσ_list_decorate([]);
+            "17";
+            var ρσ_Iter1 = range(len(prev_points)["-"](1["*"](1)));
+            ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+            for (var ρσ_Index1 of ρσ_Iter1) {
+                i = ρσ_Index1;
+                "18";
+                ρσ_unpack = ρσ_getitem(prev_points, i);
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+                x1 = ρσ_unpack[0];
+                y1 = ρσ_unpack[1];
+                "19";
+                ρσ_unpack = ρσ_getitem(prev_points, i["+"](1));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+                x2 = ρσ_unpack[0];
+                y2 = ρσ_unpack[1];
+                "20";
+                ρσ_unpack = [x2["-"](1["*"](x1)), y2["-"](1["*"](y1))];
+                dx = ρσ_unpack[0];
+                dy = ρσ_unpack[1];
+                "21";
+                if (ρσ_equals(i["%"](2), 0)) {
+                    "22";
+                    new_dx = dy;
+                    "23";
+                    new_dy = 1["-u"]()["*"](dx);
+                    "24";
+                } else {
+                    "25";
+                    new_dx = 1["-u"]()["*"](dy);
+                    "26";
+                    new_dy = dx;
+                }
+                "27";
+                ρσ_unpack = [x1["+"](dx["/"](2))["+"](new_dx["/"](2)), y1["+"](dy["/"](2))["+"](new_dy["/"](2))];
+                new_x = ρσ_unpack[0];
+                new_y = ρσ_unpack[1];
+                "28";
+                new_points.extend(ρσ_list_decorate([ [x1, y1], [new_x, new_y] ]));
+            }
+            "29";
+            new_points.append([1, 0]);
+            "30";
+            return new_points;
+        }
+    };
+    if (!dragon_curve.__argnames__) Object.defineProperties(dragon_curve, {
+        __argnames__ : {value: ["n"]},
+        __module__ : {value: null}
+    });
+
+    "33";
+    n = 15;
+    "34";
+    points_ = (await dragon_curve(n));
+    "36";
+    pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 2})]);
+    "37";
+    async function set_color_for_pixel_at(x, y, colour) {
+        "38";
+        ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: colour})]);
+    };
+    if (!set_color_for_pixel_at.__argnames__) Object.defineProperties(set_color_for_pixel_at, {
+        __argnames__ : {value: ["x", "y", "colour"]},
+        __module__ : {value: null}
+    });
+
+    "40";
+    ρσ_unpack = zip.apply(this, points_);
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+    x = ρσ_unpack[0];
+    y = ρσ_unpack[1];
+    "41";
+    var ρσ_Iter2 = range(len(x));
+    ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+    for (var ρσ_Index2 of ρσ_Iter2) {
+        i = ρσ_Index2;
+        "42";
+        (await set_color_for_pixel_at(ρσ_getitem(x, i), ρσ_getitem(y, i), color.hsv_to_rgb(vec(i["/"](len(x)), 1, 1))));
+    }
+    "44";
+    while (true) {
+        "45";
+        (await rate(10));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
