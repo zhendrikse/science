@@ -44,13 +44,14 @@ var ρσ_modules = {};
 
     ρσ_modules.pythonize.strings = strings;
 })();
-
 async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
-    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, spread, ρσ_unpack, width, height, max_recursion_depth, branch_length, lines;
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
+    var version, print, arange, __name__, type, ρσ_ls, title, display, stem;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -62,52 +63,59 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "6";
-    title = "&#x2022; Based on <a href=\"http://rosettacode.org/wiki/Fractal_tree#Python\">Fractal_tree<\/a> via <a href=\"https://prettymathpics.com/fractal-tree/\">prettymathpics.com</a>\n&#x2022; Original authors: Alan Richmond, Python3.codes, and others at <a href=\"http://rosettacode.org/\">rosettacode.org</a>\n&#x2022; Adapted to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/tree.py\">tree.py</a>\n\n";
+    "8";
+    title = "&#x2022; Based on <a href=\"https://trinket.io/glowscript/9d17ee2036\">this example<\/a>\n&#x2022; Modified by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/tree.py\">tree.py</a>\n\n";
     "10";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(0.075), width: 600, height: 400, range: 380, center: vec(300, 1["-u"]()["*"](18), 1["-u"]()["*"](70)), forward: vec(1["-u"]()["*"](.45), 1["-u"]()["*"](.2), 1["-u"]()["*"](.87))})]);
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), center: vector(0, 50, 0), height: 500, title: title})]);
     "12";
-    spread = 17;
-    "13";
-    ρσ_unpack = [512, 400];
-    width = ρσ_unpack[0];
-    height = ρσ_unpack[1];
-    "14";
-    max_recursion_depth = 12;
-    "15";
-    branch_length = 8;
-    "17";
-    lines = ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vec(width["/"](2), height["*"](.9), 0)})]) ]);
-    "21";
-    async function draw_tree(x1, y1, angle, depth) {
-        var ρσ_ls, x2, y2, colour;
-        "22";
-        if (depth[">"](0)) {
+    async function tree(branch_length, branch_pos, branch_vector) {
+        var ρσ_ls, theta_0, short, theta;
+        "13";
+        theta_0 = 30["*"](pi)["/"](180);
+        "14";
+        short = 14.5;
+        "17";
+        if (branch_length[">"](5)) {
+            "18";
+            theta = theta_0;
+            "20";
+            if (branch_length["<"](20)) {
+                "21";
+                ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: branch_pos, axis: branch_vector["*"](branch_length), radius: 1.5["*"](branch_length), color: vec(0, .5, 0)})]);
+                "22";
+            } else {
+                "23";
+                ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: branch_pos, axis: branch_vector["*"](branch_length), radius: .1["*"](branch_length), texture: textures.wood})]);
+            }
             "24";
-            x2 = x1["+"](int(cos((await radians(angle)))["*"](depth)["*"](branch_length)));
-            "25";
-            y2 = y1["+"](int(sin((await radians(angle)))["*"](depth)["*"](branch_length)));
+            branch_pos=branch_pos["+"](branch_vector["*"](branch_length));
+            "26";
+            branch_vector = ρσ_interpolate_kwargs.call(this, rotate, [branch_vector].concat([ρσ_desugar_kwargs({angle: theta, axis: vector(0, 0, 1)})]));
             "28";
-            colour = color.hsv_to_rgb(vec(float(depth)["/"](max_recursion_depth), 1, 1));
+            (await tree(branch_length["-"](1["*"](short)), branch_pos, branch_vector));
             "31";
-            lines.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(x1, 1["-u"]()["*"](y1), 0), vec(x2, 1["-u"]()["*"](y2), 0) ]), color: colour})]));
+            branch_vector = ρσ_interpolate_kwargs.call(this, rotate, [branch_vector].concat([ρσ_desugar_kwargs({angle: 1["-u"]()["*"](2)["*"](theta), axis: vector(0, 0, 1)})]));
             "34";
-            (await draw_tree(x2, y2, angle["-"](1["*"](spread)), depth["-"](1["*"](1))));
+            (await tree(branch_length["-"](1["*"](short)), branch_pos, branch_vector));
             "35";
-            (await draw_tree(x2, y2, angle["+"](spread), depth["-"](1["*"](1))));
+            branch_vector = ρσ_interpolate_kwargs.call(this, rotate, [branch_vector].concat([ρσ_desugar_kwargs({angle: theta, axis: vector(0, 0, 1)})]));
+            "36";
+            branch_pos=branch_pos["-"](branch_length["*"](branch_vector));
         }
     };
-    if (!draw_tree.__argnames__) Object.defineProperties(draw_tree, {
-        __argnames__ : {value: ["x1", "y1", "angle", "depth"]},
+    if (!tree.__argnames__) Object.defineProperties(tree, {
+        __argnames__ : {value: ["branch_length", "branch_pos", "branch_vector"]},
         __module__ : {value: null}
     });
 
     "39";
-    (await draw_tree(width["/"](2), height["*"](.9), 1["-u"]()["*"](90), max_recursion_depth));
+    stem = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](300), 0), radius: 12.5, axis: vec(0, 175, 0), texture: textures.wood})]);
     "41";
+    await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, tree, [ρσ_desugar_kwargs({branch_length: 125, branch_pos: vector(0, 1["-u"]()["*"](125), 0), branch_vector: vector(0, 1, 0)})]));
+    "43";
     while (true) {
-        "42";
-        (await rate(10));
+        "44";
+        (await rate(2));
     }
 };
 if (!__main__.__module__) Object.defineProperties(__main__, {
