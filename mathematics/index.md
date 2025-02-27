@@ -158,7 +158,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 <p style="clear: both;"></p>
 
 <a name="mandelbrot"></a>
-## Rendering Mandelbrot &amp; Lorenz attractor in VPython
+## Rendering Mandelbrot and other fractals
 <div class="header_line"><br/></div>
 
 <div class="double_image">
@@ -169,13 +169,58 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <figcaption>VPython can also be used to generate Mandelbrot images!</figcaption>
 </figure>
 <figure class="right_image">
+  <a href="dragon_curve.html">
+    <img alt="Dragon curve" src="./images/dragon_curve.png" title="Click to animate"/>
+  </a>
+  <figcaption>The dragon curve.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+
+<a name="3d_fractals"></a>
+## Sierpiński&apos;s pyramid &amp; Menger&apos;s sponge
+<div class="header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="sierpinski.html">
+    <img alt="Sierpinski pyramid" src="./images/sierpinski.png" title="Click to animate"/>
+  </a>
+  <figcaption>Sierpiński pyramid is a 3D analogue of the 
+  <a href="https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle">Sierpiński triangle</a></figcaption>
+</figure>
+<figure class="right_image">
+  <a href="menger_sponge.html">
+    <img alt="Menger sponge" src="./images/menger_sponge.png" title="Click to animate"/>
+  </a>
+  <figcaption><a href="https://en.wikipedia.org/wiki/Menger_sponge">Menger Sponge</a> 
+  is another famous three-dimensional fractal curve.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+
+<a name="lorenz_harmonograph"></a>
+## Lorenz attractor and a harmonograph
+<div class="header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
   <a href="lorenz_attractor.html">
     <img alt="Lorenz attractor" src="./images/lorenz_attractor.png" title="Click to animate"/>
   </a>
   <figcaption>VPython program that renders the Lorenz attractor.</figcaption>
 </figure>
+<figure class="right_image">
+  <a href="harmonograph.html">
+    <img alt="Harmonograph simulator" src="./images/harmonograph.png" title="Click to animate"/>
+  </a>
+  <figcaption>A three-dimensional harmonograph simulator.</figcaption>
+</figure>
 </div>
 <p style="clear: both;"></p>
+
 
 <a name="spherical_harmonics"></a>
 ## Spherical harmonics
@@ -225,49 +270,6 @@ seen in the mathematics section on this page:
 </code></pre></div></div>
 
 </details>
-<p style="clear: both;"></p>
-
-<a name="3d_fractals"></a>
-## Sierpiński&apos;s pyramid &amp; Menger&apos;s sponge
-<div class="header_line"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="sierpinski.html">
-    <img alt="Sierpinski pyramid" src="./images/sierpinski.png" title="Click to animate"/>
-  </a>
-  <figcaption>Sierpiński pyramid is a 3D analogue of the 
-  <a href="https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle">Sierpiński triangle</a></figcaption>
-</figure>
-<figure class="right_image">
-  <a href="menger_sponge.html">
-    <img alt="Menger sponge" src="./images/menger_sponge.png" title="Click to animate"/>
-  </a>
-  <figcaption><a href="https://en.wikipedia.org/wiki/Menger_sponge">Menger Sponge</a> 
-  is another famous three-dimensional fractal curve.</figcaption>
-</figure>
-</div>
-<p style="clear: both;"></p>
-
-
-<a name="other_fractals"></a>
-## Other fractals and a harmonograph
-<div class="header_line"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="dragon_curve.html">
-    <img alt="Dragon curve" src="./images/dragon_curve.png" title="Click to animate"/>
-  </a>
-  <figcaption>The dragon curve.</figcaption>
-</figure>
-<figure class="right_image">
-  <a href="harmonograph.html">
-    <img alt="Harmonograph simulator" src="./images/harmonograph.png" title="Click to animate"/>
-  </a>
-  <figcaption>A three-dimensional harmonograph simulator.</figcaption>
-</figure>
-</div>
 <p style="clear: both;"></p>
 
 
