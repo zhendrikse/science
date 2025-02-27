@@ -251,7 +251,7 @@ seen in the mathematics section on this page:
 
 
 <a name="other_fractals"></a>
-## Other fractals
+## Other fractals and a harmonograph
 <div class="header_line"><br/></div>
 
 <div class="double_image">
@@ -262,8 +262,10 @@ seen in the mathematics section on this page:
   <figcaption>The dragon curve.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION 
-  -->
+  <a href="harmonograph.html">
+    <img alt="Harmonograph simulator" src="./images/harmonograph.png" title="Click to animate"/>
+  </a>
+  <figcaption>A three-dimensional harmonograph simulator.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
