@@ -169,10 +169,10 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <figcaption>VPython can also be used to generate Mandelbrot images!</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="dragon_curve.html">
+  <a href="fractals.html">
     <img alt="Dragon curve" src="./images/dragon_curve.png" title="Click to animate"/>
   </a>
-  <figcaption>The dragon curve.</figcaption>
+  <figcaption>The dragon curve and other fractals.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

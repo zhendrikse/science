@@ -1,9 +1,9 @@
 {% include breadcrumbs.html %}
 
-## Dragon curve fractal
+## Other fractal shapes
 <div class="header_line"><br/></div>
 
-{% include_relative code/DragonCurve.html %}
+{% include_relative code/Fractals.html %}
 
 <p style="clear: both;"></p>
 
