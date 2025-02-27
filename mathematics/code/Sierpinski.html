@@ -51,8 +51,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, initial_vertices;
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, initial_tetrahedron, initial_pyramid, pyramid_radio, tetrahedron_radio;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,13 +64,19 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "7";
+    "8";
     title = "&#x2022; Inspired by <a href=\"https://isoptera.lcsc.edu/~seth/cs111/project5.pdf\">a student assignment<\/a> by <a href=\"https://isoptera.lcsc.edu/~seth/\">S. Seth Long</a>\n&#x2022; Written by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/sierpinski.py\">sierpinski.py</a>\n\n";
-    "9";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 600, forward: vec(1["-u"]()["*"](.4), .25, 1["-u"]()["*"](.85)), center: vec(.07, 1["-u"]()["*"](.23), 1["-u"]()["*"](.05)), background: color.gray(.075), range: 1.25})]);
+    "10";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 600, background: color.gray(.075), range: 1.25})]);
     "11";
+    display.range = 1.4;
+    "12";
+    display.forward = vec(1["-u"]()["*"](.8), .22, 1["-u"]()["*"](.51));
+    "13";
+    display.center = vec(.07, 1["-u"]()["*"](.23), 1["-u"]()["*"](.05));
+    "16";
     async function colour(vertex_) {
-        "12";
+        "17";
         return color.hsv_to_rgb(vec(.25["*"](1["+"](vertex_.y)), 1, 1));
     };
     if (!colour.__argnames__) Object.defineProperties(colour, {
@@ -78,41 +84,69 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "14";
-    async function sierpinski(vertices, level) {
+    "19";
+    async function sierpinski_pyramid(vertices, level) {
         var ρσ_ls, midpoints;
-        "15";
+        "20";
         if ((level === 0 || typeof level === "object" && ρσ_equals(level, 0))) {
-            "16";
-            (await tetrahedron(vertices));
-            "17";
+            "21";
+            pyramid(vertices);
+            "22";
         } else {
-            "18";
-            midpoints = ρσ_list_decorate([ ρσ_getitem(vertices, 0)["+"](ρσ_getitem(vertices, 1))["/"](2), ρσ_getitem(vertices, 1)["+"](ρσ_getitem(vertices, 2))["/"](2), ρσ_getitem(vertices, 2)["+"](ρσ_getitem(vertices, 0))["/"](2), ρσ_getitem(vertices, 0)["+"](ρσ_getitem(vertices, 3))["/"](2), ρσ_getitem(vertices, 1)["+"](ρσ_getitem(vertices, 3))["/"](2), ρσ_getitem(vertices, 2)["+"](ρσ_getitem(vertices, 3))["/"](2) ]);
-            "27";
-            (await sierpinski(ρσ_list_decorate([ ρσ_getitem(vertices, 0), ρσ_getitem(midpoints, 0), ρσ_getitem(midpoints, 2), ρσ_getitem(midpoints, 3) ]), level["-"](1["*"](1))));
-            "28";
-            (await sierpinski(ρσ_list_decorate([ ρσ_getitem(midpoints, 0), ρσ_getitem(vertices, 1), ρσ_getitem(midpoints, 1), ρσ_getitem(midpoints, 4) ]), level["-"](1["*"](1))));
-            "29";
-            (await sierpinski(ρσ_list_decorate([ ρσ_getitem(midpoints, 2), ρσ_getitem(midpoints, 1), ρσ_getitem(vertices, 2), ρσ_getitem(midpoints, 5) ]), level["-"](1["*"](1))));
-            "30";
-            (await sierpinski(ρσ_list_decorate([ ρσ_getitem(midpoints, 3), ρσ_getitem(midpoints, 4), ρσ_getitem(midpoints, 5), ρσ_getitem(vertices, 3) ]), level["-"](1["*"](1))));
+            "23";
+            midpoints = ρσ_list_decorate([ ρσ_getitem(vertices, 0)["+"](ρσ_getitem(vertices, 4))["/"](2), ρσ_getitem(vertices, 1)["+"](ρσ_getitem(vertices, 4))["/"](2), ρσ_getitem(vertices, 2)["+"](ρσ_getitem(vertices, 4))["/"](2), ρσ_getitem(vertices, 3)["+"](ρσ_getitem(vertices, 4))["/"](2), ρσ_getitem(vertices, 0)["+"](ρσ_getitem(vertices, 1))["/"](2), ρσ_getitem(vertices, 1)["+"](ρσ_getitem(vertices, 2))["/"](2), ρσ_getitem(vertices, 2)["+"](ρσ_getitem(vertices, 3))["/"](2), ρσ_getitem(vertices, 3)["+"](ρσ_getitem(vertices, 0))["/"](2), ρσ_getitem(vertices, 2)["+"](ρσ_getitem(vertices, 0))["/"](2) ]);
+            "35";
+            (await sierpinski_pyramid(ρσ_list_decorate([ ρσ_getitem(vertices, 0), ρσ_getitem(midpoints, 4), ρσ_getitem(midpoints, 8), ρσ_getitem(midpoints, 7), ρσ_getitem(midpoints, 0) ]), level["-"](1["*"](1))));
+            "36";
+            (await sierpinski_pyramid(ρσ_list_decorate([ ρσ_getitem(midpoints, 4), ρσ_getitem(vertices, 1), ρσ_getitem(midpoints, 5), ρσ_getitem(midpoints, 8), ρσ_getitem(midpoints, 1) ]), level["-"](1["*"](1))));
+            "37";
+            (await sierpinski_pyramid(ρσ_list_decorate([ ρσ_getitem(midpoints, 8), ρσ_getitem(midpoints, 5), ρσ_getitem(vertices, 2), ρσ_getitem(midpoints, 6), ρσ_getitem(midpoints, 2) ]), level["-"](1["*"](1))));
+            "38";
+            (await sierpinski_pyramid(ρσ_list_decorate([ ρσ_getitem(midpoints, 7), ρσ_getitem(midpoints, 8), ρσ_getitem(midpoints, 6), ρσ_getitem(vertices, 3), ρσ_getitem(midpoints, 3) ]), level["-"](1["*"](1))));
+            "39";
+            (await sierpinski_pyramid(ρσ_list_decorate([ ρσ_getitem(midpoints, 0), ρσ_getitem(midpoints, 1), ρσ_getitem(midpoints, 2), ρσ_getitem(midpoints, 3), ρσ_getitem(vertices, 4) ]), level["-"](1["*"](1))));
         }
     };
-    if (!sierpinski.__argnames__) Object.defineProperties(sierpinski, {
+    if (!sierpinski_pyramid.__argnames__) Object.defineProperties(sierpinski_pyramid, {
         __argnames__ : {value: ["vertices", "level"]},
         __module__ : {value: null}
     });
 
-    "33";
+    "41";
+    async function sierpinski_tetrahedron(vertices, level) {
+        var ρσ_ls, midpoints;
+        "42";
+        if ((level === 0 || typeof level === "object" && ρσ_equals(level, 0))) {
+            "43";
+            (await tetrahedron(vertices));
+            "44";
+        } else {
+            "45";
+            midpoints = ρσ_list_decorate([ ρσ_getitem(vertices, 0)["+"](ρσ_getitem(vertices, 1))["/"](2), ρσ_getitem(vertices, 1)["+"](ρσ_getitem(vertices, 2))["/"](2), ρσ_getitem(vertices, 2)["+"](ρσ_getitem(vertices, 0))["/"](2), ρσ_getitem(vertices, 0)["+"](ρσ_getitem(vertices, 3))["/"](2), ρσ_getitem(vertices, 1)["+"](ρσ_getitem(vertices, 3))["/"](2), ρσ_getitem(vertices, 2)["+"](ρσ_getitem(vertices, 3))["/"](2) ]);
+            "54";
+            (await sierpinski_tetrahedron(ρσ_list_decorate([ ρσ_getitem(vertices, 0), ρσ_getitem(midpoints, 0), ρσ_getitem(midpoints, 2), ρσ_getitem(midpoints, 3) ]), level["-"](1["*"](1))));
+            "55";
+            (await sierpinski_tetrahedron(ρσ_list_decorate([ ρσ_getitem(midpoints, 0), ρσ_getitem(vertices, 1), ρσ_getitem(midpoints, 1), ρσ_getitem(midpoints, 4) ]), level["-"](1["*"](1))));
+            "56";
+            (await sierpinski_tetrahedron(ρσ_list_decorate([ ρσ_getitem(midpoints, 2), ρσ_getitem(midpoints, 1), ρσ_getitem(vertices, 2), ρσ_getitem(midpoints, 5) ]), level["-"](1["*"](1))));
+            "57";
+            (await sierpinski_tetrahedron(ρσ_list_decorate([ ρσ_getitem(midpoints, 3), ρσ_getitem(midpoints, 4), ρσ_getitem(midpoints, 5), ρσ_getitem(vertices, 3) ]), level["-"](1["*"](1))));
+        }
+    };
+    if (!sierpinski_tetrahedron.__argnames__) Object.defineProperties(sierpinski_tetrahedron, {
+        __argnames__ : {value: ["vertices", "level"]},
+        __module__ : {value: null}
+    });
+
+    "60";
     async function tetrahedron(vertices) {
-        "34";
+        "61";
         ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(vertices, 0), ρσ_getitem(vertices, 1) ]), color: (await colour(ρσ_getitem(vertices, 0))), radius: .0055})]);
-        "35";
+        "62";
         ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(vertices, 0), ρσ_getitem(vertices, 2) ]), color: (await colour(ρσ_getitem(vertices, 0))), radius: .0055})]);
-        "36";
+        "63";
         ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(vertices, 0), ρσ_getitem(vertices, 3) ]), color: (await colour(ρσ_getitem(vertices, 0))), radius: .0055})]);
-        "37";
+        "64";
         ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(vertices, 1), ρσ_getitem(vertices, 2), ρσ_getitem(vertices, 3), ρσ_getitem(vertices, 1) ]), color: (await colour(ρσ_getitem(vertices, 0))), radius: .0055})]);
     };
     if (!tetrahedron.__argnames__) Object.defineProperties(tetrahedron, {
@@ -120,13 +154,91 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "40";
-    initial_vertices = ρσ_list_decorate([ vec(0, 1, 0), vec(1["-u"]()["*"](1), 1["-u"]()["*"](1), 1["-u"]()["*"](1)), vec(1, 1["-u"]()["*"](1), 1["-u"]()["*"](1)), vec(0, 1["-u"]()["*"](1), 1) ]);
-    "47";
-    (await sierpinski(initial_vertices, 5));
-    "49";
+    "66";
+    async function pyramid(vertices) {
+        "67";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(vertices, 0), ρσ_getitem(vertices, 4) ]), color: (await colour(ρσ_getitem(vertices, 0))), radius: .0055})]);
+        "68";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(vertices, 1), ρσ_getitem(vertices, 4) ]), color: (await colour(ρσ_getitem(vertices, 0))), radius: .0055})]);
+        "69";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(vertices, 2), ρσ_getitem(vertices, 4) ]), color: (await colour(ρσ_getitem(vertices, 0))), radius: .0055})]);
+        "70";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(vertices, 3), ρσ_getitem(vertices, 4) ]), color: (await colour(ρσ_getitem(vertices, 0))), radius: .0055})]);
+        "71";
+        ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(vertices, 0), ρσ_getitem(vertices, 1), ρσ_getitem(vertices, 2), ρσ_getitem(vertices, 3), ρσ_getitem(vertices, 0) ]), color: (await colour(ρσ_getitem(vertices, 0))), radius: .0055})]);
+    };
+    if (!pyramid.__argnames__) Object.defineProperties(pyramid, {
+        __argnames__ : {value: ["vertices"]},
+        __module__ : {value: null}
+    });
+
+    "73";
+    initial_tetrahedron = ρσ_list_decorate([ vec(0, 1, 0), vec(1["-u"]()["*"](1), 1["-u"]()["*"](1), 1["-u"]()["*"](1)), vec(1, 1["-u"]()["*"](1), 1["-u"]()["*"](1)), vec(0, 1["-u"]()["*"](1), 1) ]);
+    "80";
+    initial_pyramid = ρσ_list_decorate([ vec(1["-u"]()["*"](1), 1["-u"]()["*"](1), 1["-u"]()["*"](1)), vec(1, 1["-u"]()["*"](1), 1["-u"]()["*"](1)), vec(1, 1["-u"]()["*"](1), 1), vec(1["-u"]()["*"](1), 1["-u"]()["*"](1), 1), vec(0, 1, 0) ]);
+    "88";
+    async function clear_canvas() {
+        var ρσ_ls, obj;
+        "89";
+        var ρσ_Iter1 = display.objects;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            obj = ρσ_Index1;
+            "90";
+            obj.visible = false;
+        }
+    };
+    if (!clear_canvas.__module__) Object.defineProperties(clear_canvas, {
+        __module__ : {value: null}
+    });
+
+    "93";
+    async function toggle_pyramids(event) {
+        var ρσ_ls, forward;
+        "94";
+        (await clear_canvas());
+        "95";
+        if ((event.name === "tetrahedron" || typeof event.name === "object" && ρσ_equals(event.name, "tetrahedron"))) {
+            "96";
+            (await sierpinski_tetrahedron(initial_tetrahedron, 5));
+            "97";
+            pyramid_radio.checked = false;
+            "98";
+            display.range = 1.25;
+            "99";
+            display.forward = forward = vec(1["-u"]()["*"](.4), .25, 1["-u"]()["*"](.85));
+            "100";
+            display.center = vec(.07, 1["-u"]()["*"](.23), 1["-u"]()["*"](.05));
+            "101";
+        } else {
+            "102";
+            (await sierpinski_pyramid(initial_pyramid, 5));
+            "103";
+            tetrahedron_radio.checked = false;
+            "104";
+            display.range = 1.4;
+            "105";
+            display.forward = vec(1["-u"]()["*"](.8), .22, 1["-u"]()["*"](.51));
+            "106";
+            display.center = vec(.07, 1["-u"]()["*"](.23), 1["-u"]()["*"](.05));
+        }
+    };
+    if (!toggle_pyramids.__argnames__) Object.defineProperties(toggle_pyramids, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "109";
+    display.append_to_caption("\n");
+    "110";
+    pyramid_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Pyramids", checked: true, name: "pyramids", bind: toggle_pyramids})]);
+    "111";
+    tetrahedron_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Tetrahedron", checked: false, name: "tetrahedron", bind: toggle_pyramids})]);
+    "113";
+    (await sierpinski_pyramid(initial_pyramid, 5));
+    "115";
     while (true) {
-        "50";
+        "116";
         (await rate(1));
     }
 };
