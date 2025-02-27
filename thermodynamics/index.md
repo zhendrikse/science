@@ -16,14 +16,14 @@ and the evolution of the world. &mdash;
 <div class="double_image">
 <figure class="left_image">
   <a href="boltzmann_gas.html">
-    <img alt="Hard sphere gas" src="../images/hard_sphere_gas.png" title="Click to animate"/>
+    <img alt="Hard sphere gas" src="images/hard_sphere_gas.png" title="Click to animate"/>
   </a>
   <figcaption>A simulation that shows how the average velocity distribution approaches the theoretically 
   obtained curve.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="ising_spin.html">
-    <img alt="Ising spin model" src="../images/ising_spin_model.png" title="Click to animate"/>
+    <img alt="Ising spin model" src="images/ising_spin_model.png" title="Click to animate"/>
   </a>
   <figcaption><br/>A two-dimensional Ising spin model showing the magnetization as function of the temperature.
   </figcaption>
@@ -37,13 +37,13 @@ and the evolution of the world. &mdash;
 <div class="double_image">
 <figure class="left_image">
   <a href="fluid_layers.html">
-    <img alt="Hard sphere gas" src="../images/fluid_layers.png" title="Click to animate"/>
+    <img alt="Hard sphere gas" src="images/fluid_layers.png" title="Click to animate"/>
   </a>
   <figcaption>A simulation that shows the separation of non-mixing fluids.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="piston.html">
-    <img alt="Adiabatic compression" src="../images/piston.png" title="Click to animate"/>
+    <img alt="Adiabatic compression" src="images/piston.png" title="Click to animate"/>
   </a>
   <figcaption>Adiabatic compression of an ideal gas.</figcaption>
 </figure>
@@ -56,7 +56,7 @@ and the evolution of the world. &mdash;
 <div class="double_image">
 <figure class="left_image">
   <a href="brownian_motion.html">
-    <img alt="Brownian motion" src="../images/brownian_motion.png" title="Click to animate"/>
+    <img alt="Brownian motion" src="images/brownian_motion.png" title="Click to animate"/>
   </a>
   <figcaption>This random motion was first described by the Scottish botanist 
   <a href="Robert Brown">https://en.wikipedia.org/wiki/Robert_Brown_(botanist,_born_1773)</a>, who
