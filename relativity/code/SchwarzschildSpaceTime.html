@@ -1,0 +1,425 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, schwarzschild, sun, ρσ_unpack, r_min, r_max, start_r, comet, delta_t, r;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "10";
+    title = "&#x2022; Original <a href=\"https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram\">code.py<\/a> by M. Ryston (Department of Physics Education)\n&#x2022; Faculty of Mathematics and Physics, Charles University, V Holešovičkách 2, 180 00, Prague, Czech Republic\n&#x2022; Background: <a href=\"https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049\">Interactive animations as a tool in teaching general relativity to upper secondary school students</a> (PDF)\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/schwarzschild_space_time.py\">schwarzschild_space_time.py</a>\n\n";
+    "12";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 450, background: color.gray(.075), forward: vec(0, 1["-u"]()["*"](.45), 1["-u"]()["*"](.85)), range: 62})]);
+    "17";
+    function Sun() {;
+    }
+    Sun.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        "19";
+        self._sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, texture: "https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg", visible: true})]);
+    };
+    if (!Sun.prototype.__init__.__defaults__) Object.defineProperties(Sun.prototype.__init__, {
+        __defaults__ : {value: {radius:.8}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "radius"]},
+        __module__ : {value: null}
+    });
+    Sun.__argnames__ = Sun.prototype.__init__.__argnames__;
+    Sun.__handles_kwarg_interpolation__ = Sun.prototype.__init__.__handles_kwarg_interpolation__;
+    Sun.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Sun.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Sun.prototype, "__bases__", {value: []});
+
+
+    "21";
+    function Comet() {;
+    }
+    Comet.prototype.__init__ = async function __init__(start_position, particle_radius, colour, sour) {
+        var self = this;
+        "23";
+        self._sphere = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: start_position, radius: particle_radius, color: colour, visible: true, make_trail: true})]);
+        "24";
+        self._sour = sour;
+        "25";
+        self._start_sour = ρσ_list_decorate([ ρσ_getitem(sour, 0), ρσ_getitem(sour, 1), ρσ_getitem(sour, 2), ρσ_getitem(sour, 3) ]);
+        "26";
+        self._start_position = start_position;
+    };
+    if (!Comet.prototype.__init__.__argnames__) Object.defineProperties(Comet.prototype.__init__, {
+        __argnames__ : {value: ["start_position", "particle_radius", "colour", "sour"]},
+        __module__ : {value: null}
+    });
+    Comet.__argnames__ = Comet.prototype.__init__.__argnames__;
+    Comet.__handles_kwarg_interpolation__ = Comet.prototype.__init__.__handles_kwarg_interpolation__;
+    Comet.prototype.update_by = async function update_by(M, dt) {
+        var self = this;
+        var ρσ_ls, buff;
+        "29";
+        buff = ρσ_list_decorate([ 0, 0, 0, 0 ]);
+        "30";
+        ρσ_setitem(buff, 0, ρσ_getitem(self._sour, 0)["+"](.5["*"](dt)["*"](ρσ_getitem(self._sour, 2))));
+        "31";
+        ρσ_setitem(buff, 1, ρσ_getitem(self._sour, 1)["+"](.5["*"](dt)["*"](ρσ_getitem(self._sour, 3))));
+        "32";
+        ρσ_setitem(buff, 2, ρσ_getitem(self._sour, 2)["+"](.5["*"](dt)["*"](M["/"](ρσ_getitem(self._sour, 0))["/"](ρσ_getitem(self._sour, 0)["-"](1["*"](2)["*"](M)))["*"](Math.pow(ρσ_getitem(self._sour, 2), 2))["+"](ρσ_getitem(self._sour, 0)["-"](1["*"](2)["*"](M))["*"](Math.pow(ρσ_getitem(self._sour, 3), 2))))));
+        "33";
+        ρσ_setitem(buff, 3, ρσ_getitem(self._sour, 3)["-"](1["*"](.5)["*"](dt)["*"](2)["/"](ρσ_getitem(self._sour, 0))["*"](ρσ_getitem(self._sour, 2))["*"](ρσ_getitem(self._sour, 3))));
+        "35";
+        ρσ_setitem(self._sour, 0, ρσ_getitem(self._sour, 0)["+"](dt["*"](ρσ_getitem(buff, 2))));
+        "36";
+        ρσ_setitem(self._sour, 1, ρσ_getitem(self._sour, 1)["+"](dt["*"](ρσ_getitem(buff, 3))));
+        "37";
+        ρσ_setitem(self._sour, 2, ρσ_getitem(self._sour, 2)["+"](dt["*"](M["/"](ρσ_getitem(buff, 0))["/"](ρσ_getitem(buff, 0)["-"](1["*"](2)["*"](M)))["*"](Math.pow(ρσ_getitem(buff, 2), 2))["+"](ρσ_getitem(buff, 0)["-"](1["*"](2)["*"](M))["*"](Math.pow(ρσ_getitem(buff, 3), 2))))));
+        "38";
+        ρσ_setitem(self._sour, 3, ρσ_getitem(self._sour, 3)["+"](1["-u"]()["*"](dt)["*"](2)["/"](ρσ_getitem(buff, 0))["*"](ρσ_getitem(buff, 2))["*"](ρσ_getitem(buff, 3))));
+        "39";
+        self._sphere.pos = vec(ρσ_getitem(self._sour, 0)["*"](cos(ρσ_getitem(self._sour, 1))), sqrt(8["*"](M)["*"](ρσ_getitem(self._sour, 0))["-"](1["*"](16)["*"](Math.pow(M, 2)))), ρσ_getitem(self._sour, 0)["*"](sin(ρσ_getitem(self._sour, 1))));
+    };
+    if (!Comet.prototype.update_by.__argnames__) Object.defineProperties(Comet.prototype.update_by, {
+        __argnames__ : {value: ["M", "dt"]},
+        __module__ : {value: null}
+    });
+    Comet.prototype.r = async function r() {
+        var self = this;
+        "42";
+        return sqrt(self._sphere.pos.x["*"](self._sphere.pos.x)["+"](self._sphere.pos.z["*"](self._sphere.pos.z)));
+    };
+    if (!Comet.prototype.r.__module__) Object.defineProperties(Comet.prototype.r, {
+        __module__ : {value: null}
+    });
+    Comet.prototype.reset = async function reset() {
+        var self = this;
+        "45";
+        self._sphere.clear_trail();
+        "46";
+        self._sphere.pos = self._start_position;
+        "47";
+        self._sour = ρσ_list_decorate([ ρσ_getitem(self._start_sour, 0), ρσ_getitem(self._start_sour, 1), ρσ_getitem(self._start_sour, 2), ρσ_getitem(self._start_sour, 3) ]);
+    };
+    if (!Comet.prototype.reset.__module__) Object.defineProperties(Comet.prototype.reset, {
+        __module__ : {value: null}
+    });
+    Comet.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Comet.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Comet.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "50";
+    function SchwarzschildSpaceTime() {;
+    }
+    SchwarzschildSpaceTime.prototype.__init__ = async function __init__() {
+        var self = this;
+        var mass = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var grid_y_offset = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.grid_y_offset : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "grid_y_offset")){
+            grid_y_offset = ρσ_kwargs_obj.grid_y_offset;
+        }
+        "52";
+        self._mass = mass;
+        "53";
+        self._grid_y_offset = grid_y_offset;
+        "54";
+        self._surface = ρσ_list_decorate([]);
+        "55";
+        self._grid = ρσ_list_decorate([]);
+    };
+    if (!SchwarzschildSpaceTime.prototype.__init__.__defaults__) Object.defineProperties(SchwarzschildSpaceTime.prototype.__init__, {
+        __defaults__ : {value: {grid_y_offset:1["-u"]()["*"](10)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["mass", "grid_y_offset"]},
+        __module__ : {value: null}
+    });
+    SchwarzschildSpaceTime.__argnames__ = SchwarzschildSpaceTime.prototype.__init__.__argnames__;
+    SchwarzschildSpaceTime.__handles_kwarg_interpolation__ = SchwarzschildSpaceTime.prototype.__init__.__handles_kwarg_interpolation__;
+    SchwarzschildSpaceTime.prototype.r_min_r_max = async function r_min_r_max() {
+        var self = this;
+        var ρσ_ls, r_min, r_max;
+        "58";
+        r_min = 2["*"](self._mass)["+"](.1);
+        "59";
+        r_max = 10["*"](self._mass);
+        "60";
+        return [r_min, r_max];
+    };
+    if (!SchwarzschildSpaceTime.prototype.r_min_r_max.__module__) Object.defineProperties(SchwarzschildSpaceTime.prototype.r_min_r_max, {
+        __module__ : {value: null}
+    });
+    SchwarzschildSpaceTime.prototype.draw_grid = async function draw_grid() {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, _, r_max, i;
+        "63";
+        ρσ_unpack = (await self.r_min_r_max());
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        _ = ρσ_unpack[0];
+        r_max = ρσ_unpack[1];
+        "64";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](20); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "65";
+            self._grid=self._grid["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19)), self._grid_y_offset, 1["-u"]()["*"](r_max)), vec(1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19)), self._grid_y_offset, r_max) ]), color: color.white, radius: .2})]) ]));
+            "68";
+            self._grid=self._grid["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](r_max), self._grid_y_offset, 1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19))), vec(r_max, self._grid_y_offset, 1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19))) ]), color: color.white, radius: .2})]) ]));
+        }
+    };
+    if (!SchwarzschildSpaceTime.prototype.draw_grid.__module__) Object.defineProperties(SchwarzschildSpaceTime.prototype.draw_grid, {
+        __module__ : {value: null}
+    });
+    SchwarzschildSpaceTime.prototype.mass = async function mass() {
+        var self = this;
+        "73";
+        return self._mass;
+    };
+    if (!SchwarzschildSpaceTime.prototype.mass.__module__) Object.defineProperties(SchwarzschildSpaceTime.prototype.mass, {
+        __module__ : {value: null}
+    });
+    SchwarzschildSpaceTime.prototype.z_as_function_of = async function z_as_function_of(r) {
+        var self = this;
+        "76";
+        return sqrt(8["*"](self._mass)["*"](r)["-"](1["*"](16)["*"](self._mass)["*"](self._mass)));
+    };
+    if (!SchwarzschildSpaceTime.prototype.z_as_function_of.__argnames__) Object.defineProperties(SchwarzschildSpaceTime.prototype.z_as_function_of, {
+        __argnames__ : {value: ["r"]},
+        __module__ : {value: null}
+    });
+    SchwarzschildSpaceTime.prototype.draw = async function draw() {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, r_min, r_max, r, t, c, j, i, phi;
+        "82";
+        ρσ_unpack = (await self.r_min_r_max());
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        r_min = ρσ_unpack[0];
+        r_max = ρσ_unpack[1];
+        "83";
+        for (var ρσ_Index2 = 0; ρσ_Index2["<"](15); ρσ_Index2++) {
+            i = ρσ_Index2;
+            "84";
+            r = r_min["+"](i["*"](r_max["-"](1["*"](r_min)))["/"](14));
+            "85";
+            t = 0;
+            "86";
+            c = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vec(r["*"](cos(t)), (await self.z_as_function_of(r)), r["*"](sin(t))), color: color.green, radius: .2})]);
+            "87";
+            for (var ρσ_Index3 = 0; ρσ_Index3["<"](200); ρσ_Index3++) {
+                j = ρσ_Index3;
+                "88";
+                t=t["+"](2["*"](pi)["/"](200));
+                "89";
+                c.append(vec(r["*"](cos(t)), (await self.z_as_function_of(r)), r["*"](sin(t))));
+            }
+            "90";
+            self._surface.append(c);
+        }
+        "92";
+        for (var ρσ_Index4 = 0; ρσ_Index4["<"](12); ρσ_Index4++) {
+            i = ρσ_Index4;
+            "93";
+            phi = i["*"](2)["*"](pi)["/"](12);
+            "94";
+            r = r_min;
+            "95";
+            c = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vec(r["*"](cos(phi)), (await self.z_as_function_of(r)), r["*"](sin(phi))), color: color.green, radius: .2})]);
+            "96";
+            for (var ρσ_Index5 = 0; ρσ_Index5["<"](100); ρσ_Index5++) {
+                j = ρσ_Index5;
+                "97";
+                r=r["+"](r_max["-"](1["*"](r_min))["/"](100));
+                "98";
+                c.append(vec(r["*"](cos(phi)), (await self.z_as_function_of(r)), r["*"](sin(phi))));
+            }
+            "99";
+            self._surface.append(c);
+        }
+    };
+    if (!SchwarzschildSpaceTime.prototype.draw.__module__) Object.defineProperties(SchwarzschildSpaceTime.prototype.draw, {
+        __module__ : {value: null}
+    });
+    SchwarzschildSpaceTime.prototype.modify_grid = async function modify_grid(thickness) {
+        var self = this;
+        var ρσ_ls, element;
+        "102";
+        var ρσ_Iter6 = self._surface;
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            element = ρσ_Index6;
+            "103";
+            element.radius = thickness;
+        }
+        "104";
+        var ρσ_Iter7 = self._grid;
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            element = ρσ_Index7;
+            "105";
+            element.radius = thickness;
+        }
+    };
+    if (!SchwarzschildSpaceTime.prototype.modify_grid.__argnames__) Object.defineProperties(SchwarzschildSpaceTime.prototype.modify_grid, {
+        __argnames__ : {value: ["thickness"]},
+        __module__ : {value: null}
+    });
+    SchwarzschildSpaceTime.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    SchwarzschildSpaceTime.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(SchwarzschildSpaceTime.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+    "107";
+    _GS_1 = new SchwarzschildSpaceTime;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({mass: 5})]);
+    schwarzschild = _GS_1;
+    "108";
+    (await schwarzschild.draw());
+    "109";
+    (await schwarzschild.draw_grid());
+    "110";
+    _GS_1 = new Sun;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(0, 2, 0), radius: 2["*"]((await schwarzschild.mass()))})]);
+    sun = _GS_1;
+    "112";
+    ρσ_unpack = (await schwarzschild.r_min_r_max());
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+    r_min = ρσ_unpack[0];
+    r_max = ρσ_unpack[1];
+    "113";
+    start_r = r_max["-"](1["*"](.1));
+    "114";
+    _GS_1 = new Comet;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({start_position: vec(start_r, (await schwarzschild.z_as_function_of(start_r)), 0), particle_radius: .8, colour: color.cyan, sour: ρσ_list_decorate([ start_r, 0, 1["-u"]()["*"](25.2), .49 ])})]);
+    comet = _GS_1;
+    "116";
+    async function modify_grid_thickness(event) {
+        "117";
+        (await schwarzschild.modify_grid(event.value));
+    };
+    if (!modify_grid_thickness.__argnames__) Object.defineProperties(modify_grid_thickness, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "119";
+    display.append_to_caption("\nGrid thickness");
+    "120";
+    ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: .5, value: .2, bind: modify_grid_thickness})]);
+    "122";
+    async function restart(event) {
+        "123";
+        (await comet.reset());
+    };
+    if (!restart.__argnames__) Object.defineProperties(restart, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "125";
+    display.bind("click", restart);
+    "127";
+    delta_t = .01;
+    "128";
+    while (true) {
+        "129";
+        (await rate(1["/"](delta_t)));
+        "130";
+        r = (await comet.r());
+        "131";
+        if (r_min["<"](r) && r["<"](r_max)) {
+            "132";
+            (await comet.update_by((await schwarzschild.mass()), delta_t));
+        }
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

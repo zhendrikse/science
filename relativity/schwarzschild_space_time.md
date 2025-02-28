@@ -29,19 +29,26 @@ $ds^2 = \dfrac{dr^2}{1 - \dfrac{2GM}{c^2r}} +r^2d\phi^2$
 Now, according to [this article](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049):
 
 <blockquote>
+<p>
 In order to visualize the curvature in the 𝑟 direction, we embed this surface into
 the three-dimensional Cartesian space (where 𝑟 and 𝜑 are identical to polar coordinates and the third,
 vertical Cartesian coordinate 𝑧 is used to visualize the actual curvature – see figure below). As a result, 
-we get an equation for the 𝑧 coordinate as a function of 𝑟:
+we get an equation for the 𝑧 coordinate as a function of 𝑟:</p>
 
+<p>
 $z(r)=\sqrt{\dfrac{8GMr}{c^2} - \dfrac{16m^2g^2}{c^4}}$
+</p>
 
-Of course, this equation 𝑟 and 𝑧 are in meters, which is not very convenient for visualizing large
+<p>Of course, this equation 𝑟 and 𝑧 are in meters, which is not very convenient for visualizing large
 regions of space. For this reason, geometricized units where 𝑐 = 𝐺 = 1 are often used. Then we get the
-simpler form 
+simpler form:</p>
 
+<p>
 $z(r) = \sqrt{8Mr - 16M^2}$. 
+</p>
 </blockquote>
+
+<p style="clear:both;"></p>
 
 This is the quintessential formula that is used in this visualization:
 
