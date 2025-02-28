@@ -9,6 +9,7 @@
 - [`lightcone.py` source code](lightcone.py)
 - [`local_space_time.py` source code](local_space_time.py)
 - [`perihelion_mercury.py` source code](perihelion_mercury.py)
+- [`schwarzschild_space_time.py` source code](schwarzschild_space_time.py)
 - [`spaghettification.py` source code](spaghettification.py)
 
 

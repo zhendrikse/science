@@ -112,5 +112,20 @@ I do not understand it myself anymore. &mdash; Albert Einstein
 </div>
 <p style="clear: both;"></p>
 
+### Schwarzschild space-time
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+  <figure class="left_image">
+    <a href="schwarzschild_space_time.html">
+      <img alt="Schwarzschild space-time" src="images/schwarzschild_space_time.png" title="Click to animate"/>
+    </a>
+    <figcaption>Visualization of a comet moving in Schwarzschild space-time.</figcaption>
+  </figure>
+  <figure class="right_image">
+    <!-- RESERVED FOR FUTURE APPLICATION -->
+  </figure>
+</div>
+<p style="clear: both;"></p>
 
 {% include share_buttons.html %}
