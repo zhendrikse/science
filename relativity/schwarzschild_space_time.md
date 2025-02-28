@@ -49,7 +49,9 @@ $z(r) = \sqrt{8Mr - 16M^2}$.
 
 <figure>
 <img alt="" src="images/The-exterior-t-const-equatorial-plane-of-a-Schwarzschild-Black-Hole.png"/>
-<figcaption><b>Figure 1:</b>The-exterior t=const equatorial plane of a Schwarzschild Black Hole.</figcaption>
+<figcaption><b>Figure 1:</b>The-exterior t=const equatorial plane of a Schwarzschild Black Hole from 
+<a href="https://www.researchgate.net/publication/1977049_Spacetime_Embedding_Diagrams_for_Black_Holes">Spacetime Embedding Diagrams for Black Holes</a>.
+</figcaption>
 </figure>
 </blockquote>
 
