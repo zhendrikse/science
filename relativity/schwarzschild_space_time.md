@@ -26,7 +26,7 @@ When we assume the time to be constant ($dt=0$), we get:
 
 $ds^2 = \dfrac{dr^2}{1 - \dfrac{2GM}{c^2r}} +r^2d\phi^2$
 
-Now, according to [this article](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049):
+Now, according to [Ryston&apos;s article](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049):
 
 <blockquote>
 <p>
