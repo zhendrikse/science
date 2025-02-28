@@ -32,7 +32,7 @@ Now, according to [Ryston&apos;s article](https://iopscience.iop.org/article/10.
 <p>
 In order to visualize the curvature in the 𝑟 direction, we embed this surface into
 the three-dimensional Cartesian space (where 𝑟 and 𝜑 are identical to polar coordinates and the third,
-vertical Cartesian coordinate 𝑧 is used to visualize the actual curvature – see figure below). As a result, 
+vertical Cartesian coordinate 𝑧 is used to visualize the actual curvature – see figure 1 below). As a result, 
 we get an equation for the 𝑧 coordinate as a function of 𝑟:</p>
 
 <p>
@@ -46,6 +46,11 @@ simpler form:</p>
 <p>
 $z(r) = \sqrt{8Mr - 16M^2}$. 
 </p>
+
+<figure>
+<img alt="" src="images/The-exterior-t-const-equatorial-plane-of-a-Schwarzschild-Black-Hole.png"/>
+<figcaption><b>Figure 1:</b>The-exterior t=const equatorial plane of a Schwarzschild Black Hole.</figcaption>
+</figure>
 </blockquote>
 
 <p style="clear:both;"></p>

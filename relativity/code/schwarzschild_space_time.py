@@ -2,8 +2,8 @@
 from vpython import curve, vec, cos, pi, sqrt, sin, color, rate, sphere, slider, canvas
 
 title = """&#x2022; Original <a href="https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram">code.py</a> by M. Ryston (Department of Physics Education)
-&#x2022; Faculty of Mathematics and Physics, Charles University, V Holešovičkách 2, 180 00, Prague, Czech Republic
-&#x2022; Background: <a href="https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049">Interactive animations as a tool in teaching general relativity to upper secondary school students</a> (PDF)
+&#x2022; Faculty of Mathematics and Physics, Charles University,Prague, Czech Republic
+&#x2022; Described in <a href="https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049">Interactive animations as a tool in teaching general relativity [...]</a>
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/schwarzschild_space_time.py">schwarzschild_space_time.py</a>
 
 """
