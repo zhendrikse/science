@@ -1,0 +1,332 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var frequency;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, cylinder, ellipsoid, extrusion, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, atan, atan2, exp, log, pow, factorial, combin, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, spacing, k, kt, u, ioncharge, rad, scale, display, theta, _GS_1, carbon_atom, evector, E0, frequency, timestep, radio_1, radio_2, radio_3, radio_4, _, time, flag, old, E, new_;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; Original <a href=\"https://www.mso.anu.edu.au/pfrancis/simulations/co2.py\">co2.py<\/a> by <a href=\"http://www.mso.anu.edu.au/pfrancis/simulations/\">Paul Francis</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/molecularphysics/code/carbon.py\">carbon.py</a>\n\n";
+    "9";
+    spacing = 1e-10;
+    "10";
+    k = 8e-4;
+    "11";
+    kt = 3e-5;
+    "12";
+    u = 1.66e-27;
+    "13";
+    ioncharge = 1["*"](1.602e-19);
+    "14";
+    rad = 3e-11;
+    "16";
+    scale = 2["*"](spacing);
+    "17";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({range: scale["*"](.65), width: 600, height: 400, background: color.gray(.075), center: vector(scale["*"](.2), 0, 0), title: title})]);
+    "19";
+    theta = 30["*"](pi)["/"](180);
+    "21";
+    function Carbon() {;
+    }
+    Carbon.prototype.__init__ = async function __init__() {
+        var self = this;
+        "23";
+        self._oxy1 = sphere();
+        "24";
+        self._oxy1.pos = vector(spacing["*"](cos(theta)), spacing["*"](sin(theta)), 0);
+        "25";
+        self._oxy1.mass = 16["*"](u);
+        "26";
+        self._oxy1.charge = ioncharge;
+        "27";
+        self._oxy1.p = vector(0, 0, 0);
+        "28";
+        self._oxy1.color = color.green;
+        "29";
+        self._oxy1.radius = rad;
+        "32";
+        self._oxy2 = sphere();
+        "33";
+        self._oxy2.pos = 1["-u"]()["*"](1)["*"](self._oxy1.pos);
+        "34";
+        self._oxy2.mass = 16["*"](u);
+        "35";
+        self._oxy2.charge = ioncharge;
+        "36";
+        self._oxy2.p = vector(0, 0, 0);
+        "37";
+        self._oxy2.color = color.green;
+        "38";
+        self._oxy2.radius = rad;
+        "40";
+        self._carb1 = sphere();
+        "41";
+        self._carb1.pos = vector(0, 0["*"](spacing), 0);
+        "42";
+        self._carb1.mass = 12["*"](u);
+        "43";
+        self._carb1.charge = 1["-u"]()["*"](2)["*"](ioncharge);
+        "44";
+        self._carb1.p = vector(0, 0, 0);
+        "45";
+        self._carb1.color = color.red;
+        "46";
+        self._carb1.radius = .8["*"](rad);
+        "48";
+        self._spring1 = ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: self._carb1.pos, axis: self._oxy1.pos["-"](1["*"](self._carb1.pos)), radius: .3["*"](rad), thickness: .1["*"](rad), color: color.yellow, coils: 10})]);
+        "51";
+        self._spring2 = ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: self._carb1.pos, axis: self._oxy2.pos["-"](1["*"](self._carb1.pos)), radius: .3["*"](rad), thickness: .1["*"](rad), color: color.yellow, coils: 10})]);
+    };
+    if (!Carbon.prototype.__init__.__module__) Object.defineProperties(Carbon.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    Carbon.__argnames__ = Carbon.prototype.__init__.__argnames__;
+    Carbon.__handles_kwarg_interpolation__ = Carbon.prototype.__init__.__handles_kwarg_interpolation__;
+    Carbon.prototype.reset = async function reset() {
+        var self = this;
+        "55";
+        self._oxy1.pos = vector(spacing["*"](cos(theta)), spacing["*"](sin(theta)), 0);
+        "56";
+        self._oxy2.pos = 1["-u"]()["*"](1)["*"](self._oxy1.pos);
+        "57";
+        self._carb1.pos = vector(0, 0["*"](spacing), 0);
+        "59";
+        self._carb1.p = vector(0, 0, 0);
+        "60";
+        self._oxy1.p = vector(0, 0, 0);
+        "61";
+        self._oxy2.p = vector(0, 0, 0);
+    };
+    if (!Carbon.prototype.reset.__module__) Object.defineProperties(Carbon.prototype.reset, {
+        __module__ : {value: null}
+    });
+    Carbon.prototype.update = async function update(E) {
+        var self = this;
+        var ρσ_ls, v1, v2, angle, coulomb_force, stretch_force, torque_force;
+        "66";
+        v1 = self._oxy1.pos["-"](1["*"](self._carb1.pos));
+        "67";
+        v2 = self._oxy2.pos["-"](1["*"](self._carb1.pos));
+        "69";
+        angle = acos(dot(v1, 1["-u"]()["*"](1)["*"](v2))["/"](v1.mag["*"](v2.mag)));
+        "72";
+        coulomb_force = self._oxy1.charge["*"](E);
+        "73";
+        stretch_force = 1["-u"]()["*"](1)["*"](k)["*"](mag(v1)["-"](1["*"](spacing)))["*"](norm(v1));
+        "74";
+        torque_force = 1["-u"]()["*"](1)["*"](kt)["*"](spacing)["*"](angle)["*"](norm(v1["+"](v2)));
+        "76";
+        self._oxy1.p=self._oxy1.p["+"](timestep["*"](coulomb_force["+"](stretch_force)["+"](torque_force)));
+        "77";
+        self._oxy1.pos=self._oxy1.pos["+"](timestep["*"](self._oxy1.p)["/"](self._oxy1.mass));
+        "80";
+        coulomb_force = self._oxy2.charge["*"](E);
+        "81";
+        stretch_force = 1["-u"]()["*"](1)["*"](k)["*"](mag(v2)["-"](1["*"](spacing)))["*"](norm(v2));
+        "82";
+        torque_force = 1["-u"]()["*"](1)["*"](kt)["*"](spacing)["*"](angle)["*"](norm(v1["+"](v2)));
+        "84";
+        self._oxy2.p=self._oxy2.p["+"](timestep["*"](coulomb_force["+"](stretch_force)["+"](torque_force)));
+        "85";
+        self._oxy2.pos=self._oxy2.pos["+"](timestep["*"](self._oxy2.p)["/"](self._oxy2.mass));
+        "88";
+        coulomb_force = self._carb1.charge["*"](E);
+        "89";
+        stretch_force = k["*"](mag(v1)["-"](1["*"](spacing)))["*"](norm(v1))["+"](k["*"](mag(v2)["-"](1["*"](spacing)))["*"](norm(v2)));
+        "90";
+        torque_force = 2["*"](kt)["*"](spacing)["*"](angle)["*"](norm(v1["+"](v2)));
+        "92";
+        self._carb1.p=self._carb1.p["+"](timestep["*"](coulomb_force["+"](stretch_force)["+"](torque_force)));
+        "93";
+        self._carb1.pos=self._carb1.pos["+"](timestep["*"](self._carb1.p)["/"](self._carb1.mass));
+        "96";
+        self._spring1.pos = self._carb1.pos;
+        "97";
+        self._spring1.axis = v1;
+        "99";
+        self._spring2.pos = self._carb1.pos;
+        "100";
+        self._spring2.axis = v2;
+    };
+    if (!Carbon.prototype.update.__argnames__) Object.defineProperties(Carbon.prototype.update, {
+        __argnames__ : {value: ["E"]},
+        __module__ : {value: null}
+    });
+    Carbon.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Carbon.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Carbon.prototype, "__bases__", {value: []});
+
+
+
+
+    "102";
+    _GS_1 = new Carbon;
+    (await _GS_1.__init__());
+    carbon_atom = _GS_1;
+    "104";
+    evector = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vector(1.7["*"](spacing), 0, 0), axis: vector(0, 0, 0), shaftwidth: .1["*"](spacing), color: color.magenta})]);
+    "106";
+    E0 = 200;
+    "108";
+    frequency = 8;
+    "109";
+    frequency=frequency["*"](2["*"](pi)["*"](100001e5));
+    "111";
+    timestep = 1e-13;
+    "113";
+    async function toggle_frequency(event) {
+        "114";
+        "115";
+        if ((event.name === "8" || typeof event.name === "object" && ρσ_equals(event.name, "8"))) {
+            "116";
+            frequency = 8;
+            "117";
+            radio_2.checked = radio_3.checked = radio_4.checked = false;
+            "118";
+        }
+        if ((event.name === "5.291" || typeof event.name === "object" && ρσ_equals(event.name, "5.291"))) {
+            "119";
+            frequency = 5.291;
+            "120";
+            radio_1.checked = radio_3.checked = radio_4.checked = false;
+            "121";
+        }
+        if ((event.name === "1.5" || typeof event.name === "object" && ρσ_equals(event.name, "1.5"))) {
+            "122";
+            frequency = 1.5;
+            "123";
+            radio_1.checked = radio_2.checked = radio_4.checked = false;
+            "124";
+        }
+        if ((event.name === "2.76" || typeof event.name === "object" && ρσ_equals(event.name, "2.76"))) {
+            "125";
+            frequency = 2.76;
+            "126";
+            radio_1.checked = radio_2.checked = radio_3.checked = false;
+        }
+        "127";
+        frequency=frequency["*"](2["*"](pi)["*"](100001e5));
+    };
+    if (!toggle_frequency.__argnames__) Object.defineProperties(toggle_frequency, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "130";
+    display.append_to_caption("Frequency: ");
+    "131";
+    radio_1 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "8  ", name: "8", bind: toggle_frequency, checked: true})]);
+    "132";
+    radio_2 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "5.291  ", name: "5.291", bind: toggle_frequency})]);
+    "133";
+    radio_3 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "1.5  ", name: "1.5", bind: toggle_frequency})]);
+    "134";
+    radio_4 = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "2.76  ", name: "2.76", bind: toggle_frequency})]);
+    "135";
+    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Reset", bind: carbon_atom.reset.bind(carbon_atom)})]);
+    "137";
+    time = 0;
+    "138";
+    flag = true;
+    "139";
+    old = 0;
+    "140";
+    while (1) {
+        "141";
+        (await rate(500));
+        "143";
+        time=time["+"](timestep);
+        "144";
+        E = E0["*"](cos(time["*"](frequency)))["*"](vector(0, 1, 0));
+        "145";
+        evector.axis = .5["*"](spacing)["*"](E)["/"](E0);
+        "147";
+        if (flag && carbon_atom._carb1.pos.y["<"](0)) {
+            "148";
+            new_ = time;
+            "149";
+            flag = 0;
+            "151";
+        } else if (!flag && carbon_atom._carb1.pos.y[">"](0)) {
+            "152";
+            flag = 1;
+            "153";
+            old = new_;
+        }
+        "155";
+        (await carbon_atom.update(E));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

@@ -1,6 +1,10 @@
+#Web VPython 3.2
 from vpython import canvas, helix, sphere, color, mag, norm, cos, sin, pi, rate, arrow, acos, dot, vector, radio, button
 
-# https://www.mso.anu.edu.au/pfrancis/simulations/co2.py
+title="""&#x2022; Original <a href="https://www.mso.anu.edu.au/pfrancis/simulations/co2.py">co2.py</a> by <a href="http://www.mso.anu.edu.au/pfrancis/simulations/">Paul Francis</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/molecularphysics/code/carbon.py">carbon.py</a>
+
+"""
 
 spacing = 1.0E-10
 k = 8.0E-4  # Tension compression constant
@@ -10,7 +14,7 @@ ioncharge = 1.0 * 1.602E-19
 rad = 3.0E-11
 
 scale = 2.0 * spacing
-display = canvas(range=scale * .65, width=600, height=400, background=color.gray(0.075), center=vector(scale * .2, 0, 0))
+display = canvas(range=scale * .65, width=600, height=400, background=color.gray(0.075), center=vector(scale * .2, 0, 0), title=title)
 
 theta = 30. * pi / 180.0
 

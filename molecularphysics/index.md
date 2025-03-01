@@ -65,10 +65,7 @@ I... a universe of atoms, an atom in the universe. &mdash;
   <a href="carbon.html">
     <img alt="Carbon atom" src="images/carbon.png" title="Click to animate"/>
   </a>
-  <figcaption>It was quite the most incredible event that has ever happened to me in my life. 
-  It was almost as incredible as if you fired a 15-inch shell at a piece of tissue paper and 
-  it came back and hit you &mdash; 
-  <a href="https://en.wikipedia.org/wiki/Ernest_Rutherford">Ernest Rutherford</a></figcaption>
+  <figcaption>Carbon dioxide molecule, showing the two main resonances in response to an alternating electric field.</figcaption>
 </figure>
 <figure class="right_image">
   <!-- RESERVED FOR FUTURE APPLICATION 
