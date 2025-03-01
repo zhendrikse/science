@@ -138,7 +138,7 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 <p style="clear: both;"></p>
 <p style="clear: both;"></p>
 
-### Pendulum wave
+### Wave visualizations
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -149,8 +149,10 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
   <figcaption>A simulation of a wave with pendulums.</figcaption>
 </figure>
 <figure class="right_image">
-    <!-- RESERVED FOR FUTURE APPLICATION
-      -->
+  <a href="waves.html">
+    <img alt="Longitudinal and transversal waves" src="images/waves.png" title="Click to animate"/>
+  </a>
+  <figcaption>Longitudinal and transversal waves.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
