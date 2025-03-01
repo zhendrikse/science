@@ -1,5 +1,5 @@
 # Web VPython 3.2
-from vpython import curve, vec, cos, pi, sqrt, sin, color, rate, sphere, slider, canvas, checkbox
+from vpython import curve, vec, cos, pi, sqrt, sin, color, rate, sphere, slider, canvas, checkbox, button
 
 title = """&#x2022; Original <a href="https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram">idea &amp; code</a> by M. Ryston (Department of Physics Education)
 &#x2022; Faculty of Mathematics and Physics, Charles University,Prague, Czech Republic
@@ -227,6 +227,25 @@ _ = checkbox(text="Grid", bind=toggle_grid, checked=True)
 _ = checkbox(text="Central mass", bind=toggle_sun, checked=True)
 _ = checkbox(text="Flat motion", bind=toggle_flat_motion, checked=True)
 _ = checkbox(text="Leave trail", bind=toggle_trail, checked=True)
+
+
+
+def top_view(b):
+    display.forward = vec(0, -1, 0)
+    display.up = vec(-1, 0, 0)
+    display.range = 1.5 * r_max
+
+def flip_up(b):
+    display.up = vec(0, 1, 0)
+
+def flip_down(b):
+    display.up = vec(0, -1, 0)
+
+
+display.append_to_caption('\n\n')
+_ = button(text="Top view", bind=top_view)
+_ = button(text="Flip up", bind=flip_up)
+_ = button(text="Flip down", bind=flip_down)
 
 def modify_grid_thickness(event):
     schwarzschild.modify_grid(event.value)
