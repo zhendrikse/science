@@ -10,5 +10,6 @@
 - [`pool_with_obstacle.py` source code](pool_with_obstacle.py)
 - [`traveling_wave.py` source code](traveling_wave.py)
 - [`vibrating_membrane.py` source code](vibrating_membrane.py)
+- [`waves.py` source code](waves.py)
 
 
