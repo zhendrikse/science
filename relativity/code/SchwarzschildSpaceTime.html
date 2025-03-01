@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, schwarzschild, sun, ρσ_unpack, r_min, r_max, start_r, position, comet, flat_motion_comet, _, delta_t, r;
+    var version, print, arange, __name__, type, ρσ_ls, title, display, stars, _GS_1, schwarzschild, sun, ρσ_unpack, r_min, r_max, start_r, position, comet, flat_motion_comet, _, delta_t;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -65,11 +65,15 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "9";
+    "10";
     title = "&#x2022; Original <a href=\"https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram\">idea &amp; code<\/a> by M. Ryston (Department of Physics Education)\n&#x2022; Faculty of Mathematics and Physics, Charles University,Prague, Czech Republic\n&#x2022; Described in <a href=\"https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049\">Interactive animations as a tool in teaching general relativity [...]</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/schwarzschild_space_time.py\">schwarzschild_space_time.py</a>\n\n";
-    "11";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 450, background: color.gray(.075), forward: vec(0, 1["-u"]()["*"](.45), 1["-u"]()["*"](.85)), range: 62})]);
-    "18";
+    "12";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 450, background: color.gray(.075), forward: vec(0, 1["-u"]()["*"](.75), 1["-u"]()["*"](.85)), range: 80})]);
+    "13";
+    stars = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), texture: "https://www.hendrikse.name/science/astrophysics/images/textures/universe.jpg", radius: 200, shininess: 0, opacity: .5})]);
+    "14";
+    ρσ_interpolate_kwargs.call(stars, stars.rotate, [ρσ_desugar_kwargs({angle: pi["/"](2), axis: vec(0, 1, 0)})]);
+    "19";
     function Sun() {;
     }
     Sun.prototype.__init__ = async function __init__() {
@@ -81,7 +85,7 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
             radius = ρσ_kwargs_obj.radius;
         }
-        "20";
+        "21";
         self._sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, texture: "https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg", visible: true})]);
     };
     if (!Sun.prototype.__init__.__defaults__) Object.defineProperties(Sun.prototype.__init__, {
@@ -94,7 +98,7 @@ async function __main__() {
     Sun.__handles_kwarg_interpolation__ = Sun.prototype.__init__.__handles_kwarg_interpolation__;
     Sun.prototype.visibility_is = async function visibility_is(checked) {
         var self = this;
-        "25";
+        "26";
         self._sun.visible = checked;
     };
     if (!Sun.prototype.visibility_is.__argnames__) Object.defineProperties(Sun.prototype.visibility_is, {
@@ -111,7 +115,7 @@ async function __main__() {
 
 
 
-    "28";
+    "29";
     function Comet() {;
     }
     Comet.prototype.__init__ = async function __init__() {
@@ -125,14 +129,16 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "sour")){
             sour = ρσ_kwargs_obj.sour;
         }
-        "30";
-        self._sphere = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: start_position, radius: radius, color: colour, visible: true, make_trail: true})]);
         "31";
-        self._sour = sour;
+        self._sphere = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: start_position, radius: radius, color: colour, visible: true, make_trail: true, trail_radius: .25["*"](radius)})]);
         "32";
-        self._start_sour = (sour !== null) ? ρσ_list_decorate([ ρσ_getitem(sour, 0), ρσ_getitem(sour, 1), ρσ_getitem(sour, 2), ρσ_getitem(sour, 3) ]) : null;
+        self._sour = sour;
         "33";
+        self._start_sour = (sour !== null) ? ρσ_list_decorate([ ρσ_getitem(sour, 0), ρσ_getitem(sour, 1), ρσ_getitem(sour, 2), ρσ_getitem(sour, 3) ]) : null;
+        "34";
         self._start_position = start_position;
+        "35";
+        self._is_moving = false;
     };
     if (!Comet.prototype.__init__.__defaults__) Object.defineProperties(Comet.prototype.__init__, {
         __defaults__ : {value: {sour:null}},
@@ -145,25 +151,30 @@ async function __main__() {
     Comet.prototype.update_by = async function update_by(M, dt) {
         var self = this;
         var ρσ_ls, buff;
-        "36";
-        buff = ρσ_list_decorate([ 0, 0, 0, 0 ]);
-        "37";
-        ρσ_setitem(buff, 0, ρσ_getitem(self._sour, 0)["+"](.5["*"](dt)["*"](ρσ_getitem(self._sour, 2))));
         "38";
-        ρσ_setitem(buff, 1, ρσ_getitem(self._sour, 1)["+"](.5["*"](dt)["*"](ρσ_getitem(self._sour, 3))));
-        "39";
-        ρσ_setitem(buff, 2, ρσ_getitem(self._sour, 2)["+"](.5["*"](dt)["*"](M["/"](ρσ_getitem(self._sour, 0))["/"](ρσ_getitem(self._sour, 0)["-"](1["*"](2)["*"](M)))["*"](Math.pow(ρσ_getitem(self._sour, 2), 2))["+"](ρσ_getitem(self._sour, 0)["-"](1["*"](2)["*"](M))["*"](Math.pow(ρσ_getitem(self._sour, 3), 2))))));
+        if (!self._is_moving) {
+            "39";
+            return;
+        }
+        "41";
+        buff = ρσ_list_decorate([ 0, 0, 0, 0 ]);
         "42";
-        ρσ_setitem(buff, 3, ρσ_getitem(self._sour, 3)["-"](1["*"](.5)["*"](dt)["*"](2)["/"](ρσ_getitem(self._sour, 0))["*"](ρσ_getitem(self._sour, 2))["*"](ρσ_getitem(self._sour, 3))));
+        ρσ_setitem(buff, 0, ρσ_getitem(self._sour, 0)["+"](.5["*"](dt)["*"](ρσ_getitem(self._sour, 2))));
+        "43";
+        ρσ_setitem(buff, 1, ρσ_getitem(self._sour, 1)["+"](.5["*"](dt)["*"](ρσ_getitem(self._sour, 3))));
         "44";
-        ρσ_setitem(self._sour, 0, ρσ_getitem(self._sour, 0)["+"](dt["*"](ρσ_getitem(buff, 2))));
-        "45";
-        ρσ_setitem(self._sour, 1, ρσ_getitem(self._sour, 1)["+"](dt["*"](ρσ_getitem(buff, 3))));
-        "46";
-        ρσ_setitem(self._sour, 2, ρσ_getitem(self._sour, 2)["+"](dt["*"](M["/"](ρσ_getitem(buff, 0))["/"](ρσ_getitem(buff, 0)["-"](1["*"](2)["*"](M)))["*"](Math.pow(ρσ_getitem(buff, 2), 2))["+"](ρσ_getitem(buff, 0)["-"](1["*"](2)["*"](M))["*"](Math.pow(ρσ_getitem(buff, 3), 2))))));
+        ρσ_setitem(buff, 2, ρσ_getitem(self._sour, 2)["+"](.5["*"](dt)["*"](M["/"](ρσ_getitem(self._sour, 0))["/"](ρσ_getitem(self._sour, 0)["-"](1["*"](2)["*"](M)))["*"](Math.pow(ρσ_getitem(self._sour, 2), 2))["+"](ρσ_getitem(self._sour, 0)["-"](1["*"](2)["*"](M))["*"](Math.pow(ρσ_getitem(self._sour, 3), 2))))));
         "47";
+        ρσ_setitem(buff, 3, ρσ_getitem(self._sour, 3)["-"](1["*"](.5)["*"](dt)["*"](2)["/"](ρσ_getitem(self._sour, 0))["*"](ρσ_getitem(self._sour, 2))["*"](ρσ_getitem(self._sour, 3))));
+        "49";
+        ρσ_setitem(self._sour, 0, ρσ_getitem(self._sour, 0)["+"](dt["*"](ρσ_getitem(buff, 2))));
+        "50";
+        ρσ_setitem(self._sour, 1, ρσ_getitem(self._sour, 1)["+"](dt["*"](ρσ_getitem(buff, 3))));
+        "51";
+        ρσ_setitem(self._sour, 2, ρσ_getitem(self._sour, 2)["+"](dt["*"](M["/"](ρσ_getitem(buff, 0))["/"](ρσ_getitem(buff, 0)["-"](1["*"](2)["*"](M)))["*"](Math.pow(ρσ_getitem(buff, 2), 2))["+"](ρσ_getitem(buff, 0)["-"](1["*"](2)["*"](M))["*"](Math.pow(ρσ_getitem(buff, 3), 2))))));
+        "52";
         ρσ_setitem(self._sour, 3, ρσ_getitem(self._sour, 3)["+"](1["-u"]()["*"](dt)["*"](2)["/"](ρσ_getitem(buff, 0))["*"](ρσ_getitem(buff, 2))["*"](ρσ_getitem(buff, 3))));
-        "48";
+        "53";
         self._sphere.pos = vec(ρσ_getitem(self._sour, 0)["*"](cos(ρσ_getitem(self._sour, 1))), sqrt(8["*"](M)["*"](ρσ_getitem(self._sour, 0))["-"](1["*"](16)["*"](Math.pow(M, 2)))), ρσ_getitem(self._sour, 0)["*"](sin(ρσ_getitem(self._sour, 1))));
     };
     if (!Comet.prototype.update_by.__argnames__) Object.defineProperties(Comet.prototype.update_by, {
@@ -172,7 +183,7 @@ async function __main__() {
     });
     Comet.prototype.r = async function r() {
         var self = this;
-        "52";
+        "57";
         return sqrt(self._sphere.pos.x["*"](self._sphere.pos.x)["+"](self._sphere.pos.z["*"](self._sphere.pos.z)));
     };
     if (!Comet.prototype.r.__module__) Object.defineProperties(Comet.prototype.r, {
@@ -180,11 +191,11 @@ async function __main__() {
     });
     Comet.prototype.reset = async function reset() {
         var self = this;
-        "55";
+        "60";
         self._sphere.clear_trail();
-        "56";
+        "61";
         self._sphere.pos = self._start_position;
-        "57";
+        "62";
         self._sour = (self._sour !== null) ? ρσ_list_decorate([ ρσ_getitem(self._start_sour, 0), ρσ_getitem(self._start_sour, 1), ρσ_getitem(self._start_sour, 2), ρσ_getitem(self._start_sour, 3) ]) : null;
     };
     if (!Comet.prototype.reset.__module__) Object.defineProperties(Comet.prototype.reset, {
@@ -192,7 +203,7 @@ async function __main__() {
     });
     Comet.prototype.visibility_is = async function visibility_is(checked) {
         var self = this;
-        "60";
+        "65";
         self._sphere.visible = checked;
     };
     if (!Comet.prototype.visibility_is.__argnames__) Object.defineProperties(Comet.prototype.visibility_is, {
@@ -201,9 +212,14 @@ async function __main__() {
     });
     Comet.prototype.follow = async function follow(comet, y_offset) {
         var self = this;
-        "63";
+        "68";
+        if (!self._is_moving) {
+            "69";
+            return;
+        }
+        "71";
         self._sphere.pos = (await comet.pos());
-        "64";
+        "72";
         self._sphere.pos.y = y_offset;
     };
     if (!Comet.prototype.follow.__argnames__) Object.defineProperties(Comet.prototype.follow, {
@@ -212,7 +228,7 @@ async function __main__() {
     });
     Comet.prototype.pos = async function pos() {
         var self = this;
-        "67";
+        "75";
         return self._sphere.pos;
     };
     if (!Comet.prototype.pos.__module__) Object.defineProperties(Comet.prototype.pos, {
@@ -220,16 +236,52 @@ async function __main__() {
     });
     Comet.prototype.leave_trail_is = async function leave_trail_is(checked) {
         var self = this;
-        "70";
+        "78";
         if (!checked) {
-            "71";
+            "79";
             self._sphere.clear_trail();
         }
-        "72";
+        "80";
         self._sphere.make_trail = checked;
     };
     if (!Comet.prototype.leave_trail_is.__argnames__) Object.defineProperties(Comet.prototype.leave_trail_is, {
         __argnames__ : {value: ["checked"]},
+        __module__ : {value: null}
+    });
+    Comet.prototype.modify_start_position = async function modify_start_position(value) {
+        var self = this;
+        "83";
+        if (self._is_moving) {
+            "84";
+            return;
+        }
+        "86";
+        self._sphere.pos = value;
+        "87";
+        self._start_position = value;
+        "88";
+        self._sour = ρσ_list_decorate([ value.x, 0, 1["-u"]()["*"](25.2), .49 ]);
+        "89";
+        self._start_sour = ρσ_list_decorate([ value.x, 0, 1["-u"]()["*"](25.2), .49 ]);
+    };
+    if (!Comet.prototype.modify_start_position.__argnames__) Object.defineProperties(Comet.prototype.modify_start_position, {
+        __argnames__ : {value: ["value"]},
+        __module__ : {value: null}
+    });
+    Comet.prototype.stop_movement = async function stop_movement() {
+        var self = this;
+        "96";
+        self._is_moving = false;
+    };
+    if (!Comet.prototype.stop_movement.__module__) Object.defineProperties(Comet.prototype.stop_movement, {
+        __module__ : {value: null}
+    });
+    Comet.prototype.start_movement = async function start_movement() {
+        var self = this;
+        "99";
+        self._is_moving = true;
+    };
+    if (!Comet.prototype.start_movement.__module__) Object.defineProperties(Comet.prototype.start_movement, {
         __module__ : {value: null}
     });
     Comet.prototype.__repr__ = async function __repr__() {
@@ -248,7 +300,10 @@ async function __main__() {
 
 
 
-    "75";
+
+
+
+    "102";
     function SchwarzschildSpaceTime() {;
     }
     SchwarzschildSpaceTime.prototype.__init__ = async function __init__() {
@@ -260,13 +315,13 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "grid_y_offset")){
             grid_y_offset = ρσ_kwargs_obj.grid_y_offset;
         }
-        "77";
+        "104";
         self._mass = mass;
-        "78";
+        "105";
         self._grid_y_offset = grid_y_offset;
-        "79";
+        "106";
         self._surface = ρσ_list_decorate([]);
-        "80";
+        "107";
         self._grid = ρσ_list_decorate([]);
     };
     if (!SchwarzschildSpaceTime.prototype.__init__.__defaults__) Object.defineProperties(SchwarzschildSpaceTime.prototype.__init__, {
@@ -280,11 +335,11 @@ async function __main__() {
     SchwarzschildSpaceTime.prototype.r_min_r_max = async function r_min_r_max() {
         var self = this;
         var ρσ_ls, r_min, r_max;
-        "83";
+        "110";
         r_min = 2["*"](self._mass)["+"](.1);
-        "84";
-        r_max = 10["*"](self._mass);
-        "85";
+        "111";
+        r_max = 13["*"](self._mass);
+        "112";
         return [r_min, r_max];
     };
     if (!SchwarzschildSpaceTime.prototype.r_min_r_max.__module__) Object.defineProperties(SchwarzschildSpaceTime.prototype.r_min_r_max, {
@@ -293,18 +348,18 @@ async function __main__() {
     SchwarzschildSpaceTime.prototype.draw_grid = async function draw_grid() {
         var self = this;
         var ρσ_ls, ρσ_unpack, _, r_max, i;
-        "88";
+        "115";
         ρσ_unpack = (await self.r_min_r_max());
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
         _ = ρσ_unpack[0];
         r_max = ρσ_unpack[1];
-        "89";
+        "116";
         for (var ρσ_Index1 = 0; ρσ_Index1["<"](20); ρσ_Index1++) {
             i = ρσ_Index1;
-            "90";
-            self._grid=self._grid["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19)), self._grid_y_offset, 1["-u"]()["*"](r_max)), vec(1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19)), self._grid_y_offset, r_max) ]), color: color.white, radius: .2})]) ]));
-            "94";
-            self._grid=self._grid["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](r_max), self._grid_y_offset, 1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19))), vec(r_max, self._grid_y_offset, 1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19))) ]), color: color.white, radius: .2})]) ]));
+            "117";
+            self._grid=self._grid["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19)), self._grid_y_offset, 1["-u"]()["*"](r_max)), vec(1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19)), self._grid_y_offset, r_max) ]), color: color.green, radius: .2})]) ]));
+            "121";
+            self._grid=self._grid["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](r_max), self._grid_y_offset, 1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19))), vec(r_max, self._grid_y_offset, 1["-u"]()["*"](r_max)["+"](i["*"](2)["*"](r_max)["/"](19))) ]), color: color.green, radius: .2})]) ]));
         }
     };
     if (!SchwarzschildSpaceTime.prototype.draw_grid.__module__) Object.defineProperties(SchwarzschildSpaceTime.prototype.draw_grid, {
@@ -312,7 +367,7 @@ async function __main__() {
     });
     SchwarzschildSpaceTime.prototype.mass = async function mass() {
         var self = this;
-        "100";
+        "127";
         return self._mass;
     };
     if (!SchwarzschildSpaceTime.prototype.mass.__module__) Object.defineProperties(SchwarzschildSpaceTime.prototype.mass, {
@@ -320,7 +375,7 @@ async function __main__() {
     });
     SchwarzschildSpaceTime.prototype.grid_y_offset = async function grid_y_offset() {
         var self = this;
-        "103";
+        "130";
         return self._grid_y_offset;
     };
     if (!SchwarzschildSpaceTime.prototype.grid_y_offset.__module__) Object.defineProperties(SchwarzschildSpaceTime.prototype.grid_y_offset, {
@@ -328,7 +383,7 @@ async function __main__() {
     });
     SchwarzschildSpaceTime.prototype.z_as_function_of = async function z_as_function_of(r) {
         var self = this;
-        "106";
+        "133";
         return sqrt(8["*"](self._mass)["*"](r)["-"](1["*"](16)["*"](self._mass)["*"](self._mass)));
     };
     if (!SchwarzschildSpaceTime.prototype.z_as_function_of.__argnames__) Object.defineProperties(SchwarzschildSpaceTime.prototype.z_as_function_of, {
@@ -338,49 +393,49 @@ async function __main__() {
     SchwarzschildSpaceTime.prototype.draw = async function draw() {
         var self = this;
         var ρσ_ls, ρσ_unpack, r_min, r_max, r, t, c, j, i, phi;
-        "112";
+        "139";
         ρσ_unpack = (await self.r_min_r_max());
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
         r_min = ρσ_unpack[0];
         r_max = ρσ_unpack[1];
-        "113";
+        "140";
         for (var ρσ_Index2 = 0; ρσ_Index2["<"](15); ρσ_Index2++) {
             i = ρσ_Index2;
-            "114";
+            "141";
             r = r_min["+"](i["*"](r_max["-"](1["*"](r_min)))["/"](14));
-            "115";
+            "142";
             t = 0;
-            "116";
-            c = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vec(r["*"](cos(t)), (await self.z_as_function_of(r)), r["*"](sin(t))), color: color.green, radius: .2})]);
-            "117";
+            "143";
+            c = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vec(r["*"](cos(t)), (await self.z_as_function_of(r)), r["*"](sin(t))), color: color.yellow, radius: .2})]);
+            "144";
             for (var ρσ_Index3 = 0; ρσ_Index3["<"](200); ρσ_Index3++) {
                 j = ρσ_Index3;
-                "118";
+                "145";
                 t=t["+"](2["*"](pi)["/"](200));
-                "119";
+                "146";
                 c.append(vec(r["*"](cos(t)), (await self.z_as_function_of(r)), r["*"](sin(t))));
             }
-            "120";
+            "147";
             self._surface.append(c);
         }
-        "122";
+        "149";
         for (var ρσ_Index4 = 0; ρσ_Index4["<"](12); ρσ_Index4++) {
             i = ρσ_Index4;
-            "123";
+            "150";
             phi = i["*"](2)["*"](pi)["/"](12);
-            "124";
+            "151";
             r = r_min;
-            "125";
-            c = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vec(r["*"](cos(phi)), (await self.z_as_function_of(r)), r["*"](sin(phi))), color: color.green, radius: .2})]);
-            "126";
+            "152";
+            c = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vec(r["*"](cos(phi)), (await self.z_as_function_of(r)), r["*"](sin(phi))), color: color.yellow, radius: .2})]);
+            "153";
             for (var ρσ_Index5 = 0; ρσ_Index5["<"](100); ρσ_Index5++) {
                 j = ρσ_Index5;
-                "127";
+                "154";
                 r=r["+"](r_max["-"](1["*"](r_min))["/"](100));
-                "128";
+                "155";
                 c.append(vec(r["*"](cos(phi)), (await self.z_as_function_of(r)), r["*"](sin(phi))));
             }
-            "129";
+            "156";
             self._surface.append(c);
         }
     };
@@ -390,20 +445,20 @@ async function __main__() {
     SchwarzschildSpaceTime.prototype.modify_grid = async function modify_grid(thickness) {
         var self = this;
         var ρσ_ls, element;
-        "132";
+        "159";
         var ρσ_Iter6 = self._surface;
         ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
         for (var ρσ_Index6 of ρσ_Iter6) {
             element = ρσ_Index6;
-            "133";
+            "160";
             element.radius = thickness;
         }
-        "134";
+        "161";
         var ρσ_Iter7 = self._grid;
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             element = ρσ_Index7;
-            "135";
+            "162";
             element.radius = thickness;
         }
     };
@@ -414,12 +469,12 @@ async function __main__() {
     SchwarzschildSpaceTime.prototype.grid_visibility_is = async function grid_visibility_is(checked) {
         var self = this;
         var ρσ_ls, line;
-        "138";
+        "165";
         var ρσ_Iter8 = self._grid;
         ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
         for (var ρσ_Index8 of ρσ_Iter8) {
             line = ρσ_Index8;
-            "139";
+            "166";
             line.visible = checked;
         }
     };
@@ -430,12 +485,12 @@ async function __main__() {
     SchwarzschildSpaceTime.prototype.cone_visibility_is = async function cone_visibility_is(checked) {
         var self = this;
         var ρσ_ls, line;
-        "142";
+        "169";
         var ρσ_Iter9 = self._surface;
         ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
         for (var ρσ_Index9 of ρσ_Iter9) {
             line = ρσ_Index9;
-            "143";
+            "170";
             line.visible = checked;
         }
     };
@@ -461,38 +516,38 @@ async function __main__() {
 
 
 
-    "146";
+    "173";
     _GS_1 = new SchwarzschildSpaceTime;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({mass: 5})]);
     schwarzschild = _GS_1;
-    "147";
+    "174";
     (await schwarzschild.draw());
-    "148";
+    "175";
     (await schwarzschild.draw_grid());
-    "149";
+    "176";
     _GS_1 = new Sun;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(0, 2, 0), radius: 2["*"]((await schwarzschild.mass()))})]);
     sun = _GS_1;
-    "151";
+    "178";
     ρσ_unpack = (await schwarzschild.r_min_r_max());
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
     r_min = ρσ_unpack[0];
     r_max = ρσ_unpack[1];
-    "152";
-    start_r = r_max["-"](1["*"](.1));
-    "153";
+    "179";
+    start_r = r_max["-"](1["*"](5));
+    "180";
     position = vec(start_r, (await schwarzschild.z_as_function_of(start_r)), 0);
-    "154";
+    "181";
     _GS_1 = new Comet;
-    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({start_position: position, radius: .8, colour: color.cyan, sour: ρσ_list_decorate([ start_r, 0, 1["-u"]()["*"](25.2), .49 ])})]);
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({start_position: position, radius: 1.25, colour: color.cyan, sour: ρσ_list_decorate([ start_r, 0, 1["-u"]()["*"](25.2), .49 ])})]);
     comet = _GS_1;
-    "155";
+    "182";
     _GS_1 = new Comet;
-    (await _GS_1.__init__(vec(position.x, (await schwarzschild.grid_y_offset()), position.z), .8, color.red));
+    (await _GS_1.__init__(vec(position.x, (await schwarzschild.grid_y_offset()), position.z), 1.25, color.red));
     flat_motion_comet = _GS_1;
-    "157";
+    "184";
     async function toggle_grid(event) {
-        "158";
+        "185";
         (await schwarzschild.grid_visibility_is(event.checked));
     };
     if (!toggle_grid.__argnames__) Object.defineProperties(toggle_grid, {
@@ -500,9 +555,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "160";
+    "187";
     async function toggle_sun(event) {
-        "161";
+        "188";
         (await sun.visibility_is(event.checked));
     };
     if (!toggle_sun.__argnames__) Object.defineProperties(toggle_sun, {
@@ -510,9 +565,9 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "163";
+    "190";
     async function toggle_cone(event) {
-        "164";
+        "191";
         (await schwarzschild.cone_visibility_is(event.checked));
     };
     if (!toggle_cone.__argnames__) Object.defineProperties(toggle_cone, {
@@ -520,11 +575,11 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "166";
+    "193";
     async function toggle_flat_motion(event) {
-        "167";
+        "194";
         (await flat_motion_comet.visibility_is(event.checked));
-        "168";
+        "195";
         (await flat_motion_comet.reset());
     };
     if (!toggle_flat_motion.__argnames__) Object.defineProperties(toggle_flat_motion, {
@@ -532,11 +587,11 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "170";
+    "197";
     async function toggle_trail(event) {
-        "171";
+        "198";
         (await comet.leave_trail_is(event.checked));
-        "172";
+        "199";
         (await flat_motion_comet.leave_trail_is(event.checked));
     };
     if (!toggle_trail.__argnames__) Object.defineProperties(toggle_trail, {
@@ -544,21 +599,21 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "174";
+    "201";
     display.append_to_caption("\n");
-    "175";
+    "202";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Cone", bind: toggle_cone, checked: true})]);
-    "176";
+    "203";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Grid", bind: toggle_grid, checked: true})]);
-    "177";
+    "204";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Central mass", bind: toggle_sun, checked: true})]);
-    "178";
+    "205";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Flat motion", bind: toggle_flat_motion, checked: true})]);
-    "179";
+    "206";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Leave trail", bind: toggle_trail, checked: true})]);
-    "181";
+    "208";
     async function modify_grid_thickness(event) {
-        "182";
+        "209";
         (await schwarzschild.modify_grid(event.value));
     };
     if (!modify_grid_thickness.__argnames__) Object.defineProperties(modify_grid_thickness, {
@@ -566,40 +621,67 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "185";
-    display.append_to_caption("\n\nGrid thickness");
-    "186";
-    ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: .5, value: .2, bind: modify_grid_thickness})]);
-    "189";
-    async function restart(event) {
-        "190";
-        (await comet.reset());
-        "191";
+    "211";
+    async function modify_start_position(event) {
+        var ρσ_ls, pos;
+        "212";
         (await flat_motion_comet.reset());
+        "213";
+        (await comet.reset());
+        "214";
+        pos = vec(event.value, (await schwarzschild.z_as_function_of(event.value)), 0);
+        "215";
+        (await comet.modify_start_position(pos));
+    };
+    if (!modify_start_position.__argnames__) Object.defineProperties(modify_start_position, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "217";
+    display.append_to_caption("\n\nInitial radius:");
+    "218";
+    ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: r_min["+"](.1), max: r_max["-"](1["*"](.1)), value: start_r, step: .1, bind: modify_start_position})]);
+    "219";
+    display.append_to_caption("\n\nGrid thickness");
+    "220";
+    ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: .5, value: .2, bind: modify_grid_thickness})]);
+    "223";
+    async function restart(event) {
+        "224";
+        (await comet.reset());
+        "225";
+        (await flat_motion_comet.reset());
+        "226";
+        (await comet.start_movement());
+        "227";
+        (await flat_motion_comet.start_movement());
     };
     if (!restart.__argnames__) Object.defineProperties(restart, {
         __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
 
-    "194";
+    "230";
     display.bind("click", restart);
-    "196";
+    "232";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "198";
+    "234";
     delta_t = .01;
-    "199";
+    "235";
     while (true) {
-        "200";
+        "236";
         (await rate(1["/"](delta_t)));
-        "201";
-        r = (await comet.r());
-        "202";
-        if (r_min["<"](r) && r["<"](r_max)) {
-            "203";
+        "237";
+        if (r_min["<"](ρσ_cond_temp = (await comet.r())) && ρσ_cond_temp["<"](r_max)) {
+            "238";
             (await comet.update_by((await schwarzschild.mass()), delta_t));
-            "204";
+            "239";
             (await flat_motion_comet.follow(comet, (await schwarzschild.grid_y_offset())));
+            "240";
+        } else {
+            "241";
+            (await comet.stop_movement());
         }
     }
 };
