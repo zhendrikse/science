@@ -11,6 +11,8 @@ Discover which frequencies the molecule responds to and if so, how.
 
 {% include_relative code/Carbon.html %}
 
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}
 
 
