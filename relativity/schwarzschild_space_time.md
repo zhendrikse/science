@@ -79,7 +79,7 @@ vertical Cartesian coordinate 𝑧 is used to visualize the actual curvature –
 we get an equation for the 𝑧 coordinate as a function of 𝑟:</p>
 
 <p>
-$z(r)=\sqrt{\dfrac{8GMr}{c^2} - \dfrac{16m^2g^2}{c^4}}$
+$z(r)=\sqrt{\dfrac{8GMr}{c^2} - \dfrac{16M^2g^2}{c^4}}$
 </p>
 
 <p>Of course, this equation 𝑟 and 𝑧 are in meters, which is not very convenient for visualizing large
