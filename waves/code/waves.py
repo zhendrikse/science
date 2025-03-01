@@ -143,6 +143,8 @@ def modify_frequency(event):
 
 _ = slider(min=0.1, max=.25, value=.25, bind=modify_frequency)
 
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+
 t0 = t = 0
 delta_t = .01
 while True:
