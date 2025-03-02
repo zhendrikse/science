@@ -2,7 +2,7 @@
 from vpython import canvas, helix, sphere, color, mag, norm, cos, sin, pi, rate, arrow, acos, dot, vector, radio, button
 
 title="""&#x2022; Original <a href="https://www.mso.anu.edu.au/pfrancis/simulations/co2.py">co2.py</a> by <a href="http://www.mso.anu.edu.au/pfrancis/simulations/">Paul Francis</a>
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/molecularphysics/code/carbon.py">carbon.py</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/molecularphysics/code/carbon_dioxide.py">carbon_dioxide.py</a>
 
 """
 
