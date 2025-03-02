@@ -1,11 +1,11 @@
-from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt, ring
+from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt, box
 
 title="""&#x2022; Original <a href="https://github.com/lukekulik/solar-system">solar system</a> by <a href="https://github.com/lukekulik/">Luke Kulik</a>
 &#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/solar_system.py">solar_system.py</a>
 
 """
 
-display = canvas(title=title, width=1200, height=800, forward=vec(0, 0, -1))#, range=2000 * 2500)
+display = canvas(title=title, width=1200, height=800, forward=vec(0, 0, -1), background=color.black)#color.gray(0.075))#, range=2000 * 2500)
 
 n = 10000  # number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
 scale_up = 2000  # scaling factor for planets and moons radii
@@ -122,7 +122,7 @@ luna = {'a': 384399 * 50.,
         'radius': 1737.1,
         'tilt': 0.02691995838,
         'spin': 2 * pi / 708.7341666667,
-        'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
+        'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
         'period': 27.321,
         'planet_name': "Earth",
         'planet_num': 2,
@@ -450,7 +450,13 @@ def planet_update(planet_data, t, dt, n):
 # initializing unique (one-off) bodies:
 sun = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg", emissive=True)  # radius in km
 #sun2 = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun3.png", opacity=0.7)  # applying Sun spots
+#stars = sphere(radius=30066790000, texture="https://www.hendrikse.name/science/astrophysics/images/textures/starX.png", emissive=True, opacity=0.5)  # constructing a stellar sphere
 #stars = sphere(radius=30066790000, texture="https://www.hendrikse.name/science/astrophysics/images/textures/starX.png")  # constructing a stellar sphere
+
+#display.lights = []    # this gets rid of all the ambient scene lights so that the Sun is the source / the command here blanks an array
+#display.ambient = color.white
+#sunlight = local_light(pos=vec(0, 0, 0), color=color.white)
+#more_sunlight = local_light(pos=vec(0, 0, 0), color=color.white)  # I found adding two lights was about right
 
 planet_list = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
 
@@ -465,13 +471,13 @@ moons = []
 for moon in moon_list:
     moons.append(moon_init(moon, planets, n, scale_up))
 
-# saturn_ring = ring(length=planets[5][0].radius + 180000 * scale_up, height=1,
-#                   width=planets[5][0].radius + 180000 * scale_up, texture="https://www.hendrikse.name/science/astrophysics/images/textures/saturn_ring.png")
-# saturn_ring.rotate(angle=saturn['tilt'], axis=vec(0, 0, 1))  # tilt corresponding to planet tilt
-#
-# uranus_ring = ring(length=planets[6][0].radius + 70000 * scale_up, height=1,
-#                   width=planets[6][0].radius + 70000 * scale_up, texture="https://www.hendrikse.name/science/astrophysics/images/textures/uranus_ring.png")
-# uranus_ring.rotate(angle=uranus['tilt'], axis=vec(0, 0, 1))  # tilt corresponding to planet tilt
+saturn_ring = box(length=planets[5][0].radius + 180000 * scale_up, height=1,
+                   width=planets[5][0].radius + 180000 * scale_up, texture="https://www.hendrikse.name/science/astrophysics/images/textures/saturn_ring.jpg")
+saturn_ring.rotate(angle=saturn['tilt'], axis=vec(0, 0, 1))  # tilt corresponding to planet tilt
+
+uranus_ring = box(length=planets[6][0].radius + 70000 * scale_up, height=1,
+                   width=planets[6][0].radius + 70000 * scale_up, texture="https://www.hendrikse.name/science/astrophysics/images/textures/uranus_ring.jpg")
+uranus_ring.rotate(angle=uranus['tilt'], axis=vec(0, 0, 1))  # tilt corresponding to planet tilt
 
 t = 0  # time counter
 while True:
@@ -480,8 +486,8 @@ while True:
     for moon in moons:  # moons coordinates update
         moon_update(moon, t, dt, n)
 
-    # saturn_ring.pos = planets[5][0].pos  # saturn's rings coordinates update
-    # uranus_ring.pos = planets[6][0].pos  # uranus rings coordinates update
+    saturn_ring.pos = planets[5][0].pos  # saturn's rings coordinates update
+    uranus_ring.pos = planets[6][0].pos  # uranus rings coordinates update
 
     rate(60)
     t += dt
