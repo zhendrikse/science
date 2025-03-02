@@ -62,8 +62,8 @@ I... a universe of atoms, an atom in the universe. &mdash;
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="carbon.html">
-    <img alt="Carbon atom" src="images/carbon.png" title="Click to animate"/>
+  <a href="carbon_dioxide.html">
+    <img alt="Carbon atom" src="images/carbon_dioxide.png" title="Click to animate"/>
   </a>
   <figcaption>Carbon dioxide molecule, showing the two main resonances in response to an alternating electric field.</figcaption>
 </figure>
