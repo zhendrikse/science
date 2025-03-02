@@ -1,0 +1,536 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var time;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, cylinder, ellipsoid, extrusion, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, atan, atan2, exp, log, pow, factorial, combin, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, spacing, k, kt, u, ion_charge, rad, scale, display, _GS_1, field, hydrogen_dioxide, _, timestep, time;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; Original <a href=\"https://www.mso.anu.edu.au/pfrancis/simulations/h2o.py\">h2o.py<\/a> by <a href=\"http://www.mso.anu.edu.au/pfrancis/simulations/\">Paul Francis</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/molecularphysics/code/water.py\">water.py</a>\n\n";
+    "9";
+    spacing = 1e-10;
+    "10";
+    k = 5e-6;
+    "11";
+    kt = 5e-6;
+    "12";
+    u = 1.66e-27;
+    "13";
+    ion_charge = 1["*"](1.602e-19);
+    "14";
+    rad = 3e-11;
+    "15";
+    scale = 1.25["*"](spacing);
+    "17";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({range: scale["*"](1.25), width: 600, height: 400, background: color.gray(.075), center: vector(scale["*"](.3), 0, 0), title: title})]);
+    "20";
+    function Atom() {;
+    }
+    Atom.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var mass = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var colour = ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[2];
+        var radius = ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[3];
+        var charge = ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[4];
+        var momentum = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.momentum : arguments[5];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "momentum")){
+            momentum = ρσ_kwargs_obj.momentum;
+        }
+        "22";
+        self._atom = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, color: colour, radius: radius})]);
+        "23";
+        self._mass = mass;
+        "24";
+        self._charge = charge;
+        "25";
+        self._momentum = momentum;
+    };
+    if (!Atom.prototype.__init__.__defaults__) Object.defineProperties(Atom.prototype.__init__, {
+        __defaults__ : {value: {momentum:vector(0, 0, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "mass", "colour", "radius", "charge", "momentum"]},
+        __module__ : {value: null}
+    });
+    Atom.__argnames__ = Atom.prototype.__init__.__argnames__;
+    Atom.__handles_kwarg_interpolation__ = Atom.prototype.__init__.__handles_kwarg_interpolation__;
+    Atom.prototype.pos = async function pos() {
+        var self = this;
+        "28";
+        return self._atom.pos;
+    };
+    if (!Atom.prototype.pos.__module__) Object.defineProperties(Atom.prototype.pos, {
+        __module__ : {value: null}
+    });
+    Atom.prototype.coulomb = async function coulomb(electric_field) {
+        var self = this;
+        "31";
+        return self._charge["*"]((await electric_field.field()));
+    };
+    if (!Atom.prototype.coulomb.__argnames__) Object.defineProperties(Atom.prototype.coulomb, {
+        __argnames__ : {value: ["electric_field"]},
+        __module__ : {value: null}
+    });
+    Atom.prototype.update = async function update(force, dt) {
+        var self = this;
+        "34";
+        self._momentum=self._momentum["+"](dt["*"](force));
+        "35";
+        self._atom.pos=self._atom.pos["+"](dt["*"](self._momentum)["/"](self._mass));
+    };
+    if (!Atom.prototype.update.__argnames__) Object.defineProperties(Atom.prototype.update, {
+        __argnames__ : {value: ["force", "dt"]},
+        __module__ : {value: null}
+    });
+    Atom.prototype.reset = async function reset(position) {
+        var self = this;
+        "38";
+        self._atom.pos = position;
+        "39";
+        self._momentum = vector(0, 0, 0);
+    };
+    if (!Atom.prototype.reset.__argnames__) Object.defineProperties(Atom.prototype.reset, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    Atom.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Atom.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Atom.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "42";
+    function Oxygen() {;
+    }
+    ρσ_extends(Oxygen, Atom);
+    Oxygen.prototype.__init__ = async function __init__(position) {
+        var self = this;
+        "44";
+        ρσ_interpolate_kwargs.call(this, Atom.prototype.__init__, [self].concat([ρσ_desugar_kwargs({position: position, mass: 16["*"](u), colour: color.red, radius: 1.2["*"](rad), charge: 1["-u"]()["*"](2)["*"](ion_charge)})]));
+    };
+    if (!Oxygen.prototype.__init__.__argnames__) Object.defineProperties(Oxygen.prototype.__init__, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    Oxygen.__argnames__ = Oxygen.prototype.__init__.__argnames__;
+    Oxygen.__handles_kwarg_interpolation__ = Oxygen.prototype.__init__.__handles_kwarg_interpolation__;
+    Oxygen.prototype.__repr__ = async function __repr__() {
+        if(Atom.prototype.__repr__) return Atom.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Oxygen.prototype.__str__ = async function __str__() {
+        if(Atom.prototype.__str__) return Atom.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Oxygen.prototype, "__bases__", {value: [Atom]});
+
+
+    "47";
+    function Hydrogen() {;
+    }
+    ρσ_extends(Hydrogen, Atom);
+    Hydrogen.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+            position = ρσ_kwargs_obj.position;
+        }
+        "49";
+        ρσ_interpolate_kwargs.call(this, Atom.prototype.__init__, [self].concat([ρσ_desugar_kwargs({position: position, mass: 1["*"](u), colour: color.blue, radius: .4["*"](rad), charge: 1["-u"]()["*"](ion_charge)})]));
+    };
+    if (!Hydrogen.prototype.__init__.__defaults__) Object.defineProperties(Hydrogen.prototype.__init__, {
+        __defaults__ : {value: {position:vector(0, 0, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    Hydrogen.__argnames__ = Hydrogen.prototype.__init__.__argnames__;
+    Hydrogen.__handles_kwarg_interpolation__ = Hydrogen.prototype.__init__.__handles_kwarg_interpolation__;
+    Hydrogen.prototype.__repr__ = async function __repr__() {
+        if(Atom.prototype.__repr__) return Atom.prototype.__repr__.call(this);
+        return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Hydrogen.prototype.__str__ = async function __str__() {
+        if(Atom.prototype.__str__) return Atom.prototype.__str__.call(this);
+return this.__repr__();
+    };
+    Object.defineProperty(Hydrogen.prototype, "__bases__", {value: [Atom]});
+
+
+    "52";
+    function WaterDioxide() {;
+    }
+    WaterDioxide.prototype.__init__ = async function __init__() {
+        var self = this;
+        var bond_angle = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.bond_angle : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "bond_angle")){
+            bond_angle = ρσ_kwargs_obj.bond_angle;
+        }
+        var ρσ_ls, ρσ_unpack, oxy_pos, h1_pos, h2_pos, _GS_1;
+        "54";
+        self._bond_angle = bond_angle;
+        "56";
+        ρσ_unpack = (await self._get_positions());
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+        oxy_pos = ρσ_unpack[0];
+        h1_pos = ρσ_unpack[1];
+        h2_pos = ρσ_unpack[2];
+        "57";
+        _GS_1 = new Oxygen;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: oxy_pos})]);
+        self._oxy1 = _GS_1;
+        "58";
+        _GS_1 = new Hydrogen;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: h1_pos})]);
+        self._hy1 = _GS_1;
+        "59";
+        _GS_1 = new Hydrogen;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: h2_pos})]);
+        self._hy2 = _GS_1;
+        "61";
+        self._spring1 = ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: (await self._oxy1.pos()), axis: (await self._hy1.pos())["-"](1["*"]((await self._oxy1.pos()))), radius: .3["*"](rad), thickness: .1["*"](rad), color: color.yellow, coils: 10})]);
+        "64";
+        self._spring2 = ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: (await self._oxy1.pos()), axis: (await self._hy2.pos())["-"](1["*"]((await self._oxy1.pos()))), radius: .3["*"](rad), thickness: .1["*"](rad), color: color.yellow, coils: 10})]);
+    };
+    if (!WaterDioxide.prototype.__init__.__defaults__) Object.defineProperties(WaterDioxide.prototype.__init__, {
+        __defaults__ : {value: {bond_angle:105["*"](pi)["/"](180)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["bond_angle"]},
+        __module__ : {value: null}
+    });
+    WaterDioxide.__argnames__ = WaterDioxide.prototype.__init__.__argnames__;
+    WaterDioxide.__handles_kwarg_interpolation__ = WaterDioxide.prototype.__init__.__handles_kwarg_interpolation__;
+    WaterDioxide.prototype.update = async function update(E, dt) {
+        var self = this;
+        var ρσ_ls, v1, v2, angle, coulomb_force, stretch_force, torque_force;
+        "68";
+        v1 = (await self._hy1.pos())["-"](1["*"]((await self._oxy1.pos())));
+        "69";
+        v2 = (await self._hy2.pos())["-"](1["*"]((await self._oxy1.pos())));
+        "70";
+        angle = acos(dot(v1, v2)["/"](v1.mag["*"](v2.mag)));
+        "73";
+        coulomb_force = (await self._hy1.coulomb(E));
+        "74";
+        stretch_force = 1["-u"]()["*"](1)["*"](k)["*"](mag(v1)["-"](1["*"](spacing)))["*"](norm(v1));
+        "75";
+        torque_force = kt["*"](spacing)["*"](angle["-"](1["*"](self._bond_angle)))["*"](norm(v1["+"](v2)));
+        "76";
+        (await self._hy1.update(coulomb_force["+"](stretch_force)["+"](torque_force), dt));
+        "79";
+        coulomb_force = (await self._hy2.coulomb(E));
+        "80";
+        stretch_force = 1["-u"]()["*"](1)["*"](k)["*"](mag(v2)["-"](1["*"](spacing)))["*"](norm(v2));
+        "81";
+        torque_force = kt["*"](spacing)["*"](angle["-"](1["*"](self._bond_angle)))["*"](norm(v1["+"](v2)));
+        "82";
+        (await self._hy2.update(coulomb_force["+"](stretch_force)["+"](torque_force), dt));
+        "85";
+        coulomb_force = (await self._oxy1.coulomb(E));
+        "86";
+        stretch_force = k["*"](mag(v1)["-"](1["*"](spacing)))["*"](norm(v1))["+"](k["*"](mag(v2)["-"](1["*"](spacing)))["*"](norm(v2)));
+        "87";
+        torque_force = 1["-u"]()["*"](2)["*"](kt)["*"](spacing)["*"](angle["-"](1["*"](self._bond_angle)))["*"](norm(v1["+"](v2)));
+        "88";
+        (await self._oxy1.update(coulomb_force["+"](stretch_force)["+"](torque_force), dt));
+        "91";
+        self._spring1.pos = (await self._oxy1.pos());
+        "92";
+        self._spring1.axis = v1;
+        "94";
+        self._spring2.pos = (await self._oxy1.pos());
+        "95";
+        self._spring2.axis = v2;
+    };
+    if (!WaterDioxide.prototype.update.__argnames__) Object.defineProperties(WaterDioxide.prototype.update, {
+        __argnames__ : {value: ["E", "dt"]},
+        __module__ : {value: null}
+    });
+    WaterDioxide.prototype._get_positions = async function _get_positions() {
+        var self = this;
+        var theta = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _get_positions.__defaults__.theta : arguments[0];
+        var tilt = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _get_positions.__defaults__.tilt : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "theta")){
+            theta = ρσ_kwargs_obj.theta;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "tilt")){
+            tilt = ρσ_kwargs_obj.tilt;
+        }
+        var ρσ_ls, oxy_pos, h1_pos, angle, h2_pos;
+        "98";
+        oxy_pos = vector(0, 0["*"](spacing), 0);
+        "99";
+        h1_pos = ρσ_interpolate_kwargs.call(this, rotate, [spacing["*"](vector(cos(theta), sin(theta), 0))].concat([ρσ_desugar_kwargs({angle: tilt, axis: vec(1, 0, 0)})]));
+        "100";
+        angle = self._bond_angle["+"](theta);
+        "101";
+        h2_pos = ρσ_interpolate_kwargs.call(this, rotate, [spacing["*"](vector(cos(angle), sin(angle), 0))].concat([ρσ_desugar_kwargs({angle: tilt, axis: vec(1, 0, 0)})]));
+        "102";
+        return [oxy_pos, h1_pos, h2_pos];
+    };
+    if (!WaterDioxide.prototype._get_positions.__defaults__) Object.defineProperties(WaterDioxide.prototype._get_positions, {
+        __defaults__ : {value: {theta:0["*"](pi)["/"](180), tilt:20["*"](pi)["/"](180)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["theta", "tilt"]},
+        __module__ : {value: null}
+    });
+    WaterDioxide.prototype.reset = async function reset() {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, oxy_pos, h1_pos, h2_pos;
+        "105";
+        ρσ_unpack = (await self._get_positions());
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+        oxy_pos = ρσ_unpack[0];
+        h1_pos = ρσ_unpack[1];
+        h2_pos = ρσ_unpack[2];
+        "106";
+        ρσ_interpolate_kwargs.call(self._oxy1, self._oxy1.reset, [ρσ_desugar_kwargs({position: oxy_pos})]);
+        "107";
+        ρσ_interpolate_kwargs.call(self._hy1, self._hy1.reset, [ρσ_desugar_kwargs({position: h1_pos})]);
+        "108";
+        ρσ_interpolate_kwargs.call(self._hy2, self._hy2.reset, [ρσ_desugar_kwargs({position: h2_pos})]);
+        "109";
+        self._spring1.pos = (await self._oxy1.pos());
+        "110";
+        self._spring1.axis = (await self._hy1.pos())["-"](1["*"]((await self._oxy1.pos())));
+        "111";
+        self._spring2.pos = (await self._oxy1.pos());
+        "112";
+        self._spring2.axis = (await self._hy2.pos())["-"](1["*"]((await self._oxy1.pos())));
+    };
+    if (!WaterDioxide.prototype.reset.__module__) Object.defineProperties(WaterDioxide.prototype.reset, {
+        __module__ : {value: null}
+    });
+    WaterDioxide.prototype.pos = async function pos() {
+        var self = this;
+        "115";
+        return (await self._oxy1.pos());
+    };
+    if (!WaterDioxide.prototype.pos.__module__) Object.defineProperties(WaterDioxide.prototype.pos, {
+        __module__ : {value: null}
+    });
+    WaterDioxide.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    WaterDioxide.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(WaterDioxide.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "118";
+    function ElectricField() {;
+    }
+    ElectricField.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var magnitude = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.magnitude : arguments[1];
+        var frequency = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.frequency : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "magnitude")){
+            magnitude = ρσ_kwargs_obj.magnitude;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "frequency")){
+            frequency = ρσ_kwargs_obj.frequency;
+        }
+        "120";
+        self._magnitude = magnitude;
+        "121";
+        self._frequency = frequency;
+        "122";
+        self._evector = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vector(0, 0, 0), shaftwidth: .1["*"](spacing), color: color.magenta})]);
+        "123";
+        self._field = vector(0, 0, 0);
+    };
+    if (!ElectricField.prototype.__init__.__defaults__) Object.defineProperties(ElectricField.prototype.__init__, {
+        __defaults__ : {value: {magnitude:0, frequency:8}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "magnitude", "frequency"]},
+        __module__ : {value: null}
+    });
+    ElectricField.__argnames__ = ElectricField.prototype.__init__.__argnames__;
+    ElectricField.__handles_kwarg_interpolation__ = ElectricField.prototype.__init__.__handles_kwarg_interpolation__;
+    ElectricField.prototype.update = async function update(time) {
+        var self = this;
+        var ρσ_ls, frequency;
+        "126";
+        frequency = self._frequency["*"](2)["*"](pi)["*"](100001e5);
+        "127";
+        self._evector.axis = .5["*"](spacing)["*"](cos(time["*"](frequency)))["*"](vector(0, 1, 0));
+        "128";
+        self._field = self._magnitude["*"](cos(time["*"](frequency)))["*"](vector(0, 1, 0));
+    };
+    if (!ElectricField.prototype.update.__argnames__) Object.defineProperties(ElectricField.prototype.update, {
+        __argnames__ : {value: ["time"]},
+        __module__ : {value: null}
+    });
+    ElectricField.prototype.field = async function field() {
+        var self = this;
+        "131";
+        return self._field;
+    };
+    if (!ElectricField.prototype.field.__module__) Object.defineProperties(ElectricField.prototype.field, {
+        __module__ : {value: null}
+    });
+    ElectricField.prototype.set_frequency_to = async function set_frequency_to(frequency) {
+        var self = this;
+        "134";
+        self._frequency = frequency;
+    };
+    if (!ElectricField.prototype.set_frequency_to.__argnames__) Object.defineProperties(ElectricField.prototype.set_frequency_to, {
+        __argnames__ : {value: ["frequency"]},
+        __module__ : {value: null}
+    });
+    ElectricField.prototype.reset = async function reset() {
+        var self = this;
+        "137";
+        self._evector.axis = vector(0, 0, 0);
+        "138";
+        self._field = vector(0, 0, 0);
+    };
+    if (!ElectricField.prototype.reset.__module__) Object.defineProperties(ElectricField.prototype.reset, {
+        __module__ : {value: null}
+    });
+    ElectricField.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    ElectricField.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(ElectricField.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "140";
+    _GS_1 = new ElectricField;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({position: vec(1.7["*"](spacing), 0, 0), magnitude: 120, frequency: .25})]);
+    field = _GS_1;
+    "141";
+    _GS_1 = new WaterDioxide;
+    (await _GS_1.__init__());
+    hydrogen_dioxide = _GS_1;
+    "143";
+    async function reset() {
+        "144";
+        "145";
+        time = 0;
+        "146";
+        (await hydrogen_dioxide.reset());
+        "147";
+        (await field.reset());
+    };
+    if (!reset.__module__) Object.defineProperties(reset, {
+        __module__ : {value: null}
+    });
+
+    "149";
+    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Reset", bind: reset})]);
+    "153";
+    timestep = 5e-13;
+    "154";
+    time = 0;
+    "155";
+    while (1) {
+        "156";
+        (await rate(600));
+        "157";
+        (await field.update(time));
+        "158";
+        time=time["+"](timestep);
+        "159";
+        (await hydrogen_dioxide.update(field, timestep));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

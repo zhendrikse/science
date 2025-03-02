@@ -151,20 +151,9 @@ _ = button(text="Reset", bind=carbon_dioxide.reset)
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 time = 0
-flag = True
-old = 0.
 timestep = 1.0E-13
 while 1:
     rate(500)
     time += timestep
     field.update(time)
-
-    if flag and (carbon_dioxide.pos().y < 0):
-        new_ = time
-        flag = 0
-        # print 1.0e-10/(new-old)
-    elif not flag and (carbon_dioxide.pos().y > 0):
-        flag = 1
-        old = new_
-
     carbon_dioxide.update(field, timestep)
