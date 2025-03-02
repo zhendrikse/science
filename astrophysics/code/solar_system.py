@@ -1,8 +1,11 @@
-from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt
+from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt, ring
 
-# https://github.com/lukekulik/solar-system
+title="""&#x2022; Original <a href="https://github.com/lukekulik/solar-system">solar system</a> by <a href="https://github.com/lukekulik/">Luke Kulik</a>
+&#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/solar_system.py">solar_system.py</a>
 
-display = canvas(title="Solar System", width=1200, height=800, forward=vec(0, 0, -1))#, range=2000 * 2500)
+"""
+
+display = canvas(title=title, width=1200, height=800, forward=vec(0, 0, -1))#, range=2000 * 2500)
 
 n = 10000  # number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
 scale_up = 2000  # scaling factor for planets and moons radii
@@ -20,7 +23,7 @@ mercury = {'a': 57909050.,
            'radius': 2439.7,
            'tilt': 0.1 * pi / 180.,
            'spin': 2 * pi / 4222.6,
-           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/mercury.jpg", #TODO mercury_2
+           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/mercury.png",
            'name': "Mercury"}
 
 venus = {'a': 108208000.,
@@ -31,7 +34,7 @@ venus = {'a': 108208000.,
          'radius': 6051.8,
          'tilt': 177 * pi / 180.,
          'spin': -2 * pi / 2802.,
-         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/venus.jpg",
+         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/venus.png",
          'name': "Venus"}
 
 earth = {'a': 149598261.,
@@ -42,7 +45,7 @@ earth = {'a': 149598261.,
          'radius': 6378.,
          'tilt': 23 * pi / 180.,
          'spin': 2 * pi / 24.,
-         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth.jpg",
+         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth.png",
          'name': "Earth"}
 
 mars = {'a': 227939100.,
@@ -53,7 +56,7 @@ mars = {'a': 227939100.,
         'radius': 3393.5,
         'tilt': 25 * pi / 180.,
         'spin': 2 * pi / 24.66,
-        'material': "https://www.hendrikse.name/science/astrophysics/images/textures/mars.jpg",
+        'material': "https://www.hendrikse.name/science/astrophysics/images/textures/mars.png",
         'name': "Mars"}
 
 jupiter = {'a': 778547200.,
@@ -64,7 +67,7 @@ jupiter = {'a': 778547200.,
            'radius': 71400.,
            'tilt': 3 * pi / 180.,
            'spin': 2 * pi / 9.93,
-           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/jupiter.jpg",
+           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/jupiter.png",
            'name': "Jupiter"}
 
 saturn = {'a': 1433449370.,
@@ -75,7 +78,7 @@ saturn = {'a': 1433449370.,
           'radius': 60000.,
           'tilt': 27 * pi / 180.,
           'spin': 2 * pi / 10.66,
-          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/saturn.jpg",
+          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/saturn.png",
           'name': "Saturn"}
 
 uranus = {'a': 2876679082.,
@@ -86,7 +89,7 @@ uranus = {'a': 2876679082.,
           'radius': 25600.,
           'tilt': 98 * pi / 180.,
           'spin': -2 * pi / 17.24,
-          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/uranus.jpg",
+          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/uranus.png",
           'name': "Uranus"}
 
 neptune = {'a': 4503443661.,
@@ -97,7 +100,7 @@ neptune = {'a': 4503443661.,
            'radius': 24300.,
            'tilt': 30 * pi / 180.,
            'spin': 2 * pi / 16.11,
-           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/neptune.jpg",
+           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/neptune.png",
            'name': "Neptune"}
 
 #############
@@ -119,7 +122,7 @@ luna = {'a': 384399 * 50.,
         'radius': 1737.1,
         'tilt': 0.02691995838,
         'spin': 2 * pi / 708.7341666667,
-        'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+        'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
         'period': 27.321,
         'planet_name': "Earth",
         'planet_num': 2,
@@ -133,7 +136,7 @@ phobos = {'a': 9376 * 1000,
           'radius': 11.2667 * 10,
           'tilt': 0.,
           'spin': 0,
-          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
           'period': 0.31891023,
           'planet_name': "Mars",
           'planet_num': 3,
@@ -147,7 +150,7 @@ deimos = {'a': 23463.2 * 650.,
           'radius': 10. * 10,
           'tilt': 0.,
           'spin': 0,
-          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
           'period': 1.263,
           'planet_name': "Mars",
           'planet_num': 3,
@@ -161,7 +164,7 @@ callisto = {'a': 1882700 * ScaleMoon / 2,
             'radius': 2410.3,
             'tilt': 0.,
             'spin': 0,
-            'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+            'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
             'period': 16.689,
             'planet_name': "Jupiter",
             'planet_num': 4,
@@ -175,7 +178,7 @@ europa = {'a': 670900 * ScaleMoon,
           'radius': 1560.8,
           'tilt': 0.,
           'spin': 0,
-          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
           'period': 12.689,
           'planet_name': "Jupiter",
           'planet_num': 4,
@@ -189,7 +192,7 @@ ganymede = {'a': 1070400 * ScaleMoon,
             'radius': 2634.1,
             'tilt': 0.,
             'spin': 0,
-            'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+            'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
             'period': 10.689,
             'planet_name': "Jupiter",
             'planet_num': 4,
@@ -203,7 +206,7 @@ io = {'a': 421800 * ScaleMoon * 1.5,
       'radius': 1821.6,
       'tilt': 0.,
       'spin': 0,
-      'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+      'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
       'period': 6.689,
       'planet_name': "Jupiter",
       'planet_num': 4,
@@ -217,7 +220,7 @@ dione = {'a': 377396 * 3 * ScaleMoon,
          'radius': 561.4 * 3,
          'tilt': 0.,
          'spin': 0,
-         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
          'period': 7.689,
          'planet_name': "Saturn",
          'planet_num': 5,
@@ -231,7 +234,7 @@ enceladus = {'a': 237948 * 3 * ScaleMoon,
              'radius': 252.1 * 3,
              'tilt': 0.,
              'spin': 0,
-             'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+             'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
              'period': 16.689,
              'planet_name': "Saturn",
              'planet_num': 5,
@@ -245,7 +248,7 @@ tethys = {'a': 294619 * 3 * ScaleMoon,
           'radius': 531.1 * 3,
           'tilt': 0.,
           'spin': 0,
-          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
           'period': 1.689,
           'planet_name': "Saturn",
           'planet_num': 5,
@@ -259,7 +262,7 @@ titan = {'a': 1221870 * ScaleMoon,
          'radius': 2576.,
          'tilt': 0.,
          'spin': 0,
-         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
          'period': 61.689,
          'planet_name': "Saturn",
          'planet_num': 5,
@@ -273,7 +276,7 @@ ariel = {'a': 191020 * ScaleMoon,
          'radius': 578.9,
          'tilt': 0.,
          'spin': 0,
-         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+         'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
          'period': 16.689,
          'planet_name': "Uranus",
          'planet_num': 6,
@@ -287,7 +290,7 @@ oberon = {'a': 583520 * ScaleMoon,
           'radius': 761.4,
           'tilt': 0.,
           'spin': 0,
-          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
           'period': 6.689,
           'planet_name': "Uranus",
           'planet_num': 6,
@@ -301,7 +304,7 @@ titania = {'a': 435910 * ScaleMoon,
            'radius': 788.4,
            'tilt': 0.,
            'spin': 0,
-           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
            'period': 1.689,
            'planet_name': "Uranus",
            'planet_num': 6,
@@ -315,7 +318,7 @@ umbriel = {'a': 266000 * ScaleMoon,
            'radius': 584.7,
            'tilt': 0.,
            'spin': 0,
-           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+           'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
            'period': 24.689,
            'planet_name': "Uranus",
            'planet_num': 6,
@@ -329,7 +332,7 @@ triton = {'a': 354759 * ScaleMoon,
           'radius': 1353.4,
           'tilt': 0.,
           'spin': 0,
-          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg",
+          'material': "https://www.hendrikse.name/science/astrophysics/images/textures/moon.png",
           'period': 16.689,
           'planet_name': "Neptune",
           'planet_num': 7,
@@ -445,8 +448,9 @@ def planet_update(planet_data, t, dt, n):
     planet_data[0].rotate(angle=planet_data[5] * dt, axis=vec(-sin(planet_data[4]), cos(planet_data[4]), 0))
 
 # initializing unique (one-off) bodies:
-sun = sphere(radius=695500 * 40, color=color.yellow, emissive=True, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg")  # radius in km
-#sun2 = sphere(radius=695500 * 40, material=sun_mat, opacity=0.7)  # applying Sun spots
+sun = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg", emissive=True)  # radius in km
+#sun2 = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun3.png", opacity=0.7)  # applying Sun spots
+#stars = sphere(radius=30066790000, texture="https://www.hendrikse.name/science/astrophysics/images/textures/starX.png")  # constructing a stellar sphere
 
 planet_list = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
 
@@ -461,12 +465,23 @@ moons = []
 for moon in moon_list:
     moons.append(moon_init(moon, planets, n, scale_up))
 
+# saturn_ring = ring(length=planets[5][0].radius + 180000 * scale_up, height=1,
+#                   width=planets[5][0].radius + 180000 * scale_up, texture="https://www.hendrikse.name/science/astrophysics/images/textures/saturn_ring.png")
+# saturn_ring.rotate(angle=saturn['tilt'], axis=vec(0, 0, 1))  # tilt corresponding to planet tilt
+#
+# uranus_ring = ring(length=planets[6][0].radius + 70000 * scale_up, height=1,
+#                   width=planets[6][0].radius + 70000 * scale_up, texture="https://www.hendrikse.name/science/astrophysics/images/textures/uranus_ring.png")
+# uranus_ring.rotate(angle=uranus['tilt'], axis=vec(0, 0, 1))  # tilt corresponding to planet tilt
+
 t = 0  # time counter
 while True:
     for planet in planets:
         planet_update(planet, t, dt, n)
     for moon in moons:  # moons coordinates update
         moon_update(moon, t, dt, n)
+
+    # saturn_ring.pos = planets[5][0].pos  # saturn's rings coordinates update
+    # uranus_ring.pos = planets[6][0].pos  # uranus rings coordinates update
 
     rate(60)
     t += dt
