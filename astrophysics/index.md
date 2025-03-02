@@ -101,4 +101,21 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 </div>
 <p style="clear: both;"></p>
 
+### Solar system
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="solar_system.html">
+    <img alt="Solar system" src="images/solar_system.png" title="Click to animate"/>
+  </a>
+  <figcaption>Comprehensive simulation of our solar system.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}
