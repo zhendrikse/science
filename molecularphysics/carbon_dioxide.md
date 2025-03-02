@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Greenhouse effect of carbon
+## Greenhouse effect of carbon dioxide
 <div class="header_line"><br/></div>
 
 Why is carbon dioxide so important to global warming?

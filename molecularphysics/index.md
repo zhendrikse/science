@@ -47,7 +47,7 @@ I... a universe of atoms, an atom in the universe. &mdash;
 </figure>
 <figure class="right_image">
   <a href="molecules.html">
-    <img alt="Molecules" src="images/water_molecule.png" title="Click to animate"/>
+    <img alt="Lactate" src="images/lactate.png" title="Click to animate"/>
   </a>
   <figcaption>The magnitude of the atomic weight determines the character 
   of the element, just as the magnitude of the molecule determines the character 
@@ -68,8 +68,10 @@ I... a universe of atoms, an atom in the universe. &mdash;
   <figcaption>Carbon dioxide molecule, showing the two main resonances in response to an alternating electric field.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION 
-    -->
+  <a href="water.html">
+    <img alt="Water molecule" src="images/water.png" title="Click to animate"/>
+  </a>
+  <figcaption>Water molecule, showing its response to an alternating electric field.</figcaption>
 </figure>
 </div>
 
