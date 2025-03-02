@@ -10,7 +10,7 @@ spacing = 1.0E-10
 k = 8.0E-4  # Tension compression constant
 kt = 3.0E-5  # Torsion constant
 u = 1.660E-27
-ioncharge = 1.0 * 1.602E-19
+ion_charge = 1.0 * 1.602E-19
 rad = 3.0E-11
 
 scale = 2.0 * spacing
@@ -26,12 +26,12 @@ class Atom:
     def pos(self):
         return self._atom.pos
 
-    def coulomb(self, E):
-        return self._charge * E
+    def coulomb(self, electric_field):
+        return self._charge * electric_field.field()
 
-    def update(self, force, timestep):
-        self._momentum += timestep * force
-        self._atom.pos += timestep * self._momentum / self._mass
+    def update(self, force, dt):
+        self._momentum += dt * force
+        self._atom.pos += dt * self._momentum / self._mass
 
     def reset(self, position):
         self._atom.pos = position
@@ -40,12 +40,12 @@ class Atom:
 
 class Oxygen(Atom):
     def __init__(self, position):
-        Atom.__init__(self, position=position, mass=16.0 * u, colour=color.green, radius=rad, charge=ioncharge)
+        Atom.__init__(self, position=position, mass=16.0 * u, colour=color.green, radius=rad, charge=ion_charge)
 
 
 class Carbon(Atom):
     def __init__(self, position=vector(0, 0, 0)):
-        Atom.__init__(self, position=position, mass=12 * u, colour=color.red, radius=0.8 * rad, charge=-2.0 * ioncharge)
+        Atom.__init__(self, position=position, mass=12 * u, colour=color.red, radius=0.8 * rad, charge=-2.0 * ion_charge)
 
 
 class CarbonDioxide:
@@ -65,30 +65,34 @@ class CarbonDioxide:
         self._oxy1.reset(position=vector(spacing * cos(self._theta), spacing * sin(self._theta), 0.))
         self._oxy2.reset(position=-1 * vector(spacing * cos(self._theta), spacing * sin(self._theta), 0.))
         self._carb1.reset(position=vector(0., 0.0 * spacing, 0.))
+        self._spring1.pos = self._carb1.pos()
+        self._spring1.axis = self._oxy1.pos() - self._carb1.pos()
+        self._spring2.pos = self._carb1.pos()
+        self._spring2.axis = self._oxy2.pos() - self._carb1.pos()
 
-    def update(self, E):
+    def update(self, electric_field, dt):
         v1 = self._oxy1.pos() - self._carb1.pos()
         v2 = self._oxy2.pos() - self._carb1.pos()
 
         angle = acos(dot(v1, -1.0 * v2) / (v1.mag * v2.mag))
 
         # Oxy1 forces
-        coulomb_force = self._oxy1.coulomb(E)
+        coulomb_force = self._oxy1.coulomb(electric_field)
         stretch_force = -1.0 * k * (mag(v1) - spacing) * norm(v1)
         torque_force = -1.0 * kt * spacing * angle * norm(v1 + v2)
-        self._oxy1.update(coulomb_force + stretch_force + torque_force, timestep)
+        self._oxy1.update(coulomb_force + stretch_force + torque_force, dt)
 
         # Oxy2 forces
-        coulomb_force = self._oxy2.coulomb(E)
+        coulomb_force = self._oxy2.coulomb(electric_field)
         stretch_force = -1.0 * k * (mag(v2) - spacing) * norm(v2)
         torque_force = -1.0 * kt * spacing * angle * norm(v1 + v2)
-        self._oxy2.update(coulomb_force + stretch_force + torque_force, timestep)
+        self._oxy2.update(coulomb_force + stretch_force + torque_force, dt)
 
         # Carb1 forces
-        coulomb_force = self._carb1.coulomb(E)
+        coulomb_force = self._carb1.coulomb(electric_field)
         stretch_force = k * (mag(v1) - spacing) * norm(v1) + k * (mag(v2) - spacing) * norm(v2)
         torque_force = 2.0 * kt * spacing * angle * norm(v1 + v2)
-        self._carb1.update(coulomb_force + stretch_force + torque_force, timestep)
+        self._carb1.update(coulomb_force + stretch_force + torque_force, dt)
 
         # Update springs
         self._spring1.pos = self._carb1.pos()
@@ -100,32 +104,41 @@ class CarbonDioxide:
     def pos(self):
         return self._carb1.pos()
 
+class ElectricField:
+    def __init__(self, position, magnitude=0.0, frequency=8.0):
+        self._magnitude = magnitude
+        self._frequency = frequency
+        self._evector = arrow(pos=position, axis=vector(0, 0, 0), shaftwidth=0.1 * spacing, color=color.magenta)
+        self._field = vector(0., 0., 0.)
+
+    def update(self, time):
+        frequency = self._frequency * 2.0 * pi * 1.00001E10
+        self._evector.axis = 0.5 * spacing * cos(time * frequency) * vector(0., 1., 0.)
+        self._field = self._magnitude * cos(time * frequency) * vector(0., 1., 0.)
+
+    def field(self):
+        return self._field
+
+    def set_frequency_to(self, frequency):
+        self._frequency = frequency
+
+
 carbon_dioxide = CarbonDioxide()
-
-evector = arrow(pos=vector(1.7 * spacing, 0., 0.), axis=vector(0., 0., 0.), shaftwidth=0.1 * spacing, color=color.magenta)
-
-E0 = 200.0  # 200
-
-frequency = 8.0
-frequency *= (2.0 * pi) * 1.00001E10
-
-timestep = 1.0E-13
+field = ElectricField(position=vector(1.7 * spacing, 0., 0.), magnitude=200, frequency=8.0)
 
 def toggle_frequency(event):
-    global frequency
     if event.name == "8": # Nothing happens
-        frequency = 8.0
+        field.set_frequency_to(8.0)
         radio_2.checked = radio_3.checked = radio_4.checked = False
     if event.name == "5.291": # Linear vibrations
-        frequency = 5.291
+        field.set_frequency_to(5.291)
         radio_1.checked = radio_3.checked = radio_4.checked = False
     if event.name == "1.5": # Bending
-        frequency = 1.5
+        field.set_frequency_to(1.5)
         radio_1.checked = radio_2.checked = radio_4.checked = False
     if event.name == "2.76": # non-active sym
-        frequency = 2.76
+        field.set_frequency_to(2.76)
         radio_1.checked = radio_2.checked = radio_3.checked = False
-    frequency *= (2.0 * pi) * 1.00001E10
 
 
 display.append_to_caption("Frequency: ")
@@ -135,15 +148,16 @@ radio_3 = radio(text="1.5  ", name="1.5", bind=toggle_frequency)
 radio_4 = radio(text="2.76  ", name="2.76", bind=toggle_frequency)
 _ = button(text="Reset", bind=carbon_dioxide.reset)
 
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+
 time = 0
 flag = True
 old = 0.
+timestep = 1.0E-13
 while 1:
     rate(500)
-
     time += timestep
-    E = E0 * cos(time * frequency) * vector(0., 1., 0.)
-    evector.axis = 0.5 * spacing * E / E0
+    field.update(time)
 
     if flag and (carbon_dioxide.pos().y < 0):
         new_ = time
@@ -153,4 +167,4 @@ while 1:
         flag = 1
         old = new_
 
-    carbon_dioxide.update(E)
+    carbon_dioxide.update(field, timestep)
