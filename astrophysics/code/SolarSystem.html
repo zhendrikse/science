@@ -1,0 +1,810 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, tan, asin, atan, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, n, scale_up, dt, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, ScaleMoon, luna, phobos, deimos, callisto, europa, ganymede, io, dione, enceladus, tethys, titan, ariel, oberon, titania, umbriel, triton, sun, planet_list, moon_list, planets, planet, moons, moon, t;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "8";
+    title = "&#x2022; Original <a href=\"https://github.com/lukekulik/solar-system\">solar system<\/a> by <a href=\"https://github.com/lukekulik/\">Luke Kulik</a>\n&#x2022; Updated by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/solar_system.py\">solar_system.py</a>\n\n";
+    "10";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 1200, height: 800, forward: vec(0, 0, 1["-u"]()["*"](1))})]);
+    "12";
+    n = 1e4;
+    "13";
+    scale_up = 2e3;
+    "14";
+    dt = 1;
+    "20";
+    mercury = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 57909050);
+        ρσ_d.set("e", .20563);
+        ρσ_d.set("inclination", 7["*"](pi)["/"](180));
+        ρσ_d.set("right_ascension", .8436854966);
+        ρσ_d.set("mean_anomaly", 3.0507657193);
+        ρσ_d.set("radius", 2439.7);
+        ρσ_d.set("tilt", .1["*"](pi)["/"](180));
+        ρσ_d.set("spin", 2["*"](pi)["/"](4222.6));
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/mercury_2.jpg");
+        ρσ_d.set("name", "Mercury");
+        return ρσ_d;
+    }).call(this);
+    "31";
+    venus = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 108208e3);
+        ρσ_d.set("e", .0067);
+        ρσ_d.set("inclination", 3.39["*"](pi)["/"](180));
+        ρσ_d.set("right_ascension", 1.3381895772);
+        ρσ_d.set("mean_anomaly", .8746717546);
+        ρσ_d.set("radius", 6051.8);
+        ρσ_d.set("tilt", 177["*"](pi)["/"](180));
+        ρσ_d.set("spin", 1["-u"]()["*"](2)["*"](pi)["/"](2802));
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/venus_2.jpg");
+        ρσ_d.set("name", "Venus");
+        return ρσ_d;
+    }).call(this);
+    "42";
+    earth = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 149598261);
+        ρσ_d.set("e", .01671123);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 0);
+        ρσ_d.set("mean_anomaly", 6.2398515744);
+        ρσ_d.set("radius", 6378);
+        ρσ_d.set("tilt", 23["*"](pi)["/"](180));
+        ρσ_d.set("spin", 2["*"](pi)["/"](24));
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth.jpg");
+        ρσ_d.set("name", "Earth");
+        return ρσ_d;
+    }).call(this);
+    "53";
+    mars = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 227939100);
+        ρσ_d.set("e", .093315);
+        ρσ_d.set("inclination", 1.85["*"](pi)["/"](180));
+        ρσ_d.set("right_ascension", .8676591934);
+        ρσ_d.set("mean_anomaly", .3378329113);
+        ρσ_d.set("radius", 3393.5);
+        ρσ_d.set("tilt", 25["*"](pi)["/"](180));
+        ρσ_d.set("spin", 2["*"](pi)["/"](24.66));
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/mars_2.jpg");
+        ρσ_d.set("name", "Mars");
+        return ρσ_d;
+    }).call(this);
+    "64";
+    jupiter = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 778547200);
+        ρσ_d.set("e", .048775);
+        ρσ_d.set("inclination", 1.31["*"](pi)["/"](180));
+        ρσ_d.set("right_ascension", 1.7504400393);
+        ρσ_d.set("mean_anomaly", .3284360586);
+        ρσ_d.set("radius", 71400);
+        ρσ_d.set("tilt", 3["*"](pi)["/"](180));
+        ρσ_d.set("spin", 2["*"](pi)["/"](9.93));
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/jupiter.jpg");
+        ρσ_d.set("name", "Jupiter");
+        return ρσ_d;
+    }).call(this);
+    "75";
+    saturn = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 1433449370);
+        ρσ_d.set("e", .055723219);
+        ρσ_d.set("inclination", 2.49["*"](pi)["/"](180));
+        ρσ_d.set("right_ascension", 1.98);
+        ρσ_d.set("mean_anomaly", 5.5911055356);
+        ρσ_d.set("radius", 6e4);
+        ρσ_d.set("tilt", 27["*"](pi)["/"](180));
+        ρσ_d.set("spin", 2["*"](pi)["/"](10.66));
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/saturn.jpg");
+        ρσ_d.set("name", "Saturn");
+        return ρσ_d;
+    }).call(this);
+    "86";
+    uranus = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 2876679082);
+        ρσ_d.set("e", .044405586);
+        ρσ_d.set("inclination", .77["*"](pi)["/"](180));
+        ρσ_d.set("right_ascension", 1.2908891856);
+        ρσ_d.set("mean_anomaly", 2.4950479462);
+        ρσ_d.set("radius", 25600);
+        ρσ_d.set("tilt", 98["*"](pi)["/"](180));
+        ρσ_d.set("spin", 1["-u"]()["*"](2)["*"](pi)["/"](17.24));
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/uranus.jpg");
+        ρσ_d.set("name", "Uranus");
+        return ρσ_d;
+    }).call(this);
+    "97";
+    neptune = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 4503443661);
+        ρσ_d.set("e", .011214269);
+        ρσ_d.set("inclination", 1.77["*"](pi)["/"](180));
+        ρσ_d.set("right_ascension", 2.3001058656);
+        ρσ_d.set("mean_anomaly", 4.6734206826);
+        ρσ_d.set("radius", 24300);
+        ρσ_d.set("tilt", 30["*"](pi)["/"](180));
+        ρσ_d.set("spin", 2["*"](pi)["/"](16.11));
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/neptune.jpg");
+        ρσ_d.set("name", "Neptune");
+        return ρσ_d;
+    }).call(this);
+    "112";
+    ScaleMoon = 300;
+    "119";
+    luna = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 384399["*"](50));
+        ρσ_d.set("e", .0549);
+        ρσ_d.set("inclination", 1["-u"]()["*"](23.4)["+"](5.145)["*"](pi)["/"](180));
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 1737.1);
+        ρσ_d.set("tilt", .02691995838);
+        ρσ_d.set("spin", 2["*"](pi)["/"](708.7341666667));
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 27.321);
+        ρσ_d.set("planet_name", "Earth");
+        ρσ_d.set("planet_num", 2);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "133";
+    phobos = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 9376["*"](1e3));
+        ρσ_d.set("e", .0151);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 11.2667["*"](10));
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", .31891023);
+        ρσ_d.set("planet_name", "Mars");
+        ρσ_d.set("planet_num", 3);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "147";
+    deimos = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 23463.2["*"](650));
+        ρσ_d.set("e", 33e-5);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 10["*"](10));
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 1.263);
+        ρσ_d.set("planet_name", "Mars");
+        ρσ_d.set("planet_num", 3);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "161";
+    callisto = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 1882700["*"](ScaleMoon)["/"](2));
+        ρσ_d.set("e", .0074);
+        ρσ_d.set("inclination", .003351032164);
+        ρσ_d.set("right_ascension", 0);
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 2410.3);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 16.689);
+        ρσ_d.set("planet_name", "Jupiter");
+        ρσ_d.set("planet_num", 4);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "175";
+    europa = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 670900["*"](ScaleMoon));
+        ρσ_d.set("e", .009);
+        ρσ_d.set("inclination", .008203047484);
+        ρσ_d.set("right_ascension", 0);
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 1560.8);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 12.689);
+        ρσ_d.set("planet_name", "Jupiter");
+        ρσ_d.set("planet_num", 4);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "189";
+    ganymede = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 1070400["*"](ScaleMoon));
+        ρσ_d.set("e", .0013);
+        ρσ_d.set("inclination", .003490658504);
+        ρσ_d.set("right_ascension", 0);
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 2634.1);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 10.689);
+        ρσ_d.set("planet_name", "Jupiter");
+        ρσ_d.set("planet_num", 4);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "203";
+    io = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 421800["*"](ScaleMoon)["*"](1.5));
+        ρσ_d.set("e", .0041);
+        ρσ_d.set("inclination", .03857177647);
+        ρσ_d.set("right_ascension", 0);
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 1821.6);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 6.689);
+        ρσ_d.set("planet_name", "Jupiter");
+        ρσ_d.set("planet_num", 4);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "217";
+    dione = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 377396["*"](3)["*"](ScaleMoon));
+        ρσ_d.set("e", .0022);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 561.4["*"](3));
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 7.689);
+        ρσ_d.set("planet_name", "Saturn");
+        ρσ_d.set("planet_num", 5);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "231";
+    enceladus = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 237948["*"](3)["*"](ScaleMoon));
+        ρσ_d.set("e", .0047);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 252.1["*"](3));
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 16.689);
+        ρσ_d.set("planet_name", "Saturn");
+        ρσ_d.set("planet_num", 5);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "245";
+    tethys = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 294619["*"](3)["*"](ScaleMoon));
+        ρσ_d.set("e", 0);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 531.1["*"](3));
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 1.689);
+        ρσ_d.set("planet_name", "Saturn");
+        ρσ_d.set("planet_num", 5);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "259";
+    titan = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 1221870["*"](ScaleMoon));
+        ρσ_d.set("e", .0288);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 2576);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 61.689);
+        ρσ_d.set("planet_name", "Saturn");
+        ρσ_d.set("planet_num", 5);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "273";
+    ariel = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 191020["*"](ScaleMoon));
+        ρσ_d.set("e", .0012);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 578.9);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 16.689);
+        ρσ_d.set("planet_name", "Uranus");
+        ρσ_d.set("planet_num", 6);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "287";
+    oberon = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 583520["*"](ScaleMoon));
+        ρσ_d.set("e", .0014);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 761.4);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 6.689);
+        ρσ_d.set("planet_name", "Uranus");
+        ρσ_d.set("planet_num", 6);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "301";
+    titania = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 435910["*"](ScaleMoon));
+        ρσ_d.set("e", .0011);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 788.4);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 1.689);
+        ρσ_d.set("planet_name", "Uranus");
+        ρσ_d.set("planet_num", 6);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "315";
+    umbriel = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 266e3["*"](ScaleMoon));
+        ρσ_d.set("e", .0039);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 584.7);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 24.689);
+        ρσ_d.set("planet_name", "Uranus");
+        ρσ_d.set("planet_num", 6);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "329";
+    triton = (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("a", 354759["*"](ScaleMoon));
+        ρσ_d.set("e", 0);
+        ρσ_d.set("inclination", 0);
+        ρσ_d.set("right_ascension", 1["-u"]()["*"](pi)["/"](2));
+        ρσ_d.set("mean_anomaly", 0);
+        ρσ_d.set("radius", 1353.4);
+        ρσ_d.set("tilt", 0);
+        ρσ_d.set("spin", 0);
+        ρσ_d.set("material", "https://www.hendrikse.name/science/astrophysics/images/textures/earth_moon.jpg");
+        ρσ_d.set("period", 16.689);
+        ρσ_d.set("planet_name", "Neptune");
+        ρσ_d.set("planet_num", 7);
+        ρσ_d.set("tidal_lock", 1);
+        return ρσ_d;
+    }).call(this);
+    "343";
+    async function lin_space(start, stop, num) {
+        "344";
+        return (function() {
+            var ρσ_Iter = range(start, stop, stop["-"](1["*"](start))["/"](num["-"](1["*"](1)))), ρσ_Result = [], x;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                x = ρσ_Index;
+                ρσ_Result.push(x);
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })()["+"](ρσ_list_decorate([ stop ]));
+    };
+    if (!lin_space.__argnames__) Object.defineProperties(lin_space, {
+        __argnames__ : {value: ["start", "stop", "num"]},
+        __module__ : {value: null}
+    });
+
+    "347";
+    async function orbit() {
+        var m0 = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var e = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var a = ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[2];
+        var inclination = ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[3];
+        var ascension = ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[4];
+        var n = ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[5];
+        var acc = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? orbit.__defaults__.acc : arguments[6];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "acc")){
+            acc = ρσ_kwargs_obj.acc;
+        }
+        var ρσ_ls, m, ecc_anom, ecc_anom_old, i, theta, r, theta_asc, x, z, y;
+        "348";
+        m = (await lin_space(m0, 2["*"](pi)["+"](m0), n));
+        "349";
+        ecc_anom = m;
+        "350";
+        ecc_anom_old = (function() {
+            var ρσ_Iter = range(n), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(0);
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "352";
+        while (acc["<"](max((function() {
+            var ρσ_Iter = range(n), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(abs(ρσ_getitem(ecc_anom, i)["-"](1["*"](ρσ_getitem(ecc_anom_old, i)))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })()))) {
+            "353";
+            ecc_anom_old = ecc_anom;
+            "354";
+            for (var ρσ_Index1 = 0; ρσ_Index1["<"](n); ρσ_Index1++) {
+                i = ρσ_Index1;
+                "355";
+                ρσ_setitem(ecc_anom, i, ρσ_getitem(ecc_anom, i)["-"](ρσ_getitem(ecc_anom, i)["-"](1["*"](ρσ_getitem(m, i)))["-"](1["*"](e)["*"](sin(ρσ_getitem(ecc_anom, i))))["/"](1["-"](1["*"](e)["*"](cos(ρσ_getitem(ecc_anom, i)))))));
+            }
+        }
+        "357";
+        theta = (function() {
+            var ρσ_Iter = range(n), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(2["*"](atan2(sqrt(1["+"](e))["*"](sin(ρσ_getitem(ecc_anom, i)["/"](2))), sqrt(1["-"](1["*"](e)))["*"](cos(ρσ_getitem(ecc_anom, i)["/"](2))))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "358";
+        r = (function() {
+            var ρσ_Iter = range(n), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(a["*"](1["-"](1["*"](e)["*"](cos(ρσ_getitem(ecc_anom, i))))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "359";
+        theta_asc = (function() {
+            var ρσ_Iter = range(n), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(ρσ_getitem(theta, i)["-"](1["*"](ascension)));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "362";
+        x = (function() {
+            var ρσ_Iter = range(n), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(ρσ_getitem(r, i)["*"](cos(ascension)["*"](cos(ρσ_getitem(theta_asc, i)))["-"](1["*"](sin(ascension))["*"](sin(ρσ_getitem(theta_asc, i)))["*"](cos(inclination)))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "363";
+        z = (function() {
+            var ρσ_Iter = range(n), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(ρσ_getitem(r, i)["*"](sin(ascension)["*"](cos(ρσ_getitem(theta_asc, i)))["+"](cos(ascension)["*"](sin(ρσ_getitem(theta_asc, i)))["*"](cos(inclination)))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "364";
+        y = (function() {
+            var ρσ_Iter = range(n), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(ρσ_getitem(r, i)["*"](sin(ρσ_getitem(theta, i)["-"](1["*"](ascension))))["*"](sin(inclination)));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "368";
+        return (function() {
+            var ρσ_Iter = range(n), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(vec(ρσ_getitem(x, i), ρσ_getitem(y, i), ρσ_getitem(z, i)));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+    };
+    if (!orbit.__defaults__) Object.defineProperties(orbit, {
+        __defaults__ : {value: {acc:.01}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["m0", "e", "a", "inclination", "ascension", "n", "acc"]},
+        __module__ : {value: null}
+    });
+
+    "370";
+    async function planet_init(planet_data, n, scale_factor) {
+        var ρσ_ls, a, tilt, timescale, spin, celestial, coord;
+        "371";
+        a = ρσ_getitem(planet_data, "a");
+        "372";
+        tilt = ρσ_getitem(planet_data, "tilt");
+        "373";
+        timescale = Math.pow((a["/"](ρσ_getitem(earth, "a"))), 1.5);
+        "374";
+        spin = 365.25["*"](24)["*"](ρσ_getitem(planet_data, "spin"))["/"](n);
+        "376";
+        celestial = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: ρσ_getitem(planet_data, "radius")["*"](scale_factor), texture: ρσ_getitem(planet_data, "material"), make_trail: true, retain: int(1.5e-9["*"](Math.pow(a, 1.55))["/"](dt))})]);
+        "377";
+        ρσ_interpolate_kwargs.call(celestial, celestial.rotate, [ρσ_desugar_kwargs({angle: tilt, axis: vec(0, 0, 1)})]);
+        "380";
+        coord = (await orbit(ρσ_getitem(planet_data, "mean_anomaly"), ρσ_getitem(planet_data, "e"), a, ρσ_getitem(planet_data, "inclination"), ρσ_getitem(planet_data, "right_ascension"), n));
+        "382";
+        return ρσ_list_decorate([ celestial, coord, timescale, a, tilt, spin ]);
+    };
+    if (!planet_init.__argnames__) Object.defineProperties(planet_init, {
+        __argnames__ : {value: ["planet_data", "n", "scale_factor"]},
+        __module__ : {value: null}
+    });
+
+    "384";
+    async function moon_init(moon_data, planets, n, scale_up) {
+        var ρσ_ls, tilt, moon_scale, spin, lock, celestial, moon_coord, planet_coord, planet_scale;
+        "386";
+        tilt = ρσ_getitem(moon_data, "tilt");
+        "387";
+        moon_scale = ρσ_getitem(moon_data, "period")["/"](365.25);
+        "388";
+        spin = 365["*"](24)["*"](ρσ_getitem(moon_data, "spin"))["/"](n);
+        "389";
+        lock = ρσ_getitem(moon_data, "tidal_lock");
+        "391";
+        celestial = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: ρσ_getitem(moon_data, "radius")["*"](scale_up), texture: ρσ_getitem(moon_data, "material")})]);
+        "393";
+        moon_coord = (await orbit(ρσ_getitem(moon_data, "mean_anomaly"), ρσ_getitem(moon_data, "e"), ρσ_getitem(moon_data, "a"), ρσ_getitem(ρσ_getitem(planets, ρσ_getitem(moon_data, "planet_num")), 4)["+"](ρσ_getitem(moon_data, "inclination")), ρσ_getitem(moon_data, "right_ascension"), n));
+        "397";
+        planet_coord = ρσ_getitem(ρσ_getitem(planets, ρσ_getitem(moon_data, "planet_num")), 1);
+        "398";
+        planet_scale = ρσ_getitem(ρσ_getitem(planets, ρσ_getitem(moon_data, "planet_num")), 2);
+        "401";
+        return ρσ_list_decorate([ celestial, planet_coord, moon_coord, planet_scale, moon_scale, tilt, spin, lock ]);
+    };
+    if (!moon_init.__argnames__) Object.defineProperties(moon_init, {
+        __argnames__ : {value: ["moon_data", "planets", "n", "scale_up"]},
+        __module__ : {value: null}
+    });
+
+    "403";
+    async function moon_update(moonlist, t, dt, n) {
+        var ρσ_ls, vel_vect0, vel_vect1, ρσ_unpack, v0n, v1n, cx, d1, vel_vect2, vel_vect3, v2n, v3n, cx2, d2;
+        "408";
+        ρσ_getitem(moonlist, 0).pos = ρσ_getitem(ρσ_getitem(moonlist, 1), int(1["-u"]()["*"](t)["/"](ρσ_getitem(moonlist, 3)))["%"](n))["+"](ρσ_getitem(ρσ_getitem(moonlist, 2), int(1["-u"]()["*"](t)["/"](ρσ_getitem(moonlist, 4)))["%"](n)));
+        "415";
+        vel_vect0 = vector(ρσ_getitem(ρσ_getitem(moonlist, 2), int(1["-u"]()["*"](t["+"](dt))["/"](ρσ_getitem(moonlist, 4)))["%"](n))["-"](1["*"](ρσ_getitem(ρσ_getitem(moonlist, 2), int(1["-u"]()["*"](t)["/"](ρσ_getitem(moonlist, 4)))["%"](n)))));
+        "419";
+        vel_vect1 = vector(ρσ_getitem(ρσ_getitem(moonlist, 2), int(1["-u"]()["*"](t["+"](2["*"](dt)))["/"](ρσ_getitem(moonlist, 4)))["%"](n))["-"](1["*"](ρσ_getitem(ρσ_getitem(moonlist, 2), int(1["-u"]()["*"](t["+"](dt))["/"](ρσ_getitem(moonlist, 4)))["%"](n)))));
+        "422";
+        ρσ_unpack = [norm(vel_vect0), norm(vel_vect1)];
+        v0n = ρσ_unpack[0];
+        v1n = ρσ_unpack[1];
+        "423";
+        cx = v0n.dot(v1n);
+        "424";
+        d1 = acos(cx);
+        "427";
+        vel_vect2 = vector(ρσ_getitem(ρσ_getitem(moonlist, 1), int(1["-u"]()["*"](t["+"](dt))["/"](ρσ_getitem(moonlist, 3)))["%"](n))["-"](1["*"](ρσ_getitem(ρσ_getitem(moonlist, 1), int(1["-u"]()["*"](t)["/"](ρσ_getitem(moonlist, 3)))["%"](n)))));
+        "431";
+        vel_vect3 = vector(ρσ_getitem(ρσ_getitem(moonlist, 1), int(1["-u"]()["*"](t["+"](2["*"](dt)))["/"](ρσ_getitem(moonlist, 3)))["%"](n))["-"](1["*"](ρσ_getitem(ρσ_getitem(moonlist, 1), int(1["-u"]()["*"](t["+"](dt))["/"](ρσ_getitem(moonlist, 3)))["%"](n)))));
+        "434";
+        ρσ_unpack = [norm(vel_vect2), norm(vel_vect3)];
+        v2n = ρσ_unpack[0];
+        v3n = ρσ_unpack[1];
+        "435";
+        cx2 = v2n.dot(v3n);
+        "436";
+        d2 = acos(cx2);
+        "438";
+        if (d2[">"](1)) {
+            "439";
+            d2 = 0;
+        }
+        "442";
+        (ρσ_expr_temp = ρσ_getitem(moonlist, 0), ρσ_interpolate_kwargs.call(ρσ_expr_temp, ρσ_expr_temp.rotate, [ρσ_desugar_kwargs({angle: d1["-"](1["*"](d2))["*"](ρσ_getitem(moonlist, 7)), axis: vec(1["-u"]()["*"](sin(ρσ_getitem(moonlist, 5))), cos(ρσ_getitem(moonlist, 5)), 0)})]));
+    };
+    if (!moon_update.__argnames__) Object.defineProperties(moon_update, {
+        __argnames__ : {value: ["moonlist", "t", "dt", "n"]},
+        __module__ : {value: null}
+    });
+
+    "444";
+    async function planet_update(planet_data, t, dt, n) {
+        "447";
+        ρσ_getitem(planet_data, 0).pos = ρσ_getitem(ρσ_getitem(planet_data, 1), int(1["-u"]()["*"](t)["/"](ρσ_getitem(planet_data, 2)))["%"](n));
+        "450";
+        (ρσ_expr_temp = ρσ_getitem(planet_data, 0), ρσ_interpolate_kwargs.call(ρσ_expr_temp, ρσ_expr_temp.rotate, [ρσ_desugar_kwargs({angle: ρσ_getitem(planet_data, 5)["*"](dt), axis: vec(1["-u"]()["*"](sin(ρσ_getitem(planet_data, 4))), cos(ρσ_getitem(planet_data, 4)), 0)})]));
+    };
+    if (!planet_update.__argnames__) Object.defineProperties(planet_update, {
+        __argnames__ : {value: ["planet_data", "t", "dt", "n"]},
+        __module__ : {value: null}
+    });
+
+    "453";
+    sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: 695500["*"](40), color: color.yellow, emissive: true, texture: "https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg"})]);
+    "456";
+    planet_list = ρσ_list_decorate([ mercury, venus, earth, mars, jupiter, saturn, uranus, neptune ]);
+    "458";
+    moon_list = ρσ_list_decorate([ luna, phobos, deimos, callisto, europa, ganymede, io, dione, enceladus, tethys, titan, ariel, oberon, titania, umbriel, triton ]);
+    "461";
+    planets = ρσ_list_decorate([]);
+    "462";
+    var ρσ_Iter2 = planet_list;
+    ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+    for (var ρσ_Index2 of ρσ_Iter2) {
+        planet = ρσ_Index2;
+        "463";
+        planets.append((await planet_init(planet, n, scale_up)));
+    }
+    "465";
+    moons = ρσ_list_decorate([]);
+    "466";
+    var ρσ_Iter3 = moon_list;
+    ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+    for (var ρσ_Index3 of ρσ_Iter3) {
+        moon = ρσ_Index3;
+        "467";
+        moons.append((await moon_init(moon, planets, n, scale_up)));
+    }
+    "469";
+    t = 0;
+    "470";
+    while (true) {
+        "471";
+        var ρσ_Iter4 = planets;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            planet = ρσ_Index4;
+            "472";
+            (await planet_update(planet, t, dt, n));
+        }
+        "473";
+        var ρσ_Iter5 = moons;
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            moon = ρσ_Index5;
+            "474";
+            (await moon_update(moon, t, dt, n));
+        }
+        "476";
+        (await rate(60));
+        "477";
+        t=t["+"](dt);
+        "478";
+        if (t[">="](1e20)) {
+            "479";
+            t = 0;
+        }
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
