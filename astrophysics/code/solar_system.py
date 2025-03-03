@@ -500,26 +500,29 @@ def show_planet_info(selected_object):
                  "\nOrbital Velocity: " + str(round(v0mag, 2)) + " km/s" + \
                  "\nTime scale: 1 s =  " + str(round(rate_ * dt * 365.25 * 86400 / (3600. * n), 3)) + "hrs"
 
+def zoom_in_on(selected_object):
+    # Clicked on sun? => We assume the user wants to zoom in
+    target = selected_object.pos
+    step = (target - display.center) / 20.0
+    for _ in arange(1, 20, 1):
+        rate(20)
+        display.center += step
+        display.range /= 1.037  # (1.037**19=1.99)
+
 def select(selected_object):
-    if selected_object is sun:# or not ship_mode:
+    if selected_object is None:
         popup.visible = False
+        return
 
-        # Clicked on sun? => We assume the user wants to zoom in
+    if selected_object is sun:
         popup.visible = False
-        target = selected_object.pos
-        step = (target - display.center) / 20.0
-        for _ in arange(1, 20, 1):
-            rate(20)
-            display.center += step
-            display.range /= 1.037  # (1.037**19=1.99)
-
+        zoom_in_on(selected_object)
         return
 
     r0mag = mag(selected_object.pos)
     if r0mag > 1:
         display.center = selected_object.pos
         show_planet_info(selected_object)  # planet label update
-        return
 
 
 # initializing unique (one-off) bodies:
@@ -584,7 +587,6 @@ current_planet = sun # dummy value, popup is not visible from the start anyhow
 def on_mouse_click():
     global current_planet
     current_planet = display.mouse.pick
-    current_planet = sun if current_planet is None else current_planet
     select(current_planet)
 
 display.bind('click', on_mouse_click)
@@ -599,7 +601,7 @@ while True:
     saturn_ring.pos = planets[5][0].pos  # saturn's rings coordinates update
     uranus_ring.pos = planets[6][0].pos  # uranus rings coordinates update
 
-    popup.pos = current_planet.pos
+    popup.pos = popup.pos if current_planet is None else current_planet.pos
 
     rate(rate_)
     t += dt

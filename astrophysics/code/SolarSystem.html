@@ -805,41 +805,55 @@ async function __main__() {
     });
 
     "503";
-    async function select(selected_object) {
-        var ρσ_ls, target, step, _, r0mag;
-        "504";
-        if (selected_object === sun) {
-            "505";
-            popup.visible = false;
+    async function zoom_in_on(selected_object) {
+        var ρσ_ls, target, step, _;
+        "505";
+        target = selected_object.pos;
+        "506";
+        step = target["-"](1["*"](display.center))["/"](20);
+        "507";
+        for (var ρσ_Index3 = 1; ρσ_Index3["<"](20); ρσ_Index3=ρσ_Index3["+"](1)) {
+            _ = ρσ_Index3;
             "508";
-            popup.visible = false;
+            (await rate(20));
             "509";
-            target = selected_object.pos;
+            display.center=display.center["+"](step);
             "510";
-            step = target["-"](1["*"](display.center))["/"](20);
-            "511";
-            for (var ρσ_Index3 = 1; ρσ_Index3["<"](20); ρσ_Index3=ρσ_Index3["+"](1)) {
-                _ = ρσ_Index3;
-                "512";
-                (await rate(20));
-                "513";
-                display.center=display.center["+"](step);
-                "514";
-                display.range=display.range["/"](1.037);
-            }
-            "516";
+            display.range=display.range["/"](1.037);
+        }
+    };
+    if (!zoom_in_on.__argnames__) Object.defineProperties(zoom_in_on, {
+        __argnames__ : {value: ["selected_object"]},
+        __module__ : {value: null}
+    });
+
+    "512";
+    async function select(selected_object) {
+        var ρσ_ls, r0mag;
+        "513";
+        if (selected_object === null) {
+            "514";
+            popup.visible = false;
+            "515";
+            return;
+            "517";
+        }
+        if (selected_object === sun) {
+            "518";
+            popup.visible = false;
+            "519";
+            (await zoom_in_on(selected_object));
+            "520";
             return;
         }
-        "518";
+        "522";
         r0mag = mag(selected_object.pos);
-        "519";
+        "523";
         if (r0mag[">"](1)) {
-            "520";
+            "524";
             display.center = selected_object.pos;
-            "521";
+            "525";
             (await show_planet_info(selected_object));
-            "522";
-            return;
         }
     };
     if (!select.__argnames__) Object.defineProperties(select, {
@@ -847,53 +861,53 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "526";
+    "529";
     sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: 695500["*"](40), texture: "https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg", emissive: true})]);
-    "527";
+    "530";
     sun2 = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: 695500["*"](40), texture: "https://www.hendrikse.name/science/astrophysics/images/textures/sun3.png", opacity: .7, visible: false})]);
-    "536";
+    "539";
     planet_list = ρσ_list_decorate([ mercury, venus, earth, mars, jupiter, saturn, uranus, neptune ]);
-    "538";
-    moon_list = ρσ_list_decorate([ luna, phobos, deimos, callisto, europa, ganymede, io, dione, enceladus, tethys, titan, ariel, oberon, titania, umbriel, triton ]);
     "541";
+    moon_list = ρσ_list_decorate([ luna, phobos, deimos, callisto, europa, ganymede, io, dione, enceladus, tethys, titan, ariel, oberon, titania, umbriel, triton ]);
+    "544";
     planets = ρσ_list_decorate([]);
-    "542";
+    "545";
     var ρσ_Iter4 = planet_list;
     ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
     for (var ρσ_Index4 of ρσ_Iter4) {
         planet = ρσ_Index4;
-        "543";
+        "546";
         planets.append((await planet_init(planet, n, scale_up)));
     }
-    "545";
+    "548";
     moons = ρσ_list_decorate([]);
-    "546";
+    "549";
     var ρσ_Iter5 = moon_list;
     ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
     for (var ρσ_Index5 of ρσ_Iter5) {
         moon = ρσ_Index5;
-        "547";
+        "550";
         moons.append((await moon_init(moon, planets, n, scale_up)));
     }
-    "549";
+    "552";
     saturn_ring = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({length: ρσ_getitem(ρσ_getitem(planets, 5), 0).radius["+"](18e4["*"](scale_up)), height: 1, width: ρσ_getitem(ρσ_getitem(planets, 5), 0).radius["+"](18e4["*"](scale_up)), texture: "https://www.hendrikse.name/science/astrophysics/images/textures/saturn_ring.jpg"})]);
-    "551";
+    "554";
     ρσ_interpolate_kwargs.call(saturn_ring, saturn_ring.rotate, [ρσ_desugar_kwargs({angle: ρσ_getitem(saturn, "tilt"), axis: vec(0, 0, 1)})]);
-    "553";
+    "556";
     uranus_ring = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({length: ρσ_getitem(ρσ_getitem(planets, 6), 0).radius["+"](7e4["*"](scale_up)), height: 1, width: ρσ_getitem(ρσ_getitem(planets, 6), 0).radius["+"](7e4["*"](scale_up)), texture: "https://www.hendrikse.name/science/astrophysics/images/textures/uranus_ring.jpg"})]);
-    "555";
+    "558";
     ρσ_interpolate_kwargs.call(uranus_ring, uranus_ring.rotate, [ρσ_desugar_kwargs({angle: ρσ_getitem(uranus, "tilt"), axis: vec(0, 0, 1)})]);
-    "557";
+    "560";
     async function toggle_planet_trails(event) {
         var ρσ_ls, planet_;
-        "558";
+        "561";
         var ρσ_Iter6 = planets;
         ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
         for (var ρσ_Index6 of ρσ_Iter6) {
             planet_ = ρσ_Index6;
-            "559";
+            "562";
             ρσ_getitem(planet_, 0).clear_trail();
-            "560";
+            "563";
             ρσ_getitem(planet_, 0).make_trail = event.checked;
         }
     };
@@ -902,10 +916,10 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "562";
+    "565";
     async function change_speed(event) {
-        "563";
-        "564";
+        "566";
+        "567";
         dt = event.value;
     };
     if (!change_speed.__argnames__) Object.defineProperties(change_speed, {
@@ -913,19 +927,19 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "566";
+    "569";
     async function toggle_sun_texture(event) {
-        "567";
+        "570";
         if (event.checked) {
-            "568";
-            sun.texture = "https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg";
-            "569";
-            sun2.visible = false;
-            "570";
-        } else {
             "571";
-            sun2.visible = true;
+            sun.texture = "https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg";
             "572";
+            sun2.visible = false;
+            "573";
+        } else {
+            "574";
+            sun2.visible = true;
+            "575";
             sun.texture = "https://www.hendrikse.name/science/astrophysics/images/textures/sun.png";
         }
     };
@@ -934,67 +948,65 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "574";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Planet trails ", bind: toggle_planet_trails, checked: true})]);
-    "575";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Sun texture", bind: toggle_sun_texture, checked: true})]);
     "577";
-    display.append_to_caption("\n\nAnimation speed:");
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Planet trails ", bind: toggle_planet_trails, checked: true})]);
     "578";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .01, max: 10, value: 1, bind: change_speed})]);
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Sun texture", bind: toggle_sun_texture, checked: true})]);
+    "580";
+    display.append_to_caption("\n\nAnimation speed:");
     "581";
-    popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({visible: false, box: false, xoffset: 1["-u"]()["*"](49), yoffset: 50, font: "sans", opacity: .4})]);
-    "583";
-    current_planet = sun;
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .01, max: 10, value: 1, bind: change_speed})]);
     "584";
+    popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({visible: false, box: false, xoffset: 1["-u"]()["*"](49), yoffset: 50, font: "sans", opacity: .4})]);
+    "586";
+    current_planet = sun;
+    "587";
     async function on_mouse_click() {
-        "585";
-        "586";
-        current_planet = display.mouse.pick();
-        "587";
-        current_planet = (current_planet === null) ? sun : current_planet;
         "588";
+        "589";
+        current_planet = display.mouse.pick();
+        "590";
         (await select(current_planet));
     };
     if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
         __module__ : {value: null}
     });
 
-    "590";
-    display.bind("click", on_mouse_click);
     "592";
+    display.bind("click", on_mouse_click);
+    "594";
     t = 0;
-    "593";
+    "595";
     while (true) {
-        "594";
+        "596";
         var ρσ_Iter7 = planets;
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             planet = ρσ_Index7;
-            "595";
+            "597";
             (await planet_update(planet, t, dt, n));
         }
-        "596";
+        "598";
         var ρσ_Iter8 = moons;
         ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
         for (var ρσ_Index8 of ρσ_Iter8) {
             moon = ρσ_Index8;
-            "597";
+            "599";
             (await moon_update(moon, t, dt, n));
         }
-        "599";
+        "601";
         saturn_ring.pos = ρσ_getitem(ρσ_getitem(planets, 5), 0).pos;
-        "600";
-        uranus_ring.pos = ρσ_getitem(ρσ_getitem(planets, 6), 0).pos;
         "602";
-        popup.pos = current_planet.pos;
+        uranus_ring.pos = ρσ_getitem(ρσ_getitem(planets, 6), 0).pos;
         "604";
-        (await rate(rate_));
-        "605";
-        t=t["+"](dt);
+        popup.pos = (current_planet === null) ? popup.pos : current_planet.pos;
         "606";
+        (await rate(rate_));
+        "607";
+        t=t["+"](dt);
+        "608";
         if (t[">="](1e20)) {
-            "607";
+            "609";
             t = 0;
         }
     }
