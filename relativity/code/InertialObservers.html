@@ -1,0 +1,450 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    fontloading();
+    await waitforfonts();
+    var compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, attach_trail, attach_arrow, attach_light, sqrt, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, radio, checkbox, slider, checkbox, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, pos1, pos2, _GS_1, barge1, barge2, _, v1, v2, dt1, dt2, t;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "8";
+    title = "&#x2022; Original <a href=\"https://www.mso.anu.edu.au/pfrancis/simulations/barges_light.py\">barges_light.py<\/a> by <a href=\"http://www.mso.anu.edu.au/pfrancis/simulations/\">Paul Francis</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/inertial_observers.py\">inertial_observers.py</a>\n&#x2022; Slow speeds with respect to the speed of light, so no time dilation\n\n";
+    "10";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, range: 3, width: 650, height: 400, forward: vector(.2, 1["-u"]()["*"](.3), 1["-u"]()["*"](1)), background: color.gray(.075)})]);
+    "12";
+    function Water() {;
+    }
+    Water.prototype.__init__ = async function __init__() {
+        var self = this;
+        "14";
+        ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(0, 1["-u"]()["*"](.1), 0), length: 10, width: 3, height: .1, color: vector(.1, .2, 1)})]);
+    };
+    if (!Water.prototype.__init__.__module__) Object.defineProperties(Water.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    Water.__argnames__ = Water.prototype.__init__.__argnames__;
+    Water.__handles_kwarg_interpolation__ = Water.prototype.__init__.__handles_kwarg_interpolation__;
+    Water.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Water.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Water.prototype, "__bases__", {value: []});
+
+
+    "16";
+    function ReferenceFrame() {;
+    }
+    ReferenceFrame.prototype.__init__ = async function __init__(position) {
+        var self = this;
+        "18";
+        self._x1 = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vector(1, 0, 0), color: color.white, shaftwidth: .03})]);
+        "19";
+        self._tex1 = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "x", pos: self._x1.pos["+"](self._x1.axis), height: .1, depth: .02})]);
+        "20";
+        self._y1 = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vector(0, 0, 1), color: color.white, shaftwidth: .03})]);
+        "21";
+        self._tey1 = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "y", pos: self._y1.pos["+"](self._y1.axis), height: .1, depth: .02})]);
+        "22";
+        self._z1 = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, axis: vector(0, 1, 0), color: color.white, shaftwidth: .03})]);
+        "23";
+        self._tez1 = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "z", pos: self._z1.pos["+"](self._z1.axis), height: .1, depth: .02})]);
+    };
+    if (!ReferenceFrame.prototype.__init__.__argnames__) Object.defineProperties(ReferenceFrame.prototype.__init__, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    ReferenceFrame.__argnames__ = ReferenceFrame.prototype.__init__.__argnames__;
+    ReferenceFrame.__handles_kwarg_interpolation__ = ReferenceFrame.prototype.__init__.__handles_kwarg_interpolation__;
+    ReferenceFrame.prototype.update = async function update(dx) {
+        var self = this;
+        "26";
+        self._x1.pos=self._x1.pos["+"](dx);
+        "27";
+        self._tex1.pos=self._tex1.pos["+"](dx);
+        "28";
+        self._y1.pos=self._y1.pos["+"](dx);
+        "29";
+        self._tey1.pos=self._tey1.pos["+"](dx);
+        "30";
+        self._z1.pos=self._z1.pos["+"](dx);
+        "31";
+        self._tez1.pos=self._tez1.pos["+"](dx);
+    };
+    if (!ReferenceFrame.prototype.update.__argnames__) Object.defineProperties(ReferenceFrame.prototype.update, {
+        __argnames__ : {value: ["dx"]},
+        __module__ : {value: null}
+    });
+    ReferenceFrame.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    ReferenceFrame.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(ReferenceFrame.prototype, "__bases__", {value: []});
+
+
+
+    "33";
+    function Clock() {;
+    }
+    Clock.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var theta = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.theta : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "theta")){
+            theta = ρσ_kwargs_obj.theta;
+        }
+        "35";
+        self._clock1 = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](vector(1["-u"]()["*"](.2), .2, 0)), axis: vector(0, 0, .02), radius: .1, color: vector(.8, .8, .2)})]);
+        "37";
+        self._hand1a = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._clock1.pos["+"](vector(0, 0, .01)), axis: .1["*"](vector(cos(theta), sin(theta), 0)), color: vector(.2, .3, .1), radius: .015})]);
+        "40";
+        self._hand1b = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._clock1.pos["+"](vector(0, 0, .005)), axis: .06["*"](vector(cos(theta["/"](60)), sin(theta["/"](60)), 0)), color: vector(.2, .3, .1), radius: .02})]);
+        "43";
+        self._theta = theta;
+    };
+    if (!Clock.prototype.__init__.__defaults__) Object.defineProperties(Clock.prototype.__init__, {
+        __defaults__ : {value: {theta:.1}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "theta"]},
+        __module__ : {value: null}
+    });
+    Clock.__argnames__ = Clock.prototype.__init__.__argnames__;
+    Clock.__handles_kwarg_interpolation__ = Clock.prototype.__init__.__handles_kwarg_interpolation__;
+    Clock.prototype.update = async function update(dx, dt) {
+        var self = this;
+        "46";
+        self._theta=self._theta["+"](dt);
+        "47";
+        self._clock1.pos=self._clock1.pos["+"](dx);
+        "48";
+        self._hand1a.pos=self._hand1a.pos["+"](dx);
+        "49";
+        self._hand1a.axis = .1["*"](vector(sin(self._theta), cos(self._theta), 0));
+        "50";
+        self._hand1b.pos=self._hand1b.pos["+"](dx);
+        "51";
+        self._hand1b.axis = .06["*"](vector(sin(self._theta["/"](60)), cos(self._theta["/"](60)), 0));
+    };
+    if (!Clock.prototype.update.__argnames__) Object.defineProperties(Clock.prototype.update, {
+        __argnames__ : {value: ["dx", "dt"]},
+        __module__ : {value: null}
+    });
+    Clock.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Clock.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Clock.prototype, "__bases__", {value: []});
+
+
+
+    "54";
+    function Person() {;
+    }
+    Person.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var colour = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        "56";
+        self._head1 = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position["+"](vector(1["-u"]()["*"](.1), .5, 0)), radius: .07, color: colour})]);
+        "57";
+        self._body1 = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._head1.pos, axis: vector(0, 1["-u"]()["*"](.3), 0), radius: .03, color: colour})]);
+        "58";
+        self._arm1a = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._head1.pos["+"](vector(0, 1["-u"]()["*"](.1), 0)), axis: vector(1["-u"]()["*"](.15), 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
+        "60";
+        self._arm1b = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._head1.pos["+"](vector(0, 1["-u"]()["*"](.1), 0)), axis: vector(.15, 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
+        "62";
+        self._leg1a = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._head1.pos["+"](self._body1.axis), axis: vector(.1, 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
+        "64";
+        self._leg1b = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._head1.pos["+"](self._body1.axis), axis: vector(1["-u"]()["*"](.1), 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
+    };
+    if (!Person.prototype.__init__.__defaults__) Object.defineProperties(Person.prototype.__init__, {
+        __defaults__ : {value: {colour:color.green}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "colour"]},
+        __module__ : {value: null}
+    });
+    Person.__argnames__ = Person.prototype.__init__.__argnames__;
+    Person.__handles_kwarg_interpolation__ = Person.prototype.__init__.__handles_kwarg_interpolation__;
+    Person.prototype.arm_position = async function arm_position() {
+        var self = this;
+        "68";
+        return self._arm1b.pos["+"](self._arm1b.axis);
+    };
+    if (!Person.prototype.arm_position.__module__) Object.defineProperties(Person.prototype.arm_position, {
+        __module__ : {value: null}
+    });
+    Person.prototype.update = async function update(dx) {
+        var self = this;
+        "71";
+        self._head1.pos=self._head1.pos["+"](dx);
+        "72";
+        self._body1.pos=self._body1.pos["+"](dx);
+        "73";
+        self._arm1a.pos=self._arm1a.pos["+"](dx);
+        "74";
+        self._arm1b.pos=self._arm1b.pos["+"](dx);
+        "75";
+        self._leg1a.pos=self._leg1a.pos["+"](dx);
+        "76";
+        self._leg1b.pos=self._leg1b.pos["+"](dx);
+    };
+    if (!Person.prototype.update.__argnames__) Object.defineProperties(Person.prototype.update, {
+        __argnames__ : {value: ["dx"]},
+        __module__ : {value: null}
+    });
+    Person.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Person.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Person.prototype, "__bases__", {value: []});
+
+
+
+
+    "79";
+    function Barge() {;
+    }
+    Barge.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var person_colour = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.person_colour : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "person_colour")){
+            person_colour = ρσ_kwargs_obj.person_colour;
+        }
+        var ρσ_ls, _GS_1;
+        "81";
+        self._barge = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: position, length: 2, width: .5, height: .1, color: vector(.6, .4, .2)})]);
+        "82";
+        self._position = position;
+        "83";
+        _GS_1 = new Clock;
+        (await _GS_1.__init__(position));
+        self._clock = _GS_1;
+        "84";
+        _GS_1 = new Person;
+        (await _GS_1.__init__(position, person_colour));
+        self._person = _GS_1;
+        "85";
+        _GS_1 = new ReferenceFrame;
+        (await _GS_1.__init__(position));
+        self._reference_frame = _GS_1;
+        "86";
+        self._detector = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: (await self._person.arm_position())["+"](vector(.9, 0, 0)), axis: vector(1["-u"]()["*"](.1), 0, 0), radius: .03, color: color.red})]);
+        "88";
+        self._support = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: self._detector.pos, axis: vector(0, 1["-u"]()["*"](.3), 0), radius: .01, color: vector(.3, .3, .3)})]);
+        "90";
+        self._light = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: (await self._person.arm_position()), radius: .03, color: vector(.2, .2, .2), emissive: true})]);
+        "91";
+        self._light_light = ρσ_interpolate_kwargs.call(this, local_light, [ρσ_desugar_kwargs({pos: self._light.pos, color: color.yellow, visible: false})]);
+        "92";
+        self._light_direction = 1;
+    };
+    if (!Barge.prototype.__init__.__defaults__) Object.defineProperties(Barge.prototype.__init__, {
+        __defaults__ : {value: {person_colour:color.green}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "person_colour"]},
+        __module__ : {value: null}
+    });
+    Barge.__argnames__ = Barge.prototype.__init__.__argnames__;
+    Barge.__handles_kwarg_interpolation__ = Barge.prototype.__init__.__handles_kwarg_interpolation__;
+    Barge.prototype.switch_light = async function switch_light() {
+        var self = this;
+        "95";
+        self._light_light.visible = !self._light_light.visible;
+        "96";
+        self._light.color = (self._light_light.visible) ? color.white : vector(.2, .2, .2);
+    };
+    if (!Barge.prototype.switch_light.__module__) Object.defineProperties(Barge.prototype.switch_light, {
+        __module__ : {value: null}
+    });
+    Barge.prototype._update_photon = async function _update_photon() {
+        var self = this;
+        "99";
+        if (self._light.pos.x["-"](1["*"](self._barge.pos.x))[">="](.9) || self._light.pos.x["-"](1["*"](self._barge.pos.x))["<"](0)) {
+            "100";
+            self._light_direction=self._light_direction["*"](1["-u"]()["*"](1));
+        }
+        "102";
+        self._light.pos=self._light.pos["+"](self._light_direction["*"](5)["*"](v1));
+        "103";
+        self._light_light.pos=self._light_light.pos["+"](self._light_direction["*"](5)["*"](v1));
+    };
+    if (!Barge.prototype._update_photon.__module__) Object.defineProperties(Barge.prototype._update_photon, {
+        __module__ : {value: null}
+    });
+    Barge.prototype._move_barge = async function _move_barge(dx, dt) {
+        var self = this;
+        "106";
+        self._barge.pos=self._barge.pos["+"](dx);
+        "107";
+        (await self._reference_frame.update(dx));
+        "108";
+        (await self._clock.update(dx, dt));
+        "109";
+        (await self._person.update(dx));
+        "110";
+        self._support.pos=self._support.pos["+"](dx);
+        "111";
+        self._detector.pos=self._detector.pos["+"](dx);
+        "112";
+        self._light.pos=self._light.pos["+"](dx);
+        "113";
+        self._light_light.pos=self._light_light.pos["+"](dx);
+    };
+    if (!Barge.prototype._move_barge.__argnames__) Object.defineProperties(Barge.prototype._move_barge, {
+        __argnames__ : {value: ["dx", "dt"]},
+        __module__ : {value: null}
+    });
+    Barge.prototype.update = async function update(dx, dt) {
+        var self = this;
+        "116";
+        (await self._move_barge(dx, dt));
+        "117";
+        if (self._light_light.visible) {
+            "118";
+            (await self._update_photon());
+        }
+    };
+    if (!Barge.prototype.update.__argnames__) Object.defineProperties(Barge.prototype.update, {
+        __argnames__ : {value: ["dx", "dt"]},
+        __module__ : {value: null}
+    });
+    Barge.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Barge.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Barge.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "121";
+    pos1 = vector(1["-u"]()["*"](1), 0, .6);
+    "122";
+    pos2 = vector(0, 0, 1["-u"]()["*"](.6));
+    "123";
+    _GS_1 = new Barge;
+    (await _GS_1.__init__(pos1));
+    barge1 = _GS_1;
+    "124";
+    _GS_1 = new Barge;
+    (await _GS_1.__init__(pos2, color.orange));
+    barge2 = _GS_1;
+    "125";
+    _GS_1 = new Water;
+    (await _GS_1.__init__());
+    _ = _GS_1;
+    "137";
+    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Light barge 1", bind: barge1.switch_light.bind(barge1)})]);
+    "138";
+    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Light barge 2", bind: barge2.switch_light.bind(barge2)})]);
+    "141";
+    v1 = vector(.001, 0, 0);
+    "142";
+    v2 = vector(1["-u"]()["*"](.001), 0, 0);
+    "143";
+    dt1 = .01;
+    "144";
+    dt2 = .01;
+    "145";
+    t = 0;
+    "146";
+    while (1) {
+        "147";
+        t=t["+"](1);
+        "148";
+        (await rate(100));
+        "149";
+        (await barge1.update(v1, dt1));
+        "150";
+        (await barge2.update(v2, dt2));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
