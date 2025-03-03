@@ -13,7 +13,7 @@ These factors allow us to make the hybrid biological models... ...we speculate t
 geometrical fractal model is found that has a good match to the geometry of a given plant, 
 then there is a specific relationship between these code trees and the information 
 stored in the genes of the plant. &mdash; 
-<a href="https://en.wikipedia.org/wiki/Michael_Barnsley">Michael Barnsley</a>, <i>et al</i> in
+<a href="https://en.wikipedia.org/wiki/Michael_Barnsley">Michael Barnsley</a>, <i>et al.</i> in
 <a href="https://maths-people.anu.edu.au/~barnsley/pdfs/V-var_super_fractals.pdf">V -variable fractals and superfractals</a>
 </blockquote>
 
