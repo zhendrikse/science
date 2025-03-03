@@ -53,7 +53,10 @@ and only a kind of union of the two will preserve an independent reality.
     <figcaption>Visualization of length contraction for a relativistic particle.</figcaption>
   </figure>
   <figure class="right_image">
-    <!-- RESERVED FOR FUTURE APPLICATION -->
+    <a href="inertial_observers.html">
+      <img alt="Inertial observers" src="images/inertial_observers.png" title="Click to animate"/>
+    </a>
+    <figcaption>Observers in inertial frames equipped with photon clocks.</figcaption>
   </figure>
 </div>
 <p style="clear: both;"></p>
