@@ -1,11 +1,12 @@
-from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt, box
+#Web VPython 3.2
+from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt, box, checkbox, slider
 
 title="""&#x2022; Original <a href="https://github.com/lukekulik/solar-system">solar system</a> by <a href="https://github.com/lukekulik/">Luke Kulik</a>
 &#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/solar_system.py">solar_system.py</a>
 
 """
 
-display = canvas(title=title, width=1200, height=800, forward=vec(0, 0, -1), background=color.black)#color.gray(0.075))#, range=2000 * 2500)
+display = canvas(title=title, width=600, height=400, forward=vec(0.55, -.5, -.7), background=color.black, range=1e9)
 
 n = 10000  # number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
 scale_up = 2000  # scaling factor for planets and moons radii
@@ -449,7 +450,7 @@ def planet_update(planet_data, t, dt, n):
 
 # initializing unique (one-off) bodies:
 sun = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg", emissive=True)  # radius in km
-#sun2 = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun3.png", opacity=0.7)  # applying Sun spots
+sun2 = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun3.png", opacity=0.7, visible=False)  # applying Sun spots
 #stars = sphere(radius=30066790000, texture="https://www.hendrikse.name/science/astrophysics/images/textures/starX.png", emissive=True, opacity=0.5)  # constructing a stellar sphere
 #stars = sphere(radius=30066790000, texture="https://www.hendrikse.name/science/astrophysics/images/textures/starX.png")  # constructing a stellar sphere
 
@@ -479,6 +480,29 @@ uranus_ring = box(length=planets[6][0].radius + 70000 * scale_up, height=1,
                    width=planets[6][0].radius + 70000 * scale_up, texture="https://www.hendrikse.name/science/astrophysics/images/textures/uranus_ring.jpg")
 uranus_ring.rotate(angle=uranus['tilt'], axis=vec(0, 0, 1))  # tilt corresponding to planet tilt
 
+def toggle_planet_trails(event):
+    for planet_ in planets:
+        planet_[0].clear_trail()
+        planet_[0].make_trail = event.checked
+
+def change_speed(event):
+    global dt
+    dt = event.value
+
+def toggle_sun_texture(event):
+    if event.checked:
+        sun.texture = "https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg"
+        sun2.visible = False
+    else:
+        sun2.visible = True
+        sun.texture = "https://www.hendrikse.name/science/astrophysics/images/textures/sun.png"
+
+_ = checkbox(text="Planet trails ", bind=toggle_planet_trails, checked=True)
+_ = checkbox(text="Sun texture", bind=toggle_sun_texture, checked=True)
+
+display.append_to_caption("\n\nAnimation speed:")
+_ = slider(min=0.01, max=10, value=1, bind=change_speed)
+
 t = 0  # time counter
 while True:
     for planet in planets:
@@ -489,7 +513,7 @@ while True:
     saturn_ring.pos = planets[5][0].pos  # saturn's rings coordinates update
     uranus_ring.pos = planets[6][0].pos  # uranus rings coordinates update
 
-    rate(60)
+    rate(40)
     t += dt
     if t >= 1e20:  # orbital reset, to prevent the counter from going to infinity
         t = 0
