@@ -1,16 +1,23 @@
 #Web VPython 3.2
-from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt, box, checkbox, slider
+from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt, box, checkbox, slider, label, mag
 
 title="""&#x2022; Original <a href="https://github.com/lukekulik/solar-system">solar system</a> by <a href="https://github.com/lukekulik/">Luke Kulik</a>
 &#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/solar_system.py">solar_system.py</a>
 
+&#x2022; Fast and accurate representation of all of the planets and bigger moons using Keplerian elements in 3D
+  &#x2022; Includes tilt, spin and tidal locking of applicable moons e.g. Earth’s moon
+&#x2022; Showing 'real time' data on velocity and position of any selected planet
+&#x2022; Click on any planet for more information, click on sun to zoom in.
+
 """
 
-display = canvas(title=title, width=600, height=400, forward=vec(0.55, -.5, -.7), background=color.black, range=1e9)
+display = canvas(title=title, width=600, height=400, forward=vec(0.55, -.5, -.7), range=1e9)#, background=color.black)
 
 n = 10000  # number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
 scale_up = 2000  # scaling factor for planets and moons radii
 dt = 1  # initial time step
+ship_mode = False
+rate_ = 40
 
 #################
 # P L A N E T S #
@@ -127,6 +134,7 @@ luna = {'a': 384399 * 50.,
         'period': 27.321,
         'planet_name': "Earth",
         'planet_num': 2,
+        'name': "Luna",
         'tidal_lock': 1}
 
 phobos = {'a': 9376 * 1000,
@@ -141,6 +149,7 @@ phobos = {'a': 9376 * 1000,
           'period': 0.31891023,
           'planet_name': "Mars",
           'planet_num': 3,
+          'name': "Phobos",
           'tidal_lock': 1}
 
 deimos = {'a': 23463.2 * 650.,
@@ -155,6 +164,7 @@ deimos = {'a': 23463.2 * 650.,
           'period': 1.263,
           'planet_name': "Mars",
           'planet_num': 3,
+          'name': "Deimos",
           'tidal_lock': 1}
 
 callisto = {'a': 1882700 * ScaleMoon / 2,
@@ -169,6 +179,7 @@ callisto = {'a': 1882700 * ScaleMoon / 2,
             'period': 16.689,
             'planet_name': "Jupiter",
             'planet_num': 4,
+            'name': "Callisto",
             'tidal_lock': 1}
 
 europa = {'a': 670900 * ScaleMoon,
@@ -183,6 +194,7 @@ europa = {'a': 670900 * ScaleMoon,
           'period': 12.689,
           'planet_name': "Jupiter",
           'planet_num': 4,
+          'name': "Europa",
           'tidal_lock': 1}
 
 ganymede = {'a': 1070400 * ScaleMoon,
@@ -197,6 +209,7 @@ ganymede = {'a': 1070400 * ScaleMoon,
             'period': 10.689,
             'planet_name': "Jupiter",
             'planet_num': 4,
+            'name': "Ganymede",
             'tidal_lock': 1}
 
 io = {'a': 421800 * ScaleMoon * 1.5,
@@ -211,6 +224,7 @@ io = {'a': 421800 * ScaleMoon * 1.5,
       'period': 6.689,
       'planet_name': "Jupiter",
       'planet_num': 4,
+      'name': "Io",
       'tidal_lock': 1}
 
 dione = {'a': 377396 * 3 * ScaleMoon,
@@ -225,6 +239,7 @@ dione = {'a': 377396 * 3 * ScaleMoon,
          'period': 7.689,
          'planet_name': "Saturn",
          'planet_num': 5,
+         'name': "Dione",
          'tidal_lock': 1}
 
 enceladus = {'a': 237948 * 3 * ScaleMoon,
@@ -239,6 +254,7 @@ enceladus = {'a': 237948 * 3 * ScaleMoon,
              'period': 16.689,
              'planet_name': "Saturn",
              'planet_num': 5,
+             'name': "Enceladus",
              'tidal_lock': 1}
 
 tethys = {'a': 294619 * 3 * ScaleMoon,
@@ -253,6 +269,7 @@ tethys = {'a': 294619 * 3 * ScaleMoon,
           'period': 1.689,
           'planet_name': "Saturn",
           'planet_num': 5,
+          'name': "Tethys",
           'tidal_lock': 1}
 
 titan = {'a': 1221870 * ScaleMoon,
@@ -267,6 +284,7 @@ titan = {'a': 1221870 * ScaleMoon,
          'period': 61.689,
          'planet_name': "Saturn",
          'planet_num': 5,
+         'name': "Titan",
          'tidal_lock': 1}
 
 ariel = {'a': 191020 * ScaleMoon,
@@ -281,6 +299,7 @@ ariel = {'a': 191020 * ScaleMoon,
          'period': 16.689,
          'planet_name': "Uranus",
          'planet_num': 6,
+         'name': "Ariel",
          'tidal_lock': 1}
 
 oberon = {'a': 583520 * ScaleMoon,
@@ -295,6 +314,7 @@ oberon = {'a': 583520 * ScaleMoon,
           'period': 6.689,
           'planet_name': "Uranus",
           'planet_num': 6,
+          'name': "Oberon",
           'tidal_lock': 1}
 
 titania = {'a': 435910 * ScaleMoon,
@@ -309,6 +329,7 @@ titania = {'a': 435910 * ScaleMoon,
            'period': 1.689,
            'planet_name': "Uranus",
            'planet_num': 6,
+           'name': "Titania",
            'tidal_lock': 1}
 
 umbriel = {'a': 266000 * ScaleMoon,
@@ -323,6 +344,7 @@ umbriel = {'a': 266000 * ScaleMoon,
            'period': 24.689,
            'planet_name': "Uranus",
            'planet_num': 6,
+           'name': "Umbriel",
            'tidal_lock': 1}
 
 triton = {'a': 354759 * ScaleMoon,
@@ -337,6 +359,7 @@ triton = {'a': 354759 * ScaleMoon,
           'period': 16.689,
           'planet_name': "Neptune",
           'planet_num': 7,
+          'name': "Triton",
           'tidal_lock': 1}
 
 def lin_space(start, stop, num):
@@ -448,6 +471,57 @@ def planet_update(planet_data, t, dt, n):
     # rotate a planet by the increment corresponding to the time elapsed, around its tilted axis:
     planet_data[0].rotate(angle=planet_data[5] * dt, axis=vec(-sin(planet_data[4]), cos(planet_data[4]), 0))
 
+def show_planet_info(selected_object):
+    global current_planet
+    u = 132712440018.1  # Sun gravitational parameter
+    err = 1e20  # large number for error comparison in the for loop below
+    r0mag = mag(selected_object.pos)  # computing the instantaneous distance from the Sun
+
+    selected_planet = None
+    for planet_ in planet_list:
+        if (abs(planet_['a'] - r0mag)) < err:
+            err = (abs(planet_['a'] - r0mag))  # assign new closest value
+            selected_planet = planet_
+
+    # for moon in moon_list:
+    #     if (abs(moon['a'] - r0mag)) < err:
+    #         err = (abs(moon['a'] - r0mag))  # assign new closest value
+    #         selected_planet = moon
+
+    eps = -u / (2 * selected_planet['a'])  # compute specific orbital energy
+    v0mag = (2 * (eps + u / r0mag)) ** 0.5  # velocity calculation using specific orbital energy
+
+    popup.visible = True
+    # update label text with new data:
+    popup.text = str(selected_planet['name']) + \
+                 "\nRadius: " + str(selected_planet['radius']) + " km" + \
+                 "\nDistance from the Sun: " + str(int(round(r0mag))) + " km (" + str(
+        round(r0mag / 149598261, 2)) + " AU)" + \
+                 "\nOrbital Velocity: " + str(round(v0mag, 2)) + " km/s" + \
+                 "\nTime scale: 1 s =  " + str(round(rate_ * dt * 365.25 * 86400 / (3600. * n), 3)) + "hrs"
+
+def select(selected_object):
+    if selected_object is sun:# or not ship_mode:
+        popup.visible = False
+
+        # Clicked on sun? => We assume the user wants to zoom in
+        popup.visible = False
+        target = selected_object.pos
+        step = (target - display.center) / 20.0
+        for _ in arange(1, 20, 1):
+            rate(20)
+            display.center += step
+            display.range /= 1.037  # (1.037**19=1.99)
+
+        return
+
+    r0mag = mag(selected_object.pos)
+    if r0mag > 1:
+        display.center = selected_object.pos
+        show_planet_info(selected_object)  # planet label update
+        return
+
+
 # initializing unique (one-off) bodies:
 sun = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun.jpg", emissive=True)  # radius in km
 sun2 = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/astrophysics/images/textures/sun3.png", opacity=0.7, visible=False)  # applying Sun spots
@@ -503,6 +577,18 @@ _ = checkbox(text="Sun texture", bind=toggle_sun_texture, checked=True)
 display.append_to_caption("\n\nAnimation speed:")
 _ = slider(min=0.01, max=10, value=1, bind=change_speed)
 
+# planet/spaceship label definition:
+popup = label(visible=False, box=False, xoffset=-49, yoffset=50, font='sans', opacity=0.4)
+
+current_planet = sun # dummy value, popup is not visible from the start anyhow
+def on_mouse_click():
+    global current_planet
+    current_planet = display.mouse.pick
+    current_planet = sun if current_planet is None else current_planet
+    select(current_planet)
+
+display.bind('click', on_mouse_click)
+
 t = 0  # time counter
 while True:
     for planet in planets:
@@ -513,7 +599,9 @@ while True:
     saturn_ring.pos = planets[5][0].pos  # saturn's rings coordinates update
     uranus_ring.pos = planets[6][0].pos  # uranus rings coordinates update
 
-    rate(40)
+    popup.pos = current_planet.pos
+
+    rate(rate_)
     t += dt
     if t >= 1e20:  # orbital reset, to prevent the counter from going to infinity
         t = 0
