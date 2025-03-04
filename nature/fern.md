@@ -45,7 +45,7 @@ stored in the genes of the plant. &mdash;
 
 As stated above, the Barnsley Fern is created using a matrix transformation:
 
-$f(x, y)=\begin{pmatrix} a \ b \\ c \ d \end{pmatrix}\begin{pmatrix}x \\ y\end{pmatrix} + \begin{pmatrix}e \\ f\end{pmatrix}$
+$f(x, y)=\begin{pmatrix} a & b \\ c & d \end{pmatrix}\begin{pmatrix}x \\ y\end{pmatrix} + \begin{pmatrix}e \\ f\end{pmatrix}$
 
 Four different transformations are used, illustrated in the table below. 
 Variables $a$ to $f$ are the coefficients, 
