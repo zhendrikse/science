@@ -1,6 +1,5 @@
 #Web VPython 3.2
-from vpython import *
-
+from vpython import points, rate, canvas, color, vector, vec, random, radio
 from random import uniform
 
 title = """&#x2022; Based on <a href="https://rosettacode.org/wiki/Barnsley_fern#Python">this example</a> (an alternative <a href="https://code.activestate.com/recipes/577134-fern-ifs-fractal">here</a>) 
@@ -13,24 +12,17 @@ img_x = 512
 img_y = 512
 display = canvas(title=title, background=color.gray(0.075), height=600, center=vector(0, +5, 0), fov=0.01)
 
-pixels = points(radius=.85)
-
-
-def set_color_for_pixel_at(x, y, colour):
-    pixels.append(pos=vector(x, y, 0), color=colour)
-
+def clear_canvas(range_, forward, center):
+    for obj in display.objects:
+        obj.visible = False
+    display.forward= forward
+    display.range = range_
+    display.center = center
 
 class BarnsleyFern:
-    def __init__(self, img_width, img_height, paint_color=vec(0, .8, 0)):
-        self.img_width, self.img_height = img_width, img_height
+    def __init__(self, pixel_radius=0.85, paint_color=vec(0, .8, 0)):
         self.paint_color = paint_color
-        self.x, self.y = 0, 0
-        self.age = 0
-
-    def scale(self, x, y):
-        h = (x + 2.182) * (self.img_width - 1) / 4.8378
-        k = (9.9983 - y) * (self.img_height - 1) / 9.9983
-        return h, k
+        self.pixels = points(radius=pixel_radius)
 
     def transform(self, x, y):
         rand = uniform(0, 100)
@@ -44,11 +36,62 @@ class BarnsleyFern:
             return -0.15 * x + 0.28 * y, 0.26 * x + 0.24 * y + 0.44
 
     def iterate(self, iterations):
+        x, y = 0., 0.
         for _ in range(iterations):
-            self.x, self.y = self.transform(self.x, self.y)
-            set_color_for_pixel_at(self.x, self.y, self.paint_color)
-        self.age += iterations
+            x, y = self.transform(x, y)
+            self.pixels.append(pos=vector(x, y, 0), color=self.paint_color)
+
+class BarnsleyFern3D:
+    def __init__(self, pixel_radius=0.95, paint_color=vec(0, .8, 0)):
+        self.paint_color = paint_color
+        self.pixels = points(radius=pixel_radius)
+
+    def transform(self, x, y, z):
+        r = random()
+        if r <= 0.1:  # 10% probability
+            xn = 0.0
+            yn = 0.18 * y
+            zn = 0.0
+        elif 0.1 < r <= 0.7:  # 60% probability
+            xn = 0.85 * x
+            yn = 0.85 * y + 0.1 * z + 1.6
+            zn = -0.1 * y + 0.85 * z
+        elif 0.7 < r <= 0.85:  # 15 % probability
+            xn = 0.2 * x - 0.2 * y
+            yn = 0.2 * x + 0.2 * y + 0.8
+            zn = 0.3 * z
+        else:
+            xn = -0.2 * x + 0.2 * y  # 15% probability
+            yn = 0.2 * x + 0.2 * y + 0.8
+            zn = 0.3 * z
+        return xn, yn, zn
+
+    def iterate(self, iterations):
+        x, y, z = 0.5, 0.0, -0.2
+        for i in range(1, iterations):
+            x, y, z = self.transform(x, y, z)
+            xc = 4.0 * x  # linear TF for plot
+            yc = 2.0 * y - 7
+            zc = z
+            self.pixels.append(pos=vec(xc, yc, zc), color=self.paint_color)
 
 
-fern = BarnsleyFern(img_x, img_y)
-fern.iterate(100000)
+def toggle_fractal(event):
+    if event.name == "fern":
+        clear_canvas(range_=5.5, forward=vector(0, 0, -1), center=vector(0, 5, 0))
+        BarnsleyFern().iterate(100000)
+        fern_3d_radio.checked = False
+    else:
+        clear_canvas(range_=10, forward=vector(-.85, -.13, -.51), center=vector(.93, 1.51, -1.02))
+        BarnsleyFern3D().iterate(20000)
+        fern_radio.checked = False
+
+
+display.append_to_caption("\n")
+fern_radio = radio(text="Barnsley&apos;s fern ", checked=True, name="fern", bind=toggle_fractal)
+fern_3d_radio = radio(text="3D Barnsley&apos;s fern ", checked=False, name="fern_3d", bind=toggle_fractal)
+
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+BarnsleyFern().iterate(100000)
+while True:
+    rate(10)

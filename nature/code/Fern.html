@@ -1,6 +1,7 @@
 <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
@@ -247,14 +248,15 @@ var ρσ_modules = {};
     ρσ_modules.random.shuffle = shuffle;
     ρσ_modules.random.sample = sample;
 })();
+
 async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-
-    var version, print, arange, __name__, type, ρσ_ls, title, img_x, img_y, display, pixels, _GS_1, fern;
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, pyramid, ring, sphere, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, img_x, img_y, display, fern_radio, fern_3d_radio, _GS_1;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -268,95 +270,85 @@ async function __main__() {
     strings();
     var uniform = ρσ_modules.random.uniform;
 
-    "10";
+    "9";
     title = "&#x2022; Based on <a href=\"https://rosettacode.org/wiki/Barnsley_fern#Python\">this example<\/a> (an alternative <a href=\"https://code.activestate.com/recipes/577134-fern-ifs-fractal\">here</a>)\n&#x2022; See also this <a href=\"https://www.youtube.com/watch?v=km-ctEk8-lE\">video</a> on integrated function systems (IFS)\n&#x2022; Adapted to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/fern.py\">fern.py</a>\n\n";
-    "12";
+    "11";
     img_x = 512;
-    "13";
+    "12";
     img_y = 512;
-    "14";
+    "13";
     display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), height: 600, center: vector(0, 5, 0), fov: .01})]);
-    "16";
-    pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: .85})]);
-    "19";
-    async function set_color_for_pixel_at(x, y, colour) {
+    "15";
+    async function clear_canvas(range_, forward, center) {
+        var ρσ_ls, obj;
+        "16";
+        var ρσ_Iter6 = display.objects;
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            obj = ρσ_Index6;
+            "17";
+            obj.visible = false;
+        }
+        "18";
+        display.forward = forward;
+        "19";
+        display.range = range_;
         "20";
-        ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vector(x, y, 0), color: colour})]);
+        display.center = center;
     };
-    if (!set_color_for_pixel_at.__argnames__) Object.defineProperties(set_color_for_pixel_at, {
-        __argnames__ : {value: ["x", "y", "colour"]},
+    if (!clear_canvas.__argnames__) Object.defineProperties(clear_canvas, {
+        __argnames__ : {value: ["range_", "forward", "center"]},
         __module__ : {value: null}
     });
 
-    "23";
+    "22";
     function BarnsleyFern() {;
     }
     BarnsleyFern.prototype.__init__ = async function __init__() {
         var self = this;
-        var img_width = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
-        var img_height = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
-        var paint_color = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.paint_color : arguments[2];
+        var pixel_radius = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.pixel_radius : arguments[0];
+        var paint_color = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.paint_color : arguments[1];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
         if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "pixel_radius")){
+            pixel_radius = ρσ_kwargs_obj.pixel_radius;
+        }
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "paint_color")){
             paint_color = ρσ_kwargs_obj.paint_color;
         }
-        var ρσ_ls, ρσ_unpack;
-        "25";
-        ρσ_unpack = [img_width, img_height];
-        self.img_width = ρσ_unpack[0];
-        self.img_height = ρσ_unpack[1];
-        "26";
+        "24";
         self.paint_color = paint_color;
-        "27";
-        ρσ_unpack = [0, 0];
-        self.x = ρσ_unpack[0];
-        self.y = ρσ_unpack[1];
-        "28";
-        self.age = 0;
+        "25";
+        self.pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: pixel_radius})]);
     };
     if (!BarnsleyFern.prototype.__init__.__defaults__) Object.defineProperties(BarnsleyFern.prototype.__init__, {
-        __defaults__ : {value: {paint_color:vec(0, .8, 0)}},
+        __defaults__ : {value: {pixel_radius:.85, paint_color:vec(0, .8, 0)}},
         __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["img_width", "img_height", "paint_color"]},
+        __argnames__ : {value: ["pixel_radius", "paint_color"]},
         __module__ : {value: null}
     });
     BarnsleyFern.__argnames__ = BarnsleyFern.prototype.__init__.__argnames__;
     BarnsleyFern.__handles_kwarg_interpolation__ = BarnsleyFern.prototype.__init__.__handles_kwarg_interpolation__;
-    BarnsleyFern.prototype.scale = async function scale(x, y) {
-        var self = this;
-        var ρσ_ls, h, k;
-        "31";
-        h = x["+"](2.182)["*"](self.img_width["-"](1["*"](1)))["/"](4.8378);
-        "32";
-        k = 9.9983["-"](1["*"](y))["*"](self.img_height["-"](1["*"](1)))["/"](9.9983);
-        "33";
-        return [h, k];
-    };
-    if (!BarnsleyFern.prototype.scale.__argnames__) Object.defineProperties(BarnsleyFern.prototype.scale, {
-        __argnames__ : {value: ["x", "y"]},
-        __module__ : {value: null}
-    });
     BarnsleyFern.prototype.transform = async function transform(x, y) {
         var self = this;
         var ρσ_ls, rand;
-        "36";
+        "28";
         rand = (await uniform(0, 100));
-        "37";
+        "29";
         if (rand["<"](1)) {
-            "38";
+            "30";
             return [0, .16["*"](y)];
-            "39";
+            "31";
         } else if (1["<="](rand) && rand["<"](86)) {
-            "40";
+            "32";
             return [.85["*"](x)["+"](.04["*"](y)), 1["-u"]()["*"](.04)["*"](x)["+"](.85["*"](y))["+"](1.6)];
-            "41";
+            "33";
         } else if (86["<="](rand) && rand["<"](93)) {
-            "42";
+            "34";
             return [.2["*"](x)["-"](1["*"](.26)["*"](y)), .23["*"](x)["+"](.22["*"](y))["+"](1.6)];
-            "43";
+            "35";
         } else {
-            "44";
+            "36";
             return [1["-u"]()["*"](.15)["*"](x)["+"](.28["*"](y)), .26["*"](x)["+"](.24["*"](y))["+"](.44)];
         }
     };
@@ -366,20 +358,22 @@ async function __main__() {
     });
     BarnsleyFern.prototype.iterate = async function iterate(iterations) {
         var self = this;
-        var ρσ_ls, ρσ_unpack, _;
-        "47";
-        for (var ρσ_Index6 = 0; ρσ_Index6["<"](iterations); ρσ_Index6++) {
-            _ = ρσ_Index6;
-            "48";
-            ρσ_unpack = (await self.transform(self.x, self.y));
+        var ρσ_ls, ρσ_unpack, x, y, _;
+        "39";
+        ρσ_unpack = [0, 0];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        "40";
+        for (var ρσ_Index7 = 0; ρσ_Index7["<"](iterations); ρσ_Index7++) {
+            _ = ρσ_Index7;
+            "41";
+            ρσ_unpack = (await self.transform(x, y));
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-            self.x = ρσ_unpack[0];
-            self.y = ρσ_unpack[1];
-            "49";
-            (await set_color_for_pixel_at(self.x, self.y, self.paint_color));
+            x = ρσ_unpack[0];
+            y = ρσ_unpack[1];
+            "42";
+            ρσ_interpolate_kwargs.call(self.pixels, self.pixels.append, [ρσ_desugar_kwargs({pos: vector(x, y, 0), color: self.paint_color})]);
         }
-        "50";
-        self.age=self.age["+"](iterations);
     };
     if (!BarnsleyFern.prototype.iterate.__argnames__) Object.defineProperties(BarnsleyFern.prototype.iterate, {
         __argnames__ : {value: ["iterations"]},
@@ -396,13 +390,166 @@ async function __main__() {
 
 
 
+    "44";
+    function BarnsleyFern3D() {;
+    }
+    BarnsleyFern3D.prototype.__init__ = async function __init__() {
+        var self = this;
+        var pixel_radius = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.pixel_radius : arguments[0];
+        var paint_color = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.paint_color : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "pixel_radius")){
+            pixel_radius = ρσ_kwargs_obj.pixel_radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "paint_color")){
+            paint_color = ρσ_kwargs_obj.paint_color;
+        }
+        "46";
+        self.paint_color = paint_color;
+        "47";
+        self.pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: pixel_radius})]);
+    };
+    if (!BarnsleyFern3D.prototype.__init__.__defaults__) Object.defineProperties(BarnsleyFern3D.prototype.__init__, {
+        __defaults__ : {value: {pixel_radius:.95, paint_color:vec(0, .8, 0)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["pixel_radius", "paint_color"]},
+        __module__ : {value: null}
+    });
+    BarnsleyFern3D.__argnames__ = BarnsleyFern3D.prototype.__init__.__argnames__;
+    BarnsleyFern3D.__handles_kwarg_interpolation__ = BarnsleyFern3D.prototype.__init__.__handles_kwarg_interpolation__;
+    BarnsleyFern3D.prototype.transform = async function transform(x, y, z) {
+        var self = this;
+        var ρσ_ls, r, xn, yn, zn;
+        "50";
+        r = random();
+        "51";
+        if (r["<="](.1)) {
+            "52";
+            xn = 0;
+            "53";
+            yn = .18["*"](y);
+            "54";
+            zn = 0;
+            "55";
+        } else if (.1["<"](r) && r["<="](.7)) {
+            "56";
+            xn = .85["*"](x);
+            "57";
+            yn = .85["*"](y)["+"](.1["*"](z))["+"](1.6);
+            "58";
+            zn = 1["-u"]()["*"](.1)["*"](y)["+"](.85["*"](z));
+            "59";
+        } else if (.7["<"](r) && r["<="](.85)) {
+            "60";
+            xn = .2["*"](x)["-"](1["*"](.2)["*"](y));
+            "61";
+            yn = .2["*"](x)["+"](.2["*"](y))["+"](.8);
+            "62";
+            zn = .3["*"](z);
+            "63";
+        } else {
+            "64";
+            xn = 1["-u"]()["*"](.2)["*"](x)["+"](.2["*"](y));
+            "65";
+            yn = .2["*"](x)["+"](.2["*"](y))["+"](.8);
+            "66";
+            zn = .3["*"](z);
+        }
+        "67";
+        return [xn, yn, zn];
+    };
+    if (!BarnsleyFern3D.prototype.transform.__argnames__) Object.defineProperties(BarnsleyFern3D.prototype.transform, {
+        __argnames__ : {value: ["x", "y", "z"]},
+        __module__ : {value: null}
+    });
+    BarnsleyFern3D.prototype.iterate = async function iterate(iterations) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, x, y, z, xc, yc, zc, i;
+        "70";
+        ρσ_unpack = [.5, 0, 1["-u"]()["*"](.2)];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        z = ρσ_unpack[2];
+        "71";
+        for (var ρσ_Index8 = 1; ρσ_Index8["<"](iterations); ρσ_Index8++) {
+            i = ρσ_Index8;
+            "72";
+            ρσ_unpack = (await self.transform(x, y, z));
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+            x = ρσ_unpack[0];
+            y = ρσ_unpack[1];
+            z = ρσ_unpack[2];
+            "73";
+            xc = 4["*"](x);
+            "74";
+            yc = 2["*"](y)["-"](1["*"](7));
+            "75";
+            zc = z;
+            "76";
+            ρσ_interpolate_kwargs.call(self.pixels, self.pixels.append, [ρσ_desugar_kwargs({pos: vec(xc, yc, zc), color: self.paint_color})]);
+        }
+    };
+    if (!BarnsleyFern3D.prototype.iterate.__argnames__) Object.defineProperties(BarnsleyFern3D.prototype.iterate, {
+        __argnames__ : {value: ["iterations"]},
+        __module__ : {value: null}
+    });
+    BarnsleyFern3D.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    BarnsleyFern3D.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(BarnsleyFern3D.prototype, "__bases__", {value: []});
 
-    "53";
+
+
+
+    "79";
+    async function toggle_fractal(event) {
+        var ρσ_ls, _GS_1;
+        "80";
+        if ((event.name === "fern" || typeof event.name === "object" && ρσ_equals(event.name, "fern"))) {
+            "81";
+            await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, clear_canvas, [ρσ_desugar_kwargs({range_: 5.5, forward: vector(0, 0, 1["-u"]()["*"](1)), center: vector(0, 5, 0)})]));
+            "82";
+            _GS_1 = new BarnsleyFern;
+            (await _GS_1.__init__());
+            (await _GS_1.iterate(1e5));
+            "83";
+            fern_3d_radio.checked = false;
+            "84";
+        } else {
+            "85";
+            await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, clear_canvas, [ρσ_desugar_kwargs({range_: 10, forward: vector(1["-u"]()["*"](.85), 1["-u"]()["*"](.13), 1["-u"]()["*"](.51)), center: vector(.93, 1.51, 1["-u"]()["*"](1.02))})]));
+            "86";
+            _GS_1 = new BarnsleyFern3D;
+            (await _GS_1.__init__());
+            (await _GS_1.iterate(2e4));
+            "87";
+            fern_radio.checked = false;
+        }
+    };
+    if (!toggle_fractal.__argnames__) Object.defineProperties(toggle_fractal, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "90";
+    display.append_to_caption("\n");
+    "91";
+    fern_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Barnsley&apos;s fern ", checked: true, name: "fern", bind: toggle_fractal})]);
+    "92";
+    fern_3d_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "3D Barnsley&apos;s fern ", checked: false, name: "fern_3d", bind: toggle_fractal})]);
+    "95";
     _GS_1 = new BarnsleyFern;
-    (await _GS_1.__init__(img_x, img_y));
-    fern = _GS_1;
-    "54";
-    (await fern.iterate(1e5));
+    (await _GS_1.__init__());
+    (await _GS_1.iterate(1e5));
+    "96";
+    while (true) {
+        "97";
+        (await rate(10));
+    }
 };
 if (!__main__.__module__) Object.defineProperties(__main__, {
     __module__ : {value: null}
