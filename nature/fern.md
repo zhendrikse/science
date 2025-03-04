@@ -27,6 +27,8 @@ than fractal geometry. They were introduced in 1981. &mdash;
 
 From [Michael Barnsley](https://en.wikipedia.org/wiki/Michael_Barnsley)&apos;s own article we quote:
 
+<p style="clear: both;"></p>
+
 <blockquote>
 IFSs provide models for certain plants, leaves, and ferns, by virtue of the self-similarity which often occurs 
 in branching structures in nature. But nature also exhibits randomness and variation from one level to the next; 
