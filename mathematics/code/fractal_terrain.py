@@ -2,11 +2,78 @@ from vpython import log, canvas, rate, curve, vector, color
 import random
 
 title = """&#x2022; Based on <a href="https://github.com/ragnraok/RandomFractalTerrain-Vpython">RandomFractalTerrain-Vpython</a>
-&#x2022; Updated and extended by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/fractal_terrain.py">fractal_terrain.py</a>
+&#x2022; Refactored and extended by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/fractal_terrain.py">fractal_terrain.py</a>
 
 """
 
 display = canvas(width=600, title=title, background=color.gray(0.075))
+
+class Point:
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+class Diamond:
+    """
+    a -- b -- c
+    |    |    |
+    d -- e -- f
+    |    |    |
+    g -- h -- i
+    """
+    def __init__(self, x, y, span, height, random_value):
+        half = span >> 1
+        self.a = Point(x, y, height[y][x])
+        self.c = Point(x + span, y, height[y][x + span])
+        self.g = Point(x, y + span, height[y + span][x])
+        self.i = Point(x + span, y + span, height[y + span][x + span])
+
+        average_height = .25 *  (self.a.z + self.c.z + self.g.z + self.i.z)
+        self.e = Point(x + half, y + half, average_height + random_value)
+        height[self.e.y][self.e.x] = self.e.z
+
+
+class Square:
+    """
+    a -- b -- c
+    |    |    |
+    d -- e -- f
+    |    |    |
+    g -- h -- i
+    """
+    def __init__(self, x, y, span, height):
+        self.half = half = span >> 1
+        self.a = Point(x, y, height[y][x])
+        self.b = Point(x + half, y, height[y][x + half])
+        self.c = Point(x + span, y, height[y][x + span])
+        self.d = Point(x, y + half, height[y + half][x])
+        self.e = Point(x + half, y + half, height[y + half][x + half])
+        self.f = Point(x + span, y + half, height[y + half][x + span])
+        self.g = Point(x, y + span, height[y + span][x])
+        self.h = Point(x + half, y + span, height[y + span][x + half])
+        self.i = Point(x + span, y + span, height[y + span][x + span])
+
+    def set_random_heights(self, random_values, terrain_size, height):
+        x, y = self.a.x, self.a.y
+        half = self.half
+        above_b = Point(x + half, y - half >= 0 and y - half or terrain_size - half, 0)
+        left_d = Point(x - half >= 0 and x - half or terrain_size - half, y + half, 0)
+        right_f = Point(x + half * 3 <= terrain_size and x + half * 3 or half, y + half, 0)
+        below_h = Point(x + half, y + half * 3 <= terrain_size and y + half * 3 or half, 0)
+
+        # the four diamonds
+        self._square_height_calculator(height, random_values[0], self.a, self.e, self.g, left_d, self.d)
+        self._square_height_calculator(height, random_values[1], self.a, self.e, self.c, above_b, self.b)
+        self._square_height_calculator(height, random_values[2], self.c, self.e, self.i, right_f, self.f)
+        self._square_height_calculator(height, random_values[3], self.g, self.e, self.i, below_h, self.h)
+
+    def _square_height_calculator(self, height, random_value, a, b, c, d, center_point):
+        tmp = [height[point.y][point.x] for point in [a, b, c, d]]
+        average = sum(tmp) / len(tmp)
+        center_point.z = average + random_value
+        height[center_point.y][center_point.x] = center_point.z
+
 
 def random_fractal(size, smoothness=1, z_scale=50):
     final_size = 1
@@ -25,81 +92,32 @@ def iterate(height, smoothness, z_scale):
     iter_num = log(len(height) - 1, 2)
     while count < iter_num:
         count += 1
-        diamond(height, count, smoothness, z_scale)
+        diamond(height, count, generate_random_num(count, smoothness, z_scale))
         square(height, count, smoothness, z_scale)
 
-def diamond(height, count, smoothness, z_scale):
-    """
-        a -- b -- c
-        |    |    |
-        d -- e -- f
-        |    |    |
-        g -- h -- i
-    """
+def diamond(height, count, random_value):
     terrain_size = len(height) - 1
     num_seg = 1 << (count - 1)
     span = terrain_size // num_seg
-    half = span >> 1
     for x in range(0, terrain_size, span):
         for y in range(0, terrain_size, span):
-            a = [x, y]
-            c = [x + span, y]
-            g = [x, y + span]
-            i = [x + span, y + span]
-            e = [x + half, y + half]
+            _ = Diamond(x, y, span, height, random_value)
 
-            tmp = [height[v[1]][v[0]] for v in [a, c, g, i] ]
-            avg = sum(tmp) / len(tmp)
-
-            random_val = generate_random_num(count, smoothness, z_scale)
-            height[e[1]][e[0]] = avg + random_val
 
 def square(height, count, smoothness, z_scale):
-    """
-        a -- b -- c
-        |    |    |
-        d -- e -- f
-        |    |    |
-        g -- h -- i
-    """
     terrain_size = len(height) - 1
     num_seg = 1 << (count - 1)
     span = terrain_size // num_seg
-    half = span >> 1
     for x in range(0, terrain_size, span):
         for y in range(0, terrain_size, span):
-            a = [x, y]
-            b = [x + half, y]
-            c = [x + span, y]
-            d = [x, y + half]
-            e = [x + half, y + half]
-            f = [x + span, y + half]
-            g = [x, y + span]
-            h = [x + half, y + span]
-            i = [x + span, y + span]
-
-            above_b = [x + half, y - half >= 0 and y - half or terrain_size - half]
-            left_d = [x - half >= 0 and x - half or terrain_size - half, y + half]
-            right_f = [x + half * 3 <= terrain_size and x + half * 3 or half, y + half]
-            below_h = [x + half, y + half * 3 <= terrain_size and y + half * 3 or half]
-
-            # the four diamonds
-            _square_calculator(height, count, smoothness, z_scale, a, e, g, left_d, d)
-            _square_calculator(height, count, smoothness, z_scale, a, e, c, above_b, b)
-            _square_calculator(height, count, smoothness, z_scale, c, e, i, right_f, f)
-            _square_calculator(height, count, smoothness, z_scale, g, e, i, below_h, h)
+            square_ = Square(x, y, span, height)
+            square_.set_random_heights([generate_random_num(count, smoothness, z_scale) for i in range(4)], terrain_size, height)
 
     for y in range(0, terrain_size, span):
         height[y][terrain_size] = height[y][0]
 
     for x in range(0, terrain_size, span):
         height[terrain_size][x] = height[0][x]
-
-def _square_calculator(height, count, smoothness, z_scale, a, b, c, d, center_point):
-    tmp = [height[v[1]][v[0]] for v in [a, b, c, d]]
-    avg = sum(tmp) / len(tmp)
-    random_val = generate_random_num(count, smoothness, z_scale)
-    height[center_point[1]][center_point[0]] = avg + random_val
 
 
 def generate_random_num(count, smoothness, z_scale):
@@ -131,7 +149,7 @@ def create_grid(size, height):
             horizontal_curves.append(curve(pos=[
                 points[i + j],
                 points[i + j + 1]
-                ], color=color.green))
+                ]))
 
     # vertical lines
     for i in range(0, size):
@@ -144,7 +162,7 @@ def create_grid(size, height):
                 vertical_curves.append(curve(pos=[
                     points[i + j],
                     points[i + j + size]
-                    ], color=color.green))
+                    ]))
     
     return horizontal_curves, vertical_curves
 
@@ -157,6 +175,8 @@ def update_curves_height(horizontal_curves, vertical_curves, size, height):
     for i in range(0, len(points), size):
         for j in range(size - 1):
             horizontal_curves[index].y = [points[i + j], points[i + j + 1]]
+            hue =1.5 + .5 * (points[i + j] +  points[i + j + 1]) / Z_SCALE
+            horizontal_curves[index].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
             index += 1
 
     # vertical lines
@@ -165,6 +185,8 @@ def update_curves_height(horizontal_curves, vertical_curves, size, height):
         for j in range(0, len(points) - size, size):
             if i + j < len(points) and i + j + size < len(points):
                 vertical_curves[index].y = [points[i + j], points[i + j + size]]
+                hue =1.5 +  .5 * (points[i + j] + points[i + j + 1]) / Z_SCALE
+                vertical_curves[index].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
                 index += 1
 
 def refresh_screen(evt):
