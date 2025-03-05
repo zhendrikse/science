@@ -132,62 +132,32 @@ SIZE = 60 # The higher, the more lines are drawn in the grid
 Z_SCALE = 200
 SMOOTHNESS = 1
 
-def create_grid(size, height):
-    has_height = (height is not None and len(height) != 0)
-    row_step = (GRID_SIZE - (-GRID_SIZE)) / float(size - 1)
-    col_step = (GRID_SIZE - (-GRID_SIZE)) / float(size - 1)
+class Grid:
+    def __init__(self, size, height):
+        has_height = (height is not None and len(height) != 0)
+        row_step = (GRID_SIZE - (-GRID_SIZE)) / float(size - 1)
+        col_step = (GRID_SIZE - (-GRID_SIZE)) / float(size - 1)
 
-    # first calculate all points
-    points = [(GRID_SIZE - col * col_step, has_height and height[row][col] or 0, GRID_SIZE - row * row_step) for
-            row in range(size) for col in range(size)]
+        # first calculate all points
+        points = [(GRID_SIZE - col * col_step, has_height and height[row][col] or 0, GRID_SIZE - row * row_step) for
+                row in range(size) for col in range(size)]
 
-    horizontal_curves = []
-    vertical_curves = []
-    # horizontal lines
-    for i in range(0, len(points), size):
-        for j in range(size - 1):
-            horizontal_curves.append(curve(pos=[
-                points[i + j],
-                points[i + j + 1]
-                ]))
+        # horizontal lines
+        self._horizontal_curves = []
+        for i in range(0, len(points), size):
+            for j in range(size - 1):
+                self._horizontal_curves.append(curve(pos=[points[i + j], points[i + j + 1]]))
+                hue =1.5 + .5 * (points[i + j][1] +  points[i + j + 1][1]) / Z_SCALE
+                self._horizontal_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
-    # vertical lines
-    for i in range(0, size):
-        #print "i=%d" % i
-        for j in range(0, len(points) - size, size):
-            #print "j=%d" % j
-            #print "i+j=%d" % (i+j)
-            #print "i+j+size=%d" % (i+j+size)
-            if i + j < len(points) and i + j + size < len(points):
-                vertical_curves.append(curve(pos=[
-                    points[i + j],
-                    points[i + j + size]
-                    ]))
-    
-    return horizontal_curves, vertical_curves
-
-def update_curves_height(horizontal_curves, vertical_curves, size, height):
-    # first calculate all points
-    points = [elem for row in height for elem in row]
-
-    # horizontal lines
-    index = 0
-    for i in range(0, len(points), size):
-        for j in range(size - 1):
-            horizontal_curves[index].y = [points[i + j], points[i + j + 1]]
-            hue =1.5 + .5 * (points[i + j] +  points[i + j + 1]) / Z_SCALE
-            horizontal_curves[index].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
-            index += 1
-
-    # vertical lines
-    index = 0
-    for i in range(0, size):
-        for j in range(0, len(points) - size, size):
-            if i + j < len(points) and i + j + size < len(points):
-                vertical_curves[index].y = [points[i + j], points[i + j + size]]
-                hue =1.5 +  .5 * (points[i + j] + points[i + j + 1]) / Z_SCALE
-                vertical_curves[index].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
-                index += 1
+        # vertical lines
+        self._vertical_curves = []
+        for i in range(0, size):
+            for j in range(0, len(points) - size, size):
+                if i + j < len(points) and i + j + size < len(points):
+                    self._vertical_curves.append(curve(pos=[points[i + j], points[i + j + size]]))
+                    hue =1.5 + .5 * (points[i + j][1] +  points[i + j + 1][1]) / Z_SCALE
+                    self._vertical_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
 def refresh_screen(evt):
     for obj in display.objects:
@@ -195,11 +165,9 @@ def refresh_screen(evt):
         obj.clear()
 
     height = random_fractal(SIZE, z_scale=Z_SCALE, smoothness=SMOOTHNESS)
-    horizontal_curves, vertical_curves = create_grid(SIZE, height)
-    update_curves_height(horizontal_curves, vertical_curves, SIZE, height)
+    _ = Grid(SIZE, height)
 
 def main_loop():
-    display.width = display.height = 700
     display.forward = vector(-100, -60, -100)
     display.bind("click", refresh_screen)
     refresh_screen(None)
