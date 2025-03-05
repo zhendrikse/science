@@ -63,30 +63,33 @@ class Base:
             self._tick_marks.append(box(pos=y_hat * y_dim[i], width=scale * 2, height=scale * 5, length=scale * 2, color=tick_marks_color, visible=False))
             self._tick_marks[-1].rotate(angle=0.5 * pi, axis=vec(0, 0, 1))
 
-    def axis_visibility_is(self, visible):
+    def axis_visibility_is(self, event):
         for i in range(len(self._axis)):
-            self._axis[i].visible = visible
+            self._axis[i].visible = event.checked
 
-    def tick_marks_visibility_is(self, visible):
+    def tick_marks_visibility_is(self, event):
         for tick_mark in self._tick_marks:
-            tick_mark.visible = visible
+            tick_mark.visible = event.checked
 
-    def xy_mesh_visibility_is(self, visible):
+    def xy_mesh_visibility_is(self, event):
         for i in range(len(self._xy_mesh)):
-            self._xy_mesh[i].visible = visible
+            self._xy_mesh[i].visible = event.checked
 
-    def xz_mesh_visibility_is(self, visible):
+    def xz_mesh_visibility_is(self, event):
         for i in range(len(self._xz_mesh)):
-            self._xz_mesh[i].visible = visible
+            self._xz_mesh[i].visible = event.checked
 
-    def yz_mesh_visibility_is(self, visible):
+    def yz_mesh_visibility_is(self, event):
         for i in range(len(self._xz_mesh)):
-            self._yz_mesh[i].visible = visible
+            self._yz_mesh[i].visible = event.checked
 
 class LorenzAttractor:
-    def __init__(self):
+    def __init__(self, a=.2, b=0.2, c=5.7, max_dist=1.9027419876572438):
+        self._a = a
+        self._b = b
+        self._c = c
         self._lines, self._dots = [], []
-        self._max_distance = 1.9027419876572438
+        self._max_distance = max_dist
 
     def hide_lines(self):
         for line_ in self._lines:
@@ -114,14 +117,13 @@ class LorenzAttractor:
         z_dot = old_pos.x * old_pos.y - beta * old_pos.z
         return vec(x_dot, y_dot, z_dot)
 
-    def generate(self, a, b, c, N=150, dt=0.004, max_dist=1.9027419876572438):
-        self._max_distance = max_dist
+    def generate(self, N=150, dt=0.004):
         old_pos = vec(0.1, 0.0, 0.0)
         skip = max_distance = dist = 0
         for i in range(N):
             self._lines += [curve(pos=old_pos, color=self._color(skip, dist), radius=0.1, visible=False)]
             for j in range(N):
-                derivative = self._lorenz(old_pos, a, b, c)
+                derivative = self._lorenz(old_pos, self._a, self._b, self._c)
                 new_pos = old_pos + dt * derivative
 
                 dist = (new_pos - old_pos).mag
@@ -130,26 +132,6 @@ class LorenzAttractor:
                 self._dots += [simple_sphere(pos=new_pos, color=self._color(skip, dist), radius=0.35, visible=False)]
                 skip += 1
                 old_pos = new_pos
-
-
-def toggle_tick_marks(event):
-    axis.tick_marks_visibility_is(event.checked)
-
-
-def toggle_xz_mesh(event):
-    axis.xz_mesh_visibility_is(event.checked)
-
-
-def toggle_xy_mesh(event):
-    axis.xy_mesh_visibility_is(event.checked)
-
-
-def toggle_yz_mesh(event):
-    axis.yz_mesh_visibility_is(event.checked)
-
-
-def toggle_axis(event):
-    axis.axis_visibility_is(event.checked)
 
 
 def toggle_line_type(event):
@@ -180,12 +162,20 @@ def toggle_a_b_c(event):
     radio_1.checked = True
     radio_2.checked = False
 
+
+def linspace(start, stop, num):
+    return [x for x in arange(start, stop, (stop - start) / (num - 1))] + [stop]
+
+space = Space(linspace(-35, 35, 11), linspace(-35, 35, 11), linspace(0, 50, 11))
+axis = Base(space, axis_color=vec(0.8, 0.8, 0.8))
+
 display.append_to_caption("\n")
-_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=False)
-_ = checkbox(text='YZ-mesh ', bind=toggle_yz_mesh, checked=False)
-_ = checkbox(text='XZ-mesh ', bind=toggle_xz_mesh, checked=False)
-_ = checkbox(text='XY-mesh ', bind=toggle_xy_mesh, checked=False)
-_ = checkbox(text='Axis', bind=toggle_axis, checked=True)
+_ = checkbox(text='Tick marks ', bind=axis.tick_marks_visibility_is, checked=False)
+_ = checkbox(text='YZ-mesh ', bind=axis.yz_mesh_visibility_is, checked=False)
+_ = checkbox(text='XZ-mesh ', bind=axis.xz_mesh_visibility_is, checked=False)
+_ = checkbox(text='XY-mesh ', bind=axis.xy_mesh_visibility_is, checked=False)
+_ = checkbox(text='Axis', bind=axis.axis_visibility_is, checked=True)
+
 display.append_to_caption("\n\n")
 radio_1 = radio(text="Lines ", checked=True, name="lines", bind=toggle_line_type)
 radio_2 = radio(text="Dots ", checked=False, name="dots", bind=toggle_line_type)
@@ -194,19 +184,12 @@ radio_3 = radio(text="a, b, c = 10, 28, 8/3 ", checked=True, name="1", bind=togg
 display.append_to_caption("\n\n")
 radio_4 = radio(text="a, b, c = 28, 46.92, 4", checked=False, name="2", bind=toggle_a_b_c)
 
-def linspace(start, stop, num):
-    return [x for x in arange(start, stop, (stop - start) / (num - 1))] + [stop]
-
-
-space = Space(linspace(-35, 35, 11), linspace(-35, 35, 11), linspace(0, 50, 11))
-axis = Base(space, axis_color=vec(0.8, 0.8, 0.8))
-
-lorenz_1 = LorenzAttractor()
-lorenz_1.generate(10.0, 28.0, 8.0 / 3.0)
+lorenz_1 = LorenzAttractor(10.0, 28.0, 8.0 / 3.0)
+lorenz_1.generate()
 lorenz_1.show_lines()
 
-lorenz_2 = LorenzAttractor()
-lorenz_2.generate(28, 46.92, 4., max_dist=7.243645818599864)
+lorenz_2 = LorenzAttractor(28, 46.92, 4., max_dist=7.243645818599864)
+lorenz_2.generate()
 
 current_lorenz = lorenz_1
 
