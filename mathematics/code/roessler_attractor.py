@@ -1,11 +1,12 @@
 #Web VPython 3.2
-#
 
 from vpython import *
 
 
 title = """&#x2022; Based on <a href="https://nbviewer.org/url/sites.science.oregonstate.edu/~landaur/Books/Problems/Codes/JupyterNB/RoesslerAttractor.ipynb">RoesslerAttractor.ipynb</a>
 &#x2022; Refactored and extended to <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/roessler_attractor.py">roessler_attractor.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+
+$\\begin{cases} \\dfrac{dx}{dt} = -y-z \\\\ \\dfrac{dy}{dt} = x + ay  \\\\ \\dfrac{dz}{dt} = b+z(x-c) \\end{cases}$
 
 """
 

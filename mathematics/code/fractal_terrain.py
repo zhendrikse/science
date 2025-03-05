@@ -1,5 +1,12 @@
-from vpython import *
+from vpython import log, canvas, rate, curve, vector, color
 import random
+
+title = """&#x2022; Based on <a href="https://github.com/ragnraok/RandomFractalTerrain-Vpython">RandomFractalTerrain-Vpython</a>
+&#x2022; Updated and extended by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/fractal_terrain.py">fractal_terrain.py</a>
+
+"""
+
+display = canvas(width=600, title=title, background=color.gray(0.075))
 
 def random_fractal(size, smoothness=1, z_scale=50):
     final_size = 1
@@ -106,7 +113,6 @@ GRID_SIZE = 200 # The size of the grid itself in pixels
 SIZE = 60 # The higher, the more lines are drawn in the grid
 Z_SCALE = 200
 SMOOTHNESS = 1
-grid_frame = frame()
 
 def create_grid(size, height):
     has_height = (height is not None and len(height) != 0)
@@ -162,7 +168,7 @@ def update_curves_height(horizontal_curves, vertical_curves, size, height):
                 index += 1
 
 def refresh_screen(evt):
-    for obj in scene.objects:
+    for obj in display.objects:
         obj.visible = False
         obj.clear()
 
@@ -171,9 +177,9 @@ def refresh_screen(evt):
     update_curves_height(horizontal_curves, vertical_curves, SIZE, height)
 
 def main_loop():
-    scene.width = scene.height = 700
-    scene.forward = vector(-100, -60, -100)
-    scene.bind("click", refresh_screen)
+    display.width = display.height = 700
+    display.forward = vector(-100, -60, -100)
+    display.bind("click", refresh_screen)
     refresh_screen(None)
     while True:
         rate(10)
