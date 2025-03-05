@@ -27,7 +27,9 @@ class Diamond:
 
         average_height = .25 *  (self.a.z + self.c.z + self.g.z + self.i.z)
         self.e = vector(x + half, y + half, average_height + random_value)
-        height[int(self.e.y)][int(self.e.x)] = self.e.z
+
+    def center_point(self):
+        return self.e
 
 
 class Square:
@@ -78,9 +80,6 @@ class FractalTerrain:
 
         self._height = [[0 for i in range(final_size  + 1)] for i in range(final_size + 1)]
         self._iterate(smoothness, z_scale)
-        self._fractal = []
-        for row in range(size):
-            self._fractal.append(self._height[row][:size])
 
     def _iterate(self, smoothness, z_scale):
         count = 0
@@ -96,7 +95,8 @@ class FractalTerrain:
         span = terrain_size // num_seg
         for x in range(0, terrain_size, span):
             for y in range(0, terrain_size, span):
-                _ = Diamond(x, y, span, self._height, random_value)
+                center_point = Diamond(x, y, span, self._height, random_value).center_point()
+                self._height[int(center_point.y)][int(center_point.x)] = center_point.z
 
 
     def _square(self, count, smoothness, z_scale):
@@ -133,30 +133,34 @@ SMOOTHNESS = 1
 
 class Grid:
     def __init__(self, size, height):
+        self._size = size
+        self._points = []
+
         has_height = (height is not None and len(height) != 0)
         row_step = (GRID_SIZE - (-GRID_SIZE)) / float(size - 1)
         col_step = (GRID_SIZE - (-GRID_SIZE)) / float(size - 1)
+        for row in range(size):
+            for col in range(size):
+                self._points.append(vector(GRID_SIZE - col * col_step, has_height and height[row][col] or 0, GRID_SIZE - row * row_step))
 
-        # first calculate all points
-        points = [vector(GRID_SIZE - col * col_step, has_height and height[row][col] or 0, GRID_SIZE - row * row_step) for
-                row in range(size) for col in range(size)]
-
+    def render(self):
         # horizontal lines
-        self._horizontal_curves = []
-        for i in range(0, len(points), size):
-            for j in range(size - 1):
-                self._horizontal_curves.append(curve(pos=[points[i + j], points[i + j + 1]]))
-                hue =1.5 + .5 * (points[i + j].y +  points[i + j + 1].y) / Z_SCALE
-                self._horizontal_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
+        horizontal_curves = []
+        num_points = len(self._points)
+        for i in range(0, num_points, self._size):
+            for j in range(self._size - 1):
+                horizontal_curves.append(curve(pos=[self._points[i + j], self._points[i + j + 1]]))
+                hue =1.5 + .5 * (self._points[i + j].y +  self._points[i + j + 1].y) / Z_SCALE
+                horizontal_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
         # vertical lines
-        self._vertical_curves = []
-        for i in range(0, size):
-            for j in range(0, len(points) - size, size):
-                if i + j < len(points) and i + j + size < len(points):
-                    self._vertical_curves.append(curve(pos=[points[i + j], points[i + j + size]]))
-                    hue =1.5 + .5 * (points[i + j].y +  points[i + j + 1].y) / Z_SCALE
-                    self._vertical_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
+        vertical_curves = []
+        for i in range(0, self._size):
+            for j in range(0, num_points - self._size, self._size):
+                if i + j < num_points and i + j + self._size < num_points:
+                    vertical_curves.append(curve(pos=[self._points[i + j], self._points[i + j + self._size]]))
+                    hue =1.5 + .5 * (self._points[i + j].y +  self._points[i + j + 1].y) / Z_SCALE
+                    vertical_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
 def refresh_screen(evt):
     for obj in display.objects:
@@ -164,7 +168,8 @@ def refresh_screen(evt):
         obj.clear()
 
     terrain = FractalTerrain(SIZE, z_scale=Z_SCALE, smoothness=SMOOTHNESS)
-    _ = Grid(size=SIZE, height=terrain.height())
+    Grid(size=SIZE, height=terrain.height()).render()
+
 
 def main_loop():
     display.forward = vector(-100, -60, -100)
