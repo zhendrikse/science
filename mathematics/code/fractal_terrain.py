@@ -1,3 +1,5 @@
+from random import Random
+
 from vpython import log, canvas, rate, curve, vector, color
 import random
 
@@ -68,57 +70,60 @@ class Square:
         center_point.z = average + random_value
         height[int(center_point.y)][int(center_point.x)] = center_point.z
 
+class FractalTerrain:
+    def __init__(self, size, smoothness=1, z_scale=50):
+        final_size = 1
+        while final_size < size:
+            final_size <<= 1
 
-def random_fractal(size, smoothness=1, z_scale=50):
-    final_size = 1
-    while final_size < size:
-        final_size <<= 1
-    tmp_result = [[0 for i in range(final_size  + 1)] for i in range(final_size + 1)]
-    iterate(tmp_result, smoothness, z_scale)
-    final_result = [0 for i in range(size)]
-    for row in range(size):
-        final_result[row] = tmp_result[row][:size] 
-    
-    return final_result
+        self._height = [[0 for i in range(final_size  + 1)] for i in range(final_size + 1)]
+        self._iterate(smoothness, z_scale)
+        self._fractal = []
+        for row in range(size):
+            self._fractal.append(self._height[row][:size])
 
-def iterate(height, smoothness, z_scale):
-    count = 0
-    iter_num = log(len(height) - 1, 2)
-    while count < iter_num:
-        count += 1
-        diamond(height, count, generate_random_num(count, smoothness, z_scale))
-        square(height, count, smoothness, z_scale)
+    def _iterate(self, smoothness, z_scale):
+        count = 0
+        iter_num = log(len(self._height) - 1, 2)
+        while count < iter_num:
+            count += 1
+            self._diamond(count, self._generate_random_num(count, smoothness, z_scale))
+            self._square(count, smoothness, z_scale)
 
-def diamond(height, count, random_value):
-    terrain_size = len(height) - 1
-    num_seg = 1 << (count - 1)
-    span = terrain_size // num_seg
-    for x in range(0, terrain_size, span):
+    def _diamond(self, count, random_value):
+        terrain_size = len(self._height) - 1
+        num_seg = 1 << (count - 1)
+        span = terrain_size // num_seg
+        for x in range(0, terrain_size, span):
+            for y in range(0, terrain_size, span):
+                _ = Diamond(x, y, span, self._height, random_value)
+
+
+    def _square(self, count, smoothness, z_scale):
+        terrain_size = len(self._height) - 1
+        num_seg = 1 << (count - 1)
+        span = terrain_size // num_seg
+        for x in range(0, terrain_size, span):
+            for y in range(0, terrain_size, span):
+                square_ = Square(x, y, span, self._height)
+                square_.set_random_heights([self._generate_random_num(count, smoothness, z_scale) for i in range(4)], terrain_size, self._height)
+
         for y in range(0, terrain_size, span):
-            _ = Diamond(x, y, span, height, random_value)
+            self._height[y][terrain_size] = self._height[y][0]
+
+        for x in range(0, terrain_size, span):
+            self._height[terrain_size][x] = self._height[0][x]
 
 
-def square(height, count, smoothness, z_scale):
-    terrain_size = len(height) - 1
-    num_seg = 1 << (count - 1)
-    span = terrain_size // num_seg
-    for x in range(0, terrain_size, span):
-        for y in range(0, terrain_size, span):
-            square_ = Square(x, y, span, height)
-            square_.set_random_heights([generate_random_num(count, smoothness, z_scale) for i in range(4)], terrain_size, height)
+    def _generate_random_num(self, count, smoothness, z_scale):
+        _reduce = 1
+        for i in range(count):
+            _reduce *= pow(2, -smoothness)
+        return _reduce * random.randint(-z_scale, z_scale)
 
-    for y in range(0, terrain_size, span):
-        height[y][terrain_size] = height[y][0]
+    def height(self):
+        return self._height
 
-    for x in range(0, terrain_size, span):
-        height[terrain_size][x] = height[0][x]
-
-
-def generate_random_num(count, smoothness, z_scale):
-    _reduce = 1
-    for i in range(count):
-        _reduce *= pow(2, -smoothness)
-    return _reduce * random.randint(-z_scale, z_scale)
 
 # from -GRID_SIZE to GRID_SIZE
 GRID_SIZE = 200 # The size of the grid itself in pixels
@@ -158,8 +163,8 @@ def refresh_screen(evt):
         obj.visible = False
         obj.clear()
 
-    height = random_fractal(SIZE, z_scale=Z_SCALE, smoothness=SMOOTHNESS)
-    _ = Grid(SIZE, height)
+    terrain = FractalTerrain(SIZE, z_scale=Z_SCALE, smoothness=SMOOTHNESS)
+    _ = Grid(size=SIZE, height=terrain.height())
 
 def main_loop():
     display.forward = vector(-100, -60, -100)
