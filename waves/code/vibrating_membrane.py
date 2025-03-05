@@ -81,17 +81,17 @@ class Base:
         pos = position + (y_hat + x_hat) * .5 * max_of_base
         self._mesh += [box(pos=pos, length=radius, width=max_of_base, height=max_of_base, opacity=0.05)]
 
-    def tick_marks_visibility_is(self, visible):
+    def tick_marks_visibility_is(self, event):
         for tick_mark in self._tick_marks:
-            tick_mark.visible = visible
+            tick_mark.visible = event.checked
 
-    def mesh_visibility_is(self, visible):
+    def mesh_visibility_is(self, event):
         for i in range(len(self._mesh)):
-            self._mesh[i].visible = visible
+            self._mesh[i].visible = event.checked
 
-    def axis_labels_visibility_is(self, visible):
+    def axis_labels_visibility_is(self, event):
         for i in range(len(self._axis_labels)):
-            self._axis_labels[i].visible = visible
+            self._axis_labels[i].visible = event.checked
 
 
 class Membrane:
@@ -244,21 +244,9 @@ def adjust_omega():
     membrane.set_omega_to(omega_slider.value)
     omega_slider_text.text = "= {:1.2f}".format(omega_slider.value / pi, 2) + " π"
 
-def toggle_tick_marks(event):
-    axis.tick_marks_visibility_is(event.checked)
-
-
-def toggle_axis_labels(event):
-    axis.axis_labels_visibility_is(event.checked)
-
-
-def toggle_mesh(event):
-    axis.mesh_visibility_is(event.checked)
-
-
-_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
-_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=True)
-_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
+_ = checkbox(text='Mesh ', bind=axis.mesh_visibility_is, checked=True)
+_ = checkbox(text='Axis labels ', bind=axis.axis_labels_visibility_is, checked=True)
+_ = checkbox(text='Tick marks ', bind=axis.tick_marks_visibility_is, checked=True)
 
 def toggle(event):
     radio_buttons.toggle(event.name)
