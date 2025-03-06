@@ -14,6 +14,7 @@
 - [`multivariate_functions.py` source code](multivariate_functions.py)
 - [`polar_coordinates.py` source code](polar_coordinates.py)
 - [`quiver_plot.py` source code](quiver_plot.py)
+- [`roessler_attractor.py` source code](roessler_attractor.py)
 - [`scalar_plot.py` source code](scalar_plot.py)
 - [`sierpinski.py` source code](sierpinski.py)
 - [`spherical_harmonics.py` source code](spherical_harmonics.py)
