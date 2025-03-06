@@ -102,8 +102,10 @@ You may be surprised though to find out what happens when you drop such a simple
   <figcaption>Movement of a floating block in water.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="bouncing_particles.html">
+    <img alt="Bouncing particles" src="images/bouncing_particles.png" title="Click to animate"/>
+  </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <figcaption>Bouncing particles between a set of barriers.</figcaption>
 </figure>
 </div>
 
