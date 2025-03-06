@@ -1,6 +1,4 @@
-from random import Random
-
-from vpython import log, canvas, rate, curve, vector, color
+from vpython import log, canvas, rate, curve, vector, color, cross, quad, vertex, sqrt
 import random
 
 title = """&#x2022; Based on <a href="https://github.com/ragnraok/RandomFractalTerrain-Vpython">RandomFractalTerrain-Vpython</a>
@@ -8,7 +6,7 @@ title = """&#x2022; Based on <a href="https://github.com/ragnraok/RandomFractalT
 
 """
 
-display = canvas(width=600, title=title, background=color.gray(0.075))
+display = canvas(width=600, title=title, background=color.gray(0.075), forward=vector(-100, -60, -100))
 
 class Diamond:
     """
@@ -132,51 +130,125 @@ class FractalTerrain:
     def num_grid_lines(self):
         return self._num_grid_lines
 
-
-class Grid:
-    def __init__(self, terrain, size=200):
-        self._resolution = terrain.num_grid_lines()
-        self._points = []
-        self._z_scale = terrain.z_scale()
-
-        height = terrain.height()
-        has_height = (height is not None and len(height) != 0)
-        row_step = col_step = (size - (-size)) / float(self._resolution - 1)
-        for row in range(self._resolution):
-            for col in range(self._resolution):
-                self._points.append(vector(size - col * col_step, has_height and height[row][col] or 0, size - row * row_step))
-
-    def render(self):
-        num_points = len(self._points)
+class ContourPlot:
+    def __init__(self, points, z_scale):
+        num_points = len(points)
+        resolution = int(sqrt(num_points))
 
         # horizontal lines
         horizontal_curves = []
-        for i in range(0, num_points, self._resolution):
-            for j in range(self._resolution - 1):
-                horizontal_curves.append(curve(pos=[self._points[i + j], self._points[i + j + 1]]))
-                hue =1.5 + .5 * (self._points[i + j].y +  self._points[i + j + 1].y) / self._z_scale
+        for i in range(0, num_points, resolution):
+            for j in range(resolution - 1):
+                horizontal_curves.append(curve(pos=[points[i + j], points[i + j + 1]]))
+                hue =1.5 + .5 * (points[i + j].y +  points[i + j + 1].y) / z_scale
                 horizontal_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
         # vertical lines
         vertical_curves = []
-        for i in range(0, self._resolution):
-            for j in range(0, num_points - self._resolution, self._resolution):
+        for i in range(0, resolution):
+            for j in range(0, num_points - resolution, resolution):
                 if i + j < num_points: #and i + j + self._size < num_points:
-                    vertical_curves.append(curve(pos=[self._points[i + j], self._points[i + j + self._resolution]]))
-                    hue =1.5 + .5 * (self._points[i + j].y +  self._points[i + j + 1].y) / self._z_scale
+                    vertical_curves.append(curve(pos=[points[i + j], points[i + j + resolution]]))
+                    hue =1.5 + .5 * (points[i + j].y +  points[i + j + 1].y) / z_scale
                     vertical_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
+
+class SurfacePlot:
+    def __init__(self, points, z_scale):
+        self._vertices, self._quads = [], []
+        self._z_scale = z_scale
+        self._create_vertices(points)
+        self._create_quads()
+        self._make_normals()
+
+    def _create_vertices(self, points):
+        for point in points:
+            self._vertices.append(vertex(pos=point, normal=vector(0, 1, 0), color=color.green))
+            hue = .5 + point.y / self._z_scale
+            self._vertices[-1].color = color.hsv_to_rgb(vector(hue, 1., 1.))
+
+    def _create_quad(self, x, y):
+        dimension = int(sqrt(len(self._vertices)))
+        _neighbor_increment_x, _neighbor_increment_y = 1, 1
+        if x == (dimension - 1):
+            _neighbor_increment_x = -x
+        if y == (dimension - 1):
+            _neighbor_increment_y = -y
+
+        v0 = self._get_vertex(x, y, dimension)
+        v1 = self._get_vertex(x + _neighbor_increment_x, y, dimension)
+        v2 = self._get_vertex(x + _neighbor_increment_x, y + _neighbor_increment_y, dimension)
+        v3 = self._get_vertex(x, y + _neighbor_increment_y, dimension)
+        self._quads.append(quad(vs=[v0, v1, v2, v3]))
+
+    # Create the quad objects, based on the vertex objects already created.
+    def _create_quads(self):
+        dimension = int(sqrt(len(self._vertices)))
+        for x in range(dimension - 1):
+            for y in range(dimension - 1):
+                self._create_quad(x, y)
+
+    def _set_vertex_normal_for(self, x, y):
+        dimension = int(sqrt(len(self._vertices)))
+        _neighbor_increment_x, _neighbor_increment_y = 1, 1
+        if x == (dimension - 1):
+            _neighbor_increment_x = -x
+        if y == (dimension - 1):
+            _neighbor_increment_y = -y
+
+        vertex_ = self._get_vertex(x, y, dimension)
+        normal_total_ = self._get_vertex(x, y + _neighbor_increment_y, dimension).normal
+        normal_total_ += self._get_vertex(x + _neighbor_increment_x, y, dimension).normal
+        vec_1 = self._get_vertex(x, y + _neighbor_increment_y, dimension).pos - vertex_.pos
+        vec_2 = self._get_vertex(x + _neighbor_increment_x, y, dimension).pos - vertex_.pos
+        # """
+        # Further work to focus on this area of the normal calculations
+        # """
+        # vertex_.normal = cross(vec_1, vec_2)
+        normal_total_ += cross(vec_1, vec_2)
+        vertex_.normal = normal_total_ / 2
+
+    # Set the normal for each vertex to be perpendicular to the lower left corner of the quad.
+    # The vectors a and b point to the right and up around a vertex in the xy plane.
+    def _make_normals(self):
+        dimension = int(sqrt(len(self._vertices)))
+        for x in range(dimension):
+            for y in range(dimension):
+                self._set_vertex_normal_for(x, y)
+
+    def _get_vertex(self, x, y, dimension):
+        return self._vertices[x * dimension + y]
+
+
+class Grid:
+    def __init__(self, terrain, size=200):
+        self._points = []
+        self._z_scale = terrain.z_scale()
+
+        height = terrain.height()
+        resolution = terrain.num_grid_lines()
+        has_height = (height is not None and len(height) != 0)
+        row_step = col_step = (size - (-size)) / float(resolution - 1)
+        for row in range(resolution):
+            for col in range(resolution):
+                self._points.append(vector(size - col * col_step, has_height and height[row][col] or 0, size - row * row_step))
+
+    def render_contours(self):
+        _ = ContourPlot(self._points, self._z_scale)
+
+    def render_surface(self):
+        _ = SurfacePlot(self._points, self._z_scale)
 
 def refresh_screen(evt):
     for obj in display.objects:
         obj.visible = False
-        obj.clear()
+        obj.delete()
 
     terrain = FractalTerrain(num_grid_lines=60, z_scale=200, smoothness=1)
-    Grid(terrain, size=200).render()
+    Grid(terrain, size=200).render_contours()
+    #Grid(terrain, size=200).render_surface()
 
 
 def main_loop():
-    display.forward = vector(-100, -60, -100)
     display.bind("click", refresh_screen)
     refresh_screen(None)
     while True:
