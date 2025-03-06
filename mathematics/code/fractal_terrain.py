@@ -8,7 +8,7 @@ title = """&#x2022; Based on <a href="https://github.com/ragnraok/RandomFractalT
 
 """
 
-display = canvas(width=600, title=title, background=color.gray(0.075), forward=vector(-100, -60, -100))
+display = canvas(range=350, width=600, height=600, title=title, background=color.gray(0.075), forward=vector(-40, -122, -83), center=vector(-18, -110, 10))
 
 
 class Diamond:
