@@ -5,7 +5,7 @@ from vpython import canvas, rate, box, sphere, vector, gcurve, graph, color, sqr
 
 title="""&#x2022; <a href="https://www.glowscript.org/#/user/wlane/folder/AAPT-visual/program/length-contraction">Original code</a> by <a href="https://www.youtube.com/@LetsCodePhysics">Let&apos;s code physics</a>
 &#x2022; See also <a href="https://www.youtube.com/watch?v=yuECZzO0ZAE">his accompanying video</a>
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/quantumphysics/code/length_contraction.py">length_contraction.py</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/length_contraction.py">length_contraction.py</a>
 
 """
 
