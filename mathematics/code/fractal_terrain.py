@@ -61,25 +61,27 @@ class Square:
         below_h = vector(x + half, y + half * 3 <= terrain_size and y + half * 3 or half, 0)
 
         # the four diamonds
-        self._square_height_calculator(height, random_values[0], self.a, self.e, self.g, left_d, self.d)
-        self._square_height_calculator(height, random_values[1], self.a, self.e, self.c, above_b, self.b)
-        self._square_height_calculator(height, random_values[2], self.c, self.e, self.i, right_f, self.f)
-        self._square_height_calculator(height, random_values[3], self.g, self.e, self.i, below_h, self.h)
+        self._set_height_for_square(height, random_values[0], self.a, self.e, self.g, left_d, self.d)
+        self._set_height_for_square(height, random_values[1], self.a, self.e, self.c, above_b, self.b)
+        self._set_height_for_square(height, random_values[2], self.c, self.e, self.i, right_f, self.f)
+        self._set_height_for_square(height, random_values[3], self.g, self.e, self.i, below_h, self.h)
 
-    def _square_height_calculator(self, height, random_value, a, b, c, d, center_point):
+    def _set_height_for_square(self, height, random_value, a, b, c, d, center_point):
         tmp = [height[int(point.y)][int(point.x)] for point in [a, b, c, d]]
         average = sum(tmp) / len(tmp)
         center_point.z = average + random_value
         height[int(center_point.y)][int(center_point.x)] = center_point.z
 
 class FractalTerrain:
-    def __init__(self, size, smoothness=1, z_scale=50):
+    def __init__(self, num_grid_lines, smoothness, z_scale):
         final_size = 1
-        while final_size < size:
+        while final_size < num_grid_lines:
             final_size <<= 1
 
         self._height = [[0 for i in range(final_size  + 1)] for i in range(final_size + 1)]
         self._iterate(smoothness, z_scale)
+        self._z_scale = z_scale
+        self._num_grid_lines = num_grid_lines
 
     def _iterate(self, smoothness, z_scale):
         count = 0
@@ -124,42 +126,44 @@ class FractalTerrain:
     def height(self):
         return self._height
 
+    def z_scale(self):
+        return self._z_scale
 
-# from -GRID_SIZE to GRID_SIZE
-GRID_SIZE = 200 # The size of the grid itself in pixels
-SIZE = 60 # The higher, the more lines are drawn in the grid
-Z_SCALE = 200
-SMOOTHNESS = 1
+    def num_grid_lines(self):
+        return self._num_grid_lines
+
 
 class Grid:
-    def __init__(self, size, height):
-        self._size = size
+    def __init__(self, terrain, size=200):
+        self._resolution = terrain.num_grid_lines()
         self._points = []
+        self._z_scale = terrain.z_scale()
 
+        height = terrain.height()
         has_height = (height is not None and len(height) != 0)
-        row_step = (GRID_SIZE - (-GRID_SIZE)) / float(size - 1)
-        col_step = (GRID_SIZE - (-GRID_SIZE)) / float(size - 1)
-        for row in range(size):
-            for col in range(size):
-                self._points.append(vector(GRID_SIZE - col * col_step, has_height and height[row][col] or 0, GRID_SIZE - row * row_step))
+        row_step = col_step = (size - (-size)) / float(self._resolution - 1)
+        for row in range(self._resolution):
+            for col in range(self._resolution):
+                self._points.append(vector(size - col * col_step, has_height and height[row][col] or 0, size - row * row_step))
 
     def render(self):
+        num_points = len(self._points)
+
         # horizontal lines
         horizontal_curves = []
-        num_points = len(self._points)
-        for i in range(0, num_points, self._size):
-            for j in range(self._size - 1):
+        for i in range(0, num_points, self._resolution):
+            for j in range(self._resolution - 1):
                 horizontal_curves.append(curve(pos=[self._points[i + j], self._points[i + j + 1]]))
-                hue =1.5 + .5 * (self._points[i + j].y +  self._points[i + j + 1].y) / Z_SCALE
+                hue =1.5 + .5 * (self._points[i + j].y +  self._points[i + j + 1].y) / self._z_scale
                 horizontal_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
         # vertical lines
         vertical_curves = []
-        for i in range(0, self._size):
-            for j in range(0, num_points - self._size, self._size):
-                if i + j < num_points and i + j + self._size < num_points:
-                    vertical_curves.append(curve(pos=[self._points[i + j], self._points[i + j + self._size]]))
-                    hue =1.5 + .5 * (self._points[i + j].y +  self._points[i + j + 1].y) / Z_SCALE
+        for i in range(0, self._resolution):
+            for j in range(0, num_points - self._resolution, self._resolution):
+                if i + j < num_points: #and i + j + self._size < num_points:
+                    vertical_curves.append(curve(pos=[self._points[i + j], self._points[i + j + self._resolution]]))
+                    hue =1.5 + .5 * (self._points[i + j].y +  self._points[i + j + 1].y) / self._z_scale
                     vertical_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
 def refresh_screen(evt):
@@ -167,8 +171,8 @@ def refresh_screen(evt):
         obj.visible = False
         obj.clear()
 
-    terrain = FractalTerrain(SIZE, z_scale=Z_SCALE, smoothness=SMOOTHNESS)
-    Grid(size=SIZE, height=terrain.height()).render()
+    terrain = FractalTerrain(num_grid_lines=60, z_scale=200, smoothness=1)
+    Grid(terrain, size=200).render()
 
 
 def main_loop():
