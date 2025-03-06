@@ -201,8 +201,8 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 <p style="clear: both;"></p>
 
 
-<a name="lorenz_harmonograph"></a>
-## Lorenz attractor and a harmonograph
+<a name="strange_attractors"></a>
+## Lorenz &amp; Rössler attractors 
 <div class="header_line"><br/></div>
 
 <div class="double_image">
@@ -213,10 +213,49 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <figcaption>VPython program that renders the Lorenz attractor.</figcaption>
 </figure>
 <figure class="right_image">
+  <a href="roessler_attractor.html">
+    <img alt="Rössler attractor" src="./images/roessler_attractor.png" title="Click to animate"/>
+  </a>
+  <figcaption>VPython program that renders the Lorenz attractor.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+
+<a name="fractal_terrains"></a>
+## Fractal terrains
+<div class="header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="fractal_terrain_surface.html">
+    <img alt="Fractal terrain" src="images/fractal_terrain_surface.png" title="Click to animate"/>
+  </a>&nbsp;&nbsp;&nbsp;
+  <figcaption>Fractal terrain surface.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="fractal_terrain_contour.html">
+    <img alt="Fractal terrain" src="images/fractal_terrain_contour.png" title="Click to animate"/>
+  </a>
+  <figcaption>Fractal terrain contour plot.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+<a name="harmonograph"></a>
+## Harmonograph
+<div class="header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
   <a href="harmonograph.html">
     <img alt="Harmonograph simulator" src="./images/harmonograph.png" title="Click to animate"/>
   </a>
   <figcaption>A three-dimensional harmonograph simulator.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>

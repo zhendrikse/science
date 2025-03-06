@@ -1,9 +1,9 @@
 {% include breadcrumbs.html %}
 
-## Fractal terrain contour plot
+## Rössler attractor
 <div class="header_line"><br/></div>
 
-{% include_relative code/FractalContourTerrain.html %}
+{% include_relative code/RoesslerAttractor.html %}
 
 <p style="clear: both;"></p>
 
