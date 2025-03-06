@@ -5,6 +5,7 @@
 - [`complex_functions.py` source code](complex_functions.py)
 - [`double_shapes.py` source code](double_shapes.py)
 - [`fractals.py` source code](fractals.py)
+- [`fractal_terrain.py` source code](fractal_terrain.py)
 - [`harmonograph.py` source code](harmonograph.py)
 - [`integration_with_polar_coordinates.py` source code](integration_with_polar_coordinates.py)
 - [`lorenz_attractor.py` source code](lorenz_attractor.py)

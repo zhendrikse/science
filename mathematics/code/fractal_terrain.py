@@ -1,4 +1,6 @@
-from vpython import log, canvas, rate, curve, vector, color, cross, quad, vertex, sqrt
+#Web VPython 3.2
+
+from vpython import log, canvas, rate, curve, vector, color, cross, quad, vertex, sqrt, pow, radio
 import random
 
 title = """&#x2022; Based on <a href="https://github.com/ragnraok/RandomFractalTerrain-Vpython">RandomFractalTerrain-Vpython</a>
@@ -8,6 +10,7 @@ title = """&#x2022; Based on <a href="https://github.com/ragnraok/RandomFractalT
 
 display = canvas(width=600, title=title, background=color.gray(0.075), forward=vector(-100, -60, -100))
 
+
 class Diamond:
     """
     a -- b -- c
@@ -16,6 +19,7 @@ class Diamond:
     |    |    |
     g -- h -- i
     """
+
     def __init__(self, x, y, span, height, random_value):
         half = span >> 1
         self.a = vector(x, y, height[y][x])
@@ -23,7 +27,7 @@ class Diamond:
         self.g = vector(x, y + span, height[y + span][x])
         self.i = vector(x + span, y + span, height[y + span][x + span])
 
-        average_height = .25 *  (self.a.z + self.c.z + self.g.z + self.i.z)
+        average_height = .25 * (self.a.z + self.c.z + self.g.z + self.i.z)
         self.e = vector(x + half, y + half, average_height + random_value)
 
     def center_point(self):
@@ -38,6 +42,7 @@ class Square:
     |    |    |
     g -- h -- i
     """
+
     def __init__(self, x, y, span, height):
         self.half = half = span >> 1
         self.a = vector(x, y, height[y][x])
@@ -70,23 +75,21 @@ class Square:
         center_point.z = average + random_value
         height[int(center_point.y)][int(center_point.x)] = center_point.z
 
+
 class FractalTerrain:
     def __init__(self, num_grid_lines, smoothness, z_scale):
-        final_size = 1
-        while final_size < num_grid_lines:
-            final_size <<= 1
-
-        self._height = [[0 for i in range(final_size  + 1)] for i in range(final_size + 1)]
-        self._iterate(smoothness, z_scale)
         self._z_scale = z_scale
+        self._smoothness = smoothness
         self._num_grid_lines = num_grid_lines
+        self._height = []
 
     def _iterate(self, smoothness, z_scale):
         count = 0
-        iter_num = log(len(self._height) - 1, 2)
+        iter_num = log(len(self._height) - 1) / log(2)
         while count < iter_num:
             count += 1
-            self._diamond(count, self._generate_random_num(count, smoothness, z_scale))
+            random_value = self._generate_random_num(count, smoothness, z_scale)
+            self._diamond(count, random_value)
             self._square(count, smoothness, z_scale)
 
     def _diamond(self, count, random_value):
@@ -98,7 +101,6 @@ class FractalTerrain:
                 center_point = Diamond(x, y, span, self._height, random_value).center_point()
                 self._height[int(center_point.y)][int(center_point.x)] = center_point.z
 
-
     def _square(self, count, smoothness, z_scale):
         terrain_size = len(self._height) - 1
         num_seg = 1 << (count - 1)
@@ -106,7 +108,10 @@ class FractalTerrain:
         for x in range(0, terrain_size, span):
             for y in range(0, terrain_size, span):
                 square_ = Square(x, y, span, self._height)
-                square_.set_random_heights([self._generate_random_num(count, smoothness, z_scale) for i in range(4)], terrain_size, self._height)
+                random_values = []
+                for i in range(4):
+                    random_values += [self._generate_random_num(count, smoothness, z_scale)]
+                square_.set_random_heights(random_values, terrain_size, self._height)
 
         for y in range(0, terrain_size, span):
             self._height[y][terrain_size] = self._height[y][0]
@@ -114,43 +119,23 @@ class FractalTerrain:
         for x in range(0, terrain_size, span):
             self._height[terrain_size][x] = self._height[0][x]
 
-
     def _generate_random_num(self, count, smoothness, z_scale):
         _reduce = 1
         for i in range(count):
             _reduce *= pow(2, -smoothness)
         return _reduce * random.randint(-z_scale, z_scale)
 
-    def height(self):
+    def new_terrain(self):
+        final_size = 1
+        while final_size < self._num_grid_lines:
+            final_size <<= 1
+        self._height = [[0 for i in range(final_size + 1)] for i in range(final_size + 1)]
+        self._iterate(self._smoothness, self._z_scale)
         return self._height
 
     def z_scale(self):
         return self._z_scale
 
-    def num_grid_lines(self):
-        return self._num_grid_lines
-
-class ContourPlot:
-    def __init__(self, points, z_scale):
-        num_points = len(points)
-        resolution = int(sqrt(num_points))
-
-        # horizontal lines
-        horizontal_curves = []
-        for i in range(0, num_points, resolution):
-            for j in range(resolution - 1):
-                horizontal_curves.append(curve(pos=[points[i + j], points[i + j + 1]]))
-                hue =1.5 + .5 * (points[i + j].y +  points[i + j + 1].y) / z_scale
-                horizontal_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
-
-        # vertical lines
-        vertical_curves = []
-        for i in range(0, resolution):
-            for j in range(0, num_points - resolution, resolution):
-                if i + j < num_points: #and i + j + self._size < num_points:
-                    vertical_curves.append(curve(pos=[points[i + j], points[i + j + resolution]]))
-                    hue =1.5 + .5 * (points[i + j].y +  points[i + j + 1].y) / z_scale
-                    vertical_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
 class SurfacePlot:
     def __init__(self, points, z_scale):
@@ -163,7 +148,7 @@ class SurfacePlot:
     def _create_vertices(self, points):
         for point in points:
             self._vertices.append(vertex(pos=point, normal=vector(0, 1, 0), color=color.green))
-            hue = .5 + point.y / self._z_scale
+            hue = 1.5 + point.y / self._z_scale
             self._vertices[-1].color = color.hsv_to_rgb(vector(hue, 1., 1.))
 
     def _create_quad(self, x, y):
@@ -219,41 +204,79 @@ class SurfacePlot:
         return self._vertices[x * dimension + y]
 
 
-class Grid:
-    def __init__(self, terrain, size=200):
-        self._points = []
-        self._z_scale = terrain.z_scale()
+class ContourPlot:
+    def __init__(self, points, z_scale):
+        num_points = len(points)
+        resolution = int(sqrt(num_points))
 
-        height = terrain.height()
-        resolution = terrain.num_grid_lines()
+        # horizontal lines
+        horizontal_curves = []
+        for i in range(0, num_points, resolution):
+            for j in range(resolution - 1):
+                horizontal_curves.append(curve(pos=[points[i + j], points[i + j + 1]]))
+                hue = 1.5 + .5 * (points[i + j].y + points[i + j + 1].y) / z_scale
+                horizontal_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
+
+        # vertical lines
+        vertical_curves = []
+        for i in range(0, resolution):
+            for j in range(0, num_points - resolution, resolution):
+                if i + j < num_points:  # and i + j + self._size < num_points:
+                    vertical_curves.append(curve(pos=[points[i + j], points[i + j + resolution]]))
+                    hue = 1.5 + .5 * (points[i + j].y + points[i + j + 1].y) / z_scale
+                    vertical_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
+
+
+class Grid:
+    def __init__(self, size=200):
+        self._points = []
+        self._size = size
+        self._render_as_surface = True
+
+    def render(self, fractal):
+        height = fractal.new_terrain()
+        resolution = len(height)
         has_height = (height is not None and len(height) != 0)
-        row_step = col_step = (size - (-size)) / float(resolution - 1)
+        self._points = []
+        row_step = col_step = (self._size - (-self._size)) / float(resolution - 1)
         for row in range(resolution):
             for col in range(resolution):
-                self._points.append(vector(size - col * col_step, has_height and height[row][col] or 0, size - row * row_step))
+                self._points.append(
+                    vector(self._size - col * col_step, has_height and height[row][col] or 0, self._size - row * row_step))
 
-    def render_contours(self):
-        _ = ContourPlot(self._points, self._z_scale)
+        if self._render_as_surface:
+            _ = SurfacePlot(self._points, fractal.z_scale())
+        else:
+            _ = ContourPlot(self._points, fractal.z_scale())
 
-    def render_surface(self):
-        _ = SurfacePlot(self._points, self._z_scale)
+    def render_as_surface(self, as_surface):
+        self._render_as_surface = as_surface
+
+
+fractal_terrain = FractalTerrain(num_grid_lines=60, z_scale=200, smoothness=1)
+grid = Grid()
 
 def refresh_screen(evt):
     for obj in display.objects:
         obj.visible = False
-        obj.delete()
+        #obj.delete()
 
-    terrain = FractalTerrain(num_grid_lines=60, z_scale=200, smoothness=1)
-    Grid(terrain, size=200).render_contours()
-    #Grid(terrain, size=200).render_surface()
+    grid.render(fractal_terrain)
 
 
-def main_loop():
-    display.bind("click", refresh_screen)
-    refresh_screen(None)
-    while True:
-        rate(10)
+display.bind("click", refresh_screen)
 
+def toggle_surface_rendering(event):
+    if event.name == "surface":
+        grid.render_as_surface(True)
+        contour_radio.checked = False
+    else:
+        grid.render_as_surface(False)
+        surface_radio.checked = False
 
-if __name__ == '__main__':
-    main_loop()
+surface_radio = radio(text="Surface ", bind=toggle_surface_rendering, name="surface", checked=True)
+contour_radio = radio(text="Contour ", bind=toggle_surface_rendering, name="contour", checked=False)
+
+grid.render(fractal_terrain)
+while True:
+    rate(10)
