@@ -210,7 +210,8 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <a href="lorenz_attractor.html">
     <img alt="Lorenz attractor" src="./images/lorenz_attractor.png" title="Click to animate"/>
   </a>
-  <figcaption>VPython program that renders the Lorenz attractor.</figcaption>
+  <figcaption><a href="https://vpython.org/">VPython program</a> that renders the 
+  <a href="https://science.howstuffworks.com/math-concepts/chaos-theory4.htm">Lorenz attractor</a>.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="roessler_attractor.html">
