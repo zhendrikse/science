@@ -143,6 +143,9 @@ class FractalTerrain:
     def set_resolution_to(self, event):
         self._num_grid_lines = event.value
 
+    def set_z_scale_to(self, event):
+        self._z_scale = int(event.value)
+
 class SurfacePlot:
     def __init__(self, points, z_scale):
         self._vertices, self._quads = [], []
@@ -153,7 +156,7 @@ class SurfacePlot:
 
     def _create_vertices(self, points):
         for point in points:
-            self._vertices.append(vertex(pos=point, normal=vector(0, 1, 0), color=color.green))
+            self._vertices.append(vertex(pos=point, normal=vector(0, 1, 0)))
             hue = 1.5 + point.y / self._z_scale
             self._vertices[-1].color = color.hsv_to_rgb(vector(hue, 1., 1.))
 
@@ -283,6 +286,9 @@ _ = slider(min=0, max=1, value=.5, bind=fractal_terrain.set_smoothness_to)
 
 display.append_to_caption("\n\nresolution")
 _ = slider(min=10, max=120, value=60, bind=fractal_terrain.set_resolution_to)
+
+display.append_to_caption("\n\nHeight scale")
+_ = slider(min=100, max=300, value=200, bind=fractal_terrain.set_z_scale_to)
 
 grid.render(fractal_terrain)
 while True:

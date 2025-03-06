@@ -254,8 +254,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, triangle, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, factorial, combin, button, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, fractal_terrain, grid, surface_radio, contour_radio, _;
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, triangle, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, factorial, combin, button, radio, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, fractal_terrain, grid, _;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -630,6 +630,15 @@ async function __main__() {
         __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
+    FractalTerrain.prototype.set_z_scale_to = async function set_z_scale_to(event) {
+        var self = this;
+        "147";
+        self._z_scale = int(event.value);
+    };
+    if (!FractalTerrain.prototype.set_z_scale_to.__argnames__) Object.defineProperties(FractalTerrain.prototype.set_z_scale_to, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
     FractalTerrain.prototype.__repr__ = async function __repr__() {
                 return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
     };
@@ -647,23 +656,24 @@ async function __main__() {
 
 
 
-    "146";
+
+    "149";
     function SurfacePlot() {;
     }
     SurfacePlot.prototype.__init__ = async function __init__(points, z_scale) {
         var self = this;
         var ρσ_ls, ρσ_unpack;
-        "148";
+        "151";
         ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([])];
         self._vertices = ρσ_unpack[0];
         self._quads = ρσ_unpack[1];
-        "149";
-        self._z_scale = z_scale;
-        "150";
-        (await self._create_vertices(points));
-        "151";
-        (await self._create_quads());
         "152";
+        self._z_scale = z_scale;
+        "153";
+        (await self._create_vertices(points));
+        "154";
+        (await self._create_quads());
+        "155";
         (await self._make_normals());
     };
     if (!SurfacePlot.prototype.__init__.__argnames__) Object.defineProperties(SurfacePlot.prototype.__init__, {
@@ -675,16 +685,16 @@ async function __main__() {
     SurfacePlot.prototype._create_vertices = async function _create_vertices(points) {
         var self = this;
         var ρσ_ls, hue, point;
-        "155";
+        "158";
         var ρσ_Iter14 = points;
         ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
         for (var ρσ_Index14 of ρσ_Iter14) {
             point = ρσ_Index14;
-            "156";
-            self._vertices.append(ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: point, normal: vector(0, 1, 0), color: color.green})]));
-            "157";
+            "159";
+            self._vertices.append(ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: point, normal: vector(0, 1, 0)})]));
+            "160";
             hue = 1.5["+"](point.y["/"](self._z_scale));
-            "158";
+            "161";
             ρσ_getitem(self._vertices, 1["-u"]()["*"](1)).color = color.hsv_to_rgb(vector(hue, 1, 1));
         }
     };
@@ -695,31 +705,31 @@ async function __main__() {
     SurfacePlot.prototype._create_quad = async function _create_quad(x, y) {
         var self = this;
         var ρσ_ls, dimension, ρσ_unpack, _neighbor_increment_x, _neighbor_increment_y, v0, v1, v2, v3;
-        "161";
+        "164";
         dimension = int(sqrt(len(self._vertices)));
-        "162";
+        "165";
         ρσ_unpack = [1, 1];
         _neighbor_increment_x = ρσ_unpack[0];
         _neighbor_increment_y = ρσ_unpack[1];
-        "163";
+        "166";
         if (ρσ_equals(x, dimension["-"](1["*"](1)))) {
-            "164";
+            "167";
             _neighbor_increment_x = 1["-u"]()["*"](x);
-            "165";
+            "168";
         }
         if (ρσ_equals(y, dimension["-"](1["*"](1)))) {
-            "166";
+            "169";
             _neighbor_increment_y = 1["-u"]()["*"](y);
         }
-        "168";
-        v0 = (await self._get_vertex(x, y, dimension));
-        "169";
-        v1 = (await self._get_vertex(x["+"](_neighbor_increment_x), y, dimension));
-        "170";
-        v2 = (await self._get_vertex(x["+"](_neighbor_increment_x), y["+"](_neighbor_increment_y), dimension));
         "171";
-        v3 = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension));
+        v0 = (await self._get_vertex(x, y, dimension));
         "172";
+        v1 = (await self._get_vertex(x["+"](_neighbor_increment_x), y, dimension));
+        "173";
+        v2 = (await self._get_vertex(x["+"](_neighbor_increment_x), y["+"](_neighbor_increment_y), dimension));
+        "174";
+        v3 = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension));
+        "175";
         self._quads.append(ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ v0, v1, v2, v3 ])})]));
     };
     if (!SurfacePlot.prototype._create_quad.__argnames__) Object.defineProperties(SurfacePlot.prototype._create_quad, {
@@ -729,15 +739,15 @@ async function __main__() {
     SurfacePlot.prototype._create_quads = async function _create_quads() {
         var self = this;
         var ρσ_ls, dimension, y, x;
-        "176";
+        "179";
         dimension = int(sqrt(len(self._vertices)));
-        "177";
+        "180";
         for (var ρσ_Index15 = 0; ρσ_Index15["<"](dimension["-"](1["*"](1))); ρσ_Index15++) {
             x = ρσ_Index15;
-            "178";
+            "181";
             for (var ρσ_Index16 = 0; ρσ_Index16["<"](dimension["-"](1["*"](1))); ρσ_Index16++) {
                 y = ρσ_Index16;
-                "179";
+                "182";
                 (await self._create_quad(x, y));
             }
         }
@@ -748,35 +758,35 @@ async function __main__() {
     SurfacePlot.prototype._set_vertex_normal_for = async function _set_vertex_normal_for(x, y) {
         var self = this;
         var ρσ_ls, dimension, ρσ_unpack, _neighbor_increment_x, _neighbor_increment_y, vertex_, normal_total_, vec_1, vec_2;
-        "182";
+        "185";
         dimension = int(sqrt(len(self._vertices)));
-        "183";
+        "186";
         ρσ_unpack = [1, 1];
         _neighbor_increment_x = ρσ_unpack[0];
         _neighbor_increment_y = ρσ_unpack[1];
-        "184";
+        "187";
         if (ρσ_equals(x, dimension["-"](1["*"](1)))) {
-            "185";
+            "188";
             _neighbor_increment_x = 1["-u"]()["*"](x);
-            "186";
+            "189";
         }
         if (ρσ_equals(y, dimension["-"](1["*"](1)))) {
-            "187";
+            "190";
             _neighbor_increment_y = 1["-u"]()["*"](y);
         }
-        "189";
-        vertex_ = (await self._get_vertex(x, y, dimension));
-        "190";
-        normal_total_ = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension)).normal;
-        "191";
-        normal_total_=normal_total_["+"]((await self._get_vertex(x["+"](_neighbor_increment_x), y, dimension)).normal);
         "192";
-        vec_1 = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension)).pos["-"](1["*"](vertex_.pos));
+        vertex_ = (await self._get_vertex(x, y, dimension));
         "193";
+        normal_total_ = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension)).normal;
+        "194";
+        normal_total_=normal_total_["+"]((await self._get_vertex(x["+"](_neighbor_increment_x), y, dimension)).normal);
+        "195";
+        vec_1 = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension)).pos["-"](1["*"](vertex_.pos));
+        "196";
         vec_2 = (await self._get_vertex(x["+"](_neighbor_increment_x), y, dimension)).pos["-"](1["*"](vertex_.pos));
-        "198";
+        "201";
         normal_total_=normal_total_["+"](cross(vec_1, vec_2));
-        "199";
+        "202";
         vertex_.normal = normal_total_["/"](2);
     };
     if (!SurfacePlot.prototype._set_vertex_normal_for.__argnames__) Object.defineProperties(SurfacePlot.prototype._set_vertex_normal_for, {
@@ -786,15 +796,15 @@ async function __main__() {
     SurfacePlot.prototype._make_normals = async function _make_normals() {
         var self = this;
         var ρσ_ls, dimension, y, x;
-        "204";
+        "207";
         dimension = int(sqrt(len(self._vertices)));
-        "205";
+        "208";
         for (var ρσ_Index17 = 0; ρσ_Index17["<"](dimension); ρσ_Index17++) {
             x = ρσ_Index17;
-            "206";
+            "209";
             for (var ρσ_Index18 = 0; ρσ_Index18["<"](dimension); ρσ_Index18++) {
                 y = ρσ_Index18;
-                "207";
+                "210";
                 (await self._set_vertex_normal_for(x, y));
             }
         }
@@ -804,7 +814,7 @@ async function __main__() {
     });
     SurfacePlot.prototype._get_vertex = async function _get_vertex(x, y, dimension) {
         var self = this;
-        "210";
+        "213";
         return ρσ_getitem(self._vertices, x["*"](dimension)["+"](y));
     };
     if (!SurfacePlot.prototype._get_vertex.__argnames__) Object.defineProperties(SurfacePlot.prototype._get_vertex, {
@@ -826,51 +836,51 @@ async function __main__() {
 
 
 
-    "213";
+    "216";
     function ContourPlot() {;
     }
     ContourPlot.prototype.__init__ = async function __init__(points, z_scale) {
         var self = this;
         var ρσ_ls, num_points, resolution, horizontal_curves, hue, j, i, vertical_curves;
-        "215";
+        "218";
         num_points = len(points);
-        "216";
-        resolution = int(sqrt(num_points));
         "219";
+        resolution = int(sqrt(num_points));
+        "222";
         horizontal_curves = ρσ_list_decorate([]);
-        "220";
+        "223";
         var ρσ_Iter19 = range(0, num_points, resolution);
         ρσ_Iter19 = ((typeof ρσ_Iter19[Symbol.iterator] === "function") ? (ρσ_Iter19 instanceof Map ? ρσ_Iter19.keys() : ρσ_Iter19) : Object.keys(ρσ_Iter19));
         for (var ρσ_Index19 of ρσ_Iter19) {
             i = ρσ_Index19;
-            "221";
+            "224";
             for (var ρσ_Index20 = 0; ρσ_Index20["<"](resolution["-"](1["*"](1))); ρσ_Index20++) {
                 j = ρσ_Index20;
-                "222";
+                "225";
                 horizontal_curves.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(points, i["+"](j)), ρσ_getitem(points, i["+"](j)["+"](1)) ]), radius: .3})]));
-                "223";
+                "226";
                 hue = 1.5["+"](.5["*"](ρσ_getitem(points, i["+"](j)).y["+"](ρσ_getitem(points, i["+"](j)["+"](1)).y))["/"](z_scale));
-                "224";
+                "227";
                 ρσ_getitem(horizontal_curves, 1["-u"]()["*"](1)).color = color.hsv_to_rgb(vector(hue, .9, 1));
             }
         }
-        "227";
+        "230";
         vertical_curves = ρσ_list_decorate([]);
-        "228";
+        "231";
         for (var ρσ_Index21 = 0; ρσ_Index21["<"](resolution); ρσ_Index21++) {
             i = ρσ_Index21;
-            "229";
+            "232";
             var ρσ_Iter22 = range(0, num_points["-"](1["*"](resolution)), resolution);
             ρσ_Iter22 = ((typeof ρσ_Iter22[Symbol.iterator] === "function") ? (ρσ_Iter22 instanceof Map ? ρσ_Iter22.keys() : ρσ_Iter22) : Object.keys(ρσ_Iter22));
             for (var ρσ_Index22 of ρσ_Iter22) {
                 j = ρσ_Index22;
-                "230";
+                "233";
                 if (i["+"](j)["<"](num_points)) {
-                    "231";
+                    "234";
                     vertical_curves.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(points, i["+"](j)), ρσ_getitem(points, i["+"](j)["+"](resolution)) ]), radius: .3})]));
-                    "232";
+                    "235";
                     hue = 1.5["+"](.5["*"](ρσ_getitem(points, i["+"](j)).y["+"](ρσ_getitem(points, i["+"](j)["+"](1)).y))["/"](z_scale));
-                    "233";
+                    "236";
                     ρσ_getitem(vertical_curves, 1["-u"]()["*"](1)).color = color.hsv_to_rgb(vector(hue, .9, 1));
                 }
             }
@@ -891,7 +901,7 @@ async function __main__() {
     Object.defineProperty(ContourPlot.prototype, "__bases__", {value: []});
 
 
-    "236";
+    "239";
     function Grid() {;
     }
     Grid.prototype.__init__ = async function __init__() {
@@ -902,12 +912,12 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "size")){
             size = ρσ_kwargs_obj.size;
         }
-        "238";
-        self._points = ρσ_list_decorate([]);
-        "239";
+        "241";
         self._size = size;
-        "240";
+        "242";
         self._render_as_surface = false;
+        "243";
+        self._render_as_contour = true;
     };
     if (!Grid.prototype.__init__.__defaults__) Object.defineProperties(Grid.prototype.__init__, {
         __defaults__ : {value: {size:200}},
@@ -919,38 +929,39 @@ async function __main__() {
     Grid.__handles_kwarg_interpolation__ = Grid.prototype.__init__.__handles_kwarg_interpolation__;
     Grid.prototype.render = async function render(fractal) {
         var self = this;
-        var ρσ_ls, height, resolution, has_height, row_step, col_step, col, row, _GS_1, _;
-        "243";
-        height = (await fractal.new_terrain());
-        "244";
-        resolution = len(height);
-        "245";
-        has_height = height !== null && ρσ_not_equals(len(height), 0);
+        var ρσ_ls, height, resolution, has_height, points, row_step, col_step, col, row, _GS_1, _;
         "246";
-        self._points = ρσ_list_decorate([]);
+        height = (await fractal.new_terrain());
         "247";
-        row_step = col_step = self._size["-"](1["*"](1["-u"]())["*"](self._size))["/"](float(resolution["-"](1["*"](1))));
+        resolution = len(height);
         "248";
+        has_height = height !== null && ρσ_not_equals(len(height), 0);
+        "249";
+        points = ρσ_list_decorate([]);
+        "250";
+        row_step = col_step = self._size["-"](1["*"](1["-u"]())["*"](self._size))["/"](float(resolution["-"](1["*"](1))));
+        "251";
         for (var ρσ_Index23 = 0; ρσ_Index23["<"](resolution); ρσ_Index23++) {
             row = ρσ_Index23;
-            "249";
+            "252";
             for (var ρσ_Index24 = 0; ρσ_Index24["<"](resolution); ρσ_Index24++) {
                 col = ρσ_Index24;
-                "250";
-                self._points.append(vector(self._size["-"](1["*"](col)["*"](col_step)), has_height && ρσ_getitem(ρσ_getitem(height, row), col) || 0, self._size["-"](1["*"](row)["*"](row_step))));
                 "253";
+                points.append(vector(self._size["-"](1["*"](col)["*"](col_step)), has_height && ρσ_getitem(ρσ_getitem(height, row), col) || 0, self._size["-"](1["*"](row)["*"](row_step))));
+                "255";
             }
         }
         if (self._render_as_surface) {
-            "254";
-            _GS_1 = new SurfacePlot;
-            (await _GS_1.__init__(self._points, (await fractal.z_scale())));
-            _ = _GS_1;
-            "255";
-        } else {
             "256";
+            _GS_1 = new SurfacePlot;
+            (await _GS_1.__init__(points, (await fractal.z_scale())));
+            _ = _GS_1;
+            "257";
+        }
+        if (self._render_as_contour) {
+            "258";
             _GS_1 = new ContourPlot;
-            (await _GS_1.__init__(self._points, (await fractal.z_scale())));
+            (await _GS_1.__init__(points, (await fractal.z_scale())));
             _ = _GS_1;
         }
     };
@@ -958,13 +969,22 @@ async function __main__() {
         __argnames__ : {value: ["fractal"]},
         __module__ : {value: null}
     });
-    Grid.prototype.render_as_surface = async function render_as_surface(as_surface) {
+    Grid.prototype.set_surface_rendering = async function set_surface_rendering(event) {
         var self = this;
-        "259";
-        self._render_as_surface = as_surface;
+        "261";
+        self._render_as_surface = event.checked;
     };
-    if (!Grid.prototype.render_as_surface.__argnames__) Object.defineProperties(Grid.prototype.render_as_surface, {
-        __argnames__ : {value: ["as_surface"]},
+    if (!Grid.prototype.set_surface_rendering.__argnames__) Object.defineProperties(Grid.prototype.set_surface_rendering, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+    Grid.prototype.set_contour_rendering = async function set_contour_rendering(event) {
+        var self = this;
+        "264";
+        self._render_as_contour = event.checked;
+    };
+    if (!Grid.prototype.set_contour_rendering.__argnames__) Object.defineProperties(Grid.prototype.set_contour_rendering, {
+        __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
     Grid.prototype.__repr__ = async function __repr__() {
@@ -978,26 +998,27 @@ async function __main__() {
 
 
 
-    "262";
+
+    "267";
     _GS_1 = new FractalTerrain;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({num_grid_lines: 60, z_scale: 200, smoothness: 1})]);
     fractal_terrain = _GS_1;
-    "263";
+    "268";
     _GS_1 = new Grid;
     (await _GS_1.__init__());
     grid = _GS_1;
-    "265";
+    "270";
     async function refresh_screen(evt) {
         var ρσ_ls, obj;
-        "266";
+        "271";
         var ρσ_Iter25 = display.objects;
         ρσ_Iter25 = ((typeof ρσ_Iter25[Symbol.iterator] === "function") ? (ρσ_Iter25 instanceof Map ? ρσ_Iter25.keys() : ρσ_Iter25) : Object.keys(ρσ_Iter25));
         for (var ρσ_Index25 of ρσ_Iter25) {
             obj = ρσ_Index25;
-            "267";
+            "272";
             obj.visible = false;
         }
-        "270";
+        "275";
         (await grid.render(fractal_terrain));
     };
     if (!refresh_screen.__argnames__) Object.defineProperties(refresh_screen, {
@@ -1005,41 +1026,24 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "273";
+    "278";
     display.bind("click", refresh_screen);
-    "275";
-    async function toggle_surface_rendering(event) {
-        "276";
-        if ((event.name === "surface" || typeof event.name === "object" && ρσ_equals(event.name, "surface"))) {
-            "277";
-            (await grid.render_as_surface(true));
-            "278";
-            contour_radio.checked = false;
-            "279";
-        } else {
-            "280";
-            (await grid.render_as_surface(false));
-            "281";
-            surface_radio.checked = false;
-        }
-    };
-    if (!toggle_surface_rendering.__argnames__) Object.defineProperties(toggle_surface_rendering, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
+    "280";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Surface ", bind: grid.set_surface_rendering.bind(grid), checked: false})]);
+    "281";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Contour ", bind: grid.set_contour_rendering.bind(grid), checked: true})]);
     "283";
-    surface_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Surface ", bind: toggle_surface_rendering, name: "surface", checked: false})]);
-    "284";
-    contour_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Contour ", bind: toggle_surface_rendering, name: "contour", checked: true})]);
-    "286";
     display.append_to_caption("\n\nSmoothness");
-    "287";
+    "284";
     _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .5, bind: fractal_terrain.set_smoothness_to.bind(fractal_terrain)})]);
-    "289";
+    "286";
     display.append_to_caption("\n\nresolution");
-    "290";
+    "287";
     _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 10, max: 120, value: 60, bind: fractal_terrain.set_resolution_to.bind(fractal_terrain)})]);
+    "289";
+    display.append_to_caption("\n\nHeight scale");
+    "290";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 100, max: 300, value: 200, bind: fractal_terrain.set_z_scale_to.bind(fractal_terrain)})]);
     "292";
     (await grid.render(fractal_terrain));
     "293";
