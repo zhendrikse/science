@@ -1,6 +1,6 @@
 #Web VPython 3.2
 
-from vpython import log, canvas, rate, curve, vector, color, cross, quad, vertex, sqrt, pow, radio, slider
+from vpython import log, canvas, rate, curve, vector, color, cross, quad, vertex, sqrt, pow, checkbox, slider
 import random
 
 title = """&#x2022; Based on <a href="https://github.com/ragnraok/RandomFractalTerrain-Vpython">RandomFractalTerrain-Vpython</a>
@@ -239,7 +239,8 @@ class ContourPlot:
 class Grid:
     def __init__(self, size=200):
         self._size = size
-        self._render_as_surface = True
+        self._render_as_surface = False
+        self._render_as_contour = True
 
     def render(self, fractal):
         height = fractal.new_terrain()
@@ -251,10 +252,16 @@ class Grid:
             for col in range(resolution):
                 points.append(vector(self._size - col * col_step, has_height and height[row][col] or 0, self._size - row * row_step))
 
-        _ = SurfacePlot(points, fractal.z_scale()) if self._render_as_surface else ContourPlot(points, fractal.z_scale())
+        if self._render_as_surface:
+            _ = SurfacePlot(points, fractal.z_scale())
+        if self._render_as_contour:
+            _ = ContourPlot(points, fractal.z_scale())
 
-    def render_as_surface(self, as_surface):
-        self._render_as_surface = as_surface
+    def set_surface_rendering(self, event):
+        self._render_as_surface = event.checked
+
+    def set_contour_rendering(self, event):
+        self._render_as_contour = event.checked
 
 
 fractal_terrain = FractalTerrain(num_grid_lines=60, z_scale=200, smoothness=1)
@@ -270,16 +277,8 @@ def refresh_screen(evt):
 
 display.bind("click", refresh_screen)
 
-def toggle_surface_rendering(event):
-    if event.name == "surface":
-        grid.render_as_surface(True)
-        contour_radio.checked = False
-    else:
-        grid.render_as_surface(False)
-        surface_radio.checked = False
-
-surface_radio = radio(text="Surface ", bind=toggle_surface_rendering, name="surface", checked=True)
-contour_radio = radio(text="Contour ", bind=toggle_surface_rendering, name="contour", checked=False)
+_ = checkbox(text="Surface ", bind=grid.set_surface_rendering, checked=False)
+_ = checkbox(text="Contour ", bind=grid.set_contour_rendering, checked=True)
 
 display.append_to_caption("\n\nSmoothness")
 _ = slider(min=0, max=1, value=.5, bind=fractal_terrain.set_smoothness_to)
