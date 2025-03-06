@@ -235,7 +235,6 @@ class ContourPlot:
 
 class Grid:
     def __init__(self, size=200):
-        self._points = []
         self._size = size
         self._render_as_surface = True
 
@@ -243,17 +242,13 @@ class Grid:
         height = fractal.new_terrain()
         resolution = len(height)
         has_height = (height is not None and len(height) != 0)
-        self._points = []
+        points = []
         row_step = col_step = (self._size - (-self._size)) / float(resolution - 1)
         for row in range(resolution):
             for col in range(resolution):
-                self._points.append(
-                    vector(self._size - col * col_step, has_height and height[row][col] or 0, self._size - row * row_step))
+                points.append(vector(self._size - col * col_step, has_height and height[row][col] or 0, self._size - row * row_step))
 
-        if self._render_as_surface:
-            _ = SurfacePlot(self._points, fractal.z_scale())
-        else:
-            _ = ContourPlot(self._points, fractal.z_scale())
+        _ = SurfacePlot(points, fractal.z_scale()) if self._render_as_surface else ContourPlot(points, fractal.z_scale())
 
     def render_as_surface(self, as_surface):
         self._render_as_surface = as_surface
