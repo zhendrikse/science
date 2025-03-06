@@ -254,8 +254,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, triangle, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, factorial, combin, button, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, fractal_terrain, grid, surface_radio, contour_radio;
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, triangle, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, factorial, combin, button, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, fractal_terrain, grid, surface_radio, contour_radio, _;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -269,29 +269,29 @@ async function __main__() {
     strings();
     var random = ρσ_modules.random;
 
-    "9";
-    title = "&#x2022; Based on <a href=\"https://github.com/ragnraok/RandomFractalTerrain-Vpython\">RandomFractalTerrain-Vpython<\/a>\n&#x2022; Refactored and extended by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/fractal_terrain.py\">fractal_terrain.py</a>\n\n";
-    "11";
+    "10";
+    title = "&#x2022; Based on <a href=\"https://github.com/ragnraok/RandomFractalTerrain-Vpython\">RandomFractalTerrain-Vpython<\/a>\n&#x2022; Refactored and extended by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/fractal_terrain.py\">fractal_terrain.py</a>\n&#x2022; Click to regenerate a new terrain\n\n";
+    "12";
     display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({range: 350, width: 600, height: 600, title: title, background: color.gray(.075), forward: vector(1["-u"]()["*"](40), 1["-u"]()["*"](122), 1["-u"]()["*"](83)), center: vector(1["-u"]()["*"](18), 1["-u"]()["*"](110), 10)})]);
-    "14";
+    "15";
     function Diamond() {;
     }
     Diamond.prototype.__init__ = async function __init__(x, y, span, height, random_value) {
         var self = this;
         var ρσ_ls, half, average_height;
-        "24";
-        half = span >> 1;
         "25";
-        self.a = vector(x, y, ρσ_getitem(ρσ_getitem(height, y), x));
+        half = span >> 1;
         "26";
-        self.c = vector(x["+"](span), y, ρσ_getitem(ρσ_getitem(height, y), x["+"](span)));
+        self.a = vector(x, y, ρσ_getitem(ρσ_getitem(height, y), x));
         "27";
-        self.g = vector(x, y["+"](span), ρσ_getitem(ρσ_getitem(height, y["+"](span)), x));
+        self.c = vector(x["+"](span), y, ρσ_getitem(ρσ_getitem(height, y), x["+"](span)));
         "28";
+        self.g = vector(x, y["+"](span), ρσ_getitem(ρσ_getitem(height, y["+"](span)), x));
+        "29";
         self.i = vector(x["+"](span), y["+"](span), ρσ_getitem(ρσ_getitem(height, y["+"](span)), x["+"](span)));
-        "30";
-        average_height = .25["*"](self.a.z["+"](self.c.z)["+"](self.g.z)["+"](self.i.z));
         "31";
+        average_height = .25["*"](self.a.z["+"](self.c.z)["+"](self.g.z)["+"](self.i.z));
+        "32";
         self.e = vector(x["+"](half), y["+"](half), average_height["+"](random_value));
     };
     if (!Diamond.prototype.__init__.__argnames__) Object.defineProperties(Diamond.prototype.__init__, {
@@ -302,7 +302,7 @@ async function __main__() {
     Diamond.__handles_kwarg_interpolation__ = Diamond.prototype.__init__.__handles_kwarg_interpolation__;
     Diamond.prototype.center_point = async function center_point() {
         var self = this;
-        "34";
+        "35";
         return self.e;
     };
     if (!Diamond.prototype.center_point.__module__) Object.defineProperties(Diamond.prototype.center_point, {
@@ -318,31 +318,31 @@ async function __main__() {
 
 
 
-    "37";
+    "38";
     function Square() {;
     }
     Square.prototype.__init__ = async function __init__(x, y, span, height) {
         var self = this;
         var ρσ_ls, half;
-        "47";
-        self.half = half = span >> 1;
         "48";
-        self.a = vector(x, y, ρσ_getitem(ρσ_getitem(height, y), x));
+        self.half = half = span >> 1;
         "49";
-        self.b = vector(x["+"](half), y, ρσ_getitem(ρσ_getitem(height, y), x["+"](half)));
+        self.a = vector(x, y, ρσ_getitem(ρσ_getitem(height, y), x));
         "50";
-        self.c = vector(x["+"](span), y, ρσ_getitem(ρσ_getitem(height, y), x["+"](span)));
+        self.b = vector(x["+"](half), y, ρσ_getitem(ρσ_getitem(height, y), x["+"](half)));
         "51";
-        self.d = vector(x, y["+"](half), ρσ_getitem(ρσ_getitem(height, y["+"](half)), x));
+        self.c = vector(x["+"](span), y, ρσ_getitem(ρσ_getitem(height, y), x["+"](span)));
         "52";
-        self.e = vector(x["+"](half), y["+"](half), ρσ_getitem(ρσ_getitem(height, y["+"](half)), x["+"](half)));
+        self.d = vector(x, y["+"](half), ρσ_getitem(ρσ_getitem(height, y["+"](half)), x));
         "53";
-        self.f = vector(x["+"](span), y["+"](half), ρσ_getitem(ρσ_getitem(height, y["+"](half)), x["+"](span)));
+        self.e = vector(x["+"](half), y["+"](half), ρσ_getitem(ρσ_getitem(height, y["+"](half)), x["+"](half)));
         "54";
-        self.g = vector(x, y["+"](span), ρσ_getitem(ρσ_getitem(height, y["+"](span)), x));
+        self.f = vector(x["+"](span), y["+"](half), ρσ_getitem(ρσ_getitem(height, y["+"](half)), x["+"](span)));
         "55";
-        self.h = vector(x["+"](half), y["+"](span), ρσ_getitem(ρσ_getitem(height, y["+"](span)), x["+"](half)));
+        self.g = vector(x, y["+"](span), ρσ_getitem(ρσ_getitem(height, y["+"](span)), x));
         "56";
+        self.h = vector(x["+"](half), y["+"](span), ρσ_getitem(ρσ_getitem(height, y["+"](span)), x["+"](half)));
+        "57";
         self.i = vector(x["+"](span), y["+"](span), ρσ_getitem(ρσ_getitem(height, y["+"](span)), x["+"](span)));
     };
     if (!Square.prototype.__init__.__argnames__) Object.defineProperties(Square.prototype.__init__, {
@@ -354,27 +354,27 @@ async function __main__() {
     Square.prototype.set_random_heights = async function set_random_heights(random_values, terrain_size, height) {
         var self = this;
         var ρσ_ls, ρσ_unpack, x, y, half, above_b, left_d, right_f, below_h;
-        "59";
+        "60";
         ρσ_unpack = [self.a.x, self.a.y];
         x = ρσ_unpack[0];
         y = ρσ_unpack[1];
-        "60";
-        half = self.half;
         "61";
-        above_b = vector(x["+"](half), y["-"](1["*"](half))[">="](0) && y["-"](1["*"](half)) || terrain_size["-"](1["*"](half)), 0);
+        half = self.half;
         "62";
-        left_d = vector(x["-"](1["*"](half))[">="](0) && x["-"](1["*"](half)) || terrain_size["-"](1["*"](half)), y["+"](half), 0);
+        above_b = vector(x["+"](half), y["-"](1["*"](half))[">="](0) && y["-"](1["*"](half)) || terrain_size["-"](1["*"](half)), 0);
         "63";
-        right_f = vector(x["+"](half["*"](3))["<="](terrain_size) && x["+"](half["*"](3)) || half, y["+"](half), 0);
+        left_d = vector(x["-"](1["*"](half))[">="](0) && x["-"](1["*"](half)) || terrain_size["-"](1["*"](half)), y["+"](half), 0);
         "64";
+        right_f = vector(x["+"](half["*"](3))["<="](terrain_size) && x["+"](half["*"](3)) || half, y["+"](half), 0);
+        "65";
         below_h = vector(x["+"](half), y["+"](half["*"](3))["<="](terrain_size) && y["+"](half["*"](3)) || half, 0);
-        "67";
-        (await self._set_height_for_square(height, ρσ_getitem(random_values, 0), self.a, self.e, self.g, left_d, self.d));
         "68";
-        (await self._set_height_for_square(height, ρσ_getitem(random_values, 1), self.a, self.e, self.c, above_b, self.b));
+        (await self._set_height_for_square(height, ρσ_getitem(random_values, 0), self.a, self.e, self.g, left_d, self.d));
         "69";
-        (await self._set_height_for_square(height, ρσ_getitem(random_values, 2), self.c, self.e, self.i, right_f, self.f));
+        (await self._set_height_for_square(height, ρσ_getitem(random_values, 1), self.a, self.e, self.c, above_b, self.b));
         "70";
+        (await self._set_height_for_square(height, ρσ_getitem(random_values, 2), self.c, self.e, self.i, right_f, self.f));
+        "71";
         (await self._set_height_for_square(height, ρσ_getitem(random_values, 3), self.g, self.e, self.i, below_h, self.h));
     };
     if (!Square.prototype.set_random_heights.__argnames__) Object.defineProperties(Square.prototype.set_random_heights, {
@@ -384,7 +384,7 @@ async function __main__() {
     Square.prototype._set_height_for_square = async function _set_height_for_square(height, random_value, a, b, c, d, center_point) {
         var self = this;
         var ρσ_ls, tmp, point, average;
-        "73";
+        "74";
         tmp = (function() {
             var ρσ_Iter = ρσ_list_decorate([ a, b, c, d ]), ρσ_Result = [], point;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -395,11 +395,11 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })();
-        "74";
-        average = (await sum(tmp))["/"](len(tmp));
         "75";
-        center_point.z = average["+"](random_value);
+        average = (await sum(tmp))["/"](len(tmp));
         "76";
+        center_point.z = average["+"](random_value);
+        "77";
         ρσ_setitem(ρσ_getitem(height, int(center_point.y)), int(center_point.x), center_point.z);
     };
     if (!Square.prototype._set_height_for_square.__argnames__) Object.defineProperties(Square.prototype._set_height_for_square, {
@@ -417,18 +417,18 @@ async function __main__() {
 
 
 
-    "79";
+    "80";
     function FractalTerrain() {;
     }
     FractalTerrain.prototype.__init__ = async function __init__(num_grid_lines, smoothness, z_scale) {
         var self = this;
-        "81";
-        self._z_scale = z_scale;
         "82";
-        self._smoothness = smoothness;
+        self._z_scale = z_scale;
         "83";
-        self._num_grid_lines = num_grid_lines;
+        self._smoothness = smoothness;
         "84";
+        self._num_grid_lines = num_grid_lines;
+        "85";
         self._height = ρσ_list_decorate([]);
     };
     if (!FractalTerrain.prototype.__init__.__argnames__) Object.defineProperties(FractalTerrain.prototype.__init__, {
@@ -440,19 +440,19 @@ async function __main__() {
     FractalTerrain.prototype._iterate = async function _iterate(smoothness, z_scale) {
         var self = this;
         var ρσ_ls, count, iter_num, random_value;
-        "87";
-        count = 0;
         "88";
-        iter_num = log(len(self._height)["-"](1["*"](1)))["/"](log(2));
+        count = 0;
         "89";
+        iter_num = log(len(self._height)["-"](1["*"](1)))["/"](log(2));
+        "90";
         while (count["<"](iter_num)) {
-            "90";
-            count=count["+"](1);
             "91";
-            random_value = (await self._generate_random_num(count, smoothness, z_scale));
+            count=count["+"](1);
             "92";
-            (await self._diamond(count, random_value));
+            random_value = (await self._generate_random_num(count, smoothness, z_scale));
             "93";
+            (await self._diamond(count, random_value));
+            "94";
             (await self._square(count, smoothness, z_scale));
         }
     };
@@ -463,27 +463,27 @@ async function __main__() {
     FractalTerrain.prototype._diamond = async function _diamond(count, random_value) {
         var self = this;
         var ρσ_ls, terrain_size, num_seg, span, _GS_1, center_point, y, x;
-        "96";
-        terrain_size = len(self._height)["-"](1["*"](1));
         "97";
-        num_seg = 1 << count["-"](1["*"](1));
+        terrain_size = len(self._height)["-"](1["*"](1));
         "98";
-        span = Math.floor(terrain_size["/"](num_seg));
+        num_seg = 1 << count["-"](1["*"](1));
         "99";
+        span = Math.floor(terrain_size["/"](num_seg));
+        "100";
         var ρσ_Iter6 = range(0, terrain_size, span);
         ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
         for (var ρσ_Index6 of ρσ_Iter6) {
             x = ρσ_Index6;
-            "100";
+            "101";
             var ρσ_Iter7 = range(0, terrain_size, span);
             ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
             for (var ρσ_Index7 of ρσ_Iter7) {
                 y = ρσ_Index7;
-                "101";
+                "102";
                 _GS_1 = new Diamond;
                 (await _GS_1.__init__(x, y, span, self._height, random_value));
                 center_point = (await _GS_1.center_point());
-                "102";
+                "103";
                 ρσ_setitem(ρσ_getitem(self._height, int(center_point.y)), int(center_point.x), center_point.z);
             }
         }
@@ -495,52 +495,52 @@ async function __main__() {
     FractalTerrain.prototype._square = async function _square(count, smoothness, z_scale) {
         var self = this;
         var ρσ_ls, terrain_size, num_seg, span, _GS_1, square_, random_values, i, y, x;
-        "105";
-        terrain_size = len(self._height)["-"](1["*"](1));
         "106";
-        num_seg = 1 << count["-"](1["*"](1));
+        terrain_size = len(self._height)["-"](1["*"](1));
         "107";
-        span = Math.floor(terrain_size["/"](num_seg));
+        num_seg = 1 << count["-"](1["*"](1));
         "108";
+        span = Math.floor(terrain_size["/"](num_seg));
+        "109";
         var ρσ_Iter8 = range(0, terrain_size, span);
         ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
         for (var ρσ_Index8 of ρσ_Iter8) {
             x = ρσ_Index8;
-            "109";
+            "110";
             var ρσ_Iter9 = range(0, terrain_size, span);
             ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
             for (var ρσ_Index9 of ρσ_Iter9) {
                 y = ρσ_Index9;
-                "110";
+                "111";
                 _GS_1 = new Square;
                 (await _GS_1.__init__(x, y, span, self._height));
                 square_ = _GS_1;
-                "111";
-                random_values = ρσ_list_decorate([]);
                 "112";
+                random_values = ρσ_list_decorate([]);
+                "113";
                 for (var ρσ_Index10 = 0; ρσ_Index10["<"](4); ρσ_Index10++) {
                     i = ρσ_Index10;
-                    "113";
+                    "114";
                     random_values=random_values["+"](ρσ_list_decorate([ (await self._generate_random_num(count, smoothness, z_scale)) ]));
                 }
-                "114";
+                "115";
                 (await square_.set_random_heights(random_values, terrain_size, self._height));
             }
         }
-        "116";
+        "117";
         var ρσ_Iter11 = range(0, terrain_size, span);
         ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
         for (var ρσ_Index11 of ρσ_Iter11) {
             y = ρσ_Index11;
-            "117";
+            "118";
             ρσ_setitem(ρσ_getitem(self._height, y), terrain_size, ρσ_getitem(ρσ_getitem(self._height, y), 0));
         }
-        "119";
+        "120";
         var ρσ_Iter12 = range(0, terrain_size, span);
         ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
         for (var ρσ_Index12 of ρσ_Iter12) {
             x = ρσ_Index12;
-            "120";
+            "121";
             ρσ_setitem(ρσ_getitem(self._height, terrain_size), x, ρσ_getitem(ρσ_getitem(self._height, 0), x));
         }
     };
@@ -551,15 +551,15 @@ async function __main__() {
     FractalTerrain.prototype._generate_random_num = async function _generate_random_num(count, smoothness, z_scale) {
         var self = this;
         var ρσ_ls, _reduce, i;
-        "123";
-        _reduce = 1;
         "124";
+        _reduce = 1;
+        "125";
         for (var ρσ_Index13 = 0; ρσ_Index13["<"](count); ρσ_Index13++) {
             i = ρσ_Index13;
-            "125";
+            "126";
             _reduce=_reduce["*"](pow(2, 1["-u"]()["*"](smoothness)));
         }
-        "126";
+        "127";
         return _reduce["*"](random.randint(1["-u"]()["*"](z_scale), z_scale));
     };
     if (!FractalTerrain.prototype._generate_random_num.__argnames__) Object.defineProperties(FractalTerrain.prototype._generate_random_num, {
@@ -569,14 +569,14 @@ async function __main__() {
     FractalTerrain.prototype.new_terrain = async function new_terrain() {
         var self = this;
         var ρσ_ls, final_size, i;
-        "129";
-        final_size = 1;
         "130";
+        final_size = 1;
+        "131";
         while (final_size["<"](self._num_grid_lines)) {
-            "131";
+            "132";
             final_size <<= 1;
         }
-        "132";
+        "133";
         self._height = (function() {
             var ρσ_Iter = range(final_size["+"](1)), ρσ_Result = [], i;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -596,9 +596,9 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })();
-        "133";
-        (await self._iterate(self._smoothness, self._z_scale));
         "134";
+        (await self._iterate(self._smoothness, self._z_scale));
+        "135";
         return self._height;
     };
     if (!FractalTerrain.prototype.new_terrain.__module__) Object.defineProperties(FractalTerrain.prototype.new_terrain, {
@@ -606,10 +606,28 @@ async function __main__() {
     });
     FractalTerrain.prototype.z_scale = async function z_scale() {
         var self = this;
-        "137";
+        "138";
         return self._z_scale;
     };
     if (!FractalTerrain.prototype.z_scale.__module__) Object.defineProperties(FractalTerrain.prototype.z_scale, {
+        __module__ : {value: null}
+    });
+    FractalTerrain.prototype.set_smoothness_to = async function set_smoothness_to(event) {
+        var self = this;
+        "141";
+        self._smoothness = .5["*"](event.value)["+"](.75);
+    };
+    if (!FractalTerrain.prototype.set_smoothness_to.__argnames__) Object.defineProperties(FractalTerrain.prototype.set_smoothness_to, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+    FractalTerrain.prototype.set_resolution_to = async function set_resolution_to(event) {
+        var self = this;
+        "144";
+        self._num_grid_lines = event.value;
+    };
+    if (!FractalTerrain.prototype.set_resolution_to.__argnames__) Object.defineProperties(FractalTerrain.prototype.set_resolution_to, {
+        __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
     FractalTerrain.prototype.__repr__ = async function __repr__() {
@@ -627,23 +645,25 @@ async function __main__() {
 
 
 
-    "140";
+
+
+    "146";
     function SurfacePlot() {;
     }
     SurfacePlot.prototype.__init__ = async function __init__(points, z_scale) {
         var self = this;
         var ρσ_ls, ρσ_unpack;
-        "142";
+        "148";
         ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([])];
         self._vertices = ρσ_unpack[0];
         self._quads = ρσ_unpack[1];
-        "143";
+        "149";
         self._z_scale = z_scale;
-        "144";
+        "150";
         (await self._create_vertices(points));
-        "145";
+        "151";
         (await self._create_quads());
-        "146";
+        "152";
         (await self._make_normals());
     };
     if (!SurfacePlot.prototype.__init__.__argnames__) Object.defineProperties(SurfacePlot.prototype.__init__, {
@@ -655,16 +675,16 @@ async function __main__() {
     SurfacePlot.prototype._create_vertices = async function _create_vertices(points) {
         var self = this;
         var ρσ_ls, hue, point;
-        "149";
+        "155";
         var ρσ_Iter14 = points;
         ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
         for (var ρσ_Index14 of ρσ_Iter14) {
             point = ρσ_Index14;
-            "150";
+            "156";
             self._vertices.append(ρσ_interpolate_kwargs.call(this, vertex, [ρσ_desugar_kwargs({pos: point, normal: vector(0, 1, 0), color: color.green})]));
-            "151";
+            "157";
             hue = 1.5["+"](point.y["/"](self._z_scale));
-            "152";
+            "158";
             ρσ_getitem(self._vertices, 1["-u"]()["*"](1)).color = color.hsv_to_rgb(vector(hue, 1, 1));
         }
     };
@@ -675,31 +695,31 @@ async function __main__() {
     SurfacePlot.prototype._create_quad = async function _create_quad(x, y) {
         var self = this;
         var ρσ_ls, dimension, ρσ_unpack, _neighbor_increment_x, _neighbor_increment_y, v0, v1, v2, v3;
-        "155";
+        "161";
         dimension = int(sqrt(len(self._vertices)));
-        "156";
+        "162";
         ρσ_unpack = [1, 1];
         _neighbor_increment_x = ρσ_unpack[0];
         _neighbor_increment_y = ρσ_unpack[1];
-        "157";
+        "163";
         if (ρσ_equals(x, dimension["-"](1["*"](1)))) {
-            "158";
+            "164";
             _neighbor_increment_x = 1["-u"]()["*"](x);
-            "159";
+            "165";
         }
         if (ρσ_equals(y, dimension["-"](1["*"](1)))) {
-            "160";
+            "166";
             _neighbor_increment_y = 1["-u"]()["*"](y);
         }
-        "162";
+        "168";
         v0 = (await self._get_vertex(x, y, dimension));
-        "163";
+        "169";
         v1 = (await self._get_vertex(x["+"](_neighbor_increment_x), y, dimension));
-        "164";
+        "170";
         v2 = (await self._get_vertex(x["+"](_neighbor_increment_x), y["+"](_neighbor_increment_y), dimension));
-        "165";
+        "171";
         v3 = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension));
-        "166";
+        "172";
         self._quads.append(ρσ_interpolate_kwargs.call(this, quad, [ρσ_desugar_kwargs({vs: ρσ_list_decorate([ v0, v1, v2, v3 ])})]));
     };
     if (!SurfacePlot.prototype._create_quad.__argnames__) Object.defineProperties(SurfacePlot.prototype._create_quad, {
@@ -709,15 +729,15 @@ async function __main__() {
     SurfacePlot.prototype._create_quads = async function _create_quads() {
         var self = this;
         var ρσ_ls, dimension, y, x;
-        "170";
+        "176";
         dimension = int(sqrt(len(self._vertices)));
-        "171";
+        "177";
         for (var ρσ_Index15 = 0; ρσ_Index15["<"](dimension["-"](1["*"](1))); ρσ_Index15++) {
             x = ρσ_Index15;
-            "172";
+            "178";
             for (var ρσ_Index16 = 0; ρσ_Index16["<"](dimension["-"](1["*"](1))); ρσ_Index16++) {
                 y = ρσ_Index16;
-                "173";
+                "179";
                 (await self._create_quad(x, y));
             }
         }
@@ -728,35 +748,35 @@ async function __main__() {
     SurfacePlot.prototype._set_vertex_normal_for = async function _set_vertex_normal_for(x, y) {
         var self = this;
         var ρσ_ls, dimension, ρσ_unpack, _neighbor_increment_x, _neighbor_increment_y, vertex_, normal_total_, vec_1, vec_2;
-        "176";
+        "182";
         dimension = int(sqrt(len(self._vertices)));
-        "177";
+        "183";
         ρσ_unpack = [1, 1];
         _neighbor_increment_x = ρσ_unpack[0];
         _neighbor_increment_y = ρσ_unpack[1];
-        "178";
+        "184";
         if (ρσ_equals(x, dimension["-"](1["*"](1)))) {
-            "179";
+            "185";
             _neighbor_increment_x = 1["-u"]()["*"](x);
-            "180";
+            "186";
         }
         if (ρσ_equals(y, dimension["-"](1["*"](1)))) {
-            "181";
+            "187";
             _neighbor_increment_y = 1["-u"]()["*"](y);
         }
-        "183";
+        "189";
         vertex_ = (await self._get_vertex(x, y, dimension));
-        "184";
+        "190";
         normal_total_ = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension)).normal;
-        "185";
+        "191";
         normal_total_=normal_total_["+"]((await self._get_vertex(x["+"](_neighbor_increment_x), y, dimension)).normal);
-        "186";
-        vec_1 = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension)).pos["-"](1["*"](vertex_.pos));
-        "187";
-        vec_2 = (await self._get_vertex(x["+"](_neighbor_increment_x), y, dimension)).pos["-"](1["*"](vertex_.pos));
         "192";
-        normal_total_=normal_total_["+"](cross(vec_1, vec_2));
+        vec_1 = (await self._get_vertex(x, y["+"](_neighbor_increment_y), dimension)).pos["-"](1["*"](vertex_.pos));
         "193";
+        vec_2 = (await self._get_vertex(x["+"](_neighbor_increment_x), y, dimension)).pos["-"](1["*"](vertex_.pos));
+        "198";
+        normal_total_=normal_total_["+"](cross(vec_1, vec_2));
+        "199";
         vertex_.normal = normal_total_["/"](2);
     };
     if (!SurfacePlot.prototype._set_vertex_normal_for.__argnames__) Object.defineProperties(SurfacePlot.prototype._set_vertex_normal_for, {
@@ -766,15 +786,15 @@ async function __main__() {
     SurfacePlot.prototype._make_normals = async function _make_normals() {
         var self = this;
         var ρσ_ls, dimension, y, x;
-        "198";
+        "204";
         dimension = int(sqrt(len(self._vertices)));
-        "199";
+        "205";
         for (var ρσ_Index17 = 0; ρσ_Index17["<"](dimension); ρσ_Index17++) {
             x = ρσ_Index17;
-            "200";
+            "206";
             for (var ρσ_Index18 = 0; ρσ_Index18["<"](dimension); ρσ_Index18++) {
                 y = ρσ_Index18;
-                "201";
+                "207";
                 (await self._set_vertex_normal_for(x, y));
             }
         }
@@ -784,7 +804,7 @@ async function __main__() {
     });
     SurfacePlot.prototype._get_vertex = async function _get_vertex(x, y, dimension) {
         var self = this;
-        "204";
+        "210";
         return ρσ_getitem(self._vertices, x["*"](dimension)["+"](y));
     };
     if (!SurfacePlot.prototype._get_vertex.__argnames__) Object.defineProperties(SurfacePlot.prototype._get_vertex, {
@@ -806,51 +826,51 @@ async function __main__() {
 
 
 
-    "207";
+    "213";
     function ContourPlot() {;
     }
     ContourPlot.prototype.__init__ = async function __init__(points, z_scale) {
         var self = this;
         var ρσ_ls, num_points, resolution, horizontal_curves, hue, j, i, vertical_curves;
-        "209";
+        "215";
         num_points = len(points);
-        "210";
+        "216";
         resolution = int(sqrt(num_points));
-        "213";
+        "219";
         horizontal_curves = ρσ_list_decorate([]);
-        "214";
+        "220";
         var ρσ_Iter19 = range(0, num_points, resolution);
         ρσ_Iter19 = ((typeof ρσ_Iter19[Symbol.iterator] === "function") ? (ρσ_Iter19 instanceof Map ? ρσ_Iter19.keys() : ρσ_Iter19) : Object.keys(ρσ_Iter19));
         for (var ρσ_Index19 of ρσ_Iter19) {
             i = ρσ_Index19;
-            "215";
+            "221";
             for (var ρσ_Index20 = 0; ρσ_Index20["<"](resolution["-"](1["*"](1))); ρσ_Index20++) {
                 j = ρσ_Index20;
-                "216";
-                horizontal_curves.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(points, i["+"](j)), ρσ_getitem(points, i["+"](j)["+"](1)) ])})]));
-                "217";
+                "222";
+                horizontal_curves.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(points, i["+"](j)), ρσ_getitem(points, i["+"](j)["+"](1)) ]), radius: .3})]));
+                "223";
                 hue = 1.5["+"](.5["*"](ρσ_getitem(points, i["+"](j)).y["+"](ρσ_getitem(points, i["+"](j)["+"](1)).y))["/"](z_scale));
-                "218";
+                "224";
                 ρσ_getitem(horizontal_curves, 1["-u"]()["*"](1)).color = color.hsv_to_rgb(vector(hue, .9, 1));
             }
         }
-        "221";
+        "227";
         vertical_curves = ρσ_list_decorate([]);
-        "222";
+        "228";
         for (var ρσ_Index21 = 0; ρσ_Index21["<"](resolution); ρσ_Index21++) {
             i = ρσ_Index21;
-            "223";
+            "229";
             var ρσ_Iter22 = range(0, num_points["-"](1["*"](resolution)), resolution);
             ρσ_Iter22 = ((typeof ρσ_Iter22[Symbol.iterator] === "function") ? (ρσ_Iter22 instanceof Map ? ρσ_Iter22.keys() : ρσ_Iter22) : Object.keys(ρσ_Iter22));
             for (var ρσ_Index22 of ρσ_Iter22) {
                 j = ρσ_Index22;
-                "224";
+                "230";
                 if (i["+"](j)["<"](num_points)) {
-                    "225";
-                    vertical_curves.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(points, i["+"](j)), ρσ_getitem(points, i["+"](j)["+"](resolution)) ])})]));
-                    "226";
+                    "231";
+                    vertical_curves.append(ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ ρσ_getitem(points, i["+"](j)), ρσ_getitem(points, i["+"](j)["+"](resolution)) ]), radius: .3})]));
+                    "232";
                     hue = 1.5["+"](.5["*"](ρσ_getitem(points, i["+"](j)).y["+"](ρσ_getitem(points, i["+"](j)["+"](1)).y))["/"](z_scale));
-                    "227";
+                    "233";
                     ρσ_getitem(vertical_curves, 1["-u"]()["*"](1)).color = color.hsv_to_rgb(vector(hue, .9, 1));
                 }
             }
@@ -871,7 +891,7 @@ async function __main__() {
     Object.defineProperty(ContourPlot.prototype, "__bases__", {value: []});
 
 
-    "230";
+    "236";
     function Grid() {;
     }
     Grid.prototype.__init__ = async function __init__() {
@@ -882,11 +902,11 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "size")){
             size = ρσ_kwargs_obj.size;
         }
-        "232";
+        "238";
         self._points = ρσ_list_decorate([]);
-        "233";
+        "239";
         self._size = size;
-        "234";
+        "240";
         self._render_as_surface = true;
     };
     if (!Grid.prototype.__init__.__defaults__) Object.defineProperties(Grid.prototype.__init__, {
@@ -900,35 +920,35 @@ async function __main__() {
     Grid.prototype.render = async function render(fractal) {
         var self = this;
         var ρσ_ls, height, resolution, has_height, row_step, col_step, col, row, _GS_1, _;
-        "237";
+        "243";
         height = (await fractal.new_terrain());
-        "238";
+        "244";
         resolution = len(height);
-        "239";
+        "245";
         has_height = height !== null && ρσ_not_equals(len(height), 0);
-        "240";
+        "246";
         self._points = ρσ_list_decorate([]);
-        "241";
+        "247";
         row_step = col_step = self._size["-"](1["*"](1["-u"]())["*"](self._size))["/"](float(resolution["-"](1["*"](1))));
-        "242";
+        "248";
         for (var ρσ_Index23 = 0; ρσ_Index23["<"](resolution); ρσ_Index23++) {
             row = ρσ_Index23;
-            "243";
+            "249";
             for (var ρσ_Index24 = 0; ρσ_Index24["<"](resolution); ρσ_Index24++) {
                 col = ρσ_Index24;
-                "244";
+                "250";
                 self._points.append(vector(self._size["-"](1["*"](col)["*"](col_step)), has_height && ρσ_getitem(ρσ_getitem(height, row), col) || 0, self._size["-"](1["*"](row)["*"](row_step))));
-                "247";
+                "253";
             }
         }
         if (self._render_as_surface) {
-            "248";
+            "254";
             _GS_1 = new SurfacePlot;
             (await _GS_1.__init__(self._points, (await fractal.z_scale())));
             _ = _GS_1;
-            "249";
+            "255";
         } else {
-            "250";
+            "256";
             _GS_1 = new ContourPlot;
             (await _GS_1.__init__(self._points, (await fractal.z_scale())));
             _ = _GS_1;
@@ -940,7 +960,7 @@ async function __main__() {
     });
     Grid.prototype.render_as_surface = async function render_as_surface(as_surface) {
         var self = this;
-        "253";
+        "259";
         self._render_as_surface = as_surface;
     };
     if (!Grid.prototype.render_as_surface.__argnames__) Object.defineProperties(Grid.prototype.render_as_surface, {
@@ -958,26 +978,26 @@ async function __main__() {
 
 
 
-    "256";
+    "262";
     _GS_1 = new FractalTerrain;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({num_grid_lines: 60, z_scale: 200, smoothness: 1})]);
     fractal_terrain = _GS_1;
-    "257";
+    "263";
     _GS_1 = new Grid;
     (await _GS_1.__init__());
     grid = _GS_1;
-    "259";
+    "265";
     async function refresh_screen(evt) {
         var ρσ_ls, obj;
-        "260";
+        "266";
         var ρσ_Iter25 = display.objects;
         ρσ_Iter25 = ((typeof ρσ_Iter25[Symbol.iterator] === "function") ? (ρσ_Iter25 instanceof Map ? ρσ_Iter25.keys() : ρσ_Iter25) : Object.keys(ρσ_Iter25));
         for (var ρσ_Index25 of ρσ_Iter25) {
             obj = ρσ_Index25;
-            "261";
+            "267";
             obj.visible = false;
         }
-        "264";
+        "270";
         (await grid.render(fractal_terrain));
     };
     if (!refresh_screen.__argnames__) Object.defineProperties(refresh_screen, {
@@ -985,21 +1005,21 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "267";
+    "273";
     display.bind("click", refresh_screen);
-    "269";
+    "275";
     async function toggle_surface_rendering(event) {
-        "270";
+        "276";
         if ((event.name === "surface" || typeof event.name === "object" && ρσ_equals(event.name, "surface"))) {
-            "271";
+            "277";
             (await grid.render_as_surface(true));
-            "272";
+            "278";
             contour_radio.checked = false;
-            "273";
+            "279";
         } else {
-            "274";
+            "280";
             (await grid.render_as_surface(false));
-            "275";
+            "281";
             surface_radio.checked = false;
         }
     };
@@ -1008,15 +1028,23 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "277";
+    "283";
     surface_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Surface ", bind: toggle_surface_rendering, name: "surface", checked: true})]);
-    "278";
+    "284";
     contour_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Contour ", bind: toggle_surface_rendering, name: "contour", checked: false})]);
-    "280";
+    "286";
+    display.append_to_caption("\n\nSmoothness");
+    "287";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .5, bind: fractal_terrain.set_smoothness_to.bind(fractal_terrain)})]);
+    "289";
+    display.append_to_caption("\n\nresolution");
+    "290";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 10, max: 120, value: 60, bind: fractal_terrain.set_resolution_to.bind(fractal_terrain)})]);
+    "292";
     (await grid.render(fractal_terrain));
-    "281";
+    "293";
     while (true) {
-        "282";
+        "294";
         (await rate(10));
     }
 };

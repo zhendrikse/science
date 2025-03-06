@@ -1,10 +1,11 @@
 #Web VPython 3.2
 
-from vpython import log, canvas, rate, curve, vector, color, cross, quad, vertex, sqrt, pow, radio
+from vpython import log, canvas, rate, curve, vector, color, cross, quad, vertex, sqrt, pow, radio, slider
 import random
 
 title = """&#x2022; Based on <a href="https://github.com/ragnraok/RandomFractalTerrain-Vpython">RandomFractalTerrain-Vpython</a>
 &#x2022; Refactored and extended by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/fractal_terrain.py">fractal_terrain.py</a>
+&#x2022; Click to regenerate a new terrain
 
 """
 
@@ -136,6 +137,11 @@ class FractalTerrain:
     def z_scale(self):
         return self._z_scale
 
+    def set_smoothness_to(self, event):
+        self._smoothness = .5 * event.value + .75
+
+    def set_resolution_to(self, event):
+        self._num_grid_lines = event.value
 
 class SurfacePlot:
     def __init__(self, points, z_scale):
@@ -213,7 +219,7 @@ class ContourPlot:
         horizontal_curves = []
         for i in range(0, num_points, resolution):
             for j in range(resolution - 1):
-                horizontal_curves.append(curve(pos=[points[i + j], points[i + j + 1]]))
+                horizontal_curves.append(curve(pos=[points[i + j], points[i + j + 1]], radius=.3))
                 hue = 1.5 + .5 * (points[i + j].y + points[i + j + 1].y) / z_scale
                 horizontal_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
@@ -222,7 +228,7 @@ class ContourPlot:
         for i in range(0, resolution):
             for j in range(0, num_points - resolution, resolution):
                 if i + j < num_points:  # and i + j + self._size < num_points:
-                    vertical_curves.append(curve(pos=[points[i + j], points[i + j + resolution]]))
+                    vertical_curves.append(curve(pos=[points[i + j], points[i + j + resolution]], radius=.3))
                     hue = 1.5 + .5 * (points[i + j].y + points[i + j + 1].y) / z_scale
                     vertical_curves[-1].color = color.hsv_to_rgb(vector(hue, .9, 1.0))
 
@@ -276,6 +282,12 @@ def toggle_surface_rendering(event):
 
 surface_radio = radio(text="Surface ", bind=toggle_surface_rendering, name="surface", checked=True)
 contour_radio = radio(text="Contour ", bind=toggle_surface_rendering, name="contour", checked=False)
+
+display.append_to_caption("\n\nSmoothness")
+_ = slider(min=0, max=1, value=.5, bind=fractal_terrain.set_smoothness_to)
+
+display.append_to_caption("\n\nresolution")
+_ = slider(min=10, max=120, value=60, bind=fractal_terrain.set_resolution_to)
 
 grid.render(fractal_terrain)
 while True:
