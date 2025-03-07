@@ -3,7 +3,7 @@
 
 from vpython import sphere, vector, cross, arange, arrow, sqrt, color, rate, canvas
 
-title="""&#x2022; <a href="# https://www.glowscript.org/#/user/wlane/folder/PHYS152/program/magnetic-field">Original code</a> by <a href="https://www.youtube.com/@LetsCodePhysics">Let&apos;s code physics</a>
+title="""&#x2022; <a href="https://www.glowscript.org/#/user/wlane/folder/PHYS152/program/magnetic-field">Original code</a> by <a href="https://www.youtube.com/@LetsCodePhysics">Let&apos;s code physics</a>
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electromagnetism/code/proton_in_magnetic_field.py">proton_in_magnetic_field.py</a>
 
 """
@@ -28,7 +28,7 @@ class Proton:
 class MagneticField:
     def __init__(self, colour=color.cyan):
         dx, x_min, x_max, y_min, y_max = 0.5, -6, 6, -6, 6
-        scale = 0.05
+        scale = 0.1
 
         for x in arange(x_min, x_max + dx, dx):
             for y in arange(y_min, y_max + dx, dx):
