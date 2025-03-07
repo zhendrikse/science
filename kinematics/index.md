@@ -1,3 +1,5 @@
+{% include breadcrumbs.html %}
+
 <a name="kinematics"></a>
 # Classical mechanics
 <div class="header_line"><br/></div>
