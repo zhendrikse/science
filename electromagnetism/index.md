@@ -100,10 +100,11 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
   <figcaption>Visualization of Faraday's law by running an electric current (of electric charges) through a wire.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="charged_rings.html">
-    <img alt="Charged rings" src="images/charged_rings.png" title="Click to animate"/>
+  <a href="solenoid.html">
+    <img alt="Magnetic field around solenoid" src="images/solenoid.png" title="Click to animate"/>
   </a>  
-  <figcaption>Visualization of an electric field inside a series of charged rings.</figcaption>
+  <figcaption>Visualization of an electric field around a 
+  <a href="https://en.wikipedia.org/wiki/Solenoid">solenoid</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

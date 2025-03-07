@@ -1,0 +1,295 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, size, L, current, animation, _GS_1, charged_solenoid, magnetic_field, n_max, n_rot, R_camera, theta_camera, phi_camera, d_theta_camera, d_phi_camera, theta_camera_max, theta_camera_min;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "8";
+    title = "&#x2022; Based on <a href=\"https://glowscript.org/#/user/yizhe/folder/Public/program/25-4.Bsolenoid\">25-4.Bsolenoid<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electromagnetism/code/solenoid.py\">solenoid.py</a>\n\n";
+    "10";
+    size = .4;
+    "11";
+    L = 40;
+    "12";
+    current = 1e8;
+    "14";
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({range: 30, title: "Magnetic Field of Current Solenoid", center: vector(0, L["/"](10), 0), background: color.gray(.075)})]);
+    "15";
+    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 60, shininess: 0, opacity: .5})]);
+    "19";
+    function Solenoid() {;
+    }
+    Solenoid.prototype.__init__ = async function __init__(r, n, num, direct) {
+        var self = this;
+        var ρσ_ls, points, position, i, distance, mid;
+        "21";
+        self._segments = ρσ_list_decorate([]);
+        "22";
+        points = ρσ_list_decorate([]);
+        "23";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](n); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "24";
+            position = vector(L["/"](2)["-"](1["*"](i)["*"](L)["/"](n)), r["*"](cos(2["*"](pi)["/"](n)["*"](num)["*"](i))), r["*"](sin(2["*"](pi)["/"](n)["*"](num)["*"](i))));
+            "25";
+            points.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: .2["*"](size), color: color.cyan})]));
+        }
+        "27";
+        for (var ρσ_Index2 = 0; ρσ_Index2["<"](n["-"](1["*"](1))); ρσ_Index2++) {
+            i = ρσ_Index2;
+            "28";
+            distance = (direct) ? ρσ_getitem(points, i["+"](1)).pos["-"](1["*"](ρσ_getitem(points, i).pos)) : ρσ_getitem(points, i).pos["-"](1["*"](ρσ_getitem(points, i["+"](1)).pos));
+            "29";
+            mid = ρσ_getitem(points, i["+"](1)).pos["+"](ρσ_getitem(points, i).pos)["/"](2);
+            "30";
+            self._segments.append(ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: mid, axis: distance, radius: 1["*"](size), color: color.yellow})]));
+        }
+    };
+    if (!Solenoid.prototype.__init__.__argnames__) Object.defineProperties(Solenoid.prototype.__init__, {
+        __argnames__ : {value: ["r", "n", "num", "direct"]},
+        __module__ : {value: null}
+    });
+    Solenoid.__argnames__ = Solenoid.prototype.__init__.__argnames__;
+    Solenoid.__handles_kwarg_interpolation__ = Solenoid.prototype.__init__.__handles_kwarg_interpolation__;
+    Solenoid.prototype.field_at = async function field_at(position) {
+        var self = this;
+        var ρσ_ls, mu, field, axis, segment;
+        "33";
+        mu = 4["*"](pi)["*"](1e-7);
+        "34";
+        field = vector(0, 0, 0);
+        "35";
+        var ρσ_Iter3 = self._segments;
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            segment = ρσ_Index3;
+            "36";
+            axis = position["-"](1["*"](segment.pos));
+            "37";
+            field=field["+"](mu["*"](current)["/"](4["*"](pi))["*"](segment.axis.mag)["*"](cross(segment.axis, axis.norm()))["/"](axis.mag2));
+        }
+        "38";
+        return field;
+    };
+    if (!Solenoid.prototype.field_at.__argnames__) Object.defineProperties(Solenoid.prototype.field_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    Solenoid.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Solenoid.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Solenoid.prototype, "__bases__", {value: []});
+
+
+
+    "41";
+    function MagneticField() {;
+    }
+    MagneticField.prototype.__init__ = async function __init__() {
+        var self = this;
+        var N = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.N : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "N")){
+            N = ρσ_kwargs_obj.N;
+        }
+        var ρσ_ls, locations, location, k, j, i;
+        "43";
+        self._fields = ρσ_list_decorate([]);
+        "44";
+        locations = ρσ_list_decorate([]);
+        "45";
+        for (var ρσ_Index4 = 0; ρσ_Index4["<"](N["+"](1)); ρσ_Index4++) {
+            i = ρσ_Index4;
+            "46";
+            for (var ρσ_Index5 = 0; ρσ_Index5["<"](N["+"](1)); ρσ_Index5++) {
+                j = ρσ_Index5;
+                "47";
+                for (var ρσ_Index6 = 0; ρσ_Index6["<"](N["+"](1)); ρσ_Index6++) {
+                    k = ρσ_Index6;
+                    "48";
+                    location = vector(L["/"](N)["*"](i)["-"](1["*"](L)["/"](2)), L["/"](N)["*"](j)["-"](1["*"](L)["/"](2)), L["/"](N)["*"](k)["-"](1["*"](L)["/"](2)));
+                    "49";
+                    locations.append(location);
+                }
+            }
+        }
+        "51";
+        var ρσ_Iter7 = locations;
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            location = ρσ_Index7;
+            "52";
+            self._fields.append(ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: location, axis: vector(0, 0, 0), color: color.green})]));
+        }
+    };
+    if (!MagneticField.prototype.__init__.__defaults__) Object.defineProperties(MagneticField.prototype.__init__, {
+        __defaults__ : {value: {N:5}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["N"]},
+        __module__ : {value: null}
+    });
+    MagneticField.__argnames__ = MagneticField.prototype.__init__.__argnames__;
+    MagneticField.__handles_kwarg_interpolation__ = MagneticField.prototype.__init__.__handles_kwarg_interpolation__;
+    MagneticField.prototype.display_field_around = async function display_field_around() {
+        var self = this;
+        var solenoid = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var max_field_strength = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? display_field_around.__defaults__.max_field_strength : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "max_field_strength")){
+            max_field_strength = ρσ_kwargs_obj.max_field_strength;
+        }
+        var ρσ_ls, value, field;
+        "55";
+        var ρσ_Iter8 = self._fields;
+        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+        for (var ρσ_Index8 of ρσ_Iter8) {
+            field = ρσ_Index8;
+            "56";
+            value = (await solenoid.field_at(field.pos));
+            "57";
+            if (value.mag[">="](max_field_strength)) {
+                value = value["/"](value.mag)["*"](max_field_strength);
+            }
+            "58";
+            field.axis = value;
+            "59";
+            field.color = vector(value.mag["/"](max_field_strength), 1["-"](1["*"](value.mag)["/"](max_field_strength)), 0);
+        }
+    };
+    if (!MagneticField.prototype.display_field_around.__defaults__) Object.defineProperties(MagneticField.prototype.display_field_around, {
+        __defaults__ : {value: {max_field_strength:5}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["solenoid", "max_field_strength"]},
+        __module__ : {value: null}
+    });
+    MagneticField.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    MagneticField.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(MagneticField.prototype, "__bases__", {value: []});
+
+
+
+    "62";
+    _GS_1 = new Solenoid;
+    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({r: 10, n: 500, num: 10, direct: true})]);
+    charged_solenoid = _GS_1;
+    "63";
+    _GS_1 = new MagneticField;
+    (await _GS_1.__init__());
+    magnetic_field = _GS_1;
+    "64";
+    (await magnetic_field.display_field_around(charged_solenoid));
+    "67";
+    n_max = 100;
+    "68";
+    n_rot = 10;
+    "69";
+    R_camera = mag(animation.camera.pos);
+    "70";
+    theta_camera = pi["/"](2);
+    "71";
+    phi_camera = 0;
+    "72";
+    d_theta_camera = 1["-u"]()["*"](pi)["/"](5["*"](n_max));
+    "73";
+    d_phi_camera = pi["/"](5["*"](n_max))["*"](2);
+    "74";
+    theta_camera_max = 2["*"](pi)["/"](3);
+    "75";
+    theta_camera_min = pi["/"](3);
+    "77";
+    while (true) {
+        "78";
+        (await rate(20));
+        "79";
+        if (theta_camera[">"](theta_camera_max) || theta_camera["<"](theta_camera_min)) {
+            "80";
+            d_theta_camera=d_theta_camera["*"](1["-u"]()["*"](1));
+        }
+        "81";
+        theta_camera=theta_camera["+"](d_theta_camera);
+        "82";
+        phi_camera=phi_camera["+"](d_phi_camera);
+        "83";
+        animation.camera.pos = R_camera["*"](vec(sin(theta_camera)["*"](sin(phi_camera)), cos(theta_camera), sin(theta_camera)["*"](cos(phi_camera))));
+        "85";
+        animation.camera.axis = 1["-u"]()["*"](animation.camera.pos);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
