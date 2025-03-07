@@ -30,7 +30,7 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
 <p style="clear: both;"></p>
 
 
-### Charged particle behaviour in magnetic and electric fields
+### Charged particle in magnetic &amp; electric fields
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -68,7 +68,7 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
 </div>
 <p style="clear: both;"></p>
 
-### Electric dipole and antenna waves
+### Electric dipole field &amp; antenna waves
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -89,7 +89,7 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
 
 
 
-### Electric and magnetic fields
+### Magnetic field around wire &amp; solenoid
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">

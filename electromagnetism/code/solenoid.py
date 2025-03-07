@@ -11,7 +11,7 @@ size = 0.4
 L = 40
 current = 1E8
 
-animation = canvas(range=30, title="Magnetic Field of Current Solenoid", center=vector(0, L / 10, 0), background=color.gray(0.075))
+animation = canvas(range=30, center=vector(0, L / 10, 0), background=color.gray(0.075), title=title)
 sphere(pos=vec(0, 0, 0), texture="https://i.imgur.com/1nVWbbd.jpg", radius=60, shininess=0, opacity=0.5)
 #animation.lights = []
 #animation.ambient = color.white
