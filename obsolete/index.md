@@ -43,7 +43,7 @@
 <p style="clear: both;"></p>
 
 
-### Cubic crystal symmetry
+### Cubic crystal symmetry &amp; charged rings
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
