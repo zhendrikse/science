@@ -111,4 +111,21 @@ You may be surprised though to find out what happens when you drop such a simple
 
 <p style="clear: both;"></p>
 
+### Bouncing ball
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="bouncing_ball.html">
+    <img alt="Bouncing ball" src="images/bouncing_ball.png" title="Click to animate"/>
+  </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <figcaption>Bouncing ball.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+
+<p style="clear: both;"></p>
 {% include share_buttons.html %}
