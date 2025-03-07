@@ -30,15 +30,15 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
 <p style="clear: both;"></p>
 
 
-### Charged particle in magnetic &amp; electric fields
+### Helical motion of proton in magnetic field
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="moving_charge.html">
-    <img alt="Particle in electric field" src="images/particle_in_electric_field.png" title="Click to animate"/>
+  <a href="proton_in_magnetic_field.html">
+    <img alt="Proton in field" src="images/proton_in_magnetic_field.png" title="Click to animate"/>
   </a>
-  <figcaption><br/>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>
+  <figcaption>Movement of proton in magnetic field.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="helical_motion.html">
@@ -105,6 +105,24 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
   </a>  
   <figcaption>Visualization of an electric field around a 
   <a href="https://en.wikipedia.org/wiki/Solenoid">solenoid</a>.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+
+### Charged particle in electric field
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="moving_charge.html">
+    <img alt="Particle in electric field" src="images/particle_in_electric_field.png" title="Click to animate"/>
+  </a>
+  <figcaption>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>
