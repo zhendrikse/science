@@ -1,6 +1,6 @@
 # Web VPython 3.2
 
-from vpython import sphere, vector, cos, sin, pi, rate, simple_sphere, canvas, sqrt, log, mag2, color, slider, canvas
+from vpython import sphere, vector, cos, sin, pi, rate, simple_sphere, canvas, sqrt, log, local_light, color, slider, canvas
 from random import uniform, random
 
 title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/saturn_rings.py">saturn_rings.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
@@ -9,15 +9,18 @@ title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/ast
 
 """
 
-display = canvas(title=title, range=4, width=650, height=400, forward=vector(0.2, -0.6, -1.0), center=vector(0, -1, 0))
+display = canvas(title=title, range=3.5, width=650, height=400, forward=vector(-.52, -0.57, .9), center=vector(0, -1, 0))
 saturn = sphere(pos=vector(0, 0, 0), radius=1.5,
                 texture="https://www.hendrikse.name/science/astrophysics/images/textures/saturn.jpg")
-#stars = sphere(pos=vector(0, 0, 0),
-#               texture="https://www.hendrikse.name/science/astrophysics/images/textures/universe.jpg", radius=10,
-#               shininess=0, opacity=0.5)
+stars = sphere(pos=vector(0, 0, 0),
+              texture="https://www.hendrikse.name/science/astrophysics/images/textures/universe.jpg", radius=10,
+              shininess=0, opacity=0.5)
+display.lights = []
+display.ambient = color.gray(0.9)
+display.fov = 0.8
+lamp = local_light(pos=vector(0, 0, 0), color=color.white)
 
-
-# Box-Muller Transform To Creaacte a Normal Distribution
+# Box-Muller transform to create a normal distribution
 def normal_distribution(average, standard_deviation):
     u1 = random()
     u2 = random()

@@ -252,8 +252,8 @@ async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
-    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, tan, asin, acos, atan, atan2, exp, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, saturn, stars, rings, _GS_1, i, _, dt, ring;
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, attach_trail, attach_arrow, attach_light, tan, asin, acos, atan, atan2, exp, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, saturn, stars, lamp, rings, _GS_1, i, _, dt, ring;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -270,24 +270,32 @@ async function __main__() {
 
     "10";
     title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/saturn_rings.py\">saturn_rings.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n&#x2022; Visualization concept inspired by <a href=\"https://www.youtube.com/watch?v=5In_-KuDgL4\">this video</a>\n&#x2022; Rotational speed ratios are in accordance with <a href=\"https://www.hendrikse.name/science/astrophysics/keplers_law.html\">Kepler&apos;s third law</a>\n\n";
+    "12";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, range: 3.5, width: 650, height: 400, forward: vector(1["-u"]()["*"](.52), 1["-u"]()["*"](.57), .9), center: vector(0, 1["-u"]()["*"](1), 0)})]);
     "13";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, range: 4, width: 650, height: 400, forward: vector(.2, 1["-u"]()["*"](.6), 1["-u"]()["*"](1)), center: vector(0, 1["-u"]()["*"](1), 0)})]);
-    "14";
     saturn = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), radius: 1.5, texture: "https://www.hendrikse.name/science/astrophysics/images/textures/saturn.jpg"})]);
     "15";
     stars = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://www.hendrikse.name/science/astrophysics/images/textures/universe.jpg", radius: 10, shininess: 0, opacity: .5})]);
+    "18";
+    display.lights = ρσ_list_decorate([]);
     "19";
+    display.ambient = color.gray(.9);
+    "20";
+    display.fov = .8;
+    "21";
+    lamp = ρσ_interpolate_kwargs.call(this, local_light, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), color: color.white})]);
+    "24";
     async function normal_distribution(average, standard_deviation) {
         var ρσ_ls, u1, u2, vt;
-        "20";
+        "25";
         u1 = random();
-        "21";
+        "26";
         u2 = random();
-        "22";
+        "27";
         vt = sqrt(1["-u"]()["*"](2)["*"](log(u1)))["*"](cos(2["*"](pi)["*"](u2)));
-        "23";
+        "28";
         vt=vt["*"](standard_deviation["+"](average));
-        "24";
+        "29";
         return vt;
     };
     if (!normal_distribution.__argnames__) Object.defineProperties(normal_distribution, {
@@ -295,28 +303,28 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "26";
+    "32";
     function Ring() {;
     }
     Ring.prototype.__init__ = async function __init__(inner_radius, outer_radius, colour) {
         var self = this;
         var ρσ_ls, rad, angle, _;
-        "28";
+        "34";
         self._debris = ρσ_list_decorate([]);
-        "29";
+        "35";
         self._omega = pi;
-        "30";
+        "36";
         self._inner_radius = inner_radius;
-        "31";
+        "37";
         self._outer_radius = outer_radius;
-        "32";
+        "38";
         for (var ρσ_Index6 = 0; ρσ_Index6["<"](2500); ρσ_Index6++) {
             _ = ρσ_Index6;
-            "33";
+            "39";
             rad = (await uniform(inner_radius, outer_radius));
-            "34";
+            "40";
             angle = (await uniform(0, 2["*"](pi)));
-            "35";
+            "41";
             self._debris.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: rad["*"](vector(cos(angle), 0, sin(angle))), radius: .01, color: colour})]));
         }
     };
@@ -329,18 +337,18 @@ async function __main__() {
     Ring.prototype.update_by = async function update_by(t, radius_inner_ring) {
         var self = this;
         var ρσ_ls, kepler, cos_, sin_, body;
-        "38";
+        "44";
         kepler = radius_inner_ring["/"]((await self.radius()))["*"](sqrt(radius_inner_ring["/"]((await self.radius()))));
-        "39";
+        "45";
         cos_ = cos(self._omega["*"](dt)["*"](kepler));
-        "40";
+        "46";
         sin_ = sin(self._omega["*"](dt)["*"](kepler));
-        "41";
+        "47";
         var ρσ_Iter7 = self._debris;
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             body = ρσ_Index7;
-            "42";
+            "48";
             body.pos = vector(body.pos.x["*"](cos_)["-"](1["*"](body.pos.z)["*"](sin_)), 0, body.pos.x["*"](sin_)["+"](body.pos.z["*"](cos_)));
         }
     };
@@ -350,7 +358,7 @@ async function __main__() {
     });
     Ring.prototype.radius = async function radius() {
         var self = this;
-        "45";
+        "51";
         return .5["*"](self._inner_radius["+"](self._outer_radius));
     };
     if (!Ring.prototype.radius.__module__) Object.defineProperties(Ring.prototype.radius, {
@@ -358,7 +366,7 @@ async function __main__() {
     });
     Ring.prototype.set_omega_to = async function set_omega_to(value) {
         var self = this;
-        "48";
+        "54";
         self._omega = value;
     };
     if (!Ring.prototype.set_omega_to.__argnames__) Object.defineProperties(Ring.prototype.set_omega_to, {
@@ -377,25 +385,25 @@ async function __main__() {
 
 
 
-    "50";
+    "57";
     rings = ρσ_list_decorate([]);
-    "51";
+    "58";
     for (var ρσ_Index8 = 0; ρσ_Index8["<"](4); ρσ_Index8++) {
         i = ρσ_Index8;
-        "52";
+        "59";
         _GS_1 = new Ring;
         (await _GS_1.__init__(2.1["+"](.5["*"](i)), 2.5["+"](.5["*"](i)), vector(116["/"](255), 80["/"](255), 60["/"](255))));
         rings.append(_GS_1);
     }
-    "54";
+    "62";
     async function modify_omega(event) {
         var ρσ_ls, ring;
-        "55";
+        "63";
         var ρσ_Iter9 = rings;
         ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
         for (var ρσ_Index9 of ρσ_Iter9) {
             ring = ρσ_Index9;
-            "56";
+            "64";
             (await ring.set_omega_to(event.value));
         }
     };
@@ -404,22 +412,22 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "59";
+    "67";
     display.append_to_caption("\nRotation speed");
-    "60";
+    "68";
     _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({value: pi, min: 0, max: 2["*"](pi), bind: modify_omega})]);
-    "63";
+    "70";
     dt = .001;
-    "64";
+    "71";
     while (true) {
-        "65";
+        "72";
         (await rate(60));
-        "66";
+        "73";
         var ρσ_Iter10 = rings;
         ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
         for (var ρσ_Index10 of ρσ_Iter10) {
             ring = ρσ_Index10;
-            "67";
+            "74";
             (await ring.update_by(dt, (await ρσ_getitem(rings, 0).radius())));
         }
     }

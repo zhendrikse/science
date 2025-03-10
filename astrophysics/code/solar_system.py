@@ -535,10 +535,6 @@ sun2 = sphere(radius=695500 * 40, texture="https://www.hendrikse.name/science/as
 #stars = sphere(radius=30066790000, texture="https://www.hendrikse.name/science/astrophysics/images/textures/starX.png", emissive=True, opacity=0.5)  # constructing a stellar sphere
 #stars = sphere(radius=30066790000, texture="https://www.hendrikse.name/science/astrophysics/images/textures/starX.png")  # constructing a stellar sphere
 
-#display.lights = []    # this gets rid of all the ambient scene lights so that the Sun is the source / the command here blanks an array
-#display.ambient = color.white
-#sunlight = local_light(pos=vec(0, 0, 0), color=color.white)
-#more_sunlight = local_light(pos=vec(0, 0, 0), color=color.white)  # I found adding two lights was about right
 
 planet_list = [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune]
 
