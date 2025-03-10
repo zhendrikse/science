@@ -88,8 +88,9 @@ def sierpinski_triangle(a1=-.5, b1=-.433, a2=.5, b2=-.433, a3=0, b3=.3):
     # (a1, b1)           (a2, b2)
 
     clear_canvas(.5, vec(0.87, 0.93, 0.87), vec(0, 0, 0))
+    pixels = points(radius=2)
     x, y = 0, 0.3
-    for i in range(1, 15000):
+    for i in range(1, 30000):
         r = random()
         if r <= 1.0 / 3.0:
             x = .5 * (x + a1)
@@ -101,9 +102,7 @@ def sierpinski_triangle(a1=-.5, b1=-.433, a2=.5, b2=-.433, a3=0, b3=.3):
             else:
                 x = .5 * (x + a3)
                 y = .5 * (y + b3)
-        xc = x
-        yc = y
-        curve(pos=[vec(xc, yc, 0), vec(xc + 0.002, yc, 0)], color=color.red)  # Thin line
+        pixels.append(pos=vec(x, y, 0), color=color.red)
 
 
 def toggle_fractal(event):
