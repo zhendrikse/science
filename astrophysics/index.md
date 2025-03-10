@@ -112,8 +112,10 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
   <figcaption>Comprehensive simulation of our solar system.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="saturn_rings.html">
+    <img alt="Saturn rings" src="images/saturn_rings.png" title="Click to animate"/>
+  </a>
+  <figcaption>Rings of saturn modelled as clouds of particles.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
