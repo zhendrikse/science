@@ -1,5 +1,5 @@
 #Web VPython 3.2
-from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt, box, checkbox, slider, label, mag
+from vpython import pi, sphere, vector, norm, acos, color, rate, vec, canvas, sin, cos, arange, atan2, sqrt, box, checkbox, slider, label, mag, local_light
 
 title="""&#x2022; Original <a href="https://github.com/lukekulik/solar-system">solar system</a> by <a href="https://github.com/lukekulik/">Luke Kulik</a>
 &#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/solar_system.py">solar_system.py</a>
@@ -12,6 +12,10 @@ title="""&#x2022; Original <a href="https://github.com/lukekulik/solar-system">s
 """
 
 display = canvas(title=title, width=600, height=400, forward=vec(0.55, -.5, -.7), range=1e9)#, background=color.black)
+display.lights = []
+display.ambient = color.gray(0.4)
+display.fov = 0.8
+lamp = local_light(pos=vec(0, 0, 0), color=color.white)
 
 n = 10000  # number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
 scale_up = 2000  # scaling factor for planets and moons radii
