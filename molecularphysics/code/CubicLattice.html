@@ -1,0 +1,441 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, points, pyramid, ring, sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, lattice, dt;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; <a href=\"https://www.glowscript.org/#/user/wlane/folder/Let'sCodePhysics/program/atoms-array\">Original code<\/a> by <a href=\"https://www.youtube.com/@LetsCodePhysics\">Let&apos;s code physics</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/molecularphysics/code/cubic_lattice.py\">cubic_lattice.py</a>\n\n";
+    "9";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, center: vector(.12, 1["-u"]()["*"](.33), 0), forward: vector(1["-u"]()["*"](.65), 1["-u"]()["*"](.55), 1["-u"]()["*"](.5)), background: color.gray(.075), range: 2.25})]);
+    "11";
+    function Atom() {;
+    }
+    Atom.prototype.__init__ = async function __init__() {
+        var self = this;
+        var pos = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var radius = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[1];
+        var colour = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[2];
+        var velocity = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.velocity : arguments[3];
+        var visible = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.visible : arguments[4];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "velocity")){
+            velocity = ρσ_kwargs_obj.velocity;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "visible")){
+            visible = ρσ_kwargs_obj.visible;
+        }
+        "13";
+        self._atom = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos, radius: radius, color: colour, visible: visible})]);
+        "14";
+        self._velocity = velocity;
+        "15";
+        self._force = vector(0, 0, 0);
+        "16";
+        self._neighbors = ρσ_list_decorate([]);
+    };
+    if (!Atom.prototype.__init__.__defaults__) Object.defineProperties(Atom.prototype.__init__, {
+        __defaults__ : {value: {radius:.1, colour:color.green, velocity:vector(0, 0, 0), visible:false}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["pos", "radius", "colour", "velocity", "visible"]},
+        __module__ : {value: null}
+    });
+    Atom.__argnames__ = Atom.prototype.__init__.__argnames__;
+    Atom.__handles_kwarg_interpolation__ = Atom.prototype.__init__.__handles_kwarg_interpolation__;
+    Atom.prototype.pos = async function pos() {
+        var self = this;
+        "19";
+        return self._atom.pos;
+    };
+    if (!Atom.prototype.pos.__module__) Object.defineProperties(Atom.prototype.pos, {
+        __module__ : {value: null}
+    });
+    Atom.prototype.is_visible = async function is_visible() {
+        var self = this;
+        "22";
+        return self._atom.visible;
+    };
+    if (!Atom.prototype.is_visible.__module__) Object.defineProperties(Atom.prototype.is_visible, {
+        __module__ : {value: null}
+    });
+    Atom.prototype.radius = async function radius() {
+        var self = this;
+        "25";
+        return self._atom.radius;
+    };
+    if (!Atom.prototype.radius.__module__) Object.defineProperties(Atom.prototype.radius, {
+        __module__ : {value: null}
+    });
+    Atom.prototype.append_neighbor = async function append_neighbor(other_atom) {
+        var self = this;
+        "28";
+        self._neighbors.append(other_atom);
+    };
+    if (!Atom.prototype.append_neighbor.__argnames__) Object.defineProperties(Atom.prototype.append_neighbor, {
+        __argnames__ : {value: ["other_atom"]},
+        __module__ : {value: null}
+    });
+    Atom.prototype.update_force = async function update_force() {
+        var self = this;
+        var ρσ_ls, k, leq, s, atom;
+        "31";
+        self._force = vector(0, 0, 0);
+        "32";
+        k = 1e3;
+        "33";
+        leq = 1;
+        "34";
+        var ρσ_Iter1 = self._neighbors;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            atom = ρσ_Index1;
+            "35";
+            s = mag((await atom.pos())["-"](1["*"]((await self.pos()))))["-"](1["*"](leq));
+            "36";
+            self._force=self._force["+"](k["*"](s)["*"](hat((await atom.pos())["-"](1["*"]((await self.pos()))))));
+        }
+    };
+    if (!Atom.prototype.update_force.__module__) Object.defineProperties(Atom.prototype.update_force, {
+        __module__ : {value: null}
+    });
+    Atom.prototype.update_by = async function update_by(dt) {
+        var self = this;
+        "39";
+        if (!self._atom.visible) {
+            "40";
+            return;
+        }
+        "42";
+        self._velocity=self._velocity["+"](self._force["*"](dt));
+        "43";
+        self._atom.pos=self._atom.pos["+"](self._velocity["*"](dt));
+    };
+    if (!Atom.prototype.update_by.__argnames__) Object.defineProperties(Atom.prototype.update_by, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Atom.prototype.shift_by = async function shift_by(displacement) {
+        var self = this;
+        "46";
+        self._atom.color = color.yellow;
+        "47";
+        self._atom.pos=self._atom.pos["+"](displacement);
+    };
+    if (!Atom.prototype.shift_by.__argnames__) Object.defineProperties(Atom.prototype.shift_by, {
+        __argnames__ : {value: ["displacement"]},
+        __module__ : {value: null}
+    });
+    Atom.prototype.is_neighbor_of = async function is_neighbor_of(other_atom) {
+        var self = this;
+        var ρσ_ls, neighbor;
+        "50";
+        neighbor = ρσ_equals((await self.pos()), (await other_atom.pos())["+"](vector(1, 0, 0)));
+        "51";
+        neighbor |= ρσ_equals((await self.pos()), (await other_atom.pos())["-"](1["*"](vector(1, 0, 0))));
+        "52";
+        neighbor |= ρσ_equals((await self.pos()), (await other_atom.pos())["+"](vector(0, 1, 0)));
+        "53";
+        neighbor |= ρσ_equals((await self.pos()), (await other_atom.pos())["-"](1["*"](vector(0, 1, 0))));
+        "54";
+        neighbor |= ρσ_equals((await self.pos()), (await other_atom.pos())["+"](vector(0, 0, 1)));
+        "55";
+        neighbor |= ρσ_equals((await self.pos()), (await other_atom.pos())["-"](1["*"](vector(0, 0, 1))));
+        "56";
+        return neighbor;
+    };
+    if (!Atom.prototype.is_neighbor_of.__argnames__) Object.defineProperties(Atom.prototype.is_neighbor_of, {
+        __argnames__ : {value: ["other_atom"]},
+        __module__ : {value: null}
+    });
+    Atom.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Atom.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Atom.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+
+    "58";
+    function Bond() {;
+    }
+    Bond.prototype.__init__ = async function __init__(atom, other_atom) {
+        var self = this;
+        "60";
+        self._bond = ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: (await atom.pos()), axis: (await other_atom.pos())["-"](1["*"]((await atom.pos()))), thickness: .1["*"]((await atom.radius())), radius: (await atom.radius())["/"](2), coils: 15})]);
+        "61";
+        self._atoms = ρσ_list_decorate([ atom, other_atom ]);
+    };
+    if (!Bond.prototype.__init__.__argnames__) Object.defineProperties(Bond.prototype.__init__, {
+        __argnames__ : {value: ["atom", "other_atom"]},
+        __module__ : {value: null}
+    });
+    Bond.__argnames__ = Bond.prototype.__init__.__argnames__;
+    Bond.__handles_kwarg_interpolation__ = Bond.prototype.__init__.__handles_kwarg_interpolation__;
+    Bond.prototype.update = async function update() {
+        var self = this;
+        "64";
+        self._bond.pos = (await ρσ_getitem(self._atoms, 0).pos());
+        "65";
+        self._bond.axis = (await ρσ_getitem(self._atoms, 1).pos())["-"](1["*"]((await ρσ_getitem(self._atoms, 0).pos())));
+    };
+    if (!Bond.prototype.update.__module__) Object.defineProperties(Bond.prototype.update, {
+        __module__ : {value: null}
+    });
+    Bond.prototype.is_between = async function is_between(atom, other_atom) {
+        var self = this;
+        "68";
+        return ρσ_in(atom, self._atoms) && ρσ_in(other_atom, self._atoms);
+    };
+    if (!Bond.prototype.is_between.__argnames__) Object.defineProperties(Bond.prototype.is_between, {
+        __argnames__ : {value: ["atom", "other_atom"]},
+        __module__ : {value: null}
+    });
+    Bond.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Bond.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Bond.prototype, "__bases__", {value: []});
+
+
+
+
+    "70";
+    function Lattice() {;
+    }
+    Lattice.prototype.__init__ = async function __init__() {
+        var self = this;
+        var nrows = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.nrows : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "nrows")){
+            nrows = ρσ_kwargs_obj.nrows;
+        }
+        var ρσ_ls, vis, _GS_1, x, y, z, need_spring, bond, other_atom, atom;
+        "72";
+        self._atoms = ρσ_list_decorate([]);
+        "73";
+        self._bonds = ρσ_list_decorate([]);
+        "74";
+        nrows=nrows["+"](2);
+        "75";
+        for (var ρσ_Index2 = Math.floor(1["-u"]()["*"](nrows)["/"](2)); ρσ_Index2["<"](Math.floor(nrows["/"](2))); ρσ_Index2=ρσ_Index2["+"](1)) {
+            z = ρσ_Index2;
+            "76";
+            for (var ρσ_Index3 = Math.floor(1["-u"]()["*"](nrows)["/"](2)); ρσ_Index3["<"](Math.floor(nrows["/"](2))); ρσ_Index3=ρσ_Index3["+"](1)) {
+                y = ρσ_Index3;
+                "77";
+                for (var ρσ_Index4 = Math.floor(1["-u"]()["*"](nrows)["/"](2)); ρσ_Index4["<"](Math.floor(nrows["/"](2))); ρσ_Index4=ρσ_Index4["+"](1)) {
+                    x = ρσ_Index4;
+                    "78";
+                    vis = ρσ_not_equals(abs(x), Math.floor(nrows["/"](2))) && ρσ_not_equals(abs(y), Math.floor(nrows["/"](2))) && ρσ_not_equals(abs(z), Math.floor(nrows["/"](2)));
+                    "79";
+                    _GS_1 = new Atom;
+                    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({pos: vector(x, y, z), visible: vis})]);
+                    self._atoms.append(_GS_1);
+                }
+            }
+        }
+        "81";
+        var ρσ_Iter5 = self._atoms;
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            atom = ρσ_Index5;
+            "82";
+            var ρσ_Iter6 = self._atoms;
+            ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+            for (var ρσ_Index6 of ρσ_Iter6) {
+                other_atom = ρσ_Index6;
+                "83";
+                if ((await atom.is_neighbor_of(other_atom))) {
+                    "84";
+                    (await atom.append_neighbor(other_atom));
+                    "85";
+                    need_spring = (await atom.is_visible()) && (await other_atom.is_visible());
+                    "86";
+                    if (need_spring) {
+                        "87";
+                        var ρσ_Iter7 = self._bonds;
+                        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+                        for (var ρσ_Index7 of ρσ_Iter7) {
+                            bond = ρσ_Index7;
+                            "88";
+                            if ((await bond.is_between(other_atom, atom))) {
+                                "89";
+                                need_spring = false;
+                                "90";
+                            }
+                        }
+                    }
+                    if (need_spring) {
+                        "91";
+                        _GS_1 = new Bond;
+                        (await _GS_1.__init__(atom, other_atom));
+                        self._bonds.append(_GS_1);
+                    }
+                }
+            }
+        }
+    };
+    if (!Lattice.prototype.__init__.__defaults__) Object.defineProperties(Lattice.prototype.__init__, {
+        __defaults__ : {value: {nrows:2}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["nrows"]},
+        __module__ : {value: null}
+    });
+    Lattice.__argnames__ = Lattice.prototype.__init__.__argnames__;
+    Lattice.__handles_kwarg_interpolation__ = Lattice.prototype.__init__.__handles_kwarg_interpolation__;
+    Lattice.prototype.update_by = async function update_by(dt) {
+        var self = this;
+        var ρσ_ls, atom, bond;
+        "94";
+        var ρσ_Iter8 = self._atoms;
+        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+        for (var ρσ_Index8 of ρσ_Iter8) {
+            atom = ρσ_Index8;
+            "95";
+            (await atom.update_force());
+        }
+        "96";
+        var ρσ_Iter9 = self._atoms;
+        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+        for (var ρσ_Index9 of ρσ_Iter9) {
+            atom = ρσ_Index9;
+            "97";
+            (await atom.update_by(dt));
+        }
+        "98";
+        var ρσ_Iter10 = self._bonds;
+        ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+        for (var ρσ_Index10 of ρσ_Iter10) {
+            bond = ρσ_Index10;
+            "99";
+            (await bond.update());
+        }
+    };
+    if (!Lattice.prototype.update_by.__argnames__) Object.defineProperties(Lattice.prototype.update_by, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Lattice.prototype.move_atom = async function move_atom(atom_index, displacement) {
+        var self = this;
+        "102";
+        (await ρσ_getitem(self._atoms, atom_index).shift_by(displacement));
+    };
+    if (!Lattice.prototype.move_atom.__argnames__) Object.defineProperties(Lattice.prototype.move_atom, {
+        __argnames__ : {value: ["atom_index", "displacement"]},
+        __module__ : {value: null}
+    });
+    Lattice.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Lattice.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Lattice.prototype, "__bases__", {value: []});
+
+
+
+
+    "105";
+    _GS_1 = new Lattice;
+    (await _GS_1.__init__());
+    lattice = _GS_1;
+    "106";
+    dt = .01;
+    "107";
+    (await lattice.move_atom(26, vector(0, 0, .2)));
+    "108";
+    while (true) {
+        "109";
+        (await rate(1["/"](dt)));
+        "110";
+        (await lattice.update_by(dt));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

@@ -77,6 +77,24 @@ I... a universe of atoms, an atom in the universe. &mdash;
 
 <p style="clear: both;"></p>
 
+### Cubic lattice
+<div class="subsection_header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="cubic_lattice.html">
+    <img alt="Cubic lattice" src="images/cubic_lattice.png" title="Click to animate"/>
+  </a>
+  <figcaption>Lattice vibrations in a cubic lattice.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}
 
 
