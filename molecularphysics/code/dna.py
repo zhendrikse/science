@@ -5,7 +5,7 @@ from vpython import canvas, vector, color, cos, sin, cylinder, sphere, pi, rate,
 title_text ="""
 
 &#x2022; <a href="https://trinket.io/glowscript/7ba54885924b">Original idea and code</a> by Francisco Adeil Gomes Araujo
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/molecularphysics/code/dna.py">dna.py</a>
 
 """
 
