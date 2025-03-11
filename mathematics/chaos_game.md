@@ -40,7 +40,7 @@ see the figure below.
 
 <figure style="float: center; text-align: center;">
   <a href="https://math.bu.edu/DYSYS/chaos-game/node3.html">
-    <img alt="Sierpinksy chaos" src="images/sierpinski.gif"/>
+    <img alt="Sierpinksy chaos" src="images/sierpinski.gif" width="50%"/>
   </a>
   <figcaption>
     Source <a href="https://math.bu.edu/DYSYS/chaos-game/node3.html">BU Math</a>
