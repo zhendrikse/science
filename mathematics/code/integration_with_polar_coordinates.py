@@ -79,17 +79,17 @@ class Base:
         pos = position + (y_hat + x_hat) * .5 * max_of_base
         self._mesh += [box(pos=pos, length=radius, width=max_of_base, height=max_of_base, opacity=0.05)]
 
-    def tick_marks_visibility_is(self, visible):
+    def tick_marks_visibility_is(self, event):
         for tick_mark in self._tick_marks:
-            tick_mark.visible = visible
+            tick_mark.visible = event.checked
 
-    def mesh_visibility_is(self, visible):
+    def mesh_visibility_is(self, event):
         for i in range(len(self._mesh)):
-            self._mesh[i].visible = visible
+            self._mesh[i].visible = event.checked
 
-    def axis_labels_visibility_is(self, visible):
+    def axis_labels_visibility_is(self, event):
         for i in range(len(self._axis_labels)):
-            self._axis_labels[i].visible = visible
+            self._axis_labels[i].visible = event.checked
 
 x_range = arange(-1.25, 1.25, .1)
 y_range = arange(-1.25, 1.25, .1)
@@ -237,25 +237,13 @@ def set_phi_max(event):
 def integrate():
     return sphere_.integrate()
 
-
-def toggle_tick_marks(event):
-    axis.tick_marks_visibility_is(event.checked)
-
-
-def toggle_axis_labels(event):
-    axis.axis_labels_visibility_is(event.checked)
-
-
-def toggle_mesh(event):
-    axis.mesh_visibility_is(event.checked)
-
 def adjust_opacity(event):
     sphere_.set_opacity_to(event.value)
     opacity_slider_text.text = "= {:1.2f}".format(event.value, 2)
 
-_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
-_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=True)
-_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
+_ = checkbox(text='Mesh ', bind=axis.mesh_visibility_is, checked=True)
+_ = checkbox(text='Axis labels ', bind=axis.axis_labels_visibility_is, checked=True)
+_ = checkbox(text='Tick marks ', bind=axis.tick_marks_visibility_is, checked=True)
 
 display.append_to_caption("\n\nOpacity")
 _ = slider(min=0, max=1, step=0.01, value=.35, bind=adjust_opacity)
