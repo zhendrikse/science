@@ -1,9 +1,9 @@
 {% include breadcrumbs.html %}
 
-## Other fractal shapes
+## Chaos game
 <div class="header_line"><br/></div>
 
-{% include_relative code/Fractals.html %}
+{% include_relative code/ChaosGame.html %}
 
 <p style="clear: both;"></p>
 

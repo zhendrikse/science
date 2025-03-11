@@ -158,7 +158,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 <p style="clear: both;"></p>
 
 <a name="mandelbrot"></a>
-## Rendering Mandelbrot and other fractals
+## Mandelbrot &amp; chaos game fractals
 <div class="header_line"><br/></div>
 
 <div class="double_image">
@@ -169,10 +169,11 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <figcaption>VPython can also be used to generate Mandelbrot images!</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="fractals.html">
-    <img alt="Dragon curve" src="./images/dragon_curve.png" title="Click to animate"/>
+  <a href="chaos_game.html">
+    <img alt="Vicsek fractal" src="./images/chaos_game.png" title="Click to animate"/>
   </a>
-  <figcaption>The dragon curve and other fractals.</figcaption>
+  <figcaption>The <a href="https://en.wikipedia.org/wiki/Vicsek_fractal">Vicsek fractal</a> 
+  generated using a <a href="https://en.wikipedia.org/wiki/Chaos_game">chaos game</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
