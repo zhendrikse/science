@@ -88,7 +88,6 @@ def t_square(a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1):
     colors = [color.green, color.cyan, color.red, color.yellow]
     for i in range(40000):
         rate(frame_rate)
-        index = int(random() * 4)
         x = .5 * (x + jump_points[current_vertex][0])
         y = .5 * (y + jump_points[current_vertex][1])
 
