@@ -1,0 +1,558 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var frame_rate;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    var version, print, arange, __name__, type, ρσ_ls, title, display, frame_rate, carpet_radio, vicsek_radio, triangle_radio, dust_radio, t_square_radio, _;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "6";
+    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/chaos_game.py\">chaos_game.py<\/a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>\n\n";
+    "8";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), width: 600, height: 400, title: title})]);
+    "10";
+    async function clear_canvas(range_, center) {
+        var ρσ_ls, obj;
+        "11";
+        var ρσ_Iter1 = display.objects;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            obj = ρσ_Index1;
+            "12";
+            obj.visible = false;
+        }
+        "13";
+        display.range = range_;
+        "14";
+        display.center = center;
+    };
+    if (!clear_canvas.__argnames__) Object.defineProperties(clear_canvas, {
+        __argnames__ : {value: ["range_", "center"]},
+        __module__ : {value: null}
+    });
+
+    "16";
+    async function sierpinski_triangle() {
+        var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_triangle.__defaults__.a1 : arguments[0];
+        var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_triangle.__defaults__.b1 : arguments[1];
+        var a2 = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_triangle.__defaults__.a2 : arguments[2];
+        var b2 = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_triangle.__defaults__.b2 : arguments[3];
+        var a3 = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_triangle.__defaults__.a3 : arguments[4];
+        var b3 = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_triangle.__defaults__.b3 : arguments[5];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a1")){
+            a1 = ρσ_kwargs_obj.a1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b1")){
+            b1 = ρσ_kwargs_obj.b1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a2")){
+            a2 = ρσ_kwargs_obj.a2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b2")){
+            b2 = ρσ_kwargs_obj.b2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a3")){
+            a3 = ρσ_kwargs_obj.a3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b3")){
+            b3 = ρσ_kwargs_obj.b3;
+        }
+        var ρσ_ls, pixels, ρσ_unpack, x, y, colour, jump_points, colors, index, i;
+        "25";
+        (await clear_canvas(.5, vec(0, 1["-u"]()["*"](.1), 0)));
+        "26";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "27";
+        ρσ_unpack = [0, .3, color.red];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        colour = ρσ_unpack[2];
+        "29";
+        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3] ]);
+        "30";
+        colors = ρσ_list_decorate([ color.green, color.cyan, color.red ]);
+        "31";
+        for (var ρσ_Index2 = 0; ρσ_Index2["<"](4e4); ρσ_Index2++) {
+            i = ρσ_Index2;
+            "32";
+            (await rate(frame_rate));
+            "33";
+            index = int(random()["*"](3));
+            "34";
+            x = .5["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)));
+            "35";
+            y = .5["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)));
+            "36";
+            ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, index)})]);
+        }
+    };
+    if (!sierpinski_triangle.__defaults__) Object.defineProperties(sierpinski_triangle, {
+        __defaults__ : {value: {a1:1["-u"]()["*"](.5), b1:1["-u"]()["*"](.433), a2:.5, b2:1["-u"]()["*"](.433), a3:0, b3:.3}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["a1", "b1", "a2", "b2", "a3", "b3"]},
+        __module__ : {value: null}
+    });
+
+    "38";
+    async function vicsek_fractal() {
+        var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.a1 : arguments[0];
+        var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.b1 : arguments[1];
+        var a2 = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.a2 : arguments[2];
+        var b2 = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.b2 : arguments[3];
+        var a3 = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.a3 : arguments[4];
+        var b3 = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.b3 : arguments[5];
+        var a4 = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.a4 : arguments[6];
+        var b4 = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.b4 : arguments[7];
+        var a5 = (arguments[8] === undefined || ( 8 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.a5 : arguments[8];
+        var b5 = (arguments[9] === undefined || ( 9 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.b5 : arguments[9];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a1")){
+            a1 = ρσ_kwargs_obj.a1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b1")){
+            b1 = ρσ_kwargs_obj.b1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a2")){
+            a2 = ρσ_kwargs_obj.a2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b2")){
+            b2 = ρσ_kwargs_obj.b2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a3")){
+            a3 = ρσ_kwargs_obj.a3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b3")){
+            b3 = ρσ_kwargs_obj.b3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a4")){
+            a4 = ρσ_kwargs_obj.a4;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b4")){
+            b4 = ρσ_kwargs_obj.b4;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a5")){
+            a5 = ρσ_kwargs_obj.a5;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b5")){
+            b5 = ρσ_kwargs_obj.b5;
+        }
+        var ρσ_ls, pixels, ρσ_unpack, x, y, colour, jump_points, colors, index, i;
+        "39";
+        (await clear_canvas(1.25, vec(0, 0, 0)));
+        "40";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "41";
+        ρσ_unpack = [0, .3, color.red];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        colour = ρσ_unpack[2];
+        "43";
+        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4], [a5, b5] ]);
+        "44";
+        colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow, color.orange ]);
+        "45";
+        for (var ρσ_Index3 = 0; ρσ_Index3["<"](4e4); ρσ_Index3++) {
+            i = ρσ_Index3;
+            "46";
+            (await rate(frame_rate));
+            "47";
+            index = int(random()["*"](5));
+            "48";
+            x = x["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)))["/"](3);
+            "49";
+            y = y["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)))["/"](3);
+            "50";
+            ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, index)})]);
+        }
+    };
+    if (!vicsek_fractal.__defaults__) Object.defineProperties(vicsek_fractal, {
+        __defaults__ : {value: {a1:1["-u"]()["*"](1), b1:1["-u"]()["*"](1), a2:1["-u"]()["*"](1), b2:1, a3:1, b3:1, a4:1, b4:1["-u"]()["*"](1), a5:0, b5:0}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["a1", "b1", "a2", "b2", "a3", "b3", "a4", "b4", "a5", "b5"]},
+        __module__ : {value: null}
+    });
+
+    "52";
+    async function cantor_dust() {
+        var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.a1 : arguments[0];
+        var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.b1 : arguments[1];
+        var a2 = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.a2 : arguments[2];
+        var b2 = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.b2 : arguments[3];
+        var a3 = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.a3 : arguments[4];
+        var b3 = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.b3 : arguments[5];
+        var a4 = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.a4 : arguments[6];
+        var b4 = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.b4 : arguments[7];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a1")){
+            a1 = ρσ_kwargs_obj.a1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b1")){
+            b1 = ρσ_kwargs_obj.b1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a2")){
+            a2 = ρσ_kwargs_obj.a2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b2")){
+            b2 = ρσ_kwargs_obj.b2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a3")){
+            a3 = ρσ_kwargs_obj.a3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b3")){
+            b3 = ρσ_kwargs_obj.b3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a4")){
+            a4 = ρσ_kwargs_obj.a4;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b4")){
+            b4 = ρσ_kwargs_obj.b4;
+        }
+        var ρσ_ls, pixels, ρσ_unpack, x, y, colour, jump_points, colors, index, i;
+        "60";
+        (await clear_canvas(1.25, vec(0, 0, 0)));
+        "61";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "62";
+        ρσ_unpack = [0, .3, color.red];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        colour = ρσ_unpack[2];
+        "64";
+        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4] ]);
+        "65";
+        colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow, color.orange ]);
+        "66";
+        for (var ρσ_Index4 = 0; ρσ_Index4["<"](4e4); ρσ_Index4++) {
+            i = ρσ_Index4;
+            "67";
+            (await rate(frame_rate));
+            "68";
+            index = int(random()["*"](4));
+            "69";
+            x = .45["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)));
+            "70";
+            y = .45["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)));
+            "71";
+            ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, index)})]);
+        }
+    };
+    if (!cantor_dust.__defaults__) Object.defineProperties(cantor_dust, {
+        __defaults__ : {value: {a1:1["-u"]()["*"](1), b1:1["-u"]()["*"](1), a2:1["-u"]()["*"](1), b2:1, a3:1, b3:1, a4:1, b4:1["-u"]()["*"](1)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["a1", "b1", "a2", "b2", "a3", "b3", "a4", "b4"]},
+        __module__ : {value: null}
+    });
+
+    "74";
+    async function t_square() {
+        var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.a1 : arguments[0];
+        var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.b1 : arguments[1];
+        var a2 = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.a2 : arguments[2];
+        var b2 = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.b2 : arguments[3];
+        var a3 = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.a3 : arguments[4];
+        var b3 = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.b3 : arguments[5];
+        var a4 = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.a4 : arguments[6];
+        var b4 = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.b4 : arguments[7];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a1")){
+            a1 = ρσ_kwargs_obj.a1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b1")){
+            b1 = ρσ_kwargs_obj.b1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a2")){
+            a2 = ρσ_kwargs_obj.a2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b2")){
+            b2 = ρσ_kwargs_obj.b2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a3")){
+            a3 = ρσ_kwargs_obj.a3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b3")){
+            b3 = ρσ_kwargs_obj.b3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a4")){
+            a4 = ρσ_kwargs_obj.a4;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b4")){
+            b4 = ρσ_kwargs_obj.b4;
+        }
+        var ρσ_ls, pixels, ρσ_unpack, x, y, colour, current_vertex, jump_points, colors, index, sample, i;
+        "82";
+        (await clear_canvas(1.25, vec(0, 0, 0)));
+        "83";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "84";
+        ρσ_unpack = [0, .3, color.red];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        colour = ρσ_unpack[2];
+        "85";
+        current_vertex = int(random()["*"](4));
+        "87";
+        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4] ]);
+        "88";
+        colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow ]);
+        "89";
+        for (var ρσ_Index5 = 0; ρσ_Index5["<"](4e4); ρσ_Index5++) {
+            i = ρσ_Index5;
+            "90";
+            (await rate(frame_rate));
+            "91";
+            index = int(random()["*"](4));
+            "92";
+            x = .5["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, current_vertex), 0)));
+            "93";
+            y = .5["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, current_vertex), 1)));
+            "95";
+            ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, current_vertex)})]);
+            "97";
+            sample = ρσ_list_decorate([ 0, 1, 2, 3 ]);
+            "98";
+            if ((current_vertex === 0 || typeof current_vertex === "object" && ρσ_equals(current_vertex, 0))) {
+                "99";
+                sample.remove(2);
+                "100";
+            } else if ((current_vertex === 1 || typeof current_vertex === "object" && ρσ_equals(current_vertex, 1))) {
+                "101";
+                sample.remove(3);
+                "102";
+            } else if ((current_vertex === 2 || typeof current_vertex === "object" && ρσ_equals(current_vertex, 2))) {
+                "103";
+                sample.remove(0);
+                "104";
+            } else if ((current_vertex === 3 || typeof current_vertex === "object" && ρσ_equals(current_vertex, 3))) {
+                "105";
+                sample.remove(1);
+            }
+            "106";
+            current_vertex = ρσ_getitem(sample, int(random()["*"](3)));
+        }
+    };
+    if (!t_square.__defaults__) Object.defineProperties(t_square, {
+        __defaults__ : {value: {a1:1["-u"]()["*"](1), b1:1["-u"]()["*"](1), a2:1["-u"]()["*"](1), b2:1, a3:1, b3:1, a4:1, b4:1["-u"]()["*"](1)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["a1", "b1", "a2", "b2", "a3", "b3", "a4", "b4"]},
+        __module__ : {value: null}
+    });
+
+    "109";
+    async function sierpinski_carpet() {
+        var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.a1 : arguments[0];
+        var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.b1 : arguments[1];
+        var a2 = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.a2 : arguments[2];
+        var b2 = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.b2 : arguments[3];
+        var a3 = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.a3 : arguments[4];
+        var b3 = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.b3 : arguments[5];
+        var a4 = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.a4 : arguments[6];
+        var b4 = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.b4 : arguments[7];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a1")){
+            a1 = ρσ_kwargs_obj.a1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b1")){
+            b1 = ρσ_kwargs_obj.b1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a2")){
+            a2 = ρσ_kwargs_obj.a2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b2")){
+            b2 = ρσ_kwargs_obj.b2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a3")){
+            a3 = ρσ_kwargs_obj.a3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b3")){
+            b3 = ρσ_kwargs_obj.b3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a4")){
+            a4 = ρσ_kwargs_obj.a4;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b4")){
+            b4 = ρσ_kwargs_obj.b4;
+        }
+        var ρσ_ls, pixels, ρσ_unpack, x, y, colour, jump_points, colors, index, i;
+        "117";
+        (await clear_canvas(1.25, vec(0, 0, 0)));
+        "118";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "119";
+        ρσ_unpack = [0, .3, color.red];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        colour = ρσ_unpack[2];
+        "121";
+        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4], [a1, b1["+"](b2)], [a4,
+        b3["+"](b4)], [a1["+"](a4), b1], [a2["+"](a3), b2] ]);
+        "122";
+        colors = ρσ_list_decorate([ color.green, color.white, color.yellow, color.red, color.purple, color.cyan, color.magenta, color.orange ]);
+        "123";
+        for (var ρσ_Index6 = 0; ρσ_Index6["<"](4e4); ρσ_Index6++) {
+            i = ρσ_Index6;
+            "124";
+            (await rate(frame_rate));
+            "125";
+            index = int(random()["*"](8));
+            "126";
+            x = x["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)))["/"](3);
+            "127";
+            y = y["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)))["/"](3);
+            "128";
+            ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, index)})]);
+        }
+    };
+    if (!sierpinski_carpet.__defaults__) Object.defineProperties(sierpinski_carpet, {
+        __defaults__ : {value: {a1:1["-u"]()["*"](1), b1:1["-u"]()["*"](1), a2:1["-u"]()["*"](1), b2:1, a3:1, b3:1, a4:1, b4:1["-u"]()["*"](1)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["a1", "b1", "a2", "b2", "a3", "b3", "a4", "b4"]},
+        __module__ : {value: null}
+    });
+
+    "131";
+    async function toggle_fractal(event) {
+        "132";
+        if ((event.name === "carpet" || typeof event.name === "object" && ρσ_equals(event.name, "carpet"))) {
+            "133";
+            (await sierpinski_carpet());
+            "134";
+            t_square_radio.checked = triangle_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
+            "135";
+        } else if ((event.name === "triangle" || typeof event.name === "object" && ρσ_equals(event.name, "triangle"))) {
+            "136";
+            (await sierpinski_triangle());
+            "137";
+            t_square_radio.checked = carpet_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
+            "138";
+        } else if ((event.name === "vicsek" || typeof event.name === "object" && ρσ_equals(event.name, "vicsek"))) {
+            "139";
+            (await vicsek_fractal());
+            "140";
+            t_square_radio.checked = triangle_radio.checked = carpet_radio.checked = dust_radio.checked = false;
+            "141";
+        } else if ((event.name === "dust" || typeof event.name === "object" && ρσ_equals(event.name, "dust"))) {
+            "142";
+            (await cantor_dust());
+            "143";
+            t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+            "144";
+        } else {
+            "145";
+            (await t_square());
+            "146";
+            dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+        }
+    };
+    if (!toggle_fractal.__argnames__) Object.defineProperties(toggle_fractal, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "148";
+    frame_rate = 15e3;
+    "149";
+    async function change_speed(event) {
+        "150";
+        "151";
+        frame_rate = event.value;
+    };
+    if (!change_speed.__argnames__) Object.defineProperties(change_speed, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "153";
+    display.append_to_caption("\n");
+    "154";
+    carpet_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Sierpinski gasket ", checked: true, name: "carpet", bind: toggle_fractal})]);
+    "155";
+    vicsek_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Vicsek fractal ", checked: false, name: "vicsek", bind: toggle_fractal})]);
+    "156";
+    triangle_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Sierpinski triangle ", checked: false, name: "triangle", bind: toggle_fractal})]);
+    "157";
+    dust_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Dust ", checked: false, name: "dust", bind: toggle_fractal})]);
+    "158";
+    t_square_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "T-square ", checked: false, name: "t_square", bind: toggle_fractal})]);
+    "160";
+    display.append_to_caption("\n\nAnimation speed");
+    "161";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1e3, max: 15e3, value: 15e3, bind: change_speed})]);
+    "163";
+    (await sierpinski_carpet());
+    "164";
+    while (true) {
+        "165";
+        (await rate(10));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
