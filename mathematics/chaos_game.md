@@ -26,7 +26,7 @@ fixed corners of a triangle.
 
 <figure style="float: center; text-align: center;">
   <a href="https://en.wikipedia.org/wiki/Chaos_game#/media/File:Sierpinski_Chaos.gif">
-    <img alt="Sierpinksy chaos" src="images/Sierpinski_Chaos.gif"/>
+    <img alt="Sierpinksy chaos" src="images/Sierpinski_Chaos.gif" width="35%"/>
   </a>
   <figcaption>
     Source <a href="https://en.wikipedia.org/wiki/Chaos_game#/media/File:Sierpinski_Chaos.gif">Wikipedia</a>
@@ -40,7 +40,7 @@ see the figure below.
 
 <figure style="float: center; text-align: center;">
   <a href="https://math.bu.edu/DYSYS/chaos-game/node3.html">
-    <img alt="Sierpinksy chaos" src="images/sierpinski.gif" width="50%"/>
+    <img alt="Sierpinksy chaos" src="images/sierpinski.gif"/>
   </a>
   <figcaption>
     Source <a href="https://math.bu.edu/DYSYS/chaos-game/node3.html">BU Math</a>
