@@ -19,6 +19,7 @@
 
 - [Javalab science simulations](https://javalab.org/en/), interactive science simulations in JavaScript
 - [Interactive Simulations for Science and Math](https://phet.colorado.edu/)
+- [Physics Interactive 3D simulations](https://effectuall.github.io/)
 - [oPhysics: Interactive Physics Simulations](https://www.ophysics.com/)
 - [Online electric circuit construction kit](https://phet.colorado.edu/sims/html/circuit-construction-kit-ac/latest/circuit-construction-kit-ac_all.html).
 - [Computational Physics](https://github.com/rubinhlandau/CompPhysicsNotebooks/blob/master/CP01.ipynb), a freely available online book!
