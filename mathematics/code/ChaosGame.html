@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
 
-    var version, print, arange, __name__, type, ρσ_ls, title, display, frame_rate, carpet_radio, vicsek_radio, triangle_radio, dust_radio, t_square_radio, _;
+    var version, print, arange, __name__, type, ρσ_ls, title, display, frame_rate, carpet_radio, vicsek_radio, triangle_radio, dust_radio, t_square_radio, fractal_1_radio, fractal_2_radio, _;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -65,24 +65,24 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "6";
-    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/chaos_game.py\">chaos_game.py<\/a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>\n\n";
-    "8";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 400, title: title, background: color.gray(.075)})]);
-    "10";
+    "7";
+    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/chaos_game.py\">chaos_game.py<\/a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>\n&#x2022; Inspired by <a href=\"https://github.com/nnakul/chaos-game/tree/master\">nnakul/chaos-game</a> by <a href=\"https://github.com/nnakul/\">Nikhil Nakul</a>\n\n";
+    "9";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 600, title: title, background: color.gray(.075)})]);
+    "11";
     async function clear_canvas(range_, center) {
         var ρσ_ls, obj;
-        "11";
+        "12";
         var ρσ_Iter1 = display.objects;
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             obj = ρσ_Index1;
-            "12";
+            "13";
             obj.visible = false;
         }
-        "13";
-        display.range = range_;
         "14";
+        display.range = range_;
+        "15";
         display.center = center;
     };
     if (!clear_canvas.__argnames__) Object.defineProperties(clear_canvas, {
@@ -90,7 +90,7 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "16";
+    "17";
     async function sierpinski_triangle() {
         var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_triangle.__defaults__.a1 : arguments[0];
         var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_triangle.__defaults__.b1 : arguments[1];
@@ -119,31 +119,31 @@ async function __main__() {
             b3 = ρσ_kwargs_obj.b3;
         }
         var ρσ_ls, pixels, ρσ_unpack, x, y, colour, jump_points, colors, index, i;
-        "25";
-        (await clear_canvas(.5, vec(0, 1["-u"]()["*"](.1), 0)));
         "26";
-        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        (await clear_canvas(.5, vec(0, 1["-u"]()["*"](.1), 0)));
         "27";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "28";
         ρσ_unpack = [0, .3, color.red];
         x = ρσ_unpack[0];
         y = ρσ_unpack[1];
         colour = ρσ_unpack[2];
-        "29";
-        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3] ]);
         "30";
-        colors = ρσ_list_decorate([ color.green, color.cyan, color.red ]);
+        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3] ]);
         "31";
+        colors = ρσ_list_decorate([ color.green, color.cyan, color.red ]);
+        "32";
         for (var ρσ_Index2 = 0; ρσ_Index2["<"](4e4); ρσ_Index2++) {
             i = ρσ_Index2;
-            "32";
-            (await rate(frame_rate));
             "33";
-            index = int(random()["*"](3));
+            (await rate(frame_rate));
             "34";
-            x = .5["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)));
+            index = int(random()["*"](3));
             "35";
-            y = .5["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)));
+            x = .5["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)));
             "36";
+            y = .5["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)));
+            "37";
             ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, index)})]);
         }
     };
@@ -154,7 +154,7 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "38";
+    "39";
     async function vicsek_fractal() {
         var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.a1 : arguments[0];
         var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? vicsek_fractal.__defaults__.b1 : arguments[1];
@@ -199,31 +199,31 @@ async function __main__() {
             b5 = ρσ_kwargs_obj.b5;
         }
         var ρσ_ls, pixels, ρσ_unpack, x, y, colour, jump_points, colors, index, i;
-        "39";
-        (await clear_canvas(1.25, vec(0, 0, 0)));
         "40";
-        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        (await clear_canvas(1.25, vec(0, 0, 0)));
         "41";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "42";
         ρσ_unpack = [0, .3, color.red];
         x = ρσ_unpack[0];
         y = ρσ_unpack[1];
         colour = ρσ_unpack[2];
-        "43";
-        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4], [a5, b5] ]);
         "44";
-        colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow, color.orange ]);
+        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4], [a5, b5] ]);
         "45";
+        colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow, color.orange ]);
+        "46";
         for (var ρσ_Index3 = 0; ρσ_Index3["<"](4e4); ρσ_Index3++) {
             i = ρσ_Index3;
-            "46";
-            (await rate(frame_rate));
             "47";
-            index = int(random()["*"](5));
+            (await rate(frame_rate));
             "48";
-            x = x["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)))["/"](3);
+            index = int(random()["*"](5));
             "49";
-            y = y["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)))["/"](3);
+            x = x["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)))["/"](3);
             "50";
+            y = y["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)))["/"](3);
+            "51";
             ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, index)})]);
         }
     };
@@ -234,7 +234,7 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "52";
+    "53";
     async function cantor_dust() {
         var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.a1 : arguments[0];
         var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? cantor_dust.__defaults__.b1 : arguments[1];
@@ -271,31 +271,31 @@ async function __main__() {
             b4 = ρσ_kwargs_obj.b4;
         }
         var ρσ_ls, pixels, ρσ_unpack, x, y, colour, jump_points, colors, index, i;
-        "60";
-        (await clear_canvas(1.25, vec(0, 0, 0)));
         "61";
-        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        (await clear_canvas(1.25, vec(0, 0, 0)));
         "62";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "63";
         ρσ_unpack = [0, .3, color.red];
         x = ρσ_unpack[0];
         y = ρσ_unpack[1];
         colour = ρσ_unpack[2];
-        "64";
-        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4] ]);
         "65";
-        colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow, color.orange ]);
+        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4] ]);
         "66";
+        colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow, color.orange ]);
+        "67";
         for (var ρσ_Index4 = 0; ρσ_Index4["<"](4e4); ρσ_Index4++) {
             i = ρσ_Index4;
-            "67";
-            (await rate(frame_rate));
             "68";
-            index = int(random()["*"](4));
+            (await rate(frame_rate));
             "69";
-            x = .45["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)));
+            index = int(random()["*"](4));
             "70";
-            y = .45["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)));
+            x = .45["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)));
             "71";
+            y = .45["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)));
+            "72";
             ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, index)})]);
         }
     };
@@ -307,6 +307,139 @@ async function __main__() {
     });
 
     "74";
+    async function fractal_1() {
+        var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? fractal_1.__defaults__.a1 : arguments[0];
+        var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? fractal_1.__defaults__.b1 : arguments[1];
+        var a2 = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? fractal_1.__defaults__.a2 : arguments[2];
+        var b2 = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? fractal_1.__defaults__.b2 : arguments[3];
+        var a3 = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? fractal_1.__defaults__.a3 : arguments[4];
+        var b3 = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? fractal_1.__defaults__.b3 : arguments[5];
+        var a4 = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? fractal_1.__defaults__.a4 : arguments[6];
+        var b4 = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? fractal_1.__defaults__.b4 : arguments[7];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a1")){
+            a1 = ρσ_kwargs_obj.a1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b1")){
+            b1 = ρσ_kwargs_obj.b1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a2")){
+            a2 = ρσ_kwargs_obj.a2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b2")){
+            b2 = ρσ_kwargs_obj.b2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a3")){
+            a3 = ρσ_kwargs_obj.a3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b3")){
+            b3 = ρσ_kwargs_obj.b3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a4")){
+            a4 = ρσ_kwargs_obj.a4;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b4")){
+            b4 = ρσ_kwargs_obj.b4;
+        }
+        var ρσ_ls, pixels, ρσ_unpack, x, y, colour, current_vertex, jump_points, colors, sample, i;
+        "75";
+        (await clear_canvas(1.25, vec(0, 0, 0)));
+        "76";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "77";
+        ρσ_unpack = [0, .3, color.red];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        colour = ρσ_unpack[2];
+        "78";
+        current_vertex = int(random()["*"](4));
+        "80";
+        jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4] ]);
+        "81";
+        colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow ]);
+        "82";
+        for (var ρσ_Index5 = 0; ρσ_Index5["<"](4e4); ρσ_Index5++) {
+            i = ρσ_Index5;
+            "83";
+            (await rate(frame_rate));
+            "84";
+            x = .5["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, current_vertex), 0)));
+            "85";
+            y = .5["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, current_vertex), 1)));
+            "87";
+            ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, current_vertex)})]);
+            "89";
+            sample = ρσ_list_decorate([ 0, 1, 2, 3 ]);
+            "90";
+            sample.remove(current_vertex);
+            "91";
+            current_vertex = ρσ_getitem(sample, int(random()["*"](3)));
+        }
+    };
+    if (!fractal_1.__defaults__) Object.defineProperties(fractal_1, {
+        __defaults__ : {value: {a1:1["-u"]()["*"](1), b1:1["-u"]()["*"](1), a2:1["-u"]()["*"](1), b2:1, a3:1, b3:1, a4:1, b4:1["-u"]()["*"](1)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["a1", "b1", "a2", "b2", "a3", "b3", "a4", "b4"]},
+        __module__ : {value: null}
+    });
+
+    "93";
+    async function fractal_2() {
+        var ρσ_ls, pixels, ρσ_unpack, x, y, colour, current_vertex, w, theta, p1, p2, p3, p4, p5, jump_points, colors, sample, i;
+        "94";
+        (await clear_canvas(.45, vec(.5, .5, 0)));
+        "95";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
+        "96";
+        ρσ_unpack = [0, .3, color.red];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        colour = ρσ_unpack[2];
+        "97";
+        current_vertex = int(random()["*"](4));
+        "99";
+        w = 1;
+        "100";
+        theta = 2["*"](pi)["/"](5);
+        "102";
+        p1 = [w["/"](2), 0];
+        "103";
+        p2 = [w["*"](.5)["*"](1["+"](sin(theta))), w["*"](.5)["*"](1["-"](1["*"](cos(theta))))];
+        "104";
+        p3 = [w["*"](.5)["*"](1["+"](sin(theta["/"](2)))), w["*"](.5)["*"](1["+"](cos(theta["/"](2))))];
+        "105";
+        p4 = [w["*"](.5)["*"](1["-"](1["*"](sin(theta["/"](2))))), w["*"](.5)["*"](1["+"](cos(theta["/"](2))))];
+        "106";
+        p5 = [w["*"](.5)["*"](1["-"](1["*"](sin(theta)))), w["*"](.5)["*"](1["-"](1["*"](cos(theta))))];
+        "107";
+        jump_points = ρσ_list_decorate([ p1, p2, p3, p4, p5 ]);
+        "108";
+        colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow, color.orange ]);
+        "109";
+        for (var ρσ_Index6 = 0; ρσ_Index6["<"](4e4); ρσ_Index6++) {
+            i = ρσ_Index6;
+            "110";
+            (await rate(frame_rate));
+            "111";
+            x = .5["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, current_vertex), 0)));
+            "112";
+            y = .5["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, current_vertex), 1)));
+            "114";
+            ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, current_vertex)})]);
+            "116";
+            sample = ρσ_list_decorate([ 0, 1, 2, 3, 4 ]);
+            "117";
+            sample.remove(current_vertex);
+            "118";
+            current_vertex = ρσ_getitem(sample, int(random()["*"](4)));
+        }
+    };
+    if (!fractal_2.__module__) Object.defineProperties(fractal_2, {
+        __module__ : {value: null}
+    });
+
+    "120";
     async function t_square() {
         var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.a1 : arguments[0];
         var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? t_square.__defaults__.b1 : arguments[1];
@@ -343,54 +476,54 @@ async function __main__() {
             b4 = ρσ_kwargs_obj.b4;
         }
         var ρσ_ls, pixels, ρσ_unpack, x, y, colour, current_vertex, jump_points, colors, index, sample, i;
-        "82";
+        "128";
         (await clear_canvas(1.25, vec(0, 0, 0)));
-        "83";
+        "129";
         pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
-        "84";
+        "130";
         ρσ_unpack = [0, .3, color.red];
         x = ρσ_unpack[0];
         y = ρσ_unpack[1];
         colour = ρσ_unpack[2];
-        "85";
+        "131";
         current_vertex = int(random()["*"](4));
-        "87";
+        "133";
         jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4] ]);
-        "88";
+        "134";
         colors = ρσ_list_decorate([ color.green, color.cyan, color.red, color.yellow ]);
-        "89";
-        for (var ρσ_Index5 = 0; ρσ_Index5["<"](4e4); ρσ_Index5++) {
-            i = ρσ_Index5;
-            "90";
+        "135";
+        for (var ρσ_Index7 = 0; ρσ_Index7["<"](4e4); ρσ_Index7++) {
+            i = ρσ_Index7;
+            "136";
             (await rate(frame_rate));
-            "91";
+            "137";
             index = int(random()["*"](4));
-            "92";
+            "138";
             x = .5["*"](x["+"](ρσ_getitem(ρσ_getitem(jump_points, current_vertex), 0)));
-            "93";
+            "139";
             y = .5["*"](y["+"](ρσ_getitem(ρσ_getitem(jump_points, current_vertex), 1)));
-            "95";
+            "141";
             ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, current_vertex)})]);
-            "97";
+            "143";
             sample = ρσ_list_decorate([ 0, 1, 2, 3 ]);
-            "98";
+            "144";
             if ((current_vertex === 0 || typeof current_vertex === "object" && ρσ_equals(current_vertex, 0))) {
-                "99";
+                "145";
                 sample.remove(2);
-                "100";
+                "146";
             } else if ((current_vertex === 1 || typeof current_vertex === "object" && ρσ_equals(current_vertex, 1))) {
-                "101";
+                "147";
                 sample.remove(3);
-                "102";
+                "148";
             } else if ((current_vertex === 2 || typeof current_vertex === "object" && ρσ_equals(current_vertex, 2))) {
-                "103";
+                "149";
                 sample.remove(0);
-                "104";
+                "150";
             } else if ((current_vertex === 3 || typeof current_vertex === "object" && ρσ_equals(current_vertex, 3))) {
-                "105";
+                "151";
                 sample.remove(1);
             }
-            "106";
+            "152";
             current_vertex = ρσ_getitem(sample, int(random()["*"](3)));
         }
     };
@@ -401,7 +534,7 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "109";
+    "154";
     async function sierpinski_carpet() {
         var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.a1 : arguments[0];
         var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? sierpinski_carpet.__defaults__.b1 : arguments[1];
@@ -438,32 +571,32 @@ async function __main__() {
             b4 = ρσ_kwargs_obj.b4;
         }
         var ρσ_ls, pixels, ρσ_unpack, x, y, colour, jump_points, colors, index, i;
-        "117";
+        "162";
         (await clear_canvas(1.25, vec(0, 0, 0)));
-        "118";
+        "163";
         pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1.5})]);
-        "119";
+        "164";
         ρσ_unpack = [0, .3, color.red];
         x = ρσ_unpack[0];
         y = ρσ_unpack[1];
         colour = ρσ_unpack[2];
-        "121";
+        "166";
         jump_points = ρσ_list_decorate([ [a1, b1], [a2, b2], [a3, b3], [a4, b4], [a1, b1["+"](b2)], [a4,
         b3["+"](b4)], [a1["+"](a4), b1], [a2["+"](a3), b2] ]);
-        "122";
+        "167";
         colors = ρσ_list_decorate([ color.green, color.white, color.yellow, color.red, color.purple, color.cyan, color.magenta, color.orange ]);
-        "123";
-        for (var ρσ_Index6 = 0; ρσ_Index6["<"](4e4); ρσ_Index6++) {
-            i = ρσ_Index6;
-            "124";
+        "168";
+        for (var ρσ_Index8 = 0; ρσ_Index8["<"](4e4); ρσ_Index8++) {
+            i = ρσ_Index8;
+            "169";
             (await rate(frame_rate));
-            "125";
+            "170";
             index = int(random()["*"](8));
-            "126";
+            "171";
             x = x["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 0)))["/"](3);
-            "127";
+            "172";
             y = y["+"](2["*"](ρσ_getitem(ρσ_getitem(jump_points, index), 1)))["/"](3);
-            "128";
+            "173";
             ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: ρσ_getitem(colors, index)})]);
         }
     };
@@ -474,40 +607,52 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "131";
+    "176";
     async function toggle_fractal(event) {
-        "132";
+        "177";
         if ((event.name === "carpet" || typeof event.name === "object" && ρσ_equals(event.name, "carpet"))) {
-            "133";
+            "178";
             (await sierpinski_carpet());
-            "134";
-            t_square_radio.checked = triangle_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
-            "135";
+            "179";
+            fractal_1.checked = fractal_2.checked = t_square_radio.checked = triangle_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
+            "180";
         } else if ((event.name === "triangle" || typeof event.name === "object" && ρσ_equals(event.name, "triangle"))) {
-            "136";
+            "181";
             (await sierpinski_triangle());
-            "137";
-            t_square_radio.checked = carpet_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
-            "138";
+            "182";
+            fractal_1.checked = fractal_2.checked = t_square_radio.checked = carpet_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
+            "183";
         } else if ((event.name === "vicsek" || typeof event.name === "object" && ρσ_equals(event.name, "vicsek"))) {
-            "139";
+            "184";
             (await vicsek_fractal());
-            "140";
-            t_square_radio.checked = triangle_radio.checked = carpet_radio.checked = dust_radio.checked = false;
-            "141";
+            "185";
+            fractal_1.checked = fractal_2.checked = t_square_radio.checked = triangle_radio.checked = carpet_radio.checked = dust_radio.checked = false;
+            "186";
         } else if ((event.name === "dust" || typeof event.name === "object" && ρσ_equals(event.name, "dust"))) {
-            "142";
+            "187";
             (await cantor_dust());
-            "143";
-            t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
-            "144";
+            "188";
+            fractal_1.checked = fractal_2.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+            "189";
+        } else if ((event.name === "fractal_1" || typeof event.name === "object" && ρσ_equals(event.name, "fractal_1"))) {
+            "190";
+            (await fractal_1());
+            "191";
+            dust_radio.checked = fractal_2.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+            "192";
+        } else if ((event.name === "fractal_2" || typeof event.name === "object" && ρσ_equals(event.name, "fractal_2"))) {
+            "193";
+            (await fractal_2());
+            "194";
+            dust_radio.checked = fractal_1.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+            "195";
         } else {
-            "145";
+            "196";
             (await t_square());
-            "146";
-            dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+            "197";
+            fractal_1.checked = fractal_2.checked = dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
         }
-        "147";
+        "198";
         MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     };
     if (!toggle_fractal.__argnames__) Object.defineProperties(toggle_fractal, {
@@ -515,12 +660,12 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "149";
+    "200";
     frame_rate = 15e3;
-    "150";
+    "201";
     async function change_speed(event) {
-        "151";
-        "152";
+        "202";
+        "203";
         frame_rate = event.value;
     };
     if (!change_speed.__argnames__) Object.defineProperties(change_speed, {
@@ -528,29 +673,35 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "154";
+    "205";
     display.append_to_caption("\n");
-    "155";
+    "206";
     carpet_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Sierpinski gasket ", checked: true, name: "carpet", bind: toggle_fractal})]);
-    "156";
+    "207";
     vicsek_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Vicsek fractal ", checked: false, name: "vicsek", bind: toggle_fractal})]);
-    "157";
+    "208";
     triangle_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Sierpinski triangle ", checked: false, name: "triangle", bind: toggle_fractal})]);
-    "158";
+    "209";
     dust_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Cantor dust ", checked: false, name: "dust", bind: toggle_fractal})]);
-    "159";
+    "210";
+    display.append_to_caption("\n\n");
+    "212";
     t_square_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "T-square ", checked: false, name: "t_square", bind: toggle_fractal})]);
-    "161";
+    "213";
+    fractal_1_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Star ", checked: false, name: "fractal_1", bind: toggle_fractal})]);
+    "214";
+    fractal_2_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Flower ", checked: false, name: "fractal_2", bind: toggle_fractal})]);
+    "216";
     display.append_to_caption("\n\nAnimation speed");
-    "162";
+    "217";
     _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1e3, max: 15e3, value: 15e3, bind: change_speed})]);
-    "164";
+    "219";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "165";
+    "220";
     (await sierpinski_carpet());
-    "166";
+    "221";
     while (true) {
-        "167";
+        "222";
         (await rate(10));
     }
 };
