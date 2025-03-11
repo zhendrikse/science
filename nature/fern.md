@@ -7,7 +7,8 @@
 is a fractal that is named after British Mathematician Michael Barnsley, 
 because he described this fractal in his book “Fractals Everywhere”. 
 It is an example of a so-called “iterated function system” (IFS) fractal, which means
-that the construction of this fractal makes use of matrices.
+that the construction of this fractal makes use of matrices, see also the
+[chaos game](https://www.hendrikse.name/science/mathematics/chaos_game.html) fractals.
 
 {% include_relative code/Fern.html %}
 
