@@ -8,7 +8,7 @@ as an [affine transformation](https://en.wikipedia.org/wiki/Affine_transformatio
 
 $s_{i+1}=T_js_i+r_j$
 
-where the set of pairs $\{(T_j, r_j) | j=1,2,\dots\}$ with matrices $T_j$ and $r_j$
+where the set of pairs $\left\{(T_j, r_j) | j=1,2,\dots\right\}$ with matrices $T_j$ and $r_j$
 characterize the chosen ruleset and $j$ denotes a (per iteration) randomly chosen index.
 
 {% include_relative code/ChaosGame.html %}
