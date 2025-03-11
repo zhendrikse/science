@@ -25,6 +25,8 @@ than fractal geometry. They were introduced in 1981. &mdash;
 <a href="https://en.wikipedia.org/wiki/Iterated_function_system">Wikipedia</a>
 </blockquote>
 
+<p style="clear: both;"></p>
+
 From [Michael Barnsley](https://en.wikipedia.org/wiki/Michael_Barnsley)&apos;s own article we quote:
 
 <p style="clear: both;"></p>
