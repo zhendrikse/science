@@ -176,25 +176,25 @@ def sierpinski_carpet(a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1):
 def toggle_fractal(event):
     if event.name == "carpet":
         sierpinski_carpet()
-        fractal_1.checked = fractal_2.checked = t_square_radio.checked = triangle_radio.checked = vicsek_radio.checked =  dust_radio.checked = False
+        fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = triangle_radio.checked = vicsek_radio.checked =  dust_radio.checked = False
     elif event.name == "triangle":
         sierpinski_triangle()
-        fractal_1.checked = fractal_2.checked = t_square_radio.checked = carpet_radio.checked = vicsek_radio.checked =  dust_radio.checked = False
+        fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = carpet_radio.checked = vicsek_radio.checked =  dust_radio.checked = False
     elif event.name == "vicsek":
         vicsek_fractal()
-        fractal_1.checked = fractal_2.checked = t_square_radio.checked = triangle_radio.checked = carpet_radio.checked = dust_radio.checked = False
+        fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = triangle_radio.checked = carpet_radio.checked = dust_radio.checked = False
     elif event.name == "dust":
         cantor_dust()
-        fractal_1.checked = fractal_2.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
+        fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
     elif event.name == "fractal_1":
         fractal_1()
-        dust_radio.checked = fractal_2.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
+        dust_radio.checked = fractal_2_radio.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
     elif event.name == "fractal_2":
         fractal_2()
-        dust_radio.checked = fractal_1.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
+        dust_radio.checked = fractal_1_radio.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
     else:
         t_square()
-        fractal_1.checked = fractal_2.checked = dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
+        fractal_1_radio.checked = fractal_2_radio.checked = dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
     #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 frame_rate = 15000

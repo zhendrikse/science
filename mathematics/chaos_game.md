@@ -51,6 +51,9 @@ After one iteration, the point will jump to either one of the three smaller empt
 Eventually after a couple of iterations, the point will enter a small triangle that is so small that, 
 given the finite resolution of the screen and the pixels it contains, it will disappear.
 
+In a certain sense, the fractal itself is a kind of 
+[strange attractor](https://www.hendrikse.name/science/mathematics/index.html#strange_attractors)!
+
 ### Example Python code
 <div style="border-top: 1px solid #999999"><br/></div>
 

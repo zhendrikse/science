@@ -614,43 +614,43 @@ async function __main__() {
             "178";
             (await sierpinski_carpet());
             "179";
-            fractal_1.checked = fractal_2.checked = t_square_radio.checked = triangle_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
+            fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = triangle_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
             "180";
         } else if ((event.name === "triangle" || typeof event.name === "object" && ρσ_equals(event.name, "triangle"))) {
             "181";
             (await sierpinski_triangle());
             "182";
-            fractal_1.checked = fractal_2.checked = t_square_radio.checked = carpet_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
+            fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = carpet_radio.checked = vicsek_radio.checked = dust_radio.checked = false;
             "183";
         } else if ((event.name === "vicsek" || typeof event.name === "object" && ρσ_equals(event.name, "vicsek"))) {
             "184";
             (await vicsek_fractal());
             "185";
-            fractal_1.checked = fractal_2.checked = t_square_radio.checked = triangle_radio.checked = carpet_radio.checked = dust_radio.checked = false;
+            fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = triangle_radio.checked = carpet_radio.checked = dust_radio.checked = false;
             "186";
         } else if ((event.name === "dust" || typeof event.name === "object" && ρσ_equals(event.name, "dust"))) {
             "187";
             (await cantor_dust());
             "188";
-            fractal_1.checked = fractal_2.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+            fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
             "189";
         } else if ((event.name === "fractal_1" || typeof event.name === "object" && ρσ_equals(event.name, "fractal_1"))) {
             "190";
             (await fractal_1());
             "191";
-            dust_radio.checked = fractal_2.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+            dust_radio.checked = fractal_2_radio.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
             "192";
         } else if ((event.name === "fractal_2" || typeof event.name === "object" && ρσ_equals(event.name, "fractal_2"))) {
             "193";
             (await fractal_2());
             "194";
-            dust_radio.checked = fractal_1.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+            dust_radio.checked = fractal_1_radio.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
             "195";
         } else {
             "196";
             (await t_square());
             "197";
-            fractal_1.checked = fractal_2.checked = dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
+            fractal_1_radio.checked = fractal_2_radio.checked = dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
         }
         "198";
         MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
