@@ -50,9 +50,7 @@ async function __main__() {
     var display = canvas;
     var scene = canvas();
 
-    function round(num, n=0) {return Number(num.toFixed(n))}
-
-    var version, print, arange, __name__, type, ρσ_ls, title, display, spread, branch_length, max_recursion_depth, lines, tree_radio, dragon_radio, sierpinski_radio;
+    var version, print, arange, __name__, type, ρσ_ls, title, display, spread, branch_length, max_recursion_depth, lines, tree_radio, dragon_radio, sierpinski_radio, dust_radio;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,30 +62,28 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "10";
+    "11";
     title = "&#x2022; Tree based on <a href=\"http://rosettacode.org/wiki/Fractal_tree#Python\">Fractal_tree<\/a> via <a href=\"https://prettymathpics.com/fractal-tree/\">prettymathpics.com</a>\n    &#x2022; (Alan Richmond, Python3.codes, and others at <a href=\"http://rosettacode.org/\">rosettacode.org</a>)\n&#x2022; Dragon curve based on <a href=\"https://github.com/jeffvun/fractals/blob/main/DragonCurve.py\">DragonCurve.py</a> code \n&#x2022; Sierpinski triangle based on <a href=\"http://sites.science.oregonstate.edu/~landaur/Books/Problems/Codes/JupyterNB/SierpinskiVPmod.ipynb\">SierpinskiVPmod.ipynb</a> code\n&#x2022; Ported to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/fractals.py\">fractals.py</a>\n\n";
-    "12";
+    "13";
     display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 400, title: title})]);
-    "14";
-    async function clear_canvas(range_, colour, center) {
+    "15";
+    async function clear_canvas(range_, center) {
         var ρσ_ls, obj;
-        "15";
+        "16";
         var ρσ_Iter1 = display.objects;
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             obj = ρσ_Index1;
-            "16";
+            "17";
             obj.visible = false;
         }
-        "17";
-        display.background = colour;
         "18";
         display.range = range_;
         "19";
         display.center = center;
     };
     if (!clear_canvas.__argnames__) Object.defineProperties(clear_canvas, {
-        __argnames__ : {value: ["range_", "colour", "center"]},
+        __argnames__ : {value: ["range_", "center"]},
         __module__ : {value: null}
     });
 
@@ -202,7 +198,7 @@ async function __main__() {
         }
         "61";
         "62";
-        (await clear_canvas(370, color.gray(.075), vec(300, 1["-u"]()["*"](18), 80)));
+        (await clear_canvas(370, vec(300, 1["-u"]()["*"](18), 80)));
         "63";
         lines = ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: vec(img_x["/"](2), img_y["*"](.9), 0)})]) ]);
         "64";
@@ -226,7 +222,7 @@ async function __main__() {
         var ρσ_ls, points_, pixels, ρσ_unpack, x, y, i;
         "68";
         "69";
-        (await clear_canvas(.54, color.gray(.075), vec(.42, 1["-u"]()["*"](.173), 0)));
+        (await clear_canvas(.54, vec(.42, 1["-u"]()["*"](.173), 0)));
         "71";
         points_ = (await dragon_curve(n));
         "72";
@@ -290,46 +286,48 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b3")){
             b3 = ρσ_kwargs_obj.b3;
         }
-        var ρσ_ls, ρσ_unpack, x, y, r, xc, yc, i;
+        var ρσ_ls, pixels, ρσ_unpack, x, y, colour, r, i;
         "90";
-        (await clear_canvas(.5, vec(.87, .93, .87), vec(0, 0, 0)));
+        (await clear_canvas(.5, vec(0, 0, 0)));
         "91";
-        ρσ_unpack = [0, .3];
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1})]);
+        "92";
+        ρσ_unpack = [0, .3, color.red];
         x = ρσ_unpack[0];
         y = ρσ_unpack[1];
-        "92";
-        for (var ρσ_Index4 = 1; ρσ_Index4["<"](15e3); ρσ_Index4++) {
+        colour = ρσ_unpack[2];
+        "93";
+        for (var ρσ_Index4 = 0; ρσ_Index4["<"](4e4); ρσ_Index4++) {
             i = ρσ_Index4;
-            "93";
-            r = random();
             "94";
+            r = random();
+            "95";
             if (r["<="](1["/"](3))) {
-                "95";
-                x = .5["*"](x["+"](a1));
                 "96";
-                y = .5["*"](y["+"](b1));
+                x = .5["*"](x["+"](a1));
                 "97";
-            } else {
+                y = .5["*"](y["+"](b1));
                 "98";
-                if (1["/"](3)["<"](r) && r["<="](2["/"](3))) {
-                    "99";
-                    x = .5["*"](x["+"](a2));
-                    "100";
-                    y = .5["*"](y["+"](b2));
-                    "101";
-                } else {
-                    "102";
-                    x = .5["*"](x["+"](a3));
-                    "103";
-                    y = .5["*"](y["+"](b3));
-                }
+                colour = color.green;
+                "99";
+            } else if (1["/"](3)["<"](r) && r["<="](2["/"](3))) {
+                "100";
+                x = .5["*"](x["+"](a2));
+                "101";
+                y = .5["*"](y["+"](b2));
+                "102";
+                colour = color.cyan;
+                "103";
+            } else {
+                "104";
+                x = .5["*"](x["+"](a3));
+                "105";
+                y = .5["*"](y["+"](b3));
+                "106";
+                colour = color.red;
             }
-            "104";
-            xc = x;
-            "105";
-            yc = y;
-            "106";
-            ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(xc, yc, 0), vec(xc["+"](.002), yc, 0) ]), color: color.red})]);
+            "107";
+            ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: colour})]);
         }
     };
     if (!sierpinski_triangle.__defaults__) Object.defineProperties(sierpinski_triangle, {
@@ -339,26 +337,127 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "109";
+    "110";
+    async function dust() {
+        var a1 = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? dust.__defaults__.a1 : arguments[0];
+        var b1 = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? dust.__defaults__.b1 : arguments[1];
+        var a2 = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? dust.__defaults__.a2 : arguments[2];
+        var b2 = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? dust.__defaults__.b2 : arguments[3];
+        var a3 = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? dust.__defaults__.a3 : arguments[4];
+        var b3 = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? dust.__defaults__.b3 : arguments[5];
+        var a4 = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? dust.__defaults__.a4 : arguments[6];
+        var b4 = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? dust.__defaults__.b4 : arguments[7];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a1")){
+            a1 = ρσ_kwargs_obj.a1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b1")){
+            b1 = ρσ_kwargs_obj.b1;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a2")){
+            a2 = ρσ_kwargs_obj.a2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b2")){
+            b2 = ρσ_kwargs_obj.b2;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a3")){
+            a3 = ρσ_kwargs_obj.a3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b3")){
+            b3 = ρσ_kwargs_obj.b3;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "a4")){
+            a4 = ρσ_kwargs_obj.a4;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "b4")){
+            b4 = ρσ_kwargs_obj.b4;
+        }
+        var ρσ_ls, pixels, ρσ_unpack, x, y, colour, r, i;
+        "118";
+        (await clear_canvas(1, vec(0, 0, 0)));
+        "119";
+        pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({radius: 1})]);
+        "120";
+        ρσ_unpack = [0, .3, color.red];
+        x = ρσ_unpack[0];
+        y = ρσ_unpack[1];
+        colour = ρσ_unpack[2];
+        "121";
+        for (var ρσ_Index5 = 0; ρσ_Index5["<"](4e4); ρσ_Index5++) {
+            i = ρσ_Index5;
+            "122";
+            r = random();
+            "123";
+            if (r["<="](1["/"](4))) {
+                "124";
+                x = .45["*"](x["+"](a1));
+                "125";
+                y = .45["*"](y["+"](b1));
+                "126";
+                colour = color.green;
+                "127";
+            } else if (1["/"](4)["<"](r) && r["<="](2["/"](4))) {
+                "128";
+                x = .45["*"](x["+"](a2));
+                "129";
+                y = .45["*"](y["+"](b2));
+                "130";
+                colour = color.cyan;
+                "131";
+            } else if (2["/"](4)["<"](r) && r["<="](3["/"](4))) {
+                "132";
+                x = .45["*"](x["+"](a3));
+                "133";
+                y = .45["*"](y["+"](b3));
+                "134";
+                colour = color.yellow;
+                "135";
+            } else {
+                "136";
+                x = .45["*"](x["+"](a4));
+                "137";
+                y = .45["*"](y["+"](b4));
+                "138";
+                colour = color.red;
+            }
+            "139";
+            ρσ_interpolate_kwargs.call(pixels, pixels.append, [ρσ_desugar_kwargs({pos: vec(x, y, 0), color: colour})]);
+        }
+    };
+    if (!dust.__defaults__) Object.defineProperties(dust, {
+        __defaults__ : {value: {a1:1["-u"]()["*"](1), b1:1["-u"]()["*"](1), a2:1["-u"]()["*"](1), b2:1, a3:1, b3:1, a4:1, b4:1["-u"]()["*"](1)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["a1", "b1", "a2", "b2", "a3", "b3", "a4", "b4"]},
+        __module__ : {value: null}
+    });
+
+    "142";
     async function toggle_fractal(event) {
-        "110";
+        "143";
         if ((event.name === "dragon" || typeof event.name === "object" && ρσ_equals(event.name, "dragon"))) {
-            "111";
+            "144";
             (await generate_dragon_curve());
-            "112";
-            tree_radio.checked = sierpinski_radio.checked = false;
-            "113";
+            "145";
+            tree_radio.checked = sierpinski_radio.checked = dust_radio.checked = false;
+            "146";
         } else if ((event.name === "sierpinski" || typeof event.name === "object" && ρσ_equals(event.name, "sierpinski"))) {
-            "114";
+            "147";
             (await sierpinski_triangle());
-            "115";
-            tree_radio.checked = dragon_radio.checked = false;
-            "116";
-        } else {
-            "117";
+            "148";
+            tree_radio.checked = dragon_radio.checked = dust_radio.checked = false;
+            "149";
+        } else if ((event.name === "tree" || typeof event.name === "object" && ρσ_equals(event.name, "tree"))) {
+            "150";
             (await generate_tree());
-            "118";
-            dragon_radio.checked = sierpinski_radio.checked = false;
+            "151";
+            dragon_radio.checked = sierpinski_radio.checked = dust_radio.checked = false;
+            "152";
+        } else {
+            "153";
+            (await dust());
+            "154";
+            dragon_radio.checked = sierpinski_radio.checked = tree_radio.checked = false;
         }
     };
     if (!toggle_fractal.__argnames__) Object.defineProperties(toggle_fractal, {
@@ -366,19 +465,21 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "121";
+    "158";
     display.append_to_caption("\n");
-    "122";
+    "159";
     tree_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Tree ", checked: true, name: "tree", bind: toggle_fractal})]);
-    "123";
+    "160";
     dragon_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Dragon curve ", checked: false, name: "dragon", bind: toggle_fractal})]);
-    "124";
+    "161";
     sierpinski_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Sierpinski triangle ", checked: false, name: "sierpinski", bind: toggle_fractal})]);
-    "126";
+    "162";
+    dust_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Dust ", checked: false, name: "dust", bind: toggle_fractal})]);
+    "164";
     (await generate_tree());
-    "127";
+    "165";
     while (true) {
-        "128";
+        "166";
         (await rate(10));
     }
 };

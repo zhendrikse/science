@@ -11,10 +11,9 @@ title = """&#x2022; Tree based on <a href="http://rosettacode.org/wiki/Fractal_t
 
 display = canvas(width=600, height=400, title=title)
 
-def clear_canvas(range_, colour, center):
+def clear_canvas(range_, center):
     for obj in display.objects:
         obj.visible = False
-    display.background= colour
     display.range = range_
     display.center = center
 
@@ -59,14 +58,14 @@ def draw_tree(x1, y1, angle, depth):
 
 def generate_tree(img_x=512, img_y=400):
     global lines, display
-    clear_canvas(370, color.gray(0.075), vec(300, -18, 80))
+    clear_canvas(370, vec(300, -18, 80))
     lines = [curve(pos=vec(img_x / 2, img_y * 0.9, 0))]  # , radius=0.1, visible=False)]
     draw_tree(img_x / 2, img_y * 0.9, -90, max_recursion_depth)
 
 
 def generate_dragon_curve(n=15):
     global display
-    clear_canvas(.54, color.gray(0.075), vec(0.42, -.173, 0))
+    clear_canvas(.54, vec(0.42, -.173, 0))
 
     points_ = dragon_curve(n)
     pixels = points(radius=2)
@@ -87,40 +86,79 @@ def sierpinski_triangle(a1=-.5, b1=-.433, a2=.5, b2=-.433, a3=0, b3=.3):
     #         /________\
     # (a1, b1)           (a2, b2)
 
-    clear_canvas(.5, vec(0.87, 0.93, 0.87), vec(0, 0, 0))
-    pixels = points(radius=2)
-    x, y = 0, 0.3
-    for i in range(1, 30000):
+    clear_canvas(.5, vec(0, 0, 0))
+    pixels = points(radius=1)
+    x, y, colour = 0, 0.3, color.red
+    for i in range(40000):
         r = random()
         if r <= 1.0 / 3.0:
             x = .5 * (x + a1)
             y = .5 * (y + b1)
+            colour = color.green
+        elif 1.0 / 3.0 < r <= 2.0 / 3.0:
+            x = .5 * (x + a2)
+            y = .5 * (y + b2)
+            colour = color.cyan
         else:
-            if 1.0 / 3.0 < r <= 2.0 / 3.0:
-                x = .5 * (x + a2)
-                y = .5 * (y + b2)
-            else:
-                x = .5 * (x + a3)
-                y = .5 * (y + b3)
-        pixels.append(pos=vec(x, y, 0), color=color.red)
+            x = .5 * (x + a3)
+            y = .5 * (y + b3)
+            colour = color.red
+        pixels.append(pos=vec(x, y, 0), color=colour)
+
+
+def dust(a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1):
+    # (a2, b2)   (a3, b3)
+    #    +--------+
+    #    |        |
+    #    |        |
+    #    +--------+
+    # (a1, b1)   (a4, b4)
+
+    clear_canvas(1, vec(0, 0, 0))
+    pixels = points(radius=1)
+    x, y, colour = 0, 0.3, color.red
+    for i in range(40000):
+        r = random()
+        if r <= 1.0 / 4.0:
+            x = .45 * (x + a1)
+            y = .45 * (y + b1)
+            colour = color.green
+        elif 1.0 / 4.0 < r <= 2.0 / 4.0:
+            x = .45 * (x + a2)
+            y = .45 * (y + b2)
+            colour = color.cyan
+        elif 2.0 / 4.0 < r <= 3.0 / 4.0:
+            x = .45 * (x + a3)
+            y = .45 * (y + b3)
+            colour = color.yellow
+        else:
+            x = .45 * (x + a4)
+            y = .45 * (y + b4)
+            colour = color.red
+        pixels.append(pos=vec(x, y, 0), color=colour)
 
 
 def toggle_fractal(event):
     if event.name == "dragon":
         generate_dragon_curve()
-        tree_radio.checked = sierpinski_radio.checked = False
+        tree_radio.checked = sierpinski_radio.checked =  dust_radio.checked = False
     elif event.name == "sierpinski":
         sierpinski_triangle()
-        tree_radio.checked = dragon_radio.checked = False
-    else:
+        tree_radio.checked = dragon_radio.checked =  dust_radio.checked = False
+    elif event.name == "tree":
         generate_tree()
-        dragon_radio.checked = sierpinski_radio.checked = False
+        dragon_radio.checked = sierpinski_radio.checked = dust_radio.checked = False
+    else:
+        dust()
+        dragon_radio.checked = sierpinski_radio.checked = tree_radio.checked = False
+
 
 
 display.append_to_caption("\n")
 tree_radio = radio(text="Tree ", checked=True, name="tree", bind=toggle_fractal)
 dragon_radio = radio(text="Dragon curve ", checked=False, name="dragon", bind=toggle_fractal)
 sierpinski_radio = radio(text="Sierpinski triangle ", checked=False, name="sierpinski", bind=toggle_fractal)
+dust_radio = radio(text="Dust ", checked=False, name="dust", bind=toggle_fractal)
 
 generate_tree()
 while True:
