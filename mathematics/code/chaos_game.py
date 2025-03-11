@@ -155,7 +155,7 @@ display.append_to_caption("\n")
 carpet_radio = radio(text="Sierpinski gasket ", checked=True, name="carpet", bind=toggle_fractal)
 vicsek_radio = radio(text="Vicsek fractal ", checked=False, name="vicsek", bind=toggle_fractal)
 triangle_radio = radio(text="Sierpinski triangle ", checked=False, name="triangle", bind=toggle_fractal)
-dust_radio = radio(text="Dust ", checked=False, name="dust", bind=toggle_fractal)
+dust_radio = radio(text="Cantor dust ", checked=False, name="dust", bind=toggle_fractal)
 t_square_radio = radio(text="T-square ", checked=False, name="t_square", bind=toggle_fractal)
 
 display.append_to_caption("\n\nAnimation speed")
