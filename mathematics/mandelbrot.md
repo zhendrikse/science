@@ -90,4 +90,12 @@ class Mandelbrot:
 Although the Mandelbrot pictures are purely two-dimensional, the fact that you can
 rotate them and view them in three dimensions adds an extra dimension, no pun intended!
 
+### References
+<div style="border-top: 1px solid #999999"><br/></div>
+
+- [What's so special about the Mandelbrot Set? &mdash; Numberphile](https://www.youtube.com/watch?v=FFftmWSzgmk)
+- [The Feigenbaum Constant (4.669) &mdash; Numberphile](https://www.youtube.com/watch?v=ETrYE4MdoLQ)
+
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}
