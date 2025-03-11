@@ -144,6 +144,7 @@ def toggle_fractal(event):
     else:
         t_square()
         dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
+    #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 frame_rate = 15000
 def change_speed(event):
@@ -160,6 +161,7 @@ t_square_radio = radio(text="T-square ", checked=False, name="t_square", bind=to
 display.append_to_caption("\n\nAnimation speed")
 _ = slider(min=1000, max=15000, value=15000, bind=change_speed)
 
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 sierpinski_carpet()
 while True:
     rate(10)

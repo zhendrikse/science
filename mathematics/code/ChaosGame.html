@@ -1,6 +1,7 @@
 <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
@@ -50,6 +51,8 @@ async function __main__() {
     var display = canvas;
     var scene = canvas();
 
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
     var version, print, arange, __name__, type, ρσ_ls, title, display, frame_rate, carpet_radio, vicsek_radio, triangle_radio, dust_radio, t_square_radio, _;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
@@ -65,7 +68,7 @@ async function __main__() {
     "6";
     title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/chaos_game.py\">chaos_game.py<\/a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a>\n\n";
     "8";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), width: 600, height: 400, title: title})]);
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 400, title: title, background: color.gray(.075)})]);
     "10";
     async function clear_canvas(range_, center) {
         var ρσ_ls, obj;
@@ -504,18 +507,20 @@ async function __main__() {
             "146";
             dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = false;
         }
+        "147";
+        MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     };
     if (!toggle_fractal.__argnames__) Object.defineProperties(toggle_fractal, {
         __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
 
-    "148";
-    frame_rate = 15e3;
     "149";
+    frame_rate = 15e3;
+    "150";
     async function change_speed(event) {
-        "150";
         "151";
+        "152";
         frame_rate = event.value;
     };
     if (!change_speed.__argnames__) Object.defineProperties(change_speed, {
@@ -523,27 +528,29 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "153";
-    display.append_to_caption("\n");
     "154";
-    carpet_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Sierpinski gasket ", checked: true, name: "carpet", bind: toggle_fractal})]);
+    display.append_to_caption("\n");
     "155";
-    vicsek_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Vicsek fractal ", checked: false, name: "vicsek", bind: toggle_fractal})]);
+    carpet_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Sierpinski gasket ", checked: true, name: "carpet", bind: toggle_fractal})]);
     "156";
-    triangle_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Sierpinski triangle ", checked: false, name: "triangle", bind: toggle_fractal})]);
+    vicsek_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Vicsek fractal ", checked: false, name: "vicsek", bind: toggle_fractal})]);
     "157";
-    dust_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Dust ", checked: false, name: "dust", bind: toggle_fractal})]);
+    triangle_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Sierpinski triangle ", checked: false, name: "triangle", bind: toggle_fractal})]);
     "158";
+    dust_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Dust ", checked: false, name: "dust", bind: toggle_fractal})]);
+    "159";
     t_square_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "T-square ", checked: false, name: "t_square", bind: toggle_fractal})]);
-    "160";
-    display.append_to_caption("\n\nAnimation speed");
     "161";
+    display.append_to_caption("\n\nAnimation speed");
+    "162";
     _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1e3, max: 15e3, value: 15e3, bind: change_speed})]);
-    "163";
-    (await sierpinski_carpet());
     "164";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "165";
+    (await sierpinski_carpet());
+    "166";
     while (true) {
-        "165";
+        "167";
         (await rate(10));
     }
 };
