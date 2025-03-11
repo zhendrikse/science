@@ -26,7 +26,7 @@ fixed corners of a triangle.
 
 <figure style="float: center; text-align: center;">
   <a href="https://en.wikipedia.org/wiki/Chaos_game#/media/File:Sierpinski_Chaos.gif">
-    <img alt="Sierpinksy chaos" src="images/Sierpinski_Chaos.gif" width="35%"/>
+    <img alt="Sierpinksy chaos" src="images/Sierpinski_Chaos.gif" width="45%"/>
   </a>
   <figcaption>
     Source <a href="https://en.wikipedia.org/wiki/Chaos_game#/media/File:Sierpinski_Chaos.gif">Wikipedia</a>
