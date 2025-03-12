@@ -8,6 +8,7 @@
 - [`flocking_birds.py` source code](flocking_birds.py)
 - [`pool.py` source code](pool.py)
 - [`raindrops.py` source code](raindrops.py)
+- [`snowflake.py` source code](snowflake.py)
 - [`tree.py` source code](tree.py)
 - [`water_sprinkler.py` source code](water_sprinkler.py)
 

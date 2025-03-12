@@ -80,7 +80,7 @@ If I have ever made any valuable discoveries, it has been due more to patient at
 </div>
 <p style="clear: both;"></p>
 
-### Fern
+### Fern and tree as fractals
 
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -98,10 +98,30 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   <a href="tree.html">
     <img alt="Tree" src="images/tree.png" title="Click to animate"/>
   </a>
-  <figcaption>"People looks at trees and they think it comes out of the ground, that
+  <figcaption>"People looks at trees, and they think it comes out of the ground, that
   plants come out of the ground. &mdash;
   <a href="https://www.youtube.com/watch?v=ifk6iuLQk28">Richard Feynman in "Biology of a tree"</a>.
   </figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+### Snowflake
+
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="snowflake.html">
+    <img alt="Snowflake" src="images/snowflake.png" title="Click to animate"/>
+  </a>
+  <figcaption>"To appreciate the beauty of a snowflake, it is necessary to stand out in the cold." &mdash;
+  Aristotle  
+  </figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVER FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>
