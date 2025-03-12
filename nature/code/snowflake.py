@@ -1,7 +1,7 @@
-#Web VPython 3.2
-from vpython import simple_sphere, rate, vector, sqrt, canvas, color
+# Web VPython 3.2
+from vpython import simple_sphere, rate, vector, sqrt, canvas, color, button
 
-title="""Implementation of Reiter's cellular model for <a href="https://patarnott.com/pdf/SnowCrystalGrowth.pdf">snow crystal growth</a>
+title = """Implementation of Reiter's cellular model for <a href="https://patarnott.com/pdf/SnowCrystalGrowth.pdf">snow crystal growth</a>
 
 &#x2022; Original <a href="https://github.com/zdeager/flake">code</a> by <a href="https://github.com/zdeager">zdeager</a> 
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/snowflake.py">snowflake.py</a>
@@ -9,7 +9,7 @@ title="""Implementation of Reiter's cellular model for <a href="https://patarnot
 
 """
 
-display = canvas(range=38, forward=vector(-.72, -.36, -.6), title=title, width=600, height=600, background = color.gray(0.075))
+display = canvas(forward=vector(-.48, -.45, -.72), title=title, width=600, height=600, background=color.gray(0.075))
 number_of_neighbors = 12
 
 
@@ -25,8 +25,9 @@ def get_pos(idx, width, height, radius=1):
 
     return vector(x, y, z) * radius
 
+
 class Cell:
-    def __init__(self, pos, radius, alpha, beta, gamma, colour=vector(204/255, 1, 1)):
+    def __init__(self, pos, radius, alpha, beta, gamma, colour=vector(204 / 255, 1, 1)):
         self._sphere = simple_sphere(pos=pos, shininess=0, color=colour, visible=False, radius=radius)
         self._alpha, self._beta, self._gamma = alpha, beta, gamma
         self._A2 = beta
@@ -54,8 +55,9 @@ class Cell:
         self._beta = self._A1 + self._A2n  # add updated water and ice
         self._A2 = self._A2n  # update water for next step
 
+
 class Snowflake:
-    def __init__(self, width=60, height=60, depth=60, radius=1, alpha=1, beta=.9, gamma=.05):
+    def __init__(self, width, height, depth, radius=1, alpha=1, beta=.9, gamma=.05):
         self._width, self._height, self._depth = width, height, depth
         self._cells = []
 
@@ -102,7 +104,8 @@ class Snowflake:
             if plane != depth - 1: neighbors.append(idx + area - p)
             if plane != 0:   neighbors.append(idx - area - p)
 
-        if (col != width - 1 or p > 0 or r < 0) and (col != 0 or p < 0 or r > 0) and (row != height - 1 or p < 0) and (row != 0 or p > 0):
+        if (col != width - 1 or p > 0 or r < 0) and (col != 0 or p < 0 or r > 0) and (row != height - 1 or p < 0) and (
+                row != 0 or p > 0):
             if plane != depth - 1:
                 neighbors.append(idx + area + p * width + int((r - p) / 2))  # 10
             if plane != 0:
@@ -138,7 +141,6 @@ class Snowflake:
         for cell in self._cells:
             cell.add_updated_water_and_ice_together()
 
-
     def render(self):
         a_max = -1e30  # -float("inf")
         a_min = +1e30  # float("inf")
@@ -150,13 +152,33 @@ class Snowflake:
         for cell in self._cells:
             cell.render(a_min, a_max)
 
+    def width(self):
+        return self._width
 
-snowflake = Snowflake()
-for _ in range(15):
-    snowflake.grow()
+    def height(self):
+        return self._height
 
-snowflake.render()
-display.center = get_pos(snowflake.center_index(), 60, 60)
 
+def new_snowflake(resolution=20, range_=25):
+    global display
+    snowflake = Snowflake(resolution, resolution, resolution)
+    for _ in range(15):
+        snowflake.grow()
+
+    snowflake.render()
+    display.center = get_pos(snowflake.center_index(), snowflake.width(), snowflake.height())
+    display.range = range_
+
+
+def high_res():
+    for obj in display.objects:
+        obj.visible = False
+    new_snowflake(60, 38)
+
+
+display.append_to_caption("\n")
+_ = button(text="High resolution (s l o w !!)", bind=high_res)
+
+new_snowflake()
 while True:
     rate(10)
