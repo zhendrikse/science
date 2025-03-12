@@ -173,29 +173,52 @@ def sierpinski_carpet(a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1):
         pixels.append(pos=vec(x, y, 0), color=colors[index])
 
 
-def toggle_fractal(event):
-    if event.name == "carpet":
-        sierpinski_carpet()
-        fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = triangle_radio.checked = vicsek_radio.checked =  dust_radio.checked = False
-    elif event.name == "triangle":
-        sierpinski_triangle()
-        fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = carpet_radio.checked = vicsek_radio.checked =  dust_radio.checked = False
-    elif event.name == "vicsek":
-        vicsek_fractal()
-        fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = triangle_radio.checked = carpet_radio.checked = dust_radio.checked = False
-    elif event.name == "dust":
-        cantor_dust()
-        fractal_1_radio.checked = fractal_2_radio.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
-    elif event.name == "fractal_1":
-        fractal_1()
-        dust_radio.checked = fractal_2_radio.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
-    elif event.name == "fractal_2":
-        fractal_2()
-        dust_radio.checked = fractal_1_radio.checked = t_square_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
-    else:
-        t_square()
-        fractal_1_radio.checked = fractal_2_radio.checked = dust_radio.checked = vicsek_radio.checked = triangle_radio.checked = carpet_radio.checked = False
-    #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+class RadioButton:
+    def __init__(self, button_, function_):
+        self._button = button_
+        self._function = function_
+
+    def uncheck(self):
+        self._button.checked = False
+
+    def push(self):
+        self._function()
+        #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+
+    def check(self):
+        self._button.checked = True
+
+    def name(self):
+        return self._button.name
+
+
+class RadioButtons:
+    def __init__(self):
+        self._radio_buttons = []
+        self._selected_button = None
+
+    def add(self, button_, function_):
+        self._radio_buttons.append(RadioButton(button_, function_))
+
+        if (len(self._radio_buttons) % 4) == 0:
+            display.append_to_caption("\n\n")
+
+        if (len(self._radio_buttons)) == 1:
+            self._radio_buttons[0].check()
+            self._selected_button = self._radio_buttons[0]
+
+    def _uncheck_buttons_except(self, button_name):
+        for button_ in self._radio_buttons:
+            if button_.name() != button_name: button_.uncheck()
+
+    def _get_button_by(self, button_name):
+        for button_ in self._radio_buttons:
+            if button_.name() == button_name: return button_
+
+    def toggle(self, event):
+        self._uncheck_buttons_except(event.name)
+        self._selected_button = self._get_button_by(event.name)
+        self._selected_button.push()
 
 frame_rate = 15000
 def change_speed(event):
@@ -203,15 +226,14 @@ def change_speed(event):
     frame_rate = event.value
 
 display.append_to_caption("\n")
-carpet_radio = radio(text="Sierpinski gasket ", checked=True, name="carpet", bind=toggle_fractal)
-vicsek_radio = radio(text="Vicsek fractal ", checked=False, name="vicsek", bind=toggle_fractal)
-triangle_radio = radio(text="Sierpinski triangle ", checked=False, name="triangle", bind=toggle_fractal)
-dust_radio = radio(text="Cantor dust ", checked=False, name="dust", bind=toggle_fractal)
-display.append_to_caption("\n\n")
-
-t_square_radio = radio(text="T-square ", checked=False, name="t_square", bind=toggle_fractal)
-fractal_1_radio = radio(text="Star ", checked=False, name="fractal_1", bind=toggle_fractal)
-fractal_2_radio = radio(text="Flower ", checked=False, name="fractal_2", bind=toggle_fractal)
+radio_buttons = RadioButtons()
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="Sierpinski carpet ", name="carpet"), sierpinski_carpet)
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="Vicsek fractal ", name="vicsek"), vicsek_fractal)
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="Sierpinski triangle ", name="triangle"), sierpinski_triangle)
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="Cantor dust ", name="dust"), cantor_dust)
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="T-square ", name="dust"), t_square)
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="Star ", name="dust"), fractal_1)
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="Flower ", name="dust"), fractal_2)
 
 display.append_to_caption("\n\nAnimation speed")
 _ = slider(min=1000, max=15000, value=15000, bind=change_speed)
