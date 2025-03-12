@@ -9,21 +9,13 @@ title="""Implementation of Reiter's cellular model for <a href="https://patarnot
 """
 
 display = canvas(title=title, width=600, height=600, background = color.gray(0.075), range=30)
-
 number_of_neighbors = 12
-
-
-# cell color (lt. blue-ish)
-# colour = vector(204/255, 1, 1)
-colour = color.yellow
-
 
 def get_pos(idx, width, height, depth, radius=1):
     k = int(idx / (width * height))
     idx -= (k * width * height)
     j = int(idx / width)
     i = idx % width
-    # print(i,j,k)
     x = 2 * i + ((j + k) % 2)
     y = sqrt(3) * (j + (1 / 3) * (k % 2))
     z = ((2 * sqrt(6)) / 3) * k
@@ -31,15 +23,34 @@ def get_pos(idx, width, height, depth, radius=1):
     return vector(x, y, z) * radius
 
 class Cell:
-    def __init__(self, pos, radius):
-        self._sphere = simple_sphere(pos=pos, shininess=0, visible=False, radius=radius)
+    def __init__(self, pos, radius, beta, neighbors, colour=vector(204/255, 1, 1)):
+        self._sphere = simple_sphere(pos=pos, shininess=0, visible=False, radius=radius, color=colour)
+        self._beta = beta
+        self._neighbors = neighbors
+        self._A2 = beta
+        self._A2n = self._A2
+        self._A1 = 0
 
-    def render(self, A, a_min, a_max):
-        norm = (A - a_min) * (1 / (a_max - a_min))
-        self._sphere.color = colour * norm
+    def render(self, a_min, a_max):
+        norm = (self._beta - a_min) * (1 / (a_max - a_min))
+        self._sphere.color *= norm
         self._sphere.opacity = norm - .1
         if norm > .5:
             self._sphere.visible = True
+
+    def neighbors(self):
+        return self._neighbors
+
+    def update(self, gamma, receptive):
+        self._A1 = self.beta() + gamma if receptive else 0
+        self._A2 = 0 if receptive else self.beta()
+
+    def beta(self):
+        return self._beta
+
+    def add_updated_water_and_ice_together(self):
+        self._beta = self._A1 + self._A2n  # add updated water and ice
+        self._A2 = self._A2n  # update water for next step
 
 
 class Snowflake:
@@ -50,21 +61,15 @@ class Snowflake:
 
         # initialize
         for idx in range(width * height * depth):
-            cell = Cell(get_pos(idx, width, height, depth), radius)
-            cell.A = beta
-            cell.A2 = cell.A
-            cell.A2n = cell.A2
-            cell.A1 = 0
-            cell.neighbors = self._get_neighbors(idx)
+            cell = Cell(get_pos(idx, width, height, depth), radius, beta, self._get_neighbors(idx))
             self._cells.append(cell)
-        self._cells[self.center_index()].A = alpha
+        self._cells[self.center_index()]._beta = alpha
 
     def center_index(self):
         width, height, depth = self._width, self._height, self._depth
         return (depth // 2) * (height * width) + (height // 2) * width + (width // 2)
 
     def _get_neighbors(self, idx):
-        # see https://stackoverflow.com/questions/9982458/creating-a-sphere-packing-nearest-neighbor-list-from-integers
         width, height, depth = self._width, self._height, self._depth
         area = width * height
 
@@ -104,22 +109,21 @@ class Snowflake:
         return neighbors
 
     def _diffuse(self, cell):
-        if len(cell.neighbors) != number_of_neighbors:
+        if len(cell.neighbors()) != number_of_neighbors:
             return
-        average = sum([self._cells[neighbor].A2 for neighbor in cell.neighbors]) / number_of_neighbors
-        cell.A2n = .5 * (cell.A2 + average)
+        average = sum([self._cells[neighbor]._A2 for neighbor in cell.neighbors()]) / number_of_neighbors
+        cell._A2n = .5 * (cell._A2 + average)
 
     def _determine_receptive(self, cell):
-        if len(cell.neighbors) != number_of_neighbors:
+        if len(cell.neighbors()) != number_of_neighbors:
             return
         # determine receptive
         receptive = False
-        for neighbor in cell.neighbors:
-            if self._cells[neighbor].A >= self._alpha or cell.A >= self._alpha:
+        for neighbor in cell.neighbors():
+            if self._cells[neighbor].beta() >= self._alpha or cell.beta() >= self._alpha:
                 receptive = True
                 break
-        cell.A1 = cell.A + self._gamma if receptive else 0
-        cell.A2 = 0 if receptive else cell.A
+        cell.update(self._gamma, receptive)
 
     def grow(self):
         for cell in self._cells:
@@ -129,23 +133,22 @@ class Snowflake:
             self._diffuse(cell)
 
         for cell in self._cells:
-            cell.A = cell.A1 + cell.A2n  # add updated water and ice
-            cell.A2 = cell.A2n  # update water for next step
+            cell.add_updated_water_and_ice_together()
 
     def render(self):
-        A_max = -1e30  # -float("inf")
-        A_min = +1e30  # float("inf")
+        a_max = -1e30  # -float("inf")
+        a_min = +1e30  # float("inf")
         for cell in self._cells:
-            if cell.A > A_max:
-                A_max = cell.A
-            if cell.A < A_min:
-                A_min = cell.A
+            if cell.beta() > a_max:
+                a_max = cell.beta()
+            if cell.beta() < a_min:
+                a_min = cell.beta()
         for cell in self._cells:
-            cell.render(cell.A, A_min, A_max)
+            cell.render(a_min, a_max)
 
 
 snowflake = Snowflake()
-for iter in range(15):
+for _ in range(15):
     snowflake.grow()
 
 snowflake.render()
