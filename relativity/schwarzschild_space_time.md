@@ -56,18 +56,18 @@ The application is best described in
 The Schwarzschild metric describes a gravitational field of a non-rotating 
 spherical mass (and without electric charge), see [Wikipedia](https://en.wikipedia.org/wiki/Schwarzschild_metric):
 
-$ds^2=cd\tau^2=\left(1-\dfrac{r_s}{r}\right)c^2dt^2-\left(1-\dfrac{r_s}{r}\right)^{-1}dr^2-r^2d\Omega^2$
+$\begin{equation}ds^2=cd\tau^2=\left(1-\dfrac{r_s}{r}\right)c^2dt^2-\left(1-\dfrac{r_s}{r}\right)^{-1}dr^2-r^2d\Omega^2\end{equation}$
 
 where
 
-$d\Omega^2=\left(d\theta^2 + \sin^2\theta d\phi^2\right) \text{, } r_s=\dfrac{2GM}{c^2}$
+$\begin{equation}d\Omega^2=\left(d\theta^2 + \sin^2\theta d\phi^2\right) \text{, } r_s=\dfrac{2GM}{c^2}\end{equation}$
 
 and $G$ is Newton’s gravitational constant, $c$ the speed of light and $M$ is the 
 mass of the non-rotating spherical object.
 
 When we assume the time to be constant ($dt=0$), we get:
 
-$ds^2 = \dfrac{dr^2}{1 - \dfrac{2GM}{c^2r}} +r^2d\phi^2$
+$\begin{equation}ds^2 = \dfrac{dr^2}{1 - \dfrac{2GM}{c^2r}} +r^2d\phi^2\end{equation}$
 
 Now, according to [Ryston&apos;s article](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049):
 
