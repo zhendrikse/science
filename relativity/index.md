@@ -61,6 +61,25 @@ and only a kind of union of the two will preserve an independent reality.
 </div>
 <p style="clear: both;"></p>
 
+### Lorentz transformation of electromagnetic fields
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+  <figure class="left_image">
+    <a href="field_transform.html">
+      <img alt="Field transformation" src="images/field_transform.png" title="Click to animate"/>
+    </a>
+    <figcaption>Illustration of the 
+    <a href="https://en.wikipedia.org/wiki/Lorentz_transformation">Lorentz transformation</a> 
+    of a magnetic field around a wire.</figcaption>
+  </figure>
+  <figure class="right_image">
+    <!-- RESERVER FOR FUTURE APPLICATION
+      -->
+  </figure>
+</div>
+<p style="clear: both;"></p>
+
 <a name="general_relativity"></a>
 ## General relativity
 <div style="border-top: 2px solid #cccccc"><br/></div>
