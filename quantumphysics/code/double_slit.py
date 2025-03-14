@@ -12,8 +12,8 @@ animation = canvas(title=title, forward=vec(0, 0.85, -0.55), background=color.gr
 wavelength = 1.0
 distant_light(direction=vector(0, -1, 0), color=color.white)
 
-source_1 = sphere(pos=vector(-1, -3, 0), color=color.yellow, radius=0.25)
-source_2 = sphere(pos=vector(1, -3, 0), color=color.yellow, radius=0.25)
+source_1 = sphere(pos=vector(-1, -3, 0), color=color.white, radius=0.25)
+source_2 = sphere(pos=vector(1, -3, 0), color=color.white, radius=0.25)
 
 class InterferencePattern:
     def __init__(self, slit_1_pos, slit_2_pos, dx, x_max):
@@ -27,13 +27,14 @@ class InterferencePattern:
                 path_difference = abs(mag(vertex_.pos - slit_1_pos) - mag(vertex_.pos - slit_2_pos))
                 n = path_difference % wavelength
                 brightness = abs(n - 0.5) / 0.5
-                vertex_.color = vector(0, brightness, 0)
+                vertex_.color = vector(brightness, brightness, 0)
                 vertices.append(vertex_)
 
 dx = 0.1
 x_max = 4
 interference_pattern = InterferencePattern(source_1.pos, source_2.pos, dx, x_max)
 
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 # Now let's shoot particles.
 dt = 0.1
 particles = []
@@ -41,11 +42,11 @@ while len(particles) < 500:
     rate(10)
     r = random()
     if r > 0.90:  # 10% chance
-        particles.append(simple_sphere(pos=source_1.pos, color=color.white, radius=0.04,
+        particles.append(simple_sphere(pos=source_1.pos, color=color.green, radius=0.06,
                                        velocity=vector(0.1 * random(), 1, 0.1 * random())))
     r = random()
     if r > 0.90:  # 10% chance
-        particles.append(simple_sphere(pos=source_2.pos, color=color.white, radius=0.04,
+        particles.append(simple_sphere(pos=source_2.pos, color=color.green, radius=0.06,
                                        velocity=vector(0.1 * random(), 1, 0.1 * random())))
 
     for p in particles:

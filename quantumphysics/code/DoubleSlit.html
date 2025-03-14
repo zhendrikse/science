@@ -1,6 +1,7 @@
 <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
@@ -72,9 +73,9 @@ async function __main__() {
     "13";
     ρσ_interpolate_kwargs.call(this, distant_light, [ρσ_desugar_kwargs({direction: vector(0, 1["-u"]()["*"](1), 0), color: color.white})]);
     "15";
-    source_1 = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](1), 1["-u"]()["*"](3), 0), color: color.yellow, radius: .25})]);
+    source_1 = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](1), 1["-u"]()["*"](3), 0), color: color.white, radius: .25})]);
     "16";
-    source_2 = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1, 1["-u"]()["*"](3), 0), color: color.yellow, radius: .25})]);
+    source_2 = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1, 1["-u"]()["*"](3), 0), color: color.white, radius: .25})]);
     "18";
     function InterferencePattern() {;
     }
@@ -107,7 +108,7 @@ async function __main__() {
                 "29";
                 brightness = abs(n["-"](1["*"](.5)))["/"](.5);
                 "30";
-                vertex_.color = vector(0, brightness, 0);
+                vertex_.color = vector(brightness, brightness, 0);
                 "31";
                 vertices.append(vertex_);
             }
@@ -136,38 +137,40 @@ async function __main__() {
     _GS_1 = new InterferencePattern;
     (await _GS_1.__init__(source_1.pos, source_2.pos, dx, x_max));
     interference_pattern = _GS_1;
-    "38";
-    dt = .1;
+    "37";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "39";
-    particles = ρσ_list_decorate([]);
+    dt = .1;
     "40";
+    particles = ρσ_list_decorate([]);
+    "41";
     while (len(particles)["<"](500)) {
-        "41";
-        (await rate(10));
         "42";
-        r = random();
+        (await rate(10));
         "43";
-        if (r[">"](.9)) {
-            "44";
-            particles.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: source_1.pos, color: color.white, radius: .04, velocity: vector(.1["*"](random()), 1, .1["*"](random()))})]));
-        }
-        "46";
         r = random();
-        "47";
+        "44";
         if (r[">"](.9)) {
-            "48";
-            particles.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: source_2.pos, color: color.white, radius: .04, velocity: vector(.1["*"](random()), 1, .1["*"](random()))})]));
+            "45";
+            particles.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: source_1.pos, color: color.green, radius: .06, velocity: vector(.1["*"](random()), 1, .1["*"](random()))})]));
         }
-        "51";
+        "47";
+        r = random();
+        "48";
+        if (r[">"](.9)) {
+            "49";
+            particles.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: source_2.pos, color: color.green, radius: .06, velocity: vector(.1["*"](random()), 1, .1["*"](random()))})]));
+        }
+        "52";
         var ρσ_Iter3 = particles;
         ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
         for (var ρσ_Index3 of ρσ_Iter3) {
             p = ρσ_Index3;
-            "52";
-            p.pos=p.pos["+"](p.velocity["*"](dt));
             "53";
+            p.pos=p.pos["+"](p.velocity["*"](dt));
+            "54";
             if (p.pos.y[">="](x_max["-"](1["*"](2)["*"](dx)))) {
-                "54";
+                "55";
                 p.velocity = vector(0, 0, 0);
             }
         }
