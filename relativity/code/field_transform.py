@@ -3,7 +3,7 @@ from vpython import canvas, color, cross, vec, vector, cylinder, rate, sphere, c
 
 title = """&#x2022; Motion of a charge in field of current coil as viewed in two different frames with Vpython.
 &#x2022; Based on <a href="http://sites.science.oregonstate.edu/~landaur/Books/Problems/Codes/VPythonCodes/EMrelativisticVp.py">EMrelativisticVp.py</a>
-&#x2022; From the book <a href="https://books.google.nl/books/about/Computational_Problems_for_Physics.html?id=g9tdDwAAQBAJ">Computational Problems for Physics</a> by RH Landau, MJ Paez, and CC Bordeianu.
+&#x2022; From <a href="https://books.google.nl/books/about/Computational_Problems_for_Physics.html?id=g9tdDwAAQBAJ">Computational Problems for Physics</a> by RH Landau, MJ Paez, and CC Bordeianu.
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/field_transform.py">field_transform.py</a>
 
 $\\begin{eqnarray} E'_x &=& E_x, \\ \\ E'_y = \\gamma (E_y - v B_z), \\ \\ E'_z = \\gamma(E_z+v B_y),\\\\  B'_x &=& B_x,\\ \\  B'_y = \\gamma (B_y + vE_z/c^2), \\ \\  B'_z = \\gamma (B_z - vE_y/c^2) \\end{eqnarray}$
@@ -11,7 +11,7 @@ $\\begin{eqnarray} E'_x &=& E_x, \\ \\ E'_y = \\gamma (E_y - v B_z), \\ \\ E'_z 
 """
 
 display_1 = canvas(background = color.gray(0.075), width=600, height=300, range=75, title=title+"System S\n\n")
-display_2 = canvas(background = color.gray(0.075), width=600, height=300, range=75, title=" System S'\n\n")
+display_2 = canvas(background = color.gray(0.075), width=600, height=300, range=75, title="\nSystem S'\n\n")
 
 #graf = curve(color=color.red)
 
