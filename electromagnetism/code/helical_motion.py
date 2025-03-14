@@ -174,35 +174,35 @@ def launch():
 animation.bind("click", launch)
 
 
-def adjust_bfield():
-    magnetic_field.strength_is(b_field_slider.value)
-    b_field_text.text = str(b_field_slider.value) + " Tesla"
+def adjust_bfield(event):
+    magnetic_field.strength_is(event.value)
+    b_field_text.text = str(event.value) + " Tesla"
 
 
 animation.append_to_caption("\n\n")
-b_field_slider = slider(min=1, max=10, step=.5, value=5, bind=adjust_bfield)
+_ = slider(min=1, max=10, step=.5, value=5, bind=adjust_bfield)
 animation.append_to_caption(" B-field Strength = ")
 b_field_text = wtext(text="3 Tesla")
 animation.append_to_caption("\n\n")
 
 
-def adjust_q():
-    proton.charge_is(charge_slide.value)
-    charge_text.text = str(charge_slide.value) + " Coulumbs"
+def adjust_q(event):
+    proton.charge_is(event.value)
+    charge_text.text = str(event.value) + " Coulumbs"
 
 
-charge_slide = slider(min=0, max=1, step=.1, value=.8, bind=adjust_q)
+_ = slider(min=0, max=1, step=.1, value=.8, bind=adjust_q)
 animation.append_to_caption(" Q = ")
 charge_text = wtext(text="0.8 Coulumbs")
 animation.append_to_caption("\n\n")
 
 
-def adjust_angle():
-    proton.angle_is(radians(angle_slider.value))
-    angle_text.text = str(angle_slider.value) + " degrees"
+def adjust_angle(event):
+    proton.angle_is(radians(event.value))
+    angle_text.text = str(event.value) + " degrees"
 
 
-angle_slider = slider(min=0, max=90, step=1, value=10, bind=adjust_angle)
+_ = slider(min=0, max=90, step=1, value=10, bind=adjust_angle)
 animation.append_to_caption(" Angle = ")
 angle_text = wtext(text="10 degrees")
 
