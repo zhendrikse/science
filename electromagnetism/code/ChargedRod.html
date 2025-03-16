@@ -1,0 +1,404 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, scale_electric, scale_magnetic, oofpez, muzofp, c, dt, obj, _GS_1, field_arrows, charged_rod, popup, _;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "8";
+    title = "&#x2022; Based on <a href=\"https://www.glowscript.org/#/user/wlane/folder/PHYS152/program/MovingLineOfCharge\">MovingLineOfCharge<\/a> by Ksenja Llazar and Alyssa McCaskey\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electromagnetism/code/charged_rod.py\">charged_rod.py</a>\n\n";
+    "10";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(.15, 1["-u"]()["*"](.4), 1["-u"]()["*"](.9)), range: 1.4, title: title, width: 600, height: 600, background: color.gray(.075), center: vector(0, .5, 0)})]);
+    "12";
+    scale_electric = .002;
+    "13";
+    scale_magnetic = 2e15;
+    "14";
+    oofpez = 9e9;
+    "15";
+    muzofp = 1e-7;
+    "16";
+    c = 3e8;
+    "19";
+    function PointCharge() {;
+    }
+    PointCharge.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var charge = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var radius = ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[2];
+        var mass = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[3];
+        var colour = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[4];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
+            mass = ρσ_kwargs_obj.mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        "21";
+        self._charge = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, mass: mass, radius: radius, color: colour})]);
+        "22";
+        self._velocity = vector(0, .2, 0);
+        "23";
+        self._q = charge;
+    };
+    if (!PointCharge.prototype.__init__.__defaults__) Object.defineProperties(PointCharge.prototype.__init__, {
+        __defaults__ : {value: {mass:1.67e-27, colour:color.yellow}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "charge", "radius", "mass", "colour"]},
+        __module__ : {value: null}
+    });
+    PointCharge.__argnames__ = PointCharge.prototype.__init__.__argnames__;
+    PointCharge.__handles_kwarg_interpolation__ = PointCharge.prototype.__init__.__handles_kwarg_interpolation__;
+    PointCharge.prototype.update = async function update(dt) {
+        var self = this;
+        "26";
+        self._charge.pos=self._charge.pos["+"](self._velocity["*"](dt));
+    };
+    if (!PointCharge.prototype.update.__argnames__) Object.defineProperties(PointCharge.prototype.update, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    PointCharge.prototype.electric_force_at = async function electric_force_at(position) {
+        var self = this;
+        var ρσ_ls, r;
+        "29";
+        r = position["-"](1["*"](self._charge.pos));
+        "30";
+        return oofpez["*"](self._q)["/"](Math.pow(mag(r), 2))["*"](hat(r))["*"](1["-"](1["*"](Math.pow(mag(self._velocity), 2))["/"](Math.pow(c, 2))));
+    };
+    if (!PointCharge.prototype.electric_force_at.__argnames__) Object.defineProperties(PointCharge.prototype.electric_force_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    PointCharge.prototype.magnetic_force_at = async function magnetic_force_at(position) {
+        var self = this;
+        var ρσ_ls, r;
+        "33";
+        r = position["-"](1["*"](self._charge.pos));
+        "34";
+        return muzofp["*"](self._q)["*"](cross(self._velocity, hat(r)))["/"](Math.pow(mag(r), 2));
+    };
+    if (!PointCharge.prototype.magnetic_force_at.__argnames__) Object.defineProperties(PointCharge.prototype.magnetic_force_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    PointCharge.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    PointCharge.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(PointCharge.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "37";
+    function ChargedRod() {;
+    }
+    ChargedRod.prototype.__init__ = async function __init__() {
+        var self = this;
+        var length = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.length : arguments[0];
+        var num_charges = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.num_charges : arguments[1];
+        var charge = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.charge : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "length")){
+            length = ρσ_kwargs_obj.length;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "num_charges")){
+            num_charges = ρσ_kwargs_obj.num_charges;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "charge")){
+            charge = ρσ_kwargs_obj.charge;
+        }
+        var ρσ_ls, dy, y0, _GS_1, i;
+        "39";
+        self._slices = ρσ_list_decorate([]);
+        "40";
+        dy = length["/"](num_charges);
+        "41";
+        y0 = .5["*"](1["-u"]()["*"](length)["/"](2)["+"](dy));
+        "42";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](num_charges); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "43";
+            _GS_1 = new PointCharge;
+            (await _GS_1.__init__(vector(0, y0["+"](i["*"](dy)), 0), charge["/"](num_charges), dy["/"](2)));
+            self._slices.append(_GS_1);
+        }
+    };
+    if (!ChargedRod.prototype.__init__.__defaults__) Object.defineProperties(ChargedRod.prototype.__init__, {
+        __defaults__ : {value: {length:1, num_charges:10, charge:1e-9}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["length", "num_charges", "charge"]},
+        __module__ : {value: null}
+    });
+    ChargedRod.__argnames__ = ChargedRod.prototype.__init__.__argnames__;
+    ChargedRod.__handles_kwarg_interpolation__ = ChargedRod.prototype.__init__.__handles_kwarg_interpolation__;
+    ChargedRod.prototype.update = async function update(dt) {
+        var self = this;
+        var ρσ_ls, point_charge;
+        "46";
+        var ρσ_Iter2 = self._slices;
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            point_charge = ρσ_Index2;
+            "47";
+            (await point_charge.update(dt));
+        }
+    };
+    if (!ChargedRod.prototype.update.__argnames__) Object.defineProperties(ChargedRod.prototype.update, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    ChargedRod.prototype.electric_field_at = async function electric_field_at(position) {
+        var self = this;
+        var ρσ_ls, net_field, charge;
+        "50";
+        net_field = vector(0, 0, 0);
+        "51";
+        var ρσ_Iter3 = self._slices;
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            charge = ρσ_Index3;
+            "52";
+            net_field=net_field["+"]((await charge.electric_force_at(position)));
+        }
+        "53";
+        return net_field;
+    };
+    if (!ChargedRod.prototype.electric_field_at.__argnames__) Object.defineProperties(ChargedRod.prototype.electric_field_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    ChargedRod.prototype.magnetic_field_at = async function magnetic_field_at(position) {
+        var self = this;
+        var ρσ_ls, net_field, charge;
+        "56";
+        net_field = vector(0, 0, 0);
+        "57";
+        var ρσ_Iter4 = self._slices;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            charge = ρσ_Index4;
+            "58";
+            net_field=net_field["+"]((await charge.magnetic_force_at(position)));
+        }
+        "59";
+        return net_field;
+    };
+    if (!ChargedRod.prototype.magnetic_field_at.__argnames__) Object.defineProperties(ChargedRod.prototype.magnetic_field_at, {
+        __argnames__ : {value: ["position"]},
+        __module__ : {value: null}
+    });
+    ChargedRod.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    ChargedRod.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(ChargedRod.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "62";
+    function FieldArrows() {;
+    }
+    FieldArrows.prototype.__init__ = async function __init__() {
+        var self = this;
+        var radius = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        var ρσ_ls, ρσ_unpack, y;
+        "64";
+        ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([])];
+        self._electric_field = ρσ_unpack[0];
+        self._magnetic_field = ρσ_unpack[1];
+        self._positions = ρσ_unpack[2];
+        "66";
+        var ρσ_Iter5 = ρσ_list_decorate([ 1["-u"]()["*"](.5), 1["-u"]()["*"](.3), 0, .3, .5 ]);
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            y = ρσ_Index5;
+            "67";
+            (await self._create_arrows(y, radius));
+        }
+    };
+    if (!FieldArrows.prototype.__init__.__defaults__) Object.defineProperties(FieldArrows.prototype.__init__, {
+        __defaults__ : {value: {radius:.15}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["radius"]},
+        __module__ : {value: null}
+    });
+    FieldArrows.__argnames__ = FieldArrows.prototype.__init__.__argnames__;
+    FieldArrows.__handles_kwarg_interpolation__ = FieldArrows.prototype.__init__.__handles_kwarg_interpolation__;
+    FieldArrows.prototype._create_arrows = async function _create_arrows(y, radius) {
+        var self = this;
+        var ρσ_ls, theta, position;
+        "70";
+        theta = 0;
+        "71";
+        while (theta["<"](2["*"](pi))) {
+            "72";
+            position = vector(radius["*"](cos(theta)), y, radius["*"](sin(theta)));
+            "73";
+            self._positions.append(position);
+            "74";
+            self._electric_field.append(ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, color: color.red})]));
+            "75";
+            self._magnetic_field.append(ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position, color: color.blue})]));
+            "76";
+            theta=theta["+"](pi["/"](6));
+        }
+    };
+    if (!FieldArrows.prototype._create_arrows.__argnames__) Object.defineProperties(FieldArrows.prototype._create_arrows, {
+        __argnames__ : {value: ["y", "radius"]},
+        __module__ : {value: null}
+    });
+    FieldArrows.prototype.update = async function update(rod) {
+        var self = this;
+        var ρσ_ls, j;
+        "79";
+        var ρσ_Iter6 = range(len(self._positions));
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            j = ρσ_Index6;
+            "80";
+            ρσ_getitem(self._electric_field, j).axis = scale_electric["*"]((await rod.electric_field_at(ρσ_getitem(self._positions, j))));
+            "81";
+            ρσ_getitem(self._magnetic_field, j).axis = scale_magnetic["*"]((await rod.magnetic_field_at(ρσ_getitem(self._positions, j))));
+        }
+    };
+    if (!FieldArrows.prototype.update.__argnames__) Object.defineProperties(FieldArrows.prototype.update, {
+        __argnames__ : {value: ["rod"]},
+        __module__ : {value: null}
+    });
+    FieldArrows.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    FieldArrows.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(FieldArrows.prototype, "__bases__", {value: []});
+
+
+
+
+    "85";
+    dt = .01;
+    "86";
+    while (true) {
+        "87";
+        var ρσ_Iter7 = display.objects;
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            obj = ρσ_Index7;
+            "88";
+            obj.visible = false;
+        }
+        "90";
+        _GS_1 = new FieldArrows;
+        (await _GS_1.__init__());
+        field_arrows = _GS_1;
+        "91";
+        _GS_1 = new ChargedRod;
+        (await _GS_1.__init__());
+        charged_rod = _GS_1;
+        "92";
+        (await field_arrows.update(charged_rod));
+        "93";
+        popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({text: "Click mouse to start", pos: vector(0, 1, 0)})]);
+        "95";
+        (await display.waitfor("click"));
+        "96";
+        popup.visible = false;
+        "98";
+        for (var ρσ_Index8 = 0; ρσ_Index8["<"](500); ρσ_Index8++) {
+            _ = ρσ_Index8;
+            "99";
+            (await rate(.5["/"](dt)));
+            "100";
+            (await charged_rod.update(dt));
+            "101";
+            (await field_arrows.update(charged_rod));
+        }
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

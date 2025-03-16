@@ -110,7 +110,7 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
 <p style="clear: both;"></p>
 
 
-### Charged particle in electric field
+### Charged particle in electric field & moving charged rod
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -121,8 +121,10 @@ Nothing is too wonderful to be true if it be consistent with the laws of nature.
   <figcaption>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="charged_rod.html">
+    <img alt="Charged rod" src="images/charged_rod.png" title="Click to animate"/>
+  </a>
+  <figcaption>Electric and magnetic fields around a moving charged rod.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
