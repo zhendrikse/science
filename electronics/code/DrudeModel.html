@@ -1,0 +1,526 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var field;
+ρσ_modules.pythonize = {};
+ρσ_modules.random = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+(function(){
+    var ρσ_seed_state, ρσ_get_random_byte;
+    ρσ_seed_state = (function(){
+        var ρσ_d = {};
+        ρσ_d["key"] = ρσ_list_decorate([]);
+        ρσ_d["key_i"] = 0;
+        ρσ_d["key_j"] = 0;
+        return ρσ_d;
+    }).call(this);
+    ρσ_get_random_byte = (function() {
+        var ρσ_anonfunc = function () {
+            var ρσ_unpack;
+            ρσ_seed_state.key_i = (ρσ_seed_state.key_i + 1) % 256;
+            ρσ_seed_state.key_j = (ρσ_seed_state.key_j + (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_i, ρσ_expr_temp)]) % 256;
+            ρσ_unpack = [(ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_j, ρσ_expr_temp)],
+            (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_i, ρσ_expr_temp)]];
+            (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_i, ρσ_expr_temp)] = ρσ_unpack[0];
+            (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_j, ρσ_expr_temp)] = ρσ_unpack[1];
+            return (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(((ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_i, ρσ_expr_temp)] + (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_j, ρσ_expr_temp)]) % 256, ρσ_expr_temp)];
+        };
+        if (!ρσ_anonfunc.__module__) Object.defineProperties(ρσ_anonfunc, {
+            __module__ : {value: "random"}
+        });
+        return ρσ_anonfunc;
+    })();
+    function seed() {
+        var x = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? seed.__defaults__.x : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "x")){
+            x = ρσ_kwargs_obj.x;
+        }
+        var i, j, ρσ_unpack;
+        ρσ_seed_state.key_i = ρσ_seed_state.key_j = 0;
+        if (typeof x === "number") {
+            x = x.toString();
+        } else if (typeof x !== "string") {
+            throw new TypeError("unhashable type: '" + typeof x + "'");
+        }
+        for (var ρσ_Index1 = 0; ρσ_Index1 < 256; ρσ_Index1++) {
+            i = ρσ_Index1;
+            (ρσ_expr_temp = ρσ_seed_state.key)[(typeof i === "number" && i < 0) ? ρσ_expr_temp.length + i : i] = i;
+        }
+        j = 0;
+        for (var ρσ_Index2 = 0; ρσ_Index2 < 256; ρσ_Index2++) {
+            i = ρσ_Index2;
+            j = (j + (ρσ_expr_temp = ρσ_seed_state.key)[(typeof i === "number" && i < 0) ? ρσ_expr_temp.length + i : i] + x.charCodeAt(i % x.length)) % 256;
+            ρσ_unpack = [(ρσ_expr_temp = ρσ_seed_state.key)[(typeof j === "number" && j < 0) ? ρσ_expr_temp.length + j : j],
+            (ρσ_expr_temp = ρσ_seed_state.key)[(typeof i === "number" && i < 0) ? ρσ_expr_temp.length + i : i]];
+            (ρσ_expr_temp = ρσ_seed_state.key)[(typeof i === "number" && i < 0) ? ρσ_expr_temp.length + i : i] = ρσ_unpack[0];
+            (ρσ_expr_temp = ρσ_seed_state.key)[(typeof j === "number" && j < 0) ? ρσ_expr_temp.length + j : j] = ρσ_unpack[1];
+        }
+    };
+    if (!seed.__defaults__) Object.defineProperties(seed, {
+        __defaults__ : {value: {x:(new Date).getTime()}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["x"]},
+        __module__ : {value: "random"}
+    });
+
+    seed();
+    function random() {
+        var n, m, i;
+        n = 0;
+        m = 1;
+        for (var ρσ_Index3 = 0; ρσ_Index3 < 8; ρσ_Index3++) {
+            i = ρσ_Index3;
+            n += ρσ_get_random_byte() * m;
+            m *= 256;
+        }
+        return n / 0x10000000000000000;
+    };
+    if (!random.__module__) Object.defineProperties(random, {
+        __module__ : {value: "random"}
+    });
+
+    function randrange() {
+        var start, stop, step, width, n;
+        if (arguments.length === 1) {
+            return randbelow(int(arguments[0]));
+        }
+        start = int(arguments[0]);
+        stop = int(arguments[1]);
+        if (arguments.length < 3) {
+            step = 1;
+        } else {
+            step = int(arguments[2]);
+        }
+        width = stop - start;
+        if (step === 1) {
+            if (width > 0) {
+                return start + randbelow(width);
+            }
+            throw new ValueError("empty range for randrange()");
+        }
+        if (step > 0) {
+            n = Math.floor((width + step - 1) / step);
+        } else if (step < 0) {
+            n = Math.floor((width + step + 1) / step);
+        } else {
+            throw new ValueError("zero step for randrange()");
+        }
+        if (n <= 0) {
+            throw new ValueError("empty range in randrange(" + ρσ_str.format("{}", start) + ", " + ρσ_str.format("{}", stop) + ", " + ρσ_str.format("{}", step) + ")");
+        }
+        return start + step * randbelow(n);
+    };
+    if (!randrange.__module__) Object.defineProperties(randrange, {
+        __module__ : {value: "random"}
+    });
+
+    function randint(a, b) {
+        return int(random() * (b - a + 1) + a);
+    };
+    if (!randint.__argnames__) Object.defineProperties(randint, {
+        __argnames__ : {value: ["a", "b"]},
+        __module__ : {value: "random"}
+    });
+
+    function uniform(a, b) {
+        return random() * (b - a) + a;
+    };
+    if (!uniform.__argnames__) Object.defineProperties(uniform, {
+        __argnames__ : {value: ["a", "b"]},
+        __module__ : {value: "random"}
+    });
+
+    function randbelow(n) {
+        return Math.floor(random() * n);
+    };
+    if (!randbelow.__argnames__) Object.defineProperties(randbelow, {
+        __argnames__ : {value: ["n"]},
+        __module__ : {value: "random"}
+    });
+
+    function choice(seq) {
+        if (seq.length > 0) {
+            return seq[ρσ_bound_index(randbelow(seq.length), seq)];
+        } else {
+            throw new IndexError;
+        }
+    };
+    if (!choice.__argnames__) Object.defineProperties(choice, {
+        __argnames__ : {value: ["seq"]},
+        __module__ : {value: "random"}
+    });
+
+    function shuffle() {
+        var x = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var random_f = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? shuffle.__defaults__.random_f : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length-1];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "random_f")){
+            random_f = ρσ_kwargs_obj.random_f;
+        }
+        var j, ρσ_unpack, i;
+        for (var ρσ_Index4 = 0; ρσ_Index4 < x.length; ρσ_Index4++) {
+            i = ρσ_Index4;
+            j = Math.floor(random_f() * (i + 1));
+            ρσ_unpack = [x[(typeof j === "number" && j < 0) ? x.length + j : j], x[(typeof i === "number" && i < 0) ? x.length + i : i]];
+            x[(typeof i === "number" && i < 0) ? x.length + i : i] = ρσ_unpack[0];
+            x[(typeof j === "number" && j < 0) ? x.length + j : j] = ρσ_unpack[1];
+        }
+        return x;
+    };
+    if (!shuffle.__defaults__) Object.defineProperties(shuffle, {
+        __defaults__ : {value: {random_f:random}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["x", "random_f"]},
+        __module__ : {value: "random"}
+    });
+
+    function sample(population, k) {
+        var x, j, ρσ_unpack, i;
+        x = population.slice();
+        for (var ρσ_Index5 = population.length - 1; ρσ_Index5 > population.length - k - 1; ρσ_Index5-=1) {
+            i = ρσ_Index5;
+            j = Math.floor(random() * (i + 1));
+            ρσ_unpack = [x[(typeof j === "number" && j < 0) ? x.length + j : j], x[(typeof i === "number" && i < 0) ? x.length + i : i]];
+            x[(typeof i === "number" && i < 0) ? x.length + i : i] = ρσ_unpack[0];
+            x[(typeof j === "number" && j < 0) ? x.length + j : j] = ρσ_unpack[1];
+        }
+        return x.slice(population.length - k);
+    };
+    if (!sample.__argnames__) Object.defineProperties(sample, {
+        __argnames__ : {value: ["population", "k"]},
+        __module__ : {value: "random"}
+    });
+
+    ρσ_modules.random.ρσ_seed_state = ρσ_seed_state;
+    ρσ_modules.random.ρσ_get_random_byte = ρσ_get_random_byte;
+    ρσ_modules.random.seed = seed;
+    ρσ_modules.random.random = random;
+    ρσ_modules.random.randrange = randrange;
+    ρσ_modules.random.randint = randint;
+    ρσ_modules.random.uniform = uniform;
+    ρσ_modules.random.randbelow = randbelow;
+    ρσ_modules.random.choice = choice;
+    ρσ_modules.random.shuffle = shuffle;
+    ρσ_modules.random.sample = sample;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, x_versus_time, field, electrons, _GS_1, _, wire, dt, t, pos;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    var uniform = ρσ_modules.random.uniform;
+
+    "9";
+    title = "&#x2022; Original code by <a href=\"https://www.youtube.com/@LetsCodePhysics\">Let&apos;s code physics<\/a>.\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electronics/code/drude_model.py\">drude_model.py</a>\n\n";
+    "11";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), width: 600, title: title})]);
+    "13";
+    x_versus_time = ρσ_list_decorate([]);
+    "14";
+    x_versus_time.append(ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.red})]));
+    "15";
+    x_versus_time.append(ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.green})]));
+    "18";
+    function Wire() {;
+    }
+    Wire.prototype.__init__ = async function __init__(position, length, width, direction, resistivity, electrons) {
+        var self = this;
+        "20";
+        self._electron_list = electrons;
+        "21";
+        self._size = ((direction === "up" || typeof direction === "object" && ρσ_equals(direction, "up")) || (direction === "down" || typeof direction === "object" && ρσ_equals(direction, "down")) || (direction === "vertical" || typeof direction === "object" && ρσ_equals(direction, "vertical"))) ? vector(width, length, width) : vector(length, width, width);
+        "22";
+        self._object = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({size: self._size, pos: position, opacity: .5})]);
+        "23";
+        self._top = position.y["+"](.5["*"](self._object.size.y));
+        "24";
+        self._bottom = position.y["-"](1["*"](.5)["*"](self._object.size.y));
+        "25";
+        self._right = position.x["+"](.5["*"](self._object.size.x));
+        "26";
+        self._left = position.x["-"](1["*"](.5)["*"](self._object.size.x));
+        "27";
+        self._resistivity = resistivity;
+        "31";
+        self._scattering_time = 1["/"](1["*"](resistivity));
+    };
+    if (!Wire.prototype.__init__.__argnames__) Object.defineProperties(Wire.prototype.__init__, {
+        __argnames__ : {value: ["position", "length", "width", "direction", "resistivity", "electrons"]},
+        __module__ : {value: null}
+    });
+    Wire.__argnames__ = Wire.prototype.__init__.__argnames__;
+    Wire.__handles_kwarg_interpolation__ = Wire.prototype.__init__.__handles_kwarg_interpolation__;
+    Wire.prototype.move_electrons = async function move_electrons(electric_field, dt) {
+        var self = this;
+        var ρσ_ls, average_position, scattered, electron;
+        "34";
+        average_position = vector(0, 0, 0);
+        "35";
+        var ρσ_Iter6 = self._electron_list;
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            electron = ρσ_Index6;
+            "36";
+            scattered = (await uniform(0, 1));
+            "37";
+            scattered = scattered["<"](dt["/"](self._scattering_time));
+            "38";
+            (await electron.update_velocity(scattered, electric_field, dt));
+            "40";
+            if ((await electron.pos()).x[">"](self._right) && (await electron.velocity()).x[">"](0) || (await electron.pos()).x["<"](self._left) && (await electron.velocity()).x["<"](0)) {
+                "41";
+                (await electron.reverse_x());
+                "42";
+            }
+            if ((await electron.pos()).y[">"](self._top) && (await electron.velocity()).y[">"](0) || (await electron.pos()).y["<"](self._bottom) && (await electron.velocity()).y["<"](0)) {
+                "43";
+                (await electron.reverse_y());
+            }
+            "45";
+            (await electron.update_position(dt));
+            "46";
+            average_position=average_position["+"]((await electron.pos()));
+        }
+        "48";
+        return average_position["/"](len(self._electron_list));
+    };
+    if (!Wire.prototype.move_electrons.__argnames__) Object.defineProperties(Wire.prototype.move_electrons, {
+        __argnames__ : {value: ["electric_field", "dt"]},
+        __module__ : {value: null}
+    });
+    Wire.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Wire.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Wire.prototype, "__bases__", {value: []});
+
+
+
+    "50";
+    function Electron() {;
+    }
+    Electron.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var colour = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[1];
+        var radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        "52";
+        self._particle = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, color: colour, radius: radius})]);
+        "53";
+        self._speed = 1;
+        "54";
+        self._velocity = vector(.1, 0, 0);
+        "55";
+        self._in_wire = 0;
+    };
+    if (!Electron.prototype.__init__.__defaults__) Object.defineProperties(Electron.prototype.__init__, {
+        __defaults__ : {value: {colour:color.green, radius:.05}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "colour", "radius"]},
+        __module__ : {value: null}
+    });
+    Electron.__argnames__ = Electron.prototype.__init__.__argnames__;
+    Electron.__handles_kwarg_interpolation__ = Electron.prototype.__init__.__handles_kwarg_interpolation__;
+    Electron.prototype.update_velocity = async function update_velocity(scattered, electric_field, dt) {
+        var self = this;
+        var ρσ_ls, angle;
+        "58";
+        if (scattered) {
+            "59";
+            angle = (await uniform(0, 2["*"](pi)));
+            "60";
+            self._velocity = self._speed["*"](vector(cos(angle), sin(angle), 0));
+            "61";
+        } else {
+            "62";
+            self._velocity=self._velocity["+"](electric_field["*"](dt));
+        }
+    };
+    if (!Electron.prototype.update_velocity.__argnames__) Object.defineProperties(Electron.prototype.update_velocity, {
+        __argnames__ : {value: ["scattered", "electric_field", "dt"]},
+        __module__ : {value: null}
+    });
+    Electron.prototype.update_position = async function update_position(dt) {
+        var self = this;
+        "65";
+        self._particle.pos=self._particle.pos["+"](self._velocity["*"](dt));
+    };
+    if (!Electron.prototype.update_position.__argnames__) Object.defineProperties(Electron.prototype.update_position, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Electron.prototype.pos = async function pos() {
+        var self = this;
+        "68";
+        return self._particle.pos;
+    };
+    if (!Electron.prototype.pos.__module__) Object.defineProperties(Electron.prototype.pos, {
+        __module__ : {value: null}
+    });
+    Electron.prototype.velocity = async function velocity() {
+        var self = this;
+        "71";
+        return self._velocity;
+    };
+    if (!Electron.prototype.velocity.__module__) Object.defineProperties(Electron.prototype.velocity, {
+        __module__ : {value: null}
+    });
+    Electron.prototype.reverse_x = async function reverse_x() {
+        var self = this;
+        "74";
+        self._velocity.x=self._velocity.x["*"](1["-u"]()["*"](1));
+    };
+    if (!Electron.prototype.reverse_x.__module__) Object.defineProperties(Electron.prototype.reverse_x, {
+        __module__ : {value: null}
+    });
+    Electron.prototype.reverse_y = async function reverse_y() {
+        var self = this;
+        "77";
+        self._velocity.y=self._velocity.y["*"](1["-u"]()["*"](1));
+    };
+    if (!Electron.prototype.reverse_y.__module__) Object.defineProperties(Electron.prototype.reverse_y, {
+        __module__ : {value: null}
+    });
+    Electron.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Electron.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Electron.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+    "79";
+    field = vector(.5, 0, 0);
+    "80";
+    electrons = ρσ_list_decorate([]);
+    "81";
+    for (var ρσ_Index7 = 0; ρσ_Index7["<"](30); ρσ_Index7++) {
+        _ = ρσ_Index7;
+        "82";
+        _GS_1 = new Electron;
+        (await _GS_1.__init__(vector(0, 0, 0)));
+        electrons=electrons["+"](ρσ_list_decorate([ _GS_1 ]));
+    }
+    "83";
+    _GS_1 = new Wire;
+    (await _GS_1.__init__(vector(0, 0, 0), 10, 1, "horizontal", 1, electrons));
+    wire = _GS_1;
+    "85";
+    async function modify_electric_field(event) {
+        "86";
+        "87";
+        field = vector(event.value, 0, 0);
+    };
+    if (!modify_electric_field.__argnames__) Object.defineProperties(modify_electric_field, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "89";
+    display.append_to_caption("\nElectric field");
+    "90";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .5, bind: modify_electric_field})]);
+    "91";
+    display.append_to_caption("\n\n");
+    "93";
+    dt = .01;
+    "94";
+    t = 0;
+    "95";
+    while (true) {
+        "96";
+        (await rate(1["/"](dt)));
+        "97";
+        pos = (await wire.move_electrons(field, dt));
+        "98";
+        ρσ_getitem(x_versus_time, 0).plot(t, pos.x);
+        "99";
+        t=t["+"](dt);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
