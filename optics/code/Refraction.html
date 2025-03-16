@@ -1,0 +1,611 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var ang1, the_rate, ang2;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, tan, acos, atan, atan2, exp, log, pow, factorial, combin, text, download, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, canvas_width, canvas_height, initial_range, display, lambda_red, lambda_blue, initial_angle, initial_rate, the_rate, dt, n1, n2, c, ang1, med_fac, med_thick, medium2, v1, v2, n12, ang2, rad_fac, shift_fac, _GS_1, rays, wave_front, dang, ang_lim, _, lc_radio;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; <a href=\"https://glowscript.org/#/user/owendix/folder/Interactives/program/RefractionRaysandWavefrontInteractive\">Original code<\/a> by <a href=\"https://github.com/owendix\">Owen Dix</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/optics/code/refraction.py\">refraction.py</a>\n\n";
+    "9";
+    canvas_width = 600;
+    "10";
+    canvas_height = 9["/"](16)["*"](canvas_width);
+    "11";
+    initial_range = 1;
+    "12";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: canvas_width, height: canvas_height, range: initial_range, title: title})]);
+    "14";
+    lambda_red = 750;
+    "15";
+    lambda_blue = 380;
+    "18";
+    initial_angle = 45;
+    "19";
+    initial_rate = 500;
+    "20";
+    the_rate = initial_rate;
+    "21";
+    dt = .001;
+    "23";
+    n1 = 1;
+    "24";
+    n2 = 1.5;
+    "25";
+    c = 1;
+    "27";
+    ang1 = (await radians(initial_angle));
+    "28";
+    med_fac = 5;
+    "29";
+    med_thick = med_fac["*"](initial_range);
+    "30";
+    medium2 = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(.5["*"](med_thick), 0, 1["-u"]()["*"](.25)["*"](med_thick)), axis: vec(1, 0, 0), length: med_thick, width: med_thick, height: med_thick, color: vec(.75, .75, 1), opacity: .25})]);
+    "33";
+    async function wavelength_to_rgb(wavelength) {
+        var ρσ_ls, gamma, red, green, blue, attenuation;
+        "39";
+        gamma = .8;
+        "40";
+        red = green = blue = 0;
+        "41";
+        if (380["<="](wavelength) && wavelength["<="](440)) {
+            "42";
+            attenuation = .3["+"](.7["*"](wavelength["-"](1["*"](lambda_blue)))["/"](440["-"](1["*"](lambda_blue))));
+            "43";
+            red = Math.pow((1["-u"]()["*"](wavelength["-"](1["*"](440)))["/"](440["-"](1["*"](lambda_blue)))["*"](attenuation)), gamma);
+            "44";
+            blue = Math.pow((1["*"](attenuation)), gamma);
+            "45";
+        } else if (440["<="](wavelength) && wavelength["<="](490)) {
+            "46";
+            green = Math.pow((wavelength["-"](1["*"](440))["/"](490["-"](1["*"](440)))), gamma);
+            "47";
+            blue = 1;
+            "48";
+        } else if (490["<="](wavelength) && wavelength["<="](510)) {
+            "49";
+            green = 1;
+            "50";
+            blue = Math.pow((1["-u"]()["*"](wavelength["-"](1["*"](510)))["/"](510["-"](1["*"](490)))), gamma);
+            "51";
+        } else if (510["<="](wavelength) && wavelength["<="](580)) {
+            "52";
+            red = Math.pow((wavelength["-"](1["*"](510))["/"](580["-"](1["*"](510)))), gamma);
+            "53";
+            green = 1;
+            "54";
+        } else if (580["<="](wavelength) && wavelength["<="](645)) {
+            "55";
+            red = 1;
+            "56";
+            green = Math.pow((1["-u"]()["*"](wavelength["-"](1["*"](645)))["/"](645["-"](1["*"](580)))), gamma);
+            "57";
+        } else if (645["<="](wavelength) && wavelength["<="](lambda_red)) {
+            "58";
+            attenuation = .3["+"](.7["*"](lambda_red["-"](1["*"](wavelength)))["/"](lambda_red["-"](1["*"](645))));
+            "59";
+            red = Math.pow((1["*"](attenuation)), gamma);
+        }
+        "61";
+        return vec(red, green, blue);
+    };
+    if (!wavelength_to_rgb.__argnames__) Object.defineProperties(wavelength_to_rgb, {
+        __argnames__ : {value: ["wavelength"]},
+        __module__ : {value: null}
+    });
+
+    "64";
+    v1 = c["/"](n1);
+    "65";
+    v2 = c["/"](n2);
+    "67";
+    n12 = n1["/"](n2);
+    "68";
+    ang2 = asin(n12["*"](sin(ang1)));
+    "70";
+    rad_fac = .001;
+    "71";
+    shift_fac = 100;
+    "73";
+    function Rays() {;
+    }
+    Rays.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ray_count = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.ray_count : arguments[0];
+        var angle = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.angle : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "ray_count")){
+            ray_count = ρσ_kwargs_obj.ray_count;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "angle")){
+            angle = ρσ_kwargs_obj.angle;
+        }
+        var ρσ_ls, ray_shifts, position, radius, i;
+        "75";
+        self._rays = ρσ_list_decorate([]);
+        "76";
+        self._ray_count = ray_count;
+        "77";
+        if (ray_count[">"](10)) {
+            "78";
+            self._ray_count = 10;
+            "79";
+        } else if (ray_count["<"](1)) {
+            "80";
+            self._ray_count = 1;
+        }
+        "82";
+        angle = (await radians(angle));
+        "83";
+        ray_shifts = (await self.ray_shifts(angle));
+        "84";
+        var ρσ_Iter1 = range(len(ray_shifts));
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            i = ρσ_Index1;
+            "85";
+            position = med_thick["*"](vec(1["-u"]()["*"](cos(angle)), 1["-u"]()["*"](sin(angle)), 0))["+"](ρσ_getitem(ray_shifts, i));
+            "86";
+            radius = rad_fac["*"](med_thick);
+            "87";
+            self._rays.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, color: color.white, make_trail: true, trail_radius: radius})]));
+        }
+    };
+    if (!Rays.prototype.__init__.__defaults__) Object.defineProperties(Rays.prototype.__init__, {
+        __defaults__ : {value: {ray_count:6, angle:45}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["ray_count", "angle"]},
+        __module__ : {value: null}
+    });
+    Rays.__argnames__ = Rays.prototype.__init__.__argnames__;
+    Rays.__handles_kwarg_interpolation__ = Rays.prototype.__init__.__handles_kwarg_interpolation__;
+    Rays.prototype.ray_shifts = async function ray_shifts(angle) {
+        var self = this;
+        var ρσ_ls, Nfacs;
+        "90";
+        Nfacs = range(1["-u"]()["*"](int(self._ray_count["-"](1["*"](1))["/"](2))), int(self._ray_count["/"](2))["+"](1));
+        "91";
+        return (function() {
+            var ρσ_Iter = Nfacs, ρσ_Result = [], Nfac;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                Nfac = ρσ_Index;
+                ρσ_Result.push(Nfac["*"](shift_fac)["*"](rad_fac)["*"](vec(1["-u"]()["*"](sin(angle)), cos(angle), 0)));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+    };
+    if (!Rays.prototype.ray_shifts.__argnames__) Object.defineProperties(Rays.prototype.ray_shifts, {
+        __argnames__ : {value: ["angle"]},
+        __module__ : {value: null}
+    });
+    Rays.prototype.change_color_to = async function change_color_to(colour) {
+        var self = this;
+        var ρσ_ls, ray;
+        "94";
+        var ρσ_Iter2 = self._rays;
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            ray = ρσ_Index2;
+            "95";
+            ray.color = colour;
+            "96";
+            ray.trail_color = colour;
+        }
+    };
+    if (!Rays.prototype.change_color_to.__argnames__) Object.defineProperties(Rays.prototype.change_color_to, {
+        __argnames__ : {value: ["colour"]},
+        __module__ : {value: null}
+    });
+    Rays.prototype.update = async function update(angle) {
+        var self = this;
+        var ρσ_ls, ray;
+        "99";
+        var ρσ_Iter3 = self._rays;
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            ray = ρσ_Index3;
+            "100";
+            if (ray.pos.x[">="](0)) {
+                "101";
+                ray.v = v2["*"](vec(cos(angle), sin(angle), 0));
+            }
+            "103";
+            ray.pos=ray.pos["+"](ray.v["*"](dt));
+        }
+    };
+    if (!Rays.prototype.update.__argnames__) Object.defineProperties(Rays.prototype.update, {
+        __argnames__ : {value: ["angle"]},
+        __module__ : {value: null}
+    });
+    Rays.prototype.position_of_ray = async function position_of_ray(index) {
+        var self = this;
+        "106";
+        return ρσ_getitem(self._rays, index).pos;
+    };
+    if (!Rays.prototype.position_of_ray.__argnames__) Object.defineProperties(Rays.prototype.position_of_ray, {
+        __argnames__ : {value: ["index"]},
+        __module__ : {value: null}
+    });
+    Rays.prototype.initialize = async function initialize(angle) {
+        var self = this;
+        var ρσ_ls, ray_xmax_idx, ray_xmax, ray_shifts, ρσ_unpack, i, ray;
+        "109";
+        ray_xmax_idx = 0;
+        "110";
+        ray_xmax = 1["-u"]()["*"](med_thick);
+        "111";
+        ray_shifts = (await self.ray_shifts(angle));
+        "112";
+        var ρσ_Iter4 = enumerate(self._rays);
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            ρσ_unpack = ρσ_Index4;
+            i = ρσ_unpack[0];
+            ray = ρσ_unpack[1];
+            "113";
+            ray.clear_trail();
+            "114";
+            ray.make_trail = false;
+            "115";
+            ray.pos = med_thick["*"](vec(1["-u"]()["*"](cos(angle)), 1["-u"]()["*"](sin(angle)), 0))["+"](ρσ_getitem(ray_shifts, i));
+            "116";
+            ray.radius = rad_fac["*"](med_thick);
+            "117";
+            ray.color = color.white;
+            "118";
+            ray.make_trail = true;
+            "119";
+            ray.trail_radius = ray.radius;
+            "120";
+            ray.v = v1["*"](vec(cos(angle), sin(angle), 0));
+            "121";
+            if (ray.pos.x[">"](ray_xmax)) {
+                "122";
+                ray_xmax_idx = i;
+                "123";
+                ray_xmax = ray.pos.x;
+            }
+        }
+        "124";
+        return ray_xmax_idx;
+    };
+    if (!Rays.prototype.initialize.__argnames__) Object.defineProperties(Rays.prototype.initialize, {
+        __argnames__ : {value: ["angle"]},
+        __module__ : {value: null}
+    });
+    Rays.prototype.advance_to_mid_screen = async function advance_to_mid_screen(ray_xmax_idx) {
+        var self = this;
+        var ρσ_ls, ray;
+        "127";
+        while ((await rays.position_of_ray(ray_xmax_idx)).x["<"](1["-u"]()["*"](.666)["*"](initial_range))) {
+            "128";
+            var ρσ_Iter5 = self._rays;
+            ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+            for (var ρσ_Index5 of ρσ_Iter5) {
+                ray = ρσ_Index5;
+                "129";
+                ray.pos=ray.pos["+"](ray.v["*"](dt));
+            }
+            "130";
+            (await wave_front.update(self));
+        }
+    };
+    if (!Rays.prototype.advance_to_mid_screen.__argnames__) Object.defineProperties(Rays.prototype.advance_to_mid_screen, {
+        __argnames__ : {value: ["ray_xmax_idx"]},
+        __module__ : {value: null}
+    });
+    Rays.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Rays.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Rays.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+    "133";
+    function WaveFront() {;
+    }
+    WaveFront.prototype.__init__ = async function __init__(rays) {
+        var self = this;
+        "135";
+        self._wavefront = ρσ_list_decorate([]);
+        "136";
+        (await self._initialize(rays));
+    };
+    if (!WaveFront.prototype.__init__.__argnames__) Object.defineProperties(WaveFront.prototype.__init__, {
+        __argnames__ : {value: ["rays"]},
+        __module__ : {value: null}
+    });
+    WaveFront.__argnames__ = WaveFront.prototype.__init__.__argnames__;
+    WaveFront.__handles_kwarg_interpolation__ = WaveFront.prototype.__init__.__handles_kwarg_interpolation__;
+    WaveFront.prototype._initialize = async function _initialize(rays) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, i, r;
+        "139";
+        self._wavefront = ρσ_list_decorate([]);
+        "140";
+        var ρσ_Iter6 = enumerate(rays.slice(0, 1["-u"]()["*"](1)));
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            ρσ_unpack = ρσ_Index6;
+            i = ρσ_unpack[0];
+            r = ρσ_unpack[1];
+            "141";
+            self._wavefront.append(ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: r.pos, axis: ρσ_getitem(rays, i["+"](1)).pos["-"](1["*"](r.pos)), radius: r.radius, color: color.white})]));
+        }
+    };
+    if (!WaveFront.prototype._initialize.__argnames__) Object.defineProperties(WaveFront.prototype._initialize, {
+        __argnames__ : {value: ["rays"]},
+        __module__ : {value: null}
+    });
+    WaveFront.prototype.toggle_wavefront = async function toggle_wavefront(event) {
+        var self = this;
+        var ρσ_ls, wave;
+        "144";
+        var ρσ_Iter7 = self._wavefront;
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            wave = ρσ_Index7;
+            "145";
+            wave.visible = event.checked;
+        }
+    };
+    if (!WaveFront.prototype.toggle_wavefront.__argnames__) Object.defineProperties(WaveFront.prototype.toggle_wavefront, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+    WaveFront.prototype.change_color_to = async function change_color_to(colour) {
+        var self = this;
+        var ρσ_ls, wave;
+        "148";
+        var ρσ_Iter8 = self._wavefront;
+        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+        for (var ρσ_Index8 of ρσ_Iter8) {
+            wave = ρσ_Index8;
+            "149";
+            wave.color = colour;
+        }
+    };
+    if (!WaveFront.prototype.change_color_to.__argnames__) Object.defineProperties(WaveFront.prototype.change_color_to, {
+        __argnames__ : {value: ["colour"]},
+        __module__ : {value: null}
+    });
+    WaveFront.prototype.update = async function update(rays) {
+        var self = this;
+        var ρσ_ls, ρσ_unpack, i, w;
+        "152";
+        var ρσ_Iter9 = enumerate(self._wavefront);
+        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+        for (var ρσ_Index9 of ρσ_Iter9) {
+            ρσ_unpack = ρσ_Index9;
+            i = ρσ_unpack[0];
+            w = ρσ_unpack[1];
+            "153";
+            w.pos = (await rays.position_of_ray(i));
+            "155";
+            w.axis = (await rays.position_of_ray(i["+"](1)))["-"](1["*"]((await rays.position_of_ray(i))));
+        }
+    };
+    if (!WaveFront.prototype.update.__argnames__) Object.defineProperties(WaveFront.prototype.update, {
+        __argnames__ : {value: ["rays"]},
+        __module__ : {value: null}
+    });
+    WaveFront.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    WaveFront.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(WaveFront.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "158";
+    _GS_1 = new Rays;
+    (await _GS_1.__init__());
+    rays = _GS_1;
+    "159";
+    _GS_1 = new WaveFront;
+    (await _GS_1.__init__(rays._rays));
+    wave_front = _GS_1;
+    "161";
+    async function vary_color(event) {
+        var ρσ_ls, is_white, light_color;
+        "162";
+        is_white = true;
+        "163";
+        try {
+            "164";
+            if (ρσ_in("white", event.text)) {
+                "165";
+                is_white = event.checked;
+                "166";
+            }
+        } catch (ρσ_Exception) {
+            ρσ_last_exception = ρσ_Exception;
+            {
+                "167";
+                is_white = false;
+                "168";
+                lc_radio.checked = false;
+            }
+        }
+        "170";
+        light_color = (is_white) ? color.white : (await wavelength_to_rgb(event.value));
+        "171";
+        (await rays.change_color_to(light_color));
+        "172";
+        (await wave_front.change_color_to(light_color));
+    };
+    if (!vary_color.__argnames__) Object.defineProperties(vary_color, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "174";
+    async function set_ang1(a) {
+        "175";
+        "176";
+        ang1 = (await radians(a.value));
+        "177";
+        (await let_there_be_light());
+    };
+    if (!set_ang1.__argnames__) Object.defineProperties(set_ang1, {
+        __argnames__ : {value: ["a"]},
+        __module__ : {value: null}
+    });
+
+    "179";
+    dang = 1;
+    "180";
+    ang_lim = 90["-"](1["*"](dang));
+    "181";
+    display.append_to_caption("\nIncident angle:");
+    "182";
+    ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({value: initial_angle, min: 1["-u"]()["*"](ang_lim), max: ang_lim, step: dang, length: .75["*"](canvas_width), bind: set_ang1})]);
+    "184";
+    async function set_rate(event) {
+        "185";
+        "186";
+        the_rate = event.value;
+    };
+    if (!set_rate.__argnames__) Object.defineProperties(set_rate, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "188";
+    display.append_to_caption("\n\nAnimation speed:");
+    "189";
+    ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({value: initial_rate, min: 0, max: initial_rate["*"](5), length: .75["*"](canvas_width), bind: set_rate})]);
+    "192";
+    display.append_to_caption("\n\nWavelength:");
+    "193";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({value: 585, min: lambda_blue, max: lambda_red, step: 1, length: .75["*"](canvas_width), bind: vary_color})]);
+    "194";
+    display.append_to_caption("\t");
+    "195";
+    lc_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "white", checked: true, bind: vary_color})]);
+    "196";
+    display.append_to_caption("\n\n");
+    "197";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Wavefront", bind: wave_front.toggle_wavefront.bind(wave_front), checked: true})]);
+    "200";
+    async function move_light() {
+        "201";
+        (await rays.update(ang2));
+        "202";
+        (await wave_front.update(rays));
+    };
+    if (!move_light.__module__) Object.defineProperties(move_light, {
+        __module__ : {value: null}
+    });
+
+    "205";
+    async function let_there_be_light() {
+        var ρσ_ls, ray_xmax_idx;
+        "206";
+        "207";
+        ang2 = asin(n12["*"](sin(ang1)));
+        "208";
+        ray_xmax_idx = (await rays.initialize(ang1));
+        "209";
+        (await wave_front.update(rays));
+        "210";
+        (await rays.advance_to_mid_screen(ray_xmax_idx));
+    };
+    if (!let_there_be_light.__module__) Object.defineProperties(let_there_be_light, {
+        __module__ : {value: null}
+    });
+
+    "213";
+    (await let_there_be_light());
+    "215";
+    while (true) {
+        "216";
+        (await rate(the_rate));
+        "217";
+        (await move_light());
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
