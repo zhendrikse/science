@@ -1,0 +1,305 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var box, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, cylinder_shape, force_vector, dt, t, force_location, force, torque;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; <a href=\"https://trinket.io/glowscript/88ff44297f\">Original code<\/a> by <a href=\"https://www.youtube.com/@LetsCodePhysics\">Let&apos;s code physics</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/kinematics/code/moment_of_inertia.py\">moment_of_inertia.py</a>\n\n";
+    "9";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 600, background: color.gray(.075), title: title, range: 2, forward: vector(1["-u"]()["*"](.44), 1["-u"]()["*"](.27), 1["-u"]()["*"](.85))})]);
+    "11";
+    function Cylinder() {;
+    }
+    Cylinder.prototype.__init__ = async function __init__() {
+        var self = this;
+        var R = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.R : arguments[0];
+        var M = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.M : arguments[1];
+        var z_min = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.z_min : arguments[2];
+        var z_max = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.z_max : arguments[3];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "R")){
+            R = ρσ_kwargs_obj.R;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "M")){
+            M = ρσ_kwargs_obj.M;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "z_min")){
+            z_min = ρσ_kwargs_obj.z_min;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "z_max")){
+            z_max = ρσ_kwargs_obj.z_max;
+        }
+        var ρσ_ls, ρσ_unpack, z, atoms, dz, rotation_axis;
+        "13";
+        ρσ_unpack = [R, M];
+        self._radius = ρσ_unpack[0];
+        self._mass = ρσ_unpack[1];
+        "14";
+        ρσ_unpack = [z_min, z_max];
+        self._z_min = ρσ_unpack[0];
+        self._z_max = ρσ_unpack[1];
+        "15";
+        self._shape = null;
+        "16";
+        self._omega = 0["*"](vector(0, 0, 0));
+        "17";
+        self._moment_of_inertia = 0;
+        "19";
+        z = z_min;
+        "20";
+        atoms = ρσ_list_decorate([]);
+        "21";
+        dz = .1;
+        "22";
+        while (z["<="](z_max)) {
+            "23";
+            (await self._create_ring(atoms, z, R));
+            "24";
+            z=z["+"](dz);
+        }
+        "26";
+        rotation_axis = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vector(0, 0, 1["-u"]()["*"](1)), axis: vector(0, 0, 1), size: vector(2, .05, .05)})]);
+        "27";
+        (await self._calculate_moment_of_inertia(atoms));
+        "30";
+        ρσ_getitem(atoms, 1["-u"]()["*"](1)).color = color.cyan;
+        "31";
+        self._shape = compound(atoms);
+    };
+    if (!Cylinder.prototype.__init__.__defaults__) Object.defineProperties(Cylinder.prototype.__init__, {
+        __defaults__ : {value: {R:1, M:1, z_min:0, z_max:1}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["R", "M", "z_min", "z_max"]},
+        __module__ : {value: null}
+    });
+    Cylinder.__argnames__ = Cylinder.prototype.__init__.__argnames__;
+    Cylinder.__handles_kwarg_interpolation__ = Cylinder.prototype.__init__.__handles_kwarg_interpolation__;
+    Cylinder.prototype._create_ring = async function _create_ring(atoms, ring_center, ring_radius) {
+        var self = this;
+        var ρσ_ls, ds, theta, pos;
+        "34";
+        ds = .1;
+        "35";
+        theta = 0;
+        "36";
+        while (theta["<"](2["*"](pi))) {
+            "37";
+            pos = vector(ring_radius["*"](cos(theta)), ring_radius["*"](sin(theta)), ring_center);
+            "38";
+            atoms.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos, color: color.red, radius: .05})]));
+            "39";
+            theta=theta["+"](ds["/"](ring_radius));
+        }
+    };
+    if (!Cylinder.prototype._create_ring.__argnames__) Object.defineProperties(Cylinder.prototype._create_ring, {
+        __argnames__ : {value: ["atoms", "ring_center", "ring_radius"]},
+        __module__ : {value: null}
+    });
+    Cylinder.prototype._calculate_moment_of_inertia = async function _calculate_moment_of_inertia(atoms) {
+        var self = this;
+        var ρσ_ls, dm, atom;
+        "42";
+        dm = self._mass["/"](len(atoms));
+        "43";
+        var ρσ_Iter1 = atoms;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            atom = ρσ_Index1;
+            "45";
+            self._moment_of_inertia=self._moment_of_inertia["+"](dm["*"](Math.pow(atom.pos.x, 2)["+"](Math.pow(atom.pos.y, 2))));
+        }
+    };
+    if (!Cylinder.prototype._calculate_moment_of_inertia.__argnames__) Object.defineProperties(Cylinder.prototype._calculate_moment_of_inertia, {
+        __argnames__ : {value: ["atoms"]},
+        __module__ : {value: null}
+    });
+    Cylinder.prototype.z_average = async function z_average() {
+        var self = this;
+        "52";
+        return self._z_min["+"](self._z_max)["/"](2);
+    };
+    if (!Cylinder.prototype.z_average.__module__) Object.defineProperties(Cylinder.prototype.z_average, {
+        __module__ : {value: null}
+    });
+    Cylinder.prototype.radius = async function radius() {
+        var self = this;
+        "55";
+        return self._radius;
+    };
+    if (!Cylinder.prototype.radius.__module__) Object.defineProperties(Cylinder.prototype.radius, {
+        __module__ : {value: null}
+    });
+    Cylinder.prototype.update = async function update(torque, dt) {
+        var self = this;
+        "59";
+        self._omega=self._omega["+"](torque["/"](self._moment_of_inertia)["*"](dt));
+        "60";
+        ρσ_interpolate_kwargs.call(self._shape, self._shape.rotate, [ρσ_desugar_kwargs({angle: mag(self._omega)["*"](dt), axis: self._omega.hat})]);
+    };
+    if (!Cylinder.prototype.update.__argnames__) Object.defineProperties(Cylinder.prototype.update, {
+        __argnames__ : {value: ["torque", "dt"]},
+        __module__ : {value: null}
+    });
+    Cylinder.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Cylinder.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Cylinder.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "63";
+    function ForceVector() {;
+    }
+    ForceVector.prototype.__init__ = async function __init__() {
+        var self = this;
+        var scale_factor = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.scale_factor : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "scale_factor")){
+            scale_factor = ρσ_kwargs_obj.scale_factor;
+        }
+        "65";
+        self._force_vector = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({color: color.cyan})]);
+        "66";
+        self._scale_factor = scale_factor;
+    };
+    if (!ForceVector.prototype.__init__.__defaults__) Object.defineProperties(ForceVector.prototype.__init__, {
+        __defaults__ : {value: {scale_factor:1}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["scale_factor"]},
+        __module__ : {value: null}
+    });
+    ForceVector.__argnames__ = ForceVector.prototype.__init__.__argnames__;
+    ForceVector.__handles_kwarg_interpolation__ = ForceVector.prototype.__init__.__handles_kwarg_interpolation__;
+    ForceVector.prototype.force_at = async function force_at(location, z_average, t) {
+        var self = this;
+        var ρσ_ls, force;
+        "69";
+        force = vector(0, cos(t), 0);
+        "70";
+        self._force_vector.pos = location["+"](z_average);
+        "71";
+        self._force_vector.axis = self._scale_factor["*"](force);
+        "72";
+        return force;
+    };
+    if (!ForceVector.prototype.force_at.__argnames__) Object.defineProperties(ForceVector.prototype.force_at, {
+        __argnames__ : {value: ["location", "z_average", "t"]},
+        __module__ : {value: null}
+    });
+    ForceVector.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    ForceVector.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(ForceVector.prototype, "__bases__", {value: []});
+
+
+
+    "75";
+    _GS_1 = new Cylinder;
+    (await _GS_1.__init__());
+    cylinder_shape = _GS_1;
+    "76";
+    _GS_1 = new ForceVector;
+    (await _GS_1.__init__());
+    force_vector = _GS_1;
+    "78";
+    dt = .05;
+    "79";
+    t = 0;
+    "80";
+    while (true) {
+        "81";
+        (await rate(10));
+        "83";
+        force_location = vector((await cylinder_shape.radius()), 0, 0);
+        "84";
+        force = (await force_vector.force_at(force_location, vector(0, 0, (await cylinder_shape.z_average())), t));
+        "85";
+        torque = cross(force_location, force);
+        "86";
+        (await cylinder_shape.update(torque, dt));
+        "88";
+        t=t["+"](dt);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

@@ -10,6 +10,7 @@
 - [`cart_on_spring.py` source code](cart_on_spring.py)
 - [`chain_drop.py` source code](chain_drop.py)
 - [`floating_block.py` source code](floating_block.py)
+- [`moment_of_inertia.py` source code](moment_of_inertia.py)
 - [`newtons_cannonball.py` source code](newtons_cannonball.py)
 - [`newtons_pendulum.py` source code](newtons_pendulum.py)
 - [`sliding_ramp.py` source code](sliding_ramp.py)

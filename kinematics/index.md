@@ -124,8 +124,10 @@ You may be surprised though to find out what happens when you drop such a simple
   <figcaption>Bouncing ball.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="moment_of_inertia.html">
+    <img alt="Moment of inertia ball" src="images/moment_of_inertia.png" title="Click to animate"/>
+  </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <figcaption>Moment of inertia.</figcaption>
 </figure>
 </div>
 
