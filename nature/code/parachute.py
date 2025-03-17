@@ -24,13 +24,13 @@ class Person:
         self._arm_b = cylinder(axis=vector(0.15, -0.15, 0), radius=0.02, color=colour)
         self._leg_a = cylinder(axis=vector(0.1, -0.15, 0), radius=0.02, color=colour)
         self._leg_b = cylinder(axis=vector(-0.1, -0.15, 0), radius=0.02, color=colour)
-        self._height = position
-        self._set_positions()
+        self._position = position
+        self._update_body_parts()
         self._mass = mass # includes parachute
         self._momentum = velocity * mass
 
-    def _set_positions(self):
-        position = self._height + vec(0.1, 0, 0)
+    def _update_body_parts(self):
+        position = self._position + vec(0.1, 0, 0)
         self._head.pos = position + vector(-0.1, 0.5, 0.0)
         self._body.pos = self._head.pos
         self._arm_a.pos=self._head.pos + vector(0, -0.1, 0)
@@ -38,15 +38,15 @@ class Person:
         self._leg_a.pos=self._head.pos + self._body.axis
         self._leg_b.pos=self._head.pos + self._body.axis
 
-    def update(self, position):
-        self._height = position
-        self._set_positions()
+    def update(self, dx):
+        self._position += dx
+        self._update_body_parts()
 
     def body_pos(self):
         return self._body.pos - vector(0, self._head.radius * 2, 0)
 
-    def height(self):
-        return self._height
+    def position(self):
+        return self._position
 
 
 # scene.caption = """Ball is modelled as point object; finite size is for visualisation."""+'\n\n'
@@ -76,9 +76,8 @@ world = cylinder(pos=h0, axis=vec(0, world_height, 0), radius=world_radius, opac
 # ground for collisions
 ground = box(pos=h0, size=0.4 * vec(0.5 * world_radius, 0.1, 0.5 * world_radius), color=color.white, opacity=0.5)
 
-height = h0 + 0.9 * vec(0, world_height, 0)
-ball = sphere(pos=height, radius=0.04, color=color.blue, opacity=1)
-person = Person(height)
+ball = sphere(pos=h0 + 0.9 * vec(0, world_height, 0), radius=0.04, color=color.blue, opacity=1)
+person = Person(h0 + 0.9 * vec(0, world_height, 0))
 
 
 v = vec(0, 0, 0)
@@ -147,23 +146,19 @@ while t < tmax:  # while True:
 
     ball.pvec += total_force * dt
     v = ball.pvec / m
-    # v += g*dt
-    height += v * dt
 
-    # adjust all objects: ball -> chute/strings -> arrows
-    ball.pos = height
-
-    person.update(height)
+    ball.pos += v * dt
+    person.update(v * dt)
 
 
     chute.pos = person.body_pos() + chuteoffset
     strings.pos = chute.pos
-    vel.pos = ball.pos + arrow_offset - v / 2  # centre of arrow with the ball
+    vel.pos = person.position() + arrow_offset - v / 2  # centre of arrow with the ball
     vel.axis = v
 
     label_speed.pos = vel.pos + label_offset + v / 2  # aligned with ball
     label_speed.text = '<i>v</i> = ' + str(round(100 * v.y) / 100)
-    acceleration_arrow.pos = ball.pos + arrow_offset_right
+    acceleration_arrow.pos = person.position() + arrow_offset_right
     acceleration_arrow.axis = total_force / m
     acceleration_label.pos = acceleration_arrow.pos + labeloffsetright
     acceleration_label.text = '<i>a</i> = ' + str(round(1000 * total_force.y / m) / 1000)
@@ -172,7 +167,7 @@ while t < tmax:  # while True:
     display.camera.follow(ball)
 
     # collisions of block a with ground
-    if ball.pos.y < ground.pos.y:
+    if person.position().y < ground.pos.y:
         ball.pvec = cres * vec(0, mag(ball.pvec), 0)  # momentum upwards
         # note that force (acceleration) is not modified by collision as it would be huge; momentum is directly changed
         # v = cres*vec(0,mag(v),0)
@@ -185,11 +180,11 @@ while t < tmax:  # while True:
     t += dt
 
     # graphs
-    height_curve.plot(data=[t, height.y - ground.pos.y])
+    height_curve.plot(data=[t, person.position().y - ground.pos.y])
     velocity_curve.plot(data=[t, v.y])
     acceleration_curve.plot(data=[t, total_force.y / m])
 
-    pe = m * (-g.y) * (height.y - ground.pos.y)
+    pe = m * (-g.y) * (person.position().y - ground.pos.y)
     ke = 0.5 * m * v.y * v.y
 
     potential_energy_curve.plot(data=[t, pe])
