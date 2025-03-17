@@ -52,7 +52,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var compound, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, g, k, h0, world_height, world_radius, world, ground, _GS_1, person, parachute, ctrl, time_max, g1, height_curve, g2, velocity_curve, g3, acceleration_curve, g0, potential_energy_curve, kinetic_energy_curve, total_energy_curve, arrow_offset, velocity_scale, vel, label_offset, label_speed, arrow_offset_right, acclnscale, acceleration_arrow, labeloffsetright, acceleration_label, t, dt, chute_radius, parachute_area, resistance_force, total_force, cres, pe, ke;
+    var version, print, arange, __name__, type, ρσ_ls, title, display, g, k, h0, world_height, world_radius, world, ground, _GS_1, person, parachute, _, time_max, g1, height_curve, g2, velocity_curve, g3, acceleration_curve, g0, potential_energy_curve, kinetic_energy_curve, total_energy_curve, arrow_offset, velocity_scale, vel, label_offset, label_speed, arrow_offset_right, acclnscale, acceleration_arrow, labeloffsetright, acceleration_label, t, dt, resistance_force, total_force, cres, pe, ke;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,11 +64,15 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "13";
+    "12";
     title = "&#x2022; Based on <a href=\"https://sciencesamurai.trinket.io/a-level-physics-programming#/dynamics-understanding-motion/free-fall-with-parachute\">Original code<\/a> by <a href=\"https://sciencesamurai.trinket.io/\">sciencesamurai.trinket.io</a>\n&#x2022; Implementation of background graphic adapted from <a href=\"https://www.youtube.com/@LetsCodePhysics\">Let&apos;s code physics</a> (<a href=\"https://www.youtube.com/watch?v=3PS7PjZ2vzY\">video</a>)\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/parachute.py\">parachute.py</a>\n&#x2022; Panorama image from <a href=\"https://unsplash.com/photos/dLkyhhC-e6Y\">unsplash.com</a>\n\n&#x2022; Move slider to deploy parachute \n&#x2022; There is no air resistance without parachute\n&#x2022; Upon collision with ground, parachute collapses (and person bounces) \n\n";
-    "17";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 400, height: 350, autoscale: false, range: 2})]);
+    "16";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 500, autoscale: false, range: 2})]);
+    "18";
+    g = vec(0, 1["-u"]()["*"](1), 0);
     "19";
+    k = 2;
+    "21";
     function Person() {;
     }
     Person.prototype.__init__ = async function __init__() {
@@ -88,25 +92,25 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
             colour = ρσ_kwargs_obj.colour;
         }
-        "21";
-        self._head = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .07, color: color.yellow})]);
-        "22";
-        self._body = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(0, 1["-u"]()["*"](.3), 0), radius: .03, color: colour})]);
         "23";
-        self._arm_a = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(1["-u"]()["*"](.15), 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
+        self._head = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .07, color: color.yellow})]);
         "24";
-        self._arm_b = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(.15, 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
+        self._body = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(0, 1["-u"]()["*"](.3), 0), radius: .03, color: colour})]);
         "25";
-        self._leg_a = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(.1, 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
+        self._arm_a = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(1["-u"]()["*"](.15), 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
         "26";
-        self._leg_b = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(1["-u"]()["*"](.1), 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
+        self._arm_b = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(.15, 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
+        "27";
+        self._leg_a = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(.1, 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
         "28";
-        self._mass = mass;
-        "29";
-        self._momentum = velocity["*"](mass);
+        self._leg_b = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: vector(1["-u"]()["*"](.1), 1["-u"]()["*"](.15), 0), radius: .02, color: colour})]);
         "30";
-        self._position = position;
+        self._mass = mass;
         "31";
+        self._momentum = velocity["*"](mass);
+        "32";
+        self._position = position;
+        "33";
         (await self._update_body_parts());
     };
     if (!Person.prototype.__init__.__defaults__) Object.defineProperties(Person.prototype.__init__, {
@@ -120,19 +124,19 @@ async function __main__() {
     Person.prototype._update_body_parts = async function _update_body_parts() {
         var self = this;
         var ρσ_ls, position;
-        "34";
-        position = self._position["+"](vec(.1, 0, 0));
-        "35";
-        self._head.pos = position["+"](vector(1["-u"]()["*"](.1), .5, 0));
         "36";
-        self._body.pos = self._head.pos;
+        position = self._position["+"](vec(.1, 0, 0));
         "37";
-        self._arm_a.pos = self._head.pos["+"](vector(0, 1["-u"]()["*"](.1), 0));
+        self._head.pos = position["+"](vector(1["-u"]()["*"](.1), .5, 0));
         "38";
-        self._arm_b.pos = self._head.pos["+"](vector(0, 1["-u"]()["*"](.1), 0));
+        self._body.pos = self._head.pos;
         "39";
-        self._leg_a.pos = self._head.pos["+"](self._body.axis);
+        self._arm_a.pos = self._head.pos["+"](vector(0, 1["-u"]()["*"](.1), 0));
         "40";
+        self._arm_b.pos = self._head.pos["+"](vector(0, 1["-u"]()["*"](.1), 0));
+        "41";
+        self._leg_a.pos = self._head.pos["+"](self._body.axis);
+        "42";
         self._leg_b.pos = self._head.pos["+"](self._body.axis);
     };
     if (!Person.prototype._update_body_parts.__module__) Object.defineProperties(Person.prototype._update_body_parts, {
@@ -140,11 +144,11 @@ async function __main__() {
     });
     Person.prototype.update = async function update(force, dt) {
         var self = this;
-        "43";
-        self._momentum=self._momentum["+"](force["*"](dt));
-        "44";
-        self._position=self._position["+"](self._momentum["/"](self._mass)["*"](dt));
         "45";
+        self._momentum=self._momentum["+"](force["*"](dt));
+        "46";
+        self._position=self._position["+"](self._momentum["/"](self._mass)["*"](dt));
+        "47";
         (await self._update_body_parts());
     };
     if (!Person.prototype.update.__argnames__) Object.defineProperties(Person.prototype.update, {
@@ -153,7 +157,7 @@ async function __main__() {
     });
     Person.prototype.body_pos = async function body_pos() {
         var self = this;
-        "48";
+        "50";
         return self._body.pos["-"](1["*"](vector(0, self._head.radius["*"](2), 0)));
     };
     if (!Person.prototype.body_pos.__module__) Object.defineProperties(Person.prototype.body_pos, {
@@ -161,7 +165,7 @@ async function __main__() {
     });
     Person.prototype.position = async function position() {
         var self = this;
-        "51";
+        "53";
         return self._position;
     };
     if (!Person.prototype.position.__module__) Object.defineProperties(Person.prototype.position, {
@@ -169,7 +173,7 @@ async function __main__() {
     });
     Person.prototype.velocity = async function velocity() {
         var self = this;
-        "54";
+        "56";
         return self._momentum["/"](self._mass);
     };
     if (!Person.prototype.velocity.__module__) Object.defineProperties(Person.prototype.velocity, {
@@ -177,7 +181,7 @@ async function __main__() {
     });
     Person.prototype.land = async function land(cres) {
         var self = this;
-        "57";
+        "59";
         self._momentum = cres["*"](vec(0, mag(self._momentum), 0));
     };
     if (!Person.prototype.land.__argnames__) Object.defineProperties(Person.prototype.land, {
@@ -186,7 +190,7 @@ async function __main__() {
     });
     Person.prototype.mass = async function mass() {
         var self = this;
-        "60";
+        "62";
         return self._mass;
     };
     if (!Person.prototype.mass.__module__) Object.defineProperties(Person.prototype.mass, {
@@ -209,24 +213,6 @@ async function __main__() {
 
 
     "64";
-    g = vec(0, 1["-u"]()["*"](1), 0);
-    "65";
-    k = 2;
-    "68";
-    h0 = vec(0, 0, 0);
-    "69";
-    world_height = 25;
-    "70";
-    world_radius = 5;
-    "71";
-    world = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: h0, axis: vec(0, world_height, 0), radius: world_radius, opacity: 0, shininess: 0, texture: (function(){
-        var ρσ_d = ρσ_dict();
-        ρσ_d.set("file", "https://images.unsplash.com/photo-1533002832-1721d16b4bb9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1578&q=80");
-        ρσ_d.set("place", ρσ_list_decorate([ "sides" ]));
-        ρσ_d.set("turn", 1["-u"]()["*"](1));
-        return ρσ_d;
-    }).call(this)})]);
-    "76";
     function Parachute() {;
     }
     Parachute.prototype.__init__ = async function __init__() {
@@ -238,11 +224,11 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "chuteoffset")){
             chuteoffset = ρσ_kwargs_obj.chuteoffset;
         }
-        "78";
+        "66";
         self._chute = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](chuteoffset), axis: vec(0, .02, 0), radius: 0, color: color.red, opacity: .8})]);
-        "79";
+        "67";
         self._chute_strings = ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: self._chute.pos, axis: 1["-u"]()["*"](chuteoffset), radius: 0, color: color.gray(.5), opacity: .2})]);
-        "80";
+        "68";
         self._chuteoffset = chuteoffset;
     };
     if (!Parachute.prototype.__init__.__defaults__) Object.defineProperties(Parachute.prototype.__init__, {
@@ -255,9 +241,9 @@ async function __main__() {
     Parachute.__handles_kwarg_interpolation__ = Parachute.prototype.__init__.__handles_kwarg_interpolation__;
     Parachute.prototype.modify = async function modify(event) {
         var self = this;
-        "83";
+        "71";
         self._chute.radius = event.value;
-        "84";
+        "72";
         self._chute_strings.radius = event.value;
     };
     if (!Parachute.prototype.modify.__argnames__) Object.defineProperties(Parachute.prototype.modify, {
@@ -266,9 +252,9 @@ async function __main__() {
     });
     Parachute.prototype.update = async function update(position) {
         var self = this;
-        "87";
+        "75";
         self._chute.pos = position["+"](self._chuteoffset);
-        "88";
+        "76";
         self._chute_strings.pos = self._chute.pos;
     };
     if (!Parachute.prototype.update.__argnames__) Object.defineProperties(Parachute.prototype.update, {
@@ -277,12 +263,20 @@ async function __main__() {
     });
     Parachute.prototype.reset = async function reset() {
         var self = this;
-        "91";
+        "79";
         self._chute.radius = 0;
-        "92";
+        "80";
         self._chute_strings.radius = 0;
     };
     if (!Parachute.prototype.reset.__module__) Object.defineProperties(Parachute.prototype.reset, {
+        __module__ : {value: null}
+    });
+    Parachute.prototype.area = async function area() {
+        var self = this;
+        "83";
+        return pi["*"](self._chute.radius)["*"](self._chute.radius);
+    };
+    if (!Parachute.prototype.area.__module__) Object.defineProperties(Parachute.prototype.area, {
         __module__ : {value: null}
     });
     Parachute.prototype.__repr__ = async function __repr__() {
@@ -297,130 +291,139 @@ async function __main__() {
 
 
 
-    "100";
+
+    "89";
+    h0 = vec(0, 0, 0);
+    "90";
+    world_height = 25;
+    "91";
+    world_radius = 5;
+    "92";
+    world = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: h0, axis: vec(0, world_height, 0), radius: world_radius, opacity: 0, shininess: 0, texture: (function(){
+        var ρσ_d = ρσ_dict();
+        ρσ_d.set("file", "https://images.unsplash.com/photo-1533002832-1721d16b4bb9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1578&q=80");
+        ρσ_d.set("place", ρσ_list_decorate([ "sides" ]));
+        ρσ_d.set("turn", 1["-u"]()["*"](1));
+        return ρσ_d;
+    }).call(this)})]);
+    "99";
     ground = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: h0, size: .4["*"](vec(.5["*"](world_radius), .1, .5["*"](world_radius))), color: color.white, opacity: .5})]);
-    "101";
+    "100";
     _GS_1 = new Person;
     (await _GS_1.__init__(h0["+"](.9["*"](vec(0, world_height, 0)))));
     person = _GS_1;
-    "102";
+    "101";
     _GS_1 = new Parachute;
     (await _GS_1.__init__((await person.body_pos())));
     parachute = _GS_1;
-    "104";
+    "103";
     display.append_to_title("<b>Chute size</b>");
+    "104";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({pos: display.title_anchor, top: 15, length: 300, min: 0, max: .9, step: .05, bind: parachute.modify.bind(parachute)})]);
     "105";
-    ctrl = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({pos: display.title_anchor, top: 15, length: 300, min: 0, max: .9, step: .05, bind: parachute.modify.bind(parachute)})]);
-    "106";
     display.append_to_title("\n\n");
-    "109";
+    "108";
     time_max = 40;
-    "110";
-    g1 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({scroll: true, width: 400, height: 150, ytitle: "position", xmin: 0, xmax: time_max, xtitle: "time", title: "Height against time", background: color.black})]);
-    "112";
+    "109";
+    g1 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({scroll: true, width: 600, height: 150, ytitle: "position", xmin: 0, xmax: time_max, xtitle: "time", title: "Height against time", background: color.black})]);
+    "111";
     height_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: g1, interval: 10, color: color.red})]);
-    "113";
-    g2 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({scroll: true, width: 400, height: 150, ytitle: "velocity", xmin: 0, xmax: time_max, xtitle: "time", title: "Velocity against time", background: color.black})]);
-    "115";
+    "112";
+    g2 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({scroll: true, width: 600, height: 150, ytitle: "velocity", xmin: 0, xmax: time_max, xtitle: "time", title: "Velocity against time", background: color.black})]);
+    "114";
     velocity_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: g2, interval: 10, color: color.green})]);
-    "116";
-    g3 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({scroll: true, width: 400, height: 150, ytitle: "acceleration", xmin: 0, xmax: time_max, xtitle: "time", title: "Acceleration against time", background: color.black})]);
-    "118";
+    "115";
+    g3 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({scroll: true, width: 600, height: 150, ytitle: "acceleration", xmin: 0, xmax: time_max, xtitle: "time", title: "Acceleration against time", background: color.black})]);
+    "117";
     acceleration_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: g3, interval: 10, color: color.purple})]);
-    "120";
-    g0 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({scroll: true, width: 400, height: 250, xtitle: "time", ytitle: "energy", xmin: 0, xmax: time_max, background: color.black, title: "Energy against time"})]);
-    "122";
+    "119";
+    g0 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({scroll: true, width: 600, height: 250, xtitle: "time", ytitle: "energy", xmin: 0, xmax: time_max, background: color.black, title: "Energy against time"})]);
+    "121";
     potential_energy_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: g0, interval: 10, color: color.red, label: "PE"})]);
-    "123";
+    "122";
     kinetic_energy_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: g0, interval: 10, color: color.green, label: "KE"})]);
-    "124";
+    "123";
     total_energy_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: g0, interval: 10, color: color.black, label: "Total"})]);
-    "128";
+    "127";
     arrow_offset = vec(1["-u"]()["*"](1), 0, 0);
-    "129";
+    "128";
     velocity_scale = .3;
-    "130";
+    "129";
     vel = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: (await person.position())["+"](arrow_offset)["-"](1["*"]((await person.velocity()))["/"](2)), axis: (await person.velocity())["*"](velocity_scale), color: color.green, shaftwidth: .04, round: true})]);
-    "131";
+    "130";
     label_offset = vec(1["-u"]()["*"](.5), 0, 0);
-    "132";
+    "131";
     label_speed = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vel.pos["+"](label_offset)["+"]((await person.velocity())["/"](2)), box: false, opacity: .1, text: "vel"})]);
-    "134";
+    "133";
     arrow_offset_right = vec(1, 0, 0);
-    "135";
+    "134";
     acclnscale = .8;
-    "136";
+    "135";
     acceleration_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: (await person.position())["+"](arrow_offset_right), axis: g["*"](acclnscale), color: color.purple, shaftwidth: .06, round: false})]);
-    "137";
+    "136";
     labeloffsetright = vec(.5, 0, 0);
-    "138";
+    "137";
     acceleration_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: acceleration_arrow.pos["+"](labeloffsetright), box: false, opacity: .1, text: "accel"})]);
-    "141";
+    "140";
     t = 0;
-    "142";
+    "141";
     dt = .001;
-    "143";
+    "142";
     while (t["<"](time_max)) {
-        "144";
+        "143";
         (await rate(1["/"](dt)));
-        "147";
-        chute_radius = ctrl.value;
-        "148";
-        parachute_area = pi["*"](chute_radius)["*"](chute_radius);
-        "149";
-        resistance_force = 1["-u"]()["*"](k)["*"](parachute_area)["*"]((await person.velocity()));
-        "150";
+        "145";
+        resistance_force = 1["-u"]()["*"](k)["*"]((await parachute.area()))["*"]((await person.velocity()));
+        "146";
         total_force = (await person.mass())["*"](g)["+"](resistance_force);
-        "152";
+        "147";
         (await person.update(total_force, dt));
-        "153";
+        "148";
         (await parachute.update((await person.body_pos())));
-        "156";
+        "151";
         vel.pos = (await person.position())["+"](arrow_offset)["-"](1["*"]((await person.velocity()))["/"](2));
-        "157";
+        "152";
         vel.axis = (await person.velocity());
-        "159";
+        "154";
         label_speed.pos = vel.pos["+"](label_offset)["+"]((await person.velocity())["/"](2));
-        "160";
+        "155";
         label_speed.text = "<i>v</i> = "["+"](str(round(100["*"]((await person.velocity()).y))["/"](100)));
-        "161";
+        "156";
         acceleration_arrow.pos = (await person.position())["+"](arrow_offset_right);
-        "162";
+        "157";
         acceleration_arrow.axis = total_force["/"]((await person.mass()));
-        "163";
+        "158";
         acceleration_label.pos = acceleration_arrow.pos["+"](labeloffsetright);
-        "164";
+        "159";
         acceleration_label.text = "<i>a</i> = "["+"](str(round(1e3["*"](total_force.y)["/"]((await person.mass())))["/"](1e3)));
-        "167";
+        "162";
         display.camera.follow(person._body);
-        "170";
-        cres = .5;
-        "171";
+        "164";
         if ((await person.position()).y["<"](ground.pos.y)) {
-            "172";
+            "165";
+            cres = .5;
+            "166";
             (await person.land(cres));
-            "176";
-            ctrl.value = 0;
-            "178";
+            "167";
             (await parachute.reset());
         }
-        "180";
+        "169";
         t=t["+"](dt);
-        "183";
+        "172";
         ρσ_interpolate_kwargs.call(height_curve, height_curve.plot, [ρσ_desugar_kwargs({data: ρσ_list_decorate([ t, (await person.position()).y["-"](1["*"](ground.pos.y)) ])})]);
-        "184";
+        "173";
         ρσ_interpolate_kwargs.call(velocity_curve, velocity_curve.plot, [ρσ_desugar_kwargs({data: ρσ_list_decorate([ t, (await person.velocity()).y ])})]);
-        "185";
+        "174";
         ρσ_interpolate_kwargs.call(acceleration_curve, acceleration_curve.plot, [ρσ_desugar_kwargs({data: ρσ_list_decorate([ t, total_force.y["/"]((await person.mass())) ])})]);
-        "187";
+        "176";
         pe = (await person.mass())["*"](1["-u"]())["*"](g.y)["*"]((await person.position()).y["-"](1["*"](ground.pos.y)));
-        "188";
+        "177";
         ke = .5["*"]((await person.mass()))["*"]((await person.velocity()).y)["*"]((await person.velocity()).y);
-        "190";
+        "179";
         ρσ_interpolate_kwargs.call(potential_energy_curve, potential_energy_curve.plot, [ρσ_desugar_kwargs({data: ρσ_list_decorate([ t, pe ])})]);
-        "191";
+        "180";
         ρσ_interpolate_kwargs.call(kinetic_energy_curve, kinetic_energy_curve.plot, [ρσ_desugar_kwargs({data: ρσ_list_decorate([ t, ke ])})]);
-        "192";
+        "181";
         ρσ_interpolate_kwargs.call(total_energy_curve, total_energy_curve.plot, [ρσ_desugar_kwargs({data: ρσ_list_decorate([ t, pe["+"](ke) ])})]);
     }
 };

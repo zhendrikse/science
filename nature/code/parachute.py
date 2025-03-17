@@ -13,7 +13,7 @@ title="""&#x2022; Based on <a href="https://sciencesamurai.trinket.io/a-level-ph
 
 from vpython import canvas, rate, box, vec, vector, color, cylinder, sphere, cone, slider, graph, gcurve, arrow, label, pi, mag
 
-display = canvas(title=title, width = 400, height = 350, autoscale = False, range = 2)
+display = canvas(title=title, width = 600, height = 500, autoscale = False, range = 2)
 
 g = vec(0, -1, 0)  # use natural units
 k = 2  # coefficient of air resistance, assume F = -k*A*v
@@ -106,17 +106,17 @@ display.append_to_title('\n\n')
 
 # graphs
 time_max = 40
-g1 = graph(scroll=True, width=400, height=150, ytitle="position", xmin=0,
+g1 = graph(scroll=True, width=600, height=150, ytitle="position", xmin=0,
            xmax=time_max, xtitle="time", title='Height against time', background=color.black)
 height_curve = gcurve(graph=g1, interval=10, color=color.red)
-g2 = graph(scroll=True, width=400, height=150, ytitle="velocity", xmin=0,
+g2 = graph(scroll=True, width=600, height=150, ytitle="velocity", xmin=0,
            xmax=time_max, xtitle="time", title='Velocity against time', background=color.black)
 velocity_curve = gcurve(graph=g2, interval=10, color=color.green)
-g3 = graph(scroll=True, width=400, height=150, ytitle="acceleration", xmin=0,
+g3 = graph(scroll=True, width=600, height=150, ytitle="acceleration", xmin=0,
            xmax=time_max, xtitle="time", title='Acceleration against time', background=color.black)
 acceleration_curve = gcurve(graph=g3, interval=10, color=color.purple)
 
-g0 = graph(scroll=True, width=400, height=250, xtitle="time", ytitle="energy", xmin=0,
+g0 = graph(scroll=True, width=600, height=250, xtitle="time", ytitle="energy", xmin=0,
            xmax=time_max, background=color.black, title='Energy against time')
 potential_energy_curve = gcurve(graph=g0, interval=10, color=color.red, label="PE")
 kinetic_energy_curve = gcurve(graph=g0, interval=10, color=color.green, label="KE")
