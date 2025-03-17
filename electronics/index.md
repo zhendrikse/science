@@ -12,8 +12,12 @@
     of electrical conduction. </figcaption>
   </figure>
   <figure class="right_image">
-    <!-- RESERVED FOR FUTURE APPLICATION 
-      -->
+    <a href="larmor_resistor.html">
+      <img alt="Larmor resistor" src="images/larmor_resistor.png" title="Click to animate"/>
+    </a>
+    <figcaption>Model of a resistor that includes the
+    <a href="https://en.wikipedia.org/wiki/Larmor_formula">calculation of Larmor radiation</a>.
+    </figcaption>  
   </figure>
 </div>
 <p style="clear: both;"></p>

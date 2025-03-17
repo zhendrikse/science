@@ -1,3 +1,5 @@
+#Web VPython 3.2
+
 from vpython import canvas, simple_sphere, sqrt, rate, pi, color, arrow, label, box, vec, vector, random, log, slider, hat, graph, gcurve
 
 title = """&#x2022; Based on this <a href="https://trinket.io/glowscript/22601b616b">original code</a>.
@@ -13,7 +15,9 @@ a = 63  # atomic weight of copper
 aspectRatio = 8
 density = 8.0e23  # electrons / m^3 in copper is 8.5e22
 volume = N / density
-wire_width = (volume / aspectRatio) ** (1 / 3)  # width of wire in meters
+
+one_over_three = 1. / 3.
+wire_width = (volume / aspectRatio) ** one_over_three  # width of wire in meters
 wire_length = aspectRatio * wire_width  # length of wire in meters
 resistor_length = wire_length / 2
 resistor_width = wire_width / 4
@@ -36,7 +40,7 @@ damping = 0.9  # fraction of velocity lost in collisions (radiated)
 
 z = 29  # atomic number of material
 datom = 10 * 140e-12  # diameter of Cu is 140e-12
-spacing = (1 / density) ** (1 / 3)
+spacing = (1 / density) ** one_over_three
 
 electronSpeed = 1.6e6  # room temperature metal
 coreSpeed = electronSpeed / sqrt(a * 1800)  # vibrational speed in m/s
@@ -50,19 +54,187 @@ left = box(pos=vec(0, 0, (-resistor_length / 2) - ((wire_length - resistor_lengt
 right = box(pos=vec(0, 0, (resistor_length / 2) + ((wire_length - resistor_length) / 4)), size=box_size, opacity=0.15)
 resistor = box(pos=vec(0, 0, 0), size=vec(resistor_width, resistor_width, resistor_length), opacity=0.15)
 
-# voltage applied
 voltage_across_wire = 250.0  # voltage across wire in V
-
-# create cores
-core = []
-
 volWire = left.size.x * left.size.y * left.size.z + right.size.x * right.size.y * right.size.z
 volResist = resistor.size.x * resistor.size.y * resistor.size.z
 resistFrac = volResist / (volWire + volResist)
 
-for i in range(N):
-    core.append(simple_sphere())
+class Core:
+    def __init__(self, position, radius):
+        self._core = simple_sphere(pos=position, radius=radius)
+        self._vel = coreSpeed * vector.random()
+        self._mass = a * 1.7e-27  # mass in kg (atomic weight of copper is 63)
+        self._force = vec(0, 0, 0)  # force on core in N
+        self._k = (kCore / 2) + kCore * random()
+        self._startPos = position
+        self._ke = 0
+        self._pe = 0
+        self._tote = 0
+        self._emit = 0
 
+    def pos(self):
+        return self._core.pos
+
+    def reset_force(self):
+        self._force = -self._k * (self._core.pos - self._startPos)
+
+    def update_force_with_electron_at(self, position):
+        self._force += k_elec * qe_2 * hat(position - self._core.pos)
+
+    def update_force_with_core_at(self, position):
+        self._force += -k_elec * qe_2 * hat(position - self._core.pos)
+
+    def update_energy(self):
+        self._ke = .5 * self._mass * self._vel.mag2
+        self._pe = .5 * kCore * (self._core.pos - self._startPos).mag2
+        self._tote = self._ke + self._pe
+
+    def larmor_power(self):
+        beta = (1 / c) * self._vel
+        gamma = 1.0 / sqrt(1 - beta.mag2)
+        beta_dot = (self._force / self._mass) / c
+        larmor_power = larmorScale * (2 / (6 * pi * epsilon * c)) * qe_2 * (gamma ** 6) * (
+                    beta_dot.mag * beta_dot.mag - beta.cross(beta_dot).mag2)
+        self._ke = max(0, self._ke - larmor_power * dt)
+        self._vel = self._vel.norm() * sqrt(2 * self._ke / self._mass)
+        self._emit = larmor_power
+        return larmor_power
+
+    def update(self, dt):
+        self._vel += (self._force * dt) / self._mass
+        self._core.pos += self._vel * dt
+
+    def total_energy(self):
+        return self._tote
+
+
+class Electron:
+    def __init__(self, position, radius):
+        self._electron = simple_sphere(pos=position, radius=radius, color=color.yellow, make_trail=False, retain=10)
+        # distribute energies as fermions
+        self._energy = fermiEnergy + kT * log(1 / (random()) - 1)
+        self._mass = 9.11e-31  # mass in kg
+        electron_speed = sqrt(2 * self._energy / self._mass)
+        self._vel = electron_speed * vector.random()
+        self._force = vec(0, 0, 0)  # force on electron in N
+        self._ke = 0
+        self._pe = 0
+        self._tote = 0
+        self._emit = 0
+
+    def reset_force(self, electric_field_in_wire_in_volt_per_m):
+        self._force = - qe * electric_field_in_wire_in_volt_per_m
+
+    def pos(self):
+        return self._electron.pos
+
+    def update_force_with_core_at(self, position):
+        self._force += k_elec * qe_2 * hat(position - self._electron.pos)
+
+    def update_force_with_electron_at(self, position):
+        self._force += -k_elec * qe_2 * hat(position - self._electron.pos)
+
+    def larmor_power(self):
+        beta = (1 / c) * self._vel
+        gamma = 1.0 / sqrt(1 - beta.mag2)
+        beta_dot = (self._force / self._mass) / c
+        larmor_power = larmorScale * (2 / (6 * pi * epsilon * c)) * qe_2 * (gamma ** 6) * (
+                    beta_dot.mag ** 2 - beta.cross(beta_dot).mag2)
+        self._ke = max(0, self._ke - larmor_power * dt)
+        self._vel = self._vel.norm() * sqrt(2 * self._ke / self._mass)
+        self._emit = larmor_power
+        return larmor_power
+
+    def update(self, dt):
+        self._vel += (self._force * dt) / self._mass
+        new_pos = self._electron.pos + self._vel * dt
+
+        # deal with stray electrons outside of resistor (sigh)
+        if (self.pos().z > -(resistor_length / 2)) and (self.pos().z < (resistor_length / 2)):
+            if abs(self.pos().x) > (resistor_width / 2):
+                if self._vel.z > 0:
+                    new_pos.z = -(resistor_length / 2)
+                    self._vel.z = - damping * self._vel.z
+                else:
+                    new_pos.z = (resistor_length / 2)
+                    self._vel.z = - damping * self._vel.z
+
+        if self.pos().z < -(resistor_length / 2) and new_pos.z < (-resistor_length / 2):
+            # we are to left of the resistor and not moving into the resistor
+            # check x and y boundaries in wire
+            if new_pos.x < -(wire_width / 2) or new_pos.x > (wire_width / 2):
+                self._vel.x = -damping * self._vel.x  # swap vel
+                if self.pos().x < -(wire_width / 2): new_pos.x = -wire_width / 2
+                if self.pos().x > (wire_width / 2): new_pos.x = wire_width / 2
+            if new_pos.y < -(wire_width / 2) or new_pos.y > (wire_width / 2):
+                self._vel.y = -damping * self._vel.y  # swap vel
+                if self.pos().y < -(wire_width / 2): new_pos.y = -wire_width / 2
+                if self.pos().y > (wire_width / 2): new_pos.y = wire_width / 2
+            # check far left end of system - pass through to right
+            if new_pos.z < -(wire_length / 2):
+                # self._vel.z = - damping*self._vel.z
+                new_pos.z = (wire_length / 2)
+                # electron[trailIndex].make_trail = false
+
+        elif self.pos().z > (resistor_length / 2) and new_pos.z > (resistor_length / 2):
+            # we are to right of the resistor and not moving into the resistor
+            # check x and y boundaries in wire
+            if new_pos.x < -(wire_width / 2) or new_pos.x > (wire_width / 2):
+                self._vel.x = -damping * self._vel.x  # swap vel
+                if self.pos().x < -(wire_width / 2): new_pos.x = -wire_width / 2
+                if self.pos().x > (wire_width / 2): new_pos.x = wire_width / 2
+            if new_pos.y < -(wire_width / 2) or new_pos.y > (wire_width / 2):
+                self._vel.y = -damping * self._vel.y  # swap vel
+                if self.pos().y < -(wire_width / 2): new_pos.y = -wire_width / 2
+                if self.pos().y > (wire_width / 2): new_pos.y = wire_width / 2
+            # check far right end of system - pass through to left side
+            if new_pos.z > (wire_length / 2):
+                # self._vel.z = - damping*self._vel.z
+                new_pos.z = -(wire_length / 2)
+                # electron[trailIndex].make_trail = false
+
+        if (resistor_length / 2) > self.pos().z > -(resistor_length / 2):
+            if (resistor_length / 2) > new_pos.z > -(resistor_length / 2):
+                # we are in the resistor and not moving out of it
+                # check x and y boundaries in resistor
+                if new_pos.x < -(resistor_width / 2) or new_pos.x > (resistor_width / 2):
+                    self._vel.x = -damping * self._vel.x  # swap vel
+                    if self.pos().x < -(resistor_width / 2): new_pos.x = -resistor_width / 2
+                    if self.pos().x > (resistor_width / 2): new_pos.x = resistor_width / 2
+                if new_pos.y < -(resistor_width / 2) or new_pos.y > (resistor_width / 2):
+                    self._vel.y = -damping * self._vel.y  # swap vel
+                    if self.pos().y < -(resistor_width / 2): new_pos.y = -resistor_width / 2
+                    if self.pos().y > (resistor_width / 2): new_pos.y = resistor_width / 2
+
+        if self.pos().z < -(resistor_length / 2) and new_pos.z >= (-resistor_length / 2):
+            # we are to left of resistor and moving rightward - do we enter?
+            if (abs(self.pos().x) > resistor_length / 2) or (abs(self.pos().y) > resistor_length / 2):
+                # no we didn't fit
+                self._vel.z = -damping * self._vel.z
+                new_pos = vector(self.pos().x, self.pos().y, -resistor_length / 2)
+
+        if self.pos().z > (resistor_length / 2) >= new_pos.z:
+            # we are to right of resistor and moving leftward - do we enter?
+            if (abs(self.pos().x) > resistor_length / 2) or (abs(self.pos().y) > resistor_length / 2):
+                # no we didn't fit
+                self._vel.z = -damping * self._vel.z
+                new_pos = vector(self.pos().x, self.pos().y, resistor_length / 2)
+
+
+        # now update position with new position
+        self._electron.pos = new_pos
+
+    def total_energy(self):
+        return self._tote
+
+    def update_energy(self):
+        self._ke = .5 * self._mass * self._vel.mag2
+        self._tote = self._ke
+
+
+core = []
+electron = []
+for i in range(N):
     # distribute uniformly in density
     if random() < resistFrac:
         z = -(resistor_length / 2) + resistor_length * random()
@@ -76,31 +248,8 @@ for i in range(N):
         x = -(wire_width / 2) + wire_width * random()
         y = -(wire_width / 2) + wire_width * random()
 
-    core[i].pos = vec(x, y, z)
-    core[i].radius = datom / 2
-    core[i].vel = coreSpeed * vector.random()
-    core[i].mass = a * 1.7e-27  # mass in kg (atomic weight of copper is 63)
-    core[i].force = vec(0, 0, 0)  # force on core in N
-    core[i].k = (kCore / 2) + (kCore) * random()
-    core[i].startPos = core[i].pos
-    core[i].ke = 0
-    core[i].pe = 0
-    core[i].tote = 0
-
-# create electrons
-electron = []
-for i in range(N):
-    electron.append(simple_sphere(pos=core[i].pos + 1.0 * spacing * vector.random().norm(), radius=datom / 6, color=color.yellow,
-                         make_trail=False, retain=10))
-    # distribute energies as fermions
-    electron[i].energy = fermiEnergy + kT * log(1 / (random()) - 1)
-    electron[i].mass = 9.11e-31  # mass in kg
-    electronSpeed = sqrt(2 * electron[i].energy / electron[i].mass)
-    electron[i].vel = electronSpeed * vector.random()
-    electron[i].force = vec(0, 0, 0)  # force on electron in N
-    electron[i].ke = 0
-    electron[i].pe = 0
-    electron[i].tote = 0
+    core.append(Core(vec(x, y, z), datom / 2))
+    electron.append(Electron(core[i].pos() + 1.0 * spacing * vector.random().norm(), datom / 3))
 
 measureOnce = False
 initialEnergy = 0
@@ -136,172 +285,63 @@ while True:
 
     # initialize and calculate forces acting on each
     for i in range(N):
-        Ewire = (voltage_across_wire / wire_length) * vec(0, 0, 1)  # electric field in wire in V/m
-        electron[i].force = - qe * Ewire
-        core[i].force = - core[i].k * (core[i].pos - core[i].startPos)
-
-    # attraction of electrons to cores
-    for i in range(N):
-        for j in range(N):
-            r = electron[i].pos - core[j].pos
-            electron[i].force += - k_elec * qe_2 * hat(r)
-            core[j].force += k_elec * qe_2 * hat(r)
+        electron[i].reset_force((voltage_across_wire / wire_length) * vec(0, 0, 1))
+        core[i].reset_force()
 
     for i in range(N):
         for j in range(i):
+            # attraction of electrons to cores
+            electron[i].update_force_with_core_at(core[j].pos())
+            electron[j].update_force_with_core_at(core[i].pos())
+
+            core[i].update_force_with_electron_at(electron[j].pos())
+            core[j].update_force_with_electron_at(electron[i].pos())
+
             # repulsion of free electrons from each other
-            r = electron[i].pos - electron[j].pos
-            electron[i].force += k_elec * qe_2 * hat(r)
-            electron[j].force += - k_elec * qe_2 * hat(r)
+            electron[i].update_force_with_electron_at(electron[j].pos())
+            electron[j].update_force_with_electron_at(electron[i].pos())
 
             # repulsion of cores from each other
-            r = core[i].pos - core[j].pos
-            core[i].force += k_elec * qe_2 * hat(r)
-            core[j].force += - k_elec * qe_2 * hat(r)
+            core[i].update_force_with_core_at(core[j].pos())
+            core[j].update_force_with_core_at(core[i].pos())
 
     # Larmor radiation
     for i in range(N):
-        if electron[i].vel.mag > 0.1 * c:
-            electron[i].vel = 0.1 * c * electron[i].vel.norm()
+        if electron[i]._vel.mag > 0.1 * c:
+            electron[i]._vel = 0.1 * c * electron[i]._vel.norm()
 
-        # calculate energies
-        core[i].ke = (1 / 2) * core[i].mass * core[i].vel.mag2
-        core[i].pe = (1 / 2) * kCore * (core[i].pos - core[i].startPos).mag2
-        core[i].tote = core[i].ke + core[i].pe
-
-        electron[i].ke = (1 / 2) * electron[i].mass * electron[i].vel.mag2
-        electron[i].tote = electron[i].ke
+        core[i].update_energy()
+        electron[i].update_energy()
 
         # let's radiate using Larmor's equation
-        beta = (1 / c) * electron[i].vel
-        gamma = 1.0 / sqrt(1 - beta.mag2)
-        betaDot = (electron[i].force / electron[i].mass) / c
-        larmorPower = larmorScale * (2 / (6 * pi * epsilon * c)) * qe_2 * (gamma ** 6) * (
-                    betaDot.mag ** 2 - beta.cross(betaDot).mag2)
-        electron[i].ke = max(0, electron[i].ke - larmorPower * dt)
-        electron[i].vel = electron[i].vel.norm() * sqrt(2 * electron[i].ke / electron[i].mass)
-        electron[i].emit = larmorPower
-        totalEmission = totalEmission + larmorPower * dt
-
-        # let's radiate using Larmor's equation
-        beta = (1 / c) * core[i].vel
-        gamma = 1.0 / sqrt(1 - beta.mag2)
-        betaDot = (core[i].force / core[i].mass) / c
-        larmorPower = larmorScale * (2 / (6 * pi * epsilon * c)) * qe_2 * (gamma ** 6) * (
-                    betaDot.mag ** 2 - beta.cross(betaDot).mag2)
-        core[i].ke = max(0, core[i].ke - larmorPower * dt)
-        core[i].vel = core[i].vel.norm() * sqrt(2 * core[i].ke / core[i].mass)
-        core[i].emit = larmorPower
-        totalEmission = totalEmission + larmorPower * dt
+        totalEmission += electron[i].larmor_power() * dt
+        totalEmission += core[i].larmor_power() * dt
 
     # update velocities and positions
     totalEnergy = 0
     for i in range(N):
-
-        core[i].vel = core[i].vel + (core[i].force * dt) / core[i].mass
-        core[i].pos = core[i].pos + core[i].vel * dt
-
-        electron[i].vel = electron[i].vel + (electron[i].force * dt) / electron[i].mass
-        electron[i].newpos = electron[i].pos + electron[i].vel * dt
-
-        # deal with stray electrons outside of resistor (sigh)
-        if (electron[i].pos.z > -(resistor_length / 2)) and (electron[i].pos.z < (resistor_length / 2)):
-            if abs(electron[i].pos.x) > (resistor_width / 2):
-                if electron[i].vel.z > 0:
-                    electron[i].newpos.z = -(resistor_length / 2)
-                    electron[i].vel.z = - damping * electron[i].vel.z
-                else:
-                    electron[i].newpos.z = (resistor_length / 2)
-                    electron[i].vel.z = - damping * electron[i].vel.z
-
-        if electron[i].pos.z < -(resistor_length / 2) and electron[i].newpos.z < (-resistor_length / 2):
-            # we are to left of the resistor and not moving into the resistor
-            # check x and y boundaries in wire
-            if electron[i].newpos.x < -(wire_width / 2) or electron[i].newpos.x > (wire_width / 2):
-                electron[i].vel.x = -damping * electron[i].vel.x  # swap vel
-                if electron[i].pos.x < -(wire_width / 2): electron[i].newpos.x = -wire_width / 2
-                if electron[i].pos.x > (wire_width / 2): electron[i].newpos.x = wire_width / 2
-            if electron[i].newpos.y < -(wire_width / 2) or electron[i].newpos.y > (wire_width / 2):
-                electron[i].vel.y = -damping * electron[i].vel.y  # swap vel
-                if electron[i].pos.y < -(wire_width / 2): electron[i].newpos.y = -wire_width / 2
-                if electron[i].pos.y > (wire_width / 2): electron[i].newpos.y = wire_width / 2
-            # check far left end of system - pass through to right
-            if electron[i].newpos.z < -(wire_length / 2):
-                # electron[i].vel.z = - damping*electron[i].vel.z
-                electron[i].newpos.z = (wire_length / 2)
-                # electron[trailIndex].make_trail = false
-
-        elif electron[i].pos.z > (resistor_length / 2) and electron[i].newpos.z > (resistor_length / 2):
-            # we are to right of the resistor and not moving into the resistor
-            # check x and y boundaries in wire
-            if electron[i].newpos.x < -(wire_width / 2) or electron[i].newpos.x > (wire_width / 2):
-                electron[i].vel.x = -damping * electron[i].vel.x  # swap vel
-                if electron[i].pos.x < -(wire_width / 2): electron[i].newpos.x = -wire_width / 2
-                if electron[i].pos.x > (wire_width / 2): electron[i].newpos.x = wire_width / 2
-            if electron[i].newpos.y < -(wire_width / 2) or electron[i].newpos.y > (wire_width / 2):
-                electron[i].vel.y = -damping * electron[i].vel.y  # swap vel
-                if electron[i].pos.y < -(wire_width / 2): electron[i].newpos.y = -wire_width / 2
-                if electron[i].pos.y > (wire_width / 2): electron[i].newpos.y = wire_width / 2
-            # check far right end of system - pass through to left side
-            if electron[i].newpos.z > (wire_length / 2):
-                # electron[i].vel.z = - damping*electron[i].vel.z
-                electron[i].newpos.z = -(wire_length / 2)
-                # electron[trailIndex].make_trail = false
-
-        if (resistor_length / 2) > electron[i].pos.z > -(resistor_length / 2):
-            if (resistor_length / 2) > electron[i].newpos.z > -(resistor_length / 2):
-                # we are in the resistor and not moving out of it
-                # check x and y boundaries in resistor
-                if electron[i].newpos.x < -(resistor_width / 2) or electron[i].newpos.x > (resistor_width / 2):
-                    electron[i].vel.x = -damping * electron[i].vel.x  # swap vel
-                    if electron[i].pos.x < -(resistor_width / 2): electron[i].newpos.x = -resistor_width / 2
-                    if electron[i].pos.x > (resistor_width / 2): electron[i].newpos.x = resistor_width / 2
-                if electron[i].newpos.y < -(resistor_width / 2) or electron[i].newpos.y > (resistor_width / 2):
-                    electron[i].vel.y = -damping * electron[i].vel.y  # swap vel
-                    if electron[i].pos.y < -(resistor_width / 2): electron[i].newpos.y = -resistor_width / 2
-                    if electron[i].pos.y > (resistor_width / 2): electron[i].newpos.y = resistor_width / 2
-
-        if electron[i].pos.z < -(resistor_length / 2) and electron[i].newpos.z >= (-resistor_length / 2):
-            # we are to left of resistor and moving rightward - do we enter?
-            if (abs(electron[i].pos.x) > resistor_length / 2) or (abs(electron[i].pos.y) > resistor_length / 2):
-                # no we didn't fit
-                electron[i].vel.z = -damping * electron[i].vel.z
-                electron[i].newpos = vector(electron[i].pos.x, electron[i].pos.y, -resistor_length / 2)
-
-        if electron[i].pos.z > (resistor_length / 2) >= electron[i].newpos.z:
-            # we are to right of resistor and moving leftward - do we enter?
-            if (abs(electron[i].pos.x) > resistor_length / 2) or (abs(electron[i].pos.y) > resistor_length / 2):
-                # no we didn't fit
-                electron[i].vel.z = -damping * electron[i].vel.z
-                electron[i].newpos = vector(electron[i].pos.x, electron[i].pos.y, resistor_length / 2)
-
-
-        # now update position with new position
-        electron[i].pos = electron[i].newpos
-        totalEnergy = totalEnergy + electron[i].tote + core[i].tote
-    # if (electron[trailIndex].make_trail == false):
-    # trailIndex = random(N)
-    # electron[trailIndex].make_trail = true
-    # electron[trailIndex].retain = 10
+        core[i].update(dt)
+        electron[i].update(dt)
+        totalEnergy = totalEnergy + electron[i].total_energy() + core[i].total_energy()
 
     if not measureOnce:
         measureOnce = True
         initialEnergy = totalEnergy
 
     # color code by radiation
-    coreScale = larmorScale * 0.10 * (1 / 2) * core[0].mass * coreSpeed ** 2
-    electronScale = larmorScale * 2e6 * (voltage_across_wire / 20) * k_elec * qe ** 2 / spacing
+    coreScale = larmorScale * 0.10 * (1 / 2) * core[0]._mass * coreSpeed ** 2
+    electronScale = larmorScale * 2e6 * (voltage_across_wire / 20) * k_elec * qe * qe / spacing
 
     for i in range(N):
-        core[i].color = vec(core[i].emit / coreScale, 0.05, 0.05)
-        electron[i].color = vec(0.05, electron[i].emit / electronScale, electron[i].emit / electronScale)
+        core[i]._core.color = vec(core[i]._emit / coreScale, 0.05, 0.05)
+        electron[i]._electron.color = vec(0.05, electron[i]._emit / electronScale, electron[i]._emit / electronScale)
 
-        # calculate current in resistor
+    # calculate current in resistor
     avgVel = 0
     numInR = 0
     for i in range(N):
-        if abs(electron[i].pos.z < resistor_length / 2):
-            avgVel = avgVel + electron[i].vel.z
+        if abs(electron[i].pos().z < resistor_length / 2):
+            avgVel = avgVel + electron[i]._vel.z
             numInR = numInR + 1
     avgVel = avgVel / numInR
     current = - (qe * avgVel)
