@@ -125,7 +125,7 @@ You may be surprised though to find out what happens when you drop such a simple
 </figure>
 <figure class="right_image">
   <a href="moment_of_inertia.html">
-    <img alt="Moment of inertia ball" src="images/moment_of_inertia.png" title="Click to animate"/>
+    <img alt="Moment of inertia" src="images/moment_of_inertia.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <figcaption>Moment of inertia.</figcaption>
 </figure>
