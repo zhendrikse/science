@@ -70,6 +70,40 @@ ang2 = asin(n12 * sin(ang1))
 rad_fac = 1e-3
 shift_fac = 100
 
+class Ray:
+    def __init__(self, position, radius):
+        self._ray = simple_sphere(pos=position, radius=radius, color=color.white, make_trail=True, trail_radius=radius)
+        self._velocity = vec(0, 0, 0)
+
+    def change_color_to(self, colour):
+        self._ray.color = colour
+        self._ray.trail_color = colour
+
+    def update(self, angle):
+        if self._ray.pos.x >= 0:
+            self._velocity = v2 * vec(cos(angle), sin(angle), 0)
+
+        self._ray.pos += self._velocity * dt
+
+    def reset(self, angle, ray_shift):
+        self._ray.clear_trail()
+        self._ray.make_trail = False
+        self._ray.pos = med_thick * vec(-cos(angle), -sin(angle), 0) + ray_shift
+        self._ray.radius = rad_fac * med_thick
+        self._ray.color = color.white
+        self._ray.make_trail = True
+        self._ray.trail_radius = self._ray.radius
+        self._ray.v = v1 * vec(cos(angle), sin(angle), 0)
+
+    def pos(self):
+        return self._ray.pos
+
+    def radius(self):
+        return self._ray.radius
+
+    def update_position(self):
+        self._ray.pos += self._velocity * dt
+
 class Rays:
     def __init__(self, ray_count=6, angle=45):
         self._rays = []
