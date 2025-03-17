@@ -15,6 +15,9 @@ from vpython import canvas, rate, box, vec, vector, color, cylinder, sphere, con
 
 display = canvas(title=title, width = 400, height = 350, autoscale = False, range = 2)
 
+g = vec(0, -1, 0)  # use natural units
+k = 2  # coefficient of air resistance, assume F = -k*A*v
+
 class Person:
     def __init__(self, position, mass=1, velocity=vec(0, 0, 0), colour=color.green):
         self._head = sphere(radius=0.07, color=color.yellow)
@@ -58,20 +61,6 @@ class Person:
     def mass(self):
         return self._mass
 
-
-## physics constants
-g = vec(0, -1, 0)  # use natural units
-k = 2  # coefficient of air resistance, assume F = -k*A*v
-
-## setup the "world"
-h0 = vec(0, 0, 0)  # origin of zero height
-world_height = 25
-world_radius = 5
-world = cylinder(pos=h0, axis=vec(0, world_height, 0), radius=world_radius, opacity=0, shininess=0,
-                 texture={
-                     'file': 'https://images.unsplash.com/photo-1533002832-1721d16b4bb9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1578&q=80',
-                     'place': ['sides'], 'turn': -1})
-
 class Parachute:
     def __init__(self, position, chuteoffset=vec(0, 1, 0)):
         self._chute = cylinder(pos=position + chuteoffset, axis=vec(0, 0.02, 0), radius=0, color=color.red, opacity=0.8)
@@ -90,10 +79,21 @@ class Parachute:
         self._chute.radius = 0
         self._chute_strings.radius = 0
 
+    def area(self):
+        return pi * self._chute.radius * self._chute.radius
 
 # # label the parameters
 # textbox = label(pos=h0+vec(0,-0.2,0))
 # textbox.text = '<i>C</i><sub>restitution</sub> = '+cres
+## setup the "world"
+h0 = vec(0, 0, 0)  # origin of zero height
+world_height = 25
+world_radius = 5
+world = cylinder(pos=h0, axis=vec(0, world_height, 0), radius=world_radius, opacity=0, shininess=0,
+                 texture={
+                     'file': 'https://images.unsplash.com/photo-1533002832-1721d16b4bb9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1578&q=80',
+                     'place': ['sides'], 'turn': -1})
+
 
 # ground for collisions
 ground = box(pos=h0, size=0.4 * vec(0.5 * world_radius, 0.1, 0.5 * world_radius), color=color.white, opacity=0.5)
@@ -101,7 +101,7 @@ person = Person(h0 + 0.9 * vec(0, world_height, 0))
 parachute = Parachute(person.body_pos())
 
 display.append_to_title('<b>Chute size</b>')
-ctrl = slider(pos=display.title_anchor, top=15, length=300, min=0, max=0.9, step=0.05, bind=parachute.modify)
+_ = slider(pos=display.title_anchor, top=15, length=300, min=0, max=0.9, step=0.05, bind=parachute.modify)
 display.append_to_title('\n\n')
 
 # graphs
@@ -142,12 +142,8 @@ dt = 0.001
 while t < time_max:  # while True:
     rate(1 / dt)
 
-    # get value from slider
-    chute_radius = ctrl.value
-    parachute_area = pi * chute_radius * chute_radius  # area of parachute
-    resistance_force = -k * parachute_area * person.velocity()
+    resistance_force = -k * parachute.area() * person.velocity()
     total_force = person.mass() * g + resistance_force
-
     person.update(total_force, dt)
     parachute.update(person.body_pos())
 
@@ -165,15 +161,9 @@ while t < time_max:  # while True:
     # auto-scroll
     display.camera.follow(person._body)
 
-    # collisions of block a with ground
-    cres = 0.5  # coefficient of restitution
     if person.position().y < ground.pos.y:
+        cres = 0.5  # coefficient of restitution
         person.land(cres)
-        # note that force (acceleration) is not modified by collision as it would be huge; momentum is directly changed
-        # v = cres*vec(0,mag(v),0)
-        ## vanish the chute
-        ctrl.value = 0
-        #deploy(0)  # since bind function not automatically called
         parachute.reset()
 
     t += dt
