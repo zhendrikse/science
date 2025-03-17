@@ -3,7 +3,7 @@
 from vpython import canvas, simple_sphere, sqrt, rate, pi, color, arrow, label, box, vec, vector, random, log, slider, hat, graph, gcurve
 
 title = """&#x2022; Based on this <a href="https://trinket.io/glowscript/22601b616b">original code</a>.
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electronics/code/resistor_2.py">resistor_2.py</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electronics/code/larmor_resistor.py">larmor_resistor.py</a>
 &#x2022; Includes <a href="https://en.wikipedia.org/wiki/Larmor_formula">calculation of Larmor radiation</a>
 &#x2022; Use the slider below to adjust the voltage.
 """
