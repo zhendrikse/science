@@ -106,7 +106,7 @@ If I have ever made any valuable discoveries, it has been due more to patient at
 </div>
 <p style="clear: both;"></p>
 
-### Snowflake
+### Snowflake &amp; parachute jump
 
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -120,8 +120,11 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   </figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVER FOR FUTURE APPLICATION
-    -->
+  <a href="parachute.html">
+    <img alt="Parachute" src="images/parachute.png" title="Click to animate"/>
+  </a>
+  <figcaption>A numeric model that simulates a parachute jump.  
+  </figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

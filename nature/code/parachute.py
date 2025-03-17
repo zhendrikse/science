@@ -1,20 +1,19 @@
-#GlowScript 3.2 VPython
+#Web VPython 3.2
 
-# https://sciencesamurai.trinket.io/a-level-physics-programming#/dynamics-understanding-motion/free-fall-with-parachute
-##############################
-# implementation of background graphic adapted from Let's Code Physics
-#   https://www.youtube.com/watch?v=3PS7PjZ2vzY
-# panorama image from https://unsplash.com/photos/dLkyhhC-e6Y
-###########################
-# note: no air resistance without parachute
-# parachute deployment of various sizes
-# upon collision with ground, parachute collapses (and ball bounces)
-##############################
+title="""&#x2022; Based on <a href="https://sciencesamurai.trinket.io/a-level-physics-programming#/dynamics-understanding-motion/free-fall-with-parachute">Original code</a> by <a href="https://sciencesamurai.trinket.io/">sciencesamurai.trinket.io</a>
+&#x2022; Implementation of background graphic adapted from <a href="https://www.youtube.com/@LetsCodePhysics">Let&apos;s code physics</a> (<a href="https://www.youtube.com/watch?v=3PS7PjZ2vzY">video</a>)
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/nature/code/parachute.py">parachute.py</a>
+&#x2022; Panorama image from <a href="https://unsplash.com/photos/dLkyhhC-e6Y">unsplash.com</a>
+
+&#x2022; Move slider to deploy parachute 
+&#x2022; There is no air resistance without parachute
+&#x2022; Upon collision with ground, parachute collapses (and person bounces) 
+
+"""
 
 from vpython import canvas, rate, box, vec, vector, color, cylinder, sphere, cone, slider, graph, gcurve, arrow, label, pi, mag
 
-display = canvas(width = 400, height = 350, autoscale = False, range = 2)
-
+display = canvas(title=title, width = 400, height = 350, autoscale = False, range = 2)
 
 class Person:
     def __init__(self, position, mass=1, velocity=vec(0, 0, 0), colour=color.green):
@@ -56,12 +55,9 @@ class Person:
     def land(self, cres):
         self._momentum = cres * vec(0, mag(self._momentum), 0)  # momentum upwards
 
+    def mass(self):
+        return self._mass
 
-# scene.caption = """Ball is modelled as point object; finite size is for visualisation."""+'\n\n'
-display.caption = '\n\n'
-
-# maximum graph range (integration time?)
-tmax = 40
 
 ## physics constants
 g = vec(0, -1, 0)  # use natural units
@@ -76,49 +72,52 @@ world = cylinder(pos=h0, axis=vec(0, world_height, 0), radius=world_radius, opac
                      'file': 'https://images.unsplash.com/photo-1533002832-1721d16b4bb9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1578&q=80',
                      'place': ['sides'], 'turn': -1})
 
+class Parachute:
+    def __init__(self, position, chuteoffset=vec(0, 1, 0)):
+        self._chute = cylinder(pos=position + chuteoffset, axis=vec(0, 0.02, 0), radius=0, color=color.red, opacity=0.8)
+        self._chute_strings = cone(pos=self._chute.pos, axis=-chuteoffset, radius=0, color=color.gray(0.5), opacity=0.2)
+        self._chuteoffset = chuteoffset
+
+    def modify(self, event):
+        self._chute.radius = event.value
+        self._chute_strings.radius = event.value
+
+    def update(self, position):
+        self._chute.pos = position + self._chuteoffset
+        self._chute_strings.pos = self._chute.pos
+
+    def reset(self):
+        self._chute.radius = 0
+        self._chute_strings.radius = 0
+
+
 # # label the parameters
 # textbox = label(pos=h0+vec(0,-0.2,0))
 # textbox.text = '<i>C</i><sub>restitution</sub> = '+cres
 
 # ground for collisions
 ground = box(pos=h0, size=0.4 * vec(0.5 * world_radius, 0.1, 0.5 * world_radius), color=color.white, opacity=0.5)
-
-ball = sphere(pos=h0 + 0.9 * vec(0, world_height, 0), radius=0.04, color=color.blue, opacity=1)
 person = Person(h0 + 0.9 * vec(0, world_height, 0))
+parachute = Parachute(person.body_pos())
 
-
-m = 1  # mass of ball (and parachute)
-ball.pvec = m * vec(0, 0, 0)  # momentum
-
-
-# chute
-chute_radius = 0
-chuteoffset = vec(0, 1, 0)  # appear above the ball
-chute = cylinder(pos=person.body_pos() + chuteoffset, axis=vec(0, 0.02, 0), radius=chute_radius, color=color.red, opacity=0.8)
-chute_strings = cone(pos=chute.pos, axis=-chuteoffset, radius=chute_radius, color=color.gray(0.5), opacity=0.2)
-
-
-def deploy(event):
-    chute.radius = event.value
-    chute_strings.radius = event.value
-
-
-ctrl = slider(pos=display.title_anchor, top=15, length=300, min=0, max=0.9, step=0.1, bind=deploy)
-display.append_to_title('chute size' + '\n\n')
+display.append_to_title('<b>Chute size</b>')
+ctrl = slider(pos=display.title_anchor, top=15, length=300, min=0, max=0.9, step=0.05, bind=parachute.modify)
+display.append_to_title('\n\n')
 
 # graphs
+time_max = 40
 g1 = graph(scroll=True, width=400, height=150, ytitle="position", xmin=0,
-           xmax=tmax, xtitle="time",title='Height against time', background=color.black)
+           xmax=time_max, xtitle="time", title='Height against time', background=color.black)
 height_curve = gcurve(graph=g1, interval=10, color=color.red)
 g2 = graph(scroll=True, width=400, height=150, ytitle="velocity", xmin=0,
-           xmax=tmax, xtitle="time",title='Velocity against time', background=color.black)
+           xmax=time_max, xtitle="time", title='Velocity against time', background=color.black)
 velocity_curve = gcurve(graph=g2, interval=10, color=color.green)
 g3 = graph(scroll=True, width=400, height=150, ytitle="acceleration", xmin=0,
-           xmax=tmax ,xtitle="time",title='Acceleration against time', background=color.black)
+           xmax=time_max, xtitle="time", title='Acceleration against time', background=color.black)
 acceleration_curve = gcurve(graph=g3, interval=10, color=color.purple)
 
 g0 = graph(scroll=True, width=400, height=250, xtitle="time", ytitle="energy", xmin=0,
-           xmax=tmax, background=color.black, title='Energy against time')
+           xmax=time_max, background=color.black, title='Energy against time')
 potential_energy_curve = gcurve(graph=g0, interval=10, color=color.red, label="PE")
 kinetic_energy_curve = gcurve(graph=g0, interval=10, color=color.green, label="KE")
 total_energy_curve = gcurve(graph=g0, interval=10, color=color.black, label="Total")
@@ -127,70 +126,65 @@ total_energy_curve = gcurve(graph=g0, interval=10, color=color.black, label="Tot
 # velocity arrow on the left
 arrow_offset = vec(-1, 0, 0)
 velocity_scale = 0.3
-vel = arrow(pos=ball.pos + arrow_offset - person.velocity() / 2, axis=person.velocity() * velocity_scale, color=color.green, shaftwidth=0.04, round=True)
+vel = arrow(pos=person.position() + arrow_offset - person.velocity() / 2, axis=person.velocity() * velocity_scale, color=color.green, shaftwidth=0.04, round=True)
 label_offset = vec(-0.5, 0, 0)
 label_speed = label(pos=vel.pos + label_offset + person.velocity() / 2, box=False, opacity=0.1, text='vel')
 # acceleration arrow on the right
 arrow_offset_right = vec(1, 0, 0)
 acclnscale = 0.8
-acceleration_arrow = arrow(pos=ball.pos + arrow_offset_right, axis=g * acclnscale, color=color.purple, shaftwidth=0.06, round=False)
+acceleration_arrow = arrow(pos=person.position() + arrow_offset_right, axis=g * acclnscale, color=color.purple, shaftwidth=0.06, round=False)
 labeloffsetright = vec(0.5, 0, 0)
 acceleration_label = label(pos=acceleration_arrow.pos + labeloffsetright, box=False, opacity=0.1, text='accel')
 
 ## dynamics
 t = 0
 dt = 0.001
-while t < tmax:  # while True:
+while t < time_max:  # while True:
     rate(1 / dt)
 
     # get value from slider
     chute_radius = ctrl.value
     parachute_area = pi * chute_radius * chute_radius  # area of parachute
     resistance_force = -k * parachute_area * person.velocity()
-    total_force = m * g + resistance_force
+    total_force = person.mass() * g + resistance_force
 
-    ball.pvec += total_force * dt
-    ball.pos += ball.pvec / m * dt
     person.update(total_force, dt)
+    parachute.update(person.body_pos())
 
 
-    chute.pos = person.body_pos() + chuteoffset
-    chute_strings.pos = chute.pos
     vel.pos = person.position() + arrow_offset - person.velocity() / 2  # centre of arrow with the ball
     vel.axis = person.velocity()
 
     label_speed.pos = vel.pos + label_offset + person.velocity() / 2  # aligned with ball
     label_speed.text = '<i>v</i> = ' + str(round(100 * person.velocity().y) / 100)
     acceleration_arrow.pos = person.position() + arrow_offset_right
-    acceleration_arrow.axis = total_force / m
+    acceleration_arrow.axis = total_force / person.mass()
     acceleration_label.pos = acceleration_arrow.pos + labeloffsetright
-    acceleration_label.text = '<i>a</i> = ' + str(round(1000 * total_force.y / m) / 1000)
+    acceleration_label.text = '<i>a</i> = ' + str(round(1000 * total_force.y / person.mass()) / 1000)
 
     # auto-scroll
-    display.camera.follow(ball)
+    display.camera.follow(person._body)
 
     # collisions of block a with ground
     cres = 0.5  # coefficient of restitution
     if person.position().y < ground.pos.y:
         person.land(cres)
-        ball.pvec = cres * vec(0, mag(ball.pvec), 0)  # momentum upwards
         # note that force (acceleration) is not modified by collision as it would be huge; momentum is directly changed
         # v = cres*vec(0,mag(v),0)
         ## vanish the chute
         ctrl.value = 0
         #deploy(0)  # since bind function not automatically called
-        chute.radius = 0
-        chute_strings.radius = 0
+        parachute.reset()
 
     t += dt
 
     # graphs
     height_curve.plot(data=[t, person.position().y - ground.pos.y])
     velocity_curve.plot(data=[t, person.velocity().y])
-    acceleration_curve.plot(data=[t, total_force.y / m])
+    acceleration_curve.plot(data=[t, total_force.y / person.mass()])
 
-    pe = m * (-g.y) * (person.position().y - ground.pos.y)
-    ke = 0.5 * m * person.velocity().y * person.velocity().y
+    pe = person.mass() * (-g.y) * (person.position().y - ground.pos.y)
+    ke = 0.5 * person.mass() * person.velocity().y * person.velocity().y
 
     potential_energy_curve.plot(data=[t, pe])
     kinetic_energy_curve.plot(data=[t, ke])
