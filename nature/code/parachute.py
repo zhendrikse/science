@@ -24,10 +24,11 @@ class Person:
         self._arm_b = cylinder(axis=vector(0.15, -0.15, 0), radius=0.02, color=colour)
         self._leg_a = cylinder(axis=vector(0.1, -0.15, 0), radius=0.02, color=colour)
         self._leg_b = cylinder(axis=vector(-0.1, -0.15, 0), radius=0.02, color=colour)
-        self._position = position
-        self._update_body_parts()
+
         self._mass = mass # includes parachute
         self._momentum = velocity * mass
+        self._position = position
+        self._update_body_parts()
 
     def _update_body_parts(self):
         position = self._position + vec(0.1, 0, 0)
@@ -38,8 +39,9 @@ class Person:
         self._leg_a.pos=self._head.pos + self._body.axis
         self._leg_b.pos=self._head.pos + self._body.axis
 
-    def update(self, dx):
-        self._position += dx
+    def update(self, force, dt):
+        self._momentum += force * dt
+        self._position += self._momentum / self._mass * dt
         self._update_body_parts()
 
     def body_pos(self):
@@ -47,6 +49,12 @@ class Person:
 
     def position(self):
         return self._position
+
+    def velocity(self):
+        return self._momentum / self._mass
+
+    def land(self, cres):
+        self._momentum = cres * vec(0, mag(self._momentum), 0)  # momentum upwards
 
 
 # scene.caption = """Ball is modelled as point object; finite size is for visualisation."""+'\n\n'
@@ -56,7 +64,6 @@ display.caption = '\n\n'
 tmax = 40
 
 ## physics constants
-cres = 0.5  # coefficient of restitution
 g = vec(0, -1, 0)  # use natural units
 k = 2  # coefficient of air resistance, assume F = -k*A*v
 
@@ -80,22 +87,20 @@ ball = sphere(pos=h0 + 0.9 * vec(0, world_height, 0), radius=0.04, color=color.b
 person = Person(h0 + 0.9 * vec(0, world_height, 0))
 
 
-v = vec(0, 0, 0)
 m = 1  # mass of ball (and parachute)
-ball.pvec = m * v  # momentum
+ball.pvec = m * vec(0, 0, 0)  # momentum
 
 
 # chute
-R = 0
+chute_radius = 0
 chuteoffset = vec(0, 1, 0)  # appear above the ball
-chute = cylinder(pos=person.body_pos() + chuteoffset, axis=vec(0, 0.02, 0), radius=R, color=color.red, opacity=0.8)
-strings = cone(pos=chute.pos, axis=-chuteoffset, radius=R, color=color.gray(0.5), opacity=0.2)
+chute = cylinder(pos=person.body_pos() + chuteoffset, axis=vec(0, 0.02, 0), radius=chute_radius, color=color.red, opacity=0.8)
+chute_strings = cone(pos=chute.pos, axis=-chuteoffset, radius=chute_radius, color=color.gray(0.5), opacity=0.2)
 
 
 def deploy(event):
-    # print(R.value)
     chute.radius = event.value
-    strings.radius = event.value
+    chute_strings.radius = event.value
 
 
 ctrl = slider(pos=display.title_anchor, top=15, length=300, min=0, max=0.9, step=0.1, bind=deploy)
@@ -122,9 +127,9 @@ total_energy_curve = gcurve(graph=g0, interval=10, color=color.black, label="Tot
 # velocity arrow on the left
 arrow_offset = vec(-1, 0, 0)
 velocity_scale = 0.3
-vel = arrow(pos=ball.pos + arrow_offset - v / 2, axis=v * velocity_scale, color=color.green, shaftwidth=0.04, round=True)
+vel = arrow(pos=ball.pos + arrow_offset - person.velocity() / 2, axis=person.velocity() * velocity_scale, color=color.green, shaftwidth=0.04, round=True)
 label_offset = vec(-0.5, 0, 0)
-label_speed = label(pos=vel.pos + label_offset + v / 2, box=False, opacity=0.1, text='vel')
+label_speed = label(pos=vel.pos + label_offset + person.velocity() / 2, box=False, opacity=0.1, text='vel')
 # acceleration arrow on the right
 arrow_offset_right = vec(1, 0, 0)
 acclnscale = 0.8
@@ -139,25 +144,23 @@ while t < tmax:  # while True:
     rate(1 / dt)
 
     # get value from slider
-    R = ctrl.value
-    parachute_area = pi * R * R  # area of parachute
-    resistance_force = -k * parachute_area * v
+    chute_radius = ctrl.value
+    parachute_area = pi * chute_radius * chute_radius  # area of parachute
+    resistance_force = -k * parachute_area * person.velocity()
     total_force = m * g + resistance_force
 
     ball.pvec += total_force * dt
-    v = ball.pvec / m
-
-    ball.pos += v * dt
-    person.update(v * dt)
+    ball.pos += ball.pvec / m * dt
+    person.update(total_force, dt)
 
 
     chute.pos = person.body_pos() + chuteoffset
-    strings.pos = chute.pos
-    vel.pos = person.position() + arrow_offset - v / 2  # centre of arrow with the ball
-    vel.axis = v
+    chute_strings.pos = chute.pos
+    vel.pos = person.position() + arrow_offset - person.velocity() / 2  # centre of arrow with the ball
+    vel.axis = person.velocity()
 
-    label_speed.pos = vel.pos + label_offset + v / 2  # aligned with ball
-    label_speed.text = '<i>v</i> = ' + str(round(100 * v.y) / 100)
+    label_speed.pos = vel.pos + label_offset + person.velocity() / 2  # aligned with ball
+    label_speed.text = '<i>v</i> = ' + str(round(100 * person.velocity().y) / 100)
     acceleration_arrow.pos = person.position() + arrow_offset_right
     acceleration_arrow.axis = total_force / m
     acceleration_label.pos = acceleration_arrow.pos + labeloffsetright
@@ -167,7 +170,9 @@ while t < tmax:  # while True:
     display.camera.follow(ball)
 
     # collisions of block a with ground
+    cres = 0.5  # coefficient of restitution
     if person.position().y < ground.pos.y:
+        person.land(cres)
         ball.pvec = cres * vec(0, mag(ball.pvec), 0)  # momentum upwards
         # note that force (acceleration) is not modified by collision as it would be huge; momentum is directly changed
         # v = cres*vec(0,mag(v),0)
@@ -175,17 +180,17 @@ while t < tmax:  # while True:
         ctrl.value = 0
         #deploy(0)  # since bind function not automatically called
         chute.radius = 0
-        strings.radius = 0
+        chute_strings.radius = 0
 
     t += dt
 
     # graphs
     height_curve.plot(data=[t, person.position().y - ground.pos.y])
-    velocity_curve.plot(data=[t, v.y])
+    velocity_curve.plot(data=[t, person.velocity().y])
     acceleration_curve.plot(data=[t, total_force.y / m])
 
     pe = m * (-g.y) * (person.position().y - ground.pos.y)
-    ke = 0.5 * m * v.y * v.y
+    ke = 0.5 * m * person.velocity().y * person.velocity().y
 
     potential_energy_curve.plot(data=[t, pe])
     kinetic_energy_curve.plot(data=[t, ke])
