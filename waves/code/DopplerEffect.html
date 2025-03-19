@@ -10,7 +10,7 @@
 // START JAVASCRIPT
 ;(function() {;
 var ρσ_modules = {};
-var source_receiver_distance_sign;
+var signdiffx, wind_velocity_vector;
 ρσ_modules.pythonize = {};
 
 (function(){
@@ -52,7 +52,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
 
-    var version, print, arange, __name__, type, ρσ_ls, title, velocity_source, velocity_receiver, velocity_wind, scene, source, receiver, source_receiver_distance_sign, wind_velocity_vector, nudge, nudgev, velocity_source_arrow, velocity_receiver_arrow, velocity_wind_arrow, source_label_text, velocity_source_label, receiver_label_text, velocity_receiver_label, wind_label_text, velocity_wind_label, tmax, dt, twopi, N, ball, ball0flag, source_label, received_label, told, i, new_label_text, j, t;
+    var version, print, arange, __name__, type, ρσ_ls, title, vs, vr, vw, scale_factor, display, source, receiver, diffx, signdiffx, wind_velocity_vector, nudge, nudgev, velocity_source_arrow, velocity_receiver_arrow, velocity_wind_arrow, velocity_source_label, velocity_receiver_label, velocity_wind_label, tmax, dt, N, ball, ball0flag, sourcelabel, receivedlabel, _, told, i, j, t;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,167 +64,185 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "9";
-    title = "\n&#x2022; Original doppler-Wavefront.py by <a href=\"http://physics.syr.edu/~salgado/\">Rob Salgado<\/a> (salgado@physics.syr.edu)\n&#x2022; Updated by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/waves/code/doppler_effect.py\">doppler_effect.py</a>\n\n";
+    "8";
+    title = "&#x2022; Original <a href=\"https://www.visualrelativity.com/vpython/doppler-wavefront.py\">doppler-Wavefront.py<\/a> by <a href=\"http://physics.syr.edu/~salgado/\">Rob Salgado</a> (salgado@physics.syr.edu)\n&#x2022; Updated by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/waves/code/doppler_effect.py\">doppler_effect.py</a>\n\n";
+    "10";
+    vs = .2;
     "11";
-    velocity_source = .2;
+    vr = 1["-u"]()["*"](.3);
     "12";
-    velocity_receiver = 1["-u"]()["*"](.3);
-    "13";
-    velocity_wind = .1;
-    "15";
-    scene = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), title: title})]);
-    (await sleep(.1));
+    vw = .1;
+    "14";
+    scale_factor = 5;
     "16";
-    scene.autoscale = 0;
-    "18";
-    source = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .2, pos: vector(0, 0, 0), vel: vector(velocity_source, 0, 0), color: color.red})]);
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), title: title})]);
+    (await sleep(.1));
+    "17";
+    display.autoscale = false;
     "19";
-    receiver = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .2, pos: vector(3, 0, 0), vel: vector(velocity_receiver, 0, 0), color: color.green})]);
+    source = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .2, pos: vector(0, 0, 0), vel: vector(vs, 0, 0), color: color.red})]);
+    "20";
+    receiver = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .2, pos: vector(3, 0, 0), vel: vector(vr, 0, 0), color: color.green})]);
+    "21";
+    diffx = receiver.pos.x["-"](1["*"](source.pos.x));
     "22";
-    async function source_receiver_distance() {
+    if ((diffx === 0 || typeof diffx === "object" && ρσ_equals(diffx, 0))) {
         "23";
-        return receiver.pos.x["-"](1["*"](source.pos.x));
-    };
-    if (!source_receiver_distance.__module__) Object.defineProperties(source_receiver_distance, {
-        __module__ : {value: null}
-    });
-
-    "26";
-    async function sign_of_source_receiver_distance() {
+        signdiffx = 0;
+        "24";
+    } else if (ρσ_equals(diffx, abs(diffx))) {
+        "25";
+        signdiffx = 1;
+        "26";
+    } else {
         "27";
-        if ((source_receiver_distance === 0 || typeof source_receiver_distance === "object" && ρσ_equals(source_receiver_distance, 0))) {
-            "28";
-            return 0;
-            "29";
-        } else if (ρσ_equals(source_receiver_distance, abs((await source_receiver_distance())))) {
-            "30";
-            return 1;
-            "31";
-        } else {
-            "32";
-            return 1["-u"]()["*"](1);
-        }
-    };
-    if (!sign_of_source_receiver_distance.__module__) Object.defineProperties(sign_of_source_receiver_distance, {
-        __module__ : {value: null}
-    });
-
-    "35";
-    source_receiver_distance_sign = (await sign_of_source_receiver_distance());
-    "37";
-    wind_velocity_vector = vector(velocity_wind, 0, 0);
-    "39";
+        signdiffx = 1["-u"]()["*"](1);
+    }
+    "28";
+    wind_velocity_vector = vector(vw, 0, 0);
+    "30";
     nudge = vector(0, 6, 0);
-    "40";
+    "31";
     nudgev = vector(0, .5, 0);
-    "42";
-    velocity_source_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: source.pos["+"](nudge), axis: 5["*"](vector(velocity_source, 0, 0)), fixedwidth: 1, shaftwidth: .1, color: source.color})]);
-    "44";
-    velocity_receiver_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: receiver.pos["+"](nudge)["-"](1["*"](nudgev)), axis: 5["*"](vector(velocity_receiver, 0, 0)), fixedwidth: 1, shaftwidth: .1, color: receiver.color})]);
-    "47";
-    velocity_wind_arrow = null;
-    "48";
-    if ((velocity_wind !== 0 && (typeof velocity_wind !== "object" || ρσ_not_equals(velocity_wind, 0)))) {
-        "49";
-        velocity_wind_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: nudge["+"](2["*"](vector(0, 1, 0))), axis: 5["*"](vector(velocity_wind, 0, 0)), fixedwidth: 1, shaftwidth: .1, color: color.cyan})]);
-    }
-    "53";
-    source_label_text = "velocity="["+"](str(velocity_source));
-    "54";
-    velocity_source_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: velocity_source_arrow.pos["+"](nudge), text: source_label_text, color: source.color, box: 1})]);
-    "55";
-    receiver_label_text = "velocity="["+"](str(velocity_receiver));
-    "56";
-    velocity_receiver_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: velocity_receiver_arrow.pos["-"](1["*"](nudgev)), text: receiver_label_text, color: receiver.color})]);
-    "58";
-    if ((velocity_wind !== 0 && (typeof velocity_wind !== "object" || ρσ_not_equals(velocity_wind, 0)))) {
-        "59";
-        wind_label_text = "wind speed = "["+"](str(velocity_wind));
-        "60";
-        velocity_wind_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: velocity_wind_arrow.pos["+"](vector(0, 1, 0)), text: wind_label_text, color: velocity_wind_arrow.color})]);
-    }
-    "63";
+    "33";
+    velocity_source_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: source.pos["+"](nudge), axis: 5["*"](vector(vs, 0, 0)), fixedwidth: 1, shaftwidth: .1, color: source.color})]);
+    "34";
+    velocity_receiver_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: receiver.pos["+"](nudge)["-"](1["*"](nudgev)), axis: 5["*"](vector(vr, 0, 0)), fixedwidth: 1, shaftwidth: .1, color: receiver.color})]);
+    "35";
+    velocity_wind_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: nudge["+"](2["*"](vector(0, 1, 0))), axis: 5["*"](vector(vw, 0, 0)), fixedwidth: 1, shaftwidth: .1, color: color.cyan})]);
+    "37";
+    velocity_source_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: velocity_source_arrow.pos["+"](nudge), text: "{:.2f}".format(vs), color: source.color, box: 1})]);
+    "38";
+    velocity_receiver_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: velocity_receiver_arrow.pos["-"](1["*"](nudgev)), text: "{:.2f}".format(vr), color: receiver.color})]);
+    "39";
+    velocity_wind_label = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: velocity_wind_arrow.pos["+"](vector(0, 1, 0)), text: "Wind speed={:.2f}".format(vw), color: velocity_wind_arrow.color})]);
+    "41";
     tmax = 12;
-    "64";
+    "42";
     dt = .005;
-    "65";
-    twopi = 2["*"](pi);
-    "66";
+    "43";
     N = 32;
-    "68";
+    "45";
     ball = ρσ_list_decorate([]);
-    "69";
+    "46";
     ball0flag = ρσ_list_decorate([]);
-    "70";
-    source_label = ρσ_list_decorate([]);
-    "71";
-    received_label = ρσ_list_decorate([]);
-    "74";
+    "47";
+    sourcelabel = ρσ_list_decorate([]);
+    "48";
+    receivedlabel = ρσ_list_decorate([]);
+    "51";
     async function new_wave(t) {
-        var ρσ_ls, theta, j, source_label_text;
-        "75";
+        var ρσ_ls, theta, i;
+        "52";
         ball0flag.append(0);
-        "76";
+        "53";
         ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .05, pos: source.pos, color: vec(.5, 0, 0)})]);
-        "77";
+        "54";
         ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .05, pos: receiver.pos, color: vec(0, .5, 0)})]);
-        "79";
+        "56";
         for (var ρσ_Index1 = 0; ρσ_Index1["<"](N); ρσ_Index1++) {
-            j = ρσ_Index1;
-            "80";
-            theta = twopi["*"](j)["/"](float(N));
-            "81";
-            ball.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .1, pos: source.pos, vel: vector(cos(theta), sin(theta), 0)})]));
+            i = ρσ_Index1;
+            "57";
+            theta = 2["*"](pi)["*"](i)["/"](float(N));
+            "58";
+            ball.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({radius: .1, pos: source.pos, vel: vector(cos(theta), sin(theta), 0)})]));
         }
-        "83";
-        source_label_text = "time = "["+"](str(round(t, 2)));
-        "84";
-        source_label.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: ρσ_getitem(ball, int(N["*"](len(ball0flag)["-"](1["*"](1)))["+"](3["*"](N)["/"](4)))).pos, text: source_label_text, color: source.color, linecolor: source.color})]));
+        "59";
+        sourcelabel.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: ρσ_getitem(ball, N["*"](len(ball0flag)["-"](1["*"](1)))["+"](Math.floor(3["*"](N)["/"](4)))).pos, text: "{:.2f}".format(t), color: source.color, linecolor: source.color})]));
     };
     if (!new_wave.__argnames__) Object.defineProperties(new_wave, {
         __argnames__ : {value: ["t"]},
         __module__ : {value: null}
     });
 
-    "88";
+    "63";
     async function meeting(t) {
-        var ρσ_ls, label_text;
-        "89";
-        "90";
-        label_text = "time = "["+"](str(round(t, 2)));
-        "91";
-        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: source.pos["+"](nudge)["-"](1["*"](nudgev)["/"](2)), text: label_text, color: color.white, linecolor: color.white})]);
-        "93";
-        print(label_text);
-        "94";
-        source_receiver_distance_sign = 2;
+        "64";
+        "65";
+        ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: source.pos["+"](nudge)["-"](1["*"](nudgev)["/"](2)), text: "{:.2f}".format(t), color: color.white, linecolor: color.white})]);
+        "67";
+        signdiffx = 2;
     };
     if (!meeting.__argnames__) Object.defineProperties(meeting, {
         __argnames__ : {value: ["t"]},
         __module__ : {value: null}
     });
 
-    "97";
+    "70";
+    async function modify_velocity_source(event) {
+        "71";
+        velocity_source_arrow.axis = scale_factor["*"](vector(event.value, 0, 0));
+        "72";
+        velocity_source_label.text = "velocity="["+"](str(event.value));
+        "73";
+        source.vel = vector(event.value, 0, 0);
+    };
+    if (!modify_velocity_source.__argnames__) Object.defineProperties(modify_velocity_source, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "76";
+    async function modify_velocity_receiver(event) {
+        "77";
+        velocity_receiver_arrow.axis = scale_factor["*"](vector(1["-u"]()["*"](event.value), 0, 0));
+        "78";
+        velocity_receiver_label.text = "velocity="["+"](str(1["-u"]()["*"](event.value)));
+        "79";
+        receiver.vel = vector(1["-u"]()["*"](event.value), 0, 0);
+    };
+    if (!modify_velocity_receiver.__argnames__) Object.defineProperties(modify_velocity_receiver, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "82";
+    async function modify_wind_speed(event) {
+        "83";
+        "84";
+        velocity_wind_label.text = "wind speed = "["+"](str(event.value));
+        "85";
+        velocity_wind_arrow.axis = scale_factor["*"](vector(event.value, 0, 0));
+        "86";
+        wind_velocity_vector = vector(event.value, 0, 0);
+    };
+    if (!modify_wind_speed.__argnames__) Object.defineProperties(modify_wind_speed, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "89";
+    display.append_to_caption("\nWind speed:");
+    "90";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .1, bind: modify_wind_speed})]);
+    "92";
+    display.append_to_caption("\n\nVelocity source:");
+    "93";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .2, bind: modify_velocity_source})]);
+    "95";
+    display.append_to_caption("\n\nVelocity receiver:");
+    "96";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .3, bind: modify_velocity_receiver})]);
+    "98";
     async function on_mouse_click() {
-        var ρσ_ls, newPick, target, step, i;
-        "99";
-        newPick = ρσ_interpolate_kwargs.call(scene.mouse, scene.mouse.project, [ρσ_desugar_kwargs({normal: vec(0, 1, 0), point: vec(0, 2, 0)})]);
+        var ρσ_ls, newPick, target, step, _;
         "100";
+        newPick = ρσ_interpolate_kwargs.call(display.mouse, display.mouse.project, [ρσ_desugar_kwargs({normal: vec(0, 1, 0), point: vec(0, 2, 0)})]);
+        "101";
         if (!newPick === null) {
-            "107";
-            target = newPick;
             "108";
-            step = target["-"](1["*"](scene.center))["/"](20);
+            target = newPick;
             "109";
+            step = target["-"](1["*"](display.center))["/"](20);
+            "110";
             for (var ρσ_Index2 = 1; ρσ_Index2["<"](20); ρσ_Index2=ρσ_Index2["+"](1)) {
-                i = ρσ_Index2;
-                "110";
-                (await rate(10));
+                _ = ρσ_Index2;
                 "111";
-                scene.center=scene.center["+"](step);
+                (await rate(10));
                 "112";
-                scene.range=scene.range["/"](1.037);
+                display.center=display.center["+"](step);
+                "113";
+                display.range=display.range["/"](1.037);
             }
         }
     };
@@ -232,95 +250,82 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "116";
-    scene.bind("click", on_mouse_click);
+    "117";
+    display.bind("click", on_mouse_click);
     "120";
-    while (true) {
-        "121";
-        (await rate(100));
-        "122";
-        print("successive wavefronts received at time...");
-        "123";
-        (await new_wave(0));
+    (await new_wave(0));
+    "121";
+    told = 0;
+    "123";
+    var ρσ_Iter3 = range(0, tmax["+"](dt), dt);
+    ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+    for (var ρσ_Index3 of ρσ_Iter3) {
+        t = ρσ_Index3;
         "124";
-        told = 0;
-        "126";
-        var ρσ_Iter3 = range(0, tmax["+"](dt), dt);
-        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-        for (var ρσ_Index3 of ρσ_Iter3) {
-            t = ρσ_Index3;
-            "127";
-            (await rate(100));
-            "130";
-            if (t["%"](1)["<"](told["%"](1))) {
-                "131";
-                print("t="["+"](str(round(t, 2)))["+"](", len=")["+"](str(len(ball))));
-                "132";
-                (await new_wave(t));
-            }
+        (await rate(100));
+        "127";
+        if (t["%"](1)["<"](told["%"](1))) {
+            "129";
+            (await new_wave(t));
+        }
+        "131";
+        told = t;
+        "133";
+        if ((signdiffx === 0 || typeof signdiffx === "object" && ρσ_equals(signdiffx, 0))) {
             "134";
-            told = t;
+            if (abs(receiver.pos.x["-"](1["*"](source.pos.x)))[">"](0)) {
+                (await meeting(t));
+            }
+            "135";
+        } else if ((signdiffx === 1 || typeof signdiffx === "object" && ρσ_equals(signdiffx, 1))) {
             "136";
-            if ((source_receiver_distance_sign === 0 || typeof source_receiver_distance_sign === "object" && ρσ_equals(source_receiver_distance_sign, 0))) {
-                "137";
-                if (abs((await source_receiver_distance()))[">"](0)) {
-                    (await meeting(t));
-                }
-                "138";
-            } else if ((source_receiver_distance_sign === 1 || typeof source_receiver_distance_sign === "object" && ρσ_equals(source_receiver_distance_sign, 1))) {
-                "139";
-                if ((await source_receiver_distance())["<="](0)) {
-                    (await meeting(t));
-                }
-                "140";
-            } else if (ρσ_equals(source_receiver_distance_sign, 1["-u"]()["*"](1))) {
-                "141";
-                if ((await source_receiver_distance())[">="](0)) {
-                    (await meeting(t));
-                }
+            if (receiver.pos.x["-"](1["*"](source.pos.x))["<="](0)) {
+                (await meeting(t));
             }
-            "143";
-            var ρσ_Iter4 = range(len(ball));
-            ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-            for (var ρσ_Index4 of ρσ_Iter4) {
-                i = ρσ_Index4;
-                "144";
-                ρσ_getitem(ball, i).pos=ρσ_getitem(ball, i).pos["+"](ρσ_getitem(ball, i).vel["+"](wind_velocity_vector)["*"](dt));
+            "137";
+        } else if (ρσ_equals(signdiffx, 1["-u"]()["*"](1))) {
+            "138";
+            if (receiver.pos.x["-"](1["*"](source.pos.x))[">="](0)) {
+                (await meeting(t));
             }
-            "145";
-            source.pos=source.pos["+"](source.vel["*"](dt));
-            "146";
-            receiver.pos=receiver.pos["+"](receiver.vel["*"](dt));
-            "148";
-            velocity_source_arrow.pos = source.pos["+"](nudge);
-            "149";
-            velocity_receiver_arrow.pos = receiver.pos["+"](nudge)["-"](1["*"](nudgev));
-            "151";
-            velocity_source_label.pos = velocity_source_arrow.pos["+"](nudgev);
+        }
+        "140";
+        var ρσ_Iter4 = range(len(ball));
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            i = ρσ_Index4;
+            "141";
+            ρσ_getitem(ball, i).pos=ρσ_getitem(ball, i).pos["+"](ρσ_getitem(ball, i).vel["+"](wind_velocity_vector)["*"](dt));
+        }
+        "142";
+        source.pos=source.pos["+"](source.vel["*"](dt));
+        "143";
+        receiver.pos=receiver.pos["+"](receiver.vel["*"](dt));
+        "145";
+        velocity_source_arrow.pos = source.pos["+"](nudge);
+        "146";
+        velocity_receiver_arrow.pos = receiver.pos["+"](nudge)["-"](1["*"](nudgev));
+        "148";
+        velocity_source_label.pos = velocity_source_arrow.pos["+"](nudgev);
+        "149";
+        velocity_receiver_label.pos = velocity_receiver_arrow.pos["-"](1["*"](nudgev));
+        "151";
+        var ρσ_Iter5 = range(len(ball0flag));
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            j = ρσ_Index5;
             "152";
-            velocity_receiver_label.pos = velocity_receiver_arrow.pos["-"](1["*"](nudgev));
-            "154";
-            var ρσ_Iter5 = range(len(ball0flag));
-            ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-            for (var ρσ_Index5 of ρσ_Iter5) {
-                j = ρσ_Index5;
-                "155";
-                ρσ_getitem(source_label, j).pos = ρσ_getitem(ball, int(N["*"](j)["+"](3["*"](N)["/"](4)))).pos;
+            ρσ_getitem(sourcelabel, j).pos = ρσ_getitem(ball, N["*"](j)["+"](Math.floor(3["*"](N)["/"](4)))).pos;
+            "153";
+            if ((ρσ_getitem(ball0flag, j) === 0 || typeof ρσ_getitem(ball0flag, j) === "object" && ρσ_equals(ρσ_getitem(ball0flag, j), 0)) && (source.pos.x["<="](ρσ_cond_temp = receiver.pos.x) && ρσ_cond_temp["<="](ρσ_getitem(ball, N["*"](j)).pos.x) || source.pos.x[">="](ρσ_cond_temp = receiver.pos.x) && ρσ_cond_temp[">"](ρσ_getitem(ball, N["*"](j)["+"](Math.floor(N["/"](2)))).pos.x))) {
+                "154";
+                ρσ_setitem(ball0flag, j, 1);
                 "156";
-                if ((ρσ_getitem(ball0flag, j) === 0 || typeof ρσ_getitem(ball0flag, j) === "object" && ρσ_equals(ρσ_getitem(ball0flag, j), 0)) && (source.pos.x["<="](ρσ_cond_temp = receiver.pos.x) && ρσ_cond_temp["<="](ρσ_getitem(ball, N["*"](j)).pos.x) || source.pos.x[">="](ρσ_cond_temp = receiver.pos.x) && ρσ_cond_temp[">"](ρσ_getitem(ball, int(N["*"](j)["+"](N["/"](2)))).pos.x))) {
-                    "157";
-                    ρσ_setitem(ball0flag, j, 1);
-                    "158";
-                    print("t="["+"](str(round(t, 2))));
-                    "159";
-                    new_label_text = "t="["+"](str(round(t, 2)));
-                    "160";
-                    received_label.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: ρσ_getitem(ball, int(N["*"](j)["+"](N["-"](1["*"](3))))).pos, text: new_label_text, color: receiver.color, linecolor: receiver.color})]));
-                    "162";
-                } else if ((ρσ_getitem(ball0flag, j) === 1 || typeof ρσ_getitem(ball0flag, j) === "object" && ρσ_equals(ρσ_getitem(ball0flag, j), 1))) {
-                    "163";
-                    ρσ_getitem(received_label, j).pos = ρσ_getitem(ball, N["*"](j)["+"](N["-"](1["*"](3)))).pos;
-                }
+                receivedlabel.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: ρσ_getitem(ball, N["*"](j)["+"](N["-"](1["*"](3)))).pos, text: "{:.2f}".format(t), color: receiver.color, linecolor: receiver.color})]));
+                "157";
+            } else if ((ρσ_getitem(ball0flag, j) === 1 || typeof ρσ_getitem(ball0flag, j) === "object" && ρσ_equals(ρσ_getitem(ball0flag, j), 1))) {
+                "158";
+                ρσ_getitem(receivedlabel, j).pos = ρσ_getitem(ball, N["*"](j)["+"](N["-"](1["*"](3)))).pos;
             }
         }
     }
