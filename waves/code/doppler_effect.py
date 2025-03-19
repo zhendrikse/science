@@ -1,19 +1,21 @@
 #Web VPython 3.2
 
-from vpython import *
+from vpython import vector, canvas, sphere, simple_sphere, color, label, arrow, pi, cos, sin, vec, arange, rate, slider
 
 title="""
-&#x2022; Original doppler-Wavefront.py by <a href="http://physics.syr.edu/~salgado/">Rob Salgado</a> (salgado@physics.syr.edu)
+&#x2022; Original <a href="https://www.visualrelativity.com/vpython/doppler-wavefront.py">doppler-Wavefront.py</a> by <a href="http://physics.syr.edu/~salgado/">Rob Salgado</a> (salgado@physics.syr.edu)
 &#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/waves/code/doppler_effect.py">doppler_effect.py</a>
 
 """
+
+scale_factor = 5
 
 velocity_source = 0.20  # velocity of the source
 velocity_receiver = -0.30  # velocity of the receiver
 velocity_wind = 0.10  # velocity of the wind
 
-animation = canvas(background=color.gray(0.075), title=title)
-animation.autoscale = 0
+display = canvas(background=color.gray(0.075), title=title)
+display.autoscale = False
 
 source = sphere(radius=0.2, pos=vector(0, 0, 0), vel=vector(velocity_source, 0, 0), color=color.red)
 receiver = sphere(radius=0.2, pos=vector(3, 0, 0), vel=vector(velocity_receiver, 0, 0), color=color.green)
@@ -39,16 +41,11 @@ wind_velocity_vector = vector(velocity_wind, 0, 0)
 nudge = vector(0, 6, 0)
 nudgev = vector(0, 0.5, 0)
 
-velocity_source_arrow = arrow(pos=source.pos + nudge, axis=5 * vector(velocity_source, 0, 0), fixedwidth=1,
-                              shaftwidth=0.1, color=source.color)
-velocity_receiver_arrow = arrow(pos=receiver.pos + nudge - nudgev, axis=5 * vector(velocity_receiver, 0, 0),
-                                fixedwidth=1, shaftwidth=0.1,
-                                color=receiver.color)
+velocity_source_arrow = arrow(pos=source.pos + nudge, axis=scale_factor * vector(velocity_source, 0, 0), fixedwidth=1, shaftwidth=0.1, color=source.color)
+velocity_receiver_arrow = arrow(pos=receiver.pos + nudge - nudgev, axis=scale_factor * vector(velocity_receiver, 0, 0), fixedwidth=1, shaftwidth=0.1, color=receiver.color)
 velocity_wind_arrow = None
 if velocity_wind != 0:
-    velocity_wind_arrow = arrow(pos=nudge + 2 * vector(0, 1, 0), axis=5 * vector(velocity_wind, 0, 0), fixedwidth=1,
-                                shaftwidth=0.1,
-                                color=color.cyan)
+    velocity_wind_arrow = arrow(pos=nudge + 2 * vector(0, 1, 0), axis=scale_factor * vector(velocity_wind, 0, 0), fixedwidth=1, shaftwidth=0.1, color=color.cyan)
 
 source_label_text = "velocity=" + str(velocity_source)
 velocity_source_label = label(pos=velocity_source_arrow.pos + nudge, text=source_label_text, color=source.color, box=1)
@@ -57,12 +54,10 @@ velocity_receiver_label = label(pos=velocity_receiver_arrow.pos - nudgev, text=r
 
 if velocity_wind != 0:
     wind_label_text = "wind speed = " + str(velocity_wind)
-    velocity_wind_label = label(pos=velocity_wind_arrow.pos + vector(0, 1, 0), text=wind_label_text,
-                                color=velocity_wind_arrow.color)
+    velocity_wind_label = label(pos=velocity_wind_arrow.pos + vector(0, 1, 0), text=wind_label_text, color=velocity_wind_arrow.color)
 
 theta_max = 12.0
 dt = 0.005
-twopi = 2 * pi
 N = 32
 
 ball = []
@@ -76,56 +71,78 @@ def new_wave(t):
     sphere(radius=0.05, pos=source.pos, color=vec(.5, 0, 0))
     sphere(radius=0.05, pos=receiver.pos, color=vec(0, .5, 0))
 
-    for j in range(0, N):
-        theta = twopi * j / float(N)
-        ball.append(sphere(radius=0.1, pos=source.pos, vel=vector(cos(theta), sin(theta), 0)))
+    for j in range(N):
+        theta = 2 * pi * j / N
+        ball.append(simple_sphere(radius=0.1, pos=source.pos, vel=vector(cos(theta), sin(theta), 0)))
 
-    source_label_text = "time = " + str(round(t, 2))
-    source_label.append(label(pos=ball[int(N * (len(ball0flag) - 1) + 3 * N / 4)].pos, text=source_label_text,
+    source_label.append(label(pos=ball[int(N * (len(ball0flag) - 1) + 3 * N / 4)].pos, text="time = " + str(round(t, 2)),
                               color=source.color, linecolor=source.color))
 
 
 def meeting(t):
     global source_receiver_distance_sign
     label_text = "time = " + str(round(t, 2))
-    label(pos=source.pos + nudge - nudgev / 2.0, text=label_text,
-          color=color.white, linecolor=color.white)
-    print(label_text)
+    label(pos=source.pos + nudge - nudgev / 2.0, text=label_text, color=color.white, linecolor=color.white)
+    print("**************************************", label_text)
     source_receiver_distance_sign = 2
 
 
 def on_mouse_click():
-    # newPick = scene.mouse(pick=sphere)
-    newPick = animation.mouse.project(normal=vec(0, 1, 0), point=vec(0, 2, 0))
-    if not newPick is None:
-        #temp_color = newPick.color
-        #newPick.color = color.yellow
-        # pick_r=newPick.x*4.
+    # new_pick = scene.mouse(pick=sphere)
+    new_pick = display.mouse.project(normal=vec(0, 1, 0), point=vec(0, 2, 0))
+    if not new_pick is None:
+        temp_color = new_pick.color
+        new_pick.color = color.yellow
+        # pick_r=new_pick.x*4.
         # string= "r=%7.5f" % pick_r
-        # label(pos=newPick.pos,text=string,xoffset=-5,yoffset=5)
+        # label(pos=new_pick.pos,text=string,xoffset=-5,yoffset=5)
 
-        target = newPick
-        step = (target - animation.center) / 20.
-        for i in arange(1, 20, 1):
+        target = new_pick
+        step = (target - display.center) / 20.
+        for _ in arange(1, 20, 1):
             rate(10)
-            animation.center += step
-            animation.range /= 1.037  # (1.037**19=1.99)
-        #newPick.color = temp_color
+            display.center += step
+            display.range /= 1.037  # (1.037**19=1.99)
+        new_pick.color = temp_color
+
+def modify_velocity_source(event):
+    velocity_source_arrow.axis = scale_factor * vector(event.value, 0, 0)
+    velocity_source_label.text = "velocity=" + str(event.value)
+    source.vel = vector(event.value, 0, 0)
+
+def modify_velocity_receiver(event):
+    velocity_receiver_arrow.axis = scale_factor * vector(-event.value, 0, 0)
+    velocity_receiver_label.text = "velocity=" + str(-event.value)
+    receiver.vel = vector(-event.value, 0, 0)
+
+def modify_wind_speed(event):
+    global wind_velocity_vector
+    velocity_wind_label.text = "wind speed = " + str(event.value)
+    velocity_wind_arrow.axis = scale_factor * vector(event.value, 0, 0)
+    wind_velocity_vector = vector(event.value, 0, 0)
+
+display.append_to_caption("\nWind speed:")
+_ = slider(min=0, max=1, value=.1, bind=modify_wind_speed)
+
+display.append_to_caption("\n\nVelocity source:")
+_ = slider(min=0, max=1, value=.2, bind=modify_velocity_source)
+
+display.append_to_caption("\n\nVelocity receiver:")
+_ = slider(min=0, max=1, value=.3, bind=modify_velocity_receiver)
 
 
-animation.bind('click', on_mouse_click)
+display.bind('click', on_mouse_click)
 
 # Now... WHEN AN OBJECT IS PICKED,
 # TRANSLATE THE scene.center TO THE OBJECT'S POSITION, THEN ZOOM
 while True:
     rate(100)
-    print("successive wavefronts received at time...")
+    print("successive wave fronts received at time...")
     new_wave(0)
     told = 0
     # clock=label()
     for t in arange(0, theta_max + dt, dt):
         rate(100)
-
         #    clock.text="%f" % (t%1.0)
         if t % 1.0 < told % 1.0:
             print("t=" + str(round(t, 2)) + ", len=" + str(len(ball)))
@@ -140,7 +157,7 @@ while True:
         elif source_receiver_distance_sign == -1:
             if source_receiver_distance() >= 0: meeting(t)
 
-        for i in arange(len(ball)):
+        for i in range(len(ball)):
             ball[i].pos += (ball[i].vel + wind_velocity_vector) * dt
         source.pos += source.vel * dt
         receiver.pos += receiver.vel * dt
@@ -151,12 +168,12 @@ while True:
         velocity_source_label.pos = velocity_source_arrow.pos + nudgev
         velocity_receiver_label.pos = velocity_receiver_arrow.pos - nudgev
 
-        for j in arange(len(ball0flag)):
+        for j in range(len(ball0flag)):
             source_label[j].pos = ball[int(N * j + 3 * N / 4)].pos
-            if (ball0flag[j] == 0 and((source.pos.x <= receiver.pos.x <= ball[N * j].pos.x) or (source.pos.x >= receiver.pos.x > ball[int(N * j + N / 2)].pos.x) )):
+            if ball0flag[j] == 0 and((source.pos.x <= receiver.pos.x <= ball[N * j].pos.x) or (source.pos.x >= receiver.pos.x > ball[int(N * j + N / 2)].pos.x)):
                 ball0flag[j] = 1
-                print("t=" + str(round(t, 2)))
-                new_label_text = "t=" + str(round(t, 2))
+                #print("t=" + str(round(t, 2)))
+                new_label_text = "t={:.2}".format(t)
                 received_label.append(label(pos=ball[int(N * j + (N - 3))].pos, text=new_label_text,
                                             color=receiver.color, linecolor=receiver.color))
             elif ball0flag[j] == 1:
