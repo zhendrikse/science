@@ -1,0 +1,408 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var source_frequency, wave_speed, velocity_source, observer, observer_info, wave_fronts;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, e_horiz_v, e_vert_v, obs_pos_x, obs_pos_y, e_init_pos_x, e_init_pos_y, source_frequency, wave_speed, display, measured_time, measured_frequency, velocity_source, ρσ_unpack, observer, observer_info, wave_fronts, _, observed_frequency_graph, observed_frequency_curve, frequency_curve, t, dt, observed_wave_count, index, T, wave_front, popup;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; Original <a href=\"https://trinket.io/glowscript/bd28780444?showInstructions=true\">code<\/a> by Andrew Morrison (@achmorrison), 3/20/18\n&#x2022; Updated by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/waves/code/doppler_waves.py\">doppler_waves.py</a>\n\n";
+    "10";
+    e_horiz_v = .5;
+    "11";
+    e_vert_v = 0;
+    "14";
+    obs_pos_x = 1["-u"]()["*"](2.5);
+    "15";
+    obs_pos_y = 1["-u"]()["*"](2);
+    "18";
+    e_init_pos_x = 1;
+    "19";
+    e_init_pos_y = 2;
+    "21";
+    source_frequency = 1;
+    "22";
+    wave_speed = 1;
+    "24";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 300, range: 12, center: vector(0, 0, 0), background: color.gray(.075)})]);
+    "28";
+    measured_time = 0;
+    "29";
+    measured_frequency = 0;
+    "30";
+    velocity_source = vector(e_horiz_v, e_vert_v, 0);
+    "32";
+    function Person() {;
+    }
+    Person.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var size = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.size : arguments[1];
+        var colour = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "size")){
+            size = ρσ_kwargs_obj.size;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        "34";
+        self._size = size;
+        "35";
+        self._head = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: .07["*"](size), color: color.yellow})]);
+        "36";
+        self._body = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: size["*"](vector(0, 1["-u"]()["*"](.3), 0)), radius: .03["*"](size), color: colour})]);
+        "37";
+        self._arm_a = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: size["*"](vector(1["-u"]()["*"](.15), 1["-u"]()["*"](.15), 0)), radius: .02["*"](size), color: colour})]);
+        "38";
+        self._arm_b = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: size["*"](vector(.15, 1["-u"]()["*"](.15), 0)), radius: .02["*"](size), color: colour})]);
+        "39";
+        self._leg_a = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: size["*"](vector(.1, 1["-u"]()["*"](.15), 0)), radius: .02["*"](size), color: colour})]);
+        "40";
+        self._leg_b = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({axis: size["*"](vector(1["-u"]()["*"](.1), 1["-u"]()["*"](.15), 0)), radius: .02["*"](size), color: colour})]);
+        "42";
+        self._position = position;
+        "43";
+        (await self._update_body_parts());
+    };
+    if (!Person.prototype.__init__.__defaults__) Object.defineProperties(Person.prototype.__init__, {
+        __defaults__ : {value: {size:1, colour:color.green}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "size", "colour"]},
+        __module__ : {value: null}
+    });
+    Person.__argnames__ = Person.prototype.__init__.__argnames__;
+    Person.__handles_kwarg_interpolation__ = Person.prototype.__init__.__handles_kwarg_interpolation__;
+    Person.prototype._update_body_parts = async function _update_body_parts() {
+        var self = this;
+        var ρσ_ls, size, position;
+        "46";
+        size = self._size;
+        "47";
+        position = self._position["+"](vec(.1, 0, 0)["*"](size));
+        "48";
+        self._head.pos = position["+"](vector(1["-u"]()["*"](.1), .5, 0)["*"](size));
+        "49";
+        self._body.pos = self._head.pos;
+        "50";
+        self._arm_a.pos = self._head.pos["+"](vector(0, 1["-u"]()["*"](.1), 0)["*"](size));
+        "51";
+        self._arm_b.pos = self._head.pos["+"](vector(0, 1["-u"]()["*"](.1), 0)["*"](size));
+        "52";
+        self._leg_a.pos = self._head.pos["+"](self._body.axis);
+        "53";
+        self._leg_b.pos = self._head.pos["+"](self._body.axis);
+    };
+    if (!Person.prototype._update_body_parts.__module__) Object.defineProperties(Person.prototype._update_body_parts, {
+        __module__ : {value: null}
+    });
+    Person.prototype.update = async function update(position_x) {
+        var self = this;
+        "56";
+        self._position = vec(position_x, obs_pos_y, 0);
+        "57";
+        (await self._update_body_parts());
+    };
+    if (!Person.prototype.update.__argnames__) Object.defineProperties(Person.prototype.update, {
+        __argnames__ : {value: ["position_x"]},
+        __module__ : {value: null}
+    });
+    Person.prototype.head_pos = async function head_pos() {
+        var self = this;
+        "60";
+        return self._head.pos;
+    };
+    if (!Person.prototype.head_pos.__module__) Object.defineProperties(Person.prototype.head_pos, {
+        __module__ : {value: null}
+    });
+    Person.prototype.position = async function position() {
+        var self = this;
+        "63";
+        return self._position;
+    };
+    if (!Person.prototype.position.__module__) Object.defineProperties(Person.prototype.position, {
+        __module__ : {value: null}
+    });
+    Person.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Person.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Person.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "65";
+    async function set_scene(observer_position) {
+        var ρσ_ls, _GS_1, observer_, observer_info_, num, wave_fronts_, i;
+        "66";
+        _GS_1 = new Person;
+        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [observer_position].concat([ρσ_desugar_kwargs({size: 4})]));
+        observer_ = _GS_1;
+        "67";
+        observer_info_ = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: (await observer_.head_pos())["+"](vec(1["-u"]()["*"](1.5), .5, 0)), text: str(measured_frequency), height: 12, color: color.white, box: false})]);
+        "69";
+        num = 100;
+        "70";
+        wave_fronts_ = ρσ_list_decorate([]);
+        "71";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](num); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "72";
+            wave_fronts_.append(ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({pos: vec(e_init_pos_x, e_init_pos_y, 0), color: color.cyan, axis: vector(0, 0, 1), radius: 0, thickness: .05})]));
+        }
+        "75";
+        return [observer_, observer_info_, wave_fronts_];
+    };
+    if (!set_scene.__argnames__) Object.defineProperties(set_scene, {
+        __argnames__ : {value: ["observer_position"]},
+        __module__ : {value: null}
+    });
+
+    "77";
+    ρσ_unpack = (await set_scene(vector(obs_pos_x, obs_pos_y, 0)));
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+    observer = ρσ_unpack[0];
+    observer_info = ρσ_unpack[1];
+    wave_fronts = ρσ_unpack[2];
+    "79";
+    async function modify_frequency(event) {
+        "80";
+        "81";
+        source_frequency = event.value;
+    };
+    if (!modify_frequency.__argnames__) Object.defineProperties(modify_frequency, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "83";
+    async function modify_velocity(event) {
+        "84";
+        "85";
+        wave_speed = event.value;
+    };
+    if (!modify_velocity.__argnames__) Object.defineProperties(modify_velocity, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "87";
+    async function modify_position_observer(event) {
+        "88";
+        (await observer.update(event.value));
+        "89";
+        observer_info.pos = (await observer.head_pos())["+"](vec(1["-u"]()["*"](1.5), .5, 0));
+    };
+    if (!modify_position_observer.__argnames__) Object.defineProperties(modify_position_observer, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "91";
+    async function modify_source_velocity(event) {
+        "92";
+        "93";
+        velocity_source = vector(event.value, e_vert_v, 0);
+    };
+    if (!modify_source_velocity.__argnames__) Object.defineProperties(modify_source_velocity, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "96";
+    async function reset(observer_position) {
+        var ρσ_ls, obj, ρσ_unpack;
+        "97";
+        "98";
+        var ρσ_Iter2 = display.objects;
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            obj = ρσ_Index2;
+            "99";
+            obj.visible = false;
+        }
+        "100";
+        ρσ_unpack = (await set_scene(observer_position));
+ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
+        observer = ρσ_unpack[0];
+        observer_info = ρσ_unpack[1];
+        wave_fronts = ρσ_unpack[2];
+        "101";
+        observed_frequency_curve.remove();
+        "102";
+        frequency_curve.remove();
+    };
+    if (!reset.__argnames__) Object.defineProperties(reset, {
+        __argnames__ : {value: ["observer_position"]},
+        __module__ : {value: null}
+    });
+
+    "104";
+    display.append_to_caption("\nFrequency:");
+    "105";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: 2, value: 1, bind: modify_frequency})]);
+    "107";
+    display.append_to_caption("\n\nSource velocity:");
+    "108";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: e_horiz_v, bind: modify_source_velocity})]);
+    "110";
+    display.append_to_caption("\n\nSound velocity:");
+    "111";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: 2, value: 1, bind: modify_velocity})]);
+    "113";
+    display.append_to_caption("\n\nPosition observer:");
+    "114";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1["-u"]()["*"](10), max: 10, value: obs_pos_x, bind: modify_position_observer})]);
+    "116";
+    display.append_to_caption("\n\n");
+    "117";
+    observed_frequency_graph = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({xtitle: "Time", ytitle: "Frequency", width: 600, height: 300, title: "Observed vs. emitted frequency", background: color.black})]);
+    "118";
+    observed_frequency_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.yellow})]);
+    "119";
+    frequency_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.cyan})]);
+    "121";
+    while (true) {
+        "122";
+        t = 0;
+        "123";
+        dt = .01;
+        "124";
+        observed_wave_count = 0;
+        "125";
+        while (t["<"](30)) {
+            "126";
+            (await rate(1["/"](dt)));
+            "128";
+            index = 0;
+            "129";
+            var ρσ_Iter3 = wave_fronts;
+            ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+            for (var ρσ_Index3 of ρσ_Iter3) {
+                wave_front = ρσ_Index3;
+                "131";
+                if (t["<"](1["/"](source_frequency)["*"](index))) {
+                    "132";
+                    wave_front.visible = false;
+                    "134";
+                    wave_front.pos=wave_front.pos["+"](velocity_source["*"](dt));
+                    "135";
+                } else {
+                    "136";
+                    wave_front.visible = true;
+                    "138";
+                    wave_front.radius=wave_front.radius["+"](wave_speed["*"](dt));
+                    "141";
+                }
+                if (ρσ_equals(round(100["*"](sqrt(Math.pow((wave_front.pos.x["-"](1["*"]((await observer.head_pos()).x))), 2)["+"](Math.pow((wave_front.pos.y["-"](1["*"]((await observer.head_pos()).y))), 2)))))["/"](100), round(100["*"](wave_front.radius))["/"](100))) {
+                    "142";
+                    T = abs(measured_time["-"](1["*"](t)));
+                    "143";
+                    measured_time = t;
+                    "144";
+                    measured_frequency = ((T === 0 || typeof T === "object" && ρσ_equals(T, 0))) ? measured_frequency : round(1["/"](T), 2);
+                    "145";
+                    observed_wave_count=observed_wave_count["+"](1);
+                }
+                "149";
+                index=index["+"](1);
+            }
+            "151";
+            observer_info.pos = (await observer.head_pos())["+"](vec(1["-u"]()["*"](1.5), .5, 0));
+            "152";
+            if (observed_wave_count[">"](1)) {
+                "154";
+                observer_info.text = str(measured_frequency);
+                "155";
+                observed_frequency_curve.plot(measured_time, measured_frequency["*"](1e3));
+                "156";
+                frequency_curve.plot(measured_time, wave_speed["/"](wave_speed["+"](mag(velocity_source)))["*"](source_frequency)["*"](1e3));
+            }
+            "158";
+            t=t["+"](dt);
+        }
+        "159";
+        popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({text: "Click mouse to restart"})]);
+        "160";
+        (await display.waitfor("click"));
+        "161";
+        (await reset((await observer.position())));
+        "162";
+        popup.visible = false;
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

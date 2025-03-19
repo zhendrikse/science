@@ -110,10 +110,10 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
   <figcaption>Visualisation of the Doppler effect for sound waves.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="vibrating_membrane.html">
-    <img alt="Vibrating membrane" src="images/vibrating_membrane.png" title="Click to animate"/>
+  <a href="doppler_waves.html">
+    <img alt="Doppler effect" src="images/doppler_waves.png" title="Click to animate"/>
   </a>
-  <figcaption>Visualization of the normal modes of a vibrating membrane.</figcaption>
+  <figcaption>Visualisation of the Doppler effect for sound waves.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -156,6 +156,22 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 </figure>
 </div>
 <p style="clear: both;"></p>
+
+### Normal modes of rectangular vibrating membrane
+<div class="subsection_header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="vibrating_membrane.html">
+    <img alt="Vibrating membrane" src="images/vibrating_membrane.png" title="Click to animate"/>
+  </a>
+  <figcaption>Visualization of the normal modes of a vibrating membrane.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION 
+    --> 
+</figure>
+</div>
 <p style="clear: both;"></p>
 
 ## References
