@@ -11,6 +11,7 @@
 // START JAVASCRIPT
 ;(function() {;
 var ρσ_modules = {};
+var mu;
 ρσ_modules.pythonize = {};
 
 (function(){
@@ -50,8 +51,8 @@ async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
-    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, g, L, theta_0, animation, ceiling, balls, rods, i, t, dt, right;
+    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, tan, asin, acos, atan, atan2, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, g, L, theta_0, mu, display, ceiling, balls, rods, i, _, t, dt, right;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,17 +65,17 @@ async function __main__() {
 
     strings();
     "11";
-    title = "\n&#x2022; Original <a href=\"https://www.leonhostetler.com/blog/newtons-cradle-in-visual-python-201702/\">written by Leon Hostetler<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n&#x2022; $\\theta(t)=\\theta_0 \\cos \\bigg( \\sqrt{  \\dfrac {g} {L}} t \\bigg)$\n\n";
+    title = "\n&#x2022; Original <a href=\"https://www.leonhostetler.com/blog/newtons-cradle-in-visual-python-201702/\">written by Leon Hostetler<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/kinematics/code/newtons_pendulum.py\">newtons_pendulum.py</a>\n\n&#x2022; $\\theta(t)=\\theta_0 \\cos \\bigg( \\sqrt{  \\dfrac {g} {L}} t \\bigg)$\n\n";
     "14";
     g = 9.8;
     "15";
     L = 10;
     "16";
     theta_0 = 1.2;
-    "18";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({color: color.gray(.075), title: title, center: vector(1["-u"]()["*"](L)["/"](2), 1["-u"]()["*"](L)["/"](2), 0)})]);
+    "17";
+    mu = 0;
     "19";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({color: color.gray(.075), title: title, center: vector(1["-u"]()["*"](L)["/"](2), 1["-u"]()["*"](L)["/"](2), 0)})]);
     "22";
     ceiling = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](4), 0, 0), size: vector(20, 1, 4), color: color.green})]);
     "24";
@@ -93,56 +94,66 @@ async function __main__() {
     async function position(right, t) {
         var ρσ_ls, theta;
         "38";
-        theta = theta_0["*"](cos(sqrt(g["/"](L))["*"](t)));
+        theta = theta_0["*"](exp(1["-u"]()["*"](mu)["*"](t)))["*"](cos(sqrt(g["/"](L))["*"](t)));
         "40";
         if (right) {
-            "42";
+            "41";
             ρσ_getitem(balls, 0).pos = vector(L["*"](sin(theta)), 1["-u"]()["*"](L)["*"](cos(theta)), 0);
-            "43";
+            "42";
             ρσ_getitem(balls, 0).color = color.yellow;
-            "44";
+            "43";
             ρσ_getitem(balls, 4).color = color.red;
-            "46";
+            "44";
             ρσ_getitem(rods, 0).axis = vector(ρσ_getitem(balls, 0).pos.x, ρσ_getitem(balls, 0).pos.y, 0);
-            "48";
+            "45";
         } else {
-            "50";
+            "46";
             ρσ_getitem(balls, 4).pos = vector(L["*"](sin(theta))["-"](1["*"](4)["*"](2)), 1["-u"]()["*"](L)["*"](cos(theta)), 0);
-            "51";
+            "47";
             ρσ_getitem(balls, 0).color = color.red;
-            "52";
+            "48";
             ρσ_getitem(balls, 4).color = color.yellow;
-            "54";
+            "49";
             ρσ_getitem(rods, 4).axis = vector(ρσ_getitem(balls, 4).pos.x["+"](4["*"](2)), ρσ_getitem(balls, 4).pos.y, 0);
-            "57";
         }
-        if (theta["<="](0)) {
-            "58";
-            return false;
-            "59";
-        } else {
-            "60";
-            return true;
-        }
+        "52";
+        return theta[">"](0);
     };
     if (!position.__argnames__) Object.defineProperties(position, {
         __argnames__ : {value: ["right", "t"]},
         __module__ : {value: null}
     });
 
-    "62";
-    t = 0;
+    "54";
+    async function modify_damping(event) {
+        "55";
+        "56";
+        mu = event.value;
+    };
+    if (!modify_damping.__argnames__) Object.defineProperties(modify_damping, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "58";
+    display.append_to_caption("\nDamping constant: ");
+    "59";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({value: 0, min: 0, max: .1, bind: modify_damping})]);
+    "61";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "63";
-    dt = .01;
+    t = 0;
     "64";
-    right = true;
+    dt = .01;
     "65";
+    right = true;
+    "66";
     while (true) {
-        "66";
-        (await rate(200));
         "67";
-        right = (await position(right, t));
+        (await rate(200));
         "68";
+        right = (await position(right, t));
+        "69";
         t=t["+"](dt);
     }
 };

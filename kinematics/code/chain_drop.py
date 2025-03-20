@@ -3,7 +3,7 @@
 title = """ 
 &#x2022; Based on original by <a href="https://trinket.io/glowscript/bbe791bbfe7d">Rhett Allain</a>
 &#x2022; Belongs to <a href="https://www.youtube.com/watch?v=vXp1hW_t-bo">this video</a> 
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/chain_drop.py">chain_drop.py</a>
 
 """
 
