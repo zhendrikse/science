@@ -157,7 +157,7 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 </div>
 <p style="clear: both;"></p>
 
-### Normal modes of rectangular vibrating membrane
+### Normal modes of rectangular vibrating membrane &amp; 3D interference pattern
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
@@ -168,8 +168,10 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
   <figcaption>Visualization of the normal modes of a vibrating membrane.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION 
-    --> 
+  <a href="interference_pattern_3d.html">
+    <img alt="Interference pattern" src="images/interference_pattern_3d.png" title="Click to animate"/>
+  </a>
+  <figcaption>Three-dimensional interference pattern caused by two oscillating point sources.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
