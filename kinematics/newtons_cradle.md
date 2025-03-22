@@ -1,9 +1,9 @@
 {% include breadcrumbs.html %}
 
-## Newton&apos;s pendulum
+## Newton&apos;s cradle
 <div class="header_line"><br/></div>
 
-{% include_relative code/NewtonsPendulum.html %}
+{% include_relative code/NewtonsCradle.html %}
 
 <p style="clear: both;"></p>
 

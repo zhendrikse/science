@@ -19,15 +19,15 @@ title="""Relativistic electric field around a moving proton
 c = 3e8
 c2 = c ** 2
 
-v = 0.99 * c  ## speed of moving frame
-v2 = v ** 2
+velocity_source = 0.99 * c  ## speed of moving frame
+v2 = velocity_source ** 2
 
 kel = 9e9
 kmag = 1e-7
 gamma = 1 / sqrt(1 - (v2 / c2))
 
 proton = sphere(radius=1e-12, color=color.red)
-proton.v = vector(-v, 0, 0)
+proton.v = vector(-velocity_source, 0, 0)
 proton.q = 1.6e-19
 
 R = 1e-11

@@ -1,11 +1,13 @@
-from vpython import sphere, canvas, rate, color, vec, cylinder, dot, tan, acos, mag, graph, gcurve
+from vpython import sphere, canvas, rate, color, vec, cylinder, dot, tan, acos, mag, graph, gcurve, textures
 
-#
-# https://www.youtube.com/watch?v=eEb3seVrJHQ
-#
+title="""&#x2022; Original code taken from <a href="https://www.youtube.com/watch?v=eEb3seVrJHQ/">this video</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/newtons_cradle.py">newtons_cradle.py</a>
 
-display = canvas(width=600, height=600, background=color.gray(0.075), center=vec(0, -1, 1))
+&#x2022; $\\theta(t)=\\theta_0 \\cos \\bigg( \\sqrt{  \\dfrac {g} {L}} t \\bigg)$
 
+"""
+
+display = canvas(title=title, width=600, height=600, background=color.gray(0.075), range=1.6, center=vec(.5, -1, .4), forward=vec(-.55, -.37, -.75))
 
 ball_count = 5
 lift_count = 3
@@ -21,8 +23,8 @@ rope_length = 2.
 pivots, balls, ropes = [], [], []
 for i in range(ball_count):
     pivots.append(sphere(radius=pivot_size, color=color.orange, pos=vec(-.4 * (ball_count / 2) + i * .4, 0, 0)))
-    balls.append(sphere(radius=ball_size, color=color.yellow, pos=vec(-.4 * (ball_count / 2) + i * .4, -2. - ball_mass * g / k, 0), m=ball_mass, v=vec(0, 0, 0), make_trail=True))
-    ropes.append(cylinder(radius=0.05, pos=pivots[i].pos, axis=balls[i].pos - pivots[i].pos))
+    balls.append(sphere(radius=ball_size, color=color.yellow, pos=vec(-.4 * (ball_count / 2) + i * .4, -2. - ball_mass * g / k, 0), m=ball_mass, v=vec(0, 0, 0), make_trail=False))
+    ropes.append(cylinder(radius=0.05, pos=pivots[i].pos, axis=balls[i].pos - pivots[i].pos, texture=textures.wood))
 
 
 # Lift balls
@@ -45,13 +47,15 @@ h = -2. - ball_mass * g / k # gravitational potential = 0
 KE, GP = [], [] # Gravitational potential and kinetic energy
 
 display.append_to_caption("\n")
-energy = graph(width=450, align="left", background=color.black)
+energy = graph(width=600, background=color.black, title="Kinetic and potential energy")
 kinetic_energy = gcurve(graph=energy, color=color.blue, width=4)
 gravitational_potential = gcurve(graph=energy, color=color.red, width=4)
 
-averaged_energy = graph(width=450, align="right", background=color.black)
+averaged_energy = graph(width=600, background=color.black, title="Average kinetic and potential energy")
 avg_kinetic_energy = gcurve(graph=averaged_energy, color=color.blue, width=4)
 avg_gravitational_potential = gcurve(graph=averaged_energy, color=color.red, width=4)
+
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 t= 0
 dt = 0.001
