@@ -110,8 +110,8 @@ while True:
             pendulums[i]._velocity, pendulums[i - 1]._velocity = after_collision_velocities(pendulums[i], pendulums[i - 1])
 
     pendulums[-1].update(dt)
-    if collision_happen(pendulums[ball_count - 1], pendulums[ball_count - 2]):
-        pendulums[ball_count - 1]._velocity, pendulums[ball_count - 2]._velocity = after_collision_velocities(pendulums[ball_count - 1], pendulums[ball_count - 2])
+    if collision_happen(pendulums[-1], pendulums[-2]):
+        pendulums[-1]._velocity, pendulums[-2]._velocity = after_collision_velocities(pendulums[-1], pendulums[-2])
 
     ke_total = 0
     gp_total = 0
