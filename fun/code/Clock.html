@@ -1,0 +1,140 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+    fontloading();
+    await waitforfonts();
+    var arrow, box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, r, clock_base, knob, border, angle, i, l, p, second_hand, minute_hand, hour_hand, angle_second_hand, angle_minute_hand, angle_hour_hand;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "8";
+    title = "&#x2022; Clock as presented in <a href=\"https://www.youtube.com/watch?v=e9QxQZJRGLk&t=1490s\">this video<\/a>\n&#x2022; Copied over to <a href=\"https://github.com/zhendrikse/science/blob/main/fun/code/clock.py\">clock.py</a> file\n\n";
+    "10";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, range: 1.5, background: color.gray(0.075), width: 600, height: 600})]);
+    "12";
+    r = 1.1;
+    "13";
+    clock_base = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: r, axis: vector(0, 0, 1), length: .01})]);
+    "14";
+    knob = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .06, axis: vector(0, 0, 1), length: .05, color: color.black})]);
+    "15";
+    border = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({radius: 1.05["*"](r), axis: vector(0, 0, 1), thickness: .06, color: color.yellow})]);
+    "18";
+    for (var ρσ_Index1 = 1; ρσ_Index1["<"](13); ρσ_Index1++) {
+        i = ρσ_Index1;
+        "19";
+        angle = pi["/"](3)["-"](1["*"](30)["*"](i["-"](1["*"](1)))["*"](pi)["/"](180));
+        "20";
+        ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: str(i), height: .09, width: .03, pos: vector(.78["*"](r)["*"](cos(angle))["-"](1["*"](.035)), .78["*"](r)["*"](sin(angle))["-"](1["*"](.035)), .01), color: color.red})]);
+    }
+    "22";
+    for (var ρσ_Index2 = 0; ρσ_Index2["<"](360); ρσ_Index2++) {
+        i = ρσ_Index2;
+        "23";
+        angle = 6["*"](i)["*"](pi)["/"](180);
+        "24";
+        if (ρσ_equals(i["%"](5), 0)) {
+            "25";
+            l = .15;
+            "26";
+            p = vector(.95["*"](cos(angle)), .95["*"](sin(angle)), .01);
+            "27";
+        } else {
+            "28";
+            l = .075;
+            "29";
+            p = vector(cos(angle), sin(angle), .01);
+        }
+        "30";
+        ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .002, color: color.black, length: l, axis: vector(cos(angle), sin(angle), 0), pos: p})]);
+    }
+    "32";
+    second_hand = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .0035, color: color.black, length: .75, pos: vector(0, 0, .06), axis: vector(0, 1, 0)})]);
+    "33";
+    minute_hand = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .0038, color: color.black, length: .65, pos: vector(0, 0, .07), axis: vector(0, 1, 0)})]);
+    "34";
+    hour_hand = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .004, color: color.black, length: .5, pos: vector(0, 0, .08), axis: vector(0, 1, 0)})]);
+    "36";
+    angle_second_hand = 2["*"](pi)["/"](60);
+    "37";
+    angle_minute_hand = 2["*"](pi)["/"](60["*"](60));
+    "38";
+    angle_hour_hand = 2["*"](pi)["/"](12["*"](60)["*"](60));
+    "40";
+    while (true) {
+        "41";
+        (await rate(1));
+        "42";
+        ρσ_interpolate_kwargs.call(second_hand, second_hand.rotate, [ρσ_desugar_kwargs({angle: angle_second_hand, origin: vector(0, 0, 0), axis: vector(0, 0, 1["-u"]()["*"](1))})]);
+        "43";
+        ρσ_interpolate_kwargs.call(minute_hand, minute_hand.rotate, [ρσ_desugar_kwargs({angle: angle_minute_hand, origin: vector(0, 0, 0), axis: vector(0, 0, 1["-u"]()["*"](1))})]);
+        "44";
+        ρσ_interpolate_kwargs.call(hour_hand, hour_hand.rotate, [ρσ_desugar_kwargs({angle: angle_hour_hand, origin: vector(0, 0, 0), axis: vector(0, 0, 1["-u"]()["*"](1))})]);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

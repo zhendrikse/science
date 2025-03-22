@@ -4,6 +4,7 @@
 <div class="header_line"><br/></div>
 
 - [`chessboard.py` source code](chessboard.py)
+- [`clock.py` source code](clock.py)
 - [`face.py` source code](face.py)
 - [`odysseus.py` source code](odysseus.py)
 - [`robot.py` source code](robot.py)

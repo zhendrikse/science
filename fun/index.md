@@ -3,21 +3,21 @@ git {% include breadcrumbs.html %}
 # Fun stuff with [VPython](https://vpython.org/) 
 <div class="header_line"><br/></div>
 
-### Chessboard & animated face
+### Clock & animated face
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
+  <a href="clock.html">
+    <img alt="Clock" src="images/clock.png" title="Click to animate"/>
+  </a>
+  <figcaption>Three-dimensional clock with moving hands.</figcaption>
+</figure>
+<figure class="right_image">
     <a href="face.html">
       <img alt="Face" src="images/face.png" title="Click to animate"/>
     </a>
   <figcaption>Animated face.</figcaption>
-</figure>
-<figure class="left_image">
-  <a href="right_image.html">
-    <img alt="Chessboard" src="images/chessboard.png" title="Click to animate"/>
-  </a>
-  <figcaption>Simple chess game with moving pieces.</figcaption>
 </figure>
 </div>
 
@@ -42,6 +42,24 @@ git {% include breadcrumbs.html %}
   <a href="https://github.com/possibly-wrong/vturtle">VPython-based robot simulator and turtle graphics engine</a>
   ported from installed VPython to the web.
   </figcaption>
+</figure>
+</div>
+
+<p style="clear: both;"></p>
+
+### Chessboard 
+<div class="subsection_header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="chessboard.html">
+    <img alt="Chessboard" src="images/chessboard.png" title="Click to animate"/>
+  </a>
+  <figcaption>Simple chess game with moving pieces.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 
