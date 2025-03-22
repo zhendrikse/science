@@ -52,8 +52,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, asin, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, ball_count, lift_count, k, g, pivot_size, ball_size, ball_mass, rope_length, ρσ_unpack, pivots, balls, ropes, i, amplitude, h, KE, GP, energy, kinetic_energy, gravitational_potential, averaged_energy, avg_kinetic_energy, avg_gravitational_potential, t, dt, tension, ke_total, gp_total, ke_avg, gp_avg;
+    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, asin, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, ball_count, lift_count, k, g, pivot_size, rope_length, ceiling, pendulums, _GS_1, i, amplitude, h, ρσ_unpack, KE, GP, energy, kinetic_energy, gravitational_potential, averaged_energy, avg_kinetic_energy, avg_gravitational_potential, t, dt, ke_total, gp_total, ke_avg, gp_avg;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -68,7 +68,7 @@ async function __main__() {
     "9";
     title = "&#x2022; Original code taken from <a href=\"https://www.youtube.com/watch?v=eEb3seVrJHQ/\">this video<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/kinematics/code/newtons_cradle.py\">newtons_cradle.py</a>\n\n&#x2022; $\\theta(t)=\\theta_0 \\cos \\bigg( \\sqrt{  \\dfrac {g} {L}} t \\bigg)$\n\n";
     "11";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 600, background: color.gray(.075), range: 1.6, center: vec(.5, 1["-u"]()["*"](1), .4), forward: vec(1["-u"]()["*"](.55), 1["-u"]()["*"](.37), 1["-u"]()["*"](.75))})]);
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 600, background: color.gray(.075), range: 1.6, center: vec(.5, 1["-u"]()["*"](1), .4), forward: vec(1["-u"]()["*"](.6), 1["-u"]()["*"](.2), 1["-u"]()["*"](.75))})]);
     "13";
     ball_count = 5;
     "14";
@@ -80,188 +80,294 @@ async function __main__() {
     "19";
     pivot_size = .06;
     "20";
-    ball_size = .2;
-    "21";
-    ball_mass = 1;
-    "22";
     rope_length = 2;
-    "24";
-    ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([])];
-    pivots = ρσ_unpack[0];
-    balls = ρσ_unpack[1];
-    ropes = ρσ_unpack[2];
-    "25";
+    "22";
+    function Pendulum() {;
+    }
+    Pendulum.prototype.__init__ = async function __init__() {
+        var self = this;
+        var position = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var mass = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[1];
+        var radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[2];
+        var trail = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.trail : arguments[3];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
+            mass = ρσ_kwargs_obj.mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
+            radius = ρσ_kwargs_obj.radius;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "trail")){
+            trail = ρσ_kwargs_obj.trail;
+        }
+        "24";
+        self._pivot = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: pivot_size, color: color.orange, pos: position})]);
+        "25";
+        self._ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: radius, color: color.yellow, pos: position["+"](vec(0, 1["-u"]()["*"](2)["-"](1["*"](mass)["*"](g)["/"](k)), 0)), make_trail: trail})]);
+        "26";
+        self._rope = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .05, pos: self._pivot.pos, axis: self._ball.pos["-"](1["*"](self._pivot.pos)), texture: textures.wood})]);
+        "27";
+        self._velocity = vec(0, 0, 0);
+        "28";
+        self._mass = mass;
+    };
+    if (!Pendulum.prototype.__init__.__defaults__) Object.defineProperties(Pendulum.prototype.__init__, {
+        __defaults__ : {value: {mass:1, radius:.2, trail:false}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["position", "mass", "radius", "trail"]},
+        __module__ : {value: null}
+    });
+    Pendulum.__argnames__ = Pendulum.prototype.__init__.__argnames__;
+    Pendulum.__handles_kwarg_interpolation__ = Pendulum.prototype.__init__.__handles_kwarg_interpolation__;
+    Pendulum.prototype.lift = async function lift(displacement) {
+        var self = this;
+        "31";
+        self._ball.pos.y = 1["-u"]()["*"](2)["-"](1["*"](self._mass)["*"](g)["*"](displacement)["/"](k))["*"](displacement);
+        "32";
+        self._ball.pos.x=self._ball.pos.x["-"](abs(self._ball.pos.y)["*"](tan(acos(displacement))));
+        "33";
+        self._rope.axis = self._ball.pos["-"](1["*"](self._pivot.pos));
+    };
+    if (!Pendulum.prototype.lift.__argnames__) Object.defineProperties(Pendulum.prototype.lift, {
+        __argnames__ : {value: ["displacement"]},
+        __module__ : {value: null}
+    });
+    Pendulum.prototype.update = async function update(dt) {
+        var self = this;
+        var ρσ_ls, tension, acceleration;
+        "37";
+        self._rope.axis = self._ball.pos["-"](1["*"](self._rope.pos));
+        "38";
+        tension = 1["-u"]()["*"](k)["*"](mag(self._rope.axis)["-"](1["*"](rope_length)))["*"](self._rope.axis.norm());
+        "39";
+        acceleration = vec(0, 1["-u"]()["*"](g), 0)["+"](tension["/"](self._mass));
+        "40";
+        self._velocity=self._velocity["+"](acceleration["*"](dt));
+        "41";
+        self._ball.pos=self._ball.pos["+"](self._velocity["*"](dt));
+    };
+    if (!Pendulum.prototype.update.__argnames__) Object.defineProperties(Pendulum.prototype.update, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    Pendulum.prototype.pos = async function pos() {
+        var self = this;
+        "44";
+        return self._ball.pos;
+    };
+    if (!Pendulum.prototype.pos.__module__) Object.defineProperties(Pendulum.prototype.pos, {
+        __module__ : {value: null}
+    });
+    Pendulum.prototype.velocity = async function velocity() {
+        var self = this;
+        "47";
+        return self._velocity;
+    };
+    if (!Pendulum.prototype.velocity.__module__) Object.defineProperties(Pendulum.prototype.velocity, {
+        __module__ : {value: null}
+    });
+    Pendulum.prototype.mass = async function mass() {
+        var self = this;
+        "50";
+        return self._mass;
+    };
+    if (!Pendulum.prototype.mass.__module__) Object.defineProperties(Pendulum.prototype.mass, {
+        __module__ : {value: null}
+    });
+    Pendulum.prototype.radius = async function radius() {
+        var self = this;
+        "53";
+        return self._ball.radius;
+    };
+    if (!Pendulum.prototype.radius.__module__) Object.defineProperties(Pendulum.prototype.radius, {
+        __module__ : {value: null}
+    });
+    Pendulum.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Pendulum.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Pendulum.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+    "56";
+    ceiling = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.125), .1, 0), size: vec(3, .1, 1), color: color.green})]);
+    "57";
+    pendulums = ρσ_list_decorate([]);
+    "58";
     for (var ρσ_Index1 = 0; ρσ_Index1["<"](ball_count); ρσ_Index1++) {
         i = ρσ_Index1;
-        "26";
-        pivots.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: pivot_size, color: color.orange, pos: vec(1["-u"]()["*"](.4)["*"](ball_count["/"](2))["+"](i["*"](.4)), 0, 0)})]));
-        "27";
-        balls.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({radius: ball_size, color: color.yellow, pos: vec(1["-u"]()["*"](.4)["*"](ball_count["/"](2))["+"](i["*"](.4)), 1["-u"]()["*"](2)["-"](1["*"](ball_mass)["*"](g)["/"](k)), 0), m: ball_mass, v: vec(0, 0, 0), make_trail: false})]));
-        "28";
-        ropes.append(ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .05, pos: ρσ_getitem(pivots, i).pos, axis: ρσ_getitem(balls, i).pos["-"](1["*"](ρσ_getitem(pivots, i).pos)), texture: textures.wood})]));
+        "59";
+        _GS_1 = new Pendulum;
+        (await _GS_1.__init__(vec(1["-u"]()["*"](.4)["*"](ball_count["/"](2))["+"](i["*"](.4)), 0, 0)));
+        pendulums.append(_GS_1);
     }
-    "32";
+    "63";
     amplitude = 1.9;
-    "33";
+    "64";
     amplitude=amplitude["/"](2);
-    "34";
+    "65";
     for (var ρσ_Index2 = 0; ρσ_Index2["<"](lift_count); ρσ_Index2++) {
         i = ρσ_Index2;
-        "35";
-        ρσ_getitem(balls, i).pos.y = 1["-u"]()["*"](2)["-"](1["*"](ball_mass)["*"](g)["*"](amplitude)["/"](k))["*"](amplitude);
-        "36";
-        ρσ_getitem(balls, i).pos.x=ρσ_getitem(balls, i).pos.x["-"](abs(ρσ_getitem(balls, i).pos.y)["*"](tan(acos(amplitude))));
-        "37";
-        ρσ_getitem(ropes, i).axis = ρσ_getitem(balls, i).pos["-"](1["*"](ρσ_getitem(pivots, i).pos));
+        "66";
+        (await ρσ_getitem(pendulums, i).lift(amplitude));
     }
-    "39";
-    async function after_collision_velocities(m1, m2, v1, v2, x1, x2) {
-        var ρσ_ls, v1_prime, v2_prime;
-        "40";
+    "68";
+    async function after_collision_velocities(pendulum_1, pendulum_2) {
+        var ρσ_ls, ρσ_unpack, m1, m2, x1, x2, v1, v2, v1_prime, v2_prime;
+        "69";
+        ρσ_unpack = [(await pendulum_1.mass()), (await pendulum_2.mass())];
+        m1 = ρσ_unpack[0];
+        m2 = ρσ_unpack[1];
+        "70";
+        ρσ_unpack = [(await pendulum_1.pos()), (await pendulum_2.pos())];
+        x1 = ρσ_unpack[0];
+        x2 = ρσ_unpack[1];
+        "71";
+        ρσ_unpack = [(await pendulum_1.velocity()), (await pendulum_2.velocity())];
+        v1 = ρσ_unpack[0];
+        v2 = ρσ_unpack[1];
+        "72";
         v1_prime = v1["+"](2["*"](m2["/"](m1["+"](m2)))["*"](x1["-"](1["*"](x2)))["*"](dot(v2["-"](1["*"](v1)), x1["-"](1["*"](x2))))["/"](dot(x1["-"](1["*"](x2)), x1["-"](1["*"](x2)))));
-        "41";
+        "73";
         v2_prime = v2["+"](2["*"](m1["/"](m1["+"](m2)))["*"](x2["-"](1["*"](x1)))["*"](dot(v1["-"](1["*"](v2)), x2["-"](1["*"](x1))))["/"](dot(x2["-"](1["*"](x1)), x2["-"](1["*"](x1)))));
-        "42";
+        "74";
         return [v1_prime, v2_prime];
     };
     if (!after_collision_velocities.__argnames__) Object.defineProperties(after_collision_velocities, {
-        __argnames__ : {value: ["m1", "m2", "v1", "v2", "x1", "x2"]},
+        __argnames__ : {value: ["pendulum_1", "pendulum_2"]},
         __module__ : {value: null}
     });
 
-    "44";
-    async function collision_happen(pos1, pos2, size1, size2, v1, v2) {
-        "45";
+    "76";
+    async function collision_happen(pendulum_1, pendulum_2) {
+        var ρσ_ls, ρσ_unpack, size1, size2, pos1, pos2, v1, v2;
+        "77";
+        ρσ_unpack = [(await pendulum_1.radius()), (await pendulum_2.radius())];
+        size1 = ρσ_unpack[0];
+        size2 = ρσ_unpack[1];
+        "78";
+        ρσ_unpack = [(await pendulum_1.pos()), (await pendulum_2.pos())];
+        pos1 = ρσ_unpack[0];
+        pos2 = ρσ_unpack[1];
+        "79";
+        ρσ_unpack = [(await pendulum_1.velocity()), (await pendulum_2.velocity())];
+        v1 = ρσ_unpack[0];
+        v2 = ρσ_unpack[1];
+        "80";
         return mag(pos1["-"](1["*"](pos2)))["<="](size1["+"](size2)) && dot(pos1["-"](1["*"](pos2)), v1["-"](1["*"](v2)))["<="](0);
     };
     if (!collision_happen.__argnames__) Object.defineProperties(collision_happen, {
-        __argnames__ : {value: ["pos1", "pos2", "size1", "size2", "v1", "v2"]},
+        __argnames__ : {value: ["pendulum_1", "pendulum_2"]},
         __module__ : {value: null}
     });
 
-    "47";
-    h = 1["-u"]()["*"](2)["-"](1["*"](ball_mass)["*"](g)["/"](k));
-    "48";
+    "82";
+    h = 1["-u"]()["*"](2)["-"](1["*"]((await ρσ_getitem(pendulums, 0).mass()))["*"](g)["/"](k));
+    "83";
     ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([])];
     KE = ρσ_unpack[0];
     GP = ρσ_unpack[1];
-    "50";
+    "85";
     display.append_to_caption("\n");
-    "51";
+    "86";
     energy = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 600, background: color.black, title: "Kinetic and potential energy"})]);
-    "52";
+    "87";
     kinetic_energy = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: energy, color: color.blue, width: 4})]);
-    "53";
+    "88";
     gravitational_potential = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: energy, color: color.red, width: 4})]);
-    "55";
+    "90";
     averaged_energy = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 600, background: color.black, title: "Average kinetic and potential energy"})]);
-    "56";
+    "91";
     avg_kinetic_energy = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: averaged_energy, color: color.blue, width: 4})]);
-    "57";
+    "92";
     avg_gravitational_potential = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: averaged_energy, color: color.red, width: 4})]);
-    "59";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "61";
+    "96";
     t = 0;
-    "62";
+    "97";
     dt = .001;
-    "63";
+    "98";
     while (true) {
-        "64";
+        "99";
         (await rate(250));
-        "65";
+        "100";
         t=t["+"](dt);
-        "67";
-        for (var ρσ_Index3 = 0; ρσ_Index3["<"](ball_count); ρσ_Index3++) {
+        "102";
+        (await ρσ_getitem(pendulums, 0).update(dt));
+        "103";
+        if ((await collision_happen(ρσ_getitem(pendulums, 0), ρσ_getitem(pendulums, 1)))) {
+            "104";
+            ρσ_unpack = (await after_collision_velocities(ρσ_getitem(pendulums, 0), ρσ_getitem(pendulums, 1)));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+            ρσ_getitem(pendulums, 0)._velocity = ρσ_unpack[0];
+            ρσ_getitem(pendulums, 1)._velocity = ρσ_unpack[1];
+        }
+        "106";
+        for (var ρσ_Index3 = 1; ρσ_Index3["<"](ball_count["-"](1["*"](1))); ρσ_Index3++) {
             i = ρσ_Index3;
-            "70";
-            ρσ_getitem(ropes, i).axis = ρσ_getitem(balls, i).pos["-"](1["*"](ρσ_getitem(ropes, i).pos));
-            "71";
-            tension = 1["-u"]()["*"](k)["*"](mag(ρσ_getitem(ropes, i).axis)["-"](1["*"](rope_length)))["*"](ρσ_getitem(ropes, i).axis.norm());
-            "72";
-            ρσ_getitem(balls, i).a = vec(0, 1["-u"]()["*"](g), 0)["+"](tension["/"](ρσ_getitem(balls, i).m));
-            "74";
-            ρσ_getitem(balls, i).v=ρσ_getitem(balls, i).v["+"](ρσ_getitem(balls, i).a["*"](dt));
-            "75";
-            ρσ_getitem(balls, i).pos=ρσ_getitem(balls, i).pos["+"](ρσ_getitem(balls, i).v["*"](dt));
-            "77";
-            if ((i === 0 || typeof i === "object" && ρσ_equals(i, 0))) {
-                "78";
-                if ((await collision_happen(ρσ_getitem(balls, 0).pos, ρσ_getitem(balls, 1).pos, ρσ_getitem(balls, 0).radius, ρσ_getitem(balls, 1).radius, ρσ_getitem(balls, 0).v, ρσ_getitem(balls, 1).v))) {
-                    "79";
-                    ρσ_unpack = (await after_collision_velocities(ρσ_getitem(balls, 0).m, ρσ_getitem(balls, 1).m, ρσ_getitem(balls, 0).v, ρσ_getitem(balls, 1).v, ρσ_getitem(balls, 0).pos, ρσ_getitem(balls, 1).pos));
+            "107";
+            (await ρσ_getitem(pendulums, i).update(dt));
+            "108";
+            if ((await collision_happen(ρσ_getitem(pendulums, i), ρσ_getitem(pendulums, i["+"](1))))) {
+                "109";
+                ρσ_unpack = (await after_collision_velocities(ρσ_getitem(pendulums, i), ρσ_getitem(pendulums, i["+"](1))));
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    ρσ_getitem(balls, 0).v = ρσ_unpack[0];
-                    ρσ_getitem(balls, 1).v = ρσ_unpack[1];
-                    "80";
-                } else {
-                    "81";
-                    continue;
-                    "83";
-                }
-            } else if (ρσ_equals(i, ball_count["-"](1["*"](1)))) {
-                "84";
-                if ((await collision_happen(ρσ_getitem(balls, ball_count["-"](1["*"](1))).pos, ρσ_getitem(balls, ball_count["-"](1["*"](2))).pos, ρσ_getitem(balls, ball_count["-"](1["*"](1))).radius, ρσ_getitem(balls, ball_count["-"](1["*"](2))).radius, ρσ_getitem(balls, ball_count["-"](1["*"](1))).v, ρσ_getitem(balls, ball_count["-"](1["*"](2))).v))) {
-                    "85";
-                    ρσ_unpack = (await after_collision_velocities(ρσ_getitem(balls, ball_count["-"](1["*"](1))).m, ρσ_getitem(balls, ball_count["-"](1["*"](2))).m, ρσ_getitem(balls, ball_count["-"](1["*"](1))).v, ρσ_getitem(balls, ball_count["-"](1["*"](2))).v, ρσ_getitem(balls, ball_count["-"](1["*"](1))).pos, ρσ_getitem(balls, ball_count["-"](1["*"](2))).pos));
+                ρσ_getitem(pendulums, i)._velocity = ρσ_unpack[0];
+                ρσ_getitem(pendulums, i["+"](1))._velocity = ρσ_unpack[1];
+                "110";
+            } else if ((await collision_happen(ρσ_getitem(pendulums, i), ρσ_getitem(pendulums, i["-"](1["*"](1)))))) {
+                "111";
+                ρσ_unpack = (await after_collision_velocities(ρσ_getitem(pendulums, i), ρσ_getitem(pendulums, i["-"](1["*"](1)))));
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    ρσ_getitem(balls, ball_count["-"](1["*"](1))).v = ρσ_unpack[0];
-                    ρσ_getitem(balls, ball_count["-"](1["*"](2))).v = ρσ_unpack[1];
-                    "86";
-                } else {
-                    "87";
-                    continue;
-                    "89";
-                }
-            } else {
-                "90";
-                if ((await collision_happen(ρσ_getitem(balls, i).pos, ρσ_getitem(balls, i["+"](1)).pos, ρσ_getitem(balls, i).radius, ρσ_getitem(balls, i["+"](1)).radius, ρσ_getitem(balls, i).v, ρσ_getitem(balls, i["+"](1)).v))) {
-                    "91";
-                    ρσ_unpack = (await after_collision_velocities(ρσ_getitem(balls, i).m, ρσ_getitem(balls, i["+"](1)).m, ρσ_getitem(balls, i).v, ρσ_getitem(balls, i["+"](1)).v, ρσ_getitem(balls, i).pos, ρσ_getitem(balls, i["+"](1)).pos));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    ρσ_getitem(balls, i).v = ρσ_unpack[0];
-                    ρσ_getitem(balls, i["+"](1)).v = ρσ_unpack[1];
-                    "92";
-                } else if ((await collision_happen(ρσ_getitem(balls, i).pos, ρσ_getitem(balls, i["-"](1["*"](1))).pos, ρσ_getitem(balls, i).radius, ρσ_getitem(balls, i["-"](1["*"](1))).radius, ρσ_getitem(balls, i).v, ρσ_getitem(balls, i["-"](1["*"](1))).v))) {
-                    "93";
-                    ρσ_unpack = (await after_collision_velocities(ρσ_getitem(balls, i).m, ρσ_getitem(balls, i["-"](1["*"](1))).m, ρσ_getitem(balls, i).v, ρσ_getitem(balls, i["-"](1["*"](1))).v, ρσ_getitem(balls, i).pos, ρσ_getitem(balls, i["-"](1["*"](1))).pos));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    ρσ_getitem(balls, i).v = ρσ_unpack[0];
-                    ρσ_getitem(balls, i["-"](1["*"](1))).v = ρσ_unpack[1];
-                    "94";
-                } else {
-                    "95";
-                    continue;
-                }
+                ρσ_getitem(pendulums, i)._velocity = ρσ_unpack[0];
+                ρσ_getitem(pendulums, i["-"](1["*"](1)))._velocity = ρσ_unpack[1];
             }
         }
-        "97";
+        "113";
+        (await ρσ_getitem(pendulums, 1["-u"]()["*"](1)).update(dt));
+        "114";
+        if ((await collision_happen(ρσ_getitem(pendulums, ball_count["-"](1["*"](1))), ρσ_getitem(pendulums, ball_count["-"](1["*"](2)))))) {
+            "115";
+            ρσ_unpack = (await after_collision_velocities(ρσ_getitem(pendulums, ball_count["-"](1["*"](1))), ρσ_getitem(pendulums, ball_count["-"](1["*"](2)))));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+            ρσ_getitem(pendulums, ball_count["-"](1["*"](1)))._velocity = ρσ_unpack[0];
+            ρσ_getitem(pendulums, ball_count["-"](1["*"](2)))._velocity = ρσ_unpack[1];
+        }
+        "117";
         ke_total = 0;
-        "98";
+        "118";
         gp_total = 0;
-        "99";
+        "119";
         for (var ρσ_Index4 = 0; ρσ_Index4["<"](ball_count); ρσ_Index4++) {
             i = ρσ_Index4;
-            "100";
-            ke_total=ke_total["+"](.5["*"](ρσ_getitem(balls, i).m)["*"](dot(ρσ_getitem(balls, i).v, ρσ_getitem(balls, i).v)));
-            "101";
-            gp_total=gp_total["+"](ρσ_getitem(balls, i).m["*"](g)["*"](ρσ_getitem(balls, i).pos.y["-"](1["*"](h))));
+            "120";
+            ke_total=ke_total["+"](.5["*"]((await ρσ_getitem(pendulums, i).mass()))["*"](dot((await ρσ_getitem(pendulums, i).velocity()), (await ρσ_getitem(pendulums, i).velocity()))));
+            "121";
+            gp_total=gp_total["+"]((await ρσ_getitem(pendulums, i).mass())["*"](g)["*"]((await ρσ_getitem(pendulums, i).pos()).y["-"](1["*"](h))));
         }
-        "103";
+        "123";
         KE.append(ke_total);
-        "104";
+        "124";
         GP.append(gp_total);
-        "105";
+        "125";
         ke_avg = (await sum(KE))["/"](len(KE));
-        "106";
+        "126";
         gp_avg = (await sum(GP))["/"](len(GP));
-        "108";
+        "128";
         kinetic_energy.plot(t, ke_total);
-        "109";
+        "129";
         gravitational_potential.plot(t, gp_total);
-        "111";
+        "131";
         avg_kinetic_energy.plot(t, ke_avg);
-        "112";
+        "132";
         avg_gravitational_potential.plot(t, gp_avg);
     }
 };
