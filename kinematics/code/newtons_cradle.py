@@ -115,9 +115,9 @@ while True:
 
     ke_total = 0
     gp_total = 0
-    for i in range(ball_count):
-        ke_total += .5 * pendulums[i].mass() * dot(pendulums[i].velocity(), pendulums[i].velocity())
-        gp_total += pendulums[i].mass() * g * (pendulums[i].pos().y - h)
+    for pendulum in pendulums:
+        ke_total += .5 * pendulum.mass() * dot(pendulum.velocity(), pendulum.velocity())
+        gp_total += pendulum.mass() * g * (pendulum.pos().y - h)
 
     KE.append(ke_total)
     GP.append(gp_total)

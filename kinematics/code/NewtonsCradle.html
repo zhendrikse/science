@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, asin, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, ball_count, lift_count, k, g, pivot_size, rope_length, ceiling, pendulums, _GS_1, i, amplitude, h, ρσ_unpack, KE, GP, energy, kinetic_energy, gravitational_potential, averaged_energy, avg_kinetic_energy, avg_gravitational_potential, t, dt, ke_total, gp_total, ke_avg, gp_avg;
+    var version, print, arange, __name__, type, ρσ_ls, title, display, ball_count, lift_count, k, g, pivot_size, rope_length, ceiling, pendulums, _GS_1, i, amplitude, h, ρσ_unpack, KE, GP, energy, kinetic_energy, gravitational_potential, averaged_energy, avg_kinetic_energy, avg_gravitational_potential, t, dt, ke_total, gp_total, pendulum, ke_avg, gp_avg;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -290,6 +290,8 @@ async function __main__() {
     avg_kinetic_energy = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: averaged_energy, color: color.blue, width: 4})]);
     "92";
     avg_gravitational_potential = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({graph: averaged_energy, color: color.red, width: 4})]);
+    "94";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "96";
     t = 0;
     "97";
@@ -346,12 +348,14 @@ async function __main__() {
         "118";
         gp_total = 0;
         "119";
-        for (var ρσ_Index4 = 0; ρσ_Index4["<"](ball_count); ρσ_Index4++) {
-            i = ρσ_Index4;
+        var ρσ_Iter4 = pendulums;
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            pendulum = ρσ_Index4;
             "120";
-            ke_total=ke_total["+"](.5["*"]((await ρσ_getitem(pendulums, i).mass()))["*"](dot((await ρσ_getitem(pendulums, i).velocity()), (await ρσ_getitem(pendulums, i).velocity()))));
+            ke_total=ke_total["+"](.5["*"]((await pendulum.mass()))["*"](dot((await pendulum.velocity()), (await pendulum.velocity()))));
             "121";
-            gp_total=gp_total["+"]((await ρσ_getitem(pendulums, i).mass())["*"](g)["*"]((await ρσ_getitem(pendulums, i).pos()).y["-"](1["*"](h))));
+            gp_total=gp_total["+"]((await pendulum.mass())["*"](g)["*"]((await pendulum.pos()).y["-"](1["*"](h))));
         }
         "123";
         KE.append(ke_total);
