@@ -65,37 +65,37 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "27";
-    title = "A plane wave with wavelength $\\lambda$ strikes a thin film an angle $\\theta_i$ with the normal.\nThe film has refractive index $n$ and thickness $a$.   \nThe phase difference between the rays reflected from the first and second surfaces is:\n\n$\\begin{equation}\\delta= \\frac{4\\pi a n \\cos(\\theta_i)}{\\lambda} +\\pi.\\end{equation}$\n\nThere is additional interference from rays reflected inside the film at the first surface:\n\n$\\begin{equation}\\delta = \\frac{4\\pi a n \\cos(\\theta_i)}{\\lambda}.\\end{equation}$\n\nThe program shows a color plot of the intensity of a given wavelength.\n    \n&#x2022; Based on <a href=\"https://sites.science.oregonstate.edu/~landaur/Books/Problems/Codes/JupyterNB/ThinFilmVP.ipynb\">Thin film interference by reflection<\/a> (AJP 72,1248-1253)\n&#x2022; From <a href=\"https://books.google.nl/books/about/Computational_Problems_for_Physics.html?id=g9tdDwAAQBAJ\">Computational Problems for Physics</a> by RH Landau, MJ Paez, and CC Bordeianu.\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/optics/code/thin_film.py\">thin_film.py</a>\n\n";
-    "29";
+    "23";
+    title = "A plane wave with wavelength $\\lambda$ strikes a thin film an angle $\\theta_i$ with the normal.\nThe film has refractive index $n$ and thickness $a$.   \nThe phase difference between the rays reflected from the first and second surfaces is:\n$$\\begin{equation}\\delta= \\frac{4\\pi a n \\cos(\\theta_i)}{\\lambda} +\\pi.\\end{equation}$$\nThere is additional interference from rays reflected inside the film at the first surface:\n$$\\begin{equation}\\delta = \\frac{4\\pi a n \\cos(\\theta_i)}{\\lambda}.\\end{equation}$$\nThe program shows a color plot of the intensity of a given wavelength.\n    \n&#x2022; Based on <a href=\"https://sites.science.oregonstate.edu/~landaur/Books/Problems/Codes/JupyterNB/ThinFilmVP.ipynb\">Thin film interference by reflection<\/a> (AJP 72,1248-1253)\n&#x2022; From <a href=\"https://books.google.nl/books/about/Computational_Problems_for_Physics.html?id=g9tdDwAAQBAJ\">Computational Problems for Physics</a> by RH Landau, MJ Paez, and CC Bordeianu.\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/optics/code/thin_film.py\">thin_film.py</a>\n\n";
+    "25";
     display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 600, range: 400, background: color.gray(.075), title: title})]);
-    "31";
+    "27";
     red_curve = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: color.red})]);
-    "32";
+    "28";
     green_curve = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: color.green})]);
-    "33";
+    "29";
     blue_curve = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({color: color.blue})]);
-    "35";
+    "31";
     title = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](20), 350, 0), text: "Intensity vs Thickness nA in nm", box: false})]);
-    "36";
+    "32";
     waves = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](30), 320, 0), text: "Red, Green, and Blue Intensities", box: false})]);
-    "37";
+    "33";
     trans = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](280), 300, 0), text: "Transmission", box: false})]);
-    "38";
+    "34";
     refl = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(210, 300, 0), text: "Reflection", box: false})]);
-    "40";
+    "36";
     lambda_red = 572;
-    "41";
+    "37";
     lambda_blue = 430;
-    "42";
+    "38";
     lambda_green = 540;
-    "44";
+    "40";
     i = 0;
-    "45";
+    "41";
     film = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](150), 1["-u"]()["*"](250), 0), vec(150, 1["-u"]()["*"](250), 0), vec(150, 250, 0), vec(1["-u"]()["*"](150), 250, 0), vec(1["-u"]()["*"](150), 1["-u"]()["*"](250), 0) ])})]);
-    "48";
+    "44";
     N = 1250;
-    "49";
+    "45";
     phase_shift_red = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -106,7 +106,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "50";
+    "46";
     phase_shift_green = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -117,7 +117,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "51";
+    "47";
     phase_shift_blue = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -128,7 +128,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "52";
+    "48";
     intensity_red = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -139,7 +139,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "53";
+    "49";
     intensity_green = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -150,7 +150,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "54";
+    "50";
     intensity_blue = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -161,7 +161,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "55";
+    "51";
     xrp = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -172,7 +172,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "56";
+    "52";
     xbp = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -183,7 +183,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "57";
+    "53";
     xgp = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -194,7 +194,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "58";
+    "54";
     ap = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -205,7 +205,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "59";
+    "55";
     transmission_phase_shift_red = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -216,7 +216,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "60";
+    "56";
     transmission_phase_shift_green = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -227,7 +227,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "61";
+    "57";
     transmission_phase_shift_blue = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -238,7 +238,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "62";
+    "58";
     intensity_red_transmitted = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -249,7 +249,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "63";
+    "59";
     intensity_green_transmitted = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -260,7 +260,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "64";
+    "60";
     intensity_blue_transmitted = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -271,7 +271,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "65";
+    "61";
     INRE = (function() {
         var ρσ_Iter = range(Math.floor(N["/"](10))), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -282,7 +282,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "66";
+    "62";
     INGE = (function() {
         var ρσ_Iter = range(Math.floor(N["/"](10))), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -293,7 +293,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "67";
+    "63";
     INBE = (function() {
         var ρσ_Iter = range(Math.floor(N["/"](10))), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -304,7 +304,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "68";
+    "64";
     INRET = (function() {
         var ρσ_Iter = range(Math.floor(N["/"](10))), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -315,7 +315,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "69";
+    "65";
     INGET = (function() {
         var ρσ_Iter = range(Math.floor(N["/"](10))), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -326,7 +326,7 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "70";
+    "66";
     INBET = (function() {
         var ρσ_Iter = range(Math.floor(N["/"](10))), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -337,106 +337,106 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "71";
+    "67";
     kk = 0;
-    "73";
+    "69";
     for (var ρσ_Index1 = 0; ρσ_Index1["<"](N); ρσ_Index1=ρσ_Index1["+"](10)) {
         j = ρσ_Index1;
-        "74";
+        "70";
         ρσ_setitem(phase_shift_red, j, 4["*"](pi)["*"](j)["/"](lambda_red)["+"](pi));
-        "75";
+        "71";
         ρσ_setitem(phase_shift_green, j, 4["*"](pi)["*"](j)["/"](lambda_green)["+"](pi));
-        "76";
+        "72";
         ρσ_setitem(phase_shift_blue, j, 4["*"](pi)["*"](j)["/"](lambda_blue)["+"](pi));
-        "77";
+        "73";
         ρσ_setitem(intensity_red, j, Math.pow(cos(ρσ_getitem(phase_shift_red, j)["/"](2)), 2));
-        "78";
+        "74";
         ρσ_setitem(intensity_green, j, Math.pow(cos(ρσ_getitem(phase_shift_green, j)["/"](2)), 2));
-        "79";
+        "75";
         ρσ_setitem(intensity_blue, j, Math.pow(cos(ρσ_getitem(phase_shift_blue, j)["/"](2)), 2));
-        "80";
+        "76";
         if (ρσ_equals(j["%"](10), 0)) {
-            "81";
+            "77";
             ρσ_setitem(INRE, kk, ρσ_getitem(intensity_red, j));
-            "82";
+            "78";
             ρσ_setitem(INGE, kk, ρσ_getitem(intensity_green, j));
-            "83";
+            "79";
             ρσ_setitem(INBE, kk, ρσ_getitem(intensity_blue, j));
-            "84";
+            "80";
             kk=kk["+"](1);
         }
     }
-    "85";
+    "81";
     jj = 0;
-    "86";
+    "82";
     for (var ρσ_Index2 = 0; ρσ_Index2["<"](N); ρσ_Index2=ρσ_Index2["+"](10)) {
         nA = ρσ_Index2;
-        "88";
+        "84";
         ρσ_setitem(ap, nA, 1["-u"]()["*"](500)["*"](nA)["/"](1240)["+"](250));
-        "89";
+        "85";
         ρσ_setitem(xrp, nA, 300["*"](ρσ_getitem(intensity_red, nA))["-"](1["*"](150)));
-        "90";
+        "86";
         ρσ_setitem(xbp, nA, 300["*"](ρσ_getitem(intensity_blue, nA))["-"](1["*"](150)));
-        "91";
+        "87";
         ρσ_setitem(xgp, nA, 300["*"](ρσ_getitem(intensity_green, nA))["-"](1["*"](150)));
-        "92";
+        "88";
         ρσ_interpolate_kwargs.call(red_curve, red_curve.append, [ρσ_desugar_kwargs({pos: vec(ρσ_getitem(xrp, nA), ρσ_getitem(ap, nA), 0)})]);
-        "93";
+        "89";
         ρσ_interpolate_kwargs.call(green_curve, green_curve.append, [ρσ_desugar_kwargs({pos: vec(ρσ_getitem(xgp, nA), ρσ_getitem(ap, nA), 0)})]);
-        "94";
+        "90";
         ρσ_interpolate_kwargs.call(blue_curve, blue_curve.append, [ρσ_desugar_kwargs({pos: vec(ρσ_getitem(xbp, nA), ρσ_getitem(ap, nA), 0)})]);
-        "96";
+        "92";
         ρσ_setitem(transmission_phase_shift_red, nA, 4["*"](pi)["*"](nA)["/"](lambda_red));
-        "97";
+        "93";
         ρσ_setitem(transmission_phase_shift_green, nA, 4["*"](pi)["*"](nA)["/"](lambda_green));
-        "98";
+        "94";
         ρσ_setitem(transmission_phase_shift_blue, nA, 4["*"](pi)["*"](nA)["/"](lambda_blue));
-        "99";
+        "95";
         ρσ_setitem(intensity_red_transmitted, nA, Math.pow(cos(ρσ_getitem(transmission_phase_shift_red, nA)["/"](2)), 2));
-        "100";
+        "96";
         ρσ_setitem(intensity_green_transmitted, nA, Math.pow(cos(ρσ_getitem(transmission_phase_shift_green, nA)["/"](2)), 2));
-        "101";
+        "97";
         ρσ_setitem(intensity_blue_transmitted, nA, Math.pow(cos(ρσ_getitem(transmission_phase_shift_blue, nA)["/"](2)), 2));
-        "102";
+        "98";
         if (ρσ_equals(nA["%"](10), 0)) {
-            "103";
+            "99";
             ρσ_setitem(INRET, jj, ρσ_getitem(intensity_red_transmitted, nA));
-            "104";
+            "100";
             ρσ_setitem(INGET, jj, ρσ_getitem(intensity_green_transmitted, nA));
-            "105";
+            "101";
             ρσ_setitem(INBET, jj, ρσ_getitem(intensity_blue_transmitted, nA));
-            "106";
+            "102";
             jj=jj["+"](1);
         }
     }
-    "108";
+    "104";
     for (var ρσ_Index3 = 0; ρσ_Index3["<"](125); ρσ_Index3++) {
         nA = ρσ_Index3;
-        "109";
+        "105";
         col = vec(ρσ_getitem(INRE, nA), ρσ_getitem(INGE, nA), ρσ_getitem(INBE, nA));
-        "110";
+        "106";
         reflesc = 1["-u"]()["*"](500)["*"](nA)["/"](125)["+"](250);
-        "111";
+        "107";
         ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(205, reflesc, 0), width: .1, height: 10, length: 50, color: col})]);
-        "112";
+        "108";
         colt = vec(ρσ_getitem(INRET, nA), ρσ_getitem(INGET, nA), ρσ_getitem(INBET, nA));
-        "116";
+        "112";
         ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](270), reflesc, 0), width: .1, height: 10, length: 50, color: colt})]);
-        "117";
+        "113";
         if (ρσ_equals(nA["%"](20), 0)) {
-            "118";
+            "114";
             prof = nA["*"](10);
-            "119";
+            "115";
             escal = 1["-u"]()["*"](500)["*"](nA)["/"](125)["+"](250);
-            "120";
+            "116";
             depth = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](200), escal, 0), text: str(prof), box: false, color: color.white})]);
         }
     }
-    "122";
+    "118";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "123";
+    "119";
     while (true) {
-        "124";
+        "120";
         (await rate(10));
     }
 };
