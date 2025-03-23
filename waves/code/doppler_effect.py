@@ -5,6 +5,8 @@ from vpython import vector, canvas, sphere, simple_sphere, color, label, arrow, 
 title = """&#x2022; Original <a href="https://www.visualrelativity.com/vpython/doppler-wavefront.py">doppler-Wavefront.py</a> by <a href="http://physics.syr.edu/~salgado/">Rob Salgado</a> (salgado@physics.syr.edu)
 &#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/waves/code/doppler_effect.py">doppler_effect.py</a>
 
+&#x2022; $f_{obs}=f_{src}\\bigg( \\dfrac{c + v_{obs}}{c - v_{obs}}\\bigg)$, where $c$ is the propagation speed.
+
 """
 
 initial_velocity_source = 0.20
@@ -119,6 +121,7 @@ def on_mouse_click():
 
 
 display.bind('click', on_mouse_click)
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 new_wave(0)
 told = 0
@@ -130,7 +133,6 @@ for t in arange(0, tmax + dt, dt):
 
     #    clock.text="%f" % (t%1.0)
     if t % 1.0 < told % 1.0:
-        #        print "t=",t, "len=",len(ball)
         new_wave(t)
 
     told = t

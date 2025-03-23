@@ -3,6 +3,8 @@ from vpython import canvas, vector, color, sqrt, ring, sphere, rate, vec, label,
 title = """&#x2022; Original <a href="https://trinket.io/glowscript/bd28780444?showInstructions=true">code</a> by Andrew Morrison (@achmorrison), 3/20/18
 &#x2022; Updated by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/waves/code/doppler_waves.py">doppler_waves.py</a>
 
+&#x2022; $f_{obs}=f_{src}\\bigg( \\dfrac{c + v_{obs}}{c - v_{obs}}\\bigg)$, where $c$ is the propagation speed.
+
 """
 
 # CHANGE THE VELOCITY OF THE WAVE SOURCE HERE
@@ -116,6 +118,7 @@ display.append_to_caption("\n\n")
 observed_frequency_graph = graph(xtitle="Time", ytitle="Frequency", width=600, height=300, title="Observed vs. emitted frequency", background=color.black)
 observed_frequency_curve = gcurve(color=color.yellow)
 frequency_curve = gcurve(color=color.cyan)
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 while True:
     t = 0.0
