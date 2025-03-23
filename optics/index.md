@@ -11,8 +11,10 @@
     <figcaption><a href="https://en.wikipedia.org/wiki/Snell%27s_law">Snell&apos;s law.</a></figcaption>
   </figure>
   <figure class="right_image">
-    <!-- RESERVED FOR FUTURE APPLICATION 
-      -->
+    <a href="thin_film.html">
+      <img alt="Thin film interference" src="images/thin_film.png" title="Click to animate"/>
+    </a>
+    <figcaption><a href="https://en.wikipedia.org/wiki/Thin-film_interference">Thin film interference.</a></figcaption>
   </figure>
 </div>
 <p style="clear: both;"></p>
