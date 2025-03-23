@@ -42,12 +42,12 @@ film = curve(pos=[vec(-150, -250, 0), vec(150, -250, 0), vec(150, 250, 0),
                   vec(-150, 250, 0), vec(-150, -250, 0)])  # rectangle
 
 N = 1250
-phase_shift_red = [0. for _ in range(N)]  # phase shift red
-phase_shift_green = [0. for _ in range(N)]  # phase shift green)
-phase_shift_blue = [0. for _ in range(N)]  # phase shift blue
-intensity_red = [0. for _ in range(N)]  # intensity red
-intensity_green = [0. for _ in range(N)]  # intensity green
-intensity_blue = [0. for _ in range(N)]  # intensity blue
+phase_shift_red = [0. for _ in range(N)]
+phase_shift_green = [0. for _ in range(N)]
+phase_shift_blue = [0. for _ in range(N)]
+intensity_red = [0. for _ in range(N)]
+intensity_green = [0. for _ in range(N)]
+intensity_blue = [0. for _ in range(N)]
 xrp = [0. for _ in range(N)]  # linear transformation for red
 xbp = [0. for _ in range(N)]  # linear transformation for blue
 xgp = [0. for _ in range(N)]  # linear transformation for green
@@ -58,25 +58,25 @@ transmission_phase_shift_blue = [0. for _ in range(N)]
 intensity_red_transmitted = [0. for _ in range(N)]
 intensity_green_transmitted = [0. for _ in range(N)]
 intensity_blue_transmitted = [0. for _ in range(N)]
-INRE = [0. for _ in range(N // 10)]  # again for intensity reflexion
-INGE = [0. for _ in range(N // 10)]  # different index,
-INBE = [0. for _ in range(N // 10)]
-INRET = [0. for _ in range(N // 10)]  # again for intensity transmission
-INGET = [0. for _ in range(N // 10)]
-INBET = [0. for _ in range(N // 10)]
+intensity_reflexion_red = [0. for _ in range(N // 10)]
+intensity_reflexion_green = [0. for _ in range(N // 10)]
+intensity_reflexion_blue = [0. for _ in range(N // 10)]
+intensity_transmission_red = [0. for _ in range(N // 10)]
+intensity_transmission_green = [0. for _ in range(N // 10)]
+intensity_transmission_blue = [0. for _ in range(N // 10)]
 kk = 0
 
 for j in range(0, N, 10):
-    phase_shift_red[j] = 4 * pi * j / lambda_red + pi  # phase shift red
-    phase_shift_green[j] = 4 * pi * j / lambda_green + pi  # phase shift green
-    phase_shift_blue[j] = 4 * pi * j / lambda_blue + pi  # phase shift for blue
-    intensity_red[j] = (cos(phase_shift_red[j] / 2)) ** 2  # red intensity
-    intensity_green[j] = (cos(phase_shift_green[j] / 2)) ** 2  # green intensity
-    intensity_blue[j] = (cos(phase_shift_blue[j] / 2)) ** 2  # intensity blue
+    phase_shift_red[j] = 4 * pi * j / lambda_red + pi
+    phase_shift_green[j] = 4 * pi * j / lambda_green + pi
+    phase_shift_blue[j] = 4 * pi * j / lambda_blue + pi
+    intensity_red[j] = (cos(phase_shift_red[j] / 2)) ** 2
+    intensity_green[j] = (cos(phase_shift_green[j] / 2)) ** 2
+    intensity_blue[j] = (cos(phase_shift_blue[j] / 2)) ** 2
     if j % 10 == 0:  # intensities every 10 steps
-        INRE[kk] = intensity_red[j]
-        INGE[kk] = intensity_green[j]
-        INBE[kk] = intensity_blue[j]
+        intensity_reflexion_red[kk] = intensity_red[j]
+        intensity_reflexion_green[kk] = intensity_green[j]
+        intensity_reflexion_blue[kk] = intensity_blue[j]
         kk += 1
 jj = 0
 for nA in range(0, N, 10):
@@ -96,16 +96,16 @@ for nA in range(0, N, 10):
     intensity_green_transmitted[nA] = cos(transmission_phase_shift_green[nA] / 2) ** 2
     intensity_blue_transmitted[nA] = cos(transmission_phase_shift_blue[nA] / 2) ** 2
     if nA % 10 == 0:  # intensities for transmission every 10 steps
-        INRET[jj] = intensity_red_transmitted[nA]
-        INGET[jj] = intensity_green_transmitted[nA]
-        INBET[jj] = intensity_blue_transmitted[nA]
+        intensity_transmission_red[jj] = intensity_red_transmitted[nA]
+        intensity_transmission_green[jj] = intensity_green_transmitted[nA]
+        intensity_transmission_blue[jj] = intensity_blue_transmitted[nA]
         jj += 1
 
 for nA in range(0, 125):  # to plot 125 boxes
-    col = vec(INRE[nA], INGE[nA], INBE[nA])
+    col = vec(intensity_reflexion_red[nA], intensity_reflexion_green[nA], intensity_reflexion_blue[nA])
     reflesc = -500 * nA / 125 + 250  # 250=m 0 +b, -250 =m 125 +b
     box(pos=vec(205, reflesc, 0), width=0.1, height=10, length=50, color=col)
-    colt = (vec(INRET[nA], INGET[nA], INBET[nA]))  # transmission colors
+    colt = (vec(intensity_transmission_red[nA], intensity_transmission_green[nA], intensity_transmission_blue[nA]))  # transmission colors
     # if you uncomment next line and comment ´previous ne you have white colors
     # it sums interference by reflection and by transmission intensities
     # colt = vec(INRET[nA]+INRE[nA],INGET[nA]+INGE[nA],INBET[nA]+INBE[nA])   # Colors by transmission
