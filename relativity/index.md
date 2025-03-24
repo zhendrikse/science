@@ -10,6 +10,15 @@ merely to comprehend a little of this mystery
 each day. &mdash; <a href="https://en.wikipedia.org/wiki/Albert_Einstein">Albert Einstein</a>
 </blockquote><br/>
 
+# Special &amp; general relativity
+<div style="border-top: 2px solid #cccccc"><br/></div>
+
+If you want to learn about the special theory of relativity, check out the
+[Special Relativity For Dummies: An Intuitive Introduction](https://profoundphysics.com/special-relativity-for-dummies-an-intuitive-introduction/).
+On the same site, you will find that their 
+[General Relativity For Dummies: An Intuitive Introduction](https://profoundphysics.com/general-relativity-for-dummies/)
+is of an equally exceptional level of quality.
+
 <a name="special_relativity"></a>
 ## Special relativity
 <div style="border-top: 2px solid #cccccc"><br/></div>
