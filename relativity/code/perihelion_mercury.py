@@ -2,6 +2,7 @@
 from vpython import sphere, vector, curve, rate, color, canvas, checkbox, acos, dot, pi, graph, gdots, gcurve
 
 title = """&#x2022; Based on the original <a href="https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py">base_solution.py</a> code
+&#x2022; See also his <a href="https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf">accompanying slides</a>
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/perihelion_mercury.py">perihelion_mercury.py</a>
 &#x2022; Values are computed using the <a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet">NASA fact sheet</a>
 
@@ -47,12 +48,12 @@ class Mercury:
         self._mercurius.pos += self._velocity * dt
 
     # Strength of 1/r**3 term
-    def set_alpha(self, bool_value):
-        self._alpha = 1.e6 if bool_value else 0
+    def set_alpha(self, event):
+        self._alpha = 1.e6 if event.value else 0
 
     # Strength of 1/r**4 term
-    def set_beta(self, bool_value):
-        self._beta = 1.e5 if bool_value else 0
+    def set_beta(self, event):
+        self._beta = 1.e5 if event.value else 0
 
     def pos(self):
         return self._mercurius.pos
@@ -60,15 +61,9 @@ class Mercury:
 
 mercurius = Mercury()
 
-def set_alpha(event):
-    mercurius.set_alpha(event.checked)
-
-def set_beta(event):
-    mercurius.set_beta(event.checked)
-
 animation.append_to_caption("\n")
-_ = checkbox(text="Alpha term ", bind=set_alpha, checked=True)
-_ = checkbox(text="Beta term ", bind=set_beta, checked=True)
+_ = checkbox(text="Alpha term ", bind=mercurius.set_alpha, checked=True)
+_ = checkbox(text="Beta term ", bind=mercurius.set_beta, checked=True)
 animation.append_to_caption("\n")
 
 def angle_between(v1, v2):
