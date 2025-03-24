@@ -1,6 +1,6 @@
 #Web VPython 3.2
 from random import uniform
-from vpython import box, simple_sphere, color, vec, vector, pi, mag, mag2, norm, rate, sqrt, proj, curve, canvas
+from vpython import box, sphere, simple_sphere, color, vec, vector, pi, mag, mag2, norm, rate, sqrt, proj, curve, canvas
 
 title = "&#x2022; The original <a href=\"https://github.com/dzirbel/brownian-motion/blob/master/main.py\">main.py</a> "
 title += "was written by Jackson Bahr and Dominic Zirbel for \n   <a href=\"https://matterandinteractions.org/\">Matter and Interactions</a> "
@@ -8,7 +8,7 @@ title += "I at Carnegie Mellon University, Fall 2013.\n"
 title += "&#x2022; Repaired and refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> "
 title += "in <a href=\"https://github.com/zhendrikse/science/blob/main/thermodynamics/code/brownian_motion.py\">brownian_motion.py</a>\n\n"
 
-animation = canvas(title=title, background=color.gray(0.075))
+display = canvas(title=title, width=600, height=600, background=color.gray(0.075), forward=vec(-.1, -.6, -.8), center=vec(0, -5, 0))
 
 BOX_SIZE = 5e2  # distance from the origin to the edges of the box, in meters
 PARTICLES = 200  # the number of particles in the simulation
@@ -23,9 +23,9 @@ P2P = True  # toggle whether particles collide with other particles (as opposed 
 d2 = False  # set to true to simulate in 2 dimensions (all z-fields are 0)
 d1 = False  # set to true to simulate in 1 dimension (all y- and z-fields are 0)
 
-animation.visible = False
-animation.fullscreen = True
-animation.visible = DEMO
+display.visible = False
+#display.fullscreen = True
+display.visible = DEMO
 
 if DEMO:
     box_bottom = box(pos=vec(0, -BOX_SIZE, 0), length=2 * BOX_SIZE, width=2 * BOX_SIZE, height=0.01, color=color.cyan,
@@ -41,9 +41,9 @@ if DEMO:
 
 
 class Body:
-    def __init__(self, pos=vector(0, 0, 0), radius=0, velocity=vector(0, 0, 0), colour=color.white):
+    def __init__(self, pos=vector(0, 0, 0), radius=0, velocity=vector(0, 0, 0), colour=color.white, opacity=1):
         #sphere.__init__(self, color=color, radius=radius, pos=pos)
-        self._sphere = simple_sphere(pos=pos, color=colour, radius=radius)
+        self._sphere = simple_sphere(pos=pos, color=colour, radius=radius) if opacity == 1 else sphere(pos=pos, color=colour, radius=radius, opacity=opacity)
         self._radius = radius
         self._velocity = velocity
 
@@ -166,7 +166,7 @@ class Mass(Body):
     RADIUS = 100  # radius of the Mass, in meters
 
     def __init__(self):
-        Body.__init__(self, pos=vector(0, 0, 0), radius=Mass.RADIUS, velocity=vector(0, 0, 0), colour=color.blue)
+        Body.__init__(self, pos=vector(0, 0, 0), radius=Mass.RADIUS, velocity=vector(0, 0, 0), colour=color.blue, opacity=.4)
         self._trace = curve(color=color.red)
 
     def collide_edge(self):
