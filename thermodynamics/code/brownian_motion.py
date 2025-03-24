@@ -74,11 +74,7 @@ class Body:
         self._sphere.pos += self._velocity * dt
         self.collide_edge()
 
-        if P2P:
-            other_particles = range(PARTICLES + 1 - start)
-        else:
-            other_particles = range(PARTICLES, PARTICLES + 1)
-
+        other_particles = range(PARTICLES + 1 - start) if P2P else range(PARTICLES, PARTICLES + 1)
         for i in other_particles:
             o = objects[PARTICLES - i]
 
@@ -121,7 +117,7 @@ class Body:
                 p = proj(self._velocity, r)
 
                 # calculate the new velocities for the two objects
-                total_mass = (self.mass() + o.mass())
+                total_mass = self.mass() + o.mass()
                 self._velocity = (self._velocity - p) + (p * (self.mass() - o.mass()) / total_mass)
                 o._velocity = p * ((2 * self.mass()) / total_mass)
 
@@ -149,11 +145,7 @@ class Particle(Body):
         self._velocity = velocity
 
     def generate_position(self, objects):
-        if P2P:
-            other_particles = range(len(objects))
-        else:
-            other_particles = range(len(objects) - 1, len(objects))
-
+        other_particles = range(len(objects)) if P2P else range(len(objects) - 1, len(objects))
         candidate = vector(0, 0, 0)
         found_candidate = False
         while not found_candidate:
@@ -201,13 +193,11 @@ def run_sim(total_time=-1):
         objects.append(Particle(objects))
 
     t = 0
-
     while total_time < 0 or t < total_time:
         for i in range(len(objects)):
             objects[i].tick(objects, i + 1, dt)
 
         t += dt
-
         rate(400)
 
     return mag(mass._sphere.pos)
