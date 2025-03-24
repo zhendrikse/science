@@ -10,7 +10,7 @@
 from vpython import canvas, vector, color, pi, box, rate, points, arange#, get_library
 
 title = """&#x2022; Based on code shown in <a href="https://www.youtube.com/watch?v=TZhMeYcDCyo">this video</a> by Jordan Huang
-&#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/circular_aperture.py">circular_aperture.py</a>
+&#x2022; Modified to use <a href=\https://cdnjs.com/libraries/numjs"\">numjs</a> by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/optics/code/circular_aperture.py">circular_aperture.py</a>
 &#x2022; <span style="color: red">Rendering may be <em>slow</em>, so please be patient!</span>
 
 """

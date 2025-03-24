@@ -43,7 +43,7 @@ radius of the first dark ring, you should use the 'real' intensity image.
 The amplitude of the electric field at position $(x, y)$ on the screen gets its contribution from all point
 sources sitting inside the aperture
 
-$$E(x, y) =\int\int_{\text{aperture}} \dfrac{1}{r}\sin(\omega t - kr)dXdY$$
+$$\begin{equation}E(x, y) =\int\int_{\text{aperture}} \dfrac{1}{r}\sin(\omega t - kr)dXdY\end{equation}$$
 
 or equivalently
 
