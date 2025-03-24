@@ -1,7 +1,7 @@
 #Web VPython 3.2
 from vpython import simple_sphere, color, vector, cylinder, mag, norm, dot, cross, rate, sqrt, vec, box, canvas, graph, gcurve, random
 
-title = """&#x2022; Based on code shown in <a href="https://www.youtube.com/watch?v=tP5u-V-BLQo">this video</a>
+title = """&#x2022; Based on code shown in <a href="https://www.youtube.com/watch?v=tP5u-V-BLQo">this video</a> by Jordan Huang
 &#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.py">energy_equipartition.py</a>
 &#x2022; The <span style="color: green">green curve</span> is the averaged kinetic energy of the center of mass
 &#x2022; The <span style="color: red">red curve</span> is the averaged vibrational potential energy
