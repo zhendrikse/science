@@ -107,7 +107,7 @@ dt = 5E-16
 t = 0
 total_com_K, total_v_K, total_v_P, total_r_K = 0, 0, 0, 0
 while True:
-    rate(3000)
+    rate(300)
     for molecule in co_molecules:
         molecule.time_lapse(dt)
 
