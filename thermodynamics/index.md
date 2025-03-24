@@ -50,7 +50,7 @@ and the evolution of the world. &mdash;
 </div>
 <p style="clear: both;"></p>
 
-### Three-dimensional Brownian motion
+### 3D Brownian motion &amp; gas of CO molecules
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
