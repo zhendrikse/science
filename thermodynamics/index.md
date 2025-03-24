@@ -63,8 +63,11 @@ and the evolution of the world. &mdash;
   observed these motions while looking at pollen through his microscope.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="energy_equipartition.html">
+    <img alt="Carbon monoxide gas" src="images/energy_equipartition.png" title="Click to animate"/>
+  </a>
+  <figcaption>Carbon monoxide gas &mdash; this simulation shows that every degree of freedom of every 
+  particle has the same expectation value of energy.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

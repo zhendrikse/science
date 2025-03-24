@@ -1,0 +1,441 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
+    var version, print, arange, __name__, type, ρσ_ls, title, display, ρσ_unpack, size, k_bond, d, N, one_third, L, m, k, T, container, energies, c_avg_com_K, c_avg_v_P, c_avg_v_K, c_avg_r_K, co_molecules, _GS_1, _, times, dt, t, total_com_K, total_v_K, total_v_P, total_r_K, molecule, carbon_1, oxygen_1, carbon_2, oxygen_2, j, i, co_molecule;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "11";
+    title = " &#x2022; Based on code shown in <a href=\"https://www.youtube.com/watch?v=tP5u-V-BLQo\">this video<\/a>\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.py\">energy_equipartition.py</a>\n&#x2022; The <span style=\"color: green\">green curve</span> is the averaged kinetic energy of the center of mass\n&#x2022; The <span style=\"color: red\">red curve</span> is the averaged vibrational potential energy\n&#x2022; The <span style=\"color: purple\">purple curve</span> is the averaged vibrational kinetic energy\n&#x2022; The <span style=\"color: blue\">blue curve</span> is the averaged rotational kinetic energy\n\n";
+    "13";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 600, background: color.gray(.075), forward: vec(1["-u"]()["*"](.55), 1["-u"]()["*"](.42), 1["-u"]()["*"](.75)), range: 3.75e-10})]);
+    "15";
+    ρσ_unpack = [3.1e-11, 18600];
+    size = ρσ_unpack[0];
+    k_bond = ρσ_unpack[1];
+    "16";
+    d = 2.5["*"](size);
+    "17";
+    N = 20;
+    "18";
+    one_third = 1["/"](3);
+    "19";
+    L = Math.pow((.0244["/"](6e23)["*"](N)), one_third)["/"](50);
+    "20";
+    m = .014["/"](6e23);
+    "21";
+    ρσ_unpack = [1.38e-23, 298];
+    k = ρσ_unpack[0];
+    T = ρσ_unpack[1];
+    "24";
+    function CarbonMonoxide() {;
+    }
+    CarbonMonoxide.prototype.__init__ = async function __init__() {
+        var self = this;
+        var oxygen_mass = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.oxygen_mass : arguments[0];
+        var carbon_mass = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.carbon_mass : arguments[1];
+        var initial_v = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.initial_v : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "oxygen_mass")){
+            oxygen_mass = ρσ_kwargs_obj.oxygen_mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "carbon_mass")){
+            carbon_mass = ρσ_kwargs_obj.carbon_mass;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "initial_v")){
+            initial_v = ρσ_kwargs_obj.initial_v;
+        }
+        var ρσ_ls, pos, axis;
+        "26";
+        pos = vector(random()["-"](1["*"](.5)), random()["-"](1["*"](.5)), random()["-"](1["*"](.5)))["*"](L);
+        "27";
+        axis = vector(1["*"](d), 0, 0);
+        "28";
+        self.O = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos, radius: size, color: color.red})]);
+        "29";
+        self.C = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos["+"](axis), radius: size, color: color.blue})]);
+        "30";
+        self.bond = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: pos, axis: axis, radius: size["/"](2), color: color.white})]);
+        "31";
+        self.O.m = oxygen_mass["/"](6e23);
+        "32";
+        self.C.m = carbon_mass["/"](6e23);
+        "33";
+        self.O.v = vector(initial_v["*"](random()), initial_v["*"](random()), initial_v["*"](random()));
+        "34";
+        self.C.v = vector(initial_v["*"](random()), initial_v["*"](random()), initial_v["*"](random()));
+        "35";
+        self.bond.k = k_bond;
+    };
+    if (!CarbonMonoxide.prototype.__init__.__defaults__) Object.defineProperties(CarbonMonoxide.prototype.__init__, {
+        __defaults__ : {value: {oxygen_mass:16, carbon_mass:12, initial_v:sqrt(3["*"](k)["*"](T)["/"](m))}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["oxygen_mass", "carbon_mass", "initial_v"]},
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.__argnames__ = CarbonMonoxide.prototype.__init__.__argnames__;
+    CarbonMonoxide.__handles_kwarg_interpolation__ = CarbonMonoxide.prototype.__init__.__handles_kwarg_interpolation__;
+    CarbonMonoxide.prototype.bond_force_on_oxygen = async function bond_force_on_oxygen() {
+        var self = this;
+        "38";
+        return self.bond.k["*"](mag(self.bond.axis)["-"](1["*"](d)))["*"](norm(self.bond.axis));
+    };
+    if (!CarbonMonoxide.prototype.bond_force_on_oxygen.__module__) Object.defineProperties(CarbonMonoxide.prototype.bond_force_on_oxygen, {
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.prototype.time_lapse = async function time_lapse(dt) {
+        var self = this;
+        "41";
+        self.C.a = 1["-u"]()["*"]((await self.bond_force_on_oxygen()))["/"](self.C.m);
+        "42";
+        self.O.a = (await self.bond_force_on_oxygen())["/"](self.O.m);
+        "43";
+        self.C.v=self.C.v["+"](self.C.a["*"](dt));
+        "44";
+        self.O.v=self.O.v["+"](self.O.a["*"](dt));
+        "45";
+        self.O.pos=self.O.pos["+"](self.O.v["*"](dt));
+        "46";
+        self.C.pos=self.C.pos["+"](self.C.v["*"](dt));
+        "47";
+        self.bond.axis = self.C.pos["-"](1["*"](self.O.pos));
+        "48";
+        self.bond.pos = self.O.pos;
+    };
+    if (!CarbonMonoxide.prototype.time_lapse.__argnames__) Object.defineProperties(CarbonMonoxide.prototype.time_lapse, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.prototype.com = async function com() {
+        var self = this;
+        "51";
+        return self.C.pos["*"](self.C.m)["+"](self.O.pos["*"](self.O.m))["/"]((await self.mass()));
+    };
+    if (!CarbonMonoxide.prototype.com.__module__) Object.defineProperties(CarbonMonoxide.prototype.com, {
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.prototype.com_v = async function com_v() {
+        var self = this;
+        "54";
+        return self.C.v["*"](self.C.m)["+"](self.O.v["*"](self.O.m))["/"]((await self.mass()));
+    };
+    if (!CarbonMonoxide.prototype.com_v.__module__) Object.defineProperties(CarbonMonoxide.prototype.com_v, {
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.prototype.v_P = async function v_P() {
+        var self = this;
+        "57";
+        return self.bond.k["*"](mag(self.bond.axis)["-"](1["*"](d)))["*"](mag(self.bond.axis)["-"](1["*"](d)))["/"](2);
+    };
+    if (!CarbonMonoxide.prototype.v_P.__module__) Object.defineProperties(CarbonMonoxide.prototype.v_P, {
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.prototype.v_K = async function v_K() {
+        var self = this;
+        var ρσ_ls, C, O;
+        "60";
+        C = self.C.m["*"](Math.pow((dot(self.C.v["-"](1["*"]((await self.com_v()))), self.bond.axis)["/"](mag(self.bond.axis))), 2))["/"](2);
+        "61";
+        O = self.O.m["*"](Math.pow((dot(self.O.v["-"](1["*"]((await self.com_v()))), self.bond.axis)["/"](mag(self.bond.axis))), 2))["/"](2);
+        "62";
+        return C["+"](O);
+    };
+    if (!CarbonMonoxide.prototype.v_K.__module__) Object.defineProperties(CarbonMonoxide.prototype.v_K, {
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.prototype.r_K = async function r_K() {
+        var self = this;
+        var ρσ_ls, C, O;
+        "65";
+        C = self.C.m["*"](Math.pow((mag(cross(self.C.v["-"](1["*"]((await self.com_v()))), self.bond.axis))["/"](mag(self.bond.axis))), 2))["/"](2);
+        "66";
+        O = self.O.m["*"](Math.pow((mag(cross(self.O.v["-"](1["*"]((await self.com_v()))), self.bond.axis))["/"](mag(self.bond.axis))), 2))["/"](2);
+        "67";
+        return C["+"](O);
+    };
+    if (!CarbonMonoxide.prototype.r_K.__module__) Object.defineProperties(CarbonMonoxide.prototype.r_K, {
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.prototype.com_K = async function com_K() {
+        var self = this;
+        "70";
+        return .5["*"]((await self.mass()))["*"](dot((await self.com_v()), (await self.com_v())));
+    };
+    if (!CarbonMonoxide.prototype.com_K.__module__) Object.defineProperties(CarbonMonoxide.prototype.com_K, {
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.prototype.mass = async function mass() {
+        var self = this;
+        "73";
+        return self.C.m["+"](self.O.m);
+    };
+    if (!CarbonMonoxide.prototype.mass.__module__) Object.defineProperties(CarbonMonoxide.prototype.mass, {
+        __module__ : {value: null}
+    });
+    CarbonMonoxide.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    CarbonMonoxide.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(CarbonMonoxide.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+
+
+    "76";
+    async function collision(a1, a2) {
+        var ρσ_ls, distance, distance_squared, v1prime, v2prime;
+        "77";
+        distance = a2.pos["-"](1["*"](a1.pos));
+        "78";
+        distance_squared = dot(distance, distance);
+        "79";
+        v1prime = a1.v["-"](1["*"](2)["*"](a2.m)["/"](a1.m["+"](a2.m))["*"](1["-u"]())["*"](distance)["*"](dot(a1.v["-"](1["*"](a2.v)), 1["-u"]()["*"](distance)))["/"](distance_squared));
+        "80";
+        v2prime = a2.v["-"](1["*"](2)["*"](a1.m)["/"](a1.m["+"](a2.m))["*"](distance)["*"](dot(a2.v["-"](1["*"](a1.v)), distance))["/"](distance_squared));
+        "81";
+        return [v1prime, v2prime];
+    };
+    if (!collision.__argnames__) Object.defineProperties(collision, {
+        __argnames__ : {value: ["a1", "a2"]},
+        __module__ : {value: null}
+    });
+
+    "91";
+    container = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({length: 2["*"](L), height: 2["*"](L), width: 2["*"](L), opacity: .4, color: vec(.5, 1, .5)})]);
+    "92";
+    display.append_to_caption("\n");
+    "93";
+    energies = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 600, align: "left", ymin: 0, background: color.black, xtitle: "Average energies"})]);
+    "94";
+    c_avg_com_K = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.green})]);
+    "95";
+    c_avg_v_P = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.red})]);
+    "96";
+    c_avg_v_K = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.purple})]);
+    "97";
+    c_avg_r_K = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.blue})]);
+    "99";
+    co_molecules = ρσ_list_decorate([]);
+    "100";
+    for (var ρσ_Index1 = 0; ρσ_Index1["<"](N); ρσ_Index1++) {
+        _ = ρσ_Index1;
+        "101";
+        _GS_1 = new CarbonMonoxide;
+        (await _GS_1.__init__());
+        co_molecules=co_molecules["+"](ρσ_list_decorate([ _GS_1 ]));
+    }
+    "103";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "105";
+    times = 0;
+    "106";
+    dt = 5e-16;
+    "107";
+    t = 0;
+    "108";
+    ρσ_unpack = [0, 0, 0, 0];
+    total_com_K = ρσ_unpack[0];
+    total_v_K = ρσ_unpack[1];
+    total_v_P = ρσ_unpack[2];
+    total_r_K = ρσ_unpack[3];
+    "109";
+    while (true) {
+        "110";
+        (await rate(3e3));
+        "111";
+        var ρσ_Iter2 = co_molecules;
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            molecule = ρσ_Index2;
+            "112";
+            (await molecule.time_lapse(dt));
+        }
+        "114";
+        for (var ρσ_Index3 = 0; ρσ_Index3["<"](N["-"](1["*"](1))); ρσ_Index3++) {
+            i = ρσ_Index3;
+            "115";
+            for (var ρσ_Index4 = i["+"](1); ρσ_Index4["<"](N); ρσ_Index4++) {
+                j = ρσ_Index4;
+                "116";
+                ρσ_unpack = [ρσ_getitem(co_molecules, i).C, ρσ_getitem(co_molecules, i).O, ρσ_getitem(co_molecules, j).C,
+                ρσ_getitem(co_molecules, j).O];
+                carbon_1 = ρσ_unpack[0];
+                oxygen_1 = ρσ_unpack[1];
+                carbon_2 = ρσ_unpack[2];
+                oxygen_2 = ρσ_unpack[3];
+                "117";
+                if (mag(carbon_1.pos["-"](1["*"](carbon_2.pos)))["<="](2["*"](size)) && dot(carbon_1.pos["-"](1["*"](carbon_2.pos)), carbon_1.v["-"](1["*"](carbon_2.v)))["<="](0)) {
+                    "118";
+                    ρσ_unpack = (await collision(carbon_1, carbon_2));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+                    carbon_1.v = ρσ_unpack[0];
+                    carbon_2.v = ρσ_unpack[1];
+                    "119";
+                }
+                if (mag(oxygen_1.pos["-"](1["*"](carbon_2.pos)))["<="](2["*"](size)) && dot(oxygen_1.pos["-"](1["*"](carbon_2.pos)), oxygen_1.v["-"](1["*"](carbon_2.v)))["<="](0)) {
+                    "120";
+                    ρσ_unpack = (await collision(oxygen_1, carbon_2));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+                    oxygen_1.v = ρσ_unpack[0];
+                    carbon_2.v = ρσ_unpack[1];
+                    "121";
+                }
+                if (mag(carbon_1.pos["-"](1["*"](oxygen_2.pos)))["<="](2["*"](size)) && dot(carbon_1.pos["-"](1["*"](oxygen_2.pos)), carbon_1.v["-"](1["*"](oxygen_2.v)))["<="](0)) {
+                    "122";
+                    ρσ_unpack = (await collision(carbon_1, oxygen_2));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+                    carbon_1.v = ρσ_unpack[0];
+                    oxygen_2.v = ρσ_unpack[1];
+                    "123";
+                }
+                if (mag(oxygen_1.pos["-"](1["*"](oxygen_2.pos)))["<="](2["*"](size)) && dot(oxygen_1.pos["-"](1["*"](oxygen_2.pos)), oxygen_1.v["-"](1["*"](oxygen_2.v)))["<="](0)) {
+                    "124";
+                    ρσ_unpack = (await collision(oxygen_1, oxygen_2));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+                    oxygen_1.v = ρσ_unpack[0];
+                    oxygen_2.v = ρσ_unpack[1];
+                }
+            }
+        }
+        "126";
+        var ρσ_Iter5 = co_molecules;
+        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+        for (var ρσ_Index5 of ρσ_Iter5) {
+            co_molecule = ρσ_Index5;
+            "127";
+            if (abs(co_molecule.C.pos.x)[">="](L["-"](1["*"](size))) && co_molecule.C.pos.x["*"](co_molecule.C.v.x)[">="](0)) {
+                "128";
+                co_molecule.C.v.x = 1["-u"]()["*"](co_molecule.C.v.x);
+                "129";
+            }
+            if (abs(co_molecule.C.pos.y)[">="](L["-"](1["*"](size))) && co_molecule.C.pos.y["*"](co_molecule.C.v.y)[">="](0)) {
+                "130";
+                co_molecule.C.v.y = 1["-u"]()["*"](co_molecule.C.v.y);
+                "131";
+            }
+            if (abs(co_molecule.C.pos.z)[">="](L["-"](1["*"](size))) && co_molecule.C.pos.z["*"](co_molecule.C.v.z)[">="](0)) {
+                "132";
+                co_molecule.C.v.z = 1["-u"]()["*"](co_molecule.C.v.z);
+                "133";
+            }
+            if (abs(co_molecule.O.pos.x)[">="](L["-"](1["*"](size))) && co_molecule.O.pos.x["*"](co_molecule.O.v.x)[">="](0)) {
+                "134";
+                co_molecule.O.v.x = 1["-u"]()["*"](co_molecule.O.v.x);
+                "135";
+            }
+            if (abs(co_molecule.O.pos.y)[">="](L["-"](1["*"](size))) && co_molecule.O.pos.y["*"](co_molecule.O.v.y)[">="](0)) {
+                "136";
+                co_molecule.O.v.y = 1["-u"]()["*"](co_molecule.O.v.y);
+                "137";
+            }
+            if (abs(co_molecule.O.pos.z)[">="](L["-"](1["*"](size))) && co_molecule.O.pos.z["*"](co_molecule.O.v.z)[">="](0)) {
+                "138";
+                co_molecule.O.v.z = 1["-u"]()["*"](co_molecule.O.v.z);
+            }
+        }
+        "140";
+        var ρσ_Iter6 = co_molecules;
+        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+        for (var ρσ_Index6 of ρσ_Iter6) {
+            co_molecule = ρσ_Index6;
+            "141";
+            total_com_K=total_com_K["+"]((await co_molecule.com_K()));
+            "142";
+            total_v_K=total_v_K["+"]((await co_molecule.v_K()));
+            "143";
+            total_v_P=total_v_P["+"]((await co_molecule.v_P()));
+            "144";
+            total_r_K=total_r_K["+"]((await co_molecule.r_K()));
+        }
+        "146";
+        t=t["+"](dt);
+        "147";
+        times=times["+"](1);
+        "148";
+        c_avg_com_K.plot(times, total_com_K["/"](times));
+        "149";
+        c_avg_v_P.plot(times, total_v_P["/"](times));
+        "150";
+        c_avg_v_K.plot(times, total_v_K["/"](times));
+        "151";
+        c_avg_r_K.plot(times, total_r_K["/"](times));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
