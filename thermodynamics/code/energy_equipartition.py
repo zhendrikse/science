@@ -90,7 +90,7 @@ def collision(a1, a2):
 
 container = box(length=2 * L, height=2 * L, width=2 * L, opacity=.4, color=vec(.5, 1, .5))
 display.append_to_caption("\n")
-energies = graph(width=600, align="left", ymin=0, background=color.black, xtitle="Average energies")
+energies = graph(width=600, align="left", ymin=0, background=color.black, title="Average energies")
 c_avg_com_K = gcurve(color=color.green)
 c_avg_v_P = gcurve(color=color.red)
 c_avg_v_K = gcurve(color=color.purple)
