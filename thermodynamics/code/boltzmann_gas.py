@@ -26,8 +26,7 @@ real_mole_amount = real_number_of_atoms / avogadro_number
 gray = color.gray(0.7)  # color of edges of container
 mass = atomic_mass / avogadro_number  # helium mass
 
-animation = canvas(background=color.gray(0.075), align='top', height="500")
-animation.range = L
+animation = canvas(range=L, background=color.gray(0.075), align='top', height="500")
 animation.title = """&#x2022; A "hard-sphere" gas, written by Bruce Sherwood, modified by Rob Salgado
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/boltzmann_gas.py">boltzmann_gas.py</a>
 
@@ -99,31 +98,32 @@ class Gas:
                         self._atom_momenta[i] / self._mass) * dt
 
     def count_collisions_with(self, cube):
-        hit_counter = 0
+        hit_count = 0
         for index in range(len(self._atoms)):
-            loc = self._atom_positions[index]
-            if abs(loc.x) > cube.length() / 2:
-                if loc.x < 0:
-                    self._atom_momenta[index].x = abs(self._atom_momenta[index].x)
+            atom_position = self._atom_positions[index]
+            atom_momentum = self._atom_momenta[index]
+            if abs(atom_position.x) > cube.length() / 2:
+                if atom_position.x < 0:
+                    atom_momentum.x = abs(atom_momentum.x)
                 else:
-                    self._atom_momenta[index].x = -abs(self._atom_momenta[index].x)
-                    hit_counter += abs(2 * self._atom_momenta[index].x)
+                    atom_momentum.x = -abs(atom_momentum.x)
+                    hit_count += abs(2 * atom_momentum.x)
 
-            if abs(loc.y) > cube.length() / 2:
-                if loc.y < 0:
-                    self._atom_momenta[index].y = abs(self._atom_momenta[index].y)
+            if abs(atom_position.y) > cube.length() / 2:
+                if atom_position.y < 0:
+                    atom_momentum.y = abs(atom_momentum.y)
                 else:
-                    self._atom_momenta[index].y = -abs(self._atom_momenta[index].y)
-                    hit_counter += abs(2 * self._atom_momenta[index].y)
+                    atom_momentum.y = -abs(atom_momentum.y)
+                    hit_count += abs(2 * atom_momentum.y)
 
-            if abs(loc.z) > cube.length() / 2:
-                if loc.z < 0:
-                    self._atom_momenta[index].z = abs(self._atom_momenta[index].z)
+            if abs(atom_position.z) > cube.length() / 2:
+                if atom_position.z < 0:
+                    atom_momentum.z = abs(atom_momentum.z)
                 else:
-                    self._atom_momenta[index].z = -abs(self._atom_momenta[index].z)
-                    hit_counter += abs(2 * self._atom_momenta[index].z)
+                    atom_momentum.z = -abs(atom_momentum.z)
+                    hit_count += abs(2 * atom_momentum.z)
 
-        return hit_counter
+        return hit_count
 
     def _check_collisions(self):
         hit_list = []
@@ -239,8 +239,8 @@ while True:
     time_counter += 1
 
     # Accumulate and average histogram snapshots
-    for i in range(len(accum)):
-        accum[i][1] = (total_bins * accum[i][1] + histogram[i]) / (total_bins + 1)
+    for accumulator in accum:
+        accumulator[1] = (total_bins * accum[i][1] + histogram[i]) / (total_bins + 1)
     if total_bins % 10 == 0:
         vdist.data = accum
     total_bins += 1
