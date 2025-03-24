@@ -3,16 +3,21 @@
 ## Carbon monoxide gas &mdash; equipartition of energy 
 <div class="header_line"><br/></div>
 
+Simulation of a carbon monoxide gas contained in a square box.
+This simulation shows that every degree of freedom of every 
+CO molecule has the same expectation value of energy.
+
 {% include_relative code/EnergyEquipartition.html %}
 
 <p style="clear:both;"></p>
 
-### Instructions given in the video
-<div style="border-top: 1px solid #999999"><br/></div>
+## Instructions given in the video
+<div class="header_line"><br/></div>
 
 Below you find a copy of the original set of instructions that accompany the video.
 
-#### I. Introduction
+### I. Introduction
+<div style="border-top: 1px solid #999999"><br/></div>
 
 For a system in thermal equilibrium, every degree of freedom of every particle has the same expectation value of energy, hence the name equipartition of energy.
 
@@ -29,7 +34,10 @@ and is associated with the rotational kinetic energy `r_K`. For rotational
 motion, $f=2$ instead of $f=3$, because the rotation with the axis parallel to the bond direction is not
 discernible. Since for each available degree of freedom, the expected energy is the same, therefore
 statistically, if we add up the energies of the different types of motions respectively for all molecules and
-averaged over time, the ration between them will be `avg_com_K : avg_v_K : avg_v_P : avg_r_K = 3 : 1 : 1 : 2`.
+averaged over time, the ration between them will be 
+
+`avg_com_K : avg_v_K : avg_v_P : avg_r_K = 3 : 1 : 1 : 2`.
+
 (<span style="color:red">Notice: Here we do not consider quantum effect, therefore all 3 types of the motions will be available</span>). In
 this homework, we will simulate that.
 
@@ -45,7 +53,8 @@ individual CO molecule and their collisions, and `VP8.py`, which is the main pro
 two files into the same file folder. When the module is run for the first time, a `diatomic.pyc` will be generated
 and stored in the subfolder `__pychache__`.
 
-#### II. The template file of the diatomic module
+### II. The template file of the diatomic module
+<div style="border-top: 1px solid #999999"><br/></div>
 
 `diatomic.py`:
 

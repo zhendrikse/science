@@ -59,7 +59,7 @@ and the evolution of the world. &mdash;
     <img alt="Brownian motion" src="images/brownian_motion.png" title="Click to animate"/>
   </a>
   <figcaption>This random motion was first described by the Scottish botanist 
-  <a href="Robert Brown">https://en.wikipedia.org/wiki/Robert_Brown_(botanist,_born_1773)</a>, who
+  <a href="https://en.wikipedia.org/wiki/Robert_Brown_(botanist,_born_1773)">Robert Brown</a>, who
   observed these motions while looking at pollen through his microscope.</figcaption>
 </figure>
 <figure class="right_image">
