@@ -3,11 +3,11 @@
 ## Diffraction pattern of a circular aperture 
 <div class="header_line"><br/></div>
 
-Below you'll find a diffraction pattern of a circular aperture far from a screen, where the 
-intensity is calculated as the square of the amplitude of the electric field. Since the 
-resulting diffraction pattern is too faint to be discerned from a computer screen, 
-a 'fake' intensity image of the diffraction pattern is shown as well, calculated by
-using the absolute value of the amplitude representing the intensity instead.
+Below you'll find a diffraction pattern of a circular aperture far away from a screen. 
+The intensity is calculated as the square of the amplitude of the electric field. 
+Since the resulting diffraction pattern is too faint to be discerned on a computer screen, 
+a 'fake' intensity image of the diffraction pattern is shown as well, where the intensity
+is calculated by using the absolute value of the amplitude of the electric field instead.
 
 {% include_relative code/CircularAperture.html %}
 
@@ -21,7 +21,7 @@ Below you find a copy of the original set of instructions that accompany the vid
 ### I. Introduction
 <div style="border-top: 1px solid #999999"><br/></div>
 
-This homework is to find the diffraction pattern of a circular aperture far from the screen. Assume there
+This homework is to find the diffraction pattern of a circular aperture far away from the screen. Assume there
 is a circular aperture of diameter $d=100 \mu m$ and there is a spherical screen at $R=1m$ away. The light source is
 of wavelength $\lambda=500nm$. To obtain the diffraction pattern, you can assume there are many point light sources
 at the lattice points, sitting at the cross points of the $N=100$ vertical lines and $N=100$ horizontal lines, each 
