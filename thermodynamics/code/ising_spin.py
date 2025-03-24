@@ -89,7 +89,7 @@ class SpinLattice:
 
 MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
-mag_plot = graph(title="Magnetization", xtitle="Temperature", ytitle="Magnetization", width=400, height=250)
+mag_plot = graph(title="Magnetization", xtitle="Temperature", ytitle="Magnetization", width=600, height=250)
 mag_curve = gcurve(color=color.red)
 
 temperature = 2.0
