@@ -23,10 +23,10 @@ k = 2 * pi / lambda_
 diameter = 100E-6
 dx, dy = diameter / N, diameter / N
 
-scene0 = canvas(align="top", height=0, width=600, title=title, resizable=False)
-scene1 = canvas(align="left", height=325, width=325, center=vector(N * dx / 2, N * dy / 2, 0),
+scene0 = canvas(align="top", height=0, width=625, title=title, resizable=False)
+scene1 = canvas(align="left", height=300, width=300, center=vector(N * dx / 2, N * dy / 2, 0),
                 background=color.gray(0.075), forward=vector(-.45, 0, -.9))
-scene2 = canvas(align="right", height=325, width=325, center=vector(N * dx / 2, N * dy / 2, 0),
+scene2 = canvas(align="right", height=300, width=300, center=vector(N * dx / 2, N * dy / 2, 0),
                 background=color.gray(0.075), forward=vector(-.45, 0, -.9))
 
 scene1.lights, scene2.lights = [], []
