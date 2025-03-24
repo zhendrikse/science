@@ -20,6 +20,9 @@ Below you find a copy of the original set of instructions that accompany the vid
 <div style="border-top: 1px solid #999999"><br/></div>
 
 For a system in thermal equilibrium, every degree of freedom of every particle has the same expectation value of energy, hence the name equipartition of energy.
+<figure style="float: right;">
+  <img style="display: block" src="./images/co_molecule.png" alt="Carbon monoxide" width="33%"/>
+</figure>
 
 In the figure, we have 20 artificial molecules, each composed of two atoms, O (red ball)
 and C (blue ball), and they are connected by a bond (white cylinder). Each molecule can have translational
