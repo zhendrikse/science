@@ -56,6 +56,7 @@ dx, dy = diameter / N, diameter / N
 side_aperture = linspace(-diameter / 2, diameter / 2, N)
 X, Y = meshgrid(side_aperture, side_aperture)
 
+# Circular aperture is approximated by a square!
 area = (diameter / 2) * (diameter / 2)
 def is_within_aperture(x_, y_):
     within_aperture = x_ * x_ + y_ * y_ <= area

@@ -43,7 +43,7 @@ radius of the first dark ring, you should use the 'real' intensity image.
 The amplitude of the electric field at position $(x, y)$ on the screen gets its contribution from all point
 sources sitting inside the aperture
 
-$$\begin{equation}E(x, y) =\int\int_{\text{aperture}} \dfrac{1}{r}\sin(\omega t - kr)dXdY\end{equation}$$
+$\begin{equation}E(x, y) =\int\int_{\text{aperture}} \dfrac{1}{r}\sin(\omega t - kr)dXdY\end{equation}$
 
 or equivalently
 
@@ -51,11 +51,32 @@ $\begin{equation}E(x, y) \approx \int\int\dfrac{1}{R\left(1 - \dfrac{xX + yY}{R^
 
 Let $\theta_x=x/R, \theta_y=y/R, k_x=k\theta_x, k_y=k\theta_y$, then
 
-$$E(\theta_x, \theta_y) \approx \int\int \frac{1}{R}\sin(\omega t -kR +k_x X + k_y Y)dXdY$$
+$\begin{equation}E(\theta_x, \theta_y) \approx \int\int \frac{1}{R}\sin(\omega t -kR +k_x X + k_y Y)dXdY\end{equation}$
 
-$E(\theta_x, \theta_y) \approx \int\int \frac{1}{R}\sin(\omega t -kR)cos(k_x X + k_y Y)dXdY + \int\int \frac{1}{R}\cos(\omega t -kR)sin(k_x X + k_y Y)dXdY$
+Applying some basic trigonometry we get
 
+$\begin{equation}E(\theta_x, \theta_y) \approx \int\int \frac{1}{R}\sin(\omega t -kR)\cos(k_x X + k_y Y)dXdY + \int\int \frac{1}{R}\cos(\omega t -kR)\sin(k_x X + k_y Y)dXdY\end{equation}$
 
+which is equivalent to
+
+$\begin{equation}E(\theta_x, \theta_y) \approx \sin(\omega t -kR)\int\int \frac{1}{R}\cos(k_x X + k_y Y)dXdY + \cos(\omega t -kR)\int\int \frac{1}{R}\sin(k_x X + k_y Y)dXdY\end{equation}$
+
+As we have
+
+$\begin{equation}\int\int \frac{1}{R}\sin(k_x X + k_y Y)dXdY=0\end{equation}$ 
+
+due to the symmetry of the integration on the "circular" aperture 
+(between quotes, since we
+have approximated it by a square area in our code), we get
+
+$\begin{equation}E(\theta_x, \theta_y) \approx \sin(\omega t -kR)\int\int \frac{1}{R}\cos(k_x X + k_y Y)dXdY = A \cdot \sin(\omega t -kR)\end{equation}$
+
+where
+
+$A = \int\int_\text{aperture} \frac{1}{R}\cos(k_x X + k_y Y)dXdY$
+
+is the amplitude of the electric field on the spherical screen, which is 
+the one you should calculate by summation over all the grid points on the aperture.
 
 <p style="clear: both;"></p>
 
