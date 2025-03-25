@@ -3,7 +3,7 @@
 ## Rendering a black hole using ray tracing
 <div class="header_line"><br/></div>
 
-{% include_relative code/BlackHolePixelPlot.html %}
+{% include_relative code/BlackHoleRayTracer.html %}
 
 <p style="clear: both;"></p>
 

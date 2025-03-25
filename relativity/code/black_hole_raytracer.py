@@ -1,18 +1,25 @@
 #Web VPython 3.2
 
-from vpython import rate, canvas, color, points, vector, button
+from vpython import rate, canvas, color, points, vector, button, label
 
 title = """&#x2022; Based on the original <a href="https://github.com/silvaan/blackhole_raytracer/tree/master">blackhole_raytracer</a> project by Arman T, Casper Y, Lulu W
 &#x2022; See also their accompanying <a href="https://cyang2020.github.io/BlackHoleRayTracer/">GitHub pages</a> and <a href="https://www.youtube.com/watch?v=VTodu1YTURY">video</a>
-&#x2022; Ported to VPython by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/black_hole_pixel_plot.py">black_hole_pixel_plot.py</a>
+&#x2022; Ported to VPython by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/relativity/code/black_hole_raytracer.py">black_hole_raytracer.py</a>
+&#x2022; <span style="color: red">Rendering may be <em>slow</em>, so please be patient!</span>
 
 """
 
-x_resolution = 300
+x_resolution = 400
 y_resolution = x_resolution // 2
-animation = canvas(title=title, height=y_resolution, width=x_resolution * 1.05, fov=0.01,
-                   center=vector(x_resolution / 2, x_resolution / 4, 0),
-                   range=x_resolution / 4, background=color.gray(0.075))
+
+# Progress bar
+display_0 = canvas(background=color.gray(0.075), height=25, width=x_resolution, title=title, resizable=False)
+progress_bar = label(canvas=display_0, color=color.white, box=False)
+progress_bar.text = "Progress: 0%"
+
+display = canvas(height=y_resolution, width=x_resolution * 1.05, fov=0.01,
+                 center=vector(x_resolution / 2, x_resolution / 4, 0),
+                 range=x_resolution / 4, background=color.gray(0.075))
 
 c = 1.0
 G = 2e-3
@@ -70,7 +77,7 @@ class Image:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.pixels = points()  # np.zeros((height, width, 3))
+        self.pixels = points(canvas=display)  # np.zeros((height, width, 3))
 
     def set_pixel(self, x, y, colour):
         # self.pixels[y, x] = color.value
@@ -89,11 +96,10 @@ class Scene:
 
 class Ray:
     def __init__(self, origin, direction):
-        self.origin = origin
-        self.position = origin
+        self.origin, self.position, self.prev_pos = origin, origin, origin
         self.direction = direction.norm()
         self.velocity = c * self.direction
-        self.acceleration = vector(0, 0, 0)
+        self.acceleration, self.cross_point = vector(0, 0, 0), vector(0, 0, 0)
         self.total_time = 0
         self.crossed_xz = False
 
@@ -145,10 +151,9 @@ class Engine:
         xstep, ystep = (x1 - x0) / (self.scene.width - 1), (y1 - y0) / (self.scene.height - 1)
 
         for j in range(self.scene.height):
+            rate(10000) # This causes the progress bar to display
+            progress_bar.text = "Rendering line " + str(j + 1) + " from " + str(self.scene.height)
             y = y0 + j * ystep
-
-            # if (j+1) % 10 == 0:
-            #  print('line ' + str(j+1) + '/' + str(self.scene.height))
 
             for i in range(self.scene.width):
                 x = x0 + i * xstep
@@ -177,7 +182,7 @@ class Engine:
         return colour
 
     def save(self, filename):
-        animation.capture(filename)
+        display.capture(filename)
     # self.output.save(filename)
 
 
@@ -191,16 +196,17 @@ disk = Disk(c_focus, 4.5 * bh.radius, 16.2 * bh.radius, colour=vector(0.75, 0.15
 
 camera_ = Camera(c_origin, c_focus - c_origin, 1.2)
 scene = Scene(width=x_resolution, height=x_resolution // 2, camera=camera_, blackhole=bh, disk=disk)
-MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 engine = Engine(scene)
 engine.render()
 
+display_0.delete()
 
 def download():
     engine.save("black_hole.png")
 
-animation.append_to_caption("\n")
+display.append_to_caption("\n")
 _ = button(text="Download image", bind=download)
 
 while True:
