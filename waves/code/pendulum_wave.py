@@ -4,7 +4,7 @@ from vpython import label, box, canvas, vec, color, cylinder, sphere, cos, sin, 
 
 title="""&#x2022; Based on <a href="https://glowscript.org/#/user/yizhe/folder/Public/program/PendulumWave">PendulumWave</a>
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/waves/code/pendulum_wave.py">pendulum_wave.py</a>
-&#x2022; Related to <a href="https://www.hendrikse.name/science/waves/newtons_cradle.html">Newton&apos;s cradle</a> simulation
+&#x2022; Related to <a href="https://www.hendrikse.name/science/kinematics/newtons_cradle.html">Newton&apos;s cradle</a> simulation
 
 &#x2022; $\\theta(t)=\\theta_0 \\cos \\bigg( \\sqrt{  \\dfrac {g} {L}} t \\bigg)$
 
