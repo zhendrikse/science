@@ -21,7 +21,7 @@ Below you find a copy of the original set of instructions that accompany the vid
 ### I. Introduction
 <div style="border-top: 1px solid #999999"><br/></div>
 
-This homework is to find the diffraction pattern of a circular aperture far away from the screen. Assume there
+This homework is to find the diffraction pattern of a circular aperture far from the screen. Assume there
 is a circular aperture of diameter $d=100 \mu m$ and there is a spherical screen at $R=1m$ away. The light source is
 of wavelength $\lambda=500nm$. To obtain the diffraction pattern, you can assume there are many point light sources
 at the lattice points, sitting at the cross points of the $N=100$ vertical lines and $N=100$ horizontal lines, each 
@@ -47,7 +47,15 @@ $$\begin{equation}E(x, y) =\int\int_{\text{aperture}} \dfrac{1}{r}\sin(\omega t 
 
 or equivalently
 
-$$\begin{equation}E(x, y)=\int\int\dfrac{1}{R\left(1 - \dfrac{xX + yY}{R^2}\right)}\sin\left(\omega t - kR\left(1 -\dfrac{xX + yY}{R^2}\right)\right)dXdY\end{equation}$$
+$\begin{equation}E(x, y) \approx \int\int\dfrac{1}{R\left(1 - \dfrac{xX + yY}{R^2}\right)}\sin\left(\omega t - kR\left(1 -\dfrac{xX + yY}{R^2}\right)\right)dXdY\end{equation}$
+
+Let $\theta_x=x/R, \theta_y=y/R, k_x=k\theta_x, k_y=k\theta_y$, then
+
+$$E(\theta_x, \theta_y) \approx \int\int \frac{1}{R}\sin(\omega t -kR +k_x X + k_y Y)dXdY$$
+
+$E(\theta_x, \theta_y) \approx \int\int \frac{1}{R}\sin(\omega t -kR)cos(k_x X + k_y Y)dXdY + \int\int \frac{1}{R}\cos(\omega t -kR)sin(k_x X + k_y Y)dXdY$
+
+
 
 <p style="clear: both;"></p>
 
