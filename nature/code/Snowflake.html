@@ -74,7 +74,7 @@ async function __main__() {
     "15";
     display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](.48), 1["-u"]()["*"](.45), 1["-u"]()["*"](.72)), title: title, width: 600, height: 600, background: color.gray(.075)})]);
     "16";
-    progress_bar = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({canvas: display, color: color.yellow, box: false, text: "Rendering step 1 from "["+"](str(num_steps["+"](1)))})]);
+    progress_bar = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({canvas: display, color: color.yellow, box: false, text: "Rendering step 1 from "["+"](str(num_steps["+"](1))), height: 20})]);
     "19";
     async function get_pos() {
         var idx = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
@@ -562,17 +562,19 @@ async function __main__() {
         for (var ρσ_Index8 = 0; ρσ_Index8["<"](num_steps); ρσ_Index8++) {
             iteration = ρσ_Index8;
             "172";
-            progress_bar.text = "Rendering step "["+"](str(iteration["+"](2)))["+"](" from ")["+"](str(num_steps["+"](1)));
+            (await rate(1e3));
             "173";
+            progress_bar.text = "Rendering step "["+"](str(iteration["+"](2)))["+"](" from ")["+"](str(num_steps["+"](1)));
+            "174";
             (await snowflake.grow());
         }
-        "175";
-        (await snowflake.render());
         "176";
-        progress_bar.visible = false;
+        (await snowflake.render());
         "177";
-        display.center = (await get_pos((await snowflake.center_index()), (await snowflake.width()), (await snowflake.height())));
+        progress_bar.visible = false;
         "178";
+        display.center = (await get_pos((await snowflake.center_index()), (await snowflake.width()), (await snowflake.height())));
+        "179";
         display.range = range_;
     };
     if (!new_snowflake.__defaults__) Object.defineProperties(new_snowflake, {
@@ -582,33 +584,33 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "181";
+    "182";
     async function high_res() {
         var ρσ_ls, obj;
-        "182";
+        "183";
         var ρσ_Iter9 = display.objects;
         ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
         for (var ρσ_Index9 of ρσ_Iter9) {
             obj = ρσ_Index9;
-            "183";
+            "184";
             obj.visible = false;
         }
-        "184";
+        "185";
         (await new_snowflake(60, 38));
     };
     if (!high_res.__module__) Object.defineProperties(high_res, {
         __module__ : {value: null}
     });
 
-    "187";
-    display.append_to_caption("\n");
     "188";
+    display.append_to_caption("\n");
+    "189";
     _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "High resolution (s l o w !!)", bind: high_res})]);
-    "190";
-    (await new_snowflake());
     "191";
+    (await new_snowflake());
+    "192";
     while (true) {
-        "192";
+        "193";
         (await rate(10));
     }
 };

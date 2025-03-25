@@ -1,4 +1,4 @@
-# Web VPython 3.2
+#Web VPython 3.2
 from vpython import simple_sphere, rate, vector, sqrt, canvas, color, button, label
 
 title = """Implementation of Reiter's cellular model for <a href="https://patarnott.com/pdf/SnowCrystalGrowth.pdf">snow crystal growth</a>
@@ -13,7 +13,7 @@ number_of_neighbors = 12
 num_steps = 15
 
 display = canvas(forward=vector(-.48, -.45, -.72), title=title, width=600, height=600, background=color.gray(0.075))
-progress_bar = label(canvas=display, color=color.yellow, box=False, text = "Rendering step 1 from " + str(num_steps + 1))
+progress_bar = label(canvas=display, color=color.yellow, box=False, text = "Rendering step 1 from " + str(num_steps + 1), height=20)
 
 
 def get_pos(idx, width, height, radius=1):
@@ -107,8 +107,7 @@ class Snowflake:
             if plane != depth - 1: neighbors.append(idx + area - p)
             if plane != 0:   neighbors.append(idx - area - p)
 
-        if (col != width - 1 or p > 0 or r < 0) and (col != 0 or p < 0 or r > 0) and (row != height - 1 or p < 0) and (
-                row != 0 or p > 0):
+        if (col != width - 1 or p > 0 or r < 0) and (col != 0 or p < 0 or r > 0) and (row != height - 1 or p < 0) and (row != 0 or p > 0):
             if plane != depth - 1:
                 neighbors.append(idx + area + p * width + int((r - p) / 2))  # 10
             if plane != 0:
@@ -163,13 +162,14 @@ class Snowflake:
 
 
 def new_snowflake(resolution=20, range_=25):
-    global display
+    global display, progress_bar
 
     progress_bar.text = "Rendering step 1 from " + str(num_steps + 1)
     progress_bar.visible = True
 
     snowflake = Snowflake(resolution, resolution, resolution)
     for iteration in range(num_steps):
+        rate(1000)
         progress_bar.text = "Rendering step " + str(iteration + 2) + " from " + str(num_steps + 1)
         snowflake.grow()
 
@@ -190,4 +190,4 @@ _ = button(text="High resolution (s l o w !!)", bind=high_res)
 
 new_snowflake()
 while True:
-    rate(10)
+    rate(60)
