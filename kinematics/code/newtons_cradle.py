@@ -2,6 +2,7 @@ from vpython import sphere, canvas, rate, color, vec, cylinder, dot, tan, acos, 
 
 title="""&#x2022; Original code taken from <a href="https://www.youtube.com/watch?v=eEb3seVrJHQ/">this video</a>
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/newtons_cradle.py">newtons_cradle.py</a>
+&#x2022; Related to <a href="https://www.hendrikse.name/science/waves/pendulum_wave.html">pendulum wave</a> simulation
 
 &#x2022; $\\theta(t)=\\theta_0 \\cos \\bigg( \\sqrt{  \\dfrac {g} {L}} t \\bigg)$
 
