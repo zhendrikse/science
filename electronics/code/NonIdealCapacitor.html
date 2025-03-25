@@ -1,0 +1,422 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, N, h, display, epsilon, ρσ_unpack, L, d, V_0, u, _, i, u_cond, j, potential_field, gradient_x, gradient_y, e_x, e_y, field_arrows, point;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "10";
+    title = "&#x2022; Based on code shown in <a href=\"https://www.youtube.com/watch?v=Jq4dVuD9JV0\">this video<\/a> by Jordan Huang\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electronics/code/non_ideal_capacitor.py\">non_ideal_capacitor.py</a>\n&#x2022; The colored background shows the electric potential around the plates\n&#x2022; The arrows represent the electric field around the plates\n\n";
+    "12";
+    N = 101;
+    "13";
+    h = .01["/"](N["-"](1["*"](1)));
+    "15";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, height: 400, width: 600, center: vec(N["*"](h)["/"](2), N["*"](h)["/"](2), 0), range: .003})]);
+    "16";
+    display.lights = ρσ_list_decorate([]);
+    "17";
+    display.ambient = color.gray(.99);
+    "19";
+    epsilon = 8.854e-12;
+    "20";
+    ρσ_unpack = [.004, .001];
+    L = ρσ_unpack[0];
+    d = ρσ_unpack[1];
+    "21";
+    V_0 = 200;
+    "25";
+    async function gradient_2d(array_) {
+        var ρσ_ls, grad_x, grad_y, i;
+        "27";
+        grad_x = ρσ_list_decorate([]);
+        "28";
+        grad_y = ρσ_list_decorate([]);
+        "32";
+        grad_y.append((function() {
+            var ρσ_Iter = range(len(array_)), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(ρσ_getitem(ρσ_getitem(array_, i), 1)["-"](1["*"](ρσ_getitem(ρσ_getitem(array_, i), 0))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })());
+        "35";
+        var ρσ_Iter1 = range(1, len(array_)["-"](1["*"](1)));
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            i = ρσ_Index1;
+            "36";
+            grad_y.append((function() {
+                var ρσ_Iter = range(1, len(ρσ_getitem(array_, i))["-"](1["*"](1))), ρσ_Result = [], j;
+                ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                for (var ρσ_Index of ρσ_Iter) {
+                    j = ρσ_Index;
+                    ρσ_Result.push(ρσ_getitem(ρσ_getitem(array_, i), j["+"](1))["-"](1["*"](ρσ_getitem(ρσ_getitem(array_, i), j["-"](1["*"](1)))))["/"](2));
+                }
+                ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                return ρσ_Result;
+            })());
+        }
+        "39";
+        grad_y.append((function() {
+            var ρσ_Iter = range(len(array_)), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push(ρσ_getitem(ρσ_getitem(array_, i), 1["-u"]()["*"](1))["-"](1["*"](ρσ_getitem(ρσ_getitem(array_, i), 1["-u"]()["*"](2)))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })());
+        "43";
+        grad_x.append((function() {
+            var ρσ_Iter = range(len(ρσ_getitem(array_, 0))), ρσ_Result = [], j;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                j = ρσ_Index;
+                ρσ_Result.push(ρσ_getitem(ρσ_getitem(array_, 1), j)["-"](1["*"](ρσ_getitem(ρσ_getitem(array_, 0), j))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })());
+        "46";
+        var ρσ_Iter2 = range(1, len(array_)["-"](1["*"](1)));
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            i = ρσ_Index2;
+            "47";
+            grad_x.append((function() {
+                var ρσ_Iter = range(len(ρσ_getitem(array_, i))), ρσ_Result = [], j;
+                ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                for (var ρσ_Index of ρσ_Iter) {
+                    j = ρσ_Index;
+                    ρσ_Result.push(ρσ_getitem(ρσ_getitem(array_, i["+"](1)), j)["-"](1["*"](ρσ_getitem(ρσ_getitem(array_, i["-"](1["*"](1))), j)))["/"](2));
+                }
+                ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                return ρσ_Result;
+            })());
+        }
+        "50";
+        grad_x.append((function() {
+            var ρσ_Iter = range(len(ρσ_getitem(array_, 1["-u"]()["*"](1)))), ρσ_Result = [], j;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                j = ρσ_Index;
+                ρσ_Result.push(ρσ_getitem(ρσ_getitem(array_, 1["-u"]()["*"](1)), j)["-"](1["*"](ρσ_getitem(ρσ_getitem(array_, 1["-u"]()["*"](2)), j))));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })());
+        "52";
+        return [grad_x, grad_y];
+    };
+    if (!gradient_2d.__argnames__) Object.defineProperties(gradient_2d, {
+        __argnames__ : {value: ["array_"]},
+        __module__ : {value: null}
+    });
+
+    "54";
+    async function solve_laplacian() {
+        var u = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var u_cond = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var iterations = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? solve_laplacian.__defaults__.iterations : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "iterations")){
+            iterations = ρσ_kwargs_obj.iterations;
+        }
+        var ρσ_ls, V, row, j, i, c, r;
+        "55";
+        V = (function() {
+            var ρσ_Iter = u, ρσ_Result = [], row;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                row = ρσ_Index;
+                ρσ_Result.push(row.slice(0));
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "58";
+        for (var ρσ_Index3 = 0; ρσ_Index3["<"](iterations); ρσ_Index3++) {
+            i = ρσ_Index3;
+            "60";
+            for (var ρσ_Index4 = 0; ρσ_Index4["<"](N); ρσ_Index4++) {
+                i = ρσ_Index4;
+                "61";
+                for (var ρσ_Index5 = 0; ρσ_Index5["<"](N); ρσ_Index5++) {
+                    j = ρσ_Index5;
+                    "62";
+                    ρσ_setitem(ρσ_getitem(V, i), j, (ρσ_getitem(ρσ_getitem(u_cond, i), j)) ? ρσ_getitem(ρσ_getitem(u, i), j) : ρσ_getitem(ρσ_getitem(V, i), j));
+                }
+            }
+            "65";
+            var ρσ_Iter6 = range(1, len(u)["-"](1["*"](1)));
+            ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+            for (var ρσ_Index6 of ρσ_Iter6) {
+                r = ρσ_Index6;
+                "66";
+                var ρσ_Iter7 = range(1, len(ρσ_getitem(u, 0))["-"](1["*"](1)));
+                ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+                for (var ρσ_Index7 of ρσ_Iter7) {
+                    c = ρσ_Index7;
+                    "67";
+                    ρσ_setitem(ρσ_getitem(V, r), c, .25["*"](ρσ_getitem(ρσ_getitem(V, r["-"](1["*"](1))), c)["+"](ρσ_getitem(ρσ_getitem(V, r["+"](1)), c))["+"](ρσ_getitem(ρσ_getitem(V, r), c["-"](1["*"](1))))["+"](ρσ_getitem(ρσ_getitem(V, r), c["+"](1)))));
+                }
+            }
+        }
+        "69";
+        return V;
+    };
+    if (!solve_laplacian.__defaults__) Object.defineProperties(solve_laplacian, {
+        __defaults__ : {value: {iterations:5e3}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["u", "u_cond", "iterations"]},
+        __module__ : {value: null}
+    });
+
+    "71";
+    async function field_values_from_gradients(gradients) {
+        var ρσ_ls, field, _, j, i;
+        "72";
+        field = (function() {
+            var ρσ_Iter = range(N), ρσ_Result = [], _;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                _ = ρσ_Index;
+                ρσ_Result.push((function() {
+                    var ρσ_Iter = range(N), ρσ_Result = [], _;
+                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                    for (var ρσ_Index of ρσ_Iter) {
+                        _ = ρσ_Index;
+                        ρσ_Result.push(0);
+                    }
+                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                    return ρσ_Result;
+                })());
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "73";
+        var ρσ_Iter8 = range(len(gradients));
+        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+        for (var ρσ_Index8 of ρσ_Iter8) {
+            i = ρσ_Index8;
+            "74";
+            var ρσ_Iter9 = range(len(ρσ_getitem(gradients, i)));
+            ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+            for (var ρσ_Index9 of ρσ_Iter9) {
+                j = ρσ_Index9;
+                "75";
+                ρσ_setitem(ρσ_getitem(field, i), j, 1["-u"]()["*"](ρσ_getitem(ρσ_getitem(gradients, i), j))["/"](h));
+            }
+        }
+        "76";
+        return field;
+    };
+    if (!field_values_from_gradients.__argnames__) Object.defineProperties(field_values_from_gradients, {
+        __argnames__ : {value: ["gradients"]},
+        __module__ : {value: null}
+    });
+
+    "79";
+    u = (function() {
+        var ρσ_Iter = range(N), ρσ_Result = [], _;
+        ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+        for (var ρσ_Index of ρσ_Iter) {
+            _ = ρσ_Index;
+            ρσ_Result.push((function() {
+                var ρσ_Iter = range(N), ρσ_Result = [], _;
+                ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                for (var ρσ_Index of ρσ_Iter) {
+                    _ = ρσ_Index;
+                    ρσ_Result.push(0);
+                }
+                ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                return ρσ_Result;
+            })());
+        }
+        ρσ_Result = ρσ_list_constructor(ρσ_Result);
+        return ρσ_Result;
+    })();
+    "80";
+    var ρσ_Iter10 = range(Math.floor(N["/"](2))["-"](1["*"](int(L["/"](h)["/"](2)))), Math.floor(N["/"](2))["+"](int(L["/"](h)["/"](2))));
+    ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+    for (var ρσ_Index10 of ρσ_Iter10) {
+        i = ρσ_Index10;
+        "81";
+        ρσ_setitem(ρσ_getitem(u, i), Math.floor(N["/"](2))["-"](1["*"](int(d["/"](h)["/"](2)))), 1["-u"]()["*"](V_0)["/"](2));
+        "82";
+        ρσ_setitem(ρσ_getitem(u, i), Math.floor(N["/"](2))["+"](int(d["/"](h)["/"](2))), V_0["/"](2));
+    }
+    "84";
+    u_cond = (function() {
+        var ρσ_Iter = range(N), ρσ_Result = [], _;
+        ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+        for (var ρσ_Index of ρσ_Iter) {
+            _ = ρσ_Index;
+            ρσ_Result.push((function() {
+                var ρσ_Iter = range(N), ρσ_Result = [], _;
+                ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                for (var ρσ_Index of ρσ_Iter) {
+                    _ = ρσ_Index;
+                    ρσ_Result.push(false);
+                }
+                ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                return ρσ_Result;
+            })());
+        }
+        ρσ_Result = ρσ_list_constructor(ρσ_Result);
+        return ρσ_Result;
+    })();
+    "85";
+    for (var ρσ_Index11 = 0; ρσ_Index11["<"](N); ρσ_Index11++) {
+        i = ρσ_Index11;
+        "86";
+        for (var ρσ_Index12 = 0; ρσ_Index12["<"](N); ρσ_Index12++) {
+            j = ρσ_Index12;
+            "87";
+            ρσ_setitem(ρσ_getitem(u_cond, i), j, (ρσ_getitem(ρσ_getitem(u, i), j) !== 0 && (typeof ρσ_getitem(ρσ_getitem(u, i), j) !== "object" || ρσ_not_equals(ρσ_getitem(ρσ_getitem(u, i), j), 0))));
+        }
+    }
+    "89";
+    potential_field = (await solve_laplacian(u, u_cond));
+    "90";
+    ρσ_unpack = (await gradient_2d(potential_field));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+    gradient_x = ρσ_unpack[0];
+    gradient_y = ρσ_unpack[1];
+    "91";
+    ρσ_unpack = [(await field_values_from_gradients(gradient_x)), (await field_values_from_gradients(gradient_y))];
+    e_x = ρσ_unpack[0];
+    e_y = ρσ_unpack[1];
+    "96";
+    field_arrows = ρσ_list_decorate([]);
+    "97";
+    for (var ρσ_Index13 = 0; ρσ_Index13["<"](N); ρσ_Index13++) {
+        i = ρσ_Index13;
+        "98";
+        for (var ρσ_Index14 = 0; ρσ_Index14["<"](N); ρσ_Index14++) {
+            j = ρσ_Index14;
+            "99";
+            field_arrows.append(ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i["*"](h), j["*"](h), 0), axis: .5["*"](1e-9)["*"](vec(ρσ_getitem(ρσ_getitem(e_x, i), j), ρσ_getitem(ρσ_getitem(e_y, i), j), 0)), shaftwidth: h["/"](6), color: color.black})]));
+        }
+    }
+    "101";
+    for (var ρσ_Index15 = 0; ρσ_Index15["<"](N); ρσ_Index15++) {
+        i = ρσ_Index15;
+        "102";
+        for (var ρσ_Index16 = 0; ρσ_Index16["<"](N); ρσ_Index16++) {
+            j = ρσ_Index16;
+            "103";
+            point = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(i["*"](h), j["*"](h), 0), length: h, height: h, width: h["/"](10), color: vec(ρσ_getitem(ρσ_getitem(potential_field, i), j)["+"](100), 100["-"](1["*"](ρσ_getitem(ρσ_getitem(potential_field, i), j))), 0)["/"](200)})]);
+        }
+    }
+    "105";
+    ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(N["*"](h)["/"](2), N["*"](h)["/"](2)["-"](1["*"](d)["/"](2))["-"](1["*"](h)), 0), length: L, height: h["/"](5), width: h})]);
+    "106";
+    ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(N["*"](h)["/"](2), N["*"](h)["/"](2)["+"](d["/"](2))["-"](1["*"](h)), 0), length: L, height: h["/"](5), width: h})]);
+    "111";
+    async function scale_arrows(event) {
+        var ρσ_ls, j, i;
+        "112";
+        for (var ρσ_Index17 = 0; ρσ_Index17["<"](N); ρσ_Index17++) {
+            i = ρσ_Index17;
+            "113";
+            for (var ρσ_Index18 = 0; ρσ_Index18["<"](N); ρσ_Index18++) {
+                j = ρσ_Index18;
+                "114";
+                ρσ_getitem(field_arrows, i["*"](N)["+"](j)).axis = event.value["*"](1e-9)["*"](vec(ρσ_getitem(ρσ_getitem(e_x, i), j), ρσ_getitem(ρσ_getitem(e_y, i), j), 0));
+            }
+        }
+    };
+    if (!scale_arrows.__argnames__) Object.defineProperties(scale_arrows, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "116";
+    display.append_to_caption("\nSize of field arrows:");
+    "117";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .5, bind: scale_arrows})]);
+    "119";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "120";
+    while (true) {
+        "121";
+        (await rate(10));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
