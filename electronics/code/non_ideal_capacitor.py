@@ -54,7 +54,6 @@ def gradient_2d(array_):
 
 def solve_laplacian(u, u_cond, iterations=5000):
     V = [row[:] for row in u]  # Make a deep copy of u to V
-    #u = [row[:] for row in u]  # Ensure u is a list of lists
 
     for i in range(iterations):
         rate(iterations)
@@ -111,6 +110,17 @@ for i in range(N):
 box(pos=vec(N * h / 2, N * h / 2 - d / 2 - h, 0), length=L, height=h / 5, width=h)
 box(pos=vec(N * h / 2, N * h / 2 + d / 2 - h, 0), length=L, height=h / 5, width=h)
 
+dA = h * h
+flux_x = flux_y = 0
+
+for i in range(25, 76):
+    flux_y += (e_y[i][N // 2 + int(d / h)] - e_y[i][N // 2]) * dA
+for j in range(N // 2, N // 2 + int(d/h) + 1):
+    flux_x += (e_x[76][j] - e_x[25][j]) * dA
+
+Q_inside = (flux_x + flux_y) * epsilon
+C_non_ideal = Q_inside / V_0
+
 #
 # GUI controls
 #
@@ -121,6 +131,9 @@ def scale_arrows(event):
 
 display.append_to_caption("\nSize of field arrows:")
 _ = slider(min=0, max=1, value=0.5, bind=scale_arrows)
+
+display.append_to_caption("\n\n$C_\\text{notideal}: ", C_non_ideal, "F$")
+display.append_to_caption("\n\n$C_\\text{ideal}   : ", epsilon * L *  h / d, "F$")
 
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 while True:
