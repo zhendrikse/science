@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, N, R, lambda_, k, display_0, progress_bar, side, ρσ_unpack, x, y, diameter, dx, dy, side_aperture, X, Y, area, in_aperture, _, j, i, electric_field, field_intensity, fake_field_intensity, dx_dy, argument, array_, scene1, scene2;
+    var version, print, arange, __name__, type, ρσ_ls, title, N, R, lambda_, k, display_0, progress_bar, side, ρσ_unpack, x, y, diameter, dx, dy, side_aperture, X, Y, area, in_aperture, _, j, i, electric_field, field_intensity, fake_field_intensity, dx_dy, argument, array_, scene1, scene2, first_dark_index;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -65,25 +65,25 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "16";
-    title = "&#x2022; Based on code shown in <a href=\"https://www.youtube.com/watch?v=TZhMeYcDCyo\">this video<\/a> by Jordan Huang\n&#x2022; Modified to use <a href=\"https://cdnjs.com/libraries/numjs\">numjs</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/optics/code/circular_aperture.py\">circular_aperture.py</a>\n&#x2022; <span style=\"color: red\">Rendering may be <em>slow</em>, so please be patient!</span>\n\n";
-    "18";
+    "15";
+    title = "&#x2022; Based on code shown in <a href=\"https://www.youtube.com/watch?v=TZhMeYcDCyo\">this video<\/a> by Jordan Huang\n&#x2022; Modified to use <a href=\"https://cdnjs.com/libraries/numjs\">numjs</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/optics/code/circular_aperture.py\">circular_aperture.py</a>\n&#x2022; <span style=\"color: red\">Rendering may be <em>slow</em>, so please be patient!</span>\n";
+    "17";
     N = 100;
-    "19";
+    "18";
     R = 1;
-    "20";
+    "19";
     lambda_ = 5e-7;
-    "21";
+    "20";
     k = 2["*"](pi)["/"](lambda_);
-    "24";
+    "23";
     display_0 = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), height: 25, width: 625, title: title, resizable: false})]);
-    "25";
+    "24";
     progress_bar = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({canvas: display_0, color: color.white, box: false})]);
-    "26";
+    "25";
     progress_bar.text = "Progress: 0%";
-    "29";
+    "28";
     async function linspace(start, stop, num) {
-        "30";
+        "29";
         return (function() {
             var ρσ_Iter = range(start, stop, stop["-"](1["*"](start))["/"](num["-"](1["*"](1)))), ρσ_Result = [], x;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -100,27 +100,27 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "33";
+    "32";
     async function meshgrid(x, y) {
         var ρσ_ls, X, Y, i, j;
-        "35";
+        "34";
         X = ρσ_list_decorate([]);
-        "36";
+        "35";
         Y = ρσ_list_decorate([]);
-        "39";
+        "38";
         var ρσ_Iter1 = range(len(y));
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             i = ρσ_Index1;
-            "40";
+            "39";
             X.append(x);
         }
-        "42";
+        "41";
         var ρσ_Iter2 = range(len(x));
         ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
         for (var ρσ_Index2 of ρσ_Iter2) {
             j = ρσ_Index2;
-            "43";
+            "42";
             Y.append((function() {
                 var ρσ_Iter = range(len(y)), ρσ_Result = [], i;
                 ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -132,9 +132,9 @@ async function __main__() {
                 return ρσ_Result;
             })());
         }
-        "46";
+        "45";
         Y = list((await map(list, zip.apply(this, Y))));
-        "48";
+        "47";
         return [X, Y];
     };
     if (!meshgrid.__argnames__) Object.defineProperties(meshgrid, {
@@ -142,22 +142,22 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "51";
+    "50";
     side = (await linspace(1["-u"]()["*"](.01)["*"](pi), .01["*"](pi), N));
-    "52";
+    "51";
     ρσ_unpack = (await meshgrid(side, side));
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
     x = ρσ_unpack[0];
     y = ρσ_unpack[1];
-    "54";
+    "53";
     diameter = 1e-4;
-    "55";
+    "54";
     ρσ_unpack = [diameter["/"](N), diameter["/"](N)];
     dx = ρσ_unpack[0];
     dy = ρσ_unpack[1];
-    "56";
+    "55";
     side_aperture = (await linspace(1["-u"]()["*"](diameter)["/"](2), diameter["/"](2), N));
-    "57";
+    "56";
     ρσ_unpack = (await meshgrid(side_aperture, side_aperture));
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
     X = ρσ_unpack[0];
@@ -305,11 +305,32 @@ async function __main__() {
             ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({canvas: scene2, pos: vector(i["*"](dx), j["*"](dy), 0), length: dx, height: dy, width: dx, color: (await colour(fake_field_intensity, i, j))})]);
         }
     }
+    "132";
+    first_dark_index = 50;
+    "133";
+    for (var ρσ_Index9 = 50; ρσ_Index9["<"](100); ρσ_Index9++) {
+        i = ρσ_Index9;
+        "134";
+        if (field_intensity.get(i, 50)["<="](field_intensity.get(first_dark_index, 50))) {
+            "135";
+            first_dark_index = i;
+            "136";
+        } else {
+            "137";
+            break;
+        }
+    }
+    "139";
+    display_0.append_to_title("&#x2022; Estimated $\\theta={:1.6f}$".format(first_dark_index["-"](1["*"](49.5))["*"](.02)["*"](pi)["/"](N)));
+    "140";
+    display_0.append_to_title("\n&#x2022; Rayleigh criterion $\\theta={:1.6f}$".format(1.22["*"](lambda_)["/"](diameter)));
     "141";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    display_0.append_to_title("\n\n");
     "142";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "143";
     while (true) {
-        "143";
+        "144";
         (await rate(10));
     }
 };

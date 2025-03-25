@@ -12,7 +12,6 @@ from vpython import canvas, vector, color, pi, box, rate, label, arange#, get_li
 title = """&#x2022; Based on code shown in <a href="https://www.youtube.com/watch?v=TZhMeYcDCyo">this video</a> by Jordan Huang
 &#x2022; Modified to use <a href="https://cdnjs.com/libraries/numjs">numjs</a> by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/optics/code/circular_aperture.py">circular_aperture.py</a>
 &#x2022; <span style="color: red">Rendering may be <em>slow</em>, so please be patient!</span>
-
 """
 
 N = 100  # N^2 grids on the aperture
@@ -130,14 +129,16 @@ for i in range(N):
 
 # Find the position of the first dark ring
 # Moving along an axis, from the center of the pattern, find theta_x = x / R, or theta_y = y / R
-# first_dark_index = 50
-# for i in range(50, 100):
-#     if field_intensity[i][50] <= field_intensity[first_dark_index][50]:
-#         first_dark_index = i
-#     else:
-#         break
-# print("Estimated theta: ", (first_dark_index - 49.5) * 0.02 * pi / N)
-# print("Rayleigh criterion theta: ", 1.22 * lambda_ / diameter)
+first_dark_index = 50
+for i in range(50, 100):
+    if field_intensity[i][50] <= field_intensity[first_dark_index][50]:
+        first_dark_index = i
+    else:
+        break
+
+display_0.append_to_title("&#x2022; Estimated $\\theta={:1.6f}$".format((first_dark_index - 49.5) * 0.02 * pi / N))
+display_0.append_to_title("\n&#x2022; Rayleigh criterion $\\theta={:1.6f}$".format(1.22 * lambda_ / diameter))
+display_0.append_to_title("\n\n")
 
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 while True:
