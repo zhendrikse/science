@@ -1,6 +1,7 @@
 <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
 <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
@@ -10,6 +11,7 @@
 // START JAVASCRIPT
 ;(function() {;
 var ρσ_modules = {};
+var fps;
 ρσ_modules.pythonize = {};
 
 (function(){
@@ -51,8 +53,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, g, Tpw, N, Tmax, Lmax, width, total_balls, size, display, roof, timer, pendulums, T, loc, _GS_1, pendulum, i, _, t, delta_t;
+    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, g, Tpw, N, Tmax, Lmax, width, total_balls, size, display, floor, roof, timer, pendulums, T, loc, _GS_1, pendulum, i, fps, _, t, delta_t;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,35 +66,45 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "8";
-    title = "&#x2022; Based on <a href=\"https://glowscript.org/#/user/yizhe/folder/Public/program/PendulumWave\">PendulumWave<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/waves/code/pendulum_wave.py\">pendulum_wave.py</a>\n\n";
     "11";
-    g = 9.8;
-    "12";
-    Tpw = 30;
-    "13";
-    N = 15;
+    title = "&#x2022; Based on <a href=\"https://glowscript.org/#/user/yizhe/folder/Public/program/PendulumWave\">PendulumWave<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/waves/code/pendulum_wave.py\">pendulum_wave.py</a>\n&#x2022; Related to <a href=\"https://www.hendrikse.name/science/waves/newtons_cradle.html\">Newton&apos;s cradle</a> simulation\n\n&#x2022; $\\theta(t)=\\theta_0 \\cos \\bigg( \\sqrt{  \\dfrac {g} {L}} t \\bigg)$\n\n";
     "14";
-    Tmax = Tpw["/"](N);
+    g = 9.8;
     "15";
-    Lmax = Math.pow(Tmax, 2)["*"](g)["/"](4["*"](Math.pow(pi, 2)));
+    Tpw = 30;
     "16";
-    width = Lmax;
+    N = 15;
     "17";
-    total_balls = 20;
+    Tmax = Tpw["/"](N);
     "18";
-    size = width["/"](2["*"](total_balls));
+    Lmax = Math.pow(Tmax, 2)["*"](g)["/"](4["*"](Math.pow(pi, 2)));
+    "19";
+    width = Lmax;
+    "20";
+    total_balls = 20;
     "21";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, background: color.gray(.075), range: .5})]);
-    "22";
-    display.camera.pos = vec(1["-u"]()["*"](1.5)["*"](width), .5["*"](width), width);
-    "23";
-    display.camera.axis = 1["-u"]()["*"](display.camera.pos);
+    size = .75["*"](width["/"](total_balls));
     "24";
-    roof = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, width["+"](size)["/"](2), 0), size: vec(width, size, .5["*"](width)), color: color.cyan})]);
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 600, background: color.gray(.075)})]);
     "25";
-    timer = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(width, width, 0)["*"](.9), text: "t =  s", space: 50, height: 24, font: "monospace", box: false, color: color.yellow})]);
+    display.camera.pos = 1.4["*"](vec(1["-u"]()["*"](1.5)["*"](width), 0["*"](width), width));
+    "26";
+    display.camera.axis = 1["-u"]()["*"](display.camera.pos);
     "28";
+    floor = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](.75)["*"](width["+"](size)), 0), size: 2["*"](vec(width, size, width)), texture: textures.granite})]);
+    "29";
+    roof = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, width["+"](size)["/"](2), 0), size: vec(width["*"](1.25), size, .5["*"](width)), texture: textures.wood})]);
+    "30";
+    ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(width["*"](1.2), width["+"](size), 1["-u"]()["*"](.4)["*"](width))["/"](2), axis: vec(0, 1["-u"]()["*"](1.25), 1["-u"]()["*"](.5)), radius: 1["-u"]()["*"](.02), texture: textures.wood})]);
+    "31";
+    ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(width["*"](1.2), width["+"](size), .4["*"](width))["/"](2), axis: vec(0, 1["-u"]()["*"](1.25), .5), radius: 1["-u"]()["*"](.02), texture: textures.wood})]);
+    "32";
+    ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](width)["*"](1.2), width["+"](size), .4["*"](width))["/"](2), axis: vec(0, 1["-u"]()["*"](1.25), .5), radius: 1["-u"]()["*"](.02), texture: textures.wood})]);
+    "33";
+    ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](width)["*"](1.2), width["+"](size), 1["-u"]()["*"](.4)["*"](width))["/"](2), axis: vec(0, 1["-u"]()["*"](1.25), 1["-u"]()["*"](.5)), radius: 1["-u"]()["*"](.02), texture: textures.wood})]);
+    "34";
+    timer = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(width, width, 0)["*"](1.5), text: "t =  s", space: 50, height: 24, font: "monospace", box: false, color: color.yellow})]);
+    "37";
     function Pendulum() {;
     }
     Pendulum.prototype.__init__ = async function __init__() {
@@ -111,23 +123,23 @@ async function __main__() {
             mass = ρσ_kwargs_obj.mass;
         }
         var ρσ_ls, ball_position;
-        "30";
+        "39";
         self._pos = position;
-        "31";
+        "40";
         self._length = Math.pow(T, 2)["*"](g)["/"](4["*"](pi)["*"](pi));
-        "32";
+        "41";
         self._inertia = mass["*"](Math.pow(self._length, 2));
-        "33";
+        "42";
         self._omega = 0;
-        "34";
+        "43";
         self._theta = theta0;
-        "35";
+        "44";
         self._mass = mass;
-        "36";
+        "45";
         ball_position = vec(self._pos, .5["*"](width)["-"](1["*"](self._length)["*"](cos(theta0))), self._length["*"](sin(theta0)));
-        "37";
+        "46";
         self._ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: ball_position, radius: size, color: colour})]);
-        "38";
+        "47";
         self._rope = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(self._pos, width["/"](2), 0), axis: ball_position["-"](1["*"](vec(self._pos, width["/"](2), 0))), radius: .1["*"](size), color: color.yellow})]);
     };
     if (!Pendulum.prototype.__init__.__defaults__) Object.defineProperties(Pendulum.prototype.__init__, {
@@ -141,15 +153,15 @@ async function __main__() {
     Pendulum.prototype.update = async function update(dt) {
         var self = this;
         var ρσ_ls, alpha;
-        "41";
+        "50";
         alpha = 1["-u"]()["*"](self._mass)["*"](g)["*"](self._ball.pos.z)["/"](self._inertia);
-        "42";
+        "51";
         self._omega=self._omega["+"](alpha["*"](dt));
-        "43";
+        "52";
         self._theta=self._theta["+"](self._omega["*"](dt));
-        "44";
+        "53";
         self._ball.pos = vec(self._pos, .5["*"](width)["-"](1["*"](self._length)["*"](cos(self._theta))), self._length["*"](sin(self._theta)));
-        "45";
+        "54";
         self._rope.axis = self._ball.pos["-"](1["*"](vec(self._pos, .5["*"](width), 0)));
     };
     if (!Pendulum.prototype.update.__argnames__) Object.defineProperties(Pendulum.prototype.update, {
@@ -166,25 +178,25 @@ async function __main__() {
 
 
 
-    "48";
+    "57";
     pendulums = ρσ_list_decorate([]);
-    "49";
+    "58";
     for (var ρσ_Index1 = 0; ρσ_Index1["<"](total_balls); ρσ_Index1++) {
         i = ρσ_Index1;
-        "50";
+        "59";
         T = Tpw["/"](N["+"](i));
-        "51";
+        "60";
         loc = width["*"](1["-u"]()["*"](.5)["+"](i["/"](total_balls["-"](1["*"](1)))));
-        "52";
+        "61";
         _GS_1 = new Pendulum;
         (await _GS_1.__init__(T, loc, vec(1["-"](1["*"](i)["/"](total_balls)), 0, i["/"](total_balls))));
         pendulum = _GS_1;
-        "53";
+        "62";
         pendulums.append(pendulum);
     }
-    "55";
+    "64";
     async function toggle_clock(event) {
-        "56";
+        "65";
         timer.visible = event.checked;
     };
     if (!toggle_clock.__argnames__) Object.defineProperties(toggle_clock, {
@@ -192,27 +204,46 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "58";
+    "67";
+    fps = 500;
+    "68";
+    async function animation_speed(event) {
+        "69";
+        "70";
+        fps = event.value;
+    };
+    if (!animation_speed.__argnames__) Object.defineProperties(animation_speed, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "72";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Clock", bind: toggle_clock, checked: true})]);
-    "60";
+    "73";
+    display.append_to_caption("\n\nFrames per second");
+    "74";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 500, value: 500, bind: animation_speed})]);
+    "76";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "77";
     t = 0;
-    "61";
+    "78";
     delta_t = .001;
-    "62";
+    "79";
     while (true) {
-        "63";
-        (await rate(500));
-        "64";
+        "80";
+        (await rate(fps));
+        "81";
         var ρσ_Iter2 = pendulums;
         ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
         for (var ρσ_Index2 of ρσ_Iter2) {
             pendulum = ρσ_Index2;
-            "65";
+            "82";
             (await pendulum.update(delta_t));
         }
-        "66";
+        "83";
         timer.text = "t = {:.1f} s".format(t);
-        "67";
+        "84";
         t=t["+"](delta_t);
     }
 };
