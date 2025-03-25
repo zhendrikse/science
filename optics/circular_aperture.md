@@ -18,9 +18,18 @@ is calculated by using the absolute value of the amplitude of the electric field
 
 Below you find a copy of the original set of instructions that accompany the video.
 
+![Aperture notes](images/aperture_notes.png)
+
+$\begin{eqnarray}r &=& \sqrt{(x-X)^2 + (y-Y)^2 +z^2} \\ &=& \sqrt{x^2+y^2+z^2-2xX-2yY+X^2+Y^2} \\ &=& R\sqrt{1-\dfrac{2xY+2yY}{R^2}+\dfrac{X^2+Y^2}{R^2}}\end{eqnarray}$
+
+For a small aperture we have $X^2+Y^2 \ll  R^2$, so we can write
+
+$\begin{eqnarray}r &\approx& R\sqrt{1-\dfrac{2xY+2yY}{R^2}} \\ &\approx& R\left(1-\dfrac{2xY+2yY}{R^2}\right)\end{eqnarray}$
+
 ### I. Introduction
 <div style="border-top: 1px solid #999999"><br/></div>
 
+<img style="float: left; margin-right: 15px;" alt="Aperture grid" src="images/aperture_grid.png"/>
 This homework is to find the diffraction pattern of a circular aperture far from the screen. Assume there
 is a circular aperture of diameter $d=100 \mu m$ and there is a spherical screen at $R=1m$ away. The light source is
 of wavelength $\lambda=500nm$. To obtain the diffraction pattern, you can assume there are many point light sources
@@ -45,11 +54,11 @@ sources sitting inside the aperture
 
 $\begin{equation}E(x, y) =\int\int_{\text{aperture}} \dfrac{1}{r}\sin(\omega t - kr)dXdY\end{equation}$
 
-or equivalently
+Next, we substitute the expression for $r$ found in the previous section to obtain
 
 $\begin{equation}E(x, y) \approx \int\int\dfrac{1}{R\left(1 - \dfrac{xX + yY}{R^2}\right)}\sin\left(\omega t - kR\left(1 -\dfrac{xX + yY}{R^2}\right)\right)dXdY\end{equation}$
 
-Let $\theta_x=x/R, \theta_y=y/R, k_x=k\theta_x, k_y=k\theta_y$, then
+Now let $\theta_x=x/R, \theta_y=y/R, k_x=k\theta_x, k_y=k\theta_y$, then
 
 $\begin{equation}E(\theta_x, \theta_y) \approx \int\int \frac{1}{R}\sin(\omega t -kR +k_x X + k_y Y)dXdY\end{equation}$
 
