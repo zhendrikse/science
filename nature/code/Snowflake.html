@@ -10,7 +10,7 @@
 // START JAVASCRIPT
 ;(function() {;
 var ρσ_modules = {};
-var display;
+var display, progress_bar;
 ρσ_modules.pythonize = {};
 
 (function(){
@@ -52,8 +52,8 @@ async function __main__() {
     var scene = canvas();
 
     function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, number_of_neighbors, _;
+    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, number_of_neighbors, num_steps, display, progress_bar, _;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -68,10 +68,14 @@ async function __main__() {
     "10";
     title = "Implementation of Reiter's cellular model for <a href=\"https://patarnott.com/pdf/SnowCrystalGrowth.pdf\">snow crystal growth<\/a>\n\n&#x2022; Original <a href=\"https://github.com/zdeager/flake\">code</a> by <a href=\"https://github.com/zdeager\">zdeager</a> \n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/snowflake.py\">snowflake.py</a>\n&#x2022; Also based on <a href=\"https://stackoverflow.com/questions/9982458/creating-a-sphere-packing-nearest-neighbor-list-from-integers\">Creating a sphere packing nearest neighbor list from integers</a>\n\n";
     "12";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](.48), 1["-u"]()["*"](.45), 1["-u"]()["*"](.72)), title: title, width: 600, height: 600, background: color.gray(.075)})]);
-    "13";
     number_of_neighbors = 12;
-    "17";
+    "13";
+    num_steps = 15;
+    "15";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](.48), 1["-u"]()["*"](.45), 1["-u"]()["*"](.72)), title: title, width: 600, height: 600, background: color.gray(.075)})]);
+    "16";
+    progress_bar = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({canvas: display, color: color.yellow, box: false, text: "Rendering step 1 from "["+"](str(num_steps["+"](1)))})]);
+    "19";
     async function get_pos() {
         var idx = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
         var width = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
@@ -83,21 +87,21 @@ async function __main__() {
             radius = ρσ_kwargs_obj.radius;
         }
         var ρσ_ls, k, j, i, x, y, z;
-        "18";
-        k = Math.floor(idx["/"](width["*"](height)));
-        "19";
-        idx=idx["-"](k["*"](width)["*"](height));
         "20";
-        j = Math.floor(idx["/"](width));
+        k = Math.floor(idx["/"](width["*"](height)));
         "21";
-        i = idx["%"](width);
+        idx=idx["-"](k["*"](width)["*"](height));
+        "22";
+        j = Math.floor(idx["/"](width));
         "23";
-        x = 2["*"](i)["+"](j["+"](k)["%"](2));
-        "24";
-        y = sqrt(3)["*"](j["+"](1["/"](3)["*"](k["%"](2))));
+        i = idx["%"](width);
         "25";
-        z = 2["*"](sqrt(6))["/"](3)["*"](k);
+        x = 2["*"](i)["+"](j["+"](k)["%"](2));
+        "26";
+        y = sqrt(3)["*"](j["+"](1["/"](3)["*"](k["%"](2))));
         "27";
+        z = 2["*"](sqrt(6))["/"](3)["*"](k);
+        "29";
         return vector(x, y, z)["*"](radius);
     };
     if (!get_pos.__defaults__) Object.defineProperties(get_pos, {
@@ -107,7 +111,7 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "29";
+    "32";
     function Cell() {;
     }
     Cell.prototype.__init__ = async function __init__() {
@@ -124,18 +128,18 @@ async function __main__() {
             colour = ρσ_kwargs_obj.colour;
         }
         var ρσ_ls, ρσ_unpack;
-        "31";
+        "34";
         self._sphere = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos, shininess: 0, color: colour, visible: false, radius: radius})]);
-        "32";
+        "35";
         ρσ_unpack = [alpha, beta, gamma];
         self._alpha = ρσ_unpack[0];
         self._beta = ρσ_unpack[1];
         self._gamma = ρσ_unpack[2];
-        "33";
+        "36";
         self._A2 = beta;
-        "34";
+        "37";
         self._A2n = self._A2;
-        "35";
+        "38";
         self._A1 = 0;
     };
     if (!Cell.prototype.__init__.__defaults__) Object.defineProperties(Cell.prototype.__init__, {
@@ -149,15 +153,15 @@ async function __main__() {
     Cell.prototype.render = async function render(a_min, a_max) {
         var self = this;
         var ρσ_ls, norm;
-        "38";
-        norm = self._beta["-"](1["*"](a_min))["/"](a_max["-"](1["*"](a_min)));
-        "39";
-        self._sphere.color=self._sphere.color["*"](norm);
-        "40";
-        self._sphere.opacity = norm["-"](1["*"](.1));
         "41";
+        norm = self._beta["-"](1["*"](a_min))["/"](a_max["-"](1["*"](a_min)));
+        "42";
+        self._sphere.color=self._sphere.color["*"](norm);
+        "43";
+        self._sphere.opacity = norm["-"](1["*"](.1));
+        "44";
         if (norm[">"](.5)) {
-            "42";
+            "45";
             self._sphere.visible = true;
         }
     };
@@ -167,9 +171,9 @@ async function __main__() {
     });
     Cell.prototype.update = async function update(receptive) {
         var self = this;
-        "45";
+        "48";
         self._A1 = (receptive) ? (await self.beta())["+"](self._gamma) : 0;
-        "46";
+        "49";
         self._A2 = (receptive) ? 0 : (await self.beta());
     };
     if (!Cell.prototype.update.__argnames__) Object.defineProperties(Cell.prototype.update, {
@@ -178,7 +182,7 @@ async function __main__() {
     });
     Cell.prototype.alpha = async function alpha() {
         var self = this;
-        "49";
+        "52";
         return self._alpha;
     };
     if (!Cell.prototype.alpha.__module__) Object.defineProperties(Cell.prototype.alpha, {
@@ -186,7 +190,7 @@ async function __main__() {
     });
     Cell.prototype.beta = async function beta() {
         var self = this;
-        "52";
+        "55";
         return self._beta;
     };
     if (!Cell.prototype.beta.__module__) Object.defineProperties(Cell.prototype.beta, {
@@ -194,9 +198,9 @@ async function __main__() {
     });
     Cell.prototype.add_updated_water_and_ice_together = async function add_updated_water_and_ice_together() {
         var self = this;
-        "55";
+        "58";
         self._beta = self._A1["+"](self._A2n);
-        "56";
+        "59";
         self._A2 = self._A2n;
     };
     if (!Cell.prototype.add_updated_water_and_ice_together.__module__) Object.defineProperties(Cell.prototype.add_updated_water_and_ice_together, {
@@ -216,7 +220,7 @@ async function __main__() {
 
 
 
-    "58";
+    "62";
     function Snowflake() {;
     }
     Snowflake.prototype.__init__ = async function __init__() {
@@ -243,26 +247,26 @@ async function __main__() {
             gamma = ρσ_kwargs_obj.gamma;
         }
         var ρσ_ls, ρσ_unpack, _GS_1, cell, idx;
-        "60";
+        "64";
         ρσ_unpack = [width, height, depth];
         self._width = ρσ_unpack[0];
         self._height = ρσ_unpack[1];
         self._depth = ρσ_unpack[2];
-        "61";
+        "65";
         self._cells = ρσ_list_decorate([]);
-        "64";
+        "68";
         for (var ρσ_Index1 = 0; ρσ_Index1["<"](width["*"](height)["*"](depth)); ρσ_Index1++) {
             idx = ρσ_Index1;
-            "65";
+            "69";
             _GS_1 = new Cell;
             (await _GS_1.__init__((await get_pos(idx, width, height)), radius, alpha, beta, gamma));
             cell = _GS_1;
-            "66";
+            "70";
             cell.neighbors = (await self._get_neighbors(idx));
-            "67";
+            "71";
             self._cells.append(cell);
         }
-        "68";
+        "72";
         ρσ_getitem(self._cells, (await self.center_index()))._beta = alpha;
     };
     if (!Snowflake.prototype.__init__.__defaults__) Object.defineProperties(Snowflake.prototype.__init__, {
@@ -276,12 +280,12 @@ async function __main__() {
     Snowflake.prototype.center_index = async function center_index() {
         var self = this;
         var ρσ_ls, ρσ_unpack, width, height, depth;
-        "71";
+        "75";
         ρσ_unpack = [self._width, self._height, self._depth];
         width = ρσ_unpack[0];
         height = ρσ_unpack[1];
         depth = ρσ_unpack[2];
-        "72";
+        "76";
         return Math.floor(depth["/"](2))["*"](height)["*"](width)["+"](Math.floor(height["/"](2))["*"](width))["+"](Math.floor(width["/"](2)));
     };
     if (!Snowflake.prototype.center_index.__module__) Object.defineProperties(Snowflake.prototype.center_index, {
@@ -290,87 +294,87 @@ async function __main__() {
     Snowflake.prototype._get_neighbors = async function _get_neighbors(idx) {
         var self = this;
         var ρσ_ls, ρσ_unpack, width, height, depth, area, plane, plane_index, row, col, r, p, neighbors;
-        "76";
+        "80";
         ρσ_unpack = [self._width, self._height, self._depth];
         width = ρσ_unpack[0];
         height = ρσ_unpack[1];
         depth = ρσ_unpack[2];
-        "77";
-        area = width["*"](height);
-        "79";
-        plane = Math.floor(idx["/"](area));
-        "80";
-        plane_index = idx["%"](area);
         "81";
-        row = Math.floor(plane_index["/"](width));
-        "82";
-        col = plane_index["%"](width);
+        area = width["*"](height);
+        "83";
+        plane = Math.floor(idx["/"](area));
         "84";
-        r = (row["%"](2)) ? 1["-u"]()["*"](1) : 1;
+        plane_index = idx["%"](area);
         "85";
+        row = Math.floor(plane_index["/"](width));
+        "86";
+        col = plane_index["%"](width);
+        "88";
+        r = (row["%"](2)) ? 1["-u"]()["*"](1) : 1;
+        "89";
         p = (plane["%"](2)) ? 1["-u"]()["*"](1) : 1;
-        "87";
+        "91";
         neighbors = ρσ_list_decorate([]);
-        "90";
+        "94";
         if (ρσ_not_equals(col, width["-"](1["*"](1)))) {
             neighbors.append(idx["+"](1));
         }
-        "91";
+        "95";
         if ((col !== 0 && (typeof col !== "object" || ρσ_not_equals(col, 0)))) {
             neighbors.append(idx["-"](1["*"](1)));
         }
-        "92";
+        "96";
         if (ρσ_not_equals(row, height["-"](1["*"](1)))) {
             neighbors.append(idx["+"](width));
         }
-        "93";
+        "97";
         if ((row !== 0 && (typeof row !== "object" || ρσ_not_equals(row, 0)))) {
             neighbors.append(idx["-"](1["*"](width)));
         }
-        "94";
+        "98";
         if (((col !== 0 && (typeof col !== "object" || ρσ_not_equals(col, 0))) || r[">"](0)) && (ρσ_not_equals(col, width["-"](1["*"](1))) || r["<"](0))) {
-            "95";
+            "99";
             if (ρσ_not_equals(row, height["-"](1["*"](1)))) {
                 neighbors.append(idx["+"](width)["+"](r));
             }
-            "96";
+            "100";
             if ((row !== 0 && (typeof row !== "object" || ρσ_not_equals(row, 0)))) {
                 neighbors.append(idx["-"](1["*"](width))["+"](r));
             }
-            "99";
+            "103";
         }
         if (ρσ_not_equals(plane, depth["-"](1["*"](1)))) {
             neighbors.append(idx["+"](area));
         }
-        "100";
+        "104";
         if ((plane !== 0 && (typeof plane !== "object" || ρσ_not_equals(plane, 0)))) {
             neighbors.append(idx["-"](1["*"](area)));
         }
-        "102";
+        "106";
         if (((col !== 0 && (typeof col !== "object" || ρσ_not_equals(col, 0))) || p["<"](0)) && (ρσ_not_equals(col, width["-"](1["*"](1))) || p[">"](0))) {
-            "103";
+            "107";
             if (ρσ_not_equals(plane, depth["-"](1["*"](1)))) {
                 neighbors.append(idx["+"](area)["-"](1["*"](p)));
             }
-            "104";
+            "108";
             if ((plane !== 0 && (typeof plane !== "object" || ρσ_not_equals(plane, 0)))) {
                 neighbors.append(idx["-"](1["*"](area))["-"](1["*"](p)));
             }
-            "106";
+            "110";
         }
         if ((ρσ_not_equals(col, width["-"](1["*"](1))) || p[">"](0) || r["<"](0)) && ((col !== 0 && (typeof col !== "object" || ρσ_not_equals(col, 0))) || p["<"](0) || r[">"](0)) && (ρσ_not_equals(row, height["-"](1["*"](1))) || p["<"](0)) && ((row !== 0 && (typeof row !== "object" || ρσ_not_equals(row, 0))) || p[">"](0))) {
-            "107";
+            "111";
             if (ρσ_not_equals(plane, depth["-"](1["*"](1)))) {
-                "108";
+                "112";
                 neighbors.append(idx["+"](area)["+"](p["*"](width))["+"](int(r["-"](1["*"](p))["/"](2))));
-                "109";
+                "113";
             }
             if ((plane !== 0 && (typeof plane !== "object" || ρσ_not_equals(plane, 0)))) {
-                "110";
+                "114";
                 neighbors.append(idx["-"](1["*"](area))["+"](p["*"](width))["+"](int(r["-"](1["*"](p))["/"](2))));
             }
         }
-        "112";
+        "116";
         return neighbors;
     };
     if (!Snowflake.prototype._get_neighbors.__argnames__) Object.defineProperties(Snowflake.prototype._get_neighbors, {
@@ -380,12 +384,12 @@ async function __main__() {
     Snowflake.prototype._diffuse = async function _diffuse(cell) {
         var self = this;
         var ρσ_ls, average;
-        "115";
+        "119";
         if (ρσ_not_equals(len(cell.neighbors), number_of_neighbors)) {
-            "116";
+            "120";
             return;
         }
-        "118";
+        "122";
         average = (await sum((function() {
             var ρσ_Iter = cell.neighbors, ρσ_Result = [], neighbor;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -396,7 +400,7 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })()))["/"](number_of_neighbors);
-        "119";
+        "123";
         cell._A2n = .5["*"](cell._A2["+"](average));
     };
     if (!Snowflake.prototype._diffuse.__argnames__) Object.defineProperties(Snowflake.prototype._diffuse, {
@@ -406,27 +410,27 @@ async function __main__() {
     Snowflake.prototype._determine_receptive = async function _determine_receptive(cell) {
         var self = this;
         var ρσ_ls, receptive, neighbor;
-        "122";
+        "126";
         if (ρσ_not_equals(len(cell.neighbors), number_of_neighbors)) {
-            "123";
+            "127";
             return;
         }
-        "125";
+        "129";
         receptive = false;
-        "126";
+        "130";
         var ρσ_Iter2 = cell.neighbors;
         ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
         for (var ρσ_Index2 of ρσ_Iter2) {
             neighbor = ρσ_Index2;
-            "127";
+            "131";
             if ((await ρσ_getitem(self._cells, neighbor).beta())[">="]((await cell.alpha())) || (await cell.beta())[">="]((await cell.alpha()))) {
-                "128";
+                "132";
                 receptive = true;
-                "129";
+                "133";
                 break;
             }
         }
-        "130";
+        "134";
         (await cell.update(receptive));
     };
     if (!Snowflake.prototype._determine_receptive.__argnames__) Object.defineProperties(Snowflake.prototype._determine_receptive, {
@@ -436,28 +440,28 @@ async function __main__() {
     Snowflake.prototype.grow = async function grow() {
         var self = this;
         var ρσ_ls, cell;
-        "133";
+        "137";
         var ρσ_Iter3 = self._cells;
         ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
         for (var ρσ_Index3 of ρσ_Iter3) {
             cell = ρσ_Index3;
-            "134";
+            "138";
             (await self._determine_receptive(cell));
         }
-        "136";
+        "140";
         var ρσ_Iter4 = self._cells;
         ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
         for (var ρσ_Index4 of ρσ_Iter4) {
             cell = ρσ_Index4;
-            "137";
+            "141";
             (await self._diffuse(cell));
         }
-        "139";
+        "143";
         var ρσ_Iter5 = self._cells;
         ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
         for (var ρσ_Index5 of ρσ_Iter5) {
             cell = ρσ_Index5;
-            "140";
+            "144";
             (await cell.add_updated_water_and_ice_together());
         }
     };
@@ -467,32 +471,32 @@ async function __main__() {
     Snowflake.prototype.render = async function render() {
         var self = this;
         var ρσ_ls, a_max, a_min, cell;
-        "144";
+        "147";
         a_max = 1["-u"]()["*"](1e30);
-        "145";
+        "148";
         a_min = 1e30;
-        "146";
+        "149";
         var ρσ_Iter6 = self._cells;
         ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
         for (var ρσ_Index6 of ρσ_Iter6) {
             cell = ρσ_Index6;
-            "147";
+            "150";
             if ((await cell.beta())[">"](a_max)) {
-                "148";
+                "151";
                 a_max = (await cell.beta());
-                "149";
+                "152";
             }
             if ((await cell.beta())["<"](a_min)) {
-                "150";
+                "153";
                 a_min = (await cell.beta());
             }
         }
-        "151";
+        "154";
         var ρσ_Iter7 = self._cells;
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             cell = ρσ_Index7;
-            "152";
+            "155";
             (await cell.render(a_min, a_max));
         }
     };
@@ -501,7 +505,7 @@ async function __main__() {
     });
     Snowflake.prototype.width = async function width() {
         var self = this;
-        "155";
+        "158";
         return self._width;
     };
     if (!Snowflake.prototype.width.__module__) Object.defineProperties(Snowflake.prototype.width, {
@@ -509,7 +513,7 @@ async function __main__() {
     });
     Snowflake.prototype.height = async function height() {
         var self = this;
-        "158";
+        "161";
         return self._height;
     };
     if (!Snowflake.prototype.height.__module__) Object.defineProperties(Snowflake.prototype.height, {
@@ -532,7 +536,7 @@ async function __main__() {
 
 
 
-    "161";
+    "164";
     async function new_snowflake() {
         var resolution = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? new_snowflake.__defaults__.resolution : arguments[0];
         var range_ = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? new_snowflake.__defaults__.range_ : arguments[1];
@@ -544,23 +548,31 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "range_")){
             range_ = ρσ_kwargs_obj.range_;
         }
-        var ρσ_ls, _GS_1, snowflake, _;
-        "162";
-        "163";
+        var ρσ_ls, _GS_1, snowflake, iteration;
+        "165";
+        "167";
+        progress_bar.text = "Rendering step 1 from "["+"](str(num_steps["+"](1)));
+        "168";
+        progress_bar.visible = true;
+        "170";
         _GS_1 = new Snowflake;
         (await _GS_1.__init__(resolution, resolution, resolution));
         snowflake = _GS_1;
-        "164";
-        for (var ρσ_Index8 = 0; ρσ_Index8["<"](15); ρσ_Index8++) {
-            _ = ρσ_Index8;
-            "165";
+        "171";
+        for (var ρσ_Index8 = 0; ρσ_Index8["<"](num_steps); ρσ_Index8++) {
+            iteration = ρσ_Index8;
+            "172";
+            progress_bar.text = "Rendering step "["+"](str(iteration["+"](2)))["+"](" from ")["+"](str(num_steps["+"](1)));
+            "173";
             (await snowflake.grow());
         }
-        "167";
+        "175";
         (await snowflake.render());
-        "168";
+        "176";
+        progress_bar.visible = false;
+        "177";
         display.center = (await get_pos((await snowflake.center_index()), (await snowflake.width()), (await snowflake.height())));
-        "169";
+        "178";
         display.range = range_;
     };
     if (!new_snowflake.__defaults__) Object.defineProperties(new_snowflake, {
@@ -570,33 +582,33 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "171";
+    "181";
     async function high_res() {
         var ρσ_ls, obj;
-        "172";
+        "182";
         var ρσ_Iter9 = display.objects;
         ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
         for (var ρσ_Index9 of ρσ_Iter9) {
             obj = ρσ_Index9;
-            "173";
+            "183";
             obj.visible = false;
         }
-        "174";
+        "184";
         (await new_snowflake(60, 38));
     };
     if (!high_res.__module__) Object.defineProperties(high_res, {
         __module__ : {value: null}
     });
 
-    "176";
+    "187";
     display.append_to_caption("\n");
-    "177";
+    "188";
     _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "High resolution (s l o w !!)", bind: high_res})]);
-    "179";
+    "190";
     (await new_snowflake());
-    "180";
+    "191";
     while (true) {
-        "181";
+        "192";
         (await rate(10));
     }
 };
