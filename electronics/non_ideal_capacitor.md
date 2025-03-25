@@ -1,6 +1,7 @@
 {% include breadcrumbs.html %}
 
 ## Non-ideal capacitor
+<div class="header_line"><br/></div>
 
 {% include_relative code/NonIdealCapacitor.html %}
 

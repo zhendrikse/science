@@ -1,6 +1,6 @@
-# Web VPython 3.2
+#Web VPython 3.2
 
-from vpython import canvas, box, color, rate, vec, arrow, slider
+from vpython import canvas, box, color, rate, vec, arrow, slider, label
 
 title = """&#x2022; Based on code shown in <a href="https://www.youtube.com/watch?v=Jq4dVuD9JV0">this video</a> by Jordan Huang
 &#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electronics/code/non_ideal_capacitor.py">non_ideal_capacitor.py</a>
@@ -12,9 +12,10 @@ title = """&#x2022; Based on code shown in <a href="https://www.youtube.com/watc
 N = 101
 h = 1E-2 / (N - 1)
 
-display = canvas(title="Non-ideal capacitor", height=400, width=600, center=vec(N * h / 2, N * h / 2, 0), range=30E-4)
+display = canvas(title=title, height=400, width=600, center=vec(N * h / 2, N * h / 2, 0), range=30E-4)
 display.lights = []
 display.ambient = color.gray(.99)
+progress_bar = label(pos=vec(N * h / 2, N * h / 2, 0), canvas=display, text="Progress Laplace solver: ", color=color.red, height=20, box=False)
 
 epsilon = 8.854E-12
 L, d = 4E-3, 1E-3
@@ -56,6 +57,10 @@ def solve_laplacian(u, u_cond, iterations=5000):
     #u = [row[:] for row in u]  # Ensure u is a list of lists
 
     for i in range(iterations):
+        rate(iterations)
+        if i % 250:
+            progress_bar.text="Progress Laplace solver: " + str(i // 50) + "%"
+
         # Apply boundary conditions (u_cond tells where to keep u fixed)
         for i in range(N):
             for j in range(N):
@@ -93,6 +98,7 @@ e_x, e_y = field_values_from_gradients(gradient_x), field_values_from_gradients(
 #
 # Plot capacitor, potential, and electric field
 #
+progress_bar.visible = False
 field_arrows = []
 for i in range(N):
     for j in range(N):
