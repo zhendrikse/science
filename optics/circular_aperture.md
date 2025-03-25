@@ -20,11 +20,15 @@ Below you find a copy of the original set of instructions that accompany the vid
 
 ![Aperture notes](images/aperture_notes.png)
 
-$\begin{eqnarray}r &=& \sqrt{(x-X)^2 + (y-Y)^2 +z^2} \\ &=& \sqrt{x^2+y^2+z^2-2xX-2yY+X^2+Y^2} \\ &=& R\sqrt{1-\dfrac{2xY+2yY}{R^2}+\dfrac{X^2+Y^2}{R^2}}\end{eqnarray}$
+$\begin{equation}r = \sqrt{(x-X)^2 + (y-Y)^2 +z^2} = \sqrt{x^2+y^2+z^2-2xX-2yY+X^2+Y^2} \end{equation}$ 
+
+Extracting $R$ results in
+
+$\begin{equation}r=R\sqrt{1-\dfrac{2xY+2yY}{R^2}+\dfrac{X^2+Y^2}{R^2}}\end{equation}$
 
 For a small aperture we have $X^2+Y^2 \ll  R^2$, so we can write
 
-$\begin{eqnarray}r &\approx& R\sqrt{1-\dfrac{2xY+2yY}{R^2}} \\ &\approx& R\left(1-\dfrac{2xY+2yY}{R^2}\right)\end{eqnarray}$
+$\begin{equation}r \approx R\sqrt{1-\dfrac{2xY+2yY}{R^2}} \approx R\left(1-\dfrac{2xY+2yY}{R^2}\right)\end{equation}$
 
 ### I. Introduction
 <div style="border-top: 1px solid #999999"><br/></div>
