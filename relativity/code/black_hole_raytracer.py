@@ -9,7 +9,7 @@ title = """&#x2022; Based on the original <a href="https://github.com/silvaan/bl
 
 """
 
-x_resolution = 400
+x_resolution = 500
 y_resolution = x_resolution // 2
 
 # Progress bar
