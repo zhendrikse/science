@@ -5,6 +5,7 @@
 
 {% include_relative code/NonIdealCapacitor.html %}
 
+<p style="clear: both;"></p>
 
 ## Theoretical background
 <div class="header_line"><br/></div>
