@@ -3,6 +3,7 @@
 from vpython import canvas, box, color, rate, vec, arrow, slider, label
 
 title = """&#x2022; Based on code shown in <a href="https://www.youtube.com/watch?v=Jq4dVuD9JV0">this video</a> by Jordan Huang
+&#x2022; The same code is also presented in <a href="https://www.youtube.com/watch?v=A3MYq3q9pec">this video</a>
 &#x2022; Refactored by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/electronics/code/non_ideal_capacitor.py">non_ideal_capacitor.py</a>
 &#x2022; The colored background shows the electric potential around the plates
 &#x2022; The arrows represent the electric field around the plates
@@ -51,6 +52,21 @@ def gradient_2d(array_):
     grad_x.append([(array_[-1][j] - array_[-2][j]) for j in range(len(array_[-1]))])
 
     return grad_x, grad_y
+
+###############
+# Fast solver with NumPy but unavailable in Glowscript
+import numpy as np
+def solve_laplacian_numpy(u, u_cond, iterations=5000):
+    V = np.array(u)
+    for i in range(iterations):
+        V[u_cond] = u[u_cond]
+        V[1:-1, 1:-1] = .25 * (V[0:-2, 1:-1] + V[2:, 1:-1] + V[1:-1, 0:-2] + V[1:-1, 2:])
+    return V
+
+def get_field(V, h):
+    E_x, E_y = np.gradient(V)
+    return -E_x / h, -E_y / h
+###############
 
 def solve_laplacian(u, u_cond, iterations=5000):
     V = [row[:] for row in u]  # Make a deep copy of u to V
