@@ -21,13 +21,13 @@ is added purely for aesthetical purposes.
 <div class="double_image">
 <figure class="left_image">
   <a href="multivariate_surface_plot.html">
-    <img alt="Multivariate functions" src="../images/multivariate_surface_plot.png" title="Click to animate"/>
+    <img alt="Multivariate functions" src="images/multivariate_surface_plot.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;
   <figcaption>Surface plot for $f(x, y) = \sin(\pi x)\cos(\pi y)$.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="multivariate_contour_plot.html">
-    <img alt="Complex functions" src="../images/multivariate_contour_plot.png" title="Click to animate"/>
+    <img alt="Complex functions" src="images/multivariate_contour_plot.png" title="Click to animate"/>
   </a>
   <figcaption><br/>Contour plot for $f(x, y) = \sin(\sqrt{x^2+y^2})$.</figcaption>
 </figure>
@@ -45,13 +45,13 @@ modified by the user.
 <div class="double_image">
 <figure class="left_image">
   <a href="complex_surface_plot.html">
-    <img alt="Complex functions" src="../images/complex_function_plot.png" title="Click to animate"/>
+    <img alt="Complex functions" src="images/complex_function_plot.png" title="Click to animate"/>
   </a>
   <figcaption>Surface plot for $f(z) = \exp(-z^2)$.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="complex_contour_plot.html">
-    <img alt="Complex functions" src="../images/complex_function_contour_plot.png" title="Click to animate"/>
+    <img alt="Complex functions" src="images/complex_function_contour_plot.png" title="Click to animate"/>
   </a>
   <figcaption>Contour plot for $f(z) = log(z)$.</figcaption>
 </figure>
@@ -78,16 +78,30 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 
 <div class="double_image">
 <figure class="left_image">
+  <a href="quiver_plot.html">
+    <img alt="Vector field" src="images/vector_field.png" title="Click to animate"/>
+  </a>
+  <figcaption>Rendering of three-dimensional vector field and implied flow.</figcaption>
+</figure>
+<figure class="right_image">
+</figure>
+  <a href="div_curl_demo.html">
+    <img alt="Divergence and curl" src="images/div_curl_demo.png" title="Click to animate"/>
+  </a>
+  <figcaption>Visualization of divergence and curl.</figcaption>
+</div>
+<p style="clear: both;"></p>
+
+<div class="double_image">
+<figure class="left_image">
   <a href="scalar_plot.html">
-    <img alt="Scalar field" src="../images/scalar_plot.png" title="Click to animate"/>
+    <img alt="Scalar field" src="images/scalar_plot.png" title="Click to animate"/>
   </a>
   <figcaption>Rendering a temperature distribution as a 3D scalar field.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="quiver_plot.html">
-    <img alt="Vector field" src="../images/vector_field.png" title="Click to animate"/>
-  </a>
-  <figcaption>Rendering of three-dimensional vector field and implied flow.</figcaption>
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION 
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -314,6 +328,26 @@ seen in the mathematics section on this page:
 </details>
 <p style="clear: both;"></p>
 
+<a name="numerical_methods"></a>
+## Numerical methods
+<div class="header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="numerical_methods.html">
+    <img alt="Numerical methods" src="./images/numerical_methods.png" title="Click to animate"/>
+  </a>
+  <figcaption>Comparison between an exact solution and those from various numerical methods, such as 
+  <a href="https://en.wikipedia.org/wiki/Euler_method">Euler method</a> and
+  <a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Runge-Kutta</a> methods (2 and 4).
+  </figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+<p style="clear: both;"></p>
 
 ## References
 <div class="header_line"><br/></div>
