@@ -84,11 +84,11 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
   <figcaption>Rendering of three-dimensional vector field and implied flow.</figcaption>
 </figure>
 <figure class="right_image">
-</figure>
   <a href="div_curl_demo.html">
     <img alt="Divergence and curl" src="images/div_curl_demo.png" title="Click to animate"/>
   </a>
   <figcaption>Visualization of divergence and curl.</figcaption>
+</figure>
 </div>
 <p style="clear: both;"></p>
 
