@@ -2,7 +2,6 @@
 from vpython import vector, atan2, sin, cos, pi, text, sphere, color, canvas, rate, simple_sphere, arrow, arange, checkbox
 
 title="""&#x2022; <a href="https://www.glowscript.org/#/user/wlane/folder/Physicsin3D/program/water-flow-curl">Original code</a> by <a href="https://www.youtube.com/@LetsCodePhysics">Let&apos;s code physics</a>
-&#x2022; See also <a href="https://www.youtube.com/watch?v=Zjmg6n7Wc8I">his accompanying video</a>
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/div_curl_demo.py">div_curl_demo.py</a>
 
 """
