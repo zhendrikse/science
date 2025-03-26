@@ -1,0 +1,462 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var dt, running;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+
+    var version, print, arange, __name__, type, ρσ_ls, amplitude, phi, x0, v0, m, k, omega, dt, time, ilen, f1, exact_curve, euler_curve, implicit_curve, rk2_curve, rk4_curve, error_graph, rk4_error, rk2_error, euler_error, implicit_error, title, scene, exact_setup, euler_setup, implicit_setup, rk2_setup, rk4_setup, positions_euler, positions_rk4, velocities_euler, velocities_rk4, ρσ_unpack, x_euler, v_euler, x_implicit, v_implicit, x_rk2, v_rk2, x_rk4, v_rk4, running, run_button, dt_slider, temp, delta_t, t;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "6";
+    amplitude = 1;
+    "7";
+    phi = 0;
+    "8";
+    x0 = amplitude;
+    "9";
+    v0 = 0;
+    "10";
+    m = 3;
+    "11";
+    k = 2;
+    "12";
+    omega = sqrt(k["/"](m));
+    "13";
+    dt = .1;
+    "14";
+    time = 1e3;
+    "15";
+    ilen = 1;
+    "19";
+    async function construct() {
+        var block_height = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
+        var spring_length = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
+        var colour = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? construct.__defaults__.colour : arguments[2];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
+            colour = ρσ_kwargs_obj.colour;
+        }
+        var ρσ_ls, block, spring;
+        "20";
+        block = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(.5, block_height, 0), length: .3, width: .3, height: .3, color: colour, F: vector(0, 0, 0), p: vector(0, 0, 0)})]);
+        "28";
+        spring = ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: vector(block.pos.x["-"](1["*"](spring_length)), block.pos.y, 0), axis: vector(1, 0, 0), length: spring_length, radius: block.width["/"](3), thickness: .02, color: colour})]);
+        "37";
+        return (function(){
+            var ρσ_d = ρσ_dict();
+            ρσ_d.set("block", block);
+            ρσ_d.set("spring", spring);
+            return ρσ_d;
+        }).call(this);
+    };
+    if (!construct.__defaults__) Object.defineProperties(construct, {
+        __defaults__ : {value: {colour:vector(0, 1, 1)}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["block_height", "spring_length", "colour"]},
+        __module__ : {value: null}
+    });
+
+    "43";
+    f1 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Position vs Time", xtitle: "Time", ytitle: "Pos_x", background: color.black})]);
+    "44";
+    exact_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.red})]);
+    "45";
+    euler_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.cyan})]);
+    "46";
+    implicit_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.orange})]);
+    "47";
+    rk2_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.purple})]);
+    "48";
+    rk4_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.green})]);
+    "50";
+    error_graph = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Errors: Euler [cyan] vs Implicit [orange] vs RK2 [purple] vs RK4 [green]", xtitle: "Time", ytitle: "Error", background: color.black})]);
+    "51";
+    rk4_error = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.green})]);
+    "52";
+    rk2_error = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.purple})]);
+    "53";
+    euler_error = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.cyan})]);
+    "54";
+    implicit_error = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.orange})]);
+    "66";
+    title = "&#x2022; Based on <a href=\"https://trinket.io/glowscript/1fe7d9cdd6\">this code<\/a> and <a href=\"https://www.youtube.com/watch?v=dShtlMl69kY\">accompanying video</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/kinematics/code/numerical_methods.py\">numerical_methods.py</a>\n\n&#x2022; Comparison of accuracy of numerical methods:\n   &#x2022; <span style=\"color: red\">Exact solution (red))</span>\n   &#x2022; <span style=\"color: cyan\">Euler&apos;s method (cyan)</span>\n   &#x2022; <span style=\"color: orange\">Implicit method (orange)</span> \n   &#x2022; <span style=\"color: purple\">Runge-Kutta 2 (purple)</span>\n   &#x2022; <span style=\"color: green\">Runge-Kutta 4 (green)</span>\n\n";
+    "68";
+    scene = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075)})]);
+    "74";
+    exact_setup = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, construct, [1, ilen["+"](amplitude)].concat([ρσ_desugar_kwargs({colour: color.red})])));
+    "75";
+    euler_setup = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, construct, [.5, ilen["+"](amplitude)].concat([ρσ_desugar_kwargs({colour: color.cyan})])));
+    "76";
+    implicit_setup = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, construct, [0, ilen["+"](amplitude)].concat([ρσ_desugar_kwargs({colour: color.orange})])));
+    "77";
+    rk2_setup = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, construct, [1["-u"]()["*"](.5), ilen["+"](amplitude)].concat([ρσ_desugar_kwargs({colour: color.purple})])));
+    "78";
+    rk4_setup = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, construct, [1["-u"]()["*"](1), ilen["+"](amplitude)].concat([ρσ_desugar_kwargs({colour: color.green})])));
+    "82";
+    async function update_spring(pos, spring) {
+        "83";
+        spring.axis = pos["-"](1["*"](spring.pos));
+        "84";
+        spring.length = mag(spring.axis);
+    };
+    if (!update_spring.__argnames__) Object.defineProperties(update_spring, {
+        __argnames__ : {value: ["pos", "spring"]},
+        __module__ : {value: null}
+    });
+
+    "88";
+    async function exact_solution(t, A, omega, phi) {
+        var ρσ_ls, x, v;
+        "89";
+        x = A["*"](cos(omega["*"](t)["+"](phi)));
+        "90";
+        v = 1["-u"]()["*"](A)["*"](omega)["*"](sin(omega["*"](t)["+"](phi)));
+        "91";
+        return [x, v];
+    };
+    if (!exact_solution.__argnames__) Object.defineProperties(exact_solution, {
+        __argnames__ : {value: ["t", "A", "omega", "phi"]},
+        __module__ : {value: null}
+    });
+
+    "95";
+    async function euler_step(x, v, dt, k, m) {
+        var ρσ_ls, a, v_new, x_new;
+        "96";
+        a = 1["-u"]()["*"](k["/"](m))["*"](x);
+        "97";
+        v_new = v["+"](a["*"](dt));
+        "98";
+        x_new = x["+"](v["*"](dt));
+        "100";
+        return [x_new, v_new];
+    };
+    if (!euler_step.__argnames__) Object.defineProperties(euler_step, {
+        __argnames__ : {value: ["x", "v", "dt", "k", "m"]},
+        __module__ : {value: null}
+    });
+
+    "104";
+    async function implicit_euler_step(x, v, dt, k, m) {
+        var ρσ_ls, A, B, x_new, v_new;
+        "105";
+        A = 1["+"](Math.pow(dt, 2)["*"](k)["/"](m));
+        "106";
+        B = 1["-u"]()["*"](dt)["*"](k)["/"](m);
+        "108";
+        x_new = x["+"](dt["*"](v))["/"](A);
+        "109";
+        v_new = v["+"](dt["*"](1["-u"]())["*"](k)["/"](m)["*"](x_new));
+        "111";
+        return [x_new, v_new];
+    };
+    if (!implicit_euler_step.__argnames__) Object.defineProperties(implicit_euler_step, {
+        __argnames__ : {value: ["x", "v", "dt", "k", "m"]},
+        __module__ : {value: null}
+    });
+
+    "115";
+    async function rk2_step(x, v, dt, k, m) {
+        var ρσ_ls, ρσ_unpack, k1x, k1v, k2x, k2v, x_new, v_new;
+        "116";
+        async function derivatives(x, v) {
+            "117";
+            return [v, 1["-u"]()["*"](k["/"](m))["*"](x)];
+        };
+        if (!derivatives.__argnames__) Object.defineProperties(derivatives, {
+            __argnames__ : {value: ["x", "v"]},
+            __module__ : {value: null}
+        });
+
+        "119";
+        ρσ_unpack = (await derivatives(x, v));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        k1x = ρσ_unpack[0];
+        k1v = ρσ_unpack[1];
+        "120";
+        ρσ_unpack = (await derivatives(x["+"](dt["*"](k1x)), v["+"](dt["*"](k1v))));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        k2x = ρσ_unpack[0];
+        k2v = ρσ_unpack[1];
+        "122";
+        x_new = x["+"](dt["/"](2)["*"](k1x["+"](k2x)));
+        "123";
+        v_new = v["+"](dt["/"](2)["*"](k1v["+"](k2v)));
+        "125";
+        return [x_new, v_new];
+    };
+    if (!rk2_step.__argnames__) Object.defineProperties(rk2_step, {
+        __argnames__ : {value: ["x", "v", "dt", "k", "m"]},
+        __module__ : {value: null}
+    });
+
+    "129";
+    async function rk4_step(x, v, dt, k, m) {
+        var ρσ_ls, ρσ_unpack, k1x, k1v, k2x, k2v, k3x, k3v, k4x, k4v, x_new, v_new;
+        "130";
+        async function derivatives(x, v) {
+            "131";
+            return [v, 1["-u"]()["*"](k["/"](m))["*"](x)];
+        };
+        if (!derivatives.__argnames__) Object.defineProperties(derivatives, {
+            __argnames__ : {value: ["x", "v"]},
+            __module__ : {value: null}
+        });
+
+        "133";
+        ρσ_unpack = (await derivatives(x, v));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        k1x = ρσ_unpack[0];
+        k1v = ρσ_unpack[1];
+        "134";
+        ρσ_unpack = (await derivatives(x["+"](.5["*"](dt)["*"](k1x)), v["+"](.5["*"](dt)["*"](k1v))));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        k2x = ρσ_unpack[0];
+        k2v = ρσ_unpack[1];
+        "135";
+        ρσ_unpack = (await derivatives(x["+"](.5["*"](dt)["*"](k2x)), v["+"](.5["*"](dt)["*"](k2v))));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        k3x = ρσ_unpack[0];
+        k3v = ρσ_unpack[1];
+        "136";
+        ρσ_unpack = (await derivatives(x["+"](dt["*"](k3x)), v["+"](dt["*"](k3v))));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        k4x = ρσ_unpack[0];
+        k4v = ρσ_unpack[1];
+        "138";
+        x_new = x["+"](dt["/"](6)["*"](k1x["+"](2["*"](k2x))["+"](2["*"](k3x))["+"](k4x)));
+        "139";
+        v_new = v["+"](dt["/"](6)["*"](k1v["+"](2["*"](k2v))["+"](2["*"](k3v))["+"](k4v)));
+        "141";
+        return [x_new, v_new];
+    };
+    if (!rk4_step.__argnames__) Object.defineProperties(rk4_step, {
+        __argnames__ : {value: ["x", "v", "dt", "k", "m"]},
+        __module__ : {value: null}
+    });
+
+    "145";
+    positions_euler = ρσ_list_decorate([ x0 ]);
+    "146";
+    positions_rk4 = ρσ_list_decorate([ x0 ]);
+    "147";
+    velocities_euler = ρσ_list_decorate([ v0 ]);
+    "148";
+    velocities_rk4 = ρσ_list_decorate([ v0 ]);
+    "151";
+    ρσ_unpack = [x0, v0];
+    x_euler = ρσ_unpack[0];
+    v_euler = ρσ_unpack[1];
+    "152";
+    ρσ_unpack = [x0, v0];
+    x_implicit = ρσ_unpack[0];
+    v_implicit = ρσ_unpack[1];
+    "153";
+    ρσ_unpack = [x0, v0];
+    x_rk2 = ρσ_unpack[0];
+    v_rk2 = ρσ_unpack[1];
+    "154";
+    ρσ_unpack = [x0, v0];
+    x_rk4 = ρσ_unpack[0];
+    v_rk4 = ρσ_unpack[1];
+    "158";
+    async function set_dt(evt) {
+        "159";
+        "160";
+        if ((evt.id === "dt" || typeof evt.id === "object" && ρσ_equals(evt.id, "dt"))) {
+            "161";
+            dt = evt.value;
+        }
+    };
+    if (!set_dt.__argnames__) Object.defineProperties(set_dt, {
+        __argnames__ : {value: ["evt"]},
+        __module__ : {value: null}
+    });
+
+    "163";
+    running = false;
+    "164";
+    async function run(button_) {
+        "165";
+        "166";
+        running = !running;
+        "167";
+        button_.text = (running) ? "Stop" : "Run";
+    };
+    if (!run.__argnames__) Object.defineProperties(run, {
+        __argnames__ : {value: ["button_"]},
+        __module__ : {value: null}
+    });
+
+    "169";
+    scene.append_to_caption("\n");
+    "170";
+    run_button = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Run", pos: scene.caption_anchor, bind: run})]);
+    "176";
+    scene.append_to_caption("   ");
+    "177";
+    dt_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({bind: set_dt, max: .5, min: 1e-4, step: 1e-4, value: .1, id: "dt"})]);
+    "185";
+    scene.append_to_caption("animation speed\n\n");
+    "187";
+    temp = 0;
+    "188";
+    delta_t = .001;
+    "189";
+    while (temp["<"](1e3)) {
+        "190";
+        (await rate(24));
+        "192";
+        temp=temp["+"](delta_t);
+        "193";
+        if (running) {
+            "194";
+            break;
+        }
+    }
+    "197";
+    t = 0;
+    "198";
+    while (t["<"](time)) {
+        "199";
+        if (!running) {
+            "200";
+            (await rate(10));
+            "201";
+            continue;
+        }
+        "203";
+        (await rate(50));
+        "204";
+        ρσ_unpack = (await euler_step(x_euler, v_euler, dt, k, m));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        x_euler = ρσ_unpack[0];
+        v_euler = ρσ_unpack[1];
+        "205";
+        ρσ_unpack = (await implicit_euler_step(x_implicit, v_implicit, dt, k, m));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        x_implicit = ρσ_unpack[0];
+        v_implicit = ρσ_unpack[1];
+        "206";
+        ρσ_unpack = (await rk2_step(x_rk2, v_rk2, dt, k, m));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        x_rk2 = ρσ_unpack[0];
+        v_rk2 = ρσ_unpack[1];
+        "207";
+        ρσ_unpack = (await rk4_step(x_rk4, v_rk4, dt, k, m));
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+        x_rk4 = ρσ_unpack[0];
+        v_rk4 = ρσ_unpack[1];
+        "209";
+        positions_euler.append(x_euler);
+        "210";
+        velocities_euler.append(v_euler);
+        "211";
+        positions_rk4.append(x_rk4);
+        "212";
+        velocities_rk4.append(v_rk4);
+        "214";
+        ρσ_getitem(exact_setup, "block").pos.x = ρσ_getitem((await exact_solution(t, amplitude, omega, phi)), 0);
+        "215";
+        (await update_spring(ρσ_getitem(exact_setup, "block").pos, ρσ_getitem(exact_setup, "spring")));
+        "217";
+        ρσ_getitem(euler_setup, "block").pos.x = x_euler;
+        "218";
+        (await update_spring(ρσ_getitem(euler_setup, "block").pos, ρσ_getitem(euler_setup, "spring")));
+        "220";
+        ρσ_getitem(implicit_setup, "block").pos.x = x_implicit;
+        "221";
+        (await update_spring(ρσ_getitem(implicit_setup, "block").pos, ρσ_getitem(implicit_setup, "spring")));
+        "223";
+        ρσ_getitem(rk2_setup, "block").pos.x = x_rk2;
+        "224";
+        (await update_spring(ρσ_getitem(rk2_setup, "block").pos, ρσ_getitem(rk2_setup, "spring")));
+        "226";
+        ρσ_getitem(rk4_setup, "block").pos.x = x_rk4;
+        "227";
+        (await update_spring(ρσ_getitem(rk4_setup, "block").pos, ρσ_getitem(rk4_setup, "spring")));
+        "229";
+        exact_curve.plot(t, ρσ_getitem(exact_setup, "block").pos.x);
+        "230";
+        euler_curve.plot(t, ρσ_getitem(euler_setup, "block").pos.x);
+        "231";
+        implicit_curve.plot(t, ρσ_getitem(implicit_setup, "block").pos.x);
+        "232";
+        rk2_curve.plot(t, ρσ_getitem(rk2_setup, "block").pos.x);
+        "233";
+        rk4_curve.plot(t, ρσ_getitem(rk4_setup, "block").pos.x);
+        "237";
+        rk4_error.plot(t, abs(ρσ_getitem(exact_setup, "block").pos.x["-"](1["*"](ρσ_getitem(rk4_setup, "block").pos.x))));
+        "238";
+        rk2_error.plot(t, abs(ρσ_getitem(exact_setup, "block").pos.x["-"](1["*"](ρσ_getitem(rk2_setup, "block").pos.x))));
+        "240";
+        t=t["+"](dt);
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
