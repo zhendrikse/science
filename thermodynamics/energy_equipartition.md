@@ -1,11 +1,14 @@
 {% include breadcrumbs.html %}
 
-## Carbon monoxide gas &mdash; equipartition of energy 
+## Equipartition of energy &amp; carbon monoxide gas
 <div class="header_line"><br/></div>
 
-Simulation of a carbon monoxide gas contained in a square box.
-This simulation shows that every degree of freedom of every 
-CO molecule has the same expectation value of energy.
+This simulation demonstrates the so-called 
+[equipartition of energy](https://en.wikipedia.org/wiki/Equipartition_theorem) for a
+box with carbon monoxide molecules: every degree of freedom of every CO molecule
+ends up having the same expectation value of energy. You may want to watch
+[this wonderful video](https://www.youtube.com/watch?v=cTOlW0u1ZuI) that explains
+this principle in a very clear and understandable way.
 
 {% include_relative code/EnergyEquipartition.html %}
 
