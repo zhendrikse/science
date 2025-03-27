@@ -16,31 +16,47 @@ ilen = 1  # Rest length of spring
 
 
 # Function for Block-Spring Setup Generation
-def construct(block_height, spring_length, colour=vector(0, 1, 1)):
-    block = box(
-        pos=vector(0.5, block_height, 0),
-        length=0.3, width=0.3, height=0.3,
-        color=colour,
-        F=vector(0, 0, 0),
-        p=vector(0, 0, 0)
-    )
+class Oscillator:
+    def __init__(self, block_height, spring_length, mass=3, k=2, colour=vector(0, 1, 1)):
+        self._velocity = 0
+        self._mass = mass
+        self._spring_constant = k
 
-    spring = helix(
-        pos=vector(block.pos.x - spring_length, block.pos.y, 0),
-        axis=vector(1, 0, 0),
-        length=spring_length,
-        radius=block.width / 3,
-        thickness=0.02,
-        color=colour
-    )
+        block = box(
+            pos=vector(0.5, block_height, 0),
+            length=0.3, width=0.3, height=0.3,
+            color=colour,
+            F=vector(0, 0, 0),
+            p=vector(0, 0, 0)
+        )
 
-    return {
-        'block': block,
-        'spring': spring
-    }
+        spring = helix(
+            pos=vector(block.pos.x - spring_length, block.pos.y, 0),
+            axis=vector(1, 0, 0),
+            length=spring_length,
+            radius=block.width / 3,
+            thickness=0.02,
+            color=colour
+        )
+
+        self._osc = {
+            'block': block,
+            'spring': spring
+        }
+
+    def update_spring(self):
+        self._osc['spring'].axis = self._osc['block'].pos - self._osc['spring'].pos
+        self._osc['spring'].length = mag(self._osc['spring'].axis)
+
+    def pos(self):
+        return self._osc['block'].pos
+
+    def time_lapse(self, num_method, dt):
+        self._osc['block'].pos.x, self._velocity = num_method(self._osc['block'].pos.x, self._velocity, dt, self._spring_constant, self._mass)
+        self.update_spring()
 
 
-f1 = graph(title="Position vs Time", xtitle='Time', ytitle='Pos_x', background=color.black)
+position_graph = graph(title="Position vs Time", xtitle='Time', ytitle='Pos_x', background=color.black)
 exact_curve = gcurve(color=color.red)
 euler_curve = gcurve(color=color.cyan)
 implicit_curve = gcurve(color=color.orange)
@@ -71,31 +87,27 @@ scene = canvas(title=title, background=color.gray(0.075))
 # spring = helix(pos=vector(0, 0, 0), axis=vector(0, 0, 0), radius=0.02, color=color.cyan, coils=10, thickness=0.01)
 # block = box(pos=vector(x0, 0, 0), size=vector(0.1, 0.1, 0.1), color=color.red)
 
-exact_setup = construct(1, ilen + amplitude, colour=color.red)
-euler_setup = construct(0.5, ilen + amplitude, colour=color.cyan)
-implicit_setup = construct(0, ilen + amplitude, colour=color.orange)
-rk2_setup = construct(-0.5, ilen + amplitude, colour=color.purple)
-rk4_setup = construct(-1, ilen + amplitude, colour=color.green)
+exact_setup = Oscillator(1, ilen + amplitude, colour=color.red)
+euler_setup = Oscillator(0.5, ilen + amplitude, colour=color.cyan)
+implicit_setup = Oscillator(0, ilen + amplitude, colour=color.orange)
+rk2_setup = Oscillator(-0.5, ilen + amplitude, colour=color.purple)
+rk4_setup = Oscillator(-1, ilen + amplitude, colour=color.green)
 
-
-# Spring Updater Function
-def update_spring(pos, spring):
-    spring.axis = pos - spring.pos
-    spring.length = mag(spring.axis)
 
 
 # Exact Solution
 def exact_solution(t, A, omega, phi):
-    x = A * cos(omega * t + phi)
-    v = -A * omega * sin(omega * t + phi)
-    return x, v
+    x_new = A * cos(omega * t + phi)
+    v_new = -A * omega * sin(omega * t + phi)
+
+    return x_new, v_new
 
 
 # Euler Method
-def euler_step(x, v, dt, k, m):
-    a = - (k / m) * x
-    v_new = v + a * dt
-    x_new = x + v * dt
+def euler_step(position, velocity, dt, spring_constant, mass):
+    acceleration = - (spring_constant / mass) * position
+    v_new = velocity + acceleration * dt
+    x_new = position + velocity * dt
 
     return x_new, v_new
 
@@ -211,31 +223,24 @@ while t < time:
     positions_rk4.append(x_rk4)
     velocities_rk4.append(v_rk4)
 
-    exact_setup['block'].pos.x = exact_solution(t, amplitude, omega, phi)[0]
-    update_spring(exact_setup['block'].pos, exact_setup['spring'])
+    exact_setup._osc['block'].pos.x = exact_solution(t, amplitude, omega, phi)[0]
+    exact_setup.update_spring()
 
-    euler_setup['block'].pos.x = x_euler
-    update_spring(euler_setup['block'].pos, euler_setup['spring'])
+    euler_setup.time_lapse(euler_step, dt)
+    implicit_setup.time_lapse(implicit_euler_step, dt)
+    rk2_setup.time_lapse(rk2_step, dt)
+    rk4_setup.time_lapse(rk4_step, dt)
 
-    implicit_setup['block'].pos.x = x_implicit
-    update_spring(implicit_setup['block'].pos, implicit_setup['spring'])
-
-    rk2_setup['block'].pos.x = x_rk2
-    update_spring(rk2_setup['block'].pos, rk2_setup['spring'])
-
-    rk4_setup['block'].pos.x = x_rk4
-    update_spring(rk4_setup['block'].pos, rk4_setup['spring'])
-
-    exact_curve.plot(t, exact_setup['block'].pos.x)
-    euler_curve.plot(t, euler_setup['block'].pos.x)
-    implicit_curve.plot(t, implicit_setup['block'].pos.x)
-    rk2_curve.plot(t, rk2_setup['block'].pos.x)
-    rk4_curve.plot(t, rk4_setup['block'].pos.x)
+    exact_curve.plot(t, exact_setup.pos().x)
+    euler_curve.plot(t, euler_setup.pos().x)
+    implicit_curve.plot(t, implicit_setup.pos().x)
+    rk2_curve.plot(t, rk2_setup.pos().x)
+    rk4_curve.plot(t, rk4_setup.pos().x)
 
     # euler_error.plot(t, abs(exact_setup['block'].pos.x - euler_setup['block'].pos.x))
     # implicit_error.plot(t, abs(exact_setup['block'].pos.x - implicit_setup['block'].pos.x))
-    rk4_error.plot(t, abs(exact_setup['block'].pos.x - rk4_setup['block'].pos.x))
-    rk2_error.plot(t, abs(exact_setup['block'].pos.x - rk2_setup['block'].pos.x))
+    rk4_error.plot(t, abs(exact_setup.pos().x - rk4_setup.pos().x))
+    rk2_error.plot(t, abs(exact_setup.pos().x - rk2_setup.pos().x))
 
     t += dt
 
