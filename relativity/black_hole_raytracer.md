@@ -103,6 +103,15 @@ published a paper called "On Continued Gravitational Contraction", which provide
 solution to the EFE based on the [Schwarzschild metric](https://en.wikipedia.org/wiki/Schwarzschild_metric), 
 which describes the collapse of an extremely massive object into a black hole.
 
+<figure style="float: center; text-align: center;">
+  <a href="https://www.facebook.com/photo/?fbid=10233598208964588&set=a.10200946882861842">
+    <img alt="Einstein and Oppenheimer" width="100%" height="100%" src="images/einstein_oppenheimer.jpg" title="Click to animate"/>
+  </a>
+  <figcaption>Einstein did, in fact, tell Oppenheimer to give up his security clearance and walk away 
+  from government work. The scene in the movie Oppenheimer is based on true events.</figcaption>
+</figure>
+
+[![](images/)]()
 
 {% include share_buttons.html %}
 
