@@ -8,7 +8,7 @@ title = """&#x2022; Based on <a href="https://trinket.io/glowscript/1fe7d9cdd6">
 &#x2022; Comparison of accuracy of numerical methods:
    &#x2022; <span style="color: red">Exact solution (red))</span>
    &#x2022; <span style="color: cyan">Euler&apos;s method (cyan)</span>
-   &#x2022; <span style="color: orange">Implicit method (orange)</span> 
+   &#x2022; <span style="color: orange">Implicit Euler method (orange)</span> 
    &#x2022; <span style="color: purple">Runge-Kutta 2 (purple)</span>
    &#x2022; <span style="color: green">Runge-Kutta 4 (green)</span>
 
