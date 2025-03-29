@@ -10,10 +10,17 @@
 ### Planet size comparison
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<figure>
-  <img src="images/planets_seen_from_earth.jpg" alt="Planets"/>
+<div class="double_image">
+<figure class="left_image">
+  <img alt="Our planets" src="images/planets_seen_from_earth.jpg" title="Click to animate"/>
   <figcaption>View from earth if one of the planets replaced our moon.</figcaption>
 </figure>
+<figure class="right_image">
+  <img alt="Our planets" src="images/planet_lightyears.jpg" title="Click to animate"/>
+  <figcaption>Distance to planets expressed in terms of the speed of light.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
 
 <p style="clear:both;"></p>
 
