@@ -46,6 +46,12 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 </div>
 <p style="clear: both;"></p>
 
+<figure style="float: center; text-align: center;">
+  <img alt="Einstein and Oppenheimer" width="100%" height="100%" src="images/size_of_black_hole.jpg" title="Click to animate"/>
+  <figcaption>Size comparison for supermassive black holes such as TON 618.</figcaption>
+</figure>
+<p style="clear: both;"></p>
+
 ## A concise history
 <div class="header_line"><br/></div>
 
@@ -110,8 +116,7 @@ which describes the collapse of an extremely massive object into a black hole.
   <figcaption>Einstein did, in fact, tell Oppenheimer to give up his security clearance and walk away 
   from government work. The scene in the movie Oppenheimer is based on true events.</figcaption>
 </figure>
-
-[![](images/)]()
+<p style="clear: both;"></p>
 
 {% include share_buttons.html %}
 
