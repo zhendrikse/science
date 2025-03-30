@@ -15,14 +15,14 @@ If you think you understand quantum mechanics, you don't understand quantum mech
 <div class="double_image">
 <figure class="left_image">
   <a href="plane_wave.html">
-    <img alt="Complex wave" src="../images/plane_wave.png" title="Click to animate"/>
+    <img alt="Complex wave" src="images/plane_wave.png" title="Click to animate"/>
   </a>
   <figcaption>Visualizing plane waves $\psi(x, t) = A e^{i(k x - \omega t)}$, which 
   play a pivotal role in quantum mechanics!</figcaption>
 </figure>
 <figure class="right_image">
   <a href="infinite_squarewell.html">
-    <img alt="Particle in a box" src="../images/infinite_square_well.png" title="Click to animate"/>
+    <img alt="Particle in a box" src="images/infinite_square_well.png" title="Click to animate"/>
   </a>
   <figcaption>One-dimensional quantum particle bound by an infinite square well.</figcaption>
 </figure>
@@ -94,24 +94,40 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 
 <p></p>
 
-### The quantum harmonic oscillator and &amp; slit experiment
+### The quantum harmonic oscillator 
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
   <a href="quantum_oscillator.html">
-    <img alt="Quantum oscillator" src="../images/quantum_oscillator.png" title="Click to animate"/>
+    <img alt="Quantum oscillator" src="images/quantum_oscillator.png" title="Click to animate"/>
   </a>
   <figcaption>The quantum harmonic oscillator is visualized in a semi-classical way below.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="double_slit.html">
-    <img alt="Double slit" src="../images/double_slit.png" title="Click to animate"/>
-  </a>
-  <figcaption>The double slit experiment, showing the wave-particle duality.</figcaption>
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
 </figure> 
 </div>
 <p style="clear: both;"></p>
 
+### [Young&apos;s interference experiment](https://en.wikipedia.org/wiki/Double-slit_experiment)
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="double_slit.html">
+    <img alt="Double slit" src="images/double_slit.png" title="Click to animate"/>
+  </a>
+  <figcaption>The double slit experiment, showing the wave-particle duality.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="dynamic_double_slit.html">
+    <img alt="Dynamic double slit" src="images/dynamic_double_slit.png" title="Click to animate"/>
+  </a>
+  <figcaption>Dynamic simulation of the experiment, stressing the formation of the interference pattern.</figcaption>
+</figure> 
+</div>
+<p style="clear: both;"></p>
 
 {% include share_buttons.html %}
