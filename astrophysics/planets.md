@@ -12,11 +12,15 @@
 
 <div class="double_image">
 <figure class="left_image">
-  <img alt="Our planets" src="images/planets_seen_from_earth.jpg" title="Click to animate"/>
+  <a href="images/planets_seen_from_earth.jpg">
+    <img alt="Our planets" src="images/planets_seen_from_earth.jpg"/>
+  </a>
   <figcaption>View from earth if one of the planets replaced our moon.</figcaption>
 </figure>
 <figure class="right_image">
-  <img alt="Our planets" src="images/planet_lightyears.jpg" title="Click to animate"/>
+  <a href="images/planet_lightyears.jpg">
+    <img alt="Our planets" src="images/planet_lightyears.jpg"/>
+  </a>
   <figcaption>Distance to planets expressed in terms of the speed of light.</figcaption>
 </figure>
 </div>
