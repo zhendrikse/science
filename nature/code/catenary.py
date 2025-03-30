@@ -1,6 +1,6 @@
 #Web VPython 3.2
 
-from vpython import sphere, vector, rate, cylinder, mag, norm, color, canvas, box, gcurve
+from vpython import sphere, vector, rate, cylinder, mag, norm, color, canvas, box, gcurve, graph
 
 title = """ 
 &#x2022; Original by <a href="https://trinket.io/glowscript/e5cf69a641">code</a> by Rhett Allain
