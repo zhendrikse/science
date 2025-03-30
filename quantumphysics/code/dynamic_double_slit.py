@@ -6,7 +6,7 @@ title = """&#x2022; Original <a href="https://github.com/NelsonHackerman/Random_
 
 """
 
-display = canvas(title=title, background=color.gray(0.075), center=vec(700, 350, 0))
+display = canvas(title=title, background=color.gray(0.075), center=vec(700, 350, 0), forward=vec(0, .65, -.75))
 
 slit_size = 6
 slit_distance = 10
@@ -49,13 +49,15 @@ def initialize_simulation(pixels_are_round):
         temp = []
         for j in range(len(y)):
             if pixels_are_round:
-                temp.append(simple_sphere(pos=vec(xmesh[j][i] * 100 + 50, ymesh[j][i] * 100 + 50, 0), radius=ceil(100 * dx)))
+                temp.append(simple_sphere(pos=vec(xmesh[j][i] * 100 + 50, ymesh[j][i] * 100 + 50, 0), radius=50 * dx))
             else:
-                temp.append(box(pos=vec(xmesh[j][i] * 100 + 50, ymesh[j][i] * 100 + 50, 0), size=vec(ceil(100 * dx), ceil(100 * dy), 0)))
+                temp.append(box(pos=vec(xmesh[j][i] * 100 + 50, ymesh[j][i] * 100 + 50, 0),
+                                size=vec(ceil(100 * dx), ceil(100 * dy), 0)))
 
         pixels.append(temp)
 
     return pixels
+
 
 def initialize_meshes(len_x, len_y):
     umesh = outer_product([0 for _ in range(len_y)], arange(0, 13, dx))
@@ -63,22 +65,26 @@ def initialize_meshes(len_x, len_y):
     uttmesh = [[0. for _ in range(len_x)] for _ in range(len_y)]
     return umesh, utmesh, uttmesh
 
+
 # Calculated once and for all, for enhancing performance
 velocity_source_2 = velocity_source * velocity_source
 dx_2 = dx * dx
 dy_2 = dy * dy
 pi_2 = pi / 2
 
+
 def run_simulation(umesh, utmesh, uttmesh, pixels):
     t = 0
-    while True:
+    simulation_time = 10
+    while t < simulation_time:
+        clock.text = "Time remaining: {:1.2f}".format(simulation_time - t)
         t += dt
-        rate(100)
+        rate(50)
 
         for n in range(1, len(pixels) - 1):
             for m in range(1, len(pixels[0]) - 1):
                 uttmesh[m][n] = velocity_source_2 * ((umesh[m][n - 1] + umesh[m][n + 1] - 2 * umesh[m][n]) / dx_2 + (
-                            umesh[m - 1][n] + umesh[m + 1][n] - 2 * umesh[m][n]) / dy_2)
+                        umesh[m - 1][n] + umesh[m + 1][n] - 2 * umesh[m][n]) / dy_2)
 
         for n in range(1, len(pixels) - 1):
             for m in range(1, len(pixels[0]) - 1):
@@ -128,17 +134,29 @@ def run_simulation(umesh, utmesh, uttmesh, pixels):
             for j in range(len(pixels[0])):
                 pixels[i][j].color = vec(0, 0, 0) if umesh[j][i] == 69 else colour(umesh[j][i] - floor, colorrange)
 
+
 use_round_pixels = True
+
+
 def toggle_square_pixels(event):
     global use_round_pixels
     use_round_pixels = event.checked
 
+
 display.append_to_caption("\nRound pixels ")
 _ = checkbox(bind=toggle_square_pixels, checked=use_round_pixels)
 
-popup = label(pos=vec(700, 350, 0), text="Click mouse to start", height=25, box=False, color=color.yellow)
-display.waitfor("click")
-popup.visible = False
-pixels = initialize_simulation(use_round_pixels)
-u_mesh, ut_mesh, utt_mesh = initialize_meshes(len(pixels), len(pixels[0]))
-run_simulation(u_mesh, ut_mesh, utt_mesh, pixels)
+clock = label(pos=vec(700, 1100, 0), text="Time remaining: 0:00", height=20, box=False, color=color.green)
+while True:
+    pixels = initialize_simulation(use_round_pixels)
+    u_mesh, ut_mesh, utt_mesh = initialize_meshes(len(pixels), len(pixels[0]))
+    run_simulation(u_mesh, ut_mesh, utt_mesh, pixels)
+
+    popup = label(pos=vec(700, 350, 0), text="Click mouse to restart", height=25, box=False, color=color.yellow)
+    display.waitfor("click")
+    popup.visible = False
+    for i in range(len(pixels)):
+        for j in range(len(pixels[0])):
+            pixels[i][j].visible = False
+            # pixels[i][j].delete()
+
