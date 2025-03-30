@@ -73,17 +73,17 @@ class Base:
             item.color = color.gray(.5)
             item.radius = radius
 
-    def tick_marks_visibility_is(self, visible):
+    def tick_marks_visibility_is(self, event):
         for tick_mark in self._tick_marks:
-            tick_mark.visible = visible
+            tick_mark.visible = event.value
 
-    def mesh_visibility_is(self, visible):
+    def mesh_visibility_is(self, event):
         for i in range(len(self._mesh)):
-            self._mesh[i].visible = visible
+            self._mesh[i].visible = event.value
 
-    def axis_labels_visibility_is(self, visible):
+    def axis_labels_visibility_is(self, event):
         for i in range(len(self._axis_labels)):
-            self._axis_labels[i].visible = visible
+            self._axis_labels[i].visible = event.value
 
 
 class Scalar:
@@ -147,25 +147,17 @@ def temperature_at(position):
     # temperature = mag(position-vector(1,0,0))**-1 - mag(position-vector(-1,0,0))**-1
     return temperature
 
-def toggle_tick_marks(event):
-    plot_base.tick_marks_visibility_is(event.checked)
-
-
-def toggle_axis_labels(event):
-    plot_base.axis_labels_visibility_is(event.checked)
-
-
-def toggle_mesh(event):
-    plot_base.mesh_visibility_is(event.checked)
 
 def adjust_opacity(event):
     field.set_opacity_to(event.value)
     opacity_slider_text.text = "= {:1.2f}".format(event.value, 2)
 
+plot_base = Base(arange(-3.25, 3.25, 0.2), arange(-3.25, 3.25, 0.2), arange(-3.25, 3.25, 0.2), color.yellow, color.green, 10)
+
 display.append_to_caption("\n")
-_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
-_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=True)
-_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
+_ = checkbox(text='Mesh ', bind=plot_base.mesh_visibility_is, checked=True)
+_ = checkbox(text='Axis labels ', bind=plot_base.axis_labels_visibility_is, checked=True)
+_ = checkbox(text='Tick marks ', bind=plot_base.tick_marks_visibility_is, checked=True)
 
 display.append_to_caption("\n\nOpacity ")
 _ = slider(min=0, max=1, step=0.01, value=.3, bind=adjust_opacity)
@@ -173,7 +165,6 @@ opacity_slider_text = wtext(text="= 0.3")
 
 x_max = 3
 field = ScalarField(-x_max, x_max, 1.5 * x_max / 10, temperature_at)
-plot_base = Base(arange(-3.25, 3.25, 0.2), arange(-3.25, 3.25, 0.2), arange(-3.25, 3.25, 0.2), color.yellow, color.green, 10)
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 while True:
