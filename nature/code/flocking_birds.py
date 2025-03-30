@@ -2,9 +2,7 @@
 
 from vpython import canvas, color, arrow, vector, vec, slider, button, rate, random, norm
 
-title="""
-
-&#x2022; Original version created by B. Philhour 10/9/17 
+title="""&#x2022; Original version created by B. Philhour 10/9/17 
 &#x2022; Inspired by Gary Flake's <a href="https://www.amazon.com/Computational-Beauty-Nature-Explorations-Adaptation/dp/0262561271">Computational Beauty of Nature</a>
 &#x2022; 1998 MIT Press ISBN-13 978-0-262-56127-3
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/flocking_birds.py">flocking_birds.py</a>
@@ -82,17 +80,17 @@ class Flock:
             acceleration += self._avoid_weight * (avoid[count].norm() - self._birds[count].position())
             self._birds[count].update(acceleration, dt)
 
-    def set_center_weight(self, value):
-        self._center_weight = value
+    def set_center_weight(self, event):
+        self._center_weight = event.value
 
-    def set_direction_weight(self, value):
-      self._direction_weight = value
+    def set_direction_weight(self, event):
+      self._direction_weight = event.value
 
-    def set_avoid_weight(self, value):
-      self._avoid_weight = value
+    def set_avoid_weight(self, event):
+      self._avoid_weight = event.value
 
-    def set_random_weight(self, new_random_weight):
-        self._random_weight = new_random_weight
+    def set_random_weight(self, event):
+        self._random_weight = event.value
 
     def center_weight(self):
         return self._center_weight
@@ -108,26 +106,14 @@ class Flock:
 
 flock = Flock(250)
 
-def avoid_bird():
-  flock.set_avoid_weight(avoid_weight_slider.value)
-
-def direction_bird():
-    flock.set_direction_weight(direction_weight_slider.value)
-
-def center_bird():
-    flock.set_center_weight(center_weight_slider.value)
-
-def on_random_weight_slider():
-    flock.set_random_weight(random_weight_slider.value)
-
 animation.append_to_caption("\nRandom behavior\n")
-random_weight_slider = slider(bind=on_random_weight_slider, min=0.0, max=50.0, value=flock.random_weight())
+random_weight_slider = slider(bind=flock.set_random_weight, min=0.0, max=50.0, value=flock.random_weight())
 animation.append_to_caption("\n\nCentering behavior\n")
-center_weight_slider = slider(bind=center_bird, min=0.0, max=2.0, value=flock.center_weight())
+center_weight_slider = slider(bind=flock.set_center_weight, min=0.0, max=2.0, value=flock.center_weight())
 animation.append_to_caption("\n\nDirection behavior\n")
-direction_weight_slider = slider(bind=direction_bird, min=0.0, max=2.0, value=flock.direction_weight())
+direction_weight_slider = slider(bind=flock.set_direction_weight, min=0.0, max=2.0, value=flock.direction_weight())
 animation.append_to_caption("\n\nAvoidance behavior\n")
-avoid_weight_slider = slider(bind = avoid_bird, min = 0.0, max = 2.0, value=flock.avoid_weight())
+avoid_weight_slider = slider(bind=flock.set_avoid_weight, min = 0.0, max = 2.0, value=flock.avoid_weight())
 
 # make a button for startling the birds
 # def startle():
