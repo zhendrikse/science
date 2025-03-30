@@ -8,6 +8,12 @@ authors = ["Zeger Hendrikse  <zegerh@yahoo.co.uk>"]
 python = ">=3.10.0,<3.13"
 vpython = "^7.6.5"
 chess = "^1.11.1"
+tqdm = "^4.67.1"
+vtk = "^9.4.1"
+pygame = "^2.6.1"
+pillow = "^11.1.0"
+numpy = "^2.2.4"
+plotly = "^6.0.1"
 
 
 [tool.poetry.dev-dependencies]

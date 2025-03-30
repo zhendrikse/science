@@ -1,4 +1,6 @@
 # Web VPython 3.2
+
+from vpython import vertex, quad, triangle, radians, rate, vec, color, tan, cos, sin, canvas, mag, gdots, textures, graph, button, winput, box, sphere
 title = """Ball rolling from sliding ramp with friction
 
 &#x2022; Based on original <a href="https://github.com/Physics-Morris/Physics-Vpython/blob/master/1_Moving_Wedge.py">1_Moving_Wedge.py</a>
@@ -35,12 +37,12 @@ class Wedge:
 
     def update(self, dt):
         for i in range(0, len(self._apex)):
-            self._apex[i].v.x += self._apex[i].a.x * dt
+            self._apex[i].v.x += self._apex[i].atom.x * dt
             self._apex[i].pos.x += self._apex[i].v.x * dt
 
     def zero_acceleration(self):
         for i in range(0, len(self._apex)):
-            self._apex[i].a = vec(0, 0, 0)
+            self._apex[i].atom = vec(0, 0, 0)
 
     def acceleration_ball(self):
         acceleration_ball_x = self._acceleration_ball() * cos(self._theta) + self._acceleration_x()
@@ -75,7 +77,7 @@ class Wedge:
             0, 10, 10), vec(0, 10, 0)
 
         for i in range(0, len(self._apex)):
-            self._apex[i].a.x = self._acceleration_x()
+            self._apex[i].atom.x = self._acceleration_x()
             self._apex[i].v = vec(0, 0, 0)
 
     def velocity(self):
@@ -106,10 +108,10 @@ def Run(r):
 
 def restart():
     theta_tmp, friction_tmp, M_tmp, m_tmp = theta_input_field.number, friction_input_field.number, wedge_mass_input_field.number, ball_mass_input_field.number
-    if theta_tmp == None: theta_tmp = theta
-    if friction_tmp == None: friction_tmp = friction_constant
-    if M_tmp == None: M_tmp = wedge.mass()
-    if m_tmp == None: m_tmp = ball_mass
+    if theta_tmp is None: theta_tmp = theta
+    if friction_tmp is None: friction_tmp = friction_constant
+    if M_tmp is None: M_tmp = wedge.mass()
+    if m_tmp is None: m_tmp = ball_mass
 
     global running
     global t
@@ -125,16 +127,16 @@ def restart():
     plot_energy_wedge.delete()
 
     wedge.with_new_parameters(theta_tmp, friction_tmp, M_tmp, m_tmp)
-    ball.v, ball.pos, ball.a.x, ball.a.y = vec(0, 0, 0), vec(1.5 / sin(radians(theta_tmp)), 10,
-                                                             5), wedge.acceleration_ball().x, wedge.acceleration_ball().y
+    ball.v, ball.pos, ball.atom.x, ball.atom.y = vec(0, 0, 0), vec(1.5 / sin(radians(theta_tmp)), 10,
+                                                                   5), wedge.acceleration_ball().x, wedge.acceleration_ball().y
 
 
 def get_parameter_values():
     theta_tmp, friction_tmp, M_tmp, m_tmp = theta_input_field.number, friction_input_field.number, wedge_mass_input_field.number, ball_mass_input_field.number
-    if theta_tmp == None: theta_tmp = theta
-    if friction_tmp == None: friction_tmp = friction_constant
-    if M_tmp == None: M_tmp = wedge.mass()
-    if m_tmp == None: m_tmp = ball_mass
+    if theta_tmp is None: theta_tmp = theta
+    if friction_tmp is None: friction_tmp = friction_constant
+    if M_tmp is None: M_tmp = wedge.mass()
+    if m_tmp is None: m_tmp = ball_mass
     if theta_tmp > 80 or theta_tmp < 10: theta_tmp = theta
     return theta_tmp, friction_tmp, M_tmp, m_tmp
 
@@ -143,7 +145,7 @@ def new_parameter_value():
     theta_tmp, friction_tmp, M_tmp, m_tmp = get_parameter_values()
     wedge.with_new_parameters(theta_tmp, friction_tmp, M_tmp, m_tmp)
     ball.pos.x = 1.5 / sin(radians(theta_tmp))
-    ball.a.x, ball.a.y = wedge.acceleration_ball().x, wedge.acceleration_ball().y
+    ball.atom.x, ball.atom.y = wedge.acceleration_ball().x, wedge.acceleration_ball().y
 
 
 set_scene()
@@ -202,25 +204,25 @@ while True:
     running = running if ball.pos.x < 50 else False
 
     if running:
-        ball.v += ball.a * dt
+        ball.v += ball.atom * dt
         ball.pos += ball.v * dt
         wedge.update(dt)
 
         if ball.pos.y <= ball.radius + floor.size.y / 2:
             # Ball has left ramp
             ball.v = vec(mag(ball.v), 0, 0)
-            ball.a = vec(0, 0, 0)
+            ball.atom = vec(0, 0, 0)
             ball.up = vec(0, 1, 0)
             ball.pos += ball.v * dt
 
             wedge.zero_acceleration()
             wedge.update(dt)
 
-        if wedge_mass_input_field.number == None:
+        if wedge_mass_input_field.number is None:
             tmp_M = wedge.mass()
         else:
             tmp_M = wedge_mass_input_field.number
-        if ball_mass_input_field.number == None:
+        if ball_mass_input_field.number is None:
             tmp_m = ball_mass
         else:
             tmp_m = ball_mass_input_field.number
