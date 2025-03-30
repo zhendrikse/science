@@ -54,7 +54,7 @@ Thus far, the electromagnetic theory developed by James Clerk Maxwell in the lat
 attempts to reduce it to mechanical processes. Einstein set out to do just that. &mdash; 
 <a href="https://www.aps.org/archives/publications/apsnews/200502/history.cfm">Einstein and Brownian Motion</a>
 on <a href="https://www.aps.org/">aps.org</a>.
-</blockquote>
+</blockquote><br/>
 
 {% include share_buttons.html %}
 
