@@ -331,25 +331,25 @@ class Figure:
         for subplot in self._subplots:
             subplot.set_shininess_to(shininess)
 
-    def tick_marks_visibility_is(self, visible):
-        self._tick_marks_visible = visible
-        self._base.tick_marks_visibility_is(visible)
+    def tick_marks_visibility_is(self, event):
+        self._tick_marks_visible = event.checked
+        self._base.tick_marks_visibility_is(event.checked)
 
-    def mesh_visibility_is(self, visible):
-        self._mesh_visible = visible
-        self._base.mesh_visibility_is(visible)
+    def mesh_visibility_is(self, event):
+        self._mesh_visible = event.checked
+        self._base.mesh_visibility_is(event.checked)
 
-    def axis_labels_visibility_is(self, visible):
-        self._axis_labels_visible = visible
-        self._base.axis_labels_visibility_is(visible)
+    def axis_labels_visibility_is(self, event):
+        self._axis_labels_visible = event.checked
+        self._base.axis_labels_visibility_is(event.checked)
 
     def reset(self):
         self._subplots = []
         self._canvas.delete()
         self._canvas = canvas(x=0, y=0, height=600, background=color.gray(0.075), forward=vec(-1.0, -0.71, -.78))
 
-    def plot_contours_is(self, bool_value):
-        self._plot_contours = bool_value
+    def plot_contours_is(self, event):
+        self._plot_contours = event.checked
 
     def add_subplot(self, x, y, z):
         if self._plot_contours:
@@ -602,31 +602,17 @@ _ = slider(min=0, max=1, step=0.01, value=0.6, bind=adjust_shininess)
 shininess_slider_text = wtext(text="= 0.6")
 
 
-def toggle_tick_marks(event):
-    figure.tick_marks_visibility_is(event.checked)
-
-
-def toggle_axis_labels(event):
-    figure.axis_labels_visibility_is(event.checked)
-
-
-def toggle_mesh(event):
-    figure.mesh_visibility_is(event.checked)
-
-
 def toggle_animate(event):
     global dt
     dt = 0.01 if event.checked else 0
 
-def toggle_plot_type(event):
-    figure.plot_contours_is(event.checked)
 
-
+figure = Figure(animation)
 animation.append_to_caption("\n\n")
-_ = checkbox(text="Contour", bind=toggle_plot_type, checked=False)
-_ = checkbox(text='Mesh ', bind=toggle_mesh, checked=True)
-_ = checkbox(text='Axis labels ', bind=toggle_axis_labels, checked=False)
-_ = checkbox(text='Tick marks ', bind=toggle_tick_marks, checked=True)
+_ = checkbox(text="Contour", bind=figure.plot_contours_is, checked=False)
+_ = checkbox(text='Mesh ', bind=figure.mesh_visibility_is, checked=True)
+_ = checkbox(text='Axis labels ', bind=figure.axis_labels_visibility_is, checked=False)
+_ = checkbox(text='Tick marks ', bind=figure.tick_marks_visibility_is, checked=True)
 _ = checkbox(text='Animate ', bind=toggle_animate, checked=False)
 animation.append_to_caption("\n\n")
 
@@ -635,7 +621,6 @@ animation.title = sine_sqrt_title + "\n\n"
 # COMMENT OUT IN LOCAL VPYTHON  #
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
-figure = Figure(animation)
 figure.reset() # To make the GUI controls appear on top
 
 xx_, yy_, zz_ = sin_sqrt(50)
