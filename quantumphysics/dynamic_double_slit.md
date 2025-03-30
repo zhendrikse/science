@@ -8,7 +8,8 @@
 
 <p style="clear: both;"></p>
 
-{% include share_buttons.html %}
+{% include_relative double_slit_background.md %}
 
+{% include share_buttons.html %}
 
     
