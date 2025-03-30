@@ -1,6 +1,7 @@
 {% include breadcrumbs.html %}
 
 ## Three-dimensional Brownian motion
+<div class="header_line"><br/></div>
 
 A simulation of three-dimensional Brownian motion using a simple hard-sphere model in VPython.
 
