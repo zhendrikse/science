@@ -3,6 +3,7 @@ from vpython import ceil, pi, cos, rate, box, vec, canvas, color, arange, simple
 
 title = """&#x2022; Original <a href="https://github.com/NelsonHackerman/Random_python_ideas/blob/main/double%20slit%20experiment.py">double slit experiment.py</a> by <a href="https://github.com/NelsonHackerman">Nelson Hackerman</a>
 &#x2022; Ported from PyGame to Glowscript by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>, see <a href="https://github.com/zhendrikse/science/blob/main/quantumphysics/code/dynamic_double_slit.py">dynamic_double_slit.py</a>
+&#x2022; Check out my other <a href="https://www.hendrikse.name/science/quantumphysics/double_slit.html">double slit experiment page</a> on this site as well!
 
 """
 

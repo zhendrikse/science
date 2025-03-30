@@ -2,8 +2,8 @@
 ## Background information
 <div class="header_line"><br/></div>
 
-In 1801, Thomas Young was the first to perform an experiment that unequivocally demonstrated
-the wave-like nature of light, because the interference pattern he observed was exactly similar to
+In 1801, Thomas Young was the first to perform an experiment that made it unequivocally clear
+that light is a wave, since the interference pattern he observed was exactly similar to
 an interference pattern that would have been produced by water waves.
 
 <figure style="float: center; text-align: center;">
@@ -17,7 +17,8 @@ an interference pattern that would have been produced by water waves.
 ### Videos on the mystery of the double slit experiment
 <div style="border-top: 1px solid #999999"><br/></div>
 
-The following videos are recommended to learn more about the double slit experiment:
+The following videos are recommended to learn more about the double slit experiment
+and its repercussions for our view on the reality of nature:
 
 - [Single Photon Interference](https://www.youtube.com/watch?v=GzbKb59my3U) by [Veritassium](https://www.youtube.com/@veritasium), where the experiment is actually performed!
 - [The Quantum Experiment that Broke Reality](https://www.youtube.com/watch?v=p-MNSLsjjdo) by [PBS Space Time](https://www.youtube.com/@pbsspacetime), with a more in-depth explanation.

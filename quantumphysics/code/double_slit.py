@@ -4,6 +4,7 @@ from vpython import *
 title="""&#x2022; <a href="https://www.glowscript.org/#/user/wlane/folder/Modern-Physics/program/Double-Slit">Original code</a> by <a href="https://www.youtube.com/@LetsCodePhysics">Let&apos;s code physics</a>
 &#x2022; See also <a href="https://www.youtube.com/watch?v=Zjmg6n7Wc8I">his accompanying video</a>
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/quantumphysics/code/double_slit.py">double_slit.py</a>
+&#x2022; Check out my other <a href="https://www.hendrikse.name/science/quantumphysics/dynamic_double_slit.html">double slit experiment page</a> on this site as well!
 
 """
 
