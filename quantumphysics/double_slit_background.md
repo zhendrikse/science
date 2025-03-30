@@ -8,7 +8,7 @@ an interference pattern that would have been produced by water waves.
 
 <figure style="float: center; text-align: center;">
   <a href="https://energywavetheory.com/explanations/double-slit-experiment/">
-    <img alt="Double slit experiment" src="images/wave_particle_duality.jpg"/>
+    <img alt="Double slit experiment" src="images/wave_particle_duality.png"/>
   </a>
   <figcaption>Picture illustrating the wave-like nature of light.</figcaption>
 </figure>
