@@ -75,15 +75,15 @@ class Base:
 
     def tick_marks_visibility_is(self, event):
         for tick_mark in self._tick_marks:
-            tick_mark.visible = event.value
+            tick_mark.visible = event.checked
 
     def mesh_visibility_is(self, event):
         for i in range(len(self._mesh)):
-            self._mesh[i].visible = event.value
+            self._mesh[i].visible = event.checked
 
     def axis_labels_visibility_is(self, event):
         for i in range(len(self._axis_labels)):
-            self._axis_labels[i].visible = event.value
+            self._axis_labels[i].visible = event.checked
 
 
 class Scalar:
