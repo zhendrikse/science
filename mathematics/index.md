@@ -271,8 +271,10 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <figcaption>A three-dimensional harmonograph simulator.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="galton_board.html">
+    <img alt="Galton board" src="./images/galton_board.png" title="Click to animate"/>
+  </a>
+  <figcaption>A Galton board that demonstrates the binomial distribution.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

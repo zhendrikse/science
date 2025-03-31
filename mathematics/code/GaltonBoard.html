@@ -1,0 +1,234 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+var frames_per_second;
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sin, cos, tan, asin, acos, atan, atan2, log, pow, factorial, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, num_nails, num_balls, distribution_graph, distribution, frames_per_second, _, binomial, num_nails_plus_1, x, gauss, _GS_1, galton_board, bins, dy, ball, dx, step_count;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/galton_board.py\">galton_board.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "9";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 800, background: color.gray(.075), center: vec(0, 1["-u"]()["*"](17), 0), range: 15})]);
+    "10";
+    num_nails = 10;
+    "11";
+    num_balls = 200;
+    "14";
+    async function normal_distribution(x, mu, sigma) {
+        "15";
+        return 1["/"](sqrt(2["*"](pi)["*"](sigma)["*"](sigma)))["*"](exp(1["-u"]()["*"](1)["*"](x["-"](1["*"](mu)))["*"](x["-"](1["*"](mu)))["/"](2["*"](sigma)["*"](sigma))));
+    };
+    if (!normal_distribution.__argnames__) Object.defineProperties(normal_distribution, {
+        __argnames__ : {value: ["x", "mu", "sigma"]},
+        __module__ : {value: null}
+    });
+
+    "18";
+    distribution_graph = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Distribution", background: color.black, width: 600})]);
+    "19";
+    distribution = ρσ_interpolate_kwargs.call(this, gvbars, [ρσ_desugar_kwargs({color: color.yellow, delta: .75})]);
+    "22";
+    function GaltonBoard() {;
+    }
+    GaltonBoard.prototype.__init__ = async function __init__() {
+        var self = this;
+        var ρσ_ls, j, i;
+        "24";
+        ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](17), 1["-u"]()["*"](.75)), width: 1, height: num_balls["*"](.185), length: 2["*"](num_nails["+"](1.25)), texture: textures.wood, shininess: 0})]);
+        "26";
+        ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](1)["-"](1["*"](num_nails)), 1, 0), axis: vec(0, 1["-u"]()["*"](.18)["*"](num_balls), 0), radius: .2, texture: textures.wood})]);
+        "28";
+        ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(num_nails["+"](1), 1, 0), axis: vec(0, 1["-u"]()["*"](.18)["*"](num_balls), 0), radius: .2, texture: textures.wood})]);
+        "30";
+        ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](num_nails)["-"](1["*"](1)), 1["-u"]()["*"](.175)["*"](num_balls), 0), axis: vec(22, 0, 0), radius: .2, texture: textures.wood})]);
+        "31";
+        ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](num_nails)["-"](1["*"](1)), 1, 0), axis: vec(22, 0, 0), radius: .2, texture: textures.wood})]);
+        "32";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](num_nails); ρσ_Index1++) {
+            i = ρσ_Index1;
+            "33";
+            ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: 2["*"](vec(i["+"](.5)["-"](1["*"](num_nails)["/"](2)), 1["-u"]()["*"](5), 0)), axis: vec(0, 1["-u"]()["*"](.125)["*"](num_balls), 0), radius: .2, texture: textures.wood})]);
+            "35";
+            for (var ρσ_Index2 = 1["-u"]()["*"](i); ρσ_Index2["<"](i["+"](1)); ρσ_Index2=ρσ_Index2["+"](2)) {
+                j = ρσ_Index2;
+                "36";
+                ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(j, 1["-u"]()["*"](i), 0), radius: .2, color: color.gray(.75)})]);
+            }
+        }
+    };
+    if (!GaltonBoard.prototype.__init__.__module__) Object.defineProperties(GaltonBoard.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    GaltonBoard.__argnames__ = GaltonBoard.prototype.__init__.__argnames__;
+    GaltonBoard.__handles_kwarg_interpolation__ = GaltonBoard.prototype.__init__.__handles_kwarg_interpolation__;
+    GaltonBoard.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    GaltonBoard.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(GaltonBoard.prototype, "__bases__", {value: []});
+
+
+    "39";
+    frames_per_second = 200;
+    "42";
+    async function modify_animiation_speed(event) {
+        "43";
+        "44";
+        frames_per_second = event.value;
+    };
+    if (!modify_animiation_speed.__argnames__) Object.defineProperties(modify_animiation_speed, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "47";
+    display.append_to_caption("\nAnimation speed");
+    "48";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 50, max: 500, value: 200, bind: modify_animiation_speed})]);
+    "49";
+    display.append_to_caption("\n\n");
+    "51";
+    binomial = ρσ_interpolate_kwargs.call(this, gvbars, [ρσ_desugar_kwargs({color: color.green, delta: .25})]);
+    "52";
+    num_nails_plus_1 = num_nails["+"](1);
+    "53";
+    for (var ρσ_Index3 = 1; ρσ_Index3["<"](num_nails["+"](1)); ρσ_Index3++) {
+        x = ρσ_Index3;
+        "54";
+        ρσ_interpolate_kwargs.call(binomial, binomial.plot, [ρσ_desugar_kwargs({pos: [x,
+        200["*"](combin(num_nails["+"](1), x))["*"](Math.pow(.5, num_nails_plus_1))]})]);
+    }
+    "56";
+    gauss = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.red})]);
+    "57";
+    for (var ρσ_Index4 = 0; ρσ_Index4["<"](num_nails_plus_1["*"](10)); ρσ_Index4++) {
+        x = ρσ_Index4;
+        "58";
+        gauss.plot(.1["*"](x), 200["*"]((await normal_distribution(.1["*"](x), num_nails_plus_1["/"](2), num_nails_plus_1["/"](7)))));
+    }
+    "60";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "62";
+    _GS_1 = new GaltonBoard;
+    (await _GS_1.__init__());
+    galton_board = _GS_1;
+    "63";
+    bins = (function() {
+        var ρσ_Iter = range(num_nails_plus_1), ρσ_Result = [], _;
+        ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+        for (var ρσ_Index of ρσ_Iter) {
+            _ = ρσ_Index;
+            ρσ_Result.push(0);
+        }
+        ρσ_Result = ρσ_list_constructor(ρσ_Result);
+        return ρσ_Result;
+    })();
+    "64";
+    dy = 1["-u"]()["*"](.04);
+    "65";
+    for (var ρσ_Index5 = 0; ρσ_Index5["<"](num_balls); ρσ_Index5++) {
+        _ = ρσ_Index5;
+        "66";
+        ball = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: vec(0, 1, 0), make_trail: false, color: color.yellow, radius: .3})]);
+        "67";
+        dx = 0;
+        "68";
+        for (var ρσ_Index6 = 1; ρσ_Index6["<"](25["*"](num_nails["+"](1))["+"](1)); ρσ_Index6++) {
+            step_count = ρσ_Index6;
+            "69";
+            (await rate(frames_per_second));
+            "70";
+            ball.pos=ball.pos["+"](vec(dx, dy, 0));
+            "71";
+            if (ρσ_equals(step_count["%"](25), 0)) {
+                "72";
+                dx = (random()["<="](.5)) ? dy : 1["-u"]()["*"](dy);
+            }
+        }
+        "74";
+        ρσ_setitem(bins, Math.floor(int(ball.pos.x)["+"](num_nails)["/"](2)), ρσ_getitem(bins, Math.floor(int(ball.pos.x)["+"](num_nails)["/"](2)))["+"](1));
+        "75";
+        ball.pos.y = ρσ_getitem(bins, Math.floor(int(ball.pos.x)["+"](num_nails)["/"](2)))["/"](2)["-"](1["*"](num_balls)["*"](.175));
+        "77";
+        var ρσ_Iter7 = range(len(bins));
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            x = ρσ_Index7;
+            "78";
+            ρσ_interpolate_kwargs.call(distribution, distribution.plot, [ρσ_desugar_kwargs({pos: [x["+"](1),
+            ρσ_getitem(bins, x)]})]);
+        }
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
