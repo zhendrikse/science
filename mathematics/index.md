@@ -260,21 +260,21 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 <p style="clear: both;"></p>
 
 <a name="harmonograph"></a>
-## Harmonograph
+## Dalton board and harmonograph
 <div class="header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="harmonograph.html">
-    <img alt="Harmonograph simulator" src="./images/harmonograph.png" title="Click to animate"/>
-  </a>
-  <figcaption>A three-dimensional harmonograph simulator.</figcaption>
-</figure>
-<figure class="right_image">
   <a href="galton_board.html">
     <img alt="Galton board" src="./images/galton_board.png" title="Click to animate"/>
   </a>
   <figcaption>A Galton board that demonstrates the binomial distribution.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="harmonograph.html">
+    <img alt="Harmonograph simulator" src="./images/harmonograph.png" title="Click to animate"/>
+  </a>
+  <figcaption>A three-dimensional harmonograph simulator.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
