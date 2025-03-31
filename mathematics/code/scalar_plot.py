@@ -1,6 +1,6 @@
 #Web VPython 3.2
 
-from vpython import simple_sphere, vec, color, rate, label, canvas, cylinder, vector, arange, exp, checkbox, slider, wtext
+from vpython import simple_sphere, vec, color, rate, label, canvas, cylinder, vector, arange, exp, checkbox, slider, wtext, mag
 
 title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py">scalar_plot.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 
@@ -101,6 +101,9 @@ class Scalar:
     def set_opacity_to(self, value):
         self._sphere.opacity = value
 
+    def set_radius_to(self, value):
+        self._sphere.radius = value
+
 
 class ScalarField:
     def __init__(self, x_min, x_max, dx, f_x_y_z):
@@ -140,17 +143,25 @@ class ScalarField:
         for scalar in self._scalar_field:
             scalar.set_opacity_to(value)
 
+    def set_radius_to(self, value):
+        for scalar in self._scalar_field:
+            scalar.set_radius_to(value / 4)
+
 
 def temperature_at(position):
-    alpha = 4e-1
+    alpha = 3e-1
     temperature = exp(-alpha * position.mag * position.mag)
-    # temperature = mag(position-vector(1,0,0))**-1 - mag(position-vector(-1,0,0))**-1
+    #temperature = mag(position-vector(1,0,0))**-1 - mag(position-vector(-1,0,0))**-1
     return temperature
 
 
 def adjust_opacity(event):
     field.set_opacity_to(event.value)
     opacity_slider_text.text = "= {:1.2f}".format(event.value, 2)
+
+def adjust_radius(event):
+    field.set_radius_to(event.value)
+    radius_slider_text.text = "= {:1.2f}".format(event.value, 2)
 
 plot_base = Base(arange(-3.25, 3.25, 0.2), arange(-3.25, 3.25, 0.2), arange(-3.25, 3.25, 0.2), color.yellow, color.green, 10)
 
@@ -163,8 +174,12 @@ display.append_to_caption("\n\nOpacity ")
 _ = slider(min=0, max=1, step=0.01, value=.3, bind=adjust_opacity)
 opacity_slider_text = wtext(text="= 0.3")
 
+display.append_to_caption("\n\nRadius ")
 x_max = 3
-field = ScalarField(-x_max, x_max, 1.5 * x_max / 10, temperature_at)
+_ = slider(min=0.01 * x_max, max=.25 * x_max, step=0.01, value=0.15 * x_max, bind=adjust_radius)
+radius_slider_text = wtext(text="= {:1.2f}".format(0.15 * x_max))
+
+field = ScalarField(-x_max, x_max, 0.15 * x_max, temperature_at)
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 while True:

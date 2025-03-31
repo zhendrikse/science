@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, log, pow, factorial, combin, button, radio, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, x_hat, y_hat, z_hat, base, _, opacity_slider_text, x_max, _GS_1, field, plot_base;
+    var version, print, arange, __name__, type, ρσ_ls, title, display, x_hat, y_hat, z_hat, base, _GS_1, plot_base, _, opacity_slider_text, x_max, radius_slider_text, field;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -203,7 +203,7 @@ async function __main__() {
         __argnames__ : {value: ["delta", "max_of_base", "num_tick_marks", "position", "radius"]},
         __module__ : {value: null}
     });
-    Base.prototype.tick_marks_visibility_is = async function tick_marks_visibility_is(visible) {
+    Base.prototype.tick_marks_visibility_is = async function tick_marks_visibility_is(event) {
         var self = this;
         var ρσ_ls, tick_mark;
         "77";
@@ -212,14 +212,14 @@ async function __main__() {
         for (var ρσ_Index4 of ρσ_Iter4) {
             tick_mark = ρσ_Index4;
             "78";
-            tick_mark.visible = visible;
+            tick_mark.visible = event.checked;
         }
     };
     if (!Base.prototype.tick_marks_visibility_is.__argnames__) Object.defineProperties(Base.prototype.tick_marks_visibility_is, {
-        __argnames__ : {value: ["visible"]},
+        __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
-    Base.prototype.mesh_visibility_is = async function mesh_visibility_is(visible) {
+    Base.prototype.mesh_visibility_is = async function mesh_visibility_is(event) {
         var self = this;
         var ρσ_ls, i;
         "81";
@@ -228,14 +228,14 @@ async function __main__() {
         for (var ρσ_Index5 of ρσ_Iter5) {
             i = ρσ_Index5;
             "82";
-            ρσ_getitem(self._mesh, i).visible = visible;
+            ρσ_getitem(self._mesh, i).visible = event.checked;
         }
     };
     if (!Base.prototype.mesh_visibility_is.__argnames__) Object.defineProperties(Base.prototype.mesh_visibility_is, {
-        __argnames__ : {value: ["visible"]},
+        __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
-    Base.prototype.axis_labels_visibility_is = async function axis_labels_visibility_is(visible) {
+    Base.prototype.axis_labels_visibility_is = async function axis_labels_visibility_is(event) {
         var self = this;
         var ρσ_ls, i;
         "85";
@@ -244,11 +244,11 @@ async function __main__() {
         for (var ρσ_Index6 of ρσ_Iter6) {
             i = ρσ_Index6;
             "86";
-            ρσ_getitem(self._axis_labels, i).visible = visible;
+            ρσ_getitem(self._axis_labels, i).visible = event.checked;
         }
     };
     if (!Base.prototype.axis_labels_visibility_is.__argnames__) Object.defineProperties(Base.prototype.axis_labels_visibility_is, {
-        __argnames__ : {value: ["visible"]},
+        __argnames__ : {value: ["event"]},
         __module__ : {value: null}
     });
     Base.prototype.__repr__ = async function __repr__() {
@@ -309,6 +309,15 @@ async function __main__() {
         __argnames__ : {value: ["value"]},
         __module__ : {value: null}
     });
+    Scalar.prototype.set_radius_to = async function set_radius_to(value) {
+        var self = this;
+        "105";
+        self._sphere.radius = value;
+    };
+    if (!Scalar.prototype.set_radius_to.__argnames__) Object.defineProperties(Scalar.prototype.set_radius_to, {
+        __argnames__ : {value: ["value"]},
+        __module__ : {value: null}
+    });
     Scalar.prototype.__repr__ = async function __repr__() {
                 return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
     };
@@ -321,58 +330,59 @@ async function __main__() {
 
 
 
-    "105";
+
+    "108";
     function ScalarField() {;
     }
     ScalarField.prototype.__init__ = async function __init__(x_min, x_max, dx, f_x_y_z) {
         var self = this;
         var ρσ_ls, locations, field_values, position, field_value, _GS_1, z, y, x, scalar;
-        "107";
-        self._opacity = .3;
-        "108";
-        locations = range(x_min, x_max, dx);
-        "109";
-        field_values = ρσ_list_decorate([]);
         "110";
-        self._scalar_field = ρσ_list_decorate([]);
+        self._opacity = .3;
         "111";
+        locations = range(x_min, x_max, dx);
+        "112";
+        field_values = ρσ_list_decorate([]);
+        "113";
+        self._scalar_field = ρσ_list_decorate([]);
+        "114";
         var ρσ_Iter7 = locations;
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             x = ρσ_Index7;
-            "112";
+            "115";
             var ρσ_Iter8 = locations;
             ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
             for (var ρσ_Index8 of ρσ_Iter8) {
                 y = ρσ_Index8;
-                "113";
+                "116";
                 var ρσ_Iter9 = locations;
                 ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
                 for (var ρσ_Index9 of ρσ_Iter9) {
                     z = ρσ_Index9;
-                    "114";
-                    position = vector(x, y, z);
-                    "115";
-                    field_value = (await f_x_y_z(position));
-                    "116";
-                    field_values.append(field_value);
                     "117";
+                    position = vector(x, y, z);
+                    "118";
+                    field_value = (await f_x_y_z(position));
+                    "119";
+                    field_values.append(field_value);
+                    "120";
                     _GS_1 = new Scalar;
                     (await _GS_1.__init__(position, dx["/"](4), self._opacity, field_value));
                     self._scalar_field.append(_GS_1);
                 }
             }
         }
-        "118";
-        self._max_value = max(field_values);
-        "119";
-        self._min_value = min(field_values);
         "121";
+        self._max_value = max(field_values);
+        "122";
+        self._min_value = min(field_values);
+        "124";
         var ρσ_Iter10 = self._scalar_field;
         ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
         for (var ρσ_Index10 of ρσ_Iter10) {
             scalar = ρσ_Index10;
-            "122";
+            "125";
             (await scalar.set_color((await self._color_for((await scalar.value())))));
         }
     };
@@ -385,17 +395,17 @@ async function __main__() {
     ScalarField.prototype._color_for = async function _color_for(value) {
         var self = this;
         var ρσ_ls, mid_temp, value_range, red, blue, green;
-        "125";
-        mid_temp = self._max_value["+"](self._min_value)["/"](2);
-        "126";
-        value_range = self._max_value["-"](1["*"](self._min_value));
-        "127";
-        red = value["-"](1["*"](self._min_value))["/"](value_range)["*"](10);
         "128";
-        blue = self._max_value["-"](1["*"](value))["/"](value_range)["*"](2);
+        mid_temp = self._max_value["+"](self._min_value)["/"](2);
         "129";
-        green = value["/"](mid_temp);
+        value_range = self._max_value["-"](1["*"](self._min_value));
         "130";
+        red = value["-"](1["*"](self._min_value))["/"](value_range)["*"](10);
+        "131";
+        blue = self._max_value["-"](1["*"](value))["/"](value_range)["*"](2);
+        "132";
+        green = value["/"](mid_temp);
+        "133";
         return vector(red, green, blue);
     };
     if (!ScalarField.prototype._color_for.__argnames__) Object.defineProperties(ScalarField.prototype._color_for, {
@@ -404,7 +414,7 @@ async function __main__() {
     });
     ScalarField.prototype.min_value = async function min_value() {
         var self = this;
-        "133";
+        "136";
         return self._min_value;
     };
     if (!ScalarField.prototype.min_value.__module__) Object.defineProperties(ScalarField.prototype.min_value, {
@@ -412,7 +422,7 @@ async function __main__() {
     });
     ScalarField.prototype.max_value = async function max_value() {
         var self = this;
-        "136";
+        "139";
         return self._max_value;
     };
     if (!ScalarField.prototype.max_value.__module__) Object.defineProperties(ScalarField.prototype.max_value, {
@@ -421,18 +431,34 @@ async function __main__() {
     ScalarField.prototype.set_opacity_to = async function set_opacity_to(value) {
         var self = this;
         var ρσ_ls, scalar;
-        "139";
+        "142";
         self._opacity = value;
-        "140";
+        "143";
         var ρσ_Iter11 = self._scalar_field;
         ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
         for (var ρσ_Index11 of ρσ_Iter11) {
             scalar = ρσ_Index11;
-            "141";
+            "144";
             (await scalar.set_opacity_to(value));
         }
     };
     if (!ScalarField.prototype.set_opacity_to.__argnames__) Object.defineProperties(ScalarField.prototype.set_opacity_to, {
+        __argnames__ : {value: ["value"]},
+        __module__ : {value: null}
+    });
+    ScalarField.prototype.set_radius_to = async function set_radius_to(value) {
+        var self = this;
+        var ρσ_ls, scalar;
+        "147";
+        var ρσ_Iter12 = self._scalar_field;
+        ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
+        for (var ρσ_Index12 of ρσ_Iter12) {
+            scalar = ρσ_Index12;
+            "148";
+            (await scalar.set_radius_to(value["/"](4)));
+        }
+    };
+    if (!ScalarField.prototype.set_radius_to.__argnames__) Object.defineProperties(ScalarField.prototype.set_radius_to, {
         __argnames__ : {value: ["value"]},
         __module__ : {value: null}
     });
@@ -449,14 +475,15 @@ async function __main__() {
 
 
 
-    "144";
+
+    "151";
     async function temperature_at(position) {
         var ρσ_ls, alpha, temperature;
-        "145";
-        alpha = .4;
-        "146";
+        "152";
+        alpha = .3;
+        "153";
         temperature = exp(1["-u"]()["*"](alpha)["*"](position.mag)["*"](position.mag));
-        "148";
+        "155";
         return temperature;
     };
     if (!temperature_at.__argnames__) Object.defineProperties(temperature_at, {
@@ -464,41 +491,11 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "150";
-    async function toggle_tick_marks(event) {
-        "151";
-        (await plot_base.tick_marks_visibility_is(event.checked));
-    };
-    if (!toggle_tick_marks.__argnames__) Object.defineProperties(toggle_tick_marks, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "154";
-    async function toggle_axis_labels(event) {
-        "155";
-        (await plot_base.axis_labels_visibility_is(event.checked));
-    };
-    if (!toggle_axis_labels.__argnames__) Object.defineProperties(toggle_axis_labels, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
     "158";
-    async function toggle_mesh(event) {
-        "159";
-        (await plot_base.mesh_visibility_is(event.checked));
-    };
-    if (!toggle_mesh.__argnames__) Object.defineProperties(toggle_mesh, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "161";
     async function adjust_opacity(event) {
-        "162";
+        "159";
         (await field.set_opacity_to(event.value));
-        "163";
+        "160";
         opacity_slider_text.text = "= {:1.2f}".format(event.value, 2);
     };
     if (!adjust_opacity.__argnames__) Object.defineProperties(adjust_opacity, {
@@ -506,35 +503,53 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "165";
-    display.append_to_caption("\n");
+    "162";
+    async function adjust_radius(event) {
+        "163";
+        (await field.set_radius_to(event.value));
+        "164";
+        radius_slider_text.text = "= {:1.2f}".format(event.value, 2);
+    };
+    if (!adjust_radius.__argnames__) Object.defineProperties(adjust_radius, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
     "166";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Mesh ", bind: toggle_mesh, checked: true})]);
-    "167";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis labels ", bind: toggle_axis_labels, checked: true})]);
-    "168";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks ", bind: toggle_tick_marks, checked: true})]);
-    "170";
-    display.append_to_caption("\n\nOpacity ");
-    "171";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .3, bind: adjust_opacity})]);
-    "172";
-    opacity_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.3"})]);
-    "174";
-    x_max = 3;
-    "175";
-    _GS_1 = new ScalarField;
-    (await _GS_1.__init__(1["-u"]()["*"](x_max), x_max, 1.5["*"](x_max)["/"](10), temperature_at));
-    field = _GS_1;
-    "176";
     _GS_1 = new Base;
     (await _GS_1.__init__(range(1["-u"]()["*"](3.25), 3.25, .2), range(1["-u"]()["*"](3.25), 3.25, .2), range(1["-u"]()["*"](3.25), 3.25, .2), color.yellow, color.green, 10));
     plot_base = _GS_1;
+    "168";
+    display.append_to_caption("\n");
+    "169";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Mesh ", bind: plot_base.mesh_visibility_is.bind(plot_base), checked: true})]);
+    "170";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis labels ", bind: plot_base.axis_labels_visibility_is.bind(plot_base), checked: true})]);
+    "171";
+    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks ", bind: plot_base.tick_marks_visibility_is.bind(plot_base), checked: true})]);
+    "173";
+    display.append_to_caption("\n\nOpacity ");
+    "174";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .3, bind: adjust_opacity})]);
+    "175";
+    opacity_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.3"})]);
     "177";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    display.append_to_caption("\n\nRadius ");
+    "178";
+    x_max = 3;
     "179";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .01["*"](x_max), max: .25["*"](x_max), step: .01, value: .15["*"](x_max), bind: adjust_radius})]);
+    "180";
+    radius_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= {:1.2f}".format(.15["*"](x_max))})]);
+    "182";
+    _GS_1 = new ScalarField;
+    (await _GS_1.__init__(1["-u"]()["*"](x_max), x_max, .15["*"](x_max), temperature_at));
+    field = _GS_1;
+    "183";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "185";
     while (true) {
-        "180";
+        "186";
         (await rate(10));
     }
 };
