@@ -50,7 +50,7 @@ $$\frac{\partial^2 u}{\partial t^2} = c^2 \left(
 
 <p>To solve this equation numerically, we create a grid of size $L_x \times L_y$
 with equal spacings </p>
-<p>$$dx =\frac{L_x}{N_x-1}$ \text{ and } $dy = \frac{L_y}{N_y-1}$$</p>
+<p>$dx =\frac{L_x}{N_x-1}$ \text{ and } $dy = \frac{L_y}{N_y-1}$</p>
 
 <p>There is a balance to be struck between the number of points $N_x$ and $N_y$
 (the resolution) on the one hand and the computation time on the other.
