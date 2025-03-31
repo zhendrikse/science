@@ -50,8 +50,8 @@ display.append_to_caption("\n\n")
 
 binomial = gvbars(color=color.green, delta=.25)
 num_nails_plus_1 = num_nails + 1
-for x in range(1, num_nails + 1):
-    binomial.plot(pos=(x, num_balls * combin(num_nails + 1, x) * .5 ** num_nails_plus_1))
+for x in range(1, num_nails_plus_1):
+    binomial.plot(pos=(x, num_balls * combin(num_nails_plus_1, x) * .5 ** num_nails_plus_1))
 
 gauss = gcurve(color=color.red)
 for x in range(num_nails_plus_1 * 10):
