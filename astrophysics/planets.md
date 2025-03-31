@@ -30,8 +30,19 @@
 
 ### All water on, in, and above the Earth
 <div style="border-top: 1px solid #999999"><br/></div>
-
-![Earths water](images/all_the_worlds_water.png)
+<div class="double_image">
+<figure class="left_image">
+  <a href="images/all_the_worlds_water.png">
+    <img alt="Our planets" src="images/all_the_worlds_water.png"/>
+  </a>
+</figure>
+<figure class="right_image">
+  <a href="images/world_without_water.jpg">
+    <img alt="Our planets" src="images/world_without_water.png"/>
+  </a>
+</figure>
+</div>
+<p style="clear: both;"></p>
 
 <p style="clear:both;"></p>
 
