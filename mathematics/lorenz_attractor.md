@@ -8,6 +8,7 @@
 <p style="clear: both;"></p>
 
 ### Background
+<div style="border-top: 1px solid #999999"><br/></div>
 
 The [lorenz attractor](https://en.wikipedia.org/wiki/Lorenz_system) was first studied by [Edward N. Lorenz](https://en.wikipedia.org/wiki/Edward_Norton_Lorenz), 
 a meteorologist. It was derived from a simplified model of convection in the earth's atmosphere. 
