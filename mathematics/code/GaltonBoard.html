@@ -67,7 +67,7 @@ async function __main__() {
 
     strings();
     "7";
-    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/galton_board.py\">galton_board.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/galton_board.py\">galton_board.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n&#x2022; The <span style=\"color: green\">green histogram</span> depicts the binomial distribution\n&#x2022; The <span style=\"color: red\">red curve</span> represents the Gaussian/normal distribution.\n\n";
     "9";
     display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 800, background: color.gray(.075), center: vec(0, 1["-u"]()["*"](17), 0), range: 15})]);
     "10";
@@ -133,10 +133,10 @@ async function __main__() {
 
     "39";
     frames_per_second = 200;
-    "42";
+    "40";
     async function modify_animiation_speed(event) {
-        "43";
-        "44";
+        "41";
+        "42";
         frames_per_second = event.value;
     };
     if (!modify_animiation_speed.__argnames__) Object.defineProperties(modify_animiation_speed, {
@@ -144,38 +144,38 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "47";
+    "45";
     display.append_to_caption("\nAnimation speed");
-    "48";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 50, max: 500, value: 200, bind: modify_animiation_speed})]);
-    "49";
+    "46";
+    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 50, max: 500, value: frames_per_second, bind: modify_animiation_speed})]);
+    "47";
     display.append_to_caption("\n\n");
-    "51";
+    "49";
     binomial = ρσ_interpolate_kwargs.call(this, gvbars, [ρσ_desugar_kwargs({color: color.green, delta: .25})]);
-    "52";
+    "50";
     num_nails_plus_1 = num_nails["+"](1);
-    "53";
+    "51";
     for (var ρσ_Index3 = 1; ρσ_Index3["<"](num_nails["+"](1)); ρσ_Index3++) {
         x = ρσ_Index3;
-        "54";
+        "52";
         ρσ_interpolate_kwargs.call(binomial, binomial.plot, [ρσ_desugar_kwargs({pos: [x,
-        200["*"](combin(num_nails["+"](1), x))["*"](Math.pow(.5, num_nails_plus_1))]})]);
+        num_balls["*"](combin(num_nails["+"](1), x))["*"](Math.pow(.5, num_nails_plus_1))]})]);
     }
-    "56";
+    "54";
     gauss = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.red})]);
-    "57";
+    "55";
     for (var ρσ_Index4 = 0; ρσ_Index4["<"](num_nails_plus_1["*"](10)); ρσ_Index4++) {
         x = ρσ_Index4;
-        "58";
-        gauss.plot(.1["*"](x), 200["*"]((await normal_distribution(.1["*"](x), num_nails_plus_1["/"](2), num_nails_plus_1["/"](7)))));
+        "56";
+        gauss.plot(.1["*"](x), num_balls["*"]((await normal_distribution(.1["*"](x), .5["*"](num_nails_plus_1), sqrt(num_nails_plus_1["*"](.5)["*"](.5))))));
     }
-    "60";
+    "58";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "62";
+    "60";
     _GS_1 = new GaltonBoard;
     (await _GS_1.__init__());
     galton_board = _GS_1;
-    "63";
+    "61";
     bins = (function() {
         var ρσ_Iter = range(num_nails_plus_1), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -186,38 +186,38 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "64";
+    "62";
     dy = 1["-u"]()["*"](.04);
-    "65";
+    "63";
     for (var ρσ_Index5 = 0; ρσ_Index5["<"](num_balls); ρσ_Index5++) {
         _ = ρσ_Index5;
-        "66";
+        "64";
         ball = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: vec(0, 1, 0), make_trail: false, color: color.yellow, radius: .3})]);
-        "67";
+        "65";
         dx = 0;
-        "68";
+        "66";
         for (var ρσ_Index6 = 1; ρσ_Index6["<"](25["*"](num_nails["+"](1))["+"](1)); ρσ_Index6++) {
             step_count = ρσ_Index6;
-            "69";
+            "67";
             (await rate(frames_per_second));
-            "70";
+            "68";
             ball.pos=ball.pos["+"](vec(dx, dy, 0));
-            "71";
+            "69";
             if (ρσ_equals(step_count["%"](25), 0)) {
-                "72";
+                "70";
                 dx = (random()["<="](.5)) ? dy : 1["-u"]()["*"](dy);
             }
         }
-        "74";
+        "72";
         ρσ_setitem(bins, Math.floor(int(ball.pos.x)["+"](num_nails)["/"](2)), ρσ_getitem(bins, Math.floor(int(ball.pos.x)["+"](num_nails)["/"](2)))["+"](1));
-        "75";
+        "73";
         ball.pos.y = ρσ_getitem(bins, Math.floor(int(ball.pos.x)["+"](num_nails)["/"](2)))["/"](2)["-"](1["*"](num_balls)["*"](.175));
-        "77";
+        "75";
         var ρσ_Iter7 = range(len(bins));
         ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
         for (var ρσ_Index7 of ρσ_Iter7) {
             x = ρσ_Index7;
-            "78";
+            "76";
             ρσ_interpolate_kwargs.call(distribution, distribution.plot, [ρσ_desugar_kwargs({pos: [x["+"](1),
             ρσ_getitem(bins, x)]})]);
         }

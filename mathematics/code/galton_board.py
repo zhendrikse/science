@@ -3,6 +3,8 @@
 from vpython import canvas, color, sqrt, pi, graph, gvbars, gcurve, cylinder, textures, sphere, vec, simple_sphere, combin, rate, random, slider, box, exp
 
 title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/galton_board.py">galton_board.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; The <span style="color: green">green histogram</span> depicts the binomial distribution
+&#x2022; The <span style="color: red">red curve</span> represents the Gaussian/normal distribution.
 
 """
 
@@ -53,7 +55,7 @@ for x in range(1, num_nails + 1):
 
 gauss = gcurve(color=color.red)
 for x in range(num_nails_plus_1 * 10):
-    gauss.plot(.1 * x, num_balls * normal_distribution(.1 * x, num_nails_plus_1 / 2, num_nails_plus_1 / 7))
+    gauss.plot(.1 * x, num_balls * normal_distribution(.1 * x, .5 * num_nails_plus_1, sqrt(num_nails_plus_1 * .5 * .5)))
 
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
