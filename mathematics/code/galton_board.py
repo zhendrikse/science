@@ -37,25 +37,23 @@ class GaltonBoard:
 
 
 frames_per_second = 200
-
-
 def modify_animiation_speed(event):
     global frames_per_second
     frames_per_second = event.value
 
 
 display.append_to_caption("\nAnimation speed")
-_ = slider(min=50, max=500, value=200, bind=modify_animiation_speed)
+_ = slider(min=50, max=500, value=frames_per_second, bind=modify_animiation_speed)
 display.append_to_caption("\n\n")
 
 binomial = gvbars(color=color.green, delta=.25)
 num_nails_plus_1 = num_nails + 1
 for x in range(1, num_nails + 1):
-    binomial.plot(pos=(x, 200 * combin(num_nails + 1, x) * .5 ** num_nails_plus_1))
+    binomial.plot(pos=(x, num_balls * combin(num_nails + 1, x) * .5 ** num_nails_plus_1))
 
 gauss = gcurve(color=color.red)
 for x in range(num_nails_plus_1 * 10):
-    gauss.plot(.1 * x, 200 * normal_distribution(.1 * x, num_nails_plus_1 / 2, num_nails_plus_1 / 7))
+    gauss.plot(.1 * x, num_balls * normal_distribution(.1 * x, num_nails_plus_1 / 2, num_nails_plus_1 / 7))
 
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
