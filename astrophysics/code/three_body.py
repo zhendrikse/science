@@ -4,7 +4,7 @@ from vpython import sphere, rate, canvas, vector, color, sqrt
 
 title = """&#x2022; Based on original by <a href="https://trinket.io/glowscript/9ece3648f0">Rhett Allain</a>
 &#x2022; Belongs to <a href="https://www.youtube.com/watch?v=Ye2wIV8-SB8">this video</a> 
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> into <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/three_body.py">three_body.py</a>
 
 &#x2022; Click mouse to start animation
 
