@@ -117,7 +117,7 @@ core = build_core_stars(SCALE)
 inner_haze = haze(SCALE, r_mult=2, z_mult=0.5, density=5)
 outer_haze = haze(SCALE, r_mult=1, z_mult=0.3, density=5)
 
-display = canvas(background=color.gray(0.075), center=vec(0, -80, -80), range=SCALE, forward=vec(0, .75, -.7), title=title, width=600)
+display = canvas(background=color.gray(0.075), center=vec(0, -80, -80), range=SCALE, forward=vec(-.2, .9, -.45), title=title, width=600)
 
 leading_arm_stars, trailing_arm_stars, core_stars, inner_haze_stars, outer_haze_stars = [], [], [], [], []
 for position in leading_arm:
