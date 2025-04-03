@@ -98,6 +98,11 @@ Since the mathematicians have invaded the theory of relativity,
 I do not understand it myself anymore. &mdash; Albert Einstein
 </blockquote><br/>
 
+<figure style="float: center; text-align: center;">
+    <img alt="Curvature equation" src="images/curvature_equation.png" title="Curvature equation"/>
+</figure>
+<p style="clear: both;"></p>
+
 ### Local space-time near Earth &amp; black hole ray tracing
 <div style="border-top: 1px solid #999999"><br/></div>
 
