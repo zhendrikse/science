@@ -72,17 +72,13 @@ class CarbonMonoxide:
 
     def check_collision_with(self, other):
         carbon_1, oxygen_1, carbon_2, oxygen_2 = self._carbon, self._oxygen, other._carbon, other._oxygen
-        if mag(carbon_1.pos() - carbon_2.pos()) <= 2 * size and dot(carbon_1.pos() - carbon_2.pos(),
-                                                                    carbon_1.velocity() - carbon_2.velocity()) <= 0:
+        if mag(carbon_1.pos() - carbon_2.pos()) <= 2 * size and dot(carbon_1.pos() - carbon_2.pos(), carbon_1.velocity() - carbon_2.velocity()) <= 0:
             carbon_1._velocity, carbon_2._velocity = collision_between(carbon_1, carbon_2)
-        if mag(oxygen_1.pos() - carbon_2.pos()) <= 2 * size and dot(oxygen_1.pos() - carbon_2.pos(),
-                                                                    oxygen_1.velocity() - carbon_2.velocity()) <= 0:
+        if mag(oxygen_1.pos() - carbon_2.pos()) <= 2 * size and dot(oxygen_1.pos() - carbon_2.pos(), oxygen_1.velocity() - carbon_2.velocity()) <= 0:
             oxygen_1._velocity, carbon_2._velocity = collision_between(oxygen_1, carbon_2)
-        if mag(carbon_1.pos() - oxygen_2.pos()) <= 2 * size and dot(carbon_1.pos() - oxygen_2.pos(),
-                                                                    carbon_1.velocity() - oxygen_2.velocity()) <= 0:
+        if mag(carbon_1.pos() - oxygen_2.pos()) <= 2 * size and dot(carbon_1.pos() - oxygen_2.pos(), carbon_1.velocity() - oxygen_2.velocity()) <= 0:
             carbon_1._velocity, oxygen_2._velocity = collision_between(carbon_1, oxygen_2)
-        if mag(oxygen_1.pos() - oxygen_2.pos()) <= 2 * size and dot(oxygen_1.pos() - oxygen_2.pos(),
-                                                                    oxygen_1.velocity() - oxygen_2.velocity()) <= 0:
+        if mag(oxygen_1.pos() - oxygen_2.pos()) <= 2 * size and dot(oxygen_1.pos() - oxygen_2.pos(), oxygen_1.velocity() - oxygen_2.velocity()) <= 0:
             oxygen_1._velocity, oxygen_2._velocity = collision_between(oxygen_1, oxygen_2)
 
     def time_lapse(self, dt):
@@ -155,13 +151,11 @@ while True:
     rate(300)
     for molecule in co_molecules:
         molecule.time_lapse(dt)
+        molecule.check_box_bounce()
 
     for i in range(N - 1):  # The first N - 1 molecules
         for j in range(i + 1, N):  # From i + 1 to the last molecules, to avoid double-checking
             co_molecules[i].check_collision_with(co_molecules[j])
-
-    for co_molecule in co_molecules:
-        co_molecule.check_box_bounce()
 
     for co_molecule in co_molecules:
         total_com_K += co_molecule.com_K()
