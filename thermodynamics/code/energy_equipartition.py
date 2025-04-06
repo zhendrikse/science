@@ -20,68 +20,94 @@ L = ((24.4E-3 / 6E23) * N) ** one_third / 50.  # 2L is the length of the cubic c
 m = 14E-3 / 6E23  # Average mass of O and C
 k, T = 1.38E-23, 298.0
 
+class Atom:
+    def __init__(self, position, initial_velocity, mass, radius, colour):
+        self._atom = simple_sphere(pos=position, radius=radius, color=colour)
+        self._mass = mass
+        self._velocity = vector(random(), random(), random()) * initial_velocity
+
+    def check_box_bounce(self):
+        if abs(self._atom.pos.x) >= L - size and self._atom.pos.x * self._velocity.x >= 0:
+            self._velocity.x = -self._velocity.x
+        if abs(self._atom.pos.y) >= L - size and self._atom.pos.y * self._velocity.y >= 0:
+            self._velocity.y = -self._velocity.y
+        if abs(self._atom.pos.z) >= L - size and self._atom.pos.z * self._velocity.z >= 0:
+            self._velocity.z = -self._velocity.z
+
+    def time_lapse(self, bond_force, dt):
+        acceleration_carbon = bond_force / self._mass
+        self._velocity += acceleration_carbon * dt
+        self._atom.pos += self._velocity * dt
+
+    def pos(self):
+        return self._atom.pos
+
+    def momentum(self):
+        return self._mass * self._velocity
+
+    def mass(self):
+        return self._mass
+
+    def velocity(self):
+        return self._velocity
+
 
 class CarbonMonoxide:
     def __init__(self, oxygen_mass=16, carbon_mass=12, initial_v=sqrt(3 * k * T / m)):
         pos = vector(random() - .5, random() - .5, random() - .5) * L
         axis = vector(1. * d, 0, 0)
-        self._oxygen = simple_sphere(pos=pos, radius=size, color=color.red)
-        self._oxygen.m = oxygen_mass / 6E23
-        self._oxygen.v = vector(initial_v * random(), initial_v * random(), initial_v * random())
 
-        self._carbon = simple_sphere(pos=pos + axis, radius=size, color=color.blue)
-        self._carbon.m = carbon_mass / 6E23
-        self._carbon.v = vector(initial_v * random(), initial_v * random(), initial_v * random())
+        self._oxygen = Atom(pos, initial_v, oxygen_mass / 6E23, size, color.red)
+        self._carbon = Atom(pos + axis, initial_v, carbon_mass / 6E23, size, color.blue)
 
         self.bond = cylinder(pos=pos, axis=axis, radius=size / 2., color=color.white)
         self.bond.k = k_bond
+
+    def check_box_bounce(self):
+        self._carbon.check_box_bounce()
+        self._oxygen.check_box_bounce()
 
     def bond_force_on_oxygen(self):
         return self.bond.k * (mag(self.bond.axis) - d) * norm(self.bond.axis)
 
     def time_lapse(self, dt):
-        acceleration_carbon = -self.bond_force_on_oxygen() / self._carbon.m
-        self._carbon.v += acceleration_carbon * dt
-        self._carbon.pos += self._carbon.v * dt
+        self._carbon.time_lapse(-self.bond_force_on_oxygen(), dt)
+        self._oxygen.time_lapse(+self.bond_force_on_oxygen(), dt)
 
-        acceleration_oxygen = self.bond_force_on_oxygen() / self._oxygen.m
-        self._oxygen.v += acceleration_oxygen * dt
-        self._oxygen.pos += self._oxygen.v * dt
-
-        self.bond.axis = self._carbon.pos - self._oxygen.pos
-        self.bond.pos = self._oxygen.pos
+        self.bond.axis = self._carbon.pos() - self._oxygen.pos()
+        self.bond.pos = self._oxygen.pos()
 
     def com(self):  # center of mass
-        return (self._carbon.pos * self._carbon.m + self._oxygen.pos * self._oxygen.m) / self.mass()
+        return (self._carbon.pos() * self._carbon.mass() + self._oxygen.pos() * self._oxygen.mass()) / self.mass()
 
     def com_v(self):
-        return (self._carbon.v * self._carbon.m + self._oxygen.v * self._oxygen.m) / self.mass()
+        return (self._carbon.momentum() + self._oxygen.momentum()) / self.mass()
 
     def v_P(self):
         return self.bond.k * (mag(self.bond.axis) - d) * (mag(self.bond.axis) - d) / 2
 
     def v_K(self):
-        C = self._carbon.m * (dot(self._carbon.v - self.com_v(), self.bond.axis) / mag(self.bond.axis)) ** 2 / 2
-        O = self._oxygen.m * (dot(self._oxygen.v - self.com_v(), self.bond.axis) / mag(self.bond.axis)) ** 2 / 2
+        C = self._carbon.mass() * (dot(self._carbon.velocity() - self.com_v(), self.bond.axis) / mag(self.bond.axis)) ** 2 / 2
+        O = self._oxygen.mass() * (dot(self._oxygen.velocity() - self.com_v(), self.bond.axis) / mag(self.bond.axis)) ** 2 / 2
         return C + O
 
     def r_K(self):
-        C = self._carbon.m * (mag(cross(self._carbon.v - self.com_v(), self.bond.axis)) / mag(self.bond.axis)) ** 2 / 2
-        O = self._oxygen.m * (mag(cross(self._oxygen.v - self.com_v(), self.bond.axis)) / mag(self.bond.axis)) ** 2 / 2
+        C = self._carbon.mass() * (mag(cross(self._carbon.velocity() - self.com_v(), self.bond.axis)) / mag(self.bond.axis)) ** 2 / 2
+        O = self._oxygen.mass() * (mag(cross(self._oxygen.velocity() - self.com_v(), self.bond.axis)) / mag(self.bond.axis)) ** 2 / 2
         return C + O
 
     def com_K(self):
         return .5 * self.mass() * dot(self.com_v(), self.com_v())
 
     def mass(self):
-        return self._carbon.m + self._oxygen.m
+        return self._carbon.mass() + self._oxygen.mass()
 
 
-def collision(a1, a2):
-    distance = a2.pos - a1.pos
+def collision_between(atom_1, atom_2):
+    distance = atom_2.pos() - atom_1.pos()
     distance_squared = dot(distance, distance)
-    v1prime = a1.v - 2 * a2.m / (a1.m + a2.m) * -distance * dot(a1.v - a2.v, -distance) / distance_squared
-    v2prime = a2.v - 2 * a1.m / (a1.m + a2.m) * distance * dot(a2.v - a1.v, distance) / distance_squared
+    v1prime = atom_1.velocity() - 2 * atom_2.mass() / (atom_1.mass() + atom_2.mass()) * -distance * dot(atom_1.velocity() - atom_2.velocity(), -distance) / distance_squared
+    v2prime = atom_2.velocity() - 2 * atom_1.mass() / (atom_1.mass() + atom_2.mass()) * distance * dot(atom_2.velocity() - atom_1.velocity(), distance) / distance_squared
     return v1prime, v2prime
 
 
@@ -118,33 +144,17 @@ while True:
     for i in range(N - 1):  # The first N - 1 molecules
         for j in range(i + 1, N):  # From i + 1 to the last molecules, to avoid double checking
             carbon_1, oxygen_1, carbon_2, oxygen_2 = co_molecules[i]._carbon, co_molecules[i]._oxygen, co_molecules[j]._carbon, co_molecules[j]._oxygen
-            if mag(carbon_1.pos - carbon_2.pos) <= 2 * size and dot(carbon_1.pos - carbon_2.pos, carbon_1.v - carbon_2.v) <= 0:
-                carbon_1.v, carbon_2.v = collision(carbon_1, carbon_2)
-            if mag(oxygen_1.pos - carbon_2.pos) <= 2 * size and dot(oxygen_1.pos - carbon_2.pos, oxygen_1.v - carbon_2.v) <= 0:
-                oxygen_1.v, carbon_2.v = collision(oxygen_1, carbon_2)
-            if mag(carbon_1.pos - oxygen_2.pos) <= 2 * size and dot(carbon_1.pos - oxygen_2.pos, carbon_1.v - oxygen_2.v) <= 0:
-                carbon_1.v, oxygen_2.v = collision(carbon_1, oxygen_2)
-            if mag(oxygen_1.pos - oxygen_2.pos) <= 2 * size and dot(oxygen_1.pos - oxygen_2.pos, oxygen_1.v - oxygen_2.v) <= 0:
-                oxygen_1.v, oxygen_2.v = collision(oxygen_1, oxygen_2)
+            if mag(carbon_1.pos() - carbon_2.pos()) <= 2 * size and dot(carbon_1.pos() - carbon_2.pos(), carbon_1.velocity() - carbon_2.velocity()) <= 0:
+                carbon_1._velocity, carbon_2._velocity = collision_between(carbon_1, carbon_2)
+            if mag(oxygen_1.pos() - carbon_2.pos()) <= 2 * size and dot(oxygen_1.pos() - carbon_2.pos(), oxygen_1.velocity() - carbon_2.velocity()) <= 0:
+                oxygen_1._velocity, carbon_2._velocity = collision_between(oxygen_1, carbon_2)
+            if mag(carbon_1.pos() - oxygen_2.pos()) <= 2 * size and dot(carbon_1.pos() - oxygen_2.pos(), carbon_1.velocity() - oxygen_2.velocity()) <= 0:
+                carbon_1._velocity, oxygen_2._velocity = collision_between(carbon_1, oxygen_2)
+            if mag(oxygen_1.pos() - oxygen_2.pos()) <= 2 * size and dot(oxygen_1.pos() - oxygen_2.pos(), oxygen_1.velocity() - oxygen_2.velocity()) <= 0:
+                oxygen_1._velocity, oxygen_2._velocity = collision_between(oxygen_1, oxygen_2)
 
     for co_molecule in co_molecules:
-        carbon_position = co_molecule._carbon.pos
-        carbon_velocity = co_molecule._carbon.v
-        if abs(carbon_position.x) >= L - size and carbon_position.x * carbon_velocity.x >= 0:
-            co_molecule._carbon.v.x = -carbon_velocity.x
-        if abs(carbon_position.y) >= L - size and carbon_position.y * carbon_velocity.y >= 0:
-            co_molecule._carbon.v.y = -carbon_velocity.y
-        if abs(carbon_position.z) >= L - size and carbon_position.z * carbon_velocity.z >= 0:
-            co_molecule._carbon.v.z = -carbon_velocity.z
-
-        oxygen_position = co_molecule._oxygen.pos
-        oxygen_velocity = co_molecule._oxygen.v
-        if abs(oxygen_position.x) >= L - size and oxygen_position.x * oxygen_velocity.x >= 0:
-            co_molecule._oxygen.v.x = -oxygen_velocity.x
-        if abs(oxygen_position.y) >= L - size and oxygen_position.y * oxygen_velocity.y >= 0:
-            co_molecule._oxygen.v.y = -oxygen_velocity.y
-        if abs(oxygen_position.z) >= L - size and oxygen_position.z * oxygen_velocity.z >= 0:
-            co_molecule._oxygen.v.z = -oxygen_velocity.z
+        co_molecule.check_box_bounce()
 
     for co_molecule in co_molecules:
         total_com_K += co_molecule.com_K()
