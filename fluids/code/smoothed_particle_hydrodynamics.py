@@ -1,3 +1,4 @@
+#Web VPython 3.2
 from vpython import sqrt, simple_sphere, color, vec, rate, canvas, label, cylinder, slider
 
 title="""&#x2022; Original <a href="https://github.com/AlexandreSajus/Python-Fluid-Simulation">Python-Fluid-Simulation</a> code by <a href="https://github.com/AlexandreSajus">Alexandre Sajus</a>
@@ -291,7 +292,7 @@ def update(particles: list[Particle], dam: bool):
     # Apply viscosity force
     calculate_viscosity(particles)
 
-    return particles
+    #return particles
 
 
 display = canvas(title=title, width=600, height=300, color=color.gray(0.075), range=.5, center=vec(0, .35, 0))
@@ -317,14 +318,14 @@ step = 0
 dam_built = True
 frame_rate = 25
 while True:
-    clock.text = "Breaking dam in {:1.2}".format((DAM_BREAK - step) / frame_rate)
+    clock.text = "Breaking dam in {:1.2f}".format((DAM_BREAK - step) / frame_rate)
     rate(frame_rate)
     if step == DAM_BREAK:
         clock.visible = False
         dam_built = False
         wall.pos.y += .4
 
-    water = update(water, dam_built)
+    update(water, dam_built)
     for i in range(len(water)):
         droplets[i].pos = vec(water[i].x_pos, water[i].y_pos, 0)
 
