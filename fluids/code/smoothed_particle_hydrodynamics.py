@@ -2,7 +2,7 @@
 from vpython import sqrt, simple_sphere, color, vec, rate, canvas, label, cylinder, slider
 
 title="""&#x2022; Original <a href="https://github.com/AlexandreSajus/Python-Fluid-Simulation">Python-Fluid-Simulation</a> code by <a href="https://github.com/AlexandreSajus">Alexandre Sajus</a>
-&#x2022; Ported to <a href="https://vpython.org">VPython</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>, see <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/smoothed_particle_dynamics.py">smoothed_particle_dynamics.py</a>
+&#x2022; Ported to <a href="https://vpython.org">VPython</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>, see <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/smoothed_particle_hydrodynamics.py">smoothed_particle_hydrodynamics.py</a>
 
 """
 
