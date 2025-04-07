@@ -10,19 +10,19 @@ title = """&#x2022; Based on original <a href="https://github.com/gcschmit/vpyth
 animation = canvas(title=title, background=color.gray(0.075), forward=vector(-0.52, -0.67, -0.52), range=2.)
 
 
-def submerged_volume(object, fluid):
-    top_of_fluid = fluid.pos.y + fluid.size.y / 2
-    top_of_object = object.pos.y + object.size.y / 2
-    bottom_of_object = object.pos.y - object.size.y / 2
+def submerged_volume(wooden_block:box, water:box):
+    top_of_fluid = water.pos.y + water.size.y / 2
+    top_of_object = wooden_block.pos.y + wooden_block.size.y / 2
+    bottom_of_object = wooden_block.pos.y - wooden_block.size.y / 2
 
     if top_of_object <= top_of_fluid:
-        height_submerged = object.size.y
+        height_submerged = wooden_block.size.y
     elif bottom_of_object >= top_of_fluid:
         height_submerged = 0
     else:
         height_submerged = (top_of_fluid - bottom_of_object)
 
-    return object.size.x * height_submerged * object.size.z
+    return wooden_block.size.x * height_submerged * wooden_block.size.z
 
 
 fluid = box(size=vector(2, 2, 0.75), color=color.blue, opacity=0.3, density=1000)
