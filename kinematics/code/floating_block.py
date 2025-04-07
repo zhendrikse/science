@@ -1,10 +1,8 @@
 # Web VPython 3.2
 
-from vpython import rate, canvas, box, color, vector, graph, gcurve
+from vpython import rate, canvas, box, color, vector, graph, gcurve, textures
 
-title = """Floating block
-
-&#x2022; Based on original <a href="https://github.com/gcschmit/vpython-physics/blob/master/buoyancy/buoyancy.py">buoyancy.py</a>
+title = """&#x2022; Based on original <a href="https://github.com/gcschmit/vpython-physics/blob/master/buoyancy/buoyancy.py">buoyancy.py</a>
 &#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/floating_block">floating_block.py</a>
 
 """
@@ -27,8 +25,8 @@ def submerged_volume(object, fluid):
     return object.size.x * height_submerged * object.size.z
 
 
-fluid = box(size=vector(2, 2, 0.75), color=color.green, opacity=0.3, density=1000)
-floating_object = box(pos=vector(0, 0, 0), v=vector(0, 0, 0), color=color.red, density=500, size=vector(0.4, 0.4, 0.1))
+fluid = box(size=vector(2, 2, 0.75), color=color.blue, opacity=0.3, density=1000)
+floating_object = box(pos=vector(0, 0, 0), v=vector(0, 0, 0), texture=textures.wood, density=500, size=vector(0.4, 0.4, 0.1))
 
 graphs = graph(title="Buyoancy")
 buoyance_curve = gcurve(color=color.magenta)
@@ -46,14 +44,14 @@ while t < 20 and floating_object.pos.y > (fluid.pos.y - fluid.size.y / 2):
 
     gravitational_force = mass * g
     drag_force = dragCoefficient * floating_object.v.y
-    buoyance_force = fluid.density * -g * submerged_volume(floating_object, fluid)
+    buoyancy_force = fluid.density * -g * submerged_volume(floating_object, fluid)
 
-    net_force = buoyance_force + gravitational_force + drag_force
+    net_force = buoyancy_force + gravitational_force + drag_force
     acceleration = net_force / mass
     floating_object.v += + acceleration * dt
     floating_object.pos += floating_object.v * dt
 
-    buoyance_curve.plot(t, buoyance_force.y)
+    buoyance_curve.plot(t, buoyancy_force.y)
     drag_force_curve.plot(t, drag_force.y)
 
     t += dt
