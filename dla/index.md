@@ -4,7 +4,7 @@
 # Diffusion limited aggregation
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
-### Non-mixing fluids and smoothed particle hydrodynamics
+### Diffusion limited aggregation
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
