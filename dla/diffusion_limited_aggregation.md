@@ -7,8 +7,6 @@
 
 <p style="clear: both;"></p>
 
-{% include share_buttons.html %}
-
 We start with a three-dimensional lattice containing a seed particle in the middle.
 Next, we draw a sphere with a given radius around the particle, and place another particle 
 on the surface of this sphere at some random angle and have it execute a random walk, 
