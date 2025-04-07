@@ -16,7 +16,7 @@
 </figure>
 <figure class="right_image">
   <a href="smoothed_particle_hydrodynamics.html">
-    <img alt="Carbon monoxide gas" src="images/smoothed_particle_hydrodynamics.png" title="Click to animate"/>
+    <img alt="Smoothed particle hydrodynamics" src="images/smoothed_particle_hydrodynamics.png" title="Click to animate"/>
   </a>
   <figcaption>A fluid simulation using <a href="https://en.wikipedia.org/wiki/Smoothed-particle_hydrodynamics">smoothed particle hydrodynamics</a>.</figcaption>
 </figure>
