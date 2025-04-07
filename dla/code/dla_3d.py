@@ -8,7 +8,7 @@
 
 title = """&#x2022; Based on <a href="">DLA.py</a>
 &#x2022; From <a href="https://books.google.nl/books/about/Computational_Problems_for_Physics.html?id=g9tdDwAAQBAJ">Computational Problems for Physics</a> by RH Landau, MJ Paez, and CC Bordeianu.
-&#x2022; Three-dimensional extension by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/thermodynamics/code/dla_3d.py">dla_3d.py</a>
+&#x2022; Three-dimensional extension by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/dla/code/dla_3d.py">dla_3d.py</a>
 
 """
 
