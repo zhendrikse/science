@@ -6,13 +6,13 @@
 
 # DLA.py:   Diffusion Limited aggregation
 
-title = """&#x2022; Based on <a href="">DLA.py</a>
+title = """&#x2022; Based on <a href="https://sites.science.oregonstate.edu/~landaur/Books/Problems/Codes/VisualCodes(old)/DLAVis.py">DLA.py</a>
 &#x2022; From <a href="https://books.google.nl/books/about/Computational_Problems_for_Physics.html?id=g9tdDwAAQBAJ">Computational Problems for Physics</a> by RH Landau, MJ Paez, and CC Bordeianu.
 &#x2022; Three-dimensional extension by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/dla/code/dla_3d.py">dla_3d.py</a>
 
 """
 
-from vpython import sphere, simple_sphere, vector, ring, color, rate, sin, cos, sqrt, pi, log, canvas, random, checkbox, ring, dot, slider
+from vpython import sphere, simple_sphere, vector, color, rate, sin, cos, sqrt, pi, log, canvas, random, checkbox, ring, dot, slider
 
 display = canvas(width=600, height=600, title=title, range=20, center=vector(0, 0, 15), color=color.gray(0.075), forward=vector(-.1, -.2, -1))
 
