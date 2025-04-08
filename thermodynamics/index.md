@@ -42,7 +42,7 @@ and the evolution of the world. &mdash;
   <figcaption>Adiabatic compression of an ideal gas.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="piston.html">
+  <a href="adiabatic_expansion.html">
     <img alt="Adiabatic expansion of an ideal gas" src="images/adiabatic_expansion.png" title="Click to animate"/>
   </a>
   <figcaption>Adiabatic expansion of an ideal gas.</figcaption>
