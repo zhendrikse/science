@@ -33,9 +33,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     const canvasScale = canvas.height / simulationHeight;
     const simulationWidth = canvas.width / canvasScale;
 
-    const U_FIELD = 0;
-    const V_FIELD = 1;
-    const S_FIELD = 2;
+    const U_FIELD = 0; // x-component of velocity
+    const V_FIELD = 1; // y-component of velocity
+    const S_FIELD = 2; // smoke field
 
     let cnt = 0;
 
@@ -164,20 +164,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 sx * ty * f[x0 * n + y1];
 		}
 
-		avgU(i, j) {
+		averageVelocityU(i, j) {
             const n = this.numY;
             return (this.u[i * n + j - 1] + this.u[i * n + j] +
                 this.u[(i + 1) * n + j - 1] + this.u[(i + 1) * n + j]) * 0.25;
 		}
 
-		avgV(i, j) {
+		averageVelocityV(i, j) {
             const n = this.numY;
             return (this.v[(i-1)*n + j] + this.v[i*n + j] +
 				this.v[(i-1)*n + j+1] + this.v[i*n + j+1]) * 0.25;
 		}
 
-		advectVel(dt) {
-
+		advectVelocity(dt) {
 			let v;
             let u;
             let y;
@@ -199,10 +198,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         x = i * h;
                         y = j * h + h2;
                         u = this.u[i * n + j];
-                        v = this.avgV(i, j);
+                        v = this.averageVelocityV(i, j);
 //						var v = this.sampleField(x,y, V_FIELD);
-						x = x - dt*u;
-						y = y - dt*v;
+						x -= dt*u;
+						y -= dt*v;
 						u = this.sampleField(x,y, U_FIELD);
 						this.newU[i*n + j] = u;
 					}
@@ -210,11 +209,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 					if (this.s[i*n + j] !== 0.0 && this.s[i*n + j-1] !== 0.0 && i < this.numX - 1) {
                         x = i * h + h2;
                         y = j * h;
-                        u = this.avgU(i, j);
+                        u = this.averageVelocityU(i, j);
 //						var u = this.sampleField(x,y, U_FIELD);
                         v = this.v[i * n + j];
-                        x = x - dt*u;
-						y = y - dt*v;
+                        x -= dt * u;
+						y -= dt * v;
 						v = this.sampleField(x,y, V_FIELD);
 						this.newV[i*n + j] = v;
 					}
@@ -229,20 +228,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 			this.newM.set(this.m);
 
-			var n = this.numY;
-			var h = this.h;
-			var h2 = 0.5 * h;
+            const n = this.numY;
+            const h = this.h;
+            const h2 = 0.5 * h;
 
-			for (var i = 1; i < this.numX-1; i++) {
-				for (var j = 1; j < this.numY-1; j++) {
+            for (let i = 1; i < this.numX-1; i++) {
+				for (let j = 1; j < this.numY-1; j++) {
 
 					if (this.s[i*n + j] !== 0.0) {
-						var u = (this.u[i*n + j] + this.u[(i+1)*n + j]) * 0.5;
-						var v = (this.v[i*n + j] + this.v[i*n + j+1]) * 0.5;
-						var x = i*h + h2 - dt*u;
-						var y = j*h + h2 - dt*v;
+                        const u = (this.u[i * n + j] + this.u[(i + 1) * n + j]) * 0.5;
+                        const v = (this.v[i * n + j] + this.v[i * n + j + 1]) * 0.5;
+                        const x = i * h + h2 - dt * u;
+                        const y = j * h + h2 - dt * v;
 
-						this.newM[i*n + j] = this.sampleField(x,y, S_FIELD);
+                        this.newM[i*n + j] = this.sampleField(x,y, S_FIELD);
  					}
 				}
 			}
@@ -260,7 +259,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			this.solveIncompressibility(numIters, dt);
 
 			this.extrapolate();
-			this.advectVel(dt);
+			this.advectVelocity(dt);
 			this.advectSmoke(dt);
 		}
 	}
@@ -287,9 +286,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	function setupScene(sceneNr = 0)
 	{
-		let i;
-        let j;
-        let s;
+		let i, j, s;
         scene.sceneNr = sceneNr;
 		scene.obstacleRadius = 0.15;
 		scene.overRelaxation = 1.9;
@@ -395,14 +392,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	function getSciColor(val, minVal, maxVal) {
 		val = Math.min(Math.max(val, minVal), maxVal- 0.0001);
-		var d = maxVal - minVal;
-		val = d === 0.0 ? 0.5 : (val - minVal) / d;
-		var m = 0.25;
-		var num = Math.floor(val / m);
-		var s = (val - num * m) / m;
-		var r, g, b;
+        const d = maxVal - minVal;
+        val = d === 0.0 ? 0.5 : (val - minVal) / d;
+        const m = 0.25;
+        const num = Math.floor(val / m);
+        const s = (val - num * m) / m;
+        let r, g, b;
 
-		switch (num) {
+        switch (num) {
 			case 0 : r = 0.0; g = s; b = 1.0; break;
 			case 1 : r = 0.0; g = 1.0; b = 1.0-s; break;
 			case 2 : r = s; g = 1.0; b = 0.0; break;
@@ -414,21 +411,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	function draw()
 	{
-        let i;
-        let j;
-        let y;
-        let x;
+        let i, j, y, x;
         display.clearRect(0, 0, canvas.width, canvas.height);
 
 		display.fillStyle = "#FF0000";
 		f = scene.fluid;
         let n = f.numY;
 
-        var cellScale = 1.1;
+        const cellScale = 1.1;
 
-		var h = f.h;
+        const h = f.h;
 
-		minP = f.p[0];
+        minP = f.p[0];
 		maxP = f.p[0];
 
 		for (i = 0; i < f.numCells; i++) {
@@ -472,17 +466,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 var cx = Math.floor(canvasScale * cellScale * h) + 1;
 				var cy = Math.floor(canvasScale * cellScale * h) + 1;
 
-				r = color[0];
-				g = color[1];
-				b = color[2];
+				const red = color[0];
+                const green = color[1];
+                const blue = color[2];
 
 				for (let yi = y; yi < y + cy; yi++) {
 					var p = 4 * (yi * canvas.width + x)
 
 					for (let xi = 0; xi < cx; xi++) {
-						id.data[p++] = r;
-						id.data[p++] = g;
-						id.data[p++] = b;
+						id.data[p++] = red;
+						id.data[p++] = green;
+						id.data[p++] = blue;
 						id.data[p++] = 255;
 					}
 				}
