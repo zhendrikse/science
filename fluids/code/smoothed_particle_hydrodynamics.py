@@ -34,13 +34,29 @@ class Particle:
         self._position = vec(x_pos, y_pos, 0)
         self._previous_position = vec(x_pos, y_pos, 0)
         self._visual_position = vec(x_pos, y_pos, 0)
-        self.rho = 0.0
-        self.rho_near = 0.0
-        self.press = 0.0
-        self.press_near = 0.0
-        self.neighbors = []
+        self._rho = 0.0
+        self._rho_near = 0.0
+        self._press = 0.0
+        self._press_near = 0.0
+        self._neighbors = []
         self._velocity = vec(0, 0, 0)
         self._force = vec(0, -G, 0)
+
+    def calculate_neighbor_pressure(self):
+        pressure = vec(0, 0, 0)
+        for neighbor in self._neighbors:
+            particle_to_neighbor = neighbor.position() - self._position
+            distance = mag(particle_to_neighbor)
+            normal_distance = 1 - distance / R
+            normal_distance_squared = normal_distance * normal_distance
+            normal_distance_cubed = normal_distance_squared * normal_distance
+
+            total_pressure = (self._press + neighbor._press) * normal_distance_squared + (self._press_near + neighbor._press_near) * normal_distance_cubed
+
+            pressure_vector = particle_to_neighbor * total_pressure / distance
+            neighbor._force += pressure_vector
+            pressure += pressure_vector
+        self._force -= pressure
 
     def update_state(self, dam: bool):
         self._previous_position = vec(self._position)
@@ -89,18 +105,34 @@ class Particle:
             self._visual_position.y = BOTTOM
 
         # Reset density
-        self.rho = 0.0
-        self.rho_near = 0.0
+        self._rho = 0.0
+        self._rho_near = 0.0
 
         # Reset neighbors
-        self.neighbors = []
+        self._neighbors = []
 
     def calculate_pressure(self):
-        """
-        Calculates the pressure of the particle
-        """
-        self.press = K * (self.rho - REST_DENSITY)
-        self.press_near = K_NEAR * self.rho_near
+        self._press = K * (self._rho - REST_DENSITY)
+        self._press_near = K_NEAR * self._rho_near
+
+    def calculate_viscosity_force(self):
+        for neighbor in self._neighbors:
+            particle_to_neighbor = neighbor.position() - self._position
+            distance = sqrt(dot(particle_to_neighbor, particle_to_neighbor))
+            normal_p_to_n = particle_to_neighbor / distance
+
+            relative_distance = distance / R
+            velocity_difference = dot(self._velocity - neighbor.velocity(), normal_p_to_n)
+            if velocity_difference > 0:
+                viscosity_force = (1 - relative_distance) * SIGMA * velocity_difference * normal_p_to_n
+                self._velocity -= viscosity_force * 0.5
+                neighbor._velocity += viscosity_force * 0.5
+
+    def position(self):
+        return self._position
+
+    def velocity(self):
+        return self._velocity
 
 
 def start(xmin: float, xmax: float, ymin: float, space: float, count: int):
@@ -147,7 +179,7 @@ def calculate_density(particles: list[Particle]):
         # Density is calculated by summing the relative distance of neighboring particles
         for j in range(i + 1, len(particles)):
             particle_2 = particles[j]
-            distance = sqrt(dot(particle_1._position - particle_2._position, particle_1._position - particle_2._position))
+            distance = mag(particle_1.position() - particle_2.position())
             if distance < R:
                 # normal distance is between 0 and 1
                 normal_distance = 1 - distance / R
@@ -157,87 +189,25 @@ def calculate_density(particles: list[Particle]):
                 density += normal_distance_squared
                 density_near += normal_distance_cubed
 
-                particle_2.rho += normal_distance_squared
-                particle_2.rho_near += normal_distance_cubed
+                particle_2._rho += normal_distance_squared
+                particle_2._rho_near += normal_distance_cubed
 
-                particle_1.neighbors.append(particle_2)
-        particle_1.rho += density
-        particle_1.rho_near += density_near
-
-
-def create_pressure(particles: list[Particle]):
-    """
-    Calculates pressure force of particles
-        Neighbors list and pressure have already been calculated by calculate_density
-        We calculate the pressure force by summing the pressure force of each neighbor
-        and apply it in the direction of the neighbor
-
-    Args:
-        particles (list[Particle]): list of particles
-    """
-    for particle in particles:
-        pressure = vec(0, 0, 0)
-        for neighbor in particle.neighbors:
-            particle_to_neighbor = neighbor._position - particle._position
-            distance = sqrt(dot(particle_to_neighbor, particle_to_neighbor))
-            normal_distance = 1 - distance / R
-            normal_distance_squared = normal_distance * normal_distance
-            normal_distance_cubed = normal_distance_squared * normal_distance
-
-            total_pressure = (particle.press + neighbor.press) * normal_distance_squared + (particle.press_near + neighbor.press_near) * normal_distance_cubed
-
-            pressure_vector = particle_to_neighbor * total_pressure / distance
-            neighbor._force += pressure_vector
-            pressure += pressure_vector
-        particle._force -= pressure
-
-
-def calculate_viscosity(particles: list[Particle]):
-    """
-    Calculates the viscosity force of particles
-    Force = (relative distance of particles)*(viscosity weight)*(velocity difference of particles)
-    Velocity difference is calculated on the vector between the particles
-
-    Args:
-        particles (list[Particle]): list of particles
-    """
-
-    for particle in particles:
-        for neighbor in particle.neighbors:
-            particle_to_neighbor = neighbor._position - particle._position
-            distance = sqrt(dot(particle_to_neighbor, particle_to_neighbor))
-            normal_p_to_n = particle_to_neighbor / distance
-
-            relative_distance = distance / R
-            velocity_difference = dot(particle._velocity - neighbor._velocity, normal_p_to_n)
-            if velocity_difference > 0:
-                viscosity_force = (1 - relative_distance) * SIGMA * velocity_difference * normal_p_to_n
-                particle._velocity -= viscosity_force * 0.5
-                neighbor._velocity += viscosity_force * 0.5
+                particle_1._neighbors.append(particle_2)
+        particle_1._rho += density
+        particle_1._rho_near += density_near
 
 
 def update(particles: list[Particle], dam: bool):
-    """
-    Calculates a step of the simulation
-    """
     # Update the state of the particles (apply forces, reset values, etc.)
     for particle in particles:
         particle.update_state(dam)
 
-    # Calculate density
     calculate_density(particles)
 
-    # Calculate pressure
     for particle in particles:
         particle.calculate_pressure()
-
-    # Apply pressure force
-    create_pressure(particles)
-
-    # Apply viscosity force
-    calculate_viscosity(particles)
-
-    #return particles
+        particle.calculate_neighbor_pressure()
+        particle.calculate_viscosity_force()
 
 
 display = canvas(title=title, width=600, height=300, color=color.gray(0.075), range=.5, center=vec(0, .35, 0))
@@ -245,8 +215,7 @@ display = canvas(title=title, width=600, height=300, color=color.gray(0.075), ra
 water = start(-SIM_W, DAM, BOTTOM, 0.03, N)
 droplets = []
 for particle_ in water:
-    position = vec(particle_._position)
-    droplets.append(simple_sphere(color=color.blue, pos=position, radius=0.03, shininess=0))
+    droplets.append(simple_sphere(color=color.blue, pos=particle_.position(), radius=0.03, shininess=0))
 
 clock = label(pos=vec(0, .75, 0), text="Breaking dam in 0:00", box=False, color=color.yellow)
 cylinder(pos=vec(-.75, -.1, 0), color=color.orange, axis=vec(1.5, 0, 0), radius=0.02)
