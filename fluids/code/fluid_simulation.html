@@ -17,34 +17,34 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <button class="button" onclick="setupScene(0)">Tank</button>
 <button class="button" onclick="setupScene(2)">Paint</button>
 
-<input type="checkbox" id="streamButton" onclick = "scene.showStreamlines = !scene.showStreamlines"> Streamlines
-<input type="checkbox" id="velocityButton" onclick = "scene.showVelocities = !scene.showVelocities"> Velocities
-<input type="checkbox" name="field" id = "pressureButton" onclick = "scene.showPressure = !scene.showPressure;" checked> Pressure
-<input type="checkbox" name="field" id = "smokeButton" onclick = "scene.showSmoke = !scene.showSmoke;" checked> Smoke
-<input type="checkbox" id="overrelaxButton" onclick = "scene.overRelaxation = scene.overRelaxation == 1.0 ? 1.9 : 1.0" checked> Overrelax
+<label for="streamButton"></label><input type="checkbox" id="streamButton" onclick = "scene.showStreamlines = !scene.showStreamlines"> Streamlines
+<label for="velocityButton"></label><input type="checkbox" id="velocityButton" onclick = "scene.showVelocities = !scene.showVelocities"> Velocities
+<label for="pressureButton"></label><input type="checkbox" name="field" id = "pressureButton" onclick = "scene.showPressure = !scene.showPressure;" checked> Pressure
+<label for="smokeButton"></label><input type="checkbox" name="field" id = "smokeButton" onclick = "scene.showSmoke = !scene.showSmoke;" checked> Smoke
+<label for="overrelaxButton"></label><input type="checkbox" id="overrelaxButton" onclick = "scene.overRelaxation = scene.overRelaxation === 1.0 ? 1.9 : 1.0" checked> Overrelax
 <canvas id="myCanvas" width="650" height="650" style="border: none;"></canvas>
 <script>
-	var canvas = document.getElementById("myCanvas");
-	var c = canvas.getContext("2d");
+    const canvas = document.getElementById("myCanvas");
+    const display = canvas.getContext("2d");
 
-	canvas.focus();
+    canvas.focus();
 
-	var simHeight = 1.1;
-	var cScale = canvas.height / simHeight;
-	var simWidth = canvas.width / cScale;
+    const simulationHeight = 1.1;
+    const canvasScale = canvas.height / simulationHeight;
+    const simulationWidth = canvas.width / canvasScale;
 
-	var U_FIELD = 0;
-	var V_FIELD = 1;
-	var S_FIELD = 2;
+    const U_FIELD = 0;
+    const V_FIELD = 1;
+    const S_FIELD = 2;
 
-	var cnt = 0;
+    let cnt = 0;
 
-	function cX(x) {
-		return x * cScale;
+    function scaleX(x) {
+		return x * canvasScale;
 	}
 
-	function cY(y) {
-		return canvas.height - y * cScale;
+	function scaleY(y) {
+		return canvas.height - y * canvasScale;
 	}
 
 	// ----------------- start of simulator ------------------------------
@@ -65,14 +65,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			this.m = new Float32Array(this.numCells);
 			this.newM = new Float32Array(this.numCells);
 			this.m.fill(1.0)
-			var num = numX * numY;
 		}
 
 		integrate(dt, gravity) {
-			var n = this.numY;
-			for (var i = 1; i < this.numX; i++) {
-				for (var j = 1; j < this.numY-1; j++) {
-					if (this.s[i*n + j] != 0.0 && this.s[i*n + j-1] != 0.0)
+            const n = this.numY;
+            for (let i = 1; i < this.numX; i++) {
+				for (let j = 1; j < this.numY - 1; j++) {
+					if (this.s[i*n + j] !== 0.0 && this.s[i*n + j-1] !== 0.0)
 						this.v[i*n + j] += gravity * dt;
 				}
 			}
@@ -80,31 +79,30 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 		solveIncompressibility(numIters, dt) {
 
-			var n = this.numY;
-			var cp = this.density * this.h / dt;
+            const n = this.numY;
+            const cp = this.density * this.h / dt;
 
-			for (var iter = 0; iter < numIters; iter++) {
+            for (let iter = 0; iter < numIters; iter++) {
 
-				for (var i = 1; i < this.numX-1; i++) {
-					for (var j = 1; j < this.numY-1; j++) {
+				for (let i = 1; i < this.numX - 1; i++) {
+					for (let j = 1; j < this.numY - 1; j++) {
 
-						if (this.s[i*n + j] == 0.0)
+						if (this.s[i * n + j] === 0.0)
 							continue;
 
-						var s = this.s[i*n + j];
-						var sx0 = this.s[(i-1)*n + j];
-						var sx1 = this.s[(i+1)*n + j];
-						var sy0 = this.s[i*n + j-1];
-						var sy1 = this.s[i*n + j+1];
-						var s = sx0 + sx1 + sy0 + sy1;
-						if (s == 0.0)
+                        const sx0 = this.s[(i - 1) * n + j];
+                        const sx1 = this.s[(i + 1) * n + j];
+                        const sy0 = this.s[i * n + j - 1];
+                        const sy1 = this.s[i * n + j + 1];
+                        const s = sx0 + sx1 + sy0 + sy1;
+                        if (s === 0.0)
 							continue;
 
-						var div = this.u[(i+1)*n + j] - this.u[i*n + j] +
-							this.v[i*n + j+1] - this.v[i*n + j];
+                        const div = this.u[(i + 1) * n + j] - this.u[i * n + j] +
+                            this.v[i * n + j + 1] - this.v[i * n + j];
 
-						var p = -div / s;
-						p *= scene.overRelaxation;
+                        let p = -div / s;
+                        p *= scene.overRelaxation;
 						this.p[i*n + j] += cp * p;
 
 						this.u[i*n + j] -= sx0 * p;
@@ -117,92 +115,91 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		}
 
 		extrapolate() {
-			var n = this.numY;
-			for (var i = 0; i < this.numX; i++) {
-				this.u[i*n + 0] = this.u[i*n + 1];
-				this.u[i*n + this.numY-1] = this.u[i*n + this.numY-2];
+            const n = this.numY;
+            for (let i = 0; i < this.numX; i++) {
+				this.u[i * n + 0] = this.u[i * n + 1];
+				this.u[i * n + this.numY-1] = this.u[i*n + this.numY-2];
 			}
-			for (var j = 0; j < this.numY; j++) {
-				this.v[0*n + j] = this.v[1*n + j];
-				this.v[(this.numX-1)*n + j] = this.v[(this.numX-2)*n + j]
+			for (let j = 0; j < this.numY; j++) {
+				this.v[0 * n + j] = this.v[1 * n + j];
+				this.v[(this.numX-1) * n + j] = this.v[(this.numX-2)*n + j]
 			}
 		}
 
 		sampleField(x, y, field) {
-			var n = this.numY;
-			var h = this.h;
-			var h1 = 1.0 / h;
-			var h2 = 0.5 * h;
+            const n = this.numY;
+            const h = this.h;
+            const h1 = 1.0 / h;
+            const h2 = 0.5 * h;
 
-			x = Math.max(Math.min(x, this.numX * h), h);
+            x = Math.max(Math.min(x, this.numX * h), h);
 			y = Math.max(Math.min(y, this.numY * h), h);
 
-			var dx = 0.0;
-			var dy = 0.0;
+            let dx = 0.0;
+            let dy = 0.0;
 
-			var f;
+            let f;
 
-			switch (field) {
+            switch (field) {
 				case U_FIELD: f = this.u; dy = h2; break;
 				case V_FIELD: f = this.v; dx = h2; break;
 				case S_FIELD: f = this.m; dx = h2; dy = h2; break
 
 			}
 
-			var x0 = Math.min(Math.floor((x-dx)*h1), this.numX-1);
-			var tx = ((x-dx) - x0*h) * h1;
-			var x1 = Math.min(x0 + 1, this.numX-1);
+            const x0 = Math.min(Math.floor((x - dx) * h1), this.numX - 1);
+            const tx = ((x - dx) - x0 * h) * h1;
+            const x1 = Math.min(x0 + 1, this.numX - 1);
 
-			var y0 = Math.min(Math.floor((y-dy)*h1), this.numY-1);
-			var ty = ((y-dy) - y0*h) * h1;
-			var y1 = Math.min(y0 + 1, this.numY-1);
+            const y0 = Math.min(Math.floor((y - dy) * h1), this.numY - 1);
+            const ty = ((y - dy) - y0 * h) * h1;
+            const y1 = Math.min(y0 + 1, this.numY - 1);
 
-			var sx = 1.0 - tx;
-			var sy = 1.0 - ty;
+            const sx = 1.0 - tx;
+            const sy = 1.0 - ty;
 
-			var val = sx*sy * f[x0*n + y0] +
-				tx*sy * f[x1*n + y0] +
-				tx*ty * f[x1*n + y1] +
-				sx*ty * f[x0*n + y1];
-
-			return val;
+            return sx * sy * f[x0 * n + y0] +
+                tx * sy * f[x1 * n + y0] +
+                tx * ty * f[x1 * n + y1] +
+                sx * ty * f[x0 * n + y1];
 		}
 
 		avgU(i, j) {
-			var n = this.numY;
-			var u = (this.u[i*n + j-1] + this.u[i*n + j] +
-				this.u[(i+1)*n + j-1] + this.u[(i+1)*n + j]) * 0.25;
-			return u;
-
+            const n = this.numY;
+            return (this.u[i * n + j - 1] + this.u[i * n + j] +
+                this.u[(i + 1) * n + j - 1] + this.u[(i + 1) * n + j]) * 0.25;
 		}
 
 		avgV(i, j) {
-			var n = this.numY;
-			var v = (this.v[(i-1)*n + j] + this.v[i*n + j] +
+            const n = this.numY;
+            return (this.v[(i-1)*n + j] + this.v[i*n + j] +
 				this.v[(i-1)*n + j+1] + this.v[i*n + j+1]) * 0.25;
-			return v;
 		}
 
 		advectVel(dt) {
 
-			this.newU.set(this.u);
+			let v;
+            let u;
+            let y;
+            let x;
+            this.newU.set(this.u);
 			this.newV.set(this.v);
 
-			var n = this.numY;
-			var h = this.h;
-			var h2 = 0.5 * h;
+            const n = this.numY;
+            const h = this.h;
+            const h2 = 0.5 * h;
 
-			for (var i = 1; i < this.numX; i++) {
-				for (var j = 1; j < this.numY; j++) {
+            for (let i = 1; i < this.numX; i++) {
+				for (let j = 1; j < this.numY; j++) {
 
 					cnt++;
 
 					// u component
-					if (this.s[i*n + j] != 0.0 && this.s[(i-1)*n + j] != 0.0 && j < this.numY - 1) {
-						var x = i*h;
-						var y = j*h + h2;
-						var u = this.u[i*n + j];
-						var v = this.avgV(i, j);
+					if (this.s[i*n + j] !== 0.0 && this.s[(i-1)*n + j] !== 0.0 && j < this.numY - 1) {
+                        x = i * h;
+                        y = j * h + h2;
+                        u = this.u[i * n + j];
+                        v = this.avgV(i, j);
 //						var v = this.sampleField(x,y, V_FIELD);
 						x = x - dt*u;
 						y = y - dt*v;
@@ -210,13 +207,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 						this.newU[i*n + j] = u;
 					}
 					// v component
-					if (this.s[i*n + j] != 0.0 && this.s[i*n + j-1] != 0.0 && i < this.numX - 1) {
-						var x = i*h + h2;
-						var y = j*h;
-						var u = this.avgU(i, j);
+					if (this.s[i*n + j] !== 0.0 && this.s[i*n + j-1] !== 0.0 && i < this.numX - 1) {
+                        x = i * h + h2;
+                        y = j * h;
+                        u = this.avgU(i, j);
 //						var u = this.sampleField(x,y, U_FIELD);
-						var v = this.v[i*n + j];
-						x = x - dt*u;
+                        v = this.v[i * n + j];
+                        x = x - dt*u;
 						y = y - dt*v;
 						v = this.sampleField(x,y, V_FIELD);
 						this.newV[i*n + j] = v;
@@ -239,7 +236,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			for (var i = 1; i < this.numX-1; i++) {
 				for (var j = 1; j < this.numY-1; j++) {
 
-					if (this.s[i*n + j] != 0.0) {
+					if (this.s[i*n + j] !== 0.0) {
 						var u = (this.u[i*n + j] + this.u[(i+1)*n + j]) * 0.5;
 						var v = (this.v[i*n + j] + this.v[i*n + j+1]) * 0.5;
 						var x = i*h + h2 - dt*u;
@@ -268,7 +265,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		}
 	}
 
-	var scene =
+	const scene =
 	{
 		gravity : -9.81,
 		dt : 1.0 / 120.0,
@@ -290,7 +287,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	function setupScene(sceneNr = 0)
 	{
-		scene.sceneNr = sceneNr;
+		let i;
+        let j;
+        let s;
+        scene.sceneNr = sceneNr;
 		scene.obstacleRadius = 0.15;
 		scene.overRelaxation = 1.9;
 
@@ -299,13 +299,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 		var res = 100;
 
-		if (sceneNr == 0)
+		if (sceneNr === 0)
 			res = 50;
-		else if (sceneNr == 3)
+		else if (sceneNr === 3)
 			res = 200;
 
 		var domainHeight = 1.0;
-		var domainWidth = domainHeight / simHeight * simWidth;
+		var domainWidth = domainHeight / simulationHeight * simulationWidth;
 		var h = domainHeight / res;
 
 		var numX = Math.floor(domainWidth / h);
@@ -317,12 +317,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 		var n = f.numY;
 
-		if (sceneNr == 0) {   		// tank
+		if (sceneNr === 0) {   		// tank
 
-			for (var i = 0; i < f.numX; i++) {
-				for (var j = 0; j < f.numY; j++) {
-					var s = 1.0;	// fluid
-					if (i == 0 || i == f.numX-1 || j == 0)
+			for (i = 0; i < f.numX; i++) {
+				for (j = 0; j < f.numY; j++) {
+                    s = 1.0;	// fluid
+					if (i === 0 || i === f.numX-1 || j === 0)
 						s = 0.0;	// solid
 					f.s[i*n + j] = s
 				}
@@ -333,27 +333,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			scene.showStreamlines = false;
 			scene.showVelocities = false;
 		}
-		else if (sceneNr == 1 || sceneNr == 3) { // vortex shedding
+		else if (sceneNr === 1 || sceneNr === 3) { // vortex shedding
 
-			var inVel = 2.0;
-			for (var i = 0; i < f.numX; i++) {
-				for (var j = 0; j < f.numY; j++) {
-					var s = 1.0;	// fluid
-					if (i == 0 || j == 0 || j == f.numY-1)
+            const inVel = 2.0;
+            for (i = 0; i < f.numX; i++) {
+				for (j = 0; j < f.numY; j++) {
+                    s = 1.0;	// fluid
+					if (i === 0 || j === 0 || j === f.numY-1)
 						s = 0.0;	// solid
 					f.s[i*n + j] = s
 
-					if (i == 1) {
+					if (i === 1) {
 						f.u[i*n + j] = inVel;
 					}
 				}
 			}
 
-			var pipeH = 0.1 * f.numY;
-			var minJ = Math.floor(0.5 * f.numY - 0.5*pipeH);
-			var maxJ = Math.floor(0.5 * f.numY + 0.5*pipeH);
+            const pipeH = 0.1 * f.numY;
+            const minJ = Math.floor(0.5 * f.numY - 0.5 * pipeH);
+            const maxJ = Math.floor(0.5 * f.numY + 0.5 * pipeH);
 
-			for (var j = minJ; j < maxJ; j++)
+            for (j = minJ; j < maxJ; j++)
 				f.m[j] = 0.0;
 
 			setObstacle(0.4, 0.5, true)
@@ -364,14 +364,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			scene.showStreamlines = false;
 			scene.showVelocities = false;
 
-			if (sceneNr == 3) {
+			if (sceneNr === 3) {
 				scene.dt = 1.0 / 120.0;
 				scene.numIters = 100;
 				scene.showPressure = true;
 			}
 
 		}
-		else if (sceneNr == 2) { // paint
+		else if (sceneNr === 2) { // paint
 
 			scene.gravity = 0.0;
 			scene.overRelaxation = 1.0;
@@ -394,11 +394,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	// draw -------------------------------------------------------
 
 	function setColor(r,g,b) {
-		c.fillStyle = `rgb(
+		display.fillStyle = `rgb(
 			${Math.floor(255*r)},
 			${Math.floor(255*g)},
 			${Math.floor(255*b)})`
-		c.strokeStyle = `rgb(
+		display.strokeStyle = `rgb(
 			${Math.floor(255*r)},
 			${Math.floor(255*g)},
 			${Math.floor(255*b)})`
@@ -407,7 +407,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	function getSciColor(val, minVal, maxVal) {
 		val = Math.min(Math.max(val, minVal), maxVal- 0.0001);
 		var d = maxVal - minVal;
-		val = d == 0.0 ? 0.5 : (val - minVal) / d;
+		val = d === 0.0 ? 0.5 : (val - minVal) / d;
 		var m = 0.25;
 		var num = Math.floor(val / m);
 		var s = (val - num * m) / m;
@@ -425,30 +425,34 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 	function draw()
 	{
-		c.clearRect(0, 0, canvas.width, canvas.height);
+        let i;
+        let j;
+        let y;
+        let x;
+        display.clearRect(0, 0, canvas.width, canvas.height);
 
-		c.fillStyle = "#FF0000";
+		display.fillStyle = "#FF0000";
 		f = scene.fluid;
-		n = f.numY;
+        let n = f.numY;
 
-		var cellScale = 1.1;
+        var cellScale = 1.1;
 
 		var h = f.h;
 
 		minP = f.p[0];
 		maxP = f.p[0];
 
-		for (var i = 0; i < f.numCells; i++) {
+		for (i = 0; i < f.numCells; i++) {
 			minP = Math.min(minP, f.p[i]);
 			maxP = Math.max(maxP, f.p[i]);
 		}
 
-		id = c.getImageData(0,0, canvas.width, canvas.height)
+		id = display.getImageData(0,0, canvas.width, canvas.height)
 
 		var color = [255, 255, 255, 255]
 
-		for (var i = 0; i < f.numX; i++) {
-			for (var j = 0; j < f.numY; j++) {
+		for (i = 0; i < f.numX; i++) {
+			for (j = 0; j < f.numY; j++) {
 
 				if (scene.showPressure) {
 					var p = f.p[i*n + j];
@@ -465,28 +469,28 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 					color[0] = 255*s;
 					color[1] = 255*s;
 					color[2] = 255*s;
-					if (scene.sceneNr == 2)
+					if (scene.sceneNr === 2)
 						color = getSciColor(s, 0.0, 1.0);
 				}
-				else if (f.s[i*n + j] == 0.0) {
+				else if (f.s[i*n + j] === 0.0) {
 					color[0] = 0;
 					color[1] = 0;
 					color[2] = 0;
 				}
 
-				var x = Math.floor(cX(i * h));
-				var y = Math.floor(cY((j+1) * h));
-				var cx = Math.floor(cScale * cellScale * h) + 1;
-				var cy = Math.floor(cScale * cellScale * h) + 1;
+                x = Math.floor(scaleX(i * h));
+                y = Math.floor(scaleY((j + 1) * h));
+                var cx = Math.floor(canvasScale * cellScale * h) + 1;
+				var cy = Math.floor(canvasScale * cellScale * h) + 1;
 
 				r = color[0];
 				g = color[1];
 				b = color[2];
 
-				for (var yi = y; yi < y + cy; yi++) {
+				for (let yi = y; yi < y + cy; yi++) {
 					var p = 4 * (yi * canvas.width + x)
 
-					for (var xi = 0; xi < cx; xi++) {
+					for (let xi = 0; xi < cx; xi++) {
 						id.data[p++] = r;
 						id.data[p++] = g;
 						id.data[p++] = b;
@@ -496,37 +500,37 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			}
 		}
 
-		c.putImageData(id, 0, 0);
+		display.putImageData(id, 0, 0);
 
 		if (scene.showVelocities) {
 
-			c.strokeStyle = "#000000";
+			display.strokeStyle = "#000000";
 			scale = 0.02;
 
-			for (var i = 0; i < f.numX; i++) {
-				for (var j = 0; j < f.numY; j++) {
+			for (i = 0; i < f.numX; i++) {
+				for (j = 0; j < f.numY; j++) {
 
 					var u = f.u[i*n + j];
 					var v = f.v[i*n + j];
 
-					c.beginPath();
+					display.beginPath();
 
-					x0 = cX(i * h);
-					x1 = cX(i * h + u * scale);
-					y = cY((j + 0.5) * h );
+					x0 = scaleX(i * h);
+					x1 = scaleX(i * h + u * scale);
+					y = scaleY((j + 0.5) * h );
 
-					c.moveTo(x0, y);
-					c.lineTo(x1, y);
-					c.stroke();
+					display.moveTo(x0, y);
+					display.lineTo(x1, y);
+					display.stroke();
 
-					x = cX((i + 0.5) * h);
-					y0 = cY(j * h );
-					y1 = cY(j * h + v * scale)
+					x = scaleX((i + 0.5) * h);
+					y0 = scaleY(j * h);
+					y1 = scaleY(j * h + v * scale)
 
-					c.beginPath();
-					c.moveTo(x, y0);
-					c.lineTo(x, y1);
-					c.stroke();
+					display.beginPath();
+					display.moveTo(x, y0);
+					display.lineTo(x, y1);
+					display.stroke();
 
 				}
 			}
@@ -534,24 +538,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 		if (scene.showStreamlines) {
 
-			var segLen = f.h * 0.2;
-			var numSegs = 15;
+			// var segLen = f.h * 0.2;
+			const numberOfSegments = 15;
 
-			c.strokeStyle = "#000000";
+			display.strokeStyle = "#000000";
 
-			for (var i = 1; i < f.numX - 1; i += 5) {
-				for (var j = 1; j < f.numY - 1; j += 5) {
+			for (i = 1; i < f.numX - 1; i += 5) {
+				for (j = 1; j < f.numY - 1; j += 5) {
 
-					var x = (i + 0.5) * f.h;
-					var y = (j + 0.5) * f.h;
+                    x = (i + 0.5) * f.h;
+                    y = (j + 0.5) * f.h;
 
-					c.beginPath();
-					c.moveTo(cX(x), cY(y));
+                    display.beginPath();
+					display.moveTo(scaleX(x), scaleY(y));
 
-					for (var n = 0; n < numSegs; n++) {
+					for (n = 0; n < numberOfSegments; n++) {
 						var u = f.sampleField(x, y, U_FIELD);
 						var v = f.sampleField(x, y, V_FIELD);
-						l = Math.sqrt(u*u + v*v);
+						// l = Math.sqrt(u*u + v*v);
 						// x += u/l * segLen;
 						// y += v/l * segLen;
 						x += u * 0.01;
@@ -559,42 +563,40 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 						if (x > f.numX * f.h)
 							break;
 
-						c.lineTo(cX(x), cY(y));
+						display.lineTo(scaleX(x), scaleY(y));
 					}
-					c.stroke();
+					display.stroke();
 				}
 			}
 		}
 
 		if (scene.showObstacle) {
 
-			c.strokeW
+			display.strokeW
 			r = scene.obstacleRadius + f.h;
 			if (scene.showPressure)
-				c.fillStyle = "#131313";
+				display.fillStyle = "#131313";
 			else
-				c.fillStyle = "#DDDDDD";
-			c.beginPath();
-			c.arc(
-				cX(scene.obstacleX), cY(scene.obstacleY), cScale * r, 0.0, 2.0 * Math.PI);
-			c.closePath();
-			c.fill();
+				display.fillStyle = "#DDDDDD";
+			display.beginPath();
+			display.arc(scaleX(scene.obstacleX), scaleY(scene.obstacleY), canvasScale * r, 0.0, 2.0 * Math.PI);
+			display.closePath();
+			display.fill();
 
-			c.lineWidth = 3.0;
-			c.strokeStyle = "#000000";
-			c.beginPath();
-			c.arc(
-				cX(scene.obstacleX), cY(scene.obstacleY), cScale * r, 0.0, 2.0 * Math.PI);
-			c.closePath();
-			c.stroke();
-			c.lineWidth = 1.0;
+			display.lineWidth = 3.0;
+			display.strokeStyle = "#000000";
+			display.beginPath();
+			display.arc(scaleX(scene.obstacleX), scaleY(scene.obstacleY), canvasScale * r, 0.0, 2.0 * Math.PI);
+			display.closePath();
+			display.stroke();
+			display.lineWidth = 1.0;
 		}
 
 		if (scene.showPressure) {
-			var s = "pressure: " + minP.toFixed(0) + " - " + maxP.toFixed(0) + " N/m";
-			c.fillStyle ="#000000";
-			c.font = "16px Arial";
-			c.fillText(s, 10, 35);
+			const pressureText = "pressure: " + minP.toFixed(0) + " - " + maxP.toFixed(0) + " N/m";
+			display.fillStyle ="#A0A0A0";
+			display.font = "16px Arial";
+			display.fillText(pressureText, 10, 35);
 		}
 	}
 
@@ -625,7 +627,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 				if (dx * dx + dy * dy < r * r) {
 					f.s[i*n + j] = 0.0;
-					if (scene.sceneNr == 2)
+					if (scene.sceneNr === 2)
 						f.m[i*n + j] = 0.5 + 0.5 * Math.sin(0.1 * scene.frameNr)
 					else
 						f.m[i*n + j] = 1.0;
@@ -651,8 +653,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		let my = y - bounds.top - canvas.clientTop;
 		mouseDown = true;
 
-		x = mx / cScale;
-		y = (canvas.height - my) / cScale;
+		x = mx / canvasScale;
+		y = (canvas.height - my) / canvasScale;
 
 		setObstacle(x,y, true);
 	}
@@ -662,8 +664,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			let bounds = canvas.getBoundingClientRect();
 			let mx = x - bounds.left - canvas.clientLeft;
 			let my = y - bounds.top - canvas.clientTop;
-			x = mx / cScale;
-			y = (canvas.height - my) / cScale;
+			x = mx / canvasScale;
+			y = (canvas.height - my) / canvasScale;
 			setObstacle(x,y, false);
 		}
 	}
