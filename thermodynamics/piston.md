@@ -3,7 +3,7 @@
 ## First law of thermodynamics
 <div class="header_line"><br/></div>
 
-{% include_relative code/Piston.html %}
+{% include_relative code/piston.html %}
 
 <p style="clear: both;"></p>
 

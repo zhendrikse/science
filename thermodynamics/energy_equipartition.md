@@ -10,7 +10,7 @@ ends up having the same expectation value of energy. You may want to watch
 [this wonderful video](https://www.youtube.com/watch?v=cTOlW0u1ZuI) that explains
 this principle in a very clear and understandable way.
 
-{% include_relative code/EnergyEquipartition.html %}
+{% include_relative code/energy_equipartition.html %}
 
 <p style="clear:both;"></p>
 

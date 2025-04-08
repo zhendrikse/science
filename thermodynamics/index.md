@@ -31,21 +31,21 @@ and the evolution of the world. &mdash;
 </div>
 <p style="clear: both;"></p>
 
-### Fluid simulation and adiabatic compression of an ideal gas
+### First law of thermodynamics and adiabatic expansion &amp; compression
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="fluid_layers.html">
-    <img alt="Hard sphere gas" src="images/fluid_layers.png" title="Click to animate"/>
+  <a href="piston.html">
+    <img alt="Adiabatic compression of an ideal gas" src="images/piston.png" title="Click to animate"/>
   </a>
-  <figcaption>A simulation that shows the separation of non-mixing fluids.</figcaption>
+  <figcaption>Adiabatic compression of an ideal gas.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="piston.html">
-    <img alt="Adiabatic compression" src="images/piston.png" title="Click to animate"/>
+    <img alt="Adiabatic expansion of an ideal gas" src="images/adiabatic_expansion.png" title="Click to animate"/>
   </a>
-  <figcaption>Adiabatic compression of an ideal gas.</figcaption>
+  <figcaption>Adiabatic expansion of an ideal gas.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

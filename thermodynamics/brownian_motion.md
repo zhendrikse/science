@@ -13,7 +13,7 @@ these distances will be normally distributed.
 
 <div class="header_line"><br/></div>
 
-{% include_relative code/BrownianMotion.html %}
+{% include_relative code/brownian_motion.html %}
 
 <p style="clear: both;"></p>
 

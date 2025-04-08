@@ -16,7 +16,7 @@ for a system containing a large number of identical non-interacting,
 non-relativistic classical particles in thermodynamic equilibrium.
 
 
-{% include_relative code/BoltzmannGas.html %}
+{% include_relative code/boltzmann_gas.html %}
 
 <p style="clear: both;"></p>
 
