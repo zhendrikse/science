@@ -17,8 +17,7 @@
 <input type = "checkbox" name = "field" id = "pressureButton" onclick = "scene.showPressure = !scene.showPressure;" checked> Pressure
 <input type = "checkbox" name = "field" id = "smokeButton" onclick = "scene.showSmoke = !scene.showSmoke;" checked> Smoke
 <input type = "checkbox" id = "overrelaxButton" onclick = "scene.overRelaxation = scene.overRelaxation == 1.0 ? 1.9 : 1.0" checked> Overrelax
-
-<canvas id="myCanvas" width="600" height="600" style="border: 1px solid orange;"></canvas>
+<canvas id="myCanvas" width="700" height="700" style="border: none;"></canvas>
 
 {% include_relative code/fluid_simulation.html %}
 
