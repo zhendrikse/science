@@ -7,7 +7,7 @@ $\bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{E} = 0, \bi
 
 where $v$ is the speed of light (i.e. phase velocity) in a medium with permeability $\mu$, and permittivity $\epsilon$.
 
-{% include_relative code/ElectromagneticWave.html %}
+{% include_relative code/electromagnetic_wave.html %}
 
 <p style="clear: both;"></p>
 

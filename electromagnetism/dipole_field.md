@@ -3,7 +3,7 @@
 ## Electric dipole field
 <div class="header_line"><br/></div>
 
-{% include_relative code/DipoleField.html %}
+{% include_relative code/dipole_field.html %}
 
 <p style="clear: both;"></p>
 

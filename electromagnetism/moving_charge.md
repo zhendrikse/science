@@ -3,7 +3,7 @@
 ## Movement of charged particle in electric field
 <div class="header_line"><br/></div>
 
-{% include_relative code/MovingCharge.html %}
+{% include_relative code/moving_charge.html %}
 
 <p style="clear: both;"></p>
 

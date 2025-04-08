@@ -7,7 +7,7 @@ The rod is modelled as a collection of point charges.
 The electric field arrows are colored <span style="color: red">red</span>.
 The magnetic field arrows are colored <span style="color: blue">blue</span>.
 
-{% include_relative code/ChargedRod.html %}
+{% include_relative code/charged_rod.html %}
 
 <p style="clear: both;"></p>
 
