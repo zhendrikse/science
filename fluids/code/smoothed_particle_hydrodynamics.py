@@ -43,7 +43,6 @@ class Particle:
         self._force = vec(0, -G, 0)
 
     def update_state(self, dam: bool):
-        # Reset previous position
         self._previous_position = vec(self._position)
 
         # Apply force using Newton's second law and Euler integration with mass = 1 and dt = 1
@@ -177,33 +176,20 @@ def create_pressure(particles: list[Particle]):
         particles (list[Particle]): list of particles
     """
     for particle in particles:
-        press_x = 0.0
-        press_y = 0.0
+        pressure = vec(0, 0, 0)
         for neighbor in particle.neighbors:
-            particle_to_neighbor = [
-                neighbor._position.x - particle._position.x,
-                neighbor._position.y - particle._position.y,
-            ]
-            distance = sqrt(particle_to_neighbor[0] ** 2 + particle_to_neighbor[1] ** 2)
+            particle_to_neighbor = neighbor._position - particle._position
+            distance = sqrt(dot(particle_to_neighbor, particle_to_neighbor))
             normal_distance = 1 - distance / R
             normal_distance_squared = normal_distance * normal_distance
             normal_distance_cubed = normal_distance_squared * normal_distance
 
-            total_pressure = (
-                                     particle.press + neighbor.press
-                             ) * normal_distance_squared + (
-                                     particle.press_near + neighbor.press_near
-                             ) * normal_distance_cubed
-            pressure_vector = [
-                particle_to_neighbor[0] * total_pressure / distance,
-                particle_to_neighbor[1] * total_pressure / distance,
-            ]
-            neighbor._force.x += pressure_vector[0]
-            neighbor._force.y += pressure_vector[1]
-            press_x += pressure_vector[0]
-            press_y += pressure_vector[1]
-        particle._force.x -= press_x
-        particle._force.y -= press_y
+            total_pressure = (particle.press + neighbor.press) * normal_distance_squared + (particle.press_near + neighbor.press_near) * normal_distance_cubed
+
+            pressure_vector = particle_to_neighbor * total_pressure / distance
+            neighbor._force += pressure_vector
+            pressure += pressure_vector
+        particle._force -= pressure
 
 
 def calculate_viscosity(particles: list[Particle]):
@@ -218,27 +204,16 @@ def calculate_viscosity(particles: list[Particle]):
 
     for particle in particles:
         for neighbor in particle.neighbors:
-            particle_to_neighbor = [neighbor._position.x - particle._position.x, neighbor._position.y - particle._position.y]
-            distance = sqrt(particle_to_neighbor[0] ** 2 + particle_to_neighbor[1] ** 2)
-            normal_p_to_n = [particle_to_neighbor[0] / distance, particle_to_neighbor[1] / distance]
+            particle_to_neighbor = neighbor._position - particle._position
+            distance = sqrt(dot(particle_to_neighbor, particle_to_neighbor))
+            normal_p_to_n = particle_to_neighbor / distance
 
             relative_distance = distance / R
-            velocity_difference = (particle._velocity.x - neighbor._velocity.x) * normal_p_to_n[0] + (particle._velocity.y - neighbor._velocity.y) * normal_p_to_n[1]
+            velocity_difference = dot(particle._velocity - neighbor._velocity, normal_p_to_n)
             if velocity_difference > 0:
-                viscosity_force = [
-                    (1 - relative_distance)
-                    * SIGMA
-                    * velocity_difference
-                    * normal_p_to_n[0],
-                    (1 - relative_distance)
-                    * SIGMA
-                    * velocity_difference
-                    * normal_p_to_n[1],
-                ]
-                particle._velocity.x -= viscosity_force[0] * 0.5
-                particle._velocity.y -= viscosity_force[1] * 0.5
-                neighbor._velocity.x += viscosity_force[0] * 0.5
-                neighbor._velocity.y += viscosity_force[1] * 0.5
+                viscosity_force = (1 - relative_distance) * SIGMA * velocity_difference * normal_p_to_n
+                particle._velocity -= viscosity_force * 0.5
+                neighbor._velocity += viscosity_force * 0.5
 
 
 def update(particles: list[Particle], dam: bool):
