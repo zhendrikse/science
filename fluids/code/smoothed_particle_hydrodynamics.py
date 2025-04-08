@@ -1,5 +1,5 @@
 #Web VPython 3.2
-from vpython import sqrt, simple_sphere, color, vec, rate, canvas, label, cylinder, slider
+from vpython import sqrt, simple_sphere, color, vec, rate, canvas, label, cylinder, slider, mag, dot
 
 title="""&#x2022; Original <a href="https://github.com/AlexandreSajus/Python-Fluid-Simulation">Python-Fluid-Simulation</a> code by <a href="https://github.com/AlexandreSajus">Alexandre Sajus</a>
 &#x2022; Ported to <a href="https://vpython.org">VPython</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>, see <a href="https://github.com/zhendrikse/science/blob/main/fluids/code/smoothed_particle_hydrodynamics.py">smoothed_particle_hydrodynamics.py</a>
@@ -30,94 +30,64 @@ VEL_DAMP = 0.5  # Velocity reduction factor when particles are going above MAX_V
 
 
 class Particle:
-    """
-    A single particle of the simulated fluid
-
-    Attributes:
-        x_pos: x position of the particle
-        y_pos: y position of the particle
-        previous_x_pos: x position of the particle in the previous frame
-        previous_y_pos: y position of the particle in the previous frame
-        visual_x_pos: x position of the particle that is shown on the screen
-        visual_y_pos: y position of the particle that is shown on the screen
-        rho: density of the particle
-        rho_near: near density of the particle, used to avoid collisions between particles
-        press: pressure of the particle
-        press_near: near pressure of the particle, used to avoid collisions between particles
-        neighbors: list of the particle's neighbors
-        x_vel: x velocity of the particle
-        y_vel: y velocity of the particle
-        x_force: x force applied to the particle
-        y_force: y force applied to the particle
-    """
-
     def __init__(self, x_pos: float, y_pos: float):
-        self.x_pos = x_pos
-        self.y_pos = y_pos
-        self.previous_x_pos = x_pos
-        self.previous_y_pos = y_pos
-        self.visual_x_pos = x_pos
-        self.visual_y_pos = y_pos
+        self._position = vec(x_pos, y_pos, 0)
+        self._previous_position = vec(x_pos, y_pos, 0)
+        self._visual_position = vec(x_pos, y_pos, 0)
         self.rho = 0.0
         self.rho_near = 0.0
         self.press = 0.0
         self.press_near = 0.0
         self.neighbors = []
-        self.x_vel = 0.0
-        self.y_vel = 0.0
-        self.x_force = 0.0
-        self.y_force = -G
+        self._velocity = vec(0, 0, 0)
+        self._force = vec(0, -G, 0)
 
     def update_state(self, dam: bool):
-        """
-        Updates the state of the particle
-        """
         # Reset previous position
-        self.previous_x_pos, self.previous_y_pos = self.x_pos, self.y_pos
+        self._previous_position = vec(self._position)
 
         # Apply force using Newton's second law and Euler integration with mass = 1 and dt = 1
-        self.x_vel, self.y_vel = self.x_vel + self.x_force, self.y_vel + self.y_force
+        self._velocity += self._force
 
         # Move particle according to its velocity using Euler integration with dt = 1
-        self.x_pos, self.y_pos = self.x_pos + self.x_vel, self.y_pos + self.y_vel
+        self._position += self._velocity
 
         # Set visual position. Visual position is the one shown on the screen
         # It is used to avoid unstable particles to be shown
-        self.visual_x_pos, self.visual_y_pos = self.x_pos, self.y_pos
+        self._visual_position = vec(self._position)
 
         # Reset force
-        self.x_force, self.y_force = 0.0, -G
+        self._force = vec(0, -G, 0)
 
         # Define velocity using Euler integration with dt = 1
-        self.x_vel, self.y_vel = self.x_pos - self.previous_x_pos, self.y_pos - self.previous_y_pos
+        self._velocity = self._position - self._previous_position
 
         # Calculate velocity
-        velocity = sqrt(self.x_vel * self.x_vel + self.y_vel * self.y_vel)
+        velocity = mag(self._velocity)
 
         # Reduces the velocity if it is too high
         if velocity > MAX_VEL:
-            self.x_vel *= VEL_DAMP
-            self.y_vel *= VEL_DAMP
+            self._velocity *= VEL_DAMP
 
         # Wall constraints, if a particle is out of bounds, create a spring force to bring it back
-        if self.x_pos < -SIM_W:
-            self.x_force -= (self.x_pos - -SIM_W) * WALL_DAMP
-            self.visual_x_pos = -SIM_W
+        if self._position.x < -SIM_W:
+            self._force.x -= (self._position.x - -SIM_W) * WALL_DAMP
+            self._visual_position.x = -SIM_W
 
         # Same thing as a wall constraint but for the dam that will move from dam to SIM_W
-        if dam and self.x_pos > DAM:
-            self.x_force -= (self.x_pos - DAM) * WALL_DAMP
+        if dam and self._position.x > DAM:
+            self._force.x -= (self._position.x - DAM) * WALL_DAMP
 
         # Same thing for the right wall
-        if self.x_pos > SIM_W:
-            self.x_force -= (self.x_pos - SIM_W) * WALL_DAMP
-            self.visual_x_pos = SIM_W
+        if self._position.x > SIM_W:
+            self._force.x -= (self._position.x - SIM_W) * WALL_DAMP
+            self._visual_position.x = SIM_W
 
         # Same thing but for the floor
-        if self.y_pos < BOTTOM:
+        if self._position.y < BOTTOM:
             # We use SIM_W instead of BOTTOM here because otherwise particles are too low
-            self.y_force -= (self.y_pos - SIM_W) * WALL_DAMP
-            self.visual_y_pos = BOTTOM
+            self._force.y -= (self._position.y - SIM_W) * WALL_DAMP
+            self._visual_position.y = BOTTOM
 
         # Reset density
         self.rho = 0.0
@@ -178,7 +148,7 @@ def calculate_density(particles: list[Particle]):
         # Density is calculated by summing the relative distance of neighboring particles
         for j in range(i + 1, len(particles)):
             particle_2 = particles[j]
-            distance = sqrt((particle_1.x_pos - particle_2.x_pos) ** 2 + (particle_1.y_pos - particle_2.y_pos) ** 2)
+            distance = sqrt(dot(particle_1._position - particle_2._position, particle_1._position - particle_2._position))
             if distance < R:
                 # normal distance is between 0 and 1
                 normal_distance = 1 - distance / R
@@ -211,8 +181,8 @@ def create_pressure(particles: list[Particle]):
         press_y = 0.0
         for neighbor in particle.neighbors:
             particle_to_neighbor = [
-                neighbor.x_pos - particle.x_pos,
-                neighbor.y_pos - particle.y_pos,
+                neighbor._position.x - particle._position.x,
+                neighbor._position.y - particle._position.y,
             ]
             distance = sqrt(particle_to_neighbor[0] ** 2 + particle_to_neighbor[1] ** 2)
             normal_distance = 1 - distance / R
@@ -228,12 +198,12 @@ def create_pressure(particles: list[Particle]):
                 particle_to_neighbor[0] * total_pressure / distance,
                 particle_to_neighbor[1] * total_pressure / distance,
             ]
-            neighbor.x_force += pressure_vector[0]
-            neighbor.y_force += pressure_vector[1]
+            neighbor._force.x += pressure_vector[0]
+            neighbor._force.y += pressure_vector[1]
             press_x += pressure_vector[0]
             press_y += pressure_vector[1]
-        particle.x_force -= press_x
-        particle.y_force -= press_y
+        particle._force.x -= press_x
+        particle._force.y -= press_y
 
 
 def calculate_viscosity(particles: list[Particle]):
@@ -248,12 +218,12 @@ def calculate_viscosity(particles: list[Particle]):
 
     for particle in particles:
         for neighbor in particle.neighbors:
-            particle_to_neighbor = [neighbor.x_pos - particle.x_pos, neighbor.y_pos - particle.y_pos]
+            particle_to_neighbor = [neighbor._position.x - particle._position.x, neighbor._position.y - particle._position.y]
             distance = sqrt(particle_to_neighbor[0] ** 2 + particle_to_neighbor[1] ** 2)
             normal_p_to_n = [particle_to_neighbor[0] / distance, particle_to_neighbor[1] / distance]
 
             relative_distance = distance / R
-            velocity_difference = (particle.x_vel - neighbor.x_vel) * normal_p_to_n[0] + (particle.y_vel - neighbor.y_vel) * normal_p_to_n[1]
+            velocity_difference = (particle._velocity.x - neighbor._velocity.x) * normal_p_to_n[0] + (particle._velocity.y - neighbor._velocity.y) * normal_p_to_n[1]
             if velocity_difference > 0:
                 viscosity_force = [
                     (1 - relative_distance)
@@ -265,10 +235,10 @@ def calculate_viscosity(particles: list[Particle]):
                     * velocity_difference
                     * normal_p_to_n[1],
                 ]
-                particle.x_vel -= viscosity_force[0] * 0.5
-                particle.y_vel -= viscosity_force[1] * 0.5
-                neighbor.x_vel += viscosity_force[0] * 0.5
-                neighbor.y_vel += viscosity_force[1] * 0.5
+                particle._velocity.x -= viscosity_force[0] * 0.5
+                particle._velocity.y -= viscosity_force[1] * 0.5
+                neighbor._velocity.x += viscosity_force[0] * 0.5
+                neighbor._velocity.y += viscosity_force[1] * 0.5
 
 
 def update(particles: list[Particle], dam: bool):
@@ -300,7 +270,7 @@ display = canvas(title=title, width=600, height=300, color=color.gray(0.075), ra
 water = start(-SIM_W, DAM, BOTTOM, 0.03, N)
 droplets = []
 for particle_ in water:
-    position = vec(particle_.x_pos, particle_.y_pos, 0)
+    position = vec(particle_._position)
     droplets.append(simple_sphere(color=color.blue, pos=position, radius=0.03, shininess=0))
 
 clock = label(pos=vec(0, .75, 0), text="Breaking dam in 0:00", box=False, color=color.yellow)
@@ -327,6 +297,6 @@ while True:
 
     update(water, dam_built)
     for i in range(len(water)):
-        droplets[i].pos = vec(water[i].x_pos, water[i].y_pos, 0)
+        droplets[i].pos = vec(water[i]._position)
 
     step += 1
