@@ -3,7 +3,7 @@
 ## Bouncing particles
 <div class="header_line"><br/></div>
 
-{% include_relative code/BouncingParticles.html %}
+{% include_relative code/bouncing_particles.html %}
 
 <p style="clear: both;"></p>
 

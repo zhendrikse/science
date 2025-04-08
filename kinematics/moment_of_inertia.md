@@ -3,7 +3,7 @@
 ## Moment of inertia
 <div class="header_line"><br/></div>
 
-{% include_relative code/MomentOfInertia.html %}
+{% include_relative code/moment_of_inertia.html %}
 
 <p style="clear: both;"></p>
 

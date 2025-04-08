@@ -3,7 +3,7 @@
 from vpython import rate, canvas, box, color, vector, graph, gcurve, textures
 
 title = """&#x2022; Based on original <a href="https://github.com/gcschmit/vpython-physics/blob/master/buoyancy/buoyancy.py">buoyancy.py</a>
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/floating_block">floating_block.py</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/floating_block.py">floating_block.py</a>
 
 """
 

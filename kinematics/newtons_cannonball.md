@@ -5,7 +5,7 @@
 
 Which velocity is needed to shoot a cannonball into orbit?
 
-{% include_relative code/NewtonsCannonball.html %}
+{% include_relative code/newtons_cannonball.html %}
 
 <p style="clear: both;"></p>
 

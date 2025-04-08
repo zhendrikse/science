@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 Download the [block_rotation.py](code/block_rotation.py) source code
-{% include_relative code/BlockRotation.html %}
+{% include_relative code/block_rotation.html %}
 
 <p style="clear: both;"></p>
 

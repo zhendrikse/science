@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 Download the [sliding_ramp.py](code/sliding_ramp.py) source code
-{% include_relative code/SlidingRamp.html %}
+{% include_relative code/sliding_ramp.html %}
 
 <p style="clear: both;"></p>
 

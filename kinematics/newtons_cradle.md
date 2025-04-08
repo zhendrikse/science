@@ -3,7 +3,7 @@
 ## Newton&apos;s cradle
 <div class="header_line"><br/></div>
 
-{% include_relative code/NewtonsCradle.html %}
+{% include_relative code/newtons_cradle.html %}
 
 <p style="clear: both;"></p>
 

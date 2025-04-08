@@ -3,7 +3,7 @@
 ## Modelling a chain drop from table
 <div class="header_line"><br/></div>
 
-{% include_relative code/ChainDrop.html %}
+{% include_relative code/chain_drop.html %}
 
 <p style="clear: both;"></p>
 
