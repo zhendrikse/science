@@ -23,4 +23,21 @@
 </div>
 <p style="clear: both;"></p>
 
+### Fluid simulation
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="code/fluid_simulation.html">
+    <img alt="Fluid simulation" src="images/fluid_simulation.png" title="Click to animate"/>
+  </a>
+  <figcaption>A fluid simulation in pure Javascript.</figcaption>
+</figure>
+<figure class="right_image">
+    <!-- SPACE RESERVED FOR FUTURE APPLICATIONS 
+      -->
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}
