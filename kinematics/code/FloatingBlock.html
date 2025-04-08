@@ -52,7 +52,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, animation, fluid, floating_object, graphs, buoyance_curve, drag_force_curve, dragCoefficient, g, t, dt, mass, gravitational_force, drag_force, buoyance_force, net_force, acceleration;
+    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, wooden_block, fluid, graphs, buoyancy_curve, drag_force_curve, dragCoefficient, g, t, dt, net_force;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -64,83 +64,238 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
+    "8";
+    title = "&#x2022; Based on original <a href=\"https://github.com/gcschmit/vpython-physics/blob/master/buoyancy/buoyancy.py\">buoyancy.py<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/kinematics/code/floating_block\">floating_block.py</a>\n\n";
     "10";
-    title = "Floating block\n\n&#x2022; Based on original <a href=\"https://github.com/gcschmit/vpython-physics/blob/master/buoyancy/buoyancy.py\">buoyancy.py<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/kinematics/code/floating_block\">floating_block.py</a>\n\n";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), forward: vector(1["-u"]()["*"](.52), 1["-u"]()["*"](.67), 1["-u"]()["*"](.52)), range: 2, width: 600, height: 600})]);
     "12";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), forward: vector(1["-u"]()["*"](.52), 1["-u"]()["*"](.67), 1["-u"]()["*"](.52)), range: 2})]);
-    "14";
-    async function submerged_volume(object, fluid) {
-        var ρσ_ls, top_of_fluid, top_of_object, bottom_of_object, height_submerged;
-        "15";
-        top_of_fluid = fluid.pos.y["+"](fluid.size.y["/"](2));
-        "16";
-        top_of_object = object.pos.y["+"](object.size.y["/"](2));
-        "17";
-        bottom_of_object = object.pos.y["-"](1["*"](object.size.y)["/"](2));
-        "19";
-        if (top_of_object["<="](top_of_fluid)) {
-            "20";
-            height_submerged = object.size.y;
-            "21";
-        } else if (bottom_of_object[">="](top_of_fluid)) {
-            "22";
-            height_submerged = 0;
-            "23";
-        } else {
-            "24";
-            height_submerged = top_of_fluid["-"](1["*"](bottom_of_object));
+    function WoodenBlock() {;
+    }
+    WoodenBlock.prototype.__init__ = async function __init__() {
+        var self = this;
+        var density = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.density : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "density")){
+            density = ρσ_kwargs_obj.density;
         }
-        "26";
-        return object.size.x["*"](height_submerged)["*"](object.size.z);
+        "14";
+        self._block = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: textures.wood, size: vector(.4, .4, .1)})]);
+        "15";
+        self._density = density;
+        "16";
+        self._velocity = vector(0, 0, 0);
     };
-    if (!submerged_volume.__argnames__) Object.defineProperties(submerged_volume, {
-        __argnames__ : {value: ["object", "fluid"]},
+    if (!WoodenBlock.prototype.__init__.__defaults__) Object.defineProperties(WoodenBlock.prototype.__init__, {
+        __defaults__ : {value: {density:500}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["density"]},
         __module__ : {value: null}
     });
-
-    "29";
-    fluid = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({size: vector(2, 2, .75), color: color.green, opacity: .3, density: 1e3})]);
-    "30";
-    floating_object = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), v: vector(0, 0, 0), color: color.red, density: 500, size: vector(.4, .4, .1)})]);
-    "32";
-    graphs = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Buyoancy"})]);
-    "33";
-    buoyance_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.magenta})]);
-    "34";
-    drag_force_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.blue})]);
-    "36";
-    dragCoefficient = vector(0, 1["-u"]()["*"](5), 0);
-    "37";
-    g = vector(0, 1["-u"]()["*"](9.8), 0);
-    "39";
-    t = 0;
-    "40";
-    dt = .001;
-    "41";
-    while (t["<"](20) && floating_object.pos.y[">"](fluid.pos.y["-"](1["*"](fluid.size.y)["/"](2)))) {
-        "42";
-        (await rate(1["/"](dt)));
-        "44";
-        mass = floating_object.density["*"](floating_object.size.x)["*"](floating_object.size.y)["*"](floating_object.size.z);
+    WoodenBlock.__argnames__ = WoodenBlock.prototype.__init__.__argnames__;
+    WoodenBlock.__handles_kwarg_interpolation__ = WoodenBlock.prototype.__init__.__handles_kwarg_interpolation__;
+    WoodenBlock.prototype.pos = async function pos() {
+        var self = this;
+        "19";
+        return self._block.pos;
+    };
+    if (!WoodenBlock.prototype.pos.__module__) Object.defineProperties(WoodenBlock.prototype.pos, {
+        __module__ : {value: null}
+    });
+    WoodenBlock.prototype.buoyancy_force = async function buoyancy_force(water) {
+        var self = this;
+        "22";
+        return (await water.density())["*"](1["-u"]())["*"](g)["*"]((await self._submerged_volume(water)));
+    };
+    if (!WoodenBlock.prototype.buoyancy_force.__argnames__) Object.defineProperties(WoodenBlock.prototype.buoyancy_force, {
+        __argnames__ : {value: ["water"]},
+        __module__ : {value: null}
+    });
+    WoodenBlock.prototype.drag_force = async function drag_force() {
+        var self = this;
+        "25";
+        return dragCoefficient["*"](self._velocity.y);
+    };
+    if (!WoodenBlock.prototype.drag_force.__module__) Object.defineProperties(WoodenBlock.prototype.drag_force, {
+        __module__ : {value: null}
+    });
+    WoodenBlock.prototype.net_force_in = async function net_force_in(water) {
+        var self = this;
+        var ρσ_ls, gravitational_force;
+        "28";
+        gravitational_force = (await self._mass())["*"](g);
+        "29";
+        return (await self.buoyancy_force(water))["+"](gravitational_force)["+"]((await self.drag_force()));
+    };
+    if (!WoodenBlock.prototype.net_force_in.__argnames__) Object.defineProperties(WoodenBlock.prototype.net_force_in, {
+        __argnames__ : {value: ["water"]},
+        __module__ : {value: null}
+    });
+    WoodenBlock.prototype._mass = async function _mass() {
+        var self = this;
+        "32";
+        return self._density["*"](self._block.size.x)["*"](self._block.size.y)["*"](self._block.size.z);
+    };
+    if (!WoodenBlock.prototype._mass.__module__) Object.defineProperties(WoodenBlock.prototype._mass, {
+        __module__ : {value: null}
+    });
+    WoodenBlock.prototype._submerged_volume = async function _submerged_volume(water) {
+        var self = this;
+        var ρσ_ls, top_of_fluid, top_of_object, bottom_of_object, height_submerged;
+        "35";
+        top_of_fluid = (await water.pos()).y["+"]((await water.size()).y["/"](2));
+        "36";
+        top_of_object = (await self.pos()).y["+"](self._block.size.y["/"](2));
+        "37";
+        bottom_of_object = (await self.pos()).y["-"](1["*"](self._block.size.y)["/"](2));
+        "39";
+        if (top_of_object["<="](top_of_fluid)) {
+            "40";
+            height_submerged = self._block.size.y;
+            "41";
+        } else if (bottom_of_object[">="](top_of_fluid)) {
+            "42";
+            height_submerged = 0;
+            "43";
+        } else {
+            "44";
+            height_submerged = top_of_fluid["-"](1["*"](bottom_of_object));
+        }
         "46";
-        gravitational_force = mass["*"](g);
-        "47";
-        drag_force = dragCoefficient["*"](floating_object.v.y);
-        "48";
-        buoyance_force = fluid.density["*"](1["-u"]())["*"](g)["*"]((await submerged_volume(floating_object, fluid)));
+        return self._block.size.x["*"](height_submerged)["*"](self._block.size.z);
+    };
+    if (!WoodenBlock.prototype._submerged_volume.__annotations__) Object.defineProperties(WoodenBlock.prototype._submerged_volume, {
+        __annotations__ : {value: {water: box}},
+        __argnames__ : {value: ["water"]},
+        __module__ : {value: null}
+    });
+    WoodenBlock.prototype.time_lapse = async function time_lapse(dt) {
+        var self = this;
+        var ρσ_ls, acceleration;
+        "49";
+        acceleration = net_force["/"]((await self._mass()));
         "50";
-        net_force = buoyance_force["+"](gravitational_force)["+"](drag_force);
+        self._velocity=self._velocity["+"](acceleration["*"](dt));
         "51";
-        acceleration = net_force["/"](mass);
-        "52";
-        floating_object.v=floating_object.v["+"](acceleration["*"](dt));
-        "53";
-        floating_object.pos=floating_object.pos["+"](floating_object.v["*"](dt));
+        self._block.pos=self._block.pos["+"](self._velocity["*"](dt));
+    };
+    if (!WoodenBlock.prototype.time_lapse.__argnames__) Object.defineProperties(WoodenBlock.prototype.time_lapse, {
+        __argnames__ : {value: ["dt"]},
+        __module__ : {value: null}
+    });
+    WoodenBlock.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    WoodenBlock.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(WoodenBlock.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+
+
+    "53";
+    function Liquid() {;
+    }
+    Liquid.prototype.__init__ = async function __init__() {
+        var self = this;
+        var density = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.density : arguments[0];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "density")){
+            density = ρσ_kwargs_obj.density;
+        }
         "55";
-        buoyance_curve.plot(t, buoyance_force.y);
+        self._liquid = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({size: vector(2, 2, .75), color: color.blue, opacity: .3})]);
         "56";
-        drag_force_curve.plot(t, drag_force.y);
-        "58";
+        self._density = density;
+    };
+    if (!Liquid.prototype.__init__.__defaults__) Object.defineProperties(Liquid.prototype.__init__, {
+        __defaults__ : {value: {density:1e3}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["density"]},
+        __module__ : {value: null}
+    });
+    Liquid.__argnames__ = Liquid.prototype.__init__.__argnames__;
+    Liquid.__handles_kwarg_interpolation__ = Liquid.prototype.__init__.__handles_kwarg_interpolation__;
+    Liquid.prototype.density = async function density() {
+        var self = this;
+        "59";
+        return self._density;
+    };
+    if (!Liquid.prototype.density.__module__) Object.defineProperties(Liquid.prototype.density, {
+        __module__ : {value: null}
+    });
+    Liquid.prototype.size = async function size() {
+        var self = this;
+        "62";
+        return self._liquid.size;
+    };
+    if (!Liquid.prototype.size.__module__) Object.defineProperties(Liquid.prototype.size, {
+        __module__ : {value: null}
+    });
+    Liquid.prototype.pos = async function pos() {
+        var self = this;
+        "65";
+        return self._liquid.pos;
+    };
+    if (!Liquid.prototype.pos.__module__) Object.defineProperties(Liquid.prototype.pos, {
+        __module__ : {value: null}
+    });
+    Liquid.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    Liquid.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(Liquid.prototype, "__bases__", {value: []});
+
+
+
+
+
+    "68";
+    _GS_1 = new WoodenBlock;
+    (await _GS_1.__init__());
+    wooden_block = _GS_1;
+    "69";
+    _GS_1 = new Liquid;
+    (await _GS_1.__init__());
+    fluid = _GS_1;
+    "71";
+    display.append_to_caption("\n\n");
+    "72";
+    graphs = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Buoyancy (magenta) and drag (blue) forces", background: color.black, xtitle: "Time", ytitle: "Force"})]);
+    "73";
+    buoyancy_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.magenta})]);
+    "74";
+    drag_force_curve = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.blue})]);
+    "76";
+    dragCoefficient = vector(0, 1["-u"]()["*"](5), 0);
+    "77";
+    g = vector(0, 1["-u"]()["*"](9.8), 0);
+    "79";
+    t = 0;
+    "80";
+    dt = .001;
+    "81";
+    while (t["<"](20) && (await wooden_block.pos()).y[">"]((await fluid.pos()).y["-"](1["*"]((await fluid.size()).y)["/"](2)))) {
+        "82";
+        (await rate(1["/"](dt)));
+        "84";
+        net_force = (await wooden_block.net_force_in(fluid));
+        "85";
+        (await wooden_block.time_lapse(dt));
+        "87";
+        buoyancy_curve.plot(t, (await wooden_block.buoyancy_force(fluid)).y);
+        "88";
+        drag_force_curve.plot(t, (await wooden_block.drag_force()).y);
+        "90";
         t=t["+"](dt);
     }
 };
