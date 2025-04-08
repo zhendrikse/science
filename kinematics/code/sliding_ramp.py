@@ -4,7 +4,7 @@ from vpython import vertex, quad, triangle, radians, rate, vec, color, tan, cos,
 title = """Ball rolling from sliding ramp with friction
 
 &#x2022; Based on original <a href="https://github.com/Physics-Morris/Physics-Vpython/blob/master/1_Moving_Wedge.py">1_Moving_Wedge.py</a>
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/sliding_ramp.py">sliding_ramp.py</a>
 
 """
 

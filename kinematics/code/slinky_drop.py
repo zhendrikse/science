@@ -6,7 +6,7 @@ title = """Click to drop slinky and ball
 
 &#x2022; Original by <a href="https://trinket.io/glowscript/e5f14ebee1">Rhett Allain</a>
 &#x2022; Belongs to <a href="https://rhettallain.com/2019/02/06/modeling-a-falling-slinky/">this article</a> 
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/kinematics/code/slinky_drop.py">slinky_drop.py</a>
 
 """
 
