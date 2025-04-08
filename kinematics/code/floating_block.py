@@ -45,7 +45,7 @@ class WoodenBlock:
 
         return self._block.size.x * height_submerged * self._block.size.z
 
-    def time_lapse(self, dt):
+    def move_due_to(self, net_force, dt):
         acceleration = net_force / self._mass()
         self._velocity += + acceleration * dt
         self._block.pos += self._velocity * dt
@@ -81,8 +81,7 @@ dt = 0.001
 while t < 20 and wooden_block.pos().y > (fluid.pos().y - fluid.size().y / 2):
     rate(1 / dt)
 
-    net_force = wooden_block.net_force_in(fluid)
-    wooden_block.time_lapse(dt)
+    wooden_block.move_due_to(wooden_block.net_force_in(fluid), dt)
 
     buoyancy_curve.plot(t, wooden_block.buoyancy_force(fluid).y)
     drag_force_curve.plot(t, wooden_block.drag_force().y)
