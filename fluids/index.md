@@ -1,7 +1,7 @@
 {% include breadcrumbs.html %}
 
 <a name="fluids"></a>
-# Fluid simulations
+# Computational fluid dynamics
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
 ### Non-mixing fluids and smoothed particle hydrodynamics
