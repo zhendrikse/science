@@ -17,15 +17,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <input type = "checkbox" onclick = "scene.showGrid = !scene.showGrid"> Grid &nbsp;
 <input type = "checkbox" checked onclick = "scene.compensateDrift = !scene.compensateDrift"> Compensate Drift &nbsp;
 <input type = "checkbox" checked onclick = "scene.separateParticles = !scene.separateParticles"> Separate Particles &nbsp;
-PIC
-<input type = "range" min = "0" max = "10" value = "9" class = "slider" onchange="scene.flipRatio = 0.1 * this.value"> FLIP
+
+PIC <input type = "range" min = "0" max = "10" value = "9" class = "slider" onchange="scene.flipRatio = 0.1 * this.value"> FLIP
 <canvas id="myCanvas" width="650" height="650" style="border: none;"></canvas>
 <script>
 
 	var canvas = document.getElementById("myCanvas");
 	var gl = canvas.getContext("webgl");
-	canvas.width = window.innerWidth - 20;
-	canvas.height = window.innerHeight - 20;
 
 	canvas.focus();
 
