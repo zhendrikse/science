@@ -13,54 +13,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
-<!DOCTYPE html>
-<html>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<head>
-		<title>Euler Fluid</title>
-		<style>
-			body {
-				font-family: verdana;
-				font-size: 15px;
-			}
-			.button {
-				background-color: #606060;
-				border: none;
-				color: white;
-				padding: 10px 10px;
-				font-size: 16px;
-				margin: 4px 2px;
-				cursor: pointer;
-			}
-			.slider {
-				-webkit-appearance: none;
-				width: 80px;
-				height: 6px;
-				border-radius: 5px;
-				background: #d3d3d3;
-				outline: none;
-				opacity: 0.7;
-				-webkit-transition: .2s;
-				transition: opacity .2s;
-			}
-		</style>
-	</head>
-
-<body>
-
-	<button class="button" onclick="setupScene(1)">Wind Tunnel</button>
-	<button class="button" onclick="setupScene(3)">Hires Tunnel</button>
-	<button class="button" onclick="setupScene(0)">Tank</button>
-	<button class="button" onclick="setupScene(2)">Paint</button>
-	<input type = "checkbox" id = "streamButton" onclick = "scene.showStreamlines = !scene.showStreamlines">Streamlines
-	<input type = "checkbox" id = "velocityButton" onclick = "scene.showVelocities = !scene.showVelocities">Velocities
-	<input type = "checkbox" name = "field" id = "pressureButton" onclick = "scene.showPressure = !scene.showPressure;"> Pressure
-	<input type = "checkbox" name = "field" id = "smokeButton" onclick = "scene.showSmoke = !scene.showSmoke;" checked>Smoke
-	<input type = "checkbox" id = "overrelaxButton" onclick = "scene.overRelaxation = scene.overRelaxation == 1.0 ? 1.9 : 1.0" checked>Overrelax
-	<br>
-	<canvas id="myCanvas" style="border:2px solid"></canvas>
-
 <script>
 
 	var canvas = document.getElementById("myCanvas");
@@ -776,5 +728,3 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	update();
 
 </script>
-</body>
-</html>
