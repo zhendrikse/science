@@ -28,7 +28,7 @@
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="code/fluid_simulation.html">
+  <a href="fluid_simulation.html">
     <img alt="Fluid simulation" src="images/fluid_simulation.png" title="Click to animate"/>
   </a>
   <figcaption>A fluid simulation in pure Javascript.</figcaption>

@@ -3,7 +3,7 @@
 ## Smoothed Particle Hydrodynamics (SPH)
 <div class="header_line"><br/></div>
 
-{% include_relative code/SmoothedParticleHydrodynamics.html %}
+{% include_relative code/smoothed_particle_hydrodynamics.html %}
 
 <p style="clear: both;"></p>
 
