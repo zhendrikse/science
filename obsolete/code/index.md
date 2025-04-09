@@ -7,6 +7,7 @@
 - [`charged_rings.py` source code](charged_rings.py)
 - [`cubic_crystal.py` source code](cubic_crystal.py)
 - [`disk_builder.py` source code](disk_builder.py)
+- [`dla_2d.py` source code](dla_2d.py)
 - [`newtons_cradle.py` source code](newtons_cradle.py)
 - [`point_charge.py` source code](point_charge.py)
 - [`relativistic_proton.py` source code](relativistic_proton.py)

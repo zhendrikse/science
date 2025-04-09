@@ -1,27 +1,18 @@
 #Web VPython 3.2
-""" From "COMPUTATIONAL PHYSICS" & "COMPUTER PROBLEMS in PHYSICS"
- by RH Landau, MJ Paez, and CC Bordeianu (deceased)
-  Copyright R Landau, Oregon State Unv, MJ Paez, Univ Antioquia,
-  C Bordeianu, Univ Bucharest, 2018.
-  Please respect copyright & acknowledge our work."""
+from vpython import rate, random, pi, box, color, vec, sqrt, vector, floor, mag, canvas, cos, sin, graph, gcurve
 
-title = """&#x2022; Based on <a href="https://sites.science.oregonstate.edu/~landaur/Books/Problems/Codes/VisualCodes(old)/DLAVis.py">DLA.py</a>
-&#x2022; From <a href="https://books.google.nl/books/about/Computational_Problems_for_Physics.html?id=g9tdDwAAQBAJ">Computational Problems for Physics</a> by RH Landau, MJ Paez, and CC Bordeianu.
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/dla/code/dla_2d.py">dla_2d.py</a>
+title="""&#x2022; Based on <a href="https://github.com/ksenia007/dlaCluster/blob/master/DLAcluster.py">DLAcluster.py</a>
+&#x2022; Refactored, extended, and ported to <a href="https://vpython.org/">VPython</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>, see <a href="https://github.com/zhendrikse/science/blob/main/dla/code/dla_2d.py">dla_2d.py</a>
 
 """
 
-from vpython import simple_sphere, vector, ring, color, rate, sin, cos, sqrt, pi, log, canvas, random, checkbox, slider, dot, sphere, floor
+radius = 150
+square_size = radius * 2 + 5
+display = canvas(width=600, height=600, color=color.gray(0.075), center=vec(1, 1, 0) * square_size / 2, range=radius, title=title)
 
-display = canvas(width=600, height=600, title=title, range=40, center=vector(0, 0, 15), background=color.gray(0.075))
-
-# Box-Muller transform to create a normal distribution
-def gauss(mu, sigma):
-    u1 = random()
-    u2 = random()
-    vt = sqrt(-2 * log(u1)) * cos(2 * pi * u2)
-    vt *= sigma + mu
-    return vt
+display.append_to_caption("\n")
+graph(title="Walker data", xtitle="Released walkers", ytitle="Glued walkers", background=color.black, width=600)
+plot = gcurve(color=color.cyan)
 
 def scientific_color_code(value, min_value, max_value):
     color_value = min(max(value, min_value), max_value - 0.0001)
@@ -40,61 +31,116 @@ def scientific_color_code(value, min_value, max_value):
         return vector(1.0, 1.0 - color_value, 0.0)
 
 
-radius, grid_size = 40., 60
-grid = [[0 for _ in range(grid_size)] for _ in range(grid_size)]  # Particle locations, 1=occupied
-ring(pos=vector(0, 0, 0), axis=vector(0, 0, 1), radius=radius, thickness=0.25, color=color.cyan)
-grid[grid_size // 2][grid_size // 2] = 1  # Particle in center
-simple_sphere(pos=vector(4 * (grid_size // 2) / 3 - radius, -4 * (grid_size // 2) / 3 + radius, 0), radius=.8, color=scientific_color_code(0, 0, 1))
-ball = simple_sphere(radius=0.8)  # Moving ball
+def check_around(location, matrix):
+    found_friend = False  # found another particle
+    exit_circle = False  # reached the required radius
+    near_edge = False  # near the edge of the field
 
-show_start_points = False
-def toggle_start_points(event):
-    global show_start_points
-    show_start_points = event.checked
+    # Check if a walker is near the edge
+    if (location[1] + 1) > square_size - 1 or (location[1] - 1) < 1 or (location[0] + 1) > square_size - 1 or (location[0] - 1) < 1:
+        near_edge = True
 
-frame_rate = 10000
-def change_frame_rate(event):
-    global frame_rate
-    frame_rate = event.value
+    # If not near the edge, check if the walker is near a neighbor or reached the required radius
+    # location[1]=row, location[2]=column
+    if not near_edge:
+        neighbor_down = matrix[location[1] + 1][location[0]]
+        if neighbor_down == 1:
+            found_friend = True
+        if neighbor_down == 2:
+            exit_circle = True
 
-display.append_to_caption("\nStart points ")
-_ = checkbox(bind=toggle_start_points, checked=show_start_points)
-display.append_to_caption("\n\nFrame rate")
-_ = slider(min=5, max=frame_rate, value=frame_rate, bind=change_frame_rate)
+        neighbor_up = matrix[location[1] - 1][location[0]]
+        if neighbor_up == 1:
+            found_friend = True
+        if neighbor_up == 2:
+            exit_circle = True
 
+        neighbor_right = matrix[location[1]][location[0] + 1]
+        if neighbor_right == 1:
+            found_friend = True
+        if neighbor_right == 2:
+            exit_circle = True
 
-def neighbor_cell_is_occupied(i, j):
-    return (grid[i + 1][j] + grid[i - 1][j] + grid[i][j + 1] + grid[i][j - 1]) >= 1
-    #return (grid[xg + 1][yg] + grid[xg - 1][yg] + grid[xg][yg + 1] + grid[xg][yg - 1] + grid[xg + 1][yg + 1] + grid[xg -1][yg - 1] + grid[xg + 1][yg - 1] + grid[xg - 1][yg + 1]) >= 1
+        neighbor_left = matrix[location[1]][location[0] - 1]
+        if neighbor_left == 1:
+            found_friend = True
+        if neighbor_left == 2:
+            exit_circle = True
 
-
-running = True
-while running:
-    hit = False
-    angle = 2. * pi * random()
-    pos = radius * vector(cos(angle), sin(angle), 0)
-    max_distance = abs(int(gauss(0, 20000)))  # Length of walk
-
-    if show_start_points:
-        simple_sphere(pos=pos, color=scientific_color_code(1, 0, 1), radius=.4)
-
-    traveling_distance = 0
-    while not hit and abs(pos.x) < radius and abs(pos.y) < radius and traveling_distance < abs(max_distance):
-        step = 1 if random() < 0.5 else -1
-        xg, yg = int((pos.x * sqrt(2) + grid_size)/ 2), int((pos.y * sqrt(2) + grid_size) / 2)
-
-        if neighbor_cell_is_occupied(xg, yg):
-            hit = True  # Ball hits fixed ball
-            grid[xg][yg] = 1  # Position now occupied
-            distance = dot(pos, pos) / (radius * radius)
-            running = distance < 1.05
-            sphere(pos=vector(pos), radius=0.8, color=scientific_color_code(distance, 0, 1))
+    # After checking locations, if locations are good, start the random walk
+    if not found_friend and not near_edge:
+        decide = random()
+        if decide < 0.25:
+            location = [location[0] - 1, location[1]]
+        elif decide < 0.5:
+            location = [location[0] + 1, location[1]]
+        elif decide < 0.75:
+            location = [location[0], location[1] + 1]
         else:
-            step = 1 if random() < 0.5 else -1
-            if random() < 0.5:
-                pos.x += step
+            location = [location[0], location[1] - 1]
+
+    return location, found_friend, near_edge, exit_circle
+
+
+def random_location_on_ring(seed_x, seed_y):
+    theta = 2 * pi * random() #generate random theta
+    x= int(radius * cos(theta)) + seed_x
+    y= int(radius * sin(theta)) + seed_y
+    return [x, y]
+
+
+def dla_cluster():
+    # note - we add 2 to the parameters to get a thick broder between the edges of the disk and square
+    seed_x = radius + 2
+    seed_y = radius + 2
+
+    matrix = [[0 for _ in range(square_size)] for _ in range(square_size)]
+
+    for row in range(0, square_size):
+        for col in range(0, square_size):
+            if row == seed_y and col == seed_x:
+                # put a seed particle at the center
+                matrix[row][col] = 1
+                box(pos=vec(row, col, 0), color=scientific_color_code(0, 0, square_size))
+            elif mag(vec(seed_x - col, seed_y - row, 0)) > radius:
+                # define field outside of circle
+                box(pos=vec(row, col, 0), color=color.black, shininess=0)
+                matrix[row][col] = 2
+
+    added_walkers_count = random_walkers_count = 0
+    complete_cluster = False
+
+    while not complete_cluster:
+        random_walkers_count += 1
+        location = random_location_on_ring(seed_x, seed_y)
+
+        found_friend = False  # not near other particle
+        near_edge = False  # not near the edge of the field
+        exit_circle = False
+        while not found_friend and not near_edge:
+            location_new, found_friend, near_edge, exit_circle = check_around(location, matrix)
+
+            if found_friend:
+                rate(10000) # Refresh screen
+                matrix[location[1]][location[0]] = 1
+                screen_pos = vec(location[0], location[1], 0)
+                distance = mag(screen_pos -.5 * vec(square_size, square_size, 0))
+                box(pos=screen_pos, color=scientific_color_code(distance, 0, .5 * square_size))
+                added_walkers_count += 1
             else:
-                pos.y += step
-            ball.pos = vector(pos.x, pos.y, 0)
-            rate(frame_rate)  # Change ball speed
-        traveling_distance += 1  # increments distance, < dist
+                location = location_new
+
+        if random_walkers_count == 400000:
+            complete_cluster = True
+
+        if found_friend and exit_circle:
+            complete_cluster = True
+
+        plot.plot(random_walkers_count, added_walkers_count)
+
+    return added_walkers_count, matrix
+
+
+mass, cluster = dla_cluster()
+while True:
+    rate(10)

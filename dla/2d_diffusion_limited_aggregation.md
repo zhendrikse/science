@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Three-dimensional diffusion limited aggregation
+## Two-dimensional diffusion limited aggregation
 <div class="header_line"><br/></div>
 
 {% include_relative code/dla_2d.html %}
