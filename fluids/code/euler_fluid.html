@@ -43,8 +43,6 @@ const U_FIELD = 0; // x-component of velocity
 const V_FIELD = 1; // y-component of velocity
 const S_FIELD = 2; // smoke field
 
-let cnt = 0;
-
 function scaleX(x) {
     return x * canvasScale;
 }
@@ -580,8 +578,8 @@ function draw() {
 }
 
 function setObstacle(x, y, reset) {
-    var vx = 0.0;
-    var vy = 0.0;
+    let vx = 0.0;
+    let vy = 0.0;
 
     if (!reset) {
         vx = (x - scene.obstacleX) / scene.dt;
@@ -619,7 +617,7 @@ function setObstacle(x, y, reset) {
 
 // interaction -------------------------------------------------------
 
-var mouseDown = false;
+let mouseDown = false;
 
 function startDrag(x, y) {
     let bounds = canvas.getBoundingClientRect();
