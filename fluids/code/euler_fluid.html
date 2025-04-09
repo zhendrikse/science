@@ -407,201 +407,186 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     // draw -------------------------------------------------------
 
-    function getSciColor(value, minVal, maxVal) {
+    function scientificColorCodingFor(value, minVal, maxVal) {
         value = Math.min(Math.max(value, minVal), maxVal - 0.0001);
         const range = maxVal - minVal;
         value = range === 0.0 ? 0.5 : (value - minVal) / range;
-        const m = 0.25;
-        const num = Math.floor(value / m);
-        const s = (value - num * m) / m;
-        let red, green, blue;
+        const num = Math.floor(4 * value);
+        const s = 4 * (value - num / 4);
 
         switch (num) {
             case 0 :
-                red = 0.0;
-                green = s;
-                blue = 1.0;
-                break;
+                return [0, 255 * s, 255, 255];
             case 1 :
-                red = 0.0;
-                green = 1.0;
-                blue = 1.0 - s;
-                break;
+                return [0, 255, 255 * (1 - s), 255];
             case 2 :
-                red = s;
-                green = 1.0;
-                blue = 0.0;
-                break;
+                return [255 * s, 255, 0, 255];
             case 3 :
-                red = 1.0;
-                green = 1.0 - s;
-                blue = 0.0;
-                break;
+                return [255, 255 * (1 - s), 0, 255];
         }
-
-        return [255 * red, 255 * green, 255 * blue, 255]
     }
 
-    function draw() {
-        let i, j, y, x, smoke;
-        display.clearRect(0, 0, canvas.width, canvas.height);
+    function showStreamlines(fluid) {
+        const numberOfSegments = 15;
 
-        display.fillStyle = "#FF0000";
-        const f = scene.fluid;
-        let n = f.numY;
+        display.strokeStyle = "#000000";
 
-        const cellScale = 1.1;
-        const h = f.h;
+        for (let i = 1; i < fluid.numX - 1; i += 5) {
+            for (let j = 1; j < fluid.numY - 1; j += 5) {
 
-        let minPressure = f.p[0];
-        let maxPressure = f.p[0];
+                let x = (i + 0.5) * fluid.h;
+                let y = (j + 0.5) * fluid.h;
 
-        for (i = 0; i < f.numCells; i++) {
-            minPressure = Math.min(minPressure, f.p[i]);
-            maxPressure = Math.max(maxPressure, f.p[i]);
+                display.beginPath();
+                display.moveTo(scaleX(x), scaleY(y));
+
+                for (let n = 0; n < numberOfSegments; n++) {
+                    const u = fluid.sampleField(x, y, U_FIELD);
+                    const v = fluid.sampleField(x, y, V_FIELD);
+                    // l = Math.sqrt(u*u + v*v);
+                    // x += u/l * segLen;
+                    // y += v/l * segLen;
+                    x += u * 0.01;
+                    y += v * 0.01;
+                    if (x > fluid.numX * f.h)
+                        break;
+
+                    display.lineTo(scaleX(x), scaleY(y));
+                }
+                display.stroke();
+            }
+        }
+    }
+
+    function showVelocities(fluid) {
+        display.strokeStyle = "#000000";
+        const scale = 0.02;
+        const h = fluid.h;
+        const n = fluid.numY;
+        for (let i = 0; i < fluid.numX; i++) {
+            for (let j = 0; j < fluid.numY; j++) {
+                display.beginPath();
+
+                const x0 = scaleX(i * h);
+                const x1 = scaleX(i * h + fluid.u[i * n + j] * scale);
+                const y = scaleY((j + 0.5) * h);
+
+                display.moveTo(x0, y);
+                display.lineTo(x1, y);
+                display.stroke();
+
+                const x = scaleX((i + 0.5) * h);
+                const y0 = scaleY(j * h);
+                const y1 = scaleY(j * h + fluid.v[i * n + j] * scale)
+
+                display.beginPath();
+                display.moveTo(x, y0);
+                display.lineTo(x, y1);
+                display.stroke();
+            }
+        }
+    }
+
+    function showObstacle(fluid) {
+        //display.strokeW
+        const r = scene.obstacleRadius + fluid.h;
+        if (scene.showPressure)
+            display.fillStyle = "#131313";
+        else
+            display.fillStyle = "#DDDDDD";
+        display.beginPath();
+        display.arc(scaleX(scene.obstacleX), scaleY(scene.obstacleY), canvasScale * r, 0.0, 2.0 * Math.PI);
+        display.closePath();
+        display.fill();
+
+        display.lineWidth = 3.0;
+        display.strokeStyle = "#000000";
+        display.beginPath();
+        display.arc(scaleX(scene.obstacleX), scaleY(scene.obstacleY), canvasScale * r, 0.0, 2.0 * Math.PI);
+        display.closePath();
+        display.stroke();
+        display.lineWidth = 1.0;
+    }
+
+    function getPressureRange(fluid) {
+        let minPressure = fluid.p[0];
+        let maxPressure = fluid.p[0];
+        for (let i = 0; i < fluid.numCells; i++) {
+            minPressure = Math.min(minPressure, fluid.p[i]);
+            maxPressure = Math.max(maxPressure, fluid.p[i]);
         }
 
-        const imageData = display.getImageData(0, 0, canvas.width, canvas.height);
+        return [minPressure, maxPressure];
+    }
 
-        let color = [255, 255, 255, 255];
-
-        for (i = 0; i < f.numX; i++) {
-            for (j = 0; j < f.numY; j++) {
+    function updateImageData(imageData, fluid, pressureRange) {
+        let n = fluid.numY;
+        const cellScale = 1.1;
+        const h = fluid.h;
+        let color = [255, 255, 255, 255], smoke;
+        for (let i = 0; i < fluid.numX; i++) {
+            for (let j = 0; j < fluid.numY; j++) {
 
                 if (scene.showPressure) {
-                    smoke = f.m[i * n + j];
-                    color = getSciColor(f.p[i * n + j], minPressure, maxPressure);
+                    smoke = fluid.m[i * n + j];
+                    color = scientificColorCodingFor(fluid.p[i * n + j], pressureRange[0], pressureRange[1]);
                     if (scene.showSmoke) {
                         color[0] = Math.max(0.0, color[0] - 255 * smoke);
                         color[1] = Math.max(0.0, color[1] - 255 * smoke);
                         color[2] = Math.max(0.0, color[2] - 255 * smoke);
                     }
                 } else if (scene.showSmoke) {
-                    smoke = f.m[i * n + j];
+                    smoke = fluid.m[i * n + j];
                     color[0] = 255 * smoke;
                     color[1] = 255 * smoke;
                     color[2] = 255 * smoke;
                     if (scene.sceneNr === 2)
-                        color = getSciColor(smoke, 0.0, 1.0);
-                } else if (f.s[i * n + j] === 0.0) {
+                        color = scientificColorCodingFor(smoke, 0.0, 1.0);
+                } else if (fluid.s[i * n + j] === 0.0) {
                     color[0] = 0;
                     color[1] = 0;
                     color[2] = 0;
                 }
 
-                x = Math.floor(scaleX(i * h));
-                y = Math.floor(scaleY((j + 1) * h));
+                const x = Math.floor(scaleX(i * h));
+                const y = Math.floor(scaleY((j + 1) * h));
                 const cx = Math.floor(canvasScale * cellScale * h) + 1;
                 const cy = Math.floor(canvasScale * cellScale * h) + 1;
-
-                const red = color[0];
-                const green = color[1];
-                const blue = color[2];
-                const opacity = color[3];
 
                 for (let yi = y; yi < y + cy; yi++) {
                     let pos = 4 * (yi * canvas.width + x);
 
                     for (let xi = 0; xi < cx; xi++) {
-                        imageData.data[pos++] = red;
-                        imageData.data[pos++] = green;
-                        imageData.data[pos++] = blue;
-                        imageData.data[pos++] = opacity;
+                        imageData.data[pos++] = color[0]; // red
+                        imageData.data[pos++] = color[1]; // green
+                        imageData.data[pos++] = color[2]; // blue
+                        imageData.data[pos++] = color[3]; // opacity
                     }
                 }
             }
         }
+    }
 
+    function draw() {
+        display.clearRect(0, 0, canvas.width, canvas.height);
+        display.fillStyle = "#FF0000";
+
+        const pressureRange = getPressureRange(scene.fluid);
+        const imageData = display.getImageData(0, 0, canvas.width, canvas.height);
+        updateImageData(imageData, scene.fluid, pressureRange);
         display.putImageData(imageData, 0, 0);
 
-        if (scene.showVelocities) {
+        if (scene.showVelocities)
+            showVelocities(scene.fluid);
 
-            display.strokeStyle = "#000000";
-            const scale = 0.02;
+        if (scene.showStreamlines)
+            showStreamlines(scene.fluid);
 
-            for (i = 0; i < f.numX; i++) {
-                for (j = 0; j < f.numY; j++) {
-                    display.beginPath();
-
-                    const x0 = scaleX(i * h);
-                    const x1 = scaleX(i * h + f.u[i * n + j] * scale);
-                    y = scaleY((j + 0.5) * h);
-
-                    display.moveTo(x0, y);
-                    display.lineTo(x1, y);
-                    display.stroke();
-
-                    x = scaleX((i + 0.5) * h);
-                    const y0 = scaleY(j * h);
-                    const y1 = scaleY(j * h + f.v[i * n + j] * scale)
-
-                    display.beginPath();
-                    display.moveTo(x, y0);
-                    display.lineTo(x, y1);
-                    display.stroke();
-
-                }
-            }
-        }
-
-        if (scene.showStreamlines) {
-
-            // var segLen = f.h * 0.2;
-            const numberOfSegments = 15;
-
-            display.strokeStyle = "#000000";
-
-            for (i = 1; i < f.numX - 1; i += 5) {
-                for (j = 1; j < f.numY - 1; j += 5) {
-
-                    x = (i + 0.5) * f.h;
-                    y = (j + 0.5) * f.h;
-
-                    display.beginPath();
-                    display.moveTo(scaleX(x), scaleY(y));
-
-                    for (n = 0; n < numberOfSegments; n++) {
-                        const u = f.sampleField(x, y, U_FIELD);
-                        const v = f.sampleField(x, y, V_FIELD);
-                        // l = Math.sqrt(u*u + v*v);
-                        // x += u/l * segLen;
-                        // y += v/l * segLen;
-                        x += u * 0.01;
-                        y += v * 0.01;
-                        if (x > f.numX * f.h)
-                            break;
-
-                        display.lineTo(scaleX(x), scaleY(y));
-                    }
-                    display.stroke();
-                }
-            }
-        }
-
-        if (scene.showObstacle) {
-
-            display.strokeW
-            const r = scene.obstacleRadius + f.h;
-            if (scene.showPressure)
-                display.fillStyle = "#131313";
-            else
-                display.fillStyle = "#DDDDDD";
-            display.beginPath();
-            display.arc(scaleX(scene.obstacleX), scaleY(scene.obstacleY), canvasScale * r, 0.0, 2.0 * Math.PI);
-            display.closePath();
-            display.fill();
-
-            display.lineWidth = 3.0;
-            display.strokeStyle = "#000000";
-            display.beginPath();
-            display.arc(scaleX(scene.obstacleX), scaleY(scene.obstacleY), canvasScale * r, 0.0, 2.0 * Math.PI);
-            display.closePath();
-            display.stroke();
-            display.lineWidth = 1.0;
-        }
+        if (scene.showObstacle)
+            showObstacle(scene.fluid);
 
         if (scene.showPressure) {
-            const pressureText = "pressure: " + minPressure.toFixed(0) + " - " + maxPressure.toFixed(0) + " N/m";
+            const pressureText = "pressure: " + pressureRange[0].toFixed(0) + " - " + pressureRange[1].toFixed(0) + " N/m";
             display.fillStyle = "#A0A0A0";
             display.font = "16px Arial";
             display.fillText(pressureText, 10, 35);
@@ -609,7 +594,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     }
 
     function setObstacle(x, y, reset) {
-
         var vx = 0.0;
         var vy = 0.0;
 
@@ -626,11 +610,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         for (let i = 1; i < f.numX - 2; i++) {
             for (let j = 1; j < f.numY - 2; j++) {
-
                 f.s[i * n + j] = 1.0;
 
-                dx = (i + 0.5) * f.h - x;
-                dy = (j + 0.5) * f.h - y;
+                const dx = (i + 0.5) * f.h - x;
+                const dy = (j + 0.5) * f.h - y;
 
                 if (dx * dx + dy * dy < r * r) {
                     f.s[i * n + j] = 0.0;
