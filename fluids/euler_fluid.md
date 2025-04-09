@@ -7,6 +7,7 @@ You can move the obstacle with your mouse!
 
 &#x2022; Copyright 2022 [Matthias Müller](https://www.matthiasMueller.info/tenMinutePhysics) &mdash; [Ten Minute Physics](https://www.youtube.com/c/TenMinutePhysics)<br/>
 &#x2022; See also his [GitHub pages](https://matthias-research.github.io/pages/tenMinutePhysics/index.html)<br/>
+&#x2022; Code clean up by [Zeger Hendrikse](https://www.hendrikse.name), see [euler_fluid.html](https://github.com/zhendrikse/science/blob/main/fluids/code/euler_fluid.html)
 
 {% include_relative code/euler_fluid.html %}
 
@@ -47,6 +48,12 @@ Let's first assert that:
 
    Since we’re storing velocity in a grid just like we do with the smoke, 
    we can use the exact same routine to advect velocity through itself.
+
+   
+## References
+<div class="header_line"><br/></div>
+
+- [Fluid Simulation (with WebGL demo)](https://jamie-wong.com/2016/08/05/webgl-fluid-simulation/) by Jamie Wong
 
 <p style="clear: both;"></p>
 
