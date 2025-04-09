@@ -425,7 +425,6 @@ function scientificColorCodingFor(value, minVal, maxVal) {
 
 function showStreamlines(fluid) {
     const numberOfSegments = 15;
-
     display.strokeStyle = "#000000";
 
     for (let i = 1; i < fluid.numX - 1; i += 5) {
@@ -445,7 +444,7 @@ function showStreamlines(fluid) {
                 // y += v/l * segLen;
                 x += u * 0.01;
                 y += v * 0.01;
-                if (x > fluid.numX * f.h)
+                if (x > fluid.numX * fluid.h)
                     break;
 
                 display.lineTo(scaleX(x), scaleY(y));
