@@ -3,7 +3,7 @@
 # 3D interference pattern of two oscillating sources
 <div class="header_line"><br/></div>
 
-{% include_relative code/InterferencePattern3D.html %}
+{% include_relative code/interference_pattern_3d.html %}
 
 <p style="clear: both;"></p>
 

@@ -3,7 +3,7 @@
 # Visualization of the Doppler effect for sound
 <div class="header_line"><br/></div>
 
-{% include_relative code/DopplerEffect.html %}
+{% include_relative code/doppler_effect.html %}
 
 <p style="clear: both;"></p>
 

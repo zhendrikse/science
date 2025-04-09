@@ -3,7 +3,7 @@
 ## Traveling wave
 <div class="header_line"><br/></div>
 
-{% include_relative code/TravelingWave.html %}
+{% include_relative code/traveling_wave.html %}
 
 <p style="clear: both;"></p>
 

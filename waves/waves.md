@@ -3,7 +3,7 @@
 # Transversal and longitudinal waves
 <div class="header_line"><br/></div>
 
-{% include_relative code/Waves.html %}
+{% include_relative code/waves.html %}
 
 <p style="clear: both;"></p>
 
