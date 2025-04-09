@@ -77,8 +77,10 @@
   &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="2d_diffusion_limited_aggregation.html">
+    <img alt="Two-dimensional diffusion limited aggregation" src="images/dla_2d.png" title="Click to animate"/>
+  </a>
+  <figcaption>Two-dimensional diffusion limited aggregation.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
