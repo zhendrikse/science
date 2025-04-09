@@ -3,7 +3,7 @@
 ## Three-dimensional diffusion limited aggregation
 <div class="header_line"><br/></div>
 
-{% include_relative code/DLA_3d.html %}
+{% include_relative code/dla_3d.html %}
 
 <p style="clear: both;"></p>
 
