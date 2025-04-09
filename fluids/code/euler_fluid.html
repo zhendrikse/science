@@ -159,7 +159,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     f = this.m;
                     dx = h2;
                     dy = h2;
-                    break
+                    break;
 
             }
 
@@ -193,10 +193,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         }
 
         advectVelocity(dt) {
-            let v;
-            let u;
-            let y;
-            let x;
             this.newU.set(this.u);
             this.newV.set(this.v);
 
@@ -206,7 +202,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             for (let i = 1; i < this.numX; i++) {
                 for (let j = 1; j < this.numY; j++) {
-
+                    let u, v, x, y;
                     cnt++;
 
                     // u component
@@ -361,6 +357,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         scene.obstacleRadius = 0.1;
     }
 
+    function setHighResolution() {
+        scene.dt = 1.0 / 120.0;
+        scene.numIters = 100;
+        scene.showPressure = true;
+    }
+
     function setupScene(sceneNr = 0) {
         scene.sceneNr = sceneNr;
         scene.obstacleRadius = 0.15;
@@ -388,11 +390,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             tankScene(fluid);
         } else if (sceneNr === 1 || sceneNr === 3) { // vortex shedding
             vortexSheddingScene(fluid);
-            if (sceneNr === 3) {
-                scene.dt = 1.0 / 120.0;
-                scene.numIters = 100;
-                scene.showPressure = true;
-            }
+            if (sceneNr === 3) setHighResolution();
         } else if (sceneNr === 2) {
             paintScene();
         }
