@@ -8,7 +8,7 @@ title="""&#x2022; Based on <a href="https://github.com/ksenia007/dlaCluster/blob
 
 radius = 150
 square_size = radius * 2 + 5
-display = canvas(width=600, height=600, color=color.gray(0.075), center=vec(1, 1, 0) * square_size / 2, range=radius, title=title)
+display = canvas(width=600, height=600, background=color.gray(0.075), center=vec(1, 1, 0) * square_size / 2, range=radius, title=title)
 
 display.append_to_caption("\n")
 graph(title="Walker data", xtitle="Released walkers", ytitle="Glued walkers", background=color.black, width=600)
