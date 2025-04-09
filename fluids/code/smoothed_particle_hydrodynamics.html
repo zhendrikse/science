@@ -50,7 +50,7 @@ async function __main__() {
     var display = canvas;
     var scene = canvas();
     var arrow, box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, N, SIM_W, BOTTOM, DAM, DAM_BREAK, G, SPACING, K, K_NEAR, REST_DENSITY, R, SIGMA, MAX_VEL, WALL_DAMP, VEL_DAMP, display, water, droplets, position, particle_, clock, wall, _, step, dam_built, frame_rate, i;
+    var version, print, arange, __name__, type, ρσ_ls, title, N, SIM_W, BOTTOM, DAM, DAM_BREAK, G, SPACING, K, K_NEAR, REST_DENSITY, R, SIGMA, MAX_VEL, WALL_DAMP, VEL_DAMP, display, water, droplets, particle_, clock, wall, _, step, dam_built, frame_rate, ρσ_unpack, i, droplet;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -62,73 +62,63 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "7";
+    "8";
     title = "&#x2022; Original <a href=\"https://github.com/AlexandreSajus/Python-Fluid-Simulation\">Python-Fluid-Simulation<\/a> code by <a href=\"https://github.com/AlexandreSajus\">Alexandre Sajus</a>\n&#x2022; Ported to <a href=\"https://vpython.org\">VPython</a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>, see <a href=\"https://github.com/zhendrikse/science/blob/main/fluids/code/smoothed_particle_hydrodynamics.py\">smoothed_particle_hydrodynamics.py</a>\n\n";
-    "10";
-    N = 300;
     "11";
-    SIM_W = .5;
+    N = 300;
     "12";
-    BOTTOM = 0;
+    SIM_W = .5;
     "13";
-    DAM = 1["-u"]()["*"](.3);
+    BOTTOM = 0;
     "14";
+    DAM = 1["-u"]()["*"](.3);
+    "15";
     DAM_BREAK = 250;
-    "17";
-    G = .02["*"](.25);
     "18";
-    SPACING = .08;
+    G = .02["*"](.25);
     "19";
-    K = SPACING["/"](1e3);
+    SPACING = .08;
     "20";
+    K = SPACING["/"](1e3);
+    "21";
     K_NEAR = K["*"](10);
-    "22";
+    "23";
     REST_DENSITY = 3;
-    "24";
-    R = SPACING["*"](1.25);
     "25";
-    SIGMA = .2;
+    R = SPACING["*"](1.25);
     "26";
+    SIGMA = .2;
+    "27";
     MAX_VEL = 2;
-    "28";
-    WALL_DAMP = .05;
     "29";
+    WALL_DAMP = .05;
+    "30";
     VEL_DAMP = .5;
-    "32";
+    "33";
     function Particle() {;
     }
     Particle.prototype.__init__ = async function __init__(x_pos, y_pos) {
         var self = this;
-        "55";
-        self.x_pos = x_pos;
-        "56";
-        self.y_pos = y_pos;
-        "57";
-        self.previous_x_pos = x_pos;
-        "58";
-        self.previous_y_pos = y_pos;
-        "59";
-        self.visual_x_pos = x_pos;
-        "60";
-        self.visual_y_pos = y_pos;
-        "61";
-        self.rho = 0;
-        "62";
-        self.rho_near = 0;
-        "63";
-        self.press = 0;
-        "64";
-        self.press_near = 0;
-        "65";
-        self.neighbors = ρσ_list_decorate([]);
-        "66";
-        self.x_vel = 0;
-        "67";
-        self.y_vel = 0;
-        "68";
-        self.x_force = 0;
-        "69";
-        self.y_force = 1["-u"]()["*"](G);
+        "35";
+        self._position = vec(x_pos, y_pos, 0);
+        "36";
+        self._previous_position = vec(x_pos, y_pos, 0);
+        "37";
+        self._visual_position = vec(x_pos, y_pos, 0);
+        "38";
+        self._rho = 0;
+        "39";
+        self._rho_near = 0;
+        "40";
+        self._press = 0;
+        "41";
+        self._press_near = 0;
+        "42";
+        self._neighbors = ρσ_list_decorate([]);
+        "43";
+        self._velocity = vec(0, 0, 0);
+        "44";
+        self._force = vec(0, 1["-u"]()["*"](G), 0);
     };
     if (!Particle.prototype.__init__.__annotations__) Object.defineProperties(Particle.prototype.__init__, {
         __annotations__ : {value: {x_pos: float, y_pos: float}},
@@ -137,74 +127,95 @@ async function __main__() {
     });
     Particle.__argnames__ = Particle.prototype.__init__.__argnames__;
     Particle.__handles_kwarg_interpolation__ = Particle.prototype.__init__.__handles_kwarg_interpolation__;
+    Particle.prototype.calculate_neighbor_pressure = async function calculate_neighbor_pressure() {
+        var self = this;
+        var ρσ_ls, pressure, particle_to_neighbor, distance, normal_distance, normal_distance_squared, normal_distance_cubed, total_pressure, pressure_vector, neighbor;
+        "47";
+        pressure = vec(0, 0, 0);
+        "48";
+        var ρσ_Iter1 = self._neighbors;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            neighbor = ρσ_Index1;
+            "49";
+            particle_to_neighbor = (await neighbor.position())["-"](1["*"](self._position));
+            "50";
+            distance = mag(particle_to_neighbor);
+            "51";
+            normal_distance = 1["-"](1["*"](distance)["/"](R));
+            "52";
+            normal_distance_squared = normal_distance["*"](normal_distance);
+            "53";
+            normal_distance_cubed = normal_distance_squared["*"](normal_distance);
+            "55";
+            total_pressure = self._press["+"](neighbor._press)["*"](normal_distance_squared)["+"](self._press_near["+"](neighbor._press_near)["*"](normal_distance_cubed));
+            "57";
+            pressure_vector = particle_to_neighbor["*"](total_pressure)["/"](distance);
+            "58";
+            neighbor._force=neighbor._force["+"](pressure_vector);
+            "59";
+            pressure=pressure["+"](pressure_vector);
+        }
+        "60";
+        self._force=self._force["-"](pressure);
+    };
+    if (!Particle.prototype.calculate_neighbor_pressure.__module__) Object.defineProperties(Particle.prototype.calculate_neighbor_pressure, {
+        __module__ : {value: null}
+    });
     Particle.prototype.update_state = async function update_state(dam) {
         var self = this;
-        var ρσ_ls, ρσ_unpack, velocity;
+        var ρσ_ls, velocity;
+        "63";
+        self._previous_position = vec(self._position);
+        "66";
+        self._velocity=self._velocity["+"](self._force);
+        "69";
+        self._position=self._position["+"](self._velocity);
+        "73";
+        self._visual_position = vec(self._position);
         "76";
-        ρσ_unpack = [self.x_pos, self.y_pos];
-        self.previous_x_pos = ρσ_unpack[0];
-        self.previous_y_pos = ρσ_unpack[1];
+        self._force = vec(0, 1["-u"]()["*"](G), 0);
         "79";
-        ρσ_unpack = [self.x_vel["+"](self.x_force), self.y_vel["+"](self.y_force)];
-        self.x_vel = ρσ_unpack[0];
-        self.y_vel = ρσ_unpack[1];
+        self._velocity = self._position["-"](1["*"](self._previous_position));
         "82";
-        ρσ_unpack = [self.x_pos["+"](self.x_vel), self.y_pos["+"](self.y_vel)];
-        self.x_pos = ρσ_unpack[0];
-        self.y_pos = ρσ_unpack[1];
-        "86";
-        ρσ_unpack = [self.x_pos, self.y_pos];
-        self.visual_x_pos = ρσ_unpack[0];
-        self.visual_y_pos = ρσ_unpack[1];
-        "89";
-        ρσ_unpack = [0, 1["-u"]()["*"](G)];
-        self.x_force = ρσ_unpack[0];
-        self.y_force = ρσ_unpack[1];
-        "92";
-        ρσ_unpack = [self.x_pos["-"](1["*"](self.previous_x_pos)), self.y_pos["-"](1["*"](self.previous_y_pos))];
-        self.x_vel = ρσ_unpack[0];
-        self.y_vel = ρσ_unpack[1];
-        "95";
-        velocity = sqrt(self.x_vel["*"](self.x_vel)["+"](self.y_vel["*"](self.y_vel)));
-        "98";
+        velocity = mag(self._velocity);
+        "85";
         if (velocity[">"](MAX_VEL)) {
+            "86";
+            self._velocity=self._velocity["*"](VEL_DAMP);
+            "89";
+        }
+        if (self._position.x["<"](1["-u"]()["*"](SIM_W))) {
+            "90";
+            self._force.x=self._force.x["-"](self._position.x["-"](1["*"](1["-u"]())["*"](SIM_W))["*"](WALL_DAMP));
+            "91";
+            self._visual_position.x = 1["-u"]()["*"](SIM_W);
+            "94";
+        }
+        if (dam && self._position.x[">"](DAM)) {
+            "95";
+            self._force.x=self._force.x["-"](self._position.x["-"](1["*"](DAM))["*"](WALL_DAMP));
+            "98";
+        }
+        if (self._position.x[">"](SIM_W)) {
             "99";
-            self.x_vel=self.x_vel["*"](VEL_DAMP);
+            self._force.x=self._force.x["-"](self._position.x["-"](1["*"](SIM_W))["*"](WALL_DAMP));
             "100";
-            self.y_vel=self.y_vel["*"](VEL_DAMP);
+            self._visual_position.x = SIM_W;
             "103";
         }
-        if (self.x_pos["<"](1["-u"]()["*"](SIM_W))) {
-            "104";
-            self.x_force=self.x_force["-"](self.x_pos["-"](1["*"](1["-u"]())["*"](SIM_W))["*"](WALL_DAMP));
+        if (self._position.y["<"](BOTTOM)) {
             "105";
-            self.visual_x_pos = 1["-u"]()["*"](SIM_W);
-            "108";
+            self._force.y=self._force.y["-"](self._position.y["-"](1["*"](SIM_W))["*"](WALL_DAMP));
+            "106";
+            self._visual_position.y = BOTTOM;
         }
-        if (dam && self.x_pos[">"](DAM)) {
-            "109";
-            self.x_force=self.x_force["-"](self.x_pos["-"](1["*"](DAM))["*"](WALL_DAMP));
-            "112";
-        }
-        if (self.x_pos[">"](SIM_W)) {
-            "113";
-            self.x_force=self.x_force["-"](self.x_pos["-"](1["*"](SIM_W))["*"](WALL_DAMP));
-            "114";
-            self.visual_x_pos = SIM_W;
-            "117";
-        }
-        if (self.y_pos["<"](BOTTOM)) {
-            "119";
-            self.y_force=self.y_force["-"](self.y_pos["-"](1["*"](SIM_W))["*"](WALL_DAMP));
-            "120";
-            self.visual_y_pos = BOTTOM;
-        }
-        "123";
-        self.rho = 0;
-        "124";
-        self.rho_near = 0;
-        "127";
-        self.neighbors = ρσ_list_decorate([]);
+        "109";
+        self._rho = 0;
+        "110";
+        self._rho_near = 0;
+        "113";
+        self._neighbors = ρσ_list_decorate([]);
     };
     if (!Particle.prototype.update_state.__annotations__) Object.defineProperties(Particle.prototype.update_state, {
         __annotations__ : {value: {dam: bool}},
@@ -213,12 +224,60 @@ async function __main__() {
     });
     Particle.prototype.calculate_pressure = async function calculate_pressure() {
         var self = this;
-        "133";
-        self.press = K["*"](self.rho["-"](1["*"](REST_DENSITY)));
-        "134";
-        self.press_near = K_NEAR["*"](self.rho_near);
+        "116";
+        self._press = K["*"](self._rho["-"](1["*"](REST_DENSITY)));
+        "117";
+        self._press_near = K_NEAR["*"](self._rho_near);
     };
     if (!Particle.prototype.calculate_pressure.__module__) Object.defineProperties(Particle.prototype.calculate_pressure, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.calculate_viscosity_force = async function calculate_viscosity_force() {
+        var self = this;
+        var ρσ_ls, particle_to_neighbor, distance, normal_p_to_n, relative_distance, velocity_difference, viscosity_force, neighbor;
+        "120";
+        var ρσ_Iter2 = self._neighbors;
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            neighbor = ρσ_Index2;
+            "121";
+            particle_to_neighbor = (await neighbor.position())["-"](1["*"](self._position));
+            "122";
+            distance = sqrt(dot(particle_to_neighbor, particle_to_neighbor));
+            "123";
+            normal_p_to_n = particle_to_neighbor["/"](distance);
+            "125";
+            relative_distance = distance["/"](R);
+            "126";
+            velocity_difference = dot(self._velocity["-"](1["*"]((await neighbor.velocity()))), normal_p_to_n);
+            "127";
+            if (velocity_difference[">"](0)) {
+                "128";
+                viscosity_force = 1["-"](1["*"](relative_distance))["*"](SIGMA)["*"](velocity_difference)["*"](normal_p_to_n);
+                "129";
+                self._velocity=self._velocity["-"](viscosity_force["*"](.5));
+                "130";
+                neighbor._velocity=neighbor._velocity["+"](viscosity_force["*"](.5));
+            }
+        }
+    };
+    if (!Particle.prototype.calculate_viscosity_force.__module__) Object.defineProperties(Particle.prototype.calculate_viscosity_force, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.position = async function position() {
+        var self = this;
+        "133";
+        return self._position;
+    };
+    if (!Particle.prototype.position.__module__) Object.defineProperties(Particle.prototype.position, {
+        __module__ : {value: null}
+    });
+    Particle.prototype.velocity = async function velocity() {
+        var self = this;
+        "136";
+        return self._velocity;
+    };
+    if (!Particle.prototype.velocity.__module__) Object.defineProperties(Particle.prototype.velocity, {
         __module__ : {value: null}
     });
     Particle.prototype.__repr__ = async function __repr__() {
@@ -232,33 +291,37 @@ async function __main__() {
 
 
 
-    "137";
+
+
+
+
+    "139";
     async function start(xmin, xmax, ymin, space, count) {
         var ρσ_ls, result, ρσ_unpack, x_pos, y_pos, _GS_1, _;
-        "154";
+        "156";
         result = ρσ_list_decorate([]);
-        "155";
+        "157";
         ρσ_unpack = [xmin, ymin];
         x_pos = ρσ_unpack[0];
         y_pos = ρσ_unpack[1];
-        "156";
-        for (var ρσ_Index1 = 0; ρσ_Index1["<"](count); ρσ_Index1++) {
-            _ = ρσ_Index1;
-            "157";
+        "158";
+        for (var ρσ_Index3 = 0; ρσ_Index3["<"](count); ρσ_Index3++) {
+            _ = ρσ_Index3;
+            "159";
             _GS_1 = new Particle;
             (await _GS_1.__init__(x_pos, y_pos));
             result.append(_GS_1);
-            "158";
+            "160";
             x_pos=x_pos["+"](space);
-            "159";
+            "161";
             if (x_pos[">"](xmax)) {
-                "160";
+                "162";
                 x_pos = xmin;
-                "161";
+                "163";
                 y_pos=y_pos["+"](space);
             }
         }
-        "162";
+        "164";
         return result;
     };
     if (!start.__annotations__) Object.defineProperties(start, {
@@ -267,53 +330,53 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "165";
+    "167";
     async function calculate_density(particles) {
         var ρσ_ls, density, density_near, particle_2, distance, normal_distance, normal_distance_squared, normal_distance_cubed, j, ρσ_unpack, i, particle_1;
-        "175";
-        var ρσ_Iter2 = enumerate(particles);
-        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
-        for (var ρσ_Index2 of ρσ_Iter2) {
-            ρσ_unpack = ρσ_Index2;
+        "177";
+        var ρσ_Iter4 = enumerate(particles);
+        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+        for (var ρσ_Index4 of ρσ_Iter4) {
+            ρσ_unpack = ρσ_Index4;
             i = ρσ_unpack[0];
             particle_1 = ρσ_unpack[1];
-            "176";
+            "178";
             density = 0;
-            "177";
-            density_near = 0;
             "179";
-            var ρσ_Iter3 = range(i["+"](1), len(particles));
-            ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-            for (var ρσ_Index3 of ρσ_Iter3) {
-                j = ρσ_Index3;
-                "180";
-                particle_2 = ρσ_getitem(particles, j);
-                "181";
-                distance = sqrt(Math.pow((particle_1.x_pos["-"](1["*"](particle_2.x_pos))), 2)["+"](Math.pow((particle_1.y_pos["-"](1["*"](particle_2.y_pos))), 2)));
+            density_near = 0;
+            "181";
+            var ρσ_Iter5 = range(i["+"](1), len(particles));
+            ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+            for (var ρσ_Index5 of ρσ_Iter5) {
+                j = ρσ_Index5;
                 "182";
+                particle_2 = ρσ_getitem(particles, j);
+                "183";
+                distance = mag((await particle_1.position())["-"](1["*"]((await particle_2.position()))));
+                "184";
                 if (distance["<"](R)) {
-                    "184";
-                    normal_distance = 1["-"](1["*"](distance)["/"](R));
-                    "185";
-                    normal_distance_squared = normal_distance["*"](normal_distance);
                     "186";
-                    normal_distance_cubed = normal_distance_squared["*"](normal_distance);
+                    normal_distance = 1["-"](1["*"](distance)["/"](R));
+                    "187";
+                    normal_distance_squared = normal_distance["*"](normal_distance);
                     "188";
+                    normal_distance_cubed = normal_distance_squared["*"](normal_distance);
+                    "190";
                     density=density["+"](normal_distance_squared);
-                    "189";
-                    density_near=density_near["+"](normal_distance_cubed);
                     "191";
-                    particle_2.rho=particle_2.rho["+"](normal_distance_squared);
-                    "192";
-                    particle_2.rho_near=particle_2.rho_near["+"](normal_distance_cubed);
+                    density_near=density_near["+"](normal_distance_cubed);
+                    "193";
+                    particle_2._rho=particle_2._rho["+"](normal_distance_squared);
                     "194";
-                    particle_1.neighbors.append(particle_2);
+                    particle_2._rho_near=particle_2._rho_near["+"](normal_distance_cubed);
+                    "196";
+                    particle_1._neighbors.append(particle_2);
                 }
             }
-            "195";
-            particle_1.rho=particle_1.rho["+"](density);
-            "196";
-            particle_1.rho_near=particle_1.rho_near["+"](density_near);
+            "197";
+            particle_1._rho=particle_1._rho["+"](density);
+            "198";
+            particle_1._rho_near=particle_1._rho_near["+"](density_near);
         }
     };
     if (!calculate_density.__annotations__) Object.defineProperties(calculate_density, {
@@ -322,128 +385,31 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "199";
-    async function create_pressure(particles) {
-        var ρσ_ls, press_x, press_y, particle_to_neighbor, distance, normal_distance, normal_distance_squared, normal_distance_cubed, total_pressure, pressure_vector, neighbor, particle;
-        "209";
-        var ρσ_Iter4 = particles;
-        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-        for (var ρσ_Index4 of ρσ_Iter4) {
-            particle = ρσ_Index4;
-            "210";
-            press_x = 0;
-            "211";
-            press_y = 0;
-            "212";
-            var ρσ_Iter5 = particle.neighbors;
-            ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-            for (var ρσ_Index5 of ρσ_Iter5) {
-                neighbor = ρσ_Index5;
-                "213";
-                particle_to_neighbor = ρσ_list_decorate([ neighbor.x_pos["-"](1["*"](particle.x_pos)), neighbor.y_pos["-"](1["*"](particle.y_pos)) ]);
-                "217";
-                distance = sqrt(Math.pow(ρσ_getitem(particle_to_neighbor, 0), 2)["+"](Math.pow(ρσ_getitem(particle_to_neighbor, 1), 2)));
-                "218";
-                normal_distance = 1["-"](1["*"](distance)["/"](R));
-                "219";
-                normal_distance_squared = normal_distance["*"](normal_distance);
-                "220";
-                normal_distance_cubed = normal_distance_squared["*"](normal_distance);
-                "222";
-                total_pressure = particle.press["+"](neighbor.press)["*"](normal_distance_squared)["+"](particle.press_near["+"](neighbor.press_near)["*"](normal_distance_cubed));
-                "227";
-                pressure_vector = ρσ_list_decorate([ ρσ_getitem(particle_to_neighbor, 0)["*"](total_pressure)["/"](distance), ρσ_getitem(particle_to_neighbor, 1)["*"](total_pressure)["/"](distance) ]);
-                "231";
-                neighbor.x_force=neighbor.x_force["+"](ρσ_getitem(pressure_vector, 0));
-                "232";
-                neighbor.y_force=neighbor.y_force["+"](ρσ_getitem(pressure_vector, 1));
-                "233";
-                press_x=press_x["+"](ρσ_getitem(pressure_vector, 0));
-                "234";
-                press_y=press_y["+"](ρσ_getitem(pressure_vector, 1));
-            }
-            "235";
-            particle.x_force=particle.x_force["-"](press_x);
-            "236";
-            particle.y_force=particle.y_force["-"](press_y);
-        }
-    };
-    if (!create_pressure.__annotations__) Object.defineProperties(create_pressure, {
-        __annotations__ : {value: {particles: ρσ_getitem(list, Particle)}},
-        __argnames__ : {value: ["particles"]},
-        __module__ : {value: null}
-    });
-
-    "239";
-    async function calculate_viscosity(particles) {
-        var ρσ_ls, particle_to_neighbor, distance, normal_p_to_n, relative_distance, velocity_difference, viscosity_force, neighbor, particle;
-        "249";
+    "201";
+    async function update(particles, dam) {
+        var ρσ_ls, particle;
+        "203";
         var ρσ_Iter6 = particles;
         ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
         for (var ρσ_Index6 of ρσ_Iter6) {
             particle = ρσ_Index6;
-            "250";
-            var ρσ_Iter7 = particle.neighbors;
-            ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
-            for (var ρσ_Index7 of ρσ_Iter7) {
-                neighbor = ρσ_Index7;
-                "251";
-                particle_to_neighbor = ρσ_list_decorate([ neighbor.x_pos["-"](1["*"](particle.x_pos)), neighbor.y_pos["-"](1["*"](particle.y_pos)) ]);
-                "252";
-                distance = sqrt(Math.pow(ρσ_getitem(particle_to_neighbor, 0), 2)["+"](Math.pow(ρσ_getitem(particle_to_neighbor, 1), 2)));
-                "253";
-                normal_p_to_n = ρσ_list_decorate([ ρσ_getitem(particle_to_neighbor, 0)["/"](distance), ρσ_getitem(particle_to_neighbor, 1)["/"](distance) ]);
-                "255";
-                relative_distance = distance["/"](R);
-                "256";
-                velocity_difference = particle.x_vel["-"](1["*"](neighbor.x_vel))["*"](ρσ_getitem(normal_p_to_n, 0))["+"](particle.y_vel["-"](1["*"](neighbor.y_vel))["*"](ρσ_getitem(normal_p_to_n, 1)));
-                "257";
-                if (velocity_difference[">"](0)) {
-                    "258";
-                    viscosity_force = ρσ_list_decorate([ 1["-"](1["*"](relative_distance))["*"](SIGMA)["*"](velocity_difference)["*"](ρσ_getitem(normal_p_to_n, 0)), 1["-"](1["*"](relative_distance))["*"](SIGMA)["*"](velocity_difference)["*"](ρσ_getitem(normal_p_to_n, 1)) ]);
-                    "268";
-                    particle.x_vel=particle.x_vel["-"](ρσ_getitem(viscosity_force, 0)["*"](.5));
-                    "269";
-                    particle.y_vel=particle.y_vel["-"](ρσ_getitem(viscosity_force, 1)["*"](.5));
-                    "270";
-                    neighbor.x_vel=neighbor.x_vel["+"](ρσ_getitem(viscosity_force, 0)["*"](.5));
-                    "271";
-                    neighbor.y_vel=neighbor.y_vel["+"](ρσ_getitem(viscosity_force, 1)["*"](.5));
-                }
-            }
-        }
-    };
-    if (!calculate_viscosity.__annotations__) Object.defineProperties(calculate_viscosity, {
-        __annotations__ : {value: {particles: ρσ_getitem(list, Particle)}},
-        __argnames__ : {value: ["particles"]},
-        __module__ : {value: null}
-    });
-
-    "274";
-    async function update(particles, dam) {
-        var ρσ_ls, particle;
-        "279";
-        var ρσ_Iter8 = particles;
-        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
-        for (var ρσ_Index8 of ρσ_Iter8) {
-            particle = ρσ_Index8;
-            "280";
+            "204";
             (await particle.update_state(dam));
         }
-        "283";
+        "206";
         (await calculate_density(particles));
-        "286";
-        var ρσ_Iter9 = particles;
-        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
-        for (var ρσ_Index9 of ρσ_Iter9) {
-            particle = ρσ_Index9;
-            "287";
+        "208";
+        var ρσ_Iter7 = particles;
+        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+        for (var ρσ_Index7 of ρσ_Iter7) {
+            particle = ρσ_Index7;
+            "209";
             (await particle.calculate_pressure());
+            "210";
+            (await particle.calculate_neighbor_pressure());
+            "211";
+            (await particle.calculate_viscosity_force());
         }
-        "290";
-        (await create_pressure(particles));
-        "293";
-        (await calculate_viscosity(particles));
     };
     if (!update.__annotations__) Object.defineProperties(update, {
         __annotations__ : {value: {particles: ρσ_getitem(list, Particle), dam: bool}},
@@ -451,37 +417,35 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "298";
+    "214";
     display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 300, color: color.gray(.075), range: .5, center: vec(0, .35, 0)})]);
-    "300";
+    "216";
     water = (await start(1["-u"]()["*"](SIM_W), DAM, BOTTOM, .03, N));
-    "301";
+    "217";
     droplets = ρσ_list_decorate([]);
-    "302";
-    var ρσ_Iter10 = water;
-    ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
-    for (var ρσ_Index10 of ρσ_Iter10) {
-        particle_ = ρσ_Index10;
-        "303";
-        position = vec(particle_.x_pos, particle_.y_pos, 0);
-        "304";
-        droplets.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({color: color.blue, pos: position, radius: .03, shininess: 0})]));
+    "218";
+    var ρσ_Iter8 = water;
+    ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+    for (var ρσ_Index8 of ρσ_Iter8) {
+        particle_ = ρσ_Index8;
+        "219";
+        droplets.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({color: vec(.1, .2, 1), pos: (await particle_.position()), radius: .03, shininess: 0})]));
     }
-    "306";
+    "221";
     clock = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(0, .75, 0), text: "Breaking dam in 0:00", box: false, color: color.yellow})]);
-    "307";
+    "222";
     ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.75), 1["-u"]()["*"](.1), 0), color: color.orange, axis: vec(1.5, 0, 0), radius: .02})]);
-    "308";
+    "223";
     wall = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.05), 1["-u"]()["*"](.1), 0), color: color.orange, axis: vec(0, .4, 0), radius: .02})]);
-    "310";
+    "225";
     async function modify_droplet_radius(event) {
         var ρσ_ls, droplet;
-        "311";
-        var ρσ_Iter11 = droplets;
-        ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
-        for (var ρσ_Index11 of ρσ_Iter11) {
-            droplet = ρσ_Index11;
-            "312";
+        "226";
+        var ρσ_Iter9 = droplets;
+        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+        for (var ρσ_Index9 of ρσ_Iter9) {
+            droplet = ρσ_Index9;
+            "227";
             droplet.radius = event.value;
         }
     };
@@ -490,42 +454,44 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "314";
+    "229";
     display.append_to_caption("\nDroplet radius");
-    "315";
+    "230";
     _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .01, max: .05, value: .03, bind: modify_droplet_radius})]);
-    "317";
+    "232";
     step = 0;
-    "318";
+    "233";
     dam_built = true;
-    "319";
+    "234";
     frame_rate = 25;
-    "320";
+    "235";
     while (true) {
-        "321";
+        "236";
         clock.text = "Breaking dam in {:1.2f}".format(DAM_BREAK["-"](1["*"](step))["/"](frame_rate));
-        "322";
+        "237";
         (await rate(frame_rate));
-        "323";
+        "238";
         if ((step === DAM_BREAK || typeof step === "object" && ρσ_equals(step, DAM_BREAK))) {
-            "324";
+            "239";
             clock.visible = false;
-            "325";
+            "240";
             dam_built = false;
-            "326";
+            "241";
             wall.pos.y=wall.pos.y["+"](.4);
         }
-        "328";
+        "243";
         update(water, dam_built);
-        "329";
-        var ρσ_Iter12 = range(len(water));
-        ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
-        for (var ρσ_Index12 of ρσ_Iter12) {
-            i = ρσ_Index12;
-            "330";
-            ρσ_getitem(droplets, i).pos = vec(ρσ_getitem(water, i).x_pos, ρσ_getitem(water, i).y_pos, 0);
+        "244";
+        var ρσ_Iter10 = enumerate(droplets);
+        ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+        for (var ρσ_Index10 of ρσ_Iter10) {
+            ρσ_unpack = ρσ_Index10;
+            i = ρσ_unpack[0];
+            droplet = ρσ_unpack[1];
+            "245";
+            droplet.pos = vec(ρσ_getitem(water, i)._position);
         }
-        "332";
+        "247";
         step=step["+"](1);
     }
 };

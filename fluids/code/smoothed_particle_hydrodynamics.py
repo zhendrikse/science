@@ -215,7 +215,7 @@ display = canvas(title=title, width=600, height=300, color=color.gray(0.075), ra
 water = start(-SIM_W, DAM, BOTTOM, 0.03, N)
 droplets = []
 for particle_ in water:
-    droplets.append(simple_sphere(color=color.blue, pos=particle_.position(), radius=0.03, shininess=0))
+    droplets.append(simple_sphere(color=vec(0.1, 0.2, 1.0), pos=particle_.position(), radius=0.03, shininess=0))
 
 clock = label(pos=vec(0, .75, 0), text="Breaking dam in 0:00", box=False, color=color.yellow)
 cylinder(pos=vec(-.75, -.1, 0), color=color.orange, axis=vec(1.5, 0, 0), radius=0.02)
@@ -240,7 +240,7 @@ while True:
         wall.pos.y += .4
 
     update(water, dam_built)
-    for i in range(len(water)):
-        droplets[i].pos = vec(water[i]._position)
+    for i, droplet in enumerate(droplets):
+        droplet.pos = vec(water[i]._position)
 
     step += 1
