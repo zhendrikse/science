@@ -407,13 +407,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
     // draw -------------------------------------------------------
 
-    function getSciColor(val, minVal, maxVal) {
-        val = Math.min(Math.max(val, minVal), maxVal - 0.0001);
-        const d = maxVal - minVal;
-        val = d === 0.0 ? 0.5 : (val - minVal) / d;
+    function getSciColor(value, minVal, maxVal) {
+        value = Math.min(Math.max(value, minVal), maxVal - 0.0001);
+        const range = maxVal - minVal;
+        value = range === 0.0 ? 0.5 : (value - minVal) / range;
         const m = 0.25;
-        const num = Math.floor(val / m);
-        const s = (val - num * m) / m;
+        const num = Math.floor(value / m);
+        const s = (value - num * m) / m;
         let red, green, blue;
 
         switch (num) {
@@ -521,14 +521,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             for (i = 0; i < f.numX; i++) {
                 for (j = 0; j < f.numY; j++) {
-
-                    var u = f.u[i * n + j];
-                    var v = f.v[i * n + j];
-
                     display.beginPath();
 
                     const x0 = scaleX(i * h);
-                    const x1 = scaleX(i * h + u * scale);
+                    const x1 = scaleX(i * h + f.u[i * n + j] * scale);
                     y = scaleY((j + 0.5) * h);
 
                     display.moveTo(x0, y);
@@ -537,7 +533,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
                     x = scaleX((i + 0.5) * h);
                     const y0 = scaleY(j * h);
-                    const y1 = scaleY(j * h + v * scale)
+                    const y1 = scaleY(j * h + f.v[i * n + j] * scale)
 
                     display.beginPath();
                     display.moveTo(x, y0);
@@ -565,8 +561,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     display.moveTo(scaleX(x), scaleY(y));
 
                     for (n = 0; n < numberOfSegments; n++) {
-                        var u = f.sampleField(x, y, U_FIELD);
-                        var v = f.sampleField(x, y, V_FIELD);
+                        const u = f.sampleField(x, y, U_FIELD);
+                        const v = f.sampleField(x, y, V_FIELD);
                         // l = Math.sqrt(u*u + v*v);
                         // x += u/l * segLen;
                         // y += v/l * segLen;
