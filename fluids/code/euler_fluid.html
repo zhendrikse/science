@@ -504,51 +504,54 @@ function getPressureRange(fluid) {
     return [minPressure, maxPressure];
 }
 
-function updateImageData(imageData, fluid, pressureRange) {
+function updateImageDataAt(i, j, fluid, imageData, pressureRange) {
     let n = fluid.numY;
     const cellScale = 1.1;
     const h = fluid.h;
     let color = [255, 255, 255, 255], smoke;
-    for (let i = 0; i < fluid.numX; i++)
-        for (let j = 0; j < fluid.numY; j++) {
 
-            if (scene.showPressure) {
-                smoke = fluid.m[i * n + j];
-                color = scientificColorCodingFor(fluid.p[i * n + j], pressureRange[0], pressureRange[1]);
-                if (scene.showSmoke) {
-                    color[0] = Math.max(0.0, color[0] - 255 * smoke);
-                    color[1] = Math.max(0.0, color[1] - 255 * smoke);
-                    color[2] = Math.max(0.0, color[2] - 255 * smoke);
-                }
-            } else if (scene.showSmoke) {
-                smoke = fluid.m[i * n + j];
-                color[0] = 255 * smoke;
-                color[1] = 255 * smoke;
-                color[2] = 255 * smoke;
-                if (scene.sceneNr === 2)
-                    color = scientificColorCodingFor(smoke, 0.0, 1.0);
-            } else if (fluid.s[i * n + j] === 0.0) {
-                color[0] = 0;
-                color[1] = 0;
-                color[2] = 0;
-            }
-
-            const x = Math.floor(scaleX(i * h));
-            const y = Math.floor(scaleY((j + 1) * h));
-            const cx = Math.floor(canvasScale * cellScale * h) + 1;
-            const cy = Math.floor(canvasScale * cellScale * h) + 1;
-
-            for (let yi = y; yi < y + cy; yi++) {
-                let pos = 4 * (yi * canvas.width + x);
-
-                for (let xi = 0; xi < cx; xi++) {
-                    imageData.data[pos++] = color[0]; // red
-                    imageData.data[pos++] = color[1]; // green
-                    imageData.data[pos++] = color[2]; // blue
-                    imageData.data[pos++] = color[3]; // opacity
-                }
-            }
+    if (scene.showPressure) {
+        smoke = fluid.m[i * n + j];
+        color = scientificColorCodingFor(fluid.p[i * n + j], pressureRange[0], pressureRange[1]);
+        if (scene.showSmoke) {
+            color[0] = Math.max(0.0, color[0] - 255 * smoke);
+            color[1] = Math.max(0.0, color[1] - 255 * smoke);
+            color[2] = Math.max(0.0, color[2] - 255 * smoke);
         }
+    } else if (scene.showSmoke) {
+        smoke = fluid.m[i * n + j];
+        color[0] = 255 * smoke;
+        color[1] = 255 * smoke;
+        color[2] = 255 * smoke;
+        if (scene.sceneNr === 2)
+            color = scientificColorCodingFor(smoke, 0.0, 1.0);
+    } else if (fluid.s[i * n + j] === 0.0) {
+        color[0] = 0;
+        color[1] = 0;
+        color[2] = 0;
+    }
+
+    const x = Math.floor(scaleX(i * h));
+    const y = Math.floor(scaleY((j + 1) * h));
+    const cx = Math.floor(canvasScale * cellScale * h) + 1;
+    const cy = Math.floor(canvasScale * cellScale * h) + 1;
+
+    for (let yi = y; yi < y + cy; yi++) {
+        let pos = 4 * (yi * canvas.width + x);
+
+        for (let xi = 0; xi < cx; xi++) {
+            imageData.data[pos++] = color[0]; // red
+            imageData.data[pos++] = color[1]; // green
+            imageData.data[pos++] = color[2]; // blue
+            imageData.data[pos++] = color[3]; // opacity
+        }
+    }
+}
+
+function updateImageData(imageData, fluid, pressureRange) {
+    for (let i = 0; i < fluid.numX; i++)
+        for (let j = 0; j < fluid.numY; j++)
+            updateImageDataAt(i, j, fluid, imageData, pressureRange);
 }
 
 function draw() {
