@@ -2,9 +2,13 @@
 
 from vpython import vertex, quad, canvas, rate, cos, color, vec, arange, vector, slider, wtext, cross, sqrt, checkbox, pi
 
+title = """&#x2022; Original <a href="https://github.com/zhendrikse/science/blob/main/waves/code/interference_pattern_3d.py">interference_pattern_3d.py</a> by <a href="http://www.hendrikse.name/">Zeger Hendrikse</a>
+
+"""
+
 width = 600
 height = 450
-display = canvas(width=width, height=height, background=color.gray(0.075), forward=vec(-.82, -1., -.64), center=vec(13, -13, 5), range=60)
+display = canvas(title=title, width=width, height=height, background=color.gray(0.075), forward=vec(-.82, -1., -.64), center=vec(13, -13, 5), range=60)
 
 class NumpyWrapper:
     def __init__(self, start_1, stop_1, start_2, stop_2, resolution):
