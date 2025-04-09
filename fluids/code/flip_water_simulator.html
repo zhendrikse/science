@@ -229,7 +229,6 @@ PIC <label>
             var h = 1.0 / this.fInvSpacing;
             var r = this.particleRadius;
             var or = obstacleRadius;
-            var or2 = or * or;
             var minDist = obstacleRadius + r;
             var minDist2 = minDist * minDist;
 
@@ -981,7 +980,7 @@ PIC <label>
 
         gl.clear(gl.DEPTH_BUFFER_BIT);
 
-        var diskColor = [1.0, 1.0, 0.0];
+        var diskColor = [0.6, 0.6, 0.0];
 
         gl.useProgram(meshShader);
         gl.uniform2f(gl.getUniformLocation(meshShader, 'domainSize'), simulationWidth, simulationHeight);
