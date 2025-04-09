@@ -12,7 +12,7 @@ title = """&#x2022; Based on <a href="https://sites.science.oregonstate.edu/~lan
 
 """
 
-from vpython import sphere, simple_sphere, vector, color, rate, sin, cos, sqrt, pi, log, canvas, random, checkbox, ring, dot, slider
+from vpython import sphere, simple_sphere, vector, color, rate, sin, cos, sqrt, pi, log, canvas, random, checkbox, ring, dot, slider, floor
 
 display = canvas(width=600, height=600, title=title, range=20, center=vector(0, 0, 15), color=color.gray(0.075), forward=vector(-.1, -.2, -1))
 
@@ -24,15 +24,30 @@ def gauss(mu, sigma):
     vt *= sigma + mu
     return vt
 
-radius = 20.
-grid_size = 60
+def scientific_color_code(value, min_value, max_value):
+    color_value = min(max(value, min_value), max_value - 0.0001)
+    value_range = max_value - min_value
+    color_value = 0.5 if value_range == 0.0 else (color_value - min_value) / value_range
+    num = floor(4 * color_value)
+    color_value = 4 * (color_value - num / 4)
+
+    if num == 0:
+        return vector(0.0, color_value, 1.0)
+    elif num == 1:
+        return vector(0.0, 1.0, 1.0 - color_value)
+    elif num == 2:
+        return vector(color_value, 1.0, 0.0)
+    elif num == 3:
+        return vector(1.0, 1.0 - color_value, 0.0)
+
+radius, grid_size = 20., 60
 grid = [[[0 for _ in range(grid_size)] for _ in range(grid_size)] for _ in range(grid_size)]
 grid[grid_size // 2][grid_size // 2][grid_size // 2] = 1  # Particle in center
 
-ring(pos=vector(0, 0, 0), axis=vector(0, 1, 0), radius=radius, thickness=0.1, color=color.cyan)
-#ring(pos=vector(0, 0, 0), axis=vector(1, 0, 0), radius=radius, thickness=0.1, color=color.cyan)
-sphere(pos=vector(0, 0, 0), radius=radius, opacity=0.1, color=color.cyan)
-sphere(pos=vector(0, 0, 0), radius=1, color=color.red)
+ring_1 = ring(pos=vector(0, 0, 0), axis=vector(0, 1, 0), radius=radius, thickness=0.1, color=color.cyan)
+ring_2 = ring(pos=vector(0, 0, 0), axis=vector(1, 0, 0), radius=radius, thickness=0.1, color=color.cyan)
+dome = sphere(pos=vector(0, 0, 0), radius=radius, opacity=0.1, color=color.cyan, visible=False)
+sphere(pos=vector(0, 0, 0), radius=1, color=scientific_color_code(0, 0, 1))
 ball = simple_sphere(radius=0.8)  # Moving ball
 
 show_start_points = False
@@ -45,8 +60,17 @@ def change_frame_rate(event):
     global frame_rate
     frame_rate = event.value
 
-display.append_to_caption("\nStart points ")
-_ = checkbox(bind=toggle_start_points, checked=show_start_points)
+def toggle_rings(event):
+    ring_1.visible = ring_2.visible = event.checked
+
+def toggle_dome(event):
+    dome.visible = event.checked
+
+
+display.append_to_caption("\n")
+_ = checkbox(text="Start points ", bind=toggle_start_points, checked=show_start_points)
+_ = checkbox(text="Rings ", bind=toggle_rings, checked=True)
+_ = checkbox(text="Dome ", bind=toggle_dome, checked=False)
 display.append_to_caption("\n\nFrame rate")
 _ = slider(min=5, max=frame_rate, value=frame_rate, bind=change_frame_rate)
 
@@ -78,9 +102,8 @@ while running:  # Generates new ball
             hit = True  # Ball hits fixed ball
             grid[xg][yg][zg] = 1  # Position now occupied
             distance = dot(pos, pos) / (radius * radius)
-            running = distance < 1.1
-            colour = color.hsv_to_rgb(vector(distance, .75, 1))
-            sphere(pos=vector(pos), radius=0.8, color=colour)
+            running = distance < 1.05
+            sphere(pos=vector(pos), radius=0.8, color=scientific_color_code(distance, 0, 1))
         else:
             step = 1 if random() < 0.5 else -1
             direction = random()
