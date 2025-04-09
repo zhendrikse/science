@@ -23,7 +23,7 @@
 </div>
 <p style="clear: both;"></p>
 
-### Euler Fluid simulation
+### Euler Fluid simulations
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -34,8 +34,10 @@
   <figcaption>An Euler fluid simulation in pure Javascript.</figcaption>
 </figure>
 <figure class="right_image">
-    <!-- SPACE RESERVED FOR FUTURE APPLICATIONS 
-      -->
+  <a href="flip_water_simulator.html">
+    <img alt="Euler water simulation" src="images/flip_water_simulation.png" title="Click to animate"/>
+  </a>
+  <figcaption>An Euler water simulation in pure Javascript.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
