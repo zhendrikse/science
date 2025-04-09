@@ -1,0 +1,361 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, radius, square_size, display, plot, ρσ_unpack, mass, cluster;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "7";
+    title = "&#x2022; Based on <a href=\"https://github.com/ksenia007/dlaCluster/blob/master/DLAcluster.py\">DLAcluster.py<\/a>\n&#x2022; Refactored, extended, and ported to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>, see <a href=\"https://github.com/zhendrikse/science/blob/main/dla/code/dla_2d.py\">dla_2d.py</a>\n\n";
+    "9";
+    radius = 150;
+    "10";
+    square_size = radius["*"](2)["+"](5);
+    "11";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 600, color: color.gray(.075), center: vec(1, 1, 0)["*"](square_size)["/"](2), range: radius, title: title})]);
+    "13";
+    display.append_to_caption("\n");
+    "14";
+    ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Walker data", xtitle: "Released walkers", ytitle: "Glued walkers", background: color.black, width: 600})]);
+    "15";
+    plot = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.cyan})]);
+    "17";
+    async function scientific_color_code(value, min_value, max_value) {
+        var ρσ_ls, color_value, value_range, num;
+        "18";
+        color_value = min(max(value, min_value), max_value["-"](1["*"](1e-4)));
+        "19";
+        value_range = max_value["-"](1["*"](min_value));
+        "20";
+        color_value = ((value_range === 0 || typeof value_range === "object" && ρσ_equals(value_range, 0))) ? .5 : color_value["-"](1["*"](min_value))["/"](value_range);
+        "21";
+        num = floor(4["*"](color_value));
+        "22";
+        color_value = 4["*"](color_value["-"](1["*"](num)["/"](4)));
+        "24";
+        if ((num === 0 || typeof num === "object" && ρσ_equals(num, 0))) {
+            "25";
+            return vector(0, color_value, 1);
+            "26";
+        } else if ((num === 1 || typeof num === "object" && ρσ_equals(num, 1))) {
+            "27";
+            return vector(0, 1, 1["-"](1["*"](color_value)));
+            "28";
+        } else if ((num === 2 || typeof num === "object" && ρσ_equals(num, 2))) {
+            "29";
+            return vector(color_value, 1, 0);
+            "30";
+        } else if ((num === 3 || typeof num === "object" && ρσ_equals(num, 3))) {
+            "31";
+            return vector(1, 1["-"](1["*"](color_value)), 0);
+        }
+    };
+    if (!scientific_color_code.__argnames__) Object.defineProperties(scientific_color_code, {
+        __argnames__ : {value: ["value", "min_value", "max_value"]},
+        __module__ : {value: null}
+    });
+
+    "34";
+    async function check_around(location, matrix) {
+        var ρσ_ls, found_friend, exit_circle, near_edge, neighbor_down, neighbor_up, neighbor_right, neighbor_left, decide;
+        "35";
+        found_friend = false;
+        "36";
+        exit_circle = false;
+        "37";
+        near_edge = false;
+        "40";
+        if (ρσ_getitem(location, 1)["+"](1)[">"](square_size["-"](1["*"](1))) || ρσ_getitem(location, 1)["-"](1["*"](1))["<"](1) || ρσ_getitem(location, 0)["+"](1)[">"](square_size["-"](1["*"](1))) || ρσ_getitem(location, 0)["-"](1["*"](1))["<"](1)) {
+            "41";
+            near_edge = true;
+            "45";
+        }
+        if (!near_edge) {
+            "46";
+            neighbor_down = ρσ_getitem(ρσ_getitem(matrix, ρσ_getitem(location, 1)["+"](1)), ρσ_getitem(location, 0));
+            "47";
+            if ((neighbor_down === 1 || typeof neighbor_down === "object" && ρσ_equals(neighbor_down, 1))) {
+                "48";
+                found_friend = true;
+                "49";
+            }
+            if ((neighbor_down === 2 || typeof neighbor_down === "object" && ρσ_equals(neighbor_down, 2))) {
+                "50";
+                exit_circle = true;
+            }
+            "52";
+            neighbor_up = ρσ_getitem(ρσ_getitem(matrix, ρσ_getitem(location, 1)["-"](1["*"](1))), ρσ_getitem(location, 0));
+            "53";
+            if ((neighbor_up === 1 || typeof neighbor_up === "object" && ρσ_equals(neighbor_up, 1))) {
+                "54";
+                found_friend = true;
+                "55";
+            }
+            if ((neighbor_up === 2 || typeof neighbor_up === "object" && ρσ_equals(neighbor_up, 2))) {
+                "56";
+                exit_circle = true;
+            }
+            "58";
+            neighbor_right = ρσ_getitem(ρσ_getitem(matrix, ρσ_getitem(location, 1)), ρσ_getitem(location, 0)["+"](1));
+            "59";
+            if ((neighbor_right === 1 || typeof neighbor_right === "object" && ρσ_equals(neighbor_right, 1))) {
+                "60";
+                found_friend = true;
+                "61";
+            }
+            if ((neighbor_right === 2 || typeof neighbor_right === "object" && ρσ_equals(neighbor_right, 2))) {
+                "62";
+                exit_circle = true;
+            }
+            "64";
+            neighbor_left = ρσ_getitem(ρσ_getitem(matrix, ρσ_getitem(location, 1)), ρσ_getitem(location, 0)["-"](1["*"](1)));
+            "65";
+            if ((neighbor_left === 1 || typeof neighbor_left === "object" && ρσ_equals(neighbor_left, 1))) {
+                "66";
+                found_friend = true;
+                "67";
+            }
+            if ((neighbor_left === 2 || typeof neighbor_left === "object" && ρσ_equals(neighbor_left, 2))) {
+                "68";
+                exit_circle = true;
+                "71";
+            }
+        }
+        if (!found_friend && !near_edge) {
+            "72";
+            decide = random();
+            "73";
+            if (decide["<"](.25)) {
+                "74";
+                location = ρσ_list_decorate([ ρσ_getitem(location, 0)["-"](1["*"](1)), ρσ_getitem(location, 1) ]);
+                "75";
+            } else if (decide["<"](.5)) {
+                "76";
+                location = ρσ_list_decorate([ ρσ_getitem(location, 0)["+"](1), ρσ_getitem(location, 1) ]);
+                "77";
+            } else if (decide["<"](.75)) {
+                "78";
+                location = ρσ_list_decorate([ ρσ_getitem(location, 0), ρσ_getitem(location, 1)["+"](1) ]);
+                "79";
+            } else {
+                "80";
+                location = ρσ_list_decorate([ ρσ_getitem(location, 0), ρσ_getitem(location, 1)["-"](1["*"](1)) ]);
+            }
+        }
+        "82";
+        return [location, found_friend, near_edge, exit_circle];
+    };
+    if (!check_around.__argnames__) Object.defineProperties(check_around, {
+        __argnames__ : {value: ["location", "matrix"]},
+        __module__ : {value: null}
+    });
+
+    "85";
+    async function random_location_on_ring(seed_x, seed_y) {
+        var ρσ_ls, theta, x, y;
+        "86";
+        theta = 2["*"](pi)["*"](random());
+        "87";
+        x = int(radius["*"](cos(theta)))["+"](seed_x);
+        "88";
+        y = int(radius["*"](sin(theta)))["+"](seed_y);
+        "89";
+        return ρσ_list_decorate([ x, y ]);
+    };
+    if (!random_location_on_ring.__argnames__) Object.defineProperties(random_location_on_ring, {
+        __argnames__ : {value: ["seed_x", "seed_y"]},
+        __module__ : {value: null}
+    });
+
+    "92";
+    async function dla_cluster() {
+        var ρσ_ls, seed_x, seed_y, matrix, _, col, row, added_walkers_count, random_walkers_count, complete_cluster, location, found_friend, near_edge, exit_circle, ρσ_unpack, location_new, screen_pos, distance;
+        "94";
+        seed_x = radius["+"](2);
+        "95";
+        seed_y = radius["+"](2);
+        "97";
+        matrix = (function() {
+            var ρσ_Iter = range(square_size), ρσ_Result = [], _;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                _ = ρσ_Index;
+                ρσ_Result.push((function() {
+                    var ρσ_Iter = range(square_size), ρσ_Result = [], _;
+                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                    for (var ρσ_Index of ρσ_Iter) {
+                        _ = ρσ_Index;
+                        ρσ_Result.push(0);
+                    }
+                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                    return ρσ_Result;
+                })());
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
+        "99";
+        for (var ρσ_Index1 = 0; ρσ_Index1["<"](square_size); ρσ_Index1++) {
+            row = ρσ_Index1;
+            "100";
+            for (var ρσ_Index2 = 0; ρσ_Index2["<"](square_size); ρσ_Index2++) {
+                col = ρσ_Index2;
+                "101";
+                if ((row === seed_y || typeof row === "object" && ρσ_equals(row, seed_y)) && (col === seed_x || typeof col === "object" && ρσ_equals(col, seed_x))) {
+                    "103";
+                    ρσ_setitem(ρσ_getitem(matrix, row), col, 1);
+                    "104";
+                    ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(row, col, 0), color: (await scientific_color_code(0, 0, square_size))})]);
+                    "105";
+                } else if (mag(vec(seed_x["-"](1["*"](col)), seed_y["-"](1["*"](row)), 0))[">"](radius)) {
+                    "107";
+                    ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(row, col, 0), color: color.black, shininess: 0})]);
+                    "108";
+                    ρσ_setitem(ρσ_getitem(matrix, row), col, 2);
+                }
+            }
+        }
+        "110";
+        added_walkers_count = random_walkers_count = 0;
+        "111";
+        complete_cluster = false;
+        "113";
+        while (!complete_cluster) {
+            "114";
+            random_walkers_count=random_walkers_count["+"](1);
+            "115";
+            location = (await random_location_on_ring(seed_x, seed_y));
+            "117";
+            found_friend = false;
+            "118";
+            near_edge = false;
+            "119";
+            exit_circle = false;
+            "120";
+            while (!found_friend && !near_edge) {
+                "121";
+                ρσ_unpack = (await check_around(location, matrix));
+ρσ_unpack = ρσ_unpack_asarray(4, ρσ_unpack);
+                location_new = ρσ_unpack[0];
+                found_friend = ρσ_unpack[1];
+                near_edge = ρσ_unpack[2];
+                exit_circle = ρσ_unpack[3];
+                "123";
+                if (found_friend) {
+                    "124";
+                    (await rate(1e4));
+                    "125";
+                    ρσ_setitem(ρσ_getitem(matrix, ρσ_getitem(location, 1)), ρσ_getitem(location, 0), 1);
+                    "126";
+                    screen_pos = vec(ρσ_getitem(location, 0), ρσ_getitem(location, 1), 0);
+                    "127";
+                    distance = mag(screen_pos["-"](1["*"](.5)["*"](vec(square_size, square_size, 0))));
+                    "128";
+                    ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: screen_pos, color: (await scientific_color_code(distance, 0, .5["*"](square_size)))})]);
+                    "129";
+                    added_walkers_count=added_walkers_count["+"](1);
+                    "130";
+                } else {
+                    "131";
+                    location = location_new;
+                    "133";
+                }
+            }
+            if ((random_walkers_count === 4e5 || typeof random_walkers_count === "object" && ρσ_equals(random_walkers_count, 4e5))) {
+                "134";
+                complete_cluster = true;
+                "136";
+            }
+            if (found_friend && exit_circle) {
+                "137";
+                complete_cluster = true;
+            }
+            "139";
+            plot.plot(random_walkers_count, added_walkers_count);
+        }
+        "141";
+        return [added_walkers_count, matrix];
+    };
+    if (!dla_cluster.__module__) Object.defineProperties(dla_cluster, {
+        __module__ : {value: null}
+    });
+
+    "144";
+    ρσ_unpack = (await dla_cluster());
+ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
+    mass = ρσ_unpack[0];
+    cluster = ρσ_unpack[1];
+    "145";
+    while (true) {
+        "146";
+        (await rate(10));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>
