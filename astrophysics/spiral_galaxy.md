@@ -7,8 +7,8 @@
 
 <p style="clear:both;"></p>
 
-### Spiral galaxy renderer
-<div style="border-top: 1px solid #999999"><br/></div>
+## Spiral galaxy renderer
+<div class="header_line"><br/></div>
 
 On this site, you can also find a live demo of a way more advanced 2D spiral galaxy simulator
 that is based on the density wave theory (on GitHub &rarr; 
@@ -27,8 +27,8 @@ Click on the image below to activate this demo!
 
 <p style="clear: both;"></p>
 
-### About spiral galaxies
-<div style="border-top: 1px solid #999999"><br/></div>
+## About spiral galaxies
+<div class="header_line"><br/></div>
 
 <blockquote>
 Hubble distinguished between elliptical galaxies and spiral galaxies. 

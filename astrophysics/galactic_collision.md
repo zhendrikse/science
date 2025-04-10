@@ -16,13 +16,12 @@ The demo below simulates this future collision. It is based on a very simple mod
 - [VPython](https://vpython.org/)&apos;s [`simple_sphere`](https://www.glowscript.org/docs/VPythonDocs/sphere.html#simple-sphere) 
   objects are used to optimize performance.
 
-
 {% include_relative code/GalacticCollision.html %}
 
 <p style="clear:both;"></p>
 
-### Additional information
-<div style="border-top: 1px solid #999999"><br/></div>
+## Additional information
+<div class="header_line"><br/></div>
 
 - Even more spectacular and realistic pictures and
   [animations](https://youtu.be/fMNlt2FnHDg) can be found on
@@ -36,6 +35,27 @@ The demo below simulates this future collision. It is based on a very simple mod
   shortly the possible scenarios for our solar system as well. However, by that time all life will have
   disappeared already on planet Earth, as the sun's luminosity will have increased by over 30% by that time,
   boiling and evaporating the oceans into oblivion.
+
+## Spiral galaxy renderer
+<div class="header_line"><br/></div>
+
+On this site, you can also find a live demo of a way more advanced 2D spiral galaxy simulator
+that is based on the density wave theory (on GitHub &rarr; 
+[Galaxy renderer](https://github.com/beltoforion/Galaxy-Renderer-Typescript)). 
+It is written by [Ingo Berg](https://github.com/beltoforion) in Typescript. 
+Click on the image below to activate this demo!
+
+
+<figure style="float: center; text-align: center;">
+  <a href="spiral_galaxy_renderer.html">
+    <img alt="Daylight variations" src="images/spiral_galaxy_renderer.png" title="Click to go to demo"/>
+  </a>
+  <figcaption>Click on the image to play with a live demo of a way more advanced 2D spiral galaxy renderer!
+  </figcaption>
+</figure>
+
+<p style="clear: both;"></p>
+
 
 
 {% include share_buttons.html %}
