@@ -7,8 +7,28 @@
 
 <p style="clear:both;"></p>
 
-## About spiral galaxies
-<div class="header_line"><br/></div>
+### Spiral galaxy renderer
+<div style="border-top: 1px solid #999999"><br/></div>
+
+On this site, you can also find a live demo of a way more advanced 2D spiral galaxy simulator
+that is based on the density wave theory (on GitHub &rarr; 
+[Galaxy renderer](https://github.com/beltoforion/Galaxy-Renderer-Typescript)). 
+It is written by [Ingo Berg](https://github.com/beltoforion) in Typescript. 
+Click on the image below to activate this demo!
+
+
+<figure style="float: center; text-align: center;">
+  <a href="spiral_galaxy_renderer.html">
+    <img alt="Daylight variations" src="images/spiral_galaxy_renderer.png" title="Click to go to demo"/>
+  </a>
+  <figcaption>Click on the image to play with a live demo of a way more advanced 2D spiral galaxy renderer!
+  </figcaption>
+</figure>
+
+<p style="clear: both;"></p>
+
+### About spiral galaxies
+<div style="border-top: 1px solid #999999"><br/></div>
 
 <blockquote>
 Hubble distinguished between elliptical galaxies and spiral galaxies. 
