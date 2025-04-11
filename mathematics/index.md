@@ -171,6 +171,42 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 </div>
 <p style="clear: both;"></p>
 
+
+<a name="cellular_automata"></a>
+## Cellular automata
+<div class="header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="2d_game_of_life.html">
+    <img alt="Dragon curve fractal" src="./images/2d_game_of_life.png" title="Click to animate"/>
+  </a>
+  <figcaption>Conway's game of life.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVED FOR FUTURE APPLICATIONS -->
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+<a name="fractals"></a>
+## Fractals
+<div class="header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="fractals.html">
+    <img alt="Dragon curve fractal" src="./images/dragon_curve.png" title="Click to animate"/>
+  </a>
+  <figcaption>Generation of two-dimensional fractal shapes.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVED FOR FUTURE APPLICATIONS -->
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+
 <a name="mandelbrot"></a>
 ## Mandelbrot &amp; chaos game fractals
 <div class="header_line"><br/></div>
@@ -331,18 +367,11 @@ seen in the mathematics section on this page:
 <p style="clear: both;"></p>
 
 <a name="numerical_methods"></a>
-## Game of life &amp; some numerical methods
+## Numerical methods
 <div class="header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="2d_game_of_life.html">
-    <img alt="Conway's game of life" src="./images/2d_game_of_life.png" title="Click to animate"/>
-  </a>
-  <figcaption>Two-dimensional version of Conway's game of life.
-  </figcaption>
-</figure>
-<figure class="right_image">
   <a href="numerical_methods.html">
     <img alt="Numerical methods" src="./images/numerical_methods.png" title="Click to animate"/>
   </a>
@@ -350,6 +379,10 @@ seen in the mathematics section on this page:
   <a href="https://en.wikipedia.org/wiki/Euler_method">Euler method</a> and
   <a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Runge-Kutta</a> methods (2 and 4).
   </figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>
