@@ -8,6 +8,7 @@
 - [`double_shapes.py` source code](double_shapes.py)
 - [`fractal_terrain.py` source code](fractal_terrain.py)
 - [`galton_board.py` source code](galton_board.py)
+- [`2d_game_of_life.py` source code](2d_game_of_life.py)
 - [`harmonograph.py` source code](harmonograph.py)
 - [`integration_with_polar_coordinates.py` source code](integration_with_polar_coordinates.py)
 - [`lorenz_attractor.py` source code](lorenz_attractor.py)
