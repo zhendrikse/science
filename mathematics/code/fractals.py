@@ -1,5 +1,5 @@
 #Web VPython 3.2
-from vpython import canvas, vec, color, rate, sphere, curve, radio
+from vpython import canvas, vec, color, rate, sphere, curve, checkbox
 
 title = """&#x2022; Fractals inspired by <a href="https://github.com/jeffvun/fractals/">github.com/jeffvun/fractals</a> 
 &#x2022; Ported to <a href="https://vpython.org/">VPython</a> by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/fractals.py">fractals.py</a>
@@ -59,7 +59,6 @@ def generate_dragon_curve(n=15):
     clear_canvas(140, vec(110, -40, 0))
 
     points_ = dragon_curve(n)
-
     x, y = zip(*points_)
     for i in range(len(x)):
         sphere(pos=250 * vec(x[i], y[i], 0), radius=1, shininess=0, color=color.hsv_to_rgb(vec(i/len(x), 2, 1)))
@@ -73,8 +72,9 @@ def t_square_fractal(event):
     generate_t_square_fractal()
 
 display.append_to_caption("\n")
-dragon_radio = radio(text="Dragon curve ", checked=True, bind=dragon_fractal)
-t_square_radio = radio(text="T-square fractal ", checked=False, bind=t_square_fractal)
+
+dragon_radio = checkbox(text="Dragon curve ", checked=True, bind=dragon_fractal)
+t_square_radio = checkbox(text="T-square fractal ", bind=t_square_fractal)
 
 generate_dragon_curve()
 while True:

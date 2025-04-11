@@ -50,7 +50,7 @@ async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
-    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
     var version, print, arange, __name__, type, ρσ_ls, title, display, dragon_radio, t_square_radio;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
@@ -265,15 +265,15 @@ async function __main__() {
 
     "74";
     display.append_to_caption("\n");
-    "75";
-    dragon_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Dragon curve ", checked: true, bind: dragon_fractal})]);
     "76";
-    t_square_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "T-square fractal ", checked: false, bind: t_square_fractal})]);
-    "78";
-    (await generate_dragon_curve());
+    dragon_radio = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Dragon curve ", checked: true, bind: dragon_fractal})]);
+    "77";
+    t_square_radio = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "T-square fractal ", bind: t_square_fractal})]);
     "79";
+    (await generate_dragon_curve());
+    "80";
     while (true) {
-        "80";
+        "81";
         (await rate(10));
     }
 };
