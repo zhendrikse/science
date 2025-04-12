@@ -15,7 +15,9 @@ In this animation, a disk is used as source of alpha particles which scatter off
 The position of the gold nucleus changes as the alpha particles pass by, but it is
 repositioned after each event.
 
-{% include_relative code/Rutherfordscattering.html %}
+{% include_relative code/rutherford_scattering.html %}
+
+<p style="clear: both;"></p>
 
 {% include share_buttons.html %}
 
