@@ -3,7 +3,7 @@
 ## Observers in inertial frames
 <div class="header_line"><br/></div>
 
-{% include_relative code/InertialObservers.html %}
+{% include_relative code/inertial_observers.html %}
 
 <p style="clear: both;"></p>
 

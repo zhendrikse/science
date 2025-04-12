@@ -17,7 +17,7 @@ so that a small object being spaghettified experiences no net change in volume. 
 </blockquote>
 <p style="clear:both;"></p>
 
-{% include_relative code/Spaghettification.html %}
+{% include_relative code/spaghettification.html %}
 
 <p style="clear:both;"></p>
 

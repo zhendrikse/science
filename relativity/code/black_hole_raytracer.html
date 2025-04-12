@@ -68,7 +68,7 @@ async function __main__() {
     "10";
     title = "&#x2022; Based on the original <a href=\"https://github.com/silvaan/blackhole_raytracer/tree/master\">blackhole_raytracer<\/a> project by Arman T, Casper Y, Lulu W\n&#x2022; See also their accompanying <a href=\"https://cyang2020.github.io/BlackHoleRayTracer/\">GitHub pages</a> and <a href=\"https://www.youtube.com/watch?v=VTodu1YTURY\">video</a>\n&#x2022; Ported to VPython by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/black_hole_raytracer.py\">black_hole_raytracer.py</a>\n&#x2022; <span style=\"color: red\">Rendering may be <em>slow</em>, so please be patient!</span>\n\n";
     "12";
-    x_resolution = 500;
+    x_resolution = 600;
     "13";
     y_resolution = Math.floor(x_resolution["/"](2));
     "16";
@@ -322,19 +322,23 @@ async function __main__() {
     }
     Ray.prototype.__init__ = async function __init__(origin, direction) {
         var self = this;
+        var ρσ_ls, ρσ_unpack;
         "99";
-        self.origin = origin;
+        ρσ_unpack = [origin, origin, origin];
+        self.origin = ρσ_unpack[0];
+        self.position = ρσ_unpack[1];
+        self.prev_pos = ρσ_unpack[2];
         "100";
-        self.position = origin;
-        "101";
         self.direction = direction.norm();
-        "102";
+        "101";
         self.velocity = c["*"](self.direction);
+        "102";
+        ρσ_unpack = [vector(0, 0, 0), vector(0, 0, 0)];
+        self.acceleration = ρσ_unpack[0];
+        self.cross_point = ρσ_unpack[1];
         "103";
-        self.acceleration = vector(0, 0, 0);
-        "104";
         self.total_time = 0;
-        "105";
+        "104";
         self.crossed_xz = false;
     };
     if (!Ray.prototype.__init__.__argnames__) Object.defineProperties(Ray.prototype.__init__, {
@@ -345,7 +349,7 @@ async function __main__() {
     Ray.__handles_kwarg_interpolation__ = Ray.prototype.__init__.__handles_kwarg_interpolation__;
     Ray.prototype.point = async function point(dist) {
         var self = this;
-        "108";
+        "107";
         return self.origin["+"](dist["*"](self.direction));
     };
     if (!Ray.prototype.point.__argnames__) Object.defineProperties(Ray.prototype.point, {
@@ -354,7 +358,7 @@ async function __main__() {
     });
     Ray.prototype.accelerate = async function accelerate(a) {
         var self = this;
-        "111";
+        "110";
         self.acceleration = a;
     };
     if (!Ray.prototype.accelerate.__argnames__) Object.defineProperties(Ray.prototype.accelerate, {
@@ -364,27 +368,27 @@ async function __main__() {
     Ray.prototype.step = async function step(t) {
         var self = this;
         var ρσ_ls, a, b, l;
-        "114";
+        "113";
         self.prev_pos = self.position;
-        "115";
+        "114";
         self.velocity=self.velocity["+"](self.acceleration["*"](t));
-        "116";
+        "115";
         self.velocity = c["*"](self.velocity.norm());
-        "117";
+        "116";
         self.position=self.position["+"](self.velocity["*"](t)["+"](.5["*"](self.acceleration)["*"](t)["*"](t)));
-        "118";
+        "117";
         self.total_time=self.total_time["+"](t);
-        "120";
+        "119";
         self.crossed_xz = max(self.prev_pos.y, self.position.y)[">="](ρσ_cond_temp = 0) && ρσ_cond_temp[">="](min(self.prev_pos.y, self.position.y));
-        "121";
+        "120";
         if (self.crossed_xz) {
-            "122";
+            "121";
             a = self.prev_pos;
-            "123";
+            "122";
             b = self.position;
-            "124";
+            "123";
             l = b["-"](1["*"](a));
-            "125";
+            "124";
             self.cross_point = vector(a.x["-"](1["*"](a.y["/"](l.y))["*"](l.x)), 0, a.z["-"](1["*"](a.y["/"](l.y))["*"](l.z)));
         }
     };
@@ -404,22 +408,22 @@ async function __main__() {
 
 
 
-    "128";
+    "127";
     function Camera() {;
     }
     Camera.prototype.__init__ = async function __init__(origin, direction, focal_length) {
         var self = this;
-        "130";
+        "129";
         self.origin = origin;
-        "131";
+        "130";
         self.direction = direction.norm();
-        "132";
+        "131";
         self.focal_length = focal_length;
-        "133";
+        "132";
         self.normal = self.origin["+"](self.focal_length["*"](self.direction));
-        "134";
+        "133";
         self.right = vector(1, 0, 0);
-        "135";
+        "134";
         self.up = self.normal.cross(self.right).norm();
     };
     if (!Camera.prototype.__init__.__argnames__) Object.defineProperties(Camera.prototype.__init__, {
@@ -431,9 +435,9 @@ async function __main__() {
     Camera.prototype.ray = async function ray(x, y) {
         var self = this;
         var ρσ_ls, point, _GS_1;
-        "138";
+        "137";
         point = self.normal["+"](x["*"](self.right))["+"](y["*"](self.up));
-        "139";
+        "138";
         _GS_1 = new Ray;
         (await _GS_1.__init__(self.origin, point["-"](1["*"](self.origin))));
         return _GS_1;
@@ -452,7 +456,7 @@ async function __main__() {
 
 
 
-    "142";
+    "141";
     function Engine() {;
     }
     Engine.prototype.__init__ = async function __init__() {
@@ -468,11 +472,11 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "dt")){
             dt = ρσ_kwargs_obj.dt;
         }
-        "144";
+        "143";
         self.scene = scene_;
-        "145";
+        "144";
         self.n_iter = n_iter;
-        "146";
+        "145";
         self.dt = dt;
     };
     if (!Engine.prototype.__init__.__defaults__) Object.defineProperties(Engine.prototype.__init__, {
@@ -486,37 +490,37 @@ async function __main__() {
     Engine.prototype.render = async function render() {
         var self = this;
         var ρσ_ls, ratio, ρσ_unpack, x0, x1, y0, y1, xstep, ystep, y, x, ray, i, j;
-        "149";
+        "148";
         ratio = float(self.scene.width)["/"](self.scene.height);
-        "150";
+        "149";
         ρσ_unpack = [1["-u"]()["*"](1), 1];
         x0 = ρσ_unpack[0];
         x1 = ρσ_unpack[1];
-        "151";
+        "150";
         ρσ_unpack = [1["-u"]()["*"](1)["/"](ratio), 1["/"](ratio)];
         y0 = ρσ_unpack[0];
         y1 = ρσ_unpack[1];
-        "152";
+        "151";
         ρσ_unpack = [x1["-"](1["*"](x0))["/"](self.scene.width["-"](1["*"](1))), y1["-"](1["*"](y0))["/"](self.scene.height["-"](1["*"](1)))];
         xstep = ρσ_unpack[0];
         ystep = ρσ_unpack[1];
-        "154";
+        "153";
         for (var ρσ_Index1 = 0; ρσ_Index1["<"](self.scene.height); ρσ_Index1++) {
             j = ρσ_Index1;
-            "155";
+            "154";
             (await rate(1e4));
-            "156";
+            "155";
             progress_bar.text = "Rendering line "["+"](str(j["+"](1)))["+"](" from ")["+"](str(self.scene.height));
-            "157";
+            "156";
             y = y0["+"](j["*"](ystep));
-            "159";
+            "158";
             for (var ρσ_Index2 = 0; ρσ_Index2["<"](self.scene.width); ρσ_Index2++) {
                 i = ρσ_Index2;
-                "160";
+                "159";
                 x = x0["+"](i["*"](xstep));
-                "161";
+                "160";
                 ray = (await self.scene.camera.ray(x, y));
-                "162";
+                "161";
                 (await self.scene.image.set_pixel(i, j, (await self.trace(ray))));
             }
         }
@@ -534,38 +538,38 @@ async function __main__() {
             depth = ρσ_kwargs_obj.depth;
         }
         var ρσ_ls, colour, r, a, ray_bh_dist, t;
-        "167";
+        "166";
         colour = color.black;
-        "168";
+        "167";
         for (var ρσ_Index3 = 0; ρσ_Index3["<"](self.n_iter); ρσ_Index3++) {
             t = ρσ_Index3;
-            "169";
+            "168";
             r = self.scene.blackhole.position["-"](1["*"](ray.position));
-            "170";
+            "169";
             a = .007["*"](self.scene.blackhole.mass["/"](r.dot(r)))["*"](r.norm());
-            "171";
+            "170";
             (await ray.accelerate(a));
-            "172";
+            "171";
             (await ray.step(t["*"](self.dt)));
-            "174";
+            "173";
             ray_bh_dist = (ray.position["-"](1["*"](self.scene.blackhole.position))).mag;
-            "176";
+            "175";
             if (ray.crossed_xz && (await self.scene.disk.is_in(ray.cross_point))) {
-                "177";
+                "176";
                 colour = (await self.scene.disk.color_at(ray.position));
+                "177";
+                break;
                 "178";
-                break;
-                "179";
             } else if (ray_bh_dist["<="](self.scene.blackhole.radius)) {
-                "180";
+                "179";
                 break;
-                "181";
+                "180";
             } else if (ray_bh_dist[">="](15)) {
-                "182";
+                "181";
                 break;
             }
         }
-        "183";
+        "182";
         return colour;
     };
     if (!Engine.prototype.trace.__defaults__) Object.defineProperties(Engine.prototype.trace, {
@@ -576,7 +580,7 @@ async function __main__() {
     });
     Engine.prototype.save = async function save(filename) {
         var self = this;
-        "186";
+        "185";
         (await display.capture(filename));
     };
     if (!Engine.prototype.save.__argnames__) Object.defineProperties(Engine.prototype.save, {
@@ -595,52 +599,52 @@ async function __main__() {
 
 
 
-    "190";
+    "189";
     c_origin = vector(0, .7, 1["-u"]()["*"](9));
-    "191";
+    "190";
     c_focus = vector(0, 0, 0);
-    "193";
+    "192";
     _GS_1 = new BlackHole;
     (await _GS_1.__init__(c_focus, 80));
     bh = _GS_1;
-    "196";
+    "195";
     _GS_1 = new Disk;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [c_focus, 4.5["*"](bh.radius), 16.2["*"](bh.radius)].concat([ρσ_desugar_kwargs({colour: vector(.75, .15, .15)})]));
     disk = _GS_1;
-    "198";
+    "197";
     _GS_1 = new Camera;
     (await _GS_1.__init__(c_origin, c_focus["-"](1["*"](c_origin)), 1.2));
     camera_ = _GS_1;
-    "199";
+    "198";
     _GS_1 = new Scene;
     ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({width: x_resolution, height: Math.floor(x_resolution["/"](2)), camera: camera_, blackhole: bh, disk: disk})]);
     scene = _GS_1;
-    "200";
+    "199";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "202";
+    "201";
     _GS_1 = new Engine;
     (await _GS_1.__init__(scene));
     engine = _GS_1;
-    "203";
+    "202";
     (await engine.render());
-    "205";
+    "204";
     display_0.remove();
-    "207";
+    "206";
     async function download() {
-        "208";
+        "207";
         (await engine.save("black_hole.png"));
     };
     if (!download.__module__) Object.defineProperties(download, {
         __module__ : {value: null}
     });
 
-    "210";
+    "209";
     display.append_to_caption("\n");
-    "211";
+    "210";
     _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Download image", bind: download})]);
-    "213";
+    "212";
     while (true) {
-        "214";
+        "213";
         (await rate(10));
     }
 };

@@ -3,7 +3,7 @@
 ## Length contraction
 <div class="header_line"><br/></div>
 
-{% include_relative code/LengthContraction.html %}
+{% include_relative code/length_contraction.html %}
 
 <p style="clear: both;"></p>
 

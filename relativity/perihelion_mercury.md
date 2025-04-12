@@ -17,7 +17,7 @@ The additional terms $\alpha/r^3$ and  $\beta/r^4$ are included in the force.
 In order to simulate without it, simply set $\alpha$ and $\beta$ to zero using
 the checkboxes.
 
-{% include_relative code/PerihelionMercury.html %}
+{% include_relative code/perihelion_mercury.html %}
 
 <p style="clear: both;"></p>
 

@@ -3,7 +3,7 @@
 ## Rendering a black hole using ray tracing
 <div class="header_line"><br/></div>
 
-{% include_relative code/BlackHoleRayTracer.html %}
+{% include_relative code/black_hole_raytracer.html %}
 
 <p style="clear: both;"></p>
 
@@ -47,7 +47,7 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 <p style="clear: both;"></p>
 
 <figure style="float: center; text-align: center;">
-  <img alt="Einstein and Oppenheimer" width="100%" height="100%" src="images/size_of_black_hole.png" />
+  <img alt="Einstein and Oppenheimer" src="images/size_of_black_hole.png" />
   <figcaption>Size comparison for supermassive black holes such as TON 618.</figcaption>
 </figure>
 <p style="clear: both;"></p>

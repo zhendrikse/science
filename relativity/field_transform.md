@@ -10,7 +10,7 @@ an inertial frame at rest versus an observer in
 an inertial frame moving at a certain fraction of 
 the speed of light.
 
-{% include_relative code/FieldTransform.html %}
+{% include_relative code/field_transform.html %}
 
 <p style="clear: both;"></p>
 

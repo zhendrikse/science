@@ -3,7 +3,7 @@
 ## A comet moving in Schwarzschild space-time
 <div class="header_line"><br/></div>
 
-{% include_relative code/SchwarzschildSpaceTime.html %}
+{% include_relative code/schwarzschild_space_time.html %}
 
 <p style="clear: both;"></p>
 
