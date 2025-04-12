@@ -5,7 +5,7 @@
 
 <p style="clear: both;"></p>
 
-{% include_relative code/GaltonBoard.html %}
+{% include_relative code/galton_board.html %}
 
 <p style="clear: both;"></p>
 

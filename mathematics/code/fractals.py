@@ -1,12 +1,12 @@
 #Web VPython 3.2
-from vpython import canvas, vec, color, rate, sphere, curve, checkbox
+from vpython import canvas, vec, color, rate, sphere, curve, checkbox, sqrt
 
 title = """&#x2022; Fractals inspired by <a href="https://github.com/jeffvun/fractals/">github.com/jeffvun/fractals</a> 
 &#x2022; Ported to <a href="https://vpython.org/">VPython</a> by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/fractals.py">fractals.py</a>
 
 """
 
-display = canvas(width=600, height=400, title=title)
+display = canvas(width=600, height=600, background=color.gray(0.075), title=title)
 
 def clear_canvas(range_, center):
     for obj in display.objects:
@@ -14,6 +14,24 @@ def clear_canvas(range_, center):
         del obj
     display.range = range_
     display.center = center
+
+def sierpinski_triangle(order, length, pos):
+    if order == 0:
+        triangle_ = curve(pos=[pos,
+                               pos + vec(length, 0, 0),
+                               pos + vec(length/2, length * sqrt(3)/2, 0),
+                               pos], color=color.yellow, radius=.01)
+        return [triangle_]
+    else:
+        sierpinski_triangle(order-1, length/2, pos)
+        sierpinski_triangle(order-1, length/2, pos + vec(length/2, 0, 0))
+        sierpinski_triangle(order-1, length/2, pos + vec(length/4, length * sqrt(3)/4, 0))
+
+def generate_sierpinski_triangle(order=6, length=10):
+    clear_canvas(11 * length / 20, vec(0, 0, 0))
+    pos=vec(-length / 2, -length * sqrt(3) / 4, 0)
+    sierpinski_triangle(order, length, pos)
+
 
 def t_square(n, x, y, w):
     if n == 0:
@@ -52,11 +70,9 @@ def dragon_curve(n):
         new_points.append((1, 0))
         return new_points
 
-
-
 def generate_dragon_curve(n=15):
     global display
-    clear_canvas(140, vec(110, -40, 0))
+    clear_canvas(200, vec(105, -40, 0))
 
     points_ = dragon_curve(n)
     x, y = zip(*points_)
@@ -64,17 +80,22 @@ def generate_dragon_curve(n=15):
         sphere(pos=250 * vec(x[i], y[i], 0), radius=1, shininess=0, color=color.hsv_to_rgb(vec(i/len(x), 2, 1)))
 
 def dragon_fractal(event):
-    t_square_radio.checked = False
+    t_square_radio.checked = sierpinski_radio.checked = False
     generate_dragon_curve()
 
 def t_square_fractal(event):
-    dragon_radio.checked = False
+    dragon_radio.checked = sierpinski_radio.checked = False
     generate_t_square_fractal()
+
+def sierpinski_fractal(event):
+    dragon_radio.checked = t_square_radio.checked = False
+    generate_sierpinski_triangle()
 
 display.append_to_caption("\n")
 
 dragon_radio = checkbox(text="Dragon curve ", checked=True, bind=dragon_fractal)
 t_square_radio = checkbox(text="T-square fractal ", bind=t_square_fractal)
+sierpinski_radio = checkbox(text="Sierpinski ", bind=sierpinski_fractal)
 
 generate_dragon_curve()
 while True:

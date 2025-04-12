@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 The images are generated with [complex_functions.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/complex_functionspy).
-{% include_relative code/ComplexSurfacePlot.html %}
+{% include_relative code/complex_surface_plot.html %}
 
 <p style="clear: both;"></p>
 

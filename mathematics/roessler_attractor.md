@@ -3,7 +3,7 @@
 ## Rössler attractor
 <div class="header_line"><br/></div>
 
-{% include_relative code/RoesslerAttractor.html %}
+{% include_relative code/roessler_attractor.html %}
 
 <p style="clear: both;"></p>
 

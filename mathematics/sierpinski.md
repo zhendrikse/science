@@ -3,7 +3,7 @@
 ## Sierpiński pyramid
 <div class="header_line"><br/></div>
 
-{% include_relative code/Sierpinski.html %}
+{% include_relative code/sierpinski.html %}
 
 <p style="clear: both;"></p>
 

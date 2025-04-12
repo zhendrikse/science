@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 The images are generated with [double_shapes.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/double_shapes.py).
-{% include_relative code/DoubleShapesContourPlot.html %}
+{% include_relative code/double_shapes_contour_plot.html %}
 
 <p style="clear: both;"></p>
 

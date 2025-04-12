@@ -3,7 +3,7 @@
 ## Numerical methods
 <div class="header_line"><br/></div>
 
-{% include_relative code/NumericalMethods.html %}
+{% include_relative code/numerical_methods.html %}
 
 <p style="clear: both;"></p>
 

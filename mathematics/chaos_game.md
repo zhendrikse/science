@@ -13,7 +13,7 @@ characterize the chosen ruleset and $j$ denotes a (per iteration) randomly chose
 The famous [Barnsley fern](https://www.hendrikse.name/science/nature/fern.html) 
 is generated in a similar way.
 
-{% include_relative code/ChaosGame.html %}
+{% include_relative code/chaos_game.html %}
 
 <p style="clear: both;"></p>
 

@@ -4,7 +4,7 @@
 
 <div class="header_line"><br/></div>
 
-{% include_relative code/Mandelbrot.html %}
+{% include_relative code/mandelbrot.html %}
 
 <p style="clear: both;"></p>
 

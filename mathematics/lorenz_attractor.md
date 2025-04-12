@@ -3,7 +3,7 @@
 ## Lorenz attractor
 <div class="header_line"><br/></div>
 
-{% include_relative code/LorenzAttractor.html %}
+{% include_relative code/lorenz_attractor.html %}
 
 <p style="clear: both;"></p>
 

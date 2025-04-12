@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 The images are generated with [multivariate_functions.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/multivariate_functions.py).
-{% include_relative code/MultivariateSurfacePlot.html %}
+{% include_relative code/multivariate_surface_plot.html %}
 
 <p style="clear: both;"></p>
 

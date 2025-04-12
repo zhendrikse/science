@@ -18,7 +18,7 @@ is commonly believed to be the official inventor. &mdash; <a href="https://en.wi
 
 <p style="clear: both;"></p>
 
-{% include_relative code/Harmonograph.html %}
+{% include_relative code/harmonograph.html %}
 
 <p style="clear: both;"></p>
 

@@ -15,7 +15,7 @@ from the procedure is not a deterministic, but rather a random surface that exhi
 
 <p style="clear: both;"></p>
 
-{% include_relative code/FractalSurfaceTerrain.html %}
+{% include_relative code/fractal_surface_terrain.html %}
 
 <p style="clear: both;"></p>
 

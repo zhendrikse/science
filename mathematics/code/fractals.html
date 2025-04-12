@@ -50,8 +50,10 @@ async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
-    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, dragon_radio, t_square_radio;
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, display, dragon_radio, t_square_radio, sierpinski_radio;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -63,26 +65,26 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "7";
+    "8";
     title = "&#x2022; Fractals inspired by <a href=\"https://github.com/jeffvun/fractals/\">github.com/jeffvun/fractals<\/a>\n&#x2022; Ported to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/fractals.py\">fractals.py</a>\n\n";
-    "9";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 400, title: title})]);
-    "11";
+    "10";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 600, background: color.gray(.075), title: title})]);
+    "12";
     async function clear_canvas(range_, center) {
         var ρσ_ls, obj;
-        "12";
+        "13";
         var ρσ_Iter1 = display.objects;
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             obj = ρσ_Index1;
-            "13";
-            obj.visible = false;
             "14";
+            obj.visible = false;
+            "15";
             obj = undefined;
         }
-        "15";
-        display.range = range_;
         "16";
+        display.range = range_;
+        "17";
         display.center = center;
     };
     if (!clear_canvas.__argnames__) Object.defineProperties(clear_canvas, {
@@ -90,26 +92,77 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "18";
+    "19";
+    async function sierpinski_triangle(order, length, pos) {
+        var ρσ_ls, triangle_;
+        "20";
+        if ((order === 0 || typeof order === "object" && ρσ_equals(order, 0))) {
+            "21";
+            triangle_ = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ pos, pos["+"](vec(length, 0, 0)), pos["+"](vec(length["/"](2), length["*"](sqrt(3))["/"](2), 0)), pos ]), color: color.yellow, radius: .01})]);
+            "25";
+            return ρσ_list_decorate([ triangle_ ]);
+            "26";
+        } else {
+            "27";
+            (await sierpinski_triangle(order["-"](1["*"](1)), length["/"](2), pos));
+            "28";
+            (await sierpinski_triangle(order["-"](1["*"](1)), length["/"](2), pos["+"](vec(length["/"](2), 0, 0))));
+            "29";
+            (await sierpinski_triangle(order["-"](1["*"](1)), length["/"](2), pos["+"](vec(length["/"](4), length["*"](sqrt(3))["/"](4), 0))));
+        }
+    };
+    if (!sierpinski_triangle.__argnames__) Object.defineProperties(sierpinski_triangle, {
+        __argnames__ : {value: ["order", "length", "pos"]},
+        __module__ : {value: null}
+    });
+
+    "31";
+    async function generate_sierpinski_triangle() {
+        var order = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? generate_sierpinski_triangle.__defaults__.order : arguments[0];
+        var length = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? generate_sierpinski_triangle.__defaults__.length : arguments[1];
+        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "order")){
+            order = ρσ_kwargs_obj.order;
+        }
+        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "length")){
+            length = ρσ_kwargs_obj.length;
+        }
+        var ρσ_ls, pos;
+        "32";
+        (await clear_canvas(11["*"](length)["/"](20), vec(0, 0, 0)));
+        "33";
+        pos = vec(1["-u"]()["*"](length)["/"](2), 1["-u"]()["*"](length)["*"](sqrt(3))["/"](4), 0);
+        "34";
+        (await sierpinski_triangle(order, length, pos));
+    };
+    if (!generate_sierpinski_triangle.__defaults__) Object.defineProperties(generate_sierpinski_triangle, {
+        __defaults__ : {value: {order:6, length:10}},
+        __handles_kwarg_interpolation__ : {value: true},
+        __argnames__ : {value: ["order", "length"]},
+        __module__ : {value: null}
+    });
+
+    "37";
     async function t_square(n, x, y, w) {
         var ρσ_ls, new_w;
-        "19";
+        "38";
         if ((n === 0 || typeof n === "object" && ρσ_equals(n, 0))) {
-            "20";
+            "39";
             return;
-            "21";
+            "40";
         } else {
-            "22";
+            "41";
             ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(x, y, 0), vec(x["+"](w), y, 0), vec(x["+"](w), y["+"](w), 0), vec(x, y["+"](w), 0), vec(x, y, 0) ]), color: color.yellow})]);
-            "23";
+            "42";
             new_w = w["/"](3);
-            "24";
+            "43";
             (await t_square(n["-"](1["*"](1)), x["+"](new_w), y["+"](new_w), new_w));
-            "25";
+            "44";
             (await t_square(n["-"](1["*"](1)), x["+"](new_w), y["+"](new_w["*"](4)), new_w));
-            "26";
+            "45";
             (await t_square(n["-"](1["*"](1)), x["+"](new_w["*"](4)), y["+"](new_w["*"](4)), new_w));
-            "27";
+            "46";
             (await t_square(n["-"](1["*"](1)), x["+"](new_w["*"](4)), y["+"](new_w), new_w));
         }
     };
@@ -118,7 +171,7 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "29";
+    "48";
     async function generate_t_square_fractal() {
         var n = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? generate_t_square_fractal.__defaults__.n : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
@@ -127,11 +180,11 @@ async function __main__() {
             n = ρσ_kwargs_obj.n;
         }
         var ρσ_ls, w;
-        "30";
+        "49";
         (await clear_canvas(35, vec(30, 30, 0)));
-        "31";
+        "50";
         w = Math.pow(2, n);
-        "32";
+        "51";
         (await t_square(n, 0, 0, w));
     };
     if (!generate_t_square_fractal.__defaults__) Object.defineProperties(generate_t_square_fractal, {
@@ -141,61 +194,61 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "34";
+    "53";
     async function dragon_curve(n) {
         var ρσ_ls, prev_points, new_points, ρσ_unpack, x1, y1, x2, y2, dx, dy, new_dx, new_dy, new_x, new_y, i;
-        "35";
+        "54";
         if ((n === 0 || typeof n === "object" && ρσ_equals(n, 0))) {
-            "36";
+            "55";
             return ρσ_list_decorate([ [0, 0], [1, 0] ]);
-            "37";
+            "56";
         } else {
-            "38";
+            "57";
             prev_points = (await dragon_curve(n["-"](1["*"](1))));
-            "39";
+            "58";
             new_points = ρσ_list_decorate([]);
-            "40";
+            "59";
             var ρσ_Iter2 = range(len(prev_points)["-"](1["*"](1)));
             ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
             for (var ρσ_Index2 of ρσ_Iter2) {
                 i = ρσ_Index2;
-                "41";
+                "60";
                 ρσ_unpack = ρσ_getitem(prev_points, i);
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
                 x1 = ρσ_unpack[0];
                 y1 = ρσ_unpack[1];
-                "42";
+                "61";
                 ρσ_unpack = ρσ_getitem(prev_points, i["+"](1));
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
                 x2 = ρσ_unpack[0];
                 y2 = ρσ_unpack[1];
-                "43";
+                "62";
                 ρσ_unpack = [x2["-"](1["*"](x1)), y2["-"](1["*"](y1))];
                 dx = ρσ_unpack[0];
                 dy = ρσ_unpack[1];
-                "44";
+                "63";
                 if (ρσ_equals(i["%"](2), 0)) {
-                    "45";
+                    "64";
                     new_dx = dy;
-                    "46";
+                    "65";
                     new_dy = 1["-u"]()["*"](dx);
-                    "47";
+                    "66";
                 } else {
-                    "48";
+                    "67";
                     new_dx = 1["-u"]()["*"](dy);
-                    "49";
+                    "68";
                     new_dy = dx;
                 }
-                "50";
+                "69";
                 ρσ_unpack = [x1["+"](dx["/"](2))["+"](new_dx["/"](2)), y1["+"](dy["/"](2))["+"](new_dy["/"](2))];
                 new_x = ρσ_unpack[0];
                 new_y = ρσ_unpack[1];
-                "51";
+                "70";
                 new_points.extend(ρσ_list_decorate([ [x1, y1], [new_x, new_y] ]));
             }
-            "52";
+            "71";
             new_points.append([1, 0]);
-            "53";
+            "72";
             return new_points;
         }
     };
@@ -204,7 +257,7 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "57";
+    "74";
     async function generate_dragon_curve() {
         var n = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? generate_dragon_curve.__defaults__.n : arguments[0];
         var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
@@ -213,22 +266,22 @@ async function __main__() {
             n = ρσ_kwargs_obj.n;
         }
         var ρσ_ls, points_, ρσ_unpack, x, y, i;
-        "58";
-        "59";
-        (await clear_canvas(140, vec(110, 1["-u"]()["*"](40), 0)));
-        "61";
+        "75";
+        "76";
+        (await clear_canvas(200, vec(105, 1["-u"]()["*"](40), 0)));
+        "78";
         points_ = (await dragon_curve(n));
-        "62";
+        "79";
         ρσ_unpack = zip.apply(this, points_);
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
         x = ρσ_unpack[0];
         y = ρσ_unpack[1];
-        "63";
+        "80";
         var ρσ_Iter3 = range(len(x));
         ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
         for (var ρσ_Index3 of ρσ_Iter3) {
             i = ρσ_Index3;
-            "64";
+            "81";
             ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: 250["*"](vec(ρσ_getitem(x, i), ρσ_getitem(y, i), 0)), radius: 1, shininess: 0, color: color.hsv_to_rgb(vec(i["/"](len(x)), 2, 1))})]);
         }
     };
@@ -239,11 +292,11 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "66";
+    "83";
     async function dragon_fractal(event) {
-        "67";
-        t_square_radio.checked = false;
-        "68";
+        "84";
+        t_square_radio.checked = sierpinski_radio.checked = false;
+        "85";
         (await generate_dragon_curve());
     };
     if (!dragon_fractal.__argnames__) Object.defineProperties(dragon_fractal, {
@@ -251,11 +304,11 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "70";
+    "87";
     async function t_square_fractal(event) {
-        "71";
-        dragon_radio.checked = false;
-        "72";
+        "88";
+        dragon_radio.checked = sierpinski_radio.checked = false;
+        "89";
         (await generate_t_square_fractal());
     };
     if (!t_square_fractal.__argnames__) Object.defineProperties(t_square_fractal, {
@@ -263,17 +316,31 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "74";
+    "91";
+    async function sierpinski_fractal(event) {
+        "92";
+        dragon_radio.checked = t_square_radio.checked = false;
+        "93";
+        (await generate_sierpinski_triangle());
+    };
+    if (!sierpinski_fractal.__argnames__) Object.defineProperties(sierpinski_fractal, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "95";
     display.append_to_caption("\n");
-    "76";
+    "97";
     dragon_radio = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Dragon curve ", checked: true, bind: dragon_fractal})]);
-    "77";
+    "98";
     t_square_radio = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "T-square fractal ", bind: t_square_fractal})]);
-    "79";
+    "99";
+    sierpinski_radio = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Sierpinski ", bind: sierpinski_fractal})]);
+    "101";
     (await generate_dragon_curve());
-    "80";
+    "102";
     while (true) {
-        "81";
+        "103";
         (await rate(10));
     }
 };

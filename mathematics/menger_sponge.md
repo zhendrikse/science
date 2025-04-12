@@ -3,7 +3,7 @@
 ## Menger sponge
 <div class="header_line"><br/></div>
 
-{% include_relative code/MengerSponge.html %}
+{% include_relative code/menger_sponge.html %}
 
 <p style="clear: both;"></p>
 
