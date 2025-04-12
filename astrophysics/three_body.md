@@ -3,7 +3,7 @@
 ## The three-body problem
 <div class="header_line"><br/></div>
 
-{% include_relative code/ThreeBody.html %}
+{% include_relative code/three_body.html %}
 
 <p style="clear:both;"></p>
 

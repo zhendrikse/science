@@ -3,7 +3,7 @@
 ## Spiral galaxy visualization
 <div class="header_line"><br/></div>
 
-{% include_relative code/SpiralGalaxy.html %}
+{% include_relative code/spiral_galaxy.html %}
 
 <p style="clear:both;"></p>
 

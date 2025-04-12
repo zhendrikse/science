@@ -16,7 +16,7 @@ The demo below simulates this future collision. It is based on a very simple mod
 - [VPython](https://vpython.org/)&apos;s [`simple_sphere`](https://www.glowscript.org/docs/VPythonDocs/sphere.html#simple-sphere) 
   objects are used to optimize performance.
 
-{% include_relative code/GalacticCollision.html %}
+{% include_relative code/galactic_collision.html %}
 
 <p style="clear:both;"></p>
 

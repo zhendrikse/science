@@ -18,7 +18,7 @@ the sweeping out of equal areas in equal times, with sun at focus.
 The eccentricity of the orbit is random and determined by the 
 initial velocity. The program uses normalised units ($G =1$).
 
-{% include_relative code/KeplersLaw.html %}
+{% include_relative code/keplers_law.html %}
 
 <p style="clear:both;"></p>
 

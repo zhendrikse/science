@@ -17,7 +17,7 @@ This simulation shows such a binary star system.
 Matter from the red giant is spilling through the [Roche lobe](https://en.wikipedia.org/wiki/Roche_lobe) 
 onto the collapsed star, via a hot spot and an accretion disk.
 
-{% include_relative code/XrayBinary.html %}
+{% include_relative code/xray_binary.html %}
 
 <p style="clear:both;"></p>
 

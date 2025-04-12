@@ -5,7 +5,7 @@
 
 Saturn rings modelled as a set of point-like particles.
 
-{% include_relative code/SaturnRings.html %}
+{% include_relative code/saturn_rings.html %}
 
 <p style="clear:both;"></p>
 

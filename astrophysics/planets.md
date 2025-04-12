@@ -3,7 +3,7 @@
 ## The planets that make up our solar system
 <div class="header_line"><br/></div>
 
-{% include_relative code/Planets.html %}
+{% include_relative code/planets.html %}
 
 <p style="clear:both;"></p>
 

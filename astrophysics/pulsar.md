@@ -17,7 +17,7 @@ we see pulsars turn on and off as the beam sweeps over Earth. &mdash;
 </blockquote>
 <p style="clear:both;"></p>
 
-{% include_relative code/Pulsar.html %}
+{% include_relative code/pulsar.html %}
 
 <p style="clear:both;"></p>
 
