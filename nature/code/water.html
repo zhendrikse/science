@@ -513,11 +513,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         gRenderer = new THREE.WebGLRenderer();
         gRenderer.shadowMap.enabled = true;
         gRenderer.setPixelRatio( window.devicePixelRatio );
-        gRenderer.setSize( window.innerWidth, window.innerHeight );
+        gRenderer.setSize( 600, 600 );
         window.addEventListener( 'resize', onWindowResize, false );
         container.appendChild( gRenderer.domElement );
 
-        gRenderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight,
+        gRenderTarget = new THREE.WebGLRenderTarget( 600, 600,
             { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } );
 
         gWaterMaterial = new THREE.ShaderMaterial( {
@@ -527,8 +527,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         // gCamera
 
-        gCamera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.01, 100);
-        gCamera.position.set(0.0, 2.1, 1.5);
+        gCamera = new THREE.PerspectiveCamera( 60, 1, 0.01, 100);
+        gCamera.position.set(0.0, 3.15, 2.25);
         gCamera.updateMatrixWorld();
 
         gThreeScene.add( gCamera );
