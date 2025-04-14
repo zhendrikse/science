@@ -72,9 +72,9 @@ async function __main__() {
     "9";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "12";
-    width = 450;
+    width = 600;
     "13";
-    height = 300;
+    height = 400;
     "14";
     max_iter = 100;
     "15";
@@ -204,8 +204,6 @@ async function __main__() {
                 z = (await complex_(0, 0));
                 "77";
                 _ = (three_dim) ? (await mandelbrot_3d(re, im, z, c)) : (await mandelbrot_2d(re, im, z, c));
-                "78";
-                (await rate(1e4));
             }
         }
         "79";

@@ -6,11 +6,11 @@ title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mat
 """
 
 display = canvas(title=title, width=600, height=400, background=color.gray(0.075))
-MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 # Parameters
-width = 450  # resolution along x-axis
-height = 300  # resolution along y-axis
+width = 600  # resolution along x-axis
+height = 400  # resolution along y-axis
 max_iter = 100  # max iterations for Mandelbrot
 scale = 0.1  # scale for 3D placement
 
@@ -75,7 +75,7 @@ def render_mandelbrot(three_dim=False):
             c = complex_(re, im)
             z = complex_(0, 0)
             _ = mandelbrot_3d(re, im, z, c) if three_dim else mandelbrot_2d(re, im, z, c)
-            rate(10000)
+            #rate(10000)
     selector.disabled = False
 
 
