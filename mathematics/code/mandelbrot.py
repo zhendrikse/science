@@ -1,5 +1,5 @@
 #Web VPython 3.2
-from vpython import box, rate, canvas, vector, sqrt, color, checkbox
+from vpython import box, rate, canvas, vector, sqrt, color, checkbox, cylinder
 
 title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/mandelbrot.py">mandelbrot.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
 
@@ -12,7 +12,7 @@ MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 width = 450  # resolution along x-axis
 height = 300  # resolution along y-axis
 max_iter = 100  # max iterations for Mandelbrot
-scale = 0.075  # scale for 3D placement
+scale = 0.1  # scale for 3D placement
 
 # Mapping parameters
 x_min, x_max = -2.0, 1.0
@@ -45,10 +45,11 @@ def mandelbrot_3d(re, im, z, c):
     voxel_height = 5 * brightness
     # colour = vector(brightness, sqrt(brightness), brightness ** 0.2)
 
-    box(
+    cylinder(
         pos=vector(re / scale, im / scale, .5 * voxel_height),
-        size=vector(0.08 / scale, 0.08 / scale, voxel_height),
+        radius=0.08,
         color=colour,
+        axis =vector(0, 0, 0.08 / scale),
         shininess=0)
 
 
@@ -83,7 +84,7 @@ def render(event):
     for obj in display.objects:
         obj.visible = False
         del obj
-    display.range = 20 if three_dimensional else 1.1
+    display.range = 15 if three_dimensional else 1.1
     display.forward = vector(0, .7, -.7) if three_dimensional else vector(0, 0, -1)
     display.center = vector(-6, 0, 0) if three_dimensional else vector(-.5, 0, 0)
     render_mandelbrot(three_dimensional)
