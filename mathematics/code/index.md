@@ -12,6 +12,7 @@
 - [`2d_game_of_life.py` source code](2d_game_of_life.py)
 - [`harmonograph.py` source code](harmonograph.py)
 - [`integration_with_polar_coordinates.py` source code](integration_with_polar_coordinates.py)
+- [`julia.py` source code](julia.py)
 - [`lorenz_attractor.py` source code](lorenz_attractor.py)
 - [`mandelbrot.py` source code](mandelbrot.py)
 - [`menger_sponge.py` source code](menger_sponge.py)

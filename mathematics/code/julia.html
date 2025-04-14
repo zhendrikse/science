@@ -1,0 +1,414 @@
+<div id="glowscript" class="glowscript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+
+// START JAVASCRIPT
+;(function() {;
+var ρσ_modules = {};
+ρσ_modules.pythonize = {};
+
+(function(){
+    function strings() {
+        var string_funcs, exclude, name;
+        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+        if (!arguments.length) {
+            exclude = (function(){
+                var s = ρσ_set();
+                s.jsset.add("split");
+                s.jsset.add("replace");
+                return s;
+            })();
+        } else if (arguments[0]) {
+            exclude = Array.prototype.slice.call(arguments);
+        } else {
+            exclude = null;
+        }
+        if (exclude) {
+            string_funcs = string_funcs.difference(set(exclude));
+        }
+        var ρσ_Iter0 = string_funcs;
+        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+        for (var ρσ_Index0 of ρσ_Iter0) {
+            name = ρσ_Index0;
+            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+        }
+    };
+    if (!strings.__module__) Object.defineProperties(strings, {
+        __module__ : {value: "pythonize"}
+    });
+
+    ρσ_modules.pythonize.strings = strings;
+})();
+
+async function __main__() {
+"use strict";
+    var display = canvas;
+    var scene = canvas();
+
+    function round(num, n=0) {return Number(num.toFixed(n))}
+    var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
+    var version, print, arange, __name__, type, ρσ_ls, title, ρσ_unpack, width, height, display, resolution, zoom, max_iter, scale, _GS_1, radio_buttons, _;
+    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+    Array.prototype['+'] = function(r) {return this.concat(r)}
+    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+    window.__GSlang = "vpython";
+    print = GSprint;
+    arange = range;
+    __name__ = "__main__";
+    type = pytype;
+    var strings = ρσ_modules.pythonize.strings;
+
+    strings();
+    "6";
+    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/julia.py\">julia.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+    "8";
+    ρσ_unpack = [600, 400];
+    width = ρσ_unpack[0];
+    height = ρσ_unpack[1];
+    "9";
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: width, height: height, background: color.gray(.075)})]);
+    "10";
+    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
+    "12";
+    resolution = .005;
+    "13";
+    zoom = 1.5;
+    "14";
+    max_iter = 100;
+    "15";
+    scale = 20;
+    "17";
+    function RadioButton() {;
+    }
+    RadioButton.prototype.__init__ = async function __init__(button_, c) {
+        var self = this;
+        "19";
+        self._button = button_;
+        "20";
+        self._c = c;
+    };
+    if (!RadioButton.prototype.__init__.__argnames__) Object.defineProperties(RadioButton.prototype.__init__, {
+        __argnames__ : {value: ["button_", "c"]},
+        __module__ : {value: null}
+    });
+    RadioButton.__argnames__ = RadioButton.prototype.__init__.__argnames__;
+    RadioButton.__handles_kwarg_interpolation__ = RadioButton.prototype.__init__.__handles_kwarg_interpolation__;
+    RadioButton.prototype.uncheck = async function uncheck() {
+        var self = this;
+        "23";
+        self._button.checked = false;
+    };
+    if (!RadioButton.prototype.uncheck.__module__) Object.defineProperties(RadioButton.prototype.uncheck, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.push = async function push() {
+        var self = this;
+        "26";
+        (await generate_julia_set(self._c));
+    };
+    if (!RadioButton.prototype.push.__module__) Object.defineProperties(RadioButton.prototype.push, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.check = async function check() {
+        var self = this;
+        "29";
+        self._button.checked = true;
+    };
+    if (!RadioButton.prototype.check.__module__) Object.defineProperties(RadioButton.prototype.check, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.name = async function name() {
+        var self = this;
+        "32";
+        return self._button.name;
+    };
+    if (!RadioButton.prototype.name.__module__) Object.defineProperties(RadioButton.prototype.name, {
+        __module__ : {value: null}
+    });
+    RadioButton.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    RadioButton.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(RadioButton.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+    "35";
+    function RadioButtons() {;
+    }
+    RadioButtons.prototype.__init__ = async function __init__() {
+        var self = this;
+        "37";
+        self._radio_buttons = ρσ_list_decorate([]);
+        "38";
+        self._selected_button = null;
+    };
+    if (!RadioButtons.prototype.__init__.__module__) Object.defineProperties(RadioButtons.prototype.__init__, {
+        __module__ : {value: null}
+    });
+    RadioButtons.__argnames__ = RadioButtons.prototype.__init__.__argnames__;
+    RadioButtons.__handles_kwarg_interpolation__ = RadioButtons.prototype.__init__.__handles_kwarg_interpolation__;
+    RadioButtons.prototype.add = async function add(button_, c) {
+        var self = this;
+        var ρσ_ls, _GS_1;
+        "41";
+        _GS_1 = new RadioButton;
+        (await _GS_1.__init__(button_, c));
+        self._radio_buttons.append(_GS_1);
+        "43";
+        if (ρσ_equals(len(self._radio_buttons)["%"](2), 0)) {
+            "44";
+            display.append_to_caption("\n\n");
+            "46";
+        }
+        if (ρσ_equals(len(self._radio_buttons), 1)) {
+            "47";
+            (await ρσ_getitem(self._radio_buttons, 0).check());
+            "48";
+            self._selected_button = ρσ_getitem(self._radio_buttons, 0);
+        }
+    };
+    if (!RadioButtons.prototype.add.__argnames__) Object.defineProperties(RadioButtons.prototype.add, {
+        __argnames__ : {value: ["button_", "c"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype._uncheck_buttons_except = async function _uncheck_buttons_except(button_name) {
+        var self = this;
+        var ρσ_ls, button_;
+        "51";
+        var ρσ_Iter1 = self._radio_buttons;
+        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+        for (var ρσ_Index1 of ρσ_Iter1) {
+            button_ = ρσ_Index1;
+            "52";
+            if (ρσ_not_equals((await button_.name()), button_name)) {
+                (await button_.uncheck());
+            }
+        }
+    };
+    if (!RadioButtons.prototype._uncheck_buttons_except.__argnames__) Object.defineProperties(RadioButtons.prototype._uncheck_buttons_except, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype._get_button_by = async function _get_button_by(button_name) {
+        var self = this;
+        var ρσ_ls, button_;
+        "55";
+        var ρσ_Iter2 = self._radio_buttons;
+        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+        for (var ρσ_Index2 of ρσ_Iter2) {
+            button_ = ρσ_Index2;
+            "56";
+            if (ρσ_equals((await button_.name()), button_name)) {
+                return button_;
+            }
+        }
+    };
+    if (!RadioButtons.prototype._get_button_by.__argnames__) Object.defineProperties(RadioButtons.prototype._get_button_by, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype.toggle = async function toggle(button_name) {
+        var self = this;
+        "59";
+        (await self._uncheck_buttons_except(button_name));
+        "60";
+        self._selected_button = (await self._get_button_by(button_name));
+        "61";
+        (await self._selected_button.push());
+    };
+    if (!RadioButtons.prototype.toggle.__argnames__) Object.defineProperties(RadioButtons.prototype.toggle, {
+        __argnames__ : {value: ["button_name"]},
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype.get_selected_button_name = async function get_selected_button_name() {
+        var self = this;
+        "64";
+        return (await self._selected_button.name());
+    };
+    if (!RadioButtons.prototype.get_selected_button_name.__module__) Object.defineProperties(RadioButtons.prototype.get_selected_button_name, {
+        __module__ : {value: null}
+    });
+    RadioButtons.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+    };
+    RadioButtons.prototype.__str__ = async function __str__() {
+        return this.__repr__();
+    };
+    Object.defineProperty(RadioButtons.prototype, "__bases__", {value: []});
+
+
+
+
+
+
+
+    "67";
+    async function get_color(iteration) {
+        var ρσ_ls, t;
+        "68";
+        t = iteration["/"](max_iter);
+        "69";
+        return vector(t, t["*"](t), 1["-"](1["*"](t)));
+    };
+    if (!get_color.__argnames__) Object.defineProperties(get_color, {
+        __argnames__ : {value: ["iteration"]},
+        __module__ : {value: null}
+    });
+
+    "71";
+    async function complex_(re_, im_) {
+        "72";
+        return [re_, im_];
+    };
+    if (!complex_.__argnames__) Object.defineProperties(complex_, {
+        __argnames__ : {value: ["re_", "im_"]},
+        __module__ : {value: null}
+    });
+
+    "75";
+    async function z_squared_minus_c(z_, c_) {
+        "76";
+        return [ρσ_getitem(z_, 0)["*"](ρσ_getitem(z_, 0))["-"](1["*"](ρσ_getitem(z_, 1))["*"](ρσ_getitem(z_, 1)))["+"](ρσ_getitem(c_, 0)),
+        2["*"](ρσ_getitem(z_, 0))["*"](ρσ_getitem(z_, 1))["+"](ρσ_getitem(c_, 1))];
+    };
+    if (!z_squared_minus_c.__argnames__) Object.defineProperties(z_squared_minus_c, {
+        __argnames__ : {value: ["z_", "c_"]},
+        __module__ : {value: null}
+    });
+
+    "79";
+    async function abs_z_squared(z_) {
+        "80";
+        return ρσ_getitem(z_, 0)["*"](ρσ_getitem(z_, 0))["+"](ρσ_getitem(z_, 1)["*"](ρσ_getitem(z_, 1)));
+    };
+    if (!abs_z_squared.__argnames__) Object.defineProperties(abs_z_squared, {
+        __argnames__ : {value: ["z_"]},
+        __module__ : {value: null}
+    });
+
+    "83";
+    async function generate_julia_set(c) {
+        var ρσ_ls, ρσ_unpack, x_min, x_max, y_min, y_max, y, x, z, iteration, colour;
+        "85";
+        ρσ_unpack = [1["-u"]()["*"](zoom), zoom];
+        x_min = ρσ_unpack[0];
+        x_max = ρσ_unpack[1];
+        "86";
+        ρσ_unpack = [1["-u"]()["*"](zoom), zoom];
+        y_min = ρσ_unpack[0];
+        y_max = ρσ_unpack[1];
+        "87";
+        y = y_min;
+        "88";
+        while (y["<="](y_max)) {
+            "89";
+            x = x_min;
+            "90";
+            while (x["<="](x_max)) {
+                "91";
+                z = (await complex_(x, y));
+                "92";
+                iteration = 0;
+                "93";
+                while ((await abs_z_squared(z))["<"](4) && iteration["<"](max_iter)) {
+                    "94";
+                    z = (await z_squared_minus_c(z, c));
+                    "95";
+                    iteration=iteration["+"](1);
+                    "98";
+                }
+                if (iteration["<"](max_iter) && .075["<"](ρσ_cond_temp = iteration["/"](max_iter)) && ρσ_cond_temp["<"](1)) {
+                    "100";
+                    colour = (await get_color(iteration));
+                    "101";
+                    ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(x["*"](width)["/"](4), y["*"](height)["/"](4), 0), color: colour, shininess: 0})]);
+                }
+                "103";
+                x=x["+"](resolution);
+            }
+            "104";
+            y=y["+"](resolution);
+        }
+    };
+    if (!generate_julia_set.__argnames__) Object.defineProperties(generate_julia_set, {
+        __argnames__ : {value: ["c"]},
+        __module__ : {value: null}
+    });
+
+    "107";
+    async function toggle(event) {
+        var ρσ_ls, obj;
+        "108";
+        var ρσ_Iter3 = display.objects;
+        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+        for (var ρσ_Index3 of ρσ_Iter3) {
+            obj = ρσ_Index3;
+            "109";
+            obj.visible = false;
+            "110";
+            obj = undefined;
+        }
+        "112";
+        (await radio_buttons.toggle(event.name));
+    };
+    if (!toggle.__argnames__) Object.defineProperties(toggle, {
+        __argnames__ : {value: ["event"]},
+        __module__ : {value: null}
+    });
+
+    "115";
+    async function download() {
+        "116";
+        (await display.capture("fractal"));
+    };
+    if (!download.__module__) Object.defineProperties(download, {
+        __module__ : {value: null}
+    });
+
+    "118";
+    _GS_1 = new RadioButtons;
+    (await _GS_1.__init__());
+    radio_buttons = _GS_1;
+    "119";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "c = -0.7 + 0.27015i  ", name: "1"})]), (await complex_(1["-u"]()["*"](.7), .27015))));
+    "120";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "c = 0.355 + 0.355i  ", name: "2"})]), (await complex_(.355, .355))));
+    "121";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "c = -0.5251993 - 0.5251993i  ", name: "3"})]), (await complex_(1["-u"]()["*"](.5251993), 1["-u"]()["*"](.5251993)))));
+    "122";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "c = 0.285 + 0.0035i  ", name: "4"})]), (await complex_(.285, .0035))));
+    "123";
+    (await radio_buttons.add(ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({bind: toggle, text: "c = -0.8 + 0.156i  ", name: "5"})]), (await complex_(1["-u"]()["*"](.8), .156))));
+    "125";
+    display.append_to_caption("\n\n");
+    "126";
+    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Download", bind: download, align: "right"})]);
+    "128";
+    await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, generate_julia_set, [ρσ_desugar_kwargs({c: (await complex_(1["-u"]()["*"](.7), .27015))})]));
+    "130";
+    while (true) {
+        "131";
+        (await rate(20));
+    }
+};
+if (!__main__.__module__) Object.defineProperties(__main__, {
+    __module__ : {value: null}
+});
+
+;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+// END JAVASCRIPT
+
+//--><!]]></script>
+</div>

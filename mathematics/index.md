@@ -179,7 +179,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 <div class="double_image">
 <figure class="left_image">
   <a href="2d_game_of_life.html">
-    <img alt="Dragon curve fractal" src="./images/2d_game_of_life.png" title="Click to animate"/>
+    <img alt="Conway's game of life" src="./images/2d_game_of_life.png" title="Click to animate"/>
   </a>
   <figcaption>Conway's game of life.</figcaption>
 </figure>
@@ -188,6 +188,28 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 </figure>
 </div>
 <p style="clear: both;"></p>
+
+
+<a name="mandelbrot"></a>
+## Mandelbrot &amp; julia sets
+<div class="header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="mandelbrot.html">
+    <img alt="Mandelbrot set" src="images/mandelbrot.png" title="Click to animate"/>
+  </a>
+  <figcaption>VPython can also be used to generate Mandelbrot images!</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="Julia.html">
+    <img alt="Julia set" src="images/julia.png" title="Click to animate"/>
+  </a>
+  <figcaption>VPython can also be used to generate Julia sets!</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 
 <a name="fractals"></a>
 ## Fractals
@@ -201,24 +223,6 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <figcaption>Generation of two-dimensional fractal shapes.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATIONS -->
-</figure>
-</div>
-<p style="clear: both;"></p>
-
-
-<a name="mandelbrot"></a>
-## Mandelbrot &amp; chaos game fractals
-<div class="header_line"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="mandelbrot.html">
-    <img alt="Mandelbrot" src="./images/mandelbrot.png" title="Click to animate"/>
-  </a>
-  <figcaption>VPython can also be used to generate Mandelbrot images!</figcaption>
-</figure>
-<figure class="right_image">
   <a href="chaos_game.html">
     <img alt="Vicsek fractal" src="./images/chaos_game.png" title="Click to animate"/>
   </a>
@@ -227,6 +231,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 </figure>
 </div>
 <p style="clear: both;"></p>
+
 
 
 <a name="3d_fractals"></a>
