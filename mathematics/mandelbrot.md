@@ -11,7 +11,33 @@
 ## Background information
 <div class="header_line"><br/></div>
 
-### How is a Mandelbrot set defined?
+
+### Mandelbrot set explained visually
+<div style="border-top: 1px solid #999999"><br/></div>
+
+The Mandelbrot set is a type of shape, known as a fractal. This fractal can 
+be drawn on a piece of paper, or on a computer screen, i.e. a plane. Each point
+in this plane actually represents a (two-dimensional) value/number, called a
+complex number.
+
+The collection of points, or numbers that lie "inside" the fractal (black part), 
+_is_ the actual Mandelbrot set. The remaining points are said to be 
+"outside" the Mandelbrot set. 
+
+Whether a point is on the inside or outside, is associated with a mathematical
+concept called convergence (and divergence). For example, if you multiply a number again
+and again by itself, it runs away to infinity if your starting value is greater than one,
+i.e. it diverges, and it approaches zero if your starting value is less than one, i.e. it
+converges. And, of course, if you start with 1, it always remains one.
+
+So summarizing, the Mandelbrot set depicts which set of (two-dimensional) numbers diverge
+when multiplied by itself (the Mandelbrot set, or the inside), and which set of numbers
+converges when multiplied by itself (the outside).
+
+A more thorough visual explanation is given in the video 
+[The Mandelbrot Set Explained](https://www.youtube.com/watch?v=7MotVcGvFMg).
+
+### Mandelbrot set defined mathematically
 <div style="border-top: 1px solid #999999"><br/></div>
 
 A Mandelbrot set is defined as a two-dimensional set in the complex plane $\mathbb{C}$ 
@@ -20,25 +46,33 @@ recursive relation
 
 $z_{n+1} = z_n^2 + c, z_0 = 0$
 
-does _not_ diverge to infinity. The complex numbers that do remain bounded 
+does _not_ diverge to infinity. The parameter $c$ is also known as point of interest.
+
+The complex numbers that do remain bounded 
 make up the inner glowing regions of the Mandelbrot set. Particularly interesting 
 behaviour shows up near the edges of the set. The visualizations are realized by 
 color-coding exactly this rate of divergence. 
 
 The Mandelbrot set illustrates the same principle as 
-[Conway&apos;s Game of Life](https://conwaylife.com/), namely
-that complex structures can emerge from an astonishingly small and simple set of rules.
+[Conway&apos;s Game of Life](https://www.hendrikse.name/science/mathematics/2d_game_of_life.html), 
+namely  that complex structures can emerge from an astonishingly small and simple set of rules.
 
-In addition, this set demonstrates another principle that is well-known from
-[chaos theory](https://en.wikipedia.org/wiki/Chaos_theory), namely the so-called
-[butterfly-effect](https://en.wikipedia.org/wiki/Butterfly_effect): a slight change 
-in a value (in this case of the constant $c$)
-causes the function to either diverge to infinity or remain bounded.
+There are certain regions of values for the parameter $c$ (point of interest), where
+a tiny change in the value of this parameter $c$ results in a completely different
+(convergence) behaviour of our function. Any system that responds completely differently
+to any such a tiny change in its parameter(s) is said to behave chaotically.
+
+[Chaos theory](https://en.wikipedia.org/wiki/Chaos_theory) studies exactly these kind of systems. They are said to behave chaotically, 
+as they turn out to behave unpredictably given there sensitivity on their initial/boundary condition(s).
+
+Chaotic systems are quite well known because of the so-called [butterfly-effect](https://en.wikipedia.org/wiki/Butterfly_effect): 
+a distant butterfly flapping its wings a few weeks ago, may be causing a tornado’s route to change 
+its course, similar to a slight change in a parameter value (in this case of the constant $c$)
+that causes the function to either diverge to infinity or remain bounded.
 
 The butterfly-effect is more rigorously is defined as a deterministic 
 non-linear response of a system that for its future state(s) is (extremely) 
-sensitive on one or more of its initial conditions, such as a distant butterfly 
-flapping its wings a few weeks ago, causing a tornado’s route to change its course.
+sensitive on one or more of its initial conditions.
 
 ### Some history
 <div style="border-top: 1px solid #999999"><br/></div>
