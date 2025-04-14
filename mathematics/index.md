@@ -202,7 +202,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <figcaption>VPython can also be used to generate Mandelbrot images!</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="Julia.html">
+  <a href="julia.html">
     <img alt="Julia set" src="images/julia.png" title="Click to animate"/>
   </a>
   <figcaption>VPython can also be used to generate Julia sets!</figcaption>
