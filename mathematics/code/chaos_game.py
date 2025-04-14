@@ -11,6 +11,7 @@ display = canvas(width=600, height=600, title=title, background=color.gray(0.075
 def clear_canvas(range_, center):
     for obj in display.objects:
         obj.visible = False
+        del obj
     display.range = range_
     display.center = center
 
@@ -182,7 +183,9 @@ class RadioButton:
         self._button.checked = False
 
     def push(self):
+        radio_buttons.disable()
         self._function()
+        radio_buttons.enable()
         #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
     def check(self):
@@ -191,11 +194,25 @@ class RadioButton:
     def name(self):
         return self._button.name
 
+    def enable(self):
+        self._button.disabled = False
+
+    def disable(self):
+        self._button.disabled = True
+
 
 class RadioButtons:
     def __init__(self):
         self._radio_buttons = []
         self._selected_button = None
+
+    def enable(self):
+        for button_ in self._radio_buttons:
+            button_.enable()
+
+    def disable(self):
+        for button_ in self._radio_buttons:
+            button_.disable()
 
     def add(self, button_, function_):
         self._radio_buttons.append(RadioButton(button_, function_))
@@ -231,14 +248,16 @@ radio_buttons.add(radio(bind=radio_buttons.toggle, text="Sierpinski carpet ", na
 radio_buttons.add(radio(bind=radio_buttons.toggle, text="Vicsek fractal ", name="vicsek"), vicsek_fractal)
 radio_buttons.add(radio(bind=radio_buttons.toggle, text="Sierpinski triangle ", name="triangle"), sierpinski_triangle)
 radio_buttons.add(radio(bind=radio_buttons.toggle, text="Cantor dust ", name="dust"), cantor_dust)
-radio_buttons.add(radio(bind=radio_buttons.toggle, text="T-square ", name="dust"), t_square)
-radio_buttons.add(radio(bind=radio_buttons.toggle, text="Star ", name="dust"), fractal_1)
-radio_buttons.add(radio(bind=radio_buttons.toggle, text="Flower ", name="dust"), fractal_2)
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="T-square ", name="t_square"), t_square)
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="Star ", name="fractal_1"), fractal_1)
+radio_buttons.add(radio(bind=radio_buttons.toggle, text="Flower ", name="fractal_2"), fractal_2)
 
 display.append_to_caption("\n\nAnimation speed")
 _ = slider(min=1000, max=15000, value=15000, bind=change_speed)
 
 #MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+radio_buttons.disable()
 sierpinski_carpet()
+radio_buttons.enable()
 while True:
     rate(10)
