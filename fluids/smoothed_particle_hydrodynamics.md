@@ -25,6 +25,8 @@ on his [Ten Minute Physics](https://www.youtube.com/c/TenMinutePhysics) YouTube 
   <a href="https://www.matthiasMueller.info/tenMinutePhysics">Matthias Müller</a>.</figcaption>
 </figure>
 
+<p style="clear: both;"></p>
+
 ## Smoothed Particle Hydrodynamics explained
 <div class="header_line"><br/></div>
 
