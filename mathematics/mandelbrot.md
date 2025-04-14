@@ -25,14 +25,14 @@ _is_ the actual Mandelbrot set. The remaining points are said to be
 "outside" the Mandelbrot set. 
 
 Whether a point is on the inside or outside, is associated with a mathematical
-concept called convergence (and divergence). For example, if you multiply a number again
-and again by itself, it runs away to infinity if your starting value is greater than one,
+concept called convergence (and divergence). For example, if you multiply a number by itself
+again and again, it runs away to infinity if your starting value is greater than one,
 i.e. it diverges, and it approaches zero if your starting value is less than one, i.e. it
 converges. And, of course, if you start with 1, it always remains one.
 
-So summarizing, the Mandelbrot set depicts which set of (two-dimensional) numbers diverge
+So summarizing, the Mandelbrot set depicts which set of (two-dimensional) numbers _converges_
 when multiplied by itself (the Mandelbrot set, or the inside), and which set of numbers
-converges when multiplied by itself (the outside).
+_diverges_ when multiplied by itself (the outside).
 
 A more thorough visual explanation is given in the video 
 [The Mandelbrot Set Explained](https://www.youtube.com/watch?v=7MotVcGvFMg).
