@@ -34,10 +34,8 @@
   <figcaption>An Euler fluid simulation in pure Javascript.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="flip_water_simulator.html">
-    <img alt="Euler water simulation" src="images/flip_water_simulation.png" title="Click to animate"/>
-  </a>
-  <figcaption>An Euler water simulation in pure Javascript.</figcaption>
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>
