@@ -191,7 +191,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 
 
 <a name="mandelbrot"></a>
-## Mandelbrot &amp; julia sets
+## Mandelbrot &amp; Julia sets
 <div class="header_line"><br/></div>
 
 <div class="double_image">
