@@ -9,7 +9,7 @@ title = """&#x2022; Based on the original <a href="https://github.com/silvaan/bl
 
 """
 
-x_resolution = 600
+x_resolution = 500
 y_resolution = x_resolution // 2
 
 # Progress bar
@@ -17,7 +17,7 @@ display_0 = canvas(background=color.gray(0.075), height=25, width=x_resolution, 
 progress_bar = label(canvas=display_0, color=color.white, box=False)
 progress_bar.text = "Progress: 0%"
 
-display = canvas(height=y_resolution, width=x_resolution * 1.05, fov=0.01,
+display = canvas(height=y_resolution, width=x_resolution, fov=0.01,
                  center=vector(x_resolution / 2, x_resolution / 4, 0),
                  range=x_resolution / 4, background=color.gray(0.075))
 
