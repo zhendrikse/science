@@ -6,6 +6,7 @@ title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mat
 """
 
 display = canvas(title=title, width=600, height=400, background=color.gray(0.075))
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 # Parameters
 width = 450  # resolution along x-axis
