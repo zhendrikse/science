@@ -109,16 +109,22 @@ a pixel has been calculated, it is simply added to this `points()` object
 with the appropriate color coding:
 
 ```python
-from vpython import points, vector
-
-class Mandelbrot:
-    def __init__(self, max_iterations=100):
-        self._pixels = points()
-        # ...
-
-    def set_color_for_pixel_at(self, x, y, colour):
-        self._pixels.append(pos=vector(x, y, 0), color=colour)
-
+for x in range(width):
+    for y in range(height):
+        # Map pixel to complex plane
+        re = x_min + (x / width) * (x_max - x_min)
+        im = y_min + (y / height) * (y_max - y_min)
+        c = complex_(re, im)
+        z = complex_(0, 0)
+        n = 0
+        while abs_z_squared(z) <= 4 and n < max_iter:
+            z = z_squared_minus_c(z, c)
+            n += 1
+        brightness = n / max_iter
+        if .01 < brightness < 1:
+            colour = vector(brightness, sqrt(brightness), brightness**0.2)
+            size = vector(pixel_width, pixel_height, 0.01)
+            box(pos=vector(re, im, 0), color=colour, size=size, shininess=0)
 ```
 
 Although the Mandelbrot pictures are purely two-dimensional, the fact that you can
