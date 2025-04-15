@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, sin, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, slit_size, slit_distance, inter1, mid_up, mid_down, inter2, wall_x, dx, dy, dt, velocity_source, colorrange, floor, velocity_source_2, dx_2, dy_2, pi_2, use_round_pixels, _, clock, pixels, ρσ_unpack, u_mesh, ut_mesh, utt_mesh, popup, j, i;
+    var version, print, arange, __name__, type, ρσ_ls, title, display, slit_size, slit_distance, inter1, mid_up, mid_down, inter2, wall_x, dx, dy, dt, velocity_source, colorrange, floor, velocity_source_2, dx_2, dy_2, pi_2, use_round_pixels, _, clock, pixels, ρσ_unpack, u_mesh, ut_mesh, utt_mesh, popup, obj;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -66,7 +66,7 @@ async function __main__() {
 
     strings();
     "7";
-    title = "&#x2022; Original <a href=\"https://github.com/NelsonHackerman/Random_python_ideas/blob/main/double%20slit%20experiment.py\">double slit experiment.py<\/a> by <a href=\"https://github.com/NelsonHackerman\">Nelson Hackerman</a>\n&#x2022; Ported from PyGame to Glowscript by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>, see <a href=\"https://github.com/zhendrikse/science/blob/main/quantumphysics/code/dynamic_double_slit.py\">dynamic_double_slit.py</a>\n&#x2022; Check out my other <a href=\"https://www.hendrikse.name/science/quantumphysics/double_slit.html\">double slit experiment page</a> on this site as well!\n\n";
+    title = "&#x2022; Original <a href=\"https://github.com/NelsonHackerman/Random_python_ideas/blob/main/double%20slit%20experiment.py\">double slit experiment.py<\/a> by <a href=\"https://github.com/NelsonHackerman\">Nelson Hackerman</a>\n&#x2022; Ported from PyGame to Glowscript by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>, see <a href=\"https://github.com/zhendrikse/science/blob/main/quantumphysics/code/dynamic_double_slit.py\">dynamic_double_slit.py</a>\n\n";
     "9";
     display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), center: vec(700, 350, 0), forward: vec(0, .65, 1["-u"]()["*"](.75))})]);
     "11";
@@ -140,7 +140,7 @@ async function __main__() {
 
     "39";
     async function initialize_simulation(pixels_are_round) {
-        var ρσ_ls, x, y, const1, _, const2, xmesh, ymesh, pixels, temp, j, i;
+        var ρσ_ls, x, y, const1, _, const2, xmesh, ymesh;
         "40";
         x = range(0, 13, dx);
         "41";
@@ -172,44 +172,58 @@ async function __main__() {
         "45";
         ymesh = (await outer_product(y, const1));
         "47";
-        pixels = ρσ_list_decorate([]);
-        "48";
-        var ρσ_Iter1 = range(len(x));
-        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
-        for (var ρσ_Index1 of ρσ_Iter1) {
-            i = ρσ_Index1;
-            "49";
-            temp = ρσ_list_decorate([]);
-            "50";
-            var ρσ_Iter2 = range(len(y));
-            ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
-            for (var ρσ_Index2 of ρσ_Iter2) {
-                j = ρσ_Index2;
-                "51";
-                if (pixels_are_round) {
-                    "52";
-                    temp.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: vec(ρσ_getitem(ρσ_getitem(xmesh, j), i)["*"](100)["+"](50), ρσ_getitem(ρσ_getitem(ymesh, j), i)["*"](100)["+"](50), 0), radius: 50["*"](dx)})]));
-                    "53";
-                } else {
-                    "54";
-                    temp.append(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(ρσ_getitem(ρσ_getitem(xmesh, j), i)["*"](100)["+"](50), ρσ_getitem(ρσ_getitem(ymesh, j), i)["*"](100)["+"](50), 0), size: vec(ceil(100["*"](dx)), ceil(100["*"](dy)), 0)})]));
+        if (pixels_are_round) {
+            "48";
+            return (function() {
+                var ρσ_Iter = range(len(x)), ρσ_Result = [], i;
+                ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                for (var ρσ_Index of ρσ_Iter) {
+                    i = ρσ_Index;
+                    ρσ_Result.push((function() {
+                        var ρσ_Iter = range(len(y)), ρσ_Result = [], j;
+                        ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                        for (var ρσ_Index of ρσ_Iter) {
+                            j = ρσ_Index;
+                            ρσ_Result.push(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: vec(ρσ_getitem(ρσ_getitem(xmesh, j), i)["*"](100)["+"](50), ρσ_getitem(ρσ_getitem(ymesh, j), i)["*"](100)["+"](50), 0), radius: 50["*"](dx), shininess: 0})]));
+                        }
+                        ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                        return ρσ_Result;
+                    })());
                 }
-            }
-            "56";
-            pixels.append(temp);
+                ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                return ρσ_Result;
+            })();
         }
-        "58";
-        return pixels;
+        "50";
+        return (function() {
+            var ρσ_Iter = range(len(x)), ρσ_Result = [], i;
+            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+            for (var ρσ_Index of ρσ_Iter) {
+                i = ρσ_Index;
+                ρσ_Result.push((function() {
+                    var ρσ_Iter = range(len(y)), ρσ_Result = [], j;
+                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                    for (var ρσ_Index of ρσ_Iter) {
+                        j = ρσ_Index;
+                        ρσ_Result.push(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(ρσ_getitem(ρσ_getitem(xmesh, j), i)["*"](100)["+"](50), ρσ_getitem(ρσ_getitem(ymesh, j), i)["*"](100)["+"](50), 0), size: vec(ceil(100["*"](dx)), ceil(100["*"](dy)), 1), shininess: 0})]));
+                    }
+                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                    return ρσ_Result;
+                })());
+            }
+            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+            return ρσ_Result;
+        })();
     };
     if (!initialize_simulation.__argnames__) Object.defineProperties(initialize_simulation, {
         __argnames__ : {value: ["pixels_are_round"]},
         __module__ : {value: null}
     });
 
-    "60";
+    "52";
     async function initialize_meshes(len_x, len_y) {
         var ρσ_ls, umesh, utmesh, _, uttmesh;
-        "61";
+        "53";
         umesh = (await outer_product((function() {
             var ρσ_Iter = range(len_y), ρσ_Result = [], _;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -220,7 +234,7 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })(), range(0, 13, dx)));
-        "62";
+        "54";
         utmesh = (function() {
             var ρσ_Iter = range(len_y), ρσ_Result = [], _;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -240,7 +254,7 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })();
-        "63";
+        "55";
         uttmesh = (function() {
             var ρσ_Iter = range(len_y), ρσ_Result = [], _;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -260,7 +274,7 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })();
-        "64";
+        "56";
         return [umesh, utmesh, uttmesh];
     };
     if (!initialize_meshes.__argnames__) Object.defineProperties(initialize_meshes, {
@@ -268,143 +282,143 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "67";
+    "59";
     velocity_source_2 = velocity_source["*"](velocity_source);
-    "68";
+    "60";
     dx_2 = dx["*"](dx);
-    "69";
+    "61";
     dy_2 = dy["*"](dy);
-    "70";
+    "62";
     pi_2 = pi["/"](2);
-    "72";
+    "64";
     async function run_simulation(umesh, utmesh, uttmesh, pixels) {
         var ρσ_ls, t, simulation_time, m, n, j, i;
-        "73";
+        "65";
         t = 0;
-        "74";
+        "66";
         simulation_time = 10;
-        "75";
+        "67";
         while (t["<"](simulation_time)) {
-            "76";
+            "68";
             clock.text = "Time remaining: {:1.2f}".format(simulation_time["-"](1["*"](t)));
-            "77";
+            "69";
             t=t["+"](dt);
-            "78";
+            "70";
             (await rate(50));
-            "80";
+            "72";
+            var ρσ_Iter1 = range(1, len(pixels)["-"](1["*"](1)));
+            ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+            for (var ρσ_Index1 of ρσ_Iter1) {
+                n = ρσ_Index1;
+                "73";
+                var ρσ_Iter2 = range(1, len(ρσ_getitem(pixels, 0))["-"](1["*"](1)));
+                ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+                for (var ρσ_Index2 of ρσ_Iter2) {
+                    m = ρσ_Index2;
+                    "74";
+                    ρσ_setitem(ρσ_getitem(uttmesh, m), n, velocity_source_2["*"](ρσ_getitem(ρσ_getitem(umesh, m), n["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, m), n["+"](1)))["-"](1["*"](2)["*"](ρσ_getitem(ρσ_getitem(umesh, m), n)))["/"](dx_2)["+"](ρσ_getitem(ρσ_getitem(umesh, m["-"](1["*"](1))), n)["+"](ρσ_getitem(ρσ_getitem(umesh, m["+"](1)), n))["-"](1["*"](2)["*"](ρσ_getitem(ρσ_getitem(umesh, m), n)))["/"](dy_2))));
+                }
+            }
+            "77";
             var ρσ_Iter3 = range(1, len(pixels)["-"](1["*"](1)));
             ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
             for (var ρσ_Index3 of ρσ_Iter3) {
                 n = ρσ_Index3;
-                "81";
+                "78";
                 var ρσ_Iter4 = range(1, len(ρσ_getitem(pixels, 0))["-"](1["*"](1)));
                 ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
                 for (var ρσ_Index4 of ρσ_Iter4) {
                     m = ρσ_Index4;
-                    "82";
-                    ρσ_setitem(ρσ_getitem(uttmesh, m), n, velocity_source_2["*"](ρσ_getitem(ρσ_getitem(umesh, m), n["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, m), n["+"](1)))["-"](1["*"](2)["*"](ρσ_getitem(ρσ_getitem(umesh, m), n)))["/"](dx_2)["+"](ρσ_getitem(ρσ_getitem(umesh, m["-"](1["*"](1))), n)["+"](ρσ_getitem(ρσ_getitem(umesh, m["+"](1)), n))["-"](1["*"](2)["*"](ρσ_getitem(ρσ_getitem(umesh, m), n)))["/"](dy_2))));
-                }
-            }
-            "85";
-            var ρσ_Iter5 = range(1, len(pixels)["-"](1["*"](1)));
-            ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-            for (var ρσ_Index5 of ρσ_Iter5) {
-                n = ρσ_Index5;
-                "86";
-                var ρσ_Iter6 = range(1, len(ρσ_getitem(pixels, 0))["-"](1["*"](1)));
-                ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
-                for (var ρσ_Index6 of ρσ_Iter6) {
-                    m = ρσ_Index6;
-                    "87";
+                    "79";
                     ρσ_setitem(ρσ_getitem(utmesh, m), n, ρσ_getitem(ρσ_getitem(utmesh, m), n)["+"](ρσ_getitem(ρσ_getitem(uttmesh, m), n)["*"](dt)));
-                    "88";
+                    "80";
                     ρσ_setitem(ρσ_getitem(umesh, m), n, ρσ_getitem(ρσ_getitem(umesh, m), n)["+"](ρσ_getitem(ρσ_getitem(utmesh, m), n)["*"](dt)));
                 }
             }
-            "91";
+            "83";
             ρσ_setitem(umesh.slice(0), 0, ρσ_getitem(umesh.slice(0), 1));
-            "92";
+            "84";
             ρσ_setitem(umesh.slice(0), 1["-u"]()["*"](1), ρσ_getitem(umesh.slice(0), 1["-u"]()["*"](2)));
-            "93";
+            "85";
             ρσ_splice(ρσ_getitem(umesh, 0), ρσ_getitem(umesh, 1).slice(0), 0);
-            "94";
+            "86";
             ρσ_splice(ρσ_getitem(umesh, 1["-u"]()["*"](1)), ρσ_getitem(umesh, 1["-u"]()["*"](2)).slice(0), 0);
-            "96";
+            "88";
             if (t["<"](pi_2)) {
-                "97";
-                var ρσ_Iter7 = range(len(ρσ_getitem(pixels, 0)));
-                ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
-                for (var ρσ_Index7 of ρσ_Iter7) {
-                    n = ρσ_Index7;
-                    "98";
+                "89";
+                var ρσ_Iter5 = range(len(ρσ_getitem(pixels, 0)));
+                ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+                for (var ρσ_Index5 of ρσ_Iter5) {
+                    n = ρσ_Index5;
+                    "90";
                     ρσ_setitem(ρσ_getitem(umesh, n), 0, 1["-u"]()["*"](cos(t["*"](20)))["+"](1));
                 }
             }
-            "100";
+            "92";
             ρσ_setitem(ρσ_getitem(umesh, 0), 0, ρσ_getitem(ρσ_getitem(umesh, 1), 1));
-            "101";
+            "93";
             ρσ_setitem(ρσ_getitem(umesh, 0), 1["-u"]()["*"](1), ρσ_getitem(ρσ_getitem(umesh, 1), 1["-u"]()["*"](2)));
-            "102";
+            "94";
             ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), 0, ρσ_getitem(ρσ_getitem(umesh, 1["-u"]()["*"](2)), 1));
-            "103";
+            "95";
             ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), 1["-u"]()["*"](1), ρσ_getitem(ρσ_getitem(umesh, 1["-u"]()["*"](2)), 1["-u"]()["*"](2)));
-            "105";
-            for (var ρσ_Index8 = 0; ρσ_Index8["<"](inter1); ρσ_Index8++) {
-                n = ρσ_Index8;
-                "106";
+            "97";
+            for (var ρσ_Index6 = 0; ρσ_Index6["<"](inter1); ρσ_Index6++) {
+                n = ρσ_Index6;
+                "98";
                 ρσ_setitem(ρσ_getitem(umesh, n), wall_x, 69);
-                "107";
+                "99";
                 ρσ_setitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](1)), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](2))));
-                "108";
+                "100";
                 ρσ_setitem(ρσ_getitem(umesh, n), wall_x["+"](1), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["+"](2)));
             }
-            "109";
+            "101";
             ρσ_setitem(ρσ_getitem(umesh, inter1), wall_x, ρσ_getitem(ρσ_getitem(umesh, inter1), wall_x["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, inter1), wall_x["+"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, inter1["+"](1)), wall_x))["/"](3));
-            "111";
-            for (var ρσ_Index9 = mid_up; ρσ_Index9["<"](mid_down); ρσ_Index9++) {
-                n = ρσ_Index9;
-                "112";
+            "103";
+            for (var ρσ_Index7 = mid_up; ρσ_Index7["<"](mid_down); ρσ_Index7++) {
+                n = ρσ_Index7;
+                "104";
                 ρσ_setitem(ρσ_getitem(umesh, n), wall_x, 69);
-                "113";
+                "105";
                 ρσ_setitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](1)), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](2))));
-                "114";
+                "106";
                 ρσ_setitem(ρσ_getitem(umesh, n), wall_x["+"](1), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["+"](2)));
             }
-            "115";
+            "107";
             ρσ_setitem(ρσ_getitem(umesh, mid_up["-"](1["*"](1))), wall_x, ρσ_getitem(ρσ_getitem(umesh, mid_up["-"](1["*"](1))), wall_x["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, mid_up["-"](1["*"](1))), wall_x["+"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, mid_up["-"](1["*"](2))), wall_x))["/"](3));
-            "117";
+            "109";
             ρσ_setitem(ρσ_getitem(umesh, mid_down), wall_x, ρσ_getitem(ρσ_getitem(umesh, mid_down), wall_x["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, mid_down), wall_x["+"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, mid_down["+"](1)), wall_x))["/"](3));
-            "120";
-            var ρσ_Iter10 = range(inter2, len(ρσ_getitem(pixels, 0)));
-            ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
-            for (var ρσ_Index10 of ρσ_Iter10) {
-                n = ρσ_Index10;
-                "121";
+            "112";
+            var ρσ_Iter8 = range(inter2, len(ρσ_getitem(pixels, 0)));
+            ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+            for (var ρσ_Index8 of ρσ_Iter8) {
+                n = ρσ_Index8;
+                "113";
                 ρσ_setitem(ρσ_getitem(umesh, n), wall_x, 69);
-                "122";
+                "114";
                 ρσ_setitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](1)), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](2))));
-                "123";
+                "115";
                 ρσ_setitem(ρσ_getitem(umesh, n), wall_x["+"](1), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["+"](2)));
             }
-            "124";
+            "116";
             ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x, 69);
-            "125";
+            "117";
             ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x["-"](1["*"](1)), ρσ_getitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x["-"](1["*"](2))));
-            "126";
+            "118";
             ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x["+"](1), ρσ_getitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x["+"](2)));
-            "127";
+            "119";
             ρσ_setitem(ρσ_getitem(umesh, inter2), wall_x, ρσ_getitem(ρσ_getitem(umesh, inter2), wall_x["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, inter2), wall_x["+"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, inter2["-"](1["*"](1))), wall_x))["/"](3));
-            "129";
-            var ρσ_Iter11 = range(len(pixels));
-            ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
-            for (var ρσ_Index11 of ρσ_Iter11) {
-                i = ρσ_Index11;
-                "130";
-                var ρσ_Iter12 = range(len(ρσ_getitem(pixels, 0)));
-                ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
-                for (var ρσ_Index12 of ρσ_Iter12) {
-                    j = ρσ_Index12;
-                    "131";
+            "121";
+            var ρσ_Iter9 = range(len(pixels));
+            ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+            for (var ρσ_Index9 of ρσ_Iter9) {
+                i = ρσ_Index9;
+                "122";
+                var ρσ_Iter10 = range(len(ρσ_getitem(pixels, 0)));
+                ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+                for (var ρσ_Index10 of ρσ_Iter10) {
+                    j = ρσ_Index10;
+                    "123";
                     ρσ_getitem(ρσ_getitem(pixels, i), j).color = ((ρσ_getitem(ρσ_getitem(umesh, j), i) === 69 || typeof ρσ_getitem(ρσ_getitem(umesh, j), i) === "object" && ρσ_equals(ρσ_getitem(ρσ_getitem(umesh, j), i), 69))) ? vec(0, 0, 0) : (await colour(ρσ_getitem(ρσ_getitem(umesh, j), i)["-"](1["*"](floor)), colorrange));
                 }
             }
@@ -415,12 +429,12 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "133";
-    use_round_pixels = true;
-    "134";
+    "125";
+    use_round_pixels = false;
+    "126";
     async function toggle_square_pixels(event) {
-        "135";
-        "136";
+        "127";
+        "128";
         use_round_pixels = event.checked;
     };
     if (!toggle_square_pixels.__argnames__) Object.defineProperties(toggle_square_pixels, {
@@ -428,43 +442,39 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "138";
+    "130";
     display.append_to_caption("\nRound pixels ");
-    "139";
+    "131";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_square_pixels, checked: use_round_pixels})]);
-    "141";
+    "133";
     clock = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(700, 1100, 0), text: "Time remaining: 0:00", height: 20, box: false, color: color.green})]);
-    "142";
+    "134";
     while (true) {
-        "143";
+        "135";
         pixels = (await initialize_simulation(use_round_pixels));
-        "144";
+        "136";
         ρσ_unpack = (await initialize_meshes(len(pixels), len(ρσ_getitem(pixels, 0))));
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
         u_mesh = ρσ_unpack[0];
         ut_mesh = ρσ_unpack[1];
         utt_mesh = ρσ_unpack[2];
-        "145";
+        "137";
         (await run_simulation(u_mesh, ut_mesh, utt_mesh, pixels));
-        "147";
+        "139";
         popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(700, 350, 0), text: "Click mouse to restart", height: 25, box: false, color: color.yellow})]);
-        "148";
+        "140";
         (await display.waitfor("click"));
-        "149";
+        "141";
         popup.visible = false;
-        "150";
-        var ρσ_Iter13 = range(len(pixels));
-        ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
-        for (var ρσ_Index13 of ρσ_Iter13) {
-            i = ρσ_Index13;
-            "151";
-            var ρσ_Iter14 = range(len(ρσ_getitem(pixels, 0)));
-            ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
-            for (var ρσ_Index14 of ρσ_Iter14) {
-                j = ρσ_Index14;
-                "152";
-                ρσ_getitem(ρσ_getitem(pixels, i), j).visible = false;
-            }
+        "142";
+        var ρσ_Iter11 = display.objects;
+        ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
+        for (var ρσ_Index11 of ρσ_Iter11) {
+            obj = ρσ_Index11;
+            "143";
+            obj.visible = false;
+            "144";
+            obj = undefined;
         }
     }
 };

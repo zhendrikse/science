@@ -1,9 +1,8 @@
-#Web VPython 3.2
+# Web VPython 3.2
 from vpython import ceil, pi, cos, rate, box, vec, canvas, color, arange, simple_sphere, label, checkbox
 
 title = """&#x2022; Original <a href="https://github.com/NelsonHackerman/Random_python_ideas/blob/main/double%20slit%20experiment.py">double slit experiment.py</a> by <a href="https://github.com/NelsonHackerman">Nelson Hackerman</a>
 &#x2022; Ported from PyGame to Glowscript by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>, see <a href="https://github.com/zhendrikse/science/blob/main/quantumphysics/code/dynamic_double_slit.py">dynamic_double_slit.py</a>
-&#x2022; Check out my other <a href="https://www.hendrikse.name/science/quantumphysics/double_slit.html">double slit experiment page</a> on this site as well!
 
 """
 
@@ -45,19 +44,14 @@ def initialize_simulation(pixels_are_round):
     xmesh = outer_product(const2, x)
     ymesh = outer_product(y, const1)
 
-    pixels = []
-    for i in range(len(x)):
-        temp = []
-        for j in range(len(y)):
-            if pixels_are_round:
-                temp.append(simple_sphere(pos=vec(xmesh[j][i] * 100 + 50, ymesh[j][i] * 100 + 50, 0), radius=50 * dx))
-            else:
-                temp.append(box(pos=vec(xmesh[j][i] * 100 + 50, ymesh[j][i] * 100 + 50, 0),
-                                size=vec(ceil(100 * dx), ceil(100 * dy), 0)))
+    if pixels_are_round:
+        return [
+            [simple_sphere(pos=vec(xmesh[j][i] * 100 + 50, ymesh[j][i] * 100 + 50, 0), radius=50 * dx, shininess=0) for
+             j in range(len(y))] for i in range(len(x))]
 
-        pixels.append(temp)
-
-    return pixels
+    return [[box(pos=vec(xmesh[j][i] * 100 + 50, ymesh[j][i] * 100 + 50, 0),
+                 size=vec(ceil(100 * dx), ceil(100 * dy), 1), shininess=0) for j in range(len(y))] for i in
+            range(len(x))]
 
 
 def initialize_meshes(len_x, len_y):
@@ -136,7 +130,7 @@ def run_simulation(umesh, utmesh, uttmesh, pixels):
                 pixels[i][j].color = vec(0, 0, 0) if umesh[j][i] == 69 else colour(umesh[j][i] - floor, colorrange)
 
 
-use_round_pixels = True
+use_round_pixels = False
 
 
 def toggle_square_pixels(event):
@@ -156,8 +150,7 @@ while True:
     popup = label(pos=vec(700, 350, 0), text="Click mouse to restart", height=25, box=False, color=color.yellow)
     display.waitfor("click")
     popup.visible = False
-    for i in range(len(pixels)):
-        for j in range(len(pixels[0])):
-            pixels[i][j].visible = False
-            # pixels[i][j].delete()
+    for obj in display.objects:
+        obj.visible = False
+        del obj
 
