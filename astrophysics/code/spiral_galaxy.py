@@ -1,3 +1,4 @@
+# Web VPython 3.2
 from vpython import *
 
 title = """&#x2022; Original <a href="https://gist.github.com/rlvaugh/a49bf875890581f338a000c2b5c3a2bb">galaxy_3d_Medium.py</a> by <a href="https://towardsdatascience.com/author/lee_vaughan/">Lee Vaughan</a>
@@ -6,13 +7,7 @@ title = """&#x2022; Original <a href="https://gist.github.com/rlvaugh/a49bf87589
 
 """
 
-#import math
 from random import randint, uniform, random
-#import numpy as np
-
-#import matplotlib.pyplot as plt
-#plt.style.use('dark_background')
-#get_ipython().run_line_magic('matplotlib', 'qt')
 
 # Set the radius of the galactic disc (scaling factor):
 SCALE = 500  # Use range of 200 - 700.
@@ -65,6 +60,7 @@ def build_spiral_arms(b, arms_info):
             trailing_arms.extend(arm)
     return leading_arms, trailing_arms
 
+
 # Box-Muller transform to create a normal distribution
 def gauss(mu, sigma):
     u1 = random()
@@ -73,12 +69,13 @@ def gauss(mu, sigma):
     vt *= sigma + mu
     return vt
 
+
 def spherical_coordinates(num_pts, radius):
     """Return list of uniformly distributed points in a sphere."""
     position_list = []
     for _ in range(num_pts):
         position = radius * vector(gauss(0, 1), gauss(0, 1), gauss(0, 1))
-        #position.z *= 0.02  # Reduce z range for matplotlib default z-scale.
+        # position.z *= 0.02  # Reduce z range for matplotlib default z-scale.
         position_list.append(position)
     return position_list
 
@@ -117,39 +114,39 @@ core = build_core_stars(SCALE)
 inner_haze = haze(SCALE, r_mult=2, z_mult=0.5, density=5)
 outer_haze = haze(SCALE, r_mult=1, z_mult=0.3, density=5)
 
-display = canvas(background=color.gray(0.075), center=vec(0, -80, -80), range=SCALE, forward=vec(-.2, .9, -.45), title=title, width=600)
+display = canvas(background=color.gray(0.075), center=vec(0, -80, -80), range=SCALE, forward=vec(0, .75, -.7),
+                 title=title)
 
-leading_arm_stars, trailing_arm_stars, core_stars, inner_haze_stars, outer_haze_stars = [], [], [], [], []
-for position in leading_arm:
-    leading_arm_stars.append(simple_sphere(pos=position, color=color.white, radius=5))
-for position in trailing_arm:
-    trailing_arm_stars.append(simple_sphere(pos=position, color=color.white, radius=2))
-for position in core:
-    core_stars.append(simple_sphere(pos=position, color=color.white, radius=1))
-for position in inner_haze:
-    inner_haze_stars.append(simple_sphere(pos=position, color=color.white, radius=1))
-for position in outer_haze:
-    outer_haze_stars.append(simple_sphere(pos=position, color=color.gray(.75), radius=1))
+leading_arm_stars = [simple_sphere(pos=position, color=color.white, radius=5) for position in leading_arm]
+trailing_arm_stars = [simple_sphere(pos=position, color=color.white, radius=2) for position in trailing_arm]
+core_stars = [simple_sphere(pos=position, color=color.white, radius=1) for position in core]
+inner_haze_stars = [simple_sphere(pos=position, color=color.white, radius=1) for position in inner_haze]
+outer_haze_stars = [simple_sphere(pos=position, color=color.gray(.75), radius=1) for position in outer_haze]
+
 
 def color_leading_arm_stars(event):
     colour = color.white if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
     for star in leading_arm_stars:
         star.color = colour
 
+
 def color_trailing_arm_stars(event):
     colour = color.white if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
     for star in trailing_arm_stars:
         star.color = colour
+
 
 def color_core_stars(event):
     colour = color.white if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
     for star in core_stars:
         star.color = colour
 
+
 def color_inner_haze_stars(event):
     colour = color.white if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
     for star in inner_haze_stars:
         star.color = colour
+
 
 def color_outer_haze_stars(event):
     colour = color.gray(.75) if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
@@ -167,7 +164,6 @@ display.append_to_caption("\n\nColor of inner haze ")
 _ = slider(min=0, max=1, value=0, bind=color_inner_haze_stars)
 display.append_to_caption("\n\nColor of outer haze ")
 _ = slider(min=0, max=1, value=0, bind=color_outer_haze_stars)
-
 
 while True:
     rate(10)
