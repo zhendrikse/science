@@ -54,7 +54,7 @@ If I have ever made any valuable discoveries, it has been due more to patient at
 </div>
 <p style="clear: both;"></p>
 
-### Swimming pool &amp; overhead power lines
+### Water and fire 
 
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -68,12 +68,9 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="catenary.html">
-    <img alt="Overhead power lines" src="images/catenary.png" title="Click to animate"/>
+  <a href="Fire.html">
+    <img alt="Fire simulation" src="images/fire.png" title="Click to animate"/>
   </a>
-  <figcaption>Modelling a catenary shape, based on the original 
-  <a href="https://www.youtube.com/watch?v=BdskNTgzpAo">video</a> by 
-  <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -127,7 +124,7 @@ If I have ever made any valuable discoveries, it has been due more to patient at
 </div>
 <p style="clear: both;"></p>
 
-### Modelling a water sprinkler
+### Water sprinkler &amp; overhead power lines
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -140,8 +137,12 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   Modelling a spinning Sprinkler</a> by <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
 </figure>
 <figure class="left_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="catenary.html">
+    <img alt="Overhead power lines" src="images/catenary.png" title="Click to animate"/>
+  </a>
+  <figcaption>Modelling a catenary shape, based on the original 
+  <a href="https://www.youtube.com/watch?v=BdskNTgzpAo">video</a> by 
+  <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

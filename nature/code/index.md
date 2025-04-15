@@ -5,6 +5,7 @@
 
 - [`catenary.py` source code](catenary.py)
 - [`fern.py` source code](fern.py)
+- [`fire.py` source code](fire.py)
 - [`flocking_birds.py` source code](flocking_birds.py)
 - [`parachute.py` source code](parachute.py)
 - [`pool.py` source code](pool.py)

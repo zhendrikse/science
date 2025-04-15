@@ -1,8 +1,8 @@
 #Web VPython 3.2
 from vpython import box, vec, rate, color, canvas, random, slider
 
-title = """&#x2022; Based on <a href="https://beltoforion.de/de/unterhaltungsmathematik/2d-wellengleichung.php">this example</a>
-&#x2022; Adapted to <a href="https://vpython.org/">VPython</a> by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/fern.py">fern.py</a>
+title = """&#x2022; Based on <a href="https://beltoforion.de/de/unterhaltungsmathematik/2d-wellengleichung.php">this example</a> from <a href="https://github.com/beltoforion/recreational_mathematics_with_python">Recreational Mathematics with Python</a>
+&#x2022; Ported to <a href="https://vpython.org/">VPython</a> by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/raindrop_waves.py">raindrop_waves.py</a>
 
 """
 
@@ -24,7 +24,7 @@ def init_simulation():
     return u, alpha, colors
 
 
-def update(u, alpha):
+def timestep(u, alpha):
     for i in range(dim_x):
         for j in range(dim_y):
             u[2][i][j] = u[1][i][j]
@@ -71,16 +71,7 @@ def create_pixels():
         pixel_data.append(row)
     return pixel_data
 
-
-def update_pixels(grid, alpha, colors, pixels, frame_rate):
-    rate(frame_rate)
-    place_raindrops(grid)
-    update(grid, alpha)
-
-    # red = np.clip(u[0, 1:dim_x, 1:dim_y] + 128, 0, 255)
-    # green = np.clip(u[1, 1:dim_x, 1:dim_y] + 128, 0, 255)
-    # blue = np.clip(u[2, 1:dim_x, 1:dim_y] + 128, 0, 255)
-
+def update(colors, grid):
     for i in range(0, dim_x):
         for j in range(0, dim_y):
             for k in range(3):
@@ -90,9 +81,16 @@ def update_pixels(grid, alpha, colors, pixels, frame_rate):
                 if colors[k][i][j] > 255:
                     colors[k][i][j] = 255
 
+def update_pixels(grid, alpha, colors, pixels, frame_rate):
+    rate(frame_rate)
+    place_raindrops(grid)
+    timestep(grid, alpha)
+    update(colors, grid)
+
     for x in range(dim_x - 1):
         for y in range(dim_y - 1):
             pixels[x][y].color = vec(colors[0][x][y] * .15, colors[1][x][y] * .3, colors[2][x][y]) / 255
+
 
 display.append_to_caption("\nRain intensity")
 _ = slider(min=0, max=.1, value=raindrop_frequency, bind=modify_rain_intensity)
