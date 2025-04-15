@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 Download the [plane_wave.py](code/plane_wave.py) source code
-{% include_relative code/Planewave.html %}
+{% include_relative code/plane_wave.html %}
 
 <p style="clear: both;"></p>
 

@@ -141,8 +141,9 @@ def toggle_square_pixels(event):
 display.append_to_caption("\nRound pixels ")
 _ = checkbox(bind=toggle_square_pixels, checked=use_round_pixels)
 
-clock = label(pos=vec(700, 1100, 0), text="Time remaining: 0:00", height=20, box=False, color=color.green)
+clock = None
 while True:
+    clock = label(pos=vec(700, 1100, 0), text="Time remaining: 0:00", height=20, box=False, color=color.green)
     pixels = initialize_simulation(use_round_pixels)
     u_mesh, ut_mesh, utt_mesh = initialize_meshes(len(pixels), len(pixels[0]))
     run_simulation(u_mesh, ut_mesh, utt_mesh, pixels)

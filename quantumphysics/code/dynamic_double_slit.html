@@ -447,33 +447,35 @@ async function __main__() {
     "131";
     _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_square_pixels, checked: use_round_pixels})]);
     "133";
-    clock = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(700, 1100, 0), text: "Time remaining: 0:00", height: 20, box: false, color: color.green})]);
+    clock = null;
     "134";
     while (true) {
         "135";
-        pixels = (await initialize_simulation(use_round_pixels));
+        clock = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(700, 1100, 0), text: "Time remaining: 0:00", height: 20, box: false, color: color.green})]);
         "136";
+        pixels = (await initialize_simulation(use_round_pixels));
+        "137";
         ρσ_unpack = (await initialize_meshes(len(pixels), len(ρσ_getitem(pixels, 0))));
 ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
         u_mesh = ρσ_unpack[0];
         ut_mesh = ρσ_unpack[1];
         utt_mesh = ρσ_unpack[2];
-        "137";
+        "138";
         (await run_simulation(u_mesh, ut_mesh, utt_mesh, pixels));
-        "139";
-        popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(700, 350, 0), text: "Click mouse to restart", height: 25, box: false, color: color.yellow})]);
         "140";
-        (await display.waitfor("click"));
+        popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(700, 350, 0), text: "Click mouse to restart", height: 25, box: false, color: color.yellow})]);
         "141";
-        popup.visible = false;
+        (await display.waitfor("click"));
         "142";
+        popup.visible = false;
+        "143";
         var ρσ_Iter11 = display.objects;
         ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
         for (var ρσ_Index11 of ρσ_Iter11) {
             obj = ρσ_Index11;
-            "143";
-            obj.visible = false;
             "144";
+            obj.visible = false;
+            "145";
             obj = undefined;
         }
     }

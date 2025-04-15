@@ -18,7 +18,7 @@ in the simulation, so that the difference in the behavior of particles and waves
 
 <div class="header_line"><br/></div>
 
-{% include_relative code/DoubleSlit.html %}
+{% include_relative code/double_slit.html %}
 
 <p style="clear: both;"></p>
 

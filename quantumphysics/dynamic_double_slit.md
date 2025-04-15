@@ -20,7 +20,7 @@ for n in range(1, len(pixels) - 1):
 
 <div class="header_line"><br/></div>
 
-{% include_relative code/DynamicDoubleSlit.html %}
+{% include_relative code/dynamic_double_slit.html %}
 
 <p style="clear: both;"></p>
 
