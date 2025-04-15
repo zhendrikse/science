@@ -68,7 +68,7 @@ async function __main__() {
     "6";
     title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/mandelbrot.py\">mandelbrot.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
     "8";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 400, background: color.gray(.075)})]);
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 400, background: color.gray(.075), range: 1})]);
     "9";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "12";
@@ -241,7 +241,7 @@ async function __main__() {
             obj = undefined;
         }
         "92";
-        display.range = (three_dimensional) ? 15 : 1.1;
+        display.range = (three_dimensional) ? 15 : 1;
         "93";
         display.forward = (three_dimensional) ? vector(0, .7, 1["-u"]()["*"](.7)) : vector(0, 0, 1["-u"]()["*"](1));
         "94";
@@ -255,20 +255,18 @@ async function __main__() {
     });
 
     "98";
-    display.append_to_caption("\n");
-    "99";
     selector = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Three dimensional ", checked: false, bind: render})]);
+    "100";
+    display.range = 1;
     "101";
-    display.range = 1.1;
-    "102";
     display.forward = vector(0, 0, 1["-u"]()["*"](1));
-    "103";
+    "102";
     display.center = vector(1["-u"]()["*"](.5), 0, 0);
-    "104";
+    "103";
     (await render_mandelbrot());
-    "105";
+    "104";
     while (true) {
-        "106";
+        "105";
         (await rate(10));
     }
 };

@@ -5,7 +5,7 @@ title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mat
 
 """
 
-display = canvas(title=title, width=600, height=400, background=color.gray(0.075))
+display = canvas(title=title, width=600, height=400, background=color.gray(0.075), range=1)
 MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 # Parameters
@@ -89,16 +89,15 @@ def render(event):
     for obj in display.objects:
         obj.visible = False
         del obj
-    display.range = 15 if three_dimensional else 1.1
+    display.range = 15 if three_dimensional else 1
     display.forward = vector(0, .7, -.7) if three_dimensional else vector(0, 0, -1)
     display.center = vector(-6, 0, 0) if three_dimensional else vector(-.5, 0, 0)
     render_mandelbrot(three_dimensional)
 
 
-display.append_to_caption("\n")
 selector = checkbox(text="Three dimensional ", checked=False, bind=render)
 
-display.range = 1.1
+display.range = 1
 display.forward = vector(0, 0, -1)
 display.center = vector(-.5, 0, 0)
 render_mandelbrot()
