@@ -40,6 +40,7 @@
     const size_swarm = 2500;
     const noise = 10.0;
     const thresholdDistance = 5;
+    const thresholdDistanceSquared = thresholdDistance * thresholdDistance;
 
     class Particle {
         constructor(radius=2) {
@@ -57,10 +58,14 @@
             this.y = canvas.height - 2;
         }
 
-        distanceTo(otherParticle) {
+        distanceSquaredTo(otherParticle) {
             const dx = this.x - otherParticle.x;
             const dy = this.y - otherParticle.y;
-            return Math.sqrt(dx * dx + dy * dy);
+            return dx * dx + dy * dy;
+        }
+
+        distanceTo(otherParticle) {
+            return Math.sqrt(this.distanceSquaredTo(otherParticle));
         }
 
         checkForFreezing() {
@@ -68,7 +73,7 @@
                 if (!swarm[i].frozen)
                     continue;
 
-                if (this.distanceTo(swarm[i]) < thresholdDistance) {
+                if (this.distanceSquaredTo(swarm[i]) < thresholdDistanceSquared) {
                     this.frozen = true;
                     this.colour = scientificColorCodingFor(1.5 * this.distanceTo(swarm[0]), 0, maxDistance);
                     // We can exit since there is no point in checking
