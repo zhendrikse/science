@@ -9,6 +9,7 @@ title = """&#x2022; Based on <a href="https://beltoforion.de/de/unterhaltungsmat
 dim_x, dim_y = 150, 100
 display = canvas(width=600, height=400, range=.5 * dim_x, center=vec(dim_x / 2, dim_y / 2, 0), forward=vec(0, .85, -.5),
                  background=color.gray(0.075), title=title)
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 dh = 1  # spatial step width
 dt = 1  # time step width
@@ -62,15 +63,6 @@ def modify_rain_intensity(event):
     raindrop_frequency = event.value
 
 
-def create_pixels():
-    pixel_data = []
-    for x in range(dim_x - 1):
-        row = []
-        for y in range(dim_y - 1):
-            row.append(box(pos=vec(x, y, 0), shininess=0))
-        pixel_data.append(row)
-    return pixel_data
-
 def update(colors, grid):
     for i in range(0, dim_x):
         for j in range(0, dim_y):
@@ -97,7 +89,7 @@ _ = slider(min=0, max=.1, value=raindrop_frequency, bind=modify_rain_intensity)
 
 
 def main():
-    pixels = create_pixels()
+    pixels = [[box(pos=vec(r, c, 0), shininess=0) for c in range(dim_y - 1)] for r in range(dim_x - 1)]
     u, alpha, colors = init_simulation()
 
     while True:

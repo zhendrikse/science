@@ -1,5 +1,4 @@
-# Web VPython 3.2
-
+#Web VPython 3.2
 from vpython import vec, box, rate, canvas, color, random
 
 title = """&#x2022; Based on <a href="https://github.com/beltoforion/recreational_mathematics_with_python/blob/master/Fire/fire.py">fire.py</a> from <a href="https://github.com/beltoforion/recreational_mathematics_with_python">Recreational Mathematics with Python</a>
@@ -9,6 +8,7 @@ title = """&#x2022; Based on <a href="https://github.com/beltoforion/recreationa
 
 dim_x, dim_y = 100, 70
 display = canvas(title=title, range=32, background=color.gray(0.075), width=600, height=400, center=.5 * vec(dim_x, dim_y - 4, 0))
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 def init():
     cells = [[0. for _ in range(dim_y)] for _ in range(dim_x)]
@@ -26,12 +26,7 @@ def init():
 
 
 def update(pixels, cells, fire_colors):
-    old = []
-    for r in range(dim_x):
-        tmp = []
-        for c in range(dim_y):
-            tmp.append(cells[r][c])
-        old.append(tmp)
+    old = [[cells[r][c] for c in range(dim_y)] for r in range(dim_x)]
 
     for r in range(0, dim_y - 1):
         for c in range(0, dim_x - 1):
@@ -45,17 +40,8 @@ def update(pixels, cells, fire_colors):
             pixels[c][r].color  = fire_colors[val] / 255
 
 
-def create_pixels():
-    pixel_data = []
-    for x in range(dim_x):
-        row = []
-        for y in range(dim_y):
-            row.append(box(pos=vec(x, y, 0), shininess=0))
-        pixel_data.append(row)
-    return pixel_data
-
 def main():
-    pixels = create_pixels()
+    pixels = [[box(pos=vec(r, c, 0), shininess=0) for c in range(dim_y)] for r in range(dim_x)]
     cells, fire_colors = init()
 
     while True:
