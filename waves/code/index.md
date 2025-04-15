@@ -5,6 +5,7 @@
 
 - [`doppler_effect.py` source code](doppler_effect.py)
 - [`doppler_waves.py` source code](doppler_waves.py)
+- [`suspended_spring.py` source code](suspended_spring.py)
 - [`interference_pattern_3d.py` source code](interference_pattern_3d.py)
 - [`n_body_oscillator.py` source code](n_body_oscillator.py)
 - [`pendulum_wave.py` source code](pendulum_wave.py)

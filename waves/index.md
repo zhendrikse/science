@@ -176,6 +176,22 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 </div>
 <p style="clear: both;"></p>
 
+### Suspended spring
+<div class="subsection_header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="suspended_spring.html">
+    <img alt="Suspended spring" src="images/suspended_spring.png" title="Click to animate"/>
+  </a>
+  <figcaption>Visualization of the vibrations in a suspended spring.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
+</figure>
+</div>
+<p style="clear: both;"></p>
 ## References
 <div class="header_line"><br/></div>
 
