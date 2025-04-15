@@ -185,28 +185,37 @@ async function __main__() {
         if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "three_dim")){
             three_dim = ρσ_kwargs_obj.three_dim;
         }
-        var ρσ_ls, re, im, c, z, _, y, x;
+        var ρσ_ls, step, re, im, c, z, _, y, x;
         "69";
         selector.disabled = true;
         "70";
+        step = 0;
+        "71";
         for (var ρσ_Index1 = 0; ρσ_Index1["<"](width); ρσ_Index1++) {
             x = ρσ_Index1;
-            "71";
+            "72";
+            if (ρσ_equals(step["%"](20), 0)) {
+                "74";
+                (await rate(1e4));
+            }
+            "75";
             for (var ρσ_Index2 = 0; ρσ_Index2["<"](height); ρσ_Index2++) {
                 y = ρσ_Index2;
-                "73";
-                re = x_min["+"](x["/"](width)["*"](x_max["-"](1["*"](x_min))));
-                "74";
-                im = y_min["+"](y["/"](height)["*"](y_max["-"](1["*"](y_min))));
-                "75";
-                c = (await complex_(re, im));
-                "76";
-                z = (await complex_(0, 0));
                 "77";
+                re = x_min["+"](x["/"](width)["*"](x_max["-"](1["*"](x_min))));
+                "78";
+                im = y_min["+"](y["/"](height)["*"](y_max["-"](1["*"](y_min))));
+                "79";
+                c = (await complex_(re, im));
+                "80";
+                z = (await complex_(0, 0));
+                "81";
                 _ = (three_dim) ? (await mandelbrot_3d(re, im, z, c)) : (await mandelbrot_2d(re, im, z, c));
             }
+            "82";
+            step=step["+"](1);
         }
-        "79";
+        "84";
         selector.disabled = false;
     };
     if (!render_mandelbrot.__defaults__) Object.defineProperties(render_mandelbrot, {
@@ -216,28 +225,28 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "82";
+    "87";
     async function render(event) {
         var ρσ_ls, three_dimensional, obj;
-        "83";
+        "88";
         three_dimensional = event.checked;
-        "84";
+        "89";
         var ρσ_Iter3 = display.objects;
         ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
         for (var ρσ_Index3 of ρσ_Iter3) {
             obj = ρσ_Index3;
-            "85";
+            "90";
             obj.visible = false;
-            "86";
+            "91";
             obj = undefined;
         }
-        "87";
+        "92";
         display.range = (three_dimensional) ? 15 : 1.1;
-        "88";
+        "93";
         display.forward = (three_dimensional) ? vector(0, .7, 1["-u"]()["*"](.7)) : vector(0, 0, 1["-u"]()["*"](1));
-        "89";
+        "94";
         display.center = (three_dimensional) ? vector(1["-u"]()["*"](6), 0, 0) : vector(1["-u"]()["*"](.5), 0, 0);
-        "90";
+        "95";
         (await render_mandelbrot(three_dimensional));
     };
     if (!render.__argnames__) Object.defineProperties(render, {
@@ -245,21 +254,21 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "93";
-    display.append_to_caption("\n");
-    "94";
-    selector = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Three dimensional ", checked: false, bind: render})]);
-    "96";
-    display.range = 1.1;
-    "97";
-    display.forward = vector(0, 0, 1["-u"]()["*"](1));
     "98";
-    display.center = vector(1["-u"]()["*"](.5), 0, 0);
+    display.append_to_caption("\n");
     "99";
+    selector = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Three dimensional ", checked: false, bind: render})]);
+    "101";
+    display.range = 1.1;
+    "102";
+    display.forward = vector(0, 0, 1["-u"]()["*"](1));
+    "103";
+    display.center = vector(1["-u"]()["*"](.5), 0, 0);
+    "104";
     (await render_mandelbrot());
-    "100";
+    "105";
     while (true) {
-        "102";
+        "106";
         (await rate(10));
     }
 };

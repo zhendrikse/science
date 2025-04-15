@@ -1,4 +1,4 @@
-#Web VPython 3.2
+# Web VPython 3.2
 from vpython import box, rate, canvas, vector, sqrt, color, checkbox, cylinder
 
 title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/mandelbrot.py">mandelbrot.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
@@ -6,7 +6,7 @@ title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mat
 """
 
 display = canvas(title=title, width=600, height=400, background=color.gray(0.075))
-#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 # Parameters
 width = 600  # resolution along x-axis
@@ -49,7 +49,7 @@ def mandelbrot_3d(re, im, z, c):
         pos=vector(re / scale, im / scale, .5 * voxel_height),
         radius=0.08,
         color=colour,
-        axis =vector(0, 0, 0.08 / scale),
+        axis=vector(0, 0, 0.08 / scale),
         shininess=0)
 
 
@@ -67,7 +67,11 @@ def mandelbrot_2d(re, im, z, c):
 
 def render_mandelbrot(three_dim=False):
     selector.disabled = True
+    step = 0
     for x in range(width):
+        if step % 20 == 0:
+            # Do a screen refresh so that the user sees what's going on
+            rate(10000)
         for y in range(height):
             # Map pixel to complex plane
             re = x_min + (x / width) * (x_max - x_min)
@@ -75,7 +79,8 @@ def render_mandelbrot(three_dim=False):
             c = complex_(re, im)
             z = complex_(0, 0)
             _ = mandelbrot_3d(re, im, z, c) if three_dim else mandelbrot_2d(re, im, z, c)
-            #rate(10000)
+        step += 1
+
     selector.disabled = False
 
 
@@ -98,5 +103,4 @@ display.forward = vector(0, 0, -1)
 display.center = vector(-.5, 0, 0)
 render_mandelbrot()
 while True:
-    #print(display.range, display.forward, display.center)
     rate(10)

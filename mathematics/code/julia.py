@@ -1,4 +1,4 @@
-# Web VPython 3.2
+#Web VPython 3.2
 from vpython import simple_sphere, color, vector, rate, box, canvas, radio, button
 
 title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/julia.py">julia.py</a> by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
@@ -87,8 +87,12 @@ def generate_julia_set(c):
     x_min, x_max = -zoom, zoom
     y_min, y_max = -zoom, zoom
     y = y_min
+    step = 0
     while y <= y_max:
         x = x_min
+        if step % 20 == 0:
+            # Do a screen refresh so that the user sees what's going on
+            rate(10000)
         while x <= x_max:
             z = complex_(x, y)
             iteration = 0
@@ -96,14 +100,13 @@ def generate_julia_set(c):
                 z = z_squared_minus_c(z, c)
                 iteration += 1
 
-            #                       <- this part to get black background ->
-            if iteration < max_iter and .075 < iteration / max_iter < 1:
-                #                   <- this part to get black background ->
+            if iteration < max_iter: # and .075 < iteration / max_iter < 1:
                 colour = get_color(iteration)
                 box(pos=vector(x * width / 4, y * height / 4, 0), color=colour, shininess=0)
 
             x += resolution
         y += resolution
+        step += 1
 
 
 def toggle(event):
