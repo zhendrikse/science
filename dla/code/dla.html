@@ -65,7 +65,10 @@
 
         checkForFreezing() {
             for (let i = 0; i < size_swarm; i++) {
-                if (this.distanceTo(swarm[i]) < thresholdDistance && swarm[i].frozen) {
+                if (!swarm[i].frozen)
+                    continue;
+
+                if (this.distanceTo(swarm[i]) < thresholdDistance) {
                     this.frozen = true;
                     this.colour = scientificColorCodingFor(1.5 * this.distanceTo(swarm[0]), 0, maxDistance);
                     // We can exit since there is no point in checking
