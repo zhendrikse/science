@@ -14,13 +14,7 @@ class LongitudinalWave:
         self._frequency = frequency
         self._amplitude = amplitude
         self._wavelength_color = False
-        self._beads = []
-
-        for i in range(bead_total):
-            row = []
-            for j in range(5):
-                row.append(simple_sphere(pos=vec(i, 10 + j, 0), radius=bead_radius, color=color.red if i == 0 else color.green))
-            self._beads.append(row)
+        self._beads = [[simple_sphere(pos=vec(i, 10 + j, 0), radius=bead_radius, color=color.red if i == 0 else color.green) for j in range(5)] for i in range(bead_total)]
 
     def _update_bead_row(self, index, time, t_0, omega):
         bead_row = self._beads[index]
@@ -61,12 +55,8 @@ class TransverseWave:
         self._radius = bead_radius
         self._frequency = frequency
         self._amplitude = amplitude
-        self._springs, self._beads = [], []
-
-        for i in range(bead_total):
-            self._beads.append(simple_sphere(pos=vec(i, 0, 0), radius=bead_radius, color=color.green))
-            self._springs.append(helix(pos=vec(i, 0, 0), radius=.7 * bead_radius, thickness=.075, axis=vec(0, 0, 0), coils=10, color=color.white, visible=False))
-
+        self._beads = [simple_sphere(pos=vec(i, 0, 0), radius=bead_radius, color=color.green) for i in range(bead_total)]
+        self._springs = [helix(pos=vec(i, 0, 0), radius=.7 * bead_radius, thickness=.075, axis=vec(0, 0, 0), coils=10, color=color.white, visible=False) for i in range(bead_total)]
         self._beads[0].color = color.red
 
     def _update_bead(self, index, time, t_0, omega):
@@ -142,8 +132,6 @@ def modify_frequency(event):
     longitudinal_wave._frequency = event.value
 
 _ = slider(min=0.1, max=.25, value=.25, bind=modify_frequency)
-
-#MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 t0 = t = 0
 delta_t = .01
