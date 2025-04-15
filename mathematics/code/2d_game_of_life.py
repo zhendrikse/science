@@ -8,6 +8,7 @@ title = """&#x2022; <a href="https://github.com/zhendrikse/science/blob/main/mat
 
 dimension_x = dimension_y = 100
 display = canvas(title=title, bacground=color.gray(0.075), width=600, height=600, center=.5 * vec(dimension_x, dimension_y, 0))
+MathJax.Hub.Queue(["Typeset", MathJax.Hub])
 
 class Game:
     def __init__(self, cells):
