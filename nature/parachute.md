@@ -3,7 +3,7 @@
 ## Parachute jump
 <div class="header_line"><br/></div>
 
-{% include_relative code/Parachute.html %}
+{% include_relative code/parachute.html %}
 
 <p style="clear: both;"></p>
 

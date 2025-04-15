@@ -3,7 +3,7 @@
 ## Water sprinkler
 <div class="header_line"><br/></div>
 
-{% include_relative code/WaterSprinkler.html %}
+{% include_relative code/water_sprinkler.html %}
 
 <p style="clear: both;"></p>
 

@@ -8,7 +8,7 @@ a string of beads connected by springs. The total mass of the catenary
 is divided over the number of beads $N$, while the length of the catenary is
 divided over the number springs $N - 1$ in between.
 
-{% include_relative code/Catenary.html %}
+{% include_relative code/catenary.html %}
 
 <p style="clear: both;"></p>
 

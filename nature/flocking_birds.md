@@ -3,7 +3,7 @@
 ## Flocking birds
 <div class="header_line"><br/></div>
 
-{% include_relative code/FlockingBirds.html %}
+{% include_relative code/flockingBirds.html %}
 
 <p style="clear: both;"></p>
 

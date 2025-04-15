@@ -32,7 +32,7 @@ If I have ever made any valuable discoveries, it has been due more to patient at
 </div>
 <p style="clear: both;"></p>
 
-### Modelling water droplets &mdash; rain &amp; water sprinkler
+### Modelling rain
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -46,12 +46,10 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   </figcaption>
 </figure>
 <figure class="left_image">
-  <a href="water_sprinkler.html">
-    <img alt="Water sprinkler" src="images/water_sprinkler.png" title="Click to animate"/>
+  <a href="raindrop_waves.html">
+    <img alt="Waves caused by falling raindrops" src="images/raindrop_waves.png" title="Click to animate"/>
   </a>
-  <figcaption><br />A model of a water sprinkler, based on the original article and code in 
-  <a href="https://rhettallain.com/2019/11/12/modeling-a-spinning-sprinkler/Simulation">
-  Modelling a spinning Sprinkler</a> by <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
+  <figcaption>A finite element simulation of raindrops falling in a pond.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -125,6 +123,25 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   </a>
   <figcaption>A numeric model that simulates a parachute jump.  
   </figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
+### Modelling a water sprinkler
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="water_sprinkler.html">
+    <img alt="Water sprinkler" src="images/water_sprinkler.png" title="Click to animate"/>
+  </a>
+  <figcaption>A model of a water sprinkler, based on the original article and code in 
+  <a href="https://rhettallain.com/2019/11/12/modeling-a-spinning-sprinkler/Simulation">
+  Modelling a spinning Sprinkler</a> by <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
+</figure>
+<figure class="left_image">
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>

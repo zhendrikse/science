@@ -10,7 +10,7 @@ It is an example of a so-called “iterated function system” (IFS) fractal, wh
 that the construction of this fractal makes use of matrices, see also the
 [chaos game](https://www.hendrikse.name/science/mathematics/chaos_game.html) fractals.
 
-{% include_relative code/Fern.html %}
+{% include_relative code/fern.html %}
 
 <p style="clear: both;"></p>
 

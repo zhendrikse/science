@@ -3,7 +3,7 @@
 ## Fractal tree
 <div class="header_line"><br/></div>
 
-{% include_relative code/Tree.html %}
+{% include_relative code/tree.html %}
 
 <p style="clear: both;"></p>
 

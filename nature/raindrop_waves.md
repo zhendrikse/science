@@ -1,9 +1,9 @@
 {% include breadcrumbs.html %}
 
-## Falling &amp; splatting raindrops
+## Raindrops falling in a pond
 <div class="header_line"><br/></div>
 
-{% include_relative code/raindrops.html %}
+{% include_relative code/raindrop_waves.html %}
 
 <p style="clear: both;"></p>
 

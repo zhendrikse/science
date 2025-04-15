@@ -9,6 +9,7 @@
 - [`parachute.py` source code](parachute.py)
 - [`pool.py` source code](pool.py)
 - [`raindrops.py` source code](raindrops.py)
+- [`raindrop_waves.py` source code](raindrop_waves.py)
 - [`snowflake.py` source code](snowflake.py)
 - [`tree.py` source code](tree.py)
 - [`water_sprinkler.py` source code](water_sprinkler.py)
