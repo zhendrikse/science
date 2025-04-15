@@ -43,25 +43,25 @@ def check_around(location, matrix):
     # If not near the edge, check if the walker is near a neighbor or reached the required radius
     # location[1]=row, location[2]=column
     if not near_edge:
-        neighbor_down = matrix[location[1] + 1][location[0]]
+        neighbor_down = matrix[location[0] + 1][location[1]]
         if neighbor_down == 1:
             found_friend = True
         if neighbor_down == 2:
             exit_circle = True
 
-        neighbor_up = matrix[location[1] - 1][location[0]]
+        neighbor_up = matrix[location[0] - 1][location[1]]
         if neighbor_up == 1:
             found_friend = True
         if neighbor_up == 2:
             exit_circle = True
 
-        neighbor_right = matrix[location[1]][location[0] + 1]
+        neighbor_right = matrix[location[0]][location[1] + 1]
         if neighbor_right == 1:
             found_friend = True
         if neighbor_right == 2:
             exit_circle = True
 
-        neighbor_left = matrix[location[1]][location[0] - 1]
+        neighbor_left = matrix[location[0]][location[1] - 1]
         if neighbor_left == 1:
             found_friend = True
         if neighbor_left == 2:
@@ -96,8 +96,8 @@ def dla_cluster():
 
     matrix = [[0 for _ in range(square_size)] for _ in range(square_size)]
 
-    for row in range(0, square_size):
-        for col in range(0, square_size):
+    for row in range(square_size):
+        for col in range(square_size):
             if row == seed_y and col == seed_x:
                 # put a seed particle at the center
                 matrix[row][col] = 1
@@ -122,7 +122,7 @@ def dla_cluster():
 
             if found_friend:
                 rate(10000) # Refresh screen
-                matrix[location[1]][location[0]] = 1
+                matrix[location[0]][location[1]] = 1
                 screen_pos = vec(location[0], location[1], 0)
                 distance = mag(screen_pos -.5 * vec(square_size, square_size, 0))
                 box(pos=screen_pos, color=scientific_color_code(distance, 0, .5 * square_size))
