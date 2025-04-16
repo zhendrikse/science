@@ -69,7 +69,6 @@
         const renderer = new THREE.WebGLRenderer({antialias: true, canvas: canvas});
         renderer.setClearColor(0x191919, 1);
         renderer.setSize(canvasWidth, canvasHeight);
-        document.body.appendChild(renderer.domElement);
         return renderer;
     }
 
