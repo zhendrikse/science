@@ -29,8 +29,8 @@
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="diffusion_limited_aggregation.html">
-    <img alt="Growing coral-like structures using diffusion limited aggregation" src="images/dla.png" title="Click to animate"/>
+  <a href="coral_2d.html">
+    <img alt="Growing coral-like structures using diffusion limited aggregation" src="images/coral_2d.png" title="Click to animate"/>
   </a>
   <figcaption>Growing coral-like structures using diffusion limited aggregation.</figcaption>
 </figure>
