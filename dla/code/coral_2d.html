@@ -73,23 +73,19 @@
             this.colour = scientificColorCodingFor(1.5 * this.distanceTo(swarm[0]), 0, maxDistance);
         }
 
-        hadACollisionWith(otherParticle) {
+        hasCollisionWith(otherParticle) {
             if (!otherParticle.frozen)
                 return false;
 
-            if (this.distanceSquaredTo(otherParticle) < thresholdDistanceSquared) {
-                this.freeze();
-                return true;
-            }
-            return false;
+            return this.distanceSquaredTo(otherParticle) < thresholdDistanceSquared;
         }
 
         checkForFreezing() {
             for (let i = 0; i < size_swarm; i++)
-                if(this.hadACollisionWith(swarm[i]))
-                    // We can exit since there is no point in checking
-                    // against the other particles anymore
+                if(this.hasCollisionWith(swarm[i])) {
+                    this.freeze();
                     return;
+                }
         }
 
         update() {
