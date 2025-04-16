@@ -3,8 +3,17 @@
 <p style="clear: both"></p>
 <button type="button" id="aquariumToggle">Toggle aquarium</button>
 
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        }
+    }
+</script>
+
 <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+    import * as THREE from 'three';
+    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
     const canvas = document.getElementById('myCanvas');
     canvas.focus();
@@ -27,6 +36,7 @@
     const box = aquarium();
     let aquariumVisible = true;
 
+    const controls = new OrbitControls( camera, canvas );
 
     document.getElementById("aquariumToggle").addEventListener("click", function(){
         if (aquariumVisible) {
@@ -40,7 +50,7 @@
 
     function initCamera() {
         const camera = new THREE.PerspectiveCamera(
-            75,
+            70,
             canvasWidth / canvasHeight,
             0.1,
             1000
