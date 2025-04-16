@@ -8,8 +8,7 @@
 
 <canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas>
 <br/>
-<button class="button" id="aquariumToggle">Toggle aquarium</button>
-
+<label for="aquariumToggle"></label><input type="checkbox" id="aquariumToggle"> Aquarium
 <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
@@ -33,10 +32,10 @@
     lights();
     const camera = initCamera();
     const box = aquarium();
-    let aquariumVisible = true;
-
     const controls = new OrbitControls( camera, canvas );
 
+    let aquariumVisible = true;
+    document.getElementById("aquariumToggle").checked = aquariumVisible;
     document.getElementById("aquariumToggle").addEventListener("click", function(){
         if (aquariumVisible) {
             aquariumVisible = false;
