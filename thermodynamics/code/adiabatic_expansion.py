@@ -80,7 +80,6 @@ dt = 0.001
 one_third = 1 / 3.
 while t < 1000:
     rate(5000)
-    print(display.forward)
     volume = 4 * pi * R * R * R / 3
     volume += dv
     R = ((0.75 * volume) / pi) ** one_third
