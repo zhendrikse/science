@@ -36,7 +36,7 @@
         }
     }
 
-    swarm = [];
+    const swarm = [];
     const size_swarm = 2500;
     const noise = 10.0;
     const thresholdDistance = 5;
@@ -68,19 +68,28 @@
             return Math.sqrt(this.distanceSquaredTo(otherParticle));
         }
 
-        checkForFreezing() {
-            for (let i = 0; i < size_swarm; i++) {
-                if (!swarm[i].frozen)
-                    continue;
+        freeze() {
+            this.frozen = true;
+            this.colour = scientificColorCodingFor(1.5 * this.distanceTo(swarm[0]), 0, maxDistance);
+        }
 
-                if (this.distanceSquaredTo(swarm[i]) < thresholdDistanceSquared) {
-                    this.frozen = true;
-                    this.colour = scientificColorCodingFor(1.5 * this.distanceTo(swarm[0]), 0, maxDistance);
+        hadACollisionWith(otherParticle) {
+            if (!otherParticle.frozen)
+                return false;
+
+            if (this.distanceSquaredTo(otherParticle) < thresholdDistanceSquared) {
+                this.freeze();
+                return true;
+            }
+            return false;
+        }
+
+        checkForFreezing() {
+            for (let i = 0; i < size_swarm; i++)
+                if(this.hadACollisionWith(swarm[i]))
                     // We can exit since there is no point in checking
                     // against the other particles anymore
                     return;
-                }
-            }
         }
 
         update() {
