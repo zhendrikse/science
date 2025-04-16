@@ -1,0 +1,194 @@
+<!doctype html>
+<canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas>
+<p style="clear: both"></p>
+<button type="button" id="aquariumToggle">Toggle aquarium</button>
+
+<script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+    const canvas = document.getElementById('myCanvas');
+    canvas.focus();
+    const canvasWidth = canvas.getAttribute('width');
+    const canvasHeight = canvas.getAttribute('height');
+    const cubeSize = 10;
+    const maxDistance = Math.sqrt(3 * cubeSize * cubeSize);
+
+    const swarm = [];
+    const size_swarm = 3000;
+    const noise = .2;
+    const thresholdDistance = 0.25
+    const thresholdDistanceSquared = thresholdDistance * thresholdDistance;
+
+    const renderer = createRenderer();
+    const scene = new THREE.Scene();
+
+    lights();
+    const camera = initCamera();
+    const box = aquarium();
+    let aquariumVisible = true;
+
+
+    document.getElementById("aquariumToggle").addEventListener("click", function(){
+        if (aquariumVisible) {
+            aquariumVisible = false;
+            box.visible = false;
+        } else {
+            aquariumVisible = true;
+            box.visible = true;
+        }
+    });
+
+    function initCamera() {
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            canvasWidth / canvasHeight,
+            0.1,
+            1000
+        );
+        camera.rotateY(Math.PI / 6);
+        camera.position.z = cubeSize * 1.25;
+        camera.position.x = cubeSize * .75;
+        return camera;
+    }
+
+    function lights() {
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(3, 3, 3);
+        scene.add(light);
+    }
+
+    function createRenderer() {
+        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: canvas});
+        renderer.setClearColor(0x191919, 1);
+        renderer.setSize(canvasWidth, canvasHeight);
+        document.body.appendChild(renderer.domElement);
+        return renderer;
+    }
+
+    function aquarium() {
+        const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+        const material = new THREE.MeshStandardMaterial({ color: "rgb(0, 200, 200)", transparent: true, opacity: 0.35 });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        return cube;
+    }
+
+    function sphere(position, radius=0.05, colour="white") {
+        const geometry = new THREE.SphereGeometry(radius);
+        const material = new THREE.MeshStandardMaterial({ color: colour });
+        const sphere = new THREE.Mesh(geometry, material);
+        sphere.position.set(position.x, position.y, position.z);
+        scene.add(sphere);
+        return sphere;
+    }
+
+    function scientificColorCodingFor(value, minVal, maxVal) {
+        value = Math.min(Math.max(value, minVal), maxVal - 0.0001);
+        const range = maxVal - minVal;
+        value = range === 0.0 ? 0.5 : (value - minVal) / range;
+        const num = Math.floor(4 * value);
+        const s = 4 * (value - num / 4);
+
+        switch (num) {
+            case 0 :
+                return new THREE.Vector3(0, s, 1)
+            case 1 :
+                return new THREE.Vector3(0, 1, 1 - s)
+            case 2 :
+                return new THREE.Vector3(s, 1, 0)
+            case 3 :
+                return new THREE.Vector3(1, 1 - s, 0)
+        }
+    }
+
+    class Particle {
+        constructor(radius = .15) {
+            const x = Math.random() < 0.5 ? -Math.random(): Math.random()
+            const y = Math.random() < 0.5 ? -Math.random(): Math.random()
+            const z = Math.random() < 0.5 ? -Math.random(): Math.random()
+            this.sphere = sphere(new THREE.Vector3(x, y, z).multiplyScalar(cubeSize * .5), radius, "#00a000");
+            this.frozen = false;
+        }
+
+        makeSeed() {
+            this.frozen = true;
+            this.sphere.position.set(0, -5, 0);
+            this.sphere.scale.set(1);
+        }
+
+        distanceSquaredTo(otherParticle) {
+            const dx = this.sphere.position.x - otherParticle.sphere.position.x;
+            const dy = this.sphere.position.y - otherParticle.sphere.position.y;
+            const dz = this.sphere.position.z - otherParticle.sphere.position.z;
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        distanceTo(otherParticle) {
+            return Math.sqrt(this.distanceSquaredTo(otherParticle));
+        }
+
+        freeze() {
+            this.frozen = true;
+            this.sphere.material.color.setFromVector3(scientificColorCodingFor(1.5 * this.distanceTo(swarm[0]), 0, maxDistance));
+        }
+
+        hasCollisionWith(otherParticle) {
+            if (!otherParticle.frozen)
+                return false;
+
+            return this.distanceSquaredTo(otherParticle) < thresholdDistanceSquared;
+        }
+
+        checkForFreezing() {
+            for (let i = 0; i < size_swarm; i++)
+                if(this.hasCollisionWith(swarm[i])) {
+                    this.freeze();
+                    return;
+                }
+        }
+
+        update() {
+            if (this.frozen)
+                return;
+
+            const dx = Math.random() * noise;
+            const dy = Math.random() * noise;
+            const dz = Math.random() * noise;
+            this.sphere.position.x += Math.random() < 0.5 ? dx : -dx;
+            this.sphere.position.y += .25 + Math.random() < 0.5 ? dy : -dy;
+            this.sphere.position.z += Math.random() < 0.5 ? dz : -dz;
+            if (Math.abs(this.sphere.position.x) > cubeSize * .5)
+                this.sphere.position.x *= -1 * cubeSize;
+            if (Math.abs(this.sphere.position.z) > cubeSize * .5)
+                this.sphere.position.z *= -1 * cubeSize;
+
+            if (this.sphere.position.y < -cubeSize * .5) {
+                this.sphere.position.y = 5;
+                this.sphere.position.x = Math.random() < 0.5 ? -Math.random() * 5: Math.random() * 5;
+                this.sphere.position.z = Math.random() < 0.5 ? -Math.random() * 5: Math.random() * 5;
+            }
+            this.checkForFreezing();
+        }
+    }
+
+    // Animation loop
+    function animate() {
+       requestAnimationFrame(animate);
+        for (let j = 0; j < size_swarm; j++)
+            swarm[j].update();
+
+       renderer.render(scene, camera);
+    }
+
+    for (let j = 0; j < size_swarm; j++)
+        swarm.push(new Particle());
+    swarm[0].makeSeed();
+    animate();
+
+    // Resize handling
+    // window.addEventListener('resize', () => {
+    //     camera.aspect = canvasWidth / canvasHeight;
+    //     camera.updateProjectionMatrix();
+    //     renderer.setSize(canvasWidth, canvasHeight);
+    // });
+</script>

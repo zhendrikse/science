@@ -30,13 +30,15 @@
 <div class="double_image">
 <figure class="left_image">
   <a href="coral_2d.html">
-    <img alt="Growing coral-like structures using diffusion limited aggregation" src="images/coral_2d.png" title="Click to animate"/>
+    <img alt="Growing 2D coral-like structures using diffusion limited aggregation" src="images/coral_2d.png" title="Click to animate"/>
   </a>
-  <figcaption>Growing coral-like structures using diffusion limited aggregation.</figcaption>
+  <figcaption>Growing 2D coral-like structures using diffusion limited aggregation.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="coral_3d.html">
+    <img alt="Growing 3D coral-like structures using diffusion limited aggregation" src="images/coral_3d.png" title="Click to animate"/>
+  </a>
+  <figcaption>Growing 3D coral-like structures using diffusion limited aggregation.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
