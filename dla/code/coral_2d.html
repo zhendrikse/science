@@ -26,13 +26,13 @@
 
         switch (num) {
             case 0 :
-                return "rgb(0, " + 255 * s + ", 255, 255)";
+                return "rgba(0, " + 255 * s + ", 255, 255)";
             case 1 :
-                return "rgb(0, 255, " + 255 * (1 - s) + ", 255)";
+                return "rgba(0, 255, " + 255 * (1 - s) + ", 255)";
             case 2 :
-                return "rgb(" + 255 * s + ", 255, 0, 255)";
+                return "rgba(" + 255 * s + ", 255, 0, 255)";
             case 3 :
-                return "rgb(255, " +  255 * (1 - s)  + ", 0, 255)";
+                return "rgba(255, " +  255 * (1 - s)  + ", 0, 255)";
         }
     }
 
