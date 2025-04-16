@@ -3,7 +3,7 @@
 ## Non-ideal capacitor
 <div class="header_line"><br/></div>
 
-{% include_relative code/non_idealCapacitor.html %}
+{% include_relative code/non_ideal_capacitor.html %}
 
 <p style="clear: both;"></p>
 
