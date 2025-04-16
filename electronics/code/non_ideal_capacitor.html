@@ -53,7 +53,7 @@ async function __main__() {
 
     function round(num, n=0) {return Number(num.toFixed(n))}
     var compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, N, h, display, progress_bar, epsilon, ρσ_unpack, L, d, V_0, u, _, i, u_cond, j, potential_field, gradient_x, gradient_y, e_x, e_y, field_arrows, point, dA, flux_x, flux_y, Q_inside, C_non_ideal;
+    var version, print, arange, __name__, type, ρσ_ls, title, N, h, display, progress_bar, epsilon, ρσ_unpack, L, d, V_0, u, _, i, u_cond, potential_field, gradient_x, gradient_y, e_x, e_y, field_arrows, j, point, dA, flux_x, flux_y, Q_inside, C_non_ideal;
     version = ρσ_list_decorate([ "3.2", "glowscript" ]);
     Array.prototype['+'] = function(r) {return this.concat(r)}
     Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -66,7 +66,7 @@ async function __main__() {
 
     strings();
     "10";
-    title = "&#x2022; Based on code shown in <a href=\"https://www.youtube.com/watch?v=Jq4dVuD9JV0\">this video<\/a> by Jordan Huang\n&#x2022; The same code is also presented in <a href=\"https://www.youtube.com/watch?v=A3MYq3q9pec\">this video</a>\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electronics/code/non_ideal_capacitor.py\">non_ideal_capacitor.py</a>\n&#x2022; The colored background shows the electric potential around the plates\n&#x2022; The arrows represent the electric field around the plates\n\n";
+    title = "&#x2022; Based on code shown in <a href=\"https://www.youtube.com/watch?v=Jq4dVuD9JV0\">this video<\/a> by Jordan Huang\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electronics/code/non_ideal_capacitor.py\">non_ideal_capacitor.py</a>\n&#x2022; The colored background shows the electric potential around the plates\n&#x2022; The arrows represent the electric field around the plates\n\n";
     "12";
     N = 101;
     "13";
@@ -89,13 +89,9 @@ async function __main__() {
     V_0 = 200;
     "26";
     async function gradient_2d(array_) {
-        var ρσ_ls, grad_x, grad_y, i;
-        "28";
-        grad_x = ρσ_list_decorate([]);
-        "29";
-        grad_y = ρσ_list_decorate([]);
-        "33";
-        grad_y.append((function() {
+        var ρσ_ls, grad_y, i, grad_x;
+        "30";
+        grad_y = ρσ_list_decorate([ (function() {
             var ρσ_Iter = range(len(array_)), ρσ_Result = [], i;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
             for (var ρσ_Index of ρσ_Iter) {
@@ -104,13 +100,13 @@ async function __main__() {
             }
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
-        })());
-        "36";
+        })() ]);
+        "33";
         var ρσ_Iter1 = range(1, len(array_)["-"](1["*"](1)));
         ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
         for (var ρσ_Index1 of ρσ_Iter1) {
             i = ρσ_Index1;
-            "37";
+            "34";
             grad_y.append((function() {
                 var ρσ_Iter = range(1, len(ρσ_getitem(array_, i))["-"](1["*"](1))), ρσ_Result = [], j;
                 ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -122,7 +118,7 @@ async function __main__() {
                 return ρσ_Result;
             })());
         }
-        "40";
+        "37";
         grad_y.append((function() {
             var ρσ_Iter = range(len(array_)), ρσ_Result = [], i;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -133,8 +129,8 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })());
-        "44";
-        grad_x.append((function() {
+        "41";
+        grad_x = ρσ_list_decorate([ (function() {
             var ρσ_Iter = range(len(ρσ_getitem(array_, 0))), ρσ_Result = [], j;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
             for (var ρσ_Index of ρσ_Iter) {
@@ -143,13 +139,13 @@ async function __main__() {
             }
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
-        })());
-        "47";
+        })() ]);
+        "44";
         var ρσ_Iter2 = range(1, len(array_)["-"](1["*"](1)));
         ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
         for (var ρσ_Index2 of ρσ_Iter2) {
             i = ρσ_Index2;
-            "48";
+            "45";
             grad_x.append((function() {
                 var ρσ_Iter = range(len(ρσ_getitem(array_, i))), ρσ_Result = [], j;
                 ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -161,7 +157,7 @@ async function __main__() {
                 return ρσ_Result;
             })());
         }
-        "51";
+        "48";
         grad_x.append((function() {
             var ρσ_Iter = range(len(ρσ_getitem(array_, 1["-u"]()["*"](1)))), ρσ_Result = [], j;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -172,7 +168,7 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })());
-        "53";
+        "50";
         return [grad_x, grad_y];
     };
     if (!gradient_2d.__argnames__) Object.defineProperties(gradient_2d, {
@@ -180,7 +176,7 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "55";
+    "52";
     async function solve_laplacian() {
         var u = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
         var u_cond = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
@@ -191,7 +187,7 @@ async function __main__() {
             iterations = ρσ_kwargs_obj.iterations;
         }
         var ρσ_ls, V, row, j, i, c, r;
-        "56";
+        "53";
         V = (function() {
             var ρσ_Iter = u, ρσ_Result = [], row;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -202,42 +198,42 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })();
-        "58";
+        "55";
         for (var ρσ_Index3 = 0; ρσ_Index3["<"](iterations); ρσ_Index3++) {
             i = ρσ_Index3;
-            "59";
+            "56";
             (await rate(iterations));
-            "60";
+            "57";
             if (i["%"](250)) {
-                "61";
+                "58";
                 progress_bar.text = "Progress Laplace solver: "["+"](str(Math.floor(i["/"](50))))["+"]("%");
             }
-            "64";
+            "61";
             for (var ρσ_Index4 = 0; ρσ_Index4["<"](N); ρσ_Index4++) {
                 i = ρσ_Index4;
-                "65";
+                "62";
                 for (var ρσ_Index5 = 0; ρσ_Index5["<"](N); ρσ_Index5++) {
                     j = ρσ_Index5;
-                    "66";
+                    "63";
                     ρσ_setitem(ρσ_getitem(V, i), j, (ρσ_getitem(ρσ_getitem(u_cond, i), j)) ? ρσ_getitem(ρσ_getitem(u, i), j) : ρσ_getitem(ρσ_getitem(V, i), j));
                 }
             }
-            "69";
+            "66";
             var ρσ_Iter6 = range(1, len(u)["-"](1["*"](1)));
             ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
             for (var ρσ_Index6 of ρσ_Iter6) {
                 r = ρσ_Index6;
-                "70";
+                "67";
                 var ρσ_Iter7 = range(1, len(ρσ_getitem(u, 0))["-"](1["*"](1)));
                 ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
                 for (var ρσ_Index7 of ρσ_Iter7) {
                     c = ρσ_Index7;
-                    "71";
+                    "68";
                     ρσ_setitem(ρσ_getitem(V, r), c, .25["*"](ρσ_getitem(ρσ_getitem(V, r["-"](1["*"](1))), c)["+"](ρσ_getitem(ρσ_getitem(V, r["+"](1)), c))["+"](ρσ_getitem(ρσ_getitem(V, r), c["-"](1["*"](1))))["+"](ρσ_getitem(ρσ_getitem(V, r), c["+"](1)))));
                 }
             }
         }
-        "73";
+        "70";
         return V;
     };
     if (!solve_laplacian.__defaults__) Object.defineProperties(solve_laplacian, {
@@ -247,10 +243,10 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "75";
+    "72";
     async function field_values_from_gradients(gradients) {
         var ρσ_ls, field, _, j, i;
-        "76";
+        "73";
         field = (function() {
             var ρσ_Iter = range(N), ρσ_Result = [], _;
             ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -270,21 +266,21 @@ async function __main__() {
             ρσ_Result = ρσ_list_constructor(ρσ_Result);
             return ρσ_Result;
         })();
-        "77";
+        "74";
         var ρσ_Iter8 = range(len(gradients));
         ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
         for (var ρσ_Index8 of ρσ_Iter8) {
             i = ρσ_Index8;
-            "78";
+            "75";
             var ρσ_Iter9 = range(len(ρσ_getitem(gradients, i)));
             ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
             for (var ρσ_Index9 of ρσ_Iter9) {
                 j = ρσ_Index9;
-                "79";
+                "76";
                 ρσ_setitem(ρσ_getitem(field, i), j, 1["-u"]()["*"](ρσ_getitem(ρσ_getitem(gradients, i), j))["/"](h));
             }
         }
-        "80";
+        "77";
         return field;
     };
     if (!field_values_from_gradients.__argnames__) Object.defineProperties(field_values_from_gradients, {
@@ -292,7 +288,7 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "83";
+    "80";
     u = (function() {
         var ρσ_Iter = range(N), ρσ_Result = [], _;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
@@ -312,28 +308,28 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "84";
+    "81";
     var ρσ_Iter10 = range(Math.floor(N["/"](2))["-"](1["*"](int(L["/"](h)["/"](2)))), Math.floor(N["/"](2))["+"](int(L["/"](h)["/"](2))));
     ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
     for (var ρσ_Index10 of ρσ_Iter10) {
         i = ρσ_Index10;
-        "85";
+        "82";
         ρσ_setitem(ρσ_getitem(u, i), Math.floor(N["/"](2))["-"](1["*"](int(d["/"](h)["/"](2)))), 1["-u"]()["*"](V_0)["/"](2));
-        "86";
+        "83";
         ρσ_setitem(ρσ_getitem(u, i), Math.floor(N["/"](2))["+"](int(d["/"](h)["/"](2))), V_0["/"](2));
     }
-    "88";
+    "85";
     u_cond = (function() {
-        var ρσ_Iter = range(N), ρσ_Result = [], _;
+        var ρσ_Iter = range(N), ρσ_Result = [], i;
         ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
         for (var ρσ_Index of ρσ_Iter) {
-            _ = ρσ_Index;
+            i = ρσ_Index;
             ρσ_Result.push((function() {
-                var ρσ_Iter = range(N), ρσ_Result = [], _;
+                var ρσ_Iter = range(N), ρσ_Result = [], j;
                 ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
                 for (var ρσ_Index of ρσ_Iter) {
-                    _ = ρσ_Index;
-                    ρσ_Result.push(false);
+                    j = ρσ_Index;
+                    ρσ_Result.push((ρσ_getitem(ρσ_getitem(u, i), j) !== 0 && (typeof ρσ_getitem(ρσ_getitem(u, i), j) !== "object" || ρσ_not_equals(ρσ_getitem(ρσ_getitem(u, i), j), 0))));
                 }
                 ρσ_Result = ρσ_list_constructor(ρσ_Result);
                 return ρσ_Result;
@@ -342,87 +338,77 @@ async function __main__() {
         ρσ_Result = ρσ_list_constructor(ρσ_Result);
         return ρσ_Result;
     })();
-    "89";
-    for (var ρσ_Index11 = 0; ρσ_Index11["<"](N); ρσ_Index11++) {
-        i = ρσ_Index11;
-        "90";
-        for (var ρσ_Index12 = 0; ρσ_Index12["<"](N); ρσ_Index12++) {
-            j = ρσ_Index12;
-            "91";
-            ρσ_setitem(ρσ_getitem(u_cond, i), j, (ρσ_getitem(ρσ_getitem(u, i), j) !== 0 && (typeof ρσ_getitem(ρσ_getitem(u, i), j) !== "object" || ρσ_not_equals(ρσ_getitem(ρσ_getitem(u, i), j), 0))));
-        }
-    }
-    "93";
+    "87";
     potential_field = (await solve_laplacian(u, u_cond));
-    "94";
+    "88";
     ρσ_unpack = (await gradient_2d(potential_field));
 ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
     gradient_x = ρσ_unpack[0];
     gradient_y = ρσ_unpack[1];
-    "95";
+    "89";
     ρσ_unpack = [(await field_values_from_gradients(gradient_x)), (await field_values_from_gradients(gradient_y))];
     e_x = ρσ_unpack[0];
     e_y = ρσ_unpack[1];
-    "100";
+    "94";
     progress_bar.visible = false;
-    "101";
+    "95";
     field_arrows = ρσ_list_decorate([]);
-    "102";
-    for (var ρσ_Index13 = 0; ρσ_Index13["<"](N); ρσ_Index13++) {
-        i = ρσ_Index13;
-        "103";
-        for (var ρσ_Index14 = 0; ρσ_Index14["<"](N); ρσ_Index14++) {
-            j = ρσ_Index14;
-            "104";
+    "96";
+    for (var ρσ_Index11 = 0; ρσ_Index11["<"](N); ρσ_Index11++) {
+        i = ρσ_Index11;
+        "97";
+        for (var ρσ_Index12 = 0; ρσ_Index12["<"](N); ρσ_Index12++) {
+            j = ρσ_Index12;
+            "98";
             field_arrows.append(ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vec(i["*"](h), j["*"](h), 0), axis: .5["*"](1e-9)["*"](vec(ρσ_getitem(ρσ_getitem(e_x, i), j), ρσ_getitem(ρσ_getitem(e_y, i), j), 0)), shaftwidth: h["/"](6), color: color.black})]));
         }
     }
-    "106";
-    for (var ρσ_Index15 = 0; ρσ_Index15["<"](N); ρσ_Index15++) {
-        i = ρσ_Index15;
-        "107";
-        for (var ρσ_Index16 = 0; ρσ_Index16["<"](N); ρσ_Index16++) {
-            j = ρσ_Index16;
-            "108";
+    "100";
+    for (var ρσ_Index13 = 0; ρσ_Index13["<"](N); ρσ_Index13++) {
+        i = ρσ_Index13;
+        "101";
+        for (var ρσ_Index14 = 0; ρσ_Index14["<"](N); ρσ_Index14++) {
+            j = ρσ_Index14;
+            "102";
             point = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(i["*"](h), j["*"](h), 0), length: h, height: h, width: h["/"](10), color: vec(ρσ_getitem(ρσ_getitem(potential_field, i), j)["+"](100), 100["-"](1["*"](ρσ_getitem(ρσ_getitem(potential_field, i), j))), 0)["/"](200)})]);
         }
     }
-    "110";
+    "104";
     ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(N["*"](h)["/"](2), N["*"](h)["/"](2)["-"](1["*"](d)["/"](2))["-"](1["*"](h)), 0), length: L, height: h["/"](5), width: h})]);
-    "111";
+    "105";
     ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(N["*"](h)["/"](2), N["*"](h)["/"](2)["+"](d["/"](2))["-"](1["*"](h)), 0), length: L, height: h["/"](5), width: h})]);
-    "113";
+    "107";
     dA = h["*"](h);
-    "114";
+    "108";
     flux_x = flux_y = 0;
-    "116";
-    for (var ρσ_Index17 = 25; ρσ_Index17["<"](76); ρσ_Index17++) {
-        i = ρσ_Index17;
-        "117";
+    "110";
+    for (var ρσ_Index15 = 25; ρσ_Index15["<"](76); ρσ_Index15++) {
+        i = ρσ_Index15;
+        "111";
         flux_y=flux_y["+"](ρσ_getitem(ρσ_getitem(e_y, i), Math.floor(N["/"](2))["+"](int(d["/"](h))))["-"](1["*"](ρσ_getitem(ρσ_getitem(e_y, i), Math.floor(N["/"](2)))))["*"](dA));
     }
-    "118";
-    var ρσ_Iter18 = range(Math.floor(N["/"](2)), Math.floor(N["/"](2))["+"](int(d["/"](h)))["+"](1));
-    ρσ_Iter18 = ((typeof ρσ_Iter18[Symbol.iterator] === "function") ? (ρσ_Iter18 instanceof Map ? ρσ_Iter18.keys() : ρσ_Iter18) : Object.keys(ρσ_Iter18));
-    for (var ρσ_Index18 of ρσ_Iter18) {
-        j = ρσ_Index18;
-        "119";
+    "112";
+    var ρσ_Iter16 = range(Math.floor(N["/"](2)), Math.floor(N["/"](2))["+"](int(d["/"](h)))["+"](1));
+    ρσ_Iter16 = ((typeof ρσ_Iter16[Symbol.iterator] === "function") ? (ρσ_Iter16 instanceof Map ? ρσ_Iter16.keys() : ρσ_Iter16) : Object.keys(ρσ_Iter16));
+    for (var ρσ_Index16 of ρσ_Iter16) {
+        j = ρσ_Index16;
+        "113";
         flux_x=flux_x["+"](ρσ_getitem(ρσ_getitem(e_x, 76), j)["-"](1["*"](ρσ_getitem(ρσ_getitem(e_x, 25), j)))["*"](dA));
     }
-    "121";
+    "115";
     Q_inside = flux_x["+"](flux_y)["*"](epsilon);
-    "122";
+    "116";
     C_non_ideal = Q_inside["/"](V_0);
-    "127";
+    "121";
     async function scale_arrows(event) {
         var ρσ_ls, j, i;
-        "128";
-        for (var ρσ_Index19 = 0; ρσ_Index19["<"](N); ρσ_Index19++) {
-            i = ρσ_Index19;
-            "129";
-            for (var ρσ_Index20 = 0; ρσ_Index20["<"](N); ρσ_Index20++) {
-                j = ρσ_Index20;
-                "130";
+        "122";
+        for (var ρσ_Index17 = 0; ρσ_Index17["<"](N); ρσ_Index17++) {
+            i = ρσ_Index17;
+            "123";
+            for (var ρσ_Index18 = 0; ρσ_Index18["<"](N); ρσ_Index18++) {
+                j = ρσ_Index18;
+                "124";
                 ρσ_getitem(field_arrows, i["*"](N)["+"](j)).axis = event.value["*"](1e-9)["*"](vec(ρσ_getitem(ρσ_getitem(e_x, i), j), ρσ_getitem(ρσ_getitem(e_y, i), j), 0));
             }
         }
@@ -432,19 +418,19 @@ async function __main__() {
         __module__ : {value: null}
     });
 
-    "132";
+    "126";
     display.append_to_caption("\nSize of field arrows:");
-    "133";
+    "127";
     _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: .5, bind: scale_arrows})]);
-    "135";
+    "129";
     display.append_to_caption("\n\n$C_\\text{notideal}: ", C_non_ideal, "F$");
-    "136";
+    "130";
     display.append_to_caption("\n\n$C_\\text{ideal}   : ", epsilon["*"](L)["*"](h)["/"](d), "F$");
-    "138";
+    "132";
     MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "139";
+    "133";
     while (true) {
-        "140";
+        "134";
         (await rate(10));
     }
 };
