@@ -7,6 +7,7 @@
 </script>
 
 <canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas>
+<br/>
 <button class="button" id="aquariumToggle">Toggle aquarium</button>
 
 <script type="module">
@@ -127,7 +128,8 @@
             const dx = this.sphere.position.x - otherParticle.sphere.position.x;
             const dy = this.sphere.position.y - otherParticle.sphere.position.y;
             const dz = this.sphere.position.z - otherParticle.sphere.position.z;
-            return dx * dx + dy * dy + dz * dz;
+            const diff = new THREE.Vector3(dx, dy, dz);
+            return diff.dot(diff);
         }
 
         distanceTo(otherParticle) {
@@ -154,26 +156,30 @@
                 }
         }
 
+        redistributeParticleFromTopPosition() {
+            const newPosition = new THREE.Vector3(
+                Math.random() < 0.5 ? -Math.random() * 5: Math.random() * cubeSize * .5,
+                cubeSize * .5,
+                Math.random() < 0.5 ? -Math.random() * 5: Math.random() * cubeSize * .5
+            );
+            this.sphere.position.copy(newPosition);
+        }
+
         update() {
             if (this.frozen)
                 return;
 
-            const dx = Math.random() * noise;
-            const dy = Math.random() * noise;
-            const dz = Math.random() * noise;
-            this.sphere.position.x += Math.random() < 0.5 ? dx : -dx;
-            this.sphere.position.y += .25 + Math.random() < 0.5 ? dy : -dy;
-            this.sphere.position.z += Math.random() < 0.5 ? dz : -dz;
+            let delta = new THREE.Vector3().random().multiplyScalar(noise);
+            delta = new THREE.Vector3(Math.random() < 0.5 ? delta.x : -delta.x, .25 + Math.random() < 0.5 ? delta.y : -delta.y, Math.random() < 0.5 ? delta.z: -delta.z);
+            this.sphere.position.copy(this.sphere.position.add(delta));
+
             if (Math.abs(this.sphere.position.x) > cubeSize * .5)
                 this.sphere.position.x *= -1 * cubeSize;
             if (Math.abs(this.sphere.position.z) > cubeSize * .5)
                 this.sphere.position.z *= -1 * cubeSize;
 
-            if (this.sphere.position.y < -cubeSize * .5) {
-                this.sphere.position.y = 5;
-                this.sphere.position.x = Math.random() < 0.5 ? -Math.random() * 5: Math.random() * 5;
-                this.sphere.position.z = Math.random() < 0.5 ? -Math.random() * 5: Math.random() * 5;
-            }
+            if (this.sphere.position.y < -cubeSize * .5)
+                this.redistributeParticleFromTopPosition();
             this.checkForFreezing();
         }
     }
