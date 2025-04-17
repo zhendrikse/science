@@ -136,9 +136,8 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 </figure>
 </div>
 <p style="clear: both;"></p>
-<p style="clear: both;"></p>
 
-### Wave visualizations
+### Harmonic oscillations
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -149,23 +148,25 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
   <figcaption>A simulation of a wave with pendulums.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="waves.html">
-    <img alt="Longitudinal and transversal waves" src="images/waves.png" title="Click to animate"/>
+  <a href="suspended_spring.html">
+    <img alt="Suspended spring" src="images/suspended_spring.png" title="Click to animate"/>
   </a>
-  <figcaption>Longitudinal and transversal waves.</figcaption>
+  <figcaption>Visualization of the vibrations in a suspended spring.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
 
-### Normal modes of rectangular vibrating membrane &amp; 3D interference pattern
+### 3D wave interference patterns
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="vibrating_membrane.html">
-    <img alt="Vibrating membrane" src="images/vibrating_membrane.png" title="Click to animate"/>
+  <a href="pool.html">
+    <img alt="Swimming pool" src="images/pool.png" title="Click to animate"/>
   </a>
-  <figcaption>Visualization of the normal modes of a vibrating membrane.</figcaption>
+  <figcaption>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
+  <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
+  </figcaption>
 </figure>
 <figure class="right_image">
   <a href="interference_pattern_3d.html">
@@ -176,22 +177,25 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 </div>
 <p style="clear: both;"></p>
 
-### Suspended spring
+### Waves explained &amp; normal modes of rectangular vibrating membrane &amp;
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="suspended_spring.html">
-    <img alt="Suspended spring" src="images/suspended_spring.png" title="Click to animate"/>
+  <a href="waves.html">
+    <img alt="Longitudinal and transversal waves" src="images/waves.png" title="Click to animate"/>
   </a>
-  <figcaption>Visualization of the vibrations in a suspended spring.</figcaption>
+  <figcaption>Longitudinal and transversal waves.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="vibrating_membrane.html">
+    <img alt="Vibrating membrane" src="images/vibrating_membrane.png" title="Click to animate"/>
+  </a>
+  <figcaption>Visualization of the normal modes of a vibrating membrane.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
+
 ## References
 <div class="header_line"><br/></div>
 
