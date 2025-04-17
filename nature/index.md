@@ -71,6 +71,7 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   <a href="Fire.html">
     <img alt="Fire simulation" src="images/fire.png" title="Click to animate"/>
   </a>
+  <figcaption>Simulation of a burning fire using a finite element method.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
