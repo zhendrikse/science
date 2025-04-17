@@ -1,0 +1,98 @@
+<!-- https://www.youtube.com/watch?v=KWoJgHFYWxY -->
+<canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas>
+<p></p>
+<button class="button" onclick="setColoringSchemeTo(1)">Colors 1</button>&nbsp;
+<button class="button" onclick="setColoringSchemeTo(2)">Colors 2</button>&nbsp;
+<button class="button" onclick="setColoringSchemeTo(3)">Colors 3</button>&nbsp;
+<button class="button" onclick="setColoringSchemeTo(4)">Monochrome</button>&nbsp;
+<input type="checkbox" id="borderAroundDots"/><label for="borderAroundDots"> Dots border</label>
+
+<script>
+    const canvas = document.getElementById("myCanvas");
+    const display = canvas.getContext("2d");
+    canvas.focus();
+
+    let n = 0;
+    const c = 12;
+    const numberOfDots = 360;
+    let coloringSchemeFunction;
+
+    let drawBorderAroundDots = false;
+    document.getElementById("borderAroundDots").checked = drawBorderAroundDots;
+    document.getElementById("borderAroundDots").addEventListener("click", function(){
+        drawBorderAroundDots = !drawBorderAroundDots;
+    });
+
+    function setColoringSchemeTo(number) {
+        display.clearRect(0, 0, canvas.width, canvas.height);
+        n = 0;
+        switch (number) {
+            case 1:
+                coloringSchemeFunction = (angle, radius, n) => {
+                    return hsv2rgb((angle - radius) % 360, 1, 1);
+                }
+                break;
+            case 2:
+                coloringSchemeFunction = (angle, radius, n) => {
+                    return hsv2rgb(n, 1, 1);
+                }
+                break;
+            case 3:
+                coloringSchemeFunction = (angle, radius, n) => {
+                    return hsv2rgb(angle % 360, 1, 1);
+                }
+                break;
+            case 4:
+                coloringSchemeFunction = (angle, radius, n) => {
+                    return hsv2rgb(65, 1, 1);
+                }
+                break;
+        }
+    }
+
+    function circle(x, y, radius, fillColor="#DDDD00", outline=false) {
+        display.fillStyle = fillColor;
+        display.strokeStyle = "#000000";
+        display.lineWidth = 1;
+        display.beginPath();
+        display.arc(x, y, radius, 0, Math.PI * 2, true);
+        display.closePath();
+        display.fill();
+        if (outline)
+            display.stroke(); // Gives outline to particle
+
+    }
+
+    function hsv2rgb(h,s,v) {
+        let f= (n,k=(n+h/60)%6) => v - v*s*Math.max( Math.min(k,4-k,1), 0);
+        return [f(5),f(3),f(1)];
+    }
+
+    // display.beginPath();
+    // display.strokeStyle = "#00A000";
+    // display.lineWidth = 8;
+    // display.moveTo(canvas.width / 2, canvas.height / 4);
+    // display.lineTo(canvas.width / 2, 7 * canvas.height / 8);
+    // display.stroke();
+    // display.closePath();
+
+    function draw(n) {
+        const angle = n * 137.5
+        const radius = c * Math.sqrt(n);
+
+        const x = radius * Math.cos(Math.PI * angle / 180) + canvas.width / 2;
+        const y = radius * Math.sin(Math.PI * angle / 180) + canvas.height / 2;
+
+        const colour = coloringSchemeFunction(angle, radius, n);
+        const rgb = "rgb(" + 255 * colour[0] + "," + 255 * colour[1] + "," + 255 * colour[2] + ")";
+        circle(x, y, 8, rgb, drawBorderAroundDots);
+    }
+
+    setColoringSchemeTo(4)
+    window.requestAnimationFrame(function loop() {
+        if (n < numberOfDots)
+            draw(n++);
+        window.requestAnimationFrame(loop);
+    });
+
+</script>

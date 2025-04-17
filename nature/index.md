@@ -60,11 +60,10 @@ If I have ever made any valuable discoveries, it has been due more to patient at
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="pool.html">
-    <img alt="Swimming pool" src="images/pool.png" title="Click to animate"/>
+  <a href="phyllotaxis.html">
+    <img alt="Phyllotaxis" src="images/phyllotaxis.png" title="Click to animate"/>
   </a>
-  <figcaption>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
-  <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
+  <figcaption>Phyllotaxis like this shows up in the arrangement of seeds in a sunflower.
   </figcaption>
 </figure>
 <figure class="right_image">
