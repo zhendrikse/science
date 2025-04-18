@@ -35,7 +35,7 @@ def colour(x, range_):
 
 
 def initialize_simulation(pixels_are_round):
-    x = arange(0, 13, dx)
+    x = arange(0, 14, dx)
     y = arange(0, 7, dy)
     const1 = [1 for _ in range(len(x))]
     const2 = [1 for _ in range(len(y))]
@@ -53,7 +53,7 @@ def initialize_simulation(pixels_are_round):
 
 
 def initialize_meshes(len_x, len_y):
-    umesh = outer_product([0 for _ in range(len_y)], arange(0, 13, dx))
+    umesh = outer_product([0 for _ in range(len_y)], arange(0, 14, dx))
     utmesh = [[0. for _ in range(len_x)] for _ in range(len_y)]
     uttmesh = [[0. for _ in range(len_x)] for _ in range(len_y)]
     return umesh, utmesh, uttmesh
