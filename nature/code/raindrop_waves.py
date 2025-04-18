@@ -44,18 +44,20 @@ def timestep(u, alpha):
 
 
 def place_raindrops(grid):
-    if random() < raindrop_frequency:
-        x = int(5 + random() * (dim_x - 10))
-        y = int(5 + random() * (dim_y - 10))
-        # raindrop = sphere(pos=vec(x, y, 100), color=color.cyan)
-        # while raindrop.pos.z > 0:
-        #     rate(50)
-        #     raindrop.pos -= vec(0, 0, 1)
-        # raindrop.visible = False
+    if random() > raindrop_frequency:
+        return
 
-        for i in range(x - 2, x + 2):
-            for j in range(y - 2, y + 2):
-                grid[0][i][j] = 120
+    x = int(5 + random() * (dim_x - 10))
+    y = int(5 + random() * (dim_y - 10))
+    # raindrop = sphere(pos=vec(x, y, 100), color=color.cyan)
+    # while raindrop.pos.z > 0:
+    #     rate(50)
+    #     raindrop.pos -= vec(0, 0, 1)
+    # raindrop.visible = False
+
+    for i in range(x - 2, x + 2):
+        for j in range(y - 2, y + 2):
+            grid[0][i][j] = 120
 
 
 def modify_rain_intensity(event):

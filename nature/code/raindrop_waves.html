@@ -7,6 +7,8 @@
 </script>
 
 <canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
+<p style="clear: both;"></p>
+<label for="raindropSlider"><input type="range" min="0" max=".1" value=".05" class="slider" onchange="raindropFrequency=this.value" id="raindropSlider"/></label>
 
 <script type="module">
     import * as THREE from 'three';
@@ -29,7 +31,21 @@
     const dt = 1; //  time step width
     const c = 0.5  // The "original" wave propagation speed
     const wavePropagationVelocity = ((c * dt) / dh) ** 2;
-    const raindropFrequency = 0.05;
+    let raindropFrequency = 0.05;
+
+    //
+    // GUI controls
+    //
+
+    const slider = document.getElementById("raindropSlider");
+    // slider.oninput = function() {
+    //     raindropFrequency = this.value;
+    // }
+
+    slider.addEventListener( "change", event => {
+        console.log( raindropFrequency );
+    });
+
 
     //
     // Class definitions
@@ -63,10 +79,6 @@
     const u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];  // The 3D simulation grid
     const colors = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
     const alpha = Array2D(dim_x, dim_y, wavePropagationVelocity)
-
-    // controls.addEventListener( "change", event => {
-    //     console.log( controls.object.position );
-    // });
 
     function initCamera() {
         const camera = new THREE.PerspectiveCamera(
