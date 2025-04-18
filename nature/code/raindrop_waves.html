@@ -57,15 +57,22 @@
         }
     }
 
-    function createSurface() {
-        const pixelArray = Array2D(dim_x, dim_y);
-        const surface = new THREE.Group();
-        scene.add(surface);
-        for (let x = 0; x < dim_x; x++)
-            for (let y = 0; y < dim_y; y++)
-                pixelArray[x][y] = new Pixel(x, y, surface);
-        surface.rotateX(Math.PI / 4);
-        return pixelArray;
+    class Surface {
+        constructor() {
+            this.pixelArray = Array2D(dim_x, dim_y);
+            const surface = new THREE.Group();
+            scene.add(surface);
+            for (let x = 0; x < dim_x; x++)
+                for (let y = 0; y < dim_y; y++)
+                    this.pixelArray[x][y] = new Pixel(x, y, surface);
+            surface.rotateX(Math.PI / 4);
+        }
+
+        update() {
+            for (let x = 0; x < dim_x; x++)
+                for (let y = 0; y < dim_y; y++)
+                    this.pixelArray[x][y].setColorTo(new vector(colors[0][x][y] * .15, colors[1][x][y] * .3, colors[2][x][y]).multiplyScalar(1 / 255));
+        }
     }
 
     // Set up scene
@@ -73,7 +80,7 @@
     const controls = new OrbitControls(camera, canvas);
     const renderer = createRenderer();
     lights();
-    const pixels = createSurface();
+    const surface = new Surface();
 
     //
     // GUI controls
@@ -151,13 +158,10 @@
     }
 
     function update_pixels() {
-        placeRaindrops()
-        timestep()
-        update()
-
-        for (let x = 0; x < dim_x; x++)
-            for (let y = 0; y < dim_y; y++)
-                pixels[x][y].setColorTo(new vector(colors[0][x][y] * .15, colors[1][x][y] * .3, colors[2][x][y]).multiplyScalar(1 / 255));
+        placeRaindrops();
+        timestep();
+        update();
+        surface.update();
     }
 
     function animate() {
