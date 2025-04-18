@@ -3,9 +3,12 @@
 ## Raindrops falling in a pond
 <div class="header_line"><br/></div>
 
-- Based on <a href="https://beltoforion.de/de/unterhaltungsmathematik/2d-wellengleichung.php">this example</a> from <a href="https://github.com/beltoforion/recreational_mathematics_with_python">Recreational Mathematics with Python</a>
-- Ported to Javascript by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/raindrop_waves.html">raindrop_waves.html</a>
-- Also available as <a href="https://github.com/zhendrikse/science/blob/main/nature/code/raindrop_waves.py">raindrop_waves.py</a> (but is significantly slower!)
+- Based on [this example](https://beltoforion.de/de/unterhaltungsmathematik/2d-wellengleichung.php) 
+  from [Recreational Mathematics with Python](https://github.com/beltoforion/recreational_mathematics_with_python)
+- Ported to Javascript by [Zeger Hendrikse](https://github.com/zhendrikse/) in 
+  [raindrop_waves.html](https://github.com/zhendrikse/science/blob/main/nature/code/raindrop_waves.html">raindrop_waves.html)
+- Also available in [VPython](https://vpython.org/) as 
+  [raindrop_waves.py](https://github.com/zhendrikse/science/blob/main/nature/code/raindrop_waves.py">raindrop_waves.py), but significantly slower!
 
 {% include_relative code/raindrop_waves.html %}
 
