@@ -46,7 +46,7 @@
     class Pixel {
         constructor(x, y, surface, z = 0, size = 1, colour = "#ff0000", opacity = 1) {
             const geometry = new THREE.BoxGeometry(size, .1 * size, size);
-            const material = new THREE.MeshStandardMaterial({color: colour, opacity: opacity});
+            const material = new THREE.MeshBasicMaterial({color: colour, opacity: opacity});
             this.pixel = new THREE.Mesh(geometry, material);
             this.pixel.position.set(x - dim_x / 2, z, y - dim_y / 2);
             surface.add(this.pixel);
@@ -102,7 +102,7 @@
 
     function lights() {
         const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(3, 3, 3);
+        light.position.set(30, 30, 30);
         scene.add(light);
     }
 
@@ -110,6 +110,7 @@
         const renderer = new THREE.WebGLRenderer({antialias: true, canvas: canvas});
         renderer.setClearColor(0x191919, 1);
         renderer.setSize(canvasWidth, canvasHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
         return renderer;
     }
 
@@ -164,12 +165,19 @@
         surface.update();
     }
 
-    function animate() {
+    const desiredFramesPerSecond = 30;
+    const interval = 1000 / desiredFramesPerSecond;
+    let lastTime = 0;
+
+    function animate(time) {
         requestAnimationFrame(animate);
-        update_pixels();
-        renderer.render(scene, camera);
+        if (time - lastTime >= interval) {
+            lastTime = time;
+            update_pixels();
+            renderer.render(scene, camera);
+        }
     }
 
-    animate();
+    animate(0);
 
 </script>
