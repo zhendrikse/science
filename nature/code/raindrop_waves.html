@@ -8,12 +8,14 @@
 
 <canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
 <p style="clear: both;"></p>
-<label for="raindropSlider">Rain intensity: <input type="range" min="0" max="100" value="50" class="slider" id="raindropSlider"/></label>
+<label for="raindropSlider">Rain intensity: <input type="range" min="0" max="100" value="50" class="slider"
+                                                   id="raindropSlider"/></label>
 
 <script type="module">
     import * as THREE from 'three';
-    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
-    const Array2D = (r, c, value=0) => [...Array(r)].map(_=>Array(c).fill(value));
+    import {OrbitControls} from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+
+    const Array2D = (r, c, value = 0) => [...Array(r)].map(_ => Array(c).fill(value));
     const vector = THREE.Vector3;
     const scene = new THREE.Scene();
 
@@ -37,9 +39,9 @@
     // Class definitions
     //
     class Pixel {
-        constructor(x, y, z=0, size=1, colour="#ff0000", opacity=1) {
+        constructor(x, y, z = 0, size = 1, colour = "#ff0000", opacity = 1) {
             const geometry = new THREE.BoxGeometry(size, .1 * size, size);
-            const material = new THREE.MeshStandardMaterial({ color: colour, opacity: opacity });
+            const material = new THREE.MeshStandardMaterial({color: colour, opacity: opacity});
             this.pixel = new THREE.Mesh(geometry, material);
             this.pixel.position.set(x - dim_x / 2, z, y - dim_y / 2);
         }
@@ -52,7 +54,7 @@
     // Set up scene
     lights();
     const camera = initCamera();
-    const controls = new OrbitControls( camera, canvas );
+    const controls = new OrbitControls(camera, canvas);
     const renderer = createRenderer();
 
     // Set up simulation
@@ -70,7 +72,7 @@
     // GUI controls
     //
     const slider = document.getElementById("raindropSlider");
-    slider.oninput = function() {
+    slider.oninput = function () {
         raindropFrequency = this.value;
     }
 
@@ -155,15 +157,15 @@
         timestep()
         update()
 
-        for (let x = 0; x < dim_x ; x++)
+        for (let x = 0; x < dim_x; x++)
             for (let y = 0; y < dim_y; y++)
-                pixels[x][y].setColorTo(new vector(colors[0][x][y] * .15, colors[1][x][y] * .3, colors[2][x][y]).multiplyScalar(1/255))
+                pixels[x][y].setColorTo(new vector(colors[0][x][y] * .15, colors[1][x][y] * .3, colors[2][x][y]).multiplyScalar(1 / 255));
     }
 
     // Animation loop
     function animate() {
         requestAnimationFrame(animate);
-        update_pixels()
+        update_pixels();
         renderer.render(scene, camera);
     }
 
