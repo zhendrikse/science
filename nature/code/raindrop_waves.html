@@ -34,14 +34,6 @@
     let raindropFrequency = 0.05;
 
     //
-    // GUI controls
-    //
-    const slider = document.getElementById("raindropSlider");
-    slider.oninput = function() {
-        raindropFrequency = this.value;
-    }
-
-    //
     // Class definitions
     //
     class Pixel {
@@ -50,7 +42,6 @@
             const material = new THREE.MeshStandardMaterial({ color: colour, opacity: opacity });
             this.pixel = new THREE.Mesh(geometry, material);
             this.pixel.position.set(x - dim_x / 2, z, y - dim_y / 2);
-            scene.add(this.pixel);
         }
 
         setColorTo(rgbColorVector) {
@@ -65,10 +56,27 @@
     const renderer = createRenderer();
 
     // Set up simulation
+    const surface = new THREE.Group();
     const pixels = Array2D(dim_x, dim_y);
     for (let x = 0; x < dim_x; x++)
-        for (let y = 0; y < dim_y; y++)
+        for (let y = 0; y < dim_y; y++) {
             pixels[x][y] = new Pixel(x, y);
+            surface.add(pixels[x][y].pixel);
+        }
+    scene.add(surface);
+    surface.rotateX(Math.PI / 4);
+
+    //
+    // GUI controls
+    //
+    const slider = document.getElementById("raindropSlider");
+    slider.oninput = function() {
+        raindropFrequency = this.value;
+    }
+
+    // controls.addEventListener( "change", event => {
+    //     console.log( "Value = " + surface.rotation );
+    // });
 
     const u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];  // The 3D simulation grid
     const colors = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
@@ -81,8 +89,7 @@
             1,
             1000
         );
-        camera.position.set(0, dim_y, 0);
-        //camera.rotateX(Math.PI / 3);
+        camera.position.set(0, 0, dim_y);
         return camera;
     }
 
