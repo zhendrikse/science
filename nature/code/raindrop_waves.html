@@ -8,7 +8,7 @@
 
 <canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
 <p style="clear: both;"></p>
-<label for="raindropSlider">Rain intensity: <input type="range" min="0" max="100" value="50" class="slider"
+<label for="raindropSlider">Rain intensity: <input type="range" min="0" max="100" value="20" class="slider"
                                                    id="raindropSlider"/></label>
 
 <script type="module">
@@ -33,17 +33,22 @@
     const dt = 1; //  time step width
     const c = 0.5  // The "original" wave propagation speed
     const wavePropagationVelocity = ((c * dt) / dh) ** 2;
-    let raindropFrequency = 0.05;
+    let raindropFrequency = 20 / 1000;
+
+    const u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];  // The 3D simulation grid
+    const colors = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
+    const alpha = Array2D(dim_x, dim_y, wavePropagationVelocity)
 
     //
     // Class definitions
     //
     class Pixel {
-        constructor(x, y, z = 0, size = 1, colour = "#ff0000", opacity = 1) {
+        constructor(x, y, surface, z = 0, size = 1, colour = "#ff0000", opacity = 1) {
             const geometry = new THREE.BoxGeometry(size, .1 * size, size);
             const material = new THREE.MeshStandardMaterial({color: colour, opacity: opacity});
             this.pixel = new THREE.Mesh(geometry, material);
             this.pixel.position.set(x - dim_x / 2, z, y - dim_y / 2);
+            surface.add(this.pixel);
         }
 
         setColorTo(rgbColorVector) {
@@ -51,46 +56,38 @@
         }
     }
 
+    function createSurface() {
+        const pixelArray = Array2D(dim_x, dim_y);
+        const surface = new THREE.Group();
+        scene.add(surface);
+        for (let x = 0; x < dim_x; x++)
+            for (let y = 0; y < dim_y; y++)
+                pixelArray[x][y] = new Pixel(x, y, surface);
+        surface.rotateX(Math.PI / 4);
+        return pixelArray;
+    }
+
     // Set up scene
-    lights();
     const camera = initCamera();
     const controls = new OrbitControls(camera, canvas);
     const renderer = createRenderer();
-
-    // Set up simulation
-    const surface = new THREE.Group();
-    const pixels = Array2D(dim_x, dim_y);
-    for (let x = 0; x < dim_x; x++)
-        for (let y = 0; y < dim_y; y++) {
-            pixels[x][y] = new Pixel(x, y);
-            surface.add(pixels[x][y].pixel);
-        }
-    scene.add(surface);
-    surface.rotateX(Math.PI / 4);
+    lights();
+    const pixels = createSurface();
 
     //
     // GUI controls
     //
     const slider = document.getElementById("raindropSlider");
     slider.oninput = function () {
-        raindropFrequency = this.value;
+        raindropFrequency = this.value / 1000;
     }
 
     // controls.addEventListener( "change", event => {
     //     console.log( "Value = " + surface.rotation );
     // });
 
-    const u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];  // The 3D simulation grid
-    const colors = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
-    const alpha = Array2D(dim_x, dim_y, wavePropagationVelocity)
-
     function initCamera() {
-        const camera = new THREE.PerspectiveCamera(
-            70,
-            canvasWidth / canvasHeight,
-            1,
-            1000
-        );
+        const camera = new THREE.PerspectiveCamera(70, canvasWidth / canvasHeight, 1, 1000);
         camera.position.set(0, 0, dim_y);
         return camera;
     }
@@ -162,7 +159,6 @@
                 pixels[x][y].setColorTo(new vector(colors[0][x][y] * .15, colors[1][x][y] * .3, colors[2][x][y]).multiplyScalar(1 / 255));
     }
 
-    // Animation loop
     function animate() {
         requestAnimationFrame(animate);
         update_pixels();
