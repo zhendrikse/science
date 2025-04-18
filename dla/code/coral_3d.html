@@ -1,8 +1,9 @@
 <script type="importmap">
     {
-        "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-        }
+      "imports": {
+        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
+      }
     }
 </script>
 
@@ -10,8 +11,8 @@
 <label for="aquariumToggle">Aquarium </label><input type="checkbox" id="aquariumToggle"/>
 
 <script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
     const canvas = document.getElementById('myCanvas');
     canvas.focus();

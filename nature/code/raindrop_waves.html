@@ -1,8 +1,9 @@
 <script type="importmap">
     {
-        "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-        }
+      "imports": {
+        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
+      }
     }
 </script>
 
@@ -12,8 +13,8 @@
                                                    id="raindropSlider"/></label>
 
 <script type="module">
-    import * as THREE from 'three';
-    import {OrbitControls} from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
     const Array2D = (r, c, value = 0) => [...Array(r)].map(_ => Array(c).fill(value));
     const vector = THREE.Vector3;
