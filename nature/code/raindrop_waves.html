@@ -1,367 +1,159 @@
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-var raindrop_frequency;
-ρσ_modules.pythonize = {};
-
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
         }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-
-    var version, print, arange, __name__, type, ρσ_ls, title, ρσ_unpack, dim_x, dim_y, display, dh, dt, raindrop_frequency, _;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "7";
-    title = "&#x2022; Based on <a href=\"https://beltoforion.de/de/unterhaltungsmathematik/2d-wellengleichung.php\">this example<\/a> from <a href=\"https://github.com/beltoforion/recreational_mathematics_with_python\">Recreational Mathematics with Python</a>\n&#x2022; Ported to <a href=\"https://vpython.org/\">VPython</a> by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/raindrop_waves.py\">raindrop_waves.py</a>\n\n";
-    "9";
-    ρσ_unpack = [150, 100];
-    dim_x = ρσ_unpack[0];
-    dim_y = ρσ_unpack[1];
-    "10";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 400, range: .5["*"](dim_x), center: vec(dim_x["/"](2), dim_y["/"](2), 0), forward: vec(0, .85, 1["-u"]()["*"](.5)), background: color.gray(.075), title: title})]);
-    "13";
-    dh = 1;
-    "14";
-    dt = 1;
-    "15";
-    raindrop_frequency = .02;
-    "17";
-    async function init_simulation() {
-        var ρσ_ls, c, u, _, colors, wave_propagation_velocity, alpha;
-        "18";
-        c = .5;
-        "19";
-        u = (function() {
-            var ρσ_Iter = range(3), ρσ_Result = [], _;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                _ = ρσ_Index;
-                ρσ_Result.push((function() {
-                    var ρσ_Iter = range(dim_x), ρσ_Result = [], _;
-                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                    for (var ρσ_Index of ρσ_Iter) {
-                        _ = ρσ_Index;
-                        ρσ_Result.push((function() {
-                            var ρσ_Iter = range(dim_y), ρσ_Result = [], _;
-                            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                            for (var ρσ_Index of ρσ_Iter) {
-                                _ = ρσ_Index;
-                                ρσ_Result.push(0);
-                            }
-                            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                            return ρσ_Result;
-                        })());
-                    }
-                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                    return ρσ_Result;
-                })());
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })();
-        "20";
-        colors = (function() {
-            var ρσ_Iter = range(3), ρσ_Result = [], _;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                _ = ρσ_Index;
-                ρσ_Result.push((function() {
-                    var ρσ_Iter = range(dim_x), ρσ_Result = [], _;
-                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                    for (var ρσ_Index of ρσ_Iter) {
-                        _ = ρσ_Index;
-                        ρσ_Result.push((function() {
-                            var ρσ_Iter = range(dim_y), ρσ_Result = [], _;
-                            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                            for (var ρσ_Index of ρσ_Iter) {
-                                _ = ρσ_Index;
-                                ρσ_Result.push(0);
-                            }
-                            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                            return ρσ_Result;
-                        })());
-                    }
-                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                    return ρσ_Result;
-                })());
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })();
-        "22";
-        wave_propagation_velocity = Math.pow((c["*"](dt)["/"](dh)), 2);
-        "23";
-        alpha = (function() {
-            var ρσ_Iter = range(dim_x), ρσ_Result = [], _;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                _ = ρσ_Index;
-                ρσ_Result.push((function() {
-                    var ρσ_Iter = range(dim_y), ρσ_Result = [], _;
-                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                    for (var ρσ_Index of ρσ_Iter) {
-                        _ = ρσ_Index;
-                        ρσ_Result.push(wave_propagation_velocity);
-                    }
-                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                    return ρσ_Result;
-                })());
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })();
-        "24";
-        return [u, alpha, colors];
-    };
-    if (!init_simulation.__module__) Object.defineProperties(init_simulation, {
-        __module__ : {value: null}
-    });
-
-    "27";
-    async function update(u, alpha) {
-        var ρσ_ls, j, i, r, c;
-        "28";
-        for (var ρσ_Index1 = 0; ρσ_Index1["<"](dim_x); ρσ_Index1++) {
-            i = ρσ_Index1;
-            "29";
-            for (var ρσ_Index2 = 0; ρσ_Index2["<"](dim_y); ρσ_Index2++) {
-                j = ρσ_Index2;
-                "30";
-                ρσ_setitem(ρσ_getitem(ρσ_getitem(u, 2), i), j, ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 1), i), j));
-                "31";
-                ρσ_setitem(ρσ_getitem(ρσ_getitem(u, 1), i), j, ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 0), i), j));
-            }
-        }
-        "33";
-        for (var ρσ_Index3 = 1; ρσ_Index3["<"](dim_x["-"](1["*"](1))); ρσ_Index3++) {
-            c = ρσ_Index3;
-            "34";
-            for (var ρσ_Index4 = 1; ρσ_Index4["<"](dim_y["-"](1["*"](1))); ρσ_Index4++) {
-                r = ρσ_Index4;
-                "35";
-                ρσ_setitem(ρσ_getitem(ρσ_getitem(u, 0), c), r, ρσ_getitem(ρσ_getitem(alpha, c), r)["*"](ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 1), c["-"](1["*"](1))), r)["+"](ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 1), c["+"](1)), r))["+"](ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 1), c), r["-"](1["*"](1))))["+"](ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 1), c), r["+"](1)))["-"](1["*"](4)["*"](ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 1), c), r)))));
-                "36";
-                ρσ_setitem(ρσ_getitem(ρσ_getitem(u, 0), c), r, ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 0), c), r)["+"](2["*"](ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 1), c), r)))["-"](1["*"](ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 2), c), r))));
-            }
-        }
-        "40";
-        for (var ρσ_Index5 = 1; ρσ_Index5["<"](dim_x["-"](1["*"](1))); ρσ_Index5++) {
-            i = ρσ_Index5;
-            "41";
-            for (var ρσ_Index6 = 1; ρσ_Index6["<"](dim_y["-"](1["*"](1))); ρσ_Index6++) {
-                j = ρσ_Index6;
-                "42";
-                ρσ_setitem(ρσ_getitem(ρσ_getitem(u, 0), i), j, ρσ_getitem(ρσ_getitem(ρσ_getitem(u, 0), i), j)["*"](.995));
-            }
-        }
-    };
-    if (!update.__argnames__) Object.defineProperties(update, {
-        __argnames__ : {value: ["u", "alpha"]},
-        __module__ : {value: null}
-    });
-
-    "45";
-    async function place_raindrops(grid) {
-        var ρσ_ls, x, y, j, i;
-        "46";
-        if (random()["<"](raindrop_frequency)) {
-            "47";
-            x = int(5["+"](random()["*"](dim_x["-"](1["*"](10)))));
-            "48";
-            y = int(5["+"](random()["*"](dim_y["-"](1["*"](10)))));
-            "55";
-            for (var ρσ_Index7 = x["-"](1["*"](2)); ρσ_Index7["<"](x["+"](2)); ρσ_Index7++) {
-                i = ρσ_Index7;
-                "56";
-                for (var ρσ_Index8 = y["-"](1["*"](2)); ρσ_Index8["<"](y["+"](2)); ρσ_Index8++) {
-                    j = ρσ_Index8;
-                    "57";
-                    ρσ_setitem(ρσ_getitem(ρσ_getitem(grid, 0), i), j, 120);
-                }
-            }
-        }
-    };
-    if (!place_raindrops.__argnames__) Object.defineProperties(place_raindrops, {
-        __argnames__ : {value: ["grid"]},
-        __module__ : {value: null}
-    });
-
-    "60";
-    async function modify_rain_intensity(event) {
-        "61";
-        "62";
-        raindrop_frequency = event.value;
-    };
-    if (!modify_rain_intensity.__argnames__) Object.defineProperties(modify_rain_intensity, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "65";
-    async function create_pixels() {
-        var ρσ_ls, pixel_data, row, y, x;
-        "66";
-        pixel_data = ρσ_list_decorate([]);
-        "67";
-        for (var ρσ_Index9 = 0; ρσ_Index9["<"](dim_x["-"](1["*"](1))); ρσ_Index9++) {
-            x = ρσ_Index9;
-            "68";
-            row = ρσ_list_decorate([]);
-            "69";
-            for (var ρσ_Index10 = 0; ρσ_Index10["<"](dim_y["-"](1["*"](1))); ρσ_Index10++) {
-                y = ρσ_Index10;
-                "70";
-                row.append(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(x, y, 0), shininess: 0})]));
-            }
-            "71";
-            pixel_data.append(row);
-        }
-        "72";
-        return pixel_data;
-    };
-    if (!create_pixels.__module__) Object.defineProperties(create_pixels, {
-        __module__ : {value: null}
-    });
-
-    "75";
-    async function update_pixels(grid, alpha, colors, pixels, frame_rate) {
-        var ρσ_ls, k, j, i, y, x;
-        "76";
-        (await rate(frame_rate));
-        "77";
-        (await place_raindrops(grid));
-        "78";
-        update(grid, alpha);
-        "84";
-        for (var ρσ_Index11 = 0; ρσ_Index11["<"](dim_x); ρσ_Index11++) {
-            i = ρσ_Index11;
-            "85";
-            for (var ρσ_Index12 = 0; ρσ_Index12["<"](dim_y); ρσ_Index12++) {
-                j = ρσ_Index12;
-                "86";
-                for (var ρσ_Index13 = 0; ρσ_Index13["<"](3); ρσ_Index13++) {
-                    k = ρσ_Index13;
-                    "87";
-                    ρσ_setitem(ρσ_getitem(ρσ_getitem(colors, k), i), j, ρσ_getitem(ρσ_getitem(ρσ_getitem(grid, k), i), j)["+"](128));
-                    "88";
-                    if (ρσ_getitem(ρσ_getitem(ρσ_getitem(colors, k), i), j)["<"](0)) {
-                        "89";
-                        ρσ_setitem(ρσ_getitem(ρσ_getitem(colors, k), i), j, 0);
-                        "90";
-                    }
-                    if (ρσ_getitem(ρσ_getitem(ρσ_getitem(colors, k), i), j)[">"](255)) {
-                        "91";
-                        ρσ_setitem(ρσ_getitem(ρσ_getitem(colors, k), i), j, 255);
-                    }
-                }
-            }
-        }
-        "93";
-        for (var ρσ_Index14 = 0; ρσ_Index14["<"](dim_x["-"](1["*"](1))); ρσ_Index14++) {
-            x = ρσ_Index14;
-            "94";
-            for (var ρσ_Index15 = 0; ρσ_Index15["<"](dim_y["-"](1["*"](1))); ρσ_Index15++) {
-                y = ρσ_Index15;
-                "95";
-                ρσ_getitem(ρσ_getitem(pixels, x), y).color = vec(ρσ_getitem(ρσ_getitem(ρσ_getitem(colors, 0), x), y)["*"](.15), ρσ_getitem(ρσ_getitem(ρσ_getitem(colors, 1), x), y)["*"](.3), ρσ_getitem(ρσ_getitem(ρσ_getitem(colors, 2), x), y))["/"](255);
-            }
-        }
-    };
-    if (!update_pixels.__argnames__) Object.defineProperties(update_pixels, {
-        __argnames__ : {value: ["grid", "alpha", "colors", "pixels", "frame_rate"]},
-        __module__ : {value: null}
-    });
-
-    "97";
-    display.append_to_caption("\nRain intensity");
-    "98";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: .1, value: raindrop_frequency, bind: modify_rain_intensity})]);
-    "101";
-    async function main() {
-        var ρσ_ls, pixels, ρσ_unpack, u, alpha, colors;
-        "102";
-        pixels = (await create_pixels());
-        "103";
-        ρσ_unpack = (await init_simulation());
-ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
-        u = ρσ_unpack[0];
-        alpha = ρσ_unpack[1];
-        colors = ρσ_unpack[2];
-        "105";
-        while (true) {
-            "106";
-            (await update_pixels(u, alpha, colors, pixels, 50));
-            "109";
-        }
-    };
-    if (!main.__module__) Object.defineProperties(main, {
-        __module__ : {value: null}
-    });
-
-    if ((__name__ === "__main__" || typeof __name__ === "object" && ρσ_equals(__name__, "__main__"))) {
-        "110";
-        (await main());
     }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
+</script>
 
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
+<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
 
-//--><!]]></script>
-</div>
+<script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+    const Array2D = (r, c, value=0) => [...Array(r)].map(_=>Array(c).fill(value));
+    const vector = THREE.Vector3;
+    const scene = new THREE.Scene();
+
+    const canvas = document.getElementById('myCanvas');
+    canvas.focus();
+    const canvasWidth = canvas.getAttribute('width');
+    const canvasHeight = canvas.getAttribute('height');
+
+    //
+    // Simulation constants
+    //
+    const dim_x = 150;
+    const dim_y = 100;
+    const dh = 1;  // spatial step width
+    const dt = 1; //  time step width
+    const c = 0.5  // The "original" wave propagation speed
+    const wavePropagationVelocity = ((c * dt) / dh) ** 2;
+    const raindropFrequency = 0.05;
+
+    //
+    // Class definitions
+    //
+    class Pixel {
+        constructor(x, y, z=0, size=1, colour="#ff0000", opacity=1) {
+            const geometry = new THREE.BoxGeometry(size, .1 * size, size);
+            const material = new THREE.MeshStandardMaterial({ color: colour, opacity: opacity });
+            this.pixel = new THREE.Mesh(geometry, material);
+            this.pixel.position.set(x - dim_x / 2, z, y - dim_y / 2);
+            scene.add(this.pixel);
+        }
+
+        setColorTo(rgbColorVector) {
+            this.pixel.material.color.setFromVector3(rgbColorVector);
+        }
+    }
+
+    // Set up scene
+    lights();
+    const camera = initCamera();
+    const controls = new OrbitControls( camera, canvas );
+    const renderer = createRenderer();
+
+    // Set up simulation
+    const pixels = Array2D(dim_x, dim_y);
+    for (let x = 0; x < dim_x; x++)
+        for (let y = 0; y < dim_y; y++)
+            pixels[x][y] = new Pixel(x, y);
+
+    const u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];  // The 3D simulation grid
+    const colors = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
+    const alpha = Array2D(dim_x, dim_y, wavePropagationVelocity)
+
+    // controls.addEventListener( "change", event => {
+    //     console.log( controls.object.position );
+    // });
+
+    function initCamera() {
+        const camera = new THREE.PerspectiveCamera(
+            70,
+            canvasWidth / canvasHeight,
+            1,
+            1000
+        );
+        camera.position.set(0, dim_y, 0);
+        //camera.rotateX(Math.PI / 3);
+        return camera;
+    }
+
+    function lights() {
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(3, 3, 3);
+        scene.add(light);
+    }
+
+    function createRenderer() {
+        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: canvas});
+        renderer.setClearColor(0x191919, 1);
+        renderer.setSize(canvasWidth, canvasHeight);
+        return renderer;
+    }
+
+    function timestep() {
+        for (let i = 0; i < dim_x; i++)
+            for (let j = 0; j < dim_y; j++) {
+                u[2][i][j] = u[1][i][j];
+                u[1][i][j] = u[0][i][j];
+            }
+
+        for (let c = 1; c < dim_x - 1; c++)
+            for (let r = 1; r < dim_y - 1; r++) {
+                u[0][c][r] = alpha[c][r] * (u[1][c - 1][r] + u[1][c + 1][r] + u[1][c][r - 1] + u[1][c][r + 1] - 4 * u[1][c][r]);
+                u[0][c][r] += 2 * u[1][c][r] - u[2][c][r];
+            }
+
+        // Not part of the wave equation, but we need to remove energy from the system.
+        // The boundary conditions are closed. Energy cannot leave and the simulation keeps adding energy.
+        for (let i = 1; i < dim_x - 1; i++)
+            for (let j = 1; j < dim_y - 1; j++)
+                u[0][i][j] *= 0.995;
+    }
+
+    function placeRaindrops() {
+        if (Math.random() > raindropFrequency)
+            return;
+
+        const x = Math.floor(5 + Math.random() * (dim_x - 10))
+        const y = Math.floor(5 + Math.random() * (dim_y - 10))
+
+        for (let i = x - 2; i < x + 2; i++)
+            for (let j = y - 2; j < y + 2; j++)
+                u[0][i][j] = 120;
+    }
+
+    function update() {
+        for (let i = 0; i < dim_x; i++)
+            for (let j = 0; j < dim_y; j++)
+                for (let k = 0; k < 3; k++) {
+                    colors[k][i][j] = u[k][i][j] + 128;
+                    if (colors[k][i][j] < 0)
+                        colors[k][i][j] = 0;
+                    if (colors[k][i][j] > 255)
+                        colors[k][i][j] = 255;
+                }
+    }
+
+    function update_pixels() {
+        placeRaindrops()
+        timestep()
+        update()
+
+        for (let x = 0; x < dim_x ; x++)
+            for (let y = 0; y < dim_y; y++)
+                pixels[x][y].setColorTo(new vector(colors[0][x][y] * .15, colors[1][x][y] * .3, colors[2][x][y]).multiplyScalar(1/255))
+    }
+
+    // Animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+        update_pixels()
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+</script>
