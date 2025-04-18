@@ -16,12 +16,10 @@ mid_down = 50 + slit_distance
 inter2 = 50 + slit_distance + slit_size - 1
 
 wall_x = 70
-dx = 0.07
-dy = dx
-
+dx = dy = 0.07
 dt = 1 / 50
 velocity_source = 0.065 / dt / 1.5
-colorrange = 3
+color_range = 3
 floor = -0.5
 
 
@@ -127,7 +125,7 @@ def run_simulation(umesh, utmesh, uttmesh, pixels):
 
         for i in range(len(pixels)):
             for j in range(len(pixels[0])):
-                pixels[i][j].color = vec(0, 0, 0) if umesh[j][i] == 69 else colour(umesh[j][i] - floor, colorrange)
+                pixels[i][j].color = vec(0, 0, 0) if umesh[j][i] == 69 else colour(umesh[j][i] - floor, color_range)
 
 
 use_round_pixels = False
