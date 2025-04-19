@@ -60,18 +60,21 @@
     class Surface {
         constructor() {
             this.pixelArray = Array2D(dim_x, dim_y);
-            const surface = new THREE.Group();
-            scene.add(surface);
+            this.surface = new THREE.Group();
+            scene.add(this.surface);
             for (let x = 0; x < dim_x; x++)
                 for (let y = 0; y < dim_y; y++)
-                    this.pixelArray[x][y] = new Pixel(x, y, surface);
-            surface.rotateX(Math.PI / 4);
+                    this.pixelArray[x][y] = new Pixel(x, y, this.surface);
         }
 
         update() {
             for (let x = 0; x < dim_x; x++)
                 for (let y = 0; y < dim_y; y++)
                     this.pixelArray[x][y].setColorTo(new vector(colors[0][x][y] * .15, colors[1][x][y] * .3, colors[2][x][y]).multiplyScalar(1 / 255));
+        }
+
+        rotateX(angle) {
+            this.surface.rotateX(Math.PI / 4);
         }
     }
 
@@ -81,6 +84,7 @@
     const renderer = createRenderer();
     lights();
     const surface = new Surface();
+    surface.rotateX(Math.PI / 4);
 
     //
     // GUI controls
@@ -96,7 +100,7 @@
 
     function initCamera() {
         const camera = new THREE.PerspectiveCamera(70, canvasWidth / canvasHeight, 1, 1000);
-        camera.position.set(0, 0, dim_y);
+        camera.position.set(0, 0, dim_y * 1.1);
         return camera;
     }
 

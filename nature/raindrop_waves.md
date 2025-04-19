@@ -8,7 +8,7 @@
 - Ported to Javascript by [Zeger Hendrikse](https://github.com/zhendrikse/) in 
   [raindrop_waves.html](https://github.com/zhendrikse/science/blob/main/nature/code/raindrop_waves.html">raindrop_waves.html)
 - Also available in [VPython](https://vpython.org/) as 
-  [raindrop_waves.py](https://github.com/zhendrikse/science/blob/main/nature/code/raindrop_waves.py">raindrop_waves.py), but significantly slower!
+  [raindrop_waves.py](https://github.com/zhendrikse/science/blob/main/nature/code/raindrop_waves.py), but significantly slower!
 
 {% include_relative code/raindrop_waves.html %}
 
