@@ -37,7 +37,6 @@
     let raindropFrequency = 20 / 1000;
 
     const u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];  // The 3D simulation grid
-    const colors = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
     const alpha = Array2D(dim_x, dim_y, wavePropagationVelocity)
 
     //
@@ -60,6 +59,7 @@
     class Surface {
         constructor() {
             this.pixelArray = Array2D(dim_x, dim_y);
+            this.colors = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
             this.surface = new THREE.Group();
             scene.add(this.surface);
             for (let x = 0; x < dim_x; x++)
@@ -68,9 +68,26 @@
         }
 
         update() {
+            for (let i = 0; i < dim_x; i++)
+                for (let j = 0; j < dim_y; j++)
+                    for (let k = 0; k < 3; k++) {
+                        this.colors[k][i][j] = u[k][i][j] + 128;
+                        if (this.colors[k][i][j] < 0)
+                            this.colors[k][i][j] = 0;
+                        if (this.colors[k][i][j] > 255)
+                            this.colors[k][i][j] = 255;
+                    }
+
+            this.updatePixelsWithNewColors();
+        }
+
+        updatePixelsWithNewColors() {
             for (let x = 0; x < dim_x; x++)
                 for (let y = 0; y < dim_y; y++)
-                    this.pixelArray[x][y].setColorTo(new vector(colors[0][x][y] * .15, colors[1][x][y] * .3, colors[2][x][y]).multiplyScalar(1 / 255));
+                    this.pixelArray[x][y].setColorTo(new vector(
+                        this.colors[0][x][y] * .15,
+                        this.colors[1][x][y] * .3,
+                        this.colors[2][x][y]).divideScalar(255));
         }
 
         rotateX(angle) {
@@ -118,7 +135,7 @@
         return renderer;
     }
 
-    function timestep() {
+    function centralFiniteDifferenceMethodTimestep() {
         for (let i = 0; i < dim_x; i++)
             for (let j = 0; j < dim_y; j++) {
                 u[2][i][j] = u[1][i][j];
@@ -150,22 +167,9 @@
                 u[0][i][j] = 120;
     }
 
-    function update() {
-        for (let i = 0; i < dim_x; i++)
-            for (let j = 0; j < dim_y; j++)
-                for (let k = 0; k < 3; k++) {
-                    colors[k][i][j] = u[k][i][j] + 128;
-                    if (colors[k][i][j] < 0)
-                        colors[k][i][j] = 0;
-                    if (colors[k][i][j] > 255)
-                        colors[k][i][j] = 255;
-                }
-    }
-
     function update_pixels() {
         placeRaindrops();
-        timestep();
-        update();
+        centralFiniteDifferenceMethodTimestep();
         surface.update();
     }
 
