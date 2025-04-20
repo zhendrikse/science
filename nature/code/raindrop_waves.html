@@ -7,9 +7,11 @@
     }
 </script>
 
-<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
+<canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas><br/>
 <p style="clear: both;"></p>
-<label for="raindropSlider">Rain intensity: <input type="range" min="0" max="100" value="20" class="slider" id="raindropSlider"/></label>
+<label for="raindropFrequencySlider">Raindrops frequency: <input type="range" min="0" max="100" value="20" class="slider" id="raindropFrequencySlider"/></label>
+<p style="clear: both;"></p>
+<label for="raindropIntensitySlider">Raindrops intensity: <input type="range" min="50" max="500" value="120" class="slider" id="raindropIntensitySlider"/></label>
 
 <script type="module">
     import * as THREE from "three";
@@ -34,6 +36,7 @@
     const c = 0.5  // The "original" wave propagation speed
     const wavePropagationVelocity = ((c * dt) / dh) ** 2;
     let raindropFrequency = 20 / 1000;
+    let raindropIntensity = 120;
 
     const u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];  // The 3D simulation grid
     const alpha = Array2D(dim_x, dim_y, wavePropagationVelocity)
@@ -114,20 +117,25 @@
     const renderer = createRenderer();
     lights();
     const surface = new Surface();
-    surface.rotateX(-Math.PI / 6);
-    surface.translate(new vector(0, -.5, 0));
+    surface.rotateX(7 * Math.PI / 8);
+    surface.translate(new vector(0, 0, 0));
 
     //
     // GUI controls
     //
-    const slider = document.getElementById("raindropSlider");
+    const slider = document.getElementById("raindropFrequencySlider");
     slider.oninput = function () {
         raindropFrequency = this.value / 1000;
     }
 
+    const slider2 = document.getElementById("raindropIntensitySlider");
+    slider2.oninput = function () {
+        raindropIntensity = this.value;
+    }
+
     function initCamera() {
         const camera = new THREE.PerspectiveCamera(70, canvasWidth / canvasHeight, 1, 10);
-        camera.position.set(0, 0, 1);
+        camera.position.set(0, 0, 1.8);
         return camera;
     }
 
@@ -174,7 +182,7 @@
 
         for (let i = x - 2; i < x + 2; i++)
             for (let j = y - 2; j < y + 2; j++)
-                u[0][i][j] = 120 * Math.exp(-((i - x) ** 2 + (j - y) ** 2) / 10);
+                u[0][i][j] = raindropIntensity * Math.exp(-((i - x) ** 2 + (j - y) ** 2) / 10);
     }
 
     function update_pixels() {
