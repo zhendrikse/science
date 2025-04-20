@@ -74,10 +74,10 @@
         colour(x, range) {
             const red = Math.max(0, Math.min(510 / range * x, 255))
             const blue = Math.max(0, Math.min(510 - 510 / range * x, 255))
-            return x >= wall_x - 1 ? new vector(0, 0, 0) : new vector(red / 255, 50 / 255, blue / 255);
+            return x >= wall_x - 1 ? new THREE.Color(0, 0, 0) : new THREE.Color(red / 255, 50 / 255, blue / 255);
         }
 
-        colorSegmentAt(x, y, colorAsVector) {
+        colorSegmentAt(x, y, color) {
             // Each quad has 2 triangles (6 vertices)
             const quadIndex = y * dim_x + x;
             const vertexStart = quadIndex * 6;
@@ -85,9 +85,9 @@
             const colors = this.geometry.attributes.color.array;
             for (let i = 0; i < 6; i++) {
                 const vertexIndex = vertexStart + i;
-                colors[vertexIndex * 3 + 0] = colorAsVector.x;
-                colors[vertexIndex * 3 + 1] = colorAsVector.y;
-                colors[vertexIndex * 3 + 2] = colorAsVector.z;
+                colors[vertexIndex * 3 + 0] = color.r;
+                colors[vertexIndex * 3 + 1] = color.g;
+                colors[vertexIndex * 3 + 2] = color.b;
             }
 
             this.geometry.attributes.color.needsUpdate = true;
