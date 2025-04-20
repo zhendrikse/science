@@ -61,7 +61,7 @@
 
         }
 
-        colorSegmentAt(x, y, colorAsVector) {
+        colorSegmentAt(x, y, color) {
             // Each quad has 2 triangles (6 vertices)
             const quadIndex = y * dim_x + x;
             const vertexStart = quadIndex * 6;
@@ -69,9 +69,9 @@
             const colors = this.geometry.attributes.color.array;
             for (let i = 0; i < 6; i++) {
                 const vertexIndex = vertexStart + i;
-                colors[vertexIndex * 3 + 0] = colorAsVector.x;
-                colors[vertexIndex * 3 + 1] = colorAsVector.y;
-                colors[vertexIndex * 3 + 2] = colorAsVector.z;
+                colors[vertexIndex * 3 + 0] = color.r;
+                colors[vertexIndex * 3 + 1] = color.g;
+                colors[vertexIndex * 3 + 2] = color.b;
             }
 
             this.geometry.attributes.color.needsUpdate = true;
@@ -94,7 +94,7 @@
         updatePixelsWithNewColors() {
             for (let x = 0; x < dim_x; x++)
                 for (let y = 0; y < dim_y; y++)
-                    this.colorSegmentAt(x, y, new vector(
+                    this.colorSegmentAt(x, y, new THREE.Color(
                         this.colors[0][x][y] * .15,
                         this.colors[1][x][y] * .3,
                         this.colors[2][x][y]));
