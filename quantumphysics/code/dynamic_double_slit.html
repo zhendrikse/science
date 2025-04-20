@@ -1,491 +1,222 @@
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
+      }
+    }
+</script>
 
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-var use_round_pixels;
-ρσ_modules.pythonize = {};
+<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
+<p style="clear: both;"></p>
 
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
+<script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+    const Array2D = (r, c, value = 0) => [...Array(r)].map(_ => Array(c).fill(value));
+    const vector = THREE.Vector3;
+    const scene = new THREE.Scene();
+
+    const canvas = document.getElementById('myCanvas');
+    canvas.focus();
+    const canvasWidth = canvas.getAttribute('width');
+    const canvasHeight = canvas.getAttribute('height');
+
+    //
+    // Simulation constants
+    //
+    const dim_x = 200;
+    const dim_y = 200;
+    const dx = 0.07, dy = 0.07;
+    const dt = .02; //  time step width
+    const velocitySource = 0.065 / dt / 1.5;
+    const velocitySourceSquared = velocitySource * velocitySource;
+
+
+    const slit_size = 6;
+    const slit_distance = 10;
+    const inter1 = 50 - slit_distance - slit_size;
+    const mid_up = 50 - slit_distance;
+    const mid_down = 50 + slit_distance;
+    const inter2 = 50 + slit_distance + slit_size - 1;
+
+    const wall_x = 70;
+    const color_range = 3;
+    const floor = -0.5;
+
+    const dx_2 = dx * dx;
+    const dy_2 = dy * dy;
+    const pi_2 = Math.PI / 2;
+
+    const u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];  // The 3D simulation grid
+
+    //
+    // Class definitions
+    //
+    class Surface {
+        constructor() {
+            this.geometry = new THREE.PlaneGeometry(2, 2, dim_x, dim_y).toNonIndexed();
+            const material = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
+
+            const colours = [];
+            const position = this.geometry.attributes.position;
+            const numVertices = position.count;
+            for (let i = 0; i < numVertices; i++)
+                colours.push(0, 0, 0);
+            this.geometry.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
+
+            this.surface = new THREE.Mesh(this.geometry, material);
+            scene.add(this.surface);
+
         }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
+
+        colour(x, range) {
+            const red = Math.max(0, Math.min(510 / range * x, 255))
+            const blue = Math.max(0, Math.min(510 - 510 / range * x, 255))
+            return x >= wall_x - 1 ? new vector(0, 0, 0) : new vector(red / 255, 50 / 255, blue / 255);
         }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+
+        colorSegmentAt(x, y, colorAsVector) {
+            // Each quad has 2 triangles (6 vertices)
+            const quadIndex = y * dim_x + x;
+            const vertexStart = quadIndex * 6;
+
+            const colors = this.geometry.attributes.color.array;
+            for (let i = 0; i < 6; i++) {
+                const vertexIndex = vertexStart + i;
+                colors[vertexIndex * 3 + 0] = colorAsVector.x;
+                colors[vertexIndex * 3 + 1] = colorAsVector.y;
+                colors[vertexIndex * 3 + 2] = colorAsVector.z;
+            }
+
+            this.geometry.attributes.color.needsUpdate = true;
         }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
 
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, sin, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, slit_size, slit_distance, inter1, mid_up, mid_down, inter2, wall_x, dx, dy, dt, velocity_source, colorrange, floor, velocity_source_2, dx_2, dy_2, pi_2, use_round_pixels, _, clock, pixels, ρσ_unpack, u_mesh, ut_mesh, utt_mesh, popup, obj;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "7";
-    title = "&#x2022; Original <a href=\"https://github.com/NelsonHackerman/Random_python_ideas/blob/main/double%20slit%20experiment.py\">double slit experiment.py<\/a> by <a href=\"https://github.com/NelsonHackerman\">Nelson Hackerman</a>\n&#x2022; Ported from PyGame to Glowscript by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>, see <a href=\"https://github.com/zhendrikse/science/blob/main/quantumphysics/code/dynamic_double_slit.py\">dynamic_double_slit.py</a>\n\n";
-    "9";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), center: vec(700, 350, 0), forward: vec(0, .65, 1["-u"]()["*"](.75))})]);
-    "11";
-    slit_size = 6;
-    "12";
-    slit_distance = 10;
-    "13";
-    inter1 = 50["-"](1["*"](slit_distance))["-"](1["*"](slit_size));
-    "14";
-    mid_up = 50["-"](1["*"](slit_distance));
-    "15";
-    mid_down = 50["+"](slit_distance);
-    "16";
-    inter2 = 50["+"](slit_distance)["+"](slit_size)["-"](1["*"](1));
-    "18";
-    wall_x = 70;
-    "19";
-    dx = .07;
-    "20";
-    dy = dx;
-    "22";
-    dt = 1["/"](50);
-    "23";
-    velocity_source = .065["/"](dt)["/"](1.5);
-    "24";
-    colorrange = 3;
-    "25";
-    floor = 1["-u"]()["*"](.5);
-    "29";
-    async function outer_product(v1, v2) {
-        "30";
-        return (function() {
-            var ρσ_Iter = range(len(v1)), ρσ_Result = [], i;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                i = ρσ_Index;
-                ρσ_Result.push((function() {
-                    var ρσ_Iter = range(len(v2)), ρσ_Result = [], j;
-                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                    for (var ρσ_Index of ρσ_Iter) {
-                        j = ρσ_Index;
-                        ρσ_Result.push(ρσ_getitem(v1, i)["*"](ρσ_getitem(v2, j)));
-                    }
-                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                    return ρσ_Result;
-                })());
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })();
-    };
-    if (!outer_product.__argnames__) Object.defineProperties(outer_product, {
-        __argnames__ : {value: ["v1", "v2"]},
-        __module__ : {value: null}
-    });
-
-    "33";
-    async function colour(x, range_) {
-        var ρσ_ls, red, blue;
-        "34";
-        red = max(0, min(510["/"](range_)["*"](x), 255));
-        "35";
-        blue = max(0, min(510["-"](1["*"](510)["/"](range_)["*"](x)), 255));
-        "36";
-        return vec(red, 50, blue)["/"](255);
-    };
-    if (!colour.__argnames__) Object.defineProperties(colour, {
-        __argnames__ : {value: ["x", "range_"]},
-        __module__ : {value: null}
-    });
-
-    "39";
-    async function initialize_simulation(pixels_are_round) {
-        var ρσ_ls, x, y, const1, _, const2, xmesh, ymesh;
-        "40";
-        x = range(0, 13, dx);
-        "41";
-        y = range(0, 7, dy);
-        "42";
-        const1 = (function() {
-            var ρσ_Iter = range(len(x)), ρσ_Result = [], _;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                _ = ρσ_Index;
-                ρσ_Result.push(1);
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })();
-        "43";
-        const2 = (function() {
-            var ρσ_Iter = range(len(y)), ρσ_Result = [], _;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                _ = ρσ_Index;
-                ρσ_Result.push(1);
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })();
-        "44";
-        xmesh = (await outer_product(const2, x));
-        "45";
-        ymesh = (await outer_product(y, const1));
-        "47";
-        if (pixels_are_round) {
-            "48";
-            return (function() {
-                var ρσ_Iter = range(len(x)), ρσ_Result = [], i;
-                ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                for (var ρσ_Index of ρσ_Iter) {
-                    i = ρσ_Index;
-                    ρσ_Result.push((function() {
-                        var ρσ_Iter = range(len(y)), ρσ_Result = [], j;
-                        ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                        for (var ρσ_Index of ρσ_Iter) {
-                            j = ρσ_Index;
-                            ρσ_Result.push(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: vec(ρσ_getitem(ρσ_getitem(xmesh, j), i)["*"](100)["+"](50), ρσ_getitem(ρσ_getitem(ymesh, j), i)["*"](100)["+"](50), 0), radius: 50["*"](dx), shininess: 0})]));
-                        }
-                        ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                        return ρσ_Result;
-                    })());
-                }
-                ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                return ρσ_Result;
-            })();
+        update() {
+            for (let x = 0; x < dim_x; x++)
+                for (let y = 0; y < dim_y; y++)
+                    this.colorSegmentAt(x, y, this.colour(u[0][x][y] - floor, color_range));
         }
-        "50";
-        return (function() {
-            var ρσ_Iter = range(len(x)), ρσ_Result = [], i;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                i = ρσ_Index;
-                ρσ_Result.push((function() {
-                    var ρσ_Iter = range(len(y)), ρσ_Result = [], j;
-                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                    for (var ρσ_Index of ρσ_Iter) {
-                        j = ρσ_Index;
-                        ρσ_Result.push(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(ρσ_getitem(ρσ_getitem(xmesh, j), i)["*"](100)["+"](50), ρσ_getitem(ρσ_getitem(ymesh, j), i)["*"](100)["+"](50), 0), size: vec(ceil(100["*"](dx)), ceil(100["*"](dy)), 1), shininess: 0})]));
-                    }
-                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                    return ρσ_Result;
-                })());
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })();
-    };
-    if (!initialize_simulation.__argnames__) Object.defineProperties(initialize_simulation, {
-        __argnames__ : {value: ["pixels_are_round"]},
-        __module__ : {value: null}
-    });
 
-    "52";
-    async function initialize_meshes(len_x, len_y) {
-        var ρσ_ls, umesh, utmesh, _, uttmesh;
-        "53";
-        umesh = (await outer_product((function() {
-            var ρσ_Iter = range(len_y), ρσ_Result = [], _;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                _ = ρσ_Index;
-                ρσ_Result.push(0);
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })(), range(0, 13, dx)));
-        "54";
-        utmesh = (function() {
-            var ρσ_Iter = range(len_y), ρσ_Result = [], _;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                _ = ρσ_Index;
-                ρσ_Result.push((function() {
-                    var ρσ_Iter = range(len_x), ρσ_Result = [], _;
-                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                    for (var ρσ_Index of ρσ_Iter) {
-                        _ = ρσ_Index;
-                        ρσ_Result.push(0);
-                    }
-                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                    return ρσ_Result;
-                })());
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })();
-        "55";
-        uttmesh = (function() {
-            var ρσ_Iter = range(len_y), ρσ_Result = [], _;
-            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-            for (var ρσ_Index of ρσ_Iter) {
-                _ = ρσ_Index;
-                ρσ_Result.push((function() {
-                    var ρσ_Iter = range(len_x), ρσ_Result = [], _;
-                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
-                    for (var ρσ_Index of ρσ_Iter) {
-                        _ = ρσ_Index;
-                        ρσ_Result.push(0);
-                    }
-                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
-                    return ρσ_Result;
-                })());
-            }
-            ρσ_Result = ρσ_list_constructor(ρσ_Result);
-            return ρσ_Result;
-        })();
-        "56";
-        return [umesh, utmesh, uttmesh];
-    };
-    if (!initialize_meshes.__argnames__) Object.defineProperties(initialize_meshes, {
-        __argnames__ : {value: ["len_x", "len_y"]},
-        __module__ : {value: null}
-    });
-
-    "59";
-    velocity_source_2 = velocity_source["*"](velocity_source);
-    "60";
-    dx_2 = dx["*"](dx);
-    "61";
-    dy_2 = dy["*"](dy);
-    "62";
-    pi_2 = pi["/"](2);
-    "64";
-    async function run_simulation(umesh, utmesh, uttmesh, pixels) {
-        var ρσ_ls, t, simulation_time, m, n, j, i;
-        "65";
-        t = 0;
-        "66";
-        simulation_time = 10;
-        "67";
-        while (t["<"](simulation_time)) {
-            "68";
-            clock.text = "Time remaining: {:1.2f}".format(simulation_time["-"](1["*"](t)));
-            "69";
-            t=t["+"](dt);
-            "70";
-            (await rate(50));
-            "72";
-            var ρσ_Iter1 = range(1, len(pixels)["-"](1["*"](1)));
-            ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
-            for (var ρσ_Index1 of ρσ_Iter1) {
-                n = ρσ_Index1;
-                "73";
-                var ρσ_Iter2 = range(1, len(ρσ_getitem(pixels, 0))["-"](1["*"](1)));
-                ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
-                for (var ρσ_Index2 of ρσ_Iter2) {
-                    m = ρσ_Index2;
-                    "74";
-                    ρσ_setitem(ρσ_getitem(uttmesh, m), n, velocity_source_2["*"](ρσ_getitem(ρσ_getitem(umesh, m), n["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, m), n["+"](1)))["-"](1["*"](2)["*"](ρσ_getitem(ρσ_getitem(umesh, m), n)))["/"](dx_2)["+"](ρσ_getitem(ρσ_getitem(umesh, m["-"](1["*"](1))), n)["+"](ρσ_getitem(ρσ_getitem(umesh, m["+"](1)), n))["-"](1["*"](2)["*"](ρσ_getitem(ρσ_getitem(umesh, m), n)))["/"](dy_2))));
-                }
-            }
-            "77";
-            var ρσ_Iter3 = range(1, len(pixels)["-"](1["*"](1)));
-            ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-            for (var ρσ_Index3 of ρσ_Iter3) {
-                n = ρσ_Index3;
-                "78";
-                var ρσ_Iter4 = range(1, len(ρσ_getitem(pixels, 0))["-"](1["*"](1)));
-                ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-                for (var ρσ_Index4 of ρσ_Iter4) {
-                    m = ρσ_Index4;
-                    "79";
-                    ρσ_setitem(ρσ_getitem(utmesh, m), n, ρσ_getitem(ρσ_getitem(utmesh, m), n)["+"](ρσ_getitem(ρσ_getitem(uttmesh, m), n)["*"](dt)));
-                    "80";
-                    ρσ_setitem(ρσ_getitem(umesh, m), n, ρσ_getitem(ρσ_getitem(umesh, m), n)["+"](ρσ_getitem(ρσ_getitem(utmesh, m), n)["*"](dt)));
-                }
-            }
-            "83";
-            ρσ_setitem(umesh.slice(0), 0, ρσ_getitem(umesh.slice(0), 1));
-            "84";
-            ρσ_setitem(umesh.slice(0), 1["-u"]()["*"](1), ρσ_getitem(umesh.slice(0), 1["-u"]()["*"](2)));
-            "85";
-            ρσ_splice(ρσ_getitem(umesh, 0), ρσ_getitem(umesh, 1).slice(0), 0);
-            "86";
-            ρσ_splice(ρσ_getitem(umesh, 1["-u"]()["*"](1)), ρσ_getitem(umesh, 1["-u"]()["*"](2)).slice(0), 0);
-            "88";
-            if (t["<"](pi_2)) {
-                "89";
-                var ρσ_Iter5 = range(len(ρσ_getitem(pixels, 0)));
-                ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-                for (var ρσ_Index5 of ρσ_Iter5) {
-                    n = ρσ_Index5;
-                    "90";
-                    ρσ_setitem(ρσ_getitem(umesh, n), 0, 1["-u"]()["*"](cos(t["*"](20)))["+"](1));
-                }
-            }
-            "92";
-            ρσ_setitem(ρσ_getitem(umesh, 0), 0, ρσ_getitem(ρσ_getitem(umesh, 1), 1));
-            "93";
-            ρσ_setitem(ρσ_getitem(umesh, 0), 1["-u"]()["*"](1), ρσ_getitem(ρσ_getitem(umesh, 1), 1["-u"]()["*"](2)));
-            "94";
-            ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), 0, ρσ_getitem(ρσ_getitem(umesh, 1["-u"]()["*"](2)), 1));
-            "95";
-            ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), 1["-u"]()["*"](1), ρσ_getitem(ρσ_getitem(umesh, 1["-u"]()["*"](2)), 1["-u"]()["*"](2)));
-            "97";
-            for (var ρσ_Index6 = 0; ρσ_Index6["<"](inter1); ρσ_Index6++) {
-                n = ρσ_Index6;
-                "98";
-                ρσ_setitem(ρσ_getitem(umesh, n), wall_x, 69);
-                "99";
-                ρσ_setitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](1)), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](2))));
-                "100";
-                ρσ_setitem(ρσ_getitem(umesh, n), wall_x["+"](1), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["+"](2)));
-            }
-            "101";
-            ρσ_setitem(ρσ_getitem(umesh, inter1), wall_x, ρσ_getitem(ρσ_getitem(umesh, inter1), wall_x["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, inter1), wall_x["+"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, inter1["+"](1)), wall_x))["/"](3));
-            "103";
-            for (var ρσ_Index7 = mid_up; ρσ_Index7["<"](mid_down); ρσ_Index7++) {
-                n = ρσ_Index7;
-                "104";
-                ρσ_setitem(ρσ_getitem(umesh, n), wall_x, 69);
-                "105";
-                ρσ_setitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](1)), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](2))));
-                "106";
-                ρσ_setitem(ρσ_getitem(umesh, n), wall_x["+"](1), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["+"](2)));
-            }
-            "107";
-            ρσ_setitem(ρσ_getitem(umesh, mid_up["-"](1["*"](1))), wall_x, ρσ_getitem(ρσ_getitem(umesh, mid_up["-"](1["*"](1))), wall_x["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, mid_up["-"](1["*"](1))), wall_x["+"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, mid_up["-"](1["*"](2))), wall_x))["/"](3));
-            "109";
-            ρσ_setitem(ρσ_getitem(umesh, mid_down), wall_x, ρσ_getitem(ρσ_getitem(umesh, mid_down), wall_x["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, mid_down), wall_x["+"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, mid_down["+"](1)), wall_x))["/"](3));
-            "112";
-            var ρσ_Iter8 = range(inter2, len(ρσ_getitem(pixels, 0)));
-            ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
-            for (var ρσ_Index8 of ρσ_Iter8) {
-                n = ρσ_Index8;
-                "113";
-                ρσ_setitem(ρσ_getitem(umesh, n), wall_x, 69);
-                "114";
-                ρσ_setitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](1)), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["-"](1["*"](2))));
-                "115";
-                ρσ_setitem(ρσ_getitem(umesh, n), wall_x["+"](1), ρσ_getitem(ρσ_getitem(umesh, n), wall_x["+"](2)));
-            }
-            "116";
-            ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x, 69);
-            "117";
-            ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x["-"](1["*"](1)), ρσ_getitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x["-"](1["*"](2))));
-            "118";
-            ρσ_setitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x["+"](1), ρσ_getitem(ρσ_getitem(umesh, 1["-u"]()["*"](1)), wall_x["+"](2)));
-            "119";
-            ρσ_setitem(ρσ_getitem(umesh, inter2), wall_x, ρσ_getitem(ρσ_getitem(umesh, inter2), wall_x["-"](1["*"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, inter2), wall_x["+"](1)))["+"](ρσ_getitem(ρσ_getitem(umesh, inter2["-"](1["*"](1))), wall_x))["/"](3));
-            "121";
-            var ρσ_Iter9 = range(len(pixels));
-            ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
-            for (var ρσ_Index9 of ρσ_Iter9) {
-                i = ρσ_Index9;
-                "122";
-                var ρσ_Iter10 = range(len(ρσ_getitem(pixels, 0)));
-                ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
-                for (var ρσ_Index10 of ρσ_Iter10) {
-                    j = ρσ_Index10;
-                    "123";
-                    ρσ_getitem(ρσ_getitem(pixels, i), j).color = ((ρσ_getitem(ρσ_getitem(umesh, j), i) === 69 || typeof ρσ_getitem(ρσ_getitem(umesh, j), i) === "object" && ρσ_equals(ρσ_getitem(ρσ_getitem(umesh, j), i), 69))) ? vec(0, 0, 0) : (await colour(ρσ_getitem(ρσ_getitem(umesh, j), i)["-"](1["*"](floor)), colorrange));
-                }
-            }
+        rotateX(angle) {
+            this.surface.rotateX(angle);
         }
-    };
-    if (!run_simulation.__argnames__) Object.defineProperties(run_simulation, {
-        __argnames__ : {value: ["umesh", "utmesh", "uttmesh", "pixels"]},
-        __module__ : {value: null}
-    });
 
-    "125";
-    use_round_pixels = false;
-    "126";
-    async function toggle_square_pixels(event) {
-        "127";
-        "128";
-        use_round_pixels = event.checked;
-    };
-    if (!toggle_square_pixels.__argnames__) Object.defineProperties(toggle_square_pixels, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "130";
-    display.append_to_caption("\nRound pixels ");
-    "131";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({bind: toggle_square_pixels, checked: use_round_pixels})]);
-    "133";
-    clock = null;
-    "134";
-    while (true) {
-        "135";
-        clock = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(700, 1100, 0), text: "Time remaining: 0:00", height: 20, box: false, color: color.green})]);
-        "136";
-        pixels = (await initialize_simulation(use_round_pixels));
-        "137";
-        ρσ_unpack = (await initialize_meshes(len(pixels), len(ρσ_getitem(pixels, 0))));
-ρσ_unpack = ρσ_unpack_asarray(3, ρσ_unpack);
-        u_mesh = ρσ_unpack[0];
-        ut_mesh = ρσ_unpack[1];
-        utt_mesh = ρσ_unpack[2];
-        "138";
-        (await run_simulation(u_mesh, ut_mesh, utt_mesh, pixels));
-        "140";
-        popup = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(700, 350, 0), text: "Click mouse to restart", height: 25, box: false, color: color.yellow})]);
-        "141";
-        (await display.waitfor("click"));
-        "142";
-        popup.visible = false;
-        "143";
-        var ρσ_Iter11 = display.objects;
-        ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
-        for (var ρσ_Index11 of ρσ_Iter11) {
-            obj = ρσ_Index11;
-            "144";
-            obj.visible = false;
-            "145";
-            obj = undefined;
+        translate(translationVector) {
+            this.surface.position.copy(translationVector);
         }
     }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
 
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
+    // Set up scene
+    const camera = initCamera();
+    const controls = new OrbitControls(camera, canvas);
+    const renderer = createRenderer();
+    lights();
+    const surface = new Surface();
+    surface.rotateX(-Math.PI / 6);
+    surface.translate(new vector(0, -.5, 0));
 
-//--><!]]></script>
-</div>
+    function initCamera() {
+        const camera = new THREE.PerspectiveCamera(70, canvasWidth / canvasHeight, 1, 10);
+        camera.position.set(0, 0, 1);
+        return camera;
+    }
+
+    function lights() {
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(1, 1, 1);
+        scene.add(light);
+    }
+
+    function createRenderer() {
+        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: canvas});
+        renderer.setClearColor(0x191919, 1);
+        renderer.setSize(canvasWidth, canvasHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        return renderer;
+    }
+
+    function applyBoundaryConditions() {
+        for (let m = 1; m < dim_x - 1; m++) {
+            u[0][m][0] = u[0][m][1];
+            u[0][m][dim_y - 1] = u[0][m][dim_y - 2];
+        }
+    }
+
+    function placeSlitsAt(xWall) {
+        for (let n = 0; n < inter1; n++) {
+            u[0][xWall][n] = xWall - 1;
+            u[0][xWall - 1][n] = u[0][xWall - 2][n];
+            u[0][xWall + 1][n] = u[0][xWall + 2][n];
+        }
+        u[0][xWall][inter1] = (u[0][xWall - 1][inter1] + u[0][xWall + 1][inter1] + u[0][xWall][inter1 + 1]) / 3;
+
+        for (let n = mid_up; n < mid_down; n++) {
+            u[0][xWall][n] = xWall - 1;
+            u[0][xWall - 1][n] = u[0][xWall - 2][n];
+            u[0][xWall + 1][n] = u[0][xWall + 2][n];
+        }
+        u[0][xWall][mid_up - 1] = (u[0][xWall - 1][mid_up - 1] + u[0][xWall + 1][mid_up - 1] + u[0][xWall][mid_up - 2]) / 3;
+        u[0][xWall][mid_down] = (u[0][xWall - 1][mid_down] + u[0][xWall + 1][mid_down] + u[0][xWall][mid_down + 1]) / 3;
+
+
+        for (let n = inter2; n < dim_y; n++) {
+            u[0][xWall][n] = xWall - 1;
+            u[0][xWall - 1][n] = u[0][xWall - 2][n];
+            u[0][xWall + 1][n] = u[0][xWall + 2][n];
+        }
+        u[0][xWall][dim_y - 1] = xWall - 1;
+        u[0][xWall - 1][dim_y - 1] = u[0][xWall - 2][dim_y - 1];
+        u[0][xWall + 1][dim_y - 1] = u[0][xWall + 2][dim_y - 1];
+        u[0][xWall][inter2] = (u[0][xWall - 1][inter2] + u[0][xWall + 1][inter2] + u[0][xWall][inter2 - 1]) / 3;
+
+    }
+
+    function centralFiniteDifferenceMethodTimestep() {
+        for (let m = 1; m < dim_x - 1; m++)
+            for (let n = 1; n < dim_y - 1; n++)
+                u[2][m][n] = velocitySourceSquared * ((u[0][m][n - 1] + u[0][m][n + 1] - 2 * u[0][m][n]) / dx_2 + (
+                    u[0][m - 1][n] + u[0][m + 1][n] - 2 * u[0][m][n]) / dy_2);
+
+        for (let m = 1; m < dim_x - 1; m++)
+            for (let n = 1; n < dim_y - 1; n++) {
+                u[1][m][n] += u[2][m][n] * dt;
+                u[0][m][n] += u[1][m][n] * dt;
+            }
+
+        applyBoundaryConditions();
+
+        for (let n = 1; n < dim_y - 1; n++) {
+            u[0][0][n] = u[0][1][n];
+            u[0][dim_x - 1][n] = u[0][dim_x - 2][n];
+        }
+
+        if (time < pi_2)
+            for (let n = 0; n < dim_y; n++)
+                u[0][0][n] = -Math.cos(20 * time) + 1;
+
+        u[0][0][0] = u[0][1][1];
+        u[0][0][dim_y - 1] = u[0][1][dim_y - 2];
+        u[0][dim_x - 1][0] = u[0][dim_x - 2][1];
+        u[0][dim_x - 1][dim_y - 1] = u[0][dim_x - 2][dim_y - 2];
+
+        placeSlitsAt(wall_x);
+    }
+
+    function update_pixels() {
+        centralFiniteDifferenceMethodTimestep();
+        surface.update();
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        update_pixels();
+        renderer.render(scene, camera);
+        time += dt;
+    }
+
+    let time = 0;
+    animate();
+
+</script>

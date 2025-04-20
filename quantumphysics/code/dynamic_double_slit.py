@@ -100,13 +100,13 @@ def run_simulation(umesh, utmesh, uttmesh, pixels):
         umesh[-1][-1] = umesh[-2][-2]
 
         for n in range(inter1):
-            umesh[n][wall_x] = 69
+            umesh[n][wall_x] = wall_x - 1
             umesh[n][wall_x - 1] = umesh[n][wall_x - 2]
             umesh[n][wall_x + 1] = umesh[n][wall_x + 2]
         umesh[inter1][wall_x] = (umesh[inter1][wall_x - 1] + umesh[inter1][wall_x + 1] + umesh[inter1 + 1][wall_x]) / 3
 
         for n in range(mid_up, mid_down):
-            umesh[n][wall_x] = 69
+            umesh[n][wall_x] = wall_x - 1
             umesh[n][wall_x - 1] = umesh[n][wall_x - 2]
             umesh[n][wall_x + 1] = umesh[n][wall_x + 2]
         umesh[mid_up - 1][wall_x] = (umesh[mid_up - 1][wall_x - 1] + umesh[mid_up - 1][wall_x + 1] + umesh[mid_up - 2][
@@ -115,17 +115,17 @@ def run_simulation(umesh, utmesh, uttmesh, pixels):
             wall_x]) / 3
 
         for n in range(inter2, len(pixels[0])):
-            umesh[n][wall_x] = 69
+            umesh[n][wall_x] = wall_x - 1
             umesh[n][wall_x - 1] = umesh[n][wall_x - 2]
             umesh[n][wall_x + 1] = umesh[n][wall_x + 2]
-        umesh[-1][wall_x] = 69
+        umesh[-1][wall_x] = wall_x - 1
         umesh[-1][wall_x - 1] = umesh[-1][wall_x - 2]
         umesh[-1][wall_x + 1] = umesh[-1][wall_x + 2]
-        umesh[inter2][wall_x] = (umesh[inter2][wall_x - 1] + umesh[inter2][wall_x + 1] + umesh[inter2 - 1][wall_x]) / 3
+        umesh[inter2] = (umesh[inter2][wall_x - 1] + umesh[inter2][wall_x + 1] + umesh[inter2 - 1][wall_x]) / 3
 
         for i in range(len(pixels)):
             for j in range(len(pixels[0])):
-                pixels[i][j].color = vec(0, 0, 0) if umesh[j][i] == 69 else colour(umesh[j][i] - floor, color_range)
+                pixels[i][j].color = vec(0, 0, 0) if umesh[j][i] == wall_x - 1 else colour(umesh[j][i] - floor, color_range)
 
 
 use_round_pixels = False
