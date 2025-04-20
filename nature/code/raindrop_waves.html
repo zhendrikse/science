@@ -28,8 +28,8 @@
     //
     // Simulation constants
     //
-    const dim_x = 150;
-    const dim_y = 100;
+    const dim_x = 400;
+    const dim_y = 300;
     const dh = 1;  // spatial step width
     const dt = 1; //  time step width
     const c = 0.5  // The "original" wave propagation speed
@@ -42,40 +42,50 @@
     //
     // Class definitions
     //
-    class Pixel {
-        constructor(x, y, surface, z = 0, size = 1, colour = "#ff0000", opacity = 1) {
-            const geometry = new THREE.BoxGeometry(size, .1 * size, size);
-            const material = new THREE.MeshBasicMaterial({color: colour, opacity: opacity});
-            this.pixel = new THREE.Mesh(geometry, material);
-            this.pixel.position.set(x - dim_x / 2, z, y - dim_y / 2);
-            surface.add(this.pixel);
-        }
-
-        setColorTo(rgbColorVector) {
-            this.pixel.material.color.setFromVector3(rgbColorVector);
-        }
-    }
-
     class Surface {
         constructor() {
-            this.pixelArray = Array2D(dim_x, dim_y);
             this.colors = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
-            this.surface = new THREE.Group();
+
+            this.geometry = new THREE.PlaneGeometry(2, 2, dim_x, dim_y).toNonIndexed();
+            const material = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
+
+            const colours = [];
+            const position = this.geometry.attributes.position;
+            const numVertices = position.count;
+            for (let i = 0; i < numVertices; i++)
+                colours.push(0, 0, 0);
+            this.geometry.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
+
+            this.surface = new THREE.Mesh(this.geometry, material);
             scene.add(this.surface);
-            for (let x = 0; x < dim_x; x++)
-                for (let y = 0; y < dim_y; y++)
-                    this.pixelArray[x][y] = new Pixel(x, y, this.surface);
+
+        }
+
+        colorSegmentAt(x, y, colorAsVector) {
+            // Each quad has 2 triangles (6 vertices)
+            const quadIndex = y * dim_x + x;
+            const vertexStart = quadIndex * 6;
+
+            const colors = this.geometry.attributes.color.array;
+            for (let i = 0; i < 6; i++) {
+                const vertexIndex = vertexStart + i;
+                colors[vertexIndex * 3 + 0] = colorAsVector.x;
+                colors[vertexIndex * 3 + 1] = colorAsVector.y;
+                colors[vertexIndex * 3 + 2] = colorAsVector.z;
+            }
+
+            this.geometry.attributes.color.needsUpdate = true;
         }
 
         update() {
             for (let i = 0; i < dim_x; i++)
                 for (let j = 0; j < dim_y; j++)
                     for (let k = 0; k < 3; k++) {
-                        this.colors[k][i][j] = u[k][i][j] + 128;
+                        this.colors[k][i][j] = (u[k][i][j] + 128) / 255;
                         if (this.colors[k][i][j] < 0)
                             this.colors[k][i][j] = 0;
-                        if (this.colors[k][i][j] > 255)
-                            this.colors[k][i][j] = 255;
+                        if (this.colors[k][i][j] > 1)
+                            this.colors[k][i][j] = 1;
                     }
 
             this.updatePixelsWithNewColors();
@@ -84,14 +94,20 @@
         updatePixelsWithNewColors() {
             for (let x = 0; x < dim_x; x++)
                 for (let y = 0; y < dim_y; y++)
-                    this.pixelArray[x][y].setColorTo(new vector(
+                    this.colorSegmentAt(x, y, new vector(
                         this.colors[0][x][y] * .15,
                         this.colors[1][x][y] * .3,
-                        this.colors[2][x][y]).divideScalar(255));
+                        this.colors[2][x][y]));
         }
 
         rotateX(angle) {
             this.surface.rotateX(angle);
+        }
+
+        translate(translationVector) {
+            this.surface.position.copy(translationVector);
+            //this.geometry.attributes.color.needsUpdate = true;
+
         }
     }
 
@@ -101,7 +117,8 @@
     const renderer = createRenderer();
     lights();
     const surface = new Surface();
-    surface.rotateX(Math.PI / 4);
+    surface.rotateX(-Math.PI / 6);
+    surface.translate(new vector(0, -.5, 0));
 
     //
     // GUI controls
@@ -116,14 +133,14 @@
     // });
 
     function initCamera() {
-        const camera = new THREE.PerspectiveCamera(70, canvasWidth / canvasHeight, 1, 1000);
-        camera.position.set(0, 0, dim_y * 1.1);
+        const camera = new THREE.PerspectiveCamera(70, canvasWidth / canvasHeight, 1, 10);
+        camera.position.set(0, 0, 1);
         return camera;
     }
 
     function lights() {
         const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(30, 30, 30);
+        light.position.set(1, 1, 1);
         scene.add(light);
     }
 
@@ -173,17 +190,10 @@
         surface.update();
     }
 
-    const desiredFramesPerSecond = 30;
-    const interval = 1000 / desiredFramesPerSecond;
-    let lastTime = 0;
-
     function animate(time) {
         requestAnimationFrame(animate);
-        if (time - lastTime >= interval) {
-            lastTime = time;
-            update_pixels();
-            renderer.render(scene, camera);
-        }
+        update_pixels();
+        renderer.render(scene, camera);
     }
 
     animate(0);
