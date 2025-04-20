@@ -175,7 +175,7 @@
 
         for (let i = x - 2; i < x + 2; i++)
             for (let j = y - 2; j < y + 2; j++)
-                u[0][i][j] = 120;
+                u[0][i][j] = 120 * Math.exp(-((i - x) ** 2 + (j - y) ** 2) / 10);
     }
 
     function update_pixels() {
@@ -184,7 +184,7 @@
         surface.update();
     }
 
-    function animate(time) {
+    function animate() {
         requestAnimationFrame(animate);
         update_pixels();
         renderer.render(scene, camera);
