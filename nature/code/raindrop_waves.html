@@ -106,8 +106,6 @@
 
         translate(translationVector) {
             this.surface.position.copy(translationVector);
-            //this.geometry.attributes.color.needsUpdate = true;
-
         }
     }
 
@@ -127,10 +125,6 @@
     slider.oninput = function () {
         raindropFrequency = this.value / 1000;
     }
-
-    // controls.addEventListener( "change", event => {
-    //     console.log( "Value = " + surface.rotation );
-    // });
 
     function initCamera() {
         const camera = new THREE.PerspectiveCamera(70, canvasWidth / canvasHeight, 1, 10);
