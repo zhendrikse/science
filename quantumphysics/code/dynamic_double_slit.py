@@ -103,24 +103,22 @@ def run_simulation(umesh, utmesh, uttmesh, pixels):
             umesh[n][wall_x] = wall_x - 1
             umesh[n][wall_x - 1] = umesh[n][wall_x - 2]
             umesh[n][wall_x + 1] = umesh[n][wall_x + 2]
-        umesh[inter1][wall_x] = (umesh[inter1][wall_x - 1] + umesh[inter1][wall_x + 1] + umesh[inter1 + 1][wall_x]) / 3
 
         for n in range(mid_up, mid_down):
             umesh[n][wall_x] = wall_x - 1
             umesh[n][wall_x - 1] = umesh[n][wall_x - 2]
             umesh[n][wall_x + 1] = umesh[n][wall_x + 2]
-        umesh[mid_up - 1][wall_x] = (umesh[mid_up - 1][wall_x - 1] + umesh[mid_up - 1][wall_x + 1] + umesh[mid_up - 2][
-            wall_x]) / 3
-        umesh[mid_down][wall_x] = (umesh[mid_down][wall_x - 1] + umesh[mid_down][wall_x + 1] + umesh[mid_down + 1][
-            wall_x]) / 3
 
         for n in range(inter2, len(pixels[0])):
             umesh[n][wall_x] = wall_x - 1
             umesh[n][wall_x - 1] = umesh[n][wall_x - 2]
             umesh[n][wall_x + 1] = umesh[n][wall_x + 2]
-        umesh[-1][wall_x] = wall_x - 1
-        umesh[-1][wall_x - 1] = umesh[-1][wall_x - 2]
-        umesh[-1][wall_x + 1] = umesh[-1][wall_x + 2]
+
+        umesh[inter1][wall_x] = (umesh[inter1][wall_x - 1] + umesh[inter1][wall_x + 1] + umesh[inter1 + 1][wall_x]) / 3
+        umesh[mid_up - 1][wall_x] = (umesh[mid_up - 1][wall_x - 1] + umesh[mid_up - 1][wall_x + 1] + umesh[mid_up - 2][
+            wall_x]) / 3
+        umesh[mid_down][wall_x] = (umesh[mid_down][wall_x - 1] + umesh[mid_down][wall_x + 1] + umesh[mid_down + 1][
+            wall_x]) / 3
         umesh[inter2] = (umesh[inter2][wall_x - 1] + umesh[inter2][wall_x + 1] + umesh[inter2 - 1][wall_x]) / 3
 
         for i in range(len(pixels)):
