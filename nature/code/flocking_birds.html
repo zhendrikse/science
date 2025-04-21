@@ -170,20 +170,8 @@
                 this._birds.push(new Bird(new vector(speed, 0, 0).add(new vector().random().multiplyScalar(speed))));
         }
 
-        update(dt) {
-            // compute average position and direction
-            let center = new vector(0, 0, 0);
-            let direction = new vector(0, 0, 0);
-            for (let i = 0; i < this._bird_count; i++) {
-                const bird = this._birds[i];
-                center.add(bird.position());
-                direction.add(bird.velocity());
-            }
-
-            center.divideScalar(this._bird_count);
-            direction.divideScalar(this._bird_count);
-
-            // avoid nearest birds (A BETTER VERSION WOULD ANTICIPATE COLLISIONS)
+        // avoid nearest birds (A BETTER VERSION WOULD ANTICIPATE COLLISIONS)
+        avoidNearestBirds() {
             const avoid = []
             for (let i = 0; i < this._bird_count; i++) {
                 avoid.push(new vector(0, 0, 0));
@@ -196,7 +184,10 @@
                     }
                 }
             }
+            return avoid;
+        }
 
+        updateBirds(avoid, center, direction, dt) {
             for (let count = 0; count < this._bird_count; count++) {
                 let acceleration = new vector().randomDirection().multiplyScalar(this._random_weight);
 
@@ -211,6 +202,22 @@
 
                 this._birds[count].update(acceleration, dt)
             }
+        }
+
+        update(dt) {
+            // compute average position and direction
+            let center = new vector(0, 0, 0);
+            let direction = new vector(0, 0, 0);
+            for (let i = 0; i < this._bird_count; i++) {
+                const bird = this._birds[i];
+                center.add(bird.position());
+                direction.add(bird.velocity());
+            }
+
+            center.divideScalar(this._bird_count);
+            direction.divideScalar(this._bird_count);
+
+            this.updateBirds(this.avoidNearestBirds(), center, direction, dt);
         }
 
         setRandomWeightTo(value) {
