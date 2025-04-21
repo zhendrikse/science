@@ -131,11 +131,11 @@
         }
 
         distanceToSquared(other) {
-            return this.positionVectorTo(other).dot(this.positionVectorTo(other));
+            return this.sphere.position.distanceToSquared(other.sphere.position);
         }
 
         distanceTo(other) {
-            return Math.sqrt(this.distanceToSquared(other));
+            return this.sphere.position.distanceTo(other.sphere.position);
         }
     }
 
