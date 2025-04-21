@@ -129,6 +129,14 @@
         positionVectorTo(other) {
             return other.sphere.position.clone().sub(this.sphere.position);
         }
+
+        distanceToSquared(other) {
+            return this.positionVectorTo(other).dot(this.positionVectorTo(other));
+        }
+
+        distanceTo(other) {
+            return Math.sqrt(this.distanceToSquared(other));
+        }
     }
 
     class Particle {
@@ -146,13 +154,8 @@
             this.sphere.setRadiusTo(1);
         }
 
-        distanceSquaredTo(otherParticle) {
-            const diffVector = this.sphere.positionVectorTo(otherParticle.sphere)
-            return diffVector.dot(diffVector);
-        }
-
         distanceTo(otherParticle) {
-            return Math.sqrt(this.distanceSquaredTo(otherParticle));
+            return this.sphere.distanceTo(otherParticle.sphere);
         }
 
         freeze() {
@@ -164,7 +167,7 @@
             if (!otherParticle.frozen)
                 return false;
 
-            return this.distanceSquaredTo(otherParticle) < thresholdDistanceSquared;
+            return this.sphere.distanceToSquared(otherParticle.sphere) < thresholdDistanceSquared;
         }
 
         checkForFreezing() {
