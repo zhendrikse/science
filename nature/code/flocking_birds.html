@@ -16,6 +16,8 @@
 <label for="directionWeightSlider">Direction behavior: <input type="range" min="0" max="20" value="1" class="slider" id="directionWeightSlider"/></label>
 <p style="clear: both;"></p>
 <label for="avoidWeightSlider">Avoidance behavior: <input type="range" min="0" max="20" value="10" class="slider" id="avoidWeightSlider"/></label>
+<p style="clear: both;"></p>
+<button class="button" id="startleButton">Startle birds</button>
 
 <script type="module">
     import * as THREE from "three";
@@ -139,6 +141,10 @@
             return new vector().copy(this._velocity);
         }
 
+        startle() {
+            this._velocity = new vector().random().multiplyScalar(2 * speed);
+        }
+
         render() {
             this._bird.moveTo(this.position());
             this._bird.newAxisIs(this.velocity().normalize().multiplyScalar(size));
@@ -235,6 +241,11 @@
         setAvoidWeightTo(number) {
             this._avoid_weight = number;
         }
+
+        startleBirds() {
+            for (let i = 0; i < this._bird_count; i++)
+                this._birds[i].startle();
+        }
     }
 
     const flock = new Flock(250);
@@ -263,5 +274,9 @@
     avoidSlider.oninput = function() {
         flock.setAvoidWeightTo(this.value /10);
     };
+
+    document.getElementById("startleButton").addEventListener("click", () => {
+        flock.startleBirds();
+    });
 
 </script>
