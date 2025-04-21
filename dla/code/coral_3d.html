@@ -127,7 +127,7 @@
         }
 
         positionVectorTo(other) {
-            return other.sphere.position.clone().sub(this.sphere.position);
+            return new vector().copy(other.sphere.position).sub(this.sphere.position);
         }
 
         distanceToSquared(other) {
