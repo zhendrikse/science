@@ -127,10 +127,7 @@
         }
 
         positionVectorTo(other) {
-            const dx = this.sphere.position.x - other.sphere.position.x;
-            const dy = this.sphere.position.y - other.sphere.position.y;
-            const dz = this.sphere.position.z - other.sphere.position.z;
-            return new vector(dx, dy, dz);
+            return other.sphere.position.clone().sub(this.sphere.position);
         }
     }
 
