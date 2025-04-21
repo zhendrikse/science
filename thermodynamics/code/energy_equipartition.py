@@ -17,14 +17,15 @@ d = 2.5 * size
 N = 20
 one_third = 1. / 3.
 L = ((24.4E-3 / 6E23) * N) ** one_third / 50.  # 2L is the length of the cubic container box, the numer is made up
-m = 14E-3 / 6E23  # Average mass of O and C
 k, T = 1.38E-23, 298.0
+mass_o = 16 / 6E23
+mass_c = 12 / 6E23
 
 class Atom:
     def __init__(self, position, initial_velocity, mass, radius, colour):
         self._atom = simple_sphere(pos=position, radius=radius, color=colour)
         self._mass = mass
-        self._velocity = vector.random() * initial_velocity
+        self._velocity = vector(random(), random(), random()) * initial_velocity
 
     def check_box_bounce(self):
         if abs(self._atom.pos.x) >= L - size and self._atom.pos.x * self._velocity.x >= 0:
@@ -35,8 +36,8 @@ class Atom:
             self._velocity.z = -self._velocity.z
 
     def time_lapse(self, bond_force, dt):
-        acceleration = bond_force / self._mass
-        self._velocity += acceleration * dt
+        acceleration_carbon = bond_force / self._mass
+        self._velocity += acceleration_carbon * dt
         self._atom.pos += self._velocity * dt
 
     def pos(self):
@@ -53,12 +54,12 @@ class Atom:
 
 
 class CarbonMonoxide:
-    def __init__(self, oxygen_mass=16, carbon_mass=12, initial_v=sqrt(3 * k * T / m)):
+    def __init__(self, oxygen_mass=mass_o, carbon_mass=mass_c, initial_v=sqrt(6E3 * k * T / (mass_c + mass_o))):
         pos = vector(random() - .5, random() - .5, random() - .5) * L
         axis = vector(1. * d, 0, 0)
 
-        self._oxygen = Atom(pos, initial_v, oxygen_mass / 6E23, size, color.red)
-        self._carbon = Atom(pos + axis, initial_v, carbon_mass / 6E23, size, color.blue)
+        self._oxygen = Atom(pos, initial_v, oxygen_mass, size, color.red)
+        self._carbon = Atom(pos + axis, initial_v, carbon_mass, size, color.blue)
 
         self._bond = cylinder(pos=pos, axis=axis, radius=size / 2., color=color.white)
         self._bond_constant = k_bond
