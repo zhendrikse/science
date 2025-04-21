@@ -113,10 +113,6 @@
         distanceToSquared(other) {
             return this.arrow.position.distanceToSquared(other.arrow.position);
         }
-
-        distanceTo(other) {
-            return this.arrow.position.distanceTo(other.arrow.position);
-        }
     }
 
     class Bird {
@@ -183,7 +179,7 @@
                 avoid.push(new vector(0, 0, 0));
                 for (let j = 0; j < i; j++) {
                     const distanceSquared = this._birds[i].distanceToSquared(this._birds[j]);
-                    if (this._birds[i].distanceToSquared(this._birds[j]) < threshold) {
+                    if (distanceSquared < threshold) {
                         const separation_dist = this._birds[i].positionVectorTo(this._birds[j]);
                         avoid[i].sub(separation_dist.divideScalar(distanceSquared));
                         avoid[j].add(separation_dist.divideScalar(distanceSquared));
