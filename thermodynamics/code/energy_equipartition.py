@@ -24,7 +24,7 @@ class Atom:
     def __init__(self, position, initial_velocity, mass, radius, colour):
         self._atom = simple_sphere(pos=position, radius=radius, color=colour)
         self._mass = mass
-        self._velocity = vector(random(), random(), random()) * initial_velocity
+        self._velocity = vector.random() * initial_velocity
 
     def check_box_bounce(self):
         if abs(self._atom.pos.x) >= L - size and self._atom.pos.x * self._velocity.x >= 0:
@@ -35,8 +35,8 @@ class Atom:
             self._velocity.z = -self._velocity.z
 
     def time_lapse(self, bond_force, dt):
-        acceleration_carbon = bond_force / self._mass
-        self._velocity += acceleration_carbon * dt
+        acceleration = bond_force / self._mass
+        self._velocity += acceleration * dt
         self._atom.pos += self._velocity * dt
 
     def pos(self):
