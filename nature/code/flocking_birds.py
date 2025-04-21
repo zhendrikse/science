@@ -11,14 +11,12 @@ title="""&#x2022; Original version created by B. Philhour 10/9/17
 
 animation = canvas(background=color.gray(.075), title=title)  # , fov=10)
 
-spread = 3  # initial physical radius of entire flock
 speed = 6  # initial horizontal speed
 size = 1  # length of bird vector
 
-
 class Bird:
-    def __init__(self, velocity, size=1):
-        pos = spread * vector.random()
+    def __init__(self, velocity, initial_physical_flock_radius=3):
+        pos = initial_physical_flock_radius * vector.random()
         self._bird = arrow(pos=pos, axis=size * velocity.norm(), color=color.yellow)
         self._velocity = velocity
         self._position = pos
@@ -90,6 +88,7 @@ class Flock:
       self._avoid_weight = event.value
 
     def set_random_weight(self, event):
+        print(self._random_weight)
         self._random_weight = event.value
 
     def center_weight(self):
