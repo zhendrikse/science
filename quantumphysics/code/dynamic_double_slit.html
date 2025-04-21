@@ -16,15 +16,23 @@
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+    // Syntactic helpers
     const Array2D = (r, c, value = 0) => [...Array(r)].map(_ => Array(c).fill(value));
     const vector = THREE.Vector3;
-    const scene = new THREE.Scene();
+    Number.prototype.between = function (a, b, inclusive) {
+        const min = Math.min(a, b),
+            max = Math.max(a, b);
 
+        return inclusive ? this >= min && this <= max : this > min && this < max;
+    }
+
+    // Our display
     const canvas = document.getElementById('myCanvas');
     canvas.focus();
     const canvasWidth = canvas.getAttribute('width');
     const canvasHeight = canvas.getAttribute('height');
 
+    // GUI controls
     document.getElementById("resetButton").addEventListener("click", function(){
         u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
         time = 0;
@@ -116,6 +124,7 @@
     }
 
     // Set up scene
+    const scene = new THREE.Scene();
     const camera = initCamera();
     const controls = new OrbitControls(camera, canvas);
     const renderer = createRenderer();
@@ -168,32 +177,21 @@
             mid_up = coordinates[2],
             mid_down = coordinates[3];
 
-        for (let n = 0; n < inter1; n++) {
-            u[0][xWall][n] = xWall - 1;
-            u[0][xWall - 1][n] = u[0][xWall - 2][n];
-            u[0][xWall + 1][n] = u[0][xWall + 2][n];
-        }
-        u[0][xWall][inter1] = (u[0][xWall - 1][inter1] + u[0][xWall + 1][inter1] + u[0][xWall][inter1 + 1]) / 3;
+        for (let n = 0; n < dim_y; n++)
+            if (n.between(0, inter1, true) || n.between(mid_up, mid_down, true) || n.between(inter2, dim_y, true)) {
+                u[0][xWall][n] = xWall - 1;
+                u[0][xWall - 1][n] = u[0][xWall - 2][n];
+                u[0][xWall + 1][n] = u[0][xWall + 2][n];
+            }
 
-        for (let n = mid_up; n < mid_down; n++) {
-            u[0][xWall][n] = xWall - 1;
-            u[0][xWall - 1][n] = u[0][xWall - 2][n];
-            u[0][xWall + 1][n] = u[0][xWall + 2][n];
-        }
+        u[0][xWall][inter1] =     (u[0][xWall - 1][inter1] +     u[0][xWall + 1][inter1] +     u[0][xWall][inter1 + 1]) / 3;
         u[0][xWall][mid_up - 1] = (u[0][xWall - 1][mid_up - 1] + u[0][xWall + 1][mid_up - 1] + u[0][xWall][mid_up - 2]) / 3;
-        u[0][xWall][mid_down] = (u[0][xWall - 1][mid_down] + u[0][xWall + 1][mid_down] + u[0][xWall][mid_down + 1]) / 3;
+        u[0][xWall][mid_down] =   (u[0][xWall - 1][mid_down] +   u[0][xWall + 1][mid_down] +   u[0][xWall][mid_down + 1]) / 3;
+        u[0][xWall][inter2] =     (u[0][xWall - 1][inter2] +     u[0][xWall + 1][inter2] +     u[0][xWall][inter2 - 1]) / 3;
 
-
-        for (let n = inter2; n < dim_y; n++) {
-            u[0][xWall][n] = xWall - 1;
-            u[0][xWall - 1][n] = u[0][xWall - 2][n];
-            u[0][xWall + 1][n] = u[0][xWall + 2][n];
-        }
         u[0][xWall][dim_y - 1] = xWall - 1;
         u[0][xWall - 1][dim_y - 1] = u[0][xWall - 2][dim_y - 1];
         u[0][xWall + 1][dim_y - 1] = u[0][xWall + 2][dim_y - 1];
-        u[0][xWall][inter2] = (u[0][xWall - 1][inter2] + u[0][xWall + 1][inter2] + u[0][xWall][inter2 - 1]) / 3;
-
     }
 
     function centralFiniteDifferenceMethodTimestep() {
