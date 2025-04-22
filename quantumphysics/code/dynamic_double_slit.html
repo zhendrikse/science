@@ -159,6 +159,16 @@
             u[0][m][0] = u[0][m][1];
             u[0][m][dim_y - 1] = u[0][m][dim_y - 2];
         }
+
+        for (let n = 1; n < dim_y - 1; n++) {
+            u[0][0][n] = u[0][1][n];
+            u[0][dim_x - 1][n] = u[0][dim_x - 2][n];
+        }
+
+        u[0][0][0] = u[0][1][1];
+        u[0][0][dim_y - 1] = u[0][1][dim_y - 2];
+        u[0][dim_x - 1][0] = u[0][dim_x - 2][1];
+        u[0][dim_x - 1][dim_y - 1] = u[0][dim_x - 2][dim_y - 2];
     }
 
     function slitCoordinates() {
@@ -170,7 +180,7 @@
         return [inter1, inter2, mid_up, mid_down];
     }
 
-    function placeSlitsAt(xWall) {
+    function placeSlitsAt(x) {
         const coordinates = slitCoordinates();
         const inter1 = coordinates[0],
             inter2 = coordinates[1],
@@ -179,15 +189,21 @@
 
         for (let n = 0; n < dim_y; n++)
             if (n.between(0, inter1, true) || n.between(mid_up, mid_down, true) || n.between(inter2, dim_y, true)) {
-                u[0][xWall][n] = xWall - 1;
-                u[0][xWall - 1][n] = u[0][xWall - 2][n];
-                u[0][xWall + 1][n] = u[0][xWall + 2][n];
+                u[0][x][n] = x - 1;
+                u[0][x - 1][n] = u[0][x - 2][n];
+                u[0][x + 1][n] = u[0][x + 2][n];
             }
 
-        u[0][xWall][inter1] =     (u[0][xWall - 1][inter1] +     u[0][xWall + 1][inter1] +     u[0][xWall][inter1 + 1]) / 3;
-        u[0][xWall][mid_up - 1] = (u[0][xWall - 1][mid_up - 1] + u[0][xWall + 1][mid_up - 1] + u[0][xWall][mid_up - 2]) / 3;
-        u[0][xWall][mid_down] =   (u[0][xWall - 1][mid_down] +   u[0][xWall + 1][mid_down] +   u[0][xWall][mid_down + 1]) / 3;
-        u[0][xWall][inter2] =     (u[0][xWall - 1][inter2] +     u[0][xWall + 1][inter2] +     u[0][xWall][inter2 - 1]) / 3;
+        u[0][x][inter1] =     (u[0][x - 1][inter1] +     u[0][x + 1][inter1] +     u[0][x][inter1 + 1]) / 3;
+        u[0][x][mid_up - 1] = (u[0][x - 1][mid_up - 1] + u[0][x + 1][mid_up - 1] + u[0][x][mid_up - 2]) / 3;
+        u[0][x][mid_down] =   (u[0][x - 1][mid_down] +   u[0][x + 1][mid_down] +   u[0][x][mid_down + 1]) / 3;
+        u[0][x][inter2] =     (u[0][x - 1][inter2] +     u[0][x + 1][inter2] +     u[0][x][inter2 - 1]) / 3;
+    }
+
+    function initialDisturbance() {
+        if (time < pi_2)
+            for (let n = 0; n < dim_y; n++)
+                u[0][0][n] = -Math.cos(20 * time) + 1;
     }
 
     function centralFiniteDifferenceMethodTimestep() {
@@ -203,21 +219,7 @@
             }
 
         applyBoundaryConditions();
-
-        for (let n = 1; n < dim_y - 1; n++) {
-            u[0][0][n] = u[0][1][n];
-            u[0][dim_x - 1][n] = u[0][dim_x - 2][n];
-        }
-
-        if (time < pi_2)
-            for (let n = 0; n < dim_y; n++)
-                u[0][0][n] = -Math.cos(20 * time) + 1;
-
-        u[0][0][0] = u[0][1][1];
-        u[0][0][dim_y - 1] = u[0][1][dim_y - 2];
-        u[0][dim_x - 1][0] = u[0][dim_x - 2][1];
-        u[0][dim_x - 1][dim_y - 1] = u[0][dim_x - 2][dim_y - 2];
-
+        initialDisturbance();
         placeSlitsAt(wall_x);
     }
 
