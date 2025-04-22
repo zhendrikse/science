@@ -4,7 +4,7 @@ from vpython import sphere, cos, sin, textures, color, radians, vec, arrow, norm
 
 title = """&#x2022; Based on the <a href="https://trinket.io/embed/glowscript/575a4ed5d362597041cd6f84">Sun-Earth-Moon model by B. Philhour</a>
 &#x2022; Modified by <a href="https://www.glowscript.org/#/user/Rob_Salgado/folder/My_Programs/program/SunshineOnTheEarth">Rob Salgado</a> to model the sunshine seen by the United Kingdom
-&#x2022; Refactored and extended by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/astrophysics/code/daylight_variations.py">daylight_variations.py</a>
+&#x2022; Refactored and extended by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/nature/code/daylight_variations.py">daylight_variations.py</a>
 
 &#x2022; The red arrow points "upward from the UK" (at 52 degrees latitude [from the equator])
 &#x2022; The cyan arrow is the rotational axis of the earth, tilted at 23 degrees from vertical
