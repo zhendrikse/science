@@ -1,281 +1,171 @@
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
+<!doctype html>
+<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas>
+<p style="clear: both;"></p>
+Colors: <button id="colorSchemeButton1">scheme 1</button>
+<button id="colorSchemeButton2">scheme 2</button>&nbsp;&nbsp;&nbsp;
+Canvas: <button id="canvasSizeButton1">small</button>
+<button id="canvasSizeButton2">big</button>&nbsp;&nbsp;&nbsp;
+Action: <button id="resetButton">reset</button>
+<script>
+    const canvas = document.getElementById("myCanvas");
+    const display = canvas.getContext("2d");
+    canvas.focus();
 
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-ρσ_modules.pythonize = {};
+    const pixelSize = 1,
+        max_iter = 500;
+    let x_min = -2.0,
+        x_max =  1.0,
+        y_min = -1.0,
+        y_max = 1.0;
 
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, width, height, max_iter, scale, ρσ_unpack, x_min, x_max, y_min, y_max, pixel_width, pixel_height, selector;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "6";
-    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/mandelbrot.py\">mandelbrot.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
-    "8";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 400, background: color.gray(.075), range: 1})]);
-    "9";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "12";
-    width = 600;
-    "13";
-    height = 400;
-    "14";
-    max_iter = 100;
-    "15";
-    scale = .1;
-    "18";
-    ρσ_unpack = [1["-u"]()["*"](2), 1];
-    x_min = ρσ_unpack[0];
-    x_max = ρσ_unpack[1];
-    "19";
-    ρσ_unpack = [1["-u"]()["*"](1), 1];
-    y_min = ρσ_unpack[0];
-    y_max = ρσ_unpack[1];
-    "21";
-    pixel_width = x_max["-"](1["*"](x_min))["/"](width);
-    "22";
-    pixel_height = y_max["-"](1["*"](y_min))["/"](height);
-    "25";
-    async function complex_(re_, im_) {
-        "26";
-        return [re_, im_];
-    };
-    if (!complex_.__argnames__) Object.defineProperties(complex_, {
-        __argnames__ : {value: ["re_", "im_"]},
-        __module__ : {value: null}
-    });
-
-    "29";
-    async function z_squared_minus_c(z_, c_) {
-        "30";
-        return [ρσ_getitem(z_, 0)["*"](ρσ_getitem(z_, 0))["-"](1["*"](ρσ_getitem(z_, 1))["*"](ρσ_getitem(z_, 1)))["+"](ρσ_getitem(c_, 0)),
-        2["*"](ρσ_getitem(z_, 0))["*"](ρσ_getitem(z_, 1))["+"](ρσ_getitem(c_, 1))];
-    };
-    if (!z_squared_minus_c.__argnames__) Object.defineProperties(z_squared_minus_c, {
-        __argnames__ : {value: ["z_", "c_"]},
-        __module__ : {value: null}
-    });
-
-    "33";
-    async function abs_z_squared(z_) {
-        "34";
-        return ρσ_getitem(z_, 0)["*"](ρσ_getitem(z_, 0))["+"](ρσ_getitem(z_, 1)["*"](ρσ_getitem(z_, 1)));
-    };
-    if (!abs_z_squared.__argnames__) Object.defineProperties(abs_z_squared, {
-        __argnames__ : {value: ["z_"]},
-        __module__ : {value: null}
-    });
-
-    "37";
-    async function mandelbrot_3d(re, im, z, c) {
-        var ρσ_ls, n, colour, brightness, voxel_height;
-        "38";
-        n = 0;
-        "39";
-        while ((await abs_z_squared(z))["<="](4) && n["<"](max_iter)) {
-            "40";
-            z = (await z_squared_minus_c(z, c));
-            "41";
-            n=n["+"](1);
-        }
-        "43";
-        colour = vector(n["/"](max_iter), .3, 1["-"](1["*"](n)["/"](max_iter)));
-        "44";
-        brightness = n["/"](max_iter);
-        "45";
-        voxel_height = 5["*"](brightness);
-        "48";
-        ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vector(re["/"](scale), im["/"](scale), .5["*"](voxel_height)), radius: .08, color: colour, axis: vector(0, 0, .08["/"](scale)), shininess: 0})]);
-    };
-    if (!mandelbrot_3d.__argnames__) Object.defineProperties(mandelbrot_3d, {
-        __argnames__ : {value: ["re", "im", "z", "c"]},
-        __module__ : {value: null}
-    });
-
-    "56";
-    async function mandelbrot_2d(re, im, z, c) {
-        var ρσ_ls, n, brightness, colour, size;
-        "57";
-        n = 0;
-        "58";
-        while ((await abs_z_squared(z))["<="](4) && n["<"](max_iter)) {
-            "59";
-            z = (await z_squared_minus_c(z, c));
-            "60";
-            n=n["+"](1);
-        }
-        "61";
-        brightness = n["/"](max_iter);
-        "62";
-        if (.01["<"](brightness) && brightness["<"](1)) {
-            "63";
-            colour = vector(brightness, sqrt(brightness), Math.pow(brightness, .2));
-            "64";
-            size = vector(pixel_width, pixel_height, .01);
-            "65";
-            ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vector(re, im, 0), color: colour, size: size, shininess: 0})]);
-        }
-    };
-    if (!mandelbrot_2d.__argnames__) Object.defineProperties(mandelbrot_2d, {
-        __argnames__ : {value: ["re", "im", "z", "c"]},
-        __module__ : {value: null}
-    });
-
-    "68";
-    async function render_mandelbrot() {
-        var three_dim = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? render_mandelbrot.__defaults__.three_dim : arguments[0];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "three_dim")){
-            three_dim = ρσ_kwargs_obj.three_dim;
-        }
-        var ρσ_ls, step, re, im, c, z, _, y, x;
-        "69";
-        selector.disabled = true;
-        "70";
-        step = 0;
-        "71";
-        for (var ρσ_Index1 = 0; ρσ_Index1["<"](width); ρσ_Index1++) {
-            x = ρσ_Index1;
-            "72";
-            if (ρσ_equals(step["%"](20), 0)) {
-                "74";
-                (await rate(1e4));
-            }
-            "75";
-            for (var ρσ_Index2 = 0; ρσ_Index2["<"](height); ρσ_Index2++) {
-                y = ρσ_Index2;
-                "77";
-                re = x_min["+"](x["/"](width)["*"](x_max["-"](1["*"](x_min))));
-                "78";
-                im = y_min["+"](y["/"](height)["*"](y_max["-"](1["*"](y_min))));
-                "79";
-                c = (await complex_(re, im));
-                "80";
-                z = (await complex_(0, 0));
-                "81";
-                _ = (three_dim) ? (await mandelbrot_3d(re, im, z, c)) : (await mandelbrot_2d(re, im, z, c));
-            }
-            "82";
-            step=step["+"](1);
-        }
-        "84";
-        selector.disabled = false;
-    };
-    if (!render_mandelbrot.__defaults__) Object.defineProperties(render_mandelbrot, {
-        __defaults__ : {value: {three_dim:false}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["three_dim"]},
-        __module__ : {value: null}
-    });
-
-    "87";
-    async function render(event) {
-        var ρσ_ls, three_dimensional, obj;
-        "88";
-        three_dimensional = event.checked;
-        "89";
-        var ρσ_Iter3 = display.objects;
-        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-        for (var ρσ_Index3 of ρσ_Iter3) {
-            obj = ρσ_Index3;
-            "90";
-            obj.visible = false;
-            "91";
-            obj = undefined;
-        }
-        "92";
-        display.range = (three_dimensional) ? 15 : 1;
-        "93";
-        display.forward = (three_dimensional) ? vector(0, .7, 1["-u"]()["*"](.7)) : vector(0, 0, 1["-u"]()["*"](1));
-        "94";
-        display.center = (three_dimensional) ? vector(1["-u"]()["*"](6), 0, 0) : vector(1["-u"]()["*"](.5), 0, 0);
-        "95";
-        (await render_mandelbrot(three_dimensional));
-    };
-    if (!render.__argnames__) Object.defineProperties(render, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "98";
-    selector = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Three dimensional ", checked: false, bind: render})]);
-    "100";
-    display.range = 1;
-    "101";
-    display.forward = vector(0, 0, 1["-u"]()["*"](1));
-    "102";
-    display.center = vector(1["-u"]()["*"](.5), 0, 0);
-    "103";
-    (await render_mandelbrot());
-    "104";
-    while (true) {
-        "105";
-        (await rate(10));
+    function hsv2rgb(h,s,v) {
+        let f= (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k , 1), 0);
+        return [f(5), f(3), f(1)];
     }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
 
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
+    function hueColor(brightness) {
+        return hsv2rgb(brightness * 10 * 360, 1, 1);
+    }
 
-//--><!]]></script>
-</div>
+    function rgbColor(brightness) {
+        return [brightness, Math.sqrt(brightness), brightness ** 0.2];
+    }
+
+    let mandelbrotColorFor = rgbColor;
+
+    class PixelImage {
+        constructor() {
+            const Array2D = (r, c) => [...Array(r)].map(_=>Array(c).fill([0, 0, 0]));
+            this.dimX = canvas.width / pixelSize;
+            this.dimY = canvas.height / pixelSize;
+            this.colours = Array2D(this.dimX, this.dimY);
+        }
+
+        width() {
+            return this.dimX;
+        }
+
+        height() {
+            return this.dimY;
+        }
+
+        setColour(pixelX, pixelY, colour) {
+            this.colours[pixelX][pixelY] = colour;
+        }
+
+        asCanvasImageData() {
+            const imageData = display.createImageData(canvas.width, canvas.height);
+            for (let x = 0 ; x < canvas.width; x++)
+                for (let y = 0 ; y < canvas.height; y++) {
+                    let coordinate = y * (canvas.width * 4) + x * 4;
+                    const pixelX = Math.trunc(x / pixelSize);
+                    const pixelY = Math.trunc(y / pixelSize);
+
+                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][0] * 255;
+                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][1] * 255;
+                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][2] * 255;
+                    imageData.data[coordinate++] = 255
+                }
+            return imageData;
+        }
+
+        render() {
+            display.clearRect(0, 0, canvas.width, canvas.height);
+            display.putImageData(this.asCanvasImageData(), 0, 0);
+        }
+    }
+
+    function complex_(re_, im_) {
+        return [re_, im_];
+    }
+
+    function z_squared_minus_c(z_, c_) {
+        return [z_[0] * z_[0] - z_[1] * z_[1] + c_[0], 2 * z_[0] * z_[1] + c_[1]];
+    }
+
+    function abs_z_squared(z_) {
+        return z_[0] * z_[0] + z_[1] * z_[1];
+    }
+
+    function mandelbrot_2d(x, y, image) {
+        // Map pixel to complex plan
+        const re = x_min + (x / image.width()) * (x_max - x_min);
+        const im = y_min + (y / image.height()) * (y_max - y_min);
+        const c = complex_(re, im);
+        let z = complex_(0, 0);
+
+        let n = 0;
+        while (abs_z_squared(z) <= 4 && n < max_iter) {
+            z = z_squared_minus_c(z, c);
+            n += 1;
+        }
+
+        const brightness = n / max_iter;
+        if (.001 < brightness && brightness < 1)
+            image.setColour(x, y, mandelbrotColorFor(brightness));
+    }
+
+    function renderMandelbrot(image) {
+        for (let x = 0; x < image.width(); x++)
+            for (let y = 0; y < image.height(); y++)
+                mandelbrot_2d(x, y, image);
+    }
+
+    canvas.addEventListener("click", function(event) {
+        let x_range = (x_max - x_min);
+        let y_range = (y_max - y_min);
+
+        const re = x_min + (event.clientX / canvas.width) * x_range;
+        const im = y_min + (event.clientY / canvas.height) * y_range;
+
+        x_range *= .5;
+        y_range *= .5;
+        x_min = re - .5 * x_range;
+        x_max = re + .5 * x_range;
+        y_min = im - .5 * y_range;
+        y_max = im + .5 * y_range;
+        draw();
+    });
+
+    document.getElementById("resetButton").addEventListener("click", function(event) {
+        reset();
+    });
+
+    document.getElementById("colorSchemeButton1").addEventListener("click", function(event) {
+        mandelbrotColorFor = rgbColor;
+        draw();
+    });
+
+    document.getElementById("colorSchemeButton2").addEventListener("click", function(event) {
+        mandelbrotColorFor = hueColor;
+        draw();
+    });
+
+    document.getElementById("canvasSizeButton1").addEventListener("click", function(event) {
+        canvas.width = 600;
+        canvas.height = 400;
+        draw();
+    });
+
+    document.getElementById("canvasSizeButton2").addEventListener("click", function(event) {
+        canvas.width = 1200;
+        canvas.height = 800;
+        draw();
+    });
+
+    function draw() {
+        const mandelbrotImage = new PixelImage();
+        renderMandelbrot(mandelbrotImage);
+        mandelbrotImage.render();
+    }
+
+    function reset() {
+        x_min = -2.0;
+        x_max =  1.0;
+        y_min = -1.0;
+        y_max = 1.0;
+        draw();
+    }
+
+    reset();
+</script>
