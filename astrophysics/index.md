@@ -15,11 +15,6 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 
 
 <figure style="float: center; text-align: center;">
-  <a href="daylight_variations.html">
-    <img alt="Daylight variations" width="100%" height="100%" src="images/daylight_variations.png" title="Click to animate"/>
-  </a>
-  <figcaption>A not accurate to scale sun-earth-moon model, but very detailed and instructive!
-  It&apos;s main goal is visualizing the change in day length during the course of a year.</figcaption>
 </figure>
 
 <p style="clear: both;"></p>
