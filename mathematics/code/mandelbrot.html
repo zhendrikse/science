@@ -1,15 +1,14 @@
 <canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas>
+<p style="clear: both;"></p>
+Colors: <button id="colorSchemeButton1">scheme 1</button>
+<button id="colorSchemeButton2">scheme 2</button>&nbsp;&nbsp;&nbsp;
+Canvas: <button id="canvasSizeButton1">small</button>
+<button id="canvasSizeButton2">big</button>&nbsp;&nbsp;&nbsp;
+Action: <button id="resetButton">reset</button>
 <script>
     const canvas = document.getElementById("myCanvas");
     const display = canvas.getContext("2d");
     canvas.focus();
-
-    const pixelSize = 1,
-        max_iter = 500;
-    let x_min = -2.0,
-        x_max =  1.0,
-        y_min = -1.0,
-        y_max = 1.0;
 
     function hsv2rgb(h,s,v) {
         let f= (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k , 1), 0);
@@ -27,10 +26,11 @@
     let mandelbrotColorFor = hueColor;
 
     class PixelImage {
-        constructor() {
+        constructor(pixelSize=1) {
             const Array2D = (r, c) => [...Array(r)].map(_=>Array(c).fill([0, 0, 0]));
             this.dimX = canvas.width / pixelSize;
             this.dimY = canvas.height / pixelSize;
+            this.pixelSize = pixelSize;
             this.colours = Array2D(this.dimX, this.dimY);
         }
 
@@ -51,8 +51,8 @@
             for (let x = 0 ; x < canvas.width; x++)
                 for (let y = 0 ; y < canvas.height; y++) {
                     let coordinate = y * (canvas.width * 4) + x * 4;
-                    const pixelX = Math.trunc(x / pixelSize);
-                    const pixelY = Math.trunc(y / pixelSize);
+                    const pixelX = Math.trunc(x / this.pixelSize);
+                    const pixelY = Math.trunc(y / this.pixelSize);
 
                     imageData.data[coordinate++] = this.colours[pixelX][pixelY][0] * 255;
                     imageData.data[coordinate++] = this.colours[pixelX][pixelY][1] * 255;
@@ -68,15 +68,20 @@
         }
     }
 
+    let x_min = -2.0,
+        x_max =  1.0,
+        y_min = -1.0,
+        y_max = 1.0;
+
     class Mandelbrot {
-        constructor() {
+        constructor(max_iter=500) {
             this.image = new PixelImage();
             for (let x = 0; x < this.image.width(); x++)
                 for (let y = 0; y < this.image.height(); y++)
-                    this.mandelbrot_2d(x, y);
+                    this.mandelbrot_2d(x, y, max_iter);
         }
 
-        mandelbrot_2d(x, y) {
+        mandelbrot_2d(x, y, max_iter) {
             // Map pixel to complex plan
             const re = x_min + (x / this.image.width()) * (x_max - x_min);
             const im = y_min + (y / this.image.height()) * (y_max - y_min);
@@ -159,9 +164,4 @@
 
     new Mandelbrot().render();
 </script>
-<p style="clear: both;"></p>
-Colors: <button id="colorSchemeButton1">scheme 1</button>
-<button id="colorSchemeButton2">scheme 2</button>&nbsp;&nbsp;&nbsp;
-Canvas: <button id="canvasSizeButton1">small</button>
-<button id="canvasSizeButton2">big</button>&nbsp;&nbsp;&nbsp;
-Action: <button id="resetButton">reset</button>
+
