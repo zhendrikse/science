@@ -2,7 +2,7 @@
 from vpython import vec, box, rate, canvas, color, random
 
 title = """&#x2022; Based on <a href="https://github.com/beltoforion/recreational_mathematics_with_python/blob/master/Fire/fire.py">fire.py</a> from <a href="https://github.com/beltoforion/recreational_mathematics_with_python">Recreational Mathematics with Python</a>
-&#x2022; Ported to <a href="https://vpython.org/">VPython</a> by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/nature/code/fire.py">fire.py</a>
+&#x2022; Ported to <a href="https://vpython.org/">VPython</a> by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/fun/code/fire.py">fire.py</a>
 
 """
 

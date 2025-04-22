@@ -47,7 +47,7 @@ git {% include breadcrumbs.html %}
 
 <p style="clear: both;"></p>
 
-### Chessboard 
+### Chessboard &amp; relaxing fire
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
@@ -58,8 +58,10 @@ git {% include breadcrumbs.html %}
   <figcaption>Simple chess game with moving pieces.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="fire.html">
+    <img alt="Fire simulation" src="images/fire.png" title="Click to animate"/>
+  </a>
+  <figcaption>Simulation of a burning fire using a finite element method.</figcaption>
 </figure>
 </div>
 
