@@ -3,7 +3,7 @@
 ## Generating Mandelbrot images using VPython
 
 <div class="header_line"><br/></div>
-
+{::options syntax_highlighter="nil" /}
 {% include_relative code/mandelbrot.html %}
 
 <p style="clear: both;"></p>
