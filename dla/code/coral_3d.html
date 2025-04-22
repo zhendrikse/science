@@ -76,7 +76,7 @@
 
     function aquarium() {
         const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-        const material = new THREE.MeshStandardMaterial({ color: "rgb(0, 200, 200)", transparent: true, opacity: 0.35 });
+        const material = new THREE.MeshStandardMaterial({ color: new THREE.Color(0, .78, .78), transparent: true, opacity: 0.35 });
         const cube = new THREE.Mesh(geometry, material);
         scene.add(cube);
         return cube;
@@ -91,13 +91,13 @@
 
         switch (num) {
             case 0 :
-                return new vector(0, s, 1)
+                return new THREE.Color(0, s, 1);
             case 1 :
-                return new vector(0, 1, 1 - s)
+                return new THREE.Color(0, 1, 1 - s);
             case 2 :
-                return new vector(s, 1, 0)
+                return new THREE.Color(s, 1, 0);
             case 3 :
-                return new vector(1, 1 - s, 0)
+                return new THREE.Color(1, 1 - s, 0);
         }
     }
 
@@ -118,8 +118,8 @@
             this.sphere.scale.set(radius);
         }
 
-        setColorTo(rgbColorVector) {
-            this.sphere.material.color.setFromVector3(rgbColorVector);
+        setColorTo(colour) {
+            this.sphere.material.color.set(colour);
         }
 
         position() {
