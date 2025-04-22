@@ -1,4 +1,3 @@
-<!doctype html>
 <canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas>
 <p style="clear: both;"></p>
 Colors: <button id="colorSchemeButton1">scheme 1</button>
@@ -24,14 +23,14 @@ Action: <button id="resetButton">reset</button>
     }
 
     function hueColor(brightness) {
-        return hsv2rgb(brightness * 10 * 360, 1, 1);
+        return hsv2rgb(brightness * 5 * 360, 1, 1);
     }
 
     function rgbColor(brightness) {
         return [brightness, Math.sqrt(brightness), brightness ** 0.2];
     }
 
-    let mandelbrotColorFor = rgbColor;
+    let mandelbrotColorFor = hueColor;
 
     class PixelImage {
         constructor() {
@@ -132,12 +131,12 @@ Action: <button id="resetButton">reset</button>
     });
 
     document.getElementById("colorSchemeButton1").addEventListener("click", function(event) {
-        mandelbrotColorFor = rgbColor;
+        mandelbrotColorFor = hueColor;
         draw();
     });
 
     document.getElementById("colorSchemeButton2").addEventListener("click", function(event) {
-        mandelbrotColorFor = hueColor;
+        mandelbrotColorFor = rgbColor;
         draw();
     });
 
