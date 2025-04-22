@@ -17,6 +17,7 @@ d = 2.5 * size
 N = 20
 one_third = 1. / 3.
 L = ((24.4E-3 / 6E23) * N) ** one_third / 50.  # 2L is the length of the cubic container box, the numer is made up
+
 k, T = 1.38E-23, 298.0
 mass_o = 16 / 6E23
 mass_c = 12 / 6E23
@@ -61,7 +62,7 @@ class CarbonMonoxide:
         self._oxygen = Atom(pos, initial_v, oxygen_mass, size, color.red)
         self._carbon = Atom(pos + axis, initial_v, carbon_mass, size, color.blue)
 
-        self._bond = cylinder(pos=pos, axis=axis, radius=size / 2., color=color.white)
+        self._bond = cylinder(pos=pos, axis=axis, radius=size / 2., color=vec(0.975, .8, .55))
         self._bond_constant = k_bond
 
     def check_box_bounce(self):
