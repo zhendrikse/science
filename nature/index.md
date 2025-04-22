@@ -54,7 +54,7 @@ If I have ever made any valuable discoveries, it has been due more to patient at
 </div>
 <p style="clear: both;"></p>
 
-### Water and fire 
+### Phyllotaxis and variations in daylight 
 
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -67,10 +67,11 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="Fire.html">
-    <img alt="Fire simulation" src="images/fire.png" title="Click to animate"/>
+  <a href="daylight_variations.html">
+    <img alt="Daylight variations" src="images/daylight_variations.png" title="Click to animate"/>
   </a>
-  <figcaption>Simulation of a burning fire using a finite element method.</figcaption>
+  <figcaption>A not accurate to scale sun-earth-moon model, but very detailed and instructive!
+  It&apos;s main goal is visualizing the change in day length during the course of a year.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
