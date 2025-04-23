@@ -5,7 +5,8 @@
 
 - Code in [mandelbrot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/mandelbrot.html)
   written by [Zeger Hendrikse](https://www.hendrikse.name/)
-- Implemented in pure Javascript!
+- Implemented in 100% Javascript, but also ported to [VPython](https://vpython.org), see 
+  [mandelbrot.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/mandelbrot.py)
 - To zoom in, click with the mouse anywhere on the fractal!
 
 {% include_relative code/mandelbrot.html %}
