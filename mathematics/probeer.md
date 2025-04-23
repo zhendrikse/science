@@ -1,3 +1,5 @@
+{::options syntax_highlighter="nil" /}
+
 {% include breadcrumbs.html %}
 
 ## Generating Mandelbrot images using VPython
