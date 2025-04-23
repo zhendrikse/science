@@ -1,0 +1,167 @@
+<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas>
+<p style="clear: both;"></p>
+Colors: <button id="colorSchemeButton1">scheme 1</button>
+<button id="colorSchemeButton2">scheme 2</button>&nbsp;&nbsp;&nbsp;
+Canvas: <button id="canvasSizeButton1">small</button>
+<button id="canvasSizeButton2">big</button>&nbsp;&nbsp;&nbsp;
+Action: <button id="resetButton">reset</button>
+<script>
+    const canvas = document.getElementById("myCanvas");
+    const display = canvas.getContext("2d");
+    canvas.focus();
+
+    function hsv2rgb(h,s,v) {
+        let f= (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k , 1), 0);
+        return [f(5), f(3), f(1)];
+    }
+
+    function hueColor(brightness) {
+        return hsv2rgb(brightness * 5 * 360, 1, 1);
+    }
+
+    function rgbColor(brightness) {
+        return [brightness, Math.sqrt(brightness), brightness ** 0.2];
+    }
+
+    let mandelbrotColorFor = hueColor;
+
+    class PixelImage {
+        constructor(pixelSize=1) {
+            const Array2D = (r, c) => [...Array(r)].map(_=>Array(c).fill([0, 0, 0]));
+            this.dimX = canvas.width / pixelSize;
+            this.dimY = canvas.height / pixelSize;
+            this.pixelSize = pixelSize;
+            this.colours = Array2D(this.dimX, this.dimY);
+        }
+
+        width() {
+            return this.dimX;
+        }
+
+        height() {
+            return this.dimY;
+        }
+
+        setColour(pixelX, pixelY, colour) {
+            this.colours[pixelX][pixelY] = colour;
+        }
+
+        asCanvasImageData() {
+            const imageData = display.createImageData(canvas.width, canvas.height);
+            for (let x = 0 ; x < canvas.width; x++)
+                for (let y = 0 ; y < canvas.height; y++) {
+                    let coordinate = y * (canvas.width * 4) + x * 4;
+                    const pixelX = Math.trunc(x / this.pixelSize);
+                    const pixelY = Math.trunc(y / this.pixelSize);
+
+                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][0] * 255;
+                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][1] * 255;
+                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][2] * 255;
+                    imageData.data[coordinate++] = 255
+                }
+            return imageData;
+        }
+
+        render() {
+            display.clearRect(0, 0, canvas.width, canvas.height);
+            display.putImageData(this.asCanvasImageData(), 0, 0);
+        }
+    }
+
+    let x_min = -2.0,
+        x_max =  1.0,
+        y_min = -1.0,
+        y_max = 1.0;
+
+    class Mandelbrot {
+        constructor(max_iter=500) {
+            this.image = new PixelImage();
+            for (let x = 0; x < this.image.width(); x++)
+                for (let y = 0; y < this.image.height(); y++)
+                    this.mandelbrot_2d(x, y, max_iter);
+        }
+
+        mandelbrot_2d(x, y, max_iter) {
+            // Map pixel to complex plan
+            const re = x_min + (x / this.image.width()) * (x_max - x_min);
+            const im = y_min + (y / this.image.height()) * (y_max - y_min);
+            const c = this.complex_(re, im);
+            let z = this.complex_(0, 0);
+
+            let n = 0;
+            while (this.abs_z_squared(z) <= 4 && n < max_iter) {
+                z = this.z_squared_minus_c(z, c);
+                n += 1;
+            }
+
+            const brightness = n / max_iter;
+            if (.001 < brightness && brightness < 1)
+                this.image.setColour(x, y, mandelbrotColorFor(brightness));
+        }
+
+        render() {
+            this.image.render();
+        }
+
+        complex_(re_, im_) {
+            return [re_, im_];
+        }
+
+        z_squared_minus_c(z_, c_) {
+            return [z_[0] * z_[0] - z_[1] * z_[1] + c_[0], 2 * z_[0] * z_[1] + c_[1]];
+        }
+
+        abs_z_squared(z_) {
+            return z_[0] * z_[0] + z_[1] * z_[1];
+        }
+    }
+
+    canvas.addEventListener("click", function(event) {
+        let x_range = (x_max - x_min);
+        let y_range = (y_max - y_min);
+
+        const re = x_min + (event.clientX / canvas.width) * x_range;
+        const im = y_min + (event.clientY / canvas.height) * y_range;
+
+        x_range *= .5;
+        y_range *= .5;
+        x_min = re - .5 * x_range;
+        x_max = re + .5 * x_range;
+        y_min = im - .5 * y_range;
+        y_max = im + .5 * y_range;
+        new Mandelbrot().render();
+    });
+
+    document.getElementById("resetButton").addEventListener("click", function(event) {
+        x_min = -2.0;
+        x_max =  1.0;
+        y_min = -1.0;
+        y_max = 1.0;
+        new Mandelbrot().render();
+    });
+
+    document.getElementById("colorSchemeButton1").addEventListener("click", function(event) {
+        mandelbrotColorFor = hueColor;
+        new Mandelbrot().render();
+    });
+
+    document.getElementById("colorSchemeButton2").addEventListener("click", function(event) {
+        mandelbrotColorFor = rgbColor;
+        new Mandelbrot().render();
+    });
+
+    document.getElementById("canvasSizeButton1").addEventListener("click", function(event) {
+        canvas.width = 600;
+        canvas.height = 400;
+        new Mandelbrot().render();
+    });
+
+    document.getElementById("canvasSizeButton2").addEventListener("click", function(event) {
+        canvas.width = 1200;
+        canvas.height = 800;
+        new Mandelbrot().render();
+    });
+
+    new Mandelbrot().render();
+</script>
+
