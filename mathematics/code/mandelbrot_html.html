@@ -10,21 +10,6 @@ Action: <button id="resetButton">reset</button>
     const display = canvas.getContext("2d");
     canvas.focus();
 
-    function hsv2rgb(h,s,v) {
-        let f= (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k , 1), 0);
-        return [f(5), f(3), f(1)];
-    }
-
-    function hueColor(brightness) {
-        return hsv2rgb(brightness * 5 * 360, 1, 1);
-    }
-
-    function rgbColor(brightness) {
-        return [brightness, Math.sqrt(brightness), brightness ** 0.2];
-    }
-
-    let mandelbrotColorFor = hueColor;
-
     class PixelImage {
         constructor(pixelSize=1) {
             const Array2D = (r, c) => [...Array(r)].map(_=>Array(c).fill([0, 0, 0]));
