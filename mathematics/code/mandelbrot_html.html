@@ -27,10 +27,6 @@ Action: <button id="resetButton">reset</button>
             return this.dimY;
         }
 
-        setColour(pixelX, pixelY, colour) {
-            this.colours[pixelX][pixelY] = colour;
-        }
-
         asCanvasImageData() {
             const imageData = display.createImageData(canvas.width, canvas.height);
             for (let x = 0 ; x < canvas.width; x++)
