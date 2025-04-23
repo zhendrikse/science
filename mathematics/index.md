@@ -199,7 +199,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
   <a href="mandelbrot.html">
     <img alt="Mandelbrot set" src="images/mandelbrot.png" title="Click to animate"/>
   </a>
-  <figcaption>VPython can also be used to generate Mandelbrot images!</figcaption>
+  <figcaption>Check out this page and learn about the difference between Mandelbrot and Julia sets!</figcaption>
 </figure>
 <figure class="right_image">
   <!-- SPACE RESERVED FOR FUTURE APPLICATION
