@@ -6,6 +6,7 @@
 - Code in [mandelbrot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/mandelbrot.html)
   written by [Zeger Hendrikse](https://www.hendrikse.name/)
 - Implemented in pure Javascript!
+- To zoom in, click with the mouse anywhere on the fractal!
 
 {% include_relative code/mandelbrot.html %}
 
