@@ -24,8 +24,6 @@ Action: <button id="resetButton">reset</button>
         return [brightness, Math.sqrt(brightness), brightness ** 0.2];
     }
 
-    let mandelbrotColorFor = hueColor;
-
     class PixelImage {
         constructor(pixelSize=1) {
             const Array2D = (r, c) => [...Array(r)].map(_=>Array(c).fill([0, 0, 0]));
@@ -41,10 +39,6 @@ Action: <button id="resetButton">reset</button>
 
         height() {
             return this.dimY;
-        }
-
-        setColour(pixelX, pixelY, colour) {
-            this.colours[pixelX][pixelY] = colour;
         }
 
         asCanvasImageData() {
@@ -68,6 +62,135 @@ Action: <button id="resetButton">reset</button>
             display.putImageData(this.asCanvasImageData(), 0, 0);
         }
     }
+
+    class FractalRange {
+        constructor(re_min, re_max, im_min, im_max) {
+            this.re_min = re_min;
+            this.re_max = re_max;
+            this.im_min = im_min;
+            this.im_max = im_max;
+        }
+
+        realRange() {
+            return this.re_max - this.re_min;
+        }
+
+        imaginaryRange() {
+            return this.im_max - this.im_min;
+        }
+    }
+
+    class Fractal {
+        // When constantC is zero, this means Mandelbrot set, else Julia set
+        constructor(max_iter=500, constantC=0, colorFunction=hueColor) {
+            this.juliaRange = new FractalRange(-1.5, 1.5, -1.5, 1.5);
+            this.mandelbrotRange = new FractalRange(-2, 1, -1, 1);
+            this.constantC = constantC;
+            this.maxIter = max_iter;
+            this.colorFunction = colorFunction;
+            this.range = this.constantC === 0 ? this.mandelbrotRange : this.juliaRange;
+            this.image = new PixelImage();
+        }
+
+        reset() {
+            this.range = this.constantC === 0 ? this.mandelbrotRange : this.juliaRange;
+            this.render();
+        }
+
+        mapXyToComplexPlane(x, y) {
+            const re = this.range.re_min + (x / this.image.width()) * this.range.realRange();
+            const im = this.range.im_min + (y / this.image.height()) * this.range.imaginaryRange();
+            return this.complex(re, im);
+        }
+
+        setPixel(x, y) {
+            const c = this.constantC === 0 ? this.mapXyToComplexPlane(x, y) : this.constantC;
+            let z = this.constantC === 0 ? this.complex(0, 0) : this.mapXyToComplexPlane(x, y);
+
+            let n = 0;
+            while (this.abs_z_squared(z) <= 4 && n < this.maxIter) {
+                z = this.z_squared_minus_c(z, c);
+                n += 1;
+            }
+
+            const brightness = n / this.maxIter;
+            if (brightness < 1)
+                this.image.setColour(x, y, this.colorFunction(brightness));
+        }
+
+        render() {
+            this.image = new PixelImage();
+            for (let x = 0; x < this.image.width(); x++)
+                for (let y = 0; y < this.image.height(); y++)
+                    this.setPixel(x, y);
+            this.image.render();
+        }
+
+        zoomIn(x, y) {
+            const c = this.mapXyToComplexPlane(x, y);
+
+            const re_range = .5 * this.range.realRange();
+            const im_range = .5 * this.range.imaginaryRange();
+
+            this.range = new FractalRange(c[0] - .5 * re_range, c[0] + .5 * re_range, c[1] - .5 * im_range, c[1] + .5 * im_range);
+            this.render();
+        }
+
+        setConstantC(newValue) {
+            this.constantC = newValue;
+            this.reset();
+        }
+
+        setColorFunctionTo(newColorFunction) {
+            this.colorFunction = newColorFunction;
+            this.render();
+        }
+
+        complex(re_, im_) {
+            return [re_, im_];
+        }
+
+        z_squared_minus_c(z_, c_) {
+            return [z_[0] * z_[0] - z_[1] * z_[1] + c_[0], 2 * z_[0] * z_[1] + c_[1]];
+        }
+
+        abs_z_squared(z_) {
+            return z_[0] * z_[0] + z_[1] * z_[1];
+        }
+    }
+
+    const fractal = new Fractal();
+    fractal.render();
+
+    canvas.addEventListener("click", function(event) {
+        fractal.zoomIn(event.clientX, event.clientY);
+    });
+
+    document.getElementById("resetButton").addEventListener("click", function(event) {
+        fractal.reset();
+    });
+
+    document.getElementById("colorSchemeButton1").addEventListener("click", function(event) {
+        fractal.setColorFunctionTo(hueColor);
+    });
+
+    document.getElementById("colorSchemeButton2").addEventListener("click", function(event) {
+        fractal.setColorFunctionTo(rgbColor);
+    });
+
+    document.getElementById("canvasSizeButton1").addEventListener("click", function(event) {
+        canvas.width = 600;
+        canvas.height = 400;
+        fractal.render();
+    });
+
+    document.getElementById("canvasSizeButton2").addEventListener("click", function(event) {
+        canvas.width = 1200;
+        canvas.height = 800;
+        fractal.render();
+    });
+
+
 
 
 
