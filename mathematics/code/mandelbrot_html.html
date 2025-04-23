@@ -9,7 +9,6 @@ Action: <button id="resetButton">reset</button>
 <script>
     const canvas = document.getElementById("myCanvas");
     const display = canvas.getContext("2d");
-    const maxDistance = Math.sqrt(canvas.height * canvas.height + canvas.width * canvas.width);
     canvas.focus();
 
     function circle(x, y, radius, fillColor="#DDDD00", outline=false) {
@@ -48,6 +47,7 @@ Action: <button id="resetButton">reset</button>
     const noise = 10.0;
     const thresholdDistance = 5;
     const thresholdDistanceSquared = thresholdDistance * thresholdDistance;
+    const maxDistance = Math.sqrt(canvas.height * canvas.height + canvas.width * canvas.width);
 
     class Particle {
         constructor(radius=2) {
