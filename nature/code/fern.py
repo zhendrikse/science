@@ -10,7 +10,7 @@ title = """&#x2022; Based on <a href="https://rosettacode.org/wiki/Barnsley_fern
 
 img_x = 512
 img_y = 512
-display = canvas(title=title, background=color.gray(0.075), height=600, center=vector(0, +5, 0), fov=0.01)
+display = canvas(title=title, background=color.gray(0.15), height=600, center=vector(0, +5, 0), fov=0.01)
 
 def clear_canvas(range_, forward, center):
     for obj in display.objects:

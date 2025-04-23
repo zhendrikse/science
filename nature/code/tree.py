@@ -9,7 +9,7 @@ title = """&#x2022; Pythagoras tree based on <a href="http://rosettacode.org/wik
 
 """
 
-display = canvas(background=color.gray(0.075), center=vector(0, 50, 0), height=500, title=title)
+display = canvas(background=color.gray(0.15), center=vector(0, 50, 0), height=500, title=title)
 
 def clear_canvas(range_, center):
     for obj in display.objects:
