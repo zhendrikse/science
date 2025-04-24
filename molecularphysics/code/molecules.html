@@ -253,13 +253,13 @@
     class Lactate extends Molecule {
         constructor(carbonRadius=0.25, oxygenRadius=0.3, hydrogenRadius=0.2, bondRadius=0.05) {
             super();
-            const sqrt3 = Math.sqrt(3);
-            const sqrt3h = sqrt3 / 2;
-            const sin_phi = 1 / 3;
-            const cos_phi = 2 * Math.sqrt(2) / 3;
+            const sqrt3 = Math.sqrt(3),
+                sqrt3h = sqrt3 / 2,
+                sin_phi = 1 / 3,
+                cos_phi = 2 * Math.sqrt(2) / 3,
+                carbonPositions = [new vector(-1, 0, 0), new vector(0 ,0, 0), new vector(sin_phi, -cos_phi / 2, -sqrt3h * cos_phi)],
+                carbonAtoms = [];
 
-            const carbonPositions = [new vector(-1, 0, 0), new vector(0 ,0, 0), new vector(sin_phi, -cos_phi / 2, -sqrt3h * cos_phi)];
-            const carbonAtoms = [];
             for (let index = 0; index < carbonPositions.length; index++)
                 carbonAtoms.push(new Atom(carbonPositions[index], carbonRadius, new THREE.Color('black')));
 
