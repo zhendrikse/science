@@ -17,7 +17,6 @@ is generated in a similar way.
 - Inspired by [nnakul/chaos-game](https://github.com/nnakul/chaos-game/tree/master) by [Nikhil Nakul](https://github.com/nnakul/)
 - A [VPython](https://vpython.org) version is available as well, see [chaos_game.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/chaos_game.py)
 
-<p style="clear: both;"></p>
 {% include_relative code/chaos_game.html %}
 <p style="clear: both;"></p>
 
