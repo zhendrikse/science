@@ -13,8 +13,12 @@ characterize the chosen ruleset and $j$ denotes a (per iteration) randomly chose
 The famous [Barnsley fern](https://www.hendrikse.name/science/nature/fern.html) 
 is generated in a similar way.
 
-{% include_relative code/chaos_game.html %}
+- This [chaos_game.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/chaos_game.html) is 100% Javascript, written by [Zeger Hendrikse](https://github.com/zhendrikse/)
+- Inspired by [nnakul/chaos-game](https://github.com/nnakul/chaos-game/tree/master) by [Nikhil Nakul](https://github.com/nnakul/)
+- A [VPython](https://vpython.org) version is available as well, see [chaos_game.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/chaos_game.py)
 
+<p style="clear: both;"></p>
+{% include_relative code/chaos_game.html %}
 <p style="clear: both;"></p>
 
 ### Why do fractals arise from the chaos game

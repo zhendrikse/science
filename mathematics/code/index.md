@@ -2,7 +2,7 @@
 
 ## Python and Glowscript source code directory
  
-- [`chaos_game.py` source code](chaos_game.py)
+- [`chaos_game.html` source code](chaos_game.html)
 - [`complex_functions.py` source code](complex_functions.py)
 - [`div_curl_demo.py` source code](div_curl_demo.py)
 - [`double_shapes.py` source code](double_shapes.py)
