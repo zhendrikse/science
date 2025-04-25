@@ -1,5 +1,5 @@
 #Web VPython 3.2
-from vpython import canvas, vec, color, rate, sphere, curve, checkbox, sqrt
+from vpython import canvas, vec, color, rate, simple_sphere, curve, checkbox, sqrt
 
 title = """&#x2022; Fractals inspired by <a href="https://github.com/jeffvun/fractals/">github.com/jeffvun/fractals</a> 
 &#x2022; Ported to <a href="https://vpython.org/">VPython</a> by <a href="https://github.com/zhendrikse/">Zeger Hendrikse</a> in <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/fractals.py">fractals.py</a>
@@ -77,7 +77,7 @@ def generate_dragon_curve(n=15):
     points_ = dragon_curve(n)
     x, y = zip(*points_)
     for i in range(len(x)):
-        sphere(pos=250 * vec(x[i], y[i], 0), radius=1, shininess=0, color=color.hsv_to_rgb(vec(i/len(x), 2, 1)))
+        simple_sphere(pos=250 * vec(x[i], y[i], 0), radius=1, shininess=0, color=color.hsv_to_rgb(vec(i/len(x), 2, 1)))
 
 def dragon_fractal(event):
     t_square_radio.checked = sierpinski_radio.checked = False
