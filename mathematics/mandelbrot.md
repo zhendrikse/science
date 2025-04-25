@@ -89,7 +89,7 @@ where the index $n$ labels each consecutive iteration. The start value is zero.
 
 The burning ship uses a somewhat modified version of this formula, namely:
 
-$z_{n+1} = \left(|\text{Re}(z_n)| + i|\text{Im}(z_n)\right)^2 + c, z_0 = 0$
+$z_{n+1} = \left(\|\text{Re}(z_n)\| + i\|\text{Im}(z_n)\|\right)^2 + c, z_0 = 0$
 
 In addition, a different (and fixed) color mapping is used that underscores
 the metaphor of a burning ship.
