@@ -16,7 +16,21 @@
 ## Julia and Mandelbrot sets explained
 <div class="header_line"><br/></div>
 
-The Mandelbrot set is a type of shape, known as a fractal. This fractal can 
+The term fractal was coined by [Benoît Mandelbrot](https://en.wikipedia.org/wiki/Benoit_Mandelbrot)
+himself, and is derived from the Latin word ‘fractus’, which means broken or fractured.
+
+<figure>
+   <a href="https://svs.gsfc.nasa.gov/13326">
+     <img alt="Black hole explained" src="images/burning_ship.png"/>
+   </a>
+   <figcaption>The famous and stunningly beautiful 
+   <a href="https://en.wikipedia.org/wiki/Burning_Ship_fractal">burning ship fractal</a>
+   using a dedicated color mapping function.</figcaption>
+</figure>
+
+<p style="clear: both;"></p>
+
+The Mandelbrot and Julia sets are examples of such fractals. Such a set (fractal) can 
 be drawn on a piece of paper, or on a computer screen, i.e. a plane. Each point
 in this plane actually represents a (two-dimensional) value/number, called a
 complex number.
@@ -116,8 +130,6 @@ such as clouds or shorelines, actually had a "degree of order". &mdash;
 <a href="https://en.wikipedia.org/wiki/Benoit_Mandelbrot">Wikipedia</a>
 </blockquote><br/>
 
-The term fractal was coined by [Benoît Mandelbrot](https://en.wikipedia.org/wiki/Benoit_Mandelbrot) 
-himself, and is derived from the Latin word ‘fractus’, which means broken or fractured.
 
 ### References
 <div style="border-top: 1px solid #999999"><br/></div>
