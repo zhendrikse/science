@@ -216,15 +216,11 @@
     }
 
     function drawDragonCurve() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
+        turtle = new Turtle();
         const points = dragonCurve(12);
         const scale = 400;
         const offsetX = canvas.width / 4.5;
         const offsetY = canvas.height / 1.5;
-        turtle.penUp();
-        turtle.goto(offsetX, offsetY);
-        turtle.penDown();
 
         for (let i = 0; i < points.length - 1; i++) {
             const [x1, y1] = points[i];
