@@ -3,8 +3,13 @@
 ## Spiral galaxy visualization
 <div class="header_line"><br/></div>
 
-{% include_relative code/spiral_galaxy.html %}
+- Original [galaxy_3d_Medium.py](https://gist.github.com/rlvaugh/a49bf875890581f338a000c2b5c3a2bb) by [Lee Vaughan](https://towardsdatascience.com/author/lee_vaughan/)
+- The (theory behind the) code is thoroughly explained in his [accompanying article](https://towardsdatascience.com/create-3-d-galactic-art-with-matplotlib-a7534148a319/)
+- Extended with coloring and ported to Javascript and [Three.js](https://threejs.org/) by [Zeger Hendrikse](https://www.hendrikse.name/)
+- Also ported to [VPython](https://vpython.org), see [spiral_galaxy.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/spiral_galaxy.py)
 
+<p style="clear:both;"></p>
+{% include_relative code/spiral_galaxy.html %}
 <p style="clear:both;"></p>
 
 ## Spiral galaxy renderer

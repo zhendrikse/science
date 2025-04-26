@@ -9,7 +9,7 @@
 - [`pulsar.py` source code](pulsar.py)
 - [`saturn_rings.py` source code](saturn_rings.py)
 - [`solar_system.py` source code](solar_system.py)
-- [`spiral_galaxy.py` source code](spiral_galaxy.py)
+- [`spiral_galaxy.html` source code](spiral_galaxy.html)
 - [`three_body.py` source code](three_body.py)
 - [`xray_binary.py` source code](xray_binary.py)
 

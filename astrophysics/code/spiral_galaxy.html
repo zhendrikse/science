@@ -1,624 +1,309 @@
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-ρσ_modules.pythonize = {};
-ρσ_modules.random = {};
-
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-(function(){
-    var ρσ_seed_state, ρσ_get_random_byte;
-    ρσ_seed_state = (function(){
-        var ρσ_d = {};
-        ρσ_d["key"] = ρσ_list_decorate([]);
-        ρσ_d["key_i"] = 0;
-        ρσ_d["key_j"] = 0;
-        return ρσ_d;
-    }).call(this);
-    ρσ_get_random_byte = (function() {
-        var ρσ_anonfunc = function () {
-            var ρσ_unpack;
-            ρσ_seed_state.key_i = (ρσ_seed_state.key_i + 1) % 256;
-            ρσ_seed_state.key_j = (ρσ_seed_state.key_j + (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_i, ρσ_expr_temp)]) % 256;
-            ρσ_unpack = [(ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_j, ρσ_expr_temp)],
-            (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_i, ρσ_expr_temp)]];
-            (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_i, ρσ_expr_temp)] = ρσ_unpack[0];
-            (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_j, ρσ_expr_temp)] = ρσ_unpack[1];
-            return (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(((ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_i, ρσ_expr_temp)] + (ρσ_expr_temp = ρσ_seed_state.key)[ρσ_bound_index(ρσ_seed_state.key_j, ρσ_expr_temp)]) % 256, ρσ_expr_temp)];
-        };
-        if (!ρσ_anonfunc.__module__) Object.defineProperties(ρσ_anonfunc, {
-            __module__ : {value: "random"}
-        });
-        return ρσ_anonfunc;
-    })();
-    function seed() {
-        var x = (arguments[0] === undefined || ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? seed.__defaults__.x : arguments[0];
-        var ρσ_kwargs_obj = arguments[arguments.length-1];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "x")){
-            x = ρσ_kwargs_obj.x;
-        }
-        var i, j, ρσ_unpack;
-        ρσ_seed_state.key_i = ρσ_seed_state.key_j = 0;
-        if (typeof x === "number") {
-            x = x.toString();
-        } else if (typeof x !== "string") {
-            throw new TypeError("unhashable type: '" + typeof x + "'");
-        }
-        for (var ρσ_Index1 = 0; ρσ_Index1 < 256; ρσ_Index1++) {
-            i = ρσ_Index1;
-            (ρσ_expr_temp = ρσ_seed_state.key)[(typeof i === "number" && i < 0) ? ρσ_expr_temp.length + i : i] = i;
-        }
-        j = 0;
-        for (var ρσ_Index2 = 0; ρσ_Index2 < 256; ρσ_Index2++) {
-            i = ρσ_Index2;
-            j = (j + (ρσ_expr_temp = ρσ_seed_state.key)[(typeof i === "number" && i < 0) ? ρσ_expr_temp.length + i : i] + x.charCodeAt(i % x.length)) % 256;
-            ρσ_unpack = [(ρσ_expr_temp = ρσ_seed_state.key)[(typeof j === "number" && j < 0) ? ρσ_expr_temp.length + j : j],
-            (ρσ_expr_temp = ρσ_seed_state.key)[(typeof i === "number" && i < 0) ? ρσ_expr_temp.length + i : i]];
-            (ρσ_expr_temp = ρσ_seed_state.key)[(typeof i === "number" && i < 0) ? ρσ_expr_temp.length + i : i] = ρσ_unpack[0];
-            (ρσ_expr_temp = ρσ_seed_state.key)[(typeof j === "number" && j < 0) ? ρσ_expr_temp.length + j : j] = ρσ_unpack[1];
-        }
-    };
-    if (!seed.__defaults__) Object.defineProperties(seed, {
-        __defaults__ : {value: {x:(new Date).getTime()}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["x"]},
-        __module__ : {value: "random"}
-    });
-
-    seed();
-    function random() {
-        var n, m, i;
-        n = 0;
-        m = 1;
-        for (var ρσ_Index3 = 0; ρσ_Index3 < 8; ρσ_Index3++) {
-            i = ρσ_Index3;
-            n += ρσ_get_random_byte() * m;
-            m *= 256;
-        }
-        return n / 0x10000000000000000;
-    };
-    if (!random.__module__) Object.defineProperties(random, {
-        __module__ : {value: "random"}
-    });
-
-    function randrange() {
-        var start, stop, step, width, n;
-        if (arguments.length === 1) {
-            return randbelow(int(arguments[0]));
-        }
-        start = int(arguments[0]);
-        stop = int(arguments[1]);
-        if (arguments.length < 3) {
-            step = 1;
-        } else {
-            step = int(arguments[2]);
-        }
-        width = stop - start;
-        if (step === 1) {
-            if (width > 0) {
-                return start + randbelow(width);
-            }
-            throw new ValueError("empty range for randrange()");
-        }
-        if (step > 0) {
-            n = Math.floor((width + step - 1) / step);
-        } else if (step < 0) {
-            n = Math.floor((width + step + 1) / step);
-        } else {
-            throw new ValueError("zero step for randrange()");
-        }
-        if (n <= 0) {
-            throw new ValueError("empty range in randrange(" + ρσ_str.format("{}", start) + ", " + ρσ_str.format("{}", stop) + ", " + ρσ_str.format("{}", step) + ")");
-        }
-        return start + step * randbelow(n);
-    };
-    if (!randrange.__module__) Object.defineProperties(randrange, {
-        __module__ : {value: "random"}
-    });
-
-    function randint(a, b) {
-        return int(random() * (b - a + 1) + a);
-    };
-    if (!randint.__argnames__) Object.defineProperties(randint, {
-        __argnames__ : {value: ["a", "b"]},
-        __module__ : {value: "random"}
-    });
-
-    function uniform(a, b) {
-        return random() * (b - a) + a;
-    };
-    if (!uniform.__argnames__) Object.defineProperties(uniform, {
-        __argnames__ : {value: ["a", "b"]},
-        __module__ : {value: "random"}
-    });
-
-    function randbelow(n) {
-        return Math.floor(random() * n);
-    };
-    if (!randbelow.__argnames__) Object.defineProperties(randbelow, {
-        __argnames__ : {value: ["n"]},
-        __module__ : {value: "random"}
-    });
-
-    function choice(seq) {
-        if (seq.length > 0) {
-            return seq[ρσ_bound_index(randbelow(seq.length), seq)];
-        } else {
-            throw new IndexError;
-        }
-    };
-    if (!choice.__argnames__) Object.defineProperties(choice, {
-        __argnames__ : {value: ["seq"]},
-        __module__ : {value: "random"}
-    });
-
-    function shuffle() {
-        var x = ( 0 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
-        var random_f = (arguments[1] === undefined || ( 1 === arguments.length-1 && arguments[arguments.length-1] !== null && typeof arguments[arguments.length-1] === "object" && arguments[arguments.length-1] [ρσ_kwargs_symbol] === true)) ? shuffle.__defaults__.random_f : arguments[1];
-        var ρσ_kwargs_obj = arguments[arguments.length-1];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "random_f")){
-            random_f = ρσ_kwargs_obj.random_f;
-        }
-        var j, ρσ_unpack, i;
-        for (var ρσ_Index4 = 0; ρσ_Index4 < x.length; ρσ_Index4++) {
-            i = ρσ_Index4;
-            j = Math.floor(random_f() * (i + 1));
-            ρσ_unpack = [x[(typeof j === "number" && j < 0) ? x.length + j : j], x[(typeof i === "number" && i < 0) ? x.length + i : i]];
-            x[(typeof i === "number" && i < 0) ? x.length + i : i] = ρσ_unpack[0];
-            x[(typeof j === "number" && j < 0) ? x.length + j : j] = ρσ_unpack[1];
-        }
-        return x;
-    };
-    if (!shuffle.__defaults__) Object.defineProperties(shuffle, {
-        __defaults__ : {value: {random_f:random}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["x", "random_f"]},
-        __module__ : {value: "random"}
-    });
-
-    function sample(population, k) {
-        var x, j, ρσ_unpack, i;
-        x = population.slice();
-        for (var ρσ_Index5 = population.length - 1; ρσ_Index5 > population.length - k - 1; ρσ_Index5-=1) {
-            i = ρσ_Index5;
-            j = Math.floor(random() * (i + 1));
-            ρσ_unpack = [x[(typeof j === "number" && j < 0) ? x.length + j : j], x[(typeof i === "number" && i < 0) ? x.length + i : i]];
-            x[(typeof i === "number" && i < 0) ? x.length + i : i] = ρσ_unpack[0];
-            x[(typeof j === "number" && j < 0) ? x.length + j : j] = ρσ_unpack[1];
-        }
-        return x.slice(population.length - k);
-    };
-    if (!sample.__argnames__) Object.defineProperties(sample, {
-        __argnames__ : {value: ["population", "k"]},
-        __module__ : {value: "random"}
-    });
-
-    ρσ_modules.random.ρσ_seed_state = ρσ_seed_state;
-    ρσ_modules.random.ρσ_get_random_byte = ρσ_get_random_byte;
-    ρσ_modules.random.seed = seed;
-    ρσ_modules.random.random = random;
-    ρσ_modules.random.randrange = randrange;
-    ρσ_modules.random.randint = randint;
-    ρσ_modules.random.uniform = uniform;
-    ρσ_modules.random.randbelow = randbelow;
-    ρσ_modules.random.choice = choice;
-    ρσ_modules.random.shuffle = shuffle;
-    ρσ_modules.random.sample = sample;
-})();
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-
-    var version, print, arange, __name__, type, ρσ_ls, title, SCALE, arms_info, ρσ_unpack, leading_arm, trailing_arm, core, inner_haze, outer_haze, display, leading_arm_stars, trailing_arm_stars, core_stars, inner_haze_stars, outer_haze_stars, position, _;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "8";
-    title = "&#x2022; Original <a href=\"https://gist.github.com/rlvaugh/a49bf875890581f338a000c2b5c3a2bb\">galaxy_3d_Medium.py<\/a> by <a href=\"https://towardsdatascience.com/author/lee_vaughan/\">Lee Vaughan</a>\n&#x2022; The (theory behind the) code is thoroughly explained in his <a href=\"https://towardsdatascience.com/create-3-d-galactic-art-with-matplotlib-a7534148a319/\">accompanying article</a>\n&#x2022; Ported to <a href=\"https://vpython.org\">VPython</a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/astrophysics/code/spiral_galaxy.py\">spiral_galaxy.py</a>\n\n";
-    var randint = ρσ_modules.random.randint;
-    var uniform = ρσ_modules.random.uniform;
-    var random = ρσ_modules.random.random;
-
-    "19";
-    SCALE = 500;
-    "22";
-    async function build_spiral_stars(b, r, rot_fac, fuz_fac) {
-        var ρσ_ls, fuzz, num_stars, spiral_stars, theta, x, y, z, i;
-        "30";
-        fuzz = int(.03["*"](abs(r)));
-        "31";
-        num_stars = 1e3;
-        "32";
-        spiral_stars = ρσ_list_decorate([]);
-        "33";
-        for (var ρσ_Index6 = 0; ρσ_Index6["<"](num_stars); ρσ_Index6++) {
-            i = ρσ_Index6;
-            "34";
-            theta = (await radians(i));
-            "35";
-            x = r["*"](exp(b["*"](theta)))["*"](cos(theta["-"](1["*"](pi)["*"](rot_fac))))["-"](1["*"]((await randint(1["-u"]()["*"](fuzz), fuzz)))["*"](fuz_fac));
-            "36";
-            y = r["*"](exp(b["*"](theta)))["*"](sin(theta["-"](1["*"](pi)["*"](rot_fac))))["-"](1["*"]((await randint(1["-u"]()["*"](fuzz), fuzz)))["*"](fuz_fac));
-            "37";
-            z = (await uniform(1["-u"]()["*"](SCALE)["/"](SCALE["*"](3)), SCALE["/"](SCALE["*"](3))));
-            "38";
-            spiral_stars.append(vec(x, y, z));
-        }
-        "39";
-        return spiral_stars;
-    };
-    if (!build_spiral_stars.__argnames__) Object.defineProperties(build_spiral_stars, {
-        __argnames__ : {value: ["b", "r", "rot_fac", "fuz_fac"]},
-        __module__ : {value: null}
-    });
-
-    "44";
-    arms_info = ρσ_list_decorate([ [SCALE, 2, 1.5], [SCALE, 1.91, 1.5], [1["-u"]()["*"](SCALE),
-    2, 1.5], [1["-u"]()["*"](SCALE), 1["-u"]()["*"](2.09), 1.5], [1["-u"]()["*"](SCALE), .5, 1.5], [1["-u"]()["*"](SCALE), .4, 1.5], [1["-u"]()["*"](SCALE),
-    1["-u"]()["*"](.5), 1.5], [1["-u"]()["*"](SCALE), 1["-u"]()["*"](.6), 1.5] ]);
-    "50";
-    async function build_spiral_arms(b, arms_info) {
-        var ρσ_ls, leading_arms, trailing_arms, arm, ρσ_unpack, i, arm_info;
-        "56";
-        leading_arms = ρσ_list_decorate([]);
-        "57";
-        trailing_arms = ρσ_list_decorate([]);
-        "58";
-        var ρσ_Iter7 = enumerate(arms_info);
-        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
-        for (var ρσ_Index7 of ρσ_Iter7) {
-            ρσ_unpack = ρσ_Index7;
-            i = ρσ_unpack[0];
-            arm_info = ρσ_unpack[1];
-            "59";
-            arm = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, build_spiral_stars, [ρσ_desugar_kwargs({b: b, r: ρσ_getitem(arm_info, 0), rot_fac: ρσ_getitem(arm_info, 1), fuz_fac: ρσ_getitem(arm_info, 2)})]));
-            "63";
-            if (ρσ_not_equals(i["%"](2), 0)) {
-                "64";
-                leading_arms.extend(arm);
-                "65";
-            } else {
-                "66";
-                trailing_arms.extend(arm);
-            }
-        }
-        "67";
-        return [leading_arms, trailing_arms];
-    };
-    if (!build_spiral_arms.__argnames__) Object.defineProperties(build_spiral_arms, {
-        __argnames__ : {value: ["b", "arms_info"]},
-        __module__ : {value: null}
-    });
-
-    "70";
-    async function gauss(mu, sigma) {
-        var ρσ_ls, u1, u2, vt;
-        "71";
-        u1 = random();
-        "72";
-        u2 = random();
-        "73";
-        vt = sqrt(1["-u"]()["*"](2)["*"](log(u1)))["*"](cos(2["*"](pi)["*"](u2)));
-        "74";
-        vt=vt["*"](sigma["+"](mu));
-        "75";
-        return vt;
-    };
-    if (!gauss.__argnames__) Object.defineProperties(gauss, {
-        __argnames__ : {value: ["mu", "sigma"]},
-        __module__ : {value: null}
-    });
-
-    "77";
-    async function spherical_coordinates(num_pts, radius) {
-        var ρσ_ls, position_list, position, _;
-        "79";
-        position_list = ρσ_list_decorate([]);
-        "80";
-        for (var ρσ_Index8 = 0; ρσ_Index8["<"](num_pts); ρσ_Index8++) {
-            _ = ρσ_Index8;
-            "81";
-            position = radius["*"](vector((await gauss(0, 1)), (await gauss(0, 1)), (await gauss(0, 1))));
-            "83";
-            position_list.append(position);
-        }
-        "84";
-        return position_list;
-    };
-    if (!spherical_coordinates.__argnames__) Object.defineProperties(spherical_coordinates, {
-        __argnames__ : {value: ["num_pts", "radius"]},
-        __module__ : {value: null}
-    });
-
-    "87";
-    async function build_core_stars(scale_factor) {
-        var ρσ_ls, core_radius, num_rim_stars, outer_stars, inner_stars;
-        "89";
-        core_radius = scale_factor["/"](15);
-        "90";
-        num_rim_stars = 3e3;
-        "91";
-        outer_stars = (await spherical_coordinates(num_rim_stars, core_radius));
-        "92";
-        inner_stars = (await spherical_coordinates(int(num_rim_stars["/"](4)), core_radius["/"](2.5)));
-        "93";
-        return outer_stars["+"](inner_stars);
-    };
-    if (!build_core_stars.__argnames__) Object.defineProperties(build_core_stars, {
-        __argnames__ : {value: ["scale_factor"]},
-        __module__ : {value: null}
-    });
-
-    "96";
-    async function haze(scale_factor, r_mult, z_mult, density) {
-        var ρσ_ls, haze_coordinates, n, theta, x, y, z, _;
-        "104";
-        haze_coordinates = ρσ_list_decorate([]);
-        "105";
-        for (var ρσ_Index9 = 0; ρσ_Index9["<"](scale_factor["*"](density)); ρσ_Index9++) {
-            _ = ρσ_Index9;
-            "106";
-            n = random();
-            "107";
-            theta = (await uniform(0, 2["*"](pi)));
-            "108";
-            x = round(sqrt(n)["*"](cos(theta))["*"](scale_factor))["/"](r_mult);
-            "109";
-            y = round(sqrt(n)["*"](sin(theta))["*"](scale_factor))["/"](r_mult);
-            "110";
-            z = (await uniform(1["-u"]()["*"](1), 1))["*"](z_mult);
-            "111";
-            haze_coordinates.append(vec(x, y, z));
-        }
-        "112";
-        return haze_coordinates;
-    };
-    if (!haze.__argnames__) Object.defineProperties(haze, {
-        __argnames__ : {value: ["scale_factor", "r_mult", "z_mult", "density"]},
-        __module__ : {value: null}
-    });
-
-    "116";
-    ρσ_unpack = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, build_spiral_arms, [ρσ_desugar_kwargs({b: 1["-u"]()["*"](.3), arms_info: arms_info})]));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-    leading_arm = ρσ_unpack[0];
-    trailing_arm = ρσ_unpack[1];
-    "117";
-    core = (await build_core_stars(SCALE));
-    "118";
-    inner_haze = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, haze, [SCALE].concat([ρσ_desugar_kwargs({r_mult: 2, z_mult: .5, density: 5})])));
-    "119";
-    outer_haze = await ρσ_list_decorate(ρσ_interpolate_kwargs.call(this, haze, [SCALE].concat([ρσ_desugar_kwargs({r_mult: 1, z_mult: .3, density: 5})])));
-    "121";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), center: vec(0, 1["-u"]()["*"](80), 1["-u"]()["*"](80)), width: 600, range: SCALE, forward: vec(-.2, .9, -.45), title: title})]);
-    "123";
-    ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]),
-    ρσ_list_decorate([])];
-    leading_arm_stars = ρσ_unpack[0];
-    trailing_arm_stars = ρσ_unpack[1];
-    core_stars = ρσ_unpack[2];
-    inner_haze_stars = ρσ_unpack[3];
-    outer_haze_stars = ρσ_unpack[4];
-    "124";
-    var ρσ_Iter10 = leading_arm;
-    ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
-    for (var ρσ_Index10 of ρσ_Iter10) {
-        position = ρσ_Index10;
-        "125";
-        leading_arm_stars.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, color: color.white, radius: 5})]));
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
+      }
     }
-    "126";
-    var ρσ_Iter11 = trailing_arm;
-    ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
-    for (var ρσ_Index11 of ρσ_Iter11) {
-        position = ρσ_Index11;
-        "127";
-        trailing_arm_stars.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, color: color.white, radius: 2})]));
-    }
-    "128";
-    var ρσ_Iter12 = core;
-    ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
-    for (var ρσ_Index12 of ρσ_Iter12) {
-        position = ρσ_Index12;
-        "129";
-        core_stars.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, color: color.white, radius: 1})]));
-    }
-    "130";
-    var ρσ_Iter13 = inner_haze;
-    ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
-    for (var ρσ_Index13 of ρσ_Iter13) {
-        position = ρσ_Index13;
-        "131";
-        inner_haze_stars.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, color: color.white, radius: 1})]));
-    }
-    "132";
-    var ρσ_Iter14 = outer_haze;
-    ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
-    for (var ρσ_Index14 of ρσ_Iter14) {
-        position = ρσ_Index14;
-        "133";
-        outer_haze_stars.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, color: color.gray(.75), radius: 1})]));
-    }
-    "135";
-    async function color_leading_arm_stars(event) {
-        var ρσ_ls, colour, star;
-        "136";
-        colour = ((event.value === 0 || typeof event.value === "object" && ρσ_equals(event.value, 0))) ? color.white : color.hsv_to_rgb(vector(event.value, 1, 1));
-        "137";
-        var ρσ_Iter15 = leading_arm_stars;
-        ρσ_Iter15 = ((typeof ρσ_Iter15[Symbol.iterator] === "function") ? (ρσ_Iter15 instanceof Map ? ρσ_Iter15.keys() : ρσ_Iter15) : Object.keys(ρσ_Iter15));
-        for (var ρσ_Index15 of ρσ_Iter15) {
-            star = ρσ_Index15;
-            "138";
-            star.color = colour;
-        }
-    };
-    if (!color_leading_arm_stars.__argnames__) Object.defineProperties(color_leading_arm_stars, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
+</script>
 
-    "140";
-    async function color_trailing_arm_stars(event) {
-        var ρσ_ls, colour, star;
-        "141";
-        colour = ((event.value === 0 || typeof event.value === "object" && ρσ_equals(event.value, 0))) ? color.white : color.hsv_to_rgb(vector(event.value, 1, 1));
-        "142";
-        var ρσ_Iter16 = trailing_arm_stars;
-        ρσ_Iter16 = ((typeof ρσ_Iter16[Symbol.iterator] === "function") ? (ρσ_Iter16 instanceof Map ? ρσ_Iter16.keys() : ρσ_Iter16) : Object.keys(ρσ_Iter16));
-        for (var ρσ_Index16 of ρσ_Iter16) {
-            star = ρσ_Index16;
-            "143";
-            star.color = colour;
-        }
-    };
-    if (!color_trailing_arm_stars.__argnames__) Object.defineProperties(color_trailing_arm_stars, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "145";
-    async function color_core_stars(event) {
-        var ρσ_ls, colour, star;
-        "146";
-        colour = ((event.value === 0 || typeof event.value === "object" && ρσ_equals(event.value, 0))) ? color.white : color.hsv_to_rgb(vector(event.value, 1, 1));
-        "147";
-        var ρσ_Iter17 = core_stars;
-        ρσ_Iter17 = ((typeof ρσ_Iter17[Symbol.iterator] === "function") ? (ρσ_Iter17 instanceof Map ? ρσ_Iter17.keys() : ρσ_Iter17) : Object.keys(ρσ_Iter17));
-        for (var ρσ_Index17 of ρσ_Iter17) {
-            star = ρσ_Index17;
-            "148";
-            star.color = colour;
-        }
-    };
-    if (!color_core_stars.__argnames__) Object.defineProperties(color_core_stars, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "150";
-    async function color_inner_haze_stars(event) {
-        var ρσ_ls, colour, star;
-        "151";
-        colour = ((event.value === 0 || typeof event.value === "object" && ρσ_equals(event.value, 0))) ? color.white : color.hsv_to_rgb(vector(event.value, 1, 1));
-        "152";
-        var ρσ_Iter18 = inner_haze_stars;
-        ρσ_Iter18 = ((typeof ρσ_Iter18[Symbol.iterator] === "function") ? (ρσ_Iter18 instanceof Map ? ρσ_Iter18.keys() : ρσ_Iter18) : Object.keys(ρσ_Iter18));
-        for (var ρσ_Index18 of ρσ_Iter18) {
-            star = ρσ_Index18;
-            "153";
-            star.color = colour;
-        }
-    };
-    if (!color_inner_haze_stars.__argnames__) Object.defineProperties(color_inner_haze_stars, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "155";
-    async function color_outer_haze_stars(event) {
-        var ρσ_ls, colour, star;
-        "156";
-        colour = ((event.value === 0 || typeof event.value === "object" && ρσ_equals(event.value, 0))) ? color.gray(.75) : color.hsv_to_rgb(vector(event.value, 1, 1));
-        "157";
-        var ρσ_Iter19 = outer_haze_stars;
-        ρσ_Iter19 = ((typeof ρσ_Iter19[Symbol.iterator] === "function") ? (ρσ_Iter19 instanceof Map ? ρσ_Iter19.keys() : ρσ_Iter19) : Object.keys(ρσ_Iter19));
-        for (var ρσ_Index19 of ρσ_Iter19) {
-            star = ρσ_Index19;
-            "158";
-            star.color = colour;
-        }
-    };
-    if (!color_outer_haze_stars.__argnames__) Object.defineProperties(color_outer_haze_stars, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "161";
-    display.append_to_caption("\nColor of leading arm ");
-    "162";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: 0, bind: color_leading_arm_stars})]);
-    "163";
-    display.append_to_caption("\n\nColor of trailing arm ");
-    "164";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: 0, bind: color_trailing_arm_stars})]);
-    "165";
-    display.append_to_caption("\n\nColor of core ");
-    "166";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: 0, bind: color_core_stars})]);
-    "167";
-    display.append_to_caption("\n\nColor of inner haze ");
-    "168";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: 0, bind: color_inner_haze_stars})]);
-    "169";
-    display.append_to_caption("\n\nColor of outer haze ");
-    "170";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: 0, bind: color_outer_haze_stars})]);
-    "173";
-    while (true) {
-        "174";
-        (await rate(10));
-    }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
-
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
-
-//--><!]]></script>
+<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
+<div style="margin-top: 10px;">
+    <button id="resetView">🔄 Reset View</button>
+    <button id="zoomIn">➕ Zoom In</button>
+    <button id="zoomOut">➖ Zoom Out</button>
 </div>
+
+<script type="module">
+    import * as THREE from "three";
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+    const vector = THREE.Vector3,
+        color = THREE.Color;
+
+    const canvas = document.getElementById('myCanvas');
+    canvas.focus();
+    const canvasWidth = canvas.getAttribute('width');
+    const canvasHeight = canvas.getAttribute('height');
+
+    console.clear();
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x191919);
+
+    const camera = new THREE.PerspectiveCamera(30, canvasWidth / canvasHeight, 1, 10000);
+    const cameraBase = new vector(400, -900, 700);
+    camera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
+
+
+    const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: canvas} );
+    renderer.setSize( canvasWidth, canvasHeight );
+    renderer.setAnimationLoop( animationLoop );
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.target.set(0, 0, 0);
+    controls.update();
+
+    let zoomLevel = 1; // 1 = default
+
+    function updateCameraPosition() {
+        camera.position.set(
+            cameraBase.x * zoomLevel,
+            cameraBase.y * zoomLevel,
+            cameraBase.z * zoomLevel
+        );
+        camera.lookAt(0, 0, 0);
+        controls.update();
+    }
+
+    // GUI controls
+    document.getElementById('resetView').addEventListener('click', () => {
+        zoomLevel = 1;
+        updateCameraPosition();
+    });
+
+    document.getElementById('zoomIn').addEventListener('click', () => {
+        zoomLevel *= 0.9; // inzoomen
+        updateCameraPosition();
+    });
+
+    document.getElementById('zoomOut').addEventListener('click', () => {
+        zoomLevel *= 1.1; // uitzoomen
+        updateCameraPosition();
+    });
+
+
+    // Box-Muller transform to create a normal distribution
+    function gauss(mu, sigma) {
+        const u1 = Math.random()
+        const u2 = Math.random()
+        let vt = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
+        vt *= sigma + mu
+        return vt;
+    }
+
+    /**
+     * Returns a random number between min (inclusive) and max (exclusive)
+     */
+    function randomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    /**
+     * Returns a random integer between min (inclusive) and max (inclusive).
+     * The value is no lower than min (or the next integer greater than min
+     * if min isn't an integer) and no greater than max (or the next integer
+     * lower than max if max isn't an integer).
+     * Using Math.round() will give you a non-uniform distribution!
+     */
+    function randomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    class SpiralGalaxy {
+        // Set the radius of the galactic disc (scaling factor):
+        static ScaleFactor = 500; // Use range of 200 - 700.
+        static NumRimStars = 3000;
+        static NumSpiralStars = 1000;
+        static Density = 5;
+
+        //Assign scale factor, rotation factor and fuzz factor for spiral arms.
+        // Each arm is a pair: leading arm + trailing arm:
+        static ArmsInfo = [[SpiralGalaxy.ScaleFactor, 2, 1.5], [SpiralGalaxy.ScaleFactor, 1.91, 1.5],
+            [-SpiralGalaxy.ScaleFactor, 2, 1.5], [-SpiralGalaxy.ScaleFactor, -2.09, 1.5],
+            [-SpiralGalaxy.ScaleFactor, 0.5, 1.5], [-SpiralGalaxy.ScaleFactor, 0.4, 1.5],
+            [-SpiralGalaxy.ScaleFactor, -0.5, 1.5], [-SpiralGalaxy.ScaleFactor, -0.6, 1.5]];
+
+        constructor() {
+            const N = SpiralGalaxy.NumRimStars +
+                Math.trunc(SpiralGalaxy.NumRimStars / 4) +
+                SpiralGalaxy.NumSpiralStars * 4 +
+                SpiralGalaxy.ScaleFactor * SpiralGalaxy.Density +
+                SpiralGalaxy.ScaleFactor * SpiralGalaxy.Density;
+            const positions = new THREE.BufferAttribute(new Float32Array(3 * N), 3),
+                colors = new THREE.BufferAttribute(new Float32Array(3 * N), 3);
+            const sizes = new THREE.BufferAttribute(new Float32Array(N), 1);
+
+            this.createGalaxy(positions, colors, sizes);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', positions);
+            geometry.setAttribute('color', colors);
+            geometry.setAttribute('size', sizes);
+
+            const material = new THREE.ShaderMaterial({
+                vertexColors: true,
+                transparent: true,
+                depthTest: false,
+                blending: THREE.AdditiveBlending,
+                vertexShader: `
+        attribute float size;
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+            vColor = color;
+            float dist = length(position);
+            vAlpha = 1.0 - smoothstep(0.0, 500.0, dist); // fading from center (bright) to edge (transparent)
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            gl_PointSize = size * (300.0 / -mvPosition.z);
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    `,
+                fragmentShader: `
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+            float dist = length(gl_PointCoord - vec2(0.5));
+            if (dist > 0.5) discard;
+
+            gl_FragColor = vec4(vColor, vAlpha);
+        }
+    `
+            });
+            this.cloud = new THREE.Points(geometry, material);
+            scene.add(this.cloud);
+        }
+
+        rotateZ(delta = 0.001) {
+            this.cloud.rotation.z += delta;
+        }
+
+        colorAt(position) {
+            const distance = Math.sqrt(position.x ** 2 + position.y ** 2 + position.z ** 2);
+            const t = Math.min(distance / SpiralGalaxy.ScaleFactor, 1.0); // 0 at center, 1 at border
+            return new color().setHSL(0.65 - 0.5 * t, 1.0, 0.6); // from yellow (t=0) to blue (t=1)
+        }
+
+        // Return list of uniformly distributed points in a sphere.
+        createGalaxy(positions, colors, sizes) {
+            let starCounter = 0;
+            const numRimStars = SpiralGalaxy.NumRimStars;
+            const coreRadius = SpiralGalaxy.ScaleFactor / 15;
+
+            const outerCore = this.createCoreStars(numRimStars, coreRadius, positions, colors, starCounter);
+            const innerCore = this.createCoreStars(Math.trunc(numRimStars / 4), coreRadius / 2.5, positions, colors, starCounter);
+            const core = innerCore.concat(outerCore);
+            for (let i = 0; i < core.length; i++) {
+                positions.setXYZ(starCounter, core[i].x, core[i].y, core[i].z);
+                const colour = this.colorAt(core[i]);
+                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
+                sizes.setX(starCounter, 1);
+                starCounter++;
+            }
+
+            const spiralArms = this.buildSpiralArms(-0.3, SpiralGalaxy.ArmsInfo);
+            const leadingArms = spiralArms[0];
+            const trailingArms = spiralArms[1];
+            for (let i = 0; i < leadingArms.length; i++) {
+                positions.setXYZ(starCounter, leadingArms[i].x, leadingArms[i].y, leadingArms[i].z);
+                let colour = this.colorAt(leadingArms[i]);
+                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
+                sizes.setX(starCounter, 5);
+                starCounter++;
+
+                positions.setXYZ(starCounter, trailingArms[i].x, trailingArms[i].y, trailingArms[i].z);
+                colour = this.colorAt(trailingArms[i]);
+                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
+                sizes.setX(starCounter, 2);
+                starCounter++;
+            }
+
+            const innerHaze = this.haze(SpiralGalaxy.ScaleFactor, 2, 0.5, SpiralGalaxy.Density);
+            const outerHaze = this.haze(SpiralGalaxy.ScaleFactor, 1, 0.3, SpiralGalaxy.Density)
+            for (let i = 0; i < innerHaze.length; i++) {
+                positions.setXYZ(starCounter, innerHaze[i].x, innerHaze[i].y, innerHaze[i].z);
+                let colour = this.colorAt(innerHaze[i]);
+                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
+                sizes.setX(starCounter, 1);
+                starCounter++;
+
+                positions.setXYZ(starCounter, outerHaze[i].x, outerHaze[i].y, outerHaze[i].z);
+                colour = this.colorAt(outerHaze[i]);
+                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
+                sizes.setX(starCounter, 1);
+                starCounter++;
+            }
+        }
+
+        createCoreStars(numRimStars, coreRadius) {
+            const coreStars = [];
+            for (let i = 0; i < numRimStars; i++)
+                coreStars.push(new vector(gauss(0, 1), gauss(0, 1), gauss(0, 1)).multiplyScalar(coreRadius));
+            return coreStars;
+        }
+
+        /**
+         * Return list of (x,y,z) points for a logarithmic spiral.
+         *
+         * @param b constant for spiral direction and "openess"
+         * @param rScale factor (galactic disc radius)
+         * @param rot_fac factor to rotate each spiral arm
+         * @param fuz_fac random shift in star position in arm, applied to 'fuzz' variable
+         */
+        buildSpiralStars(b, rScale, rot_fac, fuz_fac) {
+            const fuzz = Math.trunc(0.030 * Math.abs(rScale));  // Scalable initial amount to shift locations.
+            const spiral_stars = [];
+            const SCALE = SpiralGalaxy.ScaleFactor;
+            for (let i = 0; i < SpiralGalaxy.NumSpiralStars; i++) {
+                const theta = i * Math.PI / 180;
+                const x = rScale * Math.exp(b * theta) * Math.cos(theta - Math.PI * rot_fac) - randomInt(-fuzz, fuzz) * fuz_fac;
+                const y = rScale * Math.exp(b * theta) * Math.sin(theta - Math.PI * rot_fac) - randomInt(-fuzz, fuzz) * fuz_fac;
+                const z = randomArbitrary((-SCALE / (SCALE * 3)), (SCALE / (SCALE * 3)));
+                spiral_stars.push(new vector(x, y, z));
+            }
+            return spiral_stars;
+        }
+
+        /**
+         * Return lists of point coordinates for galactic spiral arms.
+         *
+         * b = constant for spiral direction and "openess"
+         * arms_info = list of scale, rotation, and fuzz factors
+         */
+        buildSpiralArms(b, arms_info) {
+            let leading_arms = [];
+            let trailing_arms = [];
+            for (let i = 0; i < arms_info.length; i++) {
+                const arm = this.buildSpiralStars(b, arms_info[i][0], arms_info[i][1], arms_info[i][2]);
+                if (i % 2 !== 0)
+                    leading_arms = leading_arms.concat(arm);
+                else
+                    trailing_arms = trailing_arms.concat(arm);
+            }
+            return [leading_arms, trailing_arms];
+        }
+
+        /**
+         * Generate uniform random (x,y,z) points within a disc for 2-D display.
+         *
+         * @param scale_factor galactic disc radius
+         * @param r_mult scalar for radius of disc
+         * @param z_mult scalar for z values
+         * @param density multiplier to vary the number of stars posted
+         */
+        haze(scale_factor, r_mult, z_mult, density) {
+            const haze_coordinates = [];
+            for (let i = 0; i < scale_factor * density; i++) {
+                const n = Math.random();
+                const theta = randomArbitrary(0, 2 * Math.PI);
+                const x = Math.round(Math.sqrt(n) * Math.cos(theta) * scale_factor) / r_mult;
+                const y = Math.round(Math.sqrt(n) * Math.sin(theta) * scale_factor) / r_mult;
+                const z = randomArbitrary(-1, 1) * z_mult;
+                haze_coordinates.push(new vector(x, y, z));
+            }
+            return haze_coordinates;
+        }
+    }
+
+    const galaxy = new SpiralGalaxy();
+
+    function animationLoop() {
+        galaxy.rotateZ();
+        renderer.render(scene, camera);
+    }
+
+</script>
