@@ -131,6 +131,9 @@
             geometry.setAttribute('color', colors);
             geometry.setAttribute('size', sizes);
 
+            // We need a custom shader as THREE.points geometry does not
+            // allow to vary the size of the points individually, and we do
+            // need that for the different sizes of the stars in the galaxy
             const material = new THREE.ShaderMaterial({
                 vertexColors: true,
                 transparent: true,
