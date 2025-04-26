@@ -9,8 +9,10 @@
 
 <canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas>
 <p style="clear: both;"></p>
-<button class="button" id="resetButton">Reset</button>&nbsp;&nbsp;&nbsp;&nbsp;
-<label for="slitSizeSlider">Slit size: <input type="range" min="3" max="25" value="6" class="slider" id="slitSizeSlider"/></label>
+<div style="margin-top: 10px;">
+    <button id="resetButton">🔄 Reset View</button>&nbsp;&nbsp;
+    <label for="slitSizeSlider"><input type="range" min="3" max="25" value="6" class="slider" id="slitSizeSlider"/> Slit size</label>
+</div>
 
 <script type="module">
     import * as THREE from "three";
