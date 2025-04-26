@@ -30,8 +30,8 @@
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x191919);
 
-    const camera = new THREE.PerspectiveCamera(30, canvasWidth / canvasHeight, 1, 10000);
-    const cameraBase = new vector(65, -1200, 150);
+    const camera = new THREE.PerspectiveCamera(25, canvasWidth / canvasHeight, 1, 10000);
+    const cameraBase = new vector(100, -1200, 400);
     camera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
 
 
@@ -136,7 +136,7 @@
 
     class SpiralGalaxy {
         // Set the radius of the galactic disc (scaling factor):
-        static ScaleFactor = 500; // Use range of 200 - 700.
+        static ScaleFactor = 350; // Use range of 200 - 700.
         static NumRimStars = 3000;
         static NumSpiralStars = 1000;
         static Density = 5;
@@ -179,7 +179,6 @@
             return new color().setHSL(0.65 - 0.5 * t, 1.0, 0.6); // from yellow (t=0) to blue (t=1)
         }
 
-        // Return list of uniformly distributed points in a sphere.
         createGalaxy() {
             let starCounter = 0;
             const numRimStars = SpiralGalaxy.NumRimStars;
