@@ -73,7 +73,6 @@
             pos.x = pos.x * (1 + 0.4 * Math.sin(3 * pos.y) + 0.4 * Math.sin(2 * pos.z));
             pos.y = pos.y * (1 + 0.4 * Math.sin(3 * pos.z) + 0.4 * Math.sin(2 * pos.x));
             pos.z = pos.z * (1 + 0.4 * Math.sin(3 * pos.x) + 0.4 * Math.sin(2 * pos.y));
-            position.setXYZ(i, pos.x, pos.y, pos.z);
 
             const noise = perlin.noise(pos.x, pos.y, pos.z) + perlin.noise(pos.y, pos.z, pos.x) + perlin.noise(pos.z, pos.x, pos.y);
             if (noise < 0.5)
@@ -81,6 +80,7 @@
 
             const colour = new THREE.Color().setHSL(0.5 + 0.15 * Math.random(), 0.5 + 0.5 * Math.random(), Math.random());
             color.setXYZ(i, colour.r, colour.g, colour.b);
+            position.setXYZ(i, pos.x, pos.y, pos.z);
             return true;
         }
     }
