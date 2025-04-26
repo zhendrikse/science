@@ -117,53 +117,17 @@ outer_haze = haze(SCALE, r_mult=1, z_mult=0.3, density=5)
 display = canvas(background=color.gray(0.075), center=vec(0, -80, -80), range=SCALE, forward=vec(0, .75, -.7),
                  title=title)
 
-leading_arm_stars = [simple_sphere(pos=position, color=color.white, radius=5) for position in leading_arm]
-trailing_arm_stars = [simple_sphere(pos=position, color=color.white, radius=2) for position in trailing_arm]
-core_stars = [simple_sphere(pos=position, color=color.white, radius=1) for position in core]
-inner_haze_stars = [simple_sphere(pos=position, color=color.white, radius=1) for position in inner_haze]
-outer_haze_stars = [simple_sphere(pos=position, color=color.gray(.75), radius=1) for position in outer_haze]
+def colorAt(position):
+    distance = position.mag
+    t = min(distance / SCALE, 1.0)  # 0 at center, 1 at border
+    return color.hsv_to_rgb(vec(0.65 - 0.5 * t, 1.0, 0.6)) # from yellow (t=0) to blue (t=1)
 
+leading_arm_stars = [simple_sphere(pos=position, color=colorAt(position), radius=5) for position in leading_arm]
+trailing_arm_stars = [simple_sphere(pos=position, color=colorAt(position), radius=2) for position in trailing_arm]
+core_stars = [simple_sphere(pos=position, color=colorAt(position), radius=1) for position in core]
+inner_haze_stars = [simple_sphere(pos=position, color=colorAt(position), radius=1) for position in inner_haze]
+outer_haze_stars = [simple_sphere(pos=position, color=colorAt(position), radius=1) for position in outer_haze]
 
-def color_leading_arm_stars(event):
-    colour = color.white if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
-    for star in leading_arm_stars:
-        star.color = colour
-
-
-def color_trailing_arm_stars(event):
-    colour = color.white if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
-    for star in trailing_arm_stars:
-        star.color = colour
-
-
-def color_core_stars(event):
-    colour = color.white if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
-    for star in core_stars:
-        star.color = colour
-
-
-def color_inner_haze_stars(event):
-    colour = color.white if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
-    for star in inner_haze_stars:
-        star.color = colour
-
-
-def color_outer_haze_stars(event):
-    colour = color.gray(.75) if event.value == 0 else color.hsv_to_rgb(vector(event.value, 1, 1))
-    for star in outer_haze_stars:
-        star.color = colour
-
-
-display.append_to_caption("\nColor of leading arm ")
-_ = slider(min=0, max=1, value=0, bind=color_leading_arm_stars)
-display.append_to_caption("\n\nColor of trailing arm ")
-_ = slider(min=0, max=1, value=0, bind=color_trailing_arm_stars)
-display.append_to_caption("\n\nColor of core ")
-_ = slider(min=0, max=1, value=0, bind=color_core_stars)
-display.append_to_caption("\n\nColor of inner haze ")
-_ = slider(min=0, max=1, value=0, bind=color_inner_haze_stars)
-display.append_to_caption("\n\nColor of outer haze ")
-_ = slider(min=0, max=1, value=0, bind=color_outer_haze_stars)
 
 while True:
     rate(10)
