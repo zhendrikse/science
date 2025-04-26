@@ -120,16 +120,16 @@
                 SpiralGalaxy.NumSpiralStars * 4 +
                 SpiralGalaxy.ScaleFactor * SpiralGalaxy.Density +
                 SpiralGalaxy.ScaleFactor * SpiralGalaxy.Density;
-            const positions = new THREE.BufferAttribute(new Float32Array(3 * N), 3),
-                colors = new THREE.BufferAttribute(new Float32Array(3 * N), 3);
-            const sizes = new THREE.BufferAttribute(new Float32Array(N), 1);
+            this.positions = new THREE.BufferAttribute(new Float32Array(3 * N), 3),
+            this.colors = new THREE.BufferAttribute(new Float32Array(3 * N), 3);
+            this.sizes = new THREE.BufferAttribute(new Float32Array(N), 1);
 
-            this.createGalaxy(positions, colors, sizes);
+            this.createGalaxy();
 
             const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute('position', positions);
-            geometry.setAttribute('color', colors);
-            geometry.setAttribute('size', sizes);
+            geometry.setAttribute('position', this.positions);
+            geometry.setAttribute('color', this.colors);
+            geometry.setAttribute('size', this.sizes);
 
             // We need a custom shader as THREE.points geometry does not
             // allow to vary the size of the points individually, and we do
@@ -180,19 +180,16 @@
         }
 
         // Return list of uniformly distributed points in a sphere.
-        createGalaxy(positions, colors, sizes) {
+        createGalaxy() {
             let starCounter = 0;
             const numRimStars = SpiralGalaxy.NumRimStars;
             const coreRadius = SpiralGalaxy.ScaleFactor / 15;
 
-            const outerCore = this.createCoreStars(numRimStars, coreRadius, positions, colors, starCounter);
-            const innerCore = this.createCoreStars(Math.trunc(numRimStars / 4), coreRadius / 2.5, positions, colors, starCounter);
+            const outerCore = this.createCoreStars(numRimStars, coreRadius);
+            const innerCore = this.createCoreStars(Math.trunc(numRimStars / 4), coreRadius / 2.5);
             const core = innerCore.concat(outerCore);
             for (let i = 0; i < core.length; i++) {
-                positions.setXYZ(starCounter, core[i].x, core[i].y, core[i].z);
-                const colour = this.colorAt(core[i]);
-                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-                sizes.setX(starCounter, 1);
+                this.updateStarSettingsFor(starCounter, core[i], 1);
                 starCounter++;
             }
 
@@ -200,32 +197,18 @@
             const leadingArms = spiralArms[0];
             const trailingArms = spiralArms[1];
             for (let i = 0; i < leadingArms.length; i++) {
-                positions.setXYZ(starCounter, leadingArms[i].x, leadingArms[i].y, leadingArms[i].z);
-                let colour = this.colorAt(leadingArms[i]);
-                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-                sizes.setX(starCounter, 7);
+                this.updateStarSettingsFor(starCounter, leadingArms[i], 7);
                 starCounter++;
-
-                positions.setXYZ(starCounter, trailingArms[i].x, trailingArms[i].y, trailingArms[i].z);
-                colour = this.colorAt(trailingArms[i]);
-                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-                sizes.setX(starCounter, 3);
+                this.updateStarSettingsFor(starCounter, trailingArms[i], 3);
                 starCounter++;
             }
 
             const innerHaze = this.haze(SpiralGalaxy.ScaleFactor, 2, 0.5, SpiralGalaxy.Density);
             const outerHaze = this.haze(SpiralGalaxy.ScaleFactor, 1, 0.3, SpiralGalaxy.Density)
             for (let i = 0; i < innerHaze.length; i++) {
-                positions.setXYZ(starCounter, innerHaze[i].x, innerHaze[i].y, innerHaze[i].z);
-                let colour = this.colorAt(innerHaze[i]);
-                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-                sizes.setX(starCounter, 2);
+                this.updateStarSettingsFor(starCounter, innerHaze[i], 2);
                 starCounter++;
-
-                positions.setXYZ(starCounter, outerHaze[i].x, outerHaze[i].y, outerHaze[i].z);
-                colour = this.colorAt(outerHaze[i]);
-                colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-                sizes.setX(starCounter, 2);
+                this.updateStarSettingsFor(starCounter, outerHaze[i], 2);
                 starCounter++;
             }
         }
@@ -297,6 +280,13 @@
                 haze_coordinates.push(new vector(x, y, z));
             }
             return haze_coordinates;
+        }
+
+        updateStarSettingsFor(starCounter, position, size) {
+            this.positions.setXYZ(starCounter, position.x, position.y, position.z);
+            let colour = this.colorAt(position);
+            this.colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
+            this.sizes.setX(starCounter, size);
         }
     }
 
