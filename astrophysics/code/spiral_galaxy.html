@@ -44,7 +44,6 @@
     controls.update();
 
     let zoomLevel = 1; // 1 = default
-
     function updateCameraPosition() {
         camera.position.set(
             cameraBase.x * zoomLevel,
@@ -62,12 +61,12 @@
     });
 
     document.getElementById('zoomIn').addEventListener('click', () => {
-        zoomLevel *= 0.9; // inzoomen
+        zoomLevel *= 0.9;
         updateCameraPosition();
     });
 
     document.getElementById('zoomOut').addEventListener('click', () => {
-        zoomLevel *= 1.1; // uitzoomen
+        zoomLevel *= 1.1;
         updateCameraPosition();
     });
 
