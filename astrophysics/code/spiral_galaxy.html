@@ -54,6 +54,40 @@
         controls.update();
     }
 
+    // We need a custom shader as THREE.points geometry does not
+    // allow to vary the size of the points individually, and we do
+    // need that for the different sizes of the stars in the galaxy
+    const starMaterial = new THREE.ShaderMaterial({
+        vertexColors: true,
+        transparent: true,
+        depthTest: false,
+        blending: THREE.AdditiveBlending,
+        vertexShader: `
+        attribute float size;
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+            vColor = color;
+            float dist = length(position);
+            vAlpha = 1.0 - smoothstep(0.0, 500.0, dist); // fading from center (bright) to edge (transparent)
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            gl_PointSize = size * (300.0 / -mvPosition.z);
+            gl_Position = projectionMatrix * mvPosition;
+        }`,
+        fragmentShader: `
+        varying vec3 vColor;
+        varying float vAlpha;
+
+        void main() {
+            float dist = length(gl_PointCoord - vec2(0.5));
+            if (dist > 0.5) discard;
+
+            gl_FragColor = vec4(vColor, vAlpha);
+        }`
+    });
+
+
     // GUI controls
     document.getElementById('resetView').addEventListener('click', () => {
         zoomLevel = 1;
@@ -131,41 +165,7 @@
             geometry.setAttribute('color', this.colors);
             geometry.setAttribute('size', this.sizes);
 
-            // We need a custom shader as THREE.points geometry does not
-            // allow to vary the size of the points individually, and we do
-            // need that for the different sizes of the stars in the galaxy
-            const material = new THREE.ShaderMaterial({
-                vertexColors: true,
-                transparent: true,
-                depthTest: false,
-                blending: THREE.AdditiveBlending,
-                vertexShader: `
-        attribute float size;
-        varying vec3 vColor;
-        varying float vAlpha;
-
-        void main() {
-            vColor = color;
-            float dist = length(position);
-            vAlpha = 1.0 - smoothstep(0.0, 500.0, dist); // fading from center (bright) to edge (transparent)
-            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-            gl_PointSize = size * (300.0 / -mvPosition.z);
-            gl_Position = projectionMatrix * mvPosition;
-        }
-    `,
-                fragmentShader: `
-        varying vec3 vColor;
-        varying float vAlpha;
-
-        void main() {
-            float dist = length(gl_PointCoord - vec2(0.5));
-            if (dist > 0.5) discard;
-
-            gl_FragColor = vec4(vColor, vAlpha);
-        }
-    `
-            });
-            this.cloud = new THREE.Points(geometry, material);
+            this.cloud = new THREE.Points(geometry, starMaterial);
             scene.add(this.cloud);
         }
 
