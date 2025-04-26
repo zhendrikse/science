@@ -2,7 +2,7 @@
 from vpython import *
 
 title="""&#x2022; Original <a href="https://trinket.io/embed/glowscript/f61cab61ca">code</a> by Byron Philhour
-&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>
+&#x2022; Refactored by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a>, see <a href="https://github.com/zhendrikse/science/blob/main/molecularphysics/code/u235_fission.py">u235_fission.py</a>
 
 &#x2022; <span style="color: green;">Green</span> = oxide ions, <span style="color: blue;">Blue</span> = uranium 238 ions, <span style="color: red;">Red</span> = uranium 235 ions
 &#x2022; <span style="color: yellow;">Yellow</span> = reaction product (Ba / Kr), <span style="color: gray(0.5);">Gray</span> = thermal neutron
@@ -39,7 +39,7 @@ nucscale = (side / nucradius) / 3
 
 fiverow = True
 
-animation = canvas(title=title, background=color.gray(0.075), range=.4/nucscale)
+animation = canvas(title=title, background=color.gray(0.15), range=.4/nucscale)
 
 class UraniumOxideLattice:
     def __init__(self):

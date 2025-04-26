@@ -64,7 +64,7 @@ async function __main__() {
 
     strings();
     "10";
-    title = "&#x2022; Original <a href=\"https://trinket.io/embed/glowscript/f61cab61ca\">code<\/a> by Byron Philhour\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n&#x2022; <span style=\"color: green;\">Green</span> = oxide ions, <span style=\"color: blue;\">Blue</span> = uranium 238 ions, <span style=\"color: red;\">Red</span> = uranium 235 ions\n&#x2022; <span style=\"color: yellow;\">Yellow</span> = reaction product (Ba / Kr), <span style=\"color: gray(0.5);\">Gray</span> = thermal neutron\n&#x2022; U235 nuclear collision cross-section exaggerated.\n";
+    title = "&#x2022; Original <a href=\"https://trinket.io/embed/glowscript/f61cab61ca\">code<\/a> by Byron Philhour\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>, see <a href=\"https://github.com/zhendrikse/science/blob/main/molecularphysics/code/u235_fission.py\">u235_fission.py</a>\n\n&#x2022; <span style=\"color: green;\">Green</span> = oxide ions, <span style=\"color: blue;\">Blue</span> = uranium 238 ions, <span style=\"color: red;\">Red</span> = uranium 235 ions\n&#x2022; <span style=\"color: yellow;\">Yellow</span> = reaction product (Ba / Kr), <span style=\"color: gray(0.5);\">Gray</span> = thermal neutron\n&#x2022; U235 nuclear collision cross-section exaggerated.\n";
     "13";
     amu = 1.66e-23;
     "14";
@@ -100,7 +100,7 @@ async function __main__() {
     "40";
     fiverow = true;
     "42";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), range: .4["/"](nucscale)})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.15), range: .4["/"](nucscale)})]);
     "44";
     function UraniumOxideLattice() {;
     }
