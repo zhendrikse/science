@@ -13,8 +13,10 @@
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
     const vector = THREE.Vector3;
+    const color = THREE.Color;
+
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x191919);
+    scene.background = new color(0x191919);
 
     const canvas = document.getElementById('myCanvas');
     canvas.focus();
@@ -39,52 +41,14 @@
     controls.update();
 
     class Dna {
-        static bondMaterial = new THREE.MeshLambertMaterial({
-            color: 0x2e50ac,
-            emissive: 0x2e50ac,
-            emissiveIntensity: 0.4
-        });
-        static redMaterial = new THREE.MeshLambertMaterial({
-            color: new THREE.Color(0xff0000),
-            emissive: 0xff0000,
-            emissiveIntensity: 0.1
-        });
-        static blueMaterial = new THREE.MeshLambertMaterial({
-            color: new THREE.Color(0x0000ff),
-            emissive: 0x0000ff,
-            emissiveIntensity: 0.1
-        });
-        static greenMaterial = new THREE.MeshLambertMaterial({
-            color: new THREE.Color(0x00ff00),
-            emissive: 0x00ff00,
-            emissiveIntensity: 0.1
-        });
-        static yellowMaterial = new THREE.MeshLambertMaterial({
-            color: new THREE.Color(0xffff00),
-            emissive: 0xffff00,
-            emissiveIntensity: 0.1
-        });
-
-        static leftPhosphateBackboneMaterial = new THREE.MeshLambertMaterial({
-            color: 0xff00ff,
-            emissive: 0xff00ff,
-            emissiveIntensity: 0.4
-        });
-        static rightPhosphateBackboneMaterial = new THREE.MeshLambertMaterial({
-            color: 0x00ffff,
-            emissive: 0x00ffff,
-            emissiveIntensity: 0.4
-        });
+        static bondGeometry = new THREE.CylinderGeometry(0.3, 0.3, 10, 32);
 
         constructor() {
-            const bondGeometry = new THREE.CylinderGeometry(0.3, 0.3, 10, 32);
-            const moleculeGeometry = new THREE.SphereGeometry(1.2, 32, 32);
-
             this.dna = new THREE.Object3D();
             let lastLeftWorld = null;
             let lastRightWorld = null;
             for (let i = 0; i <= 20; i++) {
-                const lastPositions = this.createNucleotidePair(bondGeometry, i, moleculeGeometry, lastLeftWorld, lastRightWorld);
+                const lastPositions = this.createNucleotidePair(i, lastLeftWorld, lastRightWorld);
                 lastLeftWorld = lastPositions[0];
                 lastRightWorld = lastPositions[1];
             }
@@ -92,16 +56,13 @@
             scene.add(this.dna);
         }
 
-        createNucleotidePair(bondGeometry, i, moleculeGeometry, lastLeftWorld, lastRightWorld) {
-            const cylinder = new THREE.Mesh(bondGeometry, Dna.bondMaterial);
+        createNucleotidePair(i, lastLeftWorld, lastRightWorld) {
+            const cylinder = new THREE.Mesh(Dna.bondGeometry, Dna.bondMaterial);
             cylinder.rotation.z = 90 * Math.PI / 180;
             cylinder.position.x = 0;
-            let {ballRight, ballLeft} = this.nucleotides(i, moleculeGeometry);
+            let {ballRight, ballLeft} = this.nucleotides(i);
 
-            ballRight.position.x = 6;
-            ballLeft.position.x = -5;
-
-            const bondBetweenBalls = this.createBondBetween(ballLeft.position, ballRight.position, Dna.bondMaterial);
+            const bondBetweenBalls = this.createBondBetween(ballLeft.position, ballRight.position, new color(0x2e50ac));
             const row = this.addBondToDna(bondBetweenBalls, ballRight, ballLeft, i);
 
             const {
@@ -131,38 +92,55 @@
             ballRight.getWorldPosition(currentRightWorld);
 
             if (lastLeftWorld && lastRightWorld) {
-                const leftBackbone = this.createBondBetween(lastLeftWorld, currentLeftWorld, Dna.leftPhosphateBackboneMaterial, 0.15);
-                const rightBackbone = this.createBondBetween(lastRightWorld, currentRightWorld, Dna.rightPhosphateBackboneMaterial, 0.15);
+                const leftBackbone = this.createBondBetween(lastLeftWorld, currentLeftWorld, new color(0xff00ff), 0.15);
+                const rightBackbone = this.createBondBetween(lastRightWorld, currentRightWorld, new color(0x00ffff), 0.15);
                 this.dna.add(leftBackbone);
                 this.dna.add(rightBackbone);
             }
             return {currentLeftWorld, currentRightWorld};
         }
 
-        nucleotides(i, moleculeGeometry) {
+        createBall(position, colour, radius=1.2) {
+            const colouredMaterial = new THREE.MeshLambertMaterial({
+                color: colour,
+                emissive: colour,
+                emissiveIntensity: 0.1
+            });
+            const moleculeGeometry = new THREE.SphereGeometry(radius, 32, 32);
+            const mesh = new THREE.Mesh(moleculeGeometry, colouredMaterial);
+            mesh.position.set(position.x, position.y, position.z);
+            return mesh;
+        }
+
+        nucleotides(i) {
             let ballRight, ballLeft;
             if (i % 4 === 0) {
-                ballRight = new THREE.Mesh(moleculeGeometry, Dna.yellowMaterial);
-                ballLeft = new THREE.Mesh(moleculeGeometry, Dna.blueMaterial);
+                ballLeft = this.createBall(new vector(-5, 0, 0), new color(0x0000ff));
+                ballRight = this.createBall(new vector(6, 0, 0), new color(0xffff00));
             } else if (i % 4 === 1) {
-                ballRight = new THREE.Mesh(moleculeGeometry, Dna.greenMaterial);
-                ballLeft = new THREE.Mesh(moleculeGeometry, Dna.redMaterial);
+                ballLeft = this.createBall(new vector(-5, 0, 0), new color(0xff0000));
+                ballRight = this.createBall(new vector(6, 0, 0), new color(0x00ff00));
             } else if (i % 4 === 2) {
-                ballRight = new THREE.Mesh(moleculeGeometry, Dna.blueMaterial);
-                ballLeft = new THREE.Mesh(moleculeGeometry, Dna.yellowMaterial);
+                ballLeft = this.createBall(new vector(-5, 0, 0), new color(0xffff00));
+                ballRight = this.createBall(new vector(6, 0, 0), new color(0x0000ff));
             } else {
-                ballRight = new THREE.Mesh(moleculeGeometry, Dna.redMaterial);
-                ballLeft = new THREE.Mesh(moleculeGeometry, Dna.greenMaterial);
+                ballLeft = this.createBall(new vector(-5, 0, 0), new color(0x00ff00));
+                ballRight = this.createBall(new vector(6, 0, 0), new color(0xff0000));
             }
             return {ballRight, ballLeft};
         }
 
-        createBondBetween(pointA, pointB, material, radius = 0.2) {
+        createBondBetween(pointA, pointB, colour, radius=0.2) {
             const direction = new vector().subVectors(pointB, pointA);
             const length = direction.length();
             const midPoint = new vector().addVectors(pointA, pointB).multiplyScalar(0.5);
             const bondGeometry = new THREE.CylinderGeometry(radius, radius, length, 16);
-            const bond = new THREE.Mesh(bondGeometry, material);
+            const bondMaterial = new THREE.MeshLambertMaterial({
+                color: colour,
+                emissive: colour,
+                emissiveIntensity: 0.4
+            });
+            const bond = new THREE.Mesh(bondGeometry, bondMaterial);
 
             // Orient the bond to face between the points
             bond.position.copy(midPoint);
