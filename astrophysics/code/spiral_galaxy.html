@@ -200,13 +200,13 @@
                 positions.setXYZ(starCounter, leadingArms[i].x, leadingArms[i].y, leadingArms[i].z);
                 let colour = this.colorAt(leadingArms[i]);
                 colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-                sizes.setX(starCounter, 5);
+                sizes.setX(starCounter, 7);
                 starCounter++;
 
                 positions.setXYZ(starCounter, trailingArms[i].x, trailingArms[i].y, trailingArms[i].z);
                 colour = this.colorAt(trailingArms[i]);
                 colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-                sizes.setX(starCounter, 2);
+                sizes.setX(starCounter, 3);
                 starCounter++;
             }
 
@@ -216,13 +216,13 @@
                 positions.setXYZ(starCounter, innerHaze[i].x, innerHaze[i].y, innerHaze[i].z);
                 let colour = this.colorAt(innerHaze[i]);
                 colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-                sizes.setX(starCounter, 1);
+                sizes.setX(starCounter, 2);
                 starCounter++;
 
                 positions.setXYZ(starCounter, outerHaze[i].x, outerHaze[i].y, outerHaze[i].z);
                 colour = this.colorAt(outerHaze[i]);
                 colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-                sizes.setX(starCounter, 1);
+                sizes.setX(starCounter, 2);
                 starCounter++;
             }
         }
