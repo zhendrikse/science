@@ -5,8 +5,9 @@
 
 - Original [galaxy_3d_Medium.py](https://gist.github.com/rlvaugh/a49bf875890581f338a000c2b5c3a2bb) by [Lee Vaughan](https://towardsdatascience.com/author/lee_vaughan/)
 - The (theory behind the) code is thoroughly explained in his [accompanying article](https://towardsdatascience.com/create-3-d-galactic-art-with-matplotlib-a7534148a319/)
-- Extended with coloring and ported to Javascript and [Three.js](https://threejs.org/) by [Zeger Hendrikse](https://www.hendrikse.name/)
-- Also ported to [VPython](https://vpython.org), see [spiral_galaxy.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/spiral_galaxy.py)
+- This [spiral_galaxy.html](https://github.com/zhendrikse/science/blob/main/astrophysics/code/star_cluster.html) page is a port of the original code to Javascript and [Three.js](https://threejs.org/) 
+- Javascript version has been extended with colouring and fading ([Zeger Hendrikse](https://www.hendrikse.name/))
+- I have also ported the original code to [VPython](https://vpython.org), see [spiral_galaxy.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/spiral_galaxy.py)
 
 <p style="clear:both;"></p>
 {% include_relative code/spiral_galaxy.html %}
