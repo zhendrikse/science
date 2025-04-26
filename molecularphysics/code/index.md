@@ -5,7 +5,7 @@
 
 - [`carbon_dioxide.py` source code](carbon_dioxide.py)
 - [`cubic_lattice.py` source code](cubic_lattice.py)
-- [`dna.py` source code](dna.py)
+- [`dna.html` source code](dna.html)
 - [`molecules.html` source code](molecules.html)
 - [`rutherford_scattering.py` source code](rutherford_scattering.py)
 - [`u235_fission.py` source code](u235_fission.py)
