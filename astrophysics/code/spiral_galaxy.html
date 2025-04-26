@@ -205,10 +205,9 @@
 
             const innerHaze = this.haze(SpiralGalaxy.ScaleFactor, 2, 0.5, SpiralGalaxy.Density);
             const outerHaze = this.haze(SpiralGalaxy.ScaleFactor, 1, 0.3, SpiralGalaxy.Density)
-            for (let i = 0; i < innerHaze.length; i++) {
-                this.updateStarSettingsFor(starCounter, innerHaze[i], 2);
-                starCounter++;
-                this.updateStarSettingsFor(starCounter, outerHaze[i], 2);
+            const haze = innerHaze.concat(outerHaze);
+            for (let i = 0; i < haze.length; i++) {
+                this.updateStarSettingsFor(starCounter, haze[i], 2);
                 starCounter++;
             }
         }
