@@ -105,7 +105,9 @@
     });
 
 
-    // Box-Muller transform to create a normal distribution
+    /**
+     * Box-Muller transform to create a normal distribution
+     */
     function gauss(mu, sigma) {
         const u1 = Math.random()
         const u2 = Math.random()
@@ -134,6 +136,33 @@
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    class PointCloud {
+        constructor(positions, radii, colours) {
+            const N = positions.length;
+            this.positions = new THREE.BufferAttribute(new Float32Array(3 * N), 3);
+            this.colors = new THREE.BufferAttribute(new Float32Array(3 * N), 3);
+            this.sizes = new THREE.BufferAttribute(new Float32Array(N), 1);
+
+            for (let index = 0; index < N; index++) {
+                const position = positions[index];
+                this.positions.setXYZ(index, position.x, position.y, position.z);
+                this.colors.setXYZ(index, colours[index].r, colours[index].g, colours[index].b);
+                this.sizes.setX(index, radii[index]);
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', this.positions);
+            geometry.setAttribute('color', this.colors);
+            geometry.setAttribute('size', this.sizes);
+
+            this.cloud = new THREE.Points(geometry, starMaterial);
+        }
+
+        getThreeJsHandle() {
+            return this.cloud;
+        }
+    }
+
     class SpiralGalaxy {
         // Set the radius of the galactic disc (scaling factor):
         static ScaleFactor = 350; // Use range of 200 - 700.
@@ -149,69 +178,47 @@
             [-SpiralGalaxy.ScaleFactor, -0.5, 1.5], [-SpiralGalaxy.ScaleFactor, -0.6, 1.5]];
 
         constructor() {
-            const N = SpiralGalaxy.NumRimStars +
-                Math.trunc(SpiralGalaxy.NumRimStars / 4) +
-                SpiralGalaxy.NumSpiralStars * 4 +
-                SpiralGalaxy.ScaleFactor * SpiralGalaxy.Density +
-                SpiralGalaxy.ScaleFactor * SpiralGalaxy.Density;
-            this.positions = new THREE.BufferAttribute(new Float32Array(3 * N), 3);
-            this.colors = new THREE.BufferAttribute(new Float32Array(3 * N), 3);
-            this.sizes = new THREE.BufferAttribute(new Float32Array(N), 1);
+            const positions = [],
+                radii = [],
+                colours = [],
+                coreRadius = SpiralGalaxy.ScaleFactor / 15;
 
-            this.createGalaxy();
+            const outerCore = SpiralGalaxy.createCoreStars(SpiralGalaxy.NumRimStars, coreRadius);
+            const innerCore = SpiralGalaxy.createCoreStars(Math.trunc(SpiralGalaxy.NumRimStars / 4), coreRadius / 2.5);
+            const innerHaze = SpiralGalaxy.haze(SpiralGalaxy.ScaleFactor, 2, 0.5, SpiralGalaxy.Density);
+            const outerHaze = SpiralGalaxy.haze(SpiralGalaxy.ScaleFactor, 1, 0.3, SpiralGalaxy.Density);
+            const [leadingArms, trailingArms] = SpiralGalaxy.buildSpiralArms(-0.3, SpiralGalaxy.ArmsInfo);
 
-            const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute('position', this.positions);
-            geometry.setAttribute('color', this.colors);
-            geometry.setAttribute('size', this.sizes);
+            this.add(outerCore, 1, positions, radii, colours);
+            this.add(innerCore, 1, positions, radii, colours);
+            this.add(leadingArms, 7, positions, radii, colours);
+            this.add(trailingArms, 3, positions, radii, colours);
+            this.add(innerHaze, 2, positions, radii, colours);
+            this.add(outerHaze, 2, positions, radii, colours);
 
-            this.cloud = new THREE.Points(geometry, starMaterial);
-            scene.add(this.cloud);
+            this.pointCloud = new PointCloud(positions, radii, colours);
+            scene.add(this.pointCloud.getThreeJsHandle());
+        }
+
+        add(starPositions, starRadius, positions, radii, colours) {
+            for (let i = 0, n=starPositions.length; i < n; i++) {
+                positions.push(starPositions[i]);
+                colours.push(SpiralGalaxy.colorAt(starPositions[i]));
+                radii.push(starRadius);
+            }
         }
 
         rotateZ(delta = 0.001) {
-            this.cloud.rotation.z += delta;
+            this.pointCloud.getThreeJsHandle().rotation.z += delta;
         }
 
-        colorAt(position) {
+        static colorAt(position) {
             const distance = Math.sqrt(position.x ** 2 + position.y ** 2 + position.z ** 2);
             const t = Math.min(distance / SpiralGalaxy.ScaleFactor, 1.0); // 0 at center, 1 at border
             return new color().setHSL(0.65 - 0.5 * t, 1.0, 0.6); // from yellow (t=0) to blue (t=1)
         }
 
-        createGalaxy() {
-            let starCounter = 0;
-            const numRimStars = SpiralGalaxy.NumRimStars;
-            const coreRadius = SpiralGalaxy.ScaleFactor / 15;
-
-            const outerCore = this.createCoreStars(numRimStars, coreRadius);
-            const innerCore = this.createCoreStars(Math.trunc(numRimStars / 4), coreRadius / 2.5);
-            const core = innerCore.concat(outerCore);
-            for (let i = 0; i < core.length; i++) {
-                this.updateStarSettingsFor(starCounter, core[i], 1);
-                starCounter++;
-            }
-
-            const spiralArms = this.buildSpiralArms(-0.3, SpiralGalaxy.ArmsInfo);
-            const leadingArms = spiralArms[0];
-            const trailingArms = spiralArms[1];
-            for (let i = 0; i < leadingArms.length; i++) {
-                this.updateStarSettingsFor(starCounter, leadingArms[i], 7);
-                starCounter++;
-                this.updateStarSettingsFor(starCounter, trailingArms[i], 3);
-                starCounter++;
-            }
-
-            const innerHaze = this.haze(SpiralGalaxy.ScaleFactor, 2, 0.5, SpiralGalaxy.Density);
-            const outerHaze = this.haze(SpiralGalaxy.ScaleFactor, 1, 0.3, SpiralGalaxy.Density)
-            const haze = innerHaze.concat(outerHaze);
-            for (let i = 0; i < haze.length; i++) {
-                this.updateStarSettingsFor(starCounter, haze[i], 2);
-                starCounter++;
-            }
-        }
-
-        createCoreStars(numRimStars, coreRadius) {
+        static createCoreStars(numRimStars, coreRadius) {
             const coreStars = [];
             for (let i = 0; i < numRimStars; i++)
                 coreStars.push(new vector(gauss(0, 1), gauss(0, 1), gauss(0, 1)).multiplyScalar(coreRadius));
@@ -226,7 +233,7 @@
          * @param rot_fac factor to rotate each spiral arm
          * @param fuz_fac random shift in star position in arm, applied to 'fuzz' variable
          */
-        buildSpiralStars(b, rScale, rot_fac, fuz_fac) {
+        static buildSpiralStars(b, rScale, rot_fac, fuz_fac) {
             const fuzz = Math.trunc(0.030 * Math.abs(rScale));  // Scalable initial amount to shift locations.
             const spiral_stars = [];
             const SCALE = SpiralGalaxy.ScaleFactor;
@@ -246,11 +253,11 @@
          * b = constant for spiral direction and "openess"
          * arms_info = list of scale, rotation, and fuzz factors
          */
-        buildSpiralArms(b, arms_info) {
+        static buildSpiralArms(b, arms_info) {
             let leading_arms = [];
             let trailing_arms = [];
             for (let i = 0; i < arms_info.length; i++) {
-                const arm = this.buildSpiralStars(b, arms_info[i][0], arms_info[i][1], arms_info[i][2]);
+                const arm = SpiralGalaxy.buildSpiralStars(b, arms_info[i][0], arms_info[i][1], arms_info[i][2]);
                 if (i % 2 !== 0)
                     leading_arms = leading_arms.concat(arm);
                 else
@@ -267,7 +274,7 @@
          * @param z_mult scalar for z values
          * @param density multiplier to vary the number of stars posted
          */
-        haze(scale_factor, r_mult, z_mult, density) {
+        static haze(scale_factor, r_mult, z_mult, density) {
             const haze_coordinates = [];
             for (let i = 0; i < scale_factor * density; i++) {
                 const n = Math.random();
@@ -278,13 +285,6 @@
                 haze_coordinates.push(new vector(x, y, z));
             }
             return haze_coordinates;
-        }
-
-        updateStarSettingsFor(starCounter, position, size) {
-            this.positions.setXYZ(starCounter, position.x, position.y, position.z);
-            let colour = this.colorAt(position);
-            this.colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-            this.sizes.setX(starCounter, size);
         }
     }
 
