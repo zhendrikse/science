@@ -156,6 +156,7 @@
             geometry.setAttribute('size', this.sizes);
 
             this.cloud = new THREE.Points(geometry, starMaterial);
+            scene.add(this.cloud);
         }
 
         getThreeJsHandle() {
@@ -197,7 +198,6 @@
             this.add(outerHaze, 2, positions, radii, colours);
 
             this.pointCloud = new PointCloud(positions, radii, colours);
-            scene.add(this.pointCloud.getThreeJsHandle());
         }
 
         add(starPositions, starRadius, positions, radii, colours) {
