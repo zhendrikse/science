@@ -76,8 +76,8 @@
 
     let isRotating = true;
     let viewMode = 'ball-stick';
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1a1a);
+    const moleculeScene = new THREE.Scene();
+    moleculeScene.background = new THREE.Color(0x1a1a1a);
 
     const moleculeCamera = new THREE.PerspectiveCamera(50, canvasWidth / canvasHeight, 0.1, 1000);
     let zoomLevel = 1; // 1 = default
@@ -101,16 +101,16 @@
 
     // lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-    scene.add(ambientLight);
+    moleculeScene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(5, 5, 5);
     directionalLight.castShadow = true;
-    scene.add(directionalLight);
+    moleculeScene.add(directionalLight);
 
     const pointLight1 = new THREE.PointLight(0xffffff, 0.6);
     pointLight1.position.set(-5, -5, -5);
-    scene.add(pointLight1);
+    moleculeScene.add(pointLight1);
 
     // Raycaster for interaction
     const raycaster = new THREE.Raycaster();
@@ -238,7 +238,7 @@
             this.molecule = new THREE.Group();
             this.atoms = [];
             this.bonds = [];
-            scene.add(this.molecule);
+            moleculeScene.add(this.molecule);
         }
 
         hide() {
@@ -699,7 +699,7 @@
         if (isRotating && !mouseDown && !rightMouseDown)
             currentSelectedMolecule.rotateY(0.005);
 
-        renderer.render(scene, moleculeCamera);
+        renderer.render(moleculeScene, moleculeCamera);
     }
 
     animate();
