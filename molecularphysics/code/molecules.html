@@ -602,6 +602,11 @@
         document.getElementById(molecule).checked = true;
     }
 
+    function isMouseWithinCanvas(x, y) {
+        const rect = canvas.getBoundingClientRect();
+        return (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom);
+    }
+
     function onMouseMove(event) {
         currentSelectedMolecule.onMouseMove(event);
     }
@@ -656,14 +661,11 @@
     document.addEventListener('contextmenu', (e) => e.preventDefault());
 
     document.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX,
-            y = e.clientY;
-        if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom)
+        if (!isMouseWithinCanvas(e.clientX, e.clientY))
             return;
 
-        const deltaX = x - mouseX;
-        const deltaY = y - mouseY;
+        const deltaX = e.clientX - mouseX;
+        const deltaY = e.clientY - mouseY;
         if (mouseDown) {
             currentSelectedMolecule.molecule.rotateY(deltaX * 0.01);
             currentSelectedMolecule.rotateX(deltaY * 0.01);
@@ -672,25 +674,29 @@
             camera.position.y += deltaY * 0.01;
         }
 
-        mouseX = x;
-        mouseY = y;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
     });
 
-    document.addEventListener('dblclick', () => {
+    document.addEventListener('dblclick', (e) => {
+        if (!isMouseWithinCanvas(e.clientX, e.clientY))
+            return;
         currentSelectedMolecule.rotate(0, 0, 0);
         camera.position.set(0, 0, 8);
     });
 
     document.addEventListener('wheel', (e) => {
+        if (!isMouseWithinCanvas(e.clientX, e.clientY))
+            return;
         camera.position.z += e.deltaY * 0.01;
         camera.position.z = Math.max(4, Math.min(camera.position.z, 20));
     });
 
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    // window.addEventListener('resize', () => {
+    //     camera.aspect = window.innerWidth / window.innerHeight;
+    //     camera.updateProjectionMatrix();
+    //     renderer.setSize(window.innerWidth, window.innerHeight);
+    // });
 
     function animate() {
         requestAnimationFrame(animate);
