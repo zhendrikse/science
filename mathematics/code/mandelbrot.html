@@ -221,8 +221,8 @@
     }
 
     class Mandelbrot extends Fractal {
-        constructor(maxIter=500, colorFunction=hueColor) {
-            super(maxIter, new FractalRange(-2, 1, -1, 1), 0, hueColor);
+        constructor(maxIter=500, colorFunction=rgbColor) {
+            super(maxIter, new FractalRange(-2, 1, -1, 1), 0, colorFunction);
         }
 
         setPixelColorAt(x, y) {
@@ -242,8 +242,8 @@
     }
 
     class Julia extends Fractal {
-        constructor(cConstant, maxIter=500, colorFunction=hueColor) {
-            super(maxIter, new FractalRange(-1.5, 1.5, -1.5, 1.5), cConstant, hueColor);
+        constructor(cConstant, maxIter=500, colorFunction=rgbColor) {
+            super(maxIter, new FractalRange(-1.5, 1.5, -1.5, 1.5), cConstant, colorFunction);
         }
 
         setPixelColorAt(x, y) {
@@ -263,8 +263,8 @@
     }
 
     class BurningShip extends Fractal {
-        constructor(maxIter=100, colorFunction=hueColor) {
-            super(maxIter, new FractalRange(-2.5, 1.5, -2, 2), 0, hueColor);
+        constructor(maxIter=100, colorFunction=rgbColor) {
+            super(maxIter, new FractalRange(-2.5, 1.5, -2, 2), 0, colorFunction);
         }
 
         setPixelColorAt(x, y) {
