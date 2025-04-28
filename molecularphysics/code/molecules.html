@@ -69,21 +69,21 @@
     const color = THREE.Color;
     const vector = THREE.Vector3;
 
-    const canvas = document.getElementById('moleculesCanvas');
-    canvas.focus();
-    const canvasWidth = canvas.getAttribute('width');
-    const canvasHeight = canvas.getAttribute('height');
+    const moleculeCanvas = document.getElementById('moleculesCanvas');
+    moleculeCanvas.focus();
+    const canvasWidth = moleculeCanvas.getAttribute('width');
+    const canvasHeight = moleculeCanvas.getAttribute('height');
 
     let isRotating = true;
     let viewMode = 'ball-stick';
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a1a1a);
 
-    const camera = new THREE.PerspectiveCamera(50, canvasWidth / canvasHeight, 0.1, 1000);
+    const moleculeCamera = new THREE.PerspectiveCamera(50, canvasWidth / canvasHeight, 0.1, 1000);
     let zoomLevel = 1; // 1 = default
     const cameraBase = new vector(0, 0, 8);
     function updateCameraPosition() {
-        camera.position.set(
+        moleculeCamera.position.set(
             cameraBase.x * zoomLevel,
             cameraBase.y * zoomLevel,
             cameraBase.z * zoomLevel
@@ -93,7 +93,7 @@
 
     const renderer = new THREE.WebGLRenderer({
         antialias: true,
-        canvas: canvas
+        canvas: moleculeCanvas
     });
     renderer.setSize(canvasWidth, canvasHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -302,7 +302,7 @@
             mouse.x = (event.clientX / canvasWidth) * 2 - 1;
             mouse.y = -(event.clientY / canvasHeight) * 2 + 1.2;
 
-            raycaster.setFromCamera(mouse, camera);
+            raycaster.setFromCamera(mouse, moleculeCamera);
             const intersects = raycaster.intersectObjects(this.atoms);
 
             if (intersects.length > 0) {
@@ -567,7 +567,7 @@
 
     const slider = document.getElementById("atomicRadiusSlider");
     const molecules = [new SodiumBicarbonate(), new Ethanol(), new Lactate(), new Methane(), new Water(), new Ammonia()];
-    slider.defaultValue = 125;
+    slider.defaultValue = 80;
     molecules.forEach((molecule) => {molecule.hide(); molecule.scaleAtomicRadiusBy(.8)});
 
     //GUI controls
@@ -595,7 +595,7 @@
     }
 
     function isMouseWithinCanvas(x, y) {
-        const rect = canvas.getBoundingClientRect();
+        const rect = moleculeCanvas.getBoundingClientRect();
         return (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom);
     }
 
@@ -614,6 +614,7 @@
     document.getElementById('resetView').addEventListener('click', () => {
         zoomLevel = 1;
         molecules.forEach((molecule) => {molecule.setViewModeTo("ball-stick")});
+        molecules.forEach((molecule) => {molecule.hide(); molecule.scaleAtomicRadiusBy(.8)});
         updateCameraPosition();
     });
 
@@ -660,8 +661,8 @@
             currentSelectedMolecule.molecule.rotateY(deltaX * 0.01);
             currentSelectedMolecule.rotateX(deltaY * 0.01);
         } else if (rightMouseDown) {
-            camera.position.x -= deltaX * 0.01;
-            camera.position.y += deltaY * 0.01;
+            moleculeCamera.position.x -= deltaX * 0.01;
+            moleculeCamera.position.y += deltaY * 0.01;
         }
 
         mouseX = e.clientX;
@@ -672,20 +673,22 @@
         if (!isMouseWithinCanvas(e.clientX, e.clientY))
             return;
         currentSelectedMolecule.rotate(0, 0, 0);
-        camera.position.set(0, 0, 8);
+        moleculeCamera.position.set(0, 0, 8);
+        molecules.forEach((molecule) => {molecule.hide(); molecule.scaleAtomicRadiusBy(.8)});
+        molecules.forEach((molecule) => {molecule.setViewModeTo("ball-stick")});
     });
 
     document.addEventListener('wheel', (e) => {
         if (isMouseWithinCanvas(e.clientX, e.clientY)) {
             e.preventDefault(); // voorkom alleen scrollen binnen canvas
-            camera.position.z += e.deltaY * 0.01;
-            camera.position.z = Math.max(4, Math.min(camera.position.z, 20));
+            moleculeCamera.position.z += e.deltaY * 0.01;
+            moleculeCamera.position.z = Math.max(4, Math.min(moleculeCamera.position.z, 20));
         }
     }, { passive: false });
 
     // window.addEventListener('resize', () => {
-    //     camera.aspect = window.innerWidth / window.innerHeight;
-    //     camera.updateProjectionMatrix();
+    //     moleculeCamera.aspect = window.innerWidth / window.innerHeight;
+    //     moleculeCamera.updateProjectionMatrix();
     //     renderer.setSize(window.innerWidth, window.innerHeight);
     // });
 
@@ -695,7 +698,7 @@
         if (isRotating && !mouseDown && !rightMouseDown)
             currentSelectedMolecule.rotateY(0.005);
 
-        renderer.render(scene, camera);
+        renderer.render(scene, moleculeCamera);
     }
 
     animate();
