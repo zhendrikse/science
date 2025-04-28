@@ -658,8 +658,6 @@
             rightMouseDown = false;
     });
 
-    document.addEventListener('contextmenu', (e) => e.preventDefault());
-
     document.addEventListener('mousemove', (e) => {
         if (!isMouseWithinCanvas(e.clientX, e.clientY))
             return;
@@ -686,11 +684,12 @@
     });
 
     document.addEventListener('wheel', (e) => {
-        if (!isMouseWithinCanvas(e.clientX, e.clientY))
-            return;
-        camera.position.z += e.deltaY * 0.01;
-        camera.position.z = Math.max(4, Math.min(camera.position.z, 20));
-    });
+        if (isMouseWithinCanvas(e.clientX, e.clientY)) {
+            e.preventDefault(); // voorkom alleen scrollen binnen canvas
+            camera.position.z += e.deltaY * 0.01;
+            camera.position.z = Math.max(4, Math.min(camera.position.z, 20));
+        }
+    }, { passive: false });
 
     // window.addEventListener('resize', () => {
     //     camera.aspect = window.innerWidth / window.innerHeight;
