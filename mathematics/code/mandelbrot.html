@@ -297,8 +297,6 @@
     resetButtons();
     document.getElementById("mandelbrotToggle").checked = true;
 
-    document.addEventListener('contextmenu', (e) => e.preventDefault());
-
     canvas.addEventListener("mousedown", function(event) {
         const rect = canvas.getBoundingClientRect();
         const zoomOut = event.button === 2
