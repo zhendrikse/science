@@ -1,11 +1,11 @@
 <canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas>
 <p style="clear: both;"></p>
-Colors: <button id="colorSchemeButton1">scheme 1</button>
+<label>Colors:</label><button id="colorSchemeButton1">scheme 1</button>
 <button id="colorSchemeButton2">scheme 2</button>&nbsp;&nbsp;&nbsp;
-Canvas: <button id="canvasSizeButton1">small</button>
+<label>Canvas:</label><button id="canvasSizeButton1">small</button>
 <button id="canvasSizeButton2">big</button>
 <button id="canvasSizeButton3">huge</button>&nbsp;&nbsp;&nbsp;
-Action: <button id="resetButton">reset</button>
+<label>Action:</label><button id="resetButton">reset</button>
 <p style="clear: both;"></p>
 <table style="border: none">
     <tr style="border-style: hidden;">
@@ -29,6 +29,42 @@ Action: <button id="resetButton">reset</button>
         <td><label for="juliaToggle6"><input type="radio" id="juliaToggle7"/>z=x + iy, c=-0.70176 - 0.3842i</label></td>
     </tr>
 </table>
+
+<style>
+    body {
+        margin: 0;
+        background: #1a1a1a;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        overflow: hidden;
+    }
+
+    canvas {
+        display: block;
+    }
+
+    label {
+        color: white;
+        padding: 7px 7px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 2px;
+    }
+
+    button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 5px 5px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 2px;
+    }
+
+    button:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+</style>
 
 <script>
     const canvas = document.getElementById("myCanvas");
@@ -260,6 +296,8 @@ Action: <button id="resetButton">reset</button>
     fractal.render();
     resetButtons();
     document.getElementById("mandelbrotToggle").checked = true;
+
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
 
     canvas.addEventListener("mousedown", function(event) {
         const rect = canvas.getBoundingClientRect();
