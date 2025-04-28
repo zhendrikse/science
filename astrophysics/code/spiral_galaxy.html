@@ -64,26 +64,35 @@
         blending: THREE.AdditiveBlending,
         vertexShader: `
         attribute float size;
-        varying vec3 vColor;
         varying float vAlpha;
+        varying float vDistance;
 
         void main() {
-            vColor = color;
             float dist = length(position);
-            vAlpha = 1.0 - smoothstep(0.0, 500.0, dist); // fading from center (bright) to edge (transparent)
+            vDistance = dist;
+
+            vAlpha = 1.0 - smoothstep(0.0, 500.0, dist);
             vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
             gl_PointSize = size * (300.0 / -mvPosition.z);
-            gl_Position = projectionMatrix * mvPosition;
+           gl_Position = projectionMatrix * mvPosition;
         }`,
         fragmentShader: `
-        varying vec3 vColor;
         varying float vAlpha;
+        varying float vDistance;
 
         void main() {
             float dist = length(gl_PointCoord - vec2(0.5));
             if (dist > 0.5) discard;
 
-            gl_FragColor = vec4(vColor, vAlpha);
+            // Normalize distance from 0 (center) to 1 (edge)
+            float t = clamp(vDistance / 350.0, 0.0, 1.0);
+
+            // Interpolate from warm yellow-white (center) to cold bluish-white (edge)
+            vec3 centerColor = vec3(1.0, 0.9, 0.8);  // yellowish white
+            vec3 edgeColor = vec3(0.4, 0.6, 1.0);    // bluish white
+            vec3 finalColor = mix(centerColor, edgeColor, t);
+
+            gl_FragColor = vec4(finalColor, vAlpha);
         }`
     });
 

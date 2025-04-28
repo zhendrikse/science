@@ -7,6 +7,13 @@
 - The (theory behind the) code is thoroughly explained in his [accompanying article](https://towardsdatascience.com/create-3-d-galactic-art-with-matplotlib-a7534148a319/)
 - This [spiral_galaxy.html](https://github.com/zhendrikse/science/blob/main/astrophysics/code/spiral_galaxy.html) page is a port to Javascript and [Three.js](https://threejs.org/) 
 - Javascript version has been extended with colouring and fading ([Zeger Hendrikse](https://www.hendrikse.name/))
+  - **Core / Bulge** (Central Region): yellow-white to reddish color, since the core is
+     populated mostly by older stars (Population II), which are cooler and more evolved.
+  - **Mid-to-Outer Disk** (Arms): bluish-white color, because the spiral arms host young, hot,
+    and massive stars (Population I), which are blue and short-lived. Also, star-forming regions 
+    and nebulae contribute a diffuse glow.
+  - **Outer Halo**: dim red to transparent, as this region contains very old stars and 
+    globular clusters, often too dim to be noticeable.
 - I have also ported the original code to [VPython](https://vpython.org), see [spiral_galaxy.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/spiral_galaxy.py)
 
 <p style="clear:both;"></p>
