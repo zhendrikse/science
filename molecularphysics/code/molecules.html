@@ -7,7 +7,7 @@
     <label for="Ammonia"><input type="radio" id="Ammonia" onclick="setMolecule('Ammonia')"/>Ammonia</label>
 </div>
 
-<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas>
+<canvas id="moleculesCanvas" width="600" height="400" style="border: none;"></canvas>
 
 <div style="margin-top: 15px;">
     <label for="toggleRotate"><input type="checkbox" id="toggleRotate" onclick="toggleRotation()" checked="checked"/>&nbsp;Rotate</label>
@@ -66,17 +66,15 @@
     const color = THREE.Color;
     const vector = THREE.Vector3;
 
-    const canvas = document.getElementById('myCanvas');
-    canvas.focus();
-    const canvasWidth = canvas.getAttribute('width');
-    const canvasHeight = canvas.getAttribute('height');
+    const moleculesCanvas = document.getElementById('moleculesCanvas');
+    moleculesCanvas.focus();
 
     let isRotating = true;
     let viewMode = 'ball-stick';
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a1a1a);
 
-    const camera = new THREE.PerspectiveCamera(50, canvasWidth / canvasHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(50, moleculesCanvas.width / moleculesCanvas.height, 0.1, 1000);
     let zoomLevel = 1; // 1 = default
     const cameraBase = new vector(0, 0, 8);
     function updateCameraPosition() {
@@ -90,9 +88,9 @@
 
     const renderer = new THREE.WebGLRenderer({
         antialias: true,
-        canvas: canvas
+        canvas: moleculesCanvas
     });
-    renderer.setSize(canvasWidth, canvasHeight);
+    renderer.setSize(moleculesCanvas.width, moleculesCanvas.height);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
 
@@ -296,8 +294,8 @@
         }
 
         onMouseMove(event) {
-            mouse.x = (event.clientX / canvasWidth) * 2 - 1;
-            mouse.y = -(event.clientY / canvasHeight) * 2 + 1;
+            mouse.x = (event.clientX / moleculesCanvas.width) * 2 - 1;
+            mouse.y = -(event.clientY / moleculesCanvas.height) * 2 + 1;
 
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(this.atoms);
@@ -592,7 +590,7 @@
     }
 
     function isMouseWithinCanvas(x, y) {
-        const rect = canvas.getBoundingClientRect();
+        const rect = moleculesCanvas.getBoundingClientRect();
         return (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom);
     }
 
@@ -629,9 +627,9 @@
             molecules[index].scaleAtomicRadiusBy(this.value * .01);
     };
 
-    document.addEventListener('mousemove', onMouseMove);
+    moleculesCanvas.addEventListener('mousemove', onMouseMove);
 
-    document.addEventListener('mousedown', (e) => {
+    moleculesCanvas.addEventListener('mousedown', (e) => {
         if (e.button === 0)
             mouseDown = true;
         else if (e.button === 2)
@@ -640,14 +638,14 @@
         mouseY = e.clientY;
     });
 
-    document.addEventListener('mouseup', (e) => {
+    moleculesCanvas.addEventListener('mouseup', (e) => {
         if (e.button === 0)
             mouseDown = false;
         else if (e.button === 2)
             rightMouseDown = false;
     });
 
-    document.addEventListener('mousemove', (e) => {
+    moleculesCanvas.addEventListener('mousemove', (e) => {
         if (!isMouseWithinCanvas(e.clientX, e.clientY))
             return;
 
@@ -665,14 +663,14 @@
         mouseY = e.clientY;
     });
 
-    document.addEventListener('dblclick', (e) => {
+    moleculesCanvas.addEventListener('dblclick', (e) => {
         if (!isMouseWithinCanvas(e.clientX, e.clientY))
             return;
         currentSelectedMolecule.rotate(0, 0, 0);
         camera.position.set(0, 0, 8);
     });
 
-    document.addEventListener('wheel', (e) => {
+    moleculesCanvas.addEventListener('wheel', (e) => {
         if (isMouseWithinCanvas(e.clientX, e.clientY)) {
             e.preventDefault(); // voorkom alleen scrollen binnen canvas
             camera.position.z += e.deltaY * 0.01;
