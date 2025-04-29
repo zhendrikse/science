@@ -7,8 +7,7 @@
   written by [Zeger Hendrikse](https://www.hendrikse.name/).
 - Implemented in 100% Javascript, but also ported to [VPython](https://vpython.org), see 
   [mandelbrot.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/mandelbrot.py).
-- To zoom in, click with the mouse anywhere on the fractal!
-- Use the right mouse button to zoom out, or activate the reset button.
+- CLick anywhere on the fractal to re-center
 
 {% include_relative code/mandelbrot.html %}
 
