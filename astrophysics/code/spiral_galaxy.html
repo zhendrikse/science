@@ -7,7 +7,7 @@
     }
 </script>
 
-<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
+<canvas id="galaxyCanvas" width="650" height="400" style="border: none;"></canvas><br/>
 <div style="margin-top: 10px;">
     <button id="resetView">🔄 Reset View</button>
     <button id="zoomIn">➕ Zoom In</button>
@@ -20,37 +20,37 @@
     const vector = THREE.Vector3,
         color = THREE.Color;
 
-    const canvas = document.getElementById('myCanvas');
-    canvas.focus();
-    const canvasWidth = canvas.getAttribute('width');
-    const canvasHeight = canvas.getAttribute('height');
+    const galaxyCanvas = document.getElementById('galaxyCanvas');
+    galaxyCanvas.focus();
+    const canvasWidth = galaxyCanvas.getAttribute('width');
+    const canvasHeight = galaxyCanvas.getAttribute('height');
 
     console.clear();
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x191919);
+    const galaxyScene = new THREE.Scene();
+    galaxyScene.background = new THREE.Color(0x101010);
 
-    const camera = new THREE.PerspectiveCamera(25, canvasWidth / canvasHeight, 1, 10000);
+    const galaxyCamera = new THREE.PerspectiveCamera(25, canvasWidth / canvasHeight, 1, 10000);
     const cameraBase = new vector(100, -1200, 400);
-    camera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
+    galaxyCamera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
 
 
-    const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: canvas} );
-    renderer.setSize( canvasWidth, canvasHeight );
-    renderer.setAnimationLoop( animationLoop );
+    const galaxyRenderer = new THREE.WebGLRenderer( {antialias: true, canvas: galaxyCanvas} );
+    galaxyRenderer.setSize( canvasWidth, canvasHeight );
+    galaxyRenderer.setAnimationLoop( animationLoop );
 
-    const controls = new OrbitControls(camera, canvas);
+    const controls = new OrbitControls(galaxyCamera, galaxyCanvas);
     controls.target.set(0, 0, 0);
     controls.update();
 
     let zoomLevel = 1; // 1 = default
     function updateCameraPosition() {
-        camera.position.set(
+        galaxyCamera.position.set(
             cameraBase.x * zoomLevel,
             cameraBase.y * zoomLevel,
             cameraBase.z * zoomLevel
         );
-        camera.lookAt(0, 0, 0);
+        galaxyCamera.lookAt(0, 0, 0);
         controls.update();
     }
 
@@ -165,7 +165,7 @@
             geometry.setAttribute('size', this.sizes);
 
             this.cloud = new THREE.Points(geometry, starMaterial);
-            scene.add(this.cloud);
+            galaxyScene.add(this.cloud);
         }
 
         getThreeJsHandle() {
@@ -301,7 +301,7 @@
 
     function animationLoop() {
         galaxy.rotateZ();
-        renderer.render(scene, camera);
+        galaxyRenderer.render(galaxyScene, galaxyCamera);
     }
 
 </script>
