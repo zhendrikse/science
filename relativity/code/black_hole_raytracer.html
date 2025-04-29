@@ -12,7 +12,7 @@
         return typeof value === 'string';
     }
 
-    class PixelImage {
+    class HtmlCanvasImage {
         constructor(width, height) {
             const Array2D = (r, c) => Array.from({length: r}, () => Array.from({length: c}, () => [0, 0, 0]));
             this.width = width;
@@ -230,7 +230,7 @@
         constructor(width, height){
             this.width = width
             this.height = height
-            this.pixels = new PixelImage(width, height);
+            this.pixels = new HtmlCanvasImage(width, height);
         }
     }
 
@@ -239,7 +239,7 @@
             this.camera = camera;
             this.width = width;
             this.height = height;
-            this.image = new PixelImage(width, height);
+            this.image = new HtmlCanvasImage(width, height);
             this.blackhole = blackhole;
             this.disk = disk;
         }
