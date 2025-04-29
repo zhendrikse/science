@@ -61,7 +61,9 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 
 <figure style="float: center; text-align: center;">
   <img alt="Einstein and Oppenheimer" src="images/size_of_black_hole.png" />
-  <figcaption>Size comparison for supermassive black holes such as TON 618.</figcaption>
+  <figcaption>Size comparison for supermassive black holes such as TON 618, 
+  see also this <a href="https://www.youtube.com/watch?v=aKMmeLhVRC4">fantastic video</a>.
+  </figcaption>
 </figure>
 <p style="clear: both;"></p>
 
