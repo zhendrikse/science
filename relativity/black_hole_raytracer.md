@@ -3,6 +3,19 @@
 ## Rendering a black hole using ray tracing
 <div class="header_line"><br/></div>
 
+- Based on the 
+  [blackhole_raytracer](https://github.com/silvaan/blackhole_raytracer/tree/master) project 
+  by Arman T, Casper Y, Lulu W.
+- See their accompanying [GitHub pages](https://cyang2020.github.io/BlackHoleRayTracer/) 
+  and [video](https://www.youtube.com/watch?v=VTodu1YTURY), where they explain the code.
+- This [black_hole_raytracer.html](https://github.com/zhendrikse/science/blob/main/relativity/code/black_hole_raytracer.html)
+  is a 100% Javascript port of the original Python code.
+- Refactored and extended with more realistic colour coding by [Zeger Hendrikse](https://www.hendrikse.name/).
+- A [VPython](https://www.vpython.org/) version is also available as
+  [black_hole_raytracer.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/black_hole_raytracer.py).
+
+
+
 {% include_relative code/black_hole_raytracer.html %}
 
 <p style="clear: both;"></p>

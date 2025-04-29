@@ -1,659 +1,363 @@
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
+<canvas id="blackHoleCanvas" width="600" height="300" style="border: none;"></canvas>
 
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-ρσ_modules.pythonize = {};
+<script>
+    const canvas = document.getElementById("blackHoleCanvas");
+    const display = canvas.getContext("2d");
+    canvas.focus();
 
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
+    const c = 1.0 // Speed of light
+    const G = 2e-3 // Gravitational constant
 
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, pyramid, ring, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, x_resolution, y_resolution, display_0, progress_bar, display, c, G, c_origin, c_focus, _GS_1, bh, disk, camera_, scene, engine, _;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "10";
-    title = "&#x2022; Based on the original <a href=\"https://github.com/silvaan/blackhole_raytracer/tree/master\">blackhole_raytracer<\/a> project by Arman T, Casper Y, Lulu W\n&#x2022; See also their accompanying <a href=\"https://cyang2020.github.io/BlackHoleRayTracer/\">GitHub pages</a> and <a href=\"https://www.youtube.com/watch?v=VTodu1YTURY\">video</a>\n&#x2022; Ported to VPython by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/black_hole_raytracer.py\">black_hole_raytracer.py</a>\n&#x2022; <span style=\"color: red\">Rendering may be <em>slow</em>, so please be patient!</span>\n\n";
-    "12";
-    x_resolution = 500;
-    "13";
-    y_resolution = Math.floor(x_resolution["/"](2));
-    "16";
-    display_0 = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), height: 25, width: x_resolution, title: title, resizable: false})]);
-    "17";
-    progress_bar = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({canvas: display_0, color: color.white, box: false})]);
-    "18";
-    progress_bar.text = "Progress: 0%";
-    "20";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({height: y_resolution, width: x_resolution["*"](1), fov: .01, center: vector(x_resolution["/"](2), x_resolution["/"](4), 0), range: x_resolution["/"](4), background: color.gray(.075)})]);
-    "24";
-    c = 1;
-    "25";
-    G = .002;
-    "28";
-    function BlackHole() {;
+    function isString(value) {
+        return typeof value === 'string';
     }
-    BlackHole.prototype.__init__ = async function __init__(position, mass) {
-        var self = this;
-        "30";
-        self.position = position;
-        "31";
-        self.mass = mass;
-        "32";
-        self.radius = 2["*"](self.mass)["*"](G)["/"](c["*"](c));
-    };
-    if (!BlackHole.prototype.__init__.__argnames__) Object.defineProperties(BlackHole.prototype.__init__, {
-        __argnames__ : {value: ["position", "mass"]},
-        __module__ : {value: null}
-    });
-    BlackHole.__argnames__ = BlackHole.prototype.__init__.__argnames__;
-    BlackHole.__handles_kwarg_interpolation__ = BlackHole.prototype.__init__.__handles_kwarg_interpolation__;
-    BlackHole.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    BlackHole.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(BlackHole.prototype, "__bases__", {value: []});
 
-
-    "35";
-    function Texture() {;
-    }
-    Texture.prototype.__init__ = async function __init__(im_file, width, height) {
-        var self = this;
-        "37";
-        self.pixels = null;
-        "38";
-        self.width = width;
-        "39";
-        self.height = height;
-        "40";
-        self.im_width = width;
-        "41";
-        self.im_height = height;
-    };
-    if (!Texture.prototype.__init__.__argnames__) Object.defineProperties(Texture.prototype.__init__, {
-        __argnames__ : {value: ["im_file", "width", "height"]},
-        __module__ : {value: null}
-    });
-    Texture.__argnames__ = Texture.prototype.__init__.__argnames__;
-    Texture.__handles_kwarg_interpolation__ = Texture.prototype.__init__.__handles_kwarg_interpolation__;
-    Texture.prototype.get_color = async function get_color(x, y) {
-        var self = this;
-        "44";
-        x = min(int(round(x["*"](self.im_width["-"](1["*"](1)))["/"](self.width))), self.im_width["-"](1["*"](1)));
-        "45";
-        y = min(int(round(y["*"](self.im_height["-"](1["*"](1)))["/"](self.height))), self.im_height["-"](1["*"](1)));
-    };
-    if (!Texture.prototype.get_color.__argnames__) Object.defineProperties(Texture.prototype.get_color, {
-        __argnames__ : {value: ["x", "y"]},
-        __module__ : {value: null}
-    });
-    Texture.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Texture.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Texture.prototype, "__bases__", {value: []});
-
-
-
-    "52";
-    function Disk() {;
-    }
-    Disk.prototype.__init__ = async function __init__() {
-        var self = this;
-        var origin = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
-        var inner_r = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
-        var outer_r = ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[2];
-        var colour = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.colour : arguments[3];
-        var texture = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.texture : arguments[4];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
-            colour = ρσ_kwargs_obj.colour;
+    class PixelImage {
+        constructor(width, height) {
+            const Array2D = (r, c) => Array.from({length: r}, () => Array.from({length: c}, () => [0, 0, 0]));
+            this.width = width;
+            this.height = height;
+            this.pixelSize = canvas.width / width;
+            this.colours = Array2D(this.width, this.height);
         }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "texture")){
-            texture = ρσ_kwargs_obj.texture;
+
+        setColour(pixelX, pixelY, colour) {
+            this.colours[pixelX][pixelY] = colour;
         }
-        var ρσ_ls, _GS_1;
-        "54";
-        self.origin = origin;
-        "55";
-        self.inner_r = inner_r;
-        "56";
-        self.outer_r = outer_r;
-        "57";
-        self.color = colour;
-        "58";
-        if (texture !== null) {
-            "59";
-            _GS_1 = new Texture;
-            (await _GS_1.__init__(texture, 2["*"](self.outer_r), 2["*"](self.outer_r)));
-            self.texture = _GS_1;
-            "60";
-        } else {
-            "61";
-            self.texture = null;
+
+        asCanvasImageData() {
+            const imageData = display.createImageData(canvas.width, canvas.height);
+            for (let x = 0 ; x < canvas.width; x++)
+                for (let y = 0 ; y < canvas.height; y++) {
+                    let coordinate = y * (canvas.width * 4) + x * 4;
+                    const pixelX = Math.trunc(x / this.pixelSize);
+                    const pixelY = Math.trunc(y / this.pixelSize);
+
+                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][0];
+                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][1];
+                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][2];
+                    imageData.data[coordinate++] = 255
+                }
+            return imageData;
         }
-    };
-    if (!Disk.prototype.__init__.__defaults__) Object.defineProperties(Disk.prototype.__init__, {
-        __defaults__ : {value: {colour:color.white, texture:null}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["origin", "inner_r", "outer_r", "colour", "texture"]},
-        __module__ : {value: null}
-    });
-    Disk.__argnames__ = Disk.prototype.__init__.__argnames__;
-    Disk.__handles_kwarg_interpolation__ = Disk.prototype.__init__.__handles_kwarg_interpolation__;
-    Disk.prototype.is_in = async function is_in(point) {
-        var self = this;
-        var ρσ_ls, r;
-        "64";
-        r = (point["-"](1["*"](self.origin))).mag;
-        "65";
-        return self.outer_r[">="](r) && r[">="](self.inner_r);
-    };
-    if (!Disk.prototype.is_in.__argnames__) Object.defineProperties(Disk.prototype.is_in, {
-        __argnames__ : {value: ["point"]},
-        __module__ : {value: null}
-    });
-    Disk.prototype.color_at = async function color_at(point) {
-        var self = this;
-        var ρσ_ls, x, y;
-        "68";
-        if (self.texture !== null) {
-            "69";
-            x = point.x;
-            "70";
-            y = point.z;
-            "71";
-            return (await self.texture.get_color(x["+"](self.outer_r), y["+"](self.outer_r)));
-            "72";
-        } else {
-            "73";
-            return self.color;
+
+        render() {
+            display.clearRect(0, 0, canvas.width, canvas.height);
+            display.putImageData(this.asCanvasImageData(), 0, 0);
         }
-    };
-    if (!Disk.prototype.color_at.__argnames__) Object.defineProperties(Disk.prototype.color_at, {
-        __argnames__ : {value: ["point"]},
-        __module__ : {value: null}
-    });
-    Disk.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Disk.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Disk.prototype, "__bases__", {value: []});
-
-
-
-
-    "76";
-    function Image() {;
     }
-    Image.prototype.__init__ = async function __init__(width, height) {
-        var self = this;
-        "78";
-        self.width = width;
-        "79";
-        self.height = height;
-        "80";
-        self.pixels = ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({canvas: display})]);
-    };
-    if (!Image.prototype.__init__.__argnames__) Object.defineProperties(Image.prototype.__init__, {
-        __argnames__ : {value: ["width", "height"]},
-        __module__ : {value: null}
-    });
-    Image.__argnames__ = Image.prototype.__init__.__argnames__;
-    Image.__handles_kwarg_interpolation__ = Image.prototype.__init__.__handles_kwarg_interpolation__;
-    Image.prototype.set_pixel = async function set_pixel(x, y, colour) {
-        var self = this;
-        "84";
-        ρσ_interpolate_kwargs.call(self.pixels, self.pixels.append, [ρσ_desugar_kwargs({pos: vector(x, y, 0), color: colour})]);
-    };
-    if (!Image.prototype.set_pixel.__argnames__) Object.defineProperties(Image.prototype.set_pixel, {
-        __argnames__ : {value: ["x", "y", "colour"]},
-        __module__ : {value: null}
-    });
-    Image.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Image.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Image.prototype, "__bases__", {value: []});
 
-
-
-    "87";
-    function Scene() {;
-    }
-    Scene.prototype.__init__ = async function __init__(camera, blackhole, disk, width, height) {
-        var self = this;
-        var ρσ_ls, _GS_1;
-        "89";
-        self.camera = camera;
-        "90";
-        self.width = width;
-        "91";
-        self.height = height;
-        "92";
-        _GS_1 = new Image;
-        (await _GS_1.__init__(width, height));
-        self.image = _GS_1;
-        "93";
-        self.blackhole = blackhole;
-        "94";
-        self.disk = disk;
-    };
-    if (!Scene.prototype.__init__.__argnames__) Object.defineProperties(Scene.prototype.__init__, {
-        __argnames__ : {value: ["camera", "blackhole", "disk", "width", "height"]},
-        __module__ : {value: null}
-    });
-    Scene.__argnames__ = Scene.prototype.__init__.__argnames__;
-    Scene.__handles_kwarg_interpolation__ = Scene.prototype.__init__.__handles_kwarg_interpolation__;
-    Scene.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Scene.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Scene.prototype, "__bases__", {value: []});
-
-
-    "97";
-    function Ray() {;
-    }
-    Ray.prototype.__init__ = async function __init__(origin, direction) {
-        var self = this;
-        var ρσ_ls, ρσ_unpack;
-        "99";
-        ρσ_unpack = [origin, origin, origin];
-        self.origin = ρσ_unpack[0];
-        self.position = ρσ_unpack[1];
-        self.prev_pos = ρσ_unpack[2];
-        "100";
-        self.direction = direction.norm();
-        "101";
-        self.velocity = c["*"](self.direction);
-        "102";
-        ρσ_unpack = [vector(0, 0, 0), vector(0, 0, 0)];
-        self.acceleration = ρσ_unpack[0];
-        self.cross_point = ρσ_unpack[1];
-        "103";
-        self.total_time = 0;
-        "104";
-        self.crossed_xz = false;
-    };
-    if (!Ray.prototype.__init__.__argnames__) Object.defineProperties(Ray.prototype.__init__, {
-        __argnames__ : {value: ["origin", "direction"]},
-        __module__ : {value: null}
-    });
-    Ray.__argnames__ = Ray.prototype.__init__.__argnames__;
-    Ray.__handles_kwarg_interpolation__ = Ray.prototype.__init__.__handles_kwarg_interpolation__;
-    Ray.prototype.point = async function point(dist) {
-        var self = this;
-        "107";
-        return self.origin["+"](dist["*"](self.direction));
-    };
-    if (!Ray.prototype.point.__argnames__) Object.defineProperties(Ray.prototype.point, {
-        __argnames__ : {value: ["dist"]},
-        __module__ : {value: null}
-    });
-    Ray.prototype.accelerate = async function accelerate(a) {
-        var self = this;
-        "110";
-        self.acceleration = a;
-    };
-    if (!Ray.prototype.accelerate.__argnames__) Object.defineProperties(Ray.prototype.accelerate, {
-        __argnames__ : {value: ["a"]},
-        __module__ : {value: null}
-    });
-    Ray.prototype.step = async function step(t) {
-        var self = this;
-        var ρσ_ls, a, b, l;
-        "113";
-        self.prev_pos = self.position;
-        "114";
-        self.velocity=self.velocity["+"](self.acceleration["*"](t));
-        "115";
-        self.velocity = c["*"](self.velocity.norm());
-        "116";
-        self.position=self.position["+"](self.velocity["*"](t)["+"](.5["*"](self.acceleration)["*"](t)["*"](t)));
-        "117";
-        self.total_time=self.total_time["+"](t);
-        "119";
-        self.crossed_xz = max(self.prev_pos.y, self.position.y)[">="](ρσ_cond_temp = 0) && ρσ_cond_temp[">="](min(self.prev_pos.y, self.position.y));
-        "120";
-        if (self.crossed_xz) {
-            "121";
-            a = self.prev_pos;
-            "122";
-            b = self.position;
-            "123";
-            l = b["-"](1["*"](a));
-            "124";
-            self.cross_point = vector(a.x["-"](1["*"](a.y["/"](l.y))["*"](l.x)), 0, a.z["-"](1["*"](a.y["/"](l.y))["*"](l.z)));
+    class BlackHole {
+        constructor(position, mass) {
+            this.position = new Vector(position.x, position.y, position.z);
+            this.mass = mass;
+            this.radius = 2 *  mass * G / c**2;
         }
-    };
-    if (!Ray.prototype.step.__argnames__) Object.defineProperties(Ray.prototype.step, {
-        __argnames__ : {value: ["t"]},
-        __module__ : {value: null}
-    });
-    Ray.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Ray.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Ray.prototype, "__bases__", {value: []});
-
-
-
-
-
-    "127";
-    function Camera() {;
     }
-    Camera.prototype.__init__ = async function __init__(origin, direction, focal_length) {
-        var self = this;
-        "129";
-        self.origin = origin;
-        "130";
-        self.direction = direction.norm();
-        "131";
-        self.focal_length = focal_length;
-        "132";
-        self.normal = self.origin["+"](self.focal_length["*"](self.direction));
-        "133";
-        self.right = vector(1, 0, 0);
-        "134";
-        self.up = self.normal.cross(self.right).norm();
-    };
-    if (!Camera.prototype.__init__.__argnames__) Object.defineProperties(Camera.prototype.__init__, {
-        __argnames__ : {value: ["origin", "direction", "focal_length"]},
-        __module__ : {value: null}
-    });
-    Camera.__argnames__ = Camera.prototype.__init__.__argnames__;
-    Camera.__handles_kwarg_interpolation__ = Camera.prototype.__init__.__handles_kwarg_interpolation__;
-    Camera.prototype.ray = async function ray(x, y) {
-        var self = this;
-        var ρσ_ls, point, _GS_1;
-        "137";
-        point = self.normal["+"](x["*"](self.right))["+"](y["*"](self.up));
-        "138";
-        _GS_1 = new Ray;
-        (await _GS_1.__init__(self.origin, point["-"](1["*"](self.origin))));
-        return _GS_1;
-    };
-    if (!Camera.prototype.ray.__argnames__) Object.defineProperties(Camera.prototype.ray, {
-        __argnames__ : {value: ["x", "y"]},
-        __module__ : {value: null}
-    });
-    Camera.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Camera.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Camera.prototype, "__bases__", {value: []});
 
+    class Vector {
+        constructor(x=0, y=0, z=0) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
 
+        mag() {
+            return Math.sqrt(this.dot(this));
+        }
 
-    "141";
-    function Engine() {;
+        normalize() {
+            const norm = this.mag();
+            return new Vector(this.x / norm, this.y / norm, this.z / norm);
+        }
+
+        dot(other) {
+            return this.x * other.x + this.y * other.y + this.z * other.z;
+        }
+
+        cross(other) {
+            return new Vector(
+                this.y * other.z - this.z * other.y,
+                this.z * other.x - this.x * other.z,
+                this.x * other.y - this.y * other.x
+            );
+        }
+
+        add(other) {
+            return new Vector(this.x + other.x, this.y + other.y, this.z + other.z);
+        }
+
+        multiplyScalar(scalar) {
+            return new Vector(scalar * this.x, scalar * this.y, scalar * this.z);
+        }
+
+        subtract(other) {
+            return new Vector(this.x - other.x, this.y - other.y, this.z - other.z);
+        }
+
+        dist(other){
+            return this.subtract(other).mag();
+        }
+
+        rotateAroundZ(angleDegrees) {
+            const angle = angleDegrees * Math.PI / 180;
+            const cosA = Math.cos(angle);
+            const sinA = Math.sin(angle);
+            return new Vector(
+                cosA * this.x - sinA * this.y,
+                sinA * this.x + cosA * this.y,
+                this.z
+            );
+        }
     }
-    Engine.prototype.__init__ = async function __init__() {
-        var self = this;
-        var scene_ = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
-        var n_iter = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.n_iter : arguments[1];
-        var dt = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.dt : arguments[2];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "n_iter")){
-            n_iter = ρσ_kwargs_obj.n_iter;
+
+    class Color {
+        constructor(value = [0, 0, 0]) {
+            if (isString(value)) {
+                this.r = parseInt(value.slice(1, 3), 16);
+                this.g = parseInt(value.slice(3, 5), 16);
+                this.b = parseInt(value.slice(5, 7), 16);
+            } else {
+                this.r = value[0];
+                this.g = value[1];
+                this.b = value[2];
+            }
+            this.value = [this.r, this.g, this.b];
         }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "dt")){
-            dt = ρσ_kwargs_obj.dt;
+    }
+
+    class Texture {
+        constructor(im_file, width, height) {
+            this.pixels = np.array(pil.Image.open(im_file))
+            this.width = width
+            this.height = height
+            this.im_width = this.pixels.shape[0]
+            this.im_height = this.pixels.shape[1]
         }
-        "143";
-        self.scene = scene_;
-        "144";
-        self.n_iter = n_iter;
-        "145";
-        self.dt = dt;
-    };
-    if (!Engine.prototype.__init__.__defaults__) Object.defineProperties(Engine.prototype.__init__, {
-        __defaults__ : {value: {n_iter:200, dt:.002}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["scene_", "n_iter", "dt"]},
-        __module__ : {value: null}
-    });
-    Engine.__argnames__ = Engine.prototype.__init__.__argnames__;
-    Engine.__handles_kwarg_interpolation__ = Engine.prototype.__init__.__handles_kwarg_interpolation__;
-    Engine.prototype.render = async function render() {
-        var self = this;
-        var ρσ_ls, ratio, ρσ_unpack, x0, x1, y0, y1, xstep, ystep, y, x, ray, i, j;
-        "148";
-        ratio = float(self.scene.width)["/"](self.scene.height);
-        "149";
-        ρσ_unpack = [1["-u"]()["*"](1), 1];
-        x0 = ρσ_unpack[0];
-        x1 = ρσ_unpack[1];
-        "150";
-        ρσ_unpack = [1["-u"]()["*"](1)["/"](ratio), 1["/"](ratio)];
-        y0 = ρσ_unpack[0];
-        y1 = ρσ_unpack[1];
-        "151";
-        ρσ_unpack = [x1["-"](1["*"](x0))["/"](self.scene.width["-"](1["*"](1))), y1["-"](1["*"](y0))["/"](self.scene.height["-"](1["*"](1)))];
-        xstep = ρσ_unpack[0];
-        ystep = ρσ_unpack[1];
-        "153";
-        for (var ρσ_Index1 = 0; ρσ_Index1["<"](self.scene.height); ρσ_Index1++) {
-            j = ρσ_Index1;
-            "154";
-            (await rate(1e4));
-            "155";
-            progress_bar.text = "Rendering line "["+"](str(j["+"](1)))["+"](" from ")["+"](str(self.scene.height));
-            "156";
-            y = y0["+"](j["*"](ystep));
-            "158";
-            for (var ρσ_Index2 = 0; ρσ_Index2["<"](self.scene.width); ρσ_Index2++) {
-                i = ρσ_Index2;
-                "159";
-                x = x0["+"](i["*"](xstep));
-                "160";
-                ray = (await self.scene.camera.ray(x, y));
-                "161";
-                (await self.scene.image.set_pixel(i, j, (await self.trace(ray))));
+
+        get_color(x, y) {
+            x = Math.min(Math.trunc(Math.round(x*(this.im_width-1)/this.width)), this.im_width-1);
+            y = Math.min(Math.trunc(Math.round(y*(this.im_height-1)/this.height)), this.im_height-1);
+            return new Color(this.pixels[x, y]);
+        }
+    }
+
+    class Disk {
+        constructor(origin, inner_r, outer_r, color=new Color([0.75, 0.15, 0.15]), texture=null) {
+            this.origin = origin
+            this.inner_r = inner_r
+            this.outer_r = outer_r
+            this.color = color
+            this.texture = texture === null ? null : new Texture(texture, 2 * this.outer_r, 2 * this.outer_r);
+        }
+
+        is_in(point) {
+            const r = point.subtract(this.origin).mag();
+            return r <= this.outer_r && r >= this.inner_r
+        }
+
+        color_at(point) {
+            if (this.texture !== null)
+                return this.texture.get_color(point.x + this.outer_r, point.z + this.outer_r);
+            else
+                return this.color
+        }
+    }
+
+    class Ray {
+        constructor(origin, direction) {
+            this.origin = origin;
+            this.position = origin;
+            this.direction = direction.normalize();
+            this.velocity = this.direction.multiplyScalar(c);
+            this.acceleration = new Vector(0, 0, 0);
+            this.total_time = 0;
+            this.crossed_xz = false;
+            this.cross_point = null;
+        }
+
+        point(dist) {
+            return this.origin.add(this.direction.multiplyScalar(dist));
+        }
+
+        accelerate(a) {
+            this.acceleration = a
+        }
+
+        step(t) {
+            this.prev_pos = this.position;
+            this.velocity = this.velocity.add(this.acceleration.multiplyScalar(t));
+            this.velocity = this.velocity.normalize().multiplyScalar(c);
+            this.position = this.position
+                .add(this.velocity.multiplyScalar(t))
+                .add(this.acceleration.multiplyScalar(0.5 * t * t));
+            this.total_time += t;
+
+            this.crossed_xz = (0 <= Math.max(this.prev_pos.y, this.position.y) && 0 >= Math.min(this.prev_pos.y, this.position.y));
+
+            if (this.crossed_xz) {
+                const a = this.prev_pos;
+                const b = this.position;
+                const l = b.subtract(a);
+                this.cross_point = new Vector(a.x - (a.y / l.y) * l.x, 0, a.z - (a.y / l.y) * l.z);
             }
         }
-    };
-    if (!Engine.prototype.render.__module__) Object.defineProperties(Engine.prototype.render, {
-        __module__ : {value: null}
-    });
-    Engine.prototype.trace = async function trace() {
-        var self = this;
-        var ray = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
-        var depth = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? trace.__defaults__.depth : arguments[1];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "depth")){
-            depth = ρσ_kwargs_obj.depth;
-        }
-        var ρσ_ls, colour, r, a, ray_bh_dist, t;
-        "166";
-        colour = color.black;
-        "167";
-        for (var ρσ_Index3 = 0; ρσ_Index3["<"](self.n_iter); ρσ_Index3++) {
-            t = ρσ_Index3;
-            "168";
-            r = self.scene.blackhole.position["-"](1["*"](ray.position));
-            "169";
-            a = .007["*"](self.scene.blackhole.mass["/"](r.dot(r)))["*"](r.norm());
-            "170";
-            (await ray.accelerate(a));
-            "171";
-            (await ray.step(t["*"](self.dt)));
-            "173";
-            ray_bh_dist = (ray.position["-"](1["*"](self.scene.blackhole.position))).mag;
-            "175";
-            if (ray.crossed_xz && (await self.scene.disk.is_in(ray.cross_point))) {
-                "176";
-                colour = (await self.scene.disk.color_at(ray.position));
-                "177";
-                break;
-                "178";
-            } else if (ray_bh_dist["<="](self.scene.blackhole.radius)) {
-                "179";
-                break;
-                "180";
-            } else if (ray_bh_dist[">="](15)) {
-                "181";
-                break;
-            }
-        }
-        "182";
-        return colour;
-    };
-    if (!Engine.prototype.trace.__defaults__) Object.defineProperties(Engine.prototype.trace, {
-        __defaults__ : {value: {depth:0}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["ray", "depth"]},
-        __module__ : {value: null}
-    });
-    Engine.prototype.save = async function save(filename) {
-        var self = this;
-        "185";
-        (await display.capture(filename));
-    };
-    if (!Engine.prototype.save.__argnames__) Object.defineProperties(Engine.prototype.save, {
-        __argnames__ : {value: ["filename"]},
-        __module__ : {value: null}
-    });
-    Engine.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Engine.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Engine.prototype, "__bases__", {value: []});
-
-
-
-
-
-    "189";
-    c_origin = vector(0, .7, 1["-u"]()["*"](9));
-    "190";
-    c_focus = vector(0, 0, 0);
-    "192";
-    _GS_1 = new BlackHole;
-    (await _GS_1.__init__(c_focus, 80));
-    bh = _GS_1;
-    "195";
-    _GS_1 = new Disk;
-    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [c_focus, 4.5["*"](bh.radius), 16.2["*"](bh.radius)].concat([ρσ_desugar_kwargs({colour: vector(.75, .15, .15)})]));
-    disk = _GS_1;
-    "197";
-    _GS_1 = new Camera;
-    (await _GS_1.__init__(c_origin, c_focus["-"](1["*"](c_origin)), 1.2));
-    camera_ = _GS_1;
-    "198";
-    _GS_1 = new Scene;
-    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({width: x_resolution, height: Math.floor(x_resolution["/"](2)), camera: camera_, blackhole: bh, disk: disk})]);
-    scene = _GS_1;
-    "199";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "201";
-    _GS_1 = new Engine;
-    (await _GS_1.__init__(scene));
-    engine = _GS_1;
-    "202";
-    (await engine.render());
-    "204";
-    display_0.remove();
-    "206";
-    async function download() {
-        "207";
-        (await engine.save("black_hole.png"));
-    };
-    if (!download.__module__) Object.defineProperties(download, {
-        __module__ : {value: null}
-    });
-
-    "209";
-    display.append_to_caption("\n");
-    "210";
-    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Download image", bind: download})]);
-    "212";
-    while (true) {
-        "213";
-        (await rate(10));
     }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
 
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
+    class Camera {
+        constructor(origin, direction, focal_length) {
+            this.origin = origin;
+            this.direction = direction.normalize();
+            this.focal_length = focal_length;
+            this.normal = origin.add(direction.multiplyScalar(focal_length));
+            this.right = new Vector(1, 0, 0);
+            this.up = this.normal.cross(this.right).normalize();
+            this.rotateZ();
+        }
 
-//--><!]]></script>
-</div>
+        rotateZ(angle=20) {
+            this.right = this.right.rotateAroundZ(angle);
+            this.up = this.up.rotateAroundZ(angle);
+        }
+
+        ray(x, y) {
+            const point = this.normal.add(this.right.multiplyScalar(x)).add(this.up.multiplyScalar(y));
+            return new Ray(this.origin, point.subtract(this.origin));
+        }
+    }
+
+    class Image {
+        constructor(width, height){
+            this.width = width
+            this.height = height
+            this.pixels = new PixelImage(width, height);
+        }
+    }
+
+    class Scene {
+        constructor(camera, blackhole, disk, width, height) {
+            this.camera = camera;
+            this.width = width;
+            this.height = height;
+            this.image = new PixelImage(width, height);
+            this.blackhole = blackhole;
+            this.disk = disk;
+        }
+    }
+
+    class Engine {
+        constructor(scene, n_iter=200, dt=0.002) {
+            this.scene = scene;
+            this.n_iter = n_iter;
+            this.dt = dt;
+        }
+
+        render() {
+            const ratio = this.scene.width / this.scene.height
+            // NOTE:
+            // In the original VPython version, the rendering canvas uses a wide field of view
+            // due to implicit scene scaling (center and range parameters).
+            // To match the same visual output in this raw JavaScript version,
+            // we need to manually increase the size of the image plane window.
+            //
+            // The values below (e.g., x0 = -8, x1 = 8) effectively simulate that wide view.
+            // This compensates for the lack of automatic scene scaling in JavaScript.
+            const x0 = -9.0,
+                x1 = 9.0,
+                y0 = -9.0 / ratio,
+                y1 = 9.0 / ratio,
+                xstep = (x1 - x0) / (this.scene.width - 1),
+                ystep = (y1 - y0) / (this.scene.height - 1);
+
+            for (let j = 0; j < this.scene.height; j++) {
+                const y = y0 + j * ystep;
+                // Since Javascript is so fast, there is no need to keep
+                // track of the progress.
+                // if ((j+1) % 10 === 0)
+                //     console.log('line ' + (j+1) + '/' + this.scene.height);
+
+                for (let i = 0; i < this.scene.width; i++) {
+                    const x = x0 + i * xstep;
+                    const ray = this.scene.camera.ray(x, y);
+                    this.scene.image.setColour(i, j, this.trace(ray));
+                }
+            }
+
+            this.scene.image.render();
+            // TODO ?
+            //this.output = Image.fromarray(this.scene.image.pixels.astype(np.uint8))
+        }
+
+        trace(ray) {
+            let color = null; // Start with null to detect if set later
+
+            for (let t = 0; t < this.n_iter; t++) {
+                const r = this.scene.blackhole.position.subtract(ray.position);
+                // NOTE: The theoretical gravitational acceleration for the falloff goes as 1 / |r|⁵,
+                // i.e., a = r̂ * (7e-3 * M / |r|⁵). This creates a strong lensing effect near the black hole.
+                // However, in this version we approximate it using 1 / |r|² by writing:
+                //     a = r̂ * (7e-3 * M / r.dot(r))
+                // This is done for stability and performance:
+                // - Computing |r|⁵ requires a sqrt and multiple powers, which is slow
+                // - Dividing by |r|⁵ can explode near the black hole, causing NaNs or erratic behavior
+                // - The 1 / |r|² approximation, with tuned constants, still gives a strong lensing effect
+                //   while avoiding the risk of numerical instability
+                const a = r.normalize().multiplyScalar(7.0e-3 * this.scene.blackhole.mass / r.dot(r));
+                ray.accelerate(a);
+                ray.step(t * this.dt);
+
+                const rayBlackHoleDistance = ray.position.subtract(this.scene.blackhole.position).mag();
+
+                if (ray.crossed_xz && ray.cross_point && this.scene.disk.is_in(ray.cross_point)) {
+                    color = this.calculateRayColor(ray);
+                    break;
+                } else if (rayBlackHoleDistance <= this.scene.blackhole.radius) {
+                    break;
+                } else if (rayBlackHoleDistance >= 15.0) {
+                    break;
+                }
+            }
+
+            return (color && Array.isArray(color)) ? color : [26, 26, 26];
+        }
+
+        calculateRayColor(ray) {
+            const point = ray.cross_point;
+            const distance = point.subtract(this.scene.blackhole.position).mag();
+            let brightness = this.calculateBrightness(distance);
+
+            const red = 255;
+            const green = brightness < 0.5 ? Math.round(255 * brightness * 2) : 255;
+            const blue = brightness < 0.5 ? 0 : Math.round(255 * (brightness - .5) * 2);
+            return [red, green, blue];
+        }
+
+        calculateBrightness(distance) {
+            const inner = this.scene.disk.inner_r;
+            const outer = this.scene.disk.outer_r;
+            let brightness = 1.0 - (distance - inner) / (outer - inner);
+            brightness = Math.max(0.0, Math.min(1.0, brightness));
+            return brightness ** 2.5;  // nonlinear falloff
+        }
+    }
+
+    const c_origin = new Vector(0, -.75, -9.0); //new Vector(0, 0.7, -9.0);
+    const c_focus = new Vector(0, 0, 0.0);
+    const bh = new BlackHole(c_focus, 85);
+
+    // You can specify a texture file for the accretion disk with `texture='filename.png'` or a color by `color=Color('#ffffff') (default)`
+    const disk = new Disk(c_focus, 4.5 * bh.radius, 16.2 * bh.radius);
+    const scene = new Scene(
+        new Camera(c_origin, c_focus.subtract(c_origin), 1.2),
+        bh,
+        disk,
+        500,
+        250
+    );
+
+    const engine = new Engine(scene);
+    engine.render();
+
+    //engine.save('images/blackhole.png');
+</script>
+

@@ -3,7 +3,7 @@
 ## Python and Glowscript source code directory
 <div class="header_line"><br/></div>
 
-- [`black_hole_raytracer.py` source code](black_hole_raytracer.py)
+- [`black_hole_raytracer.html` source code](black_hole_raytracer.html)
 - [`field_transorm.py` source code](field_transorm.py)
 - [`galilean_space_time.py` source code](galilean_space_time.py)
 - [`inertial_observers.py` source code](inertial_observers.py)
