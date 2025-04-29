@@ -10,6 +10,7 @@
   [molecules.html](https://github.com/zhendrikse/science/blob/main/molecularphysics/code/molecules.html) source.
 - A somewhat similar [VPython](https://vpython.org/) version available as
   [molecules.py](https://github.com/zhendrikse/pysics-in-python/blob/main/vpython/molecules.py).
+- Hovering your mouse over each of the atoms displays additional information!
 
 
 {% include_relative code/molecules.html %}
