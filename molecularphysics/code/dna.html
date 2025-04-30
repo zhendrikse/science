@@ -84,12 +84,7 @@
             const bondBetweenBalls = this.createBondBetween(ballLeft.position, ballRight.position, new color(0x2e50ac));
             const row = this.addBondToDna(bondBetweenBalls, ballRight, ballLeft, i);
 
-            const {
-                currentLeftPosition,
-                currentRightPosition
-            } = this.createPhosphateBackboneBonds(row, ballLeft, ballRight, lastLeftPosition, lastRightPosition);
-
-            return [currentLeftPosition, currentRightPosition];
+            return this.createPhosphateBackboneBonds(row, ballLeft, ballRight, lastLeftPosition, lastRightPosition);
         }
 
         addBondToDna(bondBetweenBalls, ballRight, ballLeft, rowIndex) {
@@ -139,7 +134,7 @@
                 this.dna.add(leftBackbone);
                 this.dna.add(rightBackbone);
             }
-            return {currentLeftWorld, currentRightWorld};
+            return [currentLeftWorld, currentRightWorld];
         }
 
         createBall(position, colour, radius=1.2, metallic=false) {
