@@ -7,7 +7,7 @@
     }
 </script>
 
-<canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas>
+<canvas id="dnaCanvas" width="600" height="600" style="border: none;"></canvas>
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -18,7 +18,7 @@
     const scene = new THREE.Scene();
     scene.background = new color(0x191919);
 
-    const canvas = document.getElementById('myCanvas');
+    const canvas = document.getElementById('dnaCanvas');
     canvas.focus();
     const canvasWidth = canvas.getAttribute('width');
     const canvasHeight = canvas.getAttribute('height');
@@ -42,6 +42,25 @@
     const controls = new OrbitControls(camera, canvas);
     controls.target.set(0, 0, 0);
     controls.update();
+
+    function createTextLabel(text, position) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 128;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        ctx.font = '28px Arial';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 10);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
+        const sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(4, 2, 1);
+        sprite.position.copy(position.clone().add(new THREE.Vector3(0, 0.5, 2))); // boven base en naar voren
+
+        return sprite;
+    }
 
     class Dna {
         static bondGeometry = new THREE.CylinderGeometry(0.3, 0.3, 10, 32);
@@ -76,15 +95,38 @@
             return [currentLeftWorld, currentRightWorld];
         }
 
-        addBondToDna(bondBetweenBalls, ballRight, ballLeft, i) {
+        addBondToDna(bondBetweenBalls, ballRight, ballLeft, rowIndex) {
             const row = new THREE.Object3D();
             row.add(bondBetweenBalls);
             row.add(ballRight);
             row.add(ballLeft);
-            row.position.y = i * 2;
-            row.rotation.y = 30 * i * Math.PI / 180;
+
+            this.putInHelixSpiral(rowIndex, row);
+            this.addBasePairLabels(rowIndex, ballLeft, ballRight, row);
             this.dna.add(row);
+
             return row;
+        }
+
+        addBasePairLabels(rowIndex, ballLeft, ballRight, row) {
+            const labels = ["A-T", "G-C", "T-A", "C-G"];
+            const labelText = labels[rowIndex % labels.length];
+            const labelLeft = createTextLabel(labelText.charAt(0), ballLeft.position);
+            const labelRight = createTextLabel(labelText.charAt(2), ballRight.position);
+            row.add(labelLeft);
+            row.add(labelRight);
+        }
+
+        putInHelixSpiral(rowIndex, row) {
+            const radius = 5;
+            const angle = rowIndex * 0.4;
+            const height = rowIndex * 1.8;
+
+            row.position.x = Math.sin(angle) * radius;
+            row.position.z = Math.cos(angle) * radius;
+            row.position.y = height;
+
+            row.rotation.y = angle;
         }
 
         createPhosphateBackboneBonds(row, ballLeft, ballRight, lastLeftWorld, lastRightWorld) {
