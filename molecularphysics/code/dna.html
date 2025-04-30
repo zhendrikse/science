@@ -28,12 +28,15 @@
 
     const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: canvas} );
     renderer.setSize( canvasWidth, canvasHeight );
+    renderer.shadowMap.enabled = true;
 
     const light1 = new THREE.DirectionalLight(0xffffff, 1);
     light1.position.set(12, 12, 12);
+    light1.castShadow = true;
     scene.add(light1);
     const light2 = new THREE.DirectionalLight(0xffffff, 1);
     light2.position.set(-12, 12, -12);
+    light2.castShadow = true;
     scene.add(light2);
 
     const controls = new OrbitControls(camera, canvas);
@@ -100,11 +103,15 @@
             return {currentLeftWorld, currentRightWorld};
         }
 
-        createBall(position, colour, radius=1.2) {
-            const colouredMaterial = new THREE.MeshLambertMaterial({
+        createBall(position, colour, radius=1.2, metallic=false) {
+            const colouredMaterial = new THREE.MeshPhysicalMaterial({
                 color: colour,
-                emissive: colour,
-                emissiveIntensity: 0.1
+                metalness: metallic ? 0.8 : 0.1,
+                roughness: metallic ? 0.2 : 0.7,
+                clearcoat: metallic ? 0.8 : 0.3,
+                clearcoatRoughness: 0.2,
+                envMapIntensity: 1.0,
+                wireframe: false
             });
             const moleculeGeometry = new THREE.SphereGeometry(radius, 32, 32);
             const mesh = new THREE.Mesh(moleculeGeometry, colouredMaterial);
