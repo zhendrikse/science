@@ -67,18 +67,15 @@
 
         constructor() {
             this.dna = new THREE.Object3D();
-            let lastLeftWorld = null;
-            let lastRightWorld = null;
-            for (let i = 0; i <= 20; i++) {
-                const lastPositions = this.createNucleotidePair(i, lastLeftWorld, lastRightWorld);
-                lastLeftWorld = lastPositions[0];
-                lastRightWorld = lastPositions[1];
-            }
+            let lastLeftPosition = null;
+            let lastRightPosition = null;
+            for (let i = 0; i <= 20; i++)
+                [lastLeftPosition, lastRightPosition] = this.createNucleotidePair(i, lastLeftPosition, lastRightPosition);
             this.dna.position.y = -20;
             scene.add(this.dna);
         }
 
-        createNucleotidePair(i, lastLeftWorld, lastRightWorld) {
+        createNucleotidePair(i, lastLeftPosition, lastRightPosition) {
             const cylinder = new THREE.Mesh(Dna.bondGeometry, Dna.bondMaterial);
             cylinder.rotation.z = 90 * Math.PI / 180;
             cylinder.position.x = 0;
@@ -88,11 +85,11 @@
             const row = this.addBondToDna(bondBetweenBalls, ballRight, ballLeft, i);
 
             const {
-                currentLeftWorld,
-                currentRightWorld
-            } = this.createPhosphateBackboneBonds(row, ballLeft, ballRight, lastLeftWorld, lastRightWorld);
+                currentLeftPosition,
+                currentRightPosition
+            } = this.createPhosphateBackboneBonds(row, ballLeft, ballRight, lastLeftPosition, lastRightPosition);
 
-            return [currentLeftWorld, currentRightWorld];
+            return [currentLeftPosition, currentRightPosition];
         }
 
         addBondToDna(bondBetweenBalls, ballRight, ballLeft, rowIndex) {
