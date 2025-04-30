@@ -57,7 +57,7 @@
         const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
         const sprite = new THREE.Sprite(spriteMaterial);
         sprite.scale.set(4, 2, 1);
-        sprite.position.copy(position.clone().add(new THREE.Vector3(0, 0.5, 2))); // boven base en naar voren
+        sprite.position.copy(position.clone().add(new vector(0, 0.5, 2))); // above base and to the front
 
         return sprite;
     }
