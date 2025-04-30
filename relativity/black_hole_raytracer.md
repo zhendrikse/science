@@ -8,8 +8,8 @@
   by Arman T, Casper Y, Lulu W.
 - See their accompanying [GitHub pages](https://cyang2020.github.io/BlackHoleRayTracer/) 
   and [video](https://www.youtube.com/watch?v=VTodu1YTURY), where they explain the code.
-- This [black_hole_raytracer.html](https://github.com/zhendrikse/science/blob/main/relativity/code/black_hole_raytracer.html)
-  is a 100% Javascript port of the original Python code.
+- This [black hole ray tracer](https://github.com/zhendrikse/science/blob/main/relativity/code/worker.js)
+  is a port to Javascript executed by a [web worker](https://en.wikipedia.org/wiki/Web_worker).
 - Refactored and extended with realistic colour coding by [Zeger Hendrikse](https://www.hendrikse.name/).
 - A [VPython](https://www.vpython.org/) version is also available as
   [black_hole_raytracer.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/black_hole_raytracer.py).
