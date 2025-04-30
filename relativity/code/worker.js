@@ -3,8 +3,6 @@
 //
 const c = 1.0; // Speed of light
 const G = 2e-3; // Gravitational constant
-const blackHoleCanvasWidth = 650;
-const blackHoleCanvasHeight = 325;
 
 function isString(value) {
     return typeof value === 'string';
@@ -345,12 +343,12 @@ self.onmessage = (event) => {
             new Camera(c_origin, c_focus.subtract(c_origin), 1.2),
             bh,
             disk,
-            blackHoleCanvasWidth,
-            blackHoleCanvasHeight
+            event.data.width,
+            event.data.height
         );
 
         const engine = new Engine(scene);
-        const imageData = engine.renderToImageData(blackHoleCanvasWidth, blackHoleCanvasHeight);
+        const imageData = engine.renderToImageData(event.data.width, event.data.height);
         //engine.save('images/blackhole.png');
 
         self.postMessage(imageData);
