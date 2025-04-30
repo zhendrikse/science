@@ -1,3 +1,6 @@
+//
+// Web worker for ray tracing the black hole
+//
 const c = 1.0; // Speed of light
 const G = 2e-3; // Gravitational constant
 const blackHoleCanvasWidth = 650;
