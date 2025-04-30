@@ -268,10 +268,10 @@
 
             for (let j = 0; j < this.scene.height; j++) {
                 const y = y0 + j * ystep;
-                // Since Javascript is so fast, there is no need to keep
-                // track of the progress.
-                // if ((j+1) % 10 === 0)
+                // if ((j+1) % 10 === 0) {
                 //     console.log('line ' + (j+1) + '/' + this.scene.height);
+                //     this.scene.image.render();
+                // }
 
                 for (let i = 0; i < this.scene.width; i++) {
                     const x = x0 + i * xstep;
