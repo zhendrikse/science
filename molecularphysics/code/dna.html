@@ -6,7 +6,16 @@
       }
     }
 </script>
+<style>
+    #gui_container{
+        position: absolute;
+    }
+    #gui{
+        transform:translate(5px, 5px);
+    }
+</style>
 <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.18"></script>
+<div id="gui_container"></div>
 <canvas id="dnaCanvas" width="600" height="600" style="border: none;"></canvas>
 <script type="module">
     import * as THREE from "three";
@@ -64,10 +73,10 @@
         static bondGeometry = new THREE.CylinderGeometry(0.3, 0.3, 10, 32);
         static bondLabels = ["A-T", "G-C", "T-A", "C-G"];
 
-        constructor() {
+        constructor(numBasePairs=25, showLabels=true) {
             this.dna = null;
-            this.showLabels = true;
-            this.numBasePairs = 20;
+            this.showLabels = showLabels;
+            this.numBasePairs = numBasePairs;
             this.rebuild();
         }
 
@@ -86,6 +95,7 @@
             }
 
             this.dna.position.y = -20;
+            this.dna.position.x = 5;
             scene.add(this.dna);
         }
 
@@ -221,14 +231,14 @@
 
     const gui = new lil.GUI({ autoPlace: false });
     gui.domElement.id = 'gui';
-    dnaCanvas.appendChild(gui.domElement);
+    gui_container.appendChild(gui.domElement);
 
     const settings = {
         basePairs: dna.numBasePairs,
         showLabels: dna.showLabels
     };
 
-    gui.add(settings, 'basePairs', 5, 50, 1).name('Number base pairs').onChange((value) => {
+    gui.add(settings, 'basePairs', 5, 30, 1).name('Number base pairs').onChange((value) => {
         dna.numBasePairs = value;
         dna.rebuild();
     });
