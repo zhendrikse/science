@@ -6,7 +6,7 @@
       }
     }
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/lil-gui@0.18"></script>
 <canvas id="dnaCanvas" width="600" height="600" style="border: none;"></canvas>
 <script type="module">
     import * as THREE from "three";
@@ -64,25 +64,41 @@
 
     class Dna {
         static bondGeometry = new THREE.CylinderGeometry(0.3, 0.3, 10, 32);
+        static bondLabels = ["A-T", "G-C", "T-A", "C-G"];
 
         constructor() {
+            this.dna = null;
+            this.showLabels = true;
+            this.numBasePairs = 20;
+            this.rebuild();
+        }
+
+        rebuild() {
+            if (this.dna)
+                scene.remove(this.dna);
+
             this.dna = new THREE.Object3D();
-            let lastLeftPosition = null;
-            let lastRightPosition = null;
-            for (let i = 0; i <= 20; i++)
-                [lastLeftPosition, lastRightPosition] = this.createNucleotidePair(i, lastLeftPosition, lastRightPosition);
+
+            let lastLeftPosition = null,
+                lastRightPosition = null;
+            for (let i = 0; i < this.numBasePairs; i++) {
+                const lastPositions = this.createNucleotidePair(i, lastLeftPosition, lastRightPosition);
+                lastLeftPosition = lastPositions[0];
+                lastRightPosition = lastPositions[1];
+            }
+
             this.dna.position.y = -20;
             scene.add(this.dna);
         }
 
-        createNucleotidePair(i, lastLeftPosition, lastRightPosition) {
+        createNucleotidePair(index, lastLeftPosition, lastRightPosition) {
             const cylinder = new THREE.Mesh(Dna.bondGeometry, Dna.bondMaterial);
             cylinder.rotation.z = 90 * Math.PI / 180;
             cylinder.position.x = 0;
-            let {ballRight, ballLeft} = this.nucleotides(i);
+            let {ballRight, ballLeft} = this.nucleotides(index);
 
             const bondBetweenBalls = this.createBondBetween(ballLeft.position, ballRight.position, new color(0x2e50ac));
-            const row = this.addBondToDna(bondBetweenBalls, ballRight, ballLeft, i);
+            const row = this.addBondToDna(bondBetweenBalls, ballRight, ballLeft, index);
 
             return this.createPhosphateBackboneBonds(row, ballLeft, ballRight, lastLeftPosition, lastRightPosition);
         }
@@ -94,15 +110,15 @@
             row.add(ballLeft);
 
             this.putInHelixSpiral(rowIndex, row);
-            this.addBasePairLabels(rowIndex, ballLeft, ballRight, row);
+            if (this.showLabels)
+                this.addBasePairLabels(rowIndex, ballLeft, ballRight, row);
             this.dna.add(row);
 
             return row;
         }
 
         addBasePairLabels(rowIndex, ballLeft, ballRight, row) {
-            const labels = ["A-T", "G-C", "T-A", "C-G"];
-            const labelText = labels[rowIndex % labels.length];
+            const labelText = Dna.bondLabels[rowIndex % Dna.bondLabels.length];
             const labelLeft = createTextLabel(labelText.charAt(0), ballLeft.position);
             const labelRight = createTextLabel(labelText.charAt(2), ballRight.position);
             row.add(labelLeft);
@@ -121,20 +137,20 @@
             row.rotation.y = angle;
         }
 
-        createPhosphateBackboneBonds(row, ballLeft, ballRight, lastLeftWorld, lastRightWorld) {
+        createPhosphateBackboneBonds(row, ballLeft, ballRight, lastLeft, lastRight) {
             row.updateMatrixWorld(true);
-            const currentLeftWorld = new vector();
-            const currentRightWorld = new vector();
-            ballLeft.getWorldPosition(currentLeftWorld);
-            ballRight.getWorldPosition(currentRightWorld);
+            const currentLeft = new vector();
+            const currentRight = new vector();
+            ballLeft.getWorldPosition(currentLeft);
+            ballRight.getWorldPosition(currentRight);
 
-            if (lastLeftWorld && lastRightWorld) {
-                const leftBackbone = this.createBondBetween(lastLeftWorld, currentLeftWorld, new color(0xff00ff), 0.15);
-                const rightBackbone = this.createBondBetween(lastRightWorld, currentRightWorld, new color(0x00ffff), 0.15);
+            if (lastLeft && lastRight) {
+                const leftBackbone = this.createBondBetween(lastLeft, currentLeft, new color(0xff00ff), 0.15);
+                const rightBackbone = this.createBondBetween(lastRight, currentRight, new color(0x00ffff), 0.15);
                 this.dna.add(leftBackbone);
                 this.dna.add(rightBackbone);
             }
-            return [currentLeftWorld, currentRightWorld];
+            return [currentLeft, currentRight];
         }
 
         createBall(position, colour, radius=1.2, metallic=false) {
@@ -153,15 +169,15 @@
             return mesh;
         }
 
-        nucleotides(i) {
+        nucleotides(index) {
             let ballRight, ballLeft;
-            if (i % 4 === 0) {
+            if (index % 4 === 0) {
                 ballLeft = this.createBall(new vector(-5, 0, 0), new color(0x0000ff));
                 ballRight = this.createBall(new vector(6, 0, 0), new color(0xffff00));
-            } else if (i % 4 === 1) {
+            } else if (index % 4 === 1) {
                 ballLeft = this.createBall(new vector(-5, 0, 0), new color(0xff0000));
                 ballRight = this.createBall(new vector(6, 0, 0), new color(0x00ff00));
-            } else if (i % 4 === 2) {
+            } else if (index % 4 === 2) {
                 ballLeft = this.createBall(new vector(-5, 0, 0), new color(0xffff00));
                 ballRight = this.createBall(new vector(6, 0, 0), new color(0x0000ff));
             } else {
@@ -204,6 +220,22 @@
         dna.rotateY();
         renderer.render(scene, camera);
     }
+
+    const gui = new lil.GUI();
+    const settings = {
+        basePairs: dna.numBasePairs,
+        showLabels: dna.showLabels
+    };
+
+    gui.add(settings, 'basePairs', 5, 50, 1).name('Number base pairs').onChange((value) => {
+        dna.numBasePairs = value;
+        dna.rebuild();
+    });
+
+    gui.add(settings, 'showLabels').name('Show labels').onChange((value) => {
+        dna.showLabels = value;
+        dna.rebuild();
+    });
 
     render();
 </script>
