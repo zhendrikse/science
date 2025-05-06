@@ -7,7 +7,7 @@
     }
 </script>
 
-<canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas><br/>
+<canvas id="raindropCanvas" width="600" height="600" style="border: none;"></canvas><br/>
 <p style="clear: both;"></p>
 <label for="raindropFrequencySlider">Raindrops frequency: <input type="range" min="0" max="100" value="20" class="slider" id="raindropFrequencySlider"/></label>
 <p style="clear: both;"></p>
@@ -19,12 +19,11 @@
 
     const Array2D = (r, c, value = 0) => [...Array(r)].map(_ => Array(c).fill(value));
     const vector = THREE.Vector3;
-    const scene = new THREE.Scene();
+    const raindropsScene = new THREE.Scene();
+    raindropsScene.background = new THREE.Color(0x1a1a1a);
 
-    const canvas = document.getElementById('myCanvas');
-    canvas.focus();
-    const canvasWidth = canvas.getAttribute('width');
-    const canvasHeight = canvas.getAttribute('height');
+    const raindropCanvas = document.getElementById('raindropCanvas');
+    raindropCanvas.focus();
 
     //
     // Simulation constants
@@ -59,7 +58,7 @@
             this.geometry.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
 
             this.surface = new THREE.Mesh(this.geometry, material);
-            scene.add(this.surface);
+            raindropsScene.add(this.surface);
 
         }
 
@@ -112,9 +111,11 @@
     }
 
     // Set up scene
-    const camera = initCamera();
-    const controls = new OrbitControls(camera, canvas);
-    const renderer = createRenderer();
+    const raindropsCamera = initCamera();
+    const sceneControls = new OrbitControls(raindropsCamera, raindropCanvas);
+    const sceneRenderer = createRenderer();
+    sceneRenderer.setAnimationLoop(animateRaindrops);
+
     lights();
     const surface = new Surface();
     surface.rotateX(7 * Math.PI / 8);
@@ -134,7 +135,7 @@
     }
 
     function initCamera() {
-        const camera = new THREE.PerspectiveCamera(70, canvasWidth / canvasHeight, 1, 10);
+        const camera = new THREE.PerspectiveCamera(70, raindropCanvas.width / raindropCanvas.height, 1, 10);
         camera.position.set(0, 0, 1.8);
         return camera;
     }
@@ -142,13 +143,13 @@
     function lights() {
         const light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(1, 1, 1);
-        scene.add(light);
+        raindropsScene.add(light);
     }
 
     function createRenderer() {
-        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: canvas});
+        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: raindropCanvas});
         renderer.setClearColor(0x191919, 1);
-        renderer.setSize(canvasWidth, canvasHeight);
+        renderer.setSize(raindropCanvas.width, raindropCanvas.height);
         renderer.setPixelRatio(window.devicePixelRatio);
         return renderer;
     }
@@ -191,12 +192,8 @@
         surface.update();
     }
 
-    function animate() {
-        requestAnimationFrame(animate);
+    function animateRaindrops() {
         update_pixels();
-        renderer.render(scene, camera);
+        sceneRenderer.render(raindropsScene, raindropsCamera);
     }
-
-    animate();
-
 </script>
