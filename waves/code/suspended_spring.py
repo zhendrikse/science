@@ -3,7 +3,7 @@
 from vpython import rate, vec, canvas, helix, color, cylinder, textures, box, button, slider, checkbox
 
 title = """&#x2022; Spring implementation based on <a href="https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/1-introduction-objects-parameters-and-the-3d-environment/optional-compound-objects">this example</a> from tutorial by B. Philhour
-&#x2022; Refactored and modified by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/waves/code/hanging_spring.py">hanging_spring.py</a>
+&#x2022; Refactored and modified by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/waves/code/suspended_spring.py">suspended_spring.py</a>
 
 """
 
