@@ -52,48 +52,46 @@
 
     const controls = new OrbitControls(camera, canvas);
 
-    scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(10,10,10));
+    scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(10, 10, 10));
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    function createPlane(size, color) {
-        return new THREE.Mesh(
+    function createPlane(size, divisions, position, colour) {
+        const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
+        const plane = new THREE.Mesh(
             new THREE.PlaneGeometry(size, size),
-            new THREE.MeshPhongMaterial({ color, transparent:true, opacity:0.1, side:THREE.DoubleSide })
+            new THREE.MeshPhongMaterial({ color: colour, transparent:true, opacity:0.1, side:THREE.DoubleSide })
         );
+        plane.position.copy(position);
+        grid.position.copy(position);
+        return [grid, plane];
     }
 
-    function xyPlane(size, divisions) {
-        const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
-        const plane = createPlane(size, 0x4444ff);
-        plane.rotateX(Math.PI/2);
-        plane.position.set(1,0,1);
-        grid.position.set(1,0,1);
-        return [plane, grid];
+    function xyPlane(size, divisions, position) {
+        const gridPlane = createPlane(size, divisions, position, 0x4444ff);
+        gridPlane[1].rotateX(Math.PI/2);
+        gridPlane[0].rotateY(Math.PI/2);
+        return gridPlane;
     }
-    function yzPlane(size, divisions) {
-        const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
-        grid.rotateZ(Math.PI/2);
-        const plane = createPlane(size, 0x44ff44);
-        plane.rotateY(Math.PI/2);
-        plane.position.set(0,1,1);
-        grid.position.set(0,1,1);
-        return [plane,grid];
+
+    function yzPlane(size, divisions, position) {
+        const gridPlane = createPlane(size, divisions, position, 0x44ff44);
+        gridPlane[1].rotateY(Math.PI/2);
+        gridPlane[0].rotateZ(Math.PI/2);
+        return gridPlane;
     }
-    function xzPlane(size, divisions) {
-        const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
-        grid.rotateX(Math.PI/2);
-        const plane = createPlane(size, 0xff4444);
-        plane.rotateZ(Math.PI/2);
-        plane.position.set(1,1,0);
-        grid.position.set(1,1,0);
-        return [plane,grid];
+
+    function zxPlane(size, divisions, position) {
+        const gridPlane = createPlane(size, divisions, position, 0xff4444);
+        gridPlane[1].rotateZ(Math.PI/2);
+        gridPlane[0].rotateX(Math.PI/2);
+        return gridPlane;
     }
 
     const gridSize = 2, gridDivisions = 10;
     const allGrids = [].concat(
-        xyPlane(gridSize, gridDivisions),
-        yzPlane(gridSize, gridDivisions),
-        xzPlane(gridSize, gridDivisions)
+        xyPlane(gridSize, gridDivisions, new THREE.Vector3(1, 0, 1)),
+        yzPlane(gridSize, gridDivisions, new THREE.Vector3(0, 1, 1)),
+        zxPlane(gridSize, gridDivisions, new THREE.Vector3(1, 1, 0))
     );
     allGrids.forEach(obj => scene.add(obj));
 
