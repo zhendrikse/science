@@ -1,34 +1,4 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <title>Three.js – Polair Integreren</title>
-    <style>
-        body {
-            background: #202020;
-            color: white;
-            font-family: sans-serif;
-        }
-        #container {
-            position: relative;
-            width: 600px;
-            height: 600px;
-            border: none;
-            display: inline-block;
-        }
-        #ui {
-            vertical-align: bottom;
-            margin-left: 20px;
-        }
-        .ui label {
-            display: inline-block;
-            margin: 4px 0;
-        }
-    </style>
-</head>
-<body>
-
-<div id="container">
+<div id="container" style="position: relative; width: 600px; height: 600px; border: none; display: inline-block;">
     <canvas id="myCanvas" width="600" height="600"></canvas>
 </div>
 
@@ -80,14 +50,11 @@
     labelRenderer.domElement.style.pointerEvents = "none";
     container.appendChild(labelRenderer.domElement);
 
-    // Controls use labelRenderer.domElement (belangrijk!)
     const controls = new OrbitControls(camera, labelRenderer.domElement);
 
-    // Licht
     scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(10,10,10));
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    // Helper functie
     function createPlane(size, color) {
         return new THREE.Mesh(
             new THREE.PlaneGeometry(size, size),
@@ -95,7 +62,6 @@
         );
     }
 
-    // Gridplanes
     function xyPlane(size, divisions) {
         const grid = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
         const plane = createPlane(size, 0x4444ff);
@@ -131,7 +97,6 @@
     );
     allGrids.forEach(obj => scene.add(obj));
 
-    // Labels
     function makeLabel(text, pos, color="yellow") {
         const div = document.createElement("div");
         div.style.color = color;
@@ -167,7 +132,6 @@
     }
     const axisLabelsArr = axisLabels(gridSize);
 
-    // Sferische cellen
     function toCartesian(R, t, p) {
         return new THREE.Vector3(
             1 + R*Math.sin(t)*Math.cos(p),
@@ -268,5 +232,3 @@
 
 </script>
 
-</body>
-</html>
