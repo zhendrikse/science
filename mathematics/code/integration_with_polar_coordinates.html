@@ -127,9 +127,9 @@
         createAxisLabels(size) {
             const offset = 0.4;
             return [
-                this.makeLabel("X-axis", new THREE.Vector3(size + offset, 0, 1),"white"),
-                this.makeLabel("Y-axis", new THREE.Vector3(0, size + offset * .5, 0),"white"),
-                this.makeLabel("Z-axis", new THREE.Vector3(1, 0 ,size + offset),"white"),
+                this.makeLabel("X-axis", new THREE.Vector3(size + offset, 0, 1), "white"),
+                this.makeLabel("Y-axis", new THREE.Vector3(0, size + offset * .5, 0), "white"),
+                this.makeLabel("Z-axis", new THREE.Vector3(1, 0 ,size + offset), "white"),
             ];
         }
 
@@ -148,11 +148,11 @@
 
     const axis = new MatlabAxes();
 
-    function toCartesian(R, t, p) {
+    function toCartesian(radius, theta, phi) {
         return new THREE.Vector3(
-            1 + R*Math.sin(t)*Math.cos(p),
-            1 + R*Math.sin(t)*Math.sin(p),
-            1 + R*Math.cos(t)
+            1 + radius * Math.sin(theta) * Math.cos(phi),
+            1 + radius * Math.sin(theta) * Math.sin(phi),
+            1 + radius * Math.cos(theta)
         );
     }
 
