@@ -55,80 +55,98 @@
     scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(10, 10, 10));
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    function createPlane(size, divisions, position, colour) {
-        const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(size, size),
-            new THREE.MeshPhongMaterial({ color: colour, transparent:true, opacity:0.1, side:THREE.DoubleSide })
-        );
-        plane.position.copy(position);
-        grid.position.copy(position);
-        return [grid, plane];
-    }
-
-    function xyPlane(size, divisions, position) {
-        const gridPlane = createPlane(size, divisions, position, 0x4444ff);
-        gridPlane[1].rotateX(Math.PI/2);
-        gridPlane[0].rotateY(Math.PI/2);
-        return gridPlane;
-    }
-
-    function yzPlane(size, divisions, position) {
-        const gridPlane = createPlane(size, divisions, position, 0x44ff44);
-        gridPlane[1].rotateY(Math.PI/2);
-        gridPlane[0].rotateZ(Math.PI/2);
-        return gridPlane;
-    }
-
-    function zxPlane(size, divisions, position) {
-        const gridPlane = createPlane(size, divisions, position, 0xff4444);
-        gridPlane[1].rotateZ(Math.PI/2);
-        gridPlane[0].rotateX(Math.PI/2);
-        return gridPlane;
-    }
-
-    const gridSize = 2, gridDivisions = 10;
-    const allGrids = [].concat(
-        xyPlane(gridSize, gridDivisions, new THREE.Vector3(1, 0, 1)),
-        yzPlane(gridSize, gridDivisions, new THREE.Vector3(0, 1, 1)),
-        zxPlane(gridSize, gridDivisions, new THREE.Vector3(1, 1, 0))
-    );
-    allGrids.forEach(obj => scene.add(obj));
-
-    function makeLabel(text, pos, color="yellow") {
-        const div = document.createElement("div");
-        div.style.color = color;
-        div.style.fontSize = "15px";
-        div.textContent = text;
-        const label = new CSS2DObject(div);
-        label.position.copy(pos);
-        scene.add(label);
-        return label;
-    }
-
-    function createTickLabels(size, divisions) {
-        const labels = [];
-        const step = (2 * size) / divisions;
-        const offset = 0.1;
-
-        for (let v = 0; v <= 2; v += step) {
-            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(v, 0, size + offset)));
-            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(0, v, size + offset)));
-            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(size + offset, 0, v)));
+    class MatlabAxes {
+        constructor(gridSize=2, gridDivisions=10) {
+            this.allGrids = [].concat(
+                this.xyPlane(gridSize, gridDivisions, new THREE.Vector3(1, 0, 1)),
+                this.yzPlane(gridSize, gridDivisions, new THREE.Vector3(0, 1, 1)),
+                this.zxPlane(gridSize, gridDivisions, new THREE.Vector3(1, 1, 0))
+            );
+            this.tickLabels = this.createTickLabels(gridSize, gridDivisions);
+            this.axisLabels = this.createAxisLabels(gridSize);
+            this.allGrids.forEach(obj => scene.add(obj));
+            this.tickLabels.forEach(obj => scene.add(obj));
+            this.axisLabels.forEach(obj => scene.add(obj));
         }
-        return labels;
-    }
-    const tickLabels = createTickLabels(gridSize, gridDivisions);
 
-    function axisLabels(size) {
-        const offset = 0.4;
-        return [
-            makeLabel("X-axis", new THREE.Vector3(size + offset, 0, 1),"white"),
-            makeLabel("Y-axis", new THREE.Vector3(0, size + offset * .5, 0),"white"),
-            makeLabel("Z-axis", new THREE.Vector3(1, 0 ,size + offset),"white"),
-        ];
+        createPlane(size, divisions, position, colour) {
+            const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
+            const plane = new THREE.Mesh(
+                new THREE.PlaneGeometry(size, size),
+                new THREE.MeshPhongMaterial({ color: colour, transparent:true, opacity:0.1, side:THREE.DoubleSide })
+            );
+            plane.position.copy(position);
+            grid.position.copy(position);
+            return [grid, plane];
+        }
+
+        xyPlane(size, divisions, position) {
+            const gridPlane = this.createPlane(size, divisions, position, 0x4444ff);
+            gridPlane[1].rotateX(Math.PI/2);
+            gridPlane[0].rotateY(Math.PI/2);
+            return gridPlane;
+        }
+
+        yzPlane(size, divisions, position) {
+            const gridPlane = this.createPlane(size, divisions, position, 0x44ff44);
+            gridPlane[1].rotateY(Math.PI/2);
+            gridPlane[0].rotateZ(Math.PI/2);
+            return gridPlane;
+        }
+
+        zxPlane(size, divisions, position) {
+            const gridPlane = this.createPlane(size, divisions, position, 0xff4444);
+            gridPlane[1].rotateZ(Math.PI/2);
+            gridPlane[0].rotateX(Math.PI/2);
+            return gridPlane;
+        }
+
+        makeLabel(text, pos, color="yellow") {
+            const div = document.createElement("div");
+            div.style.color = color;
+            div.style.fontSize = "15px";
+            div.textContent = text;
+            const label = new CSS2DObject(div);
+            label.position.copy(pos);
+            return label;
+        }
+
+        createTickLabels(size, divisions) {
+            const labels = [];
+            const step = (2 * size) / divisions;
+            const offset = 0.1;
+
+            for (let v = 0; v <= 2; v += step) {
+                labels.push(this.makeLabel(v.toFixed(1), new THREE.Vector3(v, 0, size + offset)));
+                labels.push(this.makeLabel(v.toFixed(1), new THREE.Vector3(0, v, size + offset)));
+                labels.push(this.makeLabel(v.toFixed(1), new THREE.Vector3(size + offset, 0, v)));
+            }
+            return labels;
+        }
+
+        createAxisLabels(size) {
+            const offset = 0.4;
+            return [
+                this.makeLabel("X-axis", new THREE.Vector3(size + offset, 0, 1),"white"),
+                this.makeLabel("Y-axis", new THREE.Vector3(0, size + offset * .5, 0),"white"),
+                this.makeLabel("Z-axis", new THREE.Vector3(1, 0 ,size + offset),"white"),
+            ];
+        }
+
+        setTickLabelVisibilityTo(checked) {
+            this.tickLabels.forEach(label => label.visible = checked);
+        }
+
+        setPlaneVisibilityTo(checked) {
+            this.allGrids.forEach(grid => grid.visible = checked);
+        }
+
+        setAxesLabelVisibilityTo(checked) {
+            this.axisLabels.forEach(label => label.visible = checked);
+        }
     }
-    const axisLabelsArr = axisLabels(gridSize);
+
+    const axis = new MatlabAxes();
 
     function toCartesian(R, t, p) {
         return new THREE.Vector3(
@@ -204,17 +222,21 @@
     [thetaMin,thetaMax,phiMin,phiMax].forEach(el =>
         el.addEventListener("input", () => { updateVisibility(); updateIntegral(); })
     );
+
     opacity.addEventListener("input", () => {
         cells.forEach(c => c.material.opacity = parseFloat(opacity.value));
     });
+
     meshChk.addEventListener("input", () => {
-        allGrids.forEach(g => g.visible = meshChk.checked);
+        axis.setPlaneVisibilityTo(meshChk.checked);
     });
+
     tickChk.addEventListener("input", () => {
-        tickLabels.forEach(l => l.visible = tickChk.checked);
+        axis.setTickLabelVisibilityTo(tickChk.checked)
     });
+
     axisChk.addEventListener("input", () => {
-        axisLabelsArr.forEach(l => l.visible = axisChk.checked);
+        axis.setAxesLabelVisibilityTo(axisChk.checked);
     });
 
     // Init
