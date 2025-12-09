@@ -164,25 +164,25 @@
     const cells = [];
     let values = [];
 
-    for (let t=0; t<=Math.PI; t+=da)
-        for (let p=0; p<=2*Math.PI; p+=da) {
-            const val = f(t,p);
+    for (let theta = 0; theta <= Math.PI; theta += da)
+        for (let phi = 0; phi <= 2 * Math.PI; phi += da) {
+            const val = f(theta, phi);
             values.push(val);
 
-            const m = new THREE.Mesh(
+            const mesh = new THREE.Mesh(
                 new THREE.BoxGeometry(da, da, da),
                 new THREE.MeshPhongMaterial({ transparent:true, opacity:0.35 })
             );
-            m.position.copy(toCartesian(R,t,p));
-            m.userData = {theta:t, phi:p, val};
-            scene.add(m);
-            cells.push(m);
+            mesh.position.copy(toCartesian(R, theta, phi));
+            mesh.userData = {theta:theta, phi:phi, val};
+            scene.add(mesh);
+            cells.push(mesh);
         }
 
     const minF = Math.min(...values), maxF = Math.max(...values);
-    cells.forEach(c => {
-        const t = (c.userData.val - minF) / (maxF - minF);
-        c.material.color.setRGB(t, 0, 1 - t);
+    cells.forEach(cell => {
+        const t = (cell.userData.val - minF) / (maxF - minF);
+        cell.material.color.setRGB(t, 0, 1 - t);
     });
 
     // UI
@@ -201,16 +201,16 @@
             p0 = parseFloat(phiMin.value),
             p1 = parseFloat(phiMax.value);
 
-        cells.forEach(c => {
-            const t = c.userData.theta, p = c.userData.phi;
-            c.visible = (t>=t0 && t<=t1 && p>=p0 && p<=p1);
+        cells.forEach(cell => {
+            const t = cell.userData.theta, p = cell.userData.phi;
+            cell.visible = (t >= t0 && t <= t1 && p >= p0 && p <= p1);
         });
     }
 
     function integrate() {
         let sum = 0;
-        cells.forEach(c => { if (c.visible) sum += c.userData.val * Math.sin(c.userData.theta); });
-        return sum * R*R * da * da;
+        cells.forEach(cell => { if (cell.visible) sum += cell.userData.val * Math.sin(cell.userData.theta); });
+        return sum * R * R * da * da;
     }
 
     function updateIntegral() {
@@ -224,7 +224,7 @@
     );
 
     opacity.addEventListener("input", () => {
-        cells.forEach(c => c.material.opacity = parseFloat(opacity.value));
+        cells.forEach(cell => cell.material.opacity = parseFloat(opacity.value));
     });
 
     meshChk.addEventListener("input", () => {
