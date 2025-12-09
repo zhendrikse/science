@@ -50,7 +50,7 @@
     labelRenderer.domElement.style.pointerEvents = "none";
     container.appendChild(labelRenderer.domElement);
 
-    const controls = new OrbitControls(camera, labelRenderer.domElement);
+    const controls = new OrbitControls(camera, canvas);
 
     scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(10,10,10));
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
