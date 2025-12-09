@@ -2,14 +2,7 @@
 
 from vpython import label, vec, vector, canvas, rate, color, cylinder, box, arange, pi, cos, sin, wtext, slider, sign, checkbox
 
-title = """&#x2022; Based on original <a href="https://www.glowscript.org/#/user/wlane/folder/Numerical-Integration-for-Beginners/program/integration-slider-sphere/">program</a> by <a href="https://www.youtube.com/@LetsCodePhysics">Let&apos;s code physics</a>
-&#x2022; Refactored by <a href="https://www.henrikse.name/">Zeger Hendrikse</a> to <a href="https://github.com/zhendrikse/science/blob/main/mathematics/code/integration_with_polar_coordinates.py">integration_with_polar_coordinates.py</a> 
-
-&#x2022; Function to integrate: $f(\\theta, \\phi) = \\theta^2(\\phi - \\pi)^2$ 
-
-"""
-
-display = canvas(title=title, background=color.gray(0.075), height=500, forward=vec(-.4, -.7, -.6), up=vec(0, 0, 1), center=vec(0, .35, -.40))
+display = canvas(background=color.gray(0.075), height=500, forward=vec(-.4, -.7, -.6), up=vec(0, 0, 1), center=vec(0, .35, -.40))
 
 x_hat = vec(0, 1, 0)
 y_hat = vec(0, 0, 1)
