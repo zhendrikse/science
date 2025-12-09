@@ -1,744 +1,246 @@
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-ρσ_modules.pythonize = {};
-
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, x_hat, y_hat, z_hat, base, x_range, y_range, _GS_1, axis, phi_max, da, R, sphere_, _, opacity_slider_text, theta_min_text, theta_max_text, phi_min_text, phi_max_text, int_text;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "10";
-    title = "&#x2022; Based on original <a href=\"https://www.glowscript.org/#/user/wlane/folder/Numerical-Integration-for-Beginners/program/integration-slider-sphere/\">program<\/a> by <a href=\"https://www.youtube.com/@LetsCodePhysics\">Let&apos;s code physics</a>\n&#x2022; Refactored by <a href=\"https://www.henrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/integration_with_polar_coordinates.py\">integration_with_polar_coordinates.py</a> \n\n&#x2022; Function to integrate: $f(\\theta, \\phi) = \\theta^2(\\phi - \\pi)^2$ \n\n";
-    "12";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), height: 500, forward: vec(1["-u"]()["*"](.4), 1["-u"]()["*"](.7), 1["-u"]()["*"](.6)), up: vec(0, 0, 1), center: vec(0, .35, 1["-u"]()["*"](.4))})]);
-    "14";
-    x_hat = vec(0, 1, 0);
-    "15";
-    y_hat = vec(0, 0, 1);
-    "16";
-    z_hat = vec(1, 0, 0);
-    "17";
-    base = ρσ_list_decorate([ x_hat, y_hat, z_hat ]);
-    "19";
-    function Base() {;
-    }
-    Base.prototype.__init__ = async function __init__(xx, yy, zz, axis_color, tick_marks_color, num_tick_marks) {
-        var self = this;
-        var ρσ_ls, ρσ_unpack, x_min, x_max, y_min, y_max, z_min, z_max, range_x, range_y, range_z, max_of_base, delta, position, radius, pos;
-        "21";
-        ρσ_unpack = [min(xx), max(xx)];
-        x_min = ρσ_unpack[0];
-        x_max = ρσ_unpack[1];
-        "22";
-        ρσ_unpack = [min(yy), max(yy)];
-        y_min = ρσ_unpack[0];
-        y_max = ρσ_unpack[1];
-        "23";
-        ρσ_unpack = [min(zz), max(zz)];
-        z_min = ρσ_unpack[0];
-        z_max = ρσ_unpack[1];
-        "24";
-        ρσ_unpack = [x_max["-"](1["*"](x_min)), y_max["-"](1["*"](y_min)), z_max["-"](1["*"](z_min))];
-        range_x = ρσ_unpack[0];
-        range_y = ρσ_unpack[1];
-        range_z = ρσ_unpack[2];
-        "25";
-        max_of_base = max(range_x, range_y, range_z);
-        "26";
-        delta = max_of_base["/"](num_tick_marks);
-        "27";
-        position = vec(x_min, z_min, y_min);
-        "28";
-        radius = max_of_base["/"](200);
-        "30";
-        self._mesh = ρσ_list_decorate([]);
-        "31";
-        (await self._create_mesh(delta, max_of_base, num_tick_marks, position, radius));
-        "33";
-        self._tick_marks = ρσ_list_decorate([]);
-        "34";
-        (await self._create_tick_marks(delta, max_of_base, num_tick_marks, position, tick_marks_color, x_min, y_min, z_min));
-        "36";
-        self._axis_labels = ρσ_list_decorate([]);
-        "37";
-        pos = position["+"](x_hat["*"](max_of_base["+"](2.5["*"](delta))))["+"](.5["*"](max_of_base)["*"](z_hat));
-        "38";
-        self._axis_labels=self._axis_labels["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: "Y-axis", color: axis_color, box: false})]) ]));
-        "39";
-        pos = position["+"](z_hat["*"](max_of_base["+"](2.5["*"](delta))))["+"](.5["*"](max_of_base)["*"](y_hat));
-        "40";
-        self._axis_labels=self._axis_labels["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: "Z-axis", color: axis_color, box: false})]) ]));
-        "41";
-        pos = position["+"](z_hat["*"](max_of_base["+"](2.5["*"](delta))))["+"](.5["*"](max_of_base)["*"](x_hat));
-        "42";
-        self._axis_labels=self._axis_labels["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: "X-axis", color: axis_color, box: false})]) ]));
-    };
-    if (!Base.prototype.__init__.__argnames__) Object.defineProperties(Base.prototype.__init__, {
-        __argnames__ : {value: ["xx", "yy", "zz", "axis_color", "tick_marks_color", "num_tick_marks"]},
-        __module__ : {value: null}
-    });
-    Base.__argnames__ = Base.prototype.__init__.__argnames__;
-    Base.__handles_kwarg_interpolation__ = Base.prototype.__init__.__handles_kwarg_interpolation__;
-    Base.prototype._create_tick_marks = async function _create_tick_marks(delta, max_of_base, num_tick_marks, position, tick_marks_color, x_min, y_min, z_min) {
-        var self = this;
-        var ρσ_ls, increment, label_text, pos, i;
-        "45";
-        increment = max_of_base["/"](num_tick_marks);
-        "46";
-        for (var ρσ_Index1 = 1; ρσ_Index1["<"](num_tick_marks); ρσ_Index1=ρσ_Index1["+"](2)) {
-            i = ρσ_Index1;
-            "48";
-            label_text = "{:1.2f}".format(x_min["+"](i["*"](increment)), 2);
-            "49";
-            pos = position["+"](x_hat["*"](i)["*"](delta))["+"](z_hat["*"](max_of_base["+"](.75["*"](delta))));
-            "50";
-            self._tick_marks.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: label_text, color: tick_marks_color, box: false})]));
-            "52";
-            label_text = "{:1.2f}".format(y_min["+"](i["*"](increment)), 2);
-            "53";
-            pos = position["+"](z_hat["*"](i)["*"](delta))["+"](x_hat["*"](max_of_base["+"](.75["*"](delta))));
-            "54";
-            self._tick_marks.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: label_text, color: tick_marks_color, box: false})]));
-            "56";
-            label_text = "{:1.2f}".format(z_min["+"](i["*"](increment)), 2);
-            "57";
-            pos = position["+"](y_hat["*"](i)["*"](delta))["+"](z_hat["*"](max_of_base["+"](.75["*"](delta))));
-            "58";
-            self._tick_marks.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: label_text, color: tick_marks_color, box: false})]));
-        }
-    };
-    if (!Base.prototype._create_tick_marks.__argnames__) Object.defineProperties(Base.prototype._create_tick_marks, {
-        __argnames__ : {value: ["delta", "max_of_base", "num_tick_marks", "position", "tick_marks_color", "x_min", "y_min", "z_min"]},
-        __module__ : {value: null}
-    });
-    Base.prototype._create_mesh = async function _create_mesh(delta, max_of_base, num_tick_marks, position, radius) {
-        var self = this;
-        var ρσ_ls, i, item, pos;
-        "61";
-        for (var ρσ_Index2 = 0; ρσ_Index2["<"](num_tick_marks["+"](1)); ρσ_Index2++) {
-            i = ρσ_Index2;
-            "63";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](z_hat["*"](delta)["*"](i)), axis: max_of_base["*"](x_hat)})]) ]));
-            "64";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](x_hat["*"](delta)["*"](i)), axis: max_of_base["*"](z_hat)})]) ]));
-            "66";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](z_hat["*"](delta)["*"](i)), axis: max_of_base["*"](y_hat)})]) ]));
-            "67";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](y_hat["*"](delta)["*"](i)), axis: max_of_base["*"](z_hat)})]) ]));
-            "69";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](x_hat["*"](delta)["*"](i)), axis: max_of_base["*"](y_hat)})]) ]));
-            "70";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](y_hat["*"](delta)["*"](i)), axis: max_of_base["*"](x_hat)})]) ]));
-        }
-        "71";
-        var ρσ_Iter3 = self._mesh;
-        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-        for (var ρσ_Index3 of ρσ_Iter3) {
-            item = ρσ_Index3;
-            "72";
-            item.color = color.gray(.5);
-            "73";
-            item.radius = radius;
-        }
-        "75";
-        pos = position["+"](x_hat["+"](z_hat)["*"](.5)["*"](max_of_base));
-        "76";
-        self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: pos, length: max_of_base, width: radius, height: max_of_base, opacity: .05})]) ]));
-        "77";
-        pos = position["+"](z_hat["+"](y_hat)["*"](.5)["*"](max_of_base));
-        "78";
-        self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: pos, length: max_of_base, width: max_of_base, height: radius, opacity: .05})]) ]));
-        "79";
-        pos = position["+"](y_hat["+"](x_hat)["*"](.5)["*"](max_of_base));
-        "80";
-        self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: pos, length: radius, width: max_of_base, height: max_of_base, opacity: .05})]) ]));
-    };
-    if (!Base.prototype._create_mesh.__argnames__) Object.defineProperties(Base.prototype._create_mesh, {
-        __argnames__ : {value: ["delta", "max_of_base", "num_tick_marks", "position", "radius"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.tick_marks_visibility_is = async function tick_marks_visibility_is(visible) {
-        var self = this;
-        var ρσ_ls, tick_mark;
-        "83";
-        var ρσ_Iter4 = self._tick_marks;
-        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-        for (var ρσ_Index4 of ρσ_Iter4) {
-            tick_mark = ρσ_Index4;
-            "84";
-            tick_mark.visible = visible;
-        }
-    };
-    if (!Base.prototype.tick_marks_visibility_is.__argnames__) Object.defineProperties(Base.prototype.tick_marks_visibility_is, {
-        __argnames__ : {value: ["visible"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.mesh_visibility_is = async function mesh_visibility_is(visible) {
-        var self = this;
-        var ρσ_ls, i;
-        "87";
-        var ρσ_Iter5 = range(len(self._mesh));
-        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-        for (var ρσ_Index5 of ρσ_Iter5) {
-            i = ρσ_Index5;
-            "88";
-            ρσ_getitem(self._mesh, i).visible = visible;
-        }
-    };
-    if (!Base.prototype.mesh_visibility_is.__argnames__) Object.defineProperties(Base.prototype.mesh_visibility_is, {
-        __argnames__ : {value: ["visible"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.axis_labels_visibility_is = async function axis_labels_visibility_is(visible) {
-        var self = this;
-        var ρσ_ls, i;
-        "91";
-        var ρσ_Iter6 = range(len(self._axis_labels));
-        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
-        for (var ρσ_Index6 of ρσ_Iter6) {
-            i = ρσ_Index6;
-            "92";
-            ρσ_getitem(self._axis_labels, i).visible = visible;
-        }
-    };
-    if (!Base.prototype.axis_labels_visibility_is.__argnames__) Object.defineProperties(Base.prototype.axis_labels_visibility_is, {
-        __argnames__ : {value: ["visible"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Base.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Base.prototype, "__bases__", {value: []});
-
-
-
-
-
-
-
-    "94";
-    x_range = range(1["-u"]()["*"](1.25), 1.25, .1);
-    "95";
-    y_range = range(1["-u"]()["*"](1.25), 1.25, .1);
-    "96";
-    _GS_1 = new Base;
-    (await _GS_1.__init__(x_range, y_range, range(1["-u"]()["*"](1), 1, .1), color.yellow, color.green, 10));
-    axis = _GS_1;
-    "99";
-    phi_max = 2["*"](pi);
-    "100";
-    da = .05;
-    "103";
-    async function f(theta, phi) {
-        "108";
-        return theta["*"](theta)["*"](phi["-"](1["*"](pi)))["*"](phi["-"](1["*"](pi)));
-    };
-    if (!f.__argnames__) Object.defineProperties(f, {
-        __argnames__ : {value: ["theta", "phi"]},
-        __module__ : {value: null}
-    });
-
-    "111";
-    R = 1;
-    "113";
-    function Element() {;
-    }
-    Element.prototype.__init__ = async function __init__(position, size, opacity, theta, phi, f_theta_phi) {
-        var self = this;
-        "115";
-        self._element = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: position, opacity: opacity, size: size})]);
-        "116";
-        self._theta = theta;
-        "117";
-        self._phi = phi;
-        "118";
-        self._f_theta_phi = f_theta_phi;
-    };
-    if (!Element.prototype.__init__.__argnames__) Object.defineProperties(Element.prototype.__init__, {
-        __argnames__ : {value: ["position", "size", "opacity", "theta", "phi", "f_theta_phi"]},
-        __module__ : {value: null}
-    });
-    Element.__argnames__ = Element.prototype.__init__.__argnames__;
-    Element.__handles_kwarg_interpolation__ = Element.prototype.__init__.__handles_kwarg_interpolation__;
-    Element.prototype.update = async function update(theta_min, theta_max, phi_min, phi_max) {
-        var self = this;
-        "121";
-        if (theta_min["<="](ρσ_cond_temp = self._theta) && ρσ_cond_temp["<="](theta_max) && phi_min["<="](ρσ_cond_temp = self._phi) && ρσ_cond_temp["<="](phi_max)) {
-            "122";
-            self._element.visible = true;
-            "123";
-        } else if (theta_min[">="](ρσ_cond_temp = self._theta) && ρσ_cond_temp[">="](theta_max) && phi_min[">="](ρσ_cond_temp = self._phi) && ρσ_cond_temp[">="](phi_max)) {
-            "124";
-            self._element.visible = true;
-            "125";
-        } else {
-            "126";
-            self._element.visible = false;
-        }
-    };
-    if (!Element.prototype.update.__argnames__) Object.defineProperties(Element.prototype.update, {
-        __argnames__ : {value: ["theta_min", "theta_max", "phi_min", "phi_max"]},
-        __module__ : {value: null}
-    });
-    Element.prototype.f_theta_phi = async function f_theta_phi() {
-        var self = this;
-        "129";
-        return self._f_theta_phi;
-    };
-    if (!Element.prototype.f_theta_phi.__module__) Object.defineProperties(Element.prototype.f_theta_phi, {
-        __module__ : {value: null}
-    });
-    Element.prototype.value = async function value() {
-        var self = this;
-        "132";
-        return (self._element.visible) ? self._f_theta_phi["*"](sin(self._theta)) : 0;
-    };
-    if (!Element.prototype.value.__module__) Object.defineProperties(Element.prototype.value, {
-        __module__ : {value: null}
-    });
-    Element.prototype.set_color = async function set_color(colour) {
-        var self = this;
-        "135";
-        self._element.color = colour;
-    };
-    if (!Element.prototype.set_color.__argnames__) Object.defineProperties(Element.prototype.set_color, {
-        __argnames__ : {value: ["colour"]},
-        __module__ : {value: null}
-    });
-    Element.prototype.set_opacity_to = async function set_opacity_to(value) {
-        var self = this;
-        "138";
-        self._element.opacity = value;
-    };
-    if (!Element.prototype.set_opacity_to.__argnames__) Object.defineProperties(Element.prototype.set_opacity_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    Element.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Element.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Element.prototype, "__bases__", {value: []});
-
-
-
-
-
-
-
-    "143";
-    function Sphere() {;
-    }
-    Sphere.prototype.__init__ = async function __init__(theta_min, theta_max, phi_min, phi_max) {
-        var self = this;
-        var ρσ_ls, ρσ_unpack, f_values, theta, phi, pos, _GS_1, f_max, f_min, df, cell;
-        "145";
-        self._opacity = .35;
-        "146";
-        ρσ_unpack = [theta_min, theta_max, phi_min, phi_max];
-        self._theta_min = ρσ_unpack[0];
-        self._theta_max = ρσ_unpack[1];
-        self._phi_min = ρσ_unpack[2];
-        self._phi_max = ρσ_unpack[3];
-        "147";
-        self._cells = ρσ_list_decorate([]);
-        "149";
-        f_values = ρσ_list_decorate([]);
-        "150";
-        theta = theta_min;
-        "151";
-        while (theta["<="](theta_max)) {
-            "152";
-            phi = phi_min;
-            "153";
-            while (phi["<="](phi_max)) {
-                "154";
-                f_values.append((await f(theta, phi)));
-                "155";
-                pos = R["*"](vector(R["*"](sin(theta))["*"](cos(phi)), R["*"](sin(theta))["*"](sin(phi)), R["*"](cos(theta))));
-                "156";
-                _GS_1 = new Element;
-                (await _GS_1.__init__(pos, da["*"](vector(1, 1, 1)), self._opacity, theta, phi, (await f(theta, phi))));
-                self._cells.append(_GS_1);
-                "157";
-                phi=phi["+"](da);
-            }
-            "158";
-            theta=theta["+"](da);
-        }
-        "160";
-        f_max = max(f_values);
-        "161";
-        f_min = min(f_values);
-        "162";
-        df = f_max["-"](1["*"](f_min));
-        "163";
-        if ((df === 0 || typeof df === "object" && ρσ_equals(df, 0))) {
-            "164";
-            df = 1;
-            "165";
-            f_max = 1;
-            "166";
-            f_min = 0;
-        }
-        "167";
-        var ρσ_Iter7 = self._cells;
-        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
-        for (var ρσ_Index7 of ρσ_Iter7) {
-            cell = ρσ_Index7;
-            "170";
-            (await cell.set_color(vector(f_max["-"](1["*"]((await cell.f_theta_phi()))), (await cell.f_theta_phi())["-"](1["*"](f_min)), 0)["/"](df)));
-        }
-    };
-    if (!Sphere.prototype.__init__.__argnames__) Object.defineProperties(Sphere.prototype.__init__, {
-        __argnames__ : {value: ["theta_min", "theta_max", "phi_min", "phi_max"]},
-        __module__ : {value: null}
-    });
-    Sphere.__argnames__ = Sphere.prototype.__init__.__argnames__;
-    Sphere.__handles_kwarg_interpolation__ = Sphere.prototype.__init__.__handles_kwarg_interpolation__;
-    Sphere.prototype._update_cells = async function _update_cells() {
-        var self = this;
-        var ρσ_ls, cell;
-        "174";
-        var ρσ_Iter8 = self._cells;
-        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
-        for (var ρσ_Index8 of ρσ_Iter8) {
-            cell = ρσ_Index8;
-            "175";
-            (await cell.update(self._theta_min, self._theta_max, self._phi_min, self._phi_max));
-        }
-    };
-    if (!Sphere.prototype._update_cells.__module__) Object.defineProperties(Sphere.prototype._update_cells, {
-        __module__ : {value: null}
-    });
-    Sphere.prototype.set_phi_max_to = async function set_phi_max_to(value) {
-        var self = this;
-        "187";
-        self._phi_max = value;
-        "188";
-        (await self._update_cells());
-    };
-    if (!Sphere.prototype.set_phi_max_to.__argnames__) Object.defineProperties(Sphere.prototype.set_phi_max_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    Sphere.prototype.set_phi_min_to = async function set_phi_min_to(value) {
-        var self = this;
-        "191";
-        self._phi_min = value;
-        "192";
-        (await self._update_cells());
-    };
-    if (!Sphere.prototype.set_phi_min_to.__argnames__) Object.defineProperties(Sphere.prototype.set_phi_min_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    Sphere.prototype.set_theta_max_to = async function set_theta_max_to(value) {
-        var self = this;
-        "195";
-        self._theta_max = value;
-        "196";
-        (await self._update_cells());
-    };
-    if (!Sphere.prototype.set_theta_max_to.__argnames__) Object.defineProperties(Sphere.prototype.set_theta_max_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    Sphere.prototype.set_theta_min_to = async function set_theta_min_to(value) {
-        var self = this;
-        "199";
-        self._theta_min = value;
-        "200";
-        (await self._update_cells());
-    };
-    if (!Sphere.prototype.set_theta_min_to.__argnames__) Object.defineProperties(Sphere.prototype.set_theta_min_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    Sphere.prototype.integrate = async function integrate() {
-        var self = this;
-        var ρσ_ls, integral, cell;
-        "203";
-        integral = 0;
-        "204";
-        var ρσ_Iter9 = self._cells;
-        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
-        for (var ρσ_Index9 of ρσ_Iter9) {
-            cell = ρσ_Index9;
-            "205";
-            integral=integral["+"]((await cell.value()));
-        }
-        "206";
-        return integral["*"](Math.pow(R, 2))["*"](Math.pow(da, 2))["*"](sign(self._theta_max["-"](1["*"](self._theta_min))))["*"](sign(self._phi_max["-"](1["*"](self._phi_min))));
-    };
-    if (!Sphere.prototype.integrate.__module__) Object.defineProperties(Sphere.prototype.integrate, {
-        __module__ : {value: null}
-    });
-    Sphere.prototype.set_opacity_to = async function set_opacity_to(value) {
-        var self = this;
-        var ρσ_ls, element;
-        "209";
-        self._opacity = value;
-        "210";
-        var ρσ_Iter10 = self._cells;
-        ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
-        for (var ρσ_Index10 of ρσ_Iter10) {
-            element = ρσ_Index10;
-            "211";
-            (await element.set_opacity_to(value));
-        }
-    };
-    if (!Sphere.prototype.set_opacity_to.__argnames__) Object.defineProperties(Sphere.prototype.set_opacity_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    Sphere.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Sphere.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Sphere.prototype, "__bases__", {value: []});
-
-
-
-
-
-
-
-
-
-    "214";
-    _GS_1 = new Sphere;
-    (await _GS_1.__init__(0, pi, 0, 2["*"](pi)));
-    sphere_ = _GS_1;
-    "216";
-    async function set_theta_min(event) {
-        "217";
-        (await sphere_.set_theta_min_to(event.value));
-        "218";
-        theta_min_text.text = "θ_min = "["+"]("{:1.2f}".format(event.value))["+"]("\n\n");
-        "219";
-        (await make_caption());
-    };
-    if (!set_theta_min.__argnames__) Object.defineProperties(set_theta_min, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "221";
-    async function set_theta_max(event) {
-        "222";
-        (await sphere_.set_theta_max_to(event.value));
-        "223";
-        theta_max_text.text = "θ_max = "["+"]("{:1.2f}".format(event.value))["+"]("\n\n");
-        "224";
-        (await make_caption());
-    };
-    if (!set_theta_max.__argnames__) Object.defineProperties(set_theta_max, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "226";
-    async function set_phi_min(event) {
-        "227";
-        (await sphere_.set_phi_min_to(event.value));
-        "228";
-        phi_min_text.text = "φ_min = "["+"]("{:1.2f}".format(event.value))["+"]("\n\n");
-        "229";
-        (await make_caption());
-    };
-    if (!set_phi_min.__argnames__) Object.defineProperties(set_phi_min, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "231";
-    async function set_phi_max(event) {
-        "232";
-        (await sphere_.set_phi_max_to(event.value));
-        "233";
-        phi_max_text.text = "φ_max = "["+"]("{:1.2f}".format(event.value))["+"]("\n\n");
-        "234";
-        (await make_caption());
-    };
-    if (!set_phi_max.__argnames__) Object.defineProperties(set_phi_max, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "237";
-    async function integrate() {
-        "238";
-        return (await sphere_.integrate());
-    };
-    if (!integrate.__module__) Object.defineProperties(integrate, {
-        __module__ : {value: null}
-    });
-
-    "241";
-    async function toggle_tick_marks(event) {
-        "242";
-        (await axis.tick_marks_visibility_is(event.checked));
-    };
-    if (!toggle_tick_marks.__argnames__) Object.defineProperties(toggle_tick_marks, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "245";
-    async function toggle_axis_labels(event) {
-        "246";
-        (await axis.axis_labels_visibility_is(event.checked));
-    };
-    if (!toggle_axis_labels.__argnames__) Object.defineProperties(toggle_axis_labels, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "249";
-    async function toggle_mesh(event) {
-        "250";
-        (await axis.mesh_visibility_is(event.checked));
-    };
-    if (!toggle_mesh.__argnames__) Object.defineProperties(toggle_mesh, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "252";
-    async function adjust_opacity(event) {
-        "253";
-        (await sphere_.set_opacity_to(event.value));
-        "254";
-        opacity_slider_text.text = "= {:1.2f}".format(event.value, 2);
-    };
-    if (!adjust_opacity.__argnames__) Object.defineProperties(adjust_opacity, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "256";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Mesh ", bind: toggle_mesh, checked: true})]);
-    "257";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis labels ", bind: toggle_axis_labels, checked: true})]);
-    "258";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks ", bind: toggle_tick_marks, checked: true})]);
-    "260";
-    display.append_to_caption("\n\nOpacity");
-    "261";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .35, bind: adjust_opacity})]);
-    "262";
-    opacity_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.35"})]);
-    "264";
-    async function make_caption() {
-        "265";
-        int_text.text = "Integral = "["+"]("{:1.2f}".format((await integrate())));
-        "266";
-        return;
-    };
-    if (!make_caption.__module__) Object.defineProperties(make_caption, {
-        __module__ : {value: null}
-    });
-
-    "269";
-    display.append_to_caption("\n\nSet the integration range below.\n\n");
-    "271";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: pi, value: 0, length: 220, bind: set_theta_min, right: 15})]);
-    "272";
-    theta_min_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "θ_min = "["+"]("{:1.2f}".format(0))["+"]("\n\n")})]);
-    "273";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: pi, value: pi, length: 220, bind: set_theta_max, right: 15})]);
-    "274";
-    theta_max_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "θ_max = "["+"]("{:1.2f}".format(pi))["+"]("\n\n")})]);
-    "275";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 2["*"](pi), value: 0, length: 220, bind: set_phi_min, right: 15})]);
-    "276";
-    phi_min_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "φ_min = "["+"]("{:1.2f}".format(0))["+"]("\n\n")})]);
-    "277";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 2["*"](pi), value: 2["*"](pi), length: 220, bind: set_phi_max, right: 15})]);
-    "278";
-    phi_max_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "φ_max = "["+"]("{:1.2f}".format(2["*"](pi)))["+"]("\n\n")})]);
-    "280";
-    int_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "Integral = "["+"]("{:1.2f}".format((await integrate())))})]);
-    "281";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "284";
-    while (true) {
-        "285";
-        (await rate(10));
-    }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
-
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
-
-//--><!]]></script>
+<div id="ui" class="ui">
+    <div class="row">θ_min <input id="thetaMin" type="range" min="0" max="3.1416" step="0.01" value="0"></div>
+    <div class="row">θ_max <input id="thetaMax" type="range" min="0" max="3.1416" step="0.01" value="3.1416"></div>
+    <div class="row">φ_min <input id="phiMin" type="range" min="0" max="6.2832" step="0.01" value="0"></div>
+    <div class="row">φ_max <input id="phiMax" type="range" min="0" max="6.2832" step="0.01" value="6.2832"></div>
+    <div class="row">Opacity <input id="opacity" type="range" min="0" max="1" step="0.01" value="0.35"></div>
+    <div class="row">Mesh <input type="checkbox" id="meshChk" checked></div>
+    <div class="row">Tick labels <input type="checkbox" id="tickChk" checked></div>
+    <div class="row">Axis labels <input type="checkbox" id="axisLabelCheck" checked></div>
+    <div class="row" id="integral">Integral = 0.00</div>
 </div>
+
+<script type="module">
+    import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
+    import { OrbitControls } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
+    import { CSS2DRenderer, CSS2DObject } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/renderers/CSS2DRenderer";
+
+    // ------------------------
+    // SCENE SETUP
+    // ------------------------
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x111111);
+
+    const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 100);
+    camera.position.set(5,5,5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias:true });
+    renderer.setSize(innerWidth, innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(innerWidth, innerHeight);
+    labelRenderer.domElement.style.position = "absolute";
+    labelRenderer.domElement.style.top = "0px";
+    labelRenderer.domElement.style.pointerEvents = "none";
+    document.body.appendChild(labelRenderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    const ui = document.getElementById("ui");
+    ui.addEventListener("pointerenter", () => controls.enabled = false);
+    ui.addEventListener("pointerleave", () => controls.enabled = true);
+
+    const light = new THREE.DirectionalLight(0xffffff, 1.2);
+    light.position.set(10, 10, 10);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+    function createPlane(size, colour) {
+        return new THREE.Mesh(
+            new THREE.PlaneGeometry(size, size),
+            new THREE.MeshPhongMaterial({color:colour, transparent:true, opacity:0.1, side:THREE.DoubleSide})
+        );
+    }
+
+    function xyPlane(size, divisions) {
+        const gridXY = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
+
+        const planeXY = createPlane(size, 0x4444ff);
+        planeXY.rotateX(Math.PI/2);
+
+        planeXY.position.set(1, 0, 1);
+        gridXY.position.set(1, 0, 1);
+        return [planeXY, gridXY];
+    }
+
+    function yzPlane(size, divisions) {
+        const gridYZ = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
+        gridYZ.rotateZ(Math.PI/2);
+
+        const planeYZ = createPlane(size, 0x44ff44);
+        planeYZ.rotateY(Math.PI/2);
+
+        planeYZ.position.set(0, 1, 1);
+        gridYZ.position.set(0, 1, 1);
+        return [planeYZ, gridYZ];
+    }
+
+    function xzPlane(size, divisions) {
+        const gridXZ = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
+        gridXZ.rotateX(Math.PI/2);
+
+        const planeXZ = createPlane(size, 0xff4444);
+        planeXZ.rotateZ(Math.PI/2);
+
+        planeXZ.position.set(1, 1, 0);
+        gridXZ.position.set(1, 1, 0);
+        return [planeXZ, gridXZ];
+    }
+
+    function createGridPlanes(size, divisions) {
+        const grids = xyPlane(size, divisions)
+            .concat(yzPlane(size, divisions))
+            .concat(xzPlane(size, divisions));
+        grids.forEach(item => {scene.add(item);})
+        return grids;
+    }
+
+    const gridSize = 2;
+    const gridDivisions = 10;
+    const allGrids = createGridPlanes(gridSize, gridDivisions);
+
+    function makeTickLabel(text, position) {
+        const div = document.createElement('div');
+        div.style.color = "yellow";
+        div.style.fontSize = "15px";
+        div.textContent = text;
+        const label = new CSS2DObject(div);
+        label.position.copy(position);
+        scene.add(label);
+        return label;
+    }
+
+    function createTickLabels(size, divisions) {
+        const step = 2 * size / divisions;
+        const labels = [];
+        for (let i = 0; i <= 2; i += step) {
+            labels.push(makeTickLabel(i.toFixed(1), new THREE.Vector3(i, 0, size)));
+            labels.push(makeTickLabel(i.toFixed(1), new THREE.Vector3(0, i, size)));
+            labels.push(makeTickLabel(i.toFixed(1), new THREE.Vector3(size, 0, i)));
+        }
+        return labels;
+    }
+    const tickLabels = createTickLabels(gridSize, gridDivisions);
+
+    function createAxisTextLabels(size) {
+        const axisLabels = [];
+        const offset = 0.3;
+        axisLabels.push(makeTickLabel("X-axis", new THREE.Vector3(size + offset, 0, 1)));
+        axisLabels.push(makeTickLabel("Y-axis", new THREE.Vector3(0,size + offset, 1)));
+        axisLabels.push(makeTickLabel("Z-axis", new THREE.Vector3(0, 0, size + offset)));
+        return axisLabels;
+    }
+    const axisLabels = createAxisTextLabels(gridSize);
+
+    function toCartesian(radius, theta, phi) {
+        const x = 1 + radius * Math.sin(theta) * Math.cos(phi);
+        const y = 1 + radius * Math.sin(theta) * Math.sin(phi);
+        const z = 1 + radius * Math.cos(theta);
+        return new THREE.Vector3(x, y, z);
+    }
+
+    // ------------------------
+    // SPHERE CELLS
+    // ------------------------
+    const R = 1, da = 0.05;
+    function f(theta, phi) { return theta * theta * (phi - Math.PI) * (phi - Math.PI); }
+
+    const cells = [];
+    let functionValues = [];
+
+    for (let theta = 0; theta <= Math.PI; theta += da)
+        for (let phi = 0; phi <= 2 * Math.PI; phi += da) {
+            const val = f(theta,phi);
+            functionValues.push(val);
+
+            const mesh = new THREE.Mesh(
+                new THREE.BoxGeometry(da, da, da),
+                new THREE.MeshPhongMaterial({transparent:true, opacity:0.35}));
+            mesh.position.copy(toCartesian(R, theta, phi));
+            mesh.userData = {theta, phi, val};
+            scene.add(mesh);
+            cells.push(mesh);
+        }
+
+    const fMin = Math.min(...functionValues),
+        fMax = Math.max(...functionValues);
+    cells.forEach(c=>{
+        const t = (c.userData.val - fMin) / (fMax - fMin);
+        c.material.color.setRGB(t, 0, 1 - t);
+    });
+
+    // ------------------------
+    // INTERACTION
+    // ------------------------
+    const thetaMin = document.getElementById("thetaMin");
+    const thetaMax = document.getElementById("thetaMax");
+    const phiMin   = document.getElementById("phiMin");
+    const phiMax   = document.getElementById("phiMax");
+    const opacity  = document.getElementById("opacity");
+    const meshCheck  = document.getElementById("meshChk");
+    const tickCheck  = document.getElementById("tickChk");
+    const axisLabelCheck = document.getElementById("axisLabelCheck");
+
+    function isVisible(theta, phi, tmin, tmax, pmin, pmax) {
+        return theta >= tmin && theta <= tmax && phi >= pmin && phi <= pmax;
+    }
+
+    function updateVisibility() {
+        const tmin = parseFloat(thetaMin.value);
+        const tmax = parseFloat(thetaMax.value);
+        const pmin = parseFloat(phiMin.value);
+        const pmax = parseFloat(phiMax.value);
+        for (const c of cells) {
+            const {theta,phi} = c.userData;
+            c.visible = isVisible(theta, phi, tmin, tmax, pmin, pmax);
+        }
+    }
+
+    function updateOpacity() {
+        cells.forEach(c => c.material.opacity = parseFloat(opacity.value));
+    }
+
+    function updateMeshVisibility() {
+        allGrids.forEach(mesh => mesh.visible = meshCheck.checked);
+    }
+
+    function updateAxisLabelVisibility() {
+        axisLabels.forEach(label => label.visible = axisLabelCheck.checked);
+    }
+
+    function updateTickVisibility() {
+        tickLabels.forEach(label => label.visible = tickCheck.checked);
+    }
+
+    function integrate() {
+        let sum = 0;
+        for (const c of cells)
+            if(c.visible)
+                sum += c.userData.val * Math.sin(c.userData.theta);
+        return sum * R * R * da * da;
+    }
+
+    function updateIntegral() {
+        document.getElementById("integral").textContent="Integral = "+integrate().toFixed(2);
+    }
+
+    [thetaMin,thetaMax,phiMin,phiMax].forEach(el=>el.addEventListener("input", ()=>{ updateVisibility(); updateIntegral(); }));
+    opacity.addEventListener("input", updateOpacity);
+    meshCheck.addEventListener("input", updateMeshVisibility);
+    tickCheck.addEventListener("input", updateTickVisibility);
+    axisLabelCheck.addEventListener("input", updateAxisLabelVisibility);
+
+    updateVisibility();
+    updateIntegral();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+        labelRenderer.render(scene, camera);
+    }
+    animate();
+</script>
