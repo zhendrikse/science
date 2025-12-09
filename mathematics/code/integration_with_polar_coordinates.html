@@ -168,20 +168,20 @@
     });
 
     // UI
-    const θmin = document.getElementById("thetaMin");
-    const θmax = document.getElementById("thetaMax");
-    const φmin = document.getElementById("phiMin");
-    const φmax = document.getElementById("phiMax");
+    const thetaMin = document.getElementById("thetaMin");
+    const thetaMax = document.getElementById("thetaMax");
+    const phiMin = document.getElementById("phiMin");
+    const phiMax = document.getElementById("phiMax");
     const opacity = document.getElementById("opacity");
     const meshChk = document.getElementById("meshChk");
     const tickChk = document.getElementById("tickChk");
     const axisChk = document.getElementById("axisLabelCheck");
 
     function updateVisibility() {
-        const t0 = parseFloat(θmin.value),
-            t1 = parseFloat(θmax.value),
-            p0 = parseFloat(φmin.value),
-            p1 = parseFloat(φmax.value);
+        const t0 = parseFloat(thetaMin.value),
+            t1 = parseFloat(thetaMax.value),
+            p0 = parseFloat(phiMin.value),
+            p1 = parseFloat(phiMax.value);
 
         cells.forEach(c => {
             const t = c.userData.theta, p = c.userData.phi;
@@ -201,7 +201,7 @@
     }
 
     // UI listeners
-    [θmin,θmax,φmin,φmax].forEach(el =>
+    [thetaMin,thetaMax,phiMin,phiMax].forEach(el =>
         el.addEventListener("input", () => { updateVisibility(); updateIntegral(); })
     );
     opacity.addEventListener("input", () => {
