@@ -1,6 +1,36 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js – Polair Integreren</title>
+    <style>
+        body {
+            background: #202020;
+            color: white;
+            font-family: sans-serif;
+        }
+        #container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            border: none;
+            display: inline-block;
+        }
+        #ui {
+            vertical-align: bottom;
+            margin-left: 20px;
+        }
+        .ui label {
+            display: inline-block;
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
 
-<canvas id="myCanvas" width="600" height="600" style="border: none;">
-</canvas>
+<div id="container">
+    <canvas id="myCanvas" width="600" height="600"></canvas>
+</div>
 
 <div id="ui" class="ui">
     <br/><div class="row" id="integral">Integral evaluates to: 0.00</div><br/>
@@ -18,235 +48,225 @@
     <label>Axis labels <input type="checkbox" id="axisLabelCheck" checked></label>
 </div>
 
+
 <script type="module">
     import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
     import { OrbitControls } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
     import { CSS2DRenderer, CSS2DObject } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/renderers/CSS2DRenderer";
 
-    const canvas = document.getElementById('myCanvas');
-    canvas.focus();
-    const canvasWidth = canvas.getAttribute('width');
-    const canvasHeight = canvas.getAttribute('height');
+    const container = document.getElementById("container");
+    const canvas = document.getElementById("myCanvas");
 
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // --- SCENE ---
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x101010);
 
-    const camera = new THREE.PerspectiveCamera(45, canvasWidth / canvasHeight, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
     camera.position.set(4, 4, 4);
 
-    const renderer = new THREE.WebGLRenderer({ antialias:true, canvas: canvas });
-    renderer.setSize(canvasWidth, canvasHeight);
+    // WebGL renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+    renderer.setSize(width, height);
 
-    const labelRenderer = new CSS2DRenderer({ antialias:true, canvas: canvas });
-    labelRenderer.setSize(canvasWidth, canvasHeight);
+    // CSS2DRenderer overlay
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(width, height);
     labelRenderer.domElement.style.position = "absolute";
-    labelRenderer.domElement.style.top = "0px";
+    labelRenderer.domElement.style.top = "0";
+    labelRenderer.domElement.style.left = "0";
     labelRenderer.domElement.style.pointerEvents = "none";
-    document.body.appendChild( labelRenderer.domElement );
+    container.appendChild(labelRenderer.domElement);
 
-    const controls = new OrbitControls(camera, canvas);
-    // controls.enableDamping = true;
-    // controls.dampingFactor = 0.05;
+    // Controls use labelRenderer.domElement (belangrijk!)
+    const controls = new OrbitControls(camera, labelRenderer.domElement);
 
-    const light = new THREE.DirectionalLight(0xffffff, 1.2);
-    light.position.set(10, 10, 10);
-    scene.add(light);
+    // Licht
+    scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(10,10,10));
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    function createPlane(size, colour) {
+    // Helper functie
+    function createPlane(size, color) {
         return new THREE.Mesh(
             new THREE.PlaneGeometry(size, size),
-            new THREE.MeshPhongMaterial({color:colour, transparent:true, opacity:0.1, side:THREE.DoubleSide})
+            new THREE.MeshPhongMaterial({ color, transparent:true, opacity:0.1, side:THREE.DoubleSide })
         );
     }
 
+    // Gridplanes
     function xyPlane(size, divisions) {
-        const gridXY = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
-
-        const planeXY = createPlane(size, 0x4444ff);
-        planeXY.rotateX(Math.PI/2);
-
-        planeXY.position.set(1, 0, 1);
-        gridXY.position.set(1, 0, 1);
-        return [planeXY, gridXY];
+        const grid = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
+        const plane = createPlane(size, 0x4444ff);
+        plane.rotateX(Math.PI/2);
+        plane.position.set(1,0,1);
+        grid.position.set(1,0,1);
+        return [plane, grid];
     }
-
     function yzPlane(size, divisions) {
-        const gridYZ = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
-        gridYZ.rotateZ(Math.PI/2);
-
-        const planeYZ = createPlane(size, 0x44ff44);
-        planeYZ.rotateY(Math.PI/2);
-
-        planeYZ.position.set(0, 1, 1);
-        gridYZ.position.set(0, 1, 1);
-        return [planeYZ, gridYZ];
+        const grid = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
+        grid.rotateZ(Math.PI/2);
+        const plane = createPlane(size, 0x44ff44);
+        plane.rotateY(Math.PI/2);
+        plane.position.set(0,1,1);
+        grid.position.set(0,1,1);
+        return [plane,grid];
     }
-
     function xzPlane(size, divisions) {
-        const gridXZ = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
-        gridXZ.rotateX(Math.PI/2);
-
-        const planeXZ = createPlane(size, 0xff4444);
-        planeXZ.rotateZ(Math.PI/2);
-
-        planeXZ.position.set(1, 1, 0);
-        gridXZ.position.set(1, 1, 0);
-        return [planeXZ, gridXZ];
+        const grid = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
+        grid.rotateX(Math.PI/2);
+        const plane = createPlane(size, 0xff4444);
+        plane.rotateZ(Math.PI/2);
+        plane.position.set(1,1,0);
+        grid.position.set(1,1,0);
+        return [plane,grid];
     }
 
-    function createGridPlanes(size, divisions) {
-        const grids = xyPlane(size, divisions)
-            .concat(yzPlane(size, divisions))
-            .concat(xzPlane(size, divisions));
-        grids.forEach(item => {scene.add(item);})
-        return grids;
-    }
+    const gridSize = 2, gridDivisions = 10;
+    const allGrids = [].concat(
+        xyPlane(gridSize, gridDivisions),
+        yzPlane(gridSize, gridDivisions),
+        xzPlane(gridSize, gridDivisions)
+    );
+    allGrids.forEach(obj => scene.add(obj));
 
-    const gridSize = 2;
-    const gridDivisions = 10;
-    const allGrids = createGridPlanes(gridSize, gridDivisions);
-
-    function makeTickLabel(text, position, colour = "yellow") {
-        const div = document.createElement('div');
-        div.style.color = colour;
+    // Labels
+    function makeLabel(text, pos, color="yellow") {
+        const div = document.createElement("div");
+        div.style.color = color;
         div.style.fontSize = "15px";
         div.textContent = text;
         const label = new CSS2DObject(div);
-        label.position.copy(position);
+        label.position.copy(pos);
         scene.add(label);
         return label;
     }
 
-    function createTickLabels(size, divisions) {
-        const offset = 0.1;
-        const step = 2 * size / divisions;
+    function createTickLabels(size, divs) {
         const labels = [];
-        for (let i = 0; i <= 2; i += step) {
-            labels.push(makeTickLabel(i.toFixed(1), new THREE.Vector3(i, 0, size + offset)));
-            labels.push(makeTickLabel(i.toFixed(1), new THREE.Vector3(0, i, size + offset)));
-            labels.push(makeTickLabel(i.toFixed(1), new THREE.Vector3(size + offset, 0, i)));
+        const step = (2*size)/divs;
+        const off = 0.1;
+
+        for (let v = 0; v <= 2; v += step) {
+            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(v,0,size+off)));
+            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(0,v,size+off)));
+            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(size+off,0,v)));
         }
         return labels;
     }
     const tickLabels = createTickLabels(gridSize, gridDivisions);
 
-    function createAxisTextLabels(size) {
-        const axisLabels = [];
-        const offset = 0.3;
-        axisLabels.push(makeTickLabel("X-axis", new THREE.Vector3(size + offset, 0, 1), "white"));
-        axisLabels.push(makeTickLabel("Y-axis", new THREE.Vector3(0,size + offset, 1), "white"));
-        axisLabels.push(makeTickLabel("Z-axis", new THREE.Vector3(0, 0, size + offset), "white"));
-        return axisLabels;
+    function axisLabels(size) {
+        const off = 0.3;
+        return [
+            makeLabel("X-axis", new THREE.Vector3(size+off,0,1),"white"),
+            makeLabel("Y-axis", new THREE.Vector3(0,size+off,1),"white"),
+            makeLabel("Z-axis", new THREE.Vector3(0,0,size+off),"white"),
+        ];
     }
-    const axisLabels = createAxisTextLabels(gridSize);
+    const axisLabelsArr = axisLabels(gridSize);
 
-    function toCartesian(radius, theta, phi) {
-        const x = 1 + radius * Math.sin(theta) * Math.cos(phi);
-        const y = 1 + radius * Math.sin(theta) * Math.sin(phi);
-        const z = 1 + radius * Math.cos(theta);
-        return new THREE.Vector3(x, y, z);
+    // Sferische cellen
+    function toCartesian(R, t, p) {
+        return new THREE.Vector3(
+            1 + R*Math.sin(t)*Math.cos(p),
+            1 + R*Math.sin(t)*Math.sin(p),
+            1 + R*Math.cos(t)
+        );
     }
 
-    // ------------------------
-    // SPHERE CELLS
-    // ------------------------
     const R = 1, da = 0.05;
-    function f(theta, phi) {
-        return theta * theta * (phi - Math.PI) * (phi - Math.PI);
-    }
+    function f(t,p){ return t*t*(p-Math.PI)*(p-Math.PI); }
 
     const cells = [];
-    let functionValues = [];
+    let values = [];
 
-    for (let theta = 0; theta <= Math.PI; theta += da)
-        for (let phi = 0; phi <= 2 * Math.PI; phi += da) {
-            const val = f(theta,phi);
-            functionValues.push(val);
+    for (let t=0; t<=Math.PI; t+=da)
+        for (let p=0; p<=2*Math.PI; p+=da) {
+            const val = f(t,p);
+            values.push(val);
 
-            const mesh = new THREE.Mesh(
+            const m = new THREE.Mesh(
                 new THREE.BoxGeometry(da, da, da),
-                new THREE.MeshPhongMaterial({transparent:true, opacity:0.35}));
-            mesh.position.copy(toCartesian(R, theta, phi));
-            mesh.userData = {theta, phi, val};
-            scene.add(mesh);
-            cells.push(mesh);
+                new THREE.MeshPhongMaterial({ transparent:true, opacity:0.35 })
+            );
+            m.position.copy(toCartesian(R,t,p));
+            m.userData = {theta:t, phi:p, val};
+            scene.add(m);
+            cells.push(m);
         }
 
-    const fMin = Math.min(...functionValues),
-        fMax = Math.max(...functionValues);
-    cells.forEach(cell => {
-        const t = (cell.userData.val - fMin) / (fMax - fMin);
-        cell.material.color.setRGB(t, 0, 1 - t);
+    const minF = Math.min(...values), maxF = Math.max(...values);
+    cells.forEach(c => {
+        const t = (c.userData.val - minF) / (maxF - minF);
+        c.material.color.setRGB(t,0,1-t);
     });
 
-    // ------------------------
-    // INTERACTION
-    // ------------------------
-    const thetaMin = document.getElementById("thetaMin");
-    const thetaMax = document.getElementById("thetaMax");
-    const phiMin   = document.getElementById("phiMin");
-    const phiMax   = document.getElementById("phiMax");
-    const opacity  = document.getElementById("opacity");
-    const meshCheck  = document.getElementById("meshChk");
-    const tickCheck  = document.getElementById("tickChk");
-    const axisLabelCheck = document.getElementById("axisLabelCheck");
-
-    function isVisible(theta, phi, tmin, tmax, pmin, pmax) {
-        return theta >= tmin && theta <= tmax && phi >= pmin && phi <= pmax;
-    }
+    // UI
+    const θmin = document.getElementById("thetaMin");
+    const θmax = document.getElementById("thetaMax");
+    const φmin = document.getElementById("phiMin");
+    const φmax = document.getElementById("phiMax");
+    const opacity = document.getElementById("opacity");
+    const meshChk = document.getElementById("meshChk");
+    const tickChk = document.getElementById("tickChk");
+    const axisChk = document.getElementById("axisLabelCheck");
 
     function updateVisibility() {
-        const tmin = parseFloat(thetaMin.value);
-        const tmax = parseFloat(thetaMax.value);
-        const pmin = parseFloat(phiMin.value);
-        const pmax = parseFloat(phiMax.value);
-        for (const c of cells) {
-            const {theta,phi} = c.userData;
-            c.visible = isVisible(theta, phi, tmin, tmax, pmin, pmax);
-        }
+        const t0 = parseFloat(θmin.value),
+            t1 = parseFloat(θmax.value),
+            p0 = parseFloat(φmin.value),
+            p1 = parseFloat(φmax.value);
+
+        cells.forEach(c => {
+            const t = c.userData.theta, p = c.userData.phi;
+            c.visible = (t>=t0 && t<=t1 && p>=p0 && p<=p1);
+        });
     }
 
-    function updateOpacity() {
-        cells.forEach(c => c.material.opacity = parseFloat(opacity.value));
-    }
-
-    function updateMeshVisibility() {
-        allGrids.forEach(mesh => mesh.visible = meshCheck.checked);
-    }
-
-    function updateAxisLabelVisibility() {
-        axisLabels.forEach(label => label.visible = axisLabelCheck.checked);
-    }
-
-    function updateTickVisibility() {
-        tickLabels.forEach(label => label.visible = tickCheck.checked);
-    }
-
-    function integrate(R, da) {
+    function integrate() {
         let sum = 0;
-        cells.forEach(cell => {if (cell.visible) sum += cell.userData.val * Math.sin(cell.userData.theta);});
-        return sum * R * R * da * da;
+        cells.forEach(c => { if (c.visible) sum += c.userData.val * Math.sin(c.userData.theta); });
+        return sum * R*R * da * da;
     }
 
     function updateIntegral() {
-        document.getElementById("integral").textContent="Integral evaluates to: " + integrate(R, da).toFixed(2);
+        document.getElementById("integral").textContent =
+            "Integral evaluates to: " + integrate().toFixed(2);
     }
 
-    [thetaMin,thetaMax,phiMin,phiMax].forEach(el=>el.addEventListener("input", ()=>{ updateVisibility(); updateIntegral(); }));
-    opacity.addEventListener("input", updateOpacity);
-    meshCheck.addEventListener("input", updateMeshVisibility);
-    tickCheck.addEventListener("input", updateTickVisibility);
-    axisLabelCheck.addEventListener("input", updateAxisLabelVisibility);
+    // UI listeners
+    [θmin,θmax,φmin,φmax].forEach(el =>
+        el.addEventListener("input", () => { updateVisibility(); updateIntegral(); })
+    );
+    opacity.addEventListener("input", () => {
+        cells.forEach(c => c.material.opacity = parseFloat(opacity.value));
+    });
+    meshChk.addEventListener("input", () => {
+        allGrids.forEach(g => g.visible = meshChk.checked);
+    });
+    tickChk.addEventListener("input", () => {
+        tickLabels.forEach(l => l.visible = tickChk.checked);
+    });
+    axisChk.addEventListener("input", () => {
+        axisLabelsArr.forEach(l => l.visible = axisChk.checked);
+    });
 
+    // Init
     updateVisibility();
     updateIntegral();
 
+    // Animation loop
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
-        renderer.render(scene, camera);
-        labelRenderer.render(scene, camera);
+        renderer.render(scene,camera);
+        labelRenderer.render(scene,camera);
     }
     animate();
+
 </script>
+
+</body>
+</html>
