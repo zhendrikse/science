@@ -63,7 +63,7 @@
     }
 
     function xyPlane(size, divisions) {
-        const grid = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
+        const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
         const plane = createPlane(size, 0x4444ff);
         plane.rotateX(Math.PI/2);
         plane.position.set(1,0,1);
@@ -71,7 +71,7 @@
         return [plane, grid];
     }
     function yzPlane(size, divisions) {
-        const grid = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
+        const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
         grid.rotateZ(Math.PI/2);
         const plane = createPlane(size, 0x44ff44);
         plane.rotateY(Math.PI/2);
@@ -80,7 +80,7 @@
         return [plane,grid];
     }
     function xzPlane(size, divisions) {
-        const grid = new THREE.GridHelper(size, divisions, 0x666666, 0x333333);
+        const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
         grid.rotateX(Math.PI/2);
         const plane = createPlane(size, 0xff4444);
         plane.rotateZ(Math.PI/2);
@@ -108,26 +108,26 @@
         return label;
     }
 
-    function createTickLabels(size, divs) {
+    function createTickLabels(size, divisions) {
         const labels = [];
-        const step = (2*size)/divs;
-        const off = 0.1;
+        const step = (2 * size) / divisions;
+        const offset = 0.1;
 
         for (let v = 0; v <= 2; v += step) {
-            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(v,0,size+off)));
-            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(0,v,size+off)));
-            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(size+off,0,v)));
+            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(v, 0, size + offset)));
+            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(0, v, size + offset)));
+            labels.push(makeLabel(v.toFixed(1), new THREE.Vector3(size + offset, 0, v)));
         }
         return labels;
     }
     const tickLabels = createTickLabels(gridSize, gridDivisions);
 
     function axisLabels(size) {
-        const off = 0.3;
+        const offset = 0.4;
         return [
-            makeLabel("X-axis", new THREE.Vector3(size+off,0,1),"white"),
-            makeLabel("Y-axis", new THREE.Vector3(0,size+off,1),"white"),
-            makeLabel("Z-axis", new THREE.Vector3(0,0,size+off),"white"),
+            makeLabel("X-axis", new THREE.Vector3(size + offset, 0, 1),"white"),
+            makeLabel("Y-axis", new THREE.Vector3(0, size + offset * .5, 0),"white"),
+            makeLabel("Z-axis", new THREE.Vector3(1, 0 ,size + offset),"white"),
         ];
     }
     const axisLabelsArr = axisLabels(gridSize);
@@ -141,7 +141,9 @@
     }
 
     const R = 1, da = 0.05;
-    function f(t,p){ return t*t*(p-Math.PI)*(p-Math.PI); }
+    function f(theta, phi){
+        return theta * theta * (phi - Math.PI) * (phi - Math.PI);
+    }
 
     const cells = [];
     let values = [];
@@ -164,7 +166,7 @@
     const minF = Math.min(...values), maxF = Math.max(...values);
     cells.forEach(c => {
         const t = (c.userData.val - minF) / (maxF - minF);
-        c.material.color.setRGB(t,0,1-t);
+        c.material.color.setRGB(t, 0, 1 - t);
     });
 
     // UI
