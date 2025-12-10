@@ -56,11 +56,12 @@
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
     class MatlabAxes {
-        constructor(gridSize=2, gridDivisions=10) {
+        constructor(gridSize=4, gridDivisions=10) {
+            this.gridSize = gridSize;
             this.allGrids = [].concat(
-                this.xyPlane(gridSize, gridDivisions, new THREE.Vector3(1, 0, 1)),
-                this.yzPlane(gridSize, gridDivisions, new THREE.Vector3(0, 1, 1)),
-                this.zxPlane(gridSize, gridDivisions, new THREE.Vector3(1, 1, 0))
+                this.xyPlane(gridSize, gridDivisions, new THREE.Vector3(.5 * gridSize, 0, .5 * gridSize)),
+                this.yzPlane(gridSize, gridDivisions, new THREE.Vector3(0, .5 * gridSize, .5 * gridSize)),
+                this.zxPlane(gridSize, gridDivisions, new THREE.Vector3(.5 * gridSize, .5 * gridSize, 0))
             );
             this.tickLabels = this.createTickLabels(gridSize, gridDivisions);
             this.axisLabels = this.createAxisLabels(gridSize);
@@ -116,7 +117,7 @@
             const step = (2 * size) / divisions;
             const offset = 0.1;
 
-            for (let v = 0; v <= 2; v += step) {
+            for (let v = 0; v <= size; v += step) {
                 labels.push(this.makeLabel(v.toFixed(1), new THREE.Vector3(v, 0, size + offset)));
                 labels.push(this.makeLabel(v.toFixed(1), new THREE.Vector3(0, v, size + offset)));
                 labels.push(this.makeLabel(v.toFixed(1), new THREE.Vector3(size + offset, 0, v)));
@@ -125,11 +126,11 @@
         }
 
         createAxisLabels(size) {
-            const offset = 0.4;
+            const offset = 0.2 * size;
             return [
-                this.makeLabel("X-axis", new THREE.Vector3(size + offset, 0, 1), "white"),
+                this.makeLabel("X-axis", new THREE.Vector3(size + offset, 0, .5 * size), "white"),
                 this.makeLabel("Y-axis", new THREE.Vector3(0, size + offset * .5, 0), "white"),
-                this.makeLabel("Z-axis", new THREE.Vector3(1, 0 ,size + offset), "white"),
+                this.makeLabel("Z-axis", new THREE.Vector3(.5 * size, 0 ,size + offset), "white"),
             ];
         }
 
@@ -146,13 +147,13 @@
         }
     }
 
-    const axis = new MatlabAxes();
+    const axis = new MatlabAxes(2, 10);
 
     function toCartesian(radius, theta, phi) {
         return new THREE.Vector3(
-            1 + radius * Math.sin(theta) * Math.cos(phi),
             1 + radius * Math.sin(theta) * Math.sin(phi),
-            1 + radius * Math.cos(theta)
+            1 + radius * Math.cos(theta),
+            1 + radius * Math.sin(theta) * Math.cos(phi)
         );
     }
 
@@ -182,7 +183,7 @@
     const minF = Math.min(...values), maxF = Math.max(...values);
     cells.forEach(cell => {
         const t = (cell.userData.val - minF) / (maxF - minF);
-        cell.material.color.setRGB(t, 0, 1 - t);
+        cell.material.color.setRGB(1 - t, t, 0);
     });
 
     // UI
