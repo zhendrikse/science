@@ -151,9 +151,9 @@
 
     function toCartesian(radius, theta, phi) {
         return new THREE.Vector3(
+            1 + radius * Math.sin(theta) * Math.cos(phi),
             1 + radius * Math.sin(theta) * Math.sin(phi),
-            1 + radius * Math.cos(theta),
-            1 + radius * Math.sin(theta) * Math.cos(phi)
+            1 + radius * Math.cos(theta)
         );
     }
 
@@ -174,7 +174,8 @@
                 new THREE.BoxGeometry(da, da, da),
                 new THREE.MeshPhongMaterial({ transparent:true, opacity:0.35 })
             );
-            mesh.position.copy(toCartesian(R, theta, phi));
+            const position = toCartesian(R, theta, phi);
+            mesh.position.copy(new THREE.Vector3(position.x, position.z, position.y));
             mesh.userData = {theta:theta, phi:phi, val};
             scene.add(mesh);
             cells.push(mesh);
