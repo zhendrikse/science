@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 - The code for this contour plot can be found in
-  [multivariate_surface_plot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/multivariate_contour_plot.html)
+  [multivariate_contour_plot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/multivariate_contour_plot.html)
 - It is implemented in Javascript using [Three.js](https://threejs.org/)
 - A [VPython](https://vpython.org/) version is available as well:
   [multivariate_functions.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/multivariate_functions.py).
