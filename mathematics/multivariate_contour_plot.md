@@ -12,15 +12,15 @@
 <details>
 <summary>Some interesting functions to try!</summary>
 
-| Surface        | Function                                                    |
-|----------------|-------------------------------------------------------------|
-| Wavelet        | `.5 * sin(3 * sqrt(x*x + y*y)) / sqrt(x*x + y*y)`           |
-| Saddle         | `(x*x - y*y) / 5`                                           |
-| Peak           | `2 * exp(-x*x - y*y)`                                       |
-| Peaks          | `.5 * sin(pi * x) * cos(pi * y)`                            |
-| Ripple         | `.3 * sin(pi * x * y)`                                      |
-| Poly           | `.15 * (y*y*y*x - x*x*x*y)`                                 |
-| Ricker wavelet | `1.5 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) / (4/3))` |
+<table>
+  <tr><td>Wavelet</td>        <td>`.5 * sin(3 * sqrt(x*x + y*y)) / sqrt(x*x + y*y)`</td></tr>
+  <tr><td>Saddle</td>         <td>`(x*x - y*y) / 5` </td></tr>
+  <tr><td>Peak</td>           <td>`2 * exp(-x*x - y*y)`</td></tr>
+  <tr><td>Peaks</td>          <td>`.5 * sin(pi * x) * cos(pi * y)`</td></tr>
+  <tr><td>Ripple</td>         <td>`.3 * sin(pi * x * y)`</td></tr>
+  <tr><td>Poly</td>           <td>`.15 * (y*y*y*x - x*x*x*y)`</td></tr>
+  <tr><td>Ricker wavelet</td> <td>`1.5 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) / (4/3))`</td></tr>
+</table>
 
 </details>
 
