@@ -1,17 +1,17 @@
 <style>
     #gui-container {
         position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        z-index: 10;
+        top: 0;
+        left: 0;
+        z-index: 20;
     }
 </style>
 
-<div id="sidebar">
+<div id="canvas-wrapper">
     <div id="gui-container"></div>
+    <canvas id="myCanvas" width="600" height="800"></canvas>
 </div>
-<canvas id="myCanvas" width="600" height="800"></canvas>
+
 
 <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
 <script type="module">
@@ -94,7 +94,8 @@
             labelRenderer.domElement.style.top = "0px";
             labelRenderer.domElement.style.left = "0px";
             labelRenderer.domElement.style.pointerEvents = "none";
-            document.body.appendChild(labelRenderer.domElement);
+            labelRenderer.domElement.style.zIndex = 5;
+            document.getElementById("canvas-wrapper").appendChild(labelRenderer.domElement);
             return labelRenderer;
         }
 
