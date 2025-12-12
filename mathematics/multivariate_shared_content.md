@@ -1,7 +1,7 @@
 ## Background information
 <div class="header_line"><br/></div>
 
-### Implementation details
+### Implementation details of Python version
 <div style="border-top: 1px solid #999999"><br/></div>
 
 In order to make the code as generic as possible, we took an approach based

@@ -189,7 +189,7 @@
         shapeFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
 
         const appearanceFolder = controls.addFolder("Appearance");
-        appearanceFolder.add(params, 'baseColor').name("Color");
+        appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.markColorUpdate());
         appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => surface.rebuild(resolution));
         appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
         appearanceFolder.add(params, 'animate').name("Animate");
