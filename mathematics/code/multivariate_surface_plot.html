@@ -49,7 +49,7 @@
 
             this.controls.enableDamping = true;
             this.camera.position.set(5, 5, 5);
-            //this.scene.background = new THREE.Color(0xeeeeee);
+            this.scene.background = new THREE.Color(0x131313);
 
             this.scene.add(worldGroup);
             this.scene.add(this.#createDirectionalLight());
@@ -140,8 +140,8 @@
         axes: true,
         animate: false,
         resolution: 50,
-        opacity: .85,
-        customFunction: "(y*y - x*x) / 5"
+        opacity: 1.0,
+        customFunction: "10 * sin(x*x + y*y) * exp(-x*x - y*y) - .25"
     }
 
     const scaleCoordinates = (u, v) => [axes.axesSize * (u - 0.5), axes.axesSize * (v - 0.5)];
@@ -156,7 +156,6 @@
             compiled = math.compile(surfaceFunction);
         } catch (err) {
             alert("Math.js parse error: " + err.message);
-            console.error(err);
             return null;
         }
 
@@ -167,7 +166,6 @@
             try {
                 z = compiled.evaluate({ x, y, amplitude });
             } catch (err) {
-                console.error(err);
                 z = 0; // fail safe
             }
 
@@ -192,7 +190,7 @@
 
         const appearanceFolder = controls.addFolder("Appearance");
         appearanceFolder.add(params, 'baseColor').name("Color");
-        appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution");
+        appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => surface.rebuild(resolution));
         appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
         appearanceFolder.add(params, 'animate').name("Animate");
         appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.mesh.material.wireframe = value);
@@ -344,7 +342,7 @@
                 side: THREE.DoubleSide,
                 wireframe: showWireframe,
                 transparent: true,
-                opacity: 0.85
+                opacity: 1.0
             });
         }
 
