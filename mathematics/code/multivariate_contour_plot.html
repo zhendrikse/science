@@ -141,7 +141,7 @@
         animate: false,
         resolution: 50,
         opacity: 1.0,
-        customFunction: "10 * sin(x*x + y*y) * exp(-x*x - y*y) - .25"
+        customFunction: "5 * sin(x*x + y*y) * exp(-x*x - y*y)"
     }
 
     const scaleCoordinates = (u, v) => [axes.axesSize * (u - 0.5), axes.axesSize * (v - 0.5)];
