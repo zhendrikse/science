@@ -144,35 +144,6 @@
         customFunction: "5 * sin(x*x + y*y) * exp(-x*x - y*y)"
     }
 
-    const scaleCoordinates = (u, v) => [axes.axesSize * (u - 0.5), axes.axesSize * (v - 0.5)];
-
-    // Converts user-input math.js code into a SurfaceFunction(u, v, t, target)
-    function createMathJsSurface(exprString) {
-        let compiled;
-
-        try {
-            const surfaceFunction = exprString + " * amplitude";
-            console.log(surfaceFunction);
-            compiled = math.compile(surfaceFunction);
-        } catch (err) {
-            alert("Math.js parse error: " + err.message);
-            return null;
-        }
-
-        return (u, v, amplitude, target) => {
-            const [x, y] = scaleCoordinates(u, v);
-
-            let z;
-            try {
-                z = compiled.evaluate({ x, y, amplitude });
-            } catch (err) {
-                z = 0; // fail safe
-            }
-
-            target.set(x, z, y);
-        };
-    }
-
     function createLeftGuiColumn(surface) {
         const controls = new GUI({ width: 275, autoPlace: false });
         document.getElementById("gui-container").appendChild(controls.domElement);
@@ -180,7 +151,7 @@
         const mathFolder = controls.addFolder("Mathematical Surface");
         mathFolder.add(params, "customFunction").name("f(x,y) =")
             .onFinishChange(expr => {
-                const f = createMathJsSurface(expr);
+                const f = surface.createMathJsSurface(expr);
                 if (f) surface.setSurfaceFunction(f, params.frequency);
             });
 
@@ -316,8 +287,8 @@
     }
 
     class Surface {
-        constructor(parentGroup, surfaceFunction, scenery, resolution=75) {
-            this.surfaceFunction = surfaceFunction;
+        constructor(parentGroup, scenery, functionAsString="5 * sin(x*x + y*y) * exp(-x*x - y*y)", resolution=75) {
+            this.surfaceFunction = this.createMathJsSurface(functionAsString);
             this.parentGroup = parentGroup;
             this.time = 0;
             this.needsColorUpdate = true;
@@ -331,6 +302,34 @@
         setToMaxHeight(frequency) {
             this.time = 3 * Math.PI / 2 / frequency;
         }
+
+        createMathJsSurface(exprString) {
+            let compiled;
+
+            try {
+                const surfaceFunction = exprString + " * amplitude";
+                console.log(surfaceFunction);
+                compiled = math.compile(surfaceFunction);
+            } catch (err) {
+                alert("Math.js parse error: " + err.message);
+                return null;
+            }
+
+            return (u, v, amplitude, target) => {
+                const [x, y] = this.#scale(u, v);
+
+                let z;
+                try {
+                    z = compiled.evaluate({ x, y, amplitude });
+                } catch (err) {
+                    z = 0; // fail safe
+                }
+
+                target.set(x, z, y);
+            };
+        }
+
+        #scale = (u, v) => [axes.axesSize * (u - 0.5), axes.axesSize * (v - 0.5)];
 
         #amplitudeModulation = (t) => (1 - Math.sin(t * params.frequency)) * params.amplitude;
 
@@ -489,7 +488,7 @@
         worldGroup = new THREE.Group(),
         scenery = new Scenery(scene, worldGroup),
         axes = new MatlabAxes(worldGroup),
-        surface = new Surface(worldGroup, createMathJsSurface(params.customFunction), scenery);
+        surface = new Surface(worldGroup, scenery, params.customFunction);
 
     const center = boundingBoxOfWorldGroup(worldGroup);
     worldGroup.position.sub(center);
