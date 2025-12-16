@@ -366,6 +366,8 @@
             this.mesh = new THREE.Mesh(this.geometry, this.#material(showWireframe));
             this.mesh.position.copy(this.#calculateOffset());
             this.parentGroup.add(this.mesh);
+            this.mesh.material.opacity = params.opacity;
+            scenery.outlinePass.selectedObjects = [this.mesh];
 
             const colors = new Float32Array(this.geometry.attributes.position.count * 3);
             this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
