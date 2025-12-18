@@ -558,6 +558,7 @@
     /**
      * Ring containing all surfaces. Only the surfaces of one category are shown at a time.
      * These visible surfaces are continually redistributed evenly across the ring.
+     * Only one of the surfaces can be selected at a time.
      */
     class Ring {
         constructor(ringRadius=16) {
@@ -567,6 +568,7 @@
             this.ringRadius = ringRadius;
             surfaceDefinitions.forEach((surfaceDef, index) => this.#addSurface(surfaceDef, index));
             this.ringTargetRotation = null;
+            this.selectedMesh = null;
         }
 
         radius = () => this.ringRadius;
@@ -618,10 +620,10 @@
 
         getVisibleMeshes = () => meshes.filter(mesh => mesh.userData.category === activeCategory);
 
-        resetTargetRotation = () => this.ringTargetRotation = null;
+        #resetTargetRotation = () => this.ringTargetRotation = null;
 
         setTargetRotation() {
-            const local = selectedMesh.position.clone();
+            const local = this.selectedMesh.position.clone();
             const angle = Math.atan2(local.x, local.z);
             this.ringTargetRotation = -angle;
         }
@@ -629,124 +631,129 @@
         rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
 
         rotateSurfaces = () => meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
+
+        deselect = (mesh) => { if (this.selectedMesh === mesh) selectedMesh = null; };
+
+        #noMeshHasBeenSelected = () => !this.selectedMesh;
+
+        #setDefaultStyleOnSelectedMesh() {
+            this.#applyFunctionTo(this.selectedMesh, mesh => {
+                mesh.material.wireframe = true;
+                mesh.material.opacity = 0.6;
+            });
+        }
+
+        #resetMaterial() {
+            if (this.#noMeshHasBeenSelected()) return;
+            this.#setDefaultStyleOnSelectedMesh();
+        }
+
+        #removeLabelsOfInvisibleMeshes(mesh) {
+            if (mesh.visible) return;
+            if (mesh.nameLabel) { mesh.remove(mesh.nameLabel); mesh.nameLabel = null; }
+            if (mesh.formulaLabel) { mesh.remove(mesh.formulaLabel); mesh.formulaLabel = null; }
+            ring.deselect(mesh);
+        }
+
+        #createLabelIn(div, y, surface) {
+            const label = new CSS2DObject(div);
+            label.position.set(0, y, 0);
+            surface.add(label);
+            return label;
+        }
+
+        addNameLabel(surface) {
+            const div = document.createElement("div");
+            div.classList.add("surface-label", "name");
+            div.textContent = surface.userData.name;
+            surface.nameLabel = this.#createLabelIn(div, this.#topOf(surface) + 1, surface);
+        }
+
+        addFormulaLabel(surface) {
+            const div = document.createElement("div");
+            div.classList.add("surface-label", "formula");
+            katex.render(surface.userData.formula, div, { throwOnError: false });
+            surface.formulaLabel = this.#createLabelIn(div, this.#bottomOf(surface) + 1, surface);
+        }
+
+        #topOf(surface) {
+            const boundingBox = new THREE.Box3();
+            boundingBox.setFromObject(surface);
+            const topY = boundingBox.max.y;
+            return surface.worldToLocal(new THREE.Vector3(0, topY + .5, 0)).y;
+        }
+
+        #bottomOf(surface) {
+            const boundingBox = new THREE.Box3();
+            boundingBox.setFromObject(surface);
+            const bottomY = boundingBox.min.y;
+            return surface.worldToLocal(new THREE.Vector3(0, bottomY - 4, 0)).y;
+        }
+
+        #applyFunctionTo(selectedObject, fn) {
+            if (selectedObject.isMesh) {
+                fn(selectedObject);
+            } else {
+                selectedObject.traverse(child => {
+                    if (child.isMesh) fn(child);
+                });
+            }
+        }
+
+        #setSelectedStyleOn(selectedObject) {
+            this.#applyFunctionTo(selectedObject, mesh => {
+                mesh.material.wireframe = false;
+                mesh.material.opacity = 0.9; // or 0.8 if you prefer
+            });
+        }
+
+        #addLabels(surface) {
+            showNameSelectedSurface ? this.addNameLabel(surface) : this.removeNameLabel();
+            showFormulaSelectedSurface? this.addFormulaLabel(surface) : this.removeFormulaLabel();
+        }
+
+        removeFormulaLabel() {
+            const noFormulaLabelIsShown = () => !this.selectedMesh.formulaLabel;
+            if (noFormulaLabelIsShown()) return;
+            this.selectedMesh.remove(this.selectedMesh.formulaLabel);
+            this.selectedMesh.formulaLabel = null;
+        }
+
+        removeNameLabel() {
+            const noNameLabelIsShown = () => !this.selectedMesh.nameLabel;
+            if (noNameLabelIsShown()) return;
+            this.selectedMesh.remove(this.selectedMesh.nameLabel);
+            this.selectedMesh.nameLabel = null;
+        }
+
+        #removeLabels() {
+            this.removeFormulaLabel();
+            this.removeNameLabel();
+        }
+
+        #deselectMesh = () => { this.selectedMesh = null;};
+
+        clearSelection() {
+            if (this.#noMeshHasBeenSelected()) return;
+
+            this.#resetMaterial();
+            this.#removeLabels();
+            this.#deselectMesh();
+            this.#resetTargetRotation();
+        }
+
+        selectMesh(topLevelSurfaceObject) {
+            this.#removeLabelsOfInvisibleMeshes(topLevelSurfaceObject);
+            this.#setSelectedStyleOn(topLevelSurfaceObject);
+            this.#addLabels(topLevelSurfaceObject);
+            this.selectedMesh = topLevelSurfaceObject;
+        }
     }
 
     const meshes = [];
     const ring = new Ring();
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-
-    let selectedMesh = null;
-
-    function removeLabelsOfInvisibleMeshes(mesh) {
-        if (mesh.visible) return;
-        if (mesh.nameLabel) { mesh.remove(mesh.nameLabel); mesh.nameLabel = null; }
-        if (mesh.formulaLabel) { mesh.remove(mesh.formulaLabel); mesh.formulaLabel = null; }
-
-        // Deselect if this was the selected mesh
-        if (selectedMesh === mesh) selectedMesh = null;
-    }
-
-    function createLabelin(div, y, surface) {
-        const label = new CSS2DObject(div);
-        label.position.set(0, y, 0);
-        surface.add(label);
-        return label;
-    }
-
-    function addNameLabel(surface) {
-        const div = document.createElement("div");
-        div.classList.add("surface-label", "name");
-        div.textContent = surface.userData.name;
-        surface.nameLabel = createLabelin(div, topOf(surface) + 1, surface);
-    }
-
-    function addFormulaLabel(surface) {
-        const div = document.createElement("div");
-        div.classList.add("surface-label", "formula");
-        katex.render(surface.userData.formula, div, { throwOnError: false });
-        surface.formulaLabel = createLabelin(div, bottomOf(surface) + 1, surface);
-    }
-
-    function topOf(surface) {
-        const boundingBox = new THREE.Box3();
-        boundingBox.setFromObject(surface);
-        const topY = boundingBox.max.y;
-        return surface.worldToLocal(new THREE.Vector3(0, topY + .5, 0)).y;
-    }
-
-    function bottomOf(surface) {
-        const boundingBox = new THREE.Box3();
-        boundingBox.setFromObject(surface);
-        const bottomY = boundingBox.min.y;
-        return surface.worldToLocal(new THREE.Vector3(0, bottomY - 4, 0)).y;
-    }
-
-    function addLabels(surface) {
-        showNameSelectedSurface ? addNameLabel(surface) : removeNameLabel();
-        showFormulaSelectedSurface? addFormulaLabel(surface) : removeFormulaLabel();
-    }
-
-    function applyFunctionTo(selectedObject, fn) {
-        if (selectedObject.isMesh) {
-            fn(selectedObject);
-        } else {
-            selectedObject.traverse(child => {
-                if (child.isMesh) fn(child);
-            });
-        }
-    }
-
-    function setSelectedStyleOn(selectedObject) {
-        applyFunctionTo(selectedObject, mesh => {
-            mesh.material.wireframe = false;
-            mesh.material.opacity = 0.9; // or 0.8 if you prefer
-        });
-    }
-
-    function setDefaultStyleOn(selectedMesh) {
-        applyFunctionTo(selectedMesh, mesh => {
-            mesh.material.wireframe = true;
-            mesh.material.opacity = 0.6;
-        });
-    }
-
-    const noMeshHasBeenSelected = () => !selectedMesh;
-
-    function resetMaterial() {
-        if (noMeshHasBeenSelected()) return;
-        setDefaultStyleOn(selectedMesh);
-    }
-
-    function removeFormulaLabel() {
-        const noFormulaLabelIsShown = () => !selectedMesh.formulaLabel;
-        if (noFormulaLabelIsShown()) return;
-        selectedMesh.remove(selectedMesh.formulaLabel);
-        selectedMesh.formulaLabel = null;
-    }
-
-    function removeNameLabel() {
-        const noNameLabelIsShown = () => !selectedMesh.nameLabel;
-        if (noNameLabelIsShown()) return;
-        selectedMesh.remove(selectedMesh.nameLabel);
-        selectedMesh.nameLabel = null;
-    }
-
-    function removeLabels() {
-        removeFormulaLabel();
-        removeNameLabel();
-    }
-
-    const deselectMesh = () => { selectedMesh = null;};
-    const resetRingTargetRotation = () => ring.resetTargetRotation();
-    function clearSelection() {
-        if (noMeshHasBeenSelected()) return;
-
-        resetMaterial();
-        removeLabels();
-        deselectMesh();
-        resetRingTargetRotation();
-    }
 
 
     function updateCameraPosition(ringRadius) {
@@ -787,11 +794,8 @@
         while (topLevelSurfaceObject.parent && !meshes.includes(topLevelSurfaceObject))
             topLevelSurfaceObject = topLevelSurfaceObject.parent;
 
-        clearSelection();
-        selectedMesh = topLevelSurfaceObject;
-        removeLabelsOfInvisibleMeshes(selectedMesh);
-        setSelectedStyleOn(selectedMesh);
-        addLabels(selectedMesh);
+        ring.clearSelection();
+        ring.selectMesh(topLevelSurfaceObject);
         ring.setTargetRotation();
     });
 
@@ -800,7 +804,7 @@
     populateDropDownMenu(dropDown);
     dropDown.addEventListener("change", () => {
         activeCategory = dropDown.value;
-        clearSelection();
+        ring.clearSelection();
         ring.redistribute();
         updateCameraPosition(ring.radius());
     });
@@ -809,7 +813,7 @@
     const showFormulaCheckbox = document.getElementById('showFormula');
     showFormulaCheckbox.addEventListener ("click", () => {
         showFormulaSelectedSurface = !showFormulaSelectedSurface;
-        showFormulaSelectedSurface ? addFormulaLabel(selectedMesh) : removeFormulaLabel()
+        showFormulaSelectedSurface ? ring.addFormulaLabel() : ring.removeFormulaLabel()
         showFormulaCheckbox.checked = showFormulaSelectedSurface;
     });
 
@@ -817,7 +821,7 @@
     const showNameCheckbox = document.getElementById('showName');
     showNameCheckbox.addEventListener ("click", () => {
         showNameSelectedSurface = !showNameSelectedSurface;
-        showNameSelectedSurface ? addNameLabel(selectedMesh) : removeNameLabel()
+        showNameSelectedSurface ? ring.addNameLabel() : ring.removeNameLabel()
         showNameCheckbox.checked = showNameSelectedSurface;
     });
 
