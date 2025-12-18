@@ -42,7 +42,7 @@
 
 <div id="canvas-wrapper">
     <div id="gui-container"></div>
-    <canvas id="myCanvas" width="650" height="600"></canvas>
+    <canvas id="myCanvas" width="600" height="500"></canvas>
     <div id="menu">
         <label>Category:&nbsp;</label><select id="categorySelect"></select><br/>
         <label>Formula:&nbsp;</label><button id="hideFormulaButton">Hide</button><br/>
@@ -756,12 +756,12 @@
         const count = visibleMeshes.length;
 
         // Base distance from center
-        const baseDistance = ringRadius * 2.0; // approx twice the ring radius
+        const baseDistance = ringRadius * 2.1; // approx twice the ring radius
         const extra = Math.max(0, (count - 5) * 2);
         const distance = baseDistance + extra;
 
         // Set camera slightly higher to center the elevated ring
-        camera.position.set(0, ringRadius * 0.7, distance);
+        camera.position.set(0, ringRadius * 0.8, distance);
         camera.lookAt(0, ring.position.y, 0); // look at the ring's new center
         controls.update();
     }
