@@ -106,7 +106,7 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 </div>
 <p style="clear: both;"></p>
 
-## Topology and my [Math Art Gallery](gallery/index.html)
+## Differential geometry
 <div class="header_line"><br/></div>
 
 <div class="double_image">
@@ -121,26 +121,6 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
     <img alt="Self-intersecting disk" src="gallery/images/self_intersecting_disk_contour.png" title="Click to animate"/>
   </a>
   <figcaption>Contour plot of <a href="https://en.wikipedia.org/wiki/Real_projective_plane">self-intersecting disk</a>.
-  For more surfaces, visit the <a href="gallery/index.html">Math Art Gallery</a>.</figcaption>
-</figure>
-</div>
-<p style="clear: both;"></p>
-
-### Double shapes
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="double_shapes_surface_plot.html">
-    <img alt="Double torus" src="gallery/images/double_torus.png" title="Click to animate"/>
-  </a>
-  <figcaption>Double torus surface plot. For more surfaces, visit the <a href="gallery/index.html">Math Art Gallery</a>.</figcaption>
-</figure>
-<figure class="right_image">
-  <a href="double_shapes_contour_plot.html">
-    <img alt="Klein&apos;s bottle" src="gallery/images/klein_bottle_contour.png" title="Click to animate"/>
-  </a>
-  <figcaption><a href="https://en.wikipedia.org/wiki/Klein_bottle">Klein&apos;s bottle</a> contour plot.
   For more surfaces, visit the <a href="gallery/index.html">Math Art Gallery</a>.</figcaption>
 </figure>
 </div>
