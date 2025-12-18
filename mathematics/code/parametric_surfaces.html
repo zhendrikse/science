@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <style>
     body { margin:0; overflow:hidden; }
     canvas { display:block; }
@@ -46,8 +45,9 @@
     <canvas id="myCanvas" width="600" height="500"></canvas>
     <div id="menu">
         <label>Category:&nbsp;<select id="categorySelect"></select></label><br/>
-        <label>Formula:&nbsp;<input type="checkbox" id="showFormula" checked="checked"/></label>
-        <label>Name:&nbsp;<input type="checkbox" id="showName" name="hide" checked="checked"/></label>
+        <label>Formula:&nbsp;<input type="checkbox" id="showFormula" checked/></label>
+        <label>Name:&nbsp;<input type="checkbox" id="showName" checked/></label>
+        <label>Normals:&nbsp;<input type="checkbox" id="showNormals"/></label>
     </div>
 </div>
 
@@ -565,11 +565,144 @@
         }
     }
 
+    class CurvatureVisualizer {
+        constructor({
+                        normalScale = 0.25,
+                        curvatureGain = 1.5,
+                        stride = 4,
+                        eps = 1e-4
+                    } = {}) {
+            this.normalScale = normalScale;
+            this.curvatureGain = curvatureGain;
+            this.stride = stride;
+            this.eps = eps;
+        }
+
+        #disableCurvatureOn(child) {
+            if (!child.userData.curvatureHelper) return;
+
+            const h = child.userData.curvatureHelper;
+            child.remove(h);
+            h.geometry.dispose();
+            h.material.dispose();
+            child.userData.curvatureHelper = null;
+        }
+
+        #enableCurvatureOn(child, surfaceFunction) {
+            if (!child.isMesh) return;
+            if (child.userData.curvatureHelper) return;
+
+            this.#computeMeanCurvature(child, surfaceFunction);
+            child.geometry.computeVertexNormals();
+
+            const helper = this.#createNormalLines(child);
+            child.add(helper);
+            child.userData.curvatureHelper = helper;
+        }
+
+        #computeMeanCurvature(mesh, surfaceFunction) {
+            if (mesh.geometry.userData.meanCurvature) return;
+
+            const pos = mesh.geometry.attributes.position;
+            const uv  = mesh.geometry.attributes.uv;
+            const H = new Float32Array(pos.count); // Mean curvature denoted by H
+
+            for (let i = 0; i < pos.count; i++) {
+                const u = uv.getX(i), v = uv.getY(i);
+                const { Xu, Xv, Xuu, Xuv, Xvv } = this.#parametricDerivatives(surfaceFunction, u, v);
+
+                const N = Xu.clone().cross(Xv).normalize();
+
+                const E = Xu.dot(Xu);
+                const F = Xu.dot(Xv);
+                const G = Xv.dot(Xv);
+
+                const e = Xuu.dot(N);
+                const f = Xuv.dot(N);
+                const g = Xvv.dot(N);
+
+                const denominator = 2 * (E * G - F * F);
+                H[i] = denominator !== 0 ? (e * G - 2 * f * F + g * E) / denominator : 0;
+            }
+
+            mesh.geometry.userData.meanCurvature = H;
+        }
+
+        #parametricDerivatives(surfaceFunction, u, v) {
+            const e = this.eps;
+            const p   = new THREE.Vector3();
+            const pu  = new THREE.Vector3();
+            const pv  = new THREE.Vector3();
+            const puu = new THREE.Vector3();
+            const pvv = new THREE.Vector3();
+            const puv = new THREE.Vector3();
+
+            surfaceFunction(u, v, p);
+            surfaceFunction(u + e, v, pu);
+            surfaceFunction(u, v + e, pv);
+            surfaceFunction(u + e, v + e, puv);
+            surfaceFunction(u + 2 * e, v, puu);
+            surfaceFunction(u, v + 2 * e, pvv);
+
+            const Xu  = pu.clone().sub(p).divideScalar(e);
+            const Xv  = pv.clone().sub(p).divideScalar(e);
+            const Xuu = puu.clone().sub(pu.multiplyScalar(2)).add(p).divideScalar(e * e);
+            const Xvv = pvv.clone().sub(pv.multiplyScalar(2)).add(p).divideScalar(e * e);
+            const Xuv = puv.clone().sub(pu).sub(pv).add(p).divideScalar(e * e);
+
+            return { Xu, Xv, Xuu, Xuv, Xvv };
+        }
+
+        #createNormalLines(mesh) {
+            const geom = mesh.geometry;
+            const pos  = geom.attributes.position;
+            const nor  = geom.attributes.normal;
+            const H    = geom.userData.meanCurvature;
+
+            const positions = [];
+            const colors    = [];
+            for (let i = 0; i < pos.count; i += this.stride) {
+                const x  = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+                const nx = nor.getX(i), ny = nor.getY(i), nz = nor.getZ(i);
+                const scale = this.#scaleFromCurvature(H[i]);
+                const color = this.#normalToColor(nx, ny, nz);
+
+                positions.push(x, y, z, x + scale * nx, y + scale * ny, z + scale * nz);
+                colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+            return new THREE.LineSegments(geometry,
+                new THREE.LineBasicMaterial({
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.85,
+                    depthTest: false
+                })
+            );
+        }
+
+        #scaleFromCurvature = (k) => this.normalScale + this.curvatureGain * Math.min(Math.abs(k), 1);
+
+        #normalToColor = (nx, ny, nz) => new THREE.Color(0.5 * (nx + 1), 0.5 * (ny + 1), 0.5 * (nz + 1));
+
+        enable = (mesh, surfaceFunction) => mesh.traverse(child => this.#enableCurvatureOn(child, surfaceFunction));
+
+        disable = (mesh) => mesh.traverse(child => this.#disableCurvatureOn(child));
+    }
+
     class Surface {
-        constructor(mesh, formulaLabelVisible=true, nameLabelVisible=true) {
+        constructor(mesh, formulaLabelVisible=true, nameLabelVisible=true, normalsVisible=false) {
             this.mesh = mesh;
+            this.shownNormals = normalsVisible;
             this.showFormula = formulaLabelVisible;
             this.showName = nameLabelVisible;
+            this.curvatureVisualizer = new CurvatureVisualizer({normalScale: 0.25, curvatureGain: 1.5, stride: 5});
+
+            if (normalsVisible) this.addNormals();
         }
 
         #topOfSurface() {
@@ -634,15 +767,24 @@
 
         updateFormulaLabel() {
             this.showFormula = !this.showFormula;
-            this.showFormula ? this.addFormulaLabel() : this.removeFormulaLabel()
+            this.showFormula ? this.addFormulaLabel() : this.removeFormulaLabel();
         }
 
         updateNameLabel() {
             this.showName = !this.showName;
-            this.showName ? this.addNameLabel() : this.removeNameLabel()
+            this.showName ? this.addNameLabel() : this.removeNameLabel();
+        }
+
+        updateNormals() {
+            this.shownNormals = !this.shownNormals;
+            this.shownNormals ? this.addNormals() : this.removeNormals();
         }
 
         position = () => this.mesh.position;
+
+        addNormals = () => this.curvatureVisualizer.enable(this.mesh, this.mesh.userData.func);
+
+        removeNormals = () => this.curvatureVisualizer.disable(this.mesh);
     }
 
     /**
@@ -681,6 +823,7 @@
                 category: surfaceDef.category
             };
 
+            surfaceMeshOrGroup.userData.func = surfaceDef.func;
             this.ring.add(surfaceMeshOrGroup);
             this.surfaces.push(surfaceMeshOrGroup);
         }
@@ -732,8 +875,24 @@
 
         #deselectSurface = () => { this.selectedSurface = null;};
 
+        #cleanUpSurface(child) {
+            if (child.normalHelper) {
+                child.remove(child.normalHelper);
+                child.normalHelper.geometry.dispose();
+                child.normalHelper.material.dispose();
+                child.normalHelper = null;
+            }
+        }
+
+        #cleanUpSurfaces() {
+            this.surfaces.forEach(mesh => {
+                mesh.traverse(child => this.#cleanUpSurface(child));
+                mesh.visible = false;
+            });
+        }
+
         redistribute() {
-            this.surfaces.forEach(mesh => mesh.visible = false);
+            this.#cleanUpSurfaces();
             this.getVisibleMeshes().forEach((mesh, index) => this.#placeAndShowSurface(mesh, index));
         }
 
@@ -759,16 +918,18 @@
             this.#resetMaterial();
             this.selectedSurface.removeFormulaLabel();
             this.selectedSurface.removeNameLabel();
+            this.selectedSurface.removeNormals();
             this.#deselectSurface();
             this.#resetTargetRotation();
         }
 
-        selectMesh(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible) {
+        selectMesh(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible, normalsVisible) {
             this.#removeLabelsOfInvisibleMeshes(topLevelSurfaceObject);
             this.#setSelectedStyleOn(topLevelSurfaceObject);
-            this.selectedSurface = new Surface(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible);
+            this.selectedSurface = new Surface(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible, normalsVisible);
             nameLabelVisible ? this.selectedSurface.addNameLabel() : this.selectedSurface.removeNameLabel();
             formulaLabelVisible? this.selectedSurface.addFormulaLabel() : this.selectedSurface.removeFormulaLabel();
+            normalsVisible ? this.selectedSurface.addNormals() : this.selectedSurface.removeNormals();
         }
 
         includes = (topLevelSurfaceObject) => this.surfaces.includes(topLevelSurfaceObject);
@@ -778,6 +939,8 @@
         updateFormulaLabel = () => { if (this.selectedSurface) this.selectedSurface.updateFormulaLabel(); };
 
         updateNameLabel = () => { if (this.selectedSurface) this.selectedSurface.updateNameLabel(); }
+
+        updateNormals = () => { if (this.selectedSurface) this.selectedSurface.updateNormals(); }
     }
 
     const ring = new Ring();
@@ -808,7 +971,7 @@
             topLevelSurfaceObject = topLevelSurfaceObject.parent;
 
         ring.clearSelection();
-        ring.selectMesh(topLevelSurfaceObject, showFormulaCheckbox.checked, showNameCheckbox.checked);
+        ring.selectMesh(topLevelSurfaceObject, showFormulaCheckbox.checked, showNameCheckbox.checked, showNormalsCheckbox.checked);
         ring.setTargetRotation();
     });
 
@@ -840,6 +1003,9 @@
 
     const showNameCheckbox = document.getElementById('showName');
     showNameCheckbox.addEventListener ("click", () => ring.updateNameLabel());
+
+    const showNormalsCheckbox = document.getElementById('showNormals');
+    showNormalsCheckbox.addEventListener ("click", () => ring.updateNormals());
 
     /*************
      * Animation *
