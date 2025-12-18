@@ -563,6 +563,7 @@
     class Ring {
         constructor(ringRadius=16) {
             this.ring = new THREE.Group();
+            this.meshes = [];
             this.ring.position.y = 5; // move the whole ring up
             scene.add(this.ring);
             this.ringRadius = ringRadius;
@@ -584,7 +585,7 @@
             };
 
             this.ring.add(surfaceMeshOrGroup);
-            meshes.push(surfaceMeshOrGroup);
+            this.meshes.push(surfaceMeshOrGroup);
         }
 
         #setMeshPosition = (mesh, angle) =>
@@ -671,13 +672,13 @@
         }
 
         redistribute() {
-            meshes.forEach(mesh => mesh.visible = false);
+            this.meshes.forEach(mesh => mesh.visible = false);
             this.getVisibleMeshes().forEach((mesh, index) => this.#placeAndShowSurface(mesh, index));
         }
 
         position = () => this.ring.position;
 
-        getVisibleMeshes = () => meshes.filter(mesh => mesh.userData.category === activeCategory);
+        getVisibleMeshes = () => this.meshes.filter(mesh => mesh.userData.category === activeCategory);
 
         radius = () => this.ringRadius;
 
@@ -689,7 +690,7 @@
 
         rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
 
-        rotateSurfaces = () => meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
+        rotateSurfaces = () => this.meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
 
         #deselect = (mesh) => { if (this.selectedMesh === mesh) selectedMesh = null; };
         #deselectMesh = () => { this.selectedMesh = null;};
@@ -739,9 +740,10 @@
             showNameSelectedSurface ? this.addNameLabel() : this.removeNameLabel();
             showFormulaSelectedSurface? this.addFormulaLabel() : this.removeFormulaLabel();
         }
+
+        includes = (topLevelSurfaceObject) => !this.meshes.includes(topLevelSurfaceObject);
     }
 
-    const meshes = [];
     const ring = new Ring();
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -759,14 +761,14 @@
         raycaster.setFromCamera(mouse, camera);
 
         const hits = raycaster.intersectObjects(
-            meshes.filter(m => m.visible),
+            ring.getVisibleMeshes(),
             true
         );
 
         if (!hits.length) return;
 
         let topLevelSurfaceObject = hits[0].object;
-        while (topLevelSurfaceObject.parent && !meshes.includes(topLevelSurfaceObject))
+        while (topLevelSurfaceObject.parent && ring.includes(topLevelSurfaceObject))
             topLevelSurfaceObject = topLevelSurfaceObject.parent;
 
         ring.clearSelection();
@@ -775,8 +777,7 @@
     });
 
     function updateCameraPosition(ringRadius) {
-        const visibleMeshes = ring.getVisibleMeshes();
-        const count = visibleMeshes.length;
+        const count = ring.getVisibleMeshes().length;
 
         // Base distance from center
         const baseDistance = ringRadius * 2.1; // approx twice the ring radius
