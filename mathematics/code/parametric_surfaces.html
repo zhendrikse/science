@@ -545,24 +545,6 @@
         });
     }
 
-
-    const ring = new THREE.Group();
-    ring.position.y = 5; // move the whole ring up
-    scene.add(ring);
-    const meshes = [];
-    const RING_RADIUS = 16;
-
-    function setMeshPosition(mesh, angle) {
-        mesh.position.set(
-            RING_RADIUS * Math.cos(angle * 2 * Math.PI),
-            0,
-            RING_RADIUS * Math.sin(angle * 2 * Math.PI)
-        );
-    }
-
-    const createParametricMeshForCompoundSurfaces = (func, resolution, material) =>
-        new THREE.Mesh(new ParametricGeometry(func, resolution, resolution), material);
-
     const surfaceMaterial = () => new THREE.MeshNormalMaterial({
         side: THREE.DoubleSide,
         transparent: true,
@@ -570,35 +552,78 @@
         wireframe: true
     });
 
-    function addSurfaceToRing(surface, index) {
-        const surfaceIsComposite = (surface) => surface.build;
-        const surfaceMeshOrGroup = surfaceIsComposite(surface) ?
-            surface.build(surfaceMaterial(), surface.resolution)
-            : createParametricMeshForCompoundSurfaces(surface.func, surface.resolution, surfaceMaterial());
+    const createParametricMeshForCompoundSurfaces = (func, resolution) =>
+        new THREE.Mesh(new ParametricGeometry(func, resolution, resolution), surfaceMaterial());
 
-        surfaceMeshOrGroup.userData = {
-            name: surface.name,
-            formula: surface.formula,
-            category: surface.category
+    /**
+     * Ring containing all surfaces. Only the surfaces of one category are shown at a time.
+     * These visible surfaces are continually redistributed evenly across the ring.
+     */
+    class Ring {
+        constructor(ringRadius=16) {
+            this.ring = new THREE.Group();
+            this.ring.position.y = 5; // move the whole ring up
+            scene.add(this.ring);
+            this.ringRadius = ringRadius;
+            surfaceDefinitions.forEach((surface, index) => this.#addSurface(surface, index));
+        }
+
+        radius = () => this.ringRadius;
+
+        #addSurface(surface, index) {
+            const surfaceIsComposite = (surface) => surface.build;
+            const surfaceMeshOrGroup = surfaceIsComposite(surface) ?
+                surface.build(surfaceMaterial(), surface.resolution)
+                : createParametricMeshForCompoundSurfaces(surface.func, surface.resolution);
+
+            surfaceMeshOrGroup.userData = {
+                name: surface.name,
+                formula: surface.formula,
+                category: surface.category
+            };
+
+            this.#setMeshPosition(surfaceMeshOrGroup, index / surfaceDefinitions.length);
+            this.ring.add(surfaceMeshOrGroup);
+            meshes.push(surfaceMeshOrGroup);
+        }
+
+        #setMeshPosition(mesh, angle) {
+            mesh.position.set(
+                this.ringRadius * Math.cos(angle * 2 * Math.PI),
+                0,
+                this.ringRadius * Math.sin(angle * 2 * Math.PI)
+            );
+        }
+
+        #placeAndShowSurface = (mesh, index) => {
+            this.#setMeshPosition(mesh, index / this.getVisibleMeshes().length);
+            mesh.visible = true;
         };
 
-        setMeshPosition(surfaceMeshOrGroup, index / surfaceDefinitions.length);
-        ring.add(surfaceMeshOrGroup);
-        meshes.push(surfaceMeshOrGroup);
+        redistribute() {
+            meshes.forEach(mesh => mesh.visible = false);
+            this.getVisibleMeshes().forEach((mesh, index) => this.#placeAndShowSurface(mesh, index));
+        }
+
+        position = () => this.ring.position;
+
+        getVisibleMeshes = () => meshes.filter(mesh => mesh.userData.category === activeCategory);
+
+        rotate() {
+            const ROT_LERP = 0.08;
+            const delta = ringTargetRotation - this.ring.rotation.y;
+            const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
+            this.ring.rotation.y += shortest * ROT_LERP;
+
+            if (Math.abs(shortest) < 0.001) {
+                this.ring.rotation.y = ringTargetRotation;
+                ringTargetRotation = null;
+            }
+        }
     }
 
-    const getVisibleMeshes = () => meshes.filter(mesh => mesh.userData.category === activeCategory);
-    const placeAndShowSurface = (mesh, index) => {
-        setMeshPosition(mesh, index / getVisibleMeshes().length);
-        mesh.visible = true;
-    };
-
-    function redistributeRing() {
-        meshes.forEach(mesh => mesh.visible = false);
-        getVisibleMeshes().forEach((mesh, index) => placeAndShowSurface(mesh, index));
-    }
-
-    surfaceDefinitions.forEach((surface, index) => addSurfaceToRing(surface, index));
+    const meshes = [];
+    const ring = new Ring();
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -639,14 +664,14 @@
         const boundingBox = new THREE.Box3();
         boundingBox.setFromObject(surface);
         const topY = boundingBox.max.y;
-        return surface.worldToLocal(new THREE.Vector3(0, topY, 0)).y;
+        return surface.worldToLocal(new THREE.Vector3(0, topY + .5, 0)).y;
     }
 
     function bottomOf(surface) {
         const boundingBox = new THREE.Box3();
         boundingBox.setFromObject(surface);
         const bottomY = boundingBox.min.y;
-        return surface.worldToLocal(new THREE.Vector3(0, bottomY, 0)).y;
+        return surface.worldToLocal(new THREE.Vector3(0, bottomY - 4, 0)).y;
     }
 
     function addLabels(surface) {
@@ -717,7 +742,7 @@
 
 
     function updateCameraPosition(ringRadius) {
-        const visibleMeshes = getVisibleMeshes();
+        const visibleMeshes = ring.getVisibleMeshes();
         const count = visibleMeshes.length;
 
         // Base distance from center
@@ -727,7 +752,7 @@
 
         // Set camera slightly higher to center the elevated ring
         camera.position.set(0, ringRadius * 0.8, distance);
-        camera.lookAt(0, ring.position.y, 0); // look at the ring's new center
+        camera.lookAt(0, ring.position().y, 0); // look at the ring's new center
         controls.update();
     }
 
@@ -771,8 +796,8 @@
     dropDown.addEventListener("change", () => {
         activeCategory = dropDown.value;
         clearSelection();
-        redistributeRing();
-        updateCameraPosition(RING_RADIUS);
+        ring.redistribute();
+        updateCameraPosition(ring.radius());
     });
 
     let showFormulaSelectedSurface = true;
@@ -795,32 +820,21 @@
      * Animation *
      *************/
 
-    function rotateRing() {
-        const ROT_LERP = 0.08;
-        const delta = ringTargetRotation - ring.rotation.y;
-        const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
-        ring.rotation.y += shortest * ROT_LERP;
-
-        if (Math.abs(shortest) < 0.001) {
-            ring.rotation.y = ringTargetRotation;
-            ringTargetRotation = null;
-        }
-    }
 
     const rotationToTargetSurfaceIsNeeded = () => ringTargetRotation !== null;
-    const rotateRingToSelectedSurface = () => { if (rotationToTargetSurfaceIsNeeded()) rotateRing(); };
+    const rotateRingToSelectedSurface = () => { if (rotationToTargetSurfaceIsNeeded()) ring.rotate(); };
     const rotateSurfaces = () => meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
 
     function animate() {
         requestAnimationFrame(animate);
         rotateSurfaces();
         rotateRingToSelectedSurface();
-        controls.target.set(0, ring.position.y, 0);
+        controls.target.set(0, ring.position().y, 0);
         controls.update();
         renderer.render(scene, camera);
         labelRenderer.render(scene, camera);
     }
 
-    redistributeRing();
+    ring.redistribute();
     animate();
 </script>
