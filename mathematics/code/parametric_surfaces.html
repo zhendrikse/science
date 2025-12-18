@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <style>
     body { margin:0; overflow:hidden; }
     canvas { display:block; }
@@ -45,8 +46,8 @@
     <canvas id="myCanvas" width="600" height="500"></canvas>
     <div id="menu">
         <label>Category:&nbsp;</label><select id="categorySelect"></select><br/>
-        <label>Formula:&nbsp;</label><button id="hideFormulaButton">Hide</button><br/>
-        <label>Name:&nbsp;</label><button id="hideNameButton">Hide</button>
+        <label>Formula:&nbsp;</label><input type="checkbox" id="showFormula" checked="checked"/>
+        <label>Name:&nbsp;</label><input type="checkbox" id="showName" name="hide" checked="checked"/>
     </div>
 </div>
 
@@ -622,36 +623,37 @@
         return label;
     }
 
-    function addSurfaceNameLabel(surface, y) {
+    function addNameLabel(surface) {
         const div = document.createElement("div");
         div.classList.add("surface-label", "name");
         div.textContent = surface.userData.name;
-        surface.nameLabel = createLabelin(div, y, surface);
+        surface.nameLabel = createLabelin(div, topOf(surface) + 1, surface);
     }
 
-    function addFormulaLabel(surface, y) {
+    function addFormulaLabel(surface) {
         const div = document.createElement("div");
         div.classList.add("surface-label", "formula");
         katex.render(surface.userData.formula, div, { throwOnError: false });
-        surface.formulaLabel = createLabelin(div, y, surface);
+        surface.formulaLabel = createLabelin(div, bottomOf(surface) + 1, surface);
+    }
+
+    function topOf(surface) {
+        const boundingBox = new THREE.Box3();
+        boundingBox.setFromObject(surface);
+        const topY = boundingBox.max.y;
+        return surface.worldToLocal(new THREE.Vector3(0, topY, 0)).y;
+    }
+
+    function bottomOf(surface) {
+        const boundingBox = new THREE.Box3();
+        boundingBox.setFromObject(surface);
+        const bottomY = boundingBox.min.y;
+        return surface.worldToLocal(new THREE.Vector3(0, bottomY, 0)).y;
     }
 
     function addLabels(surface) {
-        const box = new THREE.Box3();
-
-        // Compute WORLD-space bounding box
-        box.setFromObject(surface);
-
-        // World-space top/bottom
-        const topY = box.max.y;
-        const bottomY = box.min.y;
-
-        // Convert world-space Y to local-space Y
-        const topLocal = surface.worldToLocal(new THREE.Vector3(0, topY, 0)).y;
-        const bottomLocal = surface.worldToLocal(new THREE.Vector3(0, bottomY, 0)).y;
-
-        addSurfaceNameLabel(surface, topLocal + 1);
-        addFormulaLabel(surface, bottomLocal - 2);
+        showNameSelectedSurface ? addNameLabel(surface) : removeNameLabel();
+        showFormulaSelectedSurface? addFormulaLabel(surface) : removeFormulaLabel();
     }
 
     function applyFunctionTo(selectedObject, fn) {
@@ -715,6 +717,26 @@
         resetRingTargetRotation();
     }
 
+
+    function updateCameraPosition(ringRadius) {
+        const visibleMeshes = getVisibleMeshes();
+        const count = visibleMeshes.length;
+
+        // Base distance from center
+        const baseDistance = ringRadius * 2.1; // approx twice the ring radius
+        const extra = Math.max(0, (count - 5) * 2);
+        const distance = baseDistance + extra;
+
+        // Set camera slightly higher to center the elevated ring
+        camera.position.set(0, ringRadius * 0.8, distance);
+        camera.lookAt(0, ring.position.y, 0); // look at the ring's new center
+        controls.update();
+    }
+
+    /*******************
+     * Event listeners *
+     *******************/
+
     window.addEventListener("pointerdown", event => {
         const rect = canvas.getBoundingClientRect();
 
@@ -745,23 +767,6 @@
         ringTargetRotation = -angle;
     });
 
-
-    function updateCameraPosition(ringRadius) {
-        const visibleMeshes = getVisibleMeshes();
-        const count = visibleMeshes.length;
-
-        // Base distance from center
-        const baseDistance = ringRadius * 2.1; // approx twice the ring radius
-        const extra = Math.max(0, (count - 5) * 2);
-        const distance = baseDistance + extra;
-
-        // Set camera slightly higher to center the elevated ring
-        camera.position.set(0, ringRadius * 0.8, distance);
-        camera.lookAt(0, ring.position.y, 0); // look at the ring's new center
-        controls.update();
-    }
-
-
     let activeCategory = "Miscellaneous";
     const dropDown = document.getElementById("categorySelect");
     populateDropDownMenu(dropDown);
@@ -772,11 +777,25 @@
         updateCameraPosition(RING_RADIUS);
     });
 
-    const hideFormulaButton = document.getElementById('hideFormulaButton');
-    hideFormulaButton.addEventListener ("click", () => { if (selectedMesh) removeFormulaLabel(); });
+    let showFormulaSelectedSurface = true;
+    const showFormulaCheckbox = document.getElementById('showFormula');
+    showFormulaCheckbox.addEventListener ("click", () => {
+        showFormulaSelectedSurface = !showFormulaSelectedSurface;
+        showFormulaSelectedSurface ? addFormulaLabel(selectedMesh) : removeFormulaLabel()
+        showFormulaCheckbox.checked = showFormulaSelectedSurface;
+    });
 
-    const hideNameButton = document.getElementById('hideNameButton');
-    hideNameButton.addEventListener ("click", () => { if (selectedMesh) removeNameLabel(); });
+    let showNameSelectedSurface = true;
+    const showNameCheckbox = document.getElementById('showName');
+    showNameCheckbox.addEventListener ("click", () => {
+        showNameSelectedSurface = !showNameSelectedSurface;
+        showNameSelectedSurface ? addNameLabel(selectedMesh) : removeNameLabel()
+        showNameCheckbox.checked = showNameSelectedSurface;
+    });
+
+    /*************
+     * Animation *
+     *************/
 
     function rotateRing() {
         const ROT_LERP = 0.08;
@@ -791,7 +810,7 @@
     }
 
     const rotationToTargetSurfaceIsNeeded = () => ringTargetRotation !== null;
-    const rotateRingToSelectedSurface = () => {if (rotationToTargetSurfaceIsNeeded()) rotateRing();};
+    const rotateRingToSelectedSurface = () => { if (rotationToTargetSurfaceIsNeeded()) rotateRing(); };
     const rotateSurfaces = () => meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
 
     function animate() {
@@ -806,11 +825,4 @@
 
     redistributeRing();
     animate();
-
-    window.addEventListener("resize", () => {
-        camera.aspect = innerWidth / innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(innerWidth, innerHeight);
-        labelRenderer.setSize(innerWidth, innerHeight);
-    });
 </script>
