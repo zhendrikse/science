@@ -101,10 +101,10 @@
                     a = 2, b = 3,
                     [theta, phi] = [Math.PI * u, Math.PI * v],
                     x = a * Math.cos(theta),
-                    y = a * (Math.sin(theta) + Math.cos(phi)),
-                    z = a * b * Math.sin(phi);
+                    y = a * b * Math.sin(phi),
+                    z = a * (Math.sin(theta) + Math.cos(phi));
 
-                target.set(x, z, y);
+                target.set(x, y, z);
             }
         },
         {
@@ -133,9 +133,9 @@
                     k = 1.2, l = 1.2, a = 1.5, scale = 0.06,
                     [theta, phi] = [6 * Math.PI * u, 2 * Math.PI * v],
                     x = k ** theta * (1 + Math.cos(phi)) * Math.cos(theta),
-                    y = k ** theta * (1 + Math.cos(phi)) * Math.sin(theta),
-                    z = k ** theta * Math.sin(phi) - a * l ** theta
-                target.set(x * scale, z * scale, y * scale);
+                    y = k ** theta * Math.sin(phi) - a * l ** theta,
+                    z = k ** theta * (1 + Math.cos(phi)) * Math.sin(theta);
+                target.set(x * scale, y * scale, z * scale);
             }
         },
         {
@@ -148,9 +148,9 @@
                     num_spirals=3, r_final=2, height=6.5, r_inner=.5, scale=.6,
                     [s, t] = [2 * Math.PI * u, 2 * Math.PI * v],
                     x = r_final * (1 - t / (2 * Math.PI)) * Math.cos(num_spirals * t) * (1 + Math.cos(s)) + r_inner * Math.cos(num_spirals * t),
-                    y = r_final * (1 - t / (2 * Math.PI)) * Math.sin(num_spirals * t) * (1 + Math.cos(s)) + r_inner * Math.sin(num_spirals * t),
-                    z = (height * t / (2 * Math.PI)) + r_final * (1 - t / (2 * Math.PI)) * Math.sin(s)
-                target.set(x * scale, z * scale, y * scale);
+                    y = (height * t / (2 * Math.PI)) + r_final * (1 - t / (2 * Math.PI)) * Math.sin(s),
+                    z = r_final * (1 - t / (2 * Math.PI)) * Math.sin(num_spirals * t) * (1 + Math.cos(s)) + r_inner * Math.sin(num_spirals * t);
+                target.set(x * scale, y * scale, z * scale);
             }
         },
         {
@@ -163,9 +163,9 @@
                     a = 2, b = 2, c = 4, eps = 1e-4,
                     [u1, v1] = [u * (1 - eps) - 0.5, 2 * Math.PI * v],
                     x = 2 * a * u1 * Math.cos(v1),
-                    y = 2 * b * u1 * Math.sin(v1),
-                    z = c * u1;
-                target.set(x, z, y);
+                    y = c * u1,
+                    z = 2 * b * u1 * Math.sin(v1);
+                target.set(x, y, z);
             }
         },
         {
@@ -194,8 +194,8 @@
                     r = 2, h=4,
                     [theta, height] = [2 * Math.PI * u, v],
                     x = r * Math.cos(theta),
-                    y = r * Math.sin(theta),
-                    z = height * h;
+                    y = height * h,
+                    z = r * Math.sin(theta);
 
                 target.set(x, z, y);
             }
@@ -224,10 +224,10 @@
                     a = 2, b = 0.1, eps = 0.05,
                     [theta, phi] = [4 * Math.PI * u, 1.99 * (eps + (1 - eps) * v)],
                     x = a * Math.cos(theta) * Math.sin(phi),
-                    y = a * Math.sin(theta) * Math.sin(phi),
-                    z = a * (Math.cos(phi) + Math.log(Math.tan(phi / 2))) + b * theta;
+                    y = a * (Math.cos(phi) + Math.log(Math.tan(phi / 2))) + b * theta,
+                    z = a * Math.sin(theta) * Math.sin(phi);
 
-                target.set(x, z, y);
+                target.set(x, y, z);
             }
         },
         {
@@ -566,8 +566,10 @@
     }
 
     class Surface {
-        constructor(mesh) {
+        constructor(mesh, formulaLabelVisible=true, nameLabelVisible=true) {
             this.mesh = mesh;
+            this.showFormula = formulaLabelVisible;
+            this.showName = nameLabelVisible;
         }
 
         #topOfSurface() {
@@ -601,7 +603,11 @@
         addFormulaLabel() {
             const div = document.createElement("div");
             div.classList.add("surface-label", "formula");
-            katex.render(this.mesh.userData.formula, div, { throwOnError: false });
+            try {
+                katex.render(this.mesh.userData.formula, div, { throwOnError: true });
+            } catch {
+                div.textContent = "Syntax error in formula";
+            }
             this.mesh.formulaLabel = this.#createLabelIn(div, this.#bottomOfSurface() + 1);
         }
 
@@ -619,11 +625,21 @@
             this.mesh.nameLabel = null;
         }
 
-        setDefaultStyle() {
+        setDefaultStyle(opacity) {
             applyFunctionTo(this.mesh, mesh => {
                 mesh.material.wireframe = true;
-                mesh.material.opacity = 0.6;
+                mesh.material.opacity = opacity;
             });
+        }
+
+        updateFormulaLabel() {
+            this.showFormula = !this.showFormula;
+            this.showFormula ? this.addFormulaLabel() : this.removeFormulaLabel()
+        }
+
+        updateNameLabel() {
+            this.showName = !this.showName;
+            this.showName ? this.addNameLabel() : this.removeNameLabel()
         }
 
         position = () => this.mesh.position;
@@ -635,13 +651,19 @@
      * Only one of the surfaces can be selected at a time.
      */
     class Ring {
-        constructor(ringRadius=16) {
+        constructor(ringRadius=16, ringRotationSpeed=0.01, selectionLerp=0.08, defaultOpacity=0.6) {
             this.ring = new THREE.Group();
             this.surfaces = [];
             this.ring.position.y = 5; // move the whole ring up
             this.ringRadius = ringRadius;
             this.ringTargetRotation = null;
             this.selectedSurface = null;
+            this.activeCategory = "Miscellaneous";
+            this.config = {
+                ringRotationSpeed: ringRotationSpeed,
+                selectionLerp: selectionLerp,
+                defaultOpacity: defaultOpacity,
+            };
 
             surfaceDefinitions.forEach((surfaceDef, index) => this.#addSurface(surfaceDef, index));
             scene.add(this.ring);
@@ -676,10 +698,9 @@
         #resetTargetRotation = () => this.ringTargetRotation = null;
 
         #rotate() {
-            const ROT_LERP = 0.08;
             const delta = this.ringTargetRotation - this.ring.rotation.y;
             const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
-            this.ring.rotation.y += shortest * ROT_LERP;
+            this.ring.rotation.y += shortest * this.config.selectionLerp;
 
             if (Math.abs(shortest) < 0.001) {
                 this.ring.rotation.y = this.ringTargetRotation;
@@ -691,7 +712,7 @@
 
         #resetMaterial() {
             if (this.#noMeshHasBeenSelected()) return;
-            this.selectedSurface.setDefaultStyle();
+            this.selectedSurface.setDefaultStyle(this.config.defaultOpacity);
         }
 
         #removeLabelsOfInvisibleMeshes(mesh) {
@@ -709,6 +730,8 @@
             });
         }
 
+        #deselectSurface = () => { this.selectedSurface = null;};
+
         redistribute() {
             this.surfaces.forEach(mesh => mesh.visible = false);
             this.getVisibleMeshes().forEach((mesh, index) => this.#placeAndShowSurface(mesh, index));
@@ -716,7 +739,7 @@
 
         position = () => this.ring.position;
 
-        getVisibleMeshes = () => this.surfaces.filter(mesh => mesh.userData.category === activeCategory);
+        getVisibleMeshes = () => this.surfaces.filter(mesh => mesh.userData.category === this.activeCategory);
 
         radius = () => this.ringRadius;
 
@@ -728,37 +751,33 @@
 
         rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
 
-        rotateSurfaces = () => this.surfaces.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
-
-        #deselectSurface = () => { this.selectedSurface = null;};
-
-        addNameLabel = () => this.selectedSurface.addNameLabel();
-
-        addFormulaLabel = () => this.selectedSurface.addFormulaLabel();
-
-        removeFormulaLabel = () => this.selectedSurface.removeFormulaLabel();
-
-        removeNameLabel= () => this.selectedSurface.removeNameLabel();
+        rotateSurfaces = () => this.getVisibleMeshes().forEach(mesh => mesh.rotation.y += this.config.ringRotationSpeed);
 
         clearSelection() {
             if (this.#noMeshHasBeenSelected()) return;
 
             this.#resetMaterial();
-            this.removeFormulaLabel();
-            this.removeNameLabel();
+            this.selectedSurface.removeFormulaLabel();
+            this.selectedSurface.removeNameLabel();
             this.#deselectSurface();
             this.#resetTargetRotation();
         }
 
-        selectMesh(topLevelSurfaceObject) {
+        selectMesh(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible) {
             this.#removeLabelsOfInvisibleMeshes(topLevelSurfaceObject);
             this.#setSelectedStyleOn(topLevelSurfaceObject);
-            this.selectedSurface = new Surface(topLevelSurfaceObject);
-            showNameSelectedSurface ? this.addNameLabel() : this.removeNameLabel();
-            showFormulaSelectedSurface? this.addFormulaLabel() : this.removeFormulaLabel();
+            this.selectedSurface = new Surface(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible);
+            nameLabelVisible ? this.selectedSurface.addNameLabel() : this.selectedSurface.removeNameLabel();
+            formulaLabelVisible? this.selectedSurface.addFormulaLabel() : this.selectedSurface.removeFormulaLabel();
         }
 
-        includes = (topLevelSurfaceObject) => !this.surfaces.includes(topLevelSurfaceObject);
+        includes = (topLevelSurfaceObject) => this.surfaces.includes(topLevelSurfaceObject);
+
+        setActiveCategoryTo = (value) => this.activeCategory = value;
+
+        updateFormulaLabel = () => { if (this.selectedSurface) this.selectedSurface.updateFormulaLabel(); };
+
+        updateNameLabel = () => { if (this.selectedSurface) this.selectedSurface.updateNameLabel(); }
     }
 
     const ring = new Ring();
@@ -785,11 +804,11 @@
         if (!hits.length) return;
 
         let topLevelSurfaceObject = hits[0].object;
-        while (topLevelSurfaceObject.parent && ring.includes(topLevelSurfaceObject))
+        while (topLevelSurfaceObject.parent && !ring.includes(topLevelSurfaceObject))
             topLevelSurfaceObject = topLevelSurfaceObject.parent;
 
         ring.clearSelection();
-        ring.selectMesh(topLevelSurfaceObject);
+        ring.selectMesh(topLevelSurfaceObject, showFormulaCheckbox.checked, showNameCheckbox.checked);
         ring.setTargetRotation();
     });
 
@@ -807,31 +826,20 @@
         controls.update();
     }
 
-    let activeCategory = "Miscellaneous";
     const dropDown = document.getElementById("categorySelect");
     populateDropDownMenu(dropDown);
     dropDown.addEventListener("change", () => {
-        activeCategory = dropDown.value;
+        ring.setActiveCategoryTo(dropDown.value);
         ring.clearSelection();
         ring.redistribute();
         updateCameraPosition(ring.radius());
     });
 
-    let showFormulaSelectedSurface = true;
     const showFormulaCheckbox = document.getElementById('showFormula');
-    showFormulaCheckbox.addEventListener ("click", () => {
-        showFormulaSelectedSurface = !showFormulaSelectedSurface;
-        showFormulaSelectedSurface ? ring.addFormulaLabel() : ring.removeFormulaLabel()
-        showFormulaCheckbox.checked = showFormulaSelectedSurface;
-    });
+    showFormulaCheckbox.addEventListener ("click", () => ring.updateFormulaLabel());
 
-    let showNameSelectedSurface = true;
     const showNameCheckbox = document.getElementById('showName');
-    showNameCheckbox.addEventListener ("click", () => {
-        showNameSelectedSurface = !showNameSelectedSurface;
-        showNameSelectedSurface ? ring.addNameLabel() : ring.removeNameLabel()
-        showNameCheckbox.checked = showNameSelectedSurface;
-    });
+    showNameCheckbox.addEventListener ("click", () => ring.updateNameLabel());
 
     /*************
      * Animation *
