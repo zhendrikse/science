@@ -553,22 +553,16 @@
     });
 
     const createParametricMeshForCompoundSurfaces = (func, resolution) => {
-        const mesh = new THREE.Mesh(
-            new ParametricGeometry(func, resolution, resolution),
-            surfaceMaterial()
-        );
+        const mesh = new THREE.Mesh(new ParametricGeometry(func, resolution, resolution), surfaceMaterial());
         mesh.userData.func = func;
         return mesh;
     }
 
     function applyFunctionTo(selectedObject, func) {
-        if (selectedObject.isMesh) {
+        if (selectedObject.isMesh)
             func(selectedObject);
-        } else {
-            selectedObject.traverse(child => {
-                if (child.isMesh) func(child);
-            });
-        }
+        else
+            selectedObject.traverse(child => { if (child.isMesh) func(child); });
     }
 
     class CurvatureVisualizer {
