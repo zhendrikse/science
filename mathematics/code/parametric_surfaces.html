@@ -57,14 +57,14 @@
     }
 </style>
 
-<button id="fullscreen-toggle">Fullscreen Canvas</button>
 <div id="canvas-wrapper">
     <canvas id="myCanvas" width="600" height="500"></canvas>
     <div id="menu">
         <label>Category:&nbsp;<select id="categorySelect"></select></label><br/>
         <label>Formula:&nbsp;<input type="checkbox" id="showFormula" checked/></label>
         <label>Name:&nbsp;<input type="checkbox" id="showName" checked/></label>
-        <label>Normals:&nbsp;<input type="checkbox" id="showNormals"/></label>
+        <label>Normals:&nbsp;<input type="checkbox" id="showNormals"/></label><br/>
+        <label>Fullscreen;&nbsp;<input type="checkbox" id="fullscreen-checkbox"/></label>
     </div>
 </div>
 
@@ -968,12 +968,18 @@
 
     let isFullscreen = false;
 
-    toggleButton.addEventListener('click', () => {
-        isFullscreen = !isFullscreen;
-        canvasContainer.classList.toggle('fullscreen', isFullscreen);
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvasContainer = document.getElementById('canvas-container');
+        const fullscreenCheckbox = document.getElementById('fullscreen-checkbox');
 
-        // Update renderer & camera
-        onWindowResize();
+        fullscreenCheckbox.addEventListener('change', () => {
+            if (fullscreenCheckbox.checked) {
+                canvasContainer.classList.add('fullscreen');
+            } else {
+                canvasContainer.classList.remove('fullscreen');
+            }
+            onWindowResize(); // adjust canvas size if needed
+        });
     });
 
     function onWindowResize() {
