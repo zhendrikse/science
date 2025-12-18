@@ -572,12 +572,7 @@
         }
 
         class CurvatureVisualizer {
-            constructor({
-                            normalScale = 0.25,
-                            curvatureGain = 1.5,
-                            stride = 4,
-                            eps = 1e-4
-                        } = {}) {
+            constructor({normalScale = 0.25, curvatureGain = 1.5, stride = 4, eps = 1e-4} = {}) {
                 this.normalScale = normalScale;
                 this.curvatureGain = curvatureGain;
                 this.stride = stride;
