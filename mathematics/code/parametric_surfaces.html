@@ -552,8 +552,14 @@
         wireframe: true
     });
 
-    const createParametricMeshForCompoundSurfaces = (func, resolution) =>
-        new THREE.Mesh(new ParametricGeometry(func, resolution, resolution), surfaceMaterial());
+    const createParametricMeshForCompoundSurfaces = (func, resolution) => {
+        const mesh = new THREE.Mesh(
+            new ParametricGeometry(func, resolution, resolution),
+            surfaceMaterial()
+        );
+        mesh.userData.func = func;
+        return mesh;
+    }
 
     function applyFunctionTo(selectedObject, func) {
         if (selectedObject.isMesh) {
@@ -566,15 +572,10 @@
     }
 
     class CurvatureVisualizer {
-        constructor({
-                        normalScale = 0.25,
-                        curvatureGain = 1.5,
-                        stride = 4,
-                        eps = 1e-4
-                    } = {}) {
-            this.normalScale = normalScale;
-            this.curvatureGain = curvatureGain;
-            this.stride = stride;
+        constructor({normalScale = 0.25, curvatureGain = 1.5, stride = 4, eps = 1e-4} = {}) {
+            this.normalScale = normalScale; // Length of normal vectors when curvature is zero
+            this.curvatureGain = curvatureGain; // Curvature gain factor applied to the length of normal vectors
+            this.stride = stride; // Influences distance between the normal vectors
             this.eps = eps;
         }
 
@@ -689,7 +690,8 @@
 
         #normalToColor = (nx, ny, nz) => new THREE.Color(0.5 * (nx + 1), 0.5 * (ny + 1), 0.5 * (nz + 1));
 
-        enable = (mesh, surfaceFunction) => mesh.traverse(child => this.#enableCurvatureOn(child, surfaceFunction));
+        enable = (mesh) => mesh.traverse(child => {
+            if (child.isMesh && child.userData.func) this.#enableCurvatureOn(child, child.userData.func); });
 
         disable = (mesh) => mesh.traverse(child => this.#disableCurvatureOn(child));
     }
@@ -782,7 +784,7 @@
 
         position = () => this.mesh.position;
 
-        addNormals = () => this.curvatureVisualizer.enable(this.mesh, this.mesh.userData.func);
+        addNormals = () => this.curvatureVisualizer.enable(this.mesh);
 
         removeNormals = () => this.curvatureVisualizer.disable(this.mesh);
     }
