@@ -38,6 +38,49 @@
     .surface-label.formula {
         font-size: 14px;
     }
+
+    .hidden {
+        display: none !important;
+    }
+
+    #surface-inspector {
+        position: fixed;
+        top: 50px;
+        left: 50px;
+        width: 800px;
+        height: 600px;
+        background: #111;
+        border: 1px solid #444;
+        z-index: 10000;
+
+        touch-action: none;
+    }
+
+
+    .inspector-header {
+        cursor: move;
+        user-select: none;
+        background: #444;
+        color: white;
+        padding: 6px 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #inspector-canvas {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+    }
+
+    .inspector-header label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 14px;
+        opacity: 0.85;
+    }
+
 </style>
 
 <div id="canvas-wrapper">
@@ -46,8 +89,17 @@
         <label>Category:&nbsp;<select id="categorySelect"></select></label><br/>
         <label>Formula:&nbsp;<input type="checkbox" id="showFormula" checked/></label>
         <label>Name:&nbsp;<input type="checkbox" id="showName" checked/></label>
-        <label>Normals:&nbsp;<input type="checkbox" id="showNormals"/></label>
     </div>
+</div>
+
+<div id="surface-inspector" class="hidden">
+    <div class="inspector-header">
+        <span>Surface inspector</span>
+        <label><input type="checkbox" id="inspectorNormals">Normals</label>
+        <button id="inspector-close">×</button>
+    </div>
+
+    <canvas id="inspector-canvas"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
@@ -562,6 +614,109 @@
             selectedObject.traverse(child => { if (child.isMesh) func(child); });
     }
 
+    class SurfaceInspector {
+        constructor(canvas) {
+            this.canvas = canvas;
+
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color(0x131313);
+
+            this.camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100);
+            this.camera.position.set(0, 0, 4);
+
+            this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+            this.renderer.setPixelRatio(window.devicePixelRatio);
+
+            this.controls = new OrbitControls(this.camera, canvas);
+            this.controls.enableDamping = true;
+
+            this.scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(1, 1, 1);
+            this.scene.add(light);
+
+            this.curvature = new CurvatureVisualizer({
+                normalScale: 0.25,
+                curvatureGain: 1.5,
+                stride: 4
+            });
+
+            this.normalsCheckbox = document.getElementById("inspectorNormals");
+            this.normalsCheckbox.addEventListener("change", () => this.updateNormals() );
+
+            this.mesh = null;
+            this.surfaceFunction = null;
+
+            this.animate();
+        }
+
+        inspect(original) {
+            if (this.mesh) {
+                this.curvature.disable(this.mesh);
+                this.scene.remove(this.mesh);
+            }
+
+            // Clone full object (group-safe)
+            this.mesh = original.clone(true);
+
+            // Preserve parametric function
+            this.surfaceFunction = original.userData.func;
+
+            // Ensure cloned meshes know their function
+            this.mesh.traverse(child => {
+                if (child.isMesh) child.userData.func = this.surfaceFunction;
+            });
+
+            // Center + fit camera
+            const box = new THREE.Box3().setFromObject(this.mesh);
+            const size = box.getSize(new THREE.Vector3()).length();
+            const center = box.getCenter(new THREE.Vector3());
+
+            this.mesh.position.sub(center);
+            this.camera.position.set(0, 0, size * 1.5);
+
+            this.scene.add(this.mesh);
+
+            // Normals default OFF
+            this.normalsCheckbox.checked = false;
+
+            this.resize();
+        }
+
+        updateNormals() {
+            if (!this.mesh) return;
+
+            this.normalsCheckbox.checked
+                ? this.curvature.enable(this.mesh)
+                : this.curvature.disable(this.mesh);
+        }
+
+
+        open() {
+            this.canvas.parentElement.classList.remove("hidden");
+            this.resize();
+        }
+
+        close() {
+            this.canvas.parentElement.classList.add("hidden");
+        }
+
+        resize() {
+            const w = this.canvas.clientWidth;
+            const h = this.canvas.clientHeight;
+            this.renderer.setSize(w, h, false);
+            this.camera.aspect = w / h;
+            this.camera.updateProjectionMatrix();
+        }
+
+        animate = () => {
+            requestAnimationFrame(this.animate);
+            this.controls.update();
+            this.renderer.render(this.scene, this.camera);
+        };
+    }
+
+
     class CurvatureVisualizer {
         constructor({normalScale = 0.25, curvatureGain = 1.5, stride = 4, eps = 1e-4} = {}) {
             this.normalScale = normalScale; // Length of normal vectors when curvature is zero
@@ -688,14 +843,10 @@
     }
 
     class Surface {
-        constructor(mesh, formulaLabelVisible=true, nameLabelVisible=true, normalsVisible=false) {
+        constructor(mesh, formulaLabelVisible=true, nameLabelVisible=true) {
             this.mesh = mesh;
-            this.shownNormals = normalsVisible;
             this.showFormula = formulaLabelVisible;
             this.showName = nameLabelVisible;
-            this.curvatureVisualizer = new CurvatureVisualizer({normalScale: 0.25, curvatureGain: 1.5, stride: 5});
-
-            if (normalsVisible) this.addNormals();
         }
 
         #topOfSurface() {
@@ -768,16 +919,7 @@
             this.showName ? this.addNameLabel() : this.removeNameLabel();
         }
 
-        updateNormals() {
-            this.shownNormals = !this.shownNormals;
-            this.shownNormals ? this.addNormals() : this.removeNormals();
-        }
-
         position = () => this.mesh.position;
-
-        addNormals = () => this.curvatureVisualizer.enable(this.mesh);
-
-        removeNormals = () => this.curvatureVisualizer.disable(this.mesh);
     }
 
     /**
@@ -911,18 +1053,16 @@
             this.#resetMaterial();
             this.selectedSurface.removeFormulaLabel();
             this.selectedSurface.removeNameLabel();
-            this.selectedSurface.removeNormals();
             this.#deselectSurface();
             this.#resetTargetRotation();
         }
 
-        selectMesh(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible, normalsVisible) {
+        selectMesh(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible) {
             this.#removeLabelsOfInvisibleMeshes(topLevelSurfaceObject);
             this.#setSelectedStyleOn(topLevelSurfaceObject);
-            this.selectedSurface = new Surface(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible, normalsVisible);
+            this.selectedSurface = new Surface(topLevelSurfaceObject, formulaLabelVisible, nameLabelVisible);
             nameLabelVisible ? this.selectedSurface.addNameLabel() : this.selectedSurface.removeNameLabel();
             formulaLabelVisible? this.selectedSurface.addFormulaLabel() : this.selectedSurface.removeFormulaLabel();
-            normalsVisible ? this.selectedSurface.addNormals() : this.selectedSurface.removeNormals();
         }
 
         includes = (topLevelSurfaceObject) => this.surfaces.includes(topLevelSurfaceObject);
@@ -936,6 +1076,49 @@
         updateNormals = () => { if (this.selectedSurface) this.selectedSurface.updateNormals(); }
     }
 
+    function makeDraggable(panel, handle) {
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let originLeft = 0;
+        let originTop = 0;
+
+        handle.addEventListener("pointerdown", e => {
+            // Only start dragging if the click is on the handle itself, not an interactive child
+            const interactiveTags = ["INPUT", "BUTTON", "SELECT", "TEXTAREA", "LABEL"];
+            if (interactiveTags.includes(e.target.tagName)) return;
+
+            dragging = true;
+
+            startX = e.clientX;
+            startY = e.clientY;
+
+            originLeft = panel.offsetLeft;
+            originTop = panel.offsetTop;
+
+            handle.setPointerCapture(e.pointerId);
+        });
+
+        handle.addEventListener("pointermove", e => {
+            if (!dragging) return;
+
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            panel.style.left = `${originLeft + dx}px`;
+            panel.style.top  = `${originTop + dy}px`;
+        });
+
+        const stopDragging = () => {
+            dragging = false;
+        };
+
+        handle.addEventListener("pointerup", stopDragging);
+        handle.addEventListener("pointercancel", stopDragging);
+    }
+
+
+
     const ring = new Ring();
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -943,6 +1126,20 @@
     /*******************
      * Event listeners *
      *******************/
+    const inspector = new SurfaceInspector(document.getElementById("inspector-canvas"));
+
+    const inspectorDiv = document.getElementById("surface-inspector");
+    const header = inspectorDiv.querySelector(".inspector-header");
+
+    makeDraggable(inspectorDiv, header);
+
+    document.getElementById("inspector-close")
+        .addEventListener("click", () => inspector.close());
+
+    function onSurfaceSelected(mesh) {
+        inspector.inspect(mesh);
+        inspector.open();
+    }
 
     window.addEventListener("pointerdown", event => {
         const rect = canvas.getBoundingClientRect();
@@ -964,8 +1161,9 @@
             topLevelSurfaceObject = topLevelSurfaceObject.parent;
 
         ring.clearSelection();
-        ring.selectMesh(topLevelSurfaceObject, showFormulaCheckbox.checked, showNameCheckbox.checked, showNormalsCheckbox.checked);
+        ring.selectMesh(topLevelSurfaceObject, showFormulaCheckbox.checked, showNameCheckbox.checked);
         ring.setTargetRotation();
+        onSurfaceSelected(topLevelSurfaceObject);
     });
 
     function updateCameraPosition(ringRadius) {
@@ -996,9 +1194,6 @@
 
     const showNameCheckbox = document.getElementById('showName');
     showNameCheckbox.addEventListener ("click", () => ring.updateNameLabel());
-
-    const showNormalsCheckbox = document.getElementById('showNormals');
-    showNormalsCheckbox.addEventListener ("click", () => ring.updateNormals());
 
     /*************
      * Animation *
