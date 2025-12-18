@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<style>
+    body { margin:0; overflow:hidden; }
+    canvas { display:block; }
+    #menu {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 10;
+        background: rgba(0,0,0,0.6);
+        padding: 8px 12px;
+        border-radius: 6px;
+        color: white;
+        font-family: sans-serif;
+    }
+    #menu select {
+        margin-left: 6px;
+    }
+
+    .surface-label {
+        color: white;
+        padding: 6px 10px;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 6px;
+        font-family: sans-serif;
+    }
+
+    .surface-label.name {
+        font-size: 18px;
+    }
+
+    .surface-label.formula {
+        font-size: 14px;
+    }
+</style>
+
+<div id="canvas-wrapper">
+    <div id="gui-container"></div>
+    <canvas id="myCanvas" width="650" height="600"></canvas>
+    <div id="menu">
+        <label>Category:&nbsp;</label><select id="categorySelect"></select><br/>
+        <label>Formula:&nbsp;</label><button id="hideFormulaButton">Hide</button><br/>
+        <label>Name:&nbsp;</label><button id="hideNameButton">Hide</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+
+<script type="module">
+    import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
+    import { ParametricGeometry } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/geometries/ParametricGeometry";
+    import { OrbitControls } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
+    import { CSS2DRenderer, CSS2DObject } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/renderers/CSS2DRenderer";
+
+    /* ---------------- Scene setup ---------------- */
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x131313);
+    const canvas = document.getElementById("myCanvas"),
+        width = canvas.width,
+        height = canvas.height;
+
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
+    camera.position.set(0, 15, 35);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
+    renderer.setSize(width, height);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    dirLight.position.set(5, 10, 7);
+    scene.add(dirLight);
+
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(width, height);
+    labelRenderer.domElement.style.position = "absolute";
+    labelRenderer.domElement.style.top = "0";
+    labelRenderer.domElement.style.pointerEvents = "none";
+    document.body.appendChild(labelRenderer.domElement);
+
+    const surfaceDefinitions = [
+        {
+            name: "Arc",
+            category: "Miscellaneous",
+            resolution: 25,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta) \\\\ \\cos(\\phi)+\\sin(\\theta) \\\\ 3\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, \\pi] \\\\ \\phi \\in [0, \\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 2,
+                    [theta, phi] = [Math.PI * u, Math.PI * v],
+                    x = a * Math.cos(theta),
+                    y = a * (Math.sin(theta) + Math.cos(phi)),
+                    z = a * 3 * Math.sin(phi);
+
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Bow curve",
+            category: "Toroids",
+            resolution: 50,
+            formula: "\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (2 + T \\sin(\\theta)) \\sin(\\phi) \\\\  (2 + T \\sin(\\theta)) \\cos(\\phi) \\\\ T \\cos(\\theta) + 3 \\cos(\\phi/2) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 4\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 2, b = 1,
+                    [theta, phi] = [2 * Math.PI * u, 4 * Math.PI * v],
+                    x = (a + b * Math.sin(theta)) * Math.sin(phi),
+                    y = (a + b * Math.sin(theta)) * Math.cos(phi),
+                    z = b * Math.cos(theta) + a * Math.cos(.5 * phi);
+
+                target.set(x, y, z);
+            }
+        },
+        {
+            name: "Conchoidal one",
+            category: "Spirals",
+            resolution: 100,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} k^\\theta(1 + \\cos(\\phi))\\cos(\\theta) \\\\ k^\\theta(1 + \\cos(\\phi))\\cos(\\sin) \\\\ k^\\theta\\sin(\\phi) -a\\cdot l^\\theta\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 6\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    k = 1.2, l = 1.2, a = 1.5, scale = 0.06,
+                    [theta, phi] = [6 * Math.PI * u, 2 * Math.PI * v],
+                    x = k ** theta * (1 + Math.cos(phi)) * Math.cos(theta),
+                    y = k ** theta * (1 + Math.cos(phi)) * Math.sin(theta),
+                    z = k ** theta * Math.sin(phi) - a * l ** theta
+                target.set(x * scale, z * scale, y * scale);
+            }
+        },
+        {
+            name: "Conchoidal two",
+            category: "Spirals",
+            resolution: 100,
+            formula: "\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} a\\left(1-\\dfrac{\\theta}{2\\pi}\\right)\\cos(n\\theta)(1+\\cos(\\phi))+c\\cos(n\\theta) \\\\  a\\left(1-\\dfrac{\\theta}{2\\pi}\\right)\\sin(n\\theta)(1+\\cos(\\phi))+c\\sin(n\\theta) \\\\ b\\dfrac{\\theta}{2\\pi}+a\\left(1-\\frac{\\theta}{2\\pi}\\right)\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    num_spirals=3, r_final=2, height=6.5, r_inner=.5, scale=.6,
+                    [s, t] = [2 * Math.PI * u, 2 * Math.PI * v],
+                    x = r_final * (1 - t / (2 * Math.PI)) * Math.cos(num_spirals * t) * (1 + Math.cos(s)) + r_inner * Math.cos(num_spirals * t),
+                    y = r_final * (1 - t / (2 * Math.PI)) * Math.sin(num_spirals * t) * (1 + Math.cos(s)) + r_inner * Math.sin(num_spirals * t),
+                    z = (height * t / (2 * Math.PI)) + r_final * (1 - t / (2 * Math.PI)) * Math.sin(s)
+                target.set(x * scale, z * scale, y * scale);
+            }
+        },
+        {
+            name: "Cone",
+            category: "Miscellaneous",
+            resolution: 25,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a\\cdot u\\cos(v) \\\\ b\\cdot u\\sin(v) \\\\ 2\\cdot u\\end{pmatrix}\\text{, } \\begin{cases} u \\in [-0.5, 0.5] \\\\ v \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 2, b = 2, c = 4, eps = 1e-4,
+                    [u1, v1] = [u * (1 - eps) - 0.5, 2 * Math.PI * v],
+                    x = 2 * a * u1 * Math.cos(v1),
+                    y = 2 * b * u1 * Math.sin(v1),
+                    z = c * u1;
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Cosine",
+            category: "Miscellaneous",
+            resolution: 50,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\phi) \\\\ \\cos(\\theta) \\\\ \\cos(\\phi+\\theta)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 2,
+                    [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                    x = a * Math.cos(theta),
+                    y = a * Math.cos(phi),
+                    z = a * Math.cos(theta + phi);
+
+                target.set(x, y, z);
+            }
+        },
+        {
+            name: "Cylinder",
+            category: "Basic shapes",
+            resolution: 25,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} r\\cos(\\theta) \\\\ r\\sin(\\theta) \\\\ h\\cdot v\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ v \\in [0, 1] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    r = 2, h=4,
+                    [theta, height] = [2 * Math.PI * u, v],
+                    x = r * Math.cos(theta),
+                    y = r * Math.sin(theta),
+                    z = height * h;
+
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Catenoid",
+            category: "Basic shapes",
+            resolution: 25,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} c\\cdot\\cosh(\\phi/c)\\cos(\\theta) \\\\ c\\cdot\\cosh(\\phi/c)\\sin(\\theta) \\\\ \\phi\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-2\\pi, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    c = 2,
+                    [theta, phi] = [2 * Math.PI * (u - 0.5), 4 * (v - 0.5)],
+                    x = c * Math.cosh(phi / c) * Math.cos(theta),
+                    y = c * Math.cosh(phi / c) * Math.sin(theta);
+                target.set(x, y, phi);
+            }
+        },
+        {
+            name: "Dini\'s surface",
+            category: "Spirals",
+            resolution: 75,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a\\cos(\\theta)\\sin(\\phi) \\\\ a\\sin(\\theta)\\sin(\\phi) \\\\ a(\\cos(\\phi) + \\ln(\\tan(\\phi /2))+b\\theta\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 4\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 2, b = 0.1, eps = 0.05,
+                    [theta, phi] = [4 * Math.PI * u, 1.99 * (eps + (1 - eps) * v)],
+                    x = a * Math.cos(theta) * Math.sin(phi),
+                    y = a * Math.sin(theta) * Math.sin(phi),
+                    z = a * (Math.cos(phi) + Math.log(Math.tan(phi / 2))) + b * theta;
+
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Double torus",
+            category: "Composite",
+            resolution: 50,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta)(a \\cos(\\phi) + b) \\\\ \\sin(\\theta)(a \\cos(\\phi) + b) \\\\ a\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            build: (material, resolution) => {
+                const group = new THREE.Group();
+
+                const torusA = createParametricMeshForCompoundSurfaces((u, v, target) => {
+                    const
+                        a = .75, b = 2,
+                        [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                        x = Math.cos(theta) * (a * Math.cos(phi) + b),
+                        y = Math.sin(theta) * (a * Math.cos(phi) + b),
+                        z = a * Math.sin(phi)
+
+                    target.set(x, y, z);
+                }, resolution, material);
+
+                const torusB = createParametricMeshForCompoundSurfaces((u, v, target) => {
+                    const
+                        a = .75, b = 2,
+                        [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                        x = b + Math.sin(theta) * (a * Math.cos(phi) + b),
+                        y = a * Math.sin(phi),
+                        z = Math.cos(theta) * (a * Math.cos(phi) + b);
+
+                    target.set(x, y, z);
+                }, resolution, material);
+
+                group.add(torusA, torusB);
+                return group;
+            }
+        },
+        {
+            name: "Elliptic torus",
+            category: "Toroids",
+            resolution: 40,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a(\\cos(\\phi + c)\\cos(\\theta) \\\\ a(\\cos(\\phi + c)\\sin(\\theta) \\\\ a(\\sin(\\phi) + \\cos(\\phi))\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 1, c = 3,
+                    [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                    x = (a * Math.cos(phi) + c) * Math.cos(theta),
+                    y = (a * Math.cos(phi) + c) * Math.sin(theta),
+                    z = a * (Math.sin(phi) + Math.cos(phi))
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Helicoid",
+            category: "Spirals",
+            resolution: 25,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} 4a\\cdot u\\cos(v) \\\\ 4a\\cdot u\\sin(v) \\\\ bv\\end{pmatrix}\\text{, } \\begin{cases} u \\in [-2, 2] \\\\ v \\in [0, 2\\pi] \\end{cases}",
+            func: (u1, v1, target) => {
+                const
+                    a = 0.75, b = .6,
+                    [u, v] = [4 * (u1 - 0.5), 2 * v1 * Math.PI],
+                    x = a * u * Math.cos(v),
+                    y = a * u * Math.sin(v),
+                    z = b * v;
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Klein\'s bottle",
+            category: "Composite",
+            resolution: 50,
+            formula: "\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=" +
+                "\\begin{pmatrix}\\begin{cases} 6\\cos(\\theta)(1+\\sin(\\theta)) + r\\cos(\\theta)\\cos(\\phi), 0 \\leq \\theta < \\pi \\\\ 6\\cos(\\theta)(1+\\sin(\\theta)) + r\\cos(\\phi+\\pi), \\pi < \\theta \\leq 2\\pi \\end{cases} \\\\ " +
+                "\\begin{cases} 16\\sin(\\theta)+r\\sin(\\theta)\\cos(\\phi), 0 \\leq \\theta \\leq \\pi  \\\\ 16\\sin(\\theta), \\pi \\leq \\theta \\leq 2\\pi \\end{cases} \\\\ " +
+                "r\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            build: (material, resolution) => {
+                const group = new THREE.Group();
+                const a = 1, b = 1.25, c = 4;
+
+                const part_1 = createParametricMeshForCompoundSurfaces((u, v, target) => {
+                    const
+                        [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                        r = a * ( 1 - Math.cos(theta) / 2),
+                        x = b * Math.cos(theta) * (1 + Math.sin(theta)) + r * Math.cos(theta) *  Math.cos(phi),
+                        y = c * Math.sin(theta) + r * Math.sin(theta) * Math.cos(phi),
+                        z = r * Math.sin(phi);
+
+                    target.set(x, z, y);
+                }, resolution, material);
+
+                const part_2 = createParametricMeshForCompoundSurfaces((u, v, target) => {
+                    const
+                        [theta, phi] = [Math.PI * (u + 1), 2 * Math.PI * v],
+                        r = a * ( 1 - Math.cos(theta) / 2),
+                        x = b * Math.cos(theta) * (1 + Math.sin(theta)) + r * Math.cos(phi + Math.PI),
+                        y = c * Math.sin(theta),
+                        z = r * Math.sin(phi);
+
+                    target.set(x, z, y);
+                }, resolution, material);
+
+                group.add(part_1, part_2);
+                return group;
+            }
+        },
+        {
+            name: "Limpet torus",
+            category: "Toroids",
+            resolution: 40,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta)/(\\sqrt{2} +\\sin(\\phi) \\\\ \\sin(\\theta)/(\\sqrt{2} +\\sin(\\phi) \\\\ 1//(\\sqrt{2} +\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    sqrt_2 = Math.sqrt(2),
+                    [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                    x = Math.cos(theta) / (sqrt_2 + Math.sin(phi)),
+                    y = Math.sin(theta) / (sqrt_2 + Math.sin(phi)),
+                    z = 1 / (sqrt_2 + Math.cos(phi))
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Möbius strip",
+            category: "Miscellaneous",
+            resolution: 40,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} (\\phi\\cos(\\theta/2)+1)\\cos(\\theta) \\\\ (\\phi\\cos(\\theta/2)+1)\\sin(\\theta) \\\\ \\phi\\sin(\\theta/2)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [-1, 1] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 3, b = 1,
+                    [theta, phi] = [2 * Math.PI * u, 2 * (v - 0.5)],
+                    x = (Math.cos(.5 * theta) * phi + a) * Math.cos(theta),
+                    y = (Math.cos(.5 * theta) * phi + a) * Math.sin(theta),
+                    z = b * phi * Math.sin(.5 * theta);
+
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Paraboloid",
+            category: "Basic shapes",
+            resolution: 25,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a\\sqrt{u/h}\\cos(v) \\\\ b\\sqrt{u/h}\\sin(v) \\\\ 3u\\end{pmatrix}\\text{, } \\begin{cases} u \\in [0, 1] \\\\ v \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 2, b = 2, h = 1, eps = 1e-4,
+                    [u1, v1] = [eps + (1 - eps) * u, 2 * Math.PI * v],
+                    x = a * Math.sqrt(u1 / h) * Math.cos(v1),
+                    y = b * Math.sqrt(u1 / h) * Math.sin(v1),
+                    z = 3 * u1;
+
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Self intersecting disk",
+            category: "Miscellaneous",
+            resolution: 40,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} r\\phi\\cos(2\\theta) \\\\ r\\phi\\sin(2\\theta) \\\\ -r\\phi\\cos(\\theta)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 1]\\end{cases}",
+            func: (u, v, target) => {
+                const
+                    r = 3,
+                    [theta, phi] = [2 * Math.PI * u, v],
+                    x = r * phi * Math.cos(2 * theta),
+                    y = r * phi * Math.sin(2 * theta),
+                    z = -r * phi * Math.cos(theta);
+
+                target.set(x, y, z);
+            }
+        },
+        {
+            name: "Sine",
+            category: "Miscellaneous",
+            resolution: 50,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\phi) \\\\ \\sin(\\theta) \\\\ \\sin(\\phi+\\theta)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 2,
+                    [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                    x = a * Math.sin(theta),
+                    y = a * Math.sin(phi),
+                    z = a * Math.sin(theta + phi);
+
+                target.set(x, y, z);
+            }
+        },
+        {
+            name: "Sine waves",
+            category: "Basic shapes",
+            resolution: 100,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} u \\\\ a\\sin(b\\sqrt{u^2+v^2} \\\\ v\\end{pmatrix}\\text{, } \\begin{cases} u \\in [-0.5, 0.5] \\\\ v \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = .75, b = 4,
+                    [u1, v1] = [7 * (u - 0.5), 7 * (v - 0.5)],
+                    x = u1,
+                    y = a * Math.sin(b * Math.sqrt(u1 * u1 + v1 * v1)),
+                    z = v1;
+                target.set(x, y, z);
+            }
+        },
+        {
+            name: "Sphere",
+            category: "Basic shapes",
+            resolution: 25,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} r\\cos(\\theta)\\sin(\\phi) \\\\ r\\sin(\\theta)\\sin(\\phi) \\\\ r\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi]\\end{cases}",
+            func: (u, v, target) => {
+                const
+                    r = 2, eps = 1e-4,
+                    [theta, phi] = [2 * Math.PI * u, Math.PI * (eps + (1 - 2 * eps) * v)],
+                    x = r * Math.cos(theta) * Math.sin(phi),
+                    y = r * Math.sin(theta) * Math.sin(phi),
+                    z = r * Math.cos(phi);
+                target.set(x, z, y);
+            }
+        },
+        {
+            name: "Sphere in torus",
+            category: "Composite",
+            resolution: 25,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} r\\cos(\\theta)\\sin(\\phi) \\\\ r\\sin(\\theta)\\sin(\\phi) \\\\ r\\cos(\\phi)\\end{pmatrix} + \\begin{pmatrix} \\cos(\\theta)(a \\cos(\\phi) + b) \\\\ \\sin(\\theta)(a \\cos(\\phi) + b) \\\\ a\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            build: (material, resolution) => {
+                const group = new THREE.Group();
+
+                const torus = createParametricMeshForCompoundSurfaces((u, v, target) => {
+                    const
+                        a = .5, b = 2,
+                        [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                        x = Math.cos(theta) * (a * Math.cos(phi) + b),
+                        y = Math.sin(theta) * (a * Math.cos(phi) + b),
+                        z = a * Math.sin(phi)
+
+                    target.set(x, y, z);
+                }, resolution, material);
+
+                const sphere = createParametricMeshForCompoundSurfaces((u, v, target) => {
+                    const
+                        r = 1.3, eps = 1e-4,
+                        [theta, phi] = [2 * Math.PI * u, Math.PI * (eps + (1 - 2 * eps) * v)],
+                        x = r * Math.cos(theta) * Math.sin(phi),
+                        y = r * Math.sin(theta) * Math.sin(phi),
+                        z = r * Math.cos(phi);
+
+                    target.set(x, y, z);
+                }, resolution, material);
+
+                group.add(torus, sphere);
+                return group;
+            }
+        },
+        {
+            name: "Tangent spiral",
+            category: "Spirals",
+            resolution: 250,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sinh(2u)/(\\cos(10u) + \\cosh(2u) \\\\ v \\\\ \\sin(10u)/(\\cos(10u) + \\cosh(2u)\\end{pmatrix}\\text{, } \\begin{cases} u \\in [-3/2, 3/2] \\\\ v \\in [0, 1] \\end{cases}",
+            func: (u1, v1, target) => {
+                const
+                    [u, v] = [(u1 - 0.5) * 3, v1],
+                    x = 1.25 * Math.sinh(2 * u) / (Math.cos(10 * u) + Math.cosh(2 * u)),
+                    y = 1.25 * v,
+                    z = 1.25 * Math.sin(10 * u) / (Math.cos(10 * u) + Math.cosh(2 * u));
+
+                target.set(x, y, z);
+            }
+        },
+        {
+            name: "Torus",
+            category: "Toroids",
+            resolution: 50,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta)(a \\cos(\\phi) + b) \\\\ \\sin(\\theta)(a \\cos(\\phi) + b) \\\\ a\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 1, b = 2,
+                    [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                    x = Math.cos(theta) * (a * Math.cos(phi) + b),
+                    y = Math.sin(theta) * (a * Math.cos(phi) + b),
+                    z = Math.sin(phi) * a
+                target.set(x, y, z);
+            }
+        },
+        {
+            name: "Trefoil knot",
+            category: "Toroids",
+            resolution: 75,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} (a (1 + 0.25\\sin(3\\phi)) + \\cos(\\theta)))\\cos(2\\phi) \\\\ (a (1 + 0.25\\sin(3\\phi)) + \\cos(\\theta)))\\sin(2\\phi) \\\\ \\sin(\\theta) + b\\cos(3\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 4, b = 2, scale = .6,
+                    [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                    x = (a * (1 + 0.25 * Math.sin(3 * phi)) + Math.cos(theta)) * Math.cos(2 * phi),
+                    y = (a * (1 + 0.25 * Math.sin(3 * phi)) + Math.cos(theta)) * Math.sin(2 * phi),
+                    z = Math.sin(theta) + b * Math.cos(phi * 3)
+                target.set(x * scale, z * scale, y * scale);
+            }
+        },
+        {
+            name: "Twisted torus",
+            category: "Toroids",
+            resolution: 75,
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} (a + \\cos(\\theta) + \\sin(\\phi))\\cos(2\\phi) \\\\ (a + \\cos(\\theta) + \\sin(\\phi))\\sin(2\\phi) \\\\ \\sin(\\theta) + b\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+            func: (u, v, target) => {
+                const
+                    a = 2, b = 3, scale = .75,
+                    [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                    x = (a + Math.sin(phi) + Math.cos(theta)) * Math.cos(2 * phi),
+                    y = (a + Math.sin(phi) + Math.cos(theta)) * Math.sin(2 * phi),
+                    z = Math.sin(theta) + b * Math.cos(phi)
+                target.set(x * scale, z * scale, y * scale);
+            }
+        }
+    ];
+
+    const categories = [...new Set(surfaceDefinitions.map(s => s.category))];
+    const dropDown = document.getElementById("categorySelect");
+    categories.forEach(category => {
+        const menuOption = document.createElement("option");
+        menuOption.value = category;
+        menuOption.textContent = category;
+        dropDown.appendChild(menuOption);
+    });
+
+    const ring = new THREE.Group();
+    ring.position.y = 5; // move the whole ring up
+    scene.add(ring);
+    const meshes = [];
+    const RING_RADIUS = 16;
+
+    function setMeshPosition(mesh, angle) {
+        mesh.position.set(
+            RING_RADIUS * Math.cos(angle * 2 * Math.PI),
+            0,
+            RING_RADIUS * Math.sin(angle * 2 * Math.PI)
+        );
+    }
+
+    function createParametricMeshForCompoundSurfaces(func, res, material) {
+        const geom = new ParametricGeometry(func, res, res);
+        return new THREE.Mesh(geom, material);
+    }
+
+    function addSurface(surface, i) {
+
+        const material = new THREE.MeshNormalMaterial({
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.6,
+            wireframe: true
+        });
+
+        const surfaceMeshOrGroup = surface.build
+            ? surface.build(material, surface.resolution)
+            : createParametricMeshForCompoundSurfaces(surface.func, surface.resolution, material);
+
+
+        surfaceMeshOrGroup.userData = {
+            name: surface.name,
+            formula: surface.formula,
+            category: surface.category
+        };
+
+        setMeshPosition(surfaceMeshOrGroup, i / surfaceDefinitions.length);
+        ring.add(surfaceMeshOrGroup);
+        meshes.push(surfaceMeshOrGroup);
+    }
+
+
+    function redistributeRing() {
+        meshes.forEach(mesh => mesh.visible = false);
+
+        getVisibleMeshes().forEach((mesh, i) => {
+            setMeshPosition(mesh, i / getVisibleMeshes().length);
+            mesh.visible = true;
+        });
+    }
+
+    function getVisibleMeshes() {
+        return meshes.filter(m => m.userData.category === activeCategory);
+    }
+
+    surfaceDefinitions.forEach((surface, i) => addSurface(surface, i));
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    let ringTargetRotation = null;
+    let selectedMesh = null;
+
+    function removeLabelsOfInvisibleMeshes(mesh) {
+        if (!mesh.visible) {
+            if (mesh.nameLabel) { mesh.remove(mesh.nameLabel); mesh.nameLabel = null; }
+            if (mesh.formulaLabel) { mesh.remove(mesh.formulaLabel); mesh.formulaLabel = null; }
+
+            // Deselect if this was the selected mesh
+            if (selectedMesh === mesh) selectedMesh = null;
+        }
+    }
+
+    function addSurfaceNameLabel(obj, y) {
+        const div = document.createElement("div");
+        div.classList.add("surface-label", "name");
+        div.textContent = obj.userData.name;
+
+        const label = new CSS2DObject(div);
+        label.position.set(0, y, 0);
+        obj.add(label);
+        obj.nameLabel = label;
+    }
+
+    function addFormulaLabel(obj, y) {
+        const div = document.createElement("div");
+        div.classList.add("surface-label", "formula");
+        katex.render(obj.userData.formula, div, { throwOnError: false });
+
+        const label = new CSS2DObject(div);
+        label.position.set(0, y, 0);
+        obj.add(label);
+        obj.formulaLabel = label;
+    }
+
+    function addLabels(obj) {
+
+        const box = new THREE.Box3();
+
+        // Compute WORLD-space bounding box
+        box.setFromObject(obj);
+
+        // World-space top/bottom
+        const topY = box.max.y;
+        const bottomY = box.min.y;
+
+        // Convert world-space Y to local-space Y
+        const topLocal = obj.worldToLocal(new THREE.Vector3(0, topY, 0)).y;
+        const bottomLocal = obj.worldToLocal(new THREE.Vector3(0, bottomY, 0)).y;
+
+        addSurfaceNameLabel(obj, topLocal + 1);
+        addFormulaLabel(obj, bottomLocal - 2);
+    }
+
+    function applyFunctionTo(selectedObject, fn) {
+        if (selectedObject.isMesh) {
+            fn(selectedObject);
+        } else {
+            selectedObject.traverse(child => {
+                if (child.isMesh) fn(child);
+            });
+        }
+    }
+
+    function setSelectedStyleOn(selectedObject) {
+        applyFunctionTo(selectedObject, mesh => {
+            mesh.material.wireframe = false;
+            mesh.material.opacity = 0.9; // or 0.8 if you prefer
+        });
+    }
+
+    function setDefaultStyleOn(selectedMesh) {
+        applyFunctionTo(selectedMesh, mesh => {
+            mesh.material.wireframe = true;
+            mesh.material.opacity = 0.6;
+        });
+    }
+
+    const noMeshHasBeenSelected = () => !selectedMesh;
+
+    function resetMaterial() {
+        if (noMeshHasBeenSelected()) return;
+        setDefaultStyleOn(selectedMesh);
+    }
+
+    function removeFormulaLabel() {
+        if (selectedMesh.formulaLabel) {
+            selectedMesh.remove(selectedMesh.formulaLabel);
+            selectedMesh.formulaLabel = null;
+        }
+    }
+
+    function removeNameLabel() {
+        if (selectedMesh.nameLabel) {
+            selectedMesh.remove(selectedMesh.nameLabel);
+            selectedMesh.nameLabel = null;
+        }
+    }
+
+    function removeLabels() {
+        removeFormulaLabel();
+        removeNameLabel();
+    }
+
+    function clearSelection() {
+        if (!selectedMesh) return;
+
+        resetMaterial();
+        removeLabels();
+
+        selectedMesh = null;
+        ringTargetRotation = null;
+    }
+
+    window.addEventListener("pointerdown", event => {
+        mouse.x = (event.clientX / width) * 2 - 1;
+        mouse.y = -(event.clientY / height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObjects(
+            meshes.filter(m => m.visible),
+            true // ← IMPORTANT: recurse into groups
+        );
+
+        if (!hits.length) return;
+
+        // Walk up to the top-level surface object
+        let topLevelSurfaceObject = hits[0].object;
+        while (topLevelSurfaceObject.parent && !meshes.includes(topLevelSurfaceObject)) {
+            topLevelSurfaceObject = topLevelSurfaceObject.parent;
+        }
+
+        clearSelection();
+        selectedMesh = topLevelSurfaceObject;
+        setSelectedStyleOn(selectedMesh);
+        addLabels(selectedMesh);
+
+        const local = selectedMesh.position.clone();
+        const angle = Math.atan2(local.x, local.z);
+        ringTargetRotation = -angle;
+    });
+
+    function updateCameraPosition(ringRadius) {
+        const visibleMeshes = getVisibleMeshes();
+        const count = visibleMeshes.length;
+
+        // Base distance from center
+        const baseDistance = ringRadius * 2.0; // approx twice the ring radius
+        const extra = Math.max(0, (count - 5) * 2);
+        const distance = baseDistance + extra;
+
+        // Set camera slightly higher to center the elevated ring
+        camera.position.set(0, ringRadius * 0.7, distance);
+        camera.lookAt(0, ring.position.y, 0); // look at the ring's new center
+        controls.update();
+    }
+
+
+    let activeCategory = "Toroids";
+    dropDown.addEventListener("change", () => {
+        activeCategory = dropDown.value;
+        clearSelection();
+        redistributeRing();
+        updateCameraPosition(RING_RADIUS);
+    });
+
+    const hideFormulaButton = document.getElementById('hideFormulaButton');
+    hideFormulaButton.addEventListener ("click", () => {
+        if (selectedMesh) removeFormulaLabel();
+    });
+
+    const hideNameButton = document.getElementById('hideNameButton');
+    hideNameButton.addEventListener ("click", () => {
+        if (selectedMesh) removeNameLabel();
+    });
+
+
+    function rotateSurfaces() {
+        meshes.forEach(mesh => {
+            removeLabelsOfInvisibleMeshes(mesh);
+            if (mesh.visible) mesh.rotation.y += .01;
+        });
+    }
+
+    function rotateRingToSelectedSurface() {
+        if (ringTargetRotation !== null) {
+            const delta = ringTargetRotation - ring.rotation.y;
+            const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
+            ring.rotation.y += shortest * ROT_LERP;
+
+            if (Math.abs(shortest) < 0.001) {
+                ring.rotation.y = ringTargetRotation;
+                ringTargetRotation = null;
+            }
+        }
+    }
+
+    redistributeRing();
+    const ROT_LERP = 0.08;
+    function animate() {
+        requestAnimationFrame(animate);
+        rotateSurfaces();
+
+        rotateRingToSelectedSurface();
+
+        controls.target.set(0, ring.position.y, 0);
+        controls.update();
+        renderer.render(scene, camera);
+        labelRenderer.render(scene, camera);
+    }
+
+    animate();
+
+    /* ---------------- Resize ---------------- */
+
+    window.addEventListener("resize", () => {
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight);
+        labelRenderer.setSize(innerWidth, innerHeight);
+    });
+</script>
