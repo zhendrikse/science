@@ -1,18 +1,24 @@
-<!DOCTYPE html>
 <style>
     body { margin:0; overflow:hidden; }
     canvas { display:block; }
+    #canvas-wrapper {
+        position: relative;
+        width: 650px;
+        height: 600px;
+    }
     #menu {
         position: absolute;
         top: 15px;
         left: 15px;
         z-index: 10;
+
         background: rgba(0,0,0,0.6);
         padding: 8px 12px;
         border-radius: 6px;
         color: white;
         font-family: sans-serif;
     }
+
     #menu select {
         margin-left: 6px;
     }
@@ -716,18 +722,21 @@
     }
 
     window.addEventListener("pointerdown", event => {
-        mouse.x = (event.clientX / width) * 2 - 1;
-        mouse.y = -(event.clientY / height) * 2 + 1;
+
+        const rect = canvas.getBoundingClientRect();
+
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
         raycaster.setFromCamera(mouse, camera);
+
         const hits = raycaster.intersectObjects(
             meshes.filter(m => m.visible),
-            true // ← IMPORTANT: recurse into groups
+            true
         );
 
         if (!hits.length) return;
 
-        // Walk up to the top-level surface object
         let topLevelSurfaceObject = hits[0].object;
         while (topLevelSurfaceObject.parent && !meshes.includes(topLevelSurfaceObject)) {
             topLevelSurfaceObject = topLevelSurfaceObject.parent;
@@ -742,6 +751,7 @@
         const angle = Math.atan2(local.x, local.z);
         ringTargetRotation = -angle;
     });
+
 
     function updateCameraPosition(ringRadius) {
         const visibleMeshes = getVisibleMeshes();
