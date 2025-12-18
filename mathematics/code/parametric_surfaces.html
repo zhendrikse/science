@@ -566,6 +566,7 @@
             scene.add(this.ring);
             this.ringRadius = ringRadius;
             surfaceDefinitions.forEach((surfaceDef, index) => this.#addSurface(surfaceDef, index));
+            this.ringTargetRotation = null;
         }
 
         radius = () => this.ringRadius;
@@ -594,6 +595,20 @@
             mesh.visible = true;
         };
 
+        #rotationToTargetSurfaceIsNeeded = () => this.ringTargetRotation !== null;
+
+        #rotate() {
+            const ROT_LERP = 0.08;
+            const delta = this.ringTargetRotation - this.ring.rotation.y;
+            const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
+            this.ring.rotation.y += shortest * ROT_LERP;
+
+            if (Math.abs(shortest) < 0.001) {
+                this.ring.rotation.y = this.ringTargetRotation;
+                this.ringTargetRotation = null;
+            }
+        }
+
         redistribute() {
             meshes.forEach(mesh => mesh.visible = false);
             this.getVisibleMeshes().forEach((mesh, index) => this.#placeAndShowSurface(mesh, index));
@@ -603,17 +618,17 @@
 
         getVisibleMeshes = () => meshes.filter(mesh => mesh.userData.category === activeCategory);
 
-        rotate() {
-            const ROT_LERP = 0.08;
-            const delta = ringTargetRotation - this.ring.rotation.y;
-            const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
-            this.ring.rotation.y += shortest * ROT_LERP;
+        resetTargetRotation = () => this.ringTargetRotation = null;
 
-            if (Math.abs(shortest) < 0.001) {
-                this.ring.rotation.y = ringTargetRotation;
-                ringTargetRotation = null;
-            }
+        setTargetRotation() {
+            const local = selectedMesh.position.clone();
+            const angle = Math.atan2(local.x, local.z);
+            this.ringTargetRotation = -angle;
         }
+
+        rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
+
+        rotateSurfaces = () => meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
     }
 
     const meshes = [];
@@ -621,7 +636,6 @@
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
-    let ringTargetRotation = null;
     let selectedMesh = null;
 
     function removeLabelsOfInvisibleMeshes(mesh) {
@@ -724,7 +738,7 @@
     }
 
     const deselectMesh = () => { selectedMesh = null;};
-    const resetRingTargetRotation = () => { ringTargetRotation = null;};
+    const resetRingTargetRotation = () => ring.resetTargetRotation();
     function clearSelection() {
         if (noMeshHasBeenSelected()) return;
 
@@ -778,10 +792,7 @@
         removeLabelsOfInvisibleMeshes(selectedMesh);
         setSelectedStyleOn(selectedMesh);
         addLabels(selectedMesh);
-
-        const local = selectedMesh.position.clone();
-        const angle = Math.atan2(local.x, local.z);
-        ringTargetRotation = -angle;
+        ring.setTargetRotation();
     });
 
     let activeCategory = "Miscellaneous";
@@ -814,15 +825,10 @@
      * Animation *
      *************/
 
-
-    const rotationToTargetSurfaceIsNeeded = () => ringTargetRotation !== null;
-    const rotateRingToSelectedSurface = () => { if (rotationToTargetSurfaceIsNeeded()) ring.rotate(); };
-    const rotateSurfaces = () => meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
-
     function animate() {
         requestAnimationFrame(animate);
-        rotateSurfaces();
-        rotateRingToSelectedSurface();
+        ring.rotateSurfaces();
+        ring.rotateRingToSelectedSurface();
         controls.target.set(0, ring.position().y, 0);
         controls.update();
         renderer.render(scene, camera);
