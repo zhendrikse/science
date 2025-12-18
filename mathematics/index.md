@@ -382,6 +382,8 @@ seen in the mathematics section on this page:
 
 - [Geometry, Surfaces, Curves, Polyhedra](https://paulbourke.net/geometry/) on 
   [Paul Bourke](https://paulbourke.net/geometry/)&apos;s website.
+- [Parametric surfaces gallery](https://vector-calculus.github.io/parametric-surfaces-gallery/),
+  a slides presentation with live Three.js-based surfaces
 - [Manim](https://github.com/3b1b/manim), an animation engine for explanatory math videos.
 - [Sage](https://doc.sagemath.org/html/en/index.html), an open source MatLab
   on [GitHub](https://doc.sagemath.org/html/en/index.html).
