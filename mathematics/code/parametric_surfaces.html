@@ -687,10 +687,7 @@
                 panel.style.top  = `${originTop + dy}px`;
             });
 
-            const stopDragging = () => {
-                dragging = false;
-            };
-
+            const stopDragging = () => dragging = false;
             handle.addEventListener("pointerup", stopDragging);
             handle.addEventListener("pointercancel", stopDragging);
         }
@@ -721,10 +718,7 @@
             this.camera.position.set(0, 0, size * 1.25);
 
             this.scene.add(this.mesh);
-
-            // Normals default OFF
             this.normalsCheckbox.checked = false;
-
             this.resize();
         }
 
