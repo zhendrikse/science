@@ -573,9 +573,9 @@
 
         class CurvatureVisualizer {
             constructor({normalScale = 0.25, curvatureGain = 1.5, stride = 4, eps = 1e-4} = {}) {
-                this.normalScale = normalScale;
-                this.curvatureGain = curvatureGain;
-                this.stride = stride;
+                this.normalScale = normalScale; // Length of normal vectors when curvature is zero
+                this.curvatureGain = curvatureGain; // Curvature gain factor applied to the length of normal vectors
+                this.stride = stride; // Influences distance between the normal vectors
                 this.eps = eps;
             }
 
@@ -691,8 +691,7 @@
             #normalToColor = (nx, ny, nz) => new THREE.Color(0.5 * (nx + 1), 0.5 * (ny + 1), 0.5 * (nz + 1));
 
             enable = (mesh) => mesh.traverse(child => {
-                    if (child.isMesh && child.userData.func) this.#enableCurvatureOn(child, child.userData.func);
-                });
+                    if (child.isMesh && child.userData.func) this.#enableCurvatureOn(child, child.userData.func); });
 
             disable = (mesh) => mesh.traverse(child => this.#disableCurvatureOn(child));
         }
