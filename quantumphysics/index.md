@@ -17,7 +17,7 @@ If you think you understand quantum mechanics, you don't understand quantum mech
   <a href="plane_wave.html">
     <img alt="Complex wave" src="images/plane_wave.png" title="Click to animate"/>
   </a>
-  <figcaption>Visualizing plane waves $\psi(x, t) = A e^{i(k x - \omega t)}$, which 
+  <figcaption>Visualizing plane waves $$\psi(x, t) = A e^{i(k\cdot x - \omega t)} $$, which 
   play a pivotal role in quantum mechanics!</figcaption>
 </figure>
 <figure class="right_image">
