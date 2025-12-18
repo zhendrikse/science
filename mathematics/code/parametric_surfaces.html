@@ -571,8 +571,6 @@
             this.selectedMesh = null;
         }
 
-        radius = () => this.ringRadius;
-
         #addSurface(surfaceDef, index) {
             const surfaceIsComposite = (surface) => surface.build;
             const surfaceMeshOrGroup = surfaceIsComposite(surfaceDef) ?
@@ -599,6 +597,8 @@
 
         #rotationToTargetSurfaceIsNeeded = () => this.ringTargetRotation !== null;
 
+        #resetTargetRotation = () => this.ringTargetRotation = null;
+
         #rotate() {
             const ROT_LERP = 0.08;
             const delta = this.ringTargetRotation - this.ring.rotation.y;
@@ -610,29 +610,6 @@
                 this.ringTargetRotation = null;
             }
         }
-
-        redistribute() {
-            meshes.forEach(mesh => mesh.visible = false);
-            this.getVisibleMeshes().forEach((mesh, index) => this.#placeAndShowSurface(mesh, index));
-        }
-
-        position = () => this.ring.position;
-
-        getVisibleMeshes = () => meshes.filter(mesh => mesh.userData.category === activeCategory);
-
-        #resetTargetRotation = () => this.ringTargetRotation = null;
-
-        setTargetRotation() {
-            const local = this.selectedMesh.position.clone();
-            const angle = Math.atan2(local.x, local.z);
-            this.ringTargetRotation = -angle;
-        }
-
-        rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
-
-        rotateSurfaces = () => meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
-
-        deselect = (mesh) => { if (this.selectedMesh === mesh) selectedMesh = null; };
 
         #noMeshHasBeenSelected = () => !this.selectedMesh;
 
@@ -652,42 +629,14 @@
             if (mesh.visible) return;
             if (mesh.nameLabel) { mesh.remove(mesh.nameLabel); mesh.nameLabel = null; }
             if (mesh.formulaLabel) { mesh.remove(mesh.formulaLabel); mesh.formulaLabel = null; }
-            ring.deselect(mesh);
+            this.#deselect(mesh);
         }
 
-        #createLabelIn(div, y, surface) {
+        #createLabelIn(div, y) {
             const label = new CSS2DObject(div);
             label.position.set(0, y, 0);
-            surface.add(label);
+            this.selectedMesh.add(label);
             return label;
-        }
-
-        addNameLabel(surface) {
-            const div = document.createElement("div");
-            div.classList.add("surface-label", "name");
-            div.textContent = surface.userData.name;
-            surface.nameLabel = this.#createLabelIn(div, this.#topOf(surface) + 1, surface);
-        }
-
-        addFormulaLabel(surface) {
-            const div = document.createElement("div");
-            div.classList.add("surface-label", "formula");
-            katex.render(surface.userData.formula, div, { throwOnError: false });
-            surface.formulaLabel = this.#createLabelIn(div, this.#bottomOf(surface) + 1, surface);
-        }
-
-        #topOf(surface) {
-            const boundingBox = new THREE.Box3();
-            boundingBox.setFromObject(surface);
-            const topY = boundingBox.max.y;
-            return surface.worldToLocal(new THREE.Vector3(0, topY + .5, 0)).y;
-        }
-
-        #bottomOf(surface) {
-            const boundingBox = new THREE.Box3();
-            boundingBox.setFromObject(surface);
-            const bottomY = boundingBox.min.y;
-            return surface.worldToLocal(new THREE.Vector3(0, bottomY - 4, 0)).y;
         }
 
         #applyFunctionTo(selectedObject, fn) {
@@ -707,9 +656,56 @@
             });
         }
 
-        #addLabels(surface) {
-            showNameSelectedSurface ? this.addNameLabel(surface) : this.removeNameLabel();
-            showFormulaSelectedSurface? this.addFormulaLabel(surface) : this.removeFormulaLabel();
+        #topOfSurface() {
+            const boundingBox = new THREE.Box3();
+            boundingBox.setFromObject(this.selectedMesh);
+            const topY = boundingBox.max.y;
+            return this.selectedMesh.worldToLocal(new THREE.Vector3(0, topY + .5, 0)).y;
+        }
+
+        #bottomOfSurface() {
+            const boundingBox = new THREE.Box3();
+            boundingBox.setFromObject(this.selectedMesh);
+            const bottomY = boundingBox.min.y;
+            return this.selectedMesh.worldToLocal(new THREE.Vector3(0, bottomY - 4, 0)).y;
+        }
+
+        redistribute() {
+            meshes.forEach(mesh => mesh.visible = false);
+            this.getVisibleMeshes().forEach((mesh, index) => this.#placeAndShowSurface(mesh, index));
+        }
+
+        position = () => this.ring.position;
+
+        getVisibleMeshes = () => meshes.filter(mesh => mesh.userData.category === activeCategory);
+
+        radius = () => this.ringRadius;
+
+        setTargetRotation() {
+            const local = this.selectedMesh.position.clone();
+            const angle = Math.atan2(local.x, local.z);
+            this.ringTargetRotation = -angle;
+        }
+
+        rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
+
+        rotateSurfaces = () => meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
+
+        #deselect = (mesh) => { if (this.selectedMesh === mesh) selectedMesh = null; };
+        #deselectMesh = () => { this.selectedMesh = null;};
+
+        addNameLabel() {
+            const div = document.createElement("div");
+            div.classList.add("surface-label", "name");
+            div.textContent = this.selectedMesh.userData.name;
+            this.selectedMesh.nameLabel = this.#createLabelIn(div, this.#topOfSurface() + 1);
+        }
+
+        addFormulaLabel() {
+            const div = document.createElement("div");
+            div.classList.add("surface-label", "formula");
+            katex.render(this.selectedMesh.userData.formula, div, { throwOnError: false });
+            this.selectedMesh.formulaLabel = this.#createLabelIn(div, this.#bottomOfSurface() + 1);
         }
 
         removeFormulaLabel() {
@@ -726,18 +722,12 @@
             this.selectedMesh.nameLabel = null;
         }
 
-        #removeLabels() {
-            this.removeFormulaLabel();
-            this.removeNameLabel();
-        }
-
-        #deselectMesh = () => { this.selectedMesh = null;};
-
         clearSelection() {
             if (this.#noMeshHasBeenSelected()) return;
 
             this.#resetMaterial();
-            this.#removeLabels();
+            this.removeFormulaLabel();
+            this.removeNameLabel();
             this.#deselectMesh();
             this.#resetTargetRotation();
         }
@@ -745,8 +735,9 @@
         selectMesh(topLevelSurfaceObject) {
             this.#removeLabelsOfInvisibleMeshes(topLevelSurfaceObject);
             this.#setSelectedStyleOn(topLevelSurfaceObject);
-            this.#addLabels(topLevelSurfaceObject);
             this.selectedMesh = topLevelSurfaceObject;
+            showNameSelectedSurface ? this.addNameLabel() : this.removeNameLabel();
+            showFormulaSelectedSurface? this.addFormulaLabel() : this.removeFormulaLabel();
         }
     }
 
@@ -754,22 +745,6 @@
     const ring = new Ring();
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-
-
-    function updateCameraPosition(ringRadius) {
-        const visibleMeshes = ring.getVisibleMeshes();
-        const count = visibleMeshes.length;
-
-        // Base distance from center
-        const baseDistance = ringRadius * 2.1; // approx twice the ring radius
-        const extra = Math.max(0, (count - 5) * 2);
-        const distance = baseDistance + extra;
-
-        // Set camera slightly higher to center the elevated ring
-        camera.position.set(0, ringRadius * 0.8, distance);
-        camera.lookAt(0, ring.position().y, 0); // look at the ring's new center
-        controls.update();
-    }
 
     /*******************
      * Event listeners *
@@ -798,6 +773,21 @@
         ring.selectMesh(topLevelSurfaceObject);
         ring.setTargetRotation();
     });
+
+    function updateCameraPosition(ringRadius) {
+        const visibleMeshes = ring.getVisibleMeshes();
+        const count = visibleMeshes.length;
+
+        // Base distance from center
+        const baseDistance = ringRadius * 2.1; // approx twice the ring radius
+        const extra = Math.max(0, (count - 5) * 2);
+        const distance = baseDistance + extra;
+
+        // Set camera slightly higher to center the elevated ring
+        camera.position.set(0, ringRadius * 0.8, distance);
+        camera.lookAt(0, ring.position().y, 0); // look at the ring's new center
+        controls.update();
+    }
 
     let activeCategory = "Miscellaneous";
     const dropDown = document.getElementById("categorySelect");
