@@ -38,63 +38,16 @@
     .surface-label.formula {
         font-size: 14px;
     }
-
-    /* Base hidden state */
-    .hidden {
-        display: none;
-    }
-
-    /* Popup container */
-    #canvas-popup {
-        position: fixed;
-        top: 50px;
-        left: 50px;
-        width: 800px;
-        height: 600px;
-        border: 2px solid #333;
-        background: white;
-        z-index: 1000;
-        box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Header for dragging / closing */
-    #popup-header {
-        background: #444;
-        color: white;
-        padding: 5px 10px;
-        cursor: move;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    /* Canvas fills popup */
-    #popup-canvas {
-        flex: 1;
-    }
-
 </style>
 
 <div id="canvas-wrapper">
     <canvas id="myCanvas" width="600" height="500"></canvas>
     <div id="menu">
-        <label><input type="checkbox" id="popup-toggle"> Open Canvas Popup</label>
         <label>Category:&nbsp;<select id="categorySelect"></select></label><br/>
         <label>Formula:&nbsp;<input type="checkbox" id="showFormula" checked/></label>
         <label>Name:&nbsp;<input type="checkbox" id="showName" checked/></label>
         <label>Normals:&nbsp;<input type="checkbox" id="showNormals"/></label>
     </div>
-</div>
-
-<!-- The floating popup -->
-<div id="canvas-popup" class="hidden">
-    <div id="popup-header">
-        <span>Canvas Popup</span>
-        <button id="popup-close">×</button>
-    </div>
-    <canvas id="popup-canvas"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
@@ -990,41 +943,6 @@
     /*******************
      * Event listeners *
      *******************/
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const popup = document.getElementById('canvas-popup');
-        const canvas = document.getElementById('popup-canvas');
-        const ctx = canvas.getContext('2d');
-        const toggle = document.getElementById('popup-toggle');
-        const closeBtn = document.getElementById('popup-close');
-
-        // Toggle popup visibility
-        toggle.addEventListener('change', () => {
-            popup.classList.toggle('hidden', !toggle.checked);
-            if (!popup.classList.contains('hidden')) resizeCanvas();
-        });
-
-        closeBtn.addEventListener('click', () => {
-            popup.classList.add('hidden');
-            toggle.checked = false;
-        });
-
-        // Resize canvas to fill popup
-        function resizeCanvas() {
-            canvas.width = popup.clientWidth;
-            canvas.height = popup.clientHeight - popup.querySelector('#popup-header').offsetHeight;
-
-            // Example drawing
-            ctx.fillStyle = 'lightblue';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'black';
-            ctx.font = '20px sans-serif';
-            ctx.fillText('Popup Canvas: ' + canvas.width + 'x' + canvas.height, 20, 30);
-        }
-
-        // Keep canvas in sync with popup size
-        new ResizeObserver(resizeCanvas).observe(popup);
-    });
 
     window.addEventListener("pointerdown", event => {
         const rect = canvas.getBoundingClientRect();
