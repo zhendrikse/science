@@ -692,30 +692,35 @@
             handle.addEventListener("pointercancel", stopDragging);
         }
 
-        inspect(original) {
-            if (this.mesh) {
-                this.curvature.disable(this.mesh);
-                this.scene.remove(this.mesh);
-            }
+        #showSurfaceNameInTitleBar(surfaceName) {
+            const titleSpan = document.querySelector("#surface-inspector .inspector-header span");
+            const surfaceNameLowerCase = surfaceName[0].toLowerCase() + surfaceName.slice(1);
+            titleSpan.textContent = "Surface inspector for " + surfaceNameLowerCase + " surface";
+        }
 
-            // Clone full object (group-safe)
-            this.mesh = original.clone(true);
-
-            // Preserve parametric function
-            this.surfaceFunction = original.userData.func;
-
-            // Ensure cloned meshes know their function
-            this.mesh.traverse(child => {
-                if (child.isMesh) child.userData.func = this.surfaceFunction;
-            });
-
-            // Center + fit camera
+        #centerAndFitCamera() {
             const box = new THREE.Box3().setFromObject(this.mesh);
             const size = box.getSize(new THREE.Vector3()).length();
             const center = box.getCenter(new THREE.Vector3());
 
             this.mesh.position.sub(center);
             this.camera.position.set(0, 0, size * 1.25);
+        }
+
+        inspect(original) {
+            if (this.mesh) {
+                this.curvature.disable(this.mesh);
+                this.scene.remove(this.mesh);
+            }
+
+            this.mesh = original.clone(true);
+            this.surfaceFunction = original.userData.func;
+
+            // Ensure cloned meshes know their function
+            this.mesh.traverse(child => { if (child.isMesh) child.userData.func = this.surfaceFunction; });
+
+            this.#showSurfaceNameInTitleBar(original.userData.name);
+            this.#centerAndFitCamera();
 
             this.scene.add(this.mesh);
             this.normalsCheckbox.checked = false;
