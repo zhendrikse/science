@@ -95,14 +95,14 @@
             name: "Arc",
             category: "Miscellaneous",
             resolution: 25,
-            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta) \\\\ \\cos(\\phi)+\\sin(\\theta) \\\\ 3\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, \\pi] \\\\ \\phi \\in [0, \\pi] \\end{cases}",
+            formula: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta) \\\\ \\cos(\\phi)+\\sin(\\theta) \\\\ b\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, \\pi] \\\\ \\phi \\in [0, \\pi] \\end{cases}",
             func: (u, v, target) => {
                 const
-                    a = 2,
+                    a = 2, b = 3,
                     [theta, phi] = [Math.PI * u, Math.PI * v],
                     x = a * Math.cos(theta),
                     y = a * (Math.sin(theta) + Math.cos(phi)),
-                    z = a * 3 * Math.sin(phi);
+                    z = a * b * Math.sin(phi);
 
                 target.set(x, z, y);
             }
@@ -763,7 +763,7 @@
     }
 
 
-    let activeCategory = "Toroids";
+    let activeCategory = "Miscellaneous";
     const dropDown = document.getElementById("categorySelect");
     populateDropDownMenu(dropDown);
     dropDown.addEventListener("change", () => {
