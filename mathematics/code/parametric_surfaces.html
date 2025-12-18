@@ -45,9 +45,9 @@
     <div id="gui-container"></div>
     <canvas id="myCanvas" width="600" height="500"></canvas>
     <div id="menu">
-        <label>Category:&nbsp;</label><select id="categorySelect"></select><br/>
-        <label>Formula:&nbsp;</label><input type="checkbox" id="showFormula" checked="checked"/>
-        <label>Name:&nbsp;</label><input type="checkbox" id="showName" name="hide" checked="checked"/>
+        <label>Category:&nbsp;<select id="categorySelect"></select></label><br/>
+        <label>Formula:&nbsp;<input type="checkbox" id="showFormula" checked="checked"/></label>
+        <label>Name:&nbsp;<input type="checkbox" id="showName" name="hide" checked="checked"/></label>
     </div>
 </div>
 
@@ -420,10 +420,8 @@
                 const
                     a = .75, b = 4,
                     [u1, v1] = [7 * (u - 0.5), 7 * (v - 0.5)],
-                    x = u1,
-                    y = a * Math.sin(b * Math.sqrt(u1 * u1 + v1 * v1)),
-                    z = v1;
-                target.set(x, y, z);
+                    y = a * Math.sin(b * Math.sqrt(u1 * u1 + v1 * v1));
+                target.set(u1, y, v1);
             }
         },
         {
