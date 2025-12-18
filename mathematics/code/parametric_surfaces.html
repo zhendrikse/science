@@ -555,6 +555,80 @@
     const createParametricMeshForCompoundSurfaces = (func, resolution) =>
         new THREE.Mesh(new ParametricGeometry(func, resolution, resolution), surfaceMaterial());
 
+    function applyFunctionTo(selectedObject, func) {
+        if (selectedObject.isMesh) {
+            func(selectedObject);
+        } else {
+            selectedObject.traverse(child => {
+                if (child.isMesh) func(child);
+            });
+        }
+    }
+
+    class Surface {
+        constructor(mesh) {
+            this.mesh = mesh;
+        }
+
+        #topOfSurface() {
+            const boundingBox = new THREE.Box3();
+            boundingBox.setFromObject(this.mesh);
+            const topY = boundingBox.max.y;
+            return this.mesh.worldToLocal(new THREE.Vector3(0, topY + .5, 0)).y;
+        }
+
+        #bottomOfSurface() {
+            const boundingBox = new THREE.Box3();
+            boundingBox.setFromObject(this.mesh);
+            const bottomY = boundingBox.min.y;
+            return this.mesh.worldToLocal(new THREE.Vector3(0, bottomY - 4, 0)).y;
+        }
+
+        #createLabelIn(div, y) {
+            const label = new CSS2DObject(div);
+            label.position.set(0, y, 0);
+            this.mesh.add(label);
+            return label;
+        }
+
+        addNameLabel() {
+            const div = document.createElement("div");
+            div.classList.add("surface-label", "name");
+            div.textContent = this.mesh.userData.name;
+            this.mesh.nameLabel = this.#createLabelIn(div, this.#topOfSurface() + 1);
+        }
+
+        addFormulaLabel() {
+            const div = document.createElement("div");
+            div.classList.add("surface-label", "formula");
+            katex.render(this.mesh.userData.formula, div, { throwOnError: false });
+            this.mesh.formulaLabel = this.#createLabelIn(div, this.#bottomOfSurface() + 1);
+        }
+
+        removeFormulaLabel() {
+            const noFormulaLabelIsShown = () => !this.mesh.formulaLabel;
+            if (noFormulaLabelIsShown()) return;
+            this.mesh.remove(this.mesh.formulaLabel);
+            this.mesh.formulaLabel = null;
+        }
+
+        removeNameLabel() {
+            const noNameLabelIsShown = () => !this.mesh.nameLabel;
+            if (noNameLabelIsShown()) return;
+            this.mesh.remove(this.mesh.nameLabel);
+            this.mesh.nameLabel = null;
+        }
+
+        setDefaultStyle() {
+            applyFunctionTo(this.mesh, mesh => {
+                mesh.material.wireframe = true;
+                mesh.material.opacity = 0.6;
+            });
+        }
+
+        position = () => this.mesh.position;
+    }
+
     /**
      * Ring containing all surfaces. Only the surfaces of one category are shown at a time.
      * These visible surfaces are continually redistributed evenly across the ring.
@@ -563,13 +637,14 @@
     class Ring {
         constructor(ringRadius=16) {
             this.ring = new THREE.Group();
-            this.meshes = [];
+            this.surfaces = [];
             this.ring.position.y = 5; // move the whole ring up
-            scene.add(this.ring);
             this.ringRadius = ringRadius;
-            surfaceDefinitions.forEach((surfaceDef, index) => this.#addSurface(surfaceDef, index));
             this.ringTargetRotation = null;
-            this.selectedMesh = null;
+            this.selectedSurface = null;
+
+            surfaceDefinitions.forEach((surfaceDef, index) => this.#addSurface(surfaceDef, index));
+            scene.add(this.ring);
         }
 
         #addSurface(surfaceDef, index) {
@@ -585,7 +660,7 @@
             };
 
             this.ring.add(surfaceMeshOrGroup);
-            this.meshes.push(surfaceMeshOrGroup);
+            this.surfaces.push(surfaceMeshOrGroup);
         }
 
         #setMeshPosition = (mesh, angle) =>
@@ -612,116 +687,58 @@
             }
         }
 
-        #noMeshHasBeenSelected = () => !this.selectedMesh;
-
-        #setDefaultStyleOnSelectedMesh() {
-            this.#applyFunctionTo(this.selectedMesh, mesh => {
-                mesh.material.wireframe = true;
-                mesh.material.opacity = 0.6;
-            });
-        }
+        #noMeshHasBeenSelected = () => !this.selectedSurface;
 
         #resetMaterial() {
             if (this.#noMeshHasBeenSelected()) return;
-            this.#setDefaultStyleOnSelectedMesh();
+            this.selectedSurface.setDefaultStyle();
         }
 
         #removeLabelsOfInvisibleMeshes(mesh) {
+            const deselect = (mesh) => { if (this.selectedMesh === mesh) selectedMesh = null; };
             if (mesh.visible) return;
             if (mesh.nameLabel) { mesh.remove(mesh.nameLabel); mesh.nameLabel = null; }
             if (mesh.formulaLabel) { mesh.remove(mesh.formulaLabel); mesh.formulaLabel = null; }
-            this.#deselect(mesh);
-        }
-
-        #createLabelIn(div, y) {
-            const label = new CSS2DObject(div);
-            label.position.set(0, y, 0);
-            this.selectedMesh.add(label);
-            return label;
-        }
-
-        #applyFunctionTo(selectedObject, fn) {
-            if (selectedObject.isMesh) {
-                fn(selectedObject);
-            } else {
-                selectedObject.traverse(child => {
-                    if (child.isMesh) fn(child);
-                });
-            }
+            deselect(mesh);
         }
 
         #setSelectedStyleOn(selectedObject) {
-            this.#applyFunctionTo(selectedObject, mesh => {
+            applyFunctionTo(selectedObject, mesh => {
                 mesh.material.wireframe = false;
                 mesh.material.opacity = 0.9; // or 0.8 if you prefer
             });
         }
 
-        #topOfSurface() {
-            const boundingBox = new THREE.Box3();
-            boundingBox.setFromObject(this.selectedMesh);
-            const topY = boundingBox.max.y;
-            return this.selectedMesh.worldToLocal(new THREE.Vector3(0, topY + .5, 0)).y;
-        }
-
-        #bottomOfSurface() {
-            const boundingBox = new THREE.Box3();
-            boundingBox.setFromObject(this.selectedMesh);
-            const bottomY = boundingBox.min.y;
-            return this.selectedMesh.worldToLocal(new THREE.Vector3(0, bottomY - 4, 0)).y;
-        }
-
         redistribute() {
-            this.meshes.forEach(mesh => mesh.visible = false);
+            this.surfaces.forEach(mesh => mesh.visible = false);
             this.getVisibleMeshes().forEach((mesh, index) => this.#placeAndShowSurface(mesh, index));
         }
 
         position = () => this.ring.position;
 
-        getVisibleMeshes = () => this.meshes.filter(mesh => mesh.userData.category === activeCategory);
+        getVisibleMeshes = () => this.surfaces.filter(mesh => mesh.userData.category === activeCategory);
 
         radius = () => this.ringRadius;
 
         setTargetRotation() {
-            const local = this.selectedMesh.position.clone();
+            const local = this.selectedSurface.position().clone();
             const angle = Math.atan2(local.x, local.z);
             this.ringTargetRotation = -angle;
         }
 
         rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
 
-        rotateSurfaces = () => this.meshes.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
+        rotateSurfaces = () => this.surfaces.forEach(mesh => { if (mesh.visible) mesh.rotation.y += .01; });
 
-        #deselect = (mesh) => { if (this.selectedMesh === mesh) selectedMesh = null; };
-        #deselectMesh = () => { this.selectedMesh = null;};
+        #deselectSurface = () => { this.selectedSurface = null;};
 
-        addNameLabel() {
-            const div = document.createElement("div");
-            div.classList.add("surface-label", "name");
-            div.textContent = this.selectedMesh.userData.name;
-            this.selectedMesh.nameLabel = this.#createLabelIn(div, this.#topOfSurface() + 1);
-        }
+        addNameLabel = () => this.selectedSurface.addNameLabel();
 
-        addFormulaLabel() {
-            const div = document.createElement("div");
-            div.classList.add("surface-label", "formula");
-            katex.render(this.selectedMesh.userData.formula, div, { throwOnError: false });
-            this.selectedMesh.formulaLabel = this.#createLabelIn(div, this.#bottomOfSurface() + 1);
-        }
+        addFormulaLabel = () => this.selectedSurface.addFormulaLabel();
 
-        removeFormulaLabel() {
-            const noFormulaLabelIsShown = () => !this.selectedMesh.formulaLabel;
-            if (noFormulaLabelIsShown()) return;
-            this.selectedMesh.remove(this.selectedMesh.formulaLabel);
-            this.selectedMesh.formulaLabel = null;
-        }
+        removeFormulaLabel = () => this.selectedSurface.removeFormulaLabel();
 
-        removeNameLabel() {
-            const noNameLabelIsShown = () => !this.selectedMesh.nameLabel;
-            if (noNameLabelIsShown()) return;
-            this.selectedMesh.remove(this.selectedMesh.nameLabel);
-            this.selectedMesh.nameLabel = null;
-        }
+        removeNameLabel= () => this.selectedSurface.removeNameLabel();
 
         clearSelection() {
             if (this.#noMeshHasBeenSelected()) return;
@@ -729,19 +746,19 @@
             this.#resetMaterial();
             this.removeFormulaLabel();
             this.removeNameLabel();
-            this.#deselectMesh();
+            this.#deselectSurface();
             this.#resetTargetRotation();
         }
 
         selectMesh(topLevelSurfaceObject) {
             this.#removeLabelsOfInvisibleMeshes(topLevelSurfaceObject);
             this.#setSelectedStyleOn(topLevelSurfaceObject);
-            this.selectedMesh = topLevelSurfaceObject;
+            this.selectedSurface = new Surface(topLevelSurfaceObject);
             showNameSelectedSurface ? this.addNameLabel() : this.removeNameLabel();
             showFormulaSelectedSurface? this.addFormulaLabel() : this.removeFormulaLabel();
         }
 
-        includes = (topLevelSurfaceObject) => !this.meshes.includes(topLevelSurfaceObject);
+        includes = (topLevelSurfaceObject) => !this.surfaces.includes(topLevelSurfaceObject);
     }
 
     const ring = new Ring();
