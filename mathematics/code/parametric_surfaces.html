@@ -1,6 +1,6 @@
 <style>
     body { margin:0; overflow:hidden; }
-    #canvas-container {
+    #canvas-wrapper {
         position: relative;
         width: 600px;  /* normal width */
         height: 400px; /* normal height */
@@ -8,7 +8,7 @@
     }
 
     /* Fullscreen mode */
-    #canvas-container.fullscreen {
+    #canvas-wrapper.fullscreen {
         position: fixed;
         top: 0;
         left: 0;
@@ -23,11 +23,6 @@
         display: block;
     }
 
-    #canvas-wrapper {
-        position: relative;
-        width: 650px;
-        height: 600px;
-    }
     #menu {
         position: absolute;
         top: 15px;
@@ -63,7 +58,7 @@
 </style>
 
 <button id="fullscreen-toggle">Fullscreen Canvas</button>
-<div id="canvas-containerr">
+<div id="canvas-wrapper">
     <canvas id="myCanvas" width="600" height="500"></canvas>
     <div id="menu">
         <label>Category:&nbsp;<select id="categorySelect"></select></label><br/>
@@ -968,7 +963,7 @@
     /*******************
      * Event listeners *
      *******************/
-    const canvasContainer = document.getElementById('canvas-container');
+    const canvasContainer = document.getElementById('canvas-wrapper');
     const toggleButton = document.getElementById('fullscreen-toggle');
 
     let isFullscreen = false;
