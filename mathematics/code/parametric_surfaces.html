@@ -565,38 +565,32 @@
             this.ring.position.y = 5; // move the whole ring up
             scene.add(this.ring);
             this.ringRadius = ringRadius;
-            surfaceDefinitions.forEach((surface, index) => this.#addSurface(surface, index));
+            surfaceDefinitions.forEach((surfaceDef, index) => this.#addSurface(surfaceDef, index));
         }
 
         radius = () => this.ringRadius;
 
-        #addSurface(surface, index) {
+        #addSurface(surfaceDef, index) {
             const surfaceIsComposite = (surface) => surface.build;
-            const surfaceMeshOrGroup = surfaceIsComposite(surface) ?
-                surface.build(surfaceMaterial(), surface.resolution)
-                : createParametricMeshForCompoundSurfaces(surface.func, surface.resolution);
+            const surfaceMeshOrGroup = surfaceIsComposite(surfaceDef) ?
+                surfaceDef.build(surfaceMaterial(), surfaceDef.resolution)
+                : createParametricMeshForCompoundSurfaces(surfaceDef.func, surfaceDef.resolution);
 
             surfaceMeshOrGroup.userData = {
-                name: surface.name,
-                formula: surface.formula,
-                category: surface.category
+                name: surfaceDef.name,
+                formula: surfaceDef.formula,
+                category: surfaceDef.category
             };
 
-            this.#setMeshPosition(surfaceMeshOrGroup, index / surfaceDefinitions.length);
             this.ring.add(surfaceMeshOrGroup);
             meshes.push(surfaceMeshOrGroup);
         }
 
-        #setMeshPosition(mesh, angle) {
-            mesh.position.set(
-                this.ringRadius * Math.cos(angle * 2 * Math.PI),
-                0,
-                this.ringRadius * Math.sin(angle * 2 * Math.PI)
-            );
-        }
+        #setMeshPosition = (mesh, angle) =>
+            mesh.position.set(this.ringRadius * Math.cos(angle), 0, this.ringRadius * Math.sin(angle));
 
         #placeAndShowSurface = (mesh, index) => {
-            this.#setMeshPosition(mesh, index / this.getVisibleMeshes().length);
+            this.#setMeshPosition(mesh, 2 * Math.PI * index / this.getVisibleMeshes().length);
             mesh.visible = true;
         };
 
