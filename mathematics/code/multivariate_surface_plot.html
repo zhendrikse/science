@@ -49,7 +49,7 @@
             this.scene = scene;
 
             this.controls.enableDamping = true;
-            this.camera.position.set(6, 4, 6);
+            this.camera.position.set(6, 5, 6);
             this.scene.background = new THREE.Color(0x131313);
 
             this.scene.add(worldGroup);
@@ -132,7 +132,7 @@
     const params = {
         amplitude: 1.0,
         frequency: 0.5,
-        baseColor: "#ee5",
+        baseColor: "#ff4",
         wireframe: false,
         axes: true,
         normals: false,
@@ -169,7 +169,7 @@
         appearanceFolder.add(params, 'animate').name("Animate");
         appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.toggleWireframe(value));
         appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
-        controls.add({reset:()=> scenery.camera.position.set(6, 4, 6)}, "reset").name("Reset Camera");
+        controls.add({reset:()=> scenery.camera.position.set(5, 6, 5)}, "reset").name("Reset Camera");
         appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => {
             if (surface.normalsHelper) surface.normalsHelper.visible = value;
         });
