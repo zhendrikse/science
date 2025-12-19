@@ -28,7 +28,6 @@
 
     import { EffectComposer } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/EffectComposer.js";
     import { RenderPass } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/RenderPass.js";
-    //import { OutlinePass } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/OutlinePass.js";
 
     import { ShaderPass } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/ShaderPass.js";
     import { FXAAShader } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/shaders/FXAAShader.js";
@@ -43,7 +42,6 @@
             this.renderer = this.#createRenderer();
             this.labelRenderer = this.#createLabelRenderer();
             this.fxaaPass = new ShaderPass(FXAAShader);
-            //this.outlinePass = new OutlinePass(new THREE.Vector2(width, height), scene, this.camera);
             this.composer = this.#createComposer(this.renderer, this.camera, scene);
             this.controls = new OrbitControls(this.camera, this.renderer.domElement);
             this.scene = scene;
@@ -75,13 +73,6 @@
             const composer = new EffectComposer(renderer);
             composer.setSize(width, height);
             composer.addPass(new RenderPass(scene, camera));
-
-            // ⭐ Outline edges
-            // this.outlinePass.edgeStrength = 2.5;
-            // this.outlinePass.edgeThickness = 1.0;
-            // this.outlinePass.visibleEdgeColor.set("#000000");
-            // this.outlinePass.hiddenEdgeColor.set("#000000");
-            // composer.addPass(this.outlinePass);
 
             /* ⭐ FXAA ANTI-ALIASING */
             const pixelRatio = window.devicePixelRatio || 1;
