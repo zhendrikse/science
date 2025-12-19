@@ -84,7 +84,8 @@
     const params = {
         amplitude: 1.0,
         frequency: 0.5,
-        baseColor: "#ee4",
+        baseColor: "#4f6",
+        colorMode: "Curvature",   // 'Height' | 'Base' | 'Curvature'
         wireframe: false,
         axes: true,
         normals: false,
@@ -111,6 +112,9 @@
         shapeFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
 
         const appearanceFolder = controls.addFolder("Appearance");
+        appearanceFolder.add(params, "colorMode", ["Height", "Base", "Curvature"])
+            .name("Color Mode")
+            .onChange(() => surface.updateColors());
         appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.updateColors());
         appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
             surface.rebuild(resolution)
@@ -204,6 +208,21 @@
             };
         }
 
+        #computeCurvature() {
+            const posAttr = this.geometry.attributes.position;
+            const normAttr = this.geometry.attributes.normal;
+            const curvatures = new Float32Array(posAttr.count);
+
+            for (let i = 0; i < posAttr.count; i++) {
+                const nx = normAttr.getX(i), ny = normAttr.getY(i), nz = normAttr.getZ(i);
+
+                // Curvature approximation: magnitude of normal change
+                curvatures[i] = Math.sqrt(nx*nx + ny*ny + nz*nz);
+            }
+            return curvatures;
+        }
+
+
         #scale = (u, v) => [this.axesSize * (u - 0.5), this.axesSize * (-v + 0.5)];
 
         #mesh(resolution, showWireframe) {
@@ -258,17 +277,59 @@
             if (this.normalsHelper) this.normalsHelper.update();
         }
 
+        #updateColor(yValue, range, useBaseColor = false) {
+            const t = range[1] !== range[0] ? (yValue - range[0]) / (range[1] - range[0]) : 0;
+            const color = new THREE.Color();
+            const hsl = {};
+
+            if (useBaseColor && params.baseColor && this.#isValidColor(params.baseColor)) {
+                color.setStyle(params.baseColor);
+                color.getHSL(hsl);
+                hsl.l = 0.4 + 0.3 * (1 - t);
+            } else {
+                hsl.h = t * .5 - .025;
+                hsl.s = 0.9;
+                hsl.l = 0.4 + 0.2 * (1 - t);
+            }
+
+            color.setHSL(hsl.h, hsl.s, hsl.l);
+            return color;
+        }
+
         #amplitudeModulation = (t) => (1.01 - Math.sin(t * params.frequency)) * params.amplitude;
 
         #material(showWireframe=false) {
             return new THREE.MeshPhongMaterial({
                 vertexColors: true,
-                side: THREE.FrontSide,
+                side: THREE.DoubleSide,
                 wireframe: showWireframe,
                 transparent: true,
                 opacity: params.opacity,
             });
         }
+
+        #colorFromCurvature(k) {
+            const color = new THREE.Color();
+            const t = THREE.MathUtils.clamp(k * 500, 0, 1); // scale curvature for visibility
+
+            if (params.baseColor && this.#isValidColor(params.baseColor)) {
+                color.setStyle(params.baseColor);
+                const hsl = {};
+                color.getHSL(hsl);
+
+                // Modulate lightness and saturation by curvature
+                hsl.l = 0.4 + 0.4 * (1 - t); // darker in high curvature
+                hsl.s = 0.5 + 0.5 * (1 - t); // less saturated in high curvature, more in low
+
+                color.setHSL(hsl.h, hsl.s, hsl.l);
+            } else {
+                // fallback gradient if baseColor is invalid
+                color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
+            }
+
+            return color;
+        }
+
 
         setToMaxHeight = (frequency) => this.time = 3 * Math.PI / 2 / frequency;
 
@@ -308,9 +369,17 @@
             const posAttr = this.geometry.attributes.position;
             const colors = this.geometry.attributes.color.array;
             const range = this.#yMinMax();
+            let curvature = params.colorMode === "Curvature" ? this.#computeCurvature() : null;
 
             for (let i = 0; i < posAttr.count; i++) {
-                const c = this.#updateColor(posAttr.getY(i), range);
+                let c;
+                if (params.colorMode === "Height")
+                    c = this.#updateColor(posAttr.getY(i), range);
+                else if (params.colorMode === "Base")
+                    c = this.#updateColor(posAttr.getY(i), range, true); // pass a flag for base color
+                else if (params.colorMode === "Curvature")
+                    c = this.#colorFromCurvature(curvature[i]);
+
                 colors[3 * i]     = c.r;
                 colors[3 * i + 1] = c.g;
                 colors[3 * i + 2] = c.b;
@@ -319,28 +388,11 @@
             this.geometry.attributes.color.needsUpdate = true;
         }
 
+
         #isValidColor(str) {
             const s = new Option().style;
             s.color = str;
             return s.color !== '';
-        }
-
-        #updateColor(yValue, range) {
-            const t = range[1] !== range[0] ? (yValue - range[0]) / (range[1] - range[0]) : 0;
-            const color = new THREE.Color();
-            const hsl = {};
-            hsl.h = t * .5 - .025;
-            hsl.s = 0.9;
-            hsl.l = 0.4 + 0.2 * (1 - t);
-
-            if (params.baseColor && this.#isValidColor(params.baseColor)) {
-                color.setStyle(params.baseColor);
-                color.getHSL(hsl);
-                hsl.l = 0.4 + 0.3 * (1 - t);
-            }
-
-            color.setHSL(hsl.h, hsl.s, hsl.l);
-            return color;
         }
 
         update(deltaTime) {
