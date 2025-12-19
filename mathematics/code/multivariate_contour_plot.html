@@ -111,7 +111,7 @@
         shapeFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
 
         const appearanceFolder = controls.addFolder("Appearance");
-        appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.markColorUpdate());
+        appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.updateColors());
         appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
             surface.rebuild(resolution)
             surface.updateNormalsLength(resolution);
@@ -123,6 +123,7 @@
         appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
         controls.add({reset:()=> scenery.camera.position.set(6, 5, 6)}, "reset").name("Reset Camera");
         appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => {
+            surface.normalsVisible = value;
             if (surface.normalsHelper) surface.normalsHelper.visible = value;
         });
 
@@ -175,8 +176,8 @@
             this.normalsHelper = null;
             this.geometry = null;
             this.mesh = null;
+            this.normalsVisible = false;
             this.#build(resolution);
-            this.normalsHelper.visible = false;
         }
 
         createMathJsSurface(exprString) {
@@ -229,9 +230,10 @@
                 0.2,
                 0x00ffff
             );
+            this.normalsHelper.visible = this.normalsVisible;
             this.mesh.add(this.normalsHelper);
 
-            this.#updateColors();
+            this.updateColors();
             this.#updateGeometry();
         }
 
@@ -255,10 +257,6 @@
             if (this.normalsHelper) this.normalsHelper.update();
         }
 
-        setToMaxHeight = (frequency) => this.time = 3 * Math.PI / 2 / frequency;
-
-        toggleWireframe = (value) => this.mesh.material.wireframe = value;
-
         #amplitudeModulation = (t) => (1 - Math.sin(t * params.frequency)) * params.amplitude;
 
         #material(showWireframe=false) {
@@ -270,6 +268,10 @@
                 opacity: 0.9
             });
         }
+
+        setToMaxHeight = (frequency) => this.time = 3 * Math.PI / 2 / frequency;
+
+        toggleWireframe = (value) => this.mesh.material.wireframe = value;
 
         setOpacity(opacity) {
             this.mesh.material.opacity = opacity;
@@ -301,7 +303,7 @@
             return [yMin, yMax];
         }
 
-        #updateColors() {
+        updateColors() {
             const posAttr = this.geometry.attributes.position;
             const colors = this.geometry.attributes.color.array;
             const range = this.#yMinMax();
@@ -345,7 +347,7 @@
 
             this.time += deltaTime;
             this.#updateGeometry();
-            this.#updateColors(); // needed when colors depend on height
+            this.updateColors(); // needed when colors depend on height
         }
 
         updateNormalsLength(resolution) {
@@ -361,8 +363,6 @@
             this.normalsHelper.size = length;
             this.normalsHelper.update(); // recalc positions
         }
-
-        markColorUpdate = () => this.#updateColors();
 
         setSurfaceFunction(newFunc, frequency) {
             this.surfaceFunction = newFunc;
