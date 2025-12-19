@@ -172,7 +172,8 @@
             this.surfaceFunction = this.createMathJsSurface(functionAsString);
             this.axesSize = axesSize;
             this.parentGroup = parentGroup;
-            this.time = 3 * Math.PI / 2 / params.frequency; // same as your setToMaxHeight()
+            this.time = 0;
+            this.setToMaxHeight(params.frequency);
             this.normalsHelper = null;
             this.geometry = null;
             this.mesh = null;
@@ -221,7 +222,7 @@
         }
 
 
-        #build(resolution, showWireframe = true) {
+        #build(resolution, showWireframe = false) {
             this.mesh = this.#mesh(resolution, showWireframe);
             this.parentGroup.add(this.mesh);
 
@@ -259,13 +260,13 @@
 
         #amplitudeModulation = (t) => (1 - Math.sin(t * params.frequency)) * params.amplitude;
 
-        #material(showWireframe=false) {
+        #material(showWireframe=true) {
             return new THREE.MeshPhongMaterial({
                 vertexColors: true,
                 side: THREE.FrontSide,
                 wireframe: showWireframe,
                 transparent: true,
-                opacity: 0.9
+                opacity: params.opacity,
             });
         }
 
