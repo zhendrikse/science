@@ -25,12 +25,6 @@
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
     import { VertexNormalsHelper } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/helpers/VertexNormalsHelper.js";
 
-    import { EffectComposer } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/EffectComposer.js";
-    import { RenderPass } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/RenderPass.js";
-
-    import { ShaderPass } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/postprocessing/ShaderPass.js";
-    import { FXAAShader } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/shaders/FXAAShader.js";
-
     const canvas = document.getElementById("myCanvas"),
         width = canvas.width,
         height = canvas.height;
@@ -39,7 +33,6 @@
         constructor(scene, worldGroup) {
             this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
             this.renderer = this.#createRenderer();
-            this.fxaaPass = new ShaderPass(FXAAShader);
             this.controls = new OrbitControls(this.camera, this.renderer.domElement);
             this.scene = scene;
 
@@ -91,7 +84,7 @@
     const params = {
         amplitude: 1.0,
         frequency: 0.5,
-        baseColor: "#ff4",
+        baseColor: "#ee4",
         wireframe: false,
         axes: true,
         normals: false,
@@ -139,7 +132,7 @@
     }
 
     class MatlabAxes {
-        constructor(parentGroup, axesSize = 4, gridDivisions = 10) {
+        constructor(parentGroup, axesSize=4, gridDivisions=10) {
             this.axesSize = axesSize;
 
             // Create main axes using THREE built-in helper
@@ -163,11 +156,6 @@
             this.gridXY.rotation.x = 0; // XY plane
             parentGroup.add(this.gridXY);
 
-            // Lift grids slightly
-            this.gridXY.position.y = -0.02;
-            this.gridXZ.position.y += 0.02;
-            this.gridYZ.position.y += 0.02;
-
             // Group all helpers for easy visibility toggle
             this.group = new THREE.Group();
             this.group.add(this.gridXZ, this.gridYZ, this.gridXY);
@@ -178,20 +166,17 @@
         show = (value) => this.group.visible = value;
     }
 
-
     class Surface {
-        constructor(parentGroup, scenery, functionAsString="5 * sin(x*x + y*y) * exp(-x*x - y*y)", resolution=75) {
+        constructor(parentGroup, scenery, functionAsString="5 * sin(x*x + y*y) * exp(-x*x - y*y)", resolution=75, axesSize=4) {
             this.surfaceFunction = this.createMathJsSurface(functionAsString);
+            this.axesSize = axesSize;
             this.parentGroup = parentGroup;
             this.time = 3 * Math.PI / 2 / params.frequency; // same as your setToMaxHeight()
-            this.needsColorUpdate = true;
             this.normalsHelper = null;
             this.geometry = null;
             this.mesh = null;
             this.#build(resolution);
             this.normalsHelper.visible = false;
-            this.#updateGeometry();
-            this.#updateColors();
         }
 
         createMathJsSurface(exprString) {
@@ -217,7 +202,7 @@
             };
         }
 
-        #scale = (u, v) => [axes.axesSize * (u - 0.5), axes.axesSize * (-v + 0.5)];
+        #scale = (u, v) => [this.axesSize * (u - 0.5), this.axesSize * (-v + 0.5)];
 
         #mesh(resolution, showWireframe) {
             this.geometry = new ParametricGeometry(
@@ -246,14 +231,15 @@
             );
             this.mesh.add(this.normalsHelper);
 
-            this.needsColorUpdate = true;
-            this.#updateColors(true);
+            this.#updateColors();
+            this.#updateGeometry();
         }
 
         #updateGeometry() {
             const posAttr = this.geometry.attributes.position;
             const uvAttr  = this.geometry.attributes.uv;
-            const temp = new THREE.Vector3();
+            this._tempVec ??= new THREE.Vector3();
+            const temp = this._tempVec;
 
             for (let i = 0; i < posAttr.count; i++) {
                 const u = uvAttr.getX(i);
@@ -316,8 +302,6 @@
         }
 
         #updateColors() {
-            if (!this.needsColorUpdate) return;
-
             const posAttr = this.geometry.attributes.position;
             const colors = this.geometry.attributes.color.array;
             const range = this.#yMinMax();
@@ -330,7 +314,6 @@
             }
 
             this.geometry.attributes.color.needsUpdate = true;
-            this.needsColorUpdate = false;
         }
 
         #isValidColor(str) {
@@ -362,7 +345,7 @@
 
             this.time += deltaTime;
             this.#updateGeometry();
-            this.#updateColors();
+            this.#updateColors(); // needed when colors depend on height
         }
 
         updateNormalsLength(resolution) {
@@ -379,7 +362,7 @@
             this.normalsHelper.update(); // recalc positions
         }
 
-        markColorUpdate = () => (this.needsColorUpdate = true);
+        markColorUpdate = () => this.#updateColors();
 
         setSurfaceFunction(newFunc, frequency) {
             this.surfaceFunction = newFunc;
