@@ -135,6 +135,7 @@
     class MatlabAxes {
         constructor(parentGroup, axesSize=4, gridDivisions=10) {
             this.axesSize = axesSize;
+            this.group = new THREE.Group();
 
             // Create main axes using THREE built-in helper
             //this.axesHelper = new THREE.AxesHelper(axesSize);
@@ -145,23 +146,51 @@
             this.gridXZ.rotation.x = Math.PI / 2; // XZ plane
             this.gridXZ.position.y = .5 * this.axesSize;
             this.gridXZ.position.z = -.5 * this.axesSize;
-            parentGroup.add(this.gridXZ);
+            this.group.add(this.gridXZ);
 
             this.gridYZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
             this.gridYZ.rotation.z = Math.PI / 2; // YZ plane
             this.gridYZ.position.y = .5 * this.axesSize;
             this.gridYZ.position.x = -.5 * this.axesSize;
-            parentGroup.add(this.gridYZ);
+            this.group.add(this.gridYZ);
 
             this.gridXY = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
             this.gridXY.rotation.x = 0; // XY plane
-            parentGroup.add(this.gridXY);
+            this.group.add(this.gridXY);
+
+            // Add transparent planes behind each grid
+            this.planeXZ = this.#createPlane(axesSize, 0.2, 0x888888);
+            this.planeXZ.rotation.x = -Math.PI / 2;
+            this.planeXZ.position.y = 0;
+            this.group.add(this.planeXZ);
+
+            this.planeYZ = this.#createPlane(axesSize, 0.2, 0x888888);
+            this.planeYZ.rotation.y = -Math.PI / 2;
+            this.planeYZ.position.x = -0.5 * this.axesSize;
+            this.planeYZ.position.y = 0.5 * this.axesSize;
+            this.group.add(this.planeYZ);
+
+            this.planeXY = this.#createPlane(axesSize, 0.2, 0x888888);
+            this.planeXY.position.y = 0.5 * this.axesSize;
+            this.planeXY.position.z = -0.5 * this.axesSize;
+            this.group.add(this.planeXY);
 
             // Group all helpers for easy visibility toggle
-            this.group = new THREE.Group();
-            this.group.add(this.gridXZ, this.gridYZ, this.gridXY);
+            //this.group.add(this.gridXZ, this.gridYZ, this.gridXY, this.PlaneXY, this.PlaneYZ, this.PlaneZY);
             //this.group.add(this.axesHelper, this.gridXZ, this.gridYZ, this.gridXY);
             parentGroup.add(this.group);
+        }
+
+        #createPlane(size, opacity = 0.2, color = 0x888888) {
+            const geometry = new THREE.PlaneGeometry(size, size);
+            const material = new THREE.MeshPhongMaterial({
+                color: color,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: opacity,
+                depthWrite: false // ensures grid lines appear on top
+            });
+            return new THREE.Mesh(geometry, material);
         }
 
         show = (value) => this.group.visible = value;
