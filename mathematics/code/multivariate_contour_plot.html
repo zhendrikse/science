@@ -69,10 +69,6 @@
             this.renderer.setSize(width, height);
             this.camera.aspect = width / height;
             this.camera.updateProjectionMatrix();
-
-            const pr = window.devicePixelRatio || 1;
-            this.fxaaPass.material.uniforms["resolution"].value.x = 1 / (width * pr);
-            this.fxaaPass.material.uniforms["resolution"].value.y = 1 / (height * pr);
         }
 
         render() {
@@ -221,7 +217,6 @@
             }
             return curvatures;
         }
-
 
         #scale = (u, v) => [this.axesSize * (u - 0.5), this.axesSize * (-v + 0.5)];
 
@@ -424,7 +419,6 @@
         }
     }
 
-    /* Optional future-proof resize: make FXAA remain always sharp */
     window.addEventListener("resize", () => {
         const w = canvas.clientWidth || width;
         const h = canvas.clientHeight || height;
