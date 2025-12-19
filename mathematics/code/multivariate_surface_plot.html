@@ -127,9 +127,7 @@
             this.labelRenderer.render(this.scene, this.camera);
         }
 
-        setControlsTarget(x, y, z) {
-            this.controls.target.set(x, y, z);
-        }
+        setControlsTarget = (x, y, z) => this.controls.target.set(x, y, z);
     }
 
     const params = {
@@ -166,7 +164,7 @@
         appearanceFolder.add(params, 'animate').name("Animate");
         appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.mesh.material.wireframe = value);
         appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
-        controls.add({reset:()=> scenery.camera.position.set(5,5,5)}, "reset").name("Reset Camera");
+        controls.add({reset:()=> scenery.camera.position.set(5, 5, 5)}, "reset").name("Reset Camera");
 
         mathFolder.open();
         shapeFolder.close();
@@ -335,13 +333,32 @@
         #material(showWireframe=false) {
             return new THREE.MeshStandardMaterial({
                 vertexColors: true,
-                roughness: 0.1,  // lager = glanzender
-                metalness: 0.25,  // hoger = meer reflectie
+                roughness: 0.1,  // lower -> higher shininess
+                metalness: 0.25,  // higher -> more reflection
                 side: THREE.DoubleSide,
                 wireframe: showWireframe,
                 transparent: true,
                 opacity: 0.8
             });
+        }
+
+        #geometry = (resolution) => {
+            const geometry = new ParametricGeometry(
+                (u, v, target) => this.surfaceFunction(u, v, this.#amplitudeModulation(0), target),
+                resolution, resolution);
+            const colors = new Float32Array(geometry.attributes.position.count * 3);
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            return geometry;
+        }
+
+        #mesh = (resolution, showWireframe) => {
+            this.geometry = this.#geometry(resolution);
+            const mesh = new THREE.Mesh(this.geometry, this.#material(showWireframe));
+            mesh.position.copy(this.#calculateOffset());
+            mesh.material.opacity = params.opacity;
+            mesh.position.copy(this.#calculateOffset());
+            mesh.material.opacity = params.opacity;
+            return mesh;
         }
 
         setOpacity(opacity) {
@@ -352,24 +369,13 @@
         rebuild(resolution) {
             this.parentGroup.remove(this.mesh);
             this.geometry.dispose();
-
             this.#build(resolution, this.mesh.material.wireframe);
         }
 
         #build(resolution, showWireframe=false) {
-            this.geometry = new ParametricGeometry(
-                (u, v, target) => this.surfaceFunction(u, v, this.#amplitudeModulation(0), target),
-                resolution, resolution
-            );
-
-            this.mesh = new THREE.Mesh(this.geometry, this.#material(showWireframe));
-            this.mesh.position.copy(this.#calculateOffset());
+            this.mesh = this.#mesh(resolution, showWireframe);
             this.parentGroup.add(this.mesh);
-            this.mesh.material.opacity = params.opacity;
             scenery.outlinePass.selectedObjects = [this.mesh];
-
-            const colors = new Float32Array(this.geometry.attributes.position.count * 3);
-            this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
             this.needsColorUpdate = true;
             this.#updateColors(true);
         }
@@ -491,8 +497,7 @@
         axes = new MatlabAxes(worldGroup),
         surface = new Surface(worldGroup, scenery, params.customFunction);
 
-    const center = boundingBoxOfWorldGroup(worldGroup);
-    worldGroup.position.sub(center);
+    worldGroup.position.sub(boundingBoxOfWorldGroup(worldGroup));
 
     // Shift DOWN to avoid overlapping GUI
     worldGroup.position.y -= 0.25 * axes.axesSize;
