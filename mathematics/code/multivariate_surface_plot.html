@@ -229,7 +229,7 @@
             this.normalsHelper = new VertexNormalsHelper(
                 this.mesh,
                 0.2,
-                0x00ffff
+                0x770000
             );
             this.normalsHelper.visible = this.normalsVisible;
             this.mesh.add(this.normalsHelper);
@@ -258,7 +258,7 @@
             if (this.normalsHelper) this.normalsHelper.update();
         }
 
-        #amplitudeModulation = (t) => (1 - Math.sin(t * params.frequency)) * params.amplitude;
+        #amplitudeModulation = (t) => (1.01 - Math.sin(t * params.frequency)) * params.amplitude;
 
         #material(showWireframe=false) {
             return new THREE.MeshPhongMaterial({
