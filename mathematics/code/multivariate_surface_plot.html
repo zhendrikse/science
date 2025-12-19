@@ -22,7 +22,6 @@
     import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
     import { ParametricGeometry } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/geometries/ParametricGeometry";
     import { OrbitControls } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
-    import { CSS2DRenderer, CSS2DObject } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/renderers/CSS2DRenderer";
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
     import { VertexNormalsHelper } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/helpers/VertexNormalsHelper.js";
 
@@ -40,9 +39,7 @@
         constructor(scene, worldGroup) {
             this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
             this.renderer = this.#createRenderer();
-            this.labelRenderer = this.#createLabelRenderer();
             this.fxaaPass = new ShaderPass(FXAAShader);
-            this.composer = this.#createComposer(this.renderer, this.camera, scene);
             this.controls = new OrbitControls(this.camera, this.renderer.domElement);
             this.scene = scene;
 
@@ -69,32 +66,6 @@
             return directionalLight;
         }
 
-        #createComposer(renderer, camera, scene) {
-            const composer = new EffectComposer(renderer);
-            composer.setSize(width, height);
-            composer.addPass(new RenderPass(scene, camera));
-
-            /* ⭐ FXAA ANTI-ALIASING */
-            const pixelRatio = window.devicePixelRatio || 1;
-            this.fxaaPass.material.uniforms["resolution"].value.x = 1 / (width * pixelRatio);
-            this.fxaaPass.material.uniforms["resolution"].value.y = 1 / (height * pixelRatio);
-            composer.addPass(this.fxaaPass);
-
-            return composer;
-        }
-
-        #createLabelRenderer() {
-            const labelRenderer = new CSS2DRenderer();
-            labelRenderer.setSize(width, height);
-            labelRenderer.domElement.style.position = "absolute";
-            labelRenderer.domElement.style.top = "0px";
-            labelRenderer.domElement.style.left = "0px";
-            labelRenderer.domElement.style.pointerEvents = "none";
-            labelRenderer.domElement.style.zIndex = 5;
-            document.getElementById("canvas-wrapper").appendChild(labelRenderer.domElement);
-            return labelRenderer;
-        }
-
         #createRenderer() {
             const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
             renderer.setSize(width, height);
@@ -102,9 +73,7 @@
         }
 
         setSize(width, height) {
-            this.composer.setSize(width, height);
             this.renderer.setSize(width, height);
-            this.labelRenderer.setSize(width, height);
             this.camera.aspect = width / height;
             this.camera.updateProjectionMatrix();
 
@@ -115,8 +84,7 @@
 
         render() {
             this.controls.update();
-            this.composer.render();
-            this.labelRenderer.render(this.scene, this.camera);
+            this.renderer.render(this.scene, this.camera);
         }
     }
 
@@ -195,6 +163,11 @@
             this.gridXY.rotation.x = 0; // XY plane
             parentGroup.add(this.gridXY);
 
+            // Lift grids slightly
+            this.gridXY.position.y = -0.02;
+            this.gridXZ.position.y += 0.02;
+            this.gridYZ.position.y += 0.02;
+
             // Group all helpers for easy visibility toggle
             this.group = new THREE.Group();
             this.group.add(this.gridXZ, this.gridYZ, this.gridXY);
@@ -202,10 +175,7 @@
             parentGroup.add(this.group);
         }
 
-        // Toggle visibility of all axes and grids
-        show(value) {
-            this.group.visible = value;
-        }
+        show = (value) => this.group.visible = value;
     }
 
 
@@ -245,7 +215,7 @@
             };
         }
 
-        #scale = (u, v) => [axes.axesSize * (u - 0.5), axes.axesSize * (v - 0.5)];
+        #scale = (u, v) => [axes.axesSize * (u - 0.5), axes.axesSize * (-v + 0.5)];
 
         #mesh(resolution, showWireframe) {
             this.geometry = new ParametricGeometry(
@@ -272,35 +242,25 @@
             );
             this.mesh.add(this.normalsHelper);
 
-            //scenery.outlinePass.selectedObjects = [this.mesh];
             this.needsColorUpdate = true;
             this.#updateColors(true);
         }
 
         #updateGeometry() {
             const posAttr = this.geometry.attributes.position;
+            const uvAttr  = this.geometry.attributes.uv;
             const temp = new THREE.Vector3();
 
             for (let i = 0; i < posAttr.count; i++) {
-                const u = posAttr.getX(i) / axes.axesSize + 0.5;
-                const v = posAttr.getZ(i) / axes.axesSize + 0.5;
+                const u = uvAttr.getX(i);
+                const v = uvAttr.getY(i);
+
                 this.surfaceFunction(u, v, this.#amplitudeModulation(this.time), temp);
                 posAttr.setXYZ(i, temp.x, temp.y, temp.z);
             }
-            posAttr.needsUpdate = true;
 
+            posAttr.needsUpdate = true;
             this.geometry.computeVertexNormals();
-            // Flip normals to point outward
-            const normalAttr = this.geometry.attributes.normal;
-            for (let i = 0; i < normalAttr.count; i++) {
-                normalAttr.setXYZ(
-                    i,
-                    -normalAttr.getX(i),
-                    -normalAttr.getY(i),
-                    -normalAttr.getZ(i)
-                );
-            }
-            normalAttr.needsUpdate = true;
 
             if (this.normalsHelper) this.normalsHelper.update();
         }
@@ -314,7 +274,7 @@
         #material(showWireframe=false) {
             return new THREE.MeshPhongMaterial({
                 vertexColors: true,
-                side: THREE.DoubleSide,
+                side: THREE.FrontSide,
                 wireframe: showWireframe,
                 transparent: true,
                 opacity: 0.9
