@@ -91,45 +91,47 @@
         customFunction: "1 + .5 * sin(3 * sqrt(x*x + y*y)) / sqrt(x*x + y*y)"
     }
 
-    function createGui(surface) {
-        const controls = new GUI({ width: 275, autoPlace: false });
-        document.getElementById("gui-container").appendChild(controls.domElement);
+    class ControlsGui {
+        constructor(surfacce) {
+            const controls = new GUI({width: 275, autoPlace: false});
+            document.getElementById("gui-container").appendChild(controls.domElement);
 
-        const mathFolder = controls.addFolder("Mathematical Surface");
-        mathFolder.add(params, "customFunction").name("f(x,y) =")
-            .onFinishChange(expr => {
-                const f = surface.createMathJsSurface(expr);
-                if (f) surface.setSurfaceFunction(f, params.frequency);
+            const mathFolder = controls.addFolder("Mathematical Surface");
+            mathFolder.add(params, "customFunction").name("f(x,y) =")
+                .onFinishChange(expr => {
+                    const f = surface.createMathJsSurface(expr);
+                    if (f) surface.setSurfaceFunction(f, params.frequency);
+                });
+
+            const shapeFolder = controls.addFolder("Shape Controls");
+            shapeFolder.add(params, 'amplitude', 0.1, 1).step(0.01).name("Amplitude")
+                .onChange(() => surface.updateNormalsLength(params.resolution));
+            shapeFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
+
+            const appearanceFolder = controls.addFolder("Appearance");
+            appearanceFolder.add(params, "colorMode", ["Height", "Base", "Curvature"])
+                .name("Color Mode")
+                .onChange(() => surface.updateColors());
+            appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.updateColors());
+            appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
+                surface.rebuild(resolution)
+                surface.updateNormalsLength(resolution);
             });
 
-        const shapeFolder = controls.addFolder("Shape Controls");
-        shapeFolder.add(params, 'amplitude', 0.1, 1).step(0.01).name("Amplitude")
-            .onChange(() => surface.updateNormalsLength(params.resolution));
-        shapeFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
+            appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
+            appearanceFolder.add(params, 'animate').name("Animate");
+            appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.toggleWireframe(value));
+            appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
+            controls.add({reset: () => scenery.camera.position.set(6, 5, 6)}, "reset").name("Reset Camera");
+            appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => {
+                surface.normalsVisible = value;
+                if (surface.normalsHelper) surface.normalsHelper.visible = value;
+            });
 
-        const appearanceFolder = controls.addFolder("Appearance");
-        appearanceFolder.add(params, "colorMode", ["Height", "Base", "Curvature"])
-            .name("Color Mode")
-            .onChange(() => surface.updateColors());
-        appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.updateColors());
-        appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
-            surface.rebuild(resolution)
-            surface.updateNormalsLength(resolution);
-        });
-
-        appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
-        appearanceFolder.add(params, 'animate').name("Animate");
-        appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.toggleWireframe(value));
-        appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
-        controls.add({reset:()=> scenery.camera.position.set(6, 5, 6)}, "reset").name("Reset Camera");
-        appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => {
-            surface.normalsVisible = value;
-            if (surface.normalsHelper) surface.normalsHelper.visible = value;
-        });
-
-        mathFolder.open();
-        shapeFolder.close();
-        appearanceFolder.close();
+            mathFolder.open();
+            shapeFolder.close();
+            appearanceFolder.close();
+        }
     }
 
     class MatlabAxes {
@@ -137,52 +139,47 @@
             this.axesSize = axesSize;
             this.group = new THREE.Group();
 
-            // Create main axes using THREE built-in helper
-            //this.axesHelper = new THREE.AxesHelper(axesSize);
-            //parentGroup.add(this.axesHelper);
-
-            // Create grids in XY, YZ, XZ planes
-            this.gridXZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
-            this.gridXZ.rotation.x = Math.PI / 2; // XZ plane
-            this.gridXZ.position.y = .5 * this.axesSize;
-            this.gridXZ.position.z = -.5 * this.axesSize;
-            this.group.add(this.gridXZ);
-
-            this.gridYZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
-            this.gridYZ.rotation.z = Math.PI / 2; // YZ plane
-            this.gridYZ.position.y = .5 * this.axesSize;
-            this.gridYZ.position.x = -.5 * this.axesSize;
-            this.group.add(this.gridYZ);
-
-            this.gridXY = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
-            this.gridXY.rotation.x = 0; // XY plane
-            this.group.add(this.gridXY);
-
-            // Add transparent planes behind each grid
-            this.planeXZ = this.#createPlane(axesSize, 0.2, 0x888888);
-            this.planeXZ.rotation.x = -Math.PI / 2;
-            this.planeXZ.position.y = 0;
-            this.group.add(this.planeXZ);
-
-            this.planeYZ = this.#createPlane(axesSize, 0.2, 0x888888);
-            this.planeYZ.rotation.y = -Math.PI / 2;
-            this.planeYZ.position.x = -0.5 * this.axesSize;
-            this.planeYZ.position.y = 0.5 * this.axesSize;
-            this.group.add(this.planeYZ);
-
-            this.planeXY = this.#createPlane(axesSize, 0.2, 0x888888);
-            this.planeXY.position.y = 0.5 * this.axesSize;
-            this.planeXY.position.z = -0.5 * this.axesSize;
-            this.group.add(this.planeXY);
+            this.#createGrids(axesSize, gridDivisions);
+            this.#createPlanes(axesSize);
+            parentGroup.add(this.#createAxes(axesSize));
 
             // Group all helpers for easy visibility toggle
-            //this.group.add(this.gridXZ, this.gridYZ, this.gridXY, this.PlaneXY, this.PlaneYZ, this.PlaneZY);
-            //this.group.add(this.axesHelper, this.gridXZ, this.gridYZ, this.gridXY);
             parentGroup.add(this.group);
         }
 
-        #createPlane(size, opacity = 0.2, color = 0x888888) {
-            const geometry = new THREE.PlaneGeometry(size, size);
+        #createGrids(axesSize, gridDivisions) {
+            const gridXZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
+            gridXZ.rotation.x = Math.PI / 2;
+            gridXZ.position.set(0, .5 * axesSize, -0.5 * axesSize);
+            this.group.add(gridXZ);
+
+            const gridYZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
+            gridYZ.rotation.z = Math.PI / 2;
+            gridYZ.position.set(-0.5 * axesSize, .5 * axesSize, 0);
+            this.group.add(gridYZ);
+
+            const gridXY = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
+            this.group.add(gridXY);
+        }
+
+        #createPlanes(axesSize) {
+            const planeXZ = this.#createPlane(axesSize, 0, 0, 0);
+            planeXZ.rotation.x = -Math.PI / 2;
+
+            const planeYZ = this.#createPlane(axesSize, -0.5, 0.5, 0);
+            planeYZ.rotation.y = -Math.PI / 2;
+
+            this.#createPlane(axesSize, 0, 0.5, -0.5);
+        }
+
+        #createAxes(axesSize) {
+            const eps = .025
+            const axesHelper = new THREE.AxesHelper(axesSize);
+            axesHelper.position.set(-.5 * axesSize + eps, eps, -.5 * axesSize +eps);
+            return axesHelper;
+        }
+
+        #createPlane(size, x, y, z, opacity=0.2, color=0x888888) {
             const material = new THREE.MeshPhongMaterial({
                 color: color,
                 side: THREE.DoubleSide,
@@ -190,7 +187,10 @@
                 opacity: opacity,
                 depthWrite: false // ensures grid lines appear on top
             });
-            return new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(new THREE.PlaneGeometry(size, size), material);
+            mesh.position.set(x * size, y * size, z * size);
+            this.group.add(mesh);
+            return mesh;
         }
 
         show = (value) => this.group.visible = value;
@@ -210,29 +210,6 @@
             this.#build(resolution);
         }
 
-        createMathJsSurface(exprString) {
-            let compiled;
-            try {
-                const surfaceFunction = exprString + " * amplitude";
-                compiled = math.compile(surfaceFunction);
-            } catch (err) {
-                alert("Math.js parse error: " + err.message);
-                return null;
-            }
-
-            // Swap y and z so that Three.js Y-axis is vertical
-            return (u, v, amplitude, target) => {
-                const [x, y] = this.#scale(u, v);
-                let z;
-                try {
-                    z = compiled.evaluate({ x, y, amplitude });
-                } catch (err) {
-                    z = 0;
-                }
-                target.set(x, z, y); // z is vertical (Three.js Y), y is depth (Three.js Z)
-            };
-        }
-
         #computeCurvature() {
             const posAttr = this.geometry.attributes.position;
             const normAttr = this.geometry.attributes.normal;
@@ -247,6 +224,8 @@
             return curvatures;
         }
 
+        // !! v-coord is inverted for correct winding direction => influences the direction of the normal vectors.
+        // !! This is caused by the fact that we switched the y and z coordinates !!
         #scale = (u, v) => [this.axesSize * (u - 0.5), this.axesSize * (-v + 0.5)];
 
         #mesh(resolution, showWireframe) {
@@ -322,6 +301,29 @@
 
         #amplitudeModulation = (t) => (1.01 - Math.sin(t * params.frequency)) * params.amplitude;
 
+        createMathJsSurface(exprString) {
+            let compiled;
+            try {
+                const surfaceFunction = exprString + " * amplitude";
+                compiled = math.compile(surfaceFunction);
+            } catch (err) {
+                alert("Math.js parse error: " + err.message);
+                return null;
+            }
+
+            // Swap y and z so that Three.js Y-axis is vertical
+            return (u, v, amplitude, target) => {
+                const [x, y] = this.#scale(u, v);
+                let z;
+                try {
+                    z = compiled.evaluate({ x, y, amplitude });
+                } catch (err) {
+                    z = 0;
+                }
+                target.set(x, z, y); // z is vertical (Three.js Y), y is depth (Three.js Z)
+            };
+        }
+
         #material(showWireframe=true) {
             return new THREE.MeshPhongMaterial({
                 vertexColors: true,
@@ -352,29 +354,6 @@
             }
 
             return color;
-        }
-
-        setToMaxHeight = (frequency) => this.time = 3 * Math.PI / 2 / frequency;
-
-        toggleWireframe = (value) => this.mesh.material.wireframe = value;
-
-        setOpacity(opacity) {
-            this.mesh.material.opacity = opacity;
-            this.geometry.attributes.position.needsUpdate = true;
-        }
-
-        rebuild(resolution) {
-            if (this.normalsHelper) {
-                this.mesh.remove(this.normalsHelper);
-                this.normalsHelper.geometry.dispose();
-                this.normalsHelper.material.dispose();
-                this.normalsHelper = null;
-            }
-
-            this.parentGroup.remove(this.mesh);
-            this.geometry.dispose();
-
-            this.#build(resolution, this.mesh.material.wireframe);
         }
 
         #yMinMax() {
@@ -415,6 +394,31 @@
             const s = new Option().style;
             s.color = str;
             return s.color !== '';
+        }
+
+        #removeNormalsHelper() {
+            if (this.normalsHelper) {
+                this.mesh.remove(this.normalsHelper);
+                this.normalsHelper.geometry.dispose();
+                this.normalsHelper.material.dispose();
+                this.normalsHelper = null;
+            }
+        }
+
+        setToMaxHeight = (frequency) => this.time = 3 * Math.PI / 2 / frequency;
+
+        toggleWireframe = (value) => this.mesh.material.wireframe = value;
+
+        setOpacity(opacity) {
+            this.mesh.material.opacity = opacity;
+            this.geometry.attributes.position.needsUpdate = true;
+        }
+
+        rebuild(resolution) {
+            this.#removeNormalsHelper();
+            this.parentGroup.remove(this.mesh);
+            this.geometry.dispose();
+            this.#build(resolution, this.mesh.material.wireframe);
         }
 
         update(deltaTime) {
@@ -463,7 +467,7 @@
     axes.show(true);
 
     const surface = new Surface(worldGroup, scenery, params.customFunction);
-    createGui(surface);
+    new ControlsGui(surface);
 
     let lastTime = performance.now();
     function animate() {
