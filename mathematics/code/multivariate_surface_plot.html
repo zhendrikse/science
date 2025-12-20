@@ -137,52 +137,50 @@
             this.axesSize = axesSize;
             this.group = new THREE.Group();
 
-            // Create main axes using THREE built-in helper
-            //this.axesHelper = new THREE.AxesHelper(axesSize);
-            //parentGroup.add(this.axesHelper);
-
-            // Create grids in XY, YZ, XZ planes
-            this.gridXZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
-            this.gridXZ.rotation.x = Math.PI / 2; // XZ plane
-            this.gridXZ.position.y = .5 * this.axesSize;
-            this.gridXZ.position.z = -.5 * this.axesSize;
-            this.group.add(this.gridXZ);
-
-            this.gridYZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
-            this.gridYZ.rotation.z = Math.PI / 2; // YZ plane
-            this.gridYZ.position.y = .5 * this.axesSize;
-            this.gridYZ.position.x = -.5 * this.axesSize;
-            this.group.add(this.gridYZ);
-
-            this.gridXY = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
-            this.gridXY.rotation.x = 0; // XY plane
-            this.group.add(this.gridXY);
-
-            // Add transparent planes behind each grid
-            this.planeXZ = this.#createPlane(axesSize, 0.2, 0x888888);
-            this.planeXZ.rotation.x = -Math.PI / 2;
-            this.planeXZ.position.y = 0;
-            this.group.add(this.planeXZ);
-
-            this.planeYZ = this.#createPlane(axesSize, 0.2, 0x888888);
-            this.planeYZ.rotation.y = -Math.PI / 2;
-            this.planeYZ.position.x = -0.5 * this.axesSize;
-            this.planeYZ.position.y = 0.5 * this.axesSize;
-            this.group.add(this.planeYZ);
-
-            this.planeXY = this.#createPlane(axesSize, 0.2, 0x888888);
-            this.planeXY.position.y = 0.5 * this.axesSize;
-            this.planeXY.position.z = -0.5 * this.axesSize;
-            this.group.add(this.planeXY);
+            this.#createGrids(axesSize, gridDivisions);
+            this.#createPlanes(axesSize);
+            parentGroup.add(this.#createAxes());
 
             // Group all helpers for easy visibility toggle
-            //this.group.add(this.gridXZ, this.gridYZ, this.gridXY, this.PlaneXY, this.PlaneYZ, this.PlaneZY);
-            //this.group.add(this.axesHelper, this.gridXZ, this.gridYZ, this.gridXY);
             parentGroup.add(this.group);
         }
 
-        #createPlane(size, opacity = 0.2, color = 0x888888) {
-            const geometry = new THREE.PlaneGeometry(size, size);
+        #createGrids(axesSize, gridDivisions) {
+            const gridXZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
+            gridXZ.rotation.x = Math.PI / 2;
+            gridXZ.position.y = .5 * axesSize;
+            gridXZ.position.z = -.5 * axesSize;
+            this.group.add(gridXZ);
+
+            const gridYZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
+            gridYZ.rotation.z = Math.PI / 2;
+            gridYZ.position.y = .5 * axesSize;
+            gridYZ.position.x = -.5 * axesSize;
+            this.group.add(gridYZ);
+
+            const gridXY = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
+            gridXY.rotation.x = 0;
+            this.group.add(gridXY);
+        }
+
+        #createPlanes(axesSize) {
+            const planeXZ = this.#createPlane(axesSize, 0, 0, 0);
+            planeXZ.rotation.x = -Math.PI / 2;
+
+            const planeYZ = this.#createPlane(axesSize, -0.5, 0.5, 0);
+            planeYZ.rotation.y = -Math.PI / 2;
+
+            this.#createPlane(axesSize, 0, 0.5, -0.5);
+        }
+
+        #createAxes() {
+            const eps = .025
+            const axesHelper = new THREE.AxesHelper(axesSize);
+            axesHelper.position.set(-.5 * axesSize + eps, eps, -.5 * axesSize +eps);
+            return axesHelper;
+        }
+
+        #createPlane(size, x, y, z, opacity=0.2, color=0x888888) {
             const material = new THREE.MeshPhongMaterial({
                 color: color,
                 side: THREE.DoubleSide,
@@ -190,7 +188,12 @@
                 opacity: opacity,
                 depthWrite: false // ensures grid lines appear on top
             });
-            return new THREE.Mesh(geometry, material);
+            const mesh = new THREE.Mesh(new THREE.PlaneGeometry(size, size), material);
+            mesh.position.x = x * size;
+            mesh.position.y = y * size;
+            mesh.position.z = z * size;
+            this.group.add(mesh);
+            return mesh;
         }
 
         show = (value) => this.group.visible = value;
