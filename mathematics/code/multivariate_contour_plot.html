@@ -253,17 +253,16 @@
             const targetSize = this.axesSize * 0.9;
 
             const scale = targetSize / maxExtent;
-            const pos = this.geometry.attributes.position;
+            const position = this.geometry.attributes.position;
 
-            for (let i = 0; i < pos.count; i++)
-                pos.setXYZ(i, pos.getX(i) * scale, pos.getY(i) * scale, pos.getZ(i) * scale);
-            pos.needsUpdate = true;
+            for (let i = 0; i < position.count; i++)
+                position.setXYZ(i, position.getX(i) * scale, position.getY(i) * scale, position.getZ(i) * scale);
 
             const yMin = box.min.y * scale;
-            for (let i = 0; i < pos.count; i++)
-                pos.setY(i, pos.getY(i) - yMin);
-            pos.needsUpdate = true;
+            for (let i = 0; i < position.count; i++)
+                position.setY(i, position.getY(i) - yMin);
 
+            position.needsUpdate = true;
             this.geometry.computeVertexNormals();
             if (this.normalsHelper) this.normalsHelper.update();
         }
