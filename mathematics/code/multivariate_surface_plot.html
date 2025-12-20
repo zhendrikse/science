@@ -233,8 +233,7 @@
                 surfaceFunction :
                 (u, v, amplitude, target) => { target.set((u - .5) * axesSize, amplitude, (.5 - v) * axesSize); };
             this.parentGroup = parentGroup;
-            this.time = 0;
-            this.setToMaxHeight(params.frequency);
+            this.time = this.setToMaxHeight(params.frequency);
             this.normalsHelper = null;
             this.geometry = null;
             this.mesh = null;
@@ -258,7 +257,7 @@
 
         #mesh(resolution, showWireframe) {
             this.geometry = new ParametricGeometry(
-                (u, v, target) => this.surfaceFunction(u, v, this.#amplitudeModulation(0), target),
+                (u, v, target) => this.surfaceFunction(u, v, this.#amplitudeModulation(this.time), target),
                 resolution, resolution
             );
 
