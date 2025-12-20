@@ -101,7 +101,7 @@
             mathFolder.add(params, "customFunction").name("f(x,y) =")
                 .onFinishChange(expr => {
                     const func = this.stringToFunction(expr);
-                    if (func) surface.setSurfaceFunction(func, params.frequency);
+                    if (func) surface.setSurfaceFunction(func);
                 });
 
             const shapeFolder = controls.addFolder("Shape Controls");
@@ -235,7 +235,7 @@
                 (u, v, amplitude, target) => { target.set((u - .5) * axesSize, amplitude, (.5 - v) * axesSize); };
             this.parentGroup = parentGroup;
             this.time = 0;
-            this.setToMaxHeight(params.frequency);
+            this.setToMaxHeight();
             this.normalsHelper = null;
             this.geometry = null;
             this.mesh = null;
@@ -359,7 +359,7 @@
             return color;
         }
 
-        #amplitudeModulation = (t) => (1.01 - Math.sin(t * params.frequency)) * params.amplitude;
+        #amplitudeModulation = (t) => (1.01 - Math.cos(t * params.frequency + Math.PI)) * params.amplitude;
 
         #material(showWireframe=true) {
             return new THREE.MeshPhongMaterial({
@@ -410,7 +410,7 @@
             return s.color !== '';
         }
 
-        setToMaxHeight = (frequency) => this.time = 3 * Math.PI / 2 / frequency;
+        setToMaxHeight = () => this.time = 0;
 
         toggleWireframe = (value) => this.mesh.material.wireframe = value;
 
@@ -472,9 +472,9 @@
             this.normalsHelper.update(); // recalc positions
         }
 
-        setSurfaceFunction(newFunc, frequency) {
+        setSurfaceFunction(newFunc) {
             this.surfaceFunction = newFunc;
-            this.setToMaxHeight(frequency);
+            this.setToMaxHeight();
             this.rebuild(params.resolution);
         }
     }
@@ -497,7 +497,7 @@
 
     const parametricSurface = new Surface(worldGroup, scenery, null);
     const controlsGui = new ControlsGui(parametricSurface, axes);
-    parametricSurface.setSurfaceFunction(controlsGui.stringToFunction(params.customFunction), params.frequency);
+    parametricSurface.setSurfaceFunction(controlsGui.stringToFunction(params.customFunction));
 
     let lastTime = performance.now();
     function animate() {
