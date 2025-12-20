@@ -228,7 +228,7 @@
     }
 
     class Surface {
-        constructor(parentGroup, scenery, surfaceFunction, resolution=75, axesSize=4) {
+        constructor(parentGroup, surfaceFunction, resolution=75, axesSize=4) {
             this.axesSize = axesSize;
             this.surfaceFunction = surfaceFunction ?
                 surfaceFunction :
@@ -495,7 +495,7 @@
     const axes = new MatlabAxes(worldGroup);
     axes.show(true);
 
-    const parametricSurface = new Surface(worldGroup, scenery, null);
+    const parametricSurface = new Surface(worldGroup, null);
     const controlsGui = new ControlsGui(parametricSurface, axes);
     parametricSurface.setSurfaceFunction(controlsGui.stringToFunction(params.customFunction));
 
