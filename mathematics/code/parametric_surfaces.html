@@ -162,8 +162,16 @@
         target.set(x, z * amplitude, y);
     };
 
-    const SurfaceEquations = {
-        "Bow curve": "\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (2 + T \\sin(\\theta)) \\sin(\\phi) \\\\  (2 + T \\sin(\\theta)) \\cos(\\phi) \\\\ T \\cos(\\theta) + 3 \\cos(\\phi/2) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 4\\pi] \\end{cases}"
+    const Equations = {
+        "Arc": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta) \\\\ \\cos(\\phi)+\\sin(\\theta) \\\\ b\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, \\pi] \\\\ \\phi \\in [0, \\pi] \\end{cases}",
+        "Bow curve": "\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (2 + T \\sin(\\theta)) \\sin(\\phi) \\\\  (2 + T \\sin(\\theta)) \\cos(\\phi) \\\\ T \\cos(\\theta) + 3 \\cos(\\phi/2) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 4\\pi] \\end{cases}",
+        "Cosine": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\phi) \\\\ \\cos(\\theta) \\\\ \\cos(\\phi+\\theta)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+        "Elliptic torus": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a(\\cos(\\phi + c)\\cos(\\theta) \\\\ a(\\cos(\\phi + c)\\sin(\\theta) \\\\ a(\\sin(\\phi) + \\cos(\\phi))\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+        "Limpet torus": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta)/(\\sqrt{2} +\\sin(\\phi) \\\\ \\sin(\\theta)/(\\sqrt{2} +\\sin(\\phi) \\\\ 1//(\\sqrt{2} +\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+        "Sine": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\phi) \\\\ \\sin(\\theta) \\\\ \\sin(\\phi+\\theta)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+        "Torus": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta)(a \\cos(\\phi) + b) \\\\ \\sin(\\theta)(a \\cos(\\phi) + b) \\\\ a\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+        "Trefoil knot": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} (a (1 + 0.25\\sin(3\\phi)) + \\cos(\\theta)))\\cos(2\\phi) \\\\ (a (1 + 0.25\\sin(3\\phi)) + \\cos(\\theta)))\\sin(2\\phi) \\\\ \\sin(\\theta) + b\\cos(3\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+        "Twisted torus": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} (a + \\cos(\\theta) + \\sin(\\phi))\\cos(2\\phi) \\\\ (a + \\cos(\\theta) + \\sin(\\phi))\\sin(2\\phi) \\\\ \\sin(\\theta) + b\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
     };
 
     const Category = {
@@ -697,9 +705,9 @@
             this.visibleRingItems().forEach((item, index) => this.#placeAndShowSurface(item.surface, index));
         }
 
-        addSurface(surface, category, name) {
+        addSurface(surface, category, name, equation) {
             this.ring.add(surface.mesh);
-            this.items.push(new RingItem(surface, category, name));
+            this.items.push(new RingItem(surface, category, name, equation));
         }
     }
 
@@ -742,15 +750,15 @@
     const parametricSurface = new Surface(worldGroup, torus, params.resolution);
 
     const ring = new Ring(parametricSurface);
-    ring.addSurface(new Surface(scene, bowCurve, 20, 1, true), Category.Toroid, "Bow curve", SurfaceEquations["Bow curve"]);
-    ring.addSurface(new Surface(scene, twistedTorus, 20, 1, true), Category.Toroid, "Twisted torus");
-    ring.addSurface(new Surface(scene, torus, 20, 1, true), Category.Toroid, "Torus");
-    ring.addSurface(new Surface(scene, ellipticTorus, 20, 1, true), Category.Toroid, "Elliptic Torus");
-    ring.addSurface(new Surface(scene, limpetTorus, 20, 1, true), Category.Toroid, "Limpet torus");
-    ring.addSurface(new Surface(scene, trefoilKnot, 20, 1, true), Category.Toroid, "Trefoil knot");
-    ring.addSurface(new Surface(scene, arc, 20, 1, true), Category.Misc, "Arc");
-    ring.addSurface(new Surface(scene, sine, 20, 1, true), Category.Misc, "Sine cube");
-    ring.addSurface(new Surface(scene, cosine, 20, 1, true), Category.Misc, "Cosine cube");
+    ring.addSurface(new Surface(scene, bowCurve, 20, 1, true), Category.Toroid, "Bow curve", Equations["Bow curve"]);
+    ring.addSurface(new Surface(scene, twistedTorus, 20, 1, true), Category.Toroid, "Twisted torus", Equations["Twisted torus"]);
+    ring.addSurface(new Surface(scene, torus, 20, 1, true), Category.Toroid, "Torus", Equations["Torus"]);
+    ring.addSurface(new Surface(scene, ellipticTorus, 20, 1, true), Category.Toroid, "Elliptic Torus", Equations["Elliptic torus"]);
+    ring.addSurface(new Surface(scene, limpetTorus, 20, 1, true), Category.Toroid, "Limpet torus", Equations["Limpet torus"]);
+    ring.addSurface(new Surface(scene, trefoilKnot, 20, 1, true), Category.Toroid, "Trefoil knot", Equations["Trefoil knot"]);
+    ring.addSurface(new Surface(scene, arc, 20, 1, true), Category.Misc, "Arc", Equations["Arc"]);
+    ring.addSurface(new Surface(scene, sine, 20, 1, true), Category.Misc, "Sine cube", Equations["Sine cube"]);
+    ring.addSurface(new Surface(scene, cosine, 20, 1, true), Category.Misc, "Cosine cube", Equations["Cosine"]);
     ring.redistribute();
     // Auto-select first surface in the initial category
     const firstItem = ring.visibleRingItems()[0];
