@@ -232,7 +232,6 @@
             this.surfaceFunction = surfaceFunction ?
                 surfaceFunction :
                 (u, v, amplitude, target) => { target.set((u - .5) * axesSize, amplitude, (.5 - v) * axesSize); };
-            this.axesSize = axesSize;
             this.parentGroup = parentGroup;
             this.time = 0;
             this.setToMaxHeight(params.frequency);
