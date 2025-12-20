@@ -170,7 +170,7 @@
 
             this.#createGrids(axesSize, gridDivisions);
             this.#createPlanes(axesSize);
-            parentGroup.add(this.#createAxes(axesSize));
+            this.group.add(this.#createAxes(axesSize));
 
             // Group all helpers for easy visibility toggle
             parentGroup.add(this.group);
