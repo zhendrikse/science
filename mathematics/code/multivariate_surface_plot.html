@@ -37,7 +37,7 @@
             this.scene = scene;
 
             this.controls.enableDamping = true;
-            this.camera.position.set(6, 5, 6);
+            this.camera.position.set(5, 5, 7);
             this.scene.background = new THREE.Color(0x131313);
 
             this.scene.add(worldGroup);
@@ -86,21 +86,22 @@
         axes: true,
         normals: false,
         animate: false,
-        resolution: 50,
+        resolution: 75,
         opacity: 0.9,
-        customFunction: "1 + .5 * sin(3 * sqrt(x*x + y*y)) / sqrt(x*x + y*y)"
+        customFunction: ".75 + 1.5 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))"
     }
 
     class ControlsGui {
-        constructor(surfacce) {
+        constructor(surface, axes) {
+            this.axesSize = axes.getAxesSize();
             const controls = new GUI({width: 275, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
             const mathFolder = controls.addFolder("Mathematical Surface");
             mathFolder.add(params, "customFunction").name("f(x,y) =")
                 .onFinishChange(expr => {
-                    const f = surface.createMathJsSurface(expr);
-                    if (f) surface.setSurfaceFunction(f, params.frequency);
+                    const func = this.stringToFunction(expr);
+                    if (func) surface.setSurfaceFunction(func, params.frequency);
                 });
 
             const shapeFolder = controls.addFolder("Shape Controls");
@@ -122,7 +123,7 @@
             appearanceFolder.add(params, 'animate').name("Animate");
             appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.toggleWireframe(value));
             appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
-            controls.add({reset: () => scenery.camera.position.set(6, 5, 6)}, "reset").name("Reset Camera");
+            controls.add({reset: () => scenery.camera.position.set(5, 5, 7)}, "reset").name("Reset Camera");
             appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => {
                 surface.normalsVisible = value;
                 if (surface.normalsHelper) surface.normalsHelper.visible = value;
@@ -131,6 +132,34 @@
             mathFolder.open();
             shapeFolder.close();
             appearanceFolder.close();
+        }
+
+        // !! v-coord is inverted for correct winding direction => influences the direction of the normal vectors.
+        // !! This is caused by the fact that we switched the y and z coordinates !!
+        #scale = (u, v) => [this.axesSize * (u - 0.5), this.axesSize * (-v + 0.5)];
+
+        stringToFunction(exprString) {
+            let compiled;
+            try {
+                const surfaceFunction = exprString + " * amplitude";
+                compiled = math.compile(surfaceFunction);
+            } catch (err) {
+                alert("Math.js parse error: " + err.message);
+                return null;
+            }
+
+            // Swap y and z so that Three.js Y-axis is vertical
+            return (u, v, amplitude, target) => {
+                const [x, y] = this.#scale(u, v);
+                let z;
+                try {
+                    z = compiled.evaluate({ x, y, amplitude });
+                } catch (err) {
+                    z = 0;
+                }
+                z = Number.isFinite(z) ? z : 0; // safeguard for user defined functions
+                target.set(x, z, y); // z is vertical (Three.js Y), y is depth (Three.js Z)
+            };
         }
     }
 
@@ -194,11 +223,15 @@
         }
 
         show = (value) => this.group.visible = value;
+
+        getAxesSize = () => this.axesSize;
     }
 
     class Surface {
-        constructor(parentGroup, scenery, functionAsString="5 * sin(x*x + y*y) * exp(-x*x - y*y)", resolution=75, axesSize=4) {
-            this.surfaceFunction = this.createMathJsSurface(functionAsString);
+        constructor(parentGroup, scenery, surfaceFunction, resolution=75, axesSize=4) {
+            this.surfaceFunction = surfaceFunction ?
+                surfaceFunction :
+                (u, v, amplitude, target) => { target.set((u - .5) * axesSize, amplitude, (.5 - v) * axesSize); };
             this.axesSize = axesSize;
             this.parentGroup = parentGroup;
             this.time = 0;
@@ -223,10 +256,6 @@
             }
             return curvatures;
         }
-
-        // !! v-coord is inverted for correct winding direction => influences the direction of the normal vectors.
-        // !! This is caused by the fact that we switched the y and z coordinates !!
-        #scale = (u, v) => [this.axesSize * (u - 0.5), this.axesSize * (-v + 0.5)];
 
         #mesh(resolution, showWireframe) {
             this.geometry = new ParametricGeometry(
@@ -301,29 +330,6 @@
 
         #amplitudeModulation = (t) => (1.01 - Math.sin(t * params.frequency)) * params.amplitude;
 
-        createMathJsSurface(exprString) {
-            let compiled;
-            try {
-                const surfaceFunction = exprString + " * amplitude";
-                compiled = math.compile(surfaceFunction);
-            } catch (err) {
-                alert("Math.js parse error: " + err.message);
-                return null;
-            }
-
-            // Swap y and z so that Three.js Y-axis is vertical
-            return (u, v, amplitude, target) => {
-                const [x, y] = this.#scale(u, v);
-                let z;
-                try {
-                    z = compiled.evaluate({ x, y, amplitude });
-                } catch (err) {
-                    z = 0;
-                }
-                target.set(x, z, y); // z is vertical (Three.js Y), y is depth (Three.js Z)
-            };
-        }
-
         #material(showWireframe=false) {
             return new THREE.MeshPhongMaterial({
                 vertexColors: true,
@@ -367,29 +373,6 @@
             return [yMin, yMax];
         }
 
-        updateColors() {
-            const posAttr = this.geometry.attributes.position;
-            const colors = this.geometry.attributes.color.array;
-            const range = this.#yMinMax();
-            let curvature = params.colorMode === "Curvature" ? this.#computeCurvature() : null;
-
-            for (let i = 0; i < posAttr.count; i++) {
-                let c;
-                if (params.colorMode === "Height")
-                    c = this.#updateColor(posAttr.getY(i), range);
-                else if (params.colorMode === "Base")
-                    c = this.#updateColor(posAttr.getY(i), range, true); // pass a flag for base color
-                else if (params.colorMode === "Curvature")
-                    c = this.#colorFromCurvature(curvature[i]);
-
-                colors[3 * i]     = c.r;
-                colors[3 * i + 1] = c.g;
-                colors[3 * i + 2] = c.b;
-            }
-
-            this.geometry.attributes.color.needsUpdate = true;
-        }
-
         #isValidColor(str) {
             const s = new Option().style;
             s.color = str;
@@ -429,6 +412,29 @@
             this.updateColors(); // needed when colors depend on height
         }
 
+        updateColors() {
+            const posAttr = this.geometry.attributes.position;
+            const colors = this.geometry.attributes.color.array;
+            const range = this.#yMinMax();
+            let curvature = params.colorMode === "Curvature" ? this.#computeCurvature() : null;
+
+            for (let i = 0; i < posAttr.count; i++) {
+                let c;
+                if (params.colorMode === "Height")
+                    c = this.#updateColor(posAttr.getY(i), range);
+                else if (params.colorMode === "Base")
+                    c = this.#updateColor(posAttr.getY(i), range, true); // pass a flag for base color
+                else if (params.colorMode === "Curvature")
+                    c = this.#colorFromCurvature(curvature[i]);
+
+                colors[3 * i]     = c.r;
+                colors[3 * i + 1] = c.g;
+                colors[3 * i + 2] = c.b;
+            }
+
+            this.geometry.attributes.color.needsUpdate = true;
+        }
+
         updateNormalsLength(resolution) {
             if (!this.normalsHelper) return;
 
@@ -466,8 +472,9 @@
     const axes = new MatlabAxes(worldGroup);
     axes.show(true);
 
-    const surface = new Surface(worldGroup, scenery, params.customFunction);
-    new ControlsGui(surface);
+    const parametricSurface = new Surface(worldGroup, scenery, null);
+    const controlsGui = new ControlsGui(parametricSurface, axes);
+    parametricSurface.setSurfaceFunction(controlsGui.stringToFunction(params.customFunction), params.frequency);
 
     let lastTime = performance.now();
     function animate() {
@@ -477,7 +484,7 @@
         const deltaTime = params.animate ? (now - lastTime) * 0.001 : 0;
         lastTime = now;
 
-        surface.update(deltaTime);
+        parametricSurface.update(deltaTime);
         scenery.render();
     }
     animate();
