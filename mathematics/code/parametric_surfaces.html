@@ -601,10 +601,11 @@
     }
 
     class RingItem {
-        constructor(surface, category, name) {
+        constructor(surface, category, name, equation) {
             this.surface = surface;
             this.category = category;
             this.name = name;
+            this.equation = equation;
         }
     }
 
@@ -650,20 +651,12 @@
 
         #updateSurfaceName() {
             const nameDiv = document.getElementById("surface-name");
-            const eqDiv = document.getElementById("surface-equation");
+            const equationDiv = document.getElementById('surface-equation');
 
             const item = this.items.find(item => item.surface.mesh === this.selectedSurfaceMesh);
             nameDiv.textContent = item ? item.name : "Surface not found";
-
-            // Update math formula
-            if(item && SurfaceEquations[item.name]) {
-                eqDiv.textContent = SurfaceEquations[item.name];
-                MathJax.typesetPromise([eqDiv]); // Render LaTeX
-            } else {
-                eqDiv.textContent = "";
-            }
+            equationDiv.innerHTML = item ? item.equation : "Equation not found";
         }
-
 
         setSelectedSurfaceMesh = (mesh) => {
             const surfaceFunction = mesh.userData.surfaceFunction;
@@ -749,7 +742,7 @@
     const parametricSurface = new Surface(worldGroup, torus, params.resolution);
 
     const ring = new Ring(parametricSurface);
-    ring.addSurface(new Surface(scene, bowCurve, 20, 1, true), Category.Toroid, "Bow curve");
+    ring.addSurface(new Surface(scene, bowCurve, 20, 1, true), Category.Toroid, "Bow curve", SurfaceEquations["Bow curve"]);
     ring.addSurface(new Surface(scene, twistedTorus, 20, 1, true), Category.Toroid, "Twisted torus");
     ring.addSurface(new Surface(scene, torus, 20, 1, true), Category.Toroid, "Torus");
     ring.addSurface(new Surface(scene, ellipticTorus, 20, 1, true), Category.Toroid, "Elliptic Torus");
