@@ -1127,27 +1127,28 @@
         inspector.open();
     }
 
-    window.addEventListener("pointerdown", event => {
+    canvas.addEventListener("pointerdown", event => {
         const rect = canvas.getBoundingClientRect();
 
-        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        const mouse = new THREE.Vector2(
+            ((event.clientX - rect.left) / rect.width) * 2 - 1,
+            -((event.clientY - rect.top) / rect.height) * 2 + 1
+        );
 
         raycaster.setFromCamera(mouse, camera);
 
-        const hits = raycaster.intersectObjects(
-            ring.getVisibleMeshes(),
-            true
-        );
+        const hits = raycaster.intersectObjects(ring.getVisibleMeshes(), true);
 
         if (!hits.length) return;
 
         let topLevelSurfaceObject = hits[0].object;
-        while (topLevelSurfaceObject.parent && !ring.includes(topLevelSurfaceObject))
+        while (
+            topLevelSurfaceObject.parent && !ring.includes(topLevelSurfaceObject)) {
             topLevelSurfaceObject = topLevelSurfaceObject.parent;
+        }
 
         ring.clearSelection();
-        ring.selectMesh(topLevelSurfaceObject, showFormulaCheckbox.checked, showNameCheckbox.checked);
+        ring.selectMesh(topLevelSurfaceObject,showFormulaCheckbox.checked,showNameCheckbox.checked);
         ring.setTargetRotation();
         onSurfaceSelected(topLevelSurfaceObject);
     });
