@@ -664,6 +664,7 @@
             const item = this.items.find(item => item.surface.mesh === this.selectedSurfaceMesh);
             nameDiv.textContent = item ? item.name : "Surface not found";
             equationDiv.innerHTML = item ? "$$" + item.equation + "$$" : "Equation not found";
+            MathJax.typesetPromise([equationDiv]);
         }
 
         setSelectedSurfaceMesh = (mesh) => {
