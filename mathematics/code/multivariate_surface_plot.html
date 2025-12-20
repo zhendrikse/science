@@ -81,14 +81,14 @@
         amplitude: 1.0,
         frequency: 0.5,
         baseColor: "#4f6",
-        colorMode: "Height",   // 'Height' | 'Base' | 'Curvature'
+        colorMode: "Height",
         wireframe: false,
         axes: true,
         normals: false,
         animate: false,
         resolution: 75,
         opacity: 0.9,
-        customFunction: ".75 + 1.5 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))"
+        customFunction: "1.5 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))"
     }
 
     class ControlsGui {
@@ -229,6 +229,7 @@
 
     class Surface {
         constructor(parentGroup, scenery, surfaceFunction, resolution=75, axesSize=4) {
+            this.axesSize = axesSize;
             this.surfaceFunction = surfaceFunction ?
                 surfaceFunction :
                 (u, v, amplitude, target) => { target.set((u - .5) * axesSize, amplitude, (.5 - v) * axesSize); };
@@ -239,7 +240,32 @@
             this.geometry = null;
             this.mesh = null;
             this.normalsVisible = false;
-            this.#build(resolution);
+            this.#buildGeometry(resolution);
+            this.#fitToAxesAndScale();
+        }
+
+        #fitToAxesAndScale() {
+            this.geometry.computeBoundingBox();
+            const box = this.geometry.boundingBox;
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            const maxExtent = Math.max(size.x, size.y, size.z);
+            const targetSize = this.axesSize * 0.9;
+
+            const scale = targetSize / maxExtent;
+            const pos = this.geometry.attributes.position;
+
+            for (let i = 0; i < pos.count; i++)
+                pos.setXYZ(i, pos.getX(i) * scale, pos.getY(i) * scale, pos.getZ(i) * scale);
+            pos.needsUpdate = true;
+
+            const yMin = box.min.y * scale;
+            for (let i = 0; i < pos.count; i++)
+                pos.setY(i, pos.getY(i) - yMin);
+            pos.needsUpdate = true;
+
+            this.geometry.computeVertexNormals();
+            if (this.normalsHelper) this.normalsHelper.update();
         }
 
         #magnitudeOfNormalChange = (nx, ny, nz) => Math.sqrt(nx*nx + ny*ny + nz*nz);
@@ -257,7 +283,7 @@
             return curvatures;
         }
 
-        #mesh(resolution, showWireframe) {
+        #buildGeometry(resolution) {
             this.geometry = new ParametricGeometry(
                 (u, v, target) => this.surfaceFunction(u, v, this.#amplitudeModulation(this.time), target),
                 resolution, resolution
@@ -266,27 +292,33 @@
             const colors = new Float32Array(this.geometry.attributes.position.count * 3);
             this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-            const mesh = new THREE.Mesh(this.geometry, this.#material(showWireframe));
-            mesh.castShadow = false;
-            mesh.receiveShadow = false;
-            return mesh; // mesh stays at (0,0,0)
-        }
+            if (this.mesh) {
+                this.parentGroup.remove(this.mesh);
+                this.#removeNormalsHelper();
+                this.geometry.dispose();
+            }
 
-
-        #build(resolution, showWireframe = false) {
-            this.mesh = this.#mesh(resolution, showWireframe);
+            this.mesh = new THREE.Mesh(this.geometry, this.#material(this.mesh?.material.wireframe || false));
             this.parentGroup.add(this.mesh);
 
-            this.normalsHelper = new VertexNormalsHelper(
-                this.mesh,
-                0.2,
-                0x770000
-            );
+            this.#addNormalsHelper();
+            this.updateColors();
+            this.updateNormalsLength(resolution);
+        }
+
+        #addNormalsHelper() {
+            this.normalsHelper = new VertexNormalsHelper(this.mesh, 0.2, 0x770000);
             this.normalsHelper.visible = this.normalsVisible;
             this.mesh.add(this.normalsHelper);
+        }
 
-            this.updateColors();
-            this.#updateGeometry();
+        #removeNormalsHelper() {
+            if (this.normalsHelper) {
+                this.mesh.remove(this.normalsHelper);
+                this.normalsHelper.geometry.dispose();
+                this.normalsHelper.material.dispose();
+                this.normalsHelper = null;
+            }
         }
 
         #updateGeometry() {
@@ -342,22 +374,25 @@
 
         #colorFromCurvature(k) {
             const color = new THREE.Color();
-            const t = THREE.MathUtils.clamp(k, 0, 1);
+            const t = THREE.MathUtils.clamp(k * 500, 0, 1); // scale curvature for visibility
 
             if (params.baseColor && this.#isValidColor(params.baseColor)) {
                 color.setStyle(params.baseColor);
                 const hsl = {};
                 color.getHSL(hsl);
-                hsl.l = 0.3 + 0.5 * t; // lighter in high curvature
-                hsl.s = 0.6 + 0.4 * t;
+
+                // Modulate lightness and saturation by curvature
+                hsl.l = 0.4 + 0.4 * (1 - t); // darker in high curvature
+                hsl.s = 0.5 + 0.5 * (1 - t); // less saturated in high curvature, more in low
+
                 color.setHSL(hsl.h, hsl.s, hsl.l);
             } else {
+                // fallback gradient if baseColor is invalid
                 color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
             }
 
             return color;
         }
-
 
         #yMinMax() {
             let yMin = Infinity, yMax = -Infinity;
@@ -376,15 +411,6 @@
             return s.color !== '';
         }
 
-        #removeNormalsHelper() {
-            if (this.normalsHelper) {
-                this.mesh.remove(this.normalsHelper);
-                this.normalsHelper.geometry.dispose();
-                this.normalsHelper.material.dispose();
-                this.normalsHelper = null;
-            }
-        }
-
         setToMaxHeight = (frequency) => this.time = 3 * Math.PI / 2 / frequency;
 
         toggleWireframe = (value) => this.mesh.material.wireframe = value;
@@ -395,10 +421,8 @@
         }
 
         rebuild(resolution) {
-            this.#removeNormalsHelper();
-            this.parentGroup.remove(this.mesh);
-            this.geometry.dispose();
-            this.#build(resolution, this.mesh.material.wireframe);
+            this.#buildGeometry(resolution);
+            this.#fitToAxesAndScale();
         }
 
         update(deltaTime) {
@@ -406,7 +430,9 @@
 
             this.time += deltaTime;
             this.#updateGeometry();
-            this.updateColors(); // needed when colors depend on height
+            this.#fitToAxesAndScale();
+            this.updateColors();
+            if (this.normalsHelper) this.updateNormalsLength(params.resolution);
         }
 
         updateColors() {
