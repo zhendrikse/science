@@ -589,8 +589,6 @@
             this.normalsHelper.update(); // recalc positions
         }
 
-        isVisible = () => this.mesh.material.visible;
-
         show = () => this.mesh.material.visible = true;
 
         hide = () => this.mesh.material.visible = false;
@@ -664,16 +662,19 @@
             const item = this.items.find(item => item.surface.mesh === this.selectedSurfaceMesh);
             nameDiv.textContent = item ? item.name : "Surface not found";
             equationDiv.innerHTML = item ? "$$" + item.equation + "$$" : "Equation not found";
-            MathJax.typesetPromise([equationDiv]);
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, eqDiv]);
         }
 
         setSelectedSurfaceMesh = (mesh) => {
             const surfaceFunction = mesh.userData.surfaceFunction;
             this.displaySurface.setSurfaceFunction(surfaceFunction);
 
-            mesh.material.emissive.set(0x444444);
-            if (this.selectedSurfaceMesh)
+            mesh.material.emissive.set(0x111111);
+            mesh.material.wireframe = false;
+            if (this.selectedSurfaceMesh) {
                 this.selectedSurfaceMesh.material.emissive.set(0x000000);
+                this.selectedSurfaceMesh.material.wireframe = true;
+            }
             this.selectedSurfaceMesh = mesh;
             this.#setTargetRotation();
             this.#updateSurfaceName();
