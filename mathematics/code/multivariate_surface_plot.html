@@ -117,8 +117,8 @@
             const appearanceFolder = controls.addFolder("Appearance");
             appearanceFolder.add(params, "colorMode", ["Height", "Base", "Curvature 1", "Curvature 2"])
                 .name("Color Mode")
-                .onChange(() => surface.updateColors());
-            appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.updateColors());
+                .onChange(() => surface.requestColorUpdate());
+            appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.requestColorUpdate());
             appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
                 surface.rebuild(resolution)
                 surface.updateNormalsLength(resolution);
@@ -242,6 +242,7 @@
             this.normalsVisible = false;
             this.#buildGeometry(resolution, showWireframe);
             this.#fitToAxesAndScale();
+            this.colorsDirty = true;
         }
 
         #surfaceFunctionFrom(xCoordinateFunction, yCoordinateFunction, zCoordinateFunction) {
@@ -315,7 +316,7 @@
             this.parentGroup.add(this.mesh);
 
             this.#addNormalsHelper();
-            this.updateColors();
+            this.#updateColors();
             this.updateNormalsLength(resolution);
         }
 
@@ -415,36 +416,7 @@
             return yRange;
         }
 
-
-        #isValidColor(str) {
-            const s = new Option().style;
-            s.color = str;
-            return s.color !== '';
-        }
-
-        toggleWireframe = (value) => this.mesh.material.wireframe = value;
-
-        setOpacity(opacity) {
-            this.mesh.material.opacity = opacity;
-            this.geometry.attributes.position.needsUpdate = true;
-        }
-
-        rebuild(resolution) {
-            this.#buildGeometry(resolution, this.mesh.material.wireframe);
-            this.#fitToAxesAndScale();
-        }
-
-        update(deltaTime) {
-            if (!params.animate) return;
-
-            this.time += deltaTime;
-            this.#updateGeometry();
-            this.#fitToAxesAndScale();
-            this.updateColors();
-            if (this.normalsHelper) this.updateNormalsLength(params.resolution);
-        }
-
-        updateColors() {
+        #updateColors() {
             const posAttr = this.geometry.attributes.position;
             const colors = this.geometry.attributes.color.array;
             const yRange = this.#yMinMax();
@@ -467,6 +439,43 @@
 
             this.geometry.attributes.color.needsUpdate = true;
         }
+
+        #isValidColor(str) {
+            const s = new Option().style;
+            s.color = str;
+            return s.color !== '';
+        }
+
+        #updateColorsIfNeeded() {
+            if (!this.colorsDirty) return;
+            this.#updateColors();
+            this.colorsDirty = false;
+        }
+
+        toggleWireframe = (value) => this.mesh.material.wireframe = value;
+
+        setOpacity(opacity) {
+            this.mesh.material.opacity = opacity;
+            this.geometry.attributes.position.needsUpdate = true;
+        }
+
+        rebuild(resolution) {
+            this.#buildGeometry(resolution, this.mesh.material.wireframe);
+            this.#fitToAxesAndScale();
+            this.requestColorUpdate();
+        }
+
+        update(deltaTime) {
+            if (!params.animate) return;
+
+            this.time += deltaTime;
+            this.#updateGeometry();
+            this.#fitToAxesAndScale();
+            this.#updateColorsIfNeeded();
+            if (this.normalsHelper) this.updateNormalsLength(params.resolution);
+        }
+
+        requestColorUpdate = () => this.colorsDirty = true;
 
         updateNormalsLength(resolution) {
             if (!this.normalsHelper) return;
