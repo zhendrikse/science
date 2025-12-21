@@ -473,12 +473,12 @@
         }
 
         update(deltaTime) {
+            this.#updateColorsIfNeeded();
             if (!params.animate) return;
 
             this.time += deltaTime;
             this.#updateGeometry();
             this.#fitToAxesAndScale();
-            this.#updateColorsIfNeeded();
             if (this.normalsHelper) this.updateNormalsLength(params.resolution);
         }
 
