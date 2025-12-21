@@ -236,10 +236,10 @@
             showWireframe = false,
             surface = {}
         } = {}) {
-            this.surface = {
+            this.surface = Object.freeze({
                 ...defaultSurfaceDefinition,
                 ...surface
-            };
+            });
             this.surfaceFunction = this.#surfaceFunctionFrom(this.surface.xFn, this.surface.yFn, this.surface.zFn);
             this.parentGroup = parentGroup;
             this.time = 0;
