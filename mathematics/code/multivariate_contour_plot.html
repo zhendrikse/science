@@ -86,23 +86,19 @@
         axes: true,
         normals: false,
         animate: false,
-        resolution: 40,
+        resolution: 75,
         opacity: 0.9,
         customFunction: "1.5 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))"
     }
 
     class ControlsGui {
         constructor(surface, axes) {
-            this.axesSize = axes.getAxesSize();
             const controls = new GUI({width: 275, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
             const mathFolder = controls.addFolder("Mathematical Surface");
             mathFolder.add(params, "customFunction").name("f(x,y) =")
-                .onFinishChange(expr => {
-                    const func = this.stringToFunction(expr);
-                    if (func) surface.setSurfaceFunction(func);
-                });
+                .onFinishChange(expr => surface.setSurfaceFunction(expr));
 
             const shapeFolder = controls.addFolder("Shape Controls");
             shapeFolder.add(params, 'amplitude', 0.1, 1).step(0.01).name("Amplitude")
@@ -133,39 +129,10 @@
             shapeFolder.close();
             appearanceFolder.close();
         }
-
-        // !! v-coord is inverted for correct winding direction => influences the direction of the normal vectors.
-        // !! This is caused by the fact that we switched the y and z coordinates !!
-        #scale = (u, v) => [this.axesSize * (u - 0.5), this.axesSize * (-v + 0.5)];
-
-        stringToFunction(exprString) {
-            let compiled;
-            try {
-                const surfaceFunction = exprString + " * amplitude";
-                compiled = math.compile(surfaceFunction);
-            } catch (err) {
-                alert("Math.js parse error: " + err.message);
-                return null;
-            }
-
-            // Swap y and z so that Three.js Y-axis is vertical
-            return (u, v, amplitude, target) => {
-                const [x, y] = this.#scale(u, v);
-                let z;
-                try {
-                    z = compiled.evaluate({ x, y, amplitude });
-                } catch (err) {
-                    z = 0;
-                }
-                z = Number.isFinite(z) ? z : 0; // safeguard for user defined functions
-                target.set(x, z, y); // z is vertical (Three.js Y), y is depth (Three.js Z)
-            };
-        }
     }
 
     class MatlabAxes {
         constructor(parentGroup, axesSize=4, gridDivisions=10) {
-            this.axesSize = axesSize;
             this.group = new THREE.Group();
 
             this.#createGrids(axesSize, gridDivisions);
@@ -223,16 +190,36 @@
         }
 
         show = (value) => this.group.visible = value;
+    }
 
-        getAxesSize = () => this.axesSize;
+    class Interval {
+        constructor(from=-Infinity, to=Infinity) {
+            this.from = from;
+            this.to = to;
+        }
+
+        range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
+
+        modifyToInclude(y) {
+            if (this.from < y) this.from = y;
+            if (this.to > y) this.to = y;
+        }
+
+        scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
+
+        scaleParameters = (u, v) => [
+            this.range() * (u + this.from / this.range()),
+            this.range() * (v + this.from / this.range())
+        ];
     }
 
     class Surface {
-        constructor(parentGroup, surfaceFunction, resolution=75, axesSize=4) {
-            this.axesSize = axesSize;
-            this.surfaceFunction = surfaceFunction ?
-                surfaceFunction :
-                (u, v, amplitude, target) => { target.set((u - .5) * axesSize, amplitude, (.5 - v) * axesSize); };
+        constructor(parentGroup, xyFunction, resolution=75, xAndYInterval=new Interval(-2, 2)) {
+            this.xAndYInterval = xAndYInterval;
+
+            this.surfaceFunction = xyFunction ?
+                this.#surfaceFunctionFromString(xyFunction) :
+                this.#surfaceFunctionFrom((x, y) => 4);
             this.parentGroup = parentGroup;
             this.time = 0;
             this.setToMaxHeight();
@@ -244,13 +231,56 @@
             this.#fitToAxesAndScale();
         }
 
+        #xCoordinateFunction = (x) => x;
+        // !! y-coord is inverted for correct winding direction => influences the direction of the normal vectors.
+        //    This is caused by the fact that we have to switch the y and z coordinates !!
+        #yCoordinateFunction = (y) => -y;
+
+        #surfaceFunctionFromString(functionAsString) {
+            let compiled;
+            try {
+                compiled = math.compile(functionAsString);
+            } catch (err) {
+                alert("Math.js parse error: " + err.message);
+                return null;
+            }
+
+            // Swap y and z so that Three.js Y-axis is vertical
+            return (normalized_u, normalized_v, amplitude, target) => {
+                const
+                    [u, v] = this.xAndYInterval.scaleParameters(normalized_u, normalized_v),
+                    x = this.#xCoordinateFunction(u),
+                    y = this.#yCoordinateFunction(v);
+                let z;
+                try {
+                    z = compiled.evaluate({ x, y });
+                } catch (err) {
+                    z = 0;
+                }
+                z = Number.isFinite(z) ? z : 0; // safeguard for user defined functions
+                target.set(x, z * amplitude, y); // z is vertical (Three.js Y), y is depth (Three.js Z)
+            };
+        }
+
+        #surfaceFunctionFrom(xyFunction) {
+            return (normalized_u, normalized_v, amplitude, target) => {
+                const
+                    [u, v] = this.xAndYInterval.scaleParameters(normalized_u, normalized_v),
+                    x = this.#xCoordinateFunction(u),
+                    y = this.#yCoordinateFunction(v),
+                    z = xyFunction(u, v) * amplitude;
+
+                target.set(x, z, y);
+            }
+        }
+
         #fitToAxesAndScale() {
             this.geometry.computeBoundingBox();
             const box = this.geometry.boundingBox;
             const size = new THREE.Vector3();
             box.getSize(size);
             const maxExtent = Math.max(size.x, size.y, size.z);
-            const targetSize = this.axesSize * 0.9;
+            const targetSize = this.xAndYInterval.range() * 0.9;
 
             const scale = targetSize / maxExtent;
             const position = this.geometry.attributes.position;
@@ -341,7 +371,7 @@
         }
 
         #updateColor(yValue, range, useBaseColor = false) {
-            const t = range[1] !== range[0] ? (yValue - range[0]) / (range[1] - range[0]) : 0;
+            const t = range.scaleValue(yValue);
             const color = new THREE.Color();
             const hsl = {};
 
@@ -394,15 +424,13 @@
         }
 
         #yMinMax() {
-            let yMin = Infinity, yMax = -Infinity;
+            const yRange = new Interval();
             const posAttr = this.geometry.attributes.position;
-            for(let i = 0; i < posAttr.count; i++) {
-                const y = posAttr.getY(i);
-                if (y < yMin) yMin = y;
-                if (y > yMax) yMax = y;
-            }
-            return [yMin, yMax];
+            for(let i = 0; i < posAttr.count; i++)
+                yRange.modifyToInclude(posAttr.getY(i));
+            return yRange;
         }
+
 
         #isValidColor(str) {
             const s = new Option().style;
@@ -437,16 +465,16 @@
         updateColors() {
             const posAttr = this.geometry.attributes.position;
             const colors = this.geometry.attributes.color.array;
-            const range = this.#yMinMax();
+            const yRange = this.#yMinMax();
             let curvature = params.colorMode === "Curvature 1" ? this.#computeCurvature(this.#deviationFromYAxis) : null;
             curvature = params.colorMode === "Curvature 2" ? this.#computeCurvature(this.#magnitudeOfNormalChange) : curvature;
 
             for (let i = 0; i < posAttr.count; i++) {
                 let c;
                 if (params.colorMode === "Height")
-                    c = this.#updateColor(posAttr.getY(i), range);
+                    c = this.#updateColor(posAttr.getY(i), yRange);
                 else if (params.colorMode === "Base")
-                    c = this.#updateColor(posAttr.getY(i), range, true); // pass a flag for base color
+                    c = this.#updateColor(posAttr.getY(i), yRange, true); // pass a flag for base color
                 else if (params.colorMode === "Curvature 1" || params.colorMode === "Curvature 2")
                     c = this.#colorFromCurvature(curvature[i]);
 
@@ -472,8 +500,10 @@
             this.normalsHelper.update(); // recalc positions
         }
 
-        setSurfaceFunction(newFunc) {
-            this.surfaceFunction = newFunc;
+        setSurfaceFunction(xyFunctionAsString) {
+            this.surfaceFunction = xyFunctionAsString ?
+                this.#surfaceFunctionFromString(xyFunctionAsString) :
+                this.#surfaceFunctionFrom((x, y) => 4);
             this.setToMaxHeight();
             this.rebuild(params.resolution);
         }
@@ -496,8 +526,8 @@
     axes.show(true);
 
     const parametricSurface = new Surface(worldGroup, null);
-    const controlsGui = new ControlsGui(parametricSurface, axes);
-    parametricSurface.setSurfaceFunction(controlsGui.stringToFunction(params.customFunction));
+    new ControlsGui(parametricSurface, axes);
+    parametricSurface.setSurfaceFunction(params.customFunction);
 
     let lastTime = performance.now();
     function animate() {
