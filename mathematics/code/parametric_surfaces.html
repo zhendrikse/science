@@ -363,6 +363,7 @@
         #createRenderer() {
             const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
             renderer.setSize(width, height);
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
             return renderer;
         }
 
@@ -653,10 +654,8 @@
                 hsl.s = 0.5 + 0.5 * (1 - t); // less saturated in high curvature, more in low
 
                 color.setHSL(hsl.h, hsl.s, hsl.l);
-            } else {
-                // fallback gradient if baseColor is invalid
+            } else // fallback gradient if baseColor is invalid
                 color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
-            }
 
             return color;
         }
