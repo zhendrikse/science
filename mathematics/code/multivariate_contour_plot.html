@@ -280,7 +280,9 @@
             box.getSize(size);
             const maxExtent = Math.max(size.x, size.y, size.z);
 
-            const scale = .9 * this.xInterval.range() / maxExtent; // We assume x and y to be the same intervals
+            const xScale = .9 * this.xInterval.range() / maxExtent;
+            const yScale = .9 * this.yInterval.range() / maxExtent;
+            const scale = xScale > yScale ? xScale : yScale;
             const position = this.geometry.attributes.position;
 
             for (let i = 0; i < position.count; i++)
