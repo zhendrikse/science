@@ -88,7 +88,16 @@
         animate: false,
         resolution: 75,
         opacity: 0.9,
-        customFunction: "1.5 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))"
+        customFunction: "3 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))"
+    }
+
+    function functionFrom(xyFunctionString) {
+        try {
+            return (x, y) => math.compile(xyFunctionString).evaluate({ x, y });
+        } catch (err) {
+            alert("Math.js parse error: " + err.message);
+            return null;
+        }
     }
 
     class ControlsGui {
@@ -98,7 +107,7 @@
 
             const mathFolder = controls.addFolder("Mathematical Surface");
             mathFolder.add(params, "customFunction").name("f(x,y) =")
-                .onFinishChange(expr => surface.setSurfaceFunction(expr));
+                .onFinishChange(expr => surface.updateToNew(functionFrom(expr)));
 
             const shapeFolder = controls.addFolder("Shape Controls");
             shapeFolder.add(params, 'amplitude', 0.1, 1).step(0.01).name("Amplitude")
@@ -213,24 +222,20 @@
     // !! y-coord needs to be inverted for correct winding direction => influences the direction of the
     // normal vectors. This is caused by the fact that we have to switch the y and z coordinates !!
     class Surface {
-        constructor(parentGroup, xyFunctionString, {
+        constructor(parentGroup, {
             resolution=75,
             showWireframe=false,
             xInterval=new Interval(-2, 2),
             yInterval=new Interval(-2, 2),
-            xCoordinateFunction=(x) => (x),
-            yCoordinateFunction=(y) => (-y)
+            xCoordinateFunction=(x, y) => (x),
+            yCoordinateFunction=(x, y) => (-y),
+            zCoordinateFunction=(x, y) => 4
             } = {}) {
             this.xInterval = xInterval;
             this.yInterval = yInterval;
-            this.xCoordinateFunction = xCoordinateFunction;
-            this.yCoordinateFunction = yCoordinateFunction;
-            this.surfaceFunction = xyFunctionString ?
-                this.#surfaceFunctionFrom(this.#functionFromString(xyFunctionString)) :
-                this.#surfaceFunctionFrom((x, y) => 4);
+            this.surfaceFunction = this.#surfaceFunctionFrom(xCoordinateFunction, yCoordinateFunction, zCoordinateFunction);
             this.parentGroup = parentGroup;
             this.time = 0;
-            this.setToMaxHeight();
             this.normalsHelper = null;
             this.geometry = null;
             this.mesh = null;
@@ -239,23 +244,14 @@
             this.#fitToAxesAndScale();
         }
 
-        #functionFromString(xyFunctionString) {
-            try {
-                return (x, y) => math.compile(xyFunctionString).evaluate({ x, y });
-            } catch (err) {
-                alert("Math.js parse error: " + err.message);
-                return null;
-            }
-        }
-
-        #surfaceFunctionFrom(xyFunction) {
+        #surfaceFunctionFrom(xCoordinateFunction, yCoordinateFunction, zCoordinateFunction) {
             return (normalized_u, normalized_v, amplitude, target) => {
                 const
                     u = this.xInterval.scaleParameter(normalized_u),
                     v = this.yInterval.scaleParameter(normalized_v),
-                    x = this.xCoordinateFunction(u),
-                    y = this.yCoordinateFunction(v),
-                    z = xyFunction(u, v) * amplitude;
+                    x = xCoordinateFunction(u, v),
+                    y = yCoordinateFunction(u, v),
+                    z = zCoordinateFunction(u, v) * amplitude;
 
                 target.set(x, z, y);
             }
@@ -377,7 +373,7 @@
             return color;
         }
 
-        #amplitudeModulation = (t) => (1.01 - Math.cos(t * params.frequency + Math.PI)) * params.amplitude;
+        #amplitudeModulation = (t) => (1.01 - Math.cos(t * params.frequency + Math.PI)) * .5 * params.amplitude;
 
         #material(showWireframe) {
             return new THREE.MeshPhongMaterial({
@@ -425,8 +421,6 @@
             s.color = str;
             return s.color !== '';
         }
-
-        setToMaxHeight = () => this.time = 0;
 
         toggleWireframe = (value) => this.mesh.material.wireframe = value;
 
@@ -488,11 +482,9 @@
             this.normalsHelper.update(); // recalc positions
         }
 
-        setSurfaceFunction(xyFunctionString) {
-            this.surfaceFunction = xyFunctionString ?
-                this.#surfaceFunctionFrom(this.#functionFromString(xyFunctionString)) :
-                this.#surfaceFunctionFrom((x, y) => 4);
-            this.setToMaxHeight();
+        updateToNew(zCoordinateFunction) {
+            this.surfaceFunction = this.#surfaceFunctionFrom((x, y) => x, (x, y) => -y, zCoordinateFunction);
+            this.time = 0;
             this.rebuild(params.resolution);
         }
     }
@@ -513,14 +505,12 @@
     const axes = new MatlabAxes(worldGroup);
     axes.show(true);
 
-    const parametricSurface = new Surface(worldGroup, params.customFunction);
-    // const parametricSurface = new Surface(worldGroup, "sin(x + y)", {
-    //     showWireframe: true,
-    //     xCoordinateFunction: (x) => Math.sin(x),
-    //     yCoordinateFunction: (y) => Math.sin(-y),
-    //     xInterval: new Interval(0, 2 * Math.PI),
-    //     yInterval: new Interval(0, 2 * Math.PI),
-    // });
+    const parametricSurface = new Surface(worldGroup, {
+        showWireframe: false,
+        zCoordinateFunction: functionFrom(params.customFunction),
+        xInterval: new Interval(-2, 2),
+        yInterval: new Interval(-2, 2),
+    });
     new ControlsGui(parametricSurface, axes);
 
     let lastTime = performance.now();
