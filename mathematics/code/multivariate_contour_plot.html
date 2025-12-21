@@ -210,12 +210,23 @@
         scaleParameter = (a) => this.range() * (a + this.from / this.range());
     }
 
+    // !! y-coord needs to be inverted for correct winding direction => influences the direction of the
+    // normal vectors. This is caused by the fact that we have to switch the y and z coordinates !!
     class Surface {
-        constructor(parentGroup, xyFunctionString, resolution=75, xInterval=new Interval(-2, 2), yInterval=new Interval(-2, 2)) {
+        constructor(parentGroup, xyFunctionString, {
+            resolution=75,
+            showWireframe=true,
+            xInterval=new Interval(-2, 2),
+            yInterval=new Interval(-2, 2),
+            xCoordinateFunction=(x) => (x),
+            yCoordinateFunction=(y) => (-y)
+        } = {}) {
             this.xInterval = xInterval;
             this.yInterval = yInterval;
+            this.xCoordinateFunction = xCoordinateFunction;
+            this.yCoordinateFunction = yCoordinateFunction;
             this.surfaceFunction = xyFunctionString ?
-                this.#surfaceFunctionFromString(xyFunctionString) :
+                this.#surfaceFunctionFrom(this.#functionFromString(xyFunctionString)) :
                 this.#surfaceFunctionFrom((x, y) => 4);
             this.parentGroup = parentGroup;
             this.time = 0;
@@ -224,40 +235,17 @@
             this.geometry = null;
             this.mesh = null;
             this.normalsVisible = false;
-            this.#buildGeometry(resolution);
+            this.#buildGeometry(resolution, showWireframe);
             this.#fitToAxesAndScale();
         }
 
-        #xCoordinateFunction = (x) => x;
-        // !! y-coord is inverted for correct winding direction => influences the direction of the normal vectors.
-        //    This is caused by the fact that we have to switch the y and z coordinates !!
-        #yCoordinateFunction = (y) => -y;
-
-        #surfaceFunctionFromString(xyFunctionString) {
-            let compiled;
+        #functionFromString(xyFunctionString) {
             try {
-                compiled = math.compile(xyFunctionString);
+                return (x, y) => math.compile(xyFunctionString).evaluate({ x, y });
             } catch (err) {
                 alert("Math.js parse error: " + err.message);
                 return null;
             }
-
-            // Swap y and z so that Three.js Y-axis is vertical
-            return (normalized_u, normalized_v, amplitude, target) => {
-                const
-                    u = this.xInterval.scaleParameter(normalized_u),
-                    v = this.yInterval.scaleParameter(normalized_v),
-                    x = this.#xCoordinateFunction(u),
-                    y = this.#yCoordinateFunction(v);
-                let z;
-                try {
-                    z = compiled.evaluate({ x, y });
-                } catch (err) {
-                    z = 0;
-                }
-                z = Number.isFinite(z) ? z : 0; // safeguard for user defined functions
-                target.set(x, z * amplitude, y); // z is vertical (Three.js Y), y is depth (Three.js Z)
-            };
         }
 
         #surfaceFunctionFrom(xyFunction) {
@@ -265,8 +253,8 @@
                 const
                     u = this.xInterval.scaleParameter(normalized_u),
                     v = this.yInterval.scaleParameter(normalized_v),
-                    x = this.#xCoordinateFunction(u),
-                    y = this.#yCoordinateFunction(v),
+                    x = this.xCoordinateFunction(u),
+                    y = this.yCoordinateFunction(v),
                     z = xyFunction(u, v) * amplitude;
 
                 target.set(x, z, y);
@@ -312,7 +300,7 @@
             return curvatures;
         }
 
-        #buildGeometry(resolution) {
+        #buildGeometry(resolution, showWireframe) {
             this.geometry = new ParametricGeometry(
                 (u, v, target) => this.surfaceFunction(u, v, this.#amplitudeModulation(this.time), target),
                 resolution, resolution
@@ -327,7 +315,7 @@
                 this.geometry.dispose();
             }
 
-            this.mesh = new THREE.Mesh(this.geometry, this.#material(this.mesh?.material.wireframe || true));
+            this.mesh = new THREE.Mesh(this.geometry, this.#material(this.mesh?.material.wireframe || showWireframe));
             this.parentGroup.add(this.mesh);
 
             this.#addNormalsHelper();
@@ -391,7 +379,7 @@
 
         #amplitudeModulation = (t) => (1.01 - Math.cos(t * params.frequency + Math.PI)) * params.amplitude;
 
-        #material(showWireframe=true) {
+        #material(showWireframe) {
             return new THREE.MeshPhongMaterial({
                 vertexColors: true,
                 side: THREE.DoubleSide,
@@ -448,7 +436,7 @@
         }
 
         rebuild(resolution) {
-            this.#buildGeometry(resolution);
+            this.#buildGeometry(resolution, this.mesh.material.wireframe);
             this.#fitToAxesAndScale();
         }
 
@@ -502,7 +490,7 @@
 
         setSurfaceFunction(xyFunctionString) {
             this.surfaceFunction = xyFunctionString ?
-                this.#surfaceFunctionFromString(xyFunctionString) :
+                this.#surfaceFunctionFrom(this.#functionFromString(xyFunctionString)) :
                 this.#surfaceFunctionFrom((x, y) => 4);
             this.setToMaxHeight();
             this.rebuild(params.resolution);
@@ -525,9 +513,15 @@
     const axes = new MatlabAxes(worldGroup);
     axes.show(true);
 
-    const parametricSurface = new Surface(worldGroup, null);
+    const parametricSurface = new Surface(worldGroup, params.customFunction);
+    // const parametricSurface = new Surface(worldGroup, "sin(x + y)", {
+    //     showWireframe: true,
+    //     xCoordinateFunction: (x) => Math.sin(x),
+    //     yCoordinateFunction: (y) => Math.sin(-y),
+    //     xInterval: new Interval(0, 2 * Math.PI),
+    //     yInterval: new Interval(0, 2 * Math.PI),
+    // });
     new ControlsGui(parametricSurface, axes);
-    parametricSurface.setSurfaceFunction(params.customFunction);
 
     let lastTime = performance.now();
     function animate() {

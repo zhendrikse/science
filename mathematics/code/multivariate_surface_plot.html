@@ -226,7 +226,7 @@
             this.xCoordinateFunction = xCoordinateFunction;
             this.yCoordinateFunction = yCoordinateFunction;
             this.surfaceFunction = xyFunctionString ?
-                this.#surfaceFunctionFromString(xyFunctionString) :
+                this.#surfaceFunctionFrom(this.#functionFromString(xyFunctionString)) :
                 this.#surfaceFunctionFrom((x, y) => 4);
             this.parentGroup = parentGroup;
             this.time = 0;
@@ -239,31 +239,13 @@
             this.#fitToAxesAndScale();
         }
 
-        #surfaceFunctionFromString(xyFunctionString) {
-            let compiled;
+        #functionFromString(xyFunctionString) {
             try {
-                compiled = math.compile(xyFunctionString);
+                return (x, y) => math.compile(xyFunctionString).evaluate({ x, y });
             } catch (err) {
                 alert("Math.js parse error: " + err.message);
                 return null;
             }
-
-            // Swap y and z so that Three.js Y-axis is vertical
-            return (normalized_u, normalized_v, amplitude, target) => {
-                const
-                    u = this.xInterval.scaleParameter(normalized_u),
-                    v = this.yInterval.scaleParameter(normalized_v),
-                    x = this.xCoordinateFunction(u),
-                    y = this.yCoordinateFunction(v);
-                let z;
-                try {
-                    z = compiled.evaluate({ x, y });
-                } catch (err) {
-                    z = 0;
-                }
-                z = Number.isFinite(z) ? z : 0; // safeguard for user defined functions
-                target.set(x, z * amplitude, y); // z is vertical (Three.js Y), y is depth (Three.js Z)
-            };
         }
 
         #surfaceFunctionFrom(xyFunction) {
@@ -508,7 +490,7 @@
 
         setSurfaceFunction(xyFunctionString) {
             this.surfaceFunction = xyFunctionString ?
-                this.#surfaceFunctionFromString(xyFunctionString) :
+                this.#surfaceFunctionFrom(this.#functionFromString(xyFunctionString)) :
                 this.#surfaceFunctionFrom((x, y) => 4);
             this.setToMaxHeight();
             this.rebuild(params.resolution);
@@ -535,7 +517,7 @@
     // const parametricSurface = new Surface(worldGroup, "sin(x + y)", {
     //     showWireframe: true,
     //     xCoordinateFunction: (x) => Math.sin(x),
-    //     yCoordinateFunction: (y) => Math.sin(y),
+    //     yCoordinateFunction: (y) => Math.sin(-y),
     //     xInterval: new Interval(0, 2 * Math.PI),
     //     yInterval: new Interval(0, 2 * Math.PI),
     // });
