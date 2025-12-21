@@ -207,16 +207,13 @@
 
         scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
 
-        scaleParameters = (u, v) => [
-            this.range() * (u + this.from / this.range()),
-            this.range() * (v + this.from / this.range())
-        ];
+        scaleParameter = (a) => this.range() * (a + this.from / this.range());
     }
 
     class Surface {
-        constructor(parentGroup, xyFunctionString, resolution=75, xAndYInterval=new Interval(-2, 2)) {
-            this.xAndYInterval = xAndYInterval;
-
+        constructor(parentGroup, xyFunctionString, resolution=75, xInterval=new Interval(-2, 2), yInterval=new Interval(-2, 2)) {
+            this.xInterval = xInterval;
+            this.yInterval = yInterval;
             this.surfaceFunction = xyFunctionString ?
                 this.#surfaceFunctionFromString(xyFunctionString) :
                 this.#surfaceFunctionFrom((x, y) => 4);
@@ -248,7 +245,8 @@
             // Swap y and z so that Three.js Y-axis is vertical
             return (normalized_u, normalized_v, amplitude, target) => {
                 const
-                    [u, v] = this.xAndYInterval.scaleParameters(normalized_u, normalized_v),
+                    u = this.xInterval.scaleParameter(normalized_u),
+                    v = this.yInterval.scaleParameter(normalized_v),
                     x = this.#xCoordinateFunction(u),
                     y = this.#yCoordinateFunction(v);
                 let z;
@@ -265,7 +263,8 @@
         #surfaceFunctionFrom(xyFunction) {
             return (normalized_u, normalized_v, amplitude, target) => {
                 const
-                    [u, v] = this.xAndYInterval.scaleParameters(normalized_u, normalized_v),
+                    u = this.xInterval.scaleParameter(normalized_u),
+                    v = this.yInterval.scaleParameter(normalized_v),
                     x = this.#xCoordinateFunction(u),
                     y = this.#yCoordinateFunction(v),
                     z = xyFunction(u, v) * amplitude;
@@ -280,9 +279,8 @@
             const size = new THREE.Vector3();
             box.getSize(size);
             const maxExtent = Math.max(size.x, size.y, size.z);
-            const targetSize = this.xAndYInterval.range() * 0.9;
 
-            const scale = targetSize / maxExtent;
+            const scale = .9 * this.xInterval.range() / maxExtent; // We assume x and y to be the same intervals
             const position = this.geometry.attributes.position;
 
             for (let i = 0; i < position.count; i++)
