@@ -82,7 +82,7 @@
         frequency: 0.5,
         baseColor: "#4f6",
         colorMode: "Height",
-        wireframe: false,
+        wireframe: true,
         axes: true,
         normals: false,
         animate: false,
@@ -219,21 +219,28 @@
         scaleParameter = (a) => this.range() * (a + this.from / this.range());
     }
 
+    const defaultSurfaceDefinition = {
+        xInterval: new Interval(-2, 2),
+        yInterval: new Interval(-2, 2),
+
+        xFn: (x, y) => x,
+        yFn: (x, y) => -y,
+        zFn: (x, y) => 4
+    };
+
     // !! y-coord needs to be inverted for correct winding direction => influences the direction of the
     // normal vectors. This is caused by the fact that we have to switch the y and z coordinates !!
     class Surface {
         constructor(parentGroup, {
-            resolution=75,
-            showWireframe=false,
-            xInterval=new Interval(-2, 2),
-            yInterval=new Interval(-2, 2),
-            xCoordinateFunction=(x, y) => (x),
-            yCoordinateFunction=(x, y) => (-y),
-            zCoordinateFunction=(x, y) => 4
+            resolution = 75,
+            showWireframe = false,
+            surface = {}
         } = {}) {
-            this.xInterval = xInterval;
-            this.yInterval = yInterval;
-            this.surfaceFunction = this.#surfaceFunctionFrom(xCoordinateFunction, yCoordinateFunction, zCoordinateFunction);
+            this.surface = {
+                ...defaultSurfaceDefinition,
+                ...surface
+            };
+            this.surfaceFunction = this.#surfaceFunctionFrom(this.surface.xFn, this.surface.yFn, this.surface.zFn);
             this.parentGroup = parentGroup;
             this.time = 0;
             this.normalsHelper = null;
@@ -245,14 +252,14 @@
             this.colorsDirty = true;
         }
 
-        #surfaceFunctionFrom(xCoordinateFunction, yCoordinateFunction, zCoordinateFunction) {
+        #surfaceFunctionFrom(xFunction, yFunction, zFunction) {
             return (normalized_u, normalized_v, amplitude, target) => {
                 const
-                    u = this.xInterval.scaleParameter(normalized_u),
-                    v = this.yInterval.scaleParameter(normalized_v),
-                    x = xCoordinateFunction(u, v),
-                    y = yCoordinateFunction(u, v),
-                    z = zCoordinateFunction(u, v) * amplitude;
+                    u = this.surface.xInterval.scaleParameter(normalized_u),
+                    v = this.surface.yInterval.scaleParameter(normalized_v),
+                    x = xFunction(u, v),
+                    y = yFunction(u, v),
+                    z = zFunction(u, v) * amplitude;
 
                 target.set(x, z, y);
             }
@@ -265,8 +272,8 @@
             box.getSize(size);
             const maxExtent = Math.max(size.x, size.y, size.z);
 
-            const xScale = .9 * this.xInterval.range() / maxExtent;
-            const yScale = .9 * this.yInterval.range() / maxExtent;
+            const xScale = .9 * this.surface.xInterval.range() / maxExtent;
+            const yScale = .9 * this.surface.yInterval.range() / maxExtent;
             const scale = xScale > yScale ? xScale : yScale;
             const position = this.geometry.attributes.position;
 
@@ -515,10 +522,12 @@
     axes.show(true);
 
     const parametricSurface = new Surface(worldGroup, {
-        showWireframe: true,
-        zCoordinateFunction: functionFrom(params.customFunction),
-        xInterval: new Interval(-2, 2),
-        yInterval: new Interval(-2, 2),
+        resolution: params.resolution,
+        surface: {
+            xInterval: new Interval(-2, 2),
+            yInterval: new Interval(-2, 2),
+            zFn: functionFrom(params.customFunction)
+        }
     });
     new ControlsGui(parametricSurface, axes);
 
