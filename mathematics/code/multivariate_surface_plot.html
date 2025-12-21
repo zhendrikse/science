@@ -100,6 +100,13 @@
         }
     }
 
+    const ColorModes = {
+        HEIGHT: "Height",
+        BASE: "Base",
+        CURVATURE_1: "Curvature 1",
+        CURVATURE_2: "Curvature 2"
+    }
+
     class ControlsGui {
         constructor(surface, axes) {
             const controls = new GUI({width: 275, autoPlace: false});
@@ -115,8 +122,7 @@
             shapeFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
 
             const appearanceFolder = controls.addFolder("Appearance");
-            appearanceFolder.add(params, "colorMode", ["Height", "Base", "Curvature 1", "Curvature 2"])
-                .name("Color Mode")
+            appearanceFolder.add(params, "colorMode", Object.values(ColorModes)).name("Color Mode")
                 .onChange(() => surface.requestColorUpdate());
             appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.requestColorUpdate());
             appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
@@ -286,7 +292,7 @@
 
             position.needsUpdate = true;
             this.geometry.computeVertexNormals();
-            if (this.normalsHelper) this.normalsHelper.update();
+            if (this.normalsHelper && this.normalsHelper) this.normalsHelper.update();
         }
 
         #magnitudeOfNormalChange = (nx, ny, nz) => Math.sqrt(nx*nx + ny*ny + nz*nz);
@@ -427,16 +433,16 @@
             const posAttr = this.geometry.attributes.position;
             const colors = this.geometry.attributes.color.array;
             const yRange = this.#yMinMax();
-            let curvature = params.colorMode === "Curvature 1" ? this.#computeCurvature(this.#deviationFromYAxis) : null;
-            curvature = params.colorMode === "Curvature 2" ? this.#computeCurvature(this.#magnitudeOfNormalChange) : curvature;
+            let curvature = params.colorMode === ColorModes.CURVATURE_1 ? this.#computeCurvature(this.#deviationFromYAxis) : null;
+            curvature = params.colorMode === ColorModes.CURVATURE_2 ? this.#computeCurvature(this.#magnitudeOfNormalChange) : curvature;
 
             for (let i = 0; i < posAttr.count; i++) {
                 let c;
-                if (params.colorMode === "Height")
+                if (params.colorMode === ColorModes.HEIGHT)
                     c = this.#updateColor(posAttr.getY(i), yRange);
-                else if (params.colorMode === "Base")
+                else if (params.colorMode === ColorModes.BASE)
                     c = this.#updateColor(posAttr.getY(i), yRange, true); // pass a flag for base color
-                else if (params.colorMode === "Curvature 1" || params.colorMode === "Curvature 2")
+                else if (params.colorMode === ColorModes.CURVATURE_1 || params.colorMode === ColorModes.CURVATURE_2)
                     c = this.#colorFromCurvature(curvature[i]);
 
                 colors[3 * i]     = c.r;
@@ -520,6 +526,15 @@
     const scenery = new Scenery(scene, worldGroup);
     const axes = new MatlabAxes(worldGroup);
     axes.show(true);
+
+
+    const torus = {
+        xInterval: new Interval(0, 2 * Math.PI),
+        yInterval: new Interval(2 * Math.PI, 0),
+        xFn: (theta, phi) => Math.cos(theta) * (2 * Math.cos(phi) + 4),
+        yFn: (theta, phi) => Math.sin(theta) * (2 * Math.cos(phi) + 4),
+        zFn: (theta, phi) => Math.sin(phi) * 2
+    };
 
     const parametricSurface = new Surface(worldGroup, {
         resolution: params.resolution,
