@@ -69,115 +69,266 @@
         width = canvas.width,
         height = canvas.height;
 
-    const arc = (u, v, amplitude, target) => {
-        const
-            b = 3,
-            [theta, phi] = [Math.PI * u, Math.PI * (1 - v)],
-            x = Math.cos(theta),
-            y = b * Math.sin(phi),
-            z = Math.sin(theta) + Math.cos(phi);
+    const Category = Object.freeze({
+        TOROID: "Toroid",
+        BASIC: "Basic",
+        SPIRAL: "Spiral",
+        MISC: "Miscellaneous"
+    });
 
-        target.set(x, y * amplitude, z);
-    };
+    const surfaceDefinitions = [ {
+        name: "Arc",
+        category: Category.MISC,
+        func: (u, v, amplitude, target) => {
+            const
+                b = 3,
+                [theta, phi] = [Math.PI * u, Math.PI * (1 - v)],
+                x = Math.cos(theta),
+                y = b * Math.sin(phi),
+                z = Math.sin(theta) + Math.cos(phi);
 
-    const bowCurve = (u, v, amplitude, target) => {
-        const
-            a = 2, b = 1,
-            [theta, phi] = [2 * Math.PI * u, 4 * Math.PI * v],
-            x = (a + b * Math.sin(theta)) * Math.sin(phi),
-            y = (a + b * Math.sin(theta)) * Math.cos(phi),
-            z = b * Math.cos(theta) + a * Math.cos(.5 * phi);
+            target.set(x, y * amplitude, z);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta) \\\\ \\cos(\\phi)+\\sin(\\theta) \\\\ b\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, \\pi] \\\\ \\phi \\in [0, \\pi] \\end{cases}"
+    }, {
+        name: "Bow curve",
+        category: Category.TOROID,
+        func: (u, v, amplitude, target) => {
+            const
+                a = 2, b = 1,
+                [theta, phi] = [2 * Math.PI * u, 4 * Math.PI * v],
+                x = (a + b * Math.sin(theta)) * Math.sin(phi),
+                y = (a + b * Math.sin(theta)) * Math.cos(phi),
+                z = b * Math.cos(theta) + a * Math.cos(.5 * phi);
 
-        target.set(x, z * amplitude, y);
-    };
+            target.set(x, z * amplitude, y);
+        },
+        equation: "\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (2 + T \\sin(\\theta)) \\sin(\\phi) \\\\  (2 + T \\sin(\\theta)) \\cos(\\phi) \\\\ T \\cos(\\theta) + 3 \\cos(\\phi/2) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 4\\pi] \\end{cases}"
+    }, {
+        name: "Catenoid",
+        category: Category.BASIC,
+        func: (u, v, amplitude, target) => {
+            const
+                c = 1.25,
+                [theta, phi] = [2 * Math.PI * (u - 0.5), 4 * (0.5 - v)],
+                x = Math.cosh(phi / c) * Math.cos(theta),
+                y = Math.cosh(phi / c) * Math.sin(theta);
+            target.set(x, c * phi * amplitude, y);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} c\\cdot\\cosh(\\phi/c)\\cos(\\theta) \\\\ c\\cdot\\cosh(\\phi/c)\\sin(\\theta) \\\\ \\phi\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [-\\pi, \\pi] \\\\ \\phi \\in [-2\\pi, 2\\pi] \\end{cases}"
+    }, {
+        name: "Conchoidal 1",
+        category: Category.SPIRAL,
+        func: (u, v, amplitude, target) => {
+            const
+                k = 1.2, l = 1.2, a = 1.5,
+                [theta, phi] = [6 * Math.PI * u, 2 * Math.PI * (1 - v)],
+                x = k ** theta * (1 + Math.cos(phi)) * Math.cos(theta),
+                y = k ** theta * Math.sin(phi) - a * l ** theta,
+                z = k ** theta * (1 + Math.cos(phi)) * Math.sin(theta);
 
-    const cosine = (u, v, amplitude, target) => {
-        const
-            a = 2,
-            [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * (1 - v)],
-            x = a * Math.cos(theta),
-            y = a * Math.cos(phi),
-            z = a * Math.cos(theta + phi);
+            target.set(x, y * amplitude, z);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} k^\\theta(1 + \\cos(\\phi))\\cos(\\theta) \\\\ k^\\theta(1 + \\cos(\\phi))\\cos(\\sin) \\\\ k^\\theta\\sin(\\phi) -a\\cdot l^\\theta\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 6\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Conchoidal 2",
+        category: Category.SPIRAL,
+        func: (u, v, amplitude, target) => {
+            const
+                num_spirals = 3, r_final = 2, height = 6.5, r_inner = .5,
+                [s, t] = [2 * Math.PI * u, 2 * Math.PI * v],
+                x = r_final * (1 - t / (2 * Math.PI)) * Math.cos(num_spirals * t) * (1 + Math.cos(s)) + r_inner * Math.cos(num_spirals * t),
+                y = (height * t / (2 * Math.PI)) + r_final * (1 - t / (2 * Math.PI)) * Math.sin(s),
+                z = r_final * (1 - t / (2 * Math.PI)) * Math.sin(num_spirals * t) * (1 + Math.cos(s)) + r_inner * Math.sin(num_spirals * t);
 
-        target.set(x, y * amplitude, z);
-    };
+            target.set(x, y * amplitude, z);
+        },
+        equation: "\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} a\\left(1-\\frac{\\theta}{2\\pi}\\right)\\cos(n\\theta)(1+\\cos(\\phi))+c\\cos(n\\theta) \\\\  a\\left(1-\\frac{\\theta}{2\\pi}\\right)\\sin(n\\theta)(1+\\cos(\\phi))+c\\sin(n\\theta) \\\\ b\\frac{\\theta}{2\\pi}+a\\left(1-\\frac{\\theta}{2\\pi}\\right)\\sin(\\phi) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Cone",
+        category: Category.BASIC,
+        func: (u, v, amplitude, target) => {
+            const
+                a = 2, b = 2, c = 4, eps = 1e-4,
+                [u1, v1] = [u * (1 - eps) - 0.5, 2 * Math.PI * v],
+                x = 2 * a * u1 * Math.cos(v1),
+                y = c * u1,
+                z = 2 * b * u1 * Math.sin(v1);
+            target.set(x, y * amplitude, z);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a\\cdot u\\cos(v) \\\\ b\\cdot u\\sin(v) \\\\ 2\\cdot u\\end{pmatrix}\\text{, } \\begin{cases} u \\in [-0.5, 0.5] \\\\ v \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Cosine",
+        category: Category.MISC,
+        func: (u, v, amplitude, target) => {
+            const
+                [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * (1 - v)],
+                x = Math.cos(theta),
+                y = Math.cos(phi),
+                z = Math.cos(theta + phi);
 
-    const ellipticTorus =  (u, v, amplitude, target) => {
-        const
-            a = 1, c = 3,
-            [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
-            x = (a * Math.cos(phi) + c) * Math.cos(theta),
-            y = (a * Math.cos(phi) + c) * Math.sin(theta),
-            z = a * (Math.sin(phi) + Math.cos(phi))
-        target.set(x, z * amplitude, y);
-    };
+            target.set(x, y * amplitude, z);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\phi) \\\\ \\cos(\\theta) \\\\ \\cos(\\phi+\\theta)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Cylinder",
+        category: Category.BASIC,
+        func: (u, v, amplitude, target) => {
+            const
+                r = 2, h=4,
+                [theta, height] = [2 * Math.PI * u, 1 - v],
+                x = r * Math.cos(theta),
+                y = height * h,
+                z = r * Math.sin(theta);
 
-    const limpetTorus = (u, v, amplitude, target) => {
-        const
-            sqrt_2 = Math.sqrt(2),
-            [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
-            x = Math.cos(theta) / (sqrt_2 + Math.sin(phi)),
-            y = Math.sin(theta) / (sqrt_2 + Math.sin(phi)),
-            z = 1 / (sqrt_2 + Math.cos(phi))
-        target.set(x, z * amplitude, y);
-    };
+            target.set(x, y * amplitude, z);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} r\\cos(\\theta) \\\\ r\\sin(\\theta) \\\\ h\\cdot v\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ v \\in [0, 1] \\end{cases}"
+    }, {
+        name: "Dini\'s surface",
+        category: Category.SPIRAL,
+        func: (u, v, amplitude, target) => {
+            const
+                b = 0.1, eps = 0.05,
+                [theta, phi] = [4 * Math.PI * (1 - u), 1.99 * (eps + (1 - eps) * v)],
+                x = Math.cos(theta) * Math.sin(phi),
+                y = (Math.cos(phi) + Math.log(Math.tan(phi / 2))) + b * theta,
+                z = Math.sin(theta) * Math.sin(phi);
 
-    const sine = (u, v, amplitude, target) => {
-        const
-            a = 2,
-            [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
-            x = a * Math.sin(theta),
-            y = a * Math.sin(phi),
-            z = a * Math.sin(theta + phi);
+            target.set(x, y * amplitude, z);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a\\cos(\\theta)\\sin(\\phi) \\\\ a\\sin(\\theta)\\sin(\\phi) \\\\ a(\\cos(\\phi) + \\ln(\\tan(\\phi /2))+b\\theta\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 4\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Elliptic torus",
+        category: Category.TOROID,
+        func: (u, v, amplitude, target) => {
+            const
+                a = 1, c = 3,
+                [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * (1 - v)],
+                x = (a * Math.cos(phi) + c) * Math.cos(theta),
+                y = (a * Math.cos(phi) + c) * Math.sin(theta),
+                z = a * (Math.sin(phi) + Math.cos(phi))
+            target.set(x, z * amplitude, y);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a(\\cos(\\phi + c)\\cos(\\theta) \\\\ a(\\cos(\\phi + c)\\sin(\\theta) \\\\ a(\\sin(\\phi) + \\cos(\\phi))\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Helicoid",
+        category: Category.SPIRAL,
+        func: (u1, v1, amplitude, target) => {
+            const
+                a = 0.75, b = .6,
+                [u, v] = [4 * (u1 - 0.5), 2 * v1 * Math.PI],
+                x = a * u * Math.cos(v),
+                y = a * u * Math.sin(v),
+                z = b * v;
+            target.set(x, z * amplitude, y);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} 4a\\cdot u\\cos(v) \\\\ 4a\\cdot u\\sin(v) \\\\ bv\\end{pmatrix}\\text{, } \\begin{cases} u \\in [-2, 2] \\\\ v \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Limpet torus",
+        category: Category.TOROID,
+        func: (u, v, amplitude, target) => {
+            const
+                sqrt_2 = Math.sqrt(2),
+                [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                x = Math.cos(theta) / (sqrt_2 + Math.sin(phi)),
+                y = Math.sin(theta) / (sqrt_2 + Math.sin(phi)),
+                z = 1 / (sqrt_2 + Math.cos(phi))
+            target.set(x, z * amplitude, y);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta)/(\\sqrt{2} +\\sin(\\phi) \\\\ \\sin(\\theta)/(\\sqrt{2} +\\sin(\\phi) \\\\ 1//(\\sqrt{2} +\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
+    }, {
+        name: "Paraboloid",
+        category: Category.BASIC,
+        func: (u, v, amplitude, target) => {
+            const
+                a = 2, b = 2, h = 1, eps = 1e-4,
+                [u1, v1] = [eps + (1 - eps) * u, 2 * Math.PI * v],
+                x = a * Math.sqrt(u1 / h) * Math.cos(v1),
+                y = b * Math.sqrt(u1 / h) * Math.sin(v1),
+                z = 3 * u1;
 
-        target.set(x, y * amplitude, z);
-    };
+            target.set(x, z * amplitude, y);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a\\sqrt{u/h}\\cos(v) \\\\ b\\sqrt{u/h}\\sin(v) \\\\ 3u\\end{pmatrix}\\text{, } \\begin{cases} u \\in [0, 1] \\\\ v \\in [0, 2\\pi] \\end{cases}"
+    },{
+        name: "Sine",
+        category: Category.MISC,
+        func: (u, v, amplitude, target) => {
+            const
+                [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                x = Math.sin(theta),
+                y = Math.sin(phi),
+                z = Math.sin(theta + phi);
 
-    const torus = (u, v, amplitude, target) => {
-        const
-            a = 1, b = 2,
-            [theta, phi] = [2 * Math.PI * u, -2 * Math.PI * v],
-            x = Math.cos(theta) * (a * Math.cos(phi) + b),
-            y = Math.sin(theta) * (a * Math.cos(phi) + b),
-            z = Math.sin(phi) * a
-        target.set(x, z * amplitude, y);
-    };
+            target.set(x, y * amplitude, z);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\phi) \\\\ \\sin(\\theta) \\\\ \\sin(\\phi+\\theta)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Sphere",
+        category: Category.BASIC,
+        func: (u, v, amplitude, target) => {
+            const
+                eps = 1e-4,
+                [theta, phi] = [2 * Math.PI * u, Math.PI * (eps + (1 - 2 * eps) * v)],
+                x = Math.cos(theta) * Math.sin(phi),
+                y = Math.sin(theta) * Math.sin(phi),
+                z = Math.cos(phi);
+            target.set(x, z * amplitude, y);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} r\\cos(\\theta)\\sin(\\phi) \\\\ r\\sin(\\theta)\\sin(\\phi) \\\\ r\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi]\\end{cases}"
+    }, {
+        name: "Tangent spiral",
+        category: Category.SPIRAL,
+        func: (u1, v1, amplitude, target) => {
+            const
+                [u, v] = [(u1 - 0.5) * 3, v1],
+                x = Math.sinh(2 * u) / (Math.cos(10 * u) + Math.cosh(2 * u)),
+                y = v,
+                z = Math.sin(10 * u) / (Math.cos(10 * u) + Math.cosh(2 * u));
 
-    const trefoilKnot = (u, v, amplitude, target) => {
-        const a = 4, b = 2,
-            [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
-            x = (a * (1 + 0.25 * Math.sin(3 * phi)) + Math.cos(theta)) * Math.cos(2 * phi),
-            y = (a * (1 + 0.25 * Math.sin(3 * phi)) + Math.cos(theta)) * Math.sin(2 * phi),
-            z = Math.sin(theta) + b * Math.cos(phi * 3);
-        target.set(x, z * amplitude, y);
-    };
-
-    const twistedTorus = (u, v, amplitude, target) => {
-        const
-            a = 2, b = 3,
-            [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
-            x = (a + Math.sin(phi) + Math.cos(theta)) * Math.cos(2 * phi),
-            y = (a + Math.sin(phi) + Math.cos(theta)) * Math.sin(2 * phi),
-            z = Math.sin(theta) + b * Math.cos(phi)
-        target.set(x, z * amplitude, y);
-    };
-
-    const Equations = {
-        "Arc": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta) \\\\ \\cos(\\phi)+\\sin(\\theta) \\\\ b\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, \\pi] \\\\ \\phi \\in [0, \\pi] \\end{cases}",
-        "Bow curve": "\\begin{pmatrix}x \\\\ y \\\\ z\\end{pmatrix}=\\begin{pmatrix} (2 + T \\sin(\\theta)) \\sin(\\phi) \\\\  (2 + T \\sin(\\theta)) \\cos(\\phi) \\\\ T \\cos(\\theta) + 3 \\cos(\\phi/2) \\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 4\\pi] \\end{cases}",
-        "Cosine": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\phi) \\\\ \\cos(\\theta) \\\\ \\cos(\\phi+\\theta)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
-        "Elliptic torus": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} a(\\cos(\\phi + c)\\cos(\\theta) \\\\ a(\\cos(\\phi + c)\\sin(\\theta) \\\\ a(\\sin(\\phi) + \\cos(\\phi))\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
-        "Limpet torus": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta)/(\\sqrt{2} +\\sin(\\phi) \\\\ \\sin(\\theta)/(\\sqrt{2} +\\sin(\\phi) \\\\ 1//(\\sqrt{2} +\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
-        "Sine": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\phi) \\\\ \\sin(\\theta) \\\\ \\sin(\\phi+\\theta)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
-        "Torus": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta)(a \\cos(\\phi) + b) \\\\ \\sin(\\theta)(a \\cos(\\phi) + b) \\\\ a\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
-        "Trefoil knot": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} (a (1 + 0.25\\sin(3\\phi)) + \\cos(\\theta)))\\cos(2\\phi) \\\\ (a (1 + 0.25\\sin(3\\phi)) + \\cos(\\theta)))\\sin(2\\phi) \\\\ \\sin(\\theta) + b\\cos(3\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}",
-        "Twisted torus": "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} (a + \\cos(\\theta) + \\sin(\\phi))\\cos(2\\phi) \\\\ (a + \\cos(\\theta) + \\sin(\\phi))\\sin(2\\phi) \\\\ \\sin(\\theta) + b\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
-    };
-
-    const Category = {
-        Toroid: "Toroid",
-        Misc: "Miscellaneous"
-    }
+            target.set(x, y * amplitude, z);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sinh(2u)/(\\cos(10u) + \\cosh(2u) \\\\ v \\\\ \\sin(10u)/(\\cos(10u) + \\cosh(2u)\\end{pmatrix}\\text{, } \\begin{cases} u \\in [-3/2, 3/2] \\\\ v \\in [0, 1] \\end{cases}"
+    }, {
+        name: "Torus",
+        category: Category.TOROID,
+        func: (u, v, amplitude, target) => {
+            const
+                a = 1, b = 2,
+                [theta, phi] = [2 * Math.PI * u, -2 * Math.PI * v],
+                x = Math.cos(theta) * (a * Math.cos(phi) + b),
+                y = Math.sin(theta) * (a * Math.cos(phi) + b),
+                z = Math.sin(phi) * a
+            target.set(x, z * amplitude, y);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\cos(\\theta)(a \\cos(\\phi) + b) \\\\ \\sin(\\theta)(a \\cos(\\phi) + b) \\\\ a\\sin(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Trefoil knot",
+        category: Category.TOROID,
+        func: (u, v, amplitude, target) => {
+            const a = 4, b = 2,
+                [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                x = (a * (1 + 0.25 * Math.sin(3 * phi)) + Math.cos(theta)) * Math.cos(2 * phi),
+                y = (a * (1 + 0.25 * Math.sin(3 * phi)) + Math.cos(theta)) * Math.sin(2 * phi),
+                z = Math.sin(theta) + b * Math.cos(phi * 3);
+            target.set(x, z * amplitude, y);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} (a (1 + 0.25\\sin(3\\phi)) + \\cos(\\theta)))\\cos(2\\phi) \\\\ (a (1 + 0.25\\sin(3\\phi)) + \\cos(\\theta)))\\sin(2\\phi) \\\\ \\sin(\\theta) + b\\cos(3\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
+    }, {
+        name: "Twisted torus",
+        category: Category.TOROID,
+        func: (u, v, amplitude, target) => {
+            const
+                a = 2, b = 3,
+                [theta, phi] = [2 * Math.PI * u, 2 * Math.PI * v],
+                x = (a + Math.sin(phi) + Math.cos(theta)) * Math.cos(2 * phi),
+                y = (a + Math.sin(phi) + Math.cos(theta)) * Math.sin(2 * phi),
+                z = Math.sin(theta) + b * Math.cos(phi)
+            target.set(x, z * amplitude, y);
+        },
+        equation: "\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} (a + \\cos(\\theta) + \\sin(\\phi))\\cos(2\\phi) \\\\ (a + \\cos(\\theta) + \\sin(\\phi))\\sin(2\\phi) \\\\ \\sin(\\theta) + b\\cos(\\phi)\\end{pmatrix}\\text{, } \\begin{cases} \\theta \\in [0, 2\\pi] \\\\ \\phi \\in [0, 2\\pi] \\end{cases}"
+    }];
 
     class Scenery {
         constructor(scene, worldGroup) {
@@ -238,7 +389,7 @@
         animate: false,
         resolution: 50,
         opacity: 0.9,
-        category: Category.Toroid
+        category: Category.TOROID
     }
 
     class ControlsGui {
@@ -247,7 +398,7 @@
             document.getElementById("gui-container").appendChild(controls.domElement);
 
             const shapeFolder = controls.addFolder("Shape Controls");
-            shapeFolder.add(params, 'category', [Category.Toroid, Category.Misc])
+            shapeFolder.add(params, 'category', Object.values(Category))
                 .name("Category")
                 .onChange(() => ring.changeActiveCategoryTo(params.category));
             shapeFolder.add(params, 'amplitude', 0.1, 1).step(0.01).name("Amplitude")
@@ -625,7 +776,7 @@
             this.selectionLerp = selectionLerp;
             this.ringTargetRotation = null;
             this.selectedSurfaceMesh = null;
-            this.activeCategory = Category.Toroid;
+            this.activeCategory = Category.TOROID;
             scene.add(this.ring);
         }
 
@@ -660,9 +811,10 @@
             const equationDiv = document.getElementById('surface-equation');
 
             const item = this.items.find(item => item.surface.mesh === this.selectedSurfaceMesh);
-            nameDiv.textContent = item ? item.name : "Surface not found";
+            nameDiv.textContent = item ? item.category + ": " + item.name: "Surface not found";
             equationDiv.innerHTML = item ? "$$" + item.equation + "$$" : "Equation not found";
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            //MathJax.typesetPromise([eqDiv]);
         }
 
         setSelectedSurfaceMesh = (mesh) => {
@@ -749,19 +901,13 @@
     const axes = new MatlabAxes(worldGroup);
     axes.show(true);
 
-    const parametricSurface = new Surface(worldGroup, torus, params.resolution);
+    const parametricSurface = new Surface(worldGroup, surfaceDefinitions[0].func, params.resolution);
 
     const ring = new Ring(parametricSurface);
-    ring.addSurface(new Surface(scene, bowCurve, 20, 1, true), Category.Toroid, "Bow curve", Equations["Bow curve"]);
-    ring.addSurface(new Surface(scene, twistedTorus, 20, 1, true), Category.Toroid, "Twisted torus", Equations["Twisted torus"]);
-    ring.addSurface(new Surface(scene, torus, 20, 1, true), Category.Toroid, "Torus", Equations["Torus"]);
-    ring.addSurface(new Surface(scene, ellipticTorus, 20, 1, true), Category.Toroid, "Elliptic Torus", Equations["Elliptic torus"]);
-    ring.addSurface(new Surface(scene, limpetTorus, 20, 1, true), Category.Toroid, "Limpet torus", Equations["Limpet torus"]);
-    ring.addSurface(new Surface(scene, trefoilKnot, 20, 1, true), Category.Toroid, "Trefoil knot", Equations["Trefoil knot"]);
-    ring.addSurface(new Surface(scene, arc, 20, 1, true), Category.Misc, "Arc", Equations["Arc"]);
-    ring.addSurface(new Surface(scene, sine, 20, 1, true), Category.Misc, "Sine cube", Equations["Sine cube"]);
-    ring.addSurface(new Surface(scene, cosine, 20, 1, true), Category.Misc, "Cosine cube", Equations["Cosine"]);
+    surfaceDefinitions.forEach((definition) =>
+        ring.addSurface(new Surface(scene, definition.func, 20, 0.8, true), definition.category, definition.name, definition.equation));
     ring.redistribute();
+
     // Auto-select first surface in the initial category
     const firstItem = ring.visibleRingItems()[0];
     if (firstItem) ring.setSelectedSurfaceMesh(firstItem.surface.mesh);
