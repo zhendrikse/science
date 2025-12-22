@@ -150,10 +150,17 @@
         }
     }
 
+    const ColorModes = {
+        HEIGHT: "Height",
+        BASE: "Base",
+        CURVATURE_1: "Curvature 1",
+        CURVATURE_2: "Curvature 2"
+    }
+
     const params = {
         frequency: 0.5,
         baseColor: "#4f6",
-        colorMode: "Height",
+        colorMode: ColorModes.HEIGHT,
         wireframe: false,
         axes: true,
         normals: false,
@@ -172,12 +179,6 @@
         }
     }
 
-    const ColorModes = {
-        HEIGHT: "Height",
-        BASE: "Base",
-        CURVATURE_1: "Curvature 1",
-        CURVATURE_2: "Curvature 2"
-    }
 
     class ControlsGui {
         constructor(scenery, surface, axes) {

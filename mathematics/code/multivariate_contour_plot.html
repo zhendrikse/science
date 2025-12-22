@@ -150,10 +150,17 @@
         }
     }
 
+    const ColorModes = {
+        HEIGHT: "Height",
+        BASE: "Base",
+        CURVATURE_1: "Curvature 1",
+        CURVATURE_2: "Curvature 2"
+    }
+
     const params = {
         frequency: 0.5,
         baseColor: "#4f6",
-        colorMode: "Height",
+        colorMode: ColorModes.Height,
         wireframe: true,
         axes: true,
         normals: false,
@@ -170,13 +177,6 @@
             alert("Math.js parse error: " + err.message);
             return null;
         }
-    }
-
-    const ColorModes = {
-        HEIGHT: "Height",
-        BASE: "Base",
-        CURVATURE_1: "Curvature 1",
-        CURVATURE_2: "Curvature 2"
     }
 
     class ControlsGui {
