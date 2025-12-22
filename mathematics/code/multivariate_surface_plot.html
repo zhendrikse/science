@@ -34,6 +34,8 @@
     <canvas id="myCanvas" width="600" height="600"></canvas>
 </div>
 
+
+<script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
 <script type="module">
     import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
     import { ParametricGeometry } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/geometries/ParametricGeometry";
@@ -142,8 +144,8 @@
             const expr = parse(customFunction);
             const latex = expr.toTex();
             const titleDiv = document.getElementById("surface-title");
-            titleDiv.innerHTML = "$(f(x,y)=" + latex + "$";
-            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, titleDiv]);
+            titleDiv.innerHTML = "$f(x,y)=" + latex + "$";
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, titleDiv]);
             //MathJax.typesetPromise([eqDiv]);
         }
     }
@@ -179,7 +181,7 @@
     }
 
     class ControlsGui {
-        constructor(surface, axes) {
+        constructor(scenery, surface, axes) {
             const controls = new GUI({width: 275, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
@@ -189,6 +191,7 @@
                     surface.updateToNew({ zFn: functionFrom(expr) });
                     axes.rebuildFrom(surface.getBoundingBox());
                     scenery.fitToBoundingBox(surface.getBoundingBox());
+                    scenery.updateTitle();
                 });
 
             const appearanceFolder = controls.addFolder("Appearance");

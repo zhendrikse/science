@@ -144,8 +144,8 @@
             const expr = parse(customFunction);
             const latex = expr.toTex();
             const titleDiv = document.getElementById("surface-title");
-            titleDiv.innerHTML = "$(f(x,y)=" + latex + "$";
-            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, titleDiv]);
+            titleDiv.innerHTML = "$f(x,y)=" + latex + "$";
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, titleDiv]);
             //MathJax.typesetPromise([eqDiv]);
         }
     }
@@ -181,7 +181,7 @@
     }
 
     class ControlsGui {
-        constructor(surface, axes) {
+        constructor(scenery, surface, axes) {
             const controls = new GUI({width: 275, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
@@ -191,6 +191,7 @@
                     surface.updateToNew({ zFn: functionFrom(expr) });
                     axes.rebuildFrom(surface.getBoundingBox());
                     scenery.fitToBoundingBox(surface.getBoundingBox());
+                    scenery.updateTitle();
                 });
 
             const appearanceFolder = controls.addFolder("Appearance");
