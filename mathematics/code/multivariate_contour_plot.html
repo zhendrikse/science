@@ -187,7 +187,11 @@
 
             controls.add(params, "customFunction").name("f(x,y) =")
                 .onFinishChange(expr => {
-                    surface.updateToNew({ zFn: functionFrom(expr) });
+                    surface.updateToNew(new GraphSurfaceDefinition({
+                        xInterval: new Interval(-2, 2),
+                        yInterval: new Interval(-2, 2),
+                        zFn: functionFrom(params.customFunction)
+                    }));
                     axes.rebuildFrom(surface.getBoundingBox());
                     scenery.fitToBoundingBox(surface.getBoundingBox());
                     scenery.updateTitle(expr);
@@ -293,7 +297,6 @@
             this.#createPlanes(axesSize);
             this.group.add(this.#createAxes(axesSize));
         }
-
     }
 
     class Interval {
@@ -302,70 +305,80 @@
             this.to = to;
         }
 
-        range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
-
         shrinkTo(value) {
             if (this.from < value) this.from = value;
             if (this.to > value) this.to = value;
         }
 
         scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
-
+        range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
         scaleParameter = (a) => this.range() * (a + this.from / this.range());
     }
 
-    const defaultSurfaceDefinition = {
-        xInterval: new Interval(-2, 2),
-        yInterval: new Interval(-2, 2),
-        xFn: (x, y) => x,
-        yFn: (x, y) => -y,
-        zFn: (x, y) => 0
-    };
+    class SurfaceDefinition {
+        sample(u, v, t, target) {
+            throw new Error("sample() not implemented");
+        }
+        //sample = (u, v, t, target) => { throw new Error("sample() not implemented"); } // u, v ∈ [0,1]
+        isClosed = () => false;
+        usesGroundLifting = () => true;
+        heightComponent = (targetVec) => targetVec.y;
+    }
 
-    // !! y-coord needs to be inverted for correct winding direction => influences the direction of the
-    // normal vectors. This is caused by the fact that we have to switch the y and z coordinates !!
+    class GraphSurfaceDefinition extends SurfaceDefinition {
+        constructor({ xInterval, yInterval, zFn }) {
+            super();
+            this.xInterval = xInterval;
+            this.yInterval = yInterval;
+            this.zFn = zFn;
+        }
+
+        sample(u, v, t, target) {
+            const x = this.xInterval.scaleParameter(u);
+            const y = this.yInterval.scaleParameter(v);
+            const z = this.zFn(x, y);
+
+            // !! y-coord needs to be inverted for correct winding direction => influences the direction of the
+            // normal vectors. This is caused by the fact that we have to switch the y and z coordinates !!
+            target.set(x, z, -y);
+        }
+    }
+
     class Surface {
         constructor(parentGroup, {
             resolution = 75,
             showWireframe = false,
-            surface = {}
-        } = {}) {
-            this.surface = this.#normalizeSurfaceDefinition(surface);
-            this.#rebuildSurfaceFunction();
+            definition    // must be a SurfaceDefinition instance
+        }) {
+            this.definition = definition;       // GraphSurfaceDefinition or TorusDefinition
             this.parentGroup = parentGroup;
             this.time = 0;
             this.normalsHelper = null;
             this.geometry = null;
             this.mesh = null;
             this.normalsVisible = false;
-            this.#buildGeometry(resolution, showWireframe);
-            this.#liftSurfaceAboveGroundLevel();
             this.colorsDirty = true;
+
+            this.#rebuildSurfaceFunction();     // prepare vertex calculation function
+            this.#buildGeometry(resolution, showWireframe);
+
+            if (this.definition.usesGroundLifting()) {
+                this.#liftSurfaceAboveGroundLevel();
+            }
         }
 
         #rebuildSurfaceFunction() {
-            const { xFn, yFn, zFn } = this.surface;
-            this.surfaceFunction = this.#surfaceFunctionFrom(xFn, yFn, zFn);
-        }
-
-        #normalizeSurfaceDefinition(partialSurface = {}) {
-            return {
-                ...defaultSurfaceDefinition,
-                ...this.surface,
-                ...partialSurface
-            };
-        }
-
-        #surfaceFunctionFrom(xFunction, yFunction, zFunction) {
-            return (normalized_u, normalized_v, target) => {
-                const
-                    u = this.surface.xInterval.scaleParameter(normalized_u),
-                    v = this.surface.yInterval.scaleParameter(normalized_v),
-                    x = xFunction(u, v),
-                    y = yFunction(u, v),
-                    z = zFunction(u, v);
-
-                target.set(x, z, y);
+            if (this.definition instanceof GraphSurfaceDefinition) {
+                const { xInterval, yInterval, zFn } = this.definition;
+                this.surfaceFunction = (u, v, target) => {
+                    const x = xInterval.scaleParameter(u);
+                    const y = yInterval.scaleParameter(v);
+                    const z = zFn(x, y);
+                    target.set(x, z, -y); // follow GraphSurfaceDefinition.sample() convention
+                };
+            } else {
+                // fallback for other SurfaceDefinitions like TorusDefinition
+                this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, this.time, target);
             }
         }
 
@@ -410,7 +423,7 @@
                 this.geometry.dispose();
             }
 
-            this.mesh = new THREE.Mesh(this.geometry, this.#material(this.mesh?.material.wireframe || showWireframe));
+            this.mesh = new THREE.Mesh(this.geometry, this.#material(showWireframe));
             this.parentGroup.add(this.mesh);
 
             this.#addNormalsHelper();
@@ -509,10 +522,18 @@
         #yMinMax() {
             const yRange = new Interval();
             const posAttr = this.geometry.attributes.position;
-            for(let i = 0; i < posAttr.count; i++)
-                yRange.shrinkTo(posAttr.getY(i));
+            const vec = new THREE.Vector3();
+
+            for (let i = 0; i < posAttr.count; i++) {
+                vec.x = posAttr.getX(i);
+                vec.y = posAttr.getY(i);
+                vec.z = posAttr.getZ(i);
+                yRange.shrinkTo(this.definition.heightComponent(vec));
+            }
+
             return yRange;
         }
+
 
         #updateColors() {
             const posAttr = this.geometry.attributes.position;
@@ -559,7 +580,7 @@
 
         rebuild(resolution) {
             this.#buildGeometry(resolution, this.mesh.material.wireframe);
-            this.#liftSurfaceAboveGroundLevel();
+            if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
             this.requestColorUpdate();
         }
 
@@ -569,7 +590,7 @@
 
             this.time += deltaTime;
             this.#updateGeometry();
-            this.#liftSurfaceAboveGroundLevel();
+            if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
             if (this.normalsHelper) this.updateNormalsLength(params.resolution);
         }
 
@@ -600,11 +621,13 @@
         }
 
         updateToNew(surfaceUpdate = {}) {
-            this.surface = this.#normalizeSurfaceDefinition(surfaceUpdate);
-            this.#rebuildSurfaceFunction();
-
+            this.definition = surfaceUpdate;
             this.time = 0;
+            this.#rebuildSurfaceFunction();
             this.rebuild(params.resolution);
+
+            if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
+            this.requestColorUpdate();
         }
     }
 
@@ -624,16 +647,19 @@
     const axes = new MatlabAxes(worldGroup);
     axes.show(true);
 
+    const graphDef = new GraphSurfaceDefinition({
+        xInterval: new Interval(-2, 2),
+        yInterval: new Interval(-2, 2),
+        zFn: functionFrom(params.customFunction)
+    });
+
     params.resolution = 35;
     const parametricSurface = new Surface(worldGroup, {
         resolution: params.resolution,
         showWireframe: true,
-        surface: {
-            xInterval: new Interval(-2, 2),
-            yInterval: new Interval(-2, 2),
-            zFn: functionFrom(params.customFunction)
-        }
+        definition: graphDef
     });
+
     axes.rebuildFrom(parametricSurface.getBoundingBox());
     scenery.fitToBoundingBox(parametricSurface.getBoundingBox());
     scenery.updateTitle(params.customFunction);
