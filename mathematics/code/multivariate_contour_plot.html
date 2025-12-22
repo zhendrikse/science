@@ -151,7 +151,6 @@
     }
 
     const params = {
-        amplitude: 1.0,
         frequency: 0.5,
         baseColor: "#4f6",
         colorMode: "Height",
@@ -319,10 +318,10 @@
         sample(u, v, t, target) {
             throw new Error("sample() not implemented");
         }
-        //sample = (u, v, t, target) => { throw new Error("sample() not implemented"); } // u, v ∈ [0,1]
-        isClosed = () => false;
-        usesGroundLifting = () => true;
-        heightComponent = (targetVec) => targetVec.y;
+
+        isClosed() { return false; }
+        useGroundLifting() { return true; }
+        heightComponent(targetVec) { return targetVec.y; }
     }
 
     class GraphSurfaceDefinition extends SurfaceDefinition {
