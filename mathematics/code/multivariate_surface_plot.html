@@ -18,7 +18,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         text-align: center;
-        font-size: 14px;
+        font-size: 16px;
         font-family: sans-serif;
         color: yellow;
         z-index: 10;
@@ -161,7 +161,7 @@
         animate: false,
         resolution: 75,
         opacity: 0.9,
-        customFunction: "3 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))"
+        customFunction: "3 * (1 - 2 * (x*x + y*y))*exp(-1.5 * (x*x + y*y))"
     }
 
     function functionFrom(xyFunctionString) {

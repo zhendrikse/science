@@ -10,12 +10,12 @@
   [multivariate_functions.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/multivariate_functions.py).
 - Some interesting functions: <br/>
   ➡️ Wavelet: `sin(3 * sqrt(x*x + y*y)) / sqrt(x*x + y*y)` <br/>
-  ➡️ Saddle: `2 * (x*x - y*y) / 5` <br/>
+  ➡️ Saddle: `2/5 * (x*x - y*y)` <br/>
   ➡️ Peak: `4 * exp(-x*x - y*y)` <br/>
   ➡️ Peaks: `sin(pi * x) * cos(pi * y)` <br/>
   ➡️ Ripple: `.5 * sin(pi * x * y)` <br/>
   ➡️ Poly: `.3 * (y*y*y*x - x*x*x*y)` <br/>
-  ➡️ Ricker wavelet: `3 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))`
+  ➡️ Ricker wavelet: `3 * (1.5 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y))`
 
 {% include_relative code/multivariate_contour_plot.html %}
 
