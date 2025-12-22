@@ -8,14 +8,14 @@
 - It is implemented in Javascript using [Three.js](https://threejs.org/) 
 - A [VPython](https://vpython.org/) version is available as well:
   [multivariate_functions.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/multivariate_functions.py).
-- Some interesting functions:
-  - Wavelet: `sin(3 * sqrt(x*x + y*y)) / sqrt(x*x + y*y)`
-  - Saddle: `2 * (x*x - y*y) / 5`
-  - Peak: `4 * exp(-x*x - y*y)`
-  - Peaks: `sin(pi * x) * cos(pi * y)`
-  - Ripple: `.5 * sin(pi * x * y)`
-  - Poly: `.3 * (y*y*y*x - x*x*x*y)`
-  - Ricker wavelet: `3 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))`
+- Some interesting functions: <br/>
+  ➡️ Wavelet: `sin(3 * sqrt(x*x + y*y)) / sqrt(x*x + y*y)` <br/>
+  ➡️ Saddle: `2 * (x*x - y*y) / 5` <br/>
+  ➡️ Peak: `4 * exp(-x*x - y*y)` <br/>
+  ➡️ Peaks: `sin(pi * x) * cos(pi * y)` <br/>
+  ➡️ Ripple: `.5 * sin(pi * x * y)` <br/>
+  ➡️ Poly: `.3 * (y*y*y*x - x*x*x*y)` <br/>
+  ➡️ Ricker wavelet: `3 * (1 - 2 * (x*x + y*y))*exp(-2 * (x*x + y*y) * (3/4))`
 
     
 {% include_relative code/multivariate_surface_plot.html %}
