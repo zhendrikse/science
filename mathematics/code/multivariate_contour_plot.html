@@ -315,11 +315,12 @@
     }
 
     class SurfaceDefinition {
-        sample(u, v, t, target) {
+        sample(u, v, target) {
             throw new Error("sample() not implemented");
         }
 
         heightComponent(targetVec) { return targetVec.y; }
+        usesGroundLifting() { return true; }
     }
 
     class GraphSurfaceDefinition extends SurfaceDefinition {
@@ -330,7 +331,7 @@
             this.zFn = zFn;
         }
 
-        sample(u, v, t, target) {
+        sample(u, v, target) {
             const x = this.xInterval.scaleParameter(u);
             const y = this.yInterval.scaleParameter(v);
             const z = this.zFn(x, y);
@@ -356,27 +357,10 @@
             this.normalsVisible = false;
             this.colorsDirty = true;
 
-            this.#rebuildSurfaceFunction();     // prepare vertex calculation function
+            this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, target);
             this.#buildGeometry(resolution, showWireframe);
 
-            if (this.definition.usesGroundLifting()) {
-                this.#liftSurfaceAboveGroundLevel();
-            }
-        }
-
-        #rebuildSurfaceFunction() {
-            if (this.definition instanceof GraphSurfaceDefinition) {
-                const { xInterval, yInterval, zFn } = this.definition;
-                this.surfaceFunction = (u, v, target) => {
-                    const x = xInterval.scaleParameter(u);
-                    const y = yInterval.scaleParameter(v);
-                    const z = zFn(x, y);
-                    target.set(x, z, -y); // follow GraphSurfaceDefinition.sample() convention
-                };
-            } else {
-                // fallback for other SurfaceDefinitions like TorusDefinition
-                this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, this.time, target);
-            }
+            if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
         }
 
         #liftSurfaceAboveGroundLevel() {
@@ -601,7 +585,7 @@
             const baseLength = 0.2;        // default length at base resolution & amplitude
 
             // Scale inversely with resolution, proportionally with amplitude
-            const length = baseLength * (baseResolution / resolution) * (params.amplitude / baseAmplitude);
+            const length = baseLength * (baseResolution / resolution) / baseAmplitude;
 
             this.normalsHelper.size = length;
             this.normalsHelper.update(); // recalc positions
@@ -620,7 +604,7 @@
         updateToNew(surfaceUpdate = {}) {
             this.definition = surfaceUpdate;
             this.time = 0;
-            this.#rebuildSurfaceFunction();
+            this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, this.time, target);
             this.rebuild(params.resolution);
 
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
@@ -652,8 +636,8 @@
 
     params.resolution = 35;
     const parametricSurface = new Surface(worldGroup, {
-        resolution: params.resolution,
         showWireframe: true,
+        resolution: params.resolution,
         definition: graphDef
     });
 
