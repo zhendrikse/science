@@ -98,6 +98,18 @@
             this.controls.update();
         }
 
+        fitToBoundingSphere(sphere, padding = 1.3) {
+            const { center, radius } = sphere;
+            const vFov = THREE.MathUtils.degToRad(this.camera.fov);
+            const distance = (radius / Math.sin(vFov / 2)) * padding;
+
+            this.camera.position
+                .copy(center)
+                .addScaledVector(new THREE.Vector3(1,1,1).normalize(), distance);
+
+            this.controls.target.copy(center);
+        }
+
         setSize(width, height) {
             this.renderer.setSize(width, height);
             this.camera.aspect = width / height;
@@ -265,9 +277,9 @@
 
         range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
 
-        modifyToInclude(y) {
-            if (this.from < y) this.from = y;
-            if (this.to > y) this.to = y;
+        shrinkTo(value) {
+            if (this.from < value) this.from = value;
+            if (this.to > value) this.to = value;
         }
 
         scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
@@ -471,7 +483,7 @@
             const yRange = new Interval();
             const posAttr = this.geometry.attributes.position;
             for(let i = 0; i < posAttr.count; i++)
-                yRange.modifyToInclude(posAttr.getY(i));
+                yRange.shrinkTo(posAttr.getY(i));
             return yRange;
         }
 
@@ -555,6 +567,11 @@
             return this.geometry.boundingBox.clone();
         }
 
+        getBoundingSphere() {
+            this.geometry.computeBoundingSphere();
+            return this.geometry.boundingSphere.clone();
+        }
+
         updateToNew(surfaceUpdate = {}) {
             this.surface = this.#normalizeSurfaceDefinition(surfaceUpdate);
             this.#rebuildSurfaceFunction();
@@ -580,17 +597,15 @@
     const axes = new MatlabAxes(worldGroup);
     axes.show(true);
 
-
     params.resolution = 35;
     const parametricSurface = new Surface(worldGroup, {
         resolution: params.resolution,
-        showWireframe: true,
-        surface:
-            {
-                xInterval: new Interval(-2, 2),
-                yInterval: new Interval(-2, 2),
-                zFn: functionFrom(params.customFunction)
-            }
+        showWireframe: true;
+        surface: {
+            xInterval: new Interval(-2, 2),
+            yInterval: new Interval(-2, 2),
+            zFn: functionFrom(params.customFunction)
+        }
     });
     axes.rebuildFrom(parametricSurface.getBoundingBox());
     scenery.fitToBoundingBox(parametricSurface.getBoundingBox());
