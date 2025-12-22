@@ -185,8 +185,7 @@
             const controls = new GUI({width: 275, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
-            const mathFolder = controls.addFolder("Mathematical Surface");
-            mathFolder.add(params, "customFunction").name("f(x,y) =")
+            controls.add(params, "customFunction").name("f(x,y) =")
                 .onFinishChange(expr => {
                     surface.updateToNew({ zFn: functionFrom(expr) });
                     axes.rebuildFrom(surface.getBoundingBox());
@@ -216,7 +215,6 @@
             animationFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
             animationFolder.add(params, 'animate').name("Animate");
 
-            mathFolder.open();
             animationFolder.close();
             appearanceFolder.close();
         }
@@ -637,7 +635,7 @@
     axes.rebuildFrom(parametricSurface.getBoundingBox());
     scenery.fitToBoundingBox(parametricSurface.getBoundingBox());
     scenery.updateTitle(params.customFunction);
-    new ControlsGui(parametricSurface, axes);
+    new ControlsGui(scenery, parametricSurface, axes);
 
     let lastTime = performance.now();
     function animate() {
