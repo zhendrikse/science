@@ -116,11 +116,6 @@
             mathFolder.add(params, "customFunction").name("f(x,y) =")
                 .onFinishChange(expr => surface.updateToNew(functionFrom(expr)));
 
-            const shapeFolder = controls.addFolder("Shape Controls");
-            shapeFolder.add(params, 'amplitude', 0.1, 1).step(0.01).name("Amplitude")
-                .onChange(() => surface.updateNormalsLength(params.resolution));
-            shapeFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
-
             const appearanceFolder = controls.addFolder("Appearance");
             appearanceFolder.add(params, "colorMode", Object.values(ColorModes)).name("Color Mode")
                 .onChange(() => surface.requestColorUpdate());
@@ -131,17 +126,20 @@
             });
 
             appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
-            appearanceFolder.add(params, 'animate').name("Animate");
             appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.toggleWireframe(value));
             appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
-            controls.add({reset: () => scenery.camera.position.set(5, 5, 7)}, "reset").name("Reset Camera");
             appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => {
                 surface.normalsVisible = value;
                 if (surface.normalsHelper) surface.normalsHelper.visible = value;
             });
+            appearanceFolder.add({reset: () => scenery.camera.position.set(5, 5, 7)}, "reset").name("Reset Camera");
+
+            const animationFolder = controls.addFolder("Animation Controls");
+            animationFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
+            animationFolder.add(params, 'animate').name("Animate");
 
             mathFolder.open();
-            shapeFolder.close();
+            animationFolder.close();
             appearanceFolder.close();
         }
     }
@@ -205,6 +203,21 @@
         }
 
         show = (value) => this.group.visible = value;
+
+        rebuildFrom(boundingBox) {
+            this.group.clear();
+
+            const size = new THREE.Vector3();
+            boundingBox.getSize(size);
+
+            const max = Math.max(size.x, size.y, size.z);
+            const axesSize = max * 1.1; // margin
+
+            this.#createGrids(axesSize, 10);
+            this.#createPlanes(axesSize);
+            this.group.add(this.#createAxes(axesSize));
+        }
+
     }
 
     class Interval {
@@ -254,7 +267,7 @@
             this.mesh = null;
             this.normalsVisible = false;
             this.#buildGeometry(resolution, showWireframe);
-            this.#fitToAxesAndScale();
+            this.#liftSurfaceAboveGroundLevel();
             this.colorsDirty = true;
         }
 
@@ -271,22 +284,9 @@
             }
         }
 
-        #fitToAxesAndScale() {
-            this.geometry.computeBoundingBox();
-            const box = this.geometry.boundingBox;
-            const size = new THREE.Vector3();
-            box.getSize(size);
-            const maxExtent = Math.max(size.x, size.y, size.z);
-
-            const xScale = .9 * this.surface.xInterval.range() / maxExtent;
-            const yScale = .9 * this.surface.yInterval.range() / maxExtent;
-            const scale = xScale > yScale ? xScale : yScale;
+        #liftSurfaceAboveGroundLevel() {
             const position = this.geometry.attributes.position;
-
-            for (let i = 0; i < position.count; i++)
-                position.setXYZ(i, position.getX(i) * scale, position.getY(i) * scale, position.getZ(i) * scale);
-
-            const yMin = box.min.y * scale;
+            const yMin = this.getBoundingBox().min.y;// * scale;
             for (let i = 0; i < position.count; i++)
                 position.setY(i, position.getY(i) - yMin);
 
@@ -387,7 +387,7 @@
             return color;
         }
 
-        #amplitudeModulation = (t) => (1.01 - Math.cos(t * params.frequency + Math.PI)) * .5 * params.amplitude;
+        #amplitudeModulation = (t) => (1.01 - Math.cos(t * params.frequency + Math.PI)) * .5
 
         #material(showWireframe) {
             return new THREE.MeshPhongMaterial({
@@ -474,7 +474,7 @@
 
         rebuild(resolution) {
             this.#buildGeometry(resolution, this.mesh.material.wireframe);
-            this.#fitToAxesAndScale();
+            this.#liftSurfaceAboveGroundLevel();
             this.requestColorUpdate();
         }
 
@@ -484,7 +484,7 @@
 
             this.time += deltaTime;
             this.#updateGeometry();
-            this.#fitToAxesAndScale();
+            this.#liftSurfaceAboveGroundLevel();
             if (this.normalsHelper) this.updateNormalsLength(params.resolution);
         }
 
@@ -502,6 +502,11 @@
 
             this.normalsHelper.size = length;
             this.normalsHelper.update(); // recalc positions
+        }
+
+        getBoundingBox() {
+            this.geometry.computeBoundingBox();
+            return this.geometry.boundingBox.clone();
         }
 
         updateToNew(zCoordinateFunction) {
@@ -538,13 +543,15 @@
 
     const parametricSurface = new Surface(worldGroup, {
         resolution: params.resolution,
-        surface: {
+        surface:
+        {
             xInterval: new Interval(-2, 2),
             yInterval: new Interval(-2, 2),
             zFn: functionFrom(params.customFunction)
         }
     });
     new ControlsGui(parametricSurface, axes);
+    axes.rebuildFrom(parametricSurface.getBoundingBox());
 
     let lastTime = performance.now();
     function animate() {
