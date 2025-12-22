@@ -1,6 +1,8 @@
 <style>
     #canvas-wrapper {
         position: relative;
+        width: 600px;
+        height: 600px;
     }
 
     #gui-container {
@@ -9,9 +11,25 @@
         left: 10px;          /* center horizontally */
         z-index: 20;
     }
+
+    #surface-title {
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        font-size: 24px;
+        font-family: sans-serif;
+        color: yellow;
+        z-index: 10;
+        pointer-events: none;
+        font-weight: bold;
+        text-shadow: 0 0 8px black;
+    }
 </style>
 
 <div id="canvas-wrapper">
+    <div id="surface-title">Surface</div>
     <div id="gui-container"></div>
     <canvas id="myCanvas" width="600" height="600"></canvas>
 </div>
@@ -24,6 +42,7 @@
     import { OrbitControls } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
     import { VertexNormalsHelper } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/helpers/VertexNormalsHelper.js";
+    import { parse } from "https://cdn.jsdelivr.net/npm/mathjs@11.11.0/+esm";
 
     const canvas = document.getElementById("myCanvas"),
         width = canvas.width,
@@ -119,6 +138,15 @@
         render() {
             this.controls.update();
             this.renderer.render(this.scene, this.camera);
+        }
+
+        updateTitle(customFunction) {
+            const expr = parse(customFunction);
+            const latex = expr.toTex();
+            const titleDiv = document.getElementById("surface-title");
+            titleDiv.innerHTML = "$" + latex + "$";
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, titleDiv]);
+            //MathJax.typesetPromise([eqDiv]);
         }
     }
 
@@ -609,6 +637,7 @@
     });
     axes.rebuildFrom(parametricSurface.getBoundingBox());
     scenery.fitToBoundingBox(parametricSurface.getBoundingBox());
+    scenery.updateTitle(params.customFunction);
     new ControlsGui(parametricSurface, axes);
 
     let lastTime = performance.now();
