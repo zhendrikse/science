@@ -330,13 +330,13 @@
         }
 
         #surfaceFunctionFrom(xFunction, yFunction, zFunction) {
-            return (normalized_u, normalized_v, amplitude, target) => {
+            return (normalized_u, normalized_v, target) => {
                 const
                     u = this.surface.xInterval.scaleParameter(normalized_u),
                     v = this.surface.yInterval.scaleParameter(normalized_v),
                     x = xFunction(u, v),
                     y = yFunction(u, v),
-                    z = zFunction(u, v) * amplitude;
+                    z = zFunction(u, v);
 
                 target.set(x, z, y);
             }
@@ -344,7 +344,7 @@
 
         #liftSurfaceAboveGroundLevel() {
             const position = this.geometry.attributes.position;
-            const yMin = this.getBoundingBox().min.y;// * scale;
+            const yMin = this.getBoundingBox().min.y;
             for (let i = 0; i < position.count; i++)
                 position.setY(i, position.getY(i) - yMin);
 
@@ -370,7 +370,7 @@
 
         #buildGeometry(resolution, showWireframe) {
             this.geometry = new ParametricGeometry(
-                (u, v, target) => this.surfaceFunction(u, v, this.#amplitudeModulation(this.time), target),
+                (u, v, target) => this.surfaceFunction(u, v, target),
                 resolution, resolution
             );
 
@@ -416,8 +416,8 @@
                 const u = uvAttr.getX(i);
                 const v = uvAttr.getY(i);
 
-                this.surfaceFunction(u, v, this.#amplitudeModulation(this.time), temp);
-                posAttr.setXYZ(i, temp.x, temp.y, temp.z);
+                this.surfaceFunction(u, v, temp);
+                posAttr.setXYZ(i, temp.x, temp.y * this.#amplitudeModulation(this.time), temp.z);
             }
 
             posAttr.needsUpdate = true;
