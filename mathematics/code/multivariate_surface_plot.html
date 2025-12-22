@@ -604,7 +604,7 @@
         updateToNew(surfaceUpdate = {}) {
             this.definition = surfaceUpdate;
             this.time = 0;
-            this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, this.time, target);
+            this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, target);
             this.rebuild(params.resolution);
 
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
