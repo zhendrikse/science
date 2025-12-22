@@ -190,7 +190,7 @@
                     surface.updateToNew({ zFn: functionFrom(expr) });
                     axes.rebuildFrom(surface.getBoundingBox());
                     scenery.fitToBoundingBox(surface.getBoundingBox());
-                    scenery.updateTitle();
+                    scenery.updateTitle(expr);
                 });
 
             const appearanceFolder = controls.addFolder("Appearance");
