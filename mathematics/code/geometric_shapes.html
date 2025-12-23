@@ -127,6 +127,14 @@
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
+        meta: {name: "Limpet torus", category: Category.TOROID},
+        definition: {
+            xFn: "cos(x) / (sqrt(2) + sin(y))",
+            yFn: "1 / (sqrt(2) + cos(y))",
+            zFn: "sin(x) / (sqrt(2) + sin(y))",
+        },
+        intervals: [["0", "2 * pi"], ["0", "2 * pi"]]
+    }, {
         meta: {name: "Sine", category: Category.MISC},
         definition: {
             xFn: "sin(x)",
