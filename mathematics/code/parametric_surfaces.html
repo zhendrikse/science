@@ -76,31 +76,6 @@
         MISC: "Miscellaneous"
     });
 
-    //
-    // class TorusDefinition extends SurfaceDefinition  {
-    //     constructor({ R=4, r=2 }) {
-    //         super();
-    //         this.R = R;
-    //         this.r = r;
-    //     }
-    //
-    //     sample(u, v, t, target) {
-    //         const θ = u * 2 * Math.PI;
-    //         const φ = v * 2 * Math.PI;
-    //
-    //         const x = Math.cos(θ) * (this.R + this.r * Math.cos(φ));
-    //         const y = this.r * Math.sin(φ);
-    //         const z = Math.sin(θ) * (this.R + this.r * Math.cos(φ));
-    //
-    //         target.set(x, y, z);
-    //     }
-    //
-    //     isClosed = () => true;
-    // }
-    //
-    // const torusDef = new TorusDefinition({R:4, r:2 });
-
-
     const surfaceDefinitions = [ {
         name: "Arc",
         category: Category.MISC,
