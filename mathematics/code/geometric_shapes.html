@@ -3,7 +3,7 @@
     #canvas-wrapper {
         position: relative;
         width: 600px;
-        height: 700px;
+        height: 750px;
     }
 
     #myCanvas {
@@ -58,7 +58,7 @@
     <div id="gui-container"></div>
     <div id="surface-title"></div>
     <div id="surface-equation"></div>
-    <canvas id="myCanvas" width="600" height="700"></canvas>
+    <canvas id="myCanvas" width="600" height="750"></canvas>
 </div>
 
 
@@ -262,7 +262,9 @@
                 .onChange(() => surface.requestColorUpdate());
             appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.requestColorUpdate());
             appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
-                surface.rebuild(resolution)
+                surface.rebuild(resolution);
+                surface.computeNormalizeScale(4); // TODO hard coded number
+                surface.normalizeToFit();
             });
 
             appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
@@ -328,7 +330,7 @@
             return axesHelper;
         }
 
-        #createPlane(size, x, y, z, opacity=0.15, color=0x888888) {
+        #createPlane(size, x, y, z, opacity=0.10, color=0x888888) {
             const material = new THREE.MeshPhongMaterial({
                 color: color,
                 side: THREE.DoubleSide,
