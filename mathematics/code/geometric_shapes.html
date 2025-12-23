@@ -233,6 +233,7 @@
             this.camera.position
                 .copy(center)
                 .addScaledVector(direction, distance);
+            this.camera.position.y -= 2;
 
             this.camera.near = distance / 100;
             this.camera.far  = distance * 10;
