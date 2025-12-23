@@ -278,6 +278,7 @@
             animationFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
             animationFolder.add(params, 'animate').name("Animate");
 
+            controls.close();
             animationFolder.close();
             appearanceFolder.close();
         }
@@ -327,7 +328,7 @@
             return axesHelper;
         }
 
-        #createPlane(size, x, y, z, opacity=0.2, color=0x888888) {
+        #createPlane(size, x, y, z, opacity=0.15, color=0x888888) {
             const material = new THREE.MeshPhongMaterial({
                 color: color,
                 side: THREE.DoubleSide,
@@ -465,7 +466,7 @@
         }
 
         #addNormalsHelper() {
-            this.normalsHelper = new VertexNormalsHelper(this.mesh, 0.25, 0x770000);
+            this.normalsHelper = new VertexNormalsHelper(this.mesh, 0.2, 0x770000);
             this.normalsHelper.visible = this.normalsVisible;
             this.parentGroup.add(this.normalsHelper);
         }
