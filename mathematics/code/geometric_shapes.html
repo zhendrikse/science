@@ -91,7 +91,7 @@
 
     const params = {
         frequency: 0.5,
-        baseColor: "#4f6",
+        baseColor: "#ff5",
         colorMode: ColorModes.HEIGHT,
         wireframe: false,
         axes: true,
@@ -267,7 +267,7 @@
 
             const appearanceFolder = controls.addFolder("Appearance");
             appearanceFolder.add(params, "colorMode", Object.values(ColorModes)).name("Color Mode")
-                .onChange(() => surface.requestColorUpdate());
+                .onChange(() => surface.changeColorModeTo(params.colorMode));
             appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.requestColorUpdate());
             appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
                 surface.rebuild(resolution);
@@ -409,6 +409,7 @@
         constructor(parentGroup, {
             resolution = 75,
             showWireframe = false,
+            colorMode = ColorModes.HEIGHT,
             definition    // must be a SurfaceDefinition instance
         }) {
             this.definition = definition;       // GraphSurfaceDefinition or TorusDefinition
@@ -420,7 +421,7 @@
             this.normalsVisible = false;
             this.colorsDirty = true;
             this.geometryScale = 1;
-
+            this.colorMode = colorMode;
             this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, target);
             this.#buildGeometry(resolution, showWireframe);
 
@@ -542,21 +543,21 @@
         #updateColors() {
             const posAttr = this.geometry.attributes.position;
             const colors = this.geometry.attributes.color.array;
-            const yRange = (params.colorMode === ColorModes.HEIGHT || params.colorMode === ColorModes.BASE)
+            const yRange = (this.colorMode === ColorModes.HEIGHT || this.colorMode === ColorModes.BASE)
                 ? this.#yMinMax()
                 : null;
 
             let curvature = null;
-            if (params.colorMode === ColorModes.CURVATURE_1)
+            if (this.colorMode === ColorModes.CURVATURE_1)
                 curvature = this.#computeCurvature(this.#deviationFromYAxis);
-            else if (params.colorMode === ColorModes.CURVATURE_2)
+            else if (this.colorMode === ColorModes.CURVATURE_2)
                 curvature = this.#computeCurvature(this.#magnitudeOfNormalChange);
 
             for (let i = 0; i < posAttr.count; i++) {
                 let color;
                 const y = posAttr.getY(i);
 
-                switch (params.colorMode) {
+                switch (this.colorMode) {
                     case ColorModes.HEIGHT:
                         color = this.#colorFromHeight(y, yRange);
                         break;
@@ -695,6 +696,7 @@
             if (this.normalsHelper) this.normalsHelper.update();
         }
 
+        changeColorModeTo = (newMode) => {this.colorMode = newMode; this.requestColorUpdate();}
         requestColorUpdate = () => this.colorsDirty = true;
         show = () => this.mesh.material.visible = true;
         hide = () => this.mesh.material.visible = false;
@@ -788,8 +790,8 @@
                 surface.mesh.userData.intervals[1][1] + "] \\end{cases}$$";
 
             equationDiv.innerHTML = surface ? equation : "Equation not found";
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
-            //MathJax.typesetPromise([eqDiv]);
+            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            MathJax.typesetPromise([eqDiv]);
         }
 
         #updateSurfaceName() {
@@ -857,6 +859,7 @@
             const surfaceShape = new Surface(worldGroup, {
                 resolution: 20,
                 showWireframe: true,
+                colorMode: ColorModes.CURVATURE_2,
                 definition: new SurfaceTemplate(surfaceDef.definition, surfaceDef.intervals[0], surfaceDef.intervals[1])
             });
             this.#addSurface(surfaceShape, surfaceDef);
