@@ -231,17 +231,12 @@
             const direction = new THREE.Vector3(1, 1, 1).normalize(); // Matlab-like camera setting
 
             this.camera.position
-                .copy(center)
+                .copy(new THREE.Vector3(center.x + 1, center.y - 4, center.z + 1))
                 .addScaledVector(direction, distance);
-            this.camera.position.y -= 2;
 
             this.camera.near = distance / 100;
             this.camera.far  = distance * 10;
             this.camera.updateProjectionMatrix();
-
-            // Smooth camera transitions
-            // this.camera.position.lerp(targetPosition, 0.15);
-            // this.controls.target.lerp(center, 0.15);
 
             this.controls.target.copy(center);
             this.controls.update();
@@ -795,14 +790,17 @@
             this.#displayEquation(surface, equationDiv);
         }
 
-        #highlightSelected(surface) {
-            surface.mesh.material.emissive.set(0x111111);
-            surface.mesh.material.wireframe = false;
-
+        #deselect(surface) {
             if (this.selectedSurface) {
-                this.selectedSurface.mesh.material.emissive.set(0x000000);
-                this.selectedSurface.mesh.material.wireframe = true;
+                this.selectedSurface.mesh.material.emissive.set(0x00000);
+                this.selectedSurface.toggleWireframe(true);
             }
+        }
+
+        #highlightSelected(surface) {
+            surface.toggleWireframe(false);
+            surface.mesh.material.emissive.set(0x222222);
+            this.#deselect(surface);
         }
 
         #storeSurfaceDataInMesh(surface, surfaceData) {
@@ -819,12 +817,13 @@
         }
 
         setSelectedSurface = (surface) => {
+            this.#highlightSelected(surface);
             this.selectedSurface = surface;
+
             this.surfaceDisplayedInAxes.updateToNew(surface.definition);
             this.surfaceDisplayedInAxes.computeNormalizeScale(4); // TODO hard coded number
             this.surfaceDisplayedInAxes.normalizeToFit();
 
-            this.#highlightSelected(surface);
             this.#setTargetRotation();
             this.#updateSurfaceName();
         }
