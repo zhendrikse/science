@@ -763,7 +763,7 @@
 
         #placeAndShowSurface = (surface, index) => {
             const angle = 2 * Math.PI * index / this.visibleRingItems().length;
-            const position = new THREE.Vector3(this.ringRadius * Math.cos(angle), -3, this.ringRadius * Math.sin(angle));
+            const position = new THREE.Vector3(this.ringRadius * Math.cos(angle), -2.75, this.ringRadius * Math.sin(angle));
             surface.normalizeToFit(1);
             surface.moveTo(position);
             surface.show();
