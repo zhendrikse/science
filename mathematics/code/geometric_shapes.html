@@ -3,7 +3,7 @@
     #canvas-wrapper {
         position: relative;
         width: 600px;
-        height: 800px;
+        height: 700px;
     }
 
     #myCanvas {
@@ -37,12 +37,15 @@
     }
 
     #surface-equation {
-        font-size: 18px;
-        color: black;
-        margin: 20px 20px 40px 20px;   /* top, sides, bottom */
+        position: absolute;
+        top: 50px;
+        font-size: 16px;
+        color: yellow;
+        margin-left: 10px;
+        margin-right: 10px;
         text-align: left;               /* align formula to left */
         width: 600px;
-        height: 200px;
+        z-index: 10;  /* above canvas */
     }
 
     #surface-equation .mjx-chtml {
@@ -54,7 +57,7 @@
 <div id="canvas-wrapper">
     <div id="gui-container"></div>
     <div id="surface-title"></div>
-    <canvas id="myCanvas" width="600" height="800"></canvas>
+    <canvas id="myCanvas" width="600" height="700"></canvas>
 </div>
 <div id="surface-equation"></div>
 
@@ -414,7 +417,7 @@
             this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, target);
             this.#buildGeometry(resolution, showWireframe);
 
-            //if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
+            if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
         }
 
         #liftSurfaceAboveGroundLevel() {
@@ -425,7 +428,7 @@
 
             position.needsUpdate = true;
             this.geometry.computeVertexNormals();
-            this.normalsHelper.update();
+            if (this.normalsHelper && this.normalsHelper.visible) this.normalsHelper.update();
         }
 
         #magnitudeOfNormalChange = (nx, ny, nz) => Math.sqrt(nx*nx + ny*ny + nz*nz);
@@ -633,7 +636,7 @@
 
         rebuild(resolution) {
             this.#buildGeometry(resolution, this.mesh.material.wireframe);
-            //if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
+            if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
             this.requestColorUpdate();
         }
 
@@ -643,7 +646,7 @@
 
             this.time += deltaTime;
             this.#updateGeometry();
-            //if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
+            if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
         }
 
         getBoundingBox() {
@@ -662,7 +665,7 @@
             this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, target);
             this.rebuild(params.resolution);
 
-            //if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
+            if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
             this.requestColorUpdate();
         }
 
@@ -727,7 +730,7 @@
 
 
     class Ring {
-        constructor(activeSurface, ringRadius=3, ringRotationSpeed=0.01, selectionLerp=0.08) {
+        constructor(activeSurface, ringRadius=2, ringRotationSpeed=0.01, selectionLerp=0.08) {
             this.surfaceDisplayedInAxes = activeSurface
             this.ring = new THREE.Group();
             this.surfaces = [];
@@ -761,7 +764,7 @@
 
         #placeAndShowSurface = (surface, index) => {
             const angle = 2 * Math.PI * index / this.visibleRingItems().length;
-            const position = new THREE.Vector3(this.ringRadius * Math.cos(angle), -5, this.ringRadius * Math.sin(angle));
+            const position = new THREE.Vector3(this.ringRadius * Math.cos(angle), -3, this.ringRadius * Math.sin(angle));
             surface.normalizeToFit(1);
             surface.moveTo(position);
             surface.show();
@@ -894,12 +897,10 @@
     scene.add(worldGroup);
     const scenery = new Scenery(scene, worldGroup);
 
-    const axesAndSurfaceGroup = new THREE.Group();
-    worldGroup.add(axesAndSurfaceGroup);
-    const axes = new MatlabAxes(axesAndSurfaceGroup);
+    const axes = new MatlabAxes(worldGroup);
 
     const firstSurface = surfaceDefinitions[0];
-    const parametricSurface = new Surface(axesAndSurfaceGroup, {
+    const parametricSurface = new Surface(worldGroup, {
         resolution: 20,
         showWireframe: false,
         definition: new SurfaceTemplate(firstSurface.definition, firstSurface.intervals[0], firstSurface.intervals[1])
