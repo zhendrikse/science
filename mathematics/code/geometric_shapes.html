@@ -790,8 +790,8 @@
                 surface.mesh.userData.intervals[1][1] + "] \\end{cases}$$";
 
             equationDiv.innerHTML = surface ? equation : "Equation not found";
-            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
-            MathJax.typesetPromise([eqDiv]);
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            //MathJax.typesetPromise([eqDiv]);
         }
 
         #updateSurfaceName() {
