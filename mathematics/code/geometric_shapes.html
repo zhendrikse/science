@@ -792,16 +792,15 @@
         }
 
         #deselect(surface) {
-            if (this.selectedSurface) {
-                this.selectedSurface.mesh.material.emissive.set(0x00000);
-                this.selectedSurface.toggleWireframe(true);
+            if (surface) {
+                surface.mesh.material.emissive.set(0x00000);
+                surface.toggleWireframe(true);
             }
         }
 
         #highlightSelected(surface) {
             surface.toggleWireframe(false);
             surface.mesh.material.emissive.set(0x222222);
-            this.#deselect(surface);
         }
 
         #storeSurfaceDataInMesh(surface, surfaceData) {
@@ -818,6 +817,7 @@
         }
 
         setSelectedSurface = (surface) => {
+            this.#deselect(this.selectedSurface);
             this.#highlightSelected(surface);
             this.selectedSurface = surface;
 
