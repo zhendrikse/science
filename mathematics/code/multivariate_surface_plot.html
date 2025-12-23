@@ -573,7 +573,7 @@
             this.time += deltaTime;
             this.#updateGeometry();
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
-            if (this.normalsHelper) this.updateNormalsLength(params.resolution);
+            if (this.normalsHelper && this.normalsHelper.visible) this.updateNormalsLength(params.resolution);
         }
 
         requestColorUpdate = () => this.colorsDirty = true;
