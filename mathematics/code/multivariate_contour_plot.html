@@ -160,7 +160,7 @@
     const params = {
         frequency: 0.5,
         baseColor: "#4f6",
-        colorMode: ColorModes.Height,
+        colorMode: ColorModes.HEIGHT,
         wireframe: true,
         axes: true,
         normals: false,
@@ -198,7 +198,7 @@
 
             const appearanceFolder = controls.addFolder("Appearance");
             appearanceFolder.add(params, "colorMode", Object.values(ColorModes)).name("Color Mode")
-                .onChange(() => surface.requestColorUpdate());
+                .onChange(() => surface.changeColorModeTo(params.colorMode));
             appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.requestColorUpdate());
             appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
                 surface.rebuild(resolution)
@@ -346,6 +346,7 @@
         constructor(parentGroup, {
             resolution = 75,
             showWireframe = false,
+            colorMode = ColorModes.HEIGHT,
             definition    // must be a SurfaceDefinition instance
         }) {
             this.definition = definition;       // GraphSurfaceDefinition or TorusDefinition
@@ -355,6 +356,7 @@
             this.geometry = null;
             this.mesh = null;
             this.normalsVisible = false;
+            this.colorMode = colorMode;
             this.colorsDirty = true;
 
             this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, target);
@@ -520,16 +522,16 @@
             const posAttr = this.geometry.attributes.position;
             const colors = this.geometry.attributes.color.array;
             const yRange = this.#yMinMax();
-            let curvature = params.colorMode === ColorModes.CURVATURE_1 ? this.#computeCurvature(this.#deviationFromYAxis) : null;
-            curvature = params.colorMode === ColorModes.CURVATURE_2 ? this.#computeCurvature(this.#magnitudeOfNormalChange) : curvature;
+            let curvature = this.colorMode === ColorModes.CURVATURE_1 ? this.#computeCurvature(this.#deviationFromYAxis) : null;
+            curvature = this.colorMode === ColorModes.CURVATURE_2 ? this.#computeCurvature(this.#magnitudeOfNormalChange) : curvature;
 
             for (let i = 0; i < posAttr.count; i++) {
                 let c;
-                if (params.colorMode === ColorModes.HEIGHT)
+                if (this.colorMode === ColorModes.HEIGHT)
                     c = this.#updateColor(posAttr.getY(i), yRange);
-                else if (params.colorMode === ColorModes.BASE)
+                else if (this.colorMode === ColorModes.BASE)
                     c = this.#updateColor(posAttr.getY(i), yRange, true); // pass a flag for base color
-                else if (params.colorMode === ColorModes.CURVATURE_1 || params.colorMode === ColorModes.CURVATURE_2)
+                else if (this.colorMode === ColorModes.CURVATURE_1 || this.colorMode === ColorModes.CURVATURE_2)
                     c = this.#colorFromCurvature(curvature[i]);
 
                 colors[3 * i]     = c.r;
@@ -575,6 +577,7 @@
             if (this.normalsHelper && this.normalsHelper.visible) this.updateNormalsLength(params.resolution);
         }
 
+        changeColorModeTo = (newMode) => {this.colorMode = newMode; this.requestColorUpdate();}
         requestColorUpdate = () => this.colorsDirty = true;
 
         updateNormalsLength(resolution) {
