@@ -41,7 +41,7 @@
         top: 50px;
         font-size: 14px;
         color: yellow;
-        margin-left: 10px;
+        margin-left: 5px;
         margin-right: 10px;
         text-align: left;
         width: 600px;
@@ -358,19 +358,19 @@
         //     this.group.position.set(0, center.y - size.y / 2, 0);
         // }
 
-        rebuildFrom(boundingBox, marginFactor=1.15) {
-            this.group.clear();
-
-            const size = new THREE.Vector3();
-            boundingBox.getSize(size);
-
-            const max = Math.max(size.x, size.y, size.z);
-            const axesSize = max * marginFactor; // axes just a fraction bigger than the object
-
-            this.#createGrids(axesSize, 10);
-            this.#createPlanes(axesSize);
-            this.group.add(this.#createAxes(axesSize));
-        }
+        // rebuildFrom(boundingBox, marginFactor=1.15) {
+        //     this.group.clear();
+        //
+        //     const size = new THREE.Vector3();
+        //     boundingBox.getSize(size);
+        //
+        //     const max = Math.max(size.x, size.y, size.z);
+        //     const axesSize = max * marginFactor; // axes just a fraction bigger than the object
+        //
+        //     this.#createGrids(axesSize, 10);
+        //     this.#createPlanes(axesSize);
+        //     this.group.add(this.#createAxes(axesSize));
+        // }
     }
 
     class Interval {
@@ -897,7 +897,6 @@
     scene.add(worldGroup);
     const scenery = new Scenery(scene, worldGroup);
 
-    const axes = new MatlabAxes(worldGroup);
 
     const firstSurface = surfaceDefinitions[0];
     const parametricSurface = new Surface(worldGroup, {
@@ -905,7 +904,9 @@
         showWireframe: false,
         definition: new SurfaceTemplate(firstSurface.definition, firstSurface.intervals[0], firstSurface.intervals[1])
     });
-    //axesAndSurfaceGroup.position.y = 3;
+    const size = new THREE.Vector3();
+    parametricSurface.getBoundingBox().getSize(size);
+    const axes = new MatlabAxes(worldGroup, Math.max(size.x, size.y, size.z) * 0.75);
 
     const ring = new Ring(parametricSurface);
     surfaceDefinitions.forEach(surface => ring.add(surface));
