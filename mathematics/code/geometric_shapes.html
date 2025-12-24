@@ -44,7 +44,7 @@
         margin-left: 5px;
         margin-right: 10px;
         text-align: left;
-        width: 600px;
+        width: 800px;
         z-index: 10;  /* above canvas */
     }
 
@@ -243,11 +243,11 @@
 
             // distance so that bounding box is always in view
             let distance = maxDim / Math.tan(verticalFieldOfView / 2);
-            distance = 1.15 * Math.max(distance * padding, minDistance);
+            distance = .6 * Math.max(distance * padding, minDistance);
             const direction = new THREE.Vector3(1, 1, 1).normalize(); // Matlab-like camera setting
 
             this.camera.position
-                .copy(new THREE.Vector3(center.x, center.y - 2, center.z))
+                .copy(new THREE.Vector3(center.x, center.y - 4.5, center.z))
                 .addScaledVector(direction, distance);
 
             this.camera.near = distance / 100;
@@ -505,14 +505,13 @@
             this._tempVec ??= new THREE.Vector3();
             const temp = this._tempVec;
 
-            const scale = this.geometryScale;
             const amplitude = this.#amplitudeModulation(this.time);
             for (let i = 0; i < posAttr.count; i++) {
                 const u = uvAttr.getX(i);
                 const v = uvAttr.getY(i);
 
                 this.surfaceFunction(u, v, temp);
-                posAttr.setXYZ(i, scale * temp.x, scale * temp.y * amplitude, scale * temp.z);
+                posAttr.setXYZ(i, temp.x, temp.y * amplitude, temp.z);
             }
 
             posAttr.needsUpdate = true;
@@ -640,7 +639,9 @@
             box.getSize(size);
 
             const maxDim = Math.max(size.x, size.y, size.z);
-            this.geometryScale = targetSize / maxDim;
+            const marginFactor = 0.9;
+            this.geometryScale = marginFactor * targetSize / maxDim;
+            this.mesh.scale.setScalar(this.geometryScale);
         }
 
         toggleWireframe = (value) => this.mesh.material.wireframe = value;
@@ -655,7 +656,6 @@
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
             this.requestColorUpdate();
             this.computeNormalizeScale(axes.getAxesSize()); // TODO axes size must be store when Surface obj is created
-            this.normalizeToFit(axes.getAxesSize()); // TODO axes size must be store when Surface obj is created
         }
 
         update(deltaTime) {
@@ -665,7 +665,6 @@
             this.time += deltaTime;
             this.#updateGeometry();
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
-            this.normalizeToFit(axes.getAxesSize()); // TODO axes size must be store when Surface obj is created
         }
 
         getBoundingBox() {
@@ -750,13 +749,14 @@
 
 
     class Ring {
-        constructor(activeSurface, ringRadius=2, scaleFactorRingItems=1, ringRotationSpeed=0.01, selectionLerp=0.08) {
+        constructor(activeSurface, ringRadius=2, verticalOffset=4.25, scaleFactorRingItems=1, ringRotationSpeed=0.01, selectionLerp=0.08) {
             this.surfaceDisplayedInAxes = activeSurface
             this.ring = new THREE.Group();
             this.surfaces = [];
             this.ringRadius = ringRadius;
             this.ringRotationSpeed = ringRotationSpeed;
             this.selectionLerp = selectionLerp;
+            this.verticalOffset = verticalOffset;
             this.ringTargetRotation = null;
             this.selectedSurface = null;
             this.scaleFactorRingItems = scaleFactorRingItems;
@@ -785,7 +785,7 @@
 
         #placeAndShowSurface = (surface, index) => {
             const angle = 2 * Math.PI * index / this.visibleRingItems().length;
-            const position = new THREE.Vector3(this.ringRadius * Math.cos(angle), -2.75, this.ringRadius * Math.sin(angle));
+            const position = new THREE.Vector3(this.ringRadius * Math.cos(angle), this.verticalOffset, this.ringRadius * Math.sin(angle));
             surface.normalizeToFit(this.scaleFactorRingItems);
             surface.moveTo(position);
             surface.show();
@@ -844,7 +844,6 @@
             this.#deselect(this.selectedSurface);
             this.#highlightSelected(surface);
             this.selectedSurface = surface;
-
             this.surfaceDisplayedInAxes.updateToNew(surface.definition);
 
             this.#setTargetRotation();
