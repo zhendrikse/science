@@ -3,7 +3,7 @@
     #canvas-wrapper {
         position: relative;
         width: 600px;
-        height: 750px;
+        height: 800px;
     }
 
     #myCanvas {
@@ -58,7 +58,7 @@
     <div id="gui-container"></div>
     <div id="surface-title"></div>
     <div id="surface-equation"></div>
-    <canvas id="myCanvas" width="600" height="750"></canvas>
+    <canvas id="myCanvas" width="600" height="800"></canvas>
 </div>
 
 
@@ -91,86 +91,94 @@
 
     const params = {
         frequency: 0.5,
-        baseColor: "#ff5",
+        baseColor: "#4f6",
         colorMode: ColorModes.HEIGHT,
         wireframe: false,
         axes: true,
         normals: false,
         animate: false,
-        resolution: 75,
+        resolution: 50,
         opacity: 0.7,
         category: Category.TOROID
     }
 
     const surfaceDefinitions = [{
+        meta: {name: "Arc", category: Category.MISC},
+        definition: {
+            xFn: "cos(u)",
+            yFn: "3 * sin(v)",
+            zFn: "sin(u) + cos(v)"
+        },
+        intervals: [["0", "pi"], ["pi", "0"]]
+    }, {
         meta: {name: "Bow curve", category: Category.TOROID},
         definition: {
-            xFn: "(1 * sin(x) + 2) * sin(y)",
-            yFn: "(1 * sin(x) + 2) * cos(y)",
-            zFn: "1 * cos(x) + 2 * cos(1/2 * y)"
+            xFn: "(1 * sin(u) + 2) * sin(v)",
+            yFn: "(1 * sin(u) + 2) * cos(v)",
+            zFn: "1 * cos(u) + 2 * cos(1/2 * v)"
         },
         intervals: [["0", "2 * pi"], ["4 * pi", "0"]]
     }, {
         meta: {name: "Elliptic torus", category: Category.TOROID},
         definition: {
-            xFn: "(1 * cos(y) + 3) * cos(x)",
-            yFn: "1 * (cos(y) + sin(y))",
-            zFn: "(1 * cos(y) + 3) * sin(x)"
+            xFn: "(1 * cos(v) + 3) * cos(u)",
+            yFn: "1 * (cos(v) + sin(v))",
+            zFn: "(1 * cos(v) + 3) * sin(u)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
         meta: {name: "Cosine", category: Category.MISC},
         definition: {
-            xFn: "cos(x)",
-            yFn: "cos(y)",
-            zFn: "cos(x + y)"
+            xFn: "cos(u)",
+            yFn: "cos(v)",
+            zFn: "cos(u + v)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
         meta: {name: "Limpet torus", category: Category.TOROID},
         definition: {
-            xFn: "cos(x) / (sqrt(2) + sin(y))",
-            yFn: "1 / (sqrt(2) + cos(y))",
-            zFn: "sin(x) / (sqrt(2) + sin(y))",
+            xFn: "cos(u) / (sqrt(2) + sin(v))",
+            yFn: "1 / (sqrt(2) + cos(v))",
+            zFn: "sin(u) / (sqrt(2) + sin(v))",
         },
         intervals: [["0", "2 * pi"], ["0", "2 * pi"]]
     }, {
         meta: {name: "Sine", category: Category.MISC},
         definition: {
-            xFn: "sin(x)",
-            yFn: "sin(y)",
-            zFn: "sin(x + y)"
+            xFn: "sin(u)",
+            yFn: "sin(v)",
+            zFn: "sin(u + v)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
         meta: {name: "Torus", category: Category.TOROID},
         definition: {
-            xFn: "cos(x) * (3 + 1.5 * cos(y))",
-            yFn: "1.5 * sin(y)",
-            zFn: "sin(x) * (3 + 1.5 * cos(y))"
+            xFn: "cos(u) * (3 + 1.5 * cos(v))",
+            yFn: "1.5 * sin(v)",
+            zFn: "sin(u) * (3 + 1.5 * cos(v))"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
         meta: {name: "Trefoil knot", category: Category.TOROID},
         definition: {
-            xFn: "(4 * (1 + 1/4 * sin(3 * y)) + cos(x)) * cos(2 * y)",
-            yFn: "(4 * (1 + 1/4 * sin(3 * y)) + cos(x)) * sin(2 * y)",
-            zFn: "sin(x) + 2 * cos(3 * y)"
+            xFn: "(4 * (1 + 1/4 * sin(3 * v)) + cos(u)) * cos(2 * v)",
+            yFn: "(4 * (1 + 1/4 * sin(3 * v)) + cos(u)) * sin(2 * v)",
+            zFn: "sin(u) + 2 * cos(3 * v)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     },{
         meta: {name: "Twisted torus", category: Category.TOROID},
         definition: {
-            xFn: "(2 + sin(y) + cos(x)) * cos(2 * y)",
-            yFn: "(2 + sin(y) + cos(x)) * sin(2 * y)",
-            zFn: "sin(x) + 3 * cos(y)"
+            xFn: "(2 + sin(v) + cos(u)) * cos(2 * v)",
+            yFn: "(2 + sin(v) + cos(u)) * sin(2 * v)",
+            zFn: "sin(u) + 3 * cos(v)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }];
 
     function functionFrom(xyFunctionString) {
         try {
-            return (x, y) => math.compile(xyFunctionString).evaluate({ x, y });
+            return (u, v) => math.compile(xyFunctionString).evaluate({ u, v });
         } catch (err) {
             alert("Math.js parse error: " + err.message);
             return null;
@@ -235,11 +243,11 @@
 
             // distance so that bounding box is always in view
             let distance = maxDim / Math.tan(verticalFieldOfView / 2);
-            distance = Math.max(distance * padding, minDistance);
+            distance = 1.15 * Math.max(distance * padding, minDistance);
             const direction = new THREE.Vector3(1, 1, 1).normalize(); // Matlab-like camera setting
 
             this.camera.position
-                .copy(new THREE.Vector3(center.x + 1, center.y - 4, center.z + 1))
+                .copy(new THREE.Vector3(center.x, center.y - 2, center.z))
                 .addScaledVector(direction, distance);
 
             this.camera.near = distance / 100;
@@ -271,8 +279,6 @@
             appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.requestColorUpdate());
             appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
                 surface.rebuild(resolution);
-                surface.computeNormalizeScale(4); // TODO hard coded number
-                surface.normalizeToFit();
             });
 
             appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
@@ -297,6 +303,7 @@
     class MatlabAxes {
         constructor(parentGroup, axesSize=4, gridDivisions=10) {
             this.group = new THREE.Group();
+            this.axesSize = axesSize;
 
             this.#createGrids(axesSize, gridDivisions);
             this.#createPlanes(axesSize);
@@ -353,6 +360,7 @@
         }
 
         show = (value) => this.group.visible = value;
+        getAxesSize = () => this.axesSize;
 
         // repositionToSurface(surface) {
         //     const box = surface.getBoundingBox();
@@ -510,7 +518,7 @@
             posAttr.needsUpdate = true;
             this.geometry.computeVertexNormals();
 
-            if (this.normalsHelper) this.normalsHelper.update();
+            if (this.normalsHelper && this.normalsHelper.visible) this.normalsHelper.update();
         }
 
         #amplitudeModulation = (t) => (1.01 - Math.cos(t * params.frequency + Math.PI)) * .5
@@ -626,7 +634,7 @@
             this.colorsDirty = false;
         }
 
-        computeNormalizeScale(targetSize = 4) { // TODO magic number
+        computeNormalizeScale(targetSize) {
             const box = this.getBoundingBox();
             const size = new THREE.Vector3();
             box.getSize(size);
@@ -646,6 +654,8 @@
             this.#buildGeometry(resolution, this.mesh.material.wireframe);
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
             this.requestColorUpdate();
+            this.computeNormalizeScale(axes.getAxesSize()); // TODO axes size must be store when Surface obj is created
+            this.normalizeToFit(axes.getAxesSize()); // TODO axes size must be store when Surface obj is created
         }
 
         update(deltaTime) {
@@ -655,6 +665,7 @@
             this.time += deltaTime;
             this.#updateGeometry();
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
+            this.normalizeToFit(axes.getAxesSize()); // TODO axes size must be store when Surface obj is created
         }
 
         getBoundingBox() {
@@ -677,14 +688,14 @@
             this.requestColorUpdate();
         }
 
-        normalizeToFit(size = 4) {
+        normalizeToFit(axesSize, marginFactor=0.85) {
             const box = this.getBoundingBox();
 
             const boxSize = new THREE.Vector3();
             box.getSize(boxSize);
 
             const maxDim = Math.max(boxSize.x, boxSize.y, boxSize.z);
-            const scale = size / maxDim;
+            const scale = marginFactor * axesSize / maxDim;
 
             const pos = this.geometry.attributes.position;
             for (let i = 0; i < pos.count; i++)
@@ -739,7 +750,7 @@
 
 
     class Ring {
-        constructor(activeSurface, ringRadius=2, ringRotationSpeed=0.01, selectionLerp=0.08) {
+        constructor(activeSurface, ringRadius=2, scaleFactorRingItems=1, ringRotationSpeed=0.01, selectionLerp=0.08) {
             this.surfaceDisplayedInAxes = activeSurface
             this.ring = new THREE.Group();
             this.surfaces = [];
@@ -748,6 +759,7 @@
             this.selectionLerp = selectionLerp;
             this.ringTargetRotation = null;
             this.selectedSurface = null;
+            this.scaleFactorRingItems = scaleFactorRingItems;
             this.activeCategory = Category.TOROID;
             scene.add(this.ring);
         }
@@ -774,7 +786,7 @@
         #placeAndShowSurface = (surface, index) => {
             const angle = 2 * Math.PI * index / this.visibleRingItems().length;
             const position = new THREE.Vector3(this.ringRadius * Math.cos(angle), -2.75, this.ringRadius * Math.sin(angle));
-            surface.normalizeToFit(1);
+            surface.normalizeToFit(this.scaleFactorRingItems);
             surface.moveTo(position);
             surface.show();
         };
@@ -783,14 +795,14 @@
             const equation = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix}" +
                 surface.mesh.userData.definition.xFn + " \\\\" +
                 surface.mesh.userData.definition.yFn + " \\\\" +
-                surface.mesh.userData.definition.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} x \\in [" +
+                surface.mesh.userData.definition.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
                 surface.mesh.userData.intervals[0][0] + ", " +
-                surface.mesh.userData.intervals[0][1] + "] \\\\ y \\in [" +
+                surface.mesh.userData.intervals[0][1] + "] \\\\ v \\in [" +
                 surface.mesh.userData.intervals[1][0] + ", " +
                 surface.mesh.userData.intervals[1][1] + "] \\end{cases}$$";
 
             equationDiv.innerHTML = surface ? equation : "Equation not found";
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
             //MathJax.typesetPromise([eqDiv]);
         }
 
@@ -834,8 +846,6 @@
             this.selectedSurface = surface;
 
             this.surfaceDisplayedInAxes.updateToNew(surface.definition);
-            this.surfaceDisplayedInAxes.computeNormalizeScale(4); // TODO hard coded number
-            this.surfaceDisplayedInAxes.normalizeToFit();
 
             this.#setTargetRotation();
             this.#updateSurfaceName();
@@ -859,7 +869,7 @@
             const surfaceShape = new Surface(worldGroup, {
                 resolution: 20,
                 showWireframe: true,
-                colorMode: ColorModes.CURVATURE_2,
+                colorMode: ColorModes.CURVATURE_1,
                 definition: new SurfaceTemplate(surfaceDef.definition, surfaceDef.intervals[0], surfaceDef.intervals[1])
             });
             this.#addSurface(surfaceShape, surfaceDef);
@@ -912,17 +922,17 @@
     const scenery = new Scenery(scene, worldGroup);
 
 
-    const firstSurface = surfaceDefinitions[0];
-    const parametricSurface = new Surface(worldGroup, {
+    const bowCurveDef = surfaceDefinitions[1];
+    const bowCurveSurface = new Surface(worldGroup, {
         resolution: 20,
         showWireframe: false,
-        definition: new SurfaceTemplate(firstSurface.definition, firstSurface.intervals[0], firstSurface.intervals[1])
+        definition: new SurfaceTemplate(bowCurveDef.definition, bowCurveDef.intervals[0], bowCurveDef.intervals[1])
     });
     const size = new THREE.Vector3();
-    parametricSurface.getBoundingBox().getSize(size);
-    const axes = new MatlabAxes(worldGroup, Math.max(size.x, size.y, size.z) * 0.75);
+    bowCurveSurface.getBoundingBox().getSize(size);
+    const axes = new MatlabAxes(worldGroup, 4);
 
-    const ring = new Ring(parametricSurface);
+    const ring = new Ring(bowCurveSurface);
     surfaceDefinitions.forEach(surface => ring.add(surface));
     ring.redistribute();
 
@@ -930,8 +940,8 @@
     const firstItem = ring.visibleRingItems()[0];
     if (firstItem) ring.setSelectedSurface(firstItem);
 
-    scenery.fitToBoundingBox(parametricSurface.getBoundingBox());
-    new ControlsGui(scenery, parametricSurface, axes);
+    scenery.fitToBoundingBox(bowCurveSurface.getBoundingBox());
+    new ControlsGui(scenery, bowCurveSurface, axes);
 
     let lastTime = performance.now();
     function animate() {
@@ -941,7 +951,7 @@
         const deltaTime = params.animate ? (now - lastTime) * 0.001 : 0;
         lastTime = now;
 
-        parametricSurface.update(deltaTime);
+        bowCurveSurface.update(deltaTime);
         ring.rotateRingToSelectedSurface();
         ring.rotateSurfaces();
         scenery.render();
