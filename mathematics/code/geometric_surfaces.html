@@ -801,9 +801,6 @@
     class SurfaceTemplate extends SurfaceDefinition {
         constructor(surfaceFunctions, xInterval, yInterval) {
             super();
-            this.surfaceFunctions = surfaceFunctions;
-            this.xInterval = xInterval;
-            this.yInterval = yInterval;
 
             this.xFnCompiled = functionFrom(surfaceFunctions.xFn);
             this.yFnCompiled = functionFrom(surfaceFunctions.yFn);
@@ -814,10 +811,6 @@
         }
 
         #evaluateConstant = (exprString) => functionFrom(exprString)(0, 0);
-
-        surfaceFunctionsAsString = () => this.surfaceFunctions;
-        xIntervalAsString = () => this.xInterval;
-        yIntervalAsString = () => this.yInterval;
 
         sample(u, v, target) {
             const θ = this.xInterval.scaleParameter(u);
@@ -830,7 +823,6 @@
             );
         }
     }
-
 
     class Ring {
         constructor(activeSurface, ringRadius=2, verticalOffset=4.25, scaleFactorRingItems=0.75, ringRotationSpeed=0.01, selectionLerp=0.08) {
@@ -1012,6 +1004,7 @@
         showWireframe: false,
         definition: new SurfaceTemplate(bowCurveDef.definition, bowCurveDef.intervals[0], bowCurveDef.intervals[1])
     });
+
     const size = new THREE.Vector3();
     bowCurveSurface.getBoundingBox().getSize(size);
     const axes = new MatlabAxes(worldGroup, 4);
