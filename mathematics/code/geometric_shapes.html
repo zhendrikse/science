@@ -91,7 +91,7 @@
 
     const params = {
         frequency: 0.5,
-        baseColor: "#4f6",
+        baseColor: "#ffe",
         colorMode: ColorModes.HEIGHT,
         wireframe: false,
         axes: true,
@@ -276,7 +276,9 @@
             const appearanceFolder = controls.addFolder("Appearance");
             appearanceFolder.add(params, "colorMode", Object.values(ColorModes)).name("Color Mode")
                 .onChange(() => surface.changeColorModeTo(params.colorMode));
-            appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.requestColorUpdate());
+            appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => {
+                if (this.#isValidColor(params.baseColor)) surface.changeBaseColorTo(params.baseColor);
+            });
             appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
                 surface.rebuild(resolution);
             });
@@ -284,9 +286,10 @@
             appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
             appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.toggleWireframe(value));
             appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
-            appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => {
+            appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => { // TODO move this to a method in surface
                 surface.normalsVisible = value;
                 if (surface.normalsHelper) surface.normalsHelper.visible = value;
+                surface.normalsHelper.update();
             });
             appearanceFolder.add({reset: () => scenery.fitToBoundingBox(surface.getBoundingBox())}, "reset").name("Reset Camera");
 
@@ -297,6 +300,12 @@
             controls.close();
             animationFolder.close();
             appearanceFolder.close();
+        }
+
+        #isValidColor(str) {
+            const s = new Option().style;
+            s.color = str;
+            return s.color !== '';
         }
     }
 
@@ -418,6 +427,7 @@
             resolution = 75,
             showWireframe = false,
             colorMode = ColorModes.HEIGHT,
+            baseColor = "#ff4",
             definition    // must be a SurfaceDefinition instance
         }) {
             this.definition = definition;       // GraphSurfaceDefinition or TorusDefinition
@@ -430,6 +440,7 @@
             this.colorsDirty = true;
             this.geometryScale = 1;
             this.colorMode = colorMode;
+            this.baseColor = baseColor;
             this.surfaceFunction = (u, v, target) => this.definition.sample(u, v, target);
             this.#buildGeometry(resolution, showWireframe);
 
@@ -590,8 +601,8 @@
             const color = new THREE.Color();
             const hsl = {};
 
-            if (useBaseColor && this.#isValidColor(params.baseColor)) {
-                color.setStyle(params.baseColor);
+            if (useBaseColor) {
+                color.setStyle(this.baseColor);
                 color.getHSL(hsl);
                 hsl.l = 0.4 + 0.3 * (1 - t);
             } else {
@@ -608,8 +619,8 @@
             const color = new THREE.Color();
             const t = THREE.MathUtils.clamp(k * 500, 0, 1); // zichtbare schaal
 
-            if (params.baseColor && this.#isValidColor(params.baseColor)) {
-                color.setStyle(params.baseColor);
+            if (this.baseColor) {
+                color.setStyle(this.baseColor);
                 const hsl = {};
                 color.getHSL(hsl);
                 hsl.l = 0.4 + 0.4 * (1 - t);
@@ -619,12 +630,6 @@
                 color.setHSL(0.6 - 0.6*t, 0.9, 0.5);
 
             return color;
-        }
-
-        #isValidColor(str) {
-            const s = new Option().style;
-            s.color = str;
-            return s.color !== '';
         }
 
         #updateColorsIfNeeded() {
@@ -654,7 +659,7 @@
         rebuild(resolution) {
             this.#buildGeometry(resolution, this.mesh.material.wireframe);
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
-            this.requestColorUpdate();
+            this.colorsDirty = true;
             this.computeNormalizeScale(axes.getAxesSize()); // TODO axes size must be store when Surface obj is created
         }
 
@@ -684,30 +689,11 @@
             this.rebuild(params.resolution);
 
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
-            this.requestColorUpdate();
+            this.colorsDirty = true;
         }
 
-        normalizeToFit(axesSize, marginFactor=0.85) {
-            const box = this.getBoundingBox();
-
-            const boxSize = new THREE.Vector3();
-            box.getSize(boxSize);
-
-            const maxDim = Math.max(boxSize.x, boxSize.y, boxSize.z);
-            const scale = marginFactor * axesSize / maxDim;
-
-            const pos = this.geometry.attributes.position;
-            for (let i = 0; i < pos.count; i++)
-                pos.setXYZ(i, pos.getX(i) * scale, pos.getY(i) * scale, pos.getZ(i) * scale);
-
-            pos.needsUpdate = true;
-            this.geometry.computeVertexNormals();
-
-            if (this.normalsHelper) this.normalsHelper.update();
-        }
-
-        changeColorModeTo = (newMode) => {this.colorMode = newMode; this.requestColorUpdate();}
-        requestColorUpdate = () => this.colorsDirty = true;
+        changeColorModeTo = (newMode) => { this.colorMode = newMode; this.colorsDirty = true;}
+        changeBaseColorTo = (newColor) => { this.baseColor = newColor; this.colorsDirty = true}
         show = () => this.mesh.material.visible = true;
         hide = () => this.mesh.material.visible = false;
         rotateBy = (delta) => this.mesh.rotation.y += delta;
@@ -749,7 +735,7 @@
 
 
     class Ring {
-        constructor(activeSurface, ringRadius=2, verticalOffset=4.25, scaleFactorRingItems=1, ringRotationSpeed=0.01, selectionLerp=0.08) {
+        constructor(activeSurface, ringRadius=2, verticalOffset=4.25, scaleFactorRingItems=0.75, ringRotationSpeed=0.01, selectionLerp=0.08) {
             this.surfaceDisplayedInAxes = activeSurface
             this.ring = new THREE.Group();
             this.surfaces = [];
@@ -786,7 +772,7 @@
         #placeAndShowSurface = (surface, index) => {
             const angle = 2 * Math.PI * index / this.visibleRingItems().length;
             const position = new THREE.Vector3(this.ringRadius * Math.cos(angle), this.verticalOffset, this.ringRadius * Math.sin(angle));
-            surface.normalizeToFit(this.scaleFactorRingItems);
+            surface.computeNormalizeScale(this.scaleFactorRingItems);
             surface.moveTo(position);
             surface.show();
         };
@@ -802,7 +788,7 @@
                 surface.mesh.userData.intervals[1][1] + "] \\end{cases}$$";
 
             equationDiv.innerHTML = surface ? equation : "Equation not found";
-            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
             //MathJax.typesetPromise([eqDiv]);
         }
 
@@ -869,6 +855,7 @@
                 resolution: 20,
                 showWireframe: true,
                 colorMode: ColorModes.CURVATURE_1,
+                baseColor: "#4f6",
                 definition: new SurfaceTemplate(surfaceDef.definition, surfaceDef.intervals[0], surfaceDef.intervals[1])
             });
             this.#addSurface(surfaceShape, surfaceDef);
