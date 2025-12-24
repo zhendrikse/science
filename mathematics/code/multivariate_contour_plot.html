@@ -444,7 +444,7 @@
             posAttr.needsUpdate = true;
             this.geometry.computeVertexNormals();
 
-            if (this.normalsHelper) this.normalsHelper.update();
+            if (this.normalsHelper && this.normalsHelper.visible) this.normalsHelper.update();
         }
 
         #updateColor(yValue, range, useBaseColor = false) {

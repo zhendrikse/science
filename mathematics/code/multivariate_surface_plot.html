@@ -444,7 +444,7 @@
             posAttr.needsUpdate = true;
             this.geometry.computeVertexNormals();
 
-            if (this.normalsHelper) this.normalsHelper.update();
+            if (this.normalsHelper && this.normalsHelper.visible) this.normalsHelper.update();
         }
 
         #updateColor(yValue, range, useBaseColor = false) {
@@ -571,7 +571,6 @@
             this.time += deltaTime;
             this.#updateGeometry();
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
-            if (this.normalsHelper && this.normalsHelper.visible) this.updateNormalsLength(params.resolution);
         }
 
         changeColorModeTo = (newMode) => {this.colorMode = newMode; this.requestColorUpdate();}
