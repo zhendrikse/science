@@ -523,7 +523,8 @@
             definition    // must be a SurfaceDefinition instance
         }) {
             this.definition = definition;       // GraphSurfaceDefinition or TorusDefinition
-            this.parentGroup = parentGroup;
+            this.surfaceGroup = new THREE.Group();
+            parentGroup.add(this.surfaceGroup);
             this.time = 0;
             this.normalsHelper = null;
             this.geometry = null;
@@ -575,13 +576,13 @@
             this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
             if (this.mesh) {
-                this.parentGroup.remove(this.mesh);
+                this.surfaceGroup.remove(this.mesh);
                 this.#removeNormalsHelper();
                 this.geometry.dispose();
             }
 
             this.mesh = new THREE.Mesh(this.geometry, this.#material(showWireframe));
-            this.parentGroup.add(this.mesh);
+            this.surfaceGroup.add(this.mesh);
 
             this.#addNormalsHelper();
             this.#updateColors();
@@ -590,12 +591,12 @@
         #addNormalsHelper() {
             this.normalsHelper = new VertexNormalsHelper(this.mesh, 0.2, 0x770000);
             this.normalsHelper.visible = this.normalsVisible;
-            this.parentGroup.add(this.normalsHelper);
+            this.surfaceGroup.add(this.normalsHelper);
         }
 
         #removeNormalsHelper() {
             if (this.normalsHelper) {
-                this.parentGroup.remove(this.normalsHelper);
+                this.surfaceGroup.remove(this.normalsHelper);
                 this.normalsHelper.geometry.dispose();
                 this.normalsHelper.material.dispose();
                 this.normalsHelper = null;
@@ -882,7 +883,7 @@
                 surface.getUserData().intervals[1][1] + "] \\end{cases}$$";
 
             equationDiv.innerHTML = surface ? equation : "Equation not found";
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
             //MathJax.typesetPromise([eqDiv]);
         }
 
