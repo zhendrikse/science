@@ -111,6 +111,14 @@
         },
         intervals: [["0", "pi"], ["pi", "0"]]
     }, {
+        meta: {name: "Bohemian dome", category: Category.MISC},
+        definition: {
+            xFn: "7 * cos(u)",
+            yFn: "7 * sin(u) + 3 * cos(v)",
+            zFn: "6 * sin(v)"
+        },
+        intervals: [["0", "2 * pi"], ["4 * pi", "0"]]
+    }, {
         meta: {name: "Bow curve", category: Category.TOROID},
         definition: {
             xFn: "(1 * sin(u) + 2) * sin(v)",
@@ -294,11 +302,7 @@
             appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
             appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.toggleWireframe(value));
             appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
-            appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => { // TODO move this to a method in surface
-                surface.normalsVisible = value;
-                if (surface.normalsHelper) surface.normalsHelper.visible = value;
-                surface.normalsHelper.update();
-            });
+            appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => surface.showNormals(value));
             appearanceFolder.add({reset: () => scenery.fitToBoundingBox(surface.getBoundingBox())}, "reset").name("Reset Camera");
 
             const animationFolder = controls.addFolder("Animation Controls");
@@ -700,6 +704,12 @@
             this.colorsDirty = true;
         }
 
+        showNormals(value) {
+            this.normalsVisible = value;
+            if (this.normalsHelper) this.normalsHelper.visible = value;
+            this.normalsHelper.update();
+        }
+
         changeColorModeTo = (newMode) => { this.colorMode = newMode; this.colorsDirty = true;}
         changeBaseColorTo = (newColor) => { this.baseColor = newColor; this.colorsDirty = true}
         show = () => this.mesh.material.visible = true;
@@ -796,7 +806,7 @@
                 surface.mesh.userData.intervals[1][1] + "] \\end{cases}$$";
 
             equationDiv.innerHTML = surface ? equation : "Equation not found";
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
             //MathJax.typesetPromise([eqDiv]);
         }
 
