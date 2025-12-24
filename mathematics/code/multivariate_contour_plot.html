@@ -202,7 +202,6 @@
             appearanceFolder.add(params, 'baseColor').name("Color").onChange(() => surface.requestColorUpdate());
             appearanceFolder.add(params, "resolution", 10, 200, 1).name("Resolution").onChange(resolution => {
                 surface.rebuild(resolution)
-                surface.updateNormalsLength(resolution);
             });
 
             appearanceFolder.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => surface.setOpacity(value));
@@ -411,7 +410,6 @@
 
             this.#addNormalsHelper();
             this.#updateColors();
-            this.updateNormalsLength(resolution);
         }
 
         #addNormalsHelper() {
@@ -574,25 +572,10 @@
             this.time += deltaTime;
             this.#updateGeometry();
             if (this.definition.usesGroundLifting()) this.#liftSurfaceAboveGroundLevel();
-            if (this.normalsHelper && this.normalsHelper.visible) this.updateNormalsLength(params.resolution);
         }
 
         changeColorModeTo = (newMode) => {this.colorMode = newMode; this.requestColorUpdate();}
         requestColorUpdate = () => this.colorsDirty = true;
-
-        updateNormalsLength(resolution) {
-            if (!this.normalsHelper) return;
-
-            const baseResolution = 50;     // resolution where base length looks good
-            const baseAmplitude = 1.0;     // amplitude where base length looks good
-            const baseLength = 0.2;        // default length at base resolution & amplitude
-
-            // Scale inversely with resolution, proportionally with amplitude
-            const length = baseLength * (baseResolution / resolution) / baseAmplitude;
-
-            this.normalsHelper.size = length;
-            this.normalsHelper.update(); // recalc positions
-        }
 
         getBoundingBox() {
             this.geometry.computeBoundingBox();
