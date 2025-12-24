@@ -112,13 +112,13 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="topology_surface_plot.html">
+  <a href="geometric_surfaces.html">
     <img alt="Twisted torus" src="gallery/images/twisted_torus.png" title="Click to animate"/>
   </a>
   <figcaption>Surface plot of twisted torus. For more surfaces, visit the <a href="gallery/index.html">Math Art Gallery</a>.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="topology_contour_plot.html">
+  <a href="geometric_surfaces.html">
     <img alt="Self-intersecting disk" src="gallery/images/self_intersecting_disk_contour.png" title="Click to animate"/>
   </a>
   <figcaption>Contour plot of <a href="https://en.wikipedia.org/wiki/Real_projective_plane">self-intersecting disk</a>.
