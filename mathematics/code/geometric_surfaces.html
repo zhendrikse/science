@@ -790,12 +790,16 @@
             this.normalsHelper.update();
         }
 
+        getPickableObject = () => this.mesh;
+        getRootGroup = () => this.mesh;
         changeColorModeTo = (newMode) => { this.colorMode = newMode; this.colorsDirty = true;}
         changeBaseColorTo = (newColor) => { this.baseColor = newColor; this.colorsDirty = true}
         show = () => this.mesh.material.visible = true;
         hide = () => this.mesh.material.visible = false;
         rotateBy = (delta) => this.mesh.rotation.y += delta;
+        position = () => this.mesh.position.clone();
         moveTo = (positionAsVector) => this.mesh.position.copy(positionAsVector);
+        getUserData = () => this.mesh.userData;
     }
 
     class SurfaceTemplate extends SurfaceDefinition {
@@ -854,7 +858,7 @@
         }
 
         #setTargetRotation() {
-            const local = this.selectedSurface.mesh.position.clone();
+            const local = this.selectedSurface.position();
             const angle = Math.atan2(local.x, local.z);
             this.ringTargetRotation = -angle + Math.PI * .3;
         }
@@ -869,13 +873,13 @@
 
         #displayEquation(surface, equationDiv) {
             const equation = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix}" +
-                surface.mesh.userData.definition.xFn + " \\\\" +
-                surface.mesh.userData.definition.yFn + " \\\\" +
-                surface.mesh.userData.definition.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
-                surface.mesh.userData.intervals[0][0] + ", " +
-                surface.mesh.userData.intervals[0][1] + "] \\\\ v \\in [" +
-                surface.mesh.userData.intervals[1][0] + ", " +
-                surface.mesh.userData.intervals[1][1] + "] \\end{cases}$$";
+                surface.getUserData().definition.xFn + " \\\\" +
+                surface.getUserData().definition.yFn + " \\\\" +
+                surface.getUserData().definition.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
+                surface.getUserData().intervals[0][0] + ", " +
+                surface.getUserData().intervals[0][1] + "] \\\\ v \\in [" +
+                surface.getUserData().intervals[1][0] + ", " +
+                surface.getUserData().intervals[1][1] + "] \\end{cases}$$";
 
             equationDiv.innerHTML = surface ? equation : "Equation not found";
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
@@ -886,32 +890,32 @@
             const nameDiv = document.getElementById("surface-title");
             const equationDiv = document.getElementById('surface-equation');
 
-            const surface = this.surfaces.find(surface => surface.mesh === this.selectedSurface.mesh);
-            nameDiv.textContent = surface ? surface.mesh.userData.category + ": " + surface.mesh.userData.name: "Surface not found";
+            const surface = this.surfaces.find(surface => surface.getPickableObject() === this.selectedSurface.getPickableObject());
+            nameDiv.textContent = surface ? surface.getUserData().category + ": " + surface.getUserData().name: "Surface not found";
             this.#displayEquation(surface, equationDiv);
         }
 
         #deselect(surface) {
             if (surface) {
-                surface.mesh.material.emissive.set(0x00000);
+                surface.getPickableObject().material.emissive.set(0x00000); // TODO move into Surface class
                 surface.toggleWireframe(true);
             }
         }
 
         #highlightSelected(surface) {
             surface.toggleWireframe(false);
-            surface.mesh.material.emissive.set(0x222222);
+            surface.getPickableObject().material.emissive.set(0x222222); // TODO move into Surface class
         }
 
         #storeSurfaceDataInMesh(surface, surfaceData) {
-            surface.mesh.userData.name = surfaceData.meta.name;
-            surface.mesh.userData.category = surfaceData.meta.category;
-            surface.mesh.userData.definition = surfaceData.definition;
-            surface.mesh.userData.intervals = surfaceData.intervals;
+            surface.getUserData().name = surfaceData.meta.name;
+            surface.getUserData().category = surfaceData.meta.category;
+            surface.getUserData().definition = surfaceData.definition;
+            surface.getUserData().intervals = surfaceData.intervals;
         }
 
         #addSurface(surface, surfaceDef) {
-            this.ring.add(surface.mesh);
+            this.ring.add(surface.getRootGroup());
             this.surfaces.push(surface);
             this.#storeSurfaceDataInMesh(surface, surfaceDef);
         }
@@ -956,12 +960,13 @@
             this.visibleRingItems().forEach((surface, index) => this.#placeAndShowSurface(surface, index));
         }
 
-        findSurfaceByMesh = (mesh) => this.surfaces.find(surface => surface.mesh === mesh);
-        getPickableMeshes = () => this.visibleRingItems().map(surface => surface.mesh);
+        findSurfaceByMesh = (mesh) => this.surfaces.find(surface => surface.getPickableObject() === mesh);
+        getPickableMeshes = () => this.visibleRingItems().map(surface => surface.getPickableObject());
         rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
-        visibleRingItems = () => this.surfaces.filter(surface => surface.mesh.userData.category === this.activeCategory);
+        visibleRingItems = () => this.surfaces.filter(surface => surface.getPickableObject().userData.category === this.activeCategory);
         rotateSurfaces = () => this.visibleRingItems().forEach(surface => surface.rotateBy(this.ringRotationSpeed));
     }
+
 
     window.addEventListener("resize", () => {
         const w = canvas.clientWidth || width;
