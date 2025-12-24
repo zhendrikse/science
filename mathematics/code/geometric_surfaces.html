@@ -52,14 +52,6 @@
         display: block;                 /* make MathJax fill the div */
         max-width: 100%;
     }
-
-    #surface-input-fields {
-        font-size: 14px;
-        color: black;
-        margin: 20px 20px 40px 20px;   /* top, sides, bottom */
-        text-align: left;               /* align formula to left */
-        width: 600px;
-    }
 </style>
 
 <div id="canvas-wrapper">
@@ -68,6 +60,7 @@
     <div id="surface-equation"></div>
     <canvas id="myCanvas" width="600" height="800"></canvas>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
 <script type="module">
@@ -530,8 +523,7 @@
             definition    // must be a SurfaceDefinition instance
         }) {
             this.definition = definition;       // GraphSurfaceDefinition or TorusDefinition
-            this.rootGroup = new THREE.Group();
-            parentGroup.add(this.rootGroup);
+            this.parentGroup = parentGroup;
             this.time = 0;
             this.normalsHelper = null;
             this.geometry = null;
@@ -583,13 +575,13 @@
             this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
             if (this.mesh) {
-                this.rootGroup.remove(this.mesh);
+                this.parentGroup.remove(this.mesh);
                 this.#removeNormalsHelper();
                 this.geometry.dispose();
             }
 
             this.mesh = new THREE.Mesh(this.geometry, this.#material(showWireframe));
-            this.rootGroup.add(this.mesh);
+            this.parentGroup.add(this.mesh);
 
             this.#addNormalsHelper();
             this.#updateColors();
@@ -598,12 +590,12 @@
         #addNormalsHelper() {
             this.normalsHelper = new VertexNormalsHelper(this.mesh, 0.2, 0x770000);
             this.normalsHelper.visible = this.normalsVisible;
-            this.rootGroup.add(this.normalsHelper);
+            this.parentGroup.add(this.normalsHelper);
         }
 
         #removeNormalsHelper() {
             if (this.normalsHelper) {
-                this.rootGroup.remove(this.normalsHelper);
+                this.parentGroup.remove(this.normalsHelper);
                 this.normalsHelper.geometry.dispose();
                 this.normalsHelper.material.dispose();
                 this.normalsHelper = null;
@@ -746,7 +738,7 @@
             const maxDim = Math.max(size.x, size.y, size.z);
             const marginFactor = 0.9;
             this.geometryScale = marginFactor * targetSize / maxDim;
-            this.rootGroup.scale.setScalar(this.geometryScale);
+            this.mesh.scale.setScalar(this.geometryScale);
         }
 
         toggleWireframe = (value) => this.mesh.material.wireframe = value;
@@ -798,16 +790,12 @@
             this.normalsHelper.update();
         }
 
-        getPickableObject = () => this.mesh;
-        getRootGroup = () => this.rootGroup;
         changeColorModeTo = (newMode) => { this.colorMode = newMode; this.colorsDirty = true;}
         changeBaseColorTo = (newColor) => { this.baseColor = newColor; this.colorsDirty = true}
         show = () => this.mesh.material.visible = true;
         hide = () => this.mesh.material.visible = false;
-        rotateBy = (delta) => this.rootGroup.rotation.y += delta;
-        position = () => this.rootGroup.position.clone();
-        moveTo = (positionAsVector) => this.rootGroup.position.copy(positionAsVector);
-        getUserData = () => this.mesh.userData;
+        rotateBy = (delta) => this.mesh.rotation.y += delta;
+        moveTo = (positionAsVector) => this.mesh.position.copy(positionAsVector);
     }
 
     class SurfaceTemplate extends SurfaceDefinition {
@@ -825,13 +813,13 @@
         #evaluateConstant = (exprString) => functionFrom(exprString)(0, 0);
 
         sample(u, v, target) {
-            const θ = this.xInterval.scaleParameter(u);
-            const φ = this.yInterval.scaleParameter(v);
+            const theta = this.xInterval.scaleParameter(u);
+            const phi = this.yInterval.scaleParameter(v);
 
             target.set(
-                this.xFnCompiled(θ, φ),
-                this.yFnCompiled(θ, φ),
-                this.zFnCompiled(θ, φ)
+                this.xFnCompiled(theta, phi),
+                this.yFnCompiled(theta, phi),
+                this.zFnCompiled(theta, phi)
             );
         }
     }
@@ -866,7 +854,7 @@
         }
 
         #setTargetRotation() {
-            const local = this.selectedSurface.position();
+            const local = this.selectedSurface.mesh.position.clone();
             const angle = Math.atan2(local.x, local.z);
             this.ringTargetRotation = -angle + Math.PI * .3;
         }
@@ -881,13 +869,13 @@
 
         #displayEquation(surface, equationDiv) {
             const equation = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix}" +
-                surface.getUserData().definition.xFn + " \\\\" +
-                surface.getUserData().definition.yFn + " \\\\" +
-                surface.getUserData().definition.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
-                surface.getUserData().intervals[0][0] + ", " +
-                surface.getUserData().intervals[0][1] + "] \\\\ v \\in [" +
-                surface.getUserData().intervals[1][0] + ", " +
-                surface.getUserData().intervals[1][1] + "] \\end{cases}$$";
+                surface.mesh.userData.definition.xFn + " \\\\" +
+                surface.mesh.userData.definition.yFn + " \\\\" +
+                surface.mesh.userData.definition.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
+                surface.mesh.userData.intervals[0][0] + ", " +
+                surface.mesh.userData.intervals[0][1] + "] \\\\ v \\in [" +
+                surface.mesh.userData.intervals[1][0] + ", " +
+                surface.mesh.userData.intervals[1][1] + "] \\end{cases}$$";
 
             equationDiv.innerHTML = surface ? equation : "Equation not found";
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
@@ -898,32 +886,32 @@
             const nameDiv = document.getElementById("surface-title");
             const equationDiv = document.getElementById('surface-equation');
 
-            const surface = this.surfaces.find(surface => surface.getPickableObject() === this.selectedSurface.getPickableObject());
-            nameDiv.textContent = surface ? surface.getUserData().category + ": " + surface.getUserData().name: "Surface not found";
+            const surface = this.surfaces.find(surface => surface.mesh === this.selectedSurface.mesh);
+            nameDiv.textContent = surface ? surface.mesh.userData.category + ": " + surface.mesh.userData.name: "Surface not found";
             this.#displayEquation(surface, equationDiv);
         }
 
         #deselect(surface) {
             if (surface) {
-                surface.getPickableObject().material.emissive.set(0x00000); // TODO move into Surface class
+                surface.mesh.material.emissive.set(0x00000);
                 surface.toggleWireframe(true);
             }
         }
 
         #highlightSelected(surface) {
             surface.toggleWireframe(false);
-            surface.getPickableObject().material.emissive.set(0x222222); // TODO move into Surface class
+            surface.mesh.material.emissive.set(0x222222);
         }
 
         #storeSurfaceDataInMesh(surface, surfaceData) {
-            surface.getUserData().name = surfaceData.meta.name;
-            surface.getUserData().category = surfaceData.meta.category;
-            surface.getUserData().definition = surfaceData.definition;
-            surface.getUserData().intervals = surfaceData.intervals;
+            surface.mesh.userData.name = surfaceData.meta.name;
+            surface.mesh.userData.category = surfaceData.meta.category;
+            surface.mesh.userData.definition = surfaceData.definition;
+            surface.mesh.userData.intervals = surfaceData.intervals;
         }
 
         #addSurface(surface, surfaceDef) {
-            this.ring.add(surface.getRootGroup());
+            this.ring.add(surface.mesh);
             this.surfaces.push(surface);
             this.#storeSurfaceDataInMesh(surface, surfaceDef);
         }
@@ -968,10 +956,10 @@
             this.visibleRingItems().forEach((surface, index) => this.#placeAndShowSurface(surface, index));
         }
 
-        findSurfaceByMesh = (mesh) => this.surfaces.find(surface => surface.getPickableObject() === mesh);
-        getPickableObjects = () => this.visibleRingItems().map(surface => surface.getPickableObject());
+        findSurfaceByMesh = (mesh) => this.surfaces.find(surface => surface.mesh === mesh);
+        getPickableMeshes = () => this.visibleRingItems().map(surface => surface.mesh);
         rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
-        visibleRingItems = () => this.surfaces.filter(surface => surface.getPickableObject().userData.category === this.activeCategory);
+        visibleRingItems = () => this.surfaces.filter(surface => surface.mesh.userData.category === this.activeCategory);
         rotateSurfaces = () => this.visibleRingItems().forEach(surface => surface.rotateBy(this.ringRotationSpeed));
     }
 
@@ -991,7 +979,7 @@
         raycaster.setFromCamera(mouse, scenery.camera);
 
         const hits = raycaster.intersectObjects(
-            ring.getPickableObjects(),
+            ring.getPickableMeshes(),
             false // IMPORTANT: no recursion
         );
 
@@ -1012,8 +1000,9 @@
 
     const bowCurveDef = surfaceDefinitions[1];
     const bowCurveSurface = new Surface(worldGroup, {
-        resolution: 20,
-        showWireframe: false,
+        resolution: params.resolution,
+        showWireframe: params.wireframe,
+        baseColor: params.baseColor,
         definition: new SurfaceTemplate(bowCurveDef.definition, bowCurveDef.intervals[0], bowCurveDef.intervals[1])
     });
 
