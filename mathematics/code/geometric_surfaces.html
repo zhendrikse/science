@@ -407,7 +407,7 @@
             appearanceFolder.add(params, 'wireframe').name("Wireframe").onChange(value => surface.toggleWireframe(value));
             appearanceFolder.add(params, 'axes').name("Axes").onChange(value => axes.show(value));
             appearanceFolder.add(params, 'normals').name('Show Normals').onChange(value => surface.showNormals(value));
-            appearanceFolder.add({reset: () => scenery.fitToBoundingBox(surface.getBoundingBox())}, "reset").name("Reset Camera");
+            appearanceFolder.add({reset: () => scenery.fitToBoundingBox(bowCurveSurface.getBoundingBox())}, "reset").name("Reset Camera");
 
             const animationFolder = controls.addFolder("Animation Controls");
             animationFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
