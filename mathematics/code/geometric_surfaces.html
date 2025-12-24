@@ -127,6 +127,30 @@
         },
         intervals: [["0", "2 * pi"], ["4 * pi", "0"]]
     }, {
+        meta: {name: "Bow tie", category: Category.MISC},
+        definition: {
+            xFn: "sin(u)/ (sqrt(2) + sin(v))",
+            yFn: "sin(u)/ (sqrt(2) + cos(v))",
+            zFn: "cos(u)/ (sqrt(2) + 1)"
+        },
+        intervals: [["-pi", "pi"], ["pi", "-pi"]]
+    }, {
+        meta: {name: "Conchoidal", category: Category.SPIRAL},
+        definition: {
+            xFn: "1.2 ^u * (1 + cos(v)) * cos(u)",
+            yFn: "1.2 ^u * sin(v) - 1.5 * 1.2 ^u",
+            zFn: "1.2 ^u * (1 + cos(v)) * sin(u)"
+        },
+        intervals: [["0", "6 * pi"], ["2 * pi", "0"]]
+    }, {
+        meta: {name: "Dini\'s spiral", category: Category.SPIRAL},
+        definition: {
+            xFn: "1.5 * cos(u) * sin(v)",
+            yFn: "(cos(v) + log(tan(v / 2))) + 1 / 10 * u",
+            zFn: "1.5 * sin(u) * sin(v)"
+        },
+        intervals: [["0", "4 * pi"], ["2 - 0.1", "0 + 0.1"]]
+    }, {
         meta: {name: "Elliptic torus", category: Category.TOROID},
         definition: {
             xFn: "(1 * cos(v) + 3) * cos(u)",
@@ -135,11 +159,11 @@
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
-        meta: {name: "Cosine", category: Category.MISC},
+        meta: {name: "Helicoid", category: Category.SPIRAL},
         definition: {
-            xFn: "cos(u)",
-            yFn: "cos(v)",
-            zFn: "cos(u + v)"
+            xFn: "3/4 * u * cos(2 * v)",
+            yFn: "2 * v",
+            zFn: "3/4 * u * sin(2 * v)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
@@ -151,6 +175,14 @@
         },
         intervals: [["0", "2 * pi"], ["0", "2 * pi"]]
     }, {
+        meta: {name: "Pillow", category: Category.MISC},
+        definition: {
+            xFn: "cos(u)",
+            yFn: "0.7 * sin(u) * sin(v)",
+            zFn: "cos(v)"
+        },
+        intervals: [["0", "pi"], ["2 * pi", "0"]]
+    }, {
         meta: {name: "Sine", category: Category.MISC},
         definition: {
             xFn: "sin(u)",
@@ -159,6 +191,14 @@
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
+    // meta: {name: "Tangent spiral", category: Category.SPIRAL},
+    //     definition: {
+    //         xFn: "sinh(2 * u) / (cos(10 * u) + cosh(2 * u))",
+    //         yFn: "v",
+    //         zFn: "sin(10 * u) / (cos(10 * u) + cosh(2 * u))"
+    //     },
+    //     intervals: [["-3/2", "3/2"], ["0", "1"]]
+    // }, {
         meta: {name: "Torus", category: Category.TOROID},
         definition: {
             xFn: "cos(u) * (3 + 1.5 * cos(v))",
@@ -806,7 +846,7 @@
                 surface.mesh.userData.intervals[1][1] + "] \\end{cases}$$";
 
             equationDiv.innerHTML = surface ? equation : "Equation not found";
-            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
             //MathJax.typesetPromise([eqDiv]);
         }
 
