@@ -1,5 +1,4 @@
 <style>
-
     #canvas-wrapper {
         position: relative;
         width: 600px;
@@ -17,8 +16,8 @@
 
     #gui-container {
         position: absolute;
-        bottom: 10px;      /* distance from the bottom of the canvas */
-        left: 10px;          /* center horizontally */
+        bottom: 5px;      /* distance from the bottom of the canvas */
+        left: 10px;
         z-index: 20;
     }
 
@@ -1487,7 +1486,8 @@
             this.#redistribute();
         }
 
-        findSurfaceBy = (mesh) => this.surfaces.find(surface => surface.selectableObject() === mesh);
+        findSurfaceByName = (name) => this.surfaces.find(surface => surface.data().meta.name === name);
+        findSurfaceByMesh = (mesh) => this.surfaces.find(surface => surface.selectableObject() === mesh);
         getSelectableObjects = () => this.visibleRingItems().map(surface => surface.selectableObject());
         rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
         rotateSurfaces = () => this.visibleRingItems().forEach(surface => surface.rotateBy(this.rotationSpeed));
@@ -1515,6 +1515,8 @@
     const ring = new Ring(worldGroup, surfaceInAxes, boundingBox);
     ring.add(surfaces);
     ring.changeActiveCategoryTo(surfaceDefinition.meta.category);
+    const selectedRingSurface = ring.findSurfaceByName(surfaceDefinition.meta.name);
+    ring.onSelectTo(selectedRingSurface);
 
     const controlsGui = new ControlsGui(worldGroup, surfaceInAxes, axes, ring, visualizationParameters);
 
@@ -1551,7 +1553,7 @@
         if (!hits.length) return;
 
         const selectedMesh = hits[0].object;
-        const selectedRingSurface = ring.findSurfaceBy(selectedMesh);
+        const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         surfaceInAxes.dispose();
         surfaceInAxes = create(selectedRingSurface.data(), visualizationParameters, scenery, axes);
         ring.onSelectTo(selectedRingSurface);
