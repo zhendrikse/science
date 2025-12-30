@@ -6,6 +6,7 @@
 The images are generated with [geometric_surfaces.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/geometric_surfaces.html).
 {% include_relative code/geometric_surfaces.html %}
 
+<br/><br/>
 <p style="clear: both;"></p>
 
 ## Introduction to manifolds
@@ -31,7 +32,8 @@ Similarly, in two dimensions, the surface of the Earth is a manifold;
 zoom in far enough anywhere on it, and it’ll look like a flat 2D plane. 
 But the surface of a double cone — a shape consisting of two cones connected 
 at their tips — is not a manifold.
-&mdash;
+
+From:
 <a href="https://www.wired.com/story/behold-the-manifold-the-concept-that-changed-how-mathematicians-view-space/">
   Behold the Manifold, the Concept that Changed How Mathematicians View Space.
 </a>
