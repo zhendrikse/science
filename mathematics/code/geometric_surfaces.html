@@ -17,7 +17,7 @@
 
     #gui-container {
         position: absolute;
-        bottom: 10px;      /* distance from the bottom of the canvas */
+        top: 125px;      /* distance from the bottom of the canvas */
         left: 10px;          /* center horizontally */
         z-index: 20;
     }
@@ -492,9 +492,9 @@
     class ViewParameters {
         constructor({
                         baseColor = "#ff4",
-                        category = Category.MISC,
+                        category = Category.BASIC,
                         colorMode = ColorMode.HEIGHT,
-                        contourType = ContourType.NONE,
+                        contourType = ContourType.ISO_PARAMETRIC,
                         normals = false,
                         opacity = 0.9,
                         resolution = 50,
@@ -1411,7 +1411,7 @@
 
     class Ring {
         constructor(parentGroup, boundingBox, {
-            ringRadius = 1.5,
+            ringRadius = 1.75,
             verticalOffset = -1,
             activeCategory = Category.MISC,
             rotationSpeed=0.01,
@@ -1446,7 +1446,7 @@
         #setTargetRotation(selectedSurface) {
             const local = selectedSurface.position();
             const angle = Math.atan2(local.x, local.z);
-            this.ringTargetRotation = -angle + Math.PI * .3;
+            this.ringTargetRotation = -angle + Math.PI * .45;
         }
 
         #placeAndShowSurface = (surface, index) => {
@@ -1506,7 +1506,7 @@
     worldGroup.add(axesGroup);
     const axes = new MatlabAxes(axesGroup);
 
-    const surfaceDefinition = surfaces[0];
+    const surfaceDefinition = surfaces[14];
     const visualizationParameters = new ViewParameters();
     let surfaceInAxes = create(surfaceDefinition, visualizationParameters, scenery, axes);
 
