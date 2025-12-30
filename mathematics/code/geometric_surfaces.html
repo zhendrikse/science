@@ -6,7 +6,7 @@
         height: 700px;
     }
 
-    #myCanvas {
+    #geometriesCanvas {
         position: absolute;
         top: 0;
         left: 0;
@@ -17,7 +17,7 @@
 
     #gui-container {
         position: absolute;
-        top: 125px;      /* distance from the bottom of the canvas */
+        bottom: 10px;      /* distance from the bottom of the canvas */
         left: 10px;          /* center horizontally */
         z-index: 20;
     }
@@ -58,7 +58,7 @@
     <div id="gui-container"></div>
     <div id="surface-title"></div>
     <div id="surface-equation"></div>
-    <canvas id="myCanvas" width="600" height="700"></canvas>
+    <canvas id="geometriesCanvas" width="600" height="700"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
@@ -68,7 +68,7 @@
     import {OrbitControls} from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
-    const canvas = document.getElementById("myCanvas"),
+    const canvas = document.getElementById("geometriesCanvas"),
         width = canvas.width,
         height = canvas.height;
 
