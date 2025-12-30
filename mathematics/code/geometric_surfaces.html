@@ -3,7 +3,7 @@
     #canvas-wrapper {
         position: relative;
         width: 600px;
-        height: 800px;
+        height: 700px;
     }
 
     #myCanvas {
@@ -58,7 +58,7 @@
     <div id="gui-container"></div>
     <div id="surface-title"></div>
     <div id="surface-equation"></div>
-    <canvas id="myCanvas" width="600" height="800"></canvas>
+    <canvas id="myCanvas" width="600" height="700"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
@@ -73,20 +73,21 @@
         height = canvas.height;
 
     const Category = Object.freeze({
-        TOROID: "Toroid",
+        BASIC: "Basic",
         CONIC: "Conics",
+        MISC: "Miscellaneous",
         SPIRAL: "Spiral",
-        MISC: "Miscellaneous"
+        TOROID: "Toroid"
     });
 
-    const ColorMode = {
+    const ColorMode = Object.freeze({
         BASE: "Base",
         GAUSSIAN: "Gaussian curvature",
         HEIGHT: "Height",
         MEAN: "Mean curvature",
         K1: "Principal curvature k₁",
         K2: "Principal curvature k₂"
-    }
+    });
 
     const ContourType = {
         CURVATURE: "Curvature",
@@ -141,7 +142,15 @@
             yFn: "v",
             zFn: "v * sin(u)"
         },
-        intervals: [["0", "2 * pi"], ["1/2", "-1/2"]]
+        intervals: [["0", "2 * pi"], ["1/2", "-1/2 + 1e-4"]]
+    }, {
+        meta: {name: "Cylinder", category: Category.BASIC},
+        parametrization: {
+            xFn: "1 * cos(u)",
+            yFn: "v",
+            zFn: "1 * sin(u)"
+        },
+        intervals: [["0", "2 * pi"], ["3", "0"]]
     }, {
         meta: {name: "Crescent", category: Category.SPIRAL},
         parametrization: {
@@ -165,7 +174,7 @@
             yFn: "1 * cos(u) * sin(v)",
             zFn: "3 * cos(v)"
         },
-        intervals: [["-pi/2", "pi/2"], ["2 * pi", "0"]]
+        intervals: [["-pi/2", "pi/2"], ["2 * pi - 1e-4", "1e-4"]]
     }, {
         meta: {name: "Elliptic torus", category: Category.TOROID},
         parametrization: {
@@ -174,6 +183,14 @@
             zFn: "(1 * cos(v) + 3) * sin(u)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+    }, {
+        meta: {name: "Goblet", category: Category.MISC},
+        parametrization: {
+            xFn: "cos(u) * cos(2 * v)",
+            yFn: "-sin(v)",
+            zFn: "sin(u) * cos(2 * v)"
+        },
+        intervals: [["0", "2 * pi"], ["pi", "0"]]
     }, {
         meta: {name: "Horn", category: Category.SPIRAL},
         parametrization: {
@@ -221,7 +238,7 @@
             yFn: "3 * u",
             zFn: "2 * sqrt(u / 1) * sin(v)"
         },
-        intervals: [["0", "1"], ["0", "2 * pi"]]
+        intervals: [["1e-5", "1 - 1e-5"], ["0", "2 * pi"]]
     }, {
         meta: {name: "Pillow", category: Category.MISC},
         parametrization: {
@@ -230,6 +247,22 @@
             zFn: "cos(v)"
         },
         intervals: [["0", "pi"], ["2 * pi", "0"]]
+    }, {
+        meta: {name: "Plane", category: Category.BASIC},
+        parametrization: {
+            xFn: "1.5 * u - 1 * v + 1",
+            yFn: "-u - v - 0.5",
+            zFn: "u + v + 1"
+        },
+        intervals: [["-3/2", "3/2"], ["3/2", "-3/2"]]
+    }, {
+        meta: {name: "Saddle / hyperbolic paraboloid", category: Category.BASIC},
+        parametrization: {
+            xFn: "u * sin(v)",
+            yFn: "1.25 * u * cos(v) * u * sin(v)",
+            zFn: "u * cos(v)"
+        },
+        intervals: [["1e-3", "1 - 1e-3"], ["0", "2 * pi"]]
     }, {
         meta: {name: "Sea shell", category: Category.SPIRAL},
         parametrization: {
@@ -246,6 +279,14 @@
             zFn: "sin(u + v)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+    }, {
+        meta: {name: "Sphere", category: Category.BASIC},
+        parametrization: {
+            xFn: "1 * cos(u) * sin(v)",
+            yFn: "1 * sin(u) * sin(v)",
+            zFn: "1 * cos(v)"
+        },
+        intervals: [["0", "2 * pi"], ["pi - 1e-4", "1e-4"]]
     }, {
         meta: {name: "Spring", category: Category.SPIRAL},
         parametrization: {
@@ -394,6 +435,23 @@
             this.camera.updateProjectionMatrix();
         }
 
+        updateSurfaceData(surfaceData) {
+            const nameDiv = document.getElementById("surface-title");
+            nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
+
+            const equationDiv = document.getElementById("surface-equation");
+            equationDiv.innerHTML = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix}" +
+                surfaceData.parametrization.xFn + " \\\\" +
+                surfaceData.parametrization.yFn + " \\\\" +
+                surfaceData.parametrization.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
+                surfaceData.intervals[0][0] + ", " +
+                surfaceData.intervals[0][1] + "] \\\\ v \\in [" +
+                surfaceData.intervals[1][0] + ", " +
+                surfaceData.intervals[1][1] + "] \\end{cases}$$";
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
+            //MathJax.typesetPromise([equationDiv]);
+        }
+
         fitToBoundingBox(boundingBox, {
             padding = 1.5,
             translationY = 0,
@@ -436,7 +494,7 @@
                         baseColor = "#ff4",
                         category = Category.MISC,
                         colorMode = ColorMode.HEIGHT,
-                        contourType = ContourType.ISO_PARAMETRIC,
+                        contourType = ContourType.NONE,
                         normals = false,
                         opacity = 0.9,
                         resolution = 50,
@@ -699,11 +757,11 @@
         #disposeChild(child) {
             if (child.geometry) child.geometry.dispose();
 
-            if (child.material)
-                if (Array.isArray(child.material))
-                    child.material.forEach(m => m.dispose());
-                else
-                    child.material.dispose();
+            if (!child.material) return;
+            if (Array.isArray(child.material))
+                child.material.forEach(m => m.dispose());
+            else
+                child.material.dispose();
         }
 
         registerChild(view) {
@@ -729,6 +787,8 @@
         data() { return this.surface.data(); }
         hide() { this.group.visible = false; }
         moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
+        material = (showWireframe, opacity) =>
+            new THREE.MeshPhongMaterial({vertexColors: true, side: THREE.DoubleSide, wireframe: showWireframe, opacity: opacity, emissive: 0x222222});
         parametrization() { return this.surface.parametrization(); }
         position() { return this.group.position.clone(); }
         rotateBy = (delta) => this.group.rotation.y += delta;
@@ -738,15 +798,23 @@
     class SurfaceSelectorView extends SurfaceView {
         constructor(parentGroup, surface, {resolution=20, baseColor="#4f6"}) {
             super(parentGroup, surface);
+            this.baseColor = baseColor;
             this.geometry = surface.createGeometryWith(resolution);
-            this.material = this.#material();
+            this.material = this.material(true, 1);
             this.colorMapper = new HeightColorMapper({ baseColor: baseColor });
             this.mesh = new THREE.Mesh(this.geometry, this.material);
             this.group.add(this.mesh);
             this.colorMapper.apply(this.geometry);
         }
 
-        #material = () => new THREE.MeshPhongMaterial({vertexColors: true, side: THREE.DoubleSide, wireframe: true});
+        onSelect = () => {
+            this.material.wireframe = false;
+            this.colorMapper = new HeightColorMapper({});
+            this.colorMapper.apply(this.geometry); }
+        onDeselect = () => {
+            this.material.wireframe = true;
+            this.colorMapper = new HeightColorMapper({ baseColor: this.baseColor });
+            this.colorMapper.apply(this.geometry); }
         selectableObject = () => this.mesh;
     }
 
@@ -756,7 +824,7 @@
             this.baseColor = visualizationParameters.baseColor;
             this.opacity = visualizationParameters.opacity;
             this.geometry = surface.createGeometryWith(visualizationParameters.resolution);
-            this.material = this.#material(visualizationParameters.wireframe, this.opacity);
+            this.material = this.material(visualizationParameters.wireframe, this.opacity);
             this.changeOpacityTo(this.opacity);
             this.mesh = new THREE.Mesh(this.geometry, this.material);
             this.group.add(this.mesh);
@@ -767,9 +835,6 @@
             this.changeContourTypeTo(visualizationParameters.contourType);
             this.normals = this.registerChild(new NormalsView(this.group, surface, this.geometry));
         }
-
-        #material = (showWireframe, opacity) =>
-            new THREE.MeshPhongMaterial({vertexColors: true, side: THREE.DoubleSide, wireframe: showWireframe, opacity: opacity, emissive: 0x222222});
 
         addContoursWith = (contourParameters) => this.contours.buildWith(contourParameters);
         addNormalsWith = (normalParameters) => this.normals.buildWith(normalParameters);
@@ -820,7 +885,7 @@
         changeBaseColorTo = (value) => {
             this.baseColor = value;
             this.changeColorModeTo(this.colorMode);
-            if (this.contours.visible()) {
+            if (this.contours && this.contours.visible()) {
                 this.contours.dispose();
                 this.addContoursWith({color: this.baseColor});
             }
@@ -1362,6 +1427,7 @@
             this.selectionLerp = selectionLerp;
             this.verticalOffset = verticalOffset;
             this.ringTargetRotation = null;
+            this.selectedSurface = null;
         }
 
         #rotationToTargetSurfaceIsNeeded = () => this.ringTargetRotation !== null;
@@ -1395,6 +1461,13 @@
             this.visibleRingItems().forEach((surface, index) => this.#placeAndShowSurface(surface, index));
         }
 
+        #onSelectedSurface(selectedRingSurface) {
+            this.#setTargetRotation(selectedRingSurface);
+            if (this.selectedSurface) this.selectedSurface.onDeselect();
+            selectedRingSurface.onSelect();
+            this.selectedSurface = selectedRingSurface;
+        }
+
         add(surfaces) {
             surfaces.forEach(surfaceData => {
                 const selectorSurface = new SurfaceSelectorView(this.group, new Surface(surfaceData), {});
@@ -1418,7 +1491,7 @@
         getSelectableObjects = () => this.visibleRingItems().map(surface => surface.selectableObject());
         rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
         rotateSurfaces = () => this.visibleRingItems().forEach(surface => surface.rotateBy(this.rotationSpeed));
-        onSelectTo = (selectedRingSurface) => this.#setTargetRotation(selectedRingSurface);
+        onSelectTo = (selectedRingSurface) => this.#onSelectedSurface(selectedRingSurface);
         visibleRingItems = () => this.surfaces.filter(surface => surface.data().meta.category === this.activeCategory);
     }
 
@@ -1433,9 +1506,9 @@
     worldGroup.add(axesGroup);
     const axes = new MatlabAxes(axesGroup);
 
-    const surfaceDefinition = surfaces[surfaces.length - 1];
+    const surfaceDefinition = surfaces[0];
     const visualizationParameters = new ViewParameters();
-    let surfaceInAxes = create(surfaceDefinition, visualizationParameters, axes);
+    let surfaceInAxes = create(surfaceDefinition, visualizationParameters, scenery, axes);
 
     const boundingBox = surfaceInAxes.boundingBox();
     Utils.scaleBox3(boundingBox, 0.22)
@@ -1447,25 +1520,10 @@
 
     const bbox = new THREE.Box3();
     bbox.setFromObject( axesGroup );
-    scenery.fitToBoundingBox(bbox, {padding: 1.45, translationY: -4});
+    scenery.fitToBoundingBox(bbox, {padding: 1.2, translationY: -1});
 
-
-    function create(surfaceData, visualizationParameters, axes) {
-        const nameDiv = document.getElementById("surface-title");
-        nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
-
-        const equationDiv = document.getElementById("surface-equation");
-        equationDiv.innerHTML = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix}" +
-            surfaceData.parametrization.xFn + " \\\\" +
-            surfaceData.parametrization.yFn + " \\\\" +
-            surfaceData.parametrization.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
-            surfaceData.intervals[0][0] + ", " +
-            surfaceData.intervals[0][1] + "] \\\\ v \\in [" +
-            surfaceData.intervals[1][0] + ", " +
-            surfaceData.intervals[1][1] + "] \\end{cases}$$";
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, equationDiv]);
-        //MathJax.typesetPromise([equationDiv]);
-
+    function create(surfaceData, visualizationParameters, scenery, axes) {
+        scenery.updateSurfaceData(surfaceData);
         const surfaceInAxes = new DisplayedSurfaceView(axesGroup, new Surface(surfaceData), visualizationParameters);
         surfaceInAxes.resetTransform();
         Utils.fitGroupToBox(
@@ -1495,7 +1553,7 @@
         const selectedMesh = hits[0].object;
         const selectedRingSurface = ring.findSurfaceBy(selectedMesh);
         surfaceInAxes.dispose();
-        surfaceInAxes = create(selectedRingSurface.data(), visualizationParameters, axes);
+        surfaceInAxes = create(selectedRingSurface.data(), visualizationParameters, scenery, axes);
         ring.onSelectTo(selectedRingSurface);
         controlsGui.updateSurfaceWith(surfaceInAxes);
     });
