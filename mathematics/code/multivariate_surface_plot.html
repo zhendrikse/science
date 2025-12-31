@@ -56,7 +56,7 @@
             this.scene = scene;
 
             this.controls.enableDamping = true;
-            this.scene.background = new THREE.Color(0x131313);
+            this.scene.background = new THREE.Color(0x1a1a1a);
 
             this.scene.add(worldGroup);
             this.scene.add(this.#createDirectionalLight());
@@ -84,7 +84,8 @@
         }
 
         fitToBoundingBox(boundingBox, {
-            padding = 1.3,
+            padding = 1.5,
+            translationY = 0,
             minDistance = 2
         } = {}) {
             const size = new THREE.Vector3();
@@ -102,16 +103,12 @@
             const direction = new THREE.Vector3(1, 1, 1).normalize(); // Matlab-like camera setting
 
             this.camera.position
-                .copy(center)
+                .copy(new THREE.Vector3(center.x, center.y + translationY, center.z))
                 .addScaledVector(direction, distance);
 
             this.camera.near = distance / 100;
-            this.camera.far  = distance * 10;
+            this.camera.far = distance * 10;
             this.camera.updateProjectionMatrix();
-
-            // Smooth camera transitions
-            // this.camera.position.lerp(targetPosition, 0.15);
-            // this.controls.target.lerp(center, 0.15);
 
             this.controls.target.copy(center);
             this.controls.update();
@@ -124,7 +121,7 @@
 
             this.camera.position
                 .copy(center)
-                .addScaledVector(new THREE.Vector3(1,1,1).normalize(), distance);
+                .addScaledVector(new THREE.Vector3(1, 1, 1).normalize(), distance);
 
             this.controls.target.copy(center);
         }
@@ -145,7 +142,7 @@
             const latex = expr.toTex();
             const titleDiv = document.getElementById("surface-title");
             titleDiv.innerHTML = "$f(x,y)=" + latex + "$";
-            //MathJax.Hub.Queue(["Typeset", MathJax.Hub, titleDiv]);
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, titleDiv]);
             //MathJax.typesetPromise([eqDiv]);
         }
     }
@@ -625,7 +622,7 @@
     });
 
     axes.rebuildFrom(parametricSurface.getBoundingBox());
-    scenery.fitToBoundingBox(parametricSurface.getBoundingBox());
+    scenery.fitToBoundingBox(parametricSurface.getBoundingBox(), {padding: 1.15, translationY: -2.0});
     scenery.updateTitle(params.customFunction);
     new ControlsGui(scenery, parametricSurface, axes);
 
