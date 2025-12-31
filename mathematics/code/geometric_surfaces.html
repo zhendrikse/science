@@ -413,8 +413,7 @@
             this.scene = scene;
 
             this.controls.enableDamping = true;
-            this.camera.position.set(6, 3, 6);
-            this.scene.background = new THREE.Color(0x131313);
+            this.scene.background = new THREE.Color(0x1a1a1a);
 
             this.scene.add(worldGroup);
             this.scene.add(this.#createDirectionalLight());
@@ -453,7 +452,7 @@
             nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
 
             const equationDiv = document.getElementById("surface-equation");
-            equationDiv.innerHTML = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix}" +
+            equationDiv.innerHTML = "$$\\begin{pmatrix}" +
                 surfaceData.parametrization.xFn + " \\\\" +
                 surfaceData.parametrization.yFn + " \\\\" +
                 surfaceData.parametrization.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
@@ -504,9 +503,9 @@
 
     class ViewParameters {
         constructor({
-                        baseColor = "#ff4",
-                        category = Category.MISC,
-                        colorMode = ColorMode.HEIGHT,
+                        baseColor = "#f60",
+                        category = Category.TOROID,
+                        colorMode = ColorMode.BASE,
                         contourType = ContourType.ISO_PARAMETRIC,
                         normals = false,
                         opacity = 0.9,
@@ -846,6 +845,7 @@
             this.changeColorModeTo(visualizationParameters.colorMode);
             this.contours = null;
             this.changeContourTypeTo(visualizationParameters.contourType);
+            this.contourType = visualizationParameters.contourType;
             this.normals = this.registerChild(new NormalsView(this.group, surface, this.geometry));
         }
 
@@ -900,6 +900,7 @@
             this.changeColorModeTo(this.colorMode);
             if (this.contours && this.contours.visible()) {
                 this.contours.dispose();
+                this.changeContourTypeTo(this.contourType);
                 this.addContoursWith({color: this.baseColor});
             }
         };
@@ -929,7 +930,7 @@
     }
 
     class HeightColorMapper extends ColorMapper {
-        constructor({ baseColor = "#ff4", useBaseColor = true } = {}) {
+        constructor({ baseColor="#ff4", useBaseColor=true } = {}) {
             super();
             this.baseColor = baseColor;
             this.useBaseColor = useBaseColor;
@@ -1510,7 +1511,6 @@
     }
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1a1a);
 
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
@@ -1520,12 +1520,12 @@
     worldGroup.add(axesGroup);
     const axes = new MatlabAxes(axesGroup);
 
-    const surfaceDefinition = surfaces[0];
+    const surfaceDefinition = surfaces[3];
     const visualizationParameters = new ViewParameters();
     let surfaceInAxes = create(surfaceDefinition, visualizationParameters, scenery, axes);
 
     const boundingBox = surfaceInAxes.boundingBox();
-    Utils.scaleBox3(boundingBox, 0.22)
+    Utils.scaleBox3(boundingBox, 0.23)
     const ring = new Ring(worldGroup, surfaceInAxes, boundingBox);
     ring.add(surfaces);
     ring.changeActiveCategoryTo(surfaceDefinition.meta.category);
