@@ -13,7 +13,7 @@ vtk = "^9.4.1"
 pygame = "^2.6.1"
 pillow = "^11.1.0"
 numpy = "^2.2.4"
-plotly = "^6.0.1"
+plotly = "^6.0.1"umba = "^0.61.2"
 
 
 [tool.poetry.dev-dependencies]

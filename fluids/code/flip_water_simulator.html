@@ -45,13 +45,13 @@ PIC <label>
     const AIR_CELL = 1;
     const SOLID_CELL = 2;
 
-    function clamp(x, min, max) {
-        if (x < min)
+    function clamp(value, min, max) {
+        if (value < min)
             return min;
-        else if (x > max)
+        else if (value > max)
             return max;
         else
-            return x;
+            return value;
     }
 
     // ----------------- start of simulator ------------------------------
@@ -293,9 +293,9 @@ PIC <label>
 
             d.fill(0.0);
 
-            for (var i = 0; i < this.numParticles; i++) {
-                var x = this.particlePos[2 * i];
-                var y = this.particlePos[2 * i + 1];
+            for (let i = 0; i < this.numParticles; i++) {
+                let x = this.particlePos[2 * i];
+                let y = this.particlePos[2 * i + 1];
 
                 x = clamp(x, h, (this.fNumX - 1) * h);
                 y = clamp(y, h, (this.fNumY - 1) * h);
