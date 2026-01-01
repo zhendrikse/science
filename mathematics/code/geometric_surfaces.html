@@ -111,7 +111,7 @@
         },
         intervals: [["0", "pi"], ["pi", "0"]]
     }, {
-        meta: {name: "Bohemian dome", category: Category.MISC},
+        meta: {name: "Bohemian dome", category: Category.TOROID},
         parametrization: {
             xFn: "7 * cos(u)",
             yFn: "7 * sin(u) + 3 * cos(v)",
@@ -342,6 +342,14 @@
             zFn: "sin(u) + 3 * cos(v)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+    },{
+        meta: {name: "Umbrella", category: Category.MISC},
+        parametrization: {
+            xFn: "u^(1/3) * ((4 - 4/9) * cos(v) + 4/9 * cos((9 - 1) * v))",
+            yFn: "3 * (1 - u)",
+            zFn: "u^(1/3) * ((4 - 4/9) * sin(v) + 4/9 * sin((9 - 1) * v))"
+        },
+        intervals: [["1e-5", "1 - 1e-5"], ["2 * pi", "0"]]
     },{
         meta: {name: "Whitney umbrella", category: Category.MISC},
         parametrization: {
