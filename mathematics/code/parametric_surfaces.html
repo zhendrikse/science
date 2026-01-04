@@ -73,8 +73,9 @@
 
     const Category = Object.freeze({
         BASIC: "Basic",
-        CONIC: "Conics",
+        CONIC: "Conic",
         MISC: "Miscellaneous",
+        NON_ORIENTABLE: "Non-Orientable",
         SPIRAL: "Spiral",
         TOROID: "Toroid"
     });
@@ -142,6 +143,14 @@
             zFn: "1.2 ^u * (1 + cos(v)) * sin(u)"
         },
         intervals: [["0", "6 * pi"], ["2 * pi", "0"]]
+    }, {
+        meta: {name: "Cross cap", category: Category.NON_ORIENTABLE},
+        parametrization: {
+            xFn: "sin(2 * v) * cos(u)",
+            yFn: "-cos(v) * cos(v) + 0.5  * cos(u) * cos(u) * sin(v) * sin(v)",
+            zFn: "sin(2 * v) * sin(u)"
+        },
+        intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
         meta: {name: "Cone", category: Category.CONIC},
         parametrization: {
@@ -231,7 +240,7 @@
         },
         intervals: [["0", "2 * pi"], ["2", "-2"]]
     }, {
-        meta: {name: "Möbius strip", category: Category.MISC},
+        meta: {name: "Möbius strip", category: Category.NON_ORIENTABLE},
         parametrization: {
             xFn: "(2 + u * cos(v / 2)) * cos(v)",
             yFn: "(2 + u * cos(v / 2)) * sin(v)",
@@ -271,6 +280,14 @@
         },
         intervals: [["-3/2", "3/2"], ["3/2", "-3/2"]]
     }, {
+        meta: {name: "Roman surface", category: Category.NON_ORIENTABLE},
+        parametrization: {
+            xFn: "cos(u) * cos(v) * sin(v)",
+            yFn: "cos(u) * sin(u) * cos(v) * cos(v)",
+            zFn: "sin(u) * cos(v) * sin(v)"
+        },
+        intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+    }, {
         meta: {name: "Saddle / hyperbolic paraboloid", category: Category.BASIC},
         parametrization: {
             xFn: "u * sin(v)",
@@ -286,6 +303,14 @@
             zFn: "2 * (1 - v / (2 * pi)) * sin(3 * v) * (1 + cos(u)) + 0.25 * sin(3 * v)"
         },
         intervals: [["0", "2 * pi"], ["0", "2 * pi"]]
+    }, {
+        meta: {name: "Self intersecting disc", category: Category.NON_ORIENTABLE},
+        parametrization: {
+            xFn: "1.0 * v * cos(2 * u)",
+            yFn: "-1.0 * v * cos(u)",
+            zFn: "1.0 * v * sin(2 * u)"
+        },
+        intervals: [["0", "2 * pi"], ["0", "1"]]
     }, {
         meta: {name: "Sine", category: Category.MISC},
         parametrization: {

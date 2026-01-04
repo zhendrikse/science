@@ -9,7 +9,8 @@ The images are generated with [parametric_surfaces.html](https://github.com/zhen
 <br/><br/>
 <p style="clear: both;"></p>
 
-## Numeric determination of mean and Gaussian curvature
+## Numeric calculation mean &amp; Gaussian curvature
+<div class="header_line"><br/></div>
 
 We use **central differences of second order** for *all* derivatives as these derivatives are 
 
@@ -26,20 +27,19 @@ Note that **forward differencing** is asymmetric and leads to an error in the cu
 
 For central differences we use:
 
-$$ X_{uu} = \frac{X(u+e)-2X(u)+X(u-e)}{e^2} $$
+$$X_{uu} = \frac{X(u+e)-2X(u)+X(u-e)}{e^2}$$
 
-$$ X_{uv} = \frac{ X(u+e,v+e)-X(u+e,v-e)-X(u-e,v+e)+X(u-e,v-e)}{4e^2} $$
+$$X_{uv} = \frac{ X(u+e,v+e)-X(u+e,v-e)-X(u-e,v+e)+X(u-e,v-e)}{4e^2}$$
 
-### Analytic Gaussian curvature of a torus
-<div class="header_line"><br/></div>
+### Comparison with analytic Gaussian curvature of a torus
 
 For a torus with major radius `R` and minor radius  `r` we have the following parametrization:
 
-$$ X(u,v) = \begin{pmatrix} (R + r\cos v)\cos u \\ (R + r\cos v)\sin u \\ r\sin v \end{pmatrix}$$
+$$X(u,v) = \begin{pmatrix} (R + r\cos v)\cos u \\ (R + r\cos v)\sin u \\ r\sin v \end{pmatrix}$$
 
 ⭐ The **Gaussian curvature** is given by:
 
-$$ K(v) = \frac{\cos v}{r (R + r \cos v)} $$
+$$K(v) = \frac{\cos v}{r (R + r \cos v)}$$
 
 👉 Note that this curvature
 
@@ -74,6 +74,8 @@ A torus has
 * both **positive and negative Gaussian curvature**
 * **two closed K = 0-contours** (the so-called “equatorial” circles)
 * no contours where the _mean_ curvature $H = 0$
+
+
 
 
 
