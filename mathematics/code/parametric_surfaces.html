@@ -319,7 +319,7 @@
         },
         intervals: [["0", "8 * pi"], ["0", "2 * pi"]]
     }, {
-        meta: {name: "Torus", category: Category.TOROID},
+        meta: {name: "Torus", category: Category.BASIC},
         parametrization: {
             xFn: "cos(u) * (3 + 1.5 * cos(v))",
             yFn: "1.5 * sin(v)",
@@ -327,13 +327,29 @@
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
-        meta: {name: "Trefoil knot", category: Category.TOROID},
+        meta: {name: "Big torus", category: Category.TOROID},
+        parametrization: {
+            xFn: "cos(u) * (3 + 1.5 * cos(v))",
+            yFn: "2.5 * sin(v)",
+            zFn: "sin(u) * (3 + 1.5 * cos(v))"
+        },
+        intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+    }, {
+        meta: {name: "Trefoil knot 1", category: Category.TOROID},
         parametrization: {
             xFn: "(6 * (1 + 1/4 * sin(3 * v)) + cos(u)) * cos(2 * v)",
             yFn: "(6 * (1 + 1/4 * sin(3 * v)) + cos(u)) * sin(2 * v)",
             zFn: "sin(u) + 2 * cos(3 * v)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+    },{
+        meta: {name: "Trefoil knot 2", category: Category.TOROID},
+        parametrization: {
+            xFn: "1 * sin(3 * u) / (2 + cos(v))",
+            yFn: "1 * (sin(u) + 2 * sin(2 * u)) / (2 + cos(v + pi * 2 / 3))",
+            zFn: "1 / 2 * (cos(u) - 2 * cos(2 * u)) * (2 + cos(v)) * (2 + cos(v + pi * 2 / 3)) / 4"
+        },
+        intervals: [["-pi", "3 * pi"], ["3 * pi", "-pi"]]
     },{
         meta: {name: "Twisted torus", category: Category.TOROID},
         parametrization: {
@@ -1065,12 +1081,14 @@
             }
 
             const color = new THREE.Color();
+            const epsilon = 1e-4;
 
             for (let i = 0; i < pos.count; i++) {
                 const u = uv.getX(i);
                 const v = uv.getY(i);
 
                 const K = this.curvature.gaussianCurvature(u, v);
+                if (Math.abs(K) < epsilon) continue; // black where Gaussian curvature equals zero
                 this.#colorFromK(K, color);
 
                 colorAttr.array[3 * i]     = color.r;
@@ -1519,7 +1537,7 @@
 
         findSurfaceByName = (name) => this.surfaces.find(surface => surface.data().meta.name === name);
         findSurfaceByMesh = (mesh) => this.surfaces.find(surface => surface.selectableObject() === mesh);
-        getSelectableObjects = () => this.visibleRingItems().map(surface => surface.selectableObject());
+        selectableObjects = () => this.visibleRingItems().map(surface => surface.selectableObject());
         rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
         rotateSurfaces = () => this.visibleRingItems().forEach(surface => surface.rotateBy(this.rotationSpeed));
         onSelectTo = (selectedRingSurface) => this.#onSelectedSurface(selectedRingSurface);
@@ -1576,7 +1594,7 @@
         raycaster.setFromCamera(mouse, scenery.camera);
 
         const hits = raycaster.intersectObjects(
-            ring.getSelectableObjects(),
+            ring.selectableObjects(),
             false // IMPORTANT: no recursion
         );
 
