@@ -3,8 +3,8 @@
 ## Parametric surfaces
 <div class="header_line"><br/></div>
 
-The images are generated with [geometric_surfaces.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/geometric_surfaces.html).
-{% include_relative code/geometric_surfaces.html %}
+The images are generated with [parametric_surfaces.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/parametric_surfaces.html).
+{% include_relative code/parametric_surfaces.html %}
 
 <br/><br/>
 <p style="clear: both;"></p>
@@ -35,17 +35,6 @@ X_{uv} = \frac{
 X(u+e,v+e)-X(u+e,v-e)-X(u-e,v+e)+X(u-e,v-e)
 }{4e^2}
 $$
-
-
-Mooi, dit is een **heel goede sanity check** voor je hele differentiaal-geometrie-pipeline.
-Ik laat zien:
-
-1. wat de **analytische Gaussian curvature** van een torus is
-2. hoe je die uit je **surfaceDefinition** haalt
-3. hoe je **numeriek vs analytisch** vergelijkt
-4. wat je typisch mag verwachten aan fouten
-
----
 
 ### Comparison with analytic Gaussian curvature of a torus
 
