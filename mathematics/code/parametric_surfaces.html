@@ -1556,7 +1556,7 @@
 
     const surfaceDefinition = surfaces[3];
     const visualizationParameters = new ViewParameters();
-    let surfaceInAxes = create(surfaceDefinition, visualizationParameters, scenery, axes);
+    let surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, scenery, axes);
 
     const boundingBox = surfaceInAxes.boundingBox();
     Utils.scaleBox3(boundingBox, 0.23)
@@ -1572,7 +1572,7 @@
     bbox.setFromObject( axesGroup );
     scenery.fitToBoundingBox(bbox, {padding: 1.2, translationY: -0.5});
 
-    function create(surfaceData, visualizationParameters, scenery, axes) {
+    function displayedSurface(surfaceData, visualizationParameters, scenery, axes) {
         scenery.updateSurfaceData(surfaceData);
         const surfaceInAxes = new DisplayedSurfaceView(axesGroup, new Surface(surfaceData), visualizationParameters);
         surfaceInAxes.resetTransform();
@@ -1603,7 +1603,7 @@
         const selectedMesh = hits[0].object;
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         surfaceInAxes.dispose();
-        surfaceInAxes = create(selectedRingSurface.data(), visualizationParameters, scenery, axes);
+        surfaceInAxes = displayedSurface(selectedRingSurface.data(), visualizationParameters, scenery, axes);
         ring.onSelectTo(selectedRingSurface);
         controlsGui.updateSurfaceWith(surfaceInAxes);
     });
