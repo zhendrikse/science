@@ -26,28 +26,16 @@ Note that **forward differencing** is asymmetric and leads to an error in the cu
 
 For central differences we use:
 
-$$
-X_{uu} = \frac{X(u+e)-2X(u)+X(u-e)}{e^2}
-$$
+$$ X_{uu} = \frac{X(u+e)-2X(u)+X(u-e)}{e^2} $$
 
-$$
-X_{uv} = \frac{
-X(u+e,v+e)-X(u+e,v-e)-X(u-e,v+e)+X(u-e,v-e)
-}{4e^2}
-$$
+$$ X_{uv} = \frac{ X(u+e,v+e)-X(u+e,v-e)-X(u-e,v+e)+X(u-e,v-e)}{4e^2} $$
 
-### Comparison with analytic Gaussian curvature of a torus
+### Analytic Gaussian curvature of a torus
+<div class="header_line"><br/></div>
 
 For a torus with major radius `R` and minor radius  `r` we have the following parametrization:
 
-$$
-X(u,v) =
-\begin{pmatrix}
-(R + r\cos v)\cos u \\
-(R + r\cos v)\sin u \\
-r\sin v
-\end{pmatrix}
-$$
+$$ X(u,v) = \begin{pmatrix} (R + r\cos v)\cos u \\ (R + r\cos v)\sin u \\ r\sin v \end{pmatrix}$$
 
 ⭐ The **Gaussian curvature** is given by:
 
@@ -86,6 +74,9 @@ A torus has
 * both **positive and negative Gaussian curvature**
 * **two closed K = 0-contours** (the so-called “equatorial” circles)
 * no contours where the _mean_ curvature $H = 0$
+
+
+
 
 ## Introduction to manifolds
 <div class="header_line"><br/></div>
