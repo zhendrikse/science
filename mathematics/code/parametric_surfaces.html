@@ -558,22 +558,38 @@
         }
     }
 
+    class ContourParameters {
+        constructor({
+                        color = "#0ff",
+                        contourType = ContourType.ISO_PARAMETRIC,
+                        uCount = 20,
+                        vCount = 40
+                    } = {}) {
+            this.color = color;
+            this.contourType = contourType;
+            this.uCount = uCount;
+            this.vCount = vCount;
+        }
+    }
+
     class ViewParameters {
         constructor({
-                        baseColor = "#f60",
+                        autoRotate = false,
+                        baseColor = "#4cf",
                         category = Category.TOROID,
+                        contourParameters = new ContourParameters(),
                         colorMode = ColorMode.BASE,
-                        contourType = ContourType.ISO_PARAMETRIC,
                         normals = false,
                         opacity = 0.9,
-                        resolution = 100,
+                        resolution = 75,
                         showAxes = true,
                         wireframe = false
                     } ={}) {
+            this.autoRotate = autoRotate;
             this.baseColor = baseColor;
             this.category = category;
             this.colorMode = colorMode;
-            this.contourType = contourType;
+            this.contourParameters = contourParameters;
             this.wireframe = wireframe;
             this.showAxes = showAxes;
             this.normals = normals;
@@ -592,43 +608,16 @@
             controls.add(this.viewParameters, 'category', Object.values(Category))
                 .name("Category")
                 .onChange(value => ring.changeActiveCategoryTo(value));
-
-            this.#createAppearanceFolder(controls, axes);
-
-            const contourFolder = controls.addFolder("Contours");
-            contourFolder.add(this.viewParameters, "contourType", Object.values(ContourType))
-                .name("Contour type")
-                .onChange(value => this.surface.changeContourTypeTo(value));
-            contourFolder.close();
             controls.close();
 
-            // appearanceFolder.add(params, "resolution", 10, 200, 1)
-            //     .name("Resolution")
-            //     .onChange(resolution => surface.resampleWith(resolution));
+            this.#createAppearanceFolder(controls, axes);
+            //this.#createContourFolder(controls);
+
             //
             // appearanceFolder.add({reset: () => scenery.fitToBoundingBox(surfaceInAxes.boundingBox())}, "reset")
             //     .name("Reset Camera");
             //
-            // const contourParams = {uCount: 20, vCount: 20, visible: true, color: params.baseColor, opacity: params.opacity};
-            // contourFolder.add(contourParams, "uCount", 1, 40, 1)
-            //     .name("U contours")
-            //     .onChange(() => {
-            //         surface.clearContours();
-            //         surface.addContoursWith(contourParams);});
-            // contourFolder.add(contourParams, "vCount", 1, 40, 1)
-            //     .name("V contours")
-            //     .onChange(() => {
-            //         surface.clearContours();
-            //         surface.addContoursWith(contourParams);});
-            // contourFolder.add(contourParams, "visible")
-            //     .name("Show contours")
-            //     .onChange(value => value ?
-            //         surface.addContoursWith({color: params.baseColor, opacity: params.opacity}) :
-            //         surface.clearContours(value));
             //
-            // const animationFolder = controls.addFolder("Animation Controls");
-            // animationFolder.add(params, 'frequency', 0, 2).step(0.01).name("Frequency");
-            // animationFolder.add(params, 'animate').name("Animate");
             //
             // controls.close();
             // animationFolder.close();
@@ -636,25 +625,59 @@
             // appearanceFolder.close();
         }
 
-        #createAppearanceFolder(controls, axes) {
-            const appearanceFolder = controls.addFolder("Appearance");
-            appearanceFolder.add(this.viewParameters, "colorMode", Object.values(ColorMode))
+        #createContourFolder(folder) {
+            const contourFolder = folder.addFolder("Contours");
+            contourFolder.add(this.viewParameters.contourParameters, "contourType", Object.values(ContourType))
+                .name("Contour type")
+                .onChange(value => this.surface.modifyContours({mode: value}));
+            contourFolder.add(this.viewParameters.contourParameters, 'color')
+                .name("Color")
+                .onChange(() => {if (this.#isValidColor()) this.surface.modifyContours(this.viewParameters.contourParameters);});
+            contourFolder.add(this.viewParameters.contourParameters, "uCount", 1, 50, 1)
+                .name("U contours")
+                .onChange(() => this.surface.modifyContours(this.viewParameters.contourParameters));
+            contourFolder.add(this.viewParameters.contourParameters, "vCount", 1, 50, 1)
+                .name("V contours")
+                .onChange(() => this.surface.modifyContours(this.viewParameters.contourParameters));
+            contourFolder.close();
+        }
+
+        #createSurfaceFolder(folder) {
+            const surfaceFolder = folder.addFolder("Surface");
+            surfaceFolder.add(this.viewParameters, "colorMode", Object.values(ColorMode))
                 .name("Color Mode")
                 .onChange(() => this.surface.changeColorModeTo(this.viewParameters.colorMode));
-            appearanceFolder.add(this.viewParameters, 'baseColor')
+            surfaceFolder.add(this.viewParameters, 'baseColor')
                 .name("Base color")
                 .onChange(() => {if (this.#isValidColor()) this.surface.changeBaseColorTo(this.viewParameters.baseColor);});
-            appearanceFolder.add(this.viewParameters, "opacity", 0, 1, .01)
+            surfaceFolder.add(this.viewParameters, "opacity", 0, 1, .01)
                 .name("Opacity")
                 .onChange(value => this.surface.changeOpacityTo(value));
-            appearanceFolder.add(this.viewParameters, 'wireframe')
+            surfaceFolder.add(this.viewParameters, "resolution", 10, 200, 1)
+                .name("Resolution")
+                .onChange(resolution => this.surface.resampleWith(resolution));
+            surfaceFolder.close();
+        }
+
+        #createOptionsFolder(folder, axes) {
+            const optionsFolder = folder.addFolder("Options");
+            optionsFolder.add(this.viewParameters, 'wireframe')
                 .name("Wireframe")
                 .onChange(value => this.surface.toggleWireframe(value));
-            appearanceFolder.add(this.viewParameters, 'showAxes')
+            optionsFolder.add(this.viewParameters, 'showAxes')
                 .name("Axes").onChange(value => axes.show(value));
-            appearanceFolder.add(this.viewParameters, 'normals')
+            optionsFolder.add(this.viewParameters, 'normals')
                 .name('Show Normals')
                 .onChange(value => this.#showNormals(this.surface, value));
+            optionsFolder.add(this.viewParameters, 'autoRotate').name('Auto rotate');
+            optionsFolder.close();
+        }
+
+        #createAppearanceFolder(controls, axes) {
+            const appearanceFolder = controls.addFolder("Appearance");
+            this.#createSurfaceFolder(appearanceFolder);
+            this.#createOptionsFolder(appearanceFolder, axes);
+            this.#createContourFolder(appearanceFolder);
             appearanceFolder.close();
         }
 
@@ -672,6 +695,11 @@
                 surface.clearNormals();
                 surface.changeOpacityTo(this.viewParameters.opacity);
             }
+        }
+
+        render() {
+            if (this.viewParameters.autoRotate)
+                this.surface.rotateBy(0.005);
         }
 
         updateSurfaceWith= (newSurface) => this.surface = newSurface;
@@ -901,14 +929,19 @@
             this.colorMode = visualizationParameters.colorMode;
             this.changeColorModeTo(visualizationParameters.colorMode);
             this.contours = null;
-            this.changeContourTypeTo(visualizationParameters.contourType);
-            this.contourType = visualizationParameters.contourType;
+            this.contourParameters = visualizationParameters.contourParameters;
+            this.modifyContours({
+                mode: this.contourParameters.contourType,
+                resolution: visualizationParameters.resolution,
+                color: this.contourParameters.color,
+                uCount: this.contourParameters.uCount,
+                vCount: this.contourParameters.vCount
+            });
             this.normals = this.registerChild(new NormalsView(this.group, surface, this.geometry));
+            if (visualizationParameters.normals) this.addNormalsWith({});
         }
 
-        addContoursWith = (contourParameters) => this.contours.buildWith(contourParameters);
         addNormalsWith = (normalParameters) => this.normals.buildWith(normalParameters);
-
         changeColorModeTo(mode) {
             switch (mode) {
                 case ColorMode.HEIGHT:
@@ -934,11 +967,10 @@
             this.colorMapper.apply(this.geometry);
         }
 
-        changeContourTypeTo(mode) {
-            if (this.contours) this.contours.clear();
+        #modifyContourType(mode) {
             switch (mode) {
                 case ContourType.NONE:
-                    return;
+                    break;
                 case ContourType.CURVATURE:
                     this.contours = this.registerChild(new CurvatureContoursView(this.group, this.surface));
                     break;
@@ -946,10 +978,21 @@
                     this.contours = this.registerChild(new IsoparametricContoursView(this.group, this.surface));
                     break;
             }
-            this.contours.buildWith({
-                color: this.baseColor,
-                opacity: this.opacity
-            });
+        }
+
+        modifyContours({
+                           mode = this.contourParameters.mode,
+                           color = this.baseColor,
+                           uCount = this.contourParameters.uCount,
+                           vCount = this.contourParameters.vCount,
+                           segments = this.resolution
+                       } = {}) {
+            this.baseColor = color;
+            if (this.contours) this.contours.clear();
+            if (mode !== this.contourType)
+                this.#modifyContourType(mode);
+            if (this.contours && mode !== ContourType.NONE)
+                this.contours.buildWith({color: color, uCount: uCount, vCount: vCount, segments: segments});
         }
 
         changeBaseColorTo = (value) => {
@@ -957,8 +1000,7 @@
             this.changeColorModeTo(this.colorMode);
             if (this.contours && this.contours.visible()) {
                 this.contours.dispose();
-                this.changeContourTypeTo(this.contourType);
-                this.addContoursWith({color: this.baseColor});
+                this.modifyContours();
             }
         };
         changeOpacityTo = (value) => { this.material.opacity = value; this.material.transparent = value < 1; }
@@ -1047,7 +1089,7 @@
         }
 
         #setColorFromCurvature(u, v, color) {
-            const H = this.curvature.meanCurvature(u, v);
+            const { N, H, K } = this.curvature.normalMeanGaussian(u, v);
             const t = THREE.MathUtils.clamp(Math.abs(H) * 2.0, 0, 1);
             color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
         }
@@ -1112,7 +1154,7 @@
                 const u = uv.getX(i);
                 const v = uv.getY(i);
 
-                const K = this.curvature.gaussianCurvature(u, v);
+                const { N, H, K } = this.curvature.normalMeanGaussian(u, v);
                 if (Math.abs(K) < epsilon) continue; // black where Gaussian curvature equals zero
                 this.#colorFromK(K, color);
 
@@ -1131,7 +1173,7 @@
             scale = 1.0
         } = {}) {
             super();
-            this.geom = new DifferentialGeometry(surface.parametrization());
+            this.curvature = new DifferentialGeometry(surface.parametrization());
             this.which = which;
             this.scale = scale;
         }
@@ -1154,7 +1196,7 @@
                 const u = uv.getX(i);
                 const v = uv.getY(i);
 
-                const { k1, k2 } = this.geom.principalCurvatures(u, v);
+                let { k1, k2 } = this.curvature.principalCurvatures(u, v);
                 const k = this.which === ColorMode.K1 ? k1 : k2;
 
                 // diverging color map
@@ -1192,12 +1234,9 @@
                       uCount = 20,
                       vCount = 20,
                       segments = 100,
-                      color = 0xffffff,
-                      opacity = 0.8
+                      color = 0xffffff
                   } = {}) {
-            this.clear();
-
-            const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false });
+            const material = new THREE.LineBasicMaterial({ color: color, transparent: true, depthWrite: false });
             const target = new THREE.Vector3();
 
             // u = constant, v varies
@@ -1276,7 +1315,7 @@
                 for (let j = 0; j <= vCount; j++) {
                     const u = i / uCount;
                     const v = j / vCount;
-                    const H = curvature.meanCurvature(u, v);
+                    const {N, K, H} = curvature.normalMeanGaussian(u, v);
                     if (Math.abs(H) <= threshold) continue;
 
                     const point = new THREE.Vector3();
@@ -1321,32 +1360,51 @@
             this.geometry = geometry;
         }
 
+        #deriveScaleFromMesh(k, curvatureGain, normalScale) {
+            this.geometry.computeBoundingSphere();
+            const baseScale = this.geometry.boundingSphere.radius * normalScale;
+            const maxScale  = baseScale * 2.5;
+            // schaal met clamp
+            return Math.min(baseScale * (1 + curvatureGain * k), maxScale);
+        }
+
+        #createLineSegments(positions, colors) {
+            const normalsGeometry = new THREE.BufferGeometry();
+            normalsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            normalsGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            const material = new THREE.LineBasicMaterial({vertexColors: true, depthTest: false});
+            return new THREE.LineSegments(normalsGeometry, material);
+        }
+
         #createNormalLines(normalScale, curvatureGain, stride) {
-            const pos  = this.geometry.attributes.position;
-            const nor  = this.geometry.attributes.normal;
+            const pos = this.geometry.attributes.position;
             const uv  = this.geometry.attributes.uv;
             const curvature = new DifferentialGeometry(this.surface.parametrization());
-            this.geometry.computeVertexNormals();
 
             const positions = [];
             const colors    = [];
             for (let i = 0; i < pos.count; i += stride) {
-                const x  = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-                const nx = nor.getX(i), ny = nor.getY(i), nz = nor.getZ(i);
+                const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
                 const u = uv.getX(i), v = uv.getY(i);
-                const K = curvature.gaussianCurvature(u, v);
-                const scale = normalScale + curvatureGain * Math.min(Math.abs(K), 1);
-                const color = new THREE.Color(0.5 * (nx + 1), 0.5 * (ny + 1), 0.5 * (nz + 1));
 
-                positions.push(x, y, z, x + scale * nx, y + scale * ny, z + scale * nz);
+                let { N, H, K } = curvature.normalMeanGaussian(u, v);
+                if (!Number.isFinite(K)) K = 0;
+                const k = Math.min(Math.abs(K), 1.0);
+                const scale = this.#deriveScaleFromMesh(k, curvatureGain, normalScale);
+
+                positions.push(
+                    x, y, z,
+                    x + scale * N.x,
+                    y + scale * N.y,
+                    z + scale * N.z
+                );
+
+                // color encodes normal direction
+                const color = new THREE.Color(0.5 * (N.x + 1), 0.5 * (N.y + 1), 0.5 * (N.z + 1));
                 colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
             }
 
-            const normalsGeometry = new THREE.BufferGeometry();
-            normalsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            normalsGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-            const material = new THREE.LineBasicMaterial({ vertexColors: true, depthTest: false });
-            return new THREE.LineSegments(normalsGeometry, material);
+            return this.#createLineSegments(positions, colors);
         }
 
         buildWith({ normalScale = 0.25, curvatureGain = 1.0, stride = 4 }) {
@@ -1381,7 +1439,7 @@
         derivatives(u, v) {
             const e = this.eps;
 
-            // posities
+            // positions
             const p   = new THREE.Vector3();
 
             const pu1 = new THREE.Vector3();
@@ -1407,11 +1465,11 @@
             this.parametrization(u - e, v + e, pu0v1);
             this.parametrization(u - e, v - e, pu0v0);
 
-            // eerste afgeleiden (centraal)
+            // first order derivatives (central difference)
             const Xu = pu1.clone().sub(pu0).multiplyScalar(1 / (2 * e));
             const Xv = pv1.clone().sub(pv0).multiplyScalar(1 / (2 * e));
 
-            // tweede afgeleiden (centraal)
+            // second order derivatives (central difference)
             const Xuu = pu1.clone()
                 .sub(p.clone().multiplyScalar(2))
                 .add(pu0)
@@ -1431,54 +1489,33 @@
             return { Xu, Xv, Xuu, Xuv, Xvv };
         }
 
-        normal(u, v) {
-            const { Xu, Xv } = this.derivatives(u, v);
-            return Xu.clone().cross(Xv).normalize();
+        normalMeanGaussian(u, v) {
+            const d = this.derivatives(u, v);
+            const Xu = d.Xu, Xv = d.Xv;
+            const N  = Xu.clone().cross(Xv).normalize();
+
+            // First fundamental form
+            const E = Xu.dot(Xu);
+            const F = Xu.dot(Xv);
+            const G = Xv.dot(Xv);
+
+            // Second fundamental form
+            const e = d.Xuu.dot(N);
+            const f = d.Xuv.dot(N);
+            const g = d.Xvv.dot(N);
+
+            const EG_F2 = E * G - F * F;
+            const H = EG_F2 !== 0  ? (e * G - 2 * f * F + g * E) / (2 * EG_F2) : 0; // Mean curvature
+            const K = EG_F2 !== 0 ? (e * g - f * f) / EG_F2 : 0; // Gaussian curvature
+            return { N, H, K };
         }
 
-        firstFundamentalForm(u, v) {
-            const { Xu, Xv } = this.derivatives(u, v);
-            return {
-                E: Xu.dot(Xu),
-                F: Xu.dot(Xv),
-                G: Xv.dot(Xv)
-            };
-        }
-
-        secondFundamentalForm(u, v) {
-            const { Xu, Xv, Xuu, Xuv, Xvv } = this.derivatives(u, v);
-            const N = Xu.clone().cross(Xv).normalize();
-            return {
-                e: Xuu.dot(N),
-                f: Xuv.dot(N),
-                g: Xvv.dot(N)
-            };
-        }
-
-        meanCurvature(u, v) {
-            const { E, F, G } = this.firstFundamentalForm(u, v);
-            const { e, f, g } = this.secondFundamentalForm(u, v);
-
-            const denom = 2 * (E * G - F * F);
-            return denom !== 0 ? (e * G - 2 * f * F + g * E) / denom : 0;
-        }
-
-        gaussianCurvature(u, v) {
-            const { E, F, G } = this.firstFundamentalForm(u, v);
-            const { e, f, g } = this.secondFundamentalForm(u, v);
-
-            const denom = (E * G - F * F);
-            return denom !== 0 ? (e * g - f * f) / denom : 0;
-        }
-
-        principalCurvatures(u, v) {
-            const H = this.meanCurvature(u, v);
-            const K = this.gaussianCurvature(u, v);
-
+        principals(u, v) {
+            const {N, K, H} = this.normalMeanGaussian(u, v);
             const disc = Math.max(0, H * H - K);
             const squareRoot = Math.sqrt(disc);
-
-            return { k1: H + squareRoot, k2: H - squareRoot };
+            const k1 = H + squareRoot, k2 = H - squareRoot; // Principal curvatures
+            return { k1, k2 };
         }
     }
 
@@ -1503,23 +1540,11 @@
             this.selectedSurface = null;
         }
 
-        #rotationToTargetSurfaceIsNeeded = () => this.ringTargetRotation !== null;
-
-        #rotate() {
-            const delta = this.ringTargetRotation - this.group.rotation.y;
-            const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
-            this.group.rotation.y += shortest * this.selectionLerp;
-
-            if (Math.abs(shortest) < 0.001) {
-                this.group.rotation.y = this.ringTargetRotation;
-                this.ringTargetRotation = null;
-            }
-        }
-
-        #setTargetRotation(selectedSurface) {
-            const local = selectedSurface.position();
-            const angle = Math.atan2(local.x, local.z);
-            this.ringTargetRotation = -angle + Math.PI * .45;
+        #onSelectedSurface(selectedRingSurface) {
+            this.#setTargetRotation(selectedRingSurface);
+            if (this.selectedSurface) this.selectedSurface.onDeselect();
+            selectedRingSurface.onSelect();
+            this.selectedSurface = selectedRingSurface;
         }
 
         #placeAndShowSurface = (surface, index) => {
@@ -1534,11 +1559,25 @@
             this.visibleRingItems().forEach((surface, index) => this.#placeAndShowSurface(surface, index));
         }
 
-        #onSelectedSurface(selectedRingSurface) {
-            this.#setTargetRotation(selectedRingSurface);
-            if (this.selectedSurface) this.selectedSurface.onDeselect();
-            selectedRingSurface.onSelect();
-            this.selectedSurface = selectedRingSurface;
+        #rotate() {
+            const delta = this.ringTargetRotation - this.group.rotation.y;
+            const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
+            this.group.rotation.y += shortest * this.selectionLerp;
+
+            if (Math.abs(shortest) < 0.001) {
+                this.group.rotation.y = this.ringTargetRotation;
+                this.ringTargetRotation = null;
+            }
+        }
+
+        #rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
+        #rotateSurfaces = () => this.visibleRingItems().forEach(surface => surface.rotateBy(this.rotationSpeed));
+        #rotationToTargetSurfaceIsNeeded = () => this.ringTargetRotation !== null;
+
+        #setTargetRotation(selectedSurface) {
+            const local = selectedSurface.position();
+            const angle = Math.atan2(local.x, local.z);
+            this.ringTargetRotation = -angle + Math.PI * .45;
         }
 
         add(surfaces) {
@@ -1562,9 +1601,8 @@
 
         findSurfaceByName = (name) => this.surfaces.find(surface => surface.data().meta.name === name);
         findSurfaceByMesh = (mesh) => this.surfaces.find(surface => surface.selectableObject() === mesh);
+        render = () => { this.#rotateRingToSelectedSurface(); this.#rotateSurfaces(); }
         selectableObjects = () => this.visibleRingItems().map(surface => surface.selectableObject());
-        rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
-        rotateSurfaces = () => this.visibleRingItems().forEach(surface => surface.rotateBy(this.rotationSpeed));
         onSelectTo = (selectedRingSurface) => this.#onSelectedSurface(selectedRingSurface);
         visibleRingItems = () => this.surfaces.filter(surface => surface.data().meta.category === this.activeCategory);
     }
@@ -1635,9 +1673,9 @@
 
     function animate() {
         requestAnimationFrame(animate);
-        ring.rotateRingToSelectedSurface();
-        ring.rotateSurfaces();
         scenery.render();
+        ring.render();
+        controlsGui.render();
     }
 
     animate();

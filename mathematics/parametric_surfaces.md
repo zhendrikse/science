@@ -44,7 +44,7 @@ $$K(v) = \frac{\cos v}{r (R + r \cos v)}$$
 👉 Note that this curvature
 
 * is **independent of u**,
-* is zero at $v = \pm\dfrac{\pi}{2}$,
+* is zero at $v = \pm\frac{\pi}{2}$,
 * and has a change of sign between the blue ↔ red transition.
 
 👉 For the coloring this means that:
