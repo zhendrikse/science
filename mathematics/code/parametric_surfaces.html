@@ -355,7 +355,7 @@
         meta: {name: "Big torus", category: Category.TOROID},
         parametrization: {
             xFn: "cos(u) * (3 + 1.5 * cos(v))",
-            yFn: "2.5 * sin(v)",
+            yFn: "2.75 * sin(v)",
             zFn: "sin(u) * (3 + 1.5 * cos(v))"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
@@ -1023,11 +1023,11 @@
                 if (this.useBaseColor) {
                     color.setStyle(this.baseColor);
                     color.getHSL(hsl);
-                    hsl.l = 0.1 + 0.3 * (1 - t);
+                    hsl.l = 0.1 + 0.4 * (1 - t);
                 } else {
                     hsl.h = t * 0.5 - 0.025;
                     hsl.s = 0.9;
-                    hsl.l = 0.4 + 0.2 * (1 - t);
+                    hsl.l = 0.4 + 0.3 * (1 - t);
                 }
 
                 color.setHSL(hsl.h, hsl.s, hsl.l);
