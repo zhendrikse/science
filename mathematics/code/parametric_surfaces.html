@@ -184,6 +184,14 @@
         },
         intervals: [["0", "4 * pi"], ["2 - 0.1", "0 + 0.1"]]
     }, {
+        meta: {name: "Eight surface", category: Category.BASIC},
+        parametrization: {
+            xFn: "cos(u) * sin(2 * v)",
+            yFn: "sin(v)",
+            zFn: "sin(u) * sin(2 * v)",
+        },
+        intervals: [["-pi/2", "pi/2"], ["2 * pi - 1e-4", "1e-4"]]
+    }, {
         meta: {name: "Ellipsoid", category: Category.CONIC},
         parametrization: {
             xFn: "2 * sin(u) * sin(v)",
@@ -199,6 +207,22 @@
             zFn: "(1 * cos(v) + 3) * sin(u)"
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+    }, {
+        meta: {name: "Enneper surface", category: Category.MISC},
+        parametrization: {
+            xFn: "u - u * u * u / 3 + u * v * v",
+            yFn: "u * u - v * v",
+            zFn: "v - v * v * v / 3 + v * u * u"
+        },
+        intervals: [["-2", "2"], ["-2", "2"]]
+    }, {
+        meta: {name: "Funnel", category: Category.BASIC},
+        parametrization: {
+            xFn: "u * cos(v)",
+            yFn: "log(u)",
+            zFn: "u * sin(v)"
+        },
+        intervals: [["0.1", "2"], ["0", "2 * pi"]]
     }, {
         meta: {name: "Goblet", category: Category.MISC},
         parametrization: {
@@ -248,6 +272,14 @@
         },
         intervals: [["-1", "1"], ["0", "2 * pi"]]
     }, {
+        meta: {name: "Monkey saddle", category: Category.BASIC},
+        parametrization: {
+            xFn: "u",
+            yFn: "0.55 * (u * u * u - 3 * v * v * u)",
+            zFn: "v",
+        },
+        intervals: [["-1.1", "1.1"], ["-1.1", "1.1"]]
+    }, {
         meta: {name: "Limpet torus", category: Category.TOROID},
         parametrization: {
             xFn: "cos(u) / (sqrt(2) + sin(v))",
@@ -280,13 +312,13 @@
         },
         intervals: [["-3/2", "3/2"], ["3/2", "-3/2"]]
     }, {
-        meta: {name: "Roman surface", category: Category.NON_ORIENTABLE},
+        meta: {name: "Roman/Steiner surface", category: Category.NON_ORIENTABLE},
         parametrization: {
             xFn: "cos(u) * cos(v) * sin(v)",
             yFn: "cos(u) * sin(u) * cos(v) * cos(v)",
             zFn: "sin(u) * cos(v) * sin(v)"
         },
-        intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+        intervals: [["0", "pi"], ["pi", "0"]]
     }, {
         meta: {name: "Saddle / hyperbolic paraboloid", category: Category.BASIC},
         parametrization: {
@@ -360,7 +392,7 @@
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     }, {
-        meta: {name: "Trefoil knot 1", category: Category.TOROID},
+        meta: {name: "Trefoil knot", category: Category.TOROID},
         parametrization: {
             xFn: "(6 * (1 + 1/4 * sin(3 * v)) + cos(u)) * cos(2 * v)",
             yFn: "(6 * (1 + 1/4 * sin(3 * v)) + cos(u)) * sin(2 * v)",
@@ -368,7 +400,7 @@
         },
         intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
     },{
-        meta: {name: "Trefoil knot 2", category: Category.TOROID},
+        meta: {name: "Tranguloid Trefoil knot", category: Category.TOROID},
         parametrization: {
             xFn: "1.5 * sin(3 * u) / (2 + cos(v))",
             yFn: "1.5 * (sin(u) + 2 * sin(2 * u)) / (2 + cos(v + pi * 2 / 3))",
@@ -1184,9 +1216,7 @@
 
             let colorAttr = geometry.attributes.color;
             if (!colorAttr) {
-                colorAttr = new THREE.BufferAttribute(
-                    new Float32Array(pos.count * 3), 3
-                );
+                colorAttr = new THREE.BufferAttribute(new Float32Array(pos.count * 3), 3);
                 geometry.setAttribute("color", colorAttr);
             }
 
@@ -1196,7 +1226,7 @@
                 const u = uv.getX(i);
                 const v = uv.getY(i);
 
-                let { k1, k2 } = this.curvature.principalCurvatures(u, v);
+                let { k1, k2 } = this.curvature.principals(u, v);
                 const k = this.which === ColorMode.K1 ? k1 : k2;
 
                 // diverging color map
