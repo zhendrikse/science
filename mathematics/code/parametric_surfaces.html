@@ -769,7 +769,7 @@
                 .onChange(value => this.surface.changeOpacityTo(value));
             surfaceFolder.add(this.viewParameters, "resolution", 10, 200, 1)
                 .name("Resolution")
-                .onChange(resolution => this.surface.resampleWith(resolution));
+                .onFinishChange(resolution => this.surface.resampleWith(resolution));
             surfaceFolder.close();
         }
 
