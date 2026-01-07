@@ -1,67 +1,78 @@
-<div style="margin-bottom: 10px; margin-top: 10px;">
-    <label for="Baking soda"><input type="radio" id="Baking soda" onclick="setMolecule('Baking soda')"/>Baking soda</label>
-    <label for="Lactate"><input type="radio" id="Lactate" onclick="setMolecule('Lactate')" />Lactate</label>
-    <label for="Ethanol"><input type="radio" id="Ethanol" onclick="setMolecule('Ethanol')"/>Ethanol</label>
-    <label for="Methane"><input type="radio" id="Methane" onclick="setMolecule('Methane')"/>Methane</label>
-    <label for="Water"><input type="radio" id="Water" onclick="setMolecule('Water')"/>Water</label>
-    <label for="Ammonia"><input type="radio" id="Ammonia" onclick="setMolecule('Ammonia')"/>Ammonia</label>
-</div>
-
-<canvas id="moleculesCanvas" width="600" height="400" style="border: none;"></canvas>
-<div class="tooltip"></div>
-
-<div style="margin-top: 15px;">
-    <label for="toggleRotate"><input type="checkbox" id="toggleRotate" onclick="toggleRotation()" checked="checked"/>&nbsp;Rotate</label>
-    &nbsp;&nbsp;&nbsp;<label for="atomicRadiusSlider">Atomic radius scaling</label>
-    <input type="range" min="50" max="200" class="slider" id="atomicRadiusSlider"/>
-</div>
-<div style="margin-top: 10px;">
-    <button id="resetView">🔄 Reset View</button>
-    <button id="zoomIn">➕ Zoom In</button>
-    <button id="zoomOut">➖ Zoom Out</button>
-    <button onclick="setViewMode('ball-stick')">Ball &amp; stick</button>
-    <button onclick="setViewMode('wireframe')">Wireframe</button>
-</div>
-
 <style>
     body {
+        margin: 0;
         background-color: #1a1a1a;
+        font-family: sans-serif;
+        color: white;
+    }
+    #controls {
+        margin: 10px;
+    }
+    label, button {
+        cursor: pointer;
+        margin: 2px;
+        transition: all 0.3s;
     }
     label {
-        color: white;
-        padding: 2px 2px 2px 2px;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin: 2px;
+        padding: 2px 4px;
     }
-
     button {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
         color: white;
-        padding: 5px 5px;
+        padding: 5px 8px;
         border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin: 2px;
     }
-
     button:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255,255,255,0.2);
     }
-
     .tooltip {
         position: fixed;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0,0,0,0.8);
         color: white;
         padding: 5px 10px;
         border-radius: 4px;
         font-size: 12px;
         pointer-events: none;
-        z-index: 100;
         display: none;
+        z-index: 100;
+    }
+    #atomicRadiusSlider {
+        vertical-align: middle;
+    }
+    canvas {
+        display: block;
+        width: 100%;
+        height: 500px;
     }
 </style>
+
+<div id="controls">
+    <div>
+        <label><input type="radio" name="molecule" data-molecule="Baking soda">Baking soda</label>
+        <label><input type="radio" name="molecule" data-molecule="Lactate">Lactate</label>
+        <label><input type="radio" name="molecule" data-molecule="Ethanol">Ethanol</label>
+        <label><input type="radio" name="molecule" data-molecule="Methane">Methane</label>
+        <label><input type="radio" name="molecule" data-molecule="Water">Water</label>
+        <label><input type="radio" name="molecule" data-molecule="Ammonia">Ammonia</label>
+    </div>
+    <div style="margin-top:10px;">
+        <label><input type="checkbox" id="toggleRotate" checked>Rotate</label>
+        &nbsp;&nbsp;&nbsp;
+        <label>Atomic radius scaling</label>
+        <input type="range" min="50" max="200" id="atomicRadiusSlider" value="80">
+    </div>
+    <div style="margin-top:10px;">
+        <button id="resetView">🔄 Reset View</button>
+        <button id="zoomIn">➕ Zoom In</button>
+        <button id="zoomOut">➖ Zoom Out</button>
+        <button id="ballStickBtn">Ball & stick</button>
+        <button id="wireframeBtn">Wireframe</button>
+    </div>
+</div>
+
+<canvas id="moleculesCanvas"></canvas>
+<div class="tooltip"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
@@ -82,13 +93,15 @@
     const moleculeCamera = new THREE.PerspectiveCamera(50, canvasWidth / canvasHeight, 0.1, 1000);
     let zoomLevel = 1; // 1 = default
     const cameraBase = new vector(0, 0, 8);
+
     function updateCameraPosition() {
         moleculeCamera.position.set(
             cameraBase.x * zoomLevel,
             cameraBase.y * zoomLevel,
-            cameraBase.z * zoomLevel
+            Math.max(4, Math.min(cameraBase.z * zoomLevel, 20))
         );
     }
+
     updateCameraPosition();
 
     const moleculeRenderer = new THREE.WebGLRenderer({
@@ -325,7 +338,9 @@
                 atom.material.emissive.setHex(0x666666);
             } else {
                 tooltip.style.display = 'none';
-                this.atoms.forEach(atom => atom.material.emissive.setHex(0x000000));
+                this.atoms.forEach(atom => {
+                    atom.material.emissive.setHex(atom.userData.originalEmissive || 0x000000);
+                });
             }
         }
     }
@@ -630,9 +645,9 @@
         updateCameraPosition();
     });
 
-    slider.oninput = function () {
-        for (let index = 0; index < molecules.length; index++)
-            molecules[index].scaleAtomicRadiusBy(this.value * .01);
+    slider.oninput = () => {
+        const scale = slider.value / 100;
+        molecules.forEach(mol => mol.scaleAtomicRadiusBy(scale));
     };
 
     moleculeCanvas.addEventListener('mousemove', onMouseMove);
@@ -688,11 +703,15 @@
         }
     }, { passive: false });
 
-    // window.addEventListener('resize', () => {
-    //     moleculeCamera.aspect = window.innerWidth / window.innerHeight;
-    //     moleculeCamera.updateProjectionMatrix();
-    //     moleculeRenderer.setSize(window.innerWidth, window.innerHeight);
-    // });
+    function resizeCanvas() {
+        const rect = moleculeCanvas.getBoundingClientRect();
+        moleculeRenderer.setSize(rect.width, rect.height);
+        moleculeCamera.aspect = rect.width / rect.height;
+        moleculeCamera.updateProjectionMatrix();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
     function animate() {
         if (isRotating && !mouseDown && !rightMouseDown)
