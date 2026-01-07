@@ -45,17 +45,7 @@
     const controls = new OrbitControls(galaxyCamera, galaxyCanvas);
     controls.target.set(0, 0, 0);
     controls.update();
-
-    let zoomLevel = 1; // 1 = default
-    function updateCameraPosition() {
-        galaxyCamera.position.set(
-            cameraBase.x * zoomLevel,
-            cameraBase.y * zoomLevel,
-            cameraBase.z * zoomLevel
-        );
-        galaxyCamera.lookAt(0, 0, 0);
-        controls.update();
-    }
+    resizeRendererToCanvas(galaxyRenderer, galaxyCamera);
 
     // We need a custom shader as THREE.points geometry does not
     // allow to vary the size of the points individually, and we do
@@ -323,8 +313,6 @@
 
     function animate() {
         galaxy.rotateZ();
-        resizeRendererToCanvas(galaxyRenderer, galaxyCamera);
         galaxyRenderer.render(galaxyScene, galaxyCamera);
     }
-
 </script>
