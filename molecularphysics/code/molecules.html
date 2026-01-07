@@ -8,7 +8,7 @@
     canvas {
         display: block;
         width: 100%;
-        max-height: 60vh; /* canvas neemt maximaal 60% van schermhoogte */
+        max-height: 80vh; /* canvas neemt maximaal 60% van schermhoogte */
         margin: auto;
     }
     #controls {
@@ -34,7 +34,6 @@
         vertical-align: middle;
     }
 </style>
-
 
 <canvas id="moleculesCanvas"></canvas>
 <div class="tooltip"></div>
@@ -62,8 +61,8 @@
 </div>
 
 <script type="module">
-    import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
-    import {OrbitControls} from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
+    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js";
+    import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/controls/OrbitControls.js";
 
     const color = THREE.Color;
     const vector = THREE.Vector3;
