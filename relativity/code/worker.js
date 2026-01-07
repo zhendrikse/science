@@ -301,9 +301,8 @@ class Engine {
 
             const rayBlackHoleDistance = ray.position.subtract(this.scene.blackhole.position).mag();
             const photonSphere = 1.5 * this.scene.blackhole.radius;
-            if (rayBlackHoleDistance < photonSphere) {
+            if (rayBlackHoleDistance < photonSphere && !color) {
                 color = [5, 5, 5]; // faint glow / lensing edge
-                break;
             } else if (ray.crossed_xz && ray.cross_point && this.scene.disk.is_in(ray.cross_point)) {
                 color = this.calculateRayColor(ray);
                 break;
@@ -323,24 +322,56 @@ class Engine {
         const point = ray.cross_point;
         const distance = point.subtract(this.scene.blackhole.position).mag();
 
+        // 1. Base brightness (disk emissivity)
         let brightness = this.calculateBrightness(distance);
-        brightness *= this.calculateDopplerFactor(ray, point);
+
+        // 2. Relativistic effects
+        const doppler = this.calculateDopplerFactor(ray, point);
+        brightness *= doppler;
+
+        // 3. Gravitational redshift (energy loss)
+        const rs = this.scene.blackhole.radius;
+        const eps = 1e-3;
+        const z = Math.max(1 - rs / distance, eps);
+        const gravitationalRedShift = Math.sqrt(z); // note: energy ∝ sqrt(g_tt)
+
+        brightness *= gravitationalRedShift;
+
+        // Clamp final intensity
         brightness = Math.min(brightness, 1.0);
 
-        const rs = this.scene.blackhole.radius;
-        const gravitationalRedShift = 1 / Math.sqrt(1 - rs / distance);
+        // 4. Spectral color (hot inside → cooler outside)
+        const t = Math.min(
+            (distance - this.scene.disk.inner_r) /
+            (this.scene.disk.outer_r - this.scene.disk.inner_r),
+            1.0
+        );
 
-        const red = 255;
-        const green = brightness < 0.5 ? Math.round(255 * brightness * 2) : 255;
-        const blue = brightness < 0.5 ? 0 : Math.round(255 * (brightness - .5) * 2);
-        return [red * gravitationalRedShift, green * gravitationalRedShift * .8, blue * gravitationalRedShift * .6];
+        // inner: yellow-white, outer: red-orange
+        const baseColor = {
+            r: 1.0,
+            g: 0.9 - 0.4 * t,
+            b: 0.7 - 0.6 * t
+        };
+
+        const clamp = v => Math.max(0, Math.min(255, v));
+
+        return [
+            clamp(255 * baseColor.r * brightness),
+            clamp(255 * baseColor.g * brightness),
+            clamp(255 * baseColor.b * brightness)
+        ];
     }
+
 
     // The approaching side becomes more bright and blue
     // The receding side becomes darker and more red
     calculateDopplerFactor(ray, point) {
         const r = point.subtract(this.scene.blackhole.position).mag();
-        const discRotationalVelocity = Math.sqrt(G * this.scene.blackhole.mass / r);
+        const discRotationalVelocity = Math.min(
+            Math.sqrt(G * this.scene.blackhole.mass / r),
+            0.6 * c
+        );
         const tangentialVelocity = new Vector(-point.z, 0, point.x)
             .normalize()
             .multiplyScalar(discRotationalVelocity);
@@ -348,7 +379,8 @@ class Engine {
             .normalize()
             .dot(ray.direction.normalize());
         const beta = discRotationalVelocity / c;
-        return Math.pow(1 / (1 - beta * cosTheta), 3);
+        const doppler = Math.pow(1 / (1 - beta * cosTheta), 3);
+        return Math.max(0.1, Math.min(5.0, doppler));
     }
 
     calculateBrightness(distance) {
