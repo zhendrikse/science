@@ -2,6 +2,7 @@
     #galaxyCanvas {
         display: block;
         width: 100%;
+        height: 100%;
         margin: auto;
     }
 </style>
@@ -18,8 +19,6 @@
 <canvas id="galaxyCanvas"></canvas><br/>
 <div style="margin-top: 1px;">
     <button id="resetView">🔄 Reset View</button>
-    <button id="zoomIn">➕ Zoom In</button>
-    <button id="zoomOut">➖ Zoom Out</button>
 </div>
 
 <script type="module">
@@ -34,9 +33,9 @@
     console.clear();
 
     const galaxyScene = new THREE.Scene();
-    galaxyScene.background = new THREE.Color(0x101010);
+    galaxyScene.background = new THREE.Color(0x000000);
 
-    const galaxyCamera = new THREE.PerspectiveCamera(25, 1, 1, 10000);
+    const galaxyCamera = new THREE.PerspectiveCamera(18, 1, 1, 10000);
     const cameraBase = new vector(100, -1200, 400);
     galaxyCamera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
 
@@ -102,23 +101,11 @@
         }`
     });
 
-
     // GUI controls
     document.getElementById('resetView').addEventListener('click', () => {
         zoomLevel = 1;
         updateCameraPosition();
     });
-
-    document.getElementById('zoomIn').addEventListener('click', () => {
-        zoomLevel *= 0.9;
-        updateCameraPosition();
-    });
-
-    document.getElementById('zoomOut').addEventListener('click', () => {
-        zoomLevel *= 1.1;
-        updateCameraPosition();
-    });
-
 
     /**
      * Box-Muller transform to create a normal distribution
