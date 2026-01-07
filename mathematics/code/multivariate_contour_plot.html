@@ -142,8 +142,7 @@
             const latex = expr.toTex();
             const titleDiv = document.getElementById("surface-title");
             titleDiv.innerHTML = "$f(x,y)=" + latex + "$";
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, titleDiv]);
-            //MathJax.typesetPromise([eqDiv]);
+            if (window.MathJax) MathJax.typesetPromise([titleDiv]);
         }
     }
 
