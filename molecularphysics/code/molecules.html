@@ -108,8 +108,7 @@
         antialias: true,
         canvas: moleculeCanvas
     });
-    moleculeRenderer.setSize(canvasWidth, canvasHeight);
-    moleculeRenderer.setPixelRatio(window.devicePixelRatio);
+    moleculeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     moleculeRenderer.shadowMap.enabled = true;
     moleculeRenderer.setAnimationLoop( animate );
 
@@ -665,28 +664,28 @@
 
     moleculeCanvas.addEventListener('mousemove', onMouseMove);
 
-    moleculeCanvas.addEventListener('mousedown', (e) => {
-        if (e.button === 0)
+    moleculeCanvas.addEventListener('mousedown', (event) => {
+        if (event.button === 0)
             mouseDown = true;
-        else if (e.button === 2)
+        else if (event.button === 2)
             rightMouseDown = true;
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+        mouseX = event.clientX;
+        mouseY = event.clientY;
     });
 
-    moleculeCanvas.addEventListener('mouseup', (e) => {
-        if (e.button === 0)
+    moleculeCanvas.addEventListener('mouseup', (event) => {
+        if (event.button === 0)
             mouseDown = false;
-        else if (e.button === 2)
+        else if (event.button === 2)
             rightMouseDown = false;
     });
 
-    moleculeCanvas.addEventListener('mousemove', (e) => {
-        if (!isMouseWithinCanvas(e.clientX, e.clientY))
+    moleculeCanvas.addEventListener('mousemove', (event) => {
+        if (!isMouseWithinCanvas(event.clientX, event.clientY))
             return;
 
-        const deltaX = e.clientX - mouseX;
-        const deltaY = e.clientY - mouseY;
+        const deltaX = event.clientX - mouseX;
+        const deltaY = event.clientY - mouseY;
         if (mouseDown) {
             currentSelectedMolecule.molecule.rotateY(deltaX * 0.01);
             currentSelectedMolecule.rotateX(deltaY * 0.01);
@@ -695,12 +694,12 @@
             moleculeCamera.position.y += deltaY * 0.01;
         }
 
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+        mouseX = event.clientX;
+        mouseY = event.clientY;
     });
 
-    moleculeCanvas.addEventListener('dblclick', (e) => {
-        if (!isMouseWithinCanvas(e.clientX, e.clientY))
+    moleculeCanvas.addEventListener('dblclick', (event) => {
+        if (!isMouseWithinCanvas(event.clientX, event.clientY))
             return;
         currentSelectedMolecule.rotate(0, 0, 0);
         moleculeCamera.position.set(0, 0, 8);
@@ -708,10 +707,10 @@
         molecules.forEach((molecule) => {molecule.setViewModeTo("ball-stick")});
     });
 
-    moleculeCanvas.addEventListener('wheel', (e) => {
+    moleculeCanvas.addEventListener('wheel', (event) => {
         if (isMouseWithinCanvas(e.clientX, e.clientY)) {
-            e.preventDefault(); // voorkom alleen scrollen binnen canvas
-            moleculeCamera.position.z += e.deltaY * 0.01;
+            event.preventDefault(); // prevent scrolling within canvas
+            moleculeCamera.position.z += event.deltaY * 0.01;
             moleculeCamera.position.z = Math.max(4, Math.min(moleculeCamera.position.z, 20));
         }
     }, { passive: false });
@@ -726,10 +725,24 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
+    function resizeRendererToCanvas(moleculeRenderer, moleculeCamera) {
+        const w = moleculeCanvas.clientWidth;
+        const h = moleculeCanvas.clientHeight;
+
+        if (w === 0 || h === 0) return;
+
+        if (moleculeCanvas.width !== w || moleculeCanvas.height !== h) {
+            moleculeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            moleculeRenderer.setSize(w, h, false);
+            moleculeCamera.aspect = w / h;
+            moleculeCamera.updateProjectionMatrix();
+        }
+    }
+
     function animate() {
         if (isRotating && !mouseDown && !rightMouseDown)
             currentSelectedMolecule.rotateY(0.005);
-
+        resizeRendererToCanvas(moleculeRenderer, moleculeCamera)
         moleculeRenderer.render(moleculeScene, moleculeCamera);
     }
 </script>
