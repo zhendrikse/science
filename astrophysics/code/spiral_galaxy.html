@@ -1,13 +1,21 @@
+<style>
+    #galaxyCanvas {
+        display: block;
+        width: 100%;
+        margin: auto;
+    }
+</style>
+
 <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
       }
     }
 </script>
 
-<canvas id="galaxyCanvas" width="600" height="400" style="border: none;"></canvas><br/>
+<canvas id="galaxyCanvas"></canvas><br/>
 <div style="margin-top: 1px;">
     <button id="resetView">🔄 Reset View</button>
     <button id="zoomIn">➕ Zoom In</button>
@@ -22,22 +30,20 @@
 
     const galaxyCanvas = document.getElementById('galaxyCanvas');
     galaxyCanvas.focus();
-    const canvasWidth = galaxyCanvas.getAttribute('width');
-    const canvasHeight = galaxyCanvas.getAttribute('height');
 
     console.clear();
 
     const galaxyScene = new THREE.Scene();
     galaxyScene.background = new THREE.Color(0x101010);
 
-    const galaxyCamera = new THREE.PerspectiveCamera(25, canvasWidth / canvasHeight, 1, 10000);
+    const galaxyCamera = new THREE.PerspectiveCamera(25, 1, 1, 10000);
     const cameraBase = new vector(100, -1200, 400);
     galaxyCamera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
 
-
     const galaxyRenderer = new THREE.WebGLRenderer( {antialias: true, canvas: galaxyCanvas} );
-    galaxyRenderer.setSize( canvasWidth, canvasHeight );
-    galaxyRenderer.setAnimationLoop( animationLoop );
+    galaxyRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    galaxyRenderer.shadowMap.enabled = false;
+    galaxyRenderer.setAnimationLoop( animate );
 
     const controls = new OrbitControls(galaxyCamera, galaxyCanvas);
     controls.target.set(0, 0, 0);
@@ -297,10 +303,25 @@
         }
     }
 
+    function resizeRendererToCanvas(galaxyRenderer, galaxyCamera) {
+        const w = galaxyCanvas.clientWidth;
+        const h = galaxyCanvas.clientHeight;
+
+        if (w === 0 || h === 0) return;
+
+        if (galaxyCanvas.width !== w || galaxyCanvas.height !== h) {
+            galaxyRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            galaxyRenderer.setSize(w, h, false);
+            galaxyCamera.aspect = w / h;
+            galaxyCamera.updateProjectionMatrix();
+        }
+    }
+
     const galaxy = new SpiralGalaxy();
 
-    function animationLoop() {
+    function animate() {
         galaxy.rotateZ();
+        resizeRendererToCanvas(galaxyRenderer, galaxyCamera);
         galaxyRenderer.render(galaxyScene, galaxyCamera);
     }
 
