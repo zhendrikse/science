@@ -134,7 +134,7 @@
     const tooltip = document.querySelector('.tooltip');
 
     class Atom {
-        constructor(position, color, radius, metallic = false, name = '', properties = {}) {
+        constructor(position, color, radius, metallic = true, name = '', properties = {}) {
             const geometry = new THREE.SphereGeometry(radius, 32, 32);
             const material = new THREE.MeshPhysicalMaterial({
                 color: color,
@@ -143,6 +143,7 @@
                 clearcoat: metallic ? 0.8 : 0.3,
                 clearcoatRoughness: 0.2,
                 envMapIntensity: 1.0,
+                emissive: 0x444444,
                 wireframe: false
             });
             this.atom = new THREE.Mesh(geometry, material);
