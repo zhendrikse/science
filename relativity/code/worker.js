@@ -296,17 +296,23 @@ class Engine {
             //   while avoiding the risk of numerical instability
             const a = r.normalize().multiplyScalar(7.0e-3 * this.scene.blackhole.mass / r.dot(r));
             ray.accelerate(a);
-            ray.step(t * this.dt);
+            const localDt = this.dt * Math.max(0.2, Math.min(1.5, r / 10));
+            ray.step(localDt);
 
             const rayBlackHoleDistance = ray.position.subtract(this.scene.blackhole.position).mag();
-
-            if (ray.crossed_xz && ray.cross_point && this.scene.disk.is_in(ray.cross_point)) {
+            const photonSphere = 1.5 * this.scene.blackhole.radius;
+            if (rayBlackHoleDistance < photonSphere) {
+                color = [5, 5, 5]; // faint glow / lensing edge
+                break;
+            } else if (ray.crossed_xz && ray.cross_point && this.scene.disk.is_in(ray.cross_point)) {
                 color = this.calculateRayColor(ray);
                 break;
-            } else if (rayBlackHoleDistance <= this.scene.blackhole.radius) {
+            } else if (rayBlackHoleDistance <= this.scene.blackhole.radius)
                 break;
-            } else if (rayBlackHoleDistance >= 15.0) {
-                break;
+            else if (rayBlackHoleDistance >= 15.0) {
+                const theta = Math.atan2(ray.position.z, ray.position.x);
+                const brightness = 30 + 20 * Math.sin(5 * theta);
+                return [brightness, brightness, brightness];
             }
         }
 
@@ -316,12 +322,33 @@ class Engine {
     calculateRayColor(ray) {
         const point = ray.cross_point;
         const distance = point.subtract(this.scene.blackhole.position).mag();
+
         let brightness = this.calculateBrightness(distance);
+        brightness *= this.calculateDopplerFactor(ray, point);
+        brightness = Math.min(brightness, 1.0);
+
+        const rs = this.scene.blackhole.radius;
+        const gravitationalRedShift = 1 / Math.sqrt(1 - rs / distance);
 
         const red = 255;
         const green = brightness < 0.5 ? Math.round(255 * brightness * 2) : 255;
         const blue = brightness < 0.5 ? 0 : Math.round(255 * (brightness - .5) * 2);
-        return [red, green, blue];
+        return [red * gravitationalRedShift, green * gravitationalRedShift * .8, blue * gravitationalRedShift * .6];
+    }
+
+    // The approaching side becomes more bright and blue
+    // The receding side becomes darker and more red
+    calculateDopplerFactor(ray, point) {
+        const r = point.subtract(this.scene.blackhole.position).mag();
+        const discRotationalVelocity = Math.sqrt(G * this.scene.blackhole.mass / r);
+        const tangentialVelocity = new Vector(-point.z, 0, point.x)
+            .normalize()
+            .multiplyScalar(discRotationalVelocity);
+        const cosTheta = tangentialVelocity
+            .normalize()
+            .dot(ray.direction.normalize());
+        const beta = discRotationalVelocity / c;
+        return Math.pow(1 / (1 - beta * cosTheta), 3);
     }
 
     calculateBrightness(distance) {
