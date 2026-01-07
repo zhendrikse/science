@@ -67,9 +67,7 @@
     import {OrbitControls} from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
-    const canvas = document.getElementById("geometriesCanvas"),
-        width = canvas.width,
-        height = canvas.height;
+    const canvas = document.getElementById("geometriesCanvas");
 
     const Category = Object.freeze({
         BASIC: "Basic",
@@ -586,7 +584,7 @@
 
     class Scenery {
         constructor(scene, worldGroup) {
-            this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
+            this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
             this.renderer = this.#createRenderer();
             this.controls = new OrbitControls(this.camera, this.renderer.domElement);
             this.scene = scene;
@@ -615,15 +613,8 @@
 
         #createRenderer() {
             const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
-            renderer.setSize(width, height);
-            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             return renderer;
-        }
-
-        setSize(width, height) {
-            this.renderer.setSize(width, height);
-            this.camera.aspect = width / height;
-            this.camera.updateProjectionMatrix();
         }
 
         updateSurfaceData(surfaceData) {
@@ -678,8 +669,11 @@
             const w = canvas.clientWidth;
             const h = canvas.clientHeight;
 
+            if (w === 0 || h === 0) return;
+
             if (canvas.width !== w || canvas.height !== h) {
-                this.renderer.setSize(w, h, false);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                this.renderer.setSize(w, h, false);   // 👈 let op: this.renderer
                 this.camera.aspect = w / h;
                 this.camera.updateProjectionMatrix();
             }
