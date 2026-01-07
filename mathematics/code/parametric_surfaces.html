@@ -39,17 +39,21 @@
     #surface-equation {
         position: absolute;
         top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 100%;
         font-size: 14px;
         color: yellow;
-        margin-left: 5px;
-        margin-right: 10px;
-        text-align: left;
-        z-index: 10;  /* above canvas */
+        text-align: center;
+        z-index: 10;
     }
 
     #surface-equation .mjx-chtml {
+        font-size: clamp(12px, 3.5vw, 14px);
         display: block;                 /* make MathJax fill the div */
         max-width: 100%;
+        margin: 0 auto;
     }
 </style>
 
