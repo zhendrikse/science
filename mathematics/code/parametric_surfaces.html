@@ -4,7 +4,7 @@
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 4 / 3;
     }
 
     .canvas-inner {
@@ -39,10 +39,10 @@
 
     #surface-equation {
         position: absolute;
-        margin-top: 13px;
+        margin-top: 10px;
         width: 100%;
         max-width: 100%;
-        font-size: 14px;
+        font-size: 13px;
         color: yellow;
         text-align: center;
         z-index: 10;
@@ -1770,7 +1770,7 @@
     let surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, scenery, axes);
 
     const boundingBox = surfaceInAxes.boundingBox();
-    Utils.scaleBox3(boundingBox, 0.23)
+    Utils.scaleBox3(boundingBox, 0.25);
     const ring = new Ring(worldGroup, surfaceInAxes, boundingBox);
     ring.add(surfaces);
     ring.changeActiveCategoryTo(surfaceDefinition.meta.category);
