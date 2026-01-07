@@ -299,7 +299,6 @@ class Engine {
             ray.step(t * this.dt);
 
             const rayBlackHoleDistance = ray.position.subtract(this.scene.blackhole.position).mag();
-
             if (ray.crossed_xz && ray.cross_point && this.scene.disk.is_in(ray.cross_point)) {
                 color = this.calculateRayColor(ray);
                 break;
@@ -307,6 +306,11 @@ class Engine {
                 break;
             } else if (rayBlackHoleDistance >= 15.0) {
                 break;
+            }
+
+            const photonSphere = 1.5 * this.scene.blackhole.radius;
+            if (rayBlackHoleDistance < photonSphere && !color) {
+                color = [5, 5, 5]; // faint glow / lensing edge
             }
         }
 
