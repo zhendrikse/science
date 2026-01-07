@@ -2,6 +2,7 @@
     #canvas-wrapper {
         position: relative;
         width: 100%;
+        max-width: 800px;
         margin: 0 auto;
         aspect-ratio: 1 / 1;
     }
@@ -605,7 +606,7 @@
             this.scene = scene;
 
             this.controls.enableDamping = true;
-            this.scene.background = new THREE.Color(0x1a1a1a);
+            this.scene.background = new THREE.Color(0x000000);
 
             this.scene.add(worldGroup);
             this.scene.add(this.#createDirectionalLight());
@@ -702,7 +703,7 @@
 
     class ContourParameters {
         constructor({
-                        color = "#0ff",
+                        color = "#dd0",
                         contourType = ContourType.ISO_PARAMETRIC,
                         uCount = 20,
                         vCount = 40
@@ -744,7 +745,7 @@
         constructor(scenery, surface, axes, ring, viewParameters=new ViewParameters()) {
             this.viewParameters = viewParameters;
             this.surface = surface;
-            const controls = new GUI({autoPlace: false});
+            const controls = new GUI({width: 300, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
             controls.add(this.viewParameters, 'category', Object.values(Category))
@@ -1026,7 +1027,15 @@
         hide() { this.group.visible = false; }
         moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
         material = (showWireframe, opacity) =>
-            new THREE.MeshPhongMaterial({vertexColors: true, side: THREE.DoubleSide, wireframe: showWireframe, opacity: opacity, emissive: 0x222222});
+            new THREE.MeshStandardMaterial({
+                side: THREE.DoubleSide,
+                vertexColors: true,
+                transparent: opacity < 1,
+                opacity: opacity,
+                metalness: 0.1,
+                wireframe: showWireframe,
+                roughness: 0.5
+            });
         parametrization() { return this.surface.parametrization(); }
         position() { return this.group.position.clone(); }
         rotateBy = (delta) => this.group.rotation.y += delta;
@@ -1375,12 +1384,12 @@
                       segments = 100,
                       color = 0xffffff
                   } = {}) {
-            const material = new THREE.LineBasicMaterial({ color: color, transparent: true, depthWrite: false });
+            const material = new THREE.LineBasicMaterial({ color: color, transparent: true, depthWrite: true, depthTest: true });
             const target = new THREE.Vector3();
 
             // u = constant, v varies
             for (let i = 0; i <= uCount; i++) {
-                const u = i / (uCount + 1);
+                const u = i / uCount;
                 const points = [];
 
                 for (let j = 0; j <= segments; j++) {
@@ -1394,7 +1403,7 @@
 
             // v = constant, u varies
             for (let i = 0; i <= vCount; i++) {
-                const v = i / (vCount + 1);
+                const v = i / vCount;
                 const points = [];
 
                 for (let j = 0; j <= segments; j++) {
