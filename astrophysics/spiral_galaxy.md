@@ -3,22 +3,26 @@
 ## Spiral galaxy visualization
 <div class="header_line"><br/></div>
 
-- Original [galaxy_3d_Medium.py](https://gist.github.com/rlvaugh/a49bf875890581f338a000c2b5c3a2bb) by [Lee Vaughan](https://towardsdatascience.com/author/lee_vaughan/)
-- The (theory behind the) code is thoroughly explained in his [accompanying article](https://towardsdatascience.com/create-3-d-galactic-art-with-matplotlib-a7534148a319/)
-- This [spiral_galaxy.html](https://github.com/zhendrikse/science/blob/main/astrophysics/code/spiral_galaxy.html) page is a port to Javascript and [Three.js](https://threejs.org/) 
-- Javascript version has been extended with colouring and fading ([Zeger Hendrikse](https://www.hendrikse.name/))
-  - **Core / Bulge** (Central Region): yellow-white to reddish color, since the core is
-     populated mostly by older stars (Population II), which are cooler and more evolved.
-  - **Mid-to-Outer Disk** (Arms): bluish-white color, because the spiral arms host young, hot,
-    and massive stars (Population I), which are blue and short-lived. Also, star-forming regions 
-    and nebulae contribute a diffuse glow.
-  - **Outer Halo**: dim red to transparent, as this region contains very old stars and 
-    globular clusters, often too dim to be noticeable.
-- I have also ported the original code to [VPython](https://vpython.org), see [spiral_galaxy.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/spiral_galaxy.py)
+🔧 Original [galaxy_3d_Medium.py](https://gist.github.com/rlvaugh/a49bf875890581f338a000c2b5c3a2bb) by [Lee Vaughan](https://towardsdatascience.com/author/lee_vaughan/) <br/>
+🔧 The (theory behind the) code is thoroughly explained in his [accompanying article](https://towardsdatascience.com/create-3-d-galactic-art-with-matplotlib-a7534148a319/) <br/>
+🔧 This [spiral_galaxy.html](https://github.com/zhendrikse/science/blob/main/astrophysics/code/spiral_galaxy.html) page is a port to Javascript and [Three.js](https://threejs.org/) <br/>
+🔧 Javascript version has been extended with colouring and fading ([Zeger Hendrikse](https://www.hendrikse.name/))
 
 <p style="clear:both;"></p>
 {% include_relative code/spiral_galaxy.html %}
 <p style="clear:both;"></p>
+
+👉 **Core / Bulge (Central Region)**<br/>
+Warm yellow-white coloration due to the extremely high stellar density in the galactic core.
+Although the core is dominated by older stellar populations, the combined light of many stars produces a bright, smooth, slightly warm appearance rather than distinctly red individual stars.
+
+👉 **Spiral Arms (Mid Disk)**<br/>
+Bluish-white coloration representing regions of active star formation.
+The spiral arms contain young, hot, massive stars that appear brighter and more point-like, producing a sharper, higher-contrast structure compared to the core.
+
+👉 **Outer Disk and Fading Regions**<br/>
+Gradually decreasing brightness and visibility with increasing distance from the center.
+Stars become sparser and less luminous, causing the outer regions to fade smoothly into darkness rather than forming a distinct, visible halo.
 
 ## Spiral galaxy renderer
 <div class="header_line"><br/></div>
