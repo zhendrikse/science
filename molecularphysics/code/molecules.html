@@ -60,9 +60,18 @@
     </div>
 </div>
 
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
+    }
+</script>
+
 <script type="module">
-    import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
-    import {OrbitControls} from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
     const color = THREE.Color;
     const vector = THREE.Vector3;
