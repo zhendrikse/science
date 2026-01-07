@@ -1,15 +1,15 @@
 <style>
     body {
         margin: 0;
-        background-color: #1a1a1a;
+        background-color: #131313;
         font-family: sans-serif;
         color: white;
     }
     canvas {
         display: block;
         width: 100%;
-        aspect-ratio: 1 / 1;
-        max-height: 80vh; /* canvas neemt maximaal 60% van schermhoogte */
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
         margin: auto;
     }
     #controls {
@@ -83,9 +83,9 @@
     let isRotating = true;
     let viewMode = 'ball-stick';
     const moleculeScene = new THREE.Scene();
-    moleculeScene.background = new THREE.Color(0x1a1a1a);
+    moleculeScene.background = new THREE.Color(0x131313);
 
-    const moleculeCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+    const moleculeCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
     let zoomLevel = 1; // 1 = default
     const cameraBase = new vector(0, 0, 8);
 
@@ -106,7 +106,6 @@
     moleculeRenderer.shadowMap.enabled = true;
     moleculeRenderer.setAnimationLoop( animate );
 
-
     const moleculeControls = new OrbitControls(moleculeCamera, moleculeRenderer.domElement);
     moleculeControls.enableDamping = true;
     moleculeControls.dampingFactor = 0.05;
@@ -115,19 +114,16 @@
     moleculeControls.autoRotate = true;
     moleculeControls.autoRotateSpeed = 2;
 
+    // Lightning
+    moleculeScene.add(new THREE.AmbientLight(0xffffff, 0.25));
 
-    // lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-    moleculeScene.add(ambientLight);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    keyLight.position.set(4, 6, 8);
+    moleculeScene.add(keyLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(5, 5, 5);
-    directionalLight.castShadow = true;
-    moleculeScene.add(directionalLight);
-
-    const pointLight1 = new THREE.PointLight(0xffffff, 0.6);
-    pointLight1.position.set(-5, -5, -5);
-    moleculeScene.add(pointLight1);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    rimLight.position.set(-6, -4, -6);
+    moleculeScene.add(rimLight);
 
     // Raycaster for interaction
     const raycaster = new THREE.Raycaster();
@@ -144,9 +140,9 @@
                 clearcoat: metallic ? 0.8 : 0.3,
                 clearcoatRoughness: 0.2,
                 envMapIntensity: 1.0,
-                emissive: 0x444444,
                 wireframe: false
             });
+
             this.atom = new THREE.Mesh(geometry, material);
             this.atom.castShadow = true;
             this.atom.receiveShadow = true;
@@ -154,7 +150,8 @@
                 ...properties,
                 name,
                 type: 'atom',
-                originalRadius: radius
+                originalRadius: radius,
+                originalEmissive: material.emissive.clone()
             };
             this.atom.position.set(position.x, position.y, position.z);
         }
@@ -339,11 +336,11 @@
                          `;
 
                 // Highlight atom
-                atom.material.emissive.setHex(0x666666);
+                atom.material.emissive.setRGB(0.25, 0.25, 0.25);
             } else {
                 tooltip.style.display = 'none';
                 this.atoms.forEach(atom => {
-                    atom.material.emissive.setHex(atom.userData.originalEmissive || 0x000000);
+                    atom.material.emissive.copy(atom.userData.originalEmissive);
                 });
             }
         }
