@@ -678,7 +678,7 @@
 
             if (canvas.width !== w || canvas.height !== h) {
                 this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                this.renderer.setSize(w, h, false);   // 👈 let op: this.renderer
+                this.renderer.setSize(w, h, false);
                 this.camera.aspect = w / h;
                 this.camera.updateProjectionMatrix();
             }
