@@ -17,10 +17,21 @@
         ctx.putImageData(imageData, 0, 0);
     };
 
-    // Start the ray tracing
-    worker.postMessage({
-        type: "start",
-        width: canvas.width,
-        height: canvas.height
-    });
+    function resizeBlackHoleCanvas() {
+        const containerWidth = canvas.parentElement.clientWidth;
+        const aspect = 2 / 1;
+
+        canvas.width  = Math.floor(containerWidth);
+        canvas.height = Math.floor(containerWidth / aspect);
+
+        worker.postMessage({
+            type: "start",
+            width: canvas.width,
+            height: canvas.height
+        });
+    }
+
+    window.addEventListener("resize", resizeBlackHoleCanvas);
+    resizeBlackHoleCanvas();
+
 </script>
