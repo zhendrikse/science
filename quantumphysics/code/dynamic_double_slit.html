@@ -112,36 +112,30 @@
             return x >= wall_x - 1 ? new THREE.Color(0, 0, 0) : new THREE.Color(red / 255, 50 / 255, blue / 255);
         }
 
-        update() {
+        updateColorAt(x, y) {
+            const quadIndex = y * dim_x + x;
+            const vertexStart = quadIndex * 6;
+
+            const c = this.colour(u[0][x][y] - floor, color_range);
             const colors = this.geometry.attributes.color.array;
-
-            for (let x = 0; x < dim_x; x++) {
-                for (let y = 0; y < dim_y; y++) {
-                    const quadIndex = y * dim_x + x;
-                    const vertexStart = quadIndex * 6;
-
-                    const c = this.colour(u[0][x][y] - floor, color_range);
-
-                    for (let i = 0; i < 6; i++) {
-                        const idx = (vertexStart + i) * 3;
-                        colors[idx]     = c.r;
-                        colors[idx + 1] = c.g;
-                        colors[idx + 2] = c.b;
-                    }
-                }
+            for (let i = 0; i < 6; i++) {
+                const idx = (vertexStart + i) * 3;
+                colors[idx]     = c.r;
+                colors[idx + 1] = c.g;
+                colors[idx + 2] = c.b;
             }
+        }
+
+        update() {
+            for (let x = 0; x < dim_x; x++)
+                for (let y = 0; y < dim_y; y++)
+                    this.updateColorAt(x, y);
 
             this.geometry.attributes.color.needsUpdate = true;
         }
 
-
-        rotateX(angle) {
-            this.surface.rotateX(angle);
-        }
-
-        translate(translationVector) {
-            this.surface.position.copy(translationVector);
-        }
+        rotateX = (angle) => this.surface.rotateX(angle);
+        translate = (translationVector) => this.surface.position.copy(translationVector);
     }
 
     // Set up scene
@@ -239,9 +233,9 @@
     }
 
     function initialDisturbance() {
-        if (time < pi_2)
-            for (let n = 0; n < dim_y; n++)
-                u[0][0][n] = -Math.cos(20 * time) + 1;
+        if (time > pi_2) return;
+        for (let n = 0; n < dim_y; n++)
+            u[0][0][n] = -Math.cos(20 * time) + 1;
     }
 
     function centralFiniteDifferenceMethodTimestep() {
@@ -266,15 +260,10 @@
         surface.update();
     }
 
-    let frame = 0;
     let time = 0;
     function animate() {
-        if (frame % 2 === 0)
-            centralFiniteDifferenceMethodTimestep();
-        surface.update();
+        updatePixels();
         doubleSlitRenderer.render(scene, doubleSlitCamera);
-        frame++;
         time += dt;
     }
-
 </script>
