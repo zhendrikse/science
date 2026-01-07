@@ -606,7 +606,7 @@
             this.scene = scene;
 
             this.controls.enableDamping = true;
-            this.scene.background = new THREE.Color(0x000000);
+            this.scene.background = new THREE.Color(0x131313);
 
             this.scene.add(worldGroup);
             this.scene.add(this.#createDirectionalLight());
@@ -614,10 +614,10 @@
         }
 
         #createHemisphereLight =
-            (skyColour=0x87ceeb, groundColour=0x444444) => new THREE.HemisphereLight(skyColour, groundColour, 0.8);
+            (skyColour=0x87ceeb, groundColour=0xffffff) => new THREE.HemisphereLight(skyColour, groundColour, 0.8);
 
         #createDirectionalLight() {
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.95);
             directionalLight.position.set(5, 10, 7.5); // kind of "sunlight"
             directionalLight.castShadow = true; // Enable shadows
             directionalLight.shadow.mapSize.width = 1024;
