@@ -67,10 +67,20 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
+
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
+    }
+</script>
+
 <script type="module">
-    import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
-    import {ParametricGeometry} from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/geometries/ParametricGeometry";
-    import {OrbitControls} from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
     const canvas = document.getElementById("geometriesCanvas");
