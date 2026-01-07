@@ -66,8 +66,8 @@
         <button id="resetView">🔄 Reset View</button>
         <button id="zoomIn">➕ Zoom In</button>
         <button id="zoomOut">➖ Zoom Out</button>
-        <button id="ballStickBtn">Ball & stick</button>
-        <button id="wireframeBtn">Wireframe</button>
+        <button onclick="setViewMode('ball-stick')">Ball &amp; stick</button>
+        <button onclick="setViewMode('wireframe')">Wireframe</button>
     </div>
 </div>
 
@@ -602,13 +602,22 @@
     buttons.set("Ammonia", 5);
     let currentSelectedMolecule = molecules[2]
     setMolecule("Lactate");
+    document.querySelectorAll('input[type=radio][name=molecule]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            setMolecule(radio.dataset.molecule);
+        });
+    });
 
-    function setMolecule(molecule) {
-        molecules.forEach((molecule) => {molecule.hide();});
-        currentSelectedMolecule = molecules[buttons.get(molecule)];
+    function setMolecule(moleculeName) {
+        molecules.forEach(mol => mol.hide());
+        currentSelectedMolecule = molecules[buttons.get(moleculeName)];
         currentSelectedMolecule.show();
-        buttons.keys().forEach((button) => {document.getElementById(button).checked = false;});
-        document.getElementById(molecule).checked = true;
+
+        // Switch off all radio buttons
+        document.querySelectorAll('input[type=radio][name=molecule]').forEach(radio => { radio.checked = false; });
+
+        const selectedRadio = document.querySelector(`input[type=radio][data-molecule='${moleculeName}']`);
+        if (selectedRadio) selectedRadio.checked = true;
     }
 
     function isMouseWithinCanvas(x, y) {
