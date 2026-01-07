@@ -314,6 +314,14 @@
         },
         intervals: [["0", "2 * pi"], ["2", "-2"]]
     }, {
+        meta: {name: "Klein", category: Category.NON_ORIENTABLE},
+        parametrization: {
+            xFn: "(2+cos(u/2)*sin(v)-sin(u/2)*sin(2*v))*cos(u)",
+            yFn: "sin(u/2)*sin(v)+cos(u/2)*sin(2*v)",
+            zFn: "(2+cos(u/2)*sin(v)-sin(u/2)*sin(2*v))*sin(u)"
+        },
+        intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+    }, {
         meta: {name: "Limpet torus", category: Category.TOROID},
         parametrization: {
             xFn: "cos(u) / (sqrt(2) + sin(v))",
