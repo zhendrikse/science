@@ -1,8 +1,9 @@
 <style>
-    #galaxyCanvas {
+    canvas {
         display: block;
         width: 100%;
-        height: 100%;
+        aspect-ratio: 19 / 12;
+        max-width: 800px;
         margin: auto;
     }
 </style>
@@ -17,9 +18,6 @@
 </script>
 
 <canvas id="galaxyCanvas"></canvas><br/>
-<div style="margin-top: 1px;">
-    <button id="resetView">🔄 Reset View</button>
-</div>
 
 <script type="module">
     import * as THREE from "three";
@@ -35,7 +33,7 @@
     const galaxyScene = new THREE.Scene();
     galaxyScene.background = new THREE.Color(0x000000);
 
-    const galaxyCamera = new THREE.PerspectiveCamera(18, 1, 1, 10000);
+    const galaxyCamera = new THREE.PerspectiveCamera(20, 1, 1, 10000);
     const cameraBase = new vector(100, -1200, 400);
     galaxyCamera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
 
@@ -99,12 +97,6 @@
 
             gl_FragColor = vec4(finalColor, vAlpha);
         }`
-    });
-
-    // GUI controls
-    document.getElementById('resetView').addEventListener('click', () => {
-        zoomLevel = 1;
-        updateCameraPosition();
     });
 
     /**
