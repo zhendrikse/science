@@ -5,26 +5,19 @@
         font-family: sans-serif;
         color: white;
     }
+    canvas {
+        display: block;
+        width: 100%;
+        max-height: 60vh; /* canvas neemt maximaal 60% van schermhoogte */
+        margin: auto;
+    }
     #controls {
-        margin: 10px;
+        margin: 10px auto;
+        width: 100%;
+        max-width: 600px;
     }
-    label, button {
-        cursor: pointer;
-        margin: 2px;
-        transition: all 0.3s;
-    }
-    label {
-        padding: 2px 4px;
-    }
-    button {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
-        color: white;
-        padding: 5px 8px;
-        border-radius: 6px;
-    }
-    button:hover {
-        background: rgba(255,255,255,0.2);
+    #controls label, #controls button {
+        margin: 4px;
     }
     .tooltip {
         position: fixed;
@@ -40,15 +33,14 @@
     #atomicRadiusSlider {
         vertical-align: middle;
     }
-    canvas {
-        display: block;
-        width: 100%;
-        height: auto;
-    }
 </style>
 
+
+<canvas id="moleculesCanvas"></canvas>
+<div class="tooltip"></div>
+
 <div id="controls">
-    <div>
+    <div id="moleculeSelectors" style="margin-top:10px; text-align:center;">
         <label><input type="radio" name="molecule" data-molecule="Baking soda">Baking soda</label>
         <label><input type="radio" name="molecule" data-molecule="Lactate">Lactate</label>
         <label><input type="radio" name="molecule" data-molecule="Ethanol">Ethanol</label>
@@ -64,19 +56,15 @@
     </div>
     <div style="margin-top:10px;">
         <button id="resetView">🔄 Reset View</button>
-        <button id="zoomIn">➕ Zoom In</button>
-        <button id="zoomOut">➖ Zoom Out</button>
         <button id="ballStickBtn">Ball & stick</button>
         <button id="wireframeBtn">Wireframe</button>
     </div>
 </div>
 
-<canvas id="moleculesCanvas"></canvas>
-<div class="tooltip"></div>
+<script type="module">
+    import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
+    import {OrbitControls} from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-<script>
     const color = THREE.Color;
     const vector = THREE.Vector3;
 
@@ -88,7 +76,7 @@
     const moleculeScene = new THREE.Scene();
     moleculeScene.background = new THREE.Color(0x1a1a1a);
 
-    const moleculeCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+    const moleculeCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
     let zoomLevel = 1; // 1 = default
     const cameraBase = new vector(0, 0, 8);
 
@@ -99,7 +87,6 @@
             Math.max(4, Math.min(cameraBase.z * zoomLevel, 20))
         );
     }
-
     updateCameraPosition();
 
     const moleculeRenderer = new THREE.WebGLRenderer({
@@ -109,6 +96,16 @@
     moleculeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     moleculeRenderer.shadowMap.enabled = true;
     moleculeRenderer.setAnimationLoop( animate );
+
+
+    const moleculeControls = new OrbitControls(moleculeCamera, moleculeRenderer.domElement);
+    moleculeControls.enableDamping = true;
+    moleculeControls.dampingFactor = 0.05;
+    moleculeControls.enablePan = true;
+    moleculeControls.enableZoom = true;
+    moleculeControls.autoRotate = true;
+    moleculeControls.autoRotateSpeed = 2;
+
 
     // lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
@@ -584,12 +581,6 @@
     slider.defaultValue = 80;
     molecules.forEach((molecule) => {molecule.hide(); molecule.scaleAtomicRadiusBy(.8)});
 
-    //GUI controls
-    let mouseDown = false,
-        rightMouseDown = false,
-        mouseX = 0,
-        mouseY = 0;
-
     const buttons = new Map();
     buttons.set("Ethanol", 1);
     buttons.set("Methane", 3);
@@ -617,11 +608,6 @@
         if (selectedRadio) selectedRadio.checked = true;
     }
 
-    function isMouseWithinCanvas(x, y) {
-        const rect = moleculeCanvas.getBoundingClientRect();
-        return (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom);
-    }
-
     function onMouseMove(event) {
         currentSelectedMolecule.onMouseMove(event);
     }
@@ -637,22 +623,18 @@
     // --- View mode buttons ---
     document.getElementById('ballStickBtn').addEventListener('click', () => setViewMode('ball-stick'));
     document.getElementById('wireframeBtn').addEventListener('click', () => setViewMode('wireframe'));
-    document.getElementById('toggleRotate').addEventListener('change', (e) => { isRotating = e.target.checked; });
+    document.getElementById('toggleRotate').addEventListener('change', (e) => {
+        isRotating = e.target.checked;
+        controls.autoRotate = isRotating;
+    });
     document.getElementById('resetView').addEventListener('click', () => {
         zoomLevel = 1;
-        molecules.forEach((molecule) => {molecule.setViewModeTo("ball-stick")});
-        molecules.forEach((molecule) => {molecule.scaleAtomicRadiusBy(.8)});
-        updateCameraPosition();
-    });
+        molecules.forEach((molecule) => molecule.setViewModeTo("ball-stick"));
+        molecules.forEach((molecule) => molecule.scaleAtomicRadiusBy(.8));
 
-    document.getElementById('zoomIn').addEventListener('click', () => {
-        zoomLevel *= 0.9;
-        updateCameraPosition();
-    });
-
-    document.getElementById('zoomOut').addEventListener('click', () => {
-        zoomLevel *= 1.1;
-        updateCameraPosition();
+        moleculeCamera.position.set(0, 0, 8);
+        moleculeControls.target.set(0, 0, 0); // reset focus punt
+        moleculeControls.update();
     });
 
     slider.oninput = () => {
@@ -661,57 +643,6 @@
     };
 
     moleculeCanvas.addEventListener('mousemove', onMouseMove);
-
-    moleculeCanvas.addEventListener('mousedown', (event) => {
-        if (event.button === 0)
-            mouseDown = true;
-        else if (event.button === 2)
-            rightMouseDown = true;
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-    });
-
-    moleculeCanvas.addEventListener('mouseup', (event) => {
-        if (event.button === 0)
-            mouseDown = false;
-        else if (event.button === 2)
-            rightMouseDown = false;
-    });
-
-    moleculeCanvas.addEventListener('mousemove', (event) => {
-        if (!isMouseWithinCanvas(event.clientX, event.clientY))
-            return;
-
-        const deltaX = event.clientX - mouseX;
-        const deltaY = event.clientY - mouseY;
-        if (mouseDown) {
-            currentSelectedMolecule.molecule.rotateY(deltaX * 0.01);
-            currentSelectedMolecule.rotateX(deltaY * 0.01);
-        } else if (rightMouseDown) {
-            moleculeCamera.position.x -= deltaX * 0.01;
-            moleculeCamera.position.y += deltaY * 0.01;
-        }
-
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-    });
-
-    moleculeCanvas.addEventListener('dblclick', (event) => {
-        if (!isMouseWithinCanvas(event.clientX, event.clientY))
-            return;
-        currentSelectedMolecule.rotate(0, 0, 0);
-        moleculeCamera.position.set(0, 0, 8);
-        molecules.forEach((molecule) => {molecule.scaleAtomicRadiusBy(.8)});
-        molecules.forEach((molecule) => {molecule.setViewModeTo("ball-stick")});
-    });
-
-    moleculeCanvas.addEventListener('wheel', (event) => {
-        if (isMouseWithinCanvas(e.clientX, e.clientY)) {
-            event.preventDefault(); // prevent scrolling within canvas
-            moleculeCamera.position.z += event.deltaY * 0.01;
-            moleculeCamera.position.z = Math.max(4, Math.min(moleculeCamera.position.z, 20));
-        }
-    }, { passive: false });
 
     function resizeCanvas(moleculeRenderer, moleculeCamera) {
         const w = moleculeCanvas.clientWidth;
@@ -740,8 +671,10 @@
     }
 
     function animate() {
-        if (isRotating && !mouseDown && !rightMouseDown)
-            currentSelectedMolecule.rotateY(0.005);
+        moleculeControls.autoRotate = isRotating;
+        moleculeControls.update();
+        moleculeRenderer.render(moleculeScene, moleculeCamera);
+
         resizeRendererToCanvas(moleculeRenderer, moleculeCamera)
         moleculeRenderer.render(moleculeScene, moleculeCamera);
     }
