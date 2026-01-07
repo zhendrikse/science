@@ -296,7 +296,8 @@ class Engine {
             //   while avoiding the risk of numerical instability
             const a = r.normalize().multiplyScalar(7.0e-3 * this.scene.blackhole.mass / r.dot(r));
             ray.accelerate(a);
-            const localDt = this.dt * Math.max(0.2, Math.min(1.5, r / 10));
+            const rMag = r.mag();
+            const localDt = this.dt * Math.max(0.2, Math.min(1.5, rMag / 10));
             ray.step(localDt);
 
             const rayBlackHoleDistance = ray.position.subtract(this.scene.blackhole.position).mag();
@@ -333,7 +334,7 @@ class Engine {
         const rs = this.scene.blackhole.radius;
         const eps = 1e-3;
         const z = Math.max(1 - rs / distance, eps);
-        const gravitationalRedShift = Math.sqrt(z); // note: energy ∝ sqrt(g_tt)
+        const gravitationalRedShift = Math.sqrt(z); // note: energy ∝ sqrt(1 - r_s/r)
 
         brightness *= gravitationalRedShift;
 
@@ -388,7 +389,7 @@ class Engine {
         const outer = this.scene.disk.outer_r;
         let brightness = 1.0 - (distance - inner) / (outer - inner);
         brightness = Math.max(0.0, Math.min(1.0, brightness));
-        return brightness ** 2.5;  // nonlinear falloff
+        return brightness ** 1.5;  // nonlinear falloff
     }
 }
 
