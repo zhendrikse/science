@@ -1,13 +1,22 @@
+<style>
+    canvas {
+        display: block;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+</style>
 <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
       }
     }
 </script>
 
-<canvas id="raindropCanvas" width="600" height="600" style="border: none;"></canvas><br/>
+<canvas id="raindropCanvas"></canvas><br/>
 <p style="clear: both;"></p>
 <label for="raindropFrequencySlider">Raindrops frequency: <input type="range" min="0" max="100" value="20" class="slider" id="raindropFrequencySlider"/></label>
 <p style="clear: both;"></p>
@@ -20,7 +29,7 @@
     const Array2D = (r, c, value = 0) => [...Array(r)].map(_ => Array(c).fill(value));
     const vector = THREE.Vector3;
     const raindropsScene = new THREE.Scene();
-    raindropsScene.background = new THREE.Color(0x1a1a1a);
+    raindropsScene.background = new THREE.Color(0x131313);
 
     const raindropCanvas = document.getElementById('raindropCanvas');
     raindropCanvas.focus();
@@ -114,6 +123,7 @@
     const raindropsCamera = initCamera();
     const sceneControls = new OrbitControls(raindropsCamera, raindropCanvas);
     const sceneRenderer = createRenderer();
+    resizeRendererToCanvas(sceneRenderer, raindropsCamera);
     sceneRenderer.setAnimationLoop(animateRaindrops);
 
     lights();
@@ -135,10 +145,11 @@
     }
 
     function initCamera() {
-        const camera = new THREE.PerspectiveCamera(70, raindropCanvas.width / raindropCanvas.height, 1, 10);
+        const camera = new THREE.PerspectiveCamera(70, 1, 0.1, 10);
         camera.position.set(0, 0, 1.8);
         return camera;
     }
+
 
     function lights() {
         const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -149,8 +160,7 @@
     function createRenderer() {
         const renderer = new THREE.WebGLRenderer({antialias: true, canvas: raindropCanvas});
         renderer.setClearColor(0x191919, 1);
-        renderer.setSize(raindropCanvas.width, raindropCanvas.height);
-        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         return renderer;
     }
 
@@ -192,8 +202,23 @@
         surface.update();
     }
 
+    function resizeRendererToCanvas(raindropsRenderer, raindropsCamera) {
+        const w = raindropCanvas.clientWidth;
+        const h = raindropCanvas.clientHeight;
+
+        if (w === 0 || h === 0) return;
+
+        if (raindropCanvas.width !== w || raindropCanvas.height !== h) {
+            raindropsRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            raindropsRenderer.setSize(w, h, false);
+            raindropsCamera.aspect = w / h;
+            raindropsCamera.updateProjectionMatrix();
+        }
+    }
+
     function animateRaindrops() {
         update_pixels();
         sceneRenderer.render(raindropsScene, raindropsCamera);
+        sceneControls.update();
     }
 </script>
