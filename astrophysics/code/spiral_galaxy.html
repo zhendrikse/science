@@ -33,7 +33,7 @@
     const galaxyScene = new THREE.Scene();
     galaxyScene.background = new THREE.Color(0x000000);
 
-    const galaxyCamera = new THREE.PerspectiveCamera(20, 1, 1, 10000);
+    const galaxyCamera = new THREE.PerspectiveCamera(25, 1, 1, 10000);
     const cameraBase = new vector(100, -1200, 400);
     galaxyCamera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
 
@@ -107,7 +107,7 @@
             // soft halo: Gaussian outer core
             float haloAlpha = exp(-dist*dist*8.0);
 
-            // combibed
+            // combined
             float alpha = max(coreAlpha, haloAlpha) * vAlpha;
             if(alpha < 0.01) discard;
 
