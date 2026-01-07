@@ -651,18 +651,6 @@
 
     moleculeCanvas.addEventListener('mousemove', onMouseMove);
 
-    function resizeCanvas(moleculeRenderer, moleculeCamera) {
-        const w = moleculeCanvas.clientWidth;
-        const h = moleculeCanvas.clientHeight;
-
-        moleculeRenderer.setSize(w, h, false);
-        moleculeCamera.aspect = w / h;
-        moleculeCamera.updateProjectionMatrix();
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas(moleculeRenderer, moleculeCamera);
-
     function resizeRendererToCanvas(moleculeRenderer, moleculeCamera) {
         const w = moleculeCanvas.clientWidth;
         const h = moleculeCanvas.clientHeight;
