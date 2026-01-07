@@ -1,5 +1,21 @@
-<canvas id="blackHoleCanvas" width="600" height="300" style="border: none;"></canvas>
+<style>
+    .blackhole-container {
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+        aspect-ratio: 2 / 1;
+        background: black; /* letterbox */
+    }
 
+    .blackhole-container canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+</style>
+<div class="blackhole-container">
+    <canvas id="blackHoleCanvas" width="600" height="300"></canvas>
+</div>
 <script>
     const canvas = document.getElementById("blackHoleCanvas");
     const ctx = canvas.getContext("2d");
@@ -17,21 +33,10 @@
         ctx.putImageData(imageData, 0, 0);
     };
 
-    function resizeBlackHoleCanvas() {
-        const containerWidth = canvas.parentElement.clientWidth;
-        const aspect = 2 / 1;
-
-        canvas.width  = Math.floor(containerWidth);
-        canvas.height = Math.floor(containerWidth / aspect);
-
-        worker.postMessage({
-            type: "start",
-            width: canvas.width,
-            height: canvas.height
-        });
-    }
-
-    window.addEventListener("resize", resizeBlackHoleCanvas);
-    resizeBlackHoleCanvas();
-
+    // Start the ray tracing
+    worker.postMessage({
+        type: "start",
+        width: canvas.width,
+        height: canvas.height
+    });
 </script>
