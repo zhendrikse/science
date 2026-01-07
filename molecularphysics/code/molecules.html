@@ -66,8 +66,8 @@
         <button id="resetView">🔄 Reset View</button>
         <button id="zoomIn">➕ Zoom In</button>
         <button id="zoomOut">➖ Zoom Out</button>
-        <button onclick="setViewMode('ball-stick')">Ball &amp; stick</button>
-        <button onclick="setViewMode('wireframe')">Wireframe</button>
+        <button id="ballStickBtn">Ball & stick</button>
+        <button id="wireframeBtn">Wireframe</button>
     </div>
 </div>
 
@@ -637,6 +637,10 @@
         isRotating = !isRotating;
     }
 
+    // --- View mode buttons ---
+    document.getElementById('ballStickBtn').addEventListener('click', () => setViewMode('ball-stick'));
+    document.getElementById('wireframeBtn').addEventListener('click', () => setViewMode('wireframe'));
+    document.getElementById('toggleRotate').addEventListener('change', (e) => { isRotating = e.target.checked; });
     document.getElementById('resetView').addEventListener('click', () => {
         zoomLevel = 1;
         molecules.forEach((molecule) => {molecule.setViewModeTo("ball-stick")});
