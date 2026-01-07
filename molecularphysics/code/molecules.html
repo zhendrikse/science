@@ -105,7 +105,7 @@
     moleculeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     moleculeRenderer.shadowMap.enabled = true;
     moleculeRenderer.setAnimationLoop( animate );
-    resizeRendererToCanvas(moleculeRenderer, moleculeCamera)
+    resizeRendererToCanvas(moleculeRenderer, moleculeCamera);
 
     const moleculeControls = new OrbitControls(moleculeCamera, moleculeRenderer.domElement);
     moleculeControls.enableDamping = true;
