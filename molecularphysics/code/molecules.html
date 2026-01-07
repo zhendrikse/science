@@ -43,7 +43,7 @@
     canvas {
         display: block;
         width: 100%;
-        height: 500px;
+        height: auto;
     }
 </style>
 
@@ -82,15 +82,13 @@
 
     const moleculeCanvas = document.getElementById('moleculesCanvas');
     moleculeCanvas.focus();
-    const canvasWidth = moleculeCanvas.getAttribute('width');
-    const canvasHeight = moleculeCanvas.getAttribute('height');
 
     let isRotating = true;
     let viewMode = 'ball-stick';
     const moleculeScene = new THREE.Scene();
     moleculeScene.background = new THREE.Color(0x1a1a1a);
 
-    const moleculeCamera = new THREE.PerspectiveCamera(50, canvasWidth / canvasHeight, 0.1, 1000);
+    const moleculeCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
     let zoomLevel = 1; // 1 = default
     const cameraBase = new vector(0, 0, 8);
 
@@ -715,15 +713,17 @@
         }
     }, { passive: false });
 
-    function resizeCanvas() {
-        const rect = moleculeCanvas.getBoundingClientRect();
-        moleculeRenderer.setSize(rect.width, rect.height);
-        moleculeCamera.aspect = rect.width / rect.height;
+    function resizeCanvas(moleculeRenderer, moleculeCamera) {
+        const w = moleculeCanvas.clientWidth;
+        const h = moleculeCanvas.clientHeight;
+
+        moleculeRenderer.setSize(w, h, false);
+        moleculeCamera.aspect = w / h;
         moleculeCamera.updateProjectionMatrix();
     }
 
     window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    resizeCanvas(moleculeRenderer, moleculeCamera);
 
     function resizeRendererToCanvas(moleculeRenderer, moleculeCamera) {
         const w = moleculeCanvas.clientWidth;
