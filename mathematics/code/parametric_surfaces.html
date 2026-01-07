@@ -21,7 +21,6 @@
         display: block;
     }
 
-
     #gui-container {
         margin-top: 0.5em;
     }
@@ -38,9 +37,7 @@
 
     #surface-equation {
         position: absolute;
-        top: 50px;
-        left: 50%;
-        transform: translateX(-50%);
+        margin-top: 10px;
         width: 100%;
         max-width: 100%;
         font-size: 14px;
@@ -59,11 +56,11 @@
 
 <div id="canvas-wrapper">
     <div id="surface-title"></div>
+    <div id="surface-equation"></div>
     <div class="canvas-inner">
         <canvas id="geometriesCanvas"></canvas>
     </div>
     <div id="gui-container"></div>
-    <div id="surface-equation"></div>
 </div>
 
 
@@ -737,13 +734,12 @@
         constructor(scenery, surface, axes, ring, viewParameters=new ViewParameters()) {
             this.viewParameters = viewParameters;
             this.surface = surface;
-            const controls = new GUI({width: 275, autoPlace: false});
+            const controls = new GUI({width: canvas.width, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
             controls.add(this.viewParameters, 'category', Object.values(Category))
                 .name("Category")
                 .onChange(value => ring.changeActiveCategoryTo(value));
-            controls.close();
 
             this.#createAppearanceFolder(controls, axes);
             //this.#createContourFolder(controls);
@@ -1750,7 +1746,7 @@
     worldGroup.add(axesGroup);
     const axes = new MatlabAxes(axesGroup);
 
-    const surfaceDefinition = surfaces[33];
+    const surfaceDefinition = surfaces[34];
     const visualizationParameters = new ViewParameters();
     let surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, scenery, axes);
 
