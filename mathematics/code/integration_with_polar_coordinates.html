@@ -94,7 +94,7 @@
     scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(10, 10, 10));
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    const axis = new MatlabAxes(scene, 2, 10);
+    const axis = new MatlabAxes(scene, canvas, 2, 10);
 
     function toCartesian(radius, theta, phi) {
         return new THREE.Vector3(

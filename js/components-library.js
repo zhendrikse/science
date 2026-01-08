@@ -2,8 +2,9 @@ import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 
 export class MatlabAxes {
-    constructor(parentGroup, gridSize=4, gridDivisions=10) {
+    constructor(parentGroup, canvas, gridSize=4, gridDivisions=10) {
         this.group = new THREE.Group();
+        this.canvas = canvas;
         parentGroup.add(this.group);
 
         this.allGrids = [].concat(
@@ -51,7 +52,7 @@ export class MatlabAxes {
     }
 
     #makeLabel(text, pos, color="yellow") {
-        const div = document.createElement("div");
+        const div = this.canvas.createElement("div");
         div.style.color = color;
         div.style.fontSize = "15px";
         div.textContent = text;
@@ -93,4 +94,133 @@ export class MatlabAxes {
     setAxesLabelVisibilityTo(checked) {
         this.axisLabels.forEach(label => label.visible = checked);
     }
+}
+
+export class Interval {
+    constructor(from=-Infinity, to=Infinity) {
+        this.from = from;
+        this.to = to;
+    }
+
+    shrinkTo(value) {
+        if (this.from < value) this.from = value;
+        if (this.to > value) this.to = value;
+    }
+
+    scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
+    range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
+    scaleParameter = (a) => this.range() * (a + this.from / this.range());
+}
+
+export class SurfaceDefinition {
+    sample(u, v, target) {
+        throw new Error("sample() not implemented");
+    }
+}
+
+export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
+    constructor(surfaceFunctions, xInterval, yInterval) {
+        super();
+
+        this.xFnCompiled = Utils.functionFrom(surfaceFunctions.xFn);
+        this.yFnCompiled = Utils.functionFrom(surfaceFunctions.yFn);
+        this.zFnCompiled = Utils.functionFrom(surfaceFunctions.zFn);
+
+        this.xInterval = new Interval(this.#evaluateConstant(xInterval[0]), this.#evaluateConstant(xInterval[1]));
+        this.yInterval = new Interval(this.#evaluateConstant(yInterval[0]), this.#evaluateConstant(yInterval[1]));
+    }
+
+    #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
+
+    sample(u, v, target) {
+        const theta = this.xInterval.scaleParameter(u);
+        const phi = this.yInterval.scaleParameter(v);
+
+        target.set(
+            this.xFnCompiled(theta, phi),
+            this.yFnCompiled(theta, phi),
+            this.zFnCompiled(theta, phi)
+        );
+    }
+}
+
+export class Surface {
+    constructor(surfaceData) {
+        this.surfaceData = surfaceData;
+        const definition = new LiteralStringBasedSurfaceDefinition(
+            surfaceData.parametrization,
+            surfaceData.intervals[0],
+            surfaceData.intervals[1]);
+
+        this.surfaceFunction = (u, v, target) => definition.sample(u, v, target);
+    }
+
+    createGeometryWith = (resolution) =>
+        new ParametricGeometry((u, v, target) => this.surfaceFunction(u, v, target), resolution, resolution);
+
+    data = () => this.surfaceData;
+    parametrization = () => this.surfaceFunction;
+}
+
+export class SurfaceView {
+    constructor(parentGroup, surface) {
+        this.parentGroup = parentGroup;
+        this.surface = surface;
+        this.group = new THREE.Group();
+        this.parentGroup?.add(this.group);
+        this._children = new Set();
+    }
+
+    #disposeSubViews = () => {
+        for (const child of this._children) child.dispose?.();
+        this._children.clear();
+    }
+
+    #disposeChild(child) {
+        if (child.geometry) child.geometry.dispose();
+
+        if (!child.material) return;
+        if (Array.isArray(child.material))
+            child.material.forEach(m => m.dispose());
+        else
+            child.material.dispose();
+    }
+
+    registerChild(view) {
+        this._children.add(view);
+        return view;
+    }
+
+    dispose() {
+        this.#disposeSubViews();
+        this._disposeObject(this.group);
+        if (this.parentGroup) this.parentGroup.remove(this.group);
+        this.group = null;
+        this.parentGroup = null;
+    }
+
+    /** Deep Three.js cleanup */
+    _disposeObject(object) {
+        object.traverse(child => { if (child.isMesh) this.#disposeChild(child); });
+        object.clear();
+    }
+
+    boundingBox() { return new THREE.Box3().setFromObject(this.group).clone(); }
+    data() { return this.surface.data(); }
+    hide() { this.group.visible = false; }
+    moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
+    material = (showWireframe, opacity) =>
+        new THREE.MeshStandardMaterial({
+            side: THREE.DoubleSide,
+            vertexColors: true,
+            transparent: opacity < 1,
+            opacity: opacity,
+            metalness: 0.1,
+            wireframe: showWireframe,
+            roughness: 0.5
+        });
+    parametrization() { return this.surface.parametrization(); }
+    position() { return this.group.position.clone(); }
+    rotateBy = (delta) => this.group.rotation.y += delta;
+    show() { this.group.visible = true; }
 }
