@@ -358,14 +358,10 @@
         fractal.render();
     }
 
-    // Initial resize
     resizeCanvasToWrapper();
-
-    // Optioneel: resize bij window change
     window.addEventListener('resize', () => {
         resizeCanvasToWrapper();
     });
-
 
     for (const [key, value] of juliaButtons)
         document.getElementById(key).onclick = function() {
