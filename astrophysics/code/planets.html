@@ -1,4 +1,41 @@
-<div id="glowscript" class="glowscript">
+<style>
+    html, body {
+        background: #131313;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        height: 100%;
+    }
+
+    #glowscript-wrapper {
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .glowscript canvas {
+        display: block;
+        touch-action: none;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<script>
+    // Disable MathJax within GlowScript library
+    if (window.MathJax && !MathJax.Hub) {
+        MathJax.Hub = {
+            Configured: function(){},
+            Config: function(){},
+            Queue: function(){},
+            Typeset: function(){}
+        };
+    }
+</script>
+<div id="glowscript-wrapper">
+    <div id="glowscript" class="glowscript">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
@@ -49,7 +86,33 @@ async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
+    /* ================= GLOWSCRIPT RESPONSIVE PATCH ================= */
 
+    function resizeGlowScriptScene() {
+        const wrapper = document.getElementById('glowscript-wrapper');
+        if (!wrapper || !scene || !scene.canvas) return;
+
+        const dpr = window.devicePixelRatio || 1;
+
+        const w = wrapper.clientWidth;
+        const h = wrapper.clientHeight;
+
+        scene.width  = Math.floor(w * dpr);
+        scene.height = Math.floor(h * dpr);
+
+        scene.canvas.style.width  = w + 'px';
+        scene.canvas.style.height = h + 'px';
+    }
+
+    scene.autoscale = false;
+    scene.userzoom  = true;
+    scene.userspin  = true;
+    scene.userpan   = true;
+
+    resizeGlowScriptScene();
+    window.addEventListener('resize', resizeGlowScriptScene);
+
+    /* =============================================================== */
     function round(num, n=0) {return Number(num.toFixed(n))}
     var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
     var version, print, arange, __name__, type, ρσ_ls, title, display_range, display_center, animation, sun_textures, sun, radio_1, radio_2, radio_3, _, _GS_1, _GS_2, _GS_3, _GS_4, _GS_5, _GS_6, _GS_7, _GS_8, planets, planet;
