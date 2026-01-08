@@ -1,20 +1,36 @@
+<style>
+    body {
+        margin: 0;
+        background-color: #131313;
+        font-family: sans-serif;
+        color: white;
+    }
+    canvas {
+        display: block;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+</style>
 <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
       }
     }
 </script>
 
-<canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas><br/>
+<canvas id="aquariumCanvas"></canvas><br/>
 <label for="aquariumToggle">Aquarium </label><input type="checkbox" id="aquariumToggle"/>
 
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { ThreeJsUtils } from '../../js/trhee-js-utils.js';
 
-    const canvas = document.getElementById('myCanvas');
+    const canvas = document.getElementById('aquariumCanvas');
     canvas.focus();
     const canvasWidth = canvas.getAttribute('width');
     const canvasHeight = canvas.getAttribute('height');
@@ -35,6 +51,13 @@
     const camera = initCamera();
     const box = aquarium();
     const controls = new OrbitControls( camera, canvas );
+
+    // Resizing for mobile devices
+    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+    window.addEventListener('resize', () => {
+        ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+    });
+
 
     let aquariumVisible = true;
     document.getElementById("aquariumToggle").checked = aquariumVisible;
@@ -221,11 +244,4 @@
         swarm.push(new Particle());
     swarm[0].makeSeed();
     animate();
-
-    // Resize handling
-    // window.addEventListener('resize', () => {
-    //     camera.aspect = canvasWidth / canvasHeight;
-    //     camera.updateProjectionMatrix();
-    //     renderer.setSize(canvasWidth, canvasHeight);
-    // });
 </script>
