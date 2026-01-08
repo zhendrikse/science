@@ -7,7 +7,7 @@
 
 <p style="clear: both;"></p>
 
-## A more sophisticated simulation in pure Javascript
+## A more sophisticated simulation in pure JavaScript
 <div class="header_line"><br/></div>
 
 [Matthias Müller](https://www.matthiasMueller.info/tenMinutePhysics) wrote
@@ -17,11 +17,11 @@ in [this video](https://www.youtube.com/watch?v=XmzBREkK8kY)
 on his [Ten Minute Physics](https://www.youtube.com/c/TenMinutePhysics) YouTube channel.
 
 <figure style="float: center; text-align: center;">
-  <a href="water.html">
+  <a href="code/water.html">
     <img alt="Euler water simulation" src="images/water.png" title="Click to animate"/>
   </a>
   <figcaption>Click on the above image to activate the Euler-based water simulation 
-  which was implemented using pure Javascript by 
+  which was implemented using pure JavaScript by 
   <a href="https://www.matthiasMueller.info/tenMinutePhysics">Matthias Müller</a>.</figcaption>
 </figure>
 

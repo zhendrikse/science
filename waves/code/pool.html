@@ -1,103 +1,601 @@
-<script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
-      }
+<style>
+    html, body {
+        background: #131313;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        height: 100%;
+    }
+
+    #glowscript-wrapper {
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .glowscript canvas {
+        display: block;
+        touch-action: none;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<script>
+    // Disable MathJax within GlowScript library
+    if (window.MathJax && !MathJax.Hub) {
+        MathJax.Hub = {
+            Configured: function(){},
+            Config: function(){},
+            Queue: function(){},
+            Typeset: function(){}
+        };
     }
 </script>
+<div id="glowscript-wrapper">
+    <div id="glowscript" class="glowscript"></div>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
 
-<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
+    // START JAVASCRIPT
+    ;(function() {;
+        var ρσ_modules = {};
+        ρσ_modules.pythonize = {};
 
-<script type="module">
-    import * as THREE from "three";
-    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    const vector = THREE.Vector3;
-
-    console.clear( );
-
-    const canvas = document.getElementById('myCanvas');
-    canvas.focus();
-    const canvasWidth = canvas.getAttribute('width');
-    const canvasHeight = canvas.getAttribute('height');
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0.075, 0.075, 0.075);
-
-    const camera = new THREE.PerspectiveCamera( 30, canvasWidth/canvasHeight, 1, 100 );
-    camera.position.set( 0, 0, 10 );
-    camera.lookAt( scene.position );
-
-    const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: canvas} );
-    renderer.setSize( canvasWidth, canvasHeight );
-    //renderer.setAnimationLoop( animationLoop );
-
-    const controls = new OrbitControls( camera, canvas );
-    // controls.enableDamping = true;
-    // controls.autoRotate = true;
-
-    const light = new THREE.DirectionalLight( 'white', 1 );
-    light.position.set( 25, 25, 25 );
-    scene.add( light );
-
-
-
-    class Wave {
-        constructor(x, y) {
-            this._x = x;
-            this._y = y;
-            this._radius = 0.03;
-
-            const N = x.length * y.length;
-            this.positions = new THREE.BufferAttribute(new Float32Array(3 * N), 3);
-            this.colors = new THREE.BufferAttribute(new Float32Array(3 * N), 3);
-            this.sizes = new THREE.BufferAttribute(new Float32Array(N), 1);
-
-            this.initialize();
-
-            const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute('position', this.positions);
-            geometry.setAttribute('color', this.colors);
-            geometry.setAttribute('size', this.sizes);
-
-            this.cloud = new THREE.Points(geometry, starMaterial);
-            scene.add(this.cloud);
-        }
-
-        initialize() {
-            this._surface = [];
-            for (let i = 0; i < this._x.length; i++) {
-                const droplets_row = [];
-                for (let j = 0; j < this._y.length; j++) {
-                    const position = new vector(this._x[i], this._y[j], 0)
-                    const colour = new THREE.Color(0, 0, .8);
-                    droplets_row.push(new Sphere(position, this._radius, colour))
+        (function(){
+            function strings() {
+                var string_funcs, exclude, name;
+                string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+                if (!arguments.length) {
+                    exclude = (function(){
+                        var s = ρσ_set();
+                        s.jsset.add("split");
+                        s.jsset.add("replace");
+                        return s;
+                    })();
+                } else if (arguments[0]) {
+                    exclude = Array.prototype.slice.call(arguments);
+                } else {
+                    exclude = null;
                 }
-                this._surface.push(droplets_row)
+                if (exclude) {
+                    string_funcs = string_funcs.difference(set(exclude));
+                }
+                var ρσ_Iter0 = string_funcs;
+                ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+                for (var ρσ_Index0 of ρσ_Iter0) {
+                    name = ρσ_Index0;
+                    (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+                }
+            };
+            if (!strings.__module__) Object.defineProperties(strings, {
+                __module__ : {value: "pythonize"}
+            });
+
+            ρσ_modules.pythonize.strings = strings;
+        })();
+        async function __main__() {
+            "use strict";
+            var display = canvas;
+            var scene = canvas();
+            /* ================= GLOWSCRIPT RESPONSIVE PATCH ================= */
+
+            function resizeGlowScriptScene() {
+                const wrapper = document.getElementById('glowscript-wrapper');
+                if (!wrapper || !scene || !scene.canvas) return;
+
+                const dpr = window.devicePixelRatio || 1;
+
+                const w = wrapper.clientWidth;
+                const h = wrapper.clientHeight;
+
+                scene.width  = Math.floor(w * dpr);
+                scene.height = Math.floor(h * dpr);
+
+                scene.canvas.style.width  = w + 'px';
+                scene.canvas.style.height = h + 'px';
             }
-        }
+
+            scene.autoscale = false;
+            scene.userzoom  = true;
+            scene.userspin  = true;
+            scene.userpan   = true;
+
+            resizeGlowScriptScene();
+            window.addEventListener('resize', resizeGlowScriptScene);
+
+            /* =============================================================== */
+            function round(num, n=0) {return Number(num.toFixed(n))}
+            fontloading();
+            await waitforfonts();
+
+            var version, print, arange, __name__, type, ρσ_ls, title, ρσ_unpack, Lx, Ly, dx, dy, animation, radius_slider, droplet_radius_text, offset_slider, hue_offset_text, disturbance_slider, disturbance_text, opacity_slider, opacity_text, popup, animation_duration, clock, x_range, y_range, _GS_1, wave, pool, dt, _;
+            version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+            Array.prototype['+'] = function(r) {return this.concat(r)}
+            Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+            window.__GSlang = "vpython";
+            print = GSprint;
+            arange = range;
+            __name__ = "__main__";
+            type = pytype;
+            var strings = ρσ_modules.pythonize.strings;
+
+            strings();
+            "10";
+            title = "\n&#x2022; Original idea (and <a href=\"https://jexpearce.github.io/jex/Wavepropagation.html\">code<\/a>) by <a href=\"https://jexpearce.github.io/jex/\">Jex Pearce</a>\n&#x2022; Refactored and extended by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/nature/code/pool.py\">pool.py</a>\n&#x2022; Based on a <a href=\"\"https://en.wikipedia.org/wiki/Finite_difference_method\">finite difference mehtod</a>\n\n";
+            "12";
+            ρσ_unpack = [2, 3];
+            Lx = ρσ_unpack[0];
+            Ly = ρσ_unpack[1];
+            "13";
+            ρσ_unpack = [.05, .05];
+            dx = ρσ_unpack[0];
+            dy = ρσ_unpack[1];
+            "14";
+            animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({forward: vector(1["-u"]()["*"](2.8), 0, 1["-u"]()["*"](2.8)), center: vector(Lx["/"](2), Ly["/"](2), 0), up: vector(0, 0, 1), title: title, background: color.gray(.075), range: 1.5})]);
+            "19";
+            function Wave() {;
+            }
+            Wave.prototype.__init__ = async function __init__(x, y) {
+                var self = this;
+                var ρσ_ls, ρσ_unpack;
+                "21";
+                ρσ_unpack = [x, y];
+                self._x = ρσ_unpack[0];
+                self._y = ρσ_unpack[1];
+                "22";
+                self._hue = 2.55;
+                "23";
+                self._opacity = 1;
+                "24";
+                self._radius = .03;
+                "25";
+                self._disturbance_magnitude = .2;
+                "26";
+                self._time = 0;
+                "27";
+                (await self._initialize_wave_data());
+                "28";
+                ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([])];
+                self._old = ρσ_unpack[0];
+                self._new = ρσ_unpack[1];
+                self._surface = ρσ_unpack[2];
+                "29";
+                (await self._init_droplets());
+            };
+            if (!Wave.prototype.__init__.__argnames__) Object.defineProperties(Wave.prototype.__init__, {
+                __argnames__ : {value: ["x", "y"]},
+                __module__ : {value: null}
+            });
+            Wave.__argnames__ = Wave.prototype.__init__.__argnames__;
+            Wave.__handles_kwarg_interpolation__ = Wave.prototype.__init__.__handles_kwarg_interpolation__;
+            Wave.prototype._init_droplets = async function _init_droplets() {
+                var self = this;
+                var ρσ_ls, droplets_row, show, colour, position, j, i;
+                "32";
+                self._surface = ρσ_list_decorate([]);
+                "33";
+                var ρσ_Iter1 = range(len(self._x));
+                ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+                for (var ρσ_Index1 of ρσ_Iter1) {
+                    i = ρσ_Index1;
+                    "34";
+                    droplets_row = ρσ_list_decorate([]);
+                    "35";
+                    var ρσ_Iter2 = range(len(self._y));
+                    ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+                    for (var ρσ_Index2 of ρσ_Iter2) {
+                        j = ρσ_Index2;
+                        "36";
+                        show = (ρσ_equals(i, len(self._x)["-"](1["*"](1)))) ? false : true;
+                        "37";
+                        colour = color.hsv_to_rgb(vec(self._hue, 1, 1));
+                        "38";
+                        position = vector(ρσ_getitem(self._x, i), ρσ_getitem(self._y, j), 0);
+                        "39";
+                        droplets_row.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, visible: show, radius: self._radius, opacity: self._opacity, color: colour})]));
+                    }
+                    "41";
+                    self._surface.append(droplets_row);
+                }
+            };
+            if (!Wave.prototype._init_droplets.__module__) Object.defineProperties(Wave.prototype._init_droplets, {
+                __module__ : {value: null}
+            });
+            Wave.prototype._initialize_wave_data = async function _initialize_wave_data() {
+                var self = this;
+                var ρσ_ls, i;
+                "44";
+                self._old = (function() {
+                    var ρσ_Iter = range(len(self._x)), ρσ_Result = [], i;
+                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                    for (var ρσ_Index of ρσ_Iter) {
+                        i = ρσ_Index;
+                        ρσ_Result.push((function() {
+                            var ρσ_Iter = range(len(self._y)), ρσ_Result = [], j;
+                            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                            for (var ρσ_Index of ρσ_Iter) {
+                                j = ρσ_Index;
+                                ρσ_Result.push(0);
+                            }
+                            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                            return ρσ_Result;
+                        })());
+                    }
+                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                    return ρσ_Result;
+                })();
+                "45";
+                self._new = (function() {
+                    var ρσ_Iter = range(len(self._x)), ρσ_Result = [], i;
+                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                    for (var ρσ_Index of ρσ_Iter) {
+                        i = ρσ_Index;
+                        ρσ_Result.push((function() {
+                            var ρσ_Iter = range(len(self._y)), ρσ_Result = [], j;
+                            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                            for (var ρσ_Index of ρσ_Iter) {
+                                j = ρσ_Index;
+                                ρσ_Result.push(0);
+                            }
+                            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                            return ρσ_Result;
+                        })());
+                    }
+                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                    return ρσ_Result;
+                })();
+            };
+            if (!Wave.prototype._initialize_wave_data.__module__) Object.defineProperties(Wave.prototype._initialize_wave_data, {
+                __module__ : {value: null}
+            });
+            Wave.prototype.update = async function update(dt) {
+                var self = this;
+                var ρσ_ls, c, r, now, j, i, x, y;
+                "48";
+                c = 1.5;
+                "49";
+                r = c["*"](dt)["/"](dx)["*"](c["*"](dt)["/"](dx));
+                "50";
+                now = self._surface;
+                "52";
+                var ρσ_Iter3 = range(1, len(self._x)["-"](1["*"](1)));
+                ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+                for (var ρσ_Index3 of ρσ_Iter3) {
+                    i = ρσ_Index3;
+                    "53";
+                    var ρσ_Iter4 = range(1, len(self._y)["-"](1["*"](1)));
+                    ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+                    for (var ρσ_Index4 of ρσ_Iter4) {
+                        j = ρσ_Index4;
+                        "54";
+                        ρσ_setitem(ρσ_getitem(self._new, i), j, 2["*"](ρσ_getitem(ρσ_getitem(now, i), j).pos.z)["-"](1["*"](ρσ_getitem(ρσ_getitem(self._old, i), j)))["+"](r["*"](ρσ_getitem(ρσ_getitem(now, i["+"](1)), j).pos.z["+"](ρσ_getitem(ρσ_getitem(now, i["-"](1["*"](1))), j).pos.z)["+"](ρσ_getitem(ρσ_getitem(now, i), j["+"](1)).pos.z)["+"](ρσ_getitem(ρσ_getitem(now, i), j["-"](1["*"](1))).pos.z)["-"](1["*"](4)["*"](ρσ_getitem(ρσ_getitem(now, i), j).pos.z)))));
+                        "57";
+                        ρσ_setitem(ρσ_getitem(self._old, i), j, ρσ_getitem(ρσ_getitem(self._surface, i), j).pos.z);
+                    }
+                }
+                "60";
+                var ρσ_Iter5 = range(1, len(self._x)["-"](1["*"](1)));
+                ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+                for (var ρσ_Index5 of ρσ_Iter5) {
+                    i = ρσ_Index5;
+                    "61";
+                    var ρσ_Iter6 = range(1, len(self._y)["-"](1["*"](1)));
+                    ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+                    for (var ρσ_Index6 of ρσ_Iter6) {
+                        j = ρσ_Index6;
+                        "62";
+                        ρσ_getitem(ρσ_getitem(self._surface, i), j).pos.z = ρσ_getitem(ρσ_getitem(self._new, i), j);
+                        "63";
+                        ρσ_getitem(ρσ_getitem(self._surface, i), j).color = color.hsv_to_rgb(vec(ρσ_getitem(ρσ_getitem(self._new, i), j)["*"](1.5)["+"](self._hue), 1, 1));
+                        "65";
+                    }
+                }
+                if (abs(self._time["-"](1["*"](.25)))["<"](dt)) {
+                    "67";
+                    x = Math.floor(len(self._x)["/"](2));
+                    "68";
+                    y = Math.floor(len(self._y)["/"](2));
+                    "69";
+                    ρσ_getitem(ρσ_getitem(self._surface, x), y).pos.z=ρσ_getitem(ρσ_getitem(self._surface, x), y).pos.z["+"](self._disturbance_magnitude);
+                }
+                "71";
+                self._time=self._time["+"](dt);
+            };
+            if (!Wave.prototype.update.__argnames__) Object.defineProperties(Wave.prototype.update, {
+                __argnames__ : {value: ["dt"]},
+                __module__ : {value: null}
+            });
+            Wave.prototype.get_time = async function get_time() {
+                var self = this;
+                "74";
+                return self._time;
+            };
+            if (!Wave.prototype.get_time.__module__) Object.defineProperties(Wave.prototype.get_time, {
+                __module__ : {value: null}
+            });
+            Wave.prototype.set_opacity_to = async function set_opacity_to(new_value) {
+                var self = this;
+                var ρσ_ls, j, i;
+                "77";
+                self._opacity = new_value;
+                "78";
+                var ρσ_Iter7 = range(len(self._x));
+                ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+                for (var ρσ_Index7 of ρσ_Iter7) {
+                    i = ρσ_Index7;
+                    "79";
+                    var ρσ_Iter8 = range(len(self._y));
+                    ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+                    for (var ρσ_Index8 of ρσ_Iter8) {
+                        j = ρσ_Index8;
+                        "80";
+                        ρσ_getitem(ρσ_getitem(self._surface, i), j).opacity = new_value;
+                    }
+                }
+            };
+            if (!Wave.prototype.set_opacity_to.__argnames__) Object.defineProperties(Wave.prototype.set_opacity_to, {
+                __argnames__ : {value: ["new_value"]},
+                __module__ : {value: null}
+            });
+            Wave.prototype.set_hue_value_to = async function set_hue_value_to(new_hue_value) {
+                var self = this;
+                "83";
+                self._hue = new_hue_value;
+            };
+            if (!Wave.prototype.set_hue_value_to.__argnames__) Object.defineProperties(Wave.prototype.set_hue_value_to, {
+                __argnames__ : {value: ["new_hue_value"]},
+                __module__ : {value: null}
+            });
+            Wave.prototype.set_disturbance_magnitude_to = async function set_disturbance_magnitude_to(new_value) {
+                var self = this;
+                "86";
+                self._disturbance_magnitude = new_value;
+            };
+            if (!Wave.prototype.set_disturbance_magnitude_to.__argnames__) Object.defineProperties(Wave.prototype.set_disturbance_magnitude_to, {
+                __argnames__ : {value: ["new_value"]},
+                __module__ : {value: null}
+            });
+            Wave.prototype.set_droplet_radius_to = async function set_droplet_radius_to(new_radius) {
+                var self = this;
+                var ρσ_ls, j, i;
+                "89";
+                self._radius = new_radius;
+                "90";
+                var ρσ_Iter9 = range(len(self._x));
+                ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+                for (var ρσ_Index9 of ρσ_Iter9) {
+                    i = ρσ_Index9;
+                    "91";
+                    var ρσ_Iter10 = range(len(self._y));
+                    ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+                    for (var ρσ_Index10 of ρσ_Iter10) {
+                        j = ρσ_Index10;
+                        "92";
+                        ρσ_getitem(ρσ_getitem(self._surface, i), j).radius = new_radius;
+                    }
+                }
+            };
+            if (!Wave.prototype.set_droplet_radius_to.__argnames__) Object.defineProperties(Wave.prototype.set_droplet_radius_to, {
+                __argnames__ : {value: ["new_radius"]},
+                __module__ : {value: null}
+            });
+            Wave.prototype.reset = async function reset() {
+                var self = this;
+                var ρσ_ls, j, i;
+                "95";
+                (await self._initialize_wave_data());
+                "96";
+                self._time = 0;
+                "98";
+                var ρσ_Iter11 = range(len(self._x));
+                ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
+                for (var ρσ_Index11 of ρσ_Iter11) {
+                    i = ρσ_Index11;
+                    "99";
+                    var ρσ_Iter12 = range(len(self._y));
+                    ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
+                    for (var ρσ_Index12 of ρσ_Iter12) {
+                        j = ρσ_Index12;
+                        "100";
+                        ρσ_getitem(ρσ_getitem(self._surface, i), j).visible = false;
+                    }
+                }
+                "102";
+                (await self._init_droplets());
+            };
+            if (!Wave.prototype.reset.__module__) Object.defineProperties(Wave.prototype.reset, {
+                __module__ : {value: null}
+            });
+            Wave.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+            };
+            Wave.prototype.__str__ = async function __str__() {
+                return this.__repr__();
+            };
+            Object.defineProperty(Wave.prototype, "__bases__", {value: []});
 
 
-        updateStarSettingsFor(starCounter, position, size) {
-            this.positions.setXYZ(starCounter, position.x, position.y, position.z);
-            let colour = this.colorAt(position);
-            this.colors.setXYZ(starCounter, colour.r, colour.g, colour.b);
-            this.sizes.setX(starCounter, size);
-        }
-    }
 
-    const Lx = 2,
-        Ly = 3,
-        dx = 0.05,
-        dy = 0.05,
-        x_range = [],
-        y_range = [];
 
-    for (let x = 0; x < Lx + dx; x+=dx)
-        x_range.push(x);
-    for (let y = 0; y < Ly + dy; x+=dy)
-        y_range.push(y);
 
-    const wave = new Wave(x_range, y_range)
-    renderer.render(scene, camera);
-</script>
+
+
+
+
+
+
+            "104";
+            function Pool() {;
+            }
+            Pool.prototype.__init__ = async function __init__(Lx, Ly, dx, dy) {
+                var self = this;
+                var ρσ_ls, water, back, left, right, bottom;
+                "106";
+                water = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(Lx["/"](2), Ly["/"](2), 1["-u"]()["*"](.3)), width: .425, length: Lx, height: Ly, color: vec(0, .6, 1), opacity: .5})]);
+                "107";
+                back = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](dx), Ly["/"](2), 1["-u"]()["*"](.17)), width: .7, length: .04, height: Ly["+"](2.5["*"](dy)), color: color.yellow})]);
+                "108";
+                left = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(Lx["/"](2), 1["-u"]()["*"](dy), 1["-u"]()["*"](.17)), width: .7, length: .04, height: Lx["+"](dx), color: color.yellow})]);
+                "109";
+                ρσ_interpolate_kwargs.call(left, left.rotate, [ρσ_desugar_kwargs({angle: (await radians(90)), axis: vec(0, 0, 1)})]);
+                "110";
+                right = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(Lx["/"](2), Ly["+"](dy), 1["-u"]()["*"](.17)), width: .7, length: .04, height: Lx["+"](dx), color: color.yellow})]);
+                "111";
+                ρσ_interpolate_kwargs.call(right, right.rotate, [ρσ_desugar_kwargs({angle: (await radians(90)), axis: vec(0, 0, 1)})]);
+                "112";
+                bottom = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(Lx["/"](2), Ly["/"](2), 1["-u"]()["*"](.5)), width: .04, length: Lx["+"](dx), height: Ly["+"](dy), color: color.yellow})]);
+            };
+            if (!Pool.prototype.__init__.__argnames__) Object.defineProperties(Pool.prototype.__init__, {
+                __argnames__ : {value: ["Lx", "Ly", "dx", "dy"]},
+                __module__ : {value: null}
+            });
+            Pool.__argnames__ = Pool.prototype.__init__.__argnames__;
+            Pool.__handles_kwarg_interpolation__ = Pool.prototype.__init__.__handles_kwarg_interpolation__;
+            Pool.prototype.__repr__ = async function __repr__() {
+                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
+            };
+            Pool.prototype.__str__ = async function __str__() {
+                return this.__repr__();
+            };
+            Object.defineProperty(Pool.prototype, "__bases__", {value: []});
+
+
+            "115";
+            async function adjust_offset() {
+                "116";
+                (await wave.set_hue_value_to(offset_slider.value["+"](2.55)));
+                "117";
+                hue_offset_text.text = "{:1.2f}".format(offset_slider.value, 2);
+            };
+            if (!adjust_offset.__module__) Object.defineProperties(adjust_offset, {
+                __module__ : {value: null}
+            });
+
+            "120";
+            async function adjust_disturbance() {
+                "121";
+                (await wave.set_disturbance_magnitude_to(disturbance_slider.value));
+                "122";
+                disturbance_text.text = "{:1.2f}".format(disturbance_slider.value, 2);
+            };
+            if (!adjust_disturbance.__module__) Object.defineProperties(adjust_disturbance, {
+                __module__ : {value: null}
+            });
+
+            "125";
+            async function adjust_droplet_radius() {
+                "126";
+                (await wave.set_droplet_radius_to(radius_slider.value["*"](.01)));
+                "127";
+                droplet_radius_text.text = "{:1.2f}".format(radius_slider.value, 2);
+            };
+            if (!adjust_droplet_radius.__module__) Object.defineProperties(adjust_droplet_radius, {
+                __module__ : {value: null}
+            });
+
+            "129";
+            async function adjust_opacity() {
+                "130";
+                (await wave.set_opacity_to(opacity_slider.value));
+                "131";
+                opacity_text.text = "{:1.2f}".format(opacity_slider.value, 2);
+            };
+            if (!adjust_opacity.__module__) Object.defineProperties(adjust_opacity, {
+                __module__ : {value: null}
+            });
+
+            "133";
+            animation.append_to_caption("\n");
+            "134";
+            radius_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 4, value: 3, step: .1, bind: adjust_droplet_radius})]);
+            "135";
+            animation.append_to_caption("droplet radius = ");
+            "136";
+            droplet_radius_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "3.0"})]);
+            "138";
+            animation.append_to_caption("\n\n");
+            "139";
+            offset_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, value: 0, bind: adjust_offset})]);
+            "140";
+            animation.append_to_caption("hue offset = ");
+            "141";
+            hue_offset_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.0"})]);
+            "143";
+            animation.append_to_caption("\n\n");
+            "144";
+            disturbance_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: 1, value: .3, bind: adjust_disturbance})]);
+            "145";
+            animation.append_to_caption("disturbance magnitude = ");
+            "146";
+            disturbance_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "0.3"})]);
+            "148";
+            animation.append_to_caption("\n\n");
+            "149";
+            opacity_slider = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: 1, bind: adjust_opacity})]);
+            "150";
+            animation.append_to_caption("opacity = ");
+            "151";
+            opacity_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "1.0"})]);
+            "153";
+            popup = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "Click mouse to start", pos: vec(1["-u"]()["*"](Lx), 0, 0), billboard: true, color: color.yellow, height: .3})]);
+            "154";
+            animation_duration = 4;
+            "156";
+            animation.append_to_caption("\n\n  Remaining animation time = ");
+            "157";
+            clock = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "{:1.2f}".format(animation_duration, 2)})]);
+            "159";
+            x_range = range(0, Lx["+"](dx), dx);
+            "160";
+            y_range = range(0, Ly["+"](dy), dy);
+            "162";
+            _GS_1 = new Wave;
+            (await _GS_1.__init__(x_range, y_range));
+            wave = _GS_1;
+            "163";
+            _GS_1 = new Pool;
+            (await _GS_1.__init__(Lx, Ly, dx, dy));
+            pool = _GS_1;
+            "166";
+            dt = .01;
+            "167";
+            while (true) {
+                "168";
+                popup.visible = true;
+                "169";
+                (await animation.waitfor("click"));
+                "170";
+                popup.visible = false;
+                "171";
+                (await wave.reset());
+                "172";
+                var ρσ_Iter13 = range(int(animation_duration["/"](dt)));
+                ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
+                for (var ρσ_Index13 of ρσ_Iter13) {
+                    _ = ρσ_Index13;
+                    "173";
+                    (await rate(1["/"](10["*"](dt))));
+                    "174";
+                    (await wave.update(dt));
+                    "175";
+                    clock.text = "{:1.2f}".format(animation_duration["-"](1["*"]((await wave.get_time()))), 2);
+                }
+            }
+        };
+        if (!__main__.__module__) Object.defineProperties(__main__, {
+            __module__ : {value: null}
+        });
+
+        ;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+    // END JAVASCRIPT
+
+    //--><!]]></script>
+</div>
