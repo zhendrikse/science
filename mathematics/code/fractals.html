@@ -1,23 +1,63 @@
-<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas>
-<table style="border: none;">
-    <tr style="border-style: hidden;">
+<style>
+    html, body {
+        background: #131313;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    #canvas-wrapper {
+        position: relative;
+        width: min(100vw, 800px);
+        margin: 0 auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    #fractalsCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+    table {
+        width: 100%;
+        border: none;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    td {
+        white-space: nowrap;
+        border: none;
+    }
+</style>
+<div id="canvas-wrapper">
+    <canvas id="fractalsCanvas"></canvas>
+</div>
+<table>
+    <tr>
         <td><label for="kochSnowflake"><input type="radio" id="kochSnowflake"/>Koch snowflake</label></td>
         <td><label for="cesaroFractal"><input type="radio" id="cesaroFractal"/>Cesaro fractal</label></td>
     </tr>
-    <tr style="border-style: hidden;">
+    <tr>
         <td><label for="sierpinskiTriangle"><input type="radio" id="sierpinskiTriangle"/>Sierpinski triangle</label></td>
         <td><label for="tSquareFractal"><input type="radio" id="tSquareFractal"/>T-square fractal</label></td>
     </tr>
-    <tr style="border-style: hidden;">
+    <tr>
         <td><label for="dragonCurve"><input type="radio" id="dragonCurve"/>Dragon curve</label></td>
         <td>&nbsp;</td>
     </tr>
 </table>
 
 <script>
-    let canvas = document.getElementById("myCanvas");
+    let canvas = document.getElementById("fractalsCanvas");
     let context = canvas.getContext("2d");
     context.lineWidth = 2;
+    resizeCanvas();
+    window.addEventListener("resize", () => {
+        resizeCanvas();
+        redraw();
+    });
 
     const radioButtons = new Map();
     radioButtons.set("kochSnowflake", drawSnowflake);
@@ -293,13 +333,32 @@
             document.getElementById(key).checked = false;
     }
 
+    function resizeCanvas() {
+        const wrapper = document.getElementById("canvas-wrapper");
+        const size = wrapper.clientWidth;
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width  = Math.floor(size * dpr);
+        canvas.height = Math.floor(size * dpr);
+
+        canvas.style.width  = size + "px";
+        canvas.style.height = size + "px";
+    }
+
+    let currentFractal = drawDragonCurve;
+
+    function redraw() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        currentFractal();
+    }
+
     for (const [key, value] of radioButtons)
         document.getElementById(key).onclick = function() {
             resetButtons();
-            document.getElementById(key).checked = true;
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            value();
-        }
+            this.checked = true;
+            currentFractal = value;
+            redraw();
+        };
 
     let turtle = new Turtle();
     drawDragonCurve();
