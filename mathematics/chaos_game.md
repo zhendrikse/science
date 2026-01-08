@@ -3,6 +3,13 @@
 ## Chaos game
 <div class="header_line"><br/></div>
 
+🔧 This [chaos_game.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/chaos_game.html) is 100% Javascript, written by [Zeger Hendrikse](https://github.com/zhendrikse/)<br/>
+🔧 Inspired by [nnakul/chaos-game](https://github.com/nnakul/chaos-game/tree/master) by [Nikhil Nakul](https://github.com/nnakul/)<br/>
+👉 A [VPython](https://vpython.org) version is available as well, see [chaos_game.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/chaos_game.py)
+
+{% include_relative code/chaos_game.html %}
+<p style="clear: both;"></p>
+
 The chaos game is an iterative procedure $s_i\rightarrow s_{i+1}$ that can be written
 as an [affine transformation](https://en.wikipedia.org/wiki/Affine_transformation)
 
@@ -10,15 +17,7 @@ $s_{i+1}=T_js_i+r_j$
 
 where the set of pairs {$(T_j, r_j) | j=1,2,\dots$} with matrices $T_j$ and $r_j$
 characterize the chosen ruleset and $j$ denotes a (per iteration) randomly chosen index.
-The famous [Barnsley fern](https://www.hendrikse.name/science/nature/fern.html) 
-is generated in a similar way.
-
-- This [chaos_game.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/chaos_game.html) is 100% Javascript, written by [Zeger Hendrikse](https://github.com/zhendrikse/)
-- Inspired by [nnakul/chaos-game](https://github.com/nnakul/chaos-game/tree/master) by [Nikhil Nakul](https://github.com/nnakul/)
-- A [VPython](https://vpython.org) version is available as well, see [chaos_game.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/chaos_game.py)
-
-{% include_relative code/chaos_game.html %}
-<p style="clear: both;"></p>
+The famous [Barnsley fern](https://www.hendrikse.name/science/nature/fern.html) is generated in a similar way.
 
 ### Why do fractals arise from the chaos game
 <div style="border-top: 1px solid #999999"><br/></div>
