@@ -2,9 +2,9 @@ import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 
 export class MatlabAxes {
-    constructor(parentGroup, canvas, gridSize=4, gridDivisions=10) {
+    constructor(parentGroup, document, gridSize=4, gridDivisions=10) {
         this.group = new THREE.Group();
-        this.canvas = canvas;
+        this.document = document;
         parentGroup.add(this.group);
 
         this.allGrids = [].concat(
@@ -52,7 +52,7 @@ export class MatlabAxes {
     }
 
     #makeLabel(text, pos, color="yellow") {
-        const div = this.canvas.createElement("div");
+        const div = this.document.createElement("div");
         div.style.color = color;
         div.style.fontSize = "15px";
         div.textContent = text;

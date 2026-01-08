@@ -82,6 +82,7 @@
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
+    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
 
     const canvas = document.getElementById("geometriesCanvas");
 
@@ -538,56 +539,6 @@
     }];
 
     class Utils {
-        static scaleBox3(box, factor) {
-            const center = new THREE.Vector3();
-            const size = new THREE.Vector3();
-
-            box.getCenter(center);
-            box.getSize(size);
-
-            size.multiplyScalar(factor).multiplyScalar(0.5);
-
-            box.min.copy(center).sub(size);
-            box.max.copy(center).add(size);
-
-            return box;
-        }
-
-        static fitGroupToBox(
-            group,     // 👈 This object moves
-            sourceBox,
-            targetBox,
-            { alignY = "min", padding = 1.0 } = {}
-        ) {
-            const sourceSize = new THREE.Vector3();
-            const targetSize = new THREE.Vector3();
-            const sourceCenter = new THREE.Vector3();
-            const targetCenter = new THREE.Vector3();
-
-            sourceBox.getSize(sourceSize);
-            targetBox.getSize(targetSize);
-            sourceBox.getCenter(sourceCenter);
-            targetBox.getCenter(targetCenter);
-
-            const scale = Math.min(
-                targetSize.x / sourceSize.x,
-                targetSize.y / sourceSize.y,
-                targetSize.z / sourceSize.z
-            ) / padding;
-
-            group.scale.setScalar(scale);
-
-            sourceCenter.multiplyScalar(scale);
-            group.position.copy(targetCenter).sub(sourceCenter);
-
-            if (alignY === "min") {
-                group.updateMatrixWorld(true);
-                const scaledBox = new THREE.Box3().setFromObject(group);
-                const deltaY = targetBox.min.y - scaledBox.min.y;
-                group.position.y += deltaY;
-            }
-        }
-
         static functionFrom(functionString) {
             try {
                 return (u, v) => math.compile(functionString).evaluate({ u, v });
@@ -1728,7 +1679,7 @@
         add(surfaces) {
             surfaces.forEach(surfaceData => {
                 const selectorSurface = new SurfaceSelectorView(this.group, new Surface(surfaceData), {});
-                Utils.fitGroupToBox(
+                ThreeJsUtils.fitGroupToBox(
                     selectorSurface.group,
                     selectorSurface.boundingBox(),
                     boundingBox,
@@ -1767,7 +1718,7 @@
     let surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, scenery, axes);
 
     const boundingBox = surfaceInAxes.boundingBox();
-    Utils.scaleBox3(boundingBox, 0.25);
+    ThreeJsUtils.scaleBox3(boundingBox, 0.25);
     const ring = new Ring(worldGroup, surfaceInAxes, boundingBox);
     ring.add(surfaces);
     ring.changeActiveCategoryTo(surfaceDefinition.meta.category);
@@ -1784,7 +1735,7 @@
         scenery.updateSurfaceData(surfaceData);
         const surfaceInAxes = new DisplayedSurfaceView(axesGroup, new Surface(surfaceData), visualizationParameters);
         surfaceInAxes.resetTransform();
-        Utils.fitGroupToBox(
+        ThreeJsUtils.fitGroupToBox(
             surfaceInAxes.group,
             surfaceInAxes.boundingBox(),
             axes.boundingBox(),
