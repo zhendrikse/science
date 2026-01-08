@@ -9,8 +9,8 @@
 
     #canvas-wrapper {
         position: relative;
-        width: 90vw;        /* 90% van viewport width, mobiel vriendelijk */
-        max-width: 800px;   /* maar niet groter dan desktop max */
+        width: 100%;        /* past binnen content area */
+        max-width: 800px;   /* cap op desktop */
         aspect-ratio: 1 / 1;
         margin: 0 auto;
     }
@@ -434,17 +434,14 @@
 
     function resizeCanvas() {
         const wrapper = document.getElementById("canvas-wrapper");
-        const rect = wrapper.getBoundingClientRect();
-        const dpr = Math.min(window.devicePixelRatio || 1, 1); // cap op 1 voor desktop
+        const rect = wrapper.getBoundingClientRect(); // echte schermafmetingen
+        const dpr = window.devicePixelRatio || 1;
 
         canvas.width  = Math.floor(rect.width * dpr);
         canvas.height = Math.floor(rect.height * dpr);
 
         canvas.style.width  = rect.width + "px";
         canvas.style.height = rect.height + "px";
-
-        context.setTransform(1,0,0,1,0,0);
-        context.scale(dpr, dpr);
 
         redraw();
     }
