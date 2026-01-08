@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 export class MatlabAxes {
     constructor(parentGroup, gridSize=4, gridDivisions=10) {
         this.group = new THREE.Group();
