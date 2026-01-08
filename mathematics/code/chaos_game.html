@@ -1,8 +1,7 @@
 <style>
     #canvas-wrapper {
         position: relative;
-        width: 100%;
-        max-width: 800px;
+        width: min(100vw, 800px);
         margin: 0 auto;
         aspect-ratio: 1 / 1;
     }
@@ -14,25 +13,33 @@
         height: 100%;
         display: block;
     }
+    table {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    td {
+        white-space: nowrap;
+    }
 </style>
 <div id="canvas-wrapper">
     <canvas id="chaosGameCanvas"></canvas>
 </div>
 <p style="clear: both;"></p>
-<table style="border: none;">
-    <tr style="border-style: hidden;">
+<table>
+    <tr>
         <td><label for="cantorDust"><input type="radio" id="cantorDust"/>Cantor dust</label></td>
         <td><label for="fractal1"><input type="radio" id="fractal1"/>Fractal star</label></td>
     </tr>
-    <tr style="border-style: hidden;">
+    <tr>
         <td><label for="fractal2"><input type="radio" id="fractal2"/>Fractal flower</label></td>
         <td><label for="sierpinskiCarpet"><input type="radio" id="sierpinskiCarpet"/>Sierpinski carpet</label></td>
     </tr>
-    <tr style="border-style: hidden;">
+    <tr>
         <td><label for="sierpinskiTriangle"><input type="radio" id="sierpinskiTriangle"/>Sierpinski triangle</label></td>
         <td><label for="tSquareFractal"><input type="radio" id="tSquareFractal"/>T-square fractal</label></td>
     </tr>
-    <tr style="border-style: hidden;">
+    <tr>
         <td><label for="vicsekFractal"><input type="radio" id="vicsekFractal"/>Vicsek fractal</label></td>
         <td>&nbsp;</td>
     </tr>
@@ -296,8 +303,7 @@
 
     function resizeCanvas() {
         const wrapper = document.getElementById("canvas-wrapper");
-
-        const size = wrapper.clientWidth; // vierkant
+        const size = wrapper.clientWidth;
         const dpr = window.devicePixelRatio || 1;
 
         canvas.width  = Math.floor(size * dpr);
@@ -305,9 +311,8 @@
 
         canvas.style.width  = size + "px";
         canvas.style.height = size + "px";
-
-        display.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
+
 
     let currentFractal = vicsekFractal;
 
