@@ -28,7 +28,7 @@
 <script>
     const canvas = document.getElementById("coralCanvas");
     const display = canvas.getContext("2d");
-    const maxDistance = Math.sqrt(canvas.height * canvas.height + canvas.width * canvas.width);
+    let maxDistance = 0;
     canvas.focus();
 
     function circle(x, y, radius, fillColor="#DDDD00", outline=false) {
@@ -65,8 +65,14 @@
     const swarm = [];
     const size_swarm = 2500;
     const noise = 10.0;
-    const thresholdDistance = 5;
-    const thresholdDistanceSquared = thresholdDistance * thresholdDistance;
+    let thresholdDistance = 5;
+    let thresholdDistanceSquared = thresholdDistance * thresholdDistance;
+    function updateThreshold() {
+        const dpr = window.devicePixelRatio || 1;
+        thresholdDistance = 5 * dpr;
+        thresholdDistanceSquared = thresholdDistance * thresholdDistance;
+    }
+    updateThreshold();
 
     class Particle {
         constructor(radius=2) {
@@ -121,7 +127,7 @@
             const dx = Math.random() * noise;
             const dy = Math.random() * noise;
             this.x += Math.random() < 0.5 ? dx : -dx;
-            this.y += -.2 + Math.random() < 0.5 ? dy : -dy;
+            this.y += -0.2 + (Math.random() < 0.5 ? dy : -dy);
 
             this.x = (this.x + canvas.width) % canvas.width;
             //this.y = (this.y + canvas.height) % canvas.height;
@@ -152,14 +158,31 @@
     }
 
     function resizeCanvasToWrapper() {
-        const canvasWrapper = document.getElementById('canvas-wrapper');
-        const canvas = document.getElementById('coralCanvas');
+        const wrapper = document.getElementById('canvas-wrapper');
+        const canvas  = document.getElementById('coralCanvas');
+        const dpr = window.devicePixelRatio || 1;
 
-        canvas.width = canvasWrapper.clientWidth;
-        canvas.height = canvasWrapper.clientHeight;
+        const cssWidth  = wrapper.clientWidth;
+        const cssHeight = wrapper.clientHeight;
+
+        canvas.style.width  = cssWidth + 'px';
+        canvas.style.height = cssHeight + 'px';
+
+        canvas.width  = Math.floor(cssWidth  * dpr);
+        canvas.height = Math.floor(cssHeight * dpr);
+
+        display.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function updateMaxDistance() {
+        maxDistance = Math.sqrt(
+            canvas.width * canvas.width +
+            canvas.height * canvas.height
+        );
     }
 
     resizeCanvasToWrapper();
+    updateMaxDistance();
     window.addEventListener('resize', () => {
         resizeCanvasToWrapper();
     });
