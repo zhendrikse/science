@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 export class ThreeJsUtils {
     static scaleBox3(box, factor) {
         const center = new THREE.Vector3();

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 
 export class MatlabAxes {
     constructor(parentGroup, gridSize=4, gridDivisions=10) {
