@@ -187,9 +187,9 @@
         penUp = () => this.penState = Turtle.PenState.UP;
         draw = (lineWidth = 2) => this.renderer.drawPath(lineWidth);
 
-        forward(d) {
-            const newX = this.x + d * Math.cos(this.angle);
-            const newY = this.y + d * Math.sin(this.angle);
+        forward(distance) {
+            const newX = this.x + distance * Math.cos(this.angle);
+            const newY = this.y + distance * Math.sin(this.angle);
             this.goto(newX, newY);
         }
 
