@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Fire simulation
+## 🔥 Fire simulation 🔥
 <div class="header_line"><br/></div>
 
 {% include_relative code/fire.html %}
