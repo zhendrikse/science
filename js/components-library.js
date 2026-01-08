@@ -95,6 +95,13 @@ export class MatlabAxes {
     setAxesLabelVisibilityTo(checked) {
         this.axisLabels.forEach(label => label.visible = checked);
     }
+
+    boundingBox = () => {
+        this.group.updateMatrixWorld(true);
+        return new THREE.Box3().setFromObject(this.group).clone();
+    }
+
+    show = (value) => this.group.visible = value;
 }
 
 export class Utils {

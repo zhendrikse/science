@@ -82,7 +82,7 @@
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
     import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
-    import { Interval, Surface, SurfaceView, DifferentialGeometry } from 'https://www.hendrikse.name/science/js/components-library.js';
+    import { MatlabAxes, Interval, Surface, SurfaceView, DifferentialGeometry } from 'https://www.hendrikse.name/science/js/components-library.js';
 
     const canvas = document.getElementById("geometriesCanvas");
 
@@ -787,69 +787,6 @@
         updateSurfaceWith= (newSurface) => this.surface = newSurface;
     }
 
-    class MatlabAxes {
-        constructor(parentGroup, axesSize=3, gridDivisions=10) {
-            this.group = new THREE.Group();
-
-            this.#createGrids(axesSize, gridDivisions);
-            this.#createPlanes(axesSize);
-            this.group.add(this.#createAxes(axesSize));
-
-            parentGroup.add(this.group);
-        }
-
-        #createGrids(axesSize, gridDivisions) {
-            const gridXZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
-            gridXZ.rotation.x = Math.PI / 2;
-            gridXZ.position.set(0, .5 * axesSize, -0.5 * axesSize);
-            this.group.add(gridXZ);
-
-            const gridYZ = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
-            gridYZ.rotation.z = Math.PI / 2;
-            gridYZ.position.set(-0.5 * axesSize, .5 * axesSize, 0);
-            this.group.add(gridYZ);
-
-            const gridXY = new THREE.GridHelper(axesSize, gridDivisions, 0x444444, 0x444444);
-            this.group.add(gridXY);
-        }
-
-        #createPlanes(axesSize) {
-            const planeXZ = this.#createPlane(axesSize, 0, 0, 0);
-            planeXZ.rotation.x = -Math.PI / 2;
-
-            const planeYZ = this.#createPlane(axesSize, -0.5, 0.5, 0);
-            planeYZ.rotation.y = -Math.PI / 2;
-
-            this.#createPlane(axesSize, 0, 0.5, -0.5);
-        }
-
-        #createAxes(axesSize) {
-            const eps = .025
-            const axesHelper = new THREE.AxesHelper(axesSize);
-            axesHelper.position.set(-.5 * axesSize + eps, eps, -.5 * axesSize +eps);
-            return axesHelper;
-        }
-
-        #createPlane(size, x, y, z, opacity=0.10, color=0x888888) {
-            const material = new THREE.MeshPhongMaterial({
-                color: color,
-                side: THREE.DoubleSide,
-                transparent: true,
-                opacity: opacity
-            });
-            const mesh = new THREE.Mesh(new THREE.PlaneGeometry(size, size), material);
-            mesh.position.set(x * size, y * size, z * size);
-            this.group.add(mesh);
-            return mesh;
-        }
-
-        boundingBox = () => {
-            this.group.updateMatrixWorld(true);
-            return new THREE.Box3().setFromObject(this.group).clone();
-        }
-        show = (value) => this.group.visible = value;
-    }
-
     class SurfaceSelectorView extends SurfaceView {
         constructor(parentGroup, surface, {resolution=20, baseColor="#4f6"}) {
             super(parentGroup, surface);
@@ -1482,7 +1419,7 @@
 
     const axesGroup = new THREE.Group();
     worldGroup.add(axesGroup);
-    const axes = new MatlabAxes(axesGroup);
+    const axes = new MatlabAxes(axesGroup, document, 3, 10);
 
     const surfaceDefinition = surfaces[34];
     const visualizationParameters = new ViewParameters();
