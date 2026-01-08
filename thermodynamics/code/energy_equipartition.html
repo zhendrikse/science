@@ -336,7 +336,7 @@ async function __main__() {
     "92";
     display.append_to_caption("\n");
     "93";
-    energies = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: 600, align: "left", ymin: 0, background: color.black, title: "Average energies"})]);
+    energies = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({width: scene.canvas.style.width, align: "left", ymin: 0, background: color.black, title: "Average energies"})]);
     "94";
     c_avg_com_K = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.green})]);
     "95";
