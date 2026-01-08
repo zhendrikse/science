@@ -1,5 +1,32 @@
-<div id="container" style="position: relative; width: 600px; height: 600px; border: none; display: inline-block;">
-    <canvas id="myCanvas" width="600" height="600"></canvas>
+<style>
+    canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    #container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 4 / 3;
+    }
+</style>
+
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
+    }
+</script>
+
+<div id="container">
+    <canvas id="myCanvas"></canvas><br/>
 </div>
 
 <div id="ui" class="ui">
@@ -18,136 +45,56 @@
     <label>Axis labels <input type="checkbox" id="axisLabelCheck" checked></label>
 </div>
 
-
 <script type="module">
-    import * as THREE from "https://cdn.skypack.dev/three@0.136.0";
-    import { OrbitControls } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls";
-    import { CSS2DRenderer, CSS2DObject } from "https://cdn.skypack.dev/three@0.136.0/examples/jsm/renderers/CSS2DRenderer";
+    import * as THREE from "three";
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+    import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
+    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
+    import { MatlabAxes   } from 'https://www.hendrikse.name/science/js/components-library';
 
     const container = document.getElementById("container");
     const canvas = document.getElementById("myCanvas");
-
-    const width = canvas.width;
-    const height = canvas.height;
 
     // --- SCENE ---
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x101010);
 
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
     camera.position.set(4, 4, 4);
 
     // WebGL renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
-    renderer.setSize(width, height);
+
+    // Resizing for mobile devices
+    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+    window.addEventListener('resize', () => {
+        ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+    });
 
     // CSS2DRenderer overlay
     const labelRenderer = new CSS2DRenderer();
-    labelRenderer.setSize(width, height);
     labelRenderer.domElement.style.position = "absolute";
     labelRenderer.domElement.style.top = "0";
     labelRenderer.domElement.style.left = "0";
     labelRenderer.domElement.style.pointerEvents = "none";
     container.appendChild(labelRenderer.domElement);
 
+    function resizeLabelRendererToCanvas(labelRenderer) {
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+
+        if (!w || !h) return;
+
+        labelRenderer.setSize(w, h, false);
+    }
+    resizeLabelRendererToCanvas(labelRenderer);
+
     const controls = new OrbitControls(camera, canvas);
 
     scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(10, 10, 10));
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-    class MatlabAxes {
-        constructor(gridSize=4, gridDivisions=10) {
-            this.gridSize = gridSize;
-            this.allGrids = [].concat(
-                this.xyPlane(gridSize, gridDivisions, new THREE.Vector3(.5 * gridSize, 0, .5 * gridSize)),
-                this.yzPlane(gridSize, gridDivisions, new THREE.Vector3(0, .5 * gridSize, .5 * gridSize)),
-                this.zxPlane(gridSize, gridDivisions, new THREE.Vector3(.5 * gridSize, .5 * gridSize, 0))
-            );
-            this.tickLabels = this.createTickLabels(gridSize, gridDivisions);
-            this.axisLabels = this.createAxisLabels(gridSize);
-            this.allGrids.forEach(obj => scene.add(obj));
-            this.tickLabels.forEach(obj => scene.add(obj));
-            this.axisLabels.forEach(obj => scene.add(obj));
-        }
-
-        createPlane(size, divisions, position, colour) {
-            const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
-            const plane = new THREE.Mesh(
-                new THREE.PlaneGeometry(size, size),
-                new THREE.MeshPhongMaterial({ color: colour, transparent:true, opacity:0.1, side:THREE.DoubleSide })
-            );
-            plane.position.copy(position);
-            grid.position.copy(position);
-            return [grid, plane];
-        }
-
-        xyPlane(size, divisions, position) {
-            const gridPlane = this.createPlane(size, divisions, position, 0x4444ff);
-            gridPlane[1].rotateX(Math.PI/2);
-            gridPlane[0].rotateY(Math.PI/2);
-            return gridPlane;
-        }
-
-        yzPlane(size, divisions, position) {
-            const gridPlane = this.createPlane(size, divisions, position, 0x44ff44);
-            gridPlane[1].rotateY(Math.PI/2);
-            gridPlane[0].rotateZ(Math.PI/2);
-            return gridPlane;
-        }
-
-        zxPlane(size, divisions, position) {
-            const gridPlane = this.createPlane(size, divisions, position, 0xff4444);
-            gridPlane[1].rotateZ(Math.PI/2);
-            gridPlane[0].rotateX(Math.PI/2);
-            return gridPlane;
-        }
-
-        makeLabel(text, pos, color="yellow") {
-            const div = document.createElement("div");
-            div.style.color = color;
-            div.style.fontSize = "15px";
-            div.textContent = text;
-            const label = new CSS2DObject(div);
-            label.position.copy(pos);
-            return label;
-        }
-
-        createTickLabels(size, divisions) {
-            const labels = [];
-            const step = (2 * size) / divisions;
-            const offset = 0.1;
-
-            for (let v = 0; v <= size; v += step) {
-                labels.push(this.makeLabel(v.toFixed(1), new THREE.Vector3(v, 0, size + offset)));
-                labels.push(this.makeLabel(v.toFixed(1), new THREE.Vector3(0, v, size + offset)));
-                labels.push(this.makeLabel(v.toFixed(1), new THREE.Vector3(size + offset, 0, v)));
-            }
-            return labels;
-        }
-
-        createAxisLabels(size) {
-            const offset = 0.2 * size;
-            return [
-                this.makeLabel("X-axis", new THREE.Vector3(size + offset, 0, .5 * size), "white"),
-                this.makeLabel("Y-axis", new THREE.Vector3(0, size + offset * .5, 0), "white"),
-                this.makeLabel("Z-axis", new THREE.Vector3(.5 * size, 0 ,size + offset), "white"),
-            ];
-        }
-
-        setTickLabelVisibilityTo(checked) {
-            this.tickLabels.forEach(label => label.visible = checked);
-        }
-
-        setPlaneVisibilityTo(checked) {
-            this.allGrids.forEach(grid => grid.visible = checked);
-        }
-
-        setAxesLabelVisibilityTo(checked) {
-            this.axisLabels.forEach(label => label.visible = checked);
-        }
-    }
-
-    const axis = new MatlabAxes(2, 10);
+    const axis = new MatlabAxes(scene, 2, 10);
 
     function toCartesian(radius, theta, phi) {
         return new THREE.Vector3(

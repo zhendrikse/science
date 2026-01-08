@@ -73,6 +73,7 @@
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
 
     const color = THREE.Color;
     const vector = THREE.Vector3;
@@ -105,7 +106,12 @@
     moleculeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     moleculeRenderer.shadowMap.enabled = true;
     moleculeRenderer.setAnimationLoop( animate );
-    resizeRendererToCanvas(moleculeRenderer, moleculeCamera);
+
+    // Resizing for mobile devices
+    ThreeJsUtils.resizeRendererToCanvas(moleculeRenderer, moleculeCamera);
+    window.addEventListener('resize', () => {
+        ThreeJsUtils.resizeRendererToCanvas(moleculeRenderer, moleculeCamera);
+    });
 
     const moleculeControls = new OrbitControls(moleculeCamera, moleculeRenderer.domElement);
     moleculeControls.enableDamping = true;
@@ -651,20 +657,6 @@
     };
 
     moleculeCanvas.addEventListener('mousemove', onMouseMove);
-
-    function resizeRendererToCanvas(moleculeRenderer, moleculeCamera) {
-        const w = moleculeCanvas.clientWidth;
-        const h = moleculeCanvas.clientHeight;
-
-        if (w === 0 || h === 0) return;
-
-        if (moleculeCanvas.width !== w || moleculeCanvas.height !== h) {
-            moleculeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            moleculeRenderer.setSize(w, h, false);
-            moleculeCamera.aspect = w / h;
-            moleculeCamera.updateProjectionMatrix();
-        }
-    }
 
     function animate() {
         moleculeControls.autoRotate = isRotating;
