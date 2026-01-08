@@ -1,4 +1,23 @@
-<canvas id="myCanvas" width="600" height="600" style="border: none;"></canvas>
+<style>
+    #canvas-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    #chaosGameCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+</style>
+<div id="canvas-wrapper">
+    <canvas id="chaosGameCanvas"></canvas>
+</div>
 <p style="clear: both;"></p>
 <table style="border: none;">
     <tr style="border-style: hidden;">
@@ -20,8 +39,13 @@
 </table>
 
 <script>
-    const canvas = document.getElementById("myCanvas");
+    const canvas = document.getElementById("chaosGameCanvas");
     const display = canvas.getContext("2d");
+    resizeCanvas();
+    window.addEventListener("resize", () => {
+        resizeCanvas();
+        redraw(); // opnieuw renderen
+    });
     canvas.focus();
 
     const radioButtons = new Map();
@@ -270,14 +294,36 @@
             document.getElementById(key).checked = false;
     }
 
+    function resizeCanvas() {
+        const wrapper = document.getElementById("canvas-wrapper");
+
+        const size = wrapper.clientWidth; // vierkant
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width  = Math.floor(size * dpr);
+        canvas.height = Math.floor(size * dpr);
+
+        canvas.style.width  = size + "px";
+        canvas.style.height = size + "px";
+
+        display.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    let currentFractal = vicsekFractal;
+
+    function redraw() {
+        const image = new PixelImage();
+        currentFractal(image);
+        image.render();
+    }
+
     for (const [key, value] of radioButtons)
         document.getElementById(key).onclick = function() {
             resetButtons();
-            document.getElementById(key).checked = true;
-            const image = new PixelImage();
-            value(image);
-            image.render();
-        }
+            this.checked = true;
+            currentFractal = value;
+            redraw();
+        };
 
     const image = new PixelImage();
     vicsekFractal(image);
