@@ -22,6 +22,8 @@
 <script type="module">
     import * as THREE from "three";
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
+
     const vector = THREE.Vector3,
         color = THREE.Color;
 
@@ -42,10 +44,15 @@
     galaxyRenderer.shadowMap.enabled = false;
     galaxyRenderer.setAnimationLoop( animate );
 
+    // Resizing for mobile devices
+    ThreeJsUtils.resizeRendererToCanvas(galaxyRenderer, galaxyCamera);
+    window.addEventListener('resize', () => {
+        ThreeJsUtils.resizeRendererToCanvas(galaxyRenderer, galaxyCamera);
+    });
+
     const controls = new OrbitControls(galaxyCamera, galaxyCanvas);
     controls.target.set(0, 0, 0);
     controls.update();
-    resizeRendererToCanvas(galaxyRenderer, galaxyCamera);
 
     // We need a custom shader as THREE.points geometry does not
     // allow to vary the size of the points individually, and we do
@@ -292,20 +299,6 @@
                 haze_coordinates.push(new vector(x, y, z));
             }
             return haze_coordinates;
-        }
-    }
-
-    function resizeRendererToCanvas(galaxyRenderer, galaxyCamera) {
-        const w = galaxyCanvas.clientWidth;
-        const h = galaxyCanvas.clientHeight;
-
-        if (w === 0 || h === 0) return;
-
-        if (galaxyCanvas.width !== w || galaxyCanvas.height !== h) {
-            galaxyRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            galaxyRenderer.setSize(w, h, false);
-            galaxyCamera.aspect = w / h;
-            galaxyCamera.updateProjectionMatrix();
         }
     }
 
