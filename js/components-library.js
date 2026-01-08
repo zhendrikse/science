@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
+import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 
 export class MatlabAxes {
     constructor(parentGroup, document, gridSize=4, gridDivisions=10) {
@@ -93,6 +94,17 @@ export class MatlabAxes {
 
     setAxesLabelVisibilityTo(checked) {
         this.axisLabels.forEach(label => label.visible = checked);
+    }
+}
+
+export class Utils {
+    static functionFrom(functionString) {
+        try {
+            return (u, v) => math.compile(functionString).evaluate({ u, v });
+        } catch (err) {
+            alert("Math.js parse error: " + err.message);
+            return null;
+        }
     }
 }
 
