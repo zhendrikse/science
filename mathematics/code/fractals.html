@@ -362,16 +362,14 @@
         turtle.penDown();
         for (let i = 1; i < points.length; i++) {
             const [x, y] = points[i];
-            const color = hsvToRgb(i / points.length, 1, 1);
-            turtle.color(color);
+            turtle.color(hsvToRgb(i / points.length, 1, 1));
             turtle.goto(x * scale + offsetX, y * scale + offsetY);
         }
     }
 
     function tSquare(turtle, n, x, y, w) {
         if (n !== 0) {
-            const color = hsvToRgb(w * .5, 1, 1);
-            turtle.color(color);
+            turtle.color(hsvToRgb(w * .5, 1, 1));
             turtle.goto(x, y);
             turtle.penDown();
             turtle.goto(x + w, y);
@@ -436,14 +434,17 @@
 
     function resizeCanvas() {
         const wrapper = document.getElementById("canvas-wrapper");
-        const rect = wrapper.getBoundingClientRect(); // echte schermafmetingen
-        const dpr = window.devicePixelRatio || 1;
+        const rect = wrapper.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 1); // cap op 1 voor desktop
 
         canvas.width  = Math.floor(rect.width * dpr);
         canvas.height = Math.floor(rect.height * dpr);
 
         canvas.style.width  = rect.width + "px";
         canvas.style.height = rect.height + "px";
+
+        context.setTransform(1,0,0,1,0,0);
+        context.scale(dpr, dpr);
 
         redraw();
     }
