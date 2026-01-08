@@ -78,14 +78,9 @@
         constructor(radius=2) {
             this.x = canvas.width * Math.random();
             this.y = canvas.height * Math.random();
-            this.radius = this.#computeParticleRadius();
+            this.radius = radius;
             this.frozen = false;
             this.colour = scientificColorCodingFor(0, 0, maxDistance);
-        }
-
-        #computeParticleRadius() {
-            const dpr = window.devicePixelRatio || 1;
-            return Math.max(1, 2 * dpr);
         }
 
         makeSeed() {
