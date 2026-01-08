@@ -18,10 +18,9 @@ Phyllotactic spirals form a distinctive class of
 
 <p style="clear: both;"></p>
 
-- Code in [phyllotaxis.html](https://github.com/zhendrikse/science/blob/main/nature/code/phyllotaxis.html)
-  written by [Zeger Hendrikse](https://www.hendrikse.name/)
-- Implemented in pure Javascript!
-- Inspired by [this video](https://www.youtube.com/watch?v=KWoJgHFYWxY)
+🔧 Code in [phyllotaxis.html](https://github.com/zhendrikse/science/blob/main/nature/code/phyllotaxis.html) written by [Zeger Hendrikse](https://www.hendrikse.name/) <br/>
+👉 Implemented in pure Javascript! <br/>
+👉 Inspired by [this video](https://www.youtube.com/watch?v=KWoJgHFYWxY)
 
 {% include_relative code/phyllotaxis.html %}
 
