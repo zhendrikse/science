@@ -1420,6 +1420,7 @@
     const axesGroup = new THREE.Group();
     worldGroup.add(axesGroup);
     const axes = new MatlabAxes(axesGroup, document, 3, 10);
+    axes.setAxesLabelVisibilityTo(true);
 
     const surfaceDefinition = surfaces[34];
     const visualizationParameters = new ViewParameters();

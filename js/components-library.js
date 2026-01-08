@@ -3,21 +3,29 @@ import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 
 export class MatlabAxes {
-    constructor(parentGroup, document, gridSize=4, gridDivisions=10) {
+    constructor(parentGroup, document, gridSize=5, gridDivisions=10) {
         this.group = new THREE.Group();
         this.document = document;
         parentGroup.add(this.group);
 
         this.allGrids = [].concat(
-            this.#xyPlane(gridSize, gridDivisions, new THREE.Vector3(.5 * gridSize, 0, .5 * gridSize)),
-            this.#yzPlane(gridSize, gridDivisions, new THREE.Vector3(0, .5 * gridSize, .5 * gridSize)),
-            this.#zxPlane(gridSize, gridDivisions, new THREE.Vector3(.5 * gridSize, .5 * gridSize, 0))
+            this.#xzPlane(gridSize, gridDivisions, new THREE.Vector3(0, 0, 0)),
+            this.#yzPlane(gridSize, gridDivisions, new THREE.Vector3(-0.5 * gridSize, .5 * gridSize, 0)),
+            this.#xyPlane(gridSize, gridDivisions, new THREE.Vector3(0, .5 * gridSize, -0.5 * gridSize))
         );
+        this.group.add(this.#createAxes(gridSize));
         this.tickLabels = this.#createTickLabels(gridSize, gridDivisions);
         this.axisLabels = this.#createAxisLabels(gridSize);
         this.allGrids.forEach(obj => this.group.add(obj));
         this.tickLabels.forEach(obj => this.group.add(obj));
         this.axisLabels.forEach(obj => this.group.add(obj));
+    }
+
+    #createAxes(axesSize) {
+        const eps = .025
+        const axesHelper = new THREE.AxesHelper(axesSize);
+        axesHelper.position.set(-.5 * axesSize + eps, eps, -.5 * axesSize +eps);
+        return axesHelper;
     }
 
     #createPlane(size, divisions, position, colour) {
@@ -31,7 +39,7 @@ export class MatlabAxes {
         return [grid, plane];
     }
 
-    #xyPlane(size, divisions, position) {
+    #xzPlane(size, divisions, position) {
         const gridPlane = this.#createPlane(size, divisions, position, 0x4444ff);
         gridPlane[1].rotateX(Math.PI/2);
         gridPlane[0].rotateY(Math.PI/2);
@@ -45,7 +53,7 @@ export class MatlabAxes {
         return gridPlane;
     }
 
-    #zxPlane(size, divisions, position) {
+    #xyPlane(size, divisions, position) {
         const gridPlane = this.#createPlane(size, divisions, position, 0xff4444);
         gridPlane[1].rotateZ(Math.PI/2);
         gridPlane[0].rotateX(Math.PI/2);
