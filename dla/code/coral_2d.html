@@ -11,7 +11,7 @@
         display: block;
         position: relative;
         width: 100%;
-        max-width: 600px;
+        max-width: 650px;
         aspect-ratio: 1 / 1;
         margin: auto;
     }
@@ -30,7 +30,8 @@
     const canvas = document.getElementById("coralCanvas");
     const display = canvas.getContext("2d");
     let maxDistance = 0;
-    canvas.focus();
+    const PARTICLES_PER_10K_PIXELS = 75;
+    let swarmSize = 0;
 
     function circle(x, y, radius, fillColor="#DDDD00", outline=false) {
         display.fillStyle = fillColor;
@@ -64,25 +65,27 @@
     }
 
     const swarm = [];
-    const size_swarm = 2500;
     const noise = 10.0;
     let thresholdDistance = 5;
     let thresholdDistanceSquared = thresholdDistance * thresholdDistance;
-
     function updateThreshold() {
         const dpr = window.devicePixelRatio || 1;
         thresholdDistance = 5 * dpr;
         thresholdDistanceSquared = thresholdDistance * thresholdDistance;
     }
-    updateThreshold();
 
     class Particle {
         constructor(radius=2) {
             this.x = canvas.width * Math.random();
             this.y = canvas.height * Math.random();
-            this.radius = radius;
+            this.radius = this.#computeParticleRadius();
             this.frozen = false;
             this.colour = scientificColorCodingFor(0, 0, maxDistance);
+        }
+
+        #computeParticleRadius() {
+            const dpr = window.devicePixelRatio || 1;
+            return Math.max(1, 2 * dpr);
         }
 
         makeSeed() {
@@ -115,7 +118,7 @@
         }
 
         checkForFreezing() {
-            for (let i = 0; i < size_swarm; i++)
+            for (let i = 0; i < swarmSize; i++)
                 if(this.hasCollisionWith(swarm[i])) {
                     this.freeze();
                     return;
@@ -153,16 +156,21 @@
         );
     }
 
+    function computeSwarmSize() {
+        const area = canvas.width * canvas.height;
+        swarmSize = Math.floor(area / 10_000 * PARTICLES_PER_10K_PIXELS);
+    }
+
     function setup() {
-        for (let i = 0; i < size_swarm; i++)
+        for (let i = 0; i < swarmSize; i++)
             swarm.push(new Particle());
         swarm[0].makeSeed();
     }
 
     function draw() {
-        for (let i = 0; i < size_swarm; i++)
+        for (let i = 0; i < swarmSize; i++)
             swarm[i].update();
-        for (let i = 0; i < size_swarm; i++)
+        for (let i = 0; i < swarmSize; i++)
             swarm[i].display();
     }
 
@@ -174,13 +182,19 @@
         canvas.height = canvasWrapper.clientHeight;
     }
 
-    resizeCanvasToWrapper();
-    window.addEventListener('resize', () => {
+    function resizeAndResetSimulation() {
         resizeCanvasToWrapper();
-    });
-    setup();
-    updateMaxDistance();
+        updateMaxDistance();
+        updateThreshold();
+        computeSwarmSize();
+        setup();
+    }
 
+    window.addEventListener('resize', () => {
+        resizeAndResetSimulation();
+    });
+
+    resizeAndResetSimulation();
     window.requestAnimationFrame(function loop() {
         display.clearRect(0, 0, canvas.width, canvas.height);
         draw();
