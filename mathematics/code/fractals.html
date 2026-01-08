@@ -4,23 +4,23 @@
         margin: 0;
         padding: 0;
         overflow-x: hidden;
+        height: 100%;
     }
 
     #canvas-wrapper {
         position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
+        width: 90vw;        /* 90% van viewport width, mobiel vriendelijk */
+        max-width: 800px;   /* maar niet groter dan desktop max */
         aspect-ratio: 1 / 1;
+        margin: 0 auto;
     }
 
     #fractalsCanvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
+        width: 100%;        /* past altijd in de wrapper */
         height: 100%;
         display: block;
     }
+
     table {
         width: 100%;
         border: none;
@@ -53,12 +53,6 @@
 <script>
     let canvas = document.getElementById("fractalsCanvas");
     let context = canvas.getContext("2d");
-    context.lineWidth = 2;
-    resizeCanvas();
-    window.addEventListener("resize", () => {
-        resizeCanvas();
-        redraw();
-    });
 
     const radioButtons = new Map();
     radioButtons.set("kochSnowflake", drawSnowflake);
@@ -66,20 +60,6 @@
     radioButtons.set("dragonCurve", drawDragonCurve);
     radioButtons.set("sierpinskiTriangle", drawSierpinskiTriangle);
     radioButtons.set("tSquareFractal", drawTSquare);
-
-    const Colors = Object.freeze({
-        RED: [1, 0, 0],
-        GREEN: [0, 1, 0],
-        BLUE: [0, 0, 1],
-        CYAN: [0, 1, 1],
-        MAGENTA: [1, 0, 1],
-        YELLOW: [1, 1, 0],
-        ORANGE: [1, .6, 0],
-        PURPLE: [0.4, 0.2, 0.6],
-        GRAY: [.5, .5, .5],
-        WHITE: [1, 1, 1],
-        BLACK: [0, 0, 0],
-    });
 
     function hsvToRgb(h, s, v) {
         let r, g, b;
@@ -101,16 +81,114 @@
         return [Math.round(r), Math.round(g), Math.round(b)];
     }
 
+    const Colors = Object.freeze({
+        RED: [1, 0, 0],
+        GREEN: [0, 1, 0],
+        BLUE: [0, 0, 1],
+        CYAN: [0, 1, 1],
+        MAGENTA: [1, 0, 1],
+        YELLOW: [1, 1, 0],
+        ORANGE: [1, .6, 0],
+        PURPLE: [0.4, 0.2, 0.6],
+        GRAY: [.5, .5, .5],
+        WHITE: [1, 1, 1],
+        BLACK: [0, 0, 0],
+    });
+
+    class Pixel {
+        constructor(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+        }
+    }
+
+    class PixelImage {
+        constructor(width, height, pixelSize=1, backgroundColor=Colors.BLACK) {
+            const Array2D = (r, c) => [...Array(r)].map(_=>Array(c).fill(backgroundColor));
+            this.pixelSize = pixelSize;
+            this.width = width;
+            this.height = height;
+            this.colours = Array2D(this.dimX(), this.dimY());
+        }
+
+        #asCanvasImageData(context) {
+            const imageData = context.createImageData(this.width, this.height);
+            for (let x = 0 ; x < this.width; x++)
+                for (let y = 0 ; y < this.height; y++)
+                    this.#setPixelColor(imageData.data, new Pixel(x, y, this.colours[x][y], this.pixelSize));
+            return imageData;
+        }
+
+        #setPixelColor(imageData, pixel) {
+            let coordinate = pixel.y * (this.width * 4) + pixel.x * 4;
+            imageData[coordinate++] = pixel.color[0] * 255;
+            imageData[coordinate++] = pixel.color[1] * 255;
+            imageData[coordinate++] = pixel.color[2] * 255;
+            imageData[coordinate++] = 255
+        }
+
+        setColour = (pixel) => {
+            if (pixel.x < 0 || pixel.y < 0 || pixel.x >= this.dimX() || pixel.y >= this.dimY()) return;
+            this.colours[pixel.x][pixel.y] = pixel.color;
+        }
+
+        dimX = () => this.width / this.pixelSize;
+        dimY = () => this.height / this.pixelSize;
+
+        drawLine(fromPixel, toPixel) {
+            // Bresenham with color interpolation
+            let x0 = fromPixel.x | 0,
+                y0 = fromPixel.y | 0,
+                x1 = toPixel.x | 0,
+                y1 = toPixel.y | 0;
+
+            const dx = Math.abs(x1 - x0);
+            const dy = Math.abs(y1 - y0);
+            const sx = x0 < x1 ? 1 : -1;
+            const sy = y0 < y1 ? 1 : -1;
+            let err = dx - dy;
+
+            // Interpolate color
+            const steps = Math.max(dx, dy) || 1;
+            const dr = (toPixel.color[0] - fromPixel.color[0]) / steps;
+            const dg = (toPixel.color[1] - fromPixel.color[1]) / steps;
+            const db = (toPixel.color[2] - fromPixel.color[2]) / steps;
+
+            let step = 0;
+
+            while (true) {
+                const r = fromPixel.color[0] + dr * step;
+                const g = fromPixel.color[1] + dg * step;
+                const b = fromPixel.color[2] + db * step;
+                this.setColour(new Pixel(x0, y0, [r, g, b]));
+
+                if (x0 === x1 && y0 === y1) break;
+
+                const e2 = 2 * err;
+                if (e2 > -dy) { err -= dy; x0 += sx; }
+                if (e2 < dx) { err += dx; y0 += sy; }
+
+                step++;
+            }
+        }
+
+
+        render(context) {
+            context.clearRect(0, 0, this.width, this.height);
+            context.putImageData(this.#asCanvasImageData(context), 0, 0);
+        }
+    }
+
     class TurtleRenderer {
-        constructor(ctx, margin = 0.05) {
-            this.ctx = ctx;
+        constructor(image, margin = 0.05) {
+            this.image = image;
             this.margin = margin; // 5% marge
             this.reset();
         }
 
         reset() {
-            this.points = [];
-            this.colors = [];
+            this.pixels = [];
             this.penstates = [];
             this.minX = Infinity;
             this.maxX = -Infinity;
@@ -118,9 +196,8 @@
             this.maxY = -Infinity;
         }
 
-        plot(x, y, color="cyan", draw=true) {
-            this.points.push({x, y});
-            this.colors.push(color);
+        plot(x, y, color=Colors.CYAN, draw=true) {
+            this.pixels.push(new Pixel(x, y, color));
             this.penstates.push(draw);
             this.minX = Math.min(this.minX, x);
             this.maxX = Math.max(this.maxX, x);
@@ -128,40 +205,31 @@
             this.maxY = Math.max(this.maxY, y);
         }
 
-        transform(x, y) {
-            const w = this.ctx.canvas.width;
-            const h = this.ctx.canvas.height;
-
+        transform(pixel) {
             const fractalW = this.maxX - this.minX || 1;
             const fractalH = this.maxY - this.minY || 1;
 
             const scale = Math.min(
-                w / fractalW,
-                h / fractalH
+                this.image.width / fractalW,
+                this.image.height / fractalH
             ) * (1 - this.margin * 2);
 
-            const offsetX = w / 2 - (this.minX + fractalW / 2) * scale;
-            const offsetY = h / 2 - (this.minY + fractalH / 2) * scale;
+            const offsetX = this.image.width / 2 - (this.minX + fractalW / 2) * scale;
+            const offsetY = this.image.height / 2 - (this.minY + fractalH / 2) * scale;
 
-            return [x * scale + offsetX, h - (y * scale + offsetY)];
+            return new Pixel(pixel.x * scale + offsetX, this.image.height - (pixel.y * scale + offsetY), pixel.color);
         }
 
-        drawPath(lineWidth = 2) {
-            this.ctx.lineWidth = lineWidth;
-
-            for (let i = 1; i < this.points.length; i++) {
+        drawPaths(lineWidth=2) {
+            for (let i = 1; i < this.pixels.length; i++) {
                 if (!this.penstates[i]) continue;
-                const [x1, y1] = this.transform(this.points[i - 1].x, this.points[i - 1].y);
-                const [x2, y2] = this.transform(this.points[i].x, this.points[i].y);
-
-                this.ctx.beginPath();
-                this.ctx.moveTo(x1, y1);
-                this.ctx.lineTo(x2, y2);
-                this.ctx.strokeStyle = this.colors[i];
-                this.ctx.stroke();
-                this.ctx.closePath();
+                const fromPixel = this.transform(this.pixels[i - 1]);
+                const toPixel = this.transform(this.pixels[i]);
+                this.image.drawLine(fromPixel, toPixel, lineWidth);
             }
         }
+
+        render = (context) => this.image.render(context);
     }
 
     class Turtle {
@@ -170,7 +238,7 @@
             DOWN: [0, 1, 0]
         });
 
-        constructor(renderer, penState=Turtle.PenState.UP, color="yellow") {
+        constructor(renderer, penState=Turtle.PenState.UP, color=Colors.YELLOW) {
             this.currentColor = color;
             this.penState = penState;
             this.angle = 0;
@@ -185,7 +253,8 @@
         backward = (distance) => this.forward(-distance);
         penDown= () => this.penState = Turtle.PenState.DOWN;
         penUp = () => this.penState = Turtle.PenState.UP;
-        draw = (lineWidth = 2) => this.renderer.drawPath(lineWidth);
+        draw = (lineWidth = 2) => this.renderer.drawPaths(lineWidth);
+        render = (context) => this.renderer.render(context);
 
         forward(distance) {
             const newX = this.x + distance * Math.cos(this.angle);
@@ -194,10 +263,7 @@
         }
 
         color(color) {
-            let hexColor = "#";
-            for (let i = 0; i < color.length; i++)
-                hexColor += (color[i] * 255).toString(16).padStart(2, '0');
-            this.currentColor = hexColor;
+            this.currentColor = color;
         }
 
         goto(x, y) {
@@ -207,51 +273,47 @@
         }
     }
 
-    function kochSnowflake(length, depth) {
+    function kochSnowflake(turtle, length, depth) {
         if (depth === 0)
             turtle.forward(length);
         else {
             length /= 3.0;
-            kochSnowflake(length, depth - 1);
+            kochSnowflake(turtle, length, depth - 1);
             turtle.left(60);
-            kochSnowflake(length, depth - 1);
+            kochSnowflake(turtle, length, depth - 1);
             turtle.right(120);
-            kochSnowflake(length, depth - 1);
+            kochSnowflake(turtle, length, depth - 1);
             turtle.left(60);
-            kochSnowflake(length, depth - 1);
+            kochSnowflake(turtle, length, depth - 1);
         }
     }
 
-    function drawSnowflake() {
-        turtle = new Turtle(new TurtleRenderer(context));
+    function drawSnowflake(turtle) {
         turtle.goto(-150, 90)
         turtle.penDown()
         turtle.color(Colors.YELLOW);
         for (let i = 0; i < 3; i++)
-            kochSnowflake(300, 4);
+            kochSnowflake(turtle, 300, 4);
         turtle.right(120);
-        turtle.draw();
     }
 
-    function cesaroFractal(depth, length) {
+    function cesaroFractal(turtle, depth, length) {
         if (depth === 0)
             turtle.forward(length);
         else {
             const angles = [85, -170, 85, 0]
             for (let index = 0; index < angles.length; index++) {
-                cesaroFractal(depth - 1, length / 3);
+                cesaroFractal(turtle, depth - 1, length / 3);
                 turtle.left(angles[index]);
             }
         }
     }
 
-    function drawCesaro() {
-        turtle = new Turtle(new TurtleRenderer(context));
+    function drawCesaro(turtle) {
         turtle.goto(10, 300);
         turtle.penDown();
         turtle.color(Colors.GREEN);
-        cesaroFractal(6, 4000);
-        turtle.draw();
+        cesaroFractal(turtle, 6, 4000);
     }
 
     function dragonCurve(n) {
@@ -285,14 +347,11 @@
         }
     }
 
-    function drawDragonCurve() {
+    function drawDragonCurve(turtle) {
         const points = dragonCurve(12);
         const scale = 400;
         const offsetX = canvas.width / 4.5;
         const offsetY = canvas.height / 1.5;
-
-        const renderer = new TurtleRenderer(context);
-        turtle = new Turtle(renderer);
 
         // Put turtle on first point without drawing
         const [x0, y0] = points[0];
@@ -307,11 +366,9 @@
             turtle.color(color);
             turtle.goto(x * scale + offsetX, y * scale + offsetY);
         }
-
-        turtle.draw();
     }
 
-    function tSquare(n, x, y, w) {
+    function tSquare(turtle, n, x, y, w) {
         if (n !== 0) {
             const color = hsvToRgb(w * .5, 1, 1);
             turtle.color(color);
@@ -323,50 +380,46 @@
             turtle.goto(x, y);
             turtle.penUp();
             const new_w = w / 3
-            tSquare(n - 1, x + new_w, y + new_w, new_w)
-            tSquare(n - 1, x + new_w, y + new_w * 5, new_w)
-            tSquare(n - 1, x + new_w * 5, y + new_w * 5, new_w)
-            tSquare(n - 1, x + new_w * 5, y + new_w, new_w)
+            tSquare(turtle, n - 1, x + new_w, y + new_w, new_w)
+            tSquare(turtle, n - 1, x + new_w, y + new_w * 5, new_w)
+            tSquare(turtle, n - 1, x + new_w * 5, y + new_w * 5, new_w)
+            tSquare(turtle, n - 1, x + new_w * 5, y + new_w, new_w)
         }
     }
 
-    function drawTSquare() {
+    function drawTSquare(turtle) {
         const n = 7;
         const w = 2**n;
-        turtle = new Turtle(new TurtleRenderer(context));
         turtle.color(Colors.RED);
         turtle.penUp();
         turtle.goto(0, 0);
-        tSquare(n, 0, 0, w);
-        turtle.draw();
+        tSquare(turtle, n, 0, 0, w);
     }
 
-    function sierpinskiTriangle(length, depth) {
+    function sierpinskiTriangle(turtle, length, depth) {
         if (depth === 0)
             for (let i = 0; i < 3; i++) {
                 turtle.forward(length);
                 turtle.left(120);
             } else {
-            sierpinskiTriangle(length / 2, depth - 1);
+            sierpinskiTriangle(turtle, length / 2, depth - 1);
             turtle.forward(length / 2);
-            sierpinskiTriangle(length / 2, depth - 1);
+            sierpinskiTriangle(turtle, length / 2, depth - 1);
             turtle.backward(length / 2);
             turtle.left(60);
             turtle.forward(length / 2);
             turtle.right(60);
-            sierpinskiTriangle(length / 2, depth - 1);
+            sierpinskiTriangle(turtle, length / 2, depth - 1);
             turtle.left(60);
             turtle.backward(length / 2);
             turtle.right(60);
         }
     }
 
-    function drawSierpinskiTriangle() {
-        turtle = new Turtle(new TurtleRenderer(context));
-        turtle.goto(50, 375)
+    function drawSierpinskiTriangle(turtle) {
+        turtle.goto(50, 375);
         turtle.penDown();
-        sierpinskiTriangle(400, 5);
-        turtle.draw();
+        sierpinskiTriangle(turtle, 400, 5);
     }
 
     function resetButtons() {
@@ -374,24 +427,31 @@
             document.getElementById(key).checked = false;
     }
 
+    function redraw() {
+        const turtle = createTurtle();
+        currentFractal(turtle);
+        turtle.draw();
+        turtle.render(context);
+    }
+
     function resizeCanvas() {
         const wrapper = document.getElementById("canvas-wrapper");
-        const size = wrapper.clientWidth;
+        const rect = wrapper.getBoundingClientRect(); // echte schermafmetingen
         const dpr = window.devicePixelRatio || 1;
 
-        canvas.width  = Math.floor(size * dpr);
-        canvas.height = Math.floor(size * dpr);
+        canvas.width  = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
 
-        canvas.style.width  = size + "px";
-        canvas.style.height = size + "px";
+        canvas.style.width  = rect.width + "px";
+        canvas.style.height = rect.height + "px";
+
+        redraw();
     }
 
     let currentFractal = drawDragonCurve;
 
-    function redraw() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        currentFractal();
-    }
+    const createTurtle = () =>
+        new Turtle(new TurtleRenderer(new PixelImage(context.canvas.width, context.canvas.height)));
 
     for (const [key, value] of radioButtons)
         document.getElementById(key).onclick = function() {
@@ -401,8 +461,8 @@
             redraw();
         };
 
-    let turtle = new Turtle();
-    drawDragonCurve();
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas(); // initial draw
     document.getElementById("dragonCurve").checked = true;
 
 </script>
