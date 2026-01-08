@@ -100,82 +100,110 @@
         return [Math.round(r), Math.round(g), Math.round(b)];
     }
 
-    class Turtle {
+    class TurtleRenderer {
+        constructor(ctx, margin = 0.05) {
+            this.ctx = ctx;
+            this.margin = margin; // 5% marge
+            this.reset();
+        }
 
+        reset() {
+            this.points = [];
+            this.colors = [];
+            this.penstates = [];
+            this.minX = Infinity;
+            this.maxX = -Infinity;
+            this.minY = Infinity;
+            this.maxY = -Infinity;
+        }
+
+        plot(x, y, color="cyan", draw=true) {
+            this.points.push({x, y});
+            this.colors.push(color);
+            this.penstates.push(draw);
+            this.minX = Math.min(this.minX, x);
+            this.maxX = Math.max(this.maxX, x);
+            this.minY = Math.min(this.minY, y);
+            this.maxY = Math.max(this.maxY, y);
+        }
+
+        transform(x, y) {
+            const w = this.ctx.canvas.width;
+            const h = this.ctx.canvas.height;
+
+            const fractalW = this.maxX - this.minX || 1;
+            const fractalH = this.maxY - this.minY || 1;
+
+            const scale = Math.min(
+                w / fractalW,
+                h / fractalH
+            ) * (1 - this.margin * 2);
+
+            const offsetX = w / 2 - (this.minX + fractalW / 2) * scale;
+            const offsetY = h / 2 - (this.minY + fractalH / 2) * scale;
+
+            return [x * scale + offsetX, h - (y * scale + offsetY)];
+        }
+
+        drawPath(lineWidth = 2) {
+            this.ctx.lineWidth = lineWidth;
+
+            for (let i = 1; i < this.points.length; i++) {
+                if (!this.penstates[i]) continue;
+                const [x1, y1] = this.transform(this.points[i - 1].x, this.points[i - 1].y);
+                const [x2, y2] = this.transform(this.points[i].x, this.points[i].y);
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(x1, y1);
+                this.ctx.lineTo(x2, y2);
+                this.ctx.strokeStyle = this.colors[i];
+                this.ctx.stroke();
+                this.ctx.closePath();
+            }
+        }
+    }
+
+
+    class Turtle {
         static PenState = Object.freeze({
             UP: [1, 0, 0],
             DOWN: [0, 1, 0]
         });
 
-        constructor(penState = Turtle.PenState.UP) {
-            context.strokeStyle = "cyan";
+        constructor(renderer, penState=Turtle.PenState.UP, color="yellow") {
+            this.currentColor = color;
             this.penState = penState;
             this.angle = 0;
-            this.previousPosition = {
-                x: 0,
-                y: 0
-            };
+            this.x = 0;
+            this.y = 0;
+            this.renderer = renderer;
         }
 
-        degreeToRadians(angle) {
-            return angle * Math.PI / 180;
-        }
+        degreeToRadians = (angle) => angle * Math.PI / 180;
+        right= (angle) => this.angle += this.degreeToRadians(angle);
+        left = (angle) => this.angle -= this.degreeToRadians(angle);
+        backward = (distance) => this.forward(-distance);
+        penDown= () => this.penState = Turtle.PenState.DOWN;
+        penUp = () => this.penState = Turtle.PenState.UP;
+        draw = (lineWidth = 2) => this.renderer.drawPath(lineWidth);
 
-        right(angle) {
-            this.angle += this.degreeToRadians(angle);
-        }
-
-        left(angle) {
-            this.angle -= this.degreeToRadians(angle);
-        }
-
-        backward(distance) {
-            this.forward(-distance);
-        }
-
-        forward(distance) {
-            const newX = this.previousPosition.x + distance * Math.cos(this.angle);
-            const newY = this.previousPosition.y + distance * Math.sin(this.angle);
-            if (this.penState === Turtle.PenState.UP)
-                context.moveTo(newX, newY);
-            else {
-                context.beginPath();
-                context.moveTo(this.previousPosition.x, this.previousPosition.y);
-                context.lineTo(newX, newY);
-                context.stroke();
-                context.closePath();
-            }
-            this.previousPosition.x = newX;
-            this.previousPosition.y = newY;
+        forward(d) {
+            const newX = this.x + d * Math.cos(this.angle);
+            const newY = this.y + d * Math.sin(this.angle);
+            this.goto(newX, newY);
         }
 
         color(color) {
             let hexColor = "#";
             for (let i = 0; i < color.length; i++)
                 hexColor += (color[i] * 255).toString(16).padStart(2, '0');
-            context.strokeStyle = hexColor;
+            this.currentColor = hexColor;
         }
 
         goto(x, y) {
-            if (this.penState === Turtle.PenState.UP)
-                context.moveTo(x, y);
-            else {
-                context.beginPath();
-                context.moveTo(this.previousPosition.x, this.previousPosition.y);
-                context.lineTo(x, y);
-                context.stroke();
-                context.closePath();
-            }
-            this.previousPosition.x = x;
-            this.previousPosition.y = y;
-        }
-
-        penDown() {
-            this.penState = Turtle.PenState.DOWN;
-        }
-
-        penUp() {
-            this.penState = Turtle.PenState.UP;
+            this.renderer.plot(x, y, this.currentColor, this.penState === Turtle.PenState.DOWN);
+            this.x = x;
+            this.y = y;
         }
     }
 
@@ -184,24 +212,25 @@
             turtle.forward(length);
         else {
             length /= 3.0;
-            kochSnowflake(length, depth-1);
+            kochSnowflake(length, depth - 1);
             turtle.left(60);
-            kochSnowflake(length, depth-1);
+            kochSnowflake(length, depth - 1);
             turtle.right(120);
-            kochSnowflake(length, depth-1);
+            kochSnowflake(length, depth - 1);
             turtle.left(60);
-            kochSnowflake(length, depth-1);
+            kochSnowflake(length, depth - 1);
         }
     }
 
     function drawSnowflake() {
-        turtle = new Turtle();
+        turtle = new Turtle(new TurtleRenderer(context));
         turtle.goto(-150, 90)
         turtle.penDown()
         turtle.color(Colors.YELLOW);
         for (let i = 0; i < 3; i++)
             kochSnowflake(300, 4);
         turtle.right(120);
+        turtle.draw();
     }
 
     function cesaroFractal(depth, length) {
@@ -217,11 +246,12 @@
     }
 
     function drawCesaro() {
-        turtle = new Turtle();
+        turtle = new Turtle(new TurtleRenderer(context));
         turtle.goto(10, 300);
         turtle.penDown();
         turtle.color(Colors.GREEN);
         cesaroFractal(6, 4000);
+        turtle.draw();
     }
 
     function dragonCurve(n) {
@@ -260,22 +290,32 @@
         const scale = 400;
         const offsetX = canvas.width / 4.5;
         const offsetY = canvas.height / 1.5;
-        turtle = new Turtle();
-        turtle.goto(offsetX, offsetY);
+
+        const renderer = new TurtleRenderer(context);
+        turtle = new Turtle(renderer);
+
+        // Put turtle on first point without drawing
+        const [x0, y0] = points[0];
+        turtle.penUp();
+        turtle.goto(x0 * scale + offsetX, y0 * scale + offsetY);
+
+        // Next plot all other points with color
         turtle.penDown();
-
-        for (let i = 0; i < points.length - 1; i++) {
-            const [x1, y1] = points[i];
-            const [x2, y2] = points[i + 1];
-
-            turtle.color(hsvToRgb(i / points.length, 1, 1));
-            turtle.goto(x1 * scale + offsetX, y1 * scale + offsetY);
-            turtle.goto(x2 * scale + offsetX, y2 * scale + offsetY);
+        for (let i = 1; i < points.length; i++) {
+            const [x, y] = points[i];
+            const color = hsvToRgb(i / points.length, 1, 1);
+            turtle.color(color);
+            turtle.goto(x * scale + offsetX, y * scale + offsetY);
         }
+
+        turtle.draw();
     }
+
 
     function tSquare(n, x, y, w) {
         if (n !== 0) {
+            const color = hsvToRgb(w * .5, 1, 1);
+            turtle.color(color);
             turtle.goto(x, y);
             turtle.penDown();
             turtle.goto(x + w, y);
@@ -294,11 +334,12 @@
     function drawTSquare() {
         const n = 7;
         const w = 2**n;
-        turtle = new Turtle();
+        turtle = new Turtle(new TurtleRenderer(context));
         turtle.color(Colors.RED);
         turtle.penUp();
         turtle.goto(0, 0);
         tSquare(n, 0, 0, w);
+        turtle.draw();
     }
 
     function sierpinskiTriangle(length, depth) {
@@ -322,10 +363,11 @@
     }
 
     function drawSierpinskiTriangle() {
-        turtle = new Turtle();
+        turtle = new Turtle(new TurtleRenderer(context));
         turtle.goto(50, 375)
         turtle.penDown();
         sierpinskiTriangle(400, 5);
+        turtle.draw();
     }
 
     function resetButtons() {
