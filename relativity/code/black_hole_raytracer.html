@@ -25,7 +25,7 @@
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Prepare the worker with the ray tracing logic
-    const worker = new Worker("https://www.hendrikse.name/science/relativity/code/worker.js");
+    const worker = new Worker("https://www.hendrikse.name/science/js/black-hole-raytrace-webworker.js");
 
     // Receive the image data to be displayed
     worker.onmessage = (event) => {
