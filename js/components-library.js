@@ -236,3 +236,92 @@ export class SurfaceView {
     rotateBy = (delta) => this.group.rotation.y += delta;
     show() { this.group.visible = true; }
 }
+
+export class DifferentialGeometry {
+    constructor(surface, { eps = 1e-4 } = {}) {
+        this.parametrization = surface.parametrization();
+        this.eps = eps;
+    }
+
+    derivatives(u, v) {
+        const e = this.eps;
+
+        // positions
+        const p   = new THREE.Vector3();
+
+        const pu1 = new THREE.Vector3();
+        const pu0 = new THREE.Vector3();
+        const pv1 = new THREE.Vector3();
+        const pv0 = new THREE.Vector3();
+
+        const pu1v1 = new THREE.Vector3();
+        const pu1v0 = new THREE.Vector3();
+        const pu0v1 = new THREE.Vector3();
+        const pu0v0 = new THREE.Vector3();
+
+        // sample
+        this.parametrization(u, v, p);
+
+        this.parametrization(u + e, v, pu1);
+        this.parametrization(u - e, v, pu0);
+        this.parametrization(u, v + e, pv1);
+        this.parametrization(u, v - e, pv0);
+
+        this.parametrization(u + e, v + e, pu1v1);
+        this.parametrization(u + e, v - e, pu1v0);
+        this.parametrization(u - e, v + e, pu0v1);
+        this.parametrization(u - e, v - e, pu0v0);
+
+        // first order derivatives (central difference)
+        const Xu = pu1.clone().sub(pu0).multiplyScalar(1 / (2 * e));
+        const Xv = pv1.clone().sub(pv0).multiplyScalar(1 / (2 * e));
+
+        // second order derivatives (central difference)
+        const Xuu = pu1.clone()
+            .sub(p.clone().multiplyScalar(2))
+            .add(pu0)
+            .multiplyScalar(1 / (e * e));
+
+        const Xvv = pv1.clone()
+            .sub(p.clone().multiplyScalar(2))
+            .add(pv0)
+            .multiplyScalar(1 / (e * e));
+
+        const Xuv = pu1v1.clone()
+            .sub(pu1v0)
+            .sub(pu0v1)
+            .add(pu0v0)
+            .multiplyScalar(1 / (4 * e * e));
+
+        return { Xu, Xv, Xuu, Xuv, Xvv };
+    }
+
+    normalMeanGaussian(u, v) {
+        const d = this.derivatives(u, v);
+        const Xu = d.Xu, Xv = d.Xv;
+        const N  = Xu.clone().cross(Xv).normalize();
+
+        // First fundamental form
+        const E = Xu.dot(Xu);
+        const F = Xu.dot(Xv);
+        const G = Xv.dot(Xv);
+
+        // Second fundamental form
+        const e = d.Xuu.dot(N);
+        const f = d.Xuv.dot(N);
+        const g = d.Xvv.dot(N);
+
+        const EG_F2 = E * G - F * F;
+        const H = EG_F2 !== 0  ? (e * G - 2 * f * F + g * E) / (2 * EG_F2) : 0; // Mean curvature
+        const K = EG_F2 !== 0 ? (e * g - f * f) / EG_F2 : 0; // Gaussian curvature
+        return { N, H, K };
+    }
+
+    principals(u, v) {
+        const {N, K, H} = this.normalMeanGaussian(u, v);
+        const disc = Math.max(0, H * H - K);
+        const squareRoot = Math.sqrt(disc);
+        const k1 = H + squareRoot, k2 = H - squareRoot; // Principal curvatures
+        return { k1, k2 };
+    }
+}
