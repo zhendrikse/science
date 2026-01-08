@@ -1,10 +1,59 @@
+<style>
+    html, body {
+        background: #131313;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        height: 100%;
+    }
+
+    #canvas-wrapper {
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 13 / 8;
+        margin: auto;
+    }
+
+    #mandelbrotCanvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    label {
+        color: white;
+        padding: 7px 7px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 2px;
+    }
+
+    button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 5px 5px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin: 2px;
+    }
+
+    button:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+</style>
 <div style="margin-bottom: 5px;">
     <label>Action:</label>
     <button id="resetViewButton">🔄 Reset View</button>
     <button id="zoomInButton">➕ Zoom In</button>
     <button id="zoomOutButton">➖ Zoom Out</button>
 </div>
-<canvas id="mandelbrotCanvas" width="650" height="400" style="border: none;"></canvas>
+<div id="canvas-wrapper">
+    <canvas id="mandelbrotCanvas"></canvas>
+</div>
 <div style="margin-top: 2px;">
     <label>Colors:</label><button id="colorSchemeButton1">scheme 1</button>
     <button id="colorSchemeButton2">scheme 2</button>&nbsp;&nbsp;&nbsp;
@@ -36,39 +85,13 @@
         </tr>
     </table>
 </div>
-<style>
-    body {
-        background-color: #1a1a1a;
-    }
-    label {
-        color: white;
-        padding: 7px 7px;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin: 2px;
-    }
 
-    button {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
-        padding: 5px 5px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin: 2px;
-    }
+<script type="module">
+    import { Pixel, PixelImage, Colors } from 'https://www.hendrikse.name/science/js/pixel-image.js';
 
-    button:hover {
-        background: rgba(255, 255, 255, 0.2);
-    }
-</style>
-
-<script>
     const mandelbrotCanvas = document.getElementById("mandelbrotCanvas");
     const display = mandelbrotCanvas.getContext("2d");
     mandelbrotCanvas.focus();
-
 
     const juliaButtons = new Map();
     juliaButtons.set("juliaToggle0", [0.325, .417]);
@@ -101,49 +124,6 @@
             mu = 11 * maxIterations / 12;
         const colourMapIndex = 255 - Math.floor((mu) * 255 / maxIterations);
         return [colorMap[colourMapIndex][0] / 255, [colorMap[colourMapIndex][1] / 255], [colorMap[colourMapIndex][2] / 255]];
-    }
-
-    class PixelImage {
-        constructor(pixelSize=1) {
-            const Array2D = (r, c) => [...Array(r)].map(_=>Array(c).fill([0, 0, 0]));
-            this.dimX = mandelbrotCanvas.width / pixelSize;
-            this.dimY = mandelbrotCanvas.height / pixelSize;
-            this.pixelSize = pixelSize;
-            this.colours = Array2D(this.dimX, this.dimY);
-        }
-
-        width() {
-            return this.dimX;
-        }
-
-        height() {
-            return this.dimY;
-        }
-
-        setColour(pixelX, pixelY, colour) {
-            this.colours[pixelX][pixelY] = colour;
-        }
-
-        asCanvasImageData() {
-            const imageData = display.createImageData(mandelbrotCanvas.width, mandelbrotCanvas.height);
-            for (let x = 0 ; x < mandelbrotCanvas.width; x++)
-                for (let y = 0 ; y < mandelbrotCanvas.height; y++) {
-                    let coordinate = y * (mandelbrotCanvas.width * 4) + x * 4;
-                    const pixelX = Math.trunc(x / this.pixelSize);
-                    const pixelY = Math.trunc(y / this.pixelSize);
-
-                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][0] * 255;
-                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][1] * 255;
-                    imageData.data[coordinate++] = this.colours[pixelX][pixelY][2] * 255;
-                    imageData.data[coordinate++] = 255
-                }
-            return imageData;
-        }
-
-        render() {
-            display.clearRect(0, 0, mandelbrotCanvas.width, mandelbrotCanvas.height);
-            display.putImageData(this.asCanvasImageData(), 0, 0);
-        }
     }
 
     class FractalRange {
@@ -181,7 +161,7 @@
             this.colorFunction = colorFunction;
             this.range = range;
             this.initialRange = new FractalRange(range.re_min, range.re_max, range.im_min, range.im_max);
-            this.image = new PixelImage();
+            this.image = new PixelImage(display.canvas.width, display.canvas.height);
         }
 
         reset() {
@@ -190,8 +170,8 @@
         }
 
         mapXyToComplexPlane(x, y) {
-            const re = this.range.re_min + (x / this.image.width()) * this.range.realRange();
-            const im = this.range.im_min + (y / this.image.height()) * this.range.imaginaryRange();
+            const re = this.range.re_min + (x / this.image.width) * this.range.realRange();
+            const im = this.range.im_min + (y / this.image.height) * this.range.imaginaryRange();
             return this.complex(re, im);
         }
 
@@ -200,11 +180,11 @@
         }
 
         render() {
-            this.image = new PixelImage();
-            for (let x = 0; x < this.image.width(); x++)
-                for (let y = 0; y < this.image.height(); y++)
+            this.image = new PixelImage(display.canvas.width, display.canvas.height);
+            for (let x = 0; x < this.image.width; x++)
+                for (let y = 0; y < this.image.height; y++)
                     this.setPixelColorAt(x, y);
-            this.image.render();
+            this.image.render(display);
         }
 
         zoom(zoomOut) {
@@ -269,7 +249,7 @@
 
             const brightness = n / this.maxIter;
             if (brightness < 1)
-                this.image.setColour(x, y, this.colorFunction(brightness));
+                this.image.setColour(new Pixel(x, y, this.colorFunction(brightness)));
         }
     }
 
@@ -290,7 +270,7 @@
 
             const brightness = n / this.maxIter;
             if (brightness < 1)
-                this.image.setColour(x, y, this.colorFunction(brightness));
+                this.image.setColour(new Pixel(x, y, this.colorFunction(brightness)));
         }
     }
 
@@ -309,7 +289,7 @@
                 n += 1;
             }
 
-            this.image.setColour(x, y, colorPalette(z, n, this.maxIter));
+            this.image.setColour(new Pixel(x, y, colorPalette(z, n, this.maxIter)));
         }
     }
 
@@ -367,6 +347,25 @@
         for (const [key, value] of juliaButtons)
             document.getElementById(key).checked = false;
     }
+
+    function resizeCanvasToWrapper() {
+        const canvasWrapper = document.getElementById('canvas-wrapper');
+        const canvas = document.getElementById('mandelbrotCanvas');
+
+        canvas.width = canvasWrapper.clientWidth;
+        canvas.height = canvasWrapper.clientHeight;
+
+        fractal.render();
+    }
+
+    // Initial resize
+    resizeCanvasToWrapper();
+
+    // Optioneel: resize bij window change
+    window.addEventListener('resize', () => {
+        resizeCanvasToWrapper();
+    });
+
 
     for (const [key, value] of juliaButtons)
         document.getElementById(key).onclick = function() {
