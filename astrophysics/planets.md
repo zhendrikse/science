@@ -26,10 +26,9 @@
 </div>
 <p style="clear: both;"></p>
 
-<p style="clear:both;"></p>
-
 ### All water on, in, and above the Earth
 <div style="border-top: 1px solid #999999"><br/></div>
+
 <div class="double_image">
 <figure class="left_image">
   <a href="images/all_the_worlds_water.png">
