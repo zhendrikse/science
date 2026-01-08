@@ -65,9 +65,11 @@
     }
 
     const swarm = [];
-    const noise = 10.0;
     let thresholdDistance = 5;
     let thresholdDistanceSquared = thresholdDistance * thresholdDistance;
+    const dpr = window.devicePixelRatio || 1;
+    const noise = 10 / dpr;
+    const verticalDrift = -0.2 / dpr;
     function updateThreshold() {
         const dpr = window.devicePixelRatio || 1;
         thresholdDistance = 5 * dpr;
@@ -75,12 +77,17 @@
     }
 
     class Particle {
-        constructor(radius=2) {
+        constructor() {
             this.x = canvas.width * Math.random();
             this.y = canvas.height * Math.random();
-            this.radius = radius;
+            this.radius = this.#computeParticleRadius();
             this.frozen = false;
             this.colour = scientificColorCodingFor(0, 0, maxDistance);
+        }
+
+        #computeParticleRadius() {
+            const dpr = window.devicePixelRatio || 1;
+            return Math.max(1, 2 * dpr);
         }
 
         makeSeed() {
@@ -127,7 +134,7 @@
             const dx = Math.random() * noise;
             const dy = Math.random() * noise;
             this.x += Math.random() < 0.5 ? dx : -dx;
-            this.y += -0.2 + (Math.random() < 0.5 ? dy : -dy);
+            this.y += verticalDrift + (Math.random() < 0.5 ? dy : -dy);
 
             this.x = (this.x + canvas.width) % canvas.width;
             //this.y = (this.y + canvas.height) % canvas.height;
@@ -152,8 +159,14 @@
     }
 
     function computeSwarmSize() {
-        const area = canvas.width * canvas.height;
-        swarmSize = Math.floor(area / 10_000 * PARTICLES_PER_10K_PIXELS);
+        const cssWidth  = canvas.clientWidth;
+        const cssHeight = canvas.clientHeight;
+
+        const areaCSS = cssWidth * cssHeight;
+
+        swarmSize = Math.floor(
+            areaCSS / 10_000 * PARTICLES_PER_10K_PIXELS
+        );
     }
 
     function setup() {
