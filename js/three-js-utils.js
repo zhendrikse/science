@@ -1,4 +1,4 @@
-export class Utils {
+export class ThreeJsUtils {
     static scaleBox3(box, factor) {
         const center = new THREE.Vector3();
         const size = new THREE.Vector3();

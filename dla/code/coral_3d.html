@@ -28,7 +28,7 @@
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/trhee-js-utils.js';
+    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
 
     const canvas = document.getElementById('aquariumCanvas');
     canvas.focus();
@@ -57,7 +57,6 @@
     window.addEventListener('resize', () => {
         ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
     });
-
 
     let aquariumVisible = true;
     document.getElementById("aquariumToggle").checked = aquariumVisible;
