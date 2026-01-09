@@ -1,24 +1,18 @@
 <style>
-    #canvas-wrapper {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        aspect-ratio: 4 / 3;
-    }
-
-    #canvas-inner {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 1 / 1;
-    }
-
-    #geometriesCanvas {
+    canvas {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
         display: block;
+    }
+
+    #container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 4 / 5;
     }
 
     #gui-container {
@@ -42,7 +36,7 @@
         margin-top: 1px;
         width: 100%;
         max-width: 100%;
-        font-size: 12px;
+        font-size: 13px;
         color: yellow;
         text-align: center;
         z-index: 10;
@@ -56,18 +50,6 @@
     }
 </style>
 
-<div id="canvas-wrapper">
-    <div id="surface-title"></div>
-    <div id="surface-equation"></div>
-    <div id="canvas-inner">
-        <canvas id="geometriesCanvas"></canvas>
-    </div>
-    <div id="gui-container"></div>
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
-
 <script type="importmap">
     {
       "imports": {
@@ -77,42 +59,26 @@
     }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
+
+<div id="surface-title"></div>
+<div id="surface-equation"></div>
+<div id="container">
+    <canvas id="myCanvas"></canvas><br/>
+</div>
+<div id="gui-container"></div>
+
+
 <script type="module">
     import * as THREE from "three";
-    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
     import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
-    import { MatlabAxes, Interval, Surface, SurfaceView, DifferentialGeometry, IsoparametricContoursView,
-        CurvatureContoursView, NormalsView, AxesParameters }
+    import { Category, Axes, Plot3D, StandardAxesAnnotations, MatlabAxesLayout, Surface, StandardSurfaceView,
+        MinimalSurfaceView, ViewParameters, ColorMode, ContourType }
         from 'https://www.hendrikse.name/science/js/components-library.js';
+    import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
-    const canvas = document.getElementById("geometriesCanvas");
-
-    const Category = Object.freeze({
-        BASIC: "Basic",
-        CONIC: "Conic",
-        MISC: "Miscellaneous",
-        NATURE: "Nature",
-        NON_ORIENTABLE: "Non-Orientable",
-        OBJECT: "Object",
-        SPIRAL: "Spiral",
-        TOROID: "Toroid"
-    });
-
-    const ColorMode = Object.freeze({
-        BASE: "Base",
-        GAUSSIAN: "Gaussian curvature",
-        HEIGHT: "Height",
-        MEAN: "Mean curvature",
-        K1: "Principal curvature k₁",
-        K2: "Principal curvature k₂"
-    });
-
-    const ContourType = Object.freeze({
-        CURVATURE: "Curvature",
-        ISO_PARAMETRIC: "Isoparametric",
-        NONE: "None"
-    });
+    const canvasContainer = document.getElementById("container");
+    const canvas = document.getElementById("myCanvas");
 
     const surfaces = [{
         meta: {name: "Apple", category: Category.NATURE},
@@ -540,143 +506,8 @@
         intervals: [["-2", "2"], ["-2", "2"]]
     }];
 
-    class Scenery {
-        constructor(scene, axes) {
-            this.camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
-            this.renderer = this.#createRenderer();
-            this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-            this.scene = scene;
-            this.axes = axes;
-
-            this.controls.enableDamping = true;
-            this.scene.background = new THREE.Color(0x131313);
-
-            this.scene.add(this.#createDirectionalLight());
-            this.scene.add(this.#createHemisphereLight());
-
-            // Resizing for mobile devices
-            ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
-            window.addEventListener('resize', () => {
-                ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
-            });
-        }
-
-        #createHemisphereLight =
-            (skyColour=0x87ceeb, groundColour=0xffffff) => new THREE.HemisphereLight(skyColour, groundColour, 0.8);
-
-        #createDirectionalLight() {
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.95);
-            directionalLight.position.set(5, 10, 7.5); // kind of "sunlight"
-            directionalLight.castShadow = true; // Enable shadows
-            directionalLight.shadow.mapSize.width = 1024;
-            directionalLight.shadow.mapSize.height = 1024;
-            directionalLight.shadow.camera.near = 0.5;
-            directionalLight.shadow.camera.far = 50;
-            return directionalLight;
-        }
-
-        #createRenderer() {
-            const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            return renderer;
-        }
-
-        updateSurfaceData(surfaceData) {
-            const nameDiv = document.getElementById("surface-title");
-            nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
-
-            const equationDiv = document.getElementById("surface-equation");
-            equationDiv.innerHTML = "$$\\begin{pmatrix}" +
-                surfaceData.parametrization.xFn + " \\\\" +
-                surfaceData.parametrization.yFn + " \\\\" +
-                surfaceData.parametrization.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
-                surfaceData.intervals[0][0] + ", " +
-                surfaceData.intervals[0][1] + "] \\\\ v \\in [" +
-                surfaceData.intervals[1][0] + ", " +
-                surfaceData.intervals[1][1] + "] \\end{cases}$$";
-            if (window.MathJax) MathJax.typesetPromise([equationDiv]);
-        }
-
-        fitToBoundingBox(boundingBox, {
-            padding = 1.5,
-            translationY = 0,
-            minDistance = 2
-        } = {}) {
-            const size = new THREE.Vector3();
-            let center = new THREE.Vector3();
-
-            boundingBox.getSize(size);
-            boundingBox.getCenter(center);
-
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const verticalFieldOfView = THREE.MathUtils.degToRad(this.camera.fov);
-
-            // distance so that bounding box is always in view
-            let distance = maxDim / Math.tan(verticalFieldOfView / 2);
-            distance = Math.max(distance * padding, minDistance);
-            const direction = new THREE.Vector3(1, 1, 1).normalize(); // Matlab-like camera setting
-
-            this.camera.position
-                .copy(new THREE.Vector3(center.x, center.y + translationY, center.z))
-                .addScaledVector(direction, distance);
-
-            this.camera.near = distance / 100;
-            this.camera.far  = distance * 10;
-            this.camera.updateProjectionMatrix();
-
-            this.controls.target.copy(center);
-            this.controls.update();
-        }
-
-        render() {
-            this.controls.update();
-            this.renderer.render(this.scene, this.camera);
-            this.axes.render(this.scene, this.camera);
-        }
-    }
-
-    class ContourParameters {
-        constructor({
-                        color = "#dd0",
-                        contourType = ContourType.ISO_PARAMETRIC,
-                        uCount = 20,
-                        vCount = 40
-                    } = {}) {
-            this.color = color;
-            this.contourType = contourType;
-            this.uCount = uCount;
-            this.vCount = vCount;
-        }
-    }
-
-    class ViewParameters {
-        constructor({
-                        axesParameters = new AxesParameters(),
-                        autoRotate = false,
-                        baseColor = "#4cf",
-                        category = Category.MISC,
-                        contourParameters = new ContourParameters(),
-                        colorMode = ColorMode.HEIGHT,
-                        normals = false,
-                        opacity = 0.9,
-                        resolution = 75,
-                        wireframe = false
-                    } ={}) {
-            this.axesParameters = axesParameters;
-            this.autoRotate = autoRotate;
-            this.baseColor = baseColor;
-            this.category = category;
-            this.colorMode = colorMode;
-            this.contourParameters = contourParameters;
-            this.wireframe = wireframe;
-            this.normals = normals;
-            this.resolution = resolution;
-            this.opacity = opacity;
-        }
-    }
-
     class ControlsGui {
-        constructor(scenery, surface, axes, ring, viewParameters=new ViewParameters()) {
+        constructor(scenery, surface, axes, annotations, ring, viewParameters=new ViewParameters()) {
             this.viewParameters = viewParameters;
             this.surface = surface;
             const controls = new GUI({width: 300, autoPlace: false});
@@ -686,7 +517,7 @@
                 .name("Category")
                 .onChange(value => ring.changeActiveCategoryTo(value));
 
-            this.#createAppearanceFolder(controls, axes);
+            this.#createAppearanceFolder(controls, axes, annotations);
             this.#createContourFolder(controls);
         }
 
@@ -724,21 +555,12 @@
             surfaceFolder.close();
         }
 
-        #createAxesFolder(folder, axes) {
-            const axesFolder = folder.addFolder("Axes");
-            axesFolder.add(this.viewParameters.axesParameters, 'showAxes')
-                .name("Axes").onChange(value => axes.show(value));
-            axesFolder.add(this.viewParameters.axesParameters, 'showTickMarks')
-                .name("Tick marks").onChange(value => axes.setTickLabelVisibilityTo(value));
-            axesFolder.add(this.viewParameters.axesParameters, 'showAxesLabels')
-                .name("Axes labels").onChange(value => axes.setAxesLabelVisibilityTo(value));
-            axesFolder.add(this.viewParameters.axesParameters, 'showGridPlanes')
-                .name("Grid planes").onChange(value => axes.setPlaneVisibilityTo(value));
-            axesFolder.close();
-        }
-
-        #createOptionsFolder(folder) {
+        #createOptionsFolder(folder, axes, annotations) {
             const optionsFolder = folder.addFolder("Options");
+            optionsFolder.add(this.viewParameters.axesParameters, 'showAxes')
+                .name("Axes").onChange(value => value ? axes.show() : axes.hide());
+            optionsFolder.add(this.viewParameters.axesParameters, 'showAxesLabels')
+                .name("Axes labels").onChange(value => value ? annotations.show() : annotations.hide());
             optionsFolder.add(this.viewParameters, 'wireframe')
                 .name("Wireframe")
                 .onChange(value => this.surface.toggleWireframe(value));
@@ -749,11 +571,10 @@
             optionsFolder.close();
         }
 
-        #createAppearanceFolder(controls, axes) {
+        #createAppearanceFolder(controls, axes, annotations) {
             const appearanceFolder = controls.addFolder("Appearance");
             this.#createSurfaceFolder(appearanceFolder);
-            this.#createOptionsFolder(appearanceFolder);
-            this.#createAxesFolder(appearanceFolder, axes);
+            this.#createOptionsFolder(appearanceFolder, axes, annotations);
             this.#createContourFolder(appearanceFolder);
 
             appearanceFolder.add({reset: () =>
@@ -786,328 +607,6 @@
         updateSurfaceWith= (newSurface) => this.surface = newSurface;
     }
 
-    class SurfaceSelectorView extends SurfaceView {
-        constructor(parentGroup, surface, {resolution=20, baseColor="#4f6"}) {
-            super(parentGroup, surface);
-            this.baseColor = baseColor;
-            this.geometry = surface.createGeometryWith(resolution);
-            this.material = this.material(true, 1);
-            this.colorMapper = new HeightColorMapper({ baseColor: baseColor });
-            this.mesh = new THREE.Mesh(this.geometry, this.material);
-            this.group.add(this.mesh);
-            this.colorMapper.apply(this.geometry);
-        }
-
-        onSelect = () => {
-            this.material.wireframe = false;
-            this.colorMapper = new HeightColorMapper({});
-            this.colorMapper.apply(this.geometry); }
-        onDeselect = () => {
-            this.material.wireframe = true;
-            this.colorMapper = new HeightColorMapper({ baseColor: this.baseColor });
-            this.colorMapper.apply(this.geometry); }
-        selectableObject = () => this.mesh;
-    }
-
-    class DisplayedSurfaceView extends SurfaceView {
-        constructor(parentGroup, surface, visualizationParameters) {
-            super(parentGroup, surface);
-            this.baseColor = visualizationParameters.baseColor;
-            this.opacity = visualizationParameters.opacity;
-            this.geometry = surface.createGeometryWith(visualizationParameters.resolution);
-            this.material = this.material(visualizationParameters.wireframe, this.opacity);
-            this.changeOpacityTo(this.opacity);
-            this.mesh = new THREE.Mesh(this.geometry, this.material);
-            this.group.add(this.mesh);
-            this.colorMapper = null;
-            this.colorMode = visualizationParameters.colorMode;
-            this.changeColorModeTo(visualizationParameters.colorMode);
-            this.contours = null;
-            this.contourParameters = visualizationParameters.contourParameters;
-            this.modifyContours({
-                mode: this.contourParameters.contourType,
-                resolution: visualizationParameters.resolution,
-                color: this.contourParameters.color,
-                uCount: this.contourParameters.uCount,
-                vCount: this.contourParameters.vCount
-            });
-            this.normals = this.registerChild(new NormalsView(this.group, surface, this.geometry));
-            if (visualizationParameters.normals) this.addNormalsWith({});
-        }
-
-        addNormalsWith = (normalParameters) => this.normals.buildWith(normalParameters);
-        changeColorModeTo(mode) {
-            switch (mode) {
-                case ColorMode.HEIGHT:
-                    this.colorMapper = new HeightColorMapper({ useBaseColor: false });
-                    break;
-                case ColorMode.MEAN:
-                    this.colorMapper = new CurvatureColorMapper(this.surface);
-                    break;
-                case ColorMode.K1:
-                case ColorMode.K2:
-                    this.colorMapper = new PrincipalCurvatureColorMapper(this.surface, { which: mode, scale: 3.0 });
-                    break;
-                case ColorMode.GAUSSIAN:
-                    this.colorMapper =
-                        new GaussianCurvatureColorMapper(this.surface, {
-                            scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
-                        });
-                    break;
-                case ColorMode.BASE:
-                default:
-                    this.colorMapper = new HeightColorMapper({ baseColor: this.baseColor, useBaseColor: true});
-            }
-            this.colorMapper.apply(this.geometry);
-        }
-
-        #modifyContourType(mode) {
-            switch (mode) {
-                case ContourType.NONE:
-                    break;
-                case ContourType.CURVATURE:
-                    this.contours = this.registerChild(new CurvatureContoursView(this.group, this.surface));
-                    break;
-                case ContourType.ISO_PARAMETRIC:
-                    this.contours = this.registerChild(new IsoparametricContoursView(this.group, this.surface));
-                    break;
-            }
-        }
-
-        modifyContours({
-                           mode = this.contourParameters.mode,
-                           color = this.baseColor,
-                           uCount = this.contourParameters.uCount,
-                           vCount = this.contourParameters.vCount,
-                           segments = this.resolution
-                       } = {}) {
-            this.baseColor = color;
-            if (this.contours) this.contours.clear();
-            if (mode !== this.contourType)
-                this.#modifyContourType(mode);
-            if (this.contours && mode !== ContourType.NONE)
-                this.contours.buildWith({color: color, uCount: uCount, vCount: vCount, segments: segments});
-        }
-
-        changeBaseColorTo = (value) => {
-            this.baseColor = value;
-            this.changeColorModeTo(this.colorMode);
-            if (this.contours && this.contours.visible()) {
-                this.contours.dispose();
-                this.modifyContours();
-            }
-        };
-        changeOpacityTo = (value) => { this.material.opacity = value; this.material.transparent = value < 1; }
-        clearNormals = () => this.normals.clear();
-
-        resampleWith(resolution) {
-            this.geometry.dispose();
-            this.geometry = this.surface.createGeometryWith(resolution);
-            this.mesh.geometry = this.geometry;
-            this.colorMapper.apply(this.geometry);
-        }
-
-        resetTransform() {
-            this.group.position.set(0, 0, 0);
-            this.group.rotation.set(0, 0, 0);
-            this.group.scale.set(1, 1, 1);
-        }
-
-        toggleWireframe = (value) => this.material.wireframe = value;
-    }
-
-    class ColorMapper {
-        apply(geometry) {
-            throw new Error("apply() not implemented");
-        }
-    }
-
-    class HeightColorMapper extends ColorMapper {
-        constructor({ baseColor="#ff4", useBaseColor=true } = {}) {
-            super();
-            this.baseColor = baseColor;
-            this.useBaseColor = useBaseColor;
-        }
-
-        #computeYRange(posAttr) {
-            const yRange = new Interval();
-            for (let i = 0; i < posAttr.count; i++)
-                yRange.shrinkTo(posAttr.getY(i));
-
-            return yRange;
-        }
-
-        apply(geometry) {
-            const posAttr = geometry.attributes.position;
-            const count = posAttr.count;
-
-            let colorAttr = geometry.attributes.color;
-            if (!colorAttr) {
-                const colors = new Float32Array(count * 3);
-                colorAttr = new THREE.BufferAttribute(colors, 3);
-                geometry.setAttribute("color", colorAttr);
-            }
-
-            const yRange = this.#computeYRange(posAttr);
-            const color = new THREE.Color();
-            const hsl = {};
-
-            for (let i = 0; i < count; i++) {
-                const y = posAttr.getY(i);
-                const t = yRange.scaleValue(y);
-
-                if (this.useBaseColor) {
-                    color.setStyle(this.baseColor);
-                    color.getHSL(hsl);
-                    hsl.l = 0.1 + 0.4 * (1 - t);
-                } else {
-                    hsl.h = t * 0.5 - 0.025;
-                    hsl.s = 0.9;
-                    hsl.l = 0.4 + 0.3 * (1 - t);
-                }
-
-                color.setHSL(hsl.h, hsl.s, hsl.l);
-                colorAttr.array[3*i]     = color.r;
-                colorAttr.array[3*i + 1] = color.g;
-                colorAttr.array[3*i + 2] = color.b;
-            }
-
-            colorAttr.needsUpdate = true;
-        }
-    }
-
-    class CurvatureColorMapper extends ColorMapper {
-        constructor(surface) {
-            super();
-            this.curvature = new DifferentialGeometry(surface);
-        }
-
-        #setColorFromCurvature(u, v, color) {
-            const { N, H, K } = this.curvature.normalMeanGaussian(u, v);
-            const t = THREE.MathUtils.clamp(Math.abs(H) * 2.0, 0, 1);
-            color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
-        }
-
-        apply(geometry) {
-            const pos = geometry.attributes.position;
-            const uv = geometry.attributes.uv;
-            const color = new THREE.Color();
-            let colorAttr = geometry.attributes.color;
-            if (!colorAttr) {
-                const colors = new Float32Array(pos.count * 3);
-                colorAttr = new THREE.BufferAttribute(colors, 3);
-                geometry.setAttribute("color", colorAttr);
-            }
-
-            for (let i = 0; i < pos.count; i++) {
-                const u = uv.getX(i), v = uv.getY(i);
-                this.#setColorFromCurvature(u, v, color);
-                colorAttr.array[3 * i] = color.r;
-                colorAttr.array[3 * i + 1] = color.g;
-                colorAttr.array[3 * i + 2] = color.b;
-            }
-            colorAttr.needsUpdate = true;
-        }
-    }
-
-    class GaussianCurvatureColorMapper extends ColorMapper {
-        constructor(surface, {
-            scale = 1.0,
-            clamp = 1.0
-        } = {}) {
-            super();
-            this.curvature = new DifferentialGeometry(surface);
-            this.scale = scale;
-            this.clamp = clamp;
-        }
-
-        #colorFromK(K, color) {
-            // Symmetric scale around 0
-            const t = Math.tanh(K * this.scale);
-            if (t > 0)
-                color.setHSL(0.0, 0.85, 0.5 + 0.2 * t); // positive (elliptic): red
-            else
-                color.setHSL(0.6, 0.85, 0.5 - 0.2 * t); // negative (hyperbolic): blue
-        }
-
-        apply(geometry) {
-            const pos = geometry.attributes.position;
-            const uv  = geometry.attributes.uv;
-
-            let colorAttr = geometry.attributes.color;
-            if (!colorAttr) {
-                const colors = new Float32Array(pos.count * 3);
-                colorAttr = new THREE.BufferAttribute(colors, 3);
-                geometry.setAttribute("color", colorAttr);
-            }
-
-            const color = new THREE.Color();
-            const epsilon = 1e-4;
-
-            for (let i = 0; i < pos.count; i++) {
-                const u = uv.getX(i);
-                const v = uv.getY(i);
-
-                const { N, H, K } = this.curvature.normalMeanGaussian(u, v);
-                if (Math.abs(K) < epsilon) continue; // black where Gaussian curvature equals zero
-                this.#colorFromK(K, color);
-
-                colorAttr.array[3 * i]     = color.r;
-                colorAttr.array[3 * i + 1] = color.g;
-                colorAttr.array[3 * i + 2] = color.b;
-            }
-
-            colorAttr.needsUpdate = true;
-        }
-    }
-
-    class PrincipalCurvatureColorMapper extends ColorMapper {
-        constructor(surface, {
-            which = ColorMode.K1,
-            scale = 1.0
-        } = {}) {
-            super();
-            this.curvature = new DifferentialGeometry(surface);
-            this.which = which;
-            this.scale = scale;
-        }
-
-        apply(geometry) {
-            const pos = geometry.attributes.position;
-            const uv  = geometry.attributes.uv;
-
-            let colorAttr = geometry.attributes.color;
-            if (!colorAttr) {
-                colorAttr = new THREE.BufferAttribute(new Float32Array(pos.count * 3), 3);
-                geometry.setAttribute("color", colorAttr);
-            }
-
-            const color = new THREE.Color();
-
-            for (let i = 0; i < pos.count; i++) {
-                const u = uv.getX(i);
-                const v = uv.getY(i);
-
-                let { k1, k2 } = this.curvature.principals(u, v);
-                const k = this.which === ColorMode.K1 ? k1 : k2;
-
-                // diverging color map
-                const t = Math.tanh(k * this.scale);
-
-                if (t > 0)
-                    color.setHSL(0.0, 0.85, 0.5 + 0.25 * t); // red
-                else
-                    color.setHSL(0.6, 0.85, 0.5 - 0.25 * t); // blue
-
-                colorAttr.array[3 * i]     = color.r;
-                colorAttr.array[3 * i + 1] = color.g;
-                colorAttr.array[3 * i + 2] = color.b;
-            }
-
-            colorAttr.needsUpdate = true;
-        }
-    }
-
     class Ring {
         constructor(parentGroup, boundingBox, {
             ringRadius = 2,
@@ -1129,11 +628,28 @@
             this.selectedSurface = null;
         }
 
+        #updateSurfaceData(surfaceData) {
+            const nameDiv = document.getElementById("surface-title");
+            nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
+
+            const equationDiv = document.getElementById("surface-equation");
+            equationDiv.innerHTML = "$$\\begin{pmatrix}" +
+                surfaceData.parametrization.xFn + " \\\\" +
+                surfaceData.parametrization.yFn + " \\\\" +
+                surfaceData.parametrization.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
+                surfaceData.intervals[0][0] + ", " +
+                surfaceData.intervals[0][1] + "] \\\\ v \\in [" +
+                surfaceData.intervals[1][0] + ", " +
+                surfaceData.intervals[1][1] + "] \\end{cases}$$";
+            if (window.MathJax) MathJax.typesetPromise([equationDiv]);
+        }
+
         #onSelectedSurface(selectedRingSurface) {
             this.#setTargetRotation(selectedRingSurface);
             if (this.selectedSurface) this.selectedSurface.onDeselect();
             selectedRingSurface.onSelect();
             this.selectedSurface = selectedRingSurface;
+            this.#updateSurfaceData(selectedRingSurface.data());
         }
 
         #placeAndShowSurface = (surface, index) => {
@@ -1171,7 +687,7 @@
 
         add(surfaces) {
             surfaces.forEach(surfaceData => {
-                const selectorSurface = new SurfaceSelectorView(this.group, new Surface(surfaceData), {});
+                const selectorSurface = new MinimalSurfaceView(this.group, new Surface(surfaceData), {});
                 ThreeJsUtils.fitGroupToBox(
                     selectorSurface.group,
                     selectorSurface.boundingBox(),
@@ -1196,39 +712,8 @@
         visibleRingItems = () => this.surfaces.filter(surface => surface.data().meta.category === this.activeCategory);
     }
 
-    const scene = new THREE.Scene();
-
-    const worldGroup = new THREE.Group();
-    scene.add(worldGroup);
-
-    const axesGroup = new THREE.Group();
-    worldGroup.add(axesGroup);
-    const axes = new MatlabAxes(axesGroup, document.getElementById("canvas-inner"), 3, 10);
-    axes.setTickLabelVisibilityTo(false);
-    axes.setAxesLabelVisibilityTo(false);
-    const scenery = new Scenery(scene, axes);
-
-    const surfaceDefinition = surfaces[19];
-    const visualizationParameters = new ViewParameters();
-    let surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, scenery, axes);
-
-    const boundingBox = surfaceInAxes.boundingBox();
-    ThreeJsUtils.scaleBox3(boundingBox, 0.25);
-    const ring = new Ring(worldGroup, surfaceInAxes, boundingBox);
-    ring.add(surfaces);
-    ring.changeActiveCategoryTo(surfaceDefinition.meta.category);
-    const selectedRingSurface = ring.findSurfaceByName(surfaceDefinition.meta.name);
-    ring.onSelectTo(selectedRingSurface);
-
-    const controlsGui = new ControlsGui(worldGroup, surfaceInAxes, axes, ring, visualizationParameters);
-
-    const bbox = new THREE.Box3();
-    bbox.setFromObject( axesGroup );
-    scenery.fitToBoundingBox(bbox, {padding: 1.2, translationY: -0.5});
-
     function displayedSurface(surfaceData, visualizationParameters, scenery, axes) {
-        scenery.updateSurfaceData(surfaceData);
-        const surfaceInAxes = new DisplayedSurfaceView(axesGroup, new Surface(surfaceData), visualizationParameters);
+        const surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceData), visualizationParameters);
         surfaceInAxes.resetTransform();
         ThreeJsUtils.fitGroupToBox(
             surfaceInAxes.group,
@@ -1239,13 +724,46 @@
         return surfaceInAxes;
     }
 
+    const scene = new THREE.Scene();
+    const worldGroup = new THREE.Group();
+    scene.add(worldGroup);
+
+    // Axes
+    const axes = new Axes(worldGroup);
+    axes.setLayout(new MatlabAxesLayout(4.1, 10));
+    //axes.setLayout(new ClassicalAxesLayout(4, 10));
+    const annotations = new StandardAxesAnnotations(canvasContainer, 4.1, 10, false);
+    axes.setAnnotations(annotations);
+    annotations.hide();
+
+    // Surface
+    const plot3D = new Plot3D(canvas, scene, axes);
+    const bbox = new THREE.Box3();
+    bbox.setFromObject( worldGroup );
+    plot3D.fitToBoundingBox(bbox, {padding: 1.2, translationY: -3.0});
+
+    const surfaceDefinition = surfaces[19];
+    const visualizationParameters = new ViewParameters();
+    let surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, plot3D, axes);
+
+    // Ring
+    const boundingBox = surfaceInAxes.boundingBox();
+    ThreeJsUtils.scaleBox3(boundingBox, 0.20);
+    const ring = new Ring(worldGroup, surfaceInAxes, boundingBox);
+    ring.add(surfaces);
+    ring.changeActiveCategoryTo(surfaceDefinition.meta.category);
+    const selectedRingSurface = ring.findSurfaceByName(surfaceDefinition.meta.name);
+    ring.onSelectTo(selectedRingSurface);
+
+    // Interaction
+    const controlsGui = new ControlsGui(worldGroup, surfaceInAxes, axes, annotations, ring, visualizationParameters);
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     canvas.addEventListener("pointerdown", event => {
         mouse.x = (event.offsetX / canvas.clientWidth) * 2 - 1;
         mouse.y = -(event.offsetY / canvas.clientHeight) * 2 + 1;
 
-        raycaster.setFromCamera(mouse, scenery.camera);
+        raycaster.setFromCamera(mouse, plot3D.camera);
 
         const hits = raycaster.intersectObjects(
             ring.selectableObjects(),
@@ -1257,17 +775,16 @@
         const selectedMesh = hits[0].object;
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         surfaceInAxes.dispose();
-        surfaceInAxes = displayedSurface(selectedRingSurface.data(), visualizationParameters, scenery, axes);
+        surfaceInAxes = displayedSurface(selectedRingSurface.data(), visualizationParameters, plot3D, axes);
         ring.onSelectTo(selectedRingSurface);
         controlsGui.updateSurfaceWith(surfaceInAxes);
     });
 
     function animate() {
         requestAnimationFrame(animate);
-        scenery.render();
+        plot3D.render();
         ring.render();
         controlsGui.render();
     }
-
     animate();
 </script>
