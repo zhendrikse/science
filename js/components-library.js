@@ -318,15 +318,13 @@ export class SurfaceView {
     hide() { this.group.visible = false; }
     moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
     material = (showWireframe, opacity) =>
-        new THREE.MeshStandardMaterial({
-            side: THREE.DoubleSide,
+        new THREE.MeshPhongMaterial({
             vertexColors: true,
-            transparent: opacity < 1,
-            opacity: opacity,
-            metalness: 0.1,
+            side: THREE.DoubleSide,
             wireframe: showWireframe,
-            roughness: 0.5
-        });
+            transparent: true,
+            opacity: opacity,
+       });
     parametrization() { return this.surface.parametrization(); }
     position() { return this.group.position.clone(); }
     rotateBy = (delta) => this.group.rotation.y += delta;
