@@ -1,156 +1,287 @@
 import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
 
-export class AxesParameters {
-    constructor({
-                    showAxes = true,
-                    showTickMarks = false,
-                    showAxesLabels = false,
-                    showGridPlanes = true
-                } ={}) {
-        this.showAxes = showAxes;
-        this.showTickMarks = showTickMarks;
-        this.showAxesLabels = showAxesLabels;
-        this.showGridPlanes = showGridPlanes;
-    }
-}
-
-export class MatlabAxes {
-    constructor(parentGroup, canvasContainer, gridSize=5, gridDivisions=10) {
+export class Axes {
+    constructor(parentGroup) {
         this.group = new THREE.Group();
         parentGroup.add(this.group);
 
-        this.allGrids = [].concat(
-            this.#xzPlane(gridSize, gridDivisions, new THREE.Vector3(0, 0, 0)),
-            this.#yzPlane(gridSize, gridDivisions, new THREE.Vector3(-0.5 * gridSize, .5 * gridSize, 0)),
-            this.#xyPlane(gridSize, gridDivisions, new THREE.Vector3(0, .5 * gridSize, -0.5 * gridSize))
+        this.layout = null;
+        this.annotations = null;
+    }
+
+    static toCartesian(radius, theta, phi) {
+        return new THREE.Vector3(
+            radius * Math.sin(theta) * Math.cos(phi),
+            radius * Math.sin(theta) * Math.sin(phi),
+            1 + radius * Math.cos(theta)
         );
-        this.group.add(this.#createAxes(gridSize));
-        this.tickLabels = this.#createTickLabels(gridSize, gridDivisions);
-        this.axisLabels = this.#createAxisLabels(gridSize);
-        this.allGrids.forEach(obj => this.group.add(obj));
-        this.tickLabels.forEach(obj => this.group.add(obj));
-        this.axisLabels.forEach(obj => this.group.add(obj));
-
-        this.labelRenderer = this.#labelRenderer(canvasContainer);
     }
 
-    #resizeLabelRendererToCanvas(container, labelRenderer) {
-        const w = container.clientWidth;
-        const h = container.clientHeight;
-
-        if (!w || !h) return;
-
-        labelRenderer.setSize(w, h, false);
+    setLayout(layout) {
+        this.layout?.dispose?.();
+        this.layout = layout;
+        this.group.add(layout.group);
     }
 
-    #labelRenderer(container) {
-        // CSS2DRenderer overlay
-        const labelRenderer = new CSS2DRenderer();
-        labelRenderer.domElement.style.position = "absolute";
-        labelRenderer.domElement.style.top = "0";
-        labelRenderer.domElement.style.left = "0";
-        labelRenderer.domElement.style.pointerEvents = "none";
-        container.appendChild(labelRenderer.domElement);
-
-        this.#resizeLabelRendererToCanvas(container, labelRenderer);
-        return labelRenderer;
+    setAnnotations(annotations) {
+        this.annotations?.dispose?.();
+        this.annotations = annotations;
+        this.group.add(annotations.group);
     }
 
-    #createAxes(axesSize) {
-        const eps = .025
-        const axesHelper = new THREE.AxesHelper(axesSize);
-        axesHelper.position.set(-.5 * axesSize + eps, eps, -.5 * axesSize +eps);
-        return axesHelper;
+    show() {
+        this.group.visible = true;
     }
 
-    #createPlane(size, divisions, position, colour) {
-        const grid = new THREE.GridHelper(size, divisions, 0x333333, 0x333333);
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(size, size),
-            new THREE.MeshPhongMaterial({ color: colour, transparent:true, opacity:0.1, side:THREE.DoubleSide })
-        );
-        plane.position.copy(position);
-        grid.position.copy(position);
-        return [grid, plane];
+    hide() {
+        this.group.visible = false;
     }
 
-    #xzPlane(size, divisions, position) {
-        const gridPlane = this.#createPlane(size, divisions, position, 0x4444ff);
-        gridPlane[1].rotateX(Math.PI/2);
-        gridPlane[0].rotateY(Math.PI/2);
-        return gridPlane;
-    }
-
-    #yzPlane(size, divisions, position) {
-        const gridPlane = this.#createPlane(size, divisions, position, 0x44ff44);
-        gridPlane[1].rotateY(Math.PI/2);
-        gridPlane[0].rotateZ(Math.PI/2);
-        return gridPlane;
-    }
-
-    #xyPlane(size, divisions, position) {
-        const gridPlane = this.#createPlane(size, divisions, position, 0xff4444);
-        gridPlane[1].rotateZ(Math.PI/2);
-        gridPlane[0].rotateX(Math.PI/2);
-        return gridPlane;
-    }
-
-    #makeLabel(text, pos, color="yellow") {
-        const div = document.createElement("div");
-        div.style.color = color;
-        div.style.fontSize = "15px";
-        div.textContent = text;
-        const label = new CSS2DObject(div);
-        label.position.copy(pos);
-        return label;
-    }
-
-    #createTickLabels(size, divisions) {
-        const labels = [];
-        const step = (2 * size) / divisions;
-        const offset = 0.1;
-
-        for (let v = 0; v <= size; v += step) {
-            labels.push(this.#makeLabel(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, 0.5 * size + offset)));
-            labels.push(this.#makeLabel(v.toFixed(1), new THREE.Vector3(-0.5 * size, v, 0.5 * size + offset)));
-            labels.push(this.#makeLabel(v.toFixed(1), new THREE.Vector3(0.5 * size + offset, 0, v - 0.5 * size)));
-        }
-        return labels;
-    }
-
-    #createAxisLabels(size) {
-        const offset = 0.2 * size;
-        return [
-            this.#makeLabel("X-axis", new THREE.Vector3(0.5 * size + offset, 0, 0), "white"),
-            this.#makeLabel("Y-axis", new THREE.Vector3(-0.5 * size, size + offset * .5, -0.5 * size), "white"),
-            this.#makeLabel("Z-axis", new THREE.Vector3(0, 0 ,0.5 * size + offset), "white"),
-        ];
-    }
-
-    setTickLabelVisibilityTo(checked) {
-        this.tickLabels.forEach(label => label.visible = checked);
-    }
-
-    setPlaneVisibilityTo(checked) {
-        this.allGrids.forEach(grid => grid.visible = checked);
-    }
-
-    setAxesLabelVisibilityTo(checked) {
-        this.axisLabels.forEach(label => label.visible = checked);
-    }
-
-    boundingBox = () => {
+    boundingBox() {
         this.group.updateMatrixWorld(true);
         return new THREE.Box3().setFromObject(this.group).clone();
     }
 
     render(scene, camera) {
-        this.labelRenderer.render(scene, camera);
+        this.annotations?.render(scene, camera);
+    }
+}
+
+export class AxesLayout {
+    constructor(size = 5, divisions = 10) {
+        this.size = size;
+        this.divisions = divisions;
+        this.group = new THREE.Group();
     }
 
-    show = (value) => this.group.visible = value;
+    dispose() {
+        this.group.clear();
+    }
+}
+
+export class ClassicalAxesLayout extends AxesLayout {
+    constructor(size, divisions) {
+        super(size, divisions);
+
+        const eps = 0.025;
+
+        const axes = new THREE.AxesHelper(size);
+        axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
+        this.group.add(axes);
+
+        this.#addPlane(0x4444ff, v => v.rotateX(Math.PI / 2)); // XZ
+        this.#addPlane(0x44ff44, v => v.rotateY(Math.PI / 2)); // YZ
+        this.#addPlane(0xff4444, v => v.rotateZ(Math.PI / 2)); // XY
+    }
+
+    #addPlane(color, rotate) {
+        const grid = new THREE.GridHelper(
+            2 * this.size,
+            this.divisions,
+            0x333333,
+            0x333333
+        );
+
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(2 * this.size, 2 * this.size),
+            new THREE.MeshPhongMaterial({
+                color,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.DoubleSide
+            })
+        );
+
+        rotate(grid);
+        rotate(plane);
+
+        grid.position.set(-0.5 * this.size, 0, -0.5 * this.size);
+        plane.position.copy(grid.position);
+
+        this.group.add(grid, plane);
+    }
+}
+
+export class MatlabAxesLayout extends AxesLayout {
+    constructor(size, divisions) {
+        super(size, divisions);
+
+        const eps = 0.025;
+
+        const axes = new THREE.AxesHelper(size);
+        axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
+        this.group.add(axes);
+
+        this.#addPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]); // XZ
+        this.#addPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [-1, 1, 0]);  // YZ
+        this.#addPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [-1, 1, 0], [0, 1, -1]); // XY
+    }
+
+    #addPlane(color, rotate, gridPos, planePos) {
+        const grid = new THREE.GridHelper(
+            this.size,
+            this.divisions,
+            0x333333,
+            0x333333
+        );
+
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(this.size, this.size),
+            new THREE.MeshPhongMaterial({
+                color,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.DoubleSide
+            })
+        );
+
+        grid.position.set(
+            gridPos[0] * 0.5 * this.size, gridPos[1] * 0.5 * this.size, gridPos[2] * 0.5 * this.size);
+        plane.position.set(
+            planePos[0] * 0.5 * this.size, planePos[1] * 0.5 * this.size, planePos[2] * 0.5 * this.size);
+
+        rotate(grid);
+        rotate(plane);
+
+        this.group.add(grid, plane);
+    }
+}
+
+export class AxesAnnotation {
+    constructor(container) {
+        this.group = new THREE.Group();
+
+        this.renderer = new CSS2DRenderer();
+        this.renderer.domElement.style.position = "absolute";
+        this.renderer.domElement.style.top = "0";
+        this.renderer.domElement.style.pointerEvents = "none";
+
+        container.appendChild(this.renderer.domElement);
+        this.#resize(container);
+    }
+
+    #resize(container) {
+        this.renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    render(scene, camera) {
+        this.renderer.render(scene, camera);
+    }
+
+    show() { this.group.visible = true; }
+    hide() { this.group.visible = false; }
+}
+
+export class StandardAxesAnnotations extends AxesAnnotation {
+    constructor(container, size=5, divisions=10, includeNegative=true) {
+        super(container);
+
+        const step = (2 * size) / divisions;
+        for (let v = includeNegative ? -size : 0 ; v <= size; v += step) {
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, -0.5 * size)));
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, v, -0.5 * size)));
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, 0, v - 0.5 * size)));
+        }
+
+        this.group.add(
+            this.#label("X", new THREE.Vector3(0.65 * size, 0, -0.5 * size), "white"),
+            this.#label("Y", new THREE.Vector3(-0.5 * size, 1.1 * size, -0.5 * size), "white"),
+            this.#label("Z", new THREE.Vector3(-0.5 * size, 0, 0.65 * size), "white")
+        );
+    }
+
+    #label(text, pos, color = "yellow") {
+        const div = document.createElement("div");
+        div.textContent = text;
+        div.style.color = color;
+        div.style.fontSize = "14px";
+
+        const obj = new CSS2DObject(div);
+        obj.position.copy(pos);
+        return obj;
+    }
+}
+
+class Plot3D {
+    constructor(canvas, scene, axes) {
+        this.scene = scene;
+        this.axes = axes;
+        this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+
+        // Resizing for mobile devices
+        ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
+        window.addEventListener('resize', () => {
+            ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
+        });
+
+        this.#createLights();
+        this.controls = new OrbitControls(this.camera, canvas);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.08;
+
+        this.controls.screenSpacePanning = false;
+        this.controls.maxPolarAngle = Math.PI * 0.95;
+    }
+
+    #createLights() {
+        const hemiLight = new THREE.HemisphereLight(
+            0xffffff, // sky
+            0xeeeeee, // ground
+            0.6
+        );
+        this.scene.add(hemiLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        dirLight.position.set(3, 5, 4);
+        dirLight.target.position.set(0, 0, 0);
+        this.scene.add(dirLight);
+        this.scene.add(dirLight.target);
+    }
+
+    #calculateCenter(boundingBox) {
+        const size = new THREE.Vector3();
+        let center = new THREE.Vector3();
+        boundingBox.getSize(size);
+        boundingBox.getCenter(center);
+        return {center, size};
+    }
+
+    fitToBoundingBox(boundingBox, {
+        padding = 1.5,
+        translationY = 0,
+        minDistance = 2,
+        viewDirection = new THREE.Vector3(1, 1, 1)
+    } = {}) {
+        const {center, size} = this.#calculateCenter(boundingBox);
+
+        // distance so that bounding box is always in view
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const verticalFieldOfView = THREE.MathUtils.degToRad(this.camera.fov);
+        let distance = maxDim / Math.tan(verticalFieldOfView / 2);
+        distance = Math.max(distance * padding, minDistance);
+
+        const direction = viewDirection.clone().normalize();
+        this.camera.position
+            .copy(new THREE.Vector3(center.x, center.y + translationY, center.z))
+            .addScaledVector(direction, distance);
+        this.camera.near = distance / 100;
+        this.camera.far  = distance * 10;
+        this.camera.updateProjectionMatrix();
+
+        this.controls.target.copy(center);
+        this.controls.update();
+    }
+
+    render() {
+        this.controls.update();
+        this.axes.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this.camera);
+    }
 }
 
 export class Utils {
