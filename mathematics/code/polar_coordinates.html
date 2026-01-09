@@ -1,5 +1,5 @@
 <style>
-    canvas {
+    #polarCanvas {
         position: absolute;
         inset: 0;
         width: 100%;
@@ -7,12 +7,12 @@
         display: block;
     }
 
-    #container {
+    #polarContainer {
         position: relative;
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 4 / 5;
     }
 
     #gui-container {
@@ -30,8 +30,8 @@
     }
 </script>
 
-<div id="container">
-    <canvas id="myCanvas"></canvas><br/>
+<div id="polarContainer">
+    <canvas id="polarCanvas"></canvas><br/>
 </div>
 <div id="gui-container"></div>
 
@@ -41,8 +41,8 @@
         from 'https://www.hendrikse.name/science/js/components-library.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
-    const canvasContainer = document.getElementById("container");
-    const canvas = document.getElementById("myCanvas");
+    const canvasContainer = document.getElementById("polarContainer");
+    const canvas = document.getElementById("polarCanvas");
 
     const scene = new THREE.Scene();
     const worldGroup = new THREE.Group();
@@ -124,12 +124,18 @@
     class ControlsGui {
         constructor() {
             const gui = new GUI({width: 300, autoPlace: false});
+
             gui.add(params, "theta", 0, 360, 0.1)
                 .name("θ (theta)")
                 .onChange(value => tangentVectors.update(radius, params.phi, value));
+
             gui.add(params, "phi", 0, 180, 0.1)
                 .name("φ (phi)")
                 .onChange(value => tangentVectors.update(radius, value, params.theta));
+
+            document
+                .getElementById("gui-container")
+                .appendChild(gui.domElement);
         }
     }
 
