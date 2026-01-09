@@ -133,21 +133,25 @@ export class AxesLayout {
         this.size = size;
         this.divisions = divisions;
         this.group = new THREE.Group();
+        this.planesGroup = new THREE.Group();
+        this.group.add(this.planesGroup);
     }
 
     dispose() {
         this.group.clear();
     }
+
+    showPlanes() { this.planesGroup.visible = true; }
+    hidePlanes() { this.planesGroup.visible = false; }
 }
 
 export class ClassicalAxesLayout extends AxesLayout {
     constructor(size, divisions) {
         super(size, divisions);
 
-        const eps = 0.025;
-
         const axes = new THREE.AxesHelper(size);
-        axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
+        const eps = 0.025;
+        axes.position.set(eps, eps, eps);
         this.group.add(axes);
 
         this.#addPlane(0x4444ff, v => v.rotateX(Math.PI / 2)); // XZ
@@ -176,10 +180,10 @@ export class ClassicalAxesLayout extends AxesLayout {
         rotate(grid);
         rotate(plane);
 
-        grid.position.set(-0.5 * this.size, 0, -0.5 * this.size);
+        grid.position.set(0, 0, 0);
         plane.position.copy(grid.position);
 
-        this.group.add(grid, plane);
+        this.planesGroup.add(grid, plane);
     }
 }
 
@@ -187,9 +191,8 @@ export class MatlabAxesLayout extends AxesLayout {
     constructor(size, divisions) {
         super(size, divisions);
 
-        const eps = 0.025;
-
         const axes = new THREE.AxesHelper(size);
+        const eps = 0.025;
         axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
         this.group.add(axes);
 
@@ -224,8 +227,11 @@ export class MatlabAxesLayout extends AxesLayout {
         rotate(grid);
         rotate(plane);
 
-        this.group.add(grid, plane);
+        this.planesGroup.add(grid, plane);
     }
+
+    show() { this.group.visible = true; }
+    hide() { this.group.visible = false; }
 }
 
 export class StandardAxesAnnotations extends AxesAnnotation {
