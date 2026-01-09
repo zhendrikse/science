@@ -206,7 +206,7 @@ export class StandardAxesAnnotations extends AxesAnnotation {
     }
 }
 
-class Plot3D {
+export class Plot3D {
     constructor(canvas, scene, axes) {
         this.scene = scene;
         this.axes = axes;

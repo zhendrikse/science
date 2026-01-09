@@ -46,12 +46,11 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, MatlabAxesLayout, StandardAxesAnnotations } from 'https://www.hendrikse.name/science/js/components-library.js';
+    import { Plot3D, Axes, MatlabAxesLayout, StandardAxesAnnotations } from 'https://www.hendrikse.name/science/js/components-library.js';
 
     const scene = new THREE.Scene();
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
-    // const axes = new MatlabAxes(worldGroup, canvasContainer, 2.1, 10);
 
     const canvasContainer = document.getElementById("container");
     const canvas = document.getElementById("myCanvas");
@@ -132,20 +131,17 @@
     [thetaMin,thetaMax,phiMin,phiMax].forEach(el =>
         el.addEventListener("input", () => { updateVisibility(); updateIntegral(); })
     );
-
     opacity.addEventListener("input", () => cells.forEach(cell => cell.material.opacity = parseFloat(opacity.value)));
     axesCheck.addEventListener("input", () => axesCheck.checked ? axes.show() : axes.hide());
     axesLabelCheck.addEventListener("input", () => axesLabelCheck.checked ? annotations.show() : annotations.hide());
 
-    // Init
-    updateVisibility();
-    updateIntegral();
-
-    // Animation loop
     function animate() {
         requestAnimationFrame(animate);
         plot3D.render();
     }
+
+    updateVisibility();
+    updateIntegral();
     animate();
 
 </script>
