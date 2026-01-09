@@ -51,6 +51,31 @@ export class Axes {
     }
 }
 
+export class AxesAnnotation {
+    constructor(container) {
+        this.group = new THREE.Group();
+
+        this.renderer = new CSS2DRenderer();
+        this.renderer.domElement.style.position = "absolute";
+        this.renderer.domElement.style.top = "0";
+        this.renderer.domElement.style.pointerEvents = "none";
+
+        container.appendChild(this.renderer.domElement);
+        this.#resize(container);
+    }
+
+    #resize(container) {
+        this.renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    render(scene, camera) {
+        this.renderer.render(scene, camera);
+    }
+
+    show() { this.group.visible = true; }
+    hide() { this.group.visible = false; }
+}
+
 export class AxesLayout {
     constructor(size = 5, divisions = 10) {
         this.size = size;
@@ -106,322 +131,119 @@ export class ClassicalAxesLayout extends AxesLayout {
     }
 }
 
-export class MatlabAxesLayout extends AxesLayout {
-    constructor(size, divisions) {
-        super(size, divisions);
-
-        const eps = 0.025;
-
-        const axes = new THREE.AxesHelper(size);
-        axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
-        this.group.add(axes);
-
-        this.#addPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]); // XZ
-        this.#addPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [-1, 1, 0]);  // YZ
-        this.#addPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [-1, 1, 0], [0, 1, -1]); // XY
-    }
-
-    #addPlane(color, rotate, gridPos, planePos) {
-        const grid = new THREE.GridHelper(
-            this.size,
-            this.divisions,
-            0x333333,
-            0x333333
-        );
-
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(this.size, this.size),
-            new THREE.MeshPhongMaterial({
-                color,
-                transparent: true,
-                opacity: 0.1,
-                side: THREE.DoubleSide
-            })
-        );
-
-        grid.position.set(
-            gridPos[0] * 0.5 * this.size, gridPos[1] * 0.5 * this.size, gridPos[2] * 0.5 * this.size);
-        plane.position.set(
-            planePos[0] * 0.5 * this.size, planePos[1] * 0.5 * this.size, planePos[2] * 0.5 * this.size);
-
-        rotate(grid);
-        rotate(plane);
-
-        this.group.add(grid, plane);
+export class ColorMapper {
+    apply(geometry) {
+        throw new Error("apply() not implemented");
     }
 }
 
-export class AxesAnnotation {
-    constructor(container) {
-        this.group = new THREE.Group();
-
-        this.renderer = new CSS2DRenderer();
-        this.renderer.domElement.style.position = "absolute";
-        this.renderer.domElement.style.top = "0";
-        this.renderer.domElement.style.pointerEvents = "none";
-
-        container.appendChild(this.renderer.domElement);
-        this.#resize(container);
+export class ContourParameters {
+    constructor({
+                    color = "#dd0",
+                    contourType = ContourType.ISO_PARAMETRIC,
+                    uCount = 20,
+                    vCount = 40
+                } = {}) {
+        this.color = color;
+        this.contourType = contourType;
+        this.uCount = uCount;
+        this.vCount = vCount;
     }
-
-    #resize(container) {
-        this.renderer.setSize(container.clientWidth, container.clientHeight);
-    }
-
-    render(scene, camera) {
-        this.renderer.render(scene, camera);
-    }
-
-    show() { this.group.visible = true; }
-    hide() { this.group.visible = false; }
 }
 
-export class StandardAxesAnnotations extends AxesAnnotation {
-    constructor(container, size=5, divisions=10, includeNegative=true) {
-        super(container);
+export class CurvatureColorMapper extends ColorMapper {
+    constructor(surface) {
+        super();
+        this.curvature = new DifferentialGeometry(surface);
+    }
 
-        const step = (2 * size) / divisions;
-        for (let v = includeNegative ? -size : 0 ; v <= size; v += step) {
-            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, -0.5 * size)));
-            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, v, -0.5 * size)));
-            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, 0, v - 0.5 * size)));
+    #setColorFromCurvature(u, v, color) {
+        const { N, H, K } = this.curvature.normalMeanGaussian(u, v);
+        const t = THREE.MathUtils.clamp(Math.abs(H) * 2.0, 0, 1);
+        color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
+    }
+
+    apply(geometry) {
+        const pos = geometry.attributes.position;
+        const uv = geometry.attributes.uv;
+        const color = new THREE.Color();
+        let colorAttr = geometry.attributes.color;
+        if (!colorAttr) {
+            const colors = new Float32Array(pos.count * 3);
+            colorAttr = new THREE.BufferAttribute(colors, 3);
+            geometry.setAttribute("color", colorAttr);
         }
 
-        this.group.add(
-            this.#label("X", new THREE.Vector3(0.65 * size, 0, -0.5 * size), "white"),
-            this.#label("Y", new THREE.Vector3(-0.5 * size, 1.1 * size, -0.5 * size), "white"),
-            this.#label("Z", new THREE.Vector3(-0.5 * size, 0, 0.65 * size), "white")
-        );
-    }
-
-    #label(text, pos, color = "yellow") {
-        const div = document.createElement("div");
-        div.textContent = text;
-        div.style.color = color;
-        div.style.fontSize = "14px";
-
-        const obj = new CSS2DObject(div);
-        obj.position.copy(pos);
-        return obj;
+        for (let i = 0; i < pos.count; i++) {
+            const u = uv.getX(i), v = uv.getY(i);
+            this.#setColorFromCurvature(u, v, color);
+            colorAttr.array[3 * i] = color.r;
+            colorAttr.array[3 * i + 1] = color.g;
+            colorAttr.array[3 * i + 2] = color.b;
+        }
+        colorAttr.needsUpdate = true;
     }
 }
 
-export class Plot3D {
-    constructor(canvas, scene, axes) {
-        this.scene = scene;
-        this.axes = axes;
-        this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+export class CurvatureContoursView extends SurfaceView {
+    constructor(parentGroup, surface) {
+        super(parentGroup, surface);
+        this.pointsObject = null;
+        this.material = null;
+    }
 
-        // Resizing for mobile devices
-        ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
-        window.addEventListener('resize', () => {
-            ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
+    buildWith({
+                  threshold = 0.05,
+                  uCount = 100,
+                  vCount = 100,
+                  color = 0xffaa00,
+                  opacity = 0.8
+              } = {}) {
+        this.clear();
+
+        const curvature = new DifferentialGeometry(this.surface);
+        const points = [];
+        for (let i = 0; i <= uCount; i++)
+            for (let j = 0; j <= vCount; j++) {
+                const u = i / uCount;
+                const v = j / vCount;
+                const {N, K, H} = curvature.normalMeanGaussian(u, v);
+                if (Math.abs(H) <= threshold) continue;
+
+                const point = new THREE.Vector3();
+                this.surface.parametrization()(u, v, point);
+                points.push(point);
+            }
+
+        if (points.length === 0) return;
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        this.material = new THREE.PointsMaterial({
+            size: 0.04,
+            color: color,
+            opacity: opacity,
+            transparent: true
         });
 
-        this.#createLights();
-        this.controls = new OrbitControls(this.camera, canvas);
-        this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.08;
-
-        this.controls.screenSpacePanning = false;
-        this.controls.maxPolarAngle = Math.PI * 0.95;
+        this.pointsObject = new THREE.Points(geometry, this.material);
+        this.group.add(this.pointsObject);
     }
 
-    #createLights() {
-        const hemiLight = new THREE.HemisphereLight(
-            0xffffff, // sky
-            0xeeeeee, // ground
-            0.6
-        );
-        this.scene.add(hemiLight);
-
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
-        dirLight.position.set(3, 5, 4);
-        dirLight.target.position.set(0, 0, 0);
-        this.scene.add(dirLight);
-        this.scene.add(dirLight.target);
-    }
-
-    #calculateCenter(boundingBox) {
-        const size = new THREE.Vector3();
-        let center = new THREE.Vector3();
-        boundingBox.getSize(size);
-        boundingBox.getCenter(center);
-        return {center, size};
-    }
-
-    fitToBoundingBox(boundingBox, {
-        padding = 1.5,
-        translationY = 0,
-        minDistance = 2,
-        viewDirection = new THREE.Vector3(1, 1, 1)
-    } = {}) {
-        const {center, size} = this.#calculateCenter(boundingBox);
-
-        // distance so that bounding box is always in view
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const verticalFieldOfView = THREE.MathUtils.degToRad(this.camera.fov);
-        let distance = maxDim / Math.tan(verticalFieldOfView / 2);
-        distance = Math.max(distance * padding, minDistance);
-
-        const direction = viewDirection.clone().normalize();
-        this.camera.position
-            .copy(new THREE.Vector3(center.x, center.y + translationY, center.z))
-            .addScaledVector(direction, distance);
-        this.camera.near = distance / 100;
-        this.camera.far  = distance * 10;
-        this.camera.updateProjectionMatrix();
-
-        this.controls.target.copy(center);
-        this.controls.update();
-    }
-
-    render() {
-        this.controls.update();
-        this.axes.render(this.scene, this.camera);
-        this.renderer.render(this.scene, this.camera);
-    }
-}
-
-export class Utils {
-    static functionFrom(functionString) {
-        try {
-            return (u, v) => math.compile(functionString).evaluate({ u, v });
-        } catch (err) {
-            alert("Math.js parse error: " + err.message);
-            return null;
+    clear() {
+        if (this.pointsObject) {
+            this.group.remove(this.pointsObject);
+            this.pointsObject.geometry.dispose();
+            this.pointsObject.material.dispose();
+            this.pointsObject = null;
+            this.material = null;
         }
-    }
-}
-
-export class Interval {
-    constructor(from=-Infinity, to=Infinity) {
-        this.from = from;
-        this.to = to;
-    }
-
-    shrinkTo(value) {
-        if (this.from < value) this.from = value;
-        if (this.to > value) this.to = value;
-    }
-
-    scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
-    range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
-    scaleParameter = (a) => this.range() * (a + this.from / this.range());
-}
-
-export class SurfaceDefinition {
-    sample(u, v, target) {
-        throw new Error("sample() not implemented");
-    }
-}
-
-export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
-    constructor(surfaceFunctions, xInterval, yInterval) {
-        super();
-
-        this.xFnCompiled = Utils.functionFrom(surfaceFunctions.xFn);
-        this.yFnCompiled = Utils.functionFrom(surfaceFunctions.yFn);
-        this.zFnCompiled = Utils.functionFrom(surfaceFunctions.zFn);
-
-        this.xInterval = new Interval(this.#evaluateConstant(xInterval[0]), this.#evaluateConstant(xInterval[1]));
-        this.yInterval = new Interval(this.#evaluateConstant(yInterval[0]), this.#evaluateConstant(yInterval[1]));
-    }
-
-    #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
-
-    sample(u, v, target) {
-        const theta = this.xInterval.scaleParameter(u);
-        const phi = this.yInterval.scaleParameter(v);
-
-        target.set(
-            this.xFnCompiled(theta, phi),
-            this.yFnCompiled(theta, phi),
-            this.zFnCompiled(theta, phi)
-        );
-    }
-}
-
-export class Surface {
-    constructor(surfaceData) {
-        this.surfaceData = surfaceData;
-        const definition = new LiteralStringBasedSurfaceDefinition(
-            surfaceData.parametrization,
-            surfaceData.intervals[0],
-            surfaceData.intervals[1]);
-
-        this.surfaceFunction = (u, v, target) => definition.sample(u, v, target);
-    }
-
-    createGeometryWith = (resolution) =>
-        new ParametricGeometry((u, v, target) => this.surfaceFunction(u, v, target), resolution, resolution);
-
-    data = () => this.surfaceData;
-    parametrization = () => this.surfaceFunction;
-}
-
-export class SurfaceView {
-    constructor(parentGroup, surface) {
-        this.parentGroup = parentGroup;
-        this.surface = surface;
-        this.group = new THREE.Group();
-        this.parentGroup?.add(this.group);
-        this._children = new Set();
-    }
-
-    #disposeSubViews = () => {
-        for (const child of this._children) child.dispose?.();
-        this._children.clear();
-    }
-
-    #disposeChild(child) {
-        if (child.geometry) child.geometry.dispose();
-
-        if (!child.material) return;
-        if (Array.isArray(child.material))
-            child.material.forEach(m => m.dispose());
-        else
-            child.material.dispose();
-    }
-
-    registerChild(view) {
-        this._children.add(view);
-        return view;
     }
 
     dispose() {
-        this.#disposeSubViews();
-        this._disposeObject(this.group);
-        if (this.parentGroup) this.parentGroup.remove(this.group);
-        this.group = null;
-        this.parentGroup = null;
+        this.clear();       // eigen GPU resources
+        super.dispose();    // group uit parent + refs los
+        this.geometry = null;
+        this.surface = null;
     }
-
-    /** Deep Three.js cleanup */
-    _disposeObject(object) {
-        object.traverse(child => { if (child.isMesh) this.#disposeChild(child); });
-        object.clear();
-    }
-
-    boundingBox() { return new THREE.Box3().setFromObject(this.group).clone(); }
-    data() { return this.surface.data(); }
-    hide() { this.group.visible = false; }
-    moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
-    material = (showWireframe, opacity) =>
-        new THREE.MeshStandardMaterial({
-            side: THREE.DoubleSide,
-            vertexColors: true,
-            transparent: opacity < 1,
-            opacity: opacity,
-            metalness: 0.1,
-            wireframe: showWireframe,
-            roughness: 0.5
-        });
-    parametrization() { return this.surface.parametrization(); }
-    position() { return this.group.position.clone(); }
-    rotateBy = (delta) => this.group.rotation.y += delta;
-    show() { this.group.visible = true; }
 }
 
 export class DifferentialGeometry {
@@ -513,6 +335,111 @@ export class DifferentialGeometry {
     }
 }
 
+export class GaussianCurvatureColorMapper extends ColorMapper {
+    constructor(surface, {
+        scale = 1.0,
+        clamp = 1.0
+    } = {}) {
+        super();
+        this.curvature = new DifferentialGeometry(surface);
+        this.scale = scale;
+        this.clamp = clamp;
+    }
+
+    #colorFromK(K, color) {
+        // Symmetric scale around 0
+        const t = Math.tanh(K * this.scale);
+        if (t > 0)
+            color.setHSL(0.0, 0.85, 0.5 + 0.2 * t); // positive (elliptic): red
+        else
+            color.setHSL(0.6, 0.85, 0.5 - 0.2 * t); // negative (hyperbolic): blue
+    }
+
+    apply(geometry) {
+        const pos = geometry.attributes.position;
+        const uv  = geometry.attributes.uv;
+
+        let colorAttr = geometry.attributes.color;
+        if (!colorAttr) {
+            const colors = new Float32Array(pos.count * 3);
+            colorAttr = new THREE.BufferAttribute(colors, 3);
+            geometry.setAttribute("color", colorAttr);
+        }
+
+        const color = new THREE.Color();
+        const epsilon = 1e-4;
+
+        for (let i = 0; i < pos.count; i++) {
+            const u = uv.getX(i);
+            const v = uv.getY(i);
+
+            const { N, H, K } = this.curvature.normalMeanGaussian(u, v);
+            if (Math.abs(K) < epsilon) continue; // black where Gaussian curvature equals zero
+            this.#colorFromK(K, color);
+
+            colorAttr.array[3 * i]     = color.r;
+            colorAttr.array[3 * i + 1] = color.g;
+            colorAttr.array[3 * i + 2] = color.b;
+        }
+
+        colorAttr.needsUpdate = true;
+    }
+}
+
+export class HeightColorMapper extends ColorMapper {
+    constructor({ baseColor="#ff4", useBaseColor=true } = {}) {
+        super();
+        this.baseColor = baseColor;
+        this.useBaseColor = useBaseColor;
+    }
+
+    #computeYRange(posAttr) {
+        const yRange = new Interval();
+        for (let i = 0; i < posAttr.count; i++)
+            yRange.shrinkTo(posAttr.getY(i));
+
+        return yRange;
+    }
+
+    apply(geometry) {
+        const posAttr = geometry.attributes.position;
+        const count = posAttr.count;
+
+        let colorAttr = geometry.attributes.color;
+        if (!colorAttr) {
+            const colors = new Float32Array(count * 3);
+            colorAttr = new THREE.BufferAttribute(colors, 3);
+            geometry.setAttribute("color", colorAttr);
+        }
+
+        const yRange = this.#computeYRange(posAttr);
+        const color = new THREE.Color();
+        const hsl = {};
+
+        for (let i = 0; i < count; i++) {
+            const y = posAttr.getY(i);
+            const t = yRange.scaleValue(y);
+
+            if (this.useBaseColor) {
+                color.setStyle(this.baseColor);
+                color.getHSL(hsl);
+                hsl.l = 0.1 + 0.4 * (1 - t);
+            } else {
+                hsl.h = t * 0.5 - 0.025;
+                hsl.s = 0.9;
+                hsl.l = 0.4 + 0.3 * (1 - t);
+            }
+
+            color.setHSL(hsl.h, hsl.s, hsl.l);
+            colorAttr.array[3*i]     = color.r;
+            colorAttr.array[3*i + 1] = color.g;
+            colorAttr.array[3*i + 2] = color.b;
+        }
+
+        colorAttr.needsUpdate = true;
+    }
+}
+
 export class IsoparametricContoursView extends SurfaceView {
     constructor(parentGroup, surface) {
         super(parentGroup, surface)
@@ -590,64 +517,90 @@ export class IsoparametricContoursView extends SurfaceView {
     }
 }
 
-export class CurvatureContoursView extends SurfaceView {
-    constructor(parentGroup, surface) {
-        super(parentGroup, surface);
-        this.pointsObject = null;
-        this.material = null;
+export class Interval {
+    constructor(from=-Infinity, to=Infinity) {
+        this.from = from;
+        this.to = to;
     }
 
-    buildWith({
-                  threshold = 0.05,
-                  uCount = 100,
-                  vCount = 100,
-                  color = 0xffaa00,
-                  opacity = 0.8
-              } = {}) {
-        this.clear();
-
-        const curvature = new DifferentialGeometry(this.surface);
-        const points = [];
-        for (let i = 0; i <= uCount; i++)
-            for (let j = 0; j <= vCount; j++) {
-                const u = i / uCount;
-                const v = j / vCount;
-                const {N, K, H} = curvature.normalMeanGaussian(u, v);
-                if (Math.abs(H) <= threshold) continue;
-
-                const point = new THREE.Vector3();
-                this.surface.parametrization()(u, v, point);
-                points.push(point);
-            }
-
-        if (points.length === 0) return;
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        this.material = new THREE.PointsMaterial({
-            size: 0.04,
-            color: color,
-            opacity: opacity,
-            transparent: true
-        });
-
-        this.pointsObject = new THREE.Points(geometry, this.material);
-        this.group.add(this.pointsObject);
+    shrinkTo(value) {
+        if (this.from < value) this.from = value;
+        if (this.to > value) this.to = value;
     }
 
-    clear() {
-        if (this.pointsObject) {
-            this.group.remove(this.pointsObject);
-            this.pointsObject.geometry.dispose();
-            this.pointsObject.material.dispose();
-            this.pointsObject = null;
-            this.material = null;
-        }
+    scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
+    range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
+    scaleParameter = (a) => this.range() * (a + this.from / this.range());
+}
+
+export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
+    constructor(surfaceFunctions, xInterval, yInterval) {
+        super();
+
+        this.xFnCompiled = Utils.functionFrom(surfaceFunctions.xFn);
+        this.yFnCompiled = Utils.functionFrom(surfaceFunctions.yFn);
+        this.zFnCompiled = Utils.functionFrom(surfaceFunctions.zFn);
+
+        this.xInterval = new Interval(this.#evaluateConstant(xInterval[0]), this.#evaluateConstant(xInterval[1]));
+        this.yInterval = new Interval(this.#evaluateConstant(yInterval[0]), this.#evaluateConstant(yInterval[1]));
     }
 
-    dispose() {
-        this.clear();       // eigen GPU resources
-        super.dispose();    // group uit parent + refs los
-        this.geometry = null;
-        this.surface = null;
+    #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
+
+    sample(u, v, target) {
+        const theta = this.xInterval.scaleParameter(u);
+        const phi = this.yInterval.scaleParameter(v);
+
+        target.set(
+            this.xFnCompiled(theta, phi),
+            this.yFnCompiled(theta, phi),
+            this.zFnCompiled(theta, phi)
+        );
+    }
+}
+
+export class MatlabAxesLayout extends AxesLayout {
+    constructor(size, divisions) {
+        super(size, divisions);
+
+        const eps = 0.025;
+
+        const axes = new THREE.AxesHelper(size);
+        axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
+        this.group.add(axes);
+
+        this.#addPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]); // XZ
+        this.#addPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [-1, 1, 0]);  // YZ
+        this.#addPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [-1, 1, 0], [0, 1, -1]); // XY
+    }
+
+    #addPlane(color, rotate, gridPos, planePos) {
+        const grid = new THREE.GridHelper(
+            this.size,
+            this.divisions,
+            0x333333,
+            0x333333
+        );
+
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(this.size, this.size),
+            new THREE.MeshPhongMaterial({
+                color,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.DoubleSide
+            })
+        );
+
+        grid.position.set(
+            gridPos[0] * 0.5 * this.size, gridPos[1] * 0.5 * this.size, gridPos[2] * 0.5 * this.size);
+        plane.position.set(
+            planePos[0] * 0.5 * this.size, planePos[1] * 0.5 * this.size, planePos[2] * 0.5 * this.size);
+
+        rotate(grid);
+        rotate(plane);
+
+        this.group.add(grid, plane);
     }
 }
 
@@ -724,5 +677,389 @@ export class NormalsView extends SurfaceView {
         super.dispose();    // verwijdert group uit parent
         this.geometry = null;
         this.surface = null;
+    }
+}
+
+export class Plot3D {
+    constructor(canvas, scene, axes) {
+        this.scene = scene;
+        this.axes = axes;
+        this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+
+        // Resizing for mobile devices
+        ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
+        window.addEventListener('resize', () => {
+            ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
+        });
+
+        this.#createLights();
+        this.controls = new OrbitControls(this.camera, canvas);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.08;
+
+        this.controls.screenSpacePanning = false;
+        this.controls.maxPolarAngle = Math.PI * 0.95;
+    }
+
+    #createLights() {
+        const hemiLight = new THREE.HemisphereLight(
+            0xffffff, // sky
+            0xeeeeee, // ground
+            0.6
+        );
+        this.scene.add(hemiLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        dirLight.position.set(3, 5, 4);
+        dirLight.target.position.set(0, 0, 0);
+        this.scene.add(dirLight);
+        this.scene.add(dirLight.target);
+    }
+
+    #calculateCenter(boundingBox) {
+        const size = new THREE.Vector3();
+        let center = new THREE.Vector3();
+        boundingBox.getSize(size);
+        boundingBox.getCenter(center);
+        return {center, size};
+    }
+
+    fitToBoundingBox(boundingBox, {
+        padding = 1.5,
+        translationY = 0,
+        minDistance = 2,
+        viewDirection = new THREE.Vector3(1, 1, 1)
+    } = {}) {
+        const {center, size} = this.#calculateCenter(boundingBox);
+
+        // distance so that bounding box is always in view
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const verticalFieldOfView = THREE.MathUtils.degToRad(this.camera.fov);
+        let distance = maxDim / Math.tan(verticalFieldOfView / 2);
+        distance = Math.max(distance * padding, minDistance);
+
+        const direction = viewDirection.clone().normalize();
+        this.camera.position
+            .copy(new THREE.Vector3(center.x, center.y + translationY, center.z))
+            .addScaledVector(direction, distance);
+        this.camera.near = distance / 100;
+        this.camera.far  = distance * 10;
+        this.camera.updateProjectionMatrix();
+
+        this.controls.target.copy(center);
+        this.controls.update();
+    }
+
+    render() {
+        this.controls.update();
+        this.axes.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this.camera);
+    }
+}
+
+export class PrincipalCurvatureColorMapper extends ColorMapper {
+    constructor(surface, {
+        which = ColorMode.K1,
+        scale = 1.0
+    } = {}) {
+        super();
+        this.curvature = new DifferentialGeometry(surface);
+        this.which = which;
+        this.scale = scale;
+    }
+
+    apply(geometry) {
+        const pos = geometry.attributes.position;
+        const uv  = geometry.attributes.uv;
+
+        let colorAttr = geometry.attributes.color;
+        if (!colorAttr) {
+            colorAttr = new THREE.BufferAttribute(new Float32Array(pos.count * 3), 3);
+            geometry.setAttribute("color", colorAttr);
+        }
+
+        const color = new THREE.Color();
+
+        for (let i = 0; i < pos.count; i++) {
+            const u = uv.getX(i);
+            const v = uv.getY(i);
+
+            let { k1, k2 } = this.curvature.principals(u, v);
+            const k = this.which === ColorMode.K1 ? k1 : k2;
+
+            // diverging color map
+            const t = Math.tanh(k * this.scale);
+
+            if (t > 0)
+                color.setHSL(0.0, 0.85, 0.5 + 0.25 * t); // red
+            else
+                color.setHSL(0.6, 0.85, 0.5 - 0.25 * t); // blue
+
+            colorAttr.array[3 * i]     = color.r;
+            colorAttr.array[3 * i + 1] = color.g;
+            colorAttr.array[3 * i + 2] = color.b;
+        }
+
+        colorAttr.needsUpdate = true;
+    }
+}
+
+export class StandardAxesAnnotations extends AxesAnnotation {
+    constructor(container, size=5, divisions=10, includeNegative=true) {
+        super(container);
+
+        const step = (2 * size) / divisions;
+        for (let v = includeNegative ? -size : 0 ; v <= size; v += step) {
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, -0.5 * size)));
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, v, -0.5 * size)));
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, 0, v - 0.5 * size)));
+        }
+
+        this.group.add(
+            this.#label("X", new THREE.Vector3(0.65 * size, 0, -0.5 * size), "white"),
+            this.#label("Y", new THREE.Vector3(-0.5 * size, 1.1 * size, -0.5 * size), "white"),
+            this.#label("Z", new THREE.Vector3(-0.5 * size, 0, 0.65 * size), "white")
+        );
+    }
+
+    #label(text, pos, color = "yellow") {
+        const div = document.createElement("div");
+        div.textContent = text;
+        div.style.color = color;
+        div.style.fontSize = "14px";
+
+        const obj = new CSS2DObject(div);
+        obj.position.copy(pos);
+        return obj;
+    }
+}
+
+export class Surface {
+    constructor(surfaceData) {
+        this.surfaceData = surfaceData;
+        const definition = new LiteralStringBasedSurfaceDefinition(
+            surfaceData.parametrization,
+            surfaceData.intervals[0],
+            surfaceData.intervals[1]);
+
+        this.surfaceFunction = (u, v, target) => definition.sample(u, v, target);
+    }
+
+    createGeometryWith = (resolution) =>
+        new ParametricGeometry((u, v, target) => this.surfaceFunction(u, v, target), resolution, resolution);
+
+    data = () => this.surfaceData;
+    parametrization = () => this.surfaceFunction;
+}
+
+export class SurfaceDefinition {
+    sample(u, v, target) {
+        throw new Error("sample() not implemented");
+    }
+}
+
+export class SurfaceView {
+    constructor(parentGroup, surface) {
+        this.parentGroup = parentGroup;
+        this.surface = surface;
+        this.group = new THREE.Group();
+        this.parentGroup?.add(this.group);
+        this._children = new Set();
+    }
+
+    #disposeSubViews = () => {
+        for (const child of this._children) child.dispose?.();
+        this._children.clear();
+    }
+
+    #disposeChild(child) {
+        if (child.geometry) child.geometry.dispose();
+
+        if (!child.material) return;
+        if (Array.isArray(child.material))
+            child.material.forEach(m => m.dispose());
+        else
+            child.material.dispose();
+    }
+
+    registerChild(view) {
+        this._children.add(view);
+        return view;
+    }
+
+    dispose() {
+        this.#disposeSubViews();
+        this._disposeObject(this.group);
+        if (this.parentGroup) this.parentGroup.remove(this.group);
+        this.group = null;
+        this.parentGroup = null;
+    }
+
+    /** Deep Three.js cleanup */
+    _disposeObject(object) {
+        object.traverse(child => { if (child.isMesh) this.#disposeChild(child); });
+        object.clear();
+    }
+
+    boundingBox() { return new THREE.Box3().setFromObject(this.group).clone(); }
+    data() { return this.surface.data(); }
+    hide() { this.group.visible = false; }
+    moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
+    material = (showWireframe, opacity) =>
+        new THREE.MeshStandardMaterial({
+            side: THREE.DoubleSide,
+            vertexColors: true,
+            transparent: opacity < 1,
+            opacity: opacity,
+            metalness: 0.1,
+            wireframe: showWireframe,
+            roughness: 0.5
+        });
+    parametrization() { return this.surface.parametrization(); }
+    position() { return this.group.position.clone(); }
+    rotateBy = (delta) => this.group.rotation.y += delta;
+    show() { this.group.visible = true; }
+}
+
+export class StandardSurfaceView extends SurfaceView {
+    constructor(parentGroup, surface, visualizationParameters) {
+        super(parentGroup, surface);
+        this.baseColor = visualizationParameters.baseColor;
+        this.opacity = visualizationParameters.opacity;
+        this.geometry = surface.createGeometryWith(visualizationParameters.resolution);
+        this.material = this.material(visualizationParameters.wireframe, this.opacity);
+        this.changeOpacityTo(this.opacity);
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
+        this.group.add(this.mesh);
+        this.colorMapper = null;
+        this.colorMode = visualizationParameters.colorMode;
+        this.changeColorModeTo(visualizationParameters.colorMode);
+        this.contours = null;
+        this.contourParameters = visualizationParameters.contourParameters;
+        this.modifyContours({
+            mode: this.contourParameters.contourType,
+            resolution: visualizationParameters.resolution,
+            color: this.contourParameters.color,
+            uCount: this.contourParameters.uCount,
+            vCount: this.contourParameters.vCount
+        });
+        this.normals = this.registerChild(new NormalsView(this.group, surface, this.geometry));
+        if (visualizationParameters.normals) this.addNormalsWith({});
+    }
+
+    addNormalsWith = (normalParameters) => this.normals.buildWith(normalParameters);
+    changeColorModeTo(mode) {
+        switch (mode) {
+            case ColorMode.HEIGHT:
+                this.colorMapper = new HeightColorMapper({ useBaseColor: false });
+                break;
+            case ColorMode.MEAN:
+                this.colorMapper = new CurvatureColorMapper(this.surface);
+                break;
+            case ColorMode.K1:
+            case ColorMode.K2:
+                this.colorMapper = new PrincipalCurvatureColorMapper(this.surface, { which: mode, scale: 3.0 });
+                break;
+            case ColorMode.GAUSSIAN:
+                this.colorMapper =
+                    new GaussianCurvatureColorMapper(this.surface, {
+                        scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
+                    });
+                break;
+            case ColorMode.BASE:
+            default:
+                this.colorMapper = new HeightColorMapper({ baseColor: this.baseColor, useBaseColor: true});
+        }
+        this.colorMapper.apply(this.geometry);
+    }
+
+    #modifyContourType(mode) {
+        switch (mode) {
+            case ContourType.NONE:
+                break;
+            case ContourType.CURVATURE:
+                this.contours = this.registerChild(new CurvatureContoursView(this.group, this.surface));
+                break;
+            case ContourType.ISO_PARAMETRIC:
+                this.contours = this.registerChild(new IsoparametricContoursView(this.group, this.surface));
+                break;
+        }
+    }
+
+    modifyContours({
+                       mode = this.contourParameters.mode,
+                       color = this.baseColor,
+                       uCount = this.contourParameters.uCount,
+                       vCount = this.contourParameters.vCount,
+                       segments = this.resolution
+                   } = {}) {
+        this.baseColor = color;
+        if (this.contours) this.contours.clear();
+        if (mode !== this.contourType)
+            this.#modifyContourType(mode);
+        if (this.contours && mode !== ContourType.NONE)
+            this.contours.buildWith({color: color, uCount: uCount, vCount: vCount, segments: segments});
+    }
+
+    changeBaseColorTo = (value) => {
+        this.baseColor = value;
+        this.changeColorModeTo(this.colorMode);
+        if (this.contours && this.contours.visible()) {
+            this.contours.dispose();
+            this.modifyContours();
+        }
+    };
+    changeOpacityTo = (value) => { this.material.opacity = value; this.material.transparent = value < 1; }
+    clearNormals = () => this.normals.clear();
+
+    resampleWith(resolution) {
+        this.geometry.dispose();
+        this.geometry = this.surface.createGeometryWith(resolution);
+        this.mesh.geometry = this.geometry;
+        this.colorMapper.apply(this.geometry);
+    }
+
+    resetTransform() {
+        this.group.position.set(0, 0, 0);
+        this.group.rotation.set(0, 0, 0);
+        this.group.scale.set(1, 1, 1);
+    }
+
+    toggleWireframe = (value) => this.material.wireframe = value;
+}
+
+export class Utils {
+    static functionFrom(functionString) {
+        try {
+            return (u, v) => math.compile(functionString).evaluate({ u, v });
+        } catch (err) {
+            alert("Math.js parse error: " + err.message);
+            return null;
+        }
+    }
+}
+
+export class ViewParameters {
+    constructor({
+                    autoRotate = false,
+                    baseColor = "#4cf",
+                    category = Category.MISC,
+                    colorMode = ColorMode.HEIGHT,
+                    contourParameters = new ContourParameters(),
+                    normals = false,
+                    opacity = 0.9,
+                    resolution = 75,
+                    wireframe = false
+                } ={}) {
+        this.autoRotate = autoRotate;
+        this.baseColor = baseColor;
+        this.category = category;
+        this.colorMode = colorMode;
+        this.contourParameters = contourParameters;
+        this.wireframe = wireframe;
+        this.normals = normals;
+        this.resolution = resolution;
+        this.opacity = opacity;
     }
 }
