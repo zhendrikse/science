@@ -94,7 +94,7 @@
     }
 
     class ControlsGui {
-        constructor(scenery, surface, axes, annotations, viewParameters=new ViewParameters()) {
+        constructor(surface, axes, annotations, viewParameters=new ViewParameters()) {
             this.viewParameters = viewParameters;
             this.surface = surface;
             const controls = new GUI({width: 300, autoPlace: false});
@@ -173,7 +173,7 @@
             this.#createContourFolder(appearanceFolder);
 
             appearanceFolder.add({reset: () =>
-                    scenery.fitToBoundingBox(this.surface.boundingBox(), {padding: 1.2, translationY: -0.5})}, "reset")
+                    plot3D.fitToBoundingBox(this.surface.boundingBox(), {padding: 1.2, translationY: -0.5})}, "reset")
                 .name("Reset Camera");
             appearanceFolder.close();
         }
@@ -231,7 +231,7 @@
     updateSurfaceData(surfaceDefinition);
 
     // Interaction
-    const controlsGui = new ControlsGui(worldGroup, surfaceInAxes, axes, annotations, visualizationParameters);
+    const controlsGui = new ControlsGui(surfaceInAxes, axes, annotations, visualizationParameters);
 
     function animate() {
         requestAnimationFrame(animate);
