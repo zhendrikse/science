@@ -80,7 +80,7 @@ export class Axes {
 export class AxesParameters {
     constructor({
                     showAxes = true,
-                    showAxesLabels = true
+                    showAxesLabels = false
                 } = {}) {
         this.showAxes = showAxes;
         this.showAxesLabels = showAxesLabels;
