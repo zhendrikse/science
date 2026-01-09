@@ -12,7 +12,7 @@
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 3 / 4;
     }
 </style>
 
@@ -71,24 +71,6 @@
         ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
     });
 
-    // CSS2DRenderer overlay
-    const labelRenderer = new CSS2DRenderer();
-    labelRenderer.domElement.style.position = "absolute";
-    labelRenderer.domElement.style.top = "0";
-    labelRenderer.domElement.style.left = "0";
-    labelRenderer.domElement.style.pointerEvents = "none";
-    container.appendChild(labelRenderer.domElement);
-
-    function resizeLabelRendererToCanvas(labelRenderer) {
-        const w = canvas.clientWidth;
-        const h = canvas.clientHeight;
-
-        if (!w || !h) return;
-
-        labelRenderer.setSize(w, h, false);
-    }
-    resizeLabelRendererToCanvas(labelRenderer);
-
     const controls = new OrbitControls(camera, canvas);
 
     scene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(10, 10, 10));
@@ -96,12 +78,12 @@
 
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
-    const axis = new MatlabAxes(worldGroup, document, 2, 10);
+    const axis = new MatlabAxes(worldGroup, container, 2.1, 10);
 
     function toCartesian(radius, theta, phi) {
         return new THREE.Vector3(
-            1 + radius * Math.sin(theta) * Math.cos(phi),
-            1 + radius * Math.sin(theta) * Math.sin(phi),
+            radius * Math.sin(theta) * Math.cos(phi),
+            radius * Math.sin(theta) * Math.sin(phi),
             1 + radius * Math.cos(theta)
         );
     }
@@ -198,8 +180,8 @@
     function animate() {
         requestAnimationFrame(animate);
         controls.update();
+        axis.render(scene, camera);
         renderer.render(scene,camera);
-        labelRenderer.render(scene,camera);
     }
     animate();
 

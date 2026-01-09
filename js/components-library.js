@@ -3,9 +3,8 @@ import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 
 export class MatlabAxes {
-    constructor(parentGroup, document, gridSize=5, gridDivisions=10) {
+    constructor(parentGroup, canvasContainer, gridSize=5, gridDivisions=10) {
         this.group = new THREE.Group();
-        this.document = document;
         parentGroup.add(this.group);
 
         this.allGrids = [].concat(
@@ -19,6 +18,30 @@ export class MatlabAxes {
         this.allGrids.forEach(obj => this.group.add(obj));
         this.tickLabels.forEach(obj => this.group.add(obj));
         this.axisLabels.forEach(obj => this.group.add(obj));
+
+        this.labelRenderer = this.#labelRenderer(canvasContainer);
+    }
+
+    #resizeLabelRendererToCanvas(labelRenderer) {
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+
+        if (!w || !h) return;
+
+        labelRenderer.setSize(w, h, false);
+    }
+
+    #labelRenderer(container) {
+        // CSS2DRenderer overlay
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.domElement.style.position = "absolute";
+        labelRenderer.domElement.style.top = "0";
+        labelRenderer.domElement.style.left = "0";
+        labelRenderer.domElement.style.pointerEvents = "none";
+        container.appendChild(labelRenderer.domElement);
+
+        this.#resizeLabelRendererToCanvas(labelRenderer);
+        return labelRenderer;
     }
 
     #createAxes(axesSize) {
@@ -61,7 +84,7 @@ export class MatlabAxes {
     }
 
     #makeLabel(text, pos, color="yellow") {
-        const div = this.document.createElement("div");
+        const div = document.createElement("div");
         div.style.color = color;
         div.style.fontSize = "15px";
         div.textContent = text;
@@ -76,9 +99,9 @@ export class MatlabAxes {
         const offset = 0.1;
 
         for (let v = 0; v <= size; v += step) {
-            labels.push(this.#makeLabel(v.toFixed(1), new THREE.Vector3(v, 0, size + offset)));
-            labels.push(this.#makeLabel(v.toFixed(1), new THREE.Vector3(0, v, size + offset)));
-            labels.push(this.#makeLabel(v.toFixed(1), new THREE.Vector3(size + offset, 0, v)));
+            labels.push(this.#makeLabel(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, 0.5 * size + offset)));
+            labels.push(this.#makeLabel(v.toFixed(1), new THREE.Vector3(-0.5 * size, v, 0.5 * size + offset)));
+            labels.push(this.#makeLabel(v.toFixed(1), new THREE.Vector3(0.5 * size + offset, 0, v - 0.5 * size)));
         }
         return labels;
     }
@@ -86,9 +109,9 @@ export class MatlabAxes {
     #createAxisLabels(size) {
         const offset = 0.2 * size;
         return [
-            this.#makeLabel("X-axis", new THREE.Vector3(size + offset, 0, .5 * size), "white"),
-            this.#makeLabel("Y-axis", new THREE.Vector3(0, size + offset * .5, 0), "white"),
-            this.#makeLabel("Z-axis", new THREE.Vector3(.5 * size, 0 ,size + offset), "white"),
+            this.#makeLabel("X-axis", new THREE.Vector3(0.5 * size + offset, 0, 0), "white"),
+            this.#makeLabel("Y-axis", new THREE.Vector3(-0.5 * size, size + offset * .5, -0.5 * size), "white"),
+            this.#makeLabel("Z-axis", new THREE.Vector3(0, 0 ,0.5 * size + offset), "white"),
         ];
     }
 
@@ -107,6 +130,10 @@ export class MatlabAxes {
     boundingBox = () => {
         this.group.updateMatrixWorld(true);
         return new THREE.Box3().setFromObject(this.group).clone();
+    }
+
+    render(scene, camera) {
+        this.labelRenderer.render(scene, camera);
     }
 
     show = (value) => this.group.visible = value;
