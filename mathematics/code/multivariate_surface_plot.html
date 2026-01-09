@@ -66,7 +66,7 @@
 
     const canvasContainer = document.getElementById("container");
     const canvas = document.getElementById("myCanvas");
-    const functionParameters = { userFunction: "3 * (1 - 2 * (u*u + v*v))*exp(-1.5 * (u*u + v*v))" };
+    const functionParameters = { userFunction: ".1 * (v*v*v*u - u*u*u*v)" };
 
     function displayedSurface(surfaceData, visualizationParameters, scenery, axes) {
         const surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceData), visualizationParameters);
