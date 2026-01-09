@@ -4,6 +4,32 @@ import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
 
+export const Category = Object.freeze({
+    BASIC: "Basic",
+    CONIC: "Conic",
+    MISC: "Miscellaneous",
+    NATURE: "Nature",
+    NON_ORIENTABLE: "Non-Orientable",
+    OBJECT: "Object",
+    SPIRAL: "Spiral",
+    TOROID: "Toroid"
+});
+
+export const ColorMode = Object.freeze({
+    BASE: "Base",
+    GAUSSIAN: "Gaussian curvature",
+    HEIGHT: "Height",
+    MEAN: "Mean curvature",
+    K1: "Principal curvature k₁",
+    K2: "Principal curvature k₂"
+});
+
+export const ContourType = Object.freeze({
+    CURVATURE: "Curvature",
+    ISO_PARAMETRIC: "Isoparametric",
+    NONE: "None"
+});
+
 export class Axes {
     constructor(parentGroup) {
         this.group = new THREE.Group();
@@ -51,6 +77,22 @@ export class Axes {
     }
 }
 
+export class Interval {
+    constructor(from=-Infinity, to=Infinity) {
+        this.from = from;
+        this.to = to;
+    }
+
+    shrinkTo(value) {
+        if (this.from < value) this.from = value;
+        if (this.to > value) this.to = value;
+    }
+
+    scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
+    range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
+    scaleParameter = (a) => this.range() * (a + this.from / this.range());
+}
+
 export class AxesAnnotation {
     constructor(container) {
         this.group = new THREE.Group();
@@ -87,17 +129,6 @@ export class AxesLayout {
         this.group.clear();
     }
 }
-
-export const Category = Object.freeze({
-    BASIC: "Basic",
-    CONIC: "Conic",
-    MISC: "Miscellaneous",
-    NATURE: "Nature",
-    NON_ORIENTABLE: "Non-Orientable",
-    OBJECT: "Object",
-    SPIRAL: "Spiral",
-    TOROID: "Toroid"
-});
 
 export class ClassicalAxesLayout extends AxesLayout {
     constructor(size, divisions) {
@@ -142,26 +173,155 @@ export class ClassicalAxesLayout extends AxesLayout {
     }
 }
 
+export class MatlabAxesLayout extends AxesLayout {
+    constructor(size, divisions) {
+        super(size, divisions);
+
+        const eps = 0.025;
+
+        const axes = new THREE.AxesHelper(size);
+        axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
+        this.group.add(axes);
+
+        this.#addPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]); // XZ
+        this.#addPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [-1, 1, 0]);  // YZ
+        this.#addPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [-1, 1, 0], [0, 1, -1]); // XY
+    }
+
+    #addPlane(color, rotate, gridPos, planePos) {
+        const grid = new THREE.GridHelper(
+            this.size,
+            this.divisions,
+            0x333333,
+            0x333333
+        );
+
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(this.size, this.size),
+            new THREE.MeshPhongMaterial({
+                color,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.DoubleSide
+            })
+        );
+
+        grid.position.set(
+            gridPos[0] * 0.5 * this.size, gridPos[1] * 0.5 * this.size, gridPos[2] * 0.5 * this.size);
+        plane.position.set(
+            planePos[0] * 0.5 * this.size, planePos[1] * 0.5 * this.size, planePos[2] * 0.5 * this.size);
+
+        rotate(grid);
+        rotate(plane);
+
+        this.group.add(grid, plane);
+    }
+}
+
+export class StandardAxesAnnotations extends AxesAnnotation {
+    constructor(container, size=5, divisions=10, includeNegative=true) {
+        super(container);
+
+        const step = (2 * size) / divisions;
+        for (let v = includeNegative ? -size : 0 ; v <= size; v += step) {
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, -0.5 * size)));
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, v, -0.5 * size)));
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, 0, v - 0.5 * size)));
+        }
+
+        this.group.add(
+            this.#label("X", new THREE.Vector3(0.65 * size, 0, -0.5 * size), "white"),
+            this.#label("Y", new THREE.Vector3(-0.5 * size, 1.1 * size, -0.5 * size), "white"),
+            this.#label("Z", new THREE.Vector3(-0.5 * size, 0, 0.65 * size), "white")
+        );
+    }
+
+    #label(text, pos, color = "yellow") {
+        const div = document.createElement("div");
+        div.textContent = text;
+        div.style.color = color;
+        div.style.fontSize = "14px";
+
+        const obj = new CSS2DObject(div);
+        obj.position.copy(pos);
+        return obj;
+    }
+}
+
 export class ColorMapper {
     apply(geometry) {
         throw new Error("apply() not implemented");
     }
 }
 
-export const ColorMode = Object.freeze({
-    BASE: "Base",
-    GAUSSIAN: "Gaussian curvature",
-    HEIGHT: "Height",
-    MEAN: "Mean curvature",
-    K1: "Principal curvature k₁",
-    K2: "Principal curvature k₂"
-});
+export class SurfaceDefinition {
+    sample(u, v, target) {
+        throw new Error("sample() not implemented");
+    }
+}
 
-export const ContourType = Object.freeze({
-    CURVATURE: "Curvature",
-    ISO_PARAMETRIC: "Isoparametric",
-    NONE: "None"
-});
+export class SurfaceView {
+    constructor(parentGroup, surface) {
+        this.parentGroup = parentGroup;
+        this.surface = surface;
+        this.group = new THREE.Group();
+        this.parentGroup?.add(this.group);
+        this._children = new Set();
+    }
+
+    #disposeSubViews = () => {
+        for (const child of this._children) child.dispose?.();
+        this._children.clear();
+    }
+
+    #disposeChild(child) {
+        if (child.geometry) child.geometry.dispose();
+
+        if (!child.material) return;
+        if (Array.isArray(child.material))
+            child.material.forEach(m => m.dispose());
+        else
+            child.material.dispose();
+    }
+
+    registerChild(view) {
+        this._children.add(view);
+        return view;
+    }
+
+    dispose() {
+        this.#disposeSubViews();
+        this._disposeObject(this.group);
+        if (this.parentGroup) this.parentGroup.remove(this.group);
+        this.group = null;
+        this.parentGroup = null;
+    }
+
+    /** Deep Three.js cleanup */
+    _disposeObject(object) {
+        object.traverse(child => { if (child.isMesh) this.#disposeChild(child); });
+        object.clear();
+    }
+
+    boundingBox() { return new THREE.Box3().setFromObject(this.group).clone(); }
+    data() { return this.surface.data(); }
+    hide() { this.group.visible = false; }
+    moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
+    material = (showWireframe, opacity) =>
+        new THREE.MeshStandardMaterial({
+            side: THREE.DoubleSide,
+            vertexColors: true,
+            transparent: opacity < 1,
+            opacity: opacity,
+            metalness: 0.1,
+            wireframe: showWireframe,
+            roughness: 0.5
+        });
+    parametrization() { return this.surface.parametrization(); }
+    position() { return this.group.position.clone(); }
+    rotateBy = (delta) => this.group.rotation.y += delta;
+    show() { this.group.visible = true; }
+}
 
 export class ContourParameters {
     constructor({
@@ -543,22 +703,6 @@ export class IsoparametricContoursView extends SurfaceView {
     }
 }
 
-export class Interval {
-    constructor(from=-Infinity, to=Infinity) {
-        this.from = from;
-        this.to = to;
-    }
-
-    shrinkTo(value) {
-        if (this.from < value) this.from = value;
-        if (this.to > value) this.to = value;
-    }
-
-    scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
-    range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
-    scaleParameter = (a) => this.range() * (a + this.from / this.range());
-}
-
 export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
     constructor(surfaceFunctions, xInterval, yInterval) {
         super();
@@ -582,51 +726,6 @@ export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
             this.yFnCompiled(theta, phi),
             this.zFnCompiled(theta, phi)
         );
-    }
-}
-
-export class MatlabAxesLayout extends AxesLayout {
-    constructor(size, divisions) {
-        super(size, divisions);
-
-        const eps = 0.025;
-
-        const axes = new THREE.AxesHelper(size);
-        axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
-        this.group.add(axes);
-
-        this.#addPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]); // XZ
-        this.#addPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [-1, 1, 0]);  // YZ
-        this.#addPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [-1, 1, 0], [0, 1, -1]); // XY
-    }
-
-    #addPlane(color, rotate, gridPos, planePos) {
-        const grid = new THREE.GridHelper(
-            this.size,
-            this.divisions,
-            0x333333,
-            0x333333
-        );
-
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(this.size, this.size),
-            new THREE.MeshPhongMaterial({
-                color,
-                transparent: true,
-                opacity: 0.1,
-                side: THREE.DoubleSide
-            })
-        );
-
-        grid.position.set(
-            gridPos[0] * 0.5 * this.size, gridPos[1] * 0.5 * this.size, gridPos[2] * 0.5 * this.size);
-        plane.position.set(
-            planePos[0] * 0.5 * this.size, planePos[1] * 0.5 * this.size, planePos[2] * 0.5 * this.size);
-
-        rotate(grid);
-        rotate(plane);
-
-        this.group.add(grid, plane);
     }
 }
 
@@ -831,36 +930,6 @@ export class PrincipalCurvatureColorMapper extends ColorMapper {
     }
 }
 
-export class StandardAxesAnnotations extends AxesAnnotation {
-    constructor(container, size=5, divisions=10, includeNegative=true) {
-        super(container);
-
-        const step = (2 * size) / divisions;
-        for (let v = includeNegative ? -size : 0 ; v <= size; v += step) {
-            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, -0.5 * size)));
-            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, v, -0.5 * size)));
-            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, 0, v - 0.5 * size)));
-        }
-
-        this.group.add(
-            this.#label("X", new THREE.Vector3(0.65 * size, 0, -0.5 * size), "white"),
-            this.#label("Y", new THREE.Vector3(-0.5 * size, 1.1 * size, -0.5 * size), "white"),
-            this.#label("Z", new THREE.Vector3(-0.5 * size, 0, 0.65 * size), "white")
-        );
-    }
-
-    #label(text, pos, color = "yellow") {
-        const div = document.createElement("div");
-        div.textContent = text;
-        div.style.color = color;
-        div.style.fontSize = "14px";
-
-        const obj = new CSS2DObject(div);
-        obj.position.copy(pos);
-        return obj;
-    }
-}
-
 export class Surface {
     constructor(surfaceData) {
         this.surfaceData = surfaceData;
@@ -877,75 +946,6 @@ export class Surface {
 
     data = () => this.surfaceData;
     parametrization = () => this.surfaceFunction;
-}
-
-export class SurfaceDefinition {
-    sample(u, v, target) {
-        throw new Error("sample() not implemented");
-    }
-}
-
-export class SurfaceView {
-    constructor(parentGroup, surface) {
-        this.parentGroup = parentGroup;
-        this.surface = surface;
-        this.group = new THREE.Group();
-        this.parentGroup?.add(this.group);
-        this._children = new Set();
-    }
-
-    #disposeSubViews = () => {
-        for (const child of this._children) child.dispose?.();
-        this._children.clear();
-    }
-
-    #disposeChild(child) {
-        if (child.geometry) child.geometry.dispose();
-
-        if (!child.material) return;
-        if (Array.isArray(child.material))
-            child.material.forEach(m => m.dispose());
-        else
-            child.material.dispose();
-    }
-
-    registerChild(view) {
-        this._children.add(view);
-        return view;
-    }
-
-    dispose() {
-        this.#disposeSubViews();
-        this._disposeObject(this.group);
-        if (this.parentGroup) this.parentGroup.remove(this.group);
-        this.group = null;
-        this.parentGroup = null;
-    }
-
-    /** Deep Three.js cleanup */
-    _disposeObject(object) {
-        object.traverse(child => { if (child.isMesh) this.#disposeChild(child); });
-        object.clear();
-    }
-
-    boundingBox() { return new THREE.Box3().setFromObject(this.group).clone(); }
-    data() { return this.surface.data(); }
-    hide() { this.group.visible = false; }
-    moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
-    material = (showWireframe, opacity) =>
-        new THREE.MeshStandardMaterial({
-            side: THREE.DoubleSide,
-            vertexColors: true,
-            transparent: opacity < 1,
-            opacity: opacity,
-            metalness: 0.1,
-            wireframe: showWireframe,
-            roughness: 0.5
-        });
-    parametrization() { return this.surface.parametrization(); }
-    position() { return this.group.position.clone(); }
-    rotateBy = (delta) => this.group.rotation.y += delta;
-    show() { this.group.visible = true; }
 }
 
 export class StandardSurfaceView extends SurfaceView {
