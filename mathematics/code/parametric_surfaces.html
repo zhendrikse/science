@@ -7,7 +7,7 @@
         aspect-ratio: 4 / 3;
     }
 
-    .canvas-inner {
+    #canvas-inner {
         position: relative;
         width: 100%;
         aspect-ratio: 1 / 1;
@@ -59,7 +59,7 @@
 <div id="canvas-wrapper">
     <div id="surface-title"></div>
     <div id="surface-equation"></div>
-    <div class="canvas-inner">
+    <div id="canvas-inner">
         <canvas id="geometriesCanvas"></canvas>
     </div>
     <div id="gui-container"></div>
@@ -652,13 +652,14 @@
         constructor({
                         autoRotate = false,
                         baseColor = "#4cf",
-                        category = Category.OBJECT,
+                        category = Category.MISC,
                         contourParameters = new ContourParameters(),
-                        colorMode = ColorMode.BASE,
+                        colorMode = ColorMode.HEIGHT,
                         normals = false,
                         opacity = 0.9,
                         resolution = 75,
                         showAxes = true,
+                        showTickMarks = false,
                         wireframe = false
                     } ={}) {
             this.autoRotate = autoRotate;
@@ -668,6 +669,7 @@
             this.contourParameters = contourParameters;
             this.wireframe = wireframe;
             this.showAxes = showAxes;
+            this.showTickMarks = showTickMarks;
             this.normals = normals;
             this.resolution = resolution;
             this.opacity = opacity;
@@ -686,18 +688,7 @@
                 .onChange(value => ring.changeActiveCategoryTo(value));
 
             this.#createAppearanceFolder(controls, axes);
-            //this.#createContourFolder(controls);
-
-            //
-            // appearanceFolder.add({reset: () => scenery.fitToBoundingBox(surfaceInAxes.boundingBox())}, "reset")
-            //     .name("Reset Camera");
-            //
-            //
-            //
-            // controls.close();
-            // animationFolder.close();
-            // contourFolder.close();
-            // appearanceFolder.close();
+            this.#createContourFolder(controls);
         }
 
         #createContourFolder(folder) {
@@ -741,6 +732,8 @@
                 .onChange(value => this.surface.toggleWireframe(value));
             optionsFolder.add(this.viewParameters, 'showAxes')
                 .name("Axes").onChange(value => axes.show(value));
+            optionsFolder.add(this.viewParameters, 'showTickMarks')
+                .name("Axes tick marks").onChange(value => axes.setTickLabelVisibilityTo(value));
             optionsFolder.add(this.viewParameters, 'normals')
                 .name('Show Normals')
                 .onChange(value => this.#showNormals(this.surface, value));
@@ -753,6 +746,10 @@
             this.#createSurfaceFolder(appearanceFolder);
             this.#createOptionsFolder(appearanceFolder, axes);
             this.#createContourFolder(appearanceFolder);
+
+            appearanceFolder.add({reset: () =>
+                    scenery.fitToBoundingBox(this.surface.boundingBox(), {padding: 1.2, translationY: -0.5})}, "reset")
+                .name("Reset Camera");
             appearanceFolder.close();
         }
 
@@ -1198,10 +1195,10 @@
     const axesGroup = new THREE.Group();
     worldGroup.add(axesGroup);
     const axes = new MatlabAxes(axesGroup, document.getElementById("canvas-inner"), 3, 10);
-    axes.setAxesLabelVisibilityTo(true);
+    axes.setTickLabelVisibilityTo(false);
     const scenery = new Scenery(scene, axes);
 
-    const surfaceDefinition = surfaces[34];
+    const surfaceDefinition = surfaces[19];
     const visualizationParameters = new ViewParameters();
     let surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, scenery, axes);
 
