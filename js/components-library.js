@@ -234,15 +234,15 @@ export class StandardAxesAnnotations extends AxesAnnotation {
 
         const step = (2 * size) / divisions;
         for (let v = includeNegative ? -size : 0 ; v <= size; v += step) {
-            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, -0.5 * size)));
-            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, v, -0.5 * size)));
-            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.5 * size, 0, v - 0.5 * size)));
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, 0.525 * size)));
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(-0.525 * size, v, 0.5 * size)));
+            this.group.add(this.#label(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v - 0.5 * size)));
         }
 
         this.group.add(
-            this.#label("X", new THREE.Vector3(0.65 * size, 0, -0.5 * size), "white"),
-            this.#label("Y", new THREE.Vector3(-0.5 * size, 1.1 * size, -0.5 * size), "white"),
-            this.#label("Z", new THREE.Vector3(-0.5 * size, 0, 0.65 * size), "white")
+            this.#label("X", new THREE.Vector3(0.6 * size, 0, -0.5 * size), "red"),
+            this.#label("Y", new THREE.Vector3(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
+            this.#label("Z", new THREE.Vector3(-0.5 * size, 0, 0.6 * size), "blue")
         );
     }
 
@@ -250,7 +250,7 @@ export class StandardAxesAnnotations extends AxesAnnotation {
         const div = document.createElement("div");
         div.textContent = text;
         div.style.color = color;
-        div.style.fontSize = "16px";
+        div.style.fontSize = "18px";
 
         const obj = new CSS2DObject(div);
         obj.position.copy(pos);
