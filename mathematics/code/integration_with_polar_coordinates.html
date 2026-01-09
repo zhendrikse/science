@@ -80,7 +80,7 @@
             new THREE.MeshPhongMaterial({ transparent:true, opacity:0.35 })
         );
         const position = Axes.toCartesian(R, theta, phi);
-        mesh.position.copy(new THREE.Vector3(position.x, position.z, position.y));
+        mesh.position.copy(new THREE.Vector3(position.x, position.z + R, position.y));
         mesh.userData = {theta:theta, phi:phi, val};
         scene.add(mesh);
         cells.push(mesh);
