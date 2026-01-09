@@ -80,6 +80,19 @@
         return surfaceInAxes;
     }
 
+    function updateSurfaceData(surfaceData) {
+        const equationDiv = document.getElementById("surface-equation");
+        equationDiv.innerHTML = "$$\\begin{pmatrix}" +
+            surfaceData.parametrization.xFn + " \\\\" +
+            surfaceData.parametrization.yFn + " \\\\" +
+            surfaceData.parametrization.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
+            surfaceData.intervals[0][0] + ", " +
+            surfaceData.intervals[0][1] + "] \\\\ v \\in [" +
+            surfaceData.intervals[1][0] + ", " +
+            surfaceData.intervals[1][1] + "] \\end{cases}$$";
+        if (window.MathJax) MathJax.typesetPromise([equationDiv]);
+    }
+
     class ControlsGui {
         constructor(scenery, surface, axes, annotations, viewParameters=new ViewParameters()) {
             this.viewParameters = viewParameters;
@@ -91,13 +104,12 @@
                 .onFinishChange(expr => {
                     const surfaceDefinition = {
                         parametrization: {xFn: "u", yFn: expr, zFn: "v"},
-                        intervals: [["-2", "2"], ["-2", "2"]]
+                        intervals: [["-pi", "pi"], ["pi", "-pi"]]
                     };
 
                     this.surface.dispose();
                     this.surface = displayedSurface(surfaceDefinition, this.viewParameters, scenery, axes)
-                    // scenery.fitToBoundingBox(surface.getBoundingBox());
-                    // scenery.updateTitle(expr);
+                    updateSurfaceData(surfaceDefinition);
                 });
 
             this.#createAppearanceFolder(controls, axes, annotations);
@@ -188,27 +200,15 @@
         }
     }
 
-    function updateSurfaceData(surfaceData) {
-        const equationDiv = document.getElementById("surface-equation");
-        equationDiv.innerHTML = "$$\\begin{pmatrix}" +
-            surfaceData.parametrization.xFn + " \\\\" +
-            surfaceData.parametrization.yFn + " \\\\" +
-            surfaceData.parametrization.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
-            surfaceData.intervals[0][0] + ", " +
-            surfaceData.intervals[0][1] + "] \\\\ v \\in [" +
-            surfaceData.intervals[1][0] + ", " +
-            surfaceData.intervals[1][1] + "] \\end{cases}$$";
-        if (window.MathJax) MathJax.typesetPromise([equationDiv]);
-    }
 
     const scene = new THREE.Scene();
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
     const axes = new Axes(worldGroup);
-    axes.setLayout(new MatlabAxesLayout(4.1, 10));
+    axes.setLayout(new MatlabAxesLayout(Math.PI * 1.1, 10));
     //axes.setLayout(new ClassicalAxesLayout(4, 10));
-    const annotations = new StandardAxesAnnotations(canvasContainer, 4.1, 10, false);
+    const annotations = new StandardAxesAnnotations(canvasContainer, Math.PI * 1.1, 10, false);
     axes.setAnnotations(annotations);
     annotations.hide();
 
@@ -223,7 +223,7 @@
             yFn: functionParameters.userFunction,
             zFn: "v"
         },
-        intervals: [["-2", "2"], ["-2", "2"]]
+        intervals: [["-pi", "pi"], ["-pi", "pi"]]
     }
     const visualizationParameters = new ViewParameters();
     visualizationParameters.opacity = 0.95;
