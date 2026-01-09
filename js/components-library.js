@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import * as math from "mathjs";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
