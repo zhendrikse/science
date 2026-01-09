@@ -43,7 +43,7 @@ export class Axes {
         return new THREE.Vector3(
             radius * Math.sin(theta) * Math.cos(phi),
             radius * Math.sin(theta) * Math.sin(phi),
-            1 + radius * Math.cos(theta)
+            radius * Math.cos(theta)
         );
     }
 
