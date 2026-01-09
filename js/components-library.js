@@ -240,7 +240,7 @@ export class StandardAxesAnnotations extends AxesAnnotation {
         const div = document.createElement("div");
         div.textContent = text;
         div.style.color = color;
-        div.style.fontSize = "14px";
+        div.style.fontSize = "16px";
 
         const obj = new CSS2DObject(div);
         obj.position.copy(pos);
