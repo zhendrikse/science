@@ -77,6 +77,16 @@ export class Axes {
     }
 }
 
+export class AxesParameters {
+    constructor({
+                    showAxes = true,
+                    showAxesLabels = true
+                } = {}) {
+        this.showAxes = showAxes;
+        this.showAxesLabels = showAxesLabels;
+    }
+}
+
 export class Interval {
     constructor(from=-Infinity, to=Infinity) {
         this.from = from;
@@ -1092,6 +1102,7 @@ export class Utils {
 export class ViewParameters {
     constructor({
                     autoRotate = false,
+                    axesParameters = new AxesParameters(),
                     baseColor = "#4cf",
                     category = Category.MISC,
                     colorMode = ColorMode.HEIGHT,
@@ -1102,6 +1113,7 @@ export class ViewParameters {
                     wireframe = false
                 } ={}) {
         this.autoRotate = autoRotate;
+        this.axesParameters = axesParameters;
         this.baseColor = baseColor;
         this.category = category;
         this.colorMode = colorMode;
