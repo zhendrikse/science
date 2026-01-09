@@ -174,6 +174,7 @@ export class ClassicalAxesLayout extends AxesLayout {
             new THREE.MeshPhongMaterial({
                 color,
                 transparent: true,
+                depthWrite: false,
                 opacity: 0.1,
                 side: THREE.DoubleSide
             })
