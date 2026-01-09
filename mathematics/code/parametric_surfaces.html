@@ -1,5 +1,5 @@
 <style>
-    canvas {
+    #surfaceCanvas {
         position: absolute;
         inset: 0;
         width: 100%;
@@ -7,7 +7,7 @@
         display: block;
     }
 
-    #container {
+    #surface-canvas-container {
         position: relative;
         width: 100%;
         max-width: 800px;
@@ -63,8 +63,8 @@
 
 <div id="surface-title"></div>
 <div id="surface-equation"></div>
-<div id="container">
-    <canvas id="myCanvas"></canvas><br/>
+<div id="surface-canvas-container">
+    <canvas id="surfaceCanvas"></canvas><br/>
 </div>
 <div id="gui-container"></div>
 
@@ -77,8 +77,8 @@
         from 'https://www.hendrikse.name/science/js/components-library.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
-    const canvasContainer = document.getElementById("container");
-    const canvas = document.getElementById("myCanvas");
+    const canvasContainer = document.getElementById("surface-canvas-container");
+    const canvas = document.getElementById("surfaceCanvas");
 
     const surfaces = [{
         meta: {name: "Apple", category: Category.NATURE},
@@ -507,7 +507,7 @@
     }];
 
     class ControlsGui {
-        constructor(scenery, surface, axes, annotations, ring, viewParameters=new ViewParameters()) {
+        constructor(surface, axes, annotations, ring, viewParameters=new ViewParameters()) {
             this.viewParameters = viewParameters;
             this.surface = surface;
             const controls = new GUI({width: 300, autoPlace: false});
@@ -578,7 +578,7 @@
             this.#createContourFolder(appearanceFolder);
 
             appearanceFolder.add({reset: () =>
-                    scenery.fitToBoundingBox(this.surface.boundingBox(), {padding: 1.2, translationY: -0.5})}, "reset")
+                    plot3D.fitToBoundingBox(this.surface.boundingBox(), {padding: 1.2, translationY: -0.5})}, "reset")
                 .name("Reset Camera");
             appearanceFolder.close();
         }
@@ -724,9 +724,10 @@
         return surfaceInAxes;
     }
 
-    const scene = new THREE.Scene();
+    const surfacePlotScene = new THREE.Scene();
+    surfacePlotScene.background = new THREE.Color(0x131313);
     const worldGroup = new THREE.Group();
-    scene.add(worldGroup);
+    surfacePlotScene.add(worldGroup);
 
     // Axes
     const axes = new Axes(worldGroup);
@@ -737,7 +738,7 @@
     annotations.hide();
 
     // Surface
-    const plot3D = new Plot3D(canvas, scene, axes);
+    const plot3D = new Plot3D(canvas, surfacePlotScene, axes);
     const bbox = new THREE.Box3();
     bbox.setFromObject( worldGroup );
     plot3D.fitToBoundingBox(bbox, {padding: 1.2, translationY: -3.0});
@@ -756,7 +757,7 @@
     ring.onSelectTo(selectedRingSurface);
 
     // Interaction
-    const controlsGui = new ControlsGui(worldGroup, surfaceInAxes, axes, annotations, ring, visualizationParameters);
+    const controlsGui = new ControlsGui(surfaceInAxes, axes, annotations, ring, visualizationParameters);
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     canvas.addEventListener("pointerdown", event => {
