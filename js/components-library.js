@@ -88,6 +88,17 @@ export class AxesLayout {
     }
 }
 
+export const Category = Object.freeze({
+    BASIC: "Basic",
+    CONIC: "Conic",
+    MISC: "Miscellaneous",
+    NATURE: "Nature",
+    NON_ORIENTABLE: "Non-Orientable",
+    OBJECT: "Object",
+    SPIRAL: "Spiral",
+    TOROID: "Toroid"
+});
+
 export class ClassicalAxesLayout extends AxesLayout {
     constructor(size, divisions) {
         super(size, divisions);
@@ -136,6 +147,21 @@ export class ColorMapper {
         throw new Error("apply() not implemented");
     }
 }
+
+export const ColorMode = Object.freeze({
+    BASE: "Base",
+    GAUSSIAN: "Gaussian curvature",
+    HEIGHT: "Height",
+    MEAN: "Mean curvature",
+    K1: "Principal curvature k₁",
+    K2: "Principal curvature k₂"
+});
+
+export const ContourType = Object.freeze({
+    CURVATURE: "Curvature",
+    ISO_PARAMETRIC: "Isoparametric",
+    NONE: "None"
+});
 
 export class ContourParameters {
     constructor({
