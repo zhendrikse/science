@@ -45,14 +45,16 @@
     const canvas = document.getElementById("polarCanvas");
 
     const scene = new THREE.Scene();
-    scene.background = 0x131313;
+    scene.background = new THREE.Color(0x131313);
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
     const radius = 2;
     const params = {
         theta: 45,
-        phi: 45
+        phi: 45,
+        showAxes: true,
+        showAxesLabels: true
     };
 
     class Arrow extends THREE.Group {
@@ -133,6 +135,10 @@
             gui.add(params, "phi", 0, 180, 0.1)
                 .name("φ (phi)")
                 .onChange(value => tangentVectors.update(radius, value, params.theta));
+            gui.add(params, 'showAxes')
+                .name("Axes").onChange(value => value ? axes.show() : axes.hide());
+            gui.add(params, 'showAxesLabels')
+                .name("Axes labels").onChange(value => value ? annotations.show() : annotations.hide());
 
             document
                 .getElementById("gui-container")
@@ -149,7 +155,7 @@
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
     bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 1.1, translationY: -2});
+    plot3D.fitToBoundingBox(bbox, {padding: 1.2, translationY: -2});
 
     const resolution = 50;
     const geometry = new THREE.SphereGeometry( radius, resolution, resolution );
