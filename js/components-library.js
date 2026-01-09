@@ -2,6 +2,20 @@ import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 
+export class AxesParameters {
+    constructor({
+                    showAxes = true,
+                    showTickMarks = false,
+                    showAxesLabels = false,
+                    showGridPlanes = true
+                } ={}) {
+        this.showAxes = showAxes;
+        this.showTickMarks = showTickMarks;
+        this.showAxesLabels = showAxesLabels;
+        this.showGridPlanes = showGridPlanes;
+    }
+}
+
 export class MatlabAxes {
     constructor(parentGroup, canvasContainer, gridSize=5, gridDivisions=10) {
         this.group = new THREE.Group();

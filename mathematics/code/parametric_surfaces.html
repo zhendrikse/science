@@ -83,7 +83,8 @@
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
     import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
     import { MatlabAxes, Interval, Surface, SurfaceView, DifferentialGeometry, IsoparametricContoursView,
-        CurvatureContoursView, NormalsView } from 'https://www.hendrikse.name/science/js/components-library.js';
+        CurvatureContoursView, NormalsView, AxesParameters }
+        from 'https://www.hendrikse.name/science/js/components-library.js';
 
     const canvas = document.getElementById("geometriesCanvas");
 
@@ -650,6 +651,7 @@
 
     class ViewParameters {
         constructor({
+                        axesParameters = new AxesParameters(),
                         autoRotate = false,
                         baseColor = "#4cf",
                         category = Category.MISC,
@@ -658,18 +660,15 @@
                         normals = false,
                         opacity = 0.9,
                         resolution = 75,
-                        showAxes = true,
-                        showTickMarks = false,
                         wireframe = false
                     } ={}) {
+            this.axesParameters = axesParameters;
             this.autoRotate = autoRotate;
             this.baseColor = baseColor;
             this.category = category;
             this.colorMode = colorMode;
             this.contourParameters = contourParameters;
             this.wireframe = wireframe;
-            this.showAxes = showAxes;
-            this.showTickMarks = showTickMarks;
             this.normals = normals;
             this.resolution = resolution;
             this.opacity = opacity;
@@ -725,15 +724,24 @@
             surfaceFolder.close();
         }
 
-        #createOptionsFolder(folder, axes) {
+        #createAxesFolder(folder, axes) {
+            const axesFolder = folder.addFolder("Axes");
+            axesFolder.add(this.viewParameters.axesParameters, 'showAxes')
+                .name("Axes").onChange(value => axes.show(value));
+            axesFolder.add(this.viewParameters.axesParameters, 'showTickMarks')
+                .name("Tick marks").onChange(value => axes.setTickLabelVisibilityTo(value));
+            axesFolder.add(this.viewParameters.axesParameters, 'showAxesLabels')
+                .name("Axes labels").onChange(value => axes.setAxesLabelVisibilityTo(value));
+            axesFolder.add(this.viewParameters.axesParameters, 'showGridPlanes')
+                .name("Grid planes").onChange(value => axes.setPlaneVisibilityTo(value));
+            axesFolder.close();
+        }
+
+        #createOptionsFolder(folder) {
             const optionsFolder = folder.addFolder("Options");
             optionsFolder.add(this.viewParameters, 'wireframe')
                 .name("Wireframe")
                 .onChange(value => this.surface.toggleWireframe(value));
-            optionsFolder.add(this.viewParameters, 'showAxes')
-                .name("Axes").onChange(value => axes.show(value));
-            optionsFolder.add(this.viewParameters, 'showTickMarks')
-                .name("Axes tick marks").onChange(value => axes.setTickLabelVisibilityTo(value));
             optionsFolder.add(this.viewParameters, 'normals')
                 .name('Show Normals')
                 .onChange(value => this.#showNormals(this.surface, value));
@@ -744,7 +752,8 @@
         #createAppearanceFolder(controls, axes) {
             const appearanceFolder = controls.addFolder("Appearance");
             this.#createSurfaceFolder(appearanceFolder);
-            this.#createOptionsFolder(appearanceFolder, axes);
+            this.#createOptionsFolder(appearanceFolder);
+            this.#createAxesFolder(appearanceFolder, axes);
             this.#createContourFolder(appearanceFolder);
 
             appearanceFolder.add({reset: () =>
@@ -1196,6 +1205,7 @@
     worldGroup.add(axesGroup);
     const axes = new MatlabAxes(axesGroup, document.getElementById("canvas-inner"), 3, 10);
     axes.setTickLabelVisibilityTo(false);
+    axes.setAxesLabelVisibilityTo(false);
     const scenery = new Scenery(scene, axes);
 
     const surfaceDefinition = surfaces[19];
