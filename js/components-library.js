@@ -729,6 +729,29 @@ export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
     }
 }
 
+export class MinimalSurfaceView extends SurfaceView {
+    constructor(parentGroup, surface, {resolution=20, baseColor="#4f6"}) {
+        super(parentGroup, surface);
+        this.baseColor = baseColor;
+        this.geometry = surface.createGeometryWith(resolution);
+        this.material = this.material(true, 1);
+        this.colorMapper = new HeightColorMapper({ baseColor: baseColor });
+        this.mesh = new THREE.Mesh(this.geometry, this.material);
+        this.group.add(this.mesh);
+        this.colorMapper.apply(this.geometry);
+    }
+
+    onSelect = () => {
+        this.material.wireframe = false;
+        this.colorMapper = new HeightColorMapper({});
+        this.colorMapper.apply(this.geometry); }
+    onDeselect = () => {
+        this.material.wireframe = true;
+        this.colorMapper = new HeightColorMapper({ baseColor: this.baseColor });
+        this.colorMapper.apply(this.geometry); }
+    selectableObject = () => this.mesh;
+}
+
 export class NormalsView extends SurfaceView {
     constructor(parentGroup, surface, geometry) {
         super(parentGroup, surface);
