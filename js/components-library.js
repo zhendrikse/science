@@ -80,10 +80,12 @@ export class Axes {
 export class AxesParameters {
     constructor({
                     showAxes = true,
-                    showAxesLabels = false
+                    showAxesLabels = false,
+                    showGridPlanes = true
                 } = {}) {
         this.showAxes = showAxes;
         this.showAxesLabels = showAxesLabels;
+        this.showGridPlanes = showGridPlanes;
     }
 }
 
@@ -141,8 +143,8 @@ export class AxesLayout {
         this.group.clear();
     }
 
-    showPlanes() { this.planesGroup.visible = true; }
-    hidePlanes() { this.planesGroup.visible = false; }
+    showGridPlanes() { this.planesGroup.visible = true; }
+    hideGridPlanes() { this.planesGroup.visible = false; }
 }
 
 export class ClassicalAxesLayout extends AxesLayout {
@@ -229,9 +231,6 @@ export class MatlabAxesLayout extends AxesLayout {
 
         this.planesGroup.add(grid, plane);
     }
-
-    show() { this.group.visible = true; }
-    hide() { this.group.visible = false; }
 }
 
 export class StandardAxesAnnotations extends AxesAnnotation {
