@@ -12,7 +12,7 @@
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
-        aspect-ratio: 4 / 5;
+        aspect-ratio: 1 / 1;
     }
 
     #gui-container {
@@ -37,8 +37,9 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, Plot3D, StandardAxesAnnotations, MatlabAxesLayout, AxesParameters }
-        from 'https://www.hendrikse.name/science/js/components-library.js';
+    import { Plot3D } from 'https://www.hendrikse.name/science/js/components-library.js';
+    import { AxesParameters, TangentVectors, ClassicalAxesLayout, ClassicalAnnotations }
+        from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
     const canvasContainer = document.getElementById("polarContainer");
@@ -52,94 +53,34 @@
     const radius = 2;
     const params = {
         theta: 45,
-        phi: 45,
-        axesParameters: new AxesParameters({showGridPlanes: true, showAxesLabels: true})
+        phi: 90,
+        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false})
     };
 
-    class Arrow extends THREE.Group {
-        constructor(position, direction, color=0xff0000, length=0.6) {
-            super();
-            this.arrow = new THREE.ArrowHelper(direction, position, length, color);
-            this.add(this.arrow);
-        }
-
-        moveTo = (newPosition) => this.arrow.position.copy(newPosition);
-        pointAlong = (newDirectionVector) => this.arrow.setDirection(newDirectionVector);
-    }
-
-    class TangentVectors extends THREE.Group {
-        constructor(radius, theta=params.theta, phi=params.phi) {
-            super();
-            const radialDirection = this.#radialDirection(radius, phi, theta);
-            this.radialArrow = new Arrow(this.#positionOnSphere(radius, phi, theta), radialDirection, 0x00ff00);
-
-            const thetaDirection = new THREE.Vector3(radialDirection.z, 0, -radialDirection.x).normalize();
-            this.thetaArrow = new Arrow(this.#positionOnSphere(radius, phi, theta), thetaDirection, 0xff0000);
-
-            const phiDirection = thetaDirection.clone().cross(radialDirection).normalize();
-            this.phiArrow = new Arrow(this.#positionOnSphere(radius, phi, theta), phiDirection, 0x00ffff);
-
-            const radialLineGeometry = new THREE.BufferGeometry().setFromPoints([
-                new THREE.Vector3(0, radius, 0),
-                this.#positionOnSphere(radius, phi, theta)
-            ]);
-            this.radialLine = new THREE.Line(radialLineGeometry, new THREE.LineBasicMaterial({ color: 0x00ff00 }));
-
-            this.add(this.radialArrow, this.thetaArrow, this.phiArrow, this.radialLine);
-        }
-
-        #positionOnSphere(radius, phiDeg, thetaDeg) {
-            const theta = THREE.MathUtils.degToRad(phiDeg);
-            const phi   = THREE.MathUtils.degToRad(thetaDeg);
-
-            const position = Axes.toCartesian(radius, theta, phi);
-            return new THREE.Vector3(position.x, position.y + radius, position.z);
-        }
-
-        #radialDirection(radius, phiDeg, thetaDeg) {
-            const theta = THREE.MathUtils.degToRad(phiDeg);   // polar angle
-            const phi   = THREE.MathUtils.degToRad(thetaDeg); // azimuth
-
-            return Axes.toCartesian(radius, theta, phi).clone().normalize();
-        }
-
-        update(radius, phi, theta) {
-            const radialDirection = this.#radialDirection(radius, phi, theta);
-            this.radialArrow.moveTo(this.#positionOnSphere(radius, phi, theta));
-            this.radialArrow.pointAlong(radialDirection);
-
-            const thetaDir = new THREE.Vector3(radialDirection.z, 0, -radialDirection.x).normalize();
-            this.thetaArrow.moveTo(this.#positionOnSphere(radius, phi, theta));
-            this.thetaArrow.pointAlong(thetaDir);
-
-            const phiDir = thetaDir.clone().cross(radialDirection).normalize();
-            this.phiArrow.moveTo(this.#positionOnSphere(radius, phi, theta));
-            this.phiArrow.pointAlong(phiDir);
-
-            this.radialLine.geometry.setFromPoints(
-                [new THREE.Vector3(0, radius, 0), this.#positionOnSphere(radius, phi, theta)]);
-        }
-    }
-
-    const tangentVectors = new TangentVectors(radius);
-    worldGroup.add(tangentVectors);
     class ControlsGui {
-        constructor(axes, axesLayout, annotations) {
+        constructor(axesLayout, annotations) {
             const gui = new GUI({width: 300, autoPlace: false});
 
-            gui.add(params, "theta", 0, 360, 0.1)
+            gui.add(params, "theta", 0, 180, 0.1)
                 .name("θ (theta)")
-                .onChange(value => tangentVectors.update(radius, params.phi, value));
+                .onChange(value => tangentVectors.update(radius, value, params.phi));
 
-            gui.add(params, "phi", 0, 180, 0.1)
+            gui.add(params, "phi", 0, 360, 0.1)
                 .name("φ (phi)")
-                .onChange(value => tangentVectors.update(radius, value, params.theta));
-            gui.add(params.axesParameters, 'showAxes')
-                .name("Axes").onChange(value => value ? axes.show() : axes.hide());
-            gui.add(params.axesParameters, 'showAxesLabels')
-                .name("Axes labels").onChange(value => value ? annotations.show() : annotations.hide());
-            gui.add(params.axesParameters, 'showAxesLabels')
-                .name("Grid planes").onChange(value => value ? axesLayout.showGridPlanes() : axesLayout.hideGridPlanes());
+                .onChange(value => tangentVectors.update(radius, params.theta, value));
+
+            const axesFolder = gui.addFolder("Axes");
+            axesFolder.add(params.axesParameters, 'axesLines')
+                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
+            axesFolder.add(params.axesParameters, 'axesLabels')
+                .name("Axes labels").onChange(value => annotations.visible = value);
+            axesFolder.add(params.axesParameters, 'xyPlane')
+                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
+            axesFolder.add(params.axesParameters, 'xzPlane')
+                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
+            axesFolder.add(params.axesParameters, 'yzPlane')
+                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.close();
 
             document
                 .getElementById("gui-container")
@@ -147,26 +88,35 @@
         }
     }
 
-    const axes = new Axes(worldGroup);
-    const axesLayout = new MatlabAxesLayout(radius * 2, 10);
+    const tangentVectors = new TangentVectors(radius);
+    tangentVectors.update(radius, params.theta, params.phi);
+    worldGroup.add(tangentVectors);
+
+    const axes = new Axes();
+    worldGroup.add(axes);
+    // const axesLayout = new MatlabAxesLayout(radius * 2, 10);
+    // const annotations = new MatlabAxesAnnotations(canvasContainer, radius * 2, 10);
+    const axesLayout = new ClassicalAxesLayout(radius * 3, 10);
+    const annotations = new ClassicalAnnotations(canvasContainer, radius * 3, 10);
+    axesLayout.hideXY();
+    axesLayout.hideYZ();
     axes.setLayout(axesLayout);
-    const annotations = new StandardAxesAnnotations(canvasContainer, radius * 2, 10, false);
     axes.setAnnotations(annotations);
-    annotations.show();
+    worldGroup.add(annotations);
 
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
     bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 1.2, translationY: -2});
+    plot3D.fitToBoundingBox(bbox, {padding: 0.8, translationY: -2});
 
-    const resolution = 50;
+    const resolution = 30;
     const geometry = new THREE.SphereGeometry( radius, resolution, resolution );
-    const material = new THREE.MeshStandardMaterial( { side:THREE.DoubleSide, color: 0xffff00, transparent: true, opacity: 0.5 } );
+    const material = new THREE.MeshStandardMaterial( { side:THREE.DoubleSide, color: 0x00ffff, transparent: true, opacity: 0.1, wireframe: true } );
     const sphere = new THREE.Mesh( geometry, material );
-    sphere.position.set(0, radius, 0);
+    sphere.position.set(0, 0, 0);
     worldGroup.add( sphere );
 
-    const gui = new ControlsGui(axes, axesLayout, annotations);
+    const gui = new ControlsGui(axesLayout, annotations);
 
     function animate() {
         requestAnimationFrame(animate);
