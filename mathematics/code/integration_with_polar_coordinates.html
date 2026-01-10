@@ -1,5 +1,5 @@
 <style>
-    canvas {
+    #integrationCanvas {
         position: absolute;
         inset: 0;
         width: 100%;
@@ -14,6 +14,22 @@
         margin: 0 auto;
         aspect-ratio: 1 / 1;
     }
+
+    #integral-title {
+        text-align: center;
+        font-size: clamp(16px, 4vw, 24px);
+        font-family: sans-serif;
+        color: yellow;
+        font-weight: bold;
+        text-shadow: 0 0 8px black;
+        margin-bottom: 0.5em;
+        background: #1a1a1a;
+    }
+
+    #gui-container {
+        margin-top: 0.5em;
+        background: #1a1a1a;
+    }
 </style>
 
 <script type="importmap">
@@ -25,46 +41,92 @@
     }
 </script>
 
+<div id="integral-title"></div>
 <div id="container">
-    <canvas id="myCanvas"></canvas><br/>
+    <canvas id="integrationCanvas"></canvas><br/>
 </div>
-
-<div id="ui" class="ui">
-    <br/><div class="row" id="integral">Integral evaluates to: 0.00</div><br/>
-    <div class="row">
-        <label>$\theta_{min}$ <input id="thetaMin" type="range" min="0" max="3.1416" step="0.01" value="0"></label>
-        <label><input id="thetaMax" type="range" min="0" max="3.1416" step="0.01" value="3.1416">&nbsp;$\theta_{max}$</label>
-    </div>
-    <div class="row">
-        <label>$\phi_{min}$ <input id="phiMin" type="range" min="0" max="6.2832" step="0.01" value="0"></label>
-        <label><input id="phiMax" type="range" min="0" max="6.2832" step="0.01" value="6.2832">&nbsp;$\phi_{max}$</label>
-    </div>
-    <br/><label>Opacity <input id="opacity" type="range" min="0" max="1" step="0.01" value="0.35"></label><br/><br/>
-    <label>Axes <input type="checkbox" id="axesCheck" checked></label>
-    <label>Axis labels <input type="checkbox" id="axesLabelCheck"></label>
-</div>
+<div id="gui-container"></div>
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3D, Axes, MatlabAxesLayout, StandardAxesAnnotations } from 'https://www.hendrikse.name/science/js/components-library.js';
+    import { Plot3D } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
+    import { Axes, MatlabAxesLayout, MatlabAnnotations, AxesParameters }
+        from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
     const scene = new THREE.Scene();
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
     const canvasContainer = document.getElementById("container");
-    const canvas = document.getElementById("myCanvas");
+    const canvas = document.getElementById("integrationCanvas");
 
-    const axes = new Axes(worldGroup);
-    axes.setLayout(new MatlabAxesLayout(2.1, 10));
-    const annotations = new StandardAxesAnnotations(canvasContainer, 2.1, 10, false);
+    const params = {
+        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false}),
+        thetaMin: 0,
+        thetaMax: 180,
+        phiMin: 0,
+        phiMax: 360,
+        opacity: 0.35
+    };
+
+    class ControlsGui {
+        constructor(axesLayout, annotations) {
+            const gui = new GUI({width: 300, autoPlace: false});
+
+            gui.add(params, "thetaMin", 0, 180, 1)
+                .name("θ_min")
+                .onChange(value => { updateVisibility(); updateIntegral(); });
+
+            gui.add(params, "thetaMax", 0, 180, 1)
+                .name("θ_max)")
+                .onChange(value => { updateVisibility(); updateIntegral(); });
+
+            gui.add(params, "phiMin", 0, 360, 1)
+                .name("φ_min")
+                .onChange(value => { updateVisibility(); updateIntegral(); });
+
+            gui.add(params, "phiMax", 0, 360, 1)
+                .name("φ_max")
+                .onChange(value => { updateVisibility(); updateIntegral(); });
+
+            gui.add(params, "opacity", 0, 1, .01)
+                .name("Opacity")
+                .onChange(value => { cells.forEach(cell => cell.material.opacity = parseFloat(value)); });
+
+            const axesFolder = gui.addFolder("Axes");
+            axesFolder.add(params.axesParameters, 'axesLines')
+                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
+            axesFolder.add(params.axesParameters, 'axesLabels')
+                .name("Axes labels").onChange(value => annotations.visible = value);
+            axesFolder.add(params.axesParameters, 'xyPlane')
+                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
+            axesFolder.add(params.axesParameters, 'xzPlane')
+                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
+            axesFolder.add(params.axesParameters, 'yzPlane')
+                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.close();
+
+            document
+                .getElementById("gui-container")
+                .appendChild(gui.domElement);
+        }
+    }
+
+    // Axes
+    const axes = new Axes();
+    worldGroup.add(axes);
+    const axesLayout = new MatlabAxesLayout(2.2, 10);
+    const annotations = new MatlabAnnotations(canvasContainer, 4.2, 10);
+    axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
-    annotations.hide();
+    annotations.visible = true;
 
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
     bbox.setFromObject( worldGroup );
     plot3D.fitToBoundingBox(bbox, {padding: 1.0, translationY: -1.0});
+    const gui = new ControlsGui(axesLayout, annotations);
 
     const R = 1, da = 0.05;
     const f = (theta, phi) => theta * theta * (phi - Math.PI) * (phi - Math.PI);
@@ -77,7 +139,7 @@
 
         const mesh = new THREE.Mesh(
             new THREE.BoxGeometry(da, da, da),
-            new THREE.MeshPhongMaterial({ transparent:true, opacity:0.35 })
+            new THREE.MeshPhongMaterial({ transparent:true, opacity:params.opacity })
         );
         const position = Axes.toCartesian(R, theta, phi);
         mesh.position.copy(new THREE.Vector3(position.x, position.z + R, position.y));
@@ -97,24 +159,15 @@
         cell.material.color.setRGB(1 - t, t, 0);
     });
 
-    // UI
-    const thetaMin = document.getElementById("thetaMin"),
-        thetaMax = document.getElementById("thetaMax"),
-        phiMin = document.getElementById("phiMin"),
-        phiMax = document.getElementById("phiMax"),
-        opacity = document.getElementById("opacity"),
-        axesCheck = document.getElementById("axesCheck"),
-        axesLabelCheck = document.getElementById("axesLabelCheck");
-
     function updateVisibility() {
-        const t0 = parseFloat(thetaMin.value),
-            t1 = parseFloat(thetaMax.value),
-            p0 = parseFloat(phiMin.value),
-            p1 = parseFloat(phiMax.value);
-
         cells.forEach(cell => {
             const t = cell.userData.theta, p = cell.userData.phi;
-            cell.visible = (t >= t0 && t <= t1 && p >= p0 && p <= p1);
+            cell.visible = (
+                t >= THREE.MathUtils.degToRad(params.thetaMin) &&
+                t <= THREE.MathUtils.degToRad(params.thetaMax) &&
+                p >= THREE.MathUtils.degToRad(params.phiMin) &&
+                p <= THREE.MathUtils.degToRad(params.phiMax)
+            );
         });
     }
 
@@ -125,15 +178,7 @@
     }
 
     const updateIntegral = () =>
-        document.getElementById("integral").textContent = "Integral evaluates to: " + integrate().toFixed(2);
-
-    // UI listeners
-    [thetaMin,thetaMax,phiMin,phiMax].forEach(el =>
-        el.addEventListener("input", () => { updateVisibility(); updateIntegral(); })
-    );
-    opacity.addEventListener("input", () => cells.forEach(cell => cell.material.opacity = parseFloat(opacity.value)));
-    axesCheck.addEventListener("input", () => axesCheck.checked ? axes.show() : axes.hide());
-    axesLabelCheck.addEventListener("input", () => axesLabelCheck.checked ? annotations.show() : annotations.hide());
+        document.getElementById("integral-title").textContent = "Integral evaluates to: " + integrate().toFixed(2);
 
     function animate() {
         requestAnimationFrame(animate);
