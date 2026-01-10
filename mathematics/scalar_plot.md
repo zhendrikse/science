@@ -3,20 +3,6 @@
 ## Visualization of 3D scalar fields
 <div class="header_line"><br/></div>
 
-🔧 This [scalar_plot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.html) is 100% JavaScript!<br/>
-👉 A [VPython](https://www.vpython.org/) version is also available as [scalar_plot.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py).
-
-&#x2022; Shown below is the scalar field:
-
-<h3>$f(x, y, z) = e^{-\alpha (x^2 + y^2 + z^2)}$</h3>
-
-{% include_relative code/scalar_plot.html %}
-
-<p style="clear: both;"></p>
-
-## Scalar fields for dummies
-<div class="header_line"><br/></div>
-
 ### What are you looking at?
 
 This visualization shows how **temperature spreads through space**.
@@ -30,7 +16,15 @@ The **color** of the sphere tells you how hot it is:
 Together, all these spheres form a **scalar field**:
 a function that assigns **one number (temperature)** to **every point in space**.
 
----
+{% include_relative code/scalar_plot.html %}
+
+<p style="clear: both;"></p>
+
+🔧 This [scalar_plot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.html) is 100% JavaScript!<br/>
+👉 A [VPython](https://www.vpython.org/) version is also available as [scalar_plot.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py).
+
+## Scalar fields for dummies
+<div class="header_line"><br/></div>
 
 ### The idea of a scalar field
 
