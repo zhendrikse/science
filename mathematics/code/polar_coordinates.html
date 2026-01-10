@@ -37,8 +37,8 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3D } from 'https://www.hendrikse.name/science/js/components-library.js';
-    import { AxesParameters, TangentVectors, ClassicalAxesLayout, ClassicalAnnotations }
+    import { Plot3D } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
+    import { Axes, AxesParameters, TangentVectors, ClassicalAxesLayout, ClassicalAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
@@ -88,7 +88,7 @@
         }
     }
 
-    const tangentVectors = new TangentVectors(radius);
+    const tangentVectors = new TangentVectors(radius, params.theta, params.phi);
     tangentVectors.update(radius, params.theta, params.phi);
     worldGroup.add(tangentVectors);
 
