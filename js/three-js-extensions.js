@@ -254,7 +254,7 @@ export class Arrow extends THREE.Group {
 }
 
 export class TangentVectors extends THREE.Group {
-    constructor(radius, theta=params.theta, phi=params.phi) {
+    constructor(radius, theta, phi) {
         super();
         this.center = new THREE.Vector3(0, 0, 0);
 
