@@ -104,32 +104,27 @@
             this.scalars = [];
             this.opacity = 0.3;
 
-            for (let x=xMin; x<=xMax; x+=dx)
-                for (let y=xMin; y<=xMax; y+=dx)
-                    for (let z=xMin; z<=xMax; z+=dx) {
-                        const pos = new THREE.Vector3(x, y, z);
-                        const value = f(pos);
-                        const s = new Scalar(pos, dx/4, this.opacity, value);
-                        s.setColor(this._colorFor(value));
-                        this.scalars.push(s);
+            for (let x = xMin; x <= xMax; x += dx)
+                for (let y = xMin; y <= xMax; y += dx)
+                    for (let z = xMin; z <= xMax; z+=dx) {
+                        const position = new THREE.Vector3(x, y, z);
+                        const value = f(position);
+                        const scalar = new Scalar(position, dx/4, this.opacity, value);
+                        scalar.setColor(this._colorFor(value));
+                        this.scalars.push(scalar);
                     }
         }
 
-        _colorFor(value) {
-            const red = Math.min(1, value*2);
-            const green = Math.min(1, 1-value);
-            const blue = Math.min(1, 1-value/2);
-            return new THREE.Color(red, green, blue);
-        }
-
+        _colorFor = (value) =>
+            new THREE.Color(Math.min(1, value * 2), Math.min(1, 1 - value), Math.min(1, 1 - .5 * value));
         setOpacity(v) { this.opacity = v; this.scalars.forEach(s => s.setOpacity(v)); }
         setRadius(r) { this.scalars.forEach(s => s.setRadius(r/4)); }
     }
 
-    const field = new ScalarField(-3, 3, 0.5, pos => Math.exp(-0.3 * pos.lengthSq()));
+    const field = new ScalarField(-3, 3, 0.4, pos => Math.exp(-0.3 * pos.lengthSq()));
     field.scalars.forEach(s => scene.add(s.sphere));
 
-
+    // Axes
     const axes = new Axes();
     worldGroup.add(axes);
     axes.position.y -= 4
@@ -151,9 +146,9 @@
     const kappa = 0.3;
 
     // Temperature at center
-    function temperatureAt(pos, t) {
-        const r2 = pos.lengthSq();
-        return Math.exp(-r2 / (4 * kappa * t));
+    function temperatureAt(position, t) {
+        const rSquared = position.lengthSq();
+        return Math.exp(-rSquared / (4 * kappa * t));
     }
 
     // Temperature on edge
@@ -168,9 +163,9 @@
 
         time += 0.02;
 
-        field.scalars.forEach(s => {
-            const T = temperatureAt(s.position, time + 0.05);
-            s.setColor(field._colorFor(T));
+        field.scalars.forEach((scalar) => {
+            const T = temperatureAt(scalar.position, time + 0.05);
+            scalar.setColor(field._colorFor(T));
         });
 
         plot3D.render();
