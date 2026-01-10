@@ -71,9 +71,10 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
-    import { Category, Axes, Plot3D, StandardAxesAnnotations, MatlabAxesLayout, Surface, StandardSurfaceView,
-        MinimalSurfaceView, ViewParameters, ColorMode, ContourType }
+    import { ThreeJsUtils, Plot3D } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
+    import { Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
+        from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { Category, Surface, StandardSurfaceView, MinimalSurfaceView, ViewParameters, ColorMode, ContourType }
         from 'https://www.hendrikse.name/science/js/components-library.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
@@ -730,12 +731,13 @@
     surfacePlotScene.add(worldGroup);
 
     // Axes
-    const axes = new Axes(worldGroup);
-    axes.setLayout(new MatlabAxesLayout(4.1, 10));
-    //axes.setLayout(new ClassicalAxesLayout(4, 10));
-    const annotations = new StandardAxesAnnotations(canvasContainer, 4.1, 10, false);
+    const axes = new Axes();
+    worldGroup.add(axes);
+    const axesLayout = new MatlabAxesLayout(radius * 2, 10);
+    const annotations = new MatlabAxesAnnotations(canvasContainer, radius * 2, 10);
+    axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
-    annotations.hide();
+    annotations.visible = false;
 
     // Surface
     const plot3D = new Plot3D(canvas, surfacePlotScene, axes);

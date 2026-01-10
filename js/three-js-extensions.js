@@ -189,7 +189,7 @@ export class ClassicalAnnotations extends AxesAnnotation {
     }
 }
 
-export class MatlabAxesAnnotations extends AxesAnnotation {
+export class MatlabAnnotations extends AxesAnnotation {
     constructor(container, size=5, divisions=10) {
         super(container);
 
