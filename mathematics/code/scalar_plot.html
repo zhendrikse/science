@@ -1,627 +1,179 @@
 <style>
-    html, body {
-        background: #131313;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
+    #scalarCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
         height: 100%;
+        display: block;
     }
 
-    #glowscript-wrapper {
-        display: block;
+    #scalarContainer {
         position: relative;
         width: 100%;
         max-width: 800px;
-        aspect-ratio: 4 / 3;
-        margin: auto;
+        margin: 0 auto;
+        aspect-ratio: 1 / 1;
     }
 
-    .glowscript canvas {
-        display: block;
-        touch-action: none;
-        width: 100%;
-        height: 100%;
+    #gui-container {
+        margin-top: 0.5em;
+        background: #1a1a1a;
     }
 </style>
-<script>
-    // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
+
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
     }
 </script>
-<div id="glowscript-wrapper">
-    <div id="glowscript" class="glowscript"></div>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
 
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-ρσ_modules.pythonize = {};
-
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-    /* ================= GLOWSCRIPT RESPONSIVE PATCH ================= */
-
-    function resizeGlowScriptScene() {
-        const wrapper = document.getElementById('glowscript-wrapper');
-        if (!wrapper || !scene || !scene.canvas) return;
-
-        const dpr = window.devicePixelRatio || 1;
-
-        const w = wrapper.clientWidth;
-        const h = wrapper.clientHeight;
-
-        scene.width  = Math.floor(w * dpr);
-        scene.height = Math.floor(h * dpr);
-
-        scene.canvas.style.width  = w + 'px';
-        scene.canvas.style.height = h + 'px';
-    }
-
-    scene.autoscale = false;
-    scene.userzoom  = true;
-    scene.userspin  = true;
-    scene.userpan   = true;
-
-    resizeGlowScriptScene();
-    window.addEventListener('resize', resizeGlowScriptScene);
-
-    /* =============================================================== */
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, log, pow, factorial, combin, button, radio, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, x_hat, y_hat, z_hat, base, _GS_1, plot_base, _, opacity_slider_text, x_max, radius_slider_text, field;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "10";
-    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py\">scalar_plot.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n&#x2022; Shown below is the scalar field:\n\n<h3>$f(x, y, z) = e^{-\\alpha (x^2 + y^2 + z^2)}$</h3>\n";
-    "12";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, height: 500, forward: vec(1["-u"]()["*"](2.5), 1["-u"]()["*"](2.2), 1["-u"]()["*"](2.2)), center: vec(0, 0, 1["-u"]()["*"](.5)), up: vec(0, 0, 1), background: color.gray(.075), range: 6})]);
-    "14";
-    x_hat = vec(0, 1, 0);
-    "15";
-    y_hat = vec(0, 0, 1);
-    "16";
-    z_hat = vec(1, 0, 0);
-    "17";
-    base = ρσ_list_decorate([ x_hat, y_hat, z_hat ]);
-    "20";
-    function Base() {;
-    }
-    Base.prototype.__init__ = async function __init__(xx, yy, zz, axis_color, tick_marks_color, num_tick_marks) {
-        var self = this;
-        var ρσ_ls, ρσ_unpack, x_min, x_max, y_min, y_max, z_min, z_max, range_x, range_y, range_z, max_of_base, delta, position, radius, pos;
-        "22";
-        ρσ_unpack = [min(xx), max(xx)];
-        x_min = ρσ_unpack[0];
-        x_max = ρσ_unpack[1];
-        "23";
-        ρσ_unpack = [min(yy), max(yy)];
-        y_min = ρσ_unpack[0];
-        y_max = ρσ_unpack[1];
-        "24";
-        ρσ_unpack = [min(zz), max(zz)];
-        z_min = ρσ_unpack[0];
-        z_max = ρσ_unpack[1];
-        "25";
-        ρσ_unpack = [x_max["-"](1["*"](x_min)), y_max["-"](1["*"](y_min)), z_max["-"](1["*"](z_min))];
-        range_x = ρσ_unpack[0];
-        range_y = ρσ_unpack[1];
-        range_z = ρσ_unpack[2];
-        "26";
-        max_of_base = max(range_x, range_y, range_z);
-        "27";
-        delta = max_of_base["/"](num_tick_marks);
-        "28";
-        position = vec(x_min, z_min, y_min);
-        "29";
-        radius = max_of_base["/"](200);
-        "31";
-        self._mesh = ρσ_list_decorate([]);
-        "32";
-        (await self._create_mesh(delta, max_of_base, num_tick_marks, position, radius));
-        "34";
-        self._tick_marks = ρσ_list_decorate([]);
-        "35";
-        (await self._create_tick_marks(delta, max_of_base, num_tick_marks, position, tick_marks_color, x_min, y_min, z_min));
-        "37";
-        self._axis_labels = ρσ_list_decorate([]);
-        "38";
-        pos = position["+"](x_hat["*"](max_of_base["+"](2.5["*"](delta))))["+"](.5["*"](max_of_base)["*"](z_hat));
-        "39";
-        self._axis_labels=self._axis_labels["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: "Y-axis", color: axis_color, box: false})]) ]));
-        "40";
-        pos = position["+"](z_hat["*"](max_of_base["+"](2.5["*"](delta))))["+"](.5["*"](max_of_base)["*"](y_hat));
-        "41";
-        self._axis_labels=self._axis_labels["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: "Z-axis", color: axis_color, box: false})]) ]));
-        "42";
-        pos = position["+"](z_hat["*"](max_of_base["+"](2.5["*"](delta))))["+"](.5["*"](max_of_base)["*"](x_hat));
-        "43";
-        self._axis_labels=self._axis_labels["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: "X-axis", color: axis_color, box: false})]) ]));
-    };
-    if (!Base.prototype.__init__.__argnames__) Object.defineProperties(Base.prototype.__init__, {
-        __argnames__ : {value: ["xx", "yy", "zz", "axis_color", "tick_marks_color", "num_tick_marks"]},
-        __module__ : {value: null}
-    });
-    Base.__argnames__ = Base.prototype.__init__.__argnames__;
-    Base.__handles_kwarg_interpolation__ = Base.prototype.__init__.__handles_kwarg_interpolation__;
-    Base.prototype._create_tick_marks = async function _create_tick_marks(delta, max_of_base, num_tick_marks, position, tick_marks_color, x_min, y_min, z_min) {
-        var self = this;
-        var ρσ_ls, increment, label_text, pos, i;
-        "46";
-        increment = max_of_base["/"](num_tick_marks);
-        "47";
-        for (var ρσ_Index1 = 1; ρσ_Index1["<"](num_tick_marks); ρσ_Index1=ρσ_Index1["+"](2)) {
-            i = ρσ_Index1;
-            "49";
-            label_text = "{:1.2f}".format(x_min["+"](i["*"](increment)), 2);
-            "50";
-            pos = position["+"](x_hat["*"](i)["*"](delta))["+"](z_hat["*"](max_of_base["+"](.75["*"](delta))));
-            "51";
-            self._tick_marks.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: label_text, color: tick_marks_color, box: false})]));
-            "53";
-            label_text = "{:1.2f}".format(y_min["+"](i["*"](increment)), 2);
-            "54";
-            pos = position["+"](z_hat["*"](i)["*"](delta))["+"](x_hat["*"](max_of_base["+"](.75["*"](delta))));
-            "55";
-            self._tick_marks.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: label_text, color: tick_marks_color, box: false})]));
-            "57";
-            label_text = "{:1.2f}".format(z_min["+"](i["*"](increment)), 2);
-            "58";
-            pos = position["+"](y_hat["*"](i)["*"](delta))["+"](z_hat["*"](max_of_base["+"](.75["*"](delta))));
-            "59";
-            self._tick_marks.append(ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos, text: label_text, color: tick_marks_color, box: false})]));
-        }
-    };
-    if (!Base.prototype._create_tick_marks.__argnames__) Object.defineProperties(Base.prototype._create_tick_marks, {
-        __argnames__ : {value: ["delta", "max_of_base", "num_tick_marks", "position", "tick_marks_color", "x_min", "y_min", "z_min"]},
-        __module__ : {value: null}
-    });
-    Base.prototype._create_mesh = async function _create_mesh(delta, max_of_base, num_tick_marks, position, radius) {
-        var self = this;
-        var ρσ_ls, i, item;
-        "62";
-        for (var ρσ_Index2 = 0; ρσ_Index2["<"](num_tick_marks["+"](1)); ρσ_Index2++) {
-            i = ρσ_Index2;
-            "64";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](z_hat["*"](delta)["*"](i)), axis: max_of_base["*"](x_hat)})]) ]));
-            "65";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](x_hat["*"](delta)["*"](i)), axis: max_of_base["*"](z_hat)})]) ]));
-            "67";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](z_hat["*"](delta)["*"](i)), axis: max_of_base["*"](y_hat)})]) ]));
-            "68";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](y_hat["*"](delta)["*"](i)), axis: max_of_base["*"](z_hat)})]) ]));
-            "70";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](x_hat["*"](delta)["*"](i)), axis: max_of_base["*"](y_hat)})]) ]));
-            "71";
-            self._mesh=self._mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["+"](y_hat["*"](delta)["*"](i)), axis: max_of_base["*"](x_hat)})]) ]));
-        }
-        "72";
-        var ρσ_Iter3 = self._mesh;
-        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-        for (var ρσ_Index3 of ρσ_Iter3) {
-            item = ρσ_Index3;
-            "73";
-            item.color = color.gray(.5);
-            "74";
-            item.radius = radius;
-        }
-    };
-    if (!Base.prototype._create_mesh.__argnames__) Object.defineProperties(Base.prototype._create_mesh, {
-        __argnames__ : {value: ["delta", "max_of_base", "num_tick_marks", "position", "radius"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.tick_marks_visibility_is = async function tick_marks_visibility_is(event) {
-        var self = this;
-        var ρσ_ls, tick_mark;
-        "77";
-        var ρσ_Iter4 = self._tick_marks;
-        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-        for (var ρσ_Index4 of ρσ_Iter4) {
-            tick_mark = ρσ_Index4;
-            "78";
-            tick_mark.visible = event.checked;
-        }
-    };
-    if (!Base.prototype.tick_marks_visibility_is.__argnames__) Object.defineProperties(Base.prototype.tick_marks_visibility_is, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.mesh_visibility_is = async function mesh_visibility_is(event) {
-        var self = this;
-        var ρσ_ls, i;
-        "81";
-        var ρσ_Iter5 = range(len(self._mesh));
-        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-        for (var ρσ_Index5 of ρσ_Iter5) {
-            i = ρσ_Index5;
-            "82";
-            ρσ_getitem(self._mesh, i).visible = event.checked;
-        }
-    };
-    if (!Base.prototype.mesh_visibility_is.__argnames__) Object.defineProperties(Base.prototype.mesh_visibility_is, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.axis_labels_visibility_is = async function axis_labels_visibility_is(event) {
-        var self = this;
-        var ρσ_ls, i;
-        "85";
-        var ρσ_Iter6 = range(len(self._axis_labels));
-        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
-        for (var ρσ_Index6 of ρσ_Iter6) {
-            i = ρσ_Index6;
-            "86";
-            ρσ_getitem(self._axis_labels, i).visible = event.checked;
-        }
-    };
-    if (!Base.prototype.axis_labels_visibility_is.__argnames__) Object.defineProperties(Base.prototype.axis_labels_visibility_is, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Base.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Base.prototype, "__bases__", {value: []});
-
-
-
-
-
-
-
-    "89";
-    function Scalar() {;
-    }
-    Scalar.prototype.__init__ = async function __init__(position, radius, opacity, value) {
-        var self = this;
-        "91";
-        self._position = position;
-        "92";
-        self._value = value;
-        "93";
-        self._sphere = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: position, radius: radius, opacity: opacity})]);
-    };
-    if (!Scalar.prototype.__init__.__argnames__) Object.defineProperties(Scalar.prototype.__init__, {
-        __argnames__ : {value: ["position", "radius", "opacity", "value"]},
-        __module__ : {value: null}
-    });
-    Scalar.__argnames__ = Scalar.prototype.__init__.__argnames__;
-    Scalar.__handles_kwarg_interpolation__ = Scalar.prototype.__init__.__handles_kwarg_interpolation__;
-    Scalar.prototype.set_color = async function set_color(colour) {
-        var self = this;
-        "96";
-        self._sphere.color = colour;
-    };
-    if (!Scalar.prototype.set_color.__argnames__) Object.defineProperties(Scalar.prototype.set_color, {
-        __argnames__ : {value: ["colour"]},
-        __module__ : {value: null}
-    });
-    Scalar.prototype.value = async function value() {
-        var self = this;
-        "99";
-        return self._value;
-    };
-    if (!Scalar.prototype.value.__module__) Object.defineProperties(Scalar.prototype.value, {
-        __module__ : {value: null}
-    });
-    Scalar.prototype.set_opacity_to = async function set_opacity_to(value) {
-        var self = this;
-        "102";
-        self._sphere.opacity = value;
-    };
-    if (!Scalar.prototype.set_opacity_to.__argnames__) Object.defineProperties(Scalar.prototype.set_opacity_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    Scalar.prototype.set_radius_to = async function set_radius_to(value) {
-        var self = this;
-        "105";
-        self._sphere.radius = value;
-    };
-    if (!Scalar.prototype.set_radius_to.__argnames__) Object.defineProperties(Scalar.prototype.set_radius_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    Scalar.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Scalar.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Scalar.prototype, "__bases__", {value: []});
-
-
-
-
-
-
-    "108";
-    function ScalarField() {;
-    }
-    ScalarField.prototype.__init__ = async function __init__(x_min, x_max, dx, f_x_y_z) {
-        var self = this;
-        var ρσ_ls, locations, field_values, position, field_value, _GS_1, z, y, x, scalar;
-        "110";
-        self._opacity = .3;
-        "111";
-        locations = range(x_min, x_max, dx);
-        "112";
-        field_values = ρσ_list_decorate([]);
-        "113";
-        self._scalar_field = ρσ_list_decorate([]);
-        "114";
-        var ρσ_Iter7 = locations;
-        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
-        for (var ρσ_Index7 of ρσ_Iter7) {
-            x = ρσ_Index7;
-            "115";
-            var ρσ_Iter8 = locations;
-            ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
-            for (var ρσ_Index8 of ρσ_Iter8) {
-                y = ρσ_Index8;
-                "116";
-                var ρσ_Iter9 = locations;
-                ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
-                for (var ρσ_Index9 of ρσ_Iter9) {
-                    z = ρσ_Index9;
-                    "117";
-                    position = vector(x, y, z);
-                    "118";
-                    field_value = (await f_x_y_z(position));
-                    "119";
-                    field_values.append(field_value);
-                    "120";
-                    _GS_1 = new Scalar;
-                    (await _GS_1.__init__(position, dx["/"](4), self._opacity, field_value));
-                    self._scalar_field.append(_GS_1);
-                }
-            }
-        }
-        "121";
-        self._max_value = max(field_values);
-        "122";
-        self._min_value = min(field_values);
-        "124";
-        var ρσ_Iter10 = self._scalar_field;
-        ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
-        for (var ρσ_Index10 of ρσ_Iter10) {
-            scalar = ρσ_Index10;
-            "125";
-            (await scalar.set_color((await self._color_for((await scalar.value())))));
-        }
-    };
-    if (!ScalarField.prototype.__init__.__argnames__) Object.defineProperties(ScalarField.prototype.__init__, {
-        __argnames__ : {value: ["x_min", "x_max", "dx", "f_x_y_z"]},
-        __module__ : {value: null}
-    });
-    ScalarField.__argnames__ = ScalarField.prototype.__init__.__argnames__;
-    ScalarField.__handles_kwarg_interpolation__ = ScalarField.prototype.__init__.__handles_kwarg_interpolation__;
-    ScalarField.prototype._color_for = async function _color_for(value) {
-        var self = this;
-        var ρσ_ls, mid_temp, value_range, red, blue, green;
-        "128";
-        mid_temp = self._max_value["+"](self._min_value)["/"](2);
-        "129";
-        value_range = self._max_value["-"](1["*"](self._min_value));
-        "130";
-        red = value["-"](1["*"](self._min_value))["/"](value_range)["*"](10);
-        "131";
-        blue = self._max_value["-"](1["*"](value))["/"](value_range)["*"](2);
-        "132";
-        green = value["/"](mid_temp);
-        "133";
-        return vector(red, green, blue);
-    };
-    if (!ScalarField.prototype._color_for.__argnames__) Object.defineProperties(ScalarField.prototype._color_for, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    ScalarField.prototype.min_value = async function min_value() {
-        var self = this;
-        "136";
-        return self._min_value;
-    };
-    if (!ScalarField.prototype.min_value.__module__) Object.defineProperties(ScalarField.prototype.min_value, {
-        __module__ : {value: null}
-    });
-    ScalarField.prototype.max_value = async function max_value() {
-        var self = this;
-        "139";
-        return self._max_value;
-    };
-    if (!ScalarField.prototype.max_value.__module__) Object.defineProperties(ScalarField.prototype.max_value, {
-        __module__ : {value: null}
-    });
-    ScalarField.prototype.set_opacity_to = async function set_opacity_to(value) {
-        var self = this;
-        var ρσ_ls, scalar;
-        "142";
-        self._opacity = value;
-        "143";
-        var ρσ_Iter11 = self._scalar_field;
-        ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
-        for (var ρσ_Index11 of ρσ_Iter11) {
-            scalar = ρσ_Index11;
-            "144";
-            (await scalar.set_opacity_to(value));
-        }
-    };
-    if (!ScalarField.prototype.set_opacity_to.__argnames__) Object.defineProperties(ScalarField.prototype.set_opacity_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    ScalarField.prototype.set_radius_to = async function set_radius_to(value) {
-        var self = this;
-        var ρσ_ls, scalar;
-        "147";
-        var ρσ_Iter12 = self._scalar_field;
-        ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
-        for (var ρσ_Index12 of ρσ_Iter12) {
-            scalar = ρσ_Index12;
-            "148";
-            (await scalar.set_radius_to(value["/"](4)));
-        }
-    };
-    if (!ScalarField.prototype.set_radius_to.__argnames__) Object.defineProperties(ScalarField.prototype.set_radius_to, {
-        __argnames__ : {value: ["value"]},
-        __module__ : {value: null}
-    });
-    ScalarField.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    ScalarField.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(ScalarField.prototype, "__bases__", {value: []});
-
-
-
-
-
-
-
-    "151";
-    async function temperature_at(position) {
-        var ρσ_ls, alpha, temperature;
-        "152";
-        alpha = .3;
-        "153";
-        temperature = exp(1["-u"]()["*"](alpha)["*"](position.mag)["*"](position.mag));
-        "155";
-        return temperature;
-    };
-    if (!temperature_at.__argnames__) Object.defineProperties(temperature_at, {
-        __argnames__ : {value: ["position"]},
-        __module__ : {value: null}
-    });
-
-    "158";
-    async function adjust_opacity(event) {
-        "159";
-        (await field.set_opacity_to(event.value));
-        "160";
-        opacity_slider_text.text = "= {:1.2f}".format(event.value, 2);
-    };
-    if (!adjust_opacity.__argnames__) Object.defineProperties(adjust_opacity, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "162";
-    async function adjust_radius(event) {
-        "163";
-        (await field.set_radius_to(event.value));
-        "164";
-        radius_slider_text.text = "= {:1.2f}".format(event.value, 2);
-    };
-    if (!adjust_radius.__argnames__) Object.defineProperties(adjust_radius, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "166";
-    _GS_1 = new Base;
-    (await _GS_1.__init__(range(1["-u"]()["*"](3.25), 3.25, .2), range(1["-u"]()["*"](3.25), 3.25, .2), range(1["-u"]()["*"](3.25), 3.25, .2), color.yellow, color.green, 10));
-    plot_base = _GS_1;
-    "168";
-    display.append_to_caption("\n");
-    "169";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Mesh ", bind: plot_base.mesh_visibility_is.bind(plot_base), checked: true})]);
-    "170";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Axis labels ", bind: plot_base.axis_labels_visibility_is.bind(plot_base), checked: true})]);
-    "171";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks ", bind: plot_base.tick_marks_visibility_is.bind(plot_base), checked: true})]);
-    "173";
-    display.append_to_caption("\n\nOpacity ");
-    "174";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 0, max: 1, step: .01, value: .3, bind: adjust_opacity})]);
-    "175";
-    opacity_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= 0.3"})]);
-    "177";
-    display.append_to_caption("\n\nRadius ");
-    "178";
-    x_max = 3;
-    "179";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .01["*"](x_max), max: .25["*"](x_max), step: .01, value: .15["*"](x_max), bind: adjust_radius})]);
-    "180";
-    radius_slider_text = ρσ_interpolate_kwargs.call(this, wtext, [ρσ_desugar_kwargs({text: "= {:1.2f}".format(.15["*"](x_max))})]);
-    "182";
-    _GS_1 = new ScalarField;
-    (await _GS_1.__init__(1["-u"]()["*"](x_max), x_max, .15["*"](x_max), temperature_at));
-    field = _GS_1;
-    "183";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "185";
-    while (true) {
-        "186";
-        (await rate(10));
-    }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
-
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
-
-//--><!]]></script>
+<div id="scalarContainer">
+    <canvas id="scalarCanvas"></canvas><br/>
 </div>
+<div id="gui-container"></div>
+
+<script type="module">
+    import * as THREE from "three";
+    import { Plot3D } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
+    import { Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
+        from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+
+    const canvasContainer = document.getElementById("scalarContainer");
+    const canvas = document.getElementById("scalarCanvas");
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x131313);
+    const worldGroup = new THREE.Group();
+    scene.add(worldGroup);
+
+    const params = {
+        axesParameters: new AxesParameters({axesLabels: false})
+    };
+
+    class ControlsGui {
+        constructor(axesLayout, annotations) {
+            const gui = new GUI({width: 300, autoPlace: false});
+
+            const axesFolder = gui.addFolder("Axes");
+            axesFolder.add(params.axesParameters, 'axesLines')
+                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
+            axesFolder.add(params.axesParameters, 'axesLabels')
+                .name("Axes labels").onChange(value => annotations.visible = value);
+            axesFolder.add(params.axesParameters, 'xyPlane')
+                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
+            axesFolder.add(params.axesParameters, 'xzPlane')
+                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
+            axesFolder.add(params.axesParameters, 'yzPlane')
+                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.close();
+
+            document
+                .getElementById("gui-container")
+                .appendChild(gui.domElement);
+        }
+    }
+
+    class Scalar {
+        constructor(position, radius, opacity, value) {
+            this.position = position;
+            this.value = value;
+            const geometry = new THREE.SphereGeometry(radius, 12, 12);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: opacity
+            });
+            this.sphere = new THREE.Mesh(geometry, material);
+            this.sphere.position.copy(position);
+        }
+
+        setColor(color) { this.sphere.material.color.set(color); }
+        setOpacity(value) { this.sphere.material.opacity = value; }
+        setRadius(radius) {
+            this.sphere.geometry.dispose();
+            this.sphere.geometry = new THREE.SphereGeometry(radius, 12, 12);
+        }
+    }
+
+    class ScalarField {
+        constructor(xMin, xMax, dx, f) {
+            this.scalars = [];
+            this.opacity = 0.3;
+
+            for (let x=xMin; x<=xMax; x+=dx)
+                for (let y=xMin; y<=xMax; y+=dx)
+                    for (let z=xMin; z<=xMax; z+=dx) {
+                        const pos = new THREE.Vector3(x, y, z);
+                        const value = f(pos);
+                        const s = new Scalar(pos, dx/4, this.opacity, value);
+                        s.setColor(this._colorFor(value));
+                        this.scalars.push(s);
+                    }
+        }
+
+        _colorFor(value) {
+            const red = Math.min(1, value*2);
+            const green = Math.min(1, 1-value);
+            const blue = Math.min(1, 1-value/2);
+            return new THREE.Color(red, green, blue);
+        }
+
+        setOpacity(v) { this.opacity = v; this.scalars.forEach(s => s.setOpacity(v)); }
+        setRadius(r) { this.scalars.forEach(s => s.setRadius(r/4)); }
+    }
+
+    const field = new ScalarField(-3, 3, 0.5, pos => Math.exp(-0.3 * pos.lengthSq()));
+    field.scalars.forEach(s => scene.add(s.sphere));
+
+
+    const axes = new Axes();
+    worldGroup.add(axes);
+    axes.position.y -= 4
+    const axesLayout = new MatlabAxesLayout(8, 10);
+    const annotations = new MatlabAnnotations(canvasContainer, 8, 10);
+    axes.setLayout(axesLayout);
+    axes.setAnnotations(annotations);
+    worldGroup.add(annotations);
+    annotations.visible = params.axesParameters.axesLabels;
+
+    const plot3D = new Plot3D(canvas, scene, axes);
+    const bbox = new THREE.Box3();
+    bbox.setFromObject( worldGroup );
+    plot3D.fitToBoundingBox(bbox, {padding: 1.0, translationY: -2});
+
+    const gui = new ControlsGui(axesLayout, annotations);
+
+    let time = 0;
+    const kappa = 0.3;
+
+    // Temperature at center
+    function temperatureAt(pos, t) {
+        const r2 = pos.lengthSq();
+        return Math.exp(-r2 / (4 * kappa * t));
+    }
+
+    // Temperature on edge
+    // const source = new THREE.Vector3(3, 0, 0);
+    // function temperatureAt(pos, t) {
+    //     const r2 = pos.clone().sub(source).lengthSq();
+    //     return Math.exp(-r2 / (4 * kappa * t));
+    // }
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        time += 0.02;
+
+        field.scalars.forEach(s => {
+            const T = temperatureAt(s.position, time + 0.05);
+            s.setColor(field._colorFor(T));
+        });
+
+        plot3D.render();
+    }
+    animate();
+</script>
