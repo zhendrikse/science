@@ -59,7 +59,7 @@
 <script type="module">
     import * as THREE from "three";
     import { Plot3D, ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
-    import { Axes, MatlabAxesLayout, MatlabAnnotations }
+    import { Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { ColorMode, ContourType, Surface, StandardSurfaceView, ViewParameters }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
@@ -227,7 +227,7 @@
     const annotations = new MatlabAnnotations(canvasContainer, Math.PI * 1.1, 10);
     axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
-    annotations.visible = true;
+    annotations.visible = false;
 
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
@@ -242,8 +242,11 @@
         },
         intervals: [["-pi", "pi"], ["-pi", "pi"]]
     }
-    const visualizationParameters = new ViewParameters();
-    visualizationParameters.opacity = 0.95;
+    const visualizationParameters = new ViewParameters({
+        axesParameters: new AxesParameters({axesLabels: false}),
+        opacity: 0.95
+    });
+    annotations.visible = visualizationParameters.axesParameters.axesLabels;
     let surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, plot3D, axes);
     updateSurfaceData(surfaceDefinition);
 

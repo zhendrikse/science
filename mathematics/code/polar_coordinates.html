@@ -54,7 +54,7 @@
     const params = {
         theta: 45,
         phi: 90,
-        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false})
+        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false, axesLabels: false})
     };
 
     class ControlsGui {
@@ -101,6 +101,7 @@
     axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
     worldGroup.add(annotations);
+    annotations.visible = params.axesParameters.axesLabels;
 
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
