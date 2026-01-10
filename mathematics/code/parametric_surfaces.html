@@ -72,7 +72,7 @@
 <script type="module">
     import * as THREE from "three";
     import { ThreeJsUtils, Plot3D } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
-    import { Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
+    import { Axes, MatlabAxesLayout, MatlabAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Category, Surface, StandardSurfaceView, MinimalSurfaceView, ViewParameters, ColorMode, ContourType }
         from 'https://www.hendrikse.name/science/js/components-library.js';
@@ -716,10 +716,13 @@
     function displayedSurface(surfaceData, visualizationParameters, scenery, axes) {
         const surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceData), visualizationParameters);
         surfaceInAxes.resetTransform();
+
+        const axesBoundingBox = new THREE.Box3();
+        axesBoundingBox.setFromObject(axes);
         ThreeJsUtils.fitGroupToBox(
             surfaceInAxes.group,
             surfaceInAxes.boundingBox(),
-            axes.boundingBox(),
+            axesBoundingBox,
             { alignY: "min", padding: 1.1 }
         );
         return surfaceInAxes;
@@ -733,8 +736,8 @@
     // Axes
     const axes = new Axes();
     worldGroup.add(axes);
-    const axesLayout = new MatlabAxesLayout(radius * 2, 10);
-    const annotations = new MatlabAxesAnnotations(canvasContainer, radius * 2, 10);
+    const axesLayout = new MatlabAxesLayout(4.2, 10);
+    const annotations = new MatlabAnnotations(canvasContainer, 4.2, 10);
     axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
     annotations.visible = false;

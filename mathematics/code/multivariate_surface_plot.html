@@ -58,9 +58,10 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
-    import { Axes, Plot3D, StandardAxesAnnotations, MatlabAxesLayout, ColorMode, ContourType, Interval,
-        Surface, StandardSurfaceView, ViewParameters, LiteralStringBasedSurfaceDefinition }
+    import { Plot3D, ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-utils.js';
+    import { Axes, MatlabAxesLayout, MatlabAnnotations }
+        from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { ColorMode, ContourType, Surface, StandardSurfaceView, ViewParameters }
         from 'https://www.hendrikse.name/science/js/components-library.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
@@ -71,10 +72,12 @@
     function displayedSurface(surfaceData, visualizationParameters, scenery, axes) {
         const surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceData), visualizationParameters);
         surfaceInAxes.resetTransform();
+        const axesBoundingBox = new THREE.Box3();
+        axesBoundingBox.setFromObject(axes);
         ThreeJsUtils.fitGroupToBox(
             surfaceInAxes.group,
             surfaceInAxes.boundingBox(),
-            axes.boundingBox(),
+            axesBoundingBox,
             { alignY: "min", padding: 1.1 }
         );
         return surfaceInAxes;
@@ -205,12 +208,14 @@
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
-    const axes = new Axes(worldGroup);
-    axes.setLayout(new MatlabAxesLayout(Math.PI * 1.1, 10));
-    //axes.setLayout(new ClassicalAxesLayout(4, 10));
-    const annotations = new StandardAxesAnnotations(canvasContainer, Math.PI * 1.1, 10, false);
+    // Axes
+    const axes = new Axes();
+    worldGroup.add(axes);
+    const axesLayout = new MatlabAxesLayout(Math.PI * 1.1, 10);
+    const annotations = new MatlabAnnotations(canvasContainer, Math.PI * 1.1, 10);
+    axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
-    annotations.hide();
+    annotations.visible = false;
 
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
