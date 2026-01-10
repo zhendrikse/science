@@ -556,12 +556,23 @@
             surfaceFolder.close();
         }
 
-        #createOptionsFolder(folder, axes, annotations) {
+        #createAxesFolder(folder, axes, annotations) {
+            const axesFolder = folder.addFolder("Axes");
+            axesFolder.add(this.viewParameters.axesParameters, 'axesLines')
+                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
+            axesFolder.add(this.viewParameters.axesParameters, 'axesLabels')
+                .name("Axes labels").onChange(value => annotations.visible = value);
+            axesFolder.add(this.viewParameters.axesParameters, 'xyPlane')
+                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
+            axesFolder.add(this.viewParameters.axesParameters, 'xzPlane')
+                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
+            axesFolder.add(this.viewParameters.axesParameters, 'yzPlane')
+                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.close()
+        }
+
+        #createOptionsFolder(folder) {
             const optionsFolder = folder.addFolder("Options");
-            optionsFolder.add(this.viewParameters.axesParameters, 'showAxes')
-                .name("Axes").onChange(value => value ? axes.show() : axes.hide());
-            optionsFolder.add(this.viewParameters.axesParameters, 'showAxesLabels')
-                .name("Axes labels").onChange(value => value ? annotations.show() : annotations.hide());
             optionsFolder.add(this.viewParameters, 'wireframe')
                 .name("Wireframe")
                 .onChange(value => this.surface.toggleWireframe(value));
@@ -575,7 +586,8 @@
         #createAppearanceFolder(controls, axes, annotations) {
             const appearanceFolder = controls.addFolder("Appearance");
             this.#createSurfaceFolder(appearanceFolder);
-            this.#createOptionsFolder(appearanceFolder, axes, annotations);
+            this.#createAxesFolder(appearanceFolder, axes, annotations);
+            this.#createOptionsFolder(appearanceFolder);
             this.#createContourFolder(appearanceFolder);
 
             appearanceFolder.add({reset: () =>
