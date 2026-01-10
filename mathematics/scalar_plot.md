@@ -20,7 +20,8 @@ a function that assigns **one number (temperature)** to **every point in space**
 
 <p style="clear: both;"></p>
 
-🔧 This [scalar_plot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.html) is 100% JavaScript!<br/>
+🔧 This [scalar_plot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.html) is 100% JavaScript!
+
 👉 A [VPython](https://www.vpython.org/) version is also available as [scalar_plot.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py).
 
 ## Scalar fields for dummies
