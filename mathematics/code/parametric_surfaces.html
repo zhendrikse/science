@@ -530,9 +530,9 @@
             this.yFunction = null;
             this.zFunction = null;
             this.surfaceCoordinates = {
-                x: surface.definition().stringBasedSurfaceSpecification().parametrization.xFn,
-                y: surface.definition().stringBasedSurfaceSpecification().parametrization.yFn,
-                z: surface.definition().stringBasedSurfaceSpecification().parametrization.xFn
+                x: surface.definition().specification().parametrization.xFn,
+                y: surface.definition().specification().parametrization.yFn,
+                z: surface.definition().specification().parametrization.xFn
             }
 
             controls.add(this.viewParameters, 'category', Object.values(Category))
@@ -604,7 +604,9 @@
 
             this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceDefinition = this.surface.definition().stringBasedSurfaceSpecification().withParametrization({x: expr});
+                    const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(
+                        this.surface.definition().surfaceSpecification().withParametrization({x: expr})
+                    );
                     this.surface.dispose();
                     this.surface = displayedSurface(surfaceDefinition, this.viewParameters, this.axes)
                     surfaceInAxes = this.surface;
@@ -613,7 +615,9 @@
 
             this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceDefinition = this.surface.definition().stringBasedSurfaceSpecification().withParametrization({y: expr});
+                    const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(
+                        this.surface.definition().surfaceSpecification().withParametrization({y: expr})
+                    );
                     this.surface.dispose();
                     this.surface = displayedSurface(surfaceDefinition, this.viewParameters, this.axes)
                     surfaceInAxes = this.surface;
@@ -622,7 +626,9 @@
 
             this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceDefinition = this.surface.definition().stringBasedSurfaceSpecification().withParametrization({z: expr});
+                    const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(
+                        this.surface.definition().surfaceSpecification().withParametrization({z: expr})
+                    );
                     this.surface.dispose();
                     this.surface = displayedSurface(surfaceDefinition, this.viewParameters, this.axes)
                     surfaceInAxes = this.surface;
@@ -685,7 +691,7 @@
         updateSurfaceWith= (newSurface) => {
             this.surface = newSurface;
             this.#updateSurfaceDataTitleBox();
-            const surfaceSpecification = this.surface.definition().stringBasedSurfaceSpecification();
+            const surfaceSpecification = this.surface.definition().specification();
             this.xFunction.setValue(surfaceSpecification.parametrization.xFn);
             this.yFunction.setValue(surfaceSpecification.parametrization.yFn);
             this.zFunction.setValue(surfaceSpecification.parametrization.zFn);
@@ -774,12 +780,12 @@
             this.#redistribute();
         }
 
-        findSurfaceByName = (name) => this.surfaces.find(surface => surface.definition().stringBasedSurfaceSpecification().meta.name === name);
+        findSurfaceByName = (name) => this.surfaces.find(surface => surface.definition().specification().meta.name === name);
         findSurfaceByMesh = (mesh) => this.surfaces.find(surface => surface.selectableObject() === mesh);
         render = () => { this.#rotateRingToSelectedSurface(); this.#rotateSurfaces(); }
         selectableObjects = () => this.visibleRingItems().map(surface => surface.selectableObject());
         onSelectTo = (selectedRingSurface) => this.#onSelectedSurface(selectedRingSurface);
-        visibleRingItems = () => this.surfaces.filter(surface => surface.definition().stringBasedSurfaceSpecification().meta.category === this.activeCategory);
+        visibleRingItems = () => this.surfaces.filter(surface => surface.definition().specification().meta.category === this.activeCategory);
     }
 
     function displayedSurface(surfaceDataAsString, visualizationParameters, axes) {
@@ -852,7 +858,8 @@
         const selectedMesh = hits[0].object;
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         surfaceInAxes.dispose();
-        surfaceInAxes = displayedSurface(selectedRingSurface.definition().stringBasedSurfaceSpecification(), visualizationParameters, axes);
+        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
+        surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, axes);
         ring.onSelectTo(selectedRingSurface);
         controlsGui.updateSurfaceWith(surfaceInAxes);
     });

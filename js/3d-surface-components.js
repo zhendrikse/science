@@ -563,7 +563,7 @@ export class LiteralStringBasedSurfaceDefinition
         );
     }
 
-    surfaceSpecification() { return this._surfaceSpecification; }
+    specification() { return this._surfaceSpecification; }
 }
 
 export class MinimalSurfaceView extends SurfaceView {
