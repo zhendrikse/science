@@ -51,7 +51,9 @@
     scene.add(worldGroup);
 
     const params = {
-        axesParameters: new AxesParameters({axesLabels: false})
+        axesParameters: new AxesParameters({axesLabels: false}),
+        opacity: 0.3,
+        radius: 0.1
     };
 
     class ControlsGui {
@@ -71,9 +73,10 @@
                 .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
             axesFolder.close();
 
-            document
-                .getElementById("gui-container")
-                .appendChild(gui.domElement);
+            gui.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => field.setOpacity(value));
+            gui.add(params, "radius", 0, 1, .01).name("Radius").onFinishChange(value => field.setRadius(value));
+
+            document.getElementById("gui-container").appendChild(gui.domElement);
         }
     }
 
