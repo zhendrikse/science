@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
-import { AxesParameters } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+import {ThreeJsUtils, AxesParameters } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 export const Category = Object.freeze({
