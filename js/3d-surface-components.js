@@ -52,26 +52,28 @@ export class ColorMapper {
 }
 
 export class SurfaceDefinition {
-    constructor(meta, parametrization, intervals) {
+    sample(u, v, target) {
+        throw new Error("Abstract class: sample() not implemented!");
+    }
+}
+
+export class SurfaceSpecification {
+    constructor({ meta, parametrization, intervals }) {
         this.meta = meta;
         this.parametrization = Object.freeze({ ...parametrization });
         this.intervals = Object.freeze(intervals);
         Object.freeze(this);
     }
 
-    withParametrization(parametrizationPatch) {
-        return new SurfaceDefinition({
+    withParametrization(patch) {
+        return new SurfaceSpec({
             meta: this.meta,
             intervals: this.intervals,
             parametrization: {
                 ...this.parametrization,
-                ...parametrizationPatch
+                ...patch
             }
         });
-    }
-
-    sample(u, v, target) {
-        throw new Error("sample() not implemented");
     }
 }
 
@@ -516,30 +518,45 @@ export class IsoparametricContoursView extends SurfaceView {
     }
 }
 
-export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
-    constructor(surfaceFunctions, xInterval, yInterval) {
+export class LiteralStringBasedSurfaceDefinition
+    extends SurfaceDefinition {
+
+    constructor(surfaceSpecificationAsString) {
         super();
+        this.surfaceSpecification = surfaceSpecificationAsString;
 
-        this.xFnCompiled = Utils.functionFrom(surfaceFunctions.xFn);
-        this.yFnCompiled = Utils.functionFrom(surfaceFunctions.yFn);
-        this.zFnCompiled = Utils.functionFrom(surfaceFunctions.zFn);
+        const parametrization = surfaceSpecificationAsString.parametrization;
+        this.xFn = Utils.functionFrom(parametrization.xFn);
+        this.yFn = Utils.functionFrom(parametrization.yFn);
+        this.zFn = Utils.functionFrom(parametrization.zFn);
 
-        this.xInterval = new Interval(this.#evaluateConstant(xInterval[0]), this.#evaluateConstant(xInterval[1]));
-        this.yInterval = new Interval(this.#evaluateConstant(yInterval[0]), this.#evaluateConstant(yInterval[1]));
+        this.uInterval = new Interval(
+            this.#evaluateConstant(surfaceSpecificationAsString.intervals[0][0]),
+            this.#evaluateConstant(surfaceSpecificationAsString.intervals[0][1])
+        );
+
+        this.vInterval = new Interval(
+            this.#evaluateConstant(surfaceSpecificationAsString.intervals[1][0]),
+            this.#evaluateConstant(surfaceSpecificationAsString.intervals[1][1])
+        );
+
+        Object.freeze(this);
     }
 
     #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
 
     sample(u, v, target) {
-        const theta = this.xInterval.scaleParameter(u);
-        const phi = this.yInterval.scaleParameter(v);
+        const U = this.xInterval.scaleParameter(u);
+        const V = this.yInterval.scaleParameter(v);
 
         target.set(
-            this.xFnCompiled(theta, phi),
-            this.yFnCompiled(theta, phi),
-            this.zFnCompiled(theta, phi)
+            this.xFnCompiled(U, V),
+            this.yFnCompiled(U, V),
+            this.zFnCompiled(U, V)
         );
     }
+
+    stringBasedSurfaceSpecification() { return this.surfaceSpecification; }
 }
 
 export class MinimalSurfaceView extends SurfaceView {
@@ -689,21 +706,19 @@ export class PrincipalCurvatureColorMapper extends ColorMapper {
 }
 
 export class Surface {
-    constructor(surfaceData) {
-        this.surfaceData = surfaceData;
-        const definition = new LiteralStringBasedSurfaceDefinition(
-            surfaceData.parametrization,
-            surfaceData.intervals[0],
-            surfaceData.intervals[1]);
-
-        this.surfaceFunction = (u, v, target) => definition.sample(u, v, target);
+    constructor(surfaceDefinition) {
+        this.definition = surfaceDefinition;
     }
 
-    createGeometryWith = (resolution) =>
-        new ParametricGeometry((u, v, target) => this.surfaceFunction(u, v, target), resolution, resolution);
+    createGeometryWith(resolution) {
+        return new ParametricGeometry(
+            (u, v, target) => this.definition.sample(u, v, target),
+            resolution,
+            resolution
+        );
+    }
 
-    data = () => this.surfaceData;
-    parametrization = () => this.surfaceFunction;
+    definition() { return this.definition; }
 }
 
 export class StandardSurfaceView extends SurfaceView {
