@@ -1,8 +1,9 @@
+
 <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
       }
     }
 </script>
@@ -22,27 +23,32 @@
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     const vector = THREE.Vector3;
 
     console.clear( );
 
-    const canvas = document.getElementById('birdsCanvas');
-    canvas.focus();
-    const canvasWidth = canvas.getAttribute('width');
-    const canvasHeight = canvas.getAttribute('height');
+    const birdsCanvas = document.getElementById('birdsCanvas');
+    birdsCanvas.focus();
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0, 0, .5);
 
-    const camera = new THREE.PerspectiveCamera( 30, canvasWidth/canvasHeight, 1, 100 );
+    const camera = new THREE.PerspectiveCamera( 30, 1, 1, 100 );
     camera.position.set( 0, 0, 50 );
     camera.lookAt( scene.position );
 
-    const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: canvas} );
-    renderer.setSize( canvasWidth, canvasHeight );
+    const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: birdsCanvas} );
     renderer.setAnimationLoop( animationLoop );
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    const controls = new OrbitControls( camera, canvas );
+    // Resizing for mobile devices
+    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+    window.addEventListener('resize', () => {
+        ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+    });
+
+    const controls = new OrbitControls( camera, birdsCanvas );
     // controls.enableDamping = true;
     // controls.autoRotate = true;
 
