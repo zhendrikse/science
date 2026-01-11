@@ -74,7 +74,7 @@ export class SurfaceSpecification {
     }
 
     withParametrization(patch) {
-        return new SurfaceSpec({
+        return new SurfaceSpecification({
             meta: this.meta,
             intervals: this.intervals,
             parametrization: {
@@ -528,23 +528,23 @@ export class IsoparametricContoursView extends SurfaceView {
 export class LiteralStringBasedSurfaceDefinition
     extends SurfaceDefinition {
 
-    constructor(surfaceSpecificationAsString) {
+    constructor(surfaceSpecification) {
         super();
-        this.surfaceSpecification = surfaceSpecificationAsString;
+        this._surfaceSpecification = surfaceSpecification;
 
-        const parametrization = surfaceSpecificationAsString.parametrization;
+        const parametrization = surfaceSpecification.parametrization;
         this.xFn = Utils.functionFrom(parametrization.xFn);
         this.yFn = Utils.functionFrom(parametrization.yFn);
         this.zFn = Utils.functionFrom(parametrization.zFn);
 
         this.uInterval = new Interval(
-            this.#evaluateConstant(surfaceSpecificationAsString.intervals[0][0]),
-            this.#evaluateConstant(surfaceSpecificationAsString.intervals[0][1])
+            this.#evaluateConstant(surfaceSpecification.intervals[0][0]),
+            this.#evaluateConstant(surfaceSpecification.intervals[0][1])
         );
 
         this.vInterval = new Interval(
-            this.#evaluateConstant(surfaceSpecificationAsString.intervals[1][0]),
-            this.#evaluateConstant(surfaceSpecificationAsString.intervals[1][1])
+            this.#evaluateConstant(surfaceSpecification.intervals[1][0]),
+            this.#evaluateConstant(surfaceSpecification.intervals[1][1])
         );
 
         Object.freeze(this);
@@ -563,7 +563,7 @@ export class LiteralStringBasedSurfaceDefinition
         );
     }
 
-    stringBasedSurfaceSpecification() { return this.surfaceSpecification; }
+    surfaceSpecification() { return this._surfaceSpecification; }
 }
 
 export class MinimalSurfaceView extends SurfaceView {

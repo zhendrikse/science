@@ -73,7 +73,7 @@
     import * as THREE from "three";
     import { ThreeJsUtils, Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-    import { Plot3D, Category, Surface, StandardSurfaceView, MinimalSurfaceView,
+    import { Plot3D, Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification,
         ViewParameters, ColorMode, ContourType, LiteralStringBasedSurfaceDefinition }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
@@ -526,9 +526,14 @@
             const controls = new GUI({width: 300, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
-            this.xFn = null;
-            this.yFn = null;
-            this.zFn = null;
+            this.xFunction = null;
+            this.yFunction = null;
+            this.zFunction = null;
+            this.surfaceCoordinates = {
+                x: surface.definition().stringBasedSurfaceSpecification().parametrization.xFn,
+                y: surface.definition().stringBasedSurfaceSpecification().parametrization.yFn,
+                z: surface.definition().stringBasedSurfaceSpecification().parametrization.xFn
+            }
 
             controls.add(this.viewParameters, 'category', Object.values(Category))
                 .name("Category")
@@ -597,27 +602,27 @@
         #createMathFolder(folder) {
             const mathFolder = folder.addFolder("Math");
 
-            this.xFn = mathFolder.add(surfaceDefinition.parametrization, "xFn").name("Fx(u,v) =")
+            this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
-                    surfaceDefinition.parametrization.xFn = expr;
+                    const surfaceDefinition = this.surface.definition().stringBasedSurfaceSpecification().withParametrization({x: expr});
                     this.surface.dispose();
                     this.surface = displayedSurface(surfaceDefinition, this.viewParameters, this.axes)
                     surfaceInAxes = this.surface;
                     this.#updateSurfaceDataTitleBox();
                 });
 
-            this.yFn = mathFolder.add(surfaceDefinition.parametrization, "yFn").name("Fy(u,v) =")
+            this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
-                    surfaceDefinition.parametrization.yFn = expr;
+                    const surfaceDefinition = this.surface.definition().stringBasedSurfaceSpecification().withParametrization({y: expr});
                     this.surface.dispose();
                     this.surface = displayedSurface(surfaceDefinition, this.viewParameters, this.axes)
                     surfaceInAxes = this.surface;
                     this.#updateSurfaceDataTitleBox();
                 });
 
-            this.zFn = mathFolder.add(surfaceDefinition.parametrization, "zFn").name("Fz(u,v) =")
+            this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
-                    surfaceDefinition.parametrization.zFn = expr;
+                    const surfaceDefinition = this.surface.definition().stringBasedSurfaceSpecification().withParametrization({z: expr});
                     this.surface.dispose();
                     this.surface = displayedSurface(surfaceDefinition, this.viewParameters, this.axes)
                     surfaceInAxes = this.surface;
@@ -680,9 +685,10 @@
         updateSurfaceWith= (newSurface) => {
             this.surface = newSurface;
             this.#updateSurfaceDataTitleBox();
-            this.xFn.setValue(this.surface.definition().stringBasedSurfaceSpecification().xFn);
-            this.yFn.setValue(this.surface.definition().stringBasedSurfaceSpecification().yFn);
-            this.zFn.setValue(this.surface.definition().stringBasedSurfaceSpecification().zFn);
+            const surfaceSpecification = this.surface.definition().stringBasedSurfaceSpecification();
+            this.xFunction.setValue(surfaceSpecification.parametrization.xFn);
+            this.yFunction.setValue(surfaceSpecification.parametrization.yFn);
+            this.zFunction.setValue(surfaceSpecification.parametrization.zFn);
         }
     }
 
@@ -749,7 +755,8 @@
 
         add(surfaces) {
             surfaces.forEach(surfaceDataAsString => {
-                const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceDataAsString);
+                const surfaceSpecification = new SurfaceSpecification(surfaceDataAsString);
+                const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
                 const selectorSurface = new MinimalSurfaceView(this.group, new Surface(surfaceDefinition), {});
                 ThreeJsUtils.fitGroupToBox(
                     selectorSurface.group,
@@ -776,7 +783,8 @@
     }
 
     function displayedSurface(surfaceDataAsString, visualizationParameters, axes) {
-        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceDataAsString);
+        const surfaceSpecification = new SurfaceSpecification(surfaceDataAsString);
+        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
         const surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), visualizationParameters);
         surfaceInAxes.resetTransform();
 
