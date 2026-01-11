@@ -132,7 +132,6 @@ export class SurfaceView {
             transparent: true,
             opacity: opacity,
        });
-    parametrization() { return this.surface.parametrization(); }
     position() { return this.group.position.clone(); }
     rotateBy = (delta) => this.group.rotation.y += delta;
     show() { this.group.visible = true; }
@@ -471,7 +470,7 @@ export class IsoparametricContoursView extends SurfaceView {
 
             for (let j = 0; j <= segments; j++) {
                 const v = j / segments;
-                this.surface.parametrization()(u, v, target);
+                this.surface.definition().sample(u, v, target);
                 points.push(target.clone());
             }
 
@@ -485,7 +484,7 @@ export class IsoparametricContoursView extends SurfaceView {
 
             for (let j = 0; j <= segments; j++) {
                 const u = j / segments;
-                this.surface.parametrization()(u, v, target);
+                this.surface.definition().sample(u, v, target);
                 points.push(target.clone());
             }
 
