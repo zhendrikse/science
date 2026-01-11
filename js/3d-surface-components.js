@@ -129,7 +129,7 @@ export class SurfaceView {
     }
 
     boundingBox() { return new THREE.Box3().setFromObject(this.group).clone(); }
-    data() { return this.surface.data(); }
+    definition() { return this.surface.definition(); }
     hide() { this.group.visible = false; }
     moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
     material = (showWireframe, opacity) =>
