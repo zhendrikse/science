@@ -605,8 +605,8 @@
             this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification =
-                        this.surface.definition().specification().withParametrization({x: expr});
-                    this.surface.dispose();
+                        this.surface.definition().specification().withParametrization({xFn: expr});
+                    surfaceInAxes.dispose();
                     surfaceInAxes = displayedSurface(surfaceSpecification, this.viewParameters, this.axes);
                     this.updateCurrentSurfaceWith(surfaceInAxes);
                 });
@@ -614,8 +614,9 @@
             this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification =
-                        this.surface.definition().specification().withParametrization({y: expr});
-                    this.surface.dispose();
+                        this.surface.definition().specification().withParametrization({yFn: expr});
+                    console.log(surfaceSpecification);
+                    surfaceInAxes.dispose();
                     surfaceInAxes = displayedSurface(surfaceSpecification, this.viewParameters, this.axes);
                     this.updateCurrentSurfaceWith(surfaceInAxes);
                 });
@@ -623,8 +624,8 @@
             this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification =
-                        this.surface.definition().specification().withParametrization({z: expr});
-                    this.surface.dispose();
+                        this.surface.definition().specification().withParametrization({zFn: expr});
+                    surfaceInAxes.dispose();
                     surfaceInAxes = displayedSurface(surfaceSpecification, this.viewParameters, this.axes);
                     this.updateCurrentSurfaceWith(surfaceInAxes);
                 });
