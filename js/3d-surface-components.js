@@ -52,6 +52,24 @@ export class ColorMapper {
 }
 
 export class SurfaceDefinition {
+    constructor(meta, parametrization, intervals) {
+        this.meta = meta;
+        this.parametrization = Object.freeze({ ...parametrization });
+        this.intervals = Object.freeze(intervals);
+        Object.freeze(this);
+    }
+
+    withParametrization(parametrizationPatch) {
+        return new SurfaceDefinition({
+            meta: this.meta,
+            intervals: this.intervals,
+            parametrization: {
+                ...this.parametrization,
+                ...parametrizationPatch
+            }
+        });
+    }
+
     sample(u, v, target) {
         throw new Error("sample() not implemented");
     }
