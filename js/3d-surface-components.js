@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
-import {ThreeJsUtils, AxesParameters } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+import {ThreeJsUtils, AxesParameters, Arrow } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 export const Category = Object.freeze({
@@ -953,6 +953,58 @@ export class Plot3D {
         this.renderer.render(this.scene, this.camera);
     }
 }
+
+export class TangentFrame extends THREE.Group {
+    constructor(surface, { u = 0.25, v = 0.5, scale = 0.7 } = {}) {
+        super();
+        this.surface = surface;
+        this.dg = new DifferentialGeometry(surface);
+        this.scaleFactor = scale;
+
+        this.uArrow = new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0xff0000 });
+        this.vArrow = new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0x00ff00 });
+        this.normalArrow = new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0x00aaff });
+
+        this.tangentPlane = new THREE.Mesh(
+            new THREE.PlaneGeometry(1, 1, 10, 10),
+            new THREE.MeshStandardMaterial({
+                color: 0x8888ff,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.5,
+                wireframe: true
+            })
+        );
+
+        this.add(this.uArrow, this.vArrow, this.normalArrow, this.tangentPlane);
+        this.update(u, v);
+    }
+
+    update(u, v) {
+        const { Xu, Xv } = this.dg.derivatives(u, v);
+
+        const position = new THREE.Vector3();
+        this.surface.definition().sample(u, v, position);
+
+        const tu = Xu.clone().normalize().multiplyScalar(this.scaleFactor);
+        const tv = Xv.clone().normalize().multiplyScalar(this.scaleFactor);
+        const normal  = Xu.clone().cross(Xv).normalize().multiplyScalar(this.scaleFactor);
+
+        this.uArrow.setPosition(position);
+        this.uArrow.setDirection(tu);
+
+        this.vArrow.setPosition(position);
+        this.vArrow.setDirection(tv);
+
+        this.normalArrow.setPosition(position);
+        this.normalArrow.setDirection(normal);
+
+        this.tangentPlane.position.copy(position);
+        this.tangentPlane.lookAt(position.clone().add(normal));
+        this.tangentPlane.scale.set(this.scaleFactor, this.scaleFactor, 1);
+    }
+}
+
 
 
 const surfaceDefinitions = [{

@@ -310,92 +310,17 @@ export class Arrow extends THREE.Group {
         this.setDirection(direction);
     }
 
-    setDirection(dir) {
+    setDirection(direction) {
         const up = new THREE.Vector3(0, 1, 0);
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
             up,
-            dir.clone().normalize()
+            direction.clone().normalize()
         );
         this.setRotationFromQuaternion(quaternion);
     }
 
-    setPosition(pos) {
-        this.position.copy(pos);
-    }
-}
-
-export class TangentVectors extends THREE.Group {
-    constructor(radius, theta, phi) {
-        super();
-        this.center = new THREE.Vector3(0, 0, 0);
-
-        const pos = this.#positionOnSphere(radius, theta, phi);
-        const er  = this.#radialDirection(radius, theta, phi);
-
-        this.radialArrow = new Arrow(pos, er, {color: 0x00ff00});
-        this.thetaArrow  = new Arrow(pos, this.#thetaDirection(er), {color: 0xff0000});
-        this.phiArrow    = new Arrow(pos, this.#phiDirection(er), {color: 0x00ffff});
-
-        this.radialLine = new THREE.Line(
-            new THREE.BufferGeometry().setFromPoints([this.center, pos]),
-            new THREE.LineBasicMaterial({ color: 0xffffff })
-        );
-
-        this.tangentPlane = new THREE.Mesh(
-            new THREE.PlaneGeometry(1, 1, 10, 10),
-            new THREE.MeshStandardMaterial({
-                color: 0x8888ff,
-                side: THREE.DoubleSide,
-                transparent: true,
-                wireframe: true,
-                opacity: 0.5
-            })
-        );
-
-        this.add(this.radialArrow, this.thetaArrow, this.phiArrow, this.radialLine, this.tangentPlane);
-    }
-
-    #toRad(thetaDeg, phiDeg) {
-        return [
-            THREE.MathUtils.degToRad(thetaDeg),
-            THREE.MathUtils.degToRad(phiDeg)
-        ];
-    }
-
-    #positionOnSphere(radius, thetaDeg, phiDeg) {
-        const [theta, phi] = this.#toRad(thetaDeg, phiDeg);
-        return Axes.toCartesian(radius, theta, phi).add(this.center);
-    }
-
-    #radialDirection(radius, thetaDeg, phiDeg) {
-        const [theta, phi] = this.#toRad(thetaDeg, phiDeg);
-        return Axes.toCartesian(radius, theta, phi).normalize();
-    }
-
-    #thetaDirection(er) { return new THREE.Vector3(er.z, 0, -er.x).normalize(); }
-
-    #phiDirection(er) { return this.#thetaDirection(er).clone().cross(er).normalize(); }
-
-    update(radius, theta, phi) {
-        const pos = this.#positionOnSphere(radius, phi, theta);
-        const er  = this.#radialDirection(radius, phi, theta);
-        const et  = this.#thetaDirection(er);
-        const ep  = this.#phiDirection(er);
-
-        this.radialArrow.setPosition(pos);
-        this.radialArrow.setDirection(er);
-
-        this.thetaArrow.setPosition(pos);
-        this.thetaArrow.setDirection(et);
-
-        this.phiArrow.setPosition(pos);
-        this.phiArrow.setDirection(ep);
-
-        this.tangentPlane.position.copy(pos);
-        const normal = er.clone().normalize();
-        this.tangentPlane.lookAt(pos.clone().add(normal));
-
-        this.radialLine.geometry.setFromPoints([this.center, pos]);
+    setPosition(newPosition) {
+        this.position.copy(newPosition);
     }
 }
 
