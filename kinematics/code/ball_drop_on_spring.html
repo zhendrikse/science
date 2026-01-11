@@ -13,136 +13,14 @@
 
 <script type="module">
     import * as THREE from "three";
-
-    class Ball {
-        constructor(parent, position, mass=10, color=0xffff00) {
-            const massRadius = 1;
-            const massMaterial = new THREE.MeshStandardMaterial({color: color, metalness:0.7, roughness:0.2});
-            this.sphere = new THREE.Mesh(new THREE.SphereGeometry(massRadius,24,24), massMaterial);
-            this.sphere.position.copy(position);
-            this.sphere.castShadow = true;
-            this.mass = mass;
-            this.velocity = new THREE.Vector3(0, 0, 0);
-            parent.add(this.sphere);
-        }
-
-        // updateWith(force, dt) {
-        //     this.velocity += force / this.mass * dt;
-        //     this.velocity *= .999; // damping
-        //     this.sphere.position.y += this.velocity * dt;
-        // }
-
-        updateWith(force, dt) {
-            this.velocity.addScaledVector(force, dt / this.mass);
-            this.velocity.multiplyScalar(0.998); // damping
-            this.sphere.position.addScaledVector(this.velocity, dt);
-        }
-
-        damp = () => this.velocity.multiplyScalar(0.998);
-        position = () => this.sphere.position.clone();
-        shiftTo(newPosition) {
-            this.sphere.position.copy(newPosition);
-            this.velocity = new THREE.Vector3(0, 0, 0);
-        }
-
-        kineticEnergy = () => 0.5 * ball.mass * this.velocity.y * this.velocity.y;
-    }
-
-    // --- Curve for slinky spring ---
-    class SpringCurve extends THREE.Curve {
-        constructor(start, end, coils=25, radius=0.4, waveAmp=0.05, wavePhase=0){
-            super();
-            this.start = start.clone();
-            this.end = end.clone();
-            this.coils = coils;
-            this.radius = radius;
-            this.waveAmp = waveAmp;
-            this.wavePhase = wavePhase;
-        }
-
-        getPoint(t){
-            const axis = new THREE.Vector3().subVectors(this.end, this.start);
-            const length = axis.length();
-            axis.normalize();
-
-            const angle = t * this.coils * Math.PI * 2;
-            const x = Math.cos(angle) * this.radius;
-            const y = Math.sin(angle) * this.radius;
-
-            // Longitudinal wave across spring
-            const z = t * length + this.waveAmp * Math.sin(Math.PI * t) * Math.sin(2 * Math.PI * t * 3 - this.wavePhase);
-
-            const point = new THREE.Vector3(x, y, z);
-            const quaternion = new THREE.Quaternion();
-            quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), axis);
-            point.applyQuaternion(quaternion);
-
-            return point.add(this.start);
-        }
-    }
-
-    class SlinkySpring {
-        constructor(parent, start, end, {
-            k=200,
-            length=15,
-            color=0x00ffff,
-            coils=30,
-            longitudinalOscillation=false,
-            tubularSegments=400,
-            radialSegments=12,
-            radius=0.5,
-            coilRadius=0.075
-        } = {}) {
-            this.longtudinalOscillation = longitudinalOscillation;
-            this.radius = radius;
-            this.curve = new SpringCurve(start, end, coils, radius);
-            this.tubularSegments = tubularSegments;
-            this.radialSegments = radialSegments;
-            this.coilRadius = coilRadius;
-            this.length = length;
-            this.k = k;
-            this.startPosition = start;
-
-            this.geometry = new THREE.TubeGeometry(this.curve, tubularSegments, coilRadius, radialSegments, false);
-            const material = new THREE.MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
-            this.spring = new THREE.Mesh(this.geometry, material);
-            scene.add(this.spring);
-        }
-
-        #regenerateTube() {
-            this.spring.geometry.dispose();
-            this.spring.geometry = new THREE.TubeGeometry(
-                this.curve, this.tubularSegments, this.coilRadius, this.radialSegments, false
-            );
-        }
-
-        updateTo(newPosition, time) {
-            this.longtudinalOscillation ?
-                this.#updateWithLongitudinal(newPosition, time) :
-                this.#updateWithoutLongitudinal(newPosition, time);
-        }
-
-        #updateWithoutLongitudinal(newPosition, time) {
-            this.curve.end.copy(newPosition);
-            this.#regenerateTube();
-        }
-
-        #updateWithLongitudinal(newPosition, time) {
-            this.curve.end.copy(newPosition);
-            // Longitudinal wave amplitude coupled to spring elongation
-            const displacement = newPosition.y - this.curve.start.y;
-            this.curve.waveAmp = Math.min(Math.abs(displacement)/10, 0.3); // max amplitude 0.3
-            this.curve.wavePhase = time * 4;
-            this.#regenerateTube();
-        }
-
-        extensionGiven = (positionY) => positionY - (this.startPosition.y - this.length);
-    }
+    import { Ball, SlinkySpring } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
     // --- Scene setup ---
     const canvas = document.getElementById("myCanvas");
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x131313);
+
+    const g = 9.8; // gravitational constant
 
     const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
     camera.position.set(15, 15, 30);
@@ -185,17 +63,14 @@
         5,
         (Math.random() - 0.5) * 0.5   // ±0.25 in Z
     );
-    const g = 9.8;
-    const dt = 0.02;
-    let time = 0;
-    let dragging = false;
-    let mouseY = 0;
 
     // Spring ball system
     const ball = new Ball(scene, initialEnd, 10);
     const slinky = new SlinkySpring(scene, start, ball.position(), {k:200, length:15, longitudinalOscillation: true});
 
     // --- Mouse click & drag ---
+    let dragging = false;
+    let mouseY = 0;
     canvas.addEventListener('mousedown', e => {
         const rect = canvas.getBoundingClientRect();
         mouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1; // niet exact nodig voor nu
@@ -215,10 +90,7 @@
     const graphContext = graphCanvas.getContext("2d");
 
     const maxPoints = 300;
-    const KE = [];
-    const PE = [];
-    const E  = [];
-    const Y = [];
+    const KE = [], PE = [], E  = [], Y = []; // kinetic, potential, and total energy, and position
 
     function drawGraph() {
         graphContext.clearRect(0,0,graphCanvas.width,graphCanvas.height);
@@ -243,7 +115,6 @@
         drawLine(E,  "cyan");    // totaal
         drawLine(Y, "yellow");     // position
     }
-
 
     function force(kHorizontal = 100) { // horizontal spring constant
         const forceX = -kHorizontal * ball.position().x;
@@ -271,6 +142,8 @@
         }
     }
 
+    const dt = 0.02;
+    let time = 0;
     function animate(){
         requestAnimationFrame(animate);
         time += dt;

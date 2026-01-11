@@ -1,6 +1,77 @@
 import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 
+export class ThreeJsUtils {
+    static scaleBox3(box, factor) {
+        const center = new THREE.Vector3();
+        const size = new THREE.Vector3();
+
+        box.getCenter(center);
+        box.getSize(size);
+
+        size.multiplyScalar(factor).multiplyScalar(0.5);
+
+        box.min.copy(center).sub(size);
+        box.max.copy(center).add(size);
+
+        return box;
+    }
+
+    static fitGroupToBox(
+        group,     // 👈 This object moves
+        sourceBox,
+        targetBox,
+        { alignY = "min", padding = 1.0 } = {}
+    ) {
+        const sourceSize = new THREE.Vector3();
+        const targetSize = new THREE.Vector3();
+        const sourceCenter = new THREE.Vector3();
+        const targetCenter = new THREE.Vector3();
+
+        sourceBox.getSize(sourceSize);
+        targetBox.getSize(targetSize);
+        sourceBox.getCenter(sourceCenter);
+        targetBox.getCenter(targetCenter);
+
+        const scale = Math.min(
+            targetSize.x / sourceSize.x,
+            targetSize.y / sourceSize.y,
+            targetSize.z / sourceSize.z
+        ) / padding;
+
+        group.scale.setScalar(scale);
+
+        sourceCenter.multiplyScalar(scale);
+        group.position.copy(targetCenter).sub(sourceCenter);
+
+        if (alignY === "min") {
+            group.updateMatrixWorld(true);
+            const scaledBox = new THREE.Box3().setFromObject(group);
+            const deltaY = targetBox.min.y - scaledBox.min.y;
+            group.position.y += deltaY;
+        }
+    }
+
+    static resizeRendererToCanvas(renderer, camera) {
+        const canvas = renderer.domElement;
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+
+        if (!w || !h) return;
+
+        const pixelRatio = Math.min(window.devicePixelRatio, 2);
+        const width  = Math.floor(w * pixelRatio);
+        const height = Math.floor(h * pixelRatio);
+
+        if (canvas.width !== width || canvas.height !== height) {
+            renderer.setPixelRatio(pixelRatio);
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        }
+    }
+}
+
 export class Axes extends THREE.Group {
     constructor() {
         super();
@@ -261,9 +332,9 @@ export class TangentVectors extends THREE.Group {
         const pos = this.#positionOnSphere(radius, theta, phi);
         const er  = this.#radialDirection(radius, theta, phi);
 
-        this.radialArrow = new Arrow(pos, er, {length: 0.8, color: 0x00ff00});
-        this.thetaArrow  = new Arrow(pos, this.#thetaDirection(er), {length: 0.6, color: 0xff0000});
-        this.phiArrow    = new Arrow(pos, this.#phiDirection(er), {length: 0.6, color: 0x00ffff});
+        this.radialArrow = new Arrow(pos, er, {color: 0x00ff00});
+        this.thetaArrow  = new Arrow(pos, this.#thetaDirection(er), {color: 0xff0000});
+        this.phiArrow    = new Arrow(pos, this.#phiDirection(er), {color: 0x00ffff});
 
         this.radialLine = new THREE.Line(
             new THREE.BufferGeometry().setFromPoints([this.center, pos]),
@@ -326,4 +397,129 @@ export class TangentVectors extends THREE.Group {
 
         this.radialLine.geometry.setFromPoints([this.center, pos]);
     }
+}
+
+class Ball {
+    constructor(parent, position, mass=10, color=0xffff00) {
+        const massRadius = 1;
+        const massMaterial = new THREE.MeshStandardMaterial({color: color, metalness:0.7, roughness:0.2});
+        this.sphere = new THREE.Mesh(new THREE.SphereGeometry(massRadius,24,24), massMaterial);
+        this.sphere.position.copy(position);
+        this.sphere.castShadow = true;
+        this.mass = mass;
+        this.velocity = new THREE.Vector3(0, 0, 0);
+        parent.add(this.sphere);
+    }
+
+    // updateWith(force, dt) {
+    //     this.velocity += force / this.mass * dt;
+    //     this.velocity *= .999; // damping
+    //     this.sphere.position.y += this.velocity * dt;
+    // }
+
+    updateWith(force, dt) {
+        this.velocity.addScaledVector(force, dt / this.mass);
+        this.velocity.multiplyScalar(0.998); // damping
+        this.sphere.position.addScaledVector(this.velocity, dt);
+    }
+
+    damp = () => this.velocity.multiplyScalar(0.998);
+    position = () => this.sphere.position.clone();
+    shiftTo(newPosition) {
+        this.sphere.position.copy(newPosition);
+        this.velocity = new THREE.Vector3(0, 0, 0);
+    }
+
+    kineticEnergy = () => 0.5 * ball.mass * this.velocity.y * this.velocity.y;
+}
+
+// --- Curve for slinky spring ---
+class SpringCurve extends THREE.Curve {
+    constructor(start, end, coils=25, radius=0.4, waveAmp=0.05, wavePhase=0){
+        super();
+        this.start = start.clone();
+        this.end = end.clone();
+        this.coils = coils;
+        this.radius = radius;
+        this.waveAmp = waveAmp;
+        this.wavePhase = wavePhase;
+    }
+
+    getPoint(t){
+        const axis = new THREE.Vector3().subVectors(this.end, this.start);
+        const length = axis.length();
+        axis.normalize();
+
+        const angle = t * this.coils * Math.PI * 2;
+        const x = Math.cos(angle) * this.radius;
+        const y = Math.sin(angle) * this.radius;
+
+        // Longitudinal wave across spring
+        const z = t * length + this.waveAmp * Math.sin(Math.PI * t) * Math.sin(2 * Math.PI * t * 3 - this.wavePhase);
+
+        const point = new THREE.Vector3(x, y, z);
+        const quaternion = new THREE.Quaternion();
+        quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), axis);
+        point.applyQuaternion(quaternion);
+
+        return point.add(this.start);
+    }
+}
+
+export class SlinkySpring {
+    constructor(parent, start, end, {
+        k=200,
+        length=15,
+        color=0x00ffff,
+        coils=30,
+        longitudinalOscillation=false,
+        tubularSegments=400,
+        radialSegments=12,
+        radius=0.5,
+        coilRadius=0.075
+    } = {}) {
+        this.longtudinalOscillation = longitudinalOscillation;
+        this.radius = radius;
+        this.curve = new SpringCurve(start, end, coils, radius);
+        this.tubularSegments = tubularSegments;
+        this.radialSegments = radialSegments;
+        this.coilRadius = coilRadius;
+        this.length = length;
+        this.k = k;
+        this.startPosition = start;
+
+        this.geometry = new THREE.TubeGeometry(this.curve, tubularSegments, coilRadius, radialSegments, false);
+        const material = new THREE.MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
+        this.spring = new THREE.Mesh(this.geometry, material);
+        scene.add(this.spring);
+    }
+
+    #regenerateTube() {
+        this.spring.geometry.dispose();
+        this.spring.geometry = new THREE.TubeGeometry(
+            this.curve, this.tubularSegments, this.coilRadius, this.radialSegments, false
+        );
+    }
+
+    updateTo(newPosition, time) {
+        this.longtudinalOscillation ?
+            this.#updateWithLongitudinal(newPosition, time) :
+            this.#updateWithoutLongitudinal(newPosition, time);
+    }
+
+    #updateWithoutLongitudinal(newPosition, time) {
+        this.curve.end.copy(newPosition);
+        this.#regenerateTube();
+    }
+
+    #updateWithLongitudinal(newPosition, time) {
+        this.curve.end.copy(newPosition);
+        // Longitudinal wave amplitude coupled to spring elongation
+        const displacement = newPosition.y - this.curve.start.y;
+        this.curve.waveAmp = Math.min(Math.abs(displacement)/10, 0.3); // max amplitude 0.3
+        this.curve.wavePhase = time * 4;
+        this.#regenerateTube();
+    }
+
+    extensionGiven = (positionY) => positionY - (this.startPosition.y - this.length);
 }
