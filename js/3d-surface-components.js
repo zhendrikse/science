@@ -51,12 +51,20 @@ export class ColorMapper {
     }
 }
 
+/**
+ * This class contains a function F(u, v) used to create a Surface instance.
+ * It is instantiated using a SurfaceSpecification instance.
+ */
 export class SurfaceDefinition {
     sample(u, v, target) {
         throw new Error("Abstract class: sample() not implemented!");
     }
 }
 
+/**
+ * This class is used to build a SurfaceDefinition.
+ * The latter is used to construct a Surface.
+ */
 export class SurfaceSpecification {
     constructor({ meta, parametrization, intervals }) {
         this.meta = meta;
@@ -211,7 +219,7 @@ export class CurvatureContoursView extends SurfaceView {
                 if (Math.abs(H) <= threshold) continue;
 
                 const point = new THREE.Vector3();
-                this.surface.parametrization()(u, v, point);
+                this.surface.definition().sample()(u, v, point);
                 points.push(point);
             }
 
@@ -248,7 +256,7 @@ export class CurvatureContoursView extends SurfaceView {
 
 export class DifferentialGeometry {
     constructor(surface, { eps = 1e-4 } = {}) {
-        this.parametrization = surface.parametrization();
+        this.surface = surface;
         this.eps = eps;
     }
 
@@ -269,17 +277,17 @@ export class DifferentialGeometry {
         const pu0v0 = new THREE.Vector3();
 
         // sample
-        this.parametrization(u, v, p);
+        this.surface.definition().sample(u, v, p);
 
-        this.parametrization(u + e, v, pu1);
-        this.parametrization(u - e, v, pu0);
-        this.parametrization(u, v + e, pv1);
-        this.parametrization(u, v - e, pv0);
+        this.surface.definition().sample(u + e, v, pu1);
+        this.surface.definition().sample(u - e, v, pu0);
+        this.surface.definition().sample(u, v + e, pv1);
+        this.surface.definition().sample(u, v - e, pv0);
 
-        this.parametrization(u + e, v + e, pu1v1);
-        this.parametrization(u + e, v - e, pu1v0);
-        this.parametrization(u - e, v + e, pu0v1);
-        this.parametrization(u - e, v - e, pu0v0);
+        this.surface.definition().sample(u + e, v + e, pu1v1);
+        this.surface.definition().sample(u + e, v - e, pu1v0);
+        this.surface.definition().sample(u - e, v + e, pu0v1);
+        this.surface.definition().sample(u - e, v - e, pu0v0);
 
         // first order derivatives (central difference)
         const Xu = pu1.clone().sub(pu0).multiplyScalar(1 / (2 * e));
@@ -704,6 +712,9 @@ export class PrincipalCurvatureColorMapper extends ColorMapper {
     }
 }
 
+/**
+ * Using this class, various SurfaceView (sub)types can be realized.
+ */
 export class Surface {
     constructor(surfaceDefinition) {
         this.definition = surfaceDefinition;
