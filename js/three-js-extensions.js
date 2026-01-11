@@ -399,7 +399,7 @@ export class TangentVectors extends THREE.Group {
     }
 }
 
-class Ball {
+export class Ball {
     constructor(parent, position, mass=10, color=0xffff00) {
         const massRadius = 1;
         const massMaterial = new THREE.MeshStandardMaterial({color: color, metalness:0.7, roughness:0.2});
