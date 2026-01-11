@@ -1423,7 +1423,7 @@ const surfaceDefinitions = [{
     meta: {name: "Waves", category: Category.FUNCTION},
     parametrization: {
         xFn: "u",
-        yFn: ".25 * cos(pi * u + pi/6) * sin(pi * v + pi/6)",
+        yFn: "cos(pi * u + pi/6) * sin(pi * v + pi/6)",
         zFn: "v"
     },
     intervals: [["-2", "2"], ["2", "-2"]]
