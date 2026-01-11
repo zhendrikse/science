@@ -550,9 +550,9 @@ export class LiteralStringBasedSurfaceDefinition
         const V = this.vInterval.scaleParameter(v);
 
         target.set(
-            this.xFnCompiled(U, V),
-            this.yFnCompiled(U, V),
-            this.zFnCompiled(U, V)
+            this.xFn(U, V),
+            this.yFn(U, V),
+            this.zFn(U, V)
         );
     }
 
