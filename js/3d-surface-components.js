@@ -717,18 +717,18 @@ export class PrincipalCurvatureColorMapper extends ColorMapper {
  */
 export class Surface {
     constructor(surfaceDefinition) {
-        this.definition = surfaceDefinition;
+        this._definition = surfaceDefinition;
     }
 
     createGeometryWith(resolution) {
         return new ParametricGeometry(
-            (u, v, target) => this.definition.sample(u, v, target),
+            (u, v, target) => this._definition.sample(u, v, target),
             resolution,
             resolution
         );
     }
 
-    definition() { return this.definition; }
+    definition() { return this._definition; }
 }
 
 export class StandardSurfaceView extends SurfaceView {
