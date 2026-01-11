@@ -546,8 +546,8 @@ export class LiteralStringBasedSurfaceDefinition
     #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
 
     sample(u, v, target) {
-        const U = this.xInterval.scaleParameter(u);
-        const V = this.yInterval.scaleParameter(v);
+        const U = this.uInterval.scaleParameter(u);
+        const V = this.vInterval.scaleParameter(v);
 
         target.set(
             this.xFnCompiled(U, V),
