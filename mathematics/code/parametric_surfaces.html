@@ -152,7 +152,7 @@
             yFn: "-cos(v) * cos(v) + 0.5  * cos(u) * cos(u) * sin(v) * sin(v)",
             zFn: "sin(2 * v) * sin(u)"
         },
-        intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+        intervals: [["0", "1 * pi"], ["1 * pi", "0"]]
     }, {
         meta: {name: "Cone", category: Category.CONIC},
         parametrization: {
@@ -604,35 +604,29 @@
 
             this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(
-                        this.surface.definition().surfaceSpecification().withParametrization({x: expr})
-                    );
+                    const surfaceSpecification =
+                        this.surface.definition().specification().withParametrization({x: expr});
                     this.surface.dispose();
-                    this.surface = displayedSurface(surfaceDefinition, this.viewParameters, this.axes)
-                    surfaceInAxes = this.surface;
-                    this.#updateSurfaceDataTitleBox();
+                    surfaceInAxes = displayedSurface(surfaceSpecification, this.viewParameters, this.axes);
+                    this.updateCurrentSurfaceWith(surfaceInAxes);
                 });
 
             this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(
-                        this.surface.definition().surfaceSpecification().withParametrization({y: expr})
-                    );
+                    const surfaceSpecification =
+                        this.surface.definition().specification().withParametrization({y: expr});
                     this.surface.dispose();
-                    this.surface = displayedSurface(surfaceDefinition, this.viewParameters, this.axes)
-                    surfaceInAxes = this.surface;
-                    this.#updateSurfaceDataTitleBox();
+                    surfaceInAxes = displayedSurface(surfaceSpecification, this.viewParameters, this.axes);
+                    this.updateCurrentSurfaceWith(surfaceInAxes);
                 });
 
             this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(
-                        this.surface.definition().surfaceSpecification().withParametrization({z: expr})
-                    );
+                    const surfaceSpecification =
+                        this.surface.definition().specification().withParametrization({z: expr});
                     this.surface.dispose();
-                    this.surface = displayedSurface(surfaceDefinition, this.viewParameters, this.axes)
-                    surfaceInAxes = this.surface;
-                    this.#updateSurfaceDataTitleBox();
+                    surfaceInAxes = displayedSurface(surfaceSpecification, this.viewParameters, this.axes);
+                    this.updateCurrentSurfaceWith(surfaceInAxes);
                 });
 
             mathFolder.close();
@@ -668,7 +662,7 @@
 
         #updateSurfaceDataTitleBox() {
             const nameDiv = document.getElementById("surface-title");
-            const surfaceData = this.surface.definition().stringBasedSurfaceSpecification();
+            const surfaceData = this.surface.definition().specification();
             nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
 
             const equationDiv = document.getElementById("surface-equation");
@@ -688,7 +682,7 @@
                 this.surface.rotateBy(0.005);
         }
 
-        updateSurfaceWith= (newSurface) => {
+        updateCurrentSurfaceWith= (newSurface) => {
             this.surface = newSurface;
             this.#updateSurfaceDataTitleBox();
             const surfaceSpecification = this.surface.definition().specification();
@@ -788,8 +782,7 @@
         visibleRingItems = () => this.surfaces.filter(surface => surface.definition().specification().meta.category === this.activeCategory);
     }
 
-    function displayedSurface(surfaceDataAsString, visualizationParameters, axes) {
-        const surfaceSpecification = new SurfaceSpecification(surfaceDataAsString);
+    function displayedSurface(surfaceSpecification, visualizationParameters, axes) {
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
         const surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), visualizationParameters);
         surfaceInAxes.resetTransform();
@@ -824,18 +817,18 @@
     bbox.setFromObject( worldGroup );
     plot3D.fitToBoundingBox(bbox, {padding: 1.2, translationY: -3.0});
 
-    const surfaceDefinition = FrozenSurfaceDefinitions[19];
+    const surfaceData = FrozenSurfaceDefinitions[19];
     const visualizationParameters = new ViewParameters({axesParameters: new AxesParameters({axesLabels: false})});
     annotations.visible = visualizationParameters.axesParameters.axesLabels;
-    let surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, axes);
+    let surfaceInAxes = displayedSurface(new SurfaceSpecification(surfaceData), visualizationParameters, axes);
 
     // Ring
     const boundingBox = surfaceInAxes.boundingBox();
     ThreeJsUtils.scaleBox3(boundingBox, 0.20);
     const ring = new Ring(worldGroup, surfaceInAxes, boundingBox);
     ring.add(FrozenSurfaceDefinitions);
-    ring.changeActiveCategoryTo(surfaceDefinition.meta.category);
-    const selectedRingSurface = ring.findSurfaceByName(surfaceDefinition.meta.name);
+    ring.changeActiveCategoryTo(surfaceData.meta.category);
+    const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
     ring.onSelectTo(selectedRingSurface);
 
     // Interaction
@@ -858,10 +851,9 @@
         const selectedMesh = hits[0].object;
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         surfaceInAxes.dispose();
-        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
-        surfaceInAxes = displayedSurface(surfaceDefinition, visualizationParameters, axes);
+        surfaceInAxes = displayedSurface(selectedRingSurface.definition().specification(), visualizationParameters, axes);
         ring.onSelectTo(selectedRingSurface);
-        controlsGui.updateSurfaceWith(surfaceInAxes);
+        controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
     });
 
     function animate() {

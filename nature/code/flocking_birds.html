@@ -1,13 +1,13 @@
 <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
       }
     }
 </script>
 
-<canvas id="myCanvas" width="600" height="400" style="border: none;"></canvas><br/>
+<canvas class="applicationCanvas" id="birdsCanvas"></canvas><br/>
 <p style="clear: both;"></p>
 <label for="randomWeightSlider">Random behavior: <input type="range" min="0" max="50" value=".1" class="slider" id="randomWeightSlider"/></label>
 <p style="clear: both;"></p>
@@ -26,7 +26,7 @@
 
     console.clear( );
 
-    const canvas = document.getElementById('myCanvas');
+    const canvas = document.getElementById('birdsCanvas');
     canvas.focus();
     const canvasWidth = canvas.getAttribute('width');
     const canvasHeight = canvas.getAttribute('height');
