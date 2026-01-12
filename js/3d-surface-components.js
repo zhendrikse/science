@@ -256,6 +256,23 @@ export class CurvatureContoursView extends SurfaceView {
     }
 }
 
+export class PrincipalFrame {
+    constructor({
+                    position,
+                    normal,
+                    k1, k2,
+                    d1, d2
+                }) {
+        this.position = position; // Vector3
+        this.normal   = normal;   // Vector3
+        this.k1 = k1;
+        this.k2 = k2;
+        this.d1 = d1;             // tangent direction
+        this.d2 = d2;
+        Object.freeze(this);
+    }
+}
+
 export class DifferentialGeometry {
     constructor(surface, { eps = 1e-4 } = {}) {
         this.surface = surface;
@@ -402,6 +419,26 @@ export class DifferentialGeometry {
         const d2 = Xu.clone().multiplyScalar(v2[0]).add(Xv.clone().multiplyScalar(v2[1])).normalize();
 
         return { k1, k2, d1, d2 };
+    }
+
+    principalFrame(u, v) {
+        const { Xu, Xv } = this.derivatives(u, v);
+        const N = Xu.clone().cross(Xv).normalize();
+
+        const result = this.principalDirections(u, v);
+        if (!result) return null;
+
+        const position = new THREE.Vector3();
+        this.surface.definition().sample(u, v, position);
+
+        return new PrincipalFrame({
+            position,
+            normal: N,
+            k1: result.k1,
+            k2: result.k2,
+            d1: result.d1,
+            d2: result.d2
+        });
     }
 }
 
@@ -1015,7 +1052,7 @@ export class Plot3D {
     }
 }
 
-export class TangentFrame extends THREE.Group {
+export class TangentFrameView extends THREE.Group {
     constructor(surface, {
         u=0.25,
         v=0.5,
@@ -1061,28 +1098,38 @@ export class TangentFrame extends THREE.Group {
     }
 
     update(u, v) {
-        const { Xu, Xv } = this.dg.derivatives(u, v);
+        const frame = this.dg.principalFrame(u, v);
+        if (!frame) return;
 
-        const position = ZeroVector;
-        this.surface.definition().sample(u, v, position);
+        const s = this.scaleFactor;
 
-        const tangentU = Xu.clone().normalize().multiplyScalar(this.scaleFactor);
-        const tangentV = Xv.clone().normalize().multiplyScalar(this.scaleFactor);
-        const normal  = Xu.clone().cross(Xv).normalize().multiplyScalar(this.scaleFactor);
+        this.axes.uArrow.repositionAndRealign(
+            frame.position,
+            frame.d1.clone().multiplyScalar(this.scaleFactor)
+        );
 
-        this.axes.uArrow.repositionAndRealign(position, tangentU);
-        this.axes.vArrow.repositionAndRealign(position, tangentV);
-        this.axes.normalArrow.repositionAndRealign(position, normal);
+        this.axes.vArrow.repositionAndRealign(
+            frame.position,
+            frame.d2.clone().multiplyScalar(this.scaleFactor)
+        );
 
-        const result = this.dg.principalDirections(u, v);
-        if (!result) return;
-        const { k1, k2, d1, d2 } = result;
+        this.axes.normalArrow.repositionAndRealign(
+            frame.position,
+            frame.normal.clone().multiplyScalar(this.scaleFactor)
+        );
 
-        this.principals.k1Arrow.repositionAndRealign(position, d1.multiplyScalar(this.scaleFactor));
-        this.principals.k2Arrow.repositionAndRealign(position, d2.multiplyScalar(this.scaleFactor));
+        this.principals.k1Arrow.repositionAndRealign(
+            frame.position,
+            frame.d1.clone().multiplyScalar(this.scaleFactor)
+        );
 
-        this.tangentPlane.position.copy(position);
-        this.tangentPlane.lookAt(position.clone().add(normal));
+        this.principals.k2Arrow.repositionAndRealign(
+            frame.position,
+            frame.d2.clone().multiplyScalar(this.scaleFactor)
+        );
+
+        this.tangentPlane.position.copy(frame.position);
+        this.tangentPlane.lookAt(frame.position.clone().add(frame.normal));
         this.tangentPlane.scale.set(this.scaleFactor, this.scaleFactor, 1);
     }
 
