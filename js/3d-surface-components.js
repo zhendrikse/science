@@ -54,7 +54,7 @@ export class ColorMapper {
 }
 
 /**
- * This class contains a function F(u, v) used to create a Surface instance.
+ * This class contains a function F(u, v) => (x, y, z) used to create a Surface instance.
  * It is instantiated using a SurfaceSpecification instance.
  */
 export class SurfaceDefinition {
