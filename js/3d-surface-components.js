@@ -1016,7 +1016,12 @@ export class Plot3D {
 }
 
 export class TangentFrame extends THREE.Group {
-    constructor(surface, { u = 0.25, v = 0.5, scale = 0.7 } = {}) {
+    constructor(surface, {
+        u=0.25,
+        v=0.5,
+        showAxes=false,
+        showPrincipals=false,
+        scale = 0.7 } = {}) {
         super();
         this.surface = surface;
         this.dg = new DifferentialGeometry(surface);

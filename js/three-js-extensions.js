@@ -289,8 +289,9 @@ export class Arrow extends THREE.Group {
         color = 0xff0000,
         shaftRadius = 0.03,
         headRadius = 0.08,
-        headLength = 0.18} = {}
-    ) {
+        headLength = 0.18,
+        visible = true
+    } = {}) {
         super();
 
         this.length = length;
@@ -313,6 +314,7 @@ export class Arrow extends THREE.Group {
 
         this.position.copy(origin);
         this.setPositionTo(direction);
+        this.visible = visible;
     }
 
     repositionAndRealign(position, direction) {
