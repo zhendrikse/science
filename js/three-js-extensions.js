@@ -323,11 +323,13 @@ export class Arrow extends THREE.Group {
     }
 
     setDirectionIn(newDirection) {
+        const length = newDirection.length();
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
             UnitVectorE2,
             newDirection.clone().normalize()
         );
         this.setRotationFromQuaternion(quaternion);
+        this.scale.set(1, length / this.length, 1);
     }
 
     distanceToSquared(other) {
