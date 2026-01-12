@@ -1051,7 +1051,12 @@ export class TangentFrame extends THREE.Group {
             })
         );
 
-        this.add(this.uArrow, this.vArrow, this.normalArrow, this.tangentPlane, this.k1Arrow, this.k2Arrow);
+        this.add(
+            this.axes.uArrow, this.axes.vArrow, this.axes.normalArrow,
+            this.tangentPlane,
+            this.principals.k1Arrow,
+            this.principals.k2Arrow
+        );
         this.update(u, v);
     }
 
@@ -1082,11 +1087,8 @@ export class TangentFrame extends THREE.Group {
     }
 
     showAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = true);
-
     hideAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = false);
-
     showPrincipals = () => Object.values(this.principals).forEach(arrow => arrow.visible = true);
-
     hidePrincipals = () => Object.values(this.principals).forEach(arrow => arrow.visible = false);
 }
 
