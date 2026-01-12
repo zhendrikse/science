@@ -1081,10 +1081,13 @@ export class TangentFrame extends THREE.Group {
         this.tangentPlane.scale.set(this.scaleFactor, this.scaleFactor, 1);
     }
 
-    showAxes = () => this.axes.forEach(arrow => arrow.visible = true);
-    hideAxes = () => this.axes.forEach(arrow => arrow.visible = false);
-    showPrincipals = () => this.principals.forEach(arrow => arrow.visible = true);
-    hidePrincipals = () => this.principals.forEach(arrow => arrow.visible = false);
+    showAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = true);
+
+    hideAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = false);
+
+    showPrincipals = () => Object.values(this.principals).forEach(arrow => arrow.visible = true);
+
+    hidePrincipals = () => Object.values(this.principals).forEach(arrow => arrow.visible = false);
 }
 
 const surfaceDefinitions = [{
