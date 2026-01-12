@@ -107,6 +107,12 @@ export class Axes extends THREE.Group {
     render(scene, camera) {
         this.annotations.render(scene, camera);
     }
+
+    boundingBox() {
+        const axesBoundingBox = new THREE.Box3();
+        axesBoundingBox.setFromObject(this);
+        return axesBoundingBox;
+    }
 }
 
 export class AxesParameters {
