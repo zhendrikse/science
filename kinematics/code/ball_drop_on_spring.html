@@ -148,7 +148,7 @@
         requestAnimationFrame(animate);
         time += dt;
         if (!dragging) ball.updateWith(force(), dt);
-        slinky.updateTo(ball.position(), time);
+        slinky.updateTo(ball.position(), time); // Time parameter needed when longitudinal oscillation = true
         renderer.render(scene, camera);
         updateGraphData();
         shiftGraph();

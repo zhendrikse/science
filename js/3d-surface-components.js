@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
-import {ThreeJsUtils, AxesParameters, Arrow } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+import {ThreeJsUtils, AxesParameters, Arrow, ZeroVector }
+    from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 export const Category = Object.freeze({
@@ -264,8 +265,7 @@ export class DifferentialGeometry {
     derivatives(u, v) {
         const e = this.eps;
 
-        // positions
-        const p   = new THREE.Vector3();
+        const position   = new THREE.Vector3();
 
         const pu1 = new THREE.Vector3();
         const pu0 = new THREE.Vector3();
@@ -278,7 +278,7 @@ export class DifferentialGeometry {
         const pu0v0 = new THREE.Vector3();
 
         // sample
-        this.surface.definition().sample(u, v, p);
+        this.surface.definition().sample(u, v, position);
 
         this.surface.definition().sample(u + e, v, pu1);
         this.surface.definition().sample(u - e, v, pu0);
@@ -296,12 +296,12 @@ export class DifferentialGeometry {
 
         // second order derivatives (central difference)
         const Xuu = pu1.clone()
-            .sub(p.clone().multiplyScalar(2))
+            .sub(position.clone().multiplyScalar(2))
             .add(pu0)
             .multiplyScalar(1 / (e * e));
 
         const Xvv = pv1.clone()
-            .sub(p.clone().multiplyScalar(2))
+            .sub(position.clone().multiplyScalar(2))
             .add(pv0)
             .multiplyScalar(1 / (e * e));
 
@@ -315,8 +315,8 @@ export class DifferentialGeometry {
     }
 
     normalMeanGaussian(u, v) {
-        const d = this.derivatives(u, v);
-        const Xu = d.Xu, Xv = d.Xv;
+        const derivatives = this.derivatives(u, v);
+        const Xu = derivatives.Xu, Xv = derivatives.Xv;
         const N  = Xu.clone().cross(Xv).normalize();
 
         // First fundamental form
@@ -325,9 +325,9 @@ export class DifferentialGeometry {
         const G = Xv.dot(Xv);
 
         // Second fundamental form
-        const e = d.Xuu.dot(N);
-        const f = d.Xuv.dot(N);
-        const g = d.Xvv.dot(N);
+        const e = derivatives.Xuu.dot(N);
+        const f = derivatives.Xuv.dot(N);
+        const g = derivatives.Xvv.dot(N);
 
         const EG_F2 = E * G - F * F;
         const H = EG_F2 !== 0  ? (e * G - 2 * f * F + g * E) / (2 * EG_F2) : 0; // Mean curvature
@@ -341,6 +341,67 @@ export class DifferentialGeometry {
         const squareRoot = Math.sqrt(disc);
         const k1 = H + squareRoot, k2 = H - squareRoot; // Principal curvatures
         return { k1, k2 };
+    }
+
+    principalDirections(u, v) {
+        const derivatives = this.derivatives(u, v);
+        const Xu = derivatives.Xu;
+        const Xv = derivatives.Xv;
+
+        const N = Xu.clone().cross(Xv).normalize();
+
+        // First fundamental form
+        const E = Xu.dot(Xu);
+        const F = Xu.dot(Xv);
+        const G = Xv.dot(Xv);
+
+        // Second fundamental form
+        const e = derivatives.Xuu.dot(N);
+        const f = derivatives.Xuv.dot(N);
+        const g = derivatives.Xvv.dot(N);
+
+        // Shape operator S = I^{-1} II
+        const detI = E * G - F * F;
+        if (Math.abs(detI) < 1e-12) return null;
+
+        const invI = [
+            [ G / detI, -F / detI ],
+            [ -F / detI, E / detI ]
+        ];
+
+        const S = [
+            [
+                invI[0][0] * e + invI[0][1] * f,
+                invI[0][0] * f + invI[0][1] * g
+            ],
+            [
+                invI[1][0] * e + invI[1][1] * f,
+                invI[1][0] * f + invI[1][1] * g
+            ]
+        ];
+
+        // eigenvalues
+        const trace = S[0][0] + S[1][1];
+        const det   = S[0][0] * S[1][1] - S[0][1] * S[1][0];
+        const disc  = Math.sqrt(Math.max(0, trace * trace / 4 - det));
+
+        const k1 = trace / 2 + disc;
+        const k2 = trace / 2 - disc;
+
+        // eigenvectors in (u,v)
+        const v1 = Math.abs(S[0][1]) > 1e-6
+            ? [ k1 - S[1][1], S[0][1] ]
+            : [ 1, 0 ];
+
+        const v2 = Math.abs(S[0][1]) > 1e-6
+            ? [ k2 - S[1][1], S[0][1] ]
+            : [ 0, 1 ];
+
+        // lift to 3D
+        const d1 = Xu.clone().multiplyScalar(v1[0]).add(Xv.clone().multiplyScalar(v1[1])).normalize();
+        const d2 = Xu.clone().multiplyScalar(v2[0]).add(Xv.clone().multiplyScalar(v2[1])).normalize();
+
+        return { k1, k2, d1, d2 };
     }
 }
 
@@ -961,9 +1022,14 @@ export class TangentFrame extends THREE.Group {
         this.dg = new DifferentialGeometry(surface);
         this.scaleFactor = scale;
 
-        this.uArrow = new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0xff0000 });
-        this.vArrow = new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0x00ff00 });
-        this.normalArrow = new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0x00aaff });
+        // Arrows in (u, v) directions + normal vector
+        this.uArrow = new Arrow(ZeroVector, ZeroVector, { color: 0xff0000 });
+        this.vArrow = new Arrow(ZeroVector, ZeroVector, { color: 0x00ff00 });
+        this.normalArrow = new Arrow(ZeroVector, ZeroVector, { color: 0x00aaff });
+
+        // Principal direction vectors
+        this.k1Arrow = new Arrow(ZeroVector, ZeroVector, { color: 0xffaa00 });
+        this.k2Arrow = new Arrow(ZeroVector, ZeroVector, { color: 0xaa00ff });
 
         this.tangentPlane = new THREE.Mesh(
             new THREE.PlaneGeometry(1, 1, 10, 10),
@@ -976,35 +1042,36 @@ export class TangentFrame extends THREE.Group {
             })
         );
 
-        this.add(this.uArrow, this.vArrow, this.normalArrow, this.tangentPlane);
+        this.add(this.uArrow, this.vArrow, this.normalArrow, this.tangentPlane, this.k1Arrow, this.k2Arrow);
         this.update(u, v);
     }
 
     update(u, v) {
         const { Xu, Xv } = this.dg.derivatives(u, v);
 
-        const position = new THREE.Vector3();
+        const position = ZeroVector;
         this.surface.definition().sample(u, v, position);
 
-        const tu = Xu.clone().normalize().multiplyScalar(this.scaleFactor);
-        const tv = Xv.clone().normalize().multiplyScalar(this.scaleFactor);
+        const tangentU = Xu.clone().normalize().multiplyScalar(this.scaleFactor);
+        const tangentV = Xv.clone().normalize().multiplyScalar(this.scaleFactor);
         const normal  = Xu.clone().cross(Xv).normalize().multiplyScalar(this.scaleFactor);
 
-        this.uArrow.setPosition(position);
-        this.uArrow.setDirection(tu);
+        this.uArrow.repositionAndRealign(position, tangentU);
+        this.vArrow.repositionAndRealign(position, tangentV);
+        this.normalArrow.repositionAndRealign(position, normal);
 
-        this.vArrow.setPosition(position);
-        this.vArrow.setDirection(tv);
+        const result = this.dg.principalDirections(u, v);
+        if (!result) return;
+        const { k1, k2, d1, d2 } = result;
 
-        this.normalArrow.setPosition(position);
-        this.normalArrow.setDirection(normal);
+        this.k1Arrow.repositionAndRealign(position, d1.multiplyScalar(this.scaleFactor));
+        this.k2Arrow.repositionAndRealign(position, d2.multiplyScalar(this.scaleFactor));
 
         this.tangentPlane.position.copy(position);
         this.tangentPlane.lookAt(position.clone().add(normal));
         this.tangentPlane.scale.set(this.scaleFactor, this.scaleFactor, 1);
     }
 }
-
 
 
 const surfaceDefinitions = [{

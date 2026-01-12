@@ -1,6 +1,11 @@
 import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 
+export const ZeroVector = new THREE.Vector3();
+export const UnitVectorE1 = new THREE.Vector3(1, 0, 0);
+export const UnitVectorE2 = new THREE.Vector3(0, 1, 0);
+export const UnitVectorE3 = new THREE.Vector3(0, 0, 1);
+
 export class ThreeJsUtils {
     static scaleBox3(box, factor) {
         const center = new THREE.Vector3();
@@ -307,19 +312,27 @@ export class Arrow extends THREE.Group {
         this.add(this.shaft, this.head);
 
         this.position.copy(origin);
-        this.setDirection(direction);
+        this.setPositionTo(direction);
     }
 
-    setDirection(direction) {
-        const up = new THREE.Vector3(0, 1, 0);
+    repositionAndRealign(position, direction) {
+        this.setPositionTo(position);
+        this.setDirectionIn(direction);
+    }
+
+    setDirectionIn(newDirection) {
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
-            up,
-            direction.clone().normalize()
+            UnitVectorE2,
+            newDirection.clone().normalize()
         );
         this.setRotationFromQuaternion(quaternion);
     }
 
-    setPosition(newPosition) {
+    distanceToSquared(other) {
+        return this.position.distanceToSquared(other.position);
+    }
+
+    setPositionTo(newPosition) {
         this.position.copy(newPosition);
     }
 }
@@ -426,13 +439,13 @@ export class SlinkySpring {
         );
     }
 
-    updateTo(newPosition, time) {
+    updateTo(newPosition, time=0) {
         this.longtudinalOscillation ?
             this.#updateWithLongitudinal(newPosition, time) :
-            this.#updateWithoutLongitudinal(newPosition, time);
+            this.#updateWithoutLongitudinal(newPosition);
     }
 
-    #updateWithoutLongitudinal(newPosition, time) {
+    #updateWithoutLongitudinal(newPosition) {
         this.curve.end.copy(newPosition);
         this.#regenerateTube();
     }
@@ -441,7 +454,7 @@ export class SlinkySpring {
         this.curve.end.copy(newPosition);
         // Longitudinal wave amplitude coupled to spring elongation
         const displacement = newPosition.y - this.curve.start.y;
-        this.curve.waveAmp = Math.min(Math.abs(displacement)/10, 0.3); // max amplitude 0.3
+        this.curve.waveAmp = Math.min(Math.abs(displacement) / 10, 0.3); // max amplitude 0.3
         this.curve.wavePhase = time * 4;
         this.#regenerateTube();
     }
