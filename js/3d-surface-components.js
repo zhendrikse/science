@@ -7,7 +7,7 @@ import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 export const Category = Object.freeze({
     BASIC: "Basic",
     CONIC: "Conic",
-    FUNCTION: "Function",
+    FUNCTION: "Functions",
     MISC: "Miscellaneous",
     NATURE: "Nature",
     NON_ORIENTABLE: "Non-Orientable",
