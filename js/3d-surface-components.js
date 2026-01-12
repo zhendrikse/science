@@ -1027,14 +1027,16 @@ export class TangentFrame extends THREE.Group {
         this.dg = new DifferentialGeometry(surface);
         this.scaleFactor = scale;
 
-        // Arrows in (u, v) directions + normal vector
-        this.uArrow = new Arrow(ZeroVector, ZeroVector, { color: 0xff0000, visible: showAxes });
-        this.vArrow = new Arrow(ZeroVector, ZeroVector, { color: 0x00ff00, visible: showAxes });
-        this.normalArrow = new Arrow(ZeroVector, ZeroVector, { color: 0x00aaff, visible: showAxes });
+        this.axes = { // Arrows in (u, v) directions + normal vector
+            uArrow: new Arrow(ZeroVector, ZeroVector, { color: 0xff0000, visible: showAxes }),
+            vArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00ff00, visible: showAxes }),
+            normalArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00aaff, visible: showAxes })
+        }
 
-        // Principal direction vectors
-        this.k1Arrow = new Arrow(ZeroVector, ZeroVector, { color: 0xffaa00, visible: showPrincipals });
-        this.k2Arrow = new Arrow(ZeroVector, ZeroVector, { color: 0xaa00ff, visible: showPrincipals });
+        this.principals = { // Principal direction vectors
+            k1Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xffaa00, visible: showPrincipals }),
+            k2Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xaa00ff, visible: showPrincipals })
+        }
 
         this.tangentPlane = new THREE.Mesh(
             new THREE.PlaneGeometry(1, 1, 10, 10),
@@ -1061,23 +1063,27 @@ export class TangentFrame extends THREE.Group {
         const tangentV = Xv.clone().normalize().multiplyScalar(this.scaleFactor);
         const normal  = Xu.clone().cross(Xv).normalize().multiplyScalar(this.scaleFactor);
 
-        this.uArrow.repositionAndRealign(position, tangentU);
-        this.vArrow.repositionAndRealign(position, tangentV);
-        this.normalArrow.repositionAndRealign(position, normal);
+        this.axes.uArrow.repositionAndRealign(position, tangentU);
+        this.axes.vArrow.repositionAndRealign(position, tangentV);
+        this.axes.normalArrow.repositionAndRealign(position, normal);
 
         const result = this.dg.principalDirections(u, v);
         if (!result) return;
         const { k1, k2, d1, d2 } = result;
 
-        this.k1Arrow.repositionAndRealign(position, d1.multiplyScalar(this.scaleFactor));
-        this.k2Arrow.repositionAndRealign(position, d2.multiplyScalar(this.scaleFactor));
+        this.principals.k1Arrow.repositionAndRealign(position, d1.multiplyScalar(this.scaleFactor));
+        this.principals.k2Arrow.repositionAndRealign(position, d2.multiplyScalar(this.scaleFactor));
 
         this.tangentPlane.position.copy(position);
         this.tangentPlane.lookAt(position.clone().add(normal));
         this.tangentPlane.scale.set(this.scaleFactor, this.scaleFactor, 1);
     }
-}
 
+    showAxes = () => this.axes.forEach(arrow => arrow.visible = true);
+    hideAxes = () => this.axes.forEach(arrow => arrow.visible = false);
+    showPrincipals = () => this.principals.forEach(arrow => arrow.visible = true);
+    hidePrincipals = () => this.principals.forEach(arrow => arrow.visible = false);
+}
 
 const surfaceDefinitions = [{
     meta: {name: "Apple", category: Category.NATURE},

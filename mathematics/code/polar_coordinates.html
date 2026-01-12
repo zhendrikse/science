@@ -127,10 +127,12 @@
     const sphereSurface = new Surface(new SphereSurfaceDefinition(radius));
     const tangentFrame = new TangentFrame(sphereSurface, {
         u: params.theta / 180,
-        v: params.phi / 360
+        v: params.phi / 360,
+        showAxes: true,
     });
 
     worldGroup.add(tangentFrame);
+    tangetFrame
 
     // Radial line
     const pos = new THREE.Vector3(0, 0, 0);
