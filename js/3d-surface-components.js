@@ -1016,7 +1016,8 @@ export class TangentFrameView extends THREE.Group {
         v=0.5,
         showAxes=false,
         showPrincipals=false,
-        scale = 0.7 } = {}) {
+        scale = 0.7,
+        color = 0x8888ff} = {}) {
         super();
         this.surface = surface;
         this.dg = new DifferentialGeometry(surface);
@@ -1038,7 +1039,7 @@ export class TangentFrameView extends THREE.Group {
         this.tangentPlane = new THREE.Mesh(
             new THREE.PlaneGeometry(1, 1, 10, 10),
             new THREE.MeshStandardMaterial({
-                color: 0x8888ff,
+                color: color,
                 side: THREE.DoubleSide,
                 transparent: true,
                 opacity: 0.5,
