@@ -73,7 +73,7 @@
     import * as THREE from "three";
     import { ThreeJsUtils, Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-    import { Plot3D, Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification,
+    import { Plot3D, Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification, TangentFrame,
         ViewParameters, ColorMode, ContourType, LiteralStringBasedSurfaceDefinition, SurfaceDefinitions }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
@@ -83,7 +83,7 @@
 
     class ControlsGui {
         constructor(surface, axes, annotations, ring, viewParameters, onSurfaceSpecificationChanged) {
-            this.surface = surface;
+            this.surface = null;
             this.onSurfaceSpecificationChanged = onSurfaceSpecificationChanged;
             this.viewParameters = viewParameters;
             this.surface = surface;
@@ -106,7 +106,34 @@
 
             this.#createAppearanceFolder(controls, axes, annotations);
             this.#createMathFolder(controls);
+            this.updateCurrentSurfaceWith(surface);
         }
+
+        // #createTangentSpaceFolder(folder) {
+        //     const tangentFolder = folder.addFolder("Tangent frame");
+        //     tangentFolder.add(this.viewParameters, 'showTangentFrame')
+        //         .name("Tangent frame")
+        //         .onChange(value => this.surface.toggleWireframe(value));
+        //     tangentFolder.add(params, "theta", 0, 180, 0.1)
+        //         .name("θ (theta)")
+        //         .onChange(value => {
+        //             params.theta = value;
+        //             tangentFrame.update(value / 180, params.phi / 360);
+        //             const pos = new THREE.Vector3(0, 0, 0);
+        //             sphereSurface.definition().sample(value / 180, params.phi / 360, pos);
+        //             radialLine.geometry.setFromPoints([new THREE.Vector3(0, 0, 0), pos]);
+        //         });
+        //
+        //     tangentFolder.add(params, "phi", 0, 360, 0.1)
+        //         .name("φ (phi)")
+        //         .onChange(value => {
+        //             params.phi = value;
+        //             tangentFrame.update(params.theta / 180, value / 360);
+        //             const pos = new THREE.Vector3(0, 0, 0);
+        //             sphereSurface.definition().sample(params.theta / 180, value / 360, pos);
+        //             radialLine.geometry.setFromPoints([new THREE.Vector3(0, 0, 0), pos]);
+        //         });
+        // }
 
         #createContourFolder(folder) {
             const contourFolder = folder.addFolder("Contours");
@@ -389,6 +416,11 @@
     ring.changeActiveCategoryTo(surfaceData.meta.category);
     const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
     ring.onSelectTo(selectedRingSurface);
+
+    // const tangentFrame = new TangentFrame(surfaceInAxes, { showAxes: true });
+    // worldGroup.add(tangentFrame);
+    // tangentFrame.update(0.3, 0.75);
+    // tangentFrame.position.add(surfaceInAxes.group.position);
 
     // Interaction
     const controlsGui = new ControlsGui(surfaceInAxes, axes, annotations, ring, visualizationParameters,
