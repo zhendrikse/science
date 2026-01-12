@@ -273,6 +273,27 @@ export class PrincipalFrame {
     }
 }
 
+/**
+ * matrix = representation of the shape operator S in the basis
+ * of the derivative vectors (Xu, Xv).
+ *
+ * The base = genuine 3D-vectors in ℝ³
+ *
+ * normal = handy for visualization & checks
+ */
+export class ShapeOperator {
+    constructor({
+                    matrix,     // 2×2 matrix in tangent basis
+                    basis,      // { Xu, Xv }
+                    normal
+                }) {
+        this.matrix = matrix;
+        this.basis  = basis;
+        this.normal = normal;
+        Object.freeze(this);
+    }
+}
+
 export class DifferentialGeometry {
     constructor(surface, { eps = 1e-4 } = {}) {
         this.surface = surface;
@@ -281,142 +302,80 @@ export class DifferentialGeometry {
 
     derivatives(u, v) {
         const e = this.eps;
+        const pos = new THREE.Vector3();
+        const sample = (du, dv) => {
+            const p = new THREE.Vector3();
+            this.surface.definition().sample(u + du, v + dv, p);
+            return p;
+        };
 
-        const position   = new THREE.Vector3();
+        const p00 = sample(0, 0),
+            pu1 = sample(+e, 0),
+            pu0 = sample(-e, 0),
+            pv1 = sample(0, +e),
+            pv0 = sample(0, -e),
+            pu1v1 = sample(+e, +e),
+            pu1v0 = sample(+e, -e),
+            pu0v1 = sample(-e, +e),
+            pu0v0 = sample(-e, -e);
 
-        const pu1 = new THREE.Vector3();
-        const pu0 = new THREE.Vector3();
-        const pv1 = new THREE.Vector3();
-        const pv0 = new THREE.Vector3();
-
-        const pu1v1 = new THREE.Vector3();
-        const pu1v0 = new THREE.Vector3();
-        const pu0v1 = new THREE.Vector3();
-        const pu0v0 = new THREE.Vector3();
-
-        // sample
-        this.surface.definition().sample(u, v, position);
-
-        this.surface.definition().sample(u + e, v, pu1);
-        this.surface.definition().sample(u - e, v, pu0);
-        this.surface.definition().sample(u, v + e, pv1);
-        this.surface.definition().sample(u, v - e, pv0);
-
-        this.surface.definition().sample(u + e, v + e, pu1v1);
-        this.surface.definition().sample(u + e, v - e, pu1v0);
-        this.surface.definition().sample(u - e, v + e, pu0v1);
-        this.surface.definition().sample(u - e, v - e, pu0v0);
-
-        // first order derivatives (central difference)
         const Xu = pu1.clone().sub(pu0).multiplyScalar(1 / (2 * e));
         const Xv = pv1.clone().sub(pv0).multiplyScalar(1 / (2 * e));
 
-        // second order derivatives (central difference)
-        const Xuu = pu1.clone()
-            .sub(position.clone().multiplyScalar(2))
-            .add(pu0)
-            .multiplyScalar(1 / (e * e));
-
-        const Xvv = pv1.clone()
-            .sub(position.clone().multiplyScalar(2))
-            .add(pv0)
-            .multiplyScalar(1 / (e * e));
-
-        const Xuv = pu1v1.clone()
-            .sub(pu1v0)
-            .sub(pu0v1)
-            .add(pu0v0)
-            .multiplyScalar(1 / (4 * e * e));
+        const Xuu = pu1.clone().sub(p00.clone().multiplyScalar(2)).add(pu0).multiplyScalar(1 / (e * e));
+        const Xvv = pv1.clone().sub(p00.clone().multiplyScalar(2)).add(pv0).multiplyScalar(1 / (e * e));
+        const Xuv = pu1v1.clone().sub(pu1v0).sub(pu0v1).add(pu0v0).multiplyScalar(1 / (4 * e * e));
 
         return { Xu, Xv, Xuu, Xuv, Xvv };
     }
 
+    fundamentalForms(u, v) {
+        const { Xu, Xv, Xuu, Xuv, Xvv } = this.derivatives(u, v);
+        const N = Xu.clone().cross(Xv).normalize();
+
+        const E = Xu.dot(Xu), F = Xu.dot(Xv), G = Xv.dot(Xv);
+        const e = Xuu.dot(N), f = Xuv.dot(N), g = Xvv.dot(N);
+
+        const detI = E * G - F * F;
+        const invI = detI !== 0 ? [[G / detI, -F / detI], [-F / detI, E / detI]] : null;
+        const S = invI ? [
+            [invI[0][0] * e + invI[0][1] * f, invI[0][0] * f + invI[0][1] * g],
+            [invI[1][0] * e + invI[1][1] * f, invI[1][0] * f + invI[1][1] * g]
+        ] : null;
+
+        return { Xu, Xv, Xuu, Xuv, Xvv, N, E, F, G, e, f, g, detI, invI, S };
+    }
+
     normalMeanGaussian(u, v) {
-        const derivatives = this.derivatives(u, v);
-        const Xu = derivatives.Xu, Xv = derivatives.Xv;
-        const N  = Xu.clone().cross(Xv).normalize();
-
-        // First fundamental form
-        const E = Xu.dot(Xu);
-        const F = Xu.dot(Xv);
-        const G = Xv.dot(Xv);
-
-        // Second fundamental form
-        const e = derivatives.Xuu.dot(N);
-        const f = derivatives.Xuv.dot(N);
-        const g = derivatives.Xvv.dot(N);
-
-        const EG_F2 = E * G - F * F;
-        const H = EG_F2 !== 0  ? (e * G - 2 * f * F + g * E) / (2 * EG_F2) : 0; // Mean curvature
-        const K = EG_F2 !== 0 ? (e * g - f * f) / EG_F2 : 0; // Gaussian curvature
-        return { N, H, K };
+        const f = this.fundamentalForms(u, v);
+        const EG_F2 = f.E * f.G - f.F * f.F;
+        const H = EG_F2 !== 0 ? (f.e * f.G - 2 * f.f * f.F + f.g * f.E) / (2 * EG_F2) : 0;
+        const K = EG_F2 !== 0 ? (f.e * f.g - f.f * f.f) / EG_F2 : 0;
+        return { N: f.N, H, K };
     }
 
     principals(u, v) {
-        const {N, K, H} = this.normalMeanGaussian(u, v);
+        const { H, K } = this.normalMeanGaussian(u, v);
         const disc = Math.max(0, H * H - K);
-        const squareRoot = Math.sqrt(disc);
-        const k1 = H + squareRoot, k2 = H - squareRoot; // Principal curvatures
-        return { k1, k2 };
+        const sqrtDisc = Math.sqrt(disc);
+        return { k1: H + sqrtDisc, k2: H - sqrtDisc };
     }
 
     principalDirections(u, v) {
-        const derivatives = this.derivatives(u, v);
-        const Xu = derivatives.Xu;
-        const Xv = derivatives.Xv;
+        const f = this.fundamentalForms(u, v);
+        if (!f.S) return null;
 
-        const N = Xu.clone().cross(Xv).normalize();
-
-        // First fundamental form
-        const E = Xu.dot(Xu);
-        const F = Xu.dot(Xv);
-        const G = Xv.dot(Xv);
-
-        // Second fundamental form
-        const e = derivatives.Xuu.dot(N);
-        const f = derivatives.Xuv.dot(N);
-        const g = derivatives.Xvv.dot(N);
-
-        // Shape operator S = I^{-1} II
-        const detI = E * G - F * F;
-        if (Math.abs(detI) < 1e-12) return null;
-
-        const invI = [
-            [ G / detI, -F / detI ],
-            [ -F / detI, E / detI ]
-        ];
-
-        const S = [
-            [
-                invI[0][0] * e + invI[0][1] * f,
-                invI[0][0] * f + invI[0][1] * g
-            ],
-            [
-                invI[1][0] * e + invI[1][1] * f,
-                invI[1][0] * f + invI[1][1] * g
-            ]
-        ];
-
-        // eigenvalues
+        const S = f.S;
         const trace = S[0][0] + S[1][1];
-        const det   = S[0][0] * S[1][1] - S[0][1] * S[1][0];
-        const disc  = Math.sqrt(Math.max(0, trace * trace / 4 - det));
+        const det = S[0][0] * S[1][1] - S[0][1] * S[1][0];
+        const disc = Math.sqrt(Math.max(0, trace * trace / 4 - det));
 
-        const k1 = trace / 2 + disc;
-        const k2 = trace / 2 - disc;
+        const k1 = trace / 2 + disc, k2 = trace / 2 - disc;
+        const v1 = Math.abs(S[0][1]) > 1e-6 ? [k1 - S[1][1], S[0][1]] : [1, 0];
+        const v2 = Math.abs(S[0][1]) > 1e-6 ? [k2 - S[1][1], S[0][1]] : [0, 1];
 
-        // eigenvectors in (u,v)
-        const v1 = Math.abs(S[0][1]) > 1e-6
-            ? [ k1 - S[1][1], S[0][1] ]
-            : [ 1, 0 ];
-
-        const v2 = Math.abs(S[0][1]) > 1e-6
-            ? [ k2 - S[1][1], S[0][1] ]
-            : [ 0, 1 ];
-
-        // lift to 3D
-        const d1 = Xu.clone().multiplyScalar(v1[0]).add(Xv.clone().multiplyScalar(v1[1])).normalize();
-        const d2 = Xu.clone().multiplyScalar(v2[0]).add(Xv.clone().multiplyScalar(v2[1])).normalize();
+        const d1 = f.Xu.clone().multiplyScalar(v1[0]).add(f.Xv.clone().multiplyScalar(v1[1])).normalize();
+        const d2 = f.Xu.clone().multiplyScalar(v2[0]).add(f.Xv.clone().multiplyScalar(v2[1])).normalize();
 
         return { k1, k2, d1, d2 };
     }
@@ -424,7 +383,6 @@ export class DifferentialGeometry {
     principalFrame(u, v) {
         const { Xu, Xv } = this.derivatives(u, v);
         const N = Xu.clone().cross(Xv).normalize();
-
         const result = this.principalDirections(u, v);
         if (!result) return null;
 
