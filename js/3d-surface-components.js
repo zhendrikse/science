@@ -1028,15 +1028,17 @@ export class TangentFrame extends THREE.Group {
         this.scaleFactor = scale;
 
         this.axes = { // Arrows in (u, v) directions + normal vector
-            uArrow: new Arrow(ZeroVector, ZeroVector, { color: 0xff0000, visible: showAxes }),
-            vArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00ff00, visible: showAxes }),
-            normalArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00aaff, visible: showAxes })
+            uArrow: new Arrow(ZeroVector, ZeroVector, { color: 0xff0000 }),
+            vArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00ff00 }),
+            normalArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00aaff })
         }
+        showAxes ? this.showAxes() : this.hideAxes();
 
         this.principals = { // Principal direction vectors
-            k1Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xffaa00, visible: showPrincipals }),
-            k2Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xaa00ff, visible: showPrincipals })
+            k1Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xffaa00 }),
+            k2Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xaa00ff })
         }
+        showPrincipals ? this.showPrincipals() : this.hidePrincipals();
 
         this.tangentPlane = new THREE.Mesh(
             new THREE.PlaneGeometry(1, 1, 10, 10),
