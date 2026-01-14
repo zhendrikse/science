@@ -40,9 +40,9 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     // Resizing for mobile devices
-    ThreeJsUtils.resizeRendererToCanvas(moleculeRenderer, moleculeCamera);
+    ThreeJsUtils.resizeRendererToCanvas(renderer, moleculeCamera);
     window.addEventListener('resize', () => {
-        ThreeJsUtils.resizeRendererToCanvas(moleculeRenderer, moleculeCamera);
+        ThreeJsUtils.resizeRendererToCanvas(renderer, moleculeCamera);
     });
 
     const light1 = new THREE.DirectionalLight(0xffffff, 1);
