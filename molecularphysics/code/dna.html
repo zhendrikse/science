@@ -1,8 +1,8 @@
 <script type="importmap">
     {
       "imports": {
-        "three": "https://unpkg.com/three@0.175.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.175.0/examples/jsm/"
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
       }
     }
 </script>
@@ -16,16 +16,17 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.18"></script>
 <div id="gui_container"></div>
-<canvas id="dnaCanvas" width="600" height="600" style="border: none;"></canvas>
+<canvas class="applicationCanvas" id="dnaCanvas" width="600" height="600" style="border: none;"></canvas>
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
     const vector = THREE.Vector3;
     const color = THREE.Color;
 
     const scene = new THREE.Scene();
-    scene.background = new color(0x191919);
+    scene.background = new color(0x131313);
 
     const dnaCanvas = document.getElementById('dnaCanvas');
     dnaCanvas.focus();
@@ -36,6 +37,13 @@
     const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: dnaCanvas} );
     renderer.setSize( dnaCanvas.width, dnaCanvas.height );
     renderer.shadowMap.enabled = true;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Resizing for mobile devices
+    ThreeJsUtils.resizeRendererToCanvas(moleculeRenderer, moleculeCamera);
+    window.addEventListener('resize', () => {
+        ThreeJsUtils.resizeRendererToCanvas(moleculeRenderer, moleculeCamera);
+    });
 
     const light1 = new THREE.DirectionalLight(0xffffff, 1);
     light1.position.set(12, 12, 12);
