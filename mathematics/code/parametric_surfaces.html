@@ -184,10 +184,10 @@
                 .name("Axes labels").onChange(value => annotations.visible = value);
             axesFolder.add(this.viewParameters.axesParameters, 'xyPlane') // intentional misuse of xyPlane for all planes
                 .name("Grid planes").onChange(value => {
-                    value ? axesLayout.showXY() : axesLayout.hideXY();
-                    value ? axesLayout.showXZ() : axesLayout.hideXZ();
-                    value ? axesLayout.showYZ() : axesLayout.hideYZ();
-                });
+                value ? axesLayout.showXY() : axesLayout.hideXY();
+                value ? axesLayout.showXZ() : axesLayout.hideXZ();
+                value ? axesLayout.showYZ() : axesLayout.hideYZ();
+            });
             axesFolder.close();
         }
 
@@ -368,17 +368,19 @@
         visibleRingItems = () => this.surfaces.filter(surface => surface.definition().specification().meta.category === this.activeCategory);
     }
 
-    function displayedSurface(surfaceSpecification, visualizationParameters, axes) {
-        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-        const surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), visualizationParameters);
-        surfaceInAxes.resetTransform();
+    let tangentFrame = null;
+    let currentU = 0.5;
+    let currentV = 0.5;
 
-        const axesBoundingBox = new THREE.Box3();
-        axesBoundingBox.setFromObject(axes);
+    function displayedSurface(parent, surfaceSpecification, visualizationParameters, axes) {
+        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
+        const surfaceInAxes = new StandardSurfaceView(parent, new Surface(surfaceDefinition), visualizationParameters);
+        createTangentFrame(surfaceInAxes);
+
         ThreeJsUtils.fitGroupToBox(
             surfaceInAxes.group,
             surfaceInAxes.boundingBox(),
-            axesBoundingBox,
+            axes.boundingBox(),
             { alignY: "min", padding: 1.1 }
         );
         return surfaceInAxes;
@@ -397,16 +399,19 @@
     axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
 
-    // Surface
+    // Plot3D object
     const plot3D = new Plot3D(canvas, surfacePlotScene, axes);
     const bbox = new THREE.Box3();
     bbox.setFromObject( worldGroup );
     plot3D.fitToBoundingBox(bbox, {padding: 1.2, translationY: -3.0});
 
+    // Surface
+    const surfaceGroup = new THREE.Group();
+    worldGroup.add(surfaceGroup);
     const surfaceData = SurfaceDefinitions[19];
     const visualizationParameters = new ViewParameters({axesParameters: new AxesParameters({axesLabels: false})});
     annotations.visible = visualizationParameters.axesParameters.axesLabels;
-    let surfaceInAxes = displayedSurface(new SurfaceSpecification(surfaceData), visualizationParameters, axes);
+    let surfaceInAxes = displayedSurface(surfaceGroup, new SurfaceSpecification(surfaceData), visualizationParameters, axes);
 
     // Ring
     const boundingBox = surfaceInAxes.boundingBox();
@@ -417,16 +422,70 @@
     const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
     ring.onSelectTo(selectedRingSurface);
 
-    // const tangentFrame = new TangentFrame(surfaceInAxes, { showAxes: true });
-    // worldGroup.add(tangentFrame);
-    // tangentFrame.update(0.3, 0.75);
-    // tangentFrame.position.add(surfaceInAxes.group.position);
+
+
+
+    // Functie om tangent frame aan te maken
+    function createTangentFrame(surface) {
+        if (tangentFrame) {
+            surface.group.remove(tangentFrame);  // verwijder oud frame uit de groep
+            tangentFrame.dispose();              // opruimen van geometrie/material
+        }
+
+        tangentFrame = new TangentFrameView(surface, {
+            u: currentU,
+            v: currentV,
+            showAxes: true,
+            showPrincipals: true,
+            scale: 0.4,
+            color: 0xff000
+        });
+        surface.group.add(tangentFrame);
+    }
+
+    // Functie om tangent frame te updaten als u,v veranderen
+    function updateTangentFrame(u, v) {
+        currentU = u;
+        currentV = v;
+        if (tangentFrame) {
+            tangentFrame.position.set(0, 0, 0);
+            tangentFrame.rotation.set(0, 0, 0);
+            tangentFrame.scale.set(1, 1, 1);
+            // surfaceInAxes.resetTransform();
+            tangentFrame.update(u, v);
+            const boundingBox = new THREE.Box3();
+            boundingBox.setFromObject(tangentFrame);
+            // ThreeJsUtils.fitGroupToBox(
+            //     tangentFrame,
+            //     boundingBox,
+            //     surfaceInAxes.boundingBox(),
+            //     { alignY: "aap", padding: 1.0 }
+            // );
+
+            // ThreeJsUtils.fitGroupToBox(
+            //     surfaceInAxes.group,
+            //     surfaceInAxes.boundingBox(),
+            //     axes.boundingBox(),
+            //     { alignY: "min", padding: 1.1 }
+            // );
+        }
+    }
+
+    // --- Voorbeeld van gebruik ---
+
+    // Bij eerste surface:
+
+    // Als je sliders toevoegt voor u,v:
+    updateTangentFrame(0.6, 0.8); // beweegt het frame zonder het weg te gooien
+    // Als je een nieuw oppervlak selecteert:
+    // createTangentFrame(newSurfaceInAxes); // maakt een nieuw frame op dezelfde u,v
+
 
     // Interaction
     const controlsGui = new ControlsGui(surfaceInAxes, axes, annotations, ring, visualizationParameters,
         (newSpec) => {
             surfaceInAxes.dispose();
-            surfaceInAxes = displayedSurface(newSpec, visualizationParameters, axes);
+            surfaceInAxes = displayedSurface(surfaceGroup, newSpec, visualizationParameters, axes);
             controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
         });
     const raycaster = new THREE.Raycaster();
@@ -447,7 +506,8 @@
         const selectedMesh = hits[0].object;
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         surfaceInAxes.dispose();
-        surfaceInAxes = displayedSurface(selectedRingSurface.definition().specification(), visualizationParameters, axes);
+        const specification = selectedRingSurface.definition().specification();
+        surfaceInAxes = displayedSurface(surfaceGroup, specification, visualizationParameters, axes);
         ring.onSelectTo(selectedRingSurface);
         controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
     });
