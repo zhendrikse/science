@@ -23,8 +23,7 @@
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    import { ThreeJsUtils, Arrow } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-    const vector = THREE.Vector3;
+    import { ThreeJsUtils, Arrow, vector } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
     console.clear( );
 
@@ -85,34 +84,22 @@
             this.render();
         }
 
-        position() {
-            return this._position.clone();
-        }
+        position = () => this._position.clone();
 
-        velocity() {
-            return this._velocity.clone();
-        }
+        velocity = () => this._velocity.clone();
 
-        startle() {
-            this._velocity = new vector().random().multiplyScalar(2 * speed);
-        }
+        startle = () => this._velocity = new vector().random().multiplyScalar(2 * speed);
 
         render() {
             this._bird.moveTo(this.position());
             this._bird.updateAxis(this.velocity().normalize().multiplyScalar(size));
         }
 
-        positionVectorTo(other) {
-            return this._bird.positionVectorTo(other._bird);
-        }
+        positionVectorTo = (other) => this._bird.positionVectorTo(other._bird);
 
-        distanceToSquared(other) {
-            return this._bird.distanceToSquared(other._bird);
-        }
+        distanceToSquared = (other) => this._bird.distanceToSquared(other._bird);
 
-        distanceTo(other) {
-            return this._bird.distanceTo(other._bird);
-        }
+        distanceTo = (other) => this._bird.distanceTo(other._bird);
     }
 
     class Flock {
