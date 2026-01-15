@@ -73,7 +73,7 @@
         (Math.random() - 0.5) * 0.5   // ±0.25 in Z
     );
     const ball = new Ball(scene, ballPosition, 10);
-    slinky.updateAxis(ball.position());
+    slinky.updateAxis(ball.position().sub(suspensionPoint.clone()));
 
     // --- Mouse click & drag ---
     let dragging = false;
