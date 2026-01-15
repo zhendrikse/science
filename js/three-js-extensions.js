@@ -383,21 +383,20 @@ export class Ball {
 
 // --- Curve for slinky spring ---
 class SpringCurve extends THREE.Curve {
-    constructor(start, end, coils=25, radius=0.4, waveAmp=0.05, wavePhase=0){
+    constructor(position, axis, coils=25, radius=0.4, waveAmp=0.05, wavePhase=0){
         super();
-        this.start = start.clone();
-        this.end = end.clone();
+        this.start = position.clone();
         this.coils = coils;
+        this.axis = axis;
         this.radius = radius;
         this.waveAmp = waveAmp;
         this.wavePhase = wavePhase;
     }
 
-    getPoint(t){
-        const axis = new THREE.Vector3().subVectors(this.end, this.start);
-        const length = axis.length();
-        axis.normalize();
+    updateAxis = (newAxis) => this.axis.copy(newAxis);
 
+    getPoint(t){
+        const length = this.axis.length();
         const angle = t * this.coils * Math.PI * 2;
         const x = Math.cos(angle) * this.radius;
         const y = Math.sin(angle) * this.radius;
@@ -407,17 +406,16 @@ class SpringCurve extends THREE.Curve {
 
         const point = new THREE.Vector3(x, y, z);
         const quaternion = new THREE.Quaternion();
-        quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), axis);
+        quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.axis.clone().normalize());
         point.applyQuaternion(quaternion);
 
         return point.add(this.start);
     }
 }
 
-export class SlinkySpring {
-    constructor(parent, start, end, {
+export class Spring {
+    constructor(parent, position, axis, {
         k=200,
-        length=15,
         color=0x00ffff,
         coils=30,
         longitudinalOscillation=false,
@@ -428,13 +426,14 @@ export class SlinkySpring {
     } = {}) {
         this.longtudinalOscillation = longitudinalOscillation;
         this.radius = radius;
-        this.curve = new SpringCurve(start, end, coils, radius);
+        this.curve = new SpringCurve(position, axis, coils, radius);
         this.tubularSegments = tubularSegments;
         this.radialSegments = radialSegments;
         this.coilRadius = coilRadius;
-        this.length = length;
+        this.restLength = axis.length();
         this.k = k;
-        this.startPosition = start;
+        this.position = position;
+        this.axis = axis;
 
         this.geometry = new THREE.TubeGeometry(this.curve, tubularSegments, coilRadius, radialSegments, false);
         const material = new THREE.MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
@@ -449,25 +448,27 @@ export class SlinkySpring {
         );
     }
 
-    updateTo(newPosition, time=0) {
+    updateAxis(newAxis) {
+        this.axis = newAxis;
+        this.curve.updateAxis(this.axis);
         this.longtudinalOscillation ?
-            this.#updateWithLongitudinal(newPosition, time) :
-            this.#updateWithoutLongitudinal(newPosition);
+            this.#updateWithLongitudinal() :
+            this.#updateWithoutLongitudinal();
     }
 
-    #updateWithoutLongitudinal(newPosition) {
-        this.curve.end.copy(newPosition);
+    update = (time) => this.curve.wavePhase = time * 4;
+
+    #updateWithoutLongitudinal() {
         this.#regenerateTube();
     }
 
-    #updateWithLongitudinal(newPosition, time) {
-        this.curve.end.copy(newPosition);
+    #updateWithLongitudinal(time) {
         // Longitudinal wave amplitude coupled to spring elongation
-        const displacement = newPosition.y - this.curve.start.y;
+        const displacement = this.axis.y - this.curve.start.y;
         this.curve.waveAmp = Math.min(Math.abs(displacement) / 10, 0.3); // max amplitude 0.3
-        this.curve.wavePhase = time * 4;
         this.#regenerateTube();
     }
 
-    extensionGiven = (positionY) => positionY - (this.startPosition.y - this.length);
+    force = () => -this.k * this.displacement();
+    displacement = () => this.restLength - this.axis.length();
 }
