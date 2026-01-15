@@ -333,7 +333,7 @@ export class Arrow extends THREE.Group {
             newAxis.clone().normalize()
         );
         this.setRotationFromQuaternion(quaternion);
-        this.scale.set(1, newAxis.length() / this.baseLength, 1);
+        this.scale.set(1, newAxis.length() / this.shaftLength, 1);
     }
 
     moveTo(newPositionVector) {
