@@ -301,10 +301,9 @@ export class Arrow extends THREE.Group {
         super();
 
         this.headLength = headLength;
-        const shaftLength = axis.length() - headLength;
 
         this.shaft = new THREE.Mesh(
-            new THREE.CylinderGeometry(shaftRadius, shaftRadius, shaftLength, 16),
+            new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1, 16),
             new THREE.MeshStandardMaterial({ color })
         );
 
@@ -312,9 +311,6 @@ export class Arrow extends THREE.Group {
             new THREE.ConeGeometry(headRadius, headLength, 16),
             new THREE.MeshStandardMaterial({ color })
         );
-
-        this.shaft.position.y = shaftLength *.5;
-        this.head.position.y = shaftLength + headLength * .5;
 
         this.add(this.shaft, this.head);
 
@@ -324,9 +320,8 @@ export class Arrow extends THREE.Group {
     }
 
     updateAxis(newAxis) {
-        if (newAxis.length() < 1e-6) {
+        if (newAxis.length() < 1e-6)
             return;
-        }
 
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
             UnitVectorE2,
