@@ -371,14 +371,14 @@ export class Ball {
         this.sphere.position.addScaledVector(this.velocity, dt);
     }
 
-    damp = () => this.velocity.multiplyScalar(0.998);
+    damp = (dampingFactor=0.998) => this.velocity.multiplyScalar(dampingFactor);
     position = () => this.sphere.position.clone();
     shiftTo(newPosition) {
         this.sphere.position.copy(newPosition);
         this.velocity = new THREE.Vector3(0, 0, 0);
     }
 
-    kineticEnergy = () => 0.5 * ball.mass * this.velocity.y * this.velocity.y;
+    kineticEnergy = () => 0.5 * this.mass * this.velocity.y * this.velocity.y;
 }
 
 // --- Curve for slinky spring ---
@@ -439,7 +439,7 @@ export class SlinkySpring {
         this.geometry = new THREE.TubeGeometry(this.curve, tubularSegments, coilRadius, radialSegments, false);
         const material = new THREE.MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
         this.spring = new THREE.Mesh(this.geometry, material);
-        scene.add(this.spring);
+        parent.add(this.spring);
     }
 
     #regenerateTube() {
