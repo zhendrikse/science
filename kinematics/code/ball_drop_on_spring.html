@@ -64,7 +64,7 @@
     // Spring
     const suspensionPoint = new THREE.Vector3(0, 15, 0);
     const axis = new THREE.Vector3(0, -10, 0);
-    const slinky = new SlinkySpring(scene, suspensionPoint, axis, {k:200, length:15, longitudinalOscillation: true});
+    const slinky = new Spring(scene, suspensionPoint, axis, {k:200, length:15, longitudinalOscillation: true});
 
     // Ball
     const ballPosition = new THREE.Vector3(
