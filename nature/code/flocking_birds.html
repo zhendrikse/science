@@ -10,7 +10,7 @@
 
 <canvas class="applicationCanvas" id="birdsCanvas"></canvas><br/>
 <p style="clear: both;"></p>
-<label for="randomWeightSlider">Random behavior: <input type="range" min="0" max="50" value=".1" class="slider" id="randomWeightSlider"/></label>
+<label for="randomWeightSlider">Random behavior: <input type="range" min="0" max="50" value="5" class="slider" id="randomWeightSlider"/></label>
 <p style="clear: both;"></p>
 <label for="centerWeightSlider">Centering behavior: <input type="range" min="0" max="20" value="1" class="slider" id="centerWeightSlider"/></label>
 <p style="clear: both;"></p>
@@ -103,7 +103,7 @@
     }
 
     class Flock {
-        constructor(bird_count, random_weight=.1, center_weight=0.1, direction_weight=0.05, avoid_weight=0.5) {
+        constructor(bird_count, random_weight=5, center_weight=0.1, direction_weight=0.05, avoid_weight=0.5) {
             this._birds = []
             this._bird_count = bird_count
             this._random_weight = random_weight
