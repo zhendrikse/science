@@ -1,15 +1,16 @@
 import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 
-export const ZeroVector = new THREE.Vector3();
-export const UnitVectorE1 = new THREE.Vector3(1, 0, 0);
-export const UnitVectorE2 = new THREE.Vector3(0, 1, 0);
-export const UnitVectorE3 = new THREE.Vector3(0, 0, 1);
+export const vector = THREE.Vector3;
+export const ZeroVector = new vector();
+export const UnitVectorE1 = new vector(1, 0, 0);
+export const UnitVectorE2 = new vector(0, 1, 0);
+export const UnitVectorE3 = new vector(0, 0, 1);
 
 export class ThreeJsUtils {
     static scaleBox3(box, factor) {
-        const center = new THREE.Vector3();
-        const size = new THREE.Vector3();
+        const center = new vector();
+        const size = new vector();
 
         box.getCenter(center);
         box.getSize(size);
@@ -28,10 +29,10 @@ export class ThreeJsUtils {
         targetBox,
         { alignY = "min", padding = 1.0 } = {}
     ) {
-        const sourceSize = new THREE.Vector3();
-        const targetSize = new THREE.Vector3();
-        const sourceCenter = new THREE.Vector3();
-        const targetCenter = new THREE.Vector3();
+        const sourceSize = new vector();
+        const targetSize = new vector();
+        const sourceCenter = new vector();
+        const targetCenter = new vector();
 
         sourceBox.getSize(sourceSize);
         targetBox.getSize(targetSize);
@@ -85,7 +86,7 @@ export class Axes extends THREE.Group {
     }
 
     static toCartesian(radius, theta, phi) {
-        return new THREE.Vector3(
+        return new vector(
             radius * Math.sin(theta) * Math.cos(phi),
             radius * Math.sin(theta) * Math.sin(phi),
             radius * Math.cos(theta)
@@ -260,14 +261,14 @@ export class ClassicalAnnotations extends AxesAnnotation {
         const step = size / divisions;
         for (let v = -size * .5 ; v <= size * .5; v += step)
             this.add(
-                this.label(v.toFixed(1), new THREE.Vector3(v, 0, 0.525 * size)),
-                this.label(v.toFixed(1), new THREE.Vector3(0, v, 0)),
-                this.label(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v)));
+                this.label(v.toFixed(1), new vector(v, 0, 0.525 * size)),
+                this.label(v.toFixed(1), new vector(0, v, 0)),
+                this.label(v.toFixed(1), new vector(0.525 * size, 0, v)));
 
         this.add(
-            this.label("X", new THREE.Vector3(0.55 * size, 0, 0), "red"),
-            this.label("Y", new THREE.Vector3(0, 0.55 * size, 0), "green"),
-            this.label("Z", new THREE.Vector3(0, 0, 0.55 * size), "blue"));
+            this.label("X", new vector(0.55 * size, 0, 0), "red"),
+            this.label("Y", new vector(0, 0.55 * size, 0), "green"),
+            this.label("Z", new vector(0, 0, 0.55 * size), "blue"));
     }
 }
 
@@ -278,14 +279,14 @@ export class MatlabAnnotations extends AxesAnnotation {
         const step = (2 * size) / divisions;
         for (let v = 0 ; v <= size; v += step)
             this.add(
-                this.label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, 0.525 * size)),
-                this.label(v.toFixed(1), new THREE.Vector3(-0.525 * size, v, 0.5 * size)),
-                this.label(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v - 0.5 * size)));
+                this.label(v.toFixed(1), new vector(v - 0.5 * size, 0, 0.525 * size)),
+                this.label(v.toFixed(1), new vector(-0.525 * size, v, 0.5 * size)),
+                this.label(v.toFixed(1), new vector(0.525 * size, 0, v - 0.5 * size)));
 
         this.add(
-            this.label("X", new THREE.Vector3(0.6 * size, 0, -0.5 * size), "red"),
-            this.label("Y", new THREE.Vector3(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
-            this.label("Z", new THREE.Vector3(-0.5 * size, 0, 0.6 * size), "blue"));
+            this.label("X", new vector(0.6 * size, 0, -0.5 * size), "red"),
+            this.label("Y", new vector(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
+            this.label("Z", new vector(-0.5 * size, 0, 0.6 * size), "blue"));
     }
 }
 
@@ -353,7 +354,7 @@ export class Ball {
         this.sphere.position.copy(position);
         this.sphere.castShadow = true;
         this.mass = mass;
-        this.velocity = new THREE.Vector3(0, 0, 0);
+        this.velocity = new vector(0, 0, 0);
         parent.add(this.sphere);
     }
 
@@ -373,7 +374,7 @@ export class Ball {
     position = () => this.sphere.position.clone();
     shiftTo(newPosition) {
         this.sphere.position.copy(newPosition);
-        this.velocity = new THREE.Vector3(0, 0, 0);
+        this.velocity = new vector(0, 0, 0);
     }
 
     kineticEnergy = () => 0.5 * this.mass * this.velocity.y * this.velocity.y;
@@ -402,9 +403,9 @@ class SpringCurve extends THREE.Curve {
         // Longitudinal wave across spring
         const z = t * length + this.waveAmp * Math.sin(Math.PI * t) * Math.sin(2 * Math.PI * t * 3 - this.wavePhase);
 
-        const point = new THREE.Vector3(x, y, z);
+        const point = new vector(x, y, z);
         const quaternion = new THREE.Quaternion();
-        quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.axis.clone().normalize());
+        quaternion.setFromUnitVectors(new vector(0, 0, 1), this.axis.clone().normalize());
         point.applyQuaternion(quaternion);
 
         return point.add(this.start);
