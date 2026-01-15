@@ -23,7 +23,7 @@
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { ThreeJsUtils, Arrow } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     const vector = THREE.Vector3;
 
     console.clear( );
@@ -52,8 +52,8 @@
     // controls.enableDamping = true;
     // controls.autoRotate = true;
 
-    // const ambientLight = new THREE.AmbientLight( 'white', 1 );
-    // scene.add( ambientLight );
+    const ambientLight = new THREE.AmbientLight( 'white', 1 );
+    scene.add( ambientLight );
 
     const light = new THREE.DirectionalLight( 'white', 1 );
     light.position.set( 50, 50, 50 );
@@ -65,68 +65,18 @@
     const threshold = (5 * size) ** 2
     const dt = 0.02;
 
-    //
-    // Class definitions
-    //
-    class Arrow {
-        constructor(pos, axis, thickness=0.15, color=THREE.Color.white) {
-            const ARROW_BODY = new THREE.CylinderGeometry( 1, 1, 1, 12 )
-                .rotateX( Math.PI/2)
-                .translate( 0, 0, 0.5 );
-
-            const ARROW_HEAD = new THREE.ConeGeometry( 1, 1, 12 )
-                .rotateX( Math.PI/2)
-                .translate( 0, 0, -0.5 );
-
-            const material = new THREE.MeshLambertMaterial({color: color});
-
-            const length = axis.length();
-
-            this.body = new THREE.Mesh(ARROW_BODY, material);
-            this.body.scale.set(thickness, thickness, length - 10 * thickness);
-
-            this.head = new THREE.Mesh(ARROW_HEAD, material);
-            this.head.position.set(0, 0, length);
-            this.head.scale.set(3 * thickness, 3 * thickness, 10 * thickness);
-
-            this.arrow = new THREE.Group();
-            this.arrow.position.copy(pos);
-            this.arrow.lookAt(pos.x + axis.x, pos.y + axis.y, pos.z + axis.z);
-            this.arrow.add(this.body, this.head);
-
-            this.thickness = thickness;
-            scene.add(this.arrow);
-        }
-
-        newAxisIs(axis) {
-            const length = axis.length();
-
-            this.body.scale.set(this.thickness, this.thickness, length - 10 * this.thickness);
-
-            this.head.position.set(0, 0, length);
-
-            this.arrow.lookAt(this.arrow.position.x + axis.x, this.arrow.position.y + axis.y, this.arrow.position.z + axis.z);
-        }
-
-        moveTo(newPositionVector) {
-            this.arrow.position.copy(newPositionVector);
-        }
-
-        positionVectorTo(other) {
-            return new vector().copy(other.arrow.position).sub(this.arrow.position);
-        }
-
-        distanceToSquared(other) {
-            return this.arrow.position.distanceToSquared(other.arrow.position);
-        }
-    }
-
     class Bird {
         constructor(velocity, initialPhysicalFlockRadius=3) {
             const pos = new vector().random().multiplyScalar(initialPhysicalFlockRadius);
             this._position = pos;
             this._velocity = velocity;
-            this._bird = new Arrow(pos, this.velocity().normalize().multiplyScalar(speed), .045 * size, new THREE.Color(.1, .1, .1));
+            this._bird = new Arrow(pos, this.velocity().normalize().multiplyScalar(speed * .2), {
+                shaftRadius: 0.05 * size,
+                headRadius: .2 * size,
+                headLength: 0.5 * size,
+                color: new THREE.Color(1, 1, .1)
+            });
+            scene.add(this._bird);
         }
 
         update(acceleration, dt) {
@@ -136,11 +86,11 @@
         }
 
         position() {
-            return new vector().copy(this._position);
+            return this._position.clone();
         }
 
         velocity() {
-            return new vector().copy(this._velocity);
+            return this._velocity.clone();
         }
 
         startle() {
@@ -149,7 +99,7 @@
 
         render() {
             this._bird.moveTo(this.position());
-            this._bird.newAxisIs(this.velocity().normalize().multiplyScalar(size));
+            this._bird.updateAxis(this.velocity().normalize().multiplyScalar(size));
         }
 
         positionVectorTo(other) {

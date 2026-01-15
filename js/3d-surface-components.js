@@ -1062,30 +1062,20 @@ export class TangentFrameView extends THREE.Group {
 
         const s = this.scaleFactor;
 
-        this.axes.uArrow.repositionAndRealign(
-            frame.position,
-            frame.d1.clone().multiplyScalar(this.scaleFactor)
-        );
+        this.axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor));
+        this.axes.uArrow.moveTo(frame.position);
 
-        this.axes.vArrow.repositionAndRealign(
-            frame.position,
-            frame.d2.clone().multiplyScalar(this.scaleFactor)
-        );
+        this.axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor));
+        this.axes.vArrow.moveTo(frame.position);
 
-        this.axes.normalArrow.repositionAndRealign(
-            frame.position,
-            frame.normal.clone().multiplyScalar(this.scaleFactor)
-        );
+        this.axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this.scaleFactor));
+        this.axes.normalArrow.moveTo(frame.position);
 
-        this.principals.k1Arrow.repositionAndRealign(
-            frame.position,
-            frame.d1.clone().multiplyScalar(this.scaleFactor)
-        );
+        this.principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor));
+        this.principals.k1Arrow.moveTo(frame.position);
 
-        this.principals.k2Arrow.repositionAndRealign(
-            frame.position,
-            frame.d2.clone().multiplyScalar(this.scaleFactor)
-        );
+        this.principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor));
+        this.principals.k2Arrow.moveTo(frame.position);
 
         this.tangentPlane.position.copy(frame.position);
         this.tangentPlane.lookAt(frame.position.clone().add(frame.normal));

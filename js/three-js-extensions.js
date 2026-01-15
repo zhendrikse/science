@@ -290,8 +290,7 @@ export class MatlabAnnotations extends AxesAnnotation {
 }
 
 export class Arrow extends THREE.Group {
-    constructor(origin, direction, {
-        length = 0.6,
+    constructor(origin, axis, {
         color = 0xff0000,
         shaftRadius = 0.03,
         headRadius = 0.08,
@@ -300,8 +299,8 @@ export class Arrow extends THREE.Group {
     } = {}) {
         super();
 
-        this.length = length;
-        const shaftLength = length - headLength;
+        this.axis = axis;
+        const shaftLength = axis.length() - headLength;
 
         this.shaft = new THREE.Mesh(
             new THREE.CylinderGeometry(shaftRadius, shaftRadius, shaftLength, 16),
@@ -313,37 +312,36 @@ export class Arrow extends THREE.Group {
             new THREE.MeshStandardMaterial({ color })
         );
 
-        this.shaft.position.y = shaftLength / 2;
-        this.head.position.y = shaftLength + headLength / 2;
+        this.shaft.position.y = shaftLength *.5;
+        this.head.position.y = shaftLength + headLength * .5;
 
         this.add(this.shaft, this.head);
 
         this.position.copy(origin);
-        this.setPositionTo(direction);
+        this.updateAxis(axis);
         this.visible = visible;
     }
 
-    repositionAndRealign(position, direction) {
-        this.setPositionTo(position);
-        this.setDirectionIn(direction);
-    }
-
-    setDirectionIn(newDirection) {
-        const length = newDirection.length();
+    updateAxis(newAxis) {
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
             UnitVectorE2,
-            newDirection.clone().normalize()
+            newAxis.clone().normalize()
         );
         this.setRotationFromQuaternion(quaternion);
-        this.scale.set(1, length / this.length, 1);
+        this.scale.set(1, newAxis.length() / this.axis.length(), 1);
+        this.axis = newAxis;
+    }
+
+    moveTo(newPositionVector) {
+        this.position.copy(newPositionVector);
+    }
+
+    positionVectorTo(other) {
+        return new vector().copy(other.position).sub(this.position);
     }
 
     distanceToSquared(other) {
         return this.position.distanceToSquared(other.position);
-    }
-
-    setPositionTo(newPosition) {
-        this.position.copy(newPosition);
     }
 }
 
