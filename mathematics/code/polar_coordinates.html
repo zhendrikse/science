@@ -46,7 +46,7 @@
     const radius = 2;
     const params = {
         theta: 45,
-        phi: 90,
+        phi: 0,
         axesParameters: new AxesParameters({xyPlane: false, yzPlane: false, axesLabels: false})
     };
 
@@ -128,6 +128,7 @@
     const tangentFrame = new TangentFrameView(sphereSurface, {
         u: params.theta / 180,
         v: params.phi / 360,
+        color: "#ff0",
         showAxes: true,
     });
     worldGroup.add(tangentFrame);
