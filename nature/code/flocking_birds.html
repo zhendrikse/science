@@ -70,9 +70,6 @@
             this._position = pos;
             this._velocity = velocity;
             this._bird = new Arrow(pos, this.velocity().normalize().multiplyScalar(speed * .2), {
-                shaftRadius: 0.05 * size,
-                headRadius: .2 * size,
-                headLength: 0.5 * size,
                 color: new THREE.Color(1, 1, .1)
             });
             scene.add(this._bird);
@@ -92,7 +89,7 @@
 
         render() {
             this._bird.moveTo(this.position());
-            this._bird.updateAxis(this.velocity().normalize().multiplyScalar(size));
+            this._bird.updateAxis(this.velocity().normalize().multiplyScalar(size * .2));
         }
 
         positionVectorTo = (other) => this._bird.positionVectorTo(other._bird);

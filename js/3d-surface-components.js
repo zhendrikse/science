@@ -1,9 +1,8 @@
 import * as THREE from "three";
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
-import {ThreeJsUtils, AxesParameters, Arrow, ZeroVector }
+import {ThreeJsUtils, AxesParameters, Arrow, Vector, ZeroVector }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
-import {Vector} from "./three-js-extensions";
 
 export const Category = Object.freeze({
     BASIC: "Basic",
@@ -221,7 +220,7 @@ export class CurvatureContoursView extends SurfaceView {
                 const {N, K, H} = curvature.normalMeanGaussian(u, v);
                 if (Math.abs(H) <= threshold) continue;
 
-                const point = new THREE.Vector3();
+                const point = new Vector();
                 this.surface.definition().sample()(u, v, point);
                 points.push(point);
             }
@@ -303,11 +302,10 @@ export class DifferentialGeometry {
 
     derivatives(u, v) {
         const e = this.eps;
-        const pos = new THREE.Vector3();
         const sample = (du, dv) => {
-            const p = new THREE.Vector3();
-            this.surface.definition().sample(u + du, v + dv, p);
-            return p;
+            const position = new Vector();
+            this.surface.definition().sample(u + du, v + dv, position);
+            return position;
         };
 
         const p00 = sample(0, 0),
@@ -387,7 +385,7 @@ export class DifferentialGeometry {
         const result = this.principalDirections(u, v);
         if (!result) return null;
 
-        const position = new THREE.Vector3();
+        const position = new Vector();
         this.surface.definition().sample(u, v, position);
 
         return new PrincipalFrame({
@@ -527,7 +525,7 @@ export class IsoparametricContoursView extends SurfaceView {
                   color = 0xffffff
               } = {}) {
         const material = new THREE.LineBasicMaterial({ color: color, transparent: true, depthWrite: true, depthTest: true });
-        const target = new THREE.Vector3();
+        const target = new Vector();
 
         // u = constant, v varies
         for (let i = 0; i <= uCount; i++) {
@@ -971,8 +969,8 @@ export class Plot3D {
     }
 
     #calculateCenter(boundingBox) {
-        const size = new THREE.Vector3();
-        let center = new THREE.Vector3();
+        const size = new Vector();
+        let center = new Vector();
         boundingBox.getSize(size);
         boundingBox.getCenter(center);
         return {center, size};
@@ -982,7 +980,7 @@ export class Plot3D {
         padding = 1.5,
         translationY = 0,
         minDistance = 2,
-        viewDirection = new THREE.Vector3(1, 1, 1)
+        viewDirection = new Vector(1, 1, 1)
     } = {}) {
         const {center, size} = this.#calculateCenter(boundingBox);
 
@@ -994,7 +992,7 @@ export class Plot3D {
 
         const direction = viewDirection.clone().normalize();
         this.camera.position
-            .copy(new THREE.Vector3(center.x, center.y + translationY, center.z))
+            .copy(new Vector(center.x, center.y + translationY, center.z))
             .addScaledVector(direction, distance);
         this.camera.near = distance / 100;
         this.camera.far  = distance * 10;
