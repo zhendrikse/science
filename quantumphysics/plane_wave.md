@@ -4,11 +4,9 @@
 <div class="header_line"><br/></div>
 
 ### What are you looking at?
-<div class="header_line"><br/></div>
 
 This animation shows a one-dimensional **complex plane wave**,
-a fundamental object in wave physics and quantum mechanics.
-
+a fundamental object in wave physics and quantum mechanics.<br/>
 Mathematically, the wave is described by
 
 $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
@@ -22,8 +20,8 @@ where
 Each arrow represents the complex value of the wave function at a fixed position $x$.
 The arrow rotates in the complex plane as time evolves:
 
-* **z-direction**: real part of $\psi$
-* **y-direction**: imaginary part of $\psi$
+- **z-direction**: real part of $\psi$
+- **y-direction**: imaginary part of $\psi$
 
 The **length of the arrows is constant**, showing that the magnitude $|\psi|$ 
 of a plane wave does not change in space or time.
@@ -36,68 +34,9 @@ and the role of $k$ and $\omega$.
 
 <p style="clear: both;"></p>
 
-&#x2022; From <a href="https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247">Visualizing Quantum Mechanics with Python</a><br/>
-&#x2022; Ported to JavaScript by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a><br/>
-&#x2022; The motion and x-axis represent the parameters $t$ and $x$ respectively<br/>
-&#x2022; The colors represent the wave number $k$
-
-
-### Complex Plane Waves in Quantum Mechanics
-<div class="header_line"><br/></div>
-
-In quantum mechanics, the state of a free particle with definite momentum is described by a **plane wave**
-
-$$
-\psi(x,t) = A  e^{i(kx - \omega t)}.
-$$
-
-This visualization shows the wave function as a **geometric object** rather than a real-valued curve.
-
-At each position $x$:
-
-* the arrow represents the **complex value** of $\psi(x,t)$
-* the arrow rotates in the complex plane with angular frequency $\omega$
-* the spatial phase advance is controlled by the wave number $k$
-
-The real and imaginary parts are shown along orthogonal axes.
-The **constant arrow length** illustrates that
-
-$$
-|\psi(x,t)|^2 = |A|^2
-$$
-
-is uniform in space and time.
-
-This emphasizes an important quantum-mechanical point:
-
-> A plane wave does **not** represent a localized particle, but a state with definite momentum and completely delocalized position.
-
-The animation separates:
-
-* **phase evolution** (rotation of arrows)
-* from **probability density** (constant magnitude)
-
-which is often obscured in standard textbook plots.
-
-
-### Concise derivation of the Schr&#246;dinger equation
-<div class="header_line"><br/></div>
-
-According to <a href="https://en.wikipedia.org/wiki/Matter_wave">De Broglie</a> we have:
-
-$$p = \dfrac{h}{\lambda} = \dfrac{h}{2\pi} \dfrac{2\pi}{\lambda} = \hbar k \Rightarrow \hbar k = \hbar \dfrac{\partial}{\partial x} \psi(x,t) = p \psi(x, t) \Rightarrow p = \hbar \dfrac{\partial}{\partial x}$$
-
-The Kinetic energy can be expressed as:
-
-$$K = \dfrac{p^2}{2m} = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \psi(x,t)$$
-
-The total energy is given by the <a href="https://en.wikipedia.org/wiki/Planck_relation">Planck-Einstein relation</a>:
-
-$$E = hf = \dfrac{h}{2\pi}\dfrac{2\pi}{T} = \hbar \omega \Rightarrow -i\hbar\dfrac{\partial}{\partial t} \psi(x,t) = E \psi(x,t) \Rightarrow E = -i\hbar\dfrac{\partial}{\partial t}$$
-
-From this we arrive at the <a href="https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation">Schr&#246;dinger equation</a>:
-
-$$(KE + PE)\Psi(x,,t) = E\Psi(x,t) = -i\hbar \dfrac{\partial}{\partial t}\Psi(x, t) = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \Psi(x,t) + V(x)\Psi(x,t)$$
+⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
+🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [plane_wave.html](https://github.com/zhendrikse/science/blob/main/quantumphysics/code/plane_wave.html)<br/>
+👉 A [VPython](https://www.vpython.org/) version is also available as [scalar_plot.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/plane_wave.py).
 
 
 ### Guided Exploration
@@ -172,6 +111,64 @@ A plane wave is not normalizable.
 
 Predict what would happen if **two plane waves with slightly different (k)** were added together.
 What new structure would you expect to see?
+
+
+### Complex Plane Waves in Quantum Mechanics
+<div class="header_line"><br/></div>
+
+In quantum mechanics, the state of a free particle with definite momentum is described by a **plane wave**
+
+$$
+\psi(x,t) = A  e^{i(kx - \omega t)}.
+$$
+
+This visualization shows the wave function as a **geometric object** rather than a real-valued curve.
+
+At each position $x$:
+
+* the arrow represents the **complex value** of $\psi(x,t)$
+* the arrow rotates in the complex plane with angular frequency $\omega$
+* the spatial phase advance is controlled by the wave number $k$
+
+The real and imaginary parts are shown along orthogonal axes.
+The **constant arrow length** illustrates that
+
+$$
+|\psi(x,t)|^2 = |A|^2
+$$
+
+is uniform in space and time.
+
+This emphasizes an important quantum-mechanical point:
+
+> A plane wave does **not** represent a localized particle, but a state with definite momentum and completely delocalized position.
+
+The animation separates:
+
+* **phase evolution** (rotation of arrows)
+* from **probability density** (constant magnitude)
+
+which is often obscured in standard textbook plots.
+
+
+### Concise derivation of the Schr&#246;dinger equation
+<div class="header_line"><br/></div>
+
+According to <a href="https://en.wikipedia.org/wiki/Matter_wave">De Broglie</a> we have:
+
+$$p = \dfrac{h}{\lambda} = \dfrac{h}{2\pi} \dfrac{2\pi}{\lambda} = \hbar k \Rightarrow \hbar k = \hbar \dfrac{\partial}{\partial x} \psi(x,t) = p \psi(x, t) \Rightarrow p = \hbar \dfrac{\partial}{\partial x}$$
+
+The Kinetic energy can be expressed as:
+
+$$K = \dfrac{p^2}{2m} = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \psi(x,t)$$
+
+The total energy is given by the <a href="https://en.wikipedia.org/wiki/Planck_relation">Planck-Einstein relation</a>:
+
+$$E = hf = \dfrac{h}{2\pi}\dfrac{2\pi}{T} = \hbar \omega \Rightarrow -i\hbar\dfrac{\partial}{\partial t} \psi(x,t) = E \psi(x,t) \Rightarrow E = -i\hbar\dfrac{\partial}{\partial t}$$
+
+From this we arrive at the <a href="https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation">Schr&#246;dinger equation</a>:
+
+$$(KE + PE)\Psi(x,,t) = E\Psi(x,t) = -i\hbar \dfrac{\partial}{\partial t}\Psi(x, t) = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \Psi(x,t) + V(x)\Psi(x,t)$$
 
 ---
 
