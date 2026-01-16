@@ -6,17 +6,11 @@
       }
     }
 </script>
-<style>
-    #gui_container{
-        position: absolute;
-    }
-    #gui{
-        transform:translate(5px, 5px);
-    }
-</style>
+
 <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.18"></script>
-<div id="gui_container"></div>
 <canvas class="applicationCanvas" id="dnaCanvas"></canvas>
+<div class="gui-container" id="gui_container"></div>
+
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
