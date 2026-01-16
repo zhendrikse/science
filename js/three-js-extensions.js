@@ -262,13 +262,14 @@ export class ClassicalAnnotations extends AxesAnnotation {
         for (let v = -size * .5 ; v <= size * .5; v += step)
             this.add(
                 this.label(v.toFixed(1), new Vector(v, 0, 0.525 * size)),
-                this.label(v.toFixed(1), new Vector(0, v, 0)),
                 this.label(v.toFixed(1), new Vector(0.525 * size, 0, v)));
+        for (let v = 0 ; v <= size * .5; v += step)
+            this.add(this.label(v.toFixed(1), new Vector(0, v, 0)));
 
         this.add(
-            this.label("X", new Vector(0.55 * size, 0, 0), "red"),
-            this.label("Y", new Vector(0, 0.55 * size, 0), "green"),
-            this.label("Z", new Vector(0, 0, 0.55 * size), "blue"));
+            this.label("X", new Vector(0.575 * size, 0, 0), "red"),
+            this.label("Y", new Vector(0, 0.575 * size, 0), "green"),
+            this.label("Z", new Vector(0, 0, 0.575 * size), "blue"));
     }
 }
 
@@ -308,6 +309,7 @@ export class Arrow extends THREE.Group {
         this.headLength = headLength;
         this.shaftWidth = shaftWidth;
         this.headWidth = headWidth;
+        this.axis = axis;
 
         const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
         const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
@@ -325,6 +327,7 @@ export class Arrow extends THREE.Group {
     }
 
     updateAxis(newAxis) {
+        this.axis.copy(newAxis);
         if (newAxis.length() < 1e-6)
             return;
 
