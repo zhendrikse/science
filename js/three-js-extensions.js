@@ -346,17 +346,13 @@ export class Arrow extends THREE.Group {
         this.head.position.y = shaftLength + headLength * 0.5;
     }
 
-    moveTo(newPositionVector) {
-        this.position.copy(newPositionVector);
-    }
+    updateColor = (color) => this.shaft.material.color = color;
 
-    positionVectorTo(other) {
-        return new Vector().copy(other.position).sub(this.position);
-    }
+    moveTo = (newPositionVector) => this.position.copy(newPositionVector);
 
-    distanceToSquared(other) {
-        return this.position.distanceToSquared(other.position);
-    }
+    positionVectorTo = (other) => new Vector().copy(other.position).sub(this.position);
+
+    distanceToSquared = (other) => this.position.distanceToSquared(other.position);
 }
 
 export class Ball {
