@@ -1372,7 +1372,7 @@ const surfaceDefinitions = [{
     meta: {name: "Pillow", category: Category.OBJECT},
     parametrization: {
         xFn: "cos(u)",
-        yFn: "0.7 * sin(u) * sin(v)",
+        yFn: "0.5 * sin(u) * sin(v)",
         zFn: "cos(v)"
     },
     intervals: [["0", "pi"], ["2 * pi", "0"]]
