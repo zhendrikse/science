@@ -3,6 +3,7 @@ import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 import {ThreeJsUtils, AxesParameters, Arrow, ZeroVector }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import {Vector} from "./three-js-extensions";
 
 export const Category = Object.freeze({
     BASIC: "Basic",
@@ -1016,7 +1017,9 @@ export class TangentFrameView extends THREE.Group {
         v=0.5,
         showAxes=false,
         showPrincipals=false,
+        wireframe=false,
         scale = 0.7,
+        opacity = 0.5,
         color = 0x8888ff} = {}) {
         super();
         this.surface = surface;
@@ -1042,8 +1045,8 @@ export class TangentFrameView extends THREE.Group {
                 color: color,
                 side: THREE.DoubleSide,
                 transparent: true,
-                opacity: 0.5,
-                wireframe: true
+                opacity: opacity,
+                wireframe: wireframe
             })
         );
 
@@ -1060,21 +1063,19 @@ export class TangentFrameView extends THREE.Group {
         const frame = this.dg.principalFrame(u, v);
         if (!frame) return;
 
-        const s = this.scaleFactor;
-
-        this.axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor));
+        this.axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor * .5));
         this.axes.uArrow.moveTo(frame.position);
 
-        this.axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor));
+        this.axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor * .5));
         this.axes.vArrow.moveTo(frame.position);
 
-        this.axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this.scaleFactor));
+        this.axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this.scaleFactor * .5));
         this.axes.normalArrow.moveTo(frame.position);
 
-        this.principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor));
+        this.principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor * .5));
         this.principals.k1Arrow.moveTo(frame.position);
 
-        this.principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor));
+        this.principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor * .5));
         this.principals.k2Arrow.moveTo(frame.position);
 
         this.tangentPlane.position.copy(frame.position);

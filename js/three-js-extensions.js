@@ -293,27 +293,27 @@ export class MatlabAnnotations extends AxesAnnotation {
 export class Arrow extends THREE.Group {
     constructor(origin, axis, {
         color = 0xff0000,
-        shaftRadius = 0.03,
-        headRadius = 0.08,
-        headLength = 0.18,
+        shaftWidth = 0.1, // times the length of the axis
+        headWidth = 2,    // times the width of the shaft
+        headLength = 5,   // times the width of the shaft
+        round = false,
         visible = true
     } = {}) {
         super();
 
         this.headLength = headLength;
+        this.shaftWidth = shaftWidth;
+        this.headWidth = headWidth;
 
-        this.shaft = new THREE.Mesh(
-            new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1, 16),
-            new THREE.MeshStandardMaterial({ color })
-        );
+        const shaftGeometry = round ? new THREE.CylinderGeometry(1, 1, 1, 16) : new THREE.BoxGeometry(1, 1, 1);
+        this.shaft = new THREE.Mesh(shaftGeometry, new THREE.MeshStandardMaterial({ color }));
 
-        this.head = new THREE.Mesh(
-            new THREE.ConeGeometry(headRadius, headLength, 16),
-            new THREE.MeshStandardMaterial({ color })
-        );
+        const coneGeometry = new THREE.ConeGeometry(1, 1, round ? 16 : 4);
+        this.head = new THREE.Mesh(coneGeometry, new THREE.MeshStandardMaterial({ color }));
+        if (!round)
+            this.head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
 
         this.add(this.shaft, this.head);
-
         this.position.copy(origin);
         this.updateAxis(axis);
         this.visible = visible;
@@ -329,10 +329,13 @@ export class Arrow extends THREE.Group {
         );
         this.setRotationFromQuaternion(quaternion);
 
-        const shaftLength = Math.max(newAxis.length() - this.headLength, 1e-4);
-        this.shaft.scale.set(1, shaftLength, 1);
+        const shaftLength = newAxis.length();
+        const shaftWidth = shaftLength * this.shaftWidth;
+        const headLength = this.headLength * shaftWidth;
+        this.shaft.scale.set(shaftWidth, shaftLength, shaftWidth);
+        this.head.scale.set(this.headWidth * shaftWidth, headLength, this.headWidth * shaftWidth);
         this.shaft.position.y = shaftLength * 0.5;
-        this.head.position.y = shaftLength + this.headLength * 0.5;
+        this.head.position.y = shaftLength + headLength * 0.5;
     }
 
     moveTo(newPositionVector) {

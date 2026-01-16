@@ -23,7 +23,7 @@
 </script>
 
 <div id="polarContainer">
-    <canvas class="applicationCanvas" id="polarCanvas" ></canvas><br/>
+    <canvas class="applicationCanvas" id="polarCanvas" width="600" height="600"></canvas><br/>
 </div>
 <div id="gui-container"></div>
 
@@ -129,6 +129,7 @@
         u: params.theta / 180,
         v: params.phi / 360,
         color: "#ff0",
+        scale: 1.0,
         showAxes: true,
     });
     worldGroup.add(tangentFrame);
