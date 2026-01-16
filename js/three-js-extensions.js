@@ -290,6 +290,10 @@ export class MatlabAnnotations extends AxesAnnotation {
     }
 }
 
+const shaftGeometryRound = new THREE.CylinderGeometry(1,1,1,16);
+const shaftGeometrySquare = new THREE.BoxGeometry(1,1,1);
+const headGeometryRound = new THREE.ConeGeometry(1,1,16);
+const headGeometrySquare = new THREE.ConeGeometry(1,1,4);
 export class Arrow extends THREE.Group {
     constructor(origin, axis, {
         color = 0xff0000,
@@ -305,11 +309,12 @@ export class Arrow extends THREE.Group {
         this.shaftWidth = shaftWidth;
         this.headWidth = headWidth;
 
-        const shaftGeometry = round ? new THREE.CylinderGeometry(1, 1, 1, 16) : new THREE.BoxGeometry(1, 1, 1);
-        this.shaft = new THREE.Mesh(shaftGeometry, new THREE.MeshStandardMaterial({ color }));
+        const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
+        const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
+        const material = new THREE.MeshStandardMaterial({ color });
 
-        const coneGeometry = new THREE.ConeGeometry(1, 1, round ? 16 : 4);
-        this.head = new THREE.Mesh(coneGeometry, new THREE.MeshStandardMaterial({ color }));
+        this.shaft = new THREE.Mesh(shaftGeometry, material);
+        this.head = new THREE.Mesh(headGeometry, material);
         if (!round)
             this.head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
 
