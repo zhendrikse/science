@@ -291,10 +291,10 @@ export class MatlabAnnotations extends AxesAnnotation {
     }
 }
 
-const shaftGeometryRound = new THREE.CylinderGeometry(1,1,1,16);
-const shaftGeometrySquare = new THREE.BoxGeometry(1,1,1);
-const headGeometryRound = new THREE.ConeGeometry(1,1,16);
-const headGeometrySquare = new THREE.ConeGeometry(1,1,4);
+const shaftGeometryRound = new THREE.CylinderGeometry(1, 1, 1, 16);
+const shaftGeometrySquare = new THREE.BoxGeometry(1, 1, 1);
+const headGeometryRound = new THREE.ConeGeometry(1, 1, 16);
+const headGeometrySquare = new THREE.ConeGeometry(1, 1, 4);
 export class Arrow extends THREE.Group {
     constructor(origin, axis, {
         color = 0xff0000,
@@ -328,7 +328,8 @@ export class Arrow extends THREE.Group {
 
     updateAxis(newAxis) {
         this.axis.copy(newAxis);
-        if (newAxis.length() < 1e-6)
+        const totalLength = newAxis.length();
+        if (totalLength < 1e-6)
             return;
 
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
@@ -337,12 +338,13 @@ export class Arrow extends THREE.Group {
         );
         this.setRotationFromQuaternion(quaternion);
 
-        const shaftLength = newAxis.length();
-        const shaftWidth = shaftLength * this.shaftWidth;
+        const shaftWidth = totalLength * this.shaftWidth;
         const headLength = this.headLength * shaftWidth;
+        const shaftLength = Math.max(totalLength - headLength, 1e-6);
+
         this.shaft.scale.set(shaftWidth, shaftLength, shaftWidth);
-        this.head.scale.set(this.headWidth * shaftWidth, headLength, this.headWidth * shaftWidth);
         this.shaft.position.y = shaftLength * 0.5;
+        this.head.scale.set(this.headWidth * shaftWidth, headLength, this.headWidth * shaftWidth);
         this.head.position.y = shaftLength + headLength * 0.5;
     }
 
