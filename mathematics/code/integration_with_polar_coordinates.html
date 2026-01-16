@@ -1,20 +1,4 @@
 <style>
-    #integrationCanvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-
-    #container {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        aspect-ratio: 1 / 1;
-    }
-
     #integral-title {
         text-align: center;
         font-size: clamp(16px, 4vw, 24px);
@@ -23,11 +7,6 @@
         font-weight: bold;
         text-shadow: 0 0 8px black;
         margin-bottom: 0.5em;
-        background: #1a1a1a;
-    }
-
-    #gui-container {
-        margin-top: 0.5em;
         background: #1a1a1a;
     }
 </style>
@@ -42,10 +21,10 @@
 </script>
 
 <div id="integral-title"></div>
-<div id="container">
-    <canvas id="integrationCanvas"></canvas><br/>
+<div class="canvasWrapper" id="container">
+    <canvas class="applicationCanvas" id="integrationCanvas"></canvas><br/>
 </div>
-<div id="gui-container"></div>
+<div class="gui-container" id="gui-container"></div>
 
 <script type="module">
     import * as THREE from "three";
