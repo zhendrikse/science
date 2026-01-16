@@ -7,14 +7,15 @@
     }
 </script>
 
+<div class="titleDiv" id="vectorFieldTitle"></div>
 <div class="canvasWrapper" id="polarContainer">
     <canvas class="applicationCanvas" id="polarCanvas"></canvas><br/>
 </div>
-<div class="gui-container" id="gui-container"></div>
+<div class="guiContainer" id="gui-container"></div>
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, Arrow, MatlabAxesLayout, MatlabAnnotations, Vector }
+    import { Axes, AxesParameters, Arrow, MatlabAxesLayout, MatlabAnnotations, Vector, UnitVectorE2 }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Plot3D }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
@@ -42,6 +43,40 @@
     bbox.setFromObject( worldGroup );
     plot3D.fitToBoundingBox(bbox, {padding: 1.1, translationY: -3});
 
+    const params = {
+        animate: false,
+        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false, axesLabels: false})
+    };
+
+    class ControlsGui {
+        constructor(axesLayout, annotations) {
+            const gui = new GUI({width: 300, autoPlace: false});
+
+            gui.add(params, "animate").name("Animate");
+
+            const axesFolder = gui.addFolder("Axes");
+            axesFolder.add(params.axesParameters, 'axesLines')
+                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
+            axesFolder.add(params.axesParameters, 'axesLabels')
+                .name("Axes labels").onChange(value => annotations.visible = value);
+            axesFolder.add(params.axesParameters, 'xyPlane')
+                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
+            axesFolder.add(params.axesParameters, 'xzPlane')
+                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
+            axesFolder.add(params.axesParameters, 'yzPlane')
+                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.close();
+
+            document
+                .getElementById("gui-container")
+                .appendChild(gui.domElement);
+        }
+    }
+
+    const gui = new ControlsGui(axesLayout, annotations);
+
+
+    const titleField1 = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$$";
     function vectorField1(x, y, z) {
         const u = Math.sin(Math.PI * x) * Math.cos(Math.PI * y) * Math.cos(Math.PI * z);
         const v = -Math.cos(Math.PI * x) * Math.sin(Math.PI * y) * Math.cos(Math.PI * z);
@@ -49,9 +84,14 @@
         return new Vector(u, w, v);
     }
 
+    const titleField2 = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$$";
     function vectorField2(x, y, z) {
         return new Vector(x, y, z);
     }
+
+    const equationDiv = document.getElementById("vectorFieldTitle");
+    equationDiv.innerHTML = titleField1;
+    if (window.MathJax) MathJax.typesetPromise([equationDiv]);
 
     const arrows = [];
     const initialPositions = [];
@@ -63,7 +103,7 @@
                 const axis = vectorField1(x, z, y).multiplyScalar(scaleFactor);
                 const color = new THREE.Color().setHSL(hue + z, 1.0, 0.5);
                 const initialPosition = new Vector(x, z, y);
-                const arrow = new Arrow(initialPosition, axis, {color: color});
+                const arrow = new Arrow(initialPosition.clone().add(UnitVectorE2), axis, {color: color});
                 if (axis.length() < 1e-3) continue;//arrow.visible = false;
                 worldGroup.add(arrow);
                 arrows.push(arrow);
@@ -72,14 +112,15 @@
 
     const tmpAxis = new Vector();
     const tmpPos  = new Vector();
+
     function update(dt) {
         arrows.forEach(arrow => {
-            const position = arrow.position;
+            const position = arrow.position.clone().sub(UnitVectorE2);
 
             tmpAxis.copy(vectorField1(position.x, position.y, position.z)).multiplyScalar(scaleFactor);
-            tmpPos.copy(position).addScaledVector(tmpAxis, dt);
+            tmpPos.copy(position).addScaledVector(tmpAxis, dt); // Euler
 
-            arrow.moveTo(tmpPos);
+            arrow.moveTo(tmpPos.clone().add(UnitVectorE2));
             tmpAxis.copy(vectorField1(tmpPos.x, tmpPos.y, tmpPos.z)).multiplyScalar(scaleFactor);
             arrow.updateAxis(tmpAxis);
         });
@@ -89,13 +130,15 @@
     const maxSteps = 100;
     function animate() {
         requestAnimationFrame(animate);
+        plot3D.render();
+        if (!params.animate) return;
+
         update(0.02);
         numSteps++;
         if (numSteps > maxSteps) {
             numSteps = 0;
-            arrows.forEach((arrow, index) => { arrow.moveTo(initialPositions[index])});
+            arrows.forEach((arrow, index) => arrow.moveTo(initialPositions[index].clone().add(UnitVectorE2)));
         }
-        plot3D.render();
     }
     animate();
 </script>
