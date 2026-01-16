@@ -1,36 +1,4 @@
 <style>
-    #surfaceCanvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-
-    #surface-canvas-container {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        aspect-ratio: 4 / 5;
-    }
-
-    #gui-container {
-        margin-top: 0.5em;
-        background: #1a1a1a;
-    }
-
-    #surface-title {
-        text-align: center;
-        font-size: clamp(16px, 4vw, 24px);
-        font-family: sans-serif;
-        color: yellow;
-        font-weight: bold;
-        text-shadow: 0 0 8px black;
-        margin-bottom: 0.5em;
-        background: #1a1a1a;
-    }
-
     #surface-equation {
         position: absolute;
         margin-top: 10px;
@@ -48,6 +16,8 @@
         max-width: 100%;
         margin: 0 auto;
     }
+
+
 </style>
 
 <script type="importmap">
@@ -61,12 +31,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
 
-<div id="surface-title"></div>
+<div class="titleDiv" id="surface-title"></div>
 <div id="surface-equation"></div>
-<div id="surface-canvas-container">
-    <canvas id="surfaceCanvas"></canvas><br/>
+<div class="containerWrapper" id="surface-canvas-container">
+    <canvas class="applicationCanvas" id="surfaceCanvas"></canvas><br/>
 </div>
-<div id="gui-container"></div>
+<div class="guiContainer" id="gui-container"></div>
 
 
 <script type="module">
@@ -417,10 +387,18 @@
     const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
     ring.onSelectTo(selectedRingSurface);
 
-    // const tangentFrame = new TangentFrame(surfaceInAxes, { showAxes: true });
+    // const tangentFrame = new TangentFrameView(surfaceInAxes, { showAxes: true, scale: 0.5 });
     // worldGroup.add(tangentFrame);
-    // tangentFrame.update(0.3, 0.75);
-    // tangentFrame.position.add(surfaceInAxes.group.position);
+    // // tangentFrame.update(0.4, 0.4);
+    // // tangentFrame.position.copy(surfaceInAxes.group.position);
+    // tangentFrame.update(0.1, 0.1);
+    // tangentFrame.position.copy(surfaceInAxes.group.position);
+    // tangentFrame.scale.set(surfaceInAxes.group.scale.x, surfaceInAxes.group.scale.y, surfaceInAxes.group.scale.z);
+    // tangentFrame.position.set(0, 0, 0);
+    // tangentFrame.scale.set(1, 1, 1);
+    // tangentFrame.update(0.5, 0.5);
+    // tangentFrame.position.copy(surfaceInAxes.group.position);
+    // tangentFrame.scale.set(surfaceInAxes.group.scale.x, surfaceInAxes.group.scale.y, surfaceInAxes.group.scale.z);
 
     // Interaction
     const controlsGui = new ControlsGui(surfaceInAxes, axes, annotations, ring, visualizationParameters,

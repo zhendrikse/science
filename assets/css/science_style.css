@@ -32,8 +32,19 @@ figcaption {
     aspect-ratio: 4 / 3;
 }
 
-.gui-container {
+.guiContainer {
     margin-top: 0.5em;
+    background: #1a1a1a;
+}
+
+.titleDiv {
+    text-align: center;
+    font-size: clamp(16px, 4vw, 24px);
+    font-family: sans-serif;
+    color: yellow;
+    font-weight: bold;
+    text-shadow: 0 0 8px black;
+    margin-bottom: 0.5em;
     background: #1a1a1a;
 }
 

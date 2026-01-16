@@ -62,7 +62,7 @@
             for (let z = -0.8; z < 1; z += .4) {
                 const axis = vectorField1(x, z, y).multiplyScalar(scaleFactor);
                 const color = new THREE.Color().setHSL(hue + z, 1.0, 0.5);
-                const initialPosition = new Vector(x, z + 1, y);
+                const initialPosition = new Vector(x, z, y);
                 const arrow = new Arrow(initialPosition, axis, {color: color});
                 if (axis.length() < 1e-3) continue;//arrow.visible = false;
                 worldGroup.add(arrow);

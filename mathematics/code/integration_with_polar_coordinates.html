@@ -1,16 +1,3 @@
-<style>
-    #integral-title {
-        text-align: center;
-        font-size: clamp(16px, 4vw, 24px);
-        font-family: sans-serif;
-        color: yellow;
-        font-weight: bold;
-        text-shadow: 0 0 8px black;
-        margin-bottom: 0.5em;
-        background: #1a1a1a;
-    }
-</style>
-
 <script type="importmap">
     {
       "imports": {
@@ -20,11 +7,11 @@
     }
 </script>
 
-<div id="integral-title"></div>
+<div class="titleDiv" id="integral-title"></div>
 <div class="canvasWrapper" id="container">
     <canvas class="applicationCanvas" id="integrationCanvas"></canvas><br/>
 </div>
-<div class="gui-container" id="gui-container"></div>
+<div class="guiContainer" id="gui-container"></div>
 
 <script type="module">
     import * as THREE from "three";
