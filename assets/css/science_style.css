@@ -24,6 +24,14 @@ figcaption {
     margin: auto;
 }
 
+.canvasWrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    aspect-ratio: 4 / 3;
+}
+
 .header_line {
   border-top: 2px solid
 }
