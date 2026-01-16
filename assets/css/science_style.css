@@ -32,6 +32,11 @@ figcaption {
     aspect-ratio: 4 / 3;
 }
 
+.gui-container {
+    margin-top: 0.5em;
+    background: #1a1a1a;
+}
+
 .header_line {
   border-top: 2px solid
 }
