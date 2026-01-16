@@ -3,12 +3,14 @@
 ## Plane waves of the form $\psi(x, t) = Ae^{i(k x - \omega t)}$
 <div class="header_line"><br/></div>
 
-Download the [plane_wave.py](code/plane_wave.py) source code
 {% include_relative code/plane_wave.html %}
 
 <p style="clear: both;"></p>
 
-{% include share_buttons.html %}
+&#x2022; From <a href="https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247">Visualizing Quantum Mechanics with Python</a><br/>
+&#x2022; Ported to JavaScript by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a><br/>
+&#x2022; The motion and x-axis represent the parameters $t$ and $x$ respectively<br/>
+&#x2022; The colors represent the wave number $k$
 
 ### Concise derivation of the Schr&#246;dinger equation
 <div class="header_line"><br/></div>
@@ -29,4 +31,6 @@ From this we arrive at the <a href="https://en.wikipedia.org/wiki/Schr%C3%B6ding
 
 $$(KE + PE)\Psi(x,,t) = E\Psi(x,t) = -i\hbar \dfrac{\partial}{\partial t}\Psi(x, t) = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \Psi(x,t) + V(x)\Psi(x,t)$$
 
-    
+---
+
+{% include share_buttons.html %}
