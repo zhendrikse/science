@@ -1,7 +1,36 @@
 {% include breadcrumbs.html %}
 
-## Plane waves of the form $\psi(x, t) = Ae^{i(k x - \omega t)}$
+## Visualizing a Complex Plane wave 
 <div class="header_line"><br/></div>
+
+### What are you looking at?
+<div class="header_line"><br/></div>
+
+This animation shows a one-dimensional **complex plane wave**,
+a fundamental object in wave physics and quantum mechanics.
+
+Mathematically, the wave is described by
+
+$$\psi(x, t) = Ae^{i(k x - \omega t)}$$
+
+where
+
+- $A$ is the amplitude
+- $k$ is the wave number
+- $\omega$ is the angular frequency
+
+Each arrow represents the complex value of the wave function at a fixed position $x$.
+The arrow rotates in the complex plane as time evolves:
+
+* **z-direction**: real part of $\psi$
+* **y-direction**: imaginary part of $\psi$
+
+The **length of the arrows is constant**, showing that the magnitude $|\psi|$ 
+of a plane wave does not change in space or time.
+The **color encodes the phase**, making the spatial and temporal phase structure visible.
+
+This visualization helps build intuition for complex waves, phase propagation, 
+and the role of $k$ and $\omega$.
 
 {% include_relative code/plane_wave.html %}
 
@@ -11,6 +40,45 @@
 &#x2022; Ported to JavaScript by <a href="https://www.hendrikse.name/">Zeger Hendrikse</a><br/>
 &#x2022; The motion and x-axis represent the parameters $t$ and $x$ respectively<br/>
 &#x2022; The colors represent the wave number $k$
+
+
+### Complex Plane Waves in Quantum Mechanics
+<div class="header_line"><br/></div>
+
+In quantum mechanics, the state of a free particle with definite momentum is described by a **plane wave**
+
+$$
+\psi(x,t) = A  e^{i(kx - \omega t)}.
+$$
+
+This visualization shows the wave function as a **geometric object** rather than a real-valued curve.
+
+At each position $x$:
+
+* the arrow represents the **complex value** of $\psi(x,t)$
+* the arrow rotates in the complex plane with angular frequency $\omega$
+* the spatial phase advance is controlled by the wave number $k$
+
+The real and imaginary parts are shown along orthogonal axes.
+The **constant arrow length** illustrates that
+
+$$
+|\psi(x,t)|^2 = |A|^2
+$$
+
+is uniform in space and time.
+
+This emphasizes an important quantum-mechanical point:
+
+> A plane wave does **not** represent a localized particle, but a state with definite momentum and completely delocalized position.
+
+The animation separates:
+
+* **phase evolution** (rotation of arrows)
+* from **probability density** (constant magnitude)
+
+which is often obscured in standard textbook plots.
+
 
 ### Concise derivation of the Schr&#246;dinger equation
 <div class="header_line"><br/></div>
@@ -30,6 +98,80 @@ $$E = hf = \dfrac{h}{2\pi}\dfrac{2\pi}{T} = \hbar \omega \Rightarrow -i\hbar\dfr
 From this we arrive at the <a href="https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation">Schr&#246;dinger equation</a>:
 
 $$(KE + PE)\Psi(x,,t) = E\Psi(x,t) = -i\hbar \dfrac{\partial}{\partial t}\Psi(x, t) = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \Psi(x,t) + V(x)\Psi(x,t)$$
+
+
+### Guided Exploration
+<div class="header_line"><br/></div>
+
+Use the controls to explore the properties of the plane wave.
+
+---
+
+#### Exercise 1 — Spatial phase
+
+1. Set (\omega = 0).
+2. Change the wave number (k).
+
+**Questions**
+
+* What happens to the phase difference between neighboring arrows?
+* How does this relate to the wavelength (\lambda = 2\pi/k)?
+
+---
+
+#### Exercise 2 — Temporal evolution
+
+1. Fix (k).
+2. Increase (\omega).
+
+**Questions**
+
+* What changes visually?
+* What does (\omega) control physically?
+* Does the probability density change?
+
+---
+
+#### Exercise 3 — Direction of propagation
+
+1. Set (k > 0).
+2. Observe how the phase moves in space.
+3. Repeat for (k < 0).
+
+**Questions**
+
+* In which direction does the phase propagate?
+* How is this related to the sign of the momentum?
+
+---
+
+#### Exercise 4 — Real vs imaginary parts
+
+Focus on a single arrow and track its motion.
+
+**Questions**
+
+* How are the real and imaginary parts related?
+* Why can neither part alone represent the full wave?
+
+---
+
+#### Exercise 5 — Interpretation
+
+A plane wave is not normalizable.
+
+**Questions**
+
+* What does that mean physically?
+* Why are plane waves still useful in quantum mechanics?
+* How might you build a localized wave packet from plane waves?
+
+---
+
+### Optional challenge
+
+Predict what would happen if **two plane waves with slightly different (k)** were added together.
+What new structure would you expect to see?
 
 ---
 
