@@ -18,6 +18,30 @@
     }
 
 
+
+
+    .applicationCanvas {
+        display: block;
+        background-color: #131313;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .canvasWrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .guiContainer {
+        margin-top: 0.5em;
+        background: #1a1a1a;
+    }
+
 </style>
 
 <script type="importmap">
@@ -33,7 +57,7 @@
 
 <div class="titleDiv" id="surface-title"></div>
 <div id="surface-equation"></div>
-<div class="containerWrapper" id="surface-canvas-container"  style="aspect-ratio: 4 / 5;">
+<div class="canvasWrapper" id="surface-canvas-container"  style="aspect-ratio: 4 / 5;">
     <canvas class="applicationCanvas" id="surfaceCanvas" style="aspect-ratio: 4 / 5;"></canvas><br/>
 </div>
 <div class="guiContainer" id="gui-container"></div>
@@ -74,36 +98,39 @@
                 .name("Category")
                 .onChange(value => ring.changeActiveCategoryTo(value));
 
+            //this.#createTangentSpaceFolder(controls);
             this.#createAppearanceFolder(controls, axes, annotations);
             this.#createMathFolder(controls);
             this.updateCurrentSurfaceWith(surface);
         }
 
-        // #createTangentSpaceFolder(folder) {
-        //     const tangentFolder = folder.addFolder("Tangent frame");
-        //     tangentFolder.add(this.viewParameters, 'showTangentFrame')
-        //         .name("Tangent frame")
-        //         .onChange(value => this.surface.toggleWireframe(value));
-        //     tangentFolder.add(params, "theta", 0, 180, 0.1)
-        //         .name("θ (theta)")
-        //         .onChange(value => {
-        //             params.theta = value;
-        //             tangentFrame.update(value / 180, params.phi / 360);
-        //             const pos = new THREE.Vector3(0, 0, 0);
-        //             sphereSurface.definition().sample(value / 180, params.phi / 360, pos);
-        //             radialLine.geometry.setFromPoints([new THREE.Vector3(0, 0, 0), pos]);
-        //         });
-        //
-        //     tangentFolder.add(params, "phi", 0, 360, 0.1)
-        //         .name("φ (phi)")
-        //         .onChange(value => {
-        //             params.phi = value;
-        //             tangentFrame.update(params.theta / 180, value / 360);
-        //             const pos = new THREE.Vector3(0, 0, 0);
-        //             sphereSurface.definition().sample(params.theta / 180, value / 360, pos);
-        //             radialLine.geometry.setFromPoints([new THREE.Vector3(0, 0, 0), pos]);
-        //         });
-        // }
+        #createTangentSpaceFolder(folder) {
+            const tangentFolder = folder.addFolder("Tangent frame");
+            // tangentFolder.add(this.viewParameters, 'showTangentFrame')
+            //     .name("Tangent frame")
+            //     .onChange(value => this.surface.toggleWireframe(value));
+            tangentFolder.add(this.viewParameters.tangentFrameParameters, "u", 0, 1, 0.01)
+                .name("u-parameter")
+                .onChange(value => {
+                    tangentFrame.position.set(0, 0, 0);
+                    tangentFrame.scale.set(1, 1, 1);
+                    tangentFrame.update(this.viewParameters.tangentFrameParameters.u, this.viewParameters.tangentFrameParameters.v);
+                    tangentFrame.position.copy(surfaceInAxes.group.position);
+                    tangentFrame.scale.set(surfaceInAxes.group.scale.x, surfaceInAxes.group.scale.y, surfaceInAxes.group.scale.z);
+
+                });
+
+            tangentFolder.add(this.viewParameters.tangentFrameParameters, "v", 0, 1, 0.01)
+                .name("v-parameter")
+                .onChange(value => {
+                    tangentFrame.position.set(0, 0, 0);
+                    tangentFrame.scale.set(1, 1, 1);
+                    tangentFrame.update(this.viewParameters.tangentFrameParameters.u, this.viewParameters.tangentFrameParameters.v);
+                    tangentFrame.position.copy(surfaceInAxes.group.position);
+                    tangentFrame.scale.set(surfaceInAxes.group.scale.x, surfaceInAxes.group.scale.y, surfaceInAxes.group.scale.z);
+                });
+            tangentFolder.close();
+        }
 
         #createContourFolder(folder) {
             const contourFolder = folder.addFolder("Contours");
@@ -338,20 +365,23 @@
         visibleRingItems = () => this.surfaces.filter(surface => surface.definition().specification().meta.category === this.activeCategory);
     }
 
+    let tangentFrame = null;
+    let surfaceInAxes = null;
     function displayedSurface(surfaceSpecification, visualizationParameters, axes) {
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-        const surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), visualizationParameters);
-        surfaceInAxes.resetTransform();
+        const newSurface = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), visualizationParameters);
 
-        const axesBoundingBox = new THREE.Box3();
-        axesBoundingBox.setFromObject(axes);
+        // visualizationParameters.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
+        // tangentFrame = new TangentFrameView(surfaceDefinition, visualizationParameters.tangentFrameParameters);
+        // newSurface.group.add(tangentFrame);
+
         ThreeJsUtils.fitGroupToBox(
-            surfaceInAxes.group,
-            surfaceInAxes.boundingBox(),
-            axesBoundingBox,
+            newSurface.group,
+            newSurface.boundingBox(),
+            axes.boundingBox(),
             { alignY: "min", padding: 1.1 }
         );
-        return surfaceInAxes;
+        return newSurface;
     }
 
     const surfacePlotScene = new THREE.Scene();
@@ -373,10 +403,10 @@
     bbox.setFromObject( worldGroup );
     plot3D.fitToBoundingBox(bbox, {padding: 1.2, translationY: -3.0});
 
-    const surfaceData = SurfaceDefinitions[19];
+    const surfaceData = SurfaceDefinitions[20];
     const visualizationParameters = new ViewParameters({axesParameters: new AxesParameters({axesLabels: false})});
     annotations.visible = visualizationParameters.axesParameters.axesLabels;
-    let surfaceInAxes = displayedSurface(new SurfaceSpecification(surfaceData), visualizationParameters, axes);
+    surfaceInAxes = displayedSurface(new SurfaceSpecification(surfaceData), visualizationParameters, axes);
 
     // Ring
     const boundingBox = surfaceInAxes.boundingBox();
@@ -386,19 +416,6 @@
     ring.changeActiveCategoryTo(surfaceData.meta.category);
     const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
     ring.onSelectTo(selectedRingSurface);
-
-    // const tangentFrame = new TangentFrameView(surfaceInAxes, { showAxes: true, scale: 0.5 });
-    // worldGroup.add(tangentFrame);
-    // // tangentFrame.update(0.4, 0.4);
-    // // tangentFrame.position.copy(surfaceInAxes.group.position);
-    // tangentFrame.update(0.1, 0.1);
-    // tangentFrame.position.copy(surfaceInAxes.group.position);
-    // tangentFrame.scale.set(surfaceInAxes.group.scale.x, surfaceInAxes.group.scale.y, surfaceInAxes.group.scale.z);
-    // tangentFrame.position.set(0, 0, 0);
-    // tangentFrame.scale.set(1, 1, 1);
-    // tangentFrame.update(0.5, 0.5);
-    // tangentFrame.position.copy(surfaceInAxes.group.position);
-    // tangentFrame.scale.set(surfaceInAxes.group.scale.x, surfaceInAxes.group.scale.y, surfaceInAxes.group.scale.z);
 
     // Interaction
     const controlsGui = new ControlsGui(surfaceInAxes, axes, annotations, ring, visualizationParameters,
