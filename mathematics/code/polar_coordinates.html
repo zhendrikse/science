@@ -7,7 +7,7 @@
     }
 </script>
 
-<div class="containerWrapper" id="polarContainer">
+<div class="canvasWrapper" id="polarContainer">
     <canvas class="applicationCanvas" id="polarCanvas"></canvas><br/>
 </div>
 <div class="gui-container" id="gui-container"></div>
@@ -107,23 +107,13 @@
         }
     }
 
-    // Class only needed to interface with DifferentialGeometry
-    class Surface {
-        constructor(definition) {
-            this._definition = definition;
-        }
-        definition() {
-            return this._definition;
-        }
-    }
-
-    const sphereSurface = new Surface(new SphereSurfaceDefinition(radius));
+    const sphereSurface = new SphereSurfaceDefinition(radius);
     const tangentFrame = new TangentFrameView(sphereSurface, tangentFrameParameters);
     worldGroup.add(tangentFrame);
 
     // Radial line
     const position = new Vector();
-    sphereSurface.definition().sample(tangentFrameParameters.u, tangentFrameParameters.v, position);
+    sphereSurface.sample(tangentFrameParameters.u, tangentFrameParameters.v, position);
     const radialLine = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints([new Vector(0, 0, 0), position]),
         new THREE.LineBasicMaterial({ color: 0xffffff })

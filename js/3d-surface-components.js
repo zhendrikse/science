@@ -295,8 +295,8 @@ export class ShapeOperator {
 }
 
 export class DifferentialGeometry {
-    constructor(surface, { eps = 1e-4 } = {}) {
-        this.surface = surface;
+    constructor(surfaceDefinition, { eps = 1e-4 } = {}) {
+        this.surfaceDefinition = surfaceDefinition;
         this.eps = eps;
     }
 
@@ -304,7 +304,7 @@ export class DifferentialGeometry {
         const e = this.eps;
         const sample = (du, dv) => {
             const position = new Vector();
-            this.surface.definition().sample(u + du, v + dv, position);
+            this.surfaceDefinition.sample(u + du, v + dv, position);
             return position;
         };
 
@@ -386,7 +386,7 @@ export class DifferentialGeometry {
         if (!result) return null;
 
         const position = new Vector();
-        this.surface.definition().sample(u, v, position);
+        this.surfaceDefinition.sample(u, v, position);
 
         return new PrincipalFrame({
             position,
@@ -1015,7 +1015,7 @@ export class TangentFrameParameters {
     constructor({
                     u=0.25,
                     v=0.5,
-                    showAxes=false,
+                    showAxes=true,
                     showPrincipals=false,
                     wireframe=false,
                     scale = 0.7,
@@ -1036,7 +1036,6 @@ export class TangentFrameParameters {
 export class TangentFrameView extends THREE.Group {
     constructor(surface, tangentFrameParameters) {
         super();
-        this.surface = surface;
         this.diffGeometry = new DifferentialGeometry(surface);
         this.scaleFactor = tangentFrameParameters.scale;
 
@@ -1134,7 +1133,7 @@ const surfaceDefinitions = [{
         yFn: "sin(v) * sin(v) * sin(v)",
         zFn: "sin(u) * sin(u) * sin(u) * cos(v) * cos(v) * cos(v)"
     },
-    intervals: [["0", "2 * pi"], ["pi", "0"]]
+    intervals: [["0", "pi"], ["2 * pi", "0"]]
 }, {
     meta: {name: "Bellerophina", category: Category.NATURE},
     parametrization: {
