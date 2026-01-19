@@ -133,8 +133,8 @@
 
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
-    bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 0.8, translationY: -2});
+    bbox.setFromObject( axes );
+    plot3D.fitToBoundingBox(bbox, {padding: 0.7, translationY: -2});
 
     const resolution = 30;
     const geometry = new THREE.SphereGeometry( radius, resolution, resolution );
