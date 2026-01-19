@@ -1,3 +1,28 @@
+<style>
+
+    .applicationCanvas {
+        display: block;
+        background-color: #131313;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .canvasWrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .guiContainer {
+        margin-top: 0.5em;
+        background: #1a1a1a;
+    }
+
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -8,8 +33,8 @@
 </script>
 
 <div class="titleDiv" id="vectorFieldTitle"></div>
-<div class="canvasWrapper" id="polarContainer">
-    <canvas class="applicationCanvas" id="polarCanvas"></canvas><br/>
+<div class="canvasWrapper" id="quiverContainer">
+    <canvas class="applicationCanvas" id="quiverCanvas"></canvas><br/>
 </div>
 <div class="guiContainer" id="gui-container"></div>
 
@@ -21,8 +46,8 @@
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
-    const canvasContainer = document.getElementById("polarContainer");
-    const canvas = document.getElementById("polarCanvas");
+    const canvasContainer = document.getElementById("quiverContainer");
+    const canvas = document.getElementById("quiverCanvas");
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x131313);
@@ -43,8 +68,14 @@
     bbox.setFromObject( worldGroup );
     plot3D.fitToBoundingBox(bbox, {padding: 1.1, translationY: -3});
 
+    const VectorFields = Object.freeze({
+        FIELD_1: "Vector field 1",
+        FIELD_2: "Vector field 2"
+    });
+
     const params = {
         animate: false,
+        vectorField: VectorFields.FIELD_1,
         axesParameters: new AxesParameters({xyPlane: false, yzPlane: false, axesLabels: false})
     };
 
@@ -52,6 +83,9 @@
         constructor(axesLayout, annotations) {
             const gui = new GUI({width: 300, autoPlace: false});
 
+            gui.add(params, 'vectorField', Object.values(VectorFields))
+                .name("Field type")
+                .onChange(value => this.#changeVectorFieldTo(value));
             gui.add(params, "animate").name("Animate");
 
             const axesFolder = gui.addFolder("Axes");
@@ -71,10 +105,32 @@
                 .getElementById("gui-container")
                 .appendChild(gui.domElement);
         }
+
+        #doChangeVectorField(vectorField) {
+            let { positions: newPositions, arrows: newArrows } =
+                initializeQuiverPlotFrom(initialPositions, vectorField);
+
+            positions = newPositions;
+            arrows = newArrows;
+        }
+
+        #changeVectorFieldTo(vectorField) {
+            arrows.forEach(arrow => {worldGroup.remove(arrow);});
+            switch (vectorField) {
+                case VectorFields.FIELD_1:
+                    equationDiv.innerHTML = titleField1;
+                    this.#doChangeVectorField(vectorField1);
+                    break;
+                case VectorFields.FIELD_2:
+                    equationDiv.innerHTML = titleField2;
+                    this.#doChangeVectorField(vectorField2);
+                    break;
+            }
+            if (window.MathJax) MathJax.typesetPromise([equationDiv]);
+        }
     }
 
     const gui = new ControlsGui(axesLayout, annotations);
-
 
     const titleField1 = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$$";
     function vectorField1(x, y, z) {
@@ -93,35 +149,43 @@
     equationDiv.innerHTML = titleField1;
     if (window.MathJax) MathJax.typesetPromise([equationDiv]);
 
-    let arrows = [];
     const initialPositions = [];
-    const scaleFactor = 0.2;
-    const hue = 0.5;
     for (let x = -0.8; x < 1; x += .2)
         for (let y = -0.8; y < 1; y += .2)
-            for (let z = -0.8; z < 1; z += .4) {
-                const axis = vectorField1(x, z, y).multiplyScalar(scaleFactor);
-                const color = new THREE.Color().setHSL(hue + z, 1.0, 0.5);
-                const initialPosition = new Vector(x, z, y);
-                const arrow = new Arrow(initialPosition.clone().add(UnitVectorE2), axis, {color: color});
-                if (axis.length() < 1e-3) continue;//arrow.visible = false;
+            for (let z = -0.8; z < 1; z += .4)
+                initialPositions.push(new Vector(x, z, y));
+
+    function initializeQuiverPlotFrom(positions, field, scaleFactor=0.2, hue=0.5) {
+        const arrows = [];
+        const arrowPositions = [];
+        positions.forEach(position => {
+            const axis = field(position.x, position.y, position.z).multiplyScalar(scaleFactor);
+            if (axis.length() > 1e-3) {
+                const color = new THREE.Color().setHSL(hue + position.y, 1.0, 0.5);
+                const arrow = new Arrow(position.clone().add(UnitVectorE2), axis, {color: color});
                 worldGroup.add(arrow);
                 arrows.push(arrow);
-                initialPositions.push(initialPosition);
+                arrowPositions.push(position);
             }
+        });
+        return {positions, arrows};
+    }
 
+    let {positions, arrows} = initializeQuiverPlotFrom(initialPositions, vectorField1);
     const tmpAxis = new Vector();
     const tmpPos  = new Vector();
 
-    function update(dt) {
+    function update(dt, scaleFactor=0.2) {
+        const vectorField = params.vectorField === VectorFields.FIELD_1 ? vectorField1 : vectorField2;
+
         arrows.forEach(arrow => {
             const position = arrow.position.clone().sub(UnitVectorE2);
 
-            tmpAxis.copy(vectorField1(position.x, position.y, position.z)).multiplyScalar(scaleFactor);
+            tmpAxis.copy(arrow.axis);
             tmpPos.copy(position).addScaledVector(tmpAxis, dt); // Euler
 
+            tmpAxis.copy(vectorField(tmpPos.x, tmpPos.y, tmpPos.z)).multiplyScalar(scaleFactor);
             arrow.moveTo(tmpPos.clone().add(UnitVectorE2));
-            tmpAxis.copy(vectorField1(tmpPos.x, tmpPos.y, tmpPos.z)).multiplyScalar(scaleFactor);
             arrow.updateAxis(tmpAxis);
         });
     }
@@ -137,7 +201,7 @@
         numSteps++;
         if (numSteps > maxSteps) {
             numSteps = 0;
-            arrows.forEach((arrow, index) => arrow.moveTo(initialPositions[index].clone().add(UnitVectorE2)));
+            arrows.forEach((arrow, index) => arrow.moveTo(positions[index].clone().add(UnitVectorE2)));
         }
     }
     animate();
