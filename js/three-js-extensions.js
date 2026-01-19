@@ -91,7 +91,7 @@ export class Interval {
 
     /**
      * Use:
-     *   for (const x of interval.iterator(0.25)) {
+     *   for (const x of interval.iterator(0.25))
      *     console.log(x);
      *
      * @param stepSize the increment between steps.
@@ -539,10 +539,10 @@ export class ArrowField extends THREE.Group {
                     this.positions.push(new Vector(x, z + 1, y));
     }
 
-    #magnitudeToColor(mag, minMag, maxMag) {
-        if (maxMag <= minMag) return new THREE.Color(0x00ffff);
+    #magnitudeToColor(magnitude, scalarRange) {
+        if (scalarRange.to <= scalarRange.from) return new THREE.Color(0x00ffff);
 
-        const t = THREE.MathUtils.clamp((mag - minMag) / (maxMag - minMag), 0, 1);
+        const t = THREE.MathUtils.clamp(scalarRange.scaleValue(magnitude), 0, 1);
         const hue = (1 - t) * 0.66; // Hue: 0.66 (blue) → 0.0 (red)
 
         return new THREE.Color().setHSL(hue, 1.0, 0.5);
@@ -561,8 +561,8 @@ export class ArrowField extends THREE.Group {
         });
     }
 
-    #scalarToColor(value, min, max) {
-        const maxAbs = Math.max(Math.abs(min), Math.abs(max));
+    #scalarToColor(value, scalarRange) {
+        const maxAbs = Math.max(Math.abs(scalarRange.from), Math.abs(scalarRange.to));
         const t = THREE.MathUtils.clamp(value / maxAbs, -1, 1);
 
         if (t < 0) // blue → white
@@ -600,24 +600,24 @@ export class ArrowField extends THREE.Group {
         this.headMesh.setMatrixAt(index, this.tmpMatrix);
     }
 
-    #updateArrowColor(index, axis, scalars, minMag, maxMag) {
+    #updateArrowColor(index, axis, scalars, scalarRange) {
         switch (this.colorMode) {
             case ArrowField.ColorMode.DIVERGENCE:
                 const scalar = scalars[index];
-                this.shaftMesh.setColorAt(index, this.#scalarToColor(scalar, minMag, maxMag));
+                this.shaftMesh.setColorAt(index, this.#scalarToColor(scalar, scalarRange));
                 break;
             case ArrowField.ColorMode.CURL:
-                const t = THREE.MathUtils.clamp((value - min) / (max - min), 0, 1);
+                const t = THREE.MathUtils.clamp(scalarRange.scaleValue(scalar), 0, 1);
                 const hue = (1 - t) * 0.66;
                 this.shaftMesh.setColorAt(index, new THREE.Color().setHSL(hue, 1, 0.5));
                 break;
             default:
                 const mag = axis.length() / this.scaleFactor;
-                this.shaftMesh.setColorAt(index, this.#magnitudeToColor(mag, minMag, maxMag));
+                this.shaftMesh.setColorAt(index, this.#magnitudeToColor(mag, scalarRange));
         }
     }
 
-    #updateArrowInstance(index, position, axis, scalars, min, max) {
+    #updateArrowInstance(index, position, axis, scalars, scalarRange) {
         const length = axis.length();
         if (length < 1e-6) {
             this.#collapseArrow(index, position);
@@ -629,7 +629,7 @@ export class ArrowField extends THREE.Group {
 
         this.#updateShaft(index, position, axis);
         this.#updateHead(index, position, axis);
-        this.#updateArrowColor(index, axis, scalars, min, max);
+        this.#updateArrowColor(index, axis, scalars, scalarRange);
     }
 
     changeColorModeTo = (newColorMode) => this.colorMode = newColorMode;
@@ -648,14 +648,13 @@ export class ArrowField extends THREE.Group {
         this.vectorField = newVectorField;
 
         const scalars = this.#scalarField();
-        const min = Math.min(...scalars);
-        const max = Math.max(...scalars);
+        const scalarRange = new Interval(Math.min(...scalars), Math.max(...scalars));
         this.positions.forEach((position, index) => {
             this.tmpAxis
                 .copy(newVectorField.sample(position))
                 .multiplyScalar(this.scaleFactor);
 
-            this.#updateArrowInstance(index, position, this.tmpAxis, scalars, min, max);
+            this.#updateArrowInstance(index, position, this.tmpAxis, scalars, scalarRange);
         });
 
         this.shaftMesh.instanceMatrix.needsUpdate = true;
