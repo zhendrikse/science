@@ -514,7 +514,7 @@ export class ArrowField extends THREE.Group {
 
     euler(dt = 0.01) {
         this.positions.forEach(pos => pos.addScaledVector(this.vectorField(pos.x, pos.y, pos.z), dt));
-        vectorFieldView.updateFieldWith(vectorFieldView.vectorField);
+        this.updateFieldWith(this.vectorField);
     }
 
     reset() {
