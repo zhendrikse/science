@@ -699,7 +699,6 @@ export class Ball {
 
     updateWith(force, dt) {
         this.velocity.addScaledVector(force, dt / this.mass);
-        this.velocity.multiplyScalar(0.998); // damping
         this.sphere.position.addScaledVector(this.velocity, dt);
     }
 

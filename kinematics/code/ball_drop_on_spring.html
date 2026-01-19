@@ -155,6 +155,7 @@
         requestAnimationFrame(animate);
         time += dt;
         if (!dragging) ball.updateWith(force(), dt);
+        ball.damp();
         slinky.updateAxis(ball.position().sub(suspensionPoint.clone()));
         slinky.update(time); // Time parameter needed when longitudinal oscillation = true
         renderer.render(scene, camera);
