@@ -555,10 +555,10 @@ export class ArrowField extends THREE.Group {
 
     updateFieldWith(newVectorField) {
         this.vectorField = newVectorField;
-        const { min, max } = this.vectorField.range(this.positions);
+        const { min, max } = newVectorField.range(this.positions);
         this.positions.forEach((position, index) => {
             this.tmpAxis
-                .copy(newVectorField(position))
+                .copy(newVectorField.sample(position))
                 .multiplyScalar(this.scaleFactor);
 
             this.#updateArrowInstance(index, position, this.tmpAxis, min, max);
