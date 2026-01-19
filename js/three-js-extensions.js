@@ -684,10 +684,19 @@ export class Ball {
         radius = 1,
         velocity = new Vector(0, 0, 0),
         mass=10,
+        opacity = 1,
+        showWireframe = false,
         color=0xffff00,
         segments = 24})
     {
-        const massMaterial = new THREE.MeshStandardMaterial({color: color, metalness:0.7, roughness:0.2});
+        const massMaterial = new THREE.MeshStandardMaterial({
+            color: color,
+            opacity: opacity,
+            transparent: true,
+            wireframe: showWireframe,
+            metalness:0.7,
+            roughness:0.2
+        });
         this.sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, segments, segments), massMaterial);
         this.sphere.position.copy(position);
         this.sphere.castShadow = true;
