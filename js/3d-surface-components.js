@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
-import {ThreeJsUtils, AxesParameters, Arrow, Vector, ZeroVector }
+import {ThreeJsUtils, AxesParameters, Arrow, Vector, Interval }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
@@ -30,22 +30,6 @@ export const ContourType = Object.freeze({
     ISO_PARAMETRIC: "Isoparametric",
     NONE: "None"
 });
-
-export class Interval {
-    constructor(from=-Infinity, to=Infinity) {
-        this.from = from;
-        this.to = to;
-    }
-
-    shrinkTo(value) {
-        if (this.from < value) this.from = value;
-        if (this.to > value) this.to = value;
-    }
-
-    scaleValue = (value) => this.to !== this.from ? (value - this.from) / this.range() : 0;
-    range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
-    scaleParameter = (a) => this.range() * (a + this.from / this.range());
-}
 
 export class ColorMapper {
     apply(geometry) {
@@ -609,8 +593,8 @@ export class LiteralStringBasedSurfaceDefinition
     #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
 
     sample(u, v, target) {
-        const U = this.uInterval.scaleParameter(u);
-        const V = this.vInterval.scaleParameter(v);
+        const U = this.uInterval.scaleUnitParameter(u);
+        const V = this.vInterval.scaleUnitParameter(v);
 
         target.set(
             this.xFn(U, V),
@@ -1040,15 +1024,15 @@ export class TangentFrameView extends THREE.Group {
         this.scaleFactor = tangentFrameParameters.scale;
 
         this.axes = { // Arrows in (u, v) directions + normal vector
-            uArrow: new Arrow(ZeroVector, ZeroVector, { color: 0xff0000 }),
-            vArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00ff00 }),
-            normalArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00aaff })
+            uArrow: new Arrow(new Vector(), new Vector(), { color: 0xff0000 }),
+            vArrow: new Arrow(new Vector(), new Vector(), { color: 0x00ff00 }),
+            normalArrow: new Arrow(new Vector(), new Vector(), { color: 0x00aaff })
         }
         tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
 
         this.principals = { // Principal direction vectors
-            k1Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xffaa00 }),
-            k2Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xaa00ff })
+            k1Arrow: new Arrow(new Vector(), new Vector(), { color: 0xffaa00 }),
+            k2Arrow: new Arrow(new Vector(), new Vector(), { color: 0xaa00ff })
         }
         tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
 

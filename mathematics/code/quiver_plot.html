@@ -1,28 +1,3 @@
-<style>
-
-    .applicationCanvas {
-        display: block;
-        background-color: #131313;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 4 / 3;
-        margin: auto;
-    }
-
-    .canvasWrapper {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        aspect-ratio: 4 / 3;
-    }
-
-    .guiContainer {
-        margin-top: 0.5em;
-        background: #1a1a1a;
-    }
-
-</style>
 <script type="importmap">
     {
       "imports": {
@@ -40,7 +15,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, AxesParameters, Arrow, MatlabAxesLayout, MatlabAnnotations, Vector, UnitVectorE2 }
+    import { Axes, AxesParameters, ArrowField, Interval, MatlabAxesLayout, MatlabAnnotations, Vector }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Plot3D }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
@@ -54,10 +29,15 @@
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+    dir.position.set(3, 5, 4);
+    scene.add(dir);
+
     const axes = new Axes();
     worldGroup.add(axes);
-    const axesLayout = new MatlabAxesLayout(2, 10);
-    const annotations = new MatlabAnnotations(canvasContainer, 2, 10);
+    const axesLayout = new MatlabAxesLayout(2.1, 10);
+    const annotations = new MatlabAnnotations(canvasContainer, 2.1, 10);
     axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
     worldGroup.add(annotations);
@@ -66,7 +46,7 @@
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
     bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 1.1, translationY: -3});
+    plot3D.fitToBoundingBox(bbox, {padding: 1.1, translationY: -1});
 
     const VectorFields = Object.freeze({
         FIELD_1: "Vector field 1",
@@ -76,7 +56,7 @@
     const params = {
         animate: false,
         vectorField: VectorFields.FIELD_1,
-        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false, axesLabels: false})
+        axesParameters: new AxesParameters({axesLabels: false})
     };
 
     class ControlsGui {
@@ -87,6 +67,8 @@
                 .name("Field type")
                 .onChange(value => this.#changeVectorFieldTo(value));
             gui.add(params, "animate").name("Animate");
+            gui.add({reset: () =>  vectorFieldView.reset()}, "reset")
+                .name("Reset field");
 
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'axesLines')
@@ -107,15 +89,10 @@
         }
 
         #doChangeVectorField(vectorField) {
-            let { positions: newPositions, arrows: newArrows } =
-                initializeQuiverPlotFrom(initialPositions, vectorField);
-
-            positions = newPositions;
-            arrows = newArrows;
+            vectorFieldView.updateFieldWith(vectorField);
         }
 
         #changeVectorFieldTo(vectorField) {
-            arrows.forEach(arrow => {worldGroup.remove(arrow);});
             switch (vectorField) {
                 case VectorFields.FIELD_1:
                     equationDiv.innerHTML = titleField1;
@@ -137,7 +114,7 @@
         const u = Math.sin(Math.PI * x) * Math.cos(Math.PI * y) * Math.cos(Math.PI * z);
         const v = -Math.cos(Math.PI * x) * Math.sin(Math.PI * y) * Math.cos(Math.PI * z);
         const w = Math.sqrt(2.0 / 3.0) * Math.cos(Math.PI * x) * Math.cos(Math.PI * y) * Math.sin(Math.PI * z);
-        return new Vector(u, w, v);
+        return new Vector(u, v, w);
     }
 
     const titleField2 = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$$";
@@ -149,60 +126,18 @@
     equationDiv.innerHTML = titleField1;
     if (window.MathJax) MathJax.typesetPromise([equationDiv]);
 
-    const initialPositions = [];
-    for (let x = -0.8; x < 1; x += .2)
-        for (let y = -0.8; y < 1; y += .2)
-            for (let z = -0.8; z < 1; z += .4)
-                initialPositions.push(new Vector(x, z, y));
+    const arrowField = new ArrowField(
+        new Interval(-1, 0.8), new Interval(-1, 0.8), new Interval(-1, 0.8),
+        vectorField1,
+        { scaleFactor: 0.2 }
+    );
+    worldGroup.add(arrowField);
 
-    function initializeQuiverPlotFrom(positions, field, scaleFactor=0.2, hue=0.5) {
-        const arrows = [];
-        const arrowPositions = [];
-        positions.forEach(position => {
-            const axis = field(position.x, position.y, position.z).multiplyScalar(scaleFactor);
-            if (axis.length() > 1e-3) {
-                const color = new THREE.Color().setHSL(hue + position.y, 1.0, 0.5);
-                const arrow = new Arrow(position.clone().add(UnitVectorE2), axis, {color: color});
-                worldGroup.add(arrow);
-                arrows.push(arrow);
-                arrowPositions.push(position);
-            }
-        });
-        return {positions, arrows};
-    }
-
-    let {positions, arrows} = initializeQuiverPlotFrom(initialPositions, vectorField1);
-    const tmpAxis = new Vector();
-    const tmpPos  = new Vector();
-
-    function update(dt, scaleFactor=0.2) {
-        const vectorField = params.vectorField === VectorFields.FIELD_1 ? vectorField1 : vectorField2;
-
-        arrows.forEach(arrow => {
-            const position = arrow.position.clone().sub(UnitVectorE2);
-
-            tmpAxis.copy(arrow.axis);
-            tmpPos.copy(position).addScaledVector(tmpAxis, dt); // Euler
-
-            tmpAxis.copy(vectorField(tmpPos.x, tmpPos.y, tmpPos.z)).multiplyScalar(scaleFactor);
-            arrow.moveTo(tmpPos.clone().add(UnitVectorE2));
-            arrow.updateAxis(tmpAxis);
-        });
-    }
-
-    let numSteps = 0;
-    const maxSteps = 100;
     function animate() {
         requestAnimationFrame(animate);
         plot3D.render();
         if (!params.animate) return;
-
-        update(0.02);
-        numSteps++;
-        if (numSteps > maxSteps) {
-            numSteps = 0;
-            arrows.forEach((arrow, index) => arrow.moveTo(positions[index].clone().add(UnitVectorE2)));
-        }
+        arrowField.euler();
     }
     animate();
 </script>

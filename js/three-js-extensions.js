@@ -78,6 +78,49 @@ export class ThreeJsUtils {
     }
 }
 
+export class Interval {
+    constructor(from=-Infinity, to=Infinity) {
+        this.from = from;
+        this.to = to;
+    }
+
+    shrinkTo(value) {
+        if (this.from < value) this.from = value;
+        if (this.to > value) this.to = value;
+    }
+
+    /**
+     * Use:
+     *   for (const x of interval.iterator(0.25)) {
+     *     console.log(x);
+     *
+     * @param stepSize the increment between steps.
+     * @returns {Generator<*, void, *>}
+     */
+    iterator(stepSize = 0.1) {
+        const self = this;
+        return (function* () {
+            if (!isFinite(self.from) || !isFinite(self.to))
+                throw new Error("Cannot iterate over an infinite interval.");
+            if (stepSize <= 0)
+                throw new Error("stepSize must be > 0");
+
+            const n = Math.floor(self.range() / stepSize);
+            for (let i = 0; i <= n; i++)
+                yield self.from + i * stepSize;
+        })();
+    }
+
+    scaleValue = (value) => this.to === this.from ? 0: (value - this.from) / this.range();
+    range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
+    /**
+     * Scale a unit parameter [0, 1] up to this interval
+     * @param unitParameter the parameter that runs from [0, 1]
+     * @returns {number} the scaled parameter
+     */
+    scaleUnitParameter = (unitParameter) => this.range() * (unitParameter + this.from / this.range());
+}
+
 export class Axes extends THREE.Group {
     constructor() {
         super();
@@ -295,6 +338,7 @@ const shaftGeometryRound = new THREE.CylinderGeometry(1, 1, 1, 16);
 const shaftGeometrySquare = new THREE.BoxGeometry(1, 1, 1);
 const headGeometryRound = new THREE.ConeGeometry(1, 1, 16);
 const headGeometrySquare = new THREE.ConeGeometry(1, 1, 4);
+
 export class Arrow extends THREE.Group {
     constructor(origin, axis, {
         color = 0xff0000,
@@ -355,6 +399,144 @@ export class Arrow extends THREE.Group {
     positionVectorTo = (other) => new Vector().copy(other.position).sub(this.position);
 
     distanceToSquared = (other) => this.position.distanceToSquared(other.position);
+}
+
+export class ArrowField extends THREE.Group {
+    constructor(xInterval, yInterval, zInterval, vectorFieldFunction, {
+        scaleFactor = 0.3,
+        shaftWidth  = 0.08,  // relative to axis length
+        headWidth   = 2.0,   // times shaft width
+        headLength  = 4.0,   // times shaft width
+        round       = false
+    } = {}) {
+        super();
+        this.positions = [];
+        this.xInterval = xInterval;
+        this.yInterval = yInterval;
+        this.zInterval = zInterval;
+        this.scaleFactor = scaleFactor;
+        this.vectorField = vectorFieldFunction;
+        this.shaftWidth = shaftWidth;
+        this.headWidth  = headWidth;
+        this.headLength = headLength;
+
+        const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
+        const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
+        const shaftMaterial = new THREE.MeshStandardMaterial();
+        const headMaterial  = new THREE.MeshStandardMaterial();
+
+        this.#initializePositions();
+        // === instanced meshes ===
+        this.shaftMesh = new THREE.InstancedMesh(shaftGeometry, shaftMaterial, this.positions.length);
+        this.headMesh  = new THREE.InstancedMesh(headGeometry,  headMaterial,  this.positions.length);
+
+        // per-instance color
+        const colors = new Float32Array(this.positions.length * 3);
+        this.shaftMesh.instanceColor = new THREE.InstancedBufferAttribute(colors, 3);
+        this.headMesh.instanceColor  = this.shaftMesh.instanceColor;
+
+        this.add(this.shaftMesh, this.headMesh);
+
+        // temp objects (no allocations per frame)
+        this.tmpMatrix = new THREE.Matrix4();
+        this.tmpQuaternion = new THREE.Quaternion();
+        this.tmpScale      = new Vector();
+        this.tmpPosition   = new Vector();
+        this.tmpAxis       = new Vector();
+
+        // initial build
+        this.updateFieldWith(vectorFieldFunction);
+    }
+
+    #collapseArrow(index, position) {
+        this.tmpScale.set(0, 0, 0);
+        this.tmpMatrix.compose(position, new THREE.Quaternion(), this.tmpScale);
+        this.shaftMesh.setMatrixAt(index, this.tmpMatrix);
+        this.headMesh.setMatrixAt(index, this.tmpMatrix);
+    }
+
+    #arrowSizes(axis) {
+        const length = axis.length();
+        const shaftRadius = length * this.shaftWidth;
+        const headLength  = this.headLength * shaftRadius;
+        const shaftLength = Math.max(length - headLength, 1e-6);
+        return {shaftRadius, shaftLength, headLength};
+    }
+
+    #initializePositions() {
+        this.positions = [];
+        for (const x of this.xInterval.iterator(.1))
+            for (const y of this.yInterval.iterator(.1))
+                for (const z of this.zInterval.iterator(.25))
+                    this.positions.push(new Vector(x, z + 1, y));
+    }
+
+    #updateShaft(index, position, axis) {
+        const {shaftRadius, shaftLength} = this.#arrowSizes(axis);
+        this.tmpScale.set(shaftRadius, shaftLength, shaftRadius);
+        this.tmpPosition.copy(position).addScaledVector(axis, 0.5);
+
+        this.tmpMatrix.compose(this.tmpPosition, this.tmpQuaternion, this.tmpScale);
+        this.shaftMesh.setMatrixAt(index, this.tmpMatrix);
+
+        const color = new THREE.Color().setHSL(position.y * .5, 1.0, 0.5);
+        this.shaftMesh.setColorAt(index, color);
+    }
+
+    #updateHead(index, position, axis) {
+        const {shaftRadius, headLength} = this.#arrowSizes(axis);
+        this.tmpScale.set(
+            this.headWidth * shaftRadius,
+            headLength,
+            this.headWidth * shaftRadius
+        );
+        this.tmpPosition.copy(position).addScaledVector(axis, 1.0);
+        this.tmpMatrix.compose(this.tmpPosition, this.tmpQuaternion, this.tmpScale);
+        this.headMesh.setMatrixAt(index, this.tmpMatrix);
+    }
+
+    #updateArrowInstance(index, position, axis) {
+        const length = axis.length();
+        if (length < 1e-6) {
+            this.#collapseArrow(index, position);
+            return;
+        }
+
+        // rotation: Y-axis → axis direction
+        this.tmpQuaternion.setFromUnitVectors(
+            UnitVectorE2,
+            axis.clone().normalize()
+        );
+
+        this.#updateShaft(index, position, axis);
+        this.#updateHead(index, position, axis);
+    }
+
+    euler(dt = 0.01) {
+        this.positions.forEach(pos => pos.addScaledVector(this.vectorField(pos.x, pos.y, pos.z), dt));
+        vectorFieldView.updateFieldWith(vectorFieldView.vectorField);
+    }
+
+    reset() {
+        this.#initializePositions();
+        this.updateFieldWith(this.vectorField);
+    }
+
+    updateFieldWith(newVectorFieldFunction) {
+        this.vectorField = newVectorFieldFunction;
+        this.positions.forEach((position, index) => {
+
+            this.tmpAxis
+                .copy(newVectorFieldFunction(position.x, position.y, position.z))
+                .multiplyScalar(this.scaleFactor);
+
+            this.#updateArrowInstance(index, position, this.tmpAxis);
+        });
+
+        this.shaftMesh.instanceMatrix.needsUpdate = true;
+        this.headMesh.instanceMatrix.needsUpdate  = true;
+        this.shaftMesh.instanceColor.needsUpdate  = true;
+    }
 }
 
 export class Ball {
