@@ -69,6 +69,9 @@
             gui.add(params, "animate").name("Animate");
             gui.add({reset: () =>  arrowField.reset()}, "reset")
                 .name("Reset field");
+            gui.add(params, "colorMode", Object.values(ArrowField.ColorMode))
+                .name("Color by")
+                .onChange(mode => arrowField.changeColorModeTo(mode));
 
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'axesLines')

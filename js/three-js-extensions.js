@@ -632,6 +632,8 @@ export class ArrowField extends THREE.Group {
         this.#updateArrowColor(index, axis, scalars, min, max);
     }
 
+    changeColorModeTo = (newColorMode) => this.colorMode = newColorMode;
+
     euler(dt = 0.01) {
         this.positions.forEach(position => position.addScaledVector(this.vectorField.sample(position), dt));
         this.updateFieldWith(this.vectorField);
