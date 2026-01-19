@@ -548,7 +548,7 @@ export class ArrowField extends THREE.Group {
 
     updateFieldWith(newVectorFieldFunction) {
         this.vectorField = newVectorFieldFunction;
-        const { min, max } = this.#computeMagnitudeRange(field);
+        const { min, max } = this.#computeMagnitudeRange(this.vectorField);
         this.positions.forEach((position, index) => {
             this.tmpAxis
                 .copy(newVectorFieldFunction(position.x, position.y, position.z))
