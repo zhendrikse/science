@@ -15,7 +15,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, AxesParameters, ArrowField, Interval, MatlabAxesLayout, MatlabAnnotations, Vector }
+    import { Axes, AxesParameters, ArrowField, VectorField, Interval, MatlabAxesLayout, MatlabAnnotations, Vector }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Plot3D }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
@@ -109,17 +109,29 @@
 
     const gui = new ControlsGui(axesLayout, annotations);
 
-    const titleField1 = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$$";
-    function vectorField1(position) {
-        const u = Math.sin(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.cos(Math.PI * position.z);
-        const v = -Math.cos(Math.PI * position.x) * Math.sin(Math.PI * position.y) * Math.cos(Math.PI * position.z);
-        const w = Math.sqrt(2.0 / 3.0) * Math.cos(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.sin(Math.PI * position.z);
-        return new Vector(u, v, w);
+    class VectorField1 extends VectorField {
+        constructor() {
+            super();
+            this.meta = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$$";
+        }
+
+        sample(position) {
+            const u = Math.sin(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.cos(Math.PI * position.z);
+            const v = -Math.cos(Math.PI * position.x) * Math.sin(Math.PI * position.y) * Math.cos(Math.PI * position.z);
+            const w = Math.sqrt(2.0 / 3.0) * Math.cos(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.sin(Math.PI * position.z);
+            return new Vector(u, v, w);
+        }
     }
 
-    const titleField2 = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$$";
-    function vectorField2(position) {
-        return position.clone();
+    class VectorField2 extends VectorField {
+        constructor() {
+            super();
+            this.meta = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$$";
+        }
+
+        sample(position) {
+            return position.clone();
+        }
     }
 
     const equationDiv = document.getElementById("vectorFieldTitle");

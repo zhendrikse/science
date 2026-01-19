@@ -401,8 +401,29 @@ export class Arrow extends THREE.Group {
     distanceToSquared = (other) => this.position.distanceToSquared(other.position);
 }
 
+export class VectorField {
+    constructor() {}
+
+    range(positions) {
+        let min = Infinity;
+        let max = -Infinity;
+
+        for (const position of positions) {
+            const mag = this.sample(position).length();
+            min = Math.min(min, mag);
+            max = Math.max(max, mag);
+        }
+
+        return { min, max };
+    }
+
+    sample(positionVector) {
+        throw new Error("You invoked the method of an abstract base class. Please create a subclass first.");
+    }
+}
+
 export class ArrowField extends THREE.Group {
-    constructor(xInterval, yInterval, zInterval, vectorFieldFunction, {
+    constructor(xInterval, yInterval, zInterval, vectorField, {
         scaleFactor = 0.3,
         shaftWidth  = 0.08,  // relative to axis length
         headWidth   = 2.0,   // times shaft width
@@ -415,7 +436,7 @@ export class ArrowField extends THREE.Group {
         this.yInterval = yInterval;
         this.zInterval = zInterval;
         this.scaleFactor = scaleFactor;
-        this.vectorField = vectorFieldFunction;
+        this.vectorField = vectorField;
         this.shaftWidth = shaftWidth;
         this.headWidth  = headWidth;
         this.headLength = headLength;
@@ -462,20 +483,6 @@ export class ArrowField extends THREE.Group {
         const shaftLength = Math.max(length - headLength, 1e-6);
         return {shaftRadius, shaftLength, headLength};
     }
-
-    #computeMagnitudeRange() {
-        let min = Infinity;
-        let max = -Infinity;
-
-        for (const position of this.positions) {
-            const mag = this.vectorField(position).length();
-            min = Math.min(min, mag);
-            max = Math.max(max, mag);
-        }
-
-        return { min, max };
-    }
-
 
     #initializePositions() {
         this.positions = [];
@@ -537,7 +544,7 @@ export class ArrowField extends THREE.Group {
     }
 
     euler(dt = 0.01) {
-        this.positions.forEach(position => position.addScaledVector(this.vectorField(position), dt));
+        this.positions.forEach(position => position.addScaledVector(this.vectorField.sample(position), dt));
         this.updateFieldWith(this.vectorField);
     }
 
@@ -548,7 +555,7 @@ export class ArrowField extends THREE.Group {
 
     updateFieldWith(newVectorFieldFunction) {
         this.vectorField = newVectorFieldFunction;
-        const { min, max } = this.#computeMagnitudeRange(this.vectorField);
+        const { min, max } = this.vectorField.range(this.positions);
         this.positions.forEach((position, index) => {
             this.tmpAxis
                 .copy(newVectorFieldFunction(position))
