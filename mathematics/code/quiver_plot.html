@@ -67,7 +67,7 @@
                 .name("Field type")
                 .onChange(value => this.#changeVectorFieldTo(value));
             gui.add(params, "animate").name("Animate");
-            gui.add({reset: () =>  vectorFieldView.reset()}, "reset")
+            gui.add({reset: () =>  arrowField.reset()}, "reset")
                 .name("Reset field");
 
             const axesFolder = gui.addFolder("Axes");
