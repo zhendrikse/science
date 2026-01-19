@@ -466,7 +466,7 @@ export class ArrowField extends THREE.Group {
         this.tmpAxis       = new Vector();
 
         // initial build
-        this.updateFieldWith(vectorFieldFunction);
+        this.updateFieldWith(vectorField);
     }
 
     #collapseArrow(index, position) {
@@ -553,12 +553,12 @@ export class ArrowField extends THREE.Group {
         this.updateFieldWith(this.vectorField);
     }
 
-    updateFieldWith(newVectorFieldFunction) {
-        this.vectorField = newVectorFieldFunction;
+    updateFieldWith(newVectorField) {
+        this.vectorField = newVectorField;
         const { min, max } = this.vectorField.range(this.positions);
         this.positions.forEach((position, index) => {
             this.tmpAxis
-                .copy(newVectorFieldFunction(position))
+                .copy(newVectorField(position))
                 .multiplyScalar(this.scaleFactor);
 
             this.#updateArrowInstance(index, position, this.tmpAxis, min, max);

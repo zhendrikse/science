@@ -88,31 +88,28 @@
                 .appendChild(gui.domElement);
         }
 
-        #doChangeVectorField(vectorField) {
-            vectorFieldView.updateFieldWith(vectorField);
-        }
-
         #changeVectorFieldTo(vectorField) {
             switch (vectorField) {
                 case VectorFields.FIELD_1:
-                    equationDiv.innerHTML = titleField1;
-                    this.#doChangeVectorField(vectorField1);
+                    equationDiv.innerHTML = vectorField1.meta;
+                    arrowField.updateFieldWith(vectorField1);
                     break;
                 case VectorFields.FIELD_2:
-                    equationDiv.innerHTML = titleField2;
-                    this.#doChangeVectorField(vectorField2);
+                    equationDiv.innerHTML = titleField2.meta;
+                    arrowField.updateFieldWith(vectorField2);
                     break;
             }
             if (window.MathJax) MathJax.typesetPromise([equationDiv]);
         }
     }
 
-    const gui = new ControlsGui(axesLayout, annotations);
-
     class VectorField1 extends VectorField {
         constructor() {
             super();
-            this.meta = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$$";
+            this.meta = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} =" +
+                "\\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ " +
+                "-\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\" +
+                " (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$$";
         }
 
         sample(position) {
@@ -134,16 +131,20 @@
         }
     }
 
-    const equationDiv = document.getElementById("vectorFieldTitle");
-    equationDiv.innerHTML = titleField1;
-    if (window.MathJax) MathJax.typesetPromise([equationDiv]);
-
+    const vectorField1 = new VectorField1();
+    const vectorField2 = new VectorField2();
     const arrowField = new ArrowField(
         new Interval(-1, 0.8), new Interval(-1, 0.8), new Interval(-1, 0.8),
         vectorField1,
         { scaleFactor: 0.2 }
     );
     worldGroup.add(arrowField);
+
+    const equationDiv = document.getElementById("vectorFieldTitle");
+    equationDiv.innerHTML = vectorField1.meta;
+    if (window.MathJax) MathJax.typesetPromise([equationDiv]);
+
+    const gui = new ControlsGui(axesLayout, annotations);
 
     function animate() {
         requestAnimationFrame(animate);
