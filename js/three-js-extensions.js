@@ -680,14 +680,19 @@ export class ArrowField extends THREE.Group {
 }
 
 export class Ball {
-    constructor(parent, position, mass=10, color=0xffff00) {
-        const massRadius = 1;
+    constructor(parent, position, {
+        radius = 1,
+        velocity = new Vector(0, 0, 0),
+        mass=10,
+        color=0xffff00,
+        segments = 24})
+    {
         const massMaterial = new THREE.MeshStandardMaterial({color: color, metalness:0.7, roughness:0.2});
-        this.sphere = new THREE.Mesh(new THREE.SphereGeometry(massRadius,24,24), massMaterial);
+        this.sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, segments, segments), massMaterial);
         this.sphere.position.copy(position);
         this.sphere.castShadow = true;
         this.mass = mass;
-        this.velocity = new Vector(0, 0, 0);
+        this.velocity = velocity;
         parent.add(this.sphere);
     }
 
