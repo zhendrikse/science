@@ -149,11 +149,11 @@ export class SurfaceView {
 
 export class ContourParameters {
     constructor({
-                    color = "#dd0",
-                    contourType = ContourType.ISO_PARAMETRIC,
-                    uCount = 20,
-                    vCount = 40
-                } = {}) {
+        color = "#dd0",
+        contourType = ContourType.ISO_PARAMETRIC,
+        uCount = 20,
+        vCount = 40
+    } = {}) {
         this.color = color;
         this.contourType = contourType;
         this.uCount = uCount;
@@ -916,6 +916,7 @@ export class ViewParameters {
                     normals = false,
                     opacity = 0.9,
                     resolution = 75,
+                    tangentFrameParameters = new TangentFrameParameters(),
                     wireframe = false
                 } ={}) {
         this.autoRotate = autoRotate;
@@ -924,10 +925,11 @@ export class ViewParameters {
         this.category = category;
         this.colorMode = colorMode;
         this.contourParameters = contourParameters;
-        this.wireframe = wireframe;
         this.normals = normals;
-        this.resolution = resolution;
         this.opacity = opacity;
+        this.resolution = resolution;
+        this.tangentFrameParameters = tangentFrameParameters;
+        this.wireframe = wireframe;
     }
 }
 
@@ -1009,42 +1011,56 @@ export class Plot3D {
     }
 }
 
+export class TangentFrameParameters {
+    constructor({
+                    u=0.25,
+                    v=0.5,
+                    showAxes=false,
+                    showPrincipals=false,
+                    wireframe=false,
+                    scale = 0.7,
+                    opacity = 0.5,
+                    color = 0x8888ff
+                } = {}) {
+        this.u = u;
+        this.v = v;
+        this.color = color;
+        this.showAxes = showAxes;
+        this.showPrincipals = showPrincipals;
+        this.wireframe = wireframe;
+        this.scale = scale;
+        this.opacity = opacity;
+    }
+}
+
 export class TangentFrameView extends THREE.Group {
-    constructor(surface, {
-        u=0.25,
-        v=0.5,
-        showAxes=false,
-        showPrincipals=false,
-        wireframe=false,
-        scale = 0.7,
-        opacity = 0.5,
-        color = 0x8888ff} = {}) {
+    constructor(surface, tangentFrameParameters) {
         super();
         this.surface = surface;
-        this.dg = new DifferentialGeometry(surface);
-        this.scaleFactor = scale;
+        this.diffGeometry = new DifferentialGeometry(surface);
+        this.scaleFactor = tangentFrameParameters.scale;
 
         this.axes = { // Arrows in (u, v) directions + normal vector
             uArrow: new Arrow(ZeroVector, ZeroVector, { color: 0xff0000 }),
             vArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00ff00 }),
             normalArrow: new Arrow(ZeroVector, ZeroVector, { color: 0x00aaff })
         }
-        showAxes ? this.showAxes() : this.hideAxes();
+        tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
 
         this.principals = { // Principal direction vectors
             k1Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xffaa00 }),
             k2Arrow: new Arrow(ZeroVector, ZeroVector, { color: 0xaa00ff })
         }
-        showPrincipals ? this.showPrincipals() : this.hidePrincipals();
+        tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
 
         this.tangentPlane = new THREE.Mesh(
             new THREE.PlaneGeometry(1, 1, 10, 10),
             new THREE.MeshStandardMaterial({
-                color: color,
+                color: tangentFrameParameters.color,
                 side: THREE.DoubleSide,
                 transparent: true,
-                opacity: opacity,
-                wireframe: wireframe
+                opacity: tangentFrameParameters.opacity,
+                wireframe: tangentFrameParameters.wireframe
             })
         );
 
@@ -1054,11 +1070,11 @@ export class TangentFrameView extends THREE.Group {
             this.principals.k1Arrow,
             this.principals.k2Arrow
         );
-        this.update(u, v);
+        this.update(tangentFrameParameters.u, tangentFrameParameters.v);
     }
 
     update(u, v) {
-        const frame = this.dg.principalFrame(u, v);
+        const frame = this.diffGeometry.principalFrame(u, v);
         if (!frame) return;
 
         this.axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor * .5));
@@ -1111,6 +1127,14 @@ const surfaceDefinitions = [{
         zFn: "(3.5 + 1.25 * cos(v)) * exp(0.12 * u) * sin(1 * u)"
     },
     intervals: [["-40", "-1"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Astroidal helix", category: Category.MISC},
+    parametrization: {
+        xFn: "cos(u) * cos(u) * cos(u) * cos(v) * cos(v) * cos(v)",
+        yFn: "sin(v) * sin(v) * sin(v)",
+        zFn: "sin(u) * sin(u) * sin(u) * cos(v) * cos(v) * cos(v)"
+    },
+    intervals: [["0", "2 * pi"], ["pi", "0"]]
 }, {
     meta: {name: "Bellerophina", category: Category.NATURE},
     parametrization: {
