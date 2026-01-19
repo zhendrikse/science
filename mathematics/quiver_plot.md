@@ -7,9 +7,6 @@
 
 <p style="clear: both;"></p>
 
-{% include share_buttons.html %}
-
-
 ## What do the colors show?
 <div class="header_line"><br/></div>
 
@@ -37,7 +34,7 @@ $$
 
 For the color we use the magnitude of the curl:
 $$
-|\nabla \times \mathbf{F}|
+||\nabla \times \mathbf{F}||
 $$
 
 Interpretation:
@@ -75,10 +72,14 @@ Summarizing:
 
 ### Possible extensions
 
-Als je verder wilt (dit sluit hier perfect op aan):
+In the future, the following may be added:
 
 🧭 **streamlines / pathlines**<br/>
 🧠 Helmholtz-decompositie<br/>
 📊 interactieve colorbar<br/>
 ⚡ GPU finite differences (shader)<br/>
 🌀 curl-vectors i.p.v. magnitude<br/>
+
+---
+
+{% include share_buttons.html %}
