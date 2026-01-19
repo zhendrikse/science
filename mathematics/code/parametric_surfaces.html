@@ -68,7 +68,7 @@
     import { ThreeJsUtils, Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Plot3D, Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification, TangentFrameView,
-        ViewParameters, ColorMode, ContourType, LiteralStringBasedSurfaceDefinition, SurfaceDefinitions }
+        ViewParameters, ColorMapper, ContourType, LiteralStringBasedSurfaceDefinition, SurfaceDefinitions }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
@@ -151,7 +151,7 @@
 
         #createSurfaceFolder(folder) {
             const surfaceFolder = folder.addFolder("Surface");
-            surfaceFolder.add(this.viewParameters, "colorMode", Object.values(ColorMode))
+            surfaceFolder.add(this.viewParameters, "colorMode", Object.values(ColorMapper.ColorMode))
                 .name("Color Mode")
                 .onChange(() => this.surface.changeColorModeTo(this.viewParameters.colorMode));
             surfaceFolder.add(this.viewParameters, 'baseColor')

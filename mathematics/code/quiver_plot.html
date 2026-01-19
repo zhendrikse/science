@@ -20,6 +20,7 @@
     import { Plot3D }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+    import {ColorMapper} from "../../js/3d-surface-components";
 
     const canvasContainer = document.getElementById("quiverContainer");
     const canvas = document.getElementById("quiverCanvas");
@@ -56,6 +57,7 @@
     const params = {
         animate: false,
         vectorField: VectorFields.FIELD_1,
+        colorMode: ArrowField.ColorMode.MAGNITUDE,
         axesParameters: new AxesParameters({axesLabels: false})
     };
 
