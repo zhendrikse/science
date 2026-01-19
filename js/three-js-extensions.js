@@ -603,11 +603,10 @@ export class ArrowField extends THREE.Group {
     #updateArrowColor(index, axis, scalars, scalarRange) {
         switch (this.colorMode) {
             case ArrowField.ColorMode.DIVERGENCE:
-                const scalar = scalars[index];
-                this.shaftMesh.setColorAt(index, this.#scalarToColor(scalar, scalarRange));
+                this.shaftMesh.setColorAt(index, this.#scalarToColor(scalars[index], scalarRange));
                 break;
             case ArrowField.ColorMode.CURL:
-                const t = THREE.MathUtils.clamp(scalarRange.scaleValue(scalar), 0, 1);
+                const t = THREE.MathUtils.clamp(scalarRange.scaleValue(scalars[index]), 0, 1);
                 const hue = (1 - t) * 0.66;
                 this.shaftMesh.setColorAt(index, new THREE.Color().setHSL(hue, 1, 0.5));
                 break;
