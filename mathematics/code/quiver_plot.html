@@ -110,16 +110,16 @@
     const gui = new ControlsGui(axesLayout, annotations);
 
     const titleField1 = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} \\sin(\\pi x)\\cos(\\pi y)\\cos(\\pi z) \\\\ -\\cos(\\pi  x)\\sin(\\pi y)\\cos(\\pi z) \\\\ (\\sqrt{(2 / 3)} \\cos(\\pi x)\\cos(\\pi y)\\sin(\\pi z)) \\end{pmatrix}$$";
-    function vectorField1(x, y, z) {
-        const u = Math.sin(Math.PI * x) * Math.cos(Math.PI * y) * Math.cos(Math.PI * z);
-        const v = -Math.cos(Math.PI * x) * Math.sin(Math.PI * y) * Math.cos(Math.PI * z);
-        const w = Math.sqrt(2.0 / 3.0) * Math.cos(Math.PI * x) * Math.cos(Math.PI * y) * Math.sin(Math.PI * z);
+    function vectorField1(position) {
+        const u = Math.sin(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.cos(Math.PI * position.z);
+        const v = -Math.cos(Math.PI * position.x) * Math.sin(Math.PI * position.y) * Math.cos(Math.PI * position.z);
+        const w = Math.sqrt(2.0 / 3.0) * Math.cos(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.sin(Math.PI * position.z);
         return new Vector(u, v, w);
     }
 
     const titleField2 = "$$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix}$$";
-    function vectorField2(x, y, z) {
-        return new Vector(x, y, z);
+    function vectorField2(position) {
+        return position.clone();
     }
 
     const equationDiv = document.getElementById("vectorFieldTitle");

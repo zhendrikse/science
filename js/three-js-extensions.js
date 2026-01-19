@@ -463,12 +463,35 @@ export class ArrowField extends THREE.Group {
         return {shaftRadius, shaftLength, headLength};
     }
 
+    #computeMagnitudeRange() {
+        let min = Infinity;
+        let max = -Infinity;
+
+        for (const position of this.positions) {
+            const mag = this.vectorField(position).length();
+            min = Math.min(min, mag);
+            max = Math.max(max, mag);
+        }
+
+        return { min, max };
+    }
+
+
     #initializePositions() {
         this.positions = [];
         for (const x of this.xInterval.iterator(.1))
             for (const y of this.yInterval.iterator(.1))
                 for (const z of this.zInterval.iterator(.25))
                     this.positions.push(new Vector(x, z + 1, y));
+    }
+
+    #magnitudeToColor(mag, minMag, maxMag) {
+        if (maxMag <= minMag) return new THREE.Color(0x00ffff);
+
+        const t = THREE.MathUtils.clamp((mag - minMag) / (maxMag - minMag), 0, 1);
+        const hue = (1 - t) * 0.66; // Hue: 0.66 (blue) → 0.0 (red)
+
+        return new THREE.Color().setHSL(hue, 1.0, 0.5);
     }
 
     #updateShaft(index, position, axis) {
@@ -478,9 +501,6 @@ export class ArrowField extends THREE.Group {
 
         this.tmpMatrix.compose(this.tmpPosition, this.tmpQuaternion, this.tmpScale);
         this.shaftMesh.setMatrixAt(index, this.tmpMatrix);
-
-        const color = new THREE.Color().setHSL(position.y * .5, 1.0, 0.5);
-        this.shaftMesh.setColorAt(index, color);
     }
 
     #updateHead(index, position, axis) {
@@ -495,7 +515,13 @@ export class ArrowField extends THREE.Group {
         this.headMesh.setMatrixAt(index, this.tmpMatrix);
     }
 
-    #updateArrowInstance(index, position, axis) {
+    #updateArrowColor(index, axis, minMag, maxMag) {
+        const mag = axis.length() / this.scaleFactor;
+        const color = this.#magnitudeToColor(mag, minMag, maxMag);
+        this.shaftMesh.setColorAt(index, color);
+    }
+
+    #updateArrowInstance(index, position, axis, min, max) {
         const length = axis.length();
         if (length < 1e-6) {
             this.#collapseArrow(index, position);
@@ -503,17 +529,15 @@ export class ArrowField extends THREE.Group {
         }
 
         // rotation: Y-axis → axis direction
-        this.tmpQuaternion.setFromUnitVectors(
-            UnitVectorE2,
-            axis.clone().normalize()
-        );
+        this.tmpQuaternion.setFromUnitVectors(UnitVectorE2, axis.clone().normalize());
 
         this.#updateShaft(index, position, axis);
         this.#updateHead(index, position, axis);
+        this.#updateArrowColor(index, axis, min, max);
     }
 
     euler(dt = 0.01) {
-        this.positions.forEach(pos => pos.addScaledVector(this.vectorField(pos.x, pos.y, pos.z), dt));
+        this.positions.forEach(position => position.addScaledVector(this.vectorField(position), dt));
         this.updateFieldWith(this.vectorField);
     }
 
@@ -524,13 +548,13 @@ export class ArrowField extends THREE.Group {
 
     updateFieldWith(newVectorFieldFunction) {
         this.vectorField = newVectorFieldFunction;
+        const { min, max } = this.#computeMagnitudeRange(field);
         this.positions.forEach((position, index) => {
-
             this.tmpAxis
                 .copy(newVectorFieldFunction(position.x, position.y, position.z))
                 .multiplyScalar(this.scaleFactor);
 
-            this.#updateArrowInstance(index, position, this.tmpAxis);
+            this.#updateArrowInstance(index, position, this.tmpAxis, min, max);
         });
 
         this.shaftMesh.instanceMatrix.needsUpdate = true;
