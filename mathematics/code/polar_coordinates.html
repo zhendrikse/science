@@ -53,7 +53,7 @@
                     tangentFrameParameters.u = value / 180;
                     tangentFrame.update(value / 180, tangentFrameParameters.v);
                     const pos = new Vector();
-                    sphereSurface.definition().sample(value / 180, tangentFrameParameters.v, pos);
+                    sphereSurface.sample(value / 180, tangentFrameParameters.v, pos);
                     radialLine.geometry.setFromPoints([new Vector(0, 0, 0), pos]);
                 });
 
@@ -63,7 +63,7 @@
                     tangentFrameParameters.v = value / 360;
                     tangentFrame.update(tangentFrameParameters.u , value / 360);
                     const pos = new Vector();
-                    sphereSurface.definition().sample(tangentFrameParameters.u, value / 360, pos);
+                    sphereSurface.sample(tangentFrameParameters.u, value / 360, pos);
                     radialLine.geometry.setFromPoints([new Vector(0, 0, 0), pos]);
                 });
 
