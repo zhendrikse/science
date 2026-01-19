@@ -80,6 +80,4 @@ In the future, the following may be added:
 ⚡ GPU finite differences (shader)<br/>
 🌀 curl-vectors i.p.v. magnitude<br/>
 
----
-
 {% include share_buttons.html %}

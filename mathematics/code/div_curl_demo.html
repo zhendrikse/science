@@ -1,3 +1,16 @@
+<style>
+
+    .applicationCanvas {
+        display: block;
+        background-color: #131313;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -65,8 +78,48 @@
     }
 
     class DemoVectorField extends VectorField {
-        constructor() {
+        constructor(source, sink, curl=null) {
             super();
+            this.source = source; // Ball object
+            this.sink = sink;     // Ball object
+            this.curl = curl;     // Ball object or null
+        }
+
+        sample(position) {
+            let vector = new Vector(0, 0, 0);
+
+            // Source: repelling
+            const radiusToSource = position.clone().sub(this.source.position());
+            const distanceToSource = Math.max(radiusToSource.length(), 0.05);
+            vector.add(radiusToSource.multiplyScalar(1 / (distanceToSource * distanceToSource)));
+
+            // Sink: attracting
+            const radiusToSink = this.sink.position().clone().sub(position);
+            const distanceToSink = Math.max(radiusToSink.length(), 0.05);
+            vector.add(radiusToSink.multiplyScalar(1 / (distanceToSink * distanceToSink)));
+
+            // Curl effect (optional)
+            if (this.curl) {
+                const radiusToCurl = position.clone().sub(this.curl.position());
+                const curlV =
+                    new Vector(-radiusToCurl.y, radiusToCurl.x, 0).multiplyScalar(0.3 / (radiusToCurl.length() + 0.1));
+                vector.add(curlV);
+            }
+
+            // Limit velocity
+            const maxLen = 2;
+            if (vector.length() > maxLen) vector.multiplyScalar(maxLen / vector.length());
+
+            return vector;
+        }
+    }
+
+    class OriginalDemoVectorField extends VectorField {
+        constructor(source, sink, curl=null) {
+            super();
+            this.source = source; // Ball object
+            this.sink = sink;     // Ball object
+            this.curl = curl;     // Ball object or null
         }
 
         sample(position, radius=.75, a=new Vector(1, .5, 0), b=new Vector(-1, -.5, 0), c=new Vector(-1, .5, 0)) {
@@ -110,26 +163,19 @@
         }
     }
 
-    const vectorField = new DemoVectorField();
-    const arrows = [];
-    for (let x = x_min; x <= x_max; x += 0.25)
-        for (let y = y_min; y <= y_max; y += 0.25) {
-            const axis = vectorField.sample(new Vector(x, y, 0)).multiplyScalar(.2),
-                shift = axis.clone().multiplyScalar(-0.1),
-                position = new Vector(x, y, 0).add(shift),
-                arrow = new Arrow(position, axis, {color: "yellow", opacity: 0, round: true, shaftWidth: 0.05});
-            arrows.push(arrow);
-            worldGroup.add(arrow);
-        }
+
+    const source = new Ball(worldGroup, new Vector(-1, 0.5, 0), {radius: 0.25, opacity: 0.4, color: "red"});
+    const sink = new Ball(worldGroup, new Vector(-1, -0.5, 0), {radius: 0.25, opacity: 0.4, color: "green"});
+    const curl = new Ball(worldGroup, new Vector(1, 0.5, 0), {radius: 0.25, opacity: 0.4, color: "cyan"});
+    curl.sphere.visible = false;
+
+    const vectorField = new OriginalDemoVectorField(source, sink, curl);
 
     const particles = [];
     for (let x = x_min; x <= x_max; x += 0.25)
         for (let y = y_min; y <= y_max; y += 0.25)
             particles.push(new Ball(worldGroup, new Vector(x, y, 0), {radius: 0.05, color: "orange"}));
 
-    const source = new Ball(worldGroup, new Vector(-1, 0.5, 0), {radius: 0.25, opacity: 0.4, color: "red"});
-    const sink = new Ball(worldGroup, new Vector(-1, -0.5, 0), {radius: 0.25, opacity: 0.4, color: "green"});
-    const curl = new Ball(worldGroup, new Vector(1, 0.5, 0), {radius: 0.25, opacity: 0.4, color: "cyan"});
 
     function onResize() {
         const rect = canvas.getBoundingClientRect();
@@ -155,17 +201,28 @@
     window.addEventListener("resize", onResize);
     onResize();
 
-    const dt = 0.0025,
-        d_o = 0.0025;
-    let time = 0,
-        opacity = 0;
+    const arrows = [];
+    for (let x = x_min; x <= x_max; x += 0.25)
+        for (let y = y_min; y <= y_max; y += 0.25) {
+            const axis = vectorField.sample(new Vector(x, y, 0)).multiplyScalar(.2),
+                shift = axis.clone().multiplyScalar(-0.1),
+                position = new Vector(x, y, 0).add(shift),
+                arrow = new Arrow(position, axis, {color: "yellow", opacity: 0, round: true, shaftWidth: 0.05});
+            arrows.push(arrow);
+            worldGroup.add(arrow);
+        }
+
+    let time = 0;
+    let opacity = 0;
+    const dt = 0.005;
+    const d_o = 0.005;
 
     function animate() {
         requestAnimationFrame(animate);
 
         time += dt;
 
-        // update particles
+        // Update deeltjes
         for (const particle of particles) {
             const pos = particle.position();
             const vel = vectorField.sample(pos);
@@ -173,15 +230,20 @@
             particle.shiftTo(pos);
         }
 
-        // fading arrows
+        // Fading effect voor arrows
         if (opacity < 1 && time > 0.1) {
             opacity += d_o;
-            for (const arrow of arrows)
-                arrow.updateOpacity(opacity);
+            for (const arrow of arrows) {
+                arrow.shaft.material.opacity = opacity;
+                arrow.shaft.material.transparent = true;
+                arrow.head.material.opacity = opacity;
+                arrow.head.material.transparent = true;
+            }
         }
 
         renderer.render(scene, camera);
     }
+
 
     animate();
 </script>

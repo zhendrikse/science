@@ -8,17 +8,14 @@
 <p style="clear: both;"></p>
 
 ### Background information
+<div class="header_line"><br/></div>
 
-The divergence is defined as:
 $$
 \text{Divergence: }\vec{\nabla} =\begin{pmatrix} \partial/\partial x \\ \partial/\partial y \\  \partial/\partial y \end{pmatrix} \Rightarrow \vec{\nabla} \cdot \vec{V} = \dfrac{\partial V_x}{\partial x} + \dfrac{\partial V_y}{\partial y} + \dfrac{\partial V_z}{\partial z}
 $$
-
-The curl is defined as:
 
 $$
 \text{Curl: } \vec{\nabla} \times \vec{V} = \begin{vmatrix} \hat{x} & \hat{y} & \hat{z} \\ \dfrac{\partial}{\partial x} & \dfrac{\partial}{\partial y} & \dfrac{\partial}{\partial z} \\ V_x & V_y & v_z \end{vmatrix} = \begin{pmatrix} \partial V_z/\partial y - \partial F_y/\partial z \\ \partial V_x/\partial z - \partial F_z/\partial x \\ \partial V_y/\partial x - \partial F_x/\partial y\end{pmatrix} 
 $$
 
---- 
 {% include share_buttons.html %}
