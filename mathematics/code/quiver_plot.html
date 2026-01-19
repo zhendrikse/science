@@ -68,11 +68,11 @@
                 .name("Field type")
                 .onChange(value => this.#changeVectorFieldTo(value));
             gui.add(params, "animate").name("Animate");
-            gui.add({reset: () =>  arrowField.reset()}, "reset")
-                .name("Reset field");
             gui.add(params, "colorMode", Object.values(ArrowField.ColorMode))
                 .name("Color by")
                 .onChange(mode => arrowField.changeColorModeTo(mode));
+            gui.add({reset: () =>  arrowField.reset()}, "reset")
+                .name("Reset field");
 
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'axesLines')
