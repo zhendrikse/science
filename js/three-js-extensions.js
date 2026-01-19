@@ -511,6 +511,7 @@ export class ArrowField extends THREE.Group {
         this.tmpScale      = new Vector();
         this.tmpPosition   = new Vector();
         this.tmpAxis       = new Vector();
+        this.tmpDirection  = new Vector();
 
         // initial build
         this.updateFieldWith(vectorField);
@@ -562,8 +563,10 @@ export class ArrowField extends THREE.Group {
     }
 
     #scalarToColor(value, scalarRange) {
-        const maxAbs = Math.max(Math.abs(scalarRange.from), Math.abs(scalarRange.to));
-        const t = THREE.MathUtils.clamp(value / maxAbs, -1, 1);
+        const t = THREE.MathUtils.clamp(
+            scalarRange.scaleValue(value) * 2 - 1,
+            -1, 1
+        );
 
         if (t < 0) // blue → white
             return new THREE.Color().lerpColors(
@@ -606,6 +609,10 @@ export class ArrowField extends THREE.Group {
                 this.shaftMesh.setColorAt(index, this.#scalarToColor(scalars[index], scalarRange));
                 break;
             case ArrowField.ColorMode.CURL:
+                if (scalarRange.to - scalarRange.from < 1e-12) {
+                    scalarRange.from -= 1;
+                    scalarRange.to   += 1;
+                }
                 const t = THREE.MathUtils.clamp(scalarRange.scaleValue(scalars[index]), 0, 1);
                 const hue = (1 - t) * 0.66;
                 this.shaftMesh.setColorAt(index, new THREE.Color().setHSL(hue, 1, 0.5));
@@ -624,7 +631,8 @@ export class ArrowField extends THREE.Group {
         }
 
         // rotation: Y-axis → axis direction
-        this.tmpQuaternion.setFromUnitVectors(UnitVectorE2, axis.clone().normalize());
+        this.tmpDirection.copy(axis).normalize();
+        this.tmpQuaternion.setFromUnitVectors(UnitVectorE2, this.tmpDirection);
 
         this.#updateShaft(index, position, axis);
         this.#updateHead(index, position, axis);
@@ -648,6 +656,15 @@ export class ArrowField extends THREE.Group {
 
         const scalars = this.#scalarField();
         const scalarRange = new Interval(Math.min(...scalars), Math.max(...scalars));
+        if (this.colorMode === ArrowField.ColorMode.DIVERGENCE) {
+            const maxAbs = Math.max(
+                Math.abs(scalarRange.from),
+                Math.abs(scalarRange.to)
+            );
+            scalarRange.from = -maxAbs;
+            scalarRange.to   =  maxAbs;
+        }
+
         this.positions.forEach((position, index) => {
             this.tmpAxis
                 .copy(newVectorField.sample(position))
