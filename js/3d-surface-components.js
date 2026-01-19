@@ -16,15 +16,6 @@ export const Category = Object.freeze({
     TOROID: "Toroid"
 });
 
-export const ColorMode = Object.freeze({
-    BASE: "Base",
-    GAUSSIAN: "Gaussian curvature",
-    HEIGHT: "Height",
-    MEAN: "Mean curvature",
-    K1: "Principal curvature k₁",
-    K2: "Principal curvature k₂"
-});
-
 export const ContourType = Object.freeze({
     CURVATURE: "Curvature",
     ISO_PARAMETRIC: "Isoparametric",
@@ -32,6 +23,15 @@ export const ContourType = Object.freeze({
 });
 
 export class ColorMapper {
+    static ColorMode = Object.freeze({
+        BASE: "Base",
+        GAUSSIAN: "Gaussian curvature",
+        HEIGHT: "Height",
+        MEAN: "Mean curvature",
+        K1: "Principal curvature k₁",
+        K2: "Principal curvature k₂"
+    });
+
     apply(geometry) {
         throw new Error("apply() not implemented");
     }
@@ -707,7 +707,7 @@ export class NormalsView extends SurfaceView {
 
 export class PrincipalCurvatureColorMapper extends ColorMapper {
     constructor(surface, {
-        which = ColorMode.K1,
+        which = ColorMapper.ColorMode.K1,
         scale = 1.0
     } = {}) {
         super();
@@ -733,7 +733,7 @@ export class PrincipalCurvatureColorMapper extends ColorMapper {
             const v = uv.getY(i);
 
             let { k1, k2 } = this.curvature.principals(u, v);
-            const k = this.which === ColorMode.K1 ? k1 : k2;
+            const k = this.which === ColorMapper.ColorMode.K1 ? k1 : k2;
 
             // diverging color map
             const t = Math.tanh(k * this.scale);
@@ -800,23 +800,23 @@ export class StandardSurfaceView extends SurfaceView {
     addNormalsWith = (normalParameters) => this.normals.buildWith(normalParameters);
     changeColorModeTo(mode) {
         switch (mode) {
-            case ColorMode.HEIGHT:
+            case ColorMapper.ColorMode.HEIGHT:
                 this.colorMapper = new HeightColorMapper({ useBaseColor: false });
                 break;
-            case ColorMode.MEAN:
+            case ColorMapper.ColorMode.MEAN:
                 this.colorMapper = new CurvatureColorMapper(this.surface);
                 break;
-            case ColorMode.K1:
-            case ColorMode.K2:
+            case ColorMapper.ColorMode.K1:
+            case ColorMapper.ColorMode.K2:
                 this.colorMapper = new PrincipalCurvatureColorMapper(this.surface, { which: mode, scale: 3.0 });
                 break;
-            case ColorMode.GAUSSIAN:
+            case ColorMapper.ColorMode.GAUSSIAN:
                 this.colorMapper =
                     new GaussianCurvatureColorMapper(this.surface, {
                         scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
                     });
                 break;
-            case ColorMode.BASE:
+            case ColorMapper.ColorMode.BASE:
             default:
                 this.colorMapper = new HeightColorMapper({ baseColor: this.baseColor, useBaseColor: true});
         }
@@ -895,7 +895,7 @@ export class ViewParameters {
                     axesParameters = new AxesParameters(),
                     baseColor = "#4cf",
                     category = Category.MISC,
-                    colorMode = ColorMode.HEIGHT,
+                    colorMode = ColorMapper.ColorMode.HEIGHT,
                     contourParameters = new ContourParameters(),
                     normals = false,
                     opacity = 0.9,

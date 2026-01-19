@@ -420,14 +420,61 @@ export class VectorField {
     sample(positionVector) {
         throw new Error("You invoked the method of an abstract base class. Please create a subclass first.");
     }
+
+    #centralDifferences(position, h) {
+        const dx = new Vector(h, 0, 0);
+        const dy = new Vector(0, h, 0);
+        const dz = new Vector(0, 0, h);
+
+        const Fx1 = this.sample(position.clone().add(dx));
+        const Fx0 = this.sample(position.clone().sub(dx));
+
+        const Fy1 = this.sample(position.clone().add(dy));
+        const Fy0 = this.sample(position.clone().sub(dy));
+
+        const Fz1 = this.sample(position.clone().add(dz));
+        const Fz0 = this.sample(position.clone().sub(dz));
+        return {Fx0, Fy0, Fz0, Fx1, Fy1, Fz1};
+    }
+
+    divergence(position, h = 1e-2) {
+        const {Fx0, Fy0, Fz0, Fx1, Fy1, Fz1} = this.#centralDifferences(position, h);
+
+        return (
+            (Fx1.x - Fx0.x) +
+            (Fy1.y - Fy0.y) +
+            (Fz1.z - Fz0.z)
+        ) / (2 * h);
+    }
+
+    curl(position, h = 1e-2) {
+        const {Fx0, Fy0, Fz0, Fx1, Fy1, Fz1} = this.#centralDifferences(position, h);
+
+        return new Vector(
+            (Fy1.z - Fy0.z - (Fz1.y - Fz0.y)) / (2 * h),
+            (Fz1.x - Fz0.x - (Fx1.z - Fx0.z)) / (2 * h),
+            (Fx1.y - Fx0.y - (Fy1.x - Fy0.x)) / (2 * h)
+        );
+    }
+
+    curlMagnitude(position, h=1e-2) {
+        return this.curl(position, h).length();
+    }
 }
 
 export class ArrowField extends THREE.Group {
+    static ColorMode = Object.freeze({
+        MAGNITUDE: "magnitude",
+        DIVERGENCE: "divergence",
+        CURL: "curl"
+    });
+
     constructor(xInterval, yInterval, zInterval, vectorField, {
         scaleFactor = 0.3,
         shaftWidth  = 0.08,  // relative to axis length
         headWidth   = 2.0,   // times shaft width
         headLength  = 4.0,   // times shaft width
+        colorMode    = ArrowField.ColorMode.MAGNITUDE,
         round       = false
     } = {}) {
         super();
@@ -437,6 +484,7 @@ export class ArrowField extends THREE.Group {
         this.zInterval = zInterval;
         this.scaleFactor = scaleFactor;
         this.vectorField = vectorField;
+        this.colorMode = colorMode;
         this.shaftWidth = shaftWidth;
         this.headWidth  = headWidth;
         this.headLength = headLength;
@@ -447,16 +495,15 @@ export class ArrowField extends THREE.Group {
         const headMaterial  = new THREE.MeshStandardMaterial();
 
         this.#initializePositions();
-        // === instanced meshes ===
+
         this.shaftMesh = new THREE.InstancedMesh(shaftGeometry, shaftMaterial, this.positions.length);
         this.headMesh  = new THREE.InstancedMesh(headGeometry,  headMaterial,  this.positions.length);
+        this.add(this.shaftMesh, this.headMesh);
 
         // per-instance color
         const colors = new Float32Array(this.positions.length * 3);
         this.shaftMesh.instanceColor = new THREE.InstancedBufferAttribute(colors, 3);
         this.headMesh.instanceColor  = this.shaftMesh.instanceColor;
-
-        this.add(this.shaftMesh, this.headMesh);
 
         // temp objects (no allocations per frame)
         this.tmpMatrix = new THREE.Matrix4();
@@ -501,6 +548,37 @@ export class ArrowField extends THREE.Group {
         return new THREE.Color().setHSL(hue, 1.0, 0.5);
     }
 
+    #scalarField() {
+        return this.positions.map(position => {
+            switch (this.colorMode) {
+                case ArrowField.ColorMode.DIVERGENCE:
+                    return this.vectorField.divergence(position);
+                case ArrowField.ColorMode.CURL:
+                    return this.vectorField.curlMagnitude(position);
+                default:
+                    return this.vectorField.sample(position).length();
+            }
+        });
+    }
+
+    #scalarToColor(value, min, max) {
+        const maxAbs = Math.max(Math.abs(min), Math.abs(max));
+        const t = THREE.MathUtils.clamp(value / maxAbs, -1, 1);
+
+        if (t < 0) // blue → white
+            return new THREE.Color().lerpColors(
+                new THREE.Color(0x0000ff),
+                new THREE.Color(0xffffff),
+                1 + t
+            );
+        else // white → red
+            return new THREE.Color().lerpColors(
+                new THREE.Color(0xffffff),
+                new THREE.Color(0xff0000),
+                t
+            );
+    }
+
     #updateShaft(index, position, axis) {
         const {shaftRadius, shaftLength} = this.#arrowSizes(axis);
         this.tmpScale.set(shaftRadius, shaftLength, shaftRadius);
@@ -522,13 +600,24 @@ export class ArrowField extends THREE.Group {
         this.headMesh.setMatrixAt(index, this.tmpMatrix);
     }
 
-    #updateArrowColor(index, axis, minMag, maxMag) {
-        const mag = axis.length() / this.scaleFactor;
-        const color = this.#magnitudeToColor(mag, minMag, maxMag);
-        this.shaftMesh.setColorAt(index, color);
+    #updateArrowColor(index, axis, scalars, minMag, maxMag) {
+        switch (this.colorMode) {
+            case ArrowField.ColorMode.DIVERGENCE:
+                const scalar = scalars[index];
+                this.shaftMesh.setColorAt(index, this.#scalarToColor(scalar, minMag, maxMag));
+                break;
+            case ArrowField.ColorMode.CURL:
+                const t = THREE.MathUtils.clamp((value - min) / (max - min), 0, 1);
+                const hue = (1 - t) * 0.66;
+                this.shaftMesh.setColorAt(index, new THREE.Color().setHSL(hue, 1, 0.5));
+                break;
+            default:
+                const mag = axis.length() / this.scaleFactor;
+                this.shaftMesh.setColorAt(index, this.#magnitudeToColor(mag, minMag, maxMag));
+        }
     }
 
-    #updateArrowInstance(index, position, axis, min, max) {
+    #updateArrowInstance(index, position, axis, scalars, min, max) {
         const length = axis.length();
         if (length < 1e-6) {
             this.#collapseArrow(index, position);
@@ -540,7 +629,7 @@ export class ArrowField extends THREE.Group {
 
         this.#updateShaft(index, position, axis);
         this.#updateHead(index, position, axis);
-        this.#updateArrowColor(index, axis, min, max);
+        this.#updateArrowColor(index, axis, scalars, min, max);
     }
 
     euler(dt = 0.01) {
@@ -555,13 +644,16 @@ export class ArrowField extends THREE.Group {
 
     updateFieldWith(newVectorField) {
         this.vectorField = newVectorField;
-        const { min, max } = newVectorField.range(this.positions);
+
+        const scalars = this.#scalarField();
+        const min = Math.min(...scalars);
+        const max = Math.max(...scalars);
         this.positions.forEach((position, index) => {
             this.tmpAxis
                 .copy(newVectorField.sample(position))
                 .multiplyScalar(this.scaleFactor);
 
-            this.#updateArrowInstance(index, position, this.tmpAxis, min, max);
+            this.#updateArrowInstance(index, position, this.tmpAxis, scalars, min, max);
         });
 
         this.shaftMesh.instanceMatrix.needsUpdate = true;
