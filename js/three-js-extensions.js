@@ -345,6 +345,7 @@ export class Arrow extends THREE.Group {
         shaftWidth = 0.1, // times the length of the axis
         headWidth = 2,    // times the width of the shaft
         headLength = 5,   // times the width of the shaft
+        opacity = 1,
         round = false,
         visible = true
     } = {}) {
@@ -357,7 +358,11 @@ export class Arrow extends THREE.Group {
 
         const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
         const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
-        const material = new THREE.MeshStandardMaterial({ color });
+        const material = new THREE.MeshStandardMaterial({
+            color: color,
+            opacity: opacity,
+            transparent: true
+        });
 
         this.shaft = new THREE.Mesh(shaftGeometry, material);
         this.head = new THREE.Mesh(headGeometry, material);
@@ -393,6 +398,11 @@ export class Arrow extends THREE.Group {
     }
 
     updateColor = (color) => this.shaft.material.color = color;
+
+    updateOpacity = (opacity) => {
+        this.shaft.material.opacity = opacity;
+        this.head.material.opacity = opacity;
+    }
 
     moveTo = (newPositionVector) => this.position.copy(newPositionVector);
 
