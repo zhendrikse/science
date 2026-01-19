@@ -34,7 +34,7 @@ are packed.
 By varying the value of $n$ from one to the final number of seeds, we obtain 
 values for (the polar coordinates) $r$ and $\phi$ with:
 
-$\begin{cases} \phi &= n \cdot 137.5^\circ \\ r &= c \sqrt{n} \end{cases}$
+$$\begin{cases} \phi &= n \cdot 137.5^\circ \\ r &= c \sqrt{n} \end{cases}$$
 
 where $r$ measures the distance of the seed/dot to the core, and $\phi$ the angle
 at which it is placed. Note the presence of the special number $137.5$, which is 
@@ -43,8 +43,7 @@ the famous [golden angle](https://en.wikipedia.org/wiki/Golden_angle)!
 Finally, we only have to transform the $r$ and $\phi$ values to the $x, y$ coordinates 
 on our computer screen:
 
-$\begin{cases} x &= r \cdot \cos(\phi) \\ y &= r \cdot \sin(\phi) \end{cases}$
-
+$$\begin{cases} x &= r \cdot \cos(\phi) \\ y &= r \cdot \sin(\phi) \end{cases}$$
 
 
 <p style="clear: both;"></p>
