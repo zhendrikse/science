@@ -180,7 +180,7 @@
     const axes = new Axes();
     worldGroup.add(axes);
     const axesLayout = new MatlabAxesLayout(2.1, 10);
-    const annotations = new MatlabAnnotations(canvasContainer, axesLayout);
+    const annotations = new MatlabAnnotations(canvasContainer, 2.1, 10);
     axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
     worldGroup.add(annotations);
