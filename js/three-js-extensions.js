@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 export const ZeroVector = new THREE.Vector3();
 export const UnitVectorE1 = new THREE.Vector3(1, 0, 0);
@@ -184,18 +185,17 @@ export class AxesParameters {
 export class AxesAnnotation extends THREE.Group {
     constructor(container) {
         super();
+        this._renderer = new CSS2DRenderer();
+        this._renderer.domElement.style.position = "absolute";
+        this._renderer.domElement.style.top = "0";
+        this._renderer.domElement.style.pointerEvents = "none";
 
-        this.renderer = new CSS2DRenderer();
-        this.renderer.domElement.style.position = "absolute";
-        this.renderer.domElement.style.top = "0";
-        this.renderer.domElement.style.pointerEvents = "none";
-
-        container.appendChild(this.renderer.domElement);
+        container.appendChild(this._renderer.domElement);
         this.#resize(container);
     }
 
     #resize(container) {
-        this.renderer.setSize(container.clientWidth, container.clientHeight);
+        this._renderer.setSize(container.clientWidth, container.clientHeight);
     }
 
     label(text, pos, color = "yellow") {
@@ -204,33 +204,33 @@ export class AxesAnnotation extends THREE.Group {
         div.style.color = color;
         div.style.fontSize = "16px";
 
-        const obj = new CSS2DObject(div);
-        obj.position.copy(pos);
-        return obj;
+        const label = new CSS2DObject(div);
+        label.position.copy(pos);
+        return label;
     }
 
     render(scene, camera) {
-        this.renderer.render(scene, camera);
+        this._renderer.render(scene, camera);
     }
 }
 
 export class AxesLayout extends THREE.Group {
     constructor(size=5, divisions=10) {
         super();
-        this.size = size;
-        this.divisions = divisions;
+        this._size = size;
+        this._divisions = divisions;
     }
 
     createPlane(color, rotate, gridPos, planePos) {
         const grid = new THREE.GridHelper(
-            this.size,
-            this.divisions,
+            this._size,
+            this._divisions,
             0x333333,
             0x333333
         );
 
         const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(this.size, this.size),
+            new THREE.PlaneGeometry(this._size, this._size),
             new THREE.MeshPhongMaterial({
                 color,
                 transparent: true,
@@ -240,10 +240,8 @@ export class AxesLayout extends THREE.Group {
             })
         );
 
-        grid.position.set(
-            gridPos[0] * 0.5 * this.size, gridPos[1] * 0.5 * this.size, gridPos[2] * 0.5 * this.size);
-        plane.position.set(
-            planePos[0] * 0.5 * this.size, planePos[1] * 0.5 * this.size, planePos[2] * 0.5 * this.size);
+        grid.position.copy(new THREE.Vector3(gridPos[0], gridPos[1], gridPos[2]).multiplyScalar(.5 * this._size));
+        plane.position.copy(new THREE.Vector3(planePos[0], planePos[1], planePos[2]).multiplyScalar(.5 * this._size));
 
         rotate(grid);
         rotate(plane);
@@ -304,10 +302,11 @@ export class MatlabAxesLayout extends AxesLayout {
 }
 
 export class ClassicalAnnotations extends AxesAnnotation {
-    constructor(container, size=5, divisions=10) {
+    constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
         super(container);
 
-        const step = size / divisions;
+        const size = axesLayout.size;
+        const step = size / axesLayout.divisions;
         for (let v = -size * .5 ; v <= size * .5; v += step)
             this.add(
                 this.label(v.toFixed(1), new THREE.Vector3(v, 0, 0.525 * size)),
@@ -316,17 +315,18 @@ export class ClassicalAnnotations extends AxesAnnotation {
             this.add(this.label(v.toFixed(1), new THREE.Vector3(0, v, 0)));
 
         this.add(
-            this.label("X", new THREE.Vector3(0.575 * size, 0, 0), "red"),
-            this.label("Y", new THREE.Vector3(0, 0.575 * size, 0), "green"),
-            this.label("Z", new THREE.Vector3(0, 0, 0.575 * size), "blue"));
+            this.label(axisLabels[0], new THREE.Vector3(0.575 * size, 0, 0), "red"),
+            this.label(axisLabels[1], new THREE.Vector3(0, 0.575 * size, 0), "green"),
+            this.label(axisLabels[2], new THREE.Vector3(0, 0, 0.575 * size), "blue"));
     }
 }
 
 export class MatlabAnnotations extends AxesAnnotation {
-    constructor(container, size=5, divisions=10) {
+    constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
         super(container);
 
-        const step = (2 * size) / divisions;
+        const size = axesLayout.size;
+        const step = (2 * size) / axesLayout.divisions;
         for (let v = 0 ; v <= size; v += step)
             this.add(
                 this.label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, 0.525 * size)),
@@ -334,9 +334,87 @@ export class MatlabAnnotations extends AxesAnnotation {
                 this.label(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v - 0.5 * size)));
 
         this.add(
-            this.label("X", new THREE.Vector3(0.6 * size, 0, -0.5 * size), "red"),
-            this.label("Y", new THREE.Vector3(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
-            this.label("Z", new THREE.Vector3(-0.5 * size, 0, 0.6 * size), "blue"));
+            this.label(axisLabels[0], new THREE.Vector3(0.6 * size, 0, -0.5 * size), "red"),
+            this.label(axisLabels[1], new THREE.Vector3(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
+            this.label(axisLabels[2], new THREE.Vector3(-0.5 * size, 0, 0.6 * size), "blue"));
+    }
+}
+
+export class Plot3D {
+    constructor(canvas, scene, axes) {
+        this.scene = scene;
+        this.axes = axes;
+        this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+
+        // Resizing for mobile devices
+        ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
+        window.addEventListener('resize', () => {
+            ThreeJsUtils.resizeRendererToCanvas(this.renderer, this.camera);
+        });
+
+        this.#createLights();
+        this.controls = new OrbitControls(this.camera, canvas);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.08;
+
+        this.controls.screenSpacePanning = false;
+        this.controls.maxPolarAngle = Math.PI * 0.95;
+    }
+
+    #createLights() {
+        const hemiLight = new THREE.HemisphereLight(
+            0xffffff, // sky
+            0xeeeeee, // ground
+            0.6
+        );
+        this.scene.add(hemiLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        dirLight.position.set(3, 5, 4);
+        dirLight.target.position.set(0, 0, 0);
+        this.scene.add(dirLight);
+        this.scene.add(dirLight.target);
+    }
+
+    #calculateCenter(boundingBox) {
+        const size = new THREE.Vector3();
+        let center = new THREE.Vector3();
+        boundingBox.getSize(size);
+        boundingBox.getCenter(center);
+        return {center, size};
+    }
+
+    fitToBoundingBox(boundingBox, {
+        padding = 1.5,
+        translationY = 0,
+        minDistance = 2,
+        viewDirection = new THREE.Vector3(1, 1, 1)
+    } = {}) {
+        const {center, size} = this.#calculateCenter(boundingBox);
+
+        // distance so that bounding box is always in view
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const verticalFieldOfView = THREE.MathUtils.degToRad(this.camera.fov);
+        let distance = maxDim / Math.tan(verticalFieldOfView / 2);
+        distance = Math.max(distance * padding, minDistance);
+
+        const direction = viewDirection.clone().normalize();
+        this.camera.position
+            .copy(new THREE.Vector3(center.x, center.y + translationY, center.z))
+            .addScaledVector(direction, distance);
+        this.camera.near = distance / 100;
+        this.camera.far  = distance * 10;
+        this.camera.updateProjectionMatrix();
+
+        this.controls.target.copy(center);
+        this.controls.update();
+    }
+
+    render() {
+        this.controls.update();
+        this.axes.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this.camera);
     }
 }
 

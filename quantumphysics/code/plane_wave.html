@@ -1,3 +1,49 @@
+<style>
+    #surface-equation {
+        position: absolute;
+        margin-top: 10px;
+        width: 100%;
+        max-width: 100%;
+        font-size: 13px;
+        color: yellow;
+        text-align: center;
+        z-index: 10;
+    }
+
+    #surface-equation .mjx-chtml {
+        font-size: clamp(12px, 3.5vw, 10px);
+        display: block;                 /* make MathJax fill the div */
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+
+
+
+    .applicationCanvas {
+        display: block;
+        background-color: #131313;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .canvasWrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .guiContainer {
+        margin-top: 0.5em;
+        background: #1a1a1a;
+    }
+
+</style>
+
 <script type="importmap">
     {
       "imports": {
@@ -14,11 +60,15 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Arrow, Axes, AxesParameters, ClassicalAxesLayout, ClassicalAnnotations, Vector, UnitVectorE2 }
+    import { Arrow, ThreeJsUtils}
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    // import { Arrow, Axes, AxesParameters, ClassicalAxesLayout, ClassicalAnnotations }
+    //     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Plot3D }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+    import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
     const canvasContainer = document.getElementById("planeWaveContainer");
     const canvas = document.getElementById("planeWaveCanvas");
@@ -28,21 +78,6 @@
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
-    const axes = new Axes();
-    worldGroup.add(axes);
-    const axesLayout = new ClassicalAxesLayout(20, 10);
-    axesLayout.hideXY();
-    axesLayout.hideYZ();
-    const annotations = new ClassicalAnnotations(canvasContainer, axesLayout, ["X", "Im(Ψ)", "Re(Ψ)"]);
-    axes.setLayout(axesLayout);
-    axes.setAnnotations(annotations);
-    worldGroup.add(annotations);
-    annotations.visible = false;
-
-    const plot3D = new Plot3D(canvas, scene, axes);
-    const bbox = new THREE.Box3();
-    bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 0.7, translationY: -5});
 
     const params = {
         amplitude: 3,
@@ -82,12 +117,25 @@
         }
     }
 
+    const axes = new Axes();
+    worldGroup.add(axes);
+    const axesLayout = new ClassicalAxesLayout(20, 10);
+    axesLayout.hideXY();
+    axesLayout.hideYZ();
+    axes.setLayout(axesLayout);
+    const annotations = new ClassicalAnnotations(canvasContainer, axesLayout, ["X", "Im(Ψ)", "Re(Ψ)"]);
+    axes.setAnnotations(annotations);
+    worldGroup.add(annotations);
+    // annotations.visible = false;
+
     class PlaneWave extends THREE.Group {
         constructor(k=2 * Math.PI / 5, omega=2 * Math.PI, amplitude=3) {
             super();
             this._arrows = [];
             for (let x = -10; x < 10; x += 0.3)
-                this._arrows.push(new Arrow(new Vector(x, 0, 0), new Vector(0, amplitude, 0), {color: 0xff0000, shaftWidth: 0.03, headLength: 6}));
+                this._arrows.push(
+                    new Arrow(new THREE.Vector3(x, 0, 0), new THREE.Vector3(0, amplitude, 0),
+                        {color: 0xff0000, shaftWidth: 0.03, headLength: 6}));
             this._amplitude = amplitude;
             this._k = k;
             this._omega = omega;
@@ -112,23 +160,28 @@
 
                 const y = -Math.sin(phase) * this._amplitude;
                 const z = -Math.cos(phase) * this._amplitude;
-                arrow.updateAxis(new Vector(arrow.axis.x, y, z));
+                arrow.updateAxis(new THREE.Vector3(arrow.axis.x, y, z));
                 arrow.updateColor(new THREE.Color().setHSL(1.0 - cphase / (2 * Math.PI), 1.0, 0.5));
             });
         }
     }
 
-
     const planeWave = new PlaneWave();
     worldGroup.add(planeWave);
+
+    const plot3D = new Plot3D(canvas, scene, axes);
     const gui = new ControlsGui(axesLayout, annotations, planeWave);
+
+    const bbox = new THREE.Box3();
+    bbox.setFromObject( worldGroup );
+    plot3D.fitToBoundingBox(bbox, {padding: 0.7, translationY: -5});
 
     let time = 0;
     const dt = 0.01;
     function animate() {
         requestAnimationFrame(animate);
-        plot3D.render();
         planeWave.update(time);
+        plot3D.render();
         time += dt;
     }
     animate();
