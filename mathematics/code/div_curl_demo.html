@@ -60,14 +60,10 @@
     camera.position.set(0, 0, 5);
     camera.lookAt(0, 0, 0);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
-    dirLight.position.set(2, 3, 4);
-    scene.add(dirLight);
-    // For 2D/ortho scenes
-    // const rimLight = new THREE.DirectionalLight(0xffffff, 0.6);
-    // rimLight.position.set(-2, -2, 3);
-    // scene.add(rimLight);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+    dir.position.set(1, 3, 2);
+    scene.add(dir);
 
     class DemoVectorField extends VectorField {
         constructor(source, sink, curl=null) {
