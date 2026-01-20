@@ -33,7 +33,7 @@
     const axesLayout = new ClassicalAxesLayout(20, 10);
     axesLayout.hideXY();
     axesLayout.hideYZ();
-    const annotations = new ClassicalAnnotations(canvasContainer, 20, 10);
+    const annotations = new ClassicalAnnotations(canvasContainer, axesLayout, ["X", "Im(Ψ)", "Re(Ψ)"]);
     axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
     worldGroup.add(annotations);

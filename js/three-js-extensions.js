@@ -180,20 +180,19 @@ export class AxesParameters {
 }
 
 export class AxesAnnotation extends THREE.Group {
-    constructor(container, axisLabels=["X", "Y", "Z"]) {
+    constructor(container) {
         super();
-        this.axisLabels = axisLabels;
-        this.renderer = new CSS2DRenderer();
-        this.renderer.domElement.style.position = "absolute";
-        this.renderer.domElement.style.top = "0";
-        this.renderer.domElement.style.pointerEvents = "none";
+        this._renderer = new CSS2DRenderer();
+        this._renderer.domElement.style.position = "absolute";
+        this._renderer.domElement.style.top = "0";
+        this._renderer.domElement.style.pointerEvents = "none";
 
-        container.appendChild(this.renderer.domElement);
+        container.appendChild(this._renderer.domElement);
         this.#resize(container);
     }
 
     #resize(container) {
-        this.renderer.setSize(container.clientWidth, container.clientHeight);
+        this._renderer.setSize(container.clientWidth, container.clientHeight);
     }
 
     label(text, pos, color = "yellow") {
@@ -202,13 +201,13 @@ export class AxesAnnotation extends THREE.Group {
         div.style.color = color;
         div.style.fontSize = "16px";
 
-        const obj = new CSS2DObject(div);
-        obj.position.copy(pos);
-        return obj;
+        const label = new CSS2DObject(div);
+        label.position.copy(pos);
+        return label;
     }
 
     render(scene, camera) {
-        this.renderer.render(scene, camera);
+        this._renderer.render(scene, camera);
     }
 }
 
@@ -302,7 +301,7 @@ export class MatlabAxesLayout extends AxesLayout {
 }
 
 export class ClassicalAnnotations extends AxesAnnotation {
-    constructor(container, axesLayout) {
+    constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
         super(container);
 
         const size = axesLayout.size;
@@ -315,14 +314,14 @@ export class ClassicalAnnotations extends AxesAnnotation {
             this.add(this.label(v.toFixed(1), new THREE.Vector3(0, v, 0)));
 
         this.add(
-            this.label(this.axisLabels[0], new THREE.Vector3(0.575 * size, 0, 0), "red"),
-            this.label(this.axisLabels[1], new THREE.Vector3(0, 0.575 * size, 0), "green"),
-            this.label(this.axisLabels[2], new THREE.Vector3(0, 0, 0.575 * size), "blue"));
+            this.label(axisLabels[0], new THREE.Vector3(0.575 * size, 0, 0), "red"),
+            this.label(axisLabels[1], new THREE.Vector3(0, 0.575 * size, 0), "green"),
+            this.label(axisLabels[2], new THREE.Vector3(0, 0, 0.575 * size), "blue"));
     }
 }
 
 export class MatlabAnnotations extends AxesAnnotation {
-    constructor(container, axesLayout) {
+    constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
         super(container);
 
         const size = axesLayout.size;
@@ -334,9 +333,9 @@ export class MatlabAnnotations extends AxesAnnotation {
                 this.label(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v - 0.5 * size)));
 
         this.add(
-            this.label(this.axisLabels[0], new THREE.Vector3(0.6 * size, 0, -0.5 * size), "red"),
-            this.label(this.axisLabels[1], new THREE.Vector3(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
-            this.label(this.axisLabels[2], new THREE.Vector3(-0.5 * size, 0, 0.6 * size), "blue"));
+            this.label(axisLabels[0], new THREE.Vector3(0.6 * size, 0, -0.5 * size), "red"),
+            this.label(axisLabels[1], new THREE.Vector3(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
+            this.label(axisLabels[2], new THREE.Vector3(-0.5 * size, 0, 0.6 * size), "blue"));
     }
 }
 
