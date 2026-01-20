@@ -1176,6 +1176,7 @@ export class Ball {
         opacity = 1,
         wireframe = false,
         color=0xffff00,
+        makeTrail=false,
         segments = 24})
     {
         const material = new THREE.MeshStandardMaterial({
@@ -1186,7 +1187,8 @@ export class Ball {
             metalness:0.7,
             roughness:0.2
         });
-        this._sphere = new Sphere(parent, position, radius, {segments: segments, material: material});
+        this._sphere = new Sphere(parent, position, radius, makeTrail,
+            {segments: segments, material: material});
         this._ball = new PhysicalObject(position, velocity, mass);
     }
 
