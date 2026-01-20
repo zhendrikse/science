@@ -1,5 +1,21 @@
 <style>
-
+    #overlayText {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 24px;
+        pointer-events: none;
+        user-select: none;
+        text-align: center;
+    }
+    .canvasWrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+    }
     .applicationCanvas {
         display: block;
         background-color: #131313;
@@ -8,8 +24,6 @@
         aspect-ratio: 4 / 3;
         margin: auto;
     }
-
-
 </style>
 <script type="importmap">
     {
@@ -20,14 +34,18 @@
     }
 </script>
 
-<canvas class="applicationCanvas" id="quiverCanvas"></canvas><br/>
+<div class="canvasWrapper" id="canvasWrapper">
+    <canvas id="divCurlCanvas" class="applicationCanvas"></canvas>
+    <div id="overlayText">Click to start the animation</div>
+</div>
 
 <script type="module">
     import * as THREE from "three";
     import { VectorField, Arrow, Vector, Ball}
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
-    const canvas = document.getElementById("quiverCanvas");
+    const canvas = document.getElementById("divCurlCanvas");
+    const overlay = document.getElementById("overlayText");
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x131313);
@@ -163,19 +181,24 @@
         }
     }
 
+    function createParticles() {
+        const particles = [];
+        for (let x = x_min; x <= x_max; x += 0.25)
+            for (let y = y_min; y <= y_max; y += 0.25)
+                particles.push(new Ball(worldGroup, new Vector(x, y, 0), {radius: 0.05, color: "orange"}));
+        return particles;
+    }
 
-    const source = new Ball(worldGroup, new Vector(-1, 0.5, 0), {radius: 0.25, opacity: 0.4, color: "red"});
-    const sink = new Ball(worldGroup, new Vector(-1, -0.5, 0), {radius: 0.25, opacity: 0.4, color: "green"});
-    const curl = new Ball(worldGroup, new Vector(1, 0.5, 0), {radius: 0.25, opacity: 0.4, color: "cyan"});
-    curl.sphere.visible = false;
+    function resetSimulation(particles) {
+        for (const particle of particles)
+            worldGroup.remove(particle.sphere);
 
-    const vectorField = new OriginalDemoVectorField(source, sink, curl);
+        time = 0;
+        opacity = 0;
 
-    const particles = [];
-    for (let x = x_min; x <= x_max; x += 0.25)
-        for (let y = y_min; y <= y_max; y += 0.25)
-            particles.push(new Ball(worldGroup, new Vector(x, y, 0), {radius: 0.05, color: "orange"}));
-
+        for (const arrow of arrows)
+            arrow.updateOpacity(0);
+    }
 
     function onResize() {
         const rect = canvas.getBoundingClientRect();
@@ -197,9 +220,35 @@
         camera.updateProjectionMatrix();
     }
 
+    function showOverlayMessage(message, duration=1000) {
+        overlay.textContent = message;
+        overlay.style.display = "block";
+        setTimeout(() => {
+            overlay.style.display = "none";
+        }, duration);
+    }
 
+    const source = new Ball(worldGroup, new Vector(-1, 0.5, 0), {radius: 0.25, opacity: 0.4, color: "red"});
+    const sink = new Ball(worldGroup, new Vector(-1, -0.5, 0), {radius: 0.25, opacity: 0.4, color: "green"});
+    const curl = new Ball(worldGroup, new Vector(1, 0.5, 0), {radius: 0.25, opacity: 0.4, color: "cyan"});
+
+    const vectorField = new OriginalDemoVectorField(source, sink, curl);
+    let particles = createParticles();
+
+    let started = false;
     window.addEventListener("resize", onResize);
-    onResize();
+    window.addEventListener("click", () => {
+        if (!started) {
+            showOverlayMessage("Start");
+            started = true;
+            animate();
+        } else {
+            showOverlayMessage("Restart");
+            resetSimulation(particles); // reset animation with extra click
+            particles = createParticles();
+        }
+    });
+
 
     const arrows = [];
     for (let x = x_min; x <= x_max; x += 0.25)
@@ -212,13 +261,22 @@
             worldGroup.add(arrow);
         }
 
+    renderer.render(scene, camera);
+    onResize();
+
     let time = 0;
     let opacity = 0;
-    const dt = 0.005;
-    const d_o = 0.005;
+    const dt = 0.0025;
+    const d_o = 0.0025;
 
+    renderer.render(scene, camera);
     function animate() {
         requestAnimationFrame(animate);
+
+        if(!started){
+            overlay.style.display = "block";
+            return;
+        }
 
         time += dt;
 
