@@ -25,14 +25,14 @@
 </style>
 <script>
     // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
-    }
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
 </script>
 <div id="glowscript-wrapper">
     <div id="glowscript" class="glowscript"></div>
@@ -1409,8 +1409,6 @@ async function __main__() {
     font_size_button = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: " Font size ", bind: toggle_font_size})]);
     "585";
     verbose_button = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: " Verbose ", bind: toggle_verbose})]);
-    "586";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "589";
     time = 1;
     "590";

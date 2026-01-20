@@ -25,14 +25,14 @@
 </style>
 <script>
     // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
-    }
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
 </script>
 <div id="glowscript-wrapper">
     <div id="glowscript" class="glowscript"></div>
@@ -121,8 +121,6 @@ async function __main__() {
     faraday_color = ρσ_getitem(electric_field_colors, 2);
     "36";
     animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, range: 2.5, forward: vector(1["-u"]()["*"](.75), 1["-u"]()["*"](.1), 1["-u"]()["*"](.65)), background: ρσ_getitem(background_color, color_scheme)})]);
-    "38";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "40";
     electric_field_colors = ρσ_list_decorate([ color.blue, vector(0, 0, .4), color.green ]);
     "42";

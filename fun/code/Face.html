@@ -1,191 +1,178 @@
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-ρσ_modules.pythonize = {};
-
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, cylinder, extrusion, helix, points, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, animation, eye_length, eye_width, eye_height, left_eye, right_eye, left_eyebrow, right_eyebrow, nose, mouth, eyebrow_x1, eyebrow_x2, eyebrow_x3, eyebrow_x4, eyebrow_x5, eyebrow_y1, eyebrow_y2, eyebrow_y3, eyebrow_y4, eyebrow_y5, ang, red_component, green_component, switcher, blue_component;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "7";
-    title = "&#x2022; Original <a href=\"https://vpython.org/contents/contributed/face.py\">face.py<\/a> by Joel Kahn, 2004\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/fun/code/face.py\">face.py</a>\n\n";
-    "9";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), range: 4})]);
-    "11";
-    eye_length = .8;
-    "12";
-    eye_width = .4;
-    "13";
-    eye_height = .5;
-    "15";
-    left_eye = ρσ_interpolate_kwargs.call(this, ellipsoid, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](1), .9, 0), length: eye_length, width: eye_width, height: eye_height, color: color.blue})]);
-    "16";
-    right_eye = ρσ_interpolate_kwargs.call(this, ellipsoid, [ρσ_desugar_kwargs({pos: vec(1, .9, 0), length: eye_length, width: eye_width, height: eye_height, color: color.blue})]);
-    "18";
-    left_eyebrow = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({radius: .09, color: vec(.91, .7, .15)})]);
-    "19";
-    right_eyebrow = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({radius: .09, color: vec(.91, .7, .15)})]);
-    "21";
-    nose = ρσ_interpolate_kwargs.call(this, pyramid, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), axis: vec(0, 0, 1), width: .8, height: .8, length: 1.7})]);
-    "23";
-    mouth = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({radius: .2, color: color.red})]);
-    "25";
-    eyebrow_x1 = 1.4;
-    "26";
-    eyebrow_x2 = 1.1;
-    "27";
-    eyebrow_x3 = 1;
-    "28";
-    eyebrow_x4 = .9;
-    "29";
-    eyebrow_x5 = .6;
-    "31";
-    eyebrow_y1 = 1.25;
-    "32";
-    eyebrow_y2 = 1.39;
-    "33";
-    eyebrow_y3 = 1.41;
-    "34";
-    eyebrow_y4 = 1.39;
-    "35";
-    eyebrow_y5 = 1.25;
-    "37";
-    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x1), eyebrow_y1, 0)})]);
-    "38";
-    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x2), eyebrow_y2, 0)})]);
-    "39";
-    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x3), eyebrow_y3, 0)})]);
-    "40";
-    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x4), eyebrow_y4, 0)})]);
-    "41";
-    ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](eyebrow_x5), eyebrow_y5, 0)})]);
-    "43";
-    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x1, eyebrow_y1, 0)})]);
-    "44";
-    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x2, eyebrow_y2, 0)})]);
-    "45";
-    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x3, eyebrow_y3, 0)})]);
-    "46";
-    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x4, eyebrow_y4, 0)})]);
-    "47";
-    ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.append, [ρσ_desugar_kwargs({pos: vec(eyebrow_x5, eyebrow_y5, 0)})]);
-    "49";
-    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](1.5), 1["-u"]()["*"](.5), 0)})]);
-    "50";
-    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.5), 1["-u"]()["*"](1.3), 0)})]);
-    "51";
-    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](1.4), 0)})]);
-    "52";
-    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(.5, 1["-u"]()["*"](1.3), 0)})]);
-    "53";
-    ρσ_interpolate_kwargs.call(mouth, mouth.append, [ρσ_desugar_kwargs({pos: vec(1.5, 1["-u"]()["*"](.5), 0)})]);
-    "55";
-    ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({axis: vec(0, 0, 1), size: vec(.1, 6.5, 6.5), thickness: .1, color: color.yellow})]);
-    "57";
-    ang = .05;
-    "58";
-    red_component = .001;
-    "59";
-    green_component = 0;
-    "61";
-    switcher = 1;
-    "62";
-    while (true) {
-        "63";
-        (await rate(100));
-        "64";
-        ρσ_interpolate_kwargs.call(mouth, mouth.rotate, [ρσ_desugar_kwargs({angle: ang, axis: vec(1["-u"]()["*"](1), 0, 0), origin: vec(0, 1["-u"]()["*"](1.19), 0)})]);
-        "65";
-        ρσ_interpolate_kwargs.call(left_eyebrow, left_eyebrow.rotate, [ρσ_desugar_kwargs({angle: ang, axis: vec(1["-u"]()["*"](1), 0, 0), origin: vec(0, 1.36, 0)})]);
-        "66";
-        ρσ_interpolate_kwargs.call(right_eyebrow, right_eyebrow.rotate, [ρσ_desugar_kwargs({angle: ang, axis: vec(1["-u"]()["*"](1), 0, 0), origin: vec(0, 1.36, 0)})]);
-        "67";
-        ρσ_interpolate_kwargs.call(nose, nose.rotate, [ρσ_desugar_kwargs({angle: ang, axis: vec(ang, ang, 1)})]);
-        "69";
-        if (red_component[">"](.999)) {
-            switcher = 1["-u"]()["*"](1);
-        }
-        "70";
-        if (red_component["<"](.001)) {
-            switcher = 1;
-        }
-        "71";
-        red_component = red_component["+"](switcher["*"](ang));
-        "72";
-        green_component = green_component["+"](1);
-        "73";
-        if (green_component[">"](red_component)) {
-            green_component = 0;
-        }
-        "74";
-        blue_component = 1["-"](1["*"](red_component));
-        "75";
-        nose.color = vec(red_component, green_component, blue_component);
+<style>
+    html, body {
+        background: #131313;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        height: 100%;
     }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
 
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
+    #glowscript-wrapper {
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
 
-//--><!]]></script>
+    .glowscript canvas {
+        display: block;
+        touch-action: none;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<script>
+    // Disable MathJax within GlowScript library
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
+</script>
+<div id="glowscript-wrapper">
+    <div id="glowscript" class="glowscript"></div>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+    <link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+
+    // START JAVASCRIPT
+    ;(function() {;
+        var ρσ_modules = {};
+        ρσ_modules.pythonize = {};
+
+        (function(){
+            function strings() {
+                var string_funcs, exclude, name;
+                string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+                if (!arguments.length) {
+                    exclude = (function(){
+                        var s = ρσ_set();
+                        s.jsset.add("split");
+                        s.jsset.add("replace");
+                        return s;
+                    })();
+                } else if (arguments[0]) {
+                    exclude = Array.prototype.slice.call(arguments);
+                } else {
+                    exclude = null;
+                }
+                if (exclude) {
+                    string_funcs = string_funcs.difference(set(exclude));
+                }
+                var ρσ_Iter0 = string_funcs;
+                ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+                for (var ρσ_Index0 of ρσ_Iter0) {
+                    name = ρσ_Index0;
+                    (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+                }
+            };
+            if (!strings.__module__) Object.defineProperties(strings, {
+                __module__ : {value: "pythonize"}
+            });
+
+            ρσ_modules.pythonize.strings = strings;
+        })();
+
+        async function __main__() {
+            "use strict";
+            var display = canvas;
+            var scene = canvas();
+            fontloading();
+            await waitforfonts();
+            var arrow, box, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, sphere, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, download, radians, degrees, get_library, read_local_file
+            var version, print, arange, __name__, type, ρσ_ls, title, display, r, clock_base, knob, border, angle, i, l, p, second_hand, minute_hand, hour_hand, angle_second_hand, angle_minute_hand, angle_hour_hand;
+            version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+            Array.prototype['+'] = function(r) {return this.concat(r)}
+            Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+            window.__GSlang = "vpython";
+            print = GSprint;
+            arange = range;
+            __name__ = "__main__";
+            type = pytype;
+            var strings = ρσ_modules.pythonize.strings;
+
+            strings();
+            "8";
+            title = "&#x2022; Clock as presented in <a href=\"https://www.youtube.com/watch?v=e9QxQZJRGLk&t=1490s\">this video<\/a>\n&#x2022; Copied over to <a href=\"https://github.com/zhendrikse/science/blob/main/fun/code/clock.py\">clock.py</a> file\n\n";
+            "10";
+            display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, range: 1.5, width: 600, height: 600})]);
+            "12";
+            r = 1.1;
+            "13";
+            clock_base = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: r, axis: vector(0, 0, 1), length: .01})]);
+            "14";
+            knob = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .06, axis: vector(0, 0, 1), length: .05, color: color.black})]);
+            "15";
+            border = ρσ_interpolate_kwargs.call(this, ring, [ρσ_desugar_kwargs({radius: 1.05["*"](r), axis: vector(0, 0, 1), thickness: .06, color: color.yellow})]);
+            "18";
+            for (var ρσ_Index1 = 1; ρσ_Index1["<"](13); ρσ_Index1++) {
+                i = ρσ_Index1;
+                "19";
+                angle = pi["/"](3)["-"](1["*"](30)["*"](i["-"](1["*"](1)))["*"](pi)["/"](180));
+                "20";
+                ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: str(i), height: .09, width: .03, pos: vector(.78["*"](r)["*"](cos(angle))["-"](1["*"](.035)), .78["*"](r)["*"](sin(angle))["-"](1["*"](.035)), .01), color: color.red})]);
+            }
+            "22";
+            for (var ρσ_Index2 = 0; ρσ_Index2["<"](360); ρσ_Index2++) {
+                i = ρσ_Index2;
+                "23";
+                angle = 6["*"](i)["*"](pi)["/"](180);
+                "24";
+                if (ρσ_equals(i["%"](5), 0)) {
+                    "25";
+                    l = .15;
+                    "26";
+                    p = vector(.95["*"](cos(angle)), .95["*"](sin(angle)), .01);
+                    "27";
+                } else {
+                    "28";
+                    l = .075;
+                    "29";
+                    p = vector(cos(angle), sin(angle), .01);
+                }
+                "30";
+                ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .002, color: color.black, length: l, axis: vector(cos(angle), sin(angle), 0), pos: p})]);
+            }
+            "32";
+            second_hand = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .0035, color: color.black, length: .75, pos: vector(0, 0, .06), axis: vector(0, 1, 0)})]);
+            "33";
+            minute_hand = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .0038, color: color.black, length: .65, pos: vector(0, 0, .07), axis: vector(0, 1, 0)})]);
+            "34";
+            hour_hand = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({radius: .004, color: color.black, length: .5, pos: vector(0, 0, .08), axis: vector(0, 1, 0)})]);
+            "36";
+            angle_second_hand = 2["*"](pi)["/"](60);
+            "37";
+            angle_minute_hand = 2["*"](pi)["/"](60["*"](60));
+            "38";
+            angle_hour_hand = 2["*"](pi)["/"](12["*"](60)["*"](60));
+            "40";
+            while (true) {
+                "41";
+                (await rate(1));
+                "42";
+                ρσ_interpolate_kwargs.call(second_hand, second_hand.rotate, [ρσ_desugar_kwargs({angle: angle_second_hand, origin: vector(0, 0, 0), axis: vector(0, 0, 1["-u"]()["*"](1))})]);
+                "43";
+                ρσ_interpolate_kwargs.call(minute_hand, minute_hand.rotate, [ρσ_desugar_kwargs({angle: angle_minute_hand, origin: vector(0, 0, 0), axis: vector(0, 0, 1["-u"]()["*"](1))})]);
+                "44";
+                ρσ_interpolate_kwargs.call(hour_hand, hour_hand.rotate, [ρσ_desugar_kwargs({angle: angle_hour_hand, origin: vector(0, 0, 0), axis: vector(0, 0, 1["-u"]()["*"](1))})]);
+            }
+        };
+        if (!__main__.__module__) Object.defineProperties(__main__, {
+            __module__ : {value: null}
+        });
+
+        ;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+    // END JAVASCRIPT
+
+    //--><!]]></script>
 </div>

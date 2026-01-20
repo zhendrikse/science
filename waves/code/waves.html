@@ -1,226 +1,268 @@
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-var t0, t, run;
-ρσ_modules.pythonize = {};
-
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, points, pyramid, ring, sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, radio, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, transverse_wave, longitudinal_wave, run, _, t0, t, delta_t;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "7";
-    title = "&#x2022; Written by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse<\/a>\n&#x2022; Source code in <a href=\"https://github.com/zhendrikse/science/blob/main/waves/code/waves.py\">waves.py</a>\n\n";
-    "9";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 300, center: vec(25, 5, 0), background: color.gray(.075)})]);
-    "11";
-    function LongitudinalWave() {;
+<style>
+    html, body {
+        background: #131313;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        height: 100%;
     }
-    LongitudinalWave.prototype.__init__ = async function __init__(bead_total, bead_radius, frequency, amplitude) {
-        var self = this;
-        var ρσ_ls, row, j, i;
-        "13";
-        self._radius = bead_radius;
-        "14";
-        self._frequency = frequency;
-        "15";
-        self._amplitude = amplitude;
-        "16";
-        self._wavelength_color = false;
-        "17";
-        self._beads = ρσ_list_decorate([]);
-        "19";
-        for (var ρσ_Index1 = 0; ρσ_Index1["<"](bead_total); ρσ_Index1++) {
-            i = ρσ_Index1;
-            "20";
-            row = ρσ_list_decorate([]);
-            "21";
-            for (var ρσ_Index2 = 0; ρσ_Index2["<"](5); ρσ_Index2++) {
-                j = ρσ_Index2;
+
+    #glowscript-wrapper {
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .glowscript canvas {
+        display: block;
+        touch-action: none;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<script>
+    // Disable MathJax within GlowScript library
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
+</script>
+<div id="glowscript-wrapper">
+    <div id="glowscript" class="glowscript"></div>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+    <link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+
+    // START JAVASCRIPT
+    ;(function() {;
+        var ρσ_modules = {};
+        var t0, t, run;
+        ρσ_modules.pythonize = {};
+
+        (function(){
+            function strings() {
+                var string_funcs, exclude, name;
+                string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+                if (!arguments.length) {
+                    exclude = (function(){
+                        var s = ρσ_set();
+                        s.jsset.add("split");
+                        s.jsset.add("replace");
+                        return s;
+                    })();
+                } else if (arguments[0]) {
+                    exclude = Array.prototype.slice.call(arguments);
+                } else {
+                    exclude = null;
+                }
+                if (exclude) {
+                    string_funcs = string_funcs.difference(set(exclude));
+                }
+                var ρσ_Iter0 = string_funcs;
+                ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+                for (var ρσ_Index0 of ρσ_Iter0) {
+                    name = ρσ_Index0;
+                    (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+                }
+            };
+            if (!strings.__module__) Object.defineProperties(strings, {
+                __module__ : {value: "pythonize"}
+            });
+
+            ρσ_modules.pythonize.strings = strings;
+        })();
+
+        async function __main__() {
+            "use strict";
+            var display = canvas;
+            var scene = canvas();
+
+            function round(num, n=0) {return Number(num.toFixed(n))}
+            var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, points, pyramid, ring, sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, radio, text, download, radians, degrees, get_library, read_local_file
+            var version, print, arange, __name__, type, ρσ_ls, title, display, _GS_1, transverse_wave, longitudinal_wave, run, _, t0, t, delta_t;
+            version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+            Array.prototype['+'] = function(r) {return this.concat(r)}
+            Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+            window.__GSlang = "vpython";
+            print = GSprint;
+            arange = range;
+            __name__ = "__main__";
+            type = pytype;
+            var strings = ρσ_modules.pythonize.strings;
+
+            strings();
+            "7";
+            title = "&#x2022; Written by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse<\/a>\n&#x2022; Source code in <a href=\"https://github.com/zhendrikse/science/blob/main/waves/code/waves.py\">waves.py</a>\n\n";
+            "9";
+            display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 300, center: vec(25, 5, 0), background: color.gray(.075)})]);
+            "11";
+            function LongitudinalWave() {;
+            }
+            LongitudinalWave.prototype.__init__ = async function __init__(bead_total, bead_radius, frequency, amplitude) {
+                var self = this;
+                var ρσ_ls, i;
+                "13";
+                self._radius = bead_radius;
+                "14";
+                self._frequency = frequency;
+                "15";
+                self._amplitude = amplitude;
+                "16";
+                self._wavelength_color = false;
+                "17";
+                self._beads = (function() {
+                    var ρσ_Iter = range(bead_total), ρσ_Result = [], i;
+                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                    for (var ρσ_Index of ρσ_Iter) {
+                        i = ρσ_Index;
+                        ρσ_Result.push((function() {
+                            var ρσ_Iter = range(5), ρσ_Result = [], j;
+                            ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                            for (var ρσ_Index of ρσ_Iter) {
+                                j = ρσ_Index;
+                                ρσ_Result.push(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: vec(i, 10["+"](j), 0), radius: bead_radius, color: ((i === 0 || typeof i === "object" && ρσ_equals(i, 0))) ? color.red : color.green})]));
+                            }
+                            ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                            return ρσ_Result;
+                        })());
+                    }
+                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                    return ρσ_Result;
+                })();
+            };
+            if (!LongitudinalWave.prototype.__init__.__argnames__) Object.defineProperties(LongitudinalWave.prototype.__init__, {
+                __argnames__ : {value: ["bead_total", "bead_radius", "frequency", "amplitude"]},
+                __module__ : {value: null}
+            });
+            LongitudinalWave.__argnames__ = LongitudinalWave.prototype.__init__.__argnames__;
+            LongitudinalWave.__handles_kwarg_interpolation__ = LongitudinalWave.prototype.__init__.__handles_kwarg_interpolation__;
+            LongitudinalWave.prototype._update_bead_row = async function _update_bead_row(index, time, t_0, omega) {
+                var self = this;
+                var ρσ_ls, bead_row, phase, bead;
+                "20";
+                bead_row = ρσ_getitem(self._beads, index);
+                "21";
+                phase = ρσ_getitem(bead_row, 0).pos.x["*"](self._frequency);
                 "22";
-                row.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: vec(i, 10["+"](j), 0), radius: bead_radius, color: ((i === 0 || typeof i === "object" && ρσ_equals(i, 0))) ? color.red : color.green})]));
-            }
-            "23";
-            self._beads.append(row);
-        }
-    };
-    if (!LongitudinalWave.prototype.__init__.__argnames__) Object.defineProperties(LongitudinalWave.prototype.__init__, {
-        __argnames__ : {value: ["bead_total", "bead_radius", "frequency", "amplitude"]},
-        __module__ : {value: null}
-    });
-    LongitudinalWave.__argnames__ = LongitudinalWave.prototype.__init__.__argnames__;
-    LongitudinalWave.__handles_kwarg_interpolation__ = LongitudinalWave.prototype.__init__.__handles_kwarg_interpolation__;
-    LongitudinalWave.prototype._update_bead_row = async function _update_bead_row(index, time, t_0, omega) {
-        var self = this;
-        var ρσ_ls, bead_row, phase, bead;
-        "26";
-        bead_row = ρσ_getitem(self._beads, index);
-        "27";
-        phase = ρσ_getitem(bead_row, 0).pos.x["*"](self._frequency);
-        "28";
-        if (phase["<="](time["-"](1["*"](t_0)))) {
-            "29";
-            var ρσ_Iter3 = bead_row;
-            ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-            for (var ρσ_Index3 of ρσ_Iter3) {
-                bead = ρσ_Index3;
-                "30";
-                bead.pos.x = index["+"](self._amplitude["*"](sin(omega["*"](time["-"](1["*"](phase))))));
-                "31";
-                bead.color = (self._wavelength_color) ? color.hsv_to_rgb(vec(.5["+"](phase["*"](self._frequency)), 1, 1)) : color.green;
-            }
-        }
-    };
-    if (!LongitudinalWave.prototype._update_bead_row.__argnames__) Object.defineProperties(LongitudinalWave.prototype._update_bead_row, {
-        __argnames__ : {value: ["index", "time", "t_0", "omega"]},
-        __module__ : {value: null}
-    });
-    LongitudinalWave.prototype.update = async function update(time, t_0) {
-        var self = this;
-        var ρσ_ls, omega, i, bead;
-        "34";
-        omega = 2["*"](pi)["*"](self._frequency);
-        "35";
-        var ρσ_Iter4 = range(len(self._beads));
-        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-        for (var ρσ_Index4 of ρσ_Iter4) {
-            i = ρσ_Index4;
-            "36";
-            (await self._update_bead_row(i, time, t_0, omega));
-            "37";
-        }
-        if (!self._wavelength_color) {
-            "39";
-            var ρσ_Iter5 = ρσ_getitem(self._beads, 0);
-            ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-            for (var ρσ_Index5 of ρσ_Iter5) {
-                bead = ρσ_Index5;
-                "40";
-                bead.color = color.red;
-            }
-        }
-    };
-    if (!LongitudinalWave.prototype.update.__argnames__) Object.defineProperties(LongitudinalWave.prototype.update, {
-        __argnames__ : {value: ["time", "t_0"]},
-        __module__ : {value: null}
-    });
-    LongitudinalWave.prototype.reset = async function reset() {
-        var self = this;
-        var ρσ_ls, j, i;
-        "43";
-        var ρσ_Iter6 = range(len(self._beads));
-        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
-        for (var ρσ_Index6 of ρσ_Iter6) {
-            i = ρσ_Index6;
-            "44";
-            var ρσ_Iter7 = range(len(ρσ_getitem(self._beads, i)));
-            ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
-            for (var ρσ_Index7 of ρσ_Iter7) {
-                j = ρσ_Index7;
-                "45";
-                ρσ_getitem(ρσ_getitem(self._beads, i), j).pos = vec(i, 10["+"](j), 0);
-                "46";
-                ρσ_getitem(ρσ_getitem(self._beads, i), j).color = color.green;
-            }
-        }
-    };
-    if (!LongitudinalWave.prototype.reset.__module__) Object.defineProperties(LongitudinalWave.prototype.reset, {
-        __module__ : {value: null}
-    });
-    LongitudinalWave.prototype.visible = async function visible(event) {
-        var self = this;
-        var ρσ_ls, bead, i;
-        "49";
-        var ρσ_Iter8 = range(len(self._beads));
-        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
-        for (var ρσ_Index8 of ρσ_Iter8) {
-            i = ρσ_Index8;
-            "50";
-            var ρσ_Iter9 = ρσ_getitem(self._beads, i);
-            ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
-            for (var ρσ_Index9 of ρσ_Iter9) {
-                bead = ρσ_Index9;
-                "51";
-                bead.visible = event.checked;
-            }
-        }
-    };
-    if (!LongitudinalWave.prototype.visible.__argnames__) Object.defineProperties(LongitudinalWave.prototype.visible, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-    LongitudinalWave.prototype.wavelength_color_is = async function wavelength_color_is(checked) {
-        var self = this;
-        "54";
-        self._wavelength_color = checked;
-    };
-    if (!LongitudinalWave.prototype.wavelength_color_is.__argnames__) Object.defineProperties(LongitudinalWave.prototype.wavelength_color_is, {
-        __argnames__ : {value: ["checked"]},
-        __module__ : {value: null}
-    });
-    LongitudinalWave.prototype.__repr__ = async function __repr__() {
+                if (phase["<="](time["-"](1["*"](t_0)))) {
+                    "23";
+                    var ρσ_Iter1 = bead_row;
+                    ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+                    for (var ρσ_Index1 of ρσ_Iter1) {
+                        bead = ρσ_Index1;
+                        "24";
+                        bead.pos.x = index["+"](self._amplitude["*"](sin(omega["*"](time["-"](1["*"](phase))))));
+                        "25";
+                        bead.color = (self._wavelength_color) ? color.hsv_to_rgb(vec(.5["+"](phase["*"](self._frequency)), 1, 1)) : color.green;
+                    }
+                }
+            };
+            if (!LongitudinalWave.prototype._update_bead_row.__argnames__) Object.defineProperties(LongitudinalWave.prototype._update_bead_row, {
+                __argnames__ : {value: ["index", "time", "t_0", "omega"]},
+                __module__ : {value: null}
+            });
+            LongitudinalWave.prototype.update = async function update(time, t_0) {
+                var self = this;
+                var ρσ_ls, omega, i, bead;
+                "28";
+                omega = 2["*"](pi)["*"](self._frequency);
+                "29";
+                var ρσ_Iter2 = range(len(self._beads));
+                ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+                for (var ρσ_Index2 of ρσ_Iter2) {
+                    i = ρσ_Index2;
+                    "30";
+                    (await self._update_bead_row(i, time, t_0, omega));
+                    "31";
+                }
+                if (!self._wavelength_color) {
+                    "33";
+                    var ρσ_Iter3 = ρσ_getitem(self._beads, 0);
+                    ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+                    for (var ρσ_Index3 of ρσ_Iter3) {
+                        bead = ρσ_Index3;
+                        "34";
+                        bead.color = color.red;
+                    }
+                }
+            };
+            if (!LongitudinalWave.prototype.update.__argnames__) Object.defineProperties(LongitudinalWave.prototype.update, {
+                __argnames__ : {value: ["time", "t_0"]},
+                __module__ : {value: null}
+            });
+            LongitudinalWave.prototype.reset = async function reset() {
+                var self = this;
+                var ρσ_ls, j, i;
+                "37";
+                var ρσ_Iter4 = range(len(self._beads));
+                ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
+                for (var ρσ_Index4 of ρσ_Iter4) {
+                    i = ρσ_Index4;
+                    "38";
+                    var ρσ_Iter5 = range(len(ρσ_getitem(self._beads, i)));
+                    ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
+                    for (var ρσ_Index5 of ρσ_Iter5) {
+                        j = ρσ_Index5;
+                        "39";
+                        ρσ_getitem(ρσ_getitem(self._beads, i), j).pos = vec(i, 10["+"](j), 0);
+                        "40";
+                        ρσ_getitem(ρσ_getitem(self._beads, i), j).color = color.green;
+                    }
+                }
+            };
+            if (!LongitudinalWave.prototype.reset.__module__) Object.defineProperties(LongitudinalWave.prototype.reset, {
+                __module__ : {value: null}
+            });
+            LongitudinalWave.prototype.visible = async function visible(event) {
+                var self = this;
+                var ρσ_ls, bead, i;
+                "43";
+                var ρσ_Iter6 = range(len(self._beads));
+                ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+                for (var ρσ_Index6 of ρσ_Iter6) {
+                    i = ρσ_Index6;
+                    "44";
+                    var ρσ_Iter7 = ρσ_getitem(self._beads, i);
+                    ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+                    for (var ρσ_Index7 of ρσ_Iter7) {
+                        bead = ρσ_Index7;
+                        "45";
+                        bead.visible = event.checked;
+                    }
+                }
+            };
+            if (!LongitudinalWave.prototype.visible.__argnames__) Object.defineProperties(LongitudinalWave.prototype.visible, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
+            LongitudinalWave.prototype.wavelength_color_is = async function wavelength_color_is(checked) {
+                var self = this;
+                "48";
+                self._wavelength_color = checked;
+            };
+            if (!LongitudinalWave.prototype.wavelength_color_is.__argnames__) Object.defineProperties(LongitudinalWave.prototype.wavelength_color_is, {
+                __argnames__ : {value: ["checked"]},
+                __module__ : {value: null}
+            });
+            LongitudinalWave.prototype.__repr__ = async function __repr__() {
                 return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    LongitudinalWave.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(LongitudinalWave.prototype, "__bases__", {value: []});
+            };
+            LongitudinalWave.prototype.__str__ = async function __str__() {
+                return this.__repr__();
+            };
+            Object.defineProperty(LongitudinalWave.prototype, "__bases__", {value: []});
 
 
 
@@ -228,164 +270,174 @@ async function __main__() {
 
 
 
-    "57";
-    function TransverseWave() {;
-    }
-    TransverseWave.prototype.__init__ = async function __init__(bead_total, bead_radius, frequency, amplitude) {
-        var self = this;
-        var ρσ_ls, ρσ_unpack, i;
-        "59";
-        self._springs_visible = false;
-        "60";
-        self._wavelength_color = false;
-        "61";
-        self._radius = bead_radius;
-        "62";
-        self._frequency = frequency;
-        "63";
-        self._amplitude = amplitude;
-        "64";
-        ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([])];
-        self._springs = ρσ_unpack[0];
-        self._beads = ρσ_unpack[1];
-        "66";
-        for (var ρσ_Index10 = 0; ρσ_Index10["<"](bead_total); ρσ_Index10++) {
-            i = ρσ_Index10;
-            "67";
-            self._beads.append(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: vec(i, 0, 0), radius: bead_radius, color: color.green})]));
-            "68";
-            self._springs.append(ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: vec(i, 0, 0), radius: .7["*"](bead_radius), thickness: .075, axis: vec(0, 0, 0), coils: 10, color: color.white, visible: false})]));
-        }
-        "70";
-        ρσ_getitem(self._beads, 0).color = color.red;
-    };
-    if (!TransverseWave.prototype.__init__.__argnames__) Object.defineProperties(TransverseWave.prototype.__init__, {
-        __argnames__ : {value: ["bead_total", "bead_radius", "frequency", "amplitude"]},
-        __module__ : {value: null}
-    });
-    TransverseWave.__argnames__ = TransverseWave.prototype.__init__.__argnames__;
-    TransverseWave.__handles_kwarg_interpolation__ = TransverseWave.prototype.__init__.__handles_kwarg_interpolation__;
-    TransverseWave.prototype._update_bead = async function _update_bead(index, time, t_0, omega) {
-        var self = this;
-        var ρσ_ls, bead, spring, phase;
-        "73";
-        bead = ρσ_getitem(self._beads, index);
-        "74";
-        spring = ρσ_getitem(self._springs, index);
-        "75";
-        phase = bead.pos.x["*"](self._frequency);
-        "76";
-        if (phase["<="](time["-"](1["*"](t_0)))) {
-            "77";
-            bead.pos.y = self._amplitude["*"](sin(omega["*"](time["-"](1["*"](phase)))));
-            "78";
-            bead.color = (self._wavelength_color) ? color.hsv_to_rgb(vec(.5["+"](phase["*"](self._frequency)), 1, 1)) : color.green;
-            "79";
-            spring.axis = bead.pos["-"](1["*"](vec(index, (bead.pos.y["<"](0)) ? 1["-u"]()["*"](.5)["*"](self._radius) : .5["*"](self._radius), 0)));
-            "80";
-            spring.visible = true && self._springs_visible;
-        }
-    };
-    if (!TransverseWave.prototype._update_bead.__argnames__) Object.defineProperties(TransverseWave.prototype._update_bead, {
-        __argnames__ : {value: ["index", "time", "t_0", "omega"]},
-        __module__ : {value: null}
-    });
-    TransverseWave.prototype.update = async function update(time, t_0) {
-        var self = this;
-        var ρσ_ls, omega, i;
-        "83";
-        omega = 2["*"](pi)["*"](self._frequency);
-        "84";
-        var ρσ_Iter11 = range(len(self._beads));
-        ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
-        for (var ρσ_Index11 of ρσ_Iter11) {
-            i = ρσ_Index11;
-            "85";
-            (await self._update_bead(i, time, t_0, omega));
-            "86";
-        }
-        if (!self._wavelength_color) {
-            "88";
-            ρσ_getitem(self._beads, 0).color = color.red;
-        }
-    };
-    if (!TransverseWave.prototype.update.__argnames__) Object.defineProperties(TransverseWave.prototype.update, {
-        __argnames__ : {value: ["time", "t_0"]},
-        __module__ : {value: null}
-    });
-    TransverseWave.prototype.reset = async function reset() {
-        var self = this;
-        var ρσ_ls, bead, i;
-        "91";
-        var ρσ_Iter12 = range(len(self._beads));
-        ρσ_Iter12 = ((typeof ρσ_Iter12[Symbol.iterator] === "function") ? (ρσ_Iter12 instanceof Map ? ρσ_Iter12.keys() : ρσ_Iter12) : Object.keys(ρσ_Iter12));
-        for (var ρσ_Index12 of ρσ_Iter12) {
-            i = ρσ_Index12;
-            "92";
-            bead = ρσ_getitem(self._beads, i);
-            "93";
-            bead.pos = vec(bead.pos.x, 0, 0);
-            "94";
-            bead.color = color.green;
-            "95";
-            ρσ_getitem(self._springs, i).visible = false;
-        }
-    };
-    if (!TransverseWave.prototype.reset.__module__) Object.defineProperties(TransverseWave.prototype.reset, {
-        __module__ : {value: null}
-    });
-    TransverseWave.prototype.visible = async function visible(event) {
-        var self = this;
-        var ρσ_ls, i;
-        "98";
-        var ρσ_Iter13 = range(len(self._beads));
-        ρσ_Iter13 = ((typeof ρσ_Iter13[Symbol.iterator] === "function") ? (ρσ_Iter13 instanceof Map ? ρσ_Iter13.keys() : ρσ_Iter13) : Object.keys(ρσ_Iter13));
-        for (var ρσ_Index13 of ρσ_Iter13) {
-            i = ρσ_Index13;
-            "99";
-            ρσ_getitem(self._beads, i).visible = event.checked;
-            "100";
-            ρσ_getitem(self._springs, i).visible = event.checked;
-        }
-    };
-    if (!TransverseWave.prototype.visible.__argnames__) Object.defineProperties(TransverseWave.prototype.visible, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-    TransverseWave.prototype.springs_visible = async function springs_visible(event) {
-        var self = this;
-        var ρσ_ls, spring;
-        "103";
-        self._springs_visible = event.checked;
-        "104";
-        var ρσ_Iter14 = self._springs;
-        ρσ_Iter14 = ((typeof ρσ_Iter14[Symbol.iterator] === "function") ? (ρσ_Iter14 instanceof Map ? ρσ_Iter14.keys() : ρσ_Iter14) : Object.keys(ρσ_Iter14));
-        for (var ρσ_Index14 of ρσ_Iter14) {
-            spring = ρσ_Index14;
-            "105";
-            spring.visible = event.checked && spring.visible;
-        }
-    };
-    if (!TransverseWave.prototype.springs_visible.__argnames__) Object.defineProperties(TransverseWave.prototype.springs_visible, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-    TransverseWave.prototype.wavelength_color_is = async function wavelength_color_is(checked) {
-        var self = this;
-        "108";
-        self._wavelength_color = checked;
-    };
-    if (!TransverseWave.prototype.wavelength_color_is.__argnames__) Object.defineProperties(TransverseWave.prototype.wavelength_color_is, {
-        __argnames__ : {value: ["checked"]},
-        __module__ : {value: null}
-    });
-    TransverseWave.prototype.__repr__ = async function __repr__() {
+            "51";
+            function TransverseWave() {;
+            }
+            TransverseWave.prototype.__init__ = async function __init__(bead_total, bead_radius, frequency, amplitude) {
+                var self = this;
+                var ρσ_ls, i;
+                "53";
+                self._springs_visible = false;
+                "54";
+                self._wavelength_color = false;
+                "55";
+                self._radius = bead_radius;
+                "56";
+                self._frequency = frequency;
+                "57";
+                self._amplitude = amplitude;
+                "58";
+                self._beads = (function() {
+                    var ρσ_Iter = range(bead_total), ρσ_Result = [], i;
+                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                    for (var ρσ_Index of ρσ_Iter) {
+                        i = ρσ_Index;
+                        ρσ_Result.push(ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: vec(i, 0, 0), radius: bead_radius, color: color.green})]));
+                    }
+                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                    return ρσ_Result;
+                })();
+                "59";
+                self._springs = (function() {
+                    var ρσ_Iter = range(bead_total), ρσ_Result = [], i;
+                    ρσ_Iter = ((typeof ρσ_Iter[Symbol.iterator] === "function") ? (ρσ_Iter instanceof Map ? ρσ_Iter.keys() : ρσ_Iter) : Object.keys(ρσ_Iter));
+                    for (var ρσ_Index of ρσ_Iter) {
+                        i = ρσ_Index;
+                        ρσ_Result.push(ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: vec(i, 0, 0), radius: .7["*"](bead_radius), thickness: .075, axis: vec(0, 0, 0), coils: 10, color: color.white, visible: false})]));
+                    }
+                    ρσ_Result = ρσ_list_constructor(ρσ_Result);
+                    return ρσ_Result;
+                })();
+                "60";
+                ρσ_getitem(self._beads, 0).color = color.red;
+            };
+            if (!TransverseWave.prototype.__init__.__argnames__) Object.defineProperties(TransverseWave.prototype.__init__, {
+                __argnames__ : {value: ["bead_total", "bead_radius", "frequency", "amplitude"]},
+                __module__ : {value: null}
+            });
+            TransverseWave.__argnames__ = TransverseWave.prototype.__init__.__argnames__;
+            TransverseWave.__handles_kwarg_interpolation__ = TransverseWave.prototype.__init__.__handles_kwarg_interpolation__;
+            TransverseWave.prototype._update_bead = async function _update_bead(index, time, t_0, omega) {
+                var self = this;
+                var ρσ_ls, bead, spring, phase;
+                "63";
+                bead = ρσ_getitem(self._beads, index);
+                "64";
+                spring = ρσ_getitem(self._springs, index);
+                "65";
+                phase = bead.pos.x["*"](self._frequency);
+                "66";
+                if (phase["<="](time["-"](1["*"](t_0)))) {
+                    "67";
+                    bead.pos.y = self._amplitude["*"](sin(omega["*"](time["-"](1["*"](phase)))));
+                    "68";
+                    bead.color = (self._wavelength_color) ? color.hsv_to_rgb(vec(.5["+"](phase["*"](self._frequency)), 1, 1)) : color.green;
+                    "69";
+                    spring.axis = bead.pos["-"](1["*"](vec(index, (bead.pos.y["<"](0)) ? 1["-u"]()["*"](.5)["*"](self._radius) : .5["*"](self._radius), 0)));
+                    "70";
+                    spring.visible = true && self._springs_visible;
+                }
+            };
+            if (!TransverseWave.prototype._update_bead.__argnames__) Object.defineProperties(TransverseWave.prototype._update_bead, {
+                __argnames__ : {value: ["index", "time", "t_0", "omega"]},
+                __module__ : {value: null}
+            });
+            TransverseWave.prototype.update = async function update(time, t_0) {
+                var self = this;
+                var ρσ_ls, omega, i;
+                "73";
+                omega = 2["*"](pi)["*"](self._frequency);
+                "74";
+                var ρσ_Iter8 = range(len(self._beads));
+                ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+                for (var ρσ_Index8 of ρσ_Iter8) {
+                    i = ρσ_Index8;
+                    "75";
+                    (await self._update_bead(i, time, t_0, omega));
+                    "76";
+                }
+                if (!self._wavelength_color) {
+                    "78";
+                    ρσ_getitem(self._beads, 0).color = color.red;
+                }
+            };
+            if (!TransverseWave.prototype.update.__argnames__) Object.defineProperties(TransverseWave.prototype.update, {
+                __argnames__ : {value: ["time", "t_0"]},
+                __module__ : {value: null}
+            });
+            TransverseWave.prototype.reset = async function reset() {
+                var self = this;
+                var ρσ_ls, bead, i;
+                "81";
+                var ρσ_Iter9 = range(len(self._beads));
+                ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+                for (var ρσ_Index9 of ρσ_Iter9) {
+                    i = ρσ_Index9;
+                    "82";
+                    bead = ρσ_getitem(self._beads, i);
+                    "83";
+                    bead.pos = vec(bead.pos.x, 0, 0);
+                    "84";
+                    bead.color = color.green;
+                    "85";
+                    ρσ_getitem(self._springs, i).visible = false;
+                }
+            };
+            if (!TransverseWave.prototype.reset.__module__) Object.defineProperties(TransverseWave.prototype.reset, {
+                __module__ : {value: null}
+            });
+            TransverseWave.prototype.visible = async function visible(event) {
+                var self = this;
+                var ρσ_ls, i;
+                "88";
+                var ρσ_Iter10 = range(len(self._beads));
+                ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+                for (var ρσ_Index10 of ρσ_Iter10) {
+                    i = ρσ_Index10;
+                    "89";
+                    ρσ_getitem(self._beads, i).visible = event.checked;
+                    "90";
+                    ρσ_getitem(self._springs, i).visible = event.checked;
+                }
+            };
+            if (!TransverseWave.prototype.visible.__argnames__) Object.defineProperties(TransverseWave.prototype.visible, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
+            TransverseWave.prototype.springs_visible = async function springs_visible(event) {
+                var self = this;
+                var ρσ_ls, spring;
+                "93";
+                self._springs_visible = event.checked;
+                "94";
+                var ρσ_Iter11 = self._springs;
+                ρσ_Iter11 = ((typeof ρσ_Iter11[Symbol.iterator] === "function") ? (ρσ_Iter11 instanceof Map ? ρσ_Iter11.keys() : ρσ_Iter11) : Object.keys(ρσ_Iter11));
+                for (var ρσ_Index11 of ρσ_Iter11) {
+                    spring = ρσ_Index11;
+                    "95";
+                    spring.visible = event.checked && spring.visible;
+                }
+            };
+            if (!TransverseWave.prototype.springs_visible.__argnames__) Object.defineProperties(TransverseWave.prototype.springs_visible, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
+            TransverseWave.prototype.wavelength_color_is = async function wavelength_color_is(checked) {
+                var self = this;
+                "98";
+                self._wavelength_color = checked;
+            };
+            if (!TransverseWave.prototype.wavelength_color_is.__argnames__) Object.defineProperties(TransverseWave.prototype.wavelength_color_is, {
+                __argnames__ : {value: ["checked"]},
+                __module__ : {value: null}
+            });
+            TransverseWave.prototype.__repr__ = async function __repr__() {
                 return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    TransverseWave.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(TransverseWave.prototype, "__bases__", {value: []});
+            };
+            TransverseWave.prototype.__str__ = async function __str__() {
+                return this.__repr__();
+            };
+            Object.defineProperty(TransverseWave.prototype, "__bases__", {value: []});
 
 
 
@@ -394,108 +446,108 @@ async function __main__() {
 
 
 
-    "111";
-    _GS_1 = new TransverseWave;
-    (await _GS_1.__init__(50, .45, .25, 4));
-    transverse_wave = _GS_1;
-    "112";
-    _GS_1 = new LongitudinalWave;
-    (await _GS_1.__init__(50, .25, .25, 1));
-    longitudinal_wave = _GS_1;
-    "114";
-    display.append_to_caption("\n");
-    "116";
-    async function reset() {
-        "117";
-        "118";
-        t0 = t = 0;
-        "119";
-        (await transverse_wave.reset());
-        "120";
-        (await longitudinal_wave.reset());
-    };
-    if (!reset.__module__) Object.defineProperties(reset, {
-        __module__ : {value: null}
-    });
+            "101";
+            _GS_1 = new TransverseWave;
+            (await _GS_1.__init__(50, .45, .25, 4));
+            transverse_wave = _GS_1;
+            "102";
+            _GS_1 = new LongitudinalWave;
+            (await _GS_1.__init__(50, .25, .25, 1));
+            longitudinal_wave = _GS_1;
+            "104";
+            display.append_to_caption("\n");
+            "106";
+            async function reset() {
+                "107";
+                "108";
+                t0 = t = 0;
+                "109";
+                (await transverse_wave.reset());
+                "110";
+                (await longitudinal_wave.reset());
+            };
+            if (!reset.__module__) Object.defineProperties(reset, {
+                __module__ : {value: null}
+            });
 
-    "122";
-    async function toggle_wavelength(event) {
-        "123";
-        (await transverse_wave.wavelength_color_is(event.checked));
-        "124";
-        (await longitudinal_wave.wavelength_color_is(event.checked));
-    };
-    if (!toggle_wavelength.__argnames__) Object.defineProperties(toggle_wavelength, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
+            "112";
+            async function toggle_wavelength(event) {
+                "113";
+                (await transverse_wave.wavelength_color_is(event.checked));
+                "114";
+                (await longitudinal_wave.wavelength_color_is(event.checked));
+            };
+            if (!toggle_wavelength.__argnames__) Object.defineProperties(toggle_wavelength, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
 
-    "126";
-    run = true;
-    "127";
-    async function toggle_run(event) {
-        "128";
-        "129";
-        run = !run;
-    };
-    if (!toggle_run.__argnames__) Object.defineProperties(toggle_run, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
+            "116";
+            run = true;
+            "117";
+            async function toggle_run(event) {
+                "118";
+                "119";
+                run = !run;
+            };
+            if (!toggle_run.__argnames__) Object.defineProperties(toggle_run, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
 
-    "131";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Transversal ", bind: transverse_wave.visible.bind(transverse_wave), checked: true})]);
-    "132";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Longitudinal ", bind: longitudinal_wave.visible.bind(longitudinal_wave), checked: true})]);
-    "133";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Springs ", bind: transverse_wave.springs_visible.bind(transverse_wave), checked: false})]);
-    "134";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Wavelength color ", bind: toggle_wavelength, checked: false})]);
-    "135";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Pause  ", bind: toggle_run, checked: false})]);
-    "136";
-    _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Reset", bind: reset})]);
-    "138";
-    display.append_to_caption("\n\nFrequency");
-    "140";
-    async function modify_frequency(event) {
-        "141";
-        transverse_wave._frequency = event.value;
-        "142";
-        longitudinal_wave._frequency = event.value;
-    };
-    if (!modify_frequency.__argnames__) Object.defineProperties(modify_frequency, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
+            "121";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Transversal ", bind: transverse_wave.visible.bind(transverse_wave), checked: true})]);
+            "122";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Longitudinal ", bind: longitudinal_wave.visible.bind(longitudinal_wave), checked: true})]);
+            "123";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Springs ", bind: transverse_wave.springs_visible.bind(transverse_wave), checked: false})]);
+            "124";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Wavelength color ", bind: toggle_wavelength, checked: false})]);
+            "125";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Pause  ", bind: toggle_run, checked: false})]);
+            "126";
+            _ = ρσ_interpolate_kwargs.call(this, button, [ρσ_desugar_kwargs({text: "Reset", bind: reset})]);
+            "128";
+            display.append_to_caption("\n\nFrequency");
+            "130";
+            async function modify_frequency(event) {
+                "131";
+                transverse_wave._frequency = event.value;
+                "132";
+                longitudinal_wave._frequency = event.value;
+            };
+            if (!modify_frequency.__argnames__) Object.defineProperties(modify_frequency, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
 
-    "144";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: .25, value: .25, bind: modify_frequency})]);
-    "146";
-    t0 = t = 0;
-    "147";
-    delta_t = .01;
-    "148";
-    while (true) {
-        "149";
-        (await rate(1["/"](delta_t)));
-        "150";
-        if (run) {
-            "151";
-            (await longitudinal_wave.update(t, t0));
-            "152";
-            (await transverse_wave.update(t, t0));
-            "153";
-            t=t["+"](delta_t);
-        }
-    }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
+            "134";
+            _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: .1, max: .25, value: .25, bind: modify_frequency})]);
+            "136";
+            t0 = t = 0;
+            "137";
+            delta_t = .01;
+            "138";
+            while (true) {
+                "139";
+                (await rate(1["/"](delta_t)));
+                "140";
+                if (run) {
+                    "141";
+                    (await longitudinal_wave.update(t, t0));
+                    "142";
+                    (await transverse_wave.update(t, t0));
+                    "143";
+                    t=t["+"](delta_t);
+                }
+            }
+        };
+        if (!__main__.__module__) Object.defineProperties(__main__, {
+            __module__ : {value: null}
+        });
 
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
+        ;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+    // END JAVASCRIPT
 
-//--><!]]></script>
+    //--><!]]></script>
 </div>

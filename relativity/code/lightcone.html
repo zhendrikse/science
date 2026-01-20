@@ -1,405 +1,443 @@
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-var dt;
-ρσ_modules.pythonize = {};
-
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    fontloading();
-    await waitforfonts();
-    var compound, curve, ellipsoid, extrusion, helix, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, animation, x_hat, y_hat, z_hat, base, label_text, _GS_1, axis, light_cone_top, light_cone_bottom, spaceship, photon, dt, _, height, t;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "9";
-    title = "&#x2022; Click mouse to pause animation\n&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/lightcone.py\">lightcone.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
-    "11";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, forward: vec(1["-u"]()["*"](.25), 1["-u"]()["*"](.48), 1["-u"]()["*"](.83)), range: 14, background: color.gray(.075)})]);
-    "12";
-    ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 25, shininess: 0, opacity: .5})]);
-    "14";
-    x_hat = vec(1, 0, 0);
-    "15";
-    y_hat = vec(0, 1, 0);
-    "16";
-    z_hat = vec(0, 0, 1);
-    "17";
-    base = ρσ_list_decorate([ x_hat, y_hat, z_hat ]);
-    "18";
-    label_text = ["x", "y", "z"];
-    "20";
-    function Base() {;
+<style>
+    html, body {
+        background: #131313;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        height: 100%;
     }
-    Base.prototype.__init__ = async function __init__() {
-        var self = this;
-        var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
-        var axis_color = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.axis_color : arguments[1];
-        var tick_marks_color = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.tick_marks_color : arguments[2];
-        var length = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.length : arguments[3];
-        var num_tick_marks = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.num_tick_marks : arguments[4];
-        var axis_labels = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.axis_labels : arguments[5];
-        var tick_mark_labels = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.tick_mark_labels : arguments[6];
-        var mesh = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mesh : arguments[7];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
-            position = ρσ_kwargs_obj.position;
-        }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "axis_color")){
-            axis_color = ρσ_kwargs_obj.axis_color;
-        }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "tick_marks_color")){
-            tick_marks_color = ρσ_kwargs_obj.tick_marks_color;
-        }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "length")){
-            length = ρσ_kwargs_obj.length;
-        }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "num_tick_marks")){
-            num_tick_marks = ρσ_kwargs_obj.num_tick_marks;
-        }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "axis_labels")){
-            axis_labels = ρσ_kwargs_obj.axis_labels;
-        }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "tick_mark_labels")){
-            tick_mark_labels = ρσ_kwargs_obj.tick_mark_labels;
-        }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mesh")){
-            mesh = ρσ_kwargs_obj.mesh;
-        }
-        var ρσ_ls, tick_increment, radius, ρσ_unpack, base_vec, pos, i, offset, positions, label_value, marker, a_box, j;
-        "23";
-        num_tick_marks = (!num_tick_marks) ? length["-"](1["*"](1)) : num_tick_marks;
-        "24";
-        tick_increment = length["/"](num_tick_marks["-"](1["*"](1)));
-        "25";
-        radius = length["/"](200);
-        "26";
-        ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]),
-        ρσ_list_decorate([])];
-        self._tick_marks = ρσ_unpack[0];
-        self._axis = ρσ_unpack[1];
-        self._arrows = ρσ_unpack[2];
-        self._arrow_labels = ρσ_unpack[3];
-        self._tick_labels = ρσ_unpack[4];
-        "27";
-        self._position = position;
-        "29";
-        var ρσ_Iter1 = base;
-        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
-        for (var ρσ_Index1 of ρσ_Iter1) {
-            base_vec = ρσ_Index1;
-            "30";
-            self._axis=self._axis["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["-"](1["*"](length)["*"](base_vec)["/"](2)), axis: length["*"](base_vec), radius: radius, color: axis_color})]) ]));
-            "31";
-            self._arrows=self._arrows["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position["+"](length["*"](base_vec)["/"](2)), axis: base_vec, color: axis_color, shaftwidth: radius})]) ]));
-        }
-        "33";
-        var ρσ_Iter2 = range(len(base));
-        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
-        for (var ρσ_Index2 of ρσ_Iter2) {
-            i = ρσ_Index2;
-            "34";
-            pos = position["+"](ρσ_getitem(base, i)["*"](length["/"](2)["+"](tick_increment)));
-            "35";
-            self._arrow_labels.append(ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({pos: pos, text: ρσ_getitem(axis_labels, i), color: axis_color, height: radius["*"](10), align: "center", billboard: true, emissive: true})]));
-        }
-        "37";
-        offset = ρσ_list_decorate([ 1["-u"]()["*"](.05)["*"](length)["*"](y_hat), .05["*"](length)["*"](x_hat), 1["-u"]()["*"](.05)["*"](length)["*"](y_hat) ]);
-        "38";
-        positions = ρσ_list_decorate([]);
-        "39";
-        var ρσ_Iter3 = range(len(base));
-        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-        for (var ρσ_Index3 of ρσ_Iter3) {
-            i = ρσ_Index3;
-            "40";
-            for (var ρσ_Index4 = 0; ρσ_Index4["<"](num_tick_marks); ρσ_Index4++) {
-                j = ρσ_Index4;
-                "41";
-                pos = position["-"](1["*"](ρσ_getitem(base, i))["*"](length["/"](2)["-"](1["*"](j)["*"](tick_increment))));
-                "42";
-                positions.append(pos);
-                "43";
-                label_value = ((i === 0 || typeof i === "object" && ρσ_equals(i, 0))) ? pos.x["-"](1["*"](position.x)) : ((i === 1 || typeof i === "object" && ρσ_equals(i, 1))) ? pos.y["-"](1["*"](position.y)) : pos.z["-"](1["*"](position.z));
-                "44";
-                label_value = (ρσ_equals(int(num_tick_marks["/"](2)), j)) ? "" : str(int(label_value));
-                "45";
-                marker = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos["+"](ρσ_getitem(offset, i)), text: label_value, color: color.gray(.5), box: false, visible: tick_mark_labels})]);
-                "46";
-                self._tick_labels.append(marker);
-                "47";
-                a_box = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: pos, width: 2["*"](radius), height: .5, length: 2["*"](radius), color: tick_marks_color})]);
-                "48";
-                if ((i === 1 || typeof i === "object" && ρσ_equals(i, 1))) {
-                    "49";
-                    ρσ_interpolate_kwargs.call(a_box, a_box.rotate, [ρσ_desugar_kwargs({angle: .5["*"](pi), axis: vec(0, 0, 1)})]);
+
+    #glowscript-wrapper {
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .glowscript canvas {
+        display: block;
+        touch-action: none;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<script>
+    // Disable MathJax within GlowScript library
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
+</script>
+<div id="glowscript-wrapper">
+    <div id="glowscript" class="glowscript"></div>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
+    <link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
+    <script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+
+    // START JAVASCRIPT
+    ;(function() {;
+        var ρσ_modules = {};
+        var dt;
+        ρσ_modules.pythonize = {};
+
+        (function(){
+            function strings() {
+                var string_funcs, exclude, name;
+                string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
+                if (!arguments.length) {
+                    exclude = (function(){
+                        var s = ρσ_set();
+                        s.jsset.add("split");
+                        s.jsset.add("replace");
+                        return s;
+                    })();
+                } else if (arguments[0]) {
+                    exclude = Array.prototype.slice.call(arguments);
+                } else {
+                    exclude = null;
                 }
-                "50";
-                self._tick_marks.append(a_box);
+                if (exclude) {
+                    string_funcs = string_funcs.difference(set(exclude));
+                }
+                var ρσ_Iter0 = string_funcs;
+                ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
+                for (var ρσ_Index0 of ρσ_Iter0) {
+                    name = ρσ_Index0;
+                    (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+                }
+            };
+            if (!strings.__module__) Object.defineProperties(strings, {
+                __module__ : {value: "pythonize"}
+            });
+
+            ρσ_modules.pythonize.strings = strings;
+        })();
+
+        async function __main__() {
+            "use strict";
+            var display = canvas;
+            var scene = canvas();
+
+            function round(num, n=0) {return Number(num.toFixed(n))}
+            fontloading();
+            await waitforfonts();
+            var compound, curve, ellipsoid, extrusion, helix, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, download, radians, degrees, get_library, read_local_file
+            var version, print, arange, __name__, type, ρσ_ls, title, animation, x_hat, y_hat, z_hat, base, label_text, _GS_1, axis, light_cone_top, light_cone_bottom, spaceship, photon, dt, _, height, t;
+            version = ρσ_list_decorate([ "3.2", "glowscript" ]);
+            Array.prototype['+'] = function(r) {return this.concat(r)}
+            Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
+            window.__GSlang = "vpython";
+            print = GSprint;
+            arange = range;
+            __name__ = "__main__";
+            type = pytype;
+            var strings = ρσ_modules.pythonize.strings;
+
+            strings();
+            "9";
+            title = "&#x2022; Click mouse to pause animation\n&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/lightcone.py\">lightcone.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>\n\n";
+            "11";
+            animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, forward: vec(1["-u"]()["*"](.25), 1["-u"]()["*"](.48), 1["-u"]()["*"](.83)), range: 14, background: color.gray(.075)})]);
+            "12";
+            ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 25, shininess: 0, opacity: .5})]);
+            "14";
+            x_hat = vec(1, 0, 0);
+            "15";
+            y_hat = vec(0, 1, 0);
+            "16";
+            z_hat = vec(0, 0, 1);
+            "17";
+            base = ρσ_list_decorate([ x_hat, y_hat, z_hat ]);
+            "18";
+            label_text = ["x", "y", "z"];
+            "20";
+            function Base() {;
             }
-        }
-        "52";
-        ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([])];
-        self._xy_mesh = ρσ_unpack[0];
-        self._zx_mesh = ρσ_unpack[1];
-        self._xz_mesh = ρσ_unpack[2];
-        self._yx_mesh = ρσ_unpack[3];
-        "53";
-        for (var ρσ_Index5 = 0; ρσ_Index5["<"](num_tick_marks); ρσ_Index5++) {
-            j = ρσ_Index5;
-            "54";
-            self._xy_mesh=self._xy_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(position.x["-"](1["*"](length)["/"](2)), position.y["+"](j["*"](tick_increment))["-"](1["*"](length)["/"](2)), position.z), axis: x_hat["*"](length), color: color.gray(.5), radius: radius["/"](2), visible: mesh})]) ]));
-            "55";
-            self._yx_mesh=self._yx_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(position.x["-"](1["*"](length)["/"](2))["+"](j["*"](tick_increment)), position.y["-"](1["*"](length)["/"](2)), position.z), axis: y_hat["*"](length), color: color.gray(.5), radius: radius["/"](2), visible: mesh})]) ]));
-            "56";
-            self._xz_mesh=self._xz_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(position.x["-"](1["*"](length)["/"](2))["+"](j["*"](tick_increment)), position.y, position.z["-"](1["*"](length)["/"](2))), axis: z_hat["*"](length), color: color.gray(.4), radius: radius["/"](2), visible: mesh})]) ]));
-            "57";
-            self._zx_mesh=self._zx_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(position.x["-"](1["*"](length)["/"](2)), position.y, position.z["-"](1["*"](length)["/"](2))["+"](j["*"](tick_increment))), axis: x_hat["*"](length), color: color.gray(.4), radius: radius["/"](2), visible: mesh})]) ]));
-        }
-    };
-    if (!Base.prototype.__init__.__defaults__) Object.defineProperties(Base.prototype.__init__, {
-        __defaults__ : {value: {position:vec(0, 0, 0), axis_color:color.yellow, tick_marks_color:color.red, length:20, num_tick_marks:null, axis_labels:label_text, tick_mark_labels:true, mesh:false}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["position", "axis_color", "tick_marks_color", "length", "num_tick_marks", "axis_labels", "tick_mark_labels", "mesh"]},
-        __module__ : {value: null}
-    });
-    Base.__argnames__ = Base.prototype.__init__.__argnames__;
-    Base.__handles_kwarg_interpolation__ = Base.prototype.__init__.__handles_kwarg_interpolation__;
-    Base.prototype.show_axis = async function show_axis() {
-        var self = this;
-        "60";
-        (await self.axis_visible(true));
-    };
-    if (!Base.prototype.show_axis.__module__) Object.defineProperties(Base.prototype.show_axis, {
-        __module__ : {value: null}
-    });
-    Base.prototype.hide_axis = async function hide_axis() {
-        var self = this;
-        "63";
-        (await self.axis_visible(false));
-    };
-    if (!Base.prototype.hide_axis.__module__) Object.defineProperties(Base.prototype.hide_axis, {
-        __module__ : {value: null}
-    });
-    Base.prototype.show_tick_labels = async function show_tick_labels() {
-        var self = this;
-        "66";
-        (await self.tick_labels_visible(true));
-    };
-    if (!Base.prototype.show_tick_labels.__module__) Object.defineProperties(Base.prototype.show_tick_labels, {
-        __module__ : {value: null}
-    });
-    Base.prototype.hide_tick_labels = async function hide_tick_labels() {
-        var self = this;
-        "69";
-        (await self.tick_labels_visible(false));
-    };
-    if (!Base.prototype.hide_tick_labels.__module__) Object.defineProperties(Base.prototype.hide_tick_labels, {
-        __module__ : {value: null}
-    });
-    Base.prototype.show_tick_marks = async function show_tick_marks() {
-        var self = this;
-        "72";
-        (await self.tick_marks_visible(true));
-    };
-    if (!Base.prototype.show_tick_marks.__module__) Object.defineProperties(Base.prototype.show_tick_marks, {
-        __module__ : {value: null}
-    });
-    Base.prototype.hide_tick_marks = async function hide_tick_marks() {
-        var self = this;
-        "75";
-        (await self.tick_marks_visible(false));
-    };
-    if (!Base.prototype.hide_tick_marks.__module__) Object.defineProperties(Base.prototype.hide_tick_marks, {
-        __module__ : {value: null}
-    });
-    Base.prototype.axis_visible = async function axis_visible(visible) {
-        var self = this;
-        var ρσ_ls, i;
-        "78";
-        var ρσ_Iter6 = range(len(base));
-        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
-        for (var ρσ_Index6 of ρσ_Iter6) {
-            i = ρσ_Index6;
-            "79";
-            ρσ_getitem(self._arrow_labels, i).visible = visible;
-            "80";
-            ρσ_getitem(self._arrows, i).visible = visible;
-            "81";
-            ρσ_getitem(self._axis, i).visible = visible;
-        }
-        "82";
-        (await self.tick_labels_visible(visible));
-        "83";
-        (await self.tick_marks_visible(visible));
-    };
-    if (!Base.prototype.axis_visible.__argnames__) Object.defineProperties(Base.prototype.axis_visible, {
-        __argnames__ : {value: ["visible"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.tick_labels_visible = async function tick_labels_visible(visible) {
-        var self = this;
-        var ρσ_ls, a_label;
-        "86";
-        var ρσ_Iter7 = self._tick_labels;
-        ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
-        for (var ρσ_Index7 of ρσ_Iter7) {
-            a_label = ρσ_Index7;
-            "87";
-            a_label.visible = visible;
-        }
-    };
-    if (!Base.prototype.tick_labels_visible.__argnames__) Object.defineProperties(Base.prototype.tick_labels_visible, {
-        __argnames__ : {value: ["visible"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.tick_marks_visible = async function tick_marks_visible(visible) {
-        var self = this;
-        var ρσ_ls, tick_mark;
-        "90";
-        var ρσ_Iter8 = self._tick_marks;
-        ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
-        for (var ρσ_Index8 of ρσ_Iter8) {
-            tick_mark = ρσ_Index8;
-            "91";
-            tick_mark.visible = visible;
-        }
-    };
-    if (!Base.prototype.tick_marks_visible.__argnames__) Object.defineProperties(Base.prototype.tick_marks_visible, {
-        __argnames__ : {value: ["visible"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.xy_mesh_visible = async function xy_mesh_visible(visible) {
-        var self = this;
-        var ρσ_ls, i;
-        "94";
-        var ρσ_Iter9 = range(len(self._xy_mesh));
-        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
-        for (var ρσ_Index9 of ρσ_Iter9) {
-            i = ρσ_Index9;
-            "95";
-            ρσ_getitem(self._xy_mesh, i).visible = visible;
-            "96";
-            ρσ_getitem(self._yx_mesh, i).visible = visible;
-        }
-    };
-    if (!Base.prototype.xy_mesh_visible.__argnames__) Object.defineProperties(Base.prototype.xy_mesh_visible, {
-        __argnames__ : {value: ["visible"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.xz_mesh_visible = async function xz_mesh_visible(visible) {
-        var self = this;
-        var ρσ_ls, i;
-        "99";
-        var ρσ_Iter10 = range(len(self._xz_mesh));
-        ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
-        for (var ρσ_Index10 of ρσ_Iter10) {
-            i = ρσ_Index10;
-            "100";
-            ρσ_getitem(self._xz_mesh, i).visible = visible;
-            "101";
-            ρσ_getitem(self._zx_mesh, i).visible = visible;
-        }
-    };
-    if (!Base.prototype.xz_mesh_visible.__argnames__) Object.defineProperties(Base.prototype.xz_mesh_visible, {
-        __argnames__ : {value: ["visible"]},
-        __module__ : {value: null}
-    });
-    Base.prototype.show_xy_mesh = async function show_xy_mesh() {
-        var self = this;
-        "104";
-        (await self.xy_mesh_visible(true));
-    };
-    if (!Base.prototype.show_xy_mesh.__module__) Object.defineProperties(Base.prototype.show_xy_mesh, {
-        __module__ : {value: null}
-    });
-    Base.prototype.hide_xy_mesh = async function hide_xy_mesh() {
-        var self = this;
-        "107";
-        (await self.xy_mesh_visible(false));
-    };
-    if (!Base.prototype.hide_xy_mesh.__module__) Object.defineProperties(Base.prototype.hide_xy_mesh, {
-        __module__ : {value: null}
-    });
-    Base.prototype.show_xz_mesh = async function show_xz_mesh() {
-        var self = this;
-        "110";
-        (await self.xz_mesh_visible(true));
-    };
-    if (!Base.prototype.show_xz_mesh.__module__) Object.defineProperties(Base.prototype.show_xz_mesh, {
-        __module__ : {value: null}
-    });
-    Base.prototype.hide_xz_mesh = async function hide_xz_mesh() {
-        var self = this;
-        "113";
-        (await self.xz_mesh_visible(false));
-    };
-    if (!Base.prototype.hide_xz_mesh.__module__) Object.defineProperties(Base.prototype.hide_xz_mesh, {
-        __module__ : {value: null}
-    });
-    Base.prototype.__repr__ = async function __repr__() {
+            Base.prototype.__init__ = async function __init__() {
+                var self = this;
+                var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
+                var axis_color = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.axis_color : arguments[1];
+                var tick_marks_color = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.tick_marks_color : arguments[2];
+                var length = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.length : arguments[3];
+                var num_tick_marks = (arguments[4] === undefined || ( 4 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.num_tick_marks : arguments[4];
+                var axis_labels = (arguments[5] === undefined || ( 5 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.axis_labels : arguments[5];
+                var tick_mark_labels = (arguments[6] === undefined || ( 6 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.tick_mark_labels : arguments[6];
+                var mesh = (arguments[7] === undefined || ( 7 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mesh : arguments[7];
+                var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
+                if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
+                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
+                    position = ρσ_kwargs_obj.position;
+                }
+                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "axis_color")){
+                    axis_color = ρσ_kwargs_obj.axis_color;
+                }
+                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "tick_marks_color")){
+                    tick_marks_color = ρσ_kwargs_obj.tick_marks_color;
+                }
+                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "length")){
+                    length = ρσ_kwargs_obj.length;
+                }
+                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "num_tick_marks")){
+                    num_tick_marks = ρσ_kwargs_obj.num_tick_marks;
+                }
+                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "axis_labels")){
+                    axis_labels = ρσ_kwargs_obj.axis_labels;
+                }
+                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "tick_mark_labels")){
+                    tick_mark_labels = ρσ_kwargs_obj.tick_mark_labels;
+                }
+                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mesh")){
+                    mesh = ρσ_kwargs_obj.mesh;
+                }
+                var ρσ_ls, tick_increment, radius, ρσ_unpack, base_vec, pos, i, offset, positions, label_value, marker, a_box, j;
+                "23";
+                num_tick_marks = (!num_tick_marks) ? length["-"](1["*"](1)) : num_tick_marks;
+                "24";
+                tick_increment = length["/"](num_tick_marks["-"](1["*"](1)));
+                "25";
+                radius = length["/"](200);
+                "26";
+                ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]),
+                    ρσ_list_decorate([])];
+                self._tick_marks = ρσ_unpack[0];
+                self._axis = ρσ_unpack[1];
+                self._arrows = ρσ_unpack[2];
+                self._arrow_labels = ρσ_unpack[3];
+                self._tick_labels = ρσ_unpack[4];
+                "27";
+                self._position = position;
+                "29";
+                var ρσ_Iter1 = base;
+                ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
+                for (var ρσ_Index1 of ρσ_Iter1) {
+                    base_vec = ρσ_Index1;
+                    "30";
+                    self._axis=self._axis["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: position["-"](1["*"](length)["*"](base_vec)["/"](2)), axis: length["*"](base_vec), radius: radius, color: axis_color})]) ]));
+                    "31";
+                    self._arrows=self._arrows["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: position["+"](length["*"](base_vec)["/"](2)), axis: base_vec, color: axis_color, shaftwidth: radius})]) ]));
+                }
+                "33";
+                var ρσ_Iter2 = range(len(base));
+                ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
+                for (var ρσ_Index2 of ρσ_Iter2) {
+                    i = ρσ_Index2;
+                    "34";
+                    pos = position["+"](ρσ_getitem(base, i)["*"](length["/"](2)["+"](tick_increment)));
+                    "35";
+                    self._arrow_labels.append(ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({pos: pos, text: ρσ_getitem(axis_labels, i), color: axis_color, height: radius["*"](10), align: "center", billboard: true, emissive: true})]));
+                }
+                "37";
+                offset = ρσ_list_decorate([ 1["-u"]()["*"](.05)["*"](length)["*"](y_hat), .05["*"](length)["*"](x_hat), 1["-u"]()["*"](.05)["*"](length)["*"](y_hat) ]);
+                "38";
+                positions = ρσ_list_decorate([]);
+                "39";
+                var ρσ_Iter3 = range(len(base));
+                ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
+                for (var ρσ_Index3 of ρσ_Iter3) {
+                    i = ρσ_Index3;
+                    "40";
+                    for (var ρσ_Index4 = 0; ρσ_Index4["<"](num_tick_marks); ρσ_Index4++) {
+                        j = ρσ_Index4;
+                        "41";
+                        pos = position["-"](1["*"](ρσ_getitem(base, i))["*"](length["/"](2)["-"](1["*"](j)["*"](tick_increment))));
+                        "42";
+                        positions.append(pos);
+                        "43";
+                        label_value = ((i === 0 || typeof i === "object" && ρσ_equals(i, 0))) ? pos.x["-"](1["*"](position.x)) : ((i === 1 || typeof i === "object" && ρσ_equals(i, 1))) ? pos.y["-"](1["*"](position.y)) : pos.z["-"](1["*"](position.z));
+                        "44";
+                        label_value = (ρσ_equals(int(num_tick_marks["/"](2)), j)) ? "" : str(int(label_value));
+                        "45";
+                        marker = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: pos["+"](ρσ_getitem(offset, i)), text: label_value, color: color.gray(.5), box: false, visible: tick_mark_labels})]);
+                        "46";
+                        self._tick_labels.append(marker);
+                        "47";
+                        a_box = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: pos, width: 2["*"](radius), height: .5, length: 2["*"](radius), color: tick_marks_color})]);
+                        "48";
+                        if ((i === 1 || typeof i === "object" && ρσ_equals(i, 1))) {
+                            "49";
+                            ρσ_interpolate_kwargs.call(a_box, a_box.rotate, [ρσ_desugar_kwargs({angle: .5["*"](pi), axis: vec(0, 0, 1)})]);
+                        }
+                        "50";
+                        self._tick_marks.append(a_box);
+                    }
+                }
+                "52";
+                ρσ_unpack = [ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([]), ρσ_list_decorate([])];
+                self._xy_mesh = ρσ_unpack[0];
+                self._zx_mesh = ρσ_unpack[1];
+                self._xz_mesh = ρσ_unpack[2];
+                self._yx_mesh = ρσ_unpack[3];
+                "53";
+                for (var ρσ_Index5 = 0; ρσ_Index5["<"](num_tick_marks); ρσ_Index5++) {
+                    j = ρσ_Index5;
+                    "54";
+                    self._xy_mesh=self._xy_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(position.x["-"](1["*"](length)["/"](2)), position.y["+"](j["*"](tick_increment))["-"](1["*"](length)["/"](2)), position.z), axis: x_hat["*"](length), color: color.gray(.5), radius: radius["/"](2), visible: mesh})]) ]));
+                    "55";
+                    self._yx_mesh=self._yx_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(position.x["-"](1["*"](length)["/"](2))["+"](j["*"](tick_increment)), position.y["-"](1["*"](length)["/"](2)), position.z), axis: y_hat["*"](length), color: color.gray(.5), radius: radius["/"](2), visible: mesh})]) ]));
+                    "56";
+                    self._xz_mesh=self._xz_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(position.x["-"](1["*"](length)["/"](2))["+"](j["*"](tick_increment)), position.y, position.z["-"](1["*"](length)["/"](2))), axis: z_hat["*"](length), color: color.gray(.4), radius: radius["/"](2), visible: mesh})]) ]));
+                    "57";
+                    self._zx_mesh=self._zx_mesh["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(position.x["-"](1["*"](length)["/"](2)), position.y, position.z["-"](1["*"](length)["/"](2))["+"](j["*"](tick_increment))), axis: x_hat["*"](length), color: color.gray(.4), radius: radius["/"](2), visible: mesh})]) ]));
+                }
+            };
+            if (!Base.prototype.__init__.__defaults__) Object.defineProperties(Base.prototype.__init__, {
+                __defaults__ : {value: {position:vec(0, 0, 0), axis_color:color.yellow, tick_marks_color:color.red, length:20, num_tick_marks:null, axis_labels:label_text, tick_mark_labels:true, mesh:false}},
+                __handles_kwarg_interpolation__ : {value: true},
+                __argnames__ : {value: ["position", "axis_color", "tick_marks_color", "length", "num_tick_marks", "axis_labels", "tick_mark_labels", "mesh"]},
+                __module__ : {value: null}
+            });
+            Base.__argnames__ = Base.prototype.__init__.__argnames__;
+            Base.__handles_kwarg_interpolation__ = Base.prototype.__init__.__handles_kwarg_interpolation__;
+            Base.prototype.show_axis = async function show_axis() {
+                var self = this;
+                "60";
+                (await self.axis_visible(true));
+            };
+            if (!Base.prototype.show_axis.__module__) Object.defineProperties(Base.prototype.show_axis, {
+                __module__ : {value: null}
+            });
+            Base.prototype.hide_axis = async function hide_axis() {
+                var self = this;
+                "63";
+                (await self.axis_visible(false));
+            };
+            if (!Base.prototype.hide_axis.__module__) Object.defineProperties(Base.prototype.hide_axis, {
+                __module__ : {value: null}
+            });
+            Base.prototype.show_tick_labels = async function show_tick_labels() {
+                var self = this;
+                "66";
+                (await self.tick_labels_visible(true));
+            };
+            if (!Base.prototype.show_tick_labels.__module__) Object.defineProperties(Base.prototype.show_tick_labels, {
+                __module__ : {value: null}
+            });
+            Base.prototype.hide_tick_labels = async function hide_tick_labels() {
+                var self = this;
+                "69";
+                (await self.tick_labels_visible(false));
+            };
+            if (!Base.prototype.hide_tick_labels.__module__) Object.defineProperties(Base.prototype.hide_tick_labels, {
+                __module__ : {value: null}
+            });
+            Base.prototype.show_tick_marks = async function show_tick_marks() {
+                var self = this;
+                "72";
+                (await self.tick_marks_visible(true));
+            };
+            if (!Base.prototype.show_tick_marks.__module__) Object.defineProperties(Base.prototype.show_tick_marks, {
+                __module__ : {value: null}
+            });
+            Base.prototype.hide_tick_marks = async function hide_tick_marks() {
+                var self = this;
+                "75";
+                (await self.tick_marks_visible(false));
+            };
+            if (!Base.prototype.hide_tick_marks.__module__) Object.defineProperties(Base.prototype.hide_tick_marks, {
+                __module__ : {value: null}
+            });
+            Base.prototype.axis_visible = async function axis_visible(visible) {
+                var self = this;
+                var ρσ_ls, i;
+                "78";
+                var ρσ_Iter6 = range(len(base));
+                ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
+                for (var ρσ_Index6 of ρσ_Iter6) {
+                    i = ρσ_Index6;
+                    "79";
+                    ρσ_getitem(self._arrow_labels, i).visible = visible;
+                    "80";
+                    ρσ_getitem(self._arrows, i).visible = visible;
+                    "81";
+                    ρσ_getitem(self._axis, i).visible = visible;
+                }
+                "82";
+                (await self.tick_labels_visible(visible));
+                "83";
+                (await self.tick_marks_visible(visible));
+            };
+            if (!Base.prototype.axis_visible.__argnames__) Object.defineProperties(Base.prototype.axis_visible, {
+                __argnames__ : {value: ["visible"]},
+                __module__ : {value: null}
+            });
+            Base.prototype.tick_labels_visible = async function tick_labels_visible(visible) {
+                var self = this;
+                var ρσ_ls, a_label;
+                "86";
+                var ρσ_Iter7 = self._tick_labels;
+                ρσ_Iter7 = ((typeof ρσ_Iter7[Symbol.iterator] === "function") ? (ρσ_Iter7 instanceof Map ? ρσ_Iter7.keys() : ρσ_Iter7) : Object.keys(ρσ_Iter7));
+                for (var ρσ_Index7 of ρσ_Iter7) {
+                    a_label = ρσ_Index7;
+                    "87";
+                    a_label.visible = visible;
+                }
+            };
+            if (!Base.prototype.tick_labels_visible.__argnames__) Object.defineProperties(Base.prototype.tick_labels_visible, {
+                __argnames__ : {value: ["visible"]},
+                __module__ : {value: null}
+            });
+            Base.prototype.tick_marks_visible = async function tick_marks_visible(visible) {
+                var self = this;
+                var ρσ_ls, tick_mark;
+                "90";
+                var ρσ_Iter8 = self._tick_marks;
+                ρσ_Iter8 = ((typeof ρσ_Iter8[Symbol.iterator] === "function") ? (ρσ_Iter8 instanceof Map ? ρσ_Iter8.keys() : ρσ_Iter8) : Object.keys(ρσ_Iter8));
+                for (var ρσ_Index8 of ρσ_Iter8) {
+                    tick_mark = ρσ_Index8;
+                    "91";
+                    tick_mark.visible = visible;
+                }
+            };
+            if (!Base.prototype.tick_marks_visible.__argnames__) Object.defineProperties(Base.prototype.tick_marks_visible, {
+                __argnames__ : {value: ["visible"]},
+                __module__ : {value: null}
+            });
+            Base.prototype.xy_mesh_visible = async function xy_mesh_visible(visible) {
+                var self = this;
+                var ρσ_ls, i;
+                "94";
+                var ρσ_Iter9 = range(len(self._xy_mesh));
+                ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
+                for (var ρσ_Index9 of ρσ_Iter9) {
+                    i = ρσ_Index9;
+                    "95";
+                    ρσ_getitem(self._xy_mesh, i).visible = visible;
+                    "96";
+                    ρσ_getitem(self._yx_mesh, i).visible = visible;
+                }
+            };
+            if (!Base.prototype.xy_mesh_visible.__argnames__) Object.defineProperties(Base.prototype.xy_mesh_visible, {
+                __argnames__ : {value: ["visible"]},
+                __module__ : {value: null}
+            });
+            Base.prototype.xz_mesh_visible = async function xz_mesh_visible(visible) {
+                var self = this;
+                var ρσ_ls, i;
+                "99";
+                var ρσ_Iter10 = range(len(self._xz_mesh));
+                ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
+                for (var ρσ_Index10 of ρσ_Iter10) {
+                    i = ρσ_Index10;
+                    "100";
+                    ρσ_getitem(self._xz_mesh, i).visible = visible;
+                    "101";
+                    ρσ_getitem(self._zx_mesh, i).visible = visible;
+                }
+            };
+            if (!Base.prototype.xz_mesh_visible.__argnames__) Object.defineProperties(Base.prototype.xz_mesh_visible, {
+                __argnames__ : {value: ["visible"]},
+                __module__ : {value: null}
+            });
+            Base.prototype.show_xy_mesh = async function show_xy_mesh() {
+                var self = this;
+                "104";
+                (await self.xy_mesh_visible(true));
+            };
+            if (!Base.prototype.show_xy_mesh.__module__) Object.defineProperties(Base.prototype.show_xy_mesh, {
+                __module__ : {value: null}
+            });
+            Base.prototype.hide_xy_mesh = async function hide_xy_mesh() {
+                var self = this;
+                "107";
+                (await self.xy_mesh_visible(false));
+            };
+            if (!Base.prototype.hide_xy_mesh.__module__) Object.defineProperties(Base.prototype.hide_xy_mesh, {
+                __module__ : {value: null}
+            });
+            Base.prototype.show_xz_mesh = async function show_xz_mesh() {
+                var self = this;
+                "110";
+                (await self.xz_mesh_visible(true));
+            };
+            if (!Base.prototype.show_xz_mesh.__module__) Object.defineProperties(Base.prototype.show_xz_mesh, {
+                __module__ : {value: null}
+            });
+            Base.prototype.hide_xz_mesh = async function hide_xz_mesh() {
+                var self = this;
+                "113";
+                (await self.xz_mesh_visible(false));
+            };
+            if (!Base.prototype.hide_xz_mesh.__module__) Object.defineProperties(Base.prototype.hide_xz_mesh, {
+                __module__ : {value: null}
+            });
+            Base.prototype.__repr__ = async function __repr__() {
                 return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Base.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Base.prototype, "__bases__", {value: []});
+            };
+            Base.prototype.__str__ = async function __str__() {
+                return this.__repr__();
+            };
+            Object.defineProperty(Base.prototype, "__bases__", {value: []});
 
 
 
@@ -417,155 +455,155 @@ async function __main__() {
 
 
 
-    "117";
-    _GS_1 = new Base;
-    ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({mesh: true, axis_labels: ρσ_list_decorate([ "x", "ct", "y" ]), tick_mark_labels: false})]);
-    axis = _GS_1;
-    "118";
-    (await axis.hide_xy_mesh());
-    "120";
-    light_cone_top = ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), radius: 0, opacity: .4, axis: vec(0, 1["-u"]()["*"](1), 0)})]);
-    "121";
-    light_cone_bottom = ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](10), 0), radius: 10, opacity: .4, axis: vec(0, 10, 0)})]);
-    "122";
-    spaceship = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "Spaceship", color: color.cyan, visible: false, height: .75})]);
-    "123";
-    photon = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "Photon", color: color.yellow, visible: false, height: .75})]);
-    "125";
-    animation.append_to_caption("\n");
-    "127";
-    async function toggle_tick_marks(event) {
-        "128";
-        (await axis.tick_marks_visible(event.checked));
-    };
-    if (!toggle_tick_marks.__argnames__) Object.defineProperties(toggle_tick_marks, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
+            "117";
+            _GS_1 = new Base;
+            ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({mesh: true, axis_labels: ρσ_list_decorate([ "x", "ct", "y" ]), tick_mark_labels: false})]);
+            axis = _GS_1;
+            "118";
+            (await axis.hide_xy_mesh());
+            "120";
+            light_cone_top = ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), radius: 0, opacity: .4, axis: vec(0, 1["-u"]()["*"](1), 0)})]);
+            "121";
+            light_cone_bottom = ρσ_interpolate_kwargs.call(this, cone, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](10), 0), radius: 10, opacity: .4, axis: vec(0, 10, 0)})]);
+            "122";
+            spaceship = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "Spaceship", color: color.cyan, visible: false, height: .75})]);
+            "123";
+            photon = ρσ_interpolate_kwargs.call(this, text, [ρσ_desugar_kwargs({text: "Photon", color: color.yellow, visible: false, height: .75})]);
+            "125";
+            animation.append_to_caption("\n");
+            "127";
+            async function toggle_tick_marks(event) {
+                "128";
+                (await axis.tick_marks_visible(event.checked));
+            };
+            if (!toggle_tick_marks.__argnames__) Object.defineProperties(toggle_tick_marks, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
 
-    "130";
-    async function toggle_tick_labels(event) {
-        "131";
-        (await axis.tick_labels_visible(event.checked));
-    };
-    if (!toggle_tick_labels.__argnames__) Object.defineProperties(toggle_tick_labels, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
+            "130";
+            async function toggle_tick_labels(event) {
+                "131";
+                (await axis.tick_labels_visible(event.checked));
+            };
+            if (!toggle_tick_labels.__argnames__) Object.defineProperties(toggle_tick_labels, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
 
-    "133";
-    async function toggle_xz_mesh(event) {
-        "134";
-        (await axis.xz_mesh_visible(event.checked));
-    };
-    if (!toggle_xz_mesh.__argnames__) Object.defineProperties(toggle_xz_mesh, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
+            "133";
+            async function toggle_xz_mesh(event) {
+                "134";
+                (await axis.xz_mesh_visible(event.checked));
+            };
+            if (!toggle_xz_mesh.__argnames__) Object.defineProperties(toggle_xz_mesh, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
 
-    "136";
-    async function toggle_xy_mesh(event) {
-        "137";
-        (await axis.xy_mesh_visible(event.checked));
-    };
-    if (!toggle_xy_mesh.__argnames__) Object.defineProperties(toggle_xy_mesh, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
+            "136";
+            async function toggle_xy_mesh(event) {
+                "137";
+                (await axis.xy_mesh_visible(event.checked));
+            };
+            if (!toggle_xy_mesh.__argnames__) Object.defineProperties(toggle_xy_mesh, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
 
-    "139";
-    async function toggle_background(event) {
-        "140";
-        animation.background = (event.checked) ? color.black : color.white;
-    };
-    if (!toggle_background.__argnames__) Object.defineProperties(toggle_background, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
+            "139";
+            async function toggle_background(event) {
+                "140";
+                animation.background = (event.checked) ? color.black : color.white;
+            };
+            if (!toggle_background.__argnames__) Object.defineProperties(toggle_background, {
+                __argnames__ : {value: ["event"]},
+                __module__ : {value: null}
+            });
 
-    "142";
-    async function on_mouse_click() {
-        "143";
-        (await pause_animation());
-    };
-    if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
-        __module__ : {value: null}
-    });
+            "142";
+            async function on_mouse_click() {
+                "143";
+                (await pause_animation());
+            };
+            if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
+                __module__ : {value: null}
+            });
 
-    "145";
-    dt = 1;
-    "146";
-    async function pause_animation() {
-        "147";
-        "148";
-        dt=dt["+"](1);
-        "149";
-        dt %= 2;
-    };
-    if (!pause_animation.__module__) Object.defineProperties(pause_animation, {
-        __module__ : {value: null}
-    });
+            "145";
+            dt = 1;
+            "146";
+            async function pause_animation() {
+                "147";
+                "148";
+                dt=dt["+"](1);
+                "149";
+                dt %= 2;
+            };
+            if (!pause_animation.__module__) Object.defineProperties(pause_animation, {
+                __module__ : {value: null}
+            });
 
-    "151";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks", bind: toggle_tick_marks, checked: true})]);
-    "152";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick labels", bind: toggle_tick_labels, checked: false})]);
-    "153";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "XZ mesh", bind: toggle_xz_mesh, checked: true})]);
-    "154";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "XY mesh", bind: toggle_xy_mesh, checked: false})]);
-    "155";
-    _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Dark background", bind: toggle_background, checked: true})]);
-    "157";
-    animation.bind("click", on_mouse_click);
-    "159";
-    height = 0;
-    "160";
-    while (height["<="](11)) {
-        "161";
-        (await rate(10));
-        "162";
-        light_cone_top.pos = vec(0, height, 0);
-        "163";
-        light_cone_top.radius = height;
-        "164";
-        light_cone_top.axis = vec(0, 1["-u"]()["*"](height), 0);
-        "166";
-        height=height["+"](dt["/"](5));
-    }
-    "168";
-    t = 0;
-    "169";
-    photon.visible = true;
-    "170";
-    spaceship.visible = true;
-    "171";
-    while (t["<"](7)) {
-        "172";
-        (await rate(5));
-        "175";
-        ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(t["*"](1.5), t["*"](1.5), 0) ]), radius: 5, color: color.yellow})]);
-        "176";
-        photon.pos = vec(t["*"](1.5)["+"](1), t["*"](1.5), 0);
-        "179";
-        ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](t)["*"](.5), t["*"](1.5), 0) ]), radius: 3, color: color.cyan})]);
-        "180";
-        spaceship.pos = vec(1["-u"]()["*"](t)["*"](.3)["-"](1["*"](5)), t["*"](1.5), 0);
-        "182";
-        t=t["+"](dt["/"](5));
-    }
-    "184";
-    while (true) {
-        "185";
-        (await rate(100));
-    }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
+            "151";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick marks", bind: toggle_tick_marks, checked: true})]);
+            "152";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Tick labels", bind: toggle_tick_labels, checked: false})]);
+            "153";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "XZ mesh", bind: toggle_xz_mesh, checked: true})]);
+            "154";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "XY mesh", bind: toggle_xy_mesh, checked: false})]);
+            "155";
+            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Dark background", bind: toggle_background, checked: true})]);
+            "157";
+            animation.bind("click", on_mouse_click);
+            "159";
+            height = 0;
+            "160";
+            while (height["<="](11)) {
+                "161";
+                (await rate(10));
+                "162";
+                light_cone_top.pos = vec(0, height, 0);
+                "163";
+                light_cone_top.radius = height;
+                "164";
+                light_cone_top.axis = vec(0, 1["-u"]()["*"](height), 0);
+                "166";
+                height=height["+"](dt["/"](5));
+            }
+            "168";
+            t = 0;
+            "169";
+            photon.visible = true;
+            "170";
+            spaceship.visible = true;
+            "171";
+            while (t["<"](7)) {
+                "172";
+                (await rate(5));
+                "175";
+                ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(t["*"](1.5), t["*"](1.5), 0) ]), radius: 5, color: color.yellow})]);
+                "176";
+                photon.pos = vec(t["*"](1.5)["+"](1), t["*"](1.5), 0);
+                "179";
+                ρσ_interpolate_kwargs.call(this, points, [ρσ_desugar_kwargs({pos: ρσ_list_decorate([ vec(1["-u"]()["*"](t)["*"](.5), t["*"](1.5), 0) ]), radius: 3, color: color.cyan})]);
+                "180";
+                spaceship.pos = vec(1["-u"]()["*"](t)["*"](.3)["-"](1["*"](5)), t["*"](1.5), 0);
+                "182";
+                t=t["+"](dt["/"](5));
+            }
+            "184";
+            while (true) {
+                "185";
+                (await rate(100));
+            }
+        };
+        if (!__main__.__module__) Object.defineProperties(__main__, {
+            __module__ : {value: null}
+        });
 
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
+        ;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
+    // END JAVASCRIPT
 
-//--><!]]></script>
+    //--><!]]></script>
 </div>

@@ -25,14 +25,14 @@
 </style>
 <script>
     // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
-    }
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
 </script>
 <div id="glowscript-wrapper">
     <div id="glowscript" class="glowscript"></div>
@@ -394,8 +394,6 @@ async function __main__() {
 
     "79";
     ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 1e-12, shininess: 0, opacity: .5})]);
-    "80";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "82";
     _GS_1 = new Dipole;
     (await _GS_1.__init__());
