@@ -5,12 +5,12 @@
 
 ### What are you looking at?
 
-* 🎨 **Colors turn around zero points**
-* ✂️ **Branch cuts** are visible as abrupt change of colors
-* ⛰️ Height explodes where $|f(z)|$ is big
-* 🔴↔🔵 continuous phase cycli
+🎨 **Colors turn around zero points**<br/>
+✂️ **Branch cuts** are visible as abrupt change of colors<br/>
+⛰️ Height explodes where ||F(z)|| is big<br/>
+🔴↔🔵 continuous phase cycli
 
-For $ f(z)=\tfrac12(z^2+2) $:
+For $ F(z)=\dfrac{1}{2}(z^2+2) $:
 
 * Zero points at $ z = \pm i\sqrt{2} $
 * Phase-singularities exact on those points
