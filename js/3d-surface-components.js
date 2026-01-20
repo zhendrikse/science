@@ -606,11 +606,11 @@ export class LiteralStringBasedSurfaceDefinition
 }
 
 export class MinimalSurfaceView extends SurfaceView {
-    constructor(parentGroup, surface, {resolution=20, baseColor="#4f6"}) {
+    constructor(parentGroup, surface, {showWireframe=true, resolution=20, baseColor="#4f6"}) {
         super(parentGroup, surface);
         this.baseColor = baseColor;
         this.geometry = surface.createGeometryWith(resolution);
-        this.material = this.material(true, 1);
+        this.material = this.material(showWireframe, 1);
         this.colorMapper = new HeightColorMapper({ baseColor: baseColor });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.group.add(this.mesh);
