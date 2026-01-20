@@ -872,6 +872,8 @@ export class Arrow extends THREE.Group {
         this.add(this._trail.line);
     }
 
+    get axis() { return this._axis.clone(); }
+
     disableTrail() {
         if (!this._trail) return;
         this.remove(this._trail.line);
