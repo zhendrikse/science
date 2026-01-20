@@ -1,11 +1,10 @@
 import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 
-export const Vector = THREE.Vector3;
-export const ZeroVector = new Vector();
-export const UnitVectorE1 = new Vector(1, 0, 0);
-export const UnitVectorE2 = new Vector(0, 1, 0);
-export const UnitVectorE3 = new Vector(0, 0, 1);
+export const ZeroVector = new THREE.Vector3();
+export const UnitVectorE1 = new THREE.Vector3(1, 0, 0);
+export const UnitVectorE2 = new THREE.Vector3(0, 1, 0);
+export const UnitVectorE3 = new THREE.Vector3(0, 0, 1);
 
 export class ThreeJsUtils {
     static scaleBox3(box, factor) {

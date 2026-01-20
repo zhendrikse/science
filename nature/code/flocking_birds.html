@@ -23,7 +23,7 @@
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    import { ThreeJsUtils, Arrow, Vector } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { ThreeJsUtils, Arrow } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
     console.clear( );
 
@@ -66,7 +66,7 @@
 
     class Bird {
         constructor(velocity, initialPhysicalFlockRadius=3) {
-            const pos = new Vector().random().multiplyScalar(initialPhysicalFlockRadius);
+            const pos = new THREE.Vector3().random().multiplyScalar(initialPhysicalFlockRadius);
             this._position = pos;
             this._velocity = velocity;
             this._bird = new Arrow(pos, this.velocity().normalize().multiplyScalar(speed * .2), {
@@ -86,7 +86,7 @@
 
         velocity = () => this._velocity.clone();
 
-        startle = () => this._velocity = new Vector().random().multiplyScalar(2 * speed);
+        startle = () => this._velocity = new THREE.Vector3().random().multiplyScalar(2 * speed);
 
         render() {
             this._bird.moveTo(this.position());
@@ -110,14 +110,14 @@
             this._avoid_weight = avoid_weight
 
             for (let i = 0; i < bird_count; i++)
-                this._birds.push(new Bird(new Vector(speed, 0, 0).add(new Vector().random().multiplyScalar(speed))));
+                this._birds.push(new Bird(new THREE.Vector3(speed, 0, 0).add(new THREE.Vector3().random().multiplyScalar(speed))));
         }
 
         // avoid nearest birds (A BETTER VERSION WOULD ANTICIPATE COLLISIONS)
         avoidNearestBirds() {
             const avoid = []
             for (let i = 0; i < this._bird_count; i++) {
-                avoid.push(new Vector(0, 0, 0));
+                avoid.push(new THREE.Vector3(0, 0, 0));
                 for (let j = 0; j < i; j++) {
                     const distanceSquared = this._birds[i].distanceToSquared(this._birds[j]);
                     if (distanceSquared < threshold) {
@@ -132,15 +132,15 @@
 
         updateBirds(avoid, center, direction, dt) {
             for (let count = 0; count < this._bird_count; count++) {
-                let acceleration = new Vector().randomDirection().multiplyScalar(this._random_weight);
+                let acceleration = new THREE.Vector3().randomDirection().multiplyScalar(this._random_weight);
 
-                let diff = new Vector().copy(center).sub(this._birds[count].position());
+                let diff = new THREE.Vector3().copy(center).sub(this._birds[count].position());
                 acceleration.add(diff.multiplyScalar(this._center_weight));
 
-                diff = new Vector().copy(direction).sub(this._birds[count].velocity());
+                diff = new THREE.Vector3().copy(direction).sub(this._birds[count].velocity());
                 acceleration.add(diff.multiplyScalar(this._direction_weight));
 
-                diff = new Vector().copy(avoid[count]).normalize().sub(this._birds[count].position());
+                diff = new THREE.Vector3().copy(avoid[count]).normalize().sub(this._birds[count].position());
                 acceleration.add(diff.multiplyScalar(this._avoid_weight));
 
                 this._birds[count].update(acceleration, dt)
@@ -149,8 +149,8 @@
 
         update(dt) {
             // compute average position and direction
-            let center = new Vector(0, 0, 0);
-            let direction = new Vector(0, 0, 0);
+            let center = new THREE.Vector3(0, 0, 0);
+            let direction = new THREE.Vector3(0, 0, 0);
             for (let i = 0; i < this._bird_count; i++) {
                 const bird = this._birds[i];
                 center.add(bird.position());

@@ -14,7 +14,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, AxesParameters, ClassicalAxesLayout, ClassicalAnnotations, Vector }
+    import { Axes, AxesParameters, ClassicalAxesLayout, ClassicalAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import { Plot3D, SurfaceDefinition, TangentFrameView, TangentFrameParameters}
@@ -52,9 +52,9 @@
                 .onChange(value => {
                     tangentFrameParameters.u = value / 180;
                     tangentFrame.update(value / 180, tangentFrameParameters.v);
-                    const pos = new Vector();
+                    const pos = new THREE.Vector3();
                     sphereSurface.sample(value / 180, tangentFrameParameters.v, pos);
-                    radialLine.geometry.setFromPoints([new Vector(0, 0, 0), pos]);
+                    radialLine.geometry.setFromPoints([new THREE.Vector3(0, 0, 0), pos]);
                 });
 
             gui.add(params, "phi", 0, 350, 1)
@@ -62,9 +62,9 @@
                 .onChange(value => {
                     tangentFrameParameters.v = value / 360;
                     tangentFrame.update(tangentFrameParameters.u , value / 360);
-                    const pos = new Vector();
+                    const pos = new THREE.Vector3();
                     sphereSurface.sample(tangentFrameParameters.u, value / 360, pos);
-                    radialLine.geometry.setFromPoints([new Vector(0, 0, 0), pos]);
+                    radialLine.geometry.setFromPoints([new THREE.Vector3(0, 0, 0), pos]);
                 });
 
             const axesFolder = gui.addFolder("Axes");
@@ -112,10 +112,10 @@
     worldGroup.add(tangentFrame);
 
     // Radial line
-    const position = new Vector();
+    const position = new THREE.Vector3();
     sphereSurface.sample(tangentFrameParameters.u, tangentFrameParameters.v, position);
     const radialLine = new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints([new Vector(0, 0, 0), position]),
+        new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), position]),
         new THREE.LineBasicMaterial({ color: 0xffffff })
     );
     worldGroup.add(radialLine);

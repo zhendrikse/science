@@ -15,7 +15,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, AxesParameters, ArrowField, VectorField, Interval, MatlabAxesLayout, MatlabAnnotations, Vector }
+    import { Axes, AxesParameters, ArrowField, VectorField, Interval, MatlabAxesLayout, MatlabAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Plot3D }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
@@ -120,7 +120,7 @@
             const u = Math.sin(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.cos(Math.PI * position.z);
             const v = -Math.cos(Math.PI * position.x) * Math.sin(Math.PI * position.y) * Math.cos(Math.PI * position.z);
             const w = Math.sqrt(2.0 / 3.0) * Math.cos(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.sin(Math.PI * position.z);
-            return new Vector(u, v, w);
+            return new THREE.Vector3(u, v, w);
         }
     }
 
