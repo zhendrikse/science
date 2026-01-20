@@ -20,13 +20,13 @@ is added purely for aesthetical purposes.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="multivariate_surface_plot.html">
+  <a href="parametric_surfaces.html">
     <img alt="Multivariate functions" src="images/multivariate_surface_plot.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;
   <figcaption>Surface plot for $f(x, y) = \sin(\pi x)\cos(\pi y)$.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="multivariate_contour_plot.html">
+  <a href="parametric_surfaces.html">
     <img alt="Complex functions" src="images/multivariate_contour_plot.png" title="Click to animate"/>
   </a>
   <figcaption><br/>Contour plot for $f(x, y) = \sin(\sqrt{x^2+y^2})$.</figcaption>
@@ -44,13 +44,13 @@ modified by the user.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="complex_surface_plot.html">
+  <a href="complex_surfaces.html">
     <img alt="Complex functions" src="images/complex_function_plot.png" title="Click to animate"/>
   </a>
   <figcaption>Surface plot for $f(z) = \exp(-z^2)$.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="complex_contour_plot.html">
+  <a href="complex_surfaces.html">
     <img alt="Complex functions" src="images/complex_function_contour_plot.png" title="Click to animate"/>
   </a>
   <figcaption>Contour plot for $f(z) = log(z)$.</figcaption>
