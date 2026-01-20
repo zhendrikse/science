@@ -48,34 +48,34 @@ Use the controls to explore the properties of the plane wave.
 
 #### Exercise 1 — Spatial phase
 
-1. Set (\omega = 0).
-2. Change the wave number (k).
+1. Set $\omega = 0$.
+2. Change the wave number $k$.
 
 **Questions**
 
 * What happens to the phase difference between neighboring arrows?
-* How does this relate to the wavelength (\lambda = 2\pi/k)?
+* How does this relate to the wavelength $\lambda = 2\pi/k$?
 
 ---
 
 #### Exercise 2 — Temporal evolution
 
-1. Fix (k).
-2. Increase (\omega).
+1. Fix $k$.
+2. Increase $\omega$.
 
 **Questions**
 
 * What changes visually?
-* What does (\omega) control physically?
+* What does $\omega$ control physically?
 * Does the probability density change?
 
 ---
 
 #### Exercise 3 — Direction of propagation
 
-1. Set (k > 0).
+1. Set $k > 0$.
 2. Observe how the phase moves in space.
-3. Repeat for (k < 0).
+3. Repeat for $k < 0$.
 
 **Questions**
 
@@ -109,7 +109,7 @@ A plane wave is not normalizable.
 
 ### Optional challenge
 
-Predict what would happen if **two plane waves with slightly different (k)** were added together.
+Predict what would happen if **two plane waves with slightly different $k$ ** were added together.
 What new structure would you expect to see?
 
 
@@ -170,6 +170,5 @@ From this we arrive at the <a href="https://en.wikipedia.org/wiki/Schr%C3%B6ding
 
 $$(KE + PE)\Psi(x,,t) = E\Psi(x,t) = -i\hbar \dfrac{\partial}{\partial t}\Psi(x, t) = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \Psi(x,t) + V(x)\Psi(x,t)$$
 
----
 
 {% include share_buttons.html %}
