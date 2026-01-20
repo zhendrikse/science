@@ -1,0 +1,334 @@
+<style>
+    .applicationCanvas {
+        display: block;
+        background-color: #131313;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .canvasWrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .guiContainer {
+        margin-top: 0.5em;
+        background: #1a1a1a;
+    }
+
+</style>
+
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
+    }
+</script>
+
+<div class="canvasWrapper" id="complexPlotContainer">
+    <canvas class="applicationCanvas" id="complexPlotCanvas"></canvas><br/>
+</div>
+<div id="gui-container"></div>
+
+<script type="module">
+    import * as THREE from "three";
+    import { Axes, AxesParameters, MatlabAnnotations, MatlabAxesLayout, Plot3D, Interval }
+        from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+    import { SurfaceDefinition, ColorMapper, SurfaceView }
+        from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
+
+    const canvasContainer = document.getElementById("complexPlotContainer");
+    const canvas = document.getElementById("complexPlotCanvas");
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x131313);
+    const worldGroup = new THREE.Group();
+    scene.add(worldGroup);
+
+    const params = {
+        axesParameters: new AxesParameters({axesLabels: false}),
+        opacity: 0.3,
+        radius: 0.1
+    };
+
+    class ControlsGui {
+        constructor(axesLayout, annotations) {
+            const gui = new GUI({width: 300, autoPlace: false});
+
+            const axesFolder = gui.addFolder("Axes");
+            axesFolder.add(params.axesParameters, 'axesLines')
+                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
+            axesFolder.add(params.axesParameters, 'axesLabels')
+                .name("Axes labels").onChange(value => annotations.visible = value);
+            axesFolder.add(params.axesParameters, 'xyPlane')
+                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
+            axesFolder.add(params.axesParameters, 'xzPlane')
+                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
+            axesFolder.add(params.axesParameters, 'yzPlane')
+                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.close();
+
+            document.getElementById("gui-container").appendChild(gui.domElement);
+        }
+    }
+
+    export class ComplexNumber {
+        constructor(re, im) {
+            this._re = re
+            this._im = im
+        }
+
+        get re() { return this._re; }
+        get im() { return this._im; }
+
+        phase = () => Math.atan2(this.im, this.re);
+        abs = () => Math.sqrt(this.re * this.re + this.im * this.im);
+    }
+
+    export class MathWrapper {
+        constructor() {
+            this.complex = this._complex;
+            this.add = this._add;
+            this.subtract = this._subtract;
+            this.multiply = this._multiply;
+            this.divide = this._divide;
+            this.sqrt = this._sqrt;
+            this.log = this._log;
+            this.exp = this._exp;
+            this.sin = this._sin;
+            this.cos = this._cos;
+        }
+
+        _complex = (re, im) => new ComplexNumber(re, im);
+        _add = (z1, z2) => new ComplexNumber(z1.re + z2.re, z1.im + z2.im);
+        _subtract = (z1, z2) => new ComplexNumber(z1.re - z2.re, z1.im - z2.im);
+        _log = (z) => new ComplexNumber(Math.log(z.abs()), Math.atan2(z.im, z.re));
+        _exp = (z) => new ComplexNumber(Math.exp(z.re) * Math.cos(z.im), Math.exp(z.re) * Math.sin(z.im))
+        _sin = (z) => {
+            const i_z = this.multiply(z, new ComplexNumber(0, 1));
+            const min_i_z = this.multiply(z, new ComplexNumber(0, -1));
+            return this.multiply(new ComplexNumber(0, -.5), this.exp(self.subtract(i_z, min_i_z)));
+        }
+        _cos = (z) => {
+            const i_z = self.multiply(z, new ComplexNumber(0, 1));
+            const min_i_z = self.multiply(z, new ComplexNumber(0, -1));
+            return this.multiply(new ComplexNumber(.5, 0), this.exp(self.add(i_z, min_i_z)));
+        }
+        _multiply = (z1, z2) => new ComplexNumber(z1.re * z2.re - z1.im * z2.im, z1.im * z2.re + z1.re * z2.im);
+
+        _divide = (z1, z2) => {
+            const denominator = z2.re * z2.re + z2.im * z2.im;
+            const re = z1.re * z2.re + z1.im * z2.im;
+            const im = z1.im * z2.re - z1.re * z2.im;
+            return new ComplexNumber(re / denominator, im / denominator);
+        }
+        _sqrt = (z) => {
+            const factor = Math.sqrt((z.abs() + z.re) / 2);
+            return new ComplexNumber(factor, factor * (z.im / Math.abs(z.im)));
+        }
+    }
+
+    export class ComplexColorMapper extends ColorMapper {
+        apply(geometry) {
+            const phaseAttr   = geometry.attributes.phase;
+            const modulusAttr = geometry.attributes.modulus;
+
+            if (!phaseAttr || !modulusAttr)
+                throw new Error("Geometry needs phase and modulus attributes");
+
+            const count = phaseAttr.count;
+
+            let colorAttr = geometry.attributes.color;
+            if (!colorAttr) {
+                colorAttr = new THREE.BufferAttribute(
+                    new Float32Array(count * 3), 3
+                );
+                geometry.setAttribute("color", colorAttr);
+            }
+
+            // --- determine modulus range ---
+            let mMin = Infinity, mMax = -Infinity;
+            for (let i = 0; i < count; i++) {
+                const m = modulusAttr.getX(i);
+                if (m < mMin) mMin = m;
+                if (m > mMax) mMax = m;
+            }
+
+            const color = new THREE.Color();
+
+            for (let i = 0; i < count; i++) {
+                const phase = phaseAttr.getX(i);
+                const m     = modulusAttr.getX(i);
+
+                // --- phase → hue ---
+                const hue = ((phase + Math.PI) / (2 * Math.PI) + 1) % 1;
+
+                // --- modulus → brightness ---
+                const t = (m - mMin) / (mMax - mMin);
+                color.setHSL(hue, 1.0, 0.25 + 0.5 * t);
+
+                colorAttr.array[3*i]     = color.r;
+                colorAttr.array[3*i + 1] = color.g;
+                colorAttr.array[3*i + 2] = color.b;
+            }
+
+            colorAttr.needsUpdate = true;
+        }
+    }
+
+    export class ComplexSurfaceView extends SurfaceView {
+        constructor(parentGroup, surface, {showWireframe=true, resolution=100, baseColor="#4f6"}) {
+            super(parentGroup, surface);
+            this.baseColor = baseColor;
+            this.geometry = surface.createGeometryWith(resolution);
+            this.material = this.material(showWireframe, 1);
+            this.colorMapper = new ComplexColorMapper();
+            this.mesh = new THREE.Mesh(this.geometry, this.material);
+            this.group.add(this.mesh);
+            this.colorMapper.apply(this.geometry);
+        }
+
+        selectableObject = () => this.mesh;
+    }
+
+    export class ComplexParametricGeometry extends THREE.BufferGeometry {
+        constructor(definition, slices, stacks) {
+            super();
+
+            const vertices = [];
+            const phases   = [];
+            const indices  = [];
+            const moduli   = [];
+            for (let i = 0; i <= slices; i++) {
+                const u = i / slices;
+
+                for (let j = 0; j <= stacks; j++) {
+                    const v = j / stacks;
+
+                    const target = new THREE.Vector3();
+                    const phase = definition.sample(u, v, target);
+                    vertices.push(target.x, target.y, target.z);
+                    moduli.push(target.y);
+                    phases.push(phase);
+                }
+            }
+
+            for (let i = 0; i < slices; i++)
+                for (let j = 0; j < stacks; j++) {
+                    const a = i * (stacks + 1) + j;
+                    const b = a + stacks + 1;
+                    const c = b + 1;
+                    const d = a + 1;
+
+                    indices.push(a, b, d);
+                    indices.push(b, c, d);
+                }
+
+            this.setIndex(indices);
+            this.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+            this.setAttribute("phase", new THREE.Float32BufferAttribute(phases, 1));
+            this.setAttribute("modulus", new THREE.Float32BufferAttribute(moduli, 1));
+
+            this.computeVertexNormals();
+        }
+    }
+
+    export class ComplexSurfaceDefinition extends SurfaceDefinition {
+        constructor(specification) {
+            super();
+            this.specification = specification;
+        }
+
+        sample(u, v, target) {
+            const re = this.specification.reInterval.scaleUnitParameter(u);
+            const im = this.specification.imInterval.scaleUnitParameter(v);
+            const z = new ComplexNumber(re, im);
+            const value = this.specification.func(z);
+            target.set(re, value.abs(), im);
+            return value.phase();
+        }
+    }
+
+    export class ComplexSurfaceSpecification {
+        constructor(func, reInterval, imInterval) {
+            this.func = func;
+            this.reInterval = reInterval;
+            this.imInterval = imInterval;
+        }
+    }
+
+    /**
+     * Using this class, a ComplexSurfaceView can be realized.
+     */
+    export class ComplexSurface {
+        constructor(surfaceDefinition) {
+            this._definition = surfaceDefinition;
+        }
+
+        createGeometryWith(resolution) {
+            return new ComplexParametricGeometry(
+                this._definition,
+                resolution,
+                resolution
+            );
+        }
+
+        definition() { return this._definition; }
+    }
+
+    // Axes
+    const axes = new Axes();
+    worldGroup.add(axes);
+    const axesLayout = new MatlabAxesLayout(4.5, 10);
+    const annotations = new MatlabAnnotations(canvasContainer, axesLayout, ["Re(z)", "|z|", "Im(z)"]);
+    axes.setLayout(axesLayout);
+    axes.setAnnotations(annotations);
+    worldGroup.add(annotations);
+    annotations.visible = params.axesParameters.axesLabels;
+    //axes.shiftBy(new THREE.Vector3(0, -4, 0));
+
+    const plot3D = new Plot3D(canvas, scene, axes);
+    const bbox = new THREE.Box3();
+    bbox.setFromObject( worldGroup );
+    plot3D.fitToBoundingBox(bbox, {padding: 1.1, translationY: -4});
+
+    const gui = new ControlsGui(axesLayout, annotations);
+    const math = new MathWrapper();
+
+    const zSquaredPlusOne = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
+        (z) => math.multiply(math.add(math.multiply(z, z), math.complex(2, 0)), math.complex(.5, 0)),
+        new Interval(-2, 2),
+        new Interval(-2, 2)
+    ));
+    const zAbsSquared = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
+        (z) => math.multiply(math.multiply(z, new ComplexNumber(z.re, -z.im)), math.complex(0.5, 0)),
+        new Interval(-2, 2),
+        new Interval(-2, 2)
+    ));
+    const zCubed = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
+        (z) => math.multiply(math.add(math.multiply(z, math.multiply(z, z)), new ComplexNumber(2, 0)), math.complex(0.2, 0)),
+        new Interval(-2, 2),
+        new Interval(-2, 2)
+    ));
+    const zPlusOneOverZMinusOne = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
+        (z) => math.multiply(new ComplexNumber(0.4, 0), math.divide(math.add(math.complex(1, 0), z), math.add(math.complex(-1, 0), z))),
+        new Interval(-4, 4),
+        new Interval(-4, 4)
+    ));
+    const selectorSurface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed), {showWireframe: false});
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        plot3D.render();
+    }
+    animate();
+</script>
