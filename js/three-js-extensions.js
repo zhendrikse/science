@@ -339,78 +339,6 @@ const shaftGeometrySquare = new THREE.BoxGeometry(1, 1, 1);
 const headGeometryRound = new THREE.ConeGeometry(1, 1, 16);
 const headGeometrySquare = new THREE.ConeGeometry(1, 1, 4);
 
-export class Arrow extends THREE.Group {
-    constructor(origin, axis, {
-        color = 0xff0000,
-        shaftWidth = 0.1, // times the length of the axis
-        headWidth = 2,    // times the width of the shaft
-        headLength = 5,   // times the width of the shaft
-        opacity = 1,
-        round = false,
-        visible = true
-    } = {}) {
-        super();
-
-        this.headLength = headLength;
-        this.shaftWidth = shaftWidth;
-        this.headWidth = headWidth;
-        this.axis = axis;
-
-        const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
-        const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
-        const material = new THREE.MeshStandardMaterial({
-            color: color,
-            opacity: opacity,
-            transparent: true
-        });
-
-        this.shaft = new THREE.Mesh(shaftGeometry, material);
-        this.head = new THREE.Mesh(headGeometry, material);
-        if (!round)
-            this.head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
-
-        this.add(this.shaft, this.head);
-        this.position.copy(origin);
-        this.updateAxis(axis);
-        this.visible = visible;
-    }
-
-    updateAxis(newAxis) {
-        this.axis.copy(newAxis);
-        const totalLength = newAxis.length();
-        if (totalLength < 1e-6)
-            return;
-
-        const quaternion = new THREE.Quaternion().setFromUnitVectors(
-            UnitVectorE2,
-            newAxis.clone().normalize()
-        );
-        this.setRotationFromQuaternion(quaternion);
-
-        const shaftWidth = totalLength * this.shaftWidth;
-        const headLength = this.headLength * shaftWidth;
-        const shaftLength = Math.max(totalLength - headLength, 1e-6);
-
-        this.shaft.scale.set(shaftWidth, shaftLength, shaftWidth);
-        this.shaft.position.y = shaftLength * 0.5;
-        this.head.scale.set(this.headWidth * shaftWidth, headLength, this.headWidth * shaftWidth);
-        this.head.position.y = shaftLength + headLength * 0.5;
-    }
-
-    updateColor = (color) => this.shaft.material.color = color;
-
-    updateOpacity = (opacity) => {
-        this.shaft.material.opacity = opacity;
-        this.head.material.opacity = opacity;
-    }
-
-    moveTo = (newPositionVector) => this.position.copy(newPositionVector);
-
-    positionVectorTo = (other) => new Vector().copy(other.position).sub(this.position);
-
-    distanceToSquared = (other) => this.position.distanceToSquared(other.position);
-}
-
 export class VectorField {
     constructor() {}
 
@@ -689,55 +617,279 @@ export class ArrowField extends THREE.Group {
     }
 }
 
-export class Ball {
-    constructor(parent, position, {
-        radius = 1,
-        velocity = new Vector(0, 0, 0),
-        mass=10,
-        opacity = 1,
-        showWireframe = false,
-        color=0xffff00,
-        segments = 24})
-    {
-        const massMaterial = new THREE.MeshStandardMaterial({
-            color: color,
-            opacity: opacity,
-            transparent: true,
-            wireframe: showWireframe,
-            metalness:0.7,
-            roughness:0.2
-        });
-        this.sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, segments, segments), massMaterial);
-        this.sphere.position.copy(position);
-        this.sphere.castShadow = true;
-        this.mass = mass;
-        this.velocity = velocity;
-        parent.add(this.sphere);
+export class Sphere {
+    constructor(
+        group,
+        position=new THREE.Vector3(0, 0, 0),
+        radius=1,
+        {
+            segments=24,
+            material=new THREE.MeshStandardMaterial({
+                color: "yellow",
+                opacity: 1,
+                transparent: true,
+                wireframe: false,
+                metalness:0.7,
+                roughness:0.2
+            })
+        }) {
+        this._sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, segments, segments), material);
+        this._sphere.position.copy(position);
+        this._sphere.castShadow = true;
+        this._group = group;
+        this._group.add(this._sphere);
     }
 
-    // updateWith(force, dt) {
-    //     this.velocity += force / this.mass * dt;
-    //     this.velocity *= .999; // damping
-    //     this.sphere.position.y += this.velocity * dt;
-    // }
-
-    updateWith(force, dt) {
-        this.velocity.addScaledVector(force, dt / this.mass);
-        this.sphere.position.addScaledVector(this.velocity, dt);
+    moveTo(newPosition) {
+        this._sphere.position.copy(newPosition);
     }
-
-    damp = (dampingFactor=0.998) => this.velocity.multiplyScalar(dampingFactor);
-    position = () => this.sphere.position.clone();
-    shiftTo(newPosition) {
-        this.sphere.position.copy(newPosition);
-        this.velocity = new Vector(0, 0, 0);
-    }
-
-    kineticEnergy = () => 0.5 * this.mass * this.velocity.y * this.velocity.y;
 }
 
-// --- Curve for slinky spring ---
-class SpringCurve extends THREE.Curve {
+export class Arrow extends THREE.Group {
+    constructor(position, axis, {
+        color = 0xff0000,
+        shaftWidth = 0.1, // times the length of the axis
+        headWidth = 2,    // times the width of the shaft
+        headLength = 5,   // times the width of the shaft
+        opacity = 1,
+        round = false,
+        visible = true
+    } = {}) {
+        super();
+
+        this.headLength = headLength;
+        this.shaftWidth = shaftWidth;
+        this.headWidth = headWidth;
+        this.axis = axis;
+
+        const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
+        const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
+        const material = new THREE.MeshStandardMaterial({
+            color: color,
+            opacity: opacity,
+            transparent: true
+        });
+
+        this.shaft = new THREE.Mesh(shaftGeometry, material);
+        this.head = new THREE.Mesh(headGeometry, material);
+        if (!round)
+            this.head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
+
+        this.add(this.shaft, this.head);
+        this.position.copy(position);
+        this.updateAxis(axis);
+        this.visible = visible;
+    }
+
+    updateAxis(newAxis) {
+        this.axis.copy(newAxis);
+        const totalLength = newAxis.length();
+        if (totalLength < 1e-6)
+            return;
+
+        const quaternion = new THREE.Quaternion().setFromUnitVectors(
+            UnitVectorE2,
+            newAxis.clone().normalize()
+        );
+        this.setRotationFromQuaternion(quaternion);
+
+        const shaftWidth = totalLength * this.shaftWidth;
+        const headLength = this.headLength * shaftWidth;
+        const shaftLength = Math.max(totalLength - headLength, 1e-6);
+
+        this.shaft.scale.set(shaftWidth, shaftLength, shaftWidth);
+        this.shaft.position.y = shaftLength * 0.5;
+        this.head.scale.set(this.headWidth * shaftWidth, headLength, this.headWidth * shaftWidth);
+        this.head.position.y = shaftLength + headLength * 0.5;
+    }
+
+    updateColor = (color) => this.shaft.material.color = color;
+
+    updateOpacity = (opacity) => {
+        this.shaft.material.opacity = opacity;
+        this.head.material.opacity = opacity;
+    }
+
+    moveTo = (newPositionVector) => this.position.copy(newPositionVector);
+
+    positionVectorTo = (other) => new Vector().copy(other.position).sub(this.position);
+
+    distanceToSquared = (other) => this.position.distanceToSquared(other.position);
+}
+
+export class Graph {
+    constructor(canvas, {
+        maxPoints = 300,
+        dt = 0.02,
+        scaleY = 1,
+        offsetY = null,
+        background = "#131313",
+        gridColor = "#333",
+        axisColor = "#888",
+        textColor = "#aaa",
+        font = "12px sans-serif"
+    } = {}) {
+        this.canvas = canvas;
+        this.context = canvas.getContext("2d");
+
+        this.maxPoints = maxPoints;
+        this.dt = dt;
+        this.scaleY = scaleY;
+        this.offsetY = offsetY ?? canvas.height * 0.9;
+
+        this.gridColor = gridColor;
+        this.axisColor = axisColor;
+        this.textColor = textColor;
+        this.font = font;
+
+        this.series = new Map();
+        this.time = 0;
+
+        this.canvas.style.backgroundColor = background;
+    }
+
+    addSeries(name, color) {
+        this.series.set(name, { data: [], color });
+    }
+
+    push(values) {
+        this.time += this.dt;
+
+        for (const [name, value] of Object.entries(values)) {
+            const s = this.series.get(name);
+            if (!s) continue;
+
+            s.data.push({ t: this.time, v: value });
+            if (s.data.length > this.maxPoints) s.data.shift();
+        }
+    }
+
+    clear() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    draw() {
+        this.clear();
+        this._drawGrid();
+        this._drawAxes();
+
+        for (const series of this.series.values()) {
+            this._drawLine(series);
+        }
+    }
+
+    _drawLine(series) {
+        const { data, color } = series;
+        if (data.length === 0) return;
+
+        const t0 = data[0].t;
+        const t1 = data[data.length - 1].t;
+        const span = t1 - t0 || 1;
+
+        const context = this.context;
+        context.beginPath();
+        context.strokeStyle = color;
+
+        data.forEach((point, index) => {
+            const x = (point.t - t0) / span * this.canvas.width;
+            const y = this.offsetY - point.v * this.scaleY;
+            if (index === 0) context.moveTo(x, y);
+            else context.lineTo(x, y);
+        });
+
+        context.stroke();
+    }
+
+    _drawGrid() {
+        const context = this.context;
+        context.strokeStyle = this.gridColor;
+        context.lineWidth = 1;
+
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+
+        const { tMin, tMax } = this._getTimeRange();
+        const span = tMax - tMin;
+
+        const tStep = this._niceStep(span / 10);
+
+        for (let t = Math.ceil(tMin / tStep) * tStep; t <= tMax; t += tStep) {
+            const x = (t - tMin) / span * w;
+            context.beginPath();
+            context.moveTo(x, 0);
+            context.lineTo(x, h);
+            context.stroke();
+        }
+
+        // horizontale grid (Y blijft hetzelfde)
+        const yStep = this._niceStep(h / (this.scaleY * 6));
+        for (let v = -1000; v <= 1000; v += yStep) {
+            const y = this.offsetY - v * this.scaleY;
+            if (y < 0 || y > h) continue;
+            context.beginPath();
+            context.moveTo(0, y);
+            context.lineTo(w, y);
+            context.stroke();
+        }
+    }
+
+    _drawAxes() {
+        const context = this.context;
+        context.strokeStyle = this.axisColor;
+        context.fillStyle = this.textColor;
+        context.font = this.font;
+
+        const width = this.canvas.width;
+        const height = this.canvas.height;
+
+        // X axis (time)
+        const { tMin, tMax } = this._getTimeRange();
+        const span = tMax - tMin;
+        const tStep = this._niceStep(span / 5);
+
+        for (let t = Math.ceil(tMin / tStep) * tStep; t <= tMax; t += tStep) {
+            const x = (t - tMin) / span * width;
+            context.fillText(`${t.toFixed(1)} s`, x + 2, height - 5);
+        }
+
+        // Y labels
+        const yStep = this._niceStep(height / (this.scaleY * 6));
+        for (let v = -1000; v <= 1000; v += yStep) {
+            const y = this.offsetY - v * this.scaleY;
+            if (y < 0 || y > height) continue;
+            context.fillText(v.toFixed(0), 4, y - 2);
+        }
+    }
+
+    _niceStep(raw) {
+        const exp = Math.floor(Math.log10(raw));
+        const f = raw / Math.pow(10, exp);
+        const nice =
+            f < 1.5 ? 1 :
+                f < 3   ? 2 :
+                    f < 7   ? 5 : 10;
+        return nice * Math.pow(10, exp);
+    }
+
+    _getTimeRange() {
+        let tMin = Infinity;
+        let tMax = -Infinity;
+
+        for (const { data } of this.series.values()) {
+            if (data.length === 0) continue;
+            tMin = Math.min(tMin, data[0].t);
+            tMax = Math.max(tMax, data[data.length - 1].t);
+        }
+
+        if (!isFinite(tMin) || tMax === tMin) {
+            return { tMin: 0, tMax: 1 };
+        }
+
+        return { tMin, tMax };
+    }
+}
+
+class Helix extends THREE.Curve {
     constructor(position, axis, coils=25, radius=0.4, waveAmp=0.05, wavePhase=0){
         super();
         this.start = position.clone();
@@ -768,6 +920,97 @@ class SpringCurve extends THREE.Curve {
     }
 }
 
+export class PhysicalObject {
+    constructor(position, velocity, mass) {
+        this._position = position;
+        this._velocity = velocity;
+        this._mass = mass;
+    }
+
+    semiImplicitEulerUpdate(force, dt=0.01) {
+        this._velocity.addScaledVector(force, dt / this._mass);
+        this._position.addScaledVector(this._velocity, dt);
+    }
+
+    verletUpdate(force, dt=0.01) {
+        const a = force.multiplyScalar(1 / this._mass);
+
+        this._position.addScaledVector(this._velocity, dt)
+            .addScaledVector(a, 0.5 * dt * dt);
+
+        const a2 = force.multiplyScalar(1 / this._mass);
+        this._velocity.addScaledVector(a.add(a2), 0.5 * dt);
+    }
+
+
+    get position() {
+        return this._position.clone();
+    }
+
+    get velocity() {
+        return this._velocity.clone();
+    }
+
+    get mass() {
+        return this._mass;
+    }
+
+    moveTo(newPosition) {
+        this._position.copy(newPosition);
+    }
+
+    accelerateTo(newVelocity) {
+        this._velocity.copy(newVelocity);
+    }
+
+    kineticEnergy = () => 0.5 * this._mass * this._velocity.dot(this._velocity);
+}
+
+export class Ball {
+    constructor(parent, {
+        position = new THREE.Vector3(0, 0, 0),
+        radius=1,
+        velocity = new THREE.Vector3(0, 0, 0),
+        mass=1,
+        opacity = 1,
+        wireframe = false,
+        color=0xffff00,
+        segments = 24})
+    {
+        const material = new THREE.MeshStandardMaterial({
+            color: color,
+            opacity: opacity,
+            transparent: true,
+            wireframe: wireframe,
+            metalness:0.7,
+            roughness:0.2
+        });
+        this._sphere = new Sphere(parent, position, radius, {segments: segments, material: material});
+        this._ball = new PhysicalObject(position, velocity, mass);
+    }
+
+    semiImplicitEulerUpdate(force, dt=0.01) {
+        this._ball.semiImplicitEulerUpdate(force, dt);
+        this._sphere.moveTo(this._ball.position);
+    }
+
+    verletUpdate(force, dt=0.01) {
+        this._ball.verletUpdate(force, dt);
+        this._sphere.moveTo(this._ball.position);
+    }
+
+    moveTo(newPosition) {
+        this._ball.moveTo(newPosition);
+        this._sphere.moveTo(this._ball.position);
+    }
+
+    position = () => this._ball.position;
+    velocity = () => this._ball.velocity;
+    accelerateTo = (newVelocity) => this._ball.accelerateTo(newVelocity);
+    mass = () => this._ball.mass;
+    kineticEnergy = () => this._ball.kineticEnergy();
+}
+
 export class Spring {
     constructor(parent, position, axis, {
         k=200,
@@ -781,7 +1024,7 @@ export class Spring {
     } = {}) {
         this.longtudinalOscillation = longitudinalOscillation;
         this.radius = radius;
-        this.curve = new SpringCurve(position, axis, coils, radius);
+        this.curve = new Helix(position, axis, coils, radius);
         this.tubularSegments = tubularSegments;
         this.radialSegments = radialSegments;
         this.coilRadius = coilRadius;

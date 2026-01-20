@@ -13,7 +13,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Ball, Spring } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { Spring } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
     // --- Scene setup ---
     const canvas = document.getElementById("myCanvas");
@@ -36,7 +36,6 @@
     renderer.shadowMap.enabled = true;
     dirLight.castShadow = true;
 
-
     // --- Plafond ---
     // const ceilingSize = 50;
     // const ceilingGeometry = new THREE.PlaneGeometry(ceilingSize, ceilingSize);
@@ -57,10 +56,6 @@
     // scene.add(ceiling);
     // ceiling.receiveShadow = true;
 
-    // Constants and parameters
-
-
-
     // Spring
     const suspensionPoint = new THREE.Vector3(0, 15, 0);
     const axis = new THREE.Vector3(0, -10, 0);
@@ -72,7 +67,7 @@
         0,
         (Math.random() - 0.5) * 0.5   // ±0.25 in Z
     );
-    const ball = new Ball(scene, ballPosition, {mass: 10});
+    const ball = new Ball(scene, {position: ballPosition, radius: 1, mass: 10});
     slinky.updateAxis(ball.position().sub(suspensionPoint.clone()));
 
     // --- Mouse click & drag ---
@@ -89,80 +84,63 @@
             const rect = canvas.getBoundingClientRect();
             const x = ((e.clientX - rect.left)/rect.width - 0.5) * 20; // scale to scene
             const y = 10 - ((e.clientY - rect.top) / rect.height) * 20;
-            ball.shiftTo(new THREE.Vector3(x, y, 0));
+            ball.moveTo(new THREE.Vector3(x, y, 0));
+            ball.accelerateTo(new THREE.Vector3(0, 0, 0));
         }
     });
 
-    const graphCanvas = document.getElementById("graphCanvas");
-    const graphContext = graphCanvas.getContext("2d");
-
-    const maxPoints = 300;
-    const KE = [], PE = [], E  = [], Y = []; // kinetic, potential, and total energy, and position
-
-    function drawGraph() {
-        graphContext.clearRect(0,0,graphCanvas.width,graphCanvas.height);
-
-        const scaleY = 0.1;  // pas aan
-        const offsetY = graphCanvas.height * 0.9;
-
-        function drawLine(data, color) {
-            graphContext.beginPath();
-            graphContext.strokeStyle = color;
-            data.forEach((v,i)=>{
-                const x = i * graphCanvas.width / maxPoints;
-                const y = offsetY - v * scaleY;
-                if(i===0) graphContext.moveTo(x,y);
-                else graphContext.lineTo(x,y);
-            });
-            graphContext.stroke();
-        }
-
-        drawLine(KE, "red");      // kinetisch
-        drawLine(PE, "lime");     // potentieel
-        drawLine(E,  "cyan");    // totaal
-        drawLine(Y, "yellow");     // position
-    }
-
-    function force(kHorizontal = 100) { // horizontal spring constant
-        const forceX = -kHorizontal * ball.position().x;
-        const forceY = slinky.force() - ball.mass * g;
-        const forceZ = -kHorizontal * ball.position().z;
-        return new THREE.Vector3(forceX, forceY, forceZ);
-    }
-
-    function updateGraphData() {
-        const springExtension = slinky.displacement();
-        const potentialSpring = 0.5 * slinky.k * springExtension * springExtension;
-        const potentialGravity = ball.mass * g * ball.position().y;
-        KE.push(ball.kineticEnergy());
-        PE.push(potentialSpring + potentialGravity);
-        E.push(ball.kineticEnergy() + potentialSpring + potentialGravity);
-        Y.push((5 + ball.position().y) * 100); // scale
-    }
-
-    function shiftGraph() {
-        if (Y.length > maxPoints) Y.shift();
-        if (KE.length > maxPoints) {
-            KE.shift();
-            PE.shift();
-            E.shift();
-        }
-    }
-
     const dt = 0.02;
+    const graphCanvas = document.getElementById("graphCanvas");
+    const graph = new Graph(graphCanvas, {
+        maxPoints: 300,
+        dt: dt,
+        scaleY: 0.1
+    });
+
+    graph.addSeries("KE", "red");
+    graph.addSeries("PE", "lime");
+    graph.addSeries("E",  "cyan");
+    graph.addSeries("Y",  "yellow");
+
+
+    function force(kHorizontal = 100, damping = 1) { // horizontal spring constant
+        const pos = ball.position();
+        const vel = ball.velocity();
+
+        const fx = -kHorizontal * pos.x - damping * vel.x;
+        const fy = slinky.force() - ball.mass() * g - damping * vel.y;
+        const fz = -kHorizontal * pos.z - damping * vel.z;
+
+        return new THREE.Vector3(fx, fy, fz);
+    }
+
     let time = 0;
-    function animate(){
+    function animate() {
         requestAnimationFrame(animate);
         time += dt;
-        if (!dragging) ball.updateWith(force(), dt);
-        ball.damp();
+
+        if (!dragging) ball.semiImplicitEulerUpdate(force(), dt);
+
         slinky.updateAxis(ball.position().sub(suspensionPoint.clone()));
-        slinky.update(time); // Time parameter needed when longitudinal oscillation = true
+        slinky.update(time);
+
+        const springExtension = slinky.displacement();
+        const potentialSpring = 0.5 * slinky.k * springExtension ** 2;
+        const potentialGravity = ball.mass() * g * ball.position().y;
+        const kinetic = ball.kineticEnergy();
+
+        graph.push({
+            KE: kinetic,
+            PE: potentialSpring + potentialGravity,
+            E:  kinetic + potentialSpring + potentialGravity,
+            Y:  (5 + ball.position().y) * 100
+        });
+
+        graph.draw();
+
         renderer.render(scene, camera);
-        updateGraphData();
-        shiftGraph();
-        drawGraph();
     }
+
 
     animate();
 
