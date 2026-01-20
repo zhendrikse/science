@@ -10,7 +10,6 @@
 ## What do the colors show?
 <div class="header_line"><br/></div>
 
-
 Given a vector field $F = (u, v, w)$, the divergence is defined by
 
 $$
@@ -22,8 +21,8 @@ $$
 
 Interpretation:
 
-🔴 positive → **bron**<br/>
-🔵 negative → **put**<br/>
+🔴 positive → **source**<br/>
+🔵 negative → **sink**<br/>
 ⚪ zero → incompressible 
 
 The curl is defined by
@@ -78,6 +77,6 @@ In the future, the following may be added:
 🧠 Helmholtz-decompositie<br/>
 📊 interactieve colorbar<br/>
 ⚡ GPU finite differences (shader)<br/>
-🌀 curl-vectors i.p.v. magnitude<br/>
+🌀 curl-vectors as opposed to magnitude<br/>
 
 {% include share_buttons.html %}
