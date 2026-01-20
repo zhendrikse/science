@@ -1,26 +1,3 @@
-<style>
-    #scalarCanvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-
-    #scalarContainer {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        aspect-ratio: 1 / 1;
-    }
-
-    #gui-container {
-        margin-top: 0.5em;
-        background: #1a1a1a;
-    }
-</style>
-
 <script type="importmap">
     {
       "imports": {
@@ -30,8 +7,8 @@
     }
 </script>
 
-<div id="scalarContainer">
-    <canvas id="scalarCanvas"></canvas><br/>
+<div class="canvasWrapper" id="scalarContainer">
+    <canvas class="applicationCanvas" id="scalarCanvas"></canvas><br/>
 </div>
 <div id="gui-container"></div>
 

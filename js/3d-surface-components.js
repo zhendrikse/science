@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
-import {ThreeJsUtils, AxesParameters, Arrow, Vector, Interval }
+import {ThreeJsUtils, AxesParameters, Arrow, Interval }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
@@ -204,7 +204,7 @@ export class CurvatureContoursView extends SurfaceView {
                 const {N, K, H} = curvature.normalMeanGaussian(u, v);
                 if (Math.abs(H) <= threshold) continue;
 
-                const point = new Vector();
+                const point = new THREE.Vector3();
                 this.surface.definition().sample()(u, v, point);
                 points.push(point);
             }
@@ -287,7 +287,7 @@ export class DifferentialGeometry {
     derivatives(u, v) {
         const e = this.eps;
         const sample = (du, dv) => {
-            const position = new Vector();
+            const position = new THREE.Vector3();
             this.surfaceDefinition.sample(u + du, v + dv, position);
             return position;
         };
@@ -369,7 +369,7 @@ export class DifferentialGeometry {
         const result = this.principalDirections(u, v);
         if (!result) return null;
 
-        const position = new Vector();
+        const position = new THREE.Vector3();
         this.surfaceDefinition.sample(u, v, position);
 
         return new PrincipalFrame({
@@ -509,7 +509,7 @@ export class IsoparametricContoursView extends SurfaceView {
                   color = 0xffffff
               } = {}) {
         const material = new THREE.LineBasicMaterial({ color: color, transparent: true, depthWrite: true, depthTest: true });
-        const target = new Vector();
+        const target = new THREE.Vector3();
 
         // u = constant, v varies
         for (let i = 0; i <= uCount; i++) {
@@ -955,8 +955,8 @@ export class Plot3D {
     }
 
     #calculateCenter(boundingBox) {
-        const size = new Vector();
-        let center = new Vector();
+        const size = new THREE.Vector3();
+        let center = new THREE.Vector3();
         boundingBox.getSize(size);
         boundingBox.getCenter(center);
         return {center, size};
@@ -966,7 +966,7 @@ export class Plot3D {
         padding = 1.5,
         translationY = 0,
         minDistance = 2,
-        viewDirection = new Vector(1, 1, 1)
+        viewDirection = new THREE.Vector3(1, 1, 1)
     } = {}) {
         const {center, size} = this.#calculateCenter(boundingBox);
 
@@ -978,7 +978,7 @@ export class Plot3D {
 
         const direction = viewDirection.clone().normalize();
         this.camera.position
-            .copy(new Vector(center.x, center.y + translationY, center.z))
+            .copy(new THREE.Vector3(center.x, center.y + translationY, center.z))
             .addScaledVector(direction, distance);
         this.camera.near = distance / 100;
         this.camera.far  = distance * 10;
@@ -1024,15 +1024,15 @@ export class TangentFrameView extends THREE.Group {
         this.scaleFactor = tangentFrameParameters.scale;
 
         this.axes = { // Arrows in (u, v) directions + normal vector
-            uArrow: new Arrow(new Vector(), new Vector(), { color: 0xff0000 }),
-            vArrow: new Arrow(new Vector(), new Vector(), { color: 0x00ff00 }),
-            normalArrow: new Arrow(new Vector(), new Vector(), { color: 0x00aaff })
+            uArrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0xff0000 }),
+            vArrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0x00ff00 }),
+            normalArrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0x00aaff })
         }
         tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
 
         this.principals = { // Principal direction vectors
-            k1Arrow: new Arrow(new Vector(), new Vector(), { color: 0xffaa00 }),
-            k2Arrow: new Arrow(new Vector(), new Vector(), { color: 0xaa00ff })
+            k1Arrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0xffaa00 }),
+            k2Arrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0xaa00ff })
         }
         tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
 
