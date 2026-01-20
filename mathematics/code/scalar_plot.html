@@ -14,7 +14,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3D, Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
+    import { Plot3D, Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations, Range }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
@@ -79,16 +79,16 @@
     }
 
     class ScalarField {
-        constructor(xMin, xMax, dx, f) {
+        constructor(range, func) {
             this.scalars = [];
             this.opacity = 0.3;
 
-            for (let x = xMin; x <= xMax; x += dx)
-                for (let y = xMin; y <= xMax; y += dx)
-                    for (let z = xMin; z <= xMax; z+=dx) {
-                        const position = new THREE.Vector3(x, y, z);
-                        const value = f(position);
-                        const scalar = new Scalar(position, dx/4, this.opacity, value);
+            for (const x of range)
+                for (const y of range)
+                    for (const z of range) {
+                        const position = new THREE.Vector3(x, y + 4, z);
+                        const value = func(position);
+                        const scalar = new Scalar(position, range.stepSize *.25, this.opacity, value);
                         scalar.setColor(this._colorFor(value));
                         this.scalars.push(scalar);
                     }
@@ -100,13 +100,12 @@
         setRadius(r) { this.scalars.forEach(s => s.setRadius(r/4)); }
     }
 
-    const field = new ScalarField(-3, 3, 0.4, pos => Math.exp(-0.3 * pos.lengthSq()));
+    const field = new ScalarField(new Range(-3, 3, .4), pos => Math.exp(-0.3 * pos.lengthSq()));
     field.scalars.forEach(s => scene.add(s.sphere));
 
     // Axes
     const axes = new Axes();
     worldGroup.add(axes);
-    axes.position.y -= 4
     const axesLayout = new MatlabAxesLayout(8, 10);
     const annotations = new MatlabAnnotations(canvasContainer, axesLayout);
     axes.setLayout(axesLayout);
