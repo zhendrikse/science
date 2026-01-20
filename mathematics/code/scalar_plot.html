@@ -14,8 +14,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3D } from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
-    import { Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
+    import { Plot3D, Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
@@ -109,7 +108,7 @@
     worldGroup.add(axes);
     axes.position.y -= 4
     const axesLayout = new MatlabAxesLayout(8, 10);
-    const annotations = new MatlabAnnotations(canvasContainer, 8, 10);
+    const annotations = new MatlabAnnotations(canvasContainer, axesLayout);
     axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
     worldGroup.add(annotations);

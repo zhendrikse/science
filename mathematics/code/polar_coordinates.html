@@ -14,10 +14,10 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, AxesParameters, ClassicalAxesLayout, ClassicalAnnotations }
+    import { Plot3D, Axes, AxesParameters, ClassicalAxesLayout, ClassicalAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import { Plot3D, SurfaceDefinition, TangentFrameView, TangentFrameParameters}
+    import { SurfaceDefinition, TangentFrameView, TangentFrameParameters}
         from "https://www.hendrikse.name/science/js/3d-surface-components.js";
 
     const canvasContainer = document.getElementById("polarContainer");
@@ -123,7 +123,7 @@
     const axes = new Axes();
     worldGroup.add(axes);
     const axesLayout = new ClassicalAxesLayout(radius * 3, 10);
-    const annotations = new ClassicalAnnotations(canvasContainer, radius * 3, 10);
+    const annotations = new ClassicalAnnotations(canvasContainer, axesLayout);
     axesLayout.hideXY();
     axesLayout.hideYZ();
     axes.setLayout(axesLayout);

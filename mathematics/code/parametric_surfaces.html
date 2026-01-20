@@ -65,9 +65,9 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { ThreeJsUtils, Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
+    import { Plot3D, ThreeJsUtils, Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-    import { Plot3D, Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification, TangentFrameView,
+    import { Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification, TangentFrameView,
         ViewParameters, ColorMapper, ContourType, LiteralStringBasedSurfaceDefinition, SurfaceDefinitions }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
@@ -393,7 +393,7 @@
     const axes = new Axes();
     worldGroup.add(axes);
     const axesLayout = new MatlabAxesLayout(4.2, 10);
-    const annotations = new MatlabAnnotations(canvasContainer, 4.2, 10);
+    const annotations = new MatlabAnnotations(canvasContainer, axesLayout);
     axes.setLayout(axesLayout);
     axes.setAnnotations(annotations);
 

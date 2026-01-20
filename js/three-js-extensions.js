@@ -187,8 +187,13 @@ export class AxesAnnotation extends THREE.Group {
         super();
         this._renderer = new CSS2DRenderer();
         this._renderer.domElement.style.position = "absolute";
-        this._renderer.domElement.style.top = "0";
+        this._renderer.domElement.style.top = 0;
+        this._renderer.domElement.style.left = 0;
+        this._renderer.domElement.style.width = "100%";
+        this._renderer.domElement.style.height = "100%";
         this._renderer.domElement.style.pointerEvents = "none";
+        this._renderer.domElement.style.zIndex = "5"; // boven canvas
+
 
         container.appendChild(this._renderer.domElement);
         this.#resize(container);
@@ -248,6 +253,9 @@ export class AxesLayout extends THREE.Group {
 
         return [grid, plane];
     }
+
+    get divisions() { return this._divisions; }
+    get size() { return this._size; }
 
     showAxes() { this.axes.visible = true; }
     hideAxes() { this.axes.visible = false; }
@@ -413,8 +421,8 @@ export class Plot3D {
 
     render() {
         this.controls.update();
-        this.axes.render(this.scene, this.camera);
         this.renderer.render(this.scene, this.camera);
+        this.axes.render(this.scene, this.camera);
     }
 }
 
