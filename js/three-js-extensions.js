@@ -129,8 +129,8 @@ export class Interval {
 export class Axes extends THREE.Group {
     constructor() {
         super();
-        this.layout = null;
-        this.annotations = null;
+        this._layout = null;
+        this._annotations = null;
     }
 
     static toCartesian(radius, theta, phi) {
@@ -142,19 +142,19 @@ export class Axes extends THREE.Group {
     }
 
     setLayout(layout) {
-        this.layout?.dispose?.();
-        this.layout = layout;
+        this._layout?.dispose?.();
+        this._layout = layout;
         this.add(layout);
     }
 
     setAnnotations(annotations) {
-        this.annotations?.dispose?.();
-        this.annotations = annotations;
+        this._annotations?.dispose?.();
+        this._annotations = annotations;
         this.add(annotations);
     }
 
     render(scene, camera) {
-        this.annotations.render(scene, camera);
+        this._annotations.render(scene, camera);
     }
 
     boundingBox() {
@@ -189,9 +189,8 @@ export class AxesAnnotation extends THREE.Group {
         this._renderer.domElement.style.left = 0;
         this._renderer.domElement.style.width = "100%";
         this._renderer.domElement.style.height = "100%";
-        this._renderer.domElement.style.pointerEvents = "none";
-        this._renderer.domElement.style.zIndex = "5"; // boven canvas
-
+        this._renderer.domElement.style.pointerEvents = "none"; // do not process mouse events
+        this._renderer.domElement.style.zIndex = "5"; // on top of canvas
 
         container.appendChild(this._renderer.domElement);
         this.#resize(container);
