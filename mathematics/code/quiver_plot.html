@@ -1,3 +1,50 @@
+<style>
+    <style>
+    #surface-equation {
+        position: absolute;
+        margin-top: 10px;
+        width: 100%;
+        max-width: 100%;
+        font-size: 13px;
+        color: yellow;
+        text-align: center;
+        z-index: 10;
+    }
+
+    #surface-equation .mjx-chtml {
+        font-size: clamp(12px, 3.5vw, 10px);
+        display: block;                 /* make MathJax fill the div */
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+
+
+
+    .applicationCanvas {
+        display: block;
+        background-color: #131313;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .canvasWrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .guiContainer {
+        margin-top: 0.5em;
+        background: #1a1a1a;
+    }
+
+</style>
+
 <script type="importmap">
     {
       "imports": {
@@ -33,20 +80,6 @@
     const dir = new THREE.DirectionalLight(0xffffff, 0.8);
     dir.position.set(3, 5, 4);
     scene.add(dir);
-
-    const axes = new Axes();
-    worldGroup.add(axes);
-    const axesLayout = new MatlabAxesLayout(2.1, 10);
-    const annotations = new MatlabAnnotations(canvasContainer, 2.1, 10);
-    axes.setLayout(axesLayout);
-    axes.setAnnotations(annotations);
-    worldGroup.add(annotations);
-    annotations.visible = false;
-
-    const plot3D = new Plot3D(canvas, scene, axes);
-    const bbox = new THREE.Box3();
-    bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 1.1, translationY: -1});
 
     const VectorFields = Object.freeze({
         FIELD_1: "Vector field 1",
@@ -138,11 +171,26 @@
     const vectorField1 = new VectorField1();
     const vectorField2 = new VectorField2();
     const arrowField = new ArrowField(
-        new Range(-1, 0.8, .2), new Interval(-1, 0.8, .2), new Interval(-1, 0.8, .3),
+        new Range(-1, 0.8, .2), new Range(-1, 0.8, .1), new Range(-1, 0.8, .2),
         vectorField1,
         { scaleFactor: 0.2 }
     );
     worldGroup.add(arrowField);
+
+    const axes = new Axes();
+    worldGroup.add(axes);
+    const axesLayout = new MatlabAxesLayout(2.1, 10);
+    const annotations = new MatlabAnnotations(canvasContainer, axesLayout);
+    axes.setLayout(axesLayout);
+    axes.setAnnotations(annotations);
+    worldGroup.add(annotations);
+    annotations.visible = false;
+
+    const plot3D = new Plot3D(canvas, scene, axes);
+    const bbox = new THREE.Box3();
+    bbox.setFromObject( worldGroup );
+    plot3D.fitToBoundingBox(bbox, {padding: 1.1, translationY: -1});
+
 
     const equationDiv = document.getElementById("vectorFieldTitle");
     equationDiv.innerHTML = vectorField1.meta;
