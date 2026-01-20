@@ -15,7 +15,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, AxesParameters, ArrowField, VectorField, Interval, MatlabAxesLayout, MatlabAnnotations }
+    import { Axes, AxesParameters, ArrowField, VectorField, Range, MatlabAxesLayout, MatlabAnnotations }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Plot3D }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
@@ -138,7 +138,7 @@
     const vectorField1 = new VectorField1();
     const vectorField2 = new VectorField2();
     const arrowField = new ArrowField(
-        new Interval(-1, 0.8), new Interval(-1, 0.8), new Interval(-1, 0.8),
+        new Range(-1, 0.8, .2), new Interval(-1, 0.8, .2), new Interval(-1, 0.8, .3),
         vectorField1,
         { scaleFactor: 0.2 }
     );

@@ -77,6 +77,33 @@ export class ThreeJsUtils {
     }
 }
 
+export class Range {
+    constructor(from, to, stepSize) {
+        this.from = from;
+        this.to = to;
+        this.stepSize = stepSize || 0.1;
+    }
+
+    /**
+     * Use:
+     *   for (const x of range.iterator())
+     *     console.log(x);
+     *
+     * @returns {Generator<*, void, *>}
+     */
+    *[Symbol.iterator]() {
+        if (!isFinite(this.from) || !isFinite(this.to))
+            throw new Error("Cannot iterate over an infinite interval.");
+        if (this.stepSize <= 0)
+            throw new Error("stepSize must be > 0");
+
+        const n = Math.floor((this.to - this.from) / this.stepSize);
+        for (let i = 0; i <= n; i++) {
+            yield this.from + i * this.stepSize;
+        }
+    }
+}
+
 export class Interval {
     constructor(from=-Infinity, to=Infinity) {
         this.from = from;
@@ -86,28 +113,6 @@ export class Interval {
     shrinkTo(value) {
         if (this.from < value) this.from = value;
         if (this.to > value) this.to = value;
-    }
-
-    /**
-     * Use:
-     *   for (const x of interval.iterator(0.25))
-     *     console.log(x);
-     *
-     * @param stepSize the increment between steps.
-     * @returns {Generator<*, void, *>}
-     */
-    iterator(stepSize = 0.1) {
-        const self = this;
-        return (function* () {
-            if (!isFinite(self.from) || !isFinite(self.to))
-                throw new Error("Cannot iterate over an infinite interval.");
-            if (stepSize <= 0)
-                throw new Error("stepSize must be > 0");
-
-            const n = Math.floor(self.range() / stepSize);
-            for (let i = 0; i <= n; i++)
-                yield self.from + i * stepSize;
-        })();
     }
 
     scaleValue = (value) => this.to === this.from ? 0: (value - this.from) / this.range();
@@ -406,7 +411,7 @@ export class ArrowField extends THREE.Group {
         CURL: "curl"
     });
 
-    constructor(xInterval, yInterval, zInterval, vectorField, {
+    constructor(xRange, yRange, zRange, vectorField, {
         scaleFactor = 0.3,
         shaftWidth  = 0.08,  // relative to axis length
         headWidth   = 2.0,   // times shaft width
@@ -416,9 +421,9 @@ export class ArrowField extends THREE.Group {
     } = {}) {
         super();
         this.positions = [];
-        this.xInterval = xInterval;
-        this.yInterval = yInterval;
-        this.zInterval = zInterval;
+        this.xRange = xRange;
+        this.yRange = yRange;
+        this.zRange = zRange;
         this.scaleFactor = scaleFactor;
         this.vectorField = vectorField;
         this.colorMode = colorMode;
@@ -471,9 +476,9 @@ export class ArrowField extends THREE.Group {
 
     #initializePositions() {
         this.positions = [];
-        for (const x of this.xInterval.iterator(.1))
-            for (const y of this.yInterval.iterator(.1))
-                for (const z of this.zInterval.iterator(.25))
+        for (const x of this.xRange)
+            for (const y of this.yRange)
+                for (const z of this.zRange)
                     this.positions.push(new THREE.Vector3(x, z + 1, y));
     }
 
@@ -507,13 +512,13 @@ export class ArrowField extends THREE.Group {
 
         if (t < 0) // blue → white
             return new THREE.Color().lerpColors(
-                new THREE.Color(0x0000ff),
-                new THREE.Color(0xffffff),
+                new THREE.Color("blue"),
+                new THREE.Color("white"),
                 1 + t
             );
         else // white → red
             return new THREE.Color().lerpColors(
-                new THREE.Color(0xffffff),
+                new THREE.Color("white"),
                 new THREE.Color(0xff0000),
                 t
             );
