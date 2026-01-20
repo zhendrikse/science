@@ -28,10 +28,10 @@ export class ThreeJsUtils {
         targetBox,
         { alignY = "min", padding = 1.0 } = {}
     ) {
-        const sourceSize = new Vector();
-        const targetSize = new Vector();
-        const sourceCenter = new Vector();
-        const targetCenter = new Vector();
+        const sourceSize = new THREE.Vector3();
+        const targetSize = new THREE.Vector3();
+        const sourceCenter = new THREE.Vector3();
+        const targetCenter = new THREE.Vector3();
 
         sourceBox.getSize(sourceSize);
         targetBox.getSize(targetSize);
@@ -128,7 +128,7 @@ export class Axes extends THREE.Group {
     }
 
     static toCartesian(radius, theta, phi) {
-        return new Vector(
+        return new THREE.Vector3(
             radius * Math.sin(theta) * Math.cos(phi),
             radius * Math.sin(theta) * Math.sin(phi),
             radius * Math.cos(theta)
@@ -303,15 +303,15 @@ export class ClassicalAnnotations extends AxesAnnotation {
         const step = size / divisions;
         for (let v = -size * .5 ; v <= size * .5; v += step)
             this.add(
-                this.label(v.toFixed(1), new Vector(v, 0, 0.525 * size)),
-                this.label(v.toFixed(1), new Vector(0.525 * size, 0, v)));
+                this.label(v.toFixed(1), new THREE.Vector3(v, 0, 0.525 * size)),
+                this.label(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v)));
         for (let v = 0 ; v <= size * .5; v += step)
-            this.add(this.label(v.toFixed(1), new Vector(0, v, 0)));
+            this.add(this.label(v.toFixed(1), new THREE.Vector3(0, v, 0)));
 
         this.add(
-            this.label("X", new Vector(0.575 * size, 0, 0), "red"),
-            this.label("Y", new Vector(0, 0.575 * size, 0), "green"),
-            this.label("Z", new Vector(0, 0, 0.575 * size), "blue"));
+            this.label("X", new THREE.Vector3(0.575 * size, 0, 0), "red"),
+            this.label("Y", new THREE.Vector3(0, 0.575 * size, 0), "green"),
+            this.label("Z", new THREE.Vector3(0, 0, 0.575 * size), "blue"));
     }
 }
 
@@ -322,14 +322,14 @@ export class MatlabAnnotations extends AxesAnnotation {
         const step = (2 * size) / divisions;
         for (let v = 0 ; v <= size; v += step)
             this.add(
-                this.label(v.toFixed(1), new Vector(v - 0.5 * size, 0, 0.525 * size)),
-                this.label(v.toFixed(1), new Vector(-0.525 * size, v, 0.5 * size)),
-                this.label(v.toFixed(1), new Vector(0.525 * size, 0, v - 0.5 * size)));
+                this.label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, 0.525 * size)),
+                this.label(v.toFixed(1), new THREE.Vector3(-0.525 * size, v, 0.5 * size)),
+                this.label(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v - 0.5 * size)));
 
         this.add(
-            this.label("X", new Vector(0.6 * size, 0, -0.5 * size), "red"),
-            this.label("Y", new Vector(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
-            this.label("Z", new Vector(-0.5 * size, 0, 0.6 * size), "blue"));
+            this.label("X", new THREE.Vector3(0.6 * size, 0, -0.5 * size), "red"),
+            this.label("Y", new THREE.Vector3(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
+            this.label("Z", new THREE.Vector3(-0.5 * size, 0, 0.6 * size), "blue"));
     }
 }
 
@@ -359,9 +359,9 @@ export class VectorField {
     }
 
     #centralDifferences(position, h) {
-        const dx = new Vector(h, 0, 0);
-        const dy = new Vector(0, h, 0);
-        const dz = new Vector(0, 0, h);
+        const dx = new THREE.Vector3(h, 0, 0);
+        const dy = new THREE.Vector3(0, h, 0);
+        const dz = new THREE.Vector3(0, 0, h);
 
         const Fx1 = this.sample(position.clone().add(dx));
         const Fx0 = this.sample(position.clone().sub(dx));
@@ -387,7 +387,7 @@ export class VectorField {
     curl(position, h = 1e-2) {
         const {Fx0, Fy0, Fz0, Fx1, Fy1, Fz1} = this.#centralDifferences(position, h);
 
-        return new Vector(
+        return new THREE.Vector3(
             (Fy1.z - Fy0.z - (Fz1.y - Fz0.y)) / (2 * h),
             (Fz1.x - Fz0.x - (Fx1.z - Fx0.z)) / (2 * h),
             (Fx1.y - Fx0.y - (Fy1.x - Fy0.x)) / (2 * h)
@@ -445,10 +445,10 @@ export class ArrowField extends THREE.Group {
         // temp objects (no allocations per frame)
         this.tmpMatrix = new THREE.Matrix4();
         this.tmpQuaternion = new THREE.Quaternion();
-        this.tmpScale      = new Vector();
-        this.tmpPosition   = new Vector();
-        this.tmpAxis       = new Vector();
-        this.tmpDirection  = new Vector();
+        this.tmpScale      = new THREE.Vector3();
+        this.tmpPosition   = new THREE.Vector3();
+        this.tmpAxis       = new THREE.Vector3();
+        this.tmpDirection  = new THREE.Vector3();
 
         // initial build
         this.updateFieldWith(vectorField);
@@ -474,7 +474,7 @@ export class ArrowField extends THREE.Group {
         for (const x of this.xInterval.iterator(.1))
             for (const y of this.yInterval.iterator(.1))
                 for (const z of this.zInterval.iterator(.25))
-                    this.positions.push(new Vector(x, z + 1, y));
+                    this.positions.push(new THREE.Vector3(x, z + 1, y));
     }
 
     #magnitudeToColor(magnitude, scalarRange) {
@@ -711,7 +711,7 @@ export class Arrow extends THREE.Group {
 
     moveTo = (newPositionVector) => this.position.copy(newPositionVector);
 
-    positionVectorTo = (other) => new Vector().copy(other.position).sub(this.position);
+    positionVectorTo = (other) => new THREE.Vector3().copy(other.position).sub(this.position);
 
     distanceToSquared = (other) => this.position.distanceToSquared(other.position);
 }
@@ -910,9 +910,9 @@ class Helix extends THREE.Curve {
         // Longitudinal wave across spring
         const z = t * length + this.waveAmp * Math.sin(Math.PI * t) * Math.sin(2 * Math.PI * t * 3 - this.wavePhase);
 
-        const point = new Vector(x, y, z);
+        const point = new THREE.Vector3(x, y, z);
         const quaternion = new THREE.Quaternion();
-        quaternion.setFromUnitVectors(new Vector(0, 0, 1), this.axis.clone().normalize());
+        quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.axis.clone().normalize());
         point.applyQuaternion(quaternion);
 
         return point.add(this.start);
