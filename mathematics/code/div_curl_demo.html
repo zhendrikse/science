@@ -175,7 +175,7 @@
 
     function resetSimulation(particles, arrows) {
         for (const particle of particles)
-            worldGroup.remove(particle.sphere);
+            worldGroup.remove(particle._sphere._sphere);
         for (const arrow of arrows)
             worldGroup.remove(arrow);
 
