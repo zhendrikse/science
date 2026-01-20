@@ -175,9 +175,25 @@
         return particles;
     }
 
-    function resetSimulation(particles) {
+    function createArrows() {
+        const arrows = [];
+        for (let x = x_min; x <= x_max; x += 0.25)
+            for (let y = y_min; y <= y_max; y += 0.25) {
+                const axis = vectorField.sample(new Vector(x, y, 0)).multiplyScalar(.2),
+                    shift = axis.clone().multiplyScalar(-0.1),
+                    position = new Vector(x, y, 0).add(shift),
+                    arrow = new Arrow(position, axis, {color: "yellow", opacity: 0, round: true, shaftWidth: 0.05});
+                arrows.push(arrow);
+                worldGroup.add(arrow);
+            }
+        return arrows;
+    }
+
+    function resetSimulation(particles, arrows) {
         for (const particle of particles)
             worldGroup.remove(particle.sphere);
+        for (const arrow of arrows)
+            worldGroup.remove(arrow);
 
         time = 0;
         opacity = 0;
@@ -218,10 +234,12 @@
     const sink = new Ball(worldGroup, new Vector(-1, -0.5, 0), {radius: 0.25, opacity: 0.4, color: "green"});
     const curl = new Ball(worldGroup, new Vector(1, 0.5, 0), {radius: 0.25, opacity: 0.4, color: "cyan"});
 
-    const vectorField = new OriginalDemoVectorField(source, sink, curl);
+    let vectorField = new OriginalDemoVectorField(source, sink, curl);
     let particles = createParticles();
+    let arrows = createArrows();
 
     let started = false;
+    let clickCounter = 0;
     window.addEventListener("resize", onResize);
     window.addEventListener("click", () => {
         if (!started) {
@@ -229,23 +247,14 @@
             started = true;
             animate();
         } else {
-            showOverlayMessage("Restart");
-            resetSimulation(particles); // reset animation with extra click
+            showOverlayMessage("Restart with the other vector field!");
+            resetSimulation(particles, arrows); // reset animation with extra click
+            vectorField = (clickCounter++ % 2 === 0) ?
+                new DemoVectorField(source, sink, curl) : new OriginalDemoVectorField(source, sink, curl);
             particles = createParticles();
+            arrows = createArrows();
         }
     });
-
-
-    const arrows = [];
-    for (let x = x_min; x <= x_max; x += 0.25)
-        for (let y = y_min; y <= y_max; y += 0.25) {
-            const axis = vectorField.sample(new Vector(x, y, 0)).multiplyScalar(.2),
-                shift = axis.clone().multiplyScalar(-0.1),
-                position = new Vector(x, y, 0).add(shift),
-                arrow = new Arrow(position, axis, {color: "yellow", opacity: 0, round: true, shaftWidth: 0.05});
-            arrows.push(arrow);
-            worldGroup.add(arrow);
-        }
 
     renderer.render(scene, camera);
     onResize();
@@ -259,14 +268,14 @@
     function animate() {
         requestAnimationFrame(animate);
 
-        if(!started){
+        if(!started) {
             overlay.style.display = "block";
             return;
         }
 
         time += dt;
 
-        // Update deeltjes
+        // Update particles
         for (const particle of particles) {
             const pos = particle.position();
             const vel = vectorField.sample(pos);
@@ -274,7 +283,7 @@
             particle.shiftTo(pos);
         }
 
-        // Fading effect voor arrows
+        // Fading effect for arrows
         if (opacity < 1 && time > 0.1) {
             opacity += d_o;
             for (const arrow of arrows) {
