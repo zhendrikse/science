@@ -448,6 +448,53 @@ export class Plot3D {
     }
 }
 
+class Trail {
+    constructor({
+                    maxPoints = 200,
+                    color = 0xffffff,
+                    linewidth = 1
+                } = {}) {
+        this.maxPoints = maxPoints;
+        this.positions = [];
+
+        this.geometry = new THREE.BufferGeometry();
+        this.material = new THREE.LineBasicMaterial({
+            color,
+            linewidth
+        });
+
+        this.line = new THREE.Line(this.geometry, this.material);
+    }
+
+    addPoint(vec3) {
+        this.positions.push(vec3.clone());
+
+        if (this.positions.length > this.maxPoints)
+            this.positions.shift();
+
+        const array = new Float32Array(this.positions.length * 3);
+        this.positions.forEach((p, i) => {
+            array[3 * i]     = p.x;
+            array[3 * i + 1] = p.y;
+            array[3 * i + 2] = p.z;
+        });
+
+        this.geometry.setAttribute(
+            'position',
+            new THREE.BufferAttribute(array, 3)
+        );
+        this.geometry.computeBoundingSphere();
+    }
+
+    clear() {
+        this.positions.length = 0;
+        this.geometry.setAttribute(
+            'position',
+            new THREE.BufferAttribute(new Float32Array(0), 3)
+        );
+    }
+}
+
 const shaftGeometryRound = new THREE.CylinderGeometry(1, 1, 1, 16);
 const shaftGeometrySquare = new THREE.BoxGeometry(1, 1, 1);
 const headGeometryRound = new THREE.ConeGeometry(1, 1, 16);
@@ -537,9 +584,9 @@ export class ArrowField extends THREE.Group {
         this.scaleFactor = scaleFactor;
         this.vectorField = vectorField;
         this.colorMode = colorMode;
-        this.shaftWidth = shaftWidth;
-        this.headWidth  = headWidth;
-        this.headLength = headLength;
+        this._shaftWidth = shaftWidth;
+        this._headWidth  = headWidth;
+        this._headLength = headLength;
 
         const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
         const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
@@ -548,14 +595,14 @@ export class ArrowField extends THREE.Group {
 
         this.#initializePositions();
 
-        this.shaftMesh = new THREE.InstancedMesh(shaftGeometry, shaftMaterial, this.positions.length);
-        this.headMesh  = new THREE.InstancedMesh(headGeometry,  headMaterial,  this.positions.length);
-        this.add(this.shaftMesh, this.headMesh);
+        this._shaftMesh = new THREE.InstancedMesh(shaftGeometry, shaftMaterial, this.positions.length);
+        this._headMesh  = new THREE.InstancedMesh(headGeometry,  headMaterial,  this.positions.length);
+        this.add(this._shaftMesh, this._headMesh);
 
         // per-instance color
         const colors = new Float32Array(this.positions.length * 3);
-        this.shaftMesh.instanceColor = new THREE.InstancedBufferAttribute(colors, 3);
-        this.headMesh.instanceColor  = this.shaftMesh.instanceColor;
+        this._shaftMesh.instanceColor = new THREE.InstancedBufferAttribute(colors, 3);
+        this._headMesh.instanceColor  = this._shaftMesh.instanceColor;
 
         // temp objects (no allocations per frame)
         this.tmpMatrix = new THREE.Matrix4();
@@ -572,14 +619,14 @@ export class ArrowField extends THREE.Group {
     #collapseArrow(index, position) {
         this.tmpScale.set(0, 0, 0);
         this.tmpMatrix.compose(position, new THREE.Quaternion(), this.tmpScale);
-        this.shaftMesh.setMatrixAt(index, this.tmpMatrix);
-        this.headMesh.setMatrixAt(index, this.tmpMatrix);
+        this._shaftMesh.setMatrixAt(index, this.tmpMatrix);
+        this._headMesh.setMatrixAt(index, this.tmpMatrix);
     }
 
     #arrowSizes(axis) {
         const length = axis.length();
-        const shaftRadius = length * this.shaftWidth;
-        const headLength  = this.headLength * shaftRadius;
+        const shaftRadius = length * this._shaftWidth;
+        const headLength  = this._headLength * shaftRadius;
         const shaftLength = Math.max(length - headLength, 1e-6);
         return {shaftRadius, shaftLength, headLength};
     }
@@ -640,25 +687,25 @@ export class ArrowField extends THREE.Group {
         this.tmpPosition.copy(position).addScaledVector(axis, 0.5);
 
         this.tmpMatrix.compose(this.tmpPosition, this.tmpQuaternion, this.tmpScale);
-        this.shaftMesh.setMatrixAt(index, this.tmpMatrix);
+        this._shaftMesh.setMatrixAt(index, this.tmpMatrix);
     }
 
     #updateHead(index, position, axis) {
         const {shaftRadius, headLength} = this.#arrowSizes(axis);
         this.tmpScale.set(
-            this.headWidth * shaftRadius,
+            this._headWidth * shaftRadius,
             headLength,
-            this.headWidth * shaftRadius
+            this._headWidth * shaftRadius
         );
         this.tmpPosition.copy(position).addScaledVector(axis, 1.0);
         this.tmpMatrix.compose(this.tmpPosition, this.tmpQuaternion, this.tmpScale);
-        this.headMesh.setMatrixAt(index, this.tmpMatrix);
+        this._headMesh.setMatrixAt(index, this.tmpMatrix);
     }
 
     #updateArrowColor(index, axis, scalars, scalarRange) {
         switch (this.colorMode) {
             case ArrowField.ColorMode.DIVERGENCE:
-                this.shaftMesh.setColorAt(index, this.#scalarToColor(scalars[index], scalarRange));
+                this._shaftMesh.setColorAt(index, this.#scalarToColor(scalars[index], scalarRange));
                 break;
             case ArrowField.ColorMode.CURL:
                 if (scalarRange.to - scalarRange.from < 1e-12) {
@@ -667,11 +714,11 @@ export class ArrowField extends THREE.Group {
                 }
                 const t = THREE.MathUtils.clamp(scalarRange.scaleValue(scalars[index]), 0, 1);
                 const hue = (1 - t) * 0.66;
-                this.shaftMesh.setColorAt(index, new THREE.Color().setHSL(hue, 1, 0.5));
+                this._shaftMesh.setColorAt(index, new THREE.Color().setHSL(hue, 1, 0.5));
                 break;
             default:
                 const mag = axis.length() / this.scaleFactor;
-                this.shaftMesh.setColorAt(index, this.#magnitudeToColor(mag, scalarRange));
+                this._shaftMesh.setColorAt(index, this.#magnitudeToColor(mag, scalarRange));
         }
     }
 
@@ -725,9 +772,9 @@ export class ArrowField extends THREE.Group {
             this.#updateArrowInstance(index, position, this.tmpAxis, scalars, scalarRange);
         });
 
-        this.shaftMesh.instanceMatrix.needsUpdate = true;
-        this.headMesh.instanceMatrix.needsUpdate  = true;
-        this.shaftMesh.instanceColor.needsUpdate  = true;
+        this._shaftMesh.instanceMatrix.needsUpdate = true;
+        this._headMesh.instanceMatrix.needsUpdate  = true;
+        this._shaftMesh.instanceColor.needsUpdate  = true;
     }
 }
 
@@ -736,6 +783,7 @@ export class Sphere {
         group,
         position=new THREE.Vector3(0, 0, 0),
         radius=1,
+        makeTrail=false,
         {
             segments=24,
             material=new THREE.MeshStandardMaterial({
@@ -752,10 +800,28 @@ export class Sphere {
         this._sphere.castShadow = true;
         this._group = group;
         this._group.add(this._sphere);
+        this._trail = null;
+        if (makeTrail) this.enableTrail();
+    }
+
+    enableTrail({
+                    maxPoints = 200,
+                    color = this.sphere.material.color
+                } = {}) {
+        this._trail = new Trail({ maxPoints, color });
+        this._group.add(this._trail.line);
+    }
+
+    disableTrail() {
+        if (!this._trail) return;
+        this._group.remove(this._trail.line);
+        this._trail = null;
     }
 
     moveTo(newPosition) {
         this._sphere.position.copy(newPosition);
+        if (this._trail)
+            this._trail.addPoint(this._sphere.position);
     }
 }
 
@@ -767,14 +833,15 @@ export class Arrow extends THREE.Group {
         headLength = 5,   // times the width of the shaft
         opacity = 1,
         round = false,
-        visible = true
+        visible = true,
+        makeTrail = false
     } = {}) {
         super();
 
-        this.headLength = headLength;
-        this.shaftWidth = shaftWidth;
-        this.headWidth = headWidth;
-        this.axis = axis;
+        this._headLength = headLength;
+        this._shaftWidth = shaftWidth;
+        this._headWidth = headWidth;
+        this._axis = axis;
 
         const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
         const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
@@ -784,19 +851,35 @@ export class Arrow extends THREE.Group {
             transparent: true
         });
 
-        this.shaft = new THREE.Mesh(shaftGeometry, material);
-        this.head = new THREE.Mesh(headGeometry, material);
+        this._shaft = new THREE.Mesh(shaftGeometry, material);
+        this._head = new THREE.Mesh(headGeometry, material);
         if (!round)
-            this.head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
+            this._head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
 
-        this.add(this.shaft, this.head);
+        this.add(this._shaft, this._head);
         this.position.copy(position);
         this.updateAxis(axis);
         this.visible = visible;
+        this._trail = null;
+        if (makeTrail) this.enableTrail();
+    }
+
+    enableTrail({
+                    maxPoints = 200,
+                    color = this._shaft.material.color
+                } = {}) {
+        this._trail = new Trail({ maxPoints, color });
+        this.add(this._trail.line);
+    }
+
+    disableTrail() {
+        if (!this._trail) return;
+        this.remove(this._trail.line);
+        this._trail = null;
     }
 
     updateAxis(newAxis) {
-        this.axis.copy(newAxis);
+        this._axis.copy(newAxis);
         const totalLength = newAxis.length();
         if (totalLength < 1e-6)
             return;
@@ -807,24 +890,28 @@ export class Arrow extends THREE.Group {
         );
         this.setRotationFromQuaternion(quaternion);
 
-        const shaftWidth = totalLength * this.shaftWidth;
-        const headLength = this.headLength * shaftWidth;
+        const shaftWidth = totalLength * this._shaftWidth;
+        const headLength = this._headLength * shaftWidth;
         const shaftLength = Math.max(totalLength - headLength, 1e-6);
 
-        this.shaft.scale.set(shaftWidth, shaftLength, shaftWidth);
-        this.shaft.position.y = shaftLength * 0.5;
-        this.head.scale.set(this.headWidth * shaftWidth, headLength, this.headWidth * shaftWidth);
-        this.head.position.y = shaftLength + headLength * 0.5;
+        this._shaft.scale.set(shaftWidth, shaftLength, shaftWidth);
+        this._shaft.position.y = shaftLength * 0.5;
+        this._head.scale.set(this._headWidth * shaftWidth, headLength, this._headWidth * shaftWidth);
+        this._head.position.y = shaftLength + headLength * 0.5;
     }
 
-    updateColor = (color) => this.shaft.material.color = color;
+    updateColor = (color) => this._shaft.material.color = color;
 
     updateOpacity = (opacity) => {
-        this.shaft.material.opacity = opacity;
-        this.head.material.opacity = opacity;
+        this._shaft.material.opacity = opacity;
+        this._head.material.opacity = opacity;
     }
 
-    moveTo = (newPositionVector) => this.position.copy(newPositionVector);
+    moveTo(newPositionVector) {
+        this.position.copy(newPositionVector);
+        if (this._trail)
+            this._trail.addPoint(this.position);
+    }
 
     positionVectorTo = (other) => new THREE.Vector3().copy(other.position).sub(this.position);
 
@@ -1008,16 +1095,16 @@ class Helix extends THREE.Curve {
         super();
         this.start = position.clone();
         this.coils = coils;
-        this.axis = axis;
+        this._axis = axis;
         this.radius = radius;
         this.waveAmp = waveAmp;
         this.wavePhase = wavePhase;
     }
 
-    updateAxis = (newAxis) => this.axis.copy(newAxis);
+    updateAxis = (newAxis) => this._axis.copy(newAxis);
 
     getPoint(t){
-        const length = this.axis.length();
+        const length = this._axis.length();
         const angle = t * this.coils * Math.PI * 2;
         const x = Math.cos(angle) * this.radius;
         const y = Math.sin(angle) * this.radius;
@@ -1027,7 +1114,7 @@ class Helix extends THREE.Curve {
 
         const point = new THREE.Vector3(x, y, z);
         const quaternion = new THREE.Quaternion();
-        quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this.axis.clone().normalize());
+        quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this._axis.clone().normalize());
         point.applyQuaternion(quaternion);
 
         return point.add(this.start);
@@ -1145,7 +1232,7 @@ export class Spring {
         this.restLength = axis.length();
         this.k = k;
         this.position = position;
-        this.axis = axis;
+        this._axis = axis;
 
         this.geometry = new THREE.TubeGeometry(this.curve, tubularSegments, coilRadius, radialSegments, false);
         const material = new THREE.MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
@@ -1161,8 +1248,8 @@ export class Spring {
     }
 
     updateAxis(newAxis) {
-        this.axis = newAxis;
-        this.curve.updateAxis(this.axis);
+        this._axis = newAxis;
+        this.curve.updateAxis(this._axis);
         this.longtudinalOscillation ?
             this.#updateWithLongitudinal() :
             this.#updateWithoutLongitudinal();
@@ -1176,11 +1263,11 @@ export class Spring {
 
     #updateWithLongitudinal(time) {
         // Longitudinal wave amplitude coupled to spring elongation
-        const displacement = this.axis.y - this.curve.start.y;
+        const displacement = this._axis.y - this.curve.start.y;
         this.curve.waveAmp = Math.min(Math.abs(displacement) / 10, 0.3); // max amplitude 0.3
         this.#regenerateTube();
     }
 
     force = () => -this.k * this.displacement();
-    displacement = () => this.restLength - this.axis.length();
+    displacement = () => this.restLength - this._axis.length();
 }
