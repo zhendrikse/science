@@ -1,3 +1,27 @@
+<style>
+.applicationCanvas {
+display: block;
+background-color: #131313;
+width: 100%;
+max-width: 800px;
+aspect-ratio: 4 / 3;
+margin: auto;
+}
+
+.canvasWrapper {
+position: relative;
+width: 100%;
+max-width: 800px;
+margin: 0 auto;
+aspect-ratio: 4 / 3;
+}
+
+.guiContainer {
+margin-top: 0.5em;
+background: #1a1a1a;
+}
+
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -14,7 +38,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3D, Axes, AxesParameters, MatlabAxesLayout, MatlabAnnotations, Range }
+    import { Range, Axes, MatlabAnnotations, MatlabAxesLayout }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
@@ -86,7 +110,7 @@
             for (const x of range)
                 for (const y of range)
                     for (const z of range) {
-                        const position = new THREE.Vector3(x, y + 4, z);
+                        const position = new THREE.Vector3(x, y, z);
                         const value = func(position);
                         const scalar = new Scalar(position, range.stepSize *.25, this.opacity, value);
                         scalar.setColor(this._colorFor(value));
@@ -112,11 +136,12 @@
     axes.setAnnotations(annotations);
     worldGroup.add(annotations);
     annotations.visible = params.axesParameters.axesLabels;
+    axes.shiftBy(new THREE.Vector3(0, -4, 0));
 
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
     bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 1.0, translationY: -2});
+    plot3D.fitToBoundingBox(bbox, {padding: 1.0, translationY: -4});
 
     const gui = new ControlsGui(axesLayout, annotations);
 

@@ -162,6 +162,11 @@ export class Axes extends THREE.Group {
         axesBoundingBox.setFromObject(this);
         return axesBoundingBox;
     }
+
+    shiftBy(translationVector) {
+        if (this._annotations) this._annotations.shiftBy(translationVector);
+        if (this._layout) this._layout.shiftBy(translationVector);
+    }
 }
 
 export class AxesParameters {
@@ -192,6 +197,8 @@ export class AxesAnnotation extends THREE.Group {
         this._renderer.domElement.style.pointerEvents = "none"; // do not process mouse events
         this._renderer.domElement.style.zIndex = "5"; // on top of canvas
 
+        this._labels = [];
+
         container.appendChild(this._renderer.domElement);
         this.#resize(container);
     }
@@ -200,7 +207,11 @@ export class AxesAnnotation extends THREE.Group {
         this._renderer.setSize(container.clientWidth, container.clientHeight);
     }
 
-    label(text, pos, color = "yellow") {
+    shiftBy(translationVector) {
+        this._labels.forEach((label) => label.position.add(translationVector));
+    }
+
+    createLabel(text, pos, color = "yellow") {
         const div = document.createElement("div");
         div.textContent = text;
         div.style.color = color;
@@ -249,6 +260,16 @@ export class AxesLayout extends THREE.Group {
         rotate(plane);
 
         return [grid, plane];
+    }
+
+    shiftBy(translationVector) {
+        this.xyGrid.position.add(translationVector);
+        this.xyPlane.position.add(translationVector);
+        this.yzGrid.position.add(translationVector);
+        this.yzPlane.position.add(translationVector);
+        this.xzGrid.position.add(translationVector);
+        this.xzPlane.position.add(translationVector);
+        this.axes.position.add(translationVector);
     }
 
     get divisions() { return this._divisions; }
@@ -313,16 +334,18 @@ export class ClassicalAnnotations extends AxesAnnotation {
         const size = axesLayout.size;
         const step = size / axesLayout.divisions;
         for (let v = -size * .5 ; v <= size * .5; v += step)
-            this.add(
-                this.label(v.toFixed(1), new THREE.Vector3(v, 0, 0.525 * size)),
-                this.label(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v)));
+            this._labels.push(
+                this.createLabel(v.toFixed(1), new THREE.Vector3(v, 0, 0.525 * size)),
+                this.createLabel(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v)));
         for (let v = 0 ; v <= size * .5; v += step)
-            this.add(this.label(v.toFixed(1), new THREE.Vector3(0, v, 0)));
+            this._labels.push(this.label(v.toFixed(1), new THREE.Vector3(0, v, 0)));
 
-        this.add(
-            this.label(axisLabels[0], new THREE.Vector3(0.575 * size, 0, 0), "red"),
-            this.label(axisLabels[1], new THREE.Vector3(0, 0.575 * size, 0), "green"),
-            this.label(axisLabels[2], new THREE.Vector3(0, 0, 0.575 * size), "blue"));
+        this._labels.push(
+            this.createLabel(axisLabels[0], new THREE.Vector3(0.575 * size, 0, 0), "red"),
+            this.createLabel(axisLabels[1], new THREE.Vector3(0, 0.575 * size, 0), "green"),
+            this.createLabel(axisLabels[2], new THREE.Vector3(0, 0, 0.575 * size), "blue"));
+
+        this._labels.forEach(label => this.add(label));
     }
 }
 
@@ -333,15 +356,17 @@ export class MatlabAnnotations extends AxesAnnotation {
         const size = axesLayout.size;
         const step = (2 * size) / axesLayout.divisions;
         for (let v = 0 ; v <= size; v += step)
-            this.add(
-                this.label(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, 0.525 * size)),
-                this.label(v.toFixed(1), new THREE.Vector3(-0.525 * size, v, 0.5 * size)),
-                this.label(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v - 0.5 * size)));
+            this._labels.push(
+                this.createLabel(v.toFixed(1), new THREE.Vector3(v - 0.5 * size, 0, 0.525 * size)),
+                this.createLabel(v.toFixed(1), new THREE.Vector3(-0.525 * size, v, 0.5 * size)),
+                this.createLabel(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v - 0.5 * size)));
 
-        this.add(
-            this.label(axisLabels[0], new THREE.Vector3(0.6 * size, 0, -0.5 * size), "red"),
-            this.label(axisLabels[1], new THREE.Vector3(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
-            this.label(axisLabels[2], new THREE.Vector3(-0.5 * size, 0, 0.6 * size), "blue"));
+        this._labels.push(
+            this.createLabel(axisLabels[0], new THREE.Vector3(0.6 * size, 0, -0.5 * size), "red"),
+            this.createLabel(axisLabels[1], new THREE.Vector3(-0.5 * size, 1.05 * size, -0.5 * size), "green"),
+            this.createLabel(axisLabels[2], new THREE.Vector3(-0.5 * size, 0, 0.6 * size), "blue"));
+
+        this._labels.forEach(label => this.add(label));
     }
 }
 
@@ -564,7 +589,7 @@ export class ArrowField extends THREE.Group {
         for (const x of this.xRange)
             for (const y of this.yRange)
                 for (const z of this.zRange)
-                    this.positions.push(new THREE.Vector3(x, z + 1, y));
+                    this.positions.push(new THREE.Vector3(x, z, y));
     }
 
     #magnitudeToColor(magnitude, scalarRange) {

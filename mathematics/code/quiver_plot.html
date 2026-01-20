@@ -136,6 +136,7 @@
     axes.setAnnotations(annotations);
     worldGroup.add(annotations);
     annotations.visible = false;
+    axes.shiftBy(new THREE.Vector3(0, -1, 0));
 
     const plot3D = new Plot3D(canvas, scene, axes);
     const bbox = new THREE.Box3();
