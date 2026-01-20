@@ -8,8 +8,8 @@ export const UnitVectorE3 = new THREE.Vector3(0, 0, 1);
 
 export class ThreeJsUtils {
     static scaleBox3(box, factor) {
-        const center = new Vector();
-        const size = new Vector();
+        const center = new THREE.Vector3();
+        const size = new THREE.Vector3();
 
         box.getCenter(center);
         box.getSize(size);
