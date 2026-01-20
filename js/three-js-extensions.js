@@ -338,7 +338,7 @@ export class ClassicalAnnotations extends AxesAnnotation {
                 this.createLabel(v.toFixed(1), new THREE.Vector3(v, 0, 0.525 * size)),
                 this.createLabel(v.toFixed(1), new THREE.Vector3(0.525 * size, 0, v)));
         for (let v = 0 ; v <= size * .5; v += step)
-            this._labels.push(this.label(v.toFixed(1), new THREE.Vector3(0, v, 0)));
+            this._labels.push(this.createLabel(v.toFixed(1), new THREE.Vector3(0, v, 0)));
 
         this._labels.push(
             this.createLabel(axisLabels[0], new THREE.Vector3(0.575 * size, 0, 0), "red"),
