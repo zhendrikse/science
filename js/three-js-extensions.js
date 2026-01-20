@@ -806,7 +806,7 @@ export class Sphere {
 
     enableTrail({
                     maxPoints = 200,
-                    color = this.sphere.material.color
+                    color = this._sphere.material.color
                 } = {}) {
         this._trail = new Trail({ maxPoints, color });
         this._group.add(this._trail.line);
