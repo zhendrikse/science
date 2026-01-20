@@ -870,11 +870,11 @@ export class Graph {
         this.time += this.dt;
 
         for (const [name, value] of Object.entries(values)) {
-            const s = this.series.get(name);
-            if (!s) continue;
+            const series = this.series.get(name);
+            if (!series) continue;
 
-            s.data.push({ t: this.time, v: value });
-            if (s.data.length > this.maxPoints) s.data.shift();
+            series.data.push({ t: this.time, v: value });
+            if (series.data.length > this.maxPoints) series.data.shift();
         }
     }
 
@@ -919,8 +919,8 @@ export class Graph {
         context.strokeStyle = this.gridColor;
         context.lineWidth = 1;
 
-        const w = this.canvas.width;
-        const h = this.canvas.height;
+        const width = this.canvas.width;
+        const height = this.canvas.height;
 
         const { tMin, tMax } = this._getTimeRange();
         const span = tMax - tMin;
@@ -928,21 +928,21 @@ export class Graph {
         const tStep = this._niceStep(span / 10);
 
         for (let t = Math.ceil(tMin / tStep) * tStep; t <= tMax; t += tStep) {
-            const x = (t - tMin) / span * w;
+            const x = (t - tMin) / span * width;
             context.beginPath();
             context.moveTo(x, 0);
-            context.lineTo(x, h);
+            context.lineTo(x, height);
             context.stroke();
         }
 
         // horizontale grid (Y blijft hetzelfde)
-        const yStep = this._niceStep(h / (this.scaleY * 6));
+        const yStep = this._niceStep(height / (this.scaleY * 6));
         for (let v = -1000; v <= 1000; v += yStep) {
             const y = this.offsetY - v * this.scaleY;
-            if (y < 0 || y > h) continue;
+            if (y < 0 || y > height) continue;
             context.beginPath();
             context.moveTo(0, y);
-            context.lineTo(w, y);
+            context.lineTo(width, y);
             context.stroke();
         }
     }
