@@ -82,28 +82,26 @@ export class Range {
     constructor(from, to, stepSize) {
         this.from = from;
         this.to = to;
-        this.stepSize = stepSize || .1;
+        this.stepSize = stepSize || 0.1;
     }
 
     /**
      * Use:
-     *   for (const x of range.iterator())
+     *   for (const x of range)
      *     console.log(x);
      *
      * @returns {Generator<*, void, *>}
      */
-    iterator() {
-        const self = this;
-        return (function* () {
-            if (!isFinite(self.from) || !isFinite(self.to))
-                throw new Error("Cannot iterate over an infinite interval.");
-            if (self.stepSize <= 0)
-                throw new Error("stepSize must be > 0");
+    *[Symbol.iterator]() {
+        if (!isFinite(this.from) || !isFinite(this.to))
+            throw new Error("Cannot iterate over an infinite interval.");
+        if (this.stepSize <= 0)
+            throw new Error("stepSize must be > 0");
 
-            const n = Math.floor((self.to - self.from) / self.stepSize);
-            for (let i = 0; i <= n; i++)
-                yield self.from + i * self.stepSize;
-        })();
+        const n = Math.floor((this.to - this.from) / this.stepSize);
+        for (let i = 0; i <= n; i++) {
+            yield this.from + i * this.stepSize;
+        }
     }
 }
 
@@ -564,9 +562,9 @@ export class ArrowField extends THREE.Group {
 
     #initializePositions() {
         this.positions = [];
-        for (const x of this.xRange.iterator())
-            for (const y of this.yRange.iterator())
-                for (const z of this.zRange.iterator())
+        for (const x of this.xRange)
+            for (const y of this.yRange)
+                for (const z of this.zRange)
                     this.positions.push(new THREE.Vector3(x, z + 1, y));
     }
 
