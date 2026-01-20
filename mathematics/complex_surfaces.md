@@ -16,7 +16,7 @@ For $ f(z)=\tfrac12(z^2+2) $:
 * Phase-singularities exact on those points
   → visually correct? This is a check that everything is mathematically sound.
 
-{% include_relative code/complex_surface_plot.html %}
+{% include_relative code/complex_surfaces.html %}
 
 <p style="clear: both;"></p>
 
