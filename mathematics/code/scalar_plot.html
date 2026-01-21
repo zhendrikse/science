@@ -496,7 +496,7 @@
         }
 
         _colorFor(value) {
-            const t = Math.log1p(value * 10) / Math.log(11);
+            const t = Math.log1p(value * 10);
 
             const color = new Color();
             color.setHSL(0.66 * (1 - t), 1.0, 0.5);

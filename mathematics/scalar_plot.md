@@ -29,9 +29,9 @@ a function that assigns **one number (temperature)** to **every point in space**
 ### The idea of a scalar field
 
 A scalar field is simply a function like
-$$
-T(x, y, z)
-$$
+
+$$T(x, y, z)$$
+
 that gives a single value at each position.
 
 Examples of scalar fields:
@@ -47,9 +47,8 @@ Here, the scalar field represents **temperature in 3D space**.
 ### Starting situation: a hot spot
 
 At the beginning, the temperature is highest near the center and decreases smoothly outward:
-$$
-T(\mathbf{r}) = e^{-\alpha \lVert \mathbf{r} \rVert^2}
-$$
+
+$$T(\mathbf{r}) = e^{-\alpha \lVert \mathbf{r} \rVert^2}$$
 
 This describes a **localized heat source**:
 
@@ -66,9 +65,8 @@ You can think of this as a small hot object placed in cold space.
 As time passes, heat spreads out due to **diffusion**.
 
 Mathematically, this is described by the **heat equation**:
-$$
-\frac{\partial T}{\partial t} = \kappa \nabla^2 T
-$$
+
+$$\frac{\partial T}{\partial t} = \kappa \nabla^2 T$$
 
 You don’t need to solve this equation to understand what happens:
 
@@ -111,9 +109,9 @@ Instead of thinking in formulas, you can **see the heat flow**.
 This visualization shows a **three-dimensional scalar field** representing a temperature distribution in space.
 
 Each small sphere corresponds to a sample point in ℝ³, where the scalar value is given by a temperature function
-$$
-T(\mathbf{r}, t)
-$$
+
+$$T(\mathbf{r}, t)$$
+
 evaluated at that position. The color of each sphere encodes the local temperature, with warmer colors indicating higher values.
 
 ---
@@ -121,9 +119,9 @@ evaluated at that position. The color of each sphere encodes the local temperatu
 ### Initial Temperature Distribution
 
 At an initial time, the temperature is modeled as a radially symmetric Gaussian field:
-$$
-T(\mathbf{r}) = e^{-\alpha \lVert \mathbf{r} \rVert^2},
-$$
+
+$$T(\mathbf{r}) = e^{-\alpha \lVert \mathbf{r} \rVert^2},$$
+
 where:
 
 * $\mathbf{r} = (x, y, z)$ is the position vector,
@@ -136,12 +134,13 @@ This represents a localized heat concentration centered at the origin.
 ### Time-Dependent Heat Diffusion
 
 The time evolution of the temperature follows the fundamental solution of the **three-dimensional heat equation**:
-$$
-\frac{\partial T}{\partial t} = \kappa \nabla^2 T,
-$$
+
+$$\frac{\partial T}{\partial t} = \kappa \nabla^2 T,$$
+
 with thermal diffusivity $\kappa$.
 
 The analytical solution for a point-like heat source is:
+
 $$
 T(\mathbf{r}, t)=
 \exp\left(
