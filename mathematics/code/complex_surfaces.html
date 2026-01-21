@@ -140,12 +140,6 @@
                             break;
                     }
                     plot.updateAxes(surface.boundingBox());
-                    plot.tiltY(params.tilt);
-                });
-            gui.add({ tilt: params.tilt }, "tilt", -45, 45, 1)
-                .onChange(v => {
-                    plot.tiltY(v - params.tilt);
-                    params.tilt = v;
                 });
 
             const axesFolder = gui.addFolder("Axes");
@@ -164,12 +158,10 @@
     const params = {
         axesParameters: new AxesParameters({axisLabels: ["Re(z)", "log|z|", "Im(z)"]}),
         function: ComplexFunctions.ZSquaredPlusTwo,
-        tilt: 15
     };
 
     let surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed), {showWireframe: false});
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, surface.boundingBox(), params.axesParameters);
-    plot3D.tiltY(params.tilt);
     const gui = new ControlsGui(plot3D, params);
 
     function animate() {

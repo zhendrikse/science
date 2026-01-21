@@ -16,7 +16,7 @@
     import { Range, AxesParameters, Plot3DView }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import { Vector3, Scene, Color, Group, SphereGeometry, Box3, MeshStandardMaterial, Mesh } from "three";
+    import {  Scene, Color, Group, SphereGeometry, MeshStandardMaterial, Vector3, Mesh, Box3 } from "three";
 
     const canvasContainer = document.getElementById("scalarContainer");
     const canvas = document.getElementById("scalarCanvas");
@@ -29,18 +29,12 @@
     const params = {
         axesParameters: new AxesParameters({axesLabels: false}),
         opacity: 0.3,
-        radius: 0.1,
-        tilt: 15
+        radius: 0.1
     };
 
     class ControlsGui {
         constructor(plot) {
             const gui = new GUI({width: 300, autoPlace: false});
-            gui.add({ tilt: params.tilt }, "tilt", -45, 45, 1)
-                .onChange(v => {
-                    plot.tiltY(v - params.tilt);
-                    params.tilt = v;
-                });
 
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'axes')
@@ -110,7 +104,6 @@
     boundingBox.setFromObject( worldGroup );
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
     plot3D.axes.shiftBy(new Vector3(0, -3, 0));
-    plot3D.tiltY(params.tilt);
 
     const gui = new ControlsGui(plot3D);
 

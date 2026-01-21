@@ -42,18 +42,12 @@
         tangentFrameParameters: tangentFrameParameters,
         theta: 45,
         phi: 280,
-        axesParameters: new AxesParameters({gridPlanes: true, annotations: false, layoutType: AxesView.Type.CLASSICAL}),
-        tilt: 15,
+        axesParameters: new AxesParameters({gridPlanes: true, annotations: false, layoutType: AxesView.Type.CLASSICAL})
     };
 
     class ControlsGui {
         constructor(plot) {
             const gui = new GUI({width: 300, autoPlace: false});
-            gui.add({ tilt: params.tilt }, "tilt", -45, 45, 1)
-                .onChange(v => {
-                    plot.tiltY(v - params.tilt);
-                    params.tilt = v;
-                });
 
             gui.add(params, "theta", 0, 180, 1)
                 .name("θ (theta)")
@@ -132,7 +126,6 @@
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
     plot3D.axes.layout.hideXY();
     plot3D.axes.layout.hideYZ();
-    plot3D.tiltY(params.tilt);
 
     const gui = new ControlsGui(plot3D);
 

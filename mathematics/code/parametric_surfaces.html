@@ -25,7 +25,7 @@
         background-color: #131313;
         width: 100%;
         max-width: 800px;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 1 / 1;
         margin: auto;
     }
 
@@ -34,7 +34,7 @@
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 1 / 1;
     }
 
     .guiContainer {
@@ -426,7 +426,10 @@
         const selectedMesh = hits[0].object;
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         surfaceInAxes.dispose();
-        surfaceInAxes = displayedSurface(selectedRingSurface.definition().specification(), params.surfaceParameters, axes);
+
+        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
+        surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), params.surfaceParameters);
+        plot3D.updateAxes(surfaceInAxes.boundingBox());
         ring.onSelectTo(selectedRingSurface);
         controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
     });

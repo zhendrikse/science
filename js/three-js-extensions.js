@@ -1,8 +1,9 @@
-import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
-import { Spherical, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3,
-    MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry } from "three";
+import { BufferGeometry, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3,
+    MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
+    MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
+    InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry } from "three";
 
 export const ZeroVector = new Vector3();
 export const UnitVectorE1 = new Vector3(1, 0, 0);
@@ -11,8 +12,8 @@ export const UnitVectorE3 = new Vector3(0, 0, 1);
 
 export class ThreeJsUtils {
     static scaleBox3(box, factor) {
-        const center = new THREE.Vector3();
-        const size = new THREE.Vector3();
+        const center = new Vector3();
+        const size = new Vector3();
 
         box.getCenter(center);
         box.getSize(size);
@@ -31,10 +32,10 @@ export class ThreeJsUtils {
         targetBox,
         { alignY = "min", padding = 1.0 } = {}
     ) {
-        const sourceSize = new THREE.Vector3();
-        const targetSize = new THREE.Vector3();
-        const sourceCenter = new THREE.Vector3();
-        const targetCenter = new THREE.Vector3();
+        const sourceSize = new Vector3();
+        const targetSize = new Vector3();
+        const sourceCenter = new Vector3();
+        const targetCenter = new Vector3();
 
         sourceBox.getSize(sourceSize);
         targetBox.getSize(targetSize);
@@ -54,7 +55,7 @@ export class ThreeJsUtils {
 
         if (alignY === "min") {
             group.updateMatrixWorld(true);
-            const scaledBox = new THREE.Box3().setFromObject(group);
+            const scaledBox = new Box3().setFromObject(group);
             const deltaY = targetBox.min.y - scaledBox.min.y;
             group.position.y += deltaY;
         }
@@ -183,8 +184,7 @@ export class MathWrapper {
         return new ComplexNumber(factor, factor * (z.im / Math.abs(z.im)));
     }
 }
-
-export class AxesView extends THREE.Group {
+export class AxesView extends Group {
     static Type = Object.freeze({
         CLASSICAL: "classical",
         MATLAB: "MatLab"
@@ -223,7 +223,7 @@ export class AxesView extends THREE.Group {
     }
 
     static toCartesian(radius, theta, phi) {
-        return new THREE.Vector3(
+        return new Vector3(
             radius * Math.sin(theta) * Math.cos(phi),
             radius * Math.sin(theta) * Math.sin(phi),
             radius * Math.cos(theta)
@@ -255,37 +255,13 @@ export class AxesView extends THREE.Group {
     }
 
     boundingBox() {
-        const axesBoundingBox = new THREE.Box3();
+        const axesBoundingBox = new Box3();
         axesBoundingBox.setFromObject(this);
         return axesBoundingBox;
     }
 }
 
-export class AxesParameters {
-    constructor({
-                    layoutType = AxesView.Type.MATLAB,
-                    divisions = 10,
-                    axes = true,
-                    gridPlanes = true,
-                    annotations = true,
-                    xyPlane = true,
-                    xzPlane = true,
-                    yzPlane = true,
-                    axisLabels = ["X", "Y", "Z"]
-                } = {}) {
-        this.layoutType = layoutType;
-        this.divisions = divisions;
-        this.axes = axes;
-        this.gridPlanes = gridPlanes;
-        this.annotations = annotations;
-        this.xyPlane = xyPlane;
-        this.xzPlane = xzPlane;
-        this.yzPlane = yzPlane;
-        this.axisLabels = axisLabels;
-    }
-}
-
-class AxesAnnotation extends THREE.Group {
+class AxesAnnotation extends Group {
     constructor(container) {
         super();
         this._renderer = new CSS2DRenderer();
@@ -327,7 +303,7 @@ class AxesAnnotation extends THREE.Group {
     }
 }
 
-class AxesLayout extends THREE.Group {
+class AxesLayout extends Group {
     constructor(size, divisions) {
         super();
         this._size = size;
@@ -336,26 +312,26 @@ class AxesLayout extends THREE.Group {
     }
 
     createPlane(color, rotate, gridPos, planePos) {
-        const grid = new THREE.GridHelper(
+        const grid = new GridHelper(
             this._size,
             this._divisions,
             0x333333,
             0x333333
         );
 
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(this._size, this._size),
-            new THREE.MeshPhongMaterial({
+        const plane = new Mesh(
+            new PlaneGeometry(this._size, this._size),
+            new MeshPhongMaterial({
                 color,
                 transparent: true,
                 opacity: 0.1,
                 depthWrite: false,
-                side: THREE.DoubleSide
+                side: DoubleSide
             })
         );
 
-        grid.position.copy(new THREE.Vector3(gridPos[0], gridPos[1], gridPos[2]).multiplyScalar(.5 * this._size));
-        plane.position.copy(new THREE.Vector3(planePos[0], planePos[1], planePos[2]).multiplyScalar(.5 * this._size));
+        grid.position.copy(new Vector3(gridPos[0], gridPos[1], gridPos[2]).multiplyScalar(.5 * this._size));
+        plane.position.copy(new Vector3(planePos[0], planePos[1], planePos[2]).multiplyScalar(.5 * this._size));
 
         rotate(grid);
         rotate(plane);
@@ -392,7 +368,7 @@ class ClassicalAxesLayout extends AxesLayout {
         super(size, divisions);
 
         const eps = 0.025;
-        this._axes = new THREE.AxesHelper(size * .5);
+        this._axes = new AxesHelper(size * .5);
         this._axes.position.set(eps, eps, eps);
 
         const [xyGrid, xzPlane] = this.createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
@@ -413,7 +389,7 @@ class MatlabAxesLayout extends AxesLayout {
         super(size, divisions);
 
         const eps = 0.025;
-        this._axes = new THREE.AxesHelper(size);
+        this._axes = new AxesHelper(size);
         this._axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
 
         const [xyGrid, xzPlane] = this.createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]);
@@ -485,8 +461,6 @@ export class Plot3DView {
         this._scene.add(this.axes);
         this._camera = new PerspectiveCamera(45, 1, 0.1, 100);
         this._renderer = new WebGLRenderer({ antialias: true, canvas });
-        this._spherical = new Spherical();
-        this._target = new Vector3();
 
         // Resizing for mobile devices
         ThreeJsUtils.resizeRendererToCanvas(this._renderer, this._camera);
@@ -500,7 +474,7 @@ export class Plot3DView {
 
         this.#setupLights();
         this.#resize();
-        this.#frame(axesBoundingBox);
+        this.frame(axesBoundingBox);
         this.applyAxesParameters();
     }
 
@@ -519,9 +493,9 @@ export class Plot3DView {
         );
     }
 
-    #createAxes(boundingBox) {
+    #createAxes(boundingBox, padding=1.1) {
         const sizeVec = boundingBox.getSize(new Vector3());
-        const maxSize = 1.15 * Math.max(sizeVec.x, sizeVec.y, sizeVec.z);
+        const maxSize = padding * Math.max(sizeVec.x, sizeVec.y, sizeVec.z);
 
         const layout = this._axesParameters.layoutType === AxesView.Type.MATLAB ?
             new MatlabAxesLayout(maxSize, this._axesParameters.divisions) :
@@ -546,36 +520,37 @@ export class Plot3DView {
 
     get axes() { return this._axes; }
 
-    #frame(boundingBox) {
-        const sphere = boundingBox.getBoundingSphere(new THREE.Sphere());
-        this._target.copy(sphere.center);
-
-        const fov = THREE.MathUtils.degToRad(this._camera.fov);
-        const distance = sphere.radius / Math.sin(fov / 2);
-
-        const direction = new Vector3(1, 1, 1).normalize();
-
-        this._spherical.setFromVector3(
-            direction.clone().multiplyScalar(distance)
-        );
-
-        this._spherical.radius *= 1.15; // padding
-
-        this.#applyCamera();
+    #calculateCenter(boundingBox) {
+        const size = new Vector3();
+        let center = new Vector3();
+        boundingBox.getSize(size);
+        boundingBox.getCenter(center);
+        return {center, size};
     }
 
-    #applyCamera() {
-        const offset = new Vector3().setFromSpherical(this._spherical);
+    frame(boundingBox, {
+        padding = 1.2,
+        translationY = 0,
+        minDistance = 2,
+        viewDirection = new Vector3(1, 1, 1)
+    } = {}) {
+        const {center, size} = this.#calculateCenter(boundingBox);
 
+        // distance so that bounding box is always in view
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const verticalFieldOfView = MathUtils.degToRad(this._camera.fov);
+        let distance = maxDim / Math.tan(verticalFieldOfView / 2);
+        distance = Math.max(distance * padding, minDistance);
+
+        const direction = viewDirection.clone().normalize();
         this._camera.position
-            .copy(this._target)
-            .add(offset);
-
-        this._camera.near = this._spherical.radius * 0.02;
-        this._camera.far  = this._spherical.radius * 10;
+            .copy(new Vector3(center.x, center.y + translationY, center.z))
+            .addScaledVector(direction, distance);
+        this._camera.near = distance / 100;
+        this._camera.far = distance * 10;
         this._camera.updateProjectionMatrix();
 
-        this._controls.target.copy(this._target);
+        this._controls.target.copy(center);
         this._controls.update();
     }
 
@@ -586,23 +561,8 @@ export class Plot3DView {
         this._scene.remove(this._axes);
         this._axes = this.#createAxes(newBoundingBox);
         this._scene.add(this._axes);
-        this.#frame(this._axes.boundingBox());
+        this.frame(newBoundingBox);
         this.applyAxesParameters();
-    }
-
-    tiltY(deltaDegrees) {
-        const delta = MathUtils.degToRad(deltaDegrees);
-
-        this._spherical.phi = MathUtils.clamp(
-            this._spherical.phi + delta,
-            0.1,                 // prevent over the pole rotation
-            Math.PI - 0.1
-        );
-
-        this.#applyCamera();
-        this._controls.target.copy(this._target);
-        this._controls.update();
-        this._controls.saveState();
     }
 
     render() {
@@ -621,13 +581,13 @@ class Trail {
         this.maxPoints = maxPoints;
         this.positions = [];
 
-        this.geometry = new THREE.BufferGeometry();
-        this.material = new THREE.LineBasicMaterial({
+        this.geometry = new BufferGeometry();
+        this.material = new LineBasicMaterial({
             color,
             linewidth
         });
 
-        this.line = new THREE.Line(this.geometry, this.material);
+        this.line = new Line(this.geometry, this.material);
     }
 
     addPoint(vec3) {
@@ -645,7 +605,7 @@ class Trail {
 
         this.geometry.setAttribute(
             'position',
-            new THREE.BufferAttribute(array, 3)
+            new BufferAttribute(array, 3)
         );
         this.geometry.computeBoundingSphere();
     }
@@ -654,7 +614,7 @@ class Trail {
         this.positions.length = 0;
         this.geometry.setAttribute(
             'position',
-            new THREE.BufferAttribute(new Float32Array(0), 3)
+            new BufferAttribute(new Float32Array(0), 3)
         );
     }
 }
@@ -685,9 +645,9 @@ export class VectorField {
     }
 
     #centralDifferences(position, h) {
-        const dx = new THREE.Vector3(h, 0, 0);
-        const dy = new THREE.Vector3(0, h, 0);
-        const dz = new THREE.Vector3(0, 0, h);
+        const dx = new Vector3(h, 0, 0);
+        const dy = new Vector3(0, h, 0);
+        const dz = new Vector3(0, 0, h);
 
         const Fx1 = this.sample(position.clone().add(dx));
         const Fx0 = this.sample(position.clone().sub(dx));
@@ -713,7 +673,7 @@ export class VectorField {
     curl(position, h = 1e-2) {
         const {Fx0, Fy0, Fz0, Fx1, Fy1, Fz1} = this.#centralDifferences(position, h);
 
-        return new THREE.Vector3(
+        return new Vector3(
             (Fy1.z - Fy0.z - (Fz1.y - Fz0.y)) / (2 * h),
             (Fz1.x - Fz0.x - (Fx1.z - Fx0.z)) / (2 * h),
             (Fx1.y - Fx0.y - (Fy1.x - Fy0.x)) / (2 * h)
@@ -725,7 +685,7 @@ export class VectorField {
     }
 }
 
-export class ArrowField extends THREE.Group {
+export class ArrowField extends Group {
     static ColorMode = Object.freeze({
         MAGNITUDE: "magnitude",
         DIVERGENCE: "divergence",
@@ -754,27 +714,27 @@ export class ArrowField extends THREE.Group {
 
         const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
         const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
-        const shaftMaterial = new THREE.MeshStandardMaterial();
-        const headMaterial  = new THREE.MeshStandardMaterial();
+        const shaftMaterial = new MeshStandardMaterial();
+        const headMaterial  = new MeshStandardMaterial();
 
         this.#initializePositions();
 
-        this._shaftMesh = new THREE.InstancedMesh(shaftGeometry, shaftMaterial, this.positions.length);
-        this._headMesh  = new THREE.InstancedMesh(headGeometry,  headMaterial,  this.positions.length);
+        this._shaftMesh = new InstancedMesh(shaftGeometry, shaftMaterial, this.positions.length);
+        this._headMesh  = new InstancedMesh(headGeometry,  headMaterial,  this.positions.length);
         this.add(this._shaftMesh, this._headMesh);
 
         // per-instance color
         const colors = new Float32Array(this.positions.length * 3);
-        this._shaftMesh.instanceColor = new THREE.InstancedBufferAttribute(colors, 3);
+        this._shaftMesh.instanceColor = new InstancedBufferAttribute(colors, 3);
         this._headMesh.instanceColor  = this._shaftMesh.instanceColor;
 
         // temp objects (no allocations per frame)
-        this.tmpMatrix = new THREE.Matrix4();
-        this.tmpQuaternion = new THREE.Quaternion();
-        this.tmpScale      = new THREE.Vector3();
-        this.tmpPosition   = new THREE.Vector3();
-        this.tmpAxis       = new THREE.Vector3();
-        this.tmpDirection  = new THREE.Vector3();
+        this.tmpMatrix = new Matrix4();
+        this.tmpQuaternion = new Quaternion();
+        this.tmpScale      = new Vector3();
+        this.tmpPosition   = new Vector3();
+        this.tmpAxis       = new Vector3();
+        this.tmpDirection  = new Vector3();
 
         // initial build
         this.updateFieldWith(vectorField);
@@ -782,7 +742,7 @@ export class ArrowField extends THREE.Group {
 
     #collapseArrow(index, position) {
         this.tmpScale.set(0, 0, 0);
-        this.tmpMatrix.compose(position, new THREE.Quaternion(), this.tmpScale);
+        this.tmpMatrix.compose(position, new Quaternion(), this.tmpScale);
         this._shaftMesh.setMatrixAt(index, this.tmpMatrix);
         this._headMesh.setMatrixAt(index, this.tmpMatrix);
     }
@@ -800,16 +760,16 @@ export class ArrowField extends THREE.Group {
         for (const x of this.xRange)
             for (const y of this.yRange)
                 for (const z of this.zRange)
-                    this.positions.push(new THREE.Vector3(x, z, y));
+                    this.positions.push(new Vector3(x, z, y));
     }
 
     #magnitudeToColor(magnitude, scalarRange) {
-        if (scalarRange.to <= scalarRange.from) return new THREE.Color(0x00ffff);
+        if (scalarRange.to <= scalarRange.from) return new Color(0x00ffff);
 
-        const t = THREE.MathUtils.clamp(scalarRange.scaleValue(magnitude), 0, 1);
+        const t = MathUtils.clamp(scalarRange.scaleValue(magnitude), 0, 1);
         const hue = (1 - t) * 0.66; // Hue: 0.66 (blue) → 0.0 (red)
 
-        return new THREE.Color().setHSL(hue, 1.0, 0.5);
+        return new Color().setHSL(hue, 1.0, 0.5);
     }
 
     #scalarField() {
@@ -826,21 +786,21 @@ export class ArrowField extends THREE.Group {
     }
 
     #scalarToColor(value, scalarRange) {
-        const t = THREE.MathUtils.clamp(
+        const t = MathUtils.clamp(
             scalarRange.scaleValue(value) * 2 - 1,
             -1, 1
         );
 
         if (t < 0) // blue → white
-            return new THREE.Color().lerpColors(
-                new THREE.Color(0x0000ff),
-                new THREE.Color(0xffffff),
+            return new Color().lerpColors(
+                new Color(0x0000ff),
+                new Color(0xffffff),
                 1 + t
             );
         else // white → red
-            return new THREE.Color().lerpColors(
-                new THREE.Color(0xffffff),
-                new THREE.Color(0xff0000),
+            return new Color().lerpColors(
+                new Color(0xffffff),
+                new Color(0xff0000),
                 t
             );
     }
@@ -876,9 +836,9 @@ export class ArrowField extends THREE.Group {
                     scalarRange.from -= 1;
                     scalarRange.to   += 1;
                 }
-                const t = THREE.MathUtils.clamp(scalarRange.scaleValue(scalars[index]), 0, 1);
+                const t = MathUtils.clamp(scalarRange.scaleValue(scalars[index]), 0, 1);
                 const hue = (1 - t) * 0.66;
-                this._shaftMesh.setColorAt(index, new THREE.Color().setHSL(hue, 1, 0.5));
+                this._shaftMesh.setColorAt(index, new Color().setHSL(hue, 1, 0.5));
                 break;
             default:
                 const mag = axis.length() / this.scaleFactor;
@@ -945,12 +905,12 @@ export class ArrowField extends THREE.Group {
 export class Sphere {
     constructor(
         group,
-        position=new THREE.Vector3(0, 0, 0),
+        position=new Vector3(0, 0, 0),
         radius=1,
         makeTrail=false,
         {
             segments=24,
-            material=new THREE.MeshStandardMaterial({
+            material=new MeshStandardMaterial({
                 color: "yellow",
                 opacity: 1,
                 transparent: true,
@@ -959,7 +919,7 @@ export class Sphere {
                 roughness:0.2
             })
         }) {
-        this._sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, segments, segments), material);
+        this._sphere = new Mesh(new SphereGeometry(radius, segments, segments), material);
         this._sphere.position.copy(position);
         this._sphere.castShadow = true;
         this._group = group;
@@ -989,7 +949,7 @@ export class Sphere {
     }
 }
 
-export class Arrow extends THREE.Group {
+export class Arrow extends Group {
     constructor(position, axis, {
         color = 0xff0000,
         shaftWidth = 0.1, // times the length of the axis
@@ -1009,14 +969,14 @@ export class Arrow extends THREE.Group {
 
         const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
         const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
-        const material = new THREE.MeshStandardMaterial({
+        const material = new MeshStandardMaterial({
             color: color,
             opacity: opacity,
             transparent: true
         });
 
-        this._shaft = new THREE.Mesh(shaftGeometry, material);
-        this._head = new THREE.Mesh(headGeometry, material);
+        this._shaft = new Mesh(shaftGeometry, material);
+        this._head = new Mesh(headGeometry, material);
         if (!round)
             this._head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
 
@@ -1050,7 +1010,7 @@ export class Arrow extends THREE.Group {
         if (totalLength < 1e-6)
             return;
 
-        const quaternion = new THREE.Quaternion().setFromUnitVectors(
+        const quaternion = new Quaternion().setFromUnitVectors(
             UnitVectorE2,
             newAxis.clone().normalize()
         );
@@ -1079,7 +1039,7 @@ export class Arrow extends THREE.Group {
             this._trail.addPoint(this.position);
     }
 
-    positionVectorTo = (other) => new THREE.Vector3().copy(other.position).sub(this.position);
+    positionVectorTo = (other) => new Vector3().copy(other.position).sub(this.position);
 
     distanceToSquared = (other) => this.position.distanceToSquared(other.position);
 }
@@ -1256,7 +1216,7 @@ export class Graph {
     }
 }
 
-class Helix extends THREE.Curve {
+class Helix extends Curve {
     constructor(position, axis, coils=25, radius=0.4, waveAmp=0.05, wavePhase=0){
         super();
         this.start = position.clone();
@@ -1278,9 +1238,9 @@ class Helix extends THREE.Curve {
         // Longitudinal wave across spring
         const z = t * length + this.waveAmp * Math.sin(Math.PI * t) * Math.sin(2 * Math.PI * t * 3 - this.wavePhase);
 
-        const point = new THREE.Vector3(x, y, z);
-        const quaternion = new THREE.Quaternion();
-        quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), this._axis.clone().normalize());
+        const point = new Vector3(x, y, z);
+        const quaternion = new Quaternion();
+        quaternion.setFromUnitVectors(new Vector3(0, 0, 1), this._axis.clone().normalize());
         point.applyQuaternion(quaternion);
 
         return point.add(this.start);
@@ -1335,9 +1295,9 @@ export class PhysicalObject {
 
 export class Ball {
     constructor(parent, {
-        position = new THREE.Vector3(0, 0, 0),
+        position = new Vector3(0, 0, 0),
         radius=1,
-        velocity = new THREE.Vector3(0, 0, 0),
+        velocity = new Vector3(0, 0, 0),
         mass=1,
         opacity = 1,
         wireframe = false,
@@ -1345,7 +1305,7 @@ export class Ball {
         makeTrail=false,
         segments = 24})
     {
-        const material = new THREE.MeshStandardMaterial({
+        const material = new MeshStandardMaterial({
             color: color,
             opacity: opacity,
             transparent: true,
@@ -1402,15 +1362,15 @@ export class Spring {
         this.position = position;
         this._axis = axis;
 
-        this.geometry = new THREE.TubeGeometry(this.curve, tubularSegments, coilRadius, radialSegments, false);
-        const material = new THREE.MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
-        this.spring = new THREE.Mesh(this.geometry, material);
+        this.geometry = new TubeGeometry(this.curve, tubularSegments, coilRadius, radialSegments, false);
+        const material = new MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
+        this.spring = new Mesh(this.geometry, material);
         parent.add(this.spring);
     }
 
     #regenerateTube() {
         this.spring.geometry.dispose();
-        this.spring.geometry = new THREE.TubeGeometry(
+        this.spring.geometry = new TubeGeometry(
             this.curve, this.tubularSegments, this.coilRadius, this.radialSegments, false
         );
     }
