@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import {ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
-import {AxesParameters, Arrow, Interval, ComplexNumber }
+import { ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
+import { Arrow, Interval, ComplexNumber }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import { BufferGeometry, Mesh, Vector3 } from "three";
 
@@ -1044,7 +1044,6 @@ export class Utils {
 export class ViewParameters {
     constructor({
                     autoRotate = false,
-                    axesParameters = new AxesParameters(),
                     baseColor = "#4cf",
                     category = Category.MISC,
                     colorMode = ColorMapper.ColorMode.HEIGHT,
@@ -1056,7 +1055,6 @@ export class ViewParameters {
                     wireframe = false
                 } ={}) {
         this.autoRotate = autoRotate;
-        this.axesParameters = axesParameters;
         this.baseColor = baseColor;
         this.category = category;
         this.colorMode = colorMode;

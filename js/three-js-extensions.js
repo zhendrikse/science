@@ -459,9 +459,12 @@ class MatlabAnnotations extends AxesAnnotation {
         const step = (2 * size) / axesLayout.divisions;
         for (let v = 0 ; v <= size; v += step)
             this._labels.push(
-                this.createLabel(v.toFixed(1), new Vector3(v - 0.5 * size, 0, 0.525 * size)),
                 this.createLabel(v.toFixed(1), new Vector3(-0.525 * size, v, 0.5 * size)),
                 this.createLabel(v.toFixed(1), new Vector3(0.525 * size, 0, v - 0.5 * size)));
+
+        for (let v = step ; v < size; v += step)
+            this._labels.push(
+                this.createLabel(v.toFixed(1), new Vector3(v - 0.5 * size, 0, 0.525 * size)));
 
         this._labels.push(
             this.createLabel(axisLabels[0], new Vector3(0.65 * size, 0, -0.5 * size), "red", "20px"),
@@ -575,6 +578,8 @@ export class Plot3DView {
         this._controls.target.copy(this._target);
         this._controls.update();
     }
+
+    get camera() { return this._camera; }
 
     updateAxes(newBoundingBox) {
         this._axes.dispose();
