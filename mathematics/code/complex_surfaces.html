@@ -169,11 +169,11 @@
         #createAxesFolder(parentFolder) {
             const axesFolder = parentFolder.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'axes')
-                .name("Axes").onChange(value => plot.applyAxesParameters());
+                .name("Axes").onChange(value => this._plot.applyAxesParameters());
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => plot.applyAxesParameters());
+                .name("Layout").onChange(value => this._plot.applyAxesParameters());
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => plot.applyAxesParameters());
+                .name("Annotations").onChange(value => this._plot.applyAxesParameters());
             axesFolder.close();
         }
 
