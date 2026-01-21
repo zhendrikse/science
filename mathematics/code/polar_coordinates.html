@@ -14,7 +14,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3D, Axes, AxesParameters, ClassicalAxesLayout, ClassicalAnnotations }
+    import { Plot3DView, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import { SurfaceDefinition, TangentFrameView, TangentFrameParameters}
@@ -113,21 +113,8 @@
     );
     worldGroup.add(radialLine);
 
-    const axes = new Axes();
-    worldGroup.add(axes);
-    const axesLayout = new ClassicalAxesLayout(radius * 3, 10);
-    const annotations = new ClassicalAnnotations(canvasContainer, axesLayout);
-    axesLayout.hideXY();
-    axesLayout.hideYZ();
-    axes.setLayout(axesLayout);
-    axes.setAnnotations(annotations);
-    worldGroup.add(annotations);
-    annotations.visible = params.axesParameters.axesLabels;
-
-    const plot3D = new Plot3D(canvas, scene, axes);
-    const bbox = new THREE.Box3();
-    bbox.setFromObject( axes );
-    plot3D.fitToBoundingBox(bbox, {padding: 0.7, translationY: -2});
+    const axesParameters = new AxesParameters();
+    const plot3D = new Plot3DView(canvas, canvasContainer, scene, sphereSurface.boundingBox(), axesParameters);
 
     const resolution = 30;
     const geometry = new THREE.SphereGeometry( radius, resolution, resolution );
@@ -136,7 +123,7 @@
     sphere.position.set(0, 0, 0);
     worldGroup.add( sphere );
 
-    const gui = new ControlsGui(axesLayout, annotations);
+    //const gui = new ControlsGui(axesLayout, annotations);
 
     function animate() {
         requestAnimationFrame(animate);

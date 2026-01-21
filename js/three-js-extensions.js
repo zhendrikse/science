@@ -1,11 +1,13 @@
 import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import { Spherical, Sphere, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3,
+    MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry } from "three";
 
-export const ZeroVector = new THREE.Vector3();
-export const UnitVectorE1 = new THREE.Vector3(1, 0, 0);
-export const UnitVectorE2 = new THREE.Vector3(0, 1, 0);
-export const UnitVectorE3 = new THREE.Vector3(0, 0, 1);
+export const ZeroVector = new Vector3();
+export const UnitVectorE1 = new Vector3(1, 0, 0);
+export const UnitVectorE2 = new Vector3(0, 1, 0);
+export const UnitVectorE3 = new Vector3(0, 0, 1);
 
 export class ThreeJsUtils {
     static scaleBox3(box, factor) {
@@ -577,10 +579,10 @@ class Trail {
     }
 }
 
-const shaftGeometryRound = new THREE.CylinderGeometry(1, 1, 1, 16);
-const shaftGeometrySquare = new THREE.BoxGeometry(1, 1, 1);
-const headGeometryRound = new THREE.ConeGeometry(1, 1, 16);
-const headGeometrySquare = new THREE.ConeGeometry(1, 1, 4);
+const shaftGeometryRound = new CylinderGeometry(1, 1, 1, 16);
+const shaftGeometrySquare = new BoxGeometry(1, 1, 1);
+const headGeometryRound = new ConeGeometry(1, 1, 16);
+const headGeometrySquare = new ConeGeometry(1, 1, 4);
 
 export class VectorField {
     constructor() {}
