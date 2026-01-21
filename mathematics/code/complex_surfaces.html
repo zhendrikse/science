@@ -1,3 +1,22 @@
+<style>
+    #surface-equation {
+        position: absolute;
+        margin-top: 10px;
+        width: 100%;
+        max-width: 100%;
+        font-size: 13px;
+        color: yellow;
+        text-align: center;
+        z-index: 10;
+    }
+
+    #surface-equation .mjx-chtml {
+        font-size: clamp(12px, 3.5vw, 10px);
+        display: block;                 /* make MathJax fill the div */
+        max-width: 100%;
+        margin: 0 auto;
+    }
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -7,6 +26,7 @@
     }
 </script>
 
+<div id="surface-equation"></div>
 <div class="canvasWrapper" id="complexPlotContainer">
     <canvas class="applicationCanvas" id="complexPlotCanvas"></canvas><br/>
 </div>
@@ -33,63 +53,63 @@
         (z) => math.add(math.multiply(z, z), math.complex(2, 0)),
         new Interval(-2, 2),
         new Interval(-2, 2),
-        "$\\psi(z) = \\big(z^2 + 2\\big)$",
+        "$$\\psi(z) = \\big(z^2 + 2\\big)$$",
         "z * z + 2"
     ));
     const zAbsSquared = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.multiply(z, new ComplexNumber(z.re, -z.im)),
         new Interval(-2, 2),
         new Interval(-2, 2),
-        "$\\psi(z) = z\\bar{z}$",
+        "$$\\psi(z) = z\\bar{z}$$",
         "z * z_bar"
     ));
     const zCubed = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.add(math.multiply(z, math.multiply(z, z)), new ComplexNumber(2, 0)),
         new Interval(-2, 2),
         new Interval(-2, 2),
-        "$\\psi(z) = \\big(z^3 + 2\\big)$",
+        "$$\\psi(z) = \\big(z^3 + 2\\big)$$",
         "z * z * z + 2"
     ));
     const sqrtZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.sqrt(math.add(z, math.complex(0.0001, 0.0001))),
         new Interval(-1, 1),
         new Interval(-1, 1),
-        "$\\psi(z) = \\sqrt(z)$",
+        "$$\\psi(z) = \\sqrt(z)$$",
         "sqrt(z)"
     ));
     const expZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.exp(math.multiply(z, z)),
         new Interval(-1, 1),
         new Interval(-1, 1),
-        "$\\psi(z) = \\exp(z * z)$",
+        "$$\\psi(z) = \\exp(z * z)$$",
         "exp(z * z)"
     ));
     const logZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.log(math.add(z, math.complex(0.0001, 0.0001))),
         new Interval(-Math.PI, Math.PI),
         new Interval(-Math.PI, Math.PI),
-        "$\\psi(z) = \\log(z)$",
+        "$$\\psi(z) = \\log(z)$$",
         "log(z)"
     ));
     const sinZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.sin(z),
         new Interval(-Math.PI, Math.PI),
         new Interval(-Math.PI, Math.PI),
-        "$\\psi(z) = \\sin(z)$",
+        "$$\\psi(z) = \\sin(z)$$",
         "sin(z)"
     ));
     const zPlusOneOverZMinusOne = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.divide(math.add(math.complex(1, 0), z), math.add(math.complex(-1, 0), z)),
         new Interval(-4, 4),
         new Interval(-4, 4),
-        "$\\psi(z) = \\bigg(\\dfrac{z + 1}{z - 1} \\bigg)$",
+        "$$\\psi(z) = \\bigg(\\dfrac{z + 1}{z - 1} \\bigg)$$",
         "(z + 1) / (z - 1)"
     ));
     const zPlusOneOverZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.add(z, math.divide(math.complex(1, 0), math.add(z, math.complex(0.01, 0)))),
         new Interval(-3, 3),
         new Interval(-3, 3),
-        "$\\psi(z) = z + \\bigg(\\dfrac{1}{z}\\bigg)$",
+        "$$\\psi(z) = z + \\bigg(\\dfrac{1}{z}\\bigg)$$",
         "z + 1 / z"
     ));
     const ComplexFunctions = Object.freeze({
@@ -103,46 +123,52 @@
         ZPlusOneOverZMinusOne: zPlusOneOverZMinusOne.specification.textString,
         ZPlusOneOverZ: zPlusOneOverZ.specification.textString
     });
+
     class ControlsGui {
         constructor(plot, params) {
+            this._plot = plot;
             const gui = new GUI({width: 300, autoPlace: false});
             gui.add(params, 'function', Object.values(ComplexFunctions))
                 .name("F(z) = ")
                 .onChange(value => {
-                    surface.dispose();
                     switch (value) {
                         case zSquaredPlusTwo.specification.textString:
-                            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zSquaredPlusTwo));
+                            this.#updateSurface(zSquaredPlusTwo);
                             break;
                         case zAbsSquared.specification.textString:
-                            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zAbsSquared));
+                            this.#updateSurface(zAbsSquared);
                             break;
                         case zCubed.specification.textString:
-                            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed));
+                            this.#updateSurface(zCubed);
                             break;
                         case expZ.specification.textString:
-                            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(expZ));
+                            this.#updateSurface(expZ);
                             break;
                         case logZ.specification.textString:
-                            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(logZ));
+                            this.#updateSurface(logZ);
                             break;
                         case sqrtZ.specification.textString:
-                            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(sqrtZ));
+                            this.#updateSurface(sqrtZ);
                             break;
                         case sinZ.specification.textString:
-                            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(sinZ));
+                            this.#updateSurface(sinZ);
                             break;
                         case zPlusOneOverZMinusOne.specification.textString:
-                            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zPlusOneOverZMinusOne));
+                            this.#updateSurface(zPlusOneOverZMinusOne);
                             break;
                         case zPlusOneOverZ.specification.textString:
-                            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zPlusOneOverZ));
+                            this.#updateSurface(zPlusOneOverZ);
                             break;
                     }
-                    plot.updateAxes(surface.boundingBox());
                 });
 
-            const axesFolder = gui.addFolder("Axes");
+            this.#createAxesFolder(gui);
+            this.#updateSurface(zCubed);
+            document.getElementById("gui-container").appendChild(gui.domElement);
+        }
+
+        #createAxesFolder(parentFolder) {
+            const axesFolder = parentFolder.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'axes')
                 .name("Axes").onChange(value => plot.applyAxesParameters());
             axesFolder.add(params.axesParameters, 'gridPlanes')
@@ -150,14 +176,21 @@
             axesFolder.add(params.axesParameters, 'annotations')
                 .name("Annotations").onChange(value => plot.applyAxesParameters());
             axesFolder.close();
+        }
 
-            document.getElementById("gui-container").appendChild(gui.domElement);
+        #updateSurface(definition) {
+            surface.dispose();
+            surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(definition));
+            const equationDiv = document.getElementById("surface-equation");
+            equationDiv.innerHTML = definition.specification.latexString;
+            if (window.MathJax) MathJax.typesetPromise([equationDiv]);
+            this._plot.updateAxes(surface.boundingBox());
         }
     }
 
     const params = {
         axesParameters: new AxesParameters({axisLabels: ["Re(z)", "log|z|", "Im(z)"]}),
-        function: ComplexFunctions.ZSquaredPlusTwo,
+        function: ComplexFunctions.ZCubed
     };
 
     let surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed), {showWireframe: false});

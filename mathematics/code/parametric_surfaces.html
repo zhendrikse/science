@@ -98,7 +98,7 @@
                 .name("Category")
                 .onChange(value => ring.changeActiveCategoryTo(value));
 
-            //this.#createTangentSpaceFolder(controls);
+            this.#createTangentSpaceFolder(controls);
             this.#createAppearanceFolder(controls);
             this.#createMathFolder(controls);
             this.updateCurrentSurfaceWith(surface);
@@ -175,11 +175,6 @@
 
         #createAxesFolder(folder) {
             const axesFolder = folder.addFolder("Axes");
-            axesFolder.add({ tilt: params.tilt }, "tilt", -45, 45, 1)
-                .onChange(v => {
-                    this.plot.tiltY(v - params.tilt);
-                    params.tilt = v;
-                });
             axesFolder.add(params.axesParameters, 'axes')
                 .name("Axes").onChange(value => this.plot.applyAxesParameters());
             axesFolder.add(params.axesParameters, 'gridPlanes')
@@ -274,6 +269,11 @@
             this.xFunction.setValue(surfaceSpecification.parametrization.xFn);
             this.yFunction.setValue(surfaceSpecification.parametrization.yFn);
             this.zFunction.setValue(surfaceSpecification.parametrization.zFn);
+
+            tangentFrame.dispose();
+            params.surfaceParameters.tangentFrameParameters.scale = surfaceInAxes.boundingBox().max.length() * .4;
+            tangentFrame = new TangentFrameView(surfaceDefinition, params.surfaceParameters.tangentFrameParameters);
+            surfaceInAxes.group.add(tangentFrame);
         }
     }
 
@@ -376,20 +376,16 @@
     const surfaceData = SurfaceDefinitions[20];
     const params = {
         surfaceParameters: new ViewParameters(),
-        axesParameters: new AxesParameters({annotations: false}),
-        tilt: 15
+        axesParameters: new AxesParameters({annotations: false})
     };
-
     const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
     let surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), params.surfaceParameters);
 
-    // params.surfaceParameters.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
-    // let tangentFrame = new TangentFrameView(surfaceDefinition, visualizationParameters.tangentFrameParameters);
-    // newSurface.group.add(tangentFrame);
+    params.surfaceParameters.tangentFrameParameters.scale = surfaceInAxes.boundingBox().max.length() * .4;
+    let tangentFrame = new TangentFrameView(surfaceDefinition, params.surfaceParameters.tangentFrameParameters);
+    surfaceInAxes.group.add(tangentFrame);
 
     const plot3D = new Plot3DView(canvas, canvasContainer, surfacePlotScene, surfaceInAxes.boundingBox(), params.axesParameters);
-    plot3D.tiltY(params.tilt);
-
 
     // Ring
     const boundingBox = surfaceInAxes.boundingBox();
@@ -425,10 +421,11 @@
 
         const selectedMesh = hits[0].object;
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
-        surfaceInAxes.dispose();
 
+        surfaceInAxes.dispose();
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
         surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), params.surfaceParameters);
+
         plot3D.updateAxes(surfaceInAxes.boundingBox());
         ring.onSelectTo(selectedRingSurface);
         controlsGui.updateCurrentSurfaceWith(surfaceInAxes);

@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 import { Arrow, Interval, ComplexNumber }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-import { BufferGeometry, Mesh, Vector3 } from "three";
+import { BufferGeometry, Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Mesh } from "three";
 
 export const Category = Object.freeze({
     BASIC: "Basic",
@@ -1089,30 +1089,30 @@ export class TangentFrameParameters {
     }
 }
 
-export class TangentFrameView extends THREE.Group {
+export class TangentFrameView extends Group {
     constructor(surface, tangentFrameParameters) {
         super();
         this.diffGeometry = new DifferentialGeometry(surface);
         this.scaleFactor = tangentFrameParameters.scale;
 
         this.axes = { // Arrows in (u, v) directions + normal vector
-            uArrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0xff0000 }),
-            vArrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0x00ff00 }),
-            normalArrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0x00aaff })
+            uArrow: new Arrow(new Vector3(), new Vector3(), { color: 0xff0000 }),
+            vArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00ff00 }),
+            normalArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00aaff })
         }
         tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
 
         this.principals = { // Principal direction vectors
-            k1Arrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0xffaa00 }),
-            k2Arrow: new Arrow(new THREE.Vector3(), new THREE.Vector3(), { color: 0xaa00ff })
+            k1Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xffaa00 }),
+            k2Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xaa00ff })
         }
         tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
 
-        this.tangentPlane = new THREE.Mesh(
-            new THREE.PlaneGeometry(1, 1, 10, 10),
-            new THREE.MeshStandardMaterial({
+        this.tangentPlane = new Mesh(
+            new PlaneGeometry(1, 1, 10, 10),
+            new MeshStandardMaterial({
                 color: tangentFrameParameters.color,
-                side: THREE.DoubleSide,
+                side: DoubleSide,
                 transparent: true,
                 opacity: tangentFrameParameters.opacity,
                 wireframe: tangentFrameParameters.wireframe
@@ -1150,6 +1150,24 @@ export class TangentFrameView extends THREE.Group {
         this.tangentPlane.position.copy(frame.position);
         this.tangentPlane.lookAt(frame.position.clone().add(frame.normal));
         this.tangentPlane.scale.set(this.scaleFactor, this.scaleFactor, 1);
+    }
+
+    dispose() {
+        this.diffGeometry = null;
+
+        Object.values(this.axes).forEach(arrow => arrow.dispose());
+        Object.values(this.principals).forEach(arrow => arrow.dispose());
+        this.axes = null;
+        this.principals = null;
+
+        if (this.tangentPlane) {
+            if (this.tangentPlane.geometry) this.tangentPlane.geometry.dispose();
+            if (this.tangentPlane.material) this.tangentPlane.material.dispose();
+            this.remove(this.tangentPlane);
+            this.tangentPlane = null;
+        }
+
+        this.clear();
     }
 
     showAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = true);

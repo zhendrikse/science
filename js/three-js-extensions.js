@@ -1029,10 +1029,41 @@ export class Arrow extends Group {
 
     get axis() { return this._axis.clone(); }
 
-    disableTrail() {
+    disposeTrail() {
         if (!this._trail) return;
-        this.remove(this._trail.line);
+        if (this._trail.line) {
+            if (this._trail.line.geometry)
+                this._trail.line.geometry.dispose();
+            if (this._trail.line.material)
+                this._trail.line.material.dispose();
+            this.remove(this._trail.line);
+        }
         this._trail = null;
+    }
+
+    disableTrail() {
+        this.disposeTrail();
+    }
+
+    dispose() {
+        this.disposeTrail();
+
+        // DO NOT dispose shared geometries
+        if (this._shaft) {
+            if (this._shaft.material) {
+                this._shaft.material.dispose();
+            }
+            this.remove(this._shaft);
+            this._shaft = null;
+        }
+
+        if (this._head) { // head.material is the same object as share.material, so has already been disposed
+            this.remove(this._head);
+            this._head = null;
+        }
+
+        this.clear();
+        this._axis = null;
     }
 
     updateAxis(newAxis) {
