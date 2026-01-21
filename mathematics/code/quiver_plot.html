@@ -14,11 +14,10 @@
 <div class="guiContainer" id="gui-container"></div>
 
 <script type="module">
-    import * as THREE from "three";
-    import { Plot3DView, ArrowField, VectorField, Range }
+    import { Plot3DView, ArrowField, VectorField, Range, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import { Vector3, Scene, Color, Group, AmbientLight, DirectionalLight } from "three";
+    import { Vector3, Scene, Color, Group, AmbientLight, DirectionalLight, Box3 } from "three";
 
     const canvasContainer = document.getElementById("quiverContainer");
     const canvas = document.getElementById("quiverCanvas");
@@ -52,7 +51,7 @@
             const u = Math.sin(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.cos(Math.PI * position.z);
             const v = -Math.cos(Math.PI * position.x) * Math.sin(Math.PI * position.y) * Math.cos(Math.PI * position.z);
             const w = Math.sqrt(2.0 / 3.0) * Math.cos(Math.PI * position.x) * Math.cos(Math.PI * position.y) * Math.sin(Math.PI * position.z);
-            return new THREE.Vector3(u, v, w);
+            return new Vector3(u, v, w);
         }
     }
 
@@ -118,7 +117,6 @@
         }
     }
 
-
     const vectorField1 = new VectorField1();
     const vectorField2 = new VectorField2();
     const arrowField = new ArrowField(
@@ -128,7 +126,7 @@
     );
     worldGroup.add(arrowField);
 
-    const boundingBox = new THREE.Box3();
+    const boundingBox = new Box3();
     boundingBox.setFromObject( arrowField );
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
     plot3D.axes.shiftBy(new Vector3(0, -1, 0));

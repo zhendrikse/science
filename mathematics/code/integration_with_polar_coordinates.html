@@ -14,13 +14,14 @@
 <div class="guiContainer" id="gui-container"></div>
 
 <script type="module">
-    import * as THREE from "three";
-    import { Plot3D, Axes, MatlabAxesLayout, MatlabAnnotations, AxesParameters }
+    import { Plot3DView, AxesParameters, AxesView }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+    import { Vector3, Scene, MeshPhongMaterial, Group, BoxGeometry, MathUtils, Box3, Mesh } from "three";
 
-    const scene = new THREE.Scene();
-    const worldGroup = new THREE.Group();
+
+    const scene = new Scene();
+    const worldGroup = new Group();
     scene.add(worldGroup);
 
     const canvasContainer = document.getElementById("container");
@@ -36,7 +37,7 @@
     };
 
     class ControlsGui {
-        constructor(axesLayout, annotations) {
+        constructor(plot) {
             const gui = new GUI({width: 300, autoPlace: false});
 
             gui.add(params, "thetaMin", 0, 180, 1)
@@ -60,16 +61,12 @@
                 .onChange(value => { cells.forEach(cell => cell.material.opacity = parseFloat(value)); });
 
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axesLines')
-                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
-            axesFolder.add(params.axesParameters, 'axesLabels')
-                .name("Axes labels").onChange(value => annotations.visible = value);
-            axesFolder.add(params.axesParameters, 'xyPlane')
-                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
-            axesFolder.add(params.axesParameters, 'xzPlane')
-                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
-            axesFolder.add(params.axesParameters, 'yzPlane')
-                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.add(params.axesParameters, 'axes')
+                .name("Axes").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'gridPlanes')
+                .name("Layout").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'annotations')
+                .name("Annotations").onChange(value => plot.applyAxesParameters());
             axesFolder.close();
 
             document
@@ -77,21 +74,6 @@
                 .appendChild(gui.domElement);
         }
     }
-
-    // Axes
-    const axes = new Axes();
-    worldGroup.add(axes);
-    const axesLayout = new MatlabAxesLayout(2.2, 10);
-    const annotations = new MatlabAnnotations(canvasContainer, axesLayout);
-    axes.setLayout(axesLayout);
-    axes.setAnnotations(annotations);
-    annotations.visible = true;
-
-    const plot3D = new Plot3D(canvas, scene, axes);
-    const bbox = new THREE.Box3();
-    bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 1.0, translationY: -1.0});
-    const gui = new ControlsGui(axesLayout, annotations);
 
     const R = 1, da = 0.05;
     const f = (theta, phi) => theta * theta * (phi - Math.PI) * (phi - Math.PI);
@@ -102,36 +84,25 @@
         const val = f(theta, phi);
         values.push(val);
 
-        const mesh = new THREE.Mesh(
-            new THREE.BoxGeometry(da, da, da),
-            new THREE.MeshPhongMaterial({ transparent:true, opacity:params.opacity })
+        const mesh = new Mesh(
+            new BoxGeometry(da, da, da),
+            new MeshPhongMaterial({ transparent:true, opacity:params.opacity })
         );
-        const position = Axes.toCartesian(R, theta, phi);
-        mesh.position.copy(new THREE.Vector3(position.x, position.z + R, position.y));
+        const position = AxesView.toCartesian(R, theta, phi);
+        mesh.position.copy(new Vector3(position.x, position.z + R, position.y));
         mesh.userData = {theta:theta, phi:phi, val};
         scene.add(mesh);
         cells.push(mesh);
     }
 
-    for (let theta = 0; theta <= Math.PI; theta += da)
-        for (let phi = 0; phi <= 2 * Math.PI; phi += da)
-            createCell(theta, phi);
-
-
-    const minF = Math.min(...values), maxF = Math.max(...values);
-    cells.forEach(cell => {
-        const t = (cell.userData.val - minF) / (maxF - minF);
-        cell.material.color.setRGB(1 - t, t, 0);
-    });
-
     function updateVisibility() {
         cells.forEach(cell => {
             const t = cell.userData.theta, p = cell.userData.phi;
             cell.visible = (
-                t >= THREE.MathUtils.degToRad(params.thetaMin) &&
-                t <= THREE.MathUtils.degToRad(params.thetaMax) &&
-                p >= THREE.MathUtils.degToRad(params.phiMin) &&
-                p <= THREE.MathUtils.degToRad(params.phiMax)
+                t >= MathUtils.degToRad(params.thetaMin) &&
+                t <= MathUtils.degToRad(params.thetaMax) &&
+                p >= MathUtils.degToRad(params.phiMin) &&
+                p <= MathUtils.degToRad(params.phiMax)
             );
         });
     }
@@ -144,6 +115,25 @@
 
     const updateIntegral = () =>
         document.getElementById("integral-title").textContent = "Integral evaluates to: " + integrate().toFixed(2);
+
+    for (let theta = 0; theta <= Math.PI; theta += da)
+        for (let phi = 0; phi <= 2 * Math.PI; phi += da)
+            createCell(theta, phi);
+
+
+    const minF = Math.min(...values), maxF = Math.max(...values);
+    cells.forEach(cell => {
+        const t = (cell.userData.val - minF) / (maxF - minF);
+        cell.material.color.setRGB(1 - t, t, 0);
+    });
+
+
+    const boundingBox = new Box3();
+    boundingBox.setFromObject( worldGroup );
+    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
+    plot3D.axes.shiftBy(new Vector3(0, -1, 0));
+
+    const gui = new ControlsGui(plot3D);
 
     function animate() {
         requestAnimationFrame(animate);

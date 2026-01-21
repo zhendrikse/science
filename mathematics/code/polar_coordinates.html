@@ -13,7 +13,8 @@
 <div class="gui-container" id="gui-container"></div>
 
 <script type="module">
-    import * as THREE from "three";
+    import { Vector3, Line, Scene, Color, Group, BufferGeometry, LineBasicMaterial, SphereGeometry, Box3, Mesh,
+        MeshStandardMaterial, DoubleSide } from "three";
     import { Plot3DView, AxesParameters, AxesView }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
@@ -23,9 +24,9 @@
     const canvasContainer = document.getElementById("polarContainer");
     const canvas = document.getElementById("polarCanvas");
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x131313);
-    const worldGroup = new THREE.Group();
+    const scene = new Scene();
+    scene.background = new Color(0x131313);
+    const worldGroup = new Group();
     scene.add(worldGroup);
 
     const radius = 2;
@@ -36,15 +37,16 @@
         scale: 1.0,
         showAxes: true,
     });
+
     const params = {
         tangentFrameParameters: tangentFrameParameters,
         theta: 45,
         phi: 0,
-        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false, axisLabels: false})
+        axesParameters: new AxesParameters({gridPlanes: false, annotations: false, layoutType: AxesView.Type.CLASSICAL})
     };
 
     class ControlsGui {
-        constructor(axesLayout, annotations) {
+        constructor(plot) {
             const gui = new GUI({width: 300, autoPlace: false});
 
             gui.add(params, "theta", 0, 180, 1)
@@ -52,9 +54,9 @@
                 .onChange(value => {
                     tangentFrameParameters.u = value / 180;
                     tangentFrame.update(value / 180, tangentFrameParameters.v);
-                    const pos = new THREE.Vector3();
+                    const pos = new Vector3();
                     sphereSurface.sample(value / 180, tangentFrameParameters.v, pos);
-                    radialLine.geometry.setFromPoints([new THREE.Vector3(0, 0, 0), pos]);
+                    radialLine.geometry.setFromPoints([new Vector3(0, 0, 0), pos]);
                 });
 
             gui.add(params, "phi", 0, 350, 1)
@@ -62,23 +64,21 @@
                 .onChange(value => {
                     tangentFrameParameters.v = value / 360;
                     tangentFrame.update(tangentFrameParameters.u , value / 360);
-                    const pos = new THREE.Vector3();
+                    const pos = new Vector3();
                     sphereSurface.sample(tangentFrameParameters.u, value / 360, pos);
-                    radialLine.geometry.setFromPoints([new THREE.Vector3(0, 0, 0), pos]);
+                    radialLine.geometry.setFromPoints([new Vector3(0, 0, 0), pos]);
                 });
 
+
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axesLines')
-                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
-            axesFolder.add(params.axesParameters, 'axesLabels')
-                .name("Axes labels").onChange(value => annotations.visible = value);
-            axesFolder.add(params.axesParameters, 'xyPlane')
-                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
-            axesFolder.add(params.axesParameters, 'xzPlane')
-                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
-            axesFolder.add(params.axesParameters, 'yzPlane')
-                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.add(params.axesParameters, 'axes')
+                .name("Axes").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'gridPlanes')
+                .name("Layout").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'annotations')
+                .name("Annotations").onChange(value => plot.applyAxesParameters());
             axesFolder.close();
+
 
             document
                 .getElementById("gui-container")
@@ -105,28 +105,27 @@
     worldGroup.add(tangentFrame);
 
     // Radial line
-    const position = new THREE.Vector3();
+    const position = new Vector3();
     sphereSurface.sample(tangentFrameParameters.u, tangentFrameParameters.v, position);
-    const radialLine = new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), position]),
-        new THREE.LineBasicMaterial({ color: 0xffffff })
+    const radialLine = new Line(
+        new BufferGeometry().setFromPoints([new Vector3(0, 0, 0), position]),
+        new LineBasicMaterial({ color: 0xffffff })
     );
     worldGroup.add(radialLine);
 
 
     const resolution = 30;
-    const geometry = new THREE.SphereGeometry( radius, resolution, resolution );
-    const material = new THREE.MeshStandardMaterial( { side:THREE.DoubleSide, color: 0x00ffff, transparent: true, opacity: 0.1, wireframe: true } );
-    const sphere = new THREE.Mesh( geometry, material );
+    const geometry = new SphereGeometry( radius, resolution, resolution );
+    const material = new MeshStandardMaterial( { side:DoubleSide, color: 0x00ffff, transparent: true, opacity: 0.1, wireframe: true } );
+    const sphere = new Mesh( geometry, material );
     sphere.position.set(0, 0, 0);
     worldGroup.add( sphere );
 
-    const axesParameters = new AxesParameters();
-    const boundingBox = new THREE.Box3();
+    const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
-    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, axesParameters);
+    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
 
-    //const gui = new ControlsGui(axesLayout, annotations);
+    const gui = new ControlsGui(plot3D);
 
     function animate() {
         requestAnimationFrame(animate);

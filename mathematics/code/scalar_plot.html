@@ -13,17 +13,17 @@
 <div id="gui-container"></div>
 
 <script type="module">
-    import * as THREE from "three";
-    import { Range, Axes, AxesParameters, MatlabAnnotations, MatlabAxesLayout, Plot3D }
+    import { Range, AxesParameters, Plot3DView }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+    import { Vector3, Scene, Color, Group, SphereGeometry, Box3, MeshStandardMaterial, Mesh } from "three";
 
     const canvasContainer = document.getElementById("scalarContainer");
     const canvas = document.getElementById("scalarCanvas");
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x131313);
-    const worldGroup = new THREE.Group();
+    const scene = new Scene();
+    scene.background = new Color(0x131313);
+    const worldGroup = new Group();
     scene.add(worldGroup);
 
     const params = {
@@ -33,21 +33,18 @@
     };
 
     class ControlsGui {
-        constructor(axesLayout, annotations) {
+        constructor(plot) {
             const gui = new GUI({width: 300, autoPlace: false});
 
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axesLines')
-                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
-            axesFolder.add(params.axesParameters, 'axesLabels')
-                .name("Axes labels").onChange(value => annotations.visible = value);
-            axesFolder.add(params.axesParameters, 'xyPlane')
-                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
-            axesFolder.add(params.axesParameters, 'xzPlane')
-                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
-            axesFolder.add(params.axesParameters, 'yzPlane')
-                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.add(params.axesParameters, 'axes')
+                .name("Axes").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'gridPlanes')
+                .name("Layout").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'annotations')
+                .name("Annotations").onChange(value => plot.applyAxesParameters());
             axesFolder.close();
+
 
             gui.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => field.setOpacity(value));
             gui.add(params, "radius", 0, 1, .01).name("Radius").onFinishChange(value => field.setRadius(value));
@@ -60,13 +57,13 @@
         constructor(position, radius, opacity, value) {
             this.position = position;
             this.value = value;
-            const geometry = new THREE.SphereGeometry(radius, 12, 12);
-            const material = new THREE.MeshStandardMaterial({
+            const geometry = new SphereGeometry(radius, 12, 12);
+            const material = new MeshStandardMaterial({
                 color: 0xffffff,
                 transparent: true,
                 opacity: opacity
             });
-            this.sphere = new THREE.Mesh(geometry, material);
+            this.sphere = new Mesh(geometry, material);
             this.sphere.position.copy(position);
         }
 
@@ -74,7 +71,7 @@
         setOpacity(value) { this.sphere.material.opacity = value; }
         setRadius(radius) {
             this.sphere.geometry.dispose();
-            this.sphere.geometry = new THREE.SphereGeometry(radius, 12, 12);
+            this.sphere.geometry = new SphereGeometry(radius, 12, 12);
         }
     }
 
@@ -86,7 +83,7 @@
             for (const x of range)
                 for (const y of range)
                     for (const z of range) {
-                        const position = new THREE.Vector3(x, y, z);
+                        const position = new Vector3(x, y, z);
                         const value = func(position);
                         const scalar = new Scalar(position, range.stepSize *.25, this.opacity, value);
                         scalar.setColor(this._colorFor(value));
@@ -95,7 +92,7 @@
         }
 
         _colorFor = (value) =>
-            new THREE.Color(Math.min(1, value * 2), Math.min(1, 1 - value), Math.min(1, 1 - .5 * value));
+            new Color(Math.min(1, value * 2), Math.min(1, 1 - value), Math.min(1, 1 - .5 * value));
         setOpacity(v) { this.opacity = v; this.scalars.forEach(s => s.setOpacity(v)); }
         setRadius(r) { this.scalars.forEach(s => s.setRadius(r/4)); }
     }
@@ -103,23 +100,11 @@
     const field = new ScalarField(new Range(-3, 3, .4), pos => Math.exp(-0.3 * pos.lengthSq()));
     field.scalars.forEach(s => scene.add(s.sphere));
 
-    // Axes
-    const axes = new Axes();
-    worldGroup.add(axes);
-    const axesLayout = new MatlabAxesLayout(8, 10);
-    const annotations = new MatlabAnnotations(canvasContainer, axesLayout);
-    axes.setLayout(axesLayout);
-    axes.setAnnotations(annotations);
-    worldGroup.add(annotations);
-    annotations.visible = params.axesParameters.axesLabels;
-    axes.shiftBy(new THREE.Vector3(0, -4, 0));
+    const boundingBox = new Box3();
+    boundingBox.setFromObject( worldGroup );
+    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
 
-    const plot3D = new Plot3D(canvas, scene, axes);
-    const bbox = new THREE.Box3();
-    bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 1.0, translationY: -4});
-
-    const gui = new ControlsGui(axesLayout, annotations);
+    const gui = new ControlsGui(plot3D);
 
     let time = 0;
     const kappa = 0.3;
