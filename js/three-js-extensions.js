@@ -533,6 +533,12 @@ export class Plot3DView {
         const axes = new AxesView();
         axes.setLayout(layout);
         axes.setAnnotations(annotations);
+
+        axes.updateMatrixWorld(true);
+        const scaledBox = new Box3().setFromObject(axes);
+        const deltaY = boundingBox.min.y - scaledBox.min.y;
+        axes.position.y += deltaY;
+
         return axes;
     }
 
