@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 import { Arrow, Interval, ComplexNumber }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-import { BufferGeometry, Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Mesh } from "three";
+import { BufferGeometry, Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry } from "three";
 
 export const Category = Object.freeze({
     BASIC: "Basic",

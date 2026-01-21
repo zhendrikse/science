@@ -130,8 +130,7 @@
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
-    plot3D.axes.shiftBy(new Vector3(0, -R, 0));
-
+ 
     const gui = new ControlsGui(plot3D);
 
     function animate() {
