@@ -70,13 +70,18 @@
         animate: false,
         vectorField: VectorFields.FIELD_1,
         colorMode: ArrowField.ColorMode.MAGNITUDE,
-        axesParameters: new AxesParameters({annotations: false})
+        axesParameters: new AxesParameters({annotations: false}),
+        tilt: 15
     };
 
     class ControlsGui {
         constructor(plot) {
             const gui = new GUI({width: 300, autoPlace: false});
-
+            gui.add({ tilt: params.tilt }, "tilt", -45, 45, 1)
+                .onChange(v => {
+                    plot.tiltY(v - params.tilt);
+                    params.tilt = v;
+                });
             gui.add(params, 'vectorField', Object.values(VectorFields))
                 .name("Field type")
                 .onChange(value => this.#changeVectorFieldTo(value));
@@ -130,6 +135,7 @@
     boundingBox.setFromObject( arrowField );
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
     plot3D.axes.shiftBy(new Vector3(0, -1, 0));
+    plot3D.tiltY(params.tilt);
 
     const equationDiv = document.getElementById("vectorFieldTitle");
     equationDiv.innerHTML = vectorField1.meta;

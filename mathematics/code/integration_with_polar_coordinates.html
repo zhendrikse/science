@@ -33,12 +33,18 @@
         thetaMax: 180,
         phiMin: 0,
         phiMax: 360,
-        opacity: 0.35
+        opacity: 0.35,
+        tilt: 15
     };
 
     class ControlsGui {
         constructor(plot) {
             const gui = new GUI({width: 300, autoPlace: false});
+            gui.add({ tilt: params.tilt }, "tilt", -45, 45, 1)
+                .onChange(v => {
+                    plot.tiltY(v - params.tilt);
+                    params.tilt = v;
+                });
 
             gui.add(params, "thetaMin", 0, 180, 1)
                 .name("θ_min")
@@ -131,6 +137,7 @@
     boundingBox.setFromObject( worldGroup );
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
     plot3D.axes.shiftBy(new Vector3(0, -R, 0));
+    plot3D.tiltY(params.tilt);
 
     const gui = new ControlsGui(plot3D);
 
