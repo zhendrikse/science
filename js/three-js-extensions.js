@@ -518,7 +518,7 @@ export class Plot3DView {
 
     #createAxes(boundingBox) {
         const sizeVec = boundingBox.getSize(new Vector3());
-        const maxSize = Math.max(sizeVec.x, sizeVec.y, sizeVec.z);
+        const maxSize = 1.15 * Math.max(sizeVec.x, sizeVec.y, sizeVec.z);
 
         const layout = this._axesParameters.layoutType === AxesView.Type.MATLAB ?
             new MatlabAxesLayout(maxSize, this._axesParameters.divisions) :

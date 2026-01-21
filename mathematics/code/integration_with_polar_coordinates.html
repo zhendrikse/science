@@ -28,7 +28,7 @@
     const canvas = document.getElementById("integrationCanvas");
 
     const params = {
-        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false}),
+        axesParameters: new AxesParameters(),
         thetaMin: 0,
         thetaMax: 180,
         phiMin: 0,
@@ -89,9 +89,9 @@
             new MeshPhongMaterial({ transparent:true, opacity:params.opacity })
         );
         const position = AxesView.toCartesian(R, theta, phi);
-        mesh.position.copy(new Vector3(position.x, position.z + R, position.y));
+        mesh.position.copy(new Vector3(position.x, position.z, position.y));
         mesh.userData = {theta:theta, phi:phi, val};
-        scene.add(mesh);
+        worldGroup.add(mesh);
         cells.push(mesh);
     }
 
@@ -127,11 +127,10 @@
         cell.material.color.setRGB(1 - t, t, 0);
     });
 
-
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
-    plot3D.axes.shiftBy(new Vector3(0, -1, 0));
+    plot3D.axes.shiftBy(new Vector3(0, -R, 0));
 
     const gui = new ControlsGui(plot3D);
 

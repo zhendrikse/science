@@ -94,15 +94,16 @@
         _colorFor = (value) =>
             new Color(Math.min(1, value * 2), Math.min(1, 1 - value), Math.min(1, 1 - .5 * value));
         setOpacity(v) { this.opacity = v; this.scalars.forEach(s => s.setOpacity(v)); }
-        setRadius(r) { this.scalars.forEach(s => s.setRadius(r/4)); }
+        setRadius(r) { this.scalars.forEach(s => s.setRadius(r * .25)); }
     }
 
-    const field = new ScalarField(new Range(-3, 3, .4), pos => Math.exp(-0.3 * pos.lengthSq()));
-    field.scalars.forEach(s => scene.add(s.sphere));
+    const field = new ScalarField(new Range(-3, 3, .4), position => Math.exp(-0.3 * position.lengthSq()));
+    field.scalars.forEach(scalar => worldGroup.add(scalar.sphere));
 
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
+    plot3D.axes.shiftBy(new Vector3(0, -3, 0));
 
     const gui = new ControlsGui(plot3D);
 

@@ -32,7 +32,7 @@
     const radius = 2;
     const tangentFrameParameters = new TangentFrameParameters({
         u: 45 / 180,
-        v: 0 / 360,
+        v: 280 / 360,
         color: "#ff0",
         scale: 1.0,
         showAxes: true,
@@ -41,8 +41,8 @@
     const params = {
         tangentFrameParameters: tangentFrameParameters,
         theta: 45,
-        phi: 0,
-        axesParameters: new AxesParameters({gridPlanes: false, annotations: false, layoutType: AxesView.Type.CLASSICAL})
+        phi: 280,
+        axesParameters: new AxesParameters({gridPlanes: true, annotations: false, layoutType: AxesView.Type.CLASSICAL})
     };
 
     class ControlsGui {
@@ -72,11 +72,11 @@
 
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'axes')
-                .name("Axes").onChange(value => plot.applyAxesParameters());
+                .name("Axes").onChange(value => plot.axes.layout.axes.visible = value);
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => plot.applyAxesParameters());
+                .name("Layout").onChange(value => value ? plot.axes.layout.showXZ() : plot.axes.layout.hideXZ());
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => plot.applyAxesParameters());
+                .name("Annotations").onChange(value => plot.axes.annotations.visible = value);
             axesFolder.close();
 
 
@@ -124,6 +124,8 @@
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
+    plot3D.axes.layout.hideXY();
+    plot3D.axes.layout.hideYZ();
 
     const gui = new ControlsGui(plot3D);
 
