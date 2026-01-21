@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
-import { Spherical, Sphere, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3,
+import { Spherical, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3,
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry } from "three";
 
 export const ZeroVector = new Vector3();
@@ -469,7 +469,7 @@ export class Plot3DView {
     get axes() { return this._axes; }
 
     #frame(boundingBox) {
-        const sphere = boundingBox.getBoundingSphere(new Sphere());
+        const sphere = boundingBox.getBoundingSphere(new THREE.Sphere());
         this._target.copy(sphere.center);
 
         const fov = THREE.MathUtils.degToRad(this._camera.fov);
