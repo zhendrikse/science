@@ -13,7 +13,7 @@ $$
 
 * **The horizontal plane** represents the complex input $z = x + iy$
 
-* **Height** shows the magnitude as $\log |F(z)|$
+* **Height** shows the magnitude $\text{height} = \log\left( \|F(z)\|\right)$
 
 * **Color encodes the complex phase** (argument) of $F(z)$:<br/>
   🎨 colors rotate continuously as the phase winds around zero points
