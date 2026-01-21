@@ -4,7 +4,7 @@
         background-color: #131313;
         width: 100%;
         max-width: 800px;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 1 / 1;
         margin: auto;
     }
 
@@ -13,7 +13,7 @@
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 1 / 1;
     }
 
     .guiContainer {
@@ -39,11 +39,16 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Axes, AxesParameters, MatlabAnnotations, MatlabAxesLayout, Plot3D, Interval }
+    import { Spherical, Sphere, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3,
+        MathUtils, BufferGeometry, Mesh} from "three";
+    // import { Axes, AxesParameters, MatlabAnnotations, MatlabAxesLayout, Plot3D, Interval }
+    import { Interval, ThreeJsUtils }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import { SurfaceDefinition, ColorMapper, SurfaceView }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
+    import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
     const canvasContainer = document.getElementById("complexPlotContainer");
     const canvas = document.getElementById("complexPlotCanvas");
@@ -53,30 +58,398 @@
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
-    const params = {
-        axesParameters: new AxesParameters({axesLabels: false}),
-        opacity: 0.3,
-        radius: 0.1
-    };
+    export class AxesView extends THREE.Group {
+        static Type = Object.freeze({
+            CLASSICAL: "classical",
+            MATLAB: "MatLab"
+        });
 
-    class ControlsGui {
-        constructor(axesLayout, annotations) {
-            const gui = new GUI({width: 300, autoPlace: false});
+        constructor() {
+            super();
+            this._layout = null;
+            this._annotations = null;
+        }
 
-            const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axesLines')
-                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
-            axesFolder.add(params.axesParameters, 'axesLabels')
-                .name("Axes labels").onChange(value => annotations.visible = value);
-            axesFolder.add(params.axesParameters, 'xyPlane')
-                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
-            axesFolder.add(params.axesParameters, 'xzPlane')
-                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
-            axesFolder.add(params.axesParameters, 'yzPlane')
-                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
-            axesFolder.close();
+        #disposeLayout() {
+            if (this._layout) {
+                this._layout.traverse(object => {
+                    if (object.geometry) object.geometry.dispose();
+                    if (object.material) object.material.dispose();
+                });
+                this.remove(this._layout);
+                this._layout = null;
+            }
+        }
 
-            document.getElementById("gui-container").appendChild(gui.domElement);
+        #disposeAnnotations() {
+            if (this._annotations) {
+                this._annotations._labels.forEach(label => this._annotations.remove(label));
+                if (this._annotations._renderer?.domElement?.parentNode)
+                    this._annotations._renderer.domElement.parentNode.removeChild(this._annotations._renderer.domElement);
+                this._annotations = null;
+            }
+        }
+
+        dispose() {
+            this.#disposeLayout();
+            this.#disposeAnnotations();
+            this.clear();
+        }
+
+        static toCartesian(radius, theta, phi) {
+            return new THREE.Vector3(
+                radius * Math.sin(theta) * Math.cos(phi),
+                radius * Math.sin(theta) * Math.sin(phi),
+                radius * Math.cos(theta)
+            );
+        }
+
+        setLayout(layout) {
+            this._layout?.dispose?.();
+            this._layout = layout;
+            this.add(layout);
+        }
+
+        setAnnotations(annotations) {
+            this._annotations?.dispose?.();
+            this._annotations = annotations;
+            this.add(annotations);
+        }
+
+        get annotations() { return this._annotations; }
+        get layout() { return this._layout; }
+
+        render(scene, camera) {
+            this._annotations.render(scene, camera);
+        }
+
+        boundingBox() {
+            const axesBoundingBox = new THREE.Box3();
+            axesBoundingBox.setFromObject(this);
+            return axesBoundingBox;
+        }
+    }
+
+    export class AxesParameters {
+        constructor({
+                        layoutType = AxesView.Type.MATLAB,
+                        divisions = 10,
+                        axes = true,
+                        gridPlanes = true,
+                        annotations = true,
+                        xyPlane = true,
+                        xzPlane = true,
+                        yzPlane = true,
+                        axisLabels = ["X", "Y", "Z"]
+                    } = {}) {
+            this.layoutType = layoutType;
+            this.divisions = divisions;
+            this.axes = axes;
+            this.gridPlanes = gridPlanes;
+            this.annotations = annotations;
+            this.xyPlane = xyPlane;
+            this.xzPlane = xzPlane;
+            this.yzPlane = yzPlane;
+            this.axisLabels = axisLabels;
+        }
+    }
+
+    class AxesAnnotation extends THREE.Group {
+        constructor(container) {
+            super();
+            this._renderer = new CSS2DRenderer();
+            this._renderer.domElement.style.position = "absolute";
+            this._renderer.domElement.style.top = 0;
+            this._renderer.domElement.style.left = 0;
+            this._renderer.domElement.style.width = "100%";
+            this._renderer.domElement.style.height = "100%";
+            this._renderer.domElement.style.pointerEvents = "none"; // do not process mouse events
+            this._renderer.domElement.style.zIndex = "5"; // on top of canvas
+
+            this._labels = [];
+
+            container.appendChild(this._renderer.domElement);
+            this.#resize(container);
+        }
+
+        #resize(container) {
+            this._renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        createLabel(text, pos, color = "yellow", fontSize = "16px") {
+            const div = document.createElement("div");
+            div.textContent = text;
+            div.style.color = color;
+            div.style.fontSize = fontSize;
+
+            const label = new CSS2DObject(div);
+            label.position.copy(pos);
+            return label;
+        }
+
+        render(scene, camera) {
+            this._renderer.render(scene, camera);
+        }
+    }
+
+    class AxesLayout extends THREE.Group {
+        constructor(size, divisions) {
+            super();
+            this._size = size;
+            this._divisions = divisions;
+            this._axes = null; // to be created in concrete subclasses
+        }
+
+        createPlane(color, rotate, gridPos, planePos) {
+            const grid = new THREE.GridHelper(
+                this._size,
+                this._divisions,
+                0x333333,
+                0x333333
+            );
+
+            const plane = new THREE.Mesh(
+                new THREE.PlaneGeometry(this._size, this._size),
+                new THREE.MeshPhongMaterial({
+                    color,
+                    transparent: true,
+                    opacity: 0.1,
+                    depthWrite: false,
+                    side: THREE.DoubleSide
+                })
+            );
+
+            grid.position.copy(new THREE.Vector3(gridPos[0], gridPos[1], gridPos[2]).multiplyScalar(.5 * this._size));
+            plane.position.copy(new THREE.Vector3(planePos[0], planePos[1], planePos[2]).multiplyScalar(.5 * this._size));
+
+            rotate(grid);
+            rotate(plane);
+
+            return [grid, plane];
+        }
+
+        get divisions() { return this._divisions; }
+        get size() { return this._size; }
+        get axes() { return this._axes; }
+
+        showXY() { this.xyGrid.visible = true; this.xyPlane.visible = true; }
+        hideXY() { this.xyGrid.visible = false; this.xyPlane.visible = false; }
+        showXZ() { this.xzGrid.visible = true; this.xzPlane.visible = true; }
+        hideXZ() { this.xzGrid.visible = false; this.xzPlane.visible = false; }
+        showYZ() { this.yzGrid.visible = true; this.yzPlane.visible = true; }
+        hideYZ() { this.yzGrid.visible = false; this.yzPlane.visible = false; }
+        show() { this.showXY(); this.showXZ(); this.showYZ(); }
+        hide() { this.hideXY(); this.hideXZ(); this.hideYZ(); }
+    }
+
+    class ClassicalAxesLayout extends AxesLayout {
+        constructor(size, divisions) {
+            super(size, divisions);
+
+            const eps = 0.025;
+            this._axes = new THREE.AxesHelper(size * .5);
+            this._axes.position.set(eps, eps, eps);
+
+            const [xyGrid, xzPlane] = this.createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
+            const [xzGrid, yzPlane] = this.createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
+            const [yzGrid, xyPlane] = this.createPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
+            this.xyGrid = xyGrid;
+            this.xyPlane = xyPlane;
+            this.yzGrid = yzGrid;
+            this.yzPlane = yzPlane;
+            this.xzGrid = xzGrid;
+            this.xzPlane = xzPlane;
+            this.add(this._axes, this.xyGrid, this.xyPlane, this.xzGrid, this.xzPlane, this.yzPlane, this.yzGrid);
+        }
+    }
+
+    class MatlabAxesLayout extends AxesLayout {
+        constructor(size, divisions) {
+            super(size, divisions);
+
+            const eps = 0.025;
+            this._axes = new THREE.AxesHelper(size);
+            this._axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
+
+            const [xyGrid, xzPlane] = this.createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]);
+            const [xzGrid, yzPlane] = this.createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [-1, 1, 0]);
+            const [yzGrid, xyPlane] = this.createPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [-1, 1, 0], [0, 1, -1]);
+            this.xyGrid = xyGrid;
+            this.xyPlane = xyPlane;
+            this.yzGrid = yzGrid;
+            this.yzPlane = yzPlane;
+            this.xzGrid = xzGrid;
+            this.xzPlane = xzPlane;
+            this.add(this._axes, this.xyGrid, this.xyPlane, this.xzGrid, this.xzPlane, this.yzPlane, this.yzGrid);
+        }
+    }
+
+    class ClassicalAnnotations extends AxesAnnotation {
+        constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
+            super(container);
+
+            const size = axesLayout.size;
+            const step = size / axesLayout.divisions;
+            for (let v = -size * .5 ; v <= size * .5; v += step)
+                this._labels.push(
+                    this.createLabel(v.toFixed(1), new Vector3(v, 0, 0.525 * size)),
+                    this.createLabel(v.toFixed(1), new Vector3(0.525 * size, 0, v)));
+            for (let v = 0 ; v <= size * .5; v += step)
+                this._labels.push(this.createLabel(v.toFixed(1), new Vector3(0, v, 0)));
+
+            this._labels.push(
+                this.createLabel(axisLabels[0], new Vector3(0.575 * size, 0, 0), "red", "20px"),
+                this.createLabel(axisLabels[1], new Vector3(0, 0.575 * size, 0), "green", "20px"),
+                this.createLabel(axisLabels[2], new Vector3(0, 0, 0.575 * size), "blue", "20px"));
+
+            this._labels.forEach(label => this.add(label));
+        }
+    }
+
+    class MatlabAnnotations extends AxesAnnotation {
+        constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
+            super(container);
+
+            const size = axesLayout.size;
+            const step = (2 * size) / axesLayout.divisions;
+            for (let v = 0 ; v <= size; v += step)
+                this._labels.push(
+                    this.createLabel(v.toFixed(1), new Vector3(v - 0.5 * size, 0, 0.525 * size)),
+                    this.createLabel(v.toFixed(1), new Vector3(-0.525 * size, v, 0.5 * size)),
+                    this.createLabel(v.toFixed(1), new Vector3(0.525 * size, 0, v - 0.5 * size)));
+
+            this._labels.push(
+                this.createLabel(axisLabels[0], new Vector3(0.65 * size, 0, -0.5 * size), "red", "20px"),
+                this.createLabel(axisLabels[1], new Vector3(-0.5 * size, 1.1 * size, -0.5 * size), "green", "20px"),
+                this.createLabel(axisLabels[2], new Vector3(-0.5 * size, 0, 0.65 * size), "blue", "20px"));
+
+            this._labels.forEach(label => this.add(label));
+        }
+    }
+
+    export class Plot3DView {
+        constructor(canvas, canvasContainer, scene, axesBoundingBox, axesParameters) {
+            this._scene = scene;
+            this._canvas = canvas;
+            this._axesParameters = axesParameters;
+            this._canvasContainer = canvasContainer;
+            this._axes = this.#createAxes(axesBoundingBox);
+            this._scene.add(this.axes);
+            this._camera = new PerspectiveCamera(45, 1, 0.1, 100);
+            this._renderer = new WebGLRenderer({ antialias: true, canvas });
+            this._spherical = new Spherical();
+            this._target = new Vector3();
+
+            // Resizing for mobile devices
+            ThreeJsUtils.resizeRendererToCanvas(this._renderer, this._camera);
+            window.addEventListener("resize", () => this.#resize());
+
+            this._controls = new OrbitControls(this._camera, canvas);
+            this._controls.enableDamping = true;
+            this._controls.dampingFactor = 0.08;
+            //this.controls.screenSpacePanning = false;
+            //this.controls.maxPolarAngle = Math.PI * 0.95;
+
+            this.#setupLights();
+            this.#resize();
+            this.#frame(axesBoundingBox);
+        }
+
+        #resize() {
+            ThreeJsUtils.resizeRendererToCanvas(this._renderer, this._camera);
+            this.axes?._annotations._renderer.setSize(
+                this._canvasContainer.clientWidth,
+                this._canvasContainer.clientHeight
+            );
+        }
+
+        #setupLights() {
+            this._scene.add(
+                new HemisphereLight(0xffffff, 0xeeeeee, 0.6),
+                new DirectionalLight(0xffffff, 0.9)
+            );
+        }
+
+        #createAxes(boundingBox) {
+            const sizeVec = boundingBox.getSize(new Vector3());
+            const maxSize = Math.max(sizeVec.x, sizeVec.y, sizeVec.z);
+
+            const layout = this._axesParameters.layoutType === AxesView.Type.MATLAB ?
+                new MatlabAxesLayout(maxSize, this._axesParameters.divisions) :
+                new ClassicalAxesLayout(maxSize, this._axesParameters.divisions);
+
+            const annotations = (this._axesParameters.layoutType === AxesView.Type.MATLAB ) ?
+                new MatlabAnnotations(this._canvasContainer, layout, this._axesParameters.axisLabels) :
+                new ClassicalAnnotations(this._canvasContainer, layout, this._axesParameters.axisLabels);
+
+            const axes = new AxesView();
+            axes.setLayout(layout);
+            axes.setAnnotations(annotations);
+
+            axes.layout.axes.visible = this._axesParameters.axes;
+            axes.annotations.visible = this._axesParameters.annotations;
+            this._axesParameters.gridPlanes ? axes.layout.show() : axes.layout.hide();
+            return axes;
+        }
+
+        get axes() { return this._axes; }
+
+        #frame(boundingBox) {
+            const sphere = boundingBox.getBoundingSphere(new Sphere());
+            this._target.copy(sphere.center);
+
+            const fov = THREE.MathUtils.degToRad(this._camera.fov);
+            const distance = sphere.radius / Math.sin(fov / 2);
+
+            const direction = new Vector3(1, 1, 1).normalize();
+
+            this._spherical.setFromVector3(
+                direction.clone().multiplyScalar(distance)
+            );
+
+            this._spherical.radius *= 1.15; // padding
+
+            this.#applyCamera();
+        }
+
+        #applyCamera() {
+            const offset = new Vector3().setFromSpherical(this._spherical);
+
+            this._camera.position
+                .copy(this._target)
+                .add(offset);
+
+            this._camera.near = this._spherical.radius * 0.02;
+            this._camera.far  = this._spherical.radius * 10;
+            this._camera.updateProjectionMatrix();
+
+            this._controls.target.copy(this._target);
+            this._controls.update();
+        }
+
+        updateAxes(newBoundingBox) {
+            this._axes.dispose();
+            this._scene.remove(this._axes);
+            this._axes = this.#createAxes(newBoundingBox);
+            this.#frame(this._axes.boundingBox());
+        }
+
+        tiltY(deltaDegrees) {
+            const delta = MathUtils.degToRad(deltaDegrees);
+
+            this._spherical.phi = MathUtils.clamp(
+                this._spherical.phi + delta,
+                0.1,                 // prevent over the pole rotation
+                Math.PI - 0.1
+            );
+
+            this.#applyCamera();
+        }
+
+        render() {
+            this._controls.update();
+            this._renderer.render(this._scene, this._camera);
+            this._axes.render(this._scene, this._camera);
         }
     }
 
@@ -191,7 +564,7 @@
             this.geometry = surface.createGeometryWith(resolution);
             this.material = this.material(showWireframe, 1);
             this.colorMapper = new ComplexColorMapper();
-            this.mesh = new THREE.Mesh(this.geometry, this.material);
+            this.mesh = new Mesh(this.geometry, this.material);
             this.group.add(this.mesh);
             this.colorMapper.apply(this.geometry);
         }
@@ -199,7 +572,7 @@
         selectableObject = () => this.mesh;
     }
 
-    export class ComplexParametricGeometry extends THREE.BufferGeometry {
+    export class ComplexParametricGeometry extends BufferGeometry {
         constructor(definition, slices, stacks) {
             super();
 
@@ -213,7 +586,7 @@
                 for (let j = 0; j <= stacks; j++) {
                     const v = j / stacks;
 
-                    const target = new THREE.Vector3();
+                    const target = new Vector3();
                     const phase = definition.sample(u, v, target);
                     vertices.push(target.x, target.y, target.z);
                     moduli.push(target.y);
@@ -244,24 +617,27 @@
     export class ComplexSurfaceDefinition extends SurfaceDefinition {
         constructor(specification) {
             super();
-            this.specification = specification;
+            this._specification = specification;
         }
 
         sample(u, v, target) {
-            const re = this.specification.reInterval.scaleUnitParameter(u);
-            const im = this.specification.imInterval.scaleUnitParameter(v);
+            const re = this._specification.reInterval.scaleUnitParameter(u);
+            const im = this._specification.imInterval.scaleUnitParameter(v);
             const z = new ComplexNumber(re, im);
-            const value = this.specification.func(z);
+            const value = this._specification.func(z);
             target.set(re, value.abs(), im);
             return value.phase();
         }
+
+        get specification() { return this._specification; }
     }
 
     export class ComplexSurfaceSpecification {
-        constructor(func, reInterval, imInterval) {
+        constructor(func, reInterval, imInterval, asString) {
             this.func = func;
             this.reInterval = reInterval;
             this.imInterval = imInterval;
+            this.asString = asString;
         }
     }
 
@@ -284,50 +660,74 @@
         definition() { return this._definition; }
     }
 
-    // Axes
-    const axes = new Axes();
-    worldGroup.add(axes);
-    const axesLayout = new MatlabAxesLayout(4.5, 10);
-    const annotations = new MatlabAnnotations(canvasContainer, axesLayout, ["Re(z)", "|z|", "Im(z)"]);
-    axes.setLayout(axesLayout);
-    axes.setAnnotations(annotations);
-    worldGroup.add(annotations);
-    annotations.visible = params.axesParameters.axesLabels;
-    //axes.shiftBy(new THREE.Vector3(0, -4, 0));
 
-    const plot3D = new Plot3D(canvas, scene, axes);
-    const bbox = new THREE.Box3();
-    bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 1.1, translationY: -4});
-
-    const gui = new ControlsGui(axesLayout, annotations);
     const math = new MathWrapper();
-
-    const zSquaredPlusOne = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
+    const zSquaredPlusTwo = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.multiply(math.add(math.multiply(z, z), math.complex(2, 0)), math.complex(.5, 0)),
         new Interval(-2, 2),
-        new Interval(-2, 2)
+        new Interval(-2, 2),
+        "$\\psi(z) = \\big(z^2 + 2\\big)$"
     ));
     const zAbsSquared = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.multiply(math.multiply(z, new ComplexNumber(z.re, -z.im)), math.complex(0.5, 0)),
         new Interval(-2, 2),
-        new Interval(-2, 2)
+        new Interval(-2, 2),
+        "$\\psi(z) = z\\bar{z}$"
     ));
     const zCubed = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.multiply(math.add(math.multiply(z, math.multiply(z, z)), new ComplexNumber(2, 0)), math.complex(0.2, 0)),
         new Interval(-2, 2),
-        new Interval(-2, 2)
+        new Interval(-2, 2),
+        "$\\psi(z) = \\big(z^3 + 2\\big)$"
     ));
     const zPlusOneOverZMinusOne = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
         (z) => math.multiply(new ComplexNumber(0.4, 0), math.divide(math.add(math.complex(1, 0), z), math.add(math.complex(-1, 0), z))),
         new Interval(-4, 4),
-        new Interval(-4, 4)
+        new Interval(-4, 4),
+        "$\\psi(z) = z + \\bigg(\\dfrac{1}{z}\\bigg)$"
     ));
-    const selectorSurface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed), {showWireframe: false});
+    const ComplexFunctions = Object.freeze({
+        ZSquaredPlusTwo: zSquaredPlusTwo.specification.asString,
+        ZAbsSquared: zAbsSquared.specification.asString
+    });
+    class ControlsGui {
+        constructor(plot, params) {
+            const gui = new GUI({width: 300, autoPlace: false});
+            gui.add(params, 'function', Object.values(ComplexFunctions))
+                .name("Function")
+                .onChange(value => plot.updateAxes(value));
+            gui.add({ tilt: params.tilt }, "tilt", -45, 45, 1)
+                .onChange(v => {
+                    plot.tiltY(v - params.tilt);
+                    params.tilt = v;
+                });
+
+            const axesFolder = gui.addFolder("Axes");
+            axesFolder.add(params.axesParameters, 'axes')
+                .name("Axes").onChange(value => plot.axes.layout.axes.visible = value);
+            axesFolder.add(params.axesParameters, 'gridPlanes')
+                .name("Layout").onChange(value => value ? plot.axes.layout.show() : plot.axes.layout.hide());
+            axesFolder.add(params.axesParameters, 'annotations')
+                .name("Annotations").onChange(value => plot.axes.annotations.visible = value);
+            axesFolder.close();
+
+            document.getElementById("gui-container").appendChild(gui.domElement);
+        }
+    }
+
+    const params = {
+        axesParameters: new AxesParameters({axisLabels: ["Re(z)", "|z|", "Im(z)"]}),
+        function: ComplexFunctions.ZSquaredPlusTwo,
+        tilt: 20
+    };
+
+    let surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed), {showWireframe: false});
+    const plot3D = new Plot3DView(canvas, canvasContainer, scene, surface.boundingBox(), params.axesParameters);
+    plot3D.tiltY(params.tilt);
+    const gui = new ControlsGui(plot3D, params);
 
     function animate() {
         requestAnimationFrame(animate);
-
         plot3D.render();
     }
     animate();

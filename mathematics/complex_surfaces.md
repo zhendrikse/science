@@ -20,6 +20,6 @@ For $ F(z)=\dfrac{1}{2}(z^2+2) $:
 
 <p style="clear: both;"></p>
 
-The images are generated with [complex_surfaces.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/complex_surfaces.html).
+🛠️ The images are generated with [complex_surfaces.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/complex_surfaces.html).
 
 {% include share_buttons.html %}
