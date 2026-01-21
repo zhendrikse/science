@@ -184,6 +184,31 @@ export class MathWrapper {
         return new ComplexNumber(factor, factor * (z.im / Math.abs(z.im)));
     }
 }
+
+export class AxesParameters {
+    constructor({
+                    layoutType = AxesView.Type.MATLAB,
+                    divisions = 10,
+                    axes = true,
+                    gridPlanes = true,
+                    annotations = true,
+                    xyPlane = true,
+                    xzPlane = true,
+                    yzPlane = true,
+                    axisLabels = ["X", "Y", "Z"]
+                } = {}) {
+        this.layoutType = layoutType;
+        this.divisions = divisions;
+        this.axes = axes;
+        this.gridPlanes = gridPlanes;
+        this.annotations = annotations;
+        this.xyPlane = xyPlane;
+        this.xzPlane = xzPlane;
+        this.yzPlane = yzPlane;
+        this.axisLabels = axisLabels;
+    }
+}
+
 export class AxesView extends Group {
     static Type = Object.freeze({
         CLASSICAL: "classical",
