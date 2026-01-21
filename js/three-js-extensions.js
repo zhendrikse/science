@@ -128,6 +128,62 @@ export class Interval {
     scaleUnitParameter = (unitParameter) => this.range() * (unitParameter + this.from / this.range());
 }
 
+export class ComplexNumber {
+    constructor(re, im) {
+        this._re = re
+        this._im = im
+    }
+
+    get re() { return this._re; }
+    get im() { return this._im; }
+
+    phase = () => Math.atan2(this.im, this.re);
+    abs = () => Math.sqrt(this.re * this.re + this.im * this.im);
+}
+
+export class MathWrapper {
+    constructor() {
+        this.complex = this._complex;
+        this.add = this._add;
+        this.subtract = this._subtract;
+        this.multiply = this._multiply;
+        this.divide = this._divide;
+        this.sqrt = this._sqrt;
+        this.log = this._log;
+        this.exp = this._exp;
+        this.sin = this._sin;
+        this.cos = this._cos;
+    }
+
+    _complex = (re, im) => new ComplexNumber(re, im);
+    _add = (z1, z2) => new ComplexNumber(z1.re + z2.re, z1.im + z2.im);
+    _subtract = (z1, z2) => new ComplexNumber(z1.re - z2.re, z1.im - z2.im);
+    _log = (z) => new ComplexNumber(Math.log(z.abs()), Math.atan2(z.im, z.re));
+    _exp = (z) => new ComplexNumber(Math.exp(z.re) * Math.cos(z.im), Math.exp(z.re) * Math.sin(z.im))
+    _sin = (z) => {
+        const i_z = this.multiply(z, new ComplexNumber(0, 1));
+        const min_i_z = this.multiply(z, new ComplexNumber(0, -1));
+        return this.multiply(new ComplexNumber(0, -.5), this.exp(this.subtract(i_z, min_i_z)));
+    }
+    _cos = (z) => {
+        const i_z = this.multiply(z, new ComplexNumber(0, 1));
+        const min_i_z = this.multiply(z, new ComplexNumber(0, -1));
+        return this.multiply(new ComplexNumber(.5, 0), this.exp(this.add(i_z, min_i_z)));
+    }
+    _multiply = (z1, z2) => new ComplexNumber(z1.re * z2.re - z1.im * z2.im, z1.im * z2.re + z1.re * z2.im);
+
+    _divide = (z1, z2) => {
+        const denominator = z2.re * z2.re + z2.im * z2.im;
+        const re = z1.re * z2.re + z1.im * z2.im;
+        const im = z1.im * z2.re - z1.re * z2.im;
+        return new ComplexNumber(re / denominator, im / denominator);
+    }
+    _sqrt = (z) => {
+        const factor = Math.sqrt((z.abs() + z.re) / 2);
+        return new ComplexNumber(factor, factor * (z.im / Math.abs(z.im)));
+    }
+}
+
 export class AxesView extends THREE.Group {
     static Type = Object.freeze({
         CLASSICAL: "classical",

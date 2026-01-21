@@ -15,7 +15,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3D, Axes, AxesParameters, ArrowField, VectorField, Range, MatlabAxesLayout, MatlabAnnotations }
+    import { Plot3DView, AxesParameters, ArrowField, VectorField, Range }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
@@ -41,7 +41,7 @@
         animate: false,
         vectorField: VectorFields.FIELD_1,
         colorMode: ArrowField.ColorMode.MAGNITUDE,
-        axesParameters: new AxesParameters({axesLabels: false})
+        axesParameters: new AxesParameters({axisLabels: false})
     };
 
     class ControlsGui {
@@ -128,27 +128,15 @@
     );
     worldGroup.add(arrowField);
 
-    const axes = new Axes();
-    worldGroup.add(axes);
-    const axesLayout = new MatlabAxesLayout(2.1, 10);
-    const annotations = new MatlabAnnotations(canvasContainer, axesLayout);
-    axes.setLayout(axesLayout);
-    axes.setAnnotations(annotations);
-    worldGroup.add(annotations);
-    annotations.visible = false;
-    axes.shiftBy(new THREE.Vector3(0, -1, 0));
-
-    const plot3D = new Plot3D(canvas, scene, axes);
-    const bbox = new THREE.Box3();
-    bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 1.0, translationY: -1});
-
+    const boundingBox = new THREE.Box3();
+    boundingBox.setFromObject( arrowField );
+    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
 
     const equationDiv = document.getElementById("vectorFieldTitle");
     equationDiv.innerHTML = vectorField1.meta;
     if (window.MathJax) MathJax.typesetPromise([equationDiv]);
 
-    const gui = new ControlsGui(axesLayout, annotations);
+    //const gui = new ControlsGui(axesLayout, annotations);
 
     function animate() {
         requestAnimationFrame(animate);

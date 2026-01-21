@@ -14,7 +14,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3DView, AxesParameters }
+    import { Plot3DView, AxesParameters, AxesView }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import { SurfaceDefinition, TangentFrameView, TangentFrameParameters}
@@ -40,7 +40,7 @@
         tangentFrameParameters: tangentFrameParameters,
         theta: 45,
         phi: 0,
-        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false, axesLabels: false})
+        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false, axisLabels: false})
     };
 
     class ControlsGui {
@@ -95,7 +95,7 @@
         sample(u, v, target) {
             const theta = u * Math.PI;        // u in [0,1] → theta in [0, π]
             const phi   = -v * 2 * Math.PI;   // v in [0,1] → phi   in [0, 2π]
-            const xyz = Axes.toCartesian(this.radius, theta, phi);
+            const xyz = AxesView.toCartesian(this.radius, theta, phi);
             target.set(xyz.x, xyz.z, xyz.y);
         }
     }
@@ -113,8 +113,6 @@
     );
     worldGroup.add(radialLine);
 
-    const axesParameters = new AxesParameters();
-    const plot3D = new Plot3DView(canvas, canvasContainer, scene, sphereSurface.boundingBox(), axesParameters);
 
     const resolution = 30;
     const geometry = new THREE.SphereGeometry( radius, resolution, resolution );
@@ -122,6 +120,11 @@
     const sphere = new THREE.Mesh( geometry, material );
     sphere.position.set(0, 0, 0);
     worldGroup.add( sphere );
+
+    const axesParameters = new AxesParameters();
+    const boundingBox = new THREE.Box3();
+    boundingBox.setFromObject( worldGroup );
+    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, axesParameters);
 
     //const gui = new ControlsGui(axesLayout, annotations);
 
