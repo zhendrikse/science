@@ -15,20 +15,21 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3DView, AxesParameters, ArrowField, VectorField, Range }
+    import { Plot3DView, ArrowField, VectorField, Range }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+    import { Vector3, Scene, Color, Group, AmbientLight, DirectionalLight } from "three";
 
     const canvasContainer = document.getElementById("quiverContainer");
     const canvas = document.getElementById("quiverCanvas");
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x131313);
-    const worldGroup = new THREE.Group();
+    const scene = new Scene();
+    scene.background = new Color(0x131313);
+    const worldGroup = new Group();
     scene.add(worldGroup);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-    const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+    scene.add(new AmbientLight(0xffffff, 0.6));
+    const dir = new DirectionalLight(0xffffff, 0.8);
     dir.position.set(3, 5, 4);
     scene.add(dir);
 
@@ -37,59 +38,6 @@
         FIELD_2: "Vector field 2"
     });
 
-    const params = {
-        animate: false,
-        vectorField: VectorFields.FIELD_1,
-        colorMode: ArrowField.ColorMode.MAGNITUDE,
-        axesParameters: new AxesParameters({axisLabels: false})
-    };
-
-    class ControlsGui {
-        constructor(axesLayout, annotations) {
-            const gui = new GUI({width: 300, autoPlace: false});
-
-            gui.add(params, 'vectorField', Object.values(VectorFields))
-                .name("Field type")
-                .onChange(value => this.#changeVectorFieldTo(value));
-            gui.add(params, "animate").name("Animate");
-            gui.add(params, "colorMode", Object.values(ArrowField.ColorMode))
-                .name("Color by")
-                .onChange(mode => arrowField.changeColorModeTo(mode));
-            gui.add({reset: () =>  arrowField.reset()}, "reset")
-                .name("Reset field");
-
-            const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axesLines')
-                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
-            axesFolder.add(params.axesParameters, 'axesLabels')
-                .name("Axes labels").onChange(value => annotations.visible = value);
-            axesFolder.add(params.axesParameters, 'xyPlane')
-                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
-            axesFolder.add(params.axesParameters, 'xzPlane')
-                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
-            axesFolder.add(params.axesParameters, 'yzPlane')
-                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
-            axesFolder.close();
-
-            document
-                .getElementById("gui-container")
-                .appendChild(gui.domElement);
-        }
-
-        #changeVectorFieldTo(vectorField) {
-            switch (vectorField) {
-                case VectorFields.FIELD_1:
-                    equationDiv.innerHTML = vectorField1.meta;
-                    arrowField.updateFieldWith(vectorField1);
-                    break;
-                case VectorFields.FIELD_2:
-                    equationDiv.innerHTML = vectorField2.meta;
-                    arrowField.updateFieldWith(vectorField2);
-                    break;
-            }
-            if (window.MathJax) MathJax.typesetPromise([equationDiv]);
-        }
-    }
 
     class VectorField1 extends VectorField {
         constructor() {
@@ -119,6 +67,58 @@
         }
     }
 
+    const params = {
+        animate: false,
+        vectorField: VectorFields.FIELD_1,
+        colorMode: ArrowField.ColorMode.MAGNITUDE,
+        axesParameters: new AxesParameters({axisLabels: false})
+    };
+
+    class ControlsGui {
+        constructor(plot) {
+            const gui = new GUI({width: 300, autoPlace: false});
+
+            gui.add(params, 'vectorField', Object.values(VectorFields))
+                .name("Field type")
+                .onChange(value => this.#changeVectorFieldTo(value));
+            gui.add(params, "animate").name("Animate");
+            gui.add(params, "colorMode", Object.values(ArrowField.ColorMode))
+                .name("Color by")
+                .onChange(mode => arrowField.changeColorModeTo(mode));
+            gui.add({reset: () =>  arrowField.reset()}, "reset")
+                .name("Reset field");
+
+
+            const axesFolder = gui.addFolder("Axes");
+            axesFolder.add(params.axesParameters, 'axes')
+                .name("Axes").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'gridPlanes')
+                .name("Layout").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'annotations')
+                .name("Annotations").onChange(value => plot.applyAxesParameters());
+            axesFolder.close();
+
+            document
+                .getElementById("gui-container")
+                .appendChild(gui.domElement);
+        }
+
+        #changeVectorFieldTo(vectorField) {
+            switch (vectorField) {
+                case VectorFields.FIELD_1:
+                    equationDiv.innerHTML = vectorField1.meta;
+                    arrowField.updateFieldWith(vectorField1);
+                    break;
+                case VectorFields.FIELD_2:
+                    equationDiv.innerHTML = vectorField2.meta;
+                    arrowField.updateFieldWith(vectorField2);
+                    break;
+            }
+            if (window.MathJax) MathJax.typesetPromise([equationDiv]);
+        }
+    }
+
+
     const vectorField1 = new VectorField1();
     const vectorField2 = new VectorField2();
     const arrowField = new ArrowField(
@@ -131,12 +131,13 @@
     const boundingBox = new THREE.Box3();
     boundingBox.setFromObject( arrowField );
     const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
+    plot3D.axes.shiftBy(new Vector3(0, -1, 0));
 
     const equationDiv = document.getElementById("vectorFieldTitle");
     equationDiv.innerHTML = vectorField1.meta;
     if (window.MathJax) MathJax.typesetPromise([equationDiv]);
 
-    //const gui = new ControlsGui(axesLayout, annotations);
+    const gui = new ControlsGui(plot3D);
 
     function animate() {
         requestAnimationFrame(animate);

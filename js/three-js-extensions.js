@@ -249,6 +249,11 @@ export class AxesView extends THREE.Group {
         this._annotations.render(scene, camera);
     }
 
+    shiftBy(translationVector) {
+        if (this._annotations) this._annotations.shiftBy(translationVector);
+        if (this._layout) this._layout.shiftBy(translationVector);
+    }
+
     boundingBox() {
         const axesBoundingBox = new THREE.Box3();
         axesBoundingBox.setFromObject(this);
@@ -316,6 +321,10 @@ class AxesAnnotation extends THREE.Group {
     render(scene, camera) {
         this._renderer.render(scene, camera);
     }
+
+    shiftBy(translationVector) {
+        this._labels.forEach((label) => label.position.add(translationVector));
+    }
 }
 
 class AxesLayout extends THREE.Group {
@@ -357,6 +366,16 @@ class AxesLayout extends THREE.Group {
     get divisions() { return this._divisions; }
     get size() { return this._size; }
     get axes() { return this._axes; }
+
+    shiftBy(translationVector) {
+        this.xyGrid.position.add(translationVector);
+        this.xyPlane.position.add(translationVector);
+        this.yzGrid.position.add(translationVector);
+        this.yzPlane.position.add(translationVector);
+        this.xzGrid.position.add(translationVector);
+        this.xzPlane.position.add(translationVector);
+        this._axes.position.add(translationVector);
+    }
 
     showXY() { this.xyGrid.visible = true; this.xyPlane.visible = true; }
     hideXY() { this.xyGrid.visible = false; this.xyPlane.visible = false; }
