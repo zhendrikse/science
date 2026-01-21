@@ -8,13 +8,7 @@
 🎨 **Colors turn around zero points**<br/>
 ✂️ **Branch cuts** are visible as abrupt change of colors<br/>
 ⛰️ Height explodes where ||F(z)|| is big<br/>
-🔴↔🔵 continuous phase cycli
-
-For $ F(z)=\dfrac{1}{2}(z^2+2) $:
-
-* Zero points at $ z = \pm i\sqrt{2} $
-* Phase-singularities exact on those points
-  → visually correct? This is a check that everything is mathematically sound.
+📊 Continuous phase cycli 🔴↔🔵
 
 {% include_relative code/complex_surfaces.html %}
 
