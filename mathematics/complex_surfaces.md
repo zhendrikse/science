@@ -6,13 +6,14 @@
 ### What are you looking at?
 
 You are looking at a **3D visualization of a complex-valued function**
+
 $$
 \psi(z) = F(z), \quad z \in \mathbb{C}.
 $$
 
 * **The horizontal plane** represents the complex input $z = x + iy$
 
-* **Height** shows the magnitude $\text{height} = \log |F(z)|$
+* **Height** shows the magnitude as $\log |F(z)|$
 
 * **Color encodes the complex phase** (argument) of $F(z)$:<br/>
   🎨 colors rotate continuously as the phase winds around zero points
@@ -21,7 +22,7 @@ $$
 
 * 🔴↔🔵 **Full color cycles** indicate a complete $2\pi$ phase rotation
 
-Together, height and color reveal how the function **stretches, twists, and folds** the complex plane.
+Height &amp; color reveal how the function **stretches, twists, and folds** the complex plane.
 
 {% include_relative code/complex_surfaces.html %}
 
