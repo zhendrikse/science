@@ -1,3 +1,27 @@
+<style>
+.applicationCanvas {
+display: block;
+background-color: #131313;
+width: 100%;
+max-width: 800px;
+aspect-ratio: 1 / 1;
+margin: auto;
+}
+
+.canvasWrapper {
+position: relative;
+width: 100%;
+max-width: 800px;
+margin: 0 auto;
+aspect-ratio: 1 / 1;
+}
+
+.guiContainer {
+margin-top: 0.5em;
+background: #1a1a1a;
+}
+
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -13,17 +37,17 @@
 <div class="guiContainer" id="gui-container"></div>
 
 <script type="module">
-    import * as THREE from "three";
-    import { Arrow, Plot3D, Axes, AxesParameters, ClassicalAxesLayout, ClassicalAnnotations }
+    import {Box3, Scene, Color, Group, Vector3} from "three";
+    import { AxesView, Arrow, Plot3DView, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
     const canvasContainer = document.getElementById("planeWaveContainer");
     const canvas = document.getElementById("planeWaveCanvas");
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x131313);
-    const worldGroup = new THREE.Group();
+    const scene = new Scene();
+    scene.background = new Color(0x131313);
+    const worldGroup = new Group();
     scene.add(worldGroup);
 
 
@@ -31,10 +55,16 @@
         amplitude: 3,
         omega: 2,
         waveNumber: 0.4,
-        axesParameters: new AxesParameters({xyPlane: false, yzPlane: false, axesLabels: false})
+        axesParameters: new AxesParameters({
+            layoutType: AxesView.Type.CLASSICAL,
+            xyPlane: false,
+            yzPlane: false,
+            divisions: 5,
+            axisLabels: ["X", "Im(Ψ)", "Re(Ψ)"],
+            annotations: false})
     };
     class ControlsGui {
-        constructor(axesLayout, annotations, planeWave) {
+        constructor(plot, planeWave) {
             const gui = new GUI({width: 300, autoPlace: false});
             gui.add(params, "amplitude", 1, 6, 0.1)
                 .name("Amplitude")
@@ -47,16 +77,12 @@
                 .onChange(value => planeWave.set_k_to(value * Math.PI));
 
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axesLines')
-                .name("Axes").onChange(value => value ? axesLayout.showAxes() : axesLayout.hideAxes());
-            axesFolder.add(params.axesParameters, 'axesLabels')
-                .name("Axes labels").onChange(value => annotations.visible = value);
-            axesFolder.add(params.axesParameters, 'xyPlane')
-                .name("XY plane").onChange(value => value ? axesLayout.showXY() : axesLayout.hideXY());
-            axesFolder.add(params.axesParameters, 'xzPlane')
-                .name("XZ plane").onChange(value => value ? axesLayout.showXZ() : axesLayout.hideXZ());
-            axesFolder.add(params.axesParameters, 'yzPlane')
-                .name("YZ plane").onChange(value => value ? axesLayout.showYZ() : axesLayout.hideYZ());
+            axesFolder.add(params.axesParameters, 'axes')
+                .name("Axes").onChange(value => plot.axes.layout.axes.visible = value);
+            axesFolder.add(params.axesParameters, 'gridPlanes')
+                .name("Layout").onChange(value => value ? plot.axes.layout.showXZ() : plot.axes.layout.hideXZ());
+            axesFolder.add(params.axesParameters, 'annotations')
+                .name("Annotations").onChange(value => plot.axes.annotations.visible = value);
             axesFolder.close();
 
             document
@@ -65,24 +91,13 @@
         }
     }
 
-    const axes = new Axes();
-    worldGroup.add(axes);
-    const axesLayout = new ClassicalAxesLayout(20, 10);
-    axesLayout.hideXY();
-    axesLayout.hideYZ();
-    axes.setLayout(axesLayout);
-    const annotations = new ClassicalAnnotations(canvasContainer, axesLayout, ["X", "Im(Ψ)", "Re(Ψ)"]);
-    axes.setAnnotations(annotations);
-    worldGroup.add(annotations);
-    annotations.visible = false;
-
-    class PlaneWave extends THREE.Group {
+    class PlaneWave extends Group {
         constructor(k=2 * Math.PI / 5, omega=2 * Math.PI, amplitude=3) {
             super();
             this._arrows = [];
             for (let x = -10; x < 10; x += 0.3)
                 this._arrows.push(
-                    new Arrow(new THREE.Vector3(x, 0, 0), new THREE.Vector3(0, amplitude, 0),
+                    new Arrow(new Vector3(x, 0, 0), new Vector3(0, amplitude, 0),
                         {color: 0xff0000, shaftWidth: 0.03, headLength: 6}));
             this._amplitude = amplitude;
             this._k = k;
@@ -108,8 +123,8 @@
 
                 const y = -Math.sin(phase) * this._amplitude;
                 const z = -Math.cos(phase) * this._amplitude;
-                arrow.updateAxis(new THREE.Vector3(arrow.axis.x, y, z));
-                arrow.updateColor(new THREE.Color().setHSL(1.0 - cphase / (2 * Math.PI), 1.0, 0.5));
+                arrow.updateAxis(new Vector3(arrow.axis.x, y, z));
+                arrow.updateColor(new Color().setHSL(1.0 - cphase / (2 * Math.PI), 1.0, 0.5));
             });
         }
     }
@@ -117,12 +132,14 @@
     const planeWave = new PlaneWave();
     worldGroup.add(planeWave);
 
-    const plot3D = new Plot3D(canvas, scene, axes);
-    const gui = new ControlsGui(axesLayout, annotations, planeWave);
+    const boundingBox = new Box3();
+    boundingBox.setFromObject( worldGroup );
+    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
+    plot3D.axes.layout.hideXY();
+    plot3D.axes.layout.hideYZ();
+    plot3D.axes.shiftBy(new Vector3(0, -10, 0));
 
-    const bbox = new THREE.Box3();
-    bbox.setFromObject( worldGroup );
-    plot3D.fitToBoundingBox(bbox, {padding: 0.7, translationY: -5});
+    const gui = new ControlsGui(plot3D, planeWave);
 
     let time = 0;
     const dt = 0.01;
