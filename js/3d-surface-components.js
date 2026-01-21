@@ -130,6 +130,158 @@ export class SurfaceView {
     show() { this.group.visible = true; }
 }
 
+export class ComplexColorMapper extends ColorMapper {
+    apply(geometry) {
+        const phaseAttr   = geometry.attributes.phase;
+        const modulusAttr = geometry.attributes.modulus;
+
+        if (!phaseAttr || !modulusAttr)
+            throw new Error("Geometry needs phase and modulus attributes");
+
+        const count = phaseAttr.count;
+
+        let colorAttr = geometry.attributes.color;
+        if (!colorAttr) {
+            colorAttr = new THREE.BufferAttribute(
+                new Float32Array(count * 3), 3
+            );
+            geometry.setAttribute("color", colorAttr);
+        }
+
+        // --- determine modulus range ---
+        let mMin = Infinity, mMax = -Infinity;
+        for (let i = 0; i < count; i++) {
+            const m = modulusAttr.getX(i);
+            if (m < mMin) mMin = m;
+            if (m > mMax) mMax = m;
+        }
+
+        const color = new THREE.Color();
+
+        for (let i = 0; i < count; i++) {
+            const phase = phaseAttr.getX(i);
+            const m     = modulusAttr.getX(i);
+
+            // --- phase → hue ---
+            const hue = ((phase + Math.PI) / (2 * Math.PI) + 1) % 1;
+
+            // --- modulus → brightness ---
+            const t = (m - mMin) / (mMax - mMin);
+            color.setHSL(hue, 1.0, 0.25 + 0.5 * t);
+
+            colorAttr.array[3*i]     = color.r;
+            colorAttr.array[3*i + 1] = color.g;
+            colorAttr.array[3*i + 2] = color.b;
+        }
+
+        colorAttr.needsUpdate = true;
+    }
+}
+
+export class ComplexSurfaceView extends SurfaceView {
+    constructor(parentGroup, surface, {showWireframe=false, resolution=100, baseColor="#4f6"} = {}) {
+        super(parentGroup, surface);
+        this.baseColor = baseColor;
+        this.geometry = surface.createGeometryWith(resolution);
+        this.material = this.material(showWireframe, 1);
+        this.colorMapper = new ComplexColorMapper();
+        this.mesh = new Mesh(this.geometry, this.material);
+        this.group.add(this.mesh);
+        this.colorMapper.apply(this.geometry);
+    }
+
+    selectableObject = () => this.mesh;
+}
+
+export class ComplexParametricGeometry extends BufferGeometry {
+    constructor(definition, slices, stacks) {
+        super();
+
+        const vertices = [];
+        const phases   = [];
+        const indices  = [];
+        const moduli   = [];
+        for (let i = 0; i <= slices; i++) {
+            const u = i / slices;
+
+            for (let j = 0; j <= stacks; j++) {
+                const v = j / stacks;
+
+                const target = new Vector3();
+                const phase = definition.sample(u, v, target);
+                vertices.push(target.x, target.y, target.z);
+                moduli.push(target.y);
+                phases.push(phase);
+            }
+        }
+
+        for (let i = 0; i < slices; i++)
+            for (let j = 0; j < stacks; j++) {
+                const a = i * (stacks + 1) + j;
+                const b = a + stacks + 1;
+                const c = b + 1;
+                const d = a + 1;
+
+                indices.push(a, b, d);
+                indices.push(b, c, d);
+            }
+
+        this.setIndex(indices);
+        this.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+        this.setAttribute("phase", new THREE.Float32BufferAttribute(phases, 1));
+        this.setAttribute("modulus", new THREE.Float32BufferAttribute(moduli, 1));
+
+        this.computeVertexNormals();
+    }
+}
+
+export class ComplexSurfaceDefinition extends SurfaceDefinition {
+    constructor(specification) {
+        super();
+        this._specification = specification;
+    }
+
+    sample(u, v, target) {
+        const re = this._specification.reInterval.scaleUnitParameter(u);
+        const im = this._specification.imInterval.scaleUnitParameter(v);
+        const z = new ComplexNumber(re, im);
+        const value = this._specification.func(z);
+        target.set(re, Math.log1p(value.abs()), im); // Log scale for complex functions
+        return value.phase();
+    }
+
+    get specification() { return this._specification; }
+}
+
+export class ComplexSurfaceSpecification {
+    constructor(func, reInterval, imInterval, latexString, textString) {
+        this.func = func;
+        this.reInterval = reInterval;
+        this.imInterval = imInterval;
+        this.latexString = latexString;
+        this.textString = textString;
+    }
+}
+
+/**
+ * Using this class, a ComplexSurfaceView can be realized.
+ */
+export class ComplexSurface {
+    constructor(surfaceDefinition) {
+        this._definition = surfaceDefinition;
+    }
+
+    createGeometryWith(resolution) {
+        return new ComplexParametricGeometry(
+            this._definition,
+            resolution,
+            resolution
+        );
+    }
+
+    definition() { return this._definition; }
+}
+
 export class ContourParameters {
     constructor({
         color = "#dd0",
@@ -239,23 +391,6 @@ export class CurvatureContoursView extends SurfaceView {
     }
 }
 
-export class PrincipalFrame {
-    constructor({
-                    position,
-                    normal,
-                    k1, k2,
-                    d1, d2
-                }) {
-        this.position = position; // Vector3
-        this.normal   = normal;   // Vector3
-        this.k1 = k1;
-        this.k2 = k2;
-        this.d1 = d1;             // tangent direction
-        this.d2 = d2;
-        Object.freeze(this);
-    }
-}
-
 /**
  * matrix = representation of the shape operator S in the basis
  * of the derivative vectors (Xu, Xv).
@@ -273,6 +408,23 @@ export class ShapeOperator {
         this.matrix = matrix;
         this.basis  = basis;
         this.normal = normal;
+        Object.freeze(this);
+    }
+}
+
+export class PrincipalFrame {
+    constructor({
+                    position,
+                    normal,
+                    k1, k2,
+                    d1, d2
+                }) {
+        this.position = position; // Vector3
+        this.normal   = normal;   // Vector3
+        this.k1 = k1;
+        this.k2 = k2;
+        this.d1 = d1;             // tangent direction
+        this.d2 = d2;
         Object.freeze(this);
     }
 }
