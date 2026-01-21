@@ -20,7 +20,7 @@ figcaption {
     background-color: #131313;
     width: 100%;
     max-width: 800px;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
     margin: auto;
 }
 
@@ -29,7 +29,7 @@ figcaption {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
 }
 
 .guiContainer {
