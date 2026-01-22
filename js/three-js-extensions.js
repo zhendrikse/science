@@ -277,14 +277,19 @@ export class Axes extends Group {
             new ClassicalAxesLayout(this._size, this._divisions);
         this.add(this._layout);
 
-        if (type === Axes.Type.MATLAB) {
-            this.updateMatrixWorld(true);
-            const scaledBox = new Box3().setFromObject(this);
-            const deltaY = boundingBox.min.y - scaledBox.min.y;
-            this.position.y += deltaY;
-        }
-
         return this;
+    }
+
+    frameTo(boundingBox) {
+        this.updateMatrixWorld(true);
+        const scaledBox = new Box3().setFromObject(this);
+        // let size = new Vector3();
+        // boundingBox.getSize(size);
+        // let center = new Vector3();
+        // boundingBox.getCenter(center);
+        // this.position.copy(center);
+        const deltaY = boundingBox.min.y - scaledBox.min.y;
+        this.position.y += deltaY;
     }
 
     withAnnotations(container, type, axisLabels=["X", "Y", "Z"]) {

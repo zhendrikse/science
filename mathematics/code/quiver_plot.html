@@ -133,9 +133,8 @@
         .withLayout(layoutType)
         .withAnnotations(canvasContainer, layoutType, axisLabels)
         .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
+    axes.frameTo(boundingBox);
     axes.onWindowResize();
-    axes.layout.xy.visible = false;
-    axes.layout.yz.visible = false;
     worldGroup.add(axes);
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
@@ -157,6 +156,7 @@
     function animate() {
         requestAnimationFrame(animate);
         plot3D.render();
+        axes.render(scene, plot3D.camera);
         if (!params.animate) return;
         arrowField.euler();
     }
