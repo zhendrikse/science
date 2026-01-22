@@ -47,10 +47,16 @@
             gui.add(params, "radius", 0, 1, .01).name("Radius").onFinishChange(value => field.setRadius(value));
 
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'frame')
+            const dummyToggle = {gridPlanes: true};
+            axesFolder.add(axesParams, 'frame')
                 .name("Frame").onChange(value => axesController.updateSettings());
-            axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => axesController.updateSettings());
+            axesFolder.add(dummyToggle, 'gridPlanes')
+                .name("Layout").onChange(value => {
+                axesParams.xyPlane = value;
+                axesParams.xzPlane = value;
+                axesParams.yzPlane = value;
+                axesController.updateSettings();
+            });
             axesFolder.add(params.axesParameters, 'annotations')
                 .name("Annotations").onChange(value => axesController.updateSettings());
             axesFolder.close();

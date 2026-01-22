@@ -190,7 +190,6 @@ export class AxesParameters {
                     layoutType = Axes.Type.MATLAB,
                     divisions = 10,
                     frame = true,
-                    gridPlanes = true,
                     annotations = true,
                     xyPlane = true,
                     xzPlane = true,
@@ -200,7 +199,6 @@ export class AxesParameters {
         this.layoutType = layoutType;
         this.divisions = divisions;
         this.frame = frame;
-        this.gridPlanes = gridPlanes;
         this.annotations = annotations;
         this.xyPlane = xyPlane;
         this.xzPlane = xzPlane;
@@ -265,15 +263,12 @@ export class Axes extends Group {
 
     withSettings({
                      frame=true,
-                     gridPlanes=true,
                      annotations=true,
                      xyPlane=true,
                      xzPlane=true,
                      yzPlane=true } = {}) {
         this._layout.frame.visible = frame;
         this._annotations.visible = annotations;
-        console.log(gridPlanes);
-        gridPlanes ? this._layout.showPlanes() : this._layout.hidePlanes();
         this._layout.xy.visible = xyPlane;
         this._layout.xz.visible = xzPlane;
         this._layout.yz.visible = yzPlane;
@@ -425,9 +420,6 @@ class AxesLayout extends Group {
         this._xz.position.add(translationVector);
         this._yz.position.add(translationVector);
     }
-
-    showPlanes() { this._xy.visible = true; this._xz.visible = true; this._yz.visible = true; }
-    hidePlanes() { this._xy.visible = false; this._xz.visible = false; this._yz.visible = false; }
 }
 
 class ClassicalAxesLayout extends AxesLayout {
@@ -526,13 +518,13 @@ export class AxesController {
         }
 
         const { layoutType, divisions, axisLabels } = this._axesParameters;
-        const { frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
+        const { frame, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
 
         this._axes = Axes.from(boundingBox, divisions)
             .withLayout(layoutType)
             .withAnnotations(this._canvasContainer, layoutType, axisLabels)
             .withSettings(
-                { frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane });
+                { frame, annotations, xyPlane, xzPlane, yzPlane });
 
         if (layoutType === Axes.Type.MATLAB) // center the MatLab axes around the object to be displayed
             this._axes.frameTo(boundingBox);
@@ -543,9 +535,9 @@ export class AxesController {
     updateSettings() {
         if (!this._axes) return;
 
-        const { frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
+        const { frame, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
         this._axes.withSettings(
-            { frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane });
+            { frame, annotations, xyPlane, xzPlane, yzPlane });
     }
 
     render = (camera) => this._axes?.render(this._scene, camera);
