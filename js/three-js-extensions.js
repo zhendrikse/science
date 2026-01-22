@@ -292,12 +292,13 @@ export class Axes extends Group {
     frameTo(boundingBox) {
         this.updateMatrixWorld(true);
         const scaledBox = new Box3().setFromObject(this);
-        // let size = new Vector3();
-        // boundingBox.getSize(size);
         let center = new Vector3();
         boundingBox.getCenter(center);
+        // this.position.copy(center);
         const deltaY = boundingBox.min.y - scaledBox.min.y;
-        this.position.set(center.x, this.position.y + deltaY, center.z);
+        this.position.y += deltaY;
+        this.position.x = center.x;
+        this.position.z = center.z;
     }
 
     withAnnotations(container, type, axisLabels=["X", "Y", "Z"]) {

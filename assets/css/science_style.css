@@ -21,7 +21,7 @@ figcaption {
     width: 100%;
     max-width: 800px;
     aspect-ratio: 1 / 1;
-    margin: auto;
+    margin: 0;
 }
 
 .canvasWrapper {
