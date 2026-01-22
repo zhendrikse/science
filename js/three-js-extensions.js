@@ -209,7 +209,7 @@ export class AxesParameters {
     }
 }
 
-class Axes extends Group {
+export class Axes extends Group {
     static Type = Object.freeze({
         CLASSICAL: "classical",
         MATLAB: "MatLab"

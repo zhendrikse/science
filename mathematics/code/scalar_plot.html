@@ -13,7 +13,7 @@
 <div id="gui-container"></div>
 
 <script type="module">
-    import { Range, AxesParameters, ThreeJsUtils, Axes, Plot3DView }
+    import { Range, AxesParameters, ThreeJsUtils, AxesController, Plot3DView }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import {  Scene, Color, Group, SphereGeometry, MeshStandardMaterial, Vector3, Mesh, Box3 } from "three";
@@ -32,30 +32,28 @@
         radius: 0.1
     };
 
-    class ControlsGui {
-        constructor(axes) {
-            const gui = new GUI({width: 300, autoPlace: false});
+    const axesController = new AxesController({
+        parentGroup: worldGroup,
+        canvasContainer,
+        axesParameters: params.axesParameters,
+        scene
+    });
 
-            const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'frame')
-                .name("Axes").onChange(value => {
-                const { gridPlanes, annotations } = params.axesParameters;
-                axes.withSettings({frame: value, gridPlanes: gridPlanes, annotations: annotations});
-            });
-            axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => {
-                const { frame, annotations } = params.axesParameters;
-                axes.withSettings({frame: frame, gridPlanes: value, annotations: annotations});
-            });
-            axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => {
-                const { frame, gridPlanes } = params.axesParameters;
-                axes.withSettings({frame: frame, gridPlanes: gridPlanes, annotations: value})
-            });
-            axesFolder.close();
+    class ControlsGui {
+        constructor() {
+            const gui = new GUI({width: 300, autoPlace: false});
 
             gui.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => field.setOpacity(value));
             gui.add(params, "radius", 0, 1, .01).name("Radius").onFinishChange(value => field.setRadius(value));
+
+            const axesFolder = gui.addFolder("Axes");
+            axesFolder.add(params.axesParameters, 'frame')
+                .name("Frame").onChange(value => axesController.updateSettings());
+            axesFolder.add(params.axesParameters, 'gridPlanes')
+                .name("Layout").onChange(value => axesController.updateSettings());
+            axesFolder.add(params.axesParameters, 'annotations')
+                .name("Annotations").onChange(value => axesController.updateSettings());
+            axesFolder.close();
 
             document.getElementById("gui-container").appendChild(gui.domElement);
         }
@@ -250,27 +248,18 @@
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
 
-    const {layoutType, divisions, axisLabels} = params.axesParameters;
-    const { frame, gridPlanes, annotations } = params.axesParameters;
-
-    const axes = Axes.from(boundingBox, divisions)
-        .withLayout(layoutType)
-        .withAnnotations(canvasContainer, layoutType, axisLabels)
-        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
-    axes.frameTo(boundingBox);
-    axes.onWindowResize();
-    worldGroup.add(axes);
+    axesController.createFromBoundingBox(boundingBox);
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
-    const gui = new ControlsGui(axes);
+    const gui = new ControlsGui();
 
     // Resizing for mobile devices
     function resize() {
         ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
-        axes.onWindowResize();
+        axesController.resize();
     }
-    window.addEventListener("resize", () => resize());
+    window.addEventListener("resize", resize);
     resize();
 
     let time = 0;
@@ -286,7 +275,7 @@
             scalar.setColor(field._colorFor(T));
         });
 
-        axes.render(scene, plot3D.camera);
+        axesController.render(plot3D.camera);
         plot3D.render();
     }
     animate();
