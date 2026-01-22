@@ -64,7 +64,7 @@
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'frame')
                 .name("Frame").onChange(value => axesController.updateSettings());
-            axesFolder.add(params.axesParameters, 'gridPlanes')
+            axesFolder.add(params.axesParameters, 'xzPlane')
                 .name("Layout").onChange(value => axesController.updateSettings());
             axesFolder.add(params.axesParameters, 'annotations')
                 .name("Annotations").onChange(value => axesController.updateSettings());
