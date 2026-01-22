@@ -168,13 +168,13 @@
         #createAxesFolder(parentFolder) {
             const axesFolder = parentFolder.addFolder("Axes");
             const dummyToggle = {gridPlanes: true};
-            axesFolder.add(axesParams, 'frame')
+            axesFolder.add(params.axesParameters, 'frame')
                 .name("Frame").onChange(value => axesController.updateSettings());
             axesFolder.add(dummyToggle, 'gridPlanes')
                 .name("Layout").onChange(value => {
-                axesParams.xyPlane = value;
-                axesParams.xzPlane = value;
-                axesParams.yzPlane = value;
+                params.axesParameters.xyPlane = value;
+                params.axesParameters.xzPlane = value;
+                params.axesParameters.yzPlane = value;
                 axesController.updateSettings();
             });
             axesFolder.add(params.axesParameters, 'annotations')
