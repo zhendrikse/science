@@ -27,11 +27,6 @@
     const worldGroup = new Group();
     scene.add(worldGroup);
 
-    scene.add(new AmbientLight(0xffffff, 0.6));
-    const dir = new DirectionalLight(0xffffff, 0.8);
-    dir.position.set(3, 5, 4);
-    scene.add(dir);
-
     const VectorFields = Object.freeze({
         FIELD_1: "Vector field 1",
         FIELD_2: "Vector field 2"
@@ -89,11 +84,20 @@
 
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'frame')
-                .name("Axes").onChange(value => axes.withSettings({frame: value}));
+                .name("Axes").onChange(value => {
+                const { gridPlanes, annotations } = params.axesParameters;
+                axes.withSettings({frame: value, gridPlanes: gridPlanes, annotations: annotations});
+            });
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => axes.withSettings({gridPlanes: value}));
+                .name("Layout").onChange(value => {
+                const { frame, annotations } = params.axesParameters;
+                    axes.withSettings({frame: frame, gridPlanes: value, annotations: annotations});
+            });
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => axes.withSettings({annotations: value}));
+                .name("Annotations").onChange(value => {
+                const { frame, gridPlanes } = params.axesParameters;
+                axes.withSettings({frame: frame, gridPlanes: gridPlanes, annotations: value})
+            });
             axesFolder.close();
 
             document.getElementById("gui-container").appendChild(gui.domElement);
@@ -138,7 +142,7 @@
     worldGroup.add(axes);
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
-    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .5));
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
     const gui = new ControlsGui(axes);
 
     // Resizing for mobile devices

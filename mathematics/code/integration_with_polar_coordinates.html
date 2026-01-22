@@ -14,11 +14,10 @@
 <div class="guiContainer" id="gui-container"></div>
 
 <script type="module">
-    import { Plot3DView, AxesParameters, AxesView }
+    import { Plot3DView, AxesParameters, Axes, ThreeJsUtils }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import { Vector3, Scene, MeshPhongMaterial, Group, BoxGeometry, MathUtils, Box3, Mesh } from "three";
-
 
     const scene = new Scene();
     const worldGroup = new Group();
@@ -37,7 +36,7 @@
     };
 
     class ControlsGui {
-        constructor(plot) {
+        constructor(axes) {
             const gui = new GUI({width: 300, autoPlace: false});
 
             gui.add(params, "thetaMin", 0, 180, 1)
@@ -61,12 +60,21 @@
                 .onChange(value => { cells.forEach(cell => cell.material.opacity = parseFloat(value)); });
 
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axes')
-                .name("Axes").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'frame')
+                .name("Axes").onChange(value => {
+                const { gridPlanes, annotations } = params.axesParameters;
+                axes.withSettings({frame: value, gridPlanes: gridPlanes, annotations: annotations});
+            });
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => plot.applyAxesParameters());
+                .name("Layout").onChange(value => {
+                const { frame, annotations } = params.axesParameters;
+                axes.withSettings({frame: frame, gridPlanes: value, annotations: annotations});
+            });
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => plot.applyAxesParameters());
+                .name("Annotations").onChange(value => {
+                const { frame, gridPlanes } = params.axesParameters;
+                axes.withSettings({frame: frame, gridPlanes: gridPlanes, annotations: value})
+            });
             axesFolder.close();
 
             document
@@ -88,7 +96,7 @@
             new BoxGeometry(da, da, da),
             new MeshPhongMaterial({ transparent:true, opacity:params.opacity })
         );
-        const position = AxesView.toCartesian(R, theta, phi);
+        const position = Axes.toCartesian(R, theta, phi);
         mesh.position.copy(new Vector3(position.x, position.z, position.y));
         mesh.userData = {theta:theta, phi:phi, val};
         worldGroup.add(mesh);
@@ -129,13 +137,26 @@
 
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
-    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
- 
-    const gui = new ControlsGui(plot3D);
+
+    const {layoutType, divisions, axisLabels} = params.axesParameters;
+    const { frame, gridPlanes, annotations } = params.axesParameters;
+
+    const axes = Axes.from(boundingBox, divisions)
+        .withLayout(layoutType)
+        .withAnnotations(canvasContainer, layoutType, axisLabels)
+        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
+    axes.frameTo(boundingBox);
+    axes.onWindowResize();
+    worldGroup.add(axes);
+
+    const plot3D = new Plot3DView(scene, canvas, boundingBox);
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
+    const gui = new ControlsGui(axes);
 
     function animate() {
         requestAnimationFrame(animate);
         plot3D.render();
+        axes.render(scene, plot3D.camera);
     }
 
     updateVisibility();
