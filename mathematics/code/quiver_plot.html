@@ -37,7 +37,6 @@
         FIELD_2: "Vector field 2"
     });
 
-
     class VectorField1 extends VectorField {
         constructor() {
             super();
@@ -142,6 +141,14 @@
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .5));
     const gui = new ControlsGui(axes);
+
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+        axes.onWindowResize();
+    }
+    window.addEventListener("resize", () => resize());
+    resize();
 
     const equationDiv = document.getElementById("vectorFieldTitle");
     equationDiv.innerHTML = vectorField1.meta;

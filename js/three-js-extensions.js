@@ -279,7 +279,7 @@ export class Axes extends Group {
 
         if (type === Axes.Type.MATLAB) {
             this.updateMatrixWorld(true);
-            const scaledBox = new Box3().setFromObject(axes);
+            const scaledBox = new Box3().setFromObject(this);
             const deltaY = boundingBox.min.y - scaledBox.min.y;
             this.position.y += deltaY;
         }
