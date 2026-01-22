@@ -298,9 +298,9 @@ export class ContourParameters {
 }
 
 export class CurvatureColorMapper extends ColorMapper {
-    constructor(surface) {
+    constructor(surfaceDefinition) {
         super();
-        this.curvature = new DifferentialGeometry(surface);
+        this.curvature = new DifferentialGeometry(surfaceDefinition);
     }
 
     #setColorFromCurvature(u, v, color) {
@@ -347,7 +347,7 @@ export class CurvatureContoursView extends SurfaceView {
               } = {}) {
         this.clear();
 
-        const curvature = new DifferentialGeometry(this.surface);
+        const curvature = new DifferentialGeometry(this.surface.definition());
         const points = [];
         for (let i = 0; i <= uCount; i++)
             for (let j = 0; j <= vCount; j++) {
@@ -439,7 +439,7 @@ export class DifferentialGeometry {
     derivatives(u, v) {
         const e = this.eps;
         const sample = (du, dv) => {
-            const position = new THREE.Vector3();
+            const position = new Vector3();
             this.surfaceDefinition.sample(u + du, v + dv, position);
             return position;
         };
@@ -1090,9 +1090,9 @@ export class TangentFrameParameters {
 }
 
 export class TangentFrameView extends Group {
-    constructor(surface, tangentFrameParameters) {
+    constructor(surfaceDefinition, tangentFrameParameters) {
         super();
-        this.diffGeometry = new DifferentialGeometry(surface);
+        this.diffGeometry = new DifferentialGeometry(surfaceDefinition);
         this.scaleFactor = tangentFrameParameters.scale;
 
         this.axes = { // Arrows in (u, v) directions + normal vector
