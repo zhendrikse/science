@@ -33,7 +33,7 @@
 
 <script type="module">
     import { Scene, Color, Group } from "three";
-    import { Interval, Plot3DView, AxesParameters, MathWrapper, ComplexNumber }
+    import { Axes, Interval, ThreeJsUtils, Plot3DView, AxesParameters, MathWrapper, ComplexNumber }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import { ComplexSurfaceDefinition, ComplexSurfaceSpecification, ComplexSurfaceView, ComplexSurface }
@@ -124,8 +124,9 @@
     });
 
     class ControlsGui {
-        constructor(plot, params) {
-            this._plot = plot;
+        constructor(parentGroup) {
+            this._parentGroup = parentGroup;
+
             const gui = new GUI({width: 300, autoPlace: false});
             gui.add(params, 'function', Object.values(ComplexFunctions))
                 .name("F(z) = ")
@@ -168,12 +169,21 @@
 
         #createAxesFolder(parentFolder) {
             const axesFolder = parentFolder.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axes')
-                .name("Axes").onChange(value => this._plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'frame')
+                .name("Axes").onChange(value => {
+                const { gridPlanes, annotations } = params.axesParameters;
+                axes.withSettings({frame: value, gridPlanes: gridPlanes, annotations: annotations});
+            });
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => this._plot.applyAxesParameters());
+                .name("Layout").onChange(value => {
+                const { frame, annotations } = params.axesParameters;
+                axes.withSettings({frame: frame, gridPlanes: value, annotations: annotations});
+            });
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => this._plot.applyAxesParameters());
+                .name("Annotations").onChange(value => {
+                const { frame, gridPlanes } = params.axesParameters;
+                axes.withSettings({frame: frame, gridPlanes: gridPlanes, annotations: value})
+            });
             axesFolder.close();
         }
 
@@ -183,7 +193,20 @@
             const equationDiv = document.getElementById("surface-equation");
             equationDiv.innerHTML = definition.specification.latexString;
             if (window.MathJax) MathJax.typesetPromise([equationDiv]);
-            this._plot.updateAxes(surface.boundingBox());
+
+            axes.dispose();
+            this._parentGroup.remove(axes);
+
+            axes = Axes.from(surface.boundingBox(), divisions)
+                .withLayout(layoutType)
+                .withAnnotations(canvasContainer, layoutType, axisLabels)
+                .withSettings({frame, gridPlanes, annotations});
+
+            axes.frameTo(surface.boundingBox());
+            this._parentGroup.add(axes);
+            axes.onWindowResize();
+
+            plot3D.frame(surface.boundingBox());
         }
     }
 
@@ -193,12 +216,34 @@
     };
 
     let surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed), {showWireframe: false});
-    const plot3D = new Plot3DView(canvas, canvasContainer, scene, surface.boundingBox(), params.axesParameters);
-    const gui = new ControlsGui(plot3D, params);
+    const {layoutType, divisions, axisLabels} = params.axesParameters;
+    const { frame, gridPlanes, annotations } = params.axesParameters;
+
+    const boundingBox = surface.boundingBox();
+    let axes = Axes.from(boundingBox, divisions)
+        .withLayout(layoutType)
+        .withAnnotations(canvasContainer, layoutType, axisLabels)
+        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
+    axes.frameTo(boundingBox);
+    axes.onWindowResize();
+    worldGroup.add(axes);
+
+    const plot3D = new Plot3DView(scene, canvas, boundingBox);
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
+    const gui = new ControlsGui(worldGroup, axes, params);
+
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+        axes.onWindowResize();
+    }
+    window.addEventListener("resize", () => resize());
+    resize();
 
     function animate() {
         requestAnimationFrame(animate);
         plot3D.render();
+        axes.render(scene, plot3D.camera);
     }
     animate();
 </script>
