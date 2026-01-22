@@ -1359,7 +1359,7 @@ const surfaceDefinitions = [{
         yFn: "-sin(v)",
         zFn: "sin(u) * cos(2 * v)"
     },
-    intervals: [["0", "2 * pi"], ["pi", "0"]]
+    intervals: [["0", "2 * pi"], [".5 * pi", "0"]]
 }, {
     meta: {name: "Heart", category: Category.NATURE},
     parametrization: {
