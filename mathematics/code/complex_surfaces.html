@@ -182,7 +182,7 @@
             axesController.createFromBoundingBox(surface.boundingBox());
             plot3D.frame(surface.boundingBox());
         }
-    } // TODO
+    }
 
     class SurfaceController {
         constructor({
@@ -218,7 +218,7 @@
             this._parentGroup.remove(this._surface);
             this._surface = null;
         }
-    }
+    }  // TODO
     // const surfaceController = new SurfaceController({
     //     parentGroup: worldGroup,
     //     surfaceFactory: (definition, options) =>
@@ -250,9 +250,9 @@
 
     const axesController = new AxesController({
         parentGroup: worldGroup,
-        canvasContainer,
+        canvasContainer: canvasContainer,
         axesParameters: params.axesParameters,
-        scene
+        scene: scene
     });
 
     let surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed), {showWireframe: false});

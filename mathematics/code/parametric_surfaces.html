@@ -65,7 +65,7 @@
 
 <script type="module">
     import * as THREE from "three";
-    import { Plot3DView, ThreeJsUtils, AxesParameters }
+    import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification, TangentFrameView,
         ViewParameters, ColorMapper, ContourType, LiteralStringBasedSurfaceDefinition, SurfaceDefinitions }
@@ -169,15 +169,14 @@
             surfaceFolder.close();
         }
 
-        #createAxesFolder(folder) {
-            const axesFolder = folder.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axes')
-                .name("Axes").onChange(value => this.plot.applyAxesParameters());
+        #createAxesFolder(parentFolder) {
+            const axesFolder = parentFolder.addFolder("Axes");
+            axesFolder.add(params.axesParameters, 'frame')
+                .name("Frame").onChange(value => axesController.updateSettings());
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => this.plot.applyAxesParameters());
+                .name("Layout").onChange(value => axesController.updateSettings());
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => this.plot.applyAxesParameters());
-            axesFolder.close();
+                .name("Annotations").onChange(value => axesController.updateSettings());
             axesFolder.close();
         }
 
@@ -265,7 +264,6 @@
             params.surfaceParameters.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
             this._tangentFrame = new TangentFrameView(this.surface.definition(), params.surfaceParameters.tangentFrameParameters);
             newSurface.group.add(this._tangentFrame);
-            this._plot.updateAxes(surfaceInAxes.boundingBox());
 
             this.#updateSurfaceDataTitleBox();
             const surfaceSpecification = this.surface.definition().specification();
@@ -376,13 +374,30 @@
         surfaceParameters: new ViewParameters(),
         axesParameters: new AxesParameters({annotations: false})
     };
+    const axesController = new AxesController({
+        parentGroup: worldGroup,
+        canvasContainer: canvasContainer,
+        axesParameters: params.axesParameters,
+        scene: surfacePlotScene
+    });
+
     const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
     let surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), params.surfaceParameters);
+    const boundingBox = surfaceInAxes.boundingBox();
 
-    const plot3D = new Plot3DView(canvas, canvasContainer, surfacePlotScene, surfaceInAxes.boundingBox(), params.axesParameters);
+    axesController.createFromBoundingBox(boundingBox);
+    const plot3D = new Plot3DView(surfacePlotScene, canvas, boundingBox);
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
+
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+        axesController.resize();
+    }
+    window.addEventListener("resize", resize);
+    resize();
 
     // Ring
-    const boundingBox = surfaceInAxes.boundingBox();
     ThreeJsUtils.scaleBox3(boundingBox, 0.20);
     const ring = new Ring(worldGroup, surfaceInAxes, boundingBox);
     ring.add(SurfaceDefinitions);
@@ -417,10 +432,10 @@
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         ring.onSelectTo(selectedRingSurface);
         surfaceInAxes.dispose();
-
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
         surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), params.surfaceParameters);
-
+        axesController.createFromBoundingBox(surfaceInAxes.boundingBox());
+        plot3D.frame(surfaceInAxes.boundingBox());
         controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
     });
 
@@ -429,6 +444,7 @@
         plot3D.render();
         ring.render();
         controlsGui.render();
+        axesController.render(plot3D.camera);
     }
     animate();
 </script>
