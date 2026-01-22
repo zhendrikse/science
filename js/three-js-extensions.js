@@ -209,7 +209,7 @@ export class AxesParameters {
     }
 }
 
-export class Axes extends Group {
+class Axes extends Group {
     static Type = Object.freeze({
         CLASSICAL: "classical",
         MATLAB: "MatLab"
@@ -489,6 +489,60 @@ class MatlabAnnotations extends AxesAnnotation {
             this.createLabel(axisLabels[2], new Vector3(-0.5 * size, 0, 0.65 * size), "blue", "20px"));
 
         this._labels.forEach(label => this.add(label));
+    }
+}
+
+/**
+ * Use this class to create axes and manage its life cycle.
+ */
+class AxesController {
+    constructor({
+                    parentGroup,
+                    canvasContainer,
+                    axesParameters,
+                    scene
+                }) {
+        this._parentGroup = parentGroup;
+        this._canvasContainer = canvasContainer;
+        this._axesParameters = axesParameters;
+        this._scene = scene;
+        this._axes = null;
+    }
+
+    createFromBoundingBox(boundingBox) {
+        if (this._axes) {
+            this._axes.dispose();
+            this._parentGroup.remove(this._axes);
+        }
+
+        const { layoutType, divisions, axisLabels } = this._axesParameters;
+        const { frame, gridPlanes, annotations } = this._axesParameters;
+
+        this._axes = Axes.from(boundingBox, divisions)
+            .withLayout(layoutType)
+            .withAnnotations(this._canvasContainer, layoutType, axisLabels)
+            .withSettings({ frame, gridPlanes, annotations });
+
+        this._axes.frameTo(boundingBox);
+        this._axes.onWindowResize();
+        this._parentGroup.add(this._axes);
+    }
+
+    updateSettings() {
+        if (!this._axes) return;
+
+        const { frame, gridPlanes, annotations } = this._axesParameters;
+        this._axes.withSettings({ frame, gridPlanes, annotations });
+    }
+
+    render = (camera) => this._axes?.render(this._scene, camera);
+    resize = () => this._axes?.onWindowResize();
+
+    dispose() {
+        if (!this._axes) return;
+        this._axes.dispose();
+        this._parentGroup.remove(this._axes);
+        this._axes = null;
     }
 }
 
