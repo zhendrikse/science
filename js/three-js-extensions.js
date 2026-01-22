@@ -525,14 +525,16 @@ export class AxesController {
         }
 
         const { layoutType, divisions, axisLabels } = this._axesParameters;
-        const { frame, gridPlanes, annotations } = this._axesParameters;
+        const { frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
 
         this._axes = Axes.from(boundingBox, divisions)
             .withLayout(layoutType)
             .withAnnotations(this._canvasContainer, layoutType, axisLabels)
-            .withSettings({ frame, gridPlanes, annotations });
+            .withSettings(
+                { frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane });
 
-        this._axes.frameTo(boundingBox);
+        if (layoutType === Axes.Type.MATLAB) // center the MatLab axes around the object to be displayed
+            this._axes.frameTo(boundingBox);
         this._axes.onWindowResize();
         this._parentGroup.add(this._axes);
     }
@@ -541,7 +543,8 @@ export class AxesController {
         if (!this._axes) return;
 
         const { frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
-        this._axes.withSettings({ frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane });
+        this._axes.withSettings(
+            { frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane });
     }
 
     render = (camera) => this._axes?.render(this._scene, camera);
