@@ -13,414 +13,10 @@
 <div id="gui-container"></div>
 
 <script type="module">
-    import { Range, AxesParameters, ThreeJsUtils }
+    import { Range, AxesParameters, ThreeJsUtils, Axes, Plot3DView }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    // import {  Scene, Color, Group, SphereGeometry, MeshStandardMaterial, Vector3, Mesh, Box3 } from "three";
-
-
-    import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
-    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
-    import { Scene, Color, BufferGeometry, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3,
-        MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
-        MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
-        InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry } from "three";
-
-
-    export class AxesView extends Group {
-        static Type = Object.freeze({
-            CLASSICAL: "classical",
-            MATLAB: "MatLab"
-        });
-
-        constructor() {
-            super();
-            this._layout = null;
-            this._annotations = null;
-        }
-
-        #disposeLayout() {
-            if (this._layout) {
-                this._layout.traverse(object => {
-                    if (object.geometry) object.geometry.dispose();
-                    if (object.material) object.material.dispose();
-                });
-                this.remove(this._layout);
-                this._layout = null;
-            }
-        }
-
-        #disposeAnnotations() {
-            if (this._annotations) {
-                this._annotations._labels.forEach(label => this._annotations.remove(label));
-                if (this._annotations._renderer?.domElement?.parentNode)
-                    this._annotations._renderer.domElement.parentNode.removeChild(this._annotations._renderer.domElement);
-                this._annotations = null;
-            }
-        }
-
-        dispose() {
-            this.#disposeLayout();
-            this.#disposeAnnotations();
-            this.clear();
-        }
-
-        static toCartesian(radius, theta, phi) {
-            return new Vector3(
-                radius * Math.sin(theta) * Math.cos(phi),
-                radius * Math.sin(theta) * Math.sin(phi),
-                radius * Math.cos(theta)
-            );
-        }
-
-        setLayout(layout) {
-            this._layout?.dispose?.();
-            this._layout = layout;
-            this.add(layout);
-        }
-
-        setAnnotations(annotations) {
-            this._annotations?.dispose?.();
-            this._annotations = annotations;
-            this.add(annotations);
-        }
-
-        get annotations() { return this._annotations; }
-        get layout() { return this._layout; }
-
-        render(scene, camera) {
-            this._annotations.render(scene, camera);
-        }
-
-        shiftBy(translationVector) {
-            if (this._annotations) this._annotations.shiftBy(translationVector);
-            if (this._layout) this._layout.shiftBy(translationVector);
-        }
-
-        boundingBox() {
-            const axesBoundingBox = new Box3();
-            axesBoundingBox.setFromObject(this);
-            return axesBoundingBox;
-        }
-    }
-
-    class AxesAnnotation extends Group {
-        constructor(container) {
-            super();
-            this._renderer = new CSS2DRenderer();
-            this._renderer.domElement.style.position = "absolute";
-            this._renderer.domElement.style.top = 0;
-            this._renderer.domElement.style.left = 0;
-            this._renderer.domElement.style.width = "100%";
-            this._renderer.domElement.style.height = "100%";
-            this._renderer.domElement.style.pointerEvents = "none"; // do not process mouse events
-            this._renderer.domElement.style.zIndex = "5"; // on top of canvas
-
-            this._labels = [];
-
-            container.appendChild(this._renderer.domElement);
-            this.#resize(container);
-        }
-
-        #resize(container) {
-            this._renderer.setSize(container.clientWidth, container.clientHeight);
-        }
-
-        createLabel(text, pos, color = "yellow", fontSize = "16px") {
-            const div = document.createElement("div");
-            div.textContent = text;
-            div.style.color = color;
-            div.style.fontSize = fontSize;
-
-            const label = new CSS2DObject(div);
-            label.position.copy(pos);
-            return label;
-        }
-
-        render(scene, camera) {
-            this._renderer.render(scene, camera);
-        }
-
-        shiftBy(translationVector) {
-            this._labels.forEach((label) => label.position.add(translationVector));
-        }
-    }
-
-    class AxesLayout extends Group {
-        constructor(size, divisions) {
-            super();
-            this._size = size;
-            this._divisions = divisions;
-            this._axes = null; // to be created in concrete subclasses
-        }
-
-        createPlane(color, rotate, gridPos, planePos) {
-            const grid = new GridHelper(
-                this._size,
-                this._divisions,
-                0x333333,
-                0x333333
-            );
-
-            const plane = new Mesh(
-                new PlaneGeometry(this._size, this._size),
-                new MeshPhongMaterial({
-                    color,
-                    transparent: true,
-                    opacity: 0.1,
-                    depthWrite: false,
-                    side: DoubleSide
-                })
-            );
-
-            grid.position.copy(new Vector3(gridPos[0], gridPos[1], gridPos[2]).multiplyScalar(.5 * this._size));
-            plane.position.copy(new Vector3(planePos[0], planePos[1], planePos[2]).multiplyScalar(.5 * this._size));
-
-            rotate(grid);
-            rotate(plane);
-
-            return [grid, plane];
-        }
-
-        get divisions() { return this._divisions; }
-        get size() { return this._size; }
-        get axes() { return this._axes; }
-
-        shiftBy(translationVector) {
-            this.xyGrid.position.add(translationVector);
-            this.xyPlane.position.add(translationVector);
-            this.yzGrid.position.add(translationVector);
-            this.yzPlane.position.add(translationVector);
-            this.xzGrid.position.add(translationVector);
-            this.xzPlane.position.add(translationVector);
-            this._axes.position.add(translationVector);
-        }
-
-        showXY() { this.xyGrid.visible = true; this.xyPlane.visible = true; }
-        hideXY() { this.xyGrid.visible = false; this.xyPlane.visible = false; }
-        showXZ() { this.xzGrid.visible = true; this.xzPlane.visible = true; }
-        hideXZ() { this.xzGrid.visible = false; this.xzPlane.visible = false; }
-        showYZ() { this.yzGrid.visible = true; this.yzPlane.visible = true; }
-        hideYZ() { this.yzGrid.visible = false; this.yzPlane.visible = false; }
-        show() { this.showXY(); this.showXZ(); this.showYZ(); }
-        hide() { this.hideXY(); this.hideXZ(); this.hideYZ(); }
-    }
-
-    class ClassicalAxesLayout extends AxesLayout {
-        constructor(size, divisions) {
-            super(size, divisions);
-
-            const eps = 0.025;
-            this._axes = new AxesHelper(size * .5);
-            this._axes.position.set(eps, eps, eps);
-
-            const [xyGrid, xzPlane] = this.createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
-            const [xzGrid, yzPlane] = this.createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
-            const [yzGrid, xyPlane] = this.createPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
-            this.xyGrid = xyGrid;
-            this.xyPlane = xyPlane;
-            this.yzGrid = yzGrid;
-            this.yzPlane = yzPlane;
-            this.xzGrid = xzGrid;
-            this.xzPlane = xzPlane;
-            this.add(this._axes, this.xyGrid, this.xyPlane, this.xzGrid, this.xzPlane, this.yzPlane, this.yzGrid);
-        }
-    }
-
-    class MatlabAxesLayout extends AxesLayout {
-        constructor(size, divisions) {
-            super(size, divisions);
-
-            const eps = 0.025;
-            this._axes = new AxesHelper(size);
-            this._axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
-
-            const [xyGrid, xzPlane] = this.createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]);
-            const [xzGrid, yzPlane] = this.createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [-1, 1, 0]);
-            const [yzGrid, xyPlane] = this.createPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [-1, 1, 0], [0, 1, -1]);
-            this.xyGrid = xyGrid;
-            this.xyPlane = xyPlane;
-            this.yzGrid = yzGrid;
-            this.yzPlane = yzPlane;
-            this.xzGrid = xzGrid;
-            this.xzPlane = xzPlane;
-            this.add(this._axes, this.xyGrid, this.xyPlane, this.xzGrid, this.xzPlane, this.yzPlane, this.yzGrid);
-        }
-    }
-
-    class ClassicalAnnotations extends AxesAnnotation {
-        constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
-            super(container);
-
-            const size = axesLayout.size;
-            const step = size / axesLayout.divisions;
-            for (let v = -size * .5 ; v <= size * .5; v += step)
-                this._labels.push(
-                    this.createLabel(v.toFixed(1), new Vector3(v, 0, 0.525 * size)),
-                    this.createLabel(v.toFixed(1), new Vector3(0.525 * size, 0, v)));
-            for (let v = 0 ; v <= size * .5; v += step)
-                this._labels.push(this.createLabel(v.toFixed(1), new Vector3(0, v, 0)));
-
-            this._labels.push(
-                this.createLabel(axisLabels[0], new Vector3(0.575 * size, 0, 0), "red", "20px"),
-                this.createLabel(axisLabels[1], new Vector3(0, 0.575 * size, 0), "green", "20px"),
-                this.createLabel(axisLabels[2], new Vector3(0, 0, 0.575 * size), "blue", "20px"));
-
-            this._labels.forEach(label => this.add(label));
-        }
-    }
-
-    class MatlabAnnotations extends AxesAnnotation {
-        constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
-            super(container);
-
-            const size = axesLayout.size;
-            const step = (2 * size) / axesLayout.divisions;
-            for (let v = 0 ; v <= size; v += step)
-                this._labels.push(
-                    this.createLabel(v.toFixed(1), new Vector3(-0.525 * size, v, 0.5 * size)),
-                    this.createLabel(v.toFixed(1), new Vector3(0.525 * size, 0, v - 0.5 * size)));
-
-            for (let v = step ; v < size; v += step)
-                this._labels.push(
-                    this.createLabel(v.toFixed(1), new Vector3(v - 0.5 * size, 0, 0.525 * size)));
-
-            this._labels.push(
-                this.createLabel(axisLabels[0], new Vector3(0.65 * size, 0, -0.5 * size), "red", "20px"),
-                this.createLabel(axisLabels[1], new Vector3(-0.5 * size, 1.1 * size, -0.5 * size), "green", "20px"),
-                this.createLabel(axisLabels[2], new Vector3(-0.5 * size, 0, 0.65 * size), "blue", "20px"));
-
-            this._labels.forEach(label => this.add(label));
-        }
-    }
-
-    export class Plot3DView {
-        constructor(canvas, canvasContainer, scene, axesBoundingBox, axesParameters) {
-            this._scene = scene;
-            this._canvas = canvas;
-            this._axesParameters = axesParameters;
-            this._canvasContainer = canvasContainer;
-            this._axes = this.#createAxes(axesBoundingBox);
-            this._scene.add(this.axes);
-            this._camera = new PerspectiveCamera(45, 1, 0.1, 100);
-            this._renderer = new WebGLRenderer({ antialias: true, canvas });
-
-            // Resizing for mobile devices
-            ThreeJsUtils.resizeRendererToCanvas(this._renderer, this._camera);
-            window.addEventListener("resize", () => this.#resize());
-
-            this._controls = new OrbitControls(this._camera, canvas);
-            this._controls.enableDamping = true;
-            this._controls.dampingFactor = 0.08;
-            //this.controls.screenSpacePanning = false;
-            //this.controls.maxPolarAngle = Math.PI * 0.95;
-
-            this.#setupLights();
-            this.#resize();
-            this.frame(axesBoundingBox);
-            this.applyAxesParameters();
-        }
-
-        #resize() {
-            ThreeJsUtils.resizeRendererToCanvas(this._renderer, this._camera);
-            this.axes?._annotations._renderer.setSize(
-                this._canvasContainer.clientWidth,
-                this._canvasContainer.clientHeight
-            );
-        }
-
-        #setupLights() {
-            this._scene.add(
-                new HemisphereLight(0xffffff, 0xeeeeee, 0.6),
-                new DirectionalLight(0xffffff, 0.9)
-            );
-        }
-
-        #createAxes(boundingBox, padding=1.1) {
-            const sizeVec = boundingBox.getSize(new Vector3());
-            const maxSize = padding * Math.max(sizeVec.x, sizeVec.y, sizeVec.z);
-
-            const layout = this._axesParameters.layoutType === AxesView.Type.MATLAB ?
-                new MatlabAxesLayout(maxSize, this._axesParameters.divisions) :
-                new ClassicalAxesLayout(maxSize, this._axesParameters.divisions);
-
-            const annotations = (this._axesParameters.layoutType === AxesView.Type.MATLAB ) ?
-                new MatlabAnnotations(this._canvasContainer, layout, this._axesParameters.axisLabels) :
-                new ClassicalAnnotations(this._canvasContainer, layout, this._axesParameters.axisLabels);
-
-            const axes = new AxesView();
-            axes.setLayout(layout);
-            axes.setAnnotations(annotations);
-
-            axes.updateMatrixWorld(true);
-            const scaledBox = new Box3().setFromObject(axes);
-            const deltaY = boundingBox.min.y - scaledBox.min.y;
-            axes.position.y += deltaY;
-
-            return axes;
-        }
-
-        applyAxesParameters() {
-            const { axes, gridPlanes, annotations } = this._axesParameters;
-            this._axes.layout.axes.visible = axes;
-            this._axes.annotations.visible = annotations;
-            gridPlanes ? this._axes.layout.show() : this._axes.layout.hide();
-        }
-
-        get axes() { return this._axes; }
-
-        #calculateCenter(boundingBox) {
-            const size = new Vector3();
-            let center = new Vector3();
-            boundingBox.getSize(size);
-            boundingBox.getCenter(center);
-            return {center, size};
-        }
-
-        frame(boundingBox, {
-            padding = 1.2,
-            translationY = 0,
-            minDistance = 2,
-            viewDirection = new Vector3(1, 1, 1)
-        } = {}) {
-            const {center, size} = this.#calculateCenter(boundingBox);
-
-            // distance so that bounding box is always in view
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const verticalFieldOfView = MathUtils.degToRad(this._camera.fov);
-            let distance = maxDim / Math.tan(verticalFieldOfView / 2);
-            distance = Math.max(distance * padding, minDistance);
-
-            const direction = viewDirection.clone().normalize();
-            this._camera.position
-                .copy(new Vector3(center.x, center.y + translationY, center.z))
-                .addScaledVector(direction, distance);
-            this._camera.near = distance / 100;
-            this._camera.far = distance * 10;
-            this._camera.updateProjectionMatrix();
-
-            this._controls.target.copy(center);
-            this._controls.update();
-        }
-
-        get camera() { return this._camera; }
-
-        updateAxes(newBoundingBox) {
-            this._axes.dispose();
-            this._scene.remove(this._axes);
-            this._axes = this.#createAxes(newBoundingBox);
-            this._scene.add(this._axes);
-            this.frame(newBoundingBox);
-            this.applyAxesParameters();
-        }
-
-        render() {
-            this._controls.update();
-            this._renderer.render(this._scene, this._camera);
-            this._axes.render(this._scene, this._camera);
-        }
-    }
-
+    import {  Scene, Color, Group, SphereGeometry, MeshStandardMaterial, Vector3, Mesh, Box3 } from "three";
 
     const canvasContainer = document.getElementById("scalarContainer");
     const canvas = document.getElementById("scalarCanvas");
@@ -437,18 +33,26 @@
     };
 
     class ControlsGui {
-        constructor(plot) {
+        constructor(axes) {
             const gui = new GUI({width: 300, autoPlace: false});
 
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axes')
-                .name("Axes").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'frame')
+                .name("Axes").onChange(value => {
+                const { gridPlanes, annotations } = params.axesParameters;
+                axes.withSettings({frame: value, gridPlanes: gridPlanes, annotations: annotations});
+            });
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => plot.applyAxesParameters());
+                .name("Layout").onChange(value => {
+                const { frame, annotations } = params.axesParameters;
+                axes.withSettings({frame: frame, gridPlanes: value, annotations: annotations});
+            });
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => plot.applyAxesParameters());
+                .name("Annotations").onChange(value => {
+                const { frame, gridPlanes } = params.axesParameters;
+                axes.withSettings({frame: frame, gridPlanes: gridPlanes, annotations: value})
+            });
             axesFolder.close();
-
 
             gui.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => field.setOpacity(value));
             gui.add(params, "radius", 0, 1, .01).name("Radius").onFinishChange(value => field.setRadius(value));
@@ -625,18 +229,6 @@
     }
 
 
-    const field = new ScalarField(new Range(-3, 3, .4), position => Math.exp(-0.3 * position.lengthSq()));
-    field.scalars.forEach(scalar => worldGroup.add(scalar.sphere));
-
-    const boundingBox = new Box3();
-    boundingBox.setFromObject( worldGroup );
-    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
-
-    const gui = new ControlsGui(plot3D);
-
-    let time = 0;
-    const kappa = 0.3;
-
     // Temperature at center
     function temperatureAt(position, t) {
         const rSquared = position.lengthSq();
@@ -652,6 +244,38 @@
     //     return Math.exp(-r2 / (4 * kappa * t));
     // }
 
+    const field = new ScalarField(new Range(-3, 3, .4), position => Math.exp(-0.3 * position.lengthSq()));
+    field.scalars.forEach(scalar => worldGroup.add(scalar.sphere));
+
+    const boundingBox = new Box3();
+    boundingBox.setFromObject( worldGroup );
+
+    const {layoutType, divisions, axisLabels} = params.axesParameters;
+    const { frame, gridPlanes, annotations } = params.axesParameters;
+
+    const axes = Axes.from(boundingBox, divisions)
+        .withLayout(layoutType)
+        .withAnnotations(canvasContainer, layoutType, axisLabels)
+        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
+    axes.frameTo(boundingBox);
+    axes.onWindowResize();
+    worldGroup.add(axes);
+
+    const plot3D = new Plot3DView(scene, canvas, boundingBox);
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
+    const gui = new ControlsGui(axes);
+
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+        axes.onWindowResize();
+    }
+    window.addEventListener("resize", () => resize());
+    resize();
+
+    let time = 0;
+    const kappa = 0.3;
+
     function animate() {
         requestAnimationFrame(animate);
 
@@ -662,6 +286,7 @@
             scalar.setColor(field._colorFor(T));
         });
 
+        axes.render(scene, plot3D.camera);
         plot3D.render();
     }
     animate();

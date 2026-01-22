@@ -153,6 +153,14 @@
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
     const gui = new ControlsGui(axes);
 
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+        axes.onWindowResize();
+    }
+    window.addEventListener("resize", () => resize());
+    resize();
+
     function animate() {
         requestAnimationFrame(animate);
         plot3D.render();
