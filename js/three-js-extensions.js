@@ -273,15 +273,15 @@ export class Axes extends Group {
         this._layout.frame.visible = frame;
         this._annotations.visible = annotations;
         gridPlanes ? this._layout.showPlanes() : this._layout.hidePlanes();
-        this._annotations.xy.visible = xyPlane;
-        this._annotations.xz.visible = xzPlane;
-        this._annotations.yz.visible = yzPlane;
+        this._layout.xy.visible = xyPlane;
+        this._layout.xz.visible = xzPlane;
+        this._layout.yz.visible = yzPlane;
         return this;
     }
 
     withLayout(type) {
         this._layout?.dispose?.();
-        this._layout = type === "matlab" ?
+        this._layout = type === Axes.Type.MATLAB ?
             new MatlabAxesLayout(this._size, this._divisions) :
             new ClassicalAxesLayout(this._size, this._divisions);
         this.add(this._layout);
