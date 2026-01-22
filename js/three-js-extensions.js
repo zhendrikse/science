@@ -296,9 +296,8 @@ export class Axes extends Group {
         // boundingBox.getSize(size);
         let center = new Vector3();
         boundingBox.getCenter(center);
-        this.position.copy(center);
-        // const deltaY = boundingBox.min.y - scaledBox.min.y;
-        // this.position.y += deltaY;
+        const deltaY = boundingBox.min.y - scaledBox.min.y;
+        this.position.set(center.x, this.position.y + deltaY, center.z);
     }
 
     withAnnotations(container, type, axisLabels=["X", "Y", "Z"]) {
