@@ -263,16 +263,25 @@ export class Axes extends Group {
         this.clear();
     }
 
-    withSettings({ frame=true, gridPlanes=true, annotations=true } = {}) {
+    withSettings({
+                     frame=true,
+                     gridPlanes=true,
+                     annotations=true,
+                     xyPlane=true,
+                     xzPlane=true,
+                     yzPlane=true } = {}) {
         this._layout.frame.visible = frame;
         this._annotations.visible = annotations;
         gridPlanes ? this._layout.showPlanes() : this._layout.hidePlanes();
+        this._annotations.xy.visible = xyPlane;
+        this._annotations.xz.visible = xzPlane;
+        this._annotations.yz.visible = yzPlane;
         return this;
     }
 
     withLayout(type) {
         this._layout?.dispose?.();
-        this._layout = type === Axes.Type.MATLAB ?
+        this._layout = type === "matlab" ?
             new MatlabAxesLayout(this._size, this._divisions) :
             new ClassicalAxesLayout(this._size, this._divisions);
         this.add(this._layout);
@@ -531,8 +540,8 @@ export class AxesController {
     updateSettings() {
         if (!this._axes) return;
 
-        const { frame, gridPlanes, annotations } = this._axesParameters;
-        this._axes.withSettings({ frame, gridPlanes, annotations });
+        const { frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
+        this._axes.withSettings({ frame, gridPlanes, annotations, xyPlane, xzPlane, yzPlane });
     }
 
     render = (camera) => this._axes?.render(this._scene, camera);

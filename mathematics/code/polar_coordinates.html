@@ -15,7 +15,7 @@
 <script type="module">
     import { Vector3, Line, Scene, Color, Group, BufferGeometry, LineBasicMaterial, SphereGeometry, Box3, Mesh,
         MeshStandardMaterial, DoubleSide } from "three";
-    import { Plot3DView, AxesParameters, Axes, ThreeJsUtils }
+    import { Plot3DView, AxesParameters, Axes, AxesController, ThreeJsUtils }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import { SurfaceDefinition, TangentFrameView, TangentFrameParameters}
@@ -42,11 +42,24 @@
         tangentFrameParameters: tangentFrameParameters,
         theta: 45,
         phi: 280,
-        axesParameters: new AxesParameters({gridPlanes: true, annotations: false, layoutType: Axes.Type.CLASSICAL})
+        axesParameters: new AxesParameters({
+            gridPlanes: true,
+            annotations: false,
+            layoutType: Axes.Type.CLASSICAL,
+            xyPlane: false,
+            xzPlane: true,
+            yzPlane: false
+        })
     };
+    const axesController = new AxesController({
+        parentGroup: worldGroup,
+        canvasContainer,
+        axesParameters: params.axesParameters,
+        scene
+    });
 
     class ControlsGui {
-        constructor(axes) {
+        constructor() {
             const gui = new GUI({width: 300, autoPlace: false});
 
             gui.add(params, "theta", 0, 180, 1)
@@ -69,20 +82,16 @@
                     radialLine.geometry.setFromPoints([new Vector3(0, 0, 0), pos]);
                 });
 
-
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'frame')
-                .name("Axes").onChange(value => axes.layout.frame.visible = value);
+                .name("Frame").onChange(value => axesController.updateSettings());
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => axes.layout.xz.visible = value);
+                .name("Layout").onChange(value => axesController.updateSettings());
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => axes.annotations.visible = value);
+                .name("Annotations").onChange(value => axesController.updateSettings());
             axesFolder.close();
 
-
-            document
-                .getElementById("gui-container")
-                .appendChild(gui.domElement);
+            document.getElementById("gui-container").appendChild(gui.domElement);
         }
     }
 
@@ -124,34 +133,24 @@
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
 
-    const {layoutType, divisions, axisLabels} = params.axesParameters;
-    const { frame, gridPlanes, annotations } = params.axesParameters;
-
-    const axes = Axes.from(boundingBox, divisions)
-        .withLayout(layoutType)
-        .withAnnotations(canvasContainer, layoutType, axisLabels)
-        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
-    axes.onWindowResize();
-    axes.layout.xy.visible = false;
-    axes.layout.yz.visible = false;
-    worldGroup.add(axes);
+    axesController.createFromBoundingBox(boundingBox);
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .7));
-    const gui = new ControlsGui(axes);
+    const gui = new ControlsGui();
 
     // Resizing for mobile devices
     function resize() {
         ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
-        axes.onWindowResize();
+        axesController.resize();
     }
-    window.addEventListener("resize", () => resize());
+    window.addEventListener("resize", resize);
     resize();
 
     function animate() {
         requestAnimationFrame(animate);
         plot3D.render();
-        axes.render(scene, plot3D.camera);
+        axesController.render(plot3D.camera);
     }
     animate();
 </script>

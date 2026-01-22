@@ -14,10 +14,10 @@
 <div class="guiContainer" id="gui-container"></div>
 
 <script type="module">
-    import { Plot3DView, Axes, ThreeJsUtils, ArrowField, VectorField, Range, AxesParameters }
+    import { Plot3DView, AxesController, ThreeJsUtils, ArrowField, VectorField, Range, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import { Vector3, Scene, Color, Group, AmbientLight, DirectionalLight, Box3 } from "three";
+    import { Vector3, Scene, Color, Group, Box3 } from "three";
 
     const canvasContainer = document.getElementById("quiverContainer");
     const canvas = document.getElementById("quiverCanvas");
@@ -67,9 +67,15 @@
         axesParameters: new AxesParameters({annotations: false}),
         tilt: 15
     };
+    const axesController = new AxesController({
+        parentGroup: worldGroup,
+        canvasContainer,
+        axesParameters: params.axesParameters,
+        scene
+    });
 
     class ControlsGui {
-        constructor(axes) {
+        constructor() {
             const gui = new GUI({width: 300, autoPlace: false});
             gui.add(params, 'vectorField', Object.values(VectorFields))
                 .name("Field type")
@@ -81,23 +87,13 @@
             gui.add({reset: () =>  arrowField.reset()}, "reset")
                 .name("Reset field");
 
-
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'frame')
-                .name("Axes").onChange(value => {
-                const { gridPlanes, annotations } = params.axesParameters;
-                axes.withSettings({frame: value, gridPlanes: gridPlanes, annotations: annotations});
-            });
+                .name("Frame").onChange(value => axesController.updateSettings());
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => {
-                const { frame, annotations } = params.axesParameters;
-                    axes.withSettings({frame: frame, gridPlanes: value, annotations: annotations});
-            });
+                .name("Layout").onChange(value => axesController.updateSettings());
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => {
-                const { frame, gridPlanes } = params.axesParameters;
-                axes.withSettings({frame: frame, gridPlanes: gridPlanes, annotations: value})
-            });
+                .name("Annotations").onChange(value => axesController.updateSettings());
             axesFolder.close();
 
             document.getElementById("gui-container").appendChild(gui.domElement);
@@ -130,27 +126,18 @@
     const boundingBox = new Box3();
     boundingBox.setFromObject( arrowField );
 
-    const {layoutType, divisions, axisLabels} = params.axesParameters;
-    const { frame, gridPlanes, annotations } = params.axesParameters;
-
-    const axes = Axes.from(boundingBox, divisions)
-        .withLayout(layoutType)
-        .withAnnotations(canvasContainer, layoutType, axisLabels)
-        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
-    axes.frameTo(boundingBox);
-    axes.onWindowResize();
-    worldGroup.add(axes);
+    axesController.createFromBoundingBox(boundingBox);
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
-    const gui = new ControlsGui(axes);
+    const gui = new ControlsGui();
 
     // Resizing for mobile devices
     function resize() {
         ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
-        axes.onWindowResize();
+        axesController.resize();
     }
-    window.addEventListener("resize", () => resize());
+    window.addEventListener("resize", resize);
     resize();
 
     const equationDiv = document.getElementById("vectorFieldTitle");
@@ -160,7 +147,7 @@
     function animate() {
         requestAnimationFrame(animate);
         plot3D.render();
-        axes.render(scene, plot3D.camera);
+        axesController.render(plot3D.camera);
         if (!params.animate) return;
         arrowField.euler();
     }

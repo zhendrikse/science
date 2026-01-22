@@ -14,7 +14,7 @@
 
 <script type="module">
     import {Box3, Scene, Color, Group, Vector3} from "three";
-    import { Arrow, Axes, AxesParameters, ThreeJsUtils, Plot3DView }
+    import { Arrow, Axes, AxesController, AxesParameters, ThreeJsUtils, Plot3DView }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
@@ -40,8 +40,15 @@
             annotations: false})
     };
 
+    const axesController = new AxesController({
+        parentGroup: worldGroup,
+        canvasContainer,
+        axesParameters: params.axesParameters,
+        scene
+    });
+
     class ControlsGui {
-        constructor(axes, planeWave) {
+        constructor(planeWave) {
             const gui = new GUI({width: 300, autoPlace: false});
             gui.add(params, "amplitude", 1, 6, 0.1)
                 .name("Amplitude")
@@ -53,18 +60,17 @@
                 .name("Wave number k")
                 .onChange(value => planeWave.set_k_to(value * Math.PI));
 
+
             const axesFolder = gui.addFolder("Axes");
             axesFolder.add(params.axesParameters, 'frame')
-                .name("Axes").onChange(value => axes.layout.frame.visible = value);
+                .name("Frame").onChange(value => axesController.updateSettings());
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => axes.layout.xz.visible = value);
+                .name("Layout").onChange(value => axesController.updateSettings());
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => axes.annotations.visible = value);
+                .name("Annotations").onChange(value => axesController.updateSettings());
             axesFolder.close();
 
-            document
-                .getElementById("gui-container")
-                .appendChild(gui.domElement);
+            document.getElementById("gui-container").appendChild(gui.domElement);
         }
     }
 
@@ -112,28 +118,18 @@
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
 
-    const {layoutType, divisions, axisLabels} = params.axesParameters;
-    const { frame, gridPlanes, annotations } = params.axesParameters;
-
-    const axes = Axes.from(boundingBox, divisions)
-        .withLayout(layoutType)
-        .withAnnotations(canvasContainer, layoutType, axisLabels)
-        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
-    axes.onWindowResize();
-    axes.layout.xy.visible = false;
-    axes.layout.yz.visible = false;
-    worldGroup.add(axes);
+    axesController.createFromBoundingBox(boundingBox);
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .7));
-    const gui = new ControlsGui(axes, planeWave);
+    const gui = new ControlsGui();
 
     // Resizing for mobile devices
     function resize() {
         ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
-        axes.onWindowResize();
+        axesController.resize();
     }
-    window.addEventListener("resize", () => resize());
+    window.addEventListener("resize", resize);
     resize();
 
     let time = 0;
@@ -142,7 +138,7 @@
         requestAnimationFrame(animate);
         planeWave.update(time);
         plot3D.render();
-        axes.render(scene, plot3D.camera);
+        axesController.render(plot3D.camera);
         time += dt;
     }
     animate();

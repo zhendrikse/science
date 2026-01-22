@@ -182,7 +182,66 @@
             axesController.createFromBoundingBox(surface.boundingBox());
             plot3D.frame(surface.boundingBox());
         }
+    } // TODO
+
+    class SurfaceController {
+        constructor({
+                        parentGroup,
+                        surfaceFactory   // (definition) => ComplexSurfaceView
+                    }) {
+            this._parentGroup = parentGroup;
+            this._surfaceFactory = surfaceFactory;
+            this._surface = null;
+        }
+
+        create(definition, options = {}) {
+            this.dispose();
+
+            this._surface = this._surfaceFactory(definition, options);
+            this._parentGroup.add(this._surface);
+
+            return this._surface;
+        }
+
+        get boundingBox() {
+            return this._surface ? this._surface.boundingBox() : null;
+        }
+
+        get surface() {
+            return this._surface;
+        }
+
+        dispose() {
+            if (!this._surface) return;
+
+            this._surface.dispose();
+            this._parentGroup.remove(this._surface);
+            this._surface = null;
+        }
     }
+    // const surfaceController = new SurfaceController({
+    //     parentGroup: worldGroup,
+    //     surfaceFactory: (definition, options) =>
+    //         new ComplexSurfaceView(worldGroup, new ComplexSurface(definition), options)
+    // });
+    // surfaceController.create(zCubed, { showWireframe: false });
+    // surfaceController.create(definition, { showWireframe: false });
+    //
+    // axesController.createFromBoundingBox(
+    //     surfaceController.boundingBox
+    // );
+    //
+    // plot3D.frame(
+    //     surfaceController.boundingBox
+    // );
+    // !! Niet in de controller stoppen — dat is UI, geen scene-state.
+    // const equationDiv = document.getElementById("surface-equation");
+    // equationDiv.innerHTML = definition.specification.latexString;
+    // if (window.MathJax) {
+    //     MathJax.typesetPromise([equationDiv]);
+    // }
+
+
 
     const params = {
         axesParameters: new AxesParameters({axisLabels: ["Re(z)", "log|z|", "Im(z)"]}),
