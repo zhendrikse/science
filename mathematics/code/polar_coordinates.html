@@ -15,7 +15,7 @@
 <script type="module">
     import { Vector3, Line, Scene, Color, Group, BufferGeometry, LineBasicMaterial, SphereGeometry, Box3, Mesh,
         MeshStandardMaterial, DoubleSide } from "three";
-    import { Plot3DView, AxesParameters, AxesView }
+    import { Plot3DView, AxesParameters, Axes, ThreeJsUtils }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import { SurfaceDefinition, TangentFrameView, TangentFrameParameters}
@@ -42,11 +42,11 @@
         tangentFrameParameters: tangentFrameParameters,
         theta: 45,
         phi: 280,
-        axesParameters: new AxesParameters({gridPlanes: true, annotations: false, layoutType: AxesView.Type.CLASSICAL})
+        axesParameters: new AxesParameters({gridPlanes: true, annotations: false, layoutType: Axes.Type.CLASSICAL})
     };
 
     class ControlsGui {
-        constructor(plot) {
+        constructor(axes) {
             const gui = new GUI({width: 300, autoPlace: false});
 
             gui.add(params, "theta", 0, 180, 1)
@@ -71,12 +71,12 @@
 
 
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axes')
-                .name("Axes").onChange(value => plot.axes.layout.axes.visible = value);
+            axesFolder.add(params.axesParameters, 'frame')
+                .name("Axes").onChange(value => axes.layout.frame.visible = value);
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => value ? plot.axes.layout.showXZ() : plot.axes.layout.hideXZ());
+                .name("Layout").onChange(value => axes.layout.xz.visible = value);
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => plot.axes.annotations.visible = value);
+                .name("Annotations").onChange(value => axes.annotations.visible = value);
             axesFolder.close();
 
 
@@ -95,7 +95,7 @@
         sample(u, v, target) {
             const theta = u * Math.PI;        // u in [0,1] → theta in [0, π]
             const phi   = -v * 2 * Math.PI;   // v in [0,1] → phi   in [0, 2π]
-            const xyz = AxesView.toCartesian(this.radius, theta, phi);
+            const xyz = Axes.toCartesian(this.radius, theta, phi);
             target.set(xyz.x, xyz.z, xyz.y);
         }
     }
@@ -123,15 +123,35 @@
 
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
-    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
-    plot3D.axes.layout.hideXY();
-    plot3D.axes.layout.hideYZ();
 
-    const gui = new ControlsGui(plot3D);
+    const {layoutType, divisions, axisLabels} = params.axesParameters;
+    const { frame, gridPlanes, annotations } = params.axesParameters;
+
+    const axes = Axes.from(boundingBox, divisions)
+        .withLayout(layoutType)
+        .withAnnotations(canvasContainer, layoutType, axisLabels)
+        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
+    axes.onWindowResize();
+    axes.layout.xy.visible = false;
+    axes.layout.yz.visible = false;
+    worldGroup.add(axes);
+
+    const plot3D = new Plot3DView(scene, canvas, boundingBox);
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .5));
+    const gui = new ControlsGui(axes);
+
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+        axes.onWindowResize();
+    }
+    window.addEventListener("resize", () => resize());
+    resize();
 
     function animate() {
         requestAnimationFrame(animate);
         plot3D.render();
+        axes.render(scene, plot3D.camera);
     }
     animate();
 </script>

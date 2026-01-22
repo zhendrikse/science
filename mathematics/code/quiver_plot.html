@@ -14,7 +14,7 @@
 <div class="guiContainer" id="gui-container"></div>
 
 <script type="module">
-    import { Plot3DView, ArrowField, VectorField, Range, AxesParameters }
+    import { Plot3DView, Axes, ThreeJsUtils, ArrowField, VectorField, Range, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import { Vector3, Scene, Color, Group, AmbientLight, DirectionalLight, Box3 } from "three";
@@ -75,13 +75,8 @@
     };
 
     class ControlsGui {
-        constructor(plot) {
+        constructor(axes) {
             const gui = new GUI({width: 300, autoPlace: false});
-            gui.add({ tilt: params.tilt }, "tilt", -45, 45, 1)
-                .onChange(v => {
-                    plot.tiltY(v - params.tilt);
-                    params.tilt = v;
-                });
             gui.add(params, 'vectorField', Object.values(VectorFields))
                 .name("Field type")
                 .onChange(value => this.#changeVectorFieldTo(value));
@@ -94,17 +89,15 @@
 
 
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axes')
-                .name("Axes").onChange(value => plot.applyAxesParameters());
+            axesFolder.add(params.axesParameters, 'frame')
+                .name("Axes").onChange(value => axes.withSettings({frame: value}));
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => plot.applyAxesParameters());
+                .name("Layout").onChange(value => axes.withSettings({gridPlanes: value}));
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => plot.applyAxesParameters());
+                .name("Annotations").onChange(value => axes.withSettings({annotations: value}));
             axesFolder.close();
 
-            document
-                .getElementById("gui-container")
-                .appendChild(gui.domElement);
+            document.getElementById("gui-container").appendChild(gui.domElement);
         }
 
         #changeVectorFieldTo(vectorField) {
@@ -133,13 +126,26 @@
 
     const boundingBox = new Box3();
     boundingBox.setFromObject( arrowField );
-    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
+
+    const {layoutType, divisions, axisLabels} = params.axesParameters;
+    const { frame, gridPlanes, annotations } = params.axesParameters;
+
+    const axes = Axes.from(boundingBox, divisions)
+        .withLayout(layoutType)
+        .withAnnotations(canvasContainer, layoutType, axisLabels)
+        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
+    axes.onWindowResize();
+    axes.layout.xy.visible = false;
+    axes.layout.yz.visible = false;
+    worldGroup.add(axes);
+
+    const plot3D = new Plot3DView(scene, canvas, boundingBox);
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .5));
+    const gui = new ControlsGui(axes);
 
     const equationDiv = document.getElementById("vectorFieldTitle");
     equationDiv.innerHTML = vectorField1.meta;
     if (window.MathJax) MathJax.typesetPromise([equationDiv]);
-
-    const gui = new ControlsGui(plot3D);
 
     function animate() {
         requestAnimationFrame(animate);

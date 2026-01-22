@@ -187,7 +187,7 @@ export class MathWrapper {
 
 export class AxesParameters {
     constructor({
-                    layoutType = AxesView.Type.MATLAB,
+                    layoutType = Axes.Type.MATLAB,
                     divisions = 10,
                     frame = true,
                     gridPlanes = true,
