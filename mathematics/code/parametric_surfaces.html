@@ -87,12 +87,45 @@
     const hemiLight = new HemisphereLight(0xffffff, 0x444444, 1);
     ringScene.add(hemiLight);
 
-    class ControlsGui {
-        constructor(surface, ring, onSurfaceSpecificationChanged) {
-            this.surface = null;
-            this.onSurfaceSpecificationChanged = onSurfaceSpecificationChanged;
+    class SurfaceController {
+        constructor(surface) {
             this.surface = surface;
+        }
+
+        setSurface(surface) {
+            this.surface = surface;
+        }
+
+        hasSurface() {
+            return this.surface && this.surface.group;
+        }
+
+        changeBaseColorTo(color) {
+            if (!this.hasSurface()) return;
+            this.surface.changeBaseColorTo(color);
+        }
+
+        changeOpacityTo(value) {
+            if (!this.hasSurface()) return;
+            this.surface.changeOpacityTo(value);
+        }
+
+        toggleWireframe(value) {
+            if (!this.hasSurface()) return;
+            this.surface.toggleWireframe(value);
+        }
+
+        rotateBy(value) {
+            if (!this.hasSurface()) return;
+            this.surface.rotateBy(value);
+        }
+    }
+
+    class ControlsGui {
+        constructor(surfaceController, ring, onSurfaceSpecificationChanged) {
+            this._onSurfaceSpecificationChanged = onSurfaceSpecificationChanged;
             this._tangentFrame = null;
+            this._surfaceController = surfaceController
             const controls = new GUI({width: 300, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
@@ -100,9 +133,9 @@
             this.yFunction = null;
             this.zFunction = null;
             this.surfaceCoordinates = {
-                x: surface.definition().specification().parametrization.xFn,
-                y: surface.definition().specification().parametrization.yFn,
-                z: surface.definition().specification().parametrization.zFn
+                x: surfaceInAxes.definition().specification().parametrization.xFn,
+                y: surfaceInAxes.definition().specification().parametrization.yFn,
+                z: surfaceInAxes.definition().specification().parametrization.zFn
             }
 
             controls.add(surfaceParams, 'category', Object.values(Category))
@@ -112,7 +145,7 @@
             this.#createTangentSpaceFolder(controls);
             this.#createAppearanceFolder(controls);
             this.#createMathFolder(controls);
-            this.updateCurrentSurfaceWith(surface);
+            this.updateCurrentSurfaceWith(surfaceInAxes);
         }
 
         #createTangentSpaceFolder(folder) {
@@ -139,16 +172,16 @@
             const contourFolder = folder.addFolder("Contours");
             contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
                 .name("Contour type")
-                .onChange(value => this.surface.modifyContours({mode: value}));
+                .onChange(value => surfaceInAxes.modifyContours({mode: value}));
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
-                .onChange(() => {if (this.#isValidColor()) this.surface.modifyContours(surfaceParams.contourParameters);});
+                .onChange(() => {if (this.#isValidColor()) surfaceInAxes.modifyContours(surfaceParams.contourParameters);});
             contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
                 .name("U contours")
-                .onChange(() => this.surface.modifyContours(surfaceParams.contourParameters));
+                .onChange(() => surfaceInAxes.modifyContours(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, "vCount", 1, 50, 1)
                 .name("V contours")
-                .onChange(() => this.surface.modifyContours(surfaceParams.contourParameters));
+                .onChange(() => surfaceInAxes.modifyContours(surfaceParams.contourParameters));
             contourFolder.close();
         }
 
@@ -156,22 +189,22 @@
             const surfaceFolder = folder.addFolder("Surface");
             surfaceFolder.add(surfaceParams, "colorMode", Object.values(ColorMapper.ColorMode))
                 .name("Color Mode")
-                .onChange(() => this.surface.changeColorModeTo(surfaceParams.colorMode));
+                .onChange(() => surfaceInAxes.changeColorModeTo(surfaceParams.colorMode));
             surfaceFolder.add(surfaceParams, 'baseColor')
                 .name("Base color")
-                .onChange(() => {if (this.#isValidColor()) this.surface.changeBaseColorTo(surfaceParams.baseColor);});
+                .onChange(() => {if (this.#isValidColor()) this._surfaceController.changeBaseColorTo(surfaceParams.baseColor);});
             surfaceFolder.add(surfaceParams, "opacity", 0, 1, .01)
                 .name("Opacity")
-                .onChange(value => this.surface.changeOpacityTo(value));
+                .onChange(value => this._surfaceController.changeOpacityTo(value));
             surfaceFolder.add(surfaceParams, "resolution", 10, 200, 1)
                 .name("Resolution")
-                .onFinishChange(resolution => this.surface.resampleWith(resolution));
+                .onFinishChange(resolution => surfaceInAxes.resampleWith(resolution));
             surfaceFolder.add(surfaceParams, 'wireframe')
                 .name("Wireframe")
-                .onChange(value => this.surface.toggleWireframe(value));
+                .onChange(value => this._surfaceController.toggleWireframe(value));
             surfaceFolder.add(surfaceParams, 'normals')
                 .name('Show Normals')
-                .onChange(value => this.#showNormals(this.surface, value));
+                .onChange(value => this.#showNormals(surfaceInAxes, value));
             surfaceFolder.add(surfaceParams, 'autoRotate').name('Auto rotate');
             surfaceFolder.close();
         }
@@ -199,22 +232,22 @@
             this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification =
-                        this.surface.definition().specification().withParametrization({xFn: expr});
-                    this.onSurfaceSpecificationChanged(surfaceSpecification);
+                        surfaceInAxes.definition().specification().withParametrization({xFn: expr});
+                    this._onSurfaceSpecificationChanged(surfaceSpecification);
                 });
 
             this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification =
-                        this.surface.definition().specification().withParametrization({yFn: expr});
-                    this.onSurfaceSpecificationChanged(surfaceSpecification);
+                        surfaceInAxes.definition().specification().withParametrization({yFn: expr});
+                    this._onSurfaceSpecificationChanged(surfaceSpecification);
                 });
 
             this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification =
-                        this.surface.definition().specification().withParametrization({zFn: expr});
-                    this.onSurfaceSpecificationChanged(surfaceSpecification);
+                        surfaceInAxes.definition().specification().withParametrization({zFn: expr});
+                    this._onSurfaceSpecificationChanged(surfaceSpecification);
                 });
 
             mathFolder.close();
@@ -227,7 +260,7 @@
             this.#createContourFolder(appearanceFolder);
 
             appearanceFolder.add({reset: () =>
-                    plot3D.fitToBoundingBox(this.surface.boundingBox(), {padding: 1.2, translationY: -0.5})}, "reset")
+                    plot3D.fitToBoundingBox(surfaceInAxes.boundingBox(), {padding: 1.2, translationY: -0.5})}, "reset")
                 .name("Reset Camera");
             appearanceFolder.close();
         }
@@ -250,7 +283,7 @@
 
         #updateSurfaceDataTitleBox() {
             const nameDiv = document.getElementById("surface-title");
-            const surfaceData = this.surface.definition().specification();
+            const surfaceData = surfaceInAxes.definition().specification();
             nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
 
             const equationDiv = document.getElementById("surface-equation");
@@ -265,21 +298,14 @@
             if (window.MathJax) MathJax.typesetPromise([equationDiv]);
         }
 
-        render() {
-            if (surfaceParams.autoRotate)
-                this.surface.rotateBy(0.005);
-        }
-
         updateCurrentSurfaceWith= (newSurface) => {
-            this.surface = newSurface;
-
             if (this._tangentFrame) this._tangentFrame.dispose();
             surfaceParams.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
-            this._tangentFrame = new TangentFrameView(this.surface.definition(), surfaceParams.tangentFrameParameters);
+            this._tangentFrame = new TangentFrameView(surfaceInAxes.definition(), surfaceParams.tangentFrameParameters);
             newSurface.group.add(this._tangentFrame);
 
             this.#updateSurfaceDataTitleBox();
-            const surfaceSpecification = this.surface.definition().specification();
+            const surfaceSpecification = surfaceInAxes.definition().specification();
             this.xFunction.setValue(surfaceSpecification.parametrization.xFn);
             this.yFunction.setValue(surfaceSpecification.parametrization.yFn);
             this.zFunction.setValue(surfaceSpecification.parametrization.zFn);
@@ -377,8 +403,6 @@
     }
 
     // Surface
-    const surfaceData = SurfaceDefinitions[20];
-    const surfaceParams = new ViewParameters();
     const axesParams = new AxesParameters({annotations: false});
     const axesController = new AxesController({
         parentGroup: worldGroup,
@@ -387,8 +411,13 @@
         scene: surfacePlotScene
     });
 
+    const surfaceData = SurfaceDefinitions[20];
+    const surfaceParams = new ViewParameters();
     const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
     let surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
+    const surfaceController = new SurfaceController(surfaceInAxes);
+
+
     const boundingBox = surfaceInAxes.boundingBox();
 
     axesController.createFromBoundingBox(boundingBox);
@@ -415,15 +444,23 @@
     ring.onSelectTo(selectedRingSurface);
 
     // Interaction
-    const controlsGui = new ControlsGui(surfaceInAxes, ring,
+    const controlsGui = new ControlsGui(
+        surfaceController,
+        ring,
         (newSurfaceSpecification) => {
             surfaceInAxes.dispose();
-            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(newSurfaceSpecification);
-            surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
+            const surfaceDefinition =
+                new LiteralStringBasedSurfaceDefinition(newSurfaceSpecification);
+            surfaceInAxes =
+                new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
+
+            surfaceController.setSurface(surfaceInAxes);
             axesController.createFromBoundingBox(surfaceInAxes.boundingBox());
             plot3D.frame(surfaceInAxes.boundingBox());
             controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
-        });
+        }
+    );
+
 
     // -----------------------
     // Raycasting for ring
@@ -456,7 +493,8 @@
         plot3D.render();
         ring.render();
         ringRenderer.render(ringScene, ringCamera);
-        controlsGui.render();
+        if (surfaceParams.autoRotate)
+            surfaceInAxes.rotateBy(0.005);
         axesController.render(plot3D.camera);
     }
     animate();

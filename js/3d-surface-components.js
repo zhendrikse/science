@@ -1007,10 +1007,6 @@ export class StandardSurfaceView extends SurfaceView {
     changeBaseColorTo = (value) => {
         this.baseColor = value;
         this.changeColorModeTo(this.colorMode);
-        if (this.contours && this.contours.visible()) {
-            this.contours.dispose();
-            this.modifyContours();
-        }
     };
     changeOpacityTo = (value) => { this.material.opacity = value; this.material.transparent = value < 1; }
     clearNormals = () => this.normals.clear();
