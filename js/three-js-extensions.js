@@ -272,6 +272,7 @@ export class Axes extends Group {
                      yzPlane=true } = {}) {
         this._layout.frame.visible = frame;
         this._annotations.visible = annotations;
+        console.log(gridPlanes);
         gridPlanes ? this._layout.showPlanes() : this._layout.hidePlanes();
         this._layout.xy.visible = xyPlane;
         this._layout.xz.visible = xzPlane;

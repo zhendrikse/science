@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 import { Arrow, Interval, ComplexNumber }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-import { BufferGeometry, Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry } from "three";
+import { BufferGeometry, Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3,
+    MeshPhongMaterial } from "three";
 
 export const Category = Object.freeze({
     BASIC: "Basic",
@@ -75,7 +76,7 @@ export class SurfaceView {
     constructor(parentGroup, surface) {
         this.parentGroup = parentGroup;
         this.surface = surface;
-        this.group = new THREE.Group();
+        this.group = new Group();
         this.parentGroup?.add(this.group);
         this._children = new Set();
     }
@@ -114,14 +115,14 @@ export class SurfaceView {
         object.clear();
     }
 
-    boundingBox() { return new THREE.Box3().setFromObject(this.group).clone(); }
+    boundingBox() { return new Box3().setFromObject(this.group).clone(); }
     definition() { return this.surface.definition(); }
     hide() { this.group.visible = false; }
     moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
     material = (showWireframe, opacity) =>
-        new THREE.MeshPhongMaterial({
+        new MeshPhongMaterial({
             vertexColors: true,
-            side: THREE.DoubleSide,
+            side: DoubleSide,
             wireframe: showWireframe,
             transparent: true,
             opacity: opacity,

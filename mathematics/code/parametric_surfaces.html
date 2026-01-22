@@ -416,9 +416,12 @@
 
     // Interaction
     const controlsGui = new ControlsGui(surfaceInAxes, ring, params.surfaceParameters,
-        (newSpec) => {
+        (newSurfaceSpecification) => {
             surfaceInAxes.dispose();
-            surfaceInAxes = displayedSurface(newSpec, params.surfaceParameters, axes);
+            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(newSurfaceSpecification);
+            surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), params.surfaceParameters);
+            axesController.createFromBoundingBox(surfaceInAxes.boundingBox());
+            plot3D.frame(surfaceInAxes.boundingBox());
             controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
         });
 
