@@ -189,7 +189,7 @@ export class AxesParameters {
     constructor({
                     layoutType = AxesView.Type.MATLAB,
                     divisions = 10,
-                    axes = true,
+                    frame = true,
                     gridPlanes = true,
                     annotations = true,
                     xyPlane = true,
@@ -199,7 +199,7 @@ export class AxesParameters {
                 } = {}) {
         this.layoutType = layoutType;
         this.divisions = divisions;
-        this.axes = axes;
+        this.frame = frame;
         this.gridPlanes = gridPlanes;
         this.annotations = annotations;
         this.xyPlane = xyPlane;
@@ -209,14 +209,30 @@ export class AxesParameters {
     }
 }
 
-export class AxesView extends Group {
+export class Axes extends Group {
     static Type = Object.freeze({
         CLASSICAL: "classical",
         MATLAB: "MatLab"
     });
 
-    constructor() {
+    static toCartesian(radius, theta, phi) {
+        return new Vector3(
+            radius * Math.sin(theta) * Math.cos(phi),
+            radius * Math.sin(theta) * Math.sin(phi),
+            radius * Math.cos(theta)
+        );
+    }
+
+    static from(boundingBox, divisions, padding=1.1) {
+        const sizeVec = boundingBox.getSize(new Vector3());
+        const maxSize = padding * Math.max(sizeVec.x, sizeVec.y, sizeVec.z);
+        return new Axes(maxSize, divisions);
+    }
+
+    constructor(size, divisions) {
         super();
+        this._size = size;
+        this._divisions = divisions;
         this._layout = null;
         this._annotations = null;
     }
@@ -247,36 +263,48 @@ export class AxesView extends Group {
         this.clear();
     }
 
-    static toCartesian(radius, theta, phi) {
-        return new Vector3(
-            radius * Math.sin(theta) * Math.cos(phi),
-            radius * Math.sin(theta) * Math.sin(phi),
-            radius * Math.cos(theta)
-        );
+    withSettings({ frame=true, gridPlanes=true, annotations=true } = {}) {
+        this._layout.frame.visible = frame;
+        this._annotations.visible = annotations;
+        gridPlanes ? this._layout.showPlanes() : this._layout.hidePlanes();
+        return this;
     }
 
-    setLayout(layout) {
+    withLayout(type) {
         this._layout?.dispose?.();
-        this._layout = layout;
-        this.add(layout);
+        this._layout = type === Axes.Type.MATLAB ?
+            new MatlabAxesLayout(this._size, this._divisions) :
+            new ClassicalAxesLayout(this._size, this._divisions);
+        this.add(this._layout);
+
+        if (type === Axes.Type.MATLAB) {
+            this.updateMatrixWorld(true);
+            const scaledBox = new Box3().setFromObject(axes);
+            const deltaY = boundingBox.min.y - scaledBox.min.y;
+            this.position.y += deltaY;
+        }
+
+        return this;
     }
 
-    setAnnotations(annotations) {
+    withAnnotations(container, type, axisLabels=["X", "Y", "Z"]) {
         this._annotations?.dispose?.();
-        this._annotations = annotations;
-        this.add(annotations);
+        this._annotations = (type === Axes.Type.MATLAB ) ?
+            new MatlabAnnotations(container, this._size, this._divisions, axisLabels) :
+            new ClassicalAnnotations(container, this._size, this._divisions, axisLabels);
+        this.add(this._annotations);
+        return this;
     }
 
     get annotations() { return this._annotations; }
     get layout() { return this._layout; }
 
-    render(scene, camera) {
-        this._annotations.render(scene, camera);
-    }
+    onWindowResize = () => this._annotations?.onWindowResize()
+    render = (scene, camera) => this._annotations?.render(scene, camera);
 
     shiftBy(translationVector) {
-        if (this._annotations) this._annotations.shiftBy(translationVector);
-        if (this._layout) this._layout.shiftBy(translationVector);
+        this._annotations?.shiftBy(translationVector);
+        this._layout?.shiftBy(translationVector);
     }
 
     boundingBox() {
@@ -289,6 +317,7 @@ export class AxesView extends Group {
 class AxesAnnotation extends Group {
     constructor(container) {
         super();
+        this._container = container;
         this._renderer = new CSS2DRenderer();
         this._renderer.domElement.style.position = "absolute";
         this._renderer.domElement.style.top = 0;
@@ -300,12 +329,12 @@ class AxesAnnotation extends Group {
 
         this._labels = [];
 
-        container.appendChild(this._renderer.domElement);
-        this.#resize(container);
+        this._container.appendChild(this._renderer.domElement);
+        this.onWindowResize();
     }
 
-    #resize(container) {
-        this._renderer.setSize(container.clientWidth, container.clientHeight);
+    onWindowResize() {
+        this._renderer.setSize(this._container.clientWidth, this._container.clientHeight);
     }
 
     createLabel(text, pos, color = "yellow", fontSize = "16px") {
@@ -333,17 +362,22 @@ class AxesLayout extends Group {
         super();
         this._size = size;
         this._divisions = divisions;
-        this._axes = null; // to be created in concrete subclasses
+        this._frame = null; // to be created in concrete subclasses
+        this._xy = new Group();
+        this._xz = new Group();
+        this._yz = new Group();
+        this.add(this._xy, this._xz, this._yz);
     }
 
-    createPlane(color, rotate, gridPos, planePos) {
-        const grid = new GridHelper(
-            this._size,
-            this._divisions,
-            0x333333,
-            0x333333
-        );
+    _createFrame(position, size) {
+        const eps = 0.025;
+        this._frame = new AxesHelper(size);
+        this._frame.position.copy(position.add(new Vector3(eps, eps, eps)));
+        this.add(this._frame);
+    }
 
+    _createPlane(color, rotate, gridPos, planePos) {
+        const grid = new GridHelper(this._size, this._divisions, 0x333333, 0x333333);
         const plane = new Mesh(
             new PlaneGeometry(this._size, this._size),
             new MeshPhongMaterial({
@@ -366,46 +400,32 @@ class AxesLayout extends Group {
 
     get divisions() { return this._divisions; }
     get size() { return this._size; }
-    get axes() { return this._axes; }
+    get frame() { return this._frame; }
+    get xy() { return this._xy; }
+    get xz() { return this._xz; }
+    get yz() { return this._yz; }
 
     shiftBy(translationVector) {
-        this.xyGrid.position.add(translationVector);
-        this.xyPlane.position.add(translationVector);
-        this.yzGrid.position.add(translationVector);
-        this.yzPlane.position.add(translationVector);
-        this.xzGrid.position.add(translationVector);
-        this.xzPlane.position.add(translationVector);
-        this._axes.position.add(translationVector);
+        this._xy.position.add(translationVector);
+        this._xz.position.add(translationVector);
+        this._yz.position.add(translationVector);
     }
 
-    showXY() { this.xyGrid.visible = true; this.xyPlane.visible = true; }
-    hideXY() { this.xyGrid.visible = false; this.xyPlane.visible = false; }
-    showXZ() { this.xzGrid.visible = true; this.xzPlane.visible = true; }
-    hideXZ() { this.xzGrid.visible = false; this.xzPlane.visible = false; }
-    showYZ() { this.yzGrid.visible = true; this.yzPlane.visible = true; }
-    hideYZ() { this.yzGrid.visible = false; this.yzPlane.visible = false; }
-    show() { this.showXY(); this.showXZ(); this.showYZ(); }
-    hide() { this.hideXY(); this.hideXZ(); this.hideYZ(); }
+    showPlanes() { this._xy.visible = true; this._xz.visible = true; this._yz.visible = true; }
+    hidePlanes() { this._xy.visible = false; this._xz.visible = false; this._yz.visible = false; }
 }
 
 class ClassicalAxesLayout extends AxesLayout {
     constructor(size, divisions) {
         super(size, divisions);
 
-        const eps = 0.025;
-        this._axes = new AxesHelper(size * .5);
-        this._axes.position.set(eps, eps, eps);
-
-        const [xyGrid, xzPlane] = this.createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
-        const [xzGrid, yzPlane] = this.createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
-        const [yzGrid, xyPlane] = this.createPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
-        this.xyGrid = xyGrid;
-        this.xyPlane = xyPlane;
-        this.yzGrid = yzGrid;
-        this.yzPlane = yzPlane;
-        this.xzGrid = xzGrid;
-        this.xzPlane = xzPlane;
-        this.add(this._axes, this.xyGrid, this.xyPlane, this.xzGrid, this.xzPlane, this.yzPlane, this.yzGrid);
+        this._createFrame(new Vector3(0, 0, 0), 0.5 * size);
+        const [xyGrid, xzPlane] = this._createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
+        const [xzGrid, yzPlane] = this._createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
+        const [yzGrid, xyPlane] = this._createPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
+        this._xy.add(xyPlane, xyGrid);
+        this._xz.add(xzPlane, xzGrid);
+        this._yz.add(yzPlane, yzGrid);
     }
 }
 
@@ -413,29 +433,21 @@ class MatlabAxesLayout extends AxesLayout {
     constructor(size, divisions) {
         super(size, divisions);
 
-        const eps = 0.025;
-        this._axes = new AxesHelper(size);
-        this._axes.position.set(-0.5 * size + eps, eps, -0.5 * size + eps);
-
-        const [xyGrid, xzPlane] = this.createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]);
-        const [xzGrid, yzPlane] = this.createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [-1, 1, 0]);
-        const [yzGrid, xyPlane] = this.createPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [-1, 1, 0], [0, 1, -1]);
-        this.xyGrid = xyGrid;
-        this.xyPlane = xyPlane;
-        this.yzGrid = yzGrid;
-        this.yzPlane = yzPlane;
-        this.xzGrid = xzGrid;
-        this.xzPlane = xzPlane;
-        this.add(this._axes, this.xyGrid, this.xyPlane, this.xzGrid, this.xzPlane, this.yzPlane, this.yzGrid);
+        this._createFrame(new Vector3(-0.5 * size, 0, -0.5 * size), size);
+        const [xyGrid, xzPlane] = this._createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 1, -1], [0, 0, 0]);
+        const [xzGrid, yzPlane] = this._createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [-1, 1, 0]);
+        const [yzGrid, xyPlane] = this._createPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [-1, 1, 0], [0, 1, -1]);
+        this._xy.add(xyPlane, xyGrid);
+        this._xz.add(xzPlane, xzGrid);
+        this._yz.add(yzPlane, yzGrid);
     }
 }
 
 class ClassicalAnnotations extends AxesAnnotation {
-    constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
+    constructor(container, size, divisions, axisLabels) {
         super(container);
 
-        const size = axesLayout.size;
-        const step = size / axesLayout.divisions;
+        const step = size / divisions;
         for (let v = -size * .5 ; v <= size * .5; v += step)
             this._labels.push(
                 this.createLabel(v.toFixed(1), new Vector3(v, 0, 0.525 * size)),
@@ -453,11 +465,10 @@ class ClassicalAnnotations extends AxesAnnotation {
 }
 
 class MatlabAnnotations extends AxesAnnotation {
-    constructor(container, axesLayout, axisLabels=["X", "Y", "Z"]) {
+    constructor(container, size, divisions, axisLabels) {
         super(container);
 
-        const size = axesLayout.size;
-        const step = (2 * size) / axesLayout.divisions;
+        const step = (2 * size) / divisions;
         for (let v = 0 ; v <= size; v += step)
             this._labels.push(
                 this.createLabel(v.toFixed(1), new Vector3(-0.525 * size, v, 0.5 * size)),
@@ -477,19 +488,11 @@ class MatlabAnnotations extends AxesAnnotation {
 }
 
 export class Plot3DView {
-    constructor(canvas, canvasContainer, scene, axesBoundingBox, axesParameters) {
+    constructor(scene, canvas, boundingBox) {
         this._scene = scene;
         this._canvas = canvas;
-        this._axesParameters = axesParameters;
-        this._canvasContainer = canvasContainer;
-        this._axes = this.#createAxes(axesBoundingBox);
-        this._scene.add(this.axes);
         this._camera = new PerspectiveCamera(45, 1, 0.1, 100);
         this._renderer = new WebGLRenderer({ antialias: true, canvas });
-
-        // Resizing for mobile devices
-        ThreeJsUtils.resizeRendererToCanvas(this._renderer, this._camera);
-        window.addEventListener("resize", () => this.#resize());
 
         this._controls = new OrbitControls(this._camera, canvas);
         this._controls.enableDamping = true;
@@ -498,17 +501,7 @@ export class Plot3DView {
         //this.controls.maxPolarAngle = Math.PI * 0.95;
 
         this.#setupLights();
-        this.#resize();
-        this.frame(axesBoundingBox);
-        this.applyAxesParameters();
-    }
-
-    #resize() {
-        ThreeJsUtils.resizeRendererToCanvas(this._renderer, this._camera);
-        this.axes?._annotations._renderer.setSize(
-            this._canvasContainer.clientWidth,
-            this._canvasContainer.clientHeight
-        );
+        this.frame(boundingBox);
     }
 
     #setupLights() {
@@ -517,39 +510,6 @@ export class Plot3DView {
             new DirectionalLight(0xffffff, 0.9)
         );
     }
-
-    #createAxes(boundingBox, padding=1.1) {
-        const sizeVec = boundingBox.getSize(new Vector3());
-        const maxSize = padding * Math.max(sizeVec.x, sizeVec.y, sizeVec.z);
-
-        const layout = this._axesParameters.layoutType === AxesView.Type.MATLAB ?
-            new MatlabAxesLayout(maxSize, this._axesParameters.divisions) :
-            new ClassicalAxesLayout(maxSize, this._axesParameters.divisions);
-
-        const annotations = (this._axesParameters.layoutType === AxesView.Type.MATLAB ) ?
-            new MatlabAnnotations(this._canvasContainer, layout, this._axesParameters.axisLabels) :
-            new ClassicalAnnotations(this._canvasContainer, layout, this._axesParameters.axisLabels);
-
-        const axes = new AxesView();
-        axes.setLayout(layout);
-        axes.setAnnotations(annotations);
-
-        axes.updateMatrixWorld(true);
-        const scaledBox = new Box3().setFromObject(axes);
-        const deltaY = boundingBox.min.y - scaledBox.min.y;
-        axes.position.y += deltaY;
-
-        return axes;
-    }
-
-    applyAxesParameters() {
-        const { axes, gridPlanes, annotations } = this._axesParameters;
-        this._axes.layout.axes.visible = axes;
-        this._axes.annotations.visible = annotations;
-        gridPlanes ? this._axes.layout.show() : this._axes.layout.hide();
-    }
-
-    get axes() { return this._axes; }
 
     #calculateCenter(boundingBox) {
         const size = new Vector3();
@@ -586,20 +546,11 @@ export class Plot3DView {
     }
 
     get camera() { return this._camera; }
-
-    updateAxes(newBoundingBox) {
-        this._axes.dispose();
-        this._scene.remove(this._axes);
-        this._axes = this.#createAxes(newBoundingBox);
-        this._scene.add(this._axes);
-        this.frame(newBoundingBox);
-        this.applyAxesParameters();
-    }
+    get renderer() { return this._renderer; }
 
     render() {
         this._controls.update();
         this._renderer.render(this._scene, this._camera);
-        this._axes.render(this._scene, this._camera);
     }
 }
 

@@ -14,9 +14,10 @@
 
 <script type="module">
     import {Box3, Scene, Color, Group, Vector3} from "three";
-    import { AxesView, Arrow, Plot3DView, AxesParameters }
+    import { Arrow, Axes, AxesParameters, ThreeJsUtils }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+
 
     const canvasContainer = document.getElementById("planeWaveContainer");
     const canvas = document.getElementById("planeWaveCanvas");
@@ -26,21 +27,21 @@
     const worldGroup = new Group();
     scene.add(worldGroup);
 
-
     const params = {
         amplitude: 3,
         omega: 2,
         waveNumber: 0.4,
         axesParameters: new AxesParameters({
-            layoutType: AxesView.Type.CLASSICAL,
+            layoutType: Axes.Type.CLASSICAL,
             xyPlane: false,
             yzPlane: false,
-            divisions: 5,
+            divisions: 10,
             axisLabels: ["X", "Im(Ψ)", "Re(Ψ)"],
             annotations: false})
     };
+
     class ControlsGui {
-        constructor(plot, planeWave) {
+        constructor(axes, planeWave) {
             const gui = new GUI({width: 300, autoPlace: false});
             gui.add(params, "amplitude", 1, 6, 0.1)
                 .name("Amplitude")
@@ -53,12 +54,12 @@
                 .onChange(value => planeWave.set_k_to(value * Math.PI));
 
             const axesFolder = gui.addFolder("Axes");
-            axesFolder.add(params.axesParameters, 'axes')
-                .name("Axes").onChange(value => plot.axes.layout.axes.visible = value);
+            axesFolder.add(params.axesParameters, 'frame')
+                .name("Axes").onChange(value => axes.layout.frame.visible = value);
             axesFolder.add(params.axesParameters, 'gridPlanes')
-                .name("Layout").onChange(value => value ? plot.axes.layout.showXZ() : plot.axes.layout.hideXZ());
+                .name("Layout").onChange(value => axes.layout.xz.visible = value);
             axesFolder.add(params.axesParameters, 'annotations')
-                .name("Annotations").onChange(value => plot.axes.annotations.visible = value);
+                .name("Annotations").onChange(value => axes.annotations.visible = value);
             axesFolder.close();
 
             document
@@ -110,12 +111,29 @@
 
     const boundingBox = new Box3();
     boundingBox.setFromObject( worldGroup );
-    const plot3D = new Plot3DView(canvas, canvasContainer, scene, boundingBox, params.axesParameters);
-    plot3D.axes.layout.hideXY();
-    plot3D.axes.layout.hideYZ();
-    plot3D.axes.shiftBy(new Vector3(0, -10, 0));
 
-    const gui = new ControlsGui(plot3D, planeWave);
+    const {layoutType, divisions, axisLabels} = params.axesParameters;
+    const { frame, gridPlanes, annotations } = params.axesParameters;
+
+    const axes = Axes.from(boundingBox, divisions)
+        .withLayout(layoutType)
+        .withAnnotations(canvasContainer, layoutType, axisLabels)
+        .withSettings({frame: frame, gridPlanes: gridPlanes, annotations: annotations});
+    axes.onWindowResize();
+    axes.layout.xy.visible = false;
+    axes.layout.yz.visible = false;
+    worldGroup.add(axes);
+
+    const plot3D = new Plot3DView(scene, canvas, boundingBox);
+    const gui = new ControlsGui(axes, planeWave);
+
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+        axes.onWindowResize();
+    }
+    window.addEventListener("resize", () => resize());
+    resize();
 
     let time = 0;
     const dt = 0.01;
@@ -123,6 +141,7 @@
         requestAnimationFrame(animate);
         planeWave.update(time);
         plot3D.render();
+        axes.render(scene, plot3D.camera);
         time += dt;
     }
     animate();
