@@ -495,7 +495,7 @@ class MatlabAnnotations extends AxesAnnotation {
 /**
  * Use this class to create axes and manage its life cycle.
  */
-class AxesController {
+export class AxesController {
     constructor({
                     parentGroup,
                     canvasContainer,
