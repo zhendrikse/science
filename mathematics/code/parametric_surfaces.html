@@ -17,31 +17,6 @@
         margin: 0 auto;
     }
 
-
-
-
-    .applicationCanvas {
-        display: block;
-        background-color: #131313;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 1 / 1;
-        margin: auto;
-    }
-
-    .canvasWrapper {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        aspect-ratio: 1 / 1;
-    }
-
-    .guiContainer {
-        margin-top: 0.5em;
-        background: #1a1a1a;
-    }
-
 </style>
 
 <script type="importmap">
@@ -57,14 +32,18 @@
 
 <div class="titleDiv" id="surface-title"></div>
 <div id="surface-equation"></div>
-<div class="canvasWrapper" id="surface-canvas-container"  style="aspect-ratio: 4 / 5;">
-    <canvas class="applicationCanvas" id="surfaceCanvas" style="aspect-ratio: 4 / 5;"></canvas><br/>
+<div class="canvasWrapper" id="surface-canvas-container">
+    <canvas class="applicationCanvas" id="surfaceCanvas"></canvas><br/>
+</div>
+<div class="canvasWrapper" style="aspect-ratio: 4 / 1; margin-top: 0.5em;">
+    <canvas class="applicationCanvas" id="ringCanvas" style="aspect-ratio: 4 / 1;"></canvas>
 </div>
 <div class="guiContainer" id="gui-container"></div>
 
 
 <script type="module">
-    import * as THREE from "three";
+    import {Scene, Color, Group, Box3, PerspectiveCamera, WebGLRenderer, Vector3, Vector2, Raycaster,
+        DirectionalLight, AmbientLight, HemisphereLight} from "three";
     import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification, TangentFrameView,
@@ -73,15 +52,47 @@
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
     const canvasContainer = document.getElementById("surface-canvas-container");
-    const canvas = document.getElementById("surfaceCanvas");
+    const mainCanvas = document.getElementById("surfaceCanvas");
+
+    const surfacePlotScene = new Scene();
+    surfacePlotScene.background = new Color(0x131313);
+    const worldGroup = new Group();
+    surfacePlotScene.add(worldGroup);
+
+    const ringCanvas = document.getElementById("ringCanvas");
+    const ringScene = new Scene();
+    ringScene.background = new Color(0x131313);
+
+    const ringCamera = new PerspectiveCamera(45, ringCanvas.clientWidth / ringCanvas.clientHeight, 0.1, 100);
+    ringCamera.position.set(8, 4, 8);
+    ringCamera.lookAt(0, 0, 0);
+
+    const ringRenderer = new WebGLRenderer({canvas: ringCanvas, antialias: true});
+    ringRenderer.setSize(ringCanvas.clientWidth, ringCanvas.clientHeight);
+
+    const ringGroup = new Group();
+    ringScene.add(ringGroup);
+
+    const ringBoundingBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
+    ThreeJsUtils.scaleBox3(ringBoundingBox, 0.3); // scaling factor to obtain miniature surfaces
+
+    // Directional light (schadow, nice highlights)
+    const dirLight = new DirectionalLight(0xffffff, 1);
+    dirLight.position.set(5, 5, 5);
+    ringScene.add(dirLight);
+
+    // Ambient light (zorgt dat alles een beetje zichtbaar is)
+    // const ambient = new AmbientLight(0x555555);
+    // ringScene.add(ambient);
+    const hemiLight = new HemisphereLight(0xffffff, 0x444444, 1);
+    ringScene.add(hemiLight);
 
     class ControlsGui {
-        constructor(surface, plot, ring, viewParameters, onSurfaceSpecificationChanged) {
+        constructor(surface, ring, viewParameters, onSurfaceSpecificationChanged) {
             this.surface = null;
             this.onSurfaceSpecificationChanged = onSurfaceSpecificationChanged;
             this.viewParameters = viewParameters;
             this.surface = surface;
-            this._plot = plot;
             this._tangentFrame = null;
             const controls = new GUI({width: 300, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
@@ -281,7 +292,7 @@
             rotationSpeed=0.01,
             selectionLerp=0.08
         } = {}) {
-            this.group = new THREE.Group();
+            this.group = new Group();
             parentGroup.add(this.group);
             this.surfaces = [];
             this.boundingBox = boundingBox;
@@ -303,7 +314,7 @@
 
         #placeAndShowSurface = (surface, index) => {
             const angle = 2 * Math.PI * index / this.visibleRingItems().length;
-            const position = new THREE.Vector3(this.ringRadius * Math.cos(angle), this.verticalOffset, this.ringRadius * Math.sin(angle));
+            const position = new Vector3(this.ringRadius * Math.cos(angle), this.verticalOffset, this.ringRadius * Math.sin(angle));
             surface.moveTo(position);
             surface.show();
         };
@@ -363,11 +374,6 @@
         visibleRingItems = () => this.surfaces.filter(surface => surface.definition().specification().meta.category === this.activeCategory);
     }
 
-    const surfacePlotScene = new THREE.Scene();
-    surfacePlotScene.background = new THREE.Color(0x131313);
-    const worldGroup = new THREE.Group();
-    surfacePlotScene.add(worldGroup);
-
     // Surface
     const surfaceData = SurfaceDefinitions[20];
     const params = {
@@ -386,7 +392,7 @@
     const boundingBox = surfaceInAxes.boundingBox();
 
     axesController.createFromBoundingBox(boundingBox);
-    const plot3D = new Plot3DView(surfacePlotScene, canvas, boundingBox);
+    const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
 
     // Resizing for mobile devices
@@ -398,39 +404,42 @@
     resize();
 
     // Ring
-    ThreeJsUtils.scaleBox3(boundingBox, 0.20);
-    const ring = new Ring(worldGroup, surfaceInAxes, boundingBox);
+    const ring = new Ring(ringGroup, ringBoundingBox, {
+        ringRadius: 7,
+        verticalOffset: 1.75,
+        activeCategory: surfaceData.meta.category
+    });
     ring.add(SurfaceDefinitions);
     ring.changeActiveCategoryTo(surfaceData.meta.category);
     const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
     ring.onSelectTo(selectedRingSurface);
 
     // Interaction
-    const controlsGui = new ControlsGui(surfaceInAxes, plot3D, ring, params.surfaceParameters,
+    const controlsGui = new ControlsGui(surfaceInAxes, ring, params.surfaceParameters,
         (newSpec) => {
             surfaceInAxes.dispose();
             surfaceInAxes = displayedSurface(newSpec, params.surfaceParameters, axes);
             controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
         });
 
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    canvas.addEventListener("pointerdown", event => {
-        mouse.x = (event.offsetX / canvas.clientWidth) * 2 - 1;
-        mouse.y = -(event.offsetY / canvas.clientHeight) * 2 + 1;
+    // -----------------------
+    // Raycasting for ring
+    // -----------------------
+    const ringRaycaster = new Raycaster();
+    const ringMouse = new Vector2();
 
-        raycaster.setFromCamera(mouse, plot3D.camera);
+    ringCanvas.addEventListener("pointerdown", event => {
+        ringMouse.x = (event.offsetX / ringCanvas.clientWidth) * 2 - 1;
+        ringMouse.y = -(event.offsetY / ringCanvas.clientHeight) * 2 + 1;
 
-        const hits = raycaster.intersectObjects(
-            ring.selectableObjects(),
-            false // IMPORTANT: no recursion
-        );
-
-        if (!hits.length) return;
+        ringRaycaster.setFromCamera(ringMouse, ringCamera);
+        const hits = ringRaycaster.intersectObjects(ring.selectableObjects(), false);
+        if(!hits.length) return;
 
         const selectedMesh = hits[0].object;
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         ring.onSelectTo(selectedRingSurface);
+
         surfaceInAxes.dispose();
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
         surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), params.surfaceParameters);
@@ -443,6 +452,7 @@
         requestAnimationFrame(animate);
         plot3D.render();
         ring.render();
+        ringRenderer.render(ringScene, ringCamera);
         controlsGui.render();
         axesController.render(plot3D.camera);
     }

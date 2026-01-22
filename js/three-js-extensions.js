@@ -294,9 +294,9 @@ export class Axes extends Group {
         const scaledBox = new Box3().setFromObject(this);
         // let size = new Vector3();
         // boundingBox.getSize(size);
-        // let center = new Vector3();
-        // boundingBox.getCenter(center);
-        // this.position.copy(center);
+        let center = new Vector3();
+        boundingBox.getCenter(center);
+        this.position.copy(center);
         const deltaY = boundingBox.min.y - scaledBox.min.y;
         this.position.y += deltaY;
     }
