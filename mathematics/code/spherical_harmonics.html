@@ -1,0 +1,94 @@
+<style>
+    #surface-equation {
+        position: absolute;
+        margin-top: 10px;
+        margin-left: 10px;
+        width: 100%;
+        max-width: 100%;
+        font-size: 14px;
+        color: yellow;
+        z-index: 10;
+    }
+
+    #surface-equation .mjx-chtml {
+        text-align: left;
+        font-size: clamp(14px, 3.5vw, 10px);
+        margin: 0 auto;
+    }
+</style>
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
+    }
+</script>
+
+<div id="surface-equation"></div>
+<div class="canvasWrapper" id="complexPlotContainer">
+    <canvas class="applicationCanvas" id="complexPlotCanvas"></canvas><br/>
+</div>
+<div id="gui-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
+
+<script type="module">
+    import { Scene, Color, Group } from "three";
+    import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters }
+        from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    // import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+    import { Surface, StandardSurfaceView, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, ViewParameters }
+        from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
+
+    const canvasContainer = document.getElementById("complexPlotContainer");
+    const canvas = document.getElementById("complexPlotCanvas");
+
+    const scene = new Scene();
+    scene.background = new Color(0x131313);
+    const worldGroup = new Group();
+    scene.add(worldGroup);
+
+    const axesController = new AxesController({
+        parentGroup: worldGroup,
+        canvasContainer: canvasContainer,
+        axesParameters: new AxesParameters(),
+        scene: scene
+    });
+    const surfaceParams = new ViewParameters();
+
+    const surfaceData = {
+        meta: {name: "Spherical harmonics", category: "Dummy"},
+        parametrization: {
+            xFn: "(sin(4 * u)^4 + cos(4 * u)^4 + sin(4 * phi)^4 + cos(4 * phi)^4) * sin(u) * cos(v)",
+            yFn: "(sin(4 * u)^4 + cos(4 * u)^4 + sin(4 * phi)^4 + cos(4 * phi)^4) * cos(u)",
+            zFn: "(sin(4 * u)^4 + cos(4 * u)^4 + sin(4 * phi)^4 + cos(4 * phi)^4) * sin(u) * sin(v)"
+        },
+        intervals: [["-pi", "pi"], ["-pi", "pi"]]
+    };
+
+    const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
+    let surface = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
+
+    const boundingBox = surface.boundingBox();
+    axesController.createFromBoundingBox(boundingBox);
+
+    const plot3D = new Plot3DView(scene, canvas, boundingBox);
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
+    // const gui = new ControlsGui();
+
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+        axesController.resize();
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        plot3D.render();
+        axesController.render(plot3D.camera);
+    }
+    animate();
+</script>

@@ -307,14 +307,14 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="spherical_harmonics_surface_plot.html">
+  <a href="spherical_harmonics.html">
     <img alt="Spherical harmonics" src="gallery/images/spherical_harmonics.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Spherical_harmonics">Spherical harmonics</a> 
   play an important role in both physics and mathematics.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="spherical_harmonics_surface_plot.html">
+  <a href="spherical_harmonics.html">
     <img alt="Spherical harmonics" src="gallery/images/spherical_harmonic_3.png" title="Click to animate"/>
   </a>
   <figcaption><a href="https://en.wikipedia.org/wiki/Spherical_harmonics">Spherical harmonics</a> 
