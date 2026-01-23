@@ -262,7 +262,6 @@
     });
 
     let surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed), {showWireframe: false});
-    const { frame, gridPlanes, annotations } = params.axesParameters;
 
     const boundingBox = surface.boundingBox();
     axesController.createFromBoundingBox(boundingBox);
