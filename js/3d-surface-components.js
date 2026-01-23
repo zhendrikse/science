@@ -1073,7 +1073,8 @@ export class TangentFrameParameters {
                     wireframe=false,
                     scale = 0.7,
                     opacity = 0.5,
-                    color = 0x8888ff
+                    color = 0x8888ff,
+                    visible = true
                 } = {}) {
         this.u = u;
         this.v = v;
@@ -1083,6 +1084,7 @@ export class TangentFrameParameters {
         this.wireframe = wireframe;
         this.scale = scale;
         this.opacity = opacity;
+        this.visible = visible;
     }
 }
 
@@ -1123,6 +1125,7 @@ export class TangentFrameView extends Group {
             this.principals.k2Arrow
         );
         this.update(tangentFrameParameters.u, tangentFrameParameters.v);
+        this.visible = tangentFrameParameters.visible;
     }
 
     update(u, v) {
