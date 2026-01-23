@@ -90,6 +90,7 @@
             this._surface = surface;
             this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
             this._surface.group.add(this._tangentFrame);
+            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
             this._normals = new NormalsView(this._surface);
         }
 
@@ -98,11 +99,11 @@
             this._tangentFrame.dispose();
             this._surface = surface;
             this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
+            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
             this._surface.group.add(this._tangentFrame);
         }
 
-        updateTangentFrame(surfaceParams) {
-            const tangentFrameParameters = surfaceParams.tangentFrameParameters;
+        updateTangentFrame(tangentFrameParameters) {
             this._tangentFrame.visible = tangentFrameParameters.visible;
             this._tangentFrame.update(tangentFrameParameters.u, tangentFrameParameters.v);
             this._tangentFrame.position.copy(this._surface.group.position);
@@ -155,15 +156,15 @@
             tangentFolder.add(surfaceParams.tangentFrameParameters, 'visible')
                 .name("Show").onChange(value => {
                 surfaceParams.tangentFrameParameters.visible = value;
-                surfaceController.updateTangentFrame(surfaceParams);
+                surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters);
             });
             tangentFolder.add(surfaceParams.tangentFrameParameters, "u", 0, 1, 0.01)
                 .name("u-parameter")
-                .onChange(value => surfaceController.updateTangentFrame(surfaceParams));
+                .onChange(value => surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
 
             tangentFolder.add(surfaceParams.tangentFrameParameters, "v", 0, 1, 0.01)
                 .name("v-parameter")
-                .onChange(value => surfaceController.updateTangentFrame(surfaceParams));
+                .onChange(value => surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
             tangentFolder.close();
         }
 
