@@ -74,10 +74,9 @@ export class SurfaceSpecification {
 
 export class SurfaceView {
     constructor(parentGroup, surface) {
-        this.parentGroup = parentGroup;
+        this.parentGroup.add(this.group);
         this.surface = surface;
         this.group = new Group();
-        this.parentGroup?.add(this.group);
         this._children = new Set();
     }
 
@@ -104,9 +103,8 @@ export class SurfaceView {
     dispose() {
         this.#disposeSubViews();
         this._disposeObject(this.group);
-        if (this.parentGroup) this.parentGroup.remove(this.group);
-        this.group = null;
-        this.parentGroup = null;
+        this.group.removeFromParent();
+        this.group.clear();
     }
 
     /** Deep Three.js cleanup */
