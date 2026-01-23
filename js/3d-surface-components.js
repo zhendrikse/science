@@ -74,7 +74,7 @@ export class SurfaceSpecification {
 
 export class SurfaceView {
     constructor(parentGroup, surface) {
-        this.parentGroup.add(this.group);
+        parentGroup.add(this.group);
         this.surface = surface;
         this.group = new Group();
         this._children = new Set();
