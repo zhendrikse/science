@@ -70,9 +70,6 @@
     const ringRenderer = new WebGLRenderer({canvas: ringCanvas, antialias: true});
     ringRenderer.setSize(ringCanvas.clientWidth, ringCanvas.clientHeight);
 
-    const ringGroup = new Group();
-    ringScene.add(ringGroup);
-
     const ringBoundingBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
     ThreeJsUtils.scaleBox3(ringBoundingBox, 0.3); // scaling factor to obtain miniature surfaces
 
@@ -312,16 +309,15 @@
         }
     }
 
-    class Ring {
-        constructor(parentGroup, boundingBox, {
+    class Ring extends Group {
+        constructor(boundingBox, {
             ringRadius = 2,
             verticalOffset = -1,
             activeCategory = Category.MISC,
             rotationSpeed=0.01,
             selectionLerp=0.08
         } = {}) {
-            this.group = new Group();
-            parentGroup.add(this.group);
+            super();
             this.surfaces = [];
             this.boundingBox = boundingBox;
             this.ringRadius = ringRadius;
@@ -353,12 +349,12 @@
         }
 
         #rotate() {
-            const delta = this.ringTargetRotation - this.group.rotation.y;
+            const delta = this.ringTargetRotation - this.rotation.y;
             const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
-            this.group.rotation.y += shortest * this.selectionLerp;
+            this.rotation.y += shortest * this.selectionLerp;
 
             if (Math.abs(shortest) < 0.001) {
-                this.group.rotation.y = this.ringTargetRotation;
+                this.rotation.y = this.ringTargetRotation;
                 this.ringTargetRotation = null;
             }
         }
@@ -370,14 +366,14 @@
         #setTargetRotation(selectedSurface) {
             const local = selectedSurface.position();
             const angle = Math.atan2(local.x, local.z);
-            this.ringTargetRotation = -angle + Math.PI * .45;
+            this.ringTargetRotation = -angle + Math.PI * .25;
         }
 
-        add(surfaces) {
+        append(surfaces) {
             surfaces.forEach(surfaceDataAsString => {
                 const surfaceSpecification = new SurfaceSpecification(surfaceDataAsString);
                 const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-                const selectorSurface = new MinimalSurfaceView(this.group, new Surface(surfaceDefinition), {});
+                const selectorSurface = new MinimalSurfaceView(this, new Surface(surfaceDefinition), {});
                 ThreeJsUtils.fitGroupToBox(
                     selectorSurface.group,
                     selectorSurface.boundingBox(),
@@ -433,12 +429,13 @@
     resize();
 
     // Ring
-    const ring = new Ring(ringGroup, ringBoundingBox, {
+    const ring = new Ring(ringBoundingBox, {
         ringRadius: 7,
         verticalOffset: 1.75,
         activeCategory: surfaceData.meta.category
     });
-    ring.add(SurfaceDefinitions);
+    ringScene.add(ring);
+    ring.append(SurfaceDefinitions);
     ring.changeActiveCategoryTo(surfaceData.meta.category);
     const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
     ring.onSelectTo(selectedRingSurface);
