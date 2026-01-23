@@ -47,7 +47,8 @@
     import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification, TangentFrameView,
-        ViewParameters, ColorMapper, ContourType, LiteralStringBasedSurfaceDefinition, SurfaceDefinitions }
+        TangentFrameParameters, ViewParameters, ColorMapper, ContourType, LiteralStringBasedSurfaceDefinition,
+        SurfaceDefinitions }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
@@ -85,43 +86,37 @@
     ringScene.add(hemiLight);
 
     class SurfaceController {
-        constructor(surface) {
-            this.surface = surface;
+        constructor(surface, surfaceParams) {
+            this._surface = surface;
+            this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
+            this._surface.group.add(this._tangentFrame);
         }
 
-        setSurface(surface) {
-            this.surface = surface;
+        changeSurface(surface, surfaceParams) {
+            this._surface.dispose();
+            this._tangentFrame.dispose();
+            this._surface = surface;
+            this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
+            this._surface.group.add(this._tangentFrame);
         }
 
-        hasSurface() {
-            return this.surface && this.surface.group;
+        updateTangentFrame(surfaceParams) {
+            const tangentFrameParameters = surfaceParams.tangentFrameParameters;
+            this._tangentFrame.visible = tangentFrameParameters.visible;
+            this._tangentFrame.update(tangentFrameParameters.u, tangentFrameParameters.v);
+            this._tangentFrame.position.copy(this._surface.group.position);
+            this._tangentFrame.scale.set(this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
         }
 
-        changeBaseColorTo(color) {
-            if (!this.hasSurface()) return;
-            this.surface.changeBaseColorTo(color);
-        }
-
-        changeOpacityTo(value) {
-            if (!this.hasSurface()) return;
-            this.surface.changeOpacityTo(value);
-        }
-
-        toggleWireframe(value) {
-            if (!this.hasSurface()) return;
-            this.surface.toggleWireframe(value);
-        }
-
-        rotateBy(value) {
-            if (!this.hasSurface()) return;
-            this.surface.rotateBy(value);
-        }
+        changeBaseColorTo = (color) => this._surface.changeBaseColorTo(color);
+        changeOpacityTo = (value) => this._surface.changeOpacityTo(value);
+        toggleWireframe = (value) => this._surface.toggleWireframe(value);
+        rotateBy = (value) => this._surface.rotateBy(value);
     }
 
     class ControlsGui {
         constructor(surfaceController, ring, onSurfaceSpecificationChanged) {
             this._onSurfaceSpecificationChanged = onSurfaceSpecificationChanged;
-            this._tangentFrame = null;
             this._surfaceController = surfaceController
             const controls = new GUI({width: 300, autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
@@ -147,21 +142,18 @@
 
         #createTangentSpaceFolder(folder) {
             const tangentFolder = folder.addFolder("Tangent frame");
+            tangentFolder.add(surfaceParams.tangentFrameParameters, 'visible')
+                .name("Show").onChange(value => {
+                surfaceParams.tangentFrameParameters.visible = value;
+                surfaceController.updateTangentFrame(surfaceParams);
+            });
             tangentFolder.add(surfaceParams.tangentFrameParameters, "u", 0, 1, 0.01)
                 .name("u-parameter")
-                .onChange(value => {
-                    this._tangentFrame.update(surfaceParams.tangentFrameParameters.u, surfaceParams.tangentFrameParameters.v);
-                    this._tangentFrame.position.copy(surfaceInAxes.group.position);
-                    this._tangentFrame.scale.set(surfaceInAxes.group.scale.x, surfaceInAxes.group.scale.y, surfaceInAxes.group.scale.z);
-                });
+                .onChange(value => surfaceController.updateTangentFrame(surfaceParams));
 
             tangentFolder.add(surfaceParams.tangentFrameParameters, "v", 0, 1, 0.01)
                 .name("v-parameter")
-                .onChange(value => {
-                    this._tangentFrame.update(surfaceParams.tangentFrameParameters.u, surfaceParams.tangentFrameParameters.v);
-                    this._tangentFrame.position.copy(surfaceInAxes.group.position);
-                    this._tangentFrame.scale.set(surfaceInAxes.group.scale.x, surfaceInAxes.group.scale.y, surfaceInAxes.group.scale.z);
-                });
+                .onChange(value => surfaceController.updateTangentFrame(surfaceParams));
             tangentFolder.close();
         }
 
@@ -296,11 +288,7 @@
         }
 
         updateCurrentSurfaceWith= (newSurface) => {
-            if (this._tangentFrame) this._tangentFrame.dispose();
             surfaceParams.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
-            this._tangentFrame = new TangentFrameView(surfaceInAxes.definition(), surfaceParams.tangentFrameParameters);
-            newSurface.group.add(this._tangentFrame);
-
             this.#updateSurfaceDataTitleBox();
             const surfaceSpecification = surfaceInAxes.definition().specification();
             this.xFunction.setValue(surfaceSpecification.parametrization.xFn);
@@ -408,10 +396,16 @@
     });
 
     const surfaceData = SurfaceDefinitions[20];
-    const surfaceParams = new ViewParameters();
+    const surfaceParams = new ViewParameters({
+        tangentFrameParameters: new TangentFrameParameters({
+            visible: false,
+            u: 0.5,
+            v: 0.5
+        })
+    });
     const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
     let surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
-    const surfaceController = new SurfaceController(surfaceInAxes);
+    const surfaceController = new SurfaceController(surfaceInAxes, surfaceParams);
 
 
     const boundingBox = surfaceInAxes.boundingBox();
@@ -446,12 +440,10 @@
         ring,
         (newSurfaceSpecification) => {
             surfaceInAxes.dispose();
-            const surfaceDefinition =
-                new LiteralStringBasedSurfaceDefinition(newSurfaceSpecification);
-            surfaceInAxes =
-                new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
+            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(newSurfaceSpecification);
+            surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
 
-            surfaceController.setSurface(surfaceInAxes);
+            surfaceController.changeSurface(surfaceInAxes, surfaceParams);
             axesController.createFromBoundingBox(surfaceInAxes.boundingBox());
             plot3D.frame(surfaceInAxes.boundingBox());
             controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
@@ -477,10 +469,10 @@
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         ring.onSelectTo(selectedRingSurface);
 
-        surfaceInAxes.dispose();
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
         surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
         axesController.createFromBoundingBox(surfaceInAxes.boundingBox());
+        surfaceController.changeSurface(surfaceInAxes, surfaceParams);
         plot3D.frame(surfaceInAxes.boundingBox());
         controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
     });
