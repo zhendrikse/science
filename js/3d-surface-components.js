@@ -781,9 +781,9 @@ export class MinimalSurfaceView extends SurfaceView {
 }
 
 export class NormalsView extends SurfaceView {
-    constructor(parentGroup, surface, geometry) {
-        super(parentGroup, surface);
-        this.geometry = geometry;
+    constructor(surface) {
+        super(surface.group, surface);
+        this.geometry = surface.geometry;
     }
 
     #deriveScaleFromMesh(k, curvatureGain, normalScale) {
@@ -805,7 +805,7 @@ export class NormalsView extends SurfaceView {
     #createNormalLines(normalScale, curvatureGain, stride) {
         const pos = this.geometry.attributes.position;
         const uv  = this.geometry.attributes.uv;
-        const curvature = new DifferentialGeometry(this.surface);
+        const curvature = new DifferentialGeometry(this.surface.definition());
 
         const positions = [];
         const colors    = [];
@@ -944,11 +944,9 @@ export class StandardSurfaceView extends SurfaceView {
             uCount: this.contourParameters.uCount,
             vCount: this.contourParameters.vCount
         });
-        this.normals = this.registerChild(new NormalsView(this.group, surface, this.geometry));
         if (visualizationParameters.normals) this.addNormalsWith({});
     }
 
-    addNormalsWith = (normalParameters) => this.normals.buildWith(normalParameters);
     changeColorModeTo(mode) {
         switch (mode) {
             case ColorMapper.ColorMode.HEIGHT:
@@ -1007,19 +1005,12 @@ export class StandardSurfaceView extends SurfaceView {
         this.changeColorModeTo(this.colorMode);
     };
     changeOpacityTo = (value) => { this.material.opacity = value; this.material.transparent = value < 1; }
-    clearNormals = () => this.normals.clear();
 
     resampleWith(resolution) {
         this.geometry.dispose();
         this.geometry = this.surface.createGeometryWith(resolution);
         this.mesh.geometry = this.geometry;
         this.colorMapper.apply(this.geometry);
-    }
-
-    resetTransform() {
-        this.group.position.set(0, 0, 0);
-        this.group.rotation.set(0, 0, 0);
-        this.group.scale.set(1, 1, 1);
     }
 
     toggleWireframe = (value) => this.material.wireframe = value;

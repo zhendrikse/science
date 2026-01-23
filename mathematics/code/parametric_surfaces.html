@@ -48,7 +48,7 @@
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { Category, Surface, StandardSurfaceView, MinimalSurfaceView, SurfaceSpecification, TangentFrameView,
         TangentFrameParameters, ViewParameters, ColorMapper, ContourType, LiteralStringBasedSurfaceDefinition,
-        SurfaceDefinitions }
+        SurfaceDefinitions, NormalsView }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
@@ -90,6 +90,7 @@
             this._surface = surface;
             this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
             this._surface.group.add(this._tangentFrame);
+            this._normals = new NormalsView(this._surface);
         }
 
         changeSurface(surface, surfaceParams) {
@@ -113,10 +114,10 @@
         toggleWireframe = (value) => this._surface.toggleWireframe(value);
         toggleNormals = (visible, surfaceParams) => {
             if (visible) {
-                this._surface.addNormalsWith({});
+                this._normals.addNormalsWith({});
                 this._surface.changeOpacityTo(0.3);
             } else {
-                this._surface.clearNormals();
+                this._normals.clearNormals();
                 this._surface.changeOpacityTo(surfaceParams);
             }
         }
