@@ -111,6 +111,15 @@
         changeBaseColorTo = (color) => this._surface.changeBaseColorTo(color);
         changeOpacityTo = (value) => this._surface.changeOpacityTo(value);
         toggleWireframe = (value) => this._surface.toggleWireframe(value);
+        toggleNormals = (visible, surfaceParams) => {
+            if (visible) {
+                this._surface.addNormalsWith({});
+                this._surface.changeOpacityTo(0.3);
+            } else {
+                this._surface.clearNormals();
+                this._surface.changeOpacityTo(surfaceParams);
+            }
+        }
         rotateBy = (value) => this._surface.rotateBy(value);
     }
 
@@ -193,7 +202,7 @@
                 .onChange(value => this._surfaceController.toggleWireframe(value));
             surfaceFolder.add(surfaceParams, 'normals')
                 .name('Show Normals')
-                .onChange(value => this.#showNormals(surfaceInAxes, value));
+                .onChange(value => this._surfaceController.toggleNormals(value, surfaceParams));
             surfaceFolder.add(surfaceParams, 'autoRotate').name('Auto rotate');
             surfaceFolder.close();
         }
@@ -258,16 +267,6 @@
             const style = new Option().style;
             style.color = surfaceParams.baseColor;
             return style.color !== '';
-        }
-
-        #showNormals(surface, show) {
-            if (show) {
-                surface.addNormalsWith({});
-                surface.changeOpacityTo(0.3);
-            } else {
-                surface.clearNormals();
-                surface.changeOpacityTo(surfaceParams.opacity);
-            }
         }
 
         #updateSurfaceDataTitleBox() {
@@ -407,9 +406,7 @@
     let surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
     const surfaceController = new SurfaceController(surfaceInAxes, surfaceParams);
 
-
     const boundingBox = surfaceInAxes.boundingBox();
-
     axesController.createFromBoundingBox(boundingBox);
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
