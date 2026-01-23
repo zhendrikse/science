@@ -114,11 +114,11 @@
         toggleWireframe = (value) => this._surface.toggleWireframe(value);
         toggleNormals = (visible, surfaceParams) => {
             if (visible) {
-                this._normals.addNormalsWith({});
+                this._normals.buildWith({});
                 this._surface.changeOpacityTo(0.3);
             } else {
-                this._normals.clearNormals();
-                this._surface.changeOpacityTo(surfaceParams);
+                this._normals.clear();
+                this._surface.changeOpacityTo(surfaceParams.opacity);
             }
         }
         rotateBy = (value) => this._surface.rotateBy(value);

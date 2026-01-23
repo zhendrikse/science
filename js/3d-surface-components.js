@@ -297,9 +297,9 @@ export class ContourParameters {
 }
 
 export class CurvatureColorMapper extends ColorMapper {
-    constructor(surfaceDefinition) {
+    constructor(surface) {
         super();
-        this.curvature = new DifferentialGeometry(surfaceDefinition);
+        this.curvature = new DifferentialGeometry(surface.definition());
     }
 
     #setColorFromCurvature(u, v, color) {
@@ -540,7 +540,7 @@ export class GaussianCurvatureColorMapper extends ColorMapper {
         clamp = 1.0
     } = {}) {
         super();
-        this.curvature = new DifferentialGeometry(surface);
+        this.curvature = new DifferentialGeometry(surface.definition());
         this.scale = scale;
         this.clamp = clamp;
     }
@@ -862,7 +862,7 @@ export class PrincipalCurvatureColorMapper extends ColorMapper {
         scale = 1.0
     } = {}) {
         super();
-        this.curvature = new DifferentialGeometry(surface);
+        this.curvature = new DifferentialGeometry(surface.definition());
         this.which = which;
         this.scale = scale;
     }
