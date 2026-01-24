@@ -1312,6 +1312,7 @@ export class TangentFrameView extends Group {
         this.clear();
     }
 
+    boundingBox() { return new Box3().setFromObject(this).clone(); }
     showAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = true);
     hideAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = false);
     showPrincipals = () => Object.values(this.principals).forEach(arrow => arrow.visible = true);
