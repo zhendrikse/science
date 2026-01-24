@@ -3,7 +3,7 @@ import { ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 import { Arrow, Interval, ComplexNumber }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import { BufferGeometry, Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3,
-    MeshPhongMaterial } from "three";
+    MeshPhongMaterial, MathUtils, Color, BufferAttribute } from "three";
 
 export const Category = Object.freeze({
     BASIC: "Basic",
@@ -299,23 +299,23 @@ export class ContourParameters {
 export class CurvatureColorMapper extends ColorMapper {
     constructor(surface) {
         super();
-        this.curvature = new DifferentialGeometry(surface.definition());
+        this._diffGeometry = new DifferentialGeometry(surface.definition());
     }
 
     #setColorFromCurvature(u, v, color) {
-        const { N, H, K } = this.curvature.normalMeanGaussian(u, v);
-        const t = THREE.MathUtils.clamp(Math.abs(H) * 2.0, 0, 1);
+        const { N, H, K } = this._diffGeometry.normalMeanGaussian(u, v);
+        const t = MathUtils.clamp(Math.abs(H) * 2.0, 0, 1);
         color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
     }
 
     apply(geometry) {
         const pos = geometry.attributes.position;
         const uv = geometry.attributes.uv;
-        const color = new THREE.Color();
+        const color = new Color();
         let colorAttr = geometry.attributes.color;
         if (!colorAttr) {
             const colors = new Float32Array(pos.count * 3);
-            colorAttr = new THREE.BufferAttribute(colors, 3);
+            colorAttr = new BufferAttribute(colors, 3);
             geometry.setAttribute("color", colorAttr);
         }
 
@@ -333,6 +333,7 @@ export class CurvatureColorMapper extends ColorMapper {
 export class CurvatureContoursView extends SurfaceView {
     constructor(parentGroup, surface) {
         super(parentGroup, surface);
+        this._diffGeometry = new DifferentialGeometry(surface.definition());
         this.pointsObject = null;
         this.material = null;
     }
@@ -346,17 +347,16 @@ export class CurvatureContoursView extends SurfaceView {
               } = {}) {
         this.clear();
 
-        const curvature = new DifferentialGeometry(this.surface.definition());
         const points = [];
         for (let i = 0; i <= uCount; i++)
             for (let j = 0; j <= vCount; j++) {
                 const u = i / uCount;
                 const v = j / vCount;
-                const {N, K, H} = curvature.normalMeanGaussian(u, v);
+                const {N, K, H} = this._diffGeometry.normalMeanGaussian(u, v);
                 if (Math.abs(H) <= threshold) continue;
 
-                const point = new THREE.Vector3();
-                this.surface.definition().sample()(u, v, point);
+                const point = new Vector3();
+                this.surface.definition().sample(u, v, point);
                 points.push(point);
             }
 
@@ -388,6 +388,83 @@ export class CurvatureContoursView extends SurfaceView {
         super.dispose();    // group uit parent + refs los
         this.geometry = null;
         this.surface = null;
+    }
+}
+
+export class IsoparametricContoursView extends SurfaceView {
+    constructor(parentGroup, surface) {
+        super(parentGroup, surface)
+        this.material = null;
+        this.lines = [];
+    }
+
+    #addLine(points, material) {
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const line = new THREE.Line(geometry, material);
+        this.group.add(line);
+        this.lines.push(line);
+    }
+
+    buildWith({
+                  uCount = 20,
+                  vCount = 20,
+                  segments = 100,
+                  color = 0xffffff
+              } = {}) {
+        const material = new THREE.LineBasicMaterial({ color: color, transparent: true, depthWrite: true, depthTest: true });
+        const target = new THREE.Vector3();
+
+        // u = constant, v varies
+        for (let i = 0; i <= uCount; i++) {
+            const u = i / uCount;
+            const points = [];
+
+            for (let j = 0; j <= segments; j++) {
+                const v = j / segments;
+                this.surface.definition().sample(u, v, target);
+                points.push(target.clone());
+            }
+
+            this.#addLine(points, material);
+        }
+
+        // v = constant, u varies
+        for (let i = 0; i <= vCount; i++) {
+            const v = i / vCount;
+            const points = [];
+
+            for (let j = 0; j <= segments; j++) {
+                const u = j / segments;
+                this.surface.definition().sample(u, v, target);
+                points.push(target.clone());
+            }
+
+            this.#addLine(points, material);
+        }
+    }
+
+    clear() {
+        for (const line of this.lines) {
+            this.group.remove(line);
+            line.geometry.dispose();
+        }
+
+        this.lines = [];
+
+        if (this.material) {
+            this.material.dispose();
+            this.material = null;
+        }
+    }
+
+    visible() {
+        return this.lines.length !== 0;
+    }
+
+    dispose() {
+        this.clear();        // eigen GPU-resources
+        super.dispose();     // group uit parent + refs los
+        this.surfaceDefinition = null;
     }
 }
 
@@ -639,83 +716,6 @@ export class HeightColorMapper extends ColorMapper {
     }
 }
 
-export class IsoparametricContoursView extends SurfaceView {
-    constructor(parentGroup, surface) {
-        super(parentGroup, surface)
-        this.material = null;
-        this.lines = [];
-    }
-
-    #addLine(points, material) {
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const line = new THREE.Line(geometry, material);
-        this.group.add(line);
-        this.lines.push(line);
-    }
-
-    buildWith({
-                  uCount = 20,
-                  vCount = 20,
-                  segments = 100,
-                  color = 0xffffff
-              } = {}) {
-        const material = new THREE.LineBasicMaterial({ color: color, transparent: true, depthWrite: true, depthTest: true });
-        const target = new THREE.Vector3();
-
-        // u = constant, v varies
-        for (let i = 0; i <= uCount; i++) {
-            const u = i / uCount;
-            const points = [];
-
-            for (let j = 0; j <= segments; j++) {
-                const v = j / segments;
-                this.surface.definition().sample(u, v, target);
-                points.push(target.clone());
-            }
-
-            this.#addLine(points, material);
-        }
-
-        // v = constant, u varies
-        for (let i = 0; i <= vCount; i++) {
-            const v = i / vCount;
-            const points = [];
-
-            for (let j = 0; j <= segments; j++) {
-                const u = j / segments;
-                this.surface.definition().sample(u, v, target);
-                points.push(target.clone());
-            }
-
-            this.#addLine(points, material);
-        }
-    }
-
-    clear() {
-        for (const line of this.lines) {
-            this.group.remove(line);
-            line.geometry.dispose();
-        }
-
-        this.lines = [];
-
-        if (this.material) {
-            this.material.dispose();
-            this.material = null;
-        }
-    }
-
-    visible() {
-        return this.lines.length !== 0;
-    }
-
-    dispose() {
-        this.clear();        // eigen GPU-resources
-        super.dispose();     // group uit parent + refs los
-        this.surfaceDefinition = null;
-    }
-}
-
 export class LiteralStringBasedSurfaceDefinition
     extends SurfaceDefinition {
 
@@ -904,7 +904,7 @@ export class PrincipalCurvatureColorMapper extends ColorMapper {
 }
 
 /**
- * Using this class, various SurfaceView (sub)types can be realized.
+ * Abstract surface base class, with which various SurfaceView (sub)types can be realized.
  */
 export class Surface {
     constructor(surfaceDefinition) {
