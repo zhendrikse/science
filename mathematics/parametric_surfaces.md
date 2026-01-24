@@ -77,6 +77,149 @@ $$K(v) = \frac{\cos v}{r (R + r \cos v)}$$
 
 
 
+---
+
+## 2. Analytische K berekenen in code
+
+Als jouw `surfaceDefinition` deze torus is, voeg dit toe:
+
+```js
+function torusGaussianCurvature(u, v, R, r) {
+    return Math.cos(v) / (r * (R + r * Math.cos(v)));
+}
+```
+
+Let op:
+
+* `u` zit er alleen in voor consistentie
+* `v` moet **in radialen** zijn (niet genormaliseerd!)
+
+Als je nu `u,v ∈ [0,1]` gebruikt, dan:
+
+```js
+const U = 2 * Math.PI * u;
+const V = 2 * Math.PI * v;
+```
+
+---
+
+## 3. Numeriek vs analytisch vergelijken
+
+### A. Puntgewijs vergelijken (console / debug)
+
+```js
+const Kn = this.geom.gaussianCurvature(u, v);
+const Ka = torusGaussianCurvature(U, V, R, r);
+
+const relError = Math.abs(Kn - Ka) / Math.max(1e-6, Math.abs(Ka));
+```
+
+Typische goede waarden:
+
+* `relError ~ 1e-3` → ok
+* `relError ~ 1e-4` → heel goed
+* `> 1e-2` → eps of stencil fout
+
+---
+
+### B. Visueel: error colormap (aanrader)
+
+Dit is super leerzaam.
+
+```js
+const error = Kn - Ka;
+const t = Math.tanh(error * errorScale);
+```
+
+* rood → numeriek te groot
+* blauw → numeriek te klein
+* grijs → klopt
+
+Je zult zien:
+
+* fout het grootst bij **binnenkant** (hoge kromming)
+* fout groeit bij te grote `eps`
+
+---
+
+## 4. Wat je mag verwachten qua fouten
+
+### Afhankelijkheid van `eps`
+
+| eps    | gedrag                |
+| ------ | --------------------- |
+| `1e-3` | zichtbaar fout        |
+| `1e-4` | acceptabel            |
+| `1e-5` | meestal optimaal      |
+| `1e-6` | ruis (floating point) |
+
+👉 sweet spot: **`1e-5 × schaal`**
+
+---
+
+### Nabij K = 0
+
+Relatieve fout explodeert daar (want delen door klein getal).
+Gebruik daar **absolute fout**:
+
+```js
+Math.abs(Kn - Ka)
+```
+
+---
+
+## 5. Extra check: teken van K
+
+Een snelle sanity test:
+
+```js
+if (Math.sign(Kn) !== Math.sign(Ka)) {
+    console.warn("sign error at", u, v);
+}
+```
+
+Als dit gebeurt:
+
+* bijna altijd stencil / eps probleem
+* of normale vector verkeerd georiënteerd
+
+---
+
+## 6. Waarom dit een uitstekende test is
+
+De torus is perfect omdat:
+
+* analytische oplossing bekend
+* positieve + negatieve K
+* nul-contours
+* geen randproblemen
+
+Als je torus klopt:
+👉 **99% kans dat je differentiaalgeometrie correct is**
+
+---
+
+## 7. Volgende logische stap (optioneel)
+
+Als je dit leuk vindt, zijn dit mooie vervolgstappen:
+
+* vergelijk **mean curvature H**
+* vergelijk **principal curvatures k₁, k₂**
+* plot **asymptotic directions** waar `K < 0`
+* numerieke convergentie testen (`eps → 0`)
+
+Zeg maar wat je wilt uitdiepen 👍
+
+
+
+Als je wilt, kunnen we als volgende stap:
+
+* principal directions tekenen
+* asymptotic directions (waar K < 0)
+* of je numerieke K vergelijken met de analytische torusformule
+
+
+
 
 
 ## Introduction to manifolds

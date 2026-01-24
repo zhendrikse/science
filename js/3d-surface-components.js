@@ -447,7 +447,7 @@ export class IsoparametricContoursView extends SurfaceView {
     clear() {
         for (const line of this._lines) {
             this._group.remove(line);
-            line._geometry.dispose();
+            line.geometry.dispose();
         }
 
         this._lines = [];
