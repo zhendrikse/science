@@ -92,7 +92,7 @@
 
             this._tangentFrame = new TangentFrameView(surfaceDefinition, surfaceParams.tangentFrameParameters);
             this._surface.group.add(this._tangentFrame);
-            this._normals = new NormalsView(this._surface.group);
+            this._normals = new NormalsView(this._surface);
 
             this.updateTangentFrame(surfaceParams.tangentFrameParameters);
             this.updateContours(surfaceParams.contourParameters);
@@ -141,8 +141,7 @@
     }
 
     class ControlsGui {
-        constructor(surfaceController, ring, onSurfaceSpecificationChanged) {
-            this._onSurfaceSpecificationChanged = onSurfaceSpecificationChanged;
+        constructor(surfaceController, ring) {
             this._surfaceController = surfaceController
             const controls = new GUI({width: "100%", autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
@@ -187,16 +186,16 @@
             const contourFolder = folder.addFolder("Contours");
             contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
                 .name("Contour type")
-                .onChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
+                .onChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
-                .onChange(() => {if (this.#isValidColor()) surfaceController.updateContours(surfaceParams.contourParameters);});
+                .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateContours(surfaceParams.contourParameters);});
             contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
                 .name("U contours")
-                .onFinishChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
+                .onFinishChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, "vCount", 1, 50, 1)
                 .name("V contours")
-                .onFinishChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
+                .onFinishChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
             contourFolder.close();
         }
 
@@ -248,21 +247,21 @@
                 .onFinishChange(expr => {
                     const surfaceSpecification =
                         surfaceInAxes.definition().specification().withParametrization({xFn: expr});
-                    this._onSurfaceSpecificationChanged(surfaceSpecification);
+                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
                 });
 
             this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification =
                         surfaceInAxes.definition().specification().withParametrization({yFn: expr});
-                    this._onSurfaceSpecificationChanged(surfaceSpecification);
+                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
                 });
 
             this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification =
                         surfaceInAxes.definition().specification().withParametrization({zFn: expr});
-                    this._onSurfaceSpecificationChanged(surfaceSpecification);
+                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
                 });
 
             mathFolder.close();
@@ -454,20 +453,10 @@
     ring.onSelectTo(selectedRingSurface);
 
     // Interaction
-    const controlsGui = new ControlsGui(
-        surfaceController,
-        ring,
-        (newSurfaceSpecification) => {
-            surfaceController.changeSurface(newSurfaceSpecification, surfaceParams);
-            axesController.createFromBoundingBox(surfaceInAxes.boundingBox());
-            plot3D.frame(surfaceInAxes.boundingBox());
-            controlsGui.update();
-        }
-    );
-
+    const controlsGui = new ControlsGui(surfaceController, ring);
 
     // -----------------------
-    // Raycasting for ring
+    // Ray casting for ring
     // -----------------------
     const ringRaycaster = new Raycaster();
     const ringMouse = new Vector2();

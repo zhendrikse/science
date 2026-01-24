@@ -86,13 +86,13 @@ export class SurfaceView {
     }
 
     #disposeChild(child) {
-        if (child.geometry) child.geometry.dispose();
+        if (child._geometry) child._geometry.dispose();
 
-        if (!child.material) return;
-        if (Array.isArray(child.material))
-            child.material.forEach(m => m.dispose());
+        if (!child._material) return;
+        if (Array.isArray(child._material))
+            child._material.forEach(m => m.dispose());
         else
-            child.material.dispose();
+            child._material.dispose();
     }
 
     registerChild(view) {
@@ -782,9 +782,9 @@ export class MinimalSurfaceView extends SurfaceView {
 }
 
 export class NormalsView extends SurfaceView {
-    constructor(surface) {
-        super(surface.group, surface);
-        this._geometry = surface.geometry;
+    constructor(surfaceView) {
+        super(surfaceView.group, surfaceView);
+        this._geometry = surfaceView._geometry;
     }
 
     #deriveScaleFromMesh(k, curvatureGain, normalScale) {
