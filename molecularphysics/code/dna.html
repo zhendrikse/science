@@ -56,11 +56,11 @@
         const canvas = document.createElement('canvas');
         canvas.width = 128;
         canvas.height = 64;
-        const ctx = canvas.getContext('2d');
-        ctx.font = '28px Arial';
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 10);
+        const context = canvas.getContext('2d');
+        context.font = '34px Arial';
+        context.fillStyle = '#ffffff';
+        context.textAlign = 'center';
+        context.fillText(text, canvas.width / 2, canvas.height / 2 + 10);
 
         const texture = new THREE.CanvasTexture(canvas);
         const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
