@@ -428,6 +428,7 @@
     });
 
     const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
+    axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
     plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
 
