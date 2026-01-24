@@ -14,11 +14,58 @@
 <div class="canvasWrapper" id="surface-canvas-container">
     <canvas class="applicationCanvas" id="surfaceCanvas"></canvas>
 </div>
-<div class="canvasWrapper">
-    <canvas class="applicationCanvas" id="ringCanvas" style="aspect-ratio: 4 / 1;"></canvas>
-</div>
+<canvas class="applicationCanvas" id="ringCanvas" style="aspect-ratio: 4 / 1;"></canvas>
 <div class="guiContainer" id="gui-container"></div>
 
+<style>
+
+    .applicationCanvas {
+        display: block;
+        background-color: #131313;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 1 / 1;
+        margin: 0;
+    }
+
+    .canvasWrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    .guiContainer {
+        margin-top: 0;
+        background: #131313;
+    }
+
+    .titleDiv {
+        text-align: center;
+        font-size: clamp(16px, 4vw, 24px);
+        font-family: sans-serif;
+        color: yellow;
+        padding: 10px;
+        font-weight: bold;
+        text-shadow: 0 0 8px black;
+        margin: 0;
+        background: #131313;
+    }
+
+    .equationDiv {
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        font-size: 13px;
+        color: yellow;
+        text-align: center;
+        z-index: 10;
+        background: #131313;
+        padding: 5px;
+    }
+
+</style>
 
 <script type="module">
     import {Scene, Color, Group, Box3, PerspectiveCamera, WebGLRenderer, Vector3, Vector2, Raycaster,
@@ -43,14 +90,14 @@
     ringScene.background = new Color(0x131313);
 
     const ringCamera = new PerspectiveCamera(45, ringCanvas.clientWidth / ringCanvas.clientHeight, 0.1, 100);
-    ringCamera.position.set(8, 4, 8);
+    ringCamera.position.set(8, 5, 8);
     ringCamera.lookAt(0, 0, 0);
 
     const ringRenderer = new WebGLRenderer({canvas: ringCanvas, antialias: true});
     ringRenderer.setSize(ringCanvas.clientWidth, ringCanvas.clientHeight);
 
     const ringBoundingBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
-    ThreeJsUtils.scaleBox3(ringBoundingBox, 0.9); // scaling factor to obtain miniature surfaces
+    ThreeJsUtils.scaleBox3(ringBoundingBox, 1.1); // scaling factor to obtain miniature surfaces
 
     // Directional light (shadow, nice highlights)
     const dirLight = new DirectionalLight(0xffffff, 1);
@@ -236,6 +283,17 @@
         }
     }
 
+    function updateViewForSurface() {
+        const boundingBox = surfaceController.surfaceBoundingBox().clone();
+
+        axesController.createFromBoundingBox(boundingBox);
+
+        const framedBox = boundingBox.clone();
+        ThreeJsUtils.scaleBox3(framedBox, 0.8);
+        plot3D.frame(framedBox);
+    }
+
+
     // Surface
     const axesParams = new AxesParameters({annotations: false});
     const axesController = new AxesController({
@@ -255,9 +313,8 @@
     });
 
     const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
-    axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
-    plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .75));
+    updateViewForSurface();
 
     // Resizing for mobile devices
     function resize() {
@@ -301,8 +358,7 @@
         ring.onSelectTo(selectedRingSurface);
 
         surfaceController.changeSurface(selectedRingSurface.definition().specification(), surfaceParams);
-        axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
-        plot3D.frame(surfaceController.surfaceBoundingBox());
+        updateViewForSurface();
         controlsGui.update();
     });
 
