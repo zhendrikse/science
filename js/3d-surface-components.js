@@ -1023,6 +1023,7 @@ export class SurfaceController {
     constructor(parentGroup, surfaceData, surfaceParams) {
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
         this._surface = new StandardSurfaceView(parentGroup, new Surface(surfaceDefinition), surfaceParams);
+        this._parentGroup = parentGroup;
 
         this._tangentFrame = new TangentFrameView(surfaceDefinition, surfaceParams.tangentFrameParameters);
         this._surface.group.add(this._tangentFrame);
@@ -1042,7 +1043,7 @@ export class SurfaceController {
         this._tangentFrame.dispose();
 
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-        this._surface = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
+        this._surface = new StandardSurfaceView(this._parentGroup, new Surface(surfaceDefinition), surfaceParams);
 
         this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
         this.updateTangentFrame(surfaceParams.tangentFrameParameters);
