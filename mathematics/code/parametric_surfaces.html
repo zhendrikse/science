@@ -92,14 +92,14 @@
 
             this._tangentFrame = new TangentFrameView(surfaceDefinition, surfaceParams.tangentFrameParameters);
             this._surface.group.add(this._tangentFrame);
-            this._normals = new NormalsView(this._surface);
+            this._normals = new NormalsView(this._surface.group);
 
             this.updateTangentFrame(surfaceParams.tangentFrameParameters);
             this.updateContours(surfaceParams.contourParameters);
-            this.updateColors(surfaceParams);
+            this.updateColor(surfaceParams);
         }
 
-        updateColors = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
+        updateColor = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
         updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
         surfaceBoundingBox = () => this._surface.boundingBox();
 
@@ -137,6 +137,7 @@
             }
         }
         rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotation.y += value; }
+        resampleWith = (resolution) => this._surface.resampleWith(resolution);
     }
 
     class ControlsGui {
@@ -203,16 +204,16 @@
             const surfaceFolder = folder.addFolder("Surface");
             surfaceFolder.add(surfaceParams, "colorMode", Object.values(ColorMapper.ColorMode))
                 .name("Color Mode")
-                .onChange(() => surfaceInAxes.changeColorModeTo(surfaceParams.colorMode));
+                .onChange(() => this._surfaceController.updateColor(surfaceParams));
             surfaceFolder.add(surfaceParams, 'baseColor')
                 .name("Base color")
-                .onChange(() => {if (this.#isValidColor()) this._surfaceController.changeBaseColorTo(surfaceParams.baseColor);});
+                .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateColor(surfaceParams);});
             surfaceFolder.add(surfaceParams, "opacity", 0, 1, .01)
                 .name("Opacity")
-                .onChange(value => this._surfaceController.changeOpacityTo(value));
+                .onChange(value => this._surfaceController.updateOpacity(value));
             surfaceFolder.add(surfaceParams, "resolution", 10, 200, 1)
                 .name("Resolution")
-                .onFinishChange(resolution => surfaceInAxes.resampleWith(resolution));
+                .onFinishChange(resolution => this._surfaceController.resampleWith(resolution));
             surfaceFolder.add(surfaceParams, 'wireframe')
                 .name("Wireframe")
                 .onChange(value => this._surfaceController.toggleWireframe(value));

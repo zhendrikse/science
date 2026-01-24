@@ -74,9 +74,9 @@ export class SurfaceSpecification {
 
 export class SurfaceView {
     constructor(parentGroup, surface) {
-        this.group = new Group();
-        parentGroup.add(this.group);
-        this.surface = surface;
+        this._group = new Group();
+        parentGroup.add(this._group);
+        this._surface = surface;
         this._children = new Set();
     }
 
@@ -102,9 +102,9 @@ export class SurfaceView {
 
     dispose() {
         this.#disposeSubViews();
-        this._disposeObject(this.group);
-        this.group.removeFromParent();
-        this.group.clear();
+        this._disposeObject(this._group);
+        this._group.removeFromParent();
+        this._group.clear();
     }
 
     /** Deep Three.js cleanup */
@@ -113,10 +113,11 @@ export class SurfaceView {
         object.clear();
     }
 
-    boundingBox() { return new Box3().setFromObject(this.group).clone(); }
-    definition() { return this.surface.definition(); }
-    hide() { this.group.visible = false; }
-    moveTo(positionAsVector) { this.group.position.copy(positionAsVector); }
+    boundingBox() { return new Box3().setFromObject(this._group).clone(); }
+    definition() { return this._surface.definition(); }
+    get group() { return this._group; }
+    hide() { this._group.visible = false; }
+    moveTo(positionAsVector) { this._group.position.copy(positionAsVector); }
     material = (showWireframe, opacity) =>
         new MeshPhongMaterial({
             vertexColors: true,
@@ -125,9 +126,9 @@ export class SurfaceView {
             transparent: true,
             opacity: opacity,
        });
-    position() { return this.group.position.clone(); }
-    rotateBy = (delta) => this.group.rotation.y += delta;
-    show() { this.group.visible = true; }
+    position() { return this._group.position.clone(); }
+    rotateBy = (delta) => this._group.rotation.y += delta;
+    show() { this._group.visible = true; }
 }
 
 export class ComplexColorMapper extends ColorMapper {
@@ -181,16 +182,16 @@ export class ComplexColorMapper extends ColorMapper {
 export class ComplexSurfaceView extends SurfaceView {
     constructor(parentGroup, surface, {showWireframe=false, resolution=100, baseColor="#4f6"} = {}) {
         super(parentGroup, surface);
-        this.baseColor = baseColor;
-        this.geometry = surface.createGeometryWith(resolution);
-        this.material = this.material(showWireframe, 1);
-        this.colorMapper = new ComplexColorMapper();
-        this.mesh = new Mesh(this.geometry, this.material);
-        this.group.add(this.mesh);
-        this.colorMapper.apply(this.geometry);
+        this._baseColor = baseColor;
+        this._geometry = surface.createGeometryWith(resolution);
+        this._material = this.material(showWireframe, 1);
+        this._colorMapper = new ComplexColorMapper();
+        this._mesh = new Mesh(this._geometry, this._material);
+        this._group.add(this._mesh);
+        this._colorMapper.apply(this._geometry);
     }
 
-    selectableObject = () => this.mesh;
+    selectableObject = () => this._mesh;
 }
 
 export class ComplexParametricGeometry extends BufferGeometry {
@@ -334,8 +335,8 @@ export class CurvatureContoursView extends SurfaceView {
     constructor(parentGroup, surface) {
         super(parentGroup, surface);
         this._diffGeometry = new DifferentialGeometry(surface.definition());
-        this.pointsObject = null;
-        this.material = null;
+        this._pointsObject = null;
+        this._material = null;
     }
 
     buildWith({
@@ -356,53 +357,53 @@ export class CurvatureContoursView extends SurfaceView {
                 if (Math.abs(H) <= threshold) continue;
 
                 const point = new Vector3();
-                this.surface.definition().sample(u, v, point);
+                this._surface.definition().sample(u, v, point);
                 points.push(point);
             }
 
         if (points.length === 0) return;
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        this.material = new THREE.PointsMaterial({
+        this._material = new THREE.PointsMaterial({
             size: 0.04,
             color: color,
             opacity: opacity,
             transparent: true
         });
 
-        this.pointsObject = new THREE.Points(geometry, this.material);
-        this.group.add(this.pointsObject);
+        this._pointsObject = new THREE.Points(geometry, this._material);
+        this._group.add(this._pointsObject);
     }
 
     clear() {
-        if (this.pointsObject) {
-            this.group.remove(this.pointsObject);
-            this.pointsObject.geometry.dispose();
-            this.pointsObject.material.dispose();
-            this.pointsObject = null;
-            this.material = null;
+        if (this._pointsObject) {
+            this._group.remove(this.pointsObject);
+            this._pointsObject.geometry.dispose();
+            this._pointsObject.material.dispose();
+            this._pointsObject = null;
+            this._material = null;
         }
     }
 
     dispose() {
         this.clear();       // eigen GPU resources
         super.dispose();    // group uit parent + refs los
-        this.geometry = null;
-        this.surface = null;
+        this._geometry = null;
+        this._surface = null;
     }
 }
 
 export class IsoparametricContoursView extends SurfaceView {
     constructor(parentGroup, surface) {
         super(parentGroup, surface)
-        this.material = null;
-        this.lines = [];
+        this._material = null;
+        this._lines = [];
     }
 
     #addLine(points, material) {
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         const line = new THREE.Line(geometry, material);
-        this.group.add(line);
-        this.lines.push(line);
+        this._group.add(line);
+        this._lines.push(line);
     }
 
     buildWith({
@@ -421,7 +422,7 @@ export class IsoparametricContoursView extends SurfaceView {
 
             for (let j = 0; j <= segments; j++) {
                 const v = j / segments;
-                this.surface.definition().sample(u, v, target);
+                this._surface.definition().sample(u, v, target);
                 points.push(target.clone());
             }
 
@@ -435,7 +436,7 @@ export class IsoparametricContoursView extends SurfaceView {
 
             for (let j = 0; j <= segments; j++) {
                 const u = j / segments;
-                this.surface.definition().sample(u, v, target);
+                this._surface.definition().sample(u, v, target);
                 points.push(target.clone());
             }
 
@@ -444,27 +445,27 @@ export class IsoparametricContoursView extends SurfaceView {
     }
 
     clear() {
-        for (const line of this.lines) {
-            this.group.remove(line);
-            line.geometry.dispose();
+        for (const line of this._lines) {
+            this._group.remove(line);
+            line._geometry.dispose();
         }
 
-        this.lines = [];
+        this._lines = [];
 
-        if (this.material) {
-            this.material.dispose();
-            this.material = null;
+        if (this._material) {
+            this._material.dispose();
+            this._material = null;
         }
     }
 
     visible() {
-        return this.lines.length !== 0;
+        return this._lines.length !== 0;
     }
 
     dispose() {
         this.clear();        // eigen GPU-resources
         super.dispose();     // group uit parent + refs los
-        this.surfaceDefinition = null;
+        this._surfaceDefinition = null;
     }
 }
 
@@ -508,7 +509,7 @@ export class PrincipalFrame {
 
 export class DifferentialGeometry {
     constructor(surfaceDefinition, { eps = 1e-4 } = {}) {
-        this.surfaceDefinition = surfaceDefinition;
+        this._surfaceDefinition = surfaceDefinition;
         this.eps = eps;
     }
 
@@ -516,7 +517,7 @@ export class DifferentialGeometry {
         const e = this.eps;
         const sample = (du, dv) => {
             const position = new Vector3();
-            this.surfaceDefinition.sample(u + du, v + dv, position);
+            this._surfaceDefinition.sample(u + du, v + dv, position);
             return position;
         };
 
@@ -598,7 +599,7 @@ export class DifferentialGeometry {
         if (!result) return null;
 
         const position = new THREE.Vector3();
-        this.surfaceDefinition.sample(u, v, position);
+        this._surfaceDefinition.sample(u, v, position);
 
         return new PrincipalFrame({
             position,
@@ -760,35 +761,35 @@ export class LiteralStringBasedSurfaceDefinition
 export class MinimalSurfaceView extends SurfaceView {
     constructor(parentGroup, surface, {showWireframe=true, resolution=20, baseColor="#4f6"}) {
         super(parentGroup, surface);
-        this.baseColor = baseColor;
-        this.geometry = surface.createGeometryWith(resolution);
-        this.material = this.material(showWireframe, 1);
-        this.colorMapper = new HeightColorMapper({ baseColor: baseColor });
-        this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.group.add(this.mesh);
-        this.colorMapper.apply(this.geometry);
+        this._baseColor = baseColor;
+        this._geometry = surface.createGeometryWith(resolution);
+        this._material = this.material(showWireframe, 1);
+        this._colorMapper = new HeightColorMapper({ baseColor: baseColor });
+        this._mesh = new THREE.Mesh(this._geometry, this._material);
+        this._group.add(this._mesh);
+        this._colorMapper.apply(this._geometry);
     }
 
     onSelect = () => {
-        this.material.wireframe = false;
-        this.colorMapper = new HeightColorMapper({ baseColor: "#f90"});
-        this.colorMapper.apply(this.geometry); }
+        this._material.wireframe = false;
+        this._colorMapper = new HeightColorMapper({ baseColor: "#f90"});
+        this._colorMapper.apply(this._geometry); }
     onDeselect = () => {
-        this.material.wireframe = true;
-        this.colorMapper = new HeightColorMapper({ baseColor: this.baseColor });
-        this.colorMapper.apply(this.geometry); }
-    selectableObject = () => this.mesh;
+        this._material.wireframe = true;
+        this._colorMapper = new HeightColorMapper({ baseColor: this.baseColor });
+        this._colorMapper.apply(this._geometry); }
+    selectableObject = () => this._mesh;
 }
 
 export class NormalsView extends SurfaceView {
     constructor(surface) {
         super(surface.group, surface);
-        this.geometry = surface.geometry;
+        this._geometry = surface.geometry;
     }
 
     #deriveScaleFromMesh(k, curvatureGain, normalScale) {
-        this.geometry.computeBoundingSphere();
-        const baseScale = this.geometry.boundingSphere.radius * normalScale;
+        this._geometry.computeBoundingSphere();
+        const baseScale = this._geometry.boundingSphere.radius * normalScale;
         const maxScale  = baseScale * 2.5;
         // schaal met clamp
         return Math.min(baseScale * (1 + curvatureGain * k), maxScale);
@@ -803,9 +804,9 @@ export class NormalsView extends SurfaceView {
     }
 
     #createNormalLines(normalScale, curvatureGain, stride) {
-        const pos = this.geometry.attributes.position;
-        const uv  = this.geometry.attributes.uv;
-        const curvature = new DifferentialGeometry(this.surface.definition());
+        const pos = this._geometry.attributes.position;
+        const uv  = this._geometry.attributes.uv;
+        const curvature = new DifferentialGeometry(this._surface.definition());
 
         const positions = [];
         const colors    = [];
@@ -835,24 +836,24 @@ export class NormalsView extends SurfaceView {
 
     buildWith({ normalScale = 0.25, curvatureGain = 1.0, stride = 4 }) {
         this.clear();
-        this.helper = this.#createNormalLines(normalScale, curvatureGain, stride);
-        this.group.add(this.helper);
+        this._helper = this.#createNormalLines(normalScale, curvatureGain, stride);
+        this._group.add(this._helper);
     }
 
     clear() {
         if (!this.helper) return;
 
-        this.group.remove(this.helper);
-        this.helper.geometry.dispose();
-        this.helper.material.dispose();
-        this.helper = null;
+        this._group.remove(this._helper);
+        this._helper.geometry.dispose();
+        this._helper.material.dispose();
+        this._helper = null;
     }
 
     dispose() {
         this.clear();       // alleen eigen resources
         super.dispose();    // verwijdert group uit parent
-        this.geometry = null;
-        this.surface = null;
+        this._geometry = null;
+        this._surface = null;
     }
 }
 
@@ -930,10 +931,10 @@ export class StandardSurfaceView extends SurfaceView {
         this._colorMapper = null;
         this._colorMode = surfaceParameters.colorMode;
 
-        this.geometry = surface.createGeometryWith(surfaceParameters.resolution);
-        this.material = this.material(surfaceParameters.wireframe, surfaceParameters.opacity);
-        this.mesh = new Mesh(this.geometry, this.material);
-        this.group.add(this.mesh);
+        this._geometry = surface.createGeometryWith(surfaceParameters.resolution);
+        this._material = this.material(surfaceParameters.wireframe, surfaceParameters.opacity);
+        this._mesh = new Mesh(this._geometry, this._material);
+        this._group.add(this._mesh);
 
         this.#setContourMode(surfaceParameters.contourParameters);
         this.updateContours(surfaceParameters.contourParameters);
@@ -950,11 +951,11 @@ export class StandardSurfaceView extends SurfaceView {
                 this._contours = null;
                 break;
             case ContourType.CURVATURE:
-                this._contours = new CurvatureContoursView(this.group, this.surface);
+                this._contours = new CurvatureContoursView(this._group, this._surface);
                 this.registerChild(this._contours);
                 break;
             case ContourType.ISO_PARAMETRIC:
-                this._contours = new IsoparametricContoursView(this.group, this.surface);
+                this._contours = new IsoparametricContoursView(this._group, this._surface);
                 this.registerChild(this._contours);
                 break;
         }
@@ -967,21 +968,21 @@ export class StandardSurfaceView extends SurfaceView {
                 this._colorMapper = new HeightColorMapper({ useBaseColor: false });
                 break;
             case ColorMapper.ColorMode.MEAN:
-                this._colorMapper = new CurvatureColorMapper(this.surface);
+                this._colorMapper = new CurvatureColorMapper(this._surface);
                 break;
             case ColorMapper.ColorMode.K1:
             case ColorMapper.ColorMode.K2:
-                this._colorMapper = new PrincipalCurvatureColorMapper(this.surface, { which: mode, scale: 3.0 });
+                this._colorMapper = new PrincipalCurvatureColorMapper(this._surface, { which: surfaceParameters.colorMode, scale: 3.0 });
                 break;
             case ColorMapper.ColorMode.GAUSSIAN:
                 this._colorMapper =
-                    new GaussianCurvatureColorMapper(this.surface, {
+                    new GaussianCurvatureColorMapper(this._surface, {
                         scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
                     });
                 break;
             case ColorMapper.ColorMode.BASE:
             default:
-                this._colorMapper = new HeightColorMapper({ baseColor: this.baseColor, useBaseColor: true});
+                this._colorMapper = new HeightColorMapper({ baseColor: this._baseColor, useBaseColor: true});
         }
     }
 
@@ -998,19 +999,19 @@ export class StandardSurfaceView extends SurfaceView {
         if (this._colorMode !== surfaceParameters.colorMode)
             this.#setColorMode(surfaceParameters);
 
-        this._colorMapper.apply(this.geometry);
+        this._colorMapper.apply(this._geometry);
     }
 
-    updateOpacity = (value) => this.material.opacity = value;
+    updateOpacity = (value) => this._material.opacity = value;
 
     resampleWith(resolution) {
-        this.geometry.dispose();
-        this.geometry = this.surface.createGeometryWith(resolution);
-        this.mesh.geometry = this.geometry;
-        this.colorMapper.apply(this.geometry);
+        this._geometry.dispose();
+        this._geometry = this._surface.createGeometryWith(resolution);
+        this._mesh.geometry = this._geometry;
+        this._colorMapper.apply(this._geometry);
     }
 
-    toggleWireframe = (value) => this.material.wireframe = value;
+    toggleWireframe = (value) => this._material.wireframe = value;
 }
 
 export class Utils {
