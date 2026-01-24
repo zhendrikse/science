@@ -74,7 +74,7 @@
     const ringBoundingBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
     ThreeJsUtils.scaleBox3(ringBoundingBox, 0.3); // scaling factor to obtain miniature surfaces
 
-    // Directional light (schadow, nice highlights)
+    // Directional light (shadow, nice highlights)
     const dirLight = new DirectionalLight(0xffffff, 1);
     dirLight.position.set(5, 5, 5);
     ringScene.add(dirLight);
@@ -86,13 +86,22 @@
     ringScene.add(hemiLight);
 
     class SurfaceController {
-        constructor(surface, surfaceParams) {
-            this._surface = surface;
-            this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
+        constructor(parentGroup, surfaceData, surfaceParams) {
+            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
+            this._surface = new StandardSurfaceView(parentGroup, new Surface(surfaceDefinition), surfaceParams);
+
+            this._tangentFrame = new TangentFrameView(surfaceDefinition, surfaceParams.tangentFrameParameters);
             this._surface.group.add(this._tangentFrame);
-            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
             this._normals = new NormalsView(this._surface);
+
+            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
+            this.updateContours(surfaceParams.contourParameters);
+            this.updateColors(surfaceParams);
         }
+
+        updateColors = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
+        updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
+        surfaceBoundingBox = () => this._surface.boundingBox();
 
         changeSurface(surface, surfaceParams) {
             this._surface.dispose();
@@ -122,7 +131,7 @@
                 this._surface.changeOpacityTo(surfaceParams.opacity);
             }
         }
-        rotateBy = (value) => this._surface.rotateBy(value);
+        rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotateBy(value); }
     }
 
     class ControlsGui {
@@ -404,9 +413,7 @@
             v: 0.5
         })
     });
-    const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
-    let surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
-    const surfaceController = new SurfaceController(surfaceInAxes, surfaceParams);
+    const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
 
     const boundingBox = surfaceInAxes.boundingBox();
     axesController.createFromBoundingBox(boundingBox);
