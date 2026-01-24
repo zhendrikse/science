@@ -31,9 +31,7 @@
     camera.position.z = 35;
 
     const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: dnaCanvas} );
-    renderer.setSize( dnaCanvas.width, dnaCanvas.height );
     renderer.shadowMap.enabled = true;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     // Resizing for mobile devices
     ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
@@ -233,7 +231,7 @@
         renderer.render(scene, camera);
     }
 
-    const gui = new lil.GUI({ autoPlace: false });
+    const gui = new lil.GUI({ width: "100%", autoPlace: false });
     gui.domElement.id = 'gui';
     gui_container.appendChild(gui.domElement);
 

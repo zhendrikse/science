@@ -52,7 +52,7 @@
 
     class ControlsGui {
         constructor() {
-            const gui = new GUI({width: 300, autoPlace: false});
+            const gui = new GUI({width: "100%", autoPlace: false});
             this.#createContourFolder(gui);
             this.#createAxesFolder(gui);
             document.getElementById("gui-container").appendChild(gui.domElement);

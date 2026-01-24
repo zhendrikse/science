@@ -76,7 +76,7 @@
 
     class ControlsGui {
         constructor() {
-            const gui = new GUI({width: 300, autoPlace: false});
+            const gui = new GUI({width: "100%", autoPlace: false});
             gui.add(params, 'vectorField', Object.values(VectorFields))
                 .name("Field type")
                 .onChange(value => this.#changeVectorFieldTo(value));

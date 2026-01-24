@@ -72,7 +72,7 @@
     ringRenderer.setSize(ringCanvas.clientWidth, ringCanvas.clientHeight);
 
     const ringBoundingBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
-    ThreeJsUtils.scaleBox3(ringBoundingBox, 0.3); // scaling factor to obtain miniature surfaces
+    ThreeJsUtils.scaleBox3(ringBoundingBox, 0.9); // scaling factor to obtain miniature surfaces
 
     // Directional light (shadow, nice highlights)
     const dirLight = new DirectionalLight(0xffffff, 1);
@@ -143,7 +143,7 @@
         constructor(surfaceController, ring, onSurfaceSpecificationChanged) {
             this._onSurfaceSpecificationChanged = onSurfaceSpecificationChanged;
             this._surfaceController = surfaceController
-            const controls = new GUI({width: 300, autoPlace: false});
+            const controls = new GUI({width: "100%", autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
             this.xFunction = null;

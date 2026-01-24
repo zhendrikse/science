@@ -125,7 +125,7 @@
 
     class ControlsGui {
         constructor() {
-            const gui = new GUI({width: 300, autoPlace: false});
+            const gui = new GUI({width: "100%", autoPlace: false});
             gui.add(params, 'function', Object.values(ComplexFunctions))
                 .name("F(z) = ")
                 .onChange(value => {

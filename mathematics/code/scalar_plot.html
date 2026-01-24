@@ -41,7 +41,7 @@
 
     class ControlsGui {
         constructor() {
-            const gui = new GUI({width: 300, autoPlace: false});
+            const gui = new GUI({width: "100%", autoPlace: false});
 
             gui.add(params, "opacity", 0, 1, .01).name("Opacity").onChange(value => field.setOpacity(value));
             gui.add(params, "radius", 0, 1, .01).name("Radius").onFinishChange(value => field.setRadius(value));

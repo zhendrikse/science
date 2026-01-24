@@ -49,7 +49,7 @@
 
     class ControlsGui {
         constructor(planeWave) {
-            const gui = new GUI({width: 300, autoPlace: false});
+            const gui = new GUI({width: "100%", autoPlace: false});
             gui.add(params, "amplitude", 1, 6, 0.1)
                 .name("Amplitude")
                 .onChange(value => planeWave.set_amplitude_to(value));
