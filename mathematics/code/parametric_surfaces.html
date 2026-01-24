@@ -103,14 +103,19 @@
         updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
         surfaceBoundingBox = () => this._surface.boundingBox();
 
-        changeSurface(surface, surfaceParams) {
+        changeSurface(surfaceSpecification, surfaceParams) {
             this._surface.dispose();
             this._tangentFrame.dispose();
-            this._surface = surface;
+
+            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
+            this._surface = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
+
             this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
             this.updateTangentFrame(surfaceParams.tangentFrameParameters);
             this._surface.group.add(this._tangentFrame);
         }
+
+        get surface() { return this._surface; }
 
         updateTangentFrame(tangentFrameParameters) {
             this._tangentFrame.visible = tangentFrameParameters.visible;
@@ -120,18 +125,18 @@
         }
 
         changeBaseColorTo = (color) => this._surface.changeBaseColorTo(color);
-        changeOpacityTo = (value) => this._surface.changeOpacityTo(value);
+        updateOpacity = (value) => this._surface.updateOpacity(value);
         toggleWireframe = (value) => this._surface.toggleWireframe(value);
         toggleNormals = (visible, surfaceParams) => {
             if (visible) {
                 this._normals.buildWith({});
-                this._surface.changeOpacityTo(0.3);
+                this._surface.updateOpacity(0.3);
             } else {
                 this._normals.clear();
-                this._surface.changeOpacityTo(surfaceParams.opacity);
+                this._surface.updateOpacity(surfaceParams.opacity);
             }
         }
-        rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotateBy(value); }
+        rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotation.y += value; }
     }
 
     class ControlsGui {
@@ -145,9 +150,9 @@
             this.yFunction = null;
             this.zFunction = null;
             this.surfaceCoordinates = {
-                x: surfaceInAxes.definition().specification().parametrization.xFn,
-                y: surfaceInAxes.definition().specification().parametrization.yFn,
-                z: surfaceInAxes.definition().specification().parametrization.zFn
+                x: surfaceController.surface.definition().specification().parametrization.xFn,
+                y: surfaceController.surface.definition().specification().parametrization.yFn,
+                z: surfaceController.surface.definition().specification().parametrization.zFn
             }
 
             controls.add(surfaceParams, 'category', Object.values(Category))
@@ -157,7 +162,7 @@
             this.#createTangentSpaceFolder(controls);
             this.#createAppearanceFolder(controls);
             this.#createMathFolder(controls);
-            this.updateCurrentSurfaceWith(surfaceInAxes);
+            this.update();
         }
 
         #createTangentSpaceFolder(folder) {
@@ -181,16 +186,16 @@
             const contourFolder = folder.addFolder("Contours");
             contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
                 .name("Contour type")
-                .onChange(value => surfaceInAxes.modifyContours({mode: value}));
+                .onChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
-                .onChange(() => {if (this.#isValidColor()) surfaceInAxes.modifyContours(surfaceParams.contourParameters);});
+                .onChange(() => {if (this.#isValidColor()) surfaceController.updateContours(surfaceParams.contourParameters);});
             contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
                 .name("U contours")
-                .onChange(() => surfaceInAxes.modifyContours(surfaceParams.contourParameters));
+                .onFinishChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, "vCount", 1, 50, 1)
                 .name("V contours")
-                .onChange(() => surfaceInAxes.modifyContours(surfaceParams.contourParameters));
+                .onFinishChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
             contourFolder.close();
         }
 
@@ -282,7 +287,7 @@
 
         #updateSurfaceDataTitleBox() {
             const nameDiv = document.getElementById("surface-title");
-            const surfaceData = surfaceInAxes.definition().specification();
+            const surfaceData = surfaceController.surface.definition().specification();
             nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
 
             const equationDiv = document.getElementById("surface-equation");
@@ -297,10 +302,11 @@
             if (window.MathJax) MathJax.typesetPromise([equationDiv]);
         }
 
-        updateCurrentSurfaceWith= (newSurface) => {
+        update = () => {
+            const newSurface = this._surfaceController.surface;
             surfaceParams.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
             this.#updateSurfaceDataTitleBox();
-            const surfaceSpecification = surfaceInAxes.definition().specification();
+            const surfaceSpecification = newSurface.definition().specification();
             this.xFunction.setValue(surfaceSpecification.parametrization.xFn);
             this.yFunction.setValue(surfaceSpecification.parametrization.yFn);
             this.zFunction.setValue(surfaceSpecification.parametrization.zFn);
@@ -316,55 +322,56 @@
             selectionLerp=0.08
         } = {}) {
             super();
-            this.surfaces = [];
-            this.boundingBox = boundingBox;
-            this.ringRadius = ringRadius;
-            this.activeCategory = activeCategory;
-            this.rotationSpeed = rotationSpeed;
-            this.selectionLerp = selectionLerp;
-            this.verticalOffset = verticalOffset;
-            this.ringTargetRotation = null;
-            this.selectedSurface = null;
+            this._surfaces = [];
+            this._boundingBox = boundingBox;
+            this._ringRadius = ringRadius;
+            this._activeCategory = activeCategory;
+            this._rotationSpeed = rotationSpeed;
+            this._selectionLerp = selectionLerp;
+            this._verticalOffset = verticalOffset;
+            this._ringTargetRotation = null;
+            this._selectedSurface = null;
         }
 
         #onSelectedSurface(selectedRingSurface) {
             this.#setTargetRotation(selectedRingSurface);
-            if (this.selectedSurface) this.selectedSurface.onDeselect();
+            if (this._selectedSurface) this._selectedSurface.onDeselect();
             selectedRingSurface.onSelect();
-            this.selectedSurface = selectedRingSurface;
+            this._selectedSurface = selectedRingSurface;
         }
 
         #placeAndShowSurface = (surface, index) => {
             const angle = 2 * Math.PI * index / this.visibleRingItems().length;
-            const position = new Vector3(this.ringRadius * Math.cos(angle), this.verticalOffset, this.ringRadius * Math.sin(angle));
+            const position = new Vector3(
+                this._ringRadius * Math.cos(angle), this._verticalOffset, this._ringRadius * Math.sin(angle));
             surface.moveTo(position);
             surface.show();
         };
 
         #redistribute() {
-            this.surfaces.forEach(surface => surface.hide());
+            this._surfaces.forEach(surface => surface.hide());
             this.visibleRingItems().forEach((surface, index) => this.#placeAndShowSurface(surface, index));
         }
 
         #rotate() {
-            const delta = this.ringTargetRotation - this.rotation.y;
+            const delta = this._ringTargetRotation - this.rotation.y;
             const shortest = ((delta + Math.PI) % (2 * Math.PI)) - Math.PI;
-            this.rotation.y += shortest * this.selectionLerp;
+            this.rotation.y += shortest * this._selectionLerp;
 
             if (Math.abs(shortest) < 0.001) {
-                this.rotation.y = this.ringTargetRotation;
-                this.ringTargetRotation = null;
+                this.rotation.y = this._ringTargetRotation;
+                this._ringTargetRotation = null;
             }
         }
 
         #rotateRingToSelectedSurface = () => { if (this.#rotationToTargetSurfaceIsNeeded()) this.#rotate(); };
-        #rotateSurfaces = () => this.visibleRingItems().forEach(surface => surface.rotateBy(this.rotationSpeed));
-        #rotationToTargetSurfaceIsNeeded = () => this.ringTargetRotation !== null;
+        #rotateSurfaces = () => this.visibleRingItems().forEach(surface => surface.rotateBy(this._rotationSpeed));
+        #rotationToTargetSurfaceIsNeeded = () => this._ringTargetRotation !== null;
 
         #setTargetRotation(selectedSurface) {
             const local = selectedSurface.position();
             const angle = Math.atan2(local.x, local.z);
-            this.ringTargetRotation = -angle + Math.PI * .25;
+            this._ringTargetRotation = -angle + Math.PI * .25;
         }
 
         append(surfaces) {
@@ -375,25 +382,31 @@
                 ThreeJsUtils.fitGroupToBox(
                     selectorSurface.group,
                     selectorSurface.boundingBox(),
-                    boundingBox,
+                    this._boundingBox,
                     {alignY: "min", padding: 1.1}
                 );
-                this.surfaces.push(selectorSurface);
+                this._surfaces.push(selectorSurface);
             });
             this.#redistribute();
         }
 
         changeActiveCategoryTo(category) {
-            this.activeCategory = category;
+            this._activeCategory = category;
             this.#redistribute();
         }
 
-        findSurfaceByName = (name) => this.surfaces.find(surface => surface.definition().specification().meta.name === name);
-        findSurfaceByMesh = (mesh) => this.surfaces.find(surface => surface.selectableObject() === mesh);
+        findSurfaceByName = (name) => this._surfaces.find(surface => surface.definition().specification().meta.name === name);
+
+        findSurfaceByMesh = (mesh) => this._surfaces.find(surface => surface.selectableObject() === mesh);
+
         render = () => { this.#rotateRingToSelectedSurface(); this.#rotateSurfaces(); }
+
         selectableObjects = () => this.visibleRingItems().map(surface => surface.selectableObject());
+
         onSelectTo = (selectedRingSurface) => this.#onSelectedSurface(selectedRingSurface);
-        visibleRingItems = () => this.surfaces.filter(surface => surface.definition().specification().meta.category === this.activeCategory);
+
+        visibleRingItems = () => this._surfaces.filter(
+            surface => surface.definition().specification().meta.category === this._activeCategory);
     }
 
     // Surface
@@ -413,12 +426,10 @@
             v: 0.5
         })
     });
-    const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
 
-    const boundingBox = surfaceInAxes.boundingBox();
-    axesController.createFromBoundingBox(boundingBox);
-    const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, boundingBox);
-    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
+    const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
+    const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
+    plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
 
     // Resizing for mobile devices
     function resize() {
@@ -445,14 +456,10 @@
         surfaceController,
         ring,
         (newSurfaceSpecification) => {
-            surfaceInAxes.dispose();
-            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(newSurfaceSpecification);
-            surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
-
-            surfaceController.changeSurface(surfaceInAxes, surfaceParams);
+            surfaceController.changeSurface(newSurfaceSpecification, surfaceParams);
             axesController.createFromBoundingBox(surfaceInAxes.boundingBox());
             plot3D.frame(surfaceInAxes.boundingBox());
-            controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
+            controlsGui.update();
         }
     );
 
@@ -475,12 +482,10 @@
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         ring.onSelectTo(selectedRingSurface);
 
-        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
-        surfaceInAxes = new StandardSurfaceView(worldGroup, new Surface(surfaceDefinition), surfaceParams);
-        axesController.createFromBoundingBox(surfaceInAxes.boundingBox());
-        surfaceController.changeSurface(surfaceInAxes, surfaceParams);
-        plot3D.frame(surfaceInAxes.boundingBox());
-        controlsGui.updateCurrentSurfaceWith(surfaceInAxes);
+        surfaceController.changeSurface(selectedRingSurface.definition().specification(), surfaceParams);
+        axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
+        plot3D.frame(surfaceController.surfaceBoundingBox());
+        controlsGui.update();
     });
 
     function animate() {
@@ -489,7 +494,7 @@
         ring.render();
         ringRenderer.render(ringScene, ringCamera);
         if (surfaceParams.autoRotate)
-            surfaceInAxes.rotateBy(0.005);
+            surfaceController.rotateBy(0.005);
         axesController.render(plot3D.camera);
     }
     animate();
