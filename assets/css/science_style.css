@@ -46,8 +46,29 @@ figcaption {
     font-weight: bold;
     text-shadow: 0 0 8px black;
     margin: 0;
-    background: #1a1a1a;
+    background: #131313;
 }
+
+.equationDiv {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    font-size: 13px;
+    color: yellow;
+    text-align: center;
+    z-index: 10;
+    background: #131313;
+    padding: 5px;
+}
+
+/*
+.equationDiv .mjx-chtml {
+    font-size: clamp(12px, 3.5vw, 10px);
+    display: block;                 / * make MathJax fill the div * /
+    max-width: 100%;
+    margin: 0 auto;
+}
+*/
 
 .header_line {
   border-top: 2px solid

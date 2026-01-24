@@ -1,24 +1,3 @@
-<style>
-    #surface-equation {
-        position: absolute;
-        margin-top: 10px;
-        width: 100%;
-        max-width: 100%;
-        font-size: 13px;
-        color: yellow;
-        text-align: center;
-        z-index: 10;
-    }
-
-    #surface-equation .mjx-chtml {
-        font-size: clamp(12px, 3.5vw, 10px);
-        display: block;                 /* make MathJax fill the div */
-        max-width: 100%;
-        margin: 0 auto;
-    }
-
-</style>
-
 <script type="importmap">
     {
       "imports": {
@@ -31,11 +10,11 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
 
 <div class="titleDiv" id="surface-title"></div>
-<div id="surface-equation"></div>
+<div class="equationDiv" id="surface-equation"></div>
 <div class="canvasWrapper" id="surface-canvas-container">
     <canvas class="applicationCanvas" id="surfaceCanvas"></canvas>
 </div>
-<div class="canvasWrapper" style="aspect-ratio: 4 / 1; margin-top: 0.5em;">
+<div class="canvasWrapper">
     <canvas class="applicationCanvas" id="ringCanvas" style="aspect-ratio: 4 / 1;"></canvas>
 </div>
 <div class="guiContainer" id="gui-container"></div>
@@ -43,7 +22,7 @@
 
 <script type="module">
     import {Scene, Color, Group, Box3, PerspectiveCamera, WebGLRenderer, Vector3, Vector2, Raycaster,
-        DirectionalLight, AmbientLight, HemisphereLight} from "three";
+        DirectionalLight, HemisphereLight} from "three";
     import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { SurfaceController, Category, TangentFrameParameters, ViewParameters, ColorMapper, ContourType,
