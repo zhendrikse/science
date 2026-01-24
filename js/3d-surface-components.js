@@ -776,7 +776,7 @@ export class MinimalSurfaceView extends SurfaceView {
         this._colorMapper.apply(this._geometry); }
     onDeselect = () => {
         this._material.wireframe = true;
-        this._colorMapper = new HeightColorMapper({ baseColor: this.baseColor });
+        this._colorMapper = new HeightColorMapper({ baseColor: this._baseColor });
         this._colorMapper.apply(this._geometry); }
     selectableObject = () => this._mesh;
 }
