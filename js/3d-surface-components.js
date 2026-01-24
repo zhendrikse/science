@@ -923,7 +923,7 @@ export class Surface {
     definition() { return this._definition; }
 }
 
-class SurfaceSelector extends Group {
+export class SurfaceSelector extends Group {
     constructor(boundingBox, {
         ringRadius = 2,
         verticalOffset = -1,
@@ -1019,7 +1019,7 @@ class SurfaceSelector extends Group {
         surface => surface.definition().specification().meta.category === this._activeCategory);
 }
 
-class SurfaceController {
+export class SurfaceController {
     constructor(parentGroup, surfaceData, surfaceParams) {
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
         this._surface = new StandardSurfaceView(parentGroup, new Surface(surfaceDefinition), surfaceParams);
