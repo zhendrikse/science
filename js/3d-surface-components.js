@@ -1036,7 +1036,10 @@ export class SurfaceController {
 
     updateColor = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
     updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
-    surfaceBoundingBox = () => this._surface.boundingBox();
+    surfaceBoundingBox = () => {
+        this._surface.group.updateMatrixWorld(true);
+        return this._surface.boundingBox();
+    };
 
     changeSurface(surfaceSpecification, surfaceParams) {
         this._surface.dispose();
