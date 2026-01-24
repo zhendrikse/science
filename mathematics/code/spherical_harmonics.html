@@ -38,8 +38,7 @@
     import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import { Surface, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, ViewParameters, ContourType,
-        TangentFrameView, NormalsView, StandardSurfaceView}
+    import { SurfaceController, ViewParameters, ContourType }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
     const canvasContainer = document.getElementById("complexPlotContainer");
@@ -98,56 +97,6 @@
             contourFolder.close();
         }
     }
-
-    class SurfaceController {
-        constructor(parentGroup, surfaceData, surfaceParams) {
-            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
-            this._surface = new StandardSurfaceView(parentGroup, new Surface(surfaceDefinition), surfaceParams);
-
-            this._tangentFrame = new TangentFrameView(surfaceDefinition, surfaceParams.tangentFrameParameters);
-            this._surface.group.add(this._tangentFrame);
-            this._normals = new NormalsView(this._surface);
-
-            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
-            this.updateContours(surfaceParams.contourParameters);
-            this.updateColors(surfaceParams);
-        }
-
-        updateColors = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
-        updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
-        surfaceBoundingBox = () => this._surface.boundingBox();
-
-        changeSurface(surface, surfaceParams) {
-            this._surface.dispose();
-            this._tangentFrame.dispose();
-            this._surface = surface;
-            this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
-            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
-            this._surface.group.add(this._tangentFrame);
-        }
-
-        updateTangentFrame(tangentFrameParameters) {
-            this._tangentFrame.visible = tangentFrameParameters.visible;
-            this._tangentFrame.update(tangentFrameParameters.u, tangentFrameParameters.v);
-            this._tangentFrame.position.copy(this._surface.group.position);
-            this._tangentFrame.scale.set(this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
-        }
-
-        changeBaseColorTo = (color) => this._surface.changeBaseColorTo(color);
-        changeOpacityTo = (value) => this._surface.changeOpacityTo(value);
-        toggleWireframe = (value) => this._surface.toggleWireframe(value);
-        toggleNormals = (visible, surfaceParams) => {
-            if (visible) {
-                this._normals.buildWith({});
-                this._surface.changeOpacityTo(0.3);
-            } else {
-                this._normals.clear();
-                this._surface.changeOpacityTo(surfaceParams.opacity);
-            }
-        }
-        rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotateBy(value); }
-    }
-
 
     const axesParameters = new AxesParameters();
     const surfaceParams = new ViewParameters();

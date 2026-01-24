@@ -114,121 +114,210 @@
         setRadius(r) { this.scalars.forEach(s => s.setRadius(r * .25)); }
     }
 
-    class InstancedScalarField {
-        constructor(range, func, {
-            baseRadius = 0.1,
-            opacity = 0.3
+
+
+    export class ScalarFieldView extends Group {
+
+        constructor(xRange, yRange, zRange, scalarField, {
+            scaleFactor = 0.3,
+            radius       = 1
         } = {}) {
-
-            this.range = range;
-            this.func = func;
-            this.opacity = opacity;
-            this.baseRadius = baseRadius;
-
-            // --- prepare sample points ---
+            super();
             this.positions = [];
-            for (const x of range)
-                for (const y of range)
-                    for (const z of range)
-                        this.positions.push(new Vector3(x, y, z));
+            this.xRange = xRange;
+            this.yRange = yRange;
+            this.zRange = zRange;
+            this.scaleFactor = scaleFactor;
+            this.scalarField = scalarField;
+            this.colorMode = colorMode;
 
-            this.count = this.positions.length;
+            const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
+            const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
+            const shaftMaterial = new MeshStandardMaterial();
+            const headMaterial  = new MeshStandardMaterial();
 
-            // --- shared geometry & material ---
-            this.geometry = new SphereGeometry(1, 12, 12); // unit sphere
-            this.material = new MeshStandardMaterial({
-                transparent: true,
-                opacity: opacity,
-                depthWrite: false,
-                vertexColors: true
+            this.#initializePositions();
+
+            this._shaftMesh = new InstancedMesh(shaftGeometry, shaftMaterial, this.positions.length);
+            this._headMesh  = new InstancedMesh(headGeometry,  headMaterial,  this.positions.length);
+            this.add(this._shaftMesh, this._headMesh);
+
+            // per-instance color
+            const colors = new Float32Array(this.positions.length * 3);
+            this._shaftMesh.instanceColor = new InstancedBufferAttribute(colors, 3);
+            this._headMesh.instanceColor  = this._shaftMesh.instanceColor;
+
+            // temp objects (no allocations per frame)
+            this.tmpMatrix = new Matrix4();
+            this.tmpQuaternion = new Quaternion();
+            this.tmpScale      = new Vector3();
+            this.tmpPosition   = new Vector3();
+            this.tmpAxis       = new Vector3();
+            this.tmpDirection  = new Vector3();
+
+            // initial build
+            this.updateFieldWith(vectorField);
+        }
+
+        #collapseArrow(index, position) {
+            this.tmpScale.set(0, 0, 0);
+            this.tmpMatrix.compose(position, new Quaternion(), this.tmpScale);
+            this._shaftMesh.setMatrixAt(index, this.tmpMatrix);
+            this._headMesh.setMatrixAt(index, this.tmpMatrix);
+        }
+
+        #arrowSizes(axis) {
+            const length = axis.length();
+            const shaftRadius = length * this._shaftWidth;
+            const headLength  = this._headLength * shaftRadius;
+            const shaftLength = Math.max(length - headLength, 1e-6);
+            return {shaftRadius, shaftLength, headLength};
+        }
+
+        #initializePositions() {
+            this.positions = [];
+            for (const x of this.xRange)
+                for (const y of this.yRange)
+                    for (const z of this.zRange)
+                        this.positions.push(new Vector3(x, z, y));
+        }
+
+        #magnitudeToColor(magnitude, scalarRange) {
+            if (scalarRange.to <= scalarRange.from) return new Color(0x00ffff);
+
+            const t = MathUtils.clamp(scalarRange.scaleValue(magnitude), 0, 1);
+            const hue = (1 - t) * 0.66; // Hue: 0.66 (blue) → 0.0 (red)
+
+            return new Color().setHSL(hue, 1.0, 0.5);
+        }
+
+        #scalarField() {
+            return this.positions.map(position => {
+                switch (this.colorMode) {
+                    case ArrowField.ColorMode.DIVERGENCE:
+                        return this.vectorField.divergence(position);
+                    case ArrowField.ColorMode.CURL:
+                        return this.vectorField.curlMagnitude(position);
+                    default:
+                        return this.vectorField.sample(position).length();
+                }
             });
+        }
 
-            this.mesh = new InstancedMesh(
-                this.geometry,
-                this.material,
-                this.count
+        #scalarToColor(value, scalarRange) {
+            const t = MathUtils.clamp(
+                scalarRange.scaleValue(value) * 2 - 1,
+                -1, 1
             );
 
-            // --- per-instance color ---
-            this.colors = new Float32Array(this.count * 3);
-            this.mesh.instanceColor = new InstancedBufferAttribute(this.colors, 3);
-
-            // --- reusable math objects ---
-            this._dummyMatrix = new Matrix4();
-            this._dummyQuaternion = new Quaternion();
-            this._dummyScale = new Vector3();
-            this._dummyColor = new Color();
-
-            // --- initialize instances ---
-            this.#initializeInstances();
-        }
-
-        #initializeInstances() {
-            for (let i = 0; i < this.count; i++) {
-                const pos = this.positions[i];
-                const value = this.func(pos);
-
-                // position + radius
-                this._dummyScale.setScalar(this.baseRadius);
-                this._dummyMatrix.compose(
-                    pos,
-                    this._dummyQuaternion,
-                    this._dummyScale
+            if (t < 0) // blue → white
+                return new Color().lerpColors(
+                    new Color(0x0000ff),
+                    new Color(0xffffff),
+                    1 + t
                 );
-                this.mesh.setMatrixAt(i, this._dummyMatrix);
-
-                // color
-                this._dummyColor.copy(this._colorFor(value));
-                this._dummyColor.toArray(this.colors, i * 3);
-            }
-
-            this.mesh.instanceMatrix.needsUpdate = true;
-            this.mesh.instanceColor.needsUpdate = true;
-        }
-
-        // --- perceptueel betere kleurmapping ---
-        _colorFor(value) {
-            const t = MathUtils.clamp(value, 0, 1);
-            const color = new Color();
-            color.setHSL(0.66 * (1 - t), 1.0, 0.5);
-            return color;
-        }
-
-        // ===================== API =====================
-
-        setOpacity(v) {
-            this.opacity = v;
-            this.material.opacity = v;
-        }
-
-        setRadius(r) {
-            this.baseRadius = r;
-
-            for (let i = 0; i < this.count; i++) {
-                const pos = this.positions[i];
-                this._dummyScale.setScalar(r);
-
-                this._dummyMatrix.compose(
-                    pos,
-                    this._dummyQuaternion,
-                    this._dummyScale
+            else // white → red
+                return new Color().lerpColors(
+                    new Color(0xffffff),
+                    new Color(0xff0000),
+                    t
                 );
-                this.mesh.setMatrixAt(i, this._dummyMatrix);
-            }
-
-            this.mesh.instanceMatrix.needsUpdate = true;
         }
 
-        updateValues(time, valueFunc) {
-            for (let i = 0; i < this.count; i++) {
-                const pos = this.positions[i];
-                const value = valueFunc(pos, time);
+        #updateShaft(index, position, axis) {
+            const {shaftRadius, shaftLength} = this.#arrowSizes(axis);
+            this.tmpScale.set(shaftRadius, shaftLength, shaftRadius);
+            this.tmpPosition.copy(position).addScaledVector(axis, 0.5);
 
-                this._dummyColor.copy(this._colorFor(value));
-                this._dummyColor.toArray(this.colors, i * 3);
+            this.tmpMatrix.compose(this.tmpPosition, this.tmpQuaternion, this.tmpScale);
+            this._shaftMesh.setMatrixAt(index, this.tmpMatrix);
+        }
+
+        #updateHead(index, position, axis) {
+            const {shaftRadius, headLength} = this.#arrowSizes(axis);
+            this.tmpScale.set(
+                this._headWidth * shaftRadius,
+                headLength,
+                this._headWidth * shaftRadius
+            );
+            this.tmpPosition.copy(position).addScaledVector(axis, 1.0);
+            this.tmpMatrix.compose(this.tmpPosition, this.tmpQuaternion, this.tmpScale);
+            this._headMesh.setMatrixAt(index, this.tmpMatrix);
+        }
+
+        #updateArrowColor(index, axis, scalars, scalarRange) {
+            switch (this.colorMode) {
+                case ArrowField.ColorMode.DIVERGENCE:
+                    this._shaftMesh.setColorAt(index, this.#scalarToColor(scalars[index], scalarRange));
+                    break;
+                case ArrowField.ColorMode.CURL:
+                    if (scalarRange.to - scalarRange.from < 1e-12) {
+                        scalarRange.from -= 1;
+                        scalarRange.to   += 1;
+                    }
+                    const t = MathUtils.clamp(scalarRange.scaleValue(scalars[index]), 0, 1);
+                    const hue = (1 - t) * 0.66;
+                    this._shaftMesh.setColorAt(index, new Color().setHSL(hue, 1, 0.5));
+                    break;
+                default:
+                    const mag = axis.length() / this.scaleFactor;
+                    this._shaftMesh.setColorAt(index, this.#magnitudeToColor(mag, scalarRange));
+            }
+        }
+
+        #updateArrowInstance(index, position, axis, scalars, scalarRange) {
+            const length = axis.length();
+            if (length < 1e-6) {
+                this.#collapseArrow(index, position);
+                return;
             }
 
-            this.mesh.instanceColor.needsUpdate = true;
+            // rotation: Y-axis → axis direction
+            this.tmpDirection.copy(axis).normalize();
+            this.tmpQuaternion.setFromUnitVectors(UnitVectorE2, this.tmpDirection);
+
+            this.#updateShaft(index, position, axis);
+            this.#updateHead(index, position, axis);
+            this.#updateArrowColor(index, axis, scalars, scalarRange);
+        }
+
+        changeColorModeTo = (newColorMode) => this.colorMode = newColorMode;
+
+        euler(dt = 0.01) {
+            this.positions.forEach(position => position.addScaledVector(this.vectorField.sample(position), dt));
+            this.updateFieldWith(this.vectorField);
+        }
+
+        reset() {
+            this.#initializePositions();
+            this.updateFieldWith(this.vectorField);
+        }
+
+        updateFieldWith(newVectorField) {
+            this.vectorField = newVectorField;
+
+            const scalars = this.#scalarField();
+            const scalarRange = new Interval(Math.min(...scalars), Math.max(...scalars));
+            if (this.colorMode === ArrowField.ColorMode.DIVERGENCE) {
+                const maxAbs = Math.max(
+                    Math.abs(scalarRange.from),
+                    Math.abs(scalarRange.to)
+                );
+                scalarRange.from = -maxAbs;
+                scalarRange.to   =  maxAbs;
+            }
+
+            this.positions.forEach((position, index) => {
+                this.tmpAxis
+                    .copy(newVectorField.sample(position))
+                    .multiplyScalar(this.scaleFactor);
+
+                this.#updateArrowInstance(index, position, this.tmpAxis, scalars, scalarRange);
+            });
+
+            this._shaftMesh.instanceMatrix.needsUpdate = true;
+            this._headMesh.instanceMatrix.needsUpdate  = true;
+            this._shaftMesh.instanceColor.needsUpdate  = true;
         }
     }
 
