@@ -782,8 +782,8 @@ export class MinimalSurfaceView extends SurfaceView {
 }
 
 export class NormalsView extends SurfaceView {
-    constructor(surfaceView) {
-        super(surfaceView.group, surfaceView);
+    constructor(parentGroup, surfaceView) {
+        super(parentGroup, surfaceView);
         this._geometry = surfaceView._geometry;
     }
 

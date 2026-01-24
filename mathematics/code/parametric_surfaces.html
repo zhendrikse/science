@@ -19,51 +19,6 @@
 
 <style>
 
-    .applicationCanvas {
-        display: block;
-        background-color: #131313;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 1 / 1;
-        margin: 0;
-    }
-
-    .canvasWrapper {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        aspect-ratio: 1 / 1;
-    }
-
-    .guiContainer {
-        margin-top: 0;
-        background: #131313;
-    }
-
-    .titleDiv {
-        text-align: center;
-        font-size: clamp(16px, 4vw, 24px);
-        font-family: sans-serif;
-        color: yellow;
-        padding: 10px;
-        font-weight: bold;
-        text-shadow: 0 0 8px black;
-        margin: 0;
-        background: #131313;
-    }
-
-    .equationDiv {
-        margin: 0;
-        width: 100%;
-        max-width: 100%;
-        font-size: 13px;
-        color: yellow;
-        text-align: center;
-        z-index: 10;
-        background: #131313;
-        padding: 5px;
-    }
 
 </style>
 
@@ -72,8 +27,8 @@
         DirectionalLight, HemisphereLight} from "three";
     import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-    import { SurfaceController, Category, TangentFrameParameters, ViewParameters, ColorMapper, ContourType,
-        SurfaceSelector, SurfaceDefinitions }
+    import { Category, TangentFrameParameters, ViewParameters, ColorMapper, ContourType,
+        SurfaceSelector, SurfaceDefinitions, LiteralStringBasedSurfaceDefinition, Surface, SurfaceSpecification, StandardSurfaceView, TangentFrameView, NormalsView }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
@@ -283,16 +238,71 @@
         }
     }
 
-    function updateViewForSurface() {
-        const boundingBox = surfaceController.surfaceBoundingBox().clone();
 
-        axesController.createFromBoundingBox(boundingBox);
+    export class SurfaceController {
+        constructor(parentGroup, surfaceData, surfaceParams) {
+            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
+            this._surface = new StandardSurfaceView(parentGroup, new Surface(surfaceDefinition), surfaceParams);
+            this._parentGroup = parentGroup;
 
-        const framedBox = boundingBox.clone();
-        ThreeJsUtils.scaleBox3(framedBox, 0.8);
-        plot3D.frame(framedBox);
+            this._tangentFrame = new TangentFrameView(surfaceDefinition, surfaceParams.tangentFrameParameters);
+            this._parentGroup.add(this._tangentFrame);
+            this._normals = new NormalsView(parentGroup, this._surface);
+
+            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
+            this.updateContours(surfaceParams.contourParameters);
+            this.updateColor(surfaceParams);
+        }
+
+        updateColor = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
+        updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
+        surfaceBoundingBox = () => {
+            this._surface.group.updateMatrixWorld(true);
+            return this._surface.boundingBox();
+        };
+
+        changeSurface(surfaceSpecification, surfaceParams) {
+            this._surface.dispose();
+            this._tangentFrame.dispose();
+
+            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
+            this._surface = new StandardSurfaceView(this._parentGroup, new Surface(surfaceDefinition), surfaceParams);
+
+            this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
+            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
+            this._parentGroup.add(this._tangentFrame);
+        }
+
+        get surface() { return this._surface; }
+
+        updateTangentFrame(tangentFrameParameters) {
+            this._tangentFrame.visible = tangentFrameParameters.visible;
+            this._tangentFrame.update(tangentFrameParameters.u, tangentFrameParameters.v);
+            this._tangentFrame.position.copy(this._surface.group.position);
+            this._tangentFrame.scale.set(this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
+        }
+
+        changeBaseColorTo = (color) => this._surface.changeBaseColorTo(color);
+        updateOpacity = (value) => this._surface.updateOpacity(value);
+        toggleWireframe = (value) => this._surface.toggleWireframe(value);
+        toggleNormals = (visible, surfaceParams) => {
+            if (visible) {
+                this._normals.buildWith({});
+                this._surface.updateOpacity(0.3);
+            } else {
+                this._normals.clear();
+                this._surface.updateOpacity(surfaceParams.opacity);
+            }
+        }
+        rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotation.y += value; }
+        resampleWith = (resolution) => this._surface.resampleWith(resolution);
     }
 
+    function updateViewForSurface() {
+        const boundingBox = surfaceController.surfaceBoundingBox();
+        axesController.createFromBoundingBox(ThreeJsUtils.scaleBox3(boundingBox.clone(), 1.1));
+        plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.9));
+    }
 
     // Surface
     const axesParams = new AxesParameters({annotations: false});
