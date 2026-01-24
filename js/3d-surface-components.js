@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
-import { Arrow, Interval, ComplexNumber }
+import { Arrow, Interval, ComplexNumber, ThreeJsUtils }
     from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 import { BufferGeometry, Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3,
     MeshPhongMaterial, MathUtils, Color, BufferAttribute } from "three";

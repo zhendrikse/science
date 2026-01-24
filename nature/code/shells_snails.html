@@ -1,0 +1,184 @@
+<style>
+    #surface-equation {
+        position: absolute;
+        margin-top: 10px;
+        margin-left: 10px;
+        width: 100%;
+        max-width: 100%;
+        font-size: 14px;
+        color: yellow;
+        z-index: 10;
+    }
+
+    #surface-equation .mjx-chtml {
+        text-align: left;
+        font-size: clamp(14px, 3.5vw, 10px);
+        margin: 0 auto;
+    }
+</style>
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
+    }
+</script>
+
+<div id="surface-equation"></div>
+<div class="canvasWrapper" id="complexPlotContainer">
+    <canvas class="applicationCanvas" id="complexPlotCanvas"></canvas><br/>
+</div>
+<div id="gui-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
+
+<script type="module">
+    import { Scene, Color, Group } from "three";
+    import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters }
+        from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+    import { SurfaceController, ViewParameters, ContourType, SurfaceSelector }
+        from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
+
+    const canvasContainer = document.getElementById("complexPlotContainer");
+    const canvas = document.getElementById("complexPlotCanvas");
+
+    const scene = new Scene();
+    scene.background = new Color(0x131313);
+    const worldGroup = new Group();
+    scene.add(worldGroup);
+
+    class ControlsGui {
+        constructor() {
+            const gui = new GUI({width: "100%", autoPlace: false});
+            this.#createContourFolder(gui);
+            this.#createAxesFolder(gui);
+            document.getElementById("gui-container").appendChild(gui.domElement);
+        }
+
+        #isValidColor() {
+            const style = new Option().style;
+            style.color = surfaceParams.baseColor;
+            return style.color !== '';
+        }
+
+        #createAxesFolder(parentFolder) {
+            const axesFolder = parentFolder.addFolder("Axes");
+            const dummyToggle = {gridPlanes: true};
+            axesFolder.add(axesParameters, 'frame')
+                .name("Frame").onChange(value => axesController.updateSettings());
+            axesFolder.add(dummyToggle, 'gridPlanes')
+                .name("Layout").onChange(value => {
+                axesParameters.xyPlane = value;
+                axesParameters.xzPlane = value;
+                axesParameters.yzPlane = value;
+                axesController.updateSettings();
+            });
+            axesFolder.add(axesParameters, 'annotations')
+                .name("Annotations").onChange(value => axesController.updateSettings());
+            axesFolder.close();
+        }
+
+        #createContourFolder(folder) {
+            const contourFolder = folder.addFolder("Contours");
+            contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
+                .name("Contour type")
+                .onChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
+            contourFolder.add(surfaceParams.contourParameters, 'color')
+                .name("Color")
+                .onChange(() => {if (this.#isValidColor()) surfaceController.updateContours(surfaceParams.contourParameters);});
+            contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
+                .name("U contours")
+                .onFinishChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
+            contourFolder.add(surfaceParams.contourParameters, "vCount", 1, 50, 1)
+                .name("V contours")
+                .onFinishChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
+            contourFolder.close();
+        }
+    }
+
+    const axesParameters = new AxesParameters();
+    const surfaceParams = new ViewParameters();
+
+    const surfaceData = {
+        parametrization: {
+            xFn: "(sin(4 * u)^4 + cos(4 * u)^4 + sin(4 * phi)^4 + cos(4 * phi)^4) * sin(u) * cos(v)",
+            yFn: "(sin(4 * u)^4 + cos(4 * u)^4 + sin(4 * phi)^4 + cos(4 * phi)^4) * cos(u)",
+            zFn: "(sin(4 * u)^4 + cos(4 * u)^4 + sin(4 * phi)^4 + cos(4 * phi)^4) * sin(u) * sin(v)"
+        },
+        intervals: [["-pi", "pi"], ["0", "pi"]]
+    };
+
+    const axesController = new AxesController({
+        parentGroup: worldGroup,
+        canvasContainer: canvasContainer,
+        axesParameters: axesParameters,
+        scene: scene
+    });
+    const gui = new ControlsGui();
+    const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
+
+    // Scale scene according to current surface
+    axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
+    const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox());
+    plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
+
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+        axesController.resize();
+    }
+    window.addEventListener("resize", resize);
+    resize();
+    // Ring
+
+    const ring = new SurfaceSelector(ringBoundingBox, {
+        ringRadius: 7,
+        verticalOffset: 1.75,
+        activeCategory: surfaceData.meta.category
+    });
+    ringScene.add(ring);
+
+    visibleRingItems = () => this._surfaces.filter(
+        surface => surface.definition().specification().meta.category === this._activeCategory);
+
+    ring.append(SurfaceDefinitions);
+    ring.changeActiveCategoryTo(surfaceData.meta.category);
+    const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
+    ring.onSelectTo(selectedRingSurface);
+
+    // Interaction
+    const controlsGui = new ControlsGui(surfaceController, ring);
+
+    // -----------------------
+    // Ray casting for ring
+    // -----------------------
+    const ringRaycaster = new Raycaster();
+    const ringMouse = new Vector2();
+
+    ringCanvas.addEventListener("pointerdown", event => {
+        ringMouse.x = (event.offsetX / ringCanvas.clientWidth) * 2 - 1;
+        ringMouse.y = -(event.offsetY / ringCanvas.clientHeight) * 2 + 1;
+
+        ringRaycaster.setFromCamera(ringMouse, ringCamera);
+        const hits = ringRaycaster.intersectObjects(ring.selectableObjects(), false);
+        if(!hits.length) return;
+
+        const selectedMesh = hits[0].object;
+        const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
+        ring.onSelectTo(selectedRingSurface);
+
+        surfaceController.changeSurface(selectedRingSurface.definition().specification(), surfaceParams);
+        axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
+        plot3D.frame(surfaceController.surfaceBoundingBox());
+        controlsGui.update();
+    });
+
+    function animate() {
+        requestAnimationFrame(animate);
+        plot3D.render();
+        axesController.render(plot3D.camera);
+    }
+    animate();
+</script>
