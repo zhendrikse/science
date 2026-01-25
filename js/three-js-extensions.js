@@ -1525,6 +1525,8 @@ export class Spring {
         );
     }
 
+    updatePosition(newPosition) { this._curve.start.copy(newPosition); }
+
     updateAxis(newAxis) {
         this._axis = newAxis;
         this._curve.updateAxis(this._axis);
