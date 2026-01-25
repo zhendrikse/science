@@ -7,8 +7,8 @@
     }
 </script>
 
-<canvas id="myCanvas" class="applicationCanvas"></canvas>
-<canvas id="graphCanvas" style="aspect-ratio: 3 / 1; margin-top: 0.5em; background-color: #131313; width: 100%;"></canvas>
+<canvas id="myCanvas" class="applicationCanvas" style="aspect-ratio: 3 / 1;"></canvas>
+<canvas id="graphCanvas" style="aspect-ratio: 3 / 1; margin: 0; background-color: #131313; width: 100%;"></canvas>
 
 <script type="module">
     import { Group, Vector3, Scene, Color, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight } from "three";
@@ -22,8 +22,8 @@
 
     const g = 9.8; // gravitational constant
 
-    const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-    camera.position.set(30, 10, 30);
+    const camera = new PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+    camera.position.set(5, 10, 30);
     camera.lookAt(0, 0, 0);
 
     const renderer = new WebGLRenderer({canvas, antialias:true});
@@ -112,7 +112,7 @@
     const mid = Math.floor(N / 2) - 1;
     for (let n = 0; n < N - 1; n++)
         oscillator
-            .withMassAt(new Vector3(-15 + n * 5, 0, 0), {color: n === mid ? "red" : "yellow"})
+            .withMassAt(new Vector3(-25 + n * 5, 0, 0), {color: n === mid ? "red" : "yellow"})
             .withSpringBetween(n, n + 1);
 
     // Displace
@@ -127,7 +127,7 @@
         requestAnimationFrame(animate);
         oscillator.update(dt);
 
-        const x = oscillator._masses[mid].position().x - mid;
+        const x = oscillator._masses[mid].position().x + 10;
 
         graph.push({ x_mid: x });
         graph.draw();
