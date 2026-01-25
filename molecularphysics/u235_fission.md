@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Fission of radio active uranium 235
+## Fission of radio active uranium 235 ☢️
 <div class="header_line"><br/></div>
 
 {% include_relative code/u235_fission.html %}
