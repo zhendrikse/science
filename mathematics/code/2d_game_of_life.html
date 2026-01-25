@@ -1,456 +1,222 @@
-<script>
-    // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
+<style>
+    .canvas-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 1 / 1;
     }
-</script>
-<div id="glowscript" class="glowscript">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
 
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-var frame_rate;
-ρσ_modules.pythonize = {};
-
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, compound, cone, curve, ellipsoid, extrusion, helix, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, dimension_x, dimension_y, display, frame_rate, _, cells, row, _GS_1, game, pixels, y, x;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "7";
-    title = "&#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/mathematics/code/2d_game_of_life.py\">2d_game_of_life.py<\/a> by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> &amp; Rob Westgeest\n&#x2022; Developed using the principles of <a href=\"https://www.hendrikse.name/tdd/\">test-driven development (TDD)</a>, see also <a href=\"https://github.com/zhendrikse/tdd/tree/master/kata-solutions/game-of-life\">code with tests</a>\n\n";
-    "9";
-    dimension_x = dimension_y = 100;
-    "10";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, bacground: color.gray(.075), width: 600, height: 600, center: .5["*"](vec(dimension_x, dimension_y, 0))})]);
-    "12";
-    function Game() {;
+    .game-of-life-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
     }
-    Game.prototype.__init__ = async function __init__(cells) {
-        var self = this;
-        "14";
-        self._cells = cells;
-    };
-    if (!Game.prototype.__init__.__argnames__) Object.defineProperties(Game.prototype.__init__, {
-        __argnames__ : {value: ["cells"]},
-        __module__ : {value: null}
-    });
-    Game.__argnames__ = Game.prototype.__init__.__argnames__;
-    Game.__handles_kwarg_interpolation__ = Game.prototype.__init__.__handles_kwarg_interpolation__;
-    Game.prototype.next_generation = async function next_generation() {
-        var self = this;
-        var ρσ_ls, new_cells, row, _GS_1;
-        "17";
-        new_cells = ρσ_list_decorate([]);
-        "18";
-        var ρσ_Iter1 = range((await self.height()));
-        ρσ_Iter1 = ((typeof ρσ_Iter1[Symbol.iterator] === "function") ? (ρσ_Iter1 instanceof Map ? ρσ_Iter1.keys() : ρσ_Iter1) : Object.keys(ρσ_Iter1));
-        for (var ρσ_Index1 of ρσ_Iter1) {
-            row = ρσ_Index1;
-            "19";
-            new_cells.append((await self.next_row_generation(row)));
-        }
-        "20";
-        _GS_1 = new Game;
-        (await _GS_1.__init__(new_cells));
-        return _GS_1;
-    };
-    if (!Game.prototype.next_generation.__module__) Object.defineProperties(Game.prototype.next_generation, {
-        __module__ : {value: null}
-    });
-    Game.prototype.next_row_generation = async function next_row_generation(row) {
-        var self = this;
-        var ρσ_ls, result, i;
-        "23";
-        result = ρσ_list_decorate([]);
-        "24";
-        var ρσ_Iter2 = range((await self.width()));
-        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
-        for (var ρσ_Index2 of ρσ_Iter2) {
-            i = ρσ_Index2;
-            "25";
-            result.append((await (await self.cell_at(row, i)).next_generation((await self.neighbours_for(row, i)))));
-        }
-        "26";
-        return result;
-    };
-    if (!Game.prototype.next_row_generation.__argnames__) Object.defineProperties(Game.prototype.next_row_generation, {
-        __argnames__ : {value: ["row"]},
-        __module__ : {value: null}
-    });
-    Game.prototype.neighbours_for = async function neighbours_for(row, column) {
-        var self = this;
-        var ρσ_ls, neighbours;
-        "29";
-        neighbours = ρσ_list_decorate([ (await self.cell_at(row["-"](1["*"](1)), column["-"](1["*"](1)))), (await self.cell_at(row["-"](1["*"](1)), column)), (await self.cell_at(row["-"](1["*"](1)), column["+"](1))), (await self.cell_at(row, column["-"](1["*"](1)))), (await self.cell_at(row, column["+"](1))), (await self.cell_at(row["+"](1), column["-"](1["*"](1)))), (await self.cell_at(row["+"](1), column)), (await self.cell_at(row["+"](1), column["+"](1))) ]);
-        "39";
-        return (await without_nones(neighbours));
-    };
-    if (!Game.prototype.neighbours_for.__argnames__) Object.defineProperties(Game.prototype.neighbours_for, {
-        __argnames__ : {value: ["row", "column"]},
-        __module__ : {value: null}
-    });
-    Game.prototype.cell_at = async function cell_at(row, column) {
-        var self = this;
-        "42";
-        if (column["<"](0)) {
-            return null;
-        }
-        "43";
-        if (column[">="]((await self.width()))) {
-            return null;
-        }
-        "44";
-        if (row["<"](0)) {
-            return null;
-        }
-        "45";
-        if (row[">="]((await self.height()))) {
-            return null;
-        }
-        "46";
-        return ρσ_getitem(ρσ_getitem(self._cells, row), column);
-    };
-    if (!Game.prototype.cell_at.__argnames__) Object.defineProperties(Game.prototype.cell_at, {
-        __argnames__ : {value: ["row", "column"]},
-        __module__ : {value: null}
-    });
-    Game.prototype.width = async function width() {
-        var self = this;
-        "49";
-        return len(ρσ_getitem(self._cells, 0));
-    };
-    if (!Game.prototype.width.__module__) Object.defineProperties(Game.prototype.width, {
-        __module__ : {value: null}
-    });
-    Game.prototype.height = async function height() {
-        var self = this;
-        "52";
-        return len(self._cells);
-    };
-    if (!Game.prototype.height.__module__) Object.defineProperties(Game.prototype.height, {
-        __module__ : {value: null}
-    });
-    Game.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Game.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Game.prototype, "__bases__", {value: []});
-
-
-
-
-
-
-
-
-    "55";
-    async function without_nones(list_) {
-        var ρσ_ls, filtered_list, item;
-        "56";
-        filtered_list = ρσ_list_decorate([]);
-        "57";
-        var ρσ_Iter3 = list_;
-        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-        for (var ρσ_Index3 of ρσ_Iter3) {
-            item = ρσ_Index3;
-            "58";
-            if (item !== null) {
-                "59";
-                filtered_list.append(item);
-            }
-        }
-        "60";
-        return filtered_list;
-    };
-    if (!without_nones.__argnames__) Object.defineProperties(without_nones, {
-        __argnames__ : {value: ["list_"]},
-        __module__ : {value: null}
-    });
-
-    "63";
-    function Cell() {;
+    table {
+        width: 100%;
+        border: none;
+        max-width: 800px;
+        margin: 0 auto;
     }
-    Cell.prototype.__init__ = async function __init__(alive) {
-        var self = this;
-        "65";
-        self._alive = alive;
-    };
-    if (!Cell.prototype.__init__.__argnames__) Object.defineProperties(Cell.prototype.__init__, {
-        __argnames__ : {value: ["alive"]},
-        __module__ : {value: null}
-    });
-    Cell.__argnames__ = Cell.prototype.__init__.__argnames__;
-    Cell.__handles_kwarg_interpolation__ = Cell.prototype.__init__.__handles_kwarg_interpolation__;
-    Cell.prototype.next_generation = async function next_generation(neighbours) {
-        var self = this;
-        "68";
-        if ((await self.is_alive())) {
-            "69";
-            return (await self._next_generation_when_alive(neighbours));
-        }
-        "71";
-        return (await self._next_generation_when_dead(neighbours));
-    };
-    if (!Cell.prototype.next_generation.__argnames__) Object.defineProperties(Cell.prototype.next_generation, {
-        __argnames__ : {value: ["neighbours"]},
-        __module__ : {value: null}
-    });
-    Cell.prototype._next_generation_when_dead = async function _next_generation_when_dead(neighbours) {
-        var self = this;
-        "74";
-        return (ρσ_equals(len((await living(neighbours))), 3)) ? (await living_cell()) : (await dead_cell());
-    };
-    if (!Cell.prototype._next_generation_when_dead.__argnames__) Object.defineProperties(Cell.prototype._next_generation_when_dead, {
-        __argnames__ : {value: ["neighbours"]},
-        __module__ : {value: null}
-    });
-    Cell.prototype._next_generation_when_alive = async function _next_generation_when_alive(neighbours) {
-        var self = this;
-        "77";
-        return (ρσ_in(len((await living(neighbours))), (function(){
-            var s = ρσ_set();
-            s.jsset.add(2);
-            s.jsset.add(3);
-            return s;
-        })())) ? (await living_cell()) : (await dead_cell());
-    };
-    if (!Cell.prototype._next_generation_when_alive.__argnames__) Object.defineProperties(Cell.prototype._next_generation_when_alive, {
-        __argnames__ : {value: ["neighbours"]},
-        __module__ : {value: null}
-    });
-    Cell.prototype.is_alive = async function is_alive() {
-        var self = this;
-        "80";
-        return self._alive;
-    };
-    if (!Cell.prototype.is_alive.__module__) Object.defineProperties(Cell.prototype.is_alive, {
-        __module__ : {value: null}
-    });
-    Cell.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Cell.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Cell.prototype, "__bases__", {value: []});
-
-
-
-
-
-
-    "83";
-    async function living(neighbours) {
-        var ρσ_ls, living_neighbours, neighbour;
-        "84";
-        living_neighbours = ρσ_list_decorate([]);
-        "85";
-        var ρσ_Iter4 = neighbours;
-        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-        for (var ρσ_Index4 of ρσ_Iter4) {
-            neighbour = ρσ_Index4;
-            "86";
-            if ((await neighbour.is_alive())) {
-                "87";
-                living_neighbours.append(neighbour);
-            }
-        }
-        "88";
-        return living_neighbours;
-    };
-    if (!living.__argnames__) Object.defineProperties(living, {
-        __argnames__ : {value: ["neighbours"]},
-        __module__ : {value: null}
-    });
-
-    "91";
-    async function dead_cell() {
-        var ρσ_ls, _GS_1;
-        "92";
-        _GS_1 = new Cell;
-        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({alive: false})]);
-        return _GS_1;
-    };
-    if (!dead_cell.__module__) Object.defineProperties(dead_cell, {
-        __module__ : {value: null}
-    });
-
-    "95";
-    async function living_cell() {
-        var ρσ_ls, _GS_1;
-        "96";
-        _GS_1 = new Cell;
-        ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({alive: true})]);
-        return _GS_1;
-    };
-    if (!living_cell.__module__) Object.defineProperties(living_cell, {
-        __module__ : {value: null}
-    });
-
-    "99";
-    async function create_pixels(dim_x, dim_y) {
-        var ρσ_ls, pixel_data, row, y, x;
-        "100";
-        pixel_data = ρσ_list_decorate([]);
-        "101";
-        for (var ρσ_Index5 = 0; ρσ_Index5["<"](dim_x); ρσ_Index5++) {
-            x = ρσ_Index5;
-            "102";
-            row = ρσ_list_decorate([]);
-            "103";
-            for (var ρσ_Index6 = 0; ρσ_Index6["<"](dim_y); ρσ_Index6++) {
-                y = ρσ_Index6;
-                "104";
-                row.append(ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(x, y, 0), shininess: 0, visible: false, color: color.yellow})]));
-                "105";
-                ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.5), y["-"](1["*"](.5)), 0), color: color.gray(.75), radius: .1, axis: dim_x["*"](vec(1, 0, 0))})]);
-            }
-            "106";
-            pixel_data.append(row);
-            "107";
-            ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(x["-"](1["*"](.5)), 1["-u"]()["*"](.5), 0), color: color.gray(.75), radius: .1, axis: dim_y["*"](vec(0, 1, 0))})]);
-        }
-        "108";
-        ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(dim_x["-"](1["*"](.5)), 1["-u"]()["*"](.5), 0), color: color.gray(.75), radius: .1, axis: dim_y["*"](vec(0, 1, 0))})]);
-        "109";
-        ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.5), dim_y["-"](1["*"](.5)), 0), color: color.gray(.75), radius: .1, axis: dim_x["*"](vec(1, 0, 0))})]);
-        "110";
-        return pixel_data;
-    };
-    if (!create_pixels.__argnames__) Object.defineProperties(create_pixels, {
-        __argnames__ : {value: ["dim_x", "dim_y"]},
-        __module__ : {value: null}
-    });
-
-    "113";
-    frame_rate = 1;
-    "114";
-    async function change_frame_rate(event) {
-        "115";
-        "116";
-        frame_rate = event.value;
-    };
-    if (!change_frame_rate.__argnames__) Object.defineProperties(change_frame_rate, {
-        __argnames__ : {value: ["event"]},
-        __module__ : {value: null}
-    });
-
-    "118";
-    display.append_to_caption("\nFrame rate");
-    "119";
-    _ = ρσ_interpolate_kwargs.call(this, slider, [ρσ_desugar_kwargs({min: 1, max: 100, value: frame_rate, bind: change_frame_rate})]);
-    "121";
-    cells = ρσ_list_decorate([]);
-    "122";
-    for (var ρσ_Index7 = 0; ρσ_Index7["<"](dimension_x); ρσ_Index7++) {
-        _ = ρσ_Index7;
-        "123";
-        row = ρσ_list_decorate([]);
-        "124";
-        for (var ρσ_Index8 = 0; ρσ_Index8["<"](dimension_y); ρσ_Index8++) {
-            _ = ρσ_Index8;
-            "125";
-            row.append((random()["<"](.5)) ? (await dead_cell()) : (await living_cell()));
-        }
-        "126";
-        cells.append(row);
+    td {
+        white-space: nowrap;
+        border: none;
     }
-    "127";
-    _GS_1 = new Game;
-    (await _GS_1.__init__(cells));
-    game = _GS_1;
-    "129";
-    pixels = (await create_pixels(dimension_x, dimension_y));
-    "130";
-    while (true) {
-        "131";
-        (await rate(frame_rate));
-        "132";
-        game = (await game.next_generation());
-        "133";
-        var ρσ_Iter9 = range(len(pixels));
-        ρσ_Iter9 = ((typeof ρσ_Iter9[Symbol.iterator] === "function") ? (ρσ_Iter9 instanceof Map ? ρσ_Iter9.keys() : ρσ_Iter9) : Object.keys(ρσ_Iter9));
-        for (var ρσ_Index9 of ρσ_Iter9) {
-            x = ρσ_Index9;
-            "134";
-            var ρσ_Iter10 = range(len(ρσ_getitem(pixels, 0)));
-            ρσ_Iter10 = ((typeof ρσ_Iter10[Symbol.iterator] === "function") ? (ρσ_Iter10 instanceof Map ? ρσ_Iter10.keys() : ρσ_Iter10) : Object.keys(ρσ_Iter10));
-            for (var ρσ_Index10 of ρσ_Iter10) {
-                y = ρσ_Index10;
-                "135";
-                ρσ_getitem(ρσ_getitem(pixels, x), y).visible = (await (await game.cell_at(x, y)).is_alive());
-            }
-        }
-    }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
-
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
-
-//--><!]]></script>
+</style>
+<div class="canvas-wrapper" id="canvas-wrapper">
+    <canvas class="game-of-life-canvas" id="gameOfLifeCanvas"></canvas>
 </div>
+
+<script type="module">
+    import { Pixel, PixelImage, Colors } from 'https://www.hendrikse.name/science/js/pixel-image.js';
+
+    const canvas = document.getElementById("gameOfLifeCanvas");
+    const display = canvas.getContext("2d");
+
+    window.addEventListener("resize", () => {
+        resizeCanvas();
+        initGameOfLife();
+    });
+
+    canvas.focus();
+
+    function resizeCanvas() {
+        const wrapper = document.getElementById("canvas-wrapper");
+        const size = wrapper.clientWidth;
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width  = Math.floor(size * dpr);
+        canvas.height = Math.floor(size * dpr);
+
+        canvas.style.width  = size + "px";
+        canvas.style.height = size + "px";
+    }
+
+    class Game {
+        constructor(cells) {
+            this._cells = cells;
+        }
+
+        next_generation() {
+            let new_cells = [];
+            for (let row = 0; row < this.height(); row++)
+                new_cells.push(this.next_row_generation(row));
+            return new Game(new_cells);
+        }
+
+        next_row_generation(row) {
+            let result = [];
+            for (let i = 0; i < this.width(); i++)
+                result.push(
+                    this.cell_at(row, i)
+                        .next_generation(this.neighbours_for(row, i))
+                );
+            return result;
+        }
+
+        neighbours_for(row, column) {
+            let neighbours = [
+                this.cell_at(row - 1, column - 1),
+                this.cell_at(row - 1, column),
+                this.cell_at(row - 1, column + 1),
+                this.cell_at(row,     column - 1),
+                this.cell_at(row,     column + 1),
+                this.cell_at(row + 1, column - 1),
+                this.cell_at(row + 1, column),
+                this.cell_at(row + 1, column + 1),
+            ];
+            return without_nones(neighbours);
+        }
+
+        cell_at(row, column) {
+            if (column < 0) return null;
+            if (column >= this.width()) return null;
+            if (row < 0) return null;
+            if (row >= this.height()) return null;
+            return this._cells[row][column];
+        }
+
+        width() {
+            return this._cells[0].length;
+        }
+
+        height() {
+            return this._cells.length;
+        }
+    }
+
+
+    function without_nones(list_) {
+        let filtered_list = [];
+        for (let item of list_)
+            if (item !== null)
+                filtered_list.push(item);
+
+        return filtered_list;
+    }
+
+
+    class Cell {
+        constructor(alive) {
+            this._alive = alive;
+        }
+
+        next_generation(neighbours) {
+            if (this.is_alive())
+                return this._next_generation_when_alive(neighbours);
+            return this._next_generation_when_dead(neighbours);
+        }
+
+        _next_generation_when_dead(neighbours) {
+            return living(neighbours).length === 3
+                ? living_cell()
+                : dead_cell();
+        }
+
+        _next_generation_when_alive(neighbours) {
+            const n = living(neighbours).length;
+            return (n === 2 || n === 3)
+                ? living_cell()
+                : dead_cell();
+        }
+
+        is_alive() {
+            return this._alive;
+        }
+    }
+
+
+    function living(neighbours) {
+        let living_neighbours = [];
+        for (let neighbour of neighbours)
+            if (neighbour.is_alive())
+                living_neighbours.push(neighbour);
+        return living_neighbours;
+    }
+
+    function dead_cell() {
+        return new Cell(false);
+    }
+
+    function living_cell() {
+        return new Cell(true);
+    }
+
+    let dimension_x;
+    let dimension_y;
+    let game;
+    let image;
+
+    function initGameOfLife() {
+        const pixelSize = 1;
+
+        dimension_x = Math.floor(canvas.width  / pixelSize);
+        dimension_y = Math.floor(canvas.height / pixelSize);
+
+        // Create cells
+        let cells = [];
+        for (let x = 0; x < dimension_x; x++) {
+            let row = [];
+            for (let y = 0; y < dimension_y; y++)
+                row.push(Math.random() < 0.5 ? dead_cell() : living_cell());
+            cells.push(row);
+        }
+
+        game = new Game(cells);
+        image = new PixelImage(
+            dimension_x,
+            dimension_y,
+            pixelSize,
+            Colors.BLACK
+        );
+    }
+
+    function render_game(game, image) {
+        for (let x = 0; x < image.dimX(); x++)
+            for (let y = 0; y < image.dimY(); y++)
+                image.setColour(new Pixel(x, y, game.cell_at(x, y).is_alive() ? Colors.GREEN: Colors.BLACK));
+    }
+
+    const frame_rate = 10; // generations per second
+    let lastTime = 0;
+    resizeCanvas();
+    initGameOfLife();
+
+    function loop(timestamp) {
+        if (timestamp - lastTime > 1000 / frame_rate) {
+            game = game.next_generation();
+            render_game(game, image);
+            image.render(display);
+            lastTime = timestamp;
+        }
+        requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+
+
+
+</script>
+
