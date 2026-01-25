@@ -32,13 +32,11 @@
     scene.add(worldGroup);
 
     class ControlsGui {
-        constructor() {
+        constructor(surfaceController) {
             const gui = new GUI({width: "100%", autoPlace: false});
 
-            this.xFunction = null;
-            this.yFunction = null;
-            this.zFunction = null;
-            this.surfaceCoordinates = {
+            this._surfaceController = surfaceController;
+            this._surfaceCoordinates = {
                 x: surfaceController.surface.definition().specification().parametrization.xFn,
                 y: surfaceController.surface.definition().specification().parametrization.yFn,
                 z: surfaceController.surface.definition().specification().parametrization.zFn
@@ -46,7 +44,7 @@
 
             this.#createContourFolder(gui);
             this.#createAxesFolder(gui);
-            this.#createMathFolder(controls);
+            this.#createMathFolder(gui);
             document.getElementById("gui-container").appendChild(gui.domElement);
         }
 
@@ -93,21 +91,21 @@
         #createMathFolder(folder) {
             const mathFolder = folder.addFolder("Math");
 
-            this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
+            this.xFunction = mathFolder.add(this._surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification = this._surfaceController.surface
                         .definition().specification().withParametrization({xFn: expr});
                     this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
                 });
 
-            this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
+            this.yFunction = mathFolder.add(this._surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
                     this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
                 });
 
-            this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
+            this.zFunction = mathFolder.add(this._surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification = this._surfaceController.surface
                         .definition().specification().withParametrization({zFn: expr});
@@ -136,8 +134,8 @@
         axesParameters: axesParameters,
         scene: scene
     });
-    const gui = new ControlsGui();
     const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
+    const gui = new ControlsGui(surfaceController);
 
     // Scale scene according to current surface
     axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
