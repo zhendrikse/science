@@ -1,21 +1,3 @@
-<style>
-    #surface-equation {
-        position: absolute;
-        margin-top: 10px;
-        margin-left: 10px;
-        width: 100%;
-        max-width: 100%;
-        font-size: 14px;
-        color: yellow;
-        z-index: 10;
-    }
-
-    #surface-equation .mjx-chtml {
-        text-align: left;
-        font-size: clamp(14px, 3.5vw, 10px);
-        margin: 0 auto;
-    }
-</style>
 <script type="importmap">
     {
       "imports": {
@@ -25,7 +7,7 @@
     }
 </script>
 
-<div id="surface-equation"></div>
+<div class="equationDiv" id="surface-equation"></div>
 <div class="canvasWrapper" id="complexPlotContainer">
     <canvas class="applicationCanvas" id="complexPlotCanvas"></canvas><br/>
 </div>
@@ -52,8 +34,19 @@
     class ControlsGui {
         constructor() {
             const gui = new GUI({width: "100%", autoPlace: false});
+
+            this.xFunction = null;
+            this.yFunction = null;
+            this.zFunction = null;
+            this.surfaceCoordinates = {
+                x: surfaceController.surface.definition().specification().parametrization.xFn,
+                y: surfaceController.surface.definition().specification().parametrization.yFn,
+                z: surfaceController.surface.definition().specification().parametrization.zFn
+            }
+
             this.#createContourFolder(gui);
             this.#createAxesFolder(gui);
+            this.#createMathFolder(controls);
             document.getElementById("gui-container").appendChild(gui.domElement);
         }
 
@@ -95,6 +88,33 @@
                 .name("V contours")
                 .onFinishChange(value => surfaceController.updateContours(surfaceParams.contourParameters));
             contourFolder.close();
+        }
+
+        #createMathFolder(folder) {
+            const mathFolder = folder.addFolder("Math");
+
+            this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
+                .onFinishChange(expr => {
+                    const surfaceSpecification = this._surfaceController.surface
+                        .definition().specification().withParametrization({xFn: expr});
+                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                });
+
+            this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
+                .onFinishChange(expr => {
+                    const surfaceSpecification = this._surfaceController.surface
+                        .definition().specification().withParametrization({yFn: expr});
+                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                });
+
+            this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
+                .onFinishChange(expr => {
+                    const surfaceSpecification = this._surfaceController.surface
+                        .definition().specification().withParametrization({zFn: expr});
+                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                });
+
+            mathFolder.close();
         }
     }
 
