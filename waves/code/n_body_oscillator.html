@@ -8,6 +8,7 @@
 </script>
 
 <canvas id="myCanvas" class="applicationCanvas"></canvas>
+<canvas id="graphCanvas" style="aspect-ratio: 3 / 1; margin-top: 0.5em; background-color: #131313; width: 100%;"></canvas>
 
 <script type="module">
     import { Group, Vector3, Scene, Color, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight } from "three";
@@ -22,7 +23,7 @@
     const g = 9.8; // gravitational constant
 
     const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-    camera.position.set(20, 20, 20);
+    camera.position.set(30, 10, 30);
     camera.lookAt(0, 0, 0);
 
     const renderer = new WebGLRenderer({canvas, antialias:true});
@@ -76,7 +77,7 @@
                 spring.updateAxis(axis);
                 spring.updatePosition(ball1.position());
 
-                const springForce = direction.multiplyScalar(spring.force());
+                const springForce = direction.clone().multiplyScalar(spring.force());
                 const relVelocity = ball2.velocity().clone().sub(ball1.velocity());
                 const dampingForce = relVelocity.projectOnVector(direction).multiplyScalar(this._damping);
 
@@ -93,25 +94,44 @@
     const worldGroup = new Group();
     scene.add(worldGroup);
 
-    const massSpringSystem = new HarmonicOscillator({damping: 0.5})
-        .withMassAt(new Vector3(-25, 0, 0), {color: "red"})
-        .withMassAt(new Vector3(-15, 0, 0))
-        .withMassAt(new Vector3(-5, 0, 0))
-        .withMassAt(new Vector3( 5, 0, 0))
-        .withMassAt(new Vector3( 15, 0, 0), {color: "red"})
-        .withSpringBetween(0, 1)
-        .withSpringBetween(1, 2)
-        .withSpringBetween(2, 3)
-        .withSpringBetween(3, 4);
-    worldGroup.add(massSpringSystem);
+    const oscillator = new HarmonicOscillator({damping: 0.5})
+        .withMassAt(new Vector3(-25, 0, 0));
+    worldGroup.add(oscillator);
 
-    massSpringSystem._masses[0].moveTo(new Vector3(-21, 0, 0));
-    massSpringSystem._masses[2].moveTo(new Vector3(0, 0, 0));
-    massSpringSystem._masses[4].moveTo(new Vector3(11, 0, 0));
+    const dt = 0.01;
+    const graphCanvas = document.getElementById("graphCanvas");
+    const graph = new Graph(graphCanvas, {
+        dt: dt,
+        scaleY: 10
+    });
+
+    graph.addSeries("x_mid", "red");
+
+
+    const N = 11;
+    const mid = Math.floor(N / 2) - 1;
+    for (let n = 0; n < N - 1; n++)
+        oscillator
+            .withMassAt(new Vector3(-15 + n * 5, 0, 0), {color: n === mid ? "red" : "yellow"})
+            .withSpringBetween(n, n + 1);
+
+    // Displace
+    for (let n = 0; n < N; n++) {
+        oscillator._masses[n].moveTo(
+            oscillator._masses[n].position().add(
+                new Vector3(Math.sin(Math.PI * n / (N + 1)) * 10, 0, 0))
+        );
+    }
 
     function animate() {
         requestAnimationFrame(animate);
-        massSpringSystem.update();
+        oscillator.update(dt);
+
+        const x = oscillator._masses[mid].position().x - mid;
+
+        graph.push({ x_mid: x });
+        graph.draw();
+
         controls.update();
         renderer.render(scene, camera);
     }
