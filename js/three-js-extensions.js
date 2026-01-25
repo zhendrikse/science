@@ -554,7 +554,6 @@ export class AxesController {
 export class Plot3DView {
     constructor(scene, canvas, boundingBox) {
         this._scene = scene;
-        this._canvas = canvas;
         this._camera = new PerspectiveCamera(45, 1, 0.1, 100);
         this._renderer = new WebGLRenderer({ antialias: true, canvas });
 
