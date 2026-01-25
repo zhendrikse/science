@@ -212,7 +212,7 @@
     function updateViewForSurface() {
         const boundingBox = surfaceController.surfaceBoundingBox();
         axesController.createFromBoundingBox(ThreeJsUtils.scaleBox3(boundingBox.clone(), 1.1));
-        plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.55));
+        plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.6));
     }
 
     const Category = Object.freeze({
@@ -329,7 +329,8 @@
             u: 0.5,
             v: 0.5
         }),
-        autoRotate: true
+        autoRotate: true,
+        resolution: 125
     });
 
     const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
