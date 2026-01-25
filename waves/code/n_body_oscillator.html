@@ -1,470 +1,119 @@
-<style>
-    html, body {
-        background: #131313;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        height: 100%;
-    }
-
-    #glowscript-wrapper {
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 4 / 3;
-        margin: auto;
-    }
-
-    .glowscript canvas {
-        display: block;
-        touch-action: none;
-        width: 100%;
-        height: 100%;
-    }
-</style>
-<script>
-    // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
     }
 </script>
-<div id="glowscript-wrapper">
-    <div id="glowscript" class="glowscript"></div>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
 
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-ρσ_modules.pythonize = {};
+<canvas id="myCanvas" class="applicationCanvas"></canvas>
 
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
+<script type="module">
+    import { Group, Vector3, Scene, Color, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight } from "three";
+    import { Spring, Ball, Graph } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+
+    // --- Scene setup ---
+    const canvas = document.getElementById("myCanvas");
+    const scene = new Scene();
+    scene.background = new Color(0x131313);
+
+    const g = 9.8; // gravitational constant
+
+    const camera = new PerspectiveCamera(45, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+    camera.position.set(20, 20, 20);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new WebGLRenderer({canvas, antialias:true});
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+    scene.add(new HemisphereLight(0xffffff,0x222222,0.6));
+    const dirLight = new DirectionalLight(0xffffff,0.8);
+    dirLight.position.set(10, 20, 10);
+    scene.add(dirLight);
+    renderer.shadowMap.enabled = true;
+    dirLight.castShadow = true;
+
+    export class HarmonicOscillator extends Group {
+        constructor({ damping = 0.2 } = {}) {
+            super();
+            this._masses = [];
+            this._springs = [];
+            this._damping = damping;
         }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
+
+        withMassAt(position) {
+            this._masses.push(new Ball(this, {position: position}));
+            return this;
         }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
+
+        withSpringBetween(i, j) {
+            const spring = new Spring(
+                this,
+                this._masses[i].position(),
+                this._masses[j].position().clone().sub(this._masses[i].position())
+            );
+            this._springs.push({ spring, i, j });
+            return this;
         }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
 
-    ρσ_modules.pythonize.strings = strings;
-})();
+        update(dt, time) {
+            const forces = this._masses.map(() => new Vector3(0, 0, 0));
 
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
+            for (const { spring, i, j } of this._springs) {
+                const ball1 = this._masses[i];
+                const ball2 = this._masses[j];
 
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var arrow, compound, cone, curve, cylinder, ellipsoid, extrusion, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, balls, plot, _GS_1, oscillator, curve, ball_i, delta_t, t;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
+                const axis = ball2.position().clone().sub(ball1.position());
+                const direction = axis.clone().normalize();
 
-    strings();
-    "8";
-    title = " &#x2022; <a href=\"https://github.com/zhendrikse/science/blob/main/waves/code/n_body_oscillator.py\">n_body_oscillator.py<\/a> by <a href=\"http://www.hendrikse.name/\">Zeger Hendrikse</a>\n&#x2022; The number of beads still needs to be modified in the code itself\n\n";
-    "10";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), title: title, forward: vec(1["-u"]()["*"](.5), 1["-u"]()["*"](.4), 1["-u"]()["*"](.75)), center: vec(1.5, 1["-u"]()["*"](.55), 1["-u"]()["*"](.75)), range: 4})]);
-    "13";
-    function Spring() {;
+                spring.updateAxis(axis);
+                spring.update(time);
+                spring.updatePosition(ball1.position());
+
+                const springForce = direction.multiplyScalar(spring.force());
+
+                const relVelocity = ball2.velocity().clone().sub(ball1.velocity());
+                const dampingForce = relVelocity.projectOnVector(direction).multiplyScalar(this._damping);
+
+                springForce.add(dampingForce);
+
+                forces[i].add(springForce);
+                forces[j].add(springForce.clone().negate());
+            }
+
+            this._masses.forEach((ball, i) => ball.semiImplicitEulerUpdate(forces[i], dt));
+        }
     }
-    Spring.prototype.__init__ = async function __init__() {
-        var self = this;
-        var pos = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
-        var axis = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
-        var radius = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.radius : arguments[2];
-        var thickness = (arguments[3] === undefined || ( 3 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.thickness : arguments[3];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "radius")){
-            radius = ρσ_kwargs_obj.radius;
-        }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "thickness")){
-            thickness = ρσ_kwargs_obj.thickness;
-        }
-        "15";
-        self._spring = ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: pos, axis: axis, radius: radius, thickness: thickness, color: color.white, coils: 15})]);
-        "16";
-        self._size = mag(axis);
-    };
-    if (!Spring.prototype.__init__.__defaults__) Object.defineProperties(Spring.prototype.__init__, {
-        __defaults__ : {value: {radius:.15, thickness:.05}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["pos", "axis", "radius", "thickness"]},
-        __module__ : {value: null}
-    });
-    Spring.__argnames__ = Spring.prototype.__init__.__argnames__;
-    Spring.__handles_kwarg_interpolation__ = Spring.prototype.__init__.__handles_kwarg_interpolation__;
-    Spring.prototype.force = async function force() {
-        var self = this;
-        var ρσ_ls, displacement;
-        "19";
-        displacement = mag(self._spring.axis)["-"](1["*"](self._size));
-        "20";
-        return 1["-u"]()["*"](1)["*"](2e3)["*"](displacement)["*"](norm(self._spring.axis));
-    };
-    if (!Spring.prototype.force.__module__) Object.defineProperties(Spring.prototype.force, {
-        __module__ : {value: null}
-    });
-    Spring.prototype.update = async function update() {
-        var self = this;
-        var delta = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
-        var position = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? update.__defaults__.position : arguments[1];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
-            position = ρσ_kwargs_obj.position;
-        }
-        "23";
-        self._spring.axis=self._spring.axis["+"](delta);
-        "24";
-        self._spring.pos=self._spring.pos["+"](position);
-    };
-    if (!Spring.prototype.update.__defaults__) Object.defineProperties(Spring.prototype.update, {
-        __defaults__ : {value: {position:vector(0, 0, 0)}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["delta", "position"]},
-        __module__ : {value: null}
-    });
-    Spring.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Spring.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Spring.prototype, "__bases__", {value: []});
 
+    const worldGroup = new Group();
+    scene.add(worldGroup);
 
+    const massSpringSystem = new HarmonicOscillator({damping: 0.1})
+        .withMassAt(new Vector3(-25, 0, 0))
+        .withMassAt(new Vector3(-15, 0, 0))
+        .withMassAt(new Vector3(-5, 0, 0))
+        .withMassAt(new Vector3( 5, 0, 0))
+        .withMassAt(new Vector3( 15, 0, 0))
+        .withSpringBetween(0, 1)
+        .withSpringBetween(1, 2)
+        .withSpringBetween(2, 3)
+        .withSpringBetween(3, 4);
+    worldGroup.add(massSpringSystem);
 
+    massSpringSystem._masses[4].moveTo(new Vector3(11, 0, 0));
 
-    "26";
-    function Ball() {;
+    const dt = 0.01;
+    let time = 0;
+    function animate() {
+        requestAnimationFrame(animate);
+
+        time += dt;
+        massSpringSystem.update(dt, time);
+
+        renderer.render(scene, camera);
     }
-    Ball.prototype.__init__ = async function __init__() {
-        var self = this;
-        var pos = ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[0];
-        var colour = ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true) ? undefined : arguments[1];
-        var mass = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.mass : arguments[2];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "mass")){
-            mass = ρσ_kwargs_obj.mass;
-        }
-        "28";
-        self._ball = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: pos, radius: .3, color: colour})]);
-        "29";
-        self._velocity = vector(0, 0, 0);
-        "30";
-        self._mass = mass;
-    };
-    if (!Ball.prototype.__init__.__defaults__) Object.defineProperties(Ball.prototype.__init__, {
-        __defaults__ : {value: {mass:200}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["pos", "colour", "mass"]},
-        __module__ : {value: null}
-    });
-    Ball.__argnames__ = Ball.prototype.__init__.__argnames__;
-    Ball.__handles_kwarg_interpolation__ = Ball.prototype.__init__.__handles_kwarg_interpolation__;
-    Ball.prototype.update = async function update(net_force, dt) {
-        var self = this;
-        "33";
-        self._velocity=self._velocity["+"](dt["*"](net_force)["/"](self._mass));
-        "34";
-        self._ball.pos=self._ball.pos["+"](self._velocity["*"](dt));
-    };
-    if (!Ball.prototype.update.__argnames__) Object.defineProperties(Ball.prototype.update, {
-        __argnames__ : {value: ["net_force", "dt"]},
-        __module__ : {value: null}
-    });
-    Ball.prototype.shift = async function shift(delta) {
-        var self = this;
-        "37";
-        self._ball.pos=self._ball.pos["+"](delta);
-    };
-    if (!Ball.prototype.shift.__argnames__) Object.defineProperties(Ball.prototype.shift, {
-        __argnames__ : {value: ["delta"]},
-        __module__ : {value: null}
-    });
-    Ball.prototype.position = async function position() {
-        var self = this;
-        "40";
-        return self._ball.pos;
-    };
-    if (!Ball.prototype.position.__module__) Object.defineProperties(Ball.prototype.position, {
-        __module__ : {value: null}
-    });
-    Ball.prototype.velocity = async function velocity() {
-        var self = this;
-        "43";
-        return self._velocity;
-    };
-    if (!Ball.prototype.velocity.__module__) Object.defineProperties(Ball.prototype.velocity, {
-        __module__ : {value: null}
-    });
-    Ball.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Ball.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Ball.prototype, "__bases__", {value: []});
+    animate();
 
+</script>
 
-
-
-
-
-    "45";
-    function Oscillator() {;
-    }
-    Oscillator.prototype.__init__ = async function __init__() {
-        var self = this;
-        var number_of_balls = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.number_of_balls : arguments[0];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "number_of_balls")){
-            number_of_balls = ρσ_kwargs_obj.number_of_balls;
-        }
-        var ρσ_ls, ball_radius, spring_size, total_size, left, _GS_1, i;
-        "47";
-        self._total_balls = number_of_balls;
-        "48";
-        ball_radius = .3;
-        "49";
-        spring_size = vector(2, 0, 0);
-        "50";
-        total_size = mag(spring_size)["*"](self._total_balls["+"](1))["+"](self._total_balls["*"](ball_radius));
-        "51";
-        self._spring_size = mag(spring_size);
-        "53";
-        left = vector(1["-u"]()["*"](total_size)["/"](2), 0, 0);
-        "55";
-        self._left_wall = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: left, size: vector(2, .05, 2), color: color.green, up: vector(1, 0, 0)})]);
-        "56";
-        self._right_wall = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: 1["-u"]()["*"](left), size: vector(2, .05, 2), color: color.green, up: vector(1, 0, 0)})]);
-        "58";
-        self._springs = ρσ_list_decorate([]);
-        "59";
-        for (var ρσ_Index1 = 0; ρσ_Index1["<"](self._total_balls["+"](1)); ρσ_Index1++) {
-            i = ρσ_Index1;
-            "60";
-            _GS_1 = new Spring;
-            ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({pos: left["+"](i["*"](spring_size))["+"](i["*"](vector(ball_radius, 0, 0))), axis: spring_size})]);
-            self._springs=self._springs["+"](ρσ_list_decorate([ _GS_1 ]));
-        }
-        "62";
-        self._balls = ρσ_list_decorate([]);
-        "63";
-        for (var ρσ_Index2 = 1; ρσ_Index2["<"](self._total_balls["+"](1)); ρσ_Index2++) {
-            i = ρσ_Index2;
-            "64";
-            _GS_1 = new Ball;
-            ρσ_interpolate_kwargs.call(_GS_1, _GS_1.__init__, [ρσ_desugar_kwargs({pos: left["+"](i["*"](spring_size))["+"](i["-"](1["*"](.5))["*"](vector(ball_radius, 0, 0))), colour: color.orange})]);
-            self._balls=self._balls["+"](ρσ_list_decorate([ _GS_1 ]));
-        }
-    };
-    if (!Oscillator.prototype.__init__.__defaults__) Object.defineProperties(Oscillator.prototype.__init__, {
-        __defaults__ : {value: {number_of_balls:3}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["number_of_balls"]},
-        __module__ : {value: null}
-    });
-    Oscillator.__argnames__ = Oscillator.prototype.__init__.__argnames__;
-    Oscillator.__handles_kwarg_interpolation__ = Oscillator.prototype.__init__.__handles_kwarg_interpolation__;
-    Oscillator.prototype.ball_position = async function ball_position(ball_index) {
-        var self = this;
-        "67";
-        return (await ρσ_getitem(self._balls, ball_index).position());
-    };
-    if (!Oscillator.prototype.ball_position.__argnames__) Object.defineProperties(Oscillator.prototype.ball_position, {
-        __argnames__ : {value: ["ball_index"]},
-        __module__ : {value: null}
-    });
-    Oscillator.prototype.shift_ball = async function shift_ball(ball_index, delta) {
-        var self = this;
-        "70";
-        (await self.update_ball_springs(ball_index, delta));
-        "71";
-        (await ρσ_getitem(self._balls, ball_index).shift(delta));
-    };
-    if (!Oscillator.prototype.shift_ball.__argnames__) Object.defineProperties(Oscillator.prototype.shift_ball, {
-        __argnames__ : {value: ["ball_index", "delta"]},
-        __module__ : {value: null}
-    });
-    Oscillator.prototype.update = async function update(dt) {
-        var self = this;
-        var ρσ_ls, net_force, ball_i;
-        "74";
-        for (var ρσ_Index3 = 0; ρσ_Index3["<"](self._total_balls); ρσ_Index3++) {
-            ball_i = ρσ_Index3;
-            "75";
-            net_force = (await ρσ_getitem(self._springs, ball_i).force())["-"](1["*"]((await ρσ_getitem(self._springs, ball_i["+"](1)).force())));
-            "76";
-            (await ρσ_getitem(self._balls, ball_i).update(net_force, dt));
-            "77";
-            (await self.update_ball_springs(ball_i, (await ρσ_getitem(self._balls, ball_i).velocity())["*"](dt)));
-        }
-    };
-    if (!Oscillator.prototype.update.__argnames__) Object.defineProperties(Oscillator.prototype.update, {
-        __argnames__ : {value: ["dt"]},
-        __module__ : {value: null}
-    });
-    Oscillator.prototype.update_ball_springs = async function update_ball_springs(ball_index, delta) {
-        var self = this;
-        "80";
-        (await ρσ_getitem(self._springs, ball_index).update(delta));
-        "81";
-        (await ρσ_getitem(self._springs, ball_index["+"](1)).update(1["-u"]()["*"](delta), delta));
-    };
-    if (!Oscillator.prototype.update_ball_springs.__argnames__) Object.defineProperties(Oscillator.prototype.update_ball_springs, {
-        __argnames__ : {value: ["ball_index", "delta"]},
-        __module__ : {value: null}
-    });
-    Oscillator.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Oscillator.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Oscillator.prototype, "__bases__", {value: []});
-
-
-
-
-
-
-    "84";
-    async function zoom_in_on(selected_object) {
-        var ρσ_ls, temp_color, target, step, _;
-        "85";
-        if (selected_object === null) {
-            "86";
-            return;
-        }
-        "89";
-        temp_color = vec(selected_object.color.x, selected_object.color.y, selected_object.color.z);
-        "90";
-        selected_object.color = color.yellow;
-        "91";
-        target = selected_object.pos;
-        "92";
-        step = target["-"](1["*"](display.center))["/"](20);
-        "93";
-        for (var ρσ_Index4 = 1; ρσ_Index4["<"](20); ρσ_Index4=ρσ_Index4["+"](1)) {
-            _ = ρσ_Index4;
-            "94";
-            (await rate(20));
-            "95";
-            display.center=display.center["+"](step);
-            "96";
-            display.range=display.range["/"](1.037);
-        }
-        "98";
-        selected_object.color = temp_color;
-    };
-    if (!zoom_in_on.__argnames__) Object.defineProperties(zoom_in_on, {
-        __argnames__ : {value: ["selected_object"]},
-        __module__ : {value: null}
-    });
-
-    "101";
-    async function on_mouse_click() {
-        "102";
-        (await zoom_in_on(display.mouse.pick()));
-    };
-    if (!on_mouse_click.__module__) Object.defineProperties(on_mouse_click, {
-        __module__ : {value: null}
-    });
-
-    "104";
-    display.bind("click", on_mouse_click);
-    "106";
-    balls = 4;
-    "107";
-    plot = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: str(balls)["+"]("-body coupled oscillator"), xtitle: "Time", ytitle: "Amplitude", width: 500, height: 250, background: color.black})]);
-    "108";
-    _GS_1 = new Oscillator;
-    (await _GS_1.__init__(balls));
-    oscillator = _GS_1;
-    "109";
-    curve = ρσ_list_decorate([]);
-    "110";
-    for (var ρσ_Index5 = 0; ρσ_Index5["<"](balls); ρσ_Index5++) {
-        ball_i = ρσ_Index5;
-        "111";
-        curve=curve["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.magenta})]) ]));
-    }
-    "114";
-    (await oscillator.shift_ball(0, vector(1, 0, 0)));
-    "119";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "120";
-    delta_t = .001;
-    "121";
-    t = 0;
-    "122";
-    while (true) {
-        "123";
-        (await rate(1["/"](delta_t)));
-        "124";
-        (await oscillator.update(delta_t));
-        "125";
-        for (var ρσ_Index6 = 0; ρσ_Index6["<"](balls); ρσ_Index6++) {
-            ball_i = ρσ_Index6;
-            "126";
-            ρσ_getitem(curve, ball_i).plot(t["/"](delta_t), (await oscillator.ball_position(ball_i)).x["-"](1["*"](ball_i))["+"](balls["/"](2)));
-        }
-        "127";
-        t=t["+"](delta_t);
-    }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
-
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
-
-//--><!]]></script>
-</div>
