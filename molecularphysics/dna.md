@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Simulation of a DNA double helix
+## The DNA double helix 🧬
 <div class="header_line"><br/></div>
 
 - [Original idea and code](https://trinket.io/glowscript/7ba54885924b) by Francisco Adeil Gomes Araujo
