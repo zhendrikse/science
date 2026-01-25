@@ -44,7 +44,7 @@
     </tr>
     <tr>
         <td><label for="vicsekFractal"><input type="radio" id="vicsekFractal"/>Vicsek fractal</label></td>
-        <td>&nbsp;</td>
+        <td><label for="barnsleyFern"><input type="radio" id="barnsleyFern"/>Barnsley fern 🌿</label></td>
     </tr>
 </table>
 
@@ -69,6 +69,46 @@
     radioButtons.set("sierpinskiTriangle", sierpinskiTriangle);
     radioButtons.set("tSquareFractal", tSquare);
     radioButtons.set("vicsekFractal", vicsekFractal);
+    radioButtons.set("barnsleyFern", barnsleyFern);
+
+    function barnsleyFern(image) {
+        let x = 0, y = 0;
+
+        const width  = image.dimX();
+        const height = image.dimY();
+
+        for (let i = 0; i < 1E6; i++) {
+            const r = Math.random();
+            let xNew = 0,
+                yNew = 0,
+                color = Colors.GREEN;
+
+            if (r < 0.01) {
+                xNew = 0;
+                yNew = 0.16 * y;
+                color = [0, 0.4, 0]; // stem color
+            } else if (r < 0.86) {
+                xNew = 0.85 * x + 0.04 * y;
+                yNew = -0.04 * x + 0.85 * y + 1.6;
+                color = [0, 0.9, 0]; // leaf color
+            } else if (r < 0.93) {
+                xNew = 0.20 * x - 0.26 * y;
+                yNew = 0.23 * x + 0.22 * y + 1.6;
+            } else {
+                xNew = -0.15 * x + 0.28 * y;
+                yNew = 0.26 * x + 0.24 * y + 0.44;
+            }
+
+            x = xNew;
+            y = yNew;
+
+            // Schalen naar canvas
+            const px = Math.trunc(width  * (x + 2.5) / 5);
+            const py = Math.trunc(height - height * y / 10);
+
+            image.setColour(new Pixel(px, py, color));
+        }
+    }
 
     function cantorDust(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1) {
         /**

@@ -14,7 +14,7 @@ that the construction of this fractal makes use of matrices, see also the
 
 <p style="clear: both;"></p>
 
-### Background information
+## Background information
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <blockquote>
@@ -79,6 +79,28 @@ def transform(self, x, y):
         return -0.15 * x + 0.28 * y, 0.26 * x + 0.24 * y + 0.44
 ```
 
-<p style="clear: both;"></p>
+
+### Why randomness still creates order
+<div style="border-top: 1px solid #999999"><br/></div>
+
+Although the transformations are chosen randomly:
+
+- each one is contractive
+- the system has a single attractor
+- No matter where you start, the points converge to the same shape.
+
+This mirrors biology:
+
+> simple growth rules + repetition + variation → complex natural forms
+
+### Why it looks so “alive”
+<div style="border-top: 1px solid #999999"><br/></div>
+
+- Self-similarity at different scales
+- Imperfect symmetry
+- Curved growth
+- Density variation
+
+All of these are typical of real plants — which is why Barnsley’s fern became iconic in fractal geometry.
 
 {% include share_buttons.html %}
