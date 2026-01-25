@@ -1501,39 +1501,39 @@ export class Spring {
         radius=0.5,
         coilRadius=0.075
     } = {}) {
-        this.longtudinalOscillation = longitudinalOscillation;
-        this.radius = radius;
-        this.curve = new Helix(position, axis, coils, radius);
-        this.tubularSegments = tubularSegments;
-        this.radialSegments = radialSegments;
-        this.coilRadius = coilRadius;
-        this.restLength = axis.length();
-        this.k = k;
-        this.position = position;
+        this._longtudinalOscillation = longitudinalOscillation;
+        this._radius = radius;
+        this._curve = new Helix(position, axis, coils, radius);
+        this._tubularSegments = tubularSegments;
+        this._radialSegments = radialSegments;
+        this._coilRadius = coilRadius;
+        this._restLength = axis.length();
+        this._k = k;
+        this._position = position;
         this._axis = axis;
 
-        this.geometry = new TubeGeometry(this.curve, tubularSegments, coilRadius, radialSegments, false);
+        this._geometry = new TubeGeometry(this._curve, tubularSegments, coilRadius, radialSegments, false);
         const material = new MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
-        this.spring = new Mesh(this.geometry, material);
-        parent.add(this.spring);
+        this._mesh = new Mesh(this._geometry, material);
+        parent.add(this._mesh);
     }
 
     #regenerateTube() {
-        this.spring.geometry.dispose();
-        this.spring.geometry = new TubeGeometry(
-            this.curve, this.tubularSegments, this.coilRadius, this.radialSegments, false
+        this._mesh.geometry.dispose();
+        this._mesh.geometry = new TubeGeometry(
+            this._curve, this._tubularSegments, this._coilRadius, this._radialSegments, false
         );
     }
 
     updateAxis(newAxis) {
         this._axis = newAxis;
-        this.curve.updateAxis(this._axis);
-        this.longtudinalOscillation ?
+        this._curve.updateAxis(this._axis);
+        this._longtudinalOscillation ?
             this.#updateWithLongitudinal() :
             this.#updateWithoutLongitudinal();
     }
 
-    update = (time) => this.curve.wavePhase = time * 4;
+    update = (time) => this._curve.wavePhase = time * 4;
 
     #updateWithoutLongitudinal() {
         this.#regenerateTube();
@@ -1541,11 +1541,14 @@ export class Spring {
 
     #updateWithLongitudinal(time) {
         // Longitudinal wave amplitude coupled to spring elongation
-        const displacement = this._axis.y - this.curve.start.y;
-        this.curve.waveAmp = Math.min(Math.abs(displacement) / 10, 0.3); // max amplitude 0.3
+        const displacement = this._axis.y - this._curve.start.y;
+        this._curve.waveAmp = Math.min(Math.abs(displacement) / 10, 0.3); // max amplitude 0.3
         this.#regenerateTube();
     }
 
-    force = () => -this.k * this.displacement();
-    displacement = () => this.restLength - this._axis.length();
+    get position() { return this._position; }
+    get axis() { return this._axis; }
+
+    force = () => -this._k * this.displacement();
+    displacement = () => this._restLength - this._axis.length();
 }
