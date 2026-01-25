@@ -20,7 +20,7 @@
     import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import { SurfaceController, ViewParameters, ContourType }
+    import { SurfaceController, ViewParameters, ContourType, TangentFrameParameters }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
     const canvasContainer = document.getElementById("complexPlotContainer");
@@ -117,13 +117,13 @@
     }
 
     const axesParameters = new AxesParameters();
-    const surfaceParams = new ViewParameters();
+    const surfaceParams = new ViewParameters({tangentFrameParameters: new TangentFrameParameters({visible: false})});
 
     const surfaceData = {
         parametrization: {
-            xFn: "(sin(4 * u)^4 + cos(4 * u)^4 + sin(4 * phi)^4 + cos(4 * phi)^4) * sin(u) * cos(v)",
-            yFn: "(sin(4 * u)^4 + cos(4 * u)^4 + sin(4 * phi)^4 + cos(4 * phi)^4) * cos(u)",
-            zFn: "(sin(4 * u)^4 + cos(4 * u)^4 + sin(4 * phi)^4 + cos(4 * phi)^4) * sin(u) * sin(v)"
+            xFn: "(sin(2 * u)^4 + cos(6 * u)^4 + sin(2 * phi)^4 + cos(6 * phi)^4) * sin(u) * cos(v)",
+            yFn: "(sin(2 * u)^4 + cos(6 * u)^4 + sin(2 * phi)^4 + cos(6 * phi)^4) * cos(u)",
+            zFn: "(sin(2 * u)^4 + cos(6 * u)^4 + sin(2 * phi)^4 + cos(6 * phi)^4) * sin(u) * sin(v)"
         },
         intervals: [["-pi", "pi"], ["0", "pi"]]
     };
