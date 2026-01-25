@@ -17,11 +17,6 @@
 <canvas class="applicationCanvas" id="ringCanvas" style="aspect-ratio: 4 / 1;"></canvas>
 <div class="guiContainer" id="gui-container"></div>
 
-<style>
-
-
-</style>
-
 <script type="module">
     import {Scene, Color, Group, Box3, PerspectiveCamera, WebGLRenderer, Vector3, Vector2, Raycaster,
         DirectionalLight, HemisphereLight} from "three";
@@ -236,66 +231,6 @@
             this.yFunction.setValue(surfaceSpecification.parametrization.yFn);
             this.zFunction.setValue(surfaceSpecification.parametrization.zFn);
         }
-    }
-
-
-    export class SurfaceController {
-        constructor(parentGroup, surfaceData, surfaceParams) {
-            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
-            this._surface = new StandardSurfaceView(parentGroup, new Surface(surfaceDefinition), surfaceParams);
-            this._parentGroup = parentGroup;
-
-            this._tangentFrame = new TangentFrameView(surfaceDefinition, surfaceParams.tangentFrameParameters);
-            this._parentGroup.add(this._tangentFrame);
-            this._normals = new NormalsView(parentGroup, this._surface);
-
-            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
-            this.updateContours(surfaceParams.contourParameters);
-            this.updateColor(surfaceParams);
-        }
-
-        updateColor = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
-        updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
-        surfaceBoundingBox = () => {
-            this._surface.group.updateMatrixWorld(true);
-            return this._surface.boundingBox();
-        };
-
-        changeSurface(surfaceSpecification, surfaceParams) {
-            this._surface.dispose();
-            this._tangentFrame.dispose();
-
-            const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-            this._surface = new StandardSurfaceView(this._parentGroup, new Surface(surfaceDefinition), surfaceParams);
-
-            this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
-            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
-            this._parentGroup.add(this._tangentFrame);
-        }
-
-        get surface() { return this._surface; }
-
-        updateTangentFrame(tangentFrameParameters) {
-            this._tangentFrame.visible = tangentFrameParameters.visible;
-            this._tangentFrame.update(tangentFrameParameters.u, tangentFrameParameters.v);
-            this._tangentFrame.position.copy(this._surface.group.position);
-            this._tangentFrame.scale.set(this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
-        }
-
-        changeBaseColorTo = (color) => this._surface.changeBaseColorTo(color);
-        updateOpacity = (value) => this._surface.updateOpacity(value);
-        toggleWireframe = (value) => this._surface.toggleWireframe(value);
-        toggleNormals = (visible, surfaceParams) => {
-            if (visible) {
-                this._normals.buildWith({});
-                this._surface.updateOpacity(0.3);
-            } else {
-                this._normals.clear();
-                this._surface.updateOpacity(surfaceParams.opacity);
-            }
-        }
-        rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotation.y += value; }
-        resampleWith = (resolution) => this._surface.resampleWith(resolution);
     }
 
     function updateViewForSurface() {

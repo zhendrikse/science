@@ -1025,9 +1025,10 @@ export class SurfaceController {
         this._surface = new StandardSurfaceView(parentGroup, new Surface(surfaceDefinition), surfaceParams);
         this._parentGroup = parentGroup;
 
+        surfaceParams.tangentFrameParameters.scale = this._surface.boundingBox().max.length() * .4;
         this._tangentFrame = new TangentFrameView(surfaceDefinition, surfaceParams.tangentFrameParameters);
-        this._surface.group.add(this._tangentFrame);
-        this._normals = new NormalsView(this._surface);
+        this._parentGroup.add(this._tangentFrame);
+        this._normals = new NormalsView(parentGroup, this._surface);
 
         this.updateTangentFrame(surfaceParams.tangentFrameParameters);
         this.updateContours(surfaceParams.contourParameters);
@@ -1048,9 +1049,10 @@ export class SurfaceController {
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
         this._surface = new StandardSurfaceView(this._parentGroup, new Surface(surfaceDefinition), surfaceParams);
 
+        surfaceParams.tangentFrameParameters.scale = this._surface.boundingBox().max.length() * .4;
         this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
         this.updateTangentFrame(surfaceParams.tangentFrameParameters);
-        this._surface.group.add(this._tangentFrame);
+        this._parentGroup.add(this._tangentFrame);
     }
 
     get surface() { return this._surface; }
@@ -1255,6 +1257,8 @@ export class TangentFrameView extends Group {
                 color: tangentFrameParameters.color,
                 side: DoubleSide,
                 transparent: true,
+                depthTest: false,
+                depthWrite: false,
                 opacity: tangentFrameParameters.opacity,
                 wireframe: tangentFrameParameters.wireframe
             })
