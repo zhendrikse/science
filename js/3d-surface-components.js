@@ -5,18 +5,6 @@ import { Arrow, Interval, ComplexNumber, ThreeJsUtils }
 import { BufferGeometry, Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3,
     MeshPhongMaterial, MathUtils, Color, BufferAttribute } from "three";
 
-export const Category = Object.freeze({
-    BASIC: "Basic",
-    CONIC: "Conic",
-    FUNCTION: "Functions",
-    MISC: "Miscellaneous",
-    NATURE: "Nature",
-    NON_ORIENTABLE: "Non-Orientable",
-    OBJECT: "Object",
-    SPIRAL: "Spiral",
-    TOROID: "Toroid"
-});
-
 export const ContourType = Object.freeze({
     CURVATURE: "Curvature",
     ISO_PARAMETRIC: "Isoparametric",
@@ -113,7 +101,7 @@ export class SurfaceView {
         object.clear();
     }
 
-    boundingBox() { return new Box3().setFromObject(this._group).clone(); }
+    boundingBox() { this._group.updateMatrixWorld(true); return new Box3().setFromObject(this._group).clone(); }
     definition() { return this._surface.definition(); }
     get group() { return this._group; }
     hide() { this._group.visible = false; }
@@ -1020,40 +1008,50 @@ export class SurfaceSelector extends Group {
 
 export class SurfaceController {
     constructor(parentGroup, surfaceData, surfaceParams) {
-        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(new SurfaceSpecification(surfaceData));
-        this._surface = new StandardSurfaceView(parentGroup, new Surface(surfaceDefinition), surfaceParams);
         this._parentGroup = parentGroup;
+        this._surface = null;
+        this._tangentFrame = null;
+        this._normals = null;
 
-        surfaceParams.tangentFrameParameters.scale = this._surface.boundingBox().max.length() * .4;
-        this._tangentFrame = new TangentFrameView(surfaceDefinition, surfaceParams.tangentFrameParameters);
-        this._parentGroup.add(this._tangentFrame);
-        this._normals = new NormalsView(parentGroup, this._surface);
-        this._normals.group.position.copy(this._surface.group.position);
-        this._normals.group.scale.set(this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
-
-        this.updateTangentFrame(surfaceParams.tangentFrameParameters);
+        this.changeSurface(new SurfaceSpecification(surfaceData), surfaceParams);
         this.updateContours(surfaceParams.contourParameters);
         this.updateColor(surfaceParams);
     }
 
     updateColor = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
     updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
-    surfaceBoundingBox = () => {
-        this._surface.group.updateMatrixWorld(true);
-        return this._surface.boundingBox();
-    };
+    surfaceBoundingBox = () => this._surface.boundingBox();
 
-    changeSurface(surfaceSpecification, surfaceParams) {
-        this._surface.dispose();
-        this._tangentFrame.dispose();
+    #disposeCurrentSurface() {
+        this._surface?.dispose();
+        this._tangentFrame?.dispose();
+        this._normals?.clear();
+    }
 
+    #createSurfaceFrom(surfaceSpecification, surfaceParams) {
         const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
         this._surface = new StandardSurfaceView(this._parentGroup, new Surface(surfaceDefinition), surfaceParams);
+    }
 
+    #createNormals() {
+        this._normals = new NormalsView(this._parentGroup, this._surface);
+        this._normals.group.position.copy(this._surface.group.position);
+        this._normals.group.scale.set(
+            this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
+    }
+
+    #createTangentFrameFrom(surfaceParams) {
         surfaceParams.tangentFrameParameters.scale = this._surface.boundingBox().max.length() * .4;
         this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
         this.updateTangentFrame(surfaceParams.tangentFrameParameters);
         this._parentGroup.add(this._tangentFrame);
+    }
+
+    changeSurface(surfaceSpecification, surfaceParams) {
+        this.#disposeCurrentSurface();
+        this.#createSurfaceFrom(surfaceSpecification, surfaceParams);
+        this.#createNormals();
+        this.#createTangentFrameFrom(surfaceParams);
     }
 
     get surface() { return this._surface; }
@@ -1140,7 +1138,10 @@ export class StandardSurfaceView extends SurfaceView {
                 break;
             case ColorMapper.ColorMode.BASE:
             default:
-                this._colorMapper = new HeightColorMapper({ baseColor: this._baseColor, useBaseColor: true});
+                this._colorMapper = new HeightColorMapper({
+                    baseColor: surfaceParameters.baseColor,
+                    useBaseColor: true
+                });
         }
     }
 
@@ -1232,597 +1233,186 @@ export class TangentFrameParameters {
         this.visible = visible;
     }
 }
+//
+// export class TangentFrameView extends Group {
+//     constructor(surfaceDefinition, tangentFrameParameters) {
+//         super();
+//         this._diffGeometry = new DifferentialGeometry(surfaceDefinition);
+//         this._scaleFactor = tangentFrameParameters.scale;
+//
+//         this._axes = { // Arrows in (u, v) directions + normal vector
+//             uArrow: new Arrow(new Vector3(), new Vector3(), { color: 0xff0000 }),
+//             vArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00ff00 }),
+//             normalArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00aaff })
+//         }
+//
+//         this._principals = { // Principal direction vectors
+//             k1Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xffaa00 }),
+//             k2Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xaa00ff })
+//         }
+//
+//         this._tangentPlane = new Mesh(
+//             new PlaneGeometry(1, 1, 10, 10),
+//             new MeshStandardMaterial({
+//                 color: tangentFrameParameters.color,
+//                 side: DoubleSide,
+//                 transparent: true,
+//                 depthTest: true,
+//                 depthWrite: true,
+//                 opacity: tangentFrameParameters.opacity,
+//                 wireframe: tangentFrameParameters.wireframe
+//             })
+//         );
+//
+//         this.add(
+//             this._axes.uArrow, this._axes.vArrow, this._axes.normalArrow,
+//             this._tangentPlane,
+//             this._principals.k1Arrow,
+//             this._principals.k2Arrow
+//         );
+//         this.update(tangentFrameParameters.u, tangentFrameParameters.v);
+//         this.visible = tangentFrameParameters.visible;
+//     }
+//
+//     update(tangentFrameParameters) {
+//         const frame = this._diffGeometry.principalFrame(tangentFrameParameters.u, tangentFrameParameters.v);
+//         if (!frame) return;
+//
+//         this._axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
+//         this._axes.uArrow.moveTo(frame.position);
+//
+//         this._axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
+//         this._axes.vArrow.moveTo(frame.position);
+//
+//         this._axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this._scaleFactor * .5));
+//         this._axes.normalArrow.moveTo(frame.position);
+//
+//         this._principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
+//         this._principals.k1Arrow.moveTo(frame.position);
+//
+//         this._principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
+//         this._principals.k2Arrow.moveTo(frame.position);
+//
+//         this._tangentPlane.position.copy(frame.position);
+//         this._tangentPlane.lookAt(frame.position.clone().add(frame.normal));
+//         this._tangentPlane.scale.set(this._scaleFactor, this._scaleFactor, 1);
+//
+//         tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
+//         tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
+//     }
+//
+//     dispose() {
+//         this.diffGeometry = null;
+//
+//         Object.values(this._axes).forEach(arrow => arrow.dispose());
+//         Object.values(this._principals).forEach(arrow => arrow.dispose());
+//         this._axes = null;
+//         this._principals = null;
+//
+//         if (this._tangentPlane) {
+//             if (this._tangentPlane.geometry) this._tangentPlane.geometry.dispose();
+//             if (this._tangentPlane.material) this._tangentPlane.material.dispose();
+//             this.remove(this._tangentPlane);
+//             this._tangentPlane = null;
+//         }
+//
+//         this.clear();
+//     }
+//
+//     boundingBox() { return new Box3().setFromObject(this).clone(); }
+//     showAxes = () => Object.values(this._axes).forEach(arrow => arrow.visible = true);
+//     hideAxes = () => Object.values(this._axes).forEach(arrow => arrow.visible = false);
+//     showPrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = true);
+//     hidePrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = false);
+// }
 
 export class TangentFrameView extends Group {
     constructor(surfaceDefinition, tangentFrameParameters) {
         super();
-        this._diffGeometry = new DifferentialGeometry(surfaceDefinition);
-        this._scaleFactor = tangentFrameParameters.scale;
+        this.diffGeometry = new DifferentialGeometry(surfaceDefinition);
+        this.scaleFactor = tangentFrameParameters.scale;
 
-        this._axes = { // Arrows in (u, v) directions + normal vector
+        this.axes = { // Arrows in (u, v) directions + normal vector
             uArrow: new Arrow(new Vector3(), new Vector3(), { color: 0xff0000 }),
             vArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00ff00 }),
             normalArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00aaff })
         }
+        tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
 
-        this._principals = { // Principal direction vectors
+        this.principals = { // Principal direction vectors
             k1Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xffaa00 }),
             k2Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xaa00ff })
         }
+        tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
 
-        this._tangentPlane = new Mesh(
+        this.tangentPlane = new Mesh(
             new PlaneGeometry(1, 1, 10, 10),
             new MeshStandardMaterial({
                 color: tangentFrameParameters.color,
                 side: DoubleSide,
                 transparent: true,
-                depthTest: true,
-                depthWrite: true,
+                depthTest: false,
+                depthWrite: false,
                 opacity: tangentFrameParameters.opacity,
                 wireframe: tangentFrameParameters.wireframe
             })
         );
 
         this.add(
-            this._axes.uArrow, this._axes.vArrow, this._axes.normalArrow,
-            this._tangentPlane,
-            this._principals.k1Arrow,
-            this._principals.k2Arrow
+            this.axes.uArrow, this.axes.vArrow, this.axes.normalArrow,
+            this.tangentPlane,
+            this.principals.k1Arrow,
+            this.principals.k2Arrow
         );
         this.update(tangentFrameParameters.u, tangentFrameParameters.v);
         this.visible = tangentFrameParameters.visible;
     }
 
-    update(tangentFrameParameters) {
-        const frame = this._diffGeometry.principalFrame(tangentFrameParameters.u, tangentFrameParameters.v);
+    update(u, v) {
+        const frame = this.diffGeometry.principalFrame(u, v);
         if (!frame) return;
 
-        this._axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
-        this._axes.uArrow.moveTo(frame.position);
+        this.axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor * .5));
+        this.axes.uArrow.moveTo(frame.position);
 
-        this._axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
-        this._axes.vArrow.moveTo(frame.position);
+        this.axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor * .5));
+        this.axes.vArrow.moveTo(frame.position);
 
-        this._axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this._scaleFactor * .5));
-        this._axes.normalArrow.moveTo(frame.position);
+        this.axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this.scaleFactor * .5));
+        this.axes.normalArrow.moveTo(frame.position);
 
-        this._principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
-        this._principals.k1Arrow.moveTo(frame.position);
+        this.principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor * .5));
+        this.principals.k1Arrow.moveTo(frame.position);
 
-        this._principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
-        this._principals.k2Arrow.moveTo(frame.position);
+        this.principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor * .5));
+        this.principals.k2Arrow.moveTo(frame.position);
 
-        this._tangentPlane.position.copy(frame.position);
-        this._tangentPlane.lookAt(frame.position.clone().add(frame.normal));
-        this._tangentPlane.scale.set(this._scaleFactor, this._scaleFactor, 1);
-
-        tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
-        tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
+        this.tangentPlane.position.copy(frame.position);
+        this.tangentPlane.lookAt(frame.position.clone().add(frame.normal));
+        this.tangentPlane.scale.set(this.scaleFactor, this.scaleFactor, 1);
     }
 
     dispose() {
         this.diffGeometry = null;
 
-        Object.values(this._axes).forEach(arrow => arrow.dispose());
-        Object.values(this._principals).forEach(arrow => arrow.dispose());
-        this._axes = null;
-        this._principals = null;
+        Object.values(this.axes).forEach(arrow => arrow.dispose());
+        Object.values(this.principals).forEach(arrow => arrow.dispose());
+        this.axes = null;
+        this.principals = null;
 
-        if (this._tangentPlane) {
-            if (this._tangentPlane.geometry) this._tangentPlane.geometry.dispose();
-            if (this._tangentPlane.material) this._tangentPlane.material.dispose();
-            this.remove(this._tangentPlane);
-            this._tangentPlane = null;
+        if (this.tangentPlane) {
+            if (this.tangentPlane.geometry) this.tangentPlane.geometry.dispose();
+            if (this.tangentPlane.material) this.tangentPlane.material.dispose();
+            this.remove(this.tangentPlane);
+            this.tangentPlane = null;
         }
 
         this.clear();
     }
 
     boundingBox() { return new Box3().setFromObject(this).clone(); }
-    showAxes = () => Object.values(this._axes).forEach(arrow => arrow.visible = true);
-    hideAxes = () => Object.values(this._axes).forEach(arrow => arrow.visible = false);
-    showPrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = true);
-    hidePrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = false);
+    showAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = true);
+    hideAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = false);
+    showPrincipals = () => Object.values(this.principals).forEach(arrow => arrow.visible = true);
+    hidePrincipals = () => Object.values(this.principals).forEach(arrow => arrow.visible = false);
 }
-
-const surfaceDefinitions = [{
-    meta: {name: "Apple", category: Category.NATURE},
-    parametrization: {
-        xFn: "cos(u) * (4 + 3.8 * cos(v))",
-        yFn: "(cos(v) + sin(v) - 1) * (1 + sin(v)) * log(1 - pi * v /10) + 7.5 * sin(v)",
-        zFn: "sin(u) * (4 + 3.8 * cos(v))"
-    },
-    intervals: [["0", "2 * pi"], ["pi", "-pi"]]
-}, {
-    meta: {name: "Arc", category: Category.MISC},
-    parametrization: {
-        xFn: "cos(u)",
-        yFn: "3 * sin(v)",
-        zFn: "sin(u) + cos(v)"
-    },
-    intervals: [["0", "pi"], ["pi", "0"]]
-}, {
-    meta: {name: "Astroceras", category: Category.NATURE},
-    parametrization: {
-        xFn: "(3.5 + 1.25 * cos(v)) * exp(0.12 * u) * cos(1 * u)",
-        yFn: "(0 + 1.25 * sin(v)) * exp(0.12 * u)",
-        zFn: "(3.5 + 1.25 * cos(v)) * exp(0.12 * u) * sin(1 * u)"
-    },
-    intervals: [["-40", "-1"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Astroidal helix", category: Category.MISC},
-    parametrization: {
-        xFn: "cos(u) * cos(u) * cos(u) * cos(v) * cos(v) * cos(v)",
-        yFn: "sin(v) * sin(v) * sin(v)",
-        zFn: "sin(u) * sin(u) * sin(u) * cos(v) * cos(v) * cos(v)"
-    },
-    intervals: [["0", "pi"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Bellerophina", category: Category.NATURE},
-    parametrization: {
-        xFn: "(0.75 + 0.85 * cos(v)) * exp(0.06 * u) * cos(1 * u)",
-        yFn: "(0  +  1.2  * sin(v)) * exp(0.06 * u)",
-        zFn: "(0.75 + 0.85 * cos(v)) * exp(0.06 * u) * sin(1 * u)"
-    },
-    intervals: [["-10", "-1"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Bohemian dome", category: Category.TOROID},
-    parametrization: {
-        xFn: "7 * cos(u)",
-        yFn: "7 * sin(u) + 3 * cos(v)",
-        zFn: "6 * sin(v)"
-    },
-    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Bow curve", category: Category.TOROID},
-    parametrization: {
-        xFn: "(1 * sin(u) + 2) * sin(v)",
-        yFn: "(1 * sin(u) + 2) * cos(v)",
-        zFn: "1 * cos(u) + 2 * cos(1/2 * v)"
-    },
-    intervals: [["0", "2 * pi"], ["4 * pi", "0"]]
-}, {
-    meta: {name: "Bow tie", category: Category.MISC},
-    parametrization: {
-        xFn: "sin(u)/ (sqrt(2) + sin(v))",
-        yFn: "sin(u)/ (sqrt(2) + cos(v))",
-        zFn: "cos(u)/ (sqrt(2) + 1)"
-    },
-    intervals: [["-pi", "pi"], ["pi", "-pi"]]
-}, {
-    meta: {name: "Conchoidal", category: Category.NATURE},
-    parametrization: {
-        xFn: "1.2 ^u * (1 + cos(v)) * cos(u)",
-        yFn: "1.2 ^u * sin(v) - 1.5 * 1.2 ^u",
-        zFn: "1.2 ^u * (1 + cos(v)) * sin(u)"
-    },
-    intervals: [["0", "6 * pi"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Cross cap", category: Category.NON_ORIENTABLE},
-    parametrization: {
-        xFn: "sin(2 * v) * cos(u)",
-        yFn: "-cos(v) * cos(v) + 0.5  * cos(u) * cos(u) * sin(v) * sin(v)",
-        zFn: "sin(2 * v) * sin(u)"
-    },
-    intervals: [["0", "1 * pi"], ["1 * pi", "0"]]
-}, {
-    meta: {name: "Cone", category: Category.CONIC},
-    parametrization: {
-        xFn: "v * cos(u)",
-        yFn: "v",
-        zFn: "v * sin(u)"
-    },
-    intervals: [["0", "2 * pi"], ["1/2", "-1/2 + 1e-4"]]
-}, {
-    meta: {name: "Cylinder", category: Category.BASIC},
-    parametrization: {
-        xFn: "1 * cos(u)",
-        yFn: "v",
-        zFn: "1 * sin(u)"
-    },
-    intervals: [["0", "2 * pi"], ["3", "0"]]
-}, {
-    meta: {name: "Crescent", category: Category.SPIRAL},
-    parametrization: {
-        xFn: "(2 + sin(2 * pi * u) * sin(2 * pi * v)) * sin(3 * pi * v)",
-        yFn: "(2 + sin(2 * pi * u) * sin(2 * pi * v)) * cos(3 * pi * v)",
-        zFn: "cos(2 * pi * u) sin(2 * pi * v) + 4 * v - 2"
-    },
-    intervals: [["0", "1"], ["1", "0"]]
-}, {
-    meta: {name: "Dini\'s spiral", category: Category.SPIRAL},
-    parametrization: {
-        xFn: "1.5 * cos(u) * sin(v)",
-        yFn: "(cos(v) + log(tan(v / 2))) + 1 / 10 * u",
-        zFn: "1.5 * sin(u) * sin(v)"
-    },
-    intervals: [["0", "4 * pi"], ["2 - 0.1", "0 + 0.1"]]
-}, {
-    meta: {name: "Egg", category: Category.OBJECT},
-    parametrization: {
-        xFn: "1 * sqrt(u * (u - 0.5) * (u - 1)) * sin(v)",
-        yFn: "u",
-        zFn: "1 * sqrt(u * (u - 0.5) * (u - 1)) * cos(v)",
-    },
-    intervals: [["1e-4", "1/2-1e-4"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Eight surface", category: Category.BASIC},
-    parametrization: {
-        xFn: "cos(u) * sin(2 * v)",
-        yFn: "sin(v)",
-        zFn: "sin(u) * sin(2 * v)",
-    },
-    intervals: [["-pi/2", "pi/2"], ["2 * pi - 1e-4", "1e-4"]]
-}, {
-    meta: {name: "Ellipsoid", category: Category.CONIC},
-    parametrization: {
-        xFn: "2 * sin(u) * sin(v)",
-        yFn: "1 * cos(u) * sin(v)",
-        zFn: "3 * cos(v)"
-    },
-    intervals: [["-pi/2", "pi/2"], ["2 * pi - 1e-4", "1e-4"]]
-}, {
-    meta: {name: "Elliptic torus", category: Category.TOROID},
-    parametrization: {
-        xFn: "(1 * cos(v) + 3) * cos(u)",
-        yFn: "1 * (cos(v) + sin(v))",
-        zFn: "(1 * cos(v) + 3) * sin(u)"
-    },
-    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Enneper surface", category: Category.MISC},
-    parametrization: {
-        xFn: "u - u * u * u / 3 + u * v * v",
-        yFn: "u * u - v * v",
-        zFn: "v - v * v * v / 3 + v * u * u"
-    },
-    intervals: [["-2", "2"], ["-2", "2"]]
-}, {
-    meta: {name: "Euhoplites", category: Category.NATURE},
-    parametrization: {
-        xFn: "(0.9 + 0.6 * cos(v)) * exp(0.1626 * u) * cos(1 * u)",
-        yFn: "(0  +  0.4 * sin(v)) * exp(0.1626 * u)",
-        zFn: "(0.9 + 0.6 * cos(v)) * exp(0.1626 * u) * sin(1 * u)"
-    },
-    intervals: [["-40", "-1"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Folium", category: Category.MISC},
-    parametrization: {
-        yFn: "cos(u) * (2 * v/pi - tanh(v))",
-        zFn: "cos(u - 2 * pi/3) / cosh(v)",
-        xFn: "cos(u + 2 * pi/3) / cosh(v)"
-    },
-    intervals: [["-pi", "pi"], ["pi", "-pi"]]
-}, {
-    meta: {name: "Funnel", category: Category.BASIC},
-    parametrization: {
-        xFn: "u * cos(v)",
-        yFn: "log(u)",
-        zFn: "u * sin(v)"
-    },
-    intervals: [["0.1", "2"], ["0", "2 * pi"]]
-}, {
-    meta: {name: "Goblet", category: Category.OBJECT},
-    parametrization: {
-        xFn: "cos(u) * cos(2 * v)",
-        yFn: "-sin(v)",
-        zFn: "sin(u) * cos(2 * v)"
-    },
-    intervals: [["0", "2 * pi"], [".5 * pi", "0"]]
-}, {
-    meta: {name: "Heart", category: Category.NATURE},
-    parametrization: {
-        xFn: "(4 * sin(u) - sin(3 * u)) * sin(v)",
-        yFn: "1.2 * (4 * cos(u) - cos(2 * u) - cos(3 * u)/2) * sin(v)",
-        zFn: "2 * cos(v)"
-    },
-    intervals: [["0", "2 * pi"], ["pi - 1e-5", "1e-5"]]
-}, {
-    meta: {name: "Helicoid", category: Category.SPIRAL},
-    parametrization: {
-        xFn: "1.25 * u * cos(v)",
-        yFn: "0.6 * v",
-        zFn: "1.25 * u * sin(v)"
-    },
-    intervals: [["-2", "2"], ["3 * pi", "0"]]
-}, {
-    meta: {name: "Horn", category: Category.OBJECT},
-    parametrization: {
-        xFn: "(2 + u * cos(v)) * sin (2 * pi * u)",
-        yFn: "(2 + u * cos(v)) * cos (2 * pi * u) + u",
-        zFn: "u * sin(v)"
-    },
-    intervals: [["0", "1"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Hyperbolic paraboloid", category: Category.CONIC},
-    parametrization: {
-        xFn: "u",
-        yFn: "u * v",
-        zFn: "v"
-    },
-    intervals: [["-1", "1"], ["1", "-1"]]
-}, {
-    meta: {name: "Hyperboloid / Catenoid", category: Category.CONIC},
-    parametrization: {
-        xFn: "cosh(4 * v / 5) * cos(u)",
-        yFn: "5 * v /4",
-        zFn: "cosh(4 * v / 5) * sin(u)"
-    },
-    intervals: [["0", "2 * pi"], ["2", "-2"]]
-}, {
-    meta: {name: "Klein", category: Category.NON_ORIENTABLE},
-    parametrization: {
-        xFn: "(2+cos(u/2)*sin(v)-sin(u/2)*sin(2*v))*cos(u)",
-        yFn: "sin(u/2)*sin(v)+cos(u/2)*sin(2*v)",
-        zFn: "(2+cos(u/2)*sin(v)-sin(u/2)*sin(2*v))*sin(u)"
-    },
-    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Limpet torus", category: Category.TOROID},
-    parametrization: {
-        xFn: "cos(u) / (sqrt(2) + sin(v))",
-        yFn: "1 / (sqrt(2) + cos(v))",
-        zFn: "sin(u) / (sqrt(2) + sin(v))",
-    },
-    intervals: [["0", "2 * pi"], ["0", "2 * pi"]]
-}, {
-    meta: {name: "Möbius strip", category: Category.NON_ORIENTABLE},
-    parametrization: {
-        xFn: "(2 + u * cos(v / 2)) * cos(v)",
-        yFn: "(2 + u * cos(v / 2)) * sin(v)",
-        zFn: "u * sin(v / 2)",
-    },
-    intervals: [["-1", "1"], ["0", "2 * pi"]]
-}, {
-    meta: {name: "Monkey saddle", category: Category.BASIC},
-    parametrization: {
-        xFn: "u",
-        yFn: "0.55 * (u * u * u - 3 * v * v * u)",
-        zFn: "v",
-    },
-    intervals: [["-1.1", "1.1"], ["-1.1", "1.1"]]
-}, {
-    meta: {name: "Mya arenaria", category: Category.NATURE},
-    parametrization: {
-        xFn: "(0.9 + 0.85 * cos(v)) * exp(2.5 * u) * cos(3 * u)",
-        yFn: "(0  + 1.6 * sin(v)) * exp(2.5 * u)",
-        zFn: "(0.9 + 0.85 * cos(v)) * exp(2.5 * u) * sin(3 * u)"
-    },
-    intervals: [["-1", "0.52"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Nautilus", category: Category.NATURE},
-    parametrization: {
-        xFn: "(1 + 1 * cos(v)) * exp(0.18 * u) * cos(1 * u)",
-        yFn: "(0 + 0.6 * sin(v)) * exp(0.12 * u)",
-        zFn: "(1 + 1 * cos(v)) * exp(0.18 * u) * sin(1 * u)"
-    },
-    intervals: [["-20", "1"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Paraboloid", category: Category.CONIC},
-    parametrization: {
-        xFn: "2 * sqrt(u / 1) * cos(v)",
-        yFn: "3 * u",
-        zFn: "2 * sqrt(u / 1) * sin(v)"
-    },
-    intervals: [["1e-5", "1 - 1e-5"], ["0", "2 * pi"]]
-}, {
-    meta: {name: "Peak", category: Category.FUNCTION},
-    parametrization: {
-        xFn: "u",
-        yFn: "5 * exp(-u*u - v*v)",
-        zFn: "v"
-    },
-    intervals: [["-3", "3"], ["3", "-3"]]
-},{
-    meta: {name: "Pillow", category: Category.OBJECT},
-    parametrization: {
-        xFn: "cos(u)",
-        yFn: "0.5 * sin(u) * sin(v)",
-        zFn: "cos(v)"
-    },
-    intervals: [["0", "pi"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Plane", category: Category.BASIC},
-    parametrization: {
-        xFn: "1.5 * u - 1 * v + 1",
-        yFn: "-u - v - 0.5",
-        zFn: "u + v + 1"
-    },
-    intervals: [["-3/2", "3/2"], ["3/2", "-3/2"]]
-}, {
-    meta: {name: "Polynomial", category: Category.FUNCTION},
-    parametrization: {
-        xFn: "u",
-        yFn: ".3 * (v*v*v*u - u*u*u*v)",
-        zFn: "v"
-    },
-    intervals: [["-2", "2"], ["2", "-2"]]
-},{
-    meta: {name: "Pseudoheliceras subcatenatum", category: Category.NATURE},
-    parametrization: {
-        xFn: "(1.5 + 1.6 * cos(v)) * exp(0.075 * u) * cos(1 * u)",
-        yFn: "(-7  + 1.6 * sin(v)) * exp(0.075 * u)",
-        zFn: "(1.5 + 1.6 * cos(v)) * exp(0.075 * u) * sin(1 * u)"
-    },
-    intervals: [["-50", "-1"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Ricker wavelet", category: Category.FUNCTION},
-    parametrization: {
-        xFn: "u",
-        yFn: "3 * (1 - 2 * (u*u + v*v))*exp(-2 * (u*u + v*v))",
-        zFn: "v"
-    },
-    intervals: [["-2", "2"], ["2", "-2"]]
-},{
-    meta: {name: "Ripple", category: Category.FUNCTION},
-    parametrization: {
-        xFn: "u",
-        yFn: ".5 * sin(pi * u * v)",
-        zFn: "v"
-    },
-    intervals: [["-3", "3"], ["3", "-3"]]
-},{
-    meta: {name: "Roman/Steiner surface", category: Category.NON_ORIENTABLE},
-    parametrization: {
-        xFn: "cos(u) * cos(v) * sin(v)",
-        yFn: "cos(u) * sin(u) * cos(v) * cos(v)",
-        zFn: "sin(u) * cos(v) * sin(v)"
-    },
-    intervals: [["0", "pi"], ["pi", "0"]]
-}, {
-    meta: {name: "Saddle", category: Category.FUNCTION},
-    parametrization: {
-        xFn: "u",
-        yFn: "0.3 * (u * u - v * v)",
-        zFn: "v"
-    },
-    intervals: [["-3", "3"], ["3", "-3"]]
-},{
-    meta: {name: "Saddle / hyperbolic paraboloid", category: Category.BASIC},
-    parametrization: {
-        xFn: "u * sin(v)",
-        yFn: "1.25 * u * cos(v) * u * sin(v)",
-        zFn: "u * cos(v)"
-    },
-    intervals: [["1e-3", "1 - 1e-3"], ["0", "2 * pi"]]
-}, {
-    meta: {name: "Sea shell", category: Category.NATURE},
-    parametrization: {
-        xFn: "2 * (1 - v / (2 * pi)) * cos(3 * v) * (1 + cos(u)) + 0.25 * cos(3 * v)",
-        yFn: "(7 * v / (2 * pi)) + 2 * (1 - v / (2 * pi)) * sin(u)",
-        zFn: "2 * (1 - v / (2 * pi)) * sin(3 * v) * (1 + cos(u)) + 0.25 * sin(3 * v)"
-    },
-    intervals: [["0", "2 * pi"], ["0", "2 * pi"]]
-}, {
-    meta: {name: "Self intersecting disc", category: Category.NON_ORIENTABLE},
-    parametrization: {
-        xFn: "1.0 * v * cos(2 * u)",
-        yFn: "-1.0 * v * cos(u)",
-        zFn: "1.0 * v * sin(2 * u)"
-    },
-    intervals: [["0", "2 * pi"], ["0", "1"]]
-}, {
-    meta: {name: "Sine", category: Category.MISC},
-    parametrization: {
-        xFn: "sin(u)",
-        yFn: "sin(v)",
-        zFn: "sin(u + v)"
-    },
-    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Sinusoidal cone", category: Category.CONIC},
-    parametrization: {
-        xFn: "u * cos(v)",
-        yFn: ".5 * u * cos(5 * v)",
-        zFn: "u * sin(v)"
-    },
-    intervals: [["-10", "10"], ["2 * pi - 1e-4", "-2 * pi + 1e-4"]]
-}, {
-    meta: {name: "Sphere", category: Category.BASIC},
-    parametrization: {
-        xFn: "1 * cos(u) * sin(v)",
-        yFn: "1 * sin(u) * sin(v)",
-        zFn: "1 * cos(v)"
-    },
-    intervals: [["0", "2 * pi"], ["pi - 1e-4", "1e-4"]]
-}, {
-    meta: {name: "Spring", category: Category.SPIRAL},
-    parametrization: {
-        xFn: "(1 - 1/5 * cos(v)) * cos(u)",
-        yFn: "1/4 * (sin(v) + 2 * u / pi)",
-        zFn: "(1 - 1/5 * cos(v)) * sin(u)"
-    },
-    intervals: [["0", "8 * pi"], ["0", "2 * pi"]]
-}, {
-    meta: {name: "Torus", category: Category.BASIC},
-    parametrization: {
-        xFn: "cos(u) * (3 + 1.5 * cos(v))",
-        yFn: "1.5 * sin(v)",
-        zFn: "sin(u) * (3 + 1.5 * cos(v))"
-    },
-    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Torus 2", category: Category.TOROID},
-    parametrization: {
-        xFn: "cos(u) * (3 + 1.5 * cos(v))",
-        yFn: "2.75 * sin(v)",
-        zFn: "sin(u) * (3 + 1.5 * cos(v))"
-    },
-    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
-}, {
-    meta: {name: "Trash can", category: Category.OBJECT},
-    parametrization: {
-        xFn: "(1 + v) * cos(u)",
-        yFn: "1 * v * v",
-        zFn: "v * sin(u)"
-    },
-    intervals: [["0", "2 * pi"], ["2", "0"]]
-}, {
-    meta: {name: "Trefoil knot", category: Category.TOROID},
-    parametrization: {
-        xFn: "(6 * (1 + 1/4 * sin(3 * v)) + cos(u)) * cos(2 * v)",
-        yFn: "(6 * (1 + 1/4 * sin(3 * v)) + cos(u)) * sin(2 * v)",
-        zFn: "sin(u) + 2 * cos(3 * v)"
-    },
-    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
-},{
-    meta: {name: "Trianguloid Trefoil knot", category: Category.TOROID},
-    parametrization: {
-        xFn: "1.5 * sin(3 * u) / (2 + cos(v))",
-        yFn: "1.5 * (sin(u) + 2 * sin(2 * u)) / (2 + cos(v + pi * 2 / 3))",
-        zFn: "1.0 * (cos(u) - 2 * cos(2 * u)) * (2 + cos(v)) * (2 + cos(v + pi * 2 / 3)) / 4"
-    },
-    intervals: [["-pi", "pi"], ["pi", "-pi"]]
-},{
-    meta: {name: "Twisted torus", category: Category.TOROID},
-    parametrization: {
-        xFn: "(2 + sin(v) + cos(u)) * cos(2 * v)",
-        yFn: "(2 + sin(v) + cos(u)) * sin(2 * v)",
-        zFn: "sin(u) + 3 * cos(v)"
-    },
-    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
-},{
-    meta: {name: "Umbrella", category: Category.OBJECT},
-    parametrization: {
-        xFn: "u^(1/3) * ((4 - 4/9) * cos(v) + 4/9 * cos((9 - 1) * v))",
-        yFn: "3 * (1 - u)",
-        zFn: "u^(1/3) * ((4 - 4/9) * sin(v) + 4/9 * sin((9 - 1) * v))"
-    },
-    intervals: [["1e-5", "1 - 1e-5"], ["2 * pi", "0"]]
-},{
-    meta: {name: "Wavelet", category: Category.FUNCTION},
-    parametrization: {
-        xFn: "u",
-        yFn: "sin(4 * sqrt(u*u + v*v)) / sqrt(u*u + v*v +1e-3)",
-        zFn: "v"
-    },
-    intervals: [["-2", "2"], ["2", "-2"]]
-},{
-    meta: {name: "Waves", category: Category.FUNCTION},
-    parametrization: {
-        xFn: "u",
-        yFn: "cos(pi * u + pi/6) * sin(pi * v + pi/6)",
-        zFn: "v"
-    },
-    intervals: [["-2", "2"], ["2", "-2"]]
-},{
-    meta: {name: "Whitney umbrella", category: Category.MISC},
-    parametrization: {
-        xFn: "u * v",
-        yFn: "2 * v * v",
-        zFn: "u"
-    },
-    intervals: [["-2", "2"], ["-2", "2"]]
-}];
-
-function deepFreeze(obj) {
-    Object.freeze(obj);
-    Object.values(obj).forEach(v => {
-        if (typeof v === 'object' && v !== null && !Object.isFrozen(v)) {
-            deepFreeze(v);
-        }
-    });
-    return obj;
-}
-
-export const SurfaceDefinitions = surfaceDefinitions.map(s => deepFreeze(s));

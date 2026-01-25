@@ -22,12 +22,11 @@ If I have ever made any valuable discoveries, it has been due more to patient at
   <a href="https://en.wikipedia.org/wiki/John_Webster">John Webster</a></figcaption>
 </figure>
 <figure class="right_image">
-  <a href="../mathematics/gallery/index.html">
+  <a href="shells_snails.html">
     <img alt="Conchoid" src="../mathematics/gallery/images/conchoid.png" title="Click to animate"/>
   </a>
   <figcaption>"What we know is a drop, what we don't know is an ocean.”
-  &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
-  For more surfaces, visit the <a href="../mathematics/gallery/index.html">Math Art Gallery</a>.</figcaption>
+  &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

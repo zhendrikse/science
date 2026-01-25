@@ -964,18 +964,18 @@ export class Sphere {
                 roughness:0.2
             })
         }) {
-        this._sphere = new Mesh(new SphereGeometry(radius, segments, segments), material);
-        this._sphere.position.copy(position);
-        this._sphere.castShadow = true;
+        this._mesh = new Mesh(new SphereGeometry(radius, segments, segments), material);
+        this._mesh.position.copy(position);
+        this._mesh.castShadow = true;
         this._group = group;
-        this._group.add(this._sphere);
+        this._group.add(this._mesh);
         this._trail = null;
         if (makeTrail) this.enableTrail();
     }
 
     enableTrail({
                     maxPoints = 200,
-                    color = this._sphere.material.color
+                    color = this._mesh.material.color
                 } = {}) {
         this._trail = new Trail({ maxPoints, color });
         this._group.add(this._trail.line);
@@ -988,9 +988,83 @@ export class Sphere {
     }
 
     moveTo(newPosition) {
-        this._sphere.position.copy(newPosition);
+        this._mesh.position.copy(newPosition);
         if (this._trail)
-            this._trail.addPoint(this._sphere.position);
+            this._trail.addPoint(this._mesh.position);
+    }
+}
+
+export class Cylinder {
+    constructor(
+        group,
+        position = new Vector3(0, 0, 0),
+        axis = new Vector3(0, 1, 0),   // richting + lengte
+        radius = 1,
+        makeTrail = false,
+        {
+            radialSegments = 24,
+            heightSegments = 1,
+            openEnded = false,
+            material = new MeshStandardMaterial({
+                color: "yellow",
+                opacity: 1,
+                transparent: true,
+                wireframe: false,
+                metalness: 0.7,
+                roughness: 0.2
+            })
+        } = {}
+    ) {
+        const height = axis.length();
+        const direction = axis.clone().normalize();
+
+        this._cylinder = new Mesh(
+            new CylinderGeometry(
+                radius,
+                radius,
+                height,
+                radialSegments,
+                heightSegments,
+                openEnded
+            ),
+            material
+        );
+
+        const yAxis = new Vector3(0, 1, 0);
+        const quaternion = new Quaternion().setFromUnitVectors(yAxis, direction);
+        this._cylinder.quaternion.copy(quaternion);
+
+        // position is the start of the cylinder
+        const centerOffset = direction.clone().multiplyScalar(height / 2);
+        this._cylinder.position.copy(position).add(centerOffset);
+
+        this._cylinder.castShadow = true;
+
+        this._group = group;
+        this._group.add(this._cylinder);
+
+        this._trail = null;
+        if (makeTrail) this.enableTrail();
+    }
+
+    enableTrail({
+                    maxPoints = 200,
+                    color = this._cylinder.material.color
+                } = {}) {
+        this._trail = new Trail({ maxPoints, color });
+        this._group.add(this._trail.line);
+    }
+
+    disableTrail() {
+        if (!this._trail) return;
+        this._group.remove(this._trail.line);
+        this._trail = null;
+    }
+
+    moveTo(newPosition) {
+        this._cylinder.position.copy(newPosition);
+        if (this._trail)
+            this._trail.addPoint(this._cylinder.position);
     }
 }
 
