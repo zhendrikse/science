@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## The planets that make up our solar system
+## The planets that make up our solar system 🪐
 <div class="header_line"><br/></div>
 
 {% include_relative code/planets.html %}

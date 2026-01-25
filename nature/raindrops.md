@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Falling &amp; splatting raindrops
+## Falling &amp; splatting raindrops 🌧️
 <div class="header_line"><br/></div>
 
 {% include_relative code/raindrops.html %}

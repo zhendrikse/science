@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Parachute jump
+## Parachute jump 🪂
 <div class="header_line"><br/></div>
 
 {% include_relative code/parachute.html %}

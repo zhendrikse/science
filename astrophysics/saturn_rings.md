@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Saturn rings
+## Saturn rings 🪐
 <div class="header_line"><br/></div>
 
 Saturn rings modelled as a set of point-like particles.
