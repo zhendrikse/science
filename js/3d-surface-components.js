@@ -1058,7 +1058,7 @@ export class SurfaceController {
 
     updateTangentFrame(tangentFrameParameters) {
         this._tangentFrame.visible = tangentFrameParameters.visible;
-        this._tangentFrame.update(tangentFrameParameters.u, tangentFrameParameters.v);
+        this._tangentFrame.update(tangentFrameParameters);
         this._tangentFrame.position.copy(this._surface.group.position);
         this._tangentFrame.scale.set(this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
     }
@@ -1188,7 +1188,6 @@ export class ViewParameters {
     constructor({
                     autoRotate = false,
                     baseColor = "#4cf",
-                    category = Category.MISC,
                     colorMode = ColorMapper.ColorMode.HEIGHT,
                     contourParameters = new ContourParameters(),
                     normals = false,
@@ -1199,7 +1198,6 @@ export class ViewParameters {
                 } ={}) {
         this.autoRotate = autoRotate;
         this.baseColor = baseColor;
-        this.category = category;
         this.colorMode = colorMode;
         this.contourParameters = contourParameters;
         this.normals = normals;
@@ -1233,186 +1231,95 @@ export class TangentFrameParameters {
         this.visible = visible;
     }
 }
-//
-// export class TangentFrameView extends Group {
-//     constructor(surfaceDefinition, tangentFrameParameters) {
-//         super();
-//         this._diffGeometry = new DifferentialGeometry(surfaceDefinition);
-//         this._scaleFactor = tangentFrameParameters.scale;
-//
-//         this._axes = { // Arrows in (u, v) directions + normal vector
-//             uArrow: new Arrow(new Vector3(), new Vector3(), { color: 0xff0000 }),
-//             vArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00ff00 }),
-//             normalArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00aaff })
-//         }
-//
-//         this._principals = { // Principal direction vectors
-//             k1Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xffaa00 }),
-//             k2Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xaa00ff })
-//         }
-//
-//         this._tangentPlane = new Mesh(
-//             new PlaneGeometry(1, 1, 10, 10),
-//             new MeshStandardMaterial({
-//                 color: tangentFrameParameters.color,
-//                 side: DoubleSide,
-//                 transparent: true,
-//                 depthTest: true,
-//                 depthWrite: true,
-//                 opacity: tangentFrameParameters.opacity,
-//                 wireframe: tangentFrameParameters.wireframe
-//             })
-//         );
-//
-//         this.add(
-//             this._axes.uArrow, this._axes.vArrow, this._axes.normalArrow,
-//             this._tangentPlane,
-//             this._principals.k1Arrow,
-//             this._principals.k2Arrow
-//         );
-//         this.update(tangentFrameParameters.u, tangentFrameParameters.v);
-//         this.visible = tangentFrameParameters.visible;
-//     }
-//
-//     update(tangentFrameParameters) {
-//         const frame = this._diffGeometry.principalFrame(tangentFrameParameters.u, tangentFrameParameters.v);
-//         if (!frame) return;
-//
-//         this._axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
-//         this._axes.uArrow.moveTo(frame.position);
-//
-//         this._axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
-//         this._axes.vArrow.moveTo(frame.position);
-//
-//         this._axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this._scaleFactor * .5));
-//         this._axes.normalArrow.moveTo(frame.position);
-//
-//         this._principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
-//         this._principals.k1Arrow.moveTo(frame.position);
-//
-//         this._principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
-//         this._principals.k2Arrow.moveTo(frame.position);
-//
-//         this._tangentPlane.position.copy(frame.position);
-//         this._tangentPlane.lookAt(frame.position.clone().add(frame.normal));
-//         this._tangentPlane.scale.set(this._scaleFactor, this._scaleFactor, 1);
-//
-//         tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
-//         tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
-//     }
-//
-//     dispose() {
-//         this.diffGeometry = null;
-//
-//         Object.values(this._axes).forEach(arrow => arrow.dispose());
-//         Object.values(this._principals).forEach(arrow => arrow.dispose());
-//         this._axes = null;
-//         this._principals = null;
-//
-//         if (this._tangentPlane) {
-//             if (this._tangentPlane.geometry) this._tangentPlane.geometry.dispose();
-//             if (this._tangentPlane.material) this._tangentPlane.material.dispose();
-//             this.remove(this._tangentPlane);
-//             this._tangentPlane = null;
-//         }
-//
-//         this.clear();
-//     }
-//
-//     boundingBox() { return new Box3().setFromObject(this).clone(); }
-//     showAxes = () => Object.values(this._axes).forEach(arrow => arrow.visible = true);
-//     hideAxes = () => Object.values(this._axes).forEach(arrow => arrow.visible = false);
-//     showPrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = true);
-//     hidePrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = false);
-// }
 
 export class TangentFrameView extends Group {
     constructor(surfaceDefinition, tangentFrameParameters) {
         super();
-        this.diffGeometry = new DifferentialGeometry(surfaceDefinition);
-        this.scaleFactor = tangentFrameParameters.scale;
+        this._diffGeometry = new DifferentialGeometry(surfaceDefinition);
+        this._scaleFactor = tangentFrameParameters.scale;
 
-        this.axes = { // Arrows in (u, v) directions + normal vector
+        this._axes = { // Arrows in (u, v) directions + normal vector
             uArrow: new Arrow(new Vector3(), new Vector3(), { color: 0xff0000 }),
             vArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00ff00 }),
             normalArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00aaff })
         }
-        tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
 
-        this.principals = { // Principal direction vectors
+        this._principals = { // Principal direction vectors
             k1Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xffaa00 }),
             k2Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xaa00ff })
         }
-        tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
 
-        this.tangentPlane = new Mesh(
+        this._tangentPlane = new Mesh(
             new PlaneGeometry(1, 1, 10, 10),
             new MeshStandardMaterial({
                 color: tangentFrameParameters.color,
                 side: DoubleSide,
                 transparent: true,
-                depthTest: false,
-                depthWrite: false,
+                depthTest: true,
+                depthWrite: true,
                 opacity: tangentFrameParameters.opacity,
                 wireframe: tangentFrameParameters.wireframe
             })
         );
 
         this.add(
-            this.axes.uArrow, this.axes.vArrow, this.axes.normalArrow,
-            this.tangentPlane,
-            this.principals.k1Arrow,
-            this.principals.k2Arrow
+            this._axes.uArrow, this._axes.vArrow, this._axes.normalArrow,
+            this._tangentPlane,
+            this._principals.k1Arrow,
+            this._principals.k2Arrow
         );
-        this.update(tangentFrameParameters.u, tangentFrameParameters.v);
+        this.update(tangentFrameParameters);
         this.visible = tangentFrameParameters.visible;
     }
 
-    update(u, v) {
-        const frame = this.diffGeometry.principalFrame(u, v);
+    update(tangentFrameParameters) {
+        const frame = this._diffGeometry.principalFrame(tangentFrameParameters.u, tangentFrameParameters.v);
         if (!frame) return;
 
-        this.axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor * .5));
-        this.axes.uArrow.moveTo(frame.position);
+        this._axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
+        this._axes.uArrow.moveTo(frame.position);
 
-        this.axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor * .5));
-        this.axes.vArrow.moveTo(frame.position);
+        this._axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
+        this._axes.vArrow.moveTo(frame.position);
 
-        this.axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this.scaleFactor * .5));
-        this.axes.normalArrow.moveTo(frame.position);
+        this._axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this._scaleFactor * .5));
+        this._axes.normalArrow.moveTo(frame.position);
 
-        this.principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this.scaleFactor * .5));
-        this.principals.k1Arrow.moveTo(frame.position);
+        this._principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
+        this._principals.k1Arrow.moveTo(frame.position);
 
-        this.principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this.scaleFactor * .5));
-        this.principals.k2Arrow.moveTo(frame.position);
+        this._principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
+        this._principals.k2Arrow.moveTo(frame.position);
 
-        this.tangentPlane.position.copy(frame.position);
-        this.tangentPlane.lookAt(frame.position.clone().add(frame.normal));
-        this.tangentPlane.scale.set(this.scaleFactor, this.scaleFactor, 1);
+        this._tangentPlane.position.copy(frame.position);
+        this._tangentPlane.lookAt(frame.position.clone().add(frame.normal));
+        this._tangentPlane.scale.set(this._scaleFactor, this._scaleFactor, 1);
+
+        tangentFrameParameters.showPrincipals ? this.showPrincipals() : this.hidePrincipals();
+        tangentFrameParameters.showAxes ? this.showAxes() : this.hideAxes();
     }
 
     dispose() {
         this.diffGeometry = null;
 
-        Object.values(this.axes).forEach(arrow => arrow.dispose());
-        Object.values(this.principals).forEach(arrow => arrow.dispose());
-        this.axes = null;
-        this.principals = null;
+        Object.values(this._axes).forEach(arrow => arrow.dispose());
+        Object.values(this._principals).forEach(arrow => arrow.dispose());
+        this._axes = null;
+        this._principals = null;
 
-        if (this.tangentPlane) {
-            if (this.tangentPlane.geometry) this.tangentPlane.geometry.dispose();
-            if (this.tangentPlane.material) this.tangentPlane.material.dispose();
-            this.remove(this.tangentPlane);
-            this.tangentPlane = null;
+        if (this._tangentPlane) {
+            if (this._tangentPlane.geometry) this._tangentPlane.geometry.dispose();
+            if (this._tangentPlane.material) this._tangentPlane.material.dispose();
+            this.remove(this._tangentPlane);
+            this._tangentPlane = null;
         }
 
         this.clear();
     }
 
     boundingBox() { return new Box3().setFromObject(this).clone(); }
-    showAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = true);
-    hideAxes = () => Object.values(this.axes).forEach(arrow => arrow.visible = false);
-    showPrincipals = () => Object.values(this.principals).forEach(arrow => arrow.visible = true);
-    hidePrincipals = () => Object.values(this.principals).forEach(arrow => arrow.visible = false);
+    showAxes = () => Object.values(this._axes).forEach(arrow => arrow.visible = true);
+    hideAxes = () => Object.values(this._axes).forEach(arrow => arrow.visible = false);
+    showPrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = true);
+    hidePrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = false);
 }
