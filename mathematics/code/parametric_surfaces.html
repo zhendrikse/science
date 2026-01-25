@@ -85,7 +85,8 @@
                 z: surfaceController.surface.definition().specification().parametrization.zFn
             }
 
-            controls.add(surfaceParams, 'category', Object.values(Category))
+            const dummyToggle = {category: Category.TOROID};
+            controls.add(dummyToggle, 'category', Object.values(Category))
                 .name("Category")
                 .onChange(value => ring.changeActiveCategoryTo(value));
 
