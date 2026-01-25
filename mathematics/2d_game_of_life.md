@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Conway's game of life
+## Conway's game of life  🎮
 <div class="header_line"><br/></div>
 
 [Conway&apos;s Game of Life](https://conwaylife.com/) illustrates the same principle as
@@ -11,10 +11,11 @@ namely that complex structures can emerge from an astonishingly small and simple
 
 <p style="clear: both;"></p>
 
-## Conway’s Game of Life – 2D Cellular Automaton
+### Game of Life – 2D cellular automaton
 <div class="header_line"><br/></div>
 
-This visualization shows **Conway’s Game of Life**, a simple mathematical model where complex behavior emerges from very simple rules.
+This visualization shows **Conway’s Game of Life**, a simple mathematical model 
+where complex behavior emerges from very simple rules.
 
 The space is divided into a grid of cells.
 Each cell is either:
