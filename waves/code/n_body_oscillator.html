@@ -105,6 +105,8 @@
         .withSpringBetween(3, 4);
     worldGroup.add(massSpringSystem);
 
+    massSpringSystem._masses[0].moveTo(new Vector3(-21, 0, 0));
+    massSpringSystem._masses[2].moveTo(new Vector3(0, 0, 0));
     massSpringSystem._masses[4].moveTo(new Vector3(11, 0, 0));
 
     function animate() {
