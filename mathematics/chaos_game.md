@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Chaos game
+## Chaos game 🎮
 <div class="header_line"><br/></div>
 
 🔧 This [chaos_game.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/chaos_game.html) is 100% Javascript, written by [Zeger Hendrikse](https://github.com/zhendrikse/)<br/>
