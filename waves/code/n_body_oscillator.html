@@ -12,6 +12,7 @@
 <script type="module">
     import { Group, Vector3, Scene, Color, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight } from "three";
     import { Spring, Ball, Graph } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
     // --- Scene setup ---
     const canvas = document.getElementById("myCanvas");
@@ -20,19 +21,23 @@
 
     const g = 9.8; // gravitational constant
 
-    const camera = new PerspectiveCamera(45, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+    const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
     camera.position.set(20, 20, 20);
     camera.lookAt(0, 0, 0);
 
     const renderer = new WebGLRenderer({canvas, antialias:true});
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-    scene.add(new HemisphereLight(0xffffff,0x222222,0.6));
-    const dirLight = new DirectionalLight(0xffffff,0.8);
+    scene.add(new HemisphereLight(0xffffff, 0x222222, 0.6));
+    const dirLight = new DirectionalLight(0xffffff, 0.8);
     dirLight.position.set(10, 20, 10);
     scene.add(dirLight);
     renderer.shadowMap.enabled = true;
     dirLight.castShadow = true;
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
 
     export class HarmonicOscillator extends Group {
         constructor({ damping = 0.2 } = {}) {
@@ -42,22 +47,23 @@
             this._damping = damping;
         }
 
-        withMassAt(position) {
-            this._masses.push(new Ball(this, {position: position}));
+        withMassAt(position, {color = "yellow"} = {}) {
+            this._masses.push(new Ball(this, {position: position, color: color}));
             return this;
         }
 
-        withSpringBetween(i, j) {
+        withSpringBetween(i, j, {color = "white"} = {}) {
             const spring = new Spring(
                 this,
                 this._masses[i].position(),
-                this._masses[j].position().clone().sub(this._masses[i].position())
+                this._masses[j].position().clone().sub(this._masses[i].position()),
+                {color: color}
             );
             this._springs.push({ spring, i, j });
             return this;
         }
 
-        update(dt, time) {
+        update(dt=0.01) {
             const forces = this._masses.map(() => new Vector3(0, 0, 0));
 
             for (const { spring, i, j } of this._springs) {
@@ -68,11 +74,9 @@
                 const direction = axis.clone().normalize();
 
                 spring.updateAxis(axis);
-                spring.update(time);
                 spring.updatePosition(ball1.position());
 
                 const springForce = direction.multiplyScalar(spring.force());
-
                 const relVelocity = ball2.velocity().clone().sub(ball1.velocity());
                 const dampingForce = relVelocity.projectOnVector(direction).multiplyScalar(this._damping);
 
@@ -82,19 +86,19 @@
                 forces[j].add(springForce.clone().negate());
             }
 
-            this._masses.forEach((ball, i) => ball.semiImplicitEulerUpdate(forces[i], dt));
+            this._masses.forEach((ball, index) => ball.semiImplicitEulerUpdate(forces[index], dt));
         }
     }
 
     const worldGroup = new Group();
     scene.add(worldGroup);
 
-    const massSpringSystem = new HarmonicOscillator({damping: 0.1})
-        .withMassAt(new Vector3(-25, 0, 0))
+    const massSpringSystem = new HarmonicOscillator({damping: 0.5})
+        .withMassAt(new Vector3(-25, 0, 0), {color: "red"})
         .withMassAt(new Vector3(-15, 0, 0))
         .withMassAt(new Vector3(-5, 0, 0))
         .withMassAt(new Vector3( 5, 0, 0))
-        .withMassAt(new Vector3( 15, 0, 0))
+        .withMassAt(new Vector3( 15, 0, 0), {color: "red"})
         .withSpringBetween(0, 1)
         .withSpringBetween(1, 2)
         .withSpringBetween(2, 3)
@@ -103,14 +107,10 @@
 
     massSpringSystem._masses[4].moveTo(new Vector3(11, 0, 0));
 
-    const dt = 0.01;
-    let time = 0;
     function animate() {
         requestAnimationFrame(animate);
-
-        time += dt;
-        massSpringSystem.update(dt, time);
-
+        massSpringSystem.update();
+        controls.update();
         renderer.render(scene, camera);
     }
     animate();
