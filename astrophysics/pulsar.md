@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Pulsar
+## Pulsar 🔭
 <div class="header_line"><br/></div>
 
 <blockquote>
