@@ -164,40 +164,94 @@
         return new Cell(true);
     }
 
+    function place_pattern(cells, pattern, offsetX, offsetY) {
+        for (let [dx, dy] of pattern) {
+            const x = offsetX + dx;
+            const y = offsetY + dy;
+            if (x >= 0 && x < cells.length && y >= 0 && y < cells[0].length)
+                cells[x][y] = living_cell();
+        }
+    }
+
+    const GLIDER = [
+        [1, 0],
+        [2, 1],
+        [0, 2],
+        [1, 2],
+        [2, 2],
+    ];
+
+    const LWSS = [ // Lightweight spaceship
+        [1,0],[2,0],[3,0],[4,0],
+        [0,1],[4,1],
+        [4,2],
+        [0,3],[3,3]
+    ];
+
+    const PULSAR = [
+        [2,0],[3,0],[4,0],[8,0],[9,0],[10,0],
+        [0,2],[5,2],[7,2],[12,2],
+        [0,3],[5,3],[7,3],[12,3],
+        [0,4],[5,4],[7,4],[12,4],
+        [2,5],[3,5],[4,5],[8,5],[9,5],[10,5],
+
+        [2,7],[3,7],[4,7],[8,7],[9,7],[10,7],
+        [0,8],[5,8],[7,8],[12,8],
+        [0,9],[5,9],[7,9],[12,9],
+        [0,10],[5,10],[7,10],[12,10],
+        [2,12],[3,12],[4,12],[8,12],[9,12],[10,12],
+    ];
+
     let dimension_x;
     let dimension_y;
     let game;
     let image;
+    const cellSize = 4;
 
     function initGameOfLife() {
         const pixelSize = 1;
 
-        dimension_x = Math.floor(canvas.width  / pixelSize);
-        dimension_y = Math.floor(canvas.height / pixelSize);
+        dimension_x = Math.floor(canvas.width  / cellSize);
+        dimension_y = Math.floor(canvas.height / cellSize);
 
-        // Create cells
         let cells = [];
         for (let x = 0; x < dimension_x; x++) {
             let row = [];
             for (let y = 0; y < dimension_y; y++)
                 row.push(Math.random() < 0.5 ? dead_cell() : living_cell());
+                //row.push(dead_cell());
             cells.push(row);
         }
 
+        // const offsetX = Math.floor(dimension_x / 2);
+        // const offsetY = Math.floor(dimension_y / 2);
+        // place_pattern(cells, PULSAR, offsetX, offsetY);
+        // place_pattern(cells, LWSS, Math.floor(offsetX * .5), offsetY);
+
         game = new Game(cells);
         image = new PixelImage(
-            dimension_x,
-            dimension_y,
+            canvas.width,
+            canvas.height,
             pixelSize,
             Colors.BLACK
         );
     }
 
     function render_game(game, image) {
-        for (let x = 0; x < image.dimX(); x++)
-            for (let y = 0; y < image.dimY(); y++)
-                image.setColour(new Pixel(x, y, game.cell_at(x, y).is_alive() ? Colors.GREEN: Colors.BLACK));
+        for (let cx = 0; cx < dimension_x; cx++)
+            for (let cy = 0; cy < dimension_y; cy++) {
+                const alive = game.cell_at(cx, cy).is_alive();
+                const color = alive ? Colors.GREEN : Colors.BLACK;
+
+                const px0 = cx * cellSize;
+                const py0 = cy * cellSize;
+
+                for (let dx = 0; dx < cellSize; dx++)
+                    for (let dy = 0; dy < cellSize; dy++)
+                        image.setColour(new Pixel(px0 + dx, py0 + dy, color));
+            }
     }
+
 
     const frame_rate = 10; // generations per second
     let lastTime = 0;
