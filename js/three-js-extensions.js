@@ -1225,9 +1225,7 @@ export class Graph {
         this.canvas.style.backgroundColor = background;
     }
 
-    addSeries(name, color) {
-        this.series.set(name, { data: [], color });
-    }
+    addSeries(name, color) { this.series.set(name, { data: [], color }); }
 
     push(values) {
         this.time += this.dt;
@@ -1241,18 +1239,15 @@ export class Graph {
         }
     }
 
-    clear() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
+    clear() { this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); }
 
     draw() {
         this.clear();
         this._drawGrid();
         this._drawAxes();
 
-        for (const series of this.series.values()) {
+        for (const series of this.series.values())
             this._drawLine(series);
-        }
     }
 
     _drawLine(series) {
@@ -1291,7 +1286,7 @@ export class Graph {
         const tStep = this._niceStep(span / 10);
 
         for (let t = Math.ceil(tMin / tStep) * tStep; t <= tMax; t += tStep) {
-            const x = (t - tMin) / span * width;
+            const x = this._snap((t - tMin) / span * width);
             context.beginPath();
             context.moveTo(x, 0);
             context.lineTo(x, height);
@@ -1301,7 +1296,7 @@ export class Graph {
         // horizontale grid (Y blijft hetzelfde)
         const yStep = this._niceStep(height / (this.scaleY * 6));
         for (let v = -1000; v <= 1000; v += yStep) {
-            const y = this.offsetY - v * this.scaleY;
+            const y = this._snap(this.offsetY - v * this.scaleY);
             if (y < 0 || y > height) continue;
             context.beginPath();
             context.moveTo(0, y);
@@ -1325,14 +1320,14 @@ export class Graph {
         const tStep = this._niceStep(span / 5);
 
         for (let t = Math.ceil(tMin / tStep) * tStep; t <= tMax; t += tStep) {
-            const x = (t - tMin) / span * width;
+            const x = Math.round((t - tMin) / span * width);
             context.fillText(`${t.toFixed(1)} s`, x + 2, height - 5);
         }
 
         // Y labels
         const yStep = this._niceStep(height / (this.scaleY * 6));
         for (let v = -1000; v <= 1000; v += yStep) {
-            const y = this.offsetY - v * this.scaleY;
+            const y = Math.round(this.offsetY - v * this.scaleY);
             if (y < 0 || y > height) continue;
             context.fillText(v.toFixed(0), 4, y - 2);
         }
@@ -1358,12 +1353,14 @@ export class Graph {
             tMax = Math.max(tMax, data[data.length - 1].t);
         }
 
-        if (!isFinite(tMin) || tMax === tMin) {
+        if (!isFinite(tMin) || tMax === tMin)
             return { tMin: 0, tMax: 1 };
-        }
 
         return { tMin, tMax };
     }
+
+    _snap(v) { return Math.round(v) + 0.5; }
+
 }
 
 class Helix extends Curve {

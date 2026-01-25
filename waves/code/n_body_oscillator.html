@@ -58,7 +58,7 @@
                 this,
                 this._masses[i].position(),
                 this._masses[j].position().clone().sub(this._masses[i].position()),
-                {color: color}
+                {color: color, coils: 20}
             );
             this._springs.push({ spring, i, j });
             return this;
