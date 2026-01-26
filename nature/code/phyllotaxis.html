@@ -5,9 +5,8 @@
 <button class="button" onclick="setColoringSchemeTo(1)">Colors 1</button>&nbsp;
 <button class="button" onclick="setColoringSchemeTo(2)">Colors 2</button>&nbsp;
 <button class="button" onclick="setColoringSchemeTo(3)">Colors 3</button>&nbsp;
-<button class="button" onclick="setColoringSchemeTo(4)">Monochrome</button>
-<br/><br>&nbsp;
-<input type="checkbox" id="borderAroundDots"/><label for="borderAroundDots">Dots border</label>
+<button class="button" onclick="setColoringSchemeTo(4)">Monochrome</button><br/>&nbsp;
+<input type="checkbox" id="borderAroundDots"/><label for="borderAroundDots"> Dots border</label>
 
 <script>
     const canvas = document.getElementById("flowerCanvas");
@@ -66,39 +65,37 @@
 
     }
 
-    function hsv2rgb(h, s, v) {
-        let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max( Math.min(k, 4 - k, 1), 0);
-        return [f(5), f(3), f(1)];
+    function hsv2rgb(h,s,v) {
+        let f= (n,k=(n+h/60)%6) => v - v*s*Math.max( Math.min(k,4-k,1), 0);
+        return [f(5),f(3),f(1)];
     }
 
     function draw(n) {
-        const angle = n * 137.5;
+        const angle = n * 137.5
         const radius = c * Math.sqrt(n);
 
-        const x = radius * Math.cos(angle * Math.PI / 180) + centerX;
-        const y = radius * Math.sin(angle * Math.PI / 180) + centerY ;
+        const x = radius * Math.cos(Math.PI * angle / 180) + centerX;
+        const y = radius * Math.sin(Math.PI * angle / 180) + centerY;
 
         const colour = coloringSchemeFunction(angle, radius, n);
-        const alpha = Math.min(1, 0.3 + n / numberOfDots);
-        const rgb = `rgba(${255 * colour[0]}, ${255 * colour[1]}, ${255 * colour[2]},${alpha})`;
-
+        const rgb = "rgb(" + 255 * colour[0] + "," + 255 * colour[1] + "," + 255 * colour[2] + ")";
         circle(x, y, 8, rgb, drawBorderAroundDots);
     }
 
     let centerX = 0, centerY = 0;
     function resizeCanvas() {
+        const wrapper = document.getElementById("canvas-wrapper");
         const rectangle = wrapper.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
 
-        canvas.width  = rectangle.width * dpr;
-        canvas.height = rectangle.height * dpr;
-        centerX = rectangle.width * 0.5;
-        centerY = rectangle.height * 0.5;
+        centerX = rectangle.width * .5;
+        centerY = rectangle.height * .5;
+
+        canvas.width  = Math.floor(rectangle.width * dpr);
+        canvas.height = Math.floor(rectangle.height * dpr);
 
         canvas.style.width  = rectangle.width + "px";
         canvas.style.height = rectangle.height + "px";
-
-        display.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     resizeCanvas();
@@ -108,10 +105,8 @@
 
     setColoringSchemeTo(4)
     window.requestAnimationFrame(function loop() {
-        if (n > numberOfDots)
-            return; // flower has been drawn
-
-        draw(n++);
+        if (n < numberOfDots)
+            draw(n++);
         window.requestAnimationFrame(loop);
     });
 
