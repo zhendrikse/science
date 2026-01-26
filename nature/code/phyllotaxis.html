@@ -71,40 +71,32 @@
         return [f(5),f(3),f(1)];
     }
 
-    // display.beginPath();
-    // display.strokeStyle = "#00A000";
-    // display.lineWidth = 8;
-    // display.moveTo(canvas.width / 2, canvas.height / 4);
-    // display.lineTo(canvas.width / 2, 7 * canvas.height / 8);
-    // display.stroke();
-    // display.closePath();
-
     function draw(n) {
-        const angle = n * 137.5
+        const angle = n * 137.5;
         const radius = c * Math.sqrt(n);
 
-        const wrapper = document.getElementById("canvas-wrapper");
-        const rectangle = wrapper.getBoundingClientRect();
+        const rect = wrapper.getBoundingClientRect();
 
-        const x = radius * Math.cos(Math.PI * angle / 180) + rectangle.width * .5;
-        const y = radius * Math.sin(Math.PI * angle / 180) + rectangle.height * .5;
+        const x = radius * Math.cos(angle * Math.PI / 180) + rect.width * 0.5;
+        const y = radius * Math.sin(angle * Math.PI / 180) + rect.height * 0.5;
 
         const colour = coloringSchemeFunction(angle, radius, n);
-        const rgb = "rgb(" + 255 * colour[0] + "," + 255 * colour[1] + "," + 255 * colour[2] + ")";
+        const rgb = `rgb(${255*colour[0]},${255*colour[1]},${255*colour[2]})`;
+
         circle(x, y, 8, rgb, drawBorderAroundDots);
     }
 
     function resizeCanvas() {
-        const wrapper = document.getElementById("canvas-wrapper");
-        const rectangle = wrapper.getBoundingClientRect();
+        const rect = wrapper.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
-        canvas.width  = rectangle.width * dpr;
-        canvas.height = rectangle.height * dpr;
+
+        canvas.width  = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+
+        canvas.style.width  = rect.width + "px";
+        canvas.style.height = rect.height + "px";
 
         display.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-        canvas.style.width  = rectangle.width + "px";
-        canvas.style.height = rectangle.height + "px";
     }
 
     resizeCanvas();
