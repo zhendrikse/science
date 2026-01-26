@@ -25,14 +25,14 @@
 </style>
 <script>
     // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
-    }
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
 </script>
 <div id="glowscript-wrapper">
     <div id="glowscript" class="glowscript"></div>
@@ -578,8 +578,6 @@ async function __main__() {
     fern_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "Barnsley&apos;s fern ", checked: true, name: "fern", bind: toggle_fractal})]);
     "92";
     fern_3d_radio = ρσ_interpolate_kwargs.call(this, radio, [ρσ_desugar_kwargs({text: "3D Barnsley&apos;s fern ", checked: false, name: "fern_3d", bind: toggle_fractal})]);
-    "94";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "95";
     _GS_1 = new BarnsleyFern;
     (await _GS_1.__init__());
