@@ -1,4 +1,23 @@
-<div class="canvasWrapper2D" id="canvas-wrapper">
+<style>
+
+    .canvasWrapper2D {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    .applicationCanvas2D {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+</style>
+<div class="canvasWrapper2D" id="canvas-wrapper" style="aspect-ratio: 3/2;">
     <canvas class="applicationCanvas2D" id="flowerCanvas"></canvas>
 </div>
 
