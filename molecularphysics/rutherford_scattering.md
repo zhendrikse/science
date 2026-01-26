@@ -22,9 +22,9 @@ repositioned after each event.
 ## Infographic: history of the atomic model
 <div class="header_line"><br/></div>
 
-<figure style="float: center; text-align: center;">
-  <a href="daylight_variations.html">
-    <img alt="Daylight variations" src="images/atom_model_history.jpg" title="Click to animate"/>
+<figure style="text-align: center;">
+  <a href="images/atom_model_history.jpg">
+    <img alt="Daylight variations" src="images/atom_model_history.jpg"/>
   </a>
   <figcaption>Source <a href="https://www.facebook.com/SirMD.8/">Sir Marlon: Virtual Classroom</a>.</figcaption>
 </figure>

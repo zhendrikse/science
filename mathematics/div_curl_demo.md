@@ -25,7 +25,7 @@ Click on the canvas to start the animation and watch the field come alive!
 <figure style="text-align: center;">
   <img alt="Scalar versus Vector Quantities" src="images/scalar_versus_vector_quantities.jpg" />
   <figcaption>This excellent visual guide originates from 
-    <a href=https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
   </figcaption>
 </figure>
 
