@@ -21,8 +21,10 @@ export class Pixel {
 }
 
 export class PixelImage {
-    constructor(width, height, pixelSize=1, backgroundColor=Colors.BLACK) {
-        const Array2D = (r, c) => [...Array(r)].map(_=>Array(c).fill(backgroundColor));
+    constructor(width, height, pixelSize = 1, backgroundColor = null) {
+        const Array2D = (r, c) =>
+            [...Array(r)].map(_ => Array(c).fill(backgroundColor));
+
         this.pixelSize = pixelSize;
         this.width = width;
         this.height = height;
@@ -39,11 +41,18 @@ export class PixelImage {
 
     #setPixelColor(imageData, pixel) {
         let coordinate = pixel.y * (this.width * 4) + pixel.x * 4;
+
+        if (pixel.color === null) {
+            imageData[coordinate + 3] = 0; // completely transparant
+            return;
+        }
+
         imageData[coordinate++] = pixel.color[0] * 255;
         imageData[coordinate++] = pixel.color[1] * 255;
         imageData[coordinate++] = pixel.color[2] * 255;
-        imageData[coordinate++] = 255
+        imageData[coordinate++] = 255;
     }
+
 
     setColour = (pixel) => {
         if (pixel.x < 0 || pixel.y < 0 || pixel.x >= this.dimX() || pixel.y >= this.dimY()) return;
