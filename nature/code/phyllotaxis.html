@@ -93,8 +93,8 @@
         const rectangle = wrapper.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
 
-        centerX = rectangle.width * .5;
-        centerY = rectangle.height * .5;
+        centerX = dpr * rectangle.width * .5;
+        centerY = dpr * rectangle.height * .5;
 
         canvas.width  = Math.floor(rectangle.width * dpr);
         canvas.height = Math.floor(rectangle.height * dpr);
