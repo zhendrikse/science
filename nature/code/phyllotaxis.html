@@ -1,5 +1,5 @@
-<div class="canvasWrapper" id="canvas-wrapper">
-    <canvas class="applicationCanvas" id="flowerCanvas"></canvas>
+<div id="canvas-wrapper">
+    <canvas id="flowerCanvas"></canvas>
 </div>
 
 <button class="button" onclick="setColoringSchemeTo(1)">Colors 1</button>&nbsp;
@@ -91,28 +91,21 @@
         circle(x, y, 8, rgb, drawBorderAroundDots);
     }
 
-    function resizeCanvasToWrapper() {
-        const canvas  = document.getElementById('flowerCanvas');
+    function resizeCanvas() {
+        const wrapper = document.getElementById("canvas-wrapper");
+        const size = wrapper.clientWidth;
         const dpr = window.devicePixelRatio || 1;
 
-        const cssWidth  = wrapper.clientWidth;
-        const cssHeight = wrapper.clientHeight;
+        canvas.width  = Math.floor(size * dpr);
+        canvas.height = Math.floor(size * dpr);
 
-        // Internal resolution (real pixels)
-        canvas.width  = Math.floor(cssWidth  * dpr);
-        canvas.height = Math.floor(cssHeight * dpr);
-
-        // CSS-size (layout)
-        canvas.style.width  = cssWidth + "px";
-        canvas.style.height = cssHeight + "px";
-
-        // Reset transform and scale to CSS-coordinates
-        display.setTransform(dpr, 0, 0, dpr, 0, 0);
+        canvas.style.width  = size + "px";
+        canvas.style.height = size + "px";
     }
 
-    resizeCanvasToWrapper();
+    resizeCanvas();
     window.addEventListener('resize', () => {
-        resizeCanvasToWrapper();
+        resizeCanvas();
     });
 
     setColoringSchemeTo(4)
