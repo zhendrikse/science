@@ -128,12 +128,9 @@ export class ComplexColorMapper extends ColorMapper {
             throw new Error("Geometry needs phase and modulus attributes");
 
         const count = phaseAttr.count;
-
         let colorAttr = geometry.attributes.color;
         if (!colorAttr) {
-            colorAttr = new THREE.BufferAttribute(
-                new Float32Array(count * 3), 3
-            );
+            colorAttr = new THREE.BufferAttribute(new Float32Array(count * 3), 3);
             geometry.setAttribute("color", colorAttr);
         }
 
@@ -146,17 +143,25 @@ export class ComplexColorMapper extends ColorMapper {
         }
 
         const color = new THREE.Color();
-
         for (let i = 0; i < count; i++) {
-            const phase = phaseAttr.getX(i);
-            const m     = modulusAttr.getX(i);
+            const phase = phaseAttr.getX(i);      // (-π, π]
+            const modulus = modulusAttr.getX(i);  // log|f(z)|
 
-            // --- phase → hue ---
+            // --- fase → hue ---
             const hue = ((phase + Math.PI) / (2 * Math.PI) + 1) % 1;
 
             // --- modulus → brightness ---
-            const t = (m - mMin) / (mMax - mMin);
-            color.setHSL(hue, 1.0, 0.25 + 0.5 * t);
+            const t = (modulus - mMin) / (mMax - mMin);
+            let lightness = 0.25 + 0.5 * t;
+
+            // --- contourlijnen ---
+            const contourFrequency = 1.0; // lijnen per log-eenheid
+            const d = Math.abs((modulus * contourFrequency) % 1 - 0.5);
+
+            if (d < 0.04) // dark contour line
+                color.setRGB(0, 0, 0);
+            else
+                color.setHSL(hue, 1.0, lightness);
 
             colorAttr.array[3*i]     = color.r;
             colorAttr.array[3*i + 1] = color.g;
