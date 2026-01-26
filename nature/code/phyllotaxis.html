@@ -83,8 +83,8 @@
         const angle = n * 137.5
         const radius = c * Math.sqrt(n);
 
-        const x = radius * Math.cos(Math.PI * angle / 180) + canvas.width * .5;
-        const y = radius * Math.sin(Math.PI * angle / 180) + canvas.height * .5;
+        const x = radius * Math.cos(Math.PI * angle / 180) + canvas.clientWidth * .5;
+        const y = radius * Math.sin(Math.PI * angle / 180) + canvas.clientHeight * .5;
 
         const colour = coloringSchemeFunction(angle, radius, n);
         const rgb = "rgb(" + 255 * colour[0] + "," + 255 * colour[1] + "," + 255 * colour[2] + ")";
