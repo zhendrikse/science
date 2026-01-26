@@ -7,7 +7,7 @@
 the [Mandelbrot set](https://www.hendrikse.name/science/mathematics/mandelbrot.html),
 namely that complex structures can emerge from an astonishingly small and simple set of rules.
 
-{% include_relative code/2d_game_of_life.html %}
+{% include_relative code/game_of_life.html %}
 
 <p style="clear: both;"></p>
 

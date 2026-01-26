@@ -159,7 +159,7 @@ such  as [Klein&apos;s bottle](gallery/index.html#non_orientables).
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="2d_game_of_life.html">
+  <a href="game_of_life.html">
     <img alt="Conway's game of life" src="./images/2d_game_of_life.png" title="Click to animate"/>
   </a>
   <figcaption>Conway's game of life.</figcaption>
