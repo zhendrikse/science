@@ -1,22 +1,3 @@
-<style>
-
-    .canvasWrapper2D {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        aspect-ratio: 1 / 1;
-    }
-
-    .applicationCanvas2D {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-
-</style>
 <div class="canvasWrapper2D" id="canvas-wrapper" style="aspect-ratio: 3/2;">
     <canvas class="applicationCanvas2D" id="flowerCanvas"></canvas>
 </div>
@@ -24,8 +5,9 @@
 <button class="button" onclick="setColoringSchemeTo(1)">Colors 1</button>&nbsp;
 <button class="button" onclick="setColoringSchemeTo(2)">Colors 2</button>&nbsp;
 <button class="button" onclick="setColoringSchemeTo(3)">Colors 3</button>&nbsp;
-<button class="button" onclick="setColoringSchemeTo(4)">Monochrome</button><br/>&nbsp;
-<input type="checkbox" id="borderAroundDots"/><label for="borderAroundDots"> Dots border</label>
+<button class="button" onclick="setColoringSchemeTo(4)">Monochrome</button>
+<br/><br>&nbsp;
+<input type="checkbox" id="borderAroundDots"/><label for="borderAroundDots">Dots border</label>
 
 <script>
     const canvas = document.getElementById("flowerCanvas");
@@ -101,7 +83,6 @@
         const angle = n * 137.5
         const radius = c * Math.sqrt(n);
 
-        const wrapper = document.getElementById('canvas-wrapper');
         const x = radius * Math.cos(Math.PI * angle / 180) + canvas.width * .5;
         const y = radius * Math.sin(Math.PI * angle / 180) + canvas.height * .5;
 
