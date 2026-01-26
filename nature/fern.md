@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## [Barnsley&apos;s fern](https://rosettacode.org/wiki/Barnsley_fern) 🌿 &mdash; an IFS fractal
+## [Barnsley&apos;s fern](https://rosettacode.org/wiki/Barnsley_fern) 🌿
 <div class="header_line"><br/></div>
 
 [Michael Barnsley](https://en.wikipedia.org/wiki/Michael_Barnsley)&apos;s fern 
