@@ -137,31 +137,22 @@ export class ComplexColorMapper extends ColorMapper {
         // --- determine modulus range ---
         let mMin = Infinity, mMax = -Infinity;
         for (let i = 0; i < count; i++) {
-            const m = modulusAttr.getX(i);
-            if (m < mMin) mMin = m;
-            if (m > mMax) mMax = m;
+            const modulus = modulusAttr.getX(i);
+            if (modulus < mMin) mMin = modulus;
+            if (modulus > mMax) mMax = modulus;
         }
 
         const color = new THREE.Color();
         for (let i = 0; i < count; i++) {
-            const phase = phaseAttr.getX(i);      // (-π, π]
-            const modulus = modulusAttr.getX(i);  // log|f(z)|
+            const phase = phaseAttr.getX(i);
+            const modulus = modulusAttr.getX(i);
 
-            // --- fase → hue ---
+            // --- phase → hue ---
             const hue = ((phase + Math.PI) / (2 * Math.PI) + 1) % 1;
 
             // --- modulus → brightness ---
             const t = (modulus - mMin) / (mMax - mMin);
-            let lightness = 0.25 + 0.5 * t;
-
-            // --- contourlijnen ---
-            const contourFrequency = 1.0; // lijnen per log-eenheid
-            const d = Math.abs((modulus * contourFrequency) % 1 - 0.5);
-
-            if (d < 0.04) // dark contour line
-                color.setRGB(0, 0, 0);
-            else
-                color.setHSL(hue, 1.0, lightness);
+            color.setHSL(hue, 1.0, 0.25 + 0.5 * t);
 
             colorAttr.array[3*i]     = color.r;
             colorAttr.array[3*i + 1] = color.g;
