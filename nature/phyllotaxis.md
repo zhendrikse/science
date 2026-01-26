@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Phyllotaxis 🌱
+## Phyllotaxis 🌻
 <div class="header_line"><br/></div>
 
 <blockquote>
