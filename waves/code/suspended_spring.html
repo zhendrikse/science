@@ -85,7 +85,33 @@ async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
+    /* ================= GLOWSCRIPT RESPONSIVE PATCH ================= */
 
+    function resizeGlowScriptScene() {
+        const wrapper = document.getElementById('glowscript-wrapper');
+        if (!wrapper || !scene || !scene.canvas) return;
+
+        const dpr = window.devicePixelRatio || 1;
+
+        const w = wrapper.clientWidth;
+        const h = wrapper.clientHeight;
+
+        scene.width  = Math.floor(w * dpr);
+        scene.height = Math.floor(h * dpr);
+
+        scene.canvas.style.width  = w + 'px';
+        scene.canvas.style.height = h + 'px';
+    }
+
+    scene.autoscale = false;
+    scene.userzoom  = true;
+    scene.userspin  = true;
+    scene.userpan   = true;
+
+    resizeGlowScriptScene();
+    window.addEventListener('resize', resizeGlowScriptScene);
+
+    /* =============================================================== */
     function round(num, n=0) {return Number(num.toFixed(n))}
 
     var version, print, arange, __name__, type, ρσ_ls, title, display, g, frame_rate, _GS_1, spring, _, delta_t, ρσ_unpack, left, right;
