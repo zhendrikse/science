@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Two-dimensional coral using diffusion limited aggregation
+## Two-dimensional coral growth 🪸
 <div class="header_line"><br/></div>
 
 - Code in [coral_2d.html](https://github.com/zhendrikse/science/blob/main/dla/code/coral_2d.html) 
