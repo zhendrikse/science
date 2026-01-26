@@ -24,7 +24,7 @@
 <button class="button" onclick="setColoringSchemeTo(1)">Colors 1</button>&nbsp;
 <button class="button" onclick="setColoringSchemeTo(2)">Colors 2</button>&nbsp;
 <button class="button" onclick="setColoringSchemeTo(3)">Colors 3</button>&nbsp;
-<button class="button" onclick="setColoringSchemeTo(4)">Monochrome</button>&nbsp;
+<button class="button" onclick="setColoringSchemeTo(4)">Monochrome</button><br/>&nbsp;
 <input type="checkbox" id="borderAroundDots"/><label for="borderAroundDots"> Dots border</label>
 
 <script>
@@ -102,8 +102,8 @@
         const radius = c * Math.sqrt(n);
 
         const wrapper = document.getElementById('canvas-wrapper');
-        const x = radius * Math.cos(Math.PI * angle / 180) + wrapper.clientWidth * .5;
-        const y = radius * Math.sin(Math.PI * angle / 180) + wrapper.clientHeight * .5;
+        const x = radius * Math.cos(Math.PI * angle / 180) + canvas.width * .5;
+        const y = radius * Math.sin(Math.PI * angle / 180) + canvas.height * .5;
 
         const colour = coloringSchemeFunction(angle, radius, n);
         const rgb = "rgb(" + 255 * colour[0] + "," + 255 * colour[1] + "," + 255 * colour[2] + ")";
@@ -112,14 +112,14 @@
 
     function resizeCanvas() {
         const wrapper = document.getElementById("canvas-wrapper");
-        const size = wrapper.clientWidth;
+        const rectangle = wrapper.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
 
-        canvas.width  = Math.floor(size * dpr);
-        canvas.height = Math.floor(size * dpr);
+        canvas.width  = Math.floor(rectangle.width * dpr);
+        canvas.height = Math.floor(rectangle.height * dpr);
 
-        canvas.style.width  = size + "px";
-        canvas.style.height = size + "px";
+        canvas.style.width  = rectangle.width + "px";
+        canvas.style.height = rectangle.height + "px";
     }
 
     resizeCanvas();

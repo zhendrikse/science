@@ -303,7 +303,7 @@
 
     function resizeCanvas() {
         const wrapper = document.getElementById("canvas-wrapper");
-        const rect = wrapper.getBoundingClientRect(); // echte schermafmetingen
+        const rect = wrapper.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
 
         canvas.width  = Math.floor(rect.width * dpr);
