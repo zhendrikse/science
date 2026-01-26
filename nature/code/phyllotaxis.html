@@ -1,12 +1,17 @@
-<div class="canvasWrapper2D" id="canvas-wrapper" style="aspect-ratio: 3/2;">
+<div class="canvasWrapper2D" id="canvas-wrapper">
     <canvas class="applicationCanvas2D" id="flowerCanvas"></canvas>
 </div>
 
+<label for="cValue"><b>Growth rate</b></label>
+<input type="range" id="cValue" min="4" max="20" value="12" oninput="c=this.value"/>
+<br/><br/>
 <button class="button" onclick="setColoringSchemeTo(1)">Colors 1</button>&nbsp;
 <button class="button" onclick="setColoringSchemeTo(2)">Colors 2</button>&nbsp;
 <button class="button" onclick="setColoringSchemeTo(3)">Colors 3</button>&nbsp;
-<button class="button" onclick="setColoringSchemeTo(4)">Monochrome</button><br/>&nbsp;
-<input type="checkbox" id="borderAroundDots"/><label for="borderAroundDots"> Dots border</label>
+<button class="button" onclick="setColoringSchemeTo(4)">Monochrome</button>
+<br/>&nbsp;<br/>
+<label for="borderAroundDots"><b>Border around dots</b></label>
+<input type="checkbox" id="borderAroundDots"/>
 
 <script>
     const canvas = document.getElementById("flowerCanvas");
@@ -15,7 +20,7 @@
     canvas.focus();
 
     let n = 0;
-    const c = 12;
+    let c = 12;
     const numberOfDots = 360;
     let coloringSchemeFunction;
 
@@ -96,8 +101,6 @@
 
         canvas.style.width  = rectangle.width + "px";
         canvas.style.height = rectangle.height + "px";
-
-        display.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     resizeCanvas();
