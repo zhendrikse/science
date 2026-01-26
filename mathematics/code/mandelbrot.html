@@ -1,27 +1,4 @@
 <style>
-    html, body {
-        background: #131313;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        height: 100%;
-    }
-
-    #canvas-wrapper {
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 13 / 8;
-        margin: auto;
-    }
-
-    #mandelbrotCanvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-
     label {
         color: white;
         padding: 7px 7px;
@@ -51,8 +28,8 @@
     <button id="zoomInButton">➕ Zoom In</button>
     <button id="zoomOutButton">➖ Zoom Out</button>
 </div>
-<div id="canvas-wrapper">
-    <canvas id="mandelbrotCanvas"></canvas>
+<div class="canvasWrapper2D" id="canvas-wrapper" style="aspect-ratio: 13 / 8;">
+    <canvas class="applicationCanvas2D" id="mandelbrotCanvas"></canvas>
 </div>
 <div style="margin-top: 2px;">
     <label>Colors:</label><button id="colorSchemeButton1">scheme 1</button>
