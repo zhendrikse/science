@@ -25,14 +25,14 @@
 </style>
 <script>
     // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
-    }
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
 </script>
 <div id="glowscript-wrapper">
     <div id="glowscript" class="glowscript"></div>
@@ -128,8 +128,6 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "23";
-    title = "A plane wave with wavelength $\\lambda$ strikes a thin film an angle $\\theta_i$ with the normal.\nThe film has refractive index $n$ and thickness $a$.   \nThe phase difference between the rays reflected from the first and second surfaces is:\n$$\\begin{equation}\\delta= \\frac{4\\pi a n \\cos(\\theta_i)}{\\lambda} +\\pi.\\end{equation}$$\nThere is additional interference from rays reflected inside the film at the first surface:\n$$\\begin{equation}\\delta = \\frac{4\\pi a n \\cos(\\theta_i)}{\\lambda}.\\end{equation}$$\nThe program shows a color plot of the intensity of a given wavelength.\n    \n&#x2022; Based on <a href=\"https://sites.science.oregonstate.edu/~landaur/Books/Problems/Codes/JupyterNB/ThinFilmVP.ipynb\">Thin film interference by reflection<\/a> (AJP 72,1248-1253)\n&#x2022; From <a href=\"https://books.google.nl/books/about/Computational_Problems_for_Physics.html?id=g9tdDwAAQBAJ\">Computational Problems for Physics</a> by RH Landau, MJ Paez, and CC Bordeianu.\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/optics/code/thin_film.py\">thin_film.py</a>\n\n";
     "25";
     display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 600, range: 400, background: color.gray(.075), title: title})]);
     "27";
@@ -495,8 +493,6 @@ async function __main__() {
             depth = ρσ_interpolate_kwargs.call(this, label, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](200), escal, 0), text: str(prof), box: false, color: color.white})]);
         }
     }
-    "118";
-    MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
     "119";
     while (true) {
         "120";

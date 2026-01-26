@@ -102,16 +102,12 @@ async function __main__() {
     var strings = ρσ_modules.pythonize.strings;
 
     strings();
-    "8";
-    title = "&#x2022; Based on <a href=\"https://github.com/Physics-Morris/Physics-Vpython/blob/master/7_Dipole.py\">7_Dipole.py<\/a>\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/electromagnetism/code/dipole_field.py\">dipole_field.py</a>\n\n";
-    "12";
-    caption = "\nElectric field $\\vec{E} ( \\vec{r} ) = -\\dfrac {1} {4\\pi\\epsilon_0} \\nabla \\bigg( \\dfrac{\\vec{r}  \\cdot \\vec{p}} {r^3} \\bigg)$, where $\\vec{p}=+q(\\vec{r}_+) + -q(\\vec{r}_-)$\n";
     "14";
     ec = 1.6e-19;
     "15";
     k = 9e9;
     "17";
-    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), align: "top", range: 4e-13, title: title, caption: caption})]);
+    animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({background: color.gray(.075), align: "top", range: 4e-13})]);
     "19";
     function FieldArrow() {;
     }
