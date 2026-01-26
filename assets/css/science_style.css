@@ -37,6 +37,10 @@ button:hover {
     background: rgba(255, 255, 255, 0.2);
 }
 
+input[type="range"] {
+    width: 100%;
+}
+
 figure {
   border: none;
   padding: 4px;
