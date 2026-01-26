@@ -7,8 +7,12 @@
 is a fractal that is named after British Mathematician Michael Barnsley, 
 because he described this fractal in his book “Fractals Everywhere”. 
 It is an example of a so-called “iterated function system” (IFS) fractal, which means
-that the construction of this fractal makes use of matrices, see also the
-[chaos game](https://www.hendrikse.name/science/mathematics/chaos_game.html) fractals.
+that the construction of this fractal makes use of matrices.
+
+⭐ Based on [this example](https://rosettacode.org/wiki/Barnsley_fern#Python) (and an alternative [here](https://code.activestate.com/recipes/577134-fern-ifs-fractal))<br/>
+👉 See also this [video](https://www.youtube.com/watch?v=km-ctEk8-lE) on integrated function systems (IFS)<br/>
+🔧 Adapted to [VPython](https://vpython.org/) by [Zeger Hendrikse](https://github.com/zhendrikse/) in [fern.py](https://github.com/zhendrikse/science/blob/main/nature/code/fern.py)<br/>
+👉 Also available as pure JavaScript in [chaos game](https://www.hendrikse.name/science/mathematics/chaos_game.html) 
 
 {% include_relative code/fern.html %}
 
