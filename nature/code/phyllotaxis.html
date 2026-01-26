@@ -83,8 +83,11 @@
         const angle = n * 137.5
         const radius = c * Math.sqrt(n);
 
-        const x = radius * Math.cos(Math.PI * angle / 180) + canvas.clientWidth * .5;
-        const y = radius * Math.sin(Math.PI * angle / 180) + canvas.clientHeight * .5;
+        const wrapper = document.getElementById("canvas-wrapper");
+        const rectangle = wrapper.getBoundingClientRect();
+
+        const x = radius * Math.cos(Math.PI * angle / 180) + rectangle.width * .5;
+        const y = radius * Math.sin(Math.PI * angle / 180) + rectangle.height * .5;
 
         const colour = coloringSchemeFunction(angle, radius, n);
         const rgb = "rgb(" + 255 * colour[0] + "," + 255 * colour[1] + "," + 255 * colour[2] + ")";
@@ -95,9 +98,10 @@
         const wrapper = document.getElementById("canvas-wrapper");
         const rectangle = wrapper.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
+        canvas.width  = rectangle.width * dpr;
+        canvas.height = rectangle.height * dpr;
 
-        canvas.width  = Math.floor(rectangle.width * dpr);
-        canvas.height = Math.floor(rectangle.height * dpr);
+        display.setTransform(dpr, 0, 0, dpr, 0, 0);
 
         canvas.style.width  = rectangle.width + "px";
         canvas.style.height = rectangle.height + "px";
