@@ -7,6 +7,16 @@
 
 <p style="clear: both;"></p>
 
+## Scalar versus Vector Quantities: A Visual Guide
+<div class="header_line"><br/></div>
+
+<figure style="text-align: center;">
+  <img alt="Scalar versus Vector Quantities" src="images/scalar_versus_vector_quantities.jpg" />
+  <figcaption>This excellent visual guide originates from 
+    <a href=https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+  </figcaption>
+</figure>
+
 ## What do the colors show?
 <div class="header_line"><br/></div>
 

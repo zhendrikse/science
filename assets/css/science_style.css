@@ -15,7 +15,7 @@ td {
 }
 
 label {
-    color: white;
+    color: yellow;
     padding: 7px 7px;
     cursor: pointer;
     transition: all 0.3s;
@@ -24,7 +24,7 @@ label {
 
 button {
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 0, 0.2);
     color: white;
     padding: 5px 5px;
     border-radius: 8px;
@@ -38,7 +38,7 @@ button:hover {
 }
 
 input[type="range"] {
-    width: 100%;
+    width: 66%;
 }
 
 figure {

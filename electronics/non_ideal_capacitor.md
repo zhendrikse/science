@@ -7,6 +7,16 @@
 
 <p style="clear: both;"></p>
 
+## Electric potential difference $\Delta V$
+<div class="header_line"><br/></div>
+
+<figure style="text-align: center;">
+  <img alt="Electric potential difference" src="images/electric_potential_difference.jpg" />
+  <figcaption>This excellent visual guide originates from 
+    <a href=https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+  </figcaption>
+</figure>
+
 ## Theoretical background
 <div class="header_line"><br/></div>
 

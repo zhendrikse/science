@@ -26,6 +26,13 @@ a function that assigns **one number (temperature)** to **every point in space**
 ## Scalar fields for dummies
 <div class="header_line"><br/></div>
 
+<figure style="text-align: center;">
+  <img alt="Scalar versus Vector Quantities" src="images/scalar_versus_vector_quantities.jpg" />
+  <figcaption>This excellent visual guide originates from 
+    <a href=https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+  </figcaption>
+</figure>
+
 ### The idea of a scalar field
 
 A scalar field is simply a function like
@@ -42,8 +49,6 @@ Examples of scalar fields:
 
 Here, the scalar field represents **temperature in 3D space**.
 
----
-
 ### Starting situation: a hot spot
 
 At the beginning, the temperature is highest near the center and decreases smoothly outward:
@@ -57,8 +62,6 @@ This describes a **localized heat source**:
 * symmetric in all directions
 
 You can think of this as a small hot object placed in cold space.
-
----
 
 ### What happens over time? (Heat diffusion)
 
@@ -80,8 +83,6 @@ In the animation, this means:
 * warmth spreads outward
 * no heat is created or destroyed, it only redistributes
 
----
-
 ### How to read the visualization
 
 * **Position of a sphere** → where in space we measure temperature
@@ -89,8 +90,6 @@ In the animation, this means:
 * **Time** → how long heat has been spreading
 
 The coordinate axes are only there to help you understand distances and directions.
-
----
 
 ### Why this is useful
 
@@ -101,7 +100,6 @@ This kind of visualization helps you:
 * connect mathematics to physical intuition
 
 Instead of thinking in formulas, you can **see the heat flow**.
-
 
 ## **Scalar Field Visualization – 🔥 Heat Diffusion 🔥**
 <div class="header_line"><br/></div>

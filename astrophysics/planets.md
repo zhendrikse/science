@@ -36,12 +36,11 @@
   </a>
 </figure>
 <figure class="right_image">
-  <a href="images/world_without_water.jpg">
+  <a href="images/world_without_water.png">
     <img alt="Our planets" src="images/world_without_water.png"/>
   </a>
 </figure>
 </div>
-<p style="clear: both;"></p>
 
 <p style="clear:both;"></p>
 

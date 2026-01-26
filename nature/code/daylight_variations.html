@@ -25,14 +25,14 @@
 </style>
 <script>
     // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
-    }
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
 </script>
 <div id="glowscript-wrapper">
     <div id="glowscript" class="glowscript"></div>
@@ -86,7 +86,33 @@ async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
+    /* ================= GLOWSCRIPT RESPONSIVE PATCH ================= */
 
+    function resizeGlowScriptScene() {
+        const wrapper = document.getElementById('glowscript-wrapper');
+        if (!wrapper || !scene || !scene.canvas) return;
+
+        const dpr = window.devicePixelRatio || 1;
+
+        const w = wrapper.clientWidth;
+        const h = wrapper.clientHeight;
+
+        scene.width  = Math.floor(w * dpr);
+        scene.height = Math.floor(h * dpr);
+
+        scene.canvas.style.width  = w + 'px';
+        scene.canvas.style.height = h + 'px';
+    }
+
+    scene.autoscale = false;
+    scene.userzoom  = true;
+    scene.userspin  = true;
+    scene.userpan   = true;
+
+    resizeGlowScriptScene();
+    window.addEventListener('resize', resizeGlowScriptScene);
+
+    /* =============================================================== */
     function round(num, n=0) {return Number(num.toFixed(n))}
     var box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, attach_trail, attach_arrow, attach_light, sqrt, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, text, download, degrees, get_library, read_local_file
     var version, print, arange, __name__, type, ρσ_ls, title, list_of_months, astronomical_unit, earth_orbit_rate, moon_orbit_rate, animation, _GS_1, sun_earth_moon, _, speed_slider, sunlight, more_sunlight, graph_height, graph_width, daylight_graph, daylight_curve, equator_curve, day, energy_curve, new_graph_interval, month_counter, daylight, sun_energy_transfer, energy_graph;

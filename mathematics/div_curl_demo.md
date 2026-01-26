@@ -19,6 +19,16 @@ Click on the canvas to start the animation and watch the field come alive!
 🔧 Ported to [div_curl_demo.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/div_curl_demo.html) by [Zeger Hendrikse](https://www.hendrikse.name)<br/>
 👉 A [VPython](https://www.vpython.org/) version is also available as [div_curl_demo.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/div_curl_demo.py).
 
+## Scalar versus Vector Quantities: A Visual Guide
+<div class="header_line"><br/></div>
+
+<figure style="text-align: center;">
+  <img alt="Scalar versus Vector Quantities" src="images/scalar_versus_vector_quantities.jpg" />
+  <figcaption>This excellent visual guide originates from 
+    <a href=https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+  </figcaption>
+</figure>
+
 ### Background information
 <div class="header_line"><br/></div>
 

@@ -25,14 +25,14 @@
 </style>
 <script>
     // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
-    }
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
 </script>
 <div id="glowscript-wrapper">
     <div id="glowscript" class="glowscript"></div>
@@ -86,7 +86,33 @@ async function __main__() {
 "use strict";
     var display = canvas;
     var scene = canvas();
+    /* ================= GLOWSCRIPT RESPONSIVE PATCH ================= */
 
+    function resizeGlowScriptScene() {
+        const wrapper = document.getElementById('glowscript-wrapper');
+        if (!wrapper || !scene || !scene.canvas) return;
+
+        const dpr = window.devicePixelRatio || 1;
+
+        const w = wrapper.clientWidth;
+        const h = wrapper.clientHeight;
+
+        scene.width  = Math.floor(w * dpr);
+        scene.height = Math.floor(h * dpr);
+
+        scene.canvas.style.width  = w + 'px';
+        scene.canvas.style.height = h + 'px';
+    }
+
+    scene.autoscale = false;
+    scene.userzoom  = true;
+    scene.userspin  = true;
+    scene.userpan   = true;
+
+    resizeGlowScriptScene();
+    window.addEventListener('resize', resizeGlowScriptScene);
+
+    /* =============================================================== */
     function round(num, n=0) {return Number(num.toFixed(n))}
     var compound, curve, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, sleep, update, paths, shapes, vertex, triangle, quad, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, checkbox, text, download, radians, degrees, get_library, read_local_file
     var version, print, arange, __name__, type, ρσ_ls, title, display, g, k, h0, world_height, world_radius, world, ground, _GS_1, person, parachute, _, time_max, g1, height_curve, g2, velocity_curve, g3, acceleration_curve, g0, potential_energy_curve, kinetic_energy_curve, total_energy_curve, arrow_offset, velocity_scale, vel, label_offset, label_speed, arrow_offset_right, acclnscale, acceleration_arrow, labeloffsetright, acceleration_label, t, dt, resistance_force, total_force, cres, pe, ke;
