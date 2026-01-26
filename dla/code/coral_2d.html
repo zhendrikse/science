@@ -1,34 +1,11 @@
-<style>
-    html, body {
-        background: #131313;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        height: 100%;
-    }
-
-    #canvas-wrapper {
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 650px;
-        aspect-ratio: 1 / 1;
-        margin: auto;
-    }
-
-    #coralCanvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-</style>
-
-<div id="canvas-wrapper">
-    <canvas id="coralCanvas" ></canvas>
+<div class="canvasWrapper2D" id="canvas-wrapper">
+    <canvas class="applicationCanvas2D" id="coralCanvas" ></canvas>
 </div>
 <script>
-    const canvas = document.getElementById("coralCanvas");
+    const canvasWrapper = document.getElementById('canvas-wrapper');
+    const canvas = document.getElementById('coralCanvas');
     const display = canvas.getContext("2d");
+
     let maxDistance = 0;
     const PARTICLES_PER_10K_PIXELS = 75;
     let swarmSize = 0;
@@ -185,11 +162,15 @@
     }
 
     function resizeCanvasToWrapper() {
-        const canvasWrapper = document.getElementById('canvas-wrapper');
-        const canvas = document.getElementById('coralCanvas');
+        const wrapper = document.getElementById("canvas-wrapper");
+        const rectangle = wrapper.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
 
-        canvas.width = canvasWrapper.clientWidth;
-        canvas.height = canvasWrapper.clientHeight;
+        canvas.width  = Math.floor(rectangle.width * dpr);
+        canvas.height = Math.floor(rectangle.height * dpr);
+
+        canvas.style.width  = rectangle.width + "px";
+        canvas.style.height = rectangle.height + "px";
     }
 
     function resizeAndResetSimulation() {
