@@ -66,35 +66,37 @@
 
     }
 
-    function hsv2rgb(h,s,v) {
-        let f= (n,k=(n+h/60)%6) => v - v*s*Math.max( Math.min(k,4-k,1), 0);
-        return [f(5),f(3),f(1)];
+    function hsv2rgb(h, s, v) {
+        let f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max( Math.min(k, 4 - k, 1), 0);
+        return [f(5), f(3), f(1)];
     }
 
     function draw(n) {
         const angle = n * 137.5;
         const radius = c * Math.sqrt(n);
 
-        const rect = wrapper.getBoundingClientRect();
-
-        const x = radius * Math.cos(angle * Math.PI / 180) + rect.width * 0.5;
-        const y = radius * Math.sin(angle * Math.PI / 180) + rect.height * 0.5;
+        const x = radius * Math.cos(angle * Math.PI / 180) + centerX;
+        const y = radius * Math.sin(angle * Math.PI / 180) + centerY ;
 
         const colour = coloringSchemeFunction(angle, radius, n);
-        const rgb = `rgb(${255*colour[0]},${255*colour[1]},${255*colour[2]})`;
+        const alpha = Math.min(1, 0.3 + n / numberOfDots);
+        const rgb = `rgba(${255 * colour[0]}, ${255 * colour[1]}, ${255 * colour[2]},${alpha})`;
 
         circle(x, y, 8, rgb, drawBorderAroundDots);
     }
 
+    let centerX = 0, centerY = 0;
     function resizeCanvas() {
-        const rect = wrapper.getBoundingClientRect();
+        const rectangle = wrapper.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
 
-        canvas.width  = rect.width * dpr;
-        canvas.height = rect.height * dpr;
+        canvas.width  = rectangle.width * dpr;
+        canvas.height = rectangle.height * dpr;
+        centerX = rectangle.width * 0.5;
+        centerY = rectangle.height * 0.5;
 
-        canvas.style.width  = rect.width + "px";
-        canvas.style.height = rect.height + "px";
+        canvas.style.width  = rectangle.width + "px";
+        canvas.style.height = rectangle.height + "px";
 
         display.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
@@ -106,8 +108,10 @@
 
     setColoringSchemeTo(4)
     window.requestAnimationFrame(function loop() {
-        if (n < numberOfDots)
-            draw(n++);
+        if (n > numberOfDots)
+            return; // flower has been drawn
+
+        draw(n++);
         window.requestAnimationFrame(loop);
     });
 
