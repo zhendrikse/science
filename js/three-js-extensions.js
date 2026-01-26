@@ -1047,6 +1047,10 @@ export class Cylinder {
         if (makeTrail) this.enableTrail();
     }
 
+    updateAxis(newAxis) {
+        this._axis = newAxis;
+    }
+
     enableTrail({
                     maxPoints = 200,
                     color = this._cylinder.material.color
