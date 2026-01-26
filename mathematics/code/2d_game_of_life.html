@@ -28,19 +28,228 @@
 <div class="canvas-wrapper" id="canvas-wrapper">
     <canvas class="game-of-life-canvas" id="gameOfLifeCanvas"></canvas>
 </div>
+<p style="clear: both;"></p>
+<p style="text-align:center; margin-top: 10px;">
+</p>
+<table>
+    <tr>
+        <td>
+            <label for="cellSizeSelect">Cell size:</label>
+            <select id="cellSizeSelect">
+                <option value="2">2 px</option>
+                <option value="4" selected>4 px</option>
+                <option value="6">6 px</option>
+                <option value="8">8 px</option>
+                <option value="12">12 px</option>
+                <option value="16">16 px</option>
+            </select>
+        </td>
+        <td>
+            <label for="frameRateSelect">Frame rate:</label>
+            <select id="frameRateSelect">
+                <option value="1">1 fps</option>
+                <option value="2">2 fps</option>
+                <option value="5">5 fps</option>
+                <option value="10" selected>10 fps</option>
+                <option value="25">25 fps</option>
+                <option value="50">50 fps</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td><label for="acorn"></label><input type="radio" id="acorn"/>Acorn 🌰</td>
+        <td><label for="diehard"></label><input type="radio" id="diehard"/>Die hard 💀</td>
+    </tr>
+    <tr>
+        <td><label for="doubleGunPulsar"></label><input type="radio" id="doubleGunPulsar"/>Double gun pulsar 🔫</td>
+        <td><label for="glider"></label><input type="radio" id="glider"/>Glider 🛩️</td>
+    </tr>
+    <tr>
+        <td><label for="gliderGun"></label><input type="radio" id="gliderGun"/>Glider gun 🔫</td>
+        <td><label for="heavyweightSpaceship"></label><input type="radio" id="heavyweightSpaceship"/>Heavyweight spaceship 🚀</td>
+    </tr>
+    <tr>
+        <td><label for="lightweightSpaceship"></label><input type="radio" id="lightweightSpaceship"/>Lightweight spaceship 🚀</td>
+        <td><label for="megaShowCase"></label><input type="radio" id="megaShowCase"/>Mega showcase 🚨</td>
+    </tr>
+    <tr>
+        <td><label for="methusalahChaos"></label><input type="radio" id="methusalahChaos"/>Methusalah chaos 😵‍💫</td>
+        <td><label for="oscillatorWall"></label><input type="radio" id="oscillatorWall"/>Oscillator wall ⅏</td>
+    </tr>
+    <tr>
+        <td><label for="pentadecathlon"></label><input type="radio" id="pentadecathlon"/>Pentadecathlon 🏃🏻</td>
+        <td><label for="pentomino"></label><input type="radio" id="pentomino"/>Pentomino ⚅</td>
+    </tr>
+    <tr>
+        <td><label for="pulsar"></label><input type="radio" id="pulsar"/>Pulsar 🌟</td>
+        <td><label for="random"></label><input type="radio" id="random" checked/>Random 🎲</td>
+    </tr>
+</table>
 
 <script type="module">
     import { Pixel, PixelImage, Colors } from 'https://www.hendrikse.name/science/js/pixel-image.js';
 
+    const ACORN = [
+        [1,0], [3,1], [0,2], [1,2], [4,2], [5,2], [6,2]
+    ];
+
+    const GLIDER = [
+        [1, 0],
+        [2, 1],
+        [0, 2],
+        [1, 2],
+        [2, 2],
+    ];
+
+    const LWSS = [ // Lightweight spaceship
+        [1,0], [2,0], [3,0], [4,0],
+        [0,1], [4,1],
+        [4,2],
+        [0,3], [3,3]
+    ];
+    
+    const HWSS = [ // Heavyweight spaceship
+        [1,0], [2,0], [3,0], [4,0], [5,0],
+        [0,1], [5,1],
+        [5,2],
+        [0,3], [4,3], [5,3],
+        [0,4], [1,4]
+    ];
+
+    const DIEHARD = [
+        [6,0], [0,1], [1,1], [1,2], [5,2], [6,2], [7,2]
+    ];
+
+    const PULSAR = [
+        [2,0], [3,0], [4,0], [8,0], [9,0], [10,0],
+        [0,2], [5,2], [7,2], [12,2],
+        [0,3], [5,3], [7,3], [12,3],
+        [0,4], [5,4], [7,4], [12,4],
+        [2,5], [3,5], [4,5], [8,5], [9,5], [10,5],
+
+        [2,7], [3,7], [4,7], [8,7], [9,7], [10,7],
+        [0,8], [5,8], [7,8], [12,8],
+        [0,9], [5,9], [7,9], [12,9],
+        [0,10], [5,10], [7,10], [12,10],
+        [2,12], [3,12], [4,12], [8,12], [9,12], [10,12],
+    ];
+
+    const GOSPER_GLIDER_GUN = [
+        [24,0], [22,1], [24,1], [12,2], [13,2], [20,2], [21,2], [34,2], [35,2],
+        [11,3], [15,3], [20,3], [21,3], [34,3], [35,3],
+        [0,4], [1,4], [10,4], [16,4], [20,4], [21,4],
+        [0,5], [1,5], [10,5], [14,5], [16,5], [17,5], [22,5], [24,5],
+        [10,6], [16,6], [24,6],
+        [11,7], [15,7],
+        [12,8], [13,8]
+    ];
+
+    const PENTADECATHLON = [
+        [0,2], [0,3], [0,4], [0,5], [0,6], [0,7], [0,8], [0,9], [0,10], [0,11]
+    ];
+
+    const LIGHTWEIGHT_PUFFER = [
+        [0,2], [1,0], [1,2], [2,2], [3,2], [4,2], [4,1], [5,0], [5,1], [5,2],
+        [6,1], [6,0], [7,1]
+    ];
+
+    const R_PENTOMINO = [
+        [1,0], [2,0],
+        [0,1], [1,1],
+        [1,2]
+    ];
+
+    const TWIN_PULSARS = [
+        // left pulsar
+        [2,0], [3,0], [4,0], [8,0], [9,0], [10,0],
+        [0,2], [5,2], [7,2], [12,2],
+        [0,3], [5,3], [7,3], [12,3],
+        [0,4], [5,4], [7,4], [12,4],
+        [2,5], [3,5], [4,5], [8,5], [9,5], [10,5],
+        [2,7], [3,7], [4,7], [8,7], [9,7], [10,7],
+        [0,8], [5,8], [7,8], [12,8],
+        [0,9], [5,9], [7,9], [12,9],
+        [0,10], [5,10], [7,10], [12,10],
+        [2,12], [3,12], [4,12], [8,12], [9,12], [10,12],
+        //right pulsar, shifted 20 to the right
+    ].map(([x,y]) => [x + 20, y]);
+
+    const DOUBLE_GUN_PULSAR = [
+        ...GOSPER_GLIDER_GUN,
+        ...GOSPER_GLIDER_GUN.map(([x, y]) => [x + 50, y]), // tweede gun 50 rechts
+        ...TWIN_PULSARS
+    ];
+    const TRIPLE_PULSAR = [
+        ...PULSAR,
+        ...PULSAR.map(([x, y]) => [x + 16, y + 16]),
+        ...PULSAR.map(([x, y]) => [x + 32, y])
+    ];
+    const GLIDER_PUFFER_COMBO = [
+        ...GLIDER.map(([x, y]) => [x + 0, y + 20]),
+        ...LIGHTWEIGHT_PUFFER.map(([x, y]) => [x + 10, y])
+    ];
+    const METHUSELAH_CHAOS = [
+        ...R_PENTOMINO.map(([x, y]) => [x + 0, y + 0]),
+        ...ACORN.map(([x, y]) => [x + 20, y + 5]),
+        ...DIEHARD.map(([x, y]) => [x + 40, y + 0])
+    ];
+    const OSCILLATOR_WALL = [
+        ...PULSAR.map(([x, y]) => [x, y]),
+        ...PENTADECATHLON.map(([x, y]) => [x + 20, y]),
+        [25, 0], [26, 0], [25, 1], [26, 1],  // simple 2x2 Block/Beacon
+        [28, 2], [29, 2], [28, 3], [29, 3]
+    ];
+    const MEGA_SHOWCASE = [
+        ...GOSPER_GLIDER_GUN,
+        ...GOSPER_GLIDER_GUN.map(([x, y]) => [x + 50, y]),
+        ...TWIN_PULSARS,
+        ...TRIPLE_PULSAR,
+        ...GLIDER_PUFFER_COMBO,
+        ...METHUSELAH_CHAOS
+    ];
+
     const canvas = document.getElementById("gameOfLifeCanvas");
     const display = canvas.getContext("2d");
+    canvas.focus();
 
     window.addEventListener("resize", () => {
         resizeCanvas();
         initGameOfLife();
     });
 
-    canvas.focus();
+    const offsetX = () => Math.floor(dimension_x / 2);
+    const offsetY = () => Math.floor(dimension_y / 2);
+    const random= () => initGameOfLife();
+
+    const glider = () => place_pattern(initGameOfLife({randomStart: false}), GLIDER, offsetX(), offsetY());
+    const lightweightSpaceship = () => place_pattern(initGameOfLife({randomStart: false}), LWSS, offsetX(), offsetY());
+    const heavyweightSpaceship = () => place_pattern(initGameOfLife({randomStart: false}), HWSS, offsetX(), offsetY());
+    const pulsar = () => place_pattern(initGameOfLife({randomStart: false}), TWIN_PULSARS, offsetX(), offsetY());
+    const acorn = () => place_pattern(initGameOfLife({randomStart: false}), ACORN, offsetX(), offsetY());
+    const diehard = () => place_pattern(initGameOfLife({randomStart: false}), DIEHARD, offsetX(), offsetY());
+    const gliderGun = () => place_pattern(initGameOfLife({randomStart: false}), GOSPER_GLIDER_GUN, offsetX(), offsetY());
+    const doubleGunPulsar = () => place_pattern(initGameOfLife({randomStart: false}), DOUBLE_GUN_PULSAR, offsetX(), offsetY());
+    const oscillatorWall = () => place_pattern(initGameOfLife({randomStart: false}), OSCILLATOR_WALL, offsetX(), offsetY());
+    const methusalahChaos = () => place_pattern(initGameOfLife({randomStart: false}), METHUSELAH_CHAOS, offsetX(), offsetY());
+    const megaShowCase = () => place_pattern(initGameOfLife({randomStart: false}), MEGA_SHOWCASE, offsetX(), offsetY());
+    const pentomino = () => place_pattern(initGameOfLife({randomStart: false}), R_PENTOMINO, offsetX(), offsetY());
+    const pentadecathlon = () => place_pattern(initGameOfLife({randomStart: false}), PENTADECATHLON, offsetX(), offsetY());
+
+    const radioButtons = new Map();
+    radioButtons.set("random", random);
+    radioButtons.set("glider", glider);
+    radioButtons.set("lightweightSpaceship", lightweightSpaceship);
+    radioButtons.set("heavyweightSpaceship", heavyweightSpaceship);
+    radioButtons.set("pulsar", pulsar);
+    radioButtons.set("acorn", acorn);
+    radioButtons.set("diehard", diehard);
+    radioButtons.set("gliderGun", gliderGun);
+    radioButtons.set("doubleGunPulsar", doubleGunPulsar);
+    radioButtons.set("methusalahChaos", methusalahChaos);
+    radioButtons.set("megaShowCase", megaShowCase);
+    radioButtons.set("oscillatorWall", oscillatorWall);
+    radioButtons.set("pentomino", pentomino);
+    radioButtons.set("pentadecathlon", pentadecathlon);
 
     function resizeCanvas() {
         const wrapper = document.getElementById("canvas-wrapper");
@@ -52,6 +261,31 @@
 
         canvas.style.width  = size + "px";
         canvas.style.height = size + "px";
+    }
+
+    const cellSizeSelect = document.getElementById("cellSizeSelect");
+    let cellSize = 4;
+    let currentConfiguration = random;
+    cellSizeSelect.addEventListener("change", () => {
+        cellSize = parseInt(cellSizeSelect.value, 10);
+
+        resizeCanvas();
+        currentConfiguration();
+
+        // herteken direct
+        render_game(game, image);
+        image.render(display);
+    });
+
+    const frameRateSelect = document.getElementById("frameRateSelect");
+    let frameRate = 10;
+    frameRateSelect.addEventListener("change", () => {
+        frameRate = parseInt(frameRateSelect.value, 10);
+    });
+
+    function resetButtons(radioButtons) {
+        for (const [key, value] of radioButtons)
+            document.getElementById(key).checked = false;
     }
 
     class Game {
@@ -98,13 +332,8 @@
             return this._cells[row][column];
         }
 
-        width() {
-            return this._cells[0].length;
-        }
-
-        height() {
-            return this._cells.length;
-        }
+        width = () => this._cells[0].length;
+        height = () => this._cells.length;
     }
 
 
@@ -147,7 +376,6 @@
         }
     }
 
-
     function living(neighbours) {
         let living_neighbours = [];
         for (let neighbour of neighbours)
@@ -156,13 +384,8 @@
         return living_neighbours;
     }
 
-    function dead_cell() {
-        return new Cell(false);
-    }
-
-    function living_cell() {
-        return new Cell(true);
-    }
+    const dead_cell = () => new Cell(false);
+    const living_cell = () => new Cell(true);
 
     function place_pattern(cells, pattern, offsetX, offsetY) {
         for (let [dx, dy] of pattern) {
@@ -173,76 +396,13 @@
         }
     }
 
-    const GLIDER = [
-        [1, 0],
-        [2, 1],
-        [0, 2],
-        [1, 2],
-        [2, 2],
-    ];
-
-    const LWSS = [ // Lightweight spaceship
-        [1,0],[2,0],[3,0],[4,0],
-        [0,1],[4,1],
-        [4,2],
-        [0,3],[3,3]
-    ];
-
-    const HWSS = [ // Heavyweight spaceship
-        [1,0],[2,0],[3,0],[4,0],[5,0],
-        [0,1],[5,1],
-        [5,2],
-        [0,3],[4,3],[5,3],
-        [0,4],[1,4]
-    ];
-
-    const PULSAR = [
-        [2,0],[3,0],[4,0],[8,0],[9,0],[10,0],
-        [0,2],[5,2],[7,2],[12,2],
-        [0,3],[5,3],[7,3],[12,3],
-        [0,4],[5,4],[7,4],[12,4],
-        [2,5],[3,5],[4,5],[8,5],[9,5],[10,5],
-
-        [2,7],[3,7],[4,7],[8,7],[9,7],[10,7],
-        [0,8],[5,8],[7,8],[12,8],
-        [0,9],[5,9],[7,9],[12,9],
-        [0,10],[5,10],[7,10],[12,10],
-        [2,12],[3,12],[4,12],[8,12],[9,12],[10,12],
-    ];
-
-    const GOSPER_GLIDER_GUN = [
-        [24,0],[22,1],[24,1],[12,2],[13,2],[20,2],[21,2],[34,2],[35,2],
-        [11,3],[15,3],[20,3],[21,3],[34,3],[35,3],
-        [0,4],[1,4],[10,4],[16,4],[20,4],[21,4],
-        [0,5],[1,5],[10,5],[14,5],[16,5],[17,5],[22,5],[24,5],
-        [10,6],[16,6],[24,6],
-        [11,7],[15,7],
-        [12,8],[13,8]
-    ];
-
-    const TWIN_PULSARS = [
-        // left pulsar
-        [2,0],[3,0],[4,0],[8,0],[9,0],[10,0],
-        [0,2],[5,2],[7,2],[12,2],
-        [0,3],[5,3],[7,3],[12,3],
-        [0,4],[5,4],[7,4],[12,4],
-        [2,5],[3,5],[4,5],[8,5],[9,5],[10,5],
-        [2,7],[3,7],[4,7],[8,7],[9,7],[10,7],
-        [0,8],[5,8],[7,8],[12,8],
-        [0,9],[5,9],[7,9],[12,9],
-        [0,10],[5,10],[7,10],[12,10],
-        [2,12],[3,12],[4,12],[8,12],[9,12],[10,12],
-        // right pulsar, shifted 20 cells to the right
-    ].map(([x,y]) => [x+20, y]);
-
 
     let dimension_x;
     let dimension_y;
     let game;
     let image;
-    const cellSize = 4;
 
-    function initGameOfLife() {
+    function initGameOfLife({randomStart = true} = {}) {
         const pixelSize = 1;
 
         dimension_x = Math.floor(canvas.width  / cellSize);
@@ -252,15 +412,11 @@
         for (let x = 0; x < dimension_x; x++) {
             let row = [];
             for (let y = 0; y < dimension_y; y++)
-                row.push(Math.random() < 0.5 ? dead_cell() : living_cell());
-                //row.push(dead_cell());
+                randomStart ?
+                    row.push(Math.random() < 0.5 ? dead_cell() : living_cell()) :
+                    row.push(dead_cell());
             cells.push(row);
         }
-
-        // const offsetX = Math.floor(dimension_x / 2);
-        // const offsetY = Math.floor(dimension_y / 2);
-        // place_pattern(cells, PULSAR, offsetX, offsetY);
-        // place_pattern(cells, LWSS, Math.floor(offsetX * .5), offsetY);
 
         game = new Game(cells);
         image = new PixelImage(
@@ -269,31 +425,39 @@
             pixelSize,
             Colors.BLACK
         );
+
+        return cells;
+    }
+
+    function paintCellOnCanvas(game, image, x, y) {
+        const color = game.cell_at(x, y).is_alive() ? Colors.GREEN : Colors.BLACK;
+        const px0 = x * cellSize;
+        const py0 = y * cellSize;
+
+        for (let dx = 0; dx < cellSize; dx++)
+            for (let dy = 0; dy < cellSize; dy++)
+                image.setColour(new Pixel(px0 + dx, py0 + dy, color));
     }
 
     function render_game(game, image) {
-        for (let cx = 0; cx < dimension_x; cx++)
-            for (let cy = 0; cy < dimension_y; cy++) {
-                const alive = game.cell_at(cx, cy).is_alive();
-                const color = alive ? Colors.GREEN : Colors.BLACK;
-
-                const px0 = cx * cellSize;
-                const py0 = cy * cellSize;
-
-                for (let dx = 0; dx < cellSize; dx++)
-                    for (let dy = 0; dy < cellSize; dy++)
-                        image.setColour(new Pixel(px0 + dx, py0 + dy, color));
-            }
+        for (let cellX = 0; cellX < dimension_x; cellX++)
+            for (let cellY = 0; cellY < dimension_y; cellY++)
+                paintCellOnCanvas(game, image, cellX, cellY);
     }
 
-
-    const frame_rate = 10; // generations per second
-    let lastTime = 0;
     resizeCanvas();
     initGameOfLife();
+    for (const [key, value] of radioButtons)
+        document.getElementById(key).onclick = function() {
+            resetButtons(radioButtons);
+            this.checked = true;
+            currentConfiguration = value;
+            value();
+        };
 
+    let lastTime = 0;
     function loop(timestamp) {
-        if (timestamp - lastTime > 1000 / frame_rate) {
+        if (timestamp - lastTime > 1000 / frameRate) {
             game = game.next_generation();
             render_game(game, image);
             image.render(display);
@@ -303,8 +467,5 @@
     }
 
     requestAnimationFrame(loop);
-
-
-
 </script>
 
