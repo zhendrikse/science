@@ -85,7 +85,7 @@
                 z: surfaceController.surface.definition().specification().parametrization.zFn
             }
 
-            const dummyToggle = {category: Category.TOROID};
+            const dummyToggle = {category: Category.NON_ORIENTABLE};
             controls.add(dummyToggle, 'category', Object.values(Category))
                 .name("Category")
                 .onChange(value => ring.changeActiveCategoryTo(value));
@@ -434,7 +434,15 @@
         },
         intervals: [["0", "2 * pi"], ["2", "-2"]]
     }, {
-        meta: {name: "Klein", category: Category.NON_ORIENTABLE},
+        meta: {name: "Klein bottle", category: Category.NON_ORIENTABLE},
+        parametrization: {
+            xFn: "-(4 - 2*cos(u)) * cos(v) + 6 * (sin(u) + 1) * cos(u)",
+            yFn: "-16 * sin(u)",
+            zFn: "(4 - 2*cos(u)) * sin(v)"
+        },
+        intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+    }, {
+        meta: {name: "Klein bottle 2", category: Category.NON_ORIENTABLE},
         parametrization: {
             xFn: "(2+cos(u/2)*sin(v)-sin(u/2)*sin(2*v))*cos(u)",
             yFn: "sin(u/2)*sin(v)+cos(u/2)*sin(2*v)",
@@ -688,7 +696,7 @@
         scene: surfacePlotScene
     });
 
-    const surfaceData = SurfaceDefinitions[3];
+    const surfaceData = SurfaceDefinitions[22];
     const surfaceParams = new ViewParameters({
         tangentFrameParameters: new TangentFrameParameters({
             visible: false,

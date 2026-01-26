@@ -5,7 +5,6 @@
 - [`chaos_game.html` source code](chaos_game.html)
 - [`complex_surfaces.html` source code](complex_surfaces.html)
 - [`div_curl_demo.html` source code](div_curl_demo.html)
-- [`double_shapes.py` source code](double_shapes.py)
 - [`fractal_terrain.py` source code](fractal_terrain.py)
 - [`fractals.html` source code](fractals.html)
 - [`galton_board.py` source code](galton_board.py)
