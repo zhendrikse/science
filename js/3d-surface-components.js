@@ -495,7 +495,7 @@ export class MinimalSurfaceView extends SurfaceView {
     constructor(parentGroup, mathematicalSurface, {showWireframe=true, resolution=20, baseColor="#4f6"}) {
         super(parentGroup, mathematicalSurface);
         this._baseColor = baseColor;
-        this._geometry = surface.createGeometryWith(resolution);
+        this._geometry = mathematicalSurface.createGeometryWith(resolution);
         this._material = this.material(showWireframe, 1);
         this._colorMapper = new HeightColorMapper({ baseColor: baseColor });
         this._mesh = new THREE.Mesh(this._geometry, this._material);
