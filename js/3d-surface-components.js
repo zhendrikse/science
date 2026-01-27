@@ -237,12 +237,6 @@ export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
         );
     }
 
-    get xFn() { return this._xFn; }
-    get yFn() { return this._yFn; }
-    get zFn() { return this._zFn; }
-    get uInterval() { return this._uInterval; }
-    get vInterval() { return this._vInterval; }
-
     #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
 
     sample(u, v, target) {
@@ -269,6 +263,10 @@ export class SurfaceSpecification {
         this._parametrization = Object.freeze({ ...parametrization });
         this._intervals = Object.freeze(intervals);
     }
+
+    get meta() { return this._meta; }
+    get parametrization() { return this._parametrization; }
+    get intervals() { return this._intervals; }
 
     withParametrization(patch) {
         return new SurfaceSpecification({
