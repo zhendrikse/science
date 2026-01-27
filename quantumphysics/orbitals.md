@@ -41,7 +41,7 @@ The colors indicate the **sign (phase)** of the wavefunction:
 
 The **opacity** of the surface reflects the **magnitude** of the wavefunction:
 
-* More opaque regions correspond to larger values of $||\psi\\||$.
+* More opaque regions correspond to larger values of $\|\psi\|$.
 * More transparent regions indicate smaller amplitudes.
 
 This makes both the **shape** *and* the **structure** of each orbital visible at the same time.
@@ -87,7 +87,7 @@ $$
 Not shown explicitly:
 - The time dependence $e^{-iEt/\hbar}$
 - Electron trajectories (electrons do **not** orbit like planets)
-- Exact probability density $||\psi||^2$ — this is a geometric representation
+- Exact probability density $\|\psi\|^2$ — this is a geometric representation
 
 These shapes visualize the **structure of quantum states**, not literal electron paths.
 
