@@ -170,6 +170,19 @@ export class PrincipalCurvatureColorMapper extends ColorMapper {
     }
 }
 
+export class CurvatureColorMapper extends ColorMapper {
+    constructor(surfaceDefinition) {
+        super();
+        this._diffGeometry = new DifferentialGeometry(surfaceDefinition);
+    }
+
+    colorFor(u, v, color) {
+        const { N, H, K } = this._diffGeometry.normalMeanGaussian(u, v);
+        const t = MathUtils.clamp(Math.abs(H) * 2.0, 0, 1);
+        color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
+    }
+}
+
 /**
  * This class contains a function F(u, v) => (x, y, z) used to create a Surface instance.
  * It is instantiated using a SurfaceSpecification instance.
@@ -274,19 +287,6 @@ export class ContourParameters {
         this.contourType = contourType;
         this.uCount = uCount;
         this.vCount = vCount;
-    }
-}
-
-export class CurvatureColorMapper extends ColorMapper {
-    constructor(surfaceDefinition) {
-        super();
-        this._diffGeometry = new DifferentialGeometry(surfaceDefinition);
-    }
-
-    colorFor(u, v, color) {
-        const { N, H, K } = this._diffGeometry.normalMeanGaussian(u, v);
-        const t = MathUtils.clamp(Math.abs(H) * 2.0, 0, 1);
-        color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
     }
 }
 
@@ -426,6 +426,200 @@ export class IsoparametricContoursView extends SurfaceView {
         super.dispose();     // group uit parent + refs los
         this._surfaceDefinition = null;
     }
+}
+
+export class MinimalSurfaceView extends SurfaceView {
+    constructor(parentGroup, surface, {showWireframe=true, resolution=20, baseColor="#4f6"}) {
+        super(parentGroup, surface);
+        this._baseColor = baseColor;
+        this._geometry = surface.createGeometryWith(resolution);
+        this._material = this.material(showWireframe, 1);
+        this._colorMapper = new HeightColorMapper({ baseColor: baseColor });
+        this._mesh = new THREE.Mesh(this._geometry, this._material);
+        this._group.add(this._mesh);
+        this._colorMapper.apply(this._geometry);
+    }
+
+    onSelect = () => {
+        this._material.wireframe = false;
+        this._colorMapper = new HeightColorMapper({ baseColor: "#f90"});
+        this._colorMapper.apply(this._geometry); }
+    onDeselect = () => {
+        this._material.wireframe = true;
+        this._colorMapper = new HeightColorMapper({ baseColor: this._baseColor });
+        this._colorMapper.apply(this._geometry); }
+    selectableObject = () => this._mesh;
+}
+
+export class NormalsView extends SurfaceView {
+    constructor(parentGroup, surfaceView) {
+        super(parentGroup, surfaceView);
+        this._geometry = surfaceView._geometry;
+    }
+
+    #deriveScaleFromMesh(k, curvatureGain, normalScale) {
+        this._geometry.computeBoundingSphere();
+        const baseScale = this._geometry.boundingSphere.radius * normalScale;
+        const maxScale  = baseScale * 2.5;
+        return Math.min(baseScale * (1 + curvatureGain * k), maxScale); // Scale with clamp
+    }
+
+    #createLineSegments(positions, colors) {
+        const normalsGeometry = new THREE.BufferGeometry();
+        normalsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        normalsGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        const material = new THREE.LineBasicMaterial({vertexColors: true, depthTest: false});
+        return new THREE.LineSegments(normalsGeometry, material);
+    }
+
+    #createNormalLines(normalScale, curvatureGain, stride) {
+        const pos = this._geometry.attributes.position;
+        const uv  = this._geometry.attributes.uv;
+        const curvature = new DifferentialGeometry(this._surface.definition());
+
+        const positions = [];
+        const colors    = [];
+        for (let i = 0; i < pos.count; i += stride) {
+            const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+            const u = uv.getX(i), v = uv.getY(i);
+
+            let { N, H, K } = curvature.normalMeanGaussian(u, v);
+            if (!Number.isFinite(K)) K = 0;
+            const k = Math.min(Math.abs(K), 1.0);
+            const scale = this.#deriveScaleFromMesh(k, curvatureGain, normalScale);
+
+            positions.push(
+                x, y, z,
+                x + scale * N.x,
+                y + scale * N.y,
+                z + scale * N.z
+            );
+
+            // color encodes normal direction
+            const color = new THREE.Color(0.5 * (N.x + 1), 0.5 * (N.y + 1), 0.5 * (N.z + 1));
+            colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
+        }
+
+        return this.#createLineSegments(positions, colors);
+    }
+
+    buildWith({ normalScale = 0.25, curvatureGain = 1.0, stride = 4 }) {
+        this.clear();
+        this._helper = this.#createNormalLines(normalScale, curvatureGain, stride);
+        this._group.add(this._helper);
+    }
+
+    clear() {
+        if (!this._helper) return;
+
+        this._group.remove(this._helper);
+        this._helper.geometry.dispose();
+        this._helper.material.dispose();
+        this._helper = null;
+    }
+
+    dispose() {
+        this.clear();       // alleen eigen resources
+        super.dispose();    // verwijdert group uit parent
+        this._geometry = null;
+        this._surface = null;
+    }
+}
+
+export class StandardSurfaceView extends SurfaceView {
+    constructor(parentGroup, surface, surfaceParameters, colorMapper, contoursView) {
+        super(parentGroup, surface);
+        this._contours = null;
+        this._colorMapper = null;
+        this.updateColorMapper(colorMapper);
+        this.updateContoursView(contoursView);
+        this._contours.buildWith(surfaceParameters.contourParameters);
+
+        this._contourType = surfaceParameters.contourParameters.contourType;
+        this._colorMode = surfaceParameters.colorMode;
+
+        this._geometry = surface.createGeometryWith(surfaceParameters.resolution);
+        this._material = this.material(surfaceParameters.wireframe, surfaceParameters.opacity);
+        this._mesh = new Mesh(this._geometry, this._material);
+        this._group.add(this._mesh);
+
+        this.updateOpacity(surfaceParameters.opacity);
+    }
+
+    #setContourMode(contourParameters) {
+        this._contourType = contourParameters.contourType;
+        switch (this._contourType) {
+            case ContourType.NONE:
+                this._contours = null;
+                break;
+            case ContourType.CURVATURE:
+                this._contours = new CurvatureContoursView(this._group, this._surface);
+                this.registerChild(this._contours);
+                break;
+            case ContourType.ISO_PARAMETRIC:
+                this._contours = new IsoparametricContoursView(this._group, this._surface);
+                this.registerChild(this._contours);
+                break;
+        }
+    }
+
+    #setColorMode(surfaceParameters) {
+        this._colorMode = surfaceParameters.colorMode;
+        switch (this._colorMode) {
+            case ColorMapper.ColorMode.HEIGHT:
+                this._colorMapper = new HeightColorMapper({ useBaseColor: false });
+                break;
+            case ColorMapper.ColorMode.MEAN:
+                this._colorMapper = new CurvatureColorMapper(this._surface.definition());
+                break;
+            case ColorMapper.ColorMode.K1:
+            case ColorMapper.ColorMode.K2:
+                this._colorMapper = new PrincipalCurvatureColorMapper(this._surface.definition(), { which: surfaceParameters.colorMode, scale: 3.0 });
+                break;
+            case ColorMapper.ColorMode.GAUSSIAN:
+                this._colorMapper =
+                    new GaussianCurvatureColorMapper(this._surface.definition(), {
+                        scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
+                    });
+                break;
+            case ColorMapper.ColorMode.BASE:
+            default:
+                this._colorMapper = new HeightColorMapper({
+                    baseColor: surfaceParameters.baseColor,
+                    useBaseColor: true
+                });
+        }
+    }
+
+    updateContours(contourParameters) {
+        this._contours?.clear();
+
+        if (contourParameters.contourType !== this._contourType)
+            this.#setContourMode(contourParameters);
+
+        this._contours?.buildWith(contourParameters);
+    }
+
+    updateContoursView = (contoursView) => {this._contours = contoursView;}
+    updateColorMapper = (mapper) => { this._colorMapper = mapper; this._colorMapper.apply(this._geometry); }
+
+    updateColor(surfaceParameters) {
+        if (this._colorMode !== surfaceParameters.colorMode)
+            this.#setColorMode(surfaceParameters);
+
+        this._colorMapper.apply(this._geometry);
+    }
+
+    updateOpacity = (value) => this._material.opacity = value;
+
+    resampleWith(resolution) {
+        this._geometry.dispose();
+        this._geometry = this._surface.createGeometryWith(resolution);
+        this._mesh.geometry = this._geometry;
+        this._colorMapper.apply(this._geometry);
+    }
+
+    toggleWireframe = (value) => this._material.wireframe = value;
 }
 
 /**
@@ -610,104 +804,6 @@ export class LiteralStringBasedSurfaceDefinition
     }
 
     specification() { return this._surfaceSpecification; }
-}
-
-export class MinimalSurfaceView extends SurfaceView {
-    constructor(parentGroup, surface, {showWireframe=true, resolution=20, baseColor="#4f6"}) {
-        super(parentGroup, surface);
-        this._baseColor = baseColor;
-        this._geometry = surface.createGeometryWith(resolution);
-        this._material = this.material(showWireframe, 1);
-        this._colorMapper = new HeightColorMapper({ baseColor: baseColor });
-        this._mesh = new THREE.Mesh(this._geometry, this._material);
-        this._group.add(this._mesh);
-        this._colorMapper.apply(this._geometry);
-    }
-
-    onSelect = () => {
-        this._material.wireframe = false;
-        this._colorMapper = new HeightColorMapper({ baseColor: "#f90"});
-        this._colorMapper.apply(this._geometry); }
-    onDeselect = () => {
-        this._material.wireframe = true;
-        this._colorMapper = new HeightColorMapper({ baseColor: this._baseColor });
-        this._colorMapper.apply(this._geometry); }
-    selectableObject = () => this._mesh;
-}
-
-export class NormalsView extends SurfaceView {
-    constructor(parentGroup, surfaceView) {
-        super(parentGroup, surfaceView);
-        this._geometry = surfaceView._geometry;
-    }
-
-    #deriveScaleFromMesh(k, curvatureGain, normalScale) {
-        this._geometry.computeBoundingSphere();
-        const baseScale = this._geometry.boundingSphere.radius * normalScale;
-        const maxScale  = baseScale * 2.5;
-        return Math.min(baseScale * (1 + curvatureGain * k), maxScale); // Scale with clamp
-    }
-
-    #createLineSegments(positions, colors) {
-        const normalsGeometry = new THREE.BufferGeometry();
-        normalsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-        normalsGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-        const material = new THREE.LineBasicMaterial({vertexColors: true, depthTest: false});
-        return new THREE.LineSegments(normalsGeometry, material);
-    }
-
-    #createNormalLines(normalScale, curvatureGain, stride) {
-        const pos = this._geometry.attributes.position;
-        const uv  = this._geometry.attributes.uv;
-        const curvature = new DifferentialGeometry(this._surface.definition());
-
-        const positions = [];
-        const colors    = [];
-        for (let i = 0; i < pos.count; i += stride) {
-            const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
-            const u = uv.getX(i), v = uv.getY(i);
-
-            let { N, H, K } = curvature.normalMeanGaussian(u, v);
-            if (!Number.isFinite(K)) K = 0;
-            const k = Math.min(Math.abs(K), 1.0);
-            const scale = this.#deriveScaleFromMesh(k, curvatureGain, normalScale);
-
-            positions.push(
-                x, y, z,
-                x + scale * N.x,
-                y + scale * N.y,
-                z + scale * N.z
-            );
-
-            // color encodes normal direction
-            const color = new THREE.Color(0.5 * (N.x + 1), 0.5 * (N.y + 1), 0.5 * (N.z + 1));
-            colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
-        }
-
-        return this.#createLineSegments(positions, colors);
-    }
-
-    buildWith({ normalScale = 0.25, curvatureGain = 1.0, stride = 4 }) {
-        this.clear();
-        this._helper = this.#createNormalLines(normalScale, curvatureGain, stride);
-        this._group.add(this._helper);
-    }
-
-    clear() {
-        if (!this._helper) return;
-
-        this._group.remove(this._helper);
-        this._helper.geometry.dispose();
-        this._helper.material.dispose();
-        this._helper = null;
-    }
-
-    dispose() {
-        this.clear();       // alleen eigen resources
-        super.dispose();    // verwijdert group uit parent
-        this._geometry = null;
-        this._surface = null;
-    }
 }
 
 /**
@@ -896,102 +992,6 @@ export class SurfaceController {
     }
     rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotation.y += value; }
     resampleWith = (resolution) => this._surface.resampleWith(resolution);
-}
-
-export class StandardSurfaceView extends SurfaceView {
-    constructor(parentGroup, surface, surfaceParameters) {
-        super(parentGroup, surface);
-        this._contours = null;
-        this._contourType = surfaceParameters.contourParameters.contourType;
-        this._colorMapper = null;
-        this._colorMode = surfaceParameters.colorMode;
-
-        this._geometry = surface.createGeometryWith(surfaceParameters.resolution);
-        this._material = this.material(surfaceParameters.wireframe, surfaceParameters.opacity);
-        this._mesh = new Mesh(this._geometry, this._material);
-        this._group.add(this._mesh);
-
-        this.#setContourMode(surfaceParameters.contourParameters);
-        this.updateContours(surfaceParameters.contourParameters);
-        this.#setColorMode(surfaceParameters);
-        this.updateColor(surfaceParameters);
-
-        this.updateOpacity(surfaceParameters.opacity);
-    }
-
-    #setContourMode(contourParameters) {
-        this._contourType = contourParameters.contourType;
-        switch (this._contourType) {
-            case ContourType.NONE:
-                this._contours = null;
-                break;
-            case ContourType.CURVATURE:
-                this._contours = new CurvatureContoursView(this._group, this._surface);
-                this.registerChild(this._contours);
-                break;
-            case ContourType.ISO_PARAMETRIC:
-                this._contours = new IsoparametricContoursView(this._group, this._surface);
-                this.registerChild(this._contours);
-                break;
-        }
-    }
-
-    #setColorMode(surfaceParameters) {
-        this._colorMode = surfaceParameters.colorMode;
-        switch (this._colorMode) {
-            case ColorMapper.ColorMode.HEIGHT:
-                this._colorMapper = new HeightColorMapper({ useBaseColor: false });
-                break;
-            case ColorMapper.ColorMode.MEAN:
-                this._colorMapper = new CurvatureColorMapper(this._surface.definition());
-                break;
-            case ColorMapper.ColorMode.K1:
-            case ColorMapper.ColorMode.K2:
-                this._colorMapper = new PrincipalCurvatureColorMapper(this._surface.definition(), { which: surfaceParameters.colorMode, scale: 3.0 });
-                break;
-            case ColorMapper.ColorMode.GAUSSIAN:
-                this._colorMapper =
-                    new GaussianCurvatureColorMapper(this._surface.definition(), {
-                        scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
-                    });
-                break;
-            case ColorMapper.ColorMode.BASE:
-            default:
-                this._colorMapper = new HeightColorMapper({
-                    baseColor: surfaceParameters.baseColor,
-                    useBaseColor: true
-                });
-        }
-    }
-
-    updateContours(contourParameters) {
-        this._contours?.clear();
-
-        if (contourParameters.contourType !== this._contourType)
-            this.#setContourMode(contourParameters);
-
-        this._contours?.buildWith(contourParameters);
-    }
-
-    updateColorMapper = (mapper) => { this._colorMapper = mapper; this._colorMapper.apply(this._geometry); }
-
-    updateColor(surfaceParameters) {
-        if (this._colorMode !== surfaceParameters.colorMode)
-            this.#setColorMode(surfaceParameters);
-
-        this._colorMapper.apply(this._geometry);
-    }
-
-    updateOpacity = (value) => this._material.opacity = value;
-
-    resampleWith(resolution) {
-        this._geometry.dispose();
-        this._geometry = this._surface.createGeometryWith(resolution);
-        this._mesh.geometry = this._geometry;
-        this._colorMapper.apply(this._geometry);
-    }
-
-    toggleWireframe = (value) => this._material.wireframe = value;
 }
 
 export class Utils {

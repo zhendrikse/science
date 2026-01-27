@@ -19,7 +19,7 @@
     import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import { SurfaceController, ViewParameters, ContourType, TangentFrameParameters, ContourParameters }
+    import {  SignedColorMapper, ViewParameters, ContourType, TangentFrameParameters, ContourParameters, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface, NormalsView, TangentFrameView }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
     const canvasContainer = document.getElementById("orbitalsContainer");
@@ -264,7 +264,9 @@
         }
 
         #updateSurface(surfaceSpecification) {
-            this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+            const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
+            const newSurface = new StandardSurfaceView(worldGroup, new Surface(defaultSurfaceDef), surfaceParams);
+            this._surfaceController.changeSurface(newSurface, surfaceParams);
             this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
             this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
             this._xFunction.setValue(surfaceSpecification.parametrization.xFn);
@@ -273,7 +275,77 @@
         }
     }
 
-    const axesParameters = new AxesParameters();
+    export class SurfaceController {
+        constructor(parentGroup, surfaceView, surfaceParams) {
+            this._parentGroup = parentGroup;
+            this._surface = null;
+            this._tangentFrame = null;
+            this._normals = null;
+
+            this.changeSurface(surfaceView, surfaceParams);
+            this.updateContours(surfaceParams.contourParameters);
+            this.updateColor(surfaceParams);
+        }
+
+        updateColorMapper = (colorMapper) => this._surface.updateColorMapper(colorMapper);
+        updateContoursView = (contoursView) => this._surface.updateContoursView(contoursView);
+
+        updateColor = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
+        updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
+        surfaceBoundingBox = () => this._surface.boundingBox();
+
+        #disposeCurrentSurface() {
+            this._surface?.dispose();
+            this._tangentFrame?.dispose();
+            this._normals?.clear();
+        }
+
+        #createNormals() {
+            this._normals = new NormalsView(this._parentGroup, this._surface);
+            this._normals.group.position.copy(this._surface.group.position);
+            this._normals.group.scale.set(
+                this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
+        }
+
+        #createTangentFrameFrom(surfaceParams) {
+            surfaceParams.tangentFrameParameters.scale = this._surface.boundingBox().max.length() * .4;
+            this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
+            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
+            this._parentGroup.add(this._tangentFrame);
+        }
+
+        changeSurface(surfaceView, surfaceParams) {
+            this.#disposeCurrentSurface();
+            this._surface = surfaceView;
+            this.#createNormals();
+            this.#createTangentFrameFrom(surfaceParams);
+        }
+
+        get surface() { return this._surface; }
+
+        updateTangentFrame(tangentFrameParameters) {
+            this._tangentFrame.visible = tangentFrameParameters.visible;
+            this._tangentFrame.update(tangentFrameParameters);
+            this._tangentFrame.position.copy(this._surface.group.position);
+            this._tangentFrame.scale.set(this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
+        }
+
+        changeBaseColorTo = (color) => this._surface.changeBaseColorTo(color);
+        updateOpacity = (value) => this._surface.updateOpacity(value);
+        toggleWireframe = (value) => this._surface.toggleWireframe(value);
+        toggleNormals = (visible, surfaceParams) => {
+            if (visible) {
+                this._normals.buildWith({});
+                this._surface.updateOpacity(0.3);
+            } else {
+                this._normals.clear();
+                this._surface.updateOpacity(surfaceParams.opacity);
+            }
+        }
+        rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotation.y += value; }
+        resampleWith = (resolution) => this._surface.resampleWith(resolution);
+    }
+
     const surfaceParams = new ViewParameters({
         contourParameters: new ContourParameters({
             contourType: ContourType.NONE
@@ -286,7 +358,7 @@
     });
 
     const params = {
-        axesParameters: new AxesParameters(),
+        axesParameters: new AxesParameters({annotations: false}),
         surfaceDataPreset: PresetHarmonics.Preset1
     };
     const axesController = new AxesController({
@@ -295,7 +367,18 @@
         axesParameters: params.axesParameters,
         scene: scene
     });
-    const surfaceController = new SurfaceController(worldGroup, surfaceData[0], surfaceParams);
+
+    const defaultSurfaceSpec = new SurfaceSpecification(surfaceData[0]);
+    const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
+    const surfaceController = new SurfaceController(
+        worldGroup,
+        new StandardSurfaceView(
+            worldGroup,
+            new Surface(defaultSurfaceDef),
+            surfaceParams,
+            new SignedColorMapper(surfaceData[0].signedField.field)),
+        surfaceParams
+    );
 
     // Scale scene according to current surface
     axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
