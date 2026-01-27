@@ -185,6 +185,7 @@
                     const surfaceSpecification = this._surfaceController.surface
                         .definition().specification().withParametrization({xFn: expr});
                     this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    updateViewForSurface();
                 });
 
             this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
@@ -192,6 +193,7 @@
                     const surfaceSpecification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
                     this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    updateViewForSurface();
                 });
 
             this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
@@ -199,6 +201,7 @@
                     const surfaceSpecification = this._surfaceController.surface
                         .definition().specification().withParametrization({zFn: expr});
                     this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    updateViewForSurface();
                 });
 
             mathFolder.close();
@@ -253,7 +256,7 @@
 
     function updateViewForSurface() {
         const boundingBox = surfaceController.surfaceBoundingBox();
-        axesController.createFromBoundingBox(ThreeJsUtils.scaleBox3(boundingBox.clone(), 1.1));
+        axesController.createFromBoundingBox(ThreeJsUtils.scaleBox3(boundingBox.clone(), 1.05));
         plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.9));
     }
 

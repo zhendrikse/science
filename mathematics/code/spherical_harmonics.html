@@ -31,16 +31,59 @@
     const worldGroup = new Group();
     scene.add(worldGroup);
 
+    const PresetHarmonics = Object.freeze({
+        Preset1: 1,
+        Preset2: 2,
+        Preset3: 3
+    });
+
+    const surfaceData = [{
+        parametrization: {
+            xFn: "(sin(2 * u)^0 + cos(2 * u)^1 + sin(2 * phi)^2 + cos(2 * phi)^3) * sin(u) * cos(v)",
+            yFn: "(sin(2 * u)^0 + cos(2 * u)^1 + sin(2 * phi)^2 + cos(2 * phi)^3) * cos(u)",
+            zFn: "(sin(2 * u)^0 + cos(2 * u)^1 + sin(2 * phi)^2 + cos(2 * phi)^3) * sin(u) * sin(v)"
+        },
+        intervals: [["-pi", "pi"], ["0", "pi"]]
+    }, {
+        parametrization: {
+            xFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * sin(u) * cos(v)",
+            yFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * cos(u)",
+            zFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * sin(u) * sin(v)"
+        },
+        intervals: [["-pi", "pi"], ["0", "pi"]]
+    },  {
+        parametrization: {
+            xFn: "(sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * phi)^2 + cos(4 * phi)^1) * sin(u) * cos(v)",
+            yFn: "(sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * phi)^2 + cos(4 * phi)^1) * cos(u)",
+            zFn: "(sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * phi)^2 + cos(4 * phi)^1) * sin(u) * sin(v)"
+        },
+        intervals: [["-pi", "pi"], ["0", "pi"]]
+    }];
+
     class ControlsGui {
-        constructor(surfaceController) {
+        constructor(surfaceController, axesController, plot3d) {
             const gui = new GUI({width: "100%", autoPlace: false});
 
+            this._axesController = axesController;
             this._surfaceController = surfaceController;
+            this._plot3d = plot3d;
             this._surfaceCoordinates = {
                 x: surfaceController.surface.definition().specification().parametrization.xFn,
                 y: surfaceController.surface.definition().specification().parametrization.yFn,
                 z: surfaceController.surface.definition().specification().parametrization.zFn
             }
+
+            gui.add(params, 'surfaceDataPreset', Object.values(PresetHarmonics))
+                .name("Preset")
+                .onChange(value => {
+                    const surfaceSpecification = this._surfaceController.surface
+                        .definition().specification().withParametrization({
+                            xFn: surfaceData[value - 1].parametrization.xFn,
+                            yFn: surfaceData[value - 1].parametrization.yFn,
+                            zFn: surfaceData[value - 1].parametrization.zFn
+                        });
+                    this.#updateSurface(surfaceSpecification);
+                });
 
             this.#createContourFolder(gui);
             this.#createAxesFolder(gui);
@@ -91,28 +134,37 @@
         #createMathFolder(folder) {
             const mathFolder = folder.addFolder("Math");
 
-            this.xFunction = mathFolder.add(this._surfaceCoordinates, "x").name("Fx(u,v) =")
+            this._xFunction = mathFolder.add(this._surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification = this._surfaceController.surface
                         .definition().specification().withParametrization({xFn: expr});
-                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    this.#updateSurface(surfaceSpecification);
                 });
 
-            this.yFunction = mathFolder.add(this._surfaceCoordinates, "y").name("Fy(u,v) =")
+            this._yFunction = mathFolder.add(this._surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
-                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    this.#updateSurface(surfaceSpecification);
                 });
 
-            this.zFunction = mathFolder.add(this._surfaceCoordinates, "z").name("Fz(u,v) =")
+            this._zFunction = mathFolder.add(this._surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
                     const surfaceSpecification = this._surfaceController.surface
                         .definition().specification().withParametrization({zFn: expr});
-                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    this.#updateSurface(surfaceSpecification);
                 });
 
             mathFolder.close();
+        }
+
+        #updateSurface(surfaceSpecification) {
+            this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+            this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
+            this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
+            this._xFunction.setValue(surfaceSpecification.parametrization.xFn);
+            this._yFunction.setValue(surfaceSpecification.parametrization.yFn);
+            this._zFunction.setValue(surfaceSpecification.parametrization.zFn);
         }
     }
 
@@ -123,31 +175,28 @@
         }),
         tangentFrameParameters: new TangentFrameParameters({
             visible: false
-        })
+        }),
+        opacity: 0.95,
+        resolution: 125
     });
 
-    const surfaceData = {
-        parametrization: {
-            xFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * sin(u) * cos(v)",
-            yFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * cos(u)",
-            zFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * sin(u) * sin(v)"
-        },
-        intervals: [["-pi", "pi"], ["0", "pi"]]
+    const params = {
+        axesParameters: new AxesParameters({axisLabels: ["Re(z)", "log|z|", "Im(z)"]}),
+        surfaceDataPreset: PresetHarmonics.Preset1
     };
-
     const axesController = new AxesController({
         parentGroup: worldGroup,
         canvasContainer: canvasContainer,
-        axesParameters: axesParameters,
+        axesParameters: params.axesParameters,
         scene: scene
     });
-    const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
-    const gui = new ControlsGui(surfaceController);
+    const surfaceController = new SurfaceController(worldGroup, surfaceData[0], surfaceParams);
 
     // Scale scene according to current surface
     axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
     const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox());
     plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
+    const gui = new ControlsGui(surfaceController, axesController, plot3D);
 
     // Resizing for mobile devices
     function resize() {
