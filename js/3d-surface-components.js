@@ -235,8 +235,6 @@ export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
             this.#evaluateConstant(surfaceSpecification.intervals[1][0]),
             this.#evaluateConstant(surfaceSpecification.intervals[1][1])
         );
-
-        Object.freeze(this);
     }
 
     #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);

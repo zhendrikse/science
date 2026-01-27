@@ -151,7 +151,7 @@
         intervals: [["-pi","pi"],["0","pi"]]
     }];
 
-    class OrbitalSurfaceSpecification extends SurfaceSpecification {
+    class OrbitalSurfaceSpecification extends LiteralStringBasedSurfaceDefinition {
         constructor({ meta, parametrization, intervals, signedField }) {
             super({meta, parametrization, intervals});
             this._signedField = signedField;
