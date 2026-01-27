@@ -14,11 +14,11 @@
 <div id="gui-container"></div>
 
 <script type="module">
-    import { Scene, Color, Group } from "three";
+    import { Scene, Color, Group, BufferGeometry, Vector3, Mesh, Float32BufferAttribute, BufferAttribute } from "three";
     import { AxesController, Interval, ThreeJsUtils, Plot3DView, AxesParameters, MathWrapper, ComplexNumber }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import { ComplexSurfaceDefinition, ComplexSurfaceSpecification, ComplexSurfaceView, ComplexSurface }
+    import {  ColorMapper, Surface, SurfaceView, SurfaceDefinition }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
     const canvasContainer = document.getElementById("complexPlotContainer");
@@ -28,6 +28,152 @@
     scene.background = new Color(0x131313);
     const worldGroup = new Group();
     scene.add(worldGroup);
+
+    class ComplexColorMapper extends ColorMapper {
+        apply(geometry) {
+            const phaseAttr   = geometry.attributes.phase;
+            const modulusAttr = geometry.attributes.modulus;
+
+            if (!phaseAttr || !modulusAttr)
+                throw new Error("Geometry needs phase and modulus attributes");
+
+            const count = phaseAttr.count;
+            let colorAttr = geometry.attributes.color;
+            if (!colorAttr) {
+                colorAttr = new BufferAttribute(new Float32Array(count * 3), 3);
+                geometry.setAttribute("color", colorAttr);
+            }
+
+            // --- determine modulus range ---
+            let mMin = Infinity, mMax = -Infinity;
+            for (let i = 0; i < count; i++) {
+                const modulus = modulusAttr.getX(i);
+                if (modulus < mMin) mMin = modulus;
+                if (modulus > mMax) mMax = modulus;
+            }
+
+            const color = new Color();
+            for (let i = 0; i < count; i++) {
+                const phase = phaseAttr.getX(i);
+                const modulus = modulusAttr.getX(i);
+
+                // --- phase → hue ---
+                const hue = ((phase + Math.PI) / (2 * Math.PI) + 1) % 1;
+
+                // --- modulus → brightness ---
+                const t = (modulus - mMin) / (mMax - mMin);
+                color.setHSL(hue, 1.0, 0.25 + 0.5 * t);
+
+                colorAttr.array[3*i]     = color.r;
+                colorAttr.array[3*i + 1] = color.g;
+                colorAttr.array[3*i + 2] = color.b;
+            }
+
+            colorAttr.needsUpdate = true;
+        }
+    }
+
+    class ComplexSurfaceView extends SurfaceView {
+        constructor(parentGroup, surface, {showWireframe=false, resolution=100, baseColor="#4f6"} = {}) {
+            super(parentGroup, surface);
+            this._baseColor = baseColor;
+            this._geometry = surface.createGeometryWith(resolution);
+            this._material = this.material(showWireframe, 1);
+            this._colorMapper = new ComplexColorMapper();
+            this._mesh = new Mesh(this._geometry, this._material);
+            this._group.add(this._mesh);
+            this._colorMapper.apply(this._geometry);
+        }
+
+        selectableObject = () => this._mesh;
+    }
+
+    class ComplexParametricGeometry extends BufferGeometry {
+        constructor(definition, slices, stacks) {
+            super();
+
+            const vertices = [];
+            const phases   = [];
+            const indices  = [];
+            const moduli   = [];
+            for (let i = 0; i <= slices; i++) {
+                const u = i / slices;
+
+                for (let j = 0; j <= stacks; j++) {
+                    const v = j / stacks;
+
+                    const target = new Vector3();
+                    const phase = definition.sample(u, v, target);
+                    vertices.push(target.x, target.y, target.z);
+                    moduli.push(target.y);
+                    phases.push(phase);
+                }
+            }
+
+            for (let i = 0; i < slices; i++)
+                for (let j = 0; j < stacks; j++) {
+                    const a = i * (stacks + 1) + j;
+                    const b = a + stacks + 1;
+                    const c = b + 1;
+                    const d = a + 1;
+
+                    indices.push(a, b, d);
+                    indices.push(b, c, d);
+                }
+
+            this.setIndex(indices);
+            this.setAttribute("position", new Float32BufferAttribute(vertices, 3));
+            this.setAttribute("phase", new Float32BufferAttribute(phases, 1));
+            this.setAttribute("modulus", new Float32BufferAttribute(moduli, 1));
+
+            this.computeVertexNormals();
+        }
+    }
+
+    class ComplexSurfaceDefinition extends SurfaceDefinition {
+        constructor(specification) {
+            super();
+            this._specification = specification;
+        }
+
+        sample(u, v, target) {
+            const re = this._specification.reInterval.scaleUnitParameter(u);
+            const im = this._specification.imInterval.scaleUnitParameter(v);
+            const z = new ComplexNumber(re, im);
+            const value = this._specification.func(z);
+            target.set(re, Math.log1p(value.abs()), im); // Log scale for complex functions
+            return value.phase();
+        }
+
+        get specification() { return this._specification; }
+    }
+
+    class ComplexSurfaceSpecification {
+        constructor(func, reInterval, imInterval, latexString, textString) {
+            this.func = func;
+            this.reInterval = reInterval;
+            this.imInterval = imInterval;
+            this.latexString = latexString;
+            this.textString = textString;
+        }
+    } // TODO Make this inherit form SurfaceSpecification
+
+    /**
+     * Using this class, a ComplexSurfaceView can be realized.
+     */
+    export class ComplexSurface extends Surface {
+        constructor(surfaceDefinition) {
+            super(surfaceDefinition);
+        }
+
+        createGeometryWith(resolution) {
+            return new ComplexParametricGeometry(
+                this._definition,
+                resolution,
+                resolution
+            );
+        }
+    }
 
     const math = new MathWrapper();
     const zSquaredPlusTwo = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
