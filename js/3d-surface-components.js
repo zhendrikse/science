@@ -610,8 +610,8 @@ export class StandardSurfaceView extends SurfaceView {
     }
 
     updateContoursView = (contoursView) => {
-        this._contours = contoursView;
         this._contours?.clear();
+        this._contours = contoursView;
         if (contoursView)
             this.registerChild(this._contours);
     }
@@ -628,7 +628,11 @@ export class StandardSurfaceView extends SurfaceView {
     }
 
     toggleWireframe = (value) => this._material.wireframe = value;
-    rotateBy = (delta) => { this._group.rotation.y += delta; this._contours.group.rotation.y += delta; }
+    rotateBy = (delta) => {
+        this._group.rotation.y += delta;
+        if (this._contours)
+            this._contours.group.rotation.y += delta;
+    }
 }
 
 /**
