@@ -125,9 +125,9 @@
     }, {
         meta: { name: "4f_xyz" },
         parametrization: {
-            xFn: "abs(sin(u)^2*cos(u)*sin(2*v))*sin(u)*cos(v)",
-            yFn: "abs(sin(u)^2*cos(u)*sin(2*v))*cos(u)",
-            zFn: "abs(sin(u)^2*cos(u)*sin(2*v))*sin(u)*sin(v)"
+            xFn: "2 * abs(sin(u)^2*cos(u)*sin(2*v))*sin(u)*cos(v)",
+            yFn: "2 * abs(sin(u)^2*cos(u)*sin(2*v))*cos(u)",
+            zFn: "2 * abs(sin(u)^2*cos(u)*sin(2*v))*sin(u)*sin(v)"
         },
         signedField: { field: "sin(u)^2*cos(u)*sin(2*v)" },
         intervals: [["-pi","pi"],["0","pi"]]
@@ -313,7 +313,7 @@
     });
 
     const params = {
-        axesParameters: new AxesParameters({annotations: false, xyPlane: false, xzPlane: false, yzPlane: false}),
+        axesParameters: new AxesParameters({annotations: false}), //, xyPlane: false, xzPlane: false, yzPlane: false}),
         surfacePreset: "4f_z³"
     };
     const axesController = new AxesController({
