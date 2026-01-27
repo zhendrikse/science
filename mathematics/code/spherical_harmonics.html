@@ -46,15 +46,15 @@
         intervals: [["-pi", "pi"], ["0", "pi"]]
     }, {
         parametrization: {
-            xFn: "sin(u)^2*cos(u)*cos(v)^2",
-            yFn: "sin(u)*cos(u)^2*cos(v)",
-            zFn: "sin(u)^2*cos(u)*cos(v)*sin(v)"        },
+            xFn: "sin(u)^2 * cos(u) * cos(v)^2",
+            yFn: "sin(u) * cos(u)^2 * cos(v)",
+            zFn: "sin(u)^2 * cos(u) * cos(v) * sin(v)"        },
         intervals: [["-pi", "pi"], ["0", "pi"]]
     },  {
         parametrization: {
-            xFn: "sin(u)^3*cos(v)*sin(2*v)",
-            yFn: "sin(u)^2*cos(u)*sin(2*v)",
-            zFn: "sin(u)^3*sin(v)*sin(2*v)"
+            xFn: "sin(u)^3 * cos(v) * sin(2 * v)",
+            yFn: "sin(u)^2 * cos(u) * sin(2 * v)",
+            zFn: "sin(u)^3 * sin(v) * sin(2 * v)"
         },
         intervals: [["-pi", "pi"], ["0", "pi"]]
     }];
@@ -180,7 +180,7 @@
     });
 
     const params = {
-        axesParameters: new AxesParameters({axisLabels: ["Re(z)", "log|z|", "Im(z)"]}),
+        axesParameters: new AxesParameters(),
         surfaceDataPreset: PresetHarmonics.Preset1
     };
     const axesController = new AxesController({
