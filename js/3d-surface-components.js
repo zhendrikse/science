@@ -600,7 +600,7 @@ export class StandardSurfaceView extends SurfaceView {
 
         this.updateColorMapper(colorMapper);
         this.updateContoursView(contoursView);
-        this.updateContours(surfaceParams.contourParameters)
+        this.updateContours(surfaceParameters.contourParameters)
         this.updateOpacity(surfaceParameters.opacity);
     }
 
