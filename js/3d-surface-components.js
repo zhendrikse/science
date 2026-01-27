@@ -237,6 +237,12 @@ export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
         );
     }
 
+    get xFn() { return this._xFn; }
+    get yFn() { return this._yFn; }
+    get zFn() { return this._zFn; }
+    get uInterval() { return this._uInterval; }
+    get vInterval() { return this._vInterval; }
+
     #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
 
     sample(u, v, target) {
