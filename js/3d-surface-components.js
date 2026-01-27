@@ -202,7 +202,6 @@ export class SurfaceSpecification {
         this.meta = meta;
         this.parametrization = Object.freeze({ ...parametrization });
         this.intervals = Object.freeze(intervals);
-        Object.freeze(this);
     }
 
     withParametrization(patch) {
@@ -921,16 +920,19 @@ export class SurfaceSelector extends Group {
 }
 
 export class SurfaceController {
-    constructor(parentGroup, surfaceData, surfaceParams) {
+    constructor(parentGroup, surfaceView, surfaceParams) {
         this._parentGroup = parentGroup;
         this._surface = null;
         this._tangentFrame = null;
         this._normals = null;
 
-        this.changeSurface(new SurfaceSpecification(surfaceData), surfaceParams);
+        this.changeSurface(surfaceView, surfaceParams);
         this.updateContours(surfaceParams.contourParameters);
         this.updateColor(surfaceParams);
     }
+
+    updateColorMapper = (colorMapper) => this._surface.updateColorMapper(colorMapper);
+    updateContoursView = (contoursView) => this._surface.updateContoursView(contoursView);
 
     updateColor = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
     updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
@@ -940,11 +942,6 @@ export class SurfaceController {
         this._surface?.dispose();
         this._tangentFrame?.dispose();
         this._normals?.clear();
-    }
-
-    #createSurfaceFrom(surfaceSpecification, surfaceParams) {
-        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-        this._surface = new StandardSurfaceView(this._parentGroup, new Surface(surfaceDefinition), surfaceParams);
     }
 
     #createNormals() {
@@ -961,9 +958,9 @@ export class SurfaceController {
         this._parentGroup.add(this._tangentFrame);
     }
 
-    changeSurface(surfaceSpecification, surfaceParams) {
+    changeSurface(surfaceView, surfaceParams) {
         this.#disposeCurrentSurface();
-        this.#createSurfaceFrom(surfaceSpecification, surfaceParams);
+        this._surface = surfaceView;
         this.#createNormals();
         this.#createTangentFrameFrom(surfaceParams);
     }
