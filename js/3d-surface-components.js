@@ -58,6 +58,118 @@ export class ColorMapper {
     }
 }
 
+export class GaussianCurvatureColorMapper extends ColorMapper {
+    constructor(surfaceDefinition, { scale = 1.0 } = {}) {
+        super();
+        this.curvature = new DifferentialGeometry(surfaceDefinition);
+        this.scale = scale;
+    }
+
+    colorFor(u, v, color) {
+        const { K } = this.curvature.normalMeanGaussian(u, v);
+        const t = Math.tanh(K * this.scale);
+        if (t > 0) color.setHSL(0.0, 0.85, 0.5 + 0.2 * t);
+        else       color.setHSL(0.6, 0.85, 0.5 - 0.2 * t);
+    }
+}
+
+export class HeightColorMapper extends ColorMapper {
+    constructor({ baseColor="#ff4", useBaseColor=true } = {}) {
+        super();
+        this.baseColor = baseColor;
+        this.useBaseColor = useBaseColor;
+    }
+
+    #computeYRange(posAttr) {
+        const yRange = new Interval();
+        for (let i = 0; i < posAttr.count; i++)
+            yRange.shrinkTo(posAttr.getY(i));
+
+        return yRange;
+    }
+
+    apply(geometry) {
+        const posAttr = geometry.attributes.position;
+        const count = posAttr.count;
+
+        let colorAttr = geometry.attributes.color;
+        if (!colorAttr) {
+            const colors = new Float32Array(count * 3);
+            colorAttr = new THREE.BufferAttribute(colors, 3);
+            geometry.setAttribute("color", colorAttr);
+        }
+
+        const yRange = this.#computeYRange(posAttr);
+        const color = new THREE.Color();
+        const hsl = {};
+
+        for (let i = 0; i < count; i++) {
+            const y = posAttr.getY(i);
+            const t = yRange.scaleValue(y);
+
+            if (this.useBaseColor) {
+                color.setStyle(this.baseColor);
+                color.getHSL(hsl);
+                hsl.l = 0.1 + 0.4 * (1 - t);
+            } else {
+                hsl.h = t * 0.5 - 0.025;
+                hsl.s = 0.9;
+                hsl.l = 0.4 + 0.3 * (1 - t);
+            }
+
+            color.setHSL(hsl.h, hsl.s, hsl.l);
+            colorAttr.array[3*i]     = color.r;
+            colorAttr.array[3*i + 1] = color.g;
+            colorAttr.array[3*i + 2] = color.b;
+        }
+
+        colorAttr.needsUpdate = true;
+    }
+}
+
+export class SignedColorMapper extends ColorMapper {
+    /**
+     * @param {function(u,v):number} valueFn - function that determines the sign
+     * @param {Color} positiveColor - color for positive values
+     * @param {Color} negativeColor - color for negative values
+     */
+    constructor(valueFn, positiveColor = new Color(0x0077ff), negativeColor = new Color(0xff3300)) {
+        super();
+        this._valueFn = valueFn;
+        this._positiveColor = positiveColor;
+        this._negativeColor = negativeColor;
+    }
+
+    colorFor(u, v, color) {
+        const val = this._valueFn(u, v);
+        if (val >= 0) {
+            color.copy(this._positiveColor);
+        } else {
+            color.copy(this._negativeColor);
+        }
+    }
+}
+
+export class PrincipalCurvatureColorMapper extends ColorMapper {
+    constructor(surfaceDefinition, { which = ColorMapper.ColorMode.K1, scale = 1.0 } = {}) {
+        super();
+        this.curvature = new DifferentialGeometry(surfaceDefinition);
+        this.which = which;
+        this.scale = scale;
+    }
+
+    colorFor(u, v, color) {
+        const { k1, k2 } = this.curvature.principals(u, v);
+        const k = this.which === ColorMapper.ColorMode.K1 ? k1 : k2;
+        const t = Math.tanh(k * this.scale);
+
+        if (t > 0)
+            color.setHSL(0.0, 0.85, 0.5 + 0.25 * t); // red
+        else
+            color.setHSL(0.6, 0.85, 0.5 - 0.25 * t); // blue
+    }
+}
+
 /**
  * This class contains a function F(u, v) => (x, y, z) used to create a Surface instance.
  * It is instantiated using a SurfaceSpecification instance.
@@ -459,75 +571,6 @@ export class DifferentialGeometry {
     }
 }
 
-export class GaussianCurvatureColorMapper extends ColorMapper {
-    constructor(surfaceDefinition, { scale = 1.0 } = {}) {
-        super();
-        this.curvature = new DifferentialGeometry(surfaceDefinition);
-        this.scale = scale;
-    }
-
-    colorFor(u, v, color) {
-        const { K } = this.curvature.normalMeanGaussian(u, v);
-        const t = Math.tanh(K * this.scale);
-        if (t > 0) color.setHSL(0.0, 0.85, 0.5 + 0.2 * t);
-        else       color.setHSL(0.6, 0.85, 0.5 - 0.2 * t);
-    }
-}
-
-export class HeightColorMapper extends ColorMapper {
-    constructor({ baseColor="#ff4", useBaseColor=true } = {}) {
-        super();
-        this.baseColor = baseColor;
-        this.useBaseColor = useBaseColor;
-    }
-
-    #computeYRange(posAttr) {
-        const yRange = new Interval();
-        for (let i = 0; i < posAttr.count; i++)
-            yRange.shrinkTo(posAttr.getY(i));
-
-        return yRange;
-    }
-
-    apply(geometry) {
-        const posAttr = geometry.attributes.position;
-        const count = posAttr.count;
-
-        let colorAttr = geometry.attributes.color;
-        if (!colorAttr) {
-            const colors = new Float32Array(count * 3);
-            colorAttr = new THREE.BufferAttribute(colors, 3);
-            geometry.setAttribute("color", colorAttr);
-        }
-
-        const yRange = this.#computeYRange(posAttr);
-        const color = new THREE.Color();
-        const hsl = {};
-
-        for (let i = 0; i < count; i++) {
-            const y = posAttr.getY(i);
-            const t = yRange.scaleValue(y);
-
-            if (this.useBaseColor) {
-                color.setStyle(this.baseColor);
-                color.getHSL(hsl);
-                hsl.l = 0.1 + 0.4 * (1 - t);
-            } else {
-                hsl.h = t * 0.5 - 0.025;
-                hsl.s = 0.9;
-                hsl.l = 0.4 + 0.3 * (1 - t);
-            }
-
-            color.setHSL(hsl.h, hsl.s, hsl.l);
-            colorAttr.array[3*i]     = color.r;
-            colorAttr.array[3*i + 1] = color.g;
-            colorAttr.array[3*i + 2] = color.b;
-        }
-
-        colorAttr.needsUpdate = true;
-    }
-}
-
 export class LiteralStringBasedSurfaceDefinition
     extends SurfaceDefinition {
 
@@ -664,49 +707,6 @@ export class NormalsView extends SurfaceView {
         super.dispose();    // verwijdert group uit parent
         this._geometry = null;
         this._surface = null;
-    }
-}
-
-export class PrincipalCurvatureColorMapper extends ColorMapper {
-    constructor(surfaceDefinition, { which = ColorMapper.ColorMode.K1, scale = 1.0 } = {}) {
-        super();
-        this.curvature = new DifferentialGeometry(surfaceDefinition);
-        this.which = which;
-        this.scale = scale;
-    }
-
-    colorFor(u, v, color) {
-        const { k1, k2 } = this.curvature.principals(u, v);
-        const k = this.which === ColorMapper.ColorMode.K1 ? k1 : k2;
-        const t = Math.tanh(k * this.scale);
-
-        if (t > 0)
-            color.setHSL(0.0, 0.85, 0.5 + 0.25 * t); // red
-        else
-            color.setHSL(0.6, 0.85, 0.5 - 0.25 * t); // blue
-    }
-}
-
-export class SignedColorMapper extends ColorMapper {
-    /**
-     * @param {function(u,v):number} valueFn - function that determines the sign
-     * @param {Color} positiveColor - color for positive values
-     * @param {Color} negativeColor - color for negative values
-     */
-    constructor(valueFn, positiveColor = new Color(0x0077ff), negativeColor = new Color(0xff3300)) {
-        super();
-        this._valueFn = valueFn;
-        this._positiveColor = positiveColor;
-        this._negativeColor = negativeColor;
-    }
-
-    colorFor(u, v, color) {
-        const val = this._valueFn(u, v);
-        if (val >= 0) {
-            color.copy(this._positiveColor);
-        } else {
-            color.copy(this._negativeColor);
-        }
     }
 }
 
@@ -972,6 +972,8 @@ export class StandardSurfaceView extends SurfaceView {
 
         this._contours?.buildWith(contourParameters);
     }
+
+    updateColorMapper = (mapper) => { this._colorMapper = mapper; this._colorMapper.apply(this._geometry); }
 
     updateColor(surfaceParameters) {
         if (this._colorMode !== surfaceParameters.colorMode)
