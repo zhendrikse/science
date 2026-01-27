@@ -5,11 +5,11 @@
 
 ### What are you looking at?
 
-This is a **3D visualization of atomic orbitals**:  
-mathematical shapes arising from the solutions of the Schrödinger equation for a hydrogen-like atom.
+This is a **3D visualization of atomic orbitals**: mathematical shapes arising from the solutions of 
+the Schrödinger equation for a hydrogen-like atom.
 
-Each surface represents a region of constant probability density.  
-Colors show the **sign (phase)** of the wavefunction, and transparency reveals its **relative magnitude**.
+Each surface represents a region of constant probability density. Colors show the **sign (phase)** of the 
+wavefunction, and transparency reveals its **relative magnitude**.
 
 Use the controls to explore how orbital shape and symmetry change.
 
@@ -41,7 +41,7 @@ The colors indicate the **sign (phase)** of the wavefunction:
 
 The **opacity** of the surface reflects the **magnitude** of the wavefunction:
 
-* More opaque regions correspond to larger values of |ψ|.
+* More opaque regions correspond to larger values of $||\psi\\||$.
 * More transparent regions indicate smaller amplitudes.
 
 This makes both the **shape** *and* the **structure** of each orbital visible at the same time.
@@ -55,6 +55,7 @@ This makes both the **shape** *and* the **structure** of each orbital visible at
 What you are really seeing is the geometry of quantum mechanics itself.
 
 ## The mathematics behind the shapes
+<div class="header_line"><br/></div>
 
 Atomic orbitals are solutions of the **time-independent Schrödinger equation** for a hydrogen-like atom:
 
@@ -86,7 +87,7 @@ $$
 Not shown explicitly:
 - The time dependence $e^{-iEt/\hbar}$
 - Electron trajectories (electrons do **not** orbit like planets)
-- Exact probability density $|\psi|^2$ — this is a geometric representation
+- Exact probability density $||\psi||^2$ — this is a geometric representation
 
 These shapes visualize the **structure of quantum states**, not literal electron paths.
 

@@ -599,39 +599,9 @@ export class StandardSurfaceView extends SurfaceView {
         this._colorMapper = null;
         this.updateColorMapper(colorMapper);
         this.updateContoursView(contoursView);
+
         this._contours?.buildWith(surfaceParameters.contourParameters);
-
-        this._colorMode = surfaceParameters.colorMode;
-
         this.updateOpacity(surfaceParameters.opacity);
-    }
-
-    #setColorMode(surfaceParameters) {
-        this._colorMode = surfaceParameters.colorMode;
-        switch (this._colorMode) {
-            case ColorMapper.ColorMode.HEIGHT:
-                this._colorMapper = new HeightColorMapper({ useBaseColor: false });
-                break;
-            case ColorMapper.ColorMode.MEAN:
-                this._colorMapper = new CurvatureColorMapper(this._surface.definition());
-                break;
-            case ColorMapper.ColorMode.K1:
-            case ColorMapper.ColorMode.K2:
-                this._colorMapper = new PrincipalCurvatureColorMapper(this._surface.definition(), { which: surfaceParameters.colorMode, scale: 3.0 });
-                break;
-            case ColorMapper.ColorMode.GAUSSIAN:
-                this._colorMapper =
-                    new GaussianCurvatureColorMapper(this._surface.definition(), {
-                        scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
-                    });
-                break;
-            case ColorMapper.ColorMode.BASE:
-            default:
-                this._colorMapper = new HeightColorMapper({
-                    baseColor: surfaceParameters.baseColor,
-                    useBaseColor: true
-                });
-        }
     }
 
     updateContours(contourParameters) {
@@ -646,14 +616,7 @@ export class StandardSurfaceView extends SurfaceView {
     }
 
     updateColorMapper = (mapper) => { this._colorMapper = mapper; this._colorMapper.apply(this._geometry); }
-
-    updateColor(surfaceParameters) {
-        if (this._colorMode !== surfaceParameters.colorMode)
-            this.#setColorMode(surfaceParameters);
-
-        this._colorMapper.apply(this._geometry);
-    }
-
+    updateColor() { this._colorMapper.apply(this._geometry); }
     updateOpacity = (value) => this._material.opacity = value;
 
     resampleWith(resolution) {
@@ -939,7 +902,7 @@ export class SurfaceController {
     updateColorMapper = (colorMapper) => this._surface.updateColorMapper(colorMapper);
     updateContoursView = (contoursView) => this._surface.updateContoursView(contoursView);
 
-    updateColor = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
+    updateColor = () => this._surface.updateColor();
     updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
     surfaceBoundingBox = () => this._surface.boundingBox();
 
