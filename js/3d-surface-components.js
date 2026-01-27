@@ -529,6 +529,11 @@ export class NormalsView extends SurfaceView {
 export class StandardSurfaceView extends SurfaceView {
     constructor(parentGroup, surface, surfaceParameters, colorMapper, contoursView) {
         super(parentGroup, surface);
+        this._geometry = surface.createGeometryWith(surfaceParameters.resolution);
+        this._material = this.material(surfaceParameters.wireframe, surfaceParameters.opacity);
+        this._mesh = new Mesh(this._geometry, this._material);
+        this._group.add(this._mesh);
+
         this._contours = null;
         this._colorMapper = null;
         this.updateColorMapper(colorMapper);
@@ -538,10 +543,6 @@ export class StandardSurfaceView extends SurfaceView {
         this._contourType = surfaceParameters.contourParameters.contourType;
         this._colorMode = surfaceParameters.colorMode;
 
-        this._geometry = surface.createGeometryWith(surfaceParameters.resolution);
-        this._material = this.material(surfaceParameters.wireframe, surfaceParameters.opacity);
-        this._mesh = new Mesh(this._geometry, this._material);
-        this._group.add(this._mesh);
 
         this.updateOpacity(surfaceParameters.opacity);
     }
