@@ -94,7 +94,7 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 
 <p></p>
 
-### The quantum harmonic oscillator 
+### Orbitals and energy levels 
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -104,10 +104,10 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
   </a>
   <figcaption>The quantum harmonic oscillator is visualized in a semi-classical way below.</figcaption>
 </figure>
-<figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
-</figure> 
+  <a href="orbitals.html">
+    <img alt="Hydrogen orbitals" src="images/orbitals.png" title="Click to animate"/>
+  </a>
+  <figcaption>Visualization of the orbitals of an hydrogen atom.</figcaption>
 </div>
 <p style="clear: both;"></p>
 

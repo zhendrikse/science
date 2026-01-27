@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Visualization of 3D scalar fields
+## 3D scalar fields
 <div class="header_line"><br/></div>
 
 ### What are you looking at?
@@ -23,7 +23,7 @@ a function that assigns **one number (temperature)** to **every point in space**
 🔧 This [scalar_plot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.html) is 100% JavaScript!<br/>
 👉 A [VPython](https://www.vpython.org/) version is also available as [scalar_plot.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py).
 
-## Scalar fields for dummies
+### Scalar vis-à-vis vector quantities
 <div class="header_line"><br/></div>
 
 <figure style="text-align: center;">

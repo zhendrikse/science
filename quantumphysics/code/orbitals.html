@@ -7,9 +7,8 @@
     }
 </script>
 
-<div class="equationDiv" id="surface-equation"></div>
-<div class="canvasWrapper" id="complexPlotContainer">
-    <canvas class="applicationCanvas" id="complexPlotCanvas"></canvas><br/>
+<div class="canvasWrapper" id="orbitalsContainer">
+    <canvas class="applicationCanvas" id="orbitalsCanvas"></canvas><br/>
 </div>
 <div id="gui-container"></div>
 
@@ -23,8 +22,8 @@
     import { SurfaceController, ViewParameters, ContourType, TangentFrameParameters, ContourParameters }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
-    const canvasContainer = document.getElementById("complexPlotContainer");
-    const canvas = document.getElementById("complexPlotCanvas");
+    const canvasContainer = document.getElementById("orbitalsContainer");
+    const canvas = document.getElementById("orbitalsCanvas");
 
     const scene = new Scene();
     scene.background = new Color(0x131313);
@@ -39,23 +38,23 @@
 
     const surfaceData = [{
         parametrization: {
-            xFn: "(sin(2 * u)^0 + cos(2 * u)^1 + sin(2 * phi)^2 + cos(2 * phi)^3) * sin(u) * cos(v)",
-            yFn: "(sin(2 * u)^0 + cos(2 * u)^1 + sin(2 * phi)^2 + cos(2 * phi)^3) * cos(u)",
-            zFn: "(sin(2 * u)^0 + cos(2 * u)^1 + sin(2 * phi)^2 + cos(2 * phi)^3) * sin(u) * sin(v)"
+            xFn: "(3 * cos(u) * cos(u) - 1) * sin(u) * cos(v)",
+            yFn: "(3 * cos(u) * cos(u) - 1) * cos(u)",
+            zFn: "(3 * cos(u) * cos(u) - 1) * sin(u) * sin(v)"
         },
         intervals: [["-pi", "pi"], ["0", "pi"]]
     }, {
         parametrization: {
-            xFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * sin(u) * cos(v)",
-            yFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * cos(u)",
-            zFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * sin(u) * sin(v)"
+            xFn: "sin(u)^2 * cos(u) * cos(v)^2",
+            yFn: "sin(u) * cos(u)^2 * cos(v)",
+            zFn: "sin(u)^2 * cos(u) * cos(v) * sin(v)"
         },
         intervals: [["-pi", "pi"], ["0", "pi"]]
     },  {
         parametrization: {
-            xFn: "(sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * phi)^2 + cos(4 * phi)^1) * sin(u) * cos(v)",
-            yFn: "(sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * phi)^2 + cos(4 * phi)^1) * cos(u)",
-            zFn: "(sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * phi)^2 + cos(4 * phi)^1) * sin(u) * sin(v)"
+            xFn: "sin(u)^3 * cos(v) * sin(2 * v)",
+            yFn: "sin(u)^2 * cos(u) * sin(2 * v)",
+            zFn: "sin(u)^3 * sin(v) * sin(2 * v)"
         },
         intervals: [["-pi", "pi"], ["0", "pi"]]
     }];
@@ -181,7 +180,7 @@
     });
 
     const params = {
-        axesParameters: new AxesParameters({axisLabels: ["Re(z)", "log|z|", "Im(z)"]}),
+        axesParameters: new AxesParameters(),
         surfaceDataPreset: PresetHarmonics.Preset1
     };
     const axesController = new AxesController({

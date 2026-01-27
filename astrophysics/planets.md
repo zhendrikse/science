@@ -26,7 +26,7 @@
 </div>
 <p style="clear: both;"></p>
 
-### All water on, in, and above the Earth
+<h3>All water on, in, and above the Earth</h3>
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">

@@ -1,13 +1,13 @@
 {% include breadcrumbs.html %}
 
-## Visualization of 3D vector fields and implied flow
+## Vector fields &amp; implied flow
 <div class="header_line"><br/></div>
 
 {% include_relative code/quiver_plot.html %}
 
 <p style="clear: both;"></p>
 
-## Scalar versus Vector Quantities: A Visual Guide
+### Scalar vis-à-vis vector quantities
 <div class="header_line"><br/></div>
 
 <figure style="text-align: center;">

@@ -7,7 +7,7 @@
 
 <p style="clear: both;"></p>
 
-## Electric potential difference $\Delta V$
+### Electric potential difference $\Delta V$
 <div class="header_line"><br/></div>
 
 <figure style="text-align: center;">

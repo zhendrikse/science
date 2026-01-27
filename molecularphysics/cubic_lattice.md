@@ -7,7 +7,7 @@
 
 <p style="clear: both;"></p>
 
-## The world of solids
+### The world of solids
 <div class="header_line"><br/></div>
 
 <figure style="text-align: center;">
