@@ -20,7 +20,9 @@
     import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import { SurfaceController, ViewParameters, ContourType, TangentFrameParameters, ContourParameters }
+    import { SurfaceController, ViewParameters, ContourType, TangentFrameParameters, ContourParameters,
+        IsoparametricContoursView, HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition,
+        Surface, StandardSurfaceView}
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
     const canvasContainer = document.getElementById("complexPlotContainer");
@@ -159,9 +161,16 @@
         }
 
         #updateSurface(surfaceSpecification) {
-            this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+            const surfaceDef = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
+            const newSurface = new StandardSurfaceView(
+                worldGroup,
+                new Surface(surfaceDef),
+                surfaceParams,
+                new HeightColorMapper({useBaseColor: false})
+            );
+            this._surfaceController.changeSurface(newSurface, surfaceParams);
             this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
-            this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
+            this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {translationY: -2});
             this._xFunction.setValue(surfaceSpecification.parametrization.xFn);
             this._yFunction.setValue(surfaceSpecification.parametrization.yFn);
             this._zFunction.setValue(surfaceSpecification.parametrization.zFn);
@@ -181,7 +190,7 @@
     });
 
     const params = {
-        axesParameters: new AxesParameters({axisLabels: ["Re(z)", "log|z|", "Im(z)"]}),
+        axesParameters: new AxesParameters(),
         surfaceDataPreset: PresetHarmonics.Preset1
     };
     const axesController = new AxesController({
@@ -190,12 +199,22 @@
         axesParameters: params.axesParameters,
         scene: scene
     });
-    const surfaceController = new SurfaceController(worldGroup, surfaceData[0], surfaceParams);
+
+    const defaultSurfaceSpec = new SurfaceSpecification(surfaceData[0]);
+    const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
+    const mathematicalSurface = new Surface(defaultSurfaceDef);
+    const defaultSurface = new StandardSurfaceView(
+        worldGroup,
+        mathematicalSurface,
+        surfaceParams,
+        new HeightColorMapper({useBaseColor: false})
+    );
+    const surfaceController = new SurfaceController(worldGroup, defaultSurface, surfaceParams);
 
     // Scale scene according to current surface
     axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
     const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox());
-    plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
+    plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {translationY: -2});
     const gui = new ControlsGui(surfaceController, axesController, plot3D);
 
     // Resizing for mobile devices

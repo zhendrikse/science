@@ -24,7 +24,7 @@
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { ViewParameters, TangentFrameParameters, ColorMapper, ContourType, SurfaceSelector, SurfaceController,
         HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface,
-        IsoparametricContoursView}
+        IsoparametricContoursView, CurvatureContoursView}
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
@@ -125,7 +125,21 @@
             const contourFolder = folder.addFolder("Contours");
             contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
                 .name("Contour type")
-                .onChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
+                .onChange(value => {
+                    const surface = this._surfaceController.surface;
+                    switch (value) {
+                        case ContourType.NONE:
+                            this._surfaceController.updateContoursView(null);
+                            break;
+                        case ContourType.CURVATURE:
+                            this._surfaceController.updateContoursView(new CurvatureContoursView(surface.group, surface));
+                            break;
+                        case ContourType.ISO_PARAMETRIC:
+                            this._surfaceController.updateContoursView(new IsoparametricContoursView(surface.group, surface));
+                            break;
+                    }
+                    this._surfaceController.updateContours(surfaceParams.contourParameters)
+                });
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
                 .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateContours(surfaceParams.contourParameters);});
@@ -184,25 +198,25 @@
 
             this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceSpecification = this._surfaceController.surface
+                    const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({xFn: expr});
-                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
                     updateViewForSurface();
                 });
 
             this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceSpecification = this._surfaceController.surface
+                    const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
-                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
                     updateViewForSurface();
                 });
 
             this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceSpecification = this._surfaceController.surface
+                    const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({zFn: expr});
-                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
                     updateViewForSurface();
                 });
 
@@ -254,6 +268,18 @@
             this.zFunction.setValue(surfaceSpecification.parametrization.zFn);
             updateViewForSurface();
         }
+    }
+
+    function createSurfaceFrom(specification) {
+        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(specification);
+        const mathematicalSurface = new Surface(surfaceDefinition);
+        return new StandardSurfaceView(
+            worldGroup,
+            mathematicalSurface,
+            surfaceParams,
+            new HeightColorMapper({useBaseColor: false}),
+            new IsoparametricContoursView(worldGroup, mathematicalSurface)
+        );
     }
 
     function updateViewForSurface() {
@@ -680,14 +706,14 @@
         intervals: [["-2", "2"], ["-2", "2"]]
     }];
 
-    function deepFreeze(obj) {
-        Object.freeze(obj);
-        Object.values(obj).forEach(v => {
-            if (typeof v === 'object' && v !== null && !Object.isFrozen(v)) {
-                deepFreeze(v);
+    function deepFreeze(object) {
+        Object.freeze(object);
+        Object.values(object).forEach(value => {
+            if (typeof value === 'object' && value !== null && !Object.isFrozen(value)) {
+                deepFreeze(value);
             }
         });
-        return obj;
+        return object;
     }
 
     export const SurfaceDefinitions = surfaceDefinitions.map(s => deepFreeze(s));
@@ -711,16 +737,7 @@
     });
 
     const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
-    const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
-    const mathematicalSurface = new Surface(defaultSurfaceDef);
-    const defaultSurface = new StandardSurfaceView(
-            worldGroup,
-            mathematicalSurface,
-            surfaceParams,
-            new HeightColorMapper({baseColor: surfaceParams.baseColor}),
-            new IsoparametricContoursView(worldGroup, mathematicalSurface)
-    );
-    const surfaceController = new SurfaceController(worldGroup, defaultSurface, surfaceParams);
+    const surfaceController = new SurfaceController(worldGroup, createSurfaceFrom(defaultSurfaceSpec), surfaceParams);
 
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
     updateViewForSurface();
@@ -766,7 +783,8 @@
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         ring.onSelectTo(selectedRingSurface);
 
-        surfaceController.changeSurface(selectedRingSurface.definition().specification(), surfaceParams);
+        const newSurface = createSurfaceFrom(selectedRingSurface.definition().specification());
+        surfaceController.changeSurface(newSurface, surfaceParams);
         updateViewForSurface();
         controlsGui.update();
     });

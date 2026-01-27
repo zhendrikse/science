@@ -588,9 +588,9 @@ export class NormalsView extends SurfaceView {
 }
 
 export class StandardSurfaceView extends SurfaceView {
-    constructor(parentGroup, surface, surfaceParameters, colorMapper, contoursView) {
-        super(parentGroup, surface);
-        this._geometry = surface.createGeometryWith(surfaceParameters.resolution);
+    constructor(parentGroup, mathSurface, surfaceParameters, colorMapper, contoursView) {
+        super(parentGroup, mathSurface);
+        this._geometry = mathSurface.createGeometryWith(surfaceParameters.resolution);
         this._material = this.material(surfaceParameters.wireframe, surfaceParameters.opacity);
         this._mesh = new Mesh(this._geometry, this._material);
         this._group.add(this._mesh);
@@ -606,23 +606,6 @@ export class StandardSurfaceView extends SurfaceView {
         this._colorMode = surfaceParameters.colorMode;
 
         this.updateOpacity(surfaceParameters.opacity);
-    }
-
-    #setContourMode(contourParameters) {
-        this._contourType = contourParameters.contourType;
-        switch (this._contourType) {
-            case ContourType.NONE:
-                this._contours = null;
-                break;
-            case ContourType.CURVATURE:
-                this._contours = new CurvatureContoursView(this._group, this._surface);
-                this.registerChild(this._contours);
-                break;
-            case ContourType.ISO_PARAMETRIC:
-                this._contours = new IsoparametricContoursView(this._group, this._surface);
-                this.registerChild(this._contours);
-                break;
-        }
     }
 
     #setColorMode(surfaceParameters) {
@@ -655,14 +638,10 @@ export class StandardSurfaceView extends SurfaceView {
 
     updateContours(contourParameters) {
         this._contours?.clear();
-
-        if (contourParameters.contourType !== this._contourType)
-            this.#setContourMode(contourParameters);
-
         this._contours?.buildWith(contourParameters);
     }
 
-    updateContoursView = (contoursView) => {this._contours = contoursView;}
+    updateContoursView = (contoursView) => {this._contours = contoursView; this.registerChild(this._contours); }
     updateColorMapper = (mapper) => { this._colorMapper = mapper; this._colorMapper.apply(this._geometry); }
 
     updateColor(surfaceParameters) {

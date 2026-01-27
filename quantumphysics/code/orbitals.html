@@ -20,8 +20,7 @@
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import {  Utils, SignedOpacityColorMapper, ViewParameters, ContourType, TangentFrameParameters, ContourParameters,
-        SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface, NormalsView,
-        TangentFrameView }
+        SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface, SurfaceController }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
     const canvasContainer = document.getElementById("orbitalsContainer");
@@ -271,15 +270,15 @@
         }
 
         #updateSurface(surfaceSpecification) {
-            const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
+            const surfaceDef = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
             const newSurface = new StandardSurfaceView(
                 worldGroup,
-                new Surface(defaultSurfaceDef),
+                new Surface(surfaceDef),
                 surfaceParams,
                 new SignedOpacityColorMapper(surfaceSpecification.signedFieldFunction));
             this._surfaceController.changeSurface(newSurface, surfaceParams);
             this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
-            this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
+            this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9),{translationY: -1.5});
             this._xFunction.setValue(surfaceSpecification.parametrization.xFn);
             this._yFunction.setValue(surfaceSpecification.parametrization.yFn);
             this._zFunction.setValue(surfaceSpecification.parametrization.zFn);
@@ -320,7 +319,7 @@
     // Scale scene according to current surface
     axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
     const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox());
-    plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
+    plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {translationY: -1.5});
     const gui = new ControlsGui(surfaceController, axesController, plot3D);
 
     // Resizing for mobile devices
