@@ -88,15 +88,16 @@
                 .name("Contour type")
                 .onChange(value => {
                     const surface = this._surfaceController.surface;
+                    const contourParams = surfaceParams.contourParameters;
                     switch (value) {
                         case ContourType.NONE:
-                            this._surfaceController.updateContoursView(null);
+                            this._surfaceController.updateContoursView(null, contourParams);
                             break;
                         case ContourType.CURVATURE:
-                            this._surfaceController.updateContoursView(new CurvatureContoursView(surface.group, surface));
+                            this._surfaceController.updateContoursView(new CurvatureContoursView(surface.group, surface), contourParams);
                             break;
                         case ContourType.ISO_PARAMETRIC:
-                            this._surfaceController.updateContoursView(new IsoparametricContoursView(surface.group, surface));
+                            this._surfaceController.updateContoursView(new IsoparametricContoursView(surface.group, surface), contourParams);
                             break;
                     }
                     this._surfaceController.updateContours(surfaceParams.contourParameters)

@@ -597,10 +597,10 @@ export class StandardSurfaceView extends SurfaceView {
 
         this._contours = null;
         this._colorMapper = null;
+
         this.updateColorMapper(colorMapper);
         this.updateContoursView(contoursView);
-
-        this._contours?.buildWith(surfaceParameters.contourParameters);
+        this.updateContours(surfaceParams.contourParameters)
         this.updateOpacity(surfaceParameters.opacity);
     }
 
@@ -627,6 +627,7 @@ export class StandardSurfaceView extends SurfaceView {
     }
 
     toggleWireframe = (value) => this._material.wireframe = value;
+    rotateBy = (delta) => { this._group.rotation.y += delta; this._contours.group.rotation.y += delta; }
 }
 
 /**
@@ -900,7 +901,10 @@ export class SurfaceController {
     }
 
     updateColorMapper = (colorMapper) => this._surface.updateColorMapper(colorMapper);
-    updateContoursView = (contoursView) => this._surface.updateContoursView(contoursView);
+    updateContoursView = (contoursView, contourParameters) => {
+        this._surface.updateContoursView(contoursView);
+        this.updateContours(contourParameters);
+    }
 
     updateColor = () => this._surface.updateColor();
     updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
@@ -954,7 +958,11 @@ export class SurfaceController {
             this._surface.updateOpacity(surfaceParams.opacity);
         }
     }
-    rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotation.y += value; }
+    rotateBy = (value) => {
+        this._surface.rotateBy(value);
+        this._tangentFrame.rotation.y += value;
+        this._normals.rotateBy(value);
+    }
     resampleWith = (resolution) => this._surface.resampleWith(resolution);
 }
 
