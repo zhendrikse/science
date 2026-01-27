@@ -314,7 +314,7 @@
 
     const params = {
         axesParameters: new AxesParameters({annotations: false}),
-        surfacePreset: "1s"
+        surfacePreset: "4f_z³"
     };
     const axesController = new AxesController({
         parentGroup: worldGroup,
@@ -323,7 +323,7 @@
         scene: scene
     });
 
-    const defaultSurfaceSpec = new OrbitalSurfaceSpecification(surfaceData[0]);
+    const defaultSurfaceSpec = new OrbitalSurfaceSpecification(surfaceData[9]);
     const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
     const defaultSurface = new StandardSurfaceView(
         worldGroup,
