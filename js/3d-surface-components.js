@@ -150,6 +150,29 @@ export class SignedColorMapper extends ColorMapper {
     }
 }
 
+export class SignedOpacityColorMapper extends ColorMapper {
+    constructor(valueFn, {
+        positiveColor = new Color(0x3366ff),
+        negativeColor = new Color(0xff4444),
+        opacityScale = 1.0
+    } = {}) {
+        super();
+        this._valueFn = valueFn;
+        this._pos = positiveColor;
+        this._neg = negativeColor;
+        this._opacityScale = opacityScale;
+    }
+
+    colorFor(u, v, color) {
+        const val = this._valueFn(u, v);
+        const a = Math.tanh(Math.abs(val) * this._opacityScale);
+
+        color.copy(val >= 0 ? this._pos : this._neg);
+        color.multiplyScalar(0.4 + 0.6 * a); // visual punch
+        color.a = a;
+    }
+}
+
 export class PrincipalCurvatureColorMapper extends ColorMapper {
     constructor(surfaceDefinition, { which = ColorMapper.ColorMode.K1, scale = 1.0 } = {}) {
         super();
@@ -191,6 +214,45 @@ export class SurfaceDefinition {
     sample(u, v, target) {
         throw new Error("Abstract class: sample() not implemented!");
     }
+}
+
+export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
+    constructor(surfaceSpecification) {
+        super();
+        this._surfaceSpecification = surfaceSpecification;
+
+        const parametrization = surfaceSpecification.parametrization;
+        this._xFn = Utils.functionFrom(parametrization.xFn);
+        this._yFn = Utils.functionFrom(parametrization.yFn);
+        this._zFn = Utils.functionFrom(parametrization.zFn);
+
+        this._uInterval = new Interval(
+            this.#evaluateConstant(surfaceSpecification.intervals[0][0]),
+            this.#evaluateConstant(surfaceSpecification.intervals[0][1])
+        );
+
+        this._vInterval = new Interval(
+            this.#evaluateConstant(surfaceSpecification.intervals[1][0]),
+            this.#evaluateConstant(surfaceSpecification.intervals[1][1])
+        );
+
+        Object.freeze(this);
+    }
+
+    #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
+
+    sample(u, v, target) {
+        const U = this._uInterval.scaleUnitParameter(u);
+        const V = this._vInterval.scaleUnitParameter(v);
+
+        target.set(
+            this._xFn(U, V),
+            this._yFn(U, V),
+            this._zFn(U, V)
+        );
+    }
+
+    specification() { return this._surfaceSpecification; }
 }
 
 /**
@@ -763,45 +825,6 @@ export class DifferentialGeometry {
             d2: result.d2
         });
     }
-}
-
-export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
-    constructor(surfaceSpecification) {
-        super();
-        this._surfaceSpecification = surfaceSpecification;
-
-        const parametrization = surfaceSpecification.parametrization;
-        this._xFn = Utils.functionFrom(parametrization.xFn);
-        this._yFn = Utils.functionFrom(parametrization.yFn);
-        this._zFn = Utils.functionFrom(parametrization.zFn);
-
-        this._uInterval = new Interval(
-            this.#evaluateConstant(surfaceSpecification.intervals[0][0]),
-            this.#evaluateConstant(surfaceSpecification.intervals[0][1])
-        );
-
-        this._vInterval = new Interval(
-            this.#evaluateConstant(surfaceSpecification.intervals[1][0]),
-            this.#evaluateConstant(surfaceSpecification.intervals[1][1])
-        );
-
-        Object.freeze(this);
-    }
-
-    #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
-
-    sample(u, v, target) {
-        const U = this._uInterval.scaleUnitParameter(u);
-        const V = this._vInterval.scaleUnitParameter(v);
-
-        target.set(
-            this._xFn(U, V),
-            this._yFn(U, V),
-            this._zFn(U, V)
-        );
-    }
-
-    specification() { return this._surfaceSpecification; }
 }
 
 /**

@@ -119,7 +119,7 @@ published a paper called "On Continued Gravitational Contraction", which provide
 solution to the EFE based on the [Schwarzschild metric](https://en.wikipedia.org/wiki/Schwarzschild_metric), 
 which describes the collapse of an extremely massive object into a black hole.
 
-<figure style="float: center; text-align: center;">
+<figure style="text-align: center;">
   <a href="https://www.facebook.com/photo/?fbid=10233598208964588&set=a.10200946882861842">
     <img alt="Einstein and Oppenheimer" width="100%" height="100%" src="images/einstein_oppenheimer.jpg" title="Click to animate"/>
   </a>
@@ -127,6 +127,17 @@ which describes the collapse of an extremely massive object into a black hole.
   from government work. The scene in the movie Oppenheimer is based on true events.</figcaption>
 </figure>
 <p style="clear: both;"></p>
+
+### How gravity shapes the universe
+<div class="header_line"><br/></div>
+
+<figure style="text-align: center;">
+  <img alt="How gravity shapes the universe" src="images/how_gravity_shapes_the_univrse.jpg" />
+  <figcaption>This excellent visual guide originates from 
+    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+  </figcaption>
+</figure>
+
 
 {% include share_buttons.html %}
 

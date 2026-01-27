@@ -19,7 +19,7 @@
     import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import {  Utils, SignedColorMapper, ViewParameters, ContourType, TangentFrameParameters, ContourParameters,
+    import {  Utils, SignedOpacityColorMapper, ViewParameters, ContourType, TangentFrameParameters, ContourParameters,
         SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface, NormalsView,
         TangentFrameView }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
@@ -32,22 +32,6 @@
     const worldGroup = new Group();
     scene.add(worldGroup);
 
-    const PresetHarmonics = Object.freeze({
-        Preset1: 1,
-        Preset2: 2,
-        Preset3: 3,
-        Preset4: 4,
-        Preset5: 5,
-        Preset6: 6,
-        Preset7: 7,
-        Preset8: 8,
-        Preset10: 10,
-        Preset11: 11,
-        Preset12: 12,
-        Preset13: 13
-    });
-
-
     const surfaceData = [{
         meta: { name: "1s" },
         parametrization: {
@@ -58,7 +42,7 @@
         signedField: { field: "1" },
         intervals: [["-pi","pi"],["0","pi"]]
     }, {
-        meta: { name: "2p_x" },
+        meta: { name: "2pₓ" },
         parametrization: {
             xFn: "abs(sin(u)*cos(v))*sin(u)*cos(v)",
             yFn: "abs(sin(u)*cos(v))*cos(u)",
@@ -67,7 +51,7 @@
         signedField: { field: "sin(u)*cos(v)" },
         intervals: [["-pi","pi"],["0","pi"]]
     },{
-        meta: { name: "2p_y" },
+        meta: { name: "2pᵧ" },
         parametrization: {
             xFn: "abs(cos(u))*sin(u)*cos(v)",
             yFn: "abs(cos(u))*cos(u)",
@@ -85,7 +69,7 @@
         signedField: { field: "sin(u)*sin(v)" },
         intervals: [["-pi","pi"],["0","pi"]]
     }, {
-        meta: { name: "3d_z2" },
+        meta: { name: "3d_z²" },
         parametrization: {
             xFn: "abs(3*cos(u)^2-1)*sin(u)*cos(v)",
             yFn: "abs(3*cos(u)^2-1)*cos(u)",
@@ -112,7 +96,7 @@
         signedField: { field: "sin(u)*cos(u)*sin(v)" },
         intervals: [["-pi","pi"],["0","pi"]]
     }, {
-        meta: { name: "3d_x2-z2" },
+        meta: { name: "3d_x²₋z²" },
         parametrization: {
             xFn: "abs(sin(u)^2*cos(2*v))*sin(u)*cos(v)",
             yFn: "abs(sin(u)^2*cos(2*v))*cos(u)",
@@ -130,7 +114,7 @@
         signedField: { field: "sin(u)^2*sin(2*v)" },
         intervals: [["-pi","pi"],["0","pi"]]
     }, {
-        meta: { name: "4f_z3" },
+        meta: { name: "4f_z³" },
         parametrization: {
             xFn: "abs(5*cos(u)^3-3*cos(u))*sin(u)*cos(v)",
             yFn: "abs(5*cos(u)^3-3*cos(u))*cos(u)",
@@ -148,7 +132,7 @@
         signedField: { field: "sin(u)^2*cos(u)*sin(2*v)" },
         intervals: [["-pi","pi"],["0","pi"]]
     }, {
-        meta: { name: "4f_x(x2-3z2)" },
+        meta: { name: "4f_x(x²−3z²)" },
         parametrization: {
             xFn: "abs(sin(u)^3*cos(3*v))*sin(u)*cos(v)",
             yFn: "abs(sin(u)^3*cos(3*v))*cos(u)",
@@ -157,7 +141,7 @@
         signedField: { field: "sin(u)^3*cos(3*v)" },
         intervals: [["-pi","pi"],["0","pi"]]
     }, {
-        meta: { name: "4f_z(x2-z2)" },
+        meta: { name: "4f_z(x²−z²)" },
         parametrization: {
             xFn: "abs(sin(u)^3*sin(3*v))*sin(u)*cos(v)",
             yFn: "abs(sin(u)^3*sin(3*v))*cos(u)",
@@ -167,9 +151,33 @@
         intervals: [["-pi","pi"],["0","pi"]]
     }];
 
+    class OrbitalSurfaceSpecification extends SurfaceSpecification {
+        constructor({ meta, parametrization, intervals, signedField }) {
+            super({meta, parametrization, intervals});
+            this._signedField = signedField;
+            Object.freeze(this);
+        }
+
+        get signedFieldFunction() { return Utils.functionFrom(this._signedField.field); }
+
+        withParametrization(patch) {
+            return new OrbitalSurfaceSpecification({
+                meta: this._meta,
+                intervals: this._intervals,
+                signedField: this._signedField,
+                parametrization: {
+                    ...this._parametrization,
+                    ...patch
+                }
+            });
+        }
+    }
+
     class ControlsGui {
         constructor(surfaceController, axesController, plot3d) {
             const gui = new GUI({width: "100%", autoPlace: false});
+
+            const OrbitalPresets = Object.fromEntries(surfaceData.map((surface, index) => [surface.meta.name, index]));
 
             this._axesController = axesController;
             this._surfaceController = surfaceController;
@@ -180,17 +188,14 @@
                 z: surfaceController.surface.definition().specification().parametrization.zFn
             }
 
-            gui.add(params, 'surfaceDataPreset', Object.values(PresetHarmonics))
-                .name("Preset")
-                .onChange(value => {
-                    const surfaceSpecification = this._surfaceController.surface
-                        .definition().specification().withParametrization({
-                            xFn: surfaceData[value - 1].parametrization.xFn,
-                            yFn: surfaceData[value - 1].parametrization.yFn,
-                            zFn: surfaceData[value - 1].parametrization.zFn
-                        });
-                    this.#updateSurface(surfaceSpecification);
+            gui.add(params, "surfacePreset", OrbitalPresets)
+                .name("Orbital")
+                .onChange(index => {
+                    const data = surfaceData[index];
+                    const spec = new OrbitalSurfaceSpecification(data);
+                    this.#updateSurface(spec);
                 });
+
 
             this.#createContourFolder(gui);
             this.#createAxesFolder(gui);
@@ -267,7 +272,11 @@
 
         #updateSurface(surfaceSpecification) {
             const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-            const newSurface = new StandardSurfaceView(worldGroup, new Surface(defaultSurfaceDef), surfaceParams);
+            const newSurface = new StandardSurfaceView(
+                worldGroup,
+                new Surface(defaultSurfaceDef),
+                surfaceParams,
+                new SignedOpacityColorMapper(surfaceSpecification.signedFieldFunction));
             this._surfaceController.changeSurface(newSurface, surfaceParams);
             this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
             this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
@@ -275,77 +284,6 @@
             this._yFunction.setValue(surfaceSpecification.parametrization.yFn);
             this._zFunction.setValue(surfaceSpecification.parametrization.zFn);
         }
-    }
-
-    export class SurfaceController {
-        constructor(parentGroup, surfaceView, surfaceParams) {
-            this._parentGroup = parentGroup;
-            this._surface = null;
-            this._tangentFrame = null;
-            this._normals = null;
-
-            this.changeSurface(surfaceView, surfaceParams);
-            this.updateContours(surfaceParams.contourParameters);
-            this.updateColor(surfaceParams);
-        }
-
-        updateColorMapper = (colorMapper) => this._surface.updateColorMapper(colorMapper);
-        updateContoursView = (contoursView) => this._surface.updateContoursView(contoursView);
-
-        updateColor = (surfaceParameters) => this._surface.updateColor(surfaceParameters);
-        updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
-        surfaceBoundingBox = () => this._surface.boundingBox();
-
-        #disposeCurrentSurface() {
-            this._surface?.dispose();
-            this._tangentFrame?.dispose();
-            this._normals?.clear();
-        }
-
-        #createNormals() {
-            this._normals = new NormalsView(this._parentGroup, this._surface);
-            this._normals.group.position.copy(this._surface.group.position);
-            this._normals.group.scale.set(
-                this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
-        }
-
-        #createTangentFrameFrom(surfaceParams) {
-            surfaceParams.tangentFrameParameters.scale = this._surface.boundingBox().max.length() * .4;
-            this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
-            this.updateTangentFrame(surfaceParams.tangentFrameParameters);
-            this._parentGroup.add(this._tangentFrame);
-        }
-
-        changeSurface(surfaceView, surfaceParams) {
-            this.#disposeCurrentSurface();
-            this._surface = surfaceView;
-            this.#createNormals();
-            this.#createTangentFrameFrom(surfaceParams);
-        }
-
-        get surface() { return this._surface; }
-
-        updateTangentFrame(tangentFrameParameters) {
-            this._tangentFrame.visible = tangentFrameParameters.visible;
-            this._tangentFrame.update(tangentFrameParameters);
-            this._tangentFrame.position.copy(this._surface.group.position);
-            this._tangentFrame.scale.set(this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
-        }
-
-        changeBaseColorTo = (color) => this._surface.changeBaseColorTo(color);
-        updateOpacity = (value) => this._surface.updateOpacity(value);
-        toggleWireframe = (value) => this._surface.toggleWireframe(value);
-        toggleNormals = (visible, surfaceParams) => {
-            if (visible) {
-                this._normals.buildWith({});
-                this._surface.updateOpacity(0.3);
-            } else {
-                this._normals.clear();
-                this._surface.updateOpacity(surfaceParams.opacity);
-            }
-        }
-        rotateBy = (value) => { this._surface.rotateBy(value); this._tangentFrame.rotation.y += value; }
-        resampleWith = (resolution) => this._surface.resampleWith(resolution);
     }
 
     const surfaceParams = new ViewParameters({
@@ -361,7 +299,7 @@
 
     const params = {
         axesParameters: new AxesParameters({annotations: false}),
-        surfaceDataPreset: PresetHarmonics.Preset1
+        surfacePreset: "1s"
     };
     const axesController = new AxesController({
         parentGroup: worldGroup,
@@ -370,17 +308,14 @@
         scene: scene
     });
 
-    const defaultSurfaceSpec = new SurfaceSpecification(surfaceData[0]);
+    const defaultSurfaceSpec = new OrbitalSurfaceSpecification(surfaceData[0]);
     const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
-    const surfaceController = new SurfaceController(
+    const defaultSurface = new StandardSurfaceView(
         worldGroup,
-        new StandardSurfaceView(
-            worldGroup,
-            new Surface(defaultSurfaceDef),
-            surfaceParams,
-            new SignedColorMapper(Utils.functionFrom(surfaceData[0].signedField.field))),
-        surfaceParams
-    );
+        new Surface(defaultSurfaceDef),
+        surfaceParams,
+        new SignedOpacityColorMapper(defaultSurfaceSpec.signedFieldFunction));
+    const surfaceController = new SurfaceController(worldGroup, defaultSurface, surfaceParams);
 
     // Scale scene according to current surface
     axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
