@@ -19,7 +19,7 @@ repositioned after each event.
 
 <p style="clear: both;"></p>
 
-## Infographic: history of the atomic model
+### Infographic: history of the atomic model
 <div class="header_line"><br/></div>
 
 <figure style="text-align: center;">
