@@ -277,10 +277,10 @@ export class SurfaceSpecification {
 }
 
 export class SurfaceView {
-    constructor(parentGroup, surface) {
+    constructor(parentGroup, mathematicalSurface) {
         this._group = new Group();
         parentGroup.add(this._group);
-        this._surface = surface;
+        this._surface = mathematicalSurface;
         this._children = new Set();
     }
 
@@ -350,9 +350,9 @@ export class ContourParameters {
 }
 
 export class CurvatureContoursView extends SurfaceView {
-    constructor(parentGroup, surface) {
-        super(parentGroup, surface);
-        this._diffGeometry = new DifferentialGeometry(surface.definition());
+    constructor(parentGroup, mathematicalSurface) {
+        super(parentGroup, mathematicalSurface);
+        this._diffGeometry = new DifferentialGeometry(mathematicalSurface.definition());
         this._pointsObject = null;
         this._material = null;
     }
@@ -411,8 +411,8 @@ export class CurvatureContoursView extends SurfaceView {
 }
 
 export class IsoparametricContoursView extends SurfaceView {
-    constructor(parentGroup, surface) {
-        super(parentGroup, surface)
+    constructor(parentGroup, mathematicalSurface) {
+        super(parentGroup, mathematicalSurface)
         this._material = null;
         this._lines = [];
     }
@@ -488,8 +488,8 @@ export class IsoparametricContoursView extends SurfaceView {
 }
 
 export class MinimalSurfaceView extends SurfaceView {
-    constructor(parentGroup, surface, {showWireframe=true, resolution=20, baseColor="#4f6"}) {
-        super(parentGroup, surface);
+    constructor(parentGroup, mathematicalSurface, {showWireframe=true, resolution=20, baseColor="#4f6"}) {
+        super(parentGroup, mathematicalSurface);
         this._baseColor = baseColor;
         this._geometry = surface.createGeometryWith(resolution);
         this._material = this.material(showWireframe, 1);
@@ -511,9 +511,10 @@ export class MinimalSurfaceView extends SurfaceView {
 }
 
 export class NormalsView extends SurfaceView {
-    constructor(parentGroup, surfaceView) {
-        super(parentGroup, surfaceView);
-        this._geometry = surfaceView._geometry;
+    constructor(parentGroup, mathematicalSurface) {
+        super(parentGroup, mathematicalSurface);
+        const fixedResolutionForNormals = 20;
+        this._geometry = mathematicalSurface.createGeometryWith(fixedResolutionForNormals);
     }
 
     #deriveScaleFromMesh(k, curvatureGain, normalScale) {
@@ -920,7 +921,7 @@ export class SurfaceController {
     }
 
     #createNormals() {
-        this._normals = new NormalsView(this._parentGroup, this._surface);
+        this._normals = new NormalsView(this._parentGroup, new Surface(this._surface.definition()));
         this._normals.group.position.copy(this._surface.group.position);
         this._normals.group.scale.set(
             this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
