@@ -259,17 +259,17 @@ export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
  */
 export class SurfaceSpecification {
     constructor({ meta, parametrization, intervals }) {
-        this.meta = meta;
-        this.parametrization = Object.freeze({ ...parametrization });
-        this.intervals = Object.freeze(intervals);
+        this._meta = meta;
+        this._parametrization = Object.freeze({ ...parametrization });
+        this._intervals = Object.freeze(intervals);
     }
 
     withParametrization(patch) {
         return new SurfaceSpecification({
-            meta: this.meta,
-            intervals: this.intervals,
+            meta: this._meta,
+            intervals: this._intervals,
             parametrization: {
-                ...this.parametrization,
+                ...this._parametrization,
                 ...patch
             }
         });
