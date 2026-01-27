@@ -611,6 +611,7 @@ export class StandardSurfaceView extends SurfaceView {
 
     updateContoursView = (contoursView) => {
         this._contours = contoursView;
+        this._contours?.clear();
         if (contoursView)
             this.registerChild(this._contours);
     }
