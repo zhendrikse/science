@@ -706,17 +706,8 @@
         intervals: [["-2", "2"], ["-2", "2"]]
     }];
 
-    function deepFreeze(object) {
-        Object.freeze(object);
-        Object.values(object).forEach(value => {
-            if (typeof value === 'object' && value !== null && !Object.isFrozen(value)) {
-                deepFreeze(value);
-            }
-        });
-        return object;
-    }
 
-    export const SurfaceDefinitions = surfaceDefinitions.map(s => deepFreeze(s));
+    export const SurfaceDefinitions = surfaceDefinitions.map(surface => deepFreeze(surface));
 
     // Surface
     const axesParams = new AxesParameters({annotations: false});
@@ -738,7 +729,6 @@
 
     const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
     const surfaceController = new SurfaceController(worldGroup, createSurfaceFrom(defaultSurfaceSpec), surfaceParams);
-
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
     updateViewForSurface();
 

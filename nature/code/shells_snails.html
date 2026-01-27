@@ -22,9 +22,11 @@
         DirectionalLight, HemisphereLight} from "three";
     import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-    import { TangentFrameParameters, ViewParameters, ColorMapper, ContourType,
-        SurfaceSelector, SurfaceController }
+    import { ViewParameters, TangentFrameParameters, ColorMapper, ContourType, SurfaceSelector, SurfaceController,
+        HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface,
+        IsoparametricContoursView, CurvatureContoursView}
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
+
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
     const canvasContainer = document.getElementById("surface-canvas-container");
@@ -215,6 +217,18 @@
         plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.6));
     }
 
+    function createSurfaceFrom(specification) {
+        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(specification);
+        const mathematicalSurface = new Surface(surfaceDefinition);
+        return new StandardSurfaceView(
+            worldGroup,
+            mathematicalSurface,
+            surfaceParams,
+            new HeightColorMapper({useBaseColor: false}),
+            new IsoparametricContoursView(worldGroup, mathematicalSurface)
+        );
+    }
+
     const Category = Object.freeze({
         NATURE: "Nature"
     });
@@ -301,17 +315,17 @@
         intervals: [["0", "2 * pi"], ["0", "2 * pi"]]
     }];
 
-    function deepFreeze(obj) {
-        Object.freeze(obj);
-        Object.values(obj).forEach(v => {
-            if (typeof v === 'object' && v !== null && !Object.isFrozen(v)) {
-                deepFreeze(v);
+    function deepFreeze(object) {
+        Object.freeze(object);
+        Object.values(object).forEach(value => {
+            if (typeof value === 'object' && value !== null && !Object.isFrozen(value)) {
+                deepFreeze(value);
             }
         });
-        return obj;
+        return object;
     }
 
-    export const SurfaceDefinitions = surfaceDefinitions.map(s => deepFreeze(s));
+    export const SurfaceDefinitions = surfaceDefinitions.map(surface => deepFreeze(surface));
 
     // Surface
     const axesParams = new AxesParameters({annotations: false, xyPlane: false, xzPlane: false, yzPlane: false, frame: false});
@@ -333,7 +347,8 @@
         resolution: 100
     });
 
-    const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
+    const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
+    const surfaceController = new SurfaceController(worldGroup, createSurfaceFrom(defaultSurfaceSpec), surfaceParams);
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
     updateViewForSurface();
 
@@ -378,7 +393,8 @@
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         ring.onSelectTo(selectedRingSurface);
 
-        surfaceController.changeSurface(selectedRingSurface.definition().specification(), surfaceParams);
+        const newSurface = createSurfaceFrom(selectedRingSurface.definition().specification());
+        surfaceController.changeSurface(newSurface, surfaceParams);
         updateViewForSurface();
         controlsGui.update();
     });
