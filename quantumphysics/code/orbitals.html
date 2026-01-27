@@ -33,30 +33,136 @@
     const PresetHarmonics = Object.freeze({
         Preset1: 1,
         Preset2: 2,
-        Preset3: 3
+        Preset3: 3,
+        Preset4: 4,
+        Preset5: 5,
+        Preset6: 6,
+        Preset7: 7,
+        Preset8: 8,
+        Preset10: 10,
+        Preset11: 11,
+        Preset12: 12,
+        Preset13: 13
     });
 
+
     const surfaceData = [{
+        meta: { name: "1s" },
         parametrization: {
-            xFn: "(3 * cos(u) * cos(u) - 1) * sin(u) * cos(v)",
-            yFn: "(3 * cos(u) * cos(u) - 1) * cos(u)",
-            zFn: "(3 * cos(u) * cos(u) - 1) * sin(u) * sin(v)"
+            xFn: "sin(u)*cos(v)",
+            yFn: "cos(u)",
+            zFn: "sin(u)*sin(v)"
         },
-        intervals: [["-pi", "pi"], ["0", "pi"]]
+        signedField: { field: "1" },
+        intervals: [["-pi","pi"],["0","pi"]]
     }, {
+        meta: { name: "2p_x" },
         parametrization: {
-            xFn: "sin(u)^2 * cos(u) * cos(v)^2",
-            yFn: "sin(u) * cos(u)^2 * cos(v)",
-            zFn: "sin(u)^2 * cos(u) * cos(v) * sin(v)"
+            xFn: "abs(sin(u)*cos(v))*sin(u)*cos(v)",
+            yFn: "abs(sin(u)*cos(v))*cos(u)",
+            zFn: "abs(sin(u)*cos(v))*sin(u)*sin(v)"
         },
-        intervals: [["-pi", "pi"], ["0", "pi"]]
-    },  {
+        signedField: { field: "sin(u)*cos(v)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    },{
+        meta: { name: "2p_y" },
         parametrization: {
-            xFn: "sin(u)^3 * cos(v) * sin(2 * v)",
-            yFn: "sin(u)^2 * cos(u) * sin(2 * v)",
-            zFn: "sin(u)^3 * sin(v) * sin(2 * v)"
+            xFn: "abs(cos(u))*sin(u)*cos(v)",
+            yFn: "abs(cos(u))*cos(u)",
+            zFn: "abs(cos(u))*sin(u)*sin(v)"
         },
-        intervals: [["-pi", "pi"], ["0", "pi"]]
+        signedField: { field: "cos(u)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "2p_z" },
+        parametrization: {
+            xFn: "abs(sin(u)*sin(v))*sin(u)*cos(v)",
+            yFn: "abs(sin(u)*sin(v))*cos(u)",
+            zFn: "abs(sin(u)*sin(v))*sin(u)*sin(v)"
+        },
+        signedField: { field: "sin(u)*sin(v)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "3d_z2" },
+        parametrization: {
+            xFn: "abs(3*cos(u)^2-1)*sin(u)*cos(v)",
+            yFn: "abs(3*cos(u)^2-1)*cos(u)",
+            zFn: "abs(3*cos(u)^2-1)*sin(u)*sin(v)"
+        },
+        signedField: { field: "3*cos(u)^2-1" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "3d_xz" },
+        parametrization: {
+            xFn: "abs(sin(u)*cos(u)*cos(v))*sin(u)*cos(v)",
+            yFn: "abs(sin(u)*cos(u)*cos(v))*cos(u)",
+            zFn: "abs(sin(u)*cos(u)*cos(v))*sin(u)*sin(v)"
+        },
+        signedField: { field: "sin(u)*cos(u)*cos(v)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "3d_yz" },
+        parametrization: {
+            xFn: "abs(sin(u)*cos(u)*sin(v))*sin(u)*cos(v)",
+            yFn: "abs(sin(u)*cos(u)*sin(v))*cos(u)",
+            zFn: "abs(sin(u)*cos(u)*sin(v))*sin(u)*sin(v)"
+        },
+        signedField: { field: "sin(u)*cos(u)*sin(v)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "3d_x2-z2" },
+        parametrization: {
+            xFn: "abs(sin(u)^2*cos(2*v))*sin(u)*cos(v)",
+            yFn: "abs(sin(u)^2*cos(2*v))*cos(u)",
+            zFn: "abs(sin(u)^2*cos(2*v))*sin(u)*sin(v)"
+        },
+        signedField: { field: "sin(u)^2*cos(2*v)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "3d_xy" },
+        parametrization: {
+            xFn: "abs(sin(u)^2*sin(2*v))*sin(u)*cos(v)",
+            yFn: "abs(sin(u)^2*sin(2*v))*cos(u)",
+            zFn: "abs(sin(u)^2*sin(2*v))*sin(u)*sin(v)"
+        },
+        signedField: { field: "sin(u)^2*sin(2*v)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "4f_z3" },
+        parametrization: {
+            xFn: "abs(5*cos(u)^3-3*cos(u))*sin(u)*cos(v)",
+            yFn: "abs(5*cos(u)^3-3*cos(u))*cos(u)",
+            zFn: "abs(5*cos(u)^3-3*cos(u))*sin(u)*sin(v)"
+        },
+        signedField: { field: "5*cos(u)^3-3*cos(u)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "4f_xyz" },
+        parametrization: {
+            xFn: "abs(sin(u)^2*cos(u)*sin(2*v))*sin(u)*cos(v)",
+            yFn: "abs(sin(u)^2*cos(u)*sin(2*v))*cos(u)",
+            zFn: "abs(sin(u)^2*cos(u)*sin(2*v))*sin(u)*sin(v)"
+        },
+        signedField: { field: "sin(u)^2*cos(u)*sin(2*v)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "4f_x(x2-3z2)" },
+        parametrization: {
+            xFn: "abs(sin(u)^3*cos(3*v))*sin(u)*cos(v)",
+            yFn: "abs(sin(u)^3*cos(3*v))*cos(u)",
+            zFn: "abs(sin(u)^3*cos(3*v))*sin(u)*sin(v)"
+        },
+        signedField: { field: "sin(u)^3*cos(3*v)" },
+        intervals: [["-pi","pi"],["0","pi"]]
+    }, {
+        meta: { name: "4f_z(x2-z2)" },
+        parametrization: {
+            xFn: "abs(sin(u)^3*sin(3*v))*sin(u)*cos(v)",
+            yFn: "abs(sin(u)^3*sin(3*v))*cos(u)",
+            zFn: "abs(sin(u)^3*sin(3*v))*sin(u)*sin(v)"
+        },
+        signedField: { field: "sin(u)^3*sin(3*v)" },
+        intervals: [["-pi","pi"],["0","pi"]]
     }];
 
     class ControlsGui {
