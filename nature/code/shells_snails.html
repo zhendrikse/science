@@ -86,7 +86,21 @@
             const contourFolder = folder.addFolder("Contours");
             contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
                 .name("Contour type")
-                .onChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
+                .onChange(value => {
+                    const surface = this._surfaceController.surface;
+                    switch (value) {
+                        case ContourType.NONE:
+                            this._surfaceController.updateContoursView(null);
+                            break;
+                        case ContourType.CURVATURE:
+                            this._surfaceController.updateContoursView(new CurvatureContoursView(surface.group, surface));
+                            break;
+                        case ContourType.ISO_PARAMETRIC:
+                            this._surfaceController.updateContoursView(new IsoparametricContoursView(surface.group, surface));
+                            break;
+                    }
+                    this._surfaceController.updateContours(surfaceParams.contourParameters)
+                });
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
                 .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateContours(surfaceParams.contourParameters);});
@@ -142,23 +156,26 @@
 
             this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceSpecification = this._surfaceController.surface
+                    const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({xFn: expr});
-                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
+                    updateViewForSurface();
                 });
 
             this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceSpecification = this._surfaceController.surface
+                    const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
-                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
+                    updateViewForSurface();
                 });
 
             this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
-                    const surfaceSpecification = this._surfaceController.surface
+                    const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({zFn: expr});
-                    this._surfaceController.changeSurface(surfaceSpecification, surfaceParams);
+                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
+                    updateViewForSurface();
                 });
 
             mathFolder.close();

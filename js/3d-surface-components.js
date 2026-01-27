@@ -601,8 +601,6 @@ export class StandardSurfaceView extends SurfaceView {
         this.updateContoursView(contoursView);
         this._contours?.buildWith(surfaceParameters.contourParameters);
 
-
-        this._contourType = surfaceParameters.contourParameters.contourType;
         this._colorMode = surfaceParameters.colorMode;
 
         this.updateOpacity(surfaceParameters.opacity);
@@ -641,7 +639,12 @@ export class StandardSurfaceView extends SurfaceView {
         this._contours?.buildWith(contourParameters);
     }
 
-    updateContoursView = (contoursView) => {this._contours = contoursView; this.registerChild(this._contours); }
+    updateContoursView = (contoursView) => {
+        this._contours = contoursView;
+        if (contoursView)
+            this.registerChild(this._contours);
+    }
+
     updateColorMapper = (mapper) => { this._colorMapper = mapper; this._colorMapper.apply(this._geometry); }
 
     updateColor(surfaceParameters) {
