@@ -538,11 +538,11 @@ export class StandardSurfaceView extends SurfaceView {
         this._colorMapper = null;
         this.updateColorMapper(colorMapper);
         this.updateContoursView(contoursView);
-        this._contours.buildWith(surfaceParameters.contourParameters);
+        this._contours?.buildWith(surfaceParameters.contourParameters);
+
 
         this._contourType = surfaceParameters.contourParameters.contourType;
         this._colorMode = surfaceParameters.colorMode;
-
 
         this.updateOpacity(surfaceParameters.opacity);
     }
@@ -766,24 +766,22 @@ export class DifferentialGeometry {
     }
 }
 
-export class LiteralStringBasedSurfaceDefinition
-    extends SurfaceDefinition {
-
+export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
     constructor(surfaceSpecification) {
         super();
         this._surfaceSpecification = surfaceSpecification;
 
         const parametrization = surfaceSpecification.parametrization;
-        this.xFn = Utils.functionFrom(parametrization.xFn);
-        this.yFn = Utils.functionFrom(parametrization.yFn);
-        this.zFn = Utils.functionFrom(parametrization.zFn);
+        this._xFn = Utils.functionFrom(parametrization.xFn);
+        this._yFn = Utils.functionFrom(parametrization.yFn);
+        this._zFn = Utils.functionFrom(parametrization.zFn);
 
-        this.uInterval = new Interval(
+        this._uInterval = new Interval(
             this.#evaluateConstant(surfaceSpecification.intervals[0][0]),
             this.#evaluateConstant(surfaceSpecification.intervals[0][1])
         );
 
-        this.vInterval = new Interval(
+        this._vInterval = new Interval(
             this.#evaluateConstant(surfaceSpecification.intervals[1][0]),
             this.#evaluateConstant(surfaceSpecification.intervals[1][1])
         );
@@ -794,13 +792,13 @@ export class LiteralStringBasedSurfaceDefinition
     #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
 
     sample(u, v, target) {
-        const U = this.uInterval.scaleUnitParameter(u);
-        const V = this.vInterval.scaleUnitParameter(v);
+        const U = this._uInterval.scaleUnitParameter(u);
+        const V = this._vInterval.scaleUnitParameter(v);
 
         target.set(
-            this.xFn(U, V),
-            this.yFn(U, V),
-            this.zFn(U, V)
+            this._xFn(U, V),
+            this._yFn(U, V),
+            this._zFn(U, V)
         );
     }
 

@@ -22,7 +22,9 @@
         DirectionalLight, HemisphereLight} from "three";
     import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-    import { ViewParameters, TangentFrameParameters, ColorMapper, ContourType, SurfaceSelector, SurfaceController }
+    import { ViewParameters, TangentFrameParameters, ColorMapper, ContourType, SurfaceSelector, SurfaceController,
+        HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface,
+        IsoparametricContoursView}
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
@@ -708,7 +710,18 @@
         })
     });
 
-    const surfaceController = new SurfaceController(worldGroup, surfaceData, surfaceParams);
+    const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
+    const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
+    const mathematicalSurface = new Surface(defaultSurfaceDef);
+    const defaultSurface = new StandardSurfaceView(
+            worldGroup,
+            mathematicalSurface,
+            surfaceParams,
+            new HeightColorMapper({baseColor: surfaceParams.baseColor}),
+            new IsoparametricContoursView(worldGroup, mathematicalSurface)
+    );
+    const surfaceController = new SurfaceController(worldGroup, defaultSurface, surfaceParams);
+
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
     updateViewForSurface();
 

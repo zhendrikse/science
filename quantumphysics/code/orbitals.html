@@ -19,7 +19,9 @@
     import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import {  SignedColorMapper, ViewParameters, ContourType, TangentFrameParameters, ContourParameters, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface, NormalsView, TangentFrameView }
+    import {  Utils, SignedColorMapper, ViewParameters, ContourType, TangentFrameParameters, ContourParameters,
+        SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface, NormalsView,
+        TangentFrameView }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
     const canvasContainer = document.getElementById("orbitalsContainer");
@@ -376,7 +378,7 @@
             worldGroup,
             new Surface(defaultSurfaceDef),
             surfaceParams,
-            new SignedColorMapper(surfaceData[0].signedField.field)),
+            new SignedColorMapper(Utils.functionFrom(surfaceData[0].signedField.field))),
         surfaceParams
     );
 
