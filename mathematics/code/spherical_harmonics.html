@@ -39,23 +39,22 @@
 
     const surfaceData = [{
         parametrization: {
-            xFn: "(sin(2 * u)^0 + cos(2 * u)^1 + sin(2 * phi)^2 + cos(2 * phi)^3) * sin(u) * cos(v)",
-            yFn: "(sin(2 * u)^0 + cos(2 * u)^1 + sin(2 * phi)^2 + cos(2 * phi)^3) * cos(u)",
-            zFn: "(sin(2 * u)^0 + cos(2 * u)^1 + sin(2 * phi)^2 + cos(2 * phi)^3) * sin(u) * sin(v)"
+            xFn: "(3 * cos(u) * cos(u) - 1) * sin(u) * cos(v)",
+            yFn: "(3 * cos(u) * cos(u) - 1) * cos(u)",
+            zFn: "(3 * cos(u) * cos(u) - 1) * sin(u) * sin(v)"
         },
         intervals: [["-pi", "pi"], ["0", "pi"]]
     }, {
         parametrization: {
-            xFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * sin(u) * cos(v)",
-            yFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * cos(u)",
-            zFn: "(sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * phi)^2 + cos(6 * phi)^3) * sin(u) * sin(v)"
-        },
+            xFn: "sin(u)^2*cos(u)*cos(v)^2",
+            yFn: "sin(u)*cos(u)^2*cos(v)",
+            zFn: "sin(u)^2*cos(u)*cos(v)*sin(v)"        },
         intervals: [["-pi", "pi"], ["0", "pi"]]
     },  {
         parametrization: {
-            xFn: "(sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * phi)^2 + cos(4 * phi)^1) * sin(u) * cos(v)",
-            yFn: "(sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * phi)^2 + cos(4 * phi)^1) * cos(u)",
-            zFn: "(sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * phi)^2 + cos(4 * phi)^1) * sin(u) * sin(v)"
+            xFn: "sin(u)^3*cos(v)*sin(2*v)",
+            yFn: "sin(u)^2*cos(u)*sin(2*v)",
+            zFn: "sin(u)^3*sin(v)*sin(2*v)"
         },
         intervals: [["-pi", "pi"], ["0", "pi"]]
     }];
