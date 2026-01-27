@@ -21,8 +21,40 @@ export class ColorMapper {
         K2: "Principal curvature k₂"
     });
 
+    colorFor(u, v, value) {
+        throw new Error("colorFor() not implemented");
+    }
+
     apply(geometry) {
-        throw new Error("apply() not implemented");
+        if (!geometry.attributes.position) {
+            console.warn("Geometry has no positions, cannot apply colors.");
+            return;
+        }
+
+        const pos = geometry.attributes.position;
+        const uv  = geometry.attributes.uv;
+        const color = new Color();
+
+        let colorAttr = geometry.attributes.color;
+        if (!colorAttr) {
+            const colors = new Float32Array(pos.count * 3);
+            colorAttr = new BufferAttribute(colors, 3);
+            geometry.setAttribute("color", colorAttr);
+        }
+
+        for (let i = 0; i < pos.count; i++) {
+            let u = 0, v = 0;
+            if (uv) {
+                u = uv.getX(i);
+                v = uv.getY(i);
+            }
+            this.colorFor(u, v, color);
+            colorAttr.array[3 * i]     = color.r;
+            colorAttr.array[3 * i + 1] = color.g;
+            colorAttr.array[3 * i + 2] = color.b;
+        }
+
+        colorAttr.needsUpdate = true;
     }
 }
 
@@ -134,36 +166,15 @@ export class ContourParameters {
 }
 
 export class CurvatureColorMapper extends ColorMapper {
-    constructor(surface) {
+    constructor(surfaceDefinition) {
         super();
-        this._diffGeometry = new DifferentialGeometry(surface.definition());
+        this._diffGeometry = new DifferentialGeometry(surfaceDefinition);
     }
 
-    #setColorFromCurvature(u, v, color) {
+    colorFor(u, v, color) {
         const { N, H, K } = this._diffGeometry.normalMeanGaussian(u, v);
         const t = MathUtils.clamp(Math.abs(H) * 2.0, 0, 1);
         color.setHSL(0.6 - 0.6 * t, 0.9, 0.5);
-    }
-
-    apply(geometry) {
-        const pos = geometry.attributes.position;
-        const uv = geometry.attributes.uv;
-        const color = new Color();
-        let colorAttr = geometry.attributes.color;
-        if (!colorAttr) {
-            const colors = new Float32Array(pos.count * 3);
-            colorAttr = new BufferAttribute(colors, 3);
-            geometry.setAttribute("color", colorAttr);
-        }
-
-        for (let i = 0; i < pos.count; i++) {
-            const u = uv.getX(i), v = uv.getY(i);
-            this.#setColorFromCurvature(u, v, color);
-            colorAttr.array[3 * i] = color.r;
-            colorAttr.array[3 * i + 1] = color.g;
-            colorAttr.array[3 * i + 2] = color.b;
-        }
-        colorAttr.needsUpdate = true;
     }
 }
 
@@ -449,53 +460,17 @@ export class DifferentialGeometry {
 }
 
 export class GaussianCurvatureColorMapper extends ColorMapper {
-    constructor(surface, {
-        scale = 1.0,
-        clamp = 1.0
-    } = {}) {
+    constructor(surfaceDefinition, { scale = 1.0 } = {}) {
         super();
-        this.curvature = new DifferentialGeometry(surface.definition());
+        this.curvature = new DifferentialGeometry(surfaceDefinition);
         this.scale = scale;
-        this.clamp = clamp;
     }
 
-    #colorFromK(K, color) {
-        // Symmetric scale around 0
+    colorFor(u, v, color) {
+        const { K } = this.curvature.normalMeanGaussian(u, v);
         const t = Math.tanh(K * this.scale);
-        if (t > 0)
-            color.setHSL(0.0, 0.85, 0.5 + 0.2 * t); // positive (elliptic): red
-        else
-            color.setHSL(0.6, 0.85, 0.5 - 0.2 * t); // negative (hyperbolic): blue
-    }
-
-    apply(geometry) {
-        const pos = geometry.attributes.position;
-        const uv  = geometry.attributes.uv;
-
-        let colorAttr = geometry.attributes.color;
-        if (!colorAttr) {
-            const colors = new Float32Array(pos.count * 3);
-            colorAttr = new THREE.BufferAttribute(colors, 3);
-            geometry.setAttribute("color", colorAttr);
-        }
-
-        const color = new THREE.Color();
-        const epsilon = 1e-4;
-
-        for (let i = 0; i < pos.count; i++) {
-            const u = uv.getX(i);
-            const v = uv.getY(i);
-
-            const { N, H, K } = this.curvature.normalMeanGaussian(u, v);
-            if (Math.abs(K) < epsilon) continue; // black where Gaussian curvature equals zero
-            this.#colorFromK(K, color);
-
-            colorAttr.array[3 * i]     = color.r;
-            colorAttr.array[3 * i + 1] = color.g;
-            colorAttr.array[3 * i + 2] = color.b;
-        }
-
-        colorAttr.needsUpdate = true;
+        if (t > 0) color.setHSL(0.0, 0.85, 0.5 + 0.2 * t);
+        else       color.setHSL(0.6, 0.85, 0.5 - 0.2 * t);
     }
 }
 
@@ -693,49 +668,45 @@ export class NormalsView extends SurfaceView {
 }
 
 export class PrincipalCurvatureColorMapper extends ColorMapper {
-    constructor(surface, {
-        which = ColorMapper.ColorMode.K1,
-        scale = 1.0
-    } = {}) {
+    constructor(surfaceDefinition, { which = ColorMapper.ColorMode.K1, scale = 1.0 } = {}) {
         super();
-        this.curvature = new DifferentialGeometry(surface.definition());
+        this.curvature = new DifferentialGeometry(surfaceDefinition);
         this.which = which;
         this.scale = scale;
     }
 
-    apply(geometry) {
-        const pos = geometry.attributes.position;
-        const uv  = geometry.attributes.uv;
+    colorFor(u, v, color) {
+        const { k1, k2 } = this.curvature.principals(u, v);
+        const k = this.which === ColorMapper.ColorMode.K1 ? k1 : k2;
+        const t = Math.tanh(k * this.scale);
 
-        let colorAttr = geometry.attributes.color;
-        if (!colorAttr) {
-            colorAttr = new THREE.BufferAttribute(new Float32Array(pos.count * 3), 3);
-            geometry.setAttribute("color", colorAttr);
+        if (t > 0)
+            color.setHSL(0.0, 0.85, 0.5 + 0.25 * t); // red
+        else
+            color.setHSL(0.6, 0.85, 0.5 - 0.25 * t); // blue
+    }
+}
+
+export class SignedColorMapper extends ColorMapper {
+    /**
+     * @param {function(u,v):number} valueFn - function that determines the sign
+     * @param {Color} positiveColor - color for positive values
+     * @param {Color} negativeColor - color for negative values
+     */
+    constructor(valueFn, positiveColor = new Color(0x0077ff), negativeColor = new Color(0xff3300)) {
+        super();
+        this._valueFn = valueFn;
+        this._positiveColor = positiveColor;
+        this._negativeColor = negativeColor;
+    }
+
+    colorFor(u, v, color) {
+        const val = this._valueFn(u, v);
+        if (val >= 0) {
+            color.copy(this._positiveColor);
+        } else {
+            color.copy(this._negativeColor);
         }
-
-        const color = new THREE.Color();
-
-        for (let i = 0; i < pos.count; i++) {
-            const u = uv.getX(i);
-            const v = uv.getY(i);
-
-            let { k1, k2 } = this.curvature.principals(u, v);
-            const k = this.which === ColorMapper.ColorMode.K1 ? k1 : k2;
-
-            // diverging color map
-            const t = Math.tanh(k * this.scale);
-
-            if (t > 0)
-                color.setHSL(0.0, 0.85, 0.5 + 0.25 * t); // red
-            else
-                color.setHSL(0.6, 0.85, 0.5 - 0.25 * t); // blue
-
-            colorAttr.array[3 * i]     = color.r;
-            colorAttr.array[3 * i + 1] = color.g;
-            colorAttr.array[3 * i + 2] = color.b;
-        }
-
-        colorAttr.needsUpdate = true;
     }
 }
 
@@ -972,15 +943,15 @@ export class StandardSurfaceView extends SurfaceView {
                 this._colorMapper = new HeightColorMapper({ useBaseColor: false });
                 break;
             case ColorMapper.ColorMode.MEAN:
-                this._colorMapper = new CurvatureColorMapper(this._surface);
+                this._colorMapper = new CurvatureColorMapper(this._surface.definition());
                 break;
             case ColorMapper.ColorMode.K1:
             case ColorMapper.ColorMode.K2:
-                this._colorMapper = new PrincipalCurvatureColorMapper(this._surface, { which: surfaceParameters.colorMode, scale: 3.0 });
+                this._colorMapper = new PrincipalCurvatureColorMapper(this._surface.definition(), { which: surfaceParameters.colorMode, scale: 3.0 });
                 break;
             case ColorMapper.ColorMode.GAUSSIAN:
                 this._colorMapper =
-                    new GaussianCurvatureColorMapper(this._surface, {
+                    new GaussianCurvatureColorMapper(this._surface.definition(), {
                         scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
                     });
                 break;
