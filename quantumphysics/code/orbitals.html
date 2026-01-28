@@ -199,7 +199,6 @@
 
             this.#createContourFolder(gui);
             this.#createAxesFolder(gui);
-            this.#createMathFolder(gui);
             document.getElementById("gui-container").appendChild(gui.domElement);
         }
 
@@ -256,33 +255,6 @@
                 .name("V contours")
                 .onFinishChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
             contourFolder.close();
-        }
-
-        #createMathFolder(folder) {
-            const mathFolder = folder.addFolder("Math");
-
-            this._xFunction = mathFolder.add(this._surfaceCoordinates, "x").name("Fx(u,v) =")
-                .onFinishChange(expr => {
-                    const surfaceSpecification = this._surfaceController.surface
-                        .definition().specification().withParametrization({xFn: expr});
-                    this.#updateSurface(surfaceSpecification);
-                });
-
-            this._yFunction = mathFolder.add(this._surfaceCoordinates, "y").name("Fy(u,v) =")
-                .onFinishChange(expr => {
-                    const surfaceSpecification = this._surfaceController.surface
-                        .definition().specification().withParametrization({yFn: expr});
-                    this.#updateSurface(surfaceSpecification);
-                });
-
-            this._zFunction = mathFolder.add(this._surfaceCoordinates, "z").name("Fz(u,v) =")
-                .onFinishChange(expr => {
-                    const surfaceSpecification = this._surfaceController.surface
-                        .definition().specification().withParametrization({zFn: expr});
-                    this.#updateSurface(surfaceSpecification);
-                });
-
-            mathFolder.close();
         }
 
         #updateSurface(surfaceSpecification) {
