@@ -25,7 +25,7 @@
     camera.position.set(5, 10, 30);
     camera.lookAt(0, 0, 0);
 
-    const renderer = new WebGLRenderer({canvas, antialias:true});
+    const renderer = new WebGLRenderer({canvas, antialias:true, alpha: true});
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
     scene.add(new HemisphereLight(0xffffff, 0x222222, 0.6));

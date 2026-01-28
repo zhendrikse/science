@@ -165,7 +165,7 @@
     }
 
     function createRenderer() {
-        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: doubleSlitCanvas});
+        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: doubleSlitCanvas, alpha: true});
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
         renderer.setAnimationLoop( animate );

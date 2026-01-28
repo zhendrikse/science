@@ -29,7 +29,6 @@
     const Array2D = (r, c, value = 0) => [...Array(r)].map(_ => Array(c).fill(value));
     const vector = THREE.Vector3;
     const raindropsScene = new THREE.Scene();
-    raindropsScene.background = new THREE.Color(0x131313);
 
     const raindropCanvas = document.getElementById('raindropCanvas');
     raindropCanvas.focus();
@@ -158,8 +157,7 @@
     }
 
     function createRenderer() {
-        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: raindropCanvas});
-        renderer.setClearColor(0x191919, 1);
+        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: raindropCanvas, alpha: true});
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         return renderer;
     }

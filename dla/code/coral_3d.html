@@ -90,8 +90,7 @@
     }
 
     function createRenderer() {
-        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: canvas});
-        renderer.setClearColor(0x191919, 1);
+        const renderer = new THREE.WebGLRenderer({antialias: true, canvas: canvas, alpha: true});
         renderer.setSize(canvasWidth, canvasHeight);
         return renderer;
     }

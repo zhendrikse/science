@@ -33,13 +33,12 @@
     console.clear();
 
     const galaxyScene = new THREE.Scene();
-    galaxyScene.background = new THREE.Color(0x000000);
 
     const galaxyCamera = new THREE.PerspectiveCamera(25, 1, 1, 10000);
     const cameraBase = new vector(100, -1200, 400);
     galaxyCamera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
 
-    const galaxyRenderer = new THREE.WebGLRenderer( {antialias: true, canvas: galaxyCanvas} );
+    const galaxyRenderer = new THREE.WebGLRenderer( {antialias: true, canvas: galaxyCanvas, alpha: true} );
     galaxyRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     galaxyRenderer.shadowMap.enabled = false;
     galaxyRenderer.setAnimationLoop( animate );

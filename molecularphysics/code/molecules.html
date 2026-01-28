@@ -94,6 +94,7 @@
 
     const moleculeRenderer = new THREE.WebGLRenderer({
         antialias: true,
+        alpha: true,
         canvas: moleculeCanvas
     });
     moleculeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
