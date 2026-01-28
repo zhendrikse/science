@@ -80,13 +80,10 @@
             this._zFunction = null;
             this._uInterval = null;
             this._vInterval = null;
-            const intervals = surfaceController.surface.definition().specification().intervals;
-            this._intervalStrings = {
+            this._intervalInputs = {
                 u: "",
                 v: ""
             };
-            this._intervalStrings.u = `[${intervals[0][0]}, ${intervals[0][1]}]`;
-            this._intervalStrings.v = `[${intervals[1][0]}, ${intervals[1][1]}]`;
 
             this._surfaceCoordinates = {
                 x: surfaceController.surface.definition().specification().parametrization.xFn,
@@ -239,11 +236,11 @@
                     this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
-            this._uInterval = mathFolder.add(this._intervalStrings, "u")
+            this._uInterval = mathFolder.add(this._intervalInputs, "u")
                 .name("u ∈")
                 .onFinishChange(value => this.#updateIntervalFromString("u", value));
 
-            this._vInterval = mathFolder.add(this._intervalStrings, "v")
+            this._vInterval = mathFolder.add(this._intervalInputs, "v")
                 .name("v ∈")
                 .onFinishChange(value => this.#updateIntervalFromString("v", value));
             mathFolder.close();
@@ -288,16 +285,18 @@
             const newSurface = this._surfaceController.surface;
             surfaceParams.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
             this.#updateSurfaceDataTitleBox();
-            const surfaceSpecification = newSurface.definition().specification();
 
-            this._xFunction.setValue(surfaceSpecification.parametrization.xFn);
-            this._yFunction.setValue(surfaceSpecification.parametrization.yFn);
-            this._zFunction.setValue(surfaceSpecification.parametrization.zFn);
+            const specification = newSurface.definition().specification();
+            this._xFunction.setValue(specification.parametrization.xFn);
+            this._yFunction.setValue(specification.parametrization.yFn);
+            this._zFunction.setValue(specification.parametrization.zFn);
 
-            this._intervalStrings.u = `[${surfaceSpecification.intervals[0][0]}, ${surfaceSpecification.intervals[0][1]}]`;
-            this._intervalStrings.v = `[${surfaceSpecification.intervals[1][0]}, ${surfaceSpecification.intervals[1][1]}]`;
-            this._uInterval.setValue(this._intervalStrings.u);
-            this._vInterval.setValue(this._intervalStrings.v);
+            this._intervalInputs.u = `[${specification.intervals[0][0]}, ${specification.intervals[0][1]}]`;
+            this._intervalInputs.v = `[${specification.intervals[1][0]}, ${specification.intervals[1][1]}]`;
+
+            this._uInterval.setValue(this._intervalInputs.u);
+            this._vInterval.setValue(this._intervalInputs.v);
+
             updateViewForSurface();
         }
     }
