@@ -897,15 +897,15 @@ export class SurfaceSelector extends Group {
 
 export class SurfaceController {
     constructor(parentGroup, mathematicalSurface, surfaceParams, colorMapper, contoursView=null) {
-        this._parentGroup = parentGroup;
+        this._rootGroup = new Group();
+        parentGroup.add(this._rootGroup);
         this._surface = null;
         this._tangentFrame = null;
         this._normals = null;
-        this._contours = contoursView;
         this._colorMapper = colorMapper;
+        this._contours = contoursView;
 
         this.changeSurface(mathematicalSurface, surfaceParams);
-        this.updateContoursView(contoursView, surfaceParams.contourParameters);
         this.updateColorMapper(colorMapper);
     }
 
@@ -929,31 +929,51 @@ export class SurfaceController {
     }
 
     #createNormals() {
-        this._normals = new NormalsView(this._parentGroup, new Surface(this._surface.definition()));
-        this._normals.group.position.copy(this._surface.group.position);
-        this._normals.group.scale.set(
-            this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
+        this._normals = new NormalsView(this._rootGroup, new Surface(this._surface.definition()));
+        // this._normals.group.position.copy(this._surface.group.position);
+        // this._normals.group.scale.set(
+        //     this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
     }
 
     #createTangentFrameFrom(surfaceParams) {
         surfaceParams.tangentFrameParameters.scale = this._surface.boundingBox().max.length() * .4;
         this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
         this.updateTangentFrame(surfaceParams.tangentFrameParameters);
-        this._parentGroup.add(this._tangentFrame);
+        this._rootGroup.add(this._tangentFrame);
+    }
+
+    #createContours(oldContours, contourParameters) {
+        const contourParams = surfaceParams.contourParameters;
+        if (oldContours) {
+            let newContours = null;
+
+            if (contourParams.contourType === ContourType.ISO_PARAMETRIC)
+                newContours = new IsoparametricContoursView(this._surface.group, this._surface);
+            else  if (contourParams.contourType === ContourType.CURVATURE)
+                newContours = new CurvatureContoursView(this._surface.group, this._surface);
+
+            this.updateContoursView(newContours, contourParams);
+        }
     }
 
     changeSurface(mathematicalSurface, surfaceParams) {
+        const oldContours = this._contours; // Save before dispose!!
+
         this.#disposeCurrentSurface();
+
         this._surface = new StandardSurfaceView(
-            this._parentGroup,
+            this._rootGroup,
             mathematicalSurface,
             surfaceParams,
             this._colorMapper,
-            this._contours
+            null // temporarily no contours
         );
+
+        this.#createContours(oldContours, surfaceParams.contourParameters);
         this.#createNormals();
         this.#createTangentFrameFrom(surfaceParams);
     }
+
 
     get surface() { return this._surface; }
 
@@ -976,11 +996,7 @@ export class SurfaceController {
             this._surface.updateOpacity(surfaceParams.opacity);
         }
     }
-    rotateBy = (value) => {
-        this._surface.rotateBy(value);
-        this._tangentFrame.rotation.y += value;
-        this._normals.rotateBy(value);
-    }
+    rotateBy = (value) => this._rootGroup.rotation.y += value;
     resampleWith = (resolution) => this._surface.resampleWith(resolution);
 }
 
