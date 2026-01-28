@@ -15,7 +15,7 @@ td {
 }
 
 label {
-    color: yellow;
+    color: white;
     padding: 7px 7px;
     cursor: pointer;
     transition: all 0.3s;
@@ -72,7 +72,7 @@ figcaption {
 
 .applicationCanvas {
     display: block;
-    background-color: #131313;
+    background-color: transparent;
     width: 100%;
     max-width: 800px;
     aspect-ratio: 1 / 1;
@@ -89,7 +89,7 @@ figcaption {
 
 .guiContainer {
     margin-top: 0;
-    background: #131313;
+    background: transparent;
 }
 
 .titleDiv {
@@ -101,7 +101,7 @@ figcaption {
     font-weight: bold;
     text-shadow: 0 0 8px black;
     margin: 0;
-    background: #131313;
+    background: transparent;
 }
 
 .equationDiv {
@@ -112,7 +112,7 @@ figcaption {
     color: yellow;
     text-align: center;
     z-index: 10;
-    background: #131313;
+    background: transparent;
     padding: 5px;
 }
 

@@ -116,7 +116,7 @@
 
         const equationDiv = document.getElementById("flowerEquation");
         equationDiv.innerHTML = "$$\\begin{cases} \\phi &= " + n +
-            " \\cdot \\frac{137.5\pi}{180}^\\circ \\\\ r &= " + c + "\\sqrt{" + n + "} \\end{cases} \\Rightarrow "+
+            " \\cdot \\dfrac{137.5\\pi}{180} \\\\ r &= " + c + "\\sqrt{" + n + "} \\end{cases} \\Rightarrow "+
             " \\begin{cases} x &= r \\cdot \\cos(\\phi) \\\\ y &= r \\cdot \\sin(\\phi) \\end{cases}$$";
 
         if (window.MathJax?.typesetPromise)
