@@ -119,8 +119,11 @@
             " \\cdot \\frac{137.5\pi}{180}^\\circ \\\\ r &= " + c + "\\sqrt{" + n + "} \\end{cases} \\Rightarrow "+
             " \\begin{cases} x &= r \\cdot \\cos(\\phi) \\\\ y &= r \\cdot \\sin(\\phi) \\end{cases}$$";
 
-        if (window.MathJax && mathJaxReady)
+        if (window.MathJax?.typesetPromise)
             MathJax.typesetPromise([equationDiv]);
+
+        // if (window.MathJax && mathJaxReady)
+        //     MathJax.typesetPromise([equationDiv]);
     }
 
     window.addEventListener('resize', () => {
@@ -129,13 +132,20 @@
 
     resizeCanvas();
     setColoringSchemeTo(4);
-    let mathJaxReady = false;
-    if (window.MathJax) {
-        MathJax.startup.promise.then(() => {
-            mathJaxReady = true;
-            updateEquationDiv(c, n); // initial render
-        });
-    }
+    //
+    // let mathJaxReady = false;
+    // function whenMathJaxReady(callback) {
+    //     if (window.MathJax && MathJax.startup && MathJax.startup.promise)
+    //         MathJax.startup.promise.then(callback);
+    //     else
+    //         setTimeout(() => whenMathJaxReady(callback), 50);
+    // }
+    //
+    // whenMathJaxReady(() => {
+    //     mathJaxReady = true;
+    //     updateEquationDiv(c, n);
+    // });
+
 
     window.requestAnimationFrame(function loop() {
         if (n < numberOfDots)
