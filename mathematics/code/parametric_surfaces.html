@@ -302,15 +302,7 @@
     }
 
     function createSurfaceFrom(specification) {
-        const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(specification);
-        const mathematicalSurface = new Surface(surfaceDefinition);
-        return new StandardSurfaceView(
-            worldGroup,
-            mathematicalSurface,
-            surfaceParams,
-            new HeightColorMapper({useBaseColor: false}),
-            new IsoparametricContoursView(worldGroup, mathematicalSurface)
-        );
+        return new Surface(new LiteralStringBasedSurfaceDefinition(specification));
     }
 
     function updateViewForSurface() {
@@ -768,7 +760,13 @@
     });
 
     const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
-    const surfaceController = new SurfaceController(worldGroup, createSurfaceFrom(defaultSurfaceSpec), surfaceParams);
+    const surfaceController = new SurfaceController(
+        worldGroup,
+        createSurfaceFrom(defaultSurfaceSpec),
+        surfaceParams,
+        new HeightColorMapper({useBaseColor: false}),
+        new IsoparametricContoursView(worldGroup, mathematicalSurface)
+    );
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
     updateViewForSurface();
 

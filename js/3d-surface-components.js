@@ -897,7 +897,7 @@ export class SurfaceSelector extends Group {
 }
 
 export class SurfaceController {
-    constructor(parentGroup, mathematicalSurface, surfaceParams, colorMapper) {
+    constructor(parentGroup, mathematicalSurface, surfaceParams, colorMapper, contoursView=null) {
         this._parentGroup = parentGroup;
         this._surface = null;
         this._tangentFrame = null;
@@ -905,7 +905,7 @@ export class SurfaceController {
         this._colorMapper = colorMapper;
 
         this.changeSurface(mathematicalSurface, surfaceParams);
-        this.updateContours(surfaceParams.contourParameters);
+        this.updateContoursView(contoursView, surfaceParams.contourParameters);
         this.updateColor(surfaceParams);
     }
 
@@ -939,13 +939,14 @@ export class SurfaceController {
         this._parentGroup.add(this._tangentFrame);
     }
 
-    changeSurface(mathematicalSurface, surfaceParams) {
+    changeSurface(mathematicalSurface, surfaceParams, contoursView=null) {
         this.#disposeCurrentSurface();
         this._surface = new StandardSurfaceView(
             this._parentGroup,
             mathematicalSurface,
             surfaceParams,
-            this._colorMapper);
+            this._colorMapper,
+            contoursView);
         this.#createNormals();
         this.#createTangentFrameFrom(surfaceParams);
     }
