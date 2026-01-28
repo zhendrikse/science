@@ -942,8 +942,7 @@ export class SurfaceController {
         this._rootGroup.add(this._tangentFrame);
     }
 
-    #createContours(oldContours, contourParameters) {
-        const contourParams = surfaceParams.contourParameters;
+    #createContours(oldContours, contourParams) {
         if (oldContours) {
             let newContours = null;
 

@@ -555,8 +555,7 @@ export class Plot3DView {
     constructor(scene, canvas, boundingBox) {
         this._scene = scene;
         this._camera = new PerspectiveCamera(45, 1, 0.1, 100);
-        this._renderer = new WebGLRenderer({ antialias: true, canvas });
-
+        this._renderer = new WebGLRenderer({ alpha: true, antialias: true, canvas: canvas });
         this._controls = new OrbitControls(this._camera, canvas);
         this._controls.enableDamping = true;
         this._controls.dampingFactor = 0.08;
