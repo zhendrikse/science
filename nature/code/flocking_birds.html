@@ -36,7 +36,7 @@
     camera.position.set( 0, 0, 50 );
     camera.lookAt( scene.position );
 
-    const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: birdsCanvas} );
+    const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: birdsCanvas, alpha: true} );
     renderer.setAnimationLoop( animationLoop );
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
