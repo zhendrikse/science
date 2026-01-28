@@ -7,7 +7,7 @@
     }
 </script>
 
-<div class="titleDiv" id="vectorFieldTitle"></div>
+<div class="equationDiv" id="vectorFieldEquation"></div>
 <div class="canvasWrapper" id="quiverContainer">
     <canvas class="applicationCanvas" id="quiverCanvas"></canvas><br/>
 </div>
@@ -146,7 +146,7 @@
     window.addEventListener("resize", resize);
     resize();
 
-    const equationDiv = document.getElementById("vectorFieldTitle");
+    const equationDiv = document.getElementById("vectorFieldEquation");
     equationDiv.innerHTML = vectorField1.meta;
     if (window.MathJax) MathJax.typesetPromise([equationDiv]);
 
