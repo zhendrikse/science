@@ -917,7 +917,20 @@ export class SurfaceController {
         this.updateColorMapper(colorMapper);
     }
 
-    updateColorMapper = (surfaceParams) => {
+    updateColorMapper = (colorMapper) => {
+        this._colorMapper = colorMapper;
+        this._surface.updateColorMapper(colorMapper);
+    }
+    updateContoursView = (contoursView, contourParameters) => {
+        this._contours = contoursView;
+        this._surface.updateContoursView(contoursView);
+        this.updateContours(contourParameters);
+    }
+
+    updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
+    surfaceBoundingBox = () => this._surface.boundingBox();
+
+    onColorModeChange = (surfaceParams) => {
         let colorMapper = null;
         switch (surfaceParams.colorMode) {
             case ColorMapper.ColorMode.HEIGHT:
@@ -949,7 +962,7 @@ export class SurfaceController {
         this._colorMapper = colorMapper;
     }
 
-    updateContoursView = (contourParams) => {
+    onContourTypeChange = (contourParams) => {
         let contoursView = null;
         switch (contourParams.contourType) {
             case ContourType.NONE:
@@ -965,9 +978,6 @@ export class SurfaceController {
         this._contours = contoursView;
         this.updateContours(contourParams);
     }
-
-    updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
-    surfaceBoundingBox = () => this._surface.boundingBox();
 
     #disposeCurrentSurface() {
         this._surface?.dispose();

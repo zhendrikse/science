@@ -109,21 +109,21 @@
             tangentFolder.add(surfaceParams.tangentFrameParameters, 'visible')
                 .name("Show").onChange(value => {
                 surfaceParams.tangentFrameParameters.visible = value;
-                surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters);
+                this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters);
             });
             tangentFolder.add(surfaceParams.tangentFrameParameters, "u", 0, 1, 0.01)
                 .name("u-parameter")
-                .onChange(value => surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+                .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
 
             tangentFolder.add(surfaceParams.tangentFrameParameters, "v", 0, 1, 0.01)
                 .name("v-parameter")
-                .onChange(value => surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+                .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
             tangentFolder.add(surfaceParams.tangentFrameParameters, 'showAxes')
                 .name("Axes (arrows)")
-                .onChange(value => surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+                .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
             tangentFolder.add(surfaceParams.tangentFrameParameters, 'showPrincipals')
                 .name("Principal directions")
-                .onChange(value => surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+                .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
             tangentFolder.close();
         }
 
@@ -131,7 +131,7 @@
             const contourFolder = folder.addFolder("Contours");
             contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
                 .name("Contour type")
-                .onChange(value => this._surfaceController.updateContoursView(surfaceParams.contourParameters));
+                .onChange(value => this._surfaceController.onContourTypeChange(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
                 .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateContoursView(surfaceParams.contourParameters);});
@@ -148,7 +148,7 @@
             const surfaceFolder = folder.addFolder("Surface");
             surfaceFolder.add(surfaceParams, "colorMode", Object.values(ColorMapper.ColorMode))
                 .name("Color Mode")
-                .onChange((value) => this._surfaceController.updateColorMapper(surfaceParams));
+                .onChange((value) => this._surfaceController.onColorModeChange(surfaceParams));
 
             surfaceFolder.add(surfaceParams, 'baseColor')
                 .name("Base color")
@@ -184,20 +184,6 @@
             axesFolder.add(axesParams, 'annotations')
                 .name("Annotations").onChange(value => axesController.updateSettings());
             axesFolder.close();
-        }
-
-        #updateIntervals() {
-            const spec = this._surfaceController.surface
-                .definition().specification()
-                .withIntervals([
-                    [this._surfaceIntervals.uMin, this._surfaceIntervals.uMax],
-                    [this._surfaceIntervals.vMin, this._surfaceIntervals.vMax]
-                ]);
-
-            const definition = new LiteralStringBasedSurfaceDefinition(spec);
-            this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
-            updateViewForSurface();
-            this.update();
         }
 
         #updateIntervalFromString(param, value) {
