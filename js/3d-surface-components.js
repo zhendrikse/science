@@ -901,8 +901,8 @@ export class SurfaceController {
         this._surface = null;
         this._tangentFrame = null;
         this._normals = null;
-        this._contours = null;
-        this._colorMapper = null;
+        this._contours = contoursView;
+        this._colorMapper = colorMapper;
 
         this.changeSurface(mathematicalSurface, surfaceParams);
         this.updateContoursView(contoursView, surfaceParams.contourParameters);
