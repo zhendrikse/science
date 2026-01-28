@@ -121,9 +121,6 @@
 
         if (window.MathJax?.typesetPromise)
             MathJax.typesetPromise([equationDiv]);
-
-        // if (window.MathJax && mathJaxReady)
-        //     MathJax.typesetPromise([equationDiv]);
     }
 
     window.addEventListener('resize', () => {
@@ -132,24 +129,11 @@
 
     resizeCanvas();
     setColoringSchemeTo(4);
-    //
-    // let mathJaxReady = false;
-    // function whenMathJaxReady(callback) {
-    //     if (window.MathJax && MathJax.startup && MathJax.startup.promise)
-    //         MathJax.startup.promise.then(callback);
-    //     else
-    //         setTimeout(() => whenMathJaxReady(callback), 50);
-    // }
-    //
-    // whenMathJaxReady(() => {
-    //     mathJaxReady = true;
-    //     updateEquationDiv(c, n);
-    // });
-
 
     window.requestAnimationFrame(function loop() {
         if (n < numberOfDots)
             draw(n++);
+        updateEquationDiv(c, n);
 
         window.requestAnimationFrame(loop);
     });
