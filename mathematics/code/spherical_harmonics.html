@@ -119,22 +119,7 @@
             const contourFolder = folder.addFolder("Contours");
             contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
                 .name("Contour type")
-                .onChange(value => {
-                    const surface = this._surfaceController.surface;
-                    const contourParams = surfaceParams.contourParameters;
-                    switch (value) {
-                        case ContourType.NONE:
-                            this._surfaceController.updateContoursView(null, contourParams);
-                            break;
-                        case ContourType.CURVATURE:
-                            this._surfaceController.updateContoursView(new CurvatureContoursView(surface.group, surface), contourParams);
-                            break;
-                        case ContourType.ISO_PARAMETRIC:
-                            this._surfaceController.updateContoursView(new IsoparametricContoursView(surface.group, surface), contourParams);
-                            break;
-                    }
-                    this._surfaceController.updateContours(surfaceParams.contourParameters)
-                });
+                .onChange(value => this._surfaceController.onContourTypeChange(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
                 .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateContours(surfaceParams.contourParameters);});

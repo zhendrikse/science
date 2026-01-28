@@ -18,14 +18,12 @@
 <div class="guiContainer" id="gui-container"></div>
 
 <script type="module">
-    import {Scene, Color, Group, Box3, PerspectiveCamera, WebGLRenderer, Vector3, Vector2, Raycaster,
+    import {Scene, Group, Box3, PerspectiveCamera, WebGLRenderer, Vector3, Vector2, Raycaster,
         DirectionalLight, HemisphereLight} from "three";
     import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { ViewParameters, TangentFrameParameters, ColorMapper, ContourType, SurfaceSelector, SurfaceController,
-        HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, Surface,
-        IsoparametricContoursView, CurvatureContoursView, GaussianCurvatureColorMapper,
-        PrincipalCurvatureColorMapper, CurvatureColorMapper}
+        HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, Surface, IsoparametricContoursView }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
@@ -80,18 +78,21 @@
             this._xFunction = null;
             this._yFunction = null;
             this._zFunction = null;
+            this._uInterval = null;
+            this._vInterval = null;
+            const intervals = surfaceController.surface.definition().specification().intervals;
+            this._intervalStrings = {
+                u: "",
+                v: ""
+            };
+            this._intervalStrings.u = `[${intervals[0][0]}, ${intervals[0][1]}]`;
+            this._intervalStrings.v = `[${intervals[1][0]}, ${intervals[1][1]}]`;
+
             this._surfaceCoordinates = {
                 x: surfaceController.surface.definition().specification().parametrization.xFn,
                 y: surfaceController.surface.definition().specification().parametrization.yFn,
                 z: surfaceController.surface.definition().specification().parametrization.zFn
             }
-            this._intervalStrings = {
-                u: "",
-                v: ""
-            };
-            const intervals = surfaceController.surface.definition().specification().intervals;
-            this._intervalStrings.u = `[${intervals[0][0]}, ${intervals[0][1]}]`;
-            this._intervalStrings.v = `[${intervals[1][0]}, ${intervals[1][1]}]`;
 
             const dummyToggle = {category: Category.NON_ORIENTABLE};
             controls.add(dummyToggle, 'category', Object.values(Category))
@@ -209,7 +210,6 @@
             this.update();
         }
 
-
         #createMathFolder(folder) {
             const mathFolder = folder.addFolder("Math");
 
@@ -239,11 +239,11 @@
                     this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
-            mathFolder.add(this._intervalStrings, "u")
+            this._uInterval = mathFolder.add(this._intervalStrings, "u")
                 .name("u ∈")
                 .onFinishChange(value => this.#updateIntervalFromString("u", value));
 
-            mathFolder.add(this._intervalStrings, "v")
+            this._vInterval = mathFolder.add(this._intervalStrings, "v")
                 .name("v ∈")
                 .onFinishChange(value => this.#updateIntervalFromString("v", value));
             mathFolder.close();
@@ -289,9 +289,15 @@
             surfaceParams.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
             this.#updateSurfaceDataTitleBox();
             const surfaceSpecification = newSurface.definition().specification();
+
             this._xFunction.setValue(surfaceSpecification.parametrization.xFn);
             this._yFunction.setValue(surfaceSpecification.parametrization.yFn);
             this._zFunction.setValue(surfaceSpecification.parametrization.zFn);
+
+            this._intervalStrings.u = `[${surfaceSpecification.intervals[0][0]}, ${surfaceSpecification.intervals[0][1]}]`;
+            this._intervalStrings.v = `[${surfaceSpecification.intervals[1][0]}, ${surfaceSpecification.intervals[1][1]}]`;
+            this._uInterval.setValue(this._intervalStrings.u);
+            this._vInterval.setValue(this._intervalStrings.v);
             updateViewForSurface();
         }
     }
