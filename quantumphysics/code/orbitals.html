@@ -20,7 +20,7 @@
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
     import {  Utils, SignedOpacityColorMapper, ViewParameters, ContourType, TangentFrameParameters, ContourParameters,
-        SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface, SurfaceController,
+        SurfaceSpecification, LiteralStringBasedSurfaceDefinition, Surface, SurfaceController,
         IsoparametricContoursView, CurvatureContoursView }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
@@ -182,11 +182,6 @@
             this._axesController = axesController;
             this._surfaceController = surfaceController;
             this._plot3d = plot3d;
-            this._surfaceCoordinates = {
-                x: surfaceController.surface.definition().specification().parametrization.xFn,
-                y: surfaceController.surface.definition().specification().parametrization.yFn,
-                z: surfaceController.surface.definition().specification().parametrization.zFn
-            }
 
             gui.add(params, "surfacePreset", OrbitalPresets)
                 .name("Orbital")
@@ -259,17 +254,10 @@
 
         #updateSurface(surfaceSpecification) {
             const surfaceDef = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-            const newSurface = new StandardSurfaceView(
-                worldGroup,
-                new Surface(surfaceDef),
-                surfaceParams,
-                new SignedOpacityColorMapper(surfaceSpecification.signedFieldFunction));
-            this._surfaceController.changeSurface(newSurface, surfaceParams);
+            this._surfaceController.changeSurface(new Surface(surfaceDef), surfaceParams);
+            this._surfaceController.updateColorMapper(new SignedOpacityColorMapper(surfaceSpecification.signedFieldFunction));
             this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
             this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9));
-            this._xFunction.setValue(surfaceSpecification.parametrization.xFn);
-            this._yFunction.setValue(surfaceSpecification.parametrization.yFn);
-            this._zFunction.setValue(surfaceSpecification.parametrization.zFn);
         }
     }
 
@@ -296,13 +284,9 @@
     });
 
     const defaultSurfaceSpec = new OrbitalSurfaceSpecification(surfaceData[9]);
-    const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
-    const defaultSurface = new StandardSurfaceView(
-        worldGroup,
-        new Surface(defaultSurfaceDef),
-        surfaceParams,
-        new SignedOpacityColorMapper(defaultSurfaceSpec.signedFieldFunction));
-    const surfaceController = new SurfaceController(worldGroup, defaultSurface, surfaceParams);
+    const surfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
+    const orbitalColorMapper = new SignedOpacityColorMapper(defaultSurfaceSpec.signedFieldFunction);
+    const surfaceController = new SurfaceController(worldGroup, new Surface(surfaceDef), surfaceParams, orbitalColorMapper);
 
     // Scale scene according to current surface
     axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
