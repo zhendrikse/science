@@ -278,6 +278,14 @@ export class SurfaceSpecification {
             }
         });
     }
+
+    withIntervals(intervals) {
+        return new SurfaceSpecification({
+            meta: this._meta,
+            parametrization: this._parametrization,
+            intervals
+        });
+    }
 }
 
 export class SurfaceView {
@@ -909,14 +917,53 @@ export class SurfaceController {
         this.updateColorMapper(colorMapper);
     }
 
-    updateColorMapper = (colorMapper) => {
+    updateColorMapper = (surfaceParams) => {
+        let colorMapper = null;
+        switch (surfaceParams.colorMode) {
+            case ColorMapper.ColorMode.HEIGHT:
+                colorMapper = new HeightColorMapper({useBaseColor: false});
+                break;
+            case ColorMapper.ColorMode.MEAN:
+                colorMapper = new CurvatureColorMapper(surface.definition());
+                break;
+            case ColorMapper.ColorMode.K1:
+            case ColorMapper.ColorMode.K2:
+                colorMapper = new PrincipalCurvatureColorMapper(surface.definition(), {
+                    which: surfaceParams.colorMode,
+                    scale: 3.0
+                });
+                break;
+            case ColorMapper.ColorMode.GAUSSIAN:
+                colorMapper = new GaussianCurvatureColorMapper(surface.definition(), {
+                    scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
+                });
+                break;
+            case ColorMapper.ColorMode.BASE:
+            default:
+                colorMapper = new HeightColorMapper({
+                    baseColor: surfaceParams.baseColor,
+                    useBaseColor: true
+                });
+        }
+
         this._colorMapper = colorMapper;
-        this._surface.updateColorMapper(colorMapper);
     }
-    updateContoursView = (contoursView, contourParameters) => {
+
+    updateContoursView = (contourParams) => {
+        let contoursView = null;
+        switch (contourParams.contourType) {
+            case ContourType.NONE:
+                break;
+            case ContourType.CURVATURE:
+                contoursView = new CurvatureContoursView(this._surface.group, this._surface);
+                break;
+            case ContourType.ISO_PARAMETRIC:
+                contoursView = new IsoparametricContoursView(this._surface.group, this._surface);
+                break;
+        }
+
         this._contours = contoursView;
-        this._surface.updateContoursView(contoursView);
-        this.updateContours(contourParameters);
+        this.updateContours(contourParams);
     }
 
     updateContours = (contourParameters) => this._surface.updateContours(contourParameters);

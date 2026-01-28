@@ -23,7 +23,7 @@
     import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { ViewParameters, TangentFrameParameters, ColorMapper, ContourType, SurfaceSelector, SurfaceController,
-        HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, StandardSurfaceView, Surface,
+        HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, Surface,
         IsoparametricContoursView, CurvatureContoursView, GaussianCurvatureColorMapper,
         PrincipalCurvatureColorMapper, CurvatureColorMapper}
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
@@ -77,14 +77,21 @@
             const controls = new GUI({width: "100%", autoPlace: false});
             document.getElementById("gui-container").appendChild(controls.domElement);
 
-            this.xFunction = null;
-            this.yFunction = null;
-            this.zFunction = null;
-            this.surfaceCoordinates = {
+            this._xFunction = null;
+            this._yFunction = null;
+            this._zFunction = null;
+            this._surfaceCoordinates = {
                 x: surfaceController.surface.definition().specification().parametrization.xFn,
                 y: surfaceController.surface.definition().specification().parametrization.yFn,
                 z: surfaceController.surface.definition().specification().parametrization.zFn
             }
+            this._intervalStrings = {
+                u: "",
+                v: ""
+            };
+            const intervals = surfaceController.surface.definition().specification().intervals;
+            this._intervalStrings.u = `[${intervals[0][0]}, ${intervals[0][1]}]`;
+            this._intervalStrings.v = `[${intervals[1][0]}, ${intervals[1][1]}]`;
 
             const dummyToggle = {category: Category.NON_ORIENTABLE};
             controls.add(dummyToggle, 'category', Object.values(Category))
@@ -124,25 +131,10 @@
             const contourFolder = folder.addFolder("Contours");
             contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
                 .name("Contour type")
-                .onChange(value => {
-                    const surface = this._surfaceController.surface;
-                    const contourParams = surfaceParams.contourParameters;
-                    switch (value) {
-                        case ContourType.NONE:
-                            this._surfaceController.updateContoursView(null, contourParams);
-                            break;
-                        case ContourType.CURVATURE:
-                            this._surfaceController.updateContoursView(new CurvatureContoursView(surface.group, surface), contourParams);
-                            break;
-                        case ContourType.ISO_PARAMETRIC:
-                            this._surfaceController.updateContoursView(new IsoparametricContoursView(surface.group, surface), contourParams);
-                            break;
-                    }
-                    this._surfaceController.updateContours(surfaceParams.contourParameters)
-                });
+                .onChange(value => this._surfaceController.updateContoursView(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
-                .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateContours(surfaceParams.contourParameters);});
+                .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateContoursView(surfaceParams.contourParameters);});
             contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
                 .name("U contours")
                 .onFinishChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
@@ -156,35 +148,7 @@
             const surfaceFolder = folder.addFolder("Surface");
             surfaceFolder.add(surfaceParams, "colorMode", Object.values(ColorMapper.ColorMode))
                 .name("Color Mode")
-                .onChange((value) => {
-                    const surface = this._surfaceController.surface;
-                    switch (value) {
-                        case ColorMapper.ColorMode.HEIGHT:
-                            this._surfaceController.updateColorMapper(new HeightColorMapper({useBaseColor: false}));
-                            break;
-                        case ColorMapper.ColorMode.MEAN:
-                            this._surfaceController.updateColorMapper(new CurvatureColorMapper(surface.definition()));
-                            break;
-                        case ColorMapper.ColorMode.K1:
-                        case ColorMapper.ColorMode.K2:
-                            this._surfaceController.updateColorMapper(PrincipalCurvatureColorMapper(surface.definition(), {
-                                which: surfaceParams.colorMode,
-                                scale: 3.0
-                            }));
-                            break;
-                        case ColorMapper.ColorMode.GAUSSIAN:
-                            this._surfaceController.updateColorMapper(new GaussianCurvatureColorMapper(surface.definition(), {
-                                scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
-                            }));
-                            break;
-                        case ColorMapper.ColorMode.BASE:
-                        default:
-                            this._surfaceController.updateColorMapper(new HeightColorMapper({
-                                baseColor: surfaceParams.baseColor,
-                                useBaseColor: true
-                            }));
-                    }
-                });
+                .onChange((value) => this._surfaceController.updateColorMapper(surfaceParams));
 
             surfaceFolder.add(surfaceParams, 'baseColor')
                 .name("Base color")
@@ -222,10 +186,48 @@
             axesFolder.close();
         }
 
+        #updateIntervals() {
+            const spec = this._surfaceController.surface
+                .definition().specification()
+                .withIntervals([
+                    [this._surfaceIntervals.uMin, this._surfaceIntervals.uMax],
+                    [this._surfaceIntervals.vMin, this._surfaceIntervals.vMax]
+                ]);
+
+            const definition = new LiteralStringBasedSurfaceDefinition(spec);
+            this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
+            updateViewForSurface();
+            this.update();
+        }
+
+        #updateIntervalFromString(param, value) {
+            // Accept: [a, b]  or  a, b
+            const match = value.match(/\[\s*(.+?)\s*,\s*(.+?)\s*\]/)
+                ?? value.match(/\s*(.+?)\s*,\s*(.+?)\s*/);
+
+            if (!match) return; // silently ignore invalid input
+
+            const [_, min, max] = match;
+
+            const oldSpec = this._surfaceController.surface.definition().specification();
+            const intervals = structuredClone(oldSpec.intervals);
+
+            if (param === "u") intervals[0] = [min, max];
+            if (param === "v") intervals[1] = [min, max];
+
+            const newSpec = oldSpec.withIntervals(intervals);
+            const definition = new LiteralStringBasedSurfaceDefinition(newSpec);
+
+            this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
+            updateViewForSurface();
+            this.update();
+        }
+
+
         #createMathFolder(folder) {
             const mathFolder = folder.addFolder("Math");
 
-            this.xFunction = mathFolder.add(this.surfaceCoordinates, "x").name("Fx(u,v) =")
+            this._xFunction = mathFolder.add(this._surfaceCoordinates, "x").name("Fx(u,v) =")
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({xFn: expr});
@@ -234,7 +236,7 @@
                     updateViewForSurface();
                 });
 
-            this.yFunction = mathFolder.add(this.surfaceCoordinates, "y").name("Fy(u,v) =")
+            this._yFunction = mathFolder.add(this._surfaceCoordinates, "y").name("Fy(u,v) =")
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
@@ -243,7 +245,7 @@
                     updateViewForSurface();
                 });
 
-            this.zFunction = mathFolder.add(this.surfaceCoordinates, "z").name("Fz(u,v) =")
+            this._zFunction = mathFolder.add(this._surfaceCoordinates, "z").name("Fz(u,v) =")
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({zFn: expr});
@@ -251,7 +253,13 @@
                     this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
+            mathFolder.add(this._intervalStrings, "u")
+                .name("u ∈")
+                .onFinishChange(value => this.#updateIntervalFromString("u", value));
 
+            mathFolder.add(this._intervalStrings, "v")
+                .name("v ∈")
+                .onFinishChange(value => this.#updateIntervalFromString("v", value));
             mathFolder.close();
         }
 
@@ -295,9 +303,9 @@
             surfaceParams.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
             this.#updateSurfaceDataTitleBox();
             const surfaceSpecification = newSurface.definition().specification();
-            this.xFunction.setValue(surfaceSpecification.parametrization.xFn);
-            this.yFunction.setValue(surfaceSpecification.parametrization.yFn);
-            this.zFunction.setValue(surfaceSpecification.parametrization.zFn);
+            this._xFunction.setValue(surfaceSpecification.parametrization.xFn);
+            this._yFunction.setValue(surfaceSpecification.parametrization.yFn);
+            this._zFunction.setValue(surfaceSpecification.parametrization.zFn);
             updateViewForSurface();
         }
     }
