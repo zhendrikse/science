@@ -159,7 +159,8 @@
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({xFn: expr});
-                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
+                    const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                    this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
 
@@ -167,7 +168,8 @@
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
-                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
+                    const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                    this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
 
@@ -175,7 +177,8 @@
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({zFn: expr});
-                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
+                    const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                    this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
 
@@ -411,8 +414,8 @@
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         ring.onSelectTo(selectedRingSurface);
 
-        const newSurface = createSurfaceFrom(selectedRingSurface.definition().specification());
-        surfaceController.changeSurface(newSurface, surfaceParams);
+        const definition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
+        surfaceController.changeSurface(new Surface(definition), surfaceParams);
         updateViewForSurface();
         controlsGui.update();
     });

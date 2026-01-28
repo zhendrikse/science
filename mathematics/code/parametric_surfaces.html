@@ -231,7 +231,8 @@
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({xFn: expr});
-                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
+                    const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                    this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
 
@@ -239,7 +240,8 @@
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
-                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
+                    const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                    this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
 
@@ -247,7 +249,8 @@
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({zFn: expr});
-                    this._surfaceController.changeSurface(createSurfaceFrom(specification), surfaceParams);
+                    const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                    this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
 
@@ -299,10 +302,6 @@
             this.zFunction.setValue(surfaceSpecification.parametrization.zFn);
             updateViewForSurface();
         }
-    }
-
-    function createSurfaceFrom(specification) {
-        return new Surface(new LiteralStringBasedSurfaceDefinition(specification));
     }
 
     function updateViewForSurface() {
@@ -760,12 +759,13 @@
     });
 
     const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
+    const mathSurface = new Surface(new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec));
     const surfaceController = new SurfaceController(
         worldGroup,
-        createSurfaceFrom(defaultSurfaceSpec),
+        mathSurface,
         surfaceParams,
         new HeightColorMapper({useBaseColor: false}),
-        new IsoparametricContoursView(worldGroup, mathematicalSurface)
+        new IsoparametricContoursView(worldGroup, mathSurface)
     );
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
     updateViewForSurface();
@@ -811,8 +811,8 @@
         const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
         ring.onSelectTo(selectedRingSurface);
 
-        const newSurface = createSurfaceFrom(selectedRingSurface.definition().specification());
-        surfaceController.changeSurface(newSurface, surfaceParams);
+        const definition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
+        surfaceController.changeSurface(new Surface(definition), surfaceParams);
         updateViewForSurface();
         controlsGui.update();
     });
