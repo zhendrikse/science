@@ -620,7 +620,6 @@ export class StandardSurfaceView extends SurfaceView {
     }
 
     updateColorMapper = (mapper) => { this._colorMapper = mapper; this._colorMapper.apply(this._geometry); }
-    updateColor() { this._colorMapper.apply(this._geometry); }
     updateOpacity = (value) => this._material.opacity = value;
 
     resampleWith(resolution) {
@@ -902,20 +901,24 @@ export class SurfaceController {
         this._surface = null;
         this._tangentFrame = null;
         this._normals = null;
-        this._colorMapper = colorMapper;
+        this._contours = null;
+        this._colorMapper = null;
 
         this.changeSurface(mathematicalSurface, surfaceParams);
         this.updateContoursView(contoursView, surfaceParams.contourParameters);
-        this.updateColor(surfaceParams);
+        this.updateColorMapper(colorMapper);
     }
 
-    updateColorMapper = (colorMapper) => this._surface.updateColorMapper(colorMapper);
+    updateColorMapper = (colorMapper) => {
+        this._colorMapper = colorMapper;
+        this._surface.updateColorMapper(colorMapper);
+    }
     updateContoursView = (contoursView, contourParameters) => {
+        this._contours = contoursView;
         this._surface.updateContoursView(contoursView);
         this.updateContours(contourParameters);
     }
 
-    updateColor = () => this._surface.updateColor();
     updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
     surfaceBoundingBox = () => this._surface.boundingBox();
 
@@ -939,14 +942,15 @@ export class SurfaceController {
         this._parentGroup.add(this._tangentFrame);
     }
 
-    changeSurface(mathematicalSurface, surfaceParams, contoursView=null) {
+    changeSurface(mathematicalSurface, surfaceParams) {
         this.#disposeCurrentSurface();
         this._surface = new StandardSurfaceView(
             this._parentGroup,
             mathematicalSurface,
             surfaceParams,
             this._colorMapper,
-            contoursView);
+            this._contours
+        );
         this.#createNormals();
         this.#createTangentFrameFrom(surfaceParams);
     }
