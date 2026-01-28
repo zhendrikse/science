@@ -177,13 +177,7 @@
 
         #updateSurface(surfaceSpecification) {
             const surfaceDef = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-            const newSurface = new StandardSurfaceView(
-                worldGroup,
-                new Surface(surfaceDef),
-                surfaceParams,
-                new HeightColorMapper({useBaseColor: false})
-            );
-            this._surfaceController.changeSurface(newSurface, surfaceParams);
+            this._surfaceController.changeSurface(new Surface(surfaceDef), surfaceParams);
             this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
             this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {translationY: -2});
             this._xFunction.setValue(surfaceSpecification.parametrization.xFn);
@@ -217,14 +211,8 @@
 
     const defaultSurfaceSpec = new SurfaceSpecification(surfaceData[0]);
     const defaultSurfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
-    const mathematicalSurface = new Surface(defaultSurfaceDef);
-    const defaultSurface = new StandardSurfaceView(
-        worldGroup,
-        mathematicalSurface,
-        surfaceParams,
-        new HeightColorMapper({useBaseColor: false})
-    );
-    const surfaceController = new SurfaceController(worldGroup, defaultSurface, surfaceParams);
+    const mathSurface = new Surface(defaultSurfaceDef);
+    const surfaceController = new SurfaceController(worldGroup, mathSurface, surfaceParams, new HeightColorMapper({useBaseColor: false}));
 
     // Scale scene according to current surface
     axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
