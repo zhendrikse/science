@@ -33,19 +33,17 @@
     const mainCanvas = document.getElementById("surfaceCanvas");
 
     const surfacePlotScene = new Scene();
-    surfacePlotScene.background = new Color(0x131313);
     const worldGroup = new Group();
     surfacePlotScene.add(worldGroup);
 
     const ringCanvas = document.getElementById("ringCanvas");
     const ringScene = new Scene();
-    ringScene.background = new Color(0x131313);
 
     const ringCamera = new PerspectiveCamera(45, ringCanvas.clientWidth / ringCanvas.clientHeight, 0.1, 100);
     ringCamera.position.set(8, 5, 8);
     ringCamera.lookAt(0, 0, 0);
 
-    const ringRenderer = new WebGLRenderer({canvas: ringCanvas, antialias: true});
+    const ringRenderer = new WebGLRenderer({alpha: true, canvas: ringCanvas, antialias: true});
     ringRenderer.setSize(ringCanvas.clientWidth, ringCanvas.clientHeight);
 
     const ringBoundingBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
