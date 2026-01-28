@@ -96,7 +96,7 @@ figcaption {
     text-align: center;
     font-size: clamp(16px, 4vw, 24px);
     font-family: sans-serif;
-    color: yellow;
+    color: white;
     padding: 10px;
     font-weight: bold;
     text-shadow: 0 0 8px black;
@@ -109,7 +109,7 @@ figcaption {
     width: 100%;
     max-width: 100%;
     font-size: 13px;
-    color: yellow;
+    color: white;
     text-align: center;
     z-index: 10;
     background: transparent;
