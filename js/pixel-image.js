@@ -42,7 +42,7 @@ export class PixelImage {
     #setPixelColor(imageData, pixel) {
         let coordinate = pixel.y * (this.width * 4) + pixel.x * 4;
 
-        if (pixel.color === null) {
+        if (pixel.color == null) { // 👈 Intentional use of ==, not ===
             imageData[coordinate + 3] = 0; // completely transparant
             return;
         }
