@@ -22,13 +22,14 @@
         canvasHeight = canvas.clientHeight;
 
     const scene = new Scene();
+    scene.background = new Color('midnightblue');
 
     const camera = new PerspectiveCamera(30, canvasWidth / canvasHeight);
     camera.position.set(10, 20, 30);
     camera.lookAt(scene.position);
     camera.updateProjectionMatrix();
 
-    const renderer = new WebGLRenderer({ antialias: true, canvas, alpha: true });
+    const renderer = new WebGLRenderer({ antialias: true, canvas });
     renderer.setSize(canvasWidth, canvasHeight, false);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setAnimationLoop( animationLoop );
