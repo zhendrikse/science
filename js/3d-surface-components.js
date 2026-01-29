@@ -227,17 +227,17 @@ export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
         this._zFn = Utils.functionFrom(parametrization.zFn);
 
         this._uInterval = new Interval(
-            this.#evaluateConstant(surfaceSpecification.intervals[0][0]),
-            this.#evaluateConstant(surfaceSpecification.intervals[0][1])
+            this._evaluateConstant(surfaceSpecification.intervals[0][0]),
+            this._evaluateConstant(surfaceSpecification.intervals[0][1])
         );
 
         this._vInterval = new Interval(
-            this.#evaluateConstant(surfaceSpecification.intervals[1][0]),
-            this.#evaluateConstant(surfaceSpecification.intervals[1][1])
+            this._evaluateConstant(surfaceSpecification.intervals[1][0]),
+            this._evaluateConstant(surfaceSpecification.intervals[1][1])
         );
     }
 
-    #evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
+    _evaluateConstant = (exprString) => Utils.functionFrom(exprString)(0, 0);
 
     sample(u, v, target) {
         const U = this._uInterval.scaleUnitParameter(u);
