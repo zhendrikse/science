@@ -154,7 +154,7 @@
         #updateSurfaceDataTitleBox(specification) {
             const r = specification.parametrization.r;
             const equationDiv = document.getElementById("surface-equation");
-            equationDiv.innerHTML = "$$r=" + r + "$$  $$\\begin{pmatrix}" +
+            equationDiv.innerHTML = "$$r=" + r + "$$  $$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix}" +
                 specification.parametrization.xFn + "*r" + " \\\\" +
                 specification.parametrization.yFn + "*r" + " \\\\" +
                 specification.parametrization.zFn + "*r" + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
