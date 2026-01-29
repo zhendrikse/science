@@ -146,9 +146,9 @@
             const r = specification.parametrization.r;
             const equationDiv = document.getElementById("surface-equation");
             equationDiv.innerHTML = "$$\\begin{pmatrix}" +
-                specification.parametrization.xFn + "(*" + r + ")" + " \\\\" +
-                specification.parametrization.yFn + "(*" + r + ")"  + " \\\\" +
-                specification.parametrization.zFn + "(*" + r + ")"  + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
+                specification.parametrization.xFn + "*(" + r + ")" + " \\\\" +
+                specification.parametrization.yFn + "*(" + r + ")"  + " \\\\" +
+                specification.parametrization.zFn + "*(" + r + ")"  + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
                 specification.intervals[0][0] + ", " +
                 specification.intervals[0][1] + "] \\\\ v \\in [" +
                 specification.intervals[1][0] + ", " +
