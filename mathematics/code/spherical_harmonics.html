@@ -34,12 +34,21 @@
     const PresetHarmonics = Object.freeze({
         Preset1: 1,
         Preset2: 2,
-        Preset3: 3
+        Preset3: 3,
+        Preset4: 4
     });
 
     const surfaceData = [{
         parametrization: {
             r: "sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * v)^2 + cos(6 * v)^3",
+            xFn: "sin(u) * cos(v)",
+            yFn: "cos(u)",
+            zFn: "sin(u) * sin(v)"
+        },
+        intervals: [["-pi", "pi"], ["0", "pi"]]
+    },  {
+        parametrization: {
+            r: "sin(2 * u)^4 + cos(2 * u)^4 + sin(4 * v)^2 + cos(4 * v)^2",
             xFn: "sin(u) * cos(v)",
             yFn: "cos(u)",
             zFn: "sin(u) * sin(v)"
