@@ -1200,7 +1200,7 @@ export class Graph {
         dt = 0.02,
         scaleY = 1,
         offsetY = null,
-        background = "#131313",
+        background = "transparent",
         gridColor = "#333",
         axisColor = "#888",
         textColor = "#aaa",
