@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Complex functions $\phi: \mathbb{C} \rightarrow \mathbb{C}$
+## Real functions $\phi: \mathbb{R}^2 \rightarrow \mathbb{R}^3$
 <div class="header_line"><br/></div>
 
 ### What are you looking at?

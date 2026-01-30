@@ -20,7 +20,7 @@ is added purely for aesthetical purposes.
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="parametric_surfaces.html">
+  <a href="real_surfaces.html">
     <img alt="Multivariate functions" src="images/multivariate_surface_plot.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;
   <figcaption>Surface plot for $f(x, y) = \sin(\pi x)\cos(\pi y)$.</figcaption>
