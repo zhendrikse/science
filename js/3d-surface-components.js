@@ -966,7 +966,7 @@ export class SurfaceController {
                 colorMapper = new CustomColorColorMapper(surfaceParams.baseColor);
         }
 
-        this._colorMapper = colorMapper;
+        this.onColorMapperChange(colorMapper);
     }
 
     onContourTypeChange = (contourParams) => {
@@ -982,8 +982,7 @@ export class SurfaceController {
                 break;
         }
 
-        this._contours = contoursView;
-        this.onContourSettingsChange(contourParams);
+        this.onContoursViewChange(contoursView, contourParams);
     }
 
     #disposeCurrentSurface() {
