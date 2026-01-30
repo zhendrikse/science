@@ -16,7 +16,6 @@
 - [`menger_sponge.py` source code](menger_sponge.py)
 - [`parametric_surfaces.html` source code](parametric_surfaces.html)
 - [`numerical_methods.py` source code](numerical_methods.py)
-- [`polar_coordinates.html` source code](polar_coordinates.html)
 - [`quiver_plot.html` source code](quiver_plot.html)
 - [`roessler_attractor.py` source code](roessler_attractor.py)
 - [`scalar_plot.html` source code](scalar_plot.html)

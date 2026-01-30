@@ -947,17 +947,17 @@ export class SurfaceController {
                 colorMapper = new HeightColorMapper();
                 break;
             case ColorMapper.ColorMode.MEAN:
-                colorMapper = new CurvatureColorMapper(surface.definition());
+                colorMapper = new CurvatureColorMapper(this._surface.definition());
                 break;
             case ColorMapper.ColorMode.K1:
             case ColorMapper.ColorMode.K2:
-                colorMapper = new PrincipalCurvatureColorMapper(surface.definition(), {
+                colorMapper = new PrincipalCurvatureColorMapper(this._surface.definition(), {
                     which: surfaceParams.colorMode,
                     scale: 3.0
                 });
                 break;
             case ColorMapper.ColorMode.GAUSSIAN:
-                colorMapper = new GaussianCurvatureColorMapper(surface.definition(), {
+                colorMapper = new GaussianCurvatureColorMapper(this._surface.definition(), {
                     scale: 3.0 // Scale determines how "fast" the color saturates. For sphere/torus -> [1 .. 3]
                 });
                 break;
