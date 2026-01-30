@@ -1452,7 +1452,7 @@ export class Ball {
         makeTrail=false,
         segments = 24})
     {
-        const material = new MeshBasicMaterial({
+        const material = new MeshStandardMaterial({
             color: color,
             opacity: opacity,
             transparent: true,
