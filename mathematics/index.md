@@ -11,7 +11,7 @@ Yet, if I said “I never learned to read,” they’d say I was an illiterate d
 <div class="header_line"><br/></div>
 
 <a name="multivariate_functions"></a>
-### Dynamic surface and contour plots for $f(x, y) \rightarrow \mathbb{R}$
+### Plots for $f(x, y) \rightarrow \mathbb{R}$
 <div style="border-top: 1px solid #999999"><br/></div>
 
 The application below let's one render functions in two real variables $x$ and $y$.
@@ -26,34 +26,10 @@ is added purely for aesthetical purposes.
   <figcaption>Surface plot for $f(x, y) = \sin(\pi x)\cos(\pi y)$.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="parametric_surfaces.html">
-    <img alt="Complex functions" src="images/multivariate_contour_plot.png" title="Click to animate"/>
-  </a>
-  <figcaption><br/>Contour plot for $f(x, y) = \sin(\sqrt{x^2+y^2})$.</figcaption>
-</figure>
-</div>
-<p style="clear: both;"></p>
-
-<a name="complex_functions"></a>
-### Dynamic surface and contour plots for $f(z) \rightarrow \mathbb{C}$
-<div style="border-top: 1px solid #999999"><br/></div>
-
-The colors in the 3D renderings of complex functions represent 
-the phase of the complex function values, hence colors can't be
-modified by the user.
-
-<div class="double_image">
-<figure class="left_image">
   <a href="complex_surfaces.html">
     <img alt="Complex functions" src="images/complex_function_plot.png" title="Click to animate"/>
   </a>
   <figcaption>Surface plot for $f(z) = \exp(-z^2)$.</figcaption>
-</figure>
-<figure class="right_image">
-  <a href="complex_surfaces.html">
-    <img alt="Complex functions" src="images/complex_function_contour_plot.png" title="Click to animate"/>
-  </a>
-  <figcaption>Contour plot for $f(z) = log(z)$.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -126,32 +102,6 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 </figure>
 </div>
 <p style="clear: both;"></p>
-
-<a name="polar_coordinates"></a>
-## Polar coordinates &amp; numeric integration
-<div class="header_line"><br/></div>
-
-Polar coordinates not only enable us to much more easily solve spherically symmetric problems in 
-both physics and mathematics, they also provide us a way to parameterize complex topological surfaces, 
-such  as [Klein&apos;s bottle](gallery/index.html#non_orientables). 
-
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="polar_coordinates.html">
-    <img alt="Polar coordinates" src="../images/polar_coordinates.png" title="Click to animate"/>
-  </a>
-  <figcaption>Polar coordinates frequently simplify the tackling of rotationally symmetric problems.</figcaption>
-</figure>
-<figure class="right_image">
-  <a href="integration_with_polar_coordinates.html">
-    <img alt="Numeric integration" src="../images/integration_with_polar_coordinates.png" title="Click to animate"/>
-  </a>
-  <figcaption>Illustration of using polar coordinates when numerically integrating spherically symmetric functions.</figcaption>
-</figure>
-</div>
-<p style="clear: both;"></p>
-
 
 <a name="cellular_automata"></a>
 ## Cellular automata
@@ -365,8 +315,10 @@ seen in the mathematics section on this page:
   </figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="integration_with_polar_coordinates.html">
+    <img alt="Numeric integration" src="../images/integration_with_polar_coordinates.png" title="Click to animate"/>
+  </a>
+  <figcaption>Illustration of using polar coordinates when numerically integrating spherically symmetric functions.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
