@@ -132,13 +132,13 @@
                 .onChange(value => this._surfaceController.onContourTypeChange(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
-                .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateContoursView(surfaceParams.contourParameters);});
+                .onChange(() => {if (this.#isValidColor()) this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters);});
             contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
                 .name("U contours")
-                .onFinishChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
+                .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, "vCount", 1, 50, 1)
                 .name("V contours")
-                .onFinishChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
+                .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
             contourFolder.close();
         }
 
@@ -150,7 +150,7 @@
 
             surfaceFolder.add(surfaceParams, 'baseColor')
                 .name("Base color")
-                .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateColor(surfaceParams);});
+                .onChange(() => {if (this.#isValidColor()) this._surfaceController.onColorChange(surfaceParams);});
             surfaceFolder.add(surfaceParams, "opacity", 0, 1, .01)
                 .name("Opacity")
                 .onChange(value => this._surfaceController.updateOpacity(value));
@@ -202,7 +202,7 @@
             const newSpec = oldSpec.withIntervals(intervals);
             const definition = new LiteralStringBasedSurfaceDefinition(newSpec);
 
-            this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
+            this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
             updateViewForSurface();
             this.update();
         }
@@ -215,7 +215,7 @@
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({xFn: expr});
                     const definition = new LiteralStringBasedSurfaceDefinition(specification);
-                    this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
+                    this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
 
@@ -224,7 +224,7 @@
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
                     const definition = new LiteralStringBasedSurfaceDefinition(specification);
-                    this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
+                    this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
 
@@ -233,7 +233,7 @@
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({zFn: expr});
                     const definition = new LiteralStringBasedSurfaceDefinition(specification);
-                    this._surfaceController.changeSurface(new Surface(definition), surfaceParams);
+                    this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
                     updateViewForSurface();
                 });
             this._uInterval = mathFolder.add(this._intervalInputs, "u")
@@ -809,7 +809,7 @@
         ring.onSelectTo(selectedRingSurface);
 
         const definition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
-        surfaceController.changeSurface(new Surface(definition), surfaceParams);
+        surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
         updateViewForSurface();
         controlsGui.update();
     });

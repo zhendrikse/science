@@ -61,23 +61,30 @@ export class ColorMapper {
 export class GaussianCurvatureColorMapper extends ColorMapper {
     constructor(surfaceDefinition, { scale = 1.0 } = {}) {
         super();
-        this.curvature = new DifferentialGeometry(surfaceDefinition);
-        this.scale = scale;
+        this._curvature = new DifferentialGeometry(surfaceDefinition);
+        this._scale = scale;
     }
 
     colorFor(u, v, color) {
-        const { K } = this.curvature.normalMeanGaussian(u, v);
-        const t = Math.tanh(K * this.scale);
+        const { K } = this._curvature.normalMeanGaussian(u, v);
+        const t = Math.tanh(K * this._scale);
         if (t > 0) color.setHSL(0.0, 0.85, 0.5 + 0.2 * t);
         else       color.setHSL(0.6, 0.85, 0.5 - 0.2 * t);
     }
 }
 
-export class HeightColorMapper extends ColorMapper {
-    constructor({ baseColor="#ff4", useBaseColor=true } = {}) {
+export class CustomColorColorMapper extends ColorMapper {
+    constructor(baseColor="#ff4") {
         super();
-        this.baseColor = baseColor;
-        this.useBaseColor = useBaseColor;
+        this._baseColor = baseColor;
+    }
+
+    colorFor(u, v, color) { color = this._baseColor; }
+}
+
+export class HeightColorMapper extends ColorMapper {
+    constructor() {
+        super();
     }
 
     #computeYRange(posAttr) {
@@ -107,15 +114,9 @@ export class HeightColorMapper extends ColorMapper {
             const y = posAttr.getY(i);
             const t = yRange.scaleValue(y);
 
-            if (this.useBaseColor) {
-                color.setStyle(this.baseColor);
-                color.getHSL(hsl);
-                hsl.l = 0.1 + 0.4 * (1 - t);
-            } else {
-                hsl.h = t * 0.5 - 0.025;
-                hsl.s = 0.9;
-                hsl.l = 0.4 + 0.3 * (1 - t);
-            }
+            hsl.h = t * 0.5 - 0.025;
+            hsl.s = 0.9;
+            hsl.l = 0.4 + 0.3 * (1 - t);
 
             color.setHSL(hsl.h, hsl.s, hsl.l);
             colorAttr.array[3*i]     = color.r;
@@ -609,25 +610,25 @@ export class StandardSurfaceView extends SurfaceView {
         this._contours = null;
         this._colorMapper = null;
 
-        this.updateColorMapper(colorMapper);
-        this.updateContoursView(contoursView);
-        this.updateContours(surfaceParameters.contourParameters)
+        this.onColorMapperChange(colorMapper);
+        this.onContoursViewChange(contoursView);
+        this.onContourSettingsChange(surfaceParameters.contourParameters)
         this.updateOpacity(surfaceParameters.opacity);
     }
 
-    updateContours(contourParameters) {
+    onContourSettingsChange(contourParameters) {
         this._contours?.clear();
         this._contours?.buildWith(contourParameters);
     }
 
-    updateContoursView = (contoursView) => {
+    onContoursViewChange = (contoursView) => {
         this._contours?.clear();
         this._contours = contoursView;
         if (contoursView)
             this.registerChild(this._contours);
     }
 
-    updateColorMapper = (mapper) => { this._colorMapper = mapper; this._colorMapper.apply(this._geometry); }
+    onColorMapperChange = (mapper) => { this._colorMapper = mapper; this._colorMapper.apply(this._geometry); }
     updateOpacity = (value) => this._material.opacity = value;
 
     resampleWith(resolution) {
@@ -913,28 +914,33 @@ export class SurfaceController {
         this._colorMapper = colorMapper;
         this._contours = contoursView;
 
-        this.changeSurface(mathematicalSurface, surfaceParams);
-        this.updateColorMapper(colorMapper);
+        this.onSurfaceChange(mathematicalSurface, surfaceParams);
+        this.onColorMapperChange(colorMapper);
     }
 
-    updateColorMapper = (colorMapper) => {
+    onColorMapperChange = (colorMapper) => {
         this._colorMapper = colorMapper;
-        this._surface.updateColorMapper(colorMapper);
+        this._surface.onColorMapperChange(colorMapper);
     }
-    updateContoursView = (contoursView, contourParameters) => {
+    onContoursViewChange = (contoursView, contourParameters) => {
         this._contours = contoursView;
-        this._surface.updateContoursView(contoursView);
-        this.updateContours(contourParameters);
+        this._surface.onContoursViewChange(contoursView);
+        this.onContourSettingsChange(contourParameters);
     }
 
-    updateContours = (contourParameters) => this._surface.updateContours(contourParameters);
+    onContourSettingsChange = (contourParameters) => this._surface.onContourSettingsChange(contourParameters);
     surfaceBoundingBox = () => this._surface.boundingBox();
+
+    onColorChange = (surfaceParams) => {
+        this.onColorMapperChange(new CustomColorColorMapper(surfaceParams.baseColor));
+        surfaceParams.colorMode = ColorMapper.ColorMode.BASE;
+    }
 
     onColorModeChange = (surfaceParams) => {
         let colorMapper = null;
         switch (surfaceParams.colorMode) {
             case ColorMapper.ColorMode.HEIGHT:
-                colorMapper = new HeightColorMapper({useBaseColor: false});
+                colorMapper = new HeightColorMapper();
                 break;
             case ColorMapper.ColorMode.MEAN:
                 colorMapper = new CurvatureColorMapper(surface.definition());
@@ -953,10 +959,7 @@ export class SurfaceController {
                 break;
             case ColorMapper.ColorMode.BASE:
             default:
-                colorMapper = new HeightColorMapper({
-                    baseColor: surfaceParams.baseColor,
-                    useBaseColor: true
-                });
+                colorMapper = new CustomColorColorMapper(surfaceParams.baseColor);
         }
 
         this._colorMapper = colorMapper;
@@ -976,7 +979,7 @@ export class SurfaceController {
         }
 
         this._contours = contoursView;
-        this.updateContours(contourParams);
+        this.onContourSettingsChange(contourParams);
     }
 
     #disposeCurrentSurface() {
@@ -987,9 +990,6 @@ export class SurfaceController {
 
     #createNormals() {
         this._normals = new NormalsView(this._rootGroup, new Surface(this._surface.definition()));
-        // this._normals.group.position.copy(this._surface.group.position);
-        // this._normals.group.scale.set(
-        //     this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
     }
 
     #createTangentFrameFrom(surfaceParams) {
@@ -1008,11 +1008,11 @@ export class SurfaceController {
             else  if (contourParams.contourType === ContourType.CURVATURE)
                 newContours = new CurvatureContoursView(this._surface.group, this._surface);
 
-            this.updateContoursView(newContours, contourParams);
+            this.onContoursViewChange(newContours, contourParams);
         }
     }
 
-    changeSurface(mathematicalSurface, surfaceParams) {
+    onSurfaceChange(mathematicalSurface, surfaceParams) {
         const oldContours = this._contours; // Save before dispose!!
 
         this.#disposeCurrentSurface();
@@ -1029,7 +1029,6 @@ export class SurfaceController {
         this.#createNormals();
         this.#createTangentFrameFrom(surfaceParams);
     }
-
 
     get surface() { return this._surface; }
 

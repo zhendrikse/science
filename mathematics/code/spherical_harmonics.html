@@ -140,13 +140,13 @@
                 .onChange(value => this._surfaceController.onContourTypeChange(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, 'color')
                 .name("Color")
-                .onChange(() => {if (this.#isValidColor()) this._surfaceController.updateContours(surfaceParams.contourParameters);});
+                .onChange(() => {if (this.#isValidColor()) this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters);});
             contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
                 .name("U contours")
-                .onFinishChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
+                .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
             contourFolder.add(surfaceParams.contourParameters, "vCount", 1, 50, 1)
                 .name("V contours")
-                .onFinishChange(value => this._surfaceController.updateContours(surfaceParams.contourParameters));
+                .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
             contourFolder.close();
         }
 
@@ -177,7 +177,7 @@
 
         #updateSurface(surfaceSpecification) {
             const surfaceDef = new SphericalHarmonicsSurfaceDefinition(surfaceSpecification);
-            this._surfaceController.changeSurface(new Surface(surfaceDef), surfaceParams);
+            this._surfaceController.onSurfaceChange(new Surface(surfaceDef), surfaceParams);
             this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
             this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {translationY: -2});
             this._factor.setValue(surfaceSpecification.parametrization.r);
