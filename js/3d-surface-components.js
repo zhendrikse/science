@@ -1187,8 +1187,8 @@ export class TangentFrameView extends Group {
     dispose() {
         this.diffGeometry = null;
 
-        Object.values(this._axes).forEach(arrow => arrow.dispose());
-        Object.values(this._principals).forEach(arrow => arrow.dispose());
+        Object.values(this._axes).forEach(arrow => arrow?.dispose());
+        Object.values(this._principals).forEach(arrow => arrow?.dispose());
         this._axes = null;
         this._principals = null;
 
