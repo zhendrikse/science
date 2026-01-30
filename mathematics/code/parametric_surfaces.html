@@ -48,7 +48,7 @@
     ThreeJsUtils.scaleBox3(ringBoundingBox, 1.1); // scaling factor to obtain miniature surfaces
 
     // Directional light (shadow, nice highlights)
-    const dirLight = new DirectionalLight(0xffffff, 1);
+    const dirLight = new DirectionalLight(0xffffff, .75);
     dirLight.position.set(15, 15, 15);
     ringScene.add(dirLight);
 
