@@ -79,7 +79,7 @@ export class CustomColorColorMapper extends ColorMapper {
         this._baseColor = new Color(baseColor);
     }
 
-    colorFor(u, v, color) { color = this._baseColor; }
+    colorFor(u, v, color) { return this._baseColor; }
 
     onChangeColor = (newColor) => this._baseColor = newColor;
 }
