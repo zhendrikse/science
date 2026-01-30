@@ -78,16 +78,7 @@
                 v: ""
             };
 
-            this._surfaceCoordinates = {
-                x: surfaceController.surface.definition().specification().parametrization.xFn,
-                y: surfaceController.surface.definition().specification().parametrization.yFn,
-                z: surfaceController.surface.definition().specification().parametrization.zFn
-            }
-
-            const dummyToggle = {category: Category.FUNCTION};
-            controls.add(dummyToggle, 'category', Object.values(Category))
-                .name("Category")
-                .onChange(value => ring.changeActiveCategoryTo(value));
+            this._surfaceCoordinates = { y: surfaceController.surface.definition().specification().parametrization.yFn }
 
             this.#createTangentSpaceFolder(controls);
             this.#createAppearanceFolder(controls);
@@ -203,16 +194,7 @@
         #createMathFolder(folder) {
             const mathFolder = folder.addFolder("Math");
 
-            this._xFunction = mathFolder.add(this._surfaceCoordinates, "x").name("Fx(u,v) =")
-                .onFinishChange(expr => {
-                    const specification = this._surfaceController.surface
-                        .definition().specification().withParametrization({xFn: expr});
-                    const definition = new LiteralStringBasedSurfaceDefinition(specification);
-                    this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
-                    updateViewForSurface();
-                });
-
-            this._yFunction = mathFolder.add(this._surfaceCoordinates, "y").name("Fy(u,v) =")
+            this._yFunction = mathFolder.add(this._surfaceCoordinates, "y").name("F(u,v) =")
                 .onFinishChange(expr => {
                     const specification = this._surfaceController.surface
                         .definition().specification().withParametrization({yFn: expr});
@@ -221,14 +203,6 @@
                     updateViewForSurface();
                 });
 
-            this._zFunction = mathFolder.add(this._surfaceCoordinates, "z").name("Fz(u,v) =")
-                .onFinishChange(expr => {
-                    const specification = this._surfaceController.surface
-                        .definition().specification().withParametrization({zFn: expr});
-                    const definition = new LiteralStringBasedSurfaceDefinition(specification);
-                    this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
-                    updateViewForSurface();
-                });
             this._uInterval = mathFolder.add(this._intervalInputs, "u")
                 .name("u ∈")
                 .onFinishChange(value => this.#updateIntervalFromString("u", value));
@@ -280,9 +254,7 @@
             this.#updateSurfaceDataTitleBox();
 
             const specification = newSurface.definition().specification();
-            this._xFunction.setValue(specification.parametrization.xFn);
             this._yFunction.setValue(specification.parametrization.yFn);
-            this._zFunction.setValue(specification.parametrization.zFn);
 
             this._intervalInputs.u = `[${specification.intervals[0][0]}, ${specification.intervals[0][1]}]`;
             this._intervalInputs.v = `[${specification.intervals[1][0]}, ${specification.intervals[1][1]}]`;
