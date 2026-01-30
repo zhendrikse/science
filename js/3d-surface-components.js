@@ -74,14 +74,14 @@ export class GaussianCurvatureColorMapper extends ColorMapper {
 }
 
 export class CustomColorColorMapper extends ColorMapper {
-    constructor(baseColor="#ff4") {
+    constructor(baseColor = "#ff4") {
         super();
         this._baseColor = new Color(baseColor);
     }
 
-    colorFor(u, v, color) { return this._baseColor; }
+    colorFor(u, v, color) { color.copy(this._baseColor); }
 
-    onChangeColor = (newColor) => this._baseColor = newColor;
+    onChangeColor = (newColor) => { this._baseColor.set(newColor); };
 }
 
 export class HeightColorMapper extends ColorMapper {
