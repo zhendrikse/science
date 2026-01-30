@@ -1132,18 +1132,15 @@ export class Arrow extends Group {
         this._trail = null;
     }
 
-    disableTrail() {
-        this.disposeTrail();
-    }
+    disableTrail() { this.disposeTrail(); }
 
     dispose() {
         this.disposeTrail();
 
         // DO NOT dispose shared geometries
         if (this._shaft) {
-            if (this._shaft.material) {
+            if (this._shaft.material)
                 this._shaft.material.dispose();
-            }
             this.remove(this._shaft);
             this._shaft = null;
         }
@@ -1466,6 +1463,7 @@ export class Ball {
         this._sphere = new Sphere(parent, position, radius, makeTrail,
             {segments: segments, material: material});
         this._ball = new PhysicalObject(position, velocity, mass);
+        this._trail = null;
     }
 
     semiImplicitEulerUpdate(force, dt=0.01) {
@@ -1483,6 +1481,27 @@ export class Ball {
         this._sphere.moveTo(this._ball.position);
     }
 
+    enableTrail({
+                    maxPoints = 200,
+                    color = this._shaft.material.color
+                } = {}) {
+        this._trail = new Trail({ maxPoints, color });
+        this.add(this._trail.line);
+    }
+
+    disposeTrail() {
+        if (!this._trail) return;
+        if (this._trail.line) {
+            if (this._trail.line.geometry)
+                this._trail.line.geometry.dispose();
+            if (this._trail.line.material)
+                this._trail.line.material.dispose();
+            this.remove(this._trail.line);
+        }
+        this._trail = null;
+    }
+
+    disableTrail() { this.disposeTrail(); }
     position = () => this._ball.position;
     velocity = () => this._ball.velocity;
     accelerateTo = (newVelocity) => this._ball.accelerateTo(newVelocity);

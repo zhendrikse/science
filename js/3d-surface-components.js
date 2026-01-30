@@ -80,6 +80,8 @@ export class CustomColorColorMapper extends ColorMapper {
     }
 
     colorFor(u, v, color) { color = this._baseColor; }
+
+    onChangeColor = (newColor) => this._baseColor = newColor;
 }
 
 export class HeightColorMapper extends ColorMapper {
@@ -506,7 +508,7 @@ export class MinimalSurfaceView extends SurfaceView {
         this._baseColor = baseColor;
         this._geometry = mathematicalSurface.createGeometryWith(resolution);
         this._material = this.material(showWireframe, 1);
-        this._colorMapper = new HeightColorMapper({ baseColor: baseColor });
+        this._colorMapper = new CustomColorColorMapper(baseColor);
         this._mesh = new THREE.Mesh(this._geometry, this._material);
         this._group.add(this._mesh);
         this._colorMapper.apply(this._geometry);
@@ -514,11 +516,11 @@ export class MinimalSurfaceView extends SurfaceView {
 
     onSelect = () => {
         this._material.wireframe = false;
-        this._colorMapper = new HeightColorMapper({ baseColor: "#f90"});
+        this._colorMapper.onChangeColor("#f90");
         this._colorMapper.apply(this._geometry); }
     onDeselect = () => {
         this._material.wireframe = true;
-        this._colorMapper = new HeightColorMapper({ baseColor: this._baseColor });
+        this._colorMapper.onChangeColor(this._baseColor);
         this._colorMapper.apply(this._geometry); }
     selectableObject = () => this._mesh;
 }
