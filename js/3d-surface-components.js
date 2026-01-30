@@ -338,11 +338,13 @@ export class SurfaceView {
     hide() { this._group.visible = false; }
     moveTo(positionAsVector) { this._group.position.copy(positionAsVector); }
     material = (showWireframe, opacity) =>
-        new MeshPhongMaterial({
+        new MeshStandardMaterial({
             vertexColors: true,
             side: DoubleSide,
             wireframe: showWireframe,
             transparent: true,
+            metalness:0.7,
+            roughness:0.2,
             opacity: opacity,
        });
     position() { return this._group.position.clone(); }
