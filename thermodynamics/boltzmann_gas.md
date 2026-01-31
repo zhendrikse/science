@@ -20,6 +20,17 @@ non-relativistic classical particles in thermodynamic equilibrium.
 
 <p style="clear: both;"></p>
 
+
+### Kinetic theory and the ideal gas
+<div class="header_line"><br/></div>
+
+<figure style="text-align: center;">
+  <img alt="Kinetic theory and the ideal gas" src="images/kinetic_theory_ideal_gas.jpg" />
+  <figcaption>This excellent visual guide originates from 
+    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+  </figcaption>
+</figure>
+
 {% include share_buttons.html %}
 
 
