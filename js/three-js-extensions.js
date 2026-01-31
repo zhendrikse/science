@@ -292,7 +292,7 @@ export class Axes extends Group {
         boundingBox.getCenter(center);
         // this.position.copy(center);
         const deltaY = boundingBox.min.y - scaledBox.min.y;
-        this.position.y = bottomAlign? this.position.y + deltaY : center.y;
+        this.position.y = bottomAlign? this.position.y + deltaY : this.position.y;
         this.position.x = center.x;
         this.position.z = center.z;
     }
