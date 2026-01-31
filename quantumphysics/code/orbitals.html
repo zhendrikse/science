@@ -293,3 +293,195 @@
     }
     animate();
 </script>
+
+<!--
+Ja — **helemaal mee eens** 👍
+Als *math.js* er toch al in zit, is dit precies het moment om het **netjes en algemeen** te doen, zonder dat het meteen “te academisch” wordt.
+
+Ik zal je laten zien:
+
+1. **Welke formule je nodig hebt** (praktisch, niet textbook-zwaar)
+2. **Hoe je die met math.js implementeert**
+3. **Hoe dit in jouw bestaande structuur past**
+4. **Wat dit je kost in werk en complexiteit**
+
+---
+
+## 1️⃣ De radiale functie die je echt wilt
+
+Voor waterstofachtige orbitalen:
+
+[
+R_{nl}(r) = e^{-r/n}, r^l, L_{n-l-1}^{2l+1}!\left(\tfrac{2r}{n}\right)
+]
+
+Waar:
+
+* (L_k^{\alpha}(x)) = geassocieerde Laguerre-polynomen
+* normalisatie mag je **weglaten** voor visualisatie
+
+👉 Dit is *exact* geschikt voor math.js:
+
+* exponent
+* machten
+* polynomen
+* geen integralen nodig
+
+---
+
+## 2️⃣ Laguerre-polynomen met math.js
+
+math.js heeft **geen kant-en-klare Laguerre**, maar wél:
+
+* binomiaalcoëfficiënten
+* factorial
+* powers
+
+De definitie:
+
+[
+L_n^{\alpha}(x)
+===============
+
+\sum_{k=0}^{n}
+(-1)^k
+\binom{n+\alpha}{n-k}
+\frac{x^k}{k!}
+]
+
+### JS-implementatie (compact & robuust)
+
+```js
+function generalizedLaguerre(n, alpha, x) {
+    let sum = 0;
+    for (let k = 0; k <= n; k++) {
+        const coeff =
+            Math.pow(-1, k) *
+            math.combinations(n + alpha, n - k) /
+            math.factorial(k);
+
+        sum += coeff * Math.pow(x, k);
+    }
+    return sum;
+}
+```
+
+---
+
+## 3️⃣ Radiale functie `R_nl(r)`
+
+```js
+function radialHydrogen(n, l, r) {
+    const rho = 2 * r / n;
+    return Math.exp(-rho / 2) *
+           Math.pow(rho, l) *
+           generalizedLaguerre(n - l - 1, 2 * l + 1, rho);
+}
+```
+
+✔️ klopt qua nulpunten
+✔️ shape is correct
+✔️ schaal is arbitrair (prima)
+
+---
+
+## 4️⃣ Integratie in jouw surface pipeline
+
+Je hoeft **geen nieuwe SurfaceView** te maken.
+
+### Uitbreiding van je `OrbitalSurfaceSpecification`
+
+```js
+class OrbitalSurfaceSpecification extends SurfaceSpecification {
+    constructor({ meta, parametrization, intervals, signedField, n, l }) {
+        super({ meta, parametrization, intervals });
+        this._signedField = signedField;
+        this._n = n;
+        this._l = l;
+        Object.freeze(this);
+    }
+
+    radialFn(r) {
+        return radialHydrogen(this._n, this._l, r);
+    }
+}
+```
+
+---
+
+### In je parametrisatie
+
+In plaats van:
+
+```js
+abs(signedField(u,v)) * direction
+```
+
+doe je:
+
+```js
+const Y = signedField(u, v);
+const R = radialFn(r0);   // r0 slider of vaste waarde
+const A = Math.abs(R * Y);
+```
+
+En klaar.
+
+---
+
+## 5️⃣ GUI: minimale toevoeging
+
+Eén slider is genoeg:
+
+```js
+surfaceParams.radialScale = 1.0;
+gui.add(surfaceParams, 'radialScale', 0.1, 10.0);
+```
+
+Gebruik `r = radialScale`.
+
+---
+
+## ⏱️ Extra werk t.o.v. “handmatig”
+
+| Onderdeel              | Extra tijd |
+| ---------------------- | ---------- |
+| Laguerre-implementatie | 30 min     |
+| Radial helper          | 15 min     |
+| Integratie + testen    | 30–45 min  |
+| **Totaal extra**       | **±1 uur** |
+
+Voor die ene extra uur:
+
+* krijg je **alle n,l orbitalen gratis**
+* geen hardcoded specials
+* perfecte opstap naar volumetrische kansdichtheid
+
+---
+
+## ⚠️ Eén subtiele maar belangrijke tip
+
+Clamp je radius:
+
+```js
+const r = Math.min(radialScale, 10 * n);
+```
+
+Anders explodeert `L_n^α` voor grote r en krijg je lelijke spikes.
+
+---
+
+## 🎯 Samenvatting
+
+✔️ math.js is hier exact het juiste gereedschap
+✔️ radiale nodes zijn een *schone, zelfstandige stap*
+✔️ implementatie is kort en algemeen
+✔️ je architectuur blijft intact
+
+Als je wilt, kan ik in de volgende stap:
+
+* een **kant-en-klare 2s / 3s / 3p vergelijking** geven om te vergelijken
+* of samen een **didactisch goede slider-set** kiezen (n, l, radial scale)
+
+Zeg maar waar je heen wilt 🚀
+-->
