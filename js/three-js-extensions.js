@@ -511,7 +511,7 @@ export class AxesController {
         this._axes = null;
     }
 
-    createFromBoundingBox(boundingBox) {
+    createFromBoundingBox(boundingBox, bottomAlign=true) {
         if (this._axes) {
             this._axes.dispose();
             this._parentGroup.remove(this._axes);
@@ -527,7 +527,7 @@ export class AxesController {
                 { frame, annotations, xyPlane, xzPlane, yzPlane });
 
         if (layoutType === Axes.Type.MATLAB) // center the MatLab axes around the object to be displayed
-            this._axes.frameTo(boundingBox);
+            this._axes.frameTo(boundingBox, bottomAlign);
         this._axes.onWindowResize();
         this._parentGroup.add(this._axes);
     }
