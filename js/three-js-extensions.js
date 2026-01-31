@@ -285,14 +285,14 @@ export class Axes extends Group {
         return this;
     }
 
-    frameTo(boundingBox) {
+    frameTo(boundingBox, bottomAlign=true) {
         this.updateMatrixWorld(true);
         const scaledBox = new Box3().setFromObject(this);
         let center = new Vector3();
         boundingBox.getCenter(center);
         // this.position.copy(center);
         const deltaY = boundingBox.min.y - scaledBox.min.y;
-        this.position.y += deltaY;
+        this.position.y = bottomAlign? this.position.y + deltaY : center.y;
         this.position.x = center.x;
         this.position.z = center.z;
     }
