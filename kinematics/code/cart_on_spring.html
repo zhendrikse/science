@@ -1,44 +1,6 @@
-<style>
-    html, body {
-        background: #131313;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        height: 100%;
-    }
-
-    #glowscript-wrapper {
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 4 / 3;
-        margin: auto;
-    }
-
-    .glowscript canvas {
-        display: block;
-        touch-action: none;
-        width: 100%;
-        height: 100%;
-    }
-</style>
-<script>
-    // Disable MathJax within GlowScript library
-    // if (window.MathJax && !MathJax.Hub) {
-    //     MathJax.Hub = {
-    //         Configured: function(){},
-    //         Config: function(){},
-    //         Queue: function(){},
-    //         Typeset: function(){}
-    //     };
-    // }
-</script>
-<div id="glowscript-wrapper">
-    <div id="glowscript" class="glowscript"></div>
+<div id="glowscript" class="glowscript">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-    <link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
     <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
     <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
@@ -48,7 +10,7 @@
     // START JAVASCRIPT
     ;(function() {;
         var ρσ_modules = {};
-        var pull, chosenObject, cart, force_arrow;
+        var pull, chosenObject, myCart, forceArrow;
         ρσ_modules.pythonize = {};
 
         (function(){
@@ -91,7 +53,7 @@
 
             function round(num, n=0) {return Number(num.toFixed(n))}
             var cone, curve, ellipsoid, extrusion, points, pyramid, ring, sphere, simple_sphere, group, vector, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, sin, cos, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-            var version, print, arange, __name__, type, ρσ_ls, title, animation, g, _GS_1, cart, track, stop, spring, pull, chosenObject, force_arrow, delta_t, netForce;
+            var version, print, arange, __name__, type, ρσ_ls, title, animation, g, _GS_1, myCart, track, stop, spring, pull, chosenObject, forceArrow, delta_t, netForce;
             version = ρσ_list_decorate([ "3.2", "glowscript" ]);
             Array.prototype['+'] = function(r) {return this.concat(r)}
             Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
@@ -107,34 +69,34 @@
             title = "\n&#x2022; Based on <a href=\"https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/1-introduction-objects-parameters-and-the-3d-environment/optional-compound-objects\">this example<\/a> from tutorial by B. Philhour\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/kinematics/code/cart_on_spring.py\">cart_on_spring.py</a>\n&#x2022; Pull on cart with your mouse!\n\n";
             "12";
             animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({width: 600, height: 400, title: title, background: color.gray(.075), forward: vec(1["-u"]()["*"](.5), 1["-u"]()["*"](.3), 1["-u"]()["*"](.7)), center: vec(.07, 1["-u"]()["*"](.025), 0), range: .175})]);
-            "15";
+            "14";
             g = 9.8;
-            "18";
+            "16";
             function Cart() {;
             }
             Cart.prototype.__init__ = async function __init__(body_color) {
                 var self = this;
-                "20";
+                "18";
                 self.L = .1;
-                "21";
+                "19";
                 self.W = .05;
-                "22";
+                "20";
                 self.H = .02;
-                "23";
-                self._mass = 1.5;
+                "21";
+                self.mass = 1.5;
+                "22";
+                self.vel = vec(1.5, 0, 0);
                 "24";
-                self._velocity = vec(1.5, 0, 0);
-                "26";
                 self.frame = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 0, 0), size: vec(self.L, self.H, self.W), opacity: .6, color: body_color})]);
-                "27";
+                "25";
                 self.wheelFR = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(.4["*"](self.L), 1["-u"]()["*"](.5)["*"](self.H), .4["*"](self.W)), radius: .5["*"](self.H), axis: vec(0, 0, .15["*"](self.W))})]);
-                "29";
+                "27";
                 self.wheelFL = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(.4["*"](self.L), 1["-u"]()["*"](.5)["*"](self.H), 1["-u"]()["*"](.6)["*"](self.W)), radius: .5["*"](self.H), axis: vec(0, 0, .15["*"](self.W))})]);
-                "31";
+                "29";
                 self.wheelRR = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.4)["*"](self.L), 1["-u"]()["*"](.5)["*"](self.H), .4["*"](self.W)), radius: .5["*"](self.H), axis: vec(0, 0, .15["*"](self.W))})]);
-                "33";
+                "31";
                 self.wheelRL = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.4)["*"](self.L), 1["-u"]()["*"](.5)["*"](self.H), 1["-u"]()["*"](.6)["*"](self.W)), radius: .5["*"](self.H), axis: vec(0, 0, .15["*"](self.W))})]);
-                "36";
+                "34";
                 self.body = compound(ρσ_list_decorate([ self.frame, self.wheelFR, self.wheelFL, self.wheelRR, self.wheelRL ]));
             };
             if (!Cart.prototype.__init__.__argnames__) Object.defineProperties(Cart.prototype.__init__, {
@@ -143,43 +105,15 @@
             });
             Cart.__argnames__ = Cart.prototype.__init__.__argnames__;
             Cart.__handles_kwarg_interpolation__ = Cart.prototype.__init__.__handles_kwarg_interpolation__;
-            Cart.prototype.update_by = async function update_by(force, dt) {
+            Cart.prototype.process = async function process(netForce, dt) {
                 var self = this;
-                "39";
-                self._velocity=self._velocity["+"](force["/"](self._mass)["*"](dt));
-                "40";
-                self.body.pos=self.body.pos["+"](self._velocity["*"](dt));
+                "37";
+                self.vel = self.vel["+"](netForce["/"](self.mass)["*"](dt));
+                "38";
+                self.body.pos = self.body.pos["+"](self.vel["*"](dt));
             };
-            if (!Cart.prototype.update_by.__argnames__) Object.defineProperties(Cart.prototype.update_by, {
-                __argnames__ : {value: ["force", "dt"]},
-                __module__ : {value: null}
-            });
-            Cart.prototype.position = async function position() {
-                var self = this;
-                "43";
-                return self.body.pos["+"](vec(1["-u"]()["*"](self.L)["/"](2), self.H["/"](4), 0));
-            };
-            if (!Cart.prototype.position.__module__) Object.defineProperties(Cart.prototype.position, {
-                __module__ : {value: null}
-            });
-            Cart.prototype.hits_wall = async function hits_wall(wall_position) {
-                var self = this;
-                "46";
-                return self.body.pos.x["<"](wall_position.x["+"](self.L["/"](2)));
-            };
-            if (!Cart.prototype.hits_wall.__argnames__) Object.defineProperties(Cart.prototype.hits_wall, {
-                __argnames__ : {value: ["wall_position"]},
-                __module__ : {value: null}
-            });
-            Cart.prototype.bounce = async function bounce(wall_position) {
-                var self = this;
-                "49";
-                self._velocity.x=self._velocity.x["*"](1["-u"]()["*"](.5));
-                "50";
-                self.body.pos.x = wall_position.x["+"](self.L["/"](2));
-            };
-            if (!Cart.prototype.bounce.__argnames__) Object.defineProperties(Cart.prototype.bounce, {
-                __argnames__ : {value: ["wall_position"]},
+            if (!Cart.prototype.process.__argnames__) Object.defineProperties(Cart.prototype.process, {
+                __argnames__ : {value: ["netForce", "dt"]},
                 __module__ : {value: null}
             });
             Cart.prototype.__repr__ = async function __repr__() {
@@ -192,23 +126,28 @@
 
 
 
-
-
-
-            "53";
+            "41";
+            _GS_1 = new Cart;
+            (await _GS_1.__init__(color.blue));
+            myCart = _GS_1;
+            "43";
+            track = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](.025), 0), size: vec(.5, .01, .08), texture: textures.wood})]);
+            "44";
+            stop = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.245), 0, 0), size: vec(.01, .04, .08), texture: textures.wood})]);
+            "47";
             function SpringElement() {;
             }
             SpringElement.prototype.__init__ = async function __init__(position, axis, radius, mass, length) {
                 var self = this;
-                "55";
+                "49";
                 self._element = ρσ_interpolate_kwargs.call(this, helix, [ρσ_desugar_kwargs({pos: position, axis: axis, radius: radius, coils: 3})]);
-                "56";
+                "50";
                 self._velocity = vec(0, 0, 0);
-                "57";
+                "51";
                 self._mass = mass;
-                "58";
+                "52";
                 self._length = length;
-                "59";
+                "53";
                 self._force = vec(0, 0, 0);
             };
             if (!SpringElement.prototype.__init__.__argnames__) Object.defineProperties(SpringElement.prototype.__init__, {
@@ -219,9 +158,9 @@
             SpringElement.__handles_kwarg_interpolation__ = SpringElement.prototype.__init__.__handles_kwarg_interpolation__;
             SpringElement.prototype.update_gravitational_force = async function update_gravitational_force(drag) {
                 var self = this;
-                "62";
+                "56";
                 self._force = vec(0, 1["-u"]()["*"](self._mass)["*"](g), 0);
-                "64";
+                "58";
                 self._force=self._force["-"](drag["*"](self._velocity));
             };
             if (!SpringElement.prototype.update_gravitational_force.__argnames__) Object.defineProperties(SpringElement.prototype.update_gravitational_force, {
@@ -230,11 +169,11 @@
             });
             SpringElement.prototype.update_left_element = async function update_left_element(neighbor, k, top) {
                 var self = this;
-                "67";
+                "61";
                 self._force=self._force["+"](k["*"]((await neighbor.axis())["-"](1["*"](self._length)["*"]((await neighbor.axis()).norm()))));
-                "68";
+                "62";
                 self._element.pos = top;
-                "69";
+                "63";
                 self._element.axis = (await neighbor.position())["-"](1["*"](self._element.pos));
             };
             if (!SpringElement.prototype.update_left_element.__argnames__) Object.defineProperties(SpringElement.prototype.update_left_element, {
@@ -243,11 +182,11 @@
             });
             SpringElement.prototype.update_right_element = async function update_right_element(neighbor, k, bottom) {
                 var self = this;
-                "72";
+                "66";
                 self._force=self._force["-"](k["*"]((await neighbor.axis())["-"](1["*"](self._length)["*"]((await neighbor.axis()).norm()))));
-                "73";
+                "67";
                 self._element.pos = bottom;
-                "74";
+                "68";
                 self._element.axis = vec(0, 0, 0);
             };
             if (!SpringElement.prototype.update_right_element.__argnames__) Object.defineProperties(SpringElement.prototype.update_right_element, {
@@ -256,7 +195,7 @@
             });
             SpringElement.prototype.axis = async function axis() {
                 var self = this;
-                "77";
+                "71";
                 return self._element.axis;
             };
             if (!SpringElement.prototype.axis.__module__) Object.defineProperties(SpringElement.prototype.axis, {
@@ -264,7 +203,7 @@
             });
             SpringElement.prototype.position = async function position() {
                 var self = this;
-                "80";
+                "74";
                 return self._element.pos;
             };
             if (!SpringElement.prototype.position.__module__) Object.defineProperties(SpringElement.prototype.position, {
@@ -272,7 +211,7 @@
             });
             SpringElement.prototype.force = async function force() {
                 var self = this;
-                "83";
+                "77";
                 return self._force;
             };
             if (!SpringElement.prototype.force.__module__) Object.defineProperties(SpringElement.prototype.force, {
@@ -281,19 +220,19 @@
             SpringElement.prototype.update_with = async function update_with(left_neighbor, right_neighbor, k, dt) {
                 var self = this;
                 var ρσ_ls, tension;
-                "86";
+                "80";
                 self._force=self._force["-"](k["*"]((await left_neighbor.axis())["-"](1["*"](self._length)["*"]((await left_neighbor.axis()).norm()))));
-                "87";
+                "81";
                 self._force=self._force["+"](k["*"]((await self.axis())["-"](1["*"](self._length)["*"]((await self.axis()).norm()))));
-                "88";
+                "82";
                 tension = k["*"](((await self.axis())["-"](1["*"](self._length)["*"]((await self.axis()).norm()))).mag);
-                "89";
+                "83";
                 self._velocity=self._velocity["+"](self._force["/"](self._mass)["*"](dt));
-                "90";
+                "84";
                 self._element.pos=self._element.pos["+"](self._velocity["*"](dt));
-                "91";
+                "85";
                 self._element.axis = (await right_neighbor.position())["-"](1["*"](self._element.pos));
-                "92";
+                "86";
                 return tension;
             };
             if (!SpringElement.prototype.update_with.__argnames__) Object.defineProperties(SpringElement.prototype.update_with, {
@@ -316,66 +255,74 @@
 
 
 
-            "95";
+            "88";
             function Spring() {;
             }
-            Spring.prototype.__init__ = async function __init__(N, mass, k, drag, topPos, botPos, width) {
+            Spring.prototype.__init__ = async function __init__(N, M, k, drag, topPos, botPos, initial_width) {
                 var self = this;
-                var ρσ_ls, line, element_length, _GS_1, i;
+                var ρσ_ls, _GS_1, i;
+                "90";
+                self.L = (topPos["-"](1["*"](botPos))).mag;
+                "91";
+                self.N = N;
+                "92";
+                self.elemLength = self.L["/"](N);
+                "93";
+                self.elemMass = M["/"](N);
+                "94";
+                self.width = initial_width;
+                "95";
+                self.element = ρσ_list_decorate([]);
+                "96";
+                self.drag = drag;
                 "97";
-                self._elements = ρσ_list_decorate([]);
+                self.k = k;
                 "98";
-                self._drag = drag;
+                self.topPos = topPos;
                 "99";
-                self._k = k;
+                self.botPos = botPos;
                 "100";
-                self._topPos = topPos;
+                self.line = botPos["-"](1["*"](topPos));
                 "101";
-                self._botPos = botPos;
+                self.tension = 0;
                 "103";
-                line = botPos["-"](1["*"](topPos));
-                "104";
-                element_length = (topPos["-"](1["*"](botPos))).mag["/"](N);
-                "105";
-                for (var ρσ_Index1 = 0; ρσ_Index1["<"](N); ρσ_Index1++) {
+                for (var ρσ_Index1 = 0; ρσ_Index1["<"](self.N); ρσ_Index1++) {
                     i = ρσ_Index1;
-                    "106";
+                    "104";
                     _GS_1 = new SpringElement;
-                    (await _GS_1.__init__(topPos["+"](i["/"](N)["*"](line)), element_length["*"](line.norm()), width["/"](2), mass["/"](N), element_length));
-                    self._elements.append(_GS_1);
+                    (await _GS_1.__init__(topPos["+"](i["/"](N)["*"](self.line)), self.elemLength["*"](self.line.norm()), self.width["/"](2), self.elemMass, self.elemLength));
+                    self.element.append(_GS_1);
                 }
             };
             if (!Spring.prototype.__init__.__argnames__) Object.defineProperties(Spring.prototype.__init__, {
-                __argnames__ : {value: ["N", "mass", "k", "drag", "topPos", "botPos", "width"]},
+                __argnames__ : {value: ["N", "M", "k", "drag", "topPos", "botPos", "initial_width"]},
                 __module__ : {value: null}
             });
             Spring.__argnames__ = Spring.prototype.__init__.__argnames__;
             Spring.__handles_kwarg_interpolation__ = Spring.prototype.__init__.__handles_kwarg_interpolation__;
             Spring.prototype.update_by = async function update_by(dt) {
                 var self = this;
-                var ρσ_ls, total_elements, i, tension;
-                "109";
-                total_elements = len(self._elements);
-                "110";
-                for (var ρσ_Index2 = 0; ρσ_Index2["<"](total_elements); ρσ_Index2++) {
+                var ρσ_ls, i;
+                "107";
+                for (var ρσ_Index2 = 0; ρσ_Index2["<"](self.N); ρσ_Index2++) {
                     i = ρσ_Index2;
-                    "111";
-                    (await ρσ_getitem(self._elements, i).update_gravitational_force(self._drag));
+                    "108";
+                    (await ρσ_getitem(self.element, i).update_gravitational_force(self.drag));
                 }
+                "110";
+                self.tension = 0;
+                "112";
+                (await ρσ_getitem(self.element, 0).update_left_element(ρσ_getitem(self.element, 1), self.k, self.topPos));
                 "113";
-                (await ρσ_getitem(self._elements, 0).update_left_element(ρσ_getitem(self._elements, 1), self._k, self._topPos));
-                "114";
-                tension = 0;
-                "115";
-                for (var ρσ_Index3 = 1; ρσ_Index3["<"](total_elements["-"](1["*"](1))); ρσ_Index3++) {
+                for (var ρσ_Index3 = 1; ρσ_Index3["<"](self.N["-"](1["*"](1))); ρσ_Index3++) {
                     i = ρσ_Index3;
-                    "116";
-                    tension=tension["+"]((await ρσ_getitem(self._elements, i).update_with(ρσ_getitem(self._elements, i["-"](1["*"](1))), ρσ_getitem(self._elements, i["+"](1)), self._k, dt)));
+                    "114";
+                    self.tension=self.tension["+"]((await ρσ_getitem(self.element, i).update_with(ρσ_getitem(self.element, i["-"](1["*"](1))), ρσ_getitem(self.element, i["+"](1)), self.k, dt)));
                 }
+                "115";
+                (await ρσ_getitem(self.element, self.N["-"](1["*"](1))).update_right_element(ρσ_getitem(self.element, self.N["-"](1["*"](2))), self.k, self.botPos));
                 "117";
-                (await ρσ_getitem(self._elements, 1["-u"]()["*"](1)).update_right_element(ρσ_getitem(self._elements, 1["-u"]()["*"](2)), self._k, self._botPos));
-                "119";
-                return tension["/"](total_elements);
+                self.tension=self.tension["/"](self.N);
             };
             if (!Spring.prototype.update_by.__argnames__) Object.defineProperties(Spring.prototype.update_by, {
                 __argnames__ : {value: ["dt"]},
@@ -383,19 +330,10 @@
             });
             Spring.prototype.force_on_last_element = async function force_on_last_element() {
                 var self = this;
-                "122";
-                return (await ρσ_getitem(self._elements, 1["-u"]()["*"](1)).force());
+                "120";
+                return (await ρσ_getitem(self.element, self.N["-"](1["*"](1))).force());
             };
             if (!Spring.prototype.force_on_last_element.__module__) Object.defineProperties(Spring.prototype.force_on_last_element, {
-                __module__ : {value: null}
-            });
-            Spring.prototype.update_with = async function update_with(cart_position) {
-                var self = this;
-                "125";
-                self._botPos = cart_position;
-            };
-            if (!Spring.prototype.update_with.__argnames__) Object.defineProperties(Spring.prototype.update_with, {
-                __argnames__ : {value: ["cart_position"]},
                 __module__ : {value: null}
             });
             Spring.prototype.__repr__ = async function __repr__() {
@@ -409,33 +347,24 @@
 
 
 
-
-            "128";
-            _GS_1 = new Cart;
-            (await _GS_1.__init__(color.blue));
-            cart = _GS_1;
-            "129";
-            track = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(0, 1["-u"]()["*"](.025), 0), size: vec(.5, .01, .08), texture: textures.wood})]);
-            "130";
-            stop = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({pos: vec(1["-u"]()["*"](.245), 0, 0), size: vec(.01, .04, .08), texture: textures.wood})]);
-            "131";
+            "124";
             _GS_1 = new Spring;
-            (await _GS_1.__init__(20, .1, 2500, .5, stop.pos, cart.body.pos["-"](1["*"](vec(cart.L["/"](2), 0, 0))), .01));
+            (await _GS_1.__init__(20, .1, 2500, .5, stop.pos, myCart.body.pos["-"](1["*"](vec(myCart.L["/"](2), 0, 0))), .01));
             spring = _GS_1;
-            "133";
+            "127";
             pull = false;
-            "134";
+            "128";
             chosenObject = null;
-            "135";
-            force_arrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({axis: vec(0, 0, 0), color: color.red, opacity: .5})]);
-            "138";
+            "129";
+            forceArrow = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({axis: vec(0, 0, 0), color: color.red, opacity: .5})]);
+            "132";
             async function down() {
-                "139";
-                "140";
+                "133";
+                "134";
                 chosenObject = animation.mouse.pick();
-                "141";
-                if ((chosenObject === cart.body || typeof chosenObject === "object" && ρσ_equals(chosenObject, cart.body))) {
-                    "142";
+                "135";
+                if ((chosenObject === myCart.body || typeof chosenObject === "object" && ρσ_equals(chosenObject, myCart.body))) {
+                    "136";
                     pull = true;
                 }
             };
@@ -443,70 +372,72 @@
                 __module__ : {value: null}
             });
 
-            "145";
+            "139";
             async function move() {
-                "146";
-                "147";
+                "140";
+                "141";
                 if (pull) {
-                    "148";
-                    force_arrow.pos = chosenObject.pos;
-                    "149";
-                    force_arrow.axis.x = animation.mouse.pos.x["-"](1["*"](chosenObject.pos.x));
+                    "142";
+                    forceArrow.pos = chosenObject.pos;
+                    "143";
+                    forceArrow.axis.x = animation.mouse.pos.x["-"](1["*"](chosenObject.pos.x));
                 }
             };
             if (!move.__module__) Object.defineProperties(move, {
                 __module__ : {value: null}
             });
 
-            "152";
+            "146";
             async function up() {
                 var ρσ_ls, offset;
-                "153";
-                "154";
+                "147";
+                "148";
                 pull = false;
-                "155";
+                "149";
                 offset = vec(0, 0, 0);
-                "156";
-                force_arrow.axis = vec(0, 0, 0);
+                "150";
+                forceArrow.axis = vec(0, 0, 0);
             };
             if (!up.__module__) Object.defineProperties(up, {
                 __module__ : {value: null}
             });
 
-            "159";
+            "153";
             animation.bind("mousedown", down);
-            "160";
+            "154";
             animation.bind("mousemove", move);
-            "161";
+            "155";
             animation.bind("mouseup", up);
-            "163";
+            "157";
             delta_t = .001;
-            "164";
+            "159";
             while (true) {
-                "165";
+                "160";
                 (await rate(1["/"](delta_t)));
-                "168";
+                "161";
                 netForce = vec(.1, 0, 0)["+"]((await spring.force_on_last_element()));
-                "170";
+                "163";
                 if (pull) {
-                    "171";
-                    netForce=netForce["+"](50["*"](force_arrow.axis));
+                    "164";
+                    netForce = netForce["+"](50["*"](forceArrow.axis));
                 }
-                "172";
+                "165";
                 netForce.y = 0;
-                "173";
-                if ((await cart.hits_wall(stop.pos))) {
-                    "174";
-                    (await cart.bounce(stop.pos));
+                "166";
+                if (myCart.body.pos.x["<"](stop.pos.x["+"](myCart.L["/"](2)))) {
+                    "167";
+                    myCart.vel.x = 1["-u"]()["*"](.5)["*"](myCart.vel.x);
+                    "168";
+                    myCart.body.pos.x = stop.pos.x["+"](myCart.L["/"](2));
                 }
-                "175";
-                (await cart.update_by(netForce, delta_t));
-                "176";
-                (await spring.update_with((await cart.position())));
-                "177";
+                "169";
+                (await myCart.process(netForce, delta_t));
+                "170";
+                spring.botPos = myCart.body.pos["+"](vec(1["-u"]()["*"](myCart.L)["/"](2), myCart.H["/"](4), 0));
+                "171";
                 (await spring.update_by(delta_t));
-                "178";
-                force_arrow.pos = cart.body.pos;
+                "172";
+                forceArrow.pos = myCart.body.pos;
             }
         };
         if (!__main__.__module__) Object.defineProperties(__main__, {
