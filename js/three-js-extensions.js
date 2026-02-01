@@ -3,14 +3,15 @@ import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import { BufferGeometry, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3, Color,
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
     MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
-    InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry } from "three";
+    InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry, ShaderMaterial,
+    AdditiveBlending, Points, PointsMaterial} from "three";
 
 export const ZeroVector = new Vector3();
 export const UnitVectorE1 = new Vector3(1, 0, 0);
 export const UnitVectorE2 = new Vector3(0, 1, 0);
 export const UnitVectorE3 = new Vector3(0, 0, 1);
 
-export class ThreeJsUtils {
+export class TeehreeJsUtils {
     static scaleBox3(box, factor) {
         const center = new Vector3();
         const size = new Vector3();
@@ -616,7 +617,7 @@ export class Plot3DView {
     }
 }
 
-export class SkySphere extends THREE.Group {
+export class SkySphere extends Group {
     constructor({
                     skyRadius = 5000,
                     starDensity = 5,
@@ -648,14 +649,14 @@ export class SkySphere extends THREE.Group {
             randomPhases[i] = Math.random(); // unieke fase voor fonkelen
         }
 
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-        geometry.setAttribute("aRandom", new THREE.BufferAttribute(randomPhases, 1));
+        const geometry = new BufferGeometry();
+        geometry.setAttribute("position", new BufferAttribute(positions, 3));
+        geometry.setAttribute("aRandom", new BufferAttribute(randomPhases, 1));
 
-        const material = new THREE.ShaderMaterial({
+        const material = new ShaderMaterial({
             transparent: true,
             depthTest: false,
-            blending: THREE.AdditiveBlending,
+            blending: AdditiveBlending,
             uniforms: {
                 uTime: { value: 0 },
                 pointSize: { value: pointSize },
@@ -684,7 +685,7 @@ export class SkySphere extends THREE.Group {
             `
         });
 
-        return new THREE.Points(geometry, material);
+        return new Points(geometry, material);
     }
 
     #createStars(radius) {
@@ -700,7 +701,7 @@ export class SkySphere extends THREE.Group {
             const positions = new Float32Array(count * 3);
 
             for (let i = 0; i < count; i++) {
-                const v = new THREE.Vector3(
+                const v = new Vector3(
                     Math.random() * 2 - 1,
                     Math.random() * 2 - 1,
                     Math.random() * 2 - 1
@@ -711,10 +712,10 @@ export class SkySphere extends THREE.Group {
                 positions[3 * i + 2] = v.z;
             }
 
-            const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+            const geometry = new BufferGeometry();
+            geometry.setAttribute("position", new BufferAttribute(positions, 3));
 
-            const material = new THREE.PointsMaterial({
+            const material = new PointsMaterial({
                 color,
                 size,
                 sizeAttenuation: false,
@@ -723,7 +724,7 @@ export class SkySphere extends THREE.Group {
             });
 
             for (let i = 10; i < 30; i++) {
-                const stars = new THREE.Points(geometry, material);
+                const stars = new Points(geometry, material);
                 stars.rotation.set(
                     Math.random() * Math.PI,
                     Math.random() * Math.PI,
