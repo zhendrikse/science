@@ -616,6 +616,134 @@ export class Plot3DView {
     }
 }
 
+export class SkySphere extends THREE.Group {
+    constructor({
+                    skyRadius = 5000,
+                    starDensity = 5,
+                    glowStarCount = 2000,
+                    pointSize = 4,
+                    blinkSpeed = 5
+                } = {}) {
+        super();
+
+        this._stars = this.#createStars(skyRadius / starDensity); // Non-blinking stars
+        this._stars.forEach(star => { star.renderOrder = -1; this.add(star); });
+        this._glowStars = this.#createGlowStars(skyRadius, glowStarCount, pointSize, blinkSpeed); // Blinking stars
+        this.add(this._glowStars);
+    }
+
+    #createGlowStars(skyRadius, starCount, pointSize, blinkSpeed) {
+        const positions = new Float32Array(starCount * 3);
+        const randomPhases = new Float32Array(starCount);
+
+        for (let i = 0; i < starCount; i++) {
+            const theta = Math.random() * 2 * Math.PI;
+            const phi = Math.acos(2 * Math.random() - 1);
+            const r = skyRadius;
+
+            positions[3 * i + 0] = r * Math.sin(phi) * Math.cos(theta);
+            positions[3 * i + 1] = r * Math.sin(phi) * Math.sin(theta);
+            positions[3 * i + 2] = r * Math.cos(phi);
+
+            randomPhases[i] = Math.random(); // unieke fase voor fonkelen
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute("aRandom", new THREE.BufferAttribute(randomPhases, 1));
+
+        const material = new THREE.ShaderMaterial({
+            transparent: true,
+            depthTest: false,
+            blending: THREE.AdditiveBlending,
+            uniforms: {
+                uTime: { value: 0 },
+                pointSize: { value: pointSize },
+                blinkSpeed: { value: blinkSpeed }
+            },
+            vertexShader: `
+                attribute float aRandom;
+                varying float vRandom;
+                uniform float uTime;
+                void main() {
+                    vRandom = aRandom;
+                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    gl_PointSize = 4.0 + 2.0 * sin(uTime * 5.0 + vRandom * 6.2831);
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                void main() {
+                    float dist = length(gl_PointCoord - vec2(0.5));
+                    float halo = exp(-dist * dist * 8.0);
+
+                    // fonkelen
+                    float alpha = halo;
+                    gl_FragColor = vec4(vec3(1.0), alpha);
+                }
+            `
+        });
+
+        return new THREE.Points(geometry, material);
+    }
+
+    #createStars(radius) {
+        const layers = [
+            { count: 250, size: 2, color: 0x555555 },
+            { count: 1500, size: 1, color: 0x333333 }
+        ];
+
+        const starGroups = [];
+
+        for (let layer = 0; layer < layers.length; layer++) {
+            const { count, size, color } = layers[layer];
+            const positions = new Float32Array(count * 3);
+
+            for (let i = 0; i < count; i++) {
+                const v = new THREE.Vector3(
+                    Math.random() * 2 - 1,
+                    Math.random() * 2 - 1,
+                    Math.random() * 2 - 1
+                ).normalize().multiplyScalar(radius);
+
+                positions[3 * i + 0] = v.x;
+                positions[3 * i + 1] = v.y;
+                positions[3 * i + 2] = v.z;
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+            const material = new THREE.PointsMaterial({
+                color,
+                size,
+                sizeAttenuation: false,
+                depthWrite: false,
+                depthTest: false
+            });
+
+            for (let i = 10; i < 30; i++) {
+                const stars = new THREE.Points(geometry, material);
+                stars.rotation.set(
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI
+                );
+                stars.updateMatrix();
+                stars.matrixAutoUpdate = false;
+                starGroups.push(stars.clone());
+            }
+        }
+
+        return starGroups;
+    }
+
+    // Call in animate loop to update fonkelen
+    update(time) {
+        this._glowStars.material.uniforms.uTime.value = time;
+    }
+}
+
 class Trail {
     constructor({
                     maxPoints = 200,
