@@ -23,7 +23,7 @@
 <script type="module">
     import * as THREE from "three";
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
-    import { ThreeJsUtils, SkySphere } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { ThreeJsUtils, SkyDome } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
     const vector = THREE.Vector3,
         color = THREE.Color;
@@ -302,14 +302,14 @@
         }
     }
 
-    const skySphere = new SkySphere(galaxyScene);
-    galaxyScene.add(skySphere);
+    const skyDome = new SkyDome(galaxyScene);
+    galaxyScene.add(skyDome);
     const galaxy = new SpiralGalaxy();
 
     function animate(time) {
         time *= 0.001;
         galaxy.rotateZ();
-        skySphere.update(time);
+        skyDome.update(time);
         galaxyRenderer.render(galaxyScene, galaxyCamera);
     }
 </script>
