@@ -219,6 +219,33 @@ export class SurfaceDefinition {
     }
 }
 
+export class DefaultSurfaceDefinition extends SurfaceDefinition {
+    constructor(surfaceSpecification) {
+        super();
+        this._surfaceSpecification = surfaceSpecification;
+
+        this._xFn = surfaceSpecification.parametrization.xFn;
+        this._yFn = surfaceSpecification.parametrization.yFn;
+        this._zFn = surfaceSpecification.parametrization.zFn;
+
+        this._uInterval = new Interval(surfaceSpecification.intervals[0][0], surfaceSpecification.intervals[0][1]);
+        this._vInterval = new Interval(surfaceSpecification.intervals[1][0], surfaceSpecification.intervals[1][1]);
+    }
+
+    sample(u, v, target) {
+        const U = this._uInterval.scaleUnitParameter(u);
+        const V = this._vInterval.scaleUnitParameter(v);
+
+        target.set(
+            this._xFn(U, V),
+            this._yFn(U, V),
+            this._zFn(U, V)
+        );
+    }
+
+    specification() { return this._surfaceSpecification; }
+}
+
 export class LiteralStringBasedSurfaceDefinition extends SurfaceDefinition {
     constructor(surfaceSpecification) {
         super();
