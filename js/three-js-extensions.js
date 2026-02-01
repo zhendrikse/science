@@ -617,7 +617,7 @@ export class Plot3DView {
     }
 }
 
-export class SkySphere extends Group {
+export class SkyDome extends Group {
     constructor({
                     skyRadius = 5000,
                     starDensity = 5,
