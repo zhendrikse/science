@@ -309,7 +309,7 @@
     function animate(time) {
         time *= 0.001;
         galaxy.rotateZ();
-        skyDome.update(time);
+        skyDome.update(time, galaxyCamera);
         galaxyRenderer.render(galaxyScene, galaxyCamera);
     }
 </script>

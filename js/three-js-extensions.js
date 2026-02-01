@@ -630,6 +630,7 @@ export class SkyDome extends Group {
         this._stars = this.#createStars(skyRadius / starDensity); // Non-blinking stars
         this._stars.forEach(star => { star.renderOrder = -1; this.add(star); });
         this._glowStars = this.#createGlowStars(skyRadius, glowStarCount, pointSize, blinkSpeed); // Blinking stars
+        this._glowStars.renderOrder = -10; // Sky dome is "infinitely" far away
         this.add(this._glowStars);
     }
 
@@ -655,7 +656,8 @@ export class SkyDome extends Group {
 
         const material = new ShaderMaterial({
             transparent: true,
-            depthTest: false,
+            depthTest: true,
+            depthWrite: false,
             blending: AdditiveBlending,
             uniforms: {
                 uTime: { value: 0 },
@@ -739,8 +741,8 @@ export class SkyDome extends Group {
         return starGroups;
     }
 
-    // Call in animate loop to update fonkelen
-    update(time) {
+    update(time, camera) {
+        this.position.copy(camera.position);
         this._glowStars.material.uniforms.uTime.value = time;
     }
 }
