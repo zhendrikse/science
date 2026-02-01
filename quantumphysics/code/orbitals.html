@@ -16,12 +16,11 @@
 
 <script type="module">
     import { Scene, Color, Group } from "three";
-    import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters }
+    import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters, Interval }
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-    import {  Utils, SignedOpacityColorMapper, ViewParameters, ContourType, TangentFrameParameters, ContourParameters,
-        SurfaceSpecification, LiteralStringBasedSurfaceDefinition, Surface, SurfaceController,
-        IsoparametricContoursView, CurvatureContoursView }
+    import { SignedOpacityColorMapper, ViewParameters, ContourType, TangentFrameParameters, ContourParameters,
+        SurfaceSpecification, LiteralStringBasedSurfaceDefinition, Surface, SurfaceController, SurfaceDefinition }
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
     const canvasContainer = document.getElementById("orbitalsContainer");
@@ -34,120 +33,120 @@
     const surfaceData = [{
         meta: { name: "1s" },
         parametrization: {
-            xFn: "sin(u)*cos(v)",
-            yFn: "cos(u)",
-            zFn: "sin(u)*sin(v)"
+            xFn: (u, v) => Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.cos(u),
+            zFn: (u, v) => Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "1" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => 1 },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "2pₓ" },
         parametrization: {
-            xFn: "abs(sin(u)*cos(v))*sin(u)*cos(v)",
-            yFn: "abs(sin(u)*cos(v))*cos(u)",
-            zFn: "abs(sin(u)*cos(v))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(Math.sin(u) * Math.cos(v)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(Math.sin(u) * Math.cos(v)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(Math.sin(u) * Math.cos(v)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "sin(u)*cos(v)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.sin(u) * Math.cos(v) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     },{
         meta: { name: "2pᵧ" },
         parametrization: {
-            xFn: "abs(cos(u))*sin(u)*cos(v)",
-            yFn: "abs(cos(u))*cos(u)",
-            zFn: "abs(cos(u))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(Math.cos(u)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(Math.cos(u)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(Math.cos(u)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "cos(u)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.cos(u) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "2p_z" },
         parametrization: {
-            xFn: "abs(sin(u)*sin(v))*sin(u)*cos(v)",
-            yFn: "abs(sin(u)*sin(v))*cos(u)",
-            zFn: "abs(sin(u)*sin(v))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(Math.sin(u) * Math.sin(v)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(Math.sin(u) * Math.sin(v)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(Math.sin(u) * Math.sin(v)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "sin(u)*sin(v)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.sin(u) * Math.sin(v) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "3d_z²" },
         parametrization: {
-            xFn: "abs(3*cos(u)^2-1)*sin(u)*cos(v)",
-            yFn: "abs(3*cos(u)^2-1)*cos(u)",
-            zFn: "abs(3*cos(u)^2-1)*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(3 * Math.cos(u)^2-1) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(3 * Math.cos(u)^2-1) * Math.cos(u),
+            zFn: (u, v) => Math.abs(3 * Math.cos(u)^2-1) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "3*cos(u)^2-1" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => "3*Math.cos(u)^2-1" },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "3d_xz" },
         parametrization: {
-            xFn: "abs(sin(u)*cos(u)*cos(v))*sin(u)*cos(v)",
-            yFn: "abs(sin(u)*cos(u)*cos(v))*cos(u)",
-            zFn: "abs(sin(u)*cos(u)*cos(v))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(Math.sin(u) * Math.cos(u) * Math.cos(v)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(Math.sin(u) * Math.cos(u) * Math.cos(v)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(Math.sin(u) * Math.cos(u) * Math.cos(v)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "sin(u)*cos(u)*cos(v)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.sin(u) * Math.cos(u) * Math.cos(v) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "3d_yz" },
         parametrization: {
-            xFn: "abs(sin(u)*cos(u)*sin(v))*sin(u)*cos(v)",
-            yFn: "abs(sin(u)*cos(u)*sin(v))*cos(u)",
-            zFn: "abs(sin(u)*cos(u)*sin(v))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(Math.sin(u) * Math.cos(u) * Math.sin(v)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(Math.sin(u) * Math.cos(u) * Math.sin(v)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(Math.sin(u) * Math.cos(u) * Math.sin(v)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "sin(u)*cos(u)*sin(v)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.sin(u) * Math.cos(u) * Math.sin(v) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "3d_x²₋z²" },
         parametrization: {
-            xFn: "abs(sin(u)^2*cos(2*v))*sin(u)*cos(v)",
-            yFn: "abs(sin(u)^2*cos(2*v))*cos(u)",
-            zFn: "abs(sin(u)^2*cos(2*v))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(Math.sin(u)**2 * Math.cos(2 * v)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(Math.sin(u)**2 * Math.cos(2 * v)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(Math.sin(u)**2 * Math.cos(2 * v)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "sin(u)^2*cos(2*v)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.sin(u)**2 * Math.cos(2*v) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "3d_xy" },
         parametrization: {
-            xFn: "abs(sin(u)^2*sin(2*v))*sin(u)*cos(v)",
-            yFn: "abs(sin(u)^2*sin(2*v))*cos(u)",
-            zFn: "abs(sin(u)^2*sin(2*v))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(Math.sin(u)**2 * Math.sin(2 * v)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(Math.sin(u)**2 * Math.sin(2 * v)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(Math.sin(u)**2 * Math.sin(2 * v)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "sin(u)^2*sin(2*v)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.sin(u)**2 * Math.sin(2*v) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "4f_z³" },
         parametrization: {
-            xFn: "abs(5*cos(u)^3-3*cos(u))*sin(u)*cos(v)",
-            yFn: "abs(5*cos(u)^3-3*cos(u))*cos(u)",
-            zFn: "abs(5*cos(u)^3-3*cos(u))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(5 * Math.cos(u)**3 - 3 * Math.cos(u)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(5 * Math.cos(u)**3 - 3 * Math.cos(u)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(5 * Math.cos(u)**3 - 3 * Math.cos(u)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "5*cos(u)^3-3*cos(u)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => 5 * Math.cos(u)**3 - 3 * Math.cos(u) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "4f_xyz" },
         parametrization: {
-            xFn: "2 * abs(sin(u)^2*cos(u)*sin(2*v))*sin(u)*cos(v)",
-            yFn: "2 * abs(sin(u)^2*cos(u)*sin(2*v))*cos(u)",
-            zFn: "2 * abs(sin(u)^2*cos(u)*sin(2*v))*sin(u)*sin(v)"
+            xFn: (u, v) => 2 * Math.abs(Math.sin(u)**2 * Math.cos(u) * Math.sin(2 * v)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => 2 * Math.abs(Math.sin(u)**2 * Math.cos(u) * Math.sin(2 * v)) * Math.cos(u),
+            zFn: (u, v) => 2 * Math.abs(Math.sin(u)**2 * Math.cos(u) * Math.sin(2 * v)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "sin(u)^2*cos(u)*sin(2*v)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.sin(u)**2 * Math.cos(u) * Math.sin(2 * v) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "4f_x(x²−3z²)" },
         parametrization: {
-            xFn: "abs(sin(u)^3*cos(3*v))*sin(u)*cos(v)",
-            yFn: "abs(sin(u)^3*cos(3*v))*cos(u)",
-            zFn: "abs(sin(u)^3*cos(3*v))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(Math.sin(u)**3 * Math.cos(3 * v)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(Math.sin(u)**3 * Math.cos(3 * v)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(Math.sin(u)**3 * Math.cos(3 * v)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "sin(u)^3*cos(3*v)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.sin(u)**3 * Math.cos(3 * v) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }, {
         meta: { name: "4f_z(x²−z²)" },
         parametrization: {
-            xFn: "abs(sin(u)^3*sin(3*v))*sin(u)*cos(v)",
-            yFn: "abs(sin(u)^3*sin(3*v))*cos(u)",
-            zFn: "abs(sin(u)^3*sin(3*v))*sin(u)*sin(v)"
+            xFn: (u, v) => Math.abs(Math.sin(u)**3 * Math.sin(3 * v)) * Math.sin(u) * Math.cos(v),
+            yFn: (u, v) => Math.abs(Math.sin(u)**3 * Math.sin(3 * v)) * Math.cos(u),
+            zFn: (u, v) => Math.abs(Math.sin(u)**3 * Math.sin(3 * v)) * Math.sin(u) * Math.sin(v)
         },
-        signedField: { field: "sin(u)^3*sin(3*v)" },
-        intervals: [["-pi","pi"],["0","pi"]]
+        signedField: { field: (u, v) => Math.sin(u)**3 * Math.sin(3 * v) },
+        intervals: [[-Math.PI, Math.PI], [0, Math.PI]]
     }];
 
     class OrbitalSurfaceSpecification extends SurfaceSpecification {
@@ -157,7 +156,7 @@
             Object.freeze(this);
         }
 
-        get signedFieldFunction() { return Utils.functionFrom(this._signedField.field); }
+        get signedFieldFunction() { return this._signedField.field; }
 
         withParametrization(patch) {
             return new OrbitalSurfaceSpecification({
@@ -171,6 +170,33 @@
             });
         }
     }
+
+    class OrbitalSurfaceDefinition extends SurfaceDefinition {
+        constructor(surfaceSpecification) {
+            super();
+
+            this._xFn = surfaceSpecification.parametrization.xFn;
+            this._yFn = surfaceSpecification.parametrization.yFn;
+            this._zFn = surfaceSpecification.parametrization.zFn;
+
+            this._uInterval = new Interval(surfaceSpecification.intervals[0][0], surfaceSpecification.intervals[0][1]);
+            this._vInterval = new Interval(surfaceSpecification.intervals[1][0], surfaceSpecification.intervals[1][1]);
+        }
+
+        sample(u, v, target) {
+            const U = this._uInterval.scaleUnitParameter(u);
+            const V = this._vInterval.scaleUnitParameter(v);
+
+            target.set(
+                this._xFn(U, V),
+                this._yFn(U, V),
+                this._zFn(U, V)
+            );
+        }
+
+        specification() { return this._surfaceSpecification; }
+    }
+
 
     class ControlsGui {
         constructor(surfaceController, axesController, plot3d) {
@@ -237,7 +263,7 @@
         }
 
         #updateSurface(surfaceSpecification) {
-            const surfaceDef = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
+            const surfaceDef = new OrbitalSurfaceDefinition(surfaceSpecification);
             this._surfaceController.onSurfaceChange(new Surface(surfaceDef), surfaceParams);
             this._surfaceController.onColorMapperChange(new SignedOpacityColorMapper(surfaceSpecification.signedFieldFunction));
             this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
@@ -268,7 +294,7 @@
     });
 
     const defaultSurfaceSpec = new OrbitalSurfaceSpecification(surfaceData[9]);
-    const surfaceDef = new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec);
+    const surfaceDef = new OrbitalSurfaceDefinition(defaultSurfaceSpec);
     const orbitalColorMapper = new SignedOpacityColorMapper(defaultSurfaceSpec.signedFieldFunction);
     const surfaceController = new SurfaceController(worldGroup, new Surface(surfaceDef), surfaceParams, orbitalColorMapper);
 
