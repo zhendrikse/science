@@ -31,8 +31,8 @@
 
     const waveParams = {
         distance: 20,
-        waveLength: 1,
-        intensity: 1,
+        waveLength: 4,
+        intensity: 2,
         phase: 0
     };
 
@@ -40,8 +40,8 @@
     const d1 = (u, v) => Math.sqrt((u - waveParams.distance / 2) * (u - waveParams.distance / 2) + v * v);
     const d2 = (u, v) => Math.sqrt((u + waveParams.distance / 2) * (u + waveParams.distance / 2) + v * v);
     const factor = (u, v) => // cos(k * r =
-        Math.cos(2 * Math.PI * d1(u, v) * .1 * waveParams.waveLength + Math.PI * waveParams.phase / 180) +
-        Math.cos(2 * Math.PI * d2(u, v) * .1 * waveParams.waveLength + Math.PI * waveParams.phase / 180);
+        Math.cos(2 * Math.PI * d1(u, v) / waveParams.waveLength - Math.PI * waveParams.phase / 180) / Math.sqrt(d1(u, v)) +
+        Math.cos(2 * Math.PI * d2(u, v) / waveParams.waveLength - Math.PI * waveParams.phase / 180) / Math.sqrt(d2(u, v));
     const surfaceData = {
         parametrization: {
             xFn: (u, v) => u,
@@ -78,10 +78,10 @@
         #createInterferenceFolder(parentFolder) {
             const folder = parentFolder.addFolder("Wave interference");
 
-            folder.add(params.waveParams, "intensity", 0, 3, 0.05)
+            folder.add(params.waveParams, "intensity", 0, 5, 0.05)
                 .name("Intensity")
                 .onChange(() => this.#updateSurface());
-            folder.add(params.waveParams, "waveLength", 0.25, 2, 0.05)
+            folder.add(params.waveParams, "waveLength", 1, 10, 0.1)
                 .name("Wavelength")
                 .onChange(() => this.#updateSurface());
             folder.add(params.waveParams, "distance", 1, 40, 0.1)
