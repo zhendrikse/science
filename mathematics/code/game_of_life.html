@@ -247,6 +247,7 @@
         // herteken direct
         render_game(game, image);
         image.render(display);
+        drawGrid(display);
     });
 
     const frameRateSelect = document.getElementById("frameRateSelect");
@@ -410,6 +411,33 @@
             for (let dy = 0; dy < cellSize; dy++)
                 image.setColour(new Pixel(px0 + dx, py0 + dy, color));
     }
+    
+    function drawGrid(context) {
+        if (cellSize < 4) return; // Do not draw lattice when cell size is too small
+
+        context.save();
+        context.strokeStyle = "rgba(255, 255, 255, 0.15)"; // subtiel
+        context.lineWidth = 1;
+
+        const width  = canvas.width;
+        const height = canvas.height;
+
+        for (let x = 0; x <= width; x += cellSize) { // vertical lines
+            context.beginPath();
+            context.moveTo(x + 0.5, 0);
+            context.lineTo(x + 0.5, height);
+            context.stroke();
+        }
+
+        for (let y = 0; y <= height; y += cellSize) { // horizontal lines
+            context.beginPath();
+            context.moveTo(0, y + 0.5);
+            context.lineTo(width, y + 0.5);
+            context.stroke();
+        }
+
+        context.restore();
+    }
 
     function render_game(game, image) {
         for (let cellX = 0; cellX < dimension_x; cellX++)
@@ -433,6 +461,7 @@
             game = game.next_generation();
             render_game(game, image);
             image.render(display);
+            drawGrid(display);
             lastTime = timestamp;
         }
         requestAnimationFrame(loop);
