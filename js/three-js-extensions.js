@@ -11,7 +11,7 @@ export const UnitVectorE1 = new Vector3(1, 0, 0);
 export const UnitVectorE2 = new Vector3(0, 1, 0);
 export const UnitVectorE3 = new Vector3(0, 0, 1);
 
-export class TeehreeJsUtils {
+export class ThreeJsUtils {
     static scaleBox3(box, factor) {
         const center = new Vector3();
         const size = new Vector3();
