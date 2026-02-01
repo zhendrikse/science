@@ -13,8 +13,6 @@
 </div>
 <div id="gui-container"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
-
 <script type="module">
     import { Scene, Color, Group } from "three";
     import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters, Interval }
@@ -38,14 +36,16 @@
     const waveParams = {
         distance: 20,
         waveLength: 10,
-        intensity: 2
+        intensity: 2,
+        phase: 0
     };
 
     const domain = 50;
     const d1 = (u, v) => Math.sqrt((u - waveParams.distance / 2) * (u - waveParams.distance / 2) + v * v);
     const d2 = (u, v) => Math.sqrt((u + waveParams.distance / 2) * (u + waveParams.distance / 2) + v * v);
-    const factor = (u, v) => Math.cos(2 * Math.PI * d1(u, v) / waveParams.waveLength) +
-        Math.cos(2 * Math.PI * d2(u, v) / waveParams.waveLength);
+    const factor = (u, v) => // cos(k * r =
+        Math.cos(2 * Math.PI * d1(u, v) / waveParams.waveLength + Math.PI * waveParams.phase / 180) +
+        Math.cos(2 * Math.PI * d2(u, v) / waveParams.waveLength + Math.PI * waveParams.phase / 180);
     const surfaceData = {
         parametrization: {
             xFn: (u, v) => u,
@@ -92,6 +92,9 @@
                 .onChange(() => this.#updateSurface());
             folder.add(this._waveParams, "distance", 1, 40, 0.1)
                 .name("Distance")
+                .onChange(() => this.#updateSurface());
+            folder.add(this._waveParams, "phase", 0, 360, 1)
+                .name("Phase")
                 .onChange(() => this.#updateSurface());
 
             folder.open();
