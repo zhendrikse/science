@@ -703,15 +703,13 @@ export class SkyDome extends Group {
             const positions = new Float32Array(count * 3);
 
             for (let i = 0; i < count; i++) {
-                const v = new Vector3(
-                    Math.random() * 2 - 1,
-                    Math.random() * 2 - 1,
-                    Math.random() * 2 - 1
-                ).normalize().multiplyScalar(radius);
+                const vector = new Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1)
+                    .normalize()
+                    .multiplyScalar(radius);
 
-                positions[3 * i + 0] = v.x;
-                positions[3 * i + 1] = v.y;
-                positions[3 * i + 2] = v.z;
+                positions[3 * i + 0] = vector.x;
+                positions[3 * i + 1] = vector.y;
+                positions[3 * i + 2] = vector.z;
             }
 
             const geometry = new BufferGeometry();
@@ -727,11 +725,7 @@ export class SkyDome extends Group {
 
             for (let i = 10; i < 30; i++) {
                 const stars = new Points(geometry, material);
-                stars.rotation.set(
-                    Math.random() * Math.PI,
-                    Math.random() * Math.PI,
-                    Math.random() * Math.PI
-                );
+                stars.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
                 stars.updateMatrix();
                 stars.matrixAutoUpdate = false;
                 starGroups.push(stars.clone());

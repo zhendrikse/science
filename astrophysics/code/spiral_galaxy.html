@@ -52,6 +52,8 @@
 
     const controls = new OrbitControls(galaxyCamera, galaxyCanvas);
     controls.target.set(0, 0, 0);
+    controls.minDistance = 50;
+    controls.maxDistance = 2500;
     controls.update();
 
     // We need a custom shader as THREE.points geometry does not
@@ -302,7 +304,7 @@
         }
     }
 
-    const skyDome = new SkyDome();
+    const skyDome = new SkyDome({skyRadius: 7500});
     galaxyScene.add(skyDome);
     const galaxy = new SpiralGalaxy();
 
