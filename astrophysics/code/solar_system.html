@@ -42,13 +42,14 @@
     const SUN_SCALE = 100 * PLANET_SCALE;
     const ORBIT_SCALE  = 40;    // additional orbit compression factor for nice visual representation
     const DISTANCE_SCALE = AU / ORBIT_SCALE;
+    const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
+    //const TEXTURES_PATH = "textures/";
     const toRenderUnits = (vector) => vector.clone().multiplyScalar(1000 / DISTANCE_SCALE);
 
     const planetaryScene = new Scene();
     // --- CAMERA ---
     const planetCamera = new PerspectiveCamera(60, 19/20, .1, 3000);
-    // planetCamera.position.set(100, 50, 150);
-    planetCamera.position.set(50, 50, 50);
+    planetCamera.position.set(60, 60, 60);
     planetCamera.lookAt(0, 0, 0);
 
     const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: false} );
@@ -74,7 +75,7 @@
 
     // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
     class CelestialBody extends Group {
-        constructor(bodyData, scale, texturePath = "https://www.hendrikse.name/science/astrophysics/code/textures/") {
+        constructor(bodyData, scale, texturePath=TEXTURES_PATH) {
             super();
             this._name = bodyData.name;
             this._radius = bodyData.radius;
@@ -466,7 +467,20 @@
         "mass": 4.8685e+23,
         'tilt': 177 * Math.PI / 180.,
         'omega': 6.2289229172353e-07
-    })
+    });
+    const mars = new Planet({
+        "name": "mars",
+        'a': 227939100.,
+        'e': 0.093315,
+        'inclination': 1.85 * Math.PI / 180.,
+        'right_ascension': 0.8676591934,
+        'mean_anomaly': 0.3378329113,
+        'radius': 3393.5 * 1e3,
+        "mass": 6.4185e+23,
+        'tilt': 25 * Math.PI / 180.,
+        'omega': 7.077636047355991e-05
+    });
+
     const moon = new Moon(earth);
 
     const earthMoonSystem = new PlanetMoonSystem(earth, [moon]);
@@ -477,17 +491,23 @@
     const noMoonsMercury = new PlanetMoonSystem(mercury);
     solarSystemGroup.add(noMoonsMercury);
     noMoonsMercury.update(0, 1);
-    mercury.enableTrail({color: 0xffaa00});
+    mercury.enableTrail({color: 0xaaff00});
 
     const noMoonsVenus = new PlanetMoonSystem(venus);
     solarSystemGroup.add(noMoonsVenus);
     noMoonsVenus.update(0, 1);
     venus.enableTrail({color: 0xff0000});
 
+    const noMoonsMars = new PlanetMoonSystem(mars);
+    solarSystemGroup.add(noMoonsMars);
+    noMoonsMars.update(0, 1);
+    mars.enableTrail({color: 0xffaa00});
+
     const solarSystem = [
         earthMoonSystem,
         noMoonsMercury,
-        noMoonsVenus
+        noMoonsVenus,
+        noMoonsMars
     ];
 
     controls.target.copy(sun.getWorldPosition(new Vector3()));
