@@ -741,50 +741,40 @@ export class SkyDome extends Group {
     }
 }
 
-class Trail {
+export class Trail {
     constructor({
                     maxPoints = 200,
                     color = 0xffffff,
                     linewidth = 1
                 } = {}) {
-        this.maxPoints = maxPoints;
-        this.positions = [];
-
-        this.geometry = new BufferGeometry();
-        this.material = new LineBasicMaterial({
-            color,
-            linewidth
-        });
-
-        this.line = new Line(this.geometry, this.material);
+        this._maxPoints = maxPoints;
+        this._positions = [];
+        this._geometry = new BufferGeometry();
+        this._material = new LineBasicMaterial({color, linewidth});
+        this._line = new Line(this._geometry, this._material);
     }
 
-    addPoint(vec3) {
-        this.positions.push(vec3.clone());
+    addPoint(position) {
+        const localPos = this._line.worldToLocal(position.clone());
+        this._positions.push(localPos);
 
-        if (this.positions.length > this.maxPoints)
-            this.positions.shift();
+        if (this._positions.length > this._maxPoints)
+            this._positions.shift();
 
-        const array = new Float32Array(this.positions.length * 3);
-        this.positions.forEach((p, i) => {
-            array[3 * i]     = p.x;
-            array[3 * i + 1] = p.y;
-            array[3 * i + 2] = p.z;
+        const array = new Float32Array(this._positions.length * 3);
+        this._positions.forEach((pos, i) => {
+            array[3 * i]     = pos.x;
+            array[3 * i + 1] = pos.y;
+            array[3 * i + 2] = pos.z;
         });
 
-        this.geometry.setAttribute(
-            'position',
-            new BufferAttribute(array, 3)
-        );
-        this.geometry.computeBoundingSphere();
+        this._geometry.setAttribute('position', new BufferAttribute(array, 3));
+        this._geometry.computeBoundingSphere();
     }
 
     clear() {
-        this.positions.length = 0;
-        this.geometry.setAttribute(
-            'position',
-            new BufferAttribute(new Float32Array(0), 3)
-        );
+        this._positions.length = 0;
+        this._geometry.setAttribute('position', new BufferAttribute(new Float32Array(0), 3));
     }
 }
 
