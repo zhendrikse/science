@@ -49,7 +49,7 @@
     const planetaryScene = new Scene();
     // --- CAMERA ---
     const planetCamera = new PerspectiveCamera(60, 19/20, .1, 3000);
-    planetCamera.position.set(60, 60, 60);
+    planetCamera.position.set(60, 20, 60);
     planetCamera.lookAt(0, 0, 0);
 
     const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: false} );
