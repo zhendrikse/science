@@ -74,7 +74,7 @@
 
     // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
     class CelestialBody extends Group {
-        constructor(bodyData, scale, texturePath = "textures/") {
+        constructor(bodyData, scale, texturePath = "https://www.hendrikse.name/science/astrophysics/code/textures/") {
             super();
             this._name = bodyData.name;
             this._radius = bodyData.radius;
@@ -197,8 +197,8 @@
     }
 
     class Planet extends CelestialBody {
-        constructor(planetData, texturePath = "textures/") {
-            super(planetData, PLANET_SCALE, texturePath);
+        constructor(planetData) {
+            super(planetData, PLANET_SCALE);
             this._timescale = (planetData.a / EARTH_SEMI_MAJOR_AXIS) ** 1.5; // rotation period w.r.t. Earth
 
             // create orbit coordinates list for the planet
@@ -371,8 +371,8 @@
     }
 
     class Earth extends CelestialBody {
-        constructor(planetData, texturePath = "textures/") {
-            super(planetData, PLANET_SCALE, texturePath);
+        constructor(planetData) {
+            super(planetData, PLANET_SCALE);
             this._name = planetData.name;
             this._timescale = 1; // rotation period w.r.t. Earth
 
