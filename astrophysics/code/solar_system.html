@@ -36,7 +36,7 @@
     const textureLoader = new TextureLoader();
     textureLoader.setCrossOrigin("anonymous");
 
-    let dt = 10;
+    let dt = 1;
 
     const AU = 1.496 * 1E11;   // astronomical unit
     const EARTH_SEMI_MAJOR_AXIS = 149598261.;
@@ -448,10 +448,10 @@
             document.getElementById("gui-container").appendChild(controls.domElement);
 
             const settings = {
-                dt: 5
+                dt: 1
             };
 
-            controls.add(settings, 'dt', 0.01, 50, 0.01).name("Time Step (dt)").onChange(value => {
+            controls.add(settings, 'dt', 0.01, 10, 0.01).name("Time Step (dt)").onChange(value => {
                 dt = value;
             });
         }
