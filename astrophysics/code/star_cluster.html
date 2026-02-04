@@ -18,20 +18,16 @@
     import {ImprovedNoise} from 'three/addons/math/ImprovedNoise.js';
     import { SkyDome, ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
-    const canvas = document.getElementById('starClusterCanvas'),
-        canvasWidth  = canvas.clientWidth,
-        canvasHeight = canvas.clientHeight;
-
+    const canvas = document.getElementById('starClusterCanvas');
     const scene = new Scene();
     scene.background = new Color(0x131313);
 
-    const camera = new PerspectiveCamera(30, canvasWidth / canvasHeight);
+    const camera = new PerspectiveCamera(30, 1, 0.1, 5000);
     camera.position.set(10, 20, 30);
     camera.lookAt(scene.position);
     camera.updateProjectionMatrix();
 
     const renderer = new WebGLRenderer({ antialias: true, canvas: canvas, alpha: true });
-    renderer.setSize(canvasWidth, canvasHeight, false);
     renderer.setAnimationLoop( animationLoop );
     console.clear();
 
