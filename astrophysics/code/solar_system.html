@@ -23,7 +23,8 @@
 
 <script type="module">
     import { Group, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color,
-        Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight} from "three";
+        Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight,
+        RingGeometry, DoubleSide, Quaternion } from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { ThreeJsUtils, SkyDome, Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
@@ -35,6 +36,8 @@
     const textureLoader = new TextureLoader();
     textureLoader.setCrossOrigin("anonymous");
 
+    let dt = 10;
+
     const AU = 1.496 * 1E11;   // astronomical unit
     const EARTH_SEMI_MAJOR_AXIS = 149598261.;
 
@@ -42,13 +45,11 @@
     const SUN_SCALE = 100 * PLANET_SCALE;
     const ORBIT_SCALE  = 40;    // additional orbit compression factor for nice visual representation
     const DISTANCE_SCALE = AU / ORBIT_SCALE;
-    const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
-    //const TEXTURES_PATH = "textures/";
     const toRenderUnits = (vector) => vector.clone().multiplyScalar(1000 / DISTANCE_SCALE);
 
     const planetaryScene = new Scene();
     // --- CAMERA ---
-    const planetCamera = new PerspectiveCamera(60, 19/20, .1, 3000);
+    const planetCamera = new PerspectiveCamera(60, 19/20, .1, 5000);
     planetCamera.position.set(60, 20, 60);
     planetCamera.lookAt(0, 0, 0);
 
@@ -70,31 +71,36 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    const skyDome = new SkyDome({skyRadius: 2500, glowStarCount: 500});
+    const skyDome = new SkyDome({skyRadius: 4500, glowStarCount: 500});
     planetaryScene.add(skyDome);
 
     // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
+    //const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
+    const TEXTURES_PATH = "textures/";
     class CelestialBody extends Group {
-        constructor(bodyData, scale, texturePath=TEXTURES_PATH) {
+        constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false, orbitPointsCount=10000} = {}) {
             super();
+            this._orbitPointsCount = orbitPointsCount;
             this._name = bodyData.name;
             this._radius = bodyData.radius;
-            this._omega = bodyData.omega;
             this._mass = bodyData.mass;
+            this._tilt = bodyData.tilt;
             this._timescale = 1;
-            this._spin = 365.25 * 24 * bodyData.omega;
+            this._spin = bodyData.spin;
 
             const geometry = new SphereGeometry(bodyData.radius / scale, 32, 32);
-            const mesh = new Mesh(geometry, this._material(texturePath));
+            const mesh = new Mesh(geometry, this._material(bumpScale, identicalBumpMap));
             this.add(mesh);
 
-            this.rotation.z = bodyData.tilt; // Axial tilt (set only once!)
-            this._deferredTrail = false;
+            this._tmpAxis = new Vector3();
+            this._tmpQuat = new Quaternion();
+            this._trailAccumulator = 0;
+            this._trailStep = 1; // 1 unity of time
             this._trail = null;
             this._coordinates = [];
         }
 
-        get tilt() { return this.rotation.z; }
+        get tilt() { return this._tilt; }
         get radius() { return this._radius; }
         get mass() { return this._mass; }
 
@@ -112,8 +118,9 @@
         }
 
         // Newton-Raphson to calculate elliptic orbit
-        _orbit(meanAnomaly, eccentricity, a, inclination, ascension, nPoints=10000, acc=1.e-2) {
+        _orbit(meanAnomaly, eccentricity, a, inclination, ascension, acc=1.e-2) {
             // nPoints = number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
+            const nPoints = this._orbitPointsCount;
             const range = this._linSpace(meanAnomaly, 2 * Math.PI + meanAnomaly, nPoints);
 
             let eccAnom = range.slice();
@@ -162,26 +169,26 @@
             return points;
         }
 
-        _material(texturePath) { throw new Error("Abstract class: implement material!"); }
+        _material(bumpScale, identicalBumpMap) { throw new Error("Abstract class: implement material!"); }
 
-        update() {
-            if (this._trail)
+        update(t, dt) {
+            if (!this._trail) return;
+
+            this._trailAccumulator += dt;
+
+            if (this._trailAccumulator >= this._trailStep) {
                 this._trail.addPoint(this.getWorldPosition(new Vector3()));
-        }
-
-        attachDeferredTrail() {
-            if (this._deferredTrail && this.parent && this._trail) {
-                this.parent.add(this._trail._line);
-                this._deferredTrail = false;
+                this._trailAccumulator = 0;
             }
         }
 
-        enableTrail({ maxPoints = 1000, color=0xffff00 } = {}) {
+
+        enableTrail({ maxPoints = 1000, color = 0xffff00 } = {}) {
             this._trail = new Trail({ maxPoints, color });
+            this._trailAccumulator = 0;
+
             if (this.parent)
                 this.parent.add(this._trail._line);
-            else
-                this._deferredTrail = true;
         }
 
         disposeTrail() {
@@ -198,8 +205,8 @@
     }
 
     class Planet extends CelestialBody {
-        constructor(planetData) {
-            super(planetData, PLANET_SCALE);
+        constructor(planetData, {bumpScale=0.005, identicalBumpMap=false} = {}) {
+            super(planetData, PLANET_SCALE, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
             this._timescale = (planetData.a / EARTH_SEMI_MAJOR_AXIS) ** 1.5; // rotation period w.r.t. Earth
 
             // create orbit coordinates list for the planet
@@ -212,18 +219,33 @@
             );
         }
 
-        _material(texturePath) {
+        _material(bumpScale, identicalBumpMap) {
+            const bumpMap = TEXTURES_PATH + this._name + (identicalBumpMap ? "map.jpg" : "bump.jpg");
             return new MeshPhongMaterial({
-                map: textureLoader.load(`${texturePath}` + this._name + "map.jpg"),
-                bumpMap: textureLoader.load(`${texturePath}` + this._name + "bump.jpg"),
-                bumpScale: 0.005,
+                map: textureLoader.load(`${TEXTURES_PATH}` + this._name + "map.jpg"),
+                bumpMap: textureLoader.load(bumpMap),
+                bumpScale: bumpScale,
                 shininess: 0
             });
         }
 
         update(t, dt) {
-            super.update(); // for trail
-            this.rotation.y += this._omega * 3600 * 24 * 365.25 * dt / this._coordinates.length;
+            super.update(t, dt); // for trail
+
+            // 1. vaste wereld-as (identiek aan Python)
+            this._tmpAxis.set(
+                -Math.sin(this._tilt),
+                Math.cos(this._tilt),
+                0
+            ).normalize();
+
+            // 2. wereld-as → lokale as
+            this._tmpQuat.copy(this.quaternion).invert();
+            this._tmpAxis.applyQuaternion(this._tmpQuat);
+
+            // 3. roteer
+            this.rotateOnAxis(this._tmpAxis, this._spin * dt);
+
         }
     }
 
@@ -262,7 +284,7 @@
                 const planetWorldPos = this._planet.getWorldPosition(new Vector3());
                 this.lookAt(planetWorldPos);
 
-                // Corrigeer vaste fase-offset (textuur-oriëntatie)
+                // Correct fixed phase fase-offset (texture-orientation)
                 this.rotateY(Math.PI); // of rotateZ, afhankelijk van je texture
             }
 
@@ -319,21 +341,16 @@
     }
 
     class Sun extends CelestialBody {
-        static DATA = {
-            "radius": 696300000.0,
-            "mass": 1.9885440000000002e+30,
-            "omega": 2.8653290845717256e-06,
-            "tilt": 0.1265363707695889
+        constructor(bodyData, {bumpScale=0.05, identicalBumpMap=true}) {
+            super(bodyData, SUN_SCALE, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
         }
 
-        constructor() {
-            super(Sun.DATA, SUN_SCALE);
-        }
-
-        _material(texturePath) {
+        _material(bumpScale, identicalBumpMap) {
             return new MeshPhongMaterial({
-                map: textureLoader.load(`${texturePath}sunmap.jpg`),
+                map: textureLoader.load(`${TEXTURES_PATH}sunmap.jpg`),
+                bumpMap: textureLoader.load(`${TEXTURES_PATH}sunmap.jpg`),
                 emissive: new Color(0xffcc66),
+                bumpScale: bumpScale,
                 emissiveIntensity: 1.0
             });
         }
@@ -348,7 +365,7 @@
             "mean_anomaly": 0.,
             "radius": 1737400,
             "mass": 7.349e+22,  // kg
-            "omega": 2.6617072234847306e-06, // rad/s
+            "spin": 2 * Math.PI / 708.7341666667,
             "tilt": 0.11641346110802178, // rad
             'period': 27.321, // days
             "tidal_lock": true
@@ -358,10 +375,10 @@
             super(Moon.DATA, planet, PLANET_SCALE);
         }
 
-        _material(texturePath) {
+        _material(bumpScale, identicalBumpMap) {
             return new MeshPhongMaterial({
-                map: textureLoader.load(`${texturePath}moonmap1k.jpg`),
-                bumpMap: textureLoader.load(`${texturePath}moonbump1k.jpg`),
+                map: textureLoader.load(`${TEXTURES_PATH}moonmap1k.jpg`),
+                bumpMap: textureLoader.load(`${TEXTURES_PATH}moonbump1k.jpg`),
                 bumpScale: 0.05,
                 specular: new Color(0x333333),
                 emissive: new Color(0x112244),
@@ -388,22 +405,70 @@
         }
 
         update(t, dt) {
-            super.update(); // for trail
-            this.rotation.y += this._omega * 3600 * 24 * 365.25 * dt / this._coordinates.length;
+            super.update(t, dt); // for trail
+
+            // 1. vaste wereld-as (identiek aan Python)
+            this._tmpAxis.set(
+                -Math.sin(this._tilt),
+                Math.cos(this._tilt),
+                0
+            ).normalize();
+
+            // 2. wereld-as → lokale as
+            this._tmpQuat.copy(this.quaternion).invert();
+            this._tmpAxis.applyQuaternion(this._tmpQuat);
+
+            // 3. roteer
+            this.rotateOnAxis(this._tmpAxis, this._spin * dt);
         }
 
-        _material(texturePath) {
+        _material(bumpScale, identicalBumpMap) {
             return new MeshPhongMaterial({
-                map: textureLoader.load(`${texturePath}earthmap1k.jpg`),
-                bumpMap: textureLoader.load(`${texturePath}earthbump1k.jpg`),
+                map: textureLoader.load(`${TEXTURES_PATH}earthmap1k.jpg`),
+                bumpMap: textureLoader.load(`${TEXTURES_PATH}earthbump1k.jpg`),
                 bumpScale: 0.05,
-                specularMap: textureLoader.load(`${texturePath}earthspec1k.jpg`),
+                specularMap: textureLoader.load(`${TEXTURES_PATH}earthspec1k.jpg`),
                 specular: new Color(0x333333),
                 emissive: new Color(0x112244),
                 emissiveIntensity: 0.05,
                 shininess: 3
             });
         }
+    }
+
+    class Saturn extends Planet {
+        constructor(planetData) {
+            super(planetData, {bumpScale: 0.05, identicalBumpMap: true});
+
+            const innerRingRadius = 1.11 * 60268000;
+            const outerRingRadius = 2.9 * 60268000;
+            const ringMesh = this.#createRings(
+                innerRingRadius / PLANET_SCALE,
+                outerRingRadius / PLANET_SCALE);
+            this.add(ringMesh);
+        }
+
+        #createRings(innerRadius, outerRadius) {
+            const geometry = new RingGeometry(innerRadius, outerRadius, 128);
+            const texture = new TextureLoader().load(`${TEXTURES_PATH}saturnringcolor.jpg`);
+            const material = new MeshPhongMaterial({
+                map: texture,
+                side: DoubleSide,
+                transparent: true,
+                opacity: 0.85
+            });
+
+            const rings = new Mesh(geometry, material);
+            rings.rotation.x = Math.PI / 2; // Ring lies in XY plane → tilt to XZ
+            this.rotation.z = this._tilt; // Axial tilt (set only once!)
+            return rings;
+        }
+
+
+        update(t, dt) {
+            super.update(t, dt); // trail
+        }
+
     }
 
     class ControlsGui {
@@ -424,7 +489,12 @@
     const solarSystemGroup = new Group();
     planetaryScene.add(solarSystemGroup);
 
-    const sun = new Sun();
+    const sun = new Sun({
+        "radius": 696300000.0,
+        "mass": 1.9885440000000002e+30,
+        "spin": 3600 * 2.8653290845717256e-06,
+        "tilt": 0.1265363707695889
+    }, {bumpScale: 0.05, identicalBumpMap: true});
     sun.position.set(0, 0, 0);
     solarSystemGroup.add(sun);
     const sunLight = new PointLight(0xffffff, 2, 0, .1); // intense, no max distance
@@ -441,8 +511,8 @@
         "mean_anomaly": 6.2398515744,
         "radius": 6371010, // meters
         "mass": 5.97219e+24,
-        "omega": 7.292115e-05, // rad/s
-        "tilt": 0.40927970959267024 // radians
+        "spin": 2 * Math.PI / 24.,
+        "tilt": 23 * Math.PI / 180
     });
     const mercury = new Planet({
         "name": "mercury",
@@ -454,8 +524,8 @@
         'radius': 2439.7 * 1e3,
         "mass": 3.302e+23,
         'tilt': 0.1 * Math.PI / 180.,
-        "omega": 4.1332945421494e-07
-    });
+        "spin": 2 * Math.PI / 4222.6
+    }, {bumpScale: 0.005});
     const venus = new Planet({
         "name": "venus",
         'a': 108208000.,
@@ -466,8 +536,8 @@
         'radius': 6051.8 * 1e3,
         "mass": 4.8685e+23,
         'tilt': 177 * Math.PI / 180.,
-        'omega': 6.2289229172353e-07
-    });
+        'spin':  -2 * Math.PI / 2802.
+    }, {bumpScale: 0.005});
     const mars = new Planet({
         "name": "mars",
         'a': 227939100.,
@@ -478,7 +548,31 @@
         'radius': 3393.5 * 1e3,
         "mass": 6.4185e+23,
         'tilt': 25 * Math.PI / 180.,
-        'omega': 7.077636047355991e-05
+        'spin': 2 * Math.PI / 24.66
+    }, {bumpScale: 0.05});
+    const jupiter = new Planet({
+        "name": "jupiter",
+        'a': 778547200.,
+        'e': 0.048775,
+        'inclination': 1.31 * Math.PI / 180.,
+        'right_ascension': 1.7504400393,
+        'mean_anomaly': 0.3284360586,
+        'radius': 71400. * 1e3,
+        "mass": 1.89813e+27,
+        'tilt': 3 * Math.PI / 180.,
+        'spin': 2 * Math.PI / 9.93
+    }, {bumpScale: 0.02, identicalBumpMap: true});
+    const saturn = new Saturn({
+        "name": "saturn",
+        'a': 1433449370.,
+        'e': 0.055723219,
+        'inclination': 2.49 * Math.PI / 180.,
+        'right_ascension': 1.98,
+        'mean_anomaly': 5.5911055356,
+        'radius': 60000. * 1e3,
+        "mass": 5.68319e+26,
+        'tilt': 27 * Math.PI / 180.,
+        'spin': 2 * Math.PI / 10.66
     });
 
     const moon = new Moon(earth);
@@ -486,37 +580,49 @@
     const earthMoonSystem = new PlanetMoonSystem(earth, [moon]);
     solarSystemGroup.add(earthMoonSystem);
     earthMoonSystem.update(0, 1); // set initial position
-    earth.enableTrail({color: 0x00bbff});
+    earth.enableTrail({maxPoints: 450, color: 0x00bbff});
 
     const noMoonsMercury = new PlanetMoonSystem(mercury);
     solarSystemGroup.add(noMoonsMercury);
     noMoonsMercury.update(0, 1);
-    mercury.enableTrail({color: 0xaaff00});
+    mercury.enableTrail({maxPoints: 230, color: 0xaaff00});
 
     const noMoonsVenus = new PlanetMoonSystem(venus);
     solarSystemGroup.add(noMoonsVenus);
     noMoonsVenus.update(0, 1);
-    venus.enableTrail({color: 0xff0000});
+    venus.enableTrail({maxPoints: 300, color: 0xff0000});
 
-    const noMoonsMars = new PlanetMoonSystem(mars);
-    solarSystemGroup.add(noMoonsMars);
-    noMoonsMars.update(0, 1);
+    const marsWithMoons = new PlanetMoonSystem(mars);
+    solarSystemGroup.add(marsWithMoons);
+    marsWithMoons.update(0, 1);
     mars.enableTrail({color: 0xffaa00});
+
+    const jupiterWithMoons = new PlanetMoonSystem(jupiter)
+    solarSystemGroup.add(jupiterWithMoons);
+    jupiterWithMoons.update(0, 1);
+    jupiter.enableTrail({color: 0xdddddd});
+
+    const saturnWithMoons = new PlanetMoonSystem(saturn)
+    solarSystemGroup.add(saturnWithMoons);
+    saturnWithMoons.update(0, 1);
+    saturn.enableTrail({color: 0xdd00dd});
 
     const solarSystem = [
         earthMoonSystem,
         noMoonsMercury,
         noMoonsVenus,
-        noMoonsMars
+        marsWithMoons,
+        jupiterWithMoons,
+        saturnWithMoons
     ];
 
-    controls.target.copy(sun.getWorldPosition(new Vector3()));
+    // controls.target.copy(sun.getWorldPosition(new Vector3()));
+    controls.target.copy(earth.getWorldPosition(new Vector3()));
     controls.update();
     new ControlsGui();
 
     let lastTime = 0;
     const frameRate = 20;
-    let dt = 10;
     let t = 0;
     function animate(time) {
         if (time - lastTime < 1000 / frameRate) return;
