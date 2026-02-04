@@ -42,9 +42,35 @@
 <canvas class="applicationCanvas" id="planetsCanvas" style="background: #131313; aspect-ratio: 19 / 12;"></canvas><br/>
 <div class="guiContainer" id="gui-container"></div>
 
+<script id="vertexShader" type="x-shader/x-vertex">
+    uniform vec3 viewVector;
+    uniform float c;
+    uniform float p;
+    varying float intensity;
+    void main()
+    {
+        vec3 vNormal = normalize( normalMatrix * normal );
+        vec3 vNormel = normalize( normalMatrix * viewVector );
+        intensity = pow( c - dot(vNormal, vNormel), p );
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    }
+</script>
+
+<!-- fragment shader a.k.a. pixel shader -->
+<script id="fragmentShader" type="x-shader/x-vertex">
+    uniform vec3 glowColor;
+    varying float intensity;
+    void main()
+    {
+        vec3 glow = glowColor * intensity;
+        gl_FragColor = vec4( glow, 1.0 );
+    }
+</script>
+
 <script type="module">
-    import { Group, Box3, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color,
-        Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight,
+    import { Group, Box3, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial,
+        Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight, FrontSide, AdditiveBlending,
         RingGeometry, DoubleSide, Quaternion } from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { ThreeJsUtils, SkyDome, Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
@@ -95,8 +121,8 @@
     planetaryScene.add(skyDome);
 
     // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
-    //const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
-    const TEXTURES_PATH = "textures/";
+    const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
+    //const TEXTURES_PATH = "textures/";
     class CelestialBody extends Group {
         constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false, orbitPointsCount=10000} = {}) {
             super();
@@ -108,9 +134,11 @@
             this._timescale = 1;
             this._spin = bodyData.spin;
 
-            const geometry = new SphereGeometry(bodyData.radius / scale, 32, 32);
-            const mesh = new Mesh(geometry, this._material(bumpScale, identicalBumpMap));
-            this.add(mesh);
+            this._geometry = new SphereGeometry(bodyData.radius / scale, 32, 32);
+            this._body = new Mesh(this._geometry, this._material(bumpScale, identicalBumpMap));
+            this.add(this._body);
+            this._body.castShadow = true;
+            this._body.receiveShadow = false;
 
             this._trailAccumulator = 0;
             this._trailStep = 10; // 1 unity of time
@@ -236,6 +264,8 @@
         constructor(planetData, {bumpScale=0.005, identicalBumpMap=false} = {}) {
             super(planetData, PLANET_SCALE, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
             this._timescale = (planetData.a / EARTH_SEMI_MAJOR_AXIS) ** 1.5; // rotation period w.r.t. Earth
+            this._body.castShadow = true;
+            this._body.receiveShadow = false;
 
             // create orbit coordinates list for the planet
             this._coordinates = this._orbit(
@@ -273,6 +303,8 @@
 
             this._timescale = moonData.period / 365.25;  // rotation period w.r.t Earth
             this._lock = moonData.tidal_lock;
+            this._body.castShadow = false;
+            this._body.receiveShadow = true;
 
             this._coordinates = this._orbit(
                 moonData.mean_anomaly,
@@ -356,6 +388,11 @@
     class Sun extends CelestialBody {
         constructor(bodyData, {bumpScale=0.05, identicalBumpMap=true}) {
             super(bodyData, SUN_SCALE, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
+
+            this._body.castShadow = false;
+            this._body.receiveShadow = false;
+            this._glow = this._createGlow();
+            this.add(this._glow);
         }
 
         _material(bumpScale, identicalBumpMap) {
@@ -366,6 +403,38 @@
                 bumpScale: bumpScale,
                 emissiveIntensity: 1.0
             });
+        }
+
+        _createGlow() {
+            // Glow shader uniforms
+            const customMaterial = new ShaderMaterial({
+                uniforms: {
+                    c: { value: 0.0 },
+                    p: { value: 2.0 },
+                    glowColor: { value: new Color(0xffff00) },
+                    viewVector: { value: new Vector3(0,0,1) } // tijdelijke placeholder
+                },
+                vertexShader: document.getElementById('vertexShader').textContent,
+                fragmentShader: document.getElementById('fragmentShader').textContent,
+                side: FrontSide,
+                blending: AdditiveBlending,
+                transparent: true,
+                depthWrite: false,
+                depthTest: false
+            });
+
+            const glowMesh = new Mesh(this._geometry.clone(), customMaterial);
+            glowMesh.scale.multiplyScalar(1.05); // net buiten de zon
+            return glowMesh;
+        }
+
+        // Call this per frame in the animation loop
+        updateGlow(camera) {
+            if (this._glow) {
+                const viewVector = new Vector3();
+                viewVector.subVectors(camera.position, this.getWorldPosition(new Vector3())).normalize();
+                this._glow.material.uniforms.viewVector.value.copy(viewVector);
+            }
         }
     }
 
@@ -419,8 +488,8 @@
         constructor(planetData) {
             super(planetData, {bumpScale: 0.05, identicalBumpMap: true});
 
-            const innerRingRadius = 1.11 * 60268000;
-            const outerRingRadius = 2.9 * 60268000;
+            const innerRingRadius = 1.11 * planetData.radius;
+            const outerRingRadius = 2.9 * planetData.radius;
             const ringMesh = this.#createRings(
                 innerRingRadius / PLANET_SCALE,
                 outerRingRadius / PLANET_SCALE);
@@ -838,6 +907,7 @@
         t += dt;
 
         skyDome.update(time * .001, planetCamera);
+        sun.updateGlow(planetCamera);
         planetRenderer.render(planetaryScene, planetCamera);
         controlsGui.render();
     }
