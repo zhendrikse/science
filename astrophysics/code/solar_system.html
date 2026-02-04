@@ -19,13 +19,18 @@
 </script>
 
 <div id="planetControls">
-    <button data-body="sun">☀ Sun</button>
     <table>
         <tr>
+            <td><button data-body="sun">☀ Sun</button></td>
             <td><button data-body="mercury">Mercury</button></td>
             <td><button data-body="venus">Venus</button></td>
             <td><button data-body="earth">Earth</button></td>
             <td><button data-body="mars">Mars</button></td>
+        </tr>
+        <tr>
+            <td colspan="100%">
+                <canvas class="applicationCanvas" id="planetsCanvas" style="background: #131313; aspect-ratio: 19 / 12;"></canvas><br/>
+            </td>
         </tr>
         <tr>
             <td><button data-body="jupiter">Jupiter</button></td>
@@ -35,9 +40,6 @@
         </tr>
     </table>
 </div>
-
-
-<canvas class="applicationCanvas" id="planetsCanvas" style="background: #131313; aspect-ratio: 19 / 12;"></canvas><br/>
 <div class="guiContainer" id="gui-container"></div>
 
 <script id="vertexShader" type="x-shader/x-vertex">
@@ -903,8 +905,6 @@
 
         solarSystem.forEach(body => body.update(t, dt));
         t += dt;
-
-        console.log(planetCamera.position);
 
         skyDome.update(time * .001, planetCamera);
         sun.updateGlow(planetCamera);
