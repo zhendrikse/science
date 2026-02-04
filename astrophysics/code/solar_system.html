@@ -350,22 +350,8 @@
     }
 
     class Moon extends Satellite {
-        static DATA = {
-            "a": 384399 * 50.,
-            "e": 0.0549,
-            "inclination": (-23.4 + 5.145) * Math.PI / 180.,
-            "right_ascension": -Math.PI / 2.,
-            "mean_anomaly": 0.,
-            "radius": 1737400,
-            "mass": 7.349e+22,  // kg
-            "spin": 2 * Math.PI / 708.7341666667,
-            "tilt": 0.11641346110802178, // rad
-            'period': 27.321, // days
-            "tidal_lock": true
-        }
-
-        constructor(planet) {
-            super(Moon.DATA, planet, PLANET_SCALE);
+        constructor(moonData, planet) {
+            super(moonData, planet, PLANET_SCALE);
         }
 
         _material(bumpScale, identicalBumpMap) {
@@ -375,7 +361,7 @@
                 bumpScale: 0.05,
                 specular: new Color(0x333333),
                 emissive: new Color(0x112244),
-                emissiveIntensity: 0.05,
+                emissiveIntensity: 0.1,
                 shininess: 3
             });
         }
@@ -541,12 +527,50 @@
         'radius': 60000. * 1e3,
         "mass": 5.68319e+26,
         'tilt': 27 * Math.PI / 180.,
-        'spin': 2 * Math.PI / 10.66
-    });
+        'spin': 2 * Math.PI / 10.66 });
 
-    const moon = new Moon(earth);
+    const luna = new Moon({
+        "name": "luna",
+        "a": 384399 * 50.,
+        "e": 0.0549,
+        "inclination": (-23.4 + 5.145) * Math.PI / 180.,
+        "right_ascension": -Math.PI / 2.,
+        "mean_anomaly": 0.,
+        "radius": 1737400,
+        "mass": 7.349e+22,  // kg
+        "spin": 2 * Math.PI / 708.7341666667,
+        "tilt": 0.11641346110802178, // rad
+        'period': 27.321, // days
+        "tidal_lock": true
+    }, earth);
+    const phobos = new Moon({
+        "name": "phobos",
+        'a': 9376 * 1000,
+        'e': 0.0151,
+        'inclination': 0,
+        'right_ascension': -Math.PI / 2,
+        'mean_anomaly': 0.,
+        'radius': 11.2667 * 1E4,
+        "mass": 1.06E16,
+        'tilt': 0.,
+        'spin': 0,
+        'period': 0.31891023,
+        'tidal_lock': 1}, mars);
+    const deimos = new Moon({
+        'name': "deimos",
+        'a': 23463.2 * 650.,
+        'e': 0.00033,
+        'inclination': 0,
+        'right_ascension': -Math.PI / 2,
+        'mean_anomaly': 0.,
+        'radius': 10. * 1E4,
+        "mass": 1.5E15,
+        'tilt': 0.,
+        'spin': 0,
+        'period': 1.263,
+        'tidal_lock': 1}, mars);
 
-    const earthMoonSystem = new PlanetMoonSystem(earth, [moon]);
+    const earthMoonSystem = new PlanetMoonSystem(earth, [luna]);
     solarSystemGroup.add(earthMoonSystem);
     earthMoonSystem.update(0, 1); // set initial position
     earth.enableTrail({maxPoints: 450, color: 0x00bbff});
@@ -561,7 +585,7 @@
     noMoonsVenus.update(0, 1);
     venus.enableTrail({maxPoints: 600, color: 0xff0000});
 
-    const marsWithMoons = new PlanetMoonSystem(mars);
+    const marsWithMoons = new PlanetMoonSystem(mars, [phobos, deimos]);
     solarSystemGroup.add(marsWithMoons);
     marsWithMoons.update(0, 1);
     mars.enableTrail({maxPoints: 1600, color: 0xffaa00});
