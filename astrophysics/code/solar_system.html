@@ -71,7 +71,7 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    const skyDome = new SkyDome({skyRadius: 4500, glowStarCount: 500});
+    const skyDome = new SkyDome({starDensity: 3, skyRadius: 4500, glowStarCount: 500});
     planetaryScene.add(skyDome);
 
     // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
@@ -92,10 +92,8 @@
             const mesh = new Mesh(geometry, this._material(bumpScale, identicalBumpMap));
             this.add(mesh);
 
-            this._tmpAxis = new Vector3();
-            this._tmpQuat = new Quaternion();
             this._trailAccumulator = 0;
-            this._trailStep = 1; // 1 unity of time
+            this._trailStep = 10; // 1 unity of time
             this._trail = null;
             this._coordinates = [];
         }
@@ -556,17 +554,17 @@
     const noMoonsMercury = new PlanetMoonSystem(mercury);
     solarSystemGroup.add(noMoonsMercury);
     noMoonsMercury.update(0, 1);
-    mercury.enableTrail({maxPoints: 230, color: 0xaaff00});
+    mercury.enableTrail({maxPoints: 500, color: 0xaaff00});
 
     const noMoonsVenus = new PlanetMoonSystem(venus);
     solarSystemGroup.add(noMoonsVenus);
     noMoonsVenus.update(0, 1);
-    venus.enableTrail({maxPoints: 300, color: 0xff0000});
+    venus.enableTrail({maxPoints: 600, color: 0xff0000});
 
     const marsWithMoons = new PlanetMoonSystem(mars);
     solarSystemGroup.add(marsWithMoons);
     marsWithMoons.update(0, 1);
-    mars.enableTrail({color: 0xffaa00});
+    mars.enableTrail({maxPoints: 1600, color: 0xffaa00});
 
     const jupiterWithMoons = new PlanetMoonSystem(jupiter)
     solarSystemGroup.add(jupiterWithMoons);
@@ -576,7 +574,7 @@
     const saturnWithMoons = new PlanetMoonSystem(saturn)
     solarSystemGroup.add(saturnWithMoons);
     saturnWithMoons.update(0, 1);
-    saturn.enableTrail({color: 0xdd00dd});
+    saturn.enableTrail({color: 0xffff00});
 
     const solarSystem = [
         earthMoonSystem,
