@@ -18,21 +18,28 @@
     import {ImprovedNoise} from 'three/addons/math/ImprovedNoise.js';
     import { SkyDome, ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
-    const canvas = document.getElementById('starClusterCanvas');
-    const scene = new Scene();
+    const canvas = document.getElementById('starClusterCanvas'),
+        canvasWidth  = canvas.clientWidth,
+        canvasHeight = canvas.clientHeight;
 
-    const camera = new PerspectiveCamera(30, 1, 0.1, 5000);
-    camera.position.set(8, 16, 24);
+    const scene = new Scene();
+    //scene.background = new Color(0x131313);
+
+    const camera = new PerspectiveCamera(30, canvasWidth / canvasHeight);
+    camera.position.set(10, 20, 30);
     camera.lookAt(scene.position);
     camera.updateProjectionMatrix();
 
     const renderer = new WebGLRenderer({ antialias: true, canvas: canvas, alpha: true });
+    renderer.setSize(canvasWidth, canvasHeight, false);
     renderer.setAnimationLoop( animationLoop );
     console.clear();
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.autoRotate = true;
+
+    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 
     class StarCluster {
         constructor(N=40000) {
@@ -52,7 +59,7 @@
             const material = new PointsMaterial({
                 color: 'white',
                 vertexColors: true,
-                size: 0.31,
+                size: 0.15,
                 sizeAttenuation: true,
                 map: texture,
                 transparent: true,
@@ -81,23 +88,9 @@
     }
 
     new StarCluster();
-    const skyDome = new SkyDome({
-        skyRadius: 2000,
-        glowStarCount: 3000,
-        starDensity: 6,
-        pointSize: 3,
-        blinkSpeed: 4
-    });
-    scene.add(skyDome);
 
-    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
-    function animationLoop(time) {
-
+    function animationLoop() {
         controls.update();
-
-        skyDome.update(time * 0.001, camera);
-
         renderer.render(scene, camera);
     }
-
 </script>
