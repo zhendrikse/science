@@ -52,8 +52,6 @@
 
     const controls = new OrbitControls(galaxyCamera, galaxyCanvas);
     controls.target.set(0, 0, 0);
-    controls.minDistance = 50;
-    controls.maxDistance = 2500;
     controls.update();
 
     // We need a custom shader as THREE.points geometry does not
