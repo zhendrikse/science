@@ -9,7 +9,7 @@
     }
 </script>
 
-<canvas class="applicationCanvas" id="starClusterCanvas" style="width: 100%" ></canvas><br/>
+<canvas class="applicationCanvas" id="starClusterCanvas" ></canvas><br/>
 
 <script type="module">
     import { Scene, Color, PerspectiveCamera, WebGLRenderer, BufferAttribute, CanvasTexture,
@@ -22,7 +22,7 @@
     const scene = new Scene();
     scene.background = new Color(0x131313);
 
-    const camera = new PerspectiveCamera(30, 1, 0.1, 1000);
+    const camera = new PerspectiveCamera(30, 1, 0.1, 3000);
     camera.position.set(10, 20, 30);
     camera.lookAt(scene.position);
     camera.updateProjectionMatrix();
