@@ -230,22 +230,18 @@
         }
 
         update(t, dt) {
-            super.update(t, dt); // for trail
+            super.update(t, dt); // trail
 
-            // 1. vaste wereld-as (identiek aan Python)
-            this._tmpAxis.set(
-                -Math.sin(this._tilt),
-                Math.cos(this._tilt),
-                0
-            ).normalize();
+            // 1. tilt-quaternion (rotatie van XZ plane → echte as)
+            const tiltQuat = new Quaternion();
+            tiltQuat.setFromAxisAngle(new Vector3(0, 0, 1), this._tilt);
 
-            // 2. wereld-as → lokale as
-            this._tmpQuat.copy(this.quaternion).invert();
-            this._tmpAxis.applyQuaternion(this._tmpQuat);
+            // 2. spin-quaternion rond lokale Y
+            const spinQuat = new Quaternion();
+            spinQuat.setFromAxisAngle(new Vector3(0, 1, 0), this._spin * t);
 
-            // 3. roteer
-            this.rotateOnAxis(this._tmpAxis, this._spin * dt);
-
+            // 3. combineer tilt + spin
+            this.quaternion.copy(tiltQuat).multiply(spinQuat);
         }
     }
 
@@ -407,19 +403,16 @@
         update(t, dt) {
             super.update(t, dt); // for trail
 
-            // 1. vaste wereld-as (identiek aan Python)
-            this._tmpAxis.set(
-                -Math.sin(this._tilt),
-                Math.cos(this._tilt),
-                0
-            ).normalize();
+            // 1. tilt-quaternion (rotatie van XZ plane → echte as)
+            const tiltQuat = new Quaternion();
+            tiltQuat.setFromAxisAngle(new Vector3(0, 0, 1), this._tilt);
 
-            // 2. wereld-as → lokale as
-            this._tmpQuat.copy(this.quaternion).invert();
-            this._tmpAxis.applyQuaternion(this._tmpQuat);
+            // 2. spin-quaternion rond lokale Y
+            const spinQuat = new Quaternion();
+            spinQuat.setFromAxisAngle(new Vector3(0, 1, 0), this._spin * t);
 
-            // 3. roteer
-            this.rotateOnAxis(this._tmpAxis, this._spin * dt);
+            // 3. combineer tilt + spin
+            this.quaternion.copy(tiltQuat).multiply(spinQuat);
         }
 
         _material(bumpScale, identicalBumpMap) {
