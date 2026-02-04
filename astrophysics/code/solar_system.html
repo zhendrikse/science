@@ -19,18 +19,16 @@
 </script>
 
 <div id="planetControls">
+    <button data-body="sun">☀ Sun</button>
     <table>
         <tr>
-            <td><button data-body="sun">☀ Sun</button></td>
             <td><button data-body="mercury">Mercury</button></td>
             <td><button data-body="venus">Venus</button></td>
-        </tr>
-        <tr>
             <td><button data-body="earth">Earth</button></td>
             <td><button data-body="mars">Mars</button></td>
-            <td><button data-body="jupiter">Jupiter</button></td>
         </tr>
         <tr>
+            <td><button data-body="jupiter">Jupiter</button></td>
             <td><button data-body="saturn">Saturn</button></td>
             <td><button data-body="uranus">Uranus</button></td>
             <td><button data-body="neptune">Neptune</button></td>
@@ -83,7 +81,7 @@
     const textureLoader = new TextureLoader();
     textureLoader.setCrossOrigin("anonymous");
 
-    let dt = 2;
+    let dt = 1;
 
     const AU = 1.496 * 1E11;   // astronomical unit
     const EARTH_SEMI_MAJOR_AXIS = 149598261.;
@@ -97,8 +95,8 @@
 
     const planetaryScene = new Scene();
     // --- CAMERA ---
-    const planetCamera = new PerspectiveCamera(60, 19/20, .1, 5000);
-    planetCamera.position.set(60, 20, 60);
+    const planetCamera = new PerspectiveCamera(50, 1, .1, 5000);
+    planetCamera.position.set(330, 67, -430);
     planetCamera.lookAt(0, 0, 0);
 
     const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: false} );
@@ -521,7 +519,7 @@
 
 
             const settings = {
-                dt: 2
+                dt: 1
             };
 
             controls.add(settings, 'dt', 0.01, 10, 0.01).name("Time Step (dt)").onChange(value => {
@@ -859,22 +857,22 @@
     const jupiterWithMoons = new PlanetMoonSystem(jupiter, [callisto, europa, ganymede, io]);
     solarSystemGroup.add(jupiterWithMoons);
     jupiterWithMoons.update(0, 1);
-    jupiter.enableTrail({color: 0xdddddd});
+    jupiter.enableTrail({maxPoints: 1600, color: 0xdd00dd});
 
     const saturnWithMoons = new PlanetMoonSystem(saturn, [dione, enceladus, tethys, titan]);
     solarSystemGroup.add(saturnWithMoons);
     saturnWithMoons.update(0, 1);
-    saturn.enableTrail({color: 0xffff00});
+    saturn.enableTrail({maxPoints: 1600, color: 0xffff00});
 
     const uranusWithMoons = new PlanetMoonSystem(uranus, []);
     solarSystemGroup.add(uranusWithMoons);
     uranusWithMoons.update(0, 1);
-    uranus.enableTrail({color: 0x0000ff});
+    uranus.enableTrail({maxPoints: 1600, color: 0xaaaaaa});
 
     const neptuneWithMoons = new PlanetMoonSystem(neptune, []);
     solarSystemGroup.add(neptuneWithMoons);
     neptuneWithMoons.update(0, 1);
-    neptune.enableTrail({color: 0x0000ff});
+    neptune.enableTrail({maxPoints: 1600, color: 0x0000ff});
 
     const solarSystem = [
         earthMoonSystem,
@@ -905,6 +903,8 @@
 
         solarSystem.forEach(body => body.update(t, dt));
         t += dt;
+
+        console.log(planetCamera.position);
 
         skyDome.update(time * .001, planetCamera);
         sun.updateGlow(planetCamera);
