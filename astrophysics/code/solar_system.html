@@ -45,6 +45,7 @@
     const SUN_SCALE = 100 * PLANET_SCALE;
     const ORBIT_SCALE  = 40;    // additional orbit compression factor for nice visual representation
     const DISTANCE_SCALE = AU / ORBIT_SCALE;
+    const SCALE_MOON = 275 ; // scaling factor for semi major axes of some moons
     const toRenderUnits = (vector) => vector.clone().multiplyScalar(1000 / DISTANCE_SCALE);
 
     const planetaryScene = new Scene();
@@ -569,6 +570,58 @@
         'spin': 0,
         'period': 1.263,
         'tidal_lock': 1}, mars);
+    const callisto = new Moon({
+        'name': "callisto",
+        'a': 1882700 * SCALE_MOON / 2,
+        'e': 0.0074,
+        'inclination': 0.003351032164,
+        'right_ascension': 0.,
+        'mean_anomaly': 0.,
+        'radius': 2410.3 * 1e3,
+        "mass": 1.076E23,
+        'tilt': 0.,
+        'spin': 0,
+        'period': 16.689,
+        'tidal_lock': 1}, jupiter);
+    const europa = new Moon({
+        'name': "europa",
+        'a': 670900 * SCALE_MOON,
+        'e': 0.009,
+        'inclination': 0.008203047484,
+        'right_ascension': 0.,
+        'mean_anomaly': 0.,
+        'radius': 1560.8 * 1e3,
+        "mass": 4.8E22,
+        'tilt': 0.,
+        'spin': 0,
+        'period': 12.689,
+        'tidal_lock': 1}, jupiter);
+    const ganymede = new Moon({
+        'name': "ganymede",
+        'a': 1070400 * SCALE_MOON,
+        'e': 0.0013,
+        'inclination': 0.003490658504,
+        'right_ascension': 0.,
+        'mean_anomaly': 0.,
+        'radius': 2634.1 * 1E3,
+        "mass": 1.4819E23,
+        'tilt': 0.,
+        'spin': 0,
+        'period': 10.689,
+        'tidal_lock': 1}, jupiter);
+    const io = new Moon({
+        'name': "io",
+        'a': 421800 * SCALE_MOON * 1.5,
+        'e': 0.0041,
+        'inclination': 0.03857177647,
+        'right_ascension': 0.,
+        'mean_anomaly': 0.,
+        'radius': 1821.6 * 1E3,
+        "mass": 8.9319E22,
+        'tilt': 0.,
+        'spin': 0,
+        'period': 6.689,
+        'tidal_lock': 1}, jupiter);
 
     const earthMoonSystem = new PlanetMoonSystem(earth, [luna]);
     solarSystemGroup.add(earthMoonSystem);
@@ -590,7 +643,7 @@
     marsWithMoons.update(0, 1);
     mars.enableTrail({maxPoints: 1600, color: 0xffaa00});
 
-    const jupiterWithMoons = new PlanetMoonSystem(jupiter)
+    const jupiterWithMoons = new PlanetMoonSystem(jupiter, [callisto, europa, ganymede, io])
     solarSystemGroup.add(jupiterWithMoons);
     jupiterWithMoons.update(0, 1);
     jupiter.enableTrail({color: 0xdddddd});
