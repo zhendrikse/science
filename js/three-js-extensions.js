@@ -738,6 +738,7 @@ export class SkyDome extends Group {
     update(time, camera) {
         this.quaternion.copy(camera.quaternion);
         this._glowStars.material.uniforms.uTime.value = time;
+        this.position.copy(camera.position);
     }
 }
 
