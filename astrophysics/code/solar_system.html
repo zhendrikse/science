@@ -75,8 +75,8 @@
     planetaryScene.add(skyDome);
 
     // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
-    //const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
-    const TEXTURES_PATH = "textures/";
+    const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
+    //const TEXTURES_PATH = "textures/";
     class CelestialBody extends Group {
         constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false, orbitPointsCount=10000} = {}) {
             super();
