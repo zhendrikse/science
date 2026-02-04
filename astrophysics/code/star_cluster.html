@@ -27,7 +27,6 @@
     camera.updateProjectionMatrix();
 
     const renderer = new WebGLRenderer({ antialias: true, canvas: canvas, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setAnimationLoop( animationLoop );
     console.clear();
 
