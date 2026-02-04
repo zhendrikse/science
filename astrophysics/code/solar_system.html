@@ -171,17 +171,27 @@
 
         _material(bumpScale, identicalBumpMap) { throw new Error("Abstract class: implement material!"); }
 
-        update(t, dt) {
+        _updateTrail(dt) {
             if (!this._trail) return;
-
             this._trailAccumulator += dt;
-
             if (this._trailAccumulator >= this._trailStep) {
                 this._trail.addPoint(this.getWorldPosition(new Vector3()));
                 this._trailAccumulator = 0;
             }
         }
 
+        updateRotation(t) {
+            // 1. tilt-quaternion (rotatie van XZ plane → echte as)
+            const tiltQuat = new Quaternion();
+            tiltQuat.setFromAxisAngle(new Vector3(0, 0, 1), this._tilt);
+
+            // 2. spin-quaternion rond lokale Y
+            const spinQuat = new Quaternion();
+            spinQuat.setFromAxisAngle(new Vector3(0, 1, 0), this._spin * t);
+
+            // 3. combineer tilt + spin
+            this.quaternion.copy(tiltQuat).multiply(spinQuat);
+        }
 
         enableTrail({ maxPoints = 1000, color = 0xffff00 } = {}) {
             this._trail = new Trail({ maxPoints, color });
@@ -230,18 +240,8 @@
         }
 
         update(t, dt) {
-            super.update(t, dt); // trail
-
-            // 1. tilt-quaternion (rotatie van XZ plane → echte as)
-            const tiltQuat = new Quaternion();
-            tiltQuat.setFromAxisAngle(new Vector3(0, 0, 1), this._tilt);
-
-            // 2. spin-quaternion rond lokale Y
-            const spinQuat = new Quaternion();
-            spinQuat.setFromAxisAngle(new Vector3(0, 1, 0), this._spin * t);
-
-            // 3. combineer tilt + spin
-            this.quaternion.copy(tiltQuat).multiply(spinQuat);
+            this._updateTrail(dt);
+            this.updateRotation(t);
         }
     }
 
@@ -275,15 +275,14 @@
         }
 
         update(t, dt) {
-            super.update(); // for trail, if enabled
+            this._updateTrail(dt);
             if (this._lock) {
                 const planetWorldPos = this._planet.getWorldPosition(new Vector3());
                 this.lookAt(planetWorldPos);
-
-                // Correct fixed phase fase-offset (texture-orientation)
+                // Correct fixed phase fase-offset if needed (texture-orientation)
                 this.rotateY(Math.PI); // of rotateZ, afhankelijk van je texture
-            }
-
+            } else
+                this.updateRotation(t); // gewone spin
         }
     }
 
@@ -384,9 +383,9 @@
         }
     }
 
-    class Earth extends CelestialBody {
+    class Earth extends Planet {
         constructor(planetData) {
-            super(planetData, PLANET_SCALE);
+            super(planetData);
             this._name = planetData.name;
             this._timescale = 1; // rotation period w.r.t. Earth
 
@@ -398,21 +397,6 @@
                 planetData.inclination,
                 planetData.right_ascension
             );
-        }
-
-        update(t, dt) {
-            super.update(t, dt); // for trail
-
-            // 1. tilt-quaternion (rotatie van XZ plane → echte as)
-            const tiltQuat = new Quaternion();
-            tiltQuat.setFromAxisAngle(new Vector3(0, 0, 1), this._tilt);
-
-            // 2. spin-quaternion rond lokale Y
-            const spinQuat = new Quaternion();
-            spinQuat.setFromAxisAngle(new Vector3(0, 1, 0), this._spin * t);
-
-            // 3. combineer tilt + spin
-            this.quaternion.copy(tiltQuat).multiply(spinQuat);
         }
 
         _material(bumpScale, identicalBumpMap) {
@@ -456,12 +440,6 @@
             this.rotation.z = this._tilt; // Axial tilt (set only once!)
             return rings;
         }
-
-
-        update(t, dt) {
-            super.update(t, dt); // trail
-        }
-
     }
 
     class ControlsGui {
