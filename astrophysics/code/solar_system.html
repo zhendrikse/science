@@ -98,7 +98,7 @@
     const planetaryScene = new Scene();
     // --- CAMERA ---
     const planetCamera = new PerspectiveCamera(50, 1, .1, 5000);
-    planetCamera.position.set(330, 67, -430);
+    planetCamera.position.set(-118, 48, 25);
     planetCamera.lookAt(0, 0, 0);
 
     const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: false} );
@@ -539,7 +539,7 @@
 
             // Determine center and size
             const box = new Box3().setFromObject(object);
-            ThreeJsUtils.scaleBox3(box, 0.75);
+            ThreeJsUtils.scaleBox3(box, 0.9);
             const center = new Vector3();
             const size = new Vector3();
             box.getCenter(center);

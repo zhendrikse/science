@@ -7,11 +7,12 @@ table {
     border: none;
     max-width: 800px;
     margin: 0 auto;
+    border-collapse: collapse;
 }
 
 td {
-    white-space: nowrap;
     border: none;
+    white-space: nowrap;
 }
 
 label {
