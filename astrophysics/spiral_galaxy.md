@@ -16,7 +16,7 @@
 Warm yellow-white coloration due to the extremely high stellar density in the galactic core.
 Although the core is dominated by older stellar populations, the combined light of many stars produces a bright, smooth, slightly warm appearance rather than distinctly red individual stars.
 
-👉 **Spiral Arms (Mid Disk)**<br/>
+👉 **Spiral Arms (Mid-disk)**<br/>
 Bluish-white coloration representing regions of active star formation.
 The spiral arms contain young, hot, massive stars that appear brighter and more point-like, producing a sharper, higher-contrast structure compared to the core.
 
@@ -30,11 +30,11 @@ Stars become sparser and less luminous, causing the outer regions to fade smooth
 On this site, you can also find a live demo of a way more advanced 2D spiral galaxy simulator
 that is based on the density wave theory (on GitHub &rarr; 
 [Galaxy renderer](https://github.com/beltoforion/Galaxy-Renderer-Typescript)). 
-It is written by [Ingo Berg](https://github.com/beltoforion) in Typescript. 
+It is written by [Ingo Berg](https://github.com/beltoforion) in TypeScript. 
 Click on the image below to activate this demo!
 
 
-<figure style="float: center; text-align: center;">
+<figure style="text-align: center;">
   <a href="spiral_galaxy_renderer.html">
     <img alt="Daylight variations" src="images/spiral_galaxy_renderer.png" title="Click to go to demo"/>
   </a>

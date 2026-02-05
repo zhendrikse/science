@@ -7,7 +7,7 @@
 
 <p style="clear:both;"></p>
 
-### Planet size comparison
+<h3>Planet size comparison</h3>
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
