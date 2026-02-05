@@ -2,16 +2,18 @@ header {
   display: none;
 }
 
+table, tr, th, td {
+    border: none !important;
+}
+
 table {
     width: 100%;
-    border: none;
     max-width: 800px;
     margin: 0 auto;
     border-collapse: collapse;
 }
 
 td {
-    border: none;
     white-space: nowrap;
 }
 
