@@ -348,7 +348,7 @@
             const outerGlowMaterial = this._createAtmosphereMaterial(false, false, 0xfffa00, 0.3, 4.0);
             outerGlowMaterial.side = BackSide;
             const outerGlow = new Mesh(this._geometry.clone(), outerGlowMaterial);
-            outerGlow.scale.multiplyScalar(1.2);
+            outerGlow.scale.multiplyScalar(1.3);
 
             this.add(innerGlow, outerGlow);
         }
