@@ -65,7 +65,7 @@
 <script type="module">
     import { Group, Box3, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial,
         Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight, BackSide, AdditiveBlending,
-        DoubleSide, Quaternion, BufferGeometry, BufferAttribute } from "three";
+        DoubleSide, Quaternion, BufferGeometry, BufferAttribute, SRGBColorSpace, ACESFilmicToneMapping } from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { ThreeJsUtils, SkyDome, Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
@@ -101,6 +101,9 @@
     const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: true} );
     planetRenderer.shadowMap.enabled = false;
     planetRenderer.setAnimationLoop( animate );
+    planetRenderer.outputColorSpace = SRGBColorSpace;
+    planetRenderer.toneMapping = ACESFilmicToneMapping;
+    planetRenderer.toneMappingExposure = 1.2;
 
     // Resizing for mobile devices
     ThreeJsUtils.resizeRendererToCanvas(planetRenderer, planetCamera);
@@ -671,7 +674,7 @@
     }, {bumpScale: 0.05, identicalBumpMap: true});
     sun.position.set(0, 0, 0);
     solarSystemGroup.add(sun);
-    const sunLight = new PointLight(0xffffff, 2, 0, .1); // intense, no max distance
+    const sunLight = new PointLight(0xffffff, 1.5, 0, .1); // intense, no max distance
     sunLight.position.set(0, 0, 0);
     planetaryScene.add(sunLight);
     planetaryScene.add(new AmbientLight(0xffffff, 0.2));
