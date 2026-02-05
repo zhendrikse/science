@@ -1,3 +1,13 @@
+<style>
+    canvas {
+        background: #131313;
+        display: block;
+        width: 100%;
+        aspect-ratio: 19 / 12;
+        max-width: 800px;
+        margin: auto;
+    }
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -338,23 +348,33 @@
             this._body.receiveShadow = false;
 
             // 🌞 inner glow (FrontSide, harsher, brighter)/
-            const innerGlowMaterial = this._createAtmosphereMaterial(true, false, 0xfffa00, 0.3, 2.0);
+            const innerGlowMaterial = this._createAtmosphereMaterial(true, false, 0xfff6cc, 0.3, 2.0);
             innerGlowMaterial.side = FrontSide;
-            const innerGlow = new Mesh(this._geometry.clone(), innerGlowMaterial);
-            innerGlow.scale.multiplyScalar(1.01);
-            innerGlow.material.blending = AdditiveBlending;
+            this._innerGlow = new Mesh(this._geometry.clone(), innerGlowMaterial);
+            this._innerGlow.scale.multiplyScalar(1.01);
+            this._innerGlow.material.blending = AdditiveBlending;
 
             // 🌞 outer glow (BackSide, softer, bigger)
-            const outerGlowMaterial = this._createAtmosphereMaterial(false, false, 0xfffa00, 0.3, 4.0);
+            const outerGlowMaterial = this._createAtmosphereMaterial(false, false, 0xffe066, 0.3, 4.0);
             outerGlowMaterial.side = BackSide;
-            const outerGlow = new Mesh(this._geometry.clone(), outerGlowMaterial);
-            outerGlow.scale.multiplyScalar(1.3);
+            this._outerGlow = new Mesh(this._geometry.clone(), outerGlowMaterial);
+            this._outerGlow.scale.multiplyScalar(1.22);
 
-            this.add(innerGlow, outerGlow);
+            this.add(this._innerGlow, this._outerGlow);
         }
 
         _material(bumpScale, identicalBumpMap) {
             return new MeshBasicMaterial({map: textureLoader.load(`${TEXTURES_PATH}` + "sunmap.jpg")})
+        }
+
+        update(t, dt) {
+            const s =
+                1.22 +
+                0.035 * Math.sin(t * 0.02) +
+                0.015 * Math.sin(t * 0.037);
+            this._outerGlow.scale.setScalar(s);
+            this._outerGlow.material.uniforms.power.value =
+                4.0 + 0.3 * Math.sin(t * 0.015);
         }
 
         _createAtmosphereMaterial(depthTest=true, depthWrite=false, glowColor = 0xffff00, coef = 0.5, power = 2.0) {
@@ -1025,6 +1045,7 @@
         solarSystem.forEach(body => body.update(t, dt));
         t += dt;
 
+        sun.update(t, dt);
         skyDome.update(time * .001, planetCamera);
         planetRenderer.render(planetaryScene, planetCamera);
         controlsGui.render();
