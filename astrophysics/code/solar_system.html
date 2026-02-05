@@ -118,7 +118,7 @@
 
     const skyDome = new SkyDome({starDensity: 3, skyRadius: 4500, glowStarCount: 500});
     planetaryScene.add(skyDome);
-
+    
     // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
     const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
     //const TEXTURES_PATH = "textures/";
@@ -139,10 +139,8 @@
             this._body.castShadow = true;
             this._body.receiveShadow = false;
 
-            this._trailAccumulator = 0;
-            this._trailStep = 10; // 1 unity of time
-            this._trail = null;
             this._coordinates = [];
+            this._trail = new Trail(this);
         }
 
         get tilt() { return this._tilt; }
@@ -216,47 +214,25 @@
 
         _material(bumpScale, identicalBumpMap) { throw new Error("Abstract class: implement material!"); }
 
-        _updateTrail(dt) {
-            if (!this._trail) return;
-            this._trailAccumulator += dt;
-            if (this._trailAccumulator >= this._trailStep) {
-                this._trail.addPoint(this.getWorldPosition(new Vector3()));
-                this._trailAccumulator = 0;
-            }
-        }
-
         updateRotation(t) {
-            // 1. tilt-quaternion (rotatie van XZ plane → echte as)
-            const tiltQuat = new Quaternion();
-            tiltQuat.setFromAxisAngle(new Vector3(0, 0, 1), this._tilt);
+            // 1. tilt-quaternion (rotation of XZ plane → real axis)
+            const tiltQuaternion = new Quaternion();
+            tiltQuaternion.setFromAxisAngle(new Vector3(0, 0, 1), this._tilt);
 
-            // 2. spin-quaternion rond lokale Y
-            const spinQuat = new Quaternion();
-            spinQuat.setFromAxisAngle(new Vector3(0, 1, 0), this._spin * t);
+            // 2. spin-quaternion around local Y
+            const spinQuaternion = new Quaternion();
+            spinQuaternion.setFromAxisAngle(new Vector3(0, 1, 0), this._spin * t);
 
-            // 3. combineer tilt + spin
-            this.quaternion.copy(tiltQuat).multiply(spinQuat);
+            // 3. combine tilt + spin
+            this.quaternion.copy(tiltQuaternion).multiply(spinQuaternion);
         }
 
-        enableTrail({ maxPoints = 1000, color = 0xffff00 } = {}) {
-            this._trail = new Trail({ maxPoints, color });
-            this._trailAccumulator = 0;
+        enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1 } = {}) {
+            this._trail.enableTrail({maxPoints, color, lineWidth});
 
-            if (this.parent)
-                this.parent.add(this._trail._line);
         }
-
-        disposeTrail() {
-            if (!this._trail) return;
-            if (this._trail._line) {
-                if (this._trail._line.geometry)
-                    this._trail._line.geometry.dispose();
-                if (this._trail._line.material)
-                    this._trail._line.material.dispose();
-                this.remove(this._trail._line);
-            }
-            this._trail = null;
-        }
+        updateTrail(dt) { this._trail.update(dt); }
+        disposeTrail() { this._trail.dispose(); }
     }
 
     class Planet extends CelestialBody {
@@ -287,7 +263,7 @@
         }
 
         update(t, dt) {
-            this._updateTrail(dt);
+            this.updateTrail(dt);
             this.updateRotation(t);
         }
     }
@@ -324,7 +300,7 @@
         }
 
         update(t, dt) {
-            this._updateTrail(dt);
+            this.updateTrail(dt);
             if (this._lock) {
                 const planetWorldPos = this._planet.getWorldPosition(new Vector3());
                 this.lookAt(planetWorldPos);

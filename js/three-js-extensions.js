@@ -742,7 +742,7 @@ export class SkyDome extends Group {
     }
 }
 
-export class Trail {
+class TrailLine {
     constructor({
                     maxPoints = 200,
                     color = 0xffffff,
@@ -776,6 +776,48 @@ export class Trail {
     clear() {
         this._positions.length = 0;
         this._geometry.setAttribute('position', new BufferAttribute(new Float32Array(0), 3));
+    }
+}
+
+export class Trail {
+    constructor(attachedToObject) {
+        this._parent = attachedToObject;
+        this._trailStep = 10;
+        this._trailAccumulator = 0;
+        this._trail = null;
+    }
+
+    update(dt) {
+        if (!this._trail) return;
+        this._trailAccumulator += dt;
+        if (this._trailAccumulator >= this._trailStep) {
+            this._trail.addPoint(this._parent.getWorldPosition(new Vector3()));
+            this._trailAccumulator = 0;
+        }
+    }
+
+    enable({
+               maxPoints = 200,
+               color = 0xffffff,
+               linewidth = 1
+           } = {}) {
+        this._trail = new TrailLine({ maxPoints, color, linewidth });
+        this._trailAccumulator = 0;
+
+        if (this._parent)
+            this._parent.parent.add(this._trail._line);
+    }
+
+    dispose() {
+        if (!this._trail) return;
+        if (this._trail._line) {
+            if (this._trail._line.geometry)
+                this._trail._line.geometry.dispose();
+            if (this._trail._line.material)
+                this._trail._line.material.dispose();
+            this.remove(this._trail._line);
+        }
+        this._trail = null;
     }
 }
 
