@@ -11,11 +11,12 @@ table {
     max-width: 800px;
     margin: 0 auto;
     border-collapse: collapse;
-    display: block;
+    table-layout: fixed;
 }
 
 td {
-    white-space: nowrap;
+    max-width: 100%;
+    text-align: center;
 }
 
 label {
@@ -42,7 +43,7 @@ button:hover {
 }
 
 input[type="range"] {
-    width: 66%;
+    max-width: 100%;
 }
 
 figure {
