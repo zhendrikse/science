@@ -101,7 +101,6 @@
     planetCamera.position.copy(cameraStart.position);
 
     const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: false} );
-    planetRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     planetRenderer.shadowMap.enabled = false;
     planetRenderer.setAnimationLoop( animate );
 
