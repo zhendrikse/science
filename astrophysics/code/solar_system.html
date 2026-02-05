@@ -228,9 +228,9 @@
         }
 
         enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1 } = {}) {
-            this._trail.enableTrail({maxPoints, color, lineWidth});
-
+            this._trail.enable({maxPoints, color, lineWidth});
         }
+
         updateTrail(dt) { this._trail.update(dt); }
         disposeTrail() { this._trail.dispose(); }
     }
