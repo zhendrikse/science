@@ -12,7 +12,14 @@ out such a conclusive clarification of the Mercury anomaly. &mdash;
 <div class="header_line"><br/></div>
 
 This code simulates the movement of Mercury and displays its position and
-trajectory at regular intervals.
+trajectory at regular intervals. The gravitational force and relativistic correction
+are explicitly calculated per time step:
+
+$$
+\vec{a} = -\frac{c_a \cdot \text{fact}}{r^2} \hat{r},
+\quad \text{where } \text{fact} = 1 + \alpha \frac{R_s}{r} + \beta \frac{L^2}{r^2}
+$$
+
 The additional terms $\alpha/r^3$ and  $\beta/r^4$ are included in the force.
 In order to simulate without it, simply set $\alpha$ and $\beta$ to zero using
 the checkboxes.
