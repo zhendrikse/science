@@ -348,7 +348,7 @@
             this._body.receiveShadow = false;
 
             // 🌞 inner glow (FrontSide, harsher, brighter)/
-            const innerGlowMaterial = this._createAtmosphereMaterial(true, false, 0xfff6cc, 0.3, 2.0);
+            const innerGlowMaterial = this._createAtmosphereMaterial(true, false, 0xffffcc, 0.3, 2.0);
             innerGlowMaterial.side = FrontSide;
             this._innerGlow = new Mesh(this._geometry.clone(), innerGlowMaterial);
             this._innerGlow.scale.multiplyScalar(1.01);
