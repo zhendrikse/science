@@ -33,6 +33,7 @@
             </td>
         </tr>
         <tr>
+            <td> <button id="resetCamera">🔄 Reset camera</button></td>
             <td><button data-body="jupiter">Jupiter</button></td>
             <td><button data-body="saturn">Saturn</button></td>
             <td><button data-body="uranus">Uranus</button></td>
@@ -43,34 +44,29 @@
 <div class="guiContainer" id="gui-container"></div>
 
 <script id="vertexShader" type="x-shader/x-vertex">
-    uniform vec3 viewVector;
-    uniform float c;
-    uniform float p;
-    varying float intensity;
-    void main()
-    {
-        vec3 vNormal = normalize( normalMatrix * normal );
-        vec3 vNormel = normalize( normalMatrix * viewVector );
-        intensity = pow( c - dot(vNormal, vNormel), p );
+    varying float vIntensity;
+    uniform float power;
 
-        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    void main() {
+        vec3 n = normalize(normalMatrix * normal);
+        vIntensity = pow(1.0 - abs(n.z), power);
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
 </script>
 
-<!-- fragment shader a.k.a. pixel shader -->
 <script id="fragmentShader" type="x-shader/x-vertex">
     uniform vec3 glowColor;
-    varying float intensity;
-    void main()
-    {
-        vec3 glow = glowColor * intensity;
-        gl_FragColor = vec4( glow, 1.0 );
+    varying float vIntensity;
+
+    void main() {
+        gl_FragColor = vec4(glowColor, vIntensity * 0.3);
     }
 </script>
 
 <script type="module">
     import { Group, Box3, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial,
-        Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight, FrontSide, AdditiveBlending,
+        Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight, BackSide, FrontSide, AdditiveBlending,
         RingGeometry, DoubleSide, Quaternion } from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { ThreeJsUtils, SkyDome, Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
@@ -97,9 +93,12 @@
 
     const planetaryScene = new Scene();
     // --- CAMERA ---
+    const cameraStart = {
+        position: new Vector3(-118, 48, 25),
+        target: new Vector3(0, 0, 0)
+    };
     const planetCamera = new PerspectiveCamera(50, 1, .1, 5000);
-    planetCamera.position.set(-118, 48, 25);
-    planetCamera.lookAt(0, 0, 0);
+    planetCamera.position.copy(cameraStart.position);
 
     const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: false} );
     planetRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -113,7 +112,7 @@
     });
 
     const controls = new OrbitControls(planetCamera, planetsCanvas);
-    controls.target.set(0, 0, 0);
+    controls.target.copy(cameraStart.target);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
@@ -391,8 +390,22 @@
 
             this._body.castShadow = false;
             this._body.receiveShadow = false;
-            this._glow = this._createGlow();
-            this.add(this._glow);
+
+            // 🌞 inner glow (harsher, brighter)
+            this._innerGlow = this._createGlow({
+                scale: 1.15,
+                color: 0xffffaa,
+                power: 3.0   // scherp
+            });
+
+            // 🌞 outer glow (softer, bigger)
+            this._outerGlow = this._createGlow({
+                scale: 1.18,
+                color: 0xffa022,
+                power: 0.35   // zacht
+            });
+
+            this.add(this._innerGlow, this._outerGlow);
         }
 
         _material(bumpScale, identicalBumpMap) {
@@ -401,40 +414,27 @@
                 bumpMap: textureLoader.load(`${TEXTURES_PATH}sunmap.jpg`),
                 emissive: new Color(0xffcc66),
                 bumpScale: bumpScale,
-                emissiveIntensity: 1.0
+                emissiveIntensity: 0.7
             });
         }
 
-        _createGlow() {
-            // Glow shader uniforms
-            const customMaterial = new ShaderMaterial({
+        _createGlow({ scale = 1.15, color = 0xffff00, power = 2.0 }) {
+            const material = new ShaderMaterial({
                 uniforms: {
-                    c: { value: 0.0 },
-                    p: { value: 2.0 },
-                    glowColor: { value: new Color(0xffff00) },
-                    viewVector: { value: new Vector3(0,0,1) } // tijdelijke placeholder
+                    glowColor: { value: new Color(color) },
+                    power: { value: power }
                 },
                 vertexShader: document.getElementById('vertexShader').textContent,
                 fragmentShader: document.getElementById('fragmentShader').textContent,
-                side: FrontSide,
+                side: BackSide,
                 blending: AdditiveBlending,
                 transparent: true,
-                depthWrite: false,
-                depthTest: false
+                depthWrite: false
             });
 
-            const glowMesh = new Mesh(this._geometry.clone(), customMaterial);
-            glowMesh.scale.multiplyScalar(1.05); // net buiten de zon
+            const glowMesh = new Mesh(this._geometry.clone(), material);
+            glowMesh.scale.multiplyScalar(scale);
             return glowMesh;
-        }
-
-        // Call this per frame in the animation loop
-        updateGlow(camera) {
-            if (this._glow) {
-                const viewVector = new Vector3();
-                viewVector.subVectors(camera.position, this.getWorldPosition(new Vector3())).normalize();
-                this._glow.material.uniforms.viewVector.value.copy(viewVector);
-            }
         }
     }
 
@@ -510,6 +510,33 @@
             rings.rotation.x = Math.PI / 2; // Ring lies in XY plane → tilt to XZ
             this.rotation.z = this._tilt; // Axial tilt (set only once!)
             return rings;
+        }
+    }
+
+    class Uranus extends Planet {
+        constructor(planetData) {
+            super(planetData, {identicalBumpMap: true, bumpScale: 0.05});
+
+            const inner = 1.7 * planetData.radius / PLANET_SCALE;
+            const outer = 2.0 * planetData.radius / PLANET_SCALE;
+
+            const geometry = new RingGeometry(inner, outer, 128);
+            const texture = new TextureLoader().load(`${TEXTURES_PATH}uranusringcolour.jpg`);
+
+            const material = new MeshPhongMaterial({
+                map: texture,
+                side: DoubleSide,
+                transparent: true,
+                opacity: 0.25,          // 🔑 subtiel
+                depthWrite: false       // voorkomt z-fighting
+            });
+
+            const rings = new Mesh(geometry, material);
+
+            rings.rotation.x = Math.PI / 2;
+            this.rotation.z = this._tilt; // Uranus ~98°
+
+            this.add(rings);
         }
     }
 
@@ -660,7 +687,7 @@
         "mass": 5.68319e+26,
         'tilt': 27 * Math.PI / 180.,
         'spin': 2 * Math.PI / 10.66 }, {identicalBumpMap: true, bumpScale: 0.05});
-    const uranus = new Planet({
+    const uranus = new Uranus({
         "name": "uranus",
         'a': 2876679082.,
         'e': 0.044405586,
@@ -670,7 +697,7 @@
         'radius': 25600. * 1E3,
         "mass": 8.68103E25,
         'tilt': 98 * Math.PI / 180.,
-        'spin': -2 * Math.PI / 17.24}, {identicalBumpMap: true, bumpScale: 0.05});
+        'spin': -2 * Math.PI / 17.24});
     const neptune = new Planet({
         'name': "neptune",
         'a': 4503443661.,
@@ -896,6 +923,13 @@
             });
         });
 
+    document.getElementById("resetCamera").addEventListener("click", () => {
+        planetCamera.position.copy(cameraStart.position);
+        controls.target.copy(cameraStart.target);
+        controls.update();
+    });
+
+
     let lastTime = 0;
     const frameRate = 20;
     let t = 0;
@@ -907,7 +941,6 @@
         t += dt;
 
         skyDome.update(time * .001, planetCamera);
-        sun.updateGlow(planetCamera);
         planetRenderer.render(planetaryScene, planetCamera);
         controlsGui.render();
     }
