@@ -346,6 +346,7 @@
 
             this._body.castShadow = false;
             this._body.receiveShadow = false;
+            this._spin = bodyData.spin;
 
             // 🌞 inner glow (FrontSide, harsher, brighter)/
             const innerGlowMaterial = this._createAtmosphereMaterial(true, false, 0xffffcc, 0.3, 2.0);
@@ -368,6 +369,7 @@
         }
 
         update(t, dt) {
+            this._body.rotation.y += this._spin * dt * .1; // make it spin even slower for additional realism
             const s =
                 1.22 +
                 0.035 * Math.sin(t * 0.02) +
