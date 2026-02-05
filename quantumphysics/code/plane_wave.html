@@ -18,7 +18,6 @@
         from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
-
     const canvasContainer = document.getElementById("planeWaveContainer");
     const canvas = document.getElementById("planeWaveCanvas");
 
@@ -120,7 +119,7 @@
     axesController.createFromBoundingBox(boundingBox);
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
-    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .7));
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .5));
     const gui = new ControlsGui();
 
     // Resizing for mobile devices
