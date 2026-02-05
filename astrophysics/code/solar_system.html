@@ -41,7 +41,7 @@
         </tr>
     </table>
 </div>
-<div class="guiContainer" id="gui-container"></div>
+<div class="guiContainer" id="solarSystemGui"></div>
 
 <script id="vertexShader" type="x-shader/x-vertex">
     varying float vIntensity;
@@ -605,7 +605,7 @@
     class ControlsGui {
         constructor() {
             const controls = new GUI({width: "100%", autoPlace: false});
-            document.getElementById("gui-container").appendChild(controls.domElement);
+            document.getElementById("solarSystemGui").appendChild(controls.domElement);
             this._activeFocus = null;
 
 
