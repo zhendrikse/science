@@ -20,12 +20,12 @@
 <div id="planetControls">
     <table>
         <tr>
-            <td><button data-body="sun">🌞&nbsp;Sun</button></td>
+            <td><button data-body="sun">🔅&nbsp;Sun</button></td>
             <td><button data-body="mercury">Mercury</button></td>
             <td><button data-body="venus">Venus</button></td>
             <td><button data-body="earth">🌍&nbsp;Earth</button></td>
             <td><button data-body="mars">Mars</button></td>
-            <td><button id="farField">🔭</button></td>
+            <td><button id="farField1">🔭</button></td>
         </tr>
     </table>
     <canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas>
@@ -36,6 +36,7 @@
             <td><button data-body="saturn">🪐&nbsp;Saturn</button></td>
             <td><button data-body="uranus">Uranus</button></td>
             <td><button data-body="neptune">🔱&nbsp;Neptune</button></td>
+            <td><button id="farField2">💫</button></td>
         </tr>
     </table>
 </div>
@@ -101,7 +102,6 @@
     planetRenderer.toneMapping = ACESFilmicToneMapping;
     planetRenderer.toneMappingExposure = 1.5;
     planetRenderer.outputColorSpace = SRGBColorSpace;
-
 
     // Resizing for mobile devices
     ThreeJsUtils.resizeRendererToCanvas(planetRenderer, planetCamera);
@@ -226,8 +226,8 @@
             this.quaternion.copy(tiltQuaternion).multiply(spinQuaternion);
         }
 
-        enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1 } = {}) {
-            this._trail.enable({maxPoints, color, lineWidth});
+        enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+            this._trail.enable({maxPoints, color, lineWidth, trailStep });
         }
 
         updateTrail(dt) { this._trail.update(dt); }
@@ -1074,7 +1074,7 @@
     const earthMoonSystem = new PlanetMoonSystem(earth, [luna]);
     solarSystemGroup.add(earthMoonSystem);
     earthMoonSystem.update(0, 1); // set initial position
-    earth.enableTrail({maxPoints: 450, color: 0x00bbff});
+    earth.enableTrail({maxPoints: 800, color: 0x00bbff, trailStep: 20});
 
     const noMoonsMercury = new PlanetMoonSystem(mercury);
     solarSystemGroup.add(noMoonsMercury);
@@ -1138,8 +1138,15 @@
         controls.update();
     });
 
-    document.getElementById("farField").addEventListener("click", () => {
+    document.getElementById("farField1").addEventListener("click", () => {
         planetCamera.position.copy(new Vector3(580, 200, -195));
+        controlsGui.onReset();
+        controls.target.copy(cameraStart.target);
+        controls.update();
+    });
+
+    document.getElementById("farField2").addEventListener("click", () => {
+        planetCamera.position.copy(new Vector3(0, 700, 0));
         controlsGui.onReset();
         controls.target.copy(cameraStart.target);
         controls.update();
@@ -1154,7 +1161,7 @@
 
         solarSystem.forEach(body => body.update(t, dt));
         t += dt;
-
+        //console.log(planetCamera.position);
         sun.update(t, dt);
         skyDome.update(time * .001, planetCamera);
         planetRenderer.render(planetaryScene, planetCamera);

@@ -746,8 +746,8 @@ class TrailLine {
     constructor({
                     maxPoints = 200,
                     color = 0xffffff,
-                    linewidth = 1
-                } = {}) {
+                    linewidth = 1,
+        } = {}) {
         this._maxPoints = maxPoints;
         this._positions = [];
         this._geometry = new BufferGeometry();
@@ -797,12 +797,14 @@ export class Trail {
     }
 
     enable({
-               maxPoints = 200,
-               color = 0xffffff,
-               linewidth = 1
-           } = {}) {
+           maxPoints = 200,
+           color = 0xffffff,
+           trailStep = 10,
+           linewidth = 1
+    } = {}) {
         this._trail = new TrailLine({ maxPoints, color, linewidth });
         this._trailAccumulator = 0;
+        this._trailStep = trailStep;
 
         if (this._parent)
             this._parent.parent.add(this._trail._line);
