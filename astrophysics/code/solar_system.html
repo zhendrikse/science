@@ -682,7 +682,7 @@
         #formatScientific(value, unit = '') {
             if (!value) return '—';
             const [mantissa, exp] = value.toExponential(2).split('e');
-            return `${mantissa} 10${toSuperscript(exp)} ${unit}`;
+            return `${mantissa} x 10${toSuperscript(exp)} ${unit}`;
         }
 
         #formatBodyInfo(body) {
