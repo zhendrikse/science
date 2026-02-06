@@ -75,7 +75,8 @@
         return String(num).split('').map(c => map[c] || '').join('');
     }
 
-    let dt = 1;
+    let dt = 1; // dt = 1 equals to one hour per frame
+    const frameRate = 40;
 
     const AU = 1.496 * 1E11;   // astronomical unit
     const EARTH_SEMI_MAJOR_AXIS = 149598261.;
@@ -921,7 +922,7 @@
 
     const luna = new Moon({
         "name": "luna",
-        "a": 384399 * 50.,
+        "a": 384399 * SCALE_MOON,
         "e": 0.0549,
         "inclination": (-23.4 + 5.145) * Math.PI / 180.,
         "right_ascension": -Math.PI / 2.,
@@ -935,12 +936,12 @@
     }, earth);
     const phobos = new Moon({
         "name": "phobos",
-        'a': 9376 * 1000,
+        'a': 9376 * SCALE_MOON * 2.5, // 2.5 = scale up for this tiny moon
         'e': 0.0151,
         'inclination': 0,
         'right_ascension': -Math.PI / 2,
         'mean_anomaly': 0.,
-        'radius': 11.2667 * 1E4,
+        'radius': 11.2667 * 1E4 * 2, // 2 = scale up for this tiny moon
         "mass": 1.06E16,
         'tilt': 0.,
         'spin': 0,
@@ -948,12 +949,12 @@
         'tidal_lock': 1}, mars);
     const deimos = new Moon({
         'name': "deimos",
-        'a': 23463.2 * 650.,
+        'a': 23463.2 * SCALE_MOON * 1.5, // 1.5 = scale up for this tiny moon
         'e': 0.00033,
         'inclination': 0,
         'right_ascension': -Math.PI / 2,
         'mean_anomaly': 0.,
-        'radius': 10. * 1E4,
+        'radius': 10. * 1E4 * 2, // 2 = scale up for this tiny moon
         "mass": 1.5E15,
         'tilt': 0.,
         'spin': 0,
@@ -1074,37 +1075,37 @@
     const earthMoonSystem = new PlanetMoonSystem(earth, [luna]);
     solarSystemGroup.add(earthMoonSystem);
     earthMoonSystem.update(0, 1); // set initial position
-    earth.enableTrail({maxPoints: 800, color: 0x00bbff, trailStep: 20});
+    earth.enableTrail({maxPoints: 300, color: 0x00bbff, trailStep: 25});
 
     const noMoonsMercury = new PlanetMoonSystem(mercury);
     solarSystemGroup.add(noMoonsMercury);
     noMoonsMercury.update(0, 1);
-    mercury.enableTrail({maxPoints: 500, color: 0xaaff00});
+    mercury.enableTrail({maxPoints: 80, color: 0xaaff00, trailStep: 25});
 
     const noMoonsVenus = new PlanetMoonSystem(venus);
     solarSystemGroup.add(noMoonsVenus);
     noMoonsVenus.update(0, 1);
-    venus.enableTrail({maxPoints: 600, color: 0xff0000});
+    venus.enableTrail({maxPoints: 120, color: 0xff0000, trailStep: 50});
 
     const marsWithMoons = new PlanetMoonSystem(mars, [phobos, deimos]);
     solarSystemGroup.add(marsWithMoons);
     marsWithMoons.update(0, 1);
-    mars.enableTrail({maxPoints: 1600, color: 0xffaa00});
+    mars.enableTrail({maxPoints: 450, color: 0xffaa00, trailStep: 50});
 
     const jupiterWithMoons = new PlanetMoonSystem(jupiter, [callisto, europa, ganymede, io]);
     solarSystemGroup.add(jupiterWithMoons);
     jupiterWithMoons.update(0, 1);
-    jupiter.enableTrail({maxPoints: 1600, color: 0xdd00dd});
+    jupiter.enableTrail({maxPoints: 1600, color: 0xdd00dd, trailStep: 100});
 
     const saturnWithMoons = new PlanetMoonSystem(saturn, [dione, enceladus, tethys, titan]);
     solarSystemGroup.add(saturnWithMoons);
     saturnWithMoons.update(0, 1);
-    saturn.enableTrail({maxPoints: 1600, color: 0xffff00});
+    saturn.enableTrail({maxPoints: 1600, color: 0xffff00, trailStep: 100});
 
     const uranusWithMoons = new PlanetMoonSystem(uranus, []);
     solarSystemGroup.add(uranusWithMoons);
     uranusWithMoons.update(0, 1);
-    uranus.enableTrail({maxPoints: 1600, color: 0xaaaaaa});
+    uranus.enableTrail({maxPoints: 1600, color: 0xaaaaaa, trailStep: 100});
 
     const neptuneWithMoons = new PlanetMoonSystem(neptune, []);
     solarSystemGroup.add(neptuneWithMoons);
@@ -1153,19 +1154,18 @@
     });
 
     let lastTime = 0;
-    const frameRate = 40;
     let t = 0;
     function animate(time) {
         if (time - lastTime < 1000 / frameRate) return;
         lastTime = time;
 
         solarSystem.forEach(body => body.update(t, dt));
-        t += dt;
-        //console.log(planetCamera.position);
         sun.update(t, dt);
         skyDome.update(time * .001, planetCamera);
         planetRenderer.render(planetaryScene, planetCamera);
         controlsGui.render();
+
+        t += dt;
     }
 
 </script>
