@@ -18,27 +18,25 @@
 </script>
 
 <div id="planetControls">
-    <table>
-        <tr>
-            <td><button data-body="sun">🔅&nbsp;Sun</button></td>
-            <td><button data-body="mercury">Mercury</button></td>
-            <td><button data-body="venus">Venus</button></td>
-            <td><button data-body="earth">🌍&nbsp;Earth</button></td>
-            <td><button data-body="mars">Mars</button></td>
-            <td><button id="farField1">🔭</button></td>
-        </tr>
-    </table>
-    <canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas>
-    <table>
-        <tr>
-            <td><button id="resetCamera">🧭</button></td>
-            <td><button data-body="jupiter">Jupiter</button></td>
-            <td><button data-body="saturn">🪐&nbsp;Saturn</button></td>
-            <td><button data-body="uranus">Uranus</button></td>
-            <td><button data-body="neptune">🔱&nbsp;Neptune</button></td>
-            <td><button id="farField2">💫</button></td>
-        </tr>
-    </table>
+    <div class="buttonRow">
+        <button data-body="sun">🔅 Sun</button>
+        <button data-body="mercury">Mercury</button>
+        <button data-body="venus">Venus</button>
+        <button data-body="earth">🌍 Earth</button>
+        <button data-body="mars">Mars</button>
+        <button id="farField1">🔭</button>
+    </div>
+
+    <canvas class="applicationCanvas" id="planetsCanvas"></canvas>
+
+    <div class="buttonRow">
+        <button id="resetCamera">🧭</button>
+        <button data-body="jupiter">Jupiter</button>
+        <button data-body="saturn">🪐 Saturn</button>
+        <button data-body="uranus">Uranus</button>
+        <button data-body="neptune">🔱 Neptune</button>
+        <button id="farField2">💫</button>
+    </div>
 </div>
 <div class="guiContainer" id="solarSystemGui"></div>
 
@@ -147,6 +145,14 @@
         get tilt() { return this._tilt; }
         get radius() { return this._radius; }
         get mass() { return this._mass; }
+        get axis() {
+            // local Y-axis
+            const axis = new Vector3(0, 1, 0);
+
+            // transform to world space
+            return axis.applyQuaternion(this.quaternion).normalize();
+        }
+
         //get name() { return this._name; }
 
         _orbitIndex(t) { return Math.floor(t / this._timescale) % this._coordinates.length; }
