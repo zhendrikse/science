@@ -31,12 +31,12 @@
     <canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas>
     <table>
         <tr>
-            <td> <button id="resetCamera">🧭&nbsp;Reset</button></td>
+            <td><button id="farField2">💫</button></td>
             <td><button data-body="jupiter">Jupiter</button></td>
             <td><button data-body="saturn">🪐&nbsp;Saturn</button></td>
             <td><button data-body="uranus">Uranus</button></td>
             <td><button data-body="neptune">🔱&nbsp;Neptune</button></td>
-            <td><button id="farField2">💫</button></td>
+            <td><button id="resetCamera">🧭&nbsp;Reset</button></td>
         </tr>
     </table>
 </div>
@@ -922,7 +922,7 @@
 
     const luna = new Moon({
         "name": "luna",
-        "a": 384399 * SCALE_MOON,
+        "a": 384399 * SCALE_MOON * .2,
         "e": 0.0549,
         "inclination": (-23.4 + 5.145) * Math.PI / 180.,
         "right_ascension": -Math.PI / 2.,
