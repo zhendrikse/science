@@ -25,6 +25,7 @@
             <td><button data-body="venus">Venus</button></td>
             <td><button data-body="earth">Earth</button></td>
             <td><button data-body="mars">Mars</button></td>
+            <td><button id="farField">🔭</button></td>
         </tr>
     </table>
     <canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas>
@@ -1137,6 +1138,11 @@
         controls.update();
     });
 
+    document.getElementById("farField").addEventListener("click", () => {
+        planetCamera.position.copy(new Vector3(550, 190, -185));
+        controlsGui.onReset();
+        controls.update();
+    });
 
     let lastTime = 0;
     const frameRate = 40;

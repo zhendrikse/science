@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## X-ray Binary Stars
+## X-ray Binary Stars 🔭
 <div class="header_line"><br/></div>
 
 <blockquote>

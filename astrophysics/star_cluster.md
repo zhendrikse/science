@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Three-dimensional star cluster with thousands of stars
+## Three-dimensional star cluster 🔭
 <div class="header_line"><br/></div>
 
 🔧 Code on this [star_cluster.html](https://github.com/zhendrikse/science/blob/main/astrophysics/code/star_cluster.html) based on example in [Creating Clouds of Stars](https://discourse.threejs.org/t/creating-clouds-of-stars/62925)<br/>
