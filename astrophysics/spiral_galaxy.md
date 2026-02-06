@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Spiral galaxy visualization 🔭
+## Spiral galaxy visualization ✨
 <div class="header_line"><br/></div>
 
 🔧 Original [galaxy_3d_Medium.py](https://gist.github.com/rlvaugh/a49bf875890581f338a000c2b5c3a2bb) by [Lee Vaughan](https://towardsdatascience.com/author/lee_vaughan/) <br/>

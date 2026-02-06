@@ -1,19 +1,19 @@
 {% include breadcrumbs.html %}
 
-## Andromeda Milky Way collision
+## Andromeda Milky Way collision ✨
 <div class="header_line"><br/></div>
 
 In roughly four and a half billion years, our Milky Way galaxy 
-[will collide](https://en.wikipedia.org/wiki/Andromeda%E2%80%93Milky_Way_collision) with our nearest
-neighbour, the [Andromeda galaxy](https://en.wikipedia.org/wiki/Andromeda_Galaxy). 
+[will collide](https://en.wikipedia.org/wiki/Andromeda%E2%80%93Milky_Way_collision) with our nearest neighbour, the [Andromeda galaxy](https://en.wikipedia.org/wiki/Andromeda_Galaxy). 
 
 The demo below simulates this future collision. It is based on a very simple model:
-- Both galaxy's contain only a very limited amount of stars compared 
-  to the real amounts in both galaxy's (1400 for the Milky way and 2800 for the Andromeda)
-- No [super-massive black holes](https://en.wikipedia.org/wiki/Supermassive_black_hole) at the center of either galaxy
-- The masses of the stars and their positions are randomly picked from a normal distribution, 
-  generated from a uniform distribution using a [Box-Müller transform](https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform).
-- [VPython](https://vpython.org/)&apos;s [`simple_sphere`](https://www.glowscript.org/docs/VPythonDocs/sphere.html#simple-sphere) 
+
+👉 Both galaxy's contain only a very limited amount of stars compared
+  to the real amounts in both galaxy's (1400 for the Milky way and 2800 for the Andromeda)<br/>
+👉 No [super-massive black holes](https://en.wikipedia.org/wiki/Supermassive_black_hole) at the center of either galaxy<br/>
+👉 Masses and positions of stars are randomly picked from a normal distribution 
+(with a [Box-Müller transform](https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform)).<br/>
+👉 [VPython](https://vpython.org/)&apos;s [`simple_sphere`](https://www.glowscript.org/docs/VPythonDocs/sphere.html#simple-sphere) 
   objects are used to optimize performance.
 
 {% include_relative code/galactic_collision.html %}
