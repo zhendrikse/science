@@ -696,7 +696,7 @@
         }
 
         #createInfoLabel(text, {
-            font = '24px monospace',
+            font = 'bold 24px system-ui',
             color = '#ffff00',
             background = 'rgba(0, 0, 0, 0)',
             padding = 80
@@ -735,7 +735,7 @@
         }
 
         #labelPositionFrom = (object) => object.position.clone()
-            .add(new Vector3(0, object.scaledRadius, object.scaledRadius).multiplyScalar(1.0));
+            .add(new Vector3(0, object.scaledRadius, object.scaledRadius).multiplyScalar(1.1));
 
         #objectCenter = (object) => {
             const box = new Box3().setFromObject(object);
@@ -1141,6 +1141,7 @@
     document.getElementById("farField").addEventListener("click", () => {
         planetCamera.position.copy(new Vector3(580, 200, -195));
         controlsGui.onReset();
+        controls.target.copy(cameraStart.target);
         controls.update();
     });
 
