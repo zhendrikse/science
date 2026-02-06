@@ -27,6 +27,21 @@ label {
     margin: 2px;
 }
 
+.buttonRow {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 800px;
+    padding: 0 8px; /* space between the borders */
+    margin: 6px auto;
+}
+
+.buttonRow button {
+    flex: 0 1 auto;
+    white-space: nowrap;
+}
+
 button {
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 0, 0.2);
