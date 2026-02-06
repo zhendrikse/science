@@ -33,7 +33,7 @@ label {
     flex-wrap: wrap;
     gap: 6px;
     max-width: 800px;
-    padding: 0 4px; /* space between the borders */
+    padding: 0 1px; /* space between the borders */
     margin: 5px auto;
 }
 
