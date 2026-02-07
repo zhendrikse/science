@@ -118,7 +118,7 @@
     planetaryScene.add(skyDome);
 
     class Orbit {
-        constructor(meanAnomaly, eccentricity, a, inclination, ascension, accuracy=1.e-2, nPoints=10000) {
+        constructor(meanAnomaly, eccentricity, a, inclination, ascension, accuracy=1.e-2, nPoints=50000) {
             // nPoints = number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
             const range = this._linSpace(meanAnomaly, 2 * Math.PI + meanAnomaly, nPoints);
 
