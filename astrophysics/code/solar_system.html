@@ -1,3 +1,13 @@
+<style>
+    canvas {
+        background: #131313;
+        display: block;
+        width: 100%;
+        aspect-ratio: 19 / 12;
+        max-width: 800px;
+        margin: auto;
+    }
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -121,6 +131,9 @@
             this._spin = bodyData.spin;
             this._scaledRadius = bodyData.radius / scale;
 
+            // Set the axis of rotation (Y-axis) equal to the tilt
+            this.quaternion.setFromAxisAngle(new Vector3(0, 0, 1), bodyData.tilt);
+
             this._geometry = new SphereGeometry(this._scaledRadius, 64, 64);
             this._body = new Mesh(this._geometry, this._material(bumpScale, identicalBumpMap));
             this.add(this._body);
@@ -135,14 +148,7 @@
         get tilt() { return this._tilt; }
         get radius() { return this._radius; }
         get mass() { return this._mass; }
-        get axis() {
-            // local Y-axis
-            const axis = new Vector3(0, 1, 0);
-
-            // transform to world space
-            return axis.applyQuaternion(this.quaternion).normalize();
-        }
-
+        get axis() { new Vector3(0, 1, 0).applyQuaternion(this.quaternion).normalize(); }
         //get name() { return this._name; }
 
         _orbitIndex(t) { return Math.floor(t / this._timescale) % this._coordinates.length; }
@@ -211,16 +217,8 @@
         _material(bumpScale, identicalBumpMap) { throw new Error("Abstract class: implement material!"); }
 
         updateRotation(t) {
-            // 1. tilt-quaternion (rotation of XZ plane → real axis)
-            const tiltQuaternion = new Quaternion();
-            tiltQuaternion.setFromAxisAngle(new Vector3(0, 0, 1), this._tilt);
-
-            // 2. spin-quaternion around local Y
-            const spinQuaternion = new Quaternion();
-            spinQuaternion.setFromAxisAngle(new Vector3(0, 1, 0), this._spin * t);
-
-            // 3. combine tilt + spin
-            this.quaternion.copy(tiltQuaternion).multiply(spinQuaternion);
+            // Spin the body along the axis with tilt
+            this._body.rotation.y = this._spin * t;
         }
 
         enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
@@ -487,11 +485,11 @@
     }
 
     class Earth extends Planet {
-        constructor(planetData) {
+        constructor(planetData, clouds=true) {
             super(planetData);
             this._timescale = 1; // rotation period w.r.t. Earth
-            this._clouds = new EarthClouds(this._geometry.parameters.radius);
-            this.add(this._clouds);
+            this._clouds = clouds? new EarthClouds(this._geometry.parameters.radius) : null;
+            if (clouds) this.add(this._clouds);
 
             // create orbit coordinates list for the planet
             this._coordinates = this._orbit(
@@ -501,11 +499,18 @@
                 planetData.inclination,
                 planetData.right_ascension
             );
+
+            this._arrows = new EarthArrows(this, {
+                latitudeDeg: 52,
+                scale: this.scaledRadius * 3
+            });
+            this.add(this._arrows);
         }
 
         update(t, dt) {
             super.update(t, dt);
-            this._clouds.update(dt);
+            this._clouds?.update(dt);
+            this._arrows?.update(sun.getWorldPosition(new Vector3()));
         }
 
         _material(bumpScale, identicalBumpMap) {
@@ -1071,7 +1076,7 @@
     const earthMoonSystem = new PlanetMoonSystem(earth, [luna]);
     solarSystemGroup.add(earthMoonSystem);
     earthMoonSystem.update(0, 1); // set initial position
-    earth.enableTrail({maxPoints: 300, color: 0x00bbff, trailStep: 25});
+    earth.enableTrail({maxPoints: 400, color: 0x00bbff, trailStep: 25});
 
     const noMoonsMercury = new PlanetMoonSystem(mercury);
     solarSystemGroup.add(noMoonsMercury);
@@ -1086,7 +1091,7 @@
     const marsWithMoons = new PlanetMoonSystem(mars, [phobos, deimos]);
     solarSystemGroup.add(marsWithMoons);
     marsWithMoons.update(0, 1);
-    mars.enableTrail({maxPoints: 450, color: 0xffaa00, trailStep: 50});
+    mars.enableTrail({maxPoints: 550, color: 0xffaa00, trailStep: 50});
 
     const jupiterWithMoons = new PlanetMoonSystem(jupiter, [callisto, europa, ganymede, io]);
     solarSystemGroup.add(jupiterWithMoons);
