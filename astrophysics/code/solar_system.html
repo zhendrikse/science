@@ -544,11 +544,22 @@
     }
 
     class Earth extends Planet {
-        constructor(planetData, clouds=true) {
+        constructor(planetData={
+            "name": "earth",
+            "a": EARTH_SEMI_MAJOR_AXIS,
+            "e": 0.01671123,
+            "inclination": 0.,
+            "right_ascension": 0.,
+            "mean_anomaly": 6.2398515744,
+            "radius": 6371010, // meters
+            "mass": 5.97219e+24,
+            "spin": 2 * Math.PI / 24.,
+            "tilt": 23 * Math.PI / 180
+        }) {
             super(planetData);
             this._timescale = 1; // rotation period w.r.t. Earth
-            this._clouds = clouds? new EarthClouds(this._geometry.parameters.radius) : null;
-            if (clouds) this.add(this._clouds);
+            this._clouds = new EarthClouds(this._geometry.parameters.radius);
+            this.add(this._clouds);
             this._equatorialPlane = new EarthEquatorialPlane(this, {
                 innerRadiusFactor: 1.3,
                 outerRadiusFactor: 3.0,
@@ -559,6 +570,7 @@
         }
 
         get equatorialPlane() { return this._equatorialPlane; }
+        get clouds() { return this._clouds; }
 
         update(t, dt) {
             super.update(t, dt);
@@ -667,7 +679,17 @@
     };
 
     class Saturn extends Planet {
-        constructor(planetData) {
+        constructor(planetData={
+            "name": "saturn",
+            'a': 1433449370.,
+            'e': 0.055723219,
+            'inclination': 2.49 * Math.PI / 180.,
+            'right_ascension': 1.98,
+            'mean_anomaly': 5.5911055356,
+            'radius': 60000. * 1e3,
+            "mass": 5.68319e+26,
+            'tilt': 27 * Math.PI / 180.,
+            'spin': 2 * Math.PI / 10.66 }) {
             super(planetData, {bumpScale: 0.05, identicalBumpMap: true});
 
             const innerRingRadius = 1.11 * planetData.radius;
@@ -696,7 +718,17 @@
     }
 
     class Uranus extends Planet {
-        constructor(planetData) {
+        constructor(planetData={
+            "name": "uranus",
+            'a': 2876679082.,
+            'e': 0.044405586,
+            'inclination': 0.77 * Math.PI / 180.,
+            'right_ascension': 1.2908891856,
+            'mean_anomaly': 2.4950479462,
+            'radius': 25600. * 1E3,
+            "mass": 8.68103E25,
+            'tilt': 98 * Math.PI / 180.,
+            'spin': -2 * Math.PI / 17.24}) {
             super(planetData, {identicalBumpMap: true, bumpScale: 0.05});
 
             const inner = 1.5 * planetData.radius / PLANET_SCALE;
@@ -764,13 +796,16 @@
             this._objectInFocus = null;
             this._focusOffset = null;
 
-            const settings = { dt: 1, equatorialPlane: false, eclipticPlane: false };
+            const settings = { dt: 1, equatorialPlane: false, eclipticPlane: false, earthClouds: false };
             controls.add(settings, 'dt', 0.0, 5, 0.01)
                 .name("Time Step (dt)")
                 .onChange(value => dt = value);
             controls.add(settings, 'equatorialPlane')
                 .name("Equatorial plane")
                 .onChange(value => earth.equatorialPlane.visible = value);
+            controls.add(settings, 'earthClouds')
+                .name("Earth clouds")
+                .onChange(value => earth.clouds.visible = value);
             controls.add(settings, 'eclipticPlane')
                 .name("Ecliptic plane")
                 .onChange(value => eclipticPlane.material.visible = value);
@@ -918,18 +953,8 @@
     planetaryScene.add(sunLight);
     planetaryScene.add(new AmbientLight(0xffffff, 0.2));
 
-    const earth = new Earth({
-        "name": "earth",
-        "a": EARTH_SEMI_MAJOR_AXIS,
-        "e": 0.01671123,
-        "inclination": 0.,
-        "right_ascension": 0.,
-        "mean_anomaly": 6.2398515744,
-        "radius": 6371010, // meters
-        "mass": 5.97219e+24,
-        "spin": 2 * Math.PI / 24.,
-        "tilt": 23 * Math.PI / 180
-    });
+    const earth = new Earth();
+    earth.clouds.visible = false;
     const mercury = new Planet({
         "name": "mercury",
         'a': 57909050.,
@@ -978,28 +1003,8 @@
         'tilt': 3 * Math.PI / 180.,
         'spin': 2 * Math.PI / 9.93
     }, {bumpScale: 0.02, identicalBumpMap: true});
-    const saturn = new Saturn({
-        "name": "saturn",
-        'a': 1433449370.,
-        'e': 0.055723219,
-        'inclination': 2.49 * Math.PI / 180.,
-        'right_ascension': 1.98,
-        'mean_anomaly': 5.5911055356,
-        'radius': 60000. * 1e3,
-        "mass": 5.68319e+26,
-        'tilt': 27 * Math.PI / 180.,
-        'spin': 2 * Math.PI / 10.66 }, {identicalBumpMap: true, bumpScale: 0.05});
-    const uranus = new Uranus({
-        "name": "uranus",
-        'a': 2876679082.,
-        'e': 0.044405586,
-        'inclination': 0.77 * Math.PI / 180.,
-        'right_ascension': 1.2908891856,
-        'mean_anomaly': 2.4950479462,
-        'radius': 25600. * 1E3,
-        "mass": 8.68103E25,
-        'tilt': 98 * Math.PI / 180.,
-        'spin': -2 * Math.PI / 17.24});
+    const saturn = new Saturn();
+    const uranus = new Uranus();
     const neptune = new Planet({
         'name': "neptune",
         'a': 4503443661.,
