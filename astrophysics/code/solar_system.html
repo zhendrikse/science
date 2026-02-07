@@ -722,6 +722,39 @@
         }
     }
 
+    class LunarEclipseIndicator {
+        constructor(earth, moon, plane) {
+            this._earth = earth;
+            this._moon = moon;
+            this._plane = plane; // equatorial plane
+            this._threshold = earth.scaledRadius * 0.05; // ± 5% van straal
+            this._active = false;
+
+            // tiny ball as indicator
+            const geom = new SphereGeometry(this._threshold * 0.5, 16, 16);
+            const mat = new MeshBasicMaterial({ color: 0xff0000 });
+            this._indicator = new Mesh(geom, mat);
+            this._indicator.visible = false;
+            planetaryScene.add(this._indicator);
+        }
+
+        update() {
+            const moonPosLocal = this._earth.worldToLocal(this._moon.getWorldPosition(new Vector3()));
+            const distanceToPlane = Math.abs(moonPosLocal.y); // y = hoogte t.o.v. equator
+
+            if (distanceToPlane < this._threshold) {
+                this._indicator.visible = true;
+                this._indicator.position.copy(this._moon.position);
+                this._active = true;
+                this._plane.material.color.set(0xff0000); // plane tijdelijk rood
+            } else {
+                this._indicator.visible = false;
+                this._active = false;
+                this._plane.material.color.set(0x00ffff); // originele plane kleur
+            }
+        }
+    }
+
     class ControlsGui {
         constructor() {
             const controls = new GUI({width: "100%", autoPlace: false});
@@ -1230,12 +1263,14 @@
 
     let lastTime = 0;
     let t = 0;
+    const eclipseIndicator = new LunarEclipseIndicator(earth, luna, earth.equatorialPlane);
     function animate(time) {
         if (time - lastTime < 1000 / frameRate) return;
         lastTime = time;
 
         solarSystem.forEach(body => body.update(t, dt));
         sun.update(t, dt);
+        eclipseIndicator.update();
         skyDome.update(time * .001, planetCamera);
         planetRenderer.render(planetaryScene, planetCamera);
         controlsGui.render();
