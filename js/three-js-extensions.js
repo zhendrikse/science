@@ -1395,6 +1395,11 @@ export class Graph {
         context.strokeStyle = this.gridColor;
         context.lineWidth = 1;
 
+        // TODO Implement DPR
+        // const dpr = window.devicePixelRatio || 1;
+        // canvas.width  = cssWidth  * dpr;
+        // canvas.height = cssHeight * dpr;
+        // context.scale(dpr, dpr);
         const width = this.canvas.width;
         const height = this.canvas.height;
 

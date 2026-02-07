@@ -1,4 +1,13 @@
-
+<style>
+    canvas {
+        background: #131313;
+        display: block;
+        width: 100%;
+        aspect-ratio: 19 / 12;
+        max-width: 800px;
+        margin: auto;
+    }
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -21,12 +30,12 @@
     <canvas class="applicationCanvas" id="planetsCanvas"  style="aspect-ratio: 19 / 12;"></canvas>
 
     <div class="buttonRow">
-        <button id="resetCamera">🧭</button>
+        <button id="farField2">💫</button>
         <button data-body="jupiter">Jupiter</button>
         <button data-body="saturn">🪐 Saturn</button>
         <button data-body="uranus">Uranus</button>
         <button data-body="neptune">🔱 Neptune</button>
-        <button id="farField2">💫</button>
+        <button id="zoomIn">🔎</button>
     </div>
 </div>
 <div class="guiContainer" id="solarSystemGui"></div>
@@ -35,7 +44,8 @@
     import { Group, Box3, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial,
         Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight, BackSide, AdditiveBlending,
         DoubleSide, Quaternion, BufferGeometry, BufferAttribute, SRGBColorSpace, ACESFilmicToneMapping,
-        MeshBasicMaterial, LinearSRGBColorSpace, NoToneMapping, FrontSide, Sprite, SpriteMaterial, CanvasTexture} from "three";
+        MeshBasicMaterial, LinearSRGBColorSpace, NoToneMapping, FrontSide, Sprite, SpriteMaterial, CanvasTexture,
+        LineDashedMaterial, LineBasicMaterial, LineLoop, Line} from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { ThreeJsUtils, SkyDome, Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
@@ -80,7 +90,7 @@
     const planetaryScene = new Scene();
     // --- CAMERA ---
     const cameraStart = {
-        position: new Vector3(-60, 20, 12),
+        position: new Vector3(580, 200, -195),
         target: new Vector3(0, 0, 0)
     };
     const planetCamera = new PerspectiveCamera(50, 1, .1, 5000);
@@ -169,6 +179,41 @@
 
         get points() { return this._points; }
         get count() { return this._points.length; }
+
+        draw({
+                 color = 0x666666,
+                 linewidth = 1,
+                 opacity = 0.9,
+                 closed = true,
+                 scale = 1,
+                 dashed = false
+             } = {}) {
+            const positions = new Float32Array(this._points.length * 3);
+
+            this._points.forEach((p, i) => {
+                positions[3 * i + 0] = p.x * scale;
+                positions[3 * i + 1] = p.y * scale;
+                positions[3 * i + 2] = p.z * scale;
+            });
+
+            const geometry = new BufferGeometry();
+            geometry.setAttribute("position", new BufferAttribute(positions, 3));
+
+            let material;
+            if (dashed)
+                material = new LineDashedMaterial({color, linewidth, dashSize: 3, gapSize: 2, transparent: true, opacity});
+            else
+                material = new LineBasicMaterial({color, linewidth, transparent: true, opacity});
+
+            const line = closed
+                ? new LineLoop(geometry, material)
+                : new Line(geometry, material);
+
+            if (dashed) line.computeLineDistances();
+
+            this._line = line;
+            return line;
+        }
     }
 
     // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
@@ -244,6 +289,11 @@
 
         _orbitIndex(t) { return Math.floor(t / this._timescale) % this._orbit.count; }
         coordinatesAt(t) { return this._orbit.coordinatesAt(this._orbitIndex(t)); }
+        renderedOrbit(color) { return this._orbit.draw({
+            color: color,
+            opacity: 0.4,
+            scale: 1000 / DISTANCE_SCALE
+        }); }
 
         update(t, dt) {
             this.updateTrail(dt);
@@ -628,7 +678,7 @@
                 map: texture,
                 side: DoubleSide,
                 transparent: true,
-                opacity: 0.5,          // subtle
+                opacity: 0.2,          // subtle
                 depthWrite: false       // prevent z-fighting
             });
 
@@ -1048,41 +1098,49 @@
     solarSystemGroup.add(earthMoonSystem);
     earthMoonSystem.update(0, 1); // set initial position
     earth.enableTrail({maxPoints: 400, color: 0x00bbff, trailStep: 25});
+    solarSystemGroup.add(earth.renderedOrbit(0x00bbff));
 
     const noMoonsMercury = new PlanetMoonSystem(mercury);
     solarSystemGroup.add(noMoonsMercury);
     noMoonsMercury.update(0, 1);
     mercury.enableTrail({maxPoints: 80, color: 0xaaff00, trailStep: 25});
+    solarSystemGroup.add(mercury.renderedOrbit(0xaaff00));
 
     const noMoonsVenus = new PlanetMoonSystem(venus);
     solarSystemGroup.add(noMoonsVenus);
     noMoonsVenus.update(0, 1);
     venus.enableTrail({maxPoints: 120, color: 0xff0000, trailStep: 50});
+    solarSystemGroup.add(venus.renderedOrbit(0xff0000));
 
     const marsWithMoons = new PlanetMoonSystem(mars, [phobos, deimos]);
     solarSystemGroup.add(marsWithMoons);
     marsWithMoons.update(0, 1);
     mars.enableTrail({maxPoints: 550, color: 0xffaa00, trailStep: 50});
+    solarSystemGroup.add(mars.renderedOrbit(0xffaa00));
 
     const jupiterWithMoons = new PlanetMoonSystem(jupiter, [callisto, europa, ganymede, io]);
     solarSystemGroup.add(jupiterWithMoons);
     jupiterWithMoons.update(0, 1);
     jupiter.enableTrail({maxPoints: 1600, color: 0xdd00dd, trailStep: 100});
+    solarSystemGroup.add(jupiter.renderedOrbit(0xdd00dd));
 
     const saturnWithMoons = new PlanetMoonSystem(saturn, [dione, enceladus, tethys, titan]);
     solarSystemGroup.add(saturnWithMoons);
     saturnWithMoons.update(0, 1);
     saturn.enableTrail({maxPoints: 1600, color: 0xffff00, trailStep: 100});
+    solarSystemGroup.add(saturn.renderedOrbit(0xffff00));
 
     const uranusWithMoons = new PlanetMoonSystem(uranus, []);
     solarSystemGroup.add(uranusWithMoons);
     uranusWithMoons.update(0, 1);
     uranus.enableTrail({maxPoints: 1600, color: 0xaaaaaa, trailStep: 100});
+    solarSystemGroup.add(uranus.renderedOrbit(0xaaaaaa));
 
     const neptuneWithMoons = new PlanetMoonSystem(neptune, []);
     solarSystemGroup.add(neptuneWithMoons);
     neptuneWithMoons.update(0, 1);
     neptune.enableTrail({maxPoints: 1600, color: 0x0000ff});
+    solarSystemGroup.add(neptune.renderedOrbit(0x0000ff));
 
     const solarSystem = [
         earthMoonSystem,
@@ -1104,15 +1162,15 @@
             });
         });
 
-    document.getElementById("resetCamera").addEventListener("click", () => {
+    document.getElementById("farField1").addEventListener("click", () => {
         planetCamera.position.copy(cameraStart.position);
         controlsGui.onReset();
         controls.target.copy(cameraStart.target);
         controls.update();
     });
 
-    document.getElementById("farField1").addEventListener("click", () => {
-        planetCamera.position.copy(new Vector3(580, 200, -195));
+    document.getElementById("zoomIn").addEventListener("click", () => {
+        planetCamera.position.copy(new Vector3(-105, 35, 21));
         controlsGui.onReset();
         controls.target.copy(cameraStart.target);
         controls.update();
