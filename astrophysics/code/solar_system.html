@@ -729,6 +729,7 @@
             this._zoomInOnObject = null;
             this._label = null;
             this._objectInFocus = null;
+            this._focusOffset = null;
 
             const settings = { dt: 1, equatorialPlane: false, eclipticPlane: false };
             controls.add(settings, 'dt', 0.0, 5, 0.01)
@@ -799,16 +800,6 @@
         #labelPositionFrom = (object) => object.position.clone()
             .add(new Vector3(0, object.scaledRadius, object.scaledRadius).multiplyScalar(1.1));
 
-        #objectCenter = (object) => {
-            const box = new Box3().setFromObject(object);
-            ThreeJsUtils.scaleBox3(box, 0.7);
-            const center = new Vector3();
-            const size = new Vector3();
-            box.getCenter(center);
-            box.getSize(size);
-            return {size, center};
-        }
-
         #createLabel(object) {
             if (!object._name) return;
             this.#removeLabel();
@@ -830,24 +821,18 @@
         }
 
         onSelect(object, {
-            distanceFactor = 2.5,
+            distanceFactor = 5,
             duration = 1.2
         } = {}) {
             this._objectInFocus = object;
+
             const startTime = performance.now();
-            const startCamPos = planetCamera.position.clone();
-            const startTarget = controls.target.clone();
-
-            const {size, center} = this.#objectCenter(object);
-            const radius = size.length() * 0.5;
-            const currentViewDirection = new Vector3()
-                .subVectors(startCamPos, startTarget)
-                .normalize();
-
-            const endCamPos = center
+            const startOffset = planetCamera.position
                 .clone()
-                .add(currentViewDirection
-                    .multiplyScalar(radius * distanceFactor));
+                .sub(controls.target);
+
+            const viewDirection = startOffset.clone().normalize();
+            const endOffset = viewDirection.multiplyScalar(object.scaledRadius * distanceFactor);
 
             this.#createLabel(object);
             this._zoomInOnObject = () => {
@@ -855,8 +840,13 @@
                 const k = Math.min(time, 1);
                 const step = k * k * (3 - 2 * k); // smoothstep
 
-                planetCamera.position.lerpVectors(startCamPos, endCamPos, step);
-                controls.target.lerpVectors(startTarget, center, step);
+                this._focusOffset = startOffset.clone().lerp(endOffset, step);
+
+                planetCamera.position
+                    .copy(object.position)
+                    .add(this._focusOffset);
+
+                controls.target.copy(object.position);
                 controls.update();
 
                 if (k >= 1) this._zoomInOnObject = null;
@@ -866,6 +856,15 @@
         render() {
             if (this._zoomInOnObject) this._zoomInOnObject();
             if (this._label) this._label.position.copy(this.#labelPositionFrom(this._objectInFocus));
+            if (this._objectInFocus) {
+                planetCamera.position
+                    .copy(this._objectInFocus.position)
+                    .add(this._focusOffset);
+
+                controls.target.copy(this._objectInFocus.position);
+                controls.update();
+            }
+
         }
     }
 
