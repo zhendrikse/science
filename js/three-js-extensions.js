@@ -1272,6 +1272,26 @@ export class Arrow extends Group {
     updateTrail(dt) { this._trail.update(dt); }
     disposeTrail() { this._trail.dispose(); }
 
+    dispose() {
+        this.disposeTrail();
+
+        // DO NOT dispose shared geometries
+        if (this._shaft) {
+            if (this._shaft.material)
+                this._shaft.material.dispose();
+            this.remove(this._shaft);
+            this._shaft = null;
+        }
+
+        if (this._head) { // head.material is the same object as share.material, so has already been disposed
+            this.remove(this._head);
+            this._head = null;
+        }
+
+        this.clear();
+        this._axis = null;
+    }
+
     updateAxis(newAxis) {
         this._axis.copy(newAxis);
         const totalLength = newAxis.length();
