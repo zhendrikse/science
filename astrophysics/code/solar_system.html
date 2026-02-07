@@ -45,7 +45,7 @@
         Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight, BackSide, AdditiveBlending,
         DoubleSide, Quaternion, BufferGeometry, BufferAttribute, SRGBColorSpace, ACESFilmicToneMapping,
         MeshBasicMaterial, LinearSRGBColorSpace, NoToneMapping, FrontSide, Sprite, SpriteMaterial, CanvasTexture,
-        LineDashedMaterial, LineBasicMaterial, LineLoop, Line} from "three";
+        LineDashedMaterial, LineBasicMaterial, LineLoop, Line, PlaneGeometry, RingGeometry} from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { ThreeJsUtils, SkyDome, Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
@@ -520,18 +520,49 @@
         }
     }
 
+    class EarthEquatorialPlane extends Mesh {
+        constructor(earth, {
+            sizeFactor = 6,
+            opacity = 0.15,
+            color = 0x00ffff
+        } = {}) {
+
+            const geometry = new PlaneGeometry(earth.scaledRadius * sizeFactor, earth.scaledRadius * sizeFactor);
+            const material = new MeshBasicMaterial({
+                color,
+                transparent: true,
+                opacity,
+                side: DoubleSide,
+                depthWrite: false
+            });
+            super(geometry, material);
+
+            this.rotateX(Math.PI / 2);
+            const tiltQuat = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), earth.tilt);
+            this.applyQuaternion(tiltQuat);
+        }
+    }
+
     class Earth extends Planet {
         constructor(planetData, clouds=true) {
             super(planetData);
             this._timescale = 1; // rotation period w.r.t. Earth
             this._clouds = clouds? new EarthClouds(this._geometry.parameters.radius) : null;
             if (clouds) this.add(this._clouds);
+            this._equatorialPlane = new EarthEquatorialPlane(this, {
+                innerRadiusFactor: 1.3,
+                outerRadiusFactor: 3.0,
+                opacity: 0.12
+            });
+            this._equatorialPlane.visible = false;
+            this.add(this._equatorialPlane);
         }
+
+        get equatorialPlane() { return this._equatorialPlane; }
 
         update(t, dt) {
             super.update(t, dt);
             this._clouds?.update(dt);
-            this._arrows?.update(sun.getWorldPosition(new Vector3()));
         }
 
         _material(bumpScale, identicalBumpMap) {
@@ -699,8 +730,16 @@
             this._label = null;
             this._objectInFocus = null;
 
-            const settings = { dt: 1 };
-            controls.add(settings, 'dt', 0.0, 5, 0.01).name("Time Step (dt)").onChange(value => dt = value);
+            const settings = { dt: 1, equatorialPlane: false, eclipticPlane: false };
+            controls.add(settings, 'dt', 0.0, 5, 0.01)
+                .name("Time Step (dt)")
+                .onChange(value => dt = value);
+            controls.add(settings, 'equatorialPlane')
+                .name("Equatorial plane")
+                .onChange(value => earth.equatorialPlane.visible = value);
+            controls.add(settings, 'eclipticPlane')
+                .name("Ecliptic plane")
+                .onChange(value => eclipticPlane.material.visible = value);
         }
 
         #formatScientific(value, unit = '') {
@@ -1121,8 +1160,8 @@
     const jupiterWithMoons = new PlanetMoonSystem(jupiter, [callisto, europa, ganymede, io]);
     solarSystemGroup.add(jupiterWithMoons);
     jupiterWithMoons.update(0, 1);
-    jupiter.enableTrail({maxPoints: 1600, color: 0xdd00dd, trailStep: 100});
-    solarSystemGroup.add(jupiter.renderedOrbit(0xdd00dd));
+    jupiter.enableTrail({maxPoints: 1600, color: 0x8b4513, trailStep: 100});
+    solarSystemGroup.add(jupiter.renderedOrbit(0x8b4513));
 
     const saturnWithMoons = new PlanetMoonSystem(saturn, [dione, enceladus, tethys, titan]);
     solarSystemGroup.add(saturnWithMoons);
@@ -1152,6 +1191,13 @@
         uranusWithMoons,
         neptuneWithMoons
     ];
+
+    const eclipticPlane = new Mesh(
+        new RingGeometry(sun.scaledRadius * 1.1, 100, 128),
+        new MeshBasicMaterial({color: 0xffaa00, transparent: true, opacity: 0.08, side: DoubleSide, depthWrite: false, visible: false })
+    )
+    eclipticPlane.rotation.x = Math.PI /2;
+    solarSystemGroup.add(eclipticPlane);
 
     const controlsGui = new ControlsGui();
     document.querySelectorAll("#planetControls button")
