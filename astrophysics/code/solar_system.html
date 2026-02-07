@@ -1,13 +1,4 @@
-<style>
-    canvas {
-        background: #131313;
-        display: block;
-        width: 100%;
-        aspect-ratio: 19 / 12;
-        max-width: 800px;
-        margin: auto;
-    }
-</style>
+
 <script type="importmap">
     {
       "imports": {
@@ -116,6 +107,70 @@
     const skyDome = new SkyDome({starDensity: 1, skyRadius: 4950, glowStarCount: 500});
     planetaryScene.add(skyDome);
 
+    class Orbit {
+        constructor(meanAnomaly, eccentricity, a, inclination, ascension, accuracy=1.e-2, nPoints=10000) {
+            // nPoints = number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
+            const range = this._linSpace(meanAnomaly, 2 * Math.PI + meanAnomaly, nPoints);
+
+            let eccAnom = range.slice();
+            let eccAnomOld = new Array(nPoints);
+
+            let maxDiff = Infinity;
+            while (maxDiff > accuracy) {
+                maxDiff = 0;
+                eccAnomOld = eccAnom.slice(); // copy array
+
+                // Newton–Raphson step
+                for (let i = 0; i < nPoints; i++) {
+                    const f = eccAnomOld[i] - eccentricity * Math.sin(eccAnomOld[i]) - range[i];
+                    const fPrime = 1 - eccentricity * Math.cos(eccAnomOld[i]);
+                    eccAnom[i] = eccAnomOld[i] - f / fPrime;
+                    maxDiff = Math.max(maxDiff, Math.abs(eccAnom[i] - eccAnomOld[i]));
+                }
+            }
+
+            this._points = [];
+            for (let i = 0; i < nPoints; i++) {
+                const theta = 2 * Math.atan2(
+                    Math.sqrt(1 + eccentricity) * Math.sin(eccAnom[i] / 2),
+                    Math.sqrt(1 - eccentricity) * Math.cos(eccAnom[i] / 2)
+                );
+
+                const r = a * (1 - eccentricity * Math.cos(eccAnom[i]));
+                const thetaAsc = theta - ascension;
+
+                const x = (Math.cos(ascension) * Math.cos(thetaAsc) -
+                    Math.sin(ascension) *
+                    Math.sin(thetaAsc) *
+                    Math.cos(inclination));
+
+                const z = (Math.sin(ascension) * Math.cos(thetaAsc) +
+                    Math.cos(ascension) *
+                    Math.sin(thetaAsc) *
+                    Math.cos(inclination));
+
+                const y = Math.sin(theta - ascension) * Math.sin(inclination);
+                this._points.push(new Vector3(x, y, z).multiplyScalar(r));
+            }
+        }
+
+        _linSpace(start, stop, num) {
+            const result = [];
+            const step = (stop - start) / (num - 1);
+
+            for (let i = 0; i < num - 1; i++)
+                result.push(start + i * step);
+
+            result.push(stop); // include last point as well
+            return result;
+        }
+
+        coordinatesAt(index) { return this._points[index]; }
+
+        get points() { return this._points; }
+        get count() { return this._points.length; }
+    }
+
     // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
     const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
     //const TEXTURES_PATH = "textures/";
@@ -139,8 +194,6 @@
             this.add(this._body);
             this._body.castShadow = true;
             this._body.receiveShadow = false;
-
-            this._coordinates = [];
             this._trail = new Trail(this);
         }
 
@@ -148,78 +201,12 @@
         get tilt() { return this._tilt; }
         get radius() { return this._radius; }
         get mass() { return this._mass; }
-        get axis() { new Vector3(0, 1, 0).applyQuaternion(this.quaternion).normalize(); }
+        get axis() { new Vector3(0, 0, 1).applyQuaternion(this.quaternion).normalize(); }
         //get name() { return this._name; }
-
-        _orbitIndex(t) { return Math.floor(t / this._timescale) % this._coordinates.length; }
-
-        _linSpace(start, stop, num) {
-            const result = [];
-            const step = (stop - start) / (num - 1);
-
-            for (let i = 0; i < num - 1; i++)
-                result.push(start + i * step);
-
-            result.push(stop); // include last point as well
-            return result;
-        }
-
-        // Newton-Raphson to calculate elliptic orbit
-        _orbit(meanAnomaly, eccentricity, a, inclination, ascension, acc=1.e-2) {
-            // nPoints = number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
-            const nPoints = this._orbitPointsCount;
-            const range = this._linSpace(meanAnomaly, 2 * Math.PI + meanAnomaly, nPoints);
-
-            let eccAnom = range.slice();
-            let eccAnomOld = new Array(nPoints);
-
-            let maxDiff = Infinity;
-            while (maxDiff > acc) {
-                maxDiff = 0;
-                eccAnomOld = eccAnom.slice(); // copy array
-
-                // Newton–Raphson step
-                for (let i = 0; i < nPoints; i++) {
-                    const f = eccAnomOld[i] - eccentricity * Math.sin(eccAnomOld[i]) - range[i];
-                    const fPrime = 1 - eccentricity * Math.cos(eccAnomOld[i]);
-                    eccAnom[i] = eccAnomOld[i] - f / fPrime;
-                    maxDiff = Math.max(maxDiff, Math.abs(eccAnom[i] - eccAnomOld[i]));
-                }
-            }
-
-            const points = [];
-            for (let i = 0; i < nPoints; i++) {
-                const theta = 2 * Math.atan2(
-                    Math.sqrt(1 + eccentricity) * Math.sin(eccAnom[i] / 2),
-                    Math.sqrt(1 - eccentricity) * Math.cos(eccAnom[i] / 2)
-                );
-
-                const r = a * (1 - eccentricity * Math.cos(eccAnom[i]));
-                const thetaAsc = theta - ascension;
-
-                const x = (Math.cos(ascension) * Math.cos(thetaAsc) -
-                    Math.sin(ascension) *
-                    Math.sin(thetaAsc) *
-                    Math.cos(inclination));
-
-                const z = (Math.sin(ascension) * Math.cos(thetaAsc) +
-                    Math.cos(ascension) *
-                    Math.sin(thetaAsc) *
-                    Math.cos(inclination));
-
-                const y = Math.sin(theta - ascension) * Math.sin(inclination);
-                points.push(new Vector3(x, y, z).multiplyScalar(r));
-            }
-
-            return points;
-        }
 
         _material(bumpScale, identicalBumpMap) { throw new Error("Abstract class: implement material!"); }
 
-        updateRotation(t) {
-            // Spin the body along the axis with tilt
-            this._body.rotation.y = this._spin * t;
-        }
+        updateRotation(t) { this._body.rotation.y = this._spin * t; } // Spin the body along the axis with tilt
 
         enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
             this._trail.enable({maxPoints, color, lineWidth, trailStep });
@@ -236,8 +223,7 @@
             this._body.castShadow = true;
             this._body.receiveShadow = false;
 
-            // create orbit coordinates list for the planet
-            this._coordinates = this._orbit(
+            this._orbit = new Orbit(
                 planetData.mean_anomaly,
                 planetData.e,
                 planetData.a,
@@ -255,6 +241,9 @@
                 shininess: 0
             });
         }
+
+        _orbitIndex(t) { return Math.floor(t / this._timescale) % this._orbit.count; }
+        coordinatesAt(t) { return this._orbit.coordinatesAt(this._orbitIndex(t)); }
 
         update(t, dt) {
             this.updateTrail(dt);
@@ -275,22 +264,25 @@
             this._body.castShadow = false;
             this._body.receiveShadow = true;
 
-            this._coordinates = this._orbit(
+            this._orbit = new Orbit(
                 moonData.mean_anomaly,
                 this._e,
                 this._a,
                 planet.tilt +
                 moonData.inclination,
-                moonData.right_ascension);  // create orbit coordinates list for the moon
+                moonData.right_ascension);
 
             this.#centerMoonsOrbitAroundOrigin();
         }
 
+        _orbitIndex(t) { return Math.floor(t / this._timescale) % this._orbit.count; }
+        coordinatesAt(t) { return this._orbit.coordinatesAt(this._orbitIndex(t)); }
+
         #centerMoonsOrbitAroundOrigin() {
             const center = new Vector3();
-            this._coordinates.forEach(position => center.add(position));
-            center.divideScalar(this._coordinates.length);
-            this._coordinates.forEach(position => position.sub(center));
+            this._orbit.points.forEach(position => center.add(position));
+            center.divideScalar(this._orbit.count);
+            this._orbit.points.forEach(position => position.sub(center));
         }
 
         update(t, dt) {
@@ -299,9 +291,9 @@
                 const planetWorldPos = this._planet.getWorldPosition(new Vector3());
                 this.lookAt(planetWorldPos);
                 // Correct fixed phase fase-offset if needed (texture-orientation)
-                this.rotateY(Math.PI); // of rotateZ, afhankelijk van je texture
+                this.rotateY(Math.PI); // of rotateZ, dependent on texture
             } else
-                this.updateRotation(t); // gewone spin
+                this.updateRotation(t);
         }
     }
 
@@ -313,8 +305,6 @@
 
             this.add(planet);
             moons.forEach(moon => this.add(moon));
-
-            this._coordinates = planet._coordinates;
         }
 
         get mass() {
@@ -326,26 +316,22 @@
 
         update(t, dt) {
             // 1. barycentric position (sun-centric)
-            const baryPosition = this._coordinates[this._planet._orbitIndex(t)].clone();
+            const baryPosition = this._planet.coordinatesAt(t).clone();
 
             // 2. total mass
             const M = this.mass;
 
             // 3. barycentric correction
             const correction = new Vector3();
-            for (const moon of this._moons) {
-                const r = moon._coordinates[moon._orbitIndex(t)];
-                correction.add(r.clone().multiplyScalar(moon.mass / M));
-            }
+            for (const moon of this._moons)
+                correction.add(moon.coordinatesAt(t).clone().multiplyScalar(moon.mass / M));
 
             // 4. planet position
             this._planet.position.copy(toRenderUnits(baryPosition.clone().sub(correction)));
 
             // 5. moon positions
-            for (const moon of this._moons) {
-                const r = moon._coordinates[moon._orbitIndex(t)];
-                moon.position.copy(toRenderUnits(baryPosition.clone().add(r)));
-            }
+            for (const moon of this._moons)
+                moon.position.copy(toRenderUnits(baryPosition.clone().add(moon.coordinatesAt(t))));
 
             // 6. rotations
             this._planet.update(t, dt);
@@ -490,21 +476,6 @@
             this._timescale = 1; // rotation period w.r.t. Earth
             this._clouds = clouds? new EarthClouds(this._geometry.parameters.radius) : null;
             if (clouds) this.add(this._clouds);
-
-            // create orbit coordinates list for the planet
-            this._coordinates = this._orbit(
-                planetData.mean_anomaly,
-                planetData.e,
-                planetData.a,
-                planetData.inclination,
-                planetData.right_ascension
-            );
-
-            this._arrows = new EarthArrows(this, {
-                latitudeDeg: 52,
-                scale: this.scaledRadius * 3
-            });
-            this.add(this._arrows);
         }
 
         update(t, dt) {
