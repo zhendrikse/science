@@ -1294,21 +1294,14 @@ export class Arrow extends Group {
         this._head.position.y = shaftLength + headLength * 0.5;
     }
 
-    updateColor = (color) => this._shaft.material.color = color;
-
     updateOpacity = (opacity) => {
         this._shaft.material.opacity = opacity;
         this._head.material.opacity = opacity;
     }
 
-    moveTo(newPositionVector) {
-        this.position.copy(newPositionVector);
-        if (this._trail)
-            this._trail.addPoint(this.position);
-    }
-
-    positionVectorTo = (other) => new Vector3().copy(other.position).sub(this.position);
-
+    updateColor = (color) => this._shaft.material.color = color;
+    moveTo(newPositionVector) { this.position.copy(newPositionVector); }
+    positionVectorTo = (other) => other.position.clone().sub(this.position);
     distanceToSquared = (other) => this.position.distanceToSquared(other.position);
 }
 
