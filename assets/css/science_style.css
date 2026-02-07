@@ -39,6 +39,8 @@ label {
 
 .buttonRow button {
     flex: 0 1 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
     white-space: nowrap;
 }
 
