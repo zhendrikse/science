@@ -1202,7 +1202,7 @@ export class Cylinder {
         this._group = group;
         this._group.add(this._cylinder);
 
-        this._trail = null;
+        this._trail = new Trail(this);
         if (makeTrail) this.enableTrail();
     }
 
@@ -1210,19 +1210,12 @@ export class Cylinder {
         this._axis = newAxis;
     }
 
-    enableTrail({
-                    maxPoints = 200,
-                    color = this._cylinder.material.color
-                } = {}) {
-        this._trail = new Trail({ maxPoints, color });
-        this._group.add(this._trail.line);
+    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+        this._trail.enable({maxPoints, color, lineWidth, trailStep });
     }
 
-    disableTrail() {
-        if (!this._trail) return;
-        this._group.remove(this._trail.line);
-        this._trail = null;
-    }
+    updateTrail(dt) { this._trail.update(dt); }
+    disposeTrail() { this._trail.dispose(); }
 
     moveTo(newPosition) {
         this._cylinder.position.copy(newPosition);
@@ -1266,53 +1259,18 @@ export class Arrow extends Group {
         this.position.copy(position);
         this.updateAxis(axis);
         this.visible = visible;
-        this._trail = null;
+        this._trail = new Trail(this);
         if (makeTrail) this.enableTrail();
-    }
-
-    enableTrail({
-                    maxPoints = 200,
-                    color = this._shaft.material.color
-                } = {}) {
-        this._trail = new Trail({ maxPoints, color });
-        this.add(this._trail.line);
     }
 
     get axis() { return this._axis.clone(); }
 
-    disposeTrail() {
-        if (!this._trail) return;
-        if (this._trail.line) {
-            if (this._trail.line.geometry)
-                this._trail.line.geometry.dispose();
-            if (this._trail.line.material)
-                this._trail.line.material.dispose();
-            this.remove(this._trail.line);
-        }
-        this._trail = null;
+    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+        this._trail.enable({maxPoints, color, lineWidth, trailStep });
     }
 
-    disableTrail() { this.disposeTrail(); }
-
-    dispose() {
-        this.disposeTrail();
-
-        // DO NOT dispose shared geometries
-        if (this._shaft) {
-            if (this._shaft.material)
-                this._shaft.material.dispose();
-            this.remove(this._shaft);
-            this._shaft = null;
-        }
-
-        if (this._head) { // head.material is the same object as share.material, so has already been disposed
-            this.remove(this._head);
-            this._head = null;
-        }
-
-        this.clear();
-        this._axis = null;
-    }
+    updateTrail(dt) { this._trail.update(dt); }
+    disposeTrail() { this._trail.dispose(); }
 
     updateAxis(newAxis) {
         this._axis.copy(newAxis);
@@ -1623,7 +1581,7 @@ export class Ball {
         this._sphere = new Sphere(parent, position, radius, makeTrail,
             {segments: segments, material: material});
         this._ball = new PhysicalObject(position, velocity, mass);
-        this._trail = null;
+        this._trail = new Trail(this);
     }
 
     semiImplicitEulerUpdate(force, dt=0.01) {
@@ -1641,27 +1599,13 @@ export class Ball {
         this._sphere.moveTo(this._ball.position);
     }
 
-    enableTrail({
-                    maxPoints = 200,
-                    color = this._shaft.material.color
-                } = {}) {
-        this._trail = new Trail({ maxPoints, color });
-        this.add(this._trail.line);
+
+    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+        this._trail.enable({maxPoints, color, lineWidth, trailStep });
     }
 
-    disposeTrail() {
-        if (!this._trail) return;
-        if (this._trail.line) {
-            if (this._trail.line.geometry)
-                this._trail.line.geometry.dispose();
-            if (this._trail.line.material)
-                this._trail.line.material.dispose();
-            this.remove(this._trail.line);
-        }
-        this._trail = null;
-    }
-
-    disableTrail() { this.disposeTrail(); }
+    updateTrail(dt) { this._trail.update(dt); }
+    disposeTrail() { this._trail.dispose(); }
     position = () => this._ball.position;
     velocity = () => this._ball.velocity;
     accelerateTo = (newVelocity) => this._ball.accelerateTo(newVelocity);
