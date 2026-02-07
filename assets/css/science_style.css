@@ -34,13 +34,11 @@ label {
     gap: 2px;
     max-width: 800px;
     padding: 0 4px; /* space between the borders */
-    margin: 5px auto;
+    margin: 10px auto 10px auto;
 }
 
 .buttonRow button {
     flex: 0 1 auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
     white-space: nowrap;
 }
 
