@@ -75,7 +75,6 @@
     }
 
     let dt = 1; // dt = 1 equals to one hour per frame
-    const frameRate = 40;
 
     const AU = 1.496 * 1E11;   // astronomical unit
     const EARTH_SEMI_MAJOR_AXIS = 149598261.;
@@ -176,8 +175,6 @@
         }
 
         coordinatesAt(index) { return this._points[index]; }
-
-        get points() { return this._points; }
         get count() { return this._points.length; }
 
         draw({
@@ -321,19 +318,10 @@
                 planet.tilt +
                 moonData.inclination,
                 moonData.right_ascension);
-
-            this.#centerMoonsOrbitAroundOrigin();
         }
 
         _orbitIndex(t) { return Math.floor(t / this._timescale) % this._orbit.count; }
         coordinatesAt(t) { return this._orbit.coordinatesAt(this._orbitIndex(t)); }
-
-        #centerMoonsOrbitAroundOrigin() {
-            const center = new Vector3();
-            this._orbit.points.forEach(position => center.add(position));
-            center.divideScalar(this._orbit.count);
-            this._orbit.points.forEach(position => position.sub(center));
-        }
 
         update(t, dt) {
             this.updateTrail(dt);
@@ -1266,13 +1254,9 @@
         controls.update();
     });
 
-    let lastTime = 0;
     let t = 0;
     const eclipseIndicator = new LunarEclipseIndicator(earth, luna, earth.equatorialPlane);
     function animate(time) {
-        if (time - lastTime < 1000 / frameRate) return;
-        lastTime = time;
-
         solarSystem.forEach(body => body.update(t, dt));
         sun.update(t, dt);
         eclipseIndicator.update();
