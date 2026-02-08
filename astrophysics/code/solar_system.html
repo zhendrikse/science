@@ -238,7 +238,7 @@
             this.add(this._body);
             this._body.castShadow = true;
             this._body.receiveShadow = false;
-            this._trail = new Trail(this);
+            this._trail = null;
         }
 
         get scaledRadius() { return this._scaledRadius; }
@@ -253,11 +253,12 @@
         updateRotation(t) { this._body.rotation.y = this._spin * t; } // Spin the body along the axis with tilt
 
         enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+            this._trail = new Trail(this);
             this._trail.enable({maxPoints, color, lineWidth, trailStep });
         }
 
-        updateTrail(dt) { this._trail.update(dt); }
-        disposeTrail() { this._trail.dispose(); }
+        updateTrail(dt) { this._trail?.update(dt); }
+        disposeTrail() { this._trail?.dispose(); }
     }
 
     class Planet extends CelestialBody {
