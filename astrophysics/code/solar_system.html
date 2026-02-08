@@ -220,9 +220,8 @@
     const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
     //const TEXTURES_PATH = "textures/";
     class CelestialBody extends Group {
-        constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false, orbitPointsCount=10000} = {}) {
+        constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false} = {}) {
             super();
-            this._orbitPointsCount = orbitPointsCount;
             this._name = bodyData.name;
             this._radius = bodyData.radius;
             this._mass = bodyData.mass;
