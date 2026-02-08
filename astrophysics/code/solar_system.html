@@ -118,35 +118,35 @@
     planetaryScene.add(skyDome);
 
     class Orbit {
-        constructor(meanAnomaly, eccentricity, a, inclination, ascension, accuracy=1.e-2, nPoints=50000) {
+        constructor(meanAnomaly, eccentricity, semiMajorAxis, inclination, ascension, accuracy=1.e-2, nPoints=50000) {
             // nPoints = number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
             const range = this._linSpace(meanAnomaly, 2 * Math.PI + meanAnomaly, nPoints);
 
-            let eccAnom = range.slice();
-            let eccAnomOld = new Array(nPoints);
+            let eccentricAnomaly = range.slice();
+            let eccentricAnomalyOld = new Array(nPoints);
 
             let maxDiff = Infinity;
             while (maxDiff > accuracy) {
                 maxDiff = 0;
-                eccAnomOld = eccAnom.slice(); // copy array
+                eccentricAnomalyOld = eccentricAnomaly.slice(); // copy array
 
                 // Newton–Raphson step
                 for (let i = 0; i < nPoints; i++) {
-                    const f = eccAnomOld[i] - eccentricity * Math.sin(eccAnomOld[i]) - range[i];
-                    const fPrime = 1 - eccentricity * Math.cos(eccAnomOld[i]);
-                    eccAnom[i] = eccAnomOld[i] - f / fPrime;
-                    maxDiff = Math.max(maxDiff, Math.abs(eccAnom[i] - eccAnomOld[i]));
+                    const f = eccentricAnomalyOld[i] - eccentricity * Math.sin(eccentricAnomalyOld[i]) - range[i];
+                    const fPrime = 1 - eccentricity * Math.cos(eccentricAnomalyOld[i]);
+                    eccentricAnomaly[i] = eccentricAnomalyOld[i] - f / fPrime;
+                    maxDiff = Math.max(maxDiff, Math.abs(eccentricAnomaly[i] - eccentricAnomalyOld[i]));
                 }
             }
 
             this._points = [];
             for (let i = 0; i < nPoints; i++) {
                 const theta = 2 * Math.atan2(
-                    Math.sqrt(1 + eccentricity) * Math.sin(eccAnom[i] / 2),
-                    Math.sqrt(1 - eccentricity) * Math.cos(eccAnom[i] / 2)
+                    Math.sqrt(1 + eccentricity) * Math.sin(eccentricAnomaly[i] / 2),
+                    Math.sqrt(1 - eccentricity) * Math.cos(eccentricAnomaly[i] / 2)
                 );
 
-                const r = a * (1 - eccentricity * Math.cos(eccAnom[i]));
+                const r = semiMajorAxis * (1 - eccentricity * Math.cos(eccentricAnomaly[i]));
                 const thetaAsc = theta - ascension;
 
                 const x = (Math.cos(ascension) * Math.cos(thetaAsc) -
