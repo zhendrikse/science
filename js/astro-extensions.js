@@ -1,8 +1,6 @@
-import { Group, Box3, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial,
-    Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight, BackSide, AdditiveBlending,
-    DoubleSide, Quaternion, BufferGeometry, BufferAttribute, SRGBColorSpace, ACESFilmicToneMapping,
-    MeshBasicMaterial, LinearSRGBColorSpace, NoToneMapping, FrontSide, Sprite, SpriteMaterial, CanvasTexture,
-    LineDashedMaterial, LineBasicMaterial, LineLoop, Line, PlaneGeometry, RingGeometry} from "three";
+import { Group, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial, PointsMaterial,
+    Vector3, BackSide, AdditiveBlending,    DoubleSide, Quaternion, BufferGeometry, BufferAttribute, Points,
+    MeshBasicMaterial, FrontSide, LineDashedMaterial, LineBasicMaterial, LineLoop, Line, PlaneGeometry } from "three";
 import { Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
 export class SkyDome extends Group {
@@ -238,7 +236,7 @@ export class Orbit {
 
 // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
 const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
-//const TEXTURES_PATH = "textures/";
+
 export class CelestialBody extends Group {
     constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false, resolution=32} = {}) {
         super();
