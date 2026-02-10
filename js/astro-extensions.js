@@ -502,6 +502,12 @@ export class Moon extends Satellite {
             shininess: 0
         });
     }
+
+    renderedOrbit(color) { return this._orbit.draw({
+        color: color,
+        opacity: 0.4,
+        scale: 1000 / DISTANCE_SCALE
+    }); }
 }
 
 export class EarthClouds extends Mesh {
