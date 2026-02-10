@@ -3,6 +3,14 @@ import { Group, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, S
     MeshBasicMaterial, FrontSide, LineDashedMaterial, LineBasicMaterial, LineLoop, Line, PlaneGeometry } from "three";
 import { Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
+export const EARTH_SEMI_MAJOR_AXIS = 149598261.;
+export const PLANET_SCALE = 0.25E7;  // meters → render units (radius), planet sizes are shrunk by this factor
+export const SUN_SCALE = 100 * PLANET_SCALE;
+export const AU = 1.496 * 1E11;   // astronomical unit
+export const ORBIT_SCALE  = 40;    // additional orbit compression factor for nice visual representation
+export const DISTANCE_SCALE = AU / ORBIT_SCALE;
+export const SCALE_MOON = 275 ; // scaling factor for semi major axes of some moons
+
 export class SkyDome extends Group {
     constructor({
                     skyRadius = 5000,
