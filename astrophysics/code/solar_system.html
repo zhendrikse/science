@@ -74,7 +74,7 @@
         return String(num).split('').map(c => map[c] || '').join('');
     }
 
-    let dt = 1; // dt = 1 equals to one hour per frame
+    let timeScale = 24; // 24 hours equal to one second simulation time
 
     const AU = 1.496 * 1E11;   // astronomical unit
     const EARTH_SEMI_MAJOR_AXIS = 149598261.;
@@ -117,8 +117,9 @@
     planetaryScene.add(skyDome);
 
     class Orbit {
-        constructor(meanAnomaly, eccentricity, semiMajorAxis, inclination, ascension, accuracy=1.e-2, nPoints=50000) {
-            // nPoints = number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
+        constructor(meanAnomaly, eccentricity, semiMajorAxis, inclination, ascension, accuracy=1E2, nPoints=100000) {
+            this._nPoints = nPoints; // number of orbit coordinates generated
+            this._timescale = (semiMajorAxis / EARTH_SEMI_MAJOR_AXIS) ** 1.5; // rotation period w.r.t. Earth
             const range = this._linSpace(meanAnomaly, 2 * Math.PI + meanAnomaly, nPoints);
 
             let eccentricAnomaly = range.slice();
@@ -174,7 +175,17 @@
             return result;
         }
 
-        coordinatesAt(index) { return this._points[index]; }
+
+        _indexAtTime(tHours) {
+            const periodHours = 365.25 * this._timescale * 24;
+            const phase = (tHours % periodHours) / periodHours;
+            return Math.floor(phase * this._nPoints);
+        }
+
+        coordinatesAt(tHours) {
+            return this._points[this._indexAtTime(tHours)];
+        }
+
         get count() { return this._points.length; }
 
         draw({
@@ -223,7 +234,6 @@
             this._radius = bodyData.radius;
             this._mass = bodyData.mass;
             this._tilt = bodyData.tilt;
-            this._timescale = 1;
             this._spin = bodyData.spin;
             this._scaledRadius = bodyData.radius / scale;
 
@@ -247,7 +257,7 @@
 
         _material(bumpScale, identicalBumpMap) { throw new Error("Abstract class: implement material!"); }
 
-        updateRotation(t) { this._body.rotation.y = this._spin * t; } // Spin the body along the axis with tilt
+        updateRotation(tHours) { this._body.rotation.y = this._spin * tHours; } // Spin the body along the axis with tilt
 
         enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
             this._trail = new Trail(this);
@@ -261,7 +271,6 @@
     class Planet extends CelestialBody {
         constructor(planetData, {bumpScale=0.005, identicalBumpMap=false} = {}) {
             super(planetData, PLANET_SCALE, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
-            this._timescale = (planetData.a / EARTH_SEMI_MAJOR_AXIS) ** 1.5; // rotation period w.r.t. Earth
             this._body.castShadow = true;
             this._body.receiveShadow = false;
 
@@ -284,16 +293,15 @@
             });
         }
 
-        _orbitIndex(t) { return Math.floor(t / this._timescale) % this._orbit.count; }
-        coordinatesAt(t) { return this._orbit.coordinatesAt(this._orbitIndex(t)); }
+        coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
         renderedOrbit(color) { return this._orbit.draw({
             color: color,
             opacity: 0.4,
             scale: 1000 / DISTANCE_SCALE
         }); }
 
-        update(t, dt) {
-            this.updateTrail(dt);
+        update(t) {
+            this.updateTrail();
             this.updateRotation(t);
         }
     }
@@ -321,10 +329,10 @@
         }
 
         _orbitIndex(t) { return Math.floor(t / this._timescale) % this._orbit.count; }
-        coordinatesAt(t) { return this._orbit.coordinatesAt(this._orbitIndex(t)); }
+        coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
 
-        update(t, dt) {
-            this.updateTrail(dt);
+        update(t) {
+            this.updateTrail();
             if (this._lock) {
                 const planetWorldPos = this._planet.getWorldPosition(new Vector3());
                 this.lookAt(planetWorldPos);
@@ -352,7 +360,7 @@
             return M;
         }
 
-        update(t, dt) {
+        update(t) {
             // 1. barycentric position (sun-centric)
             const baryPosition = this._planet.coordinatesAt(t).clone();
 
@@ -372,9 +380,9 @@
                 moon.position.copy(toRenderUnits(baryPosition.clone().add(moon.coordinatesAt(t))));
 
             // 6. rotations
-            this._planet.update(t, dt);
+            this._planet.update(t);
             for (const moon of this._moons)
-                moon.update(t, dt);
+                moon.update(t);
         }
     }
 
@@ -504,7 +512,7 @@
 
         update(t) {
             // Clouds rotate somewhat faster than the earth
-            this.rotation.y += .15 * t;
+            this.rotation.y += earth.spin * t * 0.98;
         }
     }
 
@@ -560,9 +568,9 @@
         get equatorialPlane() { return this._equatorialPlane; }
         get clouds() { return this._clouds; }
 
-        update(t, dt) {
-            super.update(t, dt);
-            this._clouds?.update(dt);
+        update(t) {
+            super.update(t);
+            this._clouds?.update(t);
         }
 
         _material(bumpScale, identicalBumpMap) {
@@ -784,9 +792,9 @@
             this._objectInFocus = null;
             this._focusOffset = null;
 
-            const settings = { dt: 1, equatorialPlane: false, eclipticPlane: false, earthClouds: false };
-            controls.add(settings, 'dt', 0.0, 5, 0.01)
-                .name("Time Step (dt)")
+            const settings = { timeScale: 24, equatorialPlane: false, eclipticPlane: false, earthClouds: false };
+            controls.add(settings, 'timeScale', 0, 240, 1)
+                .name("Simulated hours per second")
                 .onChange(value => dt = value);
             controls.add(settings, 'equatorialPlane')
                 .name("Equatorial plane")
@@ -1254,17 +1262,21 @@
         controls.update();
     });
 
-    let t = 0;
+    let tPhys = 0;
     const eclipseIndicator = new LunarEclipseIndicator(earth, luna, earth.equatorialPlane);
-    function animate(time) {
-        solarSystem.forEach(body => body.update(t, dt));
-        sun.update(t, dt);
+    let lastTime = performance.now() * .001;
+    function animate(now) {
+        const deltaSeconds = (now - lastTime) * .001;
+        lastTime = now;
+
+        const dtHours = deltaSeconds * timeScale;
+        tPhys += dtHours;
+        solarSystem.forEach(body => body.update(tPhys));
+        sun.update(tPhys);
         eclipseIndicator.update();
-        skyDome.update(time * .001, planetCamera);
+        skyDome.update(now * .001, planetCamera);
         planetRenderer.render(planetaryScene, planetCamera);
         controlsGui.render();
-
-        t += dt;
     }
 
 </script>
