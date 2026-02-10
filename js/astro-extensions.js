@@ -352,6 +352,12 @@ export class Satellite extends CelestialBody {
 
     coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
 
+    renderedOrbit(color) { return this._orbit.draw({
+        color: color,
+        opacity: 0.4,
+        scale: 1000 / DISTANCE_SCALE
+    }); }
+
     update(t) {
         this.updateTrail();
         if (this._lock) {
@@ -503,11 +509,6 @@ export class Moon extends Satellite {
         });
     }
 
-    renderedOrbit(color) { return this._orbit.draw({
-        color: color,
-        opacity: 0.4,
-        scale: 1000 / DISTANCE_SCALE
-    }); }
 }
 
 export class EarthClouds extends Mesh {
