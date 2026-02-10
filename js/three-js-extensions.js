@@ -787,9 +787,9 @@ export class Trail {
         this._trail = null;
     }
 
-    update(dt) {
+    update(increment=1) {
         if (!this._trail) return;
-        this._trailAccumulator += dt;
+        this._trailAccumulator += increment;
         if (this._trailAccumulator >= this._trailStep) {
             this._trail.addPoint(this._parent.getWorldPosition(new Vector3()));
             this._trailAccumulator = 0;
