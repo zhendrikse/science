@@ -11,6 +11,8 @@ export const ORBIT_SCALE  = 40;    // additional orbit compression factor for ni
 export const DISTANCE_SCALE = AU / ORBIT_SCALE;
 export const SCALE_MOON = 275 ; // scaling factor for semi major axes of some moons
 
+const toRenderUnits = (vector) => vector.clone().multiplyScalar(1000 / DISTANCE_SCALE);
+
 export class SkyDome extends Group {
     constructor({
                     skyRadius = 5000,
