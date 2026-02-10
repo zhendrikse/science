@@ -1,94 +1,9 @@
 import { Group, Box3, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial,
     Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight, PointLight, BackSide, AdditiveBlending,
     DoubleSide, Quaternion, BufferGeometry, BufferAttribute, SRGBColorSpace, ACESFilmicToneMapping,
-    MeshBasicMaterial, LinearSRGBColorSpace, NoToneMapping, FrontSide} from "three";
-
-// Port to new Three.js from https://github.com/jeromeetienne/threex.planets/blob/master/threex.planets.js
-export const PlanetRingGeometry = function (innerRadius, outerRadius, thetaSegments) {
-
-    innerRadius   = innerRadius || 0;
-    outerRadius   = outerRadius || 1;
-    thetaSegments = Math.max(3, Math.floor(thetaSegments || 8));
-
-    // number of vertices = 4 per segment
-    const vertexCount = thetaSegments * 4;
-    const positionArray = new Float32Array(vertexCount * 3);
-    const normalArray   = new Float32Array(vertexCount * 3);
-    const uvArray       = new Float32Array(vertexCount * 2);
-    const indexArray    = new Uint16Array(thetaSegments * 6);
-
-    let pPos = 0, pNorm = 0, pUV = 0, pIdx = 0;
-    let vertexIndex = 0;
-
-    for (let i = 0; i < thetaSegments; i++) {
-
-        const angleLo = (i / thetaSegments) * Math.PI * 2;
-        const angleHi = ((i + 1) / thetaSegments) * Math.PI * 2;
-
-        // calculate positions
-        const x1 = Math.cos(angleLo), y1 = Math.sin(angleLo);
-        const x2 = Math.cos(angleHi), y2 = Math.sin(angleHi);
-
-        // 4 vertices per ring segment
-        const positions = [
-            innerRadius * x1, innerRadius * y1, 0,
-            outerRadius * x1, outerRadius * y1, 0,
-            innerRadius * x2, innerRadius * y2, 0,
-            outerRadius * x2, outerRadius * y2, 0,
-        ];
-
-        // normals (all Z = +1)
-        const normals = [
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
-        ];
-
-        // UVs as in original code
-        const uvs = [
-            0, 0,
-            1, 0,
-            0, 1,
-            1, 1,
-        ];
-
-        // Fill buffers
-        for (let j = 0; j < 4; j++) {
-            positionArray[pPos++] = positions[j * 3 + 0];
-            positionArray[pPos++] = positions[j * 3 + 1];
-            positionArray[pPos++] = positions[j * 3 + 2];
-
-            normalArray[pNorm++]   = normals[j * 3 + 0];
-            normalArray[pNorm++]   = normals[j * 3 + 1];
-            normalArray[pNorm++]   = normals[j * 3 + 2];
-
-            uvArray[pUV++] = uvs[j * 2 + 0];
-            uvArray[pUV++] = uvs[j * 2 + 1];
-        }
-
-        // indices (2 triangles)
-        indexArray[pIdx++] = vertexIndex + 0;
-        indexArray[pIdx++] = vertexIndex + 1;
-        indexArray[pIdx++] = vertexIndex + 2;
-
-        indexArray[pIdx++] = vertexIndex + 2;
-        indexArray[pIdx++] = vertexIndex + 1;
-        indexArray[pIdx++] = vertexIndex + 3;
-
-        vertexIndex += 4;
-    }
-
-    // Create geometry
-    const geometry = new BufferGeometry();
-    geometry.setAttribute('position', new BufferAttribute(positionArray, 3));
-    geometry.setAttribute('normal',   new BufferAttribute(normalArray, 3));
-    geometry.setAttribute('uv',       new BufferAttribute(uvArray, 2));
-    geometry.setIndex(new BufferAttribute(indexArray, 1));
-    geometry.computeBoundingSphere();
-
-    return geometry;
-};
+    MeshBasicMaterial, LinearSRGBColorSpace, NoToneMapping, FrontSide, Sprite, SpriteMaterial, CanvasTexture,
+    LineDashedMaterial, LineBasicMaterial, LineLoop, Line, PlaneGeometry, RingGeometry} from "three";
+import { Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
 export class SkyDome extends Group {
     constructor({
@@ -215,79 +130,37 @@ export class SkyDome extends Group {
     }
 }
 
-// Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
-export const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
-
-export class CelestialBody extends Group {
-    constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false, orbitPointsCount=10000} = {}) {
-        super();
-        this._orbitPointsCount = orbitPointsCount;
-        this._name = bodyData.name;
-        this._radius = bodyData.radius;
-        this._mass = bodyData.mass;
-        this._tilt = bodyData.tilt;
-        this._timescale = 1;
-        this._spin = bodyData.spin;
-
-        this._geometry = new SphereGeometry(bodyData.radius / scale, 64, 64);
-        this._body = new Mesh(this._geometry, this._material(bumpScale, identicalBumpMap));
-        this.add(this._body);
-        this._body.castShadow = true;
-        this._body.receiveShadow = false;
-
-        this._coordinates = [];
-        this._trail = new Trail(this);
-    }
-
-    get tilt() { return this._tilt; }
-    get radius() { return this._radius; }
-    get mass() { return this._mass; }
-
-    _orbitIndex(t) { return Math.floor(t / this._timescale) % this._coordinates.length; }
-
-    _linSpace(start, stop, num) {
-        const result = [];
-        const step = (stop - start) / (num - 1);
-
-        for (let i = 0; i < num - 1; i++)
-            result.push(start + i * step);
-
-        result.push(stop); // include last point as well
-        return result;
-    }
-
-    // Newton-Raphson to calculate elliptic orbit
-    _orbit(meanAnomaly, eccentricity, a, inclination, ascension, acc=1.e-2) {
-        // nPoints = number of orbit coordinates generated (affects temporal accuracy - dt(real)=365.25*86400/n (in seconds))
-        const nPoints = this._orbitPointsCount;
+export class Orbit {
+    constructor(meanAnomaly, eccentricity, semiMajorAxis, inclination, ascension, accuracy=1E2, nPoints=10000) {
+        this._nPoints = nPoints; // number of orbit coordinates generated
+        this._timescale = (semiMajorAxis / EARTH_SEMI_MAJOR_AXIS) ** 1.5; // rotation period w.r.t. Earth
         const range = this._linSpace(meanAnomaly, 2 * Math.PI + meanAnomaly, nPoints);
 
-        let eccAnom = range.slice();
-        let eccAnomOld = new Array(nPoints);
+        let eccentricAnomaly = range.slice();
+        let eccentricAnomalyOld = new Array(nPoints);
 
         let maxDiff = Infinity;
-
-        while (maxDiff > acc) {
+        while (maxDiff > accuracy) {
             maxDiff = 0;
-            eccAnomOld = eccAnom.slice(); // copy array
+            eccentricAnomalyOld = eccentricAnomaly.slice(); // copy array
 
             // Newton–Raphson step
             for (let i = 0; i < nPoints; i++) {
-                const f = eccAnomOld[i] - eccentricity * Math.sin(eccAnomOld[i]) - range[i];
-                const fPrime = 1 - eccentricity * Math.cos(eccAnomOld[i]);
-                eccAnom[i] = eccAnomOld[i] - f / fPrime;
-                maxDiff = Math.max(maxDiff, Math.abs(eccAnom[i] - eccAnomOld[i]));
+                const f = eccentricAnomalyOld[i] - eccentricity * Math.sin(eccentricAnomalyOld[i]) - range[i];
+                const fPrime = 1 - eccentricity * Math.cos(eccentricAnomalyOld[i]);
+                eccentricAnomaly[i] = eccentricAnomalyOld[i] - f / fPrime;
+                maxDiff = Math.max(maxDiff, Math.abs(eccentricAnomaly[i] - eccentricAnomalyOld[i]));
             }
         }
 
-        const points = [];
+        this._points = [];
         for (let i = 0; i < nPoints; i++) {
             const theta = 2 * Math.atan2(
-                Math.sqrt(1 + eccentricity) * Math.sin(eccAnom[i] / 2),
-                Math.sqrt(1 - eccentricity) * Math.cos(eccAnom[i] / 2)
+                Math.sqrt(1 + eccentricity) * Math.sin(eccentricAnomaly[i] / 2),
+                Math.sqrt(1 - eccentricity) * Math.cos(eccentricAnomaly[i] / 2)
             );
 
-            const r = a * (1 - eccentricity * Math.cos(eccAnom[i]));
+            const r = semiMajorAxis * (1 - eccentricity * Math.cos(eccentricAnomaly[i]));
             const thetaAsc = theta - ascension;
 
             const x = (Math.cos(ascension) * Math.cos(thetaAsc) -
@@ -301,45 +174,119 @@ export class CelestialBody extends Group {
                 Math.cos(inclination));
 
             const y = Math.sin(theta - ascension) * Math.sin(inclination);
-
-            points.push(new Vector3(x, y, z).multiplyScalar(r));
+            this._points.push(new Vector3(x, y, z).multiplyScalar(r));
         }
-
-        return points;
     }
+
+    _linSpace(start, stop, num) {
+        const result = [];
+        const step = (stop - start) / (num - 1);
+
+        for (let i = 0; i < num - 1; i++)
+            result.push(start + i * step);
+
+        result.push(stop); // include last point as well
+        return result;
+    }
+
+
+    _indexAtTime(tHours) {
+        const periodHours = 365.25 * this._timescale * 24;
+        const phase = (tHours % periodHours) / periodHours;
+        return Math.floor(phase * this._nPoints);
+    }
+
+    coordinatesAt(tHours) {
+        return this._points[this._indexAtTime(tHours)];
+    }
+
+    draw({
+             color = 0x666666,
+             linewidth = 1,
+             opacity = 0.9,
+             closed = true,
+             scale = 1,
+             dashed = false
+         } = {}) {
+        const positions = new Float32Array(this._points.length * 3);
+
+        this._points.forEach((p, i) => {
+            positions[3 * i + 0] = p.x * scale;
+            positions[3 * i + 1] = p.y * scale;
+            positions[3 * i + 2] = p.z * scale;
+        });
+
+        const geometry = new BufferGeometry();
+        geometry.setAttribute("position", new BufferAttribute(positions, 3));
+
+        let material;
+        if (dashed)
+            material = new LineDashedMaterial({color, linewidth, dashSize: 3, gapSize: 2, transparent: true, opacity});
+        else
+            material = new LineBasicMaterial({color, linewidth, transparent: true, opacity});
+
+        const line = closed
+            ? new LineLoop(geometry, material)
+            : new Line(geometry, material);
+
+        if (dashed) line.computeLineDistances();
+
+        this._line = line;
+        return line;
+    }
+}
+
+// Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
+const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
+//const TEXTURES_PATH = "textures/";
+export class CelestialBody extends Group {
+    constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false, resolution=32} = {}) {
+        super();
+        this._name = bodyData.name;
+        this._radius = bodyData.radius;
+        this._mass = bodyData.mass;
+        this._tilt = bodyData.tilt;
+        this._spin = bodyData.spin;
+        this._scaledRadius = bodyData.radius / scale;
+
+        // Set the axis of rotation (Y-axis) equal to the tilt
+        this.quaternion.setFromAxisAngle(new Vector3(0, 0, 1), bodyData.tilt);
+
+        this._geometry = new SphereGeometry(this._scaledRadius, resolution, resolution);
+        this._body = new Mesh(this._geometry, this._material(bumpScale, identicalBumpMap));
+        this.add(this._body);
+        this._body.castShadow = true;
+        this._body.receiveShadow = false;
+        this._trail = null;
+    }
+
+    get scaledRadius() { return this._scaledRadius; }
+    get tilt() { return this._tilt; }
+    get radius() { return this._radius; }
+    get mass() { return this._mass; }
+    get axis() { new Vector3(0, 0, 1).applyQuaternion(this.quaternion).normalize(); }
+    //get name() { return this._name; }
 
     _material(bumpScale, identicalBumpMap) { throw new Error("Abstract class: implement material!"); }
 
-    updateRotation(t) {
-        // 1. tilt-quaternion (rotation of XZ plane → real axis)
-        const tiltQuaternion = new Quaternion();
-        tiltQuaternion.setFromAxisAngle(new Vector3(0, 0, 1), this._tilt);
+    updateRotation(tHours) { this._body.rotation.y = this._spin * tHours; } // Spin the body along the axis with tilt
 
-        // 2. spin-quaternion around local Y
-        const spinQuaternion = new Quaternion();
-        spinQuaternion.setFromAxisAngle(new Vector3(0, 1, 0), this._spin * t);
-
-        // 3. combine tilt + spin
-        this.quaternion.copy(tiltQuaternion).multiply(spinQuaternion);
+    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+        this._trail = new Trail(this);
+        this._trail.enable({maxPoints, color, lineWidth, trailStep });
     }
 
-    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1 } = {}) {
-        this._trail.enable({maxPoints, color, lineWidth});
-    }
-
-    updateTrail(dt) { this._trail.update(dt); }
-    disposeTrail() { this._trail.dispose(); }
+    updateTrail(dt) { this._trail?.update(dt); }
+    disposeTrail() { this._trail?.dispose(); }
 }
 
 export class Planet extends CelestialBody {
     constructor(planetData, {bumpScale=0.005, identicalBumpMap=false} = {}) {
         super(planetData, PLANET_SCALE, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
-        this._timescale = (planetData.a / EARTH_SEMI_MAJOR_AXIS) ** 1.5; // rotation period w.r.t. Earth
         this._body.castShadow = true;
         this._body.receiveShadow = false;
 
-        // create orbit coordinates list for the planet
-        this._coordinates = this._orbit(
+        this._orbit = new Orbit(
             planetData.mean_anomaly,
             planetData.e,
             planetData.a,
@@ -358,15 +305,22 @@ export class Planet extends CelestialBody {
         });
     }
 
-    update(t, dt) {
-        this.updateTrail(dt);
+    coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
+    renderedOrbit(color) { return this._orbit.draw({
+        color: color,
+        opacity: 0.4,
+        scale: 1000 / DISTANCE_SCALE
+    }); }
+
+    update(t) {
+        this.updateTrail();
         this.updateRotation(t);
     }
 }
 
 export class Satellite extends CelestialBody {
     constructor(moonData, planet, scale) {
-        super(moonData, scale);
+        super(moonData, scale, {resolution: 32});
         this._planet = planet;
         this._angle = 0;
         this._a = moonData.a; // semi-major axis
@@ -377,33 +331,26 @@ export class Satellite extends CelestialBody {
         this._body.castShadow = false;
         this._body.receiveShadow = true;
 
-        this._coordinates = this._orbit(
+        this._orbit = new Orbit(
             moonData.mean_anomaly,
             this._e,
             this._a,
             planet.tilt +
             moonData.inclination,
-            moonData.right_ascension);  // create orbit coordinates list for the moon
-
-        this.#centerMoonsOrbitAroundOrigin();
+            moonData.right_ascension);
     }
 
-    #centerMoonsOrbitAroundOrigin() {
-        const center = new Vector3();
-        this._coordinates.forEach(position => center.add(position));
-        center.divideScalar(this._coordinates.length);
-        this._coordinates.forEach(position => position.sub(center));
-    }
+    coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
 
-    update(t, dt) {
-        this.updateTrail(dt);
+    update(t) {
+        this.updateTrail();
         if (this._lock) {
             const planetWorldPos = this._planet.getWorldPosition(new Vector3());
             this.lookAt(planetWorldPos);
             // Correct fixed phase fase-offset if needed (texture-orientation)
-            this.rotateY(Math.PI); // of rotateZ, afhankelijk van je texture
+            this.rotateY(Math.PI); // of rotateZ, dependent on texture
         } else
-            this.updateRotation(t); // gewone spin
+            this.updateRotation(t);
     }
 }
 
@@ -415,8 +362,6 @@ export class PlanetMoonSystem extends Group {
 
         this.add(planet);
         moons.forEach(moon => this.add(moon));
-
-        this._coordinates = planet._coordinates;
     }
 
     get mass() {
@@ -426,39 +371,35 @@ export class PlanetMoonSystem extends Group {
         return M;
     }
 
-    update(t, dt) {
+    update(t) {
         // 1. barycentric position (sun-centric)
-        const baryPosition = this._coordinates[this._planet._orbitIndex(t)].clone();
+        const baryPosition = this._planet.coordinatesAt(t).clone();
 
         // 2. total mass
         const M = this.mass;
 
         // 3. barycentric correction
         const correction = new Vector3();
-        for (const moon of this._moons) {
-            const r = moon._coordinates[moon._orbitIndex(t)];
-            correction.add(r.clone().multiplyScalar(moon.mass / M));
-        }
+        for (const moon of this._moons)
+            correction.add(moon.coordinatesAt(t).clone().multiplyScalar(moon.mass / M));
 
         // 4. planet position
         this._planet.position.copy(toRenderUnits(baryPosition.clone().sub(correction)));
 
         // 5. moon positions
-        for (const moon of this._moons) {
-            const r = moon._coordinates[moon._orbitIndex(t)];
-            moon.position.copy(toRenderUnits(baryPosition.clone().add(r)));
-        }
+        for (const moon of this._moons)
+            moon.position.copy(toRenderUnits(baryPosition.clone().add(moon.coordinatesAt(t))));
 
         // 6. rotations
-        this._planet.update(t, dt);
+        this._planet.update(t);
         for (const moon of this._moons)
-            moon.update(t, dt);
+            moon.update(t);
     }
 }
 
 export class Sun extends CelestialBody {
     constructor(bodyData) {
-        super(bodyData, SUN_SCALE);
+        super(bodyData, SUN_SCALE, {resolution: 64});
 
         this._body.castShadow = false;
         this._body.receiveShadow = false;
@@ -481,11 +422,14 @@ export class Sun extends CelestialBody {
     }
 
     _material(bumpScale, identicalBumpMap) {
-        return new MeshBasicMaterial({map: textureLoader.load(`${TEXTURES_PATH}` + "sunmap.jpg")})
+        return new MeshBasicMaterial({
+            map: textureLoader.load(`${TEXTURES_PATH}` + "sunmap.jpg"),
+            transparent: false
+        })
     }
 
-    update(t, dt) {
-        this._body.rotation.y += this._spin * dt * .1; // make it spin even slower for additional realism
+    update(t) {
+        this._body.rotation.y = this._spin * t * .1; // make it spin even slower for additional realism
         const s =
             1.22 +
             0.035 * Math.sin(t * 0.02) +
@@ -551,9 +495,9 @@ export class Moon extends Satellite {
 }
 
 export class EarthClouds extends Mesh {
-    constructor(radius) {
+    constructor(radius, spin) {
 
-        const geometry = new SphereGeometry(radius * 1.01, 64, 64);
+        const geometry = new SphereGeometry(radius * 1.01, 32, 32);
 
         const material = new MeshPhongMaterial({
             map: textureLoader.load(`${TEXTURES_PATH}earthcloudmap.jpg`),
@@ -573,37 +517,71 @@ export class EarthClouds extends Mesh {
 
         super(geometry, material);
 
+        this._spin = spin;
         this.castShadow = false;
         this.receiveShadow = false;
     }
 
     update(t) {
-        // Clouds rotate somewhat faster than the earth
-        this.rotation.y += .15 * t;
+        this.rotation.y = this._spin * t * 0.75;
+    }
+}
+
+export class EarthEquatorialPlane extends Mesh {
+    constructor(earth, {
+        sizeFactor = 6,
+        opacity = 0.15,
+        color = 0x00ffff
+    } = {}) {
+
+        const geometry = new PlaneGeometry(earth.scaledRadius * sizeFactor, earth.scaledRadius * sizeFactor);
+        const material = new MeshBasicMaterial({
+            color,
+            transparent: true,
+            opacity,
+            side: DoubleSide,
+            depthWrite: false
+        });
+        super(geometry, material);
+
+        this.rotateX(Math.PI / 2);
+        const tiltQuat = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), earth.tilt);
+        this.applyQuaternion(tiltQuat);
     }
 }
 
 export class Earth extends Planet {
-    constructor(planetData) {
+    constructor(planetData={
+        "name": "earth",
+        "a": EARTH_SEMI_MAJOR_AXIS,
+        "e": 0.01671123,
+        "inclination": 0.,
+        "right_ascension": 0.,
+        "mean_anomaly": 6.2398515744,
+        "radius": 6371010, // meters
+        "mass": 5.97219e+24,
+        "spin": 2 * Math.PI / 24.,
+        "tilt": 23 * Math.PI / 180
+    }) {
         super(planetData);
-        this._name = planetData.name;
         this._timescale = 1; // rotation period w.r.t. Earth
-        this._clouds = new EarthClouds(this._geometry.parameters.radius);
+        this._clouds = new EarthClouds(this._geometry.parameters.radius, this._spin);
         this.add(this._clouds);
-
-        // create orbit coordinates list for the planet
-        this._coordinates = this._orbit(
-            planetData.mean_anomaly,
-            planetData.e,
-            planetData.a,
-            planetData.inclination,
-            planetData.right_ascension
-        );
+        this._equatorialPlane = new EarthEquatorialPlane(this, {
+            innerRadiusFactor: 1.3,
+            outerRadiusFactor: 3.0,
+            opacity: 0.12
+        });
+        this._equatorialPlane.visible = false;
+        this.add(this._equatorialPlane);
     }
 
-    update(t, dt) {
-        super.update(t, dt);
-        this._clouds.update(dt);
+    get equatorialPlane() { return this._equatorialPlane; }
+    get clouds() { return this._clouds; }
+
+    update(t) {
+        super.update(t);
+        this._clouds?.update(t);
     }
 
     _material(bumpScale, identicalBumpMap) {
@@ -620,8 +598,105 @@ export class Earth extends Planet {
     }
 }
 
+// Port to new Three.js from https://github.com/jeromeetienne/threex.planets/blob/master/threex.planets.js
+const PlanetRingGeometry = function (innerRadius, outerRadius, thetaSegments) {
+
+    innerRadius   = innerRadius || 0;
+    outerRadius   = outerRadius || 1;
+    thetaSegments = Math.max(3, Math.floor(thetaSegments || 8));
+
+    // number of vertices = 4 per segment
+    const vertexCount = thetaSegments * 4;
+    const positionArray = new Float32Array(vertexCount * 3);
+    const normalArray   = new Float32Array(vertexCount * 3);
+    const uvArray       = new Float32Array(vertexCount * 2);
+    const indexArray    = new Uint16Array(thetaSegments * 6);
+
+    let pPos = 0, pNorm = 0, pUV = 0, pIdx = 0;
+    let vertexIndex = 0;
+
+    for (let i = 0; i < thetaSegments; i++) {
+
+        const angleLo = (i / thetaSegments) * Math.PI * 2;
+        const angleHi = ((i + 1) / thetaSegments) * Math.PI * 2;
+
+        // calculate positions
+        const x1 = Math.cos(angleLo), y1 = Math.sin(angleLo);
+        const x2 = Math.cos(angleHi), y2 = Math.sin(angleHi);
+
+        // 4 vertices per ring segment
+        const positions = [
+            innerRadius * x1, innerRadius * y1, 0,
+            outerRadius * x1, outerRadius * y1, 0,
+            innerRadius * x2, innerRadius * y2, 0,
+            outerRadius * x2, outerRadius * y2, 0,
+        ];
+
+        // normals (all Z = +1)
+        const normals = [
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+        ];
+
+        // UVs as in original code
+        const uvs = [
+            0, 0,
+            1, 0,
+            0, 1,
+            1, 1,
+        ];
+
+        // Fill buffers
+        for (let j = 0; j < 4; j++) {
+            positionArray[pPos++] = positions[j * 3 + 0];
+            positionArray[pPos++] = positions[j * 3 + 1];
+            positionArray[pPos++] = positions[j * 3 + 2];
+
+            normalArray[pNorm++]   = normals[j * 3 + 0];
+            normalArray[pNorm++]   = normals[j * 3 + 1];
+            normalArray[pNorm++]   = normals[j * 3 + 2];
+
+            uvArray[pUV++] = uvs[j * 2 + 0];
+            uvArray[pUV++] = uvs[j * 2 + 1];
+        }
+
+        // indices (2 triangles)
+        indexArray[pIdx++] = vertexIndex + 0;
+        indexArray[pIdx++] = vertexIndex + 1;
+        indexArray[pIdx++] = vertexIndex + 2;
+
+        indexArray[pIdx++] = vertexIndex + 2;
+        indexArray[pIdx++] = vertexIndex + 1;
+        indexArray[pIdx++] = vertexIndex + 3;
+
+        vertexIndex += 4;
+    }
+
+    // Create geometry
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new BufferAttribute(positionArray, 3));
+    geometry.setAttribute('normal',   new BufferAttribute(normalArray, 3));
+    geometry.setAttribute('uv',       new BufferAttribute(uvArray, 2));
+    geometry.setIndex(new BufferAttribute(indexArray, 1));
+    geometry.computeBoundingSphere();
+
+    return geometry;
+};
+
 export class Saturn extends Planet {
-    constructor(planetData) {
+    constructor(planetData={
+        "name": "saturn",
+        'a': 1433449370.,
+        'e': 0.055723219,
+        'inclination': 2.49 * Math.PI / 180.,
+        'right_ascension': 1.98,
+        'mean_anomaly': 5.5911055356,
+        'radius': 60000. * 1e3,
+        "mass": 5.68319e+26,
+        'tilt': 27 * Math.PI / 180.,
+        'spin': 2 * Math.PI / 10.66 }) {
         super(planetData, {bumpScale: 0.05, identicalBumpMap: true});
 
         const innerRingRadius = 1.11 * planetData.radius;
@@ -650,7 +725,17 @@ export class Saturn extends Planet {
 }
 
 export class Uranus extends Planet {
-    constructor(planetData) {
+    constructor(planetData={
+        "name": "uranus",
+        'a': 2876679082.,
+        'e': 0.044405586,
+        'inclination': 0.77 * Math.PI / 180.,
+        'right_ascension': 1.2908891856,
+        'mean_anomaly': 2.4950479462,
+        'radius': 25600. * 1E3,
+        "mass": 8.68103E25,
+        'tilt': 98 * Math.PI / 180.,
+        'spin': -2 * Math.PI / 17.24}) {
         super(planetData, {identicalBumpMap: true, bumpScale: 0.05});
 
         const inner = 1.5 * planetData.radius / PLANET_SCALE;
@@ -663,7 +748,7 @@ export class Uranus extends Planet {
             map: texture,
             side: DoubleSide,
             transparent: true,
-            opacity: 0.5,          // subtle
+            opacity: 0.2,          // subtle
             depthWrite: false       // prevent z-fighting
         });
 
