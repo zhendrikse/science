@@ -41,7 +41,7 @@
 <div class="guiContainer" id="solarSystemGui"></div>
 
 <script type="module">
-    import { Group, SphereGeometry, Mesh, TextureLoader, Scene, PerspectiveCamera, Vector3, WebGLRenderer,
+    import { Group, SphereGeometry, Mesh, Scene, PerspectiveCamera, Vector3, WebGLRenderer,
         AmbientLight, PointLight, DoubleSide, SRGBColorSpace, ACESFilmicToneMapping,
         MeshBasicMaterial, Sprite, SpriteMaterial, CanvasTexture, RingGeometry} from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -54,8 +54,6 @@
     planetsCanvas.focus();
     console.clear();
 
-    const textureLoader = new TextureLoader();
-    textureLoader.setCrossOrigin("anonymous");
     const capitalizeFirstLetter = (string) => String(string).charAt(0).toUpperCase() + String(string).slice(1);
     const toSuperscript = (num) => {
         const map = {

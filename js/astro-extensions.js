@@ -245,6 +245,8 @@ export class Orbit {
 // Abstract base class for celestial bodies, hence should _not_ be instantiated directly!
 const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/code/textures/";
 
+const textureLoader = new TextureLoader();
+textureLoader.setCrossOrigin("anonymous");
 export class CelestialBody extends Group {
     constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false, resolution=32} = {}) {
         super();
