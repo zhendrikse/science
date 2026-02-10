@@ -187,8 +187,6 @@
             return this._points[this._indexAtTime(tHours)];
         }
 
-        get count() { return this._points.length; }
-
         draw({
                  color = 0x666666,
                  linewidth = 1,
@@ -329,7 +327,6 @@
                 moonData.right_ascension);
         }
 
-        _orbitIndex(t) { return Math.floor(t / this._timescale) % this._orbit.count; }
         coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
 
         update(t) {
