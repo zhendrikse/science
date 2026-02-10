@@ -101,6 +101,7 @@
     planetRenderer.toneMapping = ACESFilmicToneMapping;
     planetRenderer.toneMappingExposure = 1.5;
     planetRenderer.outputColorSpace = SRGBColorSpace;
+    planetRenderer.shadowMap.enabled = true;
 
     // Resizing for mobile devices
     ThreeJsUtils.resizeRendererToCanvas(planetRenderer, planetCamera);
