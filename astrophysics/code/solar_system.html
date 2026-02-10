@@ -308,7 +308,7 @@
 
     class Satellite extends CelestialBody {
         constructor(moonData, planet, scale) {
-            super(moonData, scale, {resolution: 16});
+            super(moonData, scale, {resolution: 32});
             this._planet = planet;
             this._angle = 0;
             this._a = moonData.a; // semi-major axis
