@@ -393,7 +393,7 @@
         display.fillStyle = game.cell_at(x, y).is_alive() ? '#00ff00' : '#1a1a1a';
         display.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
     }
-    
+
     function drawGrid(context) {
         if (cellSize < 4) return; // Do not draw lattice when cell size is too small
 
@@ -401,25 +401,25 @@
         context.strokeStyle = "rgba(255, 255, 255, 0.25)"; // subtle lines
         context.lineWidth = 1;
 
-        const width  = canvas.clientWidth;
-        const height = canvas.clientHeight;
-
-        for (let x = 0; x <= width; x += cellSize) { // vertical lines
+        for (let x = 0; x <= dimension_x; x++) {  // vertical lines
+            const px = x * cellSize + 0.5;
             context.beginPath();
-            context.moveTo(x + 0.5, 0);
-            context.lineTo(x + 0.5, height);
+            context.moveTo(px, 0);
+            context.lineTo(px, dimension_y * cellSize);
             context.stroke();
         }
 
-        for (let y = 0; y <= height; y += cellSize) { // horizontal lines
+        for (let y = 0; y <= dimension_y; y++) { // horizontal lines
+            const py = y * cellSize + 0.5;
             context.beginPath();
-            context.moveTo(0, y + 0.5);
-            context.lineTo(width, y + 0.5);
+            context.moveTo(0, py);
+            context.lineTo(dimension_x * cellSize, py);
             context.stroke();
         }
 
         context.restore();
     }
+
 
     function render_game(game) {
         for (let cellX = 0; cellX < dimension_x; cellX++)
