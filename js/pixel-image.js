@@ -17,6 +17,7 @@ export class Pixel {
         this.x = x;
         this.y = y;
         this.color = color;
+        Object.freeze(this);
     }
 }
 
@@ -39,20 +40,23 @@ export class PixelImage {
         return imageData;
     }
 
+    #imageIndexFrom(x, y) { return  y * (this.width * 4) + x * 4; }
+
     #setPixelColor(imageData, pixel) {
-        let coordinate = pixel.y * (this.width * 4) + pixel.x * 4;
+        let index = this.#imageIndexFrom(pixel.x, pixel.y);
 
         if (pixel.color == null) { // 👈 Intentional use of ==, not ===
-            imageData[coordinate + 3] = 0; // completely transparant
+            imageData[index + 3] = 0; // completely transparant
             return;
         }
 
-        imageData[coordinate++] = pixel.color[0] * 255;
-        imageData[coordinate++] = pixel.color[1] * 255;
-        imageData[coordinate++] = pixel.color[2] * 255;
-        imageData[coordinate++] = 255;
+        imageData[index++] = pixel.color[0] * 255;
+        imageData[index++] = pixel.color[1] * 255;
+        imageData[index++] = pixel.color[2] * 255;
+        imageData[index++] = 255;
     }
 
+    getPixelColor(x, y) { return this.colours[x][y]; }
 
     setColour = (pixel) => {
         if (pixel.x < 0 || pixel.y < 0 || pixel.x >= this.dimX() || pixel.y >= this.dimY()) return;
