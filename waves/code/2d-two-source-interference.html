@@ -1,0 +1,78 @@
+<canvas class="applicationCanvas" id="2dInterferenceCanvas"></canvas><br/>
+
+<script>
+
+    var theCanvas = document.getElementById("2dInterferenceCanvas");
+    var theContext = theCanvas.getContext("2d");
+    var theWidth = theCanvas.width;     // storing these in ordinary variables seems to improve performance
+    var theHeight = theCanvas.height;
+    var sepSlider = document.getElementById("sepSlider");
+    var pauseButton = document.getElementById("pauseButton");
+
+    var image = theContext.createImageData(theCanvas.width, theCanvas.height);
+
+    /* image.data is now a big one-dimensional array of pixel data, with each pixel represented
+       by four successive unsigned byte integers (0 to 255), to represent r, g, b, and a values.
+       The ordering of the pixels begins at the top-left and proceeds horizontally across the
+       top row, then vertically down to successive rows.  This ordering is reflected in the
+       computation of "index" in the drawImage function below. */
+
+    for (var i=0; i<image.data.length; i+=4) {
+        image.data[i+3] = 255;      // set all alpha values to "opaque"
+    }
+
+    var k = 2 * Math.PI / (theCanvas.width/8);      // angular wavenumber
+    var omega = 2 * Math.PI / 15;                   // angular frequency
+    var t = 0;                                      // time in arbitrary units
+    var running = true;
+
+    timeStep();
+
+    function timeStep() {
+        t += 1;
+        drawImage();
+        if (running) window.setTimeout(timeStep, 1000/40);
+    }
+
+    function drawImage() {
+        var tPhase = omega * t;
+        var sourceOffset = Number(sepSlider.value) * theWidth / 4;
+        var xMid = theWidth / 2;
+        var yMid = theHeight / 2;
+        for (var y=0; y<theHeight; y++) {               // loop over rows, top to bottom
+            for (var x=0; x<theWidth; x++) {            // loop over pixels in row, left to right
+                var dx = x - (xMid - sourceOffset);
+                var dy = y - yMid;
+                var r = Math.sqrt(dx*dx + dy*dy);       // distance from left source
+                var wave1 = Math.sin(k*r - tPhase);     // local amplitude of first wave
+                dx = x - (xMid + sourceOffset);
+                r = Math.sqrt(dx*dx + dy*dy);           // distance from right source
+                var wave2 = Math.sin(k*r - tPhase);     // local amplitude of second wave
+                var waveTotal = (wave1 + wave2) / 2;    // value to plot (will be between -1 and 1)
+                var index = (x + y*theWidth) * 4;       // index into image data array
+                if (waveTotal > 0) {
+                    image.data[index] = 0;      // no red
+                    image.data[index+1] = Math.round(waveTotal * 255);  // green
+                    image.data[index+2] = 0;    // no blue
+                } else {
+                    image.data[index] = Math.round(-waveTotal * 127);   // red
+                    image.data[index+1] = 0;    // no green
+                    image.data[index+2] = 2 * image.data[index];        // blue = 2*red, for purple
+                }
+
+            }
+        }
+        theContext.putImageData(image, 0, 0);   // blast the image to the screen
+    }
+
+    function startStop() {
+        running = !running;
+        if (running) {
+            pauseButton.value = "Pause";
+            timeStep();
+        } else {
+            pauseButton.value = "Resume";
+        }
+    }
+
+</script>

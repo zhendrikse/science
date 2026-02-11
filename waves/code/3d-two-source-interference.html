@@ -7,9 +7,8 @@
     }
 </script>
 
-<div class="equationDiv" id="surface-equation"></div>
-<div class="canvasWrapper" id="complexPlotContainer">
-    <canvas class="applicationCanvas" id="complexPlotCanvas"></canvas><br/>
+<div class="canvasWrapper" id="3dInterferenceWrapper">
+    <canvas class="applicationCanvas" id="3dInterferenceCanvas"></canvas><br/>
 </div>
 <div id="gui-container"></div>
 
@@ -22,8 +21,8 @@
         HeightColorMapper, SurfaceSpecification, DefaultSurfaceDefinition, Surface}
         from 'https://www.hendrikse.name/science/js/3d-surface-components.js';
 
-    const canvasContainer = document.getElementById("complexPlotContainer");
-    const canvas = document.getElementById("complexPlotCanvas");
+    const canvasContainer = document.getElementById("3dInterferenceWrapper");
+    const canvas = document.getElementById("3dInterferenceCanvas");
 
     const scene = new Scene();
     const worldGroup = new Group();
