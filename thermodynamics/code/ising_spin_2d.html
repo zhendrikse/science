@@ -1,4 +1,4 @@
-<div id="canvas-wrapper" class="canvasWrapper2D">
+<div id="isingSpingCanvasWrapper" class="canvasWrapper2D">
     <canvas id="2dIsingCanvas" class="applicationCanvas2D"></canvas>
 </div>
 
@@ -12,9 +12,10 @@
 </div>
 
 <script type="module">
-    const size = 100;                             // lattice dimension in each direction (must divide canvas size)
     const canvas = document.getElementById('2dIsingCanvas');
-    const squareWidth = canvas.width / size;      // width of each lattice site in pixels
+    const wrapper = document.getElementById("isingSpingCanvasWrapper");
+    const size = wrapper.clientWidth;
+    const squareWidth = 2;
     let stepsPerFrame = 10000;
     let running = false;                        // will be true when running
     const tempSlider  = document.getElementById('tempSlider');
@@ -29,8 +30,6 @@
     startButton.addEventListener("click", startStop);
 
     function resizeCanvas() {
-        const wrapper = document.getElementById("canvas-wrapper");
-        const size = wrapper.clientWidth;
         const dpr = window.devicePixelRatio || 1;
 
         canvas.width  = Math.floor(size * dpr);
@@ -67,12 +66,6 @@
         }
     }
 
-    // Simulate function executes a bunch of steps and then schedules another call to itself:
-    function simulate() {
-        if (running) iterate();
-        window.setTimeout(simulate, 1);     // schedule next animation frame for 1 ms later
-    }
-
     // Given a lattice site, compute energy change from hypothetical flip;
     function deltaU(i, j) {
         let leftS, rightS, topS, bottomS;  // values of neighboring spins
@@ -93,8 +86,27 @@
     function startStop() {
         running = !running;
         startButton.textContent = running ? " Pause " : "Resume";
+
+        if (running) {
+            lastTime = performance.now();
+            requestAnimationFrame(animate);
+        }
     }
 
-    simulate();
+    let lastTime = 0;
+    const updatesPerSecond = 60;
+    function animate(now) {
+        if (!running) return;
+
+        const dt = (now - lastTime) / 1000;   // seconds
+        lastTime = now;
+
+        const batches = dt * updatesPerSecond; // How many Monte Carlo batches this frame?
+
+        for (let i = 0; i < batches; i++)
+            iterate();
+
+        requestAnimationFrame(animate);
+    }
 
 </script>
