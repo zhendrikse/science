@@ -36,11 +36,11 @@
         const size = wrapper.clientWidth;
         const dpr = window.devicePixelRatio || 1;
 
-        canvas.width  = Math.floor(size * dpr);
-        canvas.height = Math.floor(size * dpr);
+        theCanvas.width  = Math.floor(size * dpr);
+        theCanvas.height = Math.floor(size * dpr);
 
-        canvas.style.width  = size + "px";
-        canvas.style.height = size + "px";
+        theCanvas.style.width  = size + "px";
+        theCanvas.style.height = size + "px";
     }
 
     function updateParameters(t) {
