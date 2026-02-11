@@ -14,8 +14,8 @@
 <script type="module">
     const canvas = document.getElementById('2dIsingCanvas');
     const wrapper = document.getElementById("isingSpingCanvasWrapper");
-    const latticeSize = 200;   // physics
-    const squareWidth = 2;     // rendering
+    let latticeSize = 200;
+    const squareWidth = 2;
     let stepsPerFrame = 10000;
     let running = false;
     const tempSlider  = document.getElementById('tempSlider');
@@ -29,7 +29,7 @@
     const startButton = document.getElementById("pauseButton");
     startButton.addEventListener("click", startStop);
 
-    const colorAt = (x, y) => s[x][y] === 1 ? '#8000ff' : '#1a1a1a';
+    const colorAt = (s, x, y) => s[x][y] === 1 ? '#8000ff' : '#1a1a1a';
 
     function resizeCanvas() {
         const dpr = window.devicePixelRatio || 1;
@@ -42,38 +42,41 @@
         canvas.height = Math.floor(wrapperSize * dpr);
 
         display.setTransform(dpr, 0, 0, dpr, 0, 0);
+        latticeSize = wrapperSize;
     }
 
     window.addEventListener("resize", () => {
         resizeCanvas();
     });
-    resizeCanvas();
 
     // Create the 2D array of dipoles, initially random (1 for up, -1 for down):
-    const s = new Array(latticeSize);
-    for (let i = 0; i < latticeSize; i++) {
-        s[i] = new Array(latticeSize);             // a 2D array is just an array of arrays
-        for (let j = 0; j < latticeSize; j++) {
-            if (Math.random() < 0.5) s[i][j] = 1; else s[i][j] = -1;
-            drawSquareAt(i, j, colorAt(i, j));
+    function createDipoles() {
+        const s = new Array(latticeSize);
+        for (let i = 0; i < latticeSize; i++) {
+            s[i] = new Array(latticeSize);             // a 2D array is just an array of arrays
+            for (let j = 0; j < latticeSize; j++) {
+                if (Math.random() < 0.5) s[i][j] = 1; else s[i][j] = -1;
+                drawSquareAt(i, j, colorAt(s, i, j));
+            }
         }
+        return s;
     }
 
-    function iterate() {
+    function iterate(s) {
         const T = Number(tempSlider.value);
         for (let step=0; step<stepsPerFrame; step++) {
             const i = Math.floor(Math.random() * latticeSize);         // choose a random site
             const j = Math.floor(Math.random() * latticeSize);
-            const eDiff = deltaU(i, j);
+            const eDiff = deltaU(s, i, j);
             if ((eDiff <=0) || (Math.random() < Math.exp(-eDiff/T))) {  // Metropolis algorithm
                 s[i][j] *= -1;
-                drawSquareAt(i, j, colorAt(i, j));
+                drawSquareAt(i, j, colorAt(s, i, j));
             }
         }
     }
 
     // Given a lattice site, compute energy change from hypothetical flip;
-    function deltaU(i, j) {
+    function deltaU(s, i, j) {
         let leftS, rightS, topS, bottomS;  // values of neighboring spins
         if (i === 0) leftS = s[latticeSize - 1][j];   else leftS = s[i-1][j];
         if (i === latticeSize - 1) rightS = s[0][j];  else rightS = s[i+1][j];
@@ -97,6 +100,8 @@
         }
     }
 
+    resizeCanvas();
+    const lattice = createDipoles();
     let lastTime = 0;
     const updatesPerSecond = 60;
     function animate(now) {
@@ -108,7 +113,7 @@
         const batches = dt * updatesPerSecond; // How many Monte Carlo batches this frame?
 
         for (let i = 0; i < batches; i++)
-            iterate();
+            iterate(lattice);
 
         requestAnimationFrame(animate);
     }
