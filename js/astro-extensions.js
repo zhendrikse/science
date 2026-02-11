@@ -139,9 +139,9 @@ export class SkyDome extends Group {
 }
 
 export class Orbit {
-    constructor(meanAnomaly, eccentricity, semiMajorAxis, inclination, ascension, accuracy=1E2, nPoints=10000) {
+    constructor(timescale, meanAnomaly, eccentricity, semiMajorAxis, inclination, ascension, accuracy=1E2, nPoints=10000) {
         this._nPoints = nPoints; // number of orbit coordinates generated
-        this._timescale = (semiMajorAxis / EARTH_SEMI_MAJOR_AXIS) ** 1.5; // rotation period w.r.t. Earth
+        this._timescale = timescale;
         const range = this._linSpace(meanAnomaly, 2 * Math.PI + meanAnomaly, nPoints);
 
         let eccentricAnomaly = range.slice();
@@ -297,6 +297,7 @@ export class Planet extends CelestialBody {
         this._body.receiveShadow = false;
 
         this._orbit = new Orbit(
+            (planetData.a / EARTH_SEMI_MAJOR_AXIS) ** 1.5, // rotation period w.r.t. Earth
             planetData.mean_anomaly,
             planetData.e,
             planetData.a,
@@ -336,12 +337,12 @@ export class Satellite extends CelestialBody {
         this._a = moonData.a; // semi-major axis
         this._e = moonData.e;
 
-        this._timescale = moonData.period / 365.25;  // rotation period w.r.t Earth
         this._lock = moonData.tidal_lock;
         this._body.castShadow = false;
         this._body.receiveShadow = true;
 
         this._orbit = new Orbit(
+            moonData.period / 365.25,  // rotation period w.r.t Earth
             moonData.mean_anomaly,
             this._e,
             this._a,
