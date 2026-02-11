@@ -1,8 +1,16 @@
 <canvas class="applicationCanvas2D" id="2dInterferenceCanvas" style="aspect-ratio: 19/12"></canvas><br/>
 <div style="text-align:center;">
-    <label>Separation:
+    <label>Distance:
     <input type="range" id="separationSlider" min="0" max="1" step="0.01" value="0.5" />
-    </label>&nbsp;&nbsp;&nbsp;
+    </label><br><br>
+
+    <label>k = <output id="kReadout"></output>
+    <input type="range" id="kSlider" min="0.01" max="0.3" step="0.005"/>
+    </label><br><br>
+
+    <label>ω = <output id="omegaReadout"></output>
+    <input type="range" id="omegaSlider" min="0" max="10" step=".1"/>
+    </label><br><br>
     <button id="pauseButton">Start</button>
 </div>
 
@@ -15,8 +23,10 @@
     const theHeight = theCanvas.height;
     const separationSlider = document.getElementById("separationSlider");
     const pauseButton = document.getElementById("pauseButton");
-    pauseButton.addEventListener("click", startStop);
-    separationSlider.addEventListener("input", (t) => updateImage(t));
+    const kSlider = document.getElementById("kSlider");
+    const omegaSlider = document.getElementById("omegaSlider");
+    const kReadout = document.getElementById("kReadout");
+    const omegaReadout = document.getElementById("omegaReadout");
 
     function resizeCanvas() {
         const wrapper = document.getElementById("canvas-wrapper");
@@ -30,23 +40,36 @@
         canvas.style.height = size + "px";
     }
 
+    function updateParameters(t) {
+        k = Number(kSlider.value);
+        omega = Number(omegaSlider.value);
+
+        kReadout.textContent = k.toFixed(3);
+        omegaReadout.textContent = omega.toFixed(2);
+
+        updateImage(t);
+        image.render(display);
+    }
+
+    // Event listeners
+    pauseButton.addEventListener("click", startStop);
+    separationSlider.addEventListener("input", () => {
+        updateImage(t);
+        image.render(display);
+    });
+    kSlider.addEventListener("input", updateParameters);
+    omegaSlider.addEventListener("input", updateParameters);
     window.addEventListener("resize", () => {
         resizeCanvas();
     });
 
     const image = new PixelImage(display.canvas.width, display.canvas.height, 1, [0, 0, 1]);
-    const k = 2 * Math.PI / (theCanvas.width/8); // angular wavenumber
-    const omega = 2 * Math.PI / 15;              // angular frequency
+    let k = 2 * Math.PI / (theCanvas.width/8); // angular wavenumber
+    let omega = Math.PI                        // angular frequency
+    kSlider.value = k;
+    omegaSlider.value = omega;
+    updateParameters(0);
 
-    let t = 0;
-    let running = false;
-    function timeStep() {
-        t += 1;
-        updateImage(t);
-        image.render(display);
-        if (running) window.setTimeout(timeStep, 1000/40);
-    }
-    timeStep();
 
     function updateImage(t) {
         const tPhase = omega * t;
@@ -75,8 +98,25 @@
 
     function startStop() {
         running = !running;
-        if (running) timeStep();
         pauseButton.textContent = running ? " Pause " : "Resume";
+
+        if (running)
+            requestAnimationFrame(animate);
     }
 
+    let t = 0;
+    let running = false;
+    function animate(now) {
+        if (!running) return;
+
+        t = now / 1000; // in seconds
+        updateImage(t);
+        image.render(display);
+
+        requestAnimationFrame(animate);
+    }
+
+    // Initial render (without animation)
+    updateImage(t);
+    image.render(display);
 </script>
