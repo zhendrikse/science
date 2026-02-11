@@ -59,8 +59,6 @@
 </table>
 
 <script type="module">
-    import { Pixel, PixelImage, Colors } from 'https://www.hendrikse.name/science/js/pixel-image.js';
-
     const ACORN = [
         [1,0], [3,1], [0,2], [1,2], [4,2], [5,2], [6,2]
     ];
@@ -186,7 +184,6 @@
 
     window.addEventListener("resize", () => {
         resizeCanvas();
-        initGameOfLife();
     });
 
     const offsetX = () => Math.floor(dimension_x / 2);
@@ -245,8 +242,7 @@
         currentConfiguration();
 
         // herteken direct
-        render_game(game, image);
-        image.render(display);
+        render_game(game);
         drawGrid(display);
     });
 
@@ -369,15 +365,11 @@
         }
     }
 
-
     let dimension_x;
     let dimension_y;
     let game;
-    let image;
 
     function initGameOfLife({randomStart = true} = {}) {
-        const pixelSize = 1;
-
         dimension_x = Math.floor(canvas.width  / cellSize);
         dimension_y = Math.floor(canvas.height / cellSize);
 
@@ -392,31 +384,19 @@
         }
 
         game = new Game(cells);
-        image = new PixelImage(
-            canvas.width,
-            canvas.height,
-            pixelSize,
-            Colors.BLACK
-        );
-
         return cells;
     }
 
-    function paintCellOnCanvas(game, image, x, y) {
-        const color = game.cell_at(x, y).is_alive() ? Colors.GREEN : Colors.BLACK;
-        const px0 = x * cellSize;
-        const py0 = y * cellSize;
-
-        for (let dx = 0; dx < cellSize; dx++)
-            for (let dy = 0; dy < cellSize; dy++)
-                image.setColour(new Pixel(px0 + dx, py0 + dy, color));
+    function paintCellOnCanvas(game, x, y) {
+        display.fillStyle = game.cell_at(x, y).is_alive() ? '#00ff00' : '#1a1a1a';
+        display.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
     }
     
     function drawGrid(context) {
         if (cellSize < 4) return; // Do not draw lattice when cell size is too small
 
         context.save();
-        context.strokeStyle = "rgba(255, 255, 255, 0.15)"; // subtle lines
+        context.strokeStyle = "rgba(255, 255, 255, 0.25)"; // subtle lines
         context.lineWidth = 1;
 
         const width  = canvas.width;
@@ -439,10 +419,10 @@
         context.restore();
     }
 
-    function render_game(game, image) {
+    function render_game(game) {
         for (let cellX = 0; cellX < dimension_x; cellX++)
             for (let cellY = 0; cellY < dimension_y; cellY++)
-                paintCellOnCanvas(game, image, cellX, cellY);
+                paintCellOnCanvas(game, cellX, cellY);
     }
 
     resizeCanvas();
@@ -459,8 +439,7 @@
     function loop(timestamp) {
         if (timestamp - lastTime > 1000 / frameRate) {
             game = game.next_generation();
-            render_game(game, image);
-            image.render(display);
+            render_game(game);
             drawGrid(display);
             lastTime = timestamp;
         }
