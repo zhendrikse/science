@@ -1,3 +1,13 @@
+<style>
+    canvas {
+        background: #131313;
+        display: block;
+        width: 100%;
+        aspect-ratio: 19 / 12;
+        max-width: 800px;
+        margin: auto;
+    }
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -143,10 +153,10 @@
                 .onChange(value => timeScale = value);
             controls.add(settings, 'equatorialPlane')
                 .name("Equatorial plane")
-                .onChange(value => earth.equatorialPlane.visible = value);
+                .onChange(value => Bodies.earth.equatorialPlane.visible = value);
             controls.add(settings, 'earthClouds')
                 .name("Earth clouds")
-                .onChange(value => earth.clouds.visible = value);
+                .onChange(value => Bodies.earth.clouds.visible = value);
             controls.add(settings, 'eclipticPlane')
                 .name("Ecliptic plane")
                 .onChange(value => eclipticPlane.material.visible = value);
