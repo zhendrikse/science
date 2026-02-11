@@ -21,6 +21,7 @@
     import { Pixel, PixelImage } from 'https://www.hendrikse.name/science/js/pixel-image.js';
 
     const theCanvas = document.getElementById("2dInterferenceCanvas");
+    const wrapper = document.getElementById("interferenceCanvasWrapper");
     const display = theCanvas.getContext("2d");
     const theWidth = theCanvas.width;
     const theHeight = theCanvas.height;
@@ -32,15 +33,16 @@
     const omegaReadout = document.getElementById("omegaReadout");
 
     function resizeCanvas() {
-        const wrapper = document.getElementById("interferenceCanvasWrapper");
-        const size = wrapper.clientWidth;
         const dpr = window.devicePixelRatio || 1;
+        const wrapperSize = wrapper.clientWidth;
 
-        theCanvas.width  = Math.floor(size * dpr);
-        theCanvas.height = Math.floor(size * dpr);
+        theCanvas.style.width  = wrapperSize + "px";
+        theCanvas.style.height = wrapperSize + "px";
 
-        theCanvas.style.width  = size + "px";
-        theCanvas.style.height = size + "px";
+        theCanvas.width  = Math.floor(wrapperSize * dpr);
+        theCanvas.height = Math.floor(wrapperSize * dpr);
+
+        display.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     function updateParameters(t) {
@@ -71,8 +73,6 @@
     let omega = Math.PI                        // angular frequency
     kSlider.value = k;
     omegaSlider.value = omega;
-    updateParameters(0);
-    resizeCanvas();
 
     function updateImage(t) {
         const tPhase = omega * t;
@@ -107,6 +107,13 @@
             requestAnimationFrame(animate);
     }
 
+    requestAnimationFrame(() => {
+        updateParameters(0);
+        resizeCanvas();
+        updateImage(t);
+        image.render(display);
+    });
+
     let t = 0;
     let running = false;
     function animate(now) {
@@ -118,8 +125,4 @@
 
         requestAnimationFrame(animate);
     }
-
-    // Initial render (without animation)
-    updateImage(t);
-    image.render(display);
 </script>
