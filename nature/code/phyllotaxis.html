@@ -28,7 +28,7 @@
 
     let drawBorderAroundDots = false;
     document.getElementById("borderAroundDots").checked = drawBorderAroundDots;
-    document.getElementById("borderAroundDots").addEventListener("click", function(){
+    document.getElementById("borderAroundDots").addEventListener("click", function() {
         drawBorderAroundDots = !drawBorderAroundDots;
     });
 
@@ -49,6 +49,7 @@
                 coloringSchemeFunction = (angle, radius, n) => hsv2rgb(65, 1, 1);
                 break;
         }
+        resetAndRedraw();
     }
 
     function circle(x, y, radius, fillColor="#DDDD00", outline=false) {
@@ -81,23 +82,30 @@
         circle(x, y, 8, rgb, drawBorderAroundDots);
     }
 
+    function resetAndRedraw() {
+        display.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        n = 0;
+    }
+
     let centerX = 0, centerY = 0;
     function resizeCanvas() {
-        const wrapper = document.getElementById("canvas-wrapper");
-        const rectangle = wrapper.getBoundingClientRect();
+        const rect = wrapper.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
 
-        centerX = dpr * rectangle.width * .5;
-        centerY = dpr * rectangle.height * .5;
+        canvas.style.width  = rect.width + "px";
+        canvas.style.height = rect.height + "px";
 
-        canvas.width  = Math.floor(rectangle.width * dpr);
-        canvas.height = Math.floor(rectangle.height * dpr);
-
-        canvas.style.width  = rectangle.width + "px";
-        canvas.style.height = rectangle.height + "px";
+        canvas.width  = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
 
         display.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        centerX = rect.width * 0.5;
+        centerY = rect.height * 0.5;
+
+        resetAndRedraw();
     }
+
 
     let previousN = n;
     let previousC = c;
@@ -119,6 +127,7 @@
 
     window.addEventListener('resize', () => {
         resizeCanvas();
+        resetAndRedraw();
     });
 
     resizeCanvas();
