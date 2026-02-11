@@ -1,7 +1,7 @@
 <canvas class="applicationCanvas" id="2dInterferenceCanvas" style="aspect-ratio: 19/12"></canvas><br/>
 <div style="text-align:center;">
     <label>Separation:
-    <input type="range" id="separationSlider" min="0" max="1" step="0.01" value="0.5" oninput="drawImage();"/>
+    <input type="range" id="separationSlider" min="0" max="1" step="0.01" value="0.5" />
     </label>&nbsp;&nbsp;&nbsp;
     <input type="button" id="pauseButton" value="Start"/>
 </div>
@@ -16,6 +16,7 @@
     const separationSlider = document.getElementById("separationSlider");
     const pauseButton = document.getElementById("pauseButton");
     pauseButton.addEventListener("click", startStop);
+    separationSlider.addEventListener("input", (t) => updateImage(t));
 
     const image = new PixelImage(display.canvas.width, display.canvas.height, 1, [0, 0, 1]);
     const k = 2 * Math.PI / (theCanvas.width/8); // angular wavenumber
@@ -38,13 +39,16 @@
         const yMid = theHeight / 2;
         for (let y = 0; y < theHeight; y++)
             for (let x = 0; x < theWidth; x++) {
-                let dx = x - (xMid - sourceOffset);
                 const dy = y - yMid;
+
+                let dx = x - (xMid - sourceOffset);
                 let r = Math.sqrt(dx*dx + dy*dy);       // distance from left source
                 const wave1 = Math.sin(k * r - tPhase);     // local amplitude of first wave
+
                 dx = x - (xMid + sourceOffset);
                 r = Math.sqrt(dx*dx + dy*dy);           // distance from right source
                 const wave2 = Math.sin(k * r - tPhase);     // local amplitude of second wave
+
                 const waveTotal = .5 * (wave1 + wave2);    // value to plot (will be between -1 and 1)
                 if (waveTotal > 0)
                     image.setColour(new Pixel(x, y, [0, waveTotal, 0]));
