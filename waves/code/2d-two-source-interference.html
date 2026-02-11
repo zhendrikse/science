@@ -1,9 +1,9 @@
-<canvas class="applicationCanvas" id="2dInterferenceCanvas" style="aspect-ratio: 19/12"></canvas><br/>
+<canvas class="applicationCanvas2D" id="2dInterferenceCanvas" style="aspect-ratio: 19/12"></canvas><br/>
 <div style="text-align:center;">
     <label>Separation:
     <input type="range" id="separationSlider" min="0" max="1" step="0.01" value="0.5" />
     </label>&nbsp;&nbsp;&nbsp;
-    <button id="pauseButton" value="Start"></button>
+    <button id="pauseButton">Start</button>
 </div>
 
 <script type="module">
@@ -17,6 +17,22 @@
     const pauseButton = document.getElementById("pauseButton");
     pauseButton.addEventListener("click", startStop);
     separationSlider.addEventListener("input", (t) => updateImage(t));
+
+    function resizeCanvas() {
+        const wrapper = document.getElementById("canvas-wrapper");
+        const size = wrapper.clientWidth;
+        const dpr = window.devicePixelRatio || 1;
+
+        canvas.width  = Math.floor(size * dpr);
+        canvas.height = Math.floor(size * dpr);
+
+        canvas.style.width  = size + "px";
+        canvas.style.height = size + "px";
+    }
+
+    window.addEventListener("resize", () => {
+        resizeCanvas();
+    });
 
     const image = new PixelImage(display.canvas.width, display.canvas.height, 1, [0, 0, 1]);
     const k = 2 * Math.PI / (theCanvas.width/8); // angular wavenumber
@@ -59,11 +75,8 @@
 
     function startStop() {
         running = !running;
-        if (running) {
-            pauseButton.value = "Pause";
-            timeStep();
-        } else
-            pauseButton.value = "Resume";
+        if (running) timeStep();
+        pauseButton.textContent = running ? " Pause " : "Resume";
     }
 
 </script>
