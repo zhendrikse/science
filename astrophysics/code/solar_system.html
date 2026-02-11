@@ -524,7 +524,77 @@
             'spin': 0,
             'period': 61.689,
             'tidal_lock': 1
-        }, Bodies.saturn)
+        }, Bodies.saturn),
+        "ariel": new Moon({
+            'name': "ariel",
+            'a': 191020 * SCALE_MOON,
+            'e': 0.0012,
+            'inclination': 0,
+            'right_ascension': -Math.PI / 2.,
+            'mean_anomaly': 0.,
+            'radius': 578.9 * 1E3,
+            'mass': 1.353 * 1e21,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 16.689,
+            'tidal_lock': 1
+        }, Bodies.uranus),
+        "oberon": new Moon({
+            'name': "oberon",
+            'a': 583520 * SCALE_MOON,
+            'e': 0.0014,
+            'inclination': 0.,
+            'right_ascension': -Math.PI / 2.,
+            'mean_anomaly': 0.,
+            'radius': 761.4 * 1E3,
+            'mass': 3.014 * 1e21,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 6.689,
+            'tidal_lock': 1
+        }, Bodies.uranus),
+        "titania": new Moon({
+            'name': "titania",
+            'a': 435910 * SCALE_MOON,
+            'e': 0.0011,
+            'inclination': 0,
+            'right_ascension': -Math.PI / 2.,
+            'mean_anomaly': 0.,
+            'radius': 788.4 * 1E3,
+            'mass': 3.4 * 1e21,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 1.689,
+            'tidal_lock': 1
+        }, Bodies.uranus),
+        "umbriel": new Moon({
+            'name': "umbriel",
+            'a': 266000 * SCALE_MOON,
+            'e': 0.0039,
+            'inclination': 0,
+            'right_ascension': -Math.PI / 2.,
+            'mean_anomaly': 0.,
+            'radius': 584.7 * 1E3,
+            'mass': 1.275 * 1e21,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 24.689,
+            'tidal_lock': 1
+        }, Bodies.uranus),
+        "triton": new Moon({
+            'name': "triton",
+            'a': 354759 * SCALE_MOON,
+            'e': 0.,
+            'inclination': 0.,
+            'right_ascension': -Math.PI / 2.,
+            'mean_anomaly': 0.,
+            'radius': 1353.4 * 1E3,
+            'mass': 2.1390 * 1e22,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 16.689,
+            'tidal_lock': 1
+        }, Bodies.neptune)
     }
     // for (const moon of Object.values(Moons))
     //     moon.renderedOrbit(0x999999);
@@ -565,13 +635,13 @@
     Bodies.saturn.enableTrail({maxPoints: 1600, color: 0xffff00, trailStep: 500});
     solarSystemGroup.add(Bodies.saturn.renderedOrbit(0xffff00));
 
-    const uranusWithMoons = new PlanetMoonSystem(Bodies.uranus, []);
+    const uranusWithMoons = new PlanetMoonSystem(Bodies.uranus, [Moons.ariel, Moons.oberon, Moons.titania, Moons.umbriel]);
     solarSystemGroup.add(uranusWithMoons);
     uranusWithMoons.update(0, 1);
     Bodies.uranus.enableTrail({maxPoints: 1600, color: 0xaaaaaa, trailStep: 500});
     solarSystemGroup.add(Bodies.uranus.renderedOrbit(0xaaaaaa));
 
-    const neptuneWithMoons = new PlanetMoonSystem(Bodies.neptune, []);
+    const neptuneWithMoons = new PlanetMoonSystem(Bodies.neptune, [Moons.triton]);
     solarSystemGroup.add(neptuneWithMoons);
     neptuneWithMoons.update(0, 1);
     Bodies.neptune.enableTrail({maxPoints: 1600, color: 0x0000ff, trailStep: 500});
