@@ -401,7 +401,7 @@
         context.strokeStyle = "rgba(255, 255, 255, 0.25)"; // subtle lines
         context.lineWidth = 1;
 
-        for (let x = 0; x <= dimension_x; x++) {  // vertical lines
+        for (let x = 0; x < dimension_x; x++) {  // vertical lines
             const px = x * cellSize + 0.5;
             context.beginPath();
             context.moveTo(px, 0);
@@ -409,7 +409,7 @@
             context.stroke();
         }
 
-        for (let y = 0; y <= dimension_y; y++) { // horizontal lines
+        for (let y = 0; y < dimension_y; y++) { // horizontal lines
             const py = y * cellSize + 0.5;
             context.beginPath();
             context.moveTo(0, py);
