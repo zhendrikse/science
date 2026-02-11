@@ -116,20 +116,18 @@
 
     const cSlider = document.getElementById("cValue");
     cSlider.addEventListener("input", event => c = Number(event.target.value));
+    window.addEventListener('resize', () => resizeCanvas());
 
-    window.addEventListener('resize', () => {
-        resizeCanvas();
-    });
+    function loop() {
+        if (n < numberOfDots)
+            draw(n++);
+
+        updateEquationDiv(c, n);
+        requestAnimationFrame(loop);
+    }
 
     resizeCanvas();
     setColoringSchemeTo(4);
-
-    window.requestAnimationFrame(function loop() {
-        if (n < numberOfDots)
-            draw(n++);
-        updateEquationDiv(c, n);
-
-        window.requestAnimationFrame(loop);
-    });
+    requestAnimationFrame(loop);
 
 </script>
