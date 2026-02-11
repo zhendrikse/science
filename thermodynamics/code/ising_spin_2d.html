@@ -1,16 +1,14 @@
 
 <div style="width:500px; margin-left:auto; margin-right:auto;">
-    <canvas id="2dIsingCanvas" width="500" height="500">
-        Canvas not supported; please update your browser.
-    </canvas>
+    <canvas id="2dIsingCanvas" width="500" height="500"></canvas>
 </div>
 
-<div style="text-align:center;">
+<div style="margin-top: 10px; text-align:center;">
     <label>Temperature = <span id="tempReadout">2.27</span>
     <input id="tempSlider" type="range" min="0.01" max="9.99" step="0.01" value="2.27"
            oninput="showTemp();" onchange="showTemp();" style="width:180px"/>
     </label>
-    <button id="pauseButton" value="Start"></button>
+    <button id="pauseButton">Start</button>
 </div>
 
 
@@ -81,9 +79,9 @@
     function startStop() {
         running = !running;
         if (running)
-            startButton.value = " Pause ";
+            startButton.textContent = " Pause ";
         else
-            startButton.value = "Resume";
+            startButton.textContent = "Resume";
     }
 
     // Function to update the temperature readout:
