@@ -1,5 +1,10 @@
 <canvas class="applicationCanvas" id="2dInterferenceCanvas"></canvas><br/>
-
+<div style="text-align:center;">
+    Separation:
+    <input type="range" id="sepSlider" min="0" max="1" step="0.01" value="0.5" oninput="drawImage();">
+    &nbsp;&nbsp;&nbsp;
+    <input type="button" id="pauseButton" value="Pause" onclick="startStop();">
+</div>
 <script>
 
     var theCanvas = document.getElementById("2dInterferenceCanvas");
