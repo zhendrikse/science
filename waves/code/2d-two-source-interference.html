@@ -1,4 +1,4 @@
-<canvas class="applicationCanvas" id="2dInterferenceCanvas"></canvas><br/>
+<canvas class="applicationCanvas" id="2dInterferenceCanvas" style="width: 800px; aspect-ratio: 19/12"></canvas><br/>
 <div style="text-align:center;">
     Separation:
     <input type="range" id="sepSlider" min="0" max="1" step="0.01" value="0.5" oninput="drawImage();">
@@ -6,9 +6,8 @@
     <input type="button" id="pauseButton" value="Pause" onclick="startStop();">
 </div>
 
-
 <script type="module">
-    import { Pixel, PixelImage, Colors } from 'https://www.hendrikse.name/science/js/pixel-image.js';
+    import { Pixel, PixelImage } from 'https://www.hendrikse.name/science/js/pixel-image.js';
 
     const theCanvas = document.getElementById("2dInterferenceCanvas");
     const display = theCanvas.getContext("2d");
@@ -17,11 +16,11 @@
     const sepSlider = document.getElementById("sepSlider");
     const pauseButton = document.getElementById("pauseButton");
 
-    const image = new PixelImage(display.canvas.width, display.canvas.height, 1, [0, 0, 255]);
-    const k = 2 * Math.PI / (theCanvas.width/8);      // angular wavenumber
-    const omega = 2 * Math.PI / 15;                   // angular frequency
+    const image = new PixelImage(display.canvas.width, display.canvas.height, 1, [0, 0, 1]);
+    const k = 2 * Math.PI / (theCanvas.width/8); // angular wavenumber
+    const omega = 2 * Math.PI / 15;              // angular frequency
 
-    let t = 0;                                      // time in arbitrary units
+    let t = 0;
     let running = true;
     function timeStep() {
         t += 1;
@@ -36,8 +35,8 @@
         const sourceOffset = Number(sepSlider.value) * theWidth / 4;
         const xMid = theWidth / 2;
         const yMid = theHeight / 2;
-        for (let y = 0; y < theHeight; y++) {               // loop over rows, top to bottom
-            for (let x = 0; x < theWidth; x++) {            // loop over pixels in row, left to right
+        for (let y = 0; y < theHeight; y++)
+            for (let x = 0; x < theWidth; x++) {
                 let dx = x - (xMid - sourceOffset);
                 const dy = y - yMid;
                 let r = Math.sqrt(dx*dx + dy*dy);       // distance from left source
@@ -45,13 +44,12 @@
                 dx = x - (xMid + sourceOffset);
                 r = Math.sqrt(dx*dx + dy*dy);           // distance from right source
                 const wave2 = Math.sin(k * r - tPhase);     // local amplitude of second wave
-                const waveTotal = (wave1 + wave2) / 2;    // value to plot (will be between -1 and 1)
+                const waveTotal = .5 * (wave1 + wave2);    // value to plot (will be between -1 and 1)
                 if (waveTotal > 0)
-                    image.setColour(new Pixel(x, y, [0, Math.round(waveTotal * 255), 0]));
+                    image.setColour(new Pixel(x, y, [0, waveTotal, 0]));
                 else
-                    image.setColour(new Pixel(x, y, [Math.round(-waveTotal * 127), 0, 2 * image.getPixelColourAt(x, y)[2]]));
+                    image.setColour(new Pixel(x, y, [-waveTotal * .5, 0, waveTotal]));
             }
-        }
     }
 
     function startStop() {
