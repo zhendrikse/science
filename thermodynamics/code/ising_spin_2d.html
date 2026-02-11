@@ -1,4 +1,4 @@
-<div id="isingSpingCanvasWrapper" class="canvasWrapper2D">
+<div id="isingSpingCanvasWrapper" class="canvasWrapper2D" style="aspect-ratio: 1/1;">
     <canvas id="2dIsingCanvas" class="applicationCanvas2D"></canvas>
 </div>
 
@@ -17,7 +17,7 @@
     const size = wrapper.clientWidth;
     const squareWidth = 2;
     let stepsPerFrame = 10000;
-    let running = false;                        // will be true when running
+    let running = false;
     const tempSlider  = document.getElementById('tempSlider');
     const tempReadout = document.getElementById('tempReadout');
 
@@ -28,6 +28,8 @@
     const display = canvas.getContext('2d');
     const startButton = document.getElementById("pauseButton");
     startButton.addEventListener("click", startStop);
+
+    const colorAt = (x, y) => s[x][y] === 1 ? '#8000ff' : '#1a1a1a';
 
     function resizeCanvas() {
         const dpr = window.devicePixelRatio || 1;
@@ -56,8 +58,8 @@
     function iterate() {
         const T = Number(tempSlider.value);
         for (let step=0; step<stepsPerFrame; step++) {
-            const i = Math.floor(Math.random()*size);         // choose a random site
-            const j = Math.floor(Math.random()*size);
+            const i = Math.floor(Math.random() * size);         // choose a random site
+            const j = Math.floor(Math.random() * size);
             const eDiff = deltaU(i, j);
             if ((eDiff <=0) || (Math.random() < Math.exp(-eDiff/T))) {  // Metropolis algorithm
                 s[i][j] *= -1;
@@ -75,8 +77,6 @@
         if (j === size - 1) bottomS = s[i][0]; else bottomS = s[i][j+1];
         return 2.0 * s[i][j] * (leftS + rightS + topS + bottomS);
     }
-
-    function colorAt(i, j) { return s[i][j] === 1 ? '#8000ff' : '#1a1a1a'; }
 
     function drawSquareAt(x, y, color, width=squareWidth) {
         display.fillStyle = color;
