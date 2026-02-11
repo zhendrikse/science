@@ -80,7 +80,7 @@
         position: new Vector3(580, 200, -195),
         target: new Vector3(0, 0, 0)
     };
-    const planetCamera = new PerspectiveCamera(50, 1, .1, 5000);
+    const planetCamera = new PerspectiveCamera(50, 1, .1, 7500);
     planetCamera.position.copy(cameraStart.position);
 
     const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: true} );
@@ -102,7 +102,7 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    const skyDome = new SkyDome({starDensity: 1, skyRadius: 4950, glowStarCount: 500});
+    const skyDome = new SkyDome({starDensity: 1, skyRadius: 7500, glowStarCount: 500});
     planetaryScene.add(skyDome);
 
     export class LunarEclipseIndicator {
