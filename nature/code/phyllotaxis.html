@@ -37,24 +37,16 @@
         n = 0;
         switch (number) {
             case 1:
-                coloringSchemeFunction = (angle, radius, n) => {
-                    return hsv2rgb((angle - radius) % 360, 1, 1);
-                }
+                coloringSchemeFunction = (angle, radius, n) => hsv2rgb((angle - radius) % 360, 1, 1);
                 break;
             case 2:
-                coloringSchemeFunction = (angle, radius, n) => {
-                    return hsv2rgb(n, 1, 1);
-                }
+                coloringSchemeFunction = (angle, radius, n) => hsv2rgb(n, 1, 1);
                 break;
             case 3:
-                coloringSchemeFunction = (angle, radius, n) => {
-                    return hsv2rgb(angle % 360, 1, 1);
-                }
+                coloringSchemeFunction = (angle, radius, n) => hsv2rgb(angle % 360, 1, 1);
                 break;
             case 4:
-                coloringSchemeFunction = (angle, radius, n) => {
-                    return hsv2rgb(65, 1, 1);
-                }
+                coloringSchemeFunction = (angle, radius, n) => hsv2rgb(65, 1, 1);
                 break;
         }
     }
@@ -103,6 +95,8 @@
 
         canvas.style.width  = rectangle.width + "px";
         canvas.style.height = rectangle.height + "px";
+
+        display.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     let previousN = n;
