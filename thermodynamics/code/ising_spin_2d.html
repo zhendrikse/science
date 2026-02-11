@@ -1,0 +1,94 @@
+
+<div style="width:500px; margin-left:auto; margin-right:auto;">
+    <canvas id="2dIsingCanvas" width="500" height="500">
+        Canvas not supported; please update your browser.
+    </canvas>
+</div>
+
+<div style="text-align:center;">
+    <label>Temperature = <span id="tempReadout">2.27</span>
+    <input id="tempSlider" type="range" min="0.01" max="9.99" step="0.01" value="2.27"
+           oninput="showTemp();" onchange="showTemp();" style="width:180px"/>
+    </label>
+    <button id="pauseButton" value="Start"></button>
+</div>
+
+
+<script type="module">
+    import { Pixel, PixelImage } from 'https://www.hendrikse.name/science/js/pixel-image.js';
+
+    const size = 100;                             // lattice dimension in each direction (must divide canvas size)
+    const canvas = document.getElementById('2dIsingCanvas');
+    const squareWidth = canvas.width / size;      // width of each lattice site in pixels
+    let stepsPerFrame = 10000;
+    let running = false;                        // will be true when running
+    const tempSlider  = document.getElementById('tempSlider');
+    const tempReadout = document.getElementById('tempReadout');
+
+    const display = canvas.getContext('2d');
+    const image = new PixelImage(display.canvas.width, display.canvas.height);
+    const startButton = document.getElementById("pauseButton");
+    startButton.addEventListener("click", startStop);
+
+    // Create the 2D array of dipoles, initially random (1 for up, -1 for down):
+    const s = new Array(size);
+    for (let i = 0; i < size; i++) {
+        s[i] = new Array(size);             // a 2D array is just an array of arrays
+        for (let j = 0; j < size; j++) {
+            if (Math.random() < 0.5) s[i][j] = 1; else s[i][j] = -1;
+            colorSquare(i, j);
+        }
+    }
+
+    function iterate() {
+        const T = Number(tempSlider.value);
+        for (let step=0; step<stepsPerFrame; step++) {
+            const i = Math.floor(Math.random()*size);         // choose a random site
+            const j = Math.floor(Math.random()*size);
+            const eDiff = deltaU(i, j);
+            if ((eDiff <=0) || (Math.random() < Math.exp(-eDiff/T))) {  // Metropolis algorithm
+                s[i][j] *= -1;
+                colorSquare(i, j);
+            }
+        }
+    }
+
+    // Simulate function executes a bunch of steps and then schedules another call to itself:
+    function simulate() {
+        if (running) iterate();
+        window.setTimeout(simulate, 1);     // schedule next animation frame for 1 ms later
+    }
+    simulate();
+
+    // Given a lattice site, compute energy change from hypothetical flip; note pbc:
+    function deltaU(i, j) {
+        let leftS, rightS, topS, bottomS;  // values of neighboring spins
+        if (i === 0) leftS = s[size-1][j];   else leftS = s[i-1][j];
+        if (i === size - 1) rightS = s[0][j];  else rightS = s[i+1][j];
+        if (j === 0) topS = s[i][size-1];    else topS = s[i][j-1];
+        if (j === size - 1) bottomS = s[i][0]; else bottomS = s[i][j+1];
+        return 2.0 * s[i][j] * (leftS + rightS + topS + bottomS);
+    }
+
+    // Color a given square according to its alignment:
+    function colorSquare(i, j) {
+        if (s[i][j] === 1) display.fillStyle = '#8000ff';    // purple
+        else display.fillStyle = '#1a1a1a';             // white
+        display.fillRect(i*squareWidth, j*squareWidth, squareWidth, squareWidth);
+    }
+
+    // Function to start or pause the simulation:
+    function startStop() {
+        running = !running;
+        if (running)
+            startButton.value = " Pause ";
+        else
+            startButton.value = "Resume";
+    }
+
+    // Function to update the temperature readout:
+    function showTemp() {
+        tempReadout.innerHTML = Number(tempSlider.value).toFixed(2);
+    }
+
+</script>
