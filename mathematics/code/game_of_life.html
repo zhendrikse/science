@@ -427,8 +427,6 @@
                 paintCellOnCanvas(game, cellX, cellY);
     }
 
-    resizeCanvas();
-    initGameOfLife();
     for (const [key, value] of radioButtons)
         document.getElementById(key).onclick = function() {
             resetButtons(radioButtons);
@@ -449,6 +447,10 @@
         requestAnimationFrame(loop);
     }
 
+    requestAnimationFrame(() => {
+        resizeCanvas();
+        initGameOfLife();
+    });
     requestAnimationFrame(loop);
 </script>
 

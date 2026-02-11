@@ -126,8 +126,10 @@
         requestAnimationFrame(loop);
     }
 
-    resizeCanvas();
-    setColoringSchemeTo(4);
+    requestAnimationFrame(() => {
+        resizeCanvas();
+        setColoringSchemeTo(4);
+    })
     requestAnimationFrame(loop);
 
 </script>

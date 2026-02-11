@@ -100,8 +100,12 @@
         }
     }
 
-    resizeCanvas();
-    const lattice = createDipoles();
+    let lattice = null;
+    requestAnimationFrame(() => {
+        resizeCanvas();
+        lattice = createDipoles();
+    });
+
     let lastTime = 0;
     const updatesPerSecond = 60;
     function animate(now) {
