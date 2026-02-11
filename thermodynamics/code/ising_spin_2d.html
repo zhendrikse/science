@@ -14,8 +14,8 @@
 <script type="module">
     const canvas = document.getElementById('2dIsingCanvas');
     const wrapper = document.getElementById("isingSpingCanvasWrapper");
-    const size = wrapper.clientWidth;
-    const squareWidth = 2;
+    const latticeSize = 250;   // physics
+    const squareWidth = 2;     // rendering
     let stepsPerFrame = 10000;
     let running = false;
     const tempSlider  = document.getElementById('tempSlider');
@@ -33,12 +33,15 @@
 
     function resizeCanvas() {
         const dpr = window.devicePixelRatio || 1;
+        const wrapperSize = wrapper.clientWidth;
 
-        canvas.width  = Math.floor(size * dpr);
-        canvas.height = Math.floor(size * dpr);
+        canvas.style.width  = wrapperSize + "px";
+        canvas.style.height = wrapperSize + "px";
 
-        canvas.style.width  = size + "px";
-        canvas.style.height = size + "px";
+        canvas.width  = Math.floor(wrapperSize * dpr);
+        canvas.height = Math.floor(wrapperSize * dpr);
+
+        display.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     window.addEventListener("resize", () => {
@@ -47,10 +50,10 @@
     resizeCanvas();
 
     // Create the 2D array of dipoles, initially random (1 for up, -1 for down):
-    const s = new Array(size);
-    for (let i = 0; i < size; i++) {
-        s[i] = new Array(size);             // a 2D array is just an array of arrays
-        for (let j = 0; j < size; j++) {
+    const s = new Array(latticeSize);
+    for (let i = 0; i < latticeSize; i++) {
+        s[i] = new Array(latticeSize);             // a 2D array is just an array of arrays
+        for (let j = 0; j < latticeSize; j++) {
             if (Math.random() < 0.5) s[i][j] = 1; else s[i][j] = -1;
             drawSquareAt(i, j, colorAt(i, j));
         }
@@ -59,8 +62,8 @@
     function iterate() {
         const T = Number(tempSlider.value);
         for (let step=0; step<stepsPerFrame; step++) {
-            const i = Math.floor(Math.random() * size);         // choose a random site
-            const j = Math.floor(Math.random() * size);
+            const i = Math.floor(Math.random() * latticeSize);         // choose a random site
+            const j = Math.floor(Math.random() * latticeSize);
             const eDiff = deltaU(i, j);
             if ((eDiff <=0) || (Math.random() < Math.exp(-eDiff/T))) {  // Metropolis algorithm
                 s[i][j] *= -1;
@@ -72,10 +75,10 @@
     // Given a lattice site, compute energy change from hypothetical flip;
     function deltaU(i, j) {
         let leftS, rightS, topS, bottomS;  // values of neighboring spins
-        if (i === 0) leftS = s[size-1][j];   else leftS = s[i-1][j];
-        if (i === size - 1) rightS = s[0][j];  else rightS = s[i+1][j];
-        if (j === 0) topS = s[i][size-1];    else topS = s[i][j-1];
-        if (j === size - 1) bottomS = s[i][0]; else bottomS = s[i][j+1];
+        if (i === 0) leftS = s[latticeSize - 1][j];   else leftS = s[i-1][j];
+        if (i === latticeSize - 1) rightS = s[0][j];  else rightS = s[i+1][j];
+        if (j === 0) topS = s[i][latticeSize - 1];    else topS = s[i][j-1];
+        if (j === latticeSize - 1) bottomS = s[i][0]; else bottomS = s[i][j+1];
         return 2.0 * s[i][j] * (leftS + rightS + topS + bottomS);
     }
 
