@@ -1,4 +1,6 @@
-<canvas class="applicationCanvas2D" id="2dInterferenceCanvas" style="aspect-ratio: 19/12"></canvas><br/>
+<div id="interferenceCanvasWrapper" class="canvasWrapper2D">
+    <canvas class="applicationCanvas2D" id="2dInterferenceCanvas" style="aspect-ratio: 19/12"></canvas>
+</div>
 <div style="text-align:center;">
     <label>Distance:
     <input type="range" id="separationSlider" min="0" max="1" step="0.01" value="0.5" />
@@ -29,7 +31,7 @@
     const omegaReadout = document.getElementById("omegaReadout");
 
     function resizeCanvas() {
-        const wrapper = document.getElementById("canvas-wrapper");
+        const wrapper = document.getElementById("interferenceCanvasWrapper");
         const size = wrapper.clientWidth;
         const dpr = window.devicePixelRatio || 1;
 
