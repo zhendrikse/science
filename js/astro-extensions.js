@@ -199,7 +199,7 @@ export class Orbit {
 
 
     _indexAtTime(tHours) {
-        const periodHours = 365.25 * this._timescale * 24;
+        const periodHours = this._timescale * 24;
         const phase = (tHours % periodHours) / periodHours;
         return Math.floor(phase * this._nPoints);
     }
@@ -297,7 +297,7 @@ export class Planet extends CelestialBody {
         this._body.receiveShadow = false;
 
         this._orbit = new Orbit(
-            (planetData.a / EARTH_SEMI_MAJOR_AXIS) ** 1.5, // rotation period w.r.t. Earth
+            365.25 * (planetData.a / EARTH_SEMI_MAJOR_AXIS) ** 1.5, // rotation period w.r.t. Earth
             planetData.mean_anomaly,
             planetData.e,
             planetData.a,
@@ -342,7 +342,7 @@ export class Satellite extends CelestialBody {
         this._body.receiveShadow = true;
 
         this._orbit = new Orbit(
-            moonData.period / 365.25,  // rotation period w.r.t Earth
+            moonData.period,
             moonData.mean_anomaly,
             this._e,
             this._a,
