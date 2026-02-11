@@ -225,11 +225,13 @@
         const size = wrapper.clientWidth;
         const dpr = window.devicePixelRatio || 1;
 
+        canvas.style.width  = size + "px";
+        canvas.style.height = size + "px";
+
         canvas.width  = Math.floor(size * dpr);
         canvas.height = Math.floor(size * dpr);
 
-        canvas.style.width  = size + "px";
-        canvas.style.height = size + "px";
+        display.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     const cellSizeSelect = document.getElementById("cellSizeSelect");
@@ -370,8 +372,8 @@
     let game;
 
     function initGameOfLife({randomStart = true} = {}) {
-        dimension_x = Math.floor(canvas.width  / cellSize);
-        dimension_y = Math.floor(canvas.height / cellSize);
+        dimension_x = Math.floor(canvas.clientWidth / cellSize);
+        dimension_y = Math.floor(canvas.clientHeight / cellSize);
 
         let cells = [];
         for (let x = 0; x < dimension_x; x++) {
@@ -436,6 +438,7 @@
         };
 
     let lastTime = 0;
+
     function loop(timestamp) {
         if (timestamp - lastTime > 1000 / frameRate) {
             game = game.next_generation();
