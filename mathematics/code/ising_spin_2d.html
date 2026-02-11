@@ -28,6 +28,7 @@
     const display = canvas.getContext('2d');
     const startButton = document.getElementById("pauseButton");
     startButton.addEventListener("click", startStop);
+    window.addEventListener("resize", () => resizeCanvas());
 
     const colorAt = (s, x, y) => s[x][y] === 1 ? '#8000ff' : '#1a1a1a';
 
@@ -45,17 +46,13 @@
         latticeSize = wrapperSize;
     }
 
-    window.addEventListener("resize", () => {
-        resizeCanvas();
-    });
-
     // Create the 2D array of dipoles, initially random (1 for up, -1 for down):
     function createDipoles() {
         const s = new Array(latticeSize);
         for (let i = 0; i < latticeSize; i++) {
             s[i] = new Array(latticeSize);             // a 2D array is just an array of arrays
             for (let j = 0; j < latticeSize; j++) {
-                if (Math.random() < 0.5) s[i][j] = 1; else s[i][j] = -1;
+                s[i][j] = (Math.random() < 0.5) ? 1 : -1;
                 drawSquareAt(i, j, colorAt(s, i, j));
             }
         }
