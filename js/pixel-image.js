@@ -56,7 +56,7 @@ export class PixelImage {
         imageData[index++] = 255;
     }
 
-    getPixelColor(x, y) { return this.colours[x][y]; }
+    getPixelColourAt(x, y) { return this.colours[x][y]; }
 
     setColour = (pixel) => {
         if (pixel.x < 0 || pixel.y < 0 || pixel.x >= this.dimX() || pixel.y >= this.dimY()) return;
