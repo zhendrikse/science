@@ -1,13 +1,3 @@
-<style>
-    canvas {
-        background: #131313;
-        display: block;
-        width: 100%;
-        aspect-ratio: 19 / 12;
-        max-width: 800px;
-        margin: auto;
-    }
-</style>
 <script type="importmap">
     {
       "imports": {
@@ -27,7 +17,7 @@
         <button id="farField1">🔭</button>
     </div>
 
-    <canvas class="applicationCanvas" id="planetsCanvas"  style="aspect-ratio: 19 / 12;"></canvas>
+    <canvas class="applicationCanvas" id="planetsCanvas"  style="background: #131313; aspect-ratio: 19 / 12;"></canvas>
 
     <div class="buttonRow">
         <button id="farField2">💫</button>
@@ -289,286 +279,293 @@
 
     const solarSystemGroup = new Group();
     planetaryScene.add(solarSystemGroup);
-
-    const sun = new Sun({
-        "name": "sun",
-        "radius": 696300000.0,
-        "mass": 1.9885440000000002e+30,
-        "spin": 3600 * 2.8653290845717256e-06,
-        "tilt": 0.1265363707695889
-    });
-    sun.position.set(0, 0, 0);
-    solarSystemGroup.add(sun);
+    const Bodies = {
+        "sun": new Sun({
+            "name": "sun",
+            "radius": 696300000.0,
+            "mass": 1.9885440000000002e+30,
+            "spin": 3600 * 2.8653290845717256e-06,
+            "tilt": 0.1265363707695889
+        }),
+        "mercury": new Planet({
+            "name": "mercury",
+            'a': 57909050.,
+            'e': 0.205630,
+            'inclination': 7 * Math.PI / 180.,
+            'right_ascension': 0.8436854966,
+            'mean_anomaly': 3.0507657193,
+            'radius': 2439.7 * 1e3,
+            "mass": 3.302e+23,
+            'tilt': 0.1 * Math.PI / 180.,
+            "spin": 2 * Math.PI / 4222.6
+        }, {bumpScale: 0.005}),
+        "venus": new Planet({
+            "name": "venus",
+            'a': 108208000.,
+            'e': 0.0067,
+            'inclination': 3.39 * Math.PI / 180.,
+            'right_ascension': 1.3381895772,
+            'mean_anomaly': 0.8746717546,
+            'radius': 6051.8 * 1e3,
+            "mass": 4.8685e+23,
+            'tilt': 177 * Math.PI / 180.,
+            'spin':  -2 * Math.PI / 2802.
+        }, {bumpScale: 0.005}),
+        "earth": new Earth(),
+        "mars": new Planet({
+            "name": "mars",
+            'a': 227939100.,
+            'e': 0.093315,
+            'inclination': 1.85 * Math.PI / 180.,
+            'right_ascension': 0.8676591934,
+            'mean_anomaly': 0.3378329113,
+            'radius': 3393.5 * 1e3,
+            "mass": 6.4185e+23,
+            'tilt': 25 * Math.PI / 180.,
+            'spin': 2 * Math.PI / 24.66
+        }, {bumpScale: 0.05}),
+        "jupiter": new Planet({
+            "name": "jupiter",
+            'a': 778547200.,
+            'e': 0.048775,
+            'inclination': 1.31 * Math.PI / 180.,
+            'right_ascension': 1.7504400393,
+            'mean_anomaly': 0.3284360586,
+            'radius': 71400. * 1e3,
+            "mass": 1.89813e+27,
+            'tilt': 3 * Math.PI / 180.,
+            'spin': 2 * Math.PI / 9.93
+        }, {bumpScale: 0.02, identicalBumpMap: true}),
+        "saturn": new Saturn(),
+        "uranus": new Uranus(),
+        "neptune": new Planet({
+            'name': "neptune",
+            'a': 4503443661.,
+            'e': 0.011214269,
+            'inclination': 1.77 * Math.PI / 180.,
+            'right_ascension': 2.3001058656,
+            'mean_anomaly': 4.6734206826,
+            'radius': 24300. * 1E3,
+            "mass": 1.024E26,
+            'tilt': 30 * Math.PI / 180.,
+            'spin': 2 * Math.PI / 16.11,
+        }, {identicalBumpMap: true, bumpScale: 0.05})
+    }
+    Bodies.earth.clouds.visible = false;
+    Bodies.sun.position.set(0, 0, 0);
+    solarSystemGroup.add(Bodies.sun);
     const sunLight = new PointLight(0xffffff, 2.0, 0, .1); // intense, no max distance
     sunLight.position.set(0, 0, 0);
     sunLight.castShadow = true;
     planetaryScene.add(sunLight);
     planetaryScene.add(new AmbientLight(0xffffff, 0.1));
 
-    const earth = new Earth();
-    earth.clouds.visible = false;
-    const mercury = new Planet({
-        "name": "mercury",
-        'a': 57909050.,
-        'e': 0.205630,
-        'inclination': 7 * Math.PI / 180.,
-        'right_ascension': 0.8436854966,
-        'mean_anomaly': 3.0507657193,
-        'radius': 2439.7 * 1e3,
-        "mass": 3.302e+23,
-        'tilt': 0.1 * Math.PI / 180.,
-        "spin": 2 * Math.PI / 4222.6
-    }, {bumpScale: 0.005});
-    const venus = new Planet({
-        "name": "venus",
-        'a': 108208000.,
-        'e': 0.0067,
-        'inclination': 3.39 * Math.PI / 180.,
-        'right_ascension': 1.3381895772,
-        'mean_anomaly': 0.8746717546,
-        'radius': 6051.8 * 1e3,
-        "mass": 4.8685e+23,
-        'tilt': 177 * Math.PI / 180.,
-        'spin':  -2 * Math.PI / 2802.
-    }, {bumpScale: 0.005});
-    const mars = new Planet({
-        "name": "mars",
-        'a': 227939100.,
-        'e': 0.093315,
-        'inclination': 1.85 * Math.PI / 180.,
-        'right_ascension': 0.8676591934,
-        'mean_anomaly': 0.3378329113,
-        'radius': 3393.5 * 1e3,
-        "mass": 6.4185e+23,
-        'tilt': 25 * Math.PI / 180.,
-        'spin': 2 * Math.PI / 24.66
-    }, {bumpScale: 0.05});
-    const jupiter = new Planet({
-        "name": "jupiter",
-        'a': 778547200.,
-        'e': 0.048775,
-        'inclination': 1.31 * Math.PI / 180.,
-        'right_ascension': 1.7504400393,
-        'mean_anomaly': 0.3284360586,
-        'radius': 71400. * 1e3,
-        "mass": 1.89813e+27,
-        'tilt': 3 * Math.PI / 180.,
-        'spin': 2 * Math.PI / 9.93
-    }, {bumpScale: 0.02, identicalBumpMap: true});
-    const saturn = new Saturn();
-    const uranus = new Uranus();
-    const neptune = new Planet({
-        'name': "neptune",
-        'a': 4503443661.,
-        'e': 0.011214269,
-        'inclination': 1.77 * Math.PI / 180.,
-        'right_ascension': 2.3001058656,
-        'mean_anomaly': 4.6734206826,
-        'radius': 24300. * 1E3,
-        "mass": 1.024E26,
-        'tilt': 30 * Math.PI / 180.,
-        'spin': 2 * Math.PI / 16.11,
-    }, {identicalBumpMap: true, bumpScale: 0.05});
+    const Moons = {
+        "luna": new Moon({
+            "name": "luna",
+            "a": 384399 * SCALE_MOON * .2,
+            "e": 0.0549,
+            "inclination": (-23.4 + 5.145) * Math.PI / 180.,
+            "right_ascension": -Math.PI / 2.,
+            "mean_anomaly": 0.,
+            "radius": 1737400,
+            "mass": 7.349e+22,  // kg
+            "spin": 2 * Math.PI / 708.7341666667,
+            "tilt": 0.11641346110802178, // rad
+            'period': 27.321, // days
+            "tidal_lock": true
+        }, Bodies.earth),
+        "phobos": new Moon({
+            "name": "phobos",
+            'a': 9376 * SCALE_MOON * 2.5, // 2.5 = scale up for this tiny moon
+            'e': 0.0151,
+            'inclination': 0,
+            'right_ascension': -Math.PI / 2,
+            'mean_anomaly': 0.,
+            'radius': 11.2667 * 1E4 * 2, // 2 = scale up for this tiny moon
+            "mass": 1.06E16,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 0.31891023,
+            'tidal_lock': 1
+        }, Bodies.mars),
+        "deimos": new Moon({
+            'name': "deimos",
+            'a': 23463.2 * SCALE_MOON * 1.5, // 1.5 = scale up for this tiny moon
+            'e': 0.00033,
+            'inclination': 0,
+            'right_ascension': -Math.PI / 2,
+            'mean_anomaly': 0.,
+            'radius': 10. * 1E4 * 2, // 2 = scale up for this tiny moon
+            "mass": 1.5E15,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 1.263,
+            'tidal_lock': 1
+        }, Bodies.mars),
+        "callisto": new Moon({
+            'name': "callisto",
+            'a': 1882700 * SCALE_MOON / 2,
+            'e': 0.0074,
+            'inclination': 0.003351032164,
+            'right_ascension': 0.,
+            'mean_anomaly': 0.,
+            'radius': 2410.3 * 1e3,
+            "mass": 1.076E23,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 16.689,
+            'tidal_lock': 1
+        }, Bodies.jupiter),
+        "europa": new Moon({
+            'name': "europa",
+            'a': 670900 * SCALE_MOON,
+            'e': 0.009,
+            'inclination': 0.008203047484,
+            'right_ascension': 0.,
+            'mean_anomaly': 0.,
+            'radius': 1560.8 * 1e3,
+            "mass": 4.8E22,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 12.689,
+            'tidal_lock': 1
+        }, Bodies.jupiter),
+        "ganymede": new Moon({
+            'name': "ganymede",
+            'a': 1070400 * SCALE_MOON,
+            'e': 0.0013,
+            'inclination': 0.003490658504,
+            'right_ascension': 0.,
+            'mean_anomaly': 0.,
+            'radius': 2634.1 * 1E3,
+            "mass": 1.4819E23,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 10.689,
+            'tidal_lock': 1
+        }, Bodies.jupiter),
+        "io": new Moon({
+            'name': "io",
+            'a': 421800 * SCALE_MOON * 1.5,
+            'e': 0.0041,
+            'inclination': 0.03857177647,
+            'right_ascension': 0.,
+            'mean_anomaly': 0.,
+            'radius': 1821.6 * 1E3,
+            "mass": 8.9319E22,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 6.689,
+            'tidal_lock': 1
+        }, Bodies.jupiter),
+        "dione": new Moon({
+            'name': "dione",
+            'a': 377396 * 3 * SCALE_MOON,
+            'e': 0.0022,
+            'inclination': 0,
+            'right_ascension': -Math.PI / 2.,
+            'mean_anomaly': 0.,
+            'radius': 561.4 * 3 * 1e3,
+            "mass": 1.095E21,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 7.689,
+            'tidal_lock': 1
+        }, Bodies.saturn),
+        "enceladus": new Moon({
+            'name': "enceladus",
+            'a': 237948 * 3 * SCALE_MOON,
+            'e': 0.0047,
+            'inclination': 0,
+            'right_ascension': -Math.PI / 2.,
+            'mean_anomaly': 0.,
+            'radius': 252.1 * 3 * 1e3,
+            "mass": 1.08022E20,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 16.689,
+            'tidal_lock': 1
+        }, Bodies.saturn),
+        "tethys":  new Moon({
+            'name': "tethys",
+            'a': 294619 * 3 * SCALE_MOON,
+            'e': 0.,
+            'inclination': 0,
+            'right_ascension': -Math.PI / 2.,
+            'mean_anomaly': 0.,
+            'radius': 531.1 * 3 * 1e3,
+            "mass": 6.17E20,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 1.689,
+            'tidal_lock': 1
+        }, Bodies.saturn),
+        "titan": new Moon({
+            'name': "titan",
+            'a': 1221870 * SCALE_MOON,
+            'e': 0.0288,
+            'inclination': 0,
+            'right_ascension': -Math.PI / 2.,
+            'mean_anomaly': 0.,
+            'radius': 2576. * 1E3,
+            "mass": 1.345E23,
+            'tilt': 0.,
+            'spin': 0,
+            'period': 61.689,
+            'tidal_lock': 1
+        }, Bodies.saturn)
+    }
+    // for (const moon of Object.values(Moons))
+    //     moon.renderedOrbit(0x999999);
 
-    const luna = new Moon({
-        "name": "luna",
-        "a": 384399 * SCALE_MOON * .2,
-        "e": 0.0549,
-        "inclination": (-23.4 + 5.145) * Math.PI / 180.,
-        "right_ascension": -Math.PI / 2.,
-        "mean_anomaly": 0.,
-        "radius": 1737400,
-        "mass": 7.349e+22,  // kg
-        "spin": 2 * Math.PI / 708.7341666667,
-        "tilt": 0.11641346110802178, // rad
-        'period': 27.321, // days
-        "tidal_lock": true
-    }, earth);
-    const phobos = new Moon({
-        "name": "phobos",
-        'a': 9376 * SCALE_MOON * 2.5, // 2.5 = scale up for this tiny moon
-        'e': 0.0151,
-        'inclination': 0,
-        'right_ascension': -Math.PI / 2,
-        'mean_anomaly': 0.,
-        'radius': 11.2667 * 1E4 * 2, // 2 = scale up for this tiny moon
-        "mass": 1.06E16,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 0.31891023,
-        'tidal_lock': 1}, mars);
-    const deimos = new Moon({
-        'name': "deimos",
-        'a': 23463.2 * SCALE_MOON * 1.5, // 1.5 = scale up for this tiny moon
-        'e': 0.00033,
-        'inclination': 0,
-        'right_ascension': -Math.PI / 2,
-        'mean_anomaly': 0.,
-        'radius': 10. * 1E4 * 2, // 2 = scale up for this tiny moon
-        "mass": 1.5E15,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 1.263,
-        'tidal_lock': 1}, mars);
-    const callisto = new Moon({
-        'name': "callisto",
-        'a': 1882700 * SCALE_MOON / 2,
-        'e': 0.0074,
-        'inclination': 0.003351032164,
-        'right_ascension': 0.,
-        'mean_anomaly': 0.,
-        'radius': 2410.3 * 1e3,
-        "mass": 1.076E23,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 16.689,
-        'tidal_lock': 1}, jupiter);
-    const europa = new Moon({
-        'name': "europa",
-        'a': 670900 * SCALE_MOON,
-        'e': 0.009,
-        'inclination': 0.008203047484,
-        'right_ascension': 0.,
-        'mean_anomaly': 0.,
-        'radius': 1560.8 * 1e3,
-        "mass": 4.8E22,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 12.689,
-        'tidal_lock': 1}, jupiter);
-    const ganymede = new Moon({
-        'name': "ganymede",
-        'a': 1070400 * SCALE_MOON,
-        'e': 0.0013,
-        'inclination': 0.003490658504,
-        'right_ascension': 0.,
-        'mean_anomaly': 0.,
-        'radius': 2634.1 * 1E3,
-        "mass": 1.4819E23,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 10.689,
-        'tidal_lock': 1}, jupiter);
-    const io = new Moon({
-        'name': "io",
-        'a': 421800 * SCALE_MOON * 1.5,
-        'e': 0.0041,
-        'inclination': 0.03857177647,
-        'right_ascension': 0.,
-        'mean_anomaly': 0.,
-        'radius': 1821.6 * 1E3,
-        "mass": 8.9319E22,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 6.689,
-        'tidal_lock': 1
-    }, jupiter);
-    const dione = new Moon({
-        'name': "dione",
-        'a': 377396 * 3 * SCALE_MOON,
-        'e': 0.0022,
-        'inclination': 0,
-        'right_ascension': -Math.PI / 2.,
-        'mean_anomaly': 0.,
-        'radius': 561.4 * 3 * 1e3,
-        "mass": 1.095E21,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 7.689,
-        'tidal_lock': 1
-    }, saturn);
-    const enceladus = new Moon({
-        'name': "enceladus",
-        'a': 237948 * 3 * SCALE_MOON,
-        'e': 0.0047,
-        'inclination': 0,
-        'right_ascension': -Math.PI / 2.,
-        'mean_anomaly': 0.,
-        'radius': 252.1 * 3 * 1e3,
-        "mass": 1.08022E20,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 16.689,
-        'tidal_lock': 1
-    }, saturn);
-    const tethys = new Moon({
-        'name': "tethys",
-        'a': 294619 * 3 * SCALE_MOON,
-        'e': 0.,
-        'inclination': 0,
-        'right_ascension': -Math.PI / 2.,
-        'mean_anomaly': 0.,
-        'radius': 531.1 * 3 * 1e3,
-        "mass": 6.17E20,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 1.689,
-        'tidal_lock': 1
-    }, saturn);
-    const titan = new Moon({
-        'name': "titan",
-        'a': 1221870 * SCALE_MOON,
-        'e': 0.0288,
-        'inclination': 0,
-        'right_ascension': -Math.PI / 2.,
-        'mean_anomaly': 0.,
-        'radius': 2576. * 1E3,
-        "mass": 1.345E23,
-        'tilt': 0.,
-        'spin': 0,
-        'period': 61.689,
-        'tidal_lock': 1
-    }, saturn);
-
-    const bodies = { sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune };
-
-    const earthMoonSystem = new PlanetMoonSystem(earth, [luna]);
+    const earthMoonSystem = new PlanetMoonSystem(Bodies.earth, [Moons.luna]);
     solarSystemGroup.add(earthMoonSystem);
     earthMoonSystem.update(0, 1); // set initial position
-    earth.enableTrail({maxPoints: 400, color: 0x00bbff, trailStep: 125});
-    solarSystemGroup.add(earth.renderedOrbit(0x00bbff));
+    Bodies.earth.enableTrail({maxPoints: 400, color: 0x00bbff, trailStep: 125});
+    solarSystemGroup.add(Bodies.earth.renderedOrbit(0x00bbff));
 
-    const noMoonsMercury = new PlanetMoonSystem(mercury);
+    const noMoonsMercury = new PlanetMoonSystem(Bodies.mercury);
     solarSystemGroup.add(noMoonsMercury);
     noMoonsMercury.update(0, 1);
-    mercury.enableTrail({maxPoints: 80, color: 0xaaff00, trailStep: 25});
-    solarSystemGroup.add(mercury.renderedOrbit(0xaaff00));
+    Bodies.mercury.enableTrail({maxPoints: 80, color: 0xaaff00, trailStep: 25});
+    solarSystemGroup.add(Bodies.mercury.renderedOrbit(0xaaff00));
 
-    const noMoonsVenus = new PlanetMoonSystem(venus);
+    const noMoonsVenus = new PlanetMoonSystem(Bodies.venus);
     solarSystemGroup.add(noMoonsVenus);
     noMoonsVenus.update(0, 1);
-    venus.enableTrail({maxPoints: 120, color: 0xff0000, trailStep: 100});
-    solarSystemGroup.add(venus.renderedOrbit(0xff0000));
+    Bodies.venus.enableTrail({maxPoints: 120, color: 0xff0000, trailStep: 100});
+    solarSystemGroup.add(Bodies.venus.renderedOrbit(0xff0000));
 
-    const marsWithMoons = new PlanetMoonSystem(mars, [phobos, deimos]);
+    const marsWithMoons = new PlanetMoonSystem(Bodies.mars, [Moons.phobos, Moons.deimos]);
     solarSystemGroup.add(marsWithMoons);
     marsWithMoons.update(0, 1);
-    mars.enableTrail({maxPoints: 550, color: 0xffaa00, trailStep: 250});
-    solarSystemGroup.add(mars.renderedOrbit(0xffaa00));
+    Bodies.mars.enableTrail({maxPoints: 550, color: 0xffaa00, trailStep: 250});
+    solarSystemGroup.add(Bodies.mars.renderedOrbit(0xffaa00));
 
-    const jupiterWithMoons = new PlanetMoonSystem(jupiter, [callisto, europa, ganymede, io]);
+    const jupiterWithMoons = new PlanetMoonSystem(Bodies.jupiter, [Moons.callisto, Moons.europa, Moons.ganymede, Moons.io]);
     solarSystemGroup.add(jupiterWithMoons);
     jupiterWithMoons.update(0, 1);
-    jupiter.enableTrail({maxPoints: 1600, color: 0x8b4513, trailStep: 500});
-    solarSystemGroup.add(jupiter.renderedOrbit(0x8b4513));
+    Bodies.jupiter.enableTrail({maxPoints: 1600, color: 0x8b4513, trailStep: 500});
+    solarSystemGroup.add(Bodies.jupiter.renderedOrbit(0x8b4513));
 
-    const saturnWithMoons = new PlanetMoonSystem(saturn, [dione, enceladus, tethys, titan]);
+    const saturnWithMoons = new PlanetMoonSystem(Bodies.saturn, [Moons.dione, Moons.enceladus, Moons.tethys, Moons.titan]);
     solarSystemGroup.add(saturnWithMoons);
     saturnWithMoons.update(0, 1);
-    saturn.enableTrail({maxPoints: 1600, color: 0xffff00, trailStep: 500});
-    solarSystemGroup.add(saturn.renderedOrbit(0xffff00));
+    Bodies.saturn.enableTrail({maxPoints: 1600, color: 0xffff00, trailStep: 500});
+    solarSystemGroup.add(Bodies.saturn.renderedOrbit(0xffff00));
 
-    const uranusWithMoons = new PlanetMoonSystem(uranus, []);
+    const uranusWithMoons = new PlanetMoonSystem(Bodies.uranus, []);
     solarSystemGroup.add(uranusWithMoons);
     uranusWithMoons.update(0, 1);
-    uranus.enableTrail({maxPoints: 1600, color: 0xaaaaaa, trailStep: 500});
-    solarSystemGroup.add(uranus.renderedOrbit(0xaaaaaa));
+    Bodies.uranus.enableTrail({maxPoints: 1600, color: 0xaaaaaa, trailStep: 500});
+    solarSystemGroup.add(Bodies.uranus.renderedOrbit(0xaaaaaa));
 
-    const neptuneWithMoons = new PlanetMoonSystem(neptune, []);
+    const neptuneWithMoons = new PlanetMoonSystem(Bodies.neptune, []);
     solarSystemGroup.add(neptuneWithMoons);
     neptuneWithMoons.update(0, 1);
-    neptune.enableTrail({maxPoints: 1600, color: 0x0000ff, trailStep: 500});
-    solarSystemGroup.add(neptune.renderedOrbit(0x0000ff));
+    Bodies.neptune.enableTrail({maxPoints: 1600, color: 0x0000ff, trailStep: 500});
+    solarSystemGroup.add(Bodies.neptune.renderedOrbit(0x0000ff));
 
     const solarSystem = [
         earthMoonSystem,
@@ -582,17 +579,18 @@
     ];
 
     const eclipticPlane = new Mesh(
-        new RingGeometry(sun.scaledRadius * 1.1, 100, 128),
+        new RingGeometry(Bodies.sun.scaledRadius * 1.1, 100, 128),
         new MeshBasicMaterial({color: 0xffaa00, transparent: true, opacity: 0.08, side: DoubleSide, depthWrite: false, visible: false })
     )
     eclipticPlane.rotation.x = Math.PI /2;
     solarSystemGroup.add(eclipticPlane);
 
     const controlsGui = new ControlsGui();
-    document.querySelectorAll("#planetControls button")
+    document.querySelectorAll("#planetControls button[data-body]")
         .forEach(button => {
             button.addEventListener("click", () => {
-                const body = bodies[button.dataset.body];
+                const key = button.dataset.body; // "jupiter", "saturn", etc.
+                const body = Bodies[key];
                 if (body) controlsGui.onSelect(body);
             });
         });
@@ -619,7 +617,7 @@
     });
 
     let tPhys = 0;
-    const eclipseIndicator = new LunarEclipseIndicator(earth, luna, earth.equatorialPlane);
+    const eclipseIndicator = new LunarEclipseIndicator(Bodies.earth, Moons.luna, Bodies.earth.equatorialPlane);
     let lastTime = performance.now() * .001;
     function animate(now) {
         const deltaSeconds = (now - lastTime) * .001;
@@ -628,7 +626,7 @@
         const dtHours = deltaSeconds * timeScale;
         tPhys += dtHours;
         solarSystem.forEach(body => body.update(tPhys));
-        sun.update(tPhys);
+        Bodies.sun.update(tPhys);
         eclipseIndicator.update();
         skyDome.update(now * .001, planetCamera);
         planetRenderer.render(planetaryScene, planetCamera);
