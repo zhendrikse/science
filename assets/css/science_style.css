@@ -75,6 +75,22 @@ figcaption {
   text-align: center;
 }
 
+.uplot {
+    background: transparent !important;
+}
+
+.uplot .u-title {
+    color: #ddd;
+}
+
+.uplot .u-axis {
+    color: #aaa;
+}
+
+.uplot .u-grid line {
+    stroke: rgba(255,255,255,0.1);
+}
+
 .canvasWrapper2D {
     position: relative;
     width: 100%;

@@ -1,28 +1,3 @@
-<style>
-    canvas {
-        background: #131313;
-        display: block;
-        width: 100%;
-        aspect-ratio: 19 / 12;
-        max-width: 800px;
-        margin: auto;
-    }
-    .uplot {
-        background: transparent !important;
-    }
-
-    .uplot .u-title {
-        color: #ddd;
-    }
-
-    .uplot .u-axis {
-        color: #aaa;
-    }
-
-    .uplot .u-grid line {
-        stroke: rgba(255,255,255,0.1);
-    }
-</style>
 <script type="importmap">
     {
       "imports": {
@@ -34,7 +9,11 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 
-<canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas><br/>
+<canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas>
+<div class="buttonRow">
+    <label for="alphaTerm"><input type="checkbox" id="alphaTerm" checked/>&nbsp;Alpha term</label>
+    <label for="betaTerm"><input type="checkbox" id="betaTerm" checked/>&nbsp;Beta term</label>
+</div>
 <div id="plot" style="margin:auto;"></div>
 
 <script type="module">
@@ -136,15 +115,8 @@
             this.position.addScaledVector(this._velocity, dt);
         }
 
-        // Strength of 1/r**3 term
-        set alpha(takeIntoAccount) {
-            this._alpha = takeIntoAccount ? 1.e6 : 0;
-        }
-
-        // Strength of 1/r**4 term
-        set beta(takeIntoAccount) {
-            this._beta = takeIntoAccount ? 1.e5 : 0;
-        }
+        toggleAlpha() { this._alpha = this._alpha === 0 ? 1e6 : 0; } // Strength of 1/r**3 term
+        toggleBeta()  { this._beta  = this._beta === 0  ? 1e5 : 0; } // Strength of 1/r**4 term
     }
 
     const skyDome = new SkyDome({starDensity: 1, skyRadius: 18 * orbitRadius, glowStarCount: 500});
@@ -180,6 +152,8 @@
     mercury.position.copy(initial_position);
     planetaryScene.add(mercury);
     mercury.enableTrail({maxPoints: 130, color: 0xaaff00, trailStep: 1});
+    document.getElementById("alphaTerm").onclick = () => mercury.toggleAlpha();
+    document.getElementById("betaTerm").onclick = () => mercury.toggleBeta();
 
     const baseDt = 2. * orbitSpeed / c_a / 20;  // Time step
     let time = 0;                      // Current simulation time
