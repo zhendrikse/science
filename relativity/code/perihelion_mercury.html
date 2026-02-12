@@ -36,7 +36,7 @@
     const rL2 = 8.19e-7;        // Specific angular momentum, in units of R0**2
 
     // Initialize distance and velocity vectors of Mercury (at perihelion)
-    const initial_position = new Vector3(0, orbitRadius, 0);
+    const initial_position = new Vector3(orbitRadius, 0, 0);
     const initial_velocity = new Vector3(0, 0, orbitSpeed);
 
     const textureLoader = new TextureLoader();
@@ -45,7 +45,7 @@
     const planetaryScene = new Scene();
     // --- CAMERA ---
     const cameraStart = {
-        position: new Vector3(-2 * orbitRadius, -3 * orbitRadius, 0),
+        position: new Vector3(-3 * orbitRadius, 1.5 * orbitRadius, 0),
         target: new Vector3(0, 0, 0)
     };
     const planetCamera = new PerspectiveCamera(40, 1, .05 * orbitRadius, 20 * orbitRadius);
@@ -171,7 +171,7 @@
     }
 
     function markPerihelion() {
-        new Sphere(planetaryScene, vec_r_last, 0.25);
+        new Sphere(planetaryScene, vec_r_last, 0.2);
         const prev = perihelion_list[perihelion_list.length - 2];
         const curr = perihelion_list[perihelion_list.length - 1];
 
@@ -187,13 +187,12 @@
         const radiusCurrent = vec_r_last.length();
         const radiusNext = mercury.position.length();
         const dr = radiusNext - radiusCurrent; // discrete derivative of radius
-        if (previousDr !== null) {
+        if (previousDr !== null)
             if (previousDr < 0 && dr > 0) { // detect transition from ascending to descending
                 turns++;
                 perihelion_list.push(vec_r_last);
                 if (turns > 1) markPerihelion();
             }
-        }
         previousDr = dr;
     }
 
