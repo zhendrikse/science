@@ -410,7 +410,7 @@ export class PlanetMoonSystem extends Group {
 
 export class Sun extends CelestialBody {
     constructor(bodyData, scale=SUN_SCALE) {
-        super(bodyData, SUN_SCALE, {resolution: 64});
+        super(bodyData, scale, {resolution: 64});
 
         this._body.castShadow = false;
         this._body.receiveShadow = false;
@@ -490,8 +490,8 @@ export class Sun extends CelestialBody {
 }
 
 export class Moon extends Satellite {
-    constructor(moonData, planet) {
-        super(moonData, planet, PLANET_SCALE);
+    constructor(moonData, planet, scale=PLANET_SCALE) {
+        super(moonData, planet, scale);
     }
 
     _material(bumpScale, identicalBumpMap) {
@@ -573,8 +573,8 @@ export class Earth extends Planet {
         "mass": 5.97219e+24,
         "spin": 2 * Math.PI / 24.,
         "tilt": 23 * Math.PI / 180
-    }) {
-        super(planetData);
+    }, scale=PLANET_SCALE) {
+        super(planetData, {scale: scale});
         this._timescale = 1; // rotation period w.r.t. Earth
         this._clouds = new EarthClouds(this._geometry.parameters.radius, this._spin);
         this.add(this._clouds);
