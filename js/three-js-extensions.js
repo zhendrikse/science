@@ -1023,8 +1023,7 @@ export class Sphere {
 
     moveTo(newPosition) {
         this._mesh.position.copy(newPosition);
-        if (this._trail)
-            this._trail.addPoint(this._mesh.position);
+        this._trail?.addPoint(this._mesh.position);
     }
 }
 
@@ -1077,7 +1076,7 @@ export class Cylinder {
         this._group = group;
         this._group.add(this._cylinder);
 
-        this._trail = new Trail(this);
+        this._trail = null;
         if (makeTrail) this.enableTrail();
     }
 
@@ -1086,11 +1085,12 @@ export class Cylinder {
     }
 
     enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+        this._trail = new Trail(this);
         this._trail.enable({maxPoints, color, lineWidth, trailStep });
     }
 
-    updateTrail(dt) { this._trail.update(dt); }
-    disposeTrail() { this._trail.dispose(); }
+    updateTrail(dt) { this._trail?.update(dt); }
+    disposeTrail() { this._trail?.dispose(); }
 
     moveTo(newPosition) {
         this._cylinder.position.copy(newPosition);
@@ -1134,18 +1134,20 @@ export class Arrow extends Group {
         this.position.copy(position);
         this.updateAxis(axis);
         this.visible = visible;
-        this._trail = new Trail(this);
+        this._trail = null;
         if (makeTrail) this.enableTrail();
     }
 
     get axis() { return this._axis.clone(); }
 
+
     enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+        this._trail = new Trail(this);
         this._trail.enable({maxPoints, color, lineWidth, trailStep });
     }
 
-    updateTrail(dt) { this._trail.update(dt); }
-    disposeTrail() { this._trail.dispose(); }
+    updateTrail(dt) { this._trail?.update(dt); }
+    disposeTrail() { this._trail?.dispose(); }
 
     dispose() {
         this.disposeTrail();
@@ -1198,180 +1200,6 @@ export class Arrow extends Group {
     moveTo(newPositionVector) { this.position.copy(newPositionVector); }
     positionVectorTo = (other) => other.position.clone().sub(this.position);
     distanceToSquared = (other) => this.position.distanceToSquared(other.position);
-}
-
-export class Graph {
-    constructor(canvas, {
-        maxPoints = 300,
-        dt = 0.02,
-        scaleY = 1,
-        offsetY = null,
-        background = "transparent",
-        gridColor = "#333",
-        axisColor = "#888",
-        textColor = "#aaa",
-        font = "12px sans-serif"
-    } = {}) {
-        this.canvas = canvas;
-        this.context = canvas.getContext("2d");
-
-        this.maxPoints = maxPoints;
-        this.dt = dt;
-        this.scaleY = scaleY;
-        this.offsetY = offsetY ?? canvas.height * 0.9;
-
-        this.gridColor = gridColor;
-        this.axisColor = axisColor;
-        this.textColor = textColor;
-        this.font = font;
-
-        this.series = new Map();
-        this.time = 0;
-
-        this.canvas.style.backgroundColor = background;
-    }
-
-    addSeries(name, color) { this.series.set(name, { data: [], color }); }
-
-    push(values) {
-        this.time += this.dt;
-
-        for (const [name, value] of Object.entries(values)) {
-            const series = this.series.get(name);
-            if (!series) continue;
-
-            series.data.push({ t: this.time, v: value });
-            if (series.data.length > this.maxPoints) series.data.shift();
-        }
-    }
-
-    clear() { this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); }
-
-    draw() {
-        this.clear();
-        this._drawGrid();
-        this._drawAxes();
-
-        for (const series of this.series.values())
-            this._drawLine(series);
-    }
-
-    _drawLine(series) {
-        const { data, color } = series;
-        if (data.length === 0) return;
-
-        const t0 = data[0].t;
-        const t1 = data[data.length - 1].t;
-        const span = t1 - t0 || 1;
-
-        const context = this.context;
-        context.beginPath();
-        context.strokeStyle = color;
-
-        data.forEach((point, index) => {
-            const x = (point.t - t0) / span * this.canvas.width;
-            const y = this.offsetY - point.v * this.scaleY;
-            if (index === 0) context.moveTo(x, y);
-            else context.lineTo(x, y);
-        });
-
-        context.stroke();
-    }
-
-    _drawGrid() {
-        const context = this.context;
-        context.strokeStyle = this.gridColor;
-        context.lineWidth = 1;
-
-        // TODO Implement DPR
-        // const dpr = window.devicePixelRatio || 1;
-        // canvas.width  = cssWidth  * dpr;
-        // canvas.height = cssHeight * dpr;
-        // context.scale(dpr, dpr);
-        const width = this.canvas.width;
-        const height = this.canvas.height;
-
-        const { tMin, tMax } = this._getTimeRange();
-        const span = tMax - tMin;
-
-        const tStep = this._niceStep(span / 10);
-
-        for (let t = Math.ceil(tMin / tStep) * tStep; t <= tMax; t += tStep) {
-            const x = this._snap((t - tMin) / span * width);
-            context.beginPath();
-            context.moveTo(x, 0);
-            context.lineTo(x, height);
-            context.stroke();
-        }
-
-        // horizontale grid (Y blijft hetzelfde)
-        const yStep = this._niceStep(height / (this.scaleY * 6));
-        for (let v = -1000; v <= 1000; v += yStep) {
-            const y = this._snap(this.offsetY - v * this.scaleY);
-            if (y < 0 || y > height) continue;
-            context.beginPath();
-            context.moveTo(0, y);
-            context.lineTo(width, y);
-            context.stroke();
-        }
-    }
-
-    _drawAxes() {
-        const context = this.context;
-        context.strokeStyle = this.axisColor;
-        context.fillStyle = this.textColor;
-        context.font = this.font;
-
-        const width = this.canvas.width;
-        const height = this.canvas.height;
-
-        // X axis (time)
-        const { tMin, tMax } = this._getTimeRange();
-        const span = tMax - tMin;
-        const tStep = this._niceStep(span / 5);
-
-        for (let t = Math.ceil(tMin / tStep) * tStep; t <= tMax; t += tStep) {
-            const x = Math.round((t - tMin) / span * width);
-            context.fillText(`${t.toFixed(1)} s`, x + 2, height - 5);
-        }
-
-        // Y labels
-        const yStep = this._niceStep(height / (this.scaleY * 6));
-        for (let v = -1000; v <= 1000; v += yStep) {
-            const y = Math.round(this.offsetY - v * this.scaleY);
-            if (y < 0 || y > height) continue;
-            context.fillText(v.toFixed(0), 4, y - 2);
-        }
-    }
-
-    _niceStep(raw) {
-        const exp = Math.floor(Math.log10(raw));
-        const f = raw / Math.pow(10, exp);
-        const nice =
-            f < 1.5 ? 1 :
-                f < 3   ? 2 :
-                    f < 7   ? 5 : 10;
-        return nice * Math.pow(10, exp);
-    }
-
-    _getTimeRange() {
-        let tMin = Infinity;
-        let tMax = -Infinity;
-
-        for (const { data } of this.series.values()) {
-            if (data.length === 0) continue;
-            tMin = Math.min(tMin, data[0].t);
-            tMax = Math.max(tMax, data[data.length - 1].t);
-        }
-
-        if (!isFinite(tMin) || tMax === tMin)
-            return { tMin: 0, tMax: 1 };
-
-        return { tMin, tMax };
-    }
-
-    _snap(v) { return Math.round(v) + 0.5; }
-
 }
 
 class Helix extends Curve {
@@ -1457,10 +1285,10 @@ export class Ball {
             metalness:0.7,
             roughness:0.2
         });
-        this._sphere = new Sphere(parent, position, radius, makeTrail,
-            {segments: segments, material: material});
+        this._sphere = new Sphere(parent, position, radius, makeTrail,{segments: segments, material: material});
         this._ball = new PhysicalObject(position, velocity, mass);
-        this._trail = new Trail(this);
+        this._trail = null;
+        if (makeTrail) this.enableTrail();
     }
 
     semiImplicitEulerUpdate(force, dt=0.01) {
@@ -1478,13 +1306,14 @@ export class Ball {
         this._sphere.moveTo(this._ball.position);
     }
 
-
     enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+        this._trail = new Trail(this);
         this._trail.enable({maxPoints, color, lineWidth, trailStep });
     }
 
-    updateTrail(dt) { this._trail.update(dt); }
-    disposeTrail() { this._trail.dispose(); }
+    updateTrail(dt) { this._trail?.update(dt); }
+    disposeTrail() { this._trail?.dispose(); }
+
     position = () => this._ball.position;
     velocity = () => this._ball.velocity;
     accelerateTo = (newVelocity) => this._ball.accelerateTo(newVelocity);
