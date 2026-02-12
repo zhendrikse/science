@@ -80,7 +80,7 @@ figcaption {
 }
 
 .uplot .u-title {
-    color: #ddd;
+    color: #ff0;
 }
 
 .uplot .u-axis {
@@ -88,7 +88,23 @@ figcaption {
 }
 
 .uplot .u-grid line {
-    stroke: rgba(255,255,255,0.1);
+    stroke: rgba(255, 255, 255, 0.5);
+}
+
+/* Legend container */
+.uplot .u-legend {
+    color: #ff0 !important;       /* wit */
+}
+
+/* Series labels in legend */
+.uplot .u-legend .u-legend-series {
+    color: #ff0 !important;       /* wit voor elke serie */
+}
+
+/* Tooltip/hover */
+.uplot .u-tooltip {
+    color: #ff0 !important;
+    background: rgba(0,0,0,0.6) !important; /* optioneel: semi-transparante donkere achtergrond */
 }
 
 .canvasWrapper2D {

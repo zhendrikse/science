@@ -208,7 +208,7 @@
         height: planetsCanvas.clientHeight * .5,
         title: "Perihelion precession",
         scales: {
-            x: { label: "Orbit number" },
+            x: { time: false },  // <--- no date interpretation
             y: { label: "Precession angle (deg)" }
         },
         series: [{},
