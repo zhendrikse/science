@@ -1382,6 +1382,6 @@ export class Spring {
     get position() { return this._position; }
     get axis() { return this._axis; }
     get k() { return this._k; }
-    get force() { return -this._k * this.displacement(); }
+    get force() { return -this._k * this.displacement; }
     get displacement() {return this._restLength - this._axis.length(); }
 }
