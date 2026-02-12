@@ -996,7 +996,7 @@ export class Sphere {
                 metalness:0.7,
                 roughness:0.2
             })
-        }) {
+        } = {}) {
         this._mesh = new Mesh(new SphereGeometry(radius, segments, segments), material);
         this._mesh.position.copy(position);
         this._mesh.castShadow = true;
