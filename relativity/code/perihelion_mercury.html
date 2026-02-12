@@ -1,326 +1,195 @@
-<style>
-    html, body {
-        background: #131313;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        height: 100%;
-    }
-
-    #glowscript-wrapper {
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 4 / 3;
-        margin: auto;
-    }
-
-    .glowscript canvas {
-        display: block;
-        touch-action: none;
-        width: 100%;
-        height: 100%;
-    }
-</style>
-<script>
-    // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
     }
 </script>
-<div id="glowscript-wrapper">
-    <div id="glowscript" class="glowscript"></div>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-    <link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
-    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-    <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-    <script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-    <script type="text/javascript"><!--//--><![CDATA[//><!--
 
-    // START JAVASCRIPT
-    ;(function() {;
-        var ρσ_modules = {};
-        ρσ_modules.pythonize = {};
+<canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas><br/>
+<div class="guiContainer" id="gui-container"></div>
 
-        (function(){
-            function strings() {
-                var string_funcs, exclude, name;
-                string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-                if (!arguments.length) {
-                    exclude = (function(){
-                        var s = ρσ_set();
-                        s.jsset.add("split");
-                        s.jsset.add("replace");
-                        return s;
-                    })();
-                } else if (arguments[0]) {
-                    exclude = Array.prototype.slice.call(arguments);
-                } else {
-                    exclude = null;
-                }
-                if (exclude) {
-                    string_funcs = string_funcs.difference(set(exclude));
-                }
-                var ρσ_Iter0 = string_funcs;
-                ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-                for (var ρσ_Index0 of ρσ_Iter0) {
-                    name = ρσ_Index0;
-                    (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-                }
-            };
-            if (!strings.__module__) Object.defineProperties(strings, {
-                __module__ : {value: "pythonize"}
+<script type="module">
+    import { MeshPhongMaterial, TextureLoader, Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight,
+        PointLight, ACESFilmicToneMapping, SRGBColorSpace } from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { ThreeJsUtils, Sphere } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { SkyDome, Sun, TEXTURES_PATH, DISTANCE_SCALE, PLANET_SCALE, SUN_SCALE, CelestialBody }
+        from 'https://www.hendrikse.name/science/js/astro-extensions.js';
+    import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
+
+    const planetsCanvas = document.getElementById('planetsCanvas');
+    planetsCanvas.focus();
+    console.clear();
+
+    let timeScale = 96;         // 96 hours (4 days) equal to one second simulation time
+    const orbitRadius = 4.60;   // Initial radius of Mercury orbit, in units of R0
+    const orbitSpeed = 5.10e-1; // Initial orbital speed of Mercury, in units of R0/T0
+    const c_a = 9.90e-1;        // Base acceleration of Mercury, in units of R0**3/T0**2
+    const sunSchwarzschildRadius = 2.95e-7;  // Schwarzschild radius of Sun,in units of R0
+    const rL2 = 8.19e-7;        // Specific angular momentum, in units of R0**2
+
+    // Initialize distance and velocity vectors of Mercury (at perihelion)
+    const initial_position = new Vector3(0, orbitRadius, 0);
+    const initial_velocity = new Vector3(0, 0, orbitSpeed);
+
+    const textureLoader = new TextureLoader();
+    textureLoader.setCrossOrigin("anonymous");
+
+    const planetaryScene = new Scene();
+    // --- CAMERA ---
+    const cameraStart = {
+        position: new Vector3(-2 * orbitRadius, -3 * orbitRadius, 0),
+        target: new Vector3(0, 0, 0)
+    };
+    const planetCamera = new PerspectiveCamera(40, 1, .05 * orbitRadius, 20 * orbitRadius);
+    planetCamera.position.copy(cameraStart.position);
+
+    const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: true} );
+    planetRenderer.shadowMap.enabled = false;
+    planetRenderer.setAnimationLoop( animate );
+    planetRenderer.toneMapping = ACESFilmicToneMapping;
+    planetRenderer.toneMappingExposure = 1.5;
+    planetRenderer.outputColorSpace = SRGBColorSpace;
+
+    // Resizing for mobile devices
+    ThreeJsUtils.resizeRendererToCanvas(planetRenderer, planetCamera);
+    window.addEventListener('resize', () => {
+        ThreeJsUtils.resizeRendererToCanvas(planetRenderer, planetCamera);
+    });
+
+    const controls = new OrbitControls(planetCamera, planetsCanvas);
+    controls.target.copy(cameraStart.target);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    class RelativisticMercury extends CelestialBody {
+        constructor(planetData, scaleFactor, {bumpScale=0.005, identicalBumpMap=false} = {}) {
+            super(planetData, scaleFactor, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
+            this._body.castShadow = true;
+            this._body.receiveShadow = false;
+            this._orbit = [];
+            this._alpha = 1e6;
+            this._beta = 1e5;
+            this._velocity = initial_velocity;
+        }
+
+        _material(bumpScale, identicalBumpMap) {
+            const bumpMap = TEXTURES_PATH + this._name + (identicalBumpMap ? "map.jpg" : "bump.jpg");
+            return new MeshPhongMaterial({
+                map: textureLoader.load(`${TEXTURES_PATH}` + this._name + "map.jpg"),
+                bumpMap: textureLoader.load(bumpMap),
+                bumpScale: bumpScale,
+                shininess: 0
             });
+        }
 
-            ρσ_modules.pythonize.strings = strings;
-        })();
+        coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
+        renderOrbit(color) { return this._orbit.draw({
+            color: color,
+            opacity: 0.4,
+            scale: 1000 / DISTANCE_SCALE
+        }); }
 
-        async function __main__() {
-            "use strict";
-            var display = canvas;
-            var scene = canvas();
+        update_by(t, dt) {
+            this.updateTrail();
+            this.updateRotation(t);
 
-            function round(num, n=0) {return Number(num.toFixed(n))}
-            var arrow, box, compound, cone, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, sin, cos, tan, asin, atan, atan2, exp, log, pow, factorial, combin, button, radio, slider, text, download, radians, degrees, get_library, read_local_file
-            var version, print, arange, __name__, type, ρσ_ls, title, animation, rM0, vM0, c_a, sun_schwarzschild_radius, rL2, initial_position, initial_velocity, sun, _GS_1, mercurius, _, max_turns, graph_, dots_, curve_, dt, time, turns, vec_r_last, perihelion_list, sum_angle, vec_r_before_last;
-            version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-            Array.prototype['+'] = function(r) {return this.concat(r)}
-            Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-            window.__GSlang = "vpython";
-            print = GSprint;
-            arange = range;
-            __name__ = "__main__";
-            type = pytype;
-            var strings = ρσ_modules.pythonize.strings;
+            const current_pos = this.position.clone();
+            const positionLength  = current_pos.length();
+            this._orbit.push(current_pos);
+            const old_position_vector_magnitude_squared = positionLength * positionLength;
 
-            strings();
-            "8";
-            title = "&#x2022; Based on the original <a href=\"https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py\">base_solution.py<\/a> code\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/perihelion_mercury.py\">perihelion_mercury.py</a>\n&#x2022; Values are computed using the <a href=\"https://nssdc.gsfc.nasa.gov/planetary/factsheet\">NASA fact sheet</a>\n\n";
-            "10";
-            animation = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, forward: vector(0, .5, 1["-u"]()["*"](.85)), background: color.gray(.075), center: vector(0, 1["-u"]()["*"](1), 0), range: 7})]);
-            "11";
-            ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), texture: "https://i.imgur.com/1nVWbbd.jpg", radius: 30, shininess: 0, opacity: .5})]);
-            "13";
-            rM0 = 4.6;
-            "14";
-            vM0 = .51;
-            "15";
-            c_a = .99;
-            "16";
-            sun_schwarzschild_radius = 2.95e-7;
-            "17";
-            rL2 = 8.19e-7;
-            "20";
-            initial_position = vector(0, rM0, 0);
-            "21";
-            initial_velocity = vector(vM0, 0, 0);
-            "23";
-            sun = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), radius: 1.5, texture: "https://i.imgur.com/yoEzbtg.jpg"})]);
-            "24";
-            sun.velocity = vector(0, 0, 0);
-            "26";
-            function Mercury() {;
+            // Compute the factor coming from General Relativity
+            const fact = 1 + this._alpha * sunSchwarzschildRadius / positionLength + this._beta * rL2 / old_position_vector_magnitude_squared;
+            const acceleration_magnitude = c_a * fact / old_position_vector_magnitude_squared;
+            const acceleration_vector = current_pos.multiplyScalar(-acceleration_magnitude / positionLength);
+
+            this._velocity.addScaledVector(acceleration_vector, dt);
+            this.position.addScaledVector(this._velocity, dt);
+        }
+
+        // Strength of 1/r**3 term
+        set alpha(takeIntoAccount) {
+            this._alpha = takeIntoAccount ? 1.e6 : 0;
+        }
+
+        // Strength of 1/r**4 term
+        set beta(takeIntoAccount) {
+            this._beta = takeIntoAccount ? 1.e5 : 0;
+        }
+    }
+
+    const skyDome = new SkyDome({starDensity: 1, skyRadius: 18 * orbitRadius, glowStarCount: 500});
+    planetaryScene.add(skyDome);
+
+    const sun = new Sun({
+        "name": "sun",
+        "radius": 696300000.0,
+        "mass": 1.9885440000000002e+30,
+        "spin": 3600 * 2.8653290845717256e-06,
+        "tilt": 0.1265363707695889
+    }, SUN_SCALE * orbitRadius * .5);
+
+    sun.position.set(0, 0, 0);
+    planetaryScene.add(sun);
+    const sunLight = new PointLight(0xffffff, 2.0, 0, .1); // intense, no max distance
+    sunLight.position.set(0, 0, 0);
+    planetaryScene.add(sunLight);
+    planetaryScene.add(new AmbientLight(0xffffff, 0.2));
+
+    const mercury = new RelativisticMercury({
+        "name": "mercury",
+        'a': 57909050.,
+        'e': 0.205630,
+        'inclination': 7 * Math.PI / 180.,
+        'right_ascension': 0.8436854966,
+        'mean_anomaly': 3.0507657193,
+        'radius': 2439.7 * 1e3,
+        "mass": 3.302e+23,
+        'tilt': 0.1 * Math.PI / 180.,
+        "spin": 2 * Math.PI / 4222.6
+    }, PLANET_SCALE * orbitRadius * .4);
+    mercury.position.copy(initial_position);
+    planetaryScene.add(mercury);
+    mercury.enableTrail({maxPoints: 93, color: 0xaaff00, trailStep: 5});
+
+    const baseDt = 2. * orbitSpeed / c_a / 20;  // Time step
+    let time = 0;  // Current simulation time
+    let turns = 0;
+    let vec_r_last = initial_position; // Previous position of Mercury
+    const perihelion_list = [];        // List of perihelion locations
+    let sum_angle  = 0.;               // Angle between first and last perihelion
+
+    let tPhys = 0;
+    let lastTime = performance.now() * .001;
+    function animate(now) {
+        const deltaSeconds = (now - lastTime) * .001;
+        lastTime = now;
+        const dtHours = deltaSeconds * timeScale;
+        tPhys += dtHours;
+
+        const vec_r_before_last = vec_r_last;
+        vec_r_last = mercury.position.clone();
+        mercury.update_by(tPhys, baseDt * dtHours);
+        if (vec_r_before_last.length() > vec_r_last.length() && vec_r_last.length() < mercury.position.length()) {
+            turns++;
+            perihelion_list.push(vec_r_last);
+            if (turns > 1) {
+                // Draw location of perihelion
+                new Sphere(planetaryScene, vec_r_last, .2);
+                // TODO plot data
+                //sum_angle += angle_between(perihelion_list[-2], perihelion_list[-1])
+                //dots_.plot(turns, angle_between(perihelion_list[-2], perihelion_list[-1]))
+                //curve_.plot(turns, sum_angle)
             }
-            Mercury.prototype.__init__ = async function __init__() {
-                var self = this;
-                var position = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.position : arguments[0];
-                var velocity = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.velocity : arguments[1];
-                var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-                if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "position")){
-                    position = ρσ_kwargs_obj.position;
-                }
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "velocity")){
-                    velocity = ρσ_kwargs_obj.velocity;
-                }
-                "28";
-                self._mercurius = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: position, radius: .5, texture: "https://i.imgur.com/SLgVbwD.jpeg"})]);
-                "29";
-                self._velocity = velocity;
-                "30";
-                self._trajectory = ρσ_interpolate_kwargs.call(this, curve, [ρσ_desugar_kwargs({radius: .01, color: color.yellow})]);
-                "31";
-                self._alpha = 1e6;
-                "32";
-                self._beta = 1e5;
-            };
-            if (!Mercury.prototype.__init__.__defaults__) Object.defineProperties(Mercury.prototype.__init__, {
-                __defaults__ : {value: {position:initial_position, velocity:initial_velocity}},
-                __handles_kwarg_interpolation__ : {value: true},
-                __argnames__ : {value: ["position", "velocity"]},
-                __module__ : {value: null}
-            });
-            Mercury.__argnames__ = Mercury.prototype.__init__.__argnames__;
-            Mercury.__handles_kwarg_interpolation__ = Mercury.prototype.__init__.__handles_kwarg_interpolation__;
-            Mercury.prototype.update_by = async function update_by(dt) {
-                var self = this;
-                var ρσ_ls, current_pos, old_position_vector_magnitude_squared, fact, acceleration_magnitude, acceleration_vector;
-                "35";
-                current_pos = self._mercurius.pos;
-                "37";
-                ρσ_interpolate_kwargs.call(self._trajectory, self._trajectory.append, [ρσ_desugar_kwargs({pos: current_pos})]);
-                "38";
-                old_position_vector_magnitude_squared = current_pos.mag["*"](current_pos.mag);
-                "41";
-                fact = 1["+"](self._alpha["*"](sun_schwarzschild_radius)["/"](current_pos.mag))["+"](self._beta["*"](rL2)["/"](old_position_vector_magnitude_squared));
-                "43";
-                acceleration_magnitude = c_a["*"](fact)["/"](old_position_vector_magnitude_squared);
-                "44";
-                acceleration_vector = 1["-u"]()["*"](acceleration_magnitude)["*"](current_pos["/"](current_pos.mag));
-                "46";
-                self._velocity=self._velocity["+"](acceleration_vector["*"](dt));
-                "47";
-                self._mercurius.pos=self._mercurius.pos["+"](self._velocity["*"](dt));
-            };
-            if (!Mercury.prototype.update_by.__argnames__) Object.defineProperties(Mercury.prototype.update_by, {
-                __argnames__ : {value: ["dt"]},
-                __module__ : {value: null}
-            });
-            Mercury.prototype.set_alpha = async function set_alpha(bool_value) {
-                var self = this;
-                "51";
-                self._alpha = (bool_value) ? 1e6 : 0;
-            };
-            if (!Mercury.prototype.set_alpha.__argnames__) Object.defineProperties(Mercury.prototype.set_alpha, {
-                __argnames__ : {value: ["bool_value"]},
-                __module__ : {value: null}
-            });
-            Mercury.prototype.set_beta = async function set_beta(bool_value) {
-                var self = this;
-                "55";
-                self._beta = (bool_value) ? 1e5 : 0;
-            };
-            if (!Mercury.prototype.set_beta.__argnames__) Object.defineProperties(Mercury.prototype.set_beta, {
-                __argnames__ : {value: ["bool_value"]},
-                __module__ : {value: null}
-            });
-            Mercury.prototype.pos = async function pos() {
-                var self = this;
-                "58";
-                return self._mercurius.pos;
-            };
-            if (!Mercury.prototype.pos.__module__) Object.defineProperties(Mercury.prototype.pos, {
-                __module__ : {value: null}
-            });
-            Mercury.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-            };
-            Mercury.prototype.__str__ = async function __str__() {
-                return this.__repr__();
-            };
-            Object.defineProperty(Mercury.prototype, "__bases__", {value: []});
+        }
+
+        sun.update(tPhys);
+        skyDome.update(now * .001, planetCamera);
+        planetRenderer.render(planetaryScene, planetCamera);
+    }
 
 
-
-
-
-
-            "61";
-            _GS_1 = new Mercury;
-            (await _GS_1.__init__());
-            mercurius = _GS_1;
-            "63";
-            async function set_alpha(event) {
-                "64";
-                (await mercurius.set_alpha(event.checked));
-            };
-            if (!set_alpha.__argnames__) Object.defineProperties(set_alpha, {
-                __argnames__ : {value: ["event"]},
-                __module__ : {value: null}
-            });
-
-            "66";
-            async function set_beta(event) {
-                "67";
-                (await mercurius.set_beta(event.checked));
-            };
-            if (!set_beta.__argnames__) Object.defineProperties(set_beta, {
-                __argnames__ : {value: ["event"]},
-                __module__ : {value: null}
-            });
-
-            "69";
-            animation.append_to_caption("\n");
-            "70";
-            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Alpha term ", bind: set_alpha, checked: true})]);
-            "71";
-            _ = ρσ_interpolate_kwargs.call(this, checkbox, [ρσ_desugar_kwargs({text: "Beta term ", bind: set_beta, checked: true})]);
-            "72";
-            animation.append_to_caption("\n");
-            "74";
-            async function angle_between(v1, v2) {
-                "76";
-                return acos(dot(v1, v2)["/"](v1.mag["*"](v2.mag)))["*"](180)["/"](pi);
-            };
-            if (!angle_between.__argnames__) Object.defineProperties(angle_between, {
-                __argnames__ : {value: ["v1", "v2"]},
-                __module__ : {value: null}
-            });
-
-            "78";
-            max_turns = 10;
-            "79";
-            graph_ = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({title: "Perihelion growth", background: color.black, xtitle: "Number of turns", ytitle: "Angle between perihelions (degrees)", xmin: 2, xmax: max_turns, ymin: 0, ymax: 90})]);
-            "80";
-            dots_ = ρσ_interpolate_kwargs.call(this, gdots, [ρσ_desugar_kwargs({color: color.green})]);
-            "81";
-            curve_ = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.cyan})]);
-            "84";
-            dt = 2["*"](vM0)["/"](c_a)["/"](20);
-            "85";
-            time = 0;
-            "86";
-            turns = 0;
-            "87";
-            vec_r_last = initial_position;
-            "88";
-            perihelion_list = list();
-            "89";
-            sum_angle = 0;
-            "90";
-            while (turns["<"](max_turns)) {
-                "91";
-                vec_r_before_last = vec_r_last;
-                "92";
-                vec_r_last = vector((await mercurius.pos()));
-                "93";
-                (await rate(200));
-                "94";
-                (await mercurius.update_by(dt));
-                "96";
-                if (vec_r_before_last.mag[">"](ρσ_cond_temp = vec_r_last.mag) && ρσ_cond_temp["<"]((await mercurius.pos()).mag)) {
-                    "97";
-                    turns = turns["+"](1);
-                    "98";
-                    perihelion_list.append(vec_r_last);
-                    "99";
-                    if (turns[">"](1)) {
-                        "101";
-                        ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({color: color.green, radius: .2, pos: vec_r_last})]);
-                        "102";
-                        sum_angle=sum_angle["+"]((await angle_between(ρσ_getitem(perihelion_list, 1["-u"]()["*"](2)), ρσ_getitem(perihelion_list, 1["-u"]()["*"](1)))));
-                        "103";
-                        dots_.plot(turns, (await angle_between(ρσ_getitem(perihelion_list, 1["-u"]()["*"](2)), ρσ_getitem(perihelion_list, 1["-u"]()["*"](1)))));
-                        "104";
-                        curve_.plot(turns, sum_angle);
-                    }
-                }
-            }
-        };
-        if (!__main__.__module__) Object.defineProperties(__main__, {
-            __module__ : {value: null}
-        });
-
-        ;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-    // END JAVASCRIPT
-
-    //--><!]]></script>
-</div>
+</script>
