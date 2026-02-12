@@ -985,7 +985,7 @@ export class Sphere {
         group,
         position=new Vector3(0, 0, 0),
         radius=1,
-        color="yellow",
+        color=0xffff00,
         makeTrail=false,
         {
             segments=24,
@@ -1285,7 +1285,7 @@ export class Ball {
             metalness:0.7,
             roughness:0.2
         });
-        this._sphere = new Sphere(parent, position, radius, makeTrail,{segments: segments, material: material});
+        this._sphere = new Sphere(parent, position, radius, color, makeTrail,{segments: segments, material: material});
         this._ball = new PhysicalObject(position, velocity, mass);
         this._trail = null;
         if (makeTrail) this.enableTrail();
