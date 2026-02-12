@@ -29,7 +29,8 @@ the checkboxes.
 <p style="clear: both;"></p>
 
 🔧 [perihelion_mercury.html](https://github.com/zhendrikse/science/blob/main/relativity/code/perihelion_mercury.html) refactored and ported to JavaScript by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
-👉 Based on [base_solution.py](https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py) by [Christopher Körber](https://github.com/ckoerber), see also his [accompanying slides](https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf)<br/>
+👉 Based on [base_solution.py](https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py) by [Christopher Körber](https://github.com/ckoerber)<br/>
+👉 See also his [accompanying slides](https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf) and [article on arXiv](https://arxiv.org/abs/1803.01678)<br/>
 🔑 Values are computed using the [NASA fact sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet)
 
 ### Definitions of aphelion and perihelion

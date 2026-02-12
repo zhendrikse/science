@@ -7,6 +7,21 @@
         max-width: 800px;
         margin: auto;
     }
+    .uplot {
+        background: transparent !important;
+    }
+
+    .uplot .u-title {
+        color: #ddd;
+    }
+
+    .uplot .u-axis {
+        color: #aaa;
+    }
+
+    .uplot .u-grid line {
+        stroke: rgba(255,255,255,0.1);
+    }
 </style>
 <script type="importmap">
     {
@@ -215,8 +230,8 @@
     ];
 
     const plot = new uPlot({
-        width: planetsCanvas.width,
-        height: planetsCanvas.height * .5,
+        width: planetsCanvas.clientWidth,
+        height: planetsCanvas.clientHeight * .5,
         title: "Perihelion precession",
         scales: {
             x: { label: "Orbit number" },
