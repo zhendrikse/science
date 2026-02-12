@@ -1,4 +1,41 @@
-<div id="glowscript" class="glowscript">
+<style>
+    html, body {
+        background: #131313;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        height: 100%;
+    }
+
+    #glowscript-wrapper {
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 4 / 3;
+        margin: auto;
+    }
+
+    .glowscript canvas {
+        display: block;
+        touch-action: none;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<script>
+    // Disable MathJax within GlowScript library
+    // if (window.MathJax && !MathJax.Hub) {
+    //     MathJax.Hub = {
+    //         Configured: function(){},
+    //         Config: function(){},
+    //         Queue: function(){},
+    //         Typeset: function(){}
+    //     };
+    // }
+</script>
+<div id="glowscript-wrapper">
+    <div id="glowscript" class="glowscript"></div>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -68,7 +105,7 @@ async function __main__() {
     "16";
     title = "&#x2022; The <span style=\"color: red\">red lines<\/span> represent the time axis, running from the bottom to the top.\n&#x2022; The black lines are a spatial coordinate, pointing towards the Earth.\n&#x2022; The Earth can be shown, but does <em>not</em> do justice to the <em>time</em> coordinate, of course!\n&#x2022; A background with stars can be enabled, but <em>violates the time coordinate</em> in a similar way!\n\n&#x2022; Original <a href=\"https://github.com/Yurlungur/our-local-spacetime/blob/master/local_spacetime.py\">local_spacetime.py</a> by Jonah Miller (jonah.maxwell.miller@gmail.com).\n&#x2022; Ported to VPython by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a>, see <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/local_space_time.py\">local_space_time.py</a>\n&#x2022; Learn more about this visualization in Jonah Miller&apos;s elaborate article <a href=\"https://www.thephysicsmill.com/2015/09/06/our-local-spacetime/\">Our Local Spacetime</a>.\n&#x2022; Credits to ChatGPT for helping out with the optimization of the Gaussian quadrature.\n\n";
     "18";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 650, height: 650, background: color.gray(.075), center: vec(.18, 1["-u"]()["*"](.37), 1.7), range: 4.25, forward: vec(1["-u"]()["*"](.8), 1["-u"]()["*"](.15), 1["-u"]()["*"](.55))})]);
+    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), center: vec(.18, 1["-u"]()["*"](.37), 1.7), range: 4.25, forward: vec(1["-u"]()["*"](.8), 1["-u"]()["*"](.15), 1["-u"]()["*"](.55))})]);
     "20";
     earth = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({texture: textures.earth, visible: false})]);
     "21";
