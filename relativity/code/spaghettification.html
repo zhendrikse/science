@@ -11,7 +11,7 @@
 
 <script type="module">
     import { Color, TextureLoader, Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight,
-        PointLight, ACESFilmicToneMapping, SRGBColorSpace, MathUtils } from "three";
+        PointLight } from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { ThreeJsUtils, Sphere, PhysicalObject } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { SkyDome }
@@ -38,9 +38,6 @@
     const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: true} );
     planetRenderer.shadowMap.enabled = false;
     planetRenderer.setAnimationLoop( animate );
-    planetRenderer.toneMapping = ACESFilmicToneMapping;
-    planetRenderer.toneMappingExposure = 1.5;
-    planetRenderer.outputColorSpace = SRGBColorSpace;
 
     // Resizing for mobile devices
     ThreeJsUtils.resizeRendererToCanvas(planetRenderer, planetCamera);
@@ -79,15 +76,16 @@
             this._sphere = new Sphere(planetaryScene, position, radius, color);
             this._position = position.clone();
             this._velocity = velocity.clone();
+            this._rVector = new Vector3();
         }
 
         update(dt, blackHolePos) {
             this._position.addScaledVector(this._velocity, dt);
             this._sphere.moveTo(this._position);
-            const rVector = new Vector3().subVectors(this._position, blackHolePos);
-            const r2 = rVector.lengthSq();
-            rVector.normalize().multiplyScalar(-15.0 / r2);
-            this._velocity.addScaledVector(rVector, dt);
+            this._rVector.subVectors(this._position, blackHolePos);
+            const r2 = this._rVector.lengthSq();
+            this._rVector.normalize().multiplyScalar(-15.0 / r2);
+            this._velocity.addScaledVector(this._rVector, dt);
         }
     }
 
@@ -164,7 +162,7 @@
         const deltaSeconds = (now - lastTime) * .001;
         lastTime = now;
 
-        person.update(deltaSeconds, blackHolePos);
+        person.update(deltaSeconds * 2, blackHolePos);
         skyDome.update(now * .001, planetCamera);
         planetRenderer.render(planetaryScene, planetCamera);
     }
