@@ -1,3 +1,13 @@
+<style>
+    canvas {
+        background: #131313;
+        display: block;
+        width: 100%;
+        aspect-ratio: 19 / 12;
+        max-width: 800px;
+        margin: auto;
+    }
+</style>
 <script type="importmap">
     {
       "imports": {
@@ -6,18 +16,19 @@
       }
     }
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
+<script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 
 <canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas><br/>
-<div class="guiContainer" id="gui-container"></div>
+<div id="plot" style="background: transparent; margin:auto;"></div>
 
 <script type="module">
     import { MeshPhongMaterial, TextureLoader, Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight,
-        PointLight, ACESFilmicToneMapping, SRGBColorSpace } from "three";
+        PointLight, ACESFilmicToneMapping, SRGBColorSpace, MathUtils } from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
     import { ThreeJsUtils, Sphere } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import { SkyDome, Sun, TEXTURES_PATH, DISTANCE_SCALE, PLANET_SCALE, SUN_SCALE, CelestialBody }
         from 'https://www.hendrikse.name/science/js/astro-extensions.js';
-    import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
 
     const planetsCanvas = document.getElementById('planetsCanvas');
     planetsCanvas.focus();
@@ -153,7 +164,7 @@
     }, PLANET_SCALE * orbitRadius * .4);
     mercury.position.copy(initial_position);
     planetaryScene.add(mercury);
-    mercury.enableTrail({maxPoints: 68, color: 0xaaff00, trailStep: 1});
+    mercury.enableTrail({maxPoints: 130, color: 0xaaff00, trailStep: 1});
 
     const baseDt = 2. * orbitSpeed / c_a / 20;  // Time step
     let time = 0;                      // Current simulation time
@@ -162,7 +173,28 @@
     const perihelion_list = [];        // List of perihelion locations
     let sum_angle  = 0.;               // Angle between first and last perihelion
     let previousDr = 0;
+
+    function angleBetween(v1, v2) {
+        const a = v1.clone().normalize();
+        const b = v2.clone().normalize();
+        const dot = MathUtils.clamp(a.dot(b), -1, 1);
+        return Math.acos(dot); // in radialen
+    }
+
     function markPerihelion() {
+        new Sphere(planetaryScene, vec_r_last, 0.25);
+        const prev = perihelion_list[perihelion_list.length - 2];
+        const curr = perihelion_list[perihelion_list.length - 1];
+
+        sum_angle += angleBetween(prev, curr) * 180 / Math.PI;
+        plotData[0].push(turns);
+        plotData[1].push(angleBetween(prev, curr) * 180 / Math.PI);
+        plotData[2].push(sum_angle);
+
+        plot.setData(plotData);
+    }
+
+    function checkPerihelion() {
         const radiusCurrent = vec_r_last.length();
         const radiusNext = mercury.position.length();
         const dr = radiusNext - radiusCurrent; // discrete derivative of radius
@@ -170,18 +202,38 @@
             if (previousDr < 0 && dr > 0) { // detect transition from ascending to descending
                 turns++;
                 perihelion_list.push(vec_r_last);
-
-                if (turns > 1) {
-                    new Sphere(planetaryScene, vec_r_last, 0.25);
-                    // TODO plot data
-                    //sum_angle += angle_between(perihelion_list[-2], perihelion_list[-1])
-                    //dots_.plot(turns, angle_between(perihelion_list[-2], perihelion_list[-1]))
-                    //curve_.plot(turns, sum_angle)
-                }
+                if (turns > 1) markPerihelion();
             }
         }
         previousDr = dr;
     }
+
+    const plotData = [
+        [], // turns
+        [], // delta angle
+        [], // cumulative angle
+    ];
+
+    const plot = new uPlot({
+        width: planetsCanvas.width,
+        height: planetsCanvas.height * .5,
+        title: "Perihelion precession",
+        scales: {
+            x: { label: "Orbit number" },
+            y: { label: "Precession angle (deg)" }
+        },
+        series: [{},
+            {
+                label: "Δθ per orbit",
+                stroke: "lime",
+            },
+            {
+                label: "Cumulative θ",
+                stroke: "orange",
+            }
+        ]
+    }, plotData, document.getElementById("plot"));
+
 
     let tPhys = 0;
     let lastTime = performance.now() * .001;
@@ -194,7 +246,7 @@
         const vec_r_before_last = vec_r_last;
         vec_r_last = mercury.position.clone();
         mercury.update_by(tPhys, baseDt * dtHours);
-        markPerihelion();
+        checkPerihelion();
 
         sun.update(tPhys);
         skyDome.update(now * .001, planetCamera);
