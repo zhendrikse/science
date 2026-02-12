@@ -16,7 +16,7 @@ The applications of a simple harmonic oscillator are almost endless.
 You may be surprised though to find out what happens when you drop such a simple harmonic oscillator!! 
 <div class="double_image">
 <figure class="left_image">
-    <a href="ball_drop_on_spring.html">
+    <a href="ball_on_spring.html">
       <img alt="Ball drop" src="images/ball_falling_on_spring.png" title="Click to animate"/>
     </a>
     <figcaption>Ball being dropped onto a spring.</figcaption>
