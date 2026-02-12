@@ -1,379 +1,172 @@
-<style>
-    html, body {
-        background: #131313;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        height: 100%;
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
     }
-
-    #glowscript-wrapper {
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 4 / 3;
-        margin: auto;
-    }
-
-    .glowscript canvas {
-        display: block;
-        touch-action: none;
-        width: 100%;
-        height: 100%;
-    }
-</style>
-<script>
-    // Disable MathJax within GlowScript library
-    // if (window.MathJax && !MathJax.Hub) {
-    //     MathJax.Hub = {
-    //         Configured: function(){},
-    //         Config: function(){},
-    //         Queue: function(){},
-    //         Typeset: function(){}
-    //     };
-    // }
 </script>
-<div id="glowscript-wrapper">
-    <div id="glowscript" class="glowscript"></div>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-    <link type="text/css" href="https://www.glowscript.org/css/ide.css" rel="stylesheet" />
-    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-    <script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-    <script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-    <script type="text/javascript"><!--//--><![CDATA[//><!--
 
-    // START JAVASCRIPT
-    ;(function() {;
-        var ρσ_modules = {};
-        ρσ_modules.pythonize = {};
+<canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas>
 
-        (function(){
-            function strings() {
-                var string_funcs, exclude, name;
-                string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-                if (!arguments.length) {
-                    exclude = (function(){
-                        var s = ρσ_set();
-                        s.jsset.add("split");
-                        s.jsset.add("replace");
-                        return s;
-                    })();
-                } else if (arguments[0]) {
-                    exclude = Array.prototype.slice.call(arguments);
-                } else {
-                    exclude = null;
-                }
-                if (exclude) {
-                    string_funcs = string_funcs.difference(set(exclude));
-                }
-                var ρσ_Iter0 = string_funcs;
-                ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-                for (var ρσ_Index0 of ρσ_Iter0) {
-                    name = ρσ_Index0;
-                    (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-                }
-            };
-            if (!strings.__module__) Object.defineProperties(strings, {
-                __module__ : {value: "pythonize"}
-            });
+<script type="module">
+    import { Color, TextureLoader, Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight,
+        PointLight, ACESFilmicToneMapping, SRGBColorSpace, MathUtils } from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { ThreeJsUtils, Sphere, PhysicalObject } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { SkyDome }
+        from 'https://www.hendrikse.name/science/js/astro-extensions.js';
 
-            ρσ_modules.pythonize.strings = strings;
-        })();
+    const planetsCanvas = document.getElementById('planetsCanvas');
+    planetsCanvas.focus();
+    console.clear();
 
-        async function __main__() {
-            "use strict";
-            var display = canvas;
-            var scene = canvas();
+    const gaugeRadius = 10;
 
-            function round(num, n=0) {return Number(num.toFixed(n))}
-            var arrow, box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, simple_sphere, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sqrt, pi, tan, asin, acos, atan, atan2, exp, log, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-            var version, print, arange, __name__, type, ρσ_ls, title, display, size, vel0, rad, spacing, base_angle, black_hole, _GS_1, person, t, delta_t;
-            version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-            Array.prototype['+'] = function(r) {return this.concat(r)}
-            Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-            window.__GSlang = "vpython";
-            print = GSprint;
-            arange = range;
-            __name__ = "__main__";
-            type = pytype;
-            var strings = ρσ_modules.pythonize.strings;
+    const textureLoader = new TextureLoader();
+    textureLoader.setCrossOrigin("anonymous");
 
-            strings();
-            "7";
-            title = "&#x2022; Original <a href=\"https://www.mso.anu.edu.au/pfrancis/simulations/spaghettification.py\">spaghettification.py<\/a> by <a href=\"http://www.mso.anu.edu.au/pfrancis/simulations/\">Paul Francis</a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> in <a href=\"https://github.com/zhendrikse/science/blob/main/relativity/code/spaghettification.py\">spaghettification.py</a>\n\n";
-            "9";
-            display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, background: color.gray(.075), range: 10, width: 1300, height: 800})]);
-            "13";
-            size = .15;
-            "14";
-            vel0 = vector(0, .65, 0);
-            "15";
-            rad = .2;
-            "16";
-            spacing = .1;
-            "17";
-            base_angle = .2;
-            "19";
-            function Person() {;
+    const planetaryScene = new Scene();
+    // --- CAMERA ---
+    const cameraStart = {
+        position: new Vector3(0, 0, gaugeRadius * 2),
+        target: new Vector3(0, 0, 0)
+    };
+    const planetCamera = new PerspectiveCamera(40, 1, .05 * gaugeRadius, 20 * gaugeRadius);
+    planetCamera.position.copy(cameraStart.position);
+
+    const planetRenderer = new WebGLRenderer( {antialias: true, canvas: planetsCanvas, alpha: true} );
+    planetRenderer.shadowMap.enabled = false;
+    planetRenderer.setAnimationLoop( animate );
+    planetRenderer.toneMapping = ACESFilmicToneMapping;
+    planetRenderer.toneMappingExposure = 1.5;
+    planetRenderer.outputColorSpace = SRGBColorSpace;
+
+    // Resizing for mobile devices
+    ThreeJsUtils.resizeRendererToCanvas(planetRenderer, planetCamera);
+    window.addEventListener('resize', () => {
+        ThreeJsUtils.resizeRendererToCanvas(planetRenderer, planetCamera);
+    });
+
+    const controls = new OrbitControls(planetCamera, planetsCanvas);
+    controls.target.copy(cameraStart.target);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    const skyDome = new SkyDome({starDensity: 1, skyRadius: 18 * gaugeRadius, glowStarCount: 500});
+    planetaryScene.add(skyDome);
+
+
+    const sunLight = new PointLight(0xffffff, 2.0, 0, .1); // intense, no max distance
+    sunLight.position.set(0, 0, 0);
+    planetaryScene.add(sunLight);
+    planetaryScene.add(new AmbientLight(0xffffff, 1));
+
+    const vel0 = new Vector3(0, 0.65, 0);
+    const rad = 0.2;
+    const size = 0.15;
+    const spacing = 0.1;
+    const base_angle = 0.2;
+    const blackHolePos = new Vector3(-1, 0, 0);
+
+    class Ball {
+        constructor(parent, {
+            position=new Vector3(0, 0, .5),
+            velocity=new Vector3(0, 0, 0),
+            radius=1,
+            color=0xffff00,
+        } = {}) {
+            this._sphere = new Sphere(planetaryScene, position, radius, color);
+            this._position = position.clone();
+            this._velocity = velocity.clone();
+        }
+
+        update(dt, blackHolePos) {
+            this._position.addScaledVector(this._velocity, dt);
+            this._sphere.moveTo(this._position);
+            const rVector = new Vector3().subVectors(this._position, blackHolePos);
+            const r2 = rVector.lengthSq();
+            rVector.normalize().multiplyScalar(-15.0 / r2);
+            this._velocity.addScaledVector(rVector, dt);
+        }
+    }
+
+    class Person {
+        constructor(parent) {
+            this._balls = [];
+            this._head(parent);
+            this._body(parent);
+            this._rightArm(parent);
+            this._leftArm(parent);
+            this._rightLeg(parent);
+            this._leftLeg(parent);
+        }
+
+        _head() {
+            this._balls.push(new Ball(planetaryScene, {
+                position: new Vector3(10, 1, 0),
+                velocity: vel0.clone(),
+                radius: 2 * rad,
+                color: new Color(0.7, 0.6, 0.5)
+            }));
+        }
+
+        _body(parent, pos = new Vector3(10, 1.0, 0), colour=new Color(0.2, 0.4, 0.7)) {
+            const theta = 0.0;
+            for (let i = 0; i < 21; i++) {
+                const offset = new Vector3(spacing * i * Math.sin(theta + base_angle), -spacing * i * Math.cos(theta + base_angle), 0);
+                this._balls.push(new Ball(parent, {position: pos.clone().add(offset), radius: rad, velocity: vel0.clone(), color: colour}));
             }
-            Person.prototype.__init__ = async function __init__() {
-                var self = this;
-                "21";
-                self._grid = ρσ_list_decorate([]);
-                "22";
-                (await self._head());
-                "23";
-                (await self._body());
-                "24";
-                (await self._left_arm());
-                "25";
-                (await self._right_arm());
-                "26";
-                (await self._left_leg());
-                "27";
-                (await self._right_leg());
-            };
-            if (!Person.prototype.__init__.__module__) Object.defineProperties(Person.prototype.__init__, {
-                __module__ : {value: null}
-            });
-            Person.__argnames__ = Person.prototype.__init__.__argnames__;
-            Person.__handles_kwarg_interpolation__ = Person.prototype.__init__.__handles_kwarg_interpolation__;
-            Person.prototype._head = async function _head() {
-                var self = this;
-                var pos = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _head.__defaults__.pos : arguments[0];
-                var colour = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _head.__defaults__.colour : arguments[1];
-                var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-                if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "pos")){
-                    pos = ρσ_kwargs_obj.pos;
-                }
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
-                    colour = ρσ_kwargs_obj.colour;
-                }
-                "30";
-                self._grid.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: pos, radius: 2["*"](rad), vel: vel0, color: colour})]));
-            };
-            if (!Person.prototype._head.__defaults__) Object.defineProperties(Person.prototype._head, {
-                __defaults__ : {value: {pos:vector(10, 1, 0), colour:vector(.7, .6, .5)}},
-                __handles_kwarg_interpolation__ : {value: true},
-                __argnames__ : {value: ["pos", "colour"]},
-                __module__ : {value: null}
-            });
-            Person.prototype._body = async function _body() {
-                var self = this;
-                var pos = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _body.__defaults__.pos : arguments[0];
-                var colour = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _body.__defaults__.colour : arguments[1];
-                var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-                if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "pos")){
-                    pos = ρσ_kwargs_obj.pos;
-                }
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
-                    colour = ρσ_kwargs_obj.colour;
-                }
-                var ρσ_ls, theta, offset, i;
-                "33";
-                theta = 0;
-                "34";
-                for (var ρσ_Index1 = 0; ρσ_Index1["<"](21); ρσ_Index1++) {
-                    i = ρσ_Index1;
-                    "35";
-                    offset = vector(spacing["*"](i)["*"](sin(theta["+"](base_angle))), 1["-u"]()["*"](spacing)["*"](i)["*"](cos(theta["+"](base_angle))), 0);
-                    "36";
-                    self._grid.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: pos["+"](offset), radius: rad, vel: vel0, color: colour})]));
-                }
-            };
-            if (!Person.prototype._body.__defaults__) Object.defineProperties(Person.prototype._body, {
-                __defaults__ : {value: {pos:vector(10, 1, 0), colour:vector(.2, .4, .7)}},
-                __handles_kwarg_interpolation__ : {value: true},
-                __argnames__ : {value: ["pos", "colour"]},
-                __module__ : {value: null}
-            });
-            Person.prototype._right_arm = async function _right_arm() {
-                var self = this;
-                var pos = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _right_arm.__defaults__.pos : arguments[0];
-                var colour = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _right_arm.__defaults__.colour : arguments[1];
-                var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-                if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "pos")){
-                    pos = ρσ_kwargs_obj.pos;
-                }
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
-                    colour = ρσ_kwargs_obj.colour;
-                }
-                var ρσ_ls, theta, offset, i;
-                "39";
-                theta = .7;
-                "40";
-                for (var ρσ_Index2 = 0; ρσ_Index2["<"](11); ρσ_Index2++) {
-                    i = ρσ_Index2;
-                    "41";
-                    offset = vector(spacing["*"](i)["*"](sin(theta["+"](base_angle))), 1["-u"]()["*"](spacing)["*"](i)["*"](cos(theta["+"](base_angle))), 0);
-                    "42";
-                    self._grid.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: pos["+"](offset), radius: rad, vel: vel0, color: colour})]));
-                }
-            };
-            if (!Person.prototype._right_arm.__defaults__) Object.defineProperties(Person.prototype._right_arm, {
-                __defaults__ : {value: {pos:vector(10, .7, 0), colour:vector(.2, .8, .9)}},
-                __handles_kwarg_interpolation__ : {value: true},
-                __argnames__ : {value: ["pos", "colour"]},
-                __module__ : {value: null}
-            });
-            Person.prototype._left_arm = async function _left_arm() {
-                var self = this;
-                var pos = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _left_arm.__defaults__.pos : arguments[0];
-                var colour = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _left_arm.__defaults__.colour : arguments[1];
-                var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-                if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "pos")){
-                    pos = ρσ_kwargs_obj.pos;
-                }
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
-                    colour = ρσ_kwargs_obj.colour;
-                }
-                var ρσ_ls, theta, offset, i;
-                "45";
-                theta = 1["-u"]()["*"](.7);
-                "46";
-                for (var ρσ_Index3 = 0; ρσ_Index3["<"](11); ρσ_Index3++) {
-                    i = ρσ_Index3;
-                    "47";
-                    offset = vector(spacing["*"](i)["*"](sin(theta["+"](base_angle))), 1["-u"]()["*"](spacing)["*"](i)["*"](cos(theta["+"](base_angle))), 0);
-                    "48";
-                    self._grid.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: pos["+"](offset), radius: rad, vel: vel0, color: colour})]));
-                }
-            };
-            if (!Person.prototype._left_arm.__defaults__) Object.defineProperties(Person.prototype._left_arm, {
-                __defaults__ : {value: {pos:vector(10, .7, 0), colour:vector(.2, .8, .9)}},
-                __handles_kwarg_interpolation__ : {value: true},
-                __argnames__ : {value: ["pos", "colour"]},
-                __module__ : {value: null}
-            });
-            Person.prototype._right_leg = async function _right_leg() {
-                var self = this;
-                var pos = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _right_leg.__defaults__.pos : arguments[0];
-                var colour = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _right_leg.__defaults__.colour : arguments[1];
-                var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-                if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "pos")){
-                    pos = ρσ_kwargs_obj.pos;
-                }
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
-                    colour = ρσ_kwargs_obj.colour;
-                }
-                var ρσ_ls, theta, offset, i;
-                "51";
-                theta = .4;
-                "52";
-                for (var ρσ_Index4 = 0; ρσ_Index4["<"](11); ρσ_Index4++) {
-                    i = ρσ_Index4;
-                    "53";
-                    offset = vector(spacing["*"](i)["*"](sin(theta["+"](base_angle))), 1["-u"]()["*"](spacing)["*"](i)["*"](cos(theta["+"](base_angle))), 0);
-                    "54";
-                    self._grid.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: pos["+"](offset), radius: rad, vel: vel0, color: colour})]));
-                }
-            };
-            if (!Person.prototype._right_leg.__defaults__) Object.defineProperties(Person.prototype._right_leg, {
-                __defaults__ : {value: {pos:vector(10, 1, 0)["+"](2["*"](vector(sin(base_angle), 1["-u"]()["*"](cos(base_angle)), 0))), colour:vector(.2, .2, .7)}},
-                __handles_kwarg_interpolation__ : {value: true},
-                __argnames__ : {value: ["pos", "colour"]},
-                __module__ : {value: null}
-            });
-            Person.prototype._left_leg = async function _left_leg() {
-                var self = this;
-                var pos = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _left_leg.__defaults__.pos : arguments[0];
-                var colour = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? _left_leg.__defaults__.colour : arguments[1];
-                var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-                if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "pos")){
-                    pos = ρσ_kwargs_obj.pos;
-                }
-                if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "colour")){
-                    colour = ρσ_kwargs_obj.colour;
-                }
-                var ρσ_ls, theta, offset, i;
-                "57";
-                theta = 1["-u"]()["*"](.4);
-                "58";
-                for (var ρσ_Index5 = 0; ρσ_Index5["<"](11); ρσ_Index5++) {
-                    i = ρσ_Index5;
-                    "59";
-                    offset = vector(spacing["*"](i)["*"](sin(theta["+"](base_angle))), 1["-u"]()["*"](spacing)["*"](i)["*"](cos(theta["+"](base_angle))), 0);
-                    "60";
-                    self._grid.append(ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: pos["+"](offset), radius: rad, vel: vel0, color: colour})]));
-                }
-            };
-            if (!Person.prototype._left_leg.__defaults__) Object.defineProperties(Person.prototype._left_leg, {
-                __defaults__ : {value: {pos:vector(10, 1, 0)["+"](2["*"](vector(sin(base_angle), 1["-u"]()["*"](cos(base_angle)), 0))), colour:vector(.2, .2, .7)}},
-                __handles_kwarg_interpolation__ : {value: true},
-                __argnames__ : {value: ["pos", "colour"]},
-                __module__ : {value: null}
-            });
-            Person.prototype.update = async function update(dt) {
-                var self = this;
-                var ρσ_ls, acceleration, thing;
-                "63";
-                var ρσ_Iter6 = self._grid;
-                ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
-                for (var ρσ_Index6 of ρσ_Iter6) {
-                    thing = ρσ_Index6;
-                    "64";
-                    thing.pos = thing.pos["+"](thing.vel["*"](dt));
-                    "65";
-                    acceleration = 1["-u"]()["*"](15)["*"](norm(thing.pos["-"](1["*"](black_hole.pos))))["/"](Math.pow(mag(thing.pos["-"](1["*"](black_hole.pos))), 2));
-                    "66";
-                    thing.vel = thing.vel["+"](acceleration["*"](dt));
-                }
-            };
-            if (!Person.prototype.update.__argnames__) Object.defineProperties(Person.prototype.update, {
-                __argnames__ : {value: ["dt"]},
-                __module__ : {value: null}
-            });
-            Person.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-            };
-            Person.prototype.__str__ = async function __str__() {
-                return this.__repr__();
-            };
-            Object.defineProperty(Person.prototype, "__bases__", {value: []});
+        }
 
-
-
-
-
-
-
-
-
-            "69";
-            black_hole = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(1["-u"]()["*"](1), 0, 0), radius: 1, color: color.gray(.3)})]);
-            "70";
-            _GS_1 = new Person;
-            (await _GS_1.__init__());
-            person = _GS_1;
-            "72";
-            t = 0;
-            "73";
-            delta_t = .02;
-            "74";
-            while (true) {
-                "75";
-                (await rate(100));
-                "76";
-                t=t["+"](delta_t);
-                "77";
-                (await person.update(delta_t));
+        _leftArm(parent, pos = new Vector3(10, 0.7, 0), colour=new Color(0.2, 0.8, 0.9)) {
+            const theta = -0.7;
+            for (let i = 0; i < 11; i++) {
+                const offset = new Vector3(spacing * i * Math.sin(theta + base_angle), -spacing * i * Math.cos(theta + base_angle), 0);
+                this._balls.push(new Ball(parent, {position: pos.clone().add(offset), radius: rad, velocity: vel0.clone(), color: colour}));
             }
-        };
-        if (!__main__.__module__) Object.defineProperties(__main__, {
-            __module__ : {value: null}
-        });
+        }
 
-        ;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-    // END JAVASCRIPT
+        _rightArm(parent, pos = new Vector3(10, 0.7, 0), colour=new Color(0.2, 0.8, 0.9)) {
+            const theta = 0.7;
+            for (let i = 0; i < 11; i++) {
+                const offset = new Vector3(spacing * i * Math.sin(theta + base_angle), -spacing * i * Math.cos(theta + base_angle), 0);
+                this._balls.push(new Ball(parent, {position: pos.clone().add(offset), radius: rad, velocity: vel0.clone(), color: colour}));
+            }
+        }
 
-    //--><!]]></script>
-</div>
+        _rightLeg(parent, colour=new Color(0.2, 0.2, 0.7)) {
+            const theta = 0.4;
+            const pos = new Vector3(10, 1.0, 0).add((new Vector3(Math.sin(base_angle), -Math.cos(base_angle), 0)).multiplyScalar(2));
+            for (let i = 0; i < 11; i++) {
+                const offset = new Vector3(spacing * i * Math.sin(theta + base_angle), -spacing * i * Math.cos(theta + base_angle), 0);
+                this._balls.push(new Ball(parent, {position: pos.clone().add(offset), radius: rad, velocity: vel0.clone(), color: colour}));
+            }
+        }
+
+        _leftLeg(parent, colour=new Color(0.2, 0.2, 0.7)) {
+            const theta = -0.4;
+            const pos = new Vector3(10, 1.0, 0).add((new Vector3(Math.sin(base_angle), -Math.cos(base_angle), 0)).multiplyScalar(2));
+            for (let i = 0; i < 11; i++) {
+                const offset = new Vector3(spacing * i * Math.sin(theta + base_angle), -spacing * i * Math.cos(theta + base_angle), 0);
+                this._balls.push(new Ball(parent, {position: pos.clone().add(offset), radius: rad, velocity: vel0.clone(), color: colour}));
+            }
+        }
+
+        update(dt, blackHolePos) { this._balls.forEach(ball => ball.update(dt, blackHolePos)); }
+    }
+
+    const person = new Person(planetaryScene);
+    new Sphere(planetaryScene, blackHolePos, 1.0, new Color(0.3, 0.3, 0.3));
+
+    let lastTime = performance.now() * .001;
+    function animate(now) {
+        const deltaSeconds = (now - lastTime) * .001;
+        lastTime = now;
+
+        person.update(deltaSeconds, blackHolePos);
+        skyDome.update(now * .001, planetCamera);
+        planetRenderer.render(planetaryScene, planetCamera);
+    }
+
+</script>

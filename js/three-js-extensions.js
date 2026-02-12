@@ -1419,34 +1419,20 @@ export class PhysicalObject {
 
     verletUpdate(force, dt=0.01) {
         const a = force.multiplyScalar(1 / this._mass);
-
-        this._position.addScaledVector(this._velocity, dt)
-            .addScaledVector(a, 0.5 * dt * dt);
-
+        this._position.addScaledVector(this._velocity, dt).addScaledVector(a, 0.5 * dt * dt);
         const a2 = force.multiplyScalar(1 / this._mass);
         this._velocity.addScaledVector(a.add(a2), 0.5 * dt);
     }
 
+    get position() { return this._position.clone(); }
 
-    get position() {
-        return this._position.clone();
-    }
+    get velocity() { return this._velocity.clone(); }
 
-    get velocity() {
-        return this._velocity.clone();
-    }
+    get mass() { return this._mass; }
 
-    get mass() {
-        return this._mass;
-    }
+    moveTo(newPosition) { this._position.copy(newPosition); }
 
-    moveTo(newPosition) {
-        this._position.copy(newPosition);
-    }
-
-    accelerateTo(newVelocity) {
-        this._velocity.copy(newVelocity);
-    }
+    accelerateTo(newVelocity) { this._velocity.copy(newVelocity); }
 
     kineticEnergy = () => 0.5 * this._mass * this._velocity.dot(this._velocity);
 }
