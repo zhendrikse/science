@@ -28,7 +28,7 @@
     planetsCanvas.focus();
     console.clear();
 
-    let timeScale = 96;         // 96 hours (4 days) equal to one second simulation time
+    let timeScale = 10;
     const orbitRadius = 4.60;   // Initial radius of Mercury orbit, in units of R0
     const orbitSpeed = 5.10e-1; // Initial orbital speed of Mercury, in units of R0/T0
     const c_a = 9.90e-1;        // Base acceleration of Mercury, in units of R0**3/T0**2
@@ -223,11 +223,19 @@
         axes: [
             {   // x-as
                 stroke: "#ff0",
-                font: "12px Arial"
+                font: "12px Arial",
+                grid: {
+                    stroke: "rgba(255, 255, 255, 0.6)",
+                    width: 1
+                }
             },
             {   // y-as
                 stroke: "#ff0",
-                font: "12px Arial"
+                font: "12px Arial",
+                grid: {
+                    stroke: "rgba(255, 255, 255, 0.6)",
+                    width: 1
+                }
             }
         ],
         bg: "transparent"
@@ -236,15 +244,23 @@
 
     let tPhys = 0;
     let lastTime = performance.now() * .001;
+    let accumulator = 0;
     function animate(now) {
+
         const deltaSeconds = (now - lastTime) * .001;
         lastTime = now;
-        const dtHours = deltaSeconds * timeScale;
-        tPhys += dtHours;
 
-        vec_r_last = mercury.position.clone();
-        mercury.update_by(tPhys, baseDt * dtHours);
-        checkPerihelion();
+        accumulator += deltaSeconds * timeScale;
+
+        while (accumulator > baseDt) {
+            vec_r_last = mercury.position.clone();
+
+            mercury.update_by(tPhys, baseDt);
+            checkPerihelion();
+
+            tPhys += baseDt;
+            accumulator -= baseDt;
+        }
 
         sun.update(tPhys);
         skyDome.update(now * .001, planetCamera);

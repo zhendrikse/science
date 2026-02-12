@@ -78,17 +78,8 @@ figcaption {
 .uplot {
     background: transparent !important;
 }
-
-.uplot .u-title {
-    color: #ff0;
-}
-
-.uplot .u-axis {
-    color: #aaa;
-}
-
-.uplot .u-grid line {
-    stroke: rgba(255, 255, 255, 0.75);
+#plot {
+    background: transparent !important;
 }
 
 .canvasWrapper2D {
