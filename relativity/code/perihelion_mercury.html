@@ -93,7 +93,7 @@
         }); }
 
         update_by(t, dt) {
-            this.updateTrail();
+            this.updateTrail(dt);
             this.updateRotation(t);
 
             const current_pos = this.position.clone();
@@ -153,14 +153,35 @@
     }, PLANET_SCALE * orbitRadius * .4);
     mercury.position.copy(initial_position);
     planetaryScene.add(mercury);
-    mercury.enableTrail({maxPoints: 93, color: 0xaaff00, trailStep: 5});
+    mercury.enableTrail({maxPoints: 68, color: 0xaaff00, trailStep: 1});
 
     const baseDt = 2. * orbitSpeed / c_a / 20;  // Time step
-    let time = 0;  // Current simulation time
+    let time = 0;                      // Current simulation time
     let turns = 0;
     let vec_r_last = initial_position; // Previous position of Mercury
     const perihelion_list = [];        // List of perihelion locations
     let sum_angle  = 0.;               // Angle between first and last perihelion
+    let previousDr = 0;
+    function markPerihelion() {
+        const radiusCurrent = vec_r_last.length();
+        const radiusNext = mercury.position.length();
+        const dr = radiusNext - radiusCurrent; // discrete derivative of radius
+        if (previousDr !== null) {
+            if (previousDr < 0 && dr > 0) { // detect transition from ascending to descending
+                turns++;
+                perihelion_list.push(vec_r_last);
+
+                if (turns > 1) {
+                    new Sphere(planetaryScene, vec_r_last, 0.25);
+                    // TODO plot data
+                    //sum_angle += angle_between(perihelion_list[-2], perihelion_list[-1])
+                    //dots_.plot(turns, angle_between(perihelion_list[-2], perihelion_list[-1]))
+                    //curve_.plot(turns, sum_angle)
+                }
+            }
+        }
+        previousDr = dr;
+    }
 
     let tPhys = 0;
     let lastTime = performance.now() * .001;
@@ -173,18 +194,7 @@
         const vec_r_before_last = vec_r_last;
         vec_r_last = mercury.position.clone();
         mercury.update_by(tPhys, baseDt * dtHours);
-        if (vec_r_before_last.length() > vec_r_last.length() && vec_r_last.length() < mercury.position.length()) {
-            turns++;
-            perihelion_list.push(vec_r_last);
-            if (turns > 1) {
-                // Draw location of perihelion
-                new Sphere(planetaryScene, vec_r_last, .2);
-                // TODO plot data
-                //sum_angle += angle_between(perihelion_list[-2], perihelion_list[-1])
-                //dots_.plot(turns, angle_between(perihelion_list[-2], perihelion_list[-1]))
-                //curve_.plot(turns, sum_angle)
-            }
-        }
+        markPerihelion();
 
         sun.update(tPhys);
         skyDome.update(now * .001, planetCamera);
