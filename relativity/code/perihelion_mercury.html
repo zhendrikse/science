@@ -229,25 +229,28 @@
         [], // cumulative angle
     ];
 
-    const opts = {
+    const plot = new uPlot({
         width: planetsCanvas.clientWidth,
         height: planetsCanvas.clientHeight * .5,
+        title: "Perihelion precession",
+        scales: {
+            x: { label: "Orbit number" },
+            y: { label: "Precession angle (deg)" }
+        },
         series: [{},
             {
-                label: "Perihelion angle",
+                label: "Δθ per orbit",
                 stroke: "lime",
-                width: 1,
+            },
+            {
+                label: "Cumulative θ",
+                stroke: "orange",
             }
         ],
-        axes: [ {}, {} ],
-        grid: { stroke: "rgba(255,255,255,0.1)", },
-        tz: "browser",
-        tzDate: (ts) => new Date(ts),
-        plugins: [],
-        bg: "transparent",
-    };
+        grid: { stroke: "rgba(255,255,255,0.1)" },
+        bg: "transparent"
+    }, plotData, document.getElementById("plot"));
 
-    const plot = new uPlot(opts, [[], []], document.getElementById('plot'));
 
     let tPhys = 0;
     let lastTime = performance.now() * .001;
