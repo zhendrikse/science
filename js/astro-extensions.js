@@ -317,7 +317,7 @@ export class Planet extends CelestialBody {
     }
 
     coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
-    renderedOrbit(color) { return this._orbit.draw({
+    renderOrbit(color) { return this._orbit.draw({
         color: color,
         opacity: 0.4,
         scale: 1000 / DISTANCE_SCALE
