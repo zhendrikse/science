@@ -35,7 +35,7 @@
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 
 <canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas><br/>
-<div id="plot" style="background: transparent; margin:auto;"></div>
+<div id="plot" style="margin:auto;"></div>
 
 <script type="module">
     import { MeshPhongMaterial, TextureLoader, Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight,
@@ -229,26 +229,25 @@
         [], // cumulative angle
     ];
 
-    const plot = new uPlot({
+    const opts = {
         width: planetsCanvas.clientWidth,
         height: planetsCanvas.clientHeight * .5,
-        title: "Perihelion precession",
-        scales: {
-            x: { label: "Orbit number" },
-            y: { label: "Precession angle (deg)" }
-        },
         series: [{},
             {
-                label: "Δθ per orbit",
+                label: "Perihelion angle",
                 stroke: "lime",
-            },
-            {
-                label: "Cumulative θ",
-                stroke: "orange",
+                width: 1,
             }
-        ]
-    }, plotData, document.getElementById("plot"));
+        ],
+        axes: [ {}, {} ],
+        grid: { stroke: "rgba(255,255,255,0.1)", },
+        tz: "browser",
+        tzDate: (ts) => new Date(ts),
+        plugins: [],
+        bg: "transparent",
+    };
 
+    const plot = new uPlot(opts, [[], []], document.getElementById('plot'));
 
     let tPhys = 0;
     let lastTime = performance.now() * .001;
