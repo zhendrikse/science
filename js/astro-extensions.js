@@ -291,8 +291,8 @@ export class CelestialBody extends Group {
 }
 
 export class Planet extends CelestialBody {
-    constructor(planetData, {bumpScale=0.005, identicalBumpMap=false} = {}) {
-        super(planetData, PLANET_SCALE, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
+    constructor(planetData, {scale=PLANET_SCALE, bumpScale=0.005, identicalBumpMap=false} = {}) {
+        super(planetData, scale, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
         this._body.castShadow = true;
         this._body.receiveShadow = false;
 
@@ -409,7 +409,7 @@ export class PlanetMoonSystem extends Group {
 }
 
 export class Sun extends CelestialBody {
-    constructor(bodyData) {
+    constructor(bodyData, scale=SUN_SCALE) {
         super(bodyData, SUN_SCALE, {resolution: 64});
 
         this._body.castShadow = false;
