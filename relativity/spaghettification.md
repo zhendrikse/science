@@ -15,12 +15,13 @@ Within a small region, the horizontal compression balances the vertical stretchi
 so that a small object being spaghettified experiences no net change in volume. &mdash;
 <a href="https://en.wikipedia.org/wiki/Spaghettification">Wikipedia</a>
 </blockquote>
+
+{% include_relative code/spaghettification.html %}
+
 <p style="clear:both;"></p>
 
 🔧 [spaghettification.html](https://github.com/zhendrikse/science/blob/main/relativity/code/spaghettification.html) refactored and ported to JavaScript by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 👉 Based on [spaghettification.py](https://www.mso.anu.edu.au/pfrancis/simulations/spaghettification.py) by [Paul Francis](http://www.mso.anu.edu.au/pfrancis/simulations/)<br/>
-
-{% include_relative code/spaghettification.html %}
 
 <p style="clear:both;"></p>
 
