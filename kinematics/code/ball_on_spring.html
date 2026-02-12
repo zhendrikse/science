@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 
-<canvas id="springCanvas" class="applicationCanvas"></canvas>
+<canvas id="springCanvas" class="applicationCanvas" style="aspect-ratio: 19/12"></canvas>
 <div id="plot" style="margin:auto;"></div>
 
 <script type="module">
@@ -129,6 +129,7 @@
     }
 
     let time = 0;
+    const maxPoints = 300;
     function animate() {
         requestAnimationFrame(animate);
         time += dt;
@@ -138,17 +139,16 @@
         slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
         slinky.update(time);
 
-        const springExtension = slinky.displacement;
-        const potentialSpring = 0.5 * slinky.k * springExtension * springExtension;
-        // console.log(slinky.k);
+        const potentialSpring = 0.5 * slinky.k * slinky.displacement * slinky.displacement;
         const potentialGravity = ball.mass * g * ball.position.y;
-        const kinetic = ball.kineticEnergy;
-
         plotData[0].push(time); // x-axis = tijd
-        plotData[1].push(kinetic);
+        plotData[1].push(ball.kineticEnergy);
         plotData[2].push(potentialSpring + potentialGravity);
-        plotData[3].push(kinetic + potentialSpring + potentialGravity);
+        plotData[3].push(ball.kineticEnergy + potentialSpring + potentialGravity);
         plotData[4].push((5 + ball.position.y) * 100);
+
+        if (plotData[0].length > maxPoints)
+            plotData.forEach(arr => arr.shift());
         plot.setData(plotData);
 
         renderer.render(scene, camera);
