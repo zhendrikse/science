@@ -6,17 +6,18 @@
       }
     }
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
+<script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 
-<canvas id="myCanvas" class="applicationCanvas"></canvas>
-<h1>Graph</h1>
-<canvas id="graphCanvas" style="aspect-ratio: 3 / 1; margin-top: 0.5em; background-color: #131313; width: 100%;"></canvas>
+<canvas id="springCanvas" class="applicationCanvas"></canvas>
+<div id="plot" style="margin:auto;"></div>
 
 <script type="module">
     import * as THREE from "three";
-    import { Spring, Ball, Graph } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { Spring, Ball } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
     // --- Scene setup ---
-    const canvas = document.getElementById("myCanvas");
+    const canvas = document.getElementById("springCanvas");
     const scene = new THREE.Scene();
     const g = 9.8; // gravitational constant
 
@@ -66,7 +67,7 @@
         (Math.random() - 0.5) * 0.5   // ±0.25 in Z
     );
     const ball = new Ball(scene, {position: ballPosition, radius: 1, mass: 10});
-    slinky.updateAxis(ball.position().sub(suspensionPoint.clone()));
+    slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
 
     // --- Mouse click & drag ---
     let dragging = false;
@@ -88,25 +89,40 @@
     });
 
     const dt = 0.02;
-    const graphCanvas = document.getElementById("graphCanvas");
-    const graph = new Graph(graphCanvas, {
-        maxPoints: 300,
-        dt: dt,
-        scaleY: 0.1
-    });
 
-    graph.addSeries("KE", "red");
-    graph.addSeries("PE", "lime");
-    graph.addSeries("E",  "cyan");
-    graph.addSeries("Y",  "yellow");
+    const plotData = [
+        [], // x-axis = time
+        [], // KE
+        [], // PE
+        [], // E
+        []  // Y
+    ];
 
+    const plot = new uPlot({
+        width: canvas.clientWidth,
+        height: 250,
+        title: "Slinky energies",
+        scales: { x: { time: false }, y: { auto: true } },
+        series: [
+            {}, // x-axis
+            { label: "KE", stroke: "red" },
+            { label: "PE", stroke: "lime" },
+            { label: "E", stroke: "cyan" },
+            { label: "Y", stroke: "yellow" }
+        ],
+        axes: [
+            { stroke: "#fff", grid: { stroke: "rgba(255,255,255,0.2)" } },
+            { stroke: "#fff", grid: { stroke: "rgba(255,255,255,0.2)" } }
+        ],
+        bg: "transparent"
+    }, plotData, document.getElementById("plot"));
 
     function force(kHorizontal = 100, damping = 1) { // horizontal spring constant
-        const pos = ball.position();
-        const vel = ball.velocity();
+        const pos = ball.position.clone();
+        const vel = ball.velocity;
 
         const fx = -kHorizontal * pos.x - damping * vel.x;
-        const fy = slinky.force() - ball.mass() * g - damping * vel.y;
+        const fy = slinky.force - ball.mass * g - damping * vel.y;
         const fz = -kHorizontal * pos.z - damping * vel.z;
 
         return new THREE.Vector3(fx, fy, fz);
@@ -119,28 +135,24 @@
 
         if (!dragging) ball.semiImplicitEulerUpdate(force(), dt);
 
-        slinky.updateAxis(ball.position().sub(suspensionPoint.clone()));
+        slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
         slinky.update(time);
 
-        const springExtension = slinky.displacement();
-        const potentialSpring = 0.5 * slinky.k * springExtension ** 2;
-        const potentialGravity = ball.mass() * g * ball.position().y;
-        const kinetic = ball.kineticEnergy();
+        const springExtension = slinky.displacement;
+        const potentialSpring = 0.5 * slinky.k * springExtension * springExtension;
+        console.log(slinky.k);
+        const potentialGravity = ball.mass * g * ball.position.y;
+        const kinetic = ball.kineticEnergy;
 
-        graph.push({
-            KE: kinetic,
-            PE: potentialSpring + potentialGravity,
-            E:  kinetic + potentialSpring + potentialGravity,
-            Y:  (5 + ball.position().y) * 100
-        });
-
-        graph.draw();
+        plotData[0].push(time); // x-axis = tijd
+        plotData[1].push(kinetic);
+        plotData[2].push(potentialSpring + potentialGravity);
+        plotData[3].push(kinetic + potentialSpring + potentialGravity);
+        plotData[4].push((5 + ball.position.y) * 100);
+        plot.setData(plotData);
 
         renderer.render(scene, camera);
     }
-
-
-    animate();
 
     // --- interactive: spring hardening / softening ---
     window.addEventListener('keydown', e => {
@@ -149,5 +161,7 @@
         slinky.k = Math.max(20, slinky.k);
         console.log("k =", slinky.k);
     });
+
+    animate();
 </script>
 

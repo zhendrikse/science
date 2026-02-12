@@ -1313,12 +1313,12 @@ export class Ball {
 
     updateTrail(dt) { this._trail?.update(dt); }
     disposeTrail() { this._trail?.dispose(); }
-
-    position = () => this._ball.position;
-    velocity = () => this._ball.velocity;
     accelerateTo = (newVelocity) => this._ball.accelerateTo(newVelocity);
-    mass = () => this._ball.mass;
-    kineticEnergy = () => this._ball.kineticEnergy();
+
+    get position() { return this._ball.position; }
+    get velocity() { return this._ball.velocity; }
+    get mass() { return this._ball.mass; }
+    get kineticEnergy() { return this._ball.kineticEnergy(); }
 }
 
 export class Spring {
@@ -1381,7 +1381,7 @@ export class Spring {
 
     get position() { return this._position; }
     get axis() { return this._axis; }
-
-    force = () => -this._k * this.displacement();
-    displacement = () => this._restLength - this._axis.length();
+    get k() { return this._k; }
+    get force() { return -this._k * this.displacement(); }
+    get displacement() {return this._restLength - this._axis.length(); }
 }
