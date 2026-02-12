@@ -597,55 +597,55 @@
         }, Bodies.neptune)
     }
     // for (const moon of Object.values(Moons))
-    //     moon.renderedOrbit(0x999999);
+    //     moon.renderOrbit(0x999999);
 
     const earthMoonSystem = new PlanetMoonSystem(Bodies.earth, [Moons.luna]);
     solarSystemGroup.add(earthMoonSystem);
     earthMoonSystem.update(0, 1); // set initial position
     Bodies.earth.enableTrail({maxPoints: 400, color: 0x00bbff, trailStep: 125});
-    solarSystemGroup.add(Bodies.earth.renderedOrbit(0x00bbff));
+    solarSystemGroup.add(Bodies.earth.renderOrbit(0x00bbff));
 
     const noMoonsMercury = new PlanetMoonSystem(Bodies.mercury);
     solarSystemGroup.add(noMoonsMercury);
     noMoonsMercury.update(0, 1);
     Bodies.mercury.enableTrail({maxPoints: 80, color: 0xaaff00, trailStep: 25});
-    solarSystemGroup.add(Bodies.mercury.renderedOrbit(0xaaff00));
+    solarSystemGroup.add(Bodies.mercury.renderOrbit(0xaaff00));
 
     const noMoonsVenus = new PlanetMoonSystem(Bodies.venus);
     solarSystemGroup.add(noMoonsVenus);
     noMoonsVenus.update(0, 1);
     Bodies.venus.enableTrail({maxPoints: 120, color: 0xff0000, trailStep: 100});
-    solarSystemGroup.add(Bodies.venus.renderedOrbit(0xff0000));
+    solarSystemGroup.add(Bodies.venus.renderOrbit(0xff0000));
 
     const marsWithMoons = new PlanetMoonSystem(Bodies.mars, [Moons.phobos, Moons.deimos]);
     solarSystemGroup.add(marsWithMoons);
     marsWithMoons.update(0, 1);
     Bodies.mars.enableTrail({maxPoints: 550, color: 0xffaa00, trailStep: 250});
-    solarSystemGroup.add(Bodies.mars.renderedOrbit(0xffaa00));
+    solarSystemGroup.add(Bodies.mars.renderOrbit(0xffaa00));
 
     const jupiterWithMoons = new PlanetMoonSystem(Bodies.jupiter, [Moons.callisto, Moons.europa, Moons.ganymede, Moons.io]);
     solarSystemGroup.add(jupiterWithMoons);
     jupiterWithMoons.update(0, 1);
     Bodies.jupiter.enableTrail({maxPoints: 1600, color: 0x8b4513, trailStep: 500});
-    solarSystemGroup.add(Bodies.jupiter.renderedOrbit(0x8b4513));
+    solarSystemGroup.add(Bodies.jupiter.renderOrbit(0x8b4513));
 
     const saturnWithMoons = new PlanetMoonSystem(Bodies.saturn, [Moons.dione, Moons.enceladus, Moons.tethys, Moons.titan]);
     solarSystemGroup.add(saturnWithMoons);
     saturnWithMoons.update(0, 1);
     Bodies.saturn.enableTrail({maxPoints: 1600, color: 0xffff00, trailStep: 500});
-    solarSystemGroup.add(Bodies.saturn.renderedOrbit(0xffff00));
+    solarSystemGroup.add(Bodies.saturn.renderOrbit(0xffff00));
 
     const uranusWithMoons = new PlanetMoonSystem(Bodies.uranus, [Moons.ariel, Moons.oberon, Moons.titania, Moons.umbriel]);
     solarSystemGroup.add(uranusWithMoons);
     uranusWithMoons.update(0, 1);
     Bodies.uranus.enableTrail({maxPoints: 1600, color: 0xaaaaaa, trailStep: 500});
-    solarSystemGroup.add(Bodies.uranus.renderedOrbit(0xaaaaaa));
+    solarSystemGroup.add(Bodies.uranus.renderOrbit(0xaaaaaa));
 
     const neptuneWithMoons = new PlanetMoonSystem(Bodies.neptune, [Moons.triton]);
     solarSystemGroup.add(neptuneWithMoons);
     neptuneWithMoons.update(0, 1);
     Bodies.neptune.enableTrail({maxPoints: 1600, color: 0x0000ff, trailStep: 500});
-    solarSystemGroup.add(Bodies.neptune.renderedOrbit(0x0000ff));
+    solarSystemGroup.add(Bodies.neptune.renderOrbit(0x0000ff));
 
     const solarSystem = [
         earthMoonSystem,
