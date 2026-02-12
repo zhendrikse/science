@@ -985,11 +985,12 @@ export class Sphere {
         group,
         position=new Vector3(0, 0, 0),
         radius=1,
+        color="yellow",
         makeTrail=false,
         {
             segments=24,
             material=new MeshStandardMaterial({
-                color: "yellow",
+                color: color,
                 opacity: 1,
                 transparent: true,
                 wireframe: false,
