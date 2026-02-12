@@ -260,7 +260,7 @@
 
         // Update particles
         for (const particle of particles) {
-            const position = particle.position();
+            const position = particle.position;
             const velocity = vectorField.sample(position);
             position.addScaledVector(velocity, dt);
             particle.moveTo(position);
