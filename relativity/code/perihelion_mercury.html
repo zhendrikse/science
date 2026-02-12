@@ -210,7 +210,7 @@
             x: { time: false },  // <--- no date interpretation
             y: { label: "Precession angle (deg)" }
         },
-        series: [{},
+        series: [{}, // x-axis
             {
                 label: "Δθ per orbit",
                 stroke: "lime",
@@ -220,7 +220,17 @@
                 stroke: "orange",
             }
         ],
-        grid: { stroke: "rgba(255,255,255,0.1)" },
+        axes: [
+            {   // x-as
+                stroke: "#ff0",
+                font: "12px Arial"
+            },
+            {   // y-as
+                stroke: "#ff0",
+                font: "12px Arial"
+            }
+        ],
+        grid: { stroke: "rgba(255, 255, 255, 0.6)" },
         bg: "transparent"
     }, plotData, document.getElementById("plot"));
 
@@ -233,7 +243,6 @@
         const dtHours = deltaSeconds * timeScale;
         tPhys += dtHours;
 
-        const vec_r_before_last = vec_r_last;
         vec_r_last = mercury.position.clone();
         mercury.update_by(tPhys, baseDt * dtHours);
         checkPerihelion();

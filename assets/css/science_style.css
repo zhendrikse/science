@@ -88,17 +88,7 @@ figcaption {
 }
 
 .uplot .u-grid line {
-    stroke: rgba(255, 255, 255, 0.5);
-}
-
-/* Legend container text */
-.uplot .u-legend .u-legend-series .u-legend-label {
-    color: #ff0 !important;  /* wit */
-}
-
-/* Optional: legend markers too */
-.uplot .u-legend .u-legend-series .u-legend-marker {
-    border-color: #ff0 !important;
+    stroke: rgba(255, 255, 255, 0.4);
 }
 
 .canvasWrapper2D {
