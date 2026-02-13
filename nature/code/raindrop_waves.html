@@ -17,14 +17,13 @@
 </script>
 
 <canvas id="raindropCanvas"></canvas><br/>
-<p style="clear: both;"></p>
-<label for="raindropFrequencySlider">Raindrops frequency: <input type="range" min="0" max="100" value="20" class="slider" id="raindropFrequencySlider"/></label>
-<p style="clear: both;"></p>
-<label for="raindropIntensitySlider">Raindrops intensity: <input type="range" min="50" max="500" value="120" class="slider" id="raindropIntensitySlider"/></label>
+<div class="guiContainer" id="raindropsGui"></div>
 
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
     const Array2D = (r, c, value = 0) => [...Array(r)].map(_ => Array(c).fill(value));
     const vector = THREE.Vector3;
@@ -118,30 +117,33 @@
         }
     }
 
+    class ControlsGui {
+        constructor() {
+            const gui = new GUI({width: "100%", autoPlace: false});
+            document.getElementById("raindropsGui").appendChild(gui.domElement);
+            const params = { frequency: 20, intensity: 120 };
+
+            gui.add(params, "frequency", 0, 100, 1)
+                .name("Frequency")
+                .onChange(() => raindropFrequency = params.frequency / 1000);
+
+            gui.add(params, "intensity", 50, 500, 1)
+                .name("Intensity")
+                .onChange(() => raindropIntensity = params.intensity);
+        }
+    }
+    new ControlsGui();
+
     // Set up scene
     const raindropsCamera = initCamera();
     const sceneControls = new OrbitControls(raindropsCamera, raindropCanvas);
     const sceneRenderer = createRenderer();
-    resizeRendererToCanvas(sceneRenderer, raindropsCamera);
     sceneRenderer.setAnimationLoop(animateRaindrops);
 
     lights();
     const surface = new Surface();
     surface.rotateX(7 * Math.PI / 8);
     surface.translate(new vector(0, 0, 0));
-
-    //
-    // GUI controls
-    //
-    const slider = document.getElementById("raindropFrequencySlider");
-    slider.oninput = function () {
-        raindropFrequency = this.value / 1000;
-    }
-
-    const slider2 = document.getElementById("raindropIntensitySlider");
-    slider2.oninput = function () {
-        raindropIntensity = this.value;
-    }
 
     function initCamera() {
         const camera = new THREE.PerspectiveCamera(70, 1, 0.1, 10);
@@ -200,19 +202,12 @@
         surface.update();
     }
 
-    function resizeRendererToCanvas(raindropsRenderer, raindropsCamera) {
-        const w = raindropCanvas.clientWidth;
-        const h = raindropCanvas.clientHeight;
-
-        if (w === 0 || h === 0) return;
-
-        if (raindropCanvas.width !== w || raindropCanvas.height !== h) {
-            raindropsRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            raindropsRenderer.setSize(w, h, false);
-            raindropsCamera.aspect = w / h;
-            raindropsCamera.updateProjectionMatrix();
-        }
+    // Resizing for mobile devices
+    function resize() {
+        ThreeJsUtils.resizeRendererToCanvas(sceneRenderer, raindropsCamera);
     }
+    window.addEventListener("resize", resize);
+    resize();
 
     function animateRaindrops() {
         update_pixels();
