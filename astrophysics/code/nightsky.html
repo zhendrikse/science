@@ -1,0 +1,211 @@
+
+<canvas id="theCanvas" width="720" height="360">Please update your browser!</canvas>
+
+<div style="text-align:center;">
+    <input type="button" id="pauseButton" value="Pause" style="width:100px; font-size:16px;"/>&nbsp;
+    <label for="latSlider">Latitude = <output id="latReadout" for="latSlider">41&deg;</output>
+        <input id="latSlider" type="range" min="-90" max="90" step="1" value="41"/>
+    </label>
+    <label for="bearingSlider">Bearing = <output id="bearingReadout" for="bearingSlider">180&deg;</output>
+        <input id="bearingSlider" type="range" min="0" max="360" step="1" value="180"/>
+    </label>
+</div>
+
+<script>
+    const stars = [
+            {"id":24436,"ra":78.63,"dec":-8.20,"mag":0.13},
+            {"id":25336,"ra":81.28,"dec":6.35,"mag":1.64},
+            {"id":26727,"ra":83.00,"dec":-0.30,"mag":2.25},
+            {"id":26311,"ra":84.05,"dec":-1.20,"mag":1.70},
+            {"id":25930,"ra":85.19,"dec":-1.94,"mag":1.74},
+            {"id":27989,"ra":88.79,"dec":7.41,"mag":0.42},
+            {"id":28614,"ra":86.94,"dec":-9.67,"mag":2.07},
+            {"id":32349,"ra":101.29,"dec":-16.72,"mag":-1.46},
+            {"id":30438,"ra":95.99,"dec":-52.70,"mag":-0.72},
+            {"id":71683,"ra":219.90,"dec":-60.83,"mag":-0.27},
+            {"id":91262,"ra":279.23,"dec":38.78,"mag":0.03},
+            {"id":1577,"ra":10.13,"dec":41.34,"mag":2.06},
+            {"id":5447,"ra":14.66,"dec":-60.83,"mag":1.33},
+            {"id":11641,"ra":37.95,"dec":89.26,"mag":2.02},
+            {"id":17206,"ra":54.14,"dec":-17.99,"mag":1.25},
+            {"id":21604,"ra":69.88,"dec":16.57,"mag":1.86},
+            {"id":26844,"ra":83.78,"dec":-5.94,"mag":1.65},
+            {"id":27962,"ra":88.79,"dec":7.41,"mag":0.42},
+            {"id":30438,"ra":95.99,"dec":-52.70,"mag":-0.72},
+            {"id":32349,"ra":101.29,"dec":-16.72,"mag":-1.46},
+            {"id":39801,"ra":122.03,"dec":-63.21,"mag":1.33},
+            {"id":45348,"ra":138.38,"dec":-59.52,"mag":1.69},
+            {"id":48915,"ra":152.09,"dec":11.96,"mag":0.08},
+            {"id":61421,"ra":188.79,"dec":-63.10,"mag":1.33},
+            {"id":71683,"ra":219.90,"dec":-60.83,"mag":-0.27},
+            {"id":91262,"ra":279.23,"dec":38.78,"mag":0.03},
+            {"id":116727,"ra":354.42,"dec":-29.98,"mag":0.96}
+        ]
+    ;
+
+    const constellations = {
+            "Orion": [
+                [27989, 25336],
+                [25336, 26311],
+                [26311, 26727],
+                [26727, 25930],
+                [25930, 28614],
+                [28614, 24436],
+                [24436, 27989]
+            ],
+            "Cassiopeia": [
+                [91262, 48915],
+                [48915, 1577],
+                [1577, 26844],
+                [26844, 17206],
+                [17206, 91262]
+            ]
+        };
+
+    let starById = {};
+    let projectedStars = {};
+
+    const theCanvas = document.getElementById("theCanvas");
+    const theContext = theCanvas.getContext("2d");
+    const pauseButton = document.getElementById("pauseButton");
+    const latSlider = document.getElementById("latSlider");
+    const latReadout = document.getElementById("latReadout");
+    const bearingSlider = document.getElementById("bearingSlider");
+    const bearingReadout = document.getElementById("bearingReadout");
+
+    pauseButton.addEventListener("click", () => {
+        running = !running;
+        pauseButton.value = running ? "Pause ": "Resume";
+        if (running)
+            requestAnimationFrame(nextFrame);
+    });
+
+    latSlider.addEventListener("input", () => {
+        latReadout.innerHTML = latSlider.value.replace("-","&minus;") + "&deg;";
+        drawSky();
+    });
+    bearingSlider.addEventListener("input", () => {
+        bearingReadout.innerHTML = bearingSlider.value + "&deg;";
+        drawSky();
+    });
+
+    const radiusSkyDomeInPixels = Number(theCanvas.height);      // radius of sky dome image in screen pixels
+    let localSidTime = 0;   // local sidereal time in hours
+    let running = true;
+
+    function nextFrame() {
+        if (!running) return;
+
+        localSidTime += 1/60;
+        drawSky();
+
+        requestAnimationFrame(nextFrame);
+    }
+
+    function projectStar(raDeg, decDeg) {
+        // Latitude
+        let latitude = Number(latSlider.value);
+        if (latitude > 89.9) latitude = 89.9;
+        if (latitude < -89.9) latitude = -89.9;
+
+        const cosLat = Math.cos(latitude * Math.PI / 180);
+        const sinLat = Math.sin(latitude * Math.PI / 180);
+
+        const bearing = Number(bearingSlider.value) * Math.PI / 180;
+        const sidTime = localSidTime * 15 * Math.PI / 180;
+
+        // naar radialen
+        const ra  = raDeg  * Math.PI / 180;
+        const dec = decDeg * Math.PI / 180;
+
+        const sinDec = Math.sin(dec);
+        const cosDec = Math.cos(dec);
+
+        // Hour angle
+        const ha = sidTime - ra;
+
+        // Altitude
+        const sinAltitude = sinDec*sinLat + cosDec*cosLat*Math.cos(ha);
+        if (sinAltitude <= 0) return null;   // onder horizon
+
+        const alt = Math.asin(sinAltitude);
+        const cosAlt = Math.cos(alt);
+
+        // Azimuth
+        const sinAzimuth = -Math.sin(ha) * cosDec / cosAlt;
+        const cosAzimuth = (sinDec - sinLat * sinAltitude) / (cosLat*cosAlt);
+        const az = Math.atan2(sinAzimuth, cosAzimuth);
+
+        // Relatieve azimut
+        let azRel = az - bearing;
+        if (azRel < -Math.PI) azRel += 2 * Math.PI;
+
+        // buiten beeld?
+        if (azRel < -Math.PI / 2 || azRel > Math.PI / 2) return null;
+
+        // Azimuthal equidistant projectie
+        const alpha = Math.acos(cosAlt * Math.cos(azRel));
+        const sinAlpha = Math.sin(alpha);
+
+        if (sinAlpha === 0) return null;  // singulariteit
+
+        const scaleFactor = radiusSkyDomeInPixels / (Math.PI / 2);
+
+        const x = alpha * scaleFactor * cosAlt * Math.sin(azRel) / sinAlpha;
+        const y = -alpha * scaleFactor * sinAltitude / sinAlpha;
+
+        return {x, y};
+    }
+
+    // Draw the sky image:
+    function drawSky() {
+        // theContext.clearRect(0, 0, theCanvas.width, theCanvas.height);
+        // Draw the background:
+        theContext.fillStyle = "black";
+        theContext.beginPath();
+        theContext.arc(radiusSkyDomeInPixels, radiusSkyDomeInPixels, radiusSkyDomeInPixels, Math.PI, 2*Math.PI);
+        theContext.fill();
+
+        projectedStars = {};
+
+        for (let s of stars) {
+            let p = projectStar(s.ra, s.dec);
+            if (!p) continue;
+
+            projectedStars[s.id] = p;
+            drawStar(p.x, p.y, s.mag);
+        }
+        drawConstellations();
+    }
+
+    function drawConstellations() {
+        theContext.strokeStyle = "rgba(0, 150, 255, 0.2)";
+        theContext.lineWidth = 1.5;
+
+        for (let name in constellations) {
+            let lines = constellations[name];
+
+            for (let pair of lines) {
+                let a = projectedStars[pair[0]];
+                let b = projectedStars[pair[1]];
+                if (!a || !b) continue;
+
+                theContext.beginPath();
+                theContext.moveTo(radiusSkyDomeInPixels + a.x, radiusSkyDomeInPixels + a.y);
+                theContext.lineTo(radiusSkyDomeInPixels + b.x, radiusSkyDomeInPixels + b.y);
+                theContext.stroke();
+            }
+        }
+    }
+
+    // Draw a star at given pixel coordinates, relative to straight ahead:
+    function drawStar(x, y, mag) {
+        const brightness = Number((5 - mag) / 6.5).toFixed(2);    // linear map, mag -> brightness
+        theContext.fillStyle = "rgba(255,255,255," + brightness + ")";
+        theContext.beginPath();
+        theContext.arc(radiusSkyDomeInPixels + x, radiusSkyDomeInPixels + y, 1.5, 0, 2 * Math.PI);
+        theContext.fill();
+    }
+
+    requestAnimationFrame(nextFrame);
+</script>
