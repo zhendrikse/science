@@ -12,58 +12,47 @@
 </div>
 
 <script>
-    const stars = [
-            {"id":24436,"ra":78.63,"dec":-8.20,"mag":0.13},
-            {"id":25336,"ra":81.28,"dec":6.35,"mag":1.64},
-            {"id":26727,"ra":83.00,"dec":-0.30,"mag":2.25},
-            {"id":26311,"ra":84.05,"dec":-1.20,"mag":1.70},
-            {"id":25930,"ra":85.19,"dec":-1.94,"mag":1.74},
-            {"id":27989,"ra":88.79,"dec":7.41,"mag":0.42},
-            {"id":28614,"ra":86.94,"dec":-9.67,"mag":2.07},
-            {"id":32349,"ra":101.29,"dec":-16.72,"mag":-1.46},
-            {"id":30438,"ra":95.99,"dec":-52.70,"mag":-0.72},
-            {"id":71683,"ra":219.90,"dec":-60.83,"mag":-0.27},
-            {"id":91262,"ra":279.23,"dec":38.78,"mag":0.03},
-            {"id":1577,"ra":10.13,"dec":41.34,"mag":2.06},
-            {"id":5447,"ra":14.66,"dec":-60.83,"mag":1.33},
-            {"id":11641,"ra":37.95,"dec":89.26,"mag":2.02},
-            {"id":17206,"ra":54.14,"dec":-17.99,"mag":1.25},
-            {"id":21604,"ra":69.88,"dec":16.57,"mag":1.86},
-            {"id":26844,"ra":83.78,"dec":-5.94,"mag":1.65},
-            {"id":27962,"ra":88.79,"dec":7.41,"mag":0.42},
-            {"id":30438,"ra":95.99,"dec":-52.70,"mag":-0.72},
-            {"id":32349,"ra":101.29,"dec":-16.72,"mag":-1.46},
-            {"id":39801,"ra":122.03,"dec":-63.21,"mag":1.33},
-            {"id":45348,"ra":138.38,"dec":-59.52,"mag":1.69},
-            {"id":48915,"ra":152.09,"dec":11.96,"mag":0.08},
-            {"id":61421,"ra":188.79,"dec":-63.10,"mag":1.33},
-            {"id":71683,"ra":219.90,"dec":-60.83,"mag":-0.27},
-            {"id":91262,"ra":279.23,"dec":38.78,"mag":0.03},
-            {"id":116727,"ra":354.42,"dec":-29.98,"mag":0.96}
-        ]
-    ;
+    const constellationStars = [
+        {"id":27989,"ra":88.79,"dec":7.41,"mag":0.42},
+        {"id":25336,"ra":81.28,"dec":6.35,"mag":1.64},
+        {"id":26311,"ra":84.05,"dec":-1.20,"mag":1.70},
+        {"id":26727,"ra":83.00,"dec":-0.30,"mag":2.25},
+        {"id":25930,"ra":85.19,"dec":-1.94,"mag":1.74},
+        {"id":28614,"ra":86.94,"dec":-9.67,"mag":2.07},
+        {"id":24436,"ra":78.63,"dec":-8.20,"mag":0.13}
+        ];
 
     const constellations = {
-            "Orion": [
-                [27989, 25336],
-                [25336, 26311],
-                [26311, 26727],
-                [26727, 25930],
-                [25930, 28614],
-                [28614, 24436],
-                [24436, 27989]
-            ],
-            "Cassiopeia": [
-                [91262, 48915],
-                [48915, 1577],
-                [1577, 26844],
-                [26844, 17206],
-                [17206, 91262]
-            ]
-        };
+        "Orion": [
+            [27989, 25336],
+            [25336, 26311],
+            [26311, 26727],
+            [26727, 25930],
+            [25930, 28614],
+            [28614, 24436],
+            [24436, 27989]
+        ]};
 
     let starById = {};
     let projectedStars = {};
+    let stars2Draw = [];
+
+    async function loadData() {
+        // Load stars
+        const starsRes = await fetch('https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/stars.6.json');
+        const starsData = await starsRes.json();
+
+        // GeoJSON -> own format
+        const stars = starsData.features.map(feature => ({
+            id: feature.id,
+            ra: feature.geometry.coordinates[0] * 180 / Math.PI,   // rad -> graden
+            dec: feature.geometry.coordinates[1] * 180 / Math.PI,
+            mag: feature.properties.mag
+        }));
+
+        stars2Draw = stars.filter(star => star.mag <= 4);
+        requestAnimationFrame(nextFrame);
+    }
 
     const theCanvas = document.getElementById("theCanvas");
     const theContext = theCanvas.getContext("2d");
@@ -167,20 +156,28 @@
         theContext.fill();
 
         projectedStars = {};
+        for (let star of stars2Draw) {
+            let projectedStar = projectStar(star.ra, star.dec);
+            if (!projectedStar) continue;
 
-        for (let s of stars) {
-            let p = projectStar(s.ra, s.dec);
-            if (!p) continue;
-
-            projectedStars[s.id] = p;
-            drawStar(p.x, p.y, s.mag);
+            projectedStars[star.id] = projectedStar;
+            drawStar(projectedStar.x, projectedStar.y, star.mag);
         }
         drawConstellations();
     }
 
     function drawConstellations() {
-        theContext.strokeStyle = "rgba(0, 150, 255, 0.2)";
+        theContext.strokeStyle = "rgba(0, 150, 255, 0.25)";
         theContext.lineWidth = 1.5;
+        projectedStars = {};
+
+        for (let star of constellationStars) {
+            let projectedStar = projectStar(star.ra, star.dec);
+            if (!projectedStar) continue;
+
+            projectedStars[star.id] = projectedStar;
+            drawStar(projectedStar.x, projectedStar.y, star.mag);
+        }
 
         for (let name in constellations) {
             let lines = constellations[name];
@@ -207,5 +204,5 @@
         theContext.fill();
     }
 
-    requestAnimationFrame(nextFrame);
+    loadData();
 </script>
