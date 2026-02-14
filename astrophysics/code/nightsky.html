@@ -1,5 +1,5 @@
 
-<canvas id="theCanvas" width="720" height="360">Please update your browser!</canvas>
+<canvas class="applicationCanvas2D" id="nightSkyCanvas"></canvas>
 <p style="clear: both;"></p>
 
 <div style="text-align:center;">
@@ -98,8 +98,8 @@
         requestAnimationFrame(nextFrame);
     }
 
-    const theCanvas = document.getElementById("theCanvas");
-    const theContext = theCanvas.getContext("2d");
+    const nightSkyCanvas = document.getElementById("nightSkyCanvas");
+    const theContext = nightSkyCanvas.getContext("2d");
     const pauseButton = document.getElementById("pauseButton");
     const latSlider = document.getElementById("latSlider");
     const latReadout = document.getElementById("latReadout");
@@ -122,7 +122,7 @@
         drawSky();
     });
 
-    const radiusSkyDomeInPixels = Number(theCanvas.height);      // radius of sky dome image in screen pixels
+    const radiusSkyDomeInPixels = Number(nightSkyCanvas.height);      // radius of sky dome image in screen pixels
     let localSidTime = 0;   // local sidereal time in hours
     let running = true;
 
