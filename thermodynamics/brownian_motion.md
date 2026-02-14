@@ -15,13 +15,6 @@ these distances will be normally distributed.
 
 <p style="clear: both;"></p>
 
-## Two-dimensional Brownian motion
-<div class="header_line"><br/></div>
-
-{% include_relative code/brownian_motion_2d.html %}
-
-<p style="clear: both;"></p>
-
 ## Robert Brown, Albert Einstein and Brownian motion
 <div class="header_line"><br/></div>
 
