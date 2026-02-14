@@ -208,24 +208,24 @@
         drawConstellations();
     }
 
+    function drawLineBetween(starA, starB) {
+        starA = projectStar(starA[0], starA[1]);
+        starB = projectStar(starB[0], starB[1]);
+        if (!starA || !starB) return;
+
+        theContext.beginPath();
+        theContext.moveTo(radiusSkyDomeInPixels + starA.x, radiusSkyDomeInPixels + starA.y);
+        theContext.lineTo(radiusSkyDomeInPixels + starB.x, radiusSkyDomeInPixels + starB.y);
+        theContext.stroke();
+    }
+
     function drawConstellations() {
         theContext.strokeStyle = "rgba(0, 150, 255, 0.31)";
         theContext.lineWidth = 1.5;
 
-        for (let name in constellations) {
-            for (let i = 0; i < constellations[name].length - 1; i+=2) {
-                let starA = constellations[name][i];
-                let starB = constellations[name][i + 1]
-                starA = projectStar(starA[0], starA[1]);
-                starB = projectStar(starB[0], starB[1]);
-                if (!starA || !starB) continue;
-
-                theContext.beginPath();
-                theContext.moveTo(radiusSkyDomeInPixels + starA.x, radiusSkyDomeInPixels + starA.y);
-                theContext.lineTo(radiusSkyDomeInPixels + starB.x, radiusSkyDomeInPixels + starB.y);
-                theContext.stroke();
-            }
-        }
+        for (let name in constellations)
+            for (let i = 0; i < constellations[name].length - 1; i+=2)
+                drawLineBetween(constellations[name][i], constellations[name][i + 1]);
     }
 
     // Draw a star at given pixel coordinates, relative to straight ahead:
