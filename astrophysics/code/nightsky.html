@@ -1,4 +1,4 @@
-<div id="nightSkyCanvasWrapper" class="canvasWrapper2D" style="aspect-ratio: 2/1;">
+<div id="nightSkyCanvasWrapper" class="canvasWrapper2D" style="aspect-ratio: 1/2;">
     <canvas class="applicationCanvas2D" id="nightSkyCanvas"></canvas>
 </div>
 
@@ -122,20 +122,21 @@
 
     function resizeCanvas() {
         const dpr = window.devicePixelRatio || 1;
-        const wrapperSize = nightSkyCanvasWrapper.clientWidth;
+        const wrapperWidth = nightSkyCanvasWrapper.clientWidth;
+        const wrapperHeight = nightSkyCanvasWrapper.clientHeight;
 
-        nightSkyCanvas.style.width  = wrapperSize + "px";
-        nightSkyCanvas.style.height = wrapperSize + "px";
+        nightSkyCanvas.style.width  = wrapperWidth + "px";
+        nightSkyCanvas.style.height = wrapperHeight + "px";
 
-        nightSkyCanvas.width  = Math.floor(wrapperSize * dpr);
-        nightSkyCanvas.height = Math.floor(wrapperSize * dpr);
+        nightSkyCanvas.width  = Math.floor(wrapperWidth * dpr);
+        nightSkyCanvas.height = Math.floor(wrapperHeight * dpr);
 
         display.setTransform(dpr, 0, 0, dpr, 0, 0);
-        latticeSize = wrapperSize;
+        radiusSkyDomeInPixels = nightSkyCanvas.width
     }
     window.addEventListener("resize", () => resizeCanvas());
 
-    const radiusSkyDomeInPixels = Number(nightSkyCanvas.clientHeight);      // radius of sky dome image in screen pixels
+    let radiusSkyDomeInPixels = nightSkyCanvas.width;
     let localSidTime = 0;   // local sidereal time in hours
     let running = true;
 
@@ -202,7 +203,7 @@
 
     // Draw the sky image:
     function drawSky() {
-        // Draw the background:
+        display.clearRect(0, 0, nightSkyCanvas.width, nightSkyCanvas.height);
         display.fillStyle = "black";
         display.beginPath();
         display.arc(radiusSkyDomeInPixels, radiusSkyDomeInPixels, radiusSkyDomeInPixels, Math.PI, 2 * Math.PI);
