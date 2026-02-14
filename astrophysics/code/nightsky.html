@@ -12,29 +12,57 @@
 </div>
 
 <script>
-    const constellationStars = [
-        {"id":27989,"ra":88.79,"dec":7.41,"mag":0.42},
-        {"id":25336,"ra":81.28,"dec":6.35,"mag":1.64},
-        {"id":26311,"ra":84.05,"dec":-1.20,"mag":1.70},
-        {"id":26727,"ra":83.00,"dec":-0.30,"mag":2.25},
-        {"id":25930,"ra":85.19,"dec":-1.94,"mag":1.74},
-        {"id":28614,"ra":86.94,"dec":-9.67,"mag":2.07},
-        {"id":24436,"ra":78.63,"dec":-8.20,"mag":0.13}
-        ];
-
-    const constellations = {
+    const constellationCoordinates = {
         "Orion": [
-            [27989, 25336],
-            [25336, 26311],
-            [26311, 26727],
-            [26727, 25930],
-            [25930, 28614],
-            [28614, 24436],
-            [24436, 27989]
-        ]};
+            [88.7929, 7.4071],  // Betelgeuze
+            [81.2828, 6.3497],  // Bellatrix
 
-    let starById = {};
-    let projectedStars = {};
+            [81.2828, 6.3497],  // Bellatrix
+            [83.0017, -0.2991], // Mintaka
+            [83.0017, -0.2991], // Mintaka
+
+            [84.0534, -1.2019], // Alnilam
+            [84.0534, -1.2019], // Alnilam
+            [85.1897, -1.9426], // Alnitak
+
+            [85.1897, -1.9426], // Alnitak
+            [86.9391, -9.6696], // Saiph
+
+            [86.9391, -9.6696], // Saiph
+            [78.6345, -8.2016], // Rigel
+
+            [78.6345, -8.2016], // Rigel
+            [83.0017, -0.2991], // Mintaka
+
+            [85.1897, -1.9426], // Alnitak
+            [88.7929, 7.4071]   // Betelgeuze
+        ],
+        "UrsaMajor": [
+            [206.885, 49.313],  // Alkaid
+            [201.298, 54.925], // Mizar
+
+            [201.298, 54.925], // Mizar
+            [193.507, 55.959], // Alioth
+
+            [193.507, 55.959], // Alioth
+            [183.875, 57.033],  // Megrez
+
+            [183.875, 57.033],  // Megrez
+            [178.458, 53.695], // Phecda
+
+            [178.458, 53.695], // Phecda
+            [165.932, 56.382], // Merak
+
+            [165.932, 56.382], // Merak
+            [165.932, 61.751], // Dubhe
+
+            [165.932, 61.751], // Dubhe
+            [183.875, 57.033]  // Megrez
+        ]
+    };
+
+    // let starById = {};
+    // let projectedStars = {};
     let stars2Draw = [];
 
     async function loadData() {
@@ -45,8 +73,8 @@
         // GeoJSON -> own format
         const stars = starsData.features.map(feature => ({
             id: feature.id,
-            ra: feature.geometry.coordinates[0] * 180 / Math.PI,   // rad -> graden
-            dec: feature.geometry.coordinates[1] * 180 / Math.PI,
+            ra: feature.geometry.coordinates[0],   // right ascension
+            dec: feature.geometry.coordinates[1],
             mag: feature.properties.mag
         }));
 
@@ -129,14 +157,14 @@
         let azRel = az - bearing;
         if (azRel < -Math.PI) azRel += 2 * Math.PI;
 
-        // buiten beeld?
+        // Outside visible region?
         if (azRel < -Math.PI / 2 || azRel > Math.PI / 2) return null;
 
-        // Azimuthal equidistant projectie
+        // Azimuthal equidistant projection
         const alpha = Math.acos(cosAlt * Math.cos(azRel));
         const sinAlpha = Math.sin(alpha);
 
-        if (sinAlpha === 0) return null;  // singulariteit
+        if (sinAlpha === 0) return null;  // singularity
 
         const scaleFactor = radiusSkyDomeInPixels / (Math.PI / 2);
 
@@ -155,12 +183,12 @@
         theContext.arc(radiusSkyDomeInPixels, radiusSkyDomeInPixels, radiusSkyDomeInPixels, Math.PI, 2*Math.PI);
         theContext.fill();
 
-        projectedStars = {};
+        //const projectedStars = {};
         for (let star of stars2Draw) {
             let projectedStar = projectStar(star.ra, star.dec);
             if (!projectedStar) continue;
 
-            projectedStars[star.id] = projectedStar;
+            //projectedStars[star.id] = projectedStar;
             drawStar(projectedStar.x, projectedStar.y, star.mag);
         }
         drawConstellations();
@@ -169,22 +197,11 @@
     function drawConstellations() {
         theContext.strokeStyle = "rgba(0, 150, 255, 0.25)";
         theContext.lineWidth = 1.5;
-        projectedStars = {};
 
-        for (let star of constellationStars) {
-            let projectedStar = projectStar(star.ra, star.dec);
-            if (!projectedStar) continue;
-
-            projectedStars[star.id] = projectedStar;
-            drawStar(projectedStar.x, projectedStar.y, star.mag);
-        }
-
-        for (let name in constellations) {
-            let lines = constellations[name];
-
-            for (let pair of lines) {
-                let a = projectedStars[pair[0]];
-                let b = projectedStars[pair[1]];
+        for (let name in constellationCoordinates) {
+            for (let i = 0; i < constellationCoordinates[name].length - 1; i+=2) {
+                let a = projectStar(constellationCoordinates[name][i][0], constellationCoordinates[name][i][1]);
+                let b = projectStar(constellationCoordinates[name][i+1][0], constellationCoordinates[name][i+1][1]);
                 if (!a || !b) continue;
 
                 theContext.beginPath();
