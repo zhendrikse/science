@@ -23,8 +23,8 @@
 </div>
 
 <script>
-    const canvas = document.getElementById("brownianCanvas");
-    const context = canvas.getContext("2d");
+    const brownianCanvas = document.getElementById("brownianCanvas");
+    const context = brownianCanvas.getContext("2d");
 
     const Array2D = (r, c, initialValue) => [...Array(r)].map(_ => Array(c).fill(initialValue));
     const simTitle = 'Brownian motion';
@@ -34,7 +34,7 @@
     const oldOverlap = Array2D(nBalls, nBalls, true);
     const boxHeight = 400;
     const boxWidth = 400;
-    const centerX = canvas.clientWidth  * .5;
+    const centerX = brownianCanvas.clientWidth  * .5;
     const centerY = 250;
     let index = -1;
     let runFlag = true;
@@ -54,11 +54,6 @@
     hideButton.addEventListener("click", () => showMolecules = false);
     const addButton = document.getElementById("add");
     addButton.addEventListener("click", () => addBalls());
-
-    function ballColor(newColor) {
-        for (let i = 1; i < nBalls; i++)
-            ball[i].color = newColor;
-    }
 
     const showTempValue = (newTempValue) => speedFactor = Math.sqrt(Number(newTempValue));
 
@@ -186,12 +181,12 @@
         if (!runFlag) return;
 
         // clear
-        context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        context.clearRect(0, 0, brownianCanvas.clientWidth, brownianCanvas.clientHeight);
         index = index + 1;
 
         // set background color for the entire thing
         context.fillStyle = "#232323";
-        context.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        context.fillRect(0, 0, brownianCanvas.clientWidth, brownianCanvas.clientHeight);
 
         // set background color for the box of gas
         context.fillStyle = "#131313";
@@ -224,7 +219,7 @@
         context.font = 'bold 18pt Calibri';
         context.fillStyle = 'green';
         context.textAlign = 'center';
-        context.fillText(simTitle, (canvas.clientWidth) * .5, 30);
+        context.fillText(simTitle, (brownianCanvas.clientWidth) * .5, 30);
     }
 
     function runMotion() {
