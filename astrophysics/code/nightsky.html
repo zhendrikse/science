@@ -11,7 +11,7 @@
     </label>
 </div>
 <p style="clear: both;"></p>
-<button id="pauseButton"> Pause </button>
+<button id="pauseButton"> Start </button>
 
 <script>
     const constellations = {
@@ -74,6 +74,22 @@
 
             [21.455, 60.235],   // Ruchbah
             [28.5987, 63.6700]  // Segin
+        // ],
+        // "Taurus": [
+        //     [65.66, 16.509],   // Elnath
+        //     [68.979, 16.509],  // Zeta Tauri
+        //
+        //     [68.979, 16.509],  // Zeta Tauri
+        //     [66.94, 16.0],     // Aldebaran
+        //
+        //     [66.94, 16.0],     // Aldebaran
+        //     [64.375, 15.872],  // Hyadum I
+        //
+        //     [64.375, 15.872],  // Hyadum I
+        //     [63.513, 15.823],  // Hyadum II
+        //
+        //     [63.513, 15.823],  // Hyadum II
+        //     [62.2, 15.1]       // Hyadum III
         ]
     };
 
@@ -91,7 +107,6 @@
         }));
 
         stars2Draw = stars.filter(star => star.mag <= 4);
-        requestAnimationFrame(nextFrame);
     }
 
     const nightSkyCanvas = document.getElementById("nightSkyCanvas");
@@ -137,8 +152,8 @@
     window.addEventListener("resize", () => resizeCanvas());
 
     let radiusSkyDomeInPixels = nightSkyCanvas.width;
-    let localSidTime = 0;   // local sidereal time in hours
-    let running = true;
+    let localSidTime = 2;   // local sidereal time in hours
+    let running = false;
 
     function nextFrame() {
         if (!running) return;
@@ -246,6 +261,12 @@
         display.fill();
     }
 
-    resizeCanvas();
-    loadData();
+    async function init() {
+        resizeCanvas();
+        await loadData();
+        drawSky();
+        requestAnimationFrame(nextFrame);
+    }
+
+    init();
 </script>
