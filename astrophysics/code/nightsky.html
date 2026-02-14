@@ -1,4 +1,4 @@
-<div id="nightSkyCanvasWrapper" class="canvasWrapper2D">
+<div id="nightSkyCanvasWrapper" class="canvasWrapper2D" style="height: 50vw;">
     <canvas class="applicationCanvas2D" id="nightSkyCanvas"></canvas>
 </div>
 
@@ -132,7 +132,7 @@
         nightSkyCanvas.height = Math.floor(wrapperHeight * dpr);
 
         display.setTransform(dpr, 0, 0, dpr, 0, 0);
-        radiusSkyDomeInPixels = nightSkyCanvas.width
+        radiusSkyDomeInPixels = wrapperHeight;
     }
     window.addEventListener("resize", () => resizeCanvas());
 
