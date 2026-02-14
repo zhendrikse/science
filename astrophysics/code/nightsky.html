@@ -1,13 +1,16 @@
 
 <canvas id="theCanvas" width="720" height="360">Please update your browser!</canvas>
+<p style="clear: both;"></p>
 
 <div style="text-align:center;">
     <label for="latSlider">Latitude = <output id="latReadout" for="latSlider">41&deg;</output>
         <input id="latSlider" type="range" min="-90" max="90" step="1" value="41"/>
-    </label><br/>
+    </label>
+    <p style="clear: both;"></p>
     <label for="bearingSlider">Bearing = <output id="bearingReadout" for="bearingSlider">180&deg;</output>
         <input id="bearingSlider" type="range" min="0" max="360" step="1" value="180"/>
-    </label><br/>
+    </label>
+    <p style="clear: both;"></p>
     <button id="pauseButton">start</button>
 </div>
 
@@ -80,7 +83,6 @@
     let stars2Draw = [];
 
     async function loadData() {
-        // Load stars
         const starsRes = await fetch('https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/stars.6.json');
         const starsData = await starsRes.json();
 
@@ -145,9 +147,8 @@
         const bearing = Number(bearingSlider.value) * Math.PI / 180;
         const sidTime = localSidTime * 15 * Math.PI / 180;
 
-        // naar radialen
-        const ra  = raDeg  * Math.PI / 180;
-        const dec = decDeg * Math.PI / 180;
+        const ra  = raDeg  * Math.PI / 180;  // right ascension
+        const dec = decDeg * Math.PI / 180;  // declination
 
         const sinDec = Math.sin(dec);
         const cosDec = Math.cos(dec);
@@ -190,19 +191,15 @@
 
     // Draw the sky image:
     function drawSky() {
-        // theContext.clearRect(0, 0, theCanvas.width, theCanvas.height);
         // Draw the background:
         theContext.fillStyle = "black";
         theContext.beginPath();
-        theContext.arc(radiusSkyDomeInPixels, radiusSkyDomeInPixels, radiusSkyDomeInPixels, Math.PI, 2*Math.PI);
+        theContext.arc(radiusSkyDomeInPixels, radiusSkyDomeInPixels, radiusSkyDomeInPixels, Math.PI, 2 * Math.PI);
         theContext.fill();
 
-        //const projectedStars = {};
         for (let star of stars2Draw) {
             let projectedStar = projectStar(star.ra, star.dec);
             if (!projectedStar) continue;
-
-            //projectedStars[star.id] = projectedStar;
             drawStar(projectedStar.x, projectedStar.y, star.mag);
         }
         drawConstellations();
@@ -231,7 +228,7 @@
     // Draw a star at given pixel coordinates, relative to straight ahead:
     function drawStar(x, y, mag) {
         const brightness = Number((5 - mag) / 6.5).toFixed(2);    // linear map, mag -> brightness
-        theContext.fillStyle = "rgba(255,255,255," + brightness + ")";
+        theContext.fillStyle = "rgba(255, 255, 255, " + brightness + ")";
         theContext.beginPath();
         theContext.arc(radiusSkyDomeInPixels + x, radiusSkyDomeInPixels + y, 1.5, 0, 2 * Math.PI);
         theContext.fill();
