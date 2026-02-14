@@ -2,7 +2,7 @@
     <canvas class="applicationCanvas2D" id="nightSkyCanvas"></canvas>
 </div>
 
-<div style="margin-top: 10px; text-align:center;">
+<div class="buttonRow">
     <label for="latSlider">Latitude = <output id="latReadout" for="latSlider">41&deg;</output>
         <input id="latSlider" type="range" min="-90" max="90" step="1" value="41"/>
     </label>
@@ -133,6 +133,7 @@
         display.setTransform(dpr, 0, 0, dpr, 0, 0);
         latticeSize = wrapperSize;
     }
+    window.addEventListener("resize", () => resizeCanvas());
 
     const radiusSkyDomeInPixels = Number(nightSkyCanvas.clientHeight);      // radius of sky dome image in screen pixels
     let localSidTime = 0;   // local sidereal time in hours
