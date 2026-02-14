@@ -3,16 +3,15 @@
 </div>
 
 <div class="buttonRow">
-    <label for="latSlider">Latitude = <output id="latReadout" for="latSlider">41&deg;</output>
-        <input id="latSlider" type="range" min="-90" max="90" step="1" value="41"/>
+    <label for="latSlider">Latitude = <output id="latReadout" for="latSlider">52&deg;</output>
+        <input id="latSlider" type="range" min="-90" max="90" step="1" value="52"/>
     </label>
-    <p style="clear: both;"></p>
     <label for="bearingSlider">Bearing = <output id="bearingReadout" for="bearingSlider">180&deg;</output>
         <input id="bearingSlider" type="range" min="0" max="360" step="1" value="180"/>
     </label>
-    <p style="clear: both;"></p>
-    <button id="pauseButton">start</button>
 </div>
+<p style="clear: both;"></p>
+<button id="pauseButton">start</button>
 
 <script>
     const constellations = {
