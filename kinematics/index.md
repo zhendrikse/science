@@ -93,7 +93,7 @@ You may be surprised though to find out what happens when you drop such a simple
 <p style="clear: both;"></p>
 
 
-### Model of floating block
+### Floating block &amp; three-body problem
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -104,14 +104,15 @@ You may be surprised though to find out what happens when you drop such a simple
   <figcaption>Movement of a floating block in water.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="bouncing_particles.html">
-    <img alt="Bouncing particles" src="images/bouncing_particles.png" title="Click to animate"/>
-  </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <figcaption>Bouncing particles between a set of barriers.</figcaption>
+  <a href="three_body.html">
+    <img alt="Three body problem" src="images/three_body.png" title="Click to animate"/>
+  </a>
+  <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/Three-body_problem">three-body problem</a>,
+  for which there exists no analytical solution, so we have to solve it numerically. 
+  <a href="https://en.wikipedia.org/wiki/Euler%27s_three-body_problem">Euler&apos;s version</a>
+  is exactly solvable though.</figcaption>
 </figure>
 </div>
-
-<p style="clear: both;"></p>
 
 ### Bouncing ball
 <div style="border-top: 1px solid #999999"><br/></div>

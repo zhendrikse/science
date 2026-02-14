@@ -10,7 +10,7 @@
 - [`saturn_rings.py` source code](saturn_rings.py)
 - [`solar_system.html` source code](solar_system.html)
 - [`spiral_galaxy.html` source code](spiral_galaxy.html)
-- [`three_body.py` source code](three_body.py)
+- [`nightsky.html` source code](nightsky.html)
 - [`xray_binary.py` source code](xray_binary.py)
 
 

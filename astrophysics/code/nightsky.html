@@ -58,8 +58,22 @@
 
             [165.932, 61.751], // Dubhe
             [183.875, 57.033]  // Megrez
+        ],
+        "Cassiopeia": [
+            [2.293, 59.149],    // Caph
+            [10.126, 56.537],   // Schedar
+
+            [10.126, 56.537],   // Schedar
+            [14.1771, 60.7167], // Navi
+
+            [14.1771, 60.7167], // Navi
+            [21.455, 60.235],   // Ruchbah
+
+            [21.455, 60.235],   // Ruchbah
+            [28.5987, 63.6700]  // Segin
         ]
     };
+
 
     // let starById = {};
     // let projectedStars = {};
@@ -195,7 +209,7 @@
     }
 
     function drawConstellations() {
-        theContext.strokeStyle = "rgba(0, 150, 255, 0.25)";
+        theContext.strokeStyle = "rgba(0, 150, 255, 0.31)";
         theContext.lineWidth = 1.5;
 
         for (let name in constellationCoordinates) {

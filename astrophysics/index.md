@@ -113,24 +113,4 @@ special act. &mdash; <a href="https://en.wikipedia.org/wiki/Charles_Darwin">Char
 <p style="clear: both;"></p>
 
 
-### The three-body problem 
-<div style="border-top: 1px solid #999999"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="three_body.html">
-    <img alt="Three body problem" src="images/three_body.png" title="Click to animate"/>
-  </a>
-  <figcaption>The well-known <a href="https://en.wikipedia.org/wiki/Three-body_problem">three-body problem</a>,
-  for which there exists no analytical solution, so we have to solve it numerically. 
-  <a href="https://en.wikipedia.org/wiki/Euler%27s_three-body_problem">Euler&apos;s version</a>
-  is exactly solvable though.</figcaption>
-</figure>
-<figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
-</figure>
-</div>
-<p style="clear: both;"></p>
-
 {% include share_buttons.html %}
