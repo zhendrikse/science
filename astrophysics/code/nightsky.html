@@ -93,13 +93,38 @@
         ]
     };
 
+    let stars = [];
     let stars2Draw = [];
+
+    // async function loadConstellations() {
+    //     const constRes = await fetch('https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/constellations.lines.json');
+    //     const constData = await constRes.json();
+    //
+    //     const constellations = {};
+    //
+    //     for (let feature of constData.features) {
+    //         const name = feature.id;
+    //         const coords = feature.geometry.coordinates; // array of line segments [[start, end], [start, end], ...]
+    //
+    //         let lines = [];
+    //         for (let segment of coords)
+    //             lines.push(segment[0], segment[1]);
+    //
+    //         constellations[name] = lines;
+    //     }
+    // }
+
+    // async function loadConstellations() {
+    //     const constRes = await fetch('https://raw.githubusercontent.com/Stellarium/stellarium/refs/heads/master/skycultures/modern/index.json');
+    //     const constData = await constRes.json();
+    // }
+
     async function loadData() {
         const starsRes = await fetch('https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/stars.6.json');
         const starsData = await starsRes.json();
 
         // GeoJSON -> own format
-        const stars = starsData.features.map(feature => ({
+        stars = starsData.features.map(feature => ({
             id: feature.id,
             ra: feature.geometry.coordinates[0],   // right ascension
             dec: feature.geometry.coordinates[1],
@@ -107,6 +132,7 @@
         }));
 
         stars2Draw = stars.filter(star => star.mag <= 4);
+        // await loadConstellations();
     }
 
     const nightSkyCanvas = document.getElementById("nightSkyCanvas");

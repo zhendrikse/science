@@ -11,9 +11,14 @@ with each other and the larger mass. Interactions between objects are modeled as
 that the mass moves each time. If this simulation is accurate to observed brownian motion,
 these distances will be normally distributed.
 
+{% include_relative code/brownian_motion.html %}
+
+<p style="clear: both;"></p>
+
+## Two-dimensional Brownian motion
 <div class="header_line"><br/></div>
 
-{% include_relative code/brownian_motion.html %}
+{% include_relative code/brownian_motion_2d.html %}
 
 <p style="clear: both;"></p>
 

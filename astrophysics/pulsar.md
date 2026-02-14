@@ -21,10 +21,10 @@ we see pulsars turn on and off as the beam sweeps over Earth. &mdash;
 
 <p style="clear:both;"></p>
 
-### Artist impression of a pulsar
+<h3>Artist impression of a pulsar</h3>
 <div style="border-top: 1px solid #999999"><br/></div>
 
-![Pulsar](https://assets.iflscience.com/assets/articleNo/64624/aImg/56994/artist-impression-of-a-pulsar-image-credit-michaeltaylor-shutterstock-com-l.webp)
+<img alt="Pulsar" src="https://assets.iflscience.com/assets/articleNo/64624/aImg/56994/artist-impression-of-a-pulsar-image-credit-michaeltaylor-shutterstock-com-l.webp"/>
 
 <p style="clear:both;"></p>
 

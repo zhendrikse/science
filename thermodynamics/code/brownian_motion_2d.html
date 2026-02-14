@@ -1,0 +1,238 @@
+<!--
+  -- https://physics.bu.edu/~duffy/HTML5/brownian_motion.html
+  -->
+
+<canvas class="applicationCanvas2D" id="brownianCanvas"></canvas>
+<div class="buttonRow">
+    <button id="play">Play</button>
+    <button id="pause">Pause</button>
+    <button id="reset">Reset</button>
+</div>
+<p style="clear: both;"></p>
+<div class="buttonRow">Molecules:&nbsp;
+    <button id="show">Show</button>
+    <button id="hide">Hide</button>
+    <button id="add">Add</button>
+</div>
+<p style="clear: both;"></p>
+<div id="tempSlider">
+    <label for="tempValue">
+        Cold <input type="range" id="tempValue" min="0.6"
+                                 max="3.4" value="1" step="0.05" oninput="showTempValue(this.value)" onchange="showTempValue(this.value)"> Hot
+    </label>
+</div>
+
+<script>
+    const canvas = document.getElementById("brownianCanvas");
+    const context = canvas.getContext("2d");
+
+    const Array2D = (r, c, initialValue) => [...Array(r)].map(_ => Array(c).fill(initialValue));
+    const simTitle = 'Brownian motion';
+    const ballRadius = 5;
+    const nBalls = 301;
+    const overlap = Array2D(nBalls, nBalls, false);
+    const oldOverlap = Array2D(nBalls, nBalls, true);
+    const boxHeight = 400;
+    const boxWidth = 400;
+    const centerX = canvas.clientWidth  * .5;
+    const centerY = 250;
+    let index = -1;
+    let runFlag = true;
+    let time = 0;
+    let numBalls = 200;
+    let showMolecules = true;
+
+    const playButton = document.getElementById("play");
+    playButton.addEventListener("click", () => play());
+    const pauseButton = document.getElementById("pause");
+    pauseButton.addEventListener("click", () => pause());
+    const resetButton = document.getElementById("reset");
+    resetButton.addEventListener("click", () => reset());
+    const showButton = document.getElementById("show");
+    showButton.addEventListener("click", () => showMolecules = true);
+    const hideButton = document.getElementById("hide");
+    hideButton.addEventListener("click", () => showMolecules = false);
+    const addButton = document.getElementById("add");
+    addButton.addEventListener("click", () => addBalls());
+
+    function ballColor(newColor) {
+        for (let i = 1; i < nBalls; i++)
+            ball[i].color = newColor;
+    }
+
+    const showTempValue = (newTempValue) => speedFactor = Math.sqrt(Number(newTempValue));
+
+    function play() {
+        window.clearTimeout(timer);
+        runFlag = true;
+        runMotion();
+    }
+
+    function pause() {
+        window.clearTimeout(timer);
+        runFlag = false;
+    }
+
+    function addBalls() {
+        numBalls = 250;
+        for (let i = 200; i < 250; i++) {
+            ball[i].xValue = (centerX + 0.48 * boxWidth - ballRadius);
+            ball[i].yValue = (centerY + 0.48 * boxWidth - ballRadius);
+        }
+
+        for (let i = 0; i < numBalls; i++)
+            for (let j = 200; j< nBalls; j++)
+                oldOverlap[i][j] = true;
+    }
+
+    function reset() {
+        window.clearTimeout(timer);
+        index = -1;
+        numBalls = 200;
+        for (let i = 0; i < numBalls; i++) {
+            ball[i].xValue = centerX;
+            ball[i].yValue = centerY;
+        }
+        ball[0].deltaX = -1.0 + 2.0 * Math.random();
+        ball[0].deltaY = -1.0 + 2.0 * Math.random();
+
+        for (let i = 0; i < numBalls; i++)
+            for (let j = 0; j< nBalls; j++)
+                oldOverlap[i][j] = 1;
+        pushIndex = -1;
+        runFlag = true;
+    }
+
+
+    var timer;
+    let ball = new Array(nBalls + 1);
+    for (let i = 0; i <= nBalls; i++)
+        ball[i] = {
+            xValue: centerX,
+            yValue: centerY,
+            deltaX: -1.0 + 2.0 * Math.random(),
+            deltaY: -1.0 + 2.0 * Math.random(),
+            radius: ballRadius,
+            color: "yellow"
+        };
+
+    ball[0].color = "red";
+    ball[0].radius = 20;
+    for (let i = 200; i < 250; i++ )
+        ball[i].color = "cyan";
+    let speedFactor = 1;
+    const nPath = 500000;
+    const dust = new Array(nPath);
+    let pushIndex = -1;
+    for (let i = 0; i < nPath; i++)
+        dust[i] = {
+            x: centerX,
+            y: centerY
+        };
+
+    function drawBall(ball) {
+        context.fillStyle = ball.color;
+        context.strokeStyle = ball.color;
+        context.beginPath();
+        context.arc(ball.xValue, ball.yValue, ball.radius, 0, 2 * Math.PI, false);
+        context.fill();
+    }
+
+    function moveBall(ball) {
+        ball.xValue = ball.xValue + speedFactor * ball.deltaX;
+        ball.yValue = ball.yValue + speedFactor * ball.deltaY;
+
+        // code for bouncing off walls
+        if (ball.xValue > (centerX + 0.5 * boxWidth -  ball.radius)) ball.deltaX = -Math.abs(ball.deltaX);
+        if (ball.xValue < (centerX - 0.5 * boxWidth +  ball.radius)) ball.deltaX =  Math.abs(ball.deltaX);
+        if (ball.yValue > (centerY + 0.5 * boxHeight - ball.radius)) ball.deltaY = -Math.abs(ball.deltaY);
+        if (ball.yValue < (centerY - 0.5 * boxHeight + ball.radius)) ball.deltaY =  Math.abs(ball.deltaY);
+    }
+
+    function handleCollisionBetween(i, j) {
+        if (overlap[i][j] && !oldOverlap[i][j]) {
+            const vxi = ball[i].deltaX;
+            const vyi = ball[i].deltaY;
+            const vxj = ball[j].deltaX;
+            const vyj = ball[j].deltaY;
+            const distance = Math.sqrt(
+                (ball[j].xValue-ball[i].xValue)*(ball[j].xValue-ball[i].xValue)+(ball[j].yValue-ball[i].yValue)*(ball[j].yValue-ball[i].yValue));
+            const cosTheta = (ball[j].yValue-ball[i].yValue) / distance;
+            const sinTheta = (ball[j].xValue-ball[i].xValue) / distance;
+            ball[i].deltaX = vxi + sinTheta * ( -vxi * sinTheta + vxj * sinTheta - vyi * cosTheta + vyj * cosTheta);
+            ball[j].deltaX = vxj + vxi - ball[i].deltaX;
+            ball[i].deltaY = vyi + cosTheta * ( -vyi * cosTheta + vyj * cosTheta - vxi * sinTheta + vxj * sinTheta);
+            ball[j].deltaY = vyj + vyi - ball[i].deltaY;
+        }
+        oldOverlap[i][j] = overlap[i][j];
+    }
+
+    function drawDustTrail() {
+        if (pushIndex <= -1) return;
+
+        dust[pushIndex].x = ball[0].xValue;
+        dust[pushIndex].y = ball[0].yValue;
+        context.beginPath();
+        context.strokeStyle = "purple";
+        context.moveTo(dust[0].x,dust[0].y);
+        for (let i = 1; i <= pushIndex; i++)
+            context.lineTo(dust[i].x,dust[i].y);
+        context.stroke();
+        pushIndex = pushIndex + 1;
+    }
+
+    function drawMotion() {
+        if (time >= 50) runFlag = false;
+        if (!runFlag) return;
+
+        // clear
+        context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        index = index + 1;
+
+        // set background color for the entire thing
+        context.fillStyle = "#232323";
+        context.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+        // set background color for the box of gas
+        context.fillStyle = "#131313";
+        context.fillRect(centerX - 0.5 * boxWidth, centerY - 0.5 * boxHeight, boxWidth, boxHeight);
+
+        if (index > 400 && pushIndex === -1) pushIndex = 0;
+
+        // check to see if balls overlap
+        for (let i = 0; i < numBalls - 1; i++)
+            for (let j = i + 1; j < numBalls; j++) {
+                const x = ball[j].xValue - ball[i].xValue;
+                const y = ball[j].yValue - ball[i].yValue;
+                overlap[i][j] = x * x + y * y < (2 * ball[j].radius * 2 * ball[i].radius);
+            }
+
+        // if a new overlap occurs, the balls collide - find the new velocities
+        for (let i = 0; i < numBalls - 1; i++)
+            for (let j = i + 1; j < numBalls; j++)
+                handleCollisionBetween(i, j);
+
+        for (let i = numBalls - 1; i >= 0; i--) {
+            moveBall(ball[i]);
+            if (showMolecules)
+                drawBall(ball[i]);
+        }
+        drawBall(ball[0]); // Make sure the big ball is always shown
+        drawDustTrail();
+
+        // graph title
+        context.font = 'bold 18pt Calibri';
+        context.fillStyle = 'green';
+        context.textAlign = 'center';
+        context.fillText(simTitle, (canvas.clientWidth) * .5, 30);
+    }
+
+    function runMotion() {
+        if (!runFlag) return;
+        for (let i = 0; i < 5; i++)
+            drawMotion();
+        requestAnimationFrame(runMotion);
+    }
+
+    requestAnimationFrame(runMotion);
+</script>
