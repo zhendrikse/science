@@ -2,17 +2,17 @@
 <canvas id="theCanvas" width="720" height="360">Please update your browser!</canvas>
 
 <div style="text-align:center;">
-    <input type="button" id="pauseButton" value="Pause" style="width:100px; font-size:16px;"/>&nbsp;
     <label for="latSlider">Latitude = <output id="latReadout" for="latSlider">41&deg;</output>
         <input id="latSlider" type="range" min="-90" max="90" step="1" value="41"/>
-    </label>
+    </label><br/>
     <label for="bearingSlider">Bearing = <output id="bearingReadout" for="bearingSlider">180&deg;</output>
         <input id="bearingSlider" type="range" min="0" max="360" step="1" value="180"/>
-    </label>
+    </label><br/>
+    <button id="pauseButton">start</button>
 </div>
 
 <script>
-    const constellationCoordinates = {
+    const constellations = {
         "Orion": [
             [88.7929, 7.4071],  // Betelgeuze
             [81.2828, 6.3497],  // Bellatrix
@@ -106,7 +106,7 @@
 
     pauseButton.addEventListener("click", () => {
         running = !running;
-        pauseButton.value = running ? "Pause ": "Resume";
+        pauseButton.textContent = running ? " Pause " : "Resume";
         if (running)
             requestAnimationFrame(nextFrame);
     });
@@ -212,15 +212,17 @@
         theContext.strokeStyle = "rgba(0, 150, 255, 0.31)";
         theContext.lineWidth = 1.5;
 
-        for (let name in constellationCoordinates) {
-            for (let i = 0; i < constellationCoordinates[name].length - 1; i+=2) {
-                let a = projectStar(constellationCoordinates[name][i][0], constellationCoordinates[name][i][1]);
-                let b = projectStar(constellationCoordinates[name][i+1][0], constellationCoordinates[name][i+1][1]);
-                if (!a || !b) continue;
+        for (let name in constellations) {
+            for (let i = 0; i < constellations[name].length - 1; i+=2) {
+                let starA = constellations[name][i];
+                let starB = constellations[name][i + 1]
+                starA = projectStar(starA[0], starA[1]);
+                starB = projectStar(starB[0], starB[1]);
+                if (!starA || !starB) continue;
 
                 theContext.beginPath();
-                theContext.moveTo(radiusSkyDomeInPixels + a.x, radiusSkyDomeInPixels + a.y);
-                theContext.lineTo(radiusSkyDomeInPixels + b.x, radiusSkyDomeInPixels + b.y);
+                theContext.moveTo(radiusSkyDomeInPixels + starA.x, radiusSkyDomeInPixels + starA.y);
+                theContext.lineTo(radiusSkyDomeInPixels + starB.x, radiusSkyDomeInPixels + starB.y);
                 theContext.stroke();
             }
         }
