@@ -41,7 +41,7 @@
             [88.7929, 7.4071]   // Betelgeuze
         ],
         "UrsaMajor": [
-            [206.885, 49.313],  // Alkaid
+            [206.885, 49.313], // Alkaid
             [201.298, 54.925], // Mizar
 
             [201.298, 54.925], // Mizar
@@ -50,7 +50,7 @@
             [193.507, 55.959], // Alioth
             [183.875, 57.033],  // Megrez
 
-            [183.875, 57.033],  // Megrez
+            [183.875, 57.033], // Megrez
             [178.458, 53.695], // Phecda
 
             [178.458, 53.695], // Phecda
@@ -77,11 +77,7 @@
         ]
     };
 
-
-    // let starById = {};
-    // let projectedStars = {};
     let stars2Draw = [];
-
     async function loadData() {
         const starsRes = await fetch('https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/stars.6.json');
         const starsData = await starsRes.json();
@@ -131,7 +127,6 @@
 
         localSidTime += 1/60;
         drawSky();
-
         requestAnimationFrame(nextFrame);
     }
 
@@ -182,7 +177,6 @@
         if (sinAlpha === 0) return null;  // singularity
 
         const scaleFactor = radiusSkyDomeInPixels / (Math.PI / 2);
-
         const x = alpha * scaleFactor * cosAlt * Math.sin(azRel) / sinAlpha;
         const y = -alpha * scaleFactor * sinAltitude / sinAlpha;
 
