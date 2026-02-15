@@ -2,7 +2,7 @@
   -- https://physics.bu.edu/~duffy/HTML5/brownian_motion.html
   -->
 
-<canvas class="applicationCanvas2D" id="brownianCanvas"></canvas>
+<canvas class="applicationCanvas2D" id="brownianCanvas" width="500" height="500"></canvas>
 <div class="buttonRow">
     <button id="play">Play</button>
     <button id="pause">Pause</button>
@@ -17,8 +17,8 @@
 <p style="clear: both;"></p>
 <div id="tempSlider">
     <label for="tempValue">
-        Cold <input type="range" id="tempValue" min="0.6"
-                                 max="3.4" value="1" step="0.05" oninput="showTempValue(this.value)" onchange="showTempValue(this.value)"> Hot
+        Cold <input type="range" id="tempValue" min="0.01"
+                                 max="1.0" value=".5" step="0.01" oninput="showTempValue(this.value)" onchange="showTempValue(this.value)"> Hot
     </label>
 </div>
 
@@ -36,6 +36,9 @@
     const boxWidth = 400;
     const centerX = brownianCanvas.clientWidth  * .5;
     const centerY = 250;
+    const nPath = 500000;
+    const dust = new Array(nPath);
+    
     let index = -1;
     let runFlag = true;
     let time = 0;
@@ -60,7 +63,7 @@
     function play() {
         window.clearTimeout(timer);
         runFlag = true;
-        runMotion();
+        animate();
     }
 
     function pause() {
@@ -71,8 +74,8 @@
     function addBalls() {
         numBalls = 250;
         for (let i = 200; i < 250; i++) {
-            ball[i].xValue = (centerX + 0.48 * boxWidth - ballRadius);
-            ball[i].yValue = (centerY + 0.48 * boxWidth - ballRadius);
+            ball[i].x = (centerX + 0.48 * boxWidth - ballRadius);
+            ball[i].y = (centerY + 0.48 * boxWidth - ballRadius);
         }
 
         for (let i = 0; i < numBalls; i++)
@@ -85,88 +88,110 @@
         index = -1;
         numBalls = 200;
         for (let i = 0; i < numBalls; i++) {
-            ball[i].xValue = centerX;
-            ball[i].yValue = centerY;
+            ball[i].x = centerX;
+            ball[i].y = centerY;
         }
-        ball[0].deltaX = -1.0 + 2.0 * Math.random();
-        ball[0].deltaY = -1.0 + 2.0 * Math.random();
+        ball[0].velX = -1.0 + 2.0 * Math.random();
+        ball[0].velY = -1.0 + 2.0 * Math.random();
 
         for (let i = 0; i < numBalls; i++)
             for (let j = 0; j< nBalls; j++)
-                oldOverlap[i][j] = 1;
+                oldOverlap[i][j] = true;
         pushIndex = -1;
         runFlag = true;
     }
 
+    class Ball {
+        constructor(x, y, radius, color) {
+            this.x = x;
+            this.y = y;
+            this.velX = -1.0 + 2.0 * Math.random();
+            this.velY = -1.0 + 2.0 * Math.random();
+            this.radius = radius;
+            this.color = color;
+        }
 
-    var timer;
+        distanceSquaredTo(otherBall) {
+            const distX = otherBall.x - this.x;
+            const distY = otherBall.y - this.y;
+            return distX * distX + distY * distY;
+        }
+
+        distanceTo = (otherBall) => Math.sqrt(this.distanceSquaredTo(otherBall));
+
+        limitTo(left, right, top, bottom) {
+            if (this.x > right)  this.velX = -Math.abs(this.velX);
+            if (this.x < left)   this.velX =  Math.abs(this.velX);
+            if (this.y > top)    this.velY = -Math.abs(this.velY);
+            if (this.y < bottom) this.velY =  Math.abs(this.velY);
+        }
+
+        collideWith(otherBall) {
+            const vxi = this.velX;
+            const vyi = this.velY;
+            const vxj = otherBall.velX;
+            const vyj = otherBall.velY;
+            const distance = this.distanceTo(otherBall);
+            const cosTheta = (otherBall.y - this.y) / distance;
+            const sinTheta = (otherBall.x - this.x) / distance;
+            this.velX = vxi + sinTheta * ( -vxi * sinTheta + vxj * sinTheta - vyi * cosTheta + vyj * cosTheta);
+            this.velY = vyi + cosTheta * ( -vyi * cosTheta + vyj * cosTheta - vxi * sinTheta + vxj * sinTheta);
+            otherBall.velX = vxj + vxi - this.velX;
+            otherBall.velY = vyj + vyi - this.velY;
+        }
+
+        draw(visible) {
+            if (!visible) return;
+
+            context.fillStyle = this.color;
+            context.strokeStyle = this.color;
+            context.beginPath();
+            context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+            context.fill();
+        }
+
+        move() {
+            this.x += speedFactor * this.velX;
+            this.y += speedFactor * this.velY;
+            const left = centerX - 0.5 * boxWidth +  this.radius;
+            const right = centerX + 0.5 * boxWidth -  this.radius
+            const top = centerY + 0.5 * boxHeight - this.radius;
+            const bottom = centerY - 0.5 * boxHeight + this.radius;
+            this.limitTo(left, right, top, bottom);
+        }
+
+        isCollidingWith = (otherBall) => this.distanceSquaredTo(otherBall) < (2 * otherBall.radius * 2 * this.radius);
+    }
+
+    let timer;
     let ball = new Array(nBalls + 1);
     for (let i = 0; i <= nBalls; i++)
-        ball[i] = {
-            xValue: centerX,
-            yValue: centerY,
-            deltaX: -1.0 + 2.0 * Math.random(),
-            deltaY: -1.0 + 2.0 * Math.random(),
-            radius: ballRadius,
-            color: "yellow"
-        };
+        ball[i] = new Ball(centerX, centerY, ballRadius, "yellow");
 
     ball[0].color = "red";
     ball[0].radius = 20;
-    for (let i = 200; i < 250; i++ )
+    for (let i = 200; i < 250; i++)
         ball[i].color = "cyan";
+    
     let speedFactor = 1;
-    const nPath = 500000;
-    const dust = new Array(nPath);
     let pushIndex = -1;
+    
     for (let i = 0; i < nPath; i++)
         dust[i] = {
             x: centerX,
             y: centerY
         };
 
-    function drawBall(ball) {
-        context.fillStyle = ball.color;
-        context.strokeStyle = ball.color;
-        context.beginPath();
-        context.arc(ball.xValue, ball.yValue, ball.radius, 0, 2 * Math.PI, false);
-        context.fill();
-    }
-
-    function moveBall(ball) {
-        ball.xValue = ball.xValue + speedFactor * ball.deltaX;
-        ball.yValue = ball.yValue + speedFactor * ball.deltaY;
-
-        // code for bouncing off walls
-        if (ball.xValue > (centerX + 0.5 * boxWidth -  ball.radius)) ball.deltaX = -Math.abs(ball.deltaX);
-        if (ball.xValue < (centerX - 0.5 * boxWidth +  ball.radius)) ball.deltaX =  Math.abs(ball.deltaX);
-        if (ball.yValue > (centerY + 0.5 * boxHeight - ball.radius)) ball.deltaY = -Math.abs(ball.deltaY);
-        if (ball.yValue < (centerY - 0.5 * boxHeight + ball.radius)) ball.deltaY =  Math.abs(ball.deltaY);
-    }
-
     function handleCollisionBetween(i, j) {
-        if (overlap[i][j] && !oldOverlap[i][j]) {
-            const vxi = ball[i].deltaX;
-            const vyi = ball[i].deltaY;
-            const vxj = ball[j].deltaX;
-            const vyj = ball[j].deltaY;
-            const distance = Math.sqrt(
-                (ball[j].xValue-ball[i].xValue)*(ball[j].xValue-ball[i].xValue)+(ball[j].yValue-ball[i].yValue)*(ball[j].yValue-ball[i].yValue));
-            const cosTheta = (ball[j].yValue-ball[i].yValue) / distance;
-            const sinTheta = (ball[j].xValue-ball[i].xValue) / distance;
-            ball[i].deltaX = vxi + sinTheta * ( -vxi * sinTheta + vxj * sinTheta - vyi * cosTheta + vyj * cosTheta);
-            ball[j].deltaX = vxj + vxi - ball[i].deltaX;
-            ball[i].deltaY = vyi + cosTheta * ( -vyi * cosTheta + vyj * cosTheta - vxi * sinTheta + vxj * sinTheta);
-            ball[j].deltaY = vyj + vyi - ball[i].deltaY;
-        }
+        if (overlap[i][j] && !oldOverlap[i][j]) ball[i].collideWith(ball[j]);
         oldOverlap[i][j] = overlap[i][j];
     }
 
     function drawDustTrail() {
         if (pushIndex <= -1) return;
 
-        dust[pushIndex].x = ball[0].xValue;
-        dust[pushIndex].y = ball[0].yValue;
+        dust[pushIndex].x = ball[0].x;
+        dust[pushIndex].y = ball[0].y;
         context.beginPath();
         context.strokeStyle = "purple";
         context.moveTo(dust[0].x,dust[0].y);
@@ -176,13 +201,8 @@
         pushIndex = pushIndex + 1;
     }
 
-    function drawMotion() {
-        if (time >= 50) runFlag = false;
-        if (!runFlag) return;
-
-        // clear
+    function redrawCanvas() {
         context.clearRect(0, 0, brownianCanvas.clientWidth, brownianCanvas.clientHeight);
-        index = index + 1;
 
         // set background color for the entire thing
         context.fillStyle = "#232323";
@@ -191,30 +211,7 @@
         // set background color for the box of gas
         context.fillStyle = "#131313";
         context.fillRect(centerX - 0.5 * boxWidth, centerY - 0.5 * boxHeight, boxWidth, boxHeight);
-
-        if (index > 400 && pushIndex === -1) pushIndex = 0;
-
-        // check to see if balls overlap
-        for (let i = 0; i < numBalls - 1; i++)
-            for (let j = i + 1; j < numBalls; j++) {
-                const x = ball[j].xValue - ball[i].xValue;
-                const y = ball[j].yValue - ball[i].yValue;
-                overlap[i][j] = x * x + y * y < (2 * ball[j].radius * 2 * ball[i].radius);
-            }
-
-        // if a new overlap occurs, the balls collide - find the new velocities
-        for (let i = 0; i < numBalls - 1; i++)
-            for (let j = i + 1; j < numBalls; j++)
-                handleCollisionBetween(i, j);
-
-        for (let i = numBalls - 1; i >= 0; i--) {
-            moveBall(ball[i]);
-            if (showMolecules)
-                drawBall(ball[i]);
-        }
-        drawBall(ball[0]); // Make sure the big ball is always shown
-        drawDustTrail();
-
+        
         // graph title
         context.font = 'bold 18pt Calibri';
         context.fillStyle = 'green';
@@ -222,12 +219,36 @@
         context.fillText(simTitle, (brownianCanvas.clientWidth) * .5, 30);
     }
 
-    function runMotion() {
+    function drawMotion() {
+        if (time >= 50) runFlag = false;
+        if (!runFlag) return;
+
+        redrawCanvas();
+        index++;
+        if (index > 400 && pushIndex === -1) pushIndex = 0; // delay before start drawing trail
+
+        for (let i = 0; i < numBalls - 1; i++)
+            for (let j = i + 1; j < numBalls; j++)
+                overlap[i][j] = ball[i].isCollidingWith(ball[j]);
+
+        for (let i = 0; i < numBalls - 1; i++)
+            for (let j = i + 1; j < numBalls; j++)
+                handleCollisionBetween(i, j);
+
+        for (let i = numBalls - 1; i >= 0; i--) {
+            ball[i].move();
+            ball[i].draw(showMolecules);
+        }
+        ball[0].draw(true); // Make sure the big ball is always shown
+        drawDustTrail();
+    }
+
+    function animate() {
         if (!runFlag) return;
         for (let i = 0; i < 5; i++)
             drawMotion();
-        requestAnimationFrame(runMotion);
+        requestAnimationFrame(animate);
     }
 
-    requestAnimationFrame(runMotion);
+    requestAnimationFrame(animate);
 </script>
