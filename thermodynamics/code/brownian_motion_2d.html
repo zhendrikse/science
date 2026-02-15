@@ -19,8 +19,7 @@
 <p style="clear: both;"></p>
 <div id="tempSlider">
     <label for="tempValue">
-        Cold <input type="range" id="tempValue" min="0.05"
-                                 max="1.0" value=".5" step="0.01" oninput="showTempValue(this.value)" onchange="showTempValue(this.value)"> Hot
+        Cold <input type="range" id="tempValue" min="0.05" max="1.0" value=".5" step="0.01"/> Hot
     </label>
 </div>
 <div id="speedPlot" style="margin:auto;"></div>
@@ -55,8 +54,10 @@
     hideButton.addEventListener("click", () => showMolecules = false);
     const addButton = document.getElementById("add");
     addButton.addEventListener("click", () => addBalls());
-
-    const showTempValue = (newTempValue) => setTemperature(Number(newTempValue));
+    const tempSlider = document.getElementById("tempValue");
+    tempSlider.addEventListener("input", (event) => {
+        setTemperature(Number(event.target.value));
+    });
 
     function play() {
         window.clearTimeout(timer);
@@ -167,7 +168,7 @@
             return this.distanceSquaredTo(otherBall) < r * r;
         }
 
-        speedSquared = () => this.velX * this.velX + this.velY * this.velY;
+        speed = () => Math.sqrt(this.velX * this.velX + this.velY * this.velY);
     }
 
     class Trail {
@@ -282,9 +283,9 @@
 
         let sumV2 = 0;
         for (let i = 1; i < numBalls; i++) {
-            const speedSquared = ball[i].speedSquared();
-            sumV2 += speedSquared;
-            const index = Math.min(Math.floor(speedSquared / binSize), binCount - 1);
+            const v = ball[i].speed();
+            sumV2 += v * v;
+            const index = Math.min(Math.floor(v / binSize), binCount - 1);
             bins[index]++;
         }
 
