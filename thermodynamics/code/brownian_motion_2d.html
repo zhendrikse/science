@@ -1,6 +1,8 @@
 <!--
   -- https://physics.bu.edu/~duffy/HTML5/brownian_motion.html
   -->
+<link rel="stylesheet" href="https://unpkg.com/uplot/dist/uPlot.min.css">
+<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
 <canvas class="applicationCanvas2D" id="brownianCanvas" width="500" height="500"></canvas>
 <div class="buttonRow">
@@ -21,17 +23,15 @@
                                  max="1.0" value=".5" step="0.01" oninput="showTempValue(this.value)" onchange="showTempValue(this.value)"> Hot
     </label>
 </div>
+<div id="speedPlot" style="width:600px; height:300px;"></div>
 
 <script>
     const brownianCanvas = document.getElementById("brownianCanvas");
     const context = brownianCanvas.getContext("2d");
 
-    const Array2D = (r, c, initialValue) => [...Array(r)].map(_ => Array(c).fill(initialValue));
     const simTitle = 'Brownian motion';
     const ballRadius = 5;
     const nBalls = 301;
-    const overlap = Array2D(nBalls, nBalls, false);
-    const oldOverlap = Array2D(nBalls, nBalls, true);
     const boxHeight = 400;
     const boxWidth = 400;
     const centerX = brownianCanvas.clientWidth  * .5;
@@ -77,26 +77,17 @@
             ball[i].x = (centerX + 0.48 * boxWidth - ballRadius);
             ball[i].y = (centerY + 0.48 * boxWidth - ballRadius);
         }
-
-        for (let i = 0; i < numBalls; i++)
-            for (let j = 200; j< nBalls; j++)
-                oldOverlap[i][j] = true;
     }
 
     function reset() {
         window.clearTimeout(timer);
         index = -1;
         numBalls = 200;
-        for (let i = 0; i < numBalls; i++) {
-            ball[i].x = centerX;
-            ball[i].y = centerY;
-        }
+        for (let i = 0; i < numBalls; i++)
+            ball[i].reset();
         ball[0].velX = -1.0 + 2.0 * Math.random();
         ball[0].velY = -1.0 + 2.0 * Math.random();
 
-        for (let i = 0; i < numBalls; i++)
-            for (let j = 0; j< nBalls; j++)
-                oldOverlap[i][j] = true;
         pushIndex = -1;
         runFlag = true;
     }
@@ -127,17 +118,30 @@
         }
 
         collideWith(otherBall) {
+            // relative velocities
+            const dvx = otherBall.velX - this.velX;
+            const dvy = otherBall.velY - this.velY;
+            const dx = otherBall.x - this.x;
+            const dy = otherBall.y - this.y;
+
+            if (dvx * dx + dvy * dy >= 0) return;
+
             const vxi = this.velX;
             const vyi = this.velY;
             const vxj = otherBall.velX;
             const vyj = otherBall.velY;
             const distance = this.distanceTo(otherBall);
-            const cosTheta = (otherBall.y - this.y) / distance;
-            const sinTheta = (otherBall.x - this.x) / distance;
+            const cosTheta = dy / distance;
+            const sinTheta = dx / distance;
             this.velX = vxi + sinTheta * ( -vxi * sinTheta + vxj * sinTheta - vyi * cosTheta + vyj * cosTheta);
             this.velY = vyi + cosTheta * ( -vyi * cosTheta + vyj * cosTheta - vxi * sinTheta + vxj * sinTheta);
             otherBall.velX = vxj + vxi - this.velX;
             otherBall.velY = vyj + vyi - this.velY;
+        }
+
+        reset(x=centerX, y=centerY) {
+            this.x = x;
+            this.y = y;
         }
 
         draw(visible) {
@@ -164,6 +168,8 @@
             const r = this.radius + otherBall.radius;
             return this.distanceSquaredTo(otherBall) < r * r;
         }
+
+        speed = () => Math.sqrt(this.velX * this.velX + this.velY * this.velY);
     }
 
     let timer;
@@ -184,11 +190,6 @@
             x: centerX,
             y: centerY
         };
-
-    function handleCollisionBetween(i, j) {
-        if (overlap[i][j] && !oldOverlap[i][j]) ball[i].collideWith(ball[j]);
-        oldOverlap[i][j] = overlap[i][j];
-    }
 
     function drawDustTrail() {
         if (pushIndex <= -1) return;
@@ -222,29 +223,126 @@
         context.fillText(simTitle, (brownianCanvas.clientWidth) * .5, 30);
     }
 
+    function updateGraph() {
+        if (index % 5 !== 0)
+            return;
+
+        const { bins, meanV2 } = computeSpeedDistribution();
+        const averaged = getAveragedHistogram(bins);
+        const theory = computeTheoreticalCurve(meanV2, numBalls - 1);
+        speedPlot.setData([binsX, averaged, theory]);
+    }
+
+    function redraw() {
+        redrawCanvas();
+
+        for (let i = 0; i < numBalls - 1; i++)
+            ball[i].draw(showMolecules);
+        ball[0].draw(true); // Make sure the big ball is always shown
+
+        drawDustTrail();
+        updateGraph();
+    }
+
     function drawMotion() {
         if (time >= 50) runFlag = false;
         if (!runFlag) return;
 
-        redrawCanvas();
         index++;
         if (index > 400 && pushIndex === -1) pushIndex = 0; // delay before start drawing trail
 
         for (let i = 0; i < numBalls - 1; i++)
-            for (let j = i + 1; j < numBalls; j++)
-                overlap[i][j] = ball[i].isCollidingWith(ball[j]);
+            ball[i].move();
 
         for (let i = 0; i < numBalls - 1; i++)
             for (let j = i + 1; j < numBalls; j++)
-                handleCollisionBetween(i, j);
+                if (ball[i].isCollidingWith(ball[j]))
+                    ball[i].collideWith(ball[j]);
 
-        for (let i = numBalls - 1; i >= 0; i--) {
-            ball[i].move();
-            ball[i].draw(showMolecules);
-        }
-        ball[0].draw(true); // Make sure the big ball is always shown
-        drawDustTrail();
+        redraw();
     }
+
+    const binCount = 30;
+    const maxSpeed = 5;
+    const averagingFrames = 100;
+    let histogramBuffer = [];
+    const binsX = Array.from({length: binCount}, (_, i) => i);
+    function computeSpeedDistribution() {
+        const bins = new Array(binCount).fill(0);
+        const binSize = maxSpeed / binCount;
+
+        let sumV2 = 0;
+        for (let i = 1; i < numBalls; i++) {
+            const v = ball[i].speed();
+            sumV2 += v * v;
+            const index = Math.min(Math.floor(v / binSize), binCount - 1);
+            bins[index]++;
+        }
+
+        const meanV2 = sumV2 / (numBalls - 1);
+        return { bins, meanV2 };
+    }
+
+    function getAveragedHistogram(newBins) {
+        histogramBuffer.push(newBins);
+
+        if (histogramBuffer.length > averagingFrames)
+            histogramBuffer.shift();
+
+        const average = new Array(binCount).fill(0);
+        for (let frame of histogramBuffer)
+            for (let i = 0; i < binCount; i++)
+                average[i] += frame[i];
+
+        for (let i = 0; i < binCount; i++)
+            average[i] /= histogramBuffer.length;
+
+        return average;
+    }
+
+    function computeTheoreticalCurve(meanV2, totalParticles) {
+        const binSize = maxSpeed / binCount;
+        const T = meanV2 / 2;   // effective temperature
+
+        const theory = [];
+        for (let i = 0; i < binCount; i++) {
+            const v = (i + 0.5) * binSize;
+            const value = (v / T) * Math.exp(-v * v / (2 * T));
+            theory.push(value);
+        }
+
+        // normaliseren zodat oppervlak gelijk is aan histogram
+        const sumTheory = theory.reduce((a, b) => a + b, 0);
+        const scale = totalParticles / sumTheory;
+
+        return theory.map(v => v * scale);
+    }
+
+    const speedPlot = new uPlot({
+            title: "Speed Distribution (averaged)",
+            width: 600,
+            height: 300,
+            scales: {
+                x: { time: false },
+                y: { auto: false, range: [0, 50] }
+            },
+            series: [
+                {},
+                {
+                    label: "Simulation",
+                    stroke: "cyan",
+                    fill: "rgba(0,255,255,0.2)"
+                },
+                {
+                    label: "Maxwell (2D)",
+                    stroke: "orange",
+                    width: 2
+                }
+            ]
+        }, [binsX, new Array(binCount).fill(0), new Array(binCount).fill(0)],
+        document.getElementById("speedPlot"));
+
+
 
     function animate() {
         if (!runFlag) return;
