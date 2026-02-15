@@ -19,11 +19,11 @@
 <p style="clear: both;"></p>
 <div id="tempSlider">
     <label for="tempValue">
-        Cold <input type="range" id="tempValue" min="0.01"
+        Cold <input type="range" id="tempValue" min="0.05"
                                  max="1.0" value=".5" step="0.01" oninput="showTempValue(this.value)" onchange="showTempValue(this.value)"> Hot
     </label>
 </div>
-<div id="speedPlot" style="width:600px; height:300px;"></div>
+<div id="speedPlot" style="margin:auto;"></div>
 
 <script>
     const brownianCanvas = document.getElementById("brownianCanvas");
@@ -36,14 +36,12 @@
     const boxWidth = 400;
     const centerX = brownianCanvas.clientWidth  * .5;
     const centerY = 250;
-    const nPath = 500000;
-    const dust = new Array(nPath);
-    
-    let index = -1;
+
     let runFlag = true;
     let time = 0;
     let numBalls = 200;
     let showMolecules = true;
+    let timer;
 
     const playButton = document.getElementById("play");
     playButton.addEventListener("click", () => play());
@@ -58,7 +56,7 @@
     const addButton = document.getElementById("add");
     addButton.addEventListener("click", () => addBalls());
 
-    const showTempValue = (newTempValue) => speedFactor = Math.sqrt(Number(newTempValue));
+    const showTempValue = (newTempValue) => setTemperature(Number(newTempValue));
 
     function play() {
         window.clearTimeout(timer);
@@ -81,14 +79,13 @@
 
     function reset() {
         window.clearTimeout(timer);
-        index = -1;
         numBalls = 200;
         for (let i = 0; i < numBalls; i++)
             ball[i].reset();
         ball[0].velX = -1.0 + 2.0 * Math.random();
         ball[0].velY = -1.0 + 2.0 * Math.random();
 
-        pushIndex = -1;
+        trail.reset();
         runFlag = true;
     }
 
@@ -130,9 +127,10 @@
             const vyi = this.velY;
             const vxj = otherBall.velX;
             const vyj = otherBall.velY;
-            const distance = this.distanceTo(otherBall);
-            const cosTheta = dy / distance;
-            const sinTheta = dx / distance;
+            const invDist = 1 / Math.sqrt(dx*dx + dy*dy);
+            const cosTheta = dy * invDist;
+            const sinTheta = dx * invDist;
+
             this.velX = vxi + sinTheta * ( -vxi * sinTheta + vxj * sinTheta - vyi * cosTheta + vyj * cosTheta);
             this.velY = vyi + cosTheta * ( -vyi * cosTheta + vyj * cosTheta - vxi * sinTheta + vxj * sinTheta);
             otherBall.velX = vxj + vxi - this.velX;
@@ -155,8 +153,8 @@
         }
 
         move() {
-            this.x += speedFactor * this.velX;
-            this.y += speedFactor * this.velY;
+            this.x += this.velX;
+            this.y += this.velY;
             const left = centerX - 0.5 * boxWidth +  this.radius;
             const right = centerX + 0.5 * boxWidth -  this.radius
             const top = centerY + 0.5 * boxHeight - this.radius;
@@ -169,41 +167,51 @@
             return this.distanceSquaredTo(otherBall) < r * r;
         }
 
-        speed = () => Math.sqrt(this.velX * this.velX + this.velY * this.velY);
+        speedSquared = () => this.velX * this.velX + this.velY * this.velY;
     }
 
-    let timer;
+    class Trail {
+        constructor(nPath=500000) {
+            this.dust = new Array(nPath);
+            this.pushIndex = -1;
+            this.index = -1;
+            for (let i = 0; i < nPath; i++)
+                this.dust[i] = {
+                    x: centerX,
+                    y: centerY
+                };
+        }
+
+        reset() {
+            this.index = -1;
+            this.pushIndex = -1;
+        }
+
+        increment(ball) {
+            this.index++;
+            if (this.index > 400 && this.pushIndex === -1) this.pushIndex = 0; // delay before start drawing trail
+            if (this.pushIndex <= -1) return;
+            this.dust[this.pushIndex].x = ball.x;
+            this.dust[this.pushIndex].y = ball.y;
+        }
+
+        draw() {
+            if (this.pushIndex <= -1) return;
+            context.beginPath();
+            context.strokeStyle = "purple";
+            context.moveTo(this.dust[0].x, this.dust[0].y);
+            for (let i = 1; i <= this.pushIndex; i++)
+                context.lineTo(this.dust[i].x, this.dust[i].y);
+            context.stroke();
+            this.pushIndex++;
+        }
+    }
+
+    const trail = new Trail();
     let ball = new Array(nBalls + 1);
-    for (let i = 0; i <= nBalls; i++)
-        ball[i] = new Ball(centerX, centerY, ballRadius, "yellow");
-
-    ball[0].color = "red";
-    ball[0].radius = 20;
-    for (let i = 200; i < 250; i++)
-        ball[i].color = "cyan";
-    
-    let speedFactor = 1;
-    let pushIndex = -1;
-    
-    for (let i = 0; i < nPath; i++)
-        dust[i] = {
-            x: centerX,
-            y: centerY
-        };
-
-    function drawDustTrail() {
-        if (pushIndex <= -1) return;
-
-        dust[pushIndex].x = ball[0].x;
-        dust[pushIndex].y = ball[0].y;
-        context.beginPath();
-        context.strokeStyle = "purple";
-        context.moveTo(dust[0].x,dust[0].y);
-        for (let i = 1; i <= pushIndex; i++)
-            context.lineTo(dust[i].x,dust[i].y);
-        context.stroke();
-        pushIndex = pushIndex + 1;
-    }
+    ball[0] = new Ball(centerX, centerY, 20, "red"); // Big red ball
+    for (let i = 1; i <= nBalls; i++)
+        ball[i] = new Ball(centerX, centerY, ballRadius, i < 200 || i >=250 ? "yellow" : "cyan");
 
     function redrawCanvas() {
         context.clearRect(0, 0, brownianCanvas.clientWidth, brownianCanvas.clientHeight);
@@ -223,8 +231,9 @@
         context.fillText(simTitle, (brownianCanvas.clientWidth) * .5, 30);
     }
 
+    let graphUpdateCounter = 0;
     function updateGraph() {
-        if (index % 5 !== 0)
+        if (graphUpdateCounter++ % 5 !== 0)
             return;
 
         const { bins, meanV2 } = computeSpeedDistribution();
@@ -236,11 +245,11 @@
     function redraw() {
         redrawCanvas();
 
-        for (let i = 0; i < numBalls - 1; i++)
-            ball[i].draw(showMolecules);
         ball[0].draw(true); // Make sure the big ball is always shown
+        for (let i = 1; i < numBalls - 1; i++)
+            ball[i].draw(showMolecules);
 
-        drawDustTrail();
+        trail.draw();
         updateGraph();
     }
 
@@ -248,8 +257,7 @@
         if (time >= 50) runFlag = false;
         if (!runFlag) return;
 
-        index++;
-        if (index > 400 && pushIndex === -1) pushIndex = 0; // delay before start drawing trail
+        trail.increment(ball[0]);
 
         for (let i = 0; i < numBalls - 1; i++)
             ball[i].move();
@@ -267,20 +275,32 @@
     const averagingFrames = 100;
     let histogramBuffer = [];
     const binsX = Array.from({length: binCount}, (_, i) => i);
+
     function computeSpeedDistribution() {
         const bins = new Array(binCount).fill(0);
         const binSize = maxSpeed / binCount;
 
         let sumV2 = 0;
         for (let i = 1; i < numBalls; i++) {
-            const v = ball[i].speed();
-            sumV2 += v * v;
-            const index = Math.min(Math.floor(v / binSize), binCount - 1);
+            const speedSquared = ball[i].speedSquared();
+            sumV2 += speedSquared;
+            const index = Math.min(Math.floor(speedSquared / binSize), binCount - 1);
             bins[index]++;
         }
 
         const meanV2 = sumV2 / (numBalls - 1);
         return { bins, meanV2 };
+    }
+
+    function setTemperature(newTemp) {
+        const currentMeanV2 = computeSpeedDistribution().meanV2;
+        const currentTemp = currentMeanV2 / 2;
+
+        const scale = Math.sqrt(newTemp / currentTemp);
+        for (let i = 1; i < numBalls; i++) {
+            ball[i].velX *= scale;
+            ball[i].velY *= scale;
+        }
     }
 
     function getAveragedHistogram(newBins) {
@@ -311,7 +331,7 @@
             theory.push(value);
         }
 
-        // normaliseren zodat oppervlak gelijk is aan histogram
+        // normalize so that area is equal to histogram
         const sumTheory = theory.reduce((a, b) => a + b, 0);
         const scale = totalParticles / sumTheory;
 
@@ -320,11 +340,12 @@
 
     const speedPlot = new uPlot({
             title: "Speed Distribution (averaged)",
-            width: 600,
+            width: 500,
             height: 300,
+            bg: "transparent",
             scales: {
                 x: { time: false },
-                y: { auto: false, range: [0, 50] }
+                y: { auto: false, range: [0, 70] }
             },
             series: [
                 {},
@@ -339,10 +360,9 @@
                     width: 2
                 }
             ]
-        }, [binsX, new Array(binCount).fill(0), new Array(binCount).fill(0)],
+        },
+        [binsX, new Array(binCount).fill(0), new Array(binCount).fill(0)],
         document.getElementById("speedPlot"));
-
-
 
     function animate() {
         if (!runFlag) return;
