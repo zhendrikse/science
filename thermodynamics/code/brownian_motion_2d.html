@@ -160,7 +160,10 @@
             this.limitTo(left, right, top, bottom);
         }
 
-        isCollidingWith = (otherBall) => this.distanceSquaredTo(otherBall) < (2 * otherBall.radius * 2 * this.radius);
+        isCollidingWith(otherBall) {
+            const r = this.radius + otherBall.radius;
+            return this.distanceSquaredTo(otherBall) < r * r;
+        }
     }
 
     let timer;
