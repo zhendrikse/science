@@ -26,8 +26,9 @@
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
 <script type="module">
-    import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, MeshBasicMaterial, Mesh, Vector3 } from "three";
+    import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, MeshStandardMaterial, Mesh, Color } from "three";
     import { Particle3D, ParticleTrail3D } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
     // --- Canvas & scene ---
     const canvas = document.getElementById("brownianCanvas3d");
@@ -36,19 +37,26 @@
 
     // --- Camera ---
     const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 2000);
-    camera.position.set(0, 0, 600);
+    camera.position.set(boxSize, boxSize, boxSize);
     camera.lookAt(0, 0, 0);
 
     // --- Renderer ---
     const renderer = new WebGLRenderer({ canvas, antialias:true, alpha:true });
-    renderer.setClearColor(0x232323);
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     renderer.setAnimationLoop(animate);
 
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+
     // --- Box ---
-    const boxMesh = new Mesh(new BoxGeometry(boxSize, boxSize, boxSize),
-        new MeshBasicMaterial({ color:0x131313, wireframe:true }));
-    scene.add(boxMesh);
+    // const boxMesh = new Mesh(new BoxGeometry(boxSize, boxSize, boxSize),
+    //     new MeshBasicMaterial({ color:0x131313, wireframe:true }));
+    // scene.add(boxMesh);
+    const geometry = new BoxGeometry(boxSize, boxSize, boxSize);
+    const material = new MeshStandardMaterial({ color: new Color(0, .78, .78), transparent: true, opacity: 0.35 });
+    const cube = new Mesh(geometry, material);
+    scene.add(cube);
 
     const trail = new ParticleTrail3D(scene);
     const balls = [];
@@ -232,5 +240,6 @@
             if (running) iterate();
 
         renderer.render(scene, camera);
+        controls.update();
     }
 </script>

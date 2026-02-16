@@ -10,7 +10,7 @@
     }
 </script>
 
-<canvas class="applicationCanvas2D" id="brownianCanvas2d"></canvas>
+<canvas class="applicationCanvas2D" id="brownianCanvas2d" width="500" height="500"></canvas>
 <div class="buttonRow">
     <button id="toggle2d">&nbsp;Pause&nbsp;</button>
     <button id="reset2d">Reset</button>
@@ -20,7 +20,7 @@
 </div>
 <div style="margin:auto;">
     <label for="temperatureSlider2d">
-        Cold <input type="range" id="temperatureSlider2d" min="0.05" max="2.0" value=".5" step="0.01"/> Hot
+        Cold <input type="range" id="temperatureSlider2d" min="0.05" max="1.0" value=".5" step="0.01"/> Hot
     </label>
 </div>
 <p style="clear: both;"></p>
@@ -31,38 +31,27 @@
 
 <script type="module">
     import {Scene, OrthographicCamera, WebGLRenderer } from "three";
-    import { Particle2D, ParticleTrail2D } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { Particle2D, ParticleTrail2D} from "https://www.hendrikse.name/science/js/three-js-extensions.js";
 
     const brownianCanvas2d = document.getElementById("brownianCanvas2d");
-    const centerX = brownianCanvas2d.clientWidth / 2;
-    const centerY = brownianCanvas2d.clientHeight / 2;
+    const centerX = brownianCanvas2d.clientWidth  * .5;
+    const centerY = brownianCanvas2d.clientHeight * .5;
     const scene = new Scene();
-    const boxSize = brownianCanvas2d.clientWidth;
-
-    const renderer2d = new WebGLRenderer({
-        antialias: true,
-        canvas: brownianCanvas2d,
-        alpha: true // transparant
-    });
-    renderer2d.setClearColor(0x000000, 0); // alpha 0
-    renderer2d.setSize(brownianCanvas2d.clientWidth, brownianCanvas2d.clientHeight);
 
     const camera = new OrthographicCamera(-centerX, centerX, centerY, -centerY, 0.1, 1000);
     camera.position.z = 10;
 
-    window.addEventListener("resize", () => {
-        renderer2d.setSize(brownianCanvas2d.clientWidth, brownianCanvas2d.clientHeight);
-        camera.left = -brownianCanvas2d.clientWidth / 2;
-        camera.right = brownianCanvas2d.clientWidth / 2;
-        camera.top = brownianCanvas2d.clientHeight / 2;
-        camera.bottom = -brownianCanvas2d.clientHeight / 2;
-        camera.updateProjectionMatrix();
-    });
+    const renderer2d = new WebGLRenderer({ antialias: true, canvas: brownianCanvas2d, alpha: true });
+    renderer2d.setClearColor(0x000000, 0); // alpha 0
+    renderer2d.setSize(brownianCanvas2d.clientWidth, brownianCanvas2d.clientHeight);
+    renderer2d.setAnimationLoop( animate );
+
+    const boxSize = brownianCanvas2d.clientWidth;
 
     const trail = new ParticleTrail2D(scene);
     const balls = [];
     let numBalls = 200;
-    balls.push(new Particle2D(scene, {radius: 20, color: "red", mass: 100 }));  // Big red ball
+    balls.push(new Particle2D(scene, {radius: 20, color: "red", mass: 100}));  // Big red ball
     for (let i = 1; i <= numBalls; i++)
         balls.push(new Particle2D(scene, {radius: 5, color: "yellow" }));
 
@@ -139,7 +128,7 @@
     const speedPlot = new uPlot({
             title: "Speed Distribution (averaged)",
             width: brownianCanvas2d.clientWidth,
-            height: brownianCanvas2d.clientHeight * .75,
+            height: brownianCanvas2d.clientHeight * .5,
             bg: "transparent",
             scales: {
                 x: { time: false },
@@ -199,7 +188,7 @@
     document.getElementById("temperatureSlider2d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
     document.getElementById("add2d").addEventListener("click", () => {
         for (let i = 0; i < 50; i++)
-            balls.push(new Particle2D(scene, {radius: 5, color: "cyan"}));
+            balls.push(new Particle2D(scene, {radius: 5, color: "cyan" }));
 
         numBalls += 50;
     });
