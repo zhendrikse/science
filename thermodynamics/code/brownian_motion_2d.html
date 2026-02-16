@@ -63,9 +63,10 @@
             this._position = new Vector2(x, y);
             this._velocity = new Vector2(-1 + 2 * Math.random(), -1 + 2 * Math.random());
             this._radius = radius;
+            this._mass = radius * radius;
 
             const geometry = new CircleGeometry(radius, 24);
-            const material = new MeshBasicMaterial({ color });
+            const material = new MeshBasicMaterial({color});
             this._mesh = new Mesh(geometry, material);
 
             scene.add(this._mesh);
@@ -73,9 +74,23 @@
 
         show = () => this._mesh.visible = true;
         hide = () => this._mesh.visible = false;
-        get position() { return this._position; }
-        get velocity() { return this._velocity; }
-        get radius() { return this._radius; }
+
+        get position() {
+            return this._position;
+        }
+
+        get velocity() {
+            return this._velocity;
+        }
+
+        get radius() {
+            return this._radius;
+        }
+
+        get mass() {
+            return this._mass;
+        }
+
         speed = () => this._velocity.length();
         scaleVelocity = (scale) => this._velocity.multiplyScalar(scale);
         updateMesh = () => this._mesh.position.set(this.position.x, this.position.y, 0);
@@ -102,33 +117,55 @@
         }
 
         limitTo(left, right, top, bottom) {
-            if (this.position.x > right)  this._velocity.x = -Math.abs(this.velocity.x);
-            if (this.position.x < left)   this._velocity.x =  Math.abs(this.velocity.x);
-            if (this.position.y > top)    this._velocity.y = -Math.abs(this.velocity.y);
-            if (this.position.y < bottom) this._velocity.y =  Math.abs(this.velocity.y);
+            if (this.position.x > right) this._velocity.x = -Math.abs(this.velocity.x);
+            if (this.position.x < left) this._velocity.x = Math.abs(this.velocity.x);
+            if (this.position.y > top) this._velocity.y = -Math.abs(this.velocity.y);
+            if (this.position.y < bottom) this._velocity.y = Math.abs(this.velocity.y);
         }
 
-        collideWith(otherBall) {
-            // relative velocities
-            const dvx = otherBall.velocity.x - this.velocity.x;
-            const dvy = otherBall.velocity.y - this.velocity.y;
-            const dx = otherBall.position.x - this.position.x;
-            const dy = otherBall.position.y - this.position.y;
+        collideWith(other) {
+            const r = other.position.clone().sub(this.position);
+            const distance = r.length();
+            const minDist = this.radius + other.radius;
+            if (distance === 0 || distance >= minDist) return;
 
-            if (dvx * dx + dvy * dy >= 0) return;
+            // Penetration correction
+            const overlap = minDist - distance;
+            const n = r.clone().normalize();
 
-            const vxi = this.velocity.x;
-            const vyi = this.velocity.y;
-            const vxj = otherBall.velocity.x;
-            const vyj = otherBall.velocity.y;
-            const invDist = 1 / this.position.distanceTo(otherBall.position);
-            const cosTheta = dy * invDist;
-            const sinTheta = dx * invDist;
+            let selfAdjust = 0.5;
+            let otherAdjust = 0.5;
+            if (this.radius > other.radius) {
+                selfAdjust = 0;
+                otherAdjust = 1;
+            } else if (this.radius < other.radius) {
+                selfAdjust = 1;
+                otherAdjust = 0;
+            }
 
-            this._velocity.x = vxi + sinTheta * ( -vxi * sinTheta + vxj * sinTheta - vyi * cosTheta + vyj * cosTheta);
-            this._velocity.y = vyi + cosTheta * ( -vyi * cosTheta + vyj * cosTheta - vxi * sinTheta + vxj * sinTheta);
-            otherBall._velocity.x = vxj + vxi - this.velocity.x;
-            otherBall._velocity.y = vyj + vyi - this.velocity.y;
+            this._position.addScaledVector(n, -selfAdjust * overlap);
+            other._position.addScaledVector(n, otherAdjust * overlap);
+
+            // To center-of-mass frame
+            const frame = other.velocity.clone();
+            this._velocity.sub(frame);
+            other._velocity.sub(frame);
+
+            // Projection onto normal
+            const projFactor = this._velocity.dot(r) / r.lengthSq();
+            const p = r.clone().multiplyScalar(projFactor);
+
+            // New velocities
+            const totalMass = this.mass + other.mass;
+            const v1 = this._velocity.clone().sub(p).addScaledVector(p, (this.mass - other.mass) / totalMass);
+            const v2 = p.clone().multiplyScalar(2 * this.mass / totalMass);
+
+            this._velocity.copy(v1);
+            other._velocity.copy(v2);
+
+            // Back to lab-frame
+            this._velocity.add(frame);
+            other._velocity.add(frame);
         }
     }
 
