@@ -90,9 +90,6 @@ a<script type="importmap">
     controls.dampingFactor = 0.08;
 
     // --- Box ---
-    // const boxMesh = new Mesh(new BoxGeometry(boxSize, boxSize, boxSize),
-    //     new MeshBasicMaterial({ color:0x131313, wireframe:true }));
-    // scene.add(boxMesh);
     const geometry = new BoxGeometry(boxSize, boxSize, boxSize);
     const material = new MeshStandardMaterial({ color: new Color(0, .78, .78), transparent: true, opacity: 0.35 });
     const cube = new Mesh(geometry, material);
