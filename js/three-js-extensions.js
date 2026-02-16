@@ -1416,28 +1416,52 @@ class Particle {
     }
 
     collideWith(other) {
+
         const r = other.position.clone().sub(this.position);
-        const distSq = r.lengthSq();
+        const dist = r.length();
         const minDist = this.radius + other.radius;
 
-        if (distSq === 0 || distSq >= minDist * minDist) return;
+        if (dist === 0 || dist >= minDist) return;
 
-        const dist = Math.sqrt(distSq);
-        const n = r.clone().divideScalar(dist);
-
-        // Disentangle
+        // Disentangle particles
         const overlap = minDist - dist;
-        this._position.addScaledVector(n, -overlap / 2);
-        other._position.addScaledVector(n, overlap / 2);
+        const n = r.clone().normalize();
 
-        const vRel = this._velocity.clone().sub(other._velocity);
-        const velocityAlongNormal = vRel.dot(n);
+        let selfAdjust = 0.5;
+        let otherAdjust = 0.5;
 
-        if (velocityAlongNormal > 0) return;
+        if (this.radius > other.radius) {
+            selfAdjust = 0;
+            otherAdjust = 1;
+        } else if (this.radius < other.radius) {
+            selfAdjust = 1;
+            otherAdjust = 0;
+        }
 
-        const impulse = (2 * velocityAlongNormal) / (this.mass + other.mass);
-        this._velocity.addScaledVector(n, -impulse * other.mass);
-        other._velocity.addScaledVector(n, impulse * this.mass);
+        this._position.addScaledVector(n, -selfAdjust * overlap);
+        other._position.addScaledVector(n, otherAdjust * overlap);
+
+        // To center of mass frame
+        const frame = other.velocity.clone();
+        this._velocity.sub(frame);
+        other._velocity.sub(frame);
+
+        // Projection onto normal
+        const p = this.velocity.clone().projectOnVector(r);
+        const m1 = this.mass;
+        const m2 = other.mass;
+        const totalMass = m1 + m2;
+
+        // New velocities after collision
+        const v1 = this.velocity.clone().sub(p).addScaledVector(p, (m1 - m2) / totalMass);
+        const v2 = p.clone().multiplyScalar((2 * m1) / totalMass);
+
+        this._velocity.copy(v1);
+        other._velocity.copy(v2);
+
+        // Back to lab frame
+        this._velocity.add(frame);
+        other._velocity.add(frame);
     }
 }
 
