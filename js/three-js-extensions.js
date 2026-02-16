@@ -1,9 +1,10 @@
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
-import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { BufferGeometry, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3, Color,
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
     MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
-    InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry} from "three";
+    InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry, MeshBasicMaterial,
+    CircleGeometry, Vector2 } from "three";
 
 export const ZeroVector = new Vector3();
 export const UnitVectorE1 = new Vector3(1, 0, 0);
@@ -1384,4 +1385,278 @@ export class Spring {
     get k() { return this._k; }
     get force() { return -this._k * this.displacement; }
     get displacement() {return this._restLength - this._axis.length(); }
+}
+
+class Particle {
+    constructor(position, radius, color, mass=1, temperature=0.5, k=1) {
+        this._position = position;
+        this._radius = radius;
+        this._mass = mass;
+        this._k = k;
+        this._temperature = temperature;
+        this._mesh = null;     // subclass should set this
+        this._velocity = null; // subclass should set this
+    }
+
+    show = () => this._mesh.visible = true;
+    hide = () => this._mesh.visible = false;
+
+    get position() { return this._position; }
+    get velocity() { return this._velocity; }
+    get radius() { return this._radius; }
+    get mass() { return this._mass; }
+
+    speed = () => this._velocity.length();
+    kineticEnergy = () => 0.5 * this._mass * this._velocity.lengthSq();
+    scaleVelocity = (scale) => this._velocity.multiplyScalar(scale);
+
+    isCollidingWith(otherBall) {
+        const r = this.radius + otherBall.radius;
+        return this.position.distanceToSquared(otherBall.position) < r * r;
+    }
+
+    #disentangleFrom(other, r, overlap) {
+        const n = r.clone().normalize();
+
+        let selfAdjust = 0.5;
+        let otherAdjust = 0.5;
+        if (this.radius > other.radius) {
+            selfAdjust = 0;
+            otherAdjust = 1;
+        } else if (this.radius < other.radius) {
+            selfAdjust = 1;
+            otherAdjust = 0;
+        }
+
+        this._position.addScaledVector(n, -selfAdjust * overlap);
+        other._position.addScaledVector(n, otherAdjust * overlap);
+    }
+
+    collideWith(other) {
+        const r = other.position.clone().sub(this.position);
+        const distance = r.length();
+        const minDist = this.radius + other.radius;
+        if (distance === 0 || distance >= minDist) return;
+
+        const overlap = minDist - distance;
+        this.#disentangleFrom(other, r, overlap);
+
+        // To center-of-mass frame
+        const frame = other.velocity.clone();
+        this._velocity.sub(frame);
+        other._velocity.sub(frame);
+
+        // Projection onto normal
+        const projFactor = this._velocity.dot(r) / r.lengthSq();
+        const p = r.clone().multiplyScalar(projFactor);
+
+        // New velocities
+        const totalMass = this.mass + other.mass;
+        const v1 = this._velocity.clone().sub(p).addScaledVector(p, (this.mass - other.mass) / totalMass);
+        const v2 = p.clone().multiplyScalar(2 * this.mass / totalMass);
+
+        this._velocity.copy(v1);
+        other._velocity.copy(v2);
+
+        // Back to lab-frame
+        this._velocity.add(frame);
+        other._velocity.add(frame);
+    }
+}
+
+export class Particle2D extends Particle {
+    constructor(position, radius, color, mass=1, temperature=0.5, k=1) {
+        super(position, radius, mass, temperature, k);
+        this.reset();
+
+        const geometry = new CircleGeometry(radius, 24);
+        const material = new MeshBasicMaterial({color});
+        this._mesh = new Mesh(geometry, material);
+        scene.add(this._mesh);
+    }
+
+    updateMesh = () => this._mesh.position.set(this.position.x, this.position.y, 0);
+
+    reset() {
+        this._position.set(0, 0);
+        // Init speed based on temperature: v_rms^2 = 2 k T / m (2D)
+        const averageKineticEnergy = Math.sqrt(2 * this._k * this._temperature / this._mass);
+        const angle = Math.random() * 2 * Math.PI;
+        this._velocity = new Vector2(Math.cos(angle), Math.sin(angle)).multiplyScalar(averageKineticEnergy);
+    }
+
+    #confineToBox(half=boxSize / 2) {
+        ["x","y"].forEach(axis => {
+            if(this._position[axis] > half - this._radius) this._velocity[axis] = -Math.abs(this._velocity[axis]);
+            if(this._position[axis] < -half + this._radius) this._velocity[axis] =  Math.abs(this._velocity[axis]);
+        });
+    }
+
+    move() {
+        this._position.add(this._velocity);
+        this.#confineToBox();
+    }
+}
+
+export class ParticleTrail2D {
+    constructor(nPath = 500000) {
+        this._dust = new Array(nPath);
+        this._pushIndex = -1;
+        this._index = -1;
+
+        for (let i = 0; i < nPath; i++)
+            this._dust[i] = new Vector2(0, 0);
+
+        this._positions = new Float32Array(nPath * 3);
+        this._colors    = new Float32Array(nPath * 3);
+
+        this._geometry = new BufferGeometry();
+        this._geometry.setAttribute("position", new BufferAttribute(this._positions, 3));
+        this._geometry.setAttribute("color", new BufferAttribute(this._colors, 3));
+
+        this._material = new LineBasicMaterial({
+            vertexColors: true,
+            transparent: true,
+            opacity: 1,
+            depthWrite: false
+        });
+
+        this._line = new Line(this._geometry, this._material);
+        scene.add(this._line);
+    }
+
+    reset() {
+        this._index = -1;
+        this._pushIndex = -1;
+    }
+
+    increment(ball) {
+        if (this._index++ > 400 && this._pushIndex === -1)
+            this._pushIndex = 0;
+
+        if (this._pushIndex <= -1) return;
+
+        this._dust[this._pushIndex].copy(ball.position);
+    }
+
+    draw(fadeLength=1000) {
+        if (this._pushIndex <= -1) return;
+
+        const startIndex = Math.max(0, this._pushIndex - fadeLength);
+        for (let i = startIndex; i <= this._pushIndex; i++) {
+            const pos = this._dust[i];
+            this._positions[i * 3]     = pos.x;
+            this._positions[i * 3 + 1] = pos.y;
+            this._positions[i * 3 + 2] = 0;
+
+            // fade factor: 0 = old, 1 = new
+            const t = (i - startIndex) / (this._pushIndex - startIndex);
+            this._colors[i * 3]     = 0.8 * t;  // R
+            this._colors[i * 3 + 1] = 0.0;      // G
+            this._colors[i * 3 + 2] = 1.0 * t;  // B
+        }
+
+        this._geometry.setDrawRange(startIndex, this._pushIndex - startIndex + 1);
+        this._geometry.attributes.position.needsUpdate = true;
+        this._geometry.attributes.color.needsUpdate = true;
+
+        this._pushIndex = (this._pushIndex + 1) % this._dust.length;        }
+}
+
+export class Particle3D extends Particle {
+    constructor(position, radius, color, mass=1, temperature=0.5, k=1) {
+        super(position, radius, mass, temperature, k);
+        this.reset();
+
+        const geometry = new SphereGeometry(radius, 16, 16);
+        const material = new MeshBasicMaterial({ color });
+        this._mesh = new Mesh(geometry, material);
+        scene.add(this._mesh);
+    }
+
+    updateMesh() { this._mesh.position.copy(this._position); }
+
+    reset() {
+        this._position.set(0, 0, 0);
+        const averageKineticEnergy = Math.sqrt(3 * this._k * this._temperature / this._mass);
+        const theta = Math.random() * 2 * Math.PI;
+        const phi = Math.acos(2 * Math.random() - 1);
+        this._velocity = new Vector3(
+            Math.sin(phi) * Math.cos(theta),
+            Math.sin(phi) * Math.sin(theta),
+            Math.cos(phi)
+        ).multiplyScalar(averageKineticEnergy);
+    }
+
+    #confineToBox(half=boxSize / 2) {
+        ["x","y","z"].forEach(axis => {
+            if(this._position[axis] > half - this._radius) this._velocity[axis] = -Math.abs(this._velocity[axis]);
+            if(this._position[axis] < -half + this._radius) this._velocity[axis] =  Math.abs(this._velocity[axis]);
+        });
+    }
+
+    move() {
+        this._position.add(this._velocity);
+        this.#confineToBox();
+    }
+}
+
+export class ParticleTrail3D {
+    constructor(nPath=20000){
+        this._dust = new Array(nPath).fill().map(_=>new Vector3());
+        this._positions = new Float32Array(nPath*3);
+        this._colors = new Float32Array(nPath*3);
+        this._pushIndex=-1; this._index=-1;
+
+        this._geometry = new BufferGeometry();
+        this._geometry.setAttribute("position", new BufferAttribute(this._positions,3));
+        this._geometry.setAttribute("color", new BufferAttribute(this._colors,3));
+
+        this._material = new LineBasicMaterial({
+            vertexColors:true,
+            transparent:true,
+            opacity:1,
+            depthWrite:false
+        });
+        this._line = new Line(this._geometry, this._material);
+        scene.add(this._line);
+    }
+
+    reset() {
+        this._index = -1;
+        this._pushIndex = -1;
+    }
+
+    increment(ball) {
+        if (this._index++ > 400 && this._pushIndex === -1)
+            this._pushIndex = 0;
+
+        if (this._pushIndex <= -1) return;
+
+        this._dust[this._pushIndex].copy(ball.position);
+    }
+
+    draw(fadeLength=1000) {
+        if (this._pushIndex <= -1) return;
+
+        const startIndex = Math.max(0, this._pushIndex - fadeLength);
+        for (let i = startIndex; i <= this._pushIndex; i++) {
+            const pos = this._dust[i];
+            this._positions[i * 3]     = pos.x;
+            this._positions[i * 3 + 1] = pos.y;
+            this._positions[i * 3 + 2] = pos.z;
+
+            // fade factor: 0 = old, 1 = new
+            const t = (i - startIndex) / (this._pushIndex - startIndex);
+            this._colors[i * 3]     = 0.8 * t;  // R
+            this._colors[i * 3 + 1] = 0.0;      // G
+            this._colors[i * 3 + 2] = 1.0 * t;  // B
+        }
+
+        this._geometry.setDrawRange(startIndex, this._pushIndex - startIndex + 1);
+        this._geometry.attributes.position.needsUpdate = true;
+        this._geometry.attributes.color.needsUpdate = true;
+
+        this._pushIndex = (this._pushIndex + 1) % this._dust.length;
+    }
 }
