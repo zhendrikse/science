@@ -5,7 +5,8 @@
 
 - [`adiabatic_expansion.py` source code](adiabatic_expansion.py)
 - [`boltzmann_gas.py` source code](boltzmann_gas.py)
-- [`brownian_motion.py` source code](brownian_motion.py)
+- [`brownian_motion_2d.html` source code](brownian_motion_2d.html)
+- [`brownian_motion_3d.html` source code](brownian_motion_3d.html)
 - [`energy_equipartition.py` source code](energy_equipartition.py)
 - [`ising_spin.py` source code](ising_spin.py)
 - [`piston.py` source code](piston.py)
