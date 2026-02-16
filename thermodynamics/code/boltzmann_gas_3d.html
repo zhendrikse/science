@@ -6,47 +6,7 @@
       }
     }
 </script>
-<canvas class="applicationCanvas" id="brownianCanvas3d"></canvas>
-<div class="buttonRow">
-    <button id="toggle3d">&nbsp;Pause&nbsp;</button>
-    <button id="reset3d">Reset</button>
-    <button id="show3d">Show</button>
-    <button id="hide3d">Hide</button>
-    <button id="add3d">+50</button>
-</div>
-<div style="margin:auto;">
-    <label for="temperatureSlider3d">
-        Cold <input type="range" id="temperatureSlider3d" min="0.05" max="2.0" value=".5" step="0.01"/> Hot
-    </label>
-</div>
-<p style="clear: both;"></p>
-<div id="speedPlot3d" style="margin:auto;"></div>
-
-<link rel="stylesheet" href="https://unpkg.com/uplot/dist/uPlot.min.css">
-<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
-
-<script type="module">
-    import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, MeshBasicMaterial, Mesh } from "three";
-    import { Particle3D, ParticleTrail3D } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
-
-    // --- Canvas & scene ---
-    const canvas = document.getElementById("brownianCanvas3d");
-    const scene = new Scene();
-    const boxSize = 400;
-
-    // --- Camera ---
-    const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 2000);
-    camera.position.set(0, 0, 600);
-    camera.lookAt(0, 0, 0);
-a<script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
-            }
-        }
-</script>
-<canvas class="applicationCanvas" id="brownianCanvas3d"></canvas>
+<canvas class="applicationCanvas" id="boltzmannCanvas3d"></canvas>
 <div class="buttonRow">
     <button id="toggle3d">&nbsp;Pause&nbsp;</button>
     <button id="reset3d">Reset</button>
@@ -71,9 +31,12 @@ a<script type="importmap">
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
     // --- Canvas & scene ---
-    const canvas = document.getElementById("brownianCanvas3d");
+    const canvas = document.getElementById("boltzmannCanvas3d");
+    const temperatureSlider = document.getElementById("temperatureSlider3d");
+
     const scene = new Scene();
     const boxSize = 400;
+    let currentTemperature = Number(temperatureSlider.value);
 
     // --- Camera ---
     const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 2000);
@@ -91,7 +54,12 @@ a<script type="importmap">
 
     // --- Box ---
     const geometry = new BoxGeometry(boxSize, boxSize, boxSize);
-    const material = new MeshStandardMaterial({ color: new Color(0, .78, .78), transparent: true, opacity: 0.35 });
+    const material = new MeshStandardMaterial({
+        color: new Color(0, .78, .78),
+        transparent: true,
+        opacity: 0.35,
+        depthWrite: false
+    });
     const cube = new Mesh(geometry, material);
     scene.add(cube);
 
@@ -101,6 +69,7 @@ a<script type="importmap">
     balls.push(new Particle3D(scene, {radius: 5, color: "red", mass: 1 }));  // Tracer
     for (let i = 1; i <= numBalls; i++)
         balls.push(new Particle3D(scene, {radius: 5, color: "yellow" }));
+    setTemperature(currentTemperature);
 
     // --- Histogram (2D plot for speed) ---
     const binCount = 30;
@@ -217,11 +186,22 @@ a<script type="importmap">
 
 
     let running = true;
-    const toggleButton = document.getElementById("toggle3d");
-    toggleButton.onclick = () => { running = !running; toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";}
-    document.getElementById("show3d").addEventListener("click", () => { for (let ball of balls) ball.show(); });
-    document.getElementById("hide3d").addEventListener("click", () => { for (let ball of balls) ball.hide(); balls[0].show() });
-    document.getElementById("temperatureSlider3d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
+    document.getElementById("toggle3d").onclick = () => {
+        running = !running;
+        toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";
+    }
+    document.getElementById("show3d").addEventListener("click", () => {
+        for (let ball of balls)
+            ball.show();
+    });
+    document.getElementById("hide3d").addEventListener("click", () => {
+        for (let ball of balls) ball.hide();
+        balls[0].show()
+    });
+    temperatureSlider.addEventListener("input", (event) => {
+        currentTemperature = Number(event.target.value);
+        setTemperature(currentTemperature);
+    });
     document.getElementById("add3d").addEventListener("click", () => {
         for (let i = 0; i < 50; i++)
             balls.push(new Particle3D(scene, {radius: 5, color: "cyan" }));
@@ -235,11 +215,12 @@ a<script type="importmap">
             scene.remove(ball._mesh);
         }
 
-        balls[0]._x = balls[0]._y = 0; // Big red ball
+        balls[0]._x = balls[0]._y = 0; // Tracer
         for(let i = 1; i <= 500; i++)
             balls[i].reset();
 
         numBalls = 500;
+        setTemperature(currentTemperature);
     });
 
 
@@ -278,200 +259,5 @@ a<script type="importmap">
 
         renderer.render(scene, camera);
         controls.update();
-    }
-</script>
-
-// --- Renderer ---
-    const renderer = new WebGLRenderer({ canvas, antialias:true, alpha:true });
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setAnimationLoop(animate);
-
-    // --- Box ---
-    const boxMesh = new Mesh(new BoxGeometry(boxSize, boxSize, boxSize),
-        new MeshBasicMaterial({ color:0x131313, wireframe:true }));
-    scene.add(boxMesh);
-
-    const trail = new ParticleTrail3D(scene);
-    const balls = [];
-    let numBalls = 500;
-    balls.push(new Particle3D(scene, {radius: 5, color: "red" }));  // Tracer
-    for (let i = 1; i <= numBalls; i++)
-        balls.push(new Particle3D(scene, {radius: 5, color: "yellow" }));
-
-    // --- Histogram (2D plot for speed) ---
-    const binCount = 30;
-    const maxSpeed = 5;
-    const averagingFrames = 100;
-    let histogramBuffer = [];
-    const binsX = Array.from({length: binCount}, (_, i) => i);
-
-    function computeSpeedDistribution() {
-        const bins = new Array(binCount).fill(0);
-        const binSize = maxSpeed / binCount;
-
-        let sumV2 = 0;
-        for (let i = 1; i < balls.length; i++) {
-            const v = balls[i].speed();
-            sumV2 += v * v;
-            const index = Math.min(Math.floor(v / binSize), binCount - 1);
-            bins[index]++;
-        }
-
-        const meanV2 = sumV2 / (numBalls - 1);
-        return { bins, meanV2 };
-    }
-
-    function setTemperature(newTemp) {
-        // calculate current effective T via mean kinetic energy
-        let sumV2 = 0;
-        for (let i = 1; i < balls.length; i++)
-            sumV2 += balls[i].velocity.lengthSq();
-
-        const currentTemp = sumV2 / (3 * (balls.length - 1)); // 3D
-        const scale = Math.sqrt(newTemp / currentTemp);
-
-        for (let i = 1; i < balls.length; i++)
-            balls[i].scaleVelocity(scale);
-    }
-
-    function getAveragedHistogram(newBins) {
-        histogramBuffer.push(newBins);
-
-        if (histogramBuffer.length > averagingFrames)
-            histogramBuffer.shift();
-
-        const average = new Array(binCount).fill(0);
-        for (let frame of histogramBuffer)
-            for (let i = 0; i < binCount; i++)
-                average[i] += frame[i];
-
-        for (let i = 0; i < binCount; i++)
-            average[i] /= histogramBuffer.length;
-
-        return average;
-    }
-
-    function computeTheoreticalCurve(meanV2,totalParticles){
-        const binSize = maxSpeed / binCount;
-        const T = meanV2 / 3;
-
-        const theory=[];
-        for(let i = 0; i < binCount; i++){
-            const v = (i + 0.5) * binSize;
-            const value = 4 * Math.PI * v * v * (1 / (2 * Math.PI * T)**1.5) * Math.exp(-v * v / (2 * T));
-            theory.push(value);
-        }
-        const sumTheory=theory.reduce((a, b) => a + b, 0);
-        const scale = totalParticles / sumTheory;
-        return theory.map(v => v * scale);
-    }
-
-    // --- uPlot ---
-    const speedPlot = new uPlot({
-            title: "Speed Distribution (averaged)",
-            width: canvas.clientWidth,
-            height: canvas.clientHeight * .75,
-            bg: "transparent",
-            scales: {
-                x: { time: false },
-                y: { auto: false, range: [0, 120] }
-            },
-            axes: [
-                {   // x-axis
-                    stroke: "#ff0",
-                    font: "12px Arial",
-                    grid: {
-                        stroke: "rgba(255, 255, 255, 0.2)",
-                        width: 1
-                    }
-                },
-                {   // y-axis
-                    stroke: "#ff0",
-                    font: "12px Arial",
-                    grid: {
-                        stroke: "rgba(255, 255, 255, 0.2)",
-                        width: 1
-                    }
-                }
-            ],
-            series: [
-                {},
-                {
-                    label: "Simulation",
-                    stroke: "cyan",
-                    fill: "rgba(0, 255, 255, 0.2)"
-                },
-                {
-                    label: "Maxwell (3D)",
-                    stroke: "orange",
-                    width: 2
-                }
-            ]
-        },
-        [binsX, new Array(binCount).fill(0), new Array(binCount).fill(0)],
-        document.getElementById("speedPlot3d"));
-
-
-    let running = true;
-    const toggleButton = document.getElementById("toggle3d");
-    toggleButton.onclick = () => { running = !running; toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";}
-    document.getElementById("show3d").addEventListener("click", () => { for (let ball of balls) ball.show(); });
-    document.getElementById("hide3d").addEventListener("click", () => { for (let ball of balls) ball.hide(); balls[0].show() });
-    document.getElementById("temperatureSlider3d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
-    document.getElementById("add3d").addEventListener("click", () => {
-        for (let i = 0; i < 50; i++)
-            balls.push(new Particle3D(scene, {radius: 5, color: "cyan" }));
-
-        numBalls += 50;
-    });
-    document.getElementById("reset3d").addEventListener("click",() => {
-        trail.reset();
-        while(balls.length > 201) { // Remove balls that have been added with the add-button, if any
-            const ball = balls.pop();
-            scene.remove(ball._mesh);
-        }
-
-        balls[0]._x = balls[0]._y = 0; // Tracer
-        for(let i = 1; i <= 500; i++)
-            balls[i].reset();
-
-        numBalls = 500;
-    });
-
-
-    let graphUpdateCounter = 0;
-    function updateGraph() {
-        if (graphUpdateCounter++ % 5 !== 0)
-            return;
-
-        const { bins, meanV2 } = computeSpeedDistribution();
-        const averaged = getAveragedHistogram(bins);
-        const theory = computeTheoreticalCurve(meanV2, numBalls - 1);
-        speedPlot.setData([binsX, averaged, theory]);
-    }
-
-    function iterate() {
-        trail.increment(balls[0]);   // big red ball
-
-        for (let ball of balls)
-            ball.moveWithin(boxSize);
-
-        for (let i = 0; i < balls.length - 1; i++)
-            for (let j = i + 1; j < balls.length; j++)
-                if (balls[i].isCollidingWith(balls[j]))
-                    balls[i].collideWith(balls[j]);
-
-        for (let ball of balls)
-            ball.updateMesh();
-
-        trail.draw();
-        updateGraph();
-    }
-
-    function animate() {
-        for (let i = 0; i < 5; i++)
-            if (running) iterate();
-
-        renderer.render(scene, camera);
     }
 </script>

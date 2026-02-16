@@ -32,8 +32,11 @@
 
     // --- Canvas & scene ---
     const canvas = document.getElementById("brownianCanvas3d");
+    const temperatureSlider = document.getElementById("temperatureSlider3d");
+
     const scene = new Scene();
     const boxSize = 400;
+    let currentTemperature = Number(temperatureSlider.value);
 
     // --- Camera ---
     const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 2000);
@@ -51,7 +54,12 @@
 
     // --- Box ---
     const geometry = new BoxGeometry(boxSize, boxSize, boxSize);
-    const material = new MeshStandardMaterial({ color: new Color(0, .78, .78), transparent: true, opacity: 0.35 });
+    const material = new MeshStandardMaterial({
+        color: new Color(0, .78, .78),
+        transparent: true,
+        opacity: 0.35,
+        depthWrite: false
+    });
     const cube = new Mesh(geometry, material);
     scene.add(cube);
 
@@ -61,6 +69,7 @@
     balls.push(new Particle3D(scene, {radius: 20, color: "red", mass: 100 }));  // Big red ball
     for (let i = 1; i <= numBalls; i++)
         balls.push(new Particle3D(scene, {radius: 5, color: "yellow" }));
+    setTemperature(currentTemperature);
 
     // --- Histogram (2D plot for speed) ---
     const binCount = 30;
@@ -177,11 +186,22 @@
 
 
     let running = true;
-    const toggleButton = document.getElementById("toggle3d");
-    toggleButton.onclick = () => { running = !running; toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";}
-    document.getElementById("show3d").addEventListener("click", () => { for (let ball of balls) ball.show(); });
-    document.getElementById("hide3d").addEventListener("click", () => { for (let ball of balls) ball.hide(); balls[0].show() });
-    document.getElementById("temperatureSlider3d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
+    document.getElementById("toggle3d").onclick = () => {
+        running = !running;
+        toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";
+    }
+    document.getElementById("show3d").addEventListener("click", () => {
+        for (let ball of balls)
+            ball.show();
+    });
+    document.getElementById("hide3d").addEventListener("click", () => {
+        for (let ball of balls) ball.hide();
+        balls[0].show()
+    });
+    temperatureSlider.addEventListener("input", (event) => {
+        currentTemperature = Number(event.target.value);
+        setTemperature(currentTemperature);
+    });
     document.getElementById("add3d").addEventListener("click", () => {
         for (let i = 0; i < 50; i++)
             balls.push(new Particle3D(scene, {radius: 5, color: "cyan" }));
@@ -200,6 +220,7 @@
             balls[i].reset();
 
         numBalls = 500;
+        setTemperature(currentTemperature);
     });
 
 
