@@ -1416,14 +1416,13 @@ class Particle {
     }
 
     collideWith(other) {
-
         const r = other.position.clone().sub(this.position);
         const dist = r.length();
         const minDist = this.radius + other.radius;
 
         if (dist === 0 || dist >= minDist) return;
 
-        // Disentangle particles
+        // 1️. Disentangle
         const overlap = minDist - dist;
         const n = r.clone().normalize();
 
@@ -1441,25 +1440,29 @@ class Particle {
         this._position.addScaledVector(n, -selfAdjust * overlap);
         other._position.addScaledVector(n, otherAdjust * overlap);
 
-        // To center of mass frame
+        // 2️. To center-of-mass frame
         const frame = other.velocity.clone();
         this._velocity.sub(frame);
         other._velocity.sub(frame);
 
-        // Projection onto normal
-        const p = this.velocity.clone().projectOnVector(r);
+        // 3️. Projection onto normal
+        const v = this._velocity;
+        const u = r;
+        const projFactor = v.dot(u) / u.lengthSq();
+        const p = u.clone().multiplyScalar(projFactor);
+
+        // 4️. New velocities
         const m1 = this.mass;
         const m2 = other.mass;
         const totalMass = m1 + m2;
 
-        // New velocities after collision
-        const v1 = this.velocity.clone().sub(p).addScaledVector(p, (m1 - m2) / totalMass);
+        const v1 = v.clone().sub(p).addScaledVector(p, (m1 - m2) / totalMass);
         const v2 = p.clone().multiplyScalar((2 * m1) / totalMass);
 
         this._velocity.copy(v1);
         other._velocity.copy(v2);
 
-        // Back to lab frame
+        // 5️. Back to lab-frame
         this._velocity.add(frame);
         other._velocity.add(frame);
     }
