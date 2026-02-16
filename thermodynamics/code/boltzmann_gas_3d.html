@@ -36,7 +36,6 @@
 
     const scene = new Scene();
     const boxSize = 400;
-    let currentTemperature = Number(temperatureSlider.value);
 
     // --- Camera ---
     const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 2000);
@@ -63,10 +62,11 @@
     const cube = new Mesh(geometry, material);
     scene.add(cube);
 
-    const gas = new Gas3D(Number(temperatureSlider.value));
+    const gas = new Gas3D({temperature: Number(temperatureSlider.value)});
     scene.add(gas);
     // --- Histogram (2D plot for speed) ---
     const binCount = 30;
+    const maxSpeed = 500;
     const averagingFrames = 100;
     let histogramBuffer = [];
     const binsX = Array.from({length: binCount}, (_, i) => i);
@@ -156,6 +156,6 @@
             if (running) gas.update(boxSize);
 
         updateGraph();
-        renderer2d.render(scene, camera);
+        renderer.render(scene, camera);
     }
 </script>
