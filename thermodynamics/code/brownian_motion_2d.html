@@ -1,275 +1,214 @@
 <!--
   -- https://physics.bu.edu/~duffy/HTML5/brownian_motion.html
   -->
-<link rel="stylesheet" href="https://unpkg.com/uplot/dist/uPlot.min.css">
-<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
+    }
+</script>
 
-<canvas class="applicationCanvas2D" id="brownianCanvas" width="500" height="500"></canvas>
+<canvas class="applicationCanvas" id="brownianCanvas2d" width="500" height="500"></canvas>
 <div class="buttonRow">
-    <button id="play">Play</button>
-    <button id="pause">Pause</button>
-    <button id="reset">Reset</button>
+    <button id="toggle2d">&nbsp;Pause&nbsp;</button>
+    <button id="reset2d">Reset</button>
 </div>
 <p style="clear: both;"></p>
 <div class="buttonRow">Molecules:&nbsp;
-    <button id="show">Show</button>
-    <button id="hide">Hide</button>
-    <button id="add">Add</button>
+    <button id="show2d">Show</button>
+    <button id="hide2d">Hide</button>
+    <button id="add2d">+50</button>
 </div>
 <p style="clear: both;"></p>
-<div id="tempSlider">
-    <label for="tempValue">
-        Cold <input type="range" id="tempValue" min="0.05" max="1.0" value=".5" step="0.01"/> Hot
+<div>
+    <label for="temperatureSlider2d">
+        Cold <input type="range" id="temperatureSlider2d" min="0.05" max="1.0" value=".5" step="0.01"/> Hot
     </label>
 </div>
 <div id="speedPlot" style="margin:auto;"></div>
 
-<script>
-    const brownianCanvas = document.getElementById("brownianCanvas");
-    const context = brownianCanvas.getContext("2d");
+<link rel="stylesheet" href="https://unpkg.com/uplot/dist/uPlot.min.css">
+<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
-    const simTitle = 'Brownian motion';
+<script type="module">
+    import {Scene, OrthographicCamera, WebGLRenderer, PlaneGeometry, MeshBasicMaterial, Mesh, Vector2,
+        CircleGeometry, BufferGeometry, LineBasicMaterial, BufferAttribute, Line } from "three";
+
+
+    const brownianCanvas2d = document.getElementById("brownianCanvas2d");
+    const centerX = brownianCanvas2d.clientWidth  * .5;
+    const centerY = brownianCanvas2d.clientHeight * .5;
     const ballRadius = 5;
-    const nBalls = 301;
-    const boxHeight = 400;
-    const boxWidth = 400;
-    const centerX = brownianCanvas.clientWidth  * .5;
-    const centerY = 250;
 
-    let runFlag = true;
-    let time = 0;
-    let numBalls = 200;
-    let showMolecules = true;
-    let timer;
+    const scene = new Scene();
 
-    const playButton = document.getElementById("play");
-    playButton.addEventListener("click", () => play());
-    const pauseButton = document.getElementById("pause");
-    pauseButton.addEventListener("click", () => pause());
-    const resetButton = document.getElementById("reset");
-    resetButton.addEventListener("click", () => reset());
-    const showButton = document.getElementById("show");
-    showButton.addEventListener("click", () => showMolecules = true);
-    const hideButton = document.getElementById("hide");
-    hideButton.addEventListener("click", () => showMolecules = false);
-    const addButton = document.getElementById("add");
-    addButton.addEventListener("click", () => addBalls());
-    const tempSlider = document.getElementById("tempValue");
-    tempSlider.addEventListener("input", (event) => {
-        setTemperature(Number(event.target.value));
-    });
+    const camera = new OrthographicCamera(-centerX, centerX, centerY, -centerY, 0.1, 1000);
+    camera.position.z = 10;
 
-    function play() {
-        window.clearTimeout(timer);
-        runFlag = true;
-        animate();
-    }
+    const renderer2d = new WebGLRenderer({ antialias: true, canvas: brownianCanvas2d, alpha: true });
+    renderer2d.setClearColor(0x232323);
+    renderer2d.setSize(brownianCanvas2d.clientWidth, brownianCanvas2d.clientHeight);
+    renderer2d.setAnimationLoop( animate );
 
-    function pause() {
-        window.clearTimeout(timer);
-        runFlag = false;
-    }
+    const boxSize = 400;
+    const boxGeometry = new PlaneGeometry(boxSize, boxSize);
+    const boxMaterial = new MeshBasicMaterial({ color:0x131313 });
+    const boxMesh = new Mesh(boxGeometry, boxMaterial);
+    scene.add(boxMesh);
 
-    function addBalls() {
-        numBalls = 250;
-        for (let i = 200; i < 250; i++) {
-            ball[i].x = (centerX + 0.48 * boxWidth - ballRadius);
-            ball[i].y = (centerY + 0.48 * boxWidth - ballRadius);
-        }
-    }
-
-    function reset() {
-        window.clearTimeout(timer);
-        numBalls = 200;
-        for (let i = 0; i < numBalls; i++)
-            ball[i].reset();
-        ball[0].velX = -1.0 + 2.0 * Math.random();
-        ball[0].velY = -1.0 + 2.0 * Math.random();
-
-        trail.reset();
-        runFlag = true;
-    }
-
-    class Ball {
+    class Particle {
         constructor(x, y, radius, color) {
-            this.x = x;
-            this.y = y;
-            this.velX = -1.0 + 2.0 * Math.random();
-            this.velY = -1.0 + 2.0 * Math.random();
-            this.radius = radius;
-            this.color = color;
+            this._position = new Vector2(x, y);
+            this._velocity = new Vector2(-1 + 2 * Math.random(), -1 + 2 * Math.random());
+            this._radius = radius;
+
+            const geometry = new CircleGeometry(radius, 24);
+            const material = new MeshBasicMaterial({ color });
+            this._mesh = new Mesh(geometry, material);
+
+            scene.add(this._mesh);
         }
 
-        distanceSquaredTo(otherBall) {
-            const distX = otherBall.x - this.x;
-            const distY = otherBall.y - this.y;
-            return distX * distX + distY * distY;
-        }
+        show = () => this._mesh.visible = true;
+        hide = () => this._mesh.visible = false;
+        get position() { return this._position; }
+        get velocity() { return this._velocity; }
+        get radius() { return this._radius; }
+        speed = () => this._velocity.length();
+        scaleVelocity = (scale) => this._velocity.multiplyScalar(scale);
+        updateMesh = () => this._mesh.position.set(this.position.x, this.position.y, 0);
 
-        distanceTo = (otherBall) => Math.sqrt(this.distanceSquaredTo(otherBall));
-
-        limitTo(left, right, top, bottom) {
-            if (this.x > right)  this.velX = -Math.abs(this.velX);
-            if (this.x < left)   this.velX =  Math.abs(this.velX);
-            if (this.y > top)    this.velY = -Math.abs(this.velY);
-            if (this.y < bottom) this.velY =  Math.abs(this.velY);
-        }
-
-        collideWith(otherBall) {
-            // relative velocities
-            const dvx = otherBall.velX - this.velX;
-            const dvy = otherBall.velY - this.velY;
-            const dx = otherBall.x - this.x;
-            const dy = otherBall.y - this.y;
-
-            if (dvx * dx + dvy * dy >= 0) return;
-
-            const vxi = this.velX;
-            const vyi = this.velY;
-            const vxj = otherBall.velX;
-            const vyj = otherBall.velY;
-            const invDist = 1 / Math.sqrt(dx*dx + dy*dy);
-            const cosTheta = dy * invDist;
-            const sinTheta = dx * invDist;
-
-            this.velX = vxi + sinTheta * ( -vxi * sinTheta + vxj * sinTheta - vyi * cosTheta + vyj * cosTheta);
-            this.velY = vyi + cosTheta * ( -vyi * cosTheta + vyj * cosTheta - vxi * sinTheta + vxj * sinTheta);
-            otherBall.velX = vxj + vxi - this.velX;
-            otherBall.velY = vyj + vyi - this.velY;
-        }
-
-        reset(x=centerX, y=centerY) {
-            this.x = x;
-            this.y = y;
-        }
-
-        draw(visible) {
-            if (!visible) return;
-
-            context.fillStyle = this.color;
-            context.strokeStyle = this.color;
-            context.beginPath();
-            context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
-            context.fill();
+        reset() {
+            this._position.set(0, 0);
+            this._velocity.set(-1 + 2 * Math.random(), -1 + 2 * Math.random());
         }
 
         move() {
-            this.x += this.velX;
-            this.y += this.velY;
-            const left = centerX - 0.5 * boxWidth +  this.radius;
-            const right = centerX + 0.5 * boxWidth -  this.radius
-            const top = centerY + 0.5 * boxHeight - this.radius;
-            const bottom = centerY - 0.5 * boxHeight + this.radius;
+            this._position.add(this._velocity);
+
+            const half = .5 * boxSize;
+            const left = -half + this.radius;
+            const right = half - this.radius
+            const top = half - this.radius;
+            const bottom = -half + this.radius;
             this.limitTo(left, right, top, bottom);
         }
 
         isCollidingWith(otherBall) {
             const r = this.radius + otherBall.radius;
-            return this.distanceSquaredTo(otherBall) < r * r;
+            return this.position.distanceToSquared(otherBall.position) < r * r;
         }
 
-        speed = () => Math.sqrt(this.velX * this.velX + this.velY * this.velY);
+        limitTo(left, right, top, bottom) {
+            if (this.position.x > right)  this._velocity.x = -Math.abs(this.velocity.x);
+            if (this.position.x < left)   this._velocity.x =  Math.abs(this.velocity.x);
+            if (this.position.y > top)    this._velocity.y = -Math.abs(this.velocity.y);
+            if (this.position.y < bottom) this._velocity.y =  Math.abs(this.velocity.y);
+        }
+
+        collideWith(otherBall) {
+            // relative velocities
+            const dvx = otherBall.velocity.x - this.velocity.x;
+            const dvy = otherBall.velocity.y - this.velocity.y;
+            const dx = otherBall.position.x - this.position.x;
+            const dy = otherBall.position.y - this.position.y;
+
+            if (dvx * dx + dvy * dy >= 0) return;
+
+            const vxi = this.velocity.x;
+            const vyi = this.velocity.y;
+            const vxj = otherBall.velocity.x;
+            const vyj = otherBall.velocity.y;
+            const invDist = 1 / this.position.distanceTo(otherBall.position);
+            const cosTheta = dy * invDist;
+            const sinTheta = dx * invDist;
+
+            this._velocity.x = vxi + sinTheta * ( -vxi * sinTheta + vxj * sinTheta - vyi * cosTheta + vyj * cosTheta);
+            this._velocity.y = vyi + cosTheta * ( -vyi * cosTheta + vyj * cosTheta - vxi * sinTheta + vxj * sinTheta);
+            otherBall._velocity.x = vxj + vxi - this.velocity.x;
+            otherBall._velocity.y = vyj + vyi - this.velocity.y;
+        }
     }
 
     class Trail {
-        constructor(nPath=500000) {
-            this.dust = new Array(nPath);
-            this.pushIndex = -1;
-            this.index = -1;
+        constructor(nPath = 500000) {
+            this._dust = new Array(nPath);
+            this._pushIndex = -1;
+            this._index = -1;
+
             for (let i = 0; i < nPath; i++)
-                this.dust[i] = {
-                    x: centerX,
-                    y: centerY
-                };
+                this._dust[i] = new Vector2(0, 0);
+
+            this._positions = new Float32Array(nPath * 3);
+            this._colors    = new Float32Array(nPath * 3);
+
+            this._geometry = new BufferGeometry();
+            this._geometry.setAttribute("position",
+                new BufferAttribute(this._positions, 3));
+            this._geometry.setAttribute("color",
+                new BufferAttribute(this._colors, 3));
+
+            this._material = new LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 1,
+                depthWrite: false
+            });
+
+            this._line = new Line(this._geometry, this._material);
+            scene.add(this._line);
         }
 
         reset() {
-            this.index = -1;
-            this.pushIndex = -1;
+            this._index = -1;
+            this._pushIndex = -1;
         }
 
         increment(ball) {
-            this.index++;
-            if (this.index > 400 && this.pushIndex === -1) this.pushIndex = 0; // delay before start drawing trail
-            if (this.pushIndex <= -1) return;
-            this.dust[this.pushIndex].x = ball.x;
-            this.dust[this.pushIndex].y = ball.y;
+            if (this._index++ > 400 && this._pushIndex === -1)
+                this._pushIndex = 0;
+
+            if (this._pushIndex <= -1) return;
+
+            this._dust[this._pushIndex].x = ball.position.x;
+            this._dust[this._pushIndex].y = ball.position.y;
         }
 
-        draw() {
-            if (this.pushIndex <= -1) return;
-            context.beginPath();
-            context.strokeStyle = "purple";
-            context.moveTo(this.dust[0].x, this.dust[0].y);
-            for (let i = 1; i <= this.pushIndex; i++)
-                context.lineTo(this.dust[i].x, this.dust[i].y);
-            context.stroke();
-            this.pushIndex++;
+        draw(fadeLength = 1000) {
+            if (this._pushIndex <= -1) return;
+
+            const startIndex = Math.max(0, this._pushIndex - fadeLength);
+            for (let i = startIndex; i <= this._pushIndex; i++) {
+                const pos = this._dust[i];
+                this._positions[i * 3]     = pos.x;
+                this._positions[i * 3 + 1] = pos.y;
+                this._positions[i * 3 + 2] = 0;
+
+                // fade factor: 0 = old, 1 = new
+                const t = (i - startIndex) / (this._pushIndex - startIndex);
+                this._colors[i * 3]     = 0.8 * t;  // R
+                this._colors[i * 3 + 1] = 0.0;      // G
+                this._colors[i * 3 + 2] = 1.0 * t;  // B
+            }
+
+            this._geometry.setDrawRange(startIndex, this._pushIndex - startIndex + 1);
+            this._geometry.attributes.position.needsUpdate = true;
+            this._geometry.attributes.color.needsUpdate = true;
+
+            this._pushIndex++;
         }
     }
+
 
     const trail = new Trail();
-    let ball = new Array(nBalls + 1);
-    ball[0] = new Ball(centerX, centerY, 20, "red"); // Big red ball
-    for (let i = 1; i <= nBalls; i++)
-        ball[i] = new Ball(centerX, centerY, ballRadius, i < 200 || i >=250 ? "yellow" : "cyan");
+    const balls = [];
+    let numBalls = 200;
+    balls.push(new Particle(0, 0, 20, "red"));  // Big red ball
+    for (let i = 1; i <= numBalls; i++)
+        balls.push(new Particle(0, 0, ballRadius, "yellow"));
 
-    function redrawCanvas() {
-        context.clearRect(0, 0, brownianCanvas.clientWidth, brownianCanvas.clientHeight);
-
-        // set background color for the entire thing
-        context.fillStyle = "#232323";
-        context.fillRect(0, 0, brownianCanvas.clientWidth, brownianCanvas.clientHeight);
-
-        // set background color for the box of gas
-        context.fillStyle = "#131313";
-        context.fillRect(centerX - 0.5 * boxWidth, centerY - 0.5 * boxHeight, boxWidth, boxHeight);
-        
-        // graph title
-        context.font = 'bold 18pt Calibri';
-        context.fillStyle = 'green';
-        context.textAlign = 'center';
-        context.fillText(simTitle, (brownianCanvas.clientWidth) * .5, 30);
-    }
-
-    let graphUpdateCounter = 0;
-    function updateGraph() {
-        if (graphUpdateCounter++ % 5 !== 0)
-            return;
-
-        const { bins, meanV2 } = computeSpeedDistribution();
-        const averaged = getAveragedHistogram(bins);
-        const theory = computeTheoreticalCurve(meanV2, numBalls - 1);
-        speedPlot.setData([binsX, averaged, theory]);
-    }
-
-    function redraw() {
-        redrawCanvas();
-
-        ball[0].draw(true); // Make sure the big ball is always shown
-        for (let i = 1; i < numBalls - 1; i++)
-            ball[i].draw(showMolecules);
-
-        trail.draw();
-        updateGraph();
-    }
-
-    function drawMotion() {
-        if (time >= 50) runFlag = false;
-        if (!runFlag) return;
-
-        trail.increment(ball[0]);
-
-        for (let i = 0; i < numBalls - 1; i++)
-            ball[i].move();
-
-        for (let i = 0; i < numBalls - 1; i++)
-            for (let j = i + 1; j < numBalls; j++)
-                if (ball[i].isCollidingWith(ball[j]))
-                    ball[i].collideWith(ball[j]);
-
-        redraw();
-    }
 
     const binCount = 30;
     const maxSpeed = 5;
@@ -282,8 +221,8 @@
         const binSize = maxSpeed / binCount;
 
         let sumV2 = 0;
-        for (let i = 1; i < numBalls; i++) {
-            const v = ball[i].speed();
+        for (let i = 1; i < balls.length; i++) {
+            const v = balls[i].speed();
             sumV2 += v * v;
             const index = Math.min(Math.floor(v / binSize), binCount - 1);
             bins[index]++;
@@ -296,12 +235,9 @@
     function setTemperature(newTemp) {
         const currentMeanV2 = computeSpeedDistribution().meanV2;
         const currentTemp = currentMeanV2 / 2;
-
         const scale = Math.sqrt(newTemp / currentTemp);
-        for (let i = 1; i < numBalls; i++) {
-            ball[i].velX *= scale;
-            ball[i].velY *= scale;
-        }
+        for (let i = 1; i < balls.length; i++)
+            balls[i].scaleVelocity(scale);
     }
 
     function getAveragedHistogram(newBins) {
@@ -365,12 +301,65 @@
         [binsX, new Array(binCount).fill(0), new Array(binCount).fill(0)],
         document.getElementById("speedPlot"));
 
-    function animate() {
-        if (!runFlag) return;
-        for (let i = 0; i < 5; i++)
-            drawMotion();
-        requestAnimationFrame(animate);
+    let graphUpdateCounter = 0;
+    function updateGraph() {
+        if (graphUpdateCounter++ % 5 !== 0)
+            return;
+
+        const { bins, meanV2 } = computeSpeedDistribution();
+        const averaged = getAveragedHistogram(bins);
+        const theory = computeTheoreticalCurve(meanV2, numBalls - 1);
+        speedPlot.setData([binsX, averaged, theory]);
     }
 
-    requestAnimationFrame(animate);
+    let running = true;
+    const toggleButton = document.getElementById("toggle2d");
+    toggleButton.onclick = () => { running = !running; toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";}
+    document.getElementById("show2d").addEventListener("click", () => { for (let ball of balls) ball.show(); });
+    document.getElementById("hide2d").addEventListener("click", () => { for (let ball of balls) ball.hide(); balls[0].show() });
+    document.getElementById("temperatureSlider2d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
+    document.getElementById("add2d").addEventListener("click", () => {
+        for (let i = 0; i < 50; i++)
+            balls.push(new Ball(0, 0, ballRadius, "cyan"));
+
+        numBalls += 50;
+    });
+    document.getElementById("reset2d").addEventListener("click",()=>{
+        trail.reset();
+        while(balls.length > 201) { // Remove balls that have been added with the add-button, if any
+            const ball = balls.pop();
+            scene.remove(ball._mesh);
+        }
+
+        balls[0]._x = balls[0]._y = 0; // Big red ball
+        for(let i = 1; i <= 200; i++)
+            balls[i].reset();
+
+        numBalls = 200;
+    });
+
+    function iterate() {
+        trail.increment(balls[0]);   // big red ball
+
+        for (let ball of balls)
+            ball.move();
+
+        for (let i = 0; i < balls.length - 1; i++)
+            for (let j = i + 1; j < balls.length; j++)
+                if (balls[i].isCollidingWith(balls[j]))
+                    balls[i].collideWith(balls[j]);
+
+        for (let ball of balls)
+            ball.updateMesh();
+
+        trail.draw();
+        updateGraph();
+    }
+
+    function animate() {
+        for (let i = 0; i < 5; i++)
+            if (running) iterate();
+
+        renderer2d.render(scene, camera);
+    }
 </script>
