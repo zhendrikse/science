@@ -1823,13 +1823,13 @@ export class Gas3D extends Gas {
     setTemperature(newTemp) {
         // calculate current effective T via mean kinetic energy
         let sumV2 = 0;
-        for (let i = 1; i < balls.length; i++)
-            sumV2 += balls[i].velocity.lengthSq();
+        for (let i = 1; i < this._balls.length; i++)
+            sumV2 += this._balls[i].velocity.lengthSq();
 
-        const currentTemp = sumV2 / (3 * (balls.length - 1)); // 3D
+        const currentTemp = sumV2 / (3 * (this._balls.length - 1)); // 3D
         const scale = Math.sqrt(newTemp / currentTemp);
 
-        for (let i = 1; i < balls.length; i++)
-            balls[i].scaleVelocity(scale);
+        for (let i = 1; i < this._balls.length; i++)
+            this._balls[i].scaleVelocity(scale);
     }
 }
