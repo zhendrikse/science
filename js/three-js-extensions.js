@@ -1585,7 +1585,7 @@ export class Particle3D extends Particle {
         const geometry = new SphereGeometry(radius, 16, 16);
         const material = new MeshBasicMaterial({ color });
         this._mesh = new Mesh(geometry, material);
-        scene.add(this._mesh);
+        parent.add(this._mesh);
     }
 
     updateMesh() { this._mesh.position.copy(this._position); }

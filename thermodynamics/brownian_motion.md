@@ -72,19 +72,22 @@ on <a href="https://www.aps.org/">aps.org</a>.
 
 <p style="clear: both;"></p>
 
-## Maxwell-Boltzmann Distributie: 2D vs 3D
+## Maxwell-Boltzmann Distribution: 2D vis à vis 3D
 
 ### Maxwell-Boltzmann velocity distributions for $\vec{v}$
 
-| Dimension | Velocity distribution $f(\vec{v}) , d^n\vec{v}$                                                                                  |
-|-----------|----------------------------------------------------------------------------------------------------------------------------------|
-| **3D**    | $\displaystyle f(\vec{v}) d^3\vec{v} = \left(\frac{m}{2 \pi k_B T}\right)^{3/2} \exp\Big(-\frac{m v^2}{2 k_B T}\Big) d^3\vec{v}$ |
-| **2D**    | $\displaystyle f(\vec{v}) d^2\vec{v} = \left(\frac{m}{2 \pi k_B T}\right) \exp\Big(-\frac{m v^2}{2 k_B T}\Big) d^2\vec{v}$       |
+The velocity distribution for $f(\vec{v}) , d^n\vec{v}$ is given by
 
-* We have $v^2 = v_x^2 + v_y^2 + v_z^2$ in 3D and $v^2 = v_x^2 + v_y^2$ in 2D.
+#### 3D case
+
+$$ f(\vec{v}) d^3\vec{v} = \left(\frac{m}{2 \pi k_B T}\right)^{3/2} \exp\Big(-\frac{m v^2}{2 k_B T}\Big) d^3\vec{v}$$
+
+#### 2D case    
+
+$$ f(\vec{v}) d^2\vec{v} = \left(\frac{m}{2 \pi k_B T}\right) \exp\Big(-\frac{m v^2}{2 k_B T}\Big) d^2\vec{v}$$
+
+* We have $v^2 = v_x^2 + v_y^2 + v_z^2$ in 3 dimensions and $v^2 = v_x^2 + v_y^2$ in 2 dimensions.
 * Normalisation because the integral volume $d^n\vec{v}$ depends on the dimension.
-
----
 
 ### Maxwell-Boltzmann velocity distributions for $\|\vec{v}\|$
 
@@ -98,15 +101,16 @@ $$
 where $d\Omega_n$ denotes the angular part.
 This amounts to an additional factor $v$ for 2D, $v^2$ for 3D.
 
-| Dimension | Speed distribution $f(v) , dv$                                                                                      |
-|-----------|---------------------------------------------------------------------------------------------------------------------|
-| **3D**    | $\displaystyle f(v) dv = 4\pi \left(\frac{m}{2 \pi k_B T}\right)^{3/2} v^2 \exp\Big(-\frac{m v^2}{2 k_B T}\Big) dv$ |
-| **2D**    | $\displaystyle f(v) dv = \frac{m}{k_B T} , v , \exp\Big(-\frac{m v^2}{2 k_B T}\Big) dv$                             |
+#### 3D case
+
+$$ f(v) dv = 4\pi \left(\frac{m}{2 \pi k_B T}\right)^{3/2} v^2 \exp\Big(-\frac{m v^2}{2 k_B T}\Big) dv$$ 
+
+#### 2D case
+
+$$ f(v) dv = \frac{m}{k_B T} , v , \exp\Big(-\frac{m v^2}{2 k_B T}\Big) dv$$
 
 * **Factor $v^{n-1}$** originates from the velocities with the same speeds (surface of a cirkel/sphere).
 * This is what is used in the code, e.g. `value = (v / T) * exp(-v*v / (2 * T))` in 2D.
-
-
 
 {% include share_buttons.html %}
 

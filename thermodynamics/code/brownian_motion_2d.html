@@ -37,25 +37,31 @@
     import { Particle2D, ParticleTrail2D } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
     const brownianCanvas2d = document.getElementById("brownianCanvas2d");
-    const centerX = brownianCanvas2d.clientWidth  * .5;
-    const centerY = brownianCanvas2d.clientHeight * .5;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
     const scene = new Scene();
+
+    const renderer2d = new WebGLRenderer({
+        antialias: true,
+        canvas: brownianCanvas2d,
+        alpha: true // transparant
+    });
+    renderer2d.setClearColor(0x000000, 0); // alpha 0
+    renderer2d.setSize(window.innerWidth, window.innerHeight);
 
     const camera = new OrthographicCamera(-centerX, centerX, centerY, -centerY, 0.1, 1000);
     camera.position.z = 10;
 
-    const renderer2d = new WebGLRenderer({ antialias: true, canvas: brownianCanvas2d, alpha: true });
-    renderer2d.setClearColor(0x232323);
-    renderer2d.setSize(brownianCanvas2d.clientWidth, brownianCanvas2d.clientHeight);
-    renderer2d.setAnimationLoop( animate );
+    window.addEventListener("resize", () => {
+        renderer2d.setSize(window.innerWidth, window.innerHeight);
+        camera.left = -window.innerWidth / 2;
+        camera.right = window.innerWidth / 2;
+        camera.top = window.innerHeight / 2;
+        camera.bottom = -window.innerHeight / 2;
+        camera.updateProjectionMatrix();
+    });
 
-    const boxSize = 400;
-    const boxGeometry = new PlaneGeometry(boxSize, boxSize);
-    const boxMaterial = new MeshBasicMaterial({ color:0x131313 });
-    const boxMesh = new Mesh(boxGeometry, boxMaterial);
-    scene.add(boxMesh);
-
-    const trail = new ParticleTrail2D();
+    const trail = new ParticleTrail2D(scene);
     const balls = [];
     let numBalls = 200;
     balls.push(new Particle2D(scene, {radius: 20, color: "red", mass: 100 }));  // Big red ball
