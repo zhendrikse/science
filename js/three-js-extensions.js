@@ -1388,7 +1388,7 @@ export class Spring {
 }
 
 class Particle {
-    constructor(position, velocity, radius, color, mass=1, temperature=0.5, k=1) {
+    constructor(position, velocity, radius, mass=1, temperature=0.5, k=1) {
         this._position = position;
         this._velocity = velocity;
         this._radius = radius;
@@ -1424,13 +1424,18 @@ class Particle {
         // Penetration correction
         const overlap = minDist - distance;
         const n = r.clone().normalize();
+
         let selfAdjust = 0.5;
         let otherAdjust = 0.5;
         if (this.radius > other.radius) {
-            selfAdjust = 0; otherAdjust = 1;
+            selfAdjust = 0;
+            otherAdjust = 1;
         } else if (this.radius < other.radius) {
-            selfAdjust = 1; otherAdjust = 0;
-        } this._position.addScaledVector(n, -selfAdjust * overlap);
+            selfAdjust = 1;
+            otherAdjust = 0;
+        }
+
+        this._position.addScaledVector(n, -selfAdjust * overlap);
         other._position.addScaledVector(n, otherAdjust * overlap);
 
         // To center-of-mass frame
@@ -1445,7 +1450,9 @@ class Particle {
         // New velocities
         const totalMass = this.mass + other.mass;
         const v1 = this._velocity.clone().sub(p).addScaledVector(p, (this.mass - other.mass) / totalMass);
-        const v2 = p.clone().multiplyScalar(2 * this.mass / totalMass); this._velocity.copy(v1); other._velocity.copy(v2);
+        const v2 = p.clone().multiplyScalar(2 * this.mass / totalMass);
+        this._velocity.copy(v1);
+        other._velocity.copy(v2);
 
         // Back to lab-frame
         this._velocity.add(frame); other._velocity.add(frame);
