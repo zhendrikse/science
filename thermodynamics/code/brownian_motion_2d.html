@@ -320,7 +320,7 @@
     document.getElementById("temperatureSlider2d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
     document.getElementById("add2d").addEventListener("click", () => {
         for (let i = 0; i < 50; i++)
-            balls.push(new Ball(0, 0, ballRadius, "cyan"));
+            balls.push(new Particle(0, 0, ballRadius, "cyan"));
 
         numBalls += 50;
     });
