@@ -58,9 +58,9 @@
     const trail = new ParticleTrail2D();
     const balls = [];
     let numBalls = 200;
-    balls.push(new Particle2D(new Vector2(0, 0), 20, "red", 100));  // Big red ball
+    balls.push(new Particle2D(scene, {radius: 20, color: "red", mass: 100 }));  // Big red ball
     for (let i = 1; i <= numBalls; i++)
-        balls.push(new Particle2D(new Vector2(0, 0), 5, "yellow"));
+        balls.push(new Particle2D(scene, {radius: 5, color: "yellow" }));
 
     const binCount = 30;
     const maxSpeed = 5;
@@ -177,7 +177,7 @@
     document.getElementById("temperatureSlider2d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
     document.getElementById("add2d").addEventListener("click", () => {
         for (let i = 0; i < 50; i++)
-            balls.push(new Particle2D(new Vector2(0, 0), 5, "cyan"));
+            balls.push(new Particle2D(scene, {radius: 5, color: "cyan"}));
 
         numBalls += 50;
     });

@@ -56,9 +56,9 @@
     const trail = new ParticleTrail3D();
     const balls = [];
     let numBalls = 500;
-    balls.push(new Particle3D(new Vector3(0, 0, 0), 20, "red", 100));  // Big red ball
+    balls.push(new Particle3D(scene, {radius: 20, color: "red", mass: 100 }));  // Big red ball
     for (let i = 1; i <= numBalls; i++)
-        balls.push(new Particle3D(new Vector3(0, 0, 0), 5, "yellow"));
+        balls.push(new Particle3D(scene, {radius: 5, color: "yellow" }));
 
     // --- Histogram (2D plot for speed) ---
     const binCount = 30;
@@ -164,7 +164,7 @@
     document.getElementById("temperatureSlider3d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
     document.getElementById("add3d").addEventListener("click", () => {
         for (let i = 0; i < 50; i++)
-            balls.push(new Particle3D(new Vector3(0, 0), 5, "cyan"));
+            balls.push(new Particle3D(scene, {radius: 5, color: "cyan" }));
 
         numBalls += 50;
     });
