@@ -1465,14 +1465,21 @@ class Particle {
 }
 
 export class Particle2D extends Particle {
-    constructor(position, radius, color, mass=1, temperature=0.5, k=1) {
+    constructor(parent, {
+        position = new Vector2(0, 0),
+        radius = 1,
+        color = "0xffff00",
+        mass = 1,
+        temperature = 0.5,
+        k = 1
+    } ={}) {
         super(position, radius, mass, temperature, k);
         this.reset();
 
         const geometry = new CircleGeometry(radius, 24);
         const material = new MeshBasicMaterial({color});
         this._mesh = new Mesh(geometry, material);
-        scene.add(this._mesh);
+        parent.add(this._mesh);
     }
 
     updateMesh = () => this._mesh.position.set(this.position.x, this.position.y, 0);
@@ -1499,7 +1506,7 @@ export class Particle2D extends Particle {
 }
 
 export class ParticleTrail2D {
-    constructor(nPath = 500000) {
+    constructor(parent, nPath = 500000) {
         this._dust = new Array(nPath);
         this._pushIndex = -1;
         this._index = -1;
@@ -1522,7 +1529,7 @@ export class ParticleTrail2D {
         });
 
         this._line = new Line(this._geometry, this._material);
-        scene.add(this._line);
+        parent.add(this._line);
     }
 
     reset() {
@@ -1564,7 +1571,14 @@ export class ParticleTrail2D {
 }
 
 export class Particle3D extends Particle {
-    constructor(position, radius, color, mass=1, temperature=0.5, k=1) {
+    constructor(parent, {
+        position = new Vector3(0, 0, 0),
+        radius = 1,
+        color = "0xffff00",
+        mass = 1,
+        temperature = 0.5,
+        k = 1
+    } ={}) {
         super(position, radius, mass, temperature, k);
         this.reset();
 
@@ -1602,7 +1616,7 @@ export class Particle3D extends Particle {
 }
 
 export class ParticleTrail3D {
-    constructor(nPath=20000){
+    constructor(parent, nPath=20000){
         this._dust = new Array(nPath).fill().map(_=>new Vector3());
         this._positions = new Float32Array(nPath*3);
         this._colors = new Float32Array(nPath*3);
@@ -1619,7 +1633,7 @@ export class ParticleTrail3D {
             depthWrite:false
         });
         this._line = new Line(this._geometry, this._material);
-        scene.add(this._line);
+        parent.add(this._line);
     }
 
     reset() {
