@@ -1,8 +1,5 @@
 {% include breadcrumbs.html %}
 
-# Ideal gas velocity distribution
-<div class="header_line"><br/></div>
-
 ## Two-dimensional Boltzmann gas
 <div class="header_line"><br/></div>
 

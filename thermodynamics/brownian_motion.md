@@ -1,7 +1,5 @@
 {% include breadcrumbs.html %}
 
-# Brownian motion
-
 ## Two-dimensional Brownian motion
 <div class="header_line"><br/></div>
 
