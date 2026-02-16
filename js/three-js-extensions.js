@@ -1675,17 +1675,11 @@ export class ParticleTrail3D {
 }
 
 export class Gas extends Group {
-    constructor(currentTemperature, numBalls, particleRadius, particleColor, particleMass,
-                tracerRadius, tracerColor, tracerMass) {
+    constructor(currentTemperature, numBalls) {
         super();
         this._balls = [];
         this._numBalls = numBalls;
-        this._trail = new ParticleTrail2D(this);
-        this._balls.push(new Particle2D(this, {radius: tracerRadius, color: tracerColor, mass: tracerMass}));
-
-        for (let i = 1; i <= numBalls; i++)
-            this._balls.push(new Particle2D(this, {radius: particleRadius, color: particleColor, mass: particleMass }));
-        this.setTemperature(currentTemperature);
+        this._trail = null;
     }
 
     show() {
@@ -1708,7 +1702,7 @@ export class Gas extends Group {
     }
 
     reset(temperature) {
-        this._trail.reset();
+        this._trail?.reset();
         while(this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
             const ball = this._balls.pop();
             this.remove(ball._mesh);
@@ -1720,10 +1714,6 @@ export class Gas extends Group {
 
         this._numBalls = 200;
         this.setTemperature(temperature);
-    }
-
-    setTemperature(newTemp) {
-        throw new Error("Abstract class, implement this method!");
     }
 
     computeTheoreticalCurve(meanV2, totalParticles, binCount, maxSpeed) {
@@ -1761,7 +1751,7 @@ export class Gas extends Group {
     }
 
     update(boxSize) {
-        this._trail.increment(this._balls[0]);   // big red ball
+        this._trail?.increment(this._balls[0]);   // big red ball
 
         for (let ball of this._balls)
             ball.moveWithin(boxSize);
@@ -1774,7 +1764,7 @@ export class Gas extends Group {
         for (let ball of this._balls)
             ball.updateMesh();
 
-        this._trail.draw();
+        this._trail?.draw();
     }
 }
 
@@ -1788,7 +1778,13 @@ export class Gas2D extends Gas {
                     tracerRadius=5,
                     tracerColor="red",
                     tracerMass=1} = {}) {
-        super(currentTemperature, numBalls, particleRadius, particleColor, particleMass, tracerRadius, tracerColor, tracerMass);
+        super(currentTemperature, numBalls);
+        this._trail = new ParticleTrail2D(this);
+        this._balls.push(new Particle2D(this, {radius: tracerRadius, color: tracerColor, mass: tracerMass}));
+
+        for (let i = 1; i <= numBalls; i++)
+            this._balls.push(new Particle2D(this, {radius: particleRadius, color: particleColor, mass: particleMass }));
+        this.setTemperature(currentTemperature);
     }
 
     setTemperature(newTemp) {
@@ -1815,7 +1811,13 @@ export class Gas3D extends Gas {
                     tracerRadius=5,
                     tracerColor="red",
                     tracerMass=1} = {}) {
-        super(currentTemperature, numBalls, particleRadius, particleColor, particleMass, tracerRadius, tracerColor, tracerMass);
+        super(currentTemperature, numBalls);
+        this._trail = new ParticleTrail3D(this);
+        this._balls.push(new Particle3D(this, {radius: tracerRadius, color: tracerColor, mass: tracerMass}));
+
+        for (let i = 1; i <= numBalls; i++)
+            this._balls.push(new Particle3D(this, {radius: particleRadius, color: particleColor, mass: particleMass }));
+        this.setTemperature(currentTemperature);
     }
 
     setTemperature(newTemp) {
