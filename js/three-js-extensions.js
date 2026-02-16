@@ -1502,7 +1502,7 @@ export class Particle2D extends Particle {
 
     moveWithin(boxSize) {
         this._position.add(this._velocity);
-        this.#confineToBox(size);
+        this.#confineToBox(boxSize);
     }
 }
 
