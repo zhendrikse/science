@@ -67,8 +67,10 @@ on <a href="https://www.aps.org/">aps.org</a>.
 <p style="clear: both;"></p>
 
 ## Maxwell-Boltzmann Distribution: 2D vis à vis 3D
+<div class="header_line"><br/></div>
 
 ### Maxwell-Boltzmann velocity distributions for $\vec{v}$
+<div class="header_line"><br/></div>
 
 The velocity distribution for $f(\vec{v}) , d^n\vec{v}$ is given by
 
@@ -84,6 +86,7 @@ $$ f(\vec{v}) d^2\vec{v} = \left(\frac{m}{2 \pi k_B T}\right) \exp\Big(-\frac{m 
 * Normalisation because the integral volume $d^n\vec{v}$ depends on the dimension.
 
 ### Maxwell-Boltzmann velocity distributions for $\|\vec{v}\|$
+<div class="header_line"><br/></div>
 
 In the graphs we reduce to a **radial distribution**, so we take
 the “surface of the cirkel/sphere”:
