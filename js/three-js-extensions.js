@@ -1415,52 +1415,29 @@ class Particle {
         return this.position.distanceToSquared(otherBall.position) < r * r;
     }
 
-    #disentangleFrom(other, r, overlap) {
-        const n = r.clone().normalize();
-
-        let selfAdjust = 0.5;
-        let otherAdjust = 0.5;
-        if (this.radius > other.radius) {
-            selfAdjust = 0;
-            otherAdjust = 1;
-        } else if (this.radius < other.radius) {
-            selfAdjust = 1;
-            otherAdjust = 0;
-        }
-
-        this._position.addScaledVector(n, -selfAdjust * overlap);
-        other._position.addScaledVector(n, otherAdjust * overlap);
-    }
-
     collideWith(other) {
         const r = other.position.clone().sub(this.position);
-        const distance = r.length();
+        const distSq = r.lengthSq();
         const minDist = this.radius + other.radius;
-        if (distance === 0 || distance >= minDist) return;
 
-        const overlap = minDist - distance;
-        this.#disentangleFrom(other, r, overlap);
+        if (distSq === 0 || distSq >= minDist * minDist) return;
 
-        // To center-of-mass frame
-        const frame = other.velocity.clone();
-        this._velocity.sub(frame);
-        other._velocity.sub(frame);
+        const dist = Math.sqrt(distSq);
+        const n = r.clone().divideScalar(dist);
 
-        // Projection onto normal
-        const projFactor = this._velocity.dot(r) / r.lengthSq();
-        const p = r.clone().multiplyScalar(projFactor);
+        // Disentangle
+        const overlap = minDist - dist;
+        this._position.addScaledVector(n, -overlap / 2);
+        other._position.addScaledVector(n, overlap / 2);
 
-        // New velocities
-        const totalMass = this.mass + other.mass;
-        const v1 = this._velocity.clone().sub(p).addScaledVector(p, (this.mass - other.mass) / totalMass);
-        const v2 = p.clone().multiplyScalar(2 * this.mass / totalMass);
+        const vRel = this._velocity.clone().sub(other._velocity);
+        const velocityAlongNormal = vRel.dot(n);
 
-        this._velocity.copy(v1);
-        other._velocity.copy(v2);
+        if (velocityAlongNormal > 0) return;
 
-        // Back to lab-frame
-        this._velocity.add(frame);
-        other._velocity.add(frame);
+        const impulse = (2 * velocityAlongNormal) / (this.mass + other.mass);
+        this._velocity.addScaledVector(n, -impulse * other.mass);
+        other._velocity.addScaledVector(n, impulse * this.mass);
     }
 }
 
