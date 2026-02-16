@@ -1760,7 +1760,7 @@ export class Gas extends Group {
         return { bins, theory };
     }
 
-    update() {
+    update(boxSize) {
         this._trail.increment(this._balls[0]);   // big red ball
 
         for (let ball of this._balls)
