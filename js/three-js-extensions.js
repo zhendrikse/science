@@ -1673,3 +1673,161 @@ export class ParticleTrail3D {
         this._pushIndex = (this._pushIndex + 1) % this._dust.length;
     }
 }
+
+export class Gas extends Group {
+    constructor(currentTemperature, numBalls, particleRadius, particleColor, particleMass,
+                tracerRadius, tracerColor, tracerMass) {
+        super();
+        this._balls = [];
+        this._numBalls = numBalls;
+        this._trail = new ParticleTrail2D(this);
+        this._balls.push(new Particle2D(this, {radius: tracerRadius, color: tracerColor, mass: tracerMass}));
+
+        for (let i = 1; i <= numBalls; i++)
+            this._balls.push(new Particle2D(this, {radius: particleRadius, color: particleColor, mass: particleMass }));
+        this.setTemperature(currentTemperature);
+    }
+
+    show() {
+        for (let ball of this._balls)
+            ball.show();
+    }
+
+    addParticles(numberOfParticles, radius=5, color="cyan") {
+        for (let i = 0; i < numberOfParticles; i++)
+            this._balls.push(new Particle2D(this, {radius: radius, color: color }));
+
+        this._numBalls += numberOfParticles;
+    }
+
+    hide(hideTracer=true) {
+        for (let ball of this._balls)
+            ball.hide();
+        if (!hideTracer)
+            this._balls[0].show();
+    }
+
+    reset(temperature) {
+        this._trail.reset();
+        while(this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
+            const ball = this._balls.pop();
+            this.remove(ball._mesh);
+        }
+
+        this._balls[0]._x = this._balls[0]._y = 0; // Tracer
+        for(let i = 1; i <= 200; i++)
+            this._balls[i].reset();
+
+        this._numBalls = 200;
+        this.setTemperature(temperature);
+    }
+
+    setTemperature(newTemp) {
+        throw new Error("Abstract class, implement this method!");
+    }
+
+    computeTheoreticalCurve(meanV2, totalParticles, binCount, maxSpeed) {
+        const binSize = maxSpeed / binCount;
+        const T = meanV2 / 2;   // effective temperature
+
+        const theory = [];
+        for (let i = 0; i < binCount; i++) {
+            const v = (i + 0.5) * binSize;
+            const value = (v / T) * Math.exp(-v * v / (2 * T));
+            theory.push(value);
+        }
+
+        // normalize so that area is equal to histogram
+        const sumTheory = theory.reduce((a, b) => a + b, 0);
+        const scale = totalParticles / sumTheory;
+        return theory.map(v => v * scale);
+    }
+
+    computeSpeedDistribution(binCount, maxSpeed) {
+        const bins = new Array(binCount).fill(0);
+        const binSize = maxSpeed / binCount;
+
+        let sumV2 = 0;
+        for (let i = 1; i < this._balls.length; i++) {
+            const v = this._balls[i].speed();
+            sumV2 += v * v;
+            const index = Math.min(Math.floor(v / binSize), binCount - 1);
+            bins[index]++;
+        }
+
+        const meanV2 = sumV2 / (this._numBalls - 1);
+        const theory = this.computeTheoreticalCurve(meanV2, this._numBalls - 1, binCount, maxSpeed);
+        return { bins, theory };
+    }
+
+    update() {
+        this._trail.increment(this._balls[0]);   // big red ball
+
+        for (let ball of this._balls)
+            ball.moveWithin(boxSize);
+
+        for (let i = 0; i < this._balls.length - 1; i++)
+            for (let j = i + 1; j < this._balls.length; j++)
+                if (this._balls[i].isCollidingWith(this._balls[j]))
+                    this._balls[i].collideWith(this._balls[j]);
+
+        for (let ball of this._balls)
+            ball.updateMesh();
+
+        this._trail.draw();
+    }
+}
+
+export class Gas2D extends Gas {
+    constructor({
+                    currentTemperature=.5,
+                    numBalls=200,
+                    particleRadius=5,
+                    particleColor="yellow",
+                    particleMass=1,
+                    tracerRadius=5,
+                    tracerColor="red",
+                    tracerMass=1} = {}) {
+        super(currentTemperature, numBalls, particleRadius, particleColor, particleMass, tracerRadius, tracerColor, tracerMass);
+    }
+
+    setTemperature(newTemp) {
+        // calculate current effective T via mean kinetic energy
+        let sumV2 = 0;
+        for (let i = 1; i < this._balls.length; i++)
+            sumV2 += this._balls[i].velocity.lengthSq();
+
+        const currentTemp = sumV2 / (2 * (this._balls.length - 1)); // 2D
+        const scale = Math.sqrt(newTemp / currentTemp);
+
+        for (let i = 1; i < this._balls.length; i++)
+            this._balls[i].scaleVelocity(scale);
+    }
+}
+
+export class Gas3D extends Gas {
+    constructor({
+                    currentTemperature=.5,
+                    numBalls=200,
+                    particleRadius=5,
+                    particleColor="yellow",
+                    particleMass=1,
+                    tracerRadius=5,
+                    tracerColor="red",
+                    tracerMass=1} = {}) {
+        super(currentTemperature, numBalls, particleRadius, particleColor, particleMass, tracerRadius, tracerColor, tracerMass);
+    }
+
+    setTemperature(newTemp) {
+        // calculate current effective T via mean kinetic energy
+        let sumV2 = 0;
+        for (let i = 1; i < balls.length; i++)
+            sumV2 += balls[i].velocity.lengthSq();
+
+        const currentTemp = sumV2 / (3 * (balls.length - 1)); // 3D
+        const scale = Math.sqrt(newTemp / currentTemp);
+
+        for (let i = 1; i < balls.length; i++)
+            balls[i].scaleVelocity(scale);
+    }
+}
