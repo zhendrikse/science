@@ -1388,14 +1388,14 @@ export class Spring {
 }
 
 class Particle {
-    constructor(position, radius, color, mass=1, temperature=0.5, k=1) {
+    constructor(position, velocity, radius, color, mass=1, temperature=0.5, k=1) {
         this._position = position;
+        this._velocity = velocity;
         this._radius = radius;
         this._mass = mass;
         this._k = k;
         this._temperature = temperature;
         this._mesh = null;     // subclass should set this
-        this._velocity = null; // subclass should set this
     }
 
     show = () => this._mesh.visible = true;
@@ -1455,13 +1455,14 @@ class Particle {
 export class Particle2D extends Particle {
     constructor(parent, {
         position = new Vector2(0, 0),
+        velocity = new Vector2(0, 0),
         radius = 1,
         color = "0xffff00",
         mass = 1,
         temperature = 0.5,
         k = 1
     } ={}) {
-        super(position, radius, mass, temperature, k);
+        super(position, velocity, radius, mass, temperature, k);
         this.reset();
 
         const geometry = new CircleGeometry(radius, 24);
@@ -1562,13 +1563,14 @@ export class ParticleTrail2D {
 export class Particle3D extends Particle {
     constructor(parent, {
         position = new Vector3(0, 0, 0),
+        velocity = new Vector3(0, 0, 0),
         radius = 1,
         color = "0xffff00",
         mass = 1,
         temperature = 0.5,
         k = 1
     } ={}) {
-        super(position, radius, mass, temperature, k);
+        super(position, velocity, radius, mass, temperature, k);
         this.reset();
 
         const geometry = new SphereGeometry(radius, 16, 16);
