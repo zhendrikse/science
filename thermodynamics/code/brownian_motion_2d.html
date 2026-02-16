@@ -24,7 +24,7 @@
 <p style="clear: both;"></p>
 <div>
     <label for="temperatureSlider2d">
-        Cold <input type="range" id="temperatureSlider2d" min="0.05" max="1.0" value=".5" step="0.01"/> Hot
+        Cold <input type="range" id="temperatureSlider2d" min="0.05" max="2.0" value=".5" step="0.01"/> Hot
     </label>
 </div>
 <div id="speedPlot" style="margin:auto;"></div>
@@ -36,12 +36,9 @@
     import {Scene, OrthographicCamera, WebGLRenderer, PlaneGeometry, MeshBasicMaterial, Mesh, Vector2,
         CircleGeometry, BufferGeometry, LineBasicMaterial, BufferAttribute, Line } from "three";
 
-
     const brownianCanvas2d = document.getElementById("brownianCanvas2d");
     const centerX = brownianCanvas2d.clientWidth  * .5;
     const centerY = brownianCanvas2d.clientHeight * .5;
-    const ballRadius = 5;
-
     const scene = new Scene();
 
     const camera = new OrthographicCamera(-centerX, centerX, centerY, -centerY, 0.1, 1000);
@@ -59,53 +56,49 @@
     scene.add(boxMesh);
 
     class Particle {
-        constructor(x, y, radius, color) {
-            this._position = new Vector2(x, y);
-            this._velocity = new Vector2(-1 + 2 * Math.random(), -1 + 2 * Math.random());
+        constructor(position, radius, color, mass=1, temperature=0.5, k=1) {
+            this._position = position;
             this._radius = radius;
-            this._mass = radius * radius;
+            this._mass = mass;
+            this._k = k;
+            this._temperature = temperature;
+
+            // Init speed based on temperature: v_rms^2 = 2 k T / m (2D)
+            const vRms = Math.sqrt(2 * this._k * this._temperature / this._mass);
+            const angle = Math.random() * 2 * Math.PI;
+            this._velocity = new Vector2(vRms * Math.cos(angle), vRms * Math.sin(angle));
 
             const geometry = new CircleGeometry(radius, 24);
             const material = new MeshBasicMaterial({color});
             this._mesh = new Mesh(geometry, material);
-
             scene.add(this._mesh);
         }
 
         show = () => this._mesh.visible = true;
         hide = () => this._mesh.visible = false;
 
-        get position() {
-            return this._position;
-        }
-
-        get velocity() {
-            return this._velocity;
-        }
-
-        get radius() {
-            return this._radius;
-        }
-
-        get mass() {
-            return this._mass;
-        }
+        get position() { return this._position; }
+        get velocity() { return this._velocity; }
+        get radius() { return this._radius; }
+        get mass() { return this._mass; }
 
         speed = () => this._velocity.length();
+        kineticEnergy = () => 0.5 * this._mass * this._velocity.lengthSq();
         scaleVelocity = (scale) => this._velocity.multiplyScalar(scale);
         updateMesh = () => this._mesh.position.set(this.position.x, this.position.y, 0);
 
         reset() {
             this._position.set(0, 0);
-            this._velocity.set(-1 + 2 * Math.random(), -1 + 2 * Math.random());
+            const vRms = Math.sqrt(2 * this._k * this._temperature / this._mass);
+            const angle = Math.random() * 2 * Math.PI;
+            this._velocity.set(vRms * Math.cos(angle), vRms * Math.sin(angle));
         }
 
         move() {
             this._position.add(this._velocity);
-
             const half = .5 * boxSize;
             const left = -half + this.radius;
-            const right = half - this.radius
+            const right = half - this.radius;
             const top = half - this.radius;
             const bottom = -half + this.radius;
             this.limitTo(left, right, top, bottom);
@@ -123,14 +116,7 @@
             if (this.position.y < bottom) this._velocity.y = Math.abs(this.velocity.y);
         }
 
-        collideWith(other) {
-            const r = other.position.clone().sub(this.position);
-            const distance = r.length();
-            const minDist = this.radius + other.radius;
-            if (distance === 0 || distance >= minDist) return;
-
-            // Penetration correction
-            const overlap = minDist - distance;
+        #disentangleFrom(other, r, overlap) {
             const n = r.clone().normalize();
 
             let selfAdjust = 0.5;
@@ -145,6 +131,16 @@
 
             this._position.addScaledVector(n, -selfAdjust * overlap);
             other._position.addScaledVector(n, otherAdjust * overlap);
+        }
+
+        collideWith(other) {
+            const r = other.position.clone().sub(this.position);
+            const distance = r.length();
+            const minDist = this.radius + other.radius;
+            if (distance === 0 || distance >= minDist) return;
+
+            const overlap = minDist - distance;
+            this.#disentangleFrom(other, r, overlap);
 
             // To center-of-mass frame
             const frame = other.velocity.clone();
@@ -242,9 +238,9 @@
     const trail = new Trail();
     const balls = [];
     let numBalls = 200;
-    balls.push(new Particle(0, 0, 20, "red"));  // Big red ball
+    balls.push(new Particle(new Vector2(0, 0), 20, "red", 100));  // Big red ball
     for (let i = 1; i <= numBalls; i++)
-        balls.push(new Particle(0, 0, ballRadius, "yellow"));
+        balls.push(new Particle(new Vector2(0, 0), 5, "yellow"));
 
 
     const binCount = 30;
@@ -270,9 +266,14 @@
     }
 
     function setTemperature(newTemp) {
-        const currentMeanV2 = computeSpeedDistribution().meanV2;
-        const currentTemp = currentMeanV2 / 2;
+        // calculate current effective T via mean kinetic energy
+        let sumV2 = 0;
+        for (let i = 1; i < balls.length; i++)
+            sumV2 += balls[i].velocity.lengthSq();
+
+        const currentTemp = sumV2 / (2 * (balls.length - 1)); // 2D
         const scale = Math.sqrt(newTemp / currentTemp);
+
         for (let i = 1; i < balls.length; i++)
             balls[i].scaleVelocity(scale);
     }
@@ -357,7 +358,7 @@
     document.getElementById("temperatureSlider2d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
     document.getElementById("add2d").addEventListener("click", () => {
         for (let i = 0; i < 50; i++)
-            balls.push(new Particle(0, 0, ballRadius, "cyan"));
+            balls.push(new Particle(new Vector2(0, 0), 5, "cyan"));
 
         numBalls += 50;
     });
