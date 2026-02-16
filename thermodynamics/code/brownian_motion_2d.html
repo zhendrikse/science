@@ -47,7 +47,7 @@
     renderer2d.setSize(boltzmannCanvas2d.clientWidth, boltzmannCanvas2d.clientHeight);
     renderer2d.setAnimationLoop( animate );
 
-    const boxSize = boltzmannCanvas2d.clientWidth;
+    const boxSize = boltzmannCanvas2d.clientWidth * .9; // keep margin
     let currentTemperature = Number(temperatureSlider.value);
 
     const trail = new ParticleTrail2D(scene);
