@@ -1492,16 +1492,17 @@ export class Particle2D extends Particle {
         this._velocity = new Vector2(Math.cos(angle), Math.sin(angle)).multiplyScalar(averageKineticEnergy);
     }
 
-    #confineToBox(half=boxSize / 2) {
+    #confineToBox(size) {
+        const half = size / 2;
         ["x","y"].forEach(axis => {
             if(this._position[axis] > half - this._radius) this._velocity[axis] = -Math.abs(this._velocity[axis]);
             if(this._position[axis] < -half + this._radius) this._velocity[axis] =  Math.abs(this._velocity[axis]);
         });
     }
 
-    move() {
+    moveWithin(boxSize) {
         this._position.add(this._velocity);
-        this.#confineToBox();
+        this.#confineToBox(size);
     }
 }
 
@@ -1602,16 +1603,17 @@ export class Particle3D extends Particle {
         ).multiplyScalar(averageKineticEnergy);
     }
 
-    #confineToBox(half=boxSize / 2) {
+    #confineToBox(size) {
+        const half = size / 2;
         ["x","y","z"].forEach(axis => {
             if(this._position[axis] > half - this._radius) this._velocity[axis] = -Math.abs(this._velocity[axis]);
             if(this._position[axis] < -half + this._radius) this._velocity[axis] =  Math.abs(this._velocity[axis]);
         });
     }
 
-    move() {
+    moveWithin(boxSize) {
         this._position.add(this._velocity);
-        this.#confineToBox();
+        this.#confineToBox(boxSize);
     }
 }
 

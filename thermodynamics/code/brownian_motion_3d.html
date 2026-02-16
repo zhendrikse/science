@@ -14,7 +14,7 @@
     <button id="hide3d">Hide</button>
     <button id="add3d">+50</button>
 </div>
-<div>
+<div style="margin:auto;">
     <label for="temperatureSlider3d">
         Cold <input type="range" id="temperatureSlider3d" min="0.05" max="2.0" value=".5" step="0.01"/> Hot
     </label>
@@ -183,7 +183,7 @@
 
         numBalls += 50;
     });
-    document.getElementById("reset3d").addEventListener("click",()=>{
+    document.getElementById("reset3d").addEventListener("click",() => {
         trail.reset();
         while(balls.length > 201) { // Remove balls that have been added with the add-button, if any
             const ball = balls.pop();
@@ -213,7 +213,7 @@
         trail.increment(balls[0]);   // big red ball
 
         for (let ball of balls)
-            ball.move();
+            ball.moveWithin(boxSize);
 
         for (let i = 0; i < balls.length - 1; i++)
             for (let j = i + 1; j < balls.length; j++)

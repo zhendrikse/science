@@ -61,7 +61,7 @@
     const trail = new ParticleTrail2D(scene);
     const balls = [];
     let numBalls = 200;
-    balls.push(new Particle2D(scene, {radius: 20, color: "red", mass: 100 }));  // Big red ball
+    balls.push(new Particle2D(scene, {radius: 5, color: "red"}));  // Tracer
     for (let i = 1; i <= numBalls; i++)
         balls.push(new Particle2D(scene, {radius: 5, color: "yellow" }));
 

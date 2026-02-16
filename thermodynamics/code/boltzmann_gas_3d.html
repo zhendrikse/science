@@ -1,6 +1,3 @@
-<!--
-  -- https://physics.bu.edu/~duffy/HTML5/brownian_motion.html
-  -->
 <script type="importmap">
     {
       "imports": {
@@ -9,62 +6,58 @@
       }
     }
 </script>
-
-<canvas class="applicationCanvas2D" id="brownianCanvas2d"></canvas>
+<canvas class="applicationCanvas" id="brownianCanvas3d"></canvas>
 <div class="buttonRow">
-    <button id="toggle2d">&nbsp;Pause&nbsp;</button>
-    <button id="reset2d">Reset</button>
-    <button id="show2d">Show</button>
-    <button id="hide2d">Hide</button>
-    <button id="add2d">+50</button>
+    <button id="toggle3d">&nbsp;Pause&nbsp;</button>
+    <button id="reset3d">Reset</button>
+    <button id="show3d">Show</button>
+    <button id="hide3d">Hide</button>
+    <button id="add3d">+50</button>
 </div>
 <div style="margin:auto;">
-    <label for="temperatureSlider2d">
-        Cold <input type="range" id="temperatureSlider2d" min="0.05" max="2.0" value=".5" step="0.01"/> Hot
+    <label for="temperatureSlider3d">
+        Cold <input type="range" id="temperatureSlider3d" min="0.05" max="2.0" value=".5" step="0.01"/> Hot
     </label>
 </div>
 <p style="clear: both;"></p>
-<div id="speedPlot" style="margin:auto;"></div>
+<div id="speedPlot3d" style="margin:auto;"></div>
 
 <link rel="stylesheet" href="https://unpkg.com/uplot/dist/uPlot.min.css">
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
 <script type="module">
-    import {Scene, OrthographicCamera, WebGLRenderer, PlaneGeometry, MeshBasicMaterial, Mesh, Vector2 } from "three";
-    import { Particle2D, ParticleTrail2D } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, MeshBasicMaterial, Mesh, Vector3 } from "three";
+    import { Particle3D, ParticleTrail3D } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
-    const brownianCanvas2d = document.getElementById("brownianCanvas2d");
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
+    // --- Canvas & scene ---
+    const canvas = document.getElementById("brownianCanvas3d");
     const scene = new Scene();
+    const boxSize = 400;
 
-    const renderer2d = new WebGLRenderer({
-        antialias: true,
-        canvas: brownianCanvas2d,
-        alpha: true // transparant
-    });
-    renderer2d.setClearColor(0x000000, 0); // alpha 0
-    renderer2d.setSize(window.innerWidth, window.innerHeight);
+    // --- Camera ---
+    const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 2000);
+    camera.position.set(0, 0, 600);
+    camera.lookAt(0, 0, 0);
 
-    const camera = new OrthographicCamera(-centerX, centerX, centerY, -centerY, 0.1, 1000);
-    camera.position.z = 10;
+    // --- Renderer ---
+    const renderer = new WebGLRenderer({ canvas, antialias:true, alpha:true });
+    renderer.setClearColor(0x232323);
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setAnimationLoop(animate);
 
-    window.addEventListener("resize", () => {
-        renderer2d.setSize(window.innerWidth, window.innerHeight);
-        camera.left = -window.innerWidth / 2;
-        camera.right = window.innerWidth / 2;
-        camera.top = window.innerHeight / 2;
-        camera.bottom = -window.innerHeight / 2;
-        camera.updateProjectionMatrix();
-    });
+    // --- Box ---
+    const boxMesh = new Mesh(new BoxGeometry(boxSize, boxSize, boxSize),
+        new MeshBasicMaterial({ color:0x131313, wireframe:true }));
+    scene.add(boxMesh);
 
-    const trail = new ParticleTrail2D(scene);
+    const trail = new ParticleTrail3D(scene);
     const balls = [];
-    let numBalls = 200;
-    balls.push(new Particle2D(scene, {radius: 20, color: "red", mass: 100 }));  // Big red ball
+    let numBalls = 500;
+    balls.push(new Particle3D(scene, {radius: 5, color: "red" }));  // Tracer
     for (let i = 1; i <= numBalls; i++)
-        balls.push(new Particle2D(scene, {radius: 5, color: "yellow" }));
+        balls.push(new Particle3D(scene, {radius: 5, color: "yellow" }));
 
+    // --- Histogram (2D plot for speed) ---
     const binCount = 30;
     const maxSpeed = 5;
     const averagingFrames = 100;
@@ -93,7 +86,7 @@
         for (let i = 1; i < balls.length; i++)
             sumV2 += balls[i].velocity.lengthSq();
 
-        const currentTemp = sumV2 / (2 * (balls.length - 1)); // 2D
+        const currentTemp = sumV2 / (3 * (balls.length - 1)); // 3D
         const scale = Math.sqrt(newTemp / currentTemp);
 
         for (let i = 1; i < balls.length; i++)
@@ -117,46 +110,31 @@
         return average;
     }
 
-    function computeTheoreticalCurve(meanV2, totalParticles) {
+    function computeTheoreticalCurve(meanV2,totalParticles){
         const binSize = maxSpeed / binCount;
-        const T = meanV2 / 2;   // effective temperature
+        const T = meanV2 / 3;
 
-        const theory = [];
-        for (let i = 0; i < binCount; i++) {
+        const theory=[];
+        for(let i = 0; i < binCount; i++){
             const v = (i + 0.5) * binSize;
-            const value = (v / T) * Math.exp(-v * v / (2 * T));
+            const value = 4 * Math.PI * v * v * (1 / (2 * Math.PI * T)**1.5) * Math.exp(-v * v / (2 * T));
             theory.push(value);
         }
-
-        // normalize so that area is equal to histogram
-        const sumTheory = theory.reduce((a, b) => a + b, 0);
+        const sumTheory=theory.reduce((a, b) => a + b, 0);
         const scale = totalParticles / sumTheory;
-
         return theory.map(v => v * scale);
     }
 
+    // --- uPlot ---
     const speedPlot = new uPlot({
             title: "Speed Distribution (averaged)",
-            width: brownianCanvas2d.clientWidth,
-            height: brownianCanvas2d.clientHeight * .75,
+            width: canvas.clientWidth,
+            height: canvas.clientHeight * .75,
             bg: "transparent",
             scales: {
                 x: { time: false },
-                y: { auto: false, range: [0, 70] }
+                y: { auto: false, range: [0, 120] }
             },
-            series: [
-                {},
-                {
-                    label: "Simulation",
-                    stroke: "cyan",
-                    fill: "rgba(0, 255, 255, 0.2)"
-                },
-                {
-                    label: "Maxwell (2D)",
-                    stroke: "orange",
-                    width: 2
-                }
-            ],
             axes: [
                 {   // x-axis
                     stroke: "#ff0",
@@ -174,10 +152,51 @@
                         width: 1
                     }
                 }
+            ],
+            series: [
+                {},
+                {
+                    label: "Simulation",
+                    stroke: "cyan",
+                    fill: "rgba(0, 255, 255, 0.2)"
+                },
+                {
+                    label: "Maxwell (2D)",
+                    stroke: "orange",
+                    width: 2
+                }
             ]
         },
         [binsX, new Array(binCount).fill(0), new Array(binCount).fill(0)],
-        document.getElementById("speedPlot"));
+        document.getElementById("speedPlot3d"));
+
+
+    let running = true;
+    const toggleButton = document.getElementById("toggle3d");
+    toggleButton.onclick = () => { running = !running; toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";}
+    document.getElementById("show3d").addEventListener("click", () => { for (let ball of balls) ball.show(); });
+    document.getElementById("hide3d").addEventListener("click", () => { for (let ball of balls) ball.hide(); balls[0].show() });
+    document.getElementById("temperatureSlider3d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
+    document.getElementById("add3d").addEventListener("click", () => {
+        for (let i = 0; i < 50; i++)
+            balls.push(new Particle3D(scene, {radius: 5, color: "cyan" }));
+
+        numBalls += 50;
+    });
+    document.getElementById("reset3d").addEventListener("click",() => {
+        trail.reset();
+        while(balls.length > 201) { // Remove balls that have been added with the add-button, if any
+            const ball = balls.pop();
+            scene.remove(ball._mesh);
+        }
+
+        balls[0]._x = balls[0]._y = 0; // Big red ball
+        for(let i = 1; i <= 500; i++)
+            balls[i].reset();
+
+        numBalls = 500;
+    });
+
 
     let graphUpdateCounter = 0;
     function updateGraph() {
@@ -189,32 +208,6 @@
         const theory = computeTheoreticalCurve(meanV2, numBalls - 1);
         speedPlot.setData([binsX, averaged, theory]);
     }
-
-    let running = true;
-    const toggleButton = document.getElementById("toggle2d");
-    toggleButton.onclick = () => { running = !running; toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";}
-    document.getElementById("show2d").addEventListener("click", () => { for (let ball of balls) ball.show(); });
-    document.getElementById("hide2d").addEventListener("click", () => { for (let ball of balls) ball.hide(); balls[0].show() });
-    document.getElementById("temperatureSlider2d").addEventListener("input", (event) => setTemperature(Number(event.target.value)));
-    document.getElementById("add2d").addEventListener("click", () => {
-        for (let i = 0; i < 50; i++)
-            balls.push(new Particle2D(scene, {radius: 5, color: "cyan"}));
-
-        numBalls += 50;
-    });
-    document.getElementById("reset2d").addEventListener("click",()=>{
-        trail.reset();
-        while(balls.length > 201) { // Remove balls that have been added with the add-button, if any
-            const ball = balls.pop();
-            scene.remove(ball._mesh);
-        }
-
-        balls[0]._x = balls[0]._y = 0; // Big red ball
-        for(let i = 1; i <= 200; i++)
-            balls[i].reset();
-
-        numBalls = 200;
-    });
 
     function iterate() {
         trail.increment(balls[0]);   // big red ball
@@ -238,6 +231,6 @@
         for (let i = 0; i < 5; i++)
             if (running) iterate();
 
-        renderer2d.render(scene, camera);
+        renderer.render(scene, camera);
     }
 </script>
