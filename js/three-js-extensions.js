@@ -1687,13 +1687,6 @@ export class Gas extends Group {
             ball.show();
     }
 
-    addParticles(numberOfParticles, radius=5, color="cyan") {
-        for (let i = 0; i < numberOfParticles; i++)
-            this._balls.push(new Particle2D(this, {radius: radius, color: color }));
-
-        this._numBalls += numberOfParticles;
-    }
-
     hide(hideTracer=true) {
         for (let ball of this._balls)
             ball.hide();
@@ -1787,6 +1780,13 @@ export class Gas2D extends Gas {
         this.setTemperature(currentTemperature);
     }
 
+    addParticles(numberOfParticles, radius=5, color="cyan") {
+        for (let i = 0; i < numberOfParticles; i++)
+            this._balls.push(new Particle2D(this, {radius: radius, color: color }));
+
+        this._numBalls += numberOfParticles;
+    }
+
     setTemperature(newTemp) {
         // calculate current effective T via mean kinetic energy
         let sumV2 = 0;
@@ -1818,6 +1818,13 @@ export class Gas3D extends Gas {
         for (let i = 1; i <= numBalls; i++)
             this._balls.push(new Particle3D(this, {radius: particleRadius, color: particleColor, mass: particleMass }));
         this.setTemperature(currentTemperature);
+    }
+
+    addParticles(numberOfParticles, radius=5, color="cyan") {
+        for (let i = 0; i < numberOfParticles; i++)
+            this._balls.push(new Particle3D(this, {radius: radius, color: color }));
+
+        this._numBalls += numberOfParticles;
     }
 
     setTemperature(newTemp) {
