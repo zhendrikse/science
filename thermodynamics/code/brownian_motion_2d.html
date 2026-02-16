@@ -10,23 +10,20 @@
     }
 </script>
 
-<canvas class="applicationCanvas" id="brownianCanvas2d" width="500" height="500"></canvas>
+<canvas class="applicationCanvas2D" id="brownianCanvas2d"></canvas>
 <div class="buttonRow">
     <button id="toggle2d">&nbsp;Pause&nbsp;</button>
     <button id="reset2d">Reset</button>
-</div>
-<p style="clear: both;"></p>
-<div class="buttonRow">Molecules:&nbsp;
     <button id="show2d">Show</button>
     <button id="hide2d">Hide</button>
     <button id="add2d">+50</button>
 </div>
-<p style="clear: both;"></p>
 <div>
     <label for="temperatureSlider2d">
         Cold <input type="range" id="temperatureSlider2d" min="0.05" max="2.0" value=".5" step="0.01"/> Hot
     </label>
 </div>
+<p style="clear: both;"></p>
 <div id="speedPlot" style="margin:auto;"></div>
 
 <link rel="stylesheet" href="https://unpkg.com/uplot/dist/uPlot.min.css">
@@ -140,8 +137,8 @@
 
     const speedPlot = new uPlot({
             title: "Speed Distribution (averaged)",
-            width: 500,
-            height: 300,
+            width: canvas.clientWidth,
+            height: canvas.clientHeight * .75,
             bg: "transparent",
             scales: {
                 x: { time: false },
@@ -158,6 +155,24 @@
                     label: "Maxwell (2D)",
                     stroke: "orange",
                     width: 2
+                }
+            ],
+            axes: [
+                {   // x-axis
+                    stroke: "#ff0",
+                    font: "12px Arial",
+                    grid: {
+                        stroke: "rgba(255, 255, 255, 0.2)",
+                        width: 1
+                    }
+                },
+                {   // y-axis
+                    stroke: "#ff0",
+                    font: "12px Arial",
+                    grid: {
+                        stroke: "rgba(255, 255, 255, 0.2)",
+                        width: 1
+                    }
                 }
             ]
         },
