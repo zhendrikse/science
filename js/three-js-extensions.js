@@ -1784,22 +1784,28 @@ export class Gas2D extends Gas {
 
     addParticles(numberOfParticles, radius=5, color="cyan") {
         for (let i = 0; i < numberOfParticles; i++)
-            this._balls.push(new Particle2D(this, {radius: radius, color: color }));
+            this._balls.push(new Particle2D(this, {
+                radius: radius,
+                color: color,
+                velocity: this.#newInitialVelocity(radius, this.#currentTemperature())
+            }));
 
         this._numBalls += numberOfParticles;
     }
 
-    setTemperature(newTemp) {
+    setTemperature(newTemperture) {
+        const scale = Math.sqrt(newTemperture / this.#currentTemperature());
+        for(let ball of this._balls.slice(1))  // skip tracer
+            ball.scaleVelocity(scale);
+    }
+
+    #currentTemperature() {
         // calculate current effective T via mean kinetic energy
         let sumV2 = 0;
         for(let ball of this._balls.slice(1))  // skip tracer
             sumV2 += ball.velocity.lengthSq();
 
-        const currentTemp = sumV2 / (2 * (this._balls.length - 1)); // 2D
-        const scale = Math.sqrt(newTemp / currentTemp);
-
-        for(let ball of this._balls.slice(1))  // skip tracer
-            ball.scaleVelocity(scale);
+        return sumV2 / (2 * (this._balls.length - 1)); // 2D
     }
 
     #newInitialVelocity(temperature, mass) {
@@ -1856,20 +1862,26 @@ export class Gas3D extends Gas {
 
     addParticles(numberOfParticles, radius=5, color="cyan") {
         for (let i = 0; i < numberOfParticles; i++)
-            this._balls.push(new Particle3D(this, {radius: radius, color: color }));
+            this._balls.push(new Particle3D(this, {
+                radius: radius,
+                color: color,
+                velocity: this.#newInitialVelocity(radius, this.#currentTemperature())
+            }));
 
         this._numBalls += numberOfParticles;
     }
 
-    setTemperature(newTemp) {
+    #currentTemperature() {
         // calculate current effective T via mean kinetic energy
         let sumV2 = 0;
         for(let ball of this._balls.slice(1))  // skip tracer
             sumV2 += ball.velocity.lengthSq();
 
-        const currentTemp = sumV2 / (3 * (this._balls.length - 1)); // 3D
-        const scale = Math.sqrt(newTemp / currentTemp);
+        return sumV2 / (3 * (this._balls.length - 1)); // 3D
+    }
 
+    setTemperature(newTemp) {
+        const scale = Math.sqrt(newTemp / this.#currentTemperature());
         for(let ball of this._balls.slice(1))  // skip tracer
             ball.scaleVelocity(scale);
     }
