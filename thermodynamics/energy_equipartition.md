@@ -12,7 +12,7 @@ this principle in a very clear and understandable way.
 
 🔧 [energy_equipartition.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
 ⭐ Inspired by [this video](https://www.youtube.com/watch?v=tP5u-V-BLQo) from Jordan Huang<br/>
-👉 <span style="color: green">Green curve</span>: averaged kinetic energy of the center of mass<br/>
+👉 <span style="color: green">Green curve</span>: averaged translational kinetic energy<br/>
 👉 <span style="color: red">Red curve</span>: averaged vibrational potential energy<br/>
 👉 <span style="color: cyan">Cyan curve</span>: averaged vibrational kinetic energy<br/>
 👉 <span style="color: yellow">Yellow curve</span>: averaged rotational kinetic energy<br/>
@@ -61,11 +61,9 @@ look very complicated, so we separate the program into layers, allowing each lay
 
 In this homework, we provide two template files, `diatomic.py`, which is the module file to hand each
 individual CO molecule and their collisions, and `VP8.py`, which is the main program. You need to put these
-two files into the same file folder. When the module is run for the first time, a `diatomic.pyc` will be generated
-and stored in the subfolder `__pychache__`.
+two files into the same file folder.
 
 ### II. The template file of the diatomic module
-<div style="border-top: 1px solid #999999"><br/></div>
 
 `diatomic.py`:
 
