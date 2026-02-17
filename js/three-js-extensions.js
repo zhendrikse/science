@@ -4,7 +4,7 @@ import { BufferGeometry, PerspectiveCamera, WebGLRenderer, HemisphereLight, Dire
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
     MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
     InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry, MeshBasicMaterial,
-    CircleGeometry, Vector2, MeshLambertMaterial } from "three";
+    CircleGeometry, Vector2 } from "three";
 
 export const ZeroVector = new Vector3();
 export const UnitVectorE1 = new Vector3(1, 0, 0);
@@ -1902,10 +1902,15 @@ export class Gas3D extends Gas {
 }
 
 export class Bond {
-    constructor(parent, atom1, atom2, scale=1, color=new Color(0xface8d), k_bond=18600.0) {
+    static Type = Object.freeze({
+        SPRING: "spring",
+        CYLINDER: "cylinder"
+    });
+    constructor(parent, atom1, atom2, scale=1, color=new Color(0xface8d), k_bond=18600.0, type=Bond.Type.CYLINDER) {
         this._atom1 = atom1;
         this._atom2 = atom2;
         this._scale = scale;
+        this._bondType = type;
         this._bondConstant = k_bond;
 
         const geometry = new CylinderGeometry(
@@ -1913,13 +1918,29 @@ export class Bond {
             atom2.radius * .5 * scale,
             1
         );
-        const material = new MeshLambertMaterial({color: color});
-        this._mesh = new Mesh(geometry, material);
-        this.update();
+        const material = new MeshStandardMaterial({color: color});
+        this._rod = new Mesh(geometry, material);
+        this._spring = new Spring(parent, new Vector3(0, 0, 0), new Vector3(0, 1, 0), {
+            coils: 15,
+            radius: 0.2,
+            coilRadius: 0.02,
+            k: k_bond,
+            color: 0xffffff})._mesh;
+        this._mesh = this._rod;
         parent.add(this._mesh);
+
+        this.changeBondType(type);
+        this.update();
     }
 
     get bondConstant() { return this._bondConstant; }
+
+    changeBondType(bondType) {
+        this._bondType = bondType;
+        this._mesh = this._bondType === Bond.Type.CYLINDER ? this._rod : this._spring;
+        this._rod.visible = this._bondType === Bond.Type.CYLINDER;
+        this._spring.visible = this._bondType === Bond.Type.SPRING;
+    }
 
     update() {
         const p1 = this._atom1.position.clone();
@@ -1929,7 +1950,7 @@ export class Bond {
         const direction = p2.clone().sub(p1);
         const length = direction.length();
 
-        this._mesh.position.copy(mid).multiplyScalar(this._scale); // Update position
+        this._mesh.position.copy(this._bondType === Bond.Type.SPRING ? p1 :mid).multiplyScalar(this._scale);
         this._mesh.scale.set(1, length * this._scale, 1); // Cylinder/bond length (is one high by default)
 
         // orientation: rotate Y-axes to bond vectord
@@ -1998,6 +2019,10 @@ export class CarbonMonoxide extends Group {
         this._oxygen.collideWith(otherMolecule._carbon);
         this._carbon.collideWith(otherMolecule._oxygen);
         this._carbon.collideWith(otherMolecule._carbon);
+    }
+
+    changeBondType(type) {
+        this._bond.changeBondType(type);
     }
 
     translationalKE() {
