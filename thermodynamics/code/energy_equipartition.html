@@ -111,6 +111,7 @@
         changeBondType(type) {
             for (let molecule of this._molecules)
                 molecule.changeBondType(type);
+            this.update(0);
         }
 
         translationalKE() { return this._molecules.reduce((sum, m) => sum + m.translationalKE(), 0); }
