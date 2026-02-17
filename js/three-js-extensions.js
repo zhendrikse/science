@@ -1586,9 +1586,7 @@ export class Particle3D extends Particle {
         radius = 1,
         color = "0xffff00",
         mass = 1,
-        scale = 1,
-        temperature = 0.5,
-        k = 1
+        scale = 1
     } ={}) {
         super(position, velocity, radius, mass, scale);
 
@@ -1782,11 +1780,13 @@ export class Gas2D extends Gas {
         this.setTemperature(currentTemperature);
     }
 
-    addParticles(numberOfParticles, radius=5, color="cyan") {
+    addParticles(numberOfParticles, radius=5, mass=1, scale=1, color="cyan") {
         for (let i = 0; i < numberOfParticles; i++)
             this._balls.push(new Particle2D(this, {
                 radius: radius,
                 color: color,
+                mass: mass,
+                scale: scale,
                 velocity: this.#newInitialVelocity(radius, this.#currentTemperature())
             }));
 
@@ -1860,11 +1860,13 @@ export class Gas3D extends Gas {
         this.setTemperature(currentTemperature);
     }
 
-    addParticles(numberOfParticles, radius=5, color="cyan") {
+    addParticles(numberOfParticles, radius=5, mass=1, scale=1, color="cyan") {
         for (let i = 0; i < numberOfParticles; i++)
             this._balls.push(new Particle3D(this, {
                 radius: radius,
                 color: color,
+                mass: mass,
+                scale: scale,
                 velocity: this.#newInitialVelocity(radius, this.#currentTemperature())
             }));
 
