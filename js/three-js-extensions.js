@@ -1744,8 +1744,7 @@ export class Gas extends Group {
 
         for (let i = 0; i < this._balls.length - 1; i++)
             for (let j = i + 1; j < this._balls.length; j++)
-                if (this._balls[i].isCollidingWith(this._balls[j]))
-                    this._balls[i].collideWith(this._balls[j]);
+                this._balls[i].collideWith(this._balls[j]);
 
         for (let ball of this._balls)
             ball.updateMesh();
