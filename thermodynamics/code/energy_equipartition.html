@@ -13,24 +13,23 @@
 
 
 <canvas class="applicationCanvas" id="simulationCanvas" width="600" height="600"></canvas><br/>
-<p style="clear: both;"></p>
 <div id="energyPlot" style="margin:auto;"></div>
+<p style="clear: both;"></p>
+<div class="buttonRow">
+    <label for="temperatureSlider">Temperatuur (K): </label>
+    <input type="range" id="temperatureSlider" min="100" max="1000" value="298" step="1">
+    <span id="temperatureValue">298</span> K
+</div>
 
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
     // Simulation constants
-    const size = 31E-12;
-    const k_bond = 18600.0;
-    const d = 2.5 * size;
-    const N = 20;
+    const SCALE = 1e10; // For display
+    const MOLECULES_COUNT = 20;
     const one_third = 1. / 3.;
-    const L = ((24.4E-3 / 6E23) * N) ** one_third / 50; // 2L is the length of the cubic container box
-    const mass = 14E-3 / 6E23; // Average mass of Oxygen and Carbon
-    const k = 1.38E-23;
-    const T = 298.0;
-    const SCALE = 1e10;
+    const L = ((24.4E-3 / 6E23) * MOLECULES_COUNT) ** one_third / 50; // 2L is the length of the cubic container box
 
     console.clear( );
     const scene = new THREE.Scene();
@@ -67,7 +66,6 @@
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
-
     class Atom {
         constructor(parent, position, initialSpeed, mass, radius=0.1, colour=new THREE.Color(0xffffff), opacity=1) {
             this._velocity = new vector().random().multiplyScalar(initialSpeed);
@@ -84,7 +82,7 @@
 
         check_box_bounce(boxLength) {
             ["x","y","z"].forEach(axis => {
-                if (Math.abs(this.position[axis]) >= boxLength - size && this.position[axis] * this.velocity[axis] >= 0)
+                if (Math.abs(this.position[axis]) >= boxLength - this.radius && this.position[axis] * this.velocity[axis] >= 0)
                     this._velocity[axis] = -this.velocity[axis];
             });
         }
@@ -130,6 +128,7 @@
             otherAtom._velocity.addScaledVector(impulse,  1 / otherAtom.mass);
         }
 
+        scaleVelocityWith(scaleFactor) { this._velocity.multiplyScalar(scaleFactor); }
         momentum() { return this.mass * this.velocity }
         moveTo(newPosition) { this._position.copy(newPosition); }
         get mass() { return this._mass; }
@@ -142,9 +141,10 @@
     }
 
     class Bond {
-        constructor(parent, atom1, atom2, colour=new THREE.Color(0xface8d)) {
+        constructor(parent, atom1, atom2, colour=new THREE.Color(0xface8d), k_bond=18600.0) {
             this._atom1 = atom1;
             this._atom2 = atom2;
+            this._bondConstant = k_bond;
 
             const geometry = new THREE.CylinderGeometry(
                 atom1.radius * .5 * SCALE,
@@ -156,6 +156,8 @@
             this.update();
             parent.add(this._mesh);
         }
+
+        get bondConstant() { return this._bondConstant; }
 
         update() {
             const p1 = this._atom1.position.clone();
@@ -175,16 +177,16 @@
     }
 
     class CarbonMonoxide extends THREE.Group {
-        constructor(oxygenMass=16, carbonMass=12, initialVelocity=Math.sqrt(3 * k * T / mass), radius=size, boxLength=L) {
+        constructor(pos, initialSpeed) {
             super();
-            const pos = new vector(Math.random() - .5, Math.random() - .5, Math.random() - .5).multiplyScalar(boxLength);
-            const axis = new vector(2.5 * radius, 0, 0);
-            this._oxygen = new Atom(this, pos, initialVelocity, oxygenMass / 6E23, radius, new THREE.Color(0xff0000));
-            this._carbon = new Atom(this, axis.add(pos), initialVelocity, carbonMass / 6E23, radius, new THREE.Color(0x0000ff));
-
+            const radius = 31E-12;
+            const distance = 2.5 * radius;
+            const axis = new vector(distance, 0, 0);
+            const oxygenMass=16E-23, carbonMass=12E-23;
+            this._oxygen = new Atom(this, pos, initialSpeed, oxygenMass, radius, new THREE.Color(0xff0000));
+            this._carbon = new Atom(this, axis.add(pos), initialSpeed, carbonMass, radius, new THREE.Color(0x0000ff));
             this._bond = new Bond(this, this._oxygen, this._carbon);
-            this._bondConstant = k_bond;
-            this._restLength = d;
+            this._restLength = 2.5 * radius;
         }
 
         update(startPosition, endPosition) {
@@ -212,7 +214,7 @@
             const axis = this._carbon.position.clone().sub(this._oxygen.position);
             const length = axis.length();
             const stretch = length - this._restLength;
-            return axis.normalize().multiplyScalar(this._bondConstant * stretch);
+            return axis.normalize().multiplyScalar(this._bond.bondConstant * stretch);
         }
 
         resolveCollisionWith(otherMolecule) {
@@ -243,7 +245,7 @@
         vibrationalPE() {
             const length = this._carbon.position.clone().sub(this._oxygen.position).length();
             const stretch = length - this._restLength;
-            return 0.5 * this._bondConstant * stretch ** 2;
+            return 0.5 * this._bond.bondConstant * stretch * stretch;
         }
 
         rotationalKE() {
@@ -283,16 +285,25 @@
                 .divideScalar(this.mass);
         }
 
+        scaleVelocityWith(scaleFactor) {
+            this._carbon.scaleVelocityWith(scaleFactor);
+            this._oxygen.scaleVelocityWith(scaleFactor);
+        }
+
         get mass() { return this._carbon.mass + this._oxygen.mass; }
     }
 
     class CarbonMonoxideGas extends THREE.Group {
-        constructor(moleculeCount=20) {
+        constructor(moleculeCount=MOLECULES_COUNT, temperature=298, boxSize=L) {
             super();
             this._molecules = [];
-            this._boxSize = L;
+            this._boxSize = boxSize;
+            this._temperature = temperature;
+            const mass = 14E-3 / 6E23; // Average mass of Oxygen and Carbon
+            const k = 1.38E-23; // Boltzmann constant
             for (let i = 0; i < moleculeCount; i++) {
-                const molecule = new CarbonMonoxide(16, 12, Math.sqrt(3 * k * T / mass), size, L);
+                const pos = new vector(Math.random() -.5, Math.random() -.5, Math.random() -.5).multiplyScalar(boxSize);
+                const molecule = new CarbonMonoxide(pos, Math.sqrt(3 * k * temperature / mass));
                 this._molecules.push(molecule);
                 this.add(molecule);
             }
@@ -307,6 +318,14 @@
             for (let i = 0; i < this._molecules.length; i++)
                 for (let j = i + 1; j < this._molecules.length; j++)
                     this._molecules[i].resolveCollisionWith(this._molecules[j]);
+        }
+
+        updateToNewTemperature(newTemperature) {
+            // Modify the speed of all molecules according to equipartition: v ~ sqrt(T)
+            const scaleFactor = Math.sqrt(newTemperature / this._temperature); // ratio new temp / old temp
+            for (let molecule of this._molecules)
+                molecule.scaleVelocityWith(scaleFactor);
+            this._temperature = newTemperature;
         }
 
         translationalKE() { return this._molecules.reduce((sum, m) => sum + m.translationalKE(), 0); }
@@ -348,6 +367,14 @@
     scene.add(gas);
     const energyData = { time: [], translational: [], vPE: [], vKE: [], rotational: [] };
     const uplotChart = new uPlot(opts, [energyData.time, energyData.translational, energyData.vPE, energyData.vKE, energyData.rotational], document.getElementById("energyPlot"));
+
+    const tempSlider = document.getElementById("temperatureSlider");
+    const tempValueLabel = document.getElementById("temperatureValue");
+    tempSlider.addEventListener("input", () => {
+        const newTemperature = parseFloat(tempSlider.value) + "";
+        tempValueLabel.textContent = newTemperature;
+        gas.updateToNewTemperature(newTemperature);
+    });
 
     const dt = 5e-16;
     let t = 0,
