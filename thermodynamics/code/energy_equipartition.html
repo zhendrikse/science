@@ -155,13 +155,13 @@
     const uplotChart = new uPlot(opts, [energyData.time, energyData.translational, energyData.vPE, energyData.vKE, energyData.rotational], document.getElementById("energyPlot"));
 
     // UI
-    const tempSlider = document.getElementById("temperatureSlider");
-    const tempValueLabel = document.getElementById("temperatureValue");
-    tempSlider.addEventListener("input", () => {
-        const newTemperature = parseFloat(tempSlider.value) + "";
-        tempValueLabel.textContent = newTemperature;
-        gas.updateToNewTemperature(newTemperature);
-    });
+    // const tempSlider = document.getElementById("temperatureSlider");
+    // const tempValueLabel = document.getElementById("temperatureValue");
+    //tempSlider.addEventListener("input", () => {
+    //    const newTemperature = parseFloat(tempSlider.value) + "";
+    //    tempValueLabel.textContent = newTemperature;
+    //    gas.updateToNewTemperature(newTemperature);
+    //});
     let running = true;
     const toggleButton = document.getElementById("pauseButton");
     toggleButton.onclick = () => {
