@@ -13,13 +13,13 @@
 
 
 <canvas class="applicationCanvas" id="simulationCanvas"></canvas><br/>
-<div id="energyPlot" style="margin:auto;"></div>
 <p style="clear: both;"></p>
 <div class="buttonRow">
-    <label for="temperatureSlider">Temperatuur (K): </label>
+    <label for="temperatureSlider">Temperature (K): </label>
     <input type="range" id="temperatureSlider" min="100" max="1000" value="298" step="1">
     <span id="temperatureValue">298</span> K
 </div>
+<div id="energyPlot" style="margin:auto;"></div>
 
 <script type="module">
     import * as THREE from "three";
@@ -337,7 +337,7 @@
     const opts = {
         title: "Kinetic Energy vs Time",
         width: canvas.clientWidth,
-        height: canvas.clientHeight,
+        height: canvas.clientHeight * .75,
         bg: "transparent",
         scales: { x: { auto: true }, y: { auto: true } },
         axes: [
