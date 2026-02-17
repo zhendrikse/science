@@ -1,503 +1,386 @@
-<style>
-    html, body {
-        background: #131313;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        height: 100%;
-    }
-
-    #glowscript-wrapper {
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 4 / 3;
-        margin: auto;
-    }
-
-    .glowscript canvas {
-        display: block;
-        touch-action: none;
-        width: 100%;
-        height: 100%;
-    }
-</style>
-<script>
-    // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
+<!-- https://discourse.threejs.org/t/how-to-update-the-endpoints-of-a-cylinder/49853/2 -->
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
     }
 </script>
-<div id="glowscript-wrapper"><div id="glowscript" class="glowscript"></div>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
 
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-ρσ_modules.pythonize = {};
+<link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
+<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
+
+<canvas class="applicationCanvas" id="simulationCanvas" width="600" height="600"></canvas><br/>
+<p style="clear: both;"></p>
+<div id="energyPlot" style="margin:auto;"></div>
+
+<script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+    // Simulation constants
+    const size = 31E-12;
+    const k_bond = 18600.0;
+    const d = 2.5 * size;
+    const N = 20;
+    const one_third = 1. / 3.;
+    const L = ((24.4E-3 / 6E23) * N) ** one_third / 50; // 2L is the length of the cubic container box
+    const mass = 14E-3 / 6E23; // Average mass of Oxygen and Carbon
+    const k = 1.38E-23;
+    const T = 298.0;
+    const SCALE = 1e10;
+
+    console.clear( );
+    const scene = new THREE.Scene();
+    const vector = THREE.Vector3;
+
+    const canvas = document.getElementById('simulationCanvas');
+    canvas.focus();
+    const canvasWidth = canvas.clientWidth;
+    const canvasHeight = canvas.clientHeight;
+
+    const camera = new THREE.PerspectiveCamera(60, canvasWidth/canvasHeight, 0.1, 1000);
+    camera.position.set(2 * L * SCALE, 2 * L * SCALE, 2 * L * SCALE);
+    camera.updateProjectionMatrix();
+
+    const renderer = new THREE.WebGLRenderer( {antialias: true, canvas: canvas, alpha: true} );
+    renderer.setSize( canvasWidth, canvasHeight );
+    renderer.setAnimationLoop( animationLoop );
+
+    const controls = new OrbitControls( camera, canvas );
+    controls.enableDamping = true;
+
+    let light = new THREE.DirectionalLight(0xffffff, .75);
+    light.position.set(1, 2, 3).setLength(1);
+    scene.add(light, new THREE.AmbientLight(0xffffff, .5));
+
+    // --- Box ---
+    const geometry = new THREE.BoxGeometry(2 * L * SCALE, 2 * L * SCALE, 2 * L * SCALE);
+    const material = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(0, .78, .78),
+        transparent: true,
+        opacity: 0.35,
+        depthWrite: false
     });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
 
-    ρσ_modules.pythonize.strings = strings;
-})();
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-    /* ================= GLOWSCRIPT RESPONSIVE PATCH ================= */
 
-    function resizeGlowScriptScene() {
-        const wrapper = document.getElementById('glowscript-wrapper');
-        if (!wrapper || !scene || !scene.canvas) return;
+    class Atom {
+        constructor(parent, position, initialSpeed, mass, radius=0.1, colour=new THREE.Color(0xffffff), opacity=1) {
+            this._velocity = new vector().random().multiplyScalar(initialSpeed);
+            this._position = position;
+            this._mass = mass;
+            this._radius = radius;
 
-        const dpr = window.devicePixelRatio || 1;
+            const geometry = new THREE.SphereGeometry(radius * SCALE);
+            const material = new THREE.MeshStandardMaterial({ color: colour, opacity: opacity });
+            this._mesh = new THREE.Mesh(geometry, material);
+            this._mesh.position.copy(position).multiplyScalar(SCALE);
+            parent.add(this._mesh);
+        }
 
-        const w = wrapper.clientWidth;
-        const h = wrapper.clientHeight;
+        check_box_bounce(boxLength) {
+            ["x","y","z"].forEach(axis => {
+                if (Math.abs(this.position[axis]) >= boxLength - size && this.position[axis] * this.velocity[axis] >= 0)
+                    this._velocity[axis] = -this.velocity[axis];
+            });
+        }
 
-        scene.width  = Math.floor(w * dpr);
-        scene.height = Math.floor(h * dpr);
+        time_lapse(bond_force, dt) {
+            const acceleration = bond_force.clone().divideScalar(this.mass);
+            this._velocity.addScaledVector(acceleration, dt);
+            this._position.addScaledVector(this._velocity, dt);
+            this._mesh.position
+                .copy(this._position)
+                .multiplyScalar(SCALE);
+        }
 
-        scene.canvas.style.width  = w + 'px';
-        scene.canvas.style.height = h + 'px';
+        resolveCollision(otherAtom) {
+            const delta = otherAtom.position.clone().sub(this.position);
+            const dist = delta.length();
+            const minDist = this.radius + otherAtom.radius;
+
+            if (dist >= minDist) return;
+
+            const normal = delta.clone().divideScalar(dist);
+
+            // ---- Position-correction (prevents sticking)
+            const overlap = minDist - dist;
+            const totalMass = this.mass + otherAtom.mass;
+
+            this._position.addScaledVector(normal, -overlap * (otherAtom.mass / totalMass));
+            otherAtom._position.addScaledVector(normal,  overlap * (this.mass / totalMass));
+
+            // ---- Relative velocity
+            const relVel = otherAtom.velocity.clone().sub(this.velocity);
+            const velAlongNormal = relVel.dot(normal);
+
+            if (velAlongNormal > 0) return; // moving away from each other
+
+            // ---- Elastic collision
+            const restitution = 1.0; // perfect elastic
+
+            const impulseMag = -(1 + restitution) * velAlongNormal / (1 / this.mass + 1 / otherAtom.mass);
+            const impulse = normal.clone().multiplyScalar(impulseMag);
+
+            this._velocity.addScaledVector(impulse, -1 / this.mass);
+            otherAtom._velocity.addScaledVector(impulse,  1 / otherAtom.mass);
+        }
+
+        momentum() { return this.mass * this.velocity }
+        moveTo(newPosition) { this._position.copy(newPosition); }
+        get mass() { return this._mass; }
+        get radius() { return this._radius; }
+        get position() { return this._position; }
+        get velocity() { return this._velocity; }
+        positionVectorTo(other) { return other.position.clone().sub(this.position); }
+        distanceToSquared(other) { return this.position.distanceToSquared(other.position); }
+        distanceTo(other) { return this.position.distanceTo(other.position); }
     }
 
-    scene.autoscale = false;
-    scene.userzoom  = true;
-    scene.userspin  = true;
-    scene.userpan   = true;
+    class Bond {
+        constructor(parent, atom1, atom2, colour=new THREE.Color(0xface8d)) {
+            this._atom1 = atom1;
+            this._atom2 = atom2;
 
-    resizeGlowScriptScene();
-    window.addEventListener('resize', resizeGlowScriptScene);
+            const geometry = new THREE.CylinderGeometry(
+                atom1.radius * .5 * SCALE,
+                atom2.radius * .5 * SCALE,
+                1
+            );
+            const material = new THREE.MeshLambertMaterial({color: colour});
+            this._mesh = new THREE.Mesh(geometry, material);
+            this.update();
+            parent.add(this._mesh);
+        }
 
-    /* =============================================================== */
-    function round(num, n=0) {return Number(num.toFixed(n))}
+        update() {
+            const p1 = this._atom1.position.clone();
+            const p2 = this._atom2.position.clone();
 
-    var version, print, arange, __name__, type, ρσ_ls, title, display, ρσ_unpack, size, k_bond, d, N, one_third, L, m, k, T, container, energies, c_avg_com_K, c_avg_v_P, c_avg_v_K, c_avg_r_K, co_molecules, _GS_1, _, times, dt, t, total_com_K, total_v_K, total_v_P, total_r_K, molecule, carbon_1, oxygen_1, carbon_2, oxygen_2, j, i, co_molecule;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
+            const mid = p1.clone().add(p2).multiplyScalar(0.5);
+            const direction = p2.clone().sub(p1);
+            const length = direction.length();
 
-    strings();
-    "11";
-    title = " &#x2022;Based on code shown in <a href=\"https://www.youtube.com/watch?v=tP5u-V-BLQo\">this video<\/a> by Jordan Huang\n&#x2022; Refactored by <a href=\"https://github.com/zhendrikse/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.py\">energy_equipartition.py</a>\n&#x2022; The <span style=\"color: green\">green curve</span> is the averaged kinetic energy of the center of mass\n&#x2022; The <span style=\"color: red\">red curve</span> is the averaged vibrational potential energy\n&#x2022; The <span style=\"color: purple\">purple curve</span> is the averaged vibrational kinetic energy\n&#x2022; The <span style=\"color: blue\">blue curve</span> is the averaged rotational kinetic energy\n\n";
-    "13";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 600, background: color.gray(.075), forward: vec(1["-u"]()["*"](.55), 1["-u"]()["*"](.42), 1["-u"]()["*"](.75)), range: 3.75e-10})]);
-    "15";
-    ρσ_unpack = [3.1e-11, 18600];
-    size = ρσ_unpack[0];
-    k_bond = ρσ_unpack[1];
-    "16";
-    d = 2.5["*"](size);
-    "17";
-    N = 20;
-    "18";
-    one_third = 1["/"](3);
-    "19";
-    L = Math.pow((.0244["/"](6e23)["*"](N)), one_third)["/"](50);
-    "20";
-    m = .014["/"](6e23);
-    "21";
-    ρσ_unpack = [1.38e-23, 298];
-    k = ρσ_unpack[0];
-    T = ρσ_unpack[1];
-    "24";
-    function CarbonMonoxide() {;
+            this._mesh.position.copy(mid).multiplyScalar(SCALE); // Update position
+            this._mesh.scale.set(1, length * SCALE, 1); // Cylinder/bond length (is one high by default)
+
+            // orientation: rotate Y-axes to bond vector
+            const axis = new THREE.Vector3(0, 1, 0);
+            this._mesh.quaternion.setFromUnitVectors(axis, direction.clone().normalize());
+        }
     }
-    CarbonMonoxide.prototype.__init__ = async function __init__() {
-        var self = this;
-        var oxygen_mass = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.oxygen_mass : arguments[0];
-        var carbon_mass = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.carbon_mass : arguments[1];
-        var initial_v = (arguments[2] === undefined || ( 2 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.initial_v : arguments[2];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "oxygen_mass")){
-            oxygen_mass = ρσ_kwargs_obj.oxygen_mass;
+
+    class CarbonMonoxide extends THREE.Group {
+        constructor(oxygenMass=16, carbonMass=12, initialVelocity=Math.sqrt(3 * k * T / mass), radius=size, boxLength=L) {
+            super();
+            const pos = new vector(Math.random() - .5, Math.random() - .5, Math.random() - .5).multiplyScalar(boxLength);
+            const axis = new vector(2.5 * radius, 0, 0);
+            this._oxygen = new Atom(this, pos, initialVelocity, oxygenMass / 6E23, radius, new THREE.Color(0xff0000));
+            this._carbon = new Atom(this, axis.add(pos), initialVelocity, carbonMass / 6E23, radius, new THREE.Color(0x0000ff));
+
+            this._bond = new Bond(this, this._oxygen, this._carbon);
+            this._bondConstant = k_bond;
+            this._restLength = d;
         }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "carbon_mass")){
-            carbon_mass = ρσ_kwargs_obj.carbon_mass;
+
+        update(startPosition, endPosition) {
+            this._oxygen.moveTo(startPosition);
+            this._carbon.moveTo(endPosition);
+            this._bond.update();
         }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "initial_v")){
-            initial_v = ρσ_kwargs_obj.initial_v;
+
+        timeLapse(dt) {
+            const forceOnOxygen = this.bondForceOnOxygen();
+            const forceOnCarbon = forceOnOxygen.clone().negate();
+
+            this._oxygen.time_lapse(forceOnOxygen, dt);
+            this._carbon.time_lapse(forceOnCarbon, dt);
+
+            this._bond.update();
         }
-        var ρσ_ls, pos, axis;
-        "26";
-        pos = vector(random()["-"](1["*"](.5)), random()["-"](1["*"](.5)), random()["-"](1["*"](.5)))["*"](L);
-        "27";
-        axis = vector(1["*"](d), 0, 0);
-        "28";
-        self.O = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos, radius: size, color: color.red})]);
-        "29";
-        self.C = ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: pos["+"](axis), radius: size, color: color.blue})]);
-        "30";
-        self.bond = ρσ_interpolate_kwargs.call(this, cylinder, [ρσ_desugar_kwargs({pos: pos, axis: axis, radius: size["/"](2), color: color.white})]);
-        "31";
-        self.O.m = oxygen_mass["/"](6e23);
-        "32";
-        self.C.m = carbon_mass["/"](6e23);
-        "33";
-        self.O.v = vector(initial_v["*"](random()), initial_v["*"](random()), initial_v["*"](random()));
-        "34";
-        self.C.v = vector(initial_v["*"](random()), initial_v["*"](random()), initial_v["*"](random()));
-        "35";
-        self.bond.k = k_bond;
-    };
-    if (!CarbonMonoxide.prototype.__init__.__defaults__) Object.defineProperties(CarbonMonoxide.prototype.__init__, {
-        __defaults__ : {value: {oxygen_mass:16, carbon_mass:12, initial_v:sqrt(3["*"](k)["*"](T)["/"](m))}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["oxygen_mass", "carbon_mass", "initial_v"]},
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.__argnames__ = CarbonMonoxide.prototype.__init__.__argnames__;
-    CarbonMonoxide.__handles_kwarg_interpolation__ = CarbonMonoxide.prototype.__init__.__handles_kwarg_interpolation__;
-    CarbonMonoxide.prototype.bond_force_on_oxygen = async function bond_force_on_oxygen() {
-        var self = this;
-        "38";
-        return self.bond.k["*"](mag(self.bond.axis)["-"](1["*"](d)))["*"](norm(self.bond.axis));
-    };
-    if (!CarbonMonoxide.prototype.bond_force_on_oxygen.__module__) Object.defineProperties(CarbonMonoxide.prototype.bond_force_on_oxygen, {
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.prototype.time_lapse = async function time_lapse(dt) {
-        var self = this;
-        "41";
-        self.C.a = 1["-u"]()["*"]((await self.bond_force_on_oxygen()))["/"](self.C.m);
-        "42";
-        self.O.a = (await self.bond_force_on_oxygen())["/"](self.O.m);
-        "43";
-        self.C.v=self.C.v["+"](self.C.a["*"](dt));
-        "44";
-        self.O.v=self.O.v["+"](self.O.a["*"](dt));
-        "45";
-        self.O.pos=self.O.pos["+"](self.O.v["*"](dt));
-        "46";
-        self.C.pos=self.C.pos["+"](self.C.v["*"](dt));
-        "47";
-        self.bond.axis = self.C.pos["-"](1["*"](self.O.pos));
-        "48";
-        self.bond.pos = self.O.pos;
-    };
-    if (!CarbonMonoxide.prototype.time_lapse.__argnames__) Object.defineProperties(CarbonMonoxide.prototype.time_lapse, {
-        __argnames__ : {value: ["dt"]},
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.prototype.com = async function com() {
-        var self = this;
-        "51";
-        return self.C.pos["*"](self.C.m)["+"](self.O.pos["*"](self.O.m))["/"]((await self.mass()));
-    };
-    if (!CarbonMonoxide.prototype.com.__module__) Object.defineProperties(CarbonMonoxide.prototype.com, {
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.prototype.com_v = async function com_v() {
-        var self = this;
-        "54";
-        return self.C.v["*"](self.C.m)["+"](self.O.v["*"](self.O.m))["/"]((await self.mass()));
-    };
-    if (!CarbonMonoxide.prototype.com_v.__module__) Object.defineProperties(CarbonMonoxide.prototype.com_v, {
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.prototype.v_P = async function v_P() {
-        var self = this;
-        "57";
-        return self.bond.k["*"](mag(self.bond.axis)["-"](1["*"](d)))["*"](mag(self.bond.axis)["-"](1["*"](d)))["/"](2);
-    };
-    if (!CarbonMonoxide.prototype.v_P.__module__) Object.defineProperties(CarbonMonoxide.prototype.v_P, {
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.prototype.v_K = async function v_K() {
-        var self = this;
-        var ρσ_ls, C, O;
-        "60";
-        C = self.C.m["*"](Math.pow((dot(self.C.v["-"](1["*"]((await self.com_v()))), self.bond.axis)["/"](mag(self.bond.axis))), 2))["/"](2);
-        "61";
-        O = self.O.m["*"](Math.pow((dot(self.O.v["-"](1["*"]((await self.com_v()))), self.bond.axis)["/"](mag(self.bond.axis))), 2))["/"](2);
-        "62";
-        return C["+"](O);
-    };
-    if (!CarbonMonoxide.prototype.v_K.__module__) Object.defineProperties(CarbonMonoxide.prototype.v_K, {
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.prototype.r_K = async function r_K() {
-        var self = this;
-        var ρσ_ls, C, O;
-        "65";
-        C = self.C.m["*"](Math.pow((mag(cross(self.C.v["-"](1["*"]((await self.com_v()))), self.bond.axis))["/"](mag(self.bond.axis))), 2))["/"](2);
-        "66";
-        O = self.O.m["*"](Math.pow((mag(cross(self.O.v["-"](1["*"]((await self.com_v()))), self.bond.axis))["/"](mag(self.bond.axis))), 2))["/"](2);
-        "67";
-        return C["+"](O);
-    };
-    if (!CarbonMonoxide.prototype.r_K.__module__) Object.defineProperties(CarbonMonoxide.prototype.r_K, {
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.prototype.com_K = async function com_K() {
-        var self = this;
-        "70";
-        return .5["*"]((await self.mass()))["*"](dot((await self.com_v()), (await self.com_v())));
-    };
-    if (!CarbonMonoxide.prototype.com_K.__module__) Object.defineProperties(CarbonMonoxide.prototype.com_K, {
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.prototype.mass = async function mass() {
-        var self = this;
-        "73";
-        return self.C.m["+"](self.O.m);
-    };
-    if (!CarbonMonoxide.prototype.mass.__module__) Object.defineProperties(CarbonMonoxide.prototype.mass, {
-        __module__ : {value: null}
-    });
-    CarbonMonoxide.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    CarbonMonoxide.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(CarbonMonoxide.prototype, "__bases__", {value: []});
 
+        checkBoxBounce(boxLength) {
+            this._oxygen.check_box_bounce(boxLength);
+            this._carbon.check_box_bounce(boxLength);
+        }
 
+        bondForceOnOxygen() {
+            const axis = this._carbon.position.clone().sub(this._oxygen.position);
+            const length = axis.length();
+            const stretch = length - this._restLength;
+            return axis.normalize().multiplyScalar(this._bondConstant * stretch);
+        }
 
+        resolveCollisionWith(otherMolecule) {
+            this._oxygen.resolveCollision(otherMolecule._oxygen);
+            this._oxygen.resolveCollision(otherMolecule._carbon);
+            this._carbon.resolveCollision(otherMolecule._oxygen);
+            this._carbon.resolveCollision(otherMolecule._carbon);
+        }
 
+        translationalKE() {
+            return 0.5 * this.mass * this.comVelocity().lengthSq();
+        }
 
+        vibrationalKE() {
+            // Project velocities along the bond axis
+            const bondAxis = this._carbon.position.clone().sub(this._oxygen.position).normalize();
+            const comVel = this.comVelocity();
 
+            const velocityCarbon = this._carbon.velocity.clone().sub(comVel);
+            const velocityOxygen = this._oxygen.velocity.clone().sub(comVel);
 
+            const velocityCarbon_along = velocityCarbon.dot(bondAxis);
+            const velocityOxygen_along = velocityOxygen.dot(bondAxis);
 
+            return 0.5 * this._carbon.mass * velocityCarbon_along ** 2 + 0.5 * this._oxygen.mass * velocityOxygen_along ** 2;
+        }
 
+        vibrationalPE() {
+            const length = this._carbon.position.clone().sub(this._oxygen.position).length();
+            const stretch = length - this._restLength;
+            return 0.5 * this._bondConstant * stretch ** 2;
+        }
 
+        rotationalKE() {
+            // Rotation around the center of mass
+            const comVel = this.comVelocity();
+            const bondAxis = this._carbon.position.clone().sub(this._oxygen.position);
 
-    "76";
-    async function collision(a1, a2) {
-        var ρσ_ls, distance, distance_squared, v1prime, v2prime;
-        "77";
-        distance = a2.pos["-"](1["*"](a1.pos));
-        "78";
-        distance_squared = dot(distance, distance);
-        "79";
-        v1prime = a1.v["-"](1["*"](2)["*"](a2.m)["/"](a1.m["+"](a2.m))["*"](1["-u"]())["*"](distance)["*"](dot(a1.v["-"](1["*"](a2.v)), 1["-u"]()["*"](distance)))["/"](distance_squared));
-        "80";
-        v2prime = a2.v["-"](1["*"](2)["*"](a1.m)["/"](a1.m["+"](a2.m))["*"](distance)["*"](dot(a2.v["-"](1["*"](a1.v)), distance))["/"](distance_squared));
-        "81";
-        return [v1prime, v2prime];
-    };
-    if (!collision.__argnames__) Object.defineProperties(collision, {
-        __argnames__ : {value: ["a1", "a2"]},
-        __module__ : {value: null}
-    });
+            const velocityCarbon_perp = this._carbon.velocity.clone()
+                .sub(comVel).clone()
+                .sub(bondAxis.clone()
+                    .normalize()
+                    .multiplyScalar(
+                        this._carbon.velocity.clone()
+                            .sub(comVel)
+                            .dot(bondAxis.clone().normalize())
+                    )
+                );
 
-    "91";
-    container = ρσ_interpolate_kwargs.call(this, box, [ρσ_desugar_kwargs({length: 2["*"](L), height: 2["*"](L), width: 2["*"](L), opacity: .4, color: vec(.5, 1, .5)})]);
-    "92";
-    display.append_to_caption("\n");
-    "93";
-    energies = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({align: "left", ymin: 0, background: color.black, title: "Average energies"})]);
-    "94";
-    c_avg_com_K = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.green})]);
-    "95";
-    c_avg_v_P = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.red})]);
-    "96";
-    c_avg_v_K = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.purple})]);
-    "97";
-    c_avg_r_K = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.blue})]);
-    "99";
-    co_molecules = ρσ_list_decorate([]);
-    "100";
-    for (var ρσ_Index1 = 0; ρσ_Index1["<"](N); ρσ_Index1++) {
-        _ = ρσ_Index1;
-        "101";
-        _GS_1 = new CarbonMonoxide;
-        (await _GS_1.__init__());
-        co_molecules=co_molecules["+"](ρσ_list_decorate([ _GS_1 ]));
+            const velocityOxygen_perp = this._oxygen.velocity.clone()
+                .sub(comVel).clone()
+                .sub(bondAxis.clone()
+                    .normalize()
+                    .multiplyScalar(
+                        this._oxygen.velocity.clone()
+                            .sub(comVel)
+                            .dot(bondAxis.clone().normalize())
+                    )
+                );
+
+            return 0.5 * this._carbon.mass * velocityCarbon_perp.lengthSq() + 0.5 * this._oxygen.mass * velocityOxygen_perp.lengthSq();
+        }
+
+        comVelocity() {
+            return this._carbon.velocity.clone()
+                .multiplyScalar(this._carbon.mass)
+                .add(this._oxygen.velocity.clone().multiplyScalar(this._oxygen.mass))
+                .divideScalar(this.mass);
+        }
+
+        get mass() { return this._carbon.mass + this._oxygen.mass; }
     }
-    "103";
-    //MathJax.Hub.Queue(ρσ_list_decorate([ "Typeset", MathJax.Hub ]));
-    "105";
-    times = 0;
-    "106";
-    dt = 5e-16;
-    "107";
-    t = 0;
-    "108";
-    ρσ_unpack = [0, 0, 0, 0];
-    total_com_K = ρσ_unpack[0];
-    total_v_K = ρσ_unpack[1];
-    total_v_P = ρσ_unpack[2];
-    total_r_K = ρσ_unpack[3];
-    "109";
-    while (true) {
-        "110";
-        (await rate(3e2));
-        "111";
-        var ρσ_Iter2 = co_molecules;
-        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
-        for (var ρσ_Index2 of ρσ_Iter2) {
-            molecule = ρσ_Index2;
-            "112";
-            (await molecule.time_lapse(dt));
-        }
-        "114";
-        for (var ρσ_Index3 = 0; ρσ_Index3["<"](N["-"](1["*"](1))); ρσ_Index3++) {
-            i = ρσ_Index3;
-            "115";
-            for (var ρσ_Index4 = i["+"](1); ρσ_Index4["<"](N); ρσ_Index4++) {
-                j = ρσ_Index4;
-                "116";
-                ρσ_unpack = [ρσ_getitem(co_molecules, i).C, ρσ_getitem(co_molecules, i).O, ρσ_getitem(co_molecules, j).C,
-                ρσ_getitem(co_molecules, j).O];
-                carbon_1 = ρσ_unpack[0];
-                oxygen_1 = ρσ_unpack[1];
-                carbon_2 = ρσ_unpack[2];
-                oxygen_2 = ρσ_unpack[3];
-                "117";
-                if (mag(carbon_1.pos["-"](1["*"](carbon_2.pos)))["<="](2["*"](size)) && dot(carbon_1.pos["-"](1["*"](carbon_2.pos)), carbon_1.v["-"](1["*"](carbon_2.v)))["<="](0)) {
-                    "118";
-                    ρσ_unpack = (await collision(carbon_1, carbon_2));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    carbon_1.v = ρσ_unpack[0];
-                    carbon_2.v = ρσ_unpack[1];
-                    "119";
-                }
-                if (mag(oxygen_1.pos["-"](1["*"](carbon_2.pos)))["<="](2["*"](size)) && dot(oxygen_1.pos["-"](1["*"](carbon_2.pos)), oxygen_1.v["-"](1["*"](carbon_2.v)))["<="](0)) {
-                    "120";
-                    ρσ_unpack = (await collision(oxygen_1, carbon_2));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    oxygen_1.v = ρσ_unpack[0];
-                    carbon_2.v = ρσ_unpack[1];
-                    "121";
-                }
-                if (mag(carbon_1.pos["-"](1["*"](oxygen_2.pos)))["<="](2["*"](size)) && dot(carbon_1.pos["-"](1["*"](oxygen_2.pos)), carbon_1.v["-"](1["*"](oxygen_2.v)))["<="](0)) {
-                    "122";
-                    ρσ_unpack = (await collision(carbon_1, oxygen_2));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    carbon_1.v = ρσ_unpack[0];
-                    oxygen_2.v = ρσ_unpack[1];
-                    "123";
-                }
-                if (mag(oxygen_1.pos["-"](1["*"](oxygen_2.pos)))["<="](2["*"](size)) && dot(oxygen_1.pos["-"](1["*"](oxygen_2.pos)), oxygen_1.v["-"](1["*"](oxygen_2.v)))["<="](0)) {
-                    "124";
-                    ρσ_unpack = (await collision(oxygen_1, oxygen_2));
-ρσ_unpack = ρσ_unpack_asarray(2, ρσ_unpack);
-                    oxygen_1.v = ρσ_unpack[0];
-                    oxygen_2.v = ρσ_unpack[1];
-                }
+
+    class CarbonMonoxideGas extends THREE.Group {
+        constructor(moleculeCount=20) {
+            super();
+            this._molecules = [];
+            this._boxSize = L;
+            for (let i = 0; i < moleculeCount; i++) {
+                const molecule = new CarbonMonoxide(16, 12, Math.sqrt(3 * k * T / mass), size, L);
+                this._molecules.push(molecule);
+                this.add(molecule);
             }
         }
-        "126";
-        var ρσ_Iter5 = co_molecules;
-        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-        for (var ρσ_Index5 of ρσ_Iter5) {
-            co_molecule = ρσ_Index5;
-            "127";
-            if (abs(co_molecule.C.pos.x)[">="](L["-"](1["*"](size))) && co_molecule.C.pos.x["*"](co_molecule.C.v.x)[">="](0)) {
-                "128";
-                co_molecule.C.v.x = 1["-u"]()["*"](co_molecule.C.v.x);
-                "129";
+
+        update(dt) {
+            for (let molecule of this._molecules) {
+                molecule.timeLapse(dt);
+                molecule.checkBoxBounce(this._boxSize);
             }
-            if (abs(co_molecule.C.pos.y)[">="](L["-"](1["*"](size))) && co_molecule.C.pos.y["*"](co_molecule.C.v.y)[">="](0)) {
-                "130";
-                co_molecule.C.v.y = 1["-u"]()["*"](co_molecule.C.v.y);
-                "131";
-            }
-            if (abs(co_molecule.C.pos.z)[">="](L["-"](1["*"](size))) && co_molecule.C.pos.z["*"](co_molecule.C.v.z)[">="](0)) {
-                "132";
-                co_molecule.C.v.z = 1["-u"]()["*"](co_molecule.C.v.z);
-                "133";
-            }
-            if (abs(co_molecule.O.pos.x)[">="](L["-"](1["*"](size))) && co_molecule.O.pos.x["*"](co_molecule.O.v.x)[">="](0)) {
-                "134";
-                co_molecule.O.v.x = 1["-u"]()["*"](co_molecule.O.v.x);
-                "135";
-            }
-            if (abs(co_molecule.O.pos.y)[">="](L["-"](1["*"](size))) && co_molecule.O.pos.y["*"](co_molecule.O.v.y)[">="](0)) {
-                "136";
-                co_molecule.O.v.y = 1["-u"]()["*"](co_molecule.O.v.y);
-                "137";
-            }
-            if (abs(co_molecule.O.pos.z)[">="](L["-"](1["*"](size))) && co_molecule.O.pos.z["*"](co_molecule.O.v.z)[">="](0)) {
-                "138";
-                co_molecule.O.v.z = 1["-u"]()["*"](co_molecule.O.v.z);
-            }
+
+            for (let i = 0; i < this._molecules.length; i++)
+                for (let j = i + 1; j < this._molecules.length; j++)
+                    this._molecules[i].resolveCollisionWith(this._molecules[j]);
         }
-        "140";
-        var ρσ_Iter6 = co_molecules;
-        ρσ_Iter6 = ((typeof ρσ_Iter6[Symbol.iterator] === "function") ? (ρσ_Iter6 instanceof Map ? ρσ_Iter6.keys() : ρσ_Iter6) : Object.keys(ρσ_Iter6));
-        for (var ρσ_Index6 of ρσ_Iter6) {
-            co_molecule = ρσ_Index6;
-            "141";
-            total_com_K=total_com_K["+"]((await co_molecule.com_K()));
-            "142";
-            total_v_K=total_v_K["+"]((await co_molecule.v_K()));
-            "143";
-            total_v_P=total_v_P["+"]((await co_molecule.v_P()));
-            "144";
-            total_r_K=total_r_K["+"]((await co_molecule.r_K()));
-        }
-        "146";
-        t=t["+"](dt);
-        "147";
-        times=times["+"](1);
-        "148";
-        c_avg_com_K.plot(times, total_com_K["/"](times));
-        "149";
-        c_avg_v_P.plot(times, total_v_P["/"](times));
-        "150";
-        c_avg_v_K.plot(times, total_v_K["/"](times));
-        "151";
-        c_avg_r_K.plot(times, total_r_K["/"](times));
+
+        translationalKE() { return this._molecules.reduce((sum, m) => sum + m.translationalKE(), 0); }
+        vibrationalKE() { return this._molecules.reduce((sum, m) => sum + m.vibrationalKE(), 0); }
+        vibrationalPE() { return this._molecules.reduce((sum, m) => sum + m.vibrationalPE(), 0); }
+        rotationalKE() { return this._molecules.reduce((sum, m) => sum + m.rotationalKE(), 0); }
     }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
 
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
+    const opts = {
+        title: "Kinetic Energy vs Time",
+        width: canvas.clientWidth,
+        height: canvas.clientHeight * .5,
+        bg: "transparent",
+        scales: { x: { auto: true }, y: { auto: true } },
+        axes: [
+            {
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1},
+                label: "Time [ps]", values: (u, values) => values.map(value=> value.toFixed(2))
+            },
+            {
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1},
+                label: "KE [J]", values: (u, values) => values.map(value => value.toExponential(2))
+            }
+        ],
+        series: [
+            { label: "t" },
+            { label: "Translational KE", stroke: "green" },
+            { label: "Vibrational PE", stroke: "red" },
+            { label: "Vibrational KE", stroke: "cyan" },
+            { label: "Rotational KE", stroke: "yellow" }
+        ]
+    };
 
-//--><!]]></script>
-</div>
+    const gas = new CarbonMonoxideGas();
+    scene.add(gas);
+    const energyData = { time: [], translational: [], vPE: [], vKE: [], rotational: [] };
+    const uplotChart = new uPlot(opts, [energyData.time, energyData.translational, energyData.vPE, energyData.vKE, energyData.rotational], document.getElementById("energyPlot"));
+
+    const dt = 5e-16;
+    let t = 0,
+        steps = 0,
+        totalTranslational = 0,
+        totalVibrationalKE = 0,
+        totalVibrationalPE = 0,
+        totalRotational = 0;
+
+    function animationLoop() {
+        for (let i = 0; i < 12; i++) {
+            gas.update(dt);
+            t += dt;
+
+            totalTranslational += gas.translationalKE();
+            totalVibrationalKE += gas.vibrationalKE();
+            totalVibrationalPE += gas.vibrationalPE();
+            totalRotational += gas.rotationalKE();
+            steps++;
+        }
+
+        renderer.render(scene, camera);
+        controls.update();
+
+        if (steps % 120 === 0) {
+            energyData.time.push(t * SCALE);
+            energyData.translational.push(totalTranslational / steps);
+            energyData.vPE.push(totalVibrationalPE / steps);
+            energyData.vKE.push(totalVibrationalKE / steps);
+            energyData.rotational.push(totalRotational / steps);
+            uplotChart.setData([energyData.time, energyData.translational, energyData.vPE, energyData.vKE, energyData.rotational]);
+        }
+    }
+
+
+</script>

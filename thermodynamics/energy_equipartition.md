@@ -14,13 +14,20 @@ this principle in a very clear and understandable way.
 
 <p style="clear:both;"></p>
 
+🔧 [energy_equipartition.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
+⭐ Inspired by [this video](https://www.youtube.com/watch?v=tP5u-V-BLQo) from Jordan Huang<br/>
+👉 <span style="color: green">Green curve</span>: averaged kinetic energy of the center of mass<br/>
+👉 <span style="color: red">Red curve</span>: averaged vibrational potential energy<br/>
+👉 <span style="color: cyan">Cyan curve</span>: averaged vibrational kinetic energy<br/>
+👉 <span style="color: yellow">Yellow curve</span>: averaged rotational kinetic energy<br/>
+⭐ Also available as [energy_equipartion.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/energy_equipartition.py)
+
 ## Instructions given in the video
 <div class="header_line"><br/></div>
 
 Below you find a copy of the original set of instructions that accompany the video.
 
 ### I. Introduction
-<div style="border-top: 1px solid #999999"><br/></div>
 
 <img style="float: left; margin-right: 15px;" alt="Carbon monoxide" src="images/co_molecule.png" width="50%"/>
 For a system in thermal equilibrium, every degree of freedom of every particle has the same expectation value of energy, hence the name equipartition of energy.
@@ -128,7 +135,6 @@ if __name__ == "__main__":
     print(a.bond_force_on_O(), a.com(), a.v_P(), a.v_K(), a.r_K(), a.com_K())
 
 ```
-
 
 <p style="clear: both;"></p>
 
