@@ -23,6 +23,7 @@
 
 <script type="module">
     import * as THREE from "three";
+    import { CarbonMonoxide } from "https://www.hendrikse.name/science/js/three-js-extensions.js";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
     // Simulation constants
@@ -66,233 +67,6 @@
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
-    class Atom {
-        constructor(parent, position, initialSpeed, mass, radius=0.1, colour=new THREE.Color(0xffffff), opacity=1) {
-            this._velocity = new vector().random().multiplyScalar(initialSpeed);
-            this._position = position;
-            this._mass = mass;
-            this._radius = radius;
-
-            const geometry = new THREE.SphereGeometry(radius * SCALE);
-            const material = new THREE.MeshStandardMaterial({ color: colour, opacity: opacity });
-            this._mesh = new THREE.Mesh(geometry, material);
-            this._mesh.position.copy(position).multiplyScalar(SCALE);
-            parent.add(this._mesh);
-        }
-
-        check_box_bounce(boxLength) {
-            ["x","y","z"].forEach(axis => {
-                if (Math.abs(this.position[axis]) >= boxLength - this.radius && this.position[axis] * this.velocity[axis] >= 0)
-                    this._velocity[axis] = -this.velocity[axis];
-            });
-        }
-
-        time_lapse(bond_force, dt) {
-            const acceleration = bond_force.clone().divideScalar(this.mass);
-            this._velocity.addScaledVector(acceleration, dt);
-            this._position.addScaledVector(this._velocity, dt);
-            this._mesh.position
-                .copy(this._position)
-                .multiplyScalar(SCALE);
-        }
-
-        resolveCollision(otherAtom) {
-            const delta = otherAtom.position.clone().sub(this.position);
-            const dist = delta.length();
-            const minDist = this.radius + otherAtom.radius;
-
-            if (dist >= minDist) return;
-
-            const normal = delta.clone().divideScalar(dist);
-
-            // ---- Position-correction (prevents sticking)
-            const overlap = minDist - dist;
-            const totalMass = this.mass + otherAtom.mass;
-
-            this._position.addScaledVector(normal, -overlap * (otherAtom.mass / totalMass));
-            otherAtom._position.addScaledVector(normal,  overlap * (this.mass / totalMass));
-
-            // ---- Relative velocity
-            const relVel = otherAtom.velocity.clone().sub(this.velocity);
-            const velAlongNormal = relVel.dot(normal);
-
-            if (velAlongNormal > 0) return; // moving away from each other
-
-            // ---- Elastic collision
-            const restitution = 1.0; // perfect elastic
-
-            const impulseMag = -(1 + restitution) * velAlongNormal / (1 / this.mass + 1 / otherAtom.mass);
-            const impulse = normal.clone().multiplyScalar(impulseMag);
-
-            this._velocity.addScaledVector(impulse, -1 / this.mass);
-            otherAtom._velocity.addScaledVector(impulse,  1 / otherAtom.mass);
-        }
-
-        scaleVelocityWith(scaleFactor) { this._velocity.multiplyScalar(scaleFactor); }
-        momentum() { return this.mass * this.velocity }
-        moveTo(newPosition) { this._position.copy(newPosition); }
-        get mass() { return this._mass; }
-        get radius() { return this._radius; }
-        get position() { return this._position; }
-        get velocity() { return this._velocity; }
-        positionVectorTo(other) { return other.position.clone().sub(this.position); }
-        distanceToSquared(other) { return this.position.distanceToSquared(other.position); }
-        distanceTo(other) { return this.position.distanceTo(other.position); }
-    }
-
-    class Bond {
-        constructor(parent, atom1, atom2, colour=new THREE.Color(0xface8d), k_bond=18600.0) {
-            this._atom1 = atom1;
-            this._atom2 = atom2;
-            this._bondConstant = k_bond;
-
-            const geometry = new THREE.CylinderGeometry(
-                atom1.radius * .5 * SCALE,
-                atom2.radius * .5 * SCALE,
-                1
-            );
-            const material = new THREE.MeshLambertMaterial({color: colour});
-            this._mesh = new THREE.Mesh(geometry, material);
-            this.update();
-            parent.add(this._mesh);
-        }
-
-        get bondConstant() { return this._bondConstant; }
-
-        update() {
-            const p1 = this._atom1.position.clone();
-            const p2 = this._atom2.position.clone();
-
-            const mid = p1.clone().add(p2).multiplyScalar(0.5);
-            const direction = p2.clone().sub(p1);
-            const length = direction.length();
-
-            this._mesh.position.copy(mid).multiplyScalar(SCALE); // Update position
-            this._mesh.scale.set(1, length * SCALE, 1); // Cylinder/bond length (is one high by default)
-
-            // orientation: rotate Y-axes to bond vector
-            const axis = new THREE.Vector3(0, 1, 0);
-            this._mesh.quaternion.setFromUnitVectors(axis, direction.clone().normalize());
-        }
-    }
-
-    class CarbonMonoxide extends THREE.Group {
-        constructor(pos, initialSpeed) {
-            super();
-            const radius = 31E-12;
-            const distance = 2.5 * radius;
-            const axis = new vector(distance, 0, 0);
-            const oxygenMass=16E-23, carbonMass=12E-23;
-            this._oxygen = new Atom(this, pos, initialSpeed, oxygenMass, radius, new THREE.Color(0xff0000));
-            this._carbon = new Atom(this, axis.add(pos), initialSpeed, carbonMass, radius, new THREE.Color(0x0000ff));
-            this._bond = new Bond(this, this._oxygen, this._carbon);
-            this._restLength = 2.5 * radius;
-        }
-
-        update(startPosition, endPosition) {
-            this._oxygen.moveTo(startPosition);
-            this._carbon.moveTo(endPosition);
-            this._bond.update();
-        }
-
-        timeLapse(dt) {
-            const forceOnOxygen = this.bondForceOnOxygen();
-            const forceOnCarbon = forceOnOxygen.clone().negate();
-
-            this._oxygen.time_lapse(forceOnOxygen, dt);
-            this._carbon.time_lapse(forceOnCarbon, dt);
-
-            this._bond.update();
-        }
-
-        checkBoxBounce(boxLength) {
-            this._oxygen.check_box_bounce(boxLength);
-            this._carbon.check_box_bounce(boxLength);
-        }
-
-        bondForceOnOxygen() {
-            const axis = this._carbon.position.clone().sub(this._oxygen.position);
-            const length = axis.length();
-            const stretch = length - this._restLength;
-            return axis.normalize().multiplyScalar(this._bond.bondConstant * stretch);
-        }
-
-        resolveCollisionWith(otherMolecule) {
-            this._oxygen.resolveCollision(otherMolecule._oxygen);
-            this._oxygen.resolveCollision(otherMolecule._carbon);
-            this._carbon.resolveCollision(otherMolecule._oxygen);
-            this._carbon.resolveCollision(otherMolecule._carbon);
-        }
-
-        translationalKE() {
-            return 0.5 * this.mass * this.comVelocity().lengthSq();
-        }
-
-        vibrationalKE() {
-            // Project velocities along the bond axis
-            const bondAxis = this._carbon.position.clone().sub(this._oxygen.position).normalize();
-            const comVel = this.comVelocity();
-
-            const velocityCarbon = this._carbon.velocity.clone().sub(comVel);
-            const velocityOxygen = this._oxygen.velocity.clone().sub(comVel);
-
-            const velocityCarbon_along = velocityCarbon.dot(bondAxis);
-            const velocityOxygen_along = velocityOxygen.dot(bondAxis);
-
-            return 0.5 * this._carbon.mass * velocityCarbon_along ** 2 + 0.5 * this._oxygen.mass * velocityOxygen_along ** 2;
-        }
-
-        vibrationalPE() {
-            const length = this._carbon.position.clone().sub(this._oxygen.position).length();
-            const stretch = length - this._restLength;
-            return 0.5 * this._bond.bondConstant * stretch * stretch;
-        }
-
-        rotationalKE() {
-            // Rotation around the center of mass
-            const comVel = this.comVelocity();
-            const bondAxis = this._carbon.position.clone().sub(this._oxygen.position);
-
-            const velocityCarbon_perp = this._carbon.velocity.clone()
-                .sub(comVel).clone()
-                .sub(bondAxis.clone()
-                    .normalize()
-                    .multiplyScalar(
-                        this._carbon.velocity.clone()
-                            .sub(comVel)
-                            .dot(bondAxis.clone().normalize())
-                    )
-                );
-
-            const velocityOxygen_perp = this._oxygen.velocity.clone()
-                .sub(comVel).clone()
-                .sub(bondAxis.clone()
-                    .normalize()
-                    .multiplyScalar(
-                        this._oxygen.velocity.clone()
-                            .sub(comVel)
-                            .dot(bondAxis.clone().normalize())
-                    )
-                );
-
-            return 0.5 * this._carbon.mass * velocityCarbon_perp.lengthSq() + 0.5 * this._oxygen.mass * velocityOxygen_perp.lengthSq();
-        }
-
-        comVelocity() {
-            return this._carbon.velocity.clone()
-                .multiplyScalar(this._carbon.mass)
-                .add(this._oxygen.velocity.clone().multiplyScalar(this._oxygen.mass))
-                .divideScalar(this.mass);
-        }
-
-        scaleVelocityWith(scaleFactor) {
-            this._carbon.scaleVelocityWith(scaleFactor);
-            this._oxygen.scaleVelocityWith(scaleFactor);
-        }
-
-        get mass() { return this._carbon.mass + this._oxygen.mass; }
-    }
-
     class CarbonMonoxideGas extends THREE.Group {
         constructor(moleculeCount=MOLECULES_COUNT, temperature=298, boxSize=L) {
             super();
@@ -303,7 +77,7 @@
             const k = 1.38E-23; // Boltzmann constant
             for (let i = 0; i < moleculeCount; i++) {
                 const pos = new vector(Math.random() -.5, Math.random() -.5, Math.random() -.5).multiplyScalar(boxSize);
-                const molecule = new CarbonMonoxide(pos, Math.sqrt(3 * k * temperature / mass));
+                const molecule = new CarbonMonoxide(pos, Math.sqrt(3 * k * temperature / mass), SCALE);
                 this._molecules.push(molecule);
                 this.add(molecule);
             }
@@ -311,8 +85,8 @@
 
         update(dt) {
             for (let molecule of this._molecules) {
-                molecule.timeLapse(dt);
-                molecule.checkBoxBounce(this._boxSize);
+                molecule.timelapse(dt);
+                molecule.checkBoxBounce(this._boxSize * 2);
             }
 
             for (let i = 0; i < this._molecules.length; i++)
@@ -324,7 +98,7 @@
             // Modify the speed of all molecules according to equipartition: v ~ sqrt(T)
             const scaleFactor = Math.sqrt(newTemperature / this._temperature); // ratio new temp / old temp
             for (let molecule of this._molecules)
-                molecule.scaleVelocityWith(scaleFactor);
+                molecule.scaleVelocity(scaleFactor);
             this._temperature = newTemperature;
         }
 

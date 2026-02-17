@@ -4,7 +4,7 @@ import { BufferGeometry, PerspectiveCamera, WebGLRenderer, HemisphereLight, Dire
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
     MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
     InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry, MeshBasicMaterial,
-    CircleGeometry, Vector2 } from "three";
+    CircleGeometry, Vector2, MeshLambertMaterial } from "three";
 
 export const ZeroVector = new Vector3();
 export const UnitVectorE1 = new Vector3(1, 0, 0);
@@ -1765,10 +1765,19 @@ export class Gas2D extends Gas {
                     tracerMass=1} = {}) {
         super(currentTemperature, numBalls);
         this._trail = new ParticleTrail2D(this);
-        this._balls.push(new Particle2D(this, {radius: tracerRadius, color: tracerColor, mass: tracerMass}));
+        this._balls.push(new Particle2D(this, {
+            radius: tracerRadius,
+            color: tracerColor,
+            mass: tracerMass
+        }));
 
         for (let i = 1; i <= numBalls; i++)
-            this._balls.push(new Particle2D(this, {radius: particleRadius, color: particleColor, mass: particleMass }));
+            this._balls.push(new Particle2D(this, {
+                radius: particleRadius,
+                color: particleColor,
+                mass: particleMass,
+                velocity: this.#newInitialVelocity(currentTemperature, particleMass)
+            }));
         this.setTemperature(currentTemperature);
     }
 
@@ -1792,6 +1801,13 @@ export class Gas2D extends Gas {
             ball.scaleVelocity(scale);
     }
 
+    #newInitialVelocity(temperature, mass) {
+        // Init speed based on temperature: v_rms^2 = 2 k T / m (2D)
+        const averageKineticEnergy = Math.sqrt(2 * this._k * temperature / mass);
+        const angle = Math.random() * 2 * Math.PI;
+        return new Vector2(Math.cos(angle), Math.sin(angle)).multiplyScalar(averageKineticEnergy);
+    }
+
     reset(temperature) {
         this._trail?.reset();
         while(this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
@@ -1801,11 +1817,7 @@ export class Gas2D extends Gas {
 
         this._balls[0].reset(); // Tracer
         for(let i = 1; i <= 200; i++) {
-            // Init speed based on temperature: v_rms^2 = 2 k T / m (2D)
-            const averageKineticEnergy = Math.sqrt(2 * this._k * this._temperature / this._mass);
-            const angle = Math.random() * 2 * Math.PI;
-            const velocity = new Vector2(Math.cos(angle), Math.sin(angle)).multiplyScalar(averageKineticEnergy);
-            this._balls[i].reset(new Vector2(0, 0), velocity);
+            this._balls[i].reset(new Vector2(0, 0), this.#newInitialVelocity(temperature, this._balls[i].mass));
         }
 
         this._numBalls = 200;
@@ -1825,10 +1837,19 @@ export class Gas3D extends Gas {
                     tracerMass=1} = {}) {
         super(currentTemperature, numBalls);
         this._trail = new ParticleTrail3D(this);
-        this._balls.push(new Particle3D(this, {radius: tracerRadius, color: tracerColor, mass: tracerMass}));
+        this._balls.push(new Particle3D(this, {
+            radius: tracerRadius,
+            color: tracerColor,
+            mass: tracerMass
+        }));
 
         for (let i = 1; i <= numBalls; i++)
-            this._balls.push(new Particle3D(this, {radius: particleRadius, color: particleColor, mass: particleMass }));
+            this._balls.push(new Particle3D(this, {
+                radius: particleRadius,
+                color: particleColor,
+                mass: particleMass,
+                velocity: this.#newInitialVelocity(currentTemperature, particleMass)
+            }));
         this.setTemperature(currentTemperature);
     }
 
@@ -1852,6 +1873,17 @@ export class Gas3D extends Gas {
             ball.scaleVelocity(scale);
     }
 
+    #newInitialVelocity(temperature, particleMass) {
+        const averageKineticEnergy = Math.sqrt(3 * this._k * temperature / particleMass);
+        const theta = Math.random() * 2 * Math.PI;
+        const phi = Math.acos(2 * Math.random() - 1);
+        return new Vector3(
+            Math.sin(phi) * Math.cos(theta),
+            Math.sin(phi) * Math.sin(theta),
+            Math.cos(phi)
+        ).multiplyScalar(averageKineticEnergy);
+    }
+
     reset(temperature) {
         this._trail?.reset();
         while(this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
@@ -1860,19 +1892,178 @@ export class Gas3D extends Gas {
         }
 
         this._balls[0].reset(); // Tracer
-        for(let i = 1; i <= 200; i++) {
-            const averageKineticEnergy = Math.sqrt(3 * this._k * temperature / this._balls[i].mass);
-            const theta = Math.random() * 2 * Math.PI;
-            const phi = Math.acos(2 * Math.random() - 1);
-            const velocity = new Vector3(
-                Math.sin(phi) * Math.cos(theta),
-                Math.sin(phi) * Math.sin(theta),
-                Math.cos(phi)
-            ).multiplyScalar(averageKineticEnergy);
-            this._balls[i].reset(new Vector3(0, 0, 0), velocity);
-        }
+        for(let i = 1; i <= 200; i++)
+            this._balls[i].reset(new Vector3(0, 0, 0), this.#newInitialVelocity(temperature, this._balls[i].mass));
 
         this._numBalls = 200;
         this.setTemperature(temperature);
     }
+}
+
+export class Bond {
+    constructor(parent, atom1, atom2, scale=1, color=new Color(0xface8d), k_bond=18600.0) {
+        this._atom1 = atom1;
+        this._atom2 = atom2;
+        this._scale = scale;
+        this._bondConstant = k_bond;
+
+        const geometry = new CylinderGeometry(
+            atom1.radius * .5 * scale,
+            atom2.radius * .5 * scale,
+            1
+        );
+        const material = new MeshLambertMaterial({color: color});
+        this._mesh = new Mesh(geometry, material);
+        this.update();
+        parent.add(this._mesh);
+    }
+
+    get bondConstant() { return this._bondConstant; }
+
+    update() {
+        const p1 = this._atom1.position.clone();
+        const p2 = this._atom2.position.clone();
+
+        const mid = p1.clone().add(p2).multiplyScalar(0.5);
+        const direction = p2.clone().sub(p1);
+        const length = direction.length();
+
+        this._mesh.position.copy(mid).multiplyScalar(this._scale); // Update position
+        this._mesh.scale.set(1, length * this._scale, 1); // Cylinder/bond length (is one high by default)
+
+        // orientation: rotate Y-axes to bond vector
+        const axis = new Vector3(0, 1, 0);
+        this._mesh.quaternion.setFromUnitVectors(axis, direction.clone().normalize());
+    }
+}
+
+export class CarbonMonoxide extends Group {
+    constructor(pos, initialSpeed, scale=1) {
+        super();
+        const radius = 31E-12;
+        const distance = 2.5 * radius;
+        const axis = new vector(distance, 0, 0);
+        const oxygenMass=16E-23, carbonMass=12E-23;
+        this._oxygen = new Particle3D(this, {
+            position: pos,
+            velocity: new vector().random().multiplyScalar(initialSpeed),
+            mass: oxygenMass,
+            radius: radius,
+            color: "red",
+            scale: scale
+        });
+        this._carbon = new Particle3D(this, {
+            position: axis.clone().add(pos),
+            velocity: new vector().random().multiplyScalar(initialSpeed),
+            mass: carbonMass,
+            radius: radius,
+            color: "blue",
+            scale: scale
+        });
+        this._bond = new Bond(this, this._oxygen, this._carbon, scale);
+        this._restLength = 2.5 * radius;
+    }
+
+    update(startPosition, endPosition) {
+        this._oxygen.moveTo(startPosition);
+        this._carbon.moveTo(endPosition);
+        this._bond.update();
+    }
+
+    timelapse(dt) {
+        const forceOnOxygen = this.bondForceOnOxygen();
+        const forceOnCarbon = forceOnOxygen.clone().negate();
+
+        this._oxygen.timelapse(forceOnOxygen, dt);
+        this._carbon.timelapse(forceOnCarbon, dt);
+
+        this._bond.update();
+    }
+
+    checkBoxBounce(boxLength) {
+        this._oxygen.confineToBox(boxLength);
+        this._carbon.confineToBox(boxLength);
+    }
+
+    bondForceOnOxygen() {
+        const axis = this._carbon.position.clone().sub(this._oxygen.position);
+        const length = axis.length();
+        const stretch = length - this._restLength;
+        return axis.normalize().multiplyScalar(this._bond.bondConstant * stretch);
+    }
+
+    resolveCollisionWith(otherMolecule) {
+        this._oxygen.collideWith(otherMolecule._oxygen);
+        this._oxygen.collideWith(otherMolecule._carbon);
+        this._carbon.collideWith(otherMolecule._oxygen);
+        this._carbon.collideWith(otherMolecule._carbon);
+    }
+
+    translationalKE() {
+        return 0.5 * this.mass * this.comVelocity().lengthSq();
+    }
+
+    vibrationalKE() {
+        // Project velocities along the bond axis
+        const bondAxis = this._carbon.position.clone().sub(this._oxygen.position).normalize();
+        const comVel = this.comVelocity();
+
+        const velocityCarbon = this._carbon.velocity.clone().sub(comVel);
+        const velocityOxygen = this._oxygen.velocity.clone().sub(comVel);
+
+        const velocityCarbon_along = velocityCarbon.dot(bondAxis);
+        const velocityOxygen_along = velocityOxygen.dot(bondAxis);
+
+        return 0.5 * this._carbon.mass * velocityCarbon_along ** 2 + 0.5 * this._oxygen.mass * velocityOxygen_along ** 2;
+    }
+
+    vibrationalPE() {
+        const length = this._carbon.position.clone().sub(this._oxygen.position).length();
+        const stretch = length - this._restLength;
+        return 0.5 * this._bond.bondConstant * stretch * stretch;
+    }
+
+    rotationalKE() {
+        // Rotation around the center of mass
+        const comVel = this.comVelocity();
+        const bondAxis = this._carbon.position.clone().sub(this._oxygen.position);
+
+        const velocityCarbon_perp = this._carbon.velocity.clone()
+            .sub(comVel).clone()
+            .sub(bondAxis.clone()
+                .normalize()
+                .multiplyScalar(
+                    this._carbon.velocity.clone()
+                        .sub(comVel)
+                        .dot(bondAxis.clone().normalize())
+                )
+            );
+
+        const velocityOxygen_perp = this._oxygen.velocity.clone()
+            .sub(comVel).clone()
+            .sub(bondAxis.clone()
+                .normalize()
+                .multiplyScalar(
+                    this._oxygen.velocity.clone()
+                        .sub(comVel)
+                        .dot(bondAxis.clone().normalize())
+                )
+            );
+
+        return 0.5 * this._carbon.mass * velocityCarbon_perp.lengthSq() + 0.5 * this._oxygen.mass * velocityOxygen_perp.lengthSq();
+    }
+
+    comVelocity() {
+        return this._carbon.velocity.clone()
+            .multiplyScalar(this._carbon.mass)
+            .add(this._oxygen.velocity.clone().multiplyScalar(this._oxygen.mass))
+            .divideScalar(this.mass);
+    }
+
+    scaleVelocity(scaleFactor) {
+        this._carbon.scaleVelocity(scaleFactor);
+        this._oxygen.scaleVelocity(scaleFactor);
+    }
+
+    get mass() { return this._carbon.mass + this._oxygen.mass; }
 }
