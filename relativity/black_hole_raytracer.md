@@ -62,6 +62,11 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 </figure>
 <p style="clear: both;"></p>
 
+## Time dilation near gravity
+<div class="header_line"><br/></div>
+
+![Time dilation](./images/time_near_black_hole.jpg)
+
 ## A concise history
 <div class="header_line"><br/></div>
 
