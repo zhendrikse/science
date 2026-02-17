@@ -1932,7 +1932,7 @@ export class Bond {
         this._mesh.position.copy(mid).multiplyScalar(this._scale); // Update position
         this._mesh.scale.set(1, length * this._scale, 1); // Cylinder/bond length (is one high by default)
 
-        // orientation: rotate Y-axes to bond vector
+        // orientation: rotate Y-axes to bond vectord
         const axis = new Vector3(0, 1, 0);
         this._mesh.quaternion.setFromUnitVectors(axis, direction.clone().normalize());
     }
@@ -1943,11 +1943,11 @@ export class CarbonMonoxide extends Group {
         super();
         const radius = 31E-12;
         const distance = 2.5 * radius;
-        const axis = new vector(distance, 0, 0);
+        const axis = new Vector3(distance, 0, 0);
         const oxygenMass=16E-23, carbonMass=12E-23;
         this._oxygen = new Particle3D(this, {
             position: pos,
-            velocity: new vector().random().multiplyScalar(initialSpeed),
+            velocity: new Vector3().random().multiplyScalar(initialSpeed),
             mass: oxygenMass,
             radius: radius,
             color: "red",
@@ -1955,7 +1955,7 @@ export class CarbonMonoxide extends Group {
         });
         this._carbon = new Particle3D(this, {
             position: axis.clone().add(pos),
-            velocity: new vector().random().multiplyScalar(initialSpeed),
+            velocity: new Vector3().random().multiplyScalar(initialSpeed),
             mass: carbonMass,
             radius: radius,
             color: "blue",
