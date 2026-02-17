@@ -1499,7 +1499,7 @@ export class Particle2D extends Particle {
         this.updateMesh();
     }
 
-    #confineToBox(size) {
+    confineToBox(size) {
         const half = size / 2;
         ["x","y"].forEach(axis => {
             if(this._position[axis] > half - this._radius) this._velocity[axis] = -Math.abs(this._velocity[axis]);
@@ -1509,7 +1509,7 @@ export class Particle2D extends Particle {
 
     moveWithin(boxSize) {
         this._position.add(this._velocity);
-        this.#confineToBox(boxSize);
+        this.confineToBox(boxSize);
     }
 }
 
@@ -1606,7 +1606,7 @@ export class Particle3D extends Particle {
         this.updateMesh();
     }
 
-    #confineToBox(size) {
+    confineToBox(size) {
         const half = size / 2;
         ["x","y","z"].forEach(axis => {
             if(this._position[axis] > half - this._radius) this._velocity[axis] = -Math.abs(this._velocity[axis]);
@@ -1617,7 +1617,7 @@ export class Particle3D extends Particle {
     moveWithin(boxSize) {
         this._position.add(this._velocity);
         this.updateMesh();
-        this.#confineToBox(boxSize);
+        this.confineToBox(boxSize);
     }
 }
 
