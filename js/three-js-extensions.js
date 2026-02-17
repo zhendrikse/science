@@ -1388,13 +1388,12 @@ export class Spring {
 }
 
 class Particle {
-    constructor(position, velocity, radius, mass=1, temperature=0.5, k=1) {
+    constructor(position, velocity, radius, mass=1, scale=1) {
         this._position = position;
         this._velocity = velocity;
         this._radius = radius;
         this._mass = mass;
-        this._k = k;
-        this._temperature = temperature;
+        this._scale = scale;
         this._mesh = null;     // subclass should set this
     }
 
@@ -1409,6 +1408,21 @@ class Particle {
     speed = () => this._velocity.length();
     kineticEnergy = () => 0.5 * this._mass * this._velocity.lengthSq();
     scaleVelocity = (scale) => this._velocity.multiplyScalar(scale);
+
+    momentum() { return this.mass * this.velocity }
+    moveTo(newPosition) { this._position.copy(newPosition); }
+    positionVectorTo(other) { return other.position.clone().sub(this.position); }
+    distanceToSquared(other) { return this.position.distanceToSquared(other.position); }
+    distanceTo(other) { return this.position.distanceTo(other.position); }
+
+    updateMesh() { throw new Error("Method to be implemented by concrete subclass")}
+
+    timelapse(forceVector, dt) {
+        const acceleration = forceVector.clone().divideScalar(this.mass);
+        this._velocity.addScaledVector(acceleration, dt);
+        this._position.addScaledVector(this._velocity, dt);
+        this.updateMesh();
+    }
 
     isCollidingWith(otherBall) {
         const r = this.radius + otherBall.radius;
@@ -1466,10 +1480,9 @@ export class Particle2D extends Particle {
         radius = 1,
         color = "0xffff00",
         mass = 1,
-        temperature = 0.5,
-        k = 1
+        scale = 1
     } ={}) {
-        super(position, velocity, radius, mass, temperature, k);
+        super(position, velocity, radius, mass, scale);
         this.reset();
 
         const geometry = new CircleGeometry(radius, 24);
@@ -1478,14 +1491,12 @@ export class Particle2D extends Particle {
         parent.add(this._mesh);
     }
 
-    updateMesh = () => this._mesh.position.set(this.position.x, this.position.y, 0);
+    updateMesh() { this._mesh.position.set(this.position.x, this.position.y, 0).multiplyScalar(this._scale); }
 
-    reset() {
-        this._position.set(0, 0);
-        // Init speed based on temperature: v_rms^2 = 2 k T / m (2D)
-        const averageKineticEnergy = Math.sqrt(2 * this._k * this._temperature / this._mass);
-        const angle = Math.random() * 2 * Math.PI;
-        this._velocity = new Vector2(Math.cos(angle), Math.sin(angle)).multiplyScalar(averageKineticEnergy);
+    reset(position=new Vector2(0, 0), velocity=new Vector2(0, 0)) {
+        this._position.copy(position);
+        this._velocity.copy(velocity);
+        this.updateMesh();
     }
 
     #confineToBox(size) {
@@ -1574,10 +1585,11 @@ export class Particle3D extends Particle {
         radius = 1,
         color = "0xffff00",
         mass = 1,
+        scale = 1,
         temperature = 0.5,
         k = 1
     } ={}) {
-        super(position, velocity, radius, mass, temperature, k);
+        super(position, velocity, radius, mass, scale);
         this.reset();
 
         const geometry = new SphereGeometry(radius, 16, 16);
@@ -1586,18 +1598,12 @@ export class Particle3D extends Particle {
         parent.add(this._mesh);
     }
 
-    updateMesh() { this._mesh.position.copy(this._position); }
+    updateMesh() { this._mesh.position.copy(this._position).multiplyScalar(this._scale); }
 
-    reset() {
-        this._position.set(0, 0, 0);
-        const averageKineticEnergy = Math.sqrt(3 * this._k * this._temperature / this._mass);
-        const theta = Math.random() * 2 * Math.PI;
-        const phi = Math.acos(2 * Math.random() - 1);
-        this._velocity = new Vector3(
-            Math.sin(phi) * Math.cos(theta),
-            Math.sin(phi) * Math.sin(theta),
-            Math.cos(phi)
-        ).multiplyScalar(averageKineticEnergy);
+    reset(position=new Vector3(0, 0, 0), velocity=new Vector3(0, 0, 0)) {
+        this._position.copy(position);
+        this._velocity.copy(velocity);
+        this.updateMesh();
     }
 
     #confineToBox(size) {
@@ -1610,6 +1616,7 @@ export class Particle3D extends Particle {
 
     moveWithin(boxSize) {
         this._position.add(this._velocity);
+        this.updateMesh();
         this.#confineToBox(boxSize);
     }
 }
@@ -1675,11 +1682,12 @@ export class ParticleTrail3D {
 }
 
 export class Gas extends Group {
-    constructor(currentTemperature, numBalls) {
+    constructor(currentTemperature, numBalls, k=1) {
         super();
         this._balls = [];
         this._numBalls = numBalls;
         this._trail = null;
+        this._k = k; // Boltzmann constant
     }
 
     show() {
@@ -1692,21 +1700,6 @@ export class Gas extends Group {
             ball.hide();
         if (!hideTracer)
             this._balls[0].show();
-    }
-
-    reset(temperature) {
-        this._trail?.reset();
-        while(this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
-            const ball = this._balls.pop();
-            this.remove(ball._mesh);
-        }
-
-        this._balls[0]._x = this._balls[0]._y = 0; // Tracer
-        for(let i = 1; i <= 200; i++)
-            this._balls[i].reset();
-
-        this._numBalls = 200;
-        this.setTemperature(temperature);
     }
 
     computeTheoreticalCurve(meanV2, totalParticles, binCount, maxSpeed) {
@@ -1799,6 +1792,26 @@ export class Gas2D extends Gas {
         for(let ball of this._balls.slice(1))  // skip tracer
             ball.scaleVelocity(scale);
     }
+
+    reset(temperature) {
+        this._trail?.reset();
+        while(this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
+            const ball = this._balls.pop();
+            this.remove(ball._mesh);
+        }
+
+        this._balls[0]._x = this._balls[0]._y = 0; // Tracer
+        for(let i = 1; i <= 200; i++) {
+            // Init speed based on temperature: v_rms^2 = 2 k T / m (2D)
+            const averageKineticEnergy = Math.sqrt(2 * this._k * this._temperature / this._mass);
+            const angle = Math.random() * 2 * Math.PI;
+            const velocity = new Vector2(Math.cos(angle), Math.sin(angle)).multiplyScalar(averageKineticEnergy);
+            this._balls[i].reset(new Vector2(0, 0), velocity);
+        }
+
+        this._numBalls = 200;
+        this.setTemperature(temperature);
+    }
 }
 
 export class Gas3D extends Gas {
@@ -1838,5 +1851,29 @@ export class Gas3D extends Gas {
 
         for(let ball of this._balls.slice(1))  // skip tracer
             ball.scaleVelocity(scale);
+    }
+
+    reset(temperature) {
+        this._trail?.reset();
+        while(this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
+            const ball = this._balls.pop();
+            this.remove(ball._mesh);
+        }
+
+        this._balls[0]._x = this._balls[0]._y = 0; // Tracer
+        for(let i = 1; i <= 200; i++) {
+            const averageKineticEnergy = Math.sqrt(3 * this._k * temperature / this._balls[i].mass);
+            const theta = Math.random() * 2 * Math.PI;
+            const phi = Math.acos(2 * Math.random() - 1);
+            const velocity = new Vector3(
+                Math.sin(phi) * Math.cos(theta),
+                Math.sin(phi) * Math.sin(theta),
+                Math.cos(phi)
+            ).multiplyScalar(averageKineticEnergy);
+            this._balls[i].reset(new Vector3(0, 0, 0), velocity);
+        }
+
+        this._numBalls = 200;
+        this.setTemperature(temperature);
     }
 }
