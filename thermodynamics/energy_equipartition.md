@@ -10,10 +10,6 @@ ends up having the same expectation value of energy. You may want to watch
 [this wonderful video](https://www.youtube.com/watch?v=cTOlW0u1ZuI) that explains
 this principle in a very clear and understandable way.
 
-{% include_relative code/energy_equipartition.html %}
-
-<p style="clear:both;"></p>
-
 🔧 [energy_equipartition.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
 ⭐ Inspired by [this video](https://www.youtube.com/watch?v=tP5u-V-BLQo) from Jordan Huang<br/>
 👉 <span style="color: green">Green curve</span>: averaged kinetic energy of the center of mass<br/>
@@ -21,6 +17,10 @@ this principle in a very clear and understandable way.
 👉 <span style="color: cyan">Cyan curve</span>: averaged vibrational kinetic energy<br/>
 👉 <span style="color: yellow">Yellow curve</span>: averaged rotational kinetic energy<br/>
 ⭐ Also available as [energy_equipartion.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/energy_equipartition.py)
+
+{% include_relative code/energy_equipartition.html %}
+
+<p style="clear:both;"></p>
 
 ## Instructions given in the video
 <div class="header_line"><br/></div>
