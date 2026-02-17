@@ -34,9 +34,9 @@
 
     // Simulation constants
     const SCALE = 1e10; // For display
-    const MOLECULES_COUNT = 160;
+    const MOLECULES_COUNT = 40;
     const one_third = 1. / 3.;
-    const L = ((24.4E-3 / 6E23) * MOLECULES_COUNT) ** one_third / 25; // 2L is the length of the cubic container box
+    const L = ((24.4E-3 / 6E23) * MOLECULES_COUNT) ** one_third / 50; // 2L is the length of the cubic container box
 
     console.clear( );
     const scene = new Scene();
@@ -185,7 +185,7 @@
         totalRotational = 0;
 
     function iterate() {
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < 15; i++) {
             gas.update(dt);
             t += dt;
 
@@ -197,7 +197,7 @@
         }
 
 
-        if (steps % 600 === 0) {
+        if (steps % 150 === 0) {
             energyData.time.push(t * SCALE);
             energyData.translational.push(totalTranslational / steps);
             energyData.vPE.push(totalVibrationalPE / steps);
