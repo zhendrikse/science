@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Equipartition of energy &amp; carbon monoxide gas
+## Equipartition of energy
 <div class="header_line"><br/></div>
 
 This simulation demonstrates the so-called 
