@@ -1484,7 +1484,7 @@ export class Particle2D extends Particle {
     } ={}) {
         super(position, velocity, radius, mass, scale);
 
-        const geometry = new CircleGeometry(radius, 24);
+        const geometry = new CircleGeometry(radius * scale, 24);
         const material = new MeshBasicMaterial({color});
         this._mesh = new Mesh(geometry, material);
         this.updateMesh();
@@ -1591,7 +1591,7 @@ export class Particle3D extends Particle {
     } ={}) {
         super(position, velocity, radius, mass, scale);
 
-        const geometry = new SphereGeometry(radius, 16, 16);
+        const geometry = new SphereGeometry(radius * scale, 16, 16);
         const material = new MeshBasicMaterial({ color });
         this._mesh = new Mesh(geometry, material);
         this.updateMesh();
