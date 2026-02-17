@@ -1731,8 +1731,8 @@ export class Gas extends Group {
         const binSize = maxSpeed / binCount;
 
         let sumV2 = 0;
-        for (let i = 1; i < this._balls.length; i++) {
-            const v = this._balls[i].speed();
+        for(let ball of this._balls.slice(1)) { // skip tracer
+            const v = ball.speed();
             sumV2 += v * v;
             const index = Math.min(Math.floor(v / binSize), binCount - 1);
             bins[index]++;
@@ -1790,14 +1790,14 @@ export class Gas2D extends Gas {
     setTemperature(newTemp) {
         // calculate current effective T via mean kinetic energy
         let sumV2 = 0;
-        for (let i = 1; i < this._balls.length; i++)
-            sumV2 += this._balls[i].velocity.lengthSq();
+        for(let ball of this._balls.slice(1))  // skip tracer
+            sumV2 += ball.velocity.lengthSq();
 
         const currentTemp = sumV2 / (2 * (this._balls.length - 1)); // 2D
         const scale = Math.sqrt(newTemp / currentTemp);
 
-        for (let i = 1; i < this._balls.length; i++)
-            this._balls[i].scaleVelocity(scale);
+        for(let ball of this._balls.slice(1))  // skip tracer
+            ball.scaleVelocity(scale);
     }
 }
 
@@ -1830,13 +1830,13 @@ export class Gas3D extends Gas {
     setTemperature(newTemp) {
         // calculate current effective T via mean kinetic energy
         let sumV2 = 0;
-        for (let i = 1; i < this._balls.length; i++)
+        for(let ball of this._balls.slice(1))  // skip tracer
             sumV2 += this._balls[i].velocity.lengthSq();
 
         const currentTemp = sumV2 / (3 * (this._balls.length - 1)); // 3D
         const scale = Math.sqrt(newTemp / currentTemp);
 
-        for (let i = 1; i < this._balls.length; i++)
+        for(let ball of this._balls.slice(1))  // skip tracer
             this._balls[i].scaleVelocity(scale);
     }
 }
