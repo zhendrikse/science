@@ -1483,11 +1483,11 @@ export class Particle2D extends Particle {
         scale = 1
     } ={}) {
         super(position, velocity, radius, mass, scale);
-        this.reset();
 
         const geometry = new CircleGeometry(radius, 24);
         const material = new MeshBasicMaterial({color});
         this._mesh = new Mesh(geometry, material);
+        this.updateMesh();
         parent.add(this._mesh);
     }
 
@@ -1590,15 +1590,15 @@ export class Particle3D extends Particle {
         k = 1
     } ={}) {
         super(position, velocity, radius, mass, scale);
-        this.reset();
 
         const geometry = new SphereGeometry(radius, 16, 16);
         const material = new MeshBasicMaterial({ color });
         this._mesh = new Mesh(geometry, material);
+        this.updateMesh();
         parent.add(this._mesh);
     }
 
-    updateMesh() { this._mesh.position.copy(this._position).multiplyScalar(this._scale); }
+    updateMesh() { this._mesh.position.copy(this.position).multiplyScalar(this._scale); }
 
     reset(position=new Vector3(0, 0, 0), velocity=new Vector3(0, 0, 0)) {
         this._position.copy(position);
@@ -1799,7 +1799,7 @@ export class Gas2D extends Gas {
             this.remove(ball._mesh);
         }
 
-        this._balls[0]._x = this._balls[0]._y = 0; // Tracer
+        this._balls[0].reset(); // Tracer
         for(let i = 1; i <= 200; i++) {
             // Init speed based on temperature: v_rms^2 = 2 k T / m (2D)
             const averageKineticEnergy = Math.sqrt(2 * this._k * this._temperature / this._mass);
@@ -1859,7 +1859,7 @@ export class Gas3D extends Gas {
             this.remove(ball._mesh);
         }
 
-        this._balls[0]._x = this._balls[0]._y = 0; // Tracer
+        this._balls[0].reset(); // Tracer
         for(let i = 1; i <= 200; i++) {
             const averageKineticEnergy = Math.sqrt(3 * this._k * temperature / this._balls[i].mass);
             const theta = Math.random() * 2 * Math.PI;
