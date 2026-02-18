@@ -4,7 +4,7 @@ import { BufferGeometry, PerspectiveCamera, WebGLRenderer, HemisphereLight, Dire
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
     MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
     InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry, MeshBasicMaterial,
-    CircleGeometry, Vector2 } from "three";
+    CircleGeometry, Vector2, EdgesGeometry, LineSegments } from "three";
 
 export const ZeroVector = new Vector3();
 export const UnitVectorE1 = new Vector3(1, 0, 0);
@@ -2114,4 +2114,37 @@ export class CarbonMonoxide extends Group {
     }
 
     get mass() { return this._carbon.mass + this._oxygen.mass; }
+}
+
+export class Aquarium {
+    constructor(parent, {
+        size = 1,
+        opacity = 0.35,
+        contentColor = new Color(.1, .3, .78),
+        frameColor = 0xaa9900,
+        frameWidth = 1
+    } = {}) {
+        // --- Box ---
+        const geometry = new BoxGeometry(size, size, size);
+
+        const material = new MeshStandardMaterial({
+            color: contentColor,
+            transparent: true,
+            opacity: opacity,
+            depthWrite: false
+        });
+
+        const cube = new Mesh(geometry, material);
+        parent.add(cube);
+
+        // --- Edges ---
+        const edges = new EdgesGeometry(geometry);
+        const lineMaterial = new LineBasicMaterial({
+            color: frameColor,
+            linewidth: frameWidth
+        });
+
+        const wireframe = new LineSegments(edges, lineMaterial);
+        cube.add(wireframe); // make it an integral part of the cube
+    }
 }

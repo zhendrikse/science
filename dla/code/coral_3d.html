@@ -28,7 +28,7 @@
 <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    import { ThreeJsUtils } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { ThreeJsUtils, Aquarium } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
     const canvas = document.getElementById('aquariumCanvas');
     canvas.focus();
@@ -49,7 +49,7 @@
 
     lights();
     const camera = initCamera();
-    const box = aquarium();
+    new Aquarium(scene, {size: cubeSize});
     const controls = new OrbitControls( camera, canvas );
 
     // Resizing for mobile devices
@@ -93,14 +93,6 @@
         const renderer = new THREE.WebGLRenderer({antialias: true, canvas: canvas, alpha: true});
         renderer.setSize(canvasWidth, canvasHeight);
         return renderer;
-    }
-
-    function aquarium() {
-        const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-        const material = new THREE.MeshStandardMaterial({ color: new THREE.Color(0, .78, .78), transparent: true, opacity: 0.35 });
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
-        return cube;
     }
 
     function scientificColorCodingFor(value, minVal, maxVal) {

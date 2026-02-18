@@ -30,7 +30,7 @@
     import { Group, Scene, Vector3, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight,
         MeshStandardMaterial, Mesh, BoxGeometry, Color, EdgesGeometry, LineBasicMaterial, LineSegments
     }  from "three";
-    import { CarbonMonoxide, Bond } from "https://www.hendrikse.name/science/js/three-js-extensions.js";
+    import { CarbonMonoxide, Bond, Aquarium } from "https://www.hendrikse.name/science/js/three-js-extensions.js";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
     // Simulation constants
@@ -63,29 +63,7 @@
     light.position.set(0, 4 * L * SCALE, 0);
     scene.add(light);
     scene.add(new AmbientLight(0xffffff, .5));
-
-    // --- Box ---
-    const geometry = new BoxGeometry(2 * L * SCALE, 2 * L * SCALE, 2 * L * SCALE);
-
-    const material = new MeshStandardMaterial({
-        color: new Color(.1, .3, .78),
-        transparent: true,
-        opacity: 0.35,
-        depthWrite: false
-    });
-
-    const cube = new Mesh(geometry, material);
-    scene.add(cube);
-
-    // --- Edges ---
-    const edges = new EdgesGeometry(geometry);
-    const lineMaterial = new LineBasicMaterial({
-        color: 0xaa9900,
-        linewidth: 1
-    });
-
-    const wireframe = new LineSegments(edges, lineMaterial);
-    cube.add(wireframe); // make it an integral part of the cube
+    new Aquarium(scene, {size: 2 * L});
 
     class CarbonMonoxideGas extends Group {
         constructor(moleculeCount=MOLECULES_COUNT, temperature=298, boxSize=L) {
