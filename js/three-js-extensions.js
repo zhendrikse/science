@@ -1264,20 +1264,21 @@ export class Ball {
     }
 
     semiImplicitEulerUpdate(force, dt=0.01) {
-        this._velocity.addScaledVector(force, dt / this._mass);
-        this._position.addScaledVector(this._velocity, dt);
+        this._velocity.addScaledVector(force, dt / this.mass);
+        this._position.addScaledVector(this.velocity, dt);
+        this._sphere.moveTo(this.position);
     }
 
     verletUpdate(force, dt=0.01) {
-        const a = force.multiplyScalar(1 / this._mass);
-        this._position.addScaledVector(this._velocity, dt).addScaledVector(a, 0.5 * dt * dt);
-        const a2 = force.multiplyScalar(1 / this._mass);
+        const a = force.multiplyScalar(1 / this.mass);
+        this._position.addScaledVector(this.velocity, dt).addScaledVector(a, 0.5 * dt * dt);
+        const a2 = force.multiplyScalar(1 / this.mass);
         this._velocity.addScaledVector(a.add(a2), 0.5 * dt);
     }
 
     moveTo(newPosition) {
-        this._ball.moveTo(newPosition);
-        this._sphere.moveTo(this._ball.position);
+        this._position.copy(newPosition);
+        this._sphere.moveTo(this.position);
     }
 
     enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {

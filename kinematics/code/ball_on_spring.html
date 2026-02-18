@@ -154,14 +154,6 @@
         renderer.render(scene, camera);
     }
 
-    // --- interactive: spring hardening / softening ---
-    window.addEventListener('keydown', e => {
-        if(e.key==='ArrowUp') slinky.k +=20;
-        if(e.key==='ArrowDown') slinky.k -=20;
-        slinky.k = Math.max(20, slinky.k);
-        console.log("k =", slinky.k);
-    });
-
     animate();
 </script>
 
