@@ -10,7 +10,7 @@ Download the [ball_on_spring.html](code/ball_on_spring.html) source code
 
 ### Background info
 
-🧠 Note that the energy oscillates with a higher frequency than the position, namely ** twice as fast**. 
+🧠 Note that the energy oscillates with a higher frequency than the position, namely **twice as fast**. 
 
 👉 The bal goes up/down with frequency **ω**<br/>
 👉 The **energy** oscillates with frequency **2ω**
