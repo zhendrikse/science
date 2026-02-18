@@ -1931,10 +1931,10 @@ export class Bond {
         this._rod = new Mesh(geometry, material);
         this._spring = new Spring(parent, new Vector3(0, 0, 0), new Vector3(0, 1, 0), {
             coils: coils,
-            radius: radius,
+            radius: radius * .5 * scale,
             coilRadius: coilRadius,
             k: k_bond,
-            color: color})._mesh;
+            color: color});
         this._mesh = this._rod;
         parent.add(this._mesh);
 
@@ -1946,10 +1946,12 @@ export class Bond {
 
     changeBondType(bondType) {
         this._bondType = bondType;
-        this._mesh = this._bondType === Bond.Type.CYLINDER ? this._rod : this._spring;
+        this._mesh = this._bondType === Bond.Type.CYLINDER ? this._rod : this._spring._mesh;
         this._rod.visible = this._bondType === Bond.Type.CYLINDER;
-        this._spring.visible = this._bondType === Bond.Type.SPRING;
+        this._spring._mesh.visible = this._bondType === Bond.Type.SPRING;
     }
+
+    get k() { return this._bondConstant; }
 
     update() {
         const p1 = this._object1.position.clone();
