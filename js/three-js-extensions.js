@@ -1591,7 +1591,15 @@ export class Particle3D extends Particle {
         super(position, velocity, radius, mass, scale);
 
         const geometry = new SphereGeometry(radius * scale, 16, 16);
-        const material = new MeshBasicMaterial({ color });
+        const material =  new MeshStandardMaterial({
+                side: DoubleSide,
+                color: color,
+                wireframe: false,
+                transparent: true,
+                metalness: 0.7,
+                roughness: 0.2,
+                opacity: 1,
+            });
         this._mesh = new Mesh(geometry, material);
         this.updateMesh();
         parent.add(this._mesh);
