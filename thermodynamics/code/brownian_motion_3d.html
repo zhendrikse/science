@@ -6,7 +6,7 @@
       }
     }
 </script>
-<canvas class="applicationCanvas" id="brownianCanvas3d"></canvas>
+<canvas class="applicationCanvas" id="brownianCanvas3d" width="800" height="800"></canvas>
 <div class="buttonRow">
     <button id="toggle3d">&nbsp;Pause&nbsp;</button>
     <button id="reset3d">Reset</button>
@@ -40,7 +40,7 @@
 
     // --- Camera ---
     const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 2000);
-    camera.position.set(boxSize, boxSize, boxSize);
+    camera.position.set(230, 125, 560);
     camera.lookAt(0, 0, 0);
 
     // --- Renderer ---
@@ -51,6 +51,11 @@
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
+
+    const light = new DirectionalLight(0xffffff, 1);
+    light.position.set(0, 1.5 * boxSize, 0);
+    scene.add(light);
+    scene.add(new AmbientLight(0xffffff, .5));
 
     // --- Box ---
     const geometry = new BoxGeometry(boxSize, boxSize, boxSize);
