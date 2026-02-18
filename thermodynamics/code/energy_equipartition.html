@@ -18,12 +18,12 @@
     <button id="bondTypeButton">Bonds as springs</button>
 </div>
 <p style="clear: both;"></p>
-<div class="buttonRow">
+<!--div class="buttonRow">
     <label for="temperatureSlider">Temperature (K): </label>
     <input type="range" id="temperatureSlider" min="10" max="1000" value="298" step="1">
     <span id="temperatureValue">298</span> K
 </div>
-<p style="clear: both;"></p>
+<p style="clear: both;"></p-->
 <div id="energyPlot" style="margin:auto;"></div>
 
 <script type="module">
@@ -169,13 +169,13 @@
     const uplotChart = new uPlot(opts, [energyData.time, energyData.translational, energyData.vPE, energyData.vKE, energyData.rotational], document.getElementById("energyPlot"));
 
     // UI
-    const tempSlider = document.getElementById("temperatureSlider");
-    const tempValueLabel = document.getElementById("temperatureValue");
-    tempSlider.addEventListener("input", () => {
-        const newTemperature = parseFloat(tempSlider.value) + "";
-        tempValueLabel.textContent = newTemperature;
-        gas.updateToNewTemperature(newTemperature);
-    });
+    // const tempSlider = document.getElementById("temperatureSlider");
+    // const tempValueLabel = document.getElementById("temperatureValue");
+    //tempSlider.addEventListener("input", () => {
+    //    const newTemperature = parseFloat(tempSlider.value) + "";
+    //    tempValueLabel.textContent = newTemperature;
+    //    gas.updateToNewTemperature(newTemperature);
+    //});
     let running = true;
     const toggleButton = document.getElementById("pauseButton");
     toggleButton.onclick = () => {
