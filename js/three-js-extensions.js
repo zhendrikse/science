@@ -1234,38 +1234,6 @@ class Helix extends Curve {
     }
 }
 
-export class PhysicalObject {
-    constructor(position, velocity, mass) {
-        this._position = position;
-        this._velocity = velocity;
-        this._mass = mass;
-    }
-
-    semiImplicitEulerUpdate(force, dt=0.01) {
-        this._velocity.addScaledVector(force, dt / this._mass);
-        this._position.addScaledVector(this._velocity, dt);
-    }
-
-    verletUpdate(force, dt=0.01) {
-        const a = force.multiplyScalar(1 / this._mass);
-        this._position.addScaledVector(this._velocity, dt).addScaledVector(a, 0.5 * dt * dt);
-        const a2 = force.multiplyScalar(1 / this._mass);
-        this._velocity.addScaledVector(a.add(a2), 0.5 * dt);
-    }
-
-    get position() { return this._position.clone(); }
-
-    get velocity() { return this._velocity.clone(); }
-
-    get mass() { return this._mass; }
-
-    moveTo(newPosition) { this._position.copy(newPosition); }
-
-    accelerateTo(newVelocity) { this._velocity.copy(newVelocity); }
-
-    kineticEnergy = () => 0.5 * this._mass * this._velocity.dot(this._velocity);
-}
-
 export class Ball {
     constructor(parent, {
         position = new Vector3(0, 0, 0),
@@ -1287,19 +1255,24 @@ export class Ball {
             roughness:0.2
         });
         this._sphere = new Sphere(parent, position, radius, color, makeTrail,{segments: segments, material: material});
-        this._ball = new PhysicalObject(position, velocity, mass);
+        this._position = position;
+        this._velocity = velocity;
+        this._mass = mass;
+        this._radius = radius;
         this._trail = null;
         if (makeTrail) this.enableTrail();
     }
 
     semiImplicitEulerUpdate(force, dt=0.01) {
-        this._ball.semiImplicitEulerUpdate(force, dt);
-        this._sphere.moveTo(this._ball.position);
+        this._velocity.addScaledVector(force, dt / this._mass);
+        this._position.addScaledVector(this._velocity, dt);
     }
 
     verletUpdate(force, dt=0.01) {
-        this._ball.verletUpdate(force, dt);
-        this._sphere.moveTo(this._ball.position);
+        const a = force.multiplyScalar(1 / this._mass);
+        this._position.addScaledVector(this._velocity, dt).addScaledVector(a, 0.5 * dt * dt);
+        const a2 = force.multiplyScalar(1 / this._mass);
+        this._velocity.addScaledVector(a.add(a2), 0.5 * dt);
     }
 
     moveTo(newPosition) {
@@ -1314,12 +1287,12 @@ export class Ball {
 
     updateTrail(dt) { this._trail?.update(dt); }
     disposeTrail() { this._trail?.dispose(); }
-    accelerateTo = (newVelocity) => this._ball.accelerateTo(newVelocity);
 
-    get position() { return this._ball.position; }
-    get velocity() { return this._ball.velocity; }
-    get mass() { return this._ball.mass; }
-    get kineticEnergy() { return this._ball.kineticEnergy(); }
+    kineticEnergy = () => 0.5 * this._mass * this._velocity.dot(this._velocity);
+    get radius() { return this._radius }
+    get position() { return this._position; }
+    get velocity() { return this._velocity; }
+    get mass() { return this._mass; }
 }
 
 export class Spring {
