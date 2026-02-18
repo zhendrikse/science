@@ -68,7 +68,7 @@
     const geometry = new BoxGeometry(2 * L * SCALE, 2 * L * SCALE, 2 * L * SCALE);
 
     const material = new MeshStandardMaterial({
-        color: new Color(.78, .78, .78),
+        color: new Color(.1, .3, .78),
         transparent: true,
         opacity: 0.35,
         depthWrite: false
@@ -77,10 +77,10 @@
     const cube = new Mesh(geometry, material);
     scene.add(cube);
 
-    // --- Randen toevoegen ---
+    // --- Edges ---
     const edges = new EdgesGeometry(geometry);
     const lineMaterial = new LineBasicMaterial({
-        color: 0x000000,
+        color: 0xaa9900,
         linewidth: 1
     });
 

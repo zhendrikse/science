@@ -1596,7 +1596,7 @@ export class Particle3D extends Particle {
                 color: color,
                 wireframe: false,
                 transparent: true,
-                metalness: 0.7,
+                metalness: 0.4,
                 roughness: 0.2,
                 opacity: 1,
             });
