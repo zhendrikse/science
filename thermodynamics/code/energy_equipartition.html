@@ -60,9 +60,9 @@
     controls.enableDamping = true;
 
     const light = new DirectionalLight(0xffffff, 1);
-    light.position.set(2 * L * SCALE, 2 * L * SCALE, 2 * L * SCALE);
+    light.position.set(0, 3 * L * SCALE, 0);
     scene.add(light);
-    // scene.add(light, new AmbientLight(0xffffff, .25));
+    scene.add(new AmbientLight(0xffffff, .5));
 
     // --- Box ---
     const geometry = new BoxGeometry(2 * L * SCALE, 2 * L * SCALE, 2 * L * SCALE);
