@@ -2134,8 +2134,8 @@ export class Aquarium {
             depthWrite: false
         });
 
-        const cube = new Mesh(geometry, material);
-        parent.add(cube);
+        this._cube = new Mesh(geometry, material);
+        parent.add(this._cube);
 
         // --- Edges ---
         const edges = new EdgesGeometry(geometry);
@@ -2145,6 +2145,9 @@ export class Aquarium {
         });
 
         const wireframe = new LineSegments(edges, lineMaterial);
-        cube.add(wireframe); // make it an integral part of the cube
+        this._cube.add(wireframe); // make it an integral part of the cube
     }
+
+    show() { this._cube.visible = true; }
+    hide() { this._cube.visible = false; }
 }

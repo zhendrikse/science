@@ -49,7 +49,7 @@
 
     lights();
     const camera = initCamera();
-    new Aquarium(scene, {size: cubeSize});
+    const box = new Aquarium(scene, {size: cubeSize});
     const controls = new OrbitControls( camera, canvas );
 
     // Resizing for mobile devices
@@ -63,10 +63,10 @@
     document.getElementById("aquariumToggle").addEventListener("click", function(){
         if (aquariumVisible) {
             aquariumVisible = false;
-            box.visible = false;
+            box.hide();
         } else {
             aquariumVisible = true;
-            box.visible = true;
+            box.show();
         }
     });
 
@@ -78,8 +78,8 @@
             1000
         );
         camera.rotateY(Math.PI / 6);
-        camera.position.z = cubeSize * 1.25;
-        camera.position.x = cubeSize * .75;
+        camera.position.z = cubeSize * 1.2;
+        camera.position.x = cubeSize * .7;
         return camera;
     }
 
@@ -119,47 +119,33 @@
             const geometry = new THREE.SphereGeometry(radius);
             const material = new THREE.MeshStandardMaterial({ color: colour, opacity: opacity });
             this.sphere = new THREE.Mesh(geometry, material);
-            this.sphere.position.set(positionVector.x, positionVector.y, positionVector.z);
+            this.sphere.position.copy(positionVector);
             scene.add(this.sphere);
         }
 
-        moveTo(newPositionVector) {
-            this.sphere.position.copy(newPositionVector);
-        }
+        moveTo(newPositionVector) { this.sphere.position.copy(newPositionVector); }
 
-        setRadiusTo(radius) {
-            this.sphere.scale.set(radius);
-        }
+        setRadiusTo(radius) { this.sphere.scale.set(radius); }
 
-        setColorTo(colour) {
-            this.sphere.material.color.set(colour);
-        }
+        setColorTo(colour) { this.sphere.material.color.set(colour); }
 
-        position() {
-            return this.sphere.position;
-        }
+        position() { return this.sphere.position; }
 
-        positionVectorTo(other) {
-            return new vector().copy(other.sphere.position).sub(this.sphere.position);
-        }
+        positionVectorTo(other) { return new vector().copy(other.sphere.position).sub(this.sphere.position); }
 
-        distanceToSquared(other) {
-            return this.sphere.position.distanceToSquared(other.sphere.position);
-        }
+        distanceToSquared(other) { return this.sphere.position.distanceToSquared(other.sphere.position); }
 
-        distanceTo(other) {
-            return this.sphere.position.distanceTo(other.sphere.position);
-        }
+        distanceTo(other) { return this.sphere.position.distanceTo(other.sphere.position); }
     }
 
     class Particle {
         constructor(radius = .125) {
-            const x = Math.random() < 0.5 ? -Math.random(): Math.random()
-            const y = Math.random() < 0.5 ? -Math.random(): Math.random()
-            const z = Math.random() < 0.5 ? -Math.random(): Math.random()
-            this.sphere = new Sphere(new vector(x, y, z).multiplyScalar(cubeSize * .5), radius, "#00a000");
+            const position = new vector(this.#randomPosition(), this.#randomPosition(), this.#randomPosition());
+            this.sphere = new Sphere(position.multiplyScalar(cubeSize * .5), radius, "#00a000");
             this.frozen = false;
         }
+
+        #randomPosition = () => Math.random() < 0.5 ? -Math.random(): Math.random();
 
         makeSeed() {
             this.frozen = true;
