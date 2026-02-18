@@ -11,7 +11,7 @@
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
 
-<canvas class="applicationCanvas" id="simulationCanvas"></canvas><br/>
+<canvas class="applicationCanvas" id="simulationCanvas" width="800" height="800"></canvas><br/>
 <p style="clear: both;"></p>
 <div class="buttonRow">
     <button id="pauseButton">&nbsp;Pause&nbsp;</button>
@@ -28,7 +28,8 @@
 
 <script type="module">
     import { Group, Scene, Vector3, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight,
-        MeshStandardMaterial, Mesh, BoxGeometry, Color}  from "three";
+        MeshStandardMaterial, Mesh, BoxGeometry, Color, EdgesGeometry, LineBasicMaterial, LineSegments
+    }  from "three";
     import { CarbonMonoxide, Bond } from "https://www.hendrikse.name/science/js/three-js-extensions.js";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
@@ -58,20 +59,33 @@
     const controls = new OrbitControls( camera, canvas );
     controls.enableDamping = true;
 
-    let light = new DirectionalLight(0xffffff, .75);
-    light.position.set(1, 2, 3).setLength(1);
-    scene.add(light, new AmbientLight(0xffffff, .5));
+    const light = new DirectionalLight(0xffffff, 1);
+    light.position.set(2 * L * SCALE, 2 * L * SCALE, 2 * L * SCALE);
+    scene.add(light);
+    // scene.add(light, new AmbientLight(0xffffff, .25));
 
     // --- Box ---
     const geometry = new BoxGeometry(2 * L * SCALE, 2 * L * SCALE, 2 * L * SCALE);
+
     const material = new MeshStandardMaterial({
-        color: new Color(0, .78, .78),
+        color: new Color(.78, .78, .78),
         transparent: true,
         opacity: 0.35,
         depthWrite: false
     });
+
     const cube = new Mesh(geometry, material);
     scene.add(cube);
+
+    // --- Randen toevoegen ---
+    const edges = new EdgesGeometry(geometry);
+    const lineMaterial = new LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 1
+    });
+
+    const wireframe = new LineSegments(edges, lineMaterial);
+    cube.add(wireframe); // aan cube koppelen zodat hij meebeweegt
 
     class CarbonMonoxideGas extends Group {
         constructor(moleculeCount=MOLECULES_COUNT, temperature=298, boxSize=L) {
