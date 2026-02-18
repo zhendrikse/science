@@ -83,7 +83,7 @@
         }
 
         shiftBy(displacement) { this._ball.moveTo(this.position.clone().add(displacement)); }
-
+        get visible() { return this._visible; }
         get position() { return this._ball.position; }
     }
 
@@ -128,11 +128,11 @@
             nrows += 2;
             const half = Math.floor(nrows / 2);
 
-            this.#createLattice();
-            this.#determineNeighbors(half);
+            this.#createLattice(parent, half);
+            this.#determineNeighbors(parent);
         }
 
-        #createLattice(half) {
+        #createLattice(parent, half) {
             for (let z = -half; z < half; z++)
                 for (let y = -half; y < half; y++)
                     for (let x = -half; x < half; x++) {
@@ -141,16 +141,12 @@
                             Math.abs(y) !== half &&
                             Math.abs(z) !== half;
 
-                        const atom = new Atom(parent,
-                            new Vector3(x, y, z),
-                            { visible }
-                        );
-
+                        const atom = new Atom(parent, new Vector3(x, y, z), { visible });
                         this._atoms.push(atom);
                     }
         }
 
-        #determineNeighbors() {
+        #determineNeighbors(parent) {
             for (const atom of this._atoms)
                 for (const other of this._atoms) {
                     const delta = atom.position.clone().sub(other.position);
