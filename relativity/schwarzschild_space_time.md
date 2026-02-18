@@ -54,12 +54,7 @@ The application is best described in
 ### How gravity shapes the universe
 <div class="header_line"><br/></div>
 
-<figure style="text-align: center;">
-  <img alt="How gravity shapes the universe" src="images/how_gravity_shapes_the_univrse.jpg" />
-  <figcaption>This excellent visual guide originates from 
-    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
-  </figcaption>
-</figure>
+![Elasticity of space-time](images/elasticity_of_spacetime.jpg)
 
 ### Theoretical background
 <div style="border-top: 1px solid #999999"><br/></div>
