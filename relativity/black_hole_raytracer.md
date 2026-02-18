@@ -126,23 +126,17 @@ which describes the collapse of an extremely massive object into a black hole.
 
 <figure style="text-align: center;">
   <a href="https://www.facebook.com/photo/?fbid=10233598208964588&set=a.10200946882861842">
-    <img alt="Einstein and Oppenheimer" width="100%" height="100%" src="images/einstein_oppenheimer.jpg" title="Click to animate"/>
+    <img alt="Einstein and Oppenheimer" src="images/einstein_oppenheimer.jpg" title="Click to animate"/>
   </a>
   <figcaption>Einstein did, in fact, tell Oppenheimer to give up his security clearance and walk away 
   from government work. The scene in the movie Oppenheimer is based on true events.</figcaption>
 </figure>
 <p style="clear: both;"></p>
 
-### How gravity shapes the universe
+### Black hole formation
 <div class="header_line"><br/></div>
 
-<figure style="text-align: center;">
-  <img alt="How gravity shapes the universe" src="images/how_gravity_shapes_the_univrse.jpg" />
-  <figcaption>This excellent visual guide originates from 
-    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
-  </figcaption>
-</figure>
-
+![Star evolution](images/star_evolution.jpg)
 
 {% include share_buttons.html %}
 

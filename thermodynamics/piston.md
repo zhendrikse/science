@@ -25,4 +25,15 @@ is either absorbed (or emitted) by the system and the work that is done by it.
 
 <p style="clear: both;"></p>
 
+
+### Carnot cycle
+<div class="header_line"><br/></div>
+
+<figure style="text-align: center;">
+  <img alt="Carnot cycle" src="images/carnot_cycle.jpg" />
+  <figcaption>This excellent visual guide originates from 
+    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+  </figcaption>
+</figure>
+
 {% include share_buttons.html %}
