@@ -1992,7 +1992,7 @@ export class CarbonMonoxide extends Group {
             scale: scale
         });
         this._bond = new Bond(this, this._oxygen, this._carbon,
-            {scale: scale});
+            {scale: scale, radius: radius});
         this._restLength = 2.5 * radius;
     }
 
