@@ -1357,11 +1357,13 @@ export class Spring {
         this.#regenerateTube();
     }
 
+    potentialEnergy() { return 0.5 * this.k * this.displacement * this.displacement; }
+
     get position() { return this._position; }
     get axis() { return this._axis; }
     get k() { return this._k; }
     get force() { return -this._k * this.displacement; }
-    get displacement() {return this._restLength - this._axis.length(); }
+    get displacement() {return this._restLength - this.axis.length(); }
 }
 
 class Particle {

@@ -12,7 +12,7 @@
 
 <script type="module">
     import { Group, Vector3, Scene, Color, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight } from "three";
-    import { Spring, Ball, Graph } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { Spring, Ball } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
     // --- Scene setup ---
@@ -100,38 +100,9 @@
     worldGroup.add(oscillator);
 
     const dt = 0.01;
-    const graphCanvas = document.getElementById("graphCanvas");
-    const graph = new Graph(graphCanvas, {
-        dt: dt,
-        scaleY: 10
-    });
-
-    graph.addSeries("x_mid", "red");
-
-
-    const N = 11;
-    const mid = Math.floor(N / 2) - 1;
-    for (let n = 0; n < N - 1; n++)
-        oscillator
-            .withMassAt(new Vector3(-25 + n * 5, 0, 0), {color: n === mid ? "red" : "yellow"})
-            .withSpringBetween(n, n + 1);
-
-    // Displace
-    for (let n = 0; n < N; n++) {
-        oscillator._masses[n].moveTo(
-            oscillator._masses[n].position().add(
-                new Vector3(Math.sin(Math.PI * n / (N + 1)) * 10, 0, 0))
-        );
-    }
-
     function animate() {
         requestAnimationFrame(animate);
         oscillator.update(dt);
-
-        const x = oscillator._masses[mid].position().x + 10;
-
-        graph.push({ x_mid: x });
-        graph.draw();
 
         controls.update();
         renderer.render(scene, camera);

@@ -129,7 +129,7 @@
     }
 
     let time = 0;
-    const maxPoints = 300;
+    const maxPoints = 500;
     function animate() {
         requestAnimationFrame(animate);
         time += dt;
@@ -139,12 +139,11 @@
         slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
         slinky.update(time);
 
-        const potentialSpring = 0.5 * slinky.k * slinky.displacement * slinky.displacement;
         const potentialGravity = ball.mass * g * ball.position.y;
-        plotData[0].push(time); // x-axis = tijd
-        plotData[1].push(ball.kineticEnergy);
-        plotData[2].push(potentialSpring + potentialGravity);
-        plotData[3].push(ball.kineticEnergy + potentialSpring + potentialGravity);
+        plotData[0].push(time); // x-axis = time
+        plotData[1].push(ball.kineticEnergy());
+        plotData[2].push(slinky.potentialEnergy() + potentialGravity);
+        plotData[3].push(ball.kineticEnergy() + slinky.potentialEnergy() + potentialGravity);
         plotData[4].push((5 + ball.position.y) * 100);
 
         if (plotData[0].length > maxPoints)
