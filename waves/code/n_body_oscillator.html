@@ -7,11 +7,12 @@
     }
 </script>
 
-<canvas id="myCanvas" class="applicationCanvas" style="aspect-ratio: 2 / 1; width: 100%"></canvas>
+<canvas id="myCanvas" class="applicationCanvas" style="aspect-ratio: 2 / 1; width: 500px"></canvas>
 <canvas id="graphCanvas" style="aspect-ratio: 3 / 1; margin: 0; width: 100%;"></canvas>
 
 <script type="module">
-    import { Group, Vector3, Scene, Color, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight } from "three";
+    import { Group, Vector3, Scene, Color, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight,
+        Mesh, SphereGeometry, MeshStandardMaterial } from "three";
     import { Spring, Ball } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
@@ -22,92 +23,116 @@
     const g = 9.8; // gravitational constant
 
     const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-    camera.position.set(0, 10, 30);
+    camera.position.set(17, 5, 17);
 
     const renderer = new WebGLRenderer({canvas, antialias:true, alpha: true});
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setAnimationLoop( animationLoop );
 
-    scene.add(new HemisphereLight(0xffffff, 0x222222, 0.6));
     const dirLight = new DirectionalLight(0xffffff, 0.8);
     dirLight.position.set(0, 15, 45);
     scene.add(dirLight);
-    const dirLight2 = new DirectionalLight(0xffffff, 0.8);
-    dirLight2.position.set(0, 0, -45);
-    scene.add(dirLight2);
     renderer.shadowMap.enabled = true;
-    dirLight.castShadow = true;
+    scene.add(new AmbientLight(0xffffff, 0.8));
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
 
+    export class FixedPoint {
+        constructor(parent, position, { radius = 0.5, color = 0xffffff } = {}) {
+
+            this._position = position.clone();
+
+            const geometry = new SphereGeometry(radius, 24, 24);
+            const material = new MeshStandardMaterial({ color });
+            this._mesh = new Mesh(geometry, material);
+
+            this._mesh.position.copy(this._position);
+            parent.add(this._mesh);
+        }
+
+        get position() { return this._position; }
+    }
+
     export class HarmonicOscillator extends Group {
-        constructor({ damping = 0.2 } = {}) {
+        constructor({ damping=0.2 } = {}) {
             super();
             this._masses = [];
             this._springs = [];
             this._damping = damping;
         }
 
-        withMassAt(position, {color = "yellow"} = {}) {
-            this._masses.push(new Ball(this, {position: position, color: color}));
+        withMassAt(position, options = {}) {
+            const ball = new Ball(this, { position, ...options });
+            this._masses.push(ball);
             return this;
         }
 
-        withSpringBetween(i, j, {color = "white"} = {}) {
-            const spring = new Spring(
-                this,
-                this._masses[i].position(),
-                this._masses[j].position().clone().sub(this._masses[i].position()),
-                {color: color, coils: 20}
-            );
+        withSpringBetween(i, j, k, springColor=0xface8d) {
+            const p1 = this._masses[i].position;
+            const p2 = this._masses[j].position;
+
+            const axis = p2.clone().sub(p1);
+            const spring = new Spring(this, p1.clone(), axis, {k: k, color: springColor});
             this._springs.push({ spring, i, j });
+
             return this;
         }
 
-        update(dt=0.01) {
-            const forces = this._masses.map(() => new Vector3(0, 0, 0));
+        update(dt = 0.01) {
+            const forces = this._masses.map(() => new Vector3(0, 0, 0)); // force accumulator
 
             for (const { spring, i, j } of this._springs) {
-                const ball1 = this._masses[i];
-                const ball2 = this._masses[j];
+                const m1 = this._masses[i];
+                const m2 = this._masses[j];
 
-                const axis = ball2.position().clone().sub(ball1.position());
+                const axis = m2.position.clone().sub(m1.position);
                 const direction = axis.clone().normalize();
 
+                spring.moveTo(m1.position);
                 spring.updateAxis(axis);
-                spring.moveTo(ball1.position());
 
-                const springForce = direction.clone().multiplyScalar(spring.force());
-                const relVelocity = ball2.velocity().clone().sub(ball1.velocity());
-                const dampingForce = relVelocity.projectOnVector(direction).multiplyScalar(this._damping);
+                // Hooke
+                const springForceMagnitude = spring.force;
+                const springForce = direction.clone().multiplyScalar(springForceMagnitude);
+
+                // demping langs veerrichting
+                const relativeVelocity = m2.velocity.clone().sub(m1.velocity);
+                const dampingForce = relativeVelocity
+                    .projectOnVector(direction)
+                    .multiplyScalar(this._damping);
 
                 springForce.add(dampingForce);
-
                 forces[i].add(springForce);
                 forces[j].add(springForce.clone().negate());
             }
 
-            this._masses.forEach((ball, index) => ball.semiImplicitEulerUpdate(forces[index], dt));
+            this._masses.forEach((mass, index) =>  mass.semiImplicitEulerUpdate(forces[index], dt));
         }
     }
 
-    const worldGroup = new Group();
-    scene.add(worldGroup);
+    const oscillator = new HarmonicOscillator({ damping: 0.05 });
+    oscillator
+        .withMassAt(new Vector3(-30, 2, 10), { mass: 1, color: 0xff0000 })
+        .withMassAt(new Vector3(-20, 2, 10), { mass: 1, color: 0x3333ff })
+        .withMassAt(new Vector3(-10, 2, 10), { mass: 1, color: 0x3333ff })
+        .withMassAt(new Vector3(  0, 2, 10), { mass: 1, color: 0x3333ff })
+        .withMassAt(new Vector3( 10, 2, 10), { mass: 1, color: 0xff0000 })
+        .withSpringBetween(0, 1, 50)
+        .withSpringBetween(1, 2, 50)
+        .withSpringBetween(2, 3, 50)
+        .withSpringBetween(3, 4, 50);
+    scene.add(oscillator);
 
-    const oscillator = new HarmonicOscillator({damping: 0.5})
-        .withMassAt(new Vector3(-25, 0, 0));
-    worldGroup.add(oscillator);
+    oscillator._masses[0].position.x += 7;
 
-    const dt = 0.01;
-    function animate() {
-        requestAnimationFrame(animate);
-        oscillator.update(dt);
-
+    const dt = 0.005;
+    function animationLoop() {
+        for (let i = 0; i < 4; ++i)
+            oscillator.update(dt);
         controls.update();
         renderer.render(scene, camera);
     }
-    animate();
-
 </script>
 
