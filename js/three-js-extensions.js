@@ -1907,7 +1907,7 @@ export class Bond {
         SPRING: "spring",
         CYLINDER: "cylinder"
     });
-    constructor(parent, atom1, atom2, {
+    constructor(parent, object1, object2, {
         scale=1,
         color=new Color(0xface8d),
         coils=15,
@@ -1916,15 +1916,15 @@ export class Bond {
         k_bond=18600.0,
         type=Bond.Type.CYLINDER
     } = {}) {
-        this._atom1 = atom1;
-        this._atom2 = atom2;
+        this._object1 = object1;
+        this._object2 = object2;
         this._scale = scale;
         this._bondType = type;
         this._bondConstant = k_bond;
 
         const geometry = new CylinderGeometry(
-            atom1.radius * .5 * scale,
-            atom2.radius * .5 * scale,
+            radius * .5 * scale,
+            radius * .5 * scale,
             1
         );
         const material = new MeshStandardMaterial({color: color});
@@ -1952,8 +1952,8 @@ export class Bond {
     }
 
     update() {
-        const p1 = this._atom1.position.clone();
-        const p2 = this._atom2.position.clone();
+        const p1 = this._object1.position.clone();
+        const p2 = this._object2.position.clone();
 
         const mid = p1.clone().add(p2).multiplyScalar(0.5);
         const direction = p2.clone().sub(p1);
@@ -1991,7 +1991,8 @@ export class CarbonMonoxide extends Group {
             color: "blue",
             scale: scale
         });
-        this._bond = new Bond(this, this._oxygen, this._carbon, scale);
+        this._bond = new Bond(this, this._oxygen, this._carbon,
+            {scale: scale});
         this._restLength = 2.5 * radius;
     }
 
