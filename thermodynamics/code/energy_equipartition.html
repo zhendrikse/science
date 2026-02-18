@@ -11,7 +11,7 @@
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
 
-<canvas class="applicationCanvas" id="simulationCanvas" width="800" height="800"></canvas><br/>
+<canvas class="applicationCanvas" id="simulationCanvas"></canvas><br/>
 <p style="clear: both;"></p>
 <div class="buttonRow">
     <button id="pauseButton">&nbsp;Pause&nbsp;</button>
@@ -85,7 +85,7 @@
     });
 
     const wireframe = new LineSegments(edges, lineMaterial);
-    cube.add(wireframe); // aan cube koppelen zodat hij meebeweegt
+    cube.add(wireframe); // make it an integral part of the cube
 
     class CarbonMonoxideGas extends Group {
         constructor(moleculeCount=MOLECULES_COUNT, temperature=298, boxSize=L) {

@@ -26,7 +26,8 @@
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
 <script type="module">
-    import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, MeshStandardMaterial, Mesh, Color } from "three";
+    import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, MeshStandardMaterial, Mesh, Color,
+        EdgesGeometry, LineBasicMaterial, LineSegments, DirectionalLight, AmbientLight} from "three";
     import { Gas3D } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
@@ -51,16 +52,33 @@
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
 
+    const light = new DirectionalLight(0xffffff, 1);
+    light.position.set(0, 1.5 * boxSize, 0);
+    scene.add(light);
+    scene.add(new AmbientLight(0xffffff, .5));
+
     // --- Box ---
     const geometry = new BoxGeometry(boxSize, boxSize, boxSize);
+
     const material = new MeshStandardMaterial({
-        color: new Color(0, .78, .78),
+        color: new Color(.1, .3, .78),
         transparent: true,
         opacity: 0.35,
         depthWrite: false
     });
+
     const cube = new Mesh(geometry, material);
     scene.add(cube);
+
+    // --- Edges ---
+    const edges = new EdgesGeometry(geometry);
+    const lineMaterial = new LineBasicMaterial({
+        color: 0xaa9900,
+        linewidth: 1
+    });
+
+    const wireframe = new LineSegments(edges, lineMaterial);
+    cube.add(wireframe); // make it an integral part of the cube
 
     const gas = new Gas3D({temperature: Number(temperatureSlider.value)});
     scene.add(gas);
