@@ -1357,7 +1357,7 @@ export class Spring {
         );
     }
 
-    updatePosition(newPosition) { this._curve.start.copy(newPosition); }
+    moveTo(newPosition) { this._curve.start.copy(newPosition); }
 
     updateAxis(newAxis) {
         this._axis = newAxis;

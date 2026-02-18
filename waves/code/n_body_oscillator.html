@@ -76,7 +76,7 @@
                 const direction = axis.clone().normalize();
 
                 spring.updateAxis(axis);
-                spring.updatePosition(ball1.position());
+                spring.moveTo(ball1.position());
 
                 const springForce = direction.clone().multiplyScalar(spring.force());
                 const relVelocity = ball2.velocity().clone().sub(ball1.velocity());
