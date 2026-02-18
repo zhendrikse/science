@@ -36,7 +36,7 @@
     const light = new DirectionalLight(0xffffff, 1);
     light.position.set(0, 4, 0);
     scene.add(light);
-    scene.add(new AmbientLight(0xffffff, .5));
+    scene.add(new AmbientLight(0xffffff, .75));
 
     class Atom {
         constructor(parent, position, {
@@ -101,8 +101,8 @@
                 atomB.position.clone().sub(atomA.position),
                 {
                     k: 1000,
-                    color: "lightblue",
-                    radius: 0.05,
+                    color: "white",
+                    radius: 0.1,
                     coils: 25,
                     coilRadius: 0.1 * 0.05 // TODO atomA.ball._sphere.radius * 0.5
                 }
