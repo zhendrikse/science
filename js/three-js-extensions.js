@@ -1907,7 +1907,15 @@ export class Bond {
         SPRING: "spring",
         CYLINDER: "cylinder"
     });
-    constructor(parent, atom1, atom2, scale=1, color=new Color(0xface8d), k_bond=18600.0, type=Bond.Type.CYLINDER) {
+    constructor(parent, atom1, atom2, {
+        scale=1,
+        color=new Color(0xface8d),
+        coils=15,
+        radius=0.2,
+        coilRadius=0.02,
+        k_bond=18600.0,
+        type=Bond.Type.CYLINDER
+    } = {}) {
         this._atom1 = atom1;
         this._atom2 = atom2;
         this._scale = scale;
@@ -1922,11 +1930,11 @@ export class Bond {
         const material = new MeshStandardMaterial({color: color});
         this._rod = new Mesh(geometry, material);
         this._spring = new Spring(parent, new Vector3(0, 0, 0), new Vector3(0, 1, 0), {
-            coils: 15,
-            radius: 0.2,
-            coilRadius: 0.02,
+            coils: coils,
+            radius: radius,
+            coilRadius: coilRadius,
             k: k_bond,
-            color: 0xffffff})._mesh;
+            color: color})._mesh;
         this._mesh = this._rod;
         parent.add(this._mesh);
 
