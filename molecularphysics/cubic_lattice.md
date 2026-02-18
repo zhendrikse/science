@@ -1,7 +1,11 @@
 {% include breadcrumbs.html %}
 
-## Simulation of cubic lattice
+## Cubic lattice model
 <div class="header_line"><br/></div>
+
+🔧 [Original code](https://www.glowscript.org/#/user/wlane/folder/Let'sCodePhysics/program/atoms-array) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
+👉 Refactored and ported to JavaScript and [Three.js](https://threejs.org/) in [cubic_lattice.html](https://github.com/zhendrikse/science/blob/main/molecularphysics/code/cubic_lattice.html)<br/>
+👉 A similar [VPython](https://vpython.org/) version is available as [molecules.py](https://github.com/zhendrikse/pysics-in-python/blob/main/vpython/cubic_lattice.py).
 
 {% include_relative code/cubic_lattice.html %}
 
