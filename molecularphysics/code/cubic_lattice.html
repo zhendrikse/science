@@ -8,10 +8,15 @@
 </script>
 
 <canvas class="applicationCanvas" id="simulationCanvas"></canvas><br/>
+<p style="clear: both;"></p>
+<div class="buttonRow">
+    <button id="pauseButton">&nbsp;Pause&nbsp;</button>
+    <button id="bondTypeButton">Bonds as springs</button>
+</div>
 
 <script type="module">
     import { Scene, Vector3, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight }  from "three";
-    import { Ball, Spring, Cylinder } from "https://www.hendrikse.name/science/js/three-js-extensions.js";
+    import { Ball, Spring, Bond } from "https://www.hendrikse.name/science/js/three-js-extensions.js";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
     console.clear( );
@@ -83,41 +88,6 @@
         get position() { return this._ball.position; }
     }
 
-    class Bond {
-        constructor(parent, atomA, atomB) {
-            this._atomA = atomA;
-            this._atomB = atomB;
-
-            // this.spring = new Cylinder(
-            //     parent,
-            //     atomA.position.clone(),
-            //     atomB.position.clone().sub(atomA.position),
-            //     0.05
-            // );
-
-            this._spring = new Spring(
-                parent,
-                atomA.position.clone(),
-                atomB.position.clone().sub(atomA.position),
-                {
-                    k: 1000,
-                    color: "white",
-                    radius: 0.1,
-                    coils: 25,
-                    coilRadius: 0.1 * 0.05 // TODO atomA.ball._sphere.radius * 0.5
-                }
-            );
-        }
-
-        update(time) {
-            const axis = this._atomB.position.clone().sub(this._atomA.position);
-
-            this._spring.moveTo(this._atomA.position);
-            this._spring.updateAxis(axis);
-            this._spring.update(time);
-        }
-    }
-
     class Lattice {
         constructor(parent, nrows = 2) {
             this._atoms = [];
@@ -130,37 +100,52 @@
             this.#determineNeighbors(parent);
         }
 
+        #createAtom(parent, x, y, z, half) {
+            const visible =
+                Math.abs(x) !== half &&
+                Math.abs(y) !== half &&
+                Math.abs(z) !== half;
+
+            const atom = new Atom(parent, new Vector3(x, y, z), { visible });
+            this._atoms.push(atom);
+        }
+
         #createLattice(parent, half) {
             for (let z = -half; z < half; z++)
                 for (let y = -half; y < half; y++)
-                    for (let x = -half; x < half; x++) {
-                        const visible =
-                            Math.abs(x) !== half &&
-                            Math.abs(y) !== half &&
-                            Math.abs(z) !== half;
+                    for (let x = -half; x < half; x++)
+                        this.#createAtom(parent, x, y, z, half);
+        }
 
-                        const atom = new Atom(parent, new Vector3(x, y, z), { visible });
-                        this._atoms.push(atom);
-                    }
+        #isNeighbor(atom, other) {
+            const delta = atom.position.clone().sub(other.position);
+            return delta.equals(new Vector3(1, 0, 0)) ||
+                delta.equals(new Vector3(-1, 0, 0)) ||
+                delta.equals(new Vector3( 0, 1, 0)) ||
+                delta.equals(new Vector3(0, -1, 0)) ||
+                delta.equals(new Vector3( 0, 0, 1)) ||
+                delta.equals(new Vector3(0, 0, -1));
+        }
+
+        #createBond(parent, atom, other) {
+            this._bonds.push(new Bond(parent, atom, other, {
+                k: 1000,
+                color: "white",
+                radius: 0.175,
+                coils: 25,
+                type: Bond.Type.CYLINDER,
+                coilRadius: 0.1 * 0.05 // TODO atomA.ball._sphere.radius * 0.5
+            }));
         }
 
         #determineNeighbors(parent) {
             for (const atom of this._atoms)
-                for (const other of this._atoms) {
-                    const delta = atom.position.clone().sub(other.position);
-                    if (
-                        delta.equals(new Vector3(1,0,0)) ||
-                        delta.equals(new Vector3(-1,0,0)) ||
-                        delta.equals(new Vector3(0,1,0)) ||
-                        delta.equals(new Vector3(0,-1,0)) ||
-                        delta.equals(new Vector3(0,0,1)) ||
-                        delta.equals(new Vector3(0,0,-1))
-                    ) {
+                for (const other of this._atoms)
+                    if (this.#isNeighbor(atom, other)) {
                         atom.appendNeighbor(other);
                         if (atom.visible && other.visible)
-                            this._bonds.push(new Bond(parent, atom, other));
+                            this.#createBond(parent, atom, other);
                     }
-                }
         }
 
         update(dt, time) {
@@ -174,18 +159,37 @@
                 bond.update(time);
         }
 
+        changeBondType(type) {
+            for (let bond of this._bonds)
+                bond.changeBondType(type);
+            this.update(0, 0);
+        }
+
         moveAtom(index, displacement) {
             this._atoms[index].shiftBy(displacement);
         }
     }
 
+    let running = true;
+    const toggleButton = document.getElementById("pauseButton");
+    toggleButton.onclick = () => {
+        running = !running;
+        toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";
+    }
+    let bondType = Bond.Type.CYLINDER;
+    const bondTypeButton = document.getElementById("bondTypeButton");
+    bondTypeButton.onclick = () => {
+        bondType = bondType === Bond.Type.CYLINDER ? Bond.Type.SPRING : Bond.Type.CYLINDER;
+        bondTypeButton.innerHTML = bondType === Bond.Type.SPRING ? "&nbsp;Bonds as rods&nbsp;" : "Bonds as springs";
+        lattice.changeBondType(bondType);
+    }
+
     const lattice = new Lattice(scene);
-    const dt = 0.01;
-
     lattice.moveAtom(26, new Vector3(0, 0, 0.2));
-
+    const dt = 0.01;
     function animationLoop(time) {
-        lattice.update(dt, time * 0.001);
+        if (running)
+            lattice.update(dt, time * 0.001);
         renderer.render(scene, camera);
     }
 
