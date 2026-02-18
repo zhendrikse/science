@@ -1333,9 +1333,9 @@ export class Spring {
         radius=0.5,
         coilRadius=0.075
     } = {}) {
-        this._longtudinalOscillation = longitudinalOscillation;
+        this._longitudinalOscillation = longitudinalOscillation;
         this._radius = radius;
-        this._curve = new Helix(position, axis, coils, radius);
+        this._curve = new Helix(position, axis, coils, radius, longitudinalOscillation ? 0.05 : 0);
         this._tubularSegments = tubularSegments;
         this._radialSegments = radialSegments;
         this._coilRadius = coilRadius;
@@ -1362,12 +1362,15 @@ export class Spring {
     updateAxis(newAxis) {
         this._axis = newAxis;
         this._curve.updateAxis(this._axis);
-        this._longtudinalOscillation ?
+        this._longitudinalOscillation ?
             this.#updateWithLongitudinal() :
             this.#updateWithoutLongitudinal();
     }
 
-    update = (time) => this._curve.wavePhase = time * 4;
+    update(time) {
+        if (this._longitudinalOscillation)
+            this._curve.wavePhase = time * 4;
+    }
 
     #updateWithoutLongitudinal() {
         this.#regenerateTube();

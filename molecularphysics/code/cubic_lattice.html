@@ -23,7 +23,7 @@
     const canvasHeight = canvas.clientHeight;
 
     const camera = new PerspectiveCamera(60, canvasWidth/canvasHeight, 0.1, 1000);
-    camera.position.set(2.5, 0, 3);
+    camera.position.set(2, 0, 2.75);
     camera.updateProjectionMatrix();
 
     const renderer = new WebGLRenderer( {antialias: true, canvas: canvas, alpha: true} );
@@ -63,17 +63,13 @@
 
         updateForce() {
             this._force.set(0, 0, 0);
-
             const k = 1000;
             const leq = 1;
 
             for (const atom of this._neighbors) {
                 const delta = atom.position.clone().sub(this.position);
                 const stretch = delta.length() - leq;
-
-                this._force.add(
-                    delta.normalize().multiplyScalar(k * stretch)
-                );
+                this._force.add(delta.normalize().multiplyScalar(k * stretch));
             }
         }
 
@@ -105,6 +101,7 @@
                 atomB.position.clone().sub(atomA.position),
                 {
                     k: 1000,
+                    color: "cyan",
                     radius: 0.05,
                     coilRadius: 0.1 * 0.05 // TODO atomA.ball._sphere.radius * 0.5
                 }
