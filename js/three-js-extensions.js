@@ -1313,7 +1313,6 @@ export class Ball {
     get neighbors() { return this._neighbors; }
 }
 
-
 export class Spring {
     constructor(parent, position, axis, {
         k=200,
@@ -1421,9 +1420,19 @@ class Particle {
         this.updateMesh();
     }
 
-    isCollidingWith(otherBall) {
-        const r = this.radius + otherBall.radius;
-        return this.position.distanceToSquared(otherBall.position) < r * r;
+    applyForce(force, dt) { this._velocity.addScaledVector(force, dt / this.mass); }
+
+    applyRadialWallForce(radius, k) {
+        const rVector = this.position.clone();
+        const r = rVector.length();
+
+        if (r > radius) {
+            const normal = rVector.normalize();
+            const magnitude = -k * (r - radius);
+
+            const force = normal.multiplyScalar(magnitude);
+            this.applyForce(force, dt);
+        }
     }
 
     collideWith(other) {
