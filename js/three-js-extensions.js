@@ -1486,15 +1486,15 @@ class Particle {
 
         if (distance < maxDist) return;
 
-        const normal = rVector.normalize(); // normaalvector with respect to the edge
+        const normal = rVector.clone().normalize(); // normal vector with respect to the edge
 
         // project back to edge
-        this._position.copy(normal.multiplyScalar(maxDist));
+        this._position.copy(normal.clone().multiplyScalar(maxDist));
 
         // reflect velocity
         const vDotN = this._velocity.dot(normal);
-        const reflection = normal.multiplyScalar((1 + restitution) * vDotN);
-        this._velocity.sub(reflection);
+        const impulse = normal.multiplyScalar((1 + restitution) * vDotN);
+        this._velocity.sub(impulse);
     }
 
     moveWithinRadius(radius) {
@@ -1813,7 +1813,7 @@ export class Gas extends Group {
         for(const particle of this._balls)
             totalForce += particle.radialWallForce();
 
-        return totalForce/(4 * Math.PI * radius * radius);
+        return totalForce / (4 * Math.PI * radius * radius);
     }
 }
 
@@ -1932,8 +1932,6 @@ export class Gas3D extends Gas {
                 radius: particleRadius,
                 color: particleColor,
                 mass: particleMass,
-                position: new Vector3(-.5 + Math.random(), -.5 + Math.random(), -5 + Math.random())
-                    .multiplyScalar(containerSize * .25),
                 velocity: this.#newInitialVelocity(currentTemperature, particleMass)
             }));
         this.setTemperature(currentTemperature);
