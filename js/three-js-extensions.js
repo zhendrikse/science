@@ -1029,74 +1029,63 @@ export class Sphere {
 }
 
 export class Cylinder {
-    constructor(
-        group,
-        position = new Vector3(0, 0, 0),
-        axis = new Vector3(0, 1, 0),   // richting + lengte
+    constructor(group, position=new Vector3(0, 0, 0), axis=new Vector3(0, 1, 0), {
         radius = 1,
-        makeTrail = false,
-        {
+        scale = 1,
+        color= new Color(0xffff00)
+    } = {} ) {
+        const height = axis.length(),
             radialSegments = 24,
             heightSegments = 1,
-            openEnded = false,
-            material = new MeshStandardMaterial({
-                color: "yellow",
-                opacity: 1,
-                transparent: true,
-                wireframe: false,
-                metalness: 0.7,
-                roughness: 0.2
-            })
-        } = {}
-    ) {
-        const height = axis.length();
-        const direction = axis.clone().normalize();
-
-        this._cylinder = new Mesh(
+            openEnded = false;
+        const material = new MeshStandardMaterial({
+            color: color,
+            opacity: 1,
+            transparent: true,
+            wireframe: false,
+            metalness: 0.7,
+            roughness: 0.2
+        });
+        this._mesh = new Mesh(
             new CylinderGeometry(
-                radius,
-                radius,
+                radius * scale,
+                radius * scale,
                 height,
                 radialSegments,
                 heightSegments,
                 openEnded
-            ),
-            material
+            ), material
         );
+        this._scale = scale;
+        this._restLength = axis.length();
+        this._position = position;
+        this._axis = axis;
+        this._mesh.position.copy(position);
+        group.add(this._mesh);
+        this.updateAxis(axis);
+    }
 
-        const yAxis = new Vector3(0, 1, 0);
-        const quaternion = new Quaternion().setFromUnitVectors(yAxis, direction);
-        this._cylinder.quaternion.copy(quaternion);
+    get position() { return this._position; }
+    get axis() { return this._axis; }
+    get displacement() {return this._restLength - this.axis.length(); }
+    show() { this._mesh.visible = true; }
+    hide() { this._mesh.visible = false; }
 
-        // position is the start of the cylinder
-        const centerOffset = direction.clone().multiplyScalar(height / 2);
-        this._cylinder.position.copy(position).add(centerOffset);
-
-        this._cylinder.castShadow = true;
-
-        this._group = group;
-        this._group.add(this._cylinder);
-
-        this._trail = null;
-        if (makeTrail) this.enableTrail();
+    moveTo(newPosition) {
+        this._position.copy(newPosition);
+        this.updateAxis(this._axis); // herbereken positie
     }
 
     updateAxis(newAxis) {
-        this._axis = newAxis;
-    }
+        this._axis.copy(newAxis);
 
-    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
-        this._trail = new Trail(this);
-        this._trail.enable({maxPoints, color, lineWidth, trailStep });
-    }
+        const length = this._axis.length();
+        const direction = this._axis.clone().normalize();
+        this._mesh.scale.set(1, length / this._restLength, 1);
+        this._mesh.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
 
-    updateTrail(dt) { this._trail?.update(dt); }
-    disposeTrail() { this._trail?.dispose(); }
-
-    moveTo(newPosition) {
-        this._cylinder.position.copy(newPosition);
-        if (this._trail)
-            this._trail.addPoint(this._cylinder.position);
+        const midpoint = this._position.clone().addScaledVector(direction, length / 2);
+        this._mesh.position.copy(midpoint);
     }
 }
 
@@ -1922,11 +1911,7 @@ export class Bond {
         this._bondType = type;
         this._bondConstant = k_bond;
 
-        const geometry = new CylinderGeometry(
-            radius * .5 * scale,
-            radius * .5 * scale,
-            1
-        );
+        const geometry = new CylinderGeometry(radius * .5 * scale, radius * .5 * scale, 1);
         const material = new MeshStandardMaterial({color: color});
         this._rod = new Mesh(geometry, material);
         this._spring = new Spring(parent, new Vector3(0, 0, 0), new Vector3(0, 1, 0), {
