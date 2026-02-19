@@ -125,13 +125,17 @@
 
     const volume = (4 / 3) * Math.PI * sphereRadius * sphereRadius * sphereRadius;
     let steps = 0;
+    let R = sphereRadius;
     function animate(time) {
         if (running)
             gas.update();
 
-        const P  = gas.pressure(sphereRadius);
+        R += 5e-2;
+        gas.changeContainerSize(R);
+        shell.scale.setScalar(R / sphereRadius);
+        const P  = gas.pressure(R);
         const KE = gas.averageKE();
-        console.log(P, KE);
+        //console.log(P, KE);
         if(steps++ % 10 === 0){
             data[0].push(time * .001);
             data[1].push(KE);

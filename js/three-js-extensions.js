@@ -1726,6 +1726,7 @@ export class Gas extends Group {
         IN_BOX: "box",
         IN_SPHERE: "sphere"
     });
+
     constructor({
                     numBalls=20,
                     k=1,
@@ -1808,7 +1809,7 @@ export class Gas extends Group {
 
     averageKE() {
         let totalKineticEnergy = 0;
-        for(const particle of this._balls)
+        for(const particle of this._balls.slice(1))
             totalKineticEnergy += particle.kineticEnergy();
 
         return totalKineticEnergy;
@@ -1816,11 +1817,13 @@ export class Gas extends Group {
 
     pressure(radius) {
         let totalForce = 0;
-        for(const particle of this._balls)
+        for(const particle of this._balls.slice(1))
             totalForce += particle.radialWallForce(radius);
 
         return totalForce / (4 * Math.PI * radius * radius);
     }
+
+    changeContainerSize(size) { this._containerSize = size; }
 }
 
 export class Gas2D extends Gas {
