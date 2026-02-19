@@ -1747,7 +1747,7 @@ export class Gas extends Group {
         this._numBalls = numBalls;
         this._trail = null;
         this._k = k; // Boltzmann constant
-        this._particleImpulsTotal;
+        this._particleImpulsTotal = 0;
     }
 
     show() {

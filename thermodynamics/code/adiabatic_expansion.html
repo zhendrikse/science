@@ -138,6 +138,7 @@
             const P  = gas.pressure(R);
             const KE = gas.averageKE();
             const volume = (4 / 3) * Math.PI * sphereRadius * sphereRadius * sphereRadius;
+            //console.log(KE, P, P * volume / KE);
 
             data[0].push(time * .001);
             data[1].push(KE);
