@@ -57,7 +57,12 @@
     scene.add(new AmbientLight(0xffffff, .5));
 
     new Aquarium(scene, { size: boxSize });
-    const gas = new Gas3D({temperature: Number(temperatureSlider.value), tracerRadius: 20, tracerMass: 100});
+    const gas = new Gas3D({
+        temperature: Number(temperatureSlider.value),
+        tracerRadius: 20,
+        tracerMass: 100,
+        containerSize: boxSize
+    });
     scene.add(gas);
     // --- Histogram (2D plot for speed) ---
     const binCount = 30;
@@ -148,7 +153,7 @@
 
     function animate() {
         for (let i = 0; i < 5; i++)
-            if (running) gas.update(boxSize);
+            if (running) gas.update();
 
         updateGraph();
         renderer.render(scene, camera);

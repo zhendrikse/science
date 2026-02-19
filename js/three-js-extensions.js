@@ -1470,15 +1470,37 @@ export class Particle2D extends Particle {
     confineToBox(size) {
         const half = size / 2;
         ["x","y"].forEach(axis => {
-            if(this._position[axis] > half - this._radius) this._velocity[axis] = -Math.abs(this._velocity[axis]);
-            if(this._position[axis] < -half + this._radius) this._velocity[axis] =  Math.abs(this._velocity[axis]);
+            if (this.position[axis] > half - this.radius) this._velocity[axis] = -Math.abs(this.velocity[axis]);
+            if (this.position[axis] < -half + this.radius) this._velocity[axis] =  Math.abs(this.velocity[axis]);
         });
     }
 
-    moveWithin(boxSize) {
+    moveWithinBox(boxSize) {
         this._position.add(this._velocity);
         this.updateMesh();
         this.confineToBox(boxSize);
+    }
+
+    moveWithinRadius(center, radius, restitution=1) {
+        this._position.add(this._velocity);
+
+        const offset = this._position.clone().sub(center);
+        const distance = offset.length();
+        const maxDistance = radius - this.radius;
+
+        if (distance > maxDistance) {
+            const normal = offset.normalize();
+
+            // Project back to edge
+            this._position.copy(center.clone().addScaledVector(normal, maxDistance));
+            const vDotN = this._velocity.dot(normal); // Reflect velocity
+
+            // v' = v − (1 + e)(v·n)n
+            const reflection = normal.clone().multiplyScalar((1 + restitution) * vDotN);
+            this._velocity.sub(reflection);
+        }
+
+        this.updateMesh();
     }
 }
 
@@ -1584,12 +1606,30 @@ export class Particle3D extends Particle {
     confineToBox(size) {
         const half = size / 2;
         ["x","y","z"].forEach(axis => {
-            if(this._position[axis] > half - this._radius) this._velocity[axis] = -Math.abs(this._velocity[axis]);
-            if(this._position[axis] < -half + this._radius) this._velocity[axis] =  Math.abs(this._velocity[axis]);
+            if (this._position[axis] > half - this.radius) this._velocity[axis] = -Math.abs(this.velocity[axis]);
+            if (this._position[axis] < -half + this.radius) this._velocity[axis] =  Math.abs(this.velocity[axis]);
         });
     }
 
-    moveWithin(boxSize) {
+    moveWithinRadius(center, radius, restitution=1) {
+        const offset = this._position.clone().sub(center);
+        const distance = offset.length();
+
+        if (distance > radius - this.radius) {
+            const normal = offset.normalize();
+            this._position.copy(center.clone().addScaledVector(normal, radius - this.radius));
+
+            // reflecteer velocity
+            const vDotN = this._velocity.dot(normal);
+            const reflected = normal.multiplyScalar((1 + restitution) * vDotN);
+
+            this._velocity.sub(reflected);
+        }
+
+        this._sphere.moveTo(this._position);
+    }
+
+    moveWithinBox(boxSize) {
         this._position.add(this._velocity);
         this.updateMesh();
         this.confineToBox(boxSize);
@@ -1657,9 +1697,20 @@ export class ParticleTrail3D {
 }
 
 export class Gas extends Group {
-    constructor(currentTemperature, numBalls, k=1) {
+    static Type = Object.freeze({
+        IN_BOX: "box",
+        IN_SPHERE: "sphere"
+    });
+    constructor({
+                    numBalls=20,
+                    k=1,
+                    containerSize=1,
+                    containerType=Gas.Type.IN_BOX
+    } = {}) {
         super();
         this._balls = [];
+        this._containerSize = containerSize;
+        this._containerType = containerType;
         this._numBalls = numBalls;
         this._trail = null;
         this._k = k; // Boltzmann constant
@@ -1711,11 +1762,14 @@ export class Gas extends Group {
         return { bins, theory };
     }
 
-    update(boxSize) {
+    update() {
         this._trail?.increment(this._balls[0]);   // big red ball
 
         for (let ball of this._balls)
-            ball.moveWithin(boxSize);
+            if (this._containerType === Gas.Type.IN_BOX)
+                ball.moveWithinBox(this._containerSize);
+            else
+                ball.moveWithinRadius(this._containerSize);
 
         for (let i = 0; i < this._balls.length - 1; i++)
             for (let j = i + 1; j < this._balls.length; j++)
@@ -1730,6 +1784,8 @@ export class Gas extends Group {
 
 export class Gas2D extends Gas {
     constructor({
+                    containerSize=1,
+                    containerType=Gas.Type.IN_BOX,
                     currentTemperature=.5,
                     numBalls=200,
                     particleRadius=5,
@@ -1738,7 +1794,11 @@ export class Gas2D extends Gas {
                     tracerRadius=5,
                     tracerColor="red",
                     tracerMass=1} = {}) {
-        super(currentTemperature, numBalls);
+        super({
+            numBalls: numBalls,
+            containerSize: containerSize,
+            containerType: containerType
+        });
         this._trail = new ParticleTrail2D(this);
         this._balls.push(new Particle2D(this, {
             radius: tracerRadius,
@@ -1810,6 +1870,8 @@ export class Gas2D extends Gas {
 
 export class Gas3D extends Gas {
     constructor({
+                    containerSize=1,
+                    containerType=Gas.Type.IN_BOX,
                     currentTemperature=.5,
                     numBalls=200,
                     particleRadius=5,
@@ -1818,7 +1880,11 @@ export class Gas3D extends Gas {
                     tracerRadius=5,
                     tracerColor="red",
                     tracerMass=1} = {}) {
-        super(currentTemperature, numBalls);
+        super({
+            numBalls: numBalls,
+            containerSize: containerSize,
+            containerType: containerType
+        });
         this._trail = new ParticleTrail3D(this);
         this._balls.push(new Particle3D(this, {
             radius: tracerRadius,

@@ -56,7 +56,10 @@
     scene.add(light);
     scene.add(new AmbientLight(0xffffff, .5));
 
-    const gas = new Gas3D({temperature: Number(temperatureSlider.value)});
+    const gas = new Gas3D({
+        temperature: Number(temperatureSlider.value),
+        containerSize: boxSize
+    });
     scene.add(gas);
     new Aquarium(scene, {size: boxSize});
 
