@@ -1900,9 +1900,7 @@ export class Gas3D extends Gas {
                 radius: particleRadius,
                 color: particleColor,
                 mass: particleMass,
-                position: new Vector3()
-                    .random()
-                    .sub(new Vector3(-1, -1, -1))
+                position: new Vector3(-.5 + Math.random(), -.5 + Math.random(), -5 + Math.random())
                     .multiplyScalar(containerSize * .25),
                 velocity: this.#newInitialVelocity(currentTemperature, particleMass)
             }));
