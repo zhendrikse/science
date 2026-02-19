@@ -1,362 +1,145 @@
-<style>
-    html, body {
-        background: #131313;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        height: 100%;
-    }
-
-    #glowscript-wrapper {
-        display: block;
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        aspect-ratio: 4 / 3;
-        margin: auto;
-    }
-
-    .glowscript canvas {
-        display: block;
-        touch-action: none;
-        width: 100%;
-        height: 100%;
-    }
-</style>
-<script>
-    // Disable MathJax within GlowScript library
-    if (window.MathJax && !MathJax.Hub) {
-        MathJax.Hub = {
-            Configured: function(){},
-            Config: function(){},
-            Queue: function(){},
-            Typeset: function(){}
-        };
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.182.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.182.0/examples/jsm/"
+      }
     }
 </script>
-<div id="glowscript-wrapper"><div id="glowscript" class="glowscript"></div>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link type="text/css" href="https://www.glowscript.org/css/redmond/2.1/jquery-ui.custom.css" rel="stylesheet" />
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/lib/jquery/2.1/jquery-ui.custom.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/glow.3.2.min.js"></script>
-<script type="text/javascript" src="https://www.glowscript.org/package/RSrun.3.2.min.js"></script>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-
-// START JAVASCRIPT
-;(function() {;
-var ρσ_modules = {};
-ρσ_modules.pythonize = {};
-
-(function(){
-    function strings() {
-        var string_funcs, exclude, name;
-        string_funcs = set("capitalize strip lstrip rstrip islower isupper isspace lower upper swapcase center count endswith startswith find rfind index rindex format join ljust rjust partition rpartition replace split rsplit splitlines zfill".split(" "));
-        if (!arguments.length) {
-            exclude = (function(){
-                var s = ρσ_set();
-                s.jsset.add("split");
-                s.jsset.add("replace");
-                return s;
-            })();
-        } else if (arguments[0]) {
-            exclude = Array.prototype.slice.call(arguments);
-        } else {
-            exclude = null;
-        }
-        if (exclude) {
-            string_funcs = string_funcs.difference(set(exclude));
-        }
-        var ρσ_Iter0 = string_funcs;
-        ρσ_Iter0 = ((typeof ρσ_Iter0[Symbol.iterator] === "function") ? (ρσ_Iter0 instanceof Map ? ρσ_Iter0.keys() : ρσ_Iter0) : Object.keys(ρσ_Iter0));
-        for (var ρσ_Index0 of ρσ_Iter0) {
-            name = ρσ_Index0;
-            (ρσ_expr_temp = String.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name] = (ρσ_expr_temp = ρσ_str.prototype)[(typeof name === "number" && name < 0) ? ρσ_expr_temp.length + name : name];
-        }
-    };
-    if (!strings.__module__) Object.defineProperties(strings, {
-        __module__ : {value: "pythonize"}
-    });
-
-    ρσ_modules.pythonize.strings = strings;
-})();
-
-async function __main__() {
-"use strict";
-    var display = canvas;
-    var scene = canvas();
-    /* ================= GLOWSCRIPT RESPONSIVE PATCH ================= */
-
-    function resizeGlowScriptScene() {
-        const wrapper = document.getElementById('glowscript-wrapper');
-        if (!wrapper || !scene || !scene.canvas) return;
-
-        const dpr = window.devicePixelRatio || 1;
-
-        const w = wrapper.clientWidth;
-        const h = wrapper.clientHeight;
-
-        scene.width  = Math.floor(w * dpr);
-        scene.height = Math.floor(h * dpr);
-
-        scene.canvas.style.width  = w + 'px';
-        scene.canvas.style.height = h + 'px';
-    }
-
-    scene.autoscale = false;
-    scene.userzoom  = true;
-    scene.userspin  = true;
-    scene.userpan   = true;
-
-    resizeGlowScriptScene();
-    window.addEventListener('resize', resizeGlowScriptScene);
-
-    /* =============================================================== */
-    function round(num, n=0) {return Number(num.toFixed(n))}
-    var box, compound, cone, curve, cylinder, ellipsoid, extrusion, helix, points, pyramid, ring, group, vec, sleep, update, paths, shapes, vertex, triangle, quad, label, distant_light, local_light, attach_trail, attach_arrow, attach_light, sin, tan, asin, acos, atan, atan2, exp, pow, factorial, combin, button, radio, checkbox, slider, checkbox, text, download, radians, degrees, get_library, read_local_file
-    var version, print, arange, __name__, type, ρσ_ls, title, display, R, m, k, shell, ishell, expansion_x, expansion_y, expansion_z, g1, fK, g2, fP, g3, fk, _GS_1, gas, dv, t, dt, one_third, volume, ρσ_unpack, pressure, kinetic_energy;
-    version = ρσ_list_decorate([ "3.2", "glowscript" ]);
-    Array.prototype['+'] = function(r) {return this.concat(r)}
-    Array.prototype['*'] = function(r) {return __array_times_number(this, r)}
-    window.__GSlang = "vpython";
-    print = GSprint;
-    arange = range;
-    __name__ = "__main__";
-    type = pytype;
-    var strings = ρσ_modules.pythonize.strings;
-
-    strings();
-    "8";
-    title = "&#x2022; Based on <a href=\"https://trinket.io/glowscript/67ab1d3d88\">this code on Trinket<\/a>\n&#x2022; Refactored by <a href=\"https://www.hendrikse.name/\">Zeger Hendrikse</a> to <a href=\"https://github.com/zhendrikse/science/blob/main/thermodynamics/code/adiabatic_expansion.py\">adiabatic_expansion.py</a>\n\n";
-    "10";
-    display = ρσ_interpolate_kwargs.call(this, canvas, [ρσ_desugar_kwargs({title: title, width: 600, height: 600, background: color.gray(.075), forward: vector(1["-u"]()["*"](.75), 1["-u"]()["*"](.15), 1["-u"]()["*"](.75))})]);
-    "12";
-    R = 1;
-    "13";
-    m = 1;
-    "14";
-    k = 1e4;
-    "16";
-    shell = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), radius: R, opacity: .3, color: color.purple})]);
-    "17";
-    ishell = ρσ_interpolate_kwargs.call(this, sphere, [ρσ_desugar_kwargs({pos: vector(0, 0, 0), radius: R, opacity: .1, color: color.red})]);
-    "18";
-    expansion_x = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vector(R, 0, 0), axis: vector(0, 0, 0), color: color.yellow, shaftwidth: .025})]);
-    "19";
-    expansion_y = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vector(0, R, 0), axis: vector(0, 0, 0), color: color.yellow, shaftwidth: .025})]);
-    "20";
-    expansion_z = ρσ_interpolate_kwargs.call(this, arrow, [ρσ_desugar_kwargs({pos: vector(0, 0, R), axis: vector(0, 0, 0), color: color.yellow, shaftwidth: .025})]);
-    "22";
-    display.append_to_caption("\n\n");
-    "23";
-    g1 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({xtitle: "Time (s)", ytitle: "KE (J)", background: color.black})]);
-    "24";
-    fK = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.purple})]);
-    "25";
-    g2 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({xtitle: "Time (s)", ytitle: "Pressure (Pa)", background: color.black})]);
-    "26";
-    fP = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.red})]);
-    "27";
-    g3 = ρσ_interpolate_kwargs.call(this, graph, [ρσ_desugar_kwargs({xtitle: "Time(s)", ytitle: "PV/KE", background: color.black})]);
-    "28";
-    fk = ρσ_interpolate_kwargs.call(this, gcurve, [ρσ_desugar_kwargs({color: color.green})]);
-    "31";
-    async function normal(average, standard_deviation) {
-        var ρσ_ls, u1, u2, vt;
-        "32";
-        u1 = random();
-        "33";
-        u2 = random();
-        "34";
-        vt = sqrt(1["-u"]()["*"](2)["*"](log(u1)))["*"](cos(2["*"](pi)["*"](u2)));
-        "35";
-        vt = vt["*"](standard_deviation)["+"](average);
-        "36";
-        return vt;
-    };
-    if (!normal.__argnames__) Object.defineProperties(normal, {
-        __argnames__ : {value: ["average", "standard_deviation"]},
-        __module__ : {value: null}
-    });
-
-    "38";
-    function Gas() {;
-    }
-    Gas.prototype.__init__ = async function __init__() {
-        var self = this;
-        var total_atoms = (arguments[0] === undefined || ( 0 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.total_atoms : arguments[0];
-        var initial_velocity = (arguments[1] === undefined || ( 1 === arguments.length["-"](1) && arguments[arguments.length["-"](1)] !== null && typeof arguments[arguments.length["-"](1)] === "object" && arguments[arguments.length["-"](1)] [ρσ_kwargs_symbol] === true)) ? __init__.__defaults__.initial_velocity : arguments[1];
-        var ρσ_kwargs_obj = arguments[arguments.length["-"](1)];
-        if (ρσ_kwargs_obj === null || typeof ρσ_kwargs_obj !== "object" || ρσ_kwargs_obj [ρσ_kwargs_symbol] !== true) ρσ_kwargs_obj = {};
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "total_atoms")){
-            total_atoms = ρσ_kwargs_obj.total_atoms;
-        }
-        if (Object.prototype.hasOwnProperty.call(ρσ_kwargs_obj, "initial_velocity")){
-            initial_velocity = ρσ_kwargs_obj.initial_velocity;
-        }
-        var ρσ_ls, rt, _, v, atom;
-        "40";
-        self._atoms = ρσ_list_decorate([]);
-        "42";
-        for (var ρσ_Index1 = 0; ρσ_Index1["<"](total_atoms); ρσ_Index1++) {
-            _ = ρσ_Index1;
-            "43";
-            rt = R["*"](vector(2["*"](random())["-"](1["*"](1)), 2["*"](random())["-"](1["*"](1)), 2["*"](random())["-"](1["*"](1))));
-            "44";
-            if (mag(rt)["<"](R)) {
-                "45";
-                self._atoms=self._atoms["+"](ρσ_list_decorate([ ρσ_interpolate_kwargs.call(this, simple_sphere, [ρσ_desugar_kwargs({pos: rt, radius: R["/"](50), color: color.green})]) ]));
-            }
-        }
-        "47";
-        var ρσ_Iter2 = self._atoms;
-        ρσ_Iter2 = ((typeof ρσ_Iter2[Symbol.iterator] === "function") ? (ρσ_Iter2 instanceof Map ? ρσ_Iter2.keys() : ρσ_Iter2) : Object.keys(ρσ_Iter2));
-        for (var ρσ_Index2 of ρσ_Iter2) {
-            atom = ρσ_Index2;
-            "48";
-            atom.m = m;
-            "49";
-            v = (await normal(initial_velocity, .3));
-            "50";
-            atom.p = atom.m["*"](v)["*"](norm(vector(2["*"](random())["-"](1["*"](1)), 2["*"](random())["-"](1["*"](1)), 2["*"](random())["-"](1["*"](1)))));
-            "51";
-            atom.F = vector(0, 0, 0);
-        }
-    };
-    if (!Gas.prototype.__init__.__defaults__) Object.defineProperties(Gas.prototype.__init__, {
-        __defaults__ : {value: {total_atoms:3e3, initial_velocity:2}},
-        __handles_kwarg_interpolation__ : {value: true},
-        __argnames__ : {value: ["total_atoms", "initial_velocity"]},
-        __module__ : {value: null}
-    });
-    Gas.__argnames__ = Gas.prototype.__init__.__argnames__;
-    Gas.__handles_kwarg_interpolation__ = Gas.prototype.__init__.__handles_kwarg_interpolation__;
-    Gas.prototype.average_kinetic_energy = async function average_kinetic_energy() {
-        var self = this;
-        var ρσ_ls, total_kinetic_energy, atom;
-        "55";
-        total_kinetic_energy = 0;
-        "56";
-        var ρσ_Iter3 = self._atoms;
-        ρσ_Iter3 = ((typeof ρσ_Iter3[Symbol.iterator] === "function") ? (ρσ_Iter3 instanceof Map ? ρσ_Iter3.keys() : ρσ_Iter3) : Object.keys(ρσ_Iter3));
-        for (var ρσ_Index3 of ρσ_Iter3) {
-            atom = ρσ_Index3;
-            "57";
-            total_kinetic_energy=total_kinetic_energy["+"](mag(atom.p)["*"](mag(atom.p))["/"](2["*"](m)));
-        }
-        "58";
-        return total_kinetic_energy["/"](len(self._atoms));
-    };
-    if (!Gas.prototype.average_kinetic_energy.__module__) Object.defineProperties(Gas.prototype.average_kinetic_energy, {
-        __module__ : {value: null}
-    });
-    Gas.prototype.net_pressure = async function net_pressure(radius) {
-        var self = this;
-        var ρσ_ls, net_force, atom, surface_area;
-        "62";
-        net_force = 0;
-        "63";
-        var ρσ_Iter4 = self._atoms;
-        ρσ_Iter4 = ((typeof ρσ_Iter4[Symbol.iterator] === "function") ? (ρσ_Iter4 instanceof Map ? ρσ_Iter4.keys() : ρσ_Iter4) : Object.keys(ρσ_Iter4));
-        for (var ρσ_Index4 of ρσ_Iter4) {
-            atom = ρσ_Index4;
-            "64";
-            net_force=net_force["+"](mag(atom.F));
-        }
-        "65";
-        surface_area = 4["*"](pi)["*"](radius)["*"](radius);
-        "66";
-        return net_force["/"](surface_area);
-    };
-    if (!Gas.prototype.net_pressure.__argnames__) Object.defineProperties(Gas.prototype.net_pressure, {
-        __argnames__ : {value: ["radius"]},
-        __module__ : {value: null}
-    });
-    Gas.prototype.time_lapse = async function time_lapse(dt) {
-        var self = this;
-        var ρσ_ls, r, ball;
-        "69";
-        var ρσ_Iter5 = self._atoms;
-        ρσ_Iter5 = ((typeof ρσ_Iter5[Symbol.iterator] === "function") ? (ρσ_Iter5 instanceof Map ? ρσ_Iter5.keys() : ρσ_Iter5) : Object.keys(ρσ_Iter5));
-        for (var ρσ_Index5 of ρσ_Iter5) {
-            ball = ρσ_Index5;
-            "70";
-            r = ball.pos;
-            "71";
-            ball.F = (mag(r)[">"](R)) ? 1["-u"]()["*"](k)["*"](mag(r)["-"](1["*"](R)))["*"](norm(r)) : vector(0, 0, 0);
-            "72";
-            ball.p=ball.p["+"](ball.F["*"](dt));
-            "73";
-            ball.pos=ball.pos["+"](ball.p["/"](ball.m)["*"](dt));
-        }
-    };
-    if (!Gas.prototype.time_lapse.__argnames__) Object.defineProperties(Gas.prototype.time_lapse, {
-        __argnames__ : {value: ["dt"]},
-        __module__ : {value: null}
-    });
-    Gas.prototype.__repr__ = async function __repr__() {
-                return "<"["+"](__name__)["+"](".")["+"](this.constructor.name)["+"](" #")["+"](this.ρσ_object_id)["+"](">");
-    };
-    Gas.prototype.__str__ = async function __str__() {
-        return this.__repr__();
-    };
-    Object.defineProperty(Gas.prototype, "__bases__", {value: []});
-
-
-
-
-
-    "76";
-    _GS_1 = new Gas;
-    (await _GS_1.__init__());
-    gas = _GS_1;
-    "77";
-    dv = .001;
-    "78";
-    t = 0;
-    "79";
-    dt = .001;
-    "80";
-    one_third = 1["/"](3);
-    "81";
-    while (t["<"](1e3)) {
-        "82";
-        (await rate(5e3));
-        "84";
-        volume = 4["*"](pi)["*"](R)["*"](R)["*"](R)["/"](3);
-        "85";
-        volume=volume["+"](dv);
-        "86";
-        R = Math.pow((.75["*"](volume)["/"](pi)), one_third);
-        "87";
-        shell.radius = R;
-        "89";
-        (await gas.time_lapse(dt));
-        "90";
-        ρσ_unpack = [vector(R["-"](1["*"](1)), 0, 0), vector(0, R["-"](1["*"](1)), 0), vector(0, 0, R["-"](1["*"](1)))];
-        expansion_x.axis = ρσ_unpack[0];
-        expansion_y.axis = ρσ_unpack[1];
-        expansion_z.axis = ρσ_unpack[2];
-        "92";
-        t=t["+"](dt);
-        "94";
-        pressure = (await gas.net_pressure(R));
-        "95";
-        kinetic_energy = (await gas.average_kinetic_energy());
-        "96";
-        fK.plot(t, kinetic_energy);
-        "97";
-        fP.plot(t, pressure);
-        "98";
-        fk.plot(t, pressure["*"](volume)["/"](kinetic_energy));
-    }
-};
-if (!__main__.__module__) Object.defineProperties(__main__, {
-    __module__ : {value: null}
-});
-
-;$(function(){ window.__context = { glowscript_container: $("#glowscript").removeAttr("id") }; __main__() })})()
-// END JAVASCRIPT
-
-//--><!]]></script>
+<canvas class="applicationCanvas" id="boltzmannCanvas3d" width="800" height="800" ></canvas>
+<div class="buttonRow">
+    <button id="toggle3d">&nbsp;Pause&nbsp;</button>
+    <button id="reset3d">Reset</button>
+    <button id="show3d">Show</button>
+    <button id="hide3d">Hide</button>
+    <button id="add3d">+50</button>
 </div>
+<div style="margin:auto;">
+    <label for="temperatureSlider3d">
+        Cold <input type="range" id="temperatureSlider3d" min="0.05" max="2.0" value=".5" step="0.01"/> Hot
+    </label>
+</div>
+<p style="clear: both;"></p>
+<div id="plot" style="margin:auto;"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/uplot/dist/uPlot.min.css">
+<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
+
+<script type="module">
+    import { Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight,
+        MeshStandardMaterial, Mesh, SphereGeometry} from "three";
+    import { Gas3D, Gas } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+    // --- Canvas & scene ---
+    const canvas = document.getElementById("boltzmannCanvas3d");
+    const temperatureSlider = document.getElementById("temperatureSlider3d");
+
+    const scene = new Scene();
+    let sphereRadius = 200;
+
+    // --- Camera ---
+    const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 2000);
+    camera.position.set(230, 125, 560);
+    camera.lookAt(0, 0, 0);
+
+    // --- Renderer ---
+    const renderer = new WebGLRenderer({ canvas, antialias:true, alpha:true });
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setAnimationLoop(animate);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+
+    const light = new DirectionalLight(0xffffff, 1);
+    light.position.set(0, 1.5 * sphereRadius, 0);
+    scene.add(light);
+    scene.add(new AmbientLight(0xffffff, .5));
+
+    const gas = new Gas3D({
+        temperature: Number(temperatureSlider.value),
+        containerSize: sphereRadius,
+        containerType: Gas.Type.IN_SPHERE
+    });
+    scene.add(gas);
+
+    const shell = new Mesh( // Container for adiabatic expansion
+        new SphereGeometry(sphereRadius * 1.05, 32, 32),
+        new MeshStandardMaterial({
+            color: 0x8844ff,
+            transparent: true,
+            opacity: 0.25
+        })
+    );
+    scene.add(shell);
+
+    // --- uPlot ---
+    const data = [[],[],[],[]];
+    const plot = new uPlot({
+            title: "Statistics",
+            width: canvas.clientWidth,
+            height: canvas.clientHeight * .75,
+            bg: "transparent",
+            scales: {
+                x: { time: false },
+                y: { auto: true } //, range: [0, 80] }
+            },
+            axes: [
+                {   // x-axis
+                    stroke: "#ff0",
+                    font: "12px Arial",
+                    grid: {
+                        stroke: "rgba(255, 255, 255, 0.2)",
+                        width: 1
+                    }
+                },
+                {   // y-axis
+                    stroke: "#ff0",
+                    font: "12px Arial",
+                    grid: {
+                        stroke: "rgba(255, 255, 255, 0.2)",
+                        width: 1
+                    }
+                }
+            ],
+            series: [
+                {},
+                {label: "KE", stroke: "purple"},
+                {label: "Pressure", stroke: "red"},
+                {label: "PV/KE", stroke: "green"}
+            ]
+        }, data, document.getElementById("plot"));
+
+    let running = true;
+    const toggleButton = document.getElementById("toggle3d");
+    toggleButton.onclick = () => {
+        running = !running;
+        toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";
+    }
+    document.getElementById("show3d").addEventListener("click", () => gas.show());
+    document.getElementById("hide3d").addEventListener("click", () => gas.hide(false));
+    temperatureSlider.addEventListener("input", (event) => gas.setTemperature(Number(event.target.value)));
+    document.getElementById("add3d").addEventListener("click", () => gas.addParticles(50));
+    document.getElementById("reset3d").addEventListener("click", () => gas.reset(Number(temperatureSlider.value)));
+
+    const volume = (4 / 3) * Math.PI * sphereRadius * sphereRadius * sphereRadius;
+    let steps = 0;
+    function animate(time) {
+        if (running)
+            gas.update();
+
+        const P  = gas.pressure(sphereRadius);
+        const KE =gas.averageKE();
+        console.log(P, KE);
+        if(steps++ % 10 === 0){
+            data[0].push(time * .001);
+            data[1].push(KE);
+            data[2].push(P);
+            data[3].push(P * volume / KE);
+            plot.setData(data);
+        }
+
+        renderer.render(scene, camera);
+    }
+</script>

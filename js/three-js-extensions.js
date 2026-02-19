@@ -1401,8 +1401,8 @@ class Particle {
     get radius() { return this._radius; }
     get mass() { return this._mass; }
 
-    speed = () => this._velocity.length();
-    kineticEnergy = () => 0.5 * this._mass * this._velocity.lengthSq();
+    speed = () => this.velocity.length();
+    kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
     scaleVelocity = (scale) => this._velocity.multiplyScalar(scale);
 
     momentum() { return this.mass * this.velocity }
