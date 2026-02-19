@@ -1481,6 +1481,7 @@ class Particle {
 
     moveWithinRadius(radius, dt) {
         this.applyForce(this.radialWallForce(radius), dt);
+        this._position.addScaledVector(this.velocity, dt);
         this.updateMesh();
     }
 }
@@ -1899,6 +1900,10 @@ export class Gas3D extends Gas {
                 radius: particleRadius,
                 color: particleColor,
                 mass: particleMass,
+                position: new Vector3()
+                    .random()
+                    .sub(new Vector3(-.5, -.5, -.5))
+                    .multiplyScalar(containerSize * .25),
                 velocity: this.#newInitialVelocity(currentTemperature, particleMass)
             }));
         this.setTemperature(currentTemperature);
