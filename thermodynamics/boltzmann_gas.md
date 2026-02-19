@@ -3,12 +3,17 @@
 ## Two-dimensional Boltzmann gas
 <div class="header_line"><br/></div>
 
+🔧 [boltzmann_gas_2d.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
+
 {% include_relative code/boltzmann_gas_2d.html %}
 
 <p style="clear: both;"></p>
 
 ## Three-dimensional Boltzmann gas
 <div class="header_line"><br/></div>
+
+🔧 [boltzmann_gas_3d.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
+⭐ Also available as [boltzmann_gas.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/boltzmann_gas.py)
 
 {% include_relative code/boltzmann_gas_3d.html %}
 

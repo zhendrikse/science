@@ -3,12 +3,17 @@
 ## Two-dimensional Brownian motion
 <div class="header_line"><br/></div>
 
+🔧 [brownian_motion_2d.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/brownian_motion_2d.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
+
 {% include_relative code/brownian_motion_2d.html %}
 
 <p style="clear: both;"></p>
 
 ## Three-dimensional Brownian motion
 <div class="header_line"><br/></div>
+
+🔧 [brownian_motion_3d.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
+⭐ Also available as [brownian_motion.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/brownian_motion.py)
 
 {% include_relative code/brownian_motion_3d.html %}
 
