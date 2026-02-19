@@ -1493,14 +1493,17 @@ class Particle {
 
         // reflect velocity
         const vDotN = this._velocity.dot(normal);
-        const impulse = normal.multiplyScalar((1 + restitution) * vDotN);
-        this._velocity.sub(impulse);
+        const impulse = (1 + restitution) * this.mass * vDotN;
+        this._velocity.sub(normal.multiplyScalar((1 + restitution) * vDotN));
+
+        return Math.abs(impulse)
     }
 
     moveWithinRadius(radius) {
         this._position.add(this._velocity);
-        this.confineToSphere(radius);
+        const impulse = this.confineToSphere(radius);
         this.updateMesh();
+        return impulse;
     }
 }
 
@@ -1744,6 +1747,7 @@ export class Gas extends Group {
         this._numBalls = numBalls;
         this._trail = null;
         this._k = k; // Boltzmann constant
+        this._particleImpulsTotal;
     }
 
     show() {
@@ -1795,11 +1799,12 @@ export class Gas extends Group {
     update() {
         this._trail?.increment(this._balls[0]);   // big red ball
 
+        this._particleImpulsTotal = 0;
         for (let ball of this._balls)
             if (this._containerType === Gas.Type.IN_BOX)
                 ball.moveWithinBox(this._containerSize);
             else
-                ball.moveWithinRadius(this._containerSize);
+                this._particleImpulsTotal += ball.moveWithinRadius(this._containerSize);
 
         for (let i = 0; i < this._balls.length - 1; i++)
             for (let j = i + 1; j < this._balls.length; j++)
@@ -1820,11 +1825,8 @@ export class Gas extends Group {
     }
 
     pressure(radius) {
-        let totalForce = 0;
-        for(const particle of this._balls.slice(1))
-            totalForce += particle.radialWallForce(radius);
-
-        return totalForce / (4 * Math.PI * radius * radius);
+        const area = 4 * Math.PI * radius * radius;
+        return this._particleImpulsTotal / area;
     }
 
     changeContainerSize(size) { this._containerSize = size; }
