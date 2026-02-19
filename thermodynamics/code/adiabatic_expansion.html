@@ -130,7 +130,7 @@
             gas.update();
 
         const P  = gas.pressure(sphereRadius);
-        const KE =gas.averageKE();
+        const KE = gas.averageKE();
         console.log(P, KE);
         if(steps++ % 10 === 0){
             data[0].push(time * .001);

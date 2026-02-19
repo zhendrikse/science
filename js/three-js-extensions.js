@@ -1806,12 +1806,18 @@ export class Gas extends Group {
         this._trail?.draw();
     }
 
-    averageKE() { return this._balls.reduce((sum, particle)=> sum + particle.kineticEnergy(), 0) / this._numBalls; }
+    averageKE() {
+        let totalKineticEnergy = 0;
+        for(const particle of this._balls)
+            totalKineticEnergy += particle.kineticEnergy();
+
+        return totalKineticEnergy;
+    }
 
     pressure(radius) {
         let totalForce = 0;
         for(const particle of this._balls)
-            totalForce += particle.radialWallForce();
+            totalForce += particle.radialWallForce(radius);
 
         return totalForce / (4 * Math.PI * radius * radius);
     }
