@@ -1657,14 +1657,14 @@ export class Particle3D extends Particle {
             const normal = offset.normalize();
             this._position.copy(center.clone().addScaledVector(normal, radius - this.radius));
 
-            // reflecteer velocity
+            // reflect velocity
             const vDotN = this._velocity.dot(normal);
             const reflected = normal.multiplyScalar((1 + restitution) * vDotN);
 
             this._velocity.sub(reflected);
         }
 
-        this._sphere.moveTo(this._position);
+        this.updateMesh();
     }
 
     moveWithinBox(boxSize) {
