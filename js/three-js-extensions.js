@@ -1412,6 +1412,12 @@ class Particle {
     distanceTo(other) { return this.position.distanceTo(other.position); }
 
     updateMesh() { throw new Error("Method to be implemented by concrete subclass")}
+    confineToBox() { throw new Error("Method to be implemented by concrete subclass")}
+    reset(position, velocity) {
+        this._position.copy(position);
+        this._velocity.copy(velocity);
+        this.updateMesh();
+    }
 
     timelapse(forceVector, dt) {
         const acceleration = forceVector.clone().divideScalar(this.mass);
@@ -1422,17 +1428,13 @@ class Particle {
 
     applyForce(force, dt) { this._velocity.addScaledVector(force, dt / this.mass); }
 
-    applyRadialWallForce(radius, k) {
+    radialWallForce(radius, k=5000) {
+        if (this.position.lengthSq() < radius * radius) return;
+
         const rVector = this.position.clone();
-        const r = rVector.length();
-
-        if (r > radius) {
-            const normal = rVector.normalize();
-            const magnitude = -k * (r - radius);
-
-            const force = normal.multiplyScalar(magnitude);
-            this.applyForce(force, dt);
-        }
+        const normal = rVector.normalize();
+        const magnitude = -k * (rVector.length() - radius);
+        return normal.multiplyScalar(magnitude);
     }
 
     collideWith(other) {
@@ -1477,6 +1479,17 @@ class Particle {
         // Back to lab-frame
         this._velocity.add(frame); other._velocity.add(frame);
     }
+
+    moveWithinBox(boxSize) {
+        this._position.add(this._velocity);
+        this.updateMesh();
+        this.confineToBox(boxSize);
+    }
+
+    moveWithinRadius(radius) {
+        this.applyForce(this.radialWallForce(radius));
+        this.updateMesh();
+    }
 }
 
 export class Particle2D extends Particle {
@@ -1499,11 +1512,7 @@ export class Particle2D extends Particle {
 
     updateMesh() { this._mesh.position.set(this.position.x, this.position.y, 0).multiplyScalar(this._scale); }
 
-    reset(position=new Vector2(0, 0), velocity=new Vector2(0, 0)) {
-        this._position.copy(position);
-        this._velocity.copy(velocity);
-        this.updateMesh();
-    }
+    reset(position=new Vector2(0, 0), velocity=new Vector2(0, 0)) { super.reset(position, velocity); }
 
     confineToBox(size) {
         const half = size / 2;
@@ -1511,34 +1520,6 @@ export class Particle2D extends Particle {
             if (this.position[axis] > half - this.radius) this._velocity[axis] = -Math.abs(this.velocity[axis]);
             if (this.position[axis] < -half + this.radius) this._velocity[axis] =  Math.abs(this.velocity[axis]);
         });
-    }
-
-    moveWithinBox(boxSize) {
-        this._position.add(this._velocity);
-        this.updateMesh();
-        this.confineToBox(boxSize);
-    }
-
-    moveWithinRadius(center, radius, restitution=1) {
-        this._position.add(this._velocity);
-
-        const offset = this._position.clone().sub(center);
-        const distance = offset.length();
-        const maxDistance = radius - this.radius;
-
-        if (distance > maxDistance) {
-            const normal = offset.normalize();
-
-            // Project back to edge
-            this._position.copy(center.clone().addScaledVector(normal, maxDistance));
-            const vDotN = this._velocity.dot(normal); // Reflect velocity
-
-            // v' = v − (1 + e)(v·n)n
-            const reflection = normal.clone().multiplyScalar((1 + restitution) * vDotN);
-            this._velocity.sub(reflection);
-        }
-
-        this.updateMesh();
     }
 }
 
@@ -1635,11 +1616,7 @@ export class Particle3D extends Particle {
 
     updateMesh() { this._mesh.position.copy(this.position).multiplyScalar(this._scale); }
 
-    reset(position=new Vector3(0, 0, 0), velocity=new Vector3(0, 0, 0)) {
-        this._position.copy(position);
-        this._velocity.copy(velocity);
-        this.updateMesh();
-    }
+    reset(position=new Vector3(0, 0, 0), velocity=new Vector3(0, 0, 0)) { super.reset(position, velocity); }
 
     confineToBox(size) {
         const half = size / 2;
@@ -1647,30 +1624,6 @@ export class Particle3D extends Particle {
             if (this._position[axis] > half - this.radius) this._velocity[axis] = -Math.abs(this.velocity[axis]);
             if (this._position[axis] < -half + this.radius) this._velocity[axis] =  Math.abs(this.velocity[axis]);
         });
-    }
-
-    moveWithinRadius(center, radius, restitution=1) {
-        const offset = this._position.clone().sub(center);
-        const distance = offset.length();
-
-        if (distance > radius - this.radius) {
-            const normal = offset.normalize();
-            this._position.copy(center.clone().addScaledVector(normal, radius - this.radius));
-
-            // reflect velocity
-            const vDotN = this._velocity.dot(normal);
-            const reflected = normal.multiplyScalar((1 + restitution) * vDotN);
-
-            this._velocity.sub(reflected);
-        }
-
-        this.updateMesh();
-    }
-
-    moveWithinBox(boxSize) {
-        this._position.add(this._velocity);
-        this.updateMesh();
-        this.confineToBox(boxSize);
     }
 }
 
