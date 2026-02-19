@@ -1504,7 +1504,7 @@ export class Particle2D extends Particle {
         parent.add(this._mesh);
     }
 
-    radialWallForce(radius, kWall=50000) {
+    radialWallForce(radius, kWall=1e6) {
         const r = this.position.length();
         if (r < radius) return new Vector2(0, 0);
 
@@ -1617,7 +1617,7 @@ export class Particle3D extends Particle {
         parent.add(this._mesh);
     }
 
-    radialWallForce(radius, kWall=50000) {
+    radialWallForce(radius, kWall=1e6) {
         const r = this.position.length();
         if (r < radius) return new Vector3(0, 0, 0);
 
