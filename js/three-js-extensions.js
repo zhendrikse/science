@@ -1479,9 +1479,27 @@ class Particle {
         this.confineToBox(boxSize);
     }
 
-    moveWithinRadius(radius, dt) {
-        this.applyForce(this.radialWallForce(radius), dt);
-        this._position.addScaledVector(this.velocity, dt);
+    confineToSphere(radius, restitution=1) {
+        const rVector = this._position.clone();
+        const distance = rVector.length();
+        const maxDist = radius - this.radius;
+
+        if (distance < maxDist) return;
+
+        const normal = rVector.normalize(); // normaalvector with respect to the edge
+
+        // project back to edge
+        this._position.copy(normal.multiplyScalar(maxDist));
+
+        // reflect velocity
+        const vDotN = this._velocity.dot(normal);
+        const reflection = normal.multiplyScalar((1 + restitution) * vDotN);
+        this._velocity.sub(reflection);
+    }
+
+    moveWithinRadius(radius) {
+        this._position.add(this._velocity);
+        this.confineToSphere(radius);
         this.updateMesh();
     }
 }
@@ -1504,13 +1522,15 @@ export class Particle2D extends Particle {
         parent.add(this._mesh);
     }
 
-    radialWallForce(radius, kWall=1e6) {
+    radialWallForce(wallRadius, kWall=1e4) {
         const r = this.position.length();
-        if (r < radius) return new Vector2(0, 0);
+        if (r < wallRadius) return new Vector3(0, 0, 0);
 
-        const normal = this.position.clone().normalize();
-        const forceMag = -kWall * (r - radius);
-        return normal.multiplyScalar(forceMag);
+        // This is the force vector:
+        // const normal = this.position.clone().normalize();
+        // const forceMag = -kWall * (r - wallRadius);
+        // const force = normal.multiplyScalar(forceMag);
+        return -kWall * (r - wallRadius);
     }
 
     updateMesh() { this._mesh.position.set(this.position.x, this.position.y, 0).multiplyScalar(this._scale); }
@@ -1617,13 +1637,15 @@ export class Particle3D extends Particle {
         parent.add(this._mesh);
     }
 
-    radialWallForce(radius, kWall=1e6) {
+    radialWallForce(wallRadius, kWall=1e4) {
         const r = this.position.length();
-        if (r < radius) return new Vector3(0, 0, 0);
+        if (r < wallRadius) return new Vector3(0, 0, 0);
 
-        const normal = this.position.clone().normalize();
-        const forceMag = -kWall * (r - radius);
-        return normal.multiplyScalar(forceMag);
+        // This is the force vector:
+        // const normal = this.position.clone().normalize();
+        // const forceMag = -kWall * (r - wallRadius);
+        // const force = normal.multiplyScalar(forceMag);
+        return -kWall * (r - wallRadius);
     }
 
     updateMesh() { this._mesh.position.copy(this.position).multiplyScalar(this._scale); }
@@ -1765,14 +1787,14 @@ export class Gas extends Group {
         return { bins, theory };
     }
 
-    update(dt) {
+    update() {
         this._trail?.increment(this._balls[0]);   // big red ball
 
         for (let ball of this._balls)
             if (this._containerType === Gas.Type.IN_BOX)
                 ball.moveWithinBox(this._containerSize);
             else
-                ball.moveWithinRadius(this._containerSize, dt);
+                ball.moveWithinRadius(this._containerSize);
 
         for (let i = 0; i < this._balls.length - 1; i++)
             for (let j = i + 1; j < this._balls.length; j++)
@@ -1782,6 +1804,16 @@ export class Gas extends Group {
             ball.updateMesh();
 
         this._trail?.draw();
+    }
+
+    averageKE() { return this._balls.reduce((sum, particle)=> sum + particle.kineticEnergy(), 0) / this._numBalls; }
+
+    pressure(radius) {
+        let totalForce = 0;
+        for(const particle of this._balls)
+            totalForce += particle.radialWallForce();
+
+        return totalForce/(4 * Math.PI * radius * radius);
     }
 }
 
