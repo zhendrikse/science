@@ -989,6 +989,8 @@ export class Sphere {
         color=0xffff00,
         makeTrail=false,
         {
+            visible=true,
+            scale=1,
             segments=24,
             material=new MeshStandardMaterial({
                 color: color,
@@ -996,12 +998,17 @@ export class Sphere {
                 transparent: true,
                 wireframe: false,
                 metalness:0.7,
+                visible: visible,
                 roughness:0.2
             })
         } = {}) {
-        this._mesh = new Mesh(new SphereGeometry(radius, segments, segments), material);
+        this._mesh = new Mesh(new SphereGeometry(radius * scale, segments, segments), material);
         this._mesh.position.copy(position);
+        this._mesh.visible = visible;
         this._mesh.castShadow = true;
+        this._radius = radius;
+        this._position = position;
+        this._scale = scale;
         this._group = group;
         this._group.add(this._mesh);
         this._trail = null;
@@ -1023,9 +1030,14 @@ export class Sphere {
     }
 
     moveTo(newPosition) {
-        this._mesh.position.copy(newPosition);
-        this._trail?.addPoint(this._mesh.position);
+        this._position.copy(newPosition);
+        this._mesh.position.copy(newPosition.multiplyScalar(this._scale));
+        this._trail?.addPoint(this.position);
     }
+
+    get visible() { return this._mesh.visible; }
+    get position() { return this._position; }
+    get radius() { return this._radius; }
 }
 
 export class Cylinder {
@@ -1232,6 +1244,8 @@ export class Ball {
         opacity = 1,
         wireframe = false,
         color=0xffff00,
+        scale=1,
+        visible=true,
         makeTrail=false,
         segments = 24})
     {
@@ -1243,22 +1257,32 @@ export class Ball {
             metalness:0.7,
             roughness:0.2
         });
-        this._sphere = new Sphere(parent, position, radius, color, makeTrail,{segments: segments, material: material});
+        this._sphere = new Sphere(parent, position, radius, color, makeTrail,{
+            segments: segments,
+            material: material,
+            scale: scale,
+            visible: visible
+        });
         this._position = position;
         this._velocity = velocity;
         this._mass = mass;
         this._radius = radius;
         this._trail = null;
+        this._neighbors = [];
         if (makeTrail) this.enableTrail();
     }
 
+    appendNeighbor(ball) { this._neighbors.push(ball); }
+
     semiImplicitEulerUpdate(force, dt=0.01) {
+        if (!this._sphere.visible) return;
         this._velocity.addScaledVector(force, dt / this.mass);
         this._position.addScaledVector(this.velocity, dt);
         this._sphere.moveTo(this.position);
     }
 
     verletUpdate(force, dt=0.01) {
+        if (!this._sphere.visible) return;
         const a = force.multiplyScalar(1 / this.mass);
         this._position.addScaledVector(this.velocity, dt).addScaledVector(a, 0.5 * dt * dt);
         const a2 = force.multiplyScalar(1 / this.mass);
@@ -1275,15 +1299,20 @@ export class Ball {
         this._trail.enable({maxPoints, color, lineWidth, trailStep });
     }
 
+    shiftBy(displacement) { this.moveTo(this.position.clone().add(displacement)); }
+
     updateTrail(dt) { this._trail?.update(dt); }
     disposeTrail() { this._trail?.dispose(); }
 
-    kineticEnergy = () => 0.5 * this._mass * this._velocity.dot(this._velocity);
+    kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
     get radius() { return this._radius }
     get position() { return this._position; }
     get velocity() { return this._velocity; }
     get mass() { return this._mass; }
+    get visible() { return this._sphere.visible; }
+    get neighbors() { return this._neighbors; }
 }
+
 
 export class Spring {
     constructor(parent, position, axis, {
