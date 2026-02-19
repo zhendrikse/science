@@ -7,7 +7,7 @@
     }
 </script>
 
-<canvas class="applicationCanvas" id="simulationCanvas"></canvas><br/>
+<canvas class="applicationCanvas" id="simulationCanvas" style="aspect-ratio: 1/1"></canvas><br/>
 <p style="clear: both;"></p>
 <div class="buttonRow">
     <button id="pauseButton">&nbsp;Pause&nbsp;</button>
@@ -28,7 +28,7 @@
     const canvasHeight = canvas.clientHeight;
 
     const camera = new PerspectiveCamera(60, canvasWidth/canvasHeight, 0.1, 1000);
-    camera.position.set(1.25, 2.25, 2.25);
+    camera.position.set(1.25, 2.75, 3.25);
     camera.updateProjectionMatrix();
 
     const renderer = new WebGLRenderer( {antialias: true, canvas: canvas, alpha: true} );
@@ -44,14 +44,11 @@
     scene.add(new AmbientLight(0xffffff, .75));
 
     class Lattice {
-        constructor(parent, nrows = 2) {
+        constructor(parent, nrows=3) {
             this._atoms = [];
             this._bonds = [];
 
-            nrows += 2;
-            const half = Math.floor(nrows / 2);
-
-            this.#createLattice(parent, half);
+            this.#createLattice(parent, nrows + 2);
             this.#determineNeighbors(parent);
         }
 
@@ -71,7 +68,8 @@
             this._atoms.push({atom: atom, force: new Vector3(0, 0, 0)});
         }
 
-        #createLattice(parent, half) {
+        #createLattice(parent, nrows) {
+            const half = (nrows - 1) / 2;
             for (let z = -half; z < half; z++)
                 for (let y = -half; y < half; y++)
                     for (let x = -half; x < half; x++)
@@ -159,8 +157,8 @@
         lattice.changeBondType(bondType);
     }
 
-    const lattice = new Lattice(scene);
-    lattice.moveAtom(26, new Vector3(0, 0, 0.2));
+    const lattice = new Lattice(scene, 4);
+    lattice.moveAtom(4 * 4 + 1, new Vector3(0, 0, 0.1));
     const dt = 0.005;
     function animationLoop(time) {
         if (running)
