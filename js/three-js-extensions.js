@@ -1862,7 +1862,12 @@ export class Gas2D extends Gas {
         this.setTemperature(currentTemperature);
     }
 
-    addParticles(numberOfParticles, radius=5, mass=1, scale=1, color="cyan") {
+    addParticles({numberOfParticles=50,
+                 radius=5,
+                 mass=1,
+                 scale=1,
+                 color="cyan"
+    } = {}) {
         for (let i = 0; i < numberOfParticles; i++)
             this._balls.push(new Particle2D(this, {
                 radius: radius,
@@ -1948,7 +1953,12 @@ export class Gas3D extends Gas {
         this.setTemperature(currentTemperature);
     }
 
-    addParticles(numberOfParticles, radius=5, mass=1, scale=1, color="cyan") {
+    addParticles({numberOfParticles=50,
+                 radius=5,
+                 mass=1,
+                 scale=1,
+                 color="cyan"
+        } = {}) {
         for (let i = 0; i < numberOfParticles; i++)
             this._balls.push(new Particle3D(this, {
                 radius: radius,

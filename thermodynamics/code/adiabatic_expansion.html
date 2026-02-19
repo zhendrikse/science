@@ -27,8 +27,8 @@
 
 <script type="module">
     import { Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight,
-        MeshStandardMaterial, Mesh, SphereGeometry} from "three";
-    import { Gas3D, Gas } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+        MeshStandardMaterial, Mesh, SphereGeometry, Vector3, Color} from "three";
+    import { Gas3D, Gas, Arrow } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
     // --- Canvas & scene ---
@@ -36,11 +36,11 @@
     const temperatureSlider = document.getElementById("temperatureSlider3d");
 
     const scene = new Scene();
-    let sphereRadius = 200;
+    let sphereRadius = 5;
 
     // --- Camera ---
-    const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 2000);
-    camera.position.set(230, 125, 560);
+    const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 10 * sphereRadius);
+    camera.position.set(3 * sphereRadius, 3 * sphereRadius, 3 * sphereRadius);
     camera.lookAt(0, 0, 0);
 
     // --- Renderer ---
@@ -53,11 +53,18 @@
     controls.dampingFactor = 0.08;
 
     const light = new DirectionalLight(0xffffff, 1);
-    light.position.set(0, 1.5 * sphereRadius, 0);
+    light.position.set(0, 5 * sphereRadius, 0);
     scene.add(light);
     scene.add(new AmbientLight(0xffffff, .5));
 
+    const expansionX = new Arrow(new Vector3(sphereRadius, 0, 0), new Vector3(1, 0, 0), { color: new Color("red")});
+    const expansionY = new Arrow(new Vector3(0, sphereRadius, 0), new Vector3(0, 1, 0), { color: new Color("lightgreen")});
+    const expansionZ = new Arrow(new Vector3(0, 0, sphereRadius), new Vector3(0, 0, 1), { color: new Color("cyan")});
+    scene.add(expansionX, expansionY, expansionZ);
+
     const gas = new Gas3D({
+        particleRadius: .1,
+        tracerRadius: .1,
         temperature: Number(temperatureSlider.value),
         containerSize: sphereRadius,
         containerType: Gas.Type.IN_SPHERE
@@ -68,6 +75,7 @@
         new SphereGeometry(sphereRadius * 1.05, 32, 32),
         new MeshStandardMaterial({
             color: 0x8844ff,
+            depthWrite: false,
             transparent: true,
             opacity: 0.25
         })
@@ -120,31 +128,36 @@
     document.getElementById("show3d").addEventListener("click", () => gas.show());
     document.getElementById("hide3d").addEventListener("click", () => gas.hide(false));
     temperatureSlider.addEventListener("input", (event) => gas.setTemperature(Number(event.target.value)));
-    document.getElementById("add3d").addEventListener("click", () => gas.addParticles(50));
+    document.getElementById("add3d").addEventListener("click", () => gas.addParticles({radius: .1}));
     document.getElementById("reset3d").addEventListener("click", () => gas.reset(Number(temperatureSlider.value)));
 
     let steps = 0;
-    let R = sphereRadius;
+    let R = sphereRadius,
+        KE = 0,
+        P = 0;
     function animate(time) {
         if (!running) return;
 
+        R += 1e-3;
+        gas.changeContainerSize(R);
         gas.update();
 
-        R += 5e-2;
-        gas.changeContainerSize(R);
         shell.scale.setScalar(R / sphereRadius);
+        expansionX.updateAxis(new Vector3(R - sphereRadius, 0, 0));
+        expansionY.updateAxis(new Vector3(0, R - sphereRadius, 0));
+        expansionZ.updateAxis(new Vector3(0, 0, R - sphereRadius));
 
-        if(steps++ % 10 === 0) {
-            const P  = gas.pressure(R);
-            const KE = gas.averageKE();
+        P += gas.pressure(R) * 10;
+        KE += gas.averageKE();
+        if(steps++ % 20 === 0) {
             const volume = (4 / 3) * Math.PI * sphereRadius * sphereRadius * sphereRadius;
-            //console.log(KE, P, P * volume / KE);
-
             data[0].push(time * .001);
-            data[1].push(KE);
+            data[1].push(KE * .01);
             data[2].push(P);
             data[3].push(P * volume / KE);
             plot.setData(data);
+            KE = 0;
+            P = 0;
         }
 
         renderer.render(scene, camera);
