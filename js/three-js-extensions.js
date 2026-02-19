@@ -1527,15 +1527,13 @@ export class Particle2D extends Particle {
 
     radialWallForce(wallRadius, kWall=1e4) {
         const r = this.position.length();
-        // This is the force vector:
-        // if (r < wallRadius) return new Vector3(0, 0, 0);
+        if (r < wallRadius) return new Vector3(0, 0, 0);
 
-        // const normal = this.position.clone().normalize();
-        // const forceMag = -kWall * (r - wallRadius);
-        // const force = normal.multiplyScalar(forceMag);
+        const normal = this.position.clone().normalize();
+        const forceMag = -kWall * (r - wallRadius);
+        const force = normal.multiplyScalar(forceMag);
 
-        if (r < wallRadius) return 0;
-        return -kWall * (r - wallRadius);
+        return force;
     }
 
     updateMesh() { this._mesh.position.set(this.position.x, this.position.y, 0).multiplyScalar(this._scale); }
@@ -1644,15 +1642,13 @@ export class Particle3D extends Particle {
 
     radialWallForce(wallRadius, kWall=1e4) {
         const r = this.position.length();
-        // This is the force vector:
-        // if (r < wallRadius) return new Vector2(0, 0);
+        if (r < wallRadius) return new Vector2(0, 0);
 
-        // const normal = this.position.clone().normalize();
-        // const forceMag = -kWall * (r - wallRadius);
-        // const force = normal.multiplyScalar(forceMag);
+        const normal = this.position.clone().normalize();
+        const forceMag = -kWall * (r - wallRadius);
+        const force = normal.multiplyScalar(forceMag);
 
-        if (r < wallRadius) return 0;
-        return -kWall * (r - wallRadius);
+        return force;
     }
 
     updateMesh() { this._mesh.position.copy(this.position).multiplyScalar(this._scale); }
