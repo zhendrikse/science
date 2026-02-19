@@ -1504,12 +1504,12 @@ export class Particle2D extends Particle {
         parent.add(this._mesh);
     }
 
-    radialWallForce(radius, k=5000) {
+    radialWallForce(radius, kWall=5000) {
         const r = this.position.length();
         if (r < radius) return new Vector2(0, 0);
 
         const normal = this.position.clone().normalize();
-        const forceMag = -kWall*(r-radius);
+        const forceMag = -kWall * (r - radius);
         return normal.multiplyScalar(forceMag);
     }
 
@@ -1617,12 +1617,12 @@ export class Particle3D extends Particle {
         parent.add(this._mesh);
     }
 
-    radialWallForce(radius, k=5000) {
+    radialWallForce(radius, kWall=5000) {
         const r = this.position.length();
         if (r < radius) return new Vector3(0, 0, 0);
 
         const normal = this.position.clone().normalize();
-        const forceMag = -kWall*(r-radius);
+        const forceMag = -kWall * (r - radius);
         return normal.multiplyScalar(forceMag);
     }
 
