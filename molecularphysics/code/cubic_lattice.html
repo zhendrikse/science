@@ -186,7 +186,7 @@
 
     const lattice = new Lattice(scene);
     lattice.moveAtom(26, new Vector3(0, 0, 0.2));
-    const dt = 0.01;
+    const dt = 0.005;
     function animationLoop(time) {
         if (running)
             lattice.update(dt, time * 0.001);
