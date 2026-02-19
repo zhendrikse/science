@@ -123,20 +123,22 @@
     document.getElementById("add3d").addEventListener("click", () => gas.addParticles(50));
     document.getElementById("reset3d").addEventListener("click", () => gas.reset(Number(temperatureSlider.value)));
 
-    const volume = (4 / 3) * Math.PI * sphereRadius * sphereRadius * sphereRadius;
     let steps = 0;
     let R = sphereRadius;
     function animate(time) {
-        if (running)
-            gas.update();
+        if (!running) return;
+
+        gas.update();
 
         R += 5e-2;
         gas.changeContainerSize(R);
         shell.scale.setScalar(R / sphereRadius);
-        const P  = gas.pressure(R);
-        const KE = gas.averageKE();
-        //console.log(P, KE);
-        if(steps++ % 10 === 0){
+
+        if(steps++ % 10 === 0) {
+            const P  = gas.pressure(R);
+            const KE = gas.averageKE();
+            const volume = (4 / 3) * Math.PI * sphereRadius * sphereRadius * sphereRadius;
+
             data[0].push(time * .001);
             data[1].push(KE);
             data[2].push(P);
