@@ -151,9 +151,10 @@
     document.getElementById("add3d").addEventListener("click", () => gas.addParticles(50));
     document.getElementById("reset3d").addEventListener("click", () => gas.reset(Number(temperatureSlider.value)));
 
+    const dt = 1e-3;
     function animate() {
         for (let i = 0; i < 5; i++)
-            if (running) gas.update();
+            if (running) gas.update(dt);
 
         updateGraph();
         renderer.render(scene, camera);

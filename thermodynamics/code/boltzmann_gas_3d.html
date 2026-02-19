@@ -27,7 +27,7 @@
 
 <script type="module">
     import { Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight} from "three";
-    import { Gas3D, Aquarium } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import { Gas3D, Gas, Aquarium } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
     // --- Canvas & scene ---
@@ -58,7 +58,8 @@
 
     const gas = new Gas3D({
         temperature: Number(temperatureSlider.value),
-        containerSize: boxSize
+        containerSize: boxSize,
+        containerType: Gas.Type.IN_BOX
     });
     scene.add(gas);
     new Aquarium(scene, {size: boxSize});
@@ -150,9 +151,10 @@
     document.getElementById("add3d").addEventListener("click", () => gas.addParticles(50));
     document.getElementById("reset3d").addEventListener("click", () => gas.reset(Number(temperatureSlider.value)));
 
+    const dt = 1e-3;
     function animate() {
         for (let i = 0; i < 5; i++)
-            if (running) gas.update(boxSize);
+            if (running) gas.update(dt);
 
         updateGraph();
         renderer.render(scene, camera);

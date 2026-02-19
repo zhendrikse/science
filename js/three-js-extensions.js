@@ -1486,8 +1486,8 @@ class Particle {
         this.confineToBox(boxSize);
     }
 
-    moveWithinRadius(radius) {
-        this.applyForce(this.radialWallForce(radius));
+    moveWithinRadius(radius, dt) {
+        this.applyForce(this.radialWallForce(radius), dt);
         this.updateMesh();
     }
 }
@@ -1753,14 +1753,14 @@ export class Gas extends Group {
         return { bins, theory };
     }
 
-    update() {
+    update(dt) {
         this._trail?.increment(this._balls[0]);   // big red ball
 
         for (let ball of this._balls)
             if (this._containerType === Gas.Type.IN_BOX)
                 ball.moveWithinBox(this._containerSize);
             else
-                ball.moveWithinRadius(this._containerSize);
+                ball.moveWithinRadius(this._containerSize, dt);
 
         for (let i = 0; i < this._balls.length - 1; i++)
             for (let j = i + 1; j < this._balls.length; j++)

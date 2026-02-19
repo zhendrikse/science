@@ -137,7 +137,7 @@
 
     function animate() {
         for (let i = 0; i < 5; i++)
-            if (running) gas.update(boxSize);
+            if (running) gas.update();
 
         updateGraph();
         renderer2d.render(scene, camera);
