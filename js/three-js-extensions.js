@@ -1484,7 +1484,7 @@ class Particle {
         const distance = rVector.length();
         const maxDist = radius - this.radius;
 
-        if (distance < maxDist) return;
+        if (distance < maxDist) return 0;
 
         const normal = rVector.clone().normalize(); // normal vector with respect to the edge
 
