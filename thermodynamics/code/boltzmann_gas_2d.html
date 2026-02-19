@@ -47,7 +47,10 @@
     const boxSize = boltzmannCanvas2d.clientWidth * .9; // keep margin
     const binCount = 30;
     const maxSpeed = 5
-    const gas = new Gas2D({temperature: Number(temperatureSlider.value)});
+    const gas = new Gas2D({
+        temperature: Number(temperatureSlider.value),
+        containerSize: boxSize
+    });
     scene.add(gas);
 
     const averagingFrames = 100;

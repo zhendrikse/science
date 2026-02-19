@@ -47,7 +47,12 @@
     const boxSize = brownianMotion2d.clientWidth * .9; // keep margin
     const binCount = 30;
     const maxSpeed = 5
-    const gas = new Gas2D({temperature: Number(temperatureSlider.value), tracerMass: 100, tracerRadius: 20});
+    const gas = new Gas2D({
+        temperature: Number(temperatureSlider.value),
+        tracerRadius: 20,
+        tracerMass: 100,
+        containerSize: boxSize
+    });
     scene.add(gas);
 
     const averagingFrames = 100;
