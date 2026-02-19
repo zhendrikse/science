@@ -27,7 +27,7 @@
 
 <script type="module">
     import { Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight,
-        MeshStandardMaterial, Mesh, SphereGeometry, Vector3, Color} from "three";
+        MeshStandardMaterial, Mesh, SphereGeometry, Vector3, Color, AxesHelper} from "three";
     import { Gas3D, Gas, Arrow } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
@@ -40,7 +40,7 @@
 
     // --- Camera ---
     const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 10 * sphereRadius);
-    camera.position.set(3 * sphereRadius, 3 * sphereRadius, 3 * sphereRadius);
+    camera.position.set(3 * sphereRadius, 2 * sphereRadius, 3 * sphereRadius);
     camera.lookAt(0, 0, 0);
 
     // --- Renderer ---
@@ -65,12 +65,22 @@
     const gas = new Gas3D({
         particleRadius: .1,
         tracerRadius: .1,
+        tracerTrail: false,
         temperature: Number(temperatureSlider.value),
         containerSize: sphereRadius,
         containerType: Gas.Type.IN_SPHERE
     });
     scene.add(gas);
 
+    const innerShell = new Mesh( // Container for adiabatic expansion
+        new SphereGeometry(sphereRadius * 1.05, 32, 32),
+        new MeshStandardMaterial({
+            color: 0x8844ff,
+            depthWrite: false,
+            transparent: true,
+            opacity: 0.1
+        })
+    );
     const shell = new Mesh( // Container for adiabatic expansion
         new SphereGeometry(sphereRadius * 1.05, 32, 32),
         new MeshStandardMaterial({
@@ -80,7 +90,7 @@
             opacity: 0.25
         })
     );
-    scene.add(shell);
+    scene.add(innerShell, shell, new AxesHelper(sphereRadius));
 
     // --- uPlot ---
     const data = [[],[],[],[]];
@@ -138,7 +148,7 @@
     function animate(time) {
         if (!running) return;
 
-        R += 1e-3;
+        R += 2e-3;
         gas.changeContainerSize(R);
         gas.update();
 
@@ -147,12 +157,12 @@
         expansionY.updateAxis(new Vector3(0, R - sphereRadius, 0));
         expansionZ.updateAxis(new Vector3(0, 0, R - sphereRadius));
 
-        P += gas.pressure(R) * 10;
+        P += gas.pressure(R);
         KE += gas.averageKE();
         if(steps++ % 20 === 0) {
             const volume = (4 / 3) * Math.PI * sphereRadius * sphereRadius * sphereRadius;
             data[0].push(time * .001);
-            data[1].push(KE * .01);
+            data[1].push(KE * .001);
             data[2].push(P);
             data[3].push(P * volume / KE);
             plot.setData(data);

@@ -1839,13 +1839,14 @@ export class Gas2D extends Gas {
                     particleMass=1,
                     tracerRadius=5,
                     tracerColor="red",
+                    tracerTrail=true,
                     tracerMass=1} = {}) {
         super({
             numBalls: numBalls,
             containerSize: containerSize,
             containerType: containerType
         });
-        this._trail = new ParticleTrail2D(this);
+        this._trail = tracerTrail ? new ParticleTrail2D(this) : null;
         this._balls.push(new Particle2D(this, {
             radius: tracerRadius,
             color: tracerColor,
@@ -1880,8 +1881,8 @@ export class Gas2D extends Gas {
         this._numBalls += numberOfParticles;
     }
 
-    setTemperature(newTemperture) {
-        const scale = Math.sqrt(newTemperture / this.#currentTemperature());
+    setTemperature(newTemperature) {
+        const scale = Math.sqrt(newTemperature / this.#currentTemperature());
         for(let ball of this._balls.slice(1))  // skip tracer
             ball.scaleVelocity(scale);
     }
@@ -1930,13 +1931,14 @@ export class Gas3D extends Gas {
                     particleMass=1,
                     tracerRadius=5,
                     tracerColor="red",
+                    tracerTrail=true,
                     tracerMass=1} = {}) {
         super({
             numBalls: numBalls,
             containerSize: containerSize,
             containerType: containerType
         });
-        this._trail = new ParticleTrail3D(this);
+        this._trail = tracerTrail ? new ParticleTrail3D(this) : null;
         this._balls.push(new Particle3D(this, {
             radius: tracerRadius,
             color: tracerColor,
