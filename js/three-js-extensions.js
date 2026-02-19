@@ -1413,6 +1413,8 @@ class Particle {
 
     updateMesh() { throw new Error("Method to be implemented by concrete subclass")}
     confineToBox() { throw new Error("Method to be implemented by concrete subclass")}
+    radialWallForce() { throw new Error("Method to be implemented by concrete subclass")}
+
     reset(position, velocity) {
         this._position.copy(position);
         this._velocity.copy(velocity);
@@ -1427,15 +1429,6 @@ class Particle {
     }
 
     applyForce(force, dt) { this._velocity.addScaledVector(force, dt / this.mass); }
-
-    radialWallForce(radius, k=5000) {
-        if (this.position.lengthSq() < radius * radius) return;
-
-        const rVector = this.position.clone();
-        const normal = rVector.normalize();
-        const magnitude = -k * (rVector.length() - radius);
-        return normal.multiplyScalar(magnitude);
-    }
 
     collideWith(other) {
         const r = other.position.clone().sub(this.position);
@@ -1508,6 +1501,15 @@ export class Particle2D extends Particle {
         this._mesh = new Mesh(geometry, material);
         this.updateMesh();
         parent.add(this._mesh);
+    }
+
+    radialWallForce(radius, k=5000) {
+        if (this.position.lengthSq() < radius * radius) return new Vector2(0, 0);
+
+        const rVector = this.position.clone();
+        const normal = rVector.normalize();
+        const magnitude = -k * (rVector.length() - radius);
+        return normal.multiplyScalar(magnitude);
     }
 
     updateMesh() { this._mesh.position.set(this.position.x, this.position.y, 0).multiplyScalar(this._scale); }
@@ -1612,6 +1614,15 @@ export class Particle3D extends Particle {
         this._mesh = new Mesh(geometry, material);
         this.updateMesh();
         parent.add(this._mesh);
+    }
+
+    radialWallForce(radius, k=5000) {
+        if (this.position.lengthSq() < radius * radius) return new Vector3(0, 0, 0);
+
+        const rVector = this.position.clone();
+        const normal = rVector.normalize();
+        const magnitude = -k * (rVector.length() - radius);
+        return normal.multiplyScalar(magnitude);
     }
 
     updateMesh() { this._mesh.position.copy(this.position).multiplyScalar(this._scale); }
