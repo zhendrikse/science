@@ -1505,12 +1505,12 @@ export class Particle2D extends Particle {
     }
 
     radialWallForce(radius, k=5000) {
-        if (this.position.lengthSq() < radius * radius) return new Vector2(0, 0);
+        const r = this.position.length();
+        if (r < radius) return new Vector2(0, 0);
 
-        const rVector = this.position.clone();
-        const normal = rVector.normalize();
-        const magnitude = -k * (rVector.length() - radius);
-        return normal.multiplyScalar(magnitude);
+        const normal = this.position.clone().normalize();
+        const forceMag = -kWall*(r-radius);
+        return normal.multiplyScalar(forceMag);
     }
 
     updateMesh() { this._mesh.position.set(this.position.x, this.position.y, 0).multiplyScalar(this._scale); }
@@ -1618,12 +1618,12 @@ export class Particle3D extends Particle {
     }
 
     radialWallForce(radius, k=5000) {
-        if (this.position.lengthSq() < radius * radius) return new Vector3(0, 0, 0);
+        const r = this.position.length();
+        if (r < radius) return new Vector3(0, 0, 0);
 
-        const rVector = this.position.clone();
-        const normal = rVector.normalize();
-        const magnitude = -k * (rVector.length() - radius);
-        return normal.multiplyScalar(magnitude);
+        const normal = this.position.clone().normalize();
+        const forceMag = -kWall*(r-radius);
+        return normal.multiplyScalar(forceMag);
     }
 
     updateMesh() { this._mesh.position.copy(this.position).multiplyScalar(this._scale); }
@@ -1902,7 +1902,7 @@ export class Gas3D extends Gas {
                 mass: particleMass,
                 position: new Vector3()
                     .random()
-                    .sub(new Vector3(-.5, -.5, -.5))
+                    .sub(new Vector3(-1, -1, -1))
                     .multiplyScalar(containerSize * .25),
                 velocity: this.#newInitialVelocity(currentTemperature, particleMass)
             }));
