@@ -1504,13 +1504,14 @@ export class Particle2D extends Particle {
         parent.add(this._mesh);
     }
 
-    radialWallForce(radius, kWall=5000) {
+    radialWallForce(containerRadius, kWall=5000) {
         const r = this.position.length();
-        if (r < radius) return new Vector2(0, 0);
+        const allowed = containerRadius - this.radius * 2;
+        if (r <= allowed) return new Vector2(0, 0);
 
+        const penetration = r - allowed;
         const normal = this.position.clone().normalize();
-        const forceMag = -kWall * (r - radius);
-        return normal.multiplyScalar(forceMag);
+        return normal.multiplyScalar(-kWall * penetration);
     }
 
     updateMesh() { this._mesh.position.set(this.position.x, this.position.y, 0).multiplyScalar(this._scale); }
@@ -1617,13 +1618,14 @@ export class Particle3D extends Particle {
         parent.add(this._mesh);
     }
 
-    radialWallForce(radius, kWall=5000) {
+    radialWallForce(containerRadius, kWall = 5000) {
         const r = this.position.length();
-        if (r < radius) return new Vector3(0, 0, 0);
+        const allowed = containerRadius - this.radius * 2;
+        if (r <= allowed) return new Vector3(0, 0, 0);
 
+        const penetration = r - allowed;
         const normal = this.position.clone().normalize();
-        const forceMag = -kWall * (r - radius);
-        return normal.multiplyScalar(forceMag);
+        return normal.multiplyScalar(-kWall * penetration);
     }
 
     updateMesh() { this._mesh.position.copy(this.position).multiplyScalar(this._scale); }
