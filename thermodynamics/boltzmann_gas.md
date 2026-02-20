@@ -19,19 +19,25 @@
 
 <p style="clear: both;"></p>
 
-## Kinetic theory and the ideal gas
+## Maxwell-Boltzmann distribution
 <div class="header_line"><br/></div>
 
-<figure style="text-align: center;">
-  <img alt="Kinetic theory and the ideal gas" src="images/kinetic_theory_ideal_gas.jpg" />
-  <figcaption>This excellent visual guide originates from 
-    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
-  </figcaption>
+<div class="double_image">
+<figure class="left_image">
+  <a href="images/boltzmann_distribution_1.jpg">
+    <img alt="Maxwell-Boltzmann distribution" src="images/boltzmann_distribution_1.jpg"/>
+  </a>
 </figure>
+<figure class="right_image">
+  <a href="images/boltzmann_distribution_2.jpg">
+    <img alt="Maxwell-Boltzmann distribution" src="images/boltzmann_distribution_2.jpg"/>
+  </a>
+</figure>
+</div>
 
 <p style="clear: both;"></p>
 
-## Maxwell-Boltzmann Distribution: 2D vis à vis 3D
+## Maxwell-Boltzmann distribution: 2D vis à vis 3D
 <div class="header_line"><br/></div>
 
 ### Maxwell-Boltzmann velocity distributions for $\vec{v}$

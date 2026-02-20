@@ -10,9 +10,23 @@
 🔑 Includes tilt, spin and tidal locking of applicable moons e.g. Earth’s moon<br/>
 🚀 Features advanced techniques for rendering earth clouds &amp; subtle corona breathing driven by magnetic turbulence
 
-
 {% include_relative code/solar_system.html %}
 
 <p style="clear:both;"></p>
+
+## Our planets
+<div class="header_line"><br/></div>
+
+### Saturn
+<div class="header_line"><br/></div>
+
+<figure style="text-align: center;">
+  <img alt="Saturn" src="images/saturn.jpg" />
+  <figcaption>This excellent visual guide originates from 
+    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+  </figcaption>
+</figure>
+
+<p style="clear: both;"></p>
 
 {% include share_buttons.html %}

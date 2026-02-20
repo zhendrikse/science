@@ -20,7 +20,7 @@ this principle in a very clear and understandable way.
 
 {% include_relative code/energy_equipartition.html %}
 
-<p style="clear:both;"></p>
+<p style="clear: both;"></p>
 
 ## Instructions given in the video
 <div class="header_line"><br/></div>
@@ -133,6 +133,18 @@ if __name__ == "__main__":
     print(a.bond_force_on_O(), a.com(), a.v_P(), a.v_K(), a.r_K(), a.com_K())
 
 ```
+
+<p style="clear:both;"></p>
+
+## Heat capacity of diatomic gases
+<div class="header_line"><br/></div>
+
+<figure style="text-align: center;">
+  <img alt="Saturn" src="images/diatomic_gases.jpg" />
+  <figcaption>This excellent visual guide originates from 
+    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
+  </figcaption>
+</figure>
 
 <p style="clear: both;"></p>
 

@@ -17,8 +17,8 @@ Formulated more rigorously: in a thermodynamic process involving a closed system
 the increment in internal energy is equal to the difference between the heat that
 is either absorbed (or emitted) by the system and the work that is done by it.
 
-<figure style="float: center; text-align: center;">
-  <a href="daylight_variations.html">
+<figure style="text-align: center;">
+  <a href="images/first_law.png">
     <img alt="First law of thermodynamics" src="images/first_law.png" title="Moving piston"/>
   </a>
 </figure>
@@ -26,14 +26,22 @@ is either absorbed (or emitted) by the system and the work that is done by it.
 <p style="clear: both;"></p>
 
 
-### Carnot cycle
+### Infographics
 <div class="header_line"><br/></div>
 
-<figure style="text-align: center;">
-  <img alt="Carnot cycle" src="images/carnot_cycle.jpg" />
-  <figcaption>This excellent visual guide originates from 
-    <a href="https://www.facebook.com/HouseOfPhysics/">House of Physics</a>.
-  </figcaption>
+<div class="double_image">
+<figure class="left_image">
+  <a href="images/kinetic_theory_ideal_gas.jpg">
+    <img alt="Kinetic theory and the ideal gas" src="images/kinetic_theory_ideal_gas.jpg"/>
+  </a>
 </figure>
+<figure class="right_image">
+  <a href="images/carnot_cycle.jpg">
+    <img alt="Carnot cycle" src="images/carnot_cycle.jpg"/>
+  </a>
+</figure>
+</div>
+
+<p style="clear: both;"></p>
 
 {% include share_buttons.html %}
