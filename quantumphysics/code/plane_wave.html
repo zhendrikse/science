@@ -133,7 +133,6 @@
     let time = 0;
     const dt = 0.01;
     function animate() {
-        requestAnimationFrame(animate);
         planeWave.update(time);
         plot3D.render();
         axesController.render(plot3D.camera);
