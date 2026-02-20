@@ -54,12 +54,27 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 </div>
 <p style="clear: both;"></p>
 
-<figure style="float: center; text-align: center;">
-  <img alt="Einstein and Oppenheimer" src="images/size_of_black_hole.png" />
+## Black hole infographics
+<div class="header_line"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="images/star_evolution.jpg">
+    <img alt="Evolution of stars" src="images/star_evolution.jpg"/>
+  </a>
+  <figcaption>A black hole is one of the possible ways in which the life of a star can end.
+  </figcaption>
+</figure>
+<figure class="right_image">
+  <a href="images/size_of_black_hole.png">
+    <img alt="Black hole size comparison" src="images/size_of_black_hole.png"/>
+  </a>
   <figcaption>Size comparison for supermassive black holes such as TON 618, 
   see also this <a href="https://www.youtube.com/watch?v=aKMmeLhVRC4">fantastic video</a>.
   </figcaption>
 </figure>
+</div>
+
 <p style="clear: both;"></p>
 
 ## Time dilation near gravity
@@ -72,6 +87,7 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 
 Black holes are an outcome of the 
 [Einstein field equations (EFE)](https://en.wikipedia.org/wiki/Einstein_field_equations):
+
 
 $R_{\mu\nu} -\frac{1}{2}R G_{\mu\nu} + \lambda g_{\mu\nu} = k T_{\mu\nu}$
 
@@ -132,11 +148,6 @@ which describes the collapse of an extremely massive object into a black hole.
   from government work. The scene in the movie Oppenheimer is based on true events.</figcaption>
 </figure>
 <p style="clear: both;"></p>
-
-### Black hole formation
-<div class="header_line"><br/></div>
-
-![Star evolution](images/star_evolution.jpg)
 
 {% include share_buttons.html %}
 
