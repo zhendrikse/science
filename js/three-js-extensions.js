@@ -1026,23 +1026,25 @@ export class Sphere {
     }
 
     enableTrail({
-                    maxPoints = 200,
-                    color = this._mesh.material.color
+               maxPoints = 200,
+               color = 0xaaaaaa,
+               trailStep = 10,
+               linewidth = 1
                 } = {}) {
-        this._trail = new Trail({ maxPoints, color });
+        this._trail = new Trail({ maxPoints, color, trailStep, linewidth });
         this._group.add(this._trail.line);
     }
 
     disableTrail() {
         if (!this._trail) return;
-        this._group.remove(this._trail.line);
+        this._trail.dispose();
         this._trail = null;
     }
 
     moveTo(newPosition) {
         this._position.copy(newPosition);
         this._mesh.position.copy(newPosition.multiplyScalar(this._scale));
-        this._trail?.addPoint(this.position);
+        this._trail?.update();
     }
 
     get visible() { return this._mesh.visible; }
@@ -1323,8 +1325,13 @@ export class Ball {
     shiftBy(displacement) { this.moveTo(this.position.clone().add(displacement)); }
 
     disableTrail() { this._sphere.disableTrail(); }
-    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
-        this._sphere.enableTrail({maxPoints, color, lineWidth, trailStep });
+    enableTrail({
+                    maxPoints = 200,
+                    color = 0xaaaaaa,
+                    trailStep = 10,
+                    linewidth = 1
+                } = {}) {
+        this._sphere.enableTrail({maxPoints, color, trailStep, linewidth });
     }
 
     kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
