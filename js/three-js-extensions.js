@@ -528,14 +528,14 @@ export class AxesController {
             this._parentGroup.remove(this._axes);
         }
 
-        const { layoutType, divisions, axisLabels } = this._axesParameters;
+        const { layoutType, divisions, axisLabels, tickLabels } = this._axesParameters;
         const { frame, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
 
         this._axes = Axes.from(boundingBox, divisions)
             .withLayout(layoutType)
             .withAnnotations(this._canvasContainer, layoutType, axisLabels)
             .withSettings(
-                { frame, annotations, xyPlane, xzPlane, yzPlane });
+                { frame, annotations, xyPlane, xzPlane, yzPlane, tickLabels });
 
         if (layoutType === Axes.Type.MATLAB) // center the MatLab axes around the object to be displayed
             this._axes.frameTo(boundingBox, bottomAlign);
@@ -1257,6 +1257,7 @@ export class Ball {
         scale=1,
         visible=true,
         makeTrail=false,
+        elasticity=1.0,
         segments = 24})
     {
         const material = new MeshStandardMaterial({
@@ -1277,6 +1278,7 @@ export class Ball {
         this._velocity = velocity;
         this._mass = mass;
         this._radius = radius;
+        this._elasticity = elasticity;
         this._trail = null;
         this._neighbors = [];
         if (makeTrail) this.enableTrail();
@@ -1297,6 +1299,20 @@ export class Ball {
         this._position.addScaledVector(this.velocity, dt).addScaledVector(a, 0.5 * dt * dt);
         const a2 = force.multiplyScalar(1 / this.mass);
         this._velocity.addScaledVector(a.add(a2), 0.5 * dt);
+    }
+
+    liesOnFloor(epsilon = 1e-1) {
+        return this.position().y - this.radius <= epsilon;
+    }
+
+    bounceOffOfFloor(dt, epsilon = 1e-1) {
+        this._velocity.y *= -this._elasticity;
+        this._position.addScaledVector(this.velocity, dt);
+        this._sphere.moveTo(this.position);
+
+        // if the velocity is too slow, stay on the ground
+        if (this.velocity.y <= epsilon)
+            this._position.y = this.radius + this.radius * epsilon;
     }
 
     moveTo(newPosition) {
@@ -1321,6 +1337,7 @@ export class Ball {
     get mass() { return this._mass; }
     get visible() { return this._sphere.visible; }
     get neighbors() { return this._neighbors; }
+    get elasticity() { return this._elasticity; }
 }
 
 export class Spring {
