@@ -1279,9 +1279,8 @@ export class Ball {
         this._mass = mass;
         this._radius = radius;
         this._elasticity = elasticity;
-        this._trail = null;
         this._neighbors = [];
-        if (makeTrail) this.enableTrail();
+        if (makeTrail) this._sphere.enableTrail();
     }
 
     appendNeighbor(ball) { this._neighbors.push(ball); }
@@ -1299,6 +1298,7 @@ export class Ball {
         this._position.addScaledVector(this.velocity, dt).addScaledVector(a, 0.5 * dt * dt);
         const a2 = force.multiplyScalar(1 / this.mass);
         this._velocity.addScaledVector(a.add(a2), 0.5 * dt);
+        this._sphere.moveTo(this.position);
     }
 
     liesOnFloor(epsilon = 1e-1) {
@@ -1320,15 +1320,12 @@ export class Ball {
         this._sphere.moveTo(this.position);
     }
 
-    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
-        this._trail = new Trail(this);
-        this._trail.enable({maxPoints, color, lineWidth, trailStep });
-    }
-
     shiftBy(displacement) { this.moveTo(this.position.clone().add(displacement)); }
 
-    updateTrail(dt) { this._trail?.update(dt); }
-    disposeTrail() { this._trail?.dispose(); }
+    disableTrail() { this._sphere.disableTrail(); }
+    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+        this._sphere.enableTrail({maxPoints, color, lineWidth, trailStep });
+    }
 
     kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
     get radius() { return this._radius }
