@@ -1048,7 +1048,7 @@ export class Sphere {
 
     moveTo(newPosition) {
         this._position.copy(newPosition);
-        this._mesh.position.copy(newPosition.multiplyScalar(this._scale));
+        this._mesh.position.copy(newPosition.clone().multiplyScalar(this._scale));
         this._trail?.update();
     }
 
@@ -1289,9 +1289,9 @@ export class Ball {
 
     verletUpdate(force, dt=0.01) {
         if (!this._sphere.visible) return;
-        const a = force.multiplyScalar(1 / this.mass);
+        const a = force.clone().multiplyScalar(1 / this.mass);
         this._position.addScaledVector(this.velocity, dt).addScaledVector(a, 0.5 * dt * dt);
-        const a2 = force.multiplyScalar(1 / this.mass);
+        const a2 = force.clone().multiplyScalar(1 / this.mass);
         this._velocity.addScaledVector(a.add(a2), 0.5 * dt);
         this._sphere.moveTo(this.position);
     }
