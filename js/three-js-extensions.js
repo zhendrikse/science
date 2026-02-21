@@ -1017,7 +1017,7 @@ export class Sphere {
         })
 
         this._mesh = new Mesh(new SphereGeometry(radius * scale, segments, segments), material);
-        this._mesh.position.copy(position);
+        this._mesh.position.copy(position.clone().multiplyScalar(scale));
         this._mesh.visible = visible;
         this._mesh.castShadow = true;
         this._radius = radius;
