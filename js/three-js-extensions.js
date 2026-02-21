@@ -995,26 +995,27 @@ export class ArrowField extends Group {
 }
 
 export class Sphere {
-    constructor(
-        group,
-        position=new Vector3(0, 0, 0),
-        radius=1,
-        color=0xffff00,
-        makeTrail=false,
-        {
+    constructor(group, {
+            position=new Vector3(0, 0, 0),
+            radius=1,
+            color=0xffff00,
+            makeTrail=false,
             visible=true,
             scale=1,
             segments=24,
-            material=new MeshStandardMaterial({
-                color: color,
-                opacity: 1,
-                transparent: true,
-                wireframe: false,
-                metalness:0.7,
-                visible: visible,
-                roughness:0.2
-            })
+            opacity=1,
+            wireframe=false
         } = {}) {
+        const material = new MeshStandardMaterial({
+            color: color,
+            opacity: opacity,
+            transparent: true,
+            wireframe: wireframe,
+            metalness:0.7,
+            visible: visible,
+            roughness:0.2
+        })
+
         this._mesh = new Mesh(new SphereGeometry(radius * scale, segments, segments), material);
         this._mesh.position.copy(position);
         this._mesh.visible = visible;
@@ -1266,20 +1267,8 @@ export class Ball {
         elasticity=1.0,
         segments = 24} = {})
     {
-        const material = new MeshStandardMaterial({
-            color: color,
-            opacity: opacity,
-            transparent: true,
-            wireframe: wireframe,
-            metalness:0.7,
-            roughness:0.2
-        });
-        this._sphere = new Sphere(parent, position, radius, color, makeTrail,{
-            segments: segments,
-            material: material,
-            scale: scale,
-            visible: visible
-        });
+        this._sphere = new Sphere(parent,
+            {position, radius, color, makeTrail, visible, scale, segments, opacity, wireframe});
         this._position = position;
         this._velocity = velocity;
         this._mass = mass;

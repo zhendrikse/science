@@ -171,7 +171,7 @@
     }
 
     function markPerihelion() {
-        new Sphere(planetaryScene, vec_r_last, 0.2);
+        new Sphere(planetaryScene, {position: vec_r_last, radius: 0.2});
         const prev = perihelion_list[perihelion_list.length - 2];
         const curr = perihelion_list[perihelion_list.length - 1];
 
