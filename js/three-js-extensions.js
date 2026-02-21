@@ -1055,6 +1055,7 @@ export class Sphere {
     get visible() { return this._mesh.visible; }
     get position() { return this._position; }
     get radius() { return this._radius; }
+    distanceTo(other) { return other.position.clone().sub(this.position).length() }
 }
 
 export class Cylinder {
@@ -1334,6 +1335,8 @@ export class Ball {
     get visible() { return this._sphere.visible; }
     get neighbors() { return this._neighbors; }
     get elasticity() { return this._elasticity; }
+
+    distanceTo(other) { return other._sphere.distanceTo(this._sphere) }
 }
 
 export class Spring {
