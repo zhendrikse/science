@@ -5,7 +5,7 @@
 
 - [`ball_on_spring.html` source code](ball_on_spring.html)
 - [`block_rotation.py` source code](block_rotation.py)
-- [`bouncing_ball.py` source code](bouncing_ball.py)
+- [`bouncing_ball.html` source code](bouncing_ball.html)
 - [`bouncing_particles.py` source code](bouncing_particles.py)
 - [`cart_on_spring.py` source code](cart_on_spring.py)
 - [`chain_drop.py` source code](chain_drop.py)

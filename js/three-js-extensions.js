@@ -1024,7 +1024,7 @@ export class Sphere {
         this._group = group;
         this._group.add(this._mesh);
         this._trail = null;
-        if (makeTrail) this.enableTrail();
+        if (makeTrail) this.enableTrail({color: color});
     }
 
     enableTrail({
