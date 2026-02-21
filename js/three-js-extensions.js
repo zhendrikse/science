@@ -697,6 +697,8 @@ export class Trail {
 
     dispose() {
         if (!this._trail) return;
+        this._parent.parent.remove(this._trail._line);
+
         if (this._trail._line) {
             if (this._trail._line.geometry)
                 this._trail._line.geometry.dispose();
@@ -1026,13 +1028,14 @@ export class Sphere {
     }
 
     enableTrail({
-               maxPoints = 200,
-               color = 0xaaaaaa,
-               trailStep = 10,
-               linewidth = 1
+                    maxPoints = 200,
+                    color = 0xaaaaaa,
+                    trailStep = 10,
+                    linewidth = 1
                 } = {}) {
-        this._trail = new Trail({ maxPoints, color, trailStep, linewidth });
-        this._group.add(this._trail.line);
+
+        this._trail = new Trail(this._mesh);
+        this._trail.enable({ maxPoints, color, trailStep, linewidth });
     }
 
     disableTrail() {
@@ -1282,7 +1285,6 @@ export class Ball {
         this._radius = radius;
         this._elasticity = elasticity;
         this._neighbors = [];
-        if (makeTrail) this._sphere.enableTrail();
     }
 
     appendNeighbor(ball) { this._neighbors.push(ball); }
