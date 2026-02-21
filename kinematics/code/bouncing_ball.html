@@ -62,7 +62,7 @@
     axesController.createFromBoundingBox(boundingBox);
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
-    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .5), {translationY: -1});
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .4), {translationY: -1});
     plot3D.renderer.setAnimationLoop(animate);
 
     // Resizing for mobile devices
