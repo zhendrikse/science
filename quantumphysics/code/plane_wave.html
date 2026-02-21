@@ -88,7 +88,7 @@
 
         set_k_to = (value) => this._k = value;
 
-        set_omega_to = (value) =>this._omega = value;
+        set_omega_to = (value) => this._omega = value;
 
         set_amplitude_to = (value) => this._amplitude = value;
 
@@ -120,7 +120,8 @@
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .5));
-    const gui = new ControlsGui();
+    plot3D.renderer.setAnimationLoop(animate);
+    const gui = new ControlsGui(planeWave);
 
     // Resizing for mobile devices
     function resize() {
@@ -138,5 +139,4 @@
         axesController.render(plot3D.camera);
         time += dt;
     }
-    animate();
 </script>
