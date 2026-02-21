@@ -251,7 +251,8 @@ export class Axes extends Group {
 
     #disposeAnnotations() {
         if (this._annotations) {
-            this._annotations._labels.forEach(label => this._annotations.remove(label));
+            this._annotations._tickLabels.forEach(label => this._annotations.remove(label));
+            this._annotations._axesLabels.forEach(label => this._annotations.remove(label));
             if (this._annotations._renderer?.domElement?.parentNode)
                 this._annotations._renderer.domElement.parentNode.removeChild(this._annotations._renderer.domElement);
             this._annotations = null;
