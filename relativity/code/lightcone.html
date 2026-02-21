@@ -45,7 +45,7 @@
     });
 
     class LightCone extends Group {
-        constructor({color=0xaaffaa, opacity=0.6, height=3, maxHeight=height } = {}) {
+        constructor({color=0xaaffaa, opacity=0.4, height=3, maxHeight=height } = {}) {
             super();
             this._height = height;
             this._maxHeight = maxHeight;
@@ -165,7 +165,6 @@
     }
     window.addEventListener("resize", resize);
     resize();
-    lightcone.render(0.5);
 
     let t = 0;
     function animate(time) {
