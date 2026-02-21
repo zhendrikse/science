@@ -13,7 +13,11 @@
 <div class="canvasWrapper" id="bouncingBallWrapper">
     <canvas class="applicationCanvas" id="bouncingBallCanvas"  width="400" height="400"></canvas>
 </div>
+<div class="buttonRow">
+    <button id="bouncingBallButton">Start</button>
+</div>
 <div id="chart" style="margin: auto;"></div>
+
 
 <script type="module">
     import {Box3, Scene, Color, Group, Vector3 } from "three";
@@ -69,6 +73,9 @@
     window.addEventListener("resize", resize);
     resize();
 
+    let running = false;
+    document.getElementById("bouncingBallButton").addEventListener("click", () => running = true);
+
     let timeData = [];
     let positionData = [];
     let kineticData = [];
@@ -86,6 +93,18 @@
             x: { time: false },
             y: { auto: true }
         },
+        axes: [
+            {
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1}
+            },
+            {
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1}
+            }
+        ],
         series: [
             {},                         // x (time)
             { label: "Y-position", stroke: "cyan" },
@@ -104,7 +123,7 @@
     const uplot = new uPlot(opts, data, document.getElementById("chart"));
 
     function ballStep(dt) {
-        if (ball.position.x > 1.75) return;
+        if (ball.position.x > 1.75 || !running) return;
         const force = new Vector3(0, -9.8, 0).multiplyScalar(ball.mass);
         ball.semiImplicitEulerUpdate(force, dt);
         if (ball.liesOnFloor())
