@@ -1258,7 +1258,7 @@ export class Ball {
         visible=true,
         makeTrail=false,
         elasticity=1.0,
-        segments = 24})
+        segments = 24} = {})
     {
         const material = new MeshStandardMaterial({
             color: color,
@@ -1302,7 +1302,7 @@ export class Ball {
     }
 
     liesOnFloor(epsilon = 1e-1) {
-        return this.position().y - this.radius <= epsilon;
+        return this.position.y - this.radius <= epsilon;
     }
 
     bounceOffOfFloor(dt, epsilon = 1e-1) {
