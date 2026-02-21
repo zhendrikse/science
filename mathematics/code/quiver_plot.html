@@ -135,6 +135,7 @@
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
+    plot3D.renderer.setAnimationLoop(animate);
     const gui = new ControlsGui();
 
     // Resizing for mobile devices
@@ -150,11 +151,9 @@
     if (window.MathJax) MathJax.typesetPromise([equationDiv]);
 
     function animate() {
-        requestAnimationFrame(animate);
         plot3D.render();
         axesController.render(plot3D.camera);
         if (!params.animate) return;
         arrowField.euler();
     }
-    animate();
 </script>

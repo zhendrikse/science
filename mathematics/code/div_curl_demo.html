@@ -42,6 +42,7 @@
         antialias: true
     });
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setAnimationLoop(animate);
 
     const aspect = canvas.clientWidth / canvas.clientHeight;
 
@@ -249,8 +250,6 @@
 
     renderer.render(scene, camera);
     function animate() {
-        requestAnimationFrame(animate);
-
         if(!started) {
             overlay.style.display = "block";
             return;
@@ -275,6 +274,4 @@
 
         renderer.render(scene, camera);
     }
-
-    animate();
 </script>

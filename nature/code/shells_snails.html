@@ -350,6 +350,7 @@
         new IsoparametricContoursView(worldGroup, mathematicalSurface)
     );
     const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
+    plot3D.renderer.setAnimationLoop(animate);
     updateViewForSurface();
 
     // Resizing for mobile devices
@@ -400,7 +401,6 @@
     });
 
     function animate() {
-        requestAnimationFrame(animate);
         plot3D.render();
         ring.render();
         ringRenderer.render(ringScene, ringCamera);
@@ -408,5 +408,4 @@
             surfaceController.rotateBy(0.005);
         axesController.render(plot3D.camera);
     }
-    animate();
 </script>

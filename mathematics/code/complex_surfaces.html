@@ -336,6 +336,7 @@
 
     const plot3D = new Plot3DView(scene, canvas, boundingBox);
     plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
+    plot3D.renderer.setAnimationLoop(animate);
     const gui = new ControlsGui();
 
     // Resizing for mobile devices
@@ -347,11 +348,9 @@
     resize();
 
     function animate() {
-        requestAnimationFrame(animate);
         plot3D.render();
         axesController.render(plot3D.camera);
     }
-    animate();
 </script>
 
 <!--

@@ -338,7 +338,8 @@ class AxesAnnotation extends Group {
         this._renderer.domElement.style.pointerEvents = "none"; // do not process mouse events
         this._renderer.domElement.style.zIndex = "5"; // on top of canvas
 
-        this._labels = [];
+        this._tickLabels = [];
+        this._axesLabels = [];
 
         this._container.appendChild(this._renderer.domElement);
         this.onWindowResize();
@@ -358,6 +359,9 @@ class AxesAnnotation extends Group {
         label.position.copy(pos);
         return label;
     }
+
+    get tickLabels() { return this._tickLabels; }
+    get axesLabels() { return this._axesLabels; }
 
     render(scene, camera) {
         this._renderer.render(scene, camera);
@@ -457,18 +461,19 @@ class ClassicalAnnotations extends AxesAnnotation {
 
         const step = size / divisions;
         for (let v = -size * .5 ; v <= size * .5; v += step)
-            this._labels.push(
+            this._tickLabels.push(
                 this.createLabel(v.toFixed(1), new Vector3(v, 0, 0.525 * size)),
                 this.createLabel(v.toFixed(1), new Vector3(0.525 * size, 0, v)));
         for (let v = 0 ; v <= size * .5; v += step)
-            this._labels.push(this.createLabel(v.toFixed(1), new Vector3(0, v, 0)));
+            this._tickLabels.push(this.createLabel(v.toFixed(1), new Vector3(0, v, 0)));
 
-        this._labels.push(
+        this._axesLabels.push(
             this.createLabel(axisLabels[0], new Vector3(0.575 * size, 0, 0), "red", "20px"),
             this.createLabel(axisLabels[1], new Vector3(0, 0.575 * size, 0), "green", "20px"),
             this.createLabel(axisLabels[2], new Vector3(0, 0, 0.575 * size), "blue", "20px"));
 
-        this._labels.forEach(label => this.add(label));
+        this._tickLabels.forEach(label => this.add(label));
+        this._axesLabels.forEach(label => this.add(label));
     }
 }
 
@@ -478,20 +483,21 @@ class MatlabAnnotations extends AxesAnnotation {
 
         const step = (2 * size) / divisions;
         for (let v = 0 ; v <= size; v += step)
-            this._labels.push(
+            this._tickLabels.push(
                 this.createLabel(v.toFixed(1), new Vector3(-0.525 * size, v, 0.5 * size)),
                 this.createLabel(v.toFixed(1), new Vector3(0.525 * size, 0, v - 0.5 * size)));
 
         for (let v = step ; v < size; v += step)
-            this._labels.push(
+            this._tickLabels.push(
                 this.createLabel(v.toFixed(1), new Vector3(v - 0.5 * size, 0, 0.525 * size)));
 
-        this._labels.push(
+        this._axesLabels.push(
             this.createLabel(axisLabels[0], new Vector3(0.65 * size, 0, -0.5 * size), "red", "20px"),
             this.createLabel(axisLabels[1], new Vector3(-0.5 * size, 1.1 * size, -0.5 * size), "green", "20px"),
             this.createLabel(axisLabels[2], new Vector3(-0.5 * size, 0, 0.65 * size), "blue", "20px"));
 
-        this._labels.forEach(label => this.add(label));
+        this._tickLabels.forEach(label => this.add(label));
+        this._axesLabels.forEach(label => this.add(label));
     }
 }
 
