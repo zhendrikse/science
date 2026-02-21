@@ -192,6 +192,7 @@ export class AxesParameters {
                     divisions = 10,
                     frame = true,
                     annotations = true,
+                    tickLabels = true,
                     xyPlane = true,
                     xzPlane = true,
                     yzPlane = true,
@@ -205,6 +206,7 @@ export class AxesParameters {
         this.xzPlane = xzPlane;
         this.yzPlane = yzPlane;
         this.axisLabels = axisLabels;
+        this.tickLabels = tickLabels;
     }
 }
 
@@ -267,12 +269,14 @@ export class Axes extends Group {
                      annotations=true,
                      xyPlane=true,
                      xzPlane=true,
-                     yzPlane=true } = {}) {
+                     yzPlane=true,
+                     tickLabels=true } = {}) {
         this._layout.frame.visible = frame;
         this._annotations.visible = annotations;
         this._layout.xy.visible = xyPlane;
         this._layout.xz.visible = xzPlane;
         this._layout.yz.visible = yzPlane;
+        this._annotations.tickLabels.forEach(label => label.visible = tickLabels);
         return this;
     }
 
@@ -542,9 +546,9 @@ export class AxesController {
     updateSettings() {
         if (!this._axes) return;
 
-        const { frame, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
+        const { frame, annotations, xyPlane, xzPlane, yzPlane, tickLabels } = this._axesParameters;
         this._axes.withSettings(
-            { frame, annotations, xyPlane, xzPlane, yzPlane });
+            { frame, annotations, xyPlane, xzPlane, yzPlane, tickLabels });
     }
 
     render = (camera) => this._axes?.render(this._scene, camera);
