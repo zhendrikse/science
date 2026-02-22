@@ -15,50 +15,50 @@
 <script type="module">
     import * as THREE from "three";
     import { Spring, Ball } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
     // --- Scene setup ---
     const canvas = document.getElementById("springCanvas");
     const scene = new THREE.Scene();
     const g = 9.8; // gravitational constant
 
-    const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
-    camera.position.set(15, 15, 30);
-    camera.lookAt(0, 5, 0);
+    const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+    camera.position.set(20, 20, 20);
+    camera.lookAt(0, 10, 0);
 
     const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha: true});
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setAnimationLoop(animate);
+    const controls = new OrbitControls( camera, canvas );
 
-    scene.add(new THREE.HemisphereLight(0xffffff,0x222222,0.6));
-    const dirLight = new THREE.DirectionalLight(0xffffff,0.8);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
     dirLight.position.set(10, 20, 10);
     scene.add(dirLight);
-    renderer.shadowMap.enabled = true;
-    dirLight.castShadow = true;
 
     // --- Plafond ---
-    // const ceilingSize = 50;
-    // const ceilingGeometry = new THREE.PlaneGeometry(ceilingSize, ceilingSize);
-    // const ceilingMaterial = new THREE.MeshStandardMaterial({
-    //     color: 0x8a8a8a,
-    //     metalness: 0.05,
-    //     roughness: 0.95,
-    //     side: THREE.DoubleSide
-    // });
-    // ceilingMaterial.bumpScale = 0.05;
-    //
-    // const ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
-    //
-    // // horizontal plane
-    // ceiling.rotation.x = Math.PI / 2;
-    // ceiling.position.y = start.y;
-    //
-    // scene.add(ceiling);
-    // ceiling.receiveShadow = true;
+    const ceilingSize = 12;
+    const ceilingGeometry = new THREE.PlaneGeometry(ceilingSize, ceilingSize);
+    const ceilingMaterial = new THREE.MeshStandardMaterial({
+        color: 0x8a8a8a,
+        metalness: 0.05,
+        roughness: 0.95,
+        side: THREE.DoubleSide
+    });
+    ceilingMaterial.bumpScale = 0.05;
+
+    const ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+
+    // horizontal plane
+    ceiling.rotation.x = Math.PI / 2;
+    ceiling.position.y = 10;
+
+    scene.add(ceiling);
 
     // Spring
-    const suspensionPoint = new THREE.Vector3(0, 15, 0);
-    const axis = new THREE.Vector3(0, -10, 0);
-    const slinky = new Spring(scene, suspensionPoint, axis, {k:200, length:15, longitudinalOscillation: true});
+    const suspensionPoint = new THREE.Vector3(0, 10, 0);
+    const axis = new THREE.Vector3(0, -25, 0);
+    const slinky = new Spring(scene, suspensionPoint, axis, {radius: 1, k:200, length:15, longitudinalOscillation: true});
 
     // Ball
     const ballPosition = new THREE.Vector3(
@@ -66,7 +66,7 @@
         0,
         (Math.random() - 0.5) * 0.5   // ±0.25 in Z
     );
-    const ball = new Ball(scene, {position: ballPosition, radius: 1, mass: 10});
+    const ball = new Ball(scene, {position: ballPosition, radius: 2, mass: 10, color: "lightblue"});
     slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
 
     // --- Mouse click & drag ---
@@ -88,8 +88,6 @@
         }
     });
 
-    const dt = 0.02;
-
     const plotData = [
         [], // x-axis = time
         [], // KE
@@ -100,7 +98,7 @@
 
     const plot = new uPlot({
         width: canvas.clientWidth,
-        height: 250,
+        height: canvas.clientHeight * .5,
         title: "Slinky energies",
         scales: { x: { time: false }, y: { auto: true } },
         series: [
@@ -130,14 +128,15 @@
 
     let time = 0;
     const maxPoints = 500;
+    const dt = 0.02;
     function animate() {
-        requestAnimationFrame(animate);
         time += dt;
 
-        if (!dragging) ball.semiImplicitEulerUpdate(force(), dt);
-
-        slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
-        slinky.update(time);
+        for (let substep = 0; substep < 2; substep++) {
+            if (!dragging) ball.semiImplicitEulerUpdate(force(), dt);
+            slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
+            slinky.update(time);
+        }
 
         const potentialGravity = ball.mass * g * ball.position.y;
         plotData[0].push(time); // x-axis = time
@@ -151,6 +150,7 @@
         plot.setData(plotData);
 
         renderer.render(scene, camera);
+        controls.update();
     }
 
     animate();
