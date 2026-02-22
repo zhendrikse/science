@@ -119,7 +119,7 @@
 
         position() { return this.sphere.position; }
 
-        positionVectorTo(other) { return new vector().copy(other.sphere.position).sub(this.sphere.position); }
+        positionVectorTo(other) { return other.sphere.position.clone().sub(this.sphere.position); }
 
         distanceToSquared(other) { return this.sphere.position.distanceToSquared(other.sphere.position); }
 
@@ -129,11 +129,7 @@
     class Particle {
         constructor(group, radius = .125) {
             const position = new vector(this.#randomPosition(), this.#randomPosition(), this.#randomPosition());
-            this.sphere = new Sphere(group, {
-                position: position.multiplyScalar(cubeSize * .5),
-                radius: radius,
-                color:  "#00a000"
-            });
+            this.sphere = new Sphere(position.multiplyScalar(cubeSize * .5), radius, "#00a000");
             this.frozen = false;
         }
 
