@@ -11,7 +11,7 @@ const experimentGroup = new Group();
 scene.add(experimentGroup);
 
 const camera = new PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(2, 2, 10);
+camera.position.set(-3, 0, 12);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({antialias:true, alpha: true, canvas: canvas});
@@ -80,6 +80,7 @@ const stick2 = new Cylinder(experimentGroup, ball2.position.clone().sub(new Vect
     color: 0x00ffff
 });
 experimentGroup.position.y = 2 * L0;
+experimentGroup.position.x -= 2 * L0;
 
 function iterate(dt) {
     if (ball2.liesOnFloor({floorLevel: -3.5 * L0}) || ball3.liesOnFloor({floorLevel: -3.5 * L0})) return;
