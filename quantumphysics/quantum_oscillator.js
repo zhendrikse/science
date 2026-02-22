@@ -1,6 +1,6 @@
 import { Scene, Vector2, Group, Vector3, AmbientLight, PerspectiveCamera, WebGLRenderer, DirectionalLight} from "three";
 import { Raycaster, Mesh, MeshStandardMaterial, CylinderGeometry, BufferGeometry, Line, LineBasicMaterial } from "three";
-import {Ball, Spring, ThreeJsUtils} from '../js/three-js-extensions.js';
+import { HarmonicOscillator, ThreeJsUtils} from '../js/three-js-extensions.js';
 
 const canvas = document.getElementById("applicationCanvas");
 
@@ -29,79 +29,6 @@ const ks = 1.2;
 const L0 = 5;
 const ballMass = 0.5;
 
-class HarmonicOscillator extends Group {
-    constructor({
-        position = new Vector3(0, 0, 0),
-        length = 10,
-        springConstant = 10,
-        ballRadius = 0.3,
-        ballMass = 3,
-        ballColor = 0xff0000
-    } = {}) {
-        super();
-        this._center = position.clone();
-        this._k = springConstant;
-
-        const leftPos  = position.clone().add(new Vector3(-length, 0, 0));
-        const rightPos = position.clone().add(new Vector3(length, 0, 0));
-
-        this._left = new Ball(this,{
-            position: leftPos,
-            radius: ballRadius,
-            mass: ballMass,
-            color: ballColor
-        });
-
-        this._right = new Ball(this,{
-            position: rightPos,
-            radius: ballRadius,
-            mass: ballMass,
-            color: ballColor
-        });
-
-        const axis = rightPos.clone().sub(leftPos);
-        this._spring = new Spring(this, leftPos, axis,
-            {
-                k: springConstant,
-                color: 0xffffff,
-                coils: 20,
-                radius: ballRadius * .5,
-                coilRadius: 0.05
-            }
-        );
-
-        this._restLength = axis.length();
-    }
-
-    update(dt){
-        const delta = this._right.position.clone().sub(this._left.position);
-        const length = delta.length();
-        const direction = delta.clone().normalize();
-
-        const forceMagnitude = this._k * (length - this._restLength);
-        const force = direction.multiplyScalar(forceMagnitude);
-
-        this._right.semiImplicitEulerUpdate(force.clone().negate(), dt);
-        this._left.semiImplicitEulerUpdate(force, dt);
-
-        this._spring.moveTo(this._left.position);
-        this._spring.updateAxis(delta);
-    }
-
-    compress(amount){
-        this._left.shiftBy(new Vector3(amount/2, 0, 0));
-        this._right.shiftBy(new Vector3(-amount/2, 0, 0));
-    }
-
-    reset(){
-        const halfLength = this._restLength / 2;
-        this._left.moveTo(this._center.clone().add(new Vector3(-halfLength,0,0)));
-        this._right.moveTo(this._center.clone().add(new Vector3(halfLength,0,0)));
-        this._left.accelerateTo(new Vector3());
-        this._right.accelerateTo(new Vector3());
-    }
-}
-
 class Well extends Group{
     constructor({
         ks = 1.2,
@@ -124,9 +51,7 @@ class Well extends Group{
 
         this._vline1 = new Mesh(vGeom, vMat);
         this._vline2 = new Mesh(vGeom, vMat);
-
-        this._vline1.visible = false;
-        this._vline2.visible = false;
+        this.verticalLines(false);
 
         this.add(this._vline1);
         this.add(this._vline2);
@@ -135,9 +60,9 @@ class Well extends Group{
     #drawEnergyLevels(yOffset) {
         const dU = 2;
         for(let U = 1; U <= 14; U += dU) {
-            const s = Math.sqrt(2 * U / ks);
+            const s = Math.sqrt(2 * U / this._ks);
             const levelGeom = new CylinderGeometry(0.1, 0.1, 2 * s, 16);
-            const levelMat  = new MeshStandardMaterial({color:0xffffff});
+            const levelMat  = new MeshStandardMaterial({color: 0xffffff});
             const level = new Mesh(levelGeom, levelMat);
 
             // rotate cylinder horizontally
@@ -182,9 +107,11 @@ class Well extends Group{
         this._currentLevel = level;
         level.material.color.set(0xff0000);
 
-        const halfWidth = level.geometry.parameters.height/2;
+        const halfWidth = level.geometry.parameters.height / 2; // energy level cylinder has been rotated!
         this._vline1.position.set(-halfWidth, level.position.y, 0);
         this._vline2.position.set(halfWidth, level.position.y, 0);
+
+        this.verticalLines(true);
     }
 
     get energyLevels(){ return this._energyLevels; }
@@ -195,33 +122,27 @@ const mouse = new Vector2();
 window.addEventListener("click", onMouseClick);
 
 function onMouseClick(event){
-
     const rect = renderer.domElement.getBoundingClientRect();
 
     mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
     raycaster.setFromCamera(mouse, camera);
 
     const intersects = raycaster.intersectObjects(well.energyLevels);
+    if (intersects.length <= 0) return;
 
-    if(intersects.length > 0){
+    const selectedLevel = intersects[0].object;
+    well.setCurrentLevel(selectedLevel);
 
-        const selectedLevel = intersects[0].object;
-
-        well.setCurrentLevel(selectedLevel);
-
-        // amplitude bepalen uit level breedte
-        const halfWidth = selectedLevel.geometry.parameters.height / 2;
-
-        oscillator.reset?.();  // als je reset later implementeert
-        oscillator.compress(halfWidth);
-    }
+    // determine amplitude from size of selected level
+    const halfWidth = level.geometry.parameters.height / 2; // energy level cylinder has been rotated!
+    oscillator.reset();
+    oscillator.compress(halfWidth);
 }
 
 const oscillator = new HarmonicOscillator({
-    position: new Vector3(0, 8, 0),
-    length: L0/2,
+    position: new Vector3(0, 10, 0),
+    length: L0 / 2,
     springConstant: ks,
     ballRadius: 0.5,
     ballMass: ballMass,
@@ -232,7 +153,7 @@ worldGroup.add(oscillator);
 oscillator.compress(3);
 const well = new Well({
     ks: ks,
-    yOffset: -7
+    yOffset: -6
 });
 worldGroup.add(well);
 

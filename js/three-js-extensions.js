@@ -2278,3 +2278,77 @@ export class Aquarium {
     show() { this._cube.visible = true; }
     hide() { this._cube.visible = false; }
 }
+
+export
+class HarmonicOscillator extends Group {
+    constructor({
+                    position = new Vector3(0, 0, 0),
+                    length = 10,
+                    springConstant = 10,
+                    ballRadius = 0.3,
+                    ballMass = 3,
+                    ballColor = "cyan"
+                } = {}) {
+        super();
+        this._center = position.clone();
+        this._k = springConstant;
+
+        const leftPos  = position.clone().add(new Vector3(-length, 0, 0));
+        const rightPos = position.clone().add(new Vector3(length, 0, 0));
+
+        this._left = new Ball(this,{
+            position: leftPos,
+            radius: ballRadius,
+            mass: ballMass,
+            color: ballColor
+        });
+
+        this._right = new Ball(this,{
+            position: rightPos,
+            radius: ballRadius,
+            mass: ballMass,
+            color: ballColor
+        });
+
+        const axis = rightPos.clone().sub(leftPos);
+        this._spring = new Spring(this, leftPos, axis,
+            {
+                k: springConstant,
+                color: 0xffffff,
+                coils: 20,
+                radius: ballRadius * .5,
+                coilRadius: 0.05
+            }
+        );
+
+        this._restLength = axis.length();
+    }
+
+    update(dt){
+        const delta = this._right.position.clone().sub(this._left.position);
+        const length = delta.length();
+        const direction = delta.clone().normalize();
+
+        const forceMagnitude = this._k * (length - this._restLength);
+        const force = direction.multiplyScalar(forceMagnitude);
+
+        this._right.semiImplicitEulerUpdate(force.clone().negate(), dt);
+        this._left.semiImplicitEulerUpdate(force, dt);
+
+        this._spring.moveTo(this._left.position);
+        this._spring.updateAxis(delta);
+    }
+
+    compress(amount){
+        this._left.shiftBy(new Vector3(amount/2, 0, 0));
+        this._right.shiftBy(new Vector3(-amount/2, 0, 0));
+    }
+
+    reset(){
+        const halfLength = this._restLength / 2;
+        this._left.moveTo(this._center.clone().add(new Vector3(-halfLength,0,0)));
+        this._right.moveTo(this._center.clone().add(new Vector3(halfLength,0,0)));
+        this._left.accelerateTo(new Vector3());
+        this._right.accelerateTo(new Vector3());
+    }
+}
