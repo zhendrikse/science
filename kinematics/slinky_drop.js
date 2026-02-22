@@ -1,4 +1,5 @@
-import { Scene, Vector3, Group, AmbientLight, PerspectiveCamera, WebGLRenderer, DirectionalLight} from "three";
+import { Scene, Vector3, Group, AmbientLight, PerspectiveCamera, WebGLRenderer, DirectionalLight,
+    BoxGeometry, Mesh, MeshLambertMaterial, DoubleSide } from "three";
 import { Cylinder, Ball, Spring, ThreeJsUtils} from '../js/three-js-extensions.js';
 
 const canvas = document.getElementById("slinkyCanvas");
@@ -31,17 +32,18 @@ window.addEventListener("click", () => {
 const light = new DirectionalLight(0xffffff, 1);
 light.position.set(10, 10, 10);
 scene.add(light);
-scene.add(new AmbientLight(0x404040));
+scene.add(new AmbientLight(0x404040, 0.7));
 
 // Parameters
 const g = new Vector3(0, -9.8, 0);
 const L0 = 2;
 const k = 100;
 
-const floor = new Cylinder(experimentGroup, new Vector3(0, -3.5 * L0, 0), new Vector3(5*L0, 0, 0), {
-    radius: 0.05,
-    color: 0xff00ff
-});
+const floorGeometry = new BoxGeometry(5 * L0, .1, 3.5 * L0);
+const floorMaterial = new MeshLambertMaterial({transparent: true, color: 0xff0ff, side: DoubleSide });
+const floor = new Mesh(floorGeometry, floorMaterial);
+floor.position.set(0, -3.5 * L0, 0);
+experimentGroup.add(floor);
 
 const ball1 = new Ball(experimentGroup, {
     position: new Vector3(0, L0 / 2, 0),
