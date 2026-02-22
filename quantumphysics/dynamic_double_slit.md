@@ -13,11 +13,11 @@ the propagation of the waves using a [finite difference method](https://pythonnu
 <div class="canvasWrapper" id="canvas-wrapper">
     <canvas class="applicationCanvas" id="doubleSlitCanvas"></canvas>
 </div>
-<p style="clear: both;"></p>
-<div style="margin-top: 10px;">
+<div class="buttonRow">
     <button id="resetButton">🔄 Reset View</button>&nbsp;&nbsp;
     <label for="slitSizeSlider"><input type="range" min="3" max="25" value="6" class="slider" id="slitSizeSlider"/> Slit size</label>
 </div>
+<script type="module" src="dynamic_double_slit.js"></script>
 
 <p style="clear: both;"></p>
 

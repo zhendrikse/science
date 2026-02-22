@@ -34,7 +34,6 @@ and the role of $k$ and $\omega$.
     <canvas class="applicationCanvas" id="planeWaveCanvas"></canvas><br/>
 </div>
 <div class="guiContainer" id="gui-container"></div>
-
 <script type="module" src="plane_wave.js"></script>
 
 <p style="clear: both;"></p>

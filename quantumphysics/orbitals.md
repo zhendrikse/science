@@ -17,6 +17,7 @@ Use the controls to explore how orbital shape and symmetry change.
     <canvas class="applicationCanvas" id="orbitalsCanvas"></canvas>
 </div>
 <div id="gui-container"></div>
+<script type="module" src="orbitals.js"></script>
 
 <p style="clear: both;"></p>
 
