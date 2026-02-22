@@ -1,6 +1,5 @@
 import {Scene, PerspectiveCamera, DirectionalLight, WebGLRenderer, Vector3 } from "three";
-import { Ball, ThreeJsUtils }
-from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+import { Ball, ThreeJsUtils } from '../js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 //const canvasContainer = document.getElementById("threeBodyWrapper");
