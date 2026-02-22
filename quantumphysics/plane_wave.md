@@ -39,7 +39,7 @@ and the role of $k$ and $\omega$.
 <p style="clear: both;"></p>
 
 ⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [plane_wave.html](https://github.com/zhendrikse/science/blob/main/quantumphysics/code/plane_wave.html)<br/>
+🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [plane_wave.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave.js)<br/>
 👉 A [VPython](https://www.vpython.org/) version is also available as [scalar_plot.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/plane_wave.py).
 
 

@@ -11,7 +11,8 @@ the Schrödinger equation for a hydrogen-like atom.
 Each surface represents a region of constant probability density. Colors show the **sign (phase)** of the 
 wavefunction, and transparency reveals its **relative magnitude**.
 
-Use the controls to explore how orbital shape and symmetry change.
+🔧 Written with [Three.js](https://threejs.org/), see [orbitals.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/orbitals.js)<br/>
+👉 Use the controls to explore how orbital shape and symmetry change.
 
 <div class="canvasWrapper" id="orbitalsContainer">
     <canvas class="applicationCanvas" id="orbitalsCanvas"></canvas>

@@ -3,7 +3,7 @@
 ## Ball on a spring
 <div class="header_line"><br/></div>
 
-🔧 This [ball_on_spring.html](code/ball_on_spring.html) uses [Three.js](https://threejs.org/) <br/>
+🔧 This [ball_on_spring.js](code/ball_on_spring.js) uses [Three.js](https://threejs.org/) <br/>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
