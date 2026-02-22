@@ -4,10 +4,16 @@
 <div class="header_line"><br/></div>
 
 🔧 [Original code](https://www.glowscript.org/#/user/wlane/folder/Let'sCodePhysics/program/atoms-array) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
-🛠  Refactored and ported to JavaScript and [Three.js](https://threejs.org/) in [cubic_lattice.html](https://github.com/zhendrikse/science/blob/main/molecularphysics/code/cubic_lattice.html)<br/>
+🛠  Refactored and ported to [cubic_lattice.js](https://github.com/zhendrikse/science/blob/main/molecularphysics/cubic_lattice.js) with [Three.js](https://threejs.org/)<br/>
 👉 A similar [VPython](https://vpython.org/) version is available as [molecules.py](https://github.com/zhendrikse/pysics-in-python/blob/main/vpython/cubic_lattice.py).
 
-{% include_relative code/cubic_lattice.html %}
+<canvas class="applicationCanvas" id="simulationCanvas" style="aspect-ratio: 1/1"></canvas><br/>
+<p style="clear: both;"></p>
+<div class="buttonRow">
+    <button id="pauseButton">&nbsp;Pause&nbsp;</button>
+    <button id="bondTypeButton">Bonds as springs</button>
+</div>
+<script type="module" src="cubic_lattice.js"></script>
 
 <p style="clear: both;"></p>
 

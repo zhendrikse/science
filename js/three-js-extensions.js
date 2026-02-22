@@ -1361,20 +1361,20 @@ export class Spring {
         tubularSegments=400,
         radialSegments=12,
         radius=0.5,
-        coilRadius=0.075
+        thickness=0.075
     } = {}) {
         this._longitudinalOscillation = longitudinalOscillation;
         this._radius = radius;
         this._curve = new Helix(position, axis, coils, radius, longitudinalOscillation ? 0.05 : 0);
         this._tubularSegments = tubularSegments;
         this._radialSegments = radialSegments;
-        this._coilRadius = coilRadius;
+        this._thickness = thickness;
         this._restLength = axis.length();
         this._k = k;
         this._position = position;
         this._axis = axis;
 
-        this._geometry = new TubeGeometry(this._curve, tubularSegments, coilRadius, radialSegments, false);
+        this._geometry = new TubeGeometry(this._curve, tubularSegments, thickness, radialSegments, false);
         const material = new MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
         this._mesh = new Mesh(this._geometry, material);
         parent.add(this._mesh);
@@ -1383,7 +1383,7 @@ export class Spring {
     #regenerateTube() {
         this._mesh.geometry.dispose();
         this._mesh.geometry = new TubeGeometry(
-            this._curve, this._tubularSegments, this._coilRadius, this._radialSegments, false
+            this._curve, this._tubularSegments, this._thickness, this._radialSegments, false
         );
     }
 
@@ -2064,7 +2064,7 @@ export class Bond {
         color=new Color(0xface8d),
         coils=15,
         radius=0.2,
-        coilRadius=0.02,
+        thickness=0.02,
         k_bond=18600.0,
         type=Bond.Type.CYLINDER
     } = {}) {
@@ -2080,7 +2080,7 @@ export class Bond {
         this._spring = new Spring(parent, new Vector3(0, 0, 0), new Vector3(0, 1, 0), {
             coils: coils,
             radius: radius * .5 * scale,
-            coilRadius: coilRadius,
+            thickness: thickness,
             k: k_bond,
             color: color});
         this._mesh = this._rod;
@@ -2328,7 +2328,7 @@ class HarmonicOscillator extends Group {
                 color: 0xffffff,
                 coils: 20,
                 radius: ballRadius * .5,
-                coilRadius: 0.05
+                thickness: 0.05
             }
         );
 

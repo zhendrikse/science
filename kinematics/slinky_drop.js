@@ -67,7 +67,7 @@ const spring = new Spring(experimentGroup, ball1.position, ball1.positionVectorT
     k,
     coils: 15,
     radius: 0.2,
-    coilRadius: 0.025
+    thickness: 0.025
 });
 
 // Stick
