@@ -80,6 +80,15 @@ export class ThreeJsUtils {
             camera.updateProjectionMatrix();
         }
     }
+
+    static showOverlayMessage(overlay, message, duration=1000) {
+        overlay.textContent = message;
+        overlay.style.display = "block";
+
+        setTimeout(() => {
+            overlay.style.display = "none";
+        }, duration);
+    }
 }
 
 export class Range {

@@ -8,7 +8,11 @@
 ⭐ His code belongs to [his article](https://rhettallain.com/2019/02/06/modeling-a-falling-slinky/)<br/>
 👉 Also available in [VPython](https://vpython.org) as [slinky_drop.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/slinky_drop.py)
 
-<canvas class="applicationCanvas" id="slinkyCanvas"></canvas>
+
+<div class="canvasWrapper" id="slinkyWrapper">
+    <canvas class="applicationCanvas" id="slinkyCanvas"></canvas>
+    <div class="overlayText" id="overlayText">Click to start the animation!</div>
+</div>
 <script type="module" src="slinky_drop.js"></script>
 
 <p style="clear: both;"></p>

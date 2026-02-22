@@ -25,24 +25,15 @@ const controls = new OrbitControls( camera, canvas );
 const renderer = new WebGLRenderer({antialias: true, canvas: canvas, alpha: true});
 renderer.setAnimationLoop( animate );
 
-function showOverlayMessage(message, duration=1000) {
-    overlay.textContent = message;
-    overlay.style.display = "block";
-
-    setTimeout(() => {
-        overlay.style.display = "none";
-    }, duration);
-}
-
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(renderer, camera));
 window.addEventListener("click", () => {
 if (!running) {
-    showOverlayMessage("Started");
+    ThreeJsUtils.showOverlayMessage(overlay, "Started");
     running = true;
 } else
-    showOverlayMessage("Click to start the animation!");
+    ThreeJsUtils.showOverlayMessage(overlay, "Click to start the animation!");
 });
 
 const light = new DirectionalLight(0xffffff, 1);

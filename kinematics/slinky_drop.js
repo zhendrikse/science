@@ -1,8 +1,9 @@
 import { Scene, Vector3, Group, AmbientLight, PerspectiveCamera, WebGLRenderer, DirectionalLight} from "three";
-import { Color } from "three";
 import { Cylinder, Ball, Spring, ThreeJsUtils} from '../js/three-js-extensions.js';
 
 const canvas = document.getElementById("slinkyCanvas");
+const overlay = document.getElementById("overlayText");
+let running = false;
 
 // Scene, camera en renderer setup
 const scene = new Scene();
@@ -10,7 +11,7 @@ const experimentGroup = new Group();
 scene.add(experimentGroup);
 
 const camera = new PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(2, 0, 10);
+camera.position.set(2, 2, 10);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({antialias:true, alpha: true, canvas: canvas});
@@ -19,8 +20,14 @@ renderer.setAnimationLoop( animate );
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(renderer, camera));
+window.addEventListener("click", () => {
+    if (!running) {
+        ThreeJsUtils.showOverlayMessage(overlay, "Started");
+        running = true;
+    } else
+        ThreeJsUtils.showOverlayMessage(overlay, "Click to start the animation!");
+});
 
-// Lichten
 const light = new DirectionalLight(0xffffff, 1);
 light.position.set(10, 10, 10);
 scene.add(light);
@@ -35,10 +42,6 @@ const floor = new Cylinder(experimentGroup, new Vector3(0, -3.5 * L0, 0), new Ve
     radius: 0.05,
     color: 0xff00ff
 });
-
-// ball1 = Ball(position=vector(0, L0 / 2, 0))
-// ball2 = Ball(position=ball1.position() + vector(0, -L0 - ball1.mass() * mag(g) / k, 0))
-// ball3 = Ball(position=ball2.position() + vector(L0, 0, 0), colour=color.yellow)
 
 const ball1 = new Ball(experimentGroup, {
     position: new Vector3(0, L0 / 2, 0),
@@ -62,9 +65,9 @@ const ball3 = new Ball(experimentGroup, {
 // Spring
 const spring = new Spring(experimentGroup, ball1.position, ball1.positionVectorTo(ball2), {
     k,
-    coils:15,
-    radius:0.2,
-    coilRadius:0.05
+    coils: 15,
+    radius: 0.2,
+    coilRadius: 0.025
 });
 
 // Stick
@@ -97,7 +100,8 @@ function iterate(dt) {
 let t = 0;
 const dt = 0.005;
 function animate() {
-    iterate(dt);
+    if (running)
+        iterate(dt);
     renderer.render(scene, camera);
     t += dt;
 }
