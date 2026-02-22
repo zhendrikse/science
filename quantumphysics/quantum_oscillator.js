@@ -1,5 +1,5 @@
-import {Box3, Scene, Color, Group, Vector3, AmbientLight, PerspectiveCamera, WebGLRenderer, DirectionalLight} from "three";
-import { Mesh, MeshStandardMaterial, CylinderGeometry, BufferGeometry, Line, LineBasicMaterial } from "three";
+import { Scene, Vector2, Group, Vector3, AmbientLight, PerspectiveCamera, WebGLRenderer, DirectionalLight} from "three";
+import { Raycaster, Mesh, MeshStandardMaterial, CylinderGeometry, BufferGeometry, Line, LineBasicMaterial } from "three";
 import {Ball, Spring, ThreeJsUtils} from '../js/three-js-extensions.js';
 
 const canvas = document.getElementById("applicationCanvas");
@@ -29,7 +29,6 @@ const ks = 1.2;
 const L0 = 5;
 const ballMass = 0.5;
 
-// OSCILLATOR CLASS
 class HarmonicOscillator extends Group {
     constructor({
         position = new Vector3(0, 0, 0),
@@ -94,8 +93,12 @@ class HarmonicOscillator extends Group {
         this._right.shiftBy(new Vector3(-amount/2, 0, 0));
     }
 
-    reset() {
-        // optional later
+    reset(){
+        const halfLength = this._restLength / 2;
+        this._left.moveTo(this._center.clone().add(new Vector3(-halfLength,0,0)));
+        this._right.moveTo(this._center.clone().add(new Vector3(halfLength,0,0)));
+        this._left.accelerateTo(new Vector3());
+        this._right.accelerateTo(new Vector3());
     }
 }
 
@@ -111,47 +114,9 @@ class Well extends Group{
         this._energyLevels = [];
         this._currentLevel = null;
 
-        // -----------------------
-        // Vertical equilibrium line
-        // -----------------------
-        const axisGeom = new CylinderGeometry(0.075, 0.075, 10, 16);
-        const axisMat  = new MeshStandardMaterial({ color: 0x00ff00 });
-        const axisLine = new Mesh(axisGeom, axisMat);
-        axisLine.position.set(0, yOffset + 5, 0);
-        this.add(axisLine);
-
-        // -----------------------
-        // Parabolic curve
-        // -----------------------
-        const points = [];
-        for(let x = -5; x <= 5; x += 0.1) {
-            const y = 0.5 * ks * x * x + yOffset;
-            points.push(new Vector3(x, y, 0));
-        }
-
-        const geometry = new BufferGeometry().setFromPoints(points);
-        const material = new LineBasicMaterial({color: color, linewidth: 3});
-        const curve = new Line(geometry, material);
-        this.add(curve);
-
-        // -----------------------
-        // Energy levels
-        // -----------------------
-        const dU = 2;
-        for(let U = 1; U <= 14; U += dU) {
-            const s = Math.sqrt(2 * U / ks);
-
-            const levelGeom = new CylinderGeometry(0.1, 0.1, 2 * s, 16);
-            const levelMat  = new MeshStandardMaterial({color:0xffffff});
-            const level = new Mesh(levelGeom, levelMat);
-
-            // rotate cylinder horizontally
-            level.rotation.z = Math.PI/2;
-            level.position.set(0, U + yOffset, 0);
-
-            this.add(level);
-            this._energyLevels.push(level);
-        }
+        this.#drawVerticalEquilibriumLine(yOffset);
+        this.#drawParabolicCurve(yOffset, color);
+        this.#drawEnergyLevels(yOffset);
 
         // Turning point lines
         const vGeom = new CylinderGeometry(0.05, 0.05, 8,16);
@@ -165,6 +130,44 @@ class Well extends Group{
 
         this.add(this._vline1);
         this.add(this._vline2);
+    }
+
+    #drawEnergyLevels(yOffset) {
+        const dU = 2;
+        for(let U = 1; U <= 14; U += dU) {
+            const s = Math.sqrt(2 * U / ks);
+            const levelGeom = new CylinderGeometry(0.1, 0.1, 2 * s, 16);
+            const levelMat  = new MeshStandardMaterial({color:0xffffff});
+            const level = new Mesh(levelGeom, levelMat);
+
+            // rotate cylinder horizontally
+            level.rotation.z = Math.PI/2;
+            level.position.set(0, U + yOffset, 0);
+
+            this.add(level);
+            this._energyLevels.push(level);
+        }
+    }
+
+    #drawParabolicCurve(yOffset, color) {
+        const points = [];
+        for(let x = -5; x <= 5; x += 0.1) {
+            const y = 0.5 * ks * x * x + yOffset;
+            points.push(new Vector3(x, y, 0));
+        }
+
+        const geometry = new BufferGeometry().setFromPoints(points);
+        const material = new LineBasicMaterial({color: color, linewidth: 3});
+        const curve = new Line(geometry, material);
+        this.add(curve);
+    }
+
+    #drawVerticalEquilibriumLine(yOffset) {
+        const axisGeom = new CylinderGeometry(0.075, 0.075, 10, 16);
+        const axisMat  = new MeshStandardMaterial({ color: 0x00ff00 });
+        const axisLine = new Mesh(axisGeom, axisMat);
+        axisLine.position.set(0, yOffset + 5, 0);
+        this.add(axisLine);
     }
 
     verticalLines(show){
@@ -185,6 +188,35 @@ class Well extends Group{
     }
 
     get energyLevels(){ return this._energyLevels; }
+}
+
+const raycaster = new Raycaster();
+const mouse = new Vector2();
+window.addEventListener("click", onMouseClick);
+
+function onMouseClick(event){
+
+    const rect = renderer.domElement.getBoundingClientRect();
+
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(well.energyLevels);
+
+    if(intersects.length > 0){
+
+        const selectedLevel = intersects[0].object;
+
+        well.setCurrentLevel(selectedLevel);
+
+        // amplitude bepalen uit level breedte
+        const halfWidth = selectedLevel.geometry.parameters.height / 2;
+
+        oscillator.reset?.();  // als je reset later implementeert
+        oscillator.compress(halfWidth);
+    }
 }
 
 const oscillator = new HarmonicOscillator({

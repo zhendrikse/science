@@ -1,0 +1,155 @@
+import { Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight,
+    MeshStandardMaterial, Mesh, SphereGeometry, Vector3, Color, AxesHelper} from "three";
+import { Gas3D, Gas, Arrow } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+// --- Canvas & scene ---
+const canvas = document.getElementById("boltzmannCanvas3d");
+const temperatureSlider = document.getElementById("temperatureSlider3d");
+
+const scene = new Scene();
+let sphereRadius = 5;
+
+// --- Camera ---
+const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 1, 10 * sphereRadius);
+camera.position.set(3 * sphereRadius, 2 * sphereRadius, 3 * sphereRadius);
+camera.lookAt(0, 0, 0);
+
+// --- Renderer ---
+const renderer = new WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setAnimationLoop(animate);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+
+const light = new DirectionalLight(0xffffff, 1);
+light.position.set(0, 5 * sphereRadius, 0);
+scene.add(light);
+scene.add(new AmbientLight(0xffffff, .5));
+
+const expansionX = new Arrow(new Vector3(sphereRadius, 0, 0), new Vector3(1, 0, 0), { color: new Color("red")});
+const expansionY = new Arrow(new Vector3(0, sphereRadius, 0), new Vector3(0, 1, 0), { color: new Color("lightgreen")});
+const expansionZ = new Arrow(new Vector3(0, 0, sphereRadius), new Vector3(0, 0, 1), { color: new Color("cyan")});
+scene.add(expansionX, expansionY, expansionZ);
+
+// Box-Muller Transform To Create a Normal Distribution
+function normal(average, standard_deviation) {
+    const u1 = Math.random();
+    const u2 = Math.random();
+    let vt = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    vt = vt * standard_deviation + average;
+    return vt;
+}
+
+const gas = new Gas3D({
+    particleRadius: .1,
+    tracerRadius: .1,
+    tracerTrail: false,
+    temperature: Number(temperatureSlider.value),
+    containerSize: sphereRadius,
+    containerType: Gas.Type.IN_SPHERE
+});
+scene.add(gas);
+
+const innerShell = new Mesh( // Container for adiabatic expansion
+    new SphereGeometry(sphereRadius * 1.05, 32, 32),
+    new MeshStandardMaterial({
+        color: "red",
+        depthWrite: false,
+        transparent: true,
+        opacity: 0.1
+    })
+);
+const shell = new Mesh( // Container for adiabatic expansion
+    new SphereGeometry(sphereRadius * 1.05, 32, 32),
+    new MeshStandardMaterial({
+        color: "purple",
+        depthWrite: false,
+        transparent: true,
+        opacity: 0.3
+    })
+);
+scene.add(innerShell, shell, new AxesHelper(sphereRadius));
+
+// --- uPlot ---
+const data = [[],[],[],[]];
+const plot = new uPlot({
+        title: "Statistics",
+        width: canvas.clientWidth,
+        height: canvas.clientHeight * .75,
+        bg: "transparent",
+        scales: {
+            x: { time: false },
+            y: { auto: true } //, range: [0, 80] }
+        },
+        axes: [
+            {   // x-axis
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: {
+                    stroke: "rgba(255, 255, 255, 0.2)",
+                    width: 1
+                }
+            },
+            {   // y-axis
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: {
+                    stroke: "rgba(255, 255, 255, 0.2)",
+                    width: 1
+                }
+            }
+        ],
+        series: [
+            {},
+            {label: "KE", stroke: "purple"},
+            {label: "Pressure", stroke: "red"},
+            {label: "PV/KE", stroke: "green"}
+        ]
+    }, data, document.getElementById("plot"));
+
+let running = true;
+const toggleButton = document.getElementById("toggle3d");
+toggleButton.onclick = () => {
+    running = !running;
+    toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";
+}
+document.getElementById("show3d").addEventListener("click", () => gas.show());
+document.getElementById("hide3d").addEventListener("click", () => gas.hide(false));
+temperatureSlider.addEventListener("input", (event) => gas.setTemperature(Number(event.target.value)));
+document.getElementById("add3d").addEventListener("click", () => gas.addParticles({radius: .1}));
+document.getElementById("reset3d").addEventListener("click", () => gas.reset(Number(temperatureSlider.value)));
+
+let steps = 0;
+let R = sphereRadius,
+    KE = 0,
+    P = 0;
+function animate(time) {
+    if (!running) return;
+
+    R += 2e-3;
+    gas.changeContainerSize(R);
+    gas.update();
+
+    shell.scale.setScalar(R / sphereRadius);
+    expansionX.updateAxis(new Vector3(R - sphereRadius, 0, 0));
+    expansionY.updateAxis(new Vector3(0, R - sphereRadius, 0));
+    expansionZ.updateAxis(new Vector3(0, 0, R - sphereRadius));
+
+    P += gas.pressure(R);
+    KE += gas.averageKE();
+    if(steps++ % 20 === 0) {
+        const volume = (4 / 3) * Math.PI * sphereRadius * sphereRadius * sphereRadius;
+        data[0].push(time * .001);
+        data[1].push(KE * .001);
+        data[2].push(P);
+        data[3].push(P * volume / KE);
+        plot.setData(data);
+        KE = 0;
+        P = 0;
+    }
+
+    renderer.render(scene, camera);
+}

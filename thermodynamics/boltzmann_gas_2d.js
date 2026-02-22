@@ -1,0 +1,116 @@
+import {Scene, OrthographicCamera, WebGLRenderer } from "three";
+import { Gas2D } from "../js/three-js-extensions.js";
+
+const boltzmannCanvas2d = document.getElementById("boltzmannCanvas2d");
+const temperatureSlider = document.getElementById("temperatureSlider2d");
+const centerX = boltzmannCanvas2d.clientWidth  * .5;
+const centerY = boltzmannCanvas2d.clientHeight * .5;
+const scene = new Scene();
+
+const camera = new OrthographicCamera(-centerX, centerX, centerY, -centerY, 0.1, 1000);
+camera.position.z = 10;
+
+const renderer2d = new WebGLRenderer({ antialias: true, canvas: boltzmannCanvas2d, alpha: true });
+renderer2d.setClearColor(0x000000, 0); // alpha 0
+renderer2d.setSize(boltzmannCanvas2d.clientWidth, boltzmannCanvas2d.clientHeight);
+renderer2d.setAnimationLoop( animate );
+
+const boxSize = boltzmannCanvas2d.clientWidth * .9; // keep margin
+const binCount = 30;
+const maxSpeed = 5
+const gas = new Gas2D({
+    temperature: Number(temperatureSlider.value),
+    containerSize: boxSize
+});
+scene.add(gas);
+
+const averagingFrames = 100;
+let histogramBuffer = [];
+const binsX = Array.from({length: binCount}, (_, i) => i);
+function getAveragedHistogram(newBins) {
+    histogramBuffer.push(newBins);
+
+    if (histogramBuffer.length > averagingFrames)
+        histogramBuffer.shift();
+
+    const average = new Array(binCount).fill(0);
+    for (let frame of histogramBuffer)
+        for (let i = 0; i < binCount; i++)
+            average[i] += frame[i];
+
+    for (let i = 0; i < binCount; i++)
+        average[i] /= histogramBuffer.length;
+
+    return average;
+}
+
+const speedPlot = new uPlot({
+        title: "Speed Distribution (averaged)",
+        width: boltzmannCanvas2d.clientWidth,
+        height: boltzmannCanvas2d.clientHeight * .5,
+        bg: "transparent",
+        scales: {
+            x: { time: false },
+            y: { auto: false, range: [0, 70] }
+        },
+        series: [
+            {},
+            {
+                label: "Simulation",
+                stroke: "cyan",
+                fill: "rgba(0, 255, 255, 0.2)"
+            },
+            {
+                label: "Maxwell (2D)",
+                stroke: "orange",
+                width: 2
+            }
+        ],
+        axes: [
+            {   // x-axis
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: {
+                    stroke: "rgba(255, 255, 255, 0.2)",
+                    width: 1
+                }
+            },
+            {   // y-axis
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: {
+                    stroke: "rgba(255, 255, 255, 0.2)",
+                    width: 1
+                }
+            }
+        ]
+    },
+    [binsX, new Array(binCount).fill(0), new Array(binCount).fill(0)],
+    document.getElementById("speedPlot"));
+
+function updateGraph() {
+    const { bins, theory } = gas.computeSpeedDistribution(binCount, maxSpeed);
+    const averaged = getAveragedHistogram(bins);
+    speedPlot.setData([binsX, averaged, theory]);
+}
+
+let running = true;
+const toggleButton = document.getElementById("toggle2d");
+toggleButton.onclick = () => {
+    running = !running;
+    toggleButton.innerHTML = running ? "&nbsp;Pause&nbsp;" : "Resume";
+}
+document.getElementById("show2d").addEventListener("click", () => gas.show());
+document.getElementById("hide2d").addEventListener("click", () => gas.hide(false));
+temperatureSlider.addEventListener("input", (event) => gas.setTemperature(Number(event.target.value)));
+document.getElementById("add2d").addEventListener("click", () => gas.addParticles(50));
+document.getElementById("reset2d").addEventListener("click", () => gas.reset(Number(temperatureSlider.value)));
+
+function animate() {
+    for (let i = 0; i < 5; i++)
+        if (running) gas.update();
+
+    updateGraph();
+    renderer2d.render(scene, camera);
+}
+

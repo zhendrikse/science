@@ -3,19 +3,51 @@
 ## Two-dimensional Boltzmann gas
 <div class="header_line"><br/></div>
 
-🔧 [boltzmann_gas_2d.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
+🔧 [boltzmann_gas_2d.js](https://github.com/zhendrikse/science/blob/main/thermodynamics/boltzmann_gas_2d.js) is based on [Three.js](https://threejs.org/) <br/>
 
-{% include_relative code/boltzmann_gas_2d.html %}
+<canvas class="applicationCanvas" id="boltzmannCanvas2d"></canvas>
+<div class="buttonRow">
+    <button id="toggle2d">&nbsp;Pause&nbsp;</button>
+    <button id="reset2d">Reset</button>
+    <button id="show2d">Show</button>
+    <button id="hide2d">Hide</button>
+    <button id="add2d">+50</button>
+</div>
+<div style="margin:auto;">
+    <label for="temperatureSlider2d">
+        Cold <input type="range" id="temperatureSlider2d" min="0.05" max="1.0" value=".5" step="0.01"/> Hot
+    </label>
+</div>
+<p style="clear: both;"></p>
+<div id="speedPlot" style="margin:auto;"></div>
+<link rel="stylesheet" href="https://unpkg.com/uplot/dist/uPlot.min.css">
+<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
+<script type="module" src="boltzmann_gas_2d.js"></script>
 
 <p style="clear: both;"></p>
 
 ## Three-dimensional Boltzmann gas
 <div class="header_line"><br/></div>
 
-🔧 [boltzmann_gas_3d.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
+🔧 [boltzmann_gas_3d.js](https://github.com/zhendrikse/science/blob/main/thermodynamics/boltzmann_gas_3d.js) is based on [Three.js](https://threejs.org/) <br/>
 ⭐ Also available as [boltzmann_gas.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/boltzmann_gas.py)
 
-{% include_relative code/boltzmann_gas_3d.html %}
+<canvas class="applicationCanvas" id="boltzmannCanvas3d"></canvas>
+<div class="buttonRow">
+    <button id="toggle3d">&nbsp;Pause&nbsp;</button>
+    <button id="reset3d">Reset</button>
+    <button id="show3d">Show</button>
+    <button id="hide3d">Hide</button>
+    <button id="add3d">+50</button>
+</div>
+<div style="margin:auto;">
+    <label for="temperatureSlider3d">
+        Cold <input type="range" id="temperatureSlider3d" min="0.05" max="2.0" value=".5" step="0.01"/> Hot
+    </label>
+</div>
+<p style="clear: both;"></p>
+<div id="speedPlot3d" style="margin:auto;"></div>
+<script type="module" src="boltzmann_gas_3d.js"></script>
 
 <p style="clear: both;"></p>
 

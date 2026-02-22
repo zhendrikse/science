@@ -10,7 +10,7 @@ ends up having the same expectation value of energy. You may want to watch
 [this wonderful video](https://www.youtube.com/watch?v=cTOlW0u1ZuI) that explains
 this principle in a very clear and understandable way.
 
-🔧 [energy_equipartition.html](https://github.com/zhendrikse/science/blob/main/thermodynamics/code/energy_equipartition.html) is JavaScript and [Three.js](https://threejs.org/) <br/>
+🔧 [energy_equipartition.js](https://github.com/zhendrikse/science/blob/main/thermodynamics/energy_equipartition.js) is based on [Three.js](https://threejs.org/) <br/>
 ⭐ Inspired by [this video](https://www.youtube.com/watch?v=tP5u-V-BLQo) from Jordan Huang<br/>
 👉 <span style="color: green">Green curve</span>: averaged translational kinetic energy<br/>
 👉 <span style="color: red">Red curve</span>: averaged vibrational potential energy<br/>
@@ -18,7 +18,17 @@ this principle in a very clear and understandable way.
 👉 <span style="color: yellow">Yellow curve</span>: averaged rotational kinetic energy<br/>
 ⭐ Also available as [energy_equipartion.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/energy_equipartition.py)
 
-{% include_relative code/energy_equipartition.html %}
+<link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
+<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
+<canvas class="applicationCanvas" id="simulationCanvas"></canvas><br/>
+<p style="clear: both;"></p>
+<div class="buttonRow">
+    <button id="pauseButton">&nbsp;Pause&nbsp;</button>
+    <button id="bondTypeButton">Bonds as springs</button>
+</div>
+<p style="clear: both;"></p>
+<div id="energyPlot" style="margin:auto;"></div>
+<script type="module" src="energy_equipartition.js"></script>
 
 <p style="clear: both;"></p>
 
