@@ -132,11 +132,9 @@
     function animate() {
         time += dt;
 
-        for (let substep = 0; substep < 2; substep++) {
-            if (!dragging) ball.semiImplicitEulerUpdate(force(), dt);
-            slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
-            slinky.update(time);
-        }
+        if (!dragging) ball.semiImplicitEulerUpdate(force(), dt);
+        slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
+        slinky.update(time);
 
         const potentialGravity = ball.mass * g * ball.position.y;
         plotData[0].push(time); // x-axis = time
