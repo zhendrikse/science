@@ -18,7 +18,7 @@ const scale = 1E-9;
 
 const scene = new Scene();
 
-const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 200);
+const camera = new PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 200);
 camera.position.set(30, 30, 30);
 
 const controls = new OrbitControls( camera, canvas );
