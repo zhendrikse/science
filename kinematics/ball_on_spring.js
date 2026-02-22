@@ -1,0 +1,140 @@
+import * as THREE from "three";
+import { Spring, Ball } from '../js/three-js-extensions.js';
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+// --- Scene setup ---
+const canvas = document.getElementById("springCanvas");
+const scene = new THREE.Scene();
+const g = 9.8; // gravitational constant
+
+const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+camera.position.set(20, 20, 20);
+camera.lookAt(0, 10, 0);
+
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha: true});
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setAnimationLoop(animate);
+const controls = new OrbitControls( camera, canvas );
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+dirLight.position.set(10, 20, 10);
+scene.add(dirLight);
+
+// --- Plafond ---
+const ceilingSize = 12;
+const ceilingGeometry = new THREE.PlaneGeometry(ceilingSize, ceilingSize);
+const ceilingMaterial = new THREE.MeshStandardMaterial({
+    color: 0x8a8a8a,
+    metalness: 0.05,
+    roughness: 0.95,
+    side: THREE.DoubleSide
+});
+ceilingMaterial.bumpScale = 0.05;
+
+const ceiling = new THREE.Mesh(ceilingGeometry, ceilingMaterial);
+
+// horizontal plane
+ceiling.rotation.x = Math.PI / 2;
+ceiling.position.y = 10;
+
+scene.add(ceiling);
+
+// Spring
+const suspensionPoint = new THREE.Vector3(0, 10, 0);
+const axis = new THREE.Vector3(0, -25, 0);
+const slinky = new Spring(scene, suspensionPoint, axis, {radius: 1, k:200, length:15, longitudinalOscillation: true});
+
+// Ball
+const ballPosition = new THREE.Vector3(
+    (Math.random() - 0.5) * 0.5,  // ±0.25 in X
+    0,
+    (Math.random() - 0.5) * 0.5   // ±0.25 in Z
+);
+const ball = new Ball(scene, {position: ballPosition, radius: 2, mass: 10, color: "lightblue"});
+slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
+
+// --- Mouse click & drag ---
+let dragging = false;
+let mouseY = 0;
+canvas.addEventListener('mousedown', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1; // niet exact nodig voor nu
+    dragging = true;
+});
+canvas.addEventListener('mouseup', e => dragging = false);
+canvas.addEventListener('mousemove', e => {
+    if(dragging){
+        const rect = canvas.getBoundingClientRect();
+        const x = ((e.clientX - rect.left)/rect.width - 0.5) * 20; // scale to scene
+        const y = 10 - ((e.clientY - rect.top) / rect.height) * 20;
+        ball.moveTo(new THREE.Vector3(x, y, 0));
+        ball.accelerateTo(new THREE.Vector3(0, 0, 0));
+    }
+});
+
+const plotData = [
+    [], // x-axis = time
+    [], // KE
+    [], // PE
+    [], // E
+    []  // Y
+];
+
+const plot = new uPlot({
+    width: canvas.clientWidth,
+    height: canvas.clientHeight * .5,
+    title: "Slinky energies",
+    scales: { x: { time: false }, y: { auto: true } },
+    series: [
+        {}, // x-axis
+        { label: "KE", stroke: "red" },
+        { label: "PE", stroke: "lime" },
+        { label: "E", stroke: "cyan" },
+        { label: "Y", stroke: "yellow" }
+    ],
+    axes: [
+        { stroke: "#fff", grid: { stroke: "rgba(255,255,255,0.2)" } },
+        { stroke: "#fff", grid: { stroke: "rgba(255,255,255,0.2)" } }
+    ],
+    bg: "transparent"
+}, plotData, document.getElementById("plot"));
+
+function force(kHorizontal = 100, damping = 1) { // horizontal spring constant
+    const pos = ball.position.clone();
+    const vel = ball.velocity;
+
+    const fx = -kHorizontal * pos.x - damping * vel.x;
+    const fy = slinky.force - ball.mass * g - damping * vel.y;
+    const fz = -kHorizontal * pos.z - damping * vel.z;
+
+    return new THREE.Vector3(fx, fy, fz);
+}
+
+let time = 0;
+const maxPoints = 500;
+const dt = 0.02;
+function animate() {
+    time += dt;
+
+    if (!dragging) ball.semiImplicitEulerUpdate(force(), dt);
+    slinky.updateAxis(ball.position.clone().sub(suspensionPoint));
+    slinky.update(time);
+
+    const potentialGravity = ball.mass * g * ball.position.y;
+    plotData[0].push(time); // x-axis = time
+    plotData[1].push(ball.kineticEnergy());
+    plotData[2].push(slinky.potentialEnergy() + potentialGravity);
+    plotData[3].push(ball.kineticEnergy() + slinky.potentialEnergy() + potentialGravity);
+    plotData[4].push((5 + ball.position.y) * 100);
+
+    if (plotData[0].length > maxPoints)
+        plotData.forEach(arr => arr.shift());
+    plot.setData(plotData);
+
+    renderer.render(scene, camera);
+    controls.update();
+}
+
+animate();
+

@@ -1,10 +1,16 @@
 {% include breadcrumbs.html %}
 
-## Ball dropped onto a spring
+## Ball on a spring
 <div class="header_line"><br/></div>
 
-Download the [ball_on_spring.html](code/ball_on_spring.html) source code
-{% include_relative code/ball_on_spring.html %}
+🔧 This [ball_on_spring.html](code/ball_on_spring.html) uses [Three.js](https://threejs.org/) <br/>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
+<script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
+
+<canvas id="springCanvas" class="applicationCanvas" style="aspect-ratio: 19/12"></canvas>
+<div id="plot" style="margin:auto;"></div>
+<script type="module" src="ball_on_spring.js"></script>
 
 <p style="clear: both;"></p>
 
