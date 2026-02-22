@@ -13,7 +13,10 @@ wavefunction, and transparency reveals its **relative magnitude**.
 
 Use the controls to explore how orbital shape and symmetry change.
 
-{% include_relative code/orbitals.html %}
+<div class="canvasWrapper" id="orbitalsContainer">
+    <canvas class="applicationCanvas" id="orbitalsCanvas"></canvas>
+</div>
+<div id="gui-container"></div>
 
 <p style="clear: both;"></p>
 

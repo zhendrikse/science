@@ -30,7 +30,12 @@ The **color encodes the phase**, making the spatial and temporal phase structure
 This visualization helps build intuition for complex waves, phase propagation, 
 and the role of $k$ and $\omega$.
 
-{% include_relative code/plane_wave.html %}
+<div class="canvasWrapper" id="planeWaveContainer">
+    <canvas class="applicationCanvas" id="planeWaveCanvas"></canvas><br/>
+</div>
+<div class="guiContainer" id="gui-container"></div>
+
+<script type="module" src="plane_wave.js"></script>
 
 <p style="clear: both;"></p>
 
