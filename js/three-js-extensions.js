@@ -1055,6 +1055,7 @@ export class Sphere {
     get visible() { return this._mesh.visible; }
     get position() { return this._position; }
     get radius() { return this._radius; }
+    positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceTo(other) { return other.position.clone().sub(this.position).length() }
 }
 
@@ -1296,8 +1297,8 @@ export class Ball {
         this._sphere.moveTo(this.position);
     }
 
-    liesOnFloor(epsilon = 1e-1) {
-        return this.position.y - this.radius <= epsilon;
+    liesOnFloor({floorLevel=0, epsilon=1e-1} = {}) {
+        return this.position.y - this.radius <= epsilon + floorLevel;
     }
 
     bounceOffOfFloor(dt, epsilon = 1e-1) {
@@ -1338,7 +1339,8 @@ export class Ball {
     get neighbors() { return this._neighbors; }
     get elasticity() { return this._elasticity; }
 
-    distanceTo(other) { return other._sphere.distanceTo(this._sphere) }
+    distanceTo(other) { return this._sphere.distanceTo(this._other) }
+    positionVectorTo(other) { return this._sphere.positionVectorTo(other); }
 }
 
 export class Spring {

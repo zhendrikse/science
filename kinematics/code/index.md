@@ -3,10 +3,7 @@
 ## Python and Glowscript source code directory
 <div class="header_line"><br/></div>
 
-- [`ball_on_spring.html` source code](ball_on_spring.html)
 - [`block_rotation.py` source code](block_rotation.py)
-- [`bouncing_ball.html` source code](bouncing_ball.html)
-- [`three_body.html` source code](three_body.html)
 - [`cart_on_spring.py` source code](cart_on_spring.py)
 - [`chain_drop.py` source code](chain_drop.py)
 - [`floating_block.py` source code](floating_block.py)
