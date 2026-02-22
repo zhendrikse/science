@@ -1315,6 +1315,8 @@ export class Ball {
         this._sphere.moveTo(this.position);
     }
 
+    accelerateTo(newVelocity) { this._velocity.copy(newVelocity); }
+
     shiftBy(displacement) { this.moveTo(this.position.clone().add(displacement)); }
 
     disableTrail() { this._sphere.disableTrail(); }
