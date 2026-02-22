@@ -106,9 +106,7 @@ const scene = new THREE.Scene();
 const doubleSlitCamera = initCamera();
 const controls = new OrbitControls(doubleSlitCamera, doubleSlitCanvas);
 const doubleSlitRenderer = createRenderer();
-window.addEventListener('resize', () => {
-    resizeRendererToCanvas(doubleSlitRenderer, doubleSlitCamera);
-});
+window.addEventListener('resize', () => resizeRendererToCanvas(doubleSlitRenderer, doubleSlitCamera));
 
 lights();
 const surface = new Surface();
