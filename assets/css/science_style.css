@@ -42,6 +42,18 @@ label {
     white-space: nowrap;
 }
 
+.overlayText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: yellow;
+    font-size: 24px;
+    pointer-events: none;
+    user-select: none;
+    text-align: center;
+}
+
 button {
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 0, 0.2);
