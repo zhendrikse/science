@@ -1,5 +1,4 @@
 const theCanvas = document.getElementById("infiniteSquareWellCanvas2D");
-const wrapper = document.getElementById("infiniteSquareWellWrapper2D");
 const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
 theCanvas.style.touchAction = "none";
@@ -302,8 +301,8 @@ let psi = new Psi();
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
 
-    const width  = wrapper.clientWidth;
-    const height = wrapper.clientHeight;
+    const width  = theCanvas.clientWidth;
+    const height = theCanvas.clientHeight;
 
     theCanvas.style.width  = width + "px";
     theCanvas.style.height = height + "px";
