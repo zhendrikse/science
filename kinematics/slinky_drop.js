@@ -82,7 +82,7 @@ const stick2 = new Cylinder(experimentGroup, ball2.position.clone().sub(new Vect
     color: 0x00ffff
 });
 experimentGroup.position.y = 2 * L0;
-experimentGroup.position.x -= 2 * L0;
+experimentGroup.position.x -= 1.5 * L0;
 
 function iterate(dt) {
     if (ball2.liesOnFloor({floorLevel: -3.5 * L0}) || ball3.liesOnFloor({floorLevel: -3.5 * L0})) return;
