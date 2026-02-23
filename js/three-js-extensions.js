@@ -1361,7 +1361,8 @@ export class Spring {
         tubularSegments=400,
         radialSegments=12,
         radius=0.5,
-        thickness=0.075
+        thickness=0.075,
+        visible=true
     } = {}) {
         this._longitudinalOscillation = longitudinalOscillation;
         this._radius = radius;
@@ -1375,7 +1376,12 @@ export class Spring {
         this._axis = axis;
 
         this._geometry = new TubeGeometry(this._curve, tubularSegments, thickness, radialSegments, false);
-        const material = new MeshStandardMaterial({color: color, metalness:0.3, roughness:0.4});
+        const material = new MeshStandardMaterial({
+            color: color,
+            visible: visible,
+            metalness:0.3,
+            roughness:0.4
+        });
         this._mesh = new Mesh(this._geometry, material);
         parent.add(this._mesh);
     }
@@ -1387,10 +1393,14 @@ export class Spring {
         );
     }
 
-    moveTo(newPosition) { this._curve.start.copy(newPosition); }
+    moveTo(newPosition) {
+        this._position.copy(newPosition);
+        this._curve.start.copy(newPosition);
+        this._mesh.position.copy(newPosition);
+    }
 
     updateAxis(newAxis) {
-        this._axis = newAxis;
+        this._axis.copy(newAxis);
         this._curve.updateAxis(this._axis);
         this._longitudinalOscillation ?
             this.#updateWithLongitudinal() :
@@ -1420,6 +1430,10 @@ export class Spring {
     get k() { return this._k; }
     get force() { return -this._k * this.displacement; }
     get displacement() {return this._restLength - this.axis.length(); }
+
+    set color(value) { this._mesh.material.color = value; }
+    set visible(value) { this._mesh.material.visible = value; }
+    get visible() { this._mesh.material.visible; }
 }
 
 class Particle {
@@ -2291,7 +2305,7 @@ export class Aquarium {
 }
 
 export
-class HarmonicOscillator extends Group {
+class HarmonicOscillator extends Group  {
     constructor({
                     position = new Vector3(0, 0, 0),
                     length = 10,
