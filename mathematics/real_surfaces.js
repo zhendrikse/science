@@ -1,0 +1,410 @@
+import {Scene, Group, Box3, PerspectiveCamera, WebGLRenderer, Vector3, Vector2, Raycaster,
+    DirectionalLight, HemisphereLight} from "three";
+import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController } from '../js/three-js-extensions.js';
+import { ViewParameters, TangentFrameParameters, ColorMapper, ContourType, SurfaceSelector, SurfaceController,
+    HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, Surface, IsoparametricContoursView }
+    from '../js/3d-surface-components.js';
+import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
+
+const canvasContainer = document.getElementById("surface-canvas-container");
+const mainCanvas = document.getElementById("surfaceCanvas");
+
+const surfacePlotScene = new Scene();
+const worldGroup = new Group();
+surfacePlotScene.add(worldGroup);
+
+const ringCanvas = document.getElementById("ringCanvas");
+const ringScene = new Scene();
+
+const ringCamera = new PerspectiveCamera(45, ringCanvas.clientWidth / ringCanvas.clientHeight, 0.1, 100);
+ringCamera.position.set(8, 5, 8);
+ringCamera.lookAt(0, 0, 0);
+
+const ringRenderer = new WebGLRenderer({alpha: true, canvas: ringCanvas, antialias: true});
+ringRenderer.setSize(ringCanvas.clientWidth, ringCanvas.clientHeight);
+
+const ringBoundingBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
+ThreeJsUtils.scaleBox3(ringBoundingBox, 1.1); // scaling factor to obtain miniature surfaces
+
+// Directional light (shadow, nice highlights)
+const dirLight = new DirectionalLight(0xffffff, .75);
+dirLight.position.set(15, 15, 15);
+ringScene.add(dirLight);
+
+// Ambient light
+// const ambient = new AmbientLight(0x555555);
+// ringScene.add(ambient);
+const hemiLight = new HemisphereLight(0xffffff, 0x444444, 1);
+ringScene.add(hemiLight);
+
+const Category = Object.freeze({
+    FUNCTION: "Functions"
+});
+
+class ControlsGui {
+    constructor(surfaceController, ring) {
+        this._surfaceController = surfaceController
+        const controls = new GUI({width: "100%", autoPlace: false});
+        document.getElementById("gui-container").appendChild(controls.domElement);
+
+        this._xFunction = null;
+        this._yFunction = null;
+        this._zFunction = null;
+        this._uInterval = null;
+        this._vInterval = null;
+        this._intervalInputs = {
+            u: "",
+            v: ""
+        };
+
+        this._surfaceCoordinates = { y: surfaceController.surface.definition().specification().parametrization.yFn }
+
+        this.#createTangentSpaceFolder(controls);
+        this.#createAppearanceFolder(controls);
+        this.#createMathFolder(controls);
+        this.update();
+    }
+
+    #createTangentSpaceFolder(folder) {
+        const tangentFolder = folder.addFolder("Tangent frame");
+        tangentFolder.add(surfaceParams.tangentFrameParameters, 'visible')
+            .name("Show").onChange(value => {
+            surfaceParams.tangentFrameParameters.visible = value;
+            this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters);
+        });
+        tangentFolder.add(surfaceParams.tangentFrameParameters, "u", 0, 1, 0.01)
+            .name("u-parameter")
+            .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+
+        tangentFolder.add(surfaceParams.tangentFrameParameters, "v", 0, 1, 0.01)
+            .name("v-parameter")
+            .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+        tangentFolder.add(surfaceParams.tangentFrameParameters, 'showAxes')
+            .name("Axes (arrows)")
+            .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+        tangentFolder.add(surfaceParams.tangentFrameParameters, 'showPrincipals')
+            .name("Principal directions")
+            .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+        tangentFolder.close();
+    }
+
+    #createContourFolder(folder) {
+        const contourFolder = folder.addFolder("Contours");
+        contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
+            .name("Contour type")
+            .onChange(value => this._surfaceController.onContourTypeChange(surfaceParams.contourParameters));
+        contourFolder.add(surfaceParams.contourParameters, 'color')
+            .name("Color")
+            .onChange(() => {if (this.#isValidColor()) this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters);});
+        contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
+            .name("U contours")
+            .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
+        contourFolder.add(surfaceParams.contourParameters, "vCount", 1, 50, 1)
+            .name("V contours")
+            .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
+        contourFolder.close();
+    }
+
+    #createSurfaceFolder(folder) {
+        const surfaceFolder = folder.addFolder("Surface");
+        surfaceFolder.add(surfaceParams, "colorMode", Object.values(ColorMapper.ColorMode))
+            .name("Color Mode")
+            .onChange((value) => this._surfaceController.onColorModeChange(surfaceParams));
+
+        surfaceFolder.add(surfaceParams, 'baseColor')
+            .name("Base color")
+            .onChange(() => {if (this.#isValidColor()) this._surfaceController.onColorChange(surfaceParams);});
+        surfaceFolder.add(surfaceParams, "opacity", 0, 1, .01)
+            .name("Opacity")
+            .onChange(value => this._surfaceController.updateOpacity(value));
+        surfaceFolder.add(surfaceParams, "resolution", 10, 200, 1)
+            .name("Resolution")
+            .onFinishChange(resolution => this._surfaceController.resampleWith(resolution));
+        surfaceFolder.add(surfaceParams, 'wireframe')
+            .name("Wireframe")
+            .onChange(value => this._surfaceController.toggleWireframe(value));
+        surfaceFolder.add(surfaceParams, 'normals')
+            .name('Show Normals')
+            .onChange(value => this._surfaceController.toggleNormals(value, surfaceParams));
+        surfaceFolder.add(surfaceParams, 'autoRotate').name('Auto rotate');
+        surfaceFolder.close();
+    }
+
+    #createAxesFolder(parentFolder) {
+        const axesFolder = parentFolder.addFolder("Axes");
+        const dummyToggle = {gridPlanes: true};
+        axesFolder.add(axesParams, 'frame')
+            .name("Frame").onChange(value => axesController.updateSettings());
+        axesFolder.add(dummyToggle, 'gridPlanes')
+            .name("Layout").onChange(value => {
+            axesParams.xyPlane = value;
+            axesParams.xzPlane = value;
+            axesParams.yzPlane = value;
+            axesController.updateSettings();
+        });
+        axesFolder.add(axesParams, 'annotations')
+            .name("Annotations").onChange(value => axesController.updateSettings());
+        axesFolder.close();
+    }
+
+    #updateIntervalFromString(param, value) {
+        // Accept: [a, b]  or  a, b
+        const match = value.match(/\[\s*(.+?)\s*,\s*(.+?)\s*\]/)
+            ?? value.match(/\s*(.+?)\s*,\s*(.+?)\s*/);
+
+        if (!match) return; // silently ignore invalid input
+
+        const [_, min, max] = match;
+
+        const oldSpec = this._surfaceController.surface.definition().specification();
+        const intervals = structuredClone(oldSpec.intervals);
+
+        if (param === "u") intervals[0] = [min, max];
+        if (param === "v") intervals[1] = [min, max];
+
+        const newSpec = oldSpec.withIntervals(intervals);
+        const definition = new LiteralStringBasedSurfaceDefinition(newSpec);
+
+        this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
+        updateViewForSurface();
+        this.update();
+    }
+
+    #createMathFolder(folder) {
+        const mathFolder = folder.addFolder("Math");
+
+        this._yFunction = mathFolder.add(this._surfaceCoordinates, "y").name("F(u,v) =")
+            .onFinishChange(expr => {
+                const specification = this._surfaceController.surface
+                    .definition().specification().withParametrization({yFn: expr});
+                const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
+                updateViewForSurface();
+            });
+
+        this._uInterval = mathFolder.add(this._intervalInputs, "u")
+            .name("u ∈")
+            .onFinishChange(value => this.#updateIntervalFromString("u", value));
+
+        this._vInterval = mathFolder.add(this._intervalInputs, "v")
+            .name("v ∈")
+            .onFinishChange(value => this.#updateIntervalFromString("v", value));
+        mathFolder.close();
+    }
+
+    #createAppearanceFolder(controls, axes, annotations) {
+        const appearanceFolder = controls.addFolder("Appearance");
+        this.#createSurfaceFolder(appearanceFolder);
+        this.#createAxesFolder(appearanceFolder, axes, annotations);
+        this.#createContourFolder(appearanceFolder);
+
+        appearanceFolder.add({reset: () =>
+                plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9))}, "reset")
+            .name("Reset Camera");
+        appearanceFolder.close();
+    }
+
+    #isValidColor() {
+        const style = new Option().style;
+        style.color = surfaceParams.baseColor;
+        return style.color !== '';
+    }
+
+    #updateSurfaceDataTitleBox() {
+        const nameDiv = document.getElementById("surface-title");
+        const surfaceData = surfaceController.surface.definition().specification();
+        nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
+
+        const equationDiv = document.getElementById("surface-equation");
+        equationDiv.innerHTML = "$$\\begin{pmatrix}" +
+            surfaceData.parametrization.xFn + " \\\\" +
+            surfaceData.parametrization.yFn + " \\\\" +
+            surfaceData.parametrization.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
+            surfaceData.intervals[0][0] + ", " +
+            surfaceData.intervals[0][1] + "] \\\\ v \\in [" +
+            surfaceData.intervals[1][0] + ", " +
+            surfaceData.intervals[1][1] + "] \\end{cases}$$";
+        if (window.MathJax) MathJax.typesetPromise([equationDiv]);
+    }
+
+    update = () => {
+        const newSurface = this._surfaceController.surface;
+        surfaceParams.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
+        this.#updateSurfaceDataTitleBox();
+
+        const specification = newSurface.definition().specification();
+        this._yFunction.setValue(specification.parametrization.yFn);
+
+        this._intervalInputs.u = `[${specification.intervals[0][0]}, ${specification.intervals[0][1]}]`;
+        this._intervalInputs.v = `[${specification.intervals[1][0]}, ${specification.intervals[1][1]}]`;
+
+        this._uInterval.setValue(this._intervalInputs.u);
+        this._vInterval.setValue(this._intervalInputs.v);
+
+        updateViewForSurface();
+    }
+}
+
+function updateViewForSurface() {
+    const boundingBox = surfaceController.surfaceBoundingBox();
+    axesController.createFromBoundingBox(ThreeJsUtils.scaleBox3(boundingBox.clone(), 1.05));
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.9));
+}
+
+const surfaceDefinitions = [{
+    meta: {name: "Peak", category: Category.FUNCTION},
+    parametrization: {
+        xFn: "u",
+        yFn: "5 * exp(-u*u - v*v)",
+        zFn: "v"
+    },
+    intervals: [["-3", "3"], ["3", "-3"]]
+}, {
+    meta: {name: "Polynomial", category: Category.FUNCTION},
+    parametrization: {
+        xFn: "u",
+        yFn: ".3 * (v*v*v*u - u*u*u*v)",
+        zFn: "v"
+    },
+    intervals: [["-2", "2"], ["2", "-2"]]
+}, {
+    meta: {name: "Ricker wavelet", category: Category.FUNCTION},
+    parametrization: {
+        xFn: "u",
+        yFn: "3 * (1 - 2 * (u*u + v*v))*exp(-2 * (u*u + v*v))",
+        zFn: "v"
+    },
+    intervals: [["-2", "2"], ["2", "-2"]]
+},{
+    meta: {name: "Ripple", category: Category.FUNCTION},
+    parametrization: {
+        xFn: "u",
+        yFn: ".5 * sin(pi * u * v)",
+        zFn: "v"
+    },
+    intervals: [["-3", "3"], ["3", "-3"]]
+},{
+    meta: {name: "Saddle", category: Category.FUNCTION},
+    parametrization: {
+        xFn: "u",
+        yFn: "0.3 * (u * u - v * v)",
+        zFn: "v"
+    },
+    intervals: [["-3", "3"], ["3", "-3"]]
+},{
+    meta: {name: "Wavelet", category: Category.FUNCTION},
+    parametrization: {
+        xFn: "u",
+        yFn: "sin(4 * sqrt(u*u + v*v)) / sqrt(u*u + v*v +1e-3)",
+        zFn: "v"
+    },
+    intervals: [["-2", "2"], ["2", "-2"]]
+},{
+    meta: {name: "Waves", category: Category.FUNCTION},
+    parametrization: {
+        xFn: "u",
+        yFn: "cos(pi * u + pi/6) * sin(pi * v + pi/6)",
+        zFn: "v"
+    },
+    intervals: [["-2", "2"], ["2", "-2"]]
+}];
+
+function deepFreeze(object) {
+    Object.freeze(object);
+    Object.values(object).forEach(value => {
+        if (typeof value === 'object' && value !== null && !Object.isFrozen(value)) {
+            deepFreeze(value);
+        }
+    });
+    return object;
+}
+
+export const SurfaceDefinitions = surfaceDefinitions.map(surface => deepFreeze(surface));
+
+// Surface
+const axesParams = new AxesParameters();
+const axesController = new AxesController({
+    parentGroup: worldGroup,
+    canvasContainer: canvasContainer,
+    axesParameters: axesParams,
+    scene: surfacePlotScene
+});
+
+const surfaceData = SurfaceDefinitions[5];
+const surfaceParams = new ViewParameters({
+    tangentFrameParameters: new TangentFrameParameters({
+        visible: false,
+        u: 0.5,
+        v: 0.5
+    })
+});
+
+const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
+const mathSurface = new Surface(new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec));
+const surfaceController = new SurfaceController(
+    worldGroup,
+    mathSurface,
+    surfaceParams,
+    new HeightColorMapper({useBaseColor: false}),
+    new IsoparametricContoursView(worldGroup, mathSurface)
+);
+const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
+plot3D.renderer.setAnimationLoop(animate);
+updateViewForSurface();
+
+// Resizing for mobile devices
+function resize() {
+    ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+    axesController.resize();
+}
+window.addEventListener("resize", resize);
+resize();
+
+// Ring
+const ring = new SurfaceSelector(ringBoundingBox, {
+    ringRadius: 7,
+    verticalOffset: 1.75,
+    activeCategory: surfaceData.meta.category
+});
+ringScene.add(ring);
+ring.append(SurfaceDefinitions);
+ring.changeActiveCategoryTo(surfaceData.meta.category);
+const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
+ring.onSelectTo(selectedRingSurface);
+
+// Interaction
+const controlsGui = new ControlsGui(surfaceController, ring);
+
+// -----------------------
+// Ray casting for ring
+// -----------------------
+const ringRaycaster = new Raycaster();
+const ringMouse = new Vector2();
+
+ringCanvas.addEventListener("pointerdown", event => {
+    ringMouse.x = (event.offsetX / ringCanvas.clientWidth) * 2 - 1;
+    ringMouse.y = -(event.offsetY / ringCanvas.clientHeight) * 2 + 1;
+
+    ringRaycaster.setFromCamera(ringMouse, ringCamera);
+    const hits = ringRaycaster.intersectObjects(ring.selectableObjects(), false);
+    if(!hits.length) return;
+
+    const selectedMesh = hits[0].object;
+    const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
+    ring.onSelectTo(selectedRingSurface);
+
+    const definition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
+    surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
+    updateViewForSurface();
+    controlsGui.update();
+});
+
+function animate() {
+    plot3D.render();
+    ring.render();
+    ringRenderer.render(ringScene, ringCamera);
+    if (surfaceParams.autoRotate)
+        surfaceController.rotateBy(0.005);
+    axesController.render(plot3D.camera);
+}
+

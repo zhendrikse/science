@@ -3,7 +3,12 @@
 ## Vector fields &amp; implied flow
 <div class="header_line"><br/></div>
 
-{% include_relative code/quiver_plot.html %}
+<div class="equationDiv" id="vectorFieldEquation"></div>
+<div class="canvasWrapper" id="quiverContainer">
+    <canvas class="applicationCanvas" id="quiverCanvas"></canvas><br/>
+</div>
+<div class="guiContainer" id="gui-container"></div>
+<script type="module" src="quiver_plot.js"></script>
 
 <p style="clear: both;"></p>
 

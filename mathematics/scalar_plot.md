@@ -16,11 +16,15 @@ The **color** of the sphere tells you how hot it is:
 Together, all these spheres form a **scalar field**:
 a function that assigns **one number (temperature)** to **every point in space**.
 
-{% include_relative code/scalar_plot.html %}
 
+<div class="canvasWrapper" id="scalarContainer">
+    <canvas class="applicationCanvas" id="scalarCanvas"></canvas>
+</div>
+<div id="gui-container"></div>
+<script type="module" src="scalar_plot.js"></script>
 <p style="clear: both;"></p>
 
-🔧 This [scalar_plot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.html) is 100% JavaScript!<br/>
+🔧 This [scalar_plot.js](https://github.com/zhendrikse/science/blob/main/mathematics/scalar_plot.js) is based on [Three.js](https://threejs.org/)<br/>
 👉 A [VPython](https://www.vpython.org/) version is also available as [scalar_plot.py](https://github.com/zhendrikse/science/blob/main/mathematics/code/scalar_plot.py).
 
 ### Scalar vis-à-vis vector quantities
