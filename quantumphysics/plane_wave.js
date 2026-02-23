@@ -18,8 +18,10 @@ const params = {
         xyPlane: false,
         yzPlane: false,
         divisions: 10,
-        axisLabels: ["X", "Im(Ψ)", "Re(Ψ)"],
-        annotations: false})
+        axisLabels: ["x", "Im(Ψ)", "Re(Ψ)"],
+        annotations: true,
+        tickLabels: false
+    })
 };
 
 const axesController = new AxesController({
