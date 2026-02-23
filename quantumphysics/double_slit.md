@@ -28,20 +28,7 @@ the propagation of the waves using a [finite difference method](https://pythonnu
 
 In this visualization, the interference pattern is generated "statically", i.e. by calculating
 the path difference between the beams originating from each source and setting the (pixel) color 
-of the background accordingly:
-
-```javascript
-this._pos.set(x, y, 0);
-const r1 = this._pos.distanceTo(this._slit1);
-const r2 = this._pos.distanceTo(this._slit2);
-const pathDiff = Math.abs(r1 - r2);
-const rAverage = (r1 + r2) * 0.5;
-const envelope = 1 / (1 + 0.1 * rAverage);
-
-const brightness = Math.pow(Math.cos(Math.PI * pathDiff / this._wavelength),2) * envelope;
-this._color.setRGB(brightness, brightness, 0);
-this._mesh.setColorAt(index, this._color);
-```
+of the background accordingly.
 
 The two slits are represented by the two cylinders that also now firing particles at the screen/detector 
 in the simulation, so that the difference in the behavior of particles and waves can be clearly seen.
@@ -60,6 +47,26 @@ in the simulation, so that the difference in the behavior of particles and waves
 <script type="module" src="double_slit.js"></script>
 <p style="clear: both;"></p>
 
+#### How the interference pattern is generated
+
+The intensity is given by:
+
+$$
+I = \cos^2\left(\frac{\pi , \Delta r}{\lambda}\right)
+$$
+
+This is easily translated in code as follows:
+
+```js
+this._position.set(x, y, 0);
+const r1 = this._position.distanceTo(this._slit1);
+const r2 = this._position.distanceTo(this._slit2);
+const pathDiff = Math.abs(r1 - r2);
+const rAverage = (r1 + r2) * 0.5;
+const envelope = 1 / (1 + 0.1 * rAverage);
+
+const brightness = Math.pow(Math.cos(Math.PI * pathDiff / this._wavelength), 2) * envelope;
+```
 
 ## Background information
 <div class="header_line"><br/></div>
