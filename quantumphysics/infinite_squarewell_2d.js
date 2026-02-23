@@ -204,12 +204,15 @@ function mouseOrTouchStart(pageX, pageY, e) {
     }
 }
 
-function getMousePos(canvas, clientX, clientY) {
+function getMousePos(evt) {
     const rect = canvas.getBoundingClientRect();
 
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
     return {
-        x: clientX - rect.left,
-        y: clientY - rect.top
+        x: (evt.clientX - rect.left) * scaleX,
+        y: (evt.clientY - rect.top) * scaleY
     };
 }
 
