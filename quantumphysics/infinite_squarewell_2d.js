@@ -9,7 +9,6 @@ const speedSlider = document.getElementById("speedSlider");
 const speedValue = document.getElementById("speedValue");
 const realImag = document.getElementById("realImag");
 
-const iMax = theCanvas.width;	// max index in function arrays (so array size is iMax+1)
 //const pxPerX = 60;			// number of pixels per conventional x unit
 const clockSpaceFraction = 0.25;	// fraction of vertical space taken up by clocks
 const clockRadiusFraction = 0.45;	// as fraction of width or height of clock space
@@ -55,20 +54,20 @@ class Psi {
 
     init() {
         // Initialize eigenfunctions (sine waves):
-        for (let n=0; n<=nMax; n++)
-            this._eigenPsi[n] = new Array(iMax+1);
+        for (let n=0; n <= nMax; n++)
+            this._eigenPsi[n] = new Array(this._iMax+1);
 
-        for (let i = 0; i <= iMax; i++)
+        for (let i = 0; i <= this._iMax; i++)
             for (let n = 0; n <= nMax; n++)
-                this._eigenPsi[n][i] = Math.sin((n + 1) * Math.PI * i / iMax);
+                this._eigenPsi[n][i] = Math.sin((n + 1) * Math.PI * i / this._iMax);
 
         // Initialize amplitudes and phases:
         for (let n = 0; n <= nMax; n++) {
             this._amplitude[n] = 0;
             this._phase[n] = 0;
         }
-        this._amplitude[0] = 1/Math.sqrt(2);
-        this._amplitude[1] = 1/Math.sqrt(2);
+        this._amplitude[0] = 1 / Math.sqrt(2);
+        this._amplitude[1] = 1 / Math.sqrt(2);
 
         // Initialize array of colors to represent phases
         for (let c = 0; c <= nColors; c++)
@@ -126,7 +125,7 @@ class Psi {
         // Plot the real part of psi:
         context.beginPath();
         context.moveTo(0, baselineY - this._psi.re[0] * pxPerY);
-        for (let i = 1; i <= iMax; i++)
+        for (let i = 1; i <= this._iMax; i++)
             context.lineTo(i, baselineY - this._psi.re[i] * pxPerY);
 
         context.strokeStyle = "#ffc000";
@@ -135,7 +134,7 @@ class Psi {
         // Plot the imaginary part of psi:
         context.beginPath();
         context.moveTo(0, baselineY - this._psi.im[0] * pxPerY);
-        for (let i = 1; i <= iMax; i++)
+        for (let i = 1; i <= this._iMax; i++)
             context.lineTo(i, baselineY - this._psi.im[i] * pxPerY);
 
         context.strokeStyle = "#00d0ff";
@@ -152,7 +151,7 @@ class Psi {
         const baselineY = theCanvas.height * (1 - clockSpaceFraction);
         const pxPerY = baselineY * 0.4;
         context.lineWidth = 2;
-        for (let i = 0; i <= iMax; i++) {
+        for (let i = 0; i <= this._iMax; i++) {
             context.beginPath();
             context.moveTo(i, baselineY);
             context.lineTo(i, baselineY - pxPerY*(this._psi.re[i]*this._psi.re[i] + this._psi.im[i]*this._psi.im[i]));
@@ -183,11 +182,11 @@ function mouseOrTouchStart(pageX, pageY, e) {
     const x = pos.x;
     const y = pos.y;
 
-    if (y > theCanvas.height - getClockSpaceHeigt()) {
-        mouseClock = Math.floor(x / getClockSpaceHeigt());
+    if (y > theCanvas.height - getClockSpaceHeight()) {
+        mouseClock = Math.floor(x / getClockSpaceHeight());
 
-        const clockCenterX = getClockSpaceHeigt() * (mouseClock + 0.5);
-        const clockCenterY = theCanvas.height - getClockSpaceHeigt() * 0.5;
+        const clockCenterX = getClockSpaceHeight() * (mouseClock + 0.5);
+        const clockCenterY = theCanvas.height - getClockSpaceHeight() * 0.5;
         const relX = x - clockCenterX;
         const relY = clockCenterY - y;
 
@@ -214,8 +213,8 @@ function mouseOrTouchMove(pageX, pageY, event) {
     const x = pos.x;
     const y = pos.y;
 
-    const clockCenterX = getClockSpaceHeigt() * (mouseClock + 0.5);
-    const clockCenterY = theCanvas.height - getClockSpaceHeigt() * 0.5;
+    const clockCenterX = getClockSpaceHeight() * (mouseClock + 0.5);
+    const clockCenterY = theCanvas.height - getClockSpaceHeight() * 0.5;
 
     const relX = x - clockCenterX;
     const relY = clockCenterY - y;
@@ -287,6 +286,7 @@ function paintCanvas() {
     }
 }
 
+let psi = new Psi();
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
     const wrapperWidth = theCanvasWrapper.clientWidth;
@@ -299,11 +299,12 @@ function resizeCanvas() {
     theCanvas.height = Math.floor(wrapperHeight * dpr);
 
     theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    psi = new Psi(theCanvas.width);
+    paintCanvas();
 }
 window.addEventListener("resize", () => resizeCanvas());
 
-const psi = new Psi();
-nextFrame();
 
 function numberToTwoDigitHexString(numberToConvert) {
     const hex = numberToConvert.toString(16);
@@ -376,3 +377,4 @@ function updateSpeedDisplay() {
 }
 speedSlider.addEventListener("input", updateSpeedDisplay);
 updateSpeedDisplay(); // Initial display sync
+nextFrame();
