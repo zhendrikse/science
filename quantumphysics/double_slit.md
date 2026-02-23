@@ -51,7 +51,7 @@ in the simulation, so that the difference in the behavior of particles and waves
 👉 See also [his accompanying video](https://www.youtube.com/watch?v=Zjmg6n7Wc8I)<br/>
 👉 [VPython](https://vpython.org/) version available as [double_slit.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/double_slit.py)
 
-<canvas id="slitExperimentCanvas" class="applicationCanvas" aspect-ratio: 19/12"></canvas>
+<canvas id="slitExperimentCanvas" class="applicationCanvas" style="aspect-ratio: 19/12"></canvas>
 <div>
     <label for="wavelengthSlider">Wavelength:</label>
     <input type="range" id="wavelengthSlider" min="0.1" max="2" step="0.01" value="0.5">
@@ -68,7 +68,7 @@ In 1801, Thomas Young was the first to perform an experiment that made it unequi
 that light is a wave, since the interference pattern he observed was exactly similar to
 an interference pattern that would have been produced by water waves.
 
-<figure style="float: center; text-align: center;">
+<figure style="text-align: center;">
   <a href="https://energywavetheory.com/explanations/double-slit-experiment/">
     <img alt="Double slit experiment" src="images/wave_particle_duality.png"/>
   </a>
@@ -107,7 +107,7 @@ and its repercussions for our view on the reality of nature:
 ### Particle-wave duality
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<figure style="float: center; text-align: center;">
+<figure style="text-align: center;">
   <a href="https://www.threads.net/@omshah117/post/C9rk0S1yzdO/">
     <img alt="De Broglie relation" src="images/de_broglie.png"/>
   </a>
