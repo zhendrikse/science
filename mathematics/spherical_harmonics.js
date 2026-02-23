@@ -1,0 +1,260 @@
+import { Scene, Color, Group } from "three";
+import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters, Interval }
+    from '../js/three-js-extensions.js';
+import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+import { SurfaceController, ViewParameters, ContourType, TangentFrameParameters, ContourParameters,
+    Utils, HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, Surface}
+    from '../js/3d-surface-components.js';
+
+const canvasContainer = document.getElementById("complexPlotContainer");
+const canvas = document.getElementById("complexPlotCanvas");
+
+const scene = new Scene();
+const worldGroup = new Group();
+scene.add(worldGroup);
+
+const PresetHarmonics = Object.freeze({
+    Preset1: 1,
+    Preset2: 2,
+    Preset3: 3,
+    Preset4: 4,
+    Preset5: 5
+});
+
+const surfaceData = [{
+    parametrization: {
+        r: "sin(2 * u)^0 + cos(6 * u)^1 + sin(2 * v)^2 + cos(6 * v)^2",
+        xFn: "sin(u) * cos(v)",
+        yFn: "cos(u)",
+        zFn: "sin(u) * sin(v)"
+    },
+    intervals: [["-pi", "pi"], ["0", "pi"]]
+},  {
+    parametrization: {
+        r: "sin(2 * u)^4 + cos(2 * u)^4 + sin(4 * v)^2 + cos(4 * v)^2",
+        xFn: "sin(u) * cos(v)",
+        yFn: "cos(u)",
+        zFn: "sin(u) * sin(v)"
+    },
+    intervals: [["-pi", "pi"], ["0", "pi"]]
+}, {
+    parametrization: {
+        r: "sin(2 * u)^4 + cos(2 * u)^3 + sin(2 * v)^4 + cos(2 * v)^3",
+        xFn: "sin(u) * cos(v)",
+        yFn: "cos(u)",
+        zFn: "sin(u) * sin(v)"
+    },
+    intervals: [["-pi", "pi"], ["0", "pi"]]
+},  {
+    parametrization: {
+        r: "sin(4 * u)^4 + cos(4 * u)^3 + sin(4 * v)^2 + cos(4 * v)^1",
+        xFn: "sin(u) * cos(v)",
+        yFn: "cos(u)",
+        zFn: "sin(u) * sin(v)"
+    },
+    intervals: [["-pi", "pi"], ["0", "pi"]]
+},  {
+    parametrization: {
+        r: "sin(2 * u)^2 + cos(4 * u)^4 + sin(2 * v)^2 + cos(4 * v)^4",
+        xFn: "sin(u) * cos(v)",
+        yFn: "cos(u)",
+        zFn: "sin(u) * sin(v)"
+    },
+    intervals: [["-pi", "pi"], ["0", "pi"]]
+}];
+
+
+class ControlsGui {
+    constructor(surfaceController, axesController, plot3d) {
+        const gui = new GUI({width: "100%", autoPlace: false});
+
+        this._axesController = axesController;
+        this._surfaceController = surfaceController;
+        this._plot3d = plot3d;
+        this._surfaceCoordinates = {
+            r: surfaceController.surface.definition().specification().parametrization.r
+        }
+
+        gui.add(params, 'surfaceDataPreset', Object.values(PresetHarmonics))
+            .name("Preset")
+            .onChange(value => {
+                const surfaceSpecification = this._surfaceController.surface
+                    .definition().specification().withParametrization({
+                        r: surfaceData[value - 1].parametrization.r
+                    });
+                this.#updateSurface(surfaceSpecification);
+            });
+
+        this.#createContourFolder(gui);
+        this.#createAxesFolder(gui);
+        this.#createMathFolder(gui);
+        this.#updateSurfaceDataTitleBox(surfaceController.surface.definition().specification());
+        document.getElementById("gui-container").appendChild(gui.domElement);
+    }
+
+    #isValidColor() {
+        const style = new Option().style;
+        style.color = surfaceParams.baseColor;
+        return style.color !== '';
+    }
+
+    #createAxesFolder(parentFolder) {
+        const axesFolder = parentFolder.addFolder("Axes");
+        const dummyToggle = {gridPlanes: true};
+        axesFolder.add(params.axesParameters, 'frame')
+            .name("Frame").onChange(value => axesController.updateSettings());
+        axesFolder.add(dummyToggle, 'gridPlanes')
+            .name("Layout").onChange(value => {
+            params.axesParameters.xyPlane = value;
+            params.axesParameters.xzPlane = value;
+            params.axesParameters.yzPlane = value;
+            axesController.updateSettings();
+        });
+        axesFolder.add(params.axesParameters, 'annotations')
+            .name("Annotations").onChange(value => axesController.updateSettings());
+        axesFolder.close();
+    }
+
+    #createContourFolder(folder) {
+        const contourFolder = folder.addFolder("Contours");
+        contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
+            .name("Contour type")
+            .onChange(value => this._surfaceController.onContourTypeChange(surfaceParams.contourParameters));
+        contourFolder.add(surfaceParams.contourParameters, 'color')
+            .name("Color")
+            .onChange(() => {if (this.#isValidColor()) this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters);});
+        contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
+            .name("U contours")
+            .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
+        contourFolder.add(surfaceParams.contourParameters, "vCount", 1, 50, 1)
+            .name("V contours")
+            .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
+        contourFolder.close();
+    }
+
+    #createMathFolder(folder) {
+        const mathFolder = folder.addFolder("Math");
+
+        this._factor = mathFolder.add(this._surfaceCoordinates, "r").name("R(u,v) =")
+            .onFinishChange(expr => {
+                const surfaceSpecification = this._surfaceController.surface
+                    .definition().specification().withParametrization({r: expr});
+                this.#updateSurface(surfaceSpecification);
+            });
+    }
+
+    #updateSurfaceDataTitleBox(specification) {
+        const r = specification.parametrization.r;
+        const equationDiv = document.getElementById("surface-equation");
+        equationDiv.innerHTML = "$$r=" + r + "$$  $$\\begin{pmatrix} x \\\\ y \\\\ z \\end{pmatrix} = \\begin{pmatrix}" +
+            specification.parametrization.xFn + "*r" + " \\\\" +
+            specification.parametrization.yFn + "*r" + " \\\\" +
+            specification.parametrization.zFn + "*r" + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
+            specification.intervals[0][0] + ", " +
+            specification.intervals[0][1] + "] \\\\ v \\in [" +
+            specification.intervals[1][0] + ", " +
+            specification.intervals[1][1] + "] \\end{cases}$$";
+        if (window.MathJax) MathJax.typesetPromise([equationDiv]);
+    }
+
+    #updateSurface(surfaceSpecification) {
+        const surfaceDef = new SphericalHarmonicsSurfaceDefinition(surfaceSpecification);
+        this._surfaceController.onSurfaceChange(new Surface(surfaceDef), surfaceParams);
+        this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
+        this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {translationY: -2});
+        this._factor.setValue(surfaceSpecification.parametrization.r);
+        this.#updateSurfaceDataTitleBox(surfaceSpecification);
+    }
+}
+
+class SphericalHarmonicsSurfaceSpecification extends SurfaceSpecification {
+    constructor({ meta, parametrization, intervals}) {
+        super({meta, parametrization, intervals});
+        Object.freeze(this);
+    }
+
+    get factor() { return this.parametrization.r; }
+
+
+    withParametrization(patch) {
+        return new SphericalHarmonicsSurfaceSpecification({
+            meta: this._meta,
+            intervals: this._intervals,
+            parametrization: {
+                ...this._parametrization,
+                ...patch
+            }
+        });
+    }
+
+}
+
+class SphericalHarmonicsSurfaceDefinition extends LiteralStringBasedSurfaceDefinition {
+    constructor(surfaceSpecification) {
+        super(surfaceSpecification);
+
+        const parametrization = surfaceSpecification.parametrization;
+        this._xFn = Utils.functionFrom(parametrization.xFn + "*(" + surfaceSpecification.factor + ")");
+        this._yFn = Utils.functionFrom(parametrization.yFn + "*(" + surfaceSpecification.factor + ")");
+        this._zFn = Utils.functionFrom(parametrization.zFn + "*(" + surfaceSpecification.factor + ")");
+
+        this._uInterval = new Interval(
+            this._evaluateConstant(surfaceSpecification.intervals[0][0]),
+            this._evaluateConstant(surfaceSpecification.intervals[0][1])
+        );
+
+        this._vInterval = new Interval(
+            this._evaluateConstant(surfaceSpecification.intervals[1][0]),
+            this._evaluateConstant(surfaceSpecification.intervals[1][1])
+        );
+    }
+}
+
+
+const axesParameters = new AxesParameters({annotations: false});
+const surfaceParams = new ViewParameters({
+    contourParameters: new ContourParameters({
+        contourType: ContourType.NONE
+    }),
+    tangentFrameParameters: new TangentFrameParameters({
+        visible: false
+    }),
+    opacity: 0.95,
+    resolution: 125
+});
+
+const params = {
+    axesParameters: axesParameters,
+    surfaceDataPreset: PresetHarmonics.Preset1
+};
+const axesController = new AxesController({
+    parentGroup: worldGroup,
+    canvasContainer: canvasContainer,
+    axesParameters: params.axesParameters,
+    scene: scene
+});
+
+const defaultSurfaceSpec = new SphericalHarmonicsSurfaceSpecification(surfaceData[0]);
+const defaultSurfaceDef = new SphericalHarmonicsSurfaceDefinition(defaultSurfaceSpec);
+const mathSurface = new Surface(defaultSurfaceDef);
+const surfaceController = new SurfaceController(worldGroup, mathSurface, surfaceParams, new HeightColorMapper({useBaseColor: false}));
+
+// Scale scene according to current surface
+axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
+const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox());
+plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {translationY: -2});
+plot3D.renderer.setAnimationLoop(animate);
+const gui = new ControlsGui(surfaceController, axesController, plot3D);
+
+// Resizing for mobile devices
+function resize() {
+    ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+    axesController.resize();
+}
+window.addEventListener("resize", resize);
+resize();
+
+function animate() {
+    plot3D.render();
+    axesController.render(plot3D.camera);
+}

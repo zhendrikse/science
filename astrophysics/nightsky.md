@@ -21,7 +21,7 @@
 </div>
 <p style="clear: both;"></p>
 <button id="pauseButton"> Start </button>
-
+<script type="module" src="nightsky.js"></script>
 <p style="clear: both;"></p>
 
 {% include share_buttons.html %}

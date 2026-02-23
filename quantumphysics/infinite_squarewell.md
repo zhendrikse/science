@@ -29,7 +29,7 @@
     <label for="speedSlider">Speed:
         <input type="range" id="speedSlider" min="0" max="0.05" step="0.001" value="0.02">
     </label>
-    <span id="speedValue">0.020</span>    
+    <span id="speedValue">0.020</span>
     <button id="pauseButton">Pause</button>
 </div>
 
