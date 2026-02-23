@@ -376,5 +376,6 @@ function updateSpeedDisplay() {
     speedValue.textContent = Number(speedSlider.value).toFixed(3);
 }
 speedSlider.addEventListener("input", updateSpeedDisplay);
+resize();
 updateSpeedDisplay(); // Initial display sync
 nextFrame();
