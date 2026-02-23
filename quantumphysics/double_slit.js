@@ -1,6 +1,6 @@
 import { DirectionalLight, PerspectiveCamera, WebGLRenderer, Scene, Group, Vector3, MeshBasicMaterial,
     InstancedMesh, Matrix4, BoxGeometry, AmbientLight, Color, Quaternion } from "three";
-import { Sphere, Cylinder } from '../js/three-js-extensions.js';
+import { Sphere, Cylinder, ThreeJsUtils } from '../js/three-js-extensions.js';
 
 // --- Scene setup ---
 const canvas = document.getElementById("slitExperimentCanvas");
@@ -21,14 +21,17 @@ const directionalLight = new DirectionalLight(0xffffff, 7);
 directionalLight.position.set(0, 7, 0);
 scene.add(directionalLight);
 
-// --- Particle class ---
 class Particle {
     constructor(group, {
         position=new Vector3(0, 0, 0),
         velocity=new Vector3(0, 1, 0),
         radius=0.06,
         color=0x00ff00 } = {}) {
-        this._sphere = new Sphere(group, { position: position.clone(), radius, color });
+        this._sphere = new Sphere(group, {
+            position: position.clone(),
+            radius,
+            color
+        });
         this.velocity = velocity.clone();
         this.alive = true;
     }
@@ -148,7 +151,6 @@ function spawnParticleFromSlit(slitPos) {
     }));
 }
 
-// Selecteer slider en display
 const wavelengthSlider = document.getElementById("wavelengthSlider");
 const wavelengthValue = document.getElementById("wavelengthValue");
 
@@ -157,6 +159,14 @@ wavelengthSlider.addEventListener("input", (event) => {
     pattern.setWavelength(value);
     wavelengthValue.textContent = value.toFixed(2);
 });
+
+// Resizing for mobile devices
+function resize() {
+    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+    axesController.resize();
+}
+window.addEventListener("resize", resize);
+resize();
 
 function animate() {
     if (Math.random() > 0.9) spawnParticleFromSlit(pattern._slit1);

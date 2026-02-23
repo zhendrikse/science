@@ -22,7 +22,9 @@
 🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
 
-<canvas id="theCanvas" class="applicationCanvas2D"></canvas>
+<div id="infiniteSquareWellWrapper2D" class="canvasWrapper2D" style="aspect-ratio: 2/1;">
+    <canvas id="infiniteSquareWellCanvas2D" class="applicationCanvas2D"></canvas>
+</div>
 <div class="buttonRow">
     <label for="speedSlider">Speed:
         <input type="range" id="speedSlider" min="0" max="0.05" step="0.001" value="0.02">

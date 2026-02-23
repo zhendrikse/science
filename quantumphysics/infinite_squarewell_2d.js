@@ -1,4 +1,5 @@
-const theCanvas = document.getElementById("theCanvas");
+const theCanvas = document.getElementById("infiniteSquareWellCanvas2D");
+const theCanvasWrapper = document.getElementById("infiniteSquareWellWrapper2D");
 const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
 const pauseButton = document.getElementById("pauseButton");
@@ -256,6 +257,21 @@ function paintCanvas() {
         //theContext.fillText("Re = " + Number(amp*Math.cos[ph]).toFixed(3), 180, 30);
     }
 }
+
+function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const wrapperWidth = theCanvasWrapper.clientWidth;
+    const wrapperHeight = theCanvasWrapper.clientHeight;
+
+    theCanvas.style.width  = wrapperWidth + "px";
+    theCanvas.style.height = wrapperHeight + "px";
+
+    theCanvas.width  = Math.floor(wrapperWidth * dpr);
+    theCanvas.height = Math.floor(wrapperHeight * dpr);
+
+    theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+window.addEventListener("resize", () => resizeCanvas());
 
 const psi = new Psi();
 nextFrame();
