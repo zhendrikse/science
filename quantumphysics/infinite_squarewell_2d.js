@@ -99,9 +99,14 @@ class Psi {
 
     setAmplitudeTo(index, relX, relY) {
         const pixelDistance = Math.sqrt(relX*relX + relY*relY);
-        this._amplitude[mouseClock] = Math.min(pixelDistance / getClockPixelRadius(), 1);
-        this._phase[mouseClock] = Math.atan2(relY, relX);
-        if (this._phase[mouseClock] < 0) this._phase[mouseClock] += 2 * Math.PI;
+
+        this._amplitude[index] =
+            Math.min(pixelDistance / getClockPixelRadius(), 1);
+
+        this._phase[index] = Math.atan2(relY, relX);
+
+        if (this._phase[index] < 0)
+            this._phase[index] += 2 * Math.PI;
     }
 
     build() {
@@ -171,7 +176,9 @@ function nextFrame() {
 
 function setMouseClock(relX, relY) {	// parameters are x,y in pixels, relative to clock center
     mouseIsDown = true;
-    psi.setAmplitudeTo(mouseClock, relX, relY)
+
+    psi.setAmplitudeTo(mouseClock, relX, relY);
+
     psi.build();
     paintCanvas();
 }
@@ -182,9 +189,10 @@ function mouseOrTouchStart(pageX, pageY, e) {
     const y = pos.y;
 
     if (y > getCanvasHeight() - getClockSpaceHeight()) {
-        mouseClock = Math.floor(x / getClockSpaceHeight());
+        const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
+        mouseClock = Math.floor(x / phasorSpace);
 
-        const clockCenterX = getClockSpaceHeight() * (mouseClock + 0.5);
+        const clockCenterX = phasorSpace * (mouseClock + 0.5);
         const clockCenterY = getCanvasHeight() - getClockSpaceHeight() * 0.5;
         const relX = x - clockCenterX;
         const relY = clockCenterY - y;
@@ -212,7 +220,8 @@ function mouseOrTouchMove(pageX, pageY, event) {
     const x = pos.x;
     const y = pos.y;
 
-    const clockCenterX = getClockSpaceHeight() * (mouseClock + 0.5);
+    const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
+    const clockCenterX = phasorSpace * (mouseClock + 0.5);
     const clockCenterY = getCanvasHeight() - getClockSpaceHeight() * 0.5;
 
     const relX = x - clockCenterX;
@@ -250,9 +259,13 @@ function paintCanvas() {
     else
         psi.plotDensityPhase(theContext);
 
-    // Draw the eigen-phasor diagrams:
-    const phasorSpace = getCanvasHeight() * clockSpaceFraction;
-    const clockRadius = phasorSpace * clockRadiusFraction;
+    // Draw the eigen-phasor "clocks":
+    const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
+    const clockRadius = Math.min(
+        phasorSpace * 0.4,
+        getClockSpaceHeight() * clockRadiusFraction
+    );
+
     for (let n = 0; n <= psi.nMax; n++) {
         theContext.strokeStyle = "gray";
         theContext.lineWidth = 1;
