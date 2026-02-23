@@ -261,15 +261,18 @@ function paintCanvas() {
 
     // Draw the eigen-phasor "clocks":
     const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
-    const clockRadius = getClockPixelRadius();
+    const clockRadius = Math.min(
+        phasorSpace * 0.4,
+        getClockSpaceHeight() * clockRadiusFraction
+    );
 
     for (let n = 0; n <= psi.nMax; n++) {
         theContext.strokeStyle = "gray";
         theContext.lineWidth = 1;
         theContext.beginPath();
         const centerX = (n+0.5)*phasorSpace;
-        const centerY = getCanvasHeight() - 0.5 * getClockSpaceHeight();
-        theContext.arc(centerX, centerY, clockRadius, 0, 2 * Math.PI);
+        const centerY = getCanvasHeight() - 0.5*phasorSpace;
+        theContext.arc(centerX, centerY, clockRadius, 0, 2*Math.PI);
         theContext.stroke();
         theContext.beginPath();
         theContext.moveTo(centerX, centerY);
