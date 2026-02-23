@@ -286,7 +286,7 @@ function paintCanvas() {
     }
 }
 
-let psi = new Psi();
+let psi = new Psi(theCanvas.clientWidth);
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
     const wrapperWidth = theCanvasWrapper.clientWidth;
@@ -300,11 +300,10 @@ function resizeCanvas() {
 
     theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    psi = new Psi(theCanvas.width);
+    psi = new Psi(theCanvas.clientWidth);
     paintCanvas();
 }
 window.addEventListener("resize", () => resizeCanvas());
-
 
 function numberToTwoDigitHexString(numberToConvert) {
     const hex = numberToConvert.toString(16);
