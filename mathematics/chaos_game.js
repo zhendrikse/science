@@ -1,0 +1,279 @@
+import { Pixel, PixelImage, Colors } from '../js/canvas-extensions.js';
+
+const canvas = document.getElementById("chaosGameCanvas");
+const display = canvas.getContext("2d");
+resizeCanvas();
+window.addEventListener("resize", () => {
+    resizeCanvas();
+    redraw();
+});
+canvas.focus();
+
+const radioButtons = new Map();
+radioButtons.set("cantorDust", cantorDust);
+radioButtons.set("fractal1", fractal1);
+radioButtons.set("fractal2", fractal2);
+radioButtons.set("sierpinskiCarpet", sierpinskiCarpet);
+radioButtons.set("sierpinskiTriangle", sierpinskiTriangle);
+radioButtons.set("tSquareFractal", tSquare);
+radioButtons.set("vicsekFractal", vicsekFractal);
+radioButtons.set("barnsleyFern", barnsleyFern);
+
+function barnsleyFern(image) {
+    let x = 0, y = 0;
+
+    const width  = image.dimX();
+    const height = image.dimY();
+
+    for (let i = 0; i < 1E6; i++) {
+        const r = Math.random();
+        let xNew = 0,
+            yNew = 0,
+            color = Colors.GREEN;
+
+        if (r < 0.01) {
+            xNew = 0;
+            yNew = 0.16 * y;
+            color = [0, 0.4, 0]; // stem color
+        } else if (r < 0.86) {
+            xNew = 0.85 * x + 0.04 * y;
+            yNew = -0.04 * x + 0.85 * y + 1.6;
+            color = [0, 0.9, 0]; // leaf color
+        } else if (r < 0.93) {
+            xNew = 0.20 * x - 0.26 * y;
+            yNew = 0.23 * x + 0.22 * y + 1.6;
+        } else {
+            xNew = -0.15 * x + 0.28 * y;
+            yNew = 0.26 * x + 0.24 * y + 0.44;
+        }
+
+        x = xNew;
+        y = yNew;
+
+        // Schalen naar canvas
+        const px = Math.trunc(width  * (x + 2.5) / 5);
+        const py = Math.trunc(height - height * y / 10);
+
+        image.setColour(new Pixel(px, py, color));
+    }
+}
+
+function cantorDust(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1) {
+    /**
+     * (a2, b2)   (a3, b3)
+     *    +--------+
+     *    |        |
+     *    |        |
+     *    +--------+
+     * (a1, b1)   (a4, b4)
+     */
+    let x = 0,
+        y = 0.3;
+
+    const scale = image.dimX() / 2,
+        jump_points = [[a1, b1], [a2, b2], [a3, b3], [a4, b4]],
+        colors = [Colors.GREEN, Colors.CYAN, Colors.RED, Colors.YELLOW, Colors.ORANGE];
+
+    for (let i = 0; i < 1E6; i++) {
+        const index = Math.trunc(Math.random() * 4);
+        x = .45 * (x + jump_points[index][0] * scale);
+        y = .45 * (y + jump_points[index][1] * scale);
+        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[index]);
+        image.setColour(pixel);
+    }
+}
+
+function fractal1(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1) {
+    let x = 0,
+        y = 0.3,
+        currentVertex = Math.trunc(Math.random() * 4);
+
+    const scale = image.dimX() / 2,
+        jump_points = [[a1, b1], [a2, b2], [a3, b3], [a4, b4]],
+        colors = [Colors.GREEN, Colors.CYAN, Colors.RED, Colors.YELLOW];
+
+    for (let i = 0; i < 1E6; i++) {
+        x = .5 * (x + jump_points[currentVertex][0] * scale);
+        y = .5 * (y + jump_points[currentVertex][1] * scale);
+        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[currentVertex]);
+        image.setColour(pixel);
+
+        const sample = [0, 1, 2, 3];
+        sample.splice(currentVertex, 1);
+        currentVertex = sample[Math.trunc(Math.random() * 3)];
+    }
+}
+
+function fractal2(image) {
+    let x = 0,
+        y = 0.3,
+        currentVertex = Math.trunc(Math.random() * 4);
+
+    const w = 1,
+        theta = 2 * Math.PI / 5,
+        p1 = [w / 2, 0],
+        p2 = [w * 0.5 * (1 + Math.sin(theta)), w * 0.5 * (1 - Math.cos(theta))],
+        p3 = [w * 0.5 * (1 + Math.sin(theta / 2)), w * 0.5 * (1 + Math.cos(theta / 2))],
+        p4 = [w * 0.5 * (1 - Math.sin(theta / 2)), w * 0.5 * (1 + Math.cos(theta / 2))],
+        p5 = [w * 0.5 * (1 - Math.sin(theta)), w * 0.5 * (1 - Math.cos(theta))],
+        jump_points = [p1, p2, p3, p4, p5],
+        colors = [Colors.GREEN, Colors.CYAN, Colors.RED, Colors.YELLOW, Colors.ORANGE],
+        scale = image.dimX();
+
+    for (let i = 0; i < 1E6; i++) {
+        x = .5 * (x + jump_points[currentVertex][0] * scale);
+        y = .5 * (y + jump_points[currentVertex][1] * scale);
+        const pixel = new Pixel(Math.trunc(x + scale * .01), Math.trunc(y + scale * .01), colors[currentVertex]);
+        image.setColour(pixel);
+
+        const sample = [0, 1, 2, 3, 4];
+        sample.splice(currentVertex, 1);
+        currentVertex = sample[Math.trunc(Math.random() * 4)];
+    }
+}
+
+function sierpinskiCarpet(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1) {
+    /**
+     * (a2, b2)   (a3, b3)
+     *    +--------+
+     *    |        |
+     *    |        |
+     *    +--------+
+     * (a1, b1)   (a4, b4)
+     */
+
+    let x = 0,
+        y = 0.3;
+
+    const scale = image.dimX() / 2,
+        jump_points = [[a1, b1], [a2, b2], [a3, b3], [a4, b4], [a1, b1 + b2], [a4, b3 + b4], [a1 + a4, b1], [a2 + a3, b2]],
+        colors = [Colors.GREEN, Colors.WHITE, Colors.YELLOW, Colors.RED, Colors.PURPLE, Colors.CYAN, Colors.MAGENTA, Colors.ORANGE];
+
+    for (let i = 0; i < 1E6; i++) {
+        const index = Math.trunc(Math.random() * 8);
+        x = (x + 2 * jump_points[index][0] * scale) / 3;
+        y = (y + 2 * jump_points[index][1] * scale) / 3;
+        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[index]);
+        image.setColour(pixel);
+    }
+}
+
+function sierpinskiTriangle(image, a1=-.5, b1=-.433, a2=.5, b2=-.433, a3=0, b3=.3) {
+    /**
+     *          (a3, b3)
+     *             /\
+     *            /  \
+     *           /    \
+     *          /      \
+     *         /________\
+     * (a1, b1)           (a2, b2)
+     */
+
+    const scale = image.dimX(),
+        jump_points = [[a1, b1], [a2, b2], [a3, b3]],
+        colors = [Colors.GREEN, Colors.CYAN, Colors.RED];
+
+    let x = 0,
+        y = 0.3;
+
+    for (let i = 0; i < 1E6; i++) {
+        const index = Math.trunc(Math.random() * 3);
+        x = .5 * (x + jump_points[index][0] * scale);
+        y = .5 * (y + jump_points[index][1] * scale);
+        const pixel = new Pixel(Math.trunc(x + scale * .5), Math.trunc(scale * .5 - y), colors[index]);
+        image.setColour(pixel);
+    }
+}
+
+function tSquare(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1) {
+    /**
+     * (a2, b2)   (a3, b3)
+     *    +--------+
+     *    |        |
+     *    |        |
+     *    +--------+
+     * (a1, b1)   (a4, b4)
+     */
+
+    let x = 0,
+        y = 0.3,
+        currentVertex = Math.trunc(Math.random() * 4);
+
+    const scale = image.dimX() / 2,
+        jump_points = [[a1, b1], [a2, b2], [a3, b3], [a4, b4]],
+        colors = [Colors.GREEN, Colors.CYAN, Colors.RED, Colors.YELLOW];
+
+    for (let i = 0; i < 1E6; i++) {
+        x = .5 * (x + jump_points[currentVertex][0] * scale);
+        y = .5 * (y + jump_points[currentVertex][1] * scale);
+
+        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[currentVertex]);
+        image.setColour(pixel);
+
+        const sample = [0, 1, 2, 3]
+        if (currentVertex === 0)
+            sample.splice(2, 1);
+        else if (currentVertex === 1)
+            sample.splice(3, 1);
+        else if (currentVertex === 2)
+            sample.splice(0, 1);
+        else if (currentVertex === 3)
+            sample.splice(1, 1);
+        currentVertex = sample[Math.trunc(Math.random() * 3)]
+    }
+}
+
+function vicsekFractal(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1, a5=0, b5=0) {
+    let x = 0,
+        y = 0.3;
+
+    const scale = image.dimX() / 2,
+        jump_points = [[a1, b1], [a2, b2], [a3, b3], [a4, b4], [a5, b5]],
+        colors = [Colors.GREEN, Colors.CYAN, Colors.RED, Colors.YELLOW, Colors.ORANGE];
+
+    for (let i = 0; i < 1E6; i++) {
+        const index = Math.trunc(Math.random() * 5);
+        x = (x + 2 * jump_points[index][0] * scale) / 3;
+        y = (y + 2 * jump_points[index][1] * scale) / 3;
+        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[index]);
+        image.setColour(pixel);
+    }
+}
+
+function resetButtons() {
+    for (const [key, value] of radioButtons)
+        document.getElementById(key).checked = false;
+}
+
+function resizeCanvas() {
+    const wrapper = document.getElementById("canvas-wrapper");
+    const size = wrapper.clientWidth;
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width  = Math.floor(size * dpr);
+    canvas.height = Math.floor(size * dpr);
+
+    canvas.style.width  = size + "px";
+    canvas.style.height = size + "px";
+}
+
+function redraw(context) {
+    const image = new PixelImage(canvas.width, canvas.height);
+    currentFractal(image);
+    image.render(context);
+}
+
+let currentFractal = vicsekFractal;
+for (const [key, value] of radioButtons)
+    document.getElementById(key).onclick = function() {
+        resetButtons();
+        this.checked = true;
+        currentFractal = value;
+        redraw(display);
+    };
+
+const image = new PixelImage(canvas.width, canvas.height);
+vicsekFractal(image);
+image.render(display);
+document.getElementById('vicsekFractal').checked = true;
+

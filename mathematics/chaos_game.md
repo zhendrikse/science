@@ -3,11 +3,30 @@
 ## Chaos game 🎮
 <div class="header_line"><br/></div>
 
-🔧 This [chaos_game.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/chaos_game.html) is 100% Javascript, written by [Zeger Hendrikse](https://github.com/zhendrikse/)<br/>
+🔧 [chaos_game.js](https://github.com/zhendrikse/science/blob/main/mathematics/chaos_game.js) is written by [Zeger Hendrikse](https://github.com/zhendrikse/)<br/>
 ⭐ Inspired by [nnakul/chaos-game](https://github.com/nnakul/chaos-game/tree/master) by [Nikhil Nakul](https://github.com/nnakul/)<br/>
 👉 A [VPython](https://vpython.org) version is available as well, see [chaos_game.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/chaos_game.py)
 
-{% include_relative code/chaos_game.html %}
+<div class="canvasWrapper2D" id="canvas-wrapper">
+    <canvas class="applicationCanvas2D" id="chaosGameCanvas"></canvas>
+</div>
+<div class="buttonRow">        
+  <input type="radio" id="cantorDust"/><label for="cantorDust">&nbsp;Cantor dust 🧹</label>
+  <input type="radio" id="fractal1"/><label for="fractal1">&nbsp;Fractal star ⭐</label>
+</div>
+<div class="buttonRow">        
+  <input type="radio" id="fractal2"/><label for="fractal2">&nbsp;Fractal flower 🌻</label>
+  <input type="radio" id="sierpinskiCarpet"/><label for="sierpinskiCarpet">&nbsp;Sierpinski carpet 🧶</label>
+</div>
+<div class="buttonRow">        
+  <input type="radio" id="sierpinskiTriangle"/><label for="sierpinskiTriangle">&nbsp;Sierpinski triangle ⚠️</label>
+  <input type="radio" id="tSquareFractal"/><label for="tSquareFractal">&nbsp;T-square fractal 🏻</label>
+</div>
+<div class="buttonRow">        
+  <input type="radio" id="vicsekFractal"/><label for="vicsekFractal">&nbsp;Vicsek fractal 🌀</label>
+  <input type="radio" id="barnsleyFern"/><label for="barnsleyFern">&nbsp;Barnsley fern 🌿</label>
+</div>
+<script type="module" src="chaos_game.js"></script>
 <p style="clear: both;"></p>
 
 The chaos game is an iterative procedure $s_i\rightarrow s_{i+1}$ that can be written

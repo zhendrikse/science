@@ -123,7 +123,7 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
   The interference pattern is generated statically.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="dynamic_double_slit.html">
+  <a href="double_slit.html">
     <img alt="Dynamic double slit" src="images/dynamic_double_slit.png" title="Click to animate"/>
   </a>
   <figcaption>Dynamic simulation of the experiment, stressing the formation of the 

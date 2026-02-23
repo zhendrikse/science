@@ -24,10 +24,15 @@ $$
 
 Height &amp; color reveal how the function **stretches, twists, and folds** the complex plane.
 
-{% include_relative code/complex_surfaces.html %}
+<div class="equationDiv" id="surface-equation"></div>
+<div class="canvasWrapper" id="complexPlotContainer">
+    <canvas class="applicationCanvas" id="complexPlotCanvas"></canvas><br/>
+</div>
+<div id="gui-container"></div>
+<script type="module" src="complex_surfaces.js"></script>
 
 <p style="clear: both;"></p>
 
-🛠️ The images are generated with [complex_surfaces.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/complex_surfaces.html).
+🛠️ The images are generated with [complex_surfaces.js](https://github.com/zhendrikse/science/blob/main/mathematics/complex_surfaces.js).
 
 {% include share_buttons.html %}
