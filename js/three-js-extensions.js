@@ -1396,7 +1396,6 @@ export class Spring {
     moveTo(newPosition) {
         this._position.copy(newPosition);
         this._curve.start.copy(newPosition);
-        this._mesh.position.copy(newPosition);
     }
 
     updateAxis(newAxis) {
