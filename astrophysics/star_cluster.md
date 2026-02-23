@@ -7,7 +7,8 @@
 👉 Pure JavaScript using [Three.js](https://threejs.org/) 3D-library<br/>
 🔑 Thousands of stars are placed into a 3D cloud using [Perlin noise](https://en.wikipedia.org/wiki/Perlin_noise).
 
-{% include_relative code/star_cluster.html %}
+<canvas class="applicationCanvas" id="starClusterCanvas" ></canvas>
+<script type="module" src="star_cluster.js"></script>
 
 <p style="clear: both;"></p>
 

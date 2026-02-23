@@ -5,11 +5,11 @@
 
 🔧 Original [galaxy_3d_Medium.py](https://gist.github.com/rlvaugh/a49bf875890581f338a000c2b5c3a2bb) by [Lee Vaughan](https://towardsdatascience.com/author/lee_vaughan/) <br/>
 ⭐ The (theory behind the) code is thoroughly explained in his [accompanying article](https://towardsdatascience.com/create-3-d-galactic-art-with-matplotlib-a7534148a319/) <br/>
-👉 This [spiral_galaxy.html](https://github.com/zhendrikse/science/blob/main/astrophysics/code/spiral_galaxy.html) page is a port to JavaScript and [Three.js](https://threejs.org/) <br/>
-🔥 JavaScript version has been extended with colouring and fading ([Zeger Hendrikse](https://www.hendrikse.name/))
+👉 [spiral_galaxy.js](https://github.com/zhendrikse/science/blob/main/astrophysics/spiral_galaxy.js) is a port to JavaScript and [Three.js](https://threejs.org/) <br/>
+🔥 JavaScript version has been extended with coloring and fading ([Zeger Hendrikse](https://www.hendrikse.name/))
 
-<p style="clear:both;"></p>
-{% include_relative code/spiral_galaxy.html %}
+<canvas class="applicationCanvas" id="galaxyCanvas" style="aspect-ratio: 19 / 12"></canvas>
+<script type="module" src="spiral_galaxy.js"></script>
 <p style="clear:both;"></p>
 
 👉 **Core / Bulge (Central Region)**<br/>
