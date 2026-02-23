@@ -1,0 +1,282 @@
+const constellations = {
+    "Orion": [
+        [88.7929, 7.4071],  // Betelgeuze
+        [81.2828, 6.3497],  // Bellatrix
+
+        [81.2828, 6.3497],  // Bellatrix
+        [83.0017, -0.2991], // Mintaka
+
+        [83.0017, -0.2991], // Mintaka
+        [84.0534, -1.2019], // Alnilam
+
+        [84.0534, -1.2019], // Alnilam
+        [85.1897, -1.9426], // Alnitak
+
+        [85.1897, -1.9426], // Alnitak
+        [86.9391, -9.6696], // Saiph
+
+        [86.9391, -9.6696], // Saiph
+        [78.6345, -8.2016], // Rigel
+
+        [78.6345, -8.2016], // Rigel
+        [83.0017, -0.2991], // Mintaka
+
+        [85.1897, -1.9426], // Alnitak
+        [88.7929, 7.4071]   // Betelgeuze
+    ],
+    "UrsaMajor": [
+        [206.885, 49.313], // Alkaid
+        [201.298, 54.925], // Mizar
+
+        [201.298, 54.925], // Mizar
+        [193.507, 55.959], // Alioth
+
+        [193.507, 55.959], // Alioth
+        [183.875, 57.033],  // Megrez
+
+        [183.875, 57.033], // Megrez
+        [178.458, 53.695], // Phecda
+
+        [178.458, 53.695], // Phecda
+        [165.932, 56.382], // Merak
+
+        [165.932, 56.382], // Merak
+        [165.932, 61.751], // Dubhe
+
+        [165.932, 61.751], // Dubhe
+        [183.875, 57.033]  // Megrez
+    ],
+    "Cassiopeia": [
+        [2.293, 59.149],    // Caph
+        [10.126, 56.537],   // Schedar
+
+        [10.126, 56.537],   // Schedar
+        [14.1771, 60.7167], // Navi
+
+        [14.1771, 60.7167], // Navi
+        [21.455, 60.235],   // Ruchbah
+
+        [21.455, 60.235],   // Ruchbah
+        [28.5987, 63.6700]  // Segin
+    // ],
+    // "Taurus": [
+    //     [65.66, 16.509],   // Elnath
+    //     [68.979, 16.509],  // Zeta Tauri
+    //
+    //     [68.979, 16.509],  // Zeta Tauri
+    //     [66.94, 16.0],     // Aldebaran
+    //
+    //     [66.94, 16.0],     // Aldebaran
+    //     [64.375, 15.872],  // Hyadum I
+    //
+    //     [64.375, 15.872],  // Hyadum I
+    //     [63.513, 15.823],  // Hyadum II
+    //
+    //     [63.513, 15.823],  // Hyadum II
+    //     [62.2, 15.1]       // Hyadum III
+    ]
+};
+
+let stars = [];
+let stars2Draw = [];
+
+// async function loadConstellations() {
+//     const constRes = await fetch('https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/constellations.lines.json');
+//     const constData = await constRes.json();
+//
+//     const constellations = {};
+//
+//     for (let feature of constData.features) {
+//         const name = feature.id;
+//         const coords = feature.geometry.coordinates; // array of line segments [[start, end], [start, end], ...]
+//
+//         let lines = [];
+//         for (let segment of coords)
+//             lines.push(segment[0], segment[1]);
+//
+//         constellations[name] = lines;
+//     }
+// }
+
+// async function loadConstellations() {
+//     const constRes = await fetch('https://raw.githubusercontent.com/Stellarium/stellarium/refs/heads/master/skycultures/modern/index.json');
+//     const constData = await constRes.json();
+// }
+
+async function loadData() {
+    const starsRes = await fetch('https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/stars.6.json');
+    const starsData = await starsRes.json();
+
+    // GeoJSON -> own format
+    stars = starsData.features.map(feature => ({
+        id: feature.id,
+        ra: feature.geometry.coordinates[0],   // right ascension
+        dec: feature.geometry.coordinates[1],
+        mag: feature.properties.mag
+    }));
+
+    stars2Draw = stars.filter(star => star.mag <= 4);
+    // await loadConstellations();
+}
+
+const nightSkyCanvas = document.getElementById("nightSkyCanvas");
+const nightSkyCanvasWrapper = document.getElementById("nightSkyCanvasWrapper");
+const display = nightSkyCanvas.getContext("2d");
+const pauseButton = document.getElementById("pauseButton");
+const latSlider = document.getElementById("latSlider");
+const latReadout = document.getElementById("latReadout");
+const bearingSlider = document.getElementById("bearingSlider");
+const bearingReadout = document.getElementById("bearingReadout");
+
+pauseButton.addEventListener("click", () => {
+    running = !running;
+    pauseButton.textContent = running ? " Pause " : "Resume";
+    if (running)
+        requestAnimationFrame(nextFrame);
+});
+
+latSlider.addEventListener("input", () => {
+    latReadout.innerHTML = latSlider.value.replace("-","&minus;") + "&deg;";
+    drawSky();
+});
+
+bearingSlider.addEventListener("input", () => {
+    bearingReadout.innerHTML = bearingSlider.value + "&deg;";
+    drawSky();
+});
+
+function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const wrapperWidth = nightSkyCanvasWrapper.clientWidth;
+    const wrapperHeight = nightSkyCanvasWrapper.clientHeight;
+
+    nightSkyCanvas.style.width  = wrapperWidth + "px";
+    nightSkyCanvas.style.height = wrapperHeight + "px";
+
+    nightSkyCanvas.width  = Math.floor(wrapperWidth * dpr);
+    nightSkyCanvas.height = Math.floor(wrapperHeight * dpr);
+
+    display.setTransform(dpr, 0, 0, dpr, 0, 0);
+    radiusSkyDomeInPixels = wrapperHeight;
+    drawSky();
+}
+window.addEventListener("resize", () => resizeCanvas());
+
+let radiusSkyDomeInPixels = nightSkyCanvas.width;
+let localSidTime = 2;   // local sidereal time in hours
+let running = false;
+
+function nextFrame() {
+    if (!running) return;
+
+    localSidTime += 1/60;
+    drawSky();
+    requestAnimationFrame(nextFrame);
+}
+
+function projectStar(raDeg, decDeg) {
+    // Latitude
+    let latitude = Number(latSlider.value);
+    if (latitude > 89.9) latitude = 89.9;
+    if (latitude < -89.9) latitude = -89.9;
+
+    const cosLat = Math.cos(latitude * Math.PI / 180);
+    const sinLat = Math.sin(latitude * Math.PI / 180);
+
+    const bearing = Number(bearingSlider.value) * Math.PI / 180;
+    const sidTime = localSidTime * 15 * Math.PI / 180;
+
+    const ra  = raDeg  * Math.PI / 180;  // right ascension
+    const dec = decDeg * Math.PI / 180;  // declination
+
+    const sinDec = Math.sin(dec);
+    const cosDec = Math.cos(dec);
+
+    // Hour angle
+    const ha = sidTime - ra;
+
+    // Altitude
+    const sinAltitude = sinDec*sinLat + cosDec*cosLat*Math.cos(ha);
+    if (sinAltitude <= 0) return null;   // onder horizon
+
+    const alt = Math.asin(sinAltitude);
+    const cosAlt = Math.cos(alt);
+
+    // Azimuth
+    const sinAzimuth = -Math.sin(ha) * cosDec / cosAlt;
+    const cosAzimuth = (sinDec - sinLat * sinAltitude) / (cosLat*cosAlt);
+    const az = Math.atan2(sinAzimuth, cosAzimuth);
+
+    // Relatieve azimut
+    let azRel = az - bearing;
+    if (azRel < -Math.PI) azRel += 2 * Math.PI;
+
+    // Outside visible region?
+    if (azRel < -Math.PI / 2 || azRel > Math.PI / 2) return null;
+
+    // Azimuthal equidistant projection
+    const alpha = Math.acos(cosAlt * Math.cos(azRel));
+    const sinAlpha = Math.sin(alpha);
+
+    if (sinAlpha === 0) return null;  // singularity
+
+    const scaleFactor = radiusSkyDomeInPixels / (Math.PI / 2);
+    const x = alpha * scaleFactor * cosAlt * Math.sin(azRel) / sinAlpha;
+    const y = -alpha * scaleFactor * sinAltitude / sinAlpha;
+
+    return {x, y};
+}
+
+// Draw the sky image:
+function drawSky() {
+    display.clearRect(0, 0, nightSkyCanvas.width, nightSkyCanvas.height);
+    display.fillStyle = "black";
+    display.beginPath();
+    display.arc(radiusSkyDomeInPixels, radiusSkyDomeInPixels, radiusSkyDomeInPixels, Math.PI, 2 * Math.PI);
+    display.fill();
+
+    for (let star of stars2Draw) {
+        let projectedStar = projectStar(star.ra, star.dec);
+        if (!projectedStar) continue;
+        drawStar(projectedStar.x, projectedStar.y, star.mag);
+    }
+    drawConstellations();
+}
+
+function drawLineBetween(starA, starB) {
+    starA = projectStar(starA[0], starA[1]);
+    starB = projectStar(starB[0], starB[1]);
+    if (!starA || !starB) return;
+
+    display.beginPath();
+    display.moveTo(radiusSkyDomeInPixels + starA.x, radiusSkyDomeInPixels + starA.y);
+    display.lineTo(radiusSkyDomeInPixels + starB.x, radiusSkyDomeInPixels + starB.y);
+    display.stroke();
+}
+
+function drawConstellations() {
+    display.strokeStyle = "rgba(0, 150, 255, 0.31)";
+    display.lineWidth = 1.5;
+
+    for (let name in constellations)
+        for (let i = 0; i < constellations[name].length - 1; i+=2)
+            drawLineBetween(constellations[name][i], constellations[name][i + 1]);
+}
+
+// Draw a star at given pixel coordinates, relative to straight ahead:
+function drawStar(x, y, mag) {
+    const brightness = Number((5 - mag) / 6.5).toFixed(2);    // linear map, mag -> brightness
+    display.fillStyle = "rgba(255, 255, 255, " + brightness + ")";
+    display.beginPath();
+    display.arc(radiusSkyDomeInPixels + x, radiusSkyDomeInPixels + y, 1.5, 0, 2 * Math.PI);
+    display.fill();
+}
+
+async function init() {
+    await loadData();
+    resizeCanvas();
+    requestAnimationFrame(nextFrame);
+}
+
+init();
+
