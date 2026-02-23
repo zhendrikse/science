@@ -1,5 +1,5 @@
 const theCanvas = document.getElementById("infiniteSquareWellCanvas2D");
-const theCanvasWrapper = document.getElementById("infiniteSquareWellWrapper2D");
+const wrapper = document.getElementById("infiniteSquareWellWrapper2D");
 const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
 theCanvas.style.touchAction = "none";
@@ -204,15 +204,12 @@ function mouseOrTouchStart(pageX, pageY, e) {
     }
 }
 
-function getMousePos(evt) {
+function getMousePos(canvas, clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
 
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
     return {
-        x: (evt.clientX - rect.left) * scaleX,
-        y: (evt.clientY - rect.top) * scaleY
+        x: clientX - rect.left,
+        y: clientY - rect.top
     };
 }
 
@@ -305,22 +302,18 @@ let psi = new Psi();
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
 
-    const cssWidth = theCanvasWrapper.clientWidth;
-    const cssHeight = theCanvasWrapper.clientHeight;
+    const width  = wrapper.clientWidth;
+    const height = wrapper.clientHeight;
 
-    // CSS size
-    theCanvas.style.width  = cssWidth + "px";
-    theCanvas.style.height = cssHeight + "px";
+    theCanvas.style.width  = width + "px";
+    theCanvas.style.height = height + "px";
 
-    // Internal resolution
-    theCanvas.width  = Math.floor(cssWidth * dpr);
-    theCanvas.height = Math.floor(cssHeight * dpr);
+    theCanvas.width  = Math.floor(width * dpr);
+    theCanvas.height = Math.floor(height * dpr);
 
-    // Scale drawing to CSS pixels
     theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    psi = new Psi(cssWidth);
-
+    psi = new Psi();
     paintCanvas();
 }
 window.addEventListener("resize", () => resizeCanvas());
