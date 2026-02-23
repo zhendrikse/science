@@ -2,6 +2,8 @@ const theCanvas = document.getElementById("infiniteSquareWellCanvas2D");
 const theCanvasWrapper = document.getElementById("infiniteSquareWellWrapper2D");
 const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
+theCanvas.style.touchAction = "none";
+
 const pauseButton = document.getElementById("pauseButton");
 const speedSlider = document.getElementById("speedSlider");
 const speedValue = document.getElementById("speedValue");
@@ -11,8 +13,6 @@ const iMax = theCanvas.width;	// max index in function arrays (so array size is 
 //const pxPerX = 60;			// number of pixels per conventional x unit
 const clockSpaceFraction = 0.25;	// fraction of vertical space taken up by clocks
 const clockRadiusFraction = 0.45;	// as fraction of width or height of clock space
-const clockSpaceHeight = theCanvas.height * clockSpaceFraction;
-const clockPixelRadius = clockSpaceHeight * clockRadiusFraction;
 const nMax = 7;				// maximum energy quantum number (starting from zero)
 const nColors = 360;
 const phaseColor = new Array(nColors+1);
@@ -27,6 +27,14 @@ document.body.addEventListener('mouseup', mouseUp, false);
 theCanvas.addEventListener('touchstart', touchStart, false);
 document.body.addEventListener('touchmove', touchMove, false);
 document.body.addEventListener('touchend', mouseUp, false);
+
+function getClockSpaceHeight() {
+    return theCanvas.height * clockSpaceFraction;
+}
+
+function getClockPixelRadius() {
+    return getClockSpaceHeight() * clockRadiusFraction;
+}
 
 class Psi {
     constructor(iMax=theCanvas.width) {
@@ -93,7 +101,7 @@ class Psi {
 
     setAmplitudeTo(index, relX, relY) {
         const pixelDistance = Math.sqrt(relX*relX + relY*relY);
-        this._amplitude[mouseClock] = Math.min(pixelDistance / clockPixelRadius, 1);
+        this._amplitude[mouseClock] = Math.min(pixelDistance / getClockPixelRadius(), 1);
         this._phase[mouseClock] = Math.atan2(relY, relX);
         if (this._phase[mouseClock] < 0) this._phase[mouseClock] += 2 * Math.PI;
     }
@@ -171,26 +179,47 @@ function setMouseClock(relX, relY) {	// parameters are x,y in pixels, relative t
 }
 
 function mouseOrTouchStart(pageX, pageY, e) {
-    if (pageY-theCanvas.offsetTop > theCanvas.height - clockSpaceHeight) {
-        mouseClock = Math.floor((pageX - theCanvas.offsetLeft) / clockSpaceHeight);
-        const clockCenterX = clockSpaceHeight * (mouseClock + 0.5);	// relative to left of canvas
-        const clockCenterY = theCanvas.height - clockSpaceHeight*0.5;	// relative to top of canvas
-        const relX = pageX - theCanvas.offsetLeft - clockCenterX;
-        const relY = clockCenterY - (pageY - theCanvas.offsetTop) ;	// measured up from clock center
-        if (relX*relX + relY*relY <= clockPixelRadius*clockPixelRadius) {
+    const pos = getMousePos(theCanvas, pageX, pageY);
+    const x = pos.x;
+    const y = pos.y;
+
+    if (y > theCanvas.height - getClockSpaceHeigt()) {
+        mouseClock = Math.floor(x / getClockSpaceHeigt());
+
+        const clockCenterX = getClockSpaceHeigt() * (mouseClock + 0.5);
+        const clockCenterY = theCanvas.height - getClockSpaceHeigt() * 0.5;
+        const relX = x - clockCenterX;
+        const relY = clockCenterY - y;
+
+        if (relX*relX + relY*relY <= getClockPixelRadius()*getClockPixelRadius()) {
             setMouseClock(relX, relY);
             e.preventDefault();
         }
     }
 }
 
+function getMousePos(canvas, pageX, pageY) {
+    const rect = canvas.getBoundingClientRect();
+
+    return {
+        x: pageX - rect.left - window.scrollX,
+        y: pageY - rect.top  - window.scrollY
+    };
+}
+
 function mouseOrTouchMove(pageX, pageY, event) {
     if (!mouseIsDown) return;
 
-    const clockCenterX = clockSpaceHeight * (mouseClock + 0.5);	// relative to left of canvas
-    const clockCenterY = theCanvas.height - clockSpaceHeight * 0.5;	// relative to top of canvas
-    const relX = pageX - theCanvas.offsetLeft - clockCenterX;
-    const relY = clockCenterY - (pageY - theCanvas.offsetTop) ;	// measured up from clock center
+    const pos = getMousePos(theCanvas, pageX, pageY);
+    const x = pos.x;
+    const y = pos.y;
+
+    const clockCenterX = getClockSpaceHeigt() * (mouseClock + 0.5);
+    const clockCenterY = theCanvas.height - getClockSpaceHeigt() * 0.5;
+
+    const relX = x - clockCenterX;
+    const relY = clockCenterY - y;
+
     setMouseClock(relX, relY);
     event.preventDefault();
 }
