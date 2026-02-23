@@ -22,7 +22,7 @@
 🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
 
-<div id="infiniteSquareWellWrapper2D" class="canvasWrapper2D" style="aspect-ratio: 2/1;">
+<div id="infiniteSquareWellWrapper2D" class="canvasWrapper2D">
     <canvas id="infiniteSquareWellCanvas2D" class="applicationCanvas2D"></canvas>
 </div>
 <div class="buttonRow">
