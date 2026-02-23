@@ -135,7 +135,7 @@ function onMouseClick(event){
     well.setCurrentLevel(selectedLevel);
 
     // determine amplitude from size of selected level
-    const halfWidth = level.geometry.parameters.height / 2; // energy level cylinder has been rotated!
+    const halfWidth = selectedLevel.geometry.parameters.height / 2; // energy level cylinder has been rotated!
     oscillator.reset();
     oscillator.compress(halfWidth);
 }
