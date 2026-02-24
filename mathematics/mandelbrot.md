@@ -17,13 +17,13 @@
     <canvas class="applicationCanvas2D" id="mandelbrotCanvas"></canvas>
 </div>
 <div style="margin-top: 2px;">
-  <!--
-  <label>Colors:</label><button id="colorSchemeButton1">scheme 1</button>
-  <button id="colorSchemeButton2">scheme 2</button>&nbsp;&nbsp;&nbsp;
-  <label>Canvas:</label><button id="canvasSizeButton1">small</button>
-  <button id="canvasSizeButton2">big</button>
-  <button id="canvasSizeButton3">huge</button>&nbsp;&nbsp;&nbsp;
-  -->
+    <label>Colors:</label><button id="colorSchemeButton1">scheme 1</button>
+    <button id="colorSchemeButton2">scheme 2</button>&nbsp;&nbsp;&nbsp;
+    <label>Canvas:</label><button id="canvasSizeButton1">small</button>
+    <button id="canvasSizeButton2">big</button>
+    <button id="canvasSizeButton3">huge</button>&nbsp;&nbsp;&nbsp;
+</div>
+<div class="buttonRow">
   <label for="mandelbrotToggle"><button id="mandelbrotToggle">Mandelbrot</button></label>
   <label for="burningShipToggle"><button id="burningShipToggle">Burning ship</button></label>
 </div>
