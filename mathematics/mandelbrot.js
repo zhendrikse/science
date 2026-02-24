@@ -1,0 +1,558 @@
+import { Pixel, PixelImage, Colors } from '../js/canvas-extensions.js';
+
+const mandelbrotCanvas = document.getElementById("mandelbrotCanvas");
+const display = mandelbrotCanvas.getContext("2d");
+mandelbrotCanvas.focus();
+
+const juliaButtons = new Map();
+juliaButtons.set("juliaToggle0", [0.325, .417]);
+juliaButtons.set("juliaToggle1", [0.4, .4]);
+juliaButtons.set("juliaToggle2", [-0.4, 0.6]);
+juliaButtons.set("juliaToggle3", [-0.5251993, -0.5251993]);
+juliaButtons.set("juliaToggle4", [0.285, 0.001]);
+juliaButtons.set("juliaToggle5", [-0.8, .156]);
+juliaButtons.set("juliaToggle6", [0, 0.8]);
+juliaButtons.set("juliaToggle7", [-0.70176, -0.3842]);
+
+function hsv2rgb(h,s,v) {
+    let f= (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k , 1), 0);
+    return [f(5), f(3), f(1)];
+}
+
+function hueColor(brightness) {
+    return hsv2rgb(brightness * 5 * 360, 1, 1);
+}
+
+function rgbColor(brightness) {
+    return [brightness, Math.sqrt(brightness), brightness ** 0.2];
+}
+
+function colorPalette(z, i, maxIterations) {
+    let mu = i + 1 - Math.log(Math.log(z[0] * z[0] + z[1] * z[1])) / Math.log(2);
+    if (mu < 0)
+        mu = 0;
+    else if (mu > maxIterations || isNaN(mu))
+        mu = 11 * maxIterations / 12;
+    const colourMapIndex = 255 - Math.floor((mu) * 255 / maxIterations);
+    return [colorMap[colourMapIndex][0] / 255, [colorMap[colourMapIndex][1] / 255], [colorMap[colourMapIndex][2] / 255]];
+}
+
+class FractalRange {
+    constructor(re_min, re_max, im_min, im_max) {
+        this.re_min = re_min;
+        this.re_max = re_max;
+        this.im_min = im_min;
+        this.im_max = im_max;
+    }
+
+    scale(scale) {
+        const realRange = this.realRange(),
+            imaginaryRange = this.imaginaryRange(),
+            centerX = this.re_min + .5 * this.realRange(),
+            centerY = this.im_min + .5 * this.imaginaryRange();
+        this.re_min = centerX - .5 * realRange * scale;
+        this.re_max = centerX + .5 * realRange * scale;
+        this.im_min = centerY - .5 * imaginaryRange * scale;
+        this.im_max = centerY + .5 * imaginaryRange * scale;
+    }
+
+    realRange() {
+        return this.re_max - this.re_min;
+    }
+
+    imaginaryRange() {
+        return this.im_max - this.im_min;
+    }
+}
+
+class Fractal {
+    constructor(max_iter, range, constantC, colorFunction) {
+        this.constantC = constantC;
+        this.maxIter = max_iter;
+        this.colorFunction = colorFunction;
+        this.range = range;
+        this.initialRange = new FractalRange(range.re_min, range.re_max, range.im_min, range.im_max);
+        this.image = new PixelImage(display.canvas.width, display.canvas.height);
+    }
+
+    reset() {
+        this.range = this.initialRange;
+        this.render();
+    }
+
+    mapXyToComplexPlane(x, y) {
+        const re = this.range.re_min + (x / this.image.width) * this.range.realRange();
+        const im = this.range.im_min + (y / this.image.height) * this.range.imaginaryRange();
+        return this.complex(re, im);
+    }
+
+    setPixelColorAt(x, y) {
+        throw new Error('You have invoked setPixelColorAt() in the Fractal abstract base class!');
+    }
+
+    render() {
+        this.image = new PixelImage(display.canvas.width, display.canvas.height);
+        for (let x = 0; x < this.image.width; x++)
+            for (let y = 0; y < this.image.height; y++)
+                this.setPixelColorAt(x, y);
+        this.image.render(display);
+    }
+
+    zoom(zoomOut) {
+        this.range.scale(zoomOut ? 1.1 : .8);
+        this.render();
+    }
+
+    zoomOut() {
+        this.zoom(true);
+    }
+
+    zoomIn() {
+        this.zoom(false);
+    }
+
+    recenter(x, y) {
+        const c = this.mapXyToComplexPlane(x, y);
+        this.range = new FractalRange(
+            c[0] - .5 * this.range.realRange(),
+            c[0] + .5 * this.range.realRange(),
+            c[1] - .5 * this.range.imaginaryRange(),
+            c[1] + .5 * this.range.imaginaryRange());
+        this.render();
+    }
+
+    setColorFunctionTo(newColorFunction) {
+        this.colorFunction = newColorFunction;
+        this.render();
+    }
+
+    complex(re_, im_) {
+        return [re_, im_];
+    }
+
+    abs_z_squared_plus_c(z_, c_) {
+        return [z_[0] * z_[0] - z_[1] * z_[1] + c_[0], Math.abs(2 * z_[0] * z_[1]) + c_[1]];
+    }
+
+    z_squared_plus_c(z_, c_) {
+        return [z_[0] * z_[0] - z_[1] * z_[1] + c_[0], 2 * z_[0] * z_[1] + c_[1]];
+    }
+
+    abs_z_squared(z_) {
+        return z_[0] * z_[0] + z_[1] * z_[1];
+    }
+}
+
+class Mandelbrot extends Fractal {
+    constructor(maxIter=500, colorFunction=rgbColor) {
+        super(maxIter, new FractalRange(-2, 1, -1, 1), 0, colorFunction);
+    }
+
+    setPixelColorAt(x, y) {
+        const c = this.mapXyToComplexPlane(x, y);
+        let z = this.complex(0, 0);
+
+        let n = 0;
+        while (this.abs_z_squared(z) <= 4 && n < this.maxIter) {
+            z = this.z_squared_plus_c(z, c);
+            n += 1;
+        }
+
+        const brightness = n / this.maxIter;
+        if (brightness < 1)
+            this.image.setColour(new Pixel(x, y, this.colorFunction(brightness)));
+    }
+}
+
+class Julia extends Fractal {
+    constructor(cConstant, maxIter=500, colorFunction=rgbColor) {
+        super(maxIter, new FractalRange(-1.5, 1.5, -1.5, 1.5), cConstant, colorFunction);
+    }
+
+    setPixelColorAt(x, y) {
+        const c = this.constantC;
+        let z = this.mapXyToComplexPlane(x, y);
+
+        let n = 0;
+        while (this.abs_z_squared(z) <= 4 && n < this.maxIter) {
+            z = this.z_squared_plus_c(z, c);
+            n += 1;
+        }
+
+        const brightness = n / this.maxIter;
+        if (brightness < 1)
+            this.image.setColour(new Pixel(x, y, this.colorFunction(brightness)));
+    }
+}
+
+class BurningShip extends Fractal {
+    constructor(maxIter=100, colorFunction=rgbColor) {
+        super(maxIter, new FractalRange(-2.5, 1.5, -2, 2), 0, colorFunction);
+    }
+
+    setPixelColorAt(x, y) {
+        const c = this.mapXyToComplexPlane(x, y);
+        let z = this.complex(0, 0);
+
+        let n = 0;
+        while (this.abs_z_squared(z) <= 16 && n < this.maxIter) {
+            z = this.abs_z_squared_plus_c(z, c);
+            n += 1;
+        }
+
+        this.image.setColour(new Pixel(x, y, colorPalette(z, n, this.maxIter)));
+    }
+}
+
+let fractal = new Mandelbrot();
+fractal.render();
+resetButtons();
+document.getElementById("mandelbrotToggle").checked = true;
+
+mandelbrotCanvas.addEventListener("mousedown", function(event) {
+    const rect = mandelbrotCanvas.getBoundingClientRect();
+    fractal.recenter(event.clientX - rect.left, event.clientY - rect.top);
+});
+
+document.getElementById("zoomInButton").addEventListener("click", function(event) {
+    fractal.zoomIn();
+});
+
+document.getElementById("zoomOutButton").addEventListener("click", function(event) {
+    fractal.zoomOut();
+});
+
+document.getElementById("resetViewButton").addEventListener("click", function(event) {
+    fractal.reset();
+});
+
+document.getElementById("colorSchemeButton1").addEventListener("click", function(event) {
+    fractal.setColorFunctionTo(rgbColor);
+});
+
+document.getElementById("colorSchemeButton2").addEventListener("click", function(event) {
+    fractal.setColorFunctionTo(hueColor);
+});
+
+document.getElementById("canvasSizeButton1").addEventListener("click", function(event) {
+    mandelbrotCanvas.width = 600;
+    mandelbrotCanvas.height = 400;
+    fractal.render();
+});
+
+document.getElementById("canvasSizeButton2").addEventListener("click", function(event) {
+    mandelbrotCanvas.width = 1200;
+    mandelbrotCanvas.height = 800;
+    fractal.render();
+});
+
+document.getElementById("canvasSizeButton3").addEventListener("click", function(event) {
+    mandelbrotCanvas.width = 1800;
+    mandelbrotCanvas.height = 1200;
+    fractal.render();
+});
+
+function resetButtons() {
+    document.getElementById("mandelbrotToggle").checked = false;
+    document.getElementById("burningShipToggle").checked = false;
+    for (const [key, value] of juliaButtons)
+        document.getElementById(key).checked = false;
+}
+
+function resizeCanvasToWrapper() {
+    const canvasWrapper = document.getElementById('canvas-wrapper');
+    const canvas = document.getElementById('mandelbrotCanvas');
+
+    canvas.width = canvasWrapper.clientWidth;
+    canvas.height = canvasWrapper.clientHeight;
+
+    fractal.render();
+}
+
+resizeCanvasToWrapper();
+window.addEventListener('resize', () => {
+    resizeCanvasToWrapper();
+});
+
+for (const [key, value] of juliaButtons)
+    document.getElementById(key).onclick = function() {
+        resetButtons();
+        document.getElementById(key).checked = true;
+        fractal = new Julia(value);
+        fractal.render();
+    }
+
+document.getElementById("burningShipToggle").addEventListener("click", function(event) {
+    resetButtons();
+    document.getElementById("burningShipToggle").checked = true;
+    fractal = new BurningShip();
+    fractal.render();
+});
+
+document.getElementById("mandelbrotToggle").addEventListener("click", function(event) {
+    resetButtons();
+    document.getElementById("mandelbrotToggle").checked = true;
+    fractal = new Mandelbrot();
+    fractal.render();
+});
+
+// http://jdherman.github.io/colormap/ 👇
+const colorMap = [
+    [255,255,255],
+    [255,255,254],
+    [255,255,252],
+    [255,255,250],
+    [255,255,248],
+    [255,255,246],
+    [255,255,244],
+    [255,255,242],
+    [255,255,240],
+    [255,255,238],
+    [255,255,236],
+    [255,255,234],
+    [255,255,232],
+    [255,255,230],
+    [255,255,228],
+    [255,255,226],
+    [255,255,224],
+    [255,255,222],
+    [255,255,220],
+    [255,255,218],
+    [255,255,216],
+    [255,255,214],
+    [255,255,212],
+    [255,255,210],
+    [255,255,208],
+    [255,255,206],
+    [255,255,204],
+    [255,255,202],
+    [255,255,200],
+    [255,255,198],
+    [255,255,196],
+    [255,255,194],
+    [255,255,192],
+    [255,255,190],
+    [255,255,188],
+    [255,255,186],
+    [255,255,184],
+    [255,255,182],
+    [255,255,180],
+    [255,255,178],
+    [255,255,176],
+    [255,255,174],
+    [255,255,172],
+    [255,255,170],
+    [255,255,168],
+    [255,255,166],
+    [255,255,164],
+    [255,255,162],
+    [255,255,160],
+    [255,255,158],
+    [255,255,156],
+    [255,255,154],
+    [255,255,152],
+    [255,255,150],
+    [255,255,148],
+    [255,255,146],
+    [255,255,144],
+    [255,255,142],
+    [255,255,140],
+    [255,255,138],
+    [255,255,136],
+    [255,255,134],
+    [255,255,132],
+    [255,255,130],
+    [255,255,128],
+    [255,253,126],
+    [255,251,124],
+    [255,249,122],
+    [255,247,120],
+    [255,245,118],
+    [255,243,116],
+    [255,241,114],
+    [255,239,112],
+    [255,237,111],
+    [255,235,109],
+    [255,233,107],
+    [255,231,105],
+    [255,229,103],
+    [255,227,101],
+    [255,225,99],
+    [255,222,97],
+    [255,220,95],
+    [255,218,93],
+    [255,216,91],
+    [255,214,89],
+    [255,212,88],
+    [255,210,86],
+    [255,208,84],
+    [255,206,82],
+    [255,204,80],
+    [255,202,78],
+    [255,200,76],
+    [255,198,74],
+    [255,196,72],
+    [255,194,70],
+    [255,192,68],
+    [255,190,67],
+    [255,188,65],
+    [255,186,63],
+    [255,184,61],
+    [255,182,59],
+    [255,179,57],
+    [255,177,55],
+    [255,175,53],
+    [255,173,51],
+    [255,171,49],
+    [255,169,47],
+    [255,167,45],
+    [255,165,44],
+    [255,163,42],
+    [255,161,40],
+    [255,159,38],
+    [255,157,36],
+    [255,155,34],
+    [255,153,32],
+    [255,151,30],
+    [255,149,28],
+    [255,147,26],
+    [255,145,24],
+    [255,143,22],
+    [255,141,21],
+    [255,138,19],
+    [255,136,17],
+    [255,134,15],
+    [255,132,13],
+    [255,130,11],
+    [255,128,9],
+    [255,126,7],
+    [255,125,6],
+    [255,124,6],
+    [255,123,6],
+    [255,122,6],
+    [255,121,6],
+    [255,120,6],
+    [255,119,6],
+    [255,118,6],
+    [255,117,6],
+    [255,116,6],
+    [255,115,6],
+    [255,114,6],
+    [255,113,6],
+    [255,112,6],
+    [255,111,6],
+    [255,110,6],
+    [255,109,6],
+    [255,108,6],
+    [255,107,6],
+    [255,106,6],
+    [255,105,6],
+    [255,104,6],
+    [255,103,6],
+    [255,102,6],
+    [255,101,6],
+    [255,100,6],
+    [255,99,6],
+    [255,98,6],
+    [255,97,6],
+    [255,96,6],
+    [255,94,6],
+    [255,93,6],
+    [255,92,6],
+    [255,91,6],
+    [255,90,6],
+    [255,89,6],
+    [255,88,6],
+    [255,87,6],
+    [255,86,6],
+    [255,85,6],
+    [255,84,6],
+    [255,83,6],
+    [255,82,6],
+    [255,81,6],
+    [255,80,6],
+    [255,79,6],
+    [255,78,6],
+    [255,77,6],
+    [255,76,6],
+    [255,75,6],
+    [255,74,6],
+    [255,73,6],
+    [255,72,6],
+    [255,71,6],
+    [255,70,6],
+    [255,69,6],
+    [255,68,6],
+    [255,67,6],
+    [255,66,6],
+    [255,65,6],
+    [255,64,6],
+    [255,63,6],
+    [255,62,6],
+    [255,61,6],
+    [253,60,6],
+    [249,60,6],
+    [245,59,6],
+    [241,58,6],
+    [238,57,6],
+    [234,57,6],
+    [230,56,6],
+    [226,55,6],
+    [222,54,6],
+    [219,53,6],
+    [215,53,6],
+    [211,52,6],
+    [207,51,6],
+    [203,50,6],
+    [199,50,6],
+    [196,49,6],
+    [192,48,6],
+    [188,47,6],
+    [184,47,6],
+    [180,46,6],
+    [177,45,6],
+    [173,44,6],
+    [169,43,6],
+    [165,43,6],
+    [161,42,6],
+    [157,41,6],
+    [154,40,7],
+    [150,40,7],
+    [146,39,7],
+    [142,38,7],
+    [138,37,7],
+    [135,36,7],
+    [131,36,7],
+    [127,35,7],
+    [123,34,7],
+    [119,33,7],
+    [115,33,7],
+    [112,32,7],
+    [108,31,7],
+    [104,30,7],
+    [100,29,7],
+    [96,29,7],
+    [93,28,7],
+    [89,27,7],
+    [85,26,7],
+    [81,26,7],
+    [77,25,7],
+    [73,24,7],
+    [70,23,7],
+    [66,22,7],
+    [62,22,7],
+    [58,21,7],
+    [54,20,7],
+    [51,19,7],
+    [47,19,7],
+    [43,18,7],
+    [39,17,7],
+    [35,16,7],
+    [31,15,7],
+    [28,15,7],
+    [24,14,7],
+    [20,13,7],
+    [16,12,7],
+    [12,12,7]
+];
+

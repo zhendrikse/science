@@ -7,8 +7,43 @@
 👉 Implemented in 100% Javascript, but also ported to [VPython](https://vpython.org), see [mandelbrot.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/mandelbrot.py).<br/>
 🎯 Click anywhere on the fractal to re-center
 
-{% include_relative code/mandelbrot.html %}
-
+<div style="margin-bottom: 5px;">
+    <label>Action:</label>
+    <button id="resetViewButton">🔄 Reset View</button>
+    <button id="zoomInButton">➕ Zoom In</button>
+    <button id="zoomOutButton">➖ Zoom Out</button>
+</div>
+<div class="canvasWrapper2D" id="canvas-wrapper" style="aspect-ratio: 13 / 8;">
+    <canvas class="applicationCanvas2D" id="mandelbrotCanvas"></canvas>
+</div>
+<div style="margin-top: 2px;">
+    <label>Colors:</label><button id="colorSchemeButton1">scheme 1</button>
+    <button id="colorSchemeButton2">scheme 2</button>&nbsp;&nbsp;&nbsp;
+    <label>Canvas:</label><button id="canvasSizeButton1">small</button>
+    <button id="canvasSizeButton2">big</button>
+    <button id="canvasSizeButton3">huge</button>&nbsp;&nbsp;&nbsp;
+</div>
+<div class="buttonRow">
+  <label for="mandelbrotToggle"><input type="radio" id="mandelbrotToggle"/>Mandelbrot</label>
+  <label for="burningShipToggle"><input type="radio" id="burningShipToggle"/>Burning ship</label>
+</div>
+<div class="buttonRow">
+  <label for="juliaToggle0"><input type="radio" id="juliaToggle0"/>z=x + iy, c=0.325 + 0.417i</label>
+  <label for="juliaToggle1"><input type="radio" id="juliaToggle1"/>z=x + iy, c=-0.4 + 0.4i</label>
+</div>
+<div class="buttonRow">
+  <label for="juliaToggle2"><input type="radio" id="juliaToggle2"/>z=x + iy, c=-0.4 + 0.6i</label>
+  <label for="juliaToggle3"><input type="radio" id="juliaToggle3"/>z=x + iy, c=-0.5251993 - 0.5251993i</label>
+</div>
+<div class="buttonRow">
+  <label for="juliaToggle4"><input type="radio" id="juliaToggle4"/>z=x + iy, c=0.285 + 0.0001i</label>
+  <label for="juliaToggle5"><input type="radio" id="juliaToggle5"/>z=x + iy, c=-0.8 + 0.156i</label>
+</div>
+<div class="buttonRow">
+  <label for="juliaToggle6"><input type="radio" id="juliaToggle6"/>z=x + iy, c=-0.0 + 0.8i</label>
+  <label for="juliaToggle6"><input type="radio" id="juliaToggle7"/>z=x + iy, c=-0.70176 - 0.3842i</label>
+</div>
+<script type="module" src="mandelbrot.js"></script>
 <p style="clear: both;"></p>
 
 ## Julia and Mandelbrot sets explained

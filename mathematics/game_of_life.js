@@ -1,0 +1,394 @@
+const ACORN = [
+    [1,0], [3,1], [0,2], [1,2], [4,2], [5,2], [6,2]
+];
+
+const GLIDER = [
+    [1, 0],
+    [2, 1],
+    [0, 2],
+    [1, 2],
+    [2, 2],
+];
+
+const LWSS = [ // Lightweight spaceship
+    [1,0], [2,0], [3,0], [4,0],
+    [0,1], [4,1],
+    [4,2],
+    [0,3], [3,3]
+];
+
+const HWSS = [ // Heavyweight spaceship
+    [1,0], [2,0], [3,0], [4,0], [5,0],
+    [0,1], [5,1],
+    [5,2],
+    [0,3], [4,3], [5,3],
+    [0,4], [1,4]
+];
+
+const DIEHARD = [
+    [6,0], [0,1], [1,1], [1,2], [5,2], [6,2], [7,2]
+];
+
+const PULSAR = [
+    [2,0], [3,0], [4,0], [8,0], [9,0], [10,0],
+    [0,2], [5,2], [7,2], [12,2],
+    [0,3], [5,3], [7,3], [12,3],
+    [0,4], [5,4], [7,4], [12,4],
+    [2,5], [3,5], [4,5], [8,5], [9,5], [10,5],
+
+    [2,7], [3,7], [4,7], [8,7], [9,7], [10,7],
+    [0,8], [5,8], [7,8], [12,8],
+    [0,9], [5,9], [7,9], [12,9],
+    [0,10], [5,10], [7,10], [12,10],
+    [2,12], [3,12], [4,12], [8,12], [9,12], [10,12],
+];
+
+const GOSPER_GLIDER_GUN = [
+    [24,0], [22,1], [24,1], [12,2], [13,2], [20,2], [21,2], [34,2], [35,2],
+    [11,3], [15,3], [20,3], [21,3], [34,3], [35,3],
+    [0,4], [1,4], [10,4], [16,4], [20,4], [21,4],
+    [0,5], [1,5], [10,5], [14,5], [16,5], [17,5], [22,5], [24,5],
+    [10,6], [16,6], [24,6],
+    [11,7], [15,7],
+    [12,8], [13,8]
+];
+
+const PENTADECATHLON = [
+    [0,2], [0,3], [0,4], [0,5], [0,6], [0,7], [0,8], [0,9], [0,10], [0,11]
+];
+
+const LIGHTWEIGHT_PUFFER = [
+    [0,2], [1,0], [1,2], [2,2], [3,2], [4,2], [4,1], [5,0], [5,1], [5,2],
+    [6,1], [6,0], [7,1]
+];
+
+const R_PENTOMINO = [
+    [1,0], [2,0],
+    [0,1], [1,1],
+    [1,2]
+];
+
+const TWIN_PULSARS = [
+    // left pulsar
+    [2,0], [3,0], [4,0], [8,0], [9,0], [10,0],
+    [0,2], [5,2], [7,2], [12,2],
+    [0,3], [5,3], [7,3], [12,3],
+    [0,4], [5,4], [7,4], [12,4],
+    [2,5], [3,5], [4,5], [8,5], [9,5], [10,5],
+    [2,7], [3,7], [4,7], [8,7], [9,7], [10,7],
+    [0,8], [5,8], [7,8], [12,8],
+    [0,9], [5,9], [7,9], [12,9],
+    [0,10], [5,10], [7,10], [12,10],
+    [2,12], [3,12], [4,12], [8,12], [9,12], [10,12],
+    //right pulsar, shifted 20 to the right
+].map(([x,y]) => [x + 20, y]);
+
+const DOUBLE_GUN_PULSAR = [
+    ...GOSPER_GLIDER_GUN,
+    ...GOSPER_GLIDER_GUN.map(([x, y]) => [x + 50, y]), // tweede gun 50 rechts
+    ...TWIN_PULSARS
+];
+const TRIPLE_PULSAR = [
+    ...PULSAR,
+    ...PULSAR.map(([x, y]) => [x + 16, y + 16]),
+    ...PULSAR.map(([x, y]) => [x + 32, y])
+];
+const GLIDER_PUFFER_COMBO = [
+    ...GLIDER.map(([x, y]) => [x + 0, y + 20]),
+    ...LIGHTWEIGHT_PUFFER.map(([x, y]) => [x + 10, y])
+];
+const METHUSELAH_CHAOS = [
+    ...R_PENTOMINO.map(([x, y]) => [x + 0, y + 0]),
+    ...ACORN.map(([x, y]) => [x + 20, y + 5]),
+    ...DIEHARD.map(([x, y]) => [x + 40, y + 0])
+];
+const OSCILLATOR_WALL = [
+    ...PULSAR.map(([x, y]) => [x, y]),
+    ...PENTADECATHLON.map(([x, y]) => [x + 20, y]),
+    [25, 0], [26, 0], [25, 1], [26, 1],  // simple 2x2 Block/Beacon
+    [28, 2], [29, 2], [28, 3], [29, 3]
+];
+const MEGA_SHOWCASE = [
+    ...GOSPER_GLIDER_GUN,
+    ...GOSPER_GLIDER_GUN.map(([x, y]) => [x + 50, y]),
+    ...TWIN_PULSARS,
+    ...TRIPLE_PULSAR,
+    ...GLIDER_PUFFER_COMBO,
+    ...METHUSELAH_CHAOS
+];
+
+const canvas = document.getElementById("gameOfLifeCanvas");
+const display = canvas.getContext("2d");
+canvas.focus();
+
+window.addEventListener("resize", () => {
+    resizeCanvas();
+});
+
+const offsetX = () => Math.floor(dimension_x / 2);
+const offsetY = () => Math.floor(dimension_y / 2);
+const random= () => initGameOfLife();
+
+const glider = () => place_pattern(initGameOfLife({randomStart: false}), GLIDER, offsetX(), offsetY());
+const lightweightSpaceship = () => place_pattern(initGameOfLife({randomStart: false}), LWSS, offsetX(), offsetY());
+const heavyweightSpaceship = () => place_pattern(initGameOfLife({randomStart: false}), HWSS, offsetX(), offsetY());
+const pulsar = () => place_pattern(initGameOfLife({randomStart: false}), TWIN_PULSARS, offsetX(), offsetY());
+const acorn = () => place_pattern(initGameOfLife({randomStart: false}), ACORN, offsetX(), offsetY());
+const diehard = () => place_pattern(initGameOfLife({randomStart: false}), DIEHARD, offsetX(), offsetY());
+const gliderGun = () => place_pattern(initGameOfLife({randomStart: false}), GOSPER_GLIDER_GUN, offsetX(), offsetY());
+const doubleGunPulsar = () => place_pattern(initGameOfLife({randomStart: false}), DOUBLE_GUN_PULSAR, offsetX(), offsetY());
+const oscillatorWall = () => place_pattern(initGameOfLife({randomStart: false}), OSCILLATOR_WALL, offsetX(), offsetY());
+const methusalahChaos = () => place_pattern(initGameOfLife({randomStart: false}), METHUSELAH_CHAOS, offsetX(), offsetY());
+const megaShowCase = () => place_pattern(initGameOfLife({randomStart: false}), MEGA_SHOWCASE, offsetX(), offsetY());
+const pentomino = () => place_pattern(initGameOfLife({randomStart: false}), R_PENTOMINO, offsetX(), offsetY());
+const pentadecathlon = () => place_pattern(initGameOfLife({randomStart: false}), PENTADECATHLON, offsetX(), offsetY());
+
+const radioButtons = new Map();
+radioButtons.set("random", random);
+radioButtons.set("glider", glider);
+radioButtons.set("lightweightSpaceship", lightweightSpaceship);
+radioButtons.set("heavyweightSpaceship", heavyweightSpaceship);
+radioButtons.set("pulsar", pulsar);
+radioButtons.set("acorn", acorn);
+radioButtons.set("diehard", diehard);
+radioButtons.set("gliderGun", gliderGun);
+radioButtons.set("doubleGunPulsar", doubleGunPulsar);
+radioButtons.set("methusalahChaos", methusalahChaos);
+radioButtons.set("megaShowCase", megaShowCase);
+radioButtons.set("oscillatorWall", oscillatorWall);
+radioButtons.set("pentomino", pentomino);
+radioButtons.set("pentadecathlon", pentadecathlon);
+
+function resizeCanvas() {
+    const wrapper = document.getElementById("canvas-wrapper");
+    const size = wrapper.clientWidth;
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.style.width  = size + "px";
+    canvas.style.height = size + "px";
+
+    canvas.width  = Math.floor(size * dpr);
+    canvas.height = Math.floor(size * dpr);
+
+    display.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+const cellSizeSelect = document.getElementById("cellSizeSelect");
+let cellSize = 4;
+let currentConfiguration = random;
+cellSizeSelect.addEventListener("change", () => {
+    cellSize = parseInt(cellSizeSelect.value, 10);
+
+    resizeCanvas();
+    currentConfiguration();
+
+    // herteken direct
+    render_game(game);
+    drawGrid(display);
+});
+
+const frameRateSelect = document.getElementById("frameRateSelect");
+let frameRate = 10;
+frameRateSelect.addEventListener("change", () => {
+    frameRate = parseInt(frameRateSelect.value, 10);
+});
+
+function resetButtons(radioButtons) {
+    for (const [key, value] of radioButtons)
+        document.getElementById(key).checked = false;
+}
+
+class Game {
+    constructor(cells) {
+        this._cells = cells;
+    }
+
+    next_generation() {
+        let new_cells = [];
+        for (let row = 0; row < this.height(); row++)
+            new_cells.push(this.next_row_generation(row));
+        return new Game(new_cells);
+    }
+
+    next_row_generation(row) {
+        let result = [];
+        for (let i = 0; i < this.width(); i++)
+            result.push(
+                this.cell_at(row, i)
+                    .next_generation(this.neighbours_for(row, i))
+            );
+        return result;
+    }
+
+    neighbours_for(row, column) {
+        let neighbours = [
+            this.cell_at(row - 1, column - 1),
+            this.cell_at(row - 1, column),
+            this.cell_at(row - 1, column + 1),
+            this.cell_at(row,     column - 1),
+            this.cell_at(row,     column + 1),
+            this.cell_at(row + 1, column - 1),
+            this.cell_at(row + 1, column),
+            this.cell_at(row + 1, column + 1),
+        ];
+        return without_nones(neighbours);
+    }
+
+    cell_at(row, column) {
+        if (column < 0) return null;
+        if (column >= this.width()) return null;
+        if (row < 0) return null;
+        if (row >= this.height()) return null;
+        return this._cells[row][column];
+    }
+
+    width = () => this._cells[0].length;
+    height = () => this._cells.length;
+}
+
+
+function without_nones(list_) {
+    let filtered_list = [];
+    for (let item of list_)
+        if (item !== null)
+            filtered_list.push(item);
+
+    return filtered_list;
+}
+
+
+class Cell {
+    constructor(alive) {
+        this._alive = alive;
+    }
+
+    next_generation(neighbours) {
+        if (this.is_alive())
+            return this._next_generation_when_alive(neighbours);
+        return this._next_generation_when_dead(neighbours);
+    }
+
+    _next_generation_when_dead(neighbours) {
+        return living(neighbours).length === 3
+            ? living_cell()
+            : dead_cell();
+    }
+
+    _next_generation_when_alive(neighbours) {
+        const n = living(neighbours).length;
+        return (n === 2 || n === 3)
+            ? living_cell()
+            : dead_cell();
+    }
+
+    is_alive() {
+        return this._alive;
+    }
+}
+
+function living(neighbours) {
+    let living_neighbours = [];
+    for (let neighbour of neighbours)
+        if (neighbour.is_alive())
+            living_neighbours.push(neighbour);
+    return living_neighbours;
+}
+
+const dead_cell = () => new Cell(false);
+const living_cell = () => new Cell(true);
+
+function place_pattern(cells, pattern, offsetX, offsetY) {
+    for (let [dx, dy] of pattern) {
+        const x = offsetX + dx;
+        const y = offsetY + dy;
+        if (x >= 0 && x < cells.length && y >= 0 && y < cells[0].length)
+            cells[x][y] = living_cell();
+    }
+}
+
+let dimension_x;
+let dimension_y;
+let game;
+
+function initGameOfLife({randomStart = true} = {}) {
+    dimension_x = Math.floor(canvas.clientWidth / cellSize);
+    dimension_y = Math.floor(canvas.clientHeight / cellSize);
+
+    let cells = [];
+    for (let x = 0; x < dimension_x; x++) {
+        let row = [];
+        for (let y = 0; y < dimension_y; y++)
+            randomStart ?
+                row.push(Math.random() < 0.5 ? dead_cell() : living_cell()) :
+                row.push(dead_cell());
+        cells.push(row);
+    }
+
+    game = new Game(cells);
+    return cells;
+}
+
+function paintCellOnCanvas(game, x, y) {
+    display.fillStyle = game.cell_at(x, y).is_alive() ? '#00ff00' : '#1a1a1a';
+    display.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+}
+
+function drawGrid(context) {
+    if (cellSize < 4) return; // Do not draw lattice when cell size is too small
+
+    context.save();
+    context.strokeStyle = "rgba(255, 255, 255, 0.25)"; // subtle lines
+    context.lineWidth = 1;
+
+    for (let x = 0; x < dimension_x; x++) {  // vertical lines
+        const px = x * cellSize + 0.5;
+        context.beginPath();
+        context.moveTo(px, 0);
+        context.lineTo(px, dimension_y * cellSize);
+        context.stroke();
+    }
+
+    for (let y = 0; y < dimension_y; y++) { // horizontal lines
+        const py = y * cellSize + 0.5;
+        context.beginPath();
+        context.moveTo(0, py);
+        context.lineTo(dimension_x * cellSize, py);
+        context.stroke();
+    }
+
+    context.restore();
+}
+
+
+function render_game(game) {
+    for (let cellX = 0; cellX < dimension_x; cellX++)
+        for (let cellY = 0; cellY < dimension_y; cellY++)
+            paintCellOnCanvas(game, cellX, cellY);
+}
+
+for (const [key, value] of radioButtons)
+    document.getElementById(key).onclick = function() {
+        resetButtons(radioButtons);
+        this.checked = true;
+        currentConfiguration = value;
+        value();
+    };
+
+let lastTime = 0;
+
+function loop(timestamp) {
+    if (timestamp - lastTime > 1000 / frameRate) {
+        game = game.next_generation();
+        render_game(game);
+        drawGrid(display);
+        lastTime = timestamp;
+    }
+    requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(() => {
+    resizeCanvas();
+    initGameOfLife();
+});
+requestAnimationFrame(loop);
+
