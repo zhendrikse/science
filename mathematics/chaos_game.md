@@ -11,20 +11,16 @@
     <canvas class="applicationCanvas2D" id="chaosGameCanvas"></canvas>
 </div>
 <div class="buttonRow">        
-  <input type="radio" id="cantorDust"/><label for="cantorDust">&nbsp;Cantor dust 🧹</label>
-  <input type="radio" id="fractal1"/><label for="fractal1">&nbsp;Fractal star ⭐</label>
+  <button id="cantorDust"><label for="cantorDust">Cantor dust 🧹</label></button>
+  <button id="fractal1"><label for="fractal1">Fractal star ⭐</label></button>
+  <button id="fractal2"><label for="fractal2">Fractal flower 🌻</label></button>
+  <button id="sierpinskiCarpet"><label for="sierpinskiCarpet">Sierpinski carpet 🧶</label></button>
 </div>
 <div class="buttonRow">        
-  <input type="radio" id="fractal2"/><label for="fractal2">&nbsp;Fractal flower 🌻</label>
-  <input type="radio" id="sierpinskiCarpet"/><label for="sierpinskiCarpet">&nbsp;Sierpinski carpet 🧶</label>
-</div>
-<div class="buttonRow">        
-  <input type="radio" id="sierpinskiTriangle"/><label for="sierpinskiTriangle">&nbsp;Sierpinski triangle ⚠️</label>
-  <input type="radio" id="tSquareFractal"/><label for="tSquareFractal">&nbsp;T-square fractal 🏻</label>
-</div>
-<div class="buttonRow">        
-  <input type="radio" id="vicsekFractal"/><label for="vicsekFractal">&nbsp;Vicsek fractal 🌀</label>
-  <input type="radio" id="barnsleyFern"/><label for="barnsleyFern">&nbsp;Barnsley fern 🌿</label>
+  <button id="sierpinskiTriangle"><label for="sierpinskiTriangle">Sierpinski triangle ⚠️</label></button>
+  <button id="tSquareFractal"><label for="tSquareFractal">T-square fractal 🏻</label></button>
+  <button id="vicsekFractal"><label for="vicsekFractal">Vicsek fractal 🌀</label></button>
+  <button id="barnsleyFern"><label for="barnsleyFern">Barnsley fern 🌿</label></button>
 </div>
 <script type="module" src="chaos_game.js"></script>
 <p style="clear: both;"></p>

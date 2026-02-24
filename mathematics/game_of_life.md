@@ -32,32 +32,26 @@ namely that complex structures can emerge from an astonishingly small and simple
   </select>
 </div>
 <div class="buttonRow">
-  <label for="acorn"></label><input type="radio" id="acorn"/>&nbsp;Acorn 🌰
-  <label for="diehard"></label><input type="radio" id="diehard"/>&nbsp;Die hard 💀
+  <label for="acorn"></label><button id="acorn">Acorn 🌰</button>
+  <label for="diehard"></label><button id="diehard">Die hard 💀</button>
+  <label for="doubleGunPulsar"></label><button id="doubleGunPulsar">Double gun pulsar 🔫</button>
+  <label for="heavyweightSpaceship"></label><button id="heavyweightSpaceship">Heavyweight spaceship 🚀</button>
 </div>
 <div class="buttonRow">
-  <label for="doubleGunPulsar"></label><input type="radio" id="doubleGunPulsar"/>&nbsp;Double gun pulsar 🔫
-  <label for="glider"></label><input type="radio" id="glider"/>&nbsp;Glider 🛩️
+  <label for="glider"></label><button id="glider">Glider 🛩️</button>
+  <label for="gliderGun"></label><button id="gliderGun">Glider gun 🔫</button>
+  <label for="lightweightSpaceship"></label><button id="lightweightSpaceship">Lightweight spaceship 🚀</button>
+  <label for="megaShowCase"></label><button id="megaShowCase">Mega showcase 🚨</button>
 </div>
 <div class="buttonRow">
-  <label for="gliderGun"></label><input type="radio" id="gliderGun"/>&nbsp;Glider gun 🔫
-  <label for="heavyweightSpaceship"></label><input type="radio" id="heavyweightSpaceship"/>&nbsp;Heavyweight spaceship 🚀
+  <label for="methusalahChaos"></label><button id="methusalahChaos">Methusalah chaos 😵‍💫</button>
+  <label for="oscillatorWall"></label><button id="oscillatorWall">Oscillator wall ⅏</button>
+  <label for="pentadecathlon"></label><button id="pentadecathlon">Pentadecathlon 🏃🏻</button>
+  <label for="pentomino"></label><button id="pentomino">Pentomino ⚅</button>
 </div>
 <div class="buttonRow">
-  <label for="lightweightSpaceship"></label><input type="radio" id="lightweightSpaceship"/>&nbsp;Lightweight spaceship 🚀
-  <label for="megaShowCase"></label><input type="radio" id="megaShowCase"/>&nbsp;Mega showcase 🚨
-</div>
-<div class="buttonRow">
-  <label for="methusalahChaos"></label><input type="radio" id="methusalahChaos"/>&nbsp;Methusalah chaos 😵‍💫
-  <label for="oscillatorWall"></label><input type="radio" id="oscillatorWall"/>&nbsp;Oscillator wall ⅏
-</div>
-<div class="buttonRow">
-  <label for="pentadecathlon"></label><input type="radio" id="pentadecathlon"/>&nbsp;Pentadecathlon 🏃🏻
-  <label for="pentomino"></label><input type="radio" id="pentomino"/>&nbsp;Pentomino ⚅
-</div>
-<div class="buttonRow">
-  <label for="pulsar"></label><input type="radio" id="pulsar"/>&nbsp;Pulsar 🌟
-  <label for="random"></label><input type="radio" id="random" checked/>&nbsp;Random 🎲
+  <label for="pulsar"></label><button id="pulsar">Pulsar 🌟</button>
+  <label for="random"></label><button id="random">Random 🎲</button>
 </div>
 <script type="module" src="game_of_life.js"></script>
 <p style="clear: both;"></p>

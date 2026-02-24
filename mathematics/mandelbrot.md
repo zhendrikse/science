@@ -24,24 +24,24 @@
     <button id="canvasSizeButton3">huge</button>&nbsp;&nbsp;&nbsp;
 </div>
 <div class="buttonRow">
-  <label for="mandelbrotToggle"><input type="radio" id="mandelbrotToggle"/>Mandelbrot</label>
-  <label for="burningShipToggle"><input type="radio" id="burningShipToggle"/>Burning ship</label>
+  <label for="mandelbrotToggle"><button id="mandelbrotToggle">Mandelbrot</button></label>
+  <label for="burningShipToggle"><button id="burningShipToggle">Burning ship</button></label>
 </div>
 <div class="buttonRow">
-  <label for="juliaToggle0"><input type="radio" id="juliaToggle0"/>z=x + iy, c=0.325 + 0.417i</label>
-  <label for="juliaToggle1"><input type="radio" id="juliaToggle1"/>z=x + iy, c=-0.4 + 0.4i</label>
+  <label for="juliaToggle0"><button id="juliaToggle0">$z=x + iy, c=0.325 + 0.417i$</button></label>
+  <label for="juliaToggle1"><button id="juliaToggle1">$z=x + iy, c=-0.4 + 0.4i$</button></label>
 </div>
 <div class="buttonRow">
-  <label for="juliaToggle2"><input type="radio" id="juliaToggle2"/>z=x + iy, c=-0.4 + 0.6i</label>
-  <label for="juliaToggle3"><input type="radio" id="juliaToggle3"/>z=x + iy, c=-0.5251993 - 0.5251993i</label>
+  <label for="juliaToggle2"><button id="juliaToggle2">$z=x + iy, c=-0.4 + 0.6i$</button></label>
+  <label for="juliaToggle3"><button id="juliaToggle3">$z=x + iy, c=-0.5251993 - 0.5251993i$</button></label>
 </div>
 <div class="buttonRow">
-  <label for="juliaToggle4"><input type="radio" id="juliaToggle4"/>z=x + iy, c=0.285 + 0.0001i</label>
-  <label for="juliaToggle5"><input type="radio" id="juliaToggle5"/>z=x + iy, c=-0.8 + 0.156i</label>
+  <label for="juliaToggle4"><button id="juliaToggle4">$z=x + iy, c=0.285 + 0.0001i$</button></label>
+  <label for="juliaToggle5"><button id="juliaToggle5">$z=x + iy, c=-0.8 + 0.156i$</button></label>
 </div>
 <div class="buttonRow">
-  <label for="juliaToggle6"><input type="radio" id="juliaToggle6"/>z=x + iy, c=-0.0 + 0.8i</label>
-  <label for="juliaToggle6"><input type="radio" id="juliaToggle7"/>z=x + iy, c=-0.70176 - 0.3842i</label>
+  <label for="juliaToggle6"><button id="juliaToggle6">$z=x + iy, c=-0.0 + 0.8i$</button></label>
+  <label for="juliaToggle6"><button id="juliaToggle7">$z=x + iy, c=-0.70176 - 0.3842i$</button></label>
 </div>
 <script type="module" src="mandelbrot.js"></script>
 <p style="clear: both;"></p>

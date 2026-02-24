@@ -240,11 +240,6 @@ function vicsekFractal(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1
     }
 }
 
-function resetButtons() {
-    for (const [key, value] of radioButtons)
-        document.getElementById(key).checked = false;
-}
-
 function resizeCanvas() {
     const wrapper = document.getElementById("canvas-wrapper");
     const size = wrapper.clientWidth;
@@ -266,8 +261,6 @@ function redraw(context) {
 let currentFractal = vicsekFractal;
 for (const [key, value] of radioButtons)
     document.getElementById(key).onclick = function() {
-        resetButtons();
-        this.checked = true;
         currentFractal = value;
         redraw(display);
     };

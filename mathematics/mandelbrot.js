@@ -206,7 +206,6 @@ class BurningShip extends Fractal {
 
 let fractal = new Mandelbrot();
 fractal.render();
-resetButtons();
 document.getElementById("mandelbrotToggle").checked = true;
 
 mandelbrotCanvas.addEventListener("mousedown", function(event) {
@@ -252,13 +251,6 @@ document.getElementById("canvasSizeButton3").addEventListener("click", function(
     fractal.render();
 });
 
-function resetButtons() {
-    document.getElementById("mandelbrotToggle").checked = false;
-    document.getElementById("burningShipToggle").checked = false;
-    for (const [key, value] of juliaButtons)
-        document.getElementById(key).checked = false;
-}
-
 function resizeCanvasToWrapper() {
     const canvasWrapper = document.getElementById('canvas-wrapper');
     const canvas = document.getElementById('mandelbrotCanvas');
@@ -276,21 +268,18 @@ window.addEventListener('resize', () => {
 
 for (const [key, value] of juliaButtons)
     document.getElementById(key).onclick = function() {
-        resetButtons();
         document.getElementById(key).checked = true;
         fractal = new Julia(value);
         fractal.render();
     }
 
 document.getElementById("burningShipToggle").addEventListener("click", function(event) {
-    resetButtons();
     document.getElementById("burningShipToggle").checked = true;
     fractal = new BurningShip();
     fractal.render();
 });
 
 document.getElementById("mandelbrotToggle").addEventListener("click", function(event) {
-    resetButtons();
     document.getElementById("mandelbrotToggle").checked = true;
     fractal = new Mandelbrot();
     fractal.render();

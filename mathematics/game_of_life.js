@@ -143,21 +143,21 @@ const megaShowCase = () => place_pattern(initGameOfLife({randomStart: false}), M
 const pentomino = () => place_pattern(initGameOfLife({randomStart: false}), R_PENTOMINO, offsetX(), offsetY());
 const pentadecathlon = () => place_pattern(initGameOfLife({randomStart: false}), PENTADECATHLON, offsetX(), offsetY());
 
-const radioButtons = new Map();
-radioButtons.set("random", random);
-radioButtons.set("glider", glider);
-radioButtons.set("lightweightSpaceship", lightweightSpaceship);
-radioButtons.set("heavyweightSpaceship", heavyweightSpaceship);
-radioButtons.set("pulsar", pulsar);
-radioButtons.set("acorn", acorn);
-radioButtons.set("diehard", diehard);
-radioButtons.set("gliderGun", gliderGun);
-radioButtons.set("doubleGunPulsar", doubleGunPulsar);
-radioButtons.set("methusalahChaos", methusalahChaos);
-radioButtons.set("megaShowCase", megaShowCase);
-radioButtons.set("oscillatorWall", oscillatorWall);
-radioButtons.set("pentomino", pentomino);
-radioButtons.set("pentadecathlon", pentadecathlon);
+const patternButtons = new Map();
+patternButtons.set("random", random);
+patternButtons.set("glider", glider);
+patternButtons.set("lightweightSpaceship", lightweightSpaceship);
+patternButtons.set("heavyweightSpaceship", heavyweightSpaceship);
+patternButtons.set("pulsar", pulsar);
+patternButtons.set("acorn", acorn);
+patternButtons.set("diehard", diehard);
+patternButtons.set("gliderGun", gliderGun);
+patternButtons.set("doubleGunPulsar", doubleGunPulsar);
+patternButtons.set("methusalahChaos", methusalahChaos);
+patternButtons.set("megaShowCase", megaShowCase);
+patternButtons.set("oscillatorWall", oscillatorWall);
+patternButtons.set("pentomino", pentomino);
+patternButtons.set("pentadecathlon", pentadecathlon);
 
 function resizeCanvas() {
     const wrapper = document.getElementById("canvas-wrapper");
@@ -192,11 +192,6 @@ let frameRate = 10;
 frameRateSelect.addEventListener("change", () => {
     frameRate = parseInt(frameRateSelect.value, 10);
 });
-
-function resetButtons(radioButtons) {
-    for (const [key, value] of radioButtons)
-        document.getElementById(key).checked = false;
-}
 
 class Game {
     constructor(cells) {
@@ -366,10 +361,8 @@ function render_game(game) {
             paintCellOnCanvas(game, cellX, cellY);
 }
 
-for (const [key, value] of radioButtons)
+for (const [key, value] of patternButtons)
     document.getElementById(key).onclick = function() {
-        resetButtons(radioButtons);
-        this.checked = true;
         currentConfiguration = value;
         value();
     };
