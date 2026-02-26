@@ -11,6 +11,15 @@ export const UnitVectorE1 = new Vector3(1, 0, 0);
 export const UnitVectorE2 = new Vector3(0, 1, 0);
 export const UnitVectorE3 = new Vector3(0, 0, 1);
 
+// Box-Muller Transform To Create a Normal Distribution
+export function normalMuSigma(average, standard_deviation) {
+    const u1 = Math.random();
+    const u2 = Math.random();
+    let vt = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    vt = vt * standard_deviation + average;
+    return vt;
+}
+
 export class ThreeJsUtils {
     static scaleBox3(box, factor) {
         const center = new Vector3();
@@ -1064,6 +1073,7 @@ export class Sphere {
     get visible() { return this._mesh.visible; }
     get position() { return this._position; }
     get radius() { return this._radius; }
+    get rayCastHandle() { return this._mesh }
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceTo(other) { return other.position.clone().sub(this.position).length() }
 }
@@ -1347,6 +1357,7 @@ export class Ball {
     get visible() { return this._sphere.visible; }
     get neighbors() { return this._neighbors; }
     get elasticity() { return this._elasticity; }
+    get rayCastHandle() { return this._sphere.rayCastHandle; }
 
     distanceTo(other) { return this._sphere.distanceTo(this._other) }
     positionVectorTo(other) { return this._sphere.positionVectorTo(other); }
@@ -1427,7 +1438,7 @@ export class Spring {
     get position() { return this._position; }
     get axis() { return this._axis; }
     get k() { return this._k; }
-    get force() { return -this._k * this.displacement; }
+    get force() { return this.axis.clone().normalize().multiplyScalar(this._k * this.displacement); }
     get displacement() {return this._restLength - this.axis.length(); }
 
     set color(value) { this._mesh.material.color = value; }
@@ -1972,6 +1983,36 @@ export class Gas2D extends Gas {
     }
 }
 
+// TODO Je moet de wand-snelheid meegeven.
+//
+// confineToSphere(radius, wallVelocity = 0, restitution = 1) {
+//
+//     const rVector = this._position.clone();
+//     const distance = rVector.length();
+//     const maxDist = radius - this.radius;
+//
+//     if (distance < maxDist) return 0;
+//
+//     const normal = rVector.clone().normalize();
+//
+//     // project terug naar wand
+//     this._position.copy(normal.clone().multiplyScalar(maxDist));
+//
+//     const vDotN = this._velocity.dot(normal);
+//
+//     // relatieve snelheid t.o.v. wand
+//     const relative = vDotN - wallVelocity;
+//
+//     const deltaV = (1 + restitution) * relative;
+//
+//     this._velocity.sub(normal.clone().multiplyScalar(deltaV));
+//
+//     return Math.abs(this.mass * deltaV);
+// }
+// En dan in de update
+// const wallVelocity = (radius - previousRadius) / dt;
+// particle.moveWithinRadius(radius, wallVelocity);
+
 export class Gas3D extends Gas {
     constructor({
                     containerSize=1,
@@ -2303,8 +2344,7 @@ export class Aquarium {
     hide() { this._cube.visible = false; }
 }
 
-export
-class HarmonicOscillator extends Group  {
+export class HarmonicOscillator extends Group  {
     constructor({
                     position = new Vector3(0, 0, 0),
                     length = 10,
@@ -2375,4 +2415,77 @@ class HarmonicOscillator extends Group  {
         this._left.accelerateTo(new Vector3());
         this._right.accelerateTo(new Vector3());
     }
+}
+
+export class Ceiling {
+    constructor(parent, {
+        position=new Vector(0, 0, 0),
+        size=12,
+        thickness=0.75,
+        color=0x8a8a8a
+    } = {}) {
+        const ceilingGeometry = new BoxGeometry(size, size, thickness);
+        const ceilingMaterial = new MeshStandardMaterial({
+            color: color,
+            metalness: 0.05,
+            roughness: 0.95,
+            side: DoubleSide
+        });
+        ceilingMaterial.bumpScale = 0.05;
+        const ceiling = new Mesh(ceilingGeometry, ceilingMaterial);
+        ceiling.rotation.x = Math.PI / 2;
+        ceiling.position.copy(position);
+        parent.add(ceiling);
+    }
+}
+
+export class MassSpringSystem extends Group {
+    constructor({
+                    suspensionPoint=new Vector3(0, 30, 0),
+                    axis=new Vector3(0, 25, 0),
+                    massPosition=axis.clone(),
+                    massRadius=2,
+                    massMass=10,
+                    massColor= "orange",
+                    springConstant=200,
+                    coils=40
+                } = {}) {
+        super();
+        this._suspensionPoint = suspensionPoint;
+        this._slinky = new Spring(this, suspensionPoint, axis, {
+            radius: 1,
+            k: springConstant,
+            coils: coils,
+            longitudinalOscillation: true,
+            thickness: 0.125
+        });
+
+        this._mass = new Ball(this, {
+            position: suspensionPoint.clone().sub(axis).add(massPosition),
+            radius: massRadius,
+            mass: massMass,
+            color: massColor
+        });
+        this.updateWith(new Vector3(0, 0, 0), 0, 0, false);
+    }
+
+    force(damping = 1) { // horizontal spring constant
+        const force = this.mass.velocity.clone().multiplyScalar(-damping);
+        return force.add(this._slinky.force);
+    }
+
+    moveMassTo(newPosition) {
+        this._mass.moveTo(newPosition);
+        this._mass.accelerateTo(new Vector3(0, 0, 0));
+    }
+
+    updateWith(force, time, dt, dragging=false) {
+        if (!dragging) this._mass.semiImplicitEulerUpdate(force, dt);
+        this._slinky.updateAxis(this._mass.position.clone().sub(this._suspensionPoint));
+        this._slinky.update(time);
+    }
+
+    get mass() { return this._mass; }
+    kineticEnergy() { return this._mass.kineticEnergy(); }
+    potentialEnergy() { return this._slinky.potentialEnergy(); }
 }
