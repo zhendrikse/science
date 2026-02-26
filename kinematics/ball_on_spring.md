@@ -9,6 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 
 <canvas id="springCanvas" class="applicationCanvas" style="aspect-ratio: 19/12"></canvas>
+<div class="overlayText" id="overlayText">Click to start the animation!</div>
 <div id="plot" style="margin:auto;"></div>
 <script type="module" src="ball_on_spring.js"></script>
 

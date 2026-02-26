@@ -54,23 +54,28 @@ class MassSpringSystem extends Group {
     constructor({
                     suspensionPoint=new Vector3(0, 30, 0),
                     axis=new Vector3(0, 25, 0),
-                    positionMass=axis.clone()
+                    massPosition=axis.clone(),
+                    massRadius=2,
+                    massMass=10,
+                    massColor= "orange",
+                    springConstant=200,
+                    coils=40
     } = {}) {
         super();
         this._suspensionPoint = suspensionPoint;
         this._slinky = new Spring(this, suspensionPoint, axis, {
             radius: 1,
-            k: 200,
-            coils: 40,
+            k: springConstant,
+            coils: coils,
             longitudinalOscillation: true,
             thickness: 0.125
         });
 
         this._mass = new Ball(this, {
-            position: suspensionPoint.clone().sub(axis).add(positionMass),
-            radius: 2,
-            mass: 10,
-            color: "orange"
+            position: suspensionPoint.clone().sub(axis).add(massPosition),
+            radius: massRadius,
+            mass: massMass,
+            color: massColor
         });
         this.updateWith(new Vector3(0, 0, 0), 0, 0, false);
     }
@@ -105,7 +110,7 @@ class MassSpringSystem extends Group {
 }
 
 const massSpringSystem = new MassSpringSystem({
-    positionMass: new Vector3(
+    massPosition: new Vector3(
         (Math.random() - 0.5) * 5,  // ±0.25 in X
         10,
         (Math.random() - 0.5) * 5   // ±0.25 in Z
