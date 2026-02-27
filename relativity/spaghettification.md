@@ -16,11 +16,13 @@ so that a small object being spaghettified experiences no net change in volume. 
 <a href="https://en.wikipedia.org/wiki/Spaghettification">Wikipedia</a>
 </blockquote>
 
-{% include_relative code/spaghettification.html %}
+
+<canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas>
+
 
 <p style="clear:both;"></p>
 
-🔧 [spaghettification.html](https://github.com/zhendrikse/science/blob/main/relativity/code/spaghettification.html) refactored and ported to JavaScript by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
+🔧 [spaghettification.js](https://github.com/zhendrikse/science/blob/main/relativity/spaghettification.js) refactored and ported to JavaScript by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 👉 Based on [spaghettification.py](https://www.mso.anu.edu.au/pfrancis/simulations/spaghettification.py) by [Paul Francis](http://www.mso.anu.edu.au/pfrancis/simulations/)<br/>
 
 <p style="clear:both;"></p>

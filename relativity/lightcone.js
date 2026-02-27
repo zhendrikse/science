@@ -1,0 +1,164 @@
+import {Box3, Scene, Color, Group, Vector3, MeshBasicMaterial, Mesh, ConeGeometry, DoubleSide,
+    BufferGeometry, RingGeometry, Points, PointsMaterial} from "three";
+import { Arrow, Axes, AxesController, AxesParameters, ThreeJsUtils, Plot3DView }
+    from '../js/three-js-extensions.js';
+
+const canvasContainer = document.getElementById("lightConeWrapper");
+const canvas = document.getElementById("lightConeCanvas");
+
+const scene = new Scene();
+const worldGroup = new Group();
+scene.add(worldGroup);
+
+const params = {
+    axesParameters: new AxesParameters({
+        layoutType: Axes.Type.CLASSICAL,
+        xyPlane: false,
+        yzPlane: false,
+        divisions: 20,
+        axisLabels: ["x", "t", "y"],
+        annotations: true,
+        tickLabels: false
+    })
+};
+
+const axesController = new AxesController({
+    parentGroup: worldGroup,
+    canvasContainer,
+    axesParameters: params.axesParameters,
+    scene
+});
+
+class LightCone extends Group {
+    constructor({color=0xaaffaa, opacity=0.4, height=3, maxHeight=height } = {}) {
+        super();
+        this._height = height;
+        this._maxHeight = maxHeight;
+        const geometry1 = new ConeGeometry( 1, 1, 64, 1, true );
+        const geometry2 = new ConeGeometry( 1, 1, 64, 1, true );
+        const material = new MeshBasicMaterial({
+            color: color,
+            transparent: true,
+            opacity: opacity,
+            side: DoubleSide
+        } );
+        this._bottomCone = new Mesh(geometry1, material );
+        this._topCone = new Mesh(geometry2, material );
+        this._topCone.scale.y = -1;
+        this._bottomCone.position.set(0, -height, 0);
+        this._topCone.position.set(0,  height, 0);
+
+        const ringGeometry = new RingGeometry(height - 0.02, height + 0.02, 128);
+        const ringMaterial = new MeshBasicMaterial({color: 0x33aa33, side: DoubleSide});
+
+        this._topCircle = new Mesh(ringGeometry, ringMaterial);
+        this._topCircle.rotation.x = Math.PI / 2;
+        this._topCircle.position.y = height;
+        this._bottomCircle = new Mesh(ringGeometry, ringMaterial);
+        this._bottomCircle.rotation.x = Math.PI / 2;
+        this._bottomCircle.position.y = -height;
+
+        this.add( this._bottomCone, this._topCone, this._topCircle, this._bottomCircle );
+    }
+
+    render(time) {
+        if (this._height * time >= this._maxHeight) return;
+        this._height = this._maxHeight * time;
+
+        this._topCone.scale.set(this._height, -this._height, this._height);
+        this._topCone.position.y = this._height / 2;
+
+        this._bottomCone.scale.set(this._height, this._height, this._height);
+        this._bottomCone.position.y = -this._height / 2;
+
+        this._topCircle.scale.setScalar(.935 * this._height/(2 * Math.sqrt(2)));
+        this._topCircle.position.y = this._height;
+
+        this._bottomCircle.position.y = -this._height;
+        this._bottomCircle.scale.setScalar(.935 * this._height/(2 * Math.sqrt(2)));
+    }
+}
+
+class Photon {
+    constructor(parent) {
+        this._photon = new Arrow(new Vector3(0, 0, 0), new Vector3(1, 1, 0), {
+            color: 0xffff00,
+            shaftWidth: .01,
+            headLength: 5,
+            round: true
+        });
+        parent.add(this._photon);
+    }
+
+    render(time) {
+        this._photon.updateAxis(new Vector3(1, 1, 0).multiplyScalar(time * 2.25 * Math.sqrt(2)));
+    }
+}
+
+const photon = new Photon(worldGroup);
+const lightcone = new LightCone();
+worldGroup.add( lightcone );
+
+const boostedAxes = new Group();
+worldGroup.add(boostedAxes);
+
+const xPrimeAxis = new Arrow(
+    new Vector3(0, 0, 0),
+    new Vector3(1, 0, 0),  // start richting
+    { color: 0x00ffff, shaftWidth: 0.02 }
+);
+
+const tPrimeAxis = new Arrow(
+    new Vector3(0, 0, 0),
+    new Vector3(0, 1, 0),
+    { color: 0xff8800, shaftWidth: 0.02 }
+);
+
+boostedAxes.add(xPrimeAxis, tPrimeAxis);
+
+let v = 0.5; // fractie van de lichtsnelheid
+function updateBoostedAxes() {
+    const scale = 1; // lengte van de pijlen
+    const beta = v;   // snelheid als fractie van c
+
+    // t'-as: stijgt sneller met tijd, x' tilt mee
+    const tDir = new Vector3(beta, 1, 0)
+        .normalize()
+        .multiplyScalar(scale);
+
+    // x'-as: verschuift in t-richting met snelheid beta
+    const xDir = new Vector3(1, beta, 0)
+        .normalize()
+        .multiplyScalar(scale);
+
+    tPrimeAxis.updateAxis(tDir);
+    xPrimeAxis.updateAxis(xDir);
+}
+
+const boundingBox = new Box3();
+boundingBox.setFromObject( worldGroup );
+axesController.createFromBoundingBox(boundingBox);
+
+const plot3D = new Plot3DView(scene, canvas, boundingBox);
+plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .75), {translationY: -1});
+plot3D.renderer.setAnimationLoop(animate);
+
+// Resizing for mobile devices
+function resize() {
+    ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+    axesController.resize();
+}
+window.addEventListener("resize", resize);
+resize();
+
+let t = 0;
+function animate(time) {
+    t += time * 1e-6;
+    plot3D.render();
+    axesController.render(plot3D.camera);
+
+    if (t > 1) return;
+    photon.render(t);
+    lightcone.render(t);
+    updateBoostedAxes();
+}

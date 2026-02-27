@@ -3,6 +3,7 @@ import { Ball, Axes, AxesController, AxesParameters, ThreeJsUtils, Plot3DView } 
 
 const canvasContainer = document.getElementById("bouncingBallWrapper");
 const canvas = document.getElementById("bouncingBallCanvas");
+const overlay = document.getElementById("overlayText");
 
 const scene = new Scene();
 const worldGroup = new Group();
@@ -43,8 +44,8 @@ plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .4), {translationY: -1});
 plot3D.renderer.setAnimationLoop(animate);
 
 // Resizing for mobile devices
-ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
-window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(renderer, camera));
+ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, camera);
+window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, camera));
 window.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");

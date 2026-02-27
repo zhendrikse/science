@@ -1,0 +1,747 @@
+import {Scene, Group, Box3, PerspectiveCamera, WebGLRenderer, Vector3, Vector2, Raycaster,
+    DirectionalLight, HemisphereLight} from "three";
+import { Plot3DView, ThreeJsUtils, AxesParameters, AxesController } from '../js/three-js-extensions.js';
+import { ViewParameters, TangentFrameParameters, ColorMapper, ContourType, SurfaceSelector, SurfaceController,
+    HeightColorMapper, SurfaceSpecification, LiteralStringBasedSurfaceDefinition, Surface, IsoparametricContoursView }
+    from '../js/3d-surface-components.js';
+import GUI from "https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm";
+
+const canvasContainer = document.getElementById("surface-canvas-container");
+const mainCanvas = document.getElementById("surfaceCanvas");
+
+const surfacePlotScene = new Scene();
+const worldGroup = new Group();
+surfacePlotScene.add(worldGroup);
+
+const ringCanvas = document.getElementById("ringCanvas");
+const ringScene = new Scene();
+
+const ringCamera = new PerspectiveCamera(45, ringCanvas.clientWidth / ringCanvas.clientHeight, 0.1, 100);
+ringCamera.position.set(8, 5, 8);
+ringCamera.lookAt(0, 0, 0);
+
+const ringRenderer = new WebGLRenderer({alpha: true, canvas: ringCanvas, antialias: true});
+ringRenderer.setSize(ringCanvas.clientWidth, ringCanvas.clientHeight);
+
+const ringBoundingBox = new Box3(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
+ThreeJsUtils.scaleBox3(ringBoundingBox, 1.1); // scaling factor to obtain miniature surfaces
+
+// Directional light (shadow, nice highlights)
+const dirLight = new DirectionalLight(0xffffff, .75);
+dirLight.position.set(15, 15, 15);
+ringScene.add(dirLight);
+
+// Ambient light
+// const ambient = new AmbientLight(0x555555);
+// ringScene.add(ambient);
+const hemiLight = new HemisphereLight(0xffffff, 0x444444, 1);
+ringScene.add(hemiLight);
+
+const Category = Object.freeze({
+    BASIC: "Basic",
+    CONIC: "Conic",
+    MISC: "Miscellaneous",
+    NON_ORIENTABLE: "Non-Orientable",
+    OBJECT: "Object",
+    SPIRAL: "Spiral",
+    TOROID: "Toroid"
+});
+
+class ControlsGui {
+    constructor(surfaceController, ring) {
+        this._surfaceController = surfaceController
+        const controls = new GUI({width: "100%", autoPlace: false});
+        document.getElementById("gui-container").appendChild(controls.domElement);
+
+        this._xFunction = null;
+        this._yFunction = null;
+        this._zFunction = null;
+        this._uInterval = null;
+        this._vInterval = null;
+        this._intervalInputs = {
+            u: "",
+            v: ""
+        };
+
+        this._surfaceCoordinates = {
+            x: surfaceController.surface.definition().specification().parametrization.xFn,
+            y: surfaceController.surface.definition().specification().parametrization.yFn,
+            z: surfaceController.surface.definition().specification().parametrization.zFn
+        }
+
+        const dummyToggle = {category: Category.NON_ORIENTABLE};
+        controls.add(dummyToggle, 'category', Object.values(Category))
+            .name("Category")
+            .onChange(value => ring.changeActiveCategoryTo(value));
+
+        this.#createTangentSpaceFolder(controls);
+        this.#createAppearanceFolder(controls);
+        this.#createMathFolder(controls);
+        this.update();
+    }
+
+    #createTangentSpaceFolder(folder) {
+        const tangentFolder = folder.addFolder("Tangent frame");
+        tangentFolder.add(surfaceParams.tangentFrameParameters, 'visible')
+            .name("Show").onChange(value => {
+            surfaceParams.tangentFrameParameters.visible = value;
+            this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters);
+        });
+        tangentFolder.add(surfaceParams.tangentFrameParameters, "u", 0, 1, 0.01)
+            .name("u-parameter")
+            .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+
+        tangentFolder.add(surfaceParams.tangentFrameParameters, "v", 0, 1, 0.01)
+            .name("v-parameter")
+            .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+        tangentFolder.add(surfaceParams.tangentFrameParameters, 'showAxes')
+            .name("Axes (arrows)")
+            .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+        tangentFolder.add(surfaceParams.tangentFrameParameters, 'showPrincipals')
+            .name("Principal directions")
+            .onChange(value => this._surfaceController.updateTangentFrame(surfaceParams.tangentFrameParameters));
+        tangentFolder.close();
+    }
+
+    #createContourFolder(folder) {
+        const contourFolder = folder.addFolder("Contours");
+        contourFolder.add(surfaceParams.contourParameters, "contourType", Object.values(ContourType))
+            .name("Contour type")
+            .onChange(value => this._surfaceController.onContourTypeChange(surfaceParams.contourParameters));
+        contourFolder.add(surfaceParams.contourParameters, 'color')
+            .name("Color")
+            .onChange(() => {if (this.#isValidColor()) this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters);});
+        contourFolder.add(surfaceParams.contourParameters, "uCount", 1, 50, 1)
+            .name("U contours")
+            .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
+        contourFolder.add(surfaceParams.contourParameters, "vCount", 1, 50, 1)
+            .name("V contours")
+            .onFinishChange(value => this._surfaceController.onContourSettingsChange(surfaceParams.contourParameters));
+        contourFolder.close();
+    }
+
+    #createSurfaceFolder(folder) {
+        const surfaceFolder = folder.addFolder("Surface");
+        surfaceFolder.add(surfaceParams, "colorMode", Object.values(ColorMapper.ColorMode))
+            .name("Color Mode")
+            .onChange((value) => this._surfaceController.onColorModeChange(surfaceParams));
+
+        surfaceFolder.add(surfaceParams, 'baseColor')
+            .name("Base color")
+            .onChange(() => {if (this.#isValidColor()) this._surfaceController.onColorChange(surfaceParams);});
+        surfaceFolder.add(surfaceParams, "opacity", 0, 1, .01)
+            .name("Opacity")
+            .onChange(value => this._surfaceController.updateOpacity(value));
+        surfaceFolder.add(surfaceParams, "resolution", 10, 200, 1)
+            .name("Resolution")
+            .onFinishChange(resolution => this._surfaceController.resampleWith(resolution));
+        surfaceFolder.add(surfaceParams, 'wireframe')
+            .name("Wireframe")
+            .onChange(value => this._surfaceController.toggleWireframe(value));
+        surfaceFolder.add(surfaceParams, 'normals')
+            .name('Show Normals')
+            .onChange(value => this._surfaceController.toggleNormals(value, surfaceParams));
+        surfaceFolder.add(surfaceParams, 'autoRotate').name('Auto rotate');
+        surfaceFolder.close();
+    }
+
+    #createAxesFolder(parentFolder) {
+        const axesFolder = parentFolder.addFolder("Axes");
+        const dummyToggle = {gridPlanes: true};
+        axesFolder.add(axesParams, 'frame')
+            .name("Frame").onChange(value => axesController.updateSettings());
+        axesFolder.add(dummyToggle, 'gridPlanes')
+            .name("Layout").onChange(value => {
+            axesParams.xyPlane = value;
+            axesParams.xzPlane = value;
+            axesParams.yzPlane = value;
+            axesController.updateSettings();
+        });
+        axesFolder.add(axesParams, 'annotations')
+            .name("Annotations").onChange(value => axesController.updateSettings());
+        axesFolder.close();
+    }
+
+    #updateIntervalFromString(param, value) {
+        // Accept: [a, b]  or  a, b
+        const match = value.match(/\[\s*(.+?)\s*,\s*(.+?)\s*\]/)
+            ?? value.match(/\s*(.+?)\s*,\s*(.+?)\s*/);
+
+        if (!match) return; // silently ignore invalid input
+
+        const [_, min, max] = match;
+
+        const oldSpec = this._surfaceController.surface.definition().specification();
+        const intervals = structuredClone(oldSpec.intervals);
+
+        if (param === "u") intervals[0] = [min, max];
+        if (param === "v") intervals[1] = [min, max];
+
+        const newSpec = oldSpec.withIntervals(intervals);
+        const definition = new LiteralStringBasedSurfaceDefinition(newSpec);
+
+        this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
+        updateViewForSurface();
+        this.update();
+    }
+
+    #createMathFolder(folder) {
+        const mathFolder = folder.addFolder("Math");
+
+        this._xFunction = mathFolder.add(this._surfaceCoordinates, "x").name("Fx(u,v) =")
+            .onFinishChange(expr => {
+                const specification = this._surfaceController.surface
+                    .definition().specification().withParametrization({xFn: expr});
+                const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
+                updateViewForSurface();
+            });
+
+        this._yFunction = mathFolder.add(this._surfaceCoordinates, "y").name("Fy(u,v) =")
+            .onFinishChange(expr => {
+                const specification = this._surfaceController.surface
+                    .definition().specification().withParametrization({yFn: expr});
+                const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
+                updateViewForSurface();
+            });
+
+        this._zFunction = mathFolder.add(this._surfaceCoordinates, "z").name("Fz(u,v) =")
+            .onFinishChange(expr => {
+                const specification = this._surfaceController.surface
+                    .definition().specification().withParametrization({zFn: expr});
+                const definition = new LiteralStringBasedSurfaceDefinition(specification);
+                this._surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
+                updateViewForSurface();
+            });
+        this._uInterval = mathFolder.add(this._intervalInputs, "u")
+            .name("u ∈")
+            .onFinishChange(value => this.#updateIntervalFromString("u", value));
+
+        this._vInterval = mathFolder.add(this._intervalInputs, "v")
+            .name("v ∈")
+            .onFinishChange(value => this.#updateIntervalFromString("v", value));
+        mathFolder.close();
+    }
+
+    #createAppearanceFolder(controls, axes, annotations) {
+        const appearanceFolder = controls.addFolder("Appearance");
+        this.#createSurfaceFolder(appearanceFolder);
+        this.#createAxesFolder(appearanceFolder, axes, annotations);
+        this.#createContourFolder(appearanceFolder);
+
+        appearanceFolder.add({reset: () =>
+                plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9))}, "reset")
+            .name("Reset Camera");
+        appearanceFolder.close();
+    }
+
+    #isValidColor() {
+        const style = new Option().style;
+        style.color = surfaceParams.baseColor;
+        return style.color !== '';
+    }
+
+    #updateSurfaceDataTitleBox() {
+        const nameDiv = document.getElementById("surface-title");
+        const surfaceData = surfaceController.surface.definition().specification();
+        nameDiv.textContent = surfaceData.meta.category + ": " + surfaceData.meta.name;
+
+        const equationDiv = document.getElementById("surface-equation");
+        equationDiv.innerHTML = "$$\\begin{pmatrix}" +
+            surfaceData.parametrization.xFn + " \\\\" +
+            surfaceData.parametrization.yFn + " \\\\" +
+            surfaceData.parametrization.zFn + "\\end{pmatrix}\\text{, } \\begin{cases} u \\in [" +
+            surfaceData.intervals[0][0] + ", " +
+            surfaceData.intervals[0][1] + "] \\\\ v \\in [" +
+            surfaceData.intervals[1][0] + ", " +
+            surfaceData.intervals[1][1] + "] \\end{cases}$$";
+        if (window.MathJax) MathJax.typesetPromise([equationDiv]);
+    }
+
+    update = () => {
+        const newSurface = this._surfaceController.surface;
+        surfaceParams.tangentFrameParameters.scale = newSurface.boundingBox().max.length() * .4;
+        this.#updateSurfaceDataTitleBox();
+
+        const specification = newSurface.definition().specification();
+        this._xFunction.setValue(specification.parametrization.xFn);
+        this._yFunction.setValue(specification.parametrization.yFn);
+        this._zFunction.setValue(specification.parametrization.zFn);
+
+        this._intervalInputs.u = `[${specification.intervals[0][0]}, ${specification.intervals[0][1]}]`;
+        this._intervalInputs.v = `[${specification.intervals[1][0]}, ${specification.intervals[1][1]}]`;
+
+        this._uInterval.setValue(this._intervalInputs.u);
+        this._vInterval.setValue(this._intervalInputs.v);
+
+        updateViewForSurface();
+    }
+}
+
+function updateViewForSurface() {
+    const boundingBox = surfaceController.surfaceBoundingBox();
+    axesController.createFromBoundingBox(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.9));
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.7));
+}
+
+const surfaceDefinitions = [{
+    meta: {name: "Arc", category: Category.MISC},
+    parametrization: {
+        xFn: "cos(u)",
+        yFn: "3 * sin(v)",
+        zFn: "sin(u) + cos(v)"
+    },
+    intervals: [["0", "pi"], ["pi", "0"]]
+}, {
+    meta: {name: "Astroidal helix", category: Category.MISC},
+    parametrization: {
+        xFn: "cos(u) * cos(u) * cos(u) * cos(v) * cos(v) * cos(v)",
+        yFn: "sin(v) * sin(v) * sin(v)",
+        zFn: "sin(u) * sin(u) * sin(u) * cos(v) * cos(v) * cos(v)"
+    },
+    intervals: [["0", "pi"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Bohemian dome", category: Category.TOROID},
+    parametrization: {
+        xFn: "7 * cos(u)",
+        yFn: "7 * sin(u) + 3 * cos(v)",
+        zFn: "6 * sin(v)"
+    },
+    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Bow curve", category: Category.TOROID},
+    parametrization: {
+        xFn: "(1 * sin(u) + 2) * sin(v)",
+        yFn: "(1 * sin(u) + 2) * cos(v)",
+        zFn: "1 * cos(u) + 2 * cos(1/2 * v)"
+    },
+    intervals: [["0", "2 * pi"], ["4 * pi", "0"]]
+}, {
+    meta: {name: "Bow tie", category: Category.MISC},
+    parametrization: {
+        xFn: "sin(u)/ (sqrt(2) + sin(v))",
+        yFn: "sin(u)/ (sqrt(2) + cos(v))",
+        zFn: "cos(u)/ (sqrt(2) + 1)"
+    },
+    intervals: [["-pi", "pi"], ["pi", "-pi"]]
+}, {
+    meta: {name: "Cross cap", category: Category.NON_ORIENTABLE},
+    parametrization: {
+        xFn: "sin(2 * v) * cos(u)",
+        yFn: "-cos(v) * cos(v) + 0.5  * cos(u) * cos(u) * sin(v) * sin(v)",
+        zFn: "sin(2 * v) * sin(u)"
+    },
+    intervals: [["0", "1 * pi"], ["1 * pi", "0"]]
+}, {
+    meta: {name: "Cone", category: Category.CONIC},
+    parametrization: {
+        xFn: "v * cos(u)",
+        yFn: "v",
+        zFn: "v * sin(u)"
+    },
+    intervals: [["0", "2 * pi"], ["1/2", "-1/2 + 1e-4"]]
+}, {
+    meta: {name: "Cylinder", category: Category.BASIC},
+    parametrization: {
+        xFn: "1 * cos(u)",
+        yFn: "v",
+        zFn: "1 * sin(u)"
+    },
+    intervals: [["0", "2 * pi"], ["3", "0"]]
+}, {
+    meta: {name: "Crescent", category: Category.SPIRAL},
+    parametrization: {
+        xFn: "(2 + sin(2 * pi * u) * sin(2 * pi * v)) * sin(3 * pi * v)",
+        yFn: "(2 + sin(2 * pi * u) * sin(2 * pi * v)) * cos(3 * pi * v)",
+        zFn: "cos(2 * pi * u) sin(2 * pi * v) + 4 * v - 2"
+    },
+    intervals: [["0", "1"], ["1", "0"]]
+}, {
+    meta: {name: "Dini\'s spiral", category: Category.SPIRAL},
+    parametrization: {
+        xFn: "1.5 * cos(u) * sin(v)",
+        yFn: "(cos(v) + log(tan(v / 2))) + 1 / 10 * u",
+        zFn: "1.5 * sin(u) * sin(v)"
+    },
+    intervals: [["0", "4 * pi"], ["2 - 0.1", "0 + 0.1"]]
+}, {
+    meta: {name: "Egg", category: Category.OBJECT},
+    parametrization: {
+        xFn: "1 * sqrt(u * (u - 0.5) * (u - 1)) * sin(v)",
+        yFn: "u",
+        zFn: "1 * sqrt(u * (u - 0.5) * (u - 1)) * cos(v)",
+    },
+    intervals: [["1e-4", "1/2-1e-4"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Eight surface", category: Category.BASIC},
+    parametrization: {
+        xFn: "cos(u) * sin(2 * v)",
+        yFn: "sin(v)",
+        zFn: "sin(u) * sin(2 * v)",
+    },
+    intervals: [["-pi/2", "pi/2"], ["2 * pi - 1e-4", "1e-4"]]
+}, {
+    meta: {name: "Ellipsoid", category: Category.CONIC},
+    parametrization: {
+        xFn: "2 * sin(u) * sin(v)",
+        yFn: "1 * cos(u) * sin(v)",
+        zFn: "3 * cos(v)"
+    },
+    intervals: [["-pi/2", "pi/2"], ["2 * pi - 1e-4", "1e-4"]]
+}, {
+    meta: {name: "Elliptic torus", category: Category.TOROID},
+    parametrization: {
+        xFn: "(1 * cos(v) + 3) * cos(u)",
+        yFn: "1 * (cos(v) + sin(v))",
+        zFn: "(1 * cos(v) + 3) * sin(u)"
+    },
+    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Enneper surface", category: Category.MISC},
+    parametrization: {
+        xFn: "u - u * u * u / 3 + u * v * v",
+        yFn: "u * u - v * v",
+        zFn: "v - v * v * v / 3 + v * u * u"
+    },
+    intervals: [["-2", "2"], ["-2", "2"]]
+}, {
+    meta: {name: "Folium", category: Category.MISC},
+    parametrization: {
+        yFn: "cos(u) * (2 * v/pi - tanh(v))",
+        zFn: "cos(u - 2 * pi/3) / cosh(v)",
+        xFn: "cos(u + 2 * pi/3) / cosh(v)"
+    },
+    intervals: [["-pi", "pi"], ["pi", "-pi"]]
+}, {
+    meta: {name: "Funnel", category: Category.BASIC},
+    parametrization: {
+        xFn: "u * cos(v)",
+        yFn: "log(u)",
+        zFn: "u * sin(v)"
+    },
+    intervals: [["0.1", "2"], ["0", "2 * pi"]]
+}, {
+    meta: {name: "Goblet", category: Category.OBJECT},
+    parametrization: {
+        xFn: "cos(u) * cos(2 * v)",
+        yFn: "-sin(v)",
+        zFn: "sin(u) * cos(2 * v)"
+    },
+    intervals: [["0", "2 * pi"], [".5 * pi", "0"]]
+}, {
+    meta: {name: "Helicoid", category: Category.SPIRAL},
+    parametrization: {
+        xFn: "1.25 * u * cos(v)",
+        yFn: "0.6 * v",
+        zFn: "1.25 * u * sin(v)"
+    },
+    intervals: [["-2", "2"], ["3 * pi", "0"]]
+}, {
+    meta: {name: "Horn", category: Category.OBJECT},
+    parametrization: {
+        xFn: "(2 + u * cos(v)) * sin (2 * pi * u)",
+        yFn: "(2 + u * cos(v)) * cos (2 * pi * u) + u",
+        zFn: "u * sin(v)"
+    },
+    intervals: [["0", "1"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Hyperbolic paraboloid", category: Category.CONIC},
+    parametrization: {
+        xFn: "u",
+        yFn: "u * v",
+        zFn: "v"
+    },
+    intervals: [["-1", "1"], ["1", "-1"]]
+}, {
+    meta: {name: "Hyperboloid / Catenoid", category: Category.CONIC},
+    parametrization: {
+        xFn: "cosh(4 * v / 5) * cos(u)",
+        yFn: "5 * v /4",
+        zFn: "cosh(4 * v / 5) * sin(u)"
+    },
+    intervals: [["0", "2 * pi"], ["2", "-2"]]
+}, {
+    meta: {name: "Klein bottle", category: Category.NON_ORIENTABLE},
+    parametrization: {
+        xFn: "-(5 - 2*cos(u)) * cos(v) + 6 * (sin(u) + 1) * cos(u)",
+        yFn: "-16 * sin(u)",
+        zFn: "(5 - 2*cos(u)) * sin(v)"
+    },
+    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Klein bottle 2", category: Category.NON_ORIENTABLE},
+    parametrization: {
+        xFn: "(2+cos(u/2)*sin(v)-sin(u/2)*sin(2*v))*cos(u)",
+        yFn: "sin(u/2)*sin(v)+cos(u/2)*sin(2*v)",
+        zFn: "(2+cos(u/2)*sin(v)-sin(u/2)*sin(2*v))*sin(u)"
+    },
+    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Limpet torus", category: Category.TOROID},
+    parametrization: {
+        xFn: "cos(u) / (sqrt(2) + sin(v))",
+        yFn: "1 / (sqrt(2) + cos(v))",
+        zFn: "sin(u) / (sqrt(2) + sin(v))",
+    },
+    intervals: [["0", "2 * pi"], ["0", "2 * pi"]]
+}, {
+    meta: {name: "Möbius strip", category: Category.NON_ORIENTABLE},
+    parametrization: {
+        xFn: "(2 + u * cos(v / 2)) * cos(v)",
+        yFn: "(2 + u * cos(v / 2)) * sin(v)",
+        zFn: "u * sin(v / 2)",
+    },
+    intervals: [["-1", "1"], ["0", "2 * pi"]]
+}, {
+    meta: {name: "Monkey saddle", category: Category.BASIC},
+    parametrization: {
+        xFn: "u",
+        yFn: "0.55 * (u * u * u - 3 * v * v * u)",
+        zFn: "v",
+    },
+    intervals: [["-1.1", "1.1"], ["-1.1", "1.1"]]
+}, {
+    meta: {name: "Paraboloid", category: Category.CONIC},
+    parametrization: {
+        xFn: "2 * sqrt(u / 1) * cos(v)",
+        yFn: "3 * u",
+        zFn: "2 * sqrt(u / 1) * sin(v)"
+    },
+    intervals: [["1e-5", "1 - 1e-5"], ["0", "2 * pi"]]
+},{
+    meta: {name: "Pillow", category: Category.OBJECT},
+    parametrization: {
+        xFn: "cos(u)",
+        yFn: "0.5 * sin(u) * sin(v)",
+        zFn: "cos(v)"
+    },
+    intervals: [["0", "pi"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Plane", category: Category.BASIC},
+    parametrization: {
+        xFn: "1.5 * u - 1 * v + 1",
+        yFn: "-u - v - 0.5",
+        zFn: "u + v + 1"
+    },
+    intervals: [["-3/2", "3/2"], ["3/2", "-3/2"]]
+},{
+    meta: {name: "Roman/Steiner surface", category: Category.NON_ORIENTABLE},
+    parametrization: {
+        xFn: "cos(u) * cos(v) * sin(v)",
+        yFn: "cos(u) * sin(u) * cos(v) * cos(v)",
+        zFn: "sin(u) * cos(v) * sin(v)"
+    },
+    intervals: [["0", "pi"], ["pi", "0"]]
+},{
+    meta: {name: "Saddle / hyperbolic paraboloid", category: Category.BASIC},
+    parametrization: {
+        xFn: "u * sin(v)",
+        yFn: "1.25 * u * cos(v) * u * sin(v)",
+        zFn: "u * cos(v)"
+    },
+    intervals: [["1e-3", "1 - 1e-3"], ["0", "2 * pi"]]
+}, {
+    meta: {name: "Self intersecting disc", category: Category.NON_ORIENTABLE},
+    parametrization: {
+        xFn: "1.0 * v * cos(2 * u)",
+        yFn: "-1.0 * v * cos(u)",
+        zFn: "1.0 * v * sin(2 * u)"
+    },
+    intervals: [["0", "2 * pi"], ["0", "1"]]
+}, {
+    meta: {name: "Sine", category: Category.MISC},
+    parametrization: {
+        xFn: "sin(u)",
+        yFn: "sin(v)",
+        zFn: "sin(u + v)"
+    },
+    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Sinusoidal cone", category: Category.CONIC},
+    parametrization: {
+        xFn: "u * cos(v)",
+        yFn: ".5 * u * cos(5 * v)",
+        zFn: "u * sin(v)"
+    },
+    intervals: [["-10", "10"], ["2 * pi - 1e-4", "-2 * pi + 1e-4"]]
+}, {
+    meta: {name: "Sphere", category: Category.BASIC},
+    parametrization: {
+        xFn: "1 * cos(u) * sin(v)",
+        yFn: "1 * sin(u) * sin(v)",
+        zFn: "1 * cos(v)"
+    },
+    intervals: [["0", "2 * pi"], ["pi - 1e-4", "1e-4"]]
+}, {
+    meta: {name: "Spring", category: Category.SPIRAL},
+    parametrization: {
+        xFn: "(1 - 1/5 * cos(v)) * cos(u)",
+        yFn: "1/4 * (sin(v) + 2 * u / pi)",
+        zFn: "(1 - 1/5 * cos(v)) * sin(u)"
+    },
+    intervals: [["0", "8 * pi"], ["0", "2 * pi"]]
+}, {
+    meta: {name: "Torus", category: Category.BASIC},
+    parametrization: {
+        xFn: "cos(u) * (3 + 1.5 * cos(v))",
+        yFn: "1.5 * sin(v)",
+        zFn: "sin(u) * (3 + 1.5 * cos(v))"
+    },
+    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Torus 2", category: Category.TOROID},
+    parametrization: {
+        xFn: "cos(u) * (3 + 1.5 * cos(v))",
+        yFn: "2.75 * sin(v)",
+        zFn: "sin(u) * (3 + 1.5 * cos(v))"
+    },
+    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+}, {
+    meta: {name: "Trash can", category: Category.OBJECT},
+    parametrization: {
+        xFn: "(1 + v) * cos(u)",
+        yFn: "1 * v * v",
+        zFn: "v * sin(u)"
+    },
+    intervals: [["0", "2 * pi"], ["2", "0"]]
+}, {
+    meta: {name: "Trefoil knot", category: Category.TOROID},
+    parametrization: {
+        xFn: "(6 * (1 + 1/4 * sin(3 * v)) + cos(u)) * cos(2 * v)",
+        yFn: "(6 * (1 + 1/4 * sin(3 * v)) + cos(u)) * sin(2 * v)",
+        zFn: "sin(u) + 2 * cos(3 * v)"
+    },
+    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+},{
+    meta: {name: "Trianguloid Trefoil knot", category: Category.TOROID},
+    parametrization: {
+        xFn: "1.5 * sin(3 * u) / (2 + cos(v))",
+        yFn: "1.5 * (sin(u) + 2 * sin(2 * u)) / (2 + cos(v + pi * 2 / 3))",
+        zFn: "1.0 * (cos(u) - 2 * cos(2 * u)) * (2 + cos(v)) * (2 + cos(v + pi * 2 / 3)) / 4"
+    },
+    intervals: [["-pi", "pi"], ["pi", "-pi"]]
+},{
+    meta: {name: "Twisted torus", category: Category.TOROID},
+    parametrization: {
+        xFn: "(2 + sin(v) + cos(u)) * cos(2 * v)",
+        yFn: "(2 + sin(v) + cos(u)) * sin(2 * v)",
+        zFn: "sin(u) + 3 * cos(v)"
+    },
+    intervals: [["0", "2 * pi"], ["2 * pi", "0"]]
+},{
+    meta: {name: "Umbrella", category: Category.OBJECT},
+    parametrization: {
+        xFn: "u^(1/3) * ((4 - 4/9) * cos(v) + 4/9 * cos((9 - 1) * v))",
+        yFn: "3 * (1 - u)",
+        zFn: "u^(1/3) * ((4 - 4/9) * sin(v) + 4/9 * sin((9 - 1) * v))"
+    },
+    intervals: [["1e-5", "1 - 1e-5"], ["2 * pi", "0"]]
+},{
+    meta: {name: "Whitney umbrella", category: Category.MISC},
+    parametrization: {
+        xFn: "u * v",
+        yFn: "2 * v * v",
+        zFn: "u"
+    },
+    intervals: [["-2", "2"], ["-2", "2"]]
+}];
+
+function deepFreeze(object) {
+    Object.freeze(object);
+    Object.values(object).forEach(value => {
+        if (typeof value === 'object' && value !== null && !Object.isFrozen(value)) {
+            deepFreeze(value);
+        }
+    });
+    return object;
+}
+
+export const SurfaceDefinitions = surfaceDefinitions.map(surface => deepFreeze(surface));
+
+// Surface
+const axesParams = new AxesParameters({annotations: false});
+const axesController = new AxesController({
+    parentGroup: worldGroup,
+    canvasContainer: canvasContainer,
+    axesParameters: axesParams,
+    scene: surfacePlotScene
+});
+
+const surfaceData = SurfaceDefinitions[22];
+const surfaceParams = new ViewParameters({
+    tangentFrameParameters: new TangentFrameParameters({
+        visible: false,
+        u: 0.5,
+        v: 0.5
+    })
+});
+
+const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
+const mathSurface = new Surface(new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec));
+const surfaceController = new SurfaceController(
+    worldGroup,
+    mathSurface,
+    surfaceParams,
+    new HeightColorMapper({useBaseColor: false}),
+    new IsoparametricContoursView(worldGroup, mathSurface)
+);
+const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
+plot3D.renderer.setAnimationLoop(animate);
+updateViewForSurface();
+
+// Resizing for mobile devices
+function resize() {
+    ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+    axesController.resize();
+}
+window.addEventListener("resize", resize);
+resize();
+
+// Ring
+const ring = new SurfaceSelector(ringBoundingBox, {
+    ringRadius: 7,
+    verticalOffset: 1.75,
+    activeCategory: surfaceData.meta.category
+});
+ringScene.add(ring);
+ring.append(SurfaceDefinitions);
+ring.changeActiveCategoryTo(surfaceData.meta.category);
+const selectedRingSurface = ring.findSurfaceByName(surfaceData.meta.name);
+ring.onSelectTo(selectedRingSurface);
+
+// Interaction
+const controlsGui = new ControlsGui(surfaceController, ring);
+
+// -----------------------
+// Ray casting for ring
+// -----------------------
+const ringRaycaster = new Raycaster();
+const ringMouse = new Vector2();
+
+ringCanvas.addEventListener("pointerdown", event => {
+    ringMouse.x = (event.offsetX / ringCanvas.clientWidth) * 2 - 1;
+    ringMouse.y = -(event.offsetY / ringCanvas.clientHeight) * 2 + 1;
+
+    ringRaycaster.setFromCamera(ringMouse, ringCamera);
+    const hits = ringRaycaster.intersectObjects(ring.selectableObjects(), false);
+    if(!hits.length) return;
+
+    const selectedMesh = hits[0].object;
+    const selectedRingSurface = ring.findSurfaceByMesh(selectedMesh);
+    ring.onSelectTo(selectedRingSurface);
+
+    const definition = new LiteralStringBasedSurfaceDefinition(selectedRingSurface.definition().specification());
+    surfaceController.onSurfaceChange(new Surface(definition), surfaceParams);
+    updateViewForSurface();
+    controlsGui.update();
+});
+
+function animate() {
+    plot3D.render();
+    ring.render();
+    ringRenderer.render(ringScene, ringCamera);
+    if (surfaceParams.autoRotate)
+        surfaceController.rotateBy(0.005);
+    axesController.render(plot3D.camera);
+}

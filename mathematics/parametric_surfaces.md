@@ -3,11 +3,18 @@
 ## Parametric surfaces
 <div class="header_line"><br/></div>
 
-🔧 The images are generated with [parametric_surfaces.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/parametric_surfaces.html). 
+🔧 The images are generated with [parametric_surfaces.js](https://github.com/zhendrikse/science/blob/main/mathematics/parametric_surfaces.js). 
 
-{% include_relative code/parametric_surfaces.html %}
+<script src="https://cdn.jsdelivr.net/npm/mathjs@11.11.0/lib/browser/math.js" type="text/javascript"></script>
 
-<br/><br/>
+<div class="titleDiv" id="surface-title"></div>
+<div class="equationDiv" id="surface-equation"></div>
+<div class="canvasWrapper" id="surface-canvas-container">
+    <canvas class="applicationCanvas" id="surfaceCanvas"></canvas>
+</div>
+<canvas class="applicationCanvas" id="ringCanvas" style="aspect-ratio: 4 / 1;"></canvas>
+<div class="guiContainer" id="gui-container"></div>
+<script type="module" src="parametric_surfaces.js"></script>
 <p style="clear: both;"></p>
 
 ## Numeric calculation mean &amp; Gaussian curvature

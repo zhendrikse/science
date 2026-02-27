@@ -20,6 +20,102 @@ export function normalMuSigma(average, standard_deviation) {
     return vt;
 }
 
+export class Integrators {
+    static eulerStep(state, dt, accelerationFn) {
+        const acceleration = accelerationFn(state);
+
+        const newState = state.clone();
+        newState.v.addScaledVector(acceleration, dt);
+         newState.x.addScaledVector(state.v, dt);
+
+        return newState;
+    }
+
+    static symplecticEulerStep(state, dt, accelerationFn) {
+        const newState = state.clone();
+
+        const a = accelerationFn(state);
+        newState.v.addScaledVector(a, dt);
+        newState.x.addScaledVector(newState.v, dt);
+
+        return newState;
+    }
+
+    static implicitEulerStep(state, dt, omega2) {
+        const factor = 1 + dt * dt * omega2;
+        const newState = state.clone();
+
+        newState.x.multiplyScalar(1 / factor)
+            .addScaledVector(state.v, dt / factor);
+
+        newState.v.copy(state.v)
+            .addScaledVector(newState.x, -omega2 * dt);
+
+        return newState;
+    }
+
+    static rk2Step(state, dt, accelerationFn) {
+        const derivative = (state) => ({
+            dx: state.v.clone(),
+            dv: accelerationFn(state)
+        });
+
+        const k1 = derivative(state);
+
+        const mid = state.clone();
+        mid.x.addScaledVector(k1.dx, dt);
+        mid.v.addScaledVector(k1.dv, dt);
+
+        const k2 = derivative(mid);
+
+        const newState = state.clone();
+        newState.x.addScaledVector(k1.dx.clone().add(k2.dx), dt/2);
+        newState.v.addScaledVector(k1.dv.clone().add(k2.dv), dt/2);
+
+        return newState;
+    }
+
+    static rk4Step(state, dt, accelerationFn) {
+        const derivative = (state) => ({
+            dx: state.v.clone(),
+            dv: accelerationFn(state)
+        });
+
+        const k1 = derivative(state);
+
+        const s2 = state.clone();
+        s2.x.addScaledVector(k1.dx, dt / 2);
+        s2.v.addScaledVector(k1.dv, dt / 2);
+        const k2 = derivative(s2);
+
+        const s3 = state.clone();
+        s3.x.addScaledVector(k2.dx, dt / 2);
+        s3.v.addScaledVector(k2.dv, dt / 2);
+        const k3 = derivative(s3);
+
+        const s4 = state.clone();
+        s4.x.addScaledVector(k3.dx, dt);
+        s4.v.addScaledVector(k3.dv, dt);
+        const k4 = derivative(s4);
+
+        const newState = state.clone();
+
+        newState.x
+            .addScaledVector(k1.dx, dt / 6)
+            .addScaledVector(k2.dx, dt / 3)
+            .addScaledVector(k3.dx, dt / 3)
+            .addScaledVector(k4.dx, dt / 6);
+
+        newState.v
+            .addScaledVector(k1.dv, dt/6)
+            .addScaledVector(k2.dv, dt/3)
+            .addScaledVector(k3.dv, dt/3)
+            .addScaledVector(k4.dv, dt/6);
+
+        return newState;
+    }
+}
+
 export class ThreeJsUtils {
     static scaleBox3(box, factor) {
         const center = new Vector3();
@@ -2470,12 +2566,12 @@ export class MassSpringSystem extends Group {
         });
 
         this._mass = new Ball(this, {
-            position: suspensionPoint.clone().sub(axis).add(massPosition),
+            position: massPosition,
             radius: massRadius,
             mass: massMass,
             color: massColor
         });
-        this._slinky.updateAxis(this._mass.position.clone().sub(this._suspensionPoint));
+        this._slinky.updateAxis(this._mass.position.clone().sub(suspensionPoint));
         this._slinky.update(0);
     }
 
@@ -2484,7 +2580,7 @@ export class MassSpringSystem extends Group {
         return force.add(this._slinky.force);
     }
 
-    computeTotalForce(state, time, damping = 0) {
+    computeTotalForce(state, damping = 0) {
         const axis = state.x.clone().sub(this._suspensionPoint);
         const length = axis.length();
         const displacement = this._slinky._restLength - length;
@@ -2519,64 +2615,17 @@ export class MassSpringSystem extends Group {
         this._mass.accelerateTo(new Vector3(0, 0, 0));
     }
 
-    semiImplicitEulerUpdate(time, dt, damping=0, dragging=false) {
-        if (dragging) return;
+    step(dt, integrator, damping=0, time=0) {
+        const state = this._mass.state;
 
-        const state = this.mass.state;
-        const force = this.computeTotalForce(state, time, damping);
-        const accel = force.multiplyScalar(1 / this.mass.mass);
+        const accelerationFn = (state) =>
+            this.computeTotalForce(state, damping).multiplyScalar(1 / this.mass.mass);
+        const newState = integrator(state, dt, accelerationFn);
 
-        state.v.addScaledVector(accel, dt);
-        state.x.addScaledVector(state.v, dt);
+        this._mass.moveTo(newState.x);
+        this._mass.accelerateTo(newState.v);
 
-        this._mass.moveTo(state.x);
-        this._slinky.updateAxis(state.x.clone().sub(this._suspensionPoint));
-        this._slinky.update(time);
-    }
-
-    rk4Update(time, dt, damping=0, dragging=false) {
-        if (dragging) return;
-
-        const state = this._mass._state;
-
-        const derivs = (s) => {
-            const force = this.computeTotalForce(s, time, damping);
-            return {
-                dx: s.v.clone(),
-                dv: force.multiplyScalar(1 / this._mass.mass)
-            };
-        };
-
-        const k1 = derivs(state.clone());
-
-        const s2 = state.clone();
-        s2.x.addScaledVector(k1.dx, dt/2);
-        s2.v.addScaledVector(k1.dv, dt/2);
-        const k2 = derivs(s2);
-
-        const s3 = state.clone();
-        s3.x.addScaledVector(k2.dx, dt/2);
-        s3.v.addScaledVector(k2.dv, dt/2);
-        const k3 = derivs(s3);
-
-        const s4 = state.clone();
-        s4.x.addScaledVector(k3.dx, dt);
-        s4.v.addScaledVector(k3.dv, dt);
-        const k4 = derivs(s4);
-
-        state.x.addScaledVector(k1.dx, dt/6);
-        state.x.addScaledVector(k2.dx, dt/3);
-        state.x.addScaledVector(k3.dx, dt/3);
-        state.x.addScaledVector(k4.dx, dt/6);
-
-        state.v.addScaledVector(k1.dv, dt/6);
-        state.v.addScaledVector(k2.dv, dt/3);
-        state.v.addScaledVector(k3.dv, dt/3);
-        state.v.addScaledVector(k4.dv, dt/6);
-
-        this._mass.moveTo(state.x);
-
-        this._slinky.updateAxis(state.x.clone().sub(this._suspensionPoint));
+        this._slinky.updateAxis(newState.x.clone().sub(this._suspensionPoint));
         this._slinky.update(time);
     }
 

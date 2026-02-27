@@ -1,0 +1,147 @@
+import { Plot3DView, Axes, AxesParameters, AxesController, ThreeJsUtils } from '../js/three-js-extensions.js';
+import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+import { Vector3, Scene, MeshPhongMaterial, Group, BoxGeometry, MathUtils, Box3, Mesh } from "three";
+
+const scene = new Scene();
+const worldGroup = new Group();
+scene.add(worldGroup);
+
+const canvasContainer = document.getElementById("container");
+const canvas = document.getElementById("integrationCanvas");
+
+const params = {
+    axesParameters: new AxesParameters(),
+    thetaMin: 0,
+    thetaMax: 180,
+    phiMin: 0,
+    phiMax: 360,
+    opacity: 0.35
+};
+const axesController = new AxesController({
+    parentGroup: worldGroup,
+    canvasContainer,
+    axesParameters: params.axesParameters,
+    scene
+});
+
+class ControlsGui {
+    constructor() {
+        const gui = new GUI({width: "100%", autoPlace: false});
+
+        gui.add(params, "thetaMin", 0, 180, 1)
+            .name("θ_min")
+            .onChange(value => { updateVisibility(); updateIntegral(); });
+
+        gui.add(params, "thetaMax", 0, 180, 1)
+            .name("θ_max)")
+            .onChange(value => { updateVisibility(); updateIntegral(); });
+
+        gui.add(params, "phiMin", 0, 360, 1)
+            .name("φ_min")
+            .onChange(value => { updateVisibility(); updateIntegral(); });
+
+        gui.add(params, "phiMax", 0, 360, 1)
+            .name("φ_max")
+            .onChange(value => { updateVisibility(); updateIntegral(); });
+
+        gui.add(params, "opacity", 0, 1, .01)
+            .name("Opacity")
+            .onChange(value => { cells.forEach(cell => cell.material.opacity = parseFloat(value)); });
+
+        const axesFolder = gui.addFolder("Axes");
+        const dummyToggle = {gridPlanes: true};
+        axesFolder.add(params.axesParameters, 'frame')
+            .name("Frame").onChange(value => axesController.updateSettings());
+        axesFolder.add(dummyToggle, 'gridPlanes')
+            .name("Layout").onChange(value => {
+            params.axesParameters.xyPlane = value;
+            params.axesParameters.xzPlane = value;
+            params.axesParameters.yzPlane = value;
+            axesController.updateSettings();
+        });
+        axesFolder.add(params.axesParameters, 'annotations')
+            .name("Annotations").onChange(value => axesController.updateSettings());
+        axesFolder.close();
+
+        document.getElementById("gui-container").appendChild(gui.domElement);
+    }
+}
+
+const R = 1, da = 0.05;
+const f = (theta, phi) => theta * theta * (phi - Math.PI) * (phi - Math.PI);
+const cells = [];
+let values = [];
+
+function createCell(theta, phi) {
+    const val = f(theta, phi);
+    values.push(val);
+
+    const mesh = new Mesh(
+        new BoxGeometry(da, da, da),
+        new MeshPhongMaterial({ transparent:true, opacity:params.opacity })
+    );
+    const position = Axes.toCartesian(R, theta, phi);
+    mesh.position.copy(new Vector3(position.x, position.z, position.y));
+    mesh.userData = {theta:theta, phi:phi, val};
+    worldGroup.add(mesh);
+    cells.push(mesh);
+}
+
+function updateVisibility() {
+    cells.forEach(cell => {
+        const t = cell.userData.theta, p = cell.userData.phi;
+        cell.visible = (
+            t >= MathUtils.degToRad(params.thetaMin) &&
+            t <= MathUtils.degToRad(params.thetaMax) &&
+            p >= MathUtils.degToRad(params.phiMin) &&
+            p <= MathUtils.degToRad(params.phiMax)
+        );
+    });
+}
+
+function integrate() {
+    let sum = 0;
+    cells.forEach(cell => { if (cell.visible) sum += cell.userData.val * Math.sin(cell.userData.theta); });
+    return sum * R * R * da * da;
+}
+
+const updateIntegral = () =>
+    document.getElementById("integral-title").textContent = "Integral evaluates to: " + integrate().toFixed(2);
+
+for (let theta = 0; theta <= Math.PI; theta += da)
+    for (let phi = 0; phi <= 2 * Math.PI; phi += da)
+        createCell(theta, phi);
+
+
+const minF = Math.min(...values), maxF = Math.max(...values);
+cells.forEach(cell => {
+    const t = (cell.userData.val - minF) / (maxF - minF);
+    cell.material.color.setRGB(1 - t, t, 0);
+});
+
+const boundingBox = new Box3();
+boundingBox.setFromObject( worldGroup );
+
+axesController.createFromBoundingBox(boundingBox);
+
+const plot3D = new Plot3DView(scene, canvas, boundingBox);
+plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
+plot3D.renderer.setAnimationLoop( animate );
+const gui = new ControlsGui();
+
+// Resizing for mobile devices
+function resize() {
+    ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+    axesController.resize();
+}
+window.addEventListener("resize", resize);
+resize();
+
+function animate() {
+    plot3D.render();
+    axesController.render(plot3D.camera);
+}
+
+updateVisibility();
+updateIntegral();
+

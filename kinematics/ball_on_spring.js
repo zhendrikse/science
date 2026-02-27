@@ -1,6 +1,6 @@
 import { Vector3, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight,
     Raycaster, Vector2, Plane, Scene } from "three";
-import {MassSpringSystem, Ceiling, ThreeJsUtils} from '../js/three-js-extensions.js';
+import {MassSpringSystem, Ceiling, ThreeJsUtils, Integrators} from '../js/three-js-extensions.js';
 
 // --- Scene setup ---
 const canvas = document.getElementById("springCanvas");
@@ -112,7 +112,8 @@ function animate() {
     if (!running) return;
 
     time += dt;
-    massSpringSystem.semiImplicitEulerUpdate(time, dt, 1, dragging);
+    if (!dragging)
+        massSpringSystem.step(dt, Integrators.rk4Step, 1, time);
 
     const potentialGravity = massSpringSystem.mass.mass * g * massSpringSystem.mass.position.y;
     plotData[0].push(time); // x-axis = time
