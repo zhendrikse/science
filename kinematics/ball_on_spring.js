@@ -37,7 +37,7 @@ new Ceiling(scene, {position: new Vector3(0, 30, 0)})
 const massSpringSystem = new MassSpringSystem({
     massPosition: new Vector3(
         (Math.random() - 0.5) * 5,  // ±0.25 in X
-        10,
+        15,
         (Math.random() - 0.5) * 5   // ±0.25 in Z
     ),
     gravity: 9.8,
