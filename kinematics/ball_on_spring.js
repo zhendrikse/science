@@ -41,7 +41,8 @@ const massSpringSystem = new MassSpringSystem({
         (Math.random() - 0.5) * 5   // ±0.25 in Z
     ),
     gravity: 9.8,
-    horizontalK: 100
+    horizontalK: 100,
+    makeTrail: false
 });
 scene.add(massSpringSystem);
 

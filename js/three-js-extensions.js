@@ -41,19 +41,6 @@ export class Integrators {
         return newState;
     }
 
-    static implicitEulerStep(state, dt, omega2) {
-        const factor = 1 + dt * dt * omega2;
-        const newState = state.clone();
-
-        newState.x.multiplyScalar(1 / factor)
-            .addScaledVector(state.v, dt / factor);
-
-        newState.v.copy(state.v)
-            .addScaledVector(newState.x, -omega2 * dt);
-
-        return newState;
-    }
-
     static rk2Step(state, dt, accelerationFn) {
         const derivative = (state) => ({
             dx: state.v.clone(),
@@ -2551,7 +2538,8 @@ export class MassSpringSystem extends Group {
                     springConstant=200,
                     gravity = 0,
                     horizontalK = 0,
-                    coils=40
+                    coils=40,
+                    makeTrail=false
                 } = {}) {
         super();
         this._suspensionPoint = suspensionPoint;
@@ -2569,7 +2557,8 @@ export class MassSpringSystem extends Group {
             position: massPosition,
             radius: massRadius,
             mass: massMass,
-            color: massColor
+            color: massColor,
+            makeTrail: makeTrail
         });
         this._spring.updateAxis(this._mass.position.clone().sub(suspensionPoint));
         this._spring.update(0);
