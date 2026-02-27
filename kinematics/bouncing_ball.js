@@ -44,8 +44,8 @@ plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .4), {translationY: -1});
 plot3D.renderer.setAnimationLoop(animate);
 
 // Resizing for mobile devices
-ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, camera);
-window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, camera));
+ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera));
 window.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
