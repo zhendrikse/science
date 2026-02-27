@@ -115,9 +115,8 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
   <figcaption>Conway's game of life.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="ising_spin.html">
-    <img alt="Ising spin model" src="./images/ising_spin.png" title="Ising spin model"/>
-  </a>
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>

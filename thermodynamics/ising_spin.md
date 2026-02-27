@@ -10,6 +10,11 @@
 ## 2D Ising spin model
 <div class="header_line"><br/></div>
 
+🔧 The [ising_spin_2d.js](https://github.com/zhendrikse/science/blob/main/thermodynamics/ising_spin_2d.js) below is 100% JavaScript<br/>
+👉 Based on [isingHTML5.html](https://physics.weber.edu/thermal/isingHTML5.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) (Weber State University)<br/>
+👉 For use with [An Introduction to Thermal Physics](http://physics.weber.edu/thermal/)<br/>
+🔑 Updated, refactored and extended by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
+
 <div id="isingSpingCanvasWrapper" class="canvasWrapper2D" style="aspect-ratio: 1/1;">
     <canvas id="2dIsingCanvas" class="applicationCanvas2D"></canvas>
 </div>
