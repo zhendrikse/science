@@ -25,7 +25,7 @@
     <input id="tempSlider" type="range" min="0.01" max="9.99" step="0.01" value="2.27"/>
     <button id="pauseButton">Start</button>
 </div>
-
+<script type="module" src="ising_spin_2d.js"></script>
 <p style="clear: both;"></p>
 
 {% include share_buttons.html %}

@@ -2557,7 +2557,7 @@ export class MassSpringSystem extends Group {
         this._suspensionPoint = suspensionPoint;
         this._gravity = gravity;
         this._horizontalK = horizontalK;
-        this._slinky = new Spring(this, suspensionPoint, axis, {
+        this._spring = new Spring(this, suspensionPoint, axis, {
             radius: 1,
             k: springConstant,
             coils: coils,
@@ -2571,24 +2571,24 @@ export class MassSpringSystem extends Group {
             mass: massMass,
             color: massColor
         });
-        this._slinky.updateAxis(this._mass.position.clone().sub(suspensionPoint));
-        this._slinky.update(0);
+        this._spring.updateAxis(this._mass.position.clone().sub(suspensionPoint));
+        this._spring.update(0);
     }
 
     force(damping=0) { // horizontal spring constant
         const force = this.mass.velocity.clone().multiplyScalar(-damping);
-        return force.add(this._slinky.force);
+        return force.add(this._spring.force);
     }
 
     computeTotalForce(state, damping = 0) {
         const axis = state.x.clone().sub(this._suspensionPoint);
         const length = axis.length();
-        const displacement = this._slinky._restLength - length;
+        const displacement = this._spring._restLength - length;
 
         const springForce = axis
             .clone()
             .normalize()
-            .multiplyScalar(this._slinky.k * displacement);
+            .multiplyScalar(this._spring.k * displacement);
 
         const dampingForce = state.v.clone().multiplyScalar(-damping);
 
@@ -2625,11 +2625,12 @@ export class MassSpringSystem extends Group {
         this._mass.moveTo(newState.x);
         this._mass.accelerateTo(newState.v);
 
-        this._slinky.updateAxis(newState.x.clone().sub(this._suspensionPoint));
-        this._slinky.update(time);
+        this._spring.updateAxis(newState.x.clone().sub(this._suspensionPoint));
+        this._spring.update(time);
     }
 
     get mass() { return this._mass; }
+    get omega() { return Math.sqrt( this._spring.k / this.mass.mass ); }
     kineticEnergy() { return this._mass.kineticEnergy(); }
-    potentialEnergy() { return this._slinky.potentialEnergy(); }
+    potentialEnergy() { return this._spring.potentialEnergy(); }
 }

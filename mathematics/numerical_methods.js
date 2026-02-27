@@ -34,10 +34,11 @@ window.addEventListener("click", () => {
     }
 });
 
+const amplitude = 5;
 const massSpringSystem = new MassSpringSystem({
     suspensionPoint: new Vector3(-15, -7.5, 0),
     axis: new Vector3(15, 0, 0),
-    massPosition: new Vector3(7, -7.5, 0),
+    massPosition: new Vector3(amplitude, -7.5, 0),
     coils: 25,
     massColor: "cyan",
 });
@@ -46,27 +47,27 @@ scene.add(massSpringSystem);
 const massSpringSystemRK4 = new MassSpringSystem({
     suspensionPoint: new Vector3(-15, 2.5, 0),
     axis: new Vector3(15, 0, 0),
-    massPosition: new Vector3(7, 2.5, 0),
+    massPosition: new Vector3(amplitude, 2.5, 0),
     coils: 25,
-    massColor: "red"
+    massColor: "green"
 });
 scene.add(massSpringSystemRK4);
 
 const massSpringSystemRK2 = new MassSpringSystem({
     suspensionPoint: new Vector3(-15, -2.5, 0),
     axis: new Vector3(15, 0, 0),
-    massPosition: new Vector3(7, -2.5, 0),
+    massPosition: new Vector3(amplitude, -2.5, 0),
     coils: 25,
-    massColor: "green"
+    massColor: "purple"
 });
 scene.add(massSpringSystemRK2);
 
 const massSpringSystemSymplectic = new MassSpringSystem({
     suspensionPoint: new Vector3(-15, 7.5, 0),
     axis: new Vector3(15, 0, 0),
-    massPosition: new Vector3( 7, 7.5, 0),
+    massPosition: new Vector3(amplitude, 7.5, 0),
     coils: 25,
-    massColor: "yellow",
+    massColor: "orange",
 });
 scene.add(massSpringSystemSymplectic);
 
@@ -75,7 +76,8 @@ const plotData = [
     [], // Euler
     [], // Symplectic
     [], // RK2
-    []  // RK4
+    [], // RK4
+    []  // Exact
 ];
 
 const plot = new uPlot({
@@ -86,9 +88,10 @@ const plot = new uPlot({
     series: [
         {}, // x-axis
         { label: "Euler", stroke: "cyan" },
-        { label: "Symplectic", stroke: "yellow" },
-        { label: "RK2", stroke: "green" },
-        { label: "RK4", stroke: "red" }
+        { label: "Implicit", stroke: "orange" },
+        { label: "RK2", stroke: "purple" },
+        { label: "RK4", stroke: "green" },
+        { label: "Exact", stroke: "red" }
     ],
     axes: [
         { stroke: "#fff", grid: { stroke: "rgba(255,255,255,0.2)" } },
@@ -101,12 +104,13 @@ const kHorizontal = 100;
 let time = 0;
 const maxPoints = 500;
 const dt = 0.0025;
+const phi = 0;
 function animate() {
     renderer.render(scene, camera);
     controls.update();
     if (!running) return;
 
-    for (let subStep = 0; subStep < 10; subStep++) {
+    for (let subStep = 0; subStep < 15; subStep++) {
         time += dt;
         massSpringSystem.step(dt, Integrators.eulerStep, 0, time);
         massSpringSystemSymplectic.step(dt, Integrators.symplecticEulerStep, 0, time);
@@ -119,6 +123,7 @@ function animate() {
     plotData[2].push(massSpringSystemSymplectic.mass.position.x);
     plotData[3].push(massSpringSystemRK2.mass.position.x);
     plotData[4].push(massSpringSystemRK4.mass.position.x);
+    plotData[5].push(amplitude * Math.cos(massSpringSystem.omega * time + phi)); // Exact
 
     if (plotData[0].length > maxPoints)
         plotData.forEach(arr => arr.shift());
