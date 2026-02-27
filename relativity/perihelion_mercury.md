@@ -24,11 +24,19 @@ The additional terms $\alpha/r^3$ and  $\beta/r^4$ are included in the force.
 In order to simulate without it, simply set $\alpha$ and $\beta$ to zero using
 the checkboxes.
 
-{% include_relative code/perihelion_mercury.html %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
+<script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 
+<canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas>
+<div class="buttonRow">
+    <label for="alphaTerm"><input type="checkbox" id="alphaTerm" checked/>&nbsp;Alpha term</label>
+    <label for="betaTerm"><input type="checkbox" id="betaTerm" checked/>&nbsp;Beta term</label>
+</div>
+<div id="plot" style="margin:auto;"></div>
+<script type="module" src="perihelion_mercury.js"></script>
 <p style="clear: both;"></p>
 
-🔧 [perihelion_mercury.html](https://github.com/zhendrikse/science/blob/main/relativity/code/perihelion_mercury.html) refactored and ported to JavaScript by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
+🔧 [perihelion_mercury.js](https://github.com/zhendrikse/science/blob/main/relativity/perihelion_mercury.js) refactored and ported to JavaScript by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 👉 Based on [base_solution.py](https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py) by [Christopher Körber](https://github.com/ckoerber)<br/>
 👉 See also his [accompanying slides](https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf) and [article on arXiv](https://arxiv.org/abs/1803.01678)<br/>
 🔑 Values are computed using the [NASA fact sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet)
