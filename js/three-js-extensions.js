@@ -1075,7 +1075,7 @@ export class Sphere {
     get radius() { return this._radius; }
     get rayCastHandle() { return this._mesh }
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
-    distanceTo(other) { return other.position.clone().sub(this.position).length() }
+    distanceTo(other) { return this.positionVectorTo(other).length() }
 }
 
 export class Cylinder {
@@ -1273,6 +1273,17 @@ class Helix extends Curve {
     }
 }
 
+class PhysicsState {
+    constructor(position, velocity) {
+        this.x = position.clone();
+        this.v = velocity.clone();
+    }
+
+    clone() {
+        return new PhysicsState(this.x, this.v);
+    }
+}
+
 export class Ball {
     constructor(parent, {
         position = new Vector3(0, 0, 0),
@@ -1290,8 +1301,7 @@ export class Ball {
     {
         this._sphere = new Sphere(parent,
             {position, radius, color, makeTrail, visible, scale, segments, opacity, wireframe});
-        this._position = position;
-        this._velocity = velocity;
+        this._state = new PhysicsState(position, velocity);
         this._mass = mass;
         this._radius = radius;
         this._elasticity = elasticity;
@@ -1301,10 +1311,12 @@ export class Ball {
     appendNeighbor(ball) { this._neighbors.push(ball); }
 
     semiImplicitEulerUpdate(force, dt=0.01) {
-        if (!this._sphere.visible) return;
-        this._velocity.addScaledVector(force, dt / this.mass);
-        this._position.addScaledVector(this.velocity, dt);
-        this._sphere.moveTo(this.position);
+        if (!this.visible) return;
+
+        const accel = force.clone().multiplyScalar(1 / this.mass);
+        this._state.v.addScaledVector(accel, dt);         // v_{n+1}
+        this._state.x.addScaledVector(this._state.v, dt); // x_{n+1}
+        this._sphere.moveTo(this._state.x);               // sync visuals
     }
 
     verletUpdate(force, dt=0.01) {
@@ -1321,21 +1333,21 @@ export class Ball {
     }
 
     bounceOffOfFloor(dt, epsilon = 1e-1) {
-        this._velocity.y *= -this._elasticity;
-        this._position.addScaledVector(this.velocity, dt);
+        this._state.v.y *= -this._elasticity;
+        this._state.x.addScaledVector(this.velocity, dt);
         this._sphere.moveTo(this.position);
 
         // if the velocity is too slow, stay on the ground
         if (this.velocity.y <= epsilon)
-            this._position.y = this.radius + this.radius * epsilon;
+            this._state.v.y = this.radius + this.radius * epsilon;
     }
 
     moveTo(newPosition) {
-        this._position.copy(newPosition);
+        this._state.x.copy(newPosition);
         this._sphere.moveTo(this.position);
     }
 
-    accelerateTo(newVelocity) { this._velocity.copy(newVelocity); }
+    accelerateTo(newVelocity) { this._state.v.copy(newVelocity); }
 
     shiftBy(displacement) { this.moveTo(this.position.clone().add(displacement)); }
 
@@ -1351,15 +1363,16 @@ export class Ball {
 
     kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
     get radius() { return this._radius }
-    get position() { return this._position; }
-    get velocity() { return this._velocity; }
+    get position() { return this._state.x; }
+    get velocity() { return this._state.v; }
     get mass() { return this._mass; }
     get visible() { return this._sphere.visible; }
     get neighbors() { return this._neighbors; }
     get elasticity() { return this._elasticity; }
     get rayCastHandle() { return this._sphere.rayCastHandle; }
+    get state() { return this._state; }
 
-    distanceTo(other) { return this._sphere.distanceTo(this._other) }
+    distanceTo(other) { return this._sphere.distanceTo(other) }
     positionVectorTo(other) { return this._sphere.positionVectorTo(other); }
 }
 
@@ -2448,10 +2461,14 @@ export class MassSpringSystem extends Group {
                     massMass=10,
                     massColor= "orange",
                     springConstant=200,
+                    gravity = 0,
+                    horizontalK = 0,
                     coils=40
                 } = {}) {
         super();
         this._suspensionPoint = suspensionPoint;
+        this._gravity = gravity;
+        this._horizontalK = horizontalK;
         this._slinky = new Spring(this, suspensionPoint, axis, {
             radius: 1,
             k: springConstant,
@@ -2466,12 +2483,43 @@ export class MassSpringSystem extends Group {
             mass: massMass,
             color: massColor
         });
-        this.updateWith(new Vector3(0, 0, 0), 0, 0, false);
+        this._slinky.updateAxis(this._mass.position.clone().sub(this._suspensionPoint));
+        this._slinky.update(0);
     }
 
-    force(damping = 1) { // horizontal spring constant
+    force(damping=0) { // horizontal spring constant
         const force = this.mass.velocity.clone().multiplyScalar(-damping);
         return force.add(this._slinky.force);
+    }
+
+    computeTotalForce(state, time, damping = 0) {
+        const axis = state.x.clone().sub(this._suspensionPoint);
+        const length = axis.length();
+        const displacement = this._slinky._restLength - length;
+
+        const springForce = axis
+            .clone()
+            .normalize()
+            .multiplyScalar(1e6 * this._slinky.k * displacement);
+
+        const dampingForce = state.v.clone().multiplyScalar(-damping);
+
+        const gravity = this._gravity
+            ? new Vector3(0, -this._mass.mass * this._gravity, 0)
+            : new Vector3(0, 0, 0);
+
+        const horizontal = this._horizontalK
+            ? new Vector3(
+                -this._horizontalK * state.x.x,
+                0,
+                -this._horizontalK * state.x.z
+            )
+            : new Vector3(0, 0, 0);
+
+        return springForce
+            .add(dampingForce)
+            .add(gravity)
+            .add(horizontal);
     }
 
     moveMassTo(newPosition) {
@@ -2479,8 +2527,69 @@ export class MassSpringSystem extends Group {
         this._mass.accelerateTo(new Vector3(0, 0, 0));
     }
 
-    updateWith(force, time, dt, dragging=false) {
-        if (!dragging) this._mass.semiImplicitEulerUpdate(force, dt);
+    semiImplicitEulerUpdate(time, dt, damping=0, dragging=false) {
+        if (dragging) return;
+
+        const state = this.mass.state;
+        const force = this.computeTotalForce(state, time, damping);
+        const accel = force.multiplyScalar(1 / this.mass.mass);
+
+        state.v.addScaledVector(accel, dt);
+        state.x.addScaledVector(state.v, dt);
+
+        this._mass.moveTo(state.x);
+        this._slinky.updateAxis(state.x.clone().sub(this._suspensionPoint));
+        this._slinky.update(time);
+    }
+
+    rk4Update(time, dt, damping=0, dragging=false) {
+        if (dragging) return;
+
+        const state = this._mass._state;
+
+        const derivs = (s) => {
+            const force = this.computeTotalForce(s, time, damping);
+            return {
+                dx: s.v.clone(),
+                dv: force.multiplyScalar(1 / this._mass.mass)
+            };
+        };
+
+        const k1 = derivs(state.clone());
+
+        const s2 = state.clone();
+        s2.x.addScaledVector(k1.dx, dt/2);
+        s2.v.addScaledVector(k1.dv, dt/2);
+        const k2 = derivs(s2);
+
+        const s3 = state.clone();
+        s3.x.addScaledVector(k2.dx, dt/2);
+        s3.v.addScaledVector(k2.dv, dt/2);
+        const k3 = derivs(s3);
+
+        const s4 = state.clone();
+        s4.x.addScaledVector(k3.dx, dt);
+        s4.v.addScaledVector(k3.dv, dt);
+        const k4 = derivs(s4);
+
+        state.x.addScaledVector(k1.dx, dt/6);
+        state.x.addScaledVector(k2.dx, dt/3);
+        state.x.addScaledVector(k3.dx, dt/3);
+        state.x.addScaledVector(k4.dx, dt/6);
+
+        state.v.addScaledVector(k1.dv, dt/6);
+        state.v.addScaledVector(k2.dv, dt/3);
+        state.v.addScaledVector(k3.dv, dt/3);
+        state.v.addScaledVector(k4.dv, dt/6);
+
+        this._mass.moveTo(state.x);
+
+        this._slinky.updateAxis(state.x.clone().sub(this._suspensionPoint));
+        this._slinky.update(time);
+    }
+
+    verletUpdate(force, time, dt, dragging=false) {
+        if (!dragging) this._mass.verletUpdate(force, dt);
         this._slinky.updateAxis(this._mass.position.clone().sub(this._suspensionPoint));
         this._slinky.update(time);
     }

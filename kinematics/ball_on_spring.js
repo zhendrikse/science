@@ -39,7 +39,9 @@ const massSpringSystem = new MassSpringSystem({
         (Math.random() - 0.5) * 5,  // ±0.25 in X
         10,
         (Math.random() - 0.5) * 5   // ±0.25 in Z
-    )
+    ),
+    gravity: 9.8,
+    horizontalK: 100
 });
 scene.add(massSpringSystem);
 
@@ -102,7 +104,6 @@ const plot = new uPlot({
     bg: "transparent"
 }, plotData, document.getElementById("plot"));
 
-const kHorizontal = 100;
 let time = 0;
 const maxPoints = 500;
 const dt = 0.02;

@@ -43,12 +43,14 @@ plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .4), {translationY: -1});
 plot3D.renderer.setAnimationLoop(animate);
 
 // Resizing for mobile devices
-function resize() {
-    ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
-    axesController.resize();
-}
-window.addEventListener("resize", resize);
-resize();
+ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(renderer, camera));
+window.addEventListener("click", () => {
+    if (!running) {
+        ThreeJsUtils.showOverlayMessage(overlay, "Started");
+        running = true;
+    }
+});
 
 let running = false;
 document.getElementById("bouncingBallButton").addEventListener("click", () => running = true);

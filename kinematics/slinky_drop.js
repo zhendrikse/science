@@ -25,8 +25,7 @@ window.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
         running = true;
-    } else
-        ThreeJsUtils.showOverlayMessage(overlay, "Click to start the animation!");
+    }
 });
 
 const light = new DirectionalLight(0xffffff, 1);
