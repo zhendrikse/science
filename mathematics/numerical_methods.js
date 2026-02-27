@@ -88,7 +88,7 @@ const plot = new uPlot({
     series: [
         {}, // x-axis
         { label: "Euler", stroke: "cyan" },
-        { label: "Implicit", stroke: "orange" },
+        { label: "Symplectic", stroke: "orange" },
         { label: "RK2", stroke: "purple" },
         { label: "RK4", stroke: "green" },
         { label: "Exact", stroke: "red" }
