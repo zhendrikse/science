@@ -4,6 +4,7 @@ import { Ball, Axes, AxesController, AxesParameters, ThreeJsUtils, Plot3DView } 
 const canvasContainer = document.getElementById("bouncingBallWrapper");
 const canvas = document.getElementById("bouncingBallCanvas");
 const overlay = document.getElementById("overlayText");
+let running = false;
 
 const scene = new Scene();
 const worldGroup = new Group();
@@ -52,9 +53,6 @@ window.addEventListener("click", () => {
         running = true;
     }
 });
-
-let running = false;
-document.getElementById("bouncingBallButton").addEventListener("click", () => running = true);
 
 let timeData = [];
 let positionData = [];
