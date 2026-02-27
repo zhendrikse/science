@@ -112,10 +112,7 @@ function animate() {
     if (!running) return;
 
     time += dt;
-    const gravitationalForce = new Vector3(0, -massSpringSystem.mass.mass * g, 0);
-    const horizontalSwingForce = new Vector3(-kHorizontal * massSpringSystem.position.x, 0, -kHorizontal * massSpringSystem.position.z);
-    const totalForce = gravitationalForce.add(horizontalSwingForce).add(massSpringSystem.force(1));
-    massSpringSystem.semiImplicitEulerUpdate(totalForce, time, dt, dragging);
+    massSpringSystem.semiImplicitEulerUpdate(time, dt, 1, dragging);
 
     const potentialGravity = massSpringSystem.mass.mass * g * massSpringSystem.mass.position.y;
     plotData[0].push(time); // x-axis = time

@@ -1,0 +1,169 @@
+import { Group, Vector3, Scene, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight } from "three";
+import { Spring, Ball } from '../js/three-js-extensions.js';
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+// --- Scene setup ---
+const canvas = document.getElementById("myCanvas");
+const scene = new Scene();
+
+const g = 9.8; // gravitational constant
+
+const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+camera.position.set(17, 5, 17);
+
+const renderer = new WebGLRenderer({canvas, antialias:true, alpha: true});
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setAnimationLoop( animationLoop );
+
+const dirLight = new DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(0, 15, 45);
+scene.add(dirLight);
+renderer.shadowMap.enabled = true;
+scene.add(new AmbientLight(0xffffff, 0.8));
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+
+export class HarmonicOscillator extends Group {
+    constructor({ damping=0.2 } = {}) {
+        super();
+        this._masses = [];
+        this._springs = [];
+        this._damping = damping;
+    }
+
+    withMassAt(position, options = {}) {
+        const ball = new Ball(this, { position, ...options });
+        this._masses.push(ball);
+        return this;
+    }
+
+    withSpringBetween(i, j, k, springColor=0xface8d) {
+        const p1 = this._masses[i].position;
+        const p2 = this._masses[j].position;
+
+        const axis = p2.clone().sub(p1);
+        const spring = new Spring(this, p1.clone(), axis, {
+            k: k,
+            color: springColor
+        });
+        this._springs.push({ spring, i, j });
+
+        return this;
+    }
+
+    moveMass(index, dx) {
+        this._masses[index].shiftBy(new Vector3(dx, 0, 0));
+    }
+
+    update(dt = 0.01) {
+        const forces = this._masses.map(() => new Vector3(0, 0, 0)); // force accumulator
+
+        for (const { spring, i, j } of this._springs) {
+            const m1 = this._masses[i];
+            const m2 = this._masses[j];
+
+            const axis = m2.position.clone().sub(m1.position);
+            const direction = axis.clone().normalize();
+
+            spring.moveTo(m1.position);
+            spring.updateAxis(axis);
+
+            // Hooke
+            const springForceMagnitude = spring.force;
+            const springForce = direction.clone().multiplyScalar(springForceMagnitude);
+
+            // demping langs veerrichting
+            const relativeVelocity = m2.velocity.clone().sub(m1.velocity);
+            const dampingForce = relativeVelocity
+                .projectOnVector(direction)
+                .multiplyScalar(this._damping);
+
+            springForce.add(dampingForce);
+            forces[i].add(springForce);
+            forces[j].add(springForce.clone().negate());
+        }
+
+        this._masses.forEach((mass, index) =>  mass.semiImplicitEulerUpdate(forces[index], dt));
+    }
+}
+
+const oscillator = new HarmonicOscillator({ damping: 0.05 });
+oscillator
+    .withMassAt(new Vector3(-30, 2, 10), { mass: 1, color: 0xff0000 })
+    .withMassAt(new Vector3(-20, 2, 10), { mass: 1, color: 0x3333ff })
+    .withMassAt(new Vector3(-10, 2, 10), { mass: 1, color: 0x3333ff })
+    .withMassAt(new Vector3(  0, 2, 10), { mass: 1, color: 0x3333ff })
+    .withMassAt(new Vector3( 10, 2, 10), { mass: 1, color: 0xff0000 })
+    .withSpringBetween(0, 1, 50)
+    .withSpringBetween(1, 2, 50)
+    .withSpringBetween(2, 3, 50)
+    .withSpringBetween(3, 4, 50);
+scene.add(oscillator);
+oscillator.moveMass(0,  7);
+oscillator.moveMass(4, -7);
+
+const opts = {
+    title: "Kinetic Energy vs Time",
+    width: canvas.clientWidth,
+    height: canvas.clientHeight * 1.5,
+    bg: "transparent",
+    scales: { x: { auto: true }, y: { auto: true } },
+    axes: [
+        {
+            stroke: "#ff0",
+            font: "12px Arial",
+            grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1},
+            label: "Time [s]"
+        },
+        {
+            stroke: "#ff0",
+            font: "12px Arial",
+            grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1},
+            label: "Displacement"
+        }
+    ],
+    series: [
+        { label: "t" },
+        { label: "ball 1", stroke: "red" },
+        { label: "ball 2", stroke: "blue" },
+        { label: "ball 3", stroke: "blue" },
+        { label: "ball 4", stroke: "blue" },
+        { label: "ball 5", stroke: "red" }
+    ]
+};
+
+const positionData = [
+    [], // time
+    [], // ball 1
+    [], // ball 2
+    [], // ball 3
+    [], // ball 4
+    [] // ball 5
+];
+
+const uplotChart = new uPlot(opts, positionData, document.getElementById("oscillatorPlot"));
+
+const maxPoints = 500;
+const dt = 0.005;
+function animationLoop(time) {
+    for (let i = 0; i < 3; ++i) {
+        oscillator.update(dt);
+
+        positionData[0].push(time * 0.001);
+        positionData[1].push(oscillator._masses[0].position.x);
+        positionData[2].push(oscillator._masses[1].position.x);
+        positionData[3].push(oscillator._masses[2].position.x);
+        positionData[4].push(oscillator._masses[3].position.x);
+        positionData[5].push(oscillator._masses[4].position.x);
+    }
+
+    controls.update();
+    renderer.render(scene, camera);
+
+    if (positionData[0].length > maxPoints)
+        positionData.forEach(arr => arr.shift());
+    uplotChart.setData(positionData);
+}
+
