@@ -1,7 +1,6 @@
-import { Vector3, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight, BoxGeometry,
-    MeshStandardMaterial, DoubleSide, Mesh, Scene, Group } from "three";
+import { Vector3, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight,
+    Raycaster, Vector2, Plane, Scene } from "three";
 import {MassSpringSystem, Ceiling, ThreeJsUtils} from '../js/three-js-extensions.js';
-import { Raycaster, Vector2, Plane } from "three";
 
 // --- Scene setup ---
 const canvas = document.getElementById("springCanvas");
@@ -31,8 +30,7 @@ window.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
         running = true;
-    } else
-        ThreeJsUtils.showOverlayMessage(overlay, "Click to start the animation!");
+    }
 });
 
 new Ceiling(scene, {position: new Vector3(0, 30, 0)})
@@ -87,7 +85,7 @@ const plotData = [
 
 const plot = new uPlot({
     width: canvas.clientWidth,
-    height: canvas.clientHeight * .5,
+    height: canvas.clientHeight * .75,
     title: "Slinky energies",
     scales: { x: { time: false }, y: { auto: true } },
     series: [
@@ -110,22 +108,20 @@ const maxPoints = 500;
 const dt = 0.02;
 function animate() {
     renderer.render(scene, camera);
-    //controls.update();
-
     if (!running) return;
 
     time += dt;
     const gravitationalForce = new Vector3(0, -massSpringSystem.mass.mass * g, 0);
     const horizontalSwingForce = new Vector3(-kHorizontal * massSpringSystem.position.x, 0, -kHorizontal * massSpringSystem.position.z);
-    const totalForce = gravitationalForce.add(horizontalSwingForce).add(massSpringSystem.force());
-    massSpringSystem.updateWith(totalForce, time, dt, dragging);
+    const totalForce = gravitationalForce.add(horizontalSwingForce).add(massSpringSystem.force(1));
+    massSpringSystem.semiImplicitEulerUpdate(totalForce, time, dt, dragging);
 
     const potentialGravity = massSpringSystem.mass.mass * g * massSpringSystem.mass.position.y;
     plotData[0].push(time); // x-axis = time
     plotData[1].push(massSpringSystem.kineticEnergy());
     plotData[2].push(massSpringSystem.potentialEnergy() + potentialGravity);
     plotData[3].push(massSpringSystem.kineticEnergy() + massSpringSystem.potentialEnergy() + potentialGravity);
-    plotData[4].push((5 + massSpringSystem.mass.position.y) * 1000);
+    plotData[4].push((5 + massSpringSystem.mass.position.y) * 100);
 
     if (plotData[0].length > maxPoints)
         plotData.forEach(arr => arr.shift());
