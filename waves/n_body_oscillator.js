@@ -6,8 +6,6 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 const canvas = document.getElementById("myCanvas");
 const scene = new Scene();
 
-const g = 9.8; // gravitational constant
-
 const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
 camera.position.set(17, 5, 17);
 
@@ -70,19 +68,14 @@ export class HarmonicOscillator extends Group {
             spring.moveTo(m1.position);
             spring.updateAxis(axis);
 
-            // Hooke
-            const springForceMagnitude = spring.force;
-            const springForce = direction.clone().multiplyScalar(springForceMagnitude);
-
-            // demping langs veerrichting
             const relativeVelocity = m2.velocity.clone().sub(m1.velocity);
             const dampingForce = relativeVelocity
                 .projectOnVector(direction)
                 .multiplyScalar(this._damping);
 
-            springForce.add(dampingForce);
-            forces[i].add(springForce);
-            forces[j].add(springForce.clone().negate());
+            const totalForce = spring.force.add(dampingForce);
+            forces[i].add(totalForce);
+            forces[j].add(totalForce.clone().negate());
         }
 
         this._masses.forEach((mass, index) =>  mass.semiImplicitEulerUpdate(forces[index], dt));
@@ -102,7 +95,7 @@ oscillator
     .withSpringBetween(3, 4, 50);
 scene.add(oscillator);
 oscillator.moveMass(0,  7);
-oscillator.moveMass(4, -7);
+oscillator.moveMass(3, -7);
 
 const opts = {
     title: "Kinetic Energy vs Time",

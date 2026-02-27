@@ -1319,15 +1319,6 @@ export class Ball {
         this._sphere.moveTo(this._state.x);               // sync visuals
     }
 
-    verletUpdate(force, dt=0.01) {
-        if (!this._sphere.visible) return;
-        const a = force.clone().multiplyScalar(1 / this.mass);
-        this._position.addScaledVector(this.velocity, dt).addScaledVector(a, 0.5 * dt * dt);
-        const a2 = force.clone().multiplyScalar(1 / this.mass);
-        this._velocity.addScaledVector(a.add(a2), 0.5 * dt);
-        this._sphere.moveTo(this.position);
-    }
-
     liesOnFloor({floorLevel=0, epsilon=1e-1} = {}) {
         return this.position.y - this.radius <= epsilon + floorLevel;
     }
@@ -1451,7 +1442,8 @@ export class Spring {
     get position() { return this._position; }
     get axis() { return this._axis; }
     get k() { return this._k; }
-    get force() { return this.axis.clone().normalize().multiplyScalar(this._k * this.displacement); }
+    get force() { return this.axis.clone().normalize().multiplyScalar(-this._k * this.displacement); }
+
     get displacement() {return this._restLength - this.axis.length(); }
 
     set color(value) { this._mesh.material.color = value; }
@@ -2500,7 +2492,7 @@ export class MassSpringSystem extends Group {
         const springForce = axis
             .clone()
             .normalize()
-            .multiplyScalar(1e6 * this._slinky.k * displacement);
+            .multiplyScalar(this._slinky.k * displacement);
 
         const dampingForce = state.v.clone().multiplyScalar(-damping);
 
@@ -2585,12 +2577,6 @@ export class MassSpringSystem extends Group {
         this._mass.moveTo(state.x);
 
         this._slinky.updateAxis(state.x.clone().sub(this._suspensionPoint));
-        this._slinky.update(time);
-    }
-
-    verletUpdate(force, time, dt, dragging=false) {
-        if (!dragging) this._mass.verletUpdate(force, dt);
-        this._slinky.updateAxis(this._mass.position.clone().sub(this._suspensionPoint));
         this._slinky.update(time);
     }
 
