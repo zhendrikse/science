@@ -1,7 +1,7 @@
 import { Group, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial, PointsMaterial,
     Vector3, BackSide, AdditiveBlending,    DoubleSide, Quaternion, BufferGeometry, BufferAttribute, Points,
     MeshBasicMaterial, FrontSide, LineDashedMaterial, LineBasicMaterial, LineLoop, Line, PlaneGeometry } from "three";
-import { Trail } from 'three-js-extensions.js';
+import { Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
 export const EARTH_SEMI_MAJOR_AXIS = 149598261.;
 export const PLANET_SCALE = 0.25E7;  // meters → render units (radius), planet sizes are shrunk by this factor
