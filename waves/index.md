@@ -167,7 +167,7 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="double_slit_interference.html">
+  <a href="two-source-interference.html">
     <img alt="Double slit" src="images/double_slit_interference.png" title="Click to animate"/>
   </a>
   <figcaption>The double slit experiment, that unequivocally demonstrates the wave-like nature of light. 

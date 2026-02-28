@@ -163,7 +163,6 @@ wavelengthSlider.addEventListener("input", (event) => {
 // Resizing for mobile devices
 function resize() {
     ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
-    axesController.resize();
 }
 window.addEventListener("resize", resize);
 resize();
