@@ -4,11 +4,7 @@
 # Atomic &amp; molecular physics
 <div class="header_line"><br/></div>
 
-<blockquote>
-I... a universe of atoms, an atom in the universe. &mdash;
-<a href="https://en.wikipedia.org/wiki/Richard_Feynman">Richard P. Feynman</a> 
-</blockquote><br/>
-
+> I... a universe of atoms, an atom in the universe. &mdash; [Richard P. Feynman](https://en.wikipedia.org/wiki/Richard_Feynman)
 
 ### Uranium 235 fission &amp; the double helix
 <div class="subsection_header_line"><br/></div>

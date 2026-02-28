@@ -1,14 +1,12 @@
 {% include breadcrumbs.html %}
 
-<blockquote>
-The important thing is not to stop questioning. 
+>The important thing is not to stop questioning. 
 Curiosity has its own reason for existence. 
 One cannot help but be in awe when he contemplates 
 the mysteries of eternity, of life, of the marvelous 
 structure of reality. It is enough if one tries 
 merely to comprehend a little of this mystery 
-each day. &mdash; <a href="https://en.wikipedia.org/wiki/Albert_Einstein">Albert Einstein</a>
-</blockquote><br/>
+each day. &mdash; [Albert Einstein](https://en.wikipedia.org/wiki/Albert_Einstein)
 
 # Special &amp; general relativity
 <div style="border-top: 2px solid #cccccc"><br/></div>
@@ -23,12 +21,10 @@ is of an equally exceptional level of quality.
 ## Special relativity
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
-<blockquote>
-Henceforth space by itself, and time by itself,
+> Henceforth, space by itself, and time by itself,
 are doomed to fade away into mere shadows,
 and only a kind of union of the two will preserve an independent reality.
-&mdash; <a href="https://en.wikipedia.org/wiki/Hermann_Minkowski">Hermann Minkowski.</a>
-</blockquote><br/>
+&mdash; [Hermann Minkowski](https://en.wikipedia.org/wiki/Hermann_Minkowski)
 
 ### Galilean transformations &amp; lightcone animation 
 <div style="border-top: 1px solid #999999"><br/></div>
@@ -93,10 +89,8 @@ and only a kind of union of the two will preserve an independent reality.
 ## General relativity
 <div style="border-top: 2px solid #cccccc"><br/></div>
 
-<blockquote>
-Since the mathematicians have invaded the theory of relativity,
+> Since the mathematicians have invaded the theory of relativity,
 I do not understand it myself anymore. &mdash; Albert Einstein
-</blockquote><br/>
 
 <figure style="float: center; text-align: center;">
     <img alt="Curvature equation" src="images/curvature_equation.png" title="Curvature equation"/>

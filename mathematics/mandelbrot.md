@@ -172,14 +172,12 @@ Robert W. Brooks &amp; Peter Matelski first described and illustrated this set i
 the first now well-known visualizations of the set, 
 while working at IBM’s Thomas J. Watson Research Center in New York:
 
-<blockquote>
-Because of his access to IBM's computers, Mandelbrot was one of the first to use computer 
+> Because of his access to IBM's computers, Mandelbrot was one of the first to use computer 
 graphics to create and display fractal geometric images, leading to his discovery of the 
 Mandelbrot set in 1980. He showed how visual complexity can be created from simple rules. 
 He said that things typically considered to be "rough", a "mess", or "chaotic", 
 such as clouds or shorelines, actually had a "degree of order". &mdash; 
-<a href="https://en.wikipedia.org/wiki/Benoit_Mandelbrot">Wikipedia</a>
-</blockquote><br/>
+[Wikipedia](https://en.wikipedia.org/wiki/Benoit_Mandelbrot)
 
 
 ### References

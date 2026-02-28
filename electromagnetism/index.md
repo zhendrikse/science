@@ -4,11 +4,8 @@
 # Electromagnetism
 <div class="header_line"><br/></div>
 
-<blockquote>
-Nothing is too wonderful to be true if it be consistent with the laws of nature. &mdash;
-<a href="https://en.wikipedia.org/wiki/Michael_Faraday">Michael Faraday</a>
-</blockquote><br/>
-
+> Nothing is too wonderful to be true if it be consistent with the laws of nature. &mdash;
+[Michael Faraday](https://en.wikipedia.org/wiki/Michael_Faraday)
 
 ### Electron movement in electric fields
 <div style="border-top: 1px solid #999999"><br/></div>

@@ -4,10 +4,8 @@
 # Vibrations &amp; Waves
 <div class="header_line"><br/></div>
 
-<blockquote>
-Bring forward what is true. Write it so that it is clear. Defend it to your last breath. &mdash;
-<a href="https://en.wikipedia.org/wiki/Ludwig_Boltzmann">Ludwig Boltzmann</a>
-</blockquote><br/>
+> Bring forward what is true. Write it so that it is clear. Defend it to your last breath. &mdash;
+[Ludwig Boltzmann](https://en.wikipedia.org/wiki/Ludwig_Boltzmann)
 
 ### Wave propagation in a pool
 <div class="subsection_header_line"><br/></div>

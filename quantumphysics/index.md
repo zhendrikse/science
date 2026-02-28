@@ -4,10 +4,8 @@
 # Particle and quantum physics
 <div class="header_line"><br/></div>
 
-<blockquote>
-If you think you understand quantum mechanics, you don't understand quantum mechanics.
-&mdash; <a href="https://en.wikipedia.org/wiki/Richard_Feynman">Richard P. Feynman</a> 
-</blockquote><br/>
+> If you think you understand quantum mechanics, you don't understand quantum mechanics.
+&mdash; [Richard P. Feynman](https://en.wikipedia.org/wiki/Richard_Feynman)
 
 ###  Plane waves &amp; the particle in a box
 <div style="border-top: 1px solid #999999"><br/></div>

@@ -1,10 +1,8 @@
 {% include breadcrumbs.html %}
 
-<blockquote>
-Somehow it’s okay for people to chuckle about not being good at math. 
+> Somehow it’s okay for people to chuckle about not being good at math. 
 Yet, if I said “I never learned to read,” they’d say I was an illiterate dolt. &mdash;
-<a href="https://en.wikipedia.org/wiki/Neil_deGrasse_Tyson">Neil deGrasse Tyson</a>
-</blockquote><br/>
+[Neil deGrasse Tyson](https://en.wikipedia.org/wiki/Neil_deGrasse_Tyson)
 
 <a name="mathematics"></a>
 # Mathematics
@@ -14,7 +12,7 @@ Yet, if I said “I never learned to read,” they’d say I was an illiterate d
 ### Plots for $f(x, y) \rightarrow \mathbb{R}$
 <div style="border-top: 1px solid #999999"><br/></div>
 
-The application below let's one render functions in two real variables $x$ and $y$.
+The application below lets one render functions in two real variables $x$ and $y$.
 The color-coding below is associated with the height of the object and
 is added purely for aesthetical purposes.
 

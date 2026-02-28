@@ -30,34 +30,32 @@ Therefore, we assume $\partial V/\partial\rho$ is negligible and can be taken to
 As the surrounding area does not contain any additional charges, we can consider this
 to be a so-called <em>source-free</em> region, and Laplace’s Equation applies:
 
-$\begin{equation}\nabla^2V=0\end{equation}$
+$$\begin{equation}\nabla^2V=0\end{equation}$$
 
-<blockquote>
-A reasonable question to ask at this point would be, what about the potential field close to the edge 
+> A reasonable question to ask at this point would be, what about the potential field close to the edge 
 of the plates, or, for that matter, beyond the plates? The field in this region is referred to as a 
 fringing field. For the fringing field, $\partial V/\partial \rho$ is no longer negligible and must 
 be taken into account. 
-
-In addition, it is necessary to modify the boundary conditions to account for the outside 
+>
+> In addition, it is necessary to modify the boundary conditions to account for the outside 
 surfaces of the plates (that is, the sides of the plates that face away from the dielectric) 
 and to account for the effect of the boundary between the spacer material and free space. 
 These issues make the problem much more difficult. 
 When an accurate calculation of a fringing field is necessary, it is common to resort 
 to a numerical solution of Laplace’s Equation. Fortunately, accurate calculation of 
 fringing fields is usually not required in practical engineering applications. &mdash; 
-<a href="https://www.circuitbread.com/textbooks/electromagnetics-i/electrostatics/potential-field-within-a-parallel-plate-capacitor">www.circuitbread.com</a>
-</blockquote><br/>
+[www.circuitbread.com](https://www.circuitbread.com/textbooks/electromagnetics-i/electrostatics/potential-field-within-a-parallel-plate-capacitor)
 
 When we assume the plates to lie in the $xy$-plane, the  fields will be symmetric along the $z$-direction, 
 hence $\partial/V\partial z$ will be zero.
 
 This simplifies our Laplace equation to
 
-$\begin{equation}\dfrac{\partial^2V}{\partial x^2} + \dfrac{\partial^2V}{\partial y^2} = 0 \end{equation}$
+$$\begin{equation}\dfrac{\partial^2V}{\partial x^2} + \dfrac{\partial^2V}{\partial y^2} = 0 \end{equation}$$
 
 Once we know the potential $V$, we can also calculate the electric field:
 
-$\begin{equation} \vec{E} = -\nabla\cdot V = -\left( \dfrac{\partial}{\partial x}\hat{x} + \dfrac{\partial}{\partial y}\hat{y} + \dfrac{\partial}{\partial z}\hat{z} \right)V\end{equation}$
+$$\begin{equation} \vec{E} = -\nabla\cdot V = -\left( \dfrac{\partial}{\partial x}\hat{x} + \dfrac{\partial}{\partial y}\hat{y} + \dfrac{\partial}{\partial z}\hat{z} \right)V\end{equation}$$
 
 So our task is to numerically solve the second order differential equation for the potential $V$:
 
@@ -69,7 +67,7 @@ So our task is to numerically solve the second order differential equation for t
 
 - $V(x, y - h) \approx V(x, y) - h\dfrac{\partial V}{\partial y} + \dfrac{h^2}{2}\dfrac{\partial^2 V}{\partial y^2}$
 
-$\begin{equation}V(x, y) = \dfrac{1}{4} \bigg( V(x + h, y) + V(x, y+ h) + V(x - h, y) + V(x, y - h) \bigg)\end{equation}$
+$$\begin{equation}V(x, y) = \dfrac{1}{4} \bigg( V(x + h, y) + V(x, y+ h) + V(x - h, y) + V(x, y - h) \bigg)\end{equation}$$
 
 This translates to the following Python code:
 

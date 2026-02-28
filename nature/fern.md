@@ -15,29 +15,21 @@ that the construction of this fractal makes use of matrices.
 👉 Also available as pure JavaScript in [chaos game](https://www.hendrikse.name/science/mathematics/chaos_game.html) 
 
 {% include_relative code/fern.html %}
-
 <p style="clear: both;"></p>
 
 ## Background information
 <div style="border-top: 1px solid #999999"><br/></div>
 
-<blockquote>
-In mathematics, iterated function systems (IFSs) are a method of constructing 
+> In mathematics, iterated function systems (IFSs) are a method of constructing 
 <a href="https://en.wikipedia.org/wiki/Fractal">fractals</a>; 
 the resulting fractals are often <a href="https://en.wikipedia.org/wiki/Self-similar">self-similar</a>. 
 IFS fractals are more related to set theory 
 than fractal geometry. They were introduced in 1981. &mdash;
 <a href="https://en.wikipedia.org/wiki/Iterated_function_system">Wikipedia</a>
-</blockquote>
-
-<p style="clear: both;"></p>
 
 From [Michael Barnsley](https://en.wikipedia.org/wiki/Michael_Barnsley)&apos;s own article we quote:
 
-<p style="clear: both;"></p>
-
-<blockquote>
-IFSs provide models for certain plants, leaves, and ferns, by virtue of the self-similarity which often occurs 
+> IFSs provide models for certain plants, leaves, and ferns, by virtue of the self-similarity which often occurs 
 in branching structures in nature. But nature also exhibits randomness and variation from one level to the next; 
 no two ferns are exactly alike, and the branching fronds become leaves at a smaller scale. 
 V-variable fractals allow for such randomness and variability across scales, while at the same time 
@@ -46,15 +38,14 @@ These factors allow us to make the hybrid biological models... ...we speculate t
 geometrical fractal model is found that has a good match to the geometry of a given plant, 
 then there is a specific relationship between these code trees and the information 
 stored in the genes of the plant. &mdash; 
-<a href="https://en.wikipedia.org/wiki/Michael_Barnsley">Michael Barnsley</a>, <i>et al.</i> in
-<a href="https://maths-people.anu.edu.au/~barnsley/pdfs/V-var_super_fractals.pdf">V -variable fractals and superfractals</a>
-</blockquote>
-
-<p style="clear: both;"></p>
+[Michael Barnsley](https://en.wikipedia.org/wiki/Michael_Barnsley), _et al._ in
+[V -variable fractals and superfractals](https://maths-people.anu.edu.au/~barnsley/pdfs/V-var_super_fractals.pdf)
 
 As stated above, the Barnsley Fern is created using a matrix transformation:
 
-$f(x, y)=\begin{pmatrix} a & b \\ c & d \end{pmatrix}\begin{pmatrix}x \\ y\end{pmatrix} + \begin{pmatrix}e \\ f\end{pmatrix}$
+$$\begin{equation}
+f(x, y)=\begin{pmatrix} a & b \\ c & d \end{pmatrix}\begin{pmatrix}x \\ y\end{pmatrix} + \begin{pmatrix}e \\ f\end{pmatrix}
+\end{equation}$$
 
 Four different transformations are used, illustrated in the table below. 
 Variables $a$ to $f$ are the coefficients, 

@@ -4,10 +4,8 @@
 # Classical mechanics
 <div class="header_line"><br/></div>
 
-<blockquote>
-I can calculate the motion of heavenly bodies but not the madness of people.
-&mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
-</blockquote><br/>
+> I can calculate the motion of heavenly bodies but not the madness of people.
+&mdash; [Isaac Newton](https://en.wikipedia.org/wiki/Isaac_Newton)
 
 ### Fun with springs
 <div style="border-top: 1px solid #999999"><br/></div>

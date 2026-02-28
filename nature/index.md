@@ -4,10 +4,8 @@
 # Our daily environment
 <div class="header_line"><br/></div>
 
-<blockquote>
-If I have ever made any valuable discoveries, it has been due more to patient attention, than to any other talent.
-&mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.
-</blockquote><br/>
+> If I have ever made any valuable discoveries, it has been due more to patient attention, than to any other talent.
+&mdash; [Isaac Newton](https://en.wikipedia.org/wiki/Isaac_Newton)
 
 ### Flocking birds &amp; seashells
 <div style="border-top: 1px solid #999999"><br/></div>
