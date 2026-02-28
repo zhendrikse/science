@@ -9,8 +9,6 @@
 🔥 Refactored and extended with realistic colour coding by [Zeger Hendrikse](https://www.hendrikse.name/).<br/>
 👉 A [VPython](https://www.vpython.org/) version is also available as [black_hole_raytracer.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/black_hole_raytracer.py).
 
-
-
 {% include_relative code/black_hole_raytracer.html %}
 
 <p style="clear: both;"></p>
@@ -89,38 +87,31 @@ Black holes are an outcome of the
 [Einstein field equations (EFE)](https://en.wikipedia.org/wiki/Einstein_field_equations):
 
 
-$R_{\mu\nu} -\frac{1}{2}R G_{\mu\nu} + \lambda g_{\mu\nu} = k T_{\mu\nu}$
+$$\begin{equation}
+R_{\mu\nu} -\frac{1}{2}R G_{\mu\nu} + \lambda g_{\mu\nu} = k T_{\mu\nu}
+\end{equation}$$
 
-<blockquote>
-<p>
-The expression on the left represents the curvature of spacetime as determined by the metric; 
-the expression on the right represents the stress–energy–momentum content of spacetime. 
-The EFE can then be interpreted as a set of equations dictating how stress–energy–momentum 
-determines the curvature of spacetime.
-</p>
 
-<p>[&hellip;]</p>
+> The expression on the left represents the curvature of spacetime as determined by the metric; 
+> the expression on the right represents the stress–energy–momentum content of spacetime. 
+> The EFE can then be interpreted as a set of equations dictating how stress–energy–momentum 
+> determines the curvature of spacetime.
 
-<p>
-The equations are more complex than they appear. Given a specified distribution of matter and energy 
-in the form of a stress–energy tensor, the EFE are understood to be equations for the 
-metric tensor $g_{\mu\nu}$, since both the Ricci tensor and scalar curvature depend on 
-the metric in a complicated nonlinear manner. When fully written out, the EFE are a 
-system of ten coupled, nonlinear, hyperbolic-elliptic 
-<a href="https://en.wikipedia.org/wiki/Partial_differential_equation">partial differential equations</a>.
-&mdash;
-<a href="https://en.wikipedia.org/wiki/Einstein_field_equations">Wikipedia</a>
-</p>
-</blockquote><br/>
+> The equations are more complex than they appear. Given a specified distribution of matter and energy 
+> in the form of a stress–energy tensor, the EFE are understood to be equations for the 
+> metric tensor $g_{\mu\nu}$, since both the Ricci tensor and scalar curvature depend on 
+> the metric in a complicated nonlinear manner. When fully written out, the EFE are a 
+> system of ten coupled, nonlinear, hyperbolic-elliptic 
+> [partial differential equations](https://en.wikipedia.org/wiki/Partial_differential_equation).
+> &mdash;
+> [Wikipedia](https://en.wikipedia.org/wiki/Einstein_field_equations)
 
 This led [John Archibald Wheeler](https://en.wikipedia.org/wiki/John_Archibald_Wheeler), the 
 "hero of the black hole story" according to 
 [Steven Hawking](https://en.wikipedia.org/wiki/Stephen_Hawking) and the first to
 coin the term [black hole](https://en.wikipedia.org/wiki/Black_hole), to state that
 
-<blockquote>
-Spacetime tells matter how to move; matter tells spacetime how to curve.
-</blockquote><br/>
+> Spacetime tells matter how to move; matter tells spacetime how to curve.
 
 Back in 1915, [Karl Schwarzschild ](https://en.wikipedia.org/wiki/Karl_Schwarzschild) was the first to 
 actually derive an exact solution to these equations, which is quite an achievement, 
