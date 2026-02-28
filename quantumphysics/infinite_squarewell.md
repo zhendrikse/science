@@ -3,13 +3,11 @@
 ## A one-dimensional particle in a box
 <div class="header_line"><br/></div>
 
-<blockquote>
-The Infinite Square Well (ISW) is an idealization of a physical system that strictly prohibits
-the particle from straying beyond a certain range of x-values, but exerts no influence over
-the particle within those limits. So the particle is “free” to roam, but only over a prescribed
-range on the x-axis. &mdash; 
-<a href="https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247">Visualizing Quantum Mechanics with Python</a>
-</blockquote>
+> The Infinite Square Well (ISW) is an idealization of a physical system that strictly prohibits
+> the particle from straying beyond a certain range of x-values, but exerts no influence over
+> the particle within those limits. So the particle is “free” to roam, but only over a prescribed
+> range on the x-axis. &mdash; [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247) 
+
 <p style="clear: both;"></p>
 
 ⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
@@ -29,6 +27,29 @@ state has four times the energy, and therefore four times the frequency of the g
 <div class="guiContainer" id="infiniteWellGui"></div>
 <script type="module" src="infinite_squarewell_3d.js"></script>
 <p style="clear: both;"></p>
+
+The graph shows the expectation value of $x$ as function of time.
+
+$$\begin{equation}
+\langle x \rangle(t)= \int x |\psi(x,t)|^2 dx \approx \frac{\sum x_i |\psi_i|^2}{\sum |\psi_i|^2}
+\end{equation}$$
+
+When we choose one eigen state, we have
+
+$$\begin{equation}
+|\psi(x,t)|^2 = |\psi(x)|^2
+\end{equation}$$
+
+which implies no time dependency and hence, $\langle x \rangle$ 
+is constant, which makes sense in the physical world: stationary states don't move!
+Only when we choose a superposition of states, we get an oscillation in the plot:
+
+$$\begin{equation}
+\langle x \rangle (t)
+\sim
+\cos((E_1 - E_0)t)
+\end{equation}$$
+
 
 ## Additional two-dimensional simulation
 <div class="header_line"><br/></div>
