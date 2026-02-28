@@ -34,12 +34,9 @@ const surfaceData = {
 };
 
 class ControlsGui {
-    constructor(surfaceController, axesController, plot3d) {
+    constructor(surfaceController) {
         const gui = new GUI({width: "100%", autoPlace: false});
-
-        this._axesController = axesController;
         this._surfaceController = surfaceController;
-        this._plot3d = plot3d;
 
         this.#createAxesFolder(gui);
         this.#createInterferenceFolder(gui);
@@ -127,7 +124,7 @@ axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox(), fal
 const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox());
 plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .6), {translationY: -2});
 plot3D.renderer.setAnimationLoop( animate );
-const gui = new ControlsGui(surfaceController, axesController, plot3D);
+const gui = new ControlsGui(surfaceController);
 
 // Resizing for mobile devices
 function resize() {
