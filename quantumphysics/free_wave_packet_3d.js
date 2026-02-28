@@ -264,7 +264,7 @@ const plotData = [
 
 const plot = new uPlot({
     width: canvas.clientWidth,
-    height: canvas.clientHeight * .5,
+    height: canvas.clientHeight,
     title: "Probability finding the particle at x",
     scales: { x: { time: false }, y: { auto: true } },
     series: [

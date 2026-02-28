@@ -119,11 +119,8 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="double_slit.html">
-    <img alt="Double slit" src="images/double_slit.png" title="Click to animate"/>
-  </a>
-  <figcaption>The double slit experiment, stressing the <em>wave-particle duality</em>. 
-  The interference pattern is generated statically.</figcaption>
+  <!-- RESERVED FOR FUTURE APPLICATION 
+    -->
 </figure>
 <figure class="right_image">
   <a href="double_slit.html">

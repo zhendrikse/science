@@ -167,10 +167,11 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="two-source-interference.html">
-    <img alt="Interference pattern" src="images/interference_pattern_3d.png" title="Click to animate"/>
+  <a href="double_slit_interference.html">
+    <img alt="Double slit" src="images/double_slit_interference.png" title="Click to animate"/>
   </a>
-  <figcaption>Three-dimensional interference pattern by two oscillating point sources.</figcaption>
+  <figcaption>The double slit experiment, that unequivocally demonstrates the wave-like nature of light. 
+  </figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
