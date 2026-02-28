@@ -1365,7 +1365,7 @@ class Body {
     }
 
     clone() {
-        return new Body(this.position, this.velocity, this.mass, this.charge);
+        return new Body(this.position.clone(), this.velocity.clone(), this.mass, this.charge);
     }
 }
 
