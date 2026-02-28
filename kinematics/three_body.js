@@ -84,9 +84,9 @@ function iterate(subSteps, dt) {
     const force_CB = forceBetween(sphereB, sphereC);
     const force_AC = forceBetween(sphereC, sphereA);
 
-    sphereA.step(force_BA.clone().sub(force_AC), dt / subSteps, Integrators.rk4Step);
-    sphereB.step(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.rk4Step);
-    sphereC.step(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.rk4Step);
+    sphereA.step(force_BA.clone().sub(force_AC), dt / subSteps, Integrators.symplecticEulerStep);
+    sphereB.step(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.symplecticEulerStep);
+    sphereC.step(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.symplecticEulerStep);
 }
 
 const dt = 5000;

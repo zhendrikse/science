@@ -1397,7 +1397,7 @@ export class Ball {
     appendNeighbor(ball) { this._neighbors.push(ball); }
 
     step(force, dt=0.01, integrator=Integrators.symplecticEulerStep) {
-        const accelerationFn = (body) => force.multiplyScalar(1 / body.mass);
+        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
         const updatedBody = integrator(this.body, dt, accelerationFn);
 
         this.moveTo(updatedBody.position);
