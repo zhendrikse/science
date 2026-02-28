@@ -60,7 +60,7 @@ $$\begin{equation}
 👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
 
 <div id="infiniteSquareWellWrapper2D" style="width: 100%; aspect-ratio: 19/12">
-    <canvas id="infiniteSquareWellCanvas2D" style="width: 100%; aspect-ratio: 19/12"></canvas>
+    <canvas id="infiniteSquareWellCanvas2D" ></canvas>
 </div>
 <div class="buttonRow">
     <label for="speedSlider">Speed:

@@ -54,7 +54,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 <div id="shoWrapper2D" style="width: 100%; aspect-ratio: 19/12">
-    <canvas id="shoCanvas2D" style="width: 100%; aspect-ratio: 19/12"></canvas>
+    <canvas id="shoCanvas2D"></canvas>
 </div>
 <div class="buttonRow">
     <label for="speedSlider">Speed:
