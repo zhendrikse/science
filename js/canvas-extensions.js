@@ -63,6 +63,12 @@ export class PixelImage {
         this.colours[pixel.x][pixel.y] = pixel.color;
     }
 
+    // Faster version than setColour(), since it does not involve creation of a Pixel object
+    setColourAt = (x, y, color) => {
+        if (x < 0 || y < 0 || x >= this.dimX() || y >= this.dimY()) return;
+        this.colours[x][y] = color;
+    }
+
     dimX = () => this.width / this.pixelSize;
     dimY = () => this.height / this.pixelSize;
 

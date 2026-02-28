@@ -1,6 +1,6 @@
 import { Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight,
     MeshStandardMaterial, Mesh, SphereGeometry, Vector3, Color, AxesHelper} from "three";
-import { Gas3D, Gas, Arrow } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+import { Gas3D, Gas, Arrow } from '../js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 // --- Canvas & scene ---
@@ -34,14 +34,6 @@ const expansionY = new Arrow(new Vector3(0, sphereRadius, 0), new Vector3(0, 1, 
 const expansionZ = new Arrow(new Vector3(0, 0, sphereRadius), new Vector3(0, 0, 1), { color: new Color("cyan")});
 scene.add(expansionX, expansionY, expansionZ);
 
-// Box-Muller Transform To Create a Normal Distribution
-function normal(average, standard_deviation) {
-    const u1 = Math.random();
-    const u2 = Math.random();
-    let vt = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-    vt = vt * standard_deviation + average;
-    return vt;
-}
 
 const gas = new Gas3D({
     particleRadius: .1,
@@ -153,3 +145,5 @@ function animate(time) {
 
     renderer.render(scene, camera);
 }
+
+requestAnimationFrame(animate);
