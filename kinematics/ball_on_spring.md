@@ -20,8 +20,8 @@
 
 🧠 Note that the energy oscillates with a higher frequency than the position, namely **twice as fast**. 
 
-👉 The bal goes up/down with frequency **ω**<br/>
-👉 The **energy** oscillates with frequency **2ω**
+👉 The bal goes up/down with frequency $\omega$<br/>
+👉 The **energy** oscillates with frequency $2\omega$
 
 #### Why does this happen?
 
@@ -53,7 +53,7 @@ $$
 
 From this it follows that:
 
-➡️ **Frequentie = 2ω**
+➡️ **Frequentie = $2\omega$**
 
 ---
 
@@ -70,7 +70,7 @@ $$
 \cos^2(\omega t) = \tfrac12 (1 + \cos(2\omega t))
 $$
 
-➡️ **Also 2ω**
+➡️ **Also $2\omega$**
 
 ---
 
@@ -100,11 +100,11 @@ The **energie**:
 
 ### 🧪 What do we observe?
 
-| Entity         | Frequency                         |
-|----------------|-----------------------------------|
-| Position       | ω                                 |
-| Velocity       | ω                                 |
-| Energy (KE/PE) | **2ω**                            |
+| Entity         | Frequency                          |
+|----------------|------------------------------------|
+| Position       | $\omega$                           |
+| Velocity       | $\omega$                           |
+| Energy (KE/PE) | $2\omega$                          |
 | Total energy   | ~ constant (or slowly diminishing) |
 
 ✔️ Exactly in accordance with theory!
