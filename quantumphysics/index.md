@@ -60,23 +60,17 @@ $$\begin{equation}
 i\hbar\dfrac{\partial}{\partial t}\Psi(\vec{r}, t) = \left(-\frac{\hbar^2}{2m}\nabla^2 + V(\vec{r, t}\right)\Psi(\vec{r}, t)
 \end{equation}$$
 
-
 </details>
-
-<p></p>
 
 <details>
 <summary><a>&dArr; Background: particle in a box, i.e. confined by a infinite square well &uArr;</a></summary>
-<p>
+
 Although the one-dimensional particle-in-a-box problem does not correspond to any
 real-world system, it illustrates quite well some (fundamental) 
 quantum mechanical features nonetheless.
-</p>
 
-<p>
 The box is modeled by an infinite square well, so that the particle cannot escape 
 beyond the boundaries of the box.
-</p>
 
 Inside the box, the potential energy $V$ is zero (or constant). Substituting this together with the
 formula for the plane wave $\psi(x,t) = Ae^{ik x}e^{-i\omega t}$ into the Schrödinger equation, we get:
@@ -102,8 +96,6 @@ $$E=\dfrac{h^2a^2}{8\pi^2m} \text{ and } \psi_n=\sqrt{\dfrac{2}{L}}\sin(nkx), \t
 These energy eigenstates (and superpositions thereof) are used in the visualization software.
 </details>
 
-<p></p>
-
 ### Quantum oscillator 
 <div style="border-top: 1px solid #999999"><br/></div>
 
@@ -115,8 +107,9 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
   <figcaption>The quantum harmonic oscillator is visualized in a semi-classical way below.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- Reserved for future application
-    -->
+  <a href="free_wave_packet.html">
+    <img alt="Free wave packet" src="images/free_wave_packet.png" title="Click to animate"/>
+  </a>
 </figure>
 </div>
 <p style="clear: both;"></p>

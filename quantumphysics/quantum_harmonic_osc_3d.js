@@ -182,7 +182,9 @@ boundingBox.setFromObject( worldGroup );
 axesController.createFromBoundingBox(boundingBox);
 
 const plot3D = new Plot3DView(scene, canvas, boundingBox);
-plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, 0.525));
+plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, 0.525), {
+    padding: 1.0
+});
 
 // Resizing for mobile devices
 function resize() {
