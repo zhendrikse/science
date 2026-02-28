@@ -21,7 +21,7 @@ If you think you understand quantum mechanics, you don't understand quantum mech
   play a pivotal role in quantum mechanics!</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="infinite_squarewell.html">
+  <a href="infinite_square_well.html">
     <img alt="Particle in a box" src="images/infinite_square_well.png" title="Click to animate"/>
   </a>
   <figcaption>One-dimensional quantum particle bound by an infinite square well.</figcaption>
@@ -34,23 +34,35 @@ If you think you understand quantum mechanics, you don't understand quantum mech
 
 According to <a href="https://en.wikipedia.org/wiki/Matter_wave">De Broglie</a> we have:
 
-$$p = \dfrac{h}{\lambda} = \dfrac{h}{2\pi} \dfrac{2\pi}{\lambda} = \hbar k \Rightarrow \hbar k = \hbar \dfrac{\partial}{\partial x} \psi(x,t) = p \psi(x, t) \Rightarrow p = \hbar \dfrac{\partial}{\partial x}$$
+$$\begin{equation}
+p = \dfrac{h}{\lambda} = \dfrac{h}{2\pi} \dfrac{2\pi}{\lambda} = \hbar k \Rightarrow \hbar k = \hbar \dfrac{\partial}{\partial x} \psi(x,t) = p \psi(x, t) \Rightarrow p = \hbar \dfrac{\partial}{\partial x}
+\end{equation}$$
 
 The Kinetic energy can be expressed as:
 
-$$K = \dfrac{p^2}{2m} = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \psi(x,t)$$
+$$\begin{equation}
+K = \dfrac{p^2}{2m} = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \psi(x,t)
+\end{equation}$$
 
 The total energy is given by the <a href="https://en.wikipedia.org/wiki/Planck_relation">Planck-Einstein relation</a>:
 
-$$E = hf = \dfrac{h}{2\pi}\dfrac{2\pi}{T} = \hbar \omega \Rightarrow -i\hbar\dfrac{\partial}{\partial t} \psi(x,t) = E \psi(x,t) \Rightarrow E = -i\hbar\dfrac{\partial}{\partial t}$$
+$$\begin{equation}
+E = hf = \dfrac{h}{2\pi}\dfrac{2\pi}{T} = \hbar \omega \Rightarrow -i\hbar\dfrac{\partial}{\partial t} \psi(x,t) = E \psi(x,t) \Rightarrow E = -i\hbar\dfrac{\partial}{\partial t}
+\end{equation}$$
 
 From this we arrive at the <a href="https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation">Schr&#246;dinger equation</a>:
 
-$$(KE + PE)\Psi(x,,t) = E\Psi(x,t) = -i\hbar \dfrac{\partial}{\partial t}\Psi(x, t) = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \Psi(x,t) + V(x)\Psi(x,t)$$
+$$\begin{equation}
+(KE + PE)\Psi(x,,t) = E\Psi(x,t) = -i\hbar \dfrac{\partial}{\partial t}\Psi(x, t) = -\dfrac{\hbar^2}{2m}\dfrac{\partial^2}{\partial x^2} \Psi(x,t) + V(x)\Psi(x,t)
+\end{equation}$$
 
 In three-dimensional space this is then generalized to:
 
-$$i\hbar\dfrac{\partial}{\partial t}\Psi(\vec{r}, t) = \left(-\frac{\hbar^2}{2m}\nabla^2 + V(\vec{r, t}\right)\Psi(\vec{r}, t)$$
+$$\begin{equation}
+i\hbar\dfrac{\partial}{\partial t}\Psi(\vec{r}, t) = \left(-\frac{\hbar^2}{2m}\nabla^2 + V(\vec{r, t}\right)\Psi(\vec{r}, t)
+\end{equation}$$
+
+
 </details>
 
 <p></p>
@@ -94,7 +106,7 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 
 <p></p>
 
-### Orbitals and energy levels 
+### Quantum oscillator 
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -104,10 +116,10 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
   </a>
   <figcaption>The quantum harmonic oscillator is visualized in a semi-classical way below.</figcaption>
 </figure>
-  <a href="orbitals.html">
-    <img alt="Hydrogen orbitals" src="images/orbitals.png" title="Click to animate"/>
-  </a>
-  <figcaption>Visualization of the orbitals of an hydrogen atom.</figcaption>
+<figure class="right_image">
+  <!-- Reserved for future application
+    -->
+</figure>
 </div>
 <p style="clear: both;"></p>
 

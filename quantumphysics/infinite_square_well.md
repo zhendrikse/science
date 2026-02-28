@@ -11,7 +11,7 @@
 <p style="clear: both;"></p>
 
 ⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-📌 Ported to JavaScript and [Three.js](https://threejs.org/) in [infinite_squarewell_3d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_squarewell_3d.js)<br/>
+📌 Ported to JavaScript and [Three.js](https://threejs.org/) in [infinite_square_well_3d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_square_well_3d.js)<br/>
 📌 A [VPython](https://www.vpython.org/) version is also available as [infinite_squarewell.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/infinite_squarewell.py)
 
 👉 Note that the energy of the eigenstates go like $n^2$. For example, we observe that the $n = 2$
@@ -25,7 +25,7 @@ state has four times the energy, and therefore four times the frequency of the g
 </div>
 <div id="expectationPlot" style="margin:auto;"></div>
 <div class="guiContainer" id="infiniteWellGui"></div>
-<script type="module" src="infinite_squarewell_3d.js"></script>
+<script type="module" src="infinite_square_well_3d.js"></script>
 <p style="clear: both;"></p>
 
 The graph shows the expectation value of $x$ as function of time.
@@ -54,7 +54,7 @@ $$\begin{equation}
 ## Additional two-dimensional simulation
 <div class="header_line"><br/></div>
 
-🔧 This [infinite_squarewell_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_squarewell_2d.js) is 100% JavaScript<br/>
+🔧 This [infinite_square_well_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_square_well_2d.js) is 100% JavaScript<br/>
 👉 Based on [SquareWell.html](https://physics.weber.edu/schroeder/software/SquareWell.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
 🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
@@ -76,7 +76,7 @@ $$\begin{equation}
     <button id="zeroButton">Zero</button>
     <button id="normalizeButton">Normalize</button>
 </div>
-<script type="module" src="infinite_squarewell_2d.js"></script>
+<script type="module" src="infinite_square_well_2d.js"></script>
 <p style="clear: both;"></p>
 
 > This simulation animates infinite square well wavefunctions that are built from arbitrary superpositions 

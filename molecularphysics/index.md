@@ -77,7 +77,7 @@ I... a universe of atoms, an atom in the universe. &mdash;
 
 <p style="clear: both;"></p>
 
-### Cubic lattice
+### Cubic lattice &amp; atomic orbitals
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
@@ -88,8 +88,10 @@ I... a universe of atoms, an atom in the universe. &mdash;
   <figcaption>Lattice vibrations in a cubic lattice.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="orbitals.html">
+    <img alt="Hydrogen orbitals" src="images/orbitals.png" title="Click to animate"/>
+  </a>
+  <figcaption>Visualization of the orbitals of a hydrogen atom.</figcaption>
 </figure>
 </div>
 
