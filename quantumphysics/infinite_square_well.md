@@ -28,7 +28,7 @@ state has four times the energy, and therefore four times the frequency of the g
 <script type="module" src="infinite_square_well_3d.js"></script>
 <p style="clear: both;"></p>
 
-The graph shows the expectation value of $x$ as function of time.
+👉 The graph shows the expectation value of $x$ as function of time.
 
 $$\begin{equation}
 \langle x \rangle(t)= \int x |\psi(x,t)|^2 dx \approx \frac{\sum x_i |\psi_i|^2}{\sum |\psi_i|^2}

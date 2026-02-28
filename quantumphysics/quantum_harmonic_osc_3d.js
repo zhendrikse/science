@@ -65,6 +65,21 @@ class HarmonicOscillatorWave extends Group {
         this._weights = w;
     }
 
+    setCoherentState(alpha, maxN = 15) {
+        const weights = [];
+        const normFactor = Math.exp(-alpha * alpha / 2);
+
+        let factorial = 1;
+        for (let n = 0; n < maxN; n++) {
+            if (n > 0)
+                factorial *= n;
+
+            weights.push(normFactor * Math.pow(alpha, n) / Math.sqrt(factorial));
+        }
+
+        this._weights = weights;
+    }
+
     _computeHermiteStates() {
         const N = this._maxStates;
         const xs = this._xValues;
@@ -160,6 +175,7 @@ const axesController = new AxesController({
 
 const wave = new HarmonicOscillatorWave();
 worldGroup.add(wave);
+wave.setCoherentState(1.5);
 
 const boundingBox = new Box3();
 boundingBox.setFromObject( worldGroup );

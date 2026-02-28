@@ -94,21 +94,6 @@ class InfiniteWellWave extends Group {
         arrow.updateColor(new Color().setHSL(hue, 1.0, 0.5));
     }
 
-    setCoherentState(alpha, maxN = 15) {
-        const weights = [];
-        const normFactor = Math.exp(-alpha * alpha / 2);
-
-        let factorial = 1;
-        for (let n = 0; n < maxN; n++) {
-            if (n > 0)
-                factorial *= n;
-
-            weights.push(normFactor * Math.pow(alpha, n) / Math.sqrt(factorial));
-        }
-
-        this._weights = weights;
-    }
-
     update(t) {
         for (let index = 0; index < this._arrows.length; index++)
             this.updateValueFor(index, t);
@@ -147,7 +132,6 @@ const axesController = new AxesController({
 
 const wave = new InfiniteWellWave();
 worldGroup.add(wave);
-wave.setCoherentState(1.5);
 
 const boundingBox = new Box3();
 boundingBox.setFromObject( worldGroup );

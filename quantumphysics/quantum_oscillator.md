@@ -38,12 +38,18 @@
 <div id="expectationPlot" style="margin:auto;"></div>
 <div class="guiContainer" id="shoGui"></div>
 <script type="module" src="quantum_harmonic_osc_3d.js"></script>
+<p style="clear: both;"></p>
 
-The graph shows the expectation value of $x$ as function of time.
+👉 The graph shows the expectation value of $x$ as function of time.
 
 
 ## Additional two-dimensional simulation
 <div class="header_line"><br/></div>
+
+🔧 This [quantum_harmonic_osc_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/quantum_harmonic_osc_2d.js) is 100% JavaScript<br/>
+👉 Based on [HarmonicOscillator.html](https://physics.weber.edu/schroeder/software/HarmonicOscillator.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
+🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
+👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
@@ -72,6 +78,9 @@ The graph shows the expectation value of $x$ as function of time.
     <span id="alphaReadout">1.0</span></label>
 </div>
 <script type="module" src="quantum_harmonic_osc_2d.js"></script>
+<p style="clear: both;"></p>
+
+> 
 
 ## 📌 The quantum harmonic oscillator 
 <div class="header_line"><br/></div>
