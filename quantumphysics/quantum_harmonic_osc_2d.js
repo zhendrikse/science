@@ -283,7 +283,7 @@ function drawPhasorClockWithIndex(n, phasorSpace, clockRadius) {
     theContext.lineWidth = 1;
     theContext.beginPath();
     const centerX = (n+0.5) * phasorSpace;
-    const centerY = getCanvasHeight() - 0.5 * phasorSpace;
+    const centerY = getCanvasHeight() - getClockSpaceHeight() * 0.5;
     theContext.arc(centerX, centerY, clockRadius, 0, 2 * Math.PI);
     theContext.stroke();
     theContext.beginPath();
