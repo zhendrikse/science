@@ -128,5 +128,4 @@ function animate() {
     plot.setData(plotData);
 }
 
-animate();
-
+requestAnimationFrame(animate);
