@@ -339,10 +339,10 @@ function numberToTwoDigitHexString(numberToConvert) {
 function toColorString(hue) {
     let r, g, b;
     if (hue < 1/6) { // red to yellow
-        r = 255; g = Math.round(hue*6*255);
+        r = 255; g = Math.round(hue * 6 * 255);
         b = 0;
     } else if (hue < 1/3) { // yellow to green
-        r = Math.round((1/3 - hue)*6*255);
+        r = Math.round((1/3 - hue) * 6 * 255);
         g = 255;
         b = 0;
     } else if (hue < 1/2) { // green to cyan

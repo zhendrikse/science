@@ -96,7 +96,7 @@ $$\begin{equation}
 >
 > Click (or tap) on any clock face to change the corresponding amplitude. 
 > To see an individual basis function, click “zero” and then click on the corresponding clock 
-> face. &mdash; paraphrased from instructions at [SquareWell.html](https://physics.weber.edu/schroeder/software/SquareWell.html)
+> face. &mdash; Paraphrased from instructions at [SquareWell.html](https://physics.weber.edu/schroeder/software/SquareWell.html)
 
 ### Background: particle in a box
 <div class="header_line"><br/></div>
