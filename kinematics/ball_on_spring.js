@@ -89,7 +89,7 @@ const plotData = [
 const plot = new uPlot({
     width: canvas.clientWidth,
     height: canvas.clientHeight * .75,
-    title: "Slinky energies",
+    title: "Spring energies",
     scales: { x: { time: false }, y: { auto: true } },
     series: [
         {}, // x-axis
