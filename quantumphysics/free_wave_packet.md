@@ -11,10 +11,8 @@
 > momentum smears only a little, but if the envelope is small, the momentum will smear a
 > lot. This is intuitively clear from the Heisenberg uncertainty principle since the uncertainty
 > in the particle’s position is determined by the width of the Gaussian. As the width of the
-> Gaussian grows larger the uncertainty in the momentum decreases.
-> 
-> [&hellip;]
-> 
+> Gaussian grows larger the uncertainty in the momentum decreases.<br/> 
+> [&hellip;]<br/>
 > Note that when the width of the wave packet in real space becomes narrower, the distribution 
 > in the Fourier transform (momentum) space becomes broader, and vice versa. This 
 > is consistent with the Heisenberg uncertainty principle and is a consequence of the behavior 
@@ -23,7 +21,6 @@
 > choice but to broaden over time. Note that the wave packet must be constructed of momentum 
 > components with different wavelengths and speeds. As a result, some components will 
 > propagate more slowly, and others will propagate more quickly.
-> 
 > &mdash; [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)
 
 <p style="clear: both;"></p>
