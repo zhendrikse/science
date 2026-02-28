@@ -33,12 +33,10 @@ class InfiniteWellWave extends Group {
     constructor(numPoints = 40) {
         super();
         this._numPoints = numPoints;
-        this._xVals = [];
         this._arrows = [];
         const dx = L / numPoints;
         for (let i = 0; i < numPoints; i++) {
             const x = i * dx - L/2;   // <-- shift to middle of frame of axes, just for nice visuals
-            this._xVals.push(x);
             const arrow = new Arrow(new Vector3(x, 0, 0), new Vector3(0, 1, 0), {
                 color: 0xff0000,
                 shaftWidth: 0.05
@@ -53,10 +51,7 @@ class InfiniteWellWave extends Group {
         this._amplitude = 4;
     }
 
-    setWeights(weights) { this._weights = weights; }
-    setAmplitude(value) { this._amplitude = value; }
-    setOmega(value) { this._omega = value * Math.PI; }
-    setK(value) { this._k = value * Math.PI; }
+    set weights(weights) { this._weights = weights; }
 
     _computePsiAt(x, t) {
         const k = this._k;
@@ -79,14 +74,13 @@ class InfiniteWellWave extends Group {
     }
 
     update(t) {
-        for (let i = 0; i < this._numPoints; i++) {
-            const x = this._xVals[i];
-            const {real, imag} = this._computePsiAt(x, t);
-            this._arrows[i].updateAxis(new Vector3(0, imag * this._amplitude, real * this._amplitude));
+        for (let arrow of this._arrows) {
+            const {real, imag} = this._computePsiAt(arrow.position.x, t);
+            arrow.updateAxis(new Vector3(0, imag * this._amplitude, real * this._amplitude));
 
             const phase = Math.atan2(imag, real);
             const h = 1 - ((phase + Math.PI) / (2 * Math.PI));
-            this._arrows[i].updateColor(new Color().setHSL(h, 1.0, 0.5));
+            arrow.updateColor(new Color().setHSL(h, 1.0, 0.5));
         }
     }
 }
@@ -95,16 +89,16 @@ class InfiniteWellWave extends Group {
 const gui = new GUI({width: "100%", autoPlace: false});
 gui
     .add(params, "groundState", 0, 1, 0.01)
-    .name("Ground state").onChange(value => wave.setWeights({...wave._weights, ground: value}));
+    .name("Ground state").onChange(value => wave.weights = {...wave._weights, ground: value});
 gui
     .add(params, "firstState", 0, 1, 0.01)
-    .name("1st excited").onChange(value => wave.setWeights({...wave._weights, first: value}));
+    .name("1st excited").onChange(value => wave.weights = {...wave._weights, first: value});
 gui
     .add(params, "secondState", 0, 1, 0.01)
-    .name("2nd excited").onChange(value => wave.setWeights({...wave._weights, second: value}));
+    .name("2nd excited").onChange(value => wave.weights = {...wave._weights, second: value});
 gui
     .add(params, "thirdState", 0, 1, 0.01)
-    .name("3rd excited").onChange(value => wave.setWeights({...wave._weights, third: value}));
+    .name("3rd excited").onChange(value => wave.weights = {...wave._weights, third: value});
 document.getElementById("infiniteWellGui").appendChild(gui.domElement);
 
 const axesController = new AxesController({

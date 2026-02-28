@@ -4,14 +4,14 @@
 <div class="header_line"><br/></div>
 
 ⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [infinite_squarewell.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_squarewell.js)<br/>
+🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [infinite_squarewell_3d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_squarewell_3d.js)<br/>
 👉 A [VPython](https://www.vpython.org/) version is also available as [infinite_squarewell.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/infinite_squarewell.py).
 
 <div class="canvasWrapper" id="infiniteWellContainer">
     <canvas id="infiniteWellCanvas" class="applicationCanvas"></canvas>
 </div>
 <div class="guiContainer" id="infiniteWellGui"></div>
-<script type="module" src="infinite_squarewell.js"></script>
+<script type="module" src="infinite_squarewell_3d.js"></script>
 <p style="clear: both;"></p>
 
 ## Additional two-dimensional simulation
