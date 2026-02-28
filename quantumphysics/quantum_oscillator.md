@@ -1,18 +1,5 @@
 {% include breadcrumbs.html %}
 
-## Semi-classical visualization of a quantum oscillator
-<div class="header_line"><br/></div>
-
-⭐ Original [06_oscillator.py](https://lectdemo.github.io/virtual/06_oscillator.html) by Ruth Chabay 2004<br/>
-🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [quantum_oscillator.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/quantum_oscillator.js)<br/>
-👉 A [VPython](https://www.vpython.org/) version is also available as [quantum_oscillator.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/quantum_oscillator.py)<br/>
-👉 Click on an energy level to put the oscillator into particular state.
-
-<canvas id="applicationCanvas" class="applicationCanvas" style="width: 600px; aspect-ratio: 19/12"></canvas>
-<script type="module" src="quantum_oscillator.js"></script>
-
-<p style="clear: both;"></p>
-
 ## Quantum Harmonic Oscillator
 <div class="header_line"><br/></div>
 
@@ -41,7 +28,6 @@
 <p style="clear: both;"></p>
 
 👉 The graph shows the expectation value of $x$ as function of time.
-
 
 ## Additional two-dimensional simulation
 <div class="header_line"><br/></div>
@@ -102,11 +88,24 @@
 > classical particle would (see [Ehrenfest theorem](https://en.wikipedia.org/wiki/Ehrenfest_theorem)). 
 > The parameter α determines the amplitude of this oscillation, 
 > with $\alpha^2$ equal to the average number of energy units above the ground state. 
-> For large values of $\alpha$, however, the true coherent state is not well approximated 
-> using only the lowest eight basis states.
 > &mdash; Paraphrased from instructions at [HarmonicOscillator.html](https://physics.weber.edu/schroeder/software/HarmonicOscillator.html)
 
-## 📌 The quantum harmonic oscillator 
+
+## Semi-classical visualization of a quantum oscillator
+<div class="header_line"><br/></div>
+
+⭐ Original [06_oscillator.py](https://lectdemo.github.io/virtual/06_oscillator.html) by Ruth Chabay 2004<br/>
+🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [quantum_oscillator.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/quantum_oscillator.js)<br/>
+👉 A [VPython](https://www.vpython.org/) version is also available as [quantum_oscillator.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/quantum_oscillator.py)<br/>
+👉 Click on an energy level to put the oscillator into particular state.
+
+<canvas id="applicationCanvas" class="applicationCanvas"></canvas>
+<script type="module" src="quantum_oscillator.js"></script>
+
+<p style="clear: both;"></p>
+
+
+## 📌 Theoretical background 
 <div class="header_line"><br/></div>
 
 For the quantum harmonic oscillator:

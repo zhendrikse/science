@@ -26,9 +26,10 @@ const getCanvasWidth = () => theCanvas.clientWidth;
 const getCanvasHeight = () => theCanvas.clientHeight;
 
 class Psi {
-    constructor(iMax = getCanvasWidth()) {
+    constructor(iMax = getCanvasWidth(), nMax =25, nVisible=8) {
         this._iMax = iMax;
-        this._nMax = 7; // maximum energy quantum number (starting from zero)
+        this._nMax = nMax; // maximum energy quantum number (starting from zero)
+        this._nVisible = nVisible; // number of clocks/phasors that is displayed
 
         this._psi = {
             re: new Array(iMax + 1),
@@ -42,35 +43,47 @@ class Psi {
     }
 
     get nMax() { return this._nMax; }
+    get nVisible() { return this._nVisible; }
     get amplitude() { return this._amplitude; }
     get phase() { return this._phase; }
 
     init() {
-        // Initialize eigenfunctions (sine waves):
-        for (let n=0; n <= this._nMax; n++)
-            this._eigenPsi[n] = new Array(this._iMax+1);
+        // Allocate arrays
+        for (let n = 0; n <= this._nMax; n++)
+            this._eigenPsi[n] = new Array(this._iMax + 1);
 
         for (let i = 0; i <= this._iMax; i++) {
             const x = (i - this._iMax / 2) / pxPerX;
-            this._eigenPsi[0][i] = Math.exp(-x*x/2);
-            this._eigenPsi[1][i] = Math.sqrt(2) * x * this._eigenPsi[0][i];
-            this._eigenPsi[2][i] = (1/Math.sqrt(2)) * (2*x*x - 1) * this._eigenPsi[0][i];
-            this._eigenPsi[3][i] = (1/Math.sqrt(3)) * (2*x*x*x - 3*x) * this._eigenPsi[0][i];
-            this._eigenPsi[4][i] = (1/Math.sqrt(24)) * (4*x*x*x*x - 12*x*x + 3) * this._eigenPsi[0][i];
-            this._eigenPsi[5][i] = (1/Math.sqrt(60)) * (4*x*x*x*x*x - 20*x*x*x + 15*x) * this._eigenPsi[0][i];
-            this._eigenPsi[6][i] = (1/Math.sqrt(720)) * (8*x*x*x*x*x*x - 60*x*x*x*x + 90*x*x - 15) * this._eigenPsi[0][i];
-            this._eigenPsi[7][i] = (1/Math.sqrt(36*70)) * (8*x*x*x*x*x*x*x - 84*x*x*x*x*x + 210*x*x*x - 105*x) * this._eigenPsi[0][i];
+
+            // --- Build Hermite polynomials recursively ---
+            const H = new Array(this._nMax + 1);
+
+            H[0] = 1;
+            if (this._nMax > 0)
+                H[1] = 2 * x;
+
+            for (let n = 1; n < this._nMax; n++)
+                H[n+1] = 2*x*H[n] - 2*n*H[n-1];
+
+            const gaussian = Math.exp(-x*x/2);
+            let nFact = 1;
+            for (let n = 0; n <= this._nMax; n++) {
+                if (n > 0) nFact *= n;
+
+                const norm = 1 / Math.sqrt(Math.pow(2,n) * nFact * Math.sqrt(Math.PI));
+                this._eigenPsi[n][i] = norm * H[n] * gaussian;
+            }
         }
 
-        // Initialize amplitudes and phases:
+        // zero amplitudes + phases
         for (let n = 0; n <= this._nMax; n++) {
             this._amplitude[n] = 0;
             this._phase[n] = 0;
         }
-        this._amplitude[0] = 1 / Math.sqrt(2);
-        this._amplitude[1] = 1 / Math.sqrt(2);
 
-        // Initialize array of colors to represent phases
+        this._amplitude[0] = 1/Math.sqrt(2);
+        this._amplitude[1] = 1/Math.sqrt(2);
+
         for (let c = 0; c <= nColors; c++)
             phaseColor[c] = toColorString(c / nColors);
     }
@@ -292,9 +305,9 @@ function paintCanvas() {
         psi.plotDensityPhase(theContext);
 
     // Draw the eigen-phasor "clocks":
-    const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
+    const phasorSpace = getCanvasWidth() / (psi.nvisible + 1);
     const clockRadius = Math.min(phasorSpace * 0.4, getClockSpaceHeight() * clockRadiusFraction);
-    for (let n = 0; n <= psi.nMax; n++)
+    for (let n = 0; n <= psi.nvisible; n++)
         drawPhasorClockWithIndex(n, phasorSpace, clockRadius);
 
     if (!mouseIsDown) return;
