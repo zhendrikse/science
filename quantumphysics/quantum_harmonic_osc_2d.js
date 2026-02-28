@@ -1,8 +1,9 @@
-const theCanvas = document.getElementById("infiniteSquareWellCanvas2D");
+const theCanvas = document.getElementById("shoCanvas2D");
 const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
 theCanvas.style.touchAction = "none";
 
+const pxPerX = 60;			// number of pixels per conventional x unit
 const clockSpaceFraction = 0.25;	// fraction of vertical space taken up by clocks
 const clockRadiusFraction = 0.45;	// as fraction of width or height of clock space
 const nColors = 360;
@@ -49,9 +50,17 @@ class Psi {
         for (let n=0; n <= this._nMax; n++)
             this._eigenPsi[n] = new Array(this._iMax+1);
 
-        for (let i = 0; i <= this._iMax; i++)
-            for (let n = 0; n <= this._nMax; n++)
-                this._eigenPsi[n][i] = Math.sin((n + 1) * Math.PI * i / this._iMax);
+        for (let i = 0; i <= this._iMax; i++) {
+            const x = (i - this._iMax / 2) / pxPerX;
+            this._eigenPsi[0][i] = Math.exp(-x*x/2);
+            this._eigenPsi[1][i] = Math.sqrt(2) * x * this._eigenPsi[0][i];
+            this._eigenPsi[2][i] = (1/Math.sqrt(2)) * (2*x*x - 1) * this._eigenPsi[0][i];
+            this._eigenPsi[3][i] = (1/Math.sqrt(3)) * (2*x*x*x - 3*x) * this._eigenPsi[0][i];
+            this._eigenPsi[4][i] = (1/Math.sqrt(24)) * (4*x*x*x*x - 12*x*x + 3) * this._eigenPsi[0][i];
+            this._eigenPsi[5][i] = (1/Math.sqrt(60)) * (4*x*x*x*x*x - 20*x*x*x + 15*x) * this._eigenPsi[0][i];
+            this._eigenPsi[6][i] = (1/Math.sqrt(720)) * (8*x*x*x*x*x*x - 60*x*x*x*x + 90*x*x - 15) * this._eigenPsi[0][i];
+            this._eigenPsi[7][i] = (1/Math.sqrt(36*70)) * (8*x*x*x*x*x*x*x - 84*x*x*x*x*x + 210*x*x*x - 105*x) * this._eigenPsi[0][i];
+        }
 
         // Initialize amplitudes and phases:
         for (let n = 0; n <= this._nMax; n++) {
@@ -73,7 +82,7 @@ class Psi {
 
     updatePhase() {
         for (let n = 0; n <= this._nMax; n++) {
-            this._phase[n] -= (n + 1) * (n + 1) * Number(speedSlider.value);	// energies proportional to n^2
+            this._phase[n] -= (n + 0.5) * Number(speedSlider.value);
             if (this._phase[n] < 0)
                 this._phase[n] += 2 * Math.PI;
         }
@@ -88,6 +97,20 @@ class Psi {
 
         for (let n = 0; n <= this._nMax; n++)
             this._amplitude[n] /= Math.sqrt(norm2);
+    }
+
+    coherent(alphaMag) {
+        let nFact = 1;
+        const prefactor = Math.exp(-alphaMag * alphaMag / 2);
+
+        for (let n = 0; n <= this._nMax; n++) {
+            if (n > 0) nFact *= n;
+            this._amplitude[n] =
+                prefactor * Math.pow(alphaMag, n) / Math.sqrt(nFact);
+            this._phase[n] = 0;
+        }
+
+        this.normalise();
     }
 
     setAmplitudeTo(index, relX, relY) {
@@ -343,7 +366,6 @@ function toColorString(hue) {
 }
 
 // --- GUI wiring ---
-const pauseButton = document.getElementById("pauseButton");
 function startStop() {
     running = !running;
     if (running) {
@@ -365,21 +387,35 @@ function normalizePsi() {
     paintCanvas();
 }
 
-const speedSlider = document.getElementById("speedSlider");
-const speedValue = document.getElementById("speedValue");
-const realImag = document.getElementById("realImag");
+function coherent() {
+    psi.coherent(Number(alphaSlider.value));
+}
+
+const alphaReadout = document.getElementById("alphaReadout");
+function adjustAlpha() {
+    alphaReadout.innerHTML = Number(alphaSlider.value).toFixed(1);
+}
+
 const zeroButton = document.getElementById("zeroButton");
 const normalizeButton = document.getElementById("normalizeButton");
 const densityPhase = document.getElementById("densityPhase");
+const pauseButton = document.getElementById("pauseButton");
+const speedSlider = document.getElementById("speedSlider");
+const realImag = document.getElementById("realImag");
+const alphaSlider = document.getElementById("alphaSlider");
+const alphaButton = document.getElementById("alphaButton");
 
-pauseButton.addEventListener("click", () => startStop());
+alphaButton.addEventListener("click", () => coherent());
+alphaSlider.addEventListener("change", e => adjustAlpha());
+pauseButton.addEventListener("click", e => startStop());
 realImag.addEventListener("change", () => paintCanvas());
 densityPhase.addEventListener("change", () => paintCanvas());
 zeroButton.addEventListener("click", () => zero());
 normalizeButton.addEventListener("click", () => normalizePsi());
 
+const speedValueReadout = document.getElementById("speedValueReadout");
 function updateSpeedDisplay() {
-    speedValue.textContent = Number(speedSlider.value).toFixed(3);
+    speedValueReadout.textContent = Number(speedSlider.value).toFixed(3);
 }
 speedSlider.addEventListener("input", updateSpeedDisplay);
 updateSpeedDisplay(); // Initial display sync

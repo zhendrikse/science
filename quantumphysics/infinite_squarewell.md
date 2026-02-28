@@ -79,6 +79,25 @@ $$\begin{equation}
 <script type="module" src="infinite_squarewell_2d.js"></script>
 <p style="clear: both;"></p>
 
+> This simulation animates infinite square well wavefunctions that are built from arbitrary superpositions 
+> of the lowest eight definite-energy wavefunctions. The “clock faces” show phasor diagrams 
+> for the complex amplitudes of these eight basis functions. Going from the ground state at the left to 
+> the seventh excited state at the right, the outside of each “clock” corresponds to the magnitude of each. 
+> The wavefunction is then built by summing the eight basis functions, 
+> multiplied by their corresponding complex amplitudes. 
+> As time passes, each basis amplitude rotates in the complex plane at a frequency 
+> proportional to the corresponding energy.
+>
+> You can select either the real and imaginary parts of the wavefunction 
+> (shown in orange and blue, respectively), or the probability density and phase. 
+> The phase is represented by hues going from red (pure real and positive) 
+> to light green (pure imaginary and positive) to cyan (pure real and negative) 
+> to purple (pure imaginary and negative) and finally back to red.
+>
+> Click (or tap) on any clock face to change the corresponding amplitude. 
+> To see an individual basis function, click “zero” and then click on the corresponding clock 
+> face. &mdash; paraphrased from instructions at [SquareWell.html](https://physics.weber.edu/schroeder/software/SquareWell.html)
+
 ### Background: particle in a box
 <div class="header_line"><br/></div>
 
