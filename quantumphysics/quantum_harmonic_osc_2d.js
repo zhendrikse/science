@@ -305,9 +305,9 @@ function paintCanvas() {
         psi.plotDensityPhase(theContext);
 
     // Draw the eigen-phasor "clocks":
-    const phasorSpace = getCanvasWidth() / (psi.nvisible + 1);
+    const phasorSpace = getCanvasWidth() / (psi.nVisible + 1);
     const clockRadius = Math.min(phasorSpace * 0.4, getClockSpaceHeight() * clockRadiusFraction);
-    for (let n = 0; n <= psi.nvisible; n++)
+    for (let n = 0; n <= psi.nVisible; n++)
         drawPhasorClockWithIndex(n, phasorSpace, clockRadius);
 
     if (!mouseIsDown) return;
