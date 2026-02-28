@@ -297,7 +297,8 @@ export class AxesParameters {
                     xyPlane = true,
                     xzPlane = true,
                     yzPlane = true,
-                    axisLabels = ["X", "Y", "Z"]
+                    axisLabels = ["X", "Y", "Z"],
+                    positiveXZ = false
                 } = {}) {
         this.layoutType = layoutType;
         this.divisions = divisions;
@@ -308,6 +309,7 @@ export class AxesParameters {
         this.yzPlane = yzPlane;
         this.axisLabels = axisLabels;
         this.tickLabels = tickLabels;
+        this.positiveXZ = positiveXZ;
     }
 }
 
@@ -382,11 +384,11 @@ export class Axes extends Group {
         return this;
     }
 
-    withLayout(type) {
+    withLayout(type, positiveXZ) {
         this._layout?.dispose?.();
         this._layout = type === Axes.Type.MATLAB ?
             new MatlabAxesLayout(this._size, this._divisions) :
-            new ClassicalAxesLayout(this._size, this._divisions);
+            new ClassicalAxesLayout(this._size, this._divisions, positiveXZ);
         this.add(this._layout);
 
         return this;
@@ -534,12 +536,12 @@ class AxesLayout extends Group {
 }
 
 class ClassicalAxesLayout extends AxesLayout {
-    constructor(size, divisions) {
+    constructor(size, divisions, positiveXZ) {
         super(size, divisions);
 
         this._createFrame(new Vector3(0, 0, 0), 0.5 * size);
-        const [xyGrid, xzPlane] = this._createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
-        const [xzGrid, yzPlane] = this._createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
+        const [xyGrid, xzPlane] = this._createPlane(0x4444ff, v => v.rotateX(Math.PI / 2), [0, 0, 0], [positiveXZ ? 1 : 0, 0, 0]);
+        const [xzGrid, yzPlane] = this._createPlane(0x44ff44, v => v.rotateY(Math.PI / 2), [positiveXZ ? 1 : 0, 0, 0], [0, 0, 0]);
         const [yzGrid, xyPlane] = this._createPlane(0xff4444, v => v.rotateZ(Math.PI / 2), [0, 0, 0], [0, 0, 0]);
         this._xy.add(xyPlane, xyGrid);
         this._xz.add(xzPlane, xzGrid);
@@ -562,7 +564,7 @@ class MatlabAxesLayout extends AxesLayout {
 }
 
 class ClassicalAnnotations extends AxesAnnotation {
-    constructor(container, size, divisions, axisLabels) {
+    constructor(container, size, divisions, axisLabels, positiveXZ=true) {
         super(container);
 
         const step = size / divisions;
@@ -574,7 +576,7 @@ class ClassicalAnnotations extends AxesAnnotation {
             this._tickLabels.push(this.createLabel(v.toFixed(1), new Vector3(0, v, 0)));
 
         this._axesLabels.push(
-            this.createLabel(axisLabels[0], new Vector3(0.575 * size, 0, 0), "red", "20px"),
+            this.createLabel(axisLabels[0], new Vector3(size * (positiveXZ ? 1.075 : .575), 0, 0), "red", "20px"),
             this.createLabel(axisLabels[1], new Vector3(0, 0.575 * size, 0), "green", "20px"),
             this.createLabel(axisLabels[2], new Vector3(0, 0, 0.575 * size), "blue", "20px"));
 
@@ -631,10 +633,10 @@ export class AxesController {
         }
 
         const { layoutType, divisions, axisLabels, tickLabels } = this._axesParameters;
-        const { frame, annotations, xyPlane, xzPlane, yzPlane } = this._axesParameters;
+        const { frame, annotations, xyPlane, xzPlane, yzPlane, positiveXZ } = this._axesParameters;
 
         this._axes = Axes.from(boundingBox, divisions)
-            .withLayout(layoutType)
+            .withLayout(layoutType, positiveXZ)
             .withAnnotations(this._canvasContainer, layoutType, axisLabels)
             .withSettings(
                 { frame, annotations, xyPlane, xzPlane, yzPlane, tickLabels });
