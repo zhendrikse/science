@@ -3,9 +3,6 @@
 ## [Young&apos;s interference experiment](https://en.wikipedia.org/wiki/Double-slit_experiment)
 <div class="header_line"><br/></div>
 
-### Dynamic visualization
-<div class="header_line"><br/></div>
-
 In this visualization, the interference pattern is generated "dynamically", i.e. by calculating
 the propagation of the waves using a [finite difference method](https://pythonnumericalmethods.studentorg.berkeley.edu/notebooks/chapter23.03-Finite-Difference-Method.html).
 
