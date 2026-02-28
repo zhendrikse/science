@@ -40,7 +40,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 <div id="shoWrapper2D" style="width: 100%; aspect-ratio: 19/12">
-    <canvas id="shoCanvas2D"></canvas>
+    <canvas id="shoCanvas2D" style="width: 100%; aspect-ratio: 19/12"></canvas>
 </div>
 <div class="buttonRow">
     <label for="speedSlider">Speed:
@@ -99,7 +99,7 @@
 👉 A [VPython](https://www.vpython.org/) version is also available as [quantum_oscillator.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/quantum_oscillator.py)<br/>
 👉 Click on an energy level to put the oscillator into particular state.
 
-<canvas id="applicationCanvas" class="applicationCanvas"></canvas>
+<canvas id="applicationCanvas" class="applicationCanvas" style="aspect-ratio: 19/12"></canvas>
 <script type="module" src="quantum_oscillator.js"></script>
 
 <p style="clear: both;"></p>
