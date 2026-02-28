@@ -221,7 +221,7 @@ function mouseOrTouchStart(pageX, pageY, e) {
     const y = pos.y;
 
     if (y > getCanvasHeight() - getClockSpaceHeight()) {
-        const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
+        const phasorSpace = getCanvasWidth() / (psi.nVisible + 1);
         mouseClock = Math.floor(x / phasorSpace);
 
         const clockCenterX = phasorSpace * (mouseClock + 0.5);
@@ -252,7 +252,7 @@ function mouseOrTouchMove(pageX, pageY, event) {
     const x = pos.x;
     const y = pos.y;
 
-    const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
+    const phasorSpace = getCanvasWidth() / (psi.nVisible + 1);
     const clockCenterX = phasorSpace * (mouseClock + 0.5);
     const clockCenterY = getCanvasHeight() - getClockSpaceHeight() * 0.5;
 
