@@ -1,14 +1,10 @@
-import { toColorString } from "../js/canvas-extensions.js";
+import { Display } from "./2d-quantum-extensions.js"
 
 const theCanvas = document.getElementById("infiniteSquareWellCanvas2D");
 const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
 theCanvas.style.touchAction = "none";
 
-const clockSpaceFraction = 0.25;	// fraction of vertical space taken up by clocks
-const clockRadiusFraction = 0.45;	// as fraction of width or height of clock space
-const nColors = 360;
-const phaseColor = new Array(nColors+1);
 let running = true;
 let mouseIsDown = false;
 let mouseClock;
@@ -21,8 +17,6 @@ theCanvas.addEventListener('touchstart', touchStart, false);
 document.body.addEventListener('touchmove', touchMove, false);
 document.body.addEventListener('touchend', mouseUp, false);
 
-const getClockSpaceHeight = () => getCanvasHeight() * clockSpaceFraction;
-const getClockPixelRadius = () => getClockSpaceHeight() * clockRadiusFraction;
 const getCanvasWidth = () => theCanvas.clientWidth;
 const getCanvasHeight = () => theCanvas.clientHeight;
 
@@ -42,7 +36,9 @@ class Psi {
         this.build(iMax);
     }
 
-    get nMax() { return this._nMax; }
+    get re() { return this._psi.re; }
+    get im() { return this._psi.im; }
+    get iMax() { return this._iMax; }
     get amplitude() { return this._amplitude; }
     get phase() { return this._phase; }
 
@@ -62,10 +58,6 @@ class Psi {
         }
         this._amplitude[0] = 1 / Math.sqrt(2);
         this._amplitude[1] = 1 / Math.sqrt(2);
-
-        // Initialize array of colors to represent phases
-        for (let c = 0; c <= nColors; c++)
-            phaseColor[c] = toColorString(c / nColors);
     }
 
     setAmplitudesTo(amplitude) {
@@ -95,7 +87,7 @@ class Psi {
     setAmplitudeTo(index, relX, relY) {
         const pixelDistance = Math.sqrt(relX*relX + relY*relY);
 
-        this._amplitude[index] = Math.min(pixelDistance / getClockPixelRadius(), 1);
+        this._amplitude[index] = Math.min(pixelDistance / display.clockPixelRadius, 1);
         this._phase[index] = Math.atan2(relY, relX);
 
         if (this._phase[index] < 0)
@@ -116,64 +108,20 @@ class Psi {
             }
         }
     }
-
-    render(baselineY, context) {
-        let pxPerY = baselineY * 0.6;
-        // Plot the real part of psi:
-        context.beginPath();
-        context.moveTo(0, baselineY - this._psi.re[0] * pxPerY);
-        for (let i = 1; i <= this._iMax; i++)
-            context.lineTo(i, baselineY - this._psi.re[i] * pxPerY);
-
-        context.strokeStyle = "#ffc000";
-        context.stroke();
-
-        // Plot the imaginary part of psi:
-        context.beginPath();
-        context.moveTo(0, baselineY - this._psi.im[0] * pxPerY);
-        for (let i = 1; i <= this._iMax; i++)
-            context.lineTo(i, baselineY - this._psi.im[i] * pxPerY);
-
-        context.strokeStyle = "#00d0ff";
-        context.stroke();
-    }
-
-    plotRealImaginary(context) {
-        const baselineY = getCanvasHeight() * (1 - clockSpaceFraction) / 2;
-        drawHorizontalAxis(baselineY);
-        this.render(baselineY, context);
-    }
-
-    plotDensityPhase(context) {
-        const baselineY = getCanvasHeight() * (1 - clockSpaceFraction);
-        const pxPerY = baselineY * 0.4;
-        context.lineWidth = 2;
-        for (let i = 0; i <= this._iMax; i++) {
-            context.beginPath();
-            context.moveTo(i, baselineY);
-            context.lineTo(i, baselineY - pxPerY*(this._psi.re[i]*this._psi.re[i] + this._psi.im[i]*this._psi.im[i]));
-            let localPhase = Math.atan2(this._psi.im[i], this._psi.re[i]);
-            if (localPhase < 0) localPhase += 2 * Math.PI;
-            context.strokeStyle = phaseColor[Math.round(localPhase * nColors / (2 * Math.PI))];
-            context.stroke();
-        }
-    }
 }
 
 function nextFrame() {
     psi.updatePhase();
     psi.build();
-    paintCanvas();
+    display.paintCanvas(psi, mouseIsDown, mouseClock);
     if (running) requestAnimationFrame(nextFrame);
 }
 
 function setMouseClock(relX, relY) {	// parameters are x,y in pixels, relative to clock center
     mouseIsDown = true;
-
     psi.setAmplitudeTo(mouseClock, relX, relY);
-
     psi.build();
-    paintCanvas();
+    display.paintCanvas(psi, mouseIsDown, mouseClock);
 }
 
 function mouseOrTouchStart(pageX, pageY, e) {
@@ -181,16 +129,15 @@ function mouseOrTouchStart(pageX, pageY, e) {
     const x = pos.x;
     const y = pos.y;
 
-    if (y > getCanvasHeight() - getClockSpaceHeight()) {
-        const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
-        mouseClock = Math.floor(x / phasorSpace);
+    if (y > getCanvasHeight() - display.clockSpaceHeight) {
+        mouseClock = Math.floor(x / display.phasorSpace);
 
-        const clockCenterX = phasorSpace * (mouseClock + 0.5);
-        const clockCenterY = getCanvasHeight() - getClockSpaceHeight() * 0.5;
+        const clockCenterX = display.phasorSpace * (mouseClock + 0.5);
+        const clockCenterY = getCanvasHeight() - display.clockSpaceHeight * 0.5;
         const relX = x - clockCenterX;
         const relY = clockCenterY - y;
 
-        if (relX*relX + relY*relY <= getClockPixelRadius()*getClockPixelRadius()) {
+        if (relX*relX + relY*relY <= display.clockPixelRadius * display.clockPixelRadius) {
             setMouseClock(relX, relY);
             e.preventDefault();
         }
@@ -213,9 +160,8 @@ function mouseOrTouchMove(pageX, pageY, event) {
     const x = pos.x;
     const y = pos.y;
 
-    const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
-    const clockCenterX = phasorSpace * (mouseClock + 0.5);
-    const clockCenterY = getCanvasHeight() - getClockSpaceHeight() * 0.5;
+    const clockCenterX = display.phasorSpace * (mouseClock + 0.5);
+    const clockCenterY = getCanvasHeight() - display.clockSpaceHeight * 0.5;
 
     const relX = x - clockCenterX;
     const relY = clockCenterY - y;
@@ -231,66 +177,12 @@ function touchMove(e) { mouseOrTouchMove(e.targetTouches[0].clientX, e.targetTou
 
 function mouseUp(e) {
     mouseIsDown = false;
-    paintCanvas();
+    display.paintCanvas(psi, mouseIsDown, mouseClock);
 }
 
-function drawHorizontalAxis(baselineY) {
-    theContext.strokeStyle = "gray";
-    theContext.lineWidth = 1;
-    theContext.beginPath();
-    theContext.moveTo(0, baselineY);
-    theContext.lineTo(getCanvasWidth(), baselineY);
-    theContext.stroke();
-    theContext.lineWidth = 2;
-}
-
-function drawPhasorClockWithIndex(n, phasorSpace, clockRadius) {
-    theContext.strokeStyle = "gray";
-    theContext.lineWidth = 1;
-    theContext.beginPath();
-    const centerX = (n+0.5) * phasorSpace;
-    const centerY = getCanvasHeight() - getClockSpaceHeight() * 0.5;
-    theContext.arc(centerX, centerY, clockRadius, 0, 2 * Math.PI);
-    theContext.stroke();
-    theContext.beginPath();
-    theContext.moveTo(centerX, centerY);
-    const clockHandX = centerX + clockRadius * psi.amplitude[n] * Math.cos(psi.phase[n]);
-    const clockHandY = centerY - clockRadius * psi.amplitude[n] * Math.sin(psi.phase[n]);
-    theContext.lineTo(clockHandX, clockHandY);
-    theContext.strokeStyle = phaseColor[Math.round(psi.phase[n] * nColors / (2 * Math.PI))];
-    theContext.lineWidth = 3;
-    theContext.stroke();
-}
-
-function paintCanvas() {
-    theContext.clearRect(0, 0, getCanvasWidth(), getCanvasHeight());
-
-    if (realImag.checked)
-        psi.plotRealImaginary(theContext);
-    else
-        psi.plotDensityPhase(theContext);
-
-    // Draw the eigen-phasor "clocks":
-    const phasorSpace = getCanvasWidth() / (psi.nMax + 1);
-    const clockRadius = Math.min(phasorSpace * 0.4, getClockSpaceHeight() * clockRadiusFraction);
-    for (let n = 0; n <= psi.nMax; n++)
-        drawPhasorClockWithIndex(n, phasorSpace, clockRadius);
-
-    if (!mouseIsDown) return;
-
-    // Provide feedback when setting an amplitude:
-    theContext.fillStyle = "#a0a0a0";
-    theContext.font = "20px monospace";
-    theContext.fillText("n = " + (mouseClock+1), 100, 30);
-    const amp = psi.amplitude[mouseClock];
-    const ph = psi.phase[mouseClock];
-    theContext.fillText("Mag = " + Number(amp).toFixed(3), 195, 30);
-    const deg = String.fromCharCode(parseInt('00b0',16));		// degree symbol
-    theContext.fillText("Phase = " + Math.round(ph * 180 / Math.PI) + deg, 360, 30);
-    //theContext.fillText("Re = " + Number(amp*Math.cos[ph]).toFixed(3), 180, 30);
-}
-
+const display = new Display(theCanvas, theContext);
 let psi = new Psi();
+
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
 
@@ -306,7 +198,7 @@ function resizeCanvas() {
     theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     psi = new Psi();
-    paintCanvas();
+    display.paintCanvas(psi, mouseIsDown, mouseClock);
 }
 window.addEventListener("resize", () => resizeCanvas());
 
@@ -324,13 +216,13 @@ function startStop() {
 function zero() {
     psi.setAmplitudesTo(0);
     psi.build();
-    paintCanvas();
+    display.paintCanvas(psi, mouseIsDown, mouseClock);
 }
 
 function normalizePsi() {
     psi.normalise();
     psi.build();
-    paintCanvas();
+    display.paintCanvas(psi, mouseIsDown, mouseClock);
 }
 
 const speedSlider = document.getElementById("speedSlider");
@@ -341,8 +233,8 @@ const normalizeButton = document.getElementById("normalizeButton");
 const densityPhase = document.getElementById("densityPhase");
 
 pauseButton.addEventListener("click", () => startStop());
-realImag.addEventListener("change", () => paintCanvas());
-densityPhase.addEventListener("change", () => paintCanvas());
+realImag.addEventListener("change", () => display.paintCanvas(psi, mouseIsDown, mouseClock));
+densityPhase.addEventListener("change", () => display.paintCanvas(psi, mouseIsDown, mouseClock));
 zeroButton.addEventListener("click", () => zero());
 normalizeButton.addEventListener("click", () => normalizePsi());
 

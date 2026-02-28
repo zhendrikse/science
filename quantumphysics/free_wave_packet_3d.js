@@ -94,8 +94,8 @@ class FreeWavePacket extends Group {
     constructor({
                     numPoints = 256,
                     L = 30,
-                    k0Factor = 25,
-                    a = 1
+                    k0Factor = 25, // k0 → determines group velocity
+                    a = 1          // a → determines start width
                 } = {}) {
         super();
 

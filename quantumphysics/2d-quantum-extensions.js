@@ -76,7 +76,6 @@ export class Display {
         this._context.stroke();
     }
 
-    get nColors() { return this._nColors; }
     get phasorSpace() { return this._canvas.clientWidth / (this._totalClocks + 1); }
     get clockSpaceHeight() { return this._canvas.clientHeight * this._clockSpaceFraction; }
     get clockPixelRadius() { return this.clockSpaceHeight * this._clockRadiusFraction; }
