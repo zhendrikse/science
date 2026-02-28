@@ -15,7 +15,7 @@
 📌 A [VPython](https://www.vpython.org/) version is also available as [infinite_squarewell.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/infinite_squarewell.py)
 
 👉 Note that the energy of the eigenstates go like $n^2$. For example, we observe that the $n = 2$
-state has four times the energy, and therefore four times the frequency of the ground state $n = 1$
+state has four times the energy, and therefore four times the frequency of the ground state $n = 1$.
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
