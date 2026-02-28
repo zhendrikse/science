@@ -78,7 +78,7 @@ export class HarmonicOscillator extends Group {
             forces[j].add(totalForce.clone().negate());
         }
 
-        this._masses.forEach((mass, index) =>  mass.semiImplicitEulerUpdate(forces[index], dt));
+        this._masses.forEach((mass, index) =>  mass.step(forces[index], dt));
     }
 }
 

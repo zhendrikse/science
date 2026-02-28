@@ -108,7 +108,7 @@ class Lattice {
 
         for (const atomData of this._atoms) {
             if (!atomData.atom.visible) continue;
-            atomData.atom.semiImplicitEulerUpdate(atomData.force, dt);
+            atomData.atom.step(atomData.force, dt);
         }
 
         for (const bond of this._bonds)

@@ -1,5 +1,5 @@
 import {Scene, PerspectiveCamera, DirectionalLight, WebGLRenderer, Vector3 } from "three";
-import { Ball, ThreeJsUtils } from '../js/three-js-extensions.js';
+import {Ball, Integrators, ThreeJsUtils} from '../js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 //const canvasContainer = document.getElementById("threeBodyWrapper");
@@ -11,7 +11,7 @@ const G = 6.67e-11
 const astronomical_unit = 1.49e11
 const mass = 1e30
 const rA = 0.1 * astronomical_unit
-const rB = rA * 1 / 0.8
+const rB = rA / 0.8
 const vA = Math.sqrt(G * 0.8 * mass * rA) / (rA + rB)
 const sphereRadius = 190e7;
 const scale = 1E-9;
@@ -84,9 +84,9 @@ function iterate(subSteps, dt) {
     const force_CB = forceBetween(sphereB, sphereC);
     const force_AC = forceBetween(sphereC, sphereA);
 
-    sphereA.semiImplicitEulerUpdate(force_BA.clone().sub(force_AC), dt / subSteps);
-    sphereB.semiImplicitEulerUpdate(force_CB.clone().sub(force_BA), dt / subSteps);
-    sphereC.semiImplicitEulerUpdate(force_AC.clone().sub(force_CB), dt / subSteps);
+    sphereA.step(force_BA.clone().sub(force_AC), dt / subSteps, Integrators.rk4Step);
+    sphereB.step(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.rk4Step);
+    sphereC.step(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.rk4Step);
 }
 
 const dt = 5000;

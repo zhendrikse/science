@@ -23,77 +23,77 @@ export function normalMuSigma(average, standard_deviation) {
 export class Integrators {
     static eulerStep(state, dt, accelerationFn) {
         const acceleration = accelerationFn(state);
-
         const newState = state.clone();
-        newState.v.addScaledVector(acceleration, dt);
-         newState.x.addScaledVector(state.v, dt);
+
+        newState.velocity.addScaledVector(acceleration, dt);
+        newState.position.addScaledVector(state.velocity, dt);
 
         return newState;
     }
 
     static symplecticEulerStep(state, dt, accelerationFn) {
+        const acceleration = accelerationFn(state);
         const newState = state.clone();
 
-        const a = accelerationFn(state);
-        newState.v.addScaledVector(a, dt);
-        newState.x.addScaledVector(newState.v, dt);
+        newState.velocity.addScaledVector(acceleration, dt);
+        newState.position.addScaledVector(newState.velocity, dt);
 
         return newState;
     }
 
     static rk2Step(state, dt, accelerationFn) {
         const derivative = (state) => ({
-            dx: state.v.clone(),
+            dx: state.velocity.clone(),
             dv: accelerationFn(state)
         });
 
         const k1 = derivative(state);
 
         const mid = state.clone();
-        mid.x.addScaledVector(k1.dx, dt);
-        mid.v.addScaledVector(k1.dv, dt);
+        mid.position.addScaledVector(k1.dx, dt);
+        mid.velocity.addScaledVector(k1.dv, dt);
 
         const k2 = derivative(mid);
 
         const newState = state.clone();
-        newState.x.addScaledVector(k1.dx.clone().add(k2.dx), dt/2);
-        newState.v.addScaledVector(k1.dv.clone().add(k2.dv), dt/2);
+        newState.position.addScaledVector(k1.dx.clone().add(k2.dx), dt / 2);
+        newState.velocity.addScaledVector(k1.dv.clone().add(k2.dv), dt / 2);
 
         return newState;
     }
 
     static rk4Step(state, dt, accelerationFn) {
         const derivative = (state) => ({
-            dx: state.v.clone(),
+            dx: state.velocity.clone(),
             dv: accelerationFn(state)
         });
 
         const k1 = derivative(state);
 
         const s2 = state.clone();
-        s2.x.addScaledVector(k1.dx, dt / 2);
-        s2.v.addScaledVector(k1.dv, dt / 2);
+        s2.position.addScaledVector(k1.dx, dt / 2);
+        s2.velocity.addScaledVector(k1.dv, dt / 2);
         const k2 = derivative(s2);
 
         const s3 = state.clone();
-        s3.x.addScaledVector(k2.dx, dt / 2);
-        s3.v.addScaledVector(k2.dv, dt / 2);
+        s3.position.addScaledVector(k2.dx, dt / 2);
+        s3.velocity.addScaledVector(k2.dv, dt / 2);
         const k3 = derivative(s3);
 
         const s4 = state.clone();
-        s4.x.addScaledVector(k3.dx, dt);
-        s4.v.addScaledVector(k3.dv, dt);
+        s4.position.addScaledVector(k3.dx, dt);
+        s4.velocity.addScaledVector(k3.dv, dt);
         const k4 = derivative(s4);
 
         const newState = state.clone();
 
-        newState.x
+        newState.position
             .addScaledVector(k1.dx, dt / 6)
             .addScaledVector(k2.dx, dt / 3)
             .addScaledVector(k3.dx, dt / 3)
             .addScaledVector(k4.dx, dt / 6);
 
-        newState.v
+        newState.velocity
             .addScaledVector(k1.dv, dt/6)
             .addScaledVector(k2.dv, dt/3)
             .addScaledVector(k3.dv, dt/3)
@@ -1356,14 +1356,16 @@ class Helix extends Curve {
     }
 }
 
-class PhysicsState {
-    constructor(position, velocity) {
-        this.x = position.clone();
-        this.v = velocity.clone();
+class Body {
+    constructor(position=new Vector3(0, 0, 0), velocity=new Vector3(0, 0, 0), mass=1, charge=0) {
+        this.position = position;
+        this.velocity = velocity;
+        this.mass = mass;
+        this.charge = charge;
     }
 
     clone() {
-        return new PhysicsState(this.x, this.v);
+        return new Body(this.position, this.velocity, this.mass, this.charge);
     }
 }
 
@@ -1383,9 +1385,10 @@ export class Ball {
         segments = 24} = {})
     {
         this._sphere = new Sphere(parent,
-            {position, radius, color, makeTrail, visible, scale, segments, opacity, wireframe});
-        this._state = new PhysicsState(position, velocity);
-        this._mass = mass;
+            {
+                position, radius, color, makeTrail, visible, scale, segments, opacity, wireframe
+            });
+        this._state = new Body(position, velocity, mass);
         this._radius = radius;
         this._elasticity = elasticity;
         this._neighbors = [];
@@ -1393,13 +1396,13 @@ export class Ball {
 
     appendNeighbor(ball) { this._neighbors.push(ball); }
 
-    semiImplicitEulerUpdate(force, dt=0.01) {
-        if (!this.visible) return;
+    step(force, dt=0.01, integrator=Integrators.symplecticEulerStep) {
+        const accelerationFn = (body) => force.multiplyScalar(1 / body.mass);
+        const updatedBody = integrator(this.body, dt, accelerationFn);
 
-        const accel = force.clone().multiplyScalar(1 / this.mass);
-        this._state.v.addScaledVector(accel, dt);         // v_{n+1}
-        this._state.x.addScaledVector(this._state.v, dt); // x_{n+1}
-        this._sphere.moveTo(this._state.x);               // sync visuals
+        this.moveTo(updatedBody.position);
+        this.accelerateTo(updatedBody.velocity);
+        this._sphere.moveTo(this.position);
     }
 
     liesOnFloor({floorLevel=0, epsilon=1e-1} = {}) {
@@ -1407,21 +1410,21 @@ export class Ball {
     }
 
     bounceOffOfFloor(dt, epsilon = 1e-1) {
-        this._state.v.y *= -this._elasticity;
-        this._state.x.addScaledVector(this.velocity, dt);
+        this._state.velocity.y *= -this._elasticity;
+        this._state.position.addScaledVector(this.velocity, dt);
         this._sphere.moveTo(this.position);
 
         // if the velocity is too slow, stay on the ground
         if (this.velocity.y <= epsilon)
-            this._state.v.y = this.radius + this.radius * epsilon;
+            this._state.velocity.y = this.radius + this.radius * epsilon;
     }
 
     moveTo(newPosition) {
-        this._state.x.copy(newPosition);
+        this._state.position.copy(newPosition);
         this._sphere.moveTo(this.position);
     }
 
-    accelerateTo(newVelocity) { this._state.v.copy(newVelocity); }
+    accelerateTo(newVelocity) { this._state.velocity.copy(newVelocity); }
 
     shiftBy(displacement) { this.moveTo(this.position.clone().add(displacement)); }
 
@@ -1437,14 +1440,14 @@ export class Ball {
 
     kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
     get radius() { return this._radius }
-    get position() { return this._state.x; }
-    get velocity() { return this._state.v; }
-    get mass() { return this._mass; }
+    get position() { return this._state.position; }
+    get velocity() { return this._state.velocity; }
+    get mass() { return this._state.mass; }
     get visible() { return this._sphere.visible; }
     get neighbors() { return this._neighbors; }
     get elasticity() { return this._elasticity; }
     get rayCastHandle() { return this._sphere.rayCastHandle; }
-    get state() { return this._state; }
+    get body() { return this._state; }
 
     distanceTo(other) { return this._sphere.distanceTo(other) }
     positionVectorTo(other) { return this._sphere.positionVectorTo(other); }
@@ -2484,8 +2487,8 @@ export class HarmonicOscillator extends Group  {
         const forceMagnitude = this._k * (length - this._restLength);
         const force = direction.multiplyScalar(forceMagnitude);
 
-        this._right.semiImplicitEulerUpdate(force.clone().negate(), dt);
-        this._left.semiImplicitEulerUpdate(force, dt);
+        this._right.step(force.clone().negate(), dt);
+        this._left.step(force, dt);
 
         this._spring.moveTo(this._left.position);
         this._spring.updateAxis(delta);
@@ -2569,8 +2572,8 @@ export class MassSpringSystem extends Group {
         return force.add(this._spring.force);
     }
 
-    computeTotalForce(state, damping = 0) {
-        const axis = state.x.clone().sub(this._suspensionPoint);
+    computeTotalForce(body, damping = 0) {
+        const axis = body.position.clone().sub(this._suspensionPoint);
         const length = axis.length();
         const displacement = this._spring._restLength - length;
 
@@ -2579,17 +2582,17 @@ export class MassSpringSystem extends Group {
             .normalize()
             .multiplyScalar(this._spring.k * displacement);
 
-        const dampingForce = state.v.clone().multiplyScalar(-damping);
+        const dampingForce = body.velocity.clone().multiplyScalar(-damping);
 
         const gravity = this._gravity
-            ? new Vector3(0, -this._mass.mass * this._gravity, 0)
+            ? new Vector3(0, -body.mass * this._gravity, 0)
             : new Vector3(0, 0, 0);
 
         const horizontal = this._horizontalK
             ? new Vector3(
-                -this._horizontalK * state.x.x,
+                -this._horizontalK * body.position.x,
                 0,
-                -this._horizontalK * state.x.z
+                -this._horizontalK * body.position.z
             )
             : new Vector3(0, 0, 0);
 
@@ -2605,16 +2608,16 @@ export class MassSpringSystem extends Group {
     }
 
     step(dt, integrator, damping=0, time=0) {
-        const state = this._mass.state;
+        const body = this._mass.body;
 
-        const accelerationFn = (state) =>
-            this.computeTotalForce(state, damping).multiplyScalar(1 / this.mass.mass);
-        const newState = integrator(state, dt, accelerationFn);
+        const accelerationFn = (body) =>
+            this.computeTotalForce(body, damping).multiplyScalar(1 / body.mass);
+        const updatedBody = integrator(body, dt, accelerationFn);
 
-        this._mass.moveTo(newState.x);
-        this._mass.accelerateTo(newState.v);
+        this._mass.moveTo(updatedBody.position);
+        this._mass.accelerateTo(updatedBody.velocity);
 
-        this._spring.updateAxis(newState.x.clone().sub(this._suspensionPoint));
+        this._spring.updateAxis(updatedBody.position.clone().sub(this._suspensionPoint));
         this._spring.update(time);
     }
 

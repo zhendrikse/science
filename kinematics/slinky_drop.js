@@ -28,8 +28,8 @@ window.addEventListener("click", () => {
     }
 });
 
-const light = new DirectionalLight(0xffffff, 1);
-light.position.set(10, 10, 10);
+const light = new DirectionalLight(0xffffff, 2);
+light.position.set(-5, 0, 15);
 scene.add(light);
 scene.add(new AmbientLight(0x404040, 0.7));
 
@@ -39,7 +39,7 @@ const L0 = 2;
 const k = 100;
 
 const floorGeometry = new BoxGeometry(5 * L0, .1, 3.5 * L0);
-const floorMaterial = new MeshLambertMaterial({transparent: true, color: 0xff0ff, side: DoubleSide });
+const floorMaterial = new MeshLambertMaterial({transparent: true, color: 0x00bb00, side: DoubleSide });
 const floor = new Mesh(floorGeometry, floorMaterial);
 floor.position.set(0, -3.5 * L0, 0);
 experimentGroup.add(floor);
@@ -90,9 +90,9 @@ function iterate(dt) {
     const forceOnBall1 = g.clone().multiplyScalar(ball1.mass).sub(springForce);
     const forceOnBall2 = g.clone().multiplyScalar(ball2.mass).add(springForce);
 
-    ball1.semiImplicitEulerUpdate(forceOnBall1, dt);
-    ball2.semiImplicitEulerUpdate(forceOnBall2, dt);
-    ball3.semiImplicitEulerUpdate(g.clone().multiplyScalar(ball3.mass), dt);
+    ball1.step(forceOnBall1, dt);
+    ball2.step(forceOnBall2, dt);
+    ball3.step(g.clone().multiplyScalar(ball3.mass), dt);
 
     spring.moveTo(ball1.position);
     spring.updateAxis(ball1.positionVectorTo(ball2));

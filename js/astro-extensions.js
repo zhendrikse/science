@@ -507,22 +507,16 @@ export class Moon extends Satellite {
 
 export class EarthClouds extends Mesh {
     constructor(radius, spin) {
-
         const geometry = new SphereGeometry(radius * 1.01, 32, 32);
-
         const material = new MeshPhongMaterial({
             map: textureLoader.load(`${TEXTURES_PATH}earthcloudmap.jpg`),
             alphaMap: textureLoader.load(`${TEXTURES_PATH}earthcloudmaptrans.jpg`),
-
             transparent: true,
             opacity: 0.75,
-
             depthWrite: false,   // prevents harsh borders
             side: FrontSide,
-
             emissive: new Color(0x222222),
             emissiveIntensity: 0.25,
-
             shininess: 5
         });
 
@@ -562,21 +556,22 @@ export class EarthEquatorialPlane extends Mesh {
 }
 
 export class Earth extends Planet {
-    constructor(planetData={
-        "name": "earth",
-        "a": EARTH_SEMI_MAJOR_AXIS,
-        "e": 0.01671123,
-        "inclination": 0.,
-        "right_ascension": 0.,
-        "mean_anomaly": 6.2398515744,
-        "radius": 6371010, // meters
-        "mass": 5.97219e+24,
-        "spin": 2 * Math.PI / 24.,
-        "tilt": 23 * Math.PI / 180
-    }, scale=PLANET_SCALE) {
-        super(planetData, {scale: scale});
+    constructor({opacity=1, scale=PLANET_SCALE, clouds=false} = {}) {
+        super({
+            "name": "earth",
+            "a": EARTH_SEMI_MAJOR_AXIS,
+            "e": 0.01671123,
+            "inclination": 0.,
+            "right_ascension": 0.,
+            "mean_anomaly": 6.2398515744,
+            "radius": 6371010, // meters
+            "mass": 5.97219e+24,
+            "spin": 2 * Math.PI / 24.,
+            "tilt": 23 * Math.PI / 180
+        }, {scale: scale});
         this._timescale = 1; // rotation period w.r.t. Earth
         this._clouds = new EarthClouds(this._geometry.parameters.radius, this._spin);
+        this._clouds.visible = clouds;
         this.add(this._clouds);
         this._equatorialPlane = new EarthEquatorialPlane(this, {
             innerRadiusFactor: 1.3,
@@ -584,6 +579,7 @@ export class Earth extends Planet {
             opacity: 0.12
         });
         this._equatorialPlane.visible = false;
+        this._body.material.opacity = opacity;
         this.add(this._equatorialPlane);
     }
 

@@ -103,7 +103,7 @@ const uplot = new uPlot(opts, data, document.getElementById("chart"));
 function ballStep(dt) {
     if (ball.position.x > 1.75 || !running) return;
     const force = new Vector3(0, -9.8, 0).multiplyScalar(ball.mass);
-    ball.semiImplicitEulerUpdate(force, dt);
+    ball.step(force, dt);
     if (ball.liesOnFloor())
         ball.bounceOffOfFloor(dt);
 
