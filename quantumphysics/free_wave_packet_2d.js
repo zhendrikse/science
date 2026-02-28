@@ -25,62 +25,63 @@ var phaseColor = new Array(nColors+1);
 for (var c=0; c<=nColors; c++) {
     phaseColor[c] = colorString(c/nColors);		// initialize array of colors
 }
-    var dt = 0.45;		// anything less than 0.50 seems to be stable
-    var running = false;
-    var psiTempAlpha = 0.0;		// transparency level for drawing the potential next wavepacket
-    var psiTempTimer;			// timer to hide the potential next wavepacket
-    var psiTempParams = {};		// parameters of wavepacket being drawn by mouse/touch
-    var psiPixPerUnit = cHeight/3;	// scale for plotting psi (real and imag parts)
-    var plotMarginHeight = cHeight * 0.07;	// margin at bottom of density/phase plot
-    var psi2PixPerUnit = (cHeight - plotMarginHeight) * 0.55;	// scale for plotting psi squared
 
-    // Add mouse/touch handlers:
-    theCanvas.addEventListener('mousedown', mouseDown, false);
-    theCanvas.addEventListener('touchstart', touchStart, false);
+var dt = 0.45;		// anything less than 0.50 seems to be stable
+var running = false;
+var psiTempAlpha = 0.0;		// transparency level for drawing the potential next wavepacket
+var psiTempTimer;			// timer to hide the potential next wavepacket
+var psiTempParams = {};		// parameters of wavepacket being drawn by mouse/touch
+var psiPixPerUnit = cHeight/3;	// scale for plotting psi (real and imag parts)
+var plotMarginHeight = cHeight * 0.07;	// margin at bottom of density/phase plot
+var psi2PixPerUnit = (cHeight - plotMarginHeight) * 0.55;	// scale for plotting psi squared
 
-    // Start up the physics:
-    clearPsi();
-    setPsiTemp();
-    addPacket();
-    startStop();
+// Add mouse/touch handlers:
+theCanvas.addEventListener('mousedown', mouseDown, false);
+theCanvas.addEventListener('touchstart', touchStart, false);
 
-    // Respond to user clicking Run/Pause/Resume button:
-    function startStop() {
+// Start up the physics:
+clearPsi();
+setPsiTemp();
+addPacket();
+startStop();
+
+// Respond to user clicking Run/Pause/Resume button:
+function startStop() {
     running = !running;
     if (running) {
-    pauseButton.innerHTML = "Pause";
-    nextFrame();
-} else {
-    pauseButton.innerHTML = "Resume";
-}
+        pauseButton.innerHTML = "Pause";
+        nextFrame();
+    } else {
+        pauseButton.innerHTML = "Resume";
+    }
 }
 
-    // Calculate and draw the next animation frame:
-    function nextFrame() {
+// Calculate and draw the next animation frame:
+function nextFrame() {
     if (running) {
-    stepsPerFrame = Number(speedSlider.value);
-    for (var step=0; step<stepsPerFrame; step++) doStep();
-    paintCanvas();
-    window.setTimeout(nextFrame, 1000/40);	// schedule the next frame, 40 fps
-}
+        stepsPerFrame = Number(speedSlider.value);
+        for (var step=0; step<stepsPerFrame; step++) doStep();
+        paintCanvas();
+        window.setTimeout(nextFrame, 1000/40);	// schedule the next frame, 40 fps
+    }
 }
 
-    // Integrate the TDSE for a single time step (leapfrog algorithm):
-    function doStep() {
+// Integrate the TDSE for a single time step (leapfrog algorithm):
+function doStep() {
     for (var x=1; x<xMax; x++) {
-    psiNext.re[x] = psiLast.re[x] + dt * (-psi.im[x+1] - psi.im[x-1] + 2*psi.im[x]);
-    psiNext.im[x] = psiLast.im[x] - dt * (-psi.re[x+1] - psi.re[x-1] + 2*psi.re[x]);
-}
+        psiNext.re[x] = psiLast.re[x] + dt * (-psi.im[x+1] - psi.im[x-1] + 2*psi.im[x]);
+        psiNext.im[x] = psiLast.im[x] - dt * (-psi.re[x+1] - psi.re[x-1] + 2*psi.re[x]);
+    }
     for (var x=1; x<xMax; x++) {	// now copy current to past, future to current
-    psiLast.re[x] = psi.re[x];
-    psiLast.im[x] = psi.im[x];
-    psi.re[x] = psiNext.re[x];
-    psi.im[x] = psiNext.im[x];
-}
+        psiLast.re[x] = psi.re[x];
+        psiLast.im[x] = psi.im[x];
+        psi.re[x] = psiNext.re[x];
+        psi.im[x] = psiNext.im[x];
+    }
 }
 
-    // Construct a new wavepacket, using either passed parameters or GUI settings:
-    function setPsiTemp(center, pHeight, pWidth, k) {
+// Construct a new wavepacket, using either passed parameters or GUI settings:
+function setPsiTemp(center, pHeight, pWidth, k) {
     if (center == undefined) {
     center = Number(posSlider.value);
     pHeight = Number(heightSlider.value);
@@ -337,27 +338,38 @@ function paintCanvas() {
 
 }
 
-    // Utility function to convert a number to a two-digit hex string (from stackoverflow):
-    function twoDigitHex(c) {
+// Utility function to convert a number to a two-digit hex string (from stackoverflow):
+function twoDigitHex(c) {
     var hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;
 }
 
-    // Utility function to create a hex color string for a given hue (between 0 and 1):
-    function colorString(hue) {
-    var r, g, b;
-    if (hue < 1/6) {
-    r = 255; g = Math.round(hue*6*255); b = 0;			// red to yellow
-} else if (hue < 1/3) {
-    r = Math.round((1/3 - hue)*6*255); g = 255; b = 0;	// yellow to green
-} else if (hue < 1/2) {
-    r = 0; g = 255; b = Math.round((hue - 1/3)*6*255);	// green to cyan
-} else if (hue < 2/3) {
-    r = 0; g = Math.round((2/3 - hue)*6*255); b = 255;	// cyan to blue
-} else if (hue < 5/6) {
-    r = Math.round((hue - 2/3)*6*255); g = 0; b = 255;	// blue to magenta
-} else {
-    r = 255; g = 0; b = Math.round((1 - hue)*6*255);	// magenta to red
-}
-    return "#" + twoDigitHex(r) + twoDigitHex(g) + twoDigitHex(b);
+// Utility function to create a hex color string for a given hue (between 0 and 1):
+function toColorString(hue) {
+    let r, g, b;
+    if (hue < 1/6) { // red to yellow
+        r = 255; g = Math.round(hue * 6 * 255);
+        b = 0;
+    } else if (hue < 1/3) { // yellow to green
+        r = Math.round((1/3 - hue) * 6 * 255);
+        g = 255;
+        b = 0;
+    } else if (hue < 1/2) { // green to cyan
+        r = 0;
+        g = 255;
+        b = Math.round((hue - 1/3) * 6 * 255);
+    } else if (hue < 2/3) { // cyan to blue
+        r = 0;
+        g = Math.round((2/3 - hue) * 6 * 255);
+        b = 255;
+    } else if (hue < 5/6) { // blue to magenta
+        r = Math.round((hue - 2/3) * 6 * 255);
+        g = 0;
+        b = 255;
+    } else { // magenta to red
+        r = 255;
+        g = 0;
+        b = Math.round((1 - hue) * 6 * 255);
+    }
+    return "#" + numberToTwoDigitHexString(r) + numberToTwoDigitHexString(g) + numberToTwoDigitHexString(b);
 }
