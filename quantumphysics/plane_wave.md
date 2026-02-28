@@ -5,8 +5,8 @@
 
 ### What are you looking at?
 
-This animation shows a one-dimensional **complex plane wave**,
-a fundamental object in wave physics and quantum mechanics.<br/>
+This animation shows one of the most frequently encountered
+complex functions in quantum mechanics, namely a one-dimensional **complex plane wave**.
 Mathematically, the wave is described by
 
 $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
@@ -34,13 +34,13 @@ and the role of $k$ and $\omega$.
     <canvas class="applicationCanvas" id="planeWaveCanvas"></canvas><br/>
 </div>
 <div class="guiContainer" id="gui-container"></div>
-<script type="module" src="plane_wave.js"></script>
+<script type="module" src="plane_wave_3d.js"></script>
 
 <p style="clear: both;"></p>
 
 ⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [plane_wave.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave.js)<br/>
-👉 A [VPython](https://www.vpython.org/) version is also available as [scalar_plot.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/plane_wave.py).
+🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [plane_wave_3d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave_3d.js)<br/>
+👉 A [VPython](https://www.vpython.org/) version is also available as [plane_wave.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/plane_wave.py).
 
 
 ### Guided Exploration

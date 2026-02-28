@@ -1,3 +1,5 @@
+import { toColorString } from "../js/canvas-extensions.js";
+
 const theCanvas = document.getElementById("infiniteSquareWellCanvas2D");
 const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
@@ -307,40 +309,6 @@ function resizeCanvas() {
     paintCanvas();
 }
 window.addEventListener("resize", () => resizeCanvas());
-
-function numberToTwoDigitHexString(numberToConvert) {
-    const hex = numberToConvert.toString(16);
-    return hex.length === 1 ? "0" + hex : hex;
-}
-
-function toColorString(hue) {
-    let r, g, b;
-    if (hue < 1/6) { // red to yellow
-        r = 255; g = Math.round(hue * 6 * 255);
-        b = 0;
-    } else if (hue < 1/3) { // yellow to green
-        r = Math.round((1/3 - hue) * 6 * 255);
-        g = 255;
-        b = 0;
-    } else if (hue < 1/2) { // green to cyan
-        r = 0;
-        g = 255;
-        b = Math.round((hue - 1/3) * 6 * 255);
-    } else if (hue < 2/3) { // cyan to blue
-        r = 0;
-        g = Math.round((2/3 - hue) * 6 * 255);
-        b = 255;
-    } else if (hue < 5/6) { // blue to magenta
-        r = Math.round((hue - 2/3) * 6 * 255);
-        g = 0;
-        b = 255;
-    } else { // magenta to red
-        r = 255;
-        g = 0;
-        b = Math.round((1 - hue) * 6 * 255);
-    }
-    return "#" + numberToTwoDigitHexString(r) + numberToTwoDigitHexString(g) + numberToTwoDigitHexString(b);
-}
 
 // --- GUI wiring ---
 const pauseButton = document.getElementById("pauseButton");

@@ -3,15 +3,16 @@
 ## Quantum Harmonic Oscillator
 <div class="header_line"><br/></div>
 
-> It’s not terribly difficult to apply a similar approach of the infinite square well 
+> It’s not terribly difficult to apply a similar approach of the 
+> [simulation of the infinite square well](./infinite_square_well.html) 
 > to the simple harmonic oscillator (SHO). What’s the same? There are still energy
 > eigenstates (stationary states) that have definite energy (frequency). You can still form
 > superpositions of these stationary states to produce more general states that “slosh” in
 > time. These superposition states can be used to model realistic scenarios that might occur
 > in various situations. What’s different? Well, the potential energy function is pretty different,
 > rather than a piecewise constant potential like the infinite square well, or the finite square
-> well, the SHO potential is $V (x) = \frac{1}{2}m\omega^2 x^2$, and
-> this results in quantitatively different eigenstate energies 
+> well, the SHO potential is $V (x) = \frac{1}{2}m\omega^2 x^2$.
+> This results in quantitatively different eigenstate energies 
 > and wavefunctions. &mdash; [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)
 
 <p style="clear: both;"></p>
@@ -39,8 +40,8 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
-<div id="shoWrapper2D" style="width: 100%; aspect-ratio: 19/12">
-    <canvas id="shoCanvas2D" style="width: 100%; aspect-ratio: 19/12"></canvas>
+<div class="canvasWrapper" id="shoWrapper2D">
+    <canvas id="shoCanvas2D" class="applicationCanvas"></canvas>
 </div>
 <div class="buttonRow">
     <label for="speedSlider">Speed:
