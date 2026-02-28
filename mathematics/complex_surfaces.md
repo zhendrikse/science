@@ -33,6 +33,6 @@ Height &amp; color reveal how the function **stretches, twists, and folds** the 
 
 <p style="clear: both;"></p>
 
-🛠️ The images are generated with [complex_surfaces.js](https://github.com/zhendrikse/science/blob/main/mathematics/complex_surfaces.js).
+📌 [complex_surfaces.js](https://github.com/zhendrikse/science/blob/main/mathematics/complex_surfaces.js) is written by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 
 {% include share_buttons.html %}

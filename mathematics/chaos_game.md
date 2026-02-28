@@ -3,7 +3,7 @@
 ## Chaos game 🎮
 <div class="header_line"><br/></div>
 
-🔧 [chaos_game.js](https://github.com/zhendrikse/science/blob/main/mathematics/chaos_game.js) is written by [Zeger Hendrikse](https://github.com/zhendrikse/)<br/>
+📌 [chaos_game.js](https://github.com/zhendrikse/science/blob/main/mathematics/chaos_game.js) is written by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 ⭐ Inspired by [nnakul/chaos-game](https://github.com/nnakul/chaos-game/tree/master) by [Nikhil Nakul](https://github.com/nnakul/)<br/>
 👉 A [VPython](https://vpython.org) version is available as well, see [chaos_game.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/chaos_game.py)
 

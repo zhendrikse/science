@@ -19,7 +19,7 @@ Click on the canvas to start the animation and watch the field come alive!
 <p style="clear: both;"></p>
 
 ⭐ [Original idea](https://www.glowscript.org/#/user/wlane/folder/Physicsin3D/program/water-flow-curl) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
-🛠  Ported to JavaScript as [div_curl_demo.js](https://github.com/zhendrikse/science/blob/main/mathematics/div_curl_demo.js)<br/>
+📌  Ported to JavaScript as [div_curl_demo.js](https://github.com/zhendrikse/science/blob/main/mathematics/div_curl_demo.js)<br/>
 👉 A [VPython](https://www.vpython.org/) version is also available as [div_curl_demo.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/div_curl_demo.py).
 
 
