@@ -1,4 +1,4 @@
-import { Display } from "./2d-quantum-extensions.js"
+import { Display, HarmonicOscillatorWave2D } from "./2d-quantum-extensions.js"
 
 const theCanvas = document.getElementById("shoCanvas2D");
 const theContext = theCanvas.getContext("2d");
@@ -20,133 +20,6 @@ document.body.addEventListener('touchend', mouseUp, false);
 
 const getCanvasWidth = () => theCanvas.clientWidth;
 const getCanvasHeight = () => theCanvas.clientHeight;
-
-class Psi {
-    constructor(iMax = getCanvasWidth(), nMax =25) {
-        this._iMax = iMax;
-        this._nMax = nMax; // maximum energy quantum number (starting from zero)
-
-        this._psi = {
-            re: new Array(iMax + 1),
-            im: new Array(iMax + 1)
-        };
-        this._eigenPsi = new Array(this._nMax + 1);
-        this._amplitude = new Array(this._nMax + 1);		// amplitudes of the eigenfunctions in psi
-        this._phase = new Array(this._nMax + 1);			// phases of the eigenfunctions in psi
-        this.init();
-        this.build(iMax);
-    }
-
-    get re() { return this._psi.re; }
-    get im() { return this._psi.im; }
-    get iMax() { return this._iMax; }
-    get amplitude() { return this._amplitude; }
-    get phase() { return this._phase; }
-
-    #initEigenStates() {
-        for (let n = 0; n <= this._nMax; n++)
-            this._eigenPsi[n] = new Array(this._iMax + 1);
-
-        for (let i = 0; i <= this._iMax; i++) {
-            const x = (i - this._iMax / 2) / pxPerX;
-
-            // --- Build Hermite polynomials recursively ---
-            const H = new Array(this._nMax + 1);
-
-            H[0] = 1;
-            if (this._nMax > 0)
-                H[1] = 2 * x;
-
-            for (let n = 1; n < this._nMax; n++)
-                H[n+1] = 2 * x * H[n] - 2 * n * H[n-1];
-
-            const gaussian = Math.exp(-x * x / 2);
-            let nFact = 1;
-            for (let n = 0; n <= this._nMax; n++) {
-                if (n > 0) nFact *= n;
-
-                const norm = 1 / Math.sqrt(Math.pow(2,n) * nFact * Math.sqrt(Math.PI));
-                this._eigenPsi[n][i] = norm * H[n] * gaussian;
-            }
-        }
-    }
-
-    init() {
-        this.#initEigenStates();
-
-        // zero amplitudes + phases
-        for (let n = 0; n <= this._nMax; n++) {
-            this._amplitude[n] = 0;
-            this._phase[n] = 0;
-        }
-
-        this._amplitude[0] = 1/Math.sqrt(2);
-        this._amplitude[1] = 1/Math.sqrt(2);
-    }
-
-    setAmplitudesTo(amplitude) {
-        for (let n = 0; n <= this._nMax; n++)
-            this._amplitude[n] = amplitude;
-    }
-
-    updatePhase() {
-        for (let n = 0; n <= this._nMax; n++) {
-            this._phase[n] -= (n + 0.5) * Number(speedSlider.value);
-            if (this._phase[n] < 0)
-                this._phase[n] += 2 * Math.PI;
-        }
-    }
-
-    normalise() {
-        let norm2 = 0;
-        for (let n = 0; n <= this._nMax; n++)
-            norm2 += this._amplitude[n] * this._amplitude[n];
-
-        if (norm2 <= 0) return;
-
-        for (let n = 0; n <= this._nMax; n++)
-            this._amplitude[n] /= Math.sqrt(norm2);
-    }
-
-    coherent(alphaMag) {
-        let nFact = 1;
-        const prefactor = Math.exp(-alphaMag * alphaMag / 2);
-
-        for (let n = 0; n <= this._nMax; n++) {
-            if (n > 0) nFact *= n;
-            this._amplitude[n] =
-                prefactor * Math.pow(alphaMag, n) / Math.sqrt(nFact);
-            this._phase[n] = 0;
-        }
-
-        this.normalise();
-    }
-
-    setAmplitudeTo(index, relX, relY) {
-        const pixelDistance = Math.sqrt(relX*relX + relY*relY);
-
-        this._amplitude[index] = Math.min(pixelDistance / display.clockPixelRadius, 1);
-        this._phase[index] = Math.atan2(relY, relX);
-
-        if (this._phase[index] < 0)
-            this._phase[index] += 2 * Math.PI;
-    }
-
-    build() {
-        for (let i = 0; i <= this._iMax; i++) {
-            this._psi.re[i] = 0;
-            this._psi.im[i] = 0;
-        }
-        for (let n = 0; n <= this._nMax; n++) {
-            const realPart = this._amplitude[n] * Math.cos(this._phase[n]);
-            const imagPart = this._amplitude[n] * Math.sin(this._phase[n]);
-            for (let i = 0; i <= this._iMax; i++) {
-                this._psi.re[i] += realPart * this._eigenPsi[n][i];
-                this._psi.im[i] += imagPart * this._eigenPsi[n][i];
-            }
-        }
-    }
-}
 
 function nextFrame() {
     psi.updatePhase();
@@ -219,7 +92,7 @@ function mouseUp(e) {
 }
 
 const display = new Display(theCanvas, theContext);
-let psi = new Psi();
+let psi = new HarmonicOscillatorWave2D(getCanvasWidth());
 
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
@@ -235,7 +108,7 @@ function resizeCanvas() {
 
     theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    psi = new Psi();
+    psi = new HarmonicOscillatorWave2D(getCanvasWidth());
     display.paintCanvas(psi, mouseIsDown, mouseClock);
 }
 window.addEventListener("resize", () => resizeCanvas());
