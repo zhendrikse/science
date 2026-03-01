@@ -153,6 +153,7 @@ export class Wave2D {
     constructor(iMax, nMax) {
         this._iMax = iMax;
         this._nMax = nMax; // maximum energy quantum number (starting from zero)
+        this._pxPerX = 60; // number of pixels per conventional x unit
 
         this._psi = {
             re: new Array(iMax + 1),
@@ -243,9 +244,9 @@ export class InfiniteWellWave2D extends Wave2D {
                 this._eigenPsi[n][i] = Math.sin((n + 1) * Math.PI * i / this._iMax);
     }
 
-    updatePhase() {
+    updatePhase(speed) {
         for (let n = 0; n <= this._nMax; n++) {
-            this._phase[n] -= (n + 1) * (n + 1) * Number(speedSlider.value);	// energies proportional to n^2
+            this._phase[n] -= (n + 1) * (n + 1) * speed;	// energies proportional to n^2
             if (this._phase[n] < 0)
                 this._phase[n] += 2 * Math.PI;
         }
@@ -255,7 +256,6 @@ export class InfiniteWellWave2D extends Wave2D {
 export class HarmonicOscillatorWave2D extends Wave2D{
     constructor(iMax) {
         super(iMax, 25);
-        this._pxPerX = 60;			// number of pixels per conventional x unit
     }
 
     _initEigenStates() {
@@ -286,9 +286,9 @@ export class HarmonicOscillatorWave2D extends Wave2D{
         }
     }
 
-    updatePhase() {
+    updatePhase(speed) {
         for (let n = 0; n <= this._nMax; n++) {
-            this._phase[n] -= (n + 0.5) * Number(speedSlider.value);
+            this._phase[n] -= (n + 0.5) * speed;
             if (this._phase[n] < 0)
                 this._phase[n] += 2 * Math.PI;
         }

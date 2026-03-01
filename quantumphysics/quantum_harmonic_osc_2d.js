@@ -21,7 +21,7 @@ const getCanvasWidth = () => theCanvas.clientWidth;
 const getCanvasHeight = () => theCanvas.clientHeight;
 
 function nextFrame() {
-    psi.updatePhase();
+    psi.updatePhase(Number(speedSlider.value));
     psi.build();
     display.paintCanvas(psi, mouseIsDown, mouseClock);
     if (running) requestAnimationFrame(nextFrame);

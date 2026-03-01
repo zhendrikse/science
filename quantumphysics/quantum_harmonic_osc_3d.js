@@ -29,13 +29,20 @@ class HarmonicOscillatorWave extends Group {
         super();
 
         this._maxStates = maxStates;
-
         this._arrows = [];
         this._values = [];
-
         this._xValues = [];
-        const dx = L / numPoints;
+        this._initArrows(numPoints, L);
 
+        this._amplitude = 8;
+        this._omega = 5;
+        this._weights = [1, 1, 1]; // default coherent-ish
+
+        this._computeHermiteStates();
+    }
+
+    _initArrows(numPoints, L) {
+        const dx = L / numPoints;
         for (let i = 0; i < numPoints; i++) {
             const x = -L / 2 + i * dx;
             this._xValues.push(x);
@@ -53,12 +60,6 @@ class HarmonicOscillatorWave extends Group {
             this._values.push({real: 0, imag: 0});
             this.add(arrow);
         }
-
-        this._amplitude = 8;
-        this._omega = 5;
-        this._weights = [1, 1, 1]; // default coherent-ish
-
-        this._computeHermiteStates();
     }
 
     set weights(w) {
@@ -122,10 +123,9 @@ class HarmonicOscillatorWave extends Group {
     }
 
     update(t) {
-        // eerst psi berekenen
+        // First calculate Psi
         let temp = [];
         let norm = 0;
-
         for (let i = 0; i < this._arrows.length; i++) {
             const val = this._computePsiAt(i, t);
             temp.push(val);
