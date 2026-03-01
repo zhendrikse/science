@@ -32,7 +32,9 @@
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 <div class="canvasWrapper" id="freePacketWrapper" style="aspect-ratio: 2/1">
     <canvas id="freePacketCanvas" class="applicationCanvas" style="aspect-ratio: 2/1"></canvas>
+    <div class="overlayText" id="overlayText">Click to start the animation!</div>
 </div>
+<div class="guiContainer" id="freePacketGui"></div>
 <script type="module" src="free_wave_packet_3d.js"></script>
 <div id="expectationPlot" style="margin:auto;"></div>
 <p style="clear: both;"></p>

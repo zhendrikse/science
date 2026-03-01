@@ -1,12 +1,14 @@
 import { Group, Vector3, Color, Scene, Box3 } from "three";
 import { Arrow, AxesController, AxesParameters, Plot3DView, ThreeJsUtils } from '../js/three-js-extensions.js';
-// import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
 const canvasContainer = document.getElementById("freePacketWrapper");
 const canvas = document.getElementById("freePacketCanvas");
+const overlay = document.getElementById("overlayText");
 const scene = new Scene();
 const worldGroup = new Group();
 scene.add(worldGroup);
+let running = false;
 
 const axesParams = new AxesParameters({
     layoutType: 0,
@@ -19,6 +21,12 @@ const axesParams = new AxesParameters({
     annotations: true,
     tickLabels: false
 });
+
+const params = {
+    k0Factor: 20, // k0 → determines group velocity
+    a: 1,         // a → determines start width
+    x0: 0
+};
 
 // js/fft-esm.js
 // ESM-versie van fft.js suitable for browser
@@ -95,10 +103,13 @@ class FreeWavePacket extends Group {
                     numPoints = 256,
                     L = 30,
                     k0Factor = 25, // k0 → determines group velocity
-                    a = 1          // a → determines start width
+                    a = 1,         // a → determines start width
+                    x0 = 0
                 } = {}) {
         super();
-
+        this._k0Factor = k0Factor;
+        this._a = a;
+        this._x0 = x0;
         this._N = numPoints;
         this._L = L;
         this._dx = L / numPoints;
@@ -142,11 +153,11 @@ class FreeWavePacket extends Group {
 
     _buildInitialPacket(k0Factor, a) {
         const kMin = 2 * Math.PI / this._L;
-        const k0 = k0Factor * kMin;
+        const k0 = this._k0Factor * kMin;
 
         for (let i = 0; i < this._N; i++) {
             const x = this._arrows[i].position.x;
-            const gauss = Math.exp(-1 * ((x + this._L / 4) / (2 * a))**2);
+            const gauss = Math.exp(-1 * ((x - this._x0) / (2 * this._a))**2 );
             const phase = k0 * x;
 
             this._psi.re[i] = gauss * Math.cos(phase);
@@ -200,6 +211,13 @@ class FreeWavePacket extends Group {
         return real * real + imag * imag;
     }
 
+    rebuild({ k0Factor, a, x0 }) {
+        this._k0Factor = k0Factor;
+        this._a = a;
+        this._x0 = x0;
+        this._buildInitialPacket();
+    }
+
     update(t) {
         for (let i = 0; i < this._N; i++)
             this.#evolveInKspace(i, t);
@@ -241,6 +259,27 @@ plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, 0.3), {
     padding: 0.9
 });
 
+function resetWave() {
+    time = 0;
+    plotData[0] = [];
+    plotData[1] = [];
+    wave.rebuild(params);
+}
+
+const gui = new GUI({ width: "100%", autoPlace: false });
+document.getElementById("freePacketGui").appendChild(gui.domElement);
+gui.add(params, "k0Factor", 0, 40, 1)
+    .name("k₀ factor")
+    .onChange(() => resetWave());
+
+gui.add(params, "a", 0.3, 5, 0.1)
+    .name("Width a")
+    .onChange(() => resetWave());
+
+gui.add(params, "x0", -10, 10, 0.5)
+    .name("Initial position")
+    .onChange(() => resetWave());
+
 // Resizing for mobile devices
 function resize() {
     ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
@@ -248,6 +287,12 @@ function resize() {
 }
 window.addEventListener("resize", resize);
 resize();
+window.addEventListener("click", () => {
+    if (!running) {
+        ThreeJsUtils.showOverlayMessage(overlay, "Started");
+        running = true;
+    }
+});
 
 const plotData = [
     [], // x-axis = time
@@ -274,6 +319,9 @@ let time = 0;
 const dt = 0.01;
 const maxPoints = 100;
 function animate() {
+    plot3D.render();
+    if (!running) return;
+
     plotData[0].push(time); // x-axis = time
     plotData[1].push(wave.update(time));
     axesController.render(plot3D.camera);
@@ -281,7 +329,6 @@ function animate() {
     if (plotData[0].length > maxPoints)
         plotData.forEach(arr => arr.shift());
     plot.setData(plotData);
-    plot3D.render();
 }
 
 plot3D.renderer.setAnimationLoop(animate);
