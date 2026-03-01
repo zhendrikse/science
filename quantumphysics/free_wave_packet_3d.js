@@ -154,7 +154,7 @@ class FreeWavePacket extends Group {
         }
 
         this._normalize();
-        this._fft.transform(this._phi0_re, this._phi0_im, this._psi_re, this._psi_im);
+        this._fft.transform(this._phi0.re, this._phi0.im, this._psi.re, this._psi.im);
     }
 
     _normalize() {
