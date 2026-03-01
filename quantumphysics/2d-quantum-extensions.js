@@ -255,6 +255,7 @@ export class InfiniteWellWave2D extends Wave2D {
 export class HarmonicOscillatorWave2D extends Wave2D{
     constructor(iMax) {
         super(iMax, 25);
+        this._pxPerX = 60;			// number of pixels per conventional x unit
     }
 
     _initEigenStates() {
@@ -262,7 +263,7 @@ export class HarmonicOscillatorWave2D extends Wave2D{
             this._eigenPsi[n] = new Array(this._iMax + 1);
 
         for (let i = 0; i <= this._iMax; i++) {
-            const x = (i - this._iMax / 2) / pxPerX;
+            const x = (i - this._iMax / 2) / this._pxPerX;
 
             // --- Build Hermite polynomials recursively ---
             const H = new Array(this._nMax + 1);

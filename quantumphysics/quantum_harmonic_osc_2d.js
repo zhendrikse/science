@@ -5,7 +5,6 @@ const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
 theCanvas.style.touchAction = "none";
 
-const pxPerX = 60;			// number of pixels per conventional x unit
 let running = true;
 let mouseIsDown = false;
 let mouseClock;
