@@ -102,15 +102,29 @@ class FreeWavePacket extends Group {
         this._N = numPoints;
         this._L = L;
         this._dx = L / numPoints;
-        this._arrowScale = Math.sqrt(this._N * this._dx * 2 * a) / 0.8; // as in VPython version
-        this._x = [];
+        this._arrowScale = Math.sqrt(numPoints * this._dx * 2 * a) / 0.8; // as in VPython version
         this._arrows = [];
         this._values = [];
+        this._psi = {re: new Array(numPoints), im: new Array(numPoints)};
+        this._phi = {re: new Array(numPoints), im: new Array(numPoints)};
+        this._phi0 = {re: new Array(numPoints), im: new Array(numPoints)};
 
+        // ---- k-space ----
+        const n = new Array(this._N);
+        for (let i = 0; i < this._N; i++)
+            n[i] = i <= this._N / 2 ? i : i - this._N;
+
+        this._k = n.map(n => 2 * Math.PI * n / L);
+        this._omega = this._k.map(k => k * k / 2); // hbar = m = 1
+        this._fft = new FFT(this._N);
+
+        this._buildArrows(L);
+        this._buildInitialPacket(k0Factor, a);
+    }
+
+    _buildArrows(L) {
         for (let i = 0; i < this._N; i++) {
             const x = -L / 2 + i * this._dx;
-            this._x.push(x);
-
             const arrow = new Arrow(
                 new Vector3(x, 0, 0),
                 new Vector3(0, .01, 0),
@@ -124,41 +138,19 @@ class FreeWavePacket extends Group {
             this._values.push({ real: 0, imag: 0 });
             this.add(arrow);
         }
-
-        // ---- k-space ----
-        this._n = new Array(this._N);
-        for (let i = 0; i < this._N; i++)
-            this._n[i] = i <= this._N / 2 ? i : i - this._N;
-
-        this._k = this._n.map(n => 2 * Math.PI * n / L);
-
-        this._omega = this._k.map(k => k * k / 2); // hbar = m = 1
-
-        this._fft = new FFT(this._N);
-
-        this._psi_re = new Array(this._N).fill(0);
-        this._psi_im = new Array(this._N).fill(0);
-
-        this._phi0_re = new Array(this._N).fill(0);
-        this._phi0_im = new Array(this._N).fill(0);
-
-        this._phi_re = new Array(this._N).fill(0);
-        this._phi_im = new Array(this._N).fill(0);
-
-        this._buildInitialPacket(k0Factor, a);
     }
 
     _buildInitialPacket(k0Factor, a) {
-        const kMin = 2*Math.PI / this._L;
+        const kMin = 2 * Math.PI / this._L;
         const k0 = k0Factor * kMin;
 
         for (let i = 0; i < this._N; i++) {
-            const x = this._x[i];
-            const gauss = Math.exp(-1 * ((x + this._L/4)/(2*a))**2);
+            const x = this._arrows[i].position.x;
+            const gauss = Math.exp(-1 * ((x + this._L / 4) / (2 * a))**2);
             const phase = k0 * x;
 
-            this._psi_re[i] = gauss * Math.cos(phase);
-            this._psi_im[i] = gauss * Math.sin(phase);
+            this._psi.re[i] = gauss * Math.cos(phase);
+            this._psi.im[i] = gauss * Math.sin(phase);
         }
 
         this._normalize();
@@ -168,13 +160,13 @@ class FreeWavePacket extends Group {
     _normalize() {
         let norm = 0;
         for (let i = 0; i < this._N; i++)
-            norm += this._psi_re[i]**2 + this._psi_im[i]**2;
+            norm += this._psi.re[i]**2 + this._psi.im[i]**2;
 
         norm = Math.sqrt(norm);
 
         for (let i = 0; i < this._N; i++) {
-            this._psi_re[i] /= norm;
-            this._psi_im[i] /= norm;
+            this._psi.re[i] /= norm;
+            this._psi.im[i] /= norm;
         }
     }
 
@@ -183,16 +175,16 @@ class FreeWavePacket extends Group {
         const cos = Math.cos(phase);
         const sin = Math.sin(phase);
 
-        const re = this._phi0_re[index];
-        const im = this._phi0_im[index];
+        const re = this._phi0.re[index];
+        const im = this._phi0.im[index];
 
-        this._phi_re[index] = re * cos - im * sin;
-        this._phi_im[index] = re * sin + im * cos;
+        this._phi.re[index] = re * cos - im * sin;
+        this._phi.im[index] = re * sin + im * cos;
     }
 
     #updateArrowAt(index) {
-        const real = this._psi_re[index];
-        const imag = this._psi_im[index];
+        const real = this._psi.re[index];
+        const imag = this._psi.im[index];
 
         this._values[index] = {real, imag};
         const direction = new Vector3(0, imag, real);
@@ -212,14 +204,14 @@ class FreeWavePacket extends Group {
         for (let i = 0; i < this._N; i++)
             this.#evolveInKspace(i, t);
 
-        this._fft.inverseTransform(this._psi_re, this._psi_im, this._phi_re, this._phi_im);
+        this._fft.inverseTransform(this._psi.re, this._psi.im, this._phi.re, this._phi.im);
 
         let psiSum = 0;
         let expectationX = 0;
         for (let i = 0; i < this._N; i++) {
             const probability = this.#updateArrowAt(i);
             psiSum += probability;
-            expectationX += this._x[i] * probability;
+            expectationX += this._arrows[i].position.x * probability;
         }
 
         return expectationX / psiSum;
