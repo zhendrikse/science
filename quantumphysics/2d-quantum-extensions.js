@@ -230,81 +230,68 @@ export class Wave2D {
     }
 }
 
-export class InfiniteWellWave2D extends Wave2D {
-    constructor(iMax) {
-        super(iMax, 7);
+export class Mouse {
+    constructor(canvas, display) {
+        this._canvas = canvas;
+        this._display = display;
+        this._mouseIsDown = false;
+        this._mouseClock = 0;
     }
 
-    _initEigenStates() {
-        for (let n=0; n <= this._nMax; n++)
-            this._eigenPsi[n] = new Array(this._iMax+1);
+    get mouseIsDown() { return this._mouseIsDown; }
+    get mouseClock() { return this._mouseClock; }
 
-        for (let i = 0; i <= this._iMax; i++)
-            for (let n = 0; n <= this._nMax; n++)
-                this._eigenPsi[n][i] = Math.sin((n + 1) * Math.PI * i / this._iMax);
+    getMousePos(clientX, clientY) {
+        const rect = this._canvas.getBoundingClientRect();
+
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
     }
 
-    updatePhase(speed) {
-        for (let n = 0; n <= this._nMax; n++) {
-            this._phase[n] -= (n + 1) * (n + 1) * speed;	// energies proportional to n^2
-            if (this._phase[n] < 0)
-                this._phase[n] += 2 * Math.PI;
-        }
-    }
-}
-
-export class HarmonicOscillatorWave2D extends Wave2D{
-    constructor(iMax) {
-        super(iMax, 25);
+    setMouseClock(relX, relY, psi) {	// parameters are x,y in pixels, relative to clock center
+        this._mouseIsDown = true;
+        psi.setAmplitudeTo(this._mouseClock, relX, relY, this._display.clockPixelRadius);
+        psi.build();
+        this._display.paintCanvas(psi, this._mouseIsDown, this._mouseClock);
     }
 
-    _initEigenStates() {
-        for (let n = 0; n <= this._nMax; n++)
-            this._eigenPsi[n] = new Array(this._iMax + 1);
+    mouseOrTouchStart(pageX, pageY, event, psi) {
+        const pos = this.getMousePos(pageX, pageY);
+        const x = pos.x;
+        const y = pos.y;
 
-        for (let i = 0; i <= this._iMax; i++) {
-            const x = (i - this._iMax / 2) / this._pxPerX;
+        if (y <= this._canvas.clientHeight - this._display.clockSpaceHeight) return;
 
-            // --- Build Hermite polynomials recursively ---
-            const H = new Array(this._nMax + 1);
+        this._mouseClock = Math.floor(x / this._display.phasorSpace);
+        const clockCenterX = this._display.phasorSpace * (this._mouseClock + 0.5);
+        const clockCenterY = this._canvas.clientHeight - this._display.clockSpaceHeight * 0.5;
+        const relX = x - clockCenterX;
+        const relY = clockCenterY - y;
 
-            H[0] = 1;
-            if (this._nMax > 0)
-                H[1] = 2 * x;
-
-            for (let n = 1; n < this._nMax; n++)
-                H[n+1] = 2 * x * H[n] - 2 * n * H[n-1];
-
-            const gaussian = Math.exp(-x * x / 2);
-            let nFact = 1;
-            for (let n = 0; n <= this._nMax; n++) {
-                if (n > 0) nFact *= n;
-
-                const norm = 1 / Math.sqrt(Math.pow(2,n) * nFact * Math.sqrt(Math.PI));
-                this._eigenPsi[n][i] = norm * H[n] * gaussian;
-            }
+        if (relX*relX + relY*relY <= this._display.clockPixelRadius * this._display.clockPixelRadius) {
+            this.setMouseClock(relX, relY, psi);
+            event.preventDefault();
         }
     }
 
-    updatePhase(speed) {
-        for (let n = 0; n <= this._nMax; n++) {
-            this._phase[n] -= (n + 0.5) * speed;
-            if (this._phase[n] < 0)
-                this._phase[n] += 2 * Math.PI;
-        }
+    mouseOrTouchMove(pageX, pageY, event, psi) {
+        if (!this._mouseIsDown) return;
+
+        const pos = this.getMousePos(pageX, pageY);
+        const x = pos.x;
+        const y = pos.y;
+
+        const clockCenterX = this._display.phasorSpace * (this._mouseClock + 0.5);
+        const clockCenterY = this._canvas.clientHeight - this._display.clockSpaceHeight * 0.5;
+
+        const relX = x - clockCenterX;
+        const relY = clockCenterY - y;
+
+        this.setMouseClock(relX, relY, psi);
+        event.preventDefault();
     }
 
-    coherent(alphaMag) {
-        let nFact = 1;
-        const prefactor = Math.exp(-alphaMag * alphaMag / 2);
-
-        for (let n = 0; n <= this._nMax; n++) {
-            if (n > 0) nFact *= n;
-            this._amplitude[n] =
-                prefactor * Math.pow(alphaMag, n) / Math.sqrt(nFact);
-            this._phase[n] = 0;
-        }
-
-        this.normalise();
-    }
+    mouseUp() { this._mouseIsDown = false; }
 }

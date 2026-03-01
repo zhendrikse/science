@@ -1,13 +1,70 @@
-import { Display, HarmonicOscillatorWave2D } from "./2d-quantum-extensions.js"
+import { Display, Wave2D, Mouse } from "./2d-quantum-extensions.js"
 
 const theCanvas = document.getElementById("shoCanvas2D");
 const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
 theCanvas.style.touchAction = "none";
 
+export class HarmonicOscillatorWave2D extends Wave2D{
+    constructor(iMax) {
+        super(iMax, 25);
+    }
+
+    _initEigenStates() {
+        for (let n = 0; n <= this._nMax; n++)
+            this._eigenPsi[n] = new Array(this._iMax + 1);
+
+        for (let i = 0; i <= this._iMax; i++) {
+            const x = (i - this._iMax / 2) / this._pxPerX;
+
+            // --- Build Hermite polynomials recursively ---
+            const H = new Array(this._nMax + 1);
+
+            H[0] = 1;
+            if (this._nMax > 0)
+                H[1] = 2 * x;
+
+            for (let n = 1; n < this._nMax; n++)
+                H[n+1] = 2 * x * H[n] - 2 * n * H[n-1];
+
+            const gaussian = Math.exp(-x * x / 2);
+            let nFact = 1;
+            for (let n = 0; n <= this._nMax; n++) {
+                if (n > 0) nFact *= n;
+
+                const norm = 1 / Math.sqrt(Math.pow(2,n) * nFact * Math.sqrt(Math.PI));
+                this._eigenPsi[n][i] = norm * H[n] * gaussian;
+            }
+        }
+    }
+
+    updatePhase(speed) {
+        for (let n = 0; n <= this._nMax; n++) {
+            this._phase[n] -= (n + 0.5) * speed;
+            if (this._phase[n] < 0)
+                this._phase[n] += 2 * Math.PI;
+        }
+    }
+
+    coherent(alphaMag) {
+        let nFact = 1;
+        const prefactor = Math.exp(-alphaMag * alphaMag / 2);
+
+        for (let n = 0; n <= this._nMax; n++) {
+            if (n > 0) nFact *= n;
+            this._amplitude[n] =
+                prefactor * Math.pow(alphaMag, n) / Math.sqrt(nFact);
+            this._phase[n] = 0;
+        }
+
+        this.normalise();
+    }
+}
+
+const display = new Display(theCanvas, theContext);
+const mouse = new Mouse(theCanvas, display);
+let psi = new HarmonicOscillatorWave2D(theCanvas.clientWidth);
 let running = true;
-let mouseIsDown = false;
-let mouseClock;
 
 // Add mouse/touch handlers; down/start must be inside the canvas but drag can go outside it:
 theCanvas.addEventListener('mousedown', mouseDown, false);
@@ -17,81 +74,18 @@ theCanvas.addEventListener('touchstart', touchStart, false);
 document.body.addEventListener('touchmove', touchMove, false);
 document.body.addEventListener('touchend', mouseUp, false);
 
-const getCanvasWidth = () => theCanvas.clientWidth;
-const getCanvasHeight = () => theCanvas.clientHeight;
-
 function nextFrame() {
     psi.updatePhase(Number(speedSlider.value));
     psi.build();
-    display.paintCanvas(psi, mouseIsDown, mouseClock);
+    display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock);
     if (running) requestAnimationFrame(nextFrame);
 }
 
-function setMouseClock(relX, relY) {	// parameters are x,y in pixels, relative to clock center
-    mouseIsDown = true;
-    psi.setAmplitudeTo(mouseClock, relX, relY, display.clockPixelRadius);
-    psi.build();
-    display.paintCanvas(psi, mouseIsDown, mouseClock);
-}
-
-function mouseOrTouchStart(pageX, pageY, e) {
-    const pos = getMousePos(theCanvas, pageX, pageY);
-    const x = pos.x;
-    const y = pos.y;
-
-    if (y > getCanvasHeight() - display.clockSpaceHeight) {
-        mouseClock = Math.floor(x / display.phasorSpace);
-
-        const clockCenterX = display.phasorSpace * (mouseClock + 0.5);
-        const clockCenterY = getCanvasHeight() - display.clockSpaceHeight * 0.5;
-        const relX = x - clockCenterX;
-        const relY = clockCenterY - y;
-
-        if (relX*relX + relY*relY <= display.clockPixelRadius * display.clockPixelRadius) {
-            setMouseClock(relX, relY);
-            e.preventDefault();
-        }
-    }
-}
-
-function getMousePos(canvas, clientX, clientY) {
-    const rect = canvas.getBoundingClientRect();
-
-    return {
-        x: clientX - rect.left,
-        y: clientY - rect.top
-    };
-}
-
-function mouseOrTouchMove(pageX, pageY, event) {
-    if (!mouseIsDown) return;
-
-    const pos = getMousePos(theCanvas, pageX, pageY);
-    const x = pos.x;
-    const y = pos.y;
-
-    const clockCenterX = display.phasorSpace * (mouseClock + 0.5);
-    const clockCenterY = getCanvasHeight() - display.clockSpaceHeight * 0.5;
-
-    const relX = x - clockCenterX;
-    const relY = clockCenterY - y;
-
-    setMouseClock(relX, relY);
-    event.preventDefault();
-}
-
-function mouseDown(e) { mouseOrTouchStart(e.clientX, e.clientY, e); }
-function touchStart(e) { mouseOrTouchStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY, e); }
-function mouseMove(e) { mouseOrTouchMove(e.clientX, e.clientY, e); }
-function touchMove(e) { mouseOrTouchMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY, e); }
-
-function mouseUp(e) {
-    mouseIsDown = false;
-    display.paintCanvas(psi, mouseIsDown, mouseClock);
-}
-
-const display = new Display(theCanvas, theContext);
-let psi = new HarmonicOscillatorWave2D(getCanvasWidth());
+function mouseUp(e) { mouse.mouseUp(); display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock); }
+function mouseDown(e) { mouse.mouseOrTouchStart(e.clientX, e.clientY, e, psi); }
+function touchStart(e) { mouse.mouseOrTouchStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY, e, psi); }
+function mouseMove(e) { mouse.mouseOrTouchMove(e.clientX, e.clientY, e, psi); }
+function touchMove(e) { mouse.mouseOrTouchMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY, e, psi); }
 
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
@@ -107,8 +101,8 @@ function resizeCanvas() {
 
     theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    psi = new HarmonicOscillatorWave2D(getCanvasWidth());
-    display.paintCanvas(psi, mouseIsDown, mouseClock);
+    psi = new HarmonicOscillatorWave2D(theCanvas.clientWidth);
+    display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock);
 }
 window.addEventListener("resize", () => resizeCanvas());
 
@@ -125,13 +119,13 @@ function startStop() {
 function zero() {
     psi.setAmplitudesTo(0);
     psi.build();
-    display.paintCanvas(psi, mouseIsDown, mouseClock);
+    display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock);
 }
 
 function normalizePsi() {
     psi.normalise();
     psi.build();
-    display.paintCanvas(psi, mouseIsDown, mouseClock);
+    display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock);
 }
 
 function coherent() {
@@ -155,8 +149,8 @@ const alphaButton = document.getElementById("alphaButton");
 alphaButton.addEventListener("click", () => coherent());
 alphaSlider.addEventListener("change", e => adjustAlpha());
 pauseButton.addEventListener("click", e => startStop());
-realImag.addEventListener("change", () => display.paintCanvas(psi, mouseIsDown, mouseClock));
-densityPhase.addEventListener("change", () => display.paintCanvas(psi, mouseIsDown, mouseClock));
+realImag.addEventListener("change", () => display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock));
+densityPhase.addEventListener("change", () => display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock));
 zeroButton.addEventListener("click", () => zero());
 normalizeButton.addEventListener("click", () => normalizePsi());
 
