@@ -213,10 +213,10 @@ export class Wave2D {
             this._amplitude[n] /= Math.sqrt(norm2);
     }
 
-    setAmplitudeTo(index, relX, relY) {
+    setAmplitudeTo(index, relX, relY, clockPixelRadius) {
         const pixelDistance = Math.sqrt(relX*relX + relY*relY);
 
-        this._amplitude[index] = Math.min(pixelDistance / display.clockPixelRadius, 1);
+        this._amplitude[index] = Math.min(pixelDistance / clockPixelRadius, 1);
         this._phase[index] = Math.atan2(relY, relX);
 
         if (this._phase[index] < 0)

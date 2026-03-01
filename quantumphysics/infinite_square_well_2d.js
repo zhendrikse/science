@@ -29,7 +29,7 @@ function nextFrame() {
 
 function setMouseClock(relX, relY) {	// parameters are x,y in pixels, relative to clock center
     mouseIsDown = true;
-    psi.setAmplitudeTo(mouseClock, relX, relY);
+    psi.setAmplitudeTo(mouseClock, relX, relY, display.clockPixelRadius);
     psi.build();
     display.paintCanvas(psi, mouseIsDown, mouseClock);
 }
