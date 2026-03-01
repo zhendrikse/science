@@ -48,11 +48,11 @@ function nextFrame() {
     if (running) requestAnimationFrame(nextFrame);
 }
 
-function mouseDown(e) { mouseOrTouchStart(e.clientX, e.clientY, e); }
-function touchStart(e) { mouseOrTouchStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY, e); }
-function mouseMove(e) { mouseOrTouchMove(e.clientX, e.clientY, e); }
-function touchMove(e) { mouseOrTouchMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY, e); }
-function mouseUp(e) {mouse.mouseUp(); display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock);}
+function mouseUp(e) { mouse.mouseUp(); display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock); }
+function mouseDown(e) { mouse.mouseOrTouchStart(e.clientX, e.clientY, e, psi); }
+function touchStart(e) { mouse.mouseOrTouchStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY, e, psi); }
+function mouseMove(e) { mouse.mouseOrTouchMove(e.clientX, e.clientY, e, psi); }
+function touchMove(e) { mouse.mouseOrTouchMove(e.targetTouches[0].clientX, e.targetTouches[0].clientY, e, psi); }
 
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
