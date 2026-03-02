@@ -113,7 +113,7 @@ class FreeWavePacket extends Group {
         this._N = numPoints;
         this._L = L;
         this._dx = L / numPoints;
-        this._arrowScale = Math.sqrt(numPoints * this._dx * 2 * a) / 0.8; // as in VPython version
+        this._arrowScale = Math.sqrt(numPoints * this._dx * 2 * a) / 2; // as in VPython version
         this._arrows = [];
         this._values = [];
         this._psi = {re: new Array(numPoints), im: new Array(numPoints)};
@@ -171,8 +171,7 @@ class FreeWavePacket extends Group {
     _normalize() {
         let norm = 0;
         for (let i = 0; i < this._N; i++)
-            norm += this._psi.re[i]**2 + this._psi.im[i]**2;
-
+            norm += (this._psi.re[i] * this._psi.re[i] + this._psi.im[i] * this._psi.im[i]) * this._dx;
         norm = Math.sqrt(norm);
 
         for (let i = 0; i < this._N; i++) {
@@ -199,10 +198,9 @@ class FreeWavePacket extends Group {
 
         this._values[index] = {real, imag};
         const direction = new Vector3(0, imag, real);
-        this._arrows[index].updateAxis(direction.clone().multiplyScalar(this._arrowScale));
+        const length = direction.length();
         direction.normalize();
-
-        this._arrows[index].updateAxis(direction.multiplyScalar(length));
+        this._arrows[index].updateAxis(direction.multiplyScalar(length * this._arrowScale));
 
         const phase = Math.atan2(imag, real);
         const hue = 1 - ((phase + Math.PI) / (2 * Math.PI));
@@ -226,13 +224,21 @@ class FreeWavePacket extends Group {
 
         let psiSum = 0;
         let expectationX = 0;
+        let expectationX2 = 0;
         for (let i = 0; i < this._N; i++) {
             const probability = this.#updateArrowAt(i);
-            psiSum += probability;
-            expectationX += this._arrows[i].position.x * probability;
+            const x = this._arrows[i].position.x;
+
+            psiSum += probability * this._dx;
+            expectationX  += x * probability * this._dx;
+            expectationX2 += x * x * probability * this._dx;
         }
 
-        return expectationX / psiSum;
+        const meanX = expectationX / psiSum;
+        const meanX2 = expectationX2 / psiSum;
+        const sigma = Math.sqrt(meanX2 - meanX * meanX);
+
+        return { meanX, sigma };
     }
 }
 
@@ -296,17 +302,19 @@ window.addEventListener("click", () => {
 
 const plotData = [
     [], // x-axis = time
-    [] // Expectation
+    [], // Expectation
+    []  // Sigma
 ];
 
 const plot = new uPlot({
     width: canvas.clientWidth,
     height: canvas.clientHeight,
-    title: "Probability finding the particle at x",
+    title: "Expectation value and spreading",
     scales: { x: { time: false }, y: { auto: true } },
     series: [
         {}, // x-axis
-        { label: "Expectation", stroke: "yellow" }
+        { label: "<x>", stroke: "yellow" },
+        { label: "σ(t)", stroke: "cyan" }
     ],
     axes: [
         { stroke: "#fff", grid: { stroke: "rgba(255,255,255,0.2)" } },
@@ -317,14 +325,16 @@ const plot = new uPlot({
 
 let time = 0;
 const dt = 0.01;
-const maxPoints = 100;
+const maxPoints = 200;
 function animate() {
     plot3D.render();
+    axesController.render(plot3D.camera);
     if (!running) return;
 
-    plotData[0].push(time); // x-axis = time
-    plotData[1].push(wave.update(time));
-    axesController.render(plot3D.camera);
+    const result = wave.update(time);
+    plotData[0].push(time);
+    plotData[1].push(result.meanX);
+    plotData[2].push(result.sigma);
     time += dt;
     if (plotData[0].length > maxPoints)
         plotData.forEach(arr => arr.shift());
