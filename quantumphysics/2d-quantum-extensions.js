@@ -165,7 +165,7 @@ export class Wave2D {
         this.init();
     }
 
-    _buildPsi() {
+    build() {
         for (let i = 0; i <= this._iMax; i++) {
             this._psi.re[i] = 0;
             this._psi.im[i] = 0;
@@ -189,7 +189,7 @@ export class Wave2D {
     init() {
         this._initEigenStates();
         this._initAmplitudes();
-        this._buildPsi();
+        this.build();
     }
 
     _initEigenStates() { throw new Error("Implement this in concrete subclass"); }
