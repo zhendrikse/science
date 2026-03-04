@@ -240,7 +240,8 @@ function paintCanvas() {
             image.data[imageIndex] = rgb.r;
             image.data[imageIndex+1] = rgb.g;
             image.data[imageIndex+2] = rgb.b;
-            image.data[imageIndex+3] = Math.round(brightness * 255);        }
+            image.data[imageIndex+3] = Math.round(brightness * 255);
+        }
     theContext.putImageData(image, 0, 0);   // blast the image to the screen
 }
 

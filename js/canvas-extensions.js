@@ -15,7 +15,11 @@ export function hsvToRgb(h, s, v) {
         case 5: r = v, g = p, b = q; break;
     }
 
-    return [Math.round(r), Math.round(g), Math.round(b)];
+    return {
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
+    };
 }
 
 export const Colors = Object.freeze({

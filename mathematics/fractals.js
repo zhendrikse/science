@@ -192,14 +192,16 @@ function drawDragonCurve(turtle) {
     turtle.penDown();
     for (let i = 1; i < points.length; i++) {
         const [x, y] = points[i];
-        turtle.color(hsvToRgb(i / points.length, 1, 1));
+        const {r, g, b} = hsvToRgb(i / points.length, 1, 1);
+        turtle.color([r, g, b]);
         turtle.goto(x * scale + offsetX, y * scale + offsetY);
     }
 }
 
 function tSquare(turtle, n, x, y, w) {
     if (n !== 0) {
-        turtle.color(hsvToRgb(w * .5, 1, 1));
+        const {r, g, b} = hsvToRgb(w * .5, 1, 1);
+        turtle.color([r, g, b]);
         turtle.goto(x, y);
         turtle.penDown();
         turtle.goto(x + w, y);
