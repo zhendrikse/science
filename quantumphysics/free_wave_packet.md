@@ -40,5 +40,50 @@
 <p style="clear: both;"></p>
 
 
+## Additional two-dimensional simulation
+<div class="header_line"><br/></div>
+
+🔧 This [free_wave_packet_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/free_wave_packet_2d.js) is 100% JavaScript<br/>
+👉 Based on [Wavepackets.html](https://physics.weber.edu/schroeder/software/Wavepackets.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
+🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
+👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
+
+
+<div id="freeWavePacketDiv" style="position:relative;">
+    <canvas id="freeWavePacketCanvas" width="720" height="300" style="position:relative; z-index:1;">Canvas not supported! Please update your browser.</canvas>
+</div>
+<div class="buttonRow">
+    <label for="speedSlider">Speed:
+        <input type="range" id="speedSlider" min="1" max="100" step="1" value="10">
+    </label>
+    <span id="speedValue">0.020</span>
+</div>
+
+<div class="buttonRow">
+    <input type="radio" name="plotType" id="realImag"/><label for="realImag">Real/imag</label>
+    <input type="radio" name="plotType" id="densityPhase" checked/><label for="densityPhase">Density/phase</label>
+    <input type="checkbox" id="gridCheck"/><label for="gridCheck">Grid</label>
+    <button id="clearButton">Clear</button>
+    <button id="pauseButton">Pause</button>
+</div>
+<div class="buttonRow">
+    <label for="posSlider">Position:</label><input type="range" id="posSlider" min="80" max="640" step="1" value="100"/>
+    <label for="heightSlider">Height:</label><input type="range" id="heightSlider" min="0" max="1.5" step="0.01" value="1.0"/>
+</div>
+<div class="buttonRow">
+    <label for="widthSlider">Width:</label><input type="range" id="widthSlider" min="5" max="100" step="1" value="40"/>
+    <label for="momentumSlider">Momentum:</label><input type="range" id="momentumSlider" min="-0.5" max="0.5" step="0.01" value=".25"/>
+    <button id="addButton">Add packet</button>
+</div>
+
+<p style="text-align:left; margin-top:12px; margin-left:20px; -webkit-text-size-adjust: 100%;">
+    Click/tap to add a new wavepacket. Drag vertically to change its shape
+    and horizontally to change its momentum. Or use the controls at right
+    for more careful adjustments.
+</p>
+
+<script type="module" src="free_wave_packet_2d.js"></script>
+<p style="clear: both;"></p>
+
 {% include share_buttons.html %}
 

@@ -163,10 +163,9 @@ export class Wave2D {
         this._amplitude = new Array(this._nMax + 1);		// amplitudes of the eigenfunctions in psi
         this._phase = new Array(this._nMax + 1);			// phases of the eigenfunctions in psi
         this.init();
-        this.build(iMax);
     }
 
-    build() {
+    _buildPsi() {
         for (let i = 0; i <= this._iMax; i++) {
             this._psi.re[i] = 0;
             this._psi.im[i] = 0;
@@ -190,6 +189,7 @@ export class Wave2D {
     init() {
         this._initEigenStates();
         this._initAmplitudes();
+        this._buildPsi();
     }
 
     _initEigenStates() { throw new Error("Implement this in concrete subclass"); }
