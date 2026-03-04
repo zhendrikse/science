@@ -44,11 +44,11 @@ document.body.addEventListener('touchend', mouseUp, false);
 function nextFrame() {
     psi.updatePhase(Number(speedSlider.value));
     psi.build();
-    display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock);
+    display.paintCanvas(psi, realImag.checked, mouse.mouseIsDown, mouse.mouseClock);
     if (running) requestAnimationFrame(nextFrame);
 }
 
-function mouseUp(e) { mouse.mouseUp(); display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock); }
+function mouseUp(e) { mouse.mouseUp(); display.paintCanvas(psi, realImag.checked, mouse.mouseIsDown, mouse.mouseClock); }
 function mouseDown(e) { mouse.mouseOrTouchStart(e.clientX, e.clientY, e, psi); }
 function touchStart(e) { mouse.mouseOrTouchStart(e.targetTouches[0].clientX, e.targetTouches[0].clientY, e, psi); }
 function mouseMove(e) { mouse.mouseOrTouchMove(e.clientX, e.clientY, e, psi); }
@@ -69,9 +69,9 @@ function resizeCanvas() {
     theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     psi = new InfiniteWellWave2D(theCanvas.clientWidth);
-    display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock);
+    display.paintCanvas(psi, realImag.checked, mouse.mouseIsDown, mouse.mouseClock);
 }
-window.addEventListener("resize", () => resizeCanvas());
+theCanvas.addEventListener("resize", () => resizeCanvas());
 
 // --- GUI wiring ---
 const pauseButton = document.getElementById("pauseButton");
@@ -87,13 +87,13 @@ function startStop() {
 function zero() {
     psi.setAmplitudesTo(0);
     psi.build();
-    display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock);
+    display.paintCanvas(psi, realImag.checked, mouse.mouseIsDown, mouse.mouseClock);
 }
 
 function normalizePsi() {
     psi.normalise();
     psi.build();
-    display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock);
+    display.paintCanvas(psi, realImag.checked, mouse.mouseIsDown, mouse.mouseClock);
 }
 
 const speedSlider = document.getElementById("speedSlider");
@@ -104,8 +104,8 @@ const normalizeButton = document.getElementById("normalizeButton");
 const densityPhase = document.getElementById("densityPhase");
 
 pauseButton.addEventListener("click", () => startStop());
-realImag.addEventListener("change", () => display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock));
-densityPhase.addEventListener("change", () => display.paintCanvas(psi, mouse.mouseIsDown, mouse.mouseClock));
+realImag.addEventListener("change", () => display.paintCanvas(psi, realImag.checked, mouse.mouseIsDown, mouse.mouseClock));
+densityPhase.addEventListener("change", () => display.paintCanvas(psi, realImag.checked, mouse.mouseIsDown, mouse.mouseClock));
 zeroButton.addEventListener("click", () => zero());
 normalizeButton.addEventListener("click", () => normalizePsi());
 

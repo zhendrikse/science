@@ -80,10 +80,10 @@ export class Display {
     get clockSpaceHeight() { return this._canvas.clientHeight * this._clockSpaceFraction; }
     get clockPixelRadius() { return this.clockSpaceHeight * this._clockRadiusFraction; }
 
-    paintCanvas(psi, mouseIsDown, mouseClock) {
+    paintCanvas(psi, realImagChecked, mouseIsDown, mouseClock) {
         this._context.clearRect(0, 0, this._canvas.clientWidth, this._canvas.clientHeight);
 
-        if (realImag.checked)
+        if (realImagChecked)
             this.plotRealImaginary(psi);
         else
             this.plotDensityPhase(psi);
