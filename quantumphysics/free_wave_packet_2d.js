@@ -1,6 +1,5 @@
 import { toColorString } from "./2d-quantum-extensions.js";
 
-const canvasDiv = document.getElementById("freeWavePacketDiv");
 const theCanvas = document.getElementById("freeWavePacketCanvas");
 const theContext = theCanvas.getContext("2d");
 theContext.fillStyle = "transparent";
@@ -140,6 +139,7 @@ class Display {
 
 const display = new Display(theContext);
 
+pauseButton.addEventListener("click", () => startStop());
 document.getElementById("clearButton").addEventListener("click", () => clearPsi());
 gridCheck.addEventListener("click",  () => display.paintCanvas(psi, realImag.checked));
 posSlider.addEventListener("input", () => setPsiTemp());
