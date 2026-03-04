@@ -35,6 +35,23 @@ in the simulation, so that the difference in the behavior of particles and waves
 ⭐ More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
 
 
+<style>
+    #simContainer {
+        position: relative;
+        width: 100%;
+        max-width: 600px;     /* optional */
+        aspect-ratio: 1 / 1;
+        margin: 0 auto;
+    }
+
+    #simContainer canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+</style>
 <div style="aspect-ratio: 1/1; width:400px;">
     <canvas id="vCanvas" width="400" height="400" style="display:block; position:absolute; z-index:1;">Canvas not supported!</canvas>
     <canvas id="theCanvas" width="400" height="400" style="display:block; position:relative; z-index:0;">Canvas not supported!</canvas>
