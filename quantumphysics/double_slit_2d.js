@@ -13,7 +13,7 @@ document.getElementById("resetButton").addEventListener("click", () => reset());
 document.getElementById("pauseButton").addEventListener("click", () => startStop());
 document.getElementById("barrierType").addEventListener("click", () => barrier.adjust());
 speedSlider.addEventListener("input", () => resetTimer());
-brightnessSlider.addEventListener("input", () => paintCanvas());
+brightnessSlider.addEventListener("input", () => paintCanvas(psi));
 eSlider.addEventListener("input", () => wpEnergyAdjust());
 document.getElementById("bEnergySlider").addEventListener("input", () => barrier.adjust());
 document.getElementById("bSizeSlider").addEventListener("input", () => barrier.adjust());
@@ -28,8 +28,6 @@ const pWidth = 48;	// initial wavepacket width
 // Here are the wavefunction arrays.  Note that times are staggered, with the imaginary parts always
 // one time step behind the corresponding real parts.  This is admittedly confusing.
 // Also note that these are 1D arrays, with index i = y*xMax + x, for efficiency.
-const psi = {re:(new Array(xMax*xMax)), im:(new Array(xMax*xMax))};
-const psiNext = {re:(new Array(xMax*xMax)), im:(new Array(xMax*xMax))};	// psiNext is actually 2*dt later than psi
 const dt = 0.24;		// anything less than 0.25 seems to be stable
 let running = false;
 let startTime, stepCount;
@@ -137,6 +135,7 @@ class Barrier {
     }
 }
 let barrier;
+let psi;
 
 function startStop() {
     running = !running;
@@ -166,77 +165,91 @@ function wpEnergyAdjust() {
     if (!running) reset();
 }
 
-
-// Calculate and draw the next animation frame:
 function nextFrame() {
     if (!running) return;
 
     const stepsPerFrame = Number(speedSlider.value);
     for (let step=0; step < stepsPerFrame; step++)
-        doStep(dt);
+        psi.doStep(dt, barrier);
     stepCount += stepsPerFrame;
-    paintCanvas();
+    paintCanvas(psi);
     const currentTime = (new Date()).getTime();
     spsReadout.innerHTML = "" + Math.round(1000 * stepCount / (currentTime-startTime));
     requestAnimationFrame(nextFrame);
 }
 
-// Integrate the TDSE for a double time step (centered-difference time integration):
-// (Remember that psi.im is one time step earlier than psi.re; same for psiNext.im and psiNext.re.)
-function doStep(dt) {
-    for (let y=1; y<xMaxm1; y++)
-        for (let x=1; x<xMaxm1; x++) {
-            const i = y*xMax + x;
-            psiNext.im[i] = psi.im[i] - dt * (-psi.re[i+1] - psi.re[i-1] - psi.re[i+xMax] - psi.re[i-xMax] + 2*(2+barrier.at(i))*psi.re[i]);
-        }
-
-    for (let y=1; y<xMaxm1; y++)
-        for (let x=1; x<xMaxm1; x++) {
-            const i = y*xMax + x;
-            psiNext.re[i] = psi.re[i] + dt * (-psiNext.im[i+1] - psiNext.im[i-1] - psiNext.im[i+xMax] - psiNext.im[i-xMax] + 2*(2+barrier.at(i))*psiNext.im[i]);
+class Psi2D {
+    constructor(xMax) {
+        this._xMax = xMax;
+        this._psi = {re:(new Array(xMax*xMax)), im:(new Array(xMax*xMax))};
+        this._psiNext = {re:(new Array(xMax*xMax)), im:(new Array(xMax*xMax))};	// psiNext is actually 2*dt later than psi
     }
 
-    for (let y=1; y<xMax-1; y++)			// now copy next to current
-        for (let x=1; x<xMaxm1; x++) {
-            const i = y*xMax + x;
-            psi.re[i] = psiNext.re[i];
-            psi.im[i] = psiNext.im[i];
+    get re() { return this._psi.re; }
+    get im() { return this._psi.im; }
+
+    // Integrate the TDSE for a double time step (centered-difference time integration):
+    // (Remember that psi.im is one time step earlier than psi.re; same for psiNext.im and psiNext.re.)
+    doStep(dt, barrier) {
+        for (let y=1; y<xMaxm1; y++)
+            for (let x=1; x<xMaxm1; x++) {
+                const i = y*this._xMax + x;
+                this._psiNext.im[i] = this.im[i] - dt * (-this.re[i+1] - this.re[i-1] - this.re[i+this._xMax] - this.re[i-this._xMax] + 2*(2+barrier.at(i))*this.re[i]);
+            }
+
+        for (let y=1; y<xMaxm1; y++)
+            for (let x=1; x<xMaxm1; x++) {
+                const i = y*this._xMax + x;
+                this._psiNext.re[i] = this.re[i] + dt * (-this._psiNext.im[i+1] - this._psiNext.im[i-1] - this._psiNext.im[i+this._xMax] - this._psiNext.im[i-this._xMax] + 2*(2+barrier.at(i))*this._psiNext.im[i]);
+            }
+
+        for (let y=1; y<this._xMax-1; y++)			// now copy next to current
+            for (let x=1; x<xMaxm1; x++) {
+                const i = y*this._xMax + x;
+                this._psi.re[i] = this._psiNext.re[i];
+                this._psi.im[i] = this._psiNext.im[i];
+            }
+    }
+
+    // Initialize the wavefunction to a Gaussian wavepacket:
+    reset() {
+        for (let x=0; x<xMax; x++) {
+            const centerX = Math.floor(xMax*0.22);
+            const centerY = xMax/2;
+            const e = Number(eSlider.value);
+            const kx = Math.sqrt(2*e);
+            const ky = 0;
+            for (let y=0; y<xMax; y++)
+                for (let x=0; x<xMax; x++) {
+                    const i = y*xMax + x;
+                    const envelope = Math.exp(-(x-centerX)*(x-centerX)/(pWidth*pWidth)) *
+                        Math.exp(-(y-centerY)*(y-centerY)/(pWidth*pWidth));
+                    this._psi.re[i] = envelope * (Math.cos(kx*x)*Math.cos(ky*y) - Math.sin(kx*x)*Math.sin(ky*y));
+                    this._psi.im[i] = envelope * (Math.cos(kx*x)*Math.sin(ky*y) + Math.sin(kx*x)*Math.cos(ky*y));
+                    this._psiNext.re[i] = 0.0;
+                    this._psiNext.im[i] = 0.0;	// These lines may not be needed but edges must be zero
+                }
+
+            // Now bump the imaginary part of psi back by one time step:
+            for (let y=1; y<xMax-1; y++)
+                for (let x=1; x<xMax-1; x++) {
+                    const i = y*xMax + x;
+                    this._psi.im[i] = this.im[i] + 0.5*dt * (-this.re[i+1] - this.re[i-1] - this.re[i+xMax] - this.re[i-xMax] + 2*(2+barrier.at(i))*this.re[i]);
+                }
+        }
     }
 }
 
 // Initialize the wavefunction to a Gaussian wavepacket:
 function reset() {
-    for (let x=0; x<xMax; x++) {
-        const centerX = Math.floor(xMax*0.22);
-        const centerY = xMax/2;
-        const e = Number(eSlider.value);
-        const kx = Math.sqrt(2*e);
-        const ky = 0;
-        for (let y=0; y<xMax; y++)
-            for (let x=0; x<xMax; x++) {
-                const i = y*xMax + x;
-                const envelope = Math.exp(-(x-centerX)*(x-centerX)/(pWidth*pWidth)) *
-                Math.exp(-(y-centerY)*(y-centerY)/(pWidth*pWidth));
-                psi.re[i] = envelope * (Math.cos(kx*x)*Math.cos(ky*y) - Math.sin(kx*x)*Math.sin(ky*y));
-                psi.im[i] = envelope * (Math.cos(kx*x)*Math.sin(ky*y) + Math.sin(kx*x)*Math.cos(ky*y));
-                psiNext.re[i] = 0.0;
-                psiNext.im[i] = 0.0;	// These lines may not be needed but edges must be zero
-        }
-
-        // Now bump the imaginary part of psi back by one time step:
-        for (let y=1; y<xMax-1; y++) 
-            for (let x=1; x<xMax-1; x++) {
-                const i = y*xMax + x;
-                psi.im[i] = psi.im[i] + 0.5*dt * (-psi.re[i+1] - psi.re[i-1] - psi.re[i+xMax] - psi.re[i-xMax] + 2*(2+barrier.at(i))*psi.re[i]);
-            }
-        }
-    paintCanvas();
+    psi.reset();
+    paintCanvas(psi);
     if (!running) pauseButton.innerHTML = "Run";
 }
 
-function paintCanvas() {
+function paintCanvas(psi) {
     const brightSetting = Number(brightnessSlider.value);
-    const size = xMax; // gebruik de actuele canvasgrootte
+    const size = xMax; // use actual canvas size
     const imgData = theContext.createImageData(size, size);
 
     for (let y = 0; y < size; y++)
@@ -254,7 +267,7 @@ function paintCanvas() {
             imgData.data[imageIndex] = rgb.r;
             imgData.data[imageIndex + 1] = rgb.g;
             imgData.data[imageIndex + 2] = rgb.b;
-            imgData.data[imageIndex + 3] = Math.round(brightness * 255); // alpha op basis van brightness
+            imgData.data[imageIndex + 3] = Math.round(brightness * 255); // alpha based on brightness
         }
 
     theContext.putImageData(imgData, 0, 0);
@@ -262,11 +275,7 @@ function paintCanvas() {
 
 function setupArrays() {
     image = theContext.createImageData(xMax, xMax);
-
-    psi.re = new Array(xMax * xMax);
-    psi.im = new Array(xMax * xMax);
-    psiNext.re = new Array(xMax * xMax);
-    psiNext.im = new Array(xMax * xMax);
+    psi = new Psi2D(xMax);
 }
 
 function initSimulation(size) {
