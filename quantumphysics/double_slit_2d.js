@@ -18,21 +18,19 @@ document.getElementById("bEnergySlider").addEventListener("input", () => barrier
 document.getElementById("bSizeSlider").addEventListener("input", () => barrierAdjust());
 document.getElementById("bSoftnessSlider").addEventListener("input", () => barrierAdjust());
 
-const xMax = Number(theCanvas.width);
-const xMaxm1 = xMax - 1;
-const image = theContext.createImageData(xMax, xMax);		// for pixel manipulation
-for (let i=0; i<image.data.length; i+=4)
-    image.data[i+3] = 255;      // set all alpha values to "opaque"
+let xMax = Number(theCanvas.width);
+let xMaxm1 = xMax - 1;
+let image = theContext.createImageData(xMax, xMax);		// for pixel manipulation
 
 
-const vImage = vContext.createImageData(xMax, xMax);		// overlaid image of potential function
+let vImage = vContext.createImageData(xMax, xMax);		// overlaid image of potential function
 const pWidth = 48;	// initial wavepacket width
 // Here are the wavefunction arrays.  Note that times are staggered, with the imaginary parts always
 // one time step behind the corresponding real parts.  This is admittedly confusing.
 // Also note that these are 1D arrays, with index i = y*xMax + x, for efficiency.
 const psi = {re:(new Array(xMax*xMax)), im:(new Array(xMax*xMax))};
 const psiNext = {re:(new Array(xMax*xMax)), im:(new Array(xMax*xMax))};	// psiNext is actually 2*dt later than psi
-const v = new Array(xMax*xMax);
+let v = new Array(xMax*xMax);
 for (let index=0; index<xMax*xMax; index++)
     v[index] = 0.0;
 const dt = 0.24;		// anything less than 0.25 seems to be stable
@@ -240,7 +238,7 @@ function paintCanvas() {
             image.data[imageIndex] = rgb.r;
             image.data[imageIndex+1] = rgb.g;
             image.data[imageIndex+2] = rgb.b;
-        }
+            image.data[imageIndex+3] = Math.round(brightness * 255);        }
     theContext.putImageData(image, 0, 0);   // blast the image to the screen
 }
 
@@ -267,3 +265,38 @@ function HSVtoRGB(h, s, v) {
         b: Math.round(b * 255)
     };
 }
+
+function setupArrays() {
+    image = theContext.createImageData(xMax, xMax);
+    vImage = vContext.createImageData(xMax, xMax);
+
+    psi.re = new Array(xMax * xMax);
+    psi.im = new Array(xMax * xMax);
+    psiNext.re = new Array(xMax * xMax);
+    psiNext.im = new Array(xMax * xMax);
+    v = new Array(xMax * xMax).fill(0);
+}
+
+function initSimulation(size) {
+    xMax = size;
+    xMaxm1 = xMax - 1;
+
+    setupArrays();
+    barrierAdjust();
+    reset();
+}
+
+function resizeCanvas() {
+    const rect = theCanvas.getBoundingClientRect();
+    const size = Math.floor(rect.width);
+
+    theCanvas.width = size;
+    theCanvas.height = size;
+    vCanvas.width = size;
+    vCanvas.height = size;
+
+    initSimulation(size);
+}
+
+theCanvas.addEventListener("resize", resizeCanvas);
+resizeCanvas();

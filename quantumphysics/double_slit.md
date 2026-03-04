@@ -89,11 +89,11 @@ in the simulation, so that the difference in the behavior of particles and waves
 > and finally back to red.  Use the slider to adjust the overall brightness.
 > 
 > The simulation uses natural units in which the particle&rsquo;s mass, Planck&rsquo;s 
-> constant &hbar;, and the (nominal) screen pixel width are all equal to 1.  It works by 
+> constant $\hbar$, and the (nominal) screen pixel width are all equal to $1$.  It works by 
 > integrating a discretized version of the time-dependent Schrödinger equation, with a grid 
-> spacing of one unit and a grid size of 400 &times; 400.  The wavefunction is always zero 
-> along all edges of the square grid, so the particle is effectively trapped inside a 400 &times; 
-> 400 box.
+> spacing of one unit and a grid size of $400 \times 400$. The wavefunction is always zero 
+> along all edges of the square grid, so the particle is effectively trapped inside 
+> a $400 \times 400$ box.
 > &mdash; Paraphrased from instructions at [QuantumScattering2D.html](https://physics.weber.edu/schroeder/software/QuantumScattering2D.html)
 
 
