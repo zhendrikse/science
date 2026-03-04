@@ -3,7 +3,6 @@ import { hsvToRgb } from "../js/canvas-extensions.js";
 const theCanvas = document.getElementById("theCanvas");
 const theContext = theCanvas.getContext("2d");
 const vCanvas = document.getElementById("vCanvas");
-const vContext = vCanvas.getContext("2d");
 const pauseButton = document.getElementById("pauseButton");
 const speedSlider = document.getElementById("speedSlider");
 const brightnessSlider = document.getElementById("brightnessSlider");
@@ -25,7 +24,6 @@ let xMaxm1 = xMax - 1;
 let image = theContext.createImageData(xMax, xMax);		// for pixel manipulation
 
 
-let vImage = vContext.createImageData(xMax, xMax);		// overlaid image of potential function
 const pWidth = 48;	// initial wavepacket width
 // Here are the wavefunction arrays.  Note that times are staggered, with the imaginary parts always
 // one time step behind the corresponding real parts.  This is admittedly confusing.
@@ -37,106 +35,108 @@ let running = false;
 let startTime, stepCount;
 
 class Barrier {
-    constructor(xMax) {
-        this._v = new Array(xMax * xMax).fill(0);
+    constructor(size, context) {
+        this._xMax = size;
+        this._context = context;
+        this._v = new Array(size * size).fill(0);
+        this._vImage = context.createImageData(size, size);
     }
 
     at = (i) => this._v[i];
+    _clear = () => this._v.fill(0);
 
-    adjust() {
-        const barrierType =document.getElementById("barrierType").value;
-        const bEnergy = Number(document.getElementById("bEnergySlider").value);
-        const bSize = Number(document.getElementById("bSizeSlider").value);
-        const softness = Number(document.getElementById("bSoftnessSlider").value);
-        document.getElementById("bSoftnessReadout").innerHTML = "" + softness;
-        document.getElementById("bEnergyReadout").innerHTML = bEnergy.toFixed(3).replace("-","&minus;");
-        document.getElementById("bSizeReadout").innerHTML = "" + bSize;
-
-        for (let y=0; y<xMax; y++)
-            for (let x=0; x<xMax; x++)
-                this._v[y * xMax + x] = 0.0;		// erase old barrier
-
+    _setPotentialFor(barrierType, bSize, bEnergy) {
+        const max = this._xMax;
         switch (barrierType) {
             case "circle":
                 const rSquared = bSize*bSize/4.0;
-                for (let y=0; y<xMax; y++)
-                    for (let x=0; x<xMax; x++) {
-                        const dx = x - xMax/2;
-                        const dy = y - xMax/2;
-                        if (dx*dx + dy*dy < rSquared)
-                            this._v[y*xMax+x] = bEnergy;
-                    }
+                for (let y=0; y<max; y++)
+                    for (let x=0; x<max; x++)
+                        if ((x-max/2)**2 + (y-max/2)**2 < rSquared)
+                            this._v[y*max+x] = bEnergy;
                 break;
             case "square":
-                const edge = Math.round(xMax / 2 - bSize / 2);
-                for (let y = edge; y < edge + bSize; y++)
-                    for (let x = edge; x < edge + bSize; x++)
-                        this._v[y * xMax + x] = bEnergy;
+                const edge = Math.round(max/2 - bSize/2);
+                for (let y=edge; y<edge+bSize; y++)
+                    for (let x=edge; x<edge+bSize; x++)
+                        this._v[y*max+x] = bEnergy;
                 break;
             case "line":
-                for (let y=0; y<xMax; y++)
-                    for (let x=xMax/2; x<xMax/2+bSize; x++)
-                        this._v[y*xMax + x] = bEnergy;
+                for (let y=0; y<max; y++)
+                    for (let x=Math.floor(max/2); x<Math.floor(max/2)+bSize; x++)
+                        this._v[y*max+x] = bEnergy;
                 break;
             case "step":
-                for (let y=0; y<xMax; y++)
-                    for (let x=xMax/2; x<xMax; x++)
-                        this._v[y*xMax + x] = bEnergy;
+                for (let y=0; y<max; y++)
+                    for (let x=Math.floor(max/2); x<max; x++)
+                        this._v[y*max+x] = bEnergy;
                 break;
             case "singleHole":
-                for (let y=0; y<xMax; y++)
-                    for (let x=xMax/2-5; x<xMax/2+5; x++) {
-                        const holeEdge = Math.round(xMax/2 - bSize/2);
-                        if ((y <= holeEdge) || (y > holeEdge+bSize))
-                            this._v[y*xMax + x] = bEnergy;
-                    }
+                const holeEdge = Math.round(max/2 - bSize/2);
+                for (let y=0; y<max; y++)
+                    for (let x=Math.floor(max/2)-5; x<Math.floor(max/2)+5; x++)
+                        if (y <= holeEdge || y > holeEdge+bSize)
+                            this._v[y*max+x] = bEnergy;
                 break;
             case "doubleHole":
-                for (let y=0; y<xMax; y++)
-                    for (let x=xMax/2-5; x<xMax/2+5; x++) {
-                        const holeEdge = Math.round(xMax/2 - bSize/2);
-                        if ((y <= holeEdge-10) || (y > holeEdge+bSize+10) || ((y > holeEdge) && (y <= holeEdge+bSize)))
-                            this._v[y*xMax + x] = bEnergy;
-                    }
+                const dhEdge = Math.round(max/2 - bSize/2);
+                for (let y=0; y<max; y++)
+                    for (let x=Math.floor(max/2)-5; x<Math.floor(max/2)+5; x++)
+                        if (y <= dhEdge-10 || y > dhEdge+bSize+10 || (y>dhEdge && y<=dhEdge+bSize))
+                            this._v[y*max+x] = bEnergy;
                 break;
             case "grating":
-                for (let y=xMax/4; y<3*xMax/4; y++)
-                    for (let x=xMax/2-5; x<xMax/2+5; x++)
+                for (let y=Math.floor(max/4); y<Math.floor(3*max/4); y++)
+                    for (let x=Math.floor(max/2)-5; x<Math.floor(max/2)+5; x++)
                         if (y % bSize < bSize/2)
-                            this._v[y*xMax + x] = bEnergy;
-
+                            this._v[y*max+x] = bEnergy;
                 break;
         }
+    }
 
-        // Soften the barrier edges if softness is nonzero:
-        for (let s = 0; s < softness; s++) {
-            const oldV = [];
-            for (let i=0; i<xMax*xMax; i++)
-                oldV[i] = this._v[i];
-
-            for (let y=1; y<xMax-1; y++)
-                for (let x=1; x<xMax-1; x++) {
-                    const i = y*xMax + x;
-                    this._v[i] = (oldV[i+1] + oldV[i-1] + oldV[i+xMax] + oldV[i-xMax]) / 4;
+    _softenEdges(softness) {
+        const max = this._xMax;
+        for (let s=0; s<softness; s++) {
+            const oldV = this._v.slice();
+            for (let y=1; y<max-1; y++)
+                for (let x=1; x<max-1; x++) {
+                    const i = y*max + x;
+                    this._v[i] = (oldV[i + 1] + oldV[i - 1] + oldV[i + max] + oldV[i - max]) * .25;
                 }
         }
+    }
 
-        // Now paint the potential on vImage:
-        for (let y=0; y<xMax; y++)
-            for (let x=0; x<xMax; x++) {
-                const i = y*xMax + x;
-                const imageIndex = (x + (xMax-y-1)*xMax) * 4;
-                vImage.data[imageIndex] = 255;
-                vImage.data[imageIndex+1] = 255;
-                vImage.data[imageIndex+2] = 255;
-                vImage.data[imageIndex+3] = Math.round(Math.abs(128 * this.at(i) / 0.1)); // max v is drawn as 50% opaque
+    _draw() {
+        const max = this._xMax;
+        for (let y=0; y<max; y++)
+            for (let x=0; x<max; x++) {
+                const i = y*max+x;
+                const imageIndex = (x + (max-y-1)*max)*4;
+                this._vImage.data[imageIndex] = 255;
+                this._vImage.data[imageIndex+1] = 255;
+                this._vImage.data[imageIndex+2] = 255;
+                this._vImage.data[imageIndex+3] = Math.round(Math.abs(128 * this.at(i) * 10));
             }
-        vContext.putImageData(vImage, 0, 0);   // blast barrier image to the screen
+        this._context.putImageData(this._vImage, 0, 0);
+    }
+
+    adjust() {
+        const barrierType = document.getElementById("barrierType").value;
+        const bEnergy = Number(document.getElementById("bEnergySlider").value);
+        const bSize = Number(document.getElementById("bSizeSlider").value);
+        const softness = Number(document.getElementById("bSoftnessSlider").value);
+
+        document.getElementById("bSoftnessReadout").innerText = softness;
+        document.getElementById("bEnergyReadout").innerText = bEnergy.toFixed(3).replace("-", "−");
+        document.getElementById("bSizeReadout").innerText = bSize;
+
+        this._clear();
+        this._setPotentialFor(barrierType, bSize, bEnergy);
+        this._softenEdges(softness);
+        this._draw();
     }
 }
-const barrier = new Barrier(xMax);
-barrier.adjust();
-reset();
+let barrier;
 
 function startStop() {
     running = !running;
@@ -234,31 +234,34 @@ function reset() {
     if (!running) pauseButton.innerHTML = "Run";
 }
 
-// Draw the canvas:
-// (Could probably speed it up a little by using a lookup table for colors.)
 function paintCanvas() {
-    const brightSetting = brightnessSlider.value;
-    for (let y=0; y<xMax; y++)
-        for (let x=0; x<xMax; x++) {
-            const psiIndex = x + y*xMax;
-            const imageIndex = (x + (xMax-y-1)*xMax) * 4;
-            const psi2 = psi.re[psiIndex]*psi.re[psiIndex] + psi.im[psiIndex]*psi.im[psiIndex];
+    const brightSetting = Number(brightnessSlider.value);
+    const size = xMax; // gebruik de actuele canvasgrootte
+    const imgData = theContext.createImageData(size, size);
+
+    for (let y = 0; y < size; y++)
+        for (let x = 0; x < size; x++) {
+            const i = y * size + x;
+            const psi2 = psi.re[i] * psi.re[i] + psi.im[i] * psi.im[i];
             let brightness = Math.sqrt(psi2) * brightSetting;
             if (brightness > 1.0) brightness = 1.0;
-            let localPhase = Math.atan2(psi.im[psiIndex], psi.re[psiIndex]) / (2*Math.PI);
-            if (localPhase < 0) localPhase += 1.0;
-            const rgb = hsvToRgb(localPhase, 1.0, brightness);
-            image.data[imageIndex] = rgb.r;
-            image.data[imageIndex+1] = rgb.g;
-            image.data[imageIndex+2] = rgb.b;
-            image.data[imageIndex+3] = Math.round(brightness * 255);
+
+            let phase = Math.atan2(psi.im[i], psi.re[i]) / (2 * Math.PI);
+            if (phase < 0) phase += 1.0;
+
+            const rgb = hsvToRgb(phase, 1.0, brightness);
+            const imageIndex = (x + (size - y - 1) * size) * 4;
+            imgData.data[imageIndex] = rgb.r;
+            imgData.data[imageIndex + 1] = rgb.g;
+            imgData.data[imageIndex + 2] = rgb.b;
+            imgData.data[imageIndex + 3] = Math.round(brightness * 255); // alpha op basis van brightness
         }
-    theContext.putImageData(image, 0, 0);   // blast the image to the screen
+
+    theContext.putImageData(imgData, 0, 0);
 }
 
 function setupArrays() {
     image = theContext.createImageData(xMax, xMax);
-    vImage = vContext.createImageData(xMax, xMax);
 
     psi.re = new Array(xMax * xMax);
     psi.im = new Array(xMax * xMax);
@@ -271,6 +274,7 @@ function initSimulation(size) {
     xMaxm1 = xMax - 1;
 
     setupArrays();
+    barrier = new Barrier(xMax, vCanvas.getContext("2d"));
     barrier.adjust();
     reset();
 }
@@ -287,5 +291,5 @@ function resizeCanvas() {
     initSimulation(size);
 }
 
-theCanvas.addEventListener("resize", resizeCanvas);
+window.addEventListener("resize", resizeCanvas);
 resizeCanvas();

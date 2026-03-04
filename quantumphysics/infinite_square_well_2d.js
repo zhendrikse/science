@@ -71,7 +71,7 @@ function resizeCanvas() {
     psi = new InfiniteWellWave2D(theCanvas.clientWidth);
     display.paintCanvas(psi, realImag.checked, mouse.mouseIsDown, mouse.mouseClock);
 }
-theCanvas.addEventListener("resize", () => resizeCanvas());
+window.addEventListener("resize", () => resizeCanvas());
 
 // --- GUI wiring ---
 const pauseButton = document.getElementById("pauseButton");

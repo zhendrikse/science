@@ -410,7 +410,7 @@ function resizeCanvas() {
     initPhysics();
     display.paintCanvas(psi, realImag.checked);
 }
-theCanvas.addEventListener("resize", resizeCanvas);
+window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 startStop();
 
