@@ -155,7 +155,7 @@ const scene = new Scene();
 scene.background = new Color(0x05070f);
 
 const camera = new PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, 0.01, 1000);
-camera.position.set(10, 20, 30);
+camera.position.set(15, 30, 45);
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableRotate = false;

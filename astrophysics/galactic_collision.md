@@ -16,7 +16,7 @@ The demo below simulates this future collision. It is based on a very simple mod
 (with a [Box-Müller transform](https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform)), 
 circular velocities are $v=\sqrt{GM/r}$<br/>
 
-<canvas class="applicationCanvas" id="galacticCollisionCanvas"></canvas>
+<canvas class="applicationCanvas" id="galacticCollisionCanvas" style="aspect-ratio: 19/12"></canvas>
 <script type="module" src="galactic_collision.js"></script>
 
 <p style="clear:both;"></p>
