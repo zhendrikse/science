@@ -8,15 +8,16 @@ In roughly four and a half billion years, our Milky Way galaxy
 
 The demo below simulates this future collision. It is based on a very simple model:
 
-👉 Both galaxy's contain only a very limited amount of stars compared
-  to the real amounts in both galaxy's (1400 for the Milky way and 2800 for the Andromeda)<br/>
+👉 No star-star interaction, only gravitational forces from the galaxy cores (= sum of all masses)
+👉 Very limited amount of stars compared
+  to the real amounts in both galaxy's (1400 for Milky way, 2800 for Andromeda)<br/>
 👉 No [super-massive black holes](https://en.wikipedia.org/wiki/Supermassive_black_hole) at the center of either galaxy<br/>
 👉 Masses and positions of stars are randomly picked from a normal distribution 
-(with a [Box-Müller transform](https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform)).<br/>
-👉 [VPython](https://vpython.org/)&apos;s [`simple_sphere`](https://www.glowscript.org/docs/VPythonDocs/sphere.html#simple-sphere) 
-  objects are used to optimize performance.
+(with a [Box-Müller transform](https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform)), 
+circular velocities are $v=\sqrt{GM/r}$<br/>
 
-{% include_relative code/galactic_collision.html %}
+<canvas class="applicationCanvas" id="galacticCollisionCanvas"></canvas>
+<script type="module" src="galactic_collision.js"></script>
 
 <p style="clear:both;"></p>
 
@@ -42,7 +43,7 @@ The demo below simulates this future collision. It is based on a very simple mod
 On this site, you can also find a live demo of a way more advanced 2D spiral galaxy simulator
 that is based on the density wave theory (on GitHub &rarr; 
 [Galaxy renderer](https://github.com/beltoforion/Galaxy-Renderer-Typescript)). 
-It is written by [Ingo Berg](https://github.com/beltoforion) in Typescript. 
+It is written by [Ingo Berg](https://github.com/beltoforion) in TypeScript. 
 Click on the image below to activate this demo!
 
 
