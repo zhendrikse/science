@@ -26,6 +26,28 @@ in the simulation, so that the difference in the behavior of particles and waves
 <p style="clear: both;"></p>
 
 
+### How the interference pattern is generated
+
+The intensity is given by:
+
+$$
+I = \cos^2\left(\frac{\pi , \Delta r}{\lambda}\right)
+$$
+
+This is easily translated in code as follows:
+
+```js
+this._position.set(x, y, 0);
+const r1 = this._position.distanceTo(this._slit1);
+const r2 = this._position.distanceTo(this._slit2);
+const pathDiff = Math.abs(r1 - r2);
+const rAverage = (r1 + r2) * 0.5;
+const envelope = 1 / (1 + 0.1 * rAverage);
+
+const brightness = Math.pow(Math.cos(Math.PI * pathDiff / this._wavelength), 2) * envelope;
+```
+
+
 ## Additional two-dimensional simulation
 <div class="header_line"><br/></div>
 
@@ -117,27 +139,6 @@ in the simulation, so that the difference in the behavior of particles and waves
 > a $400 \times 400$ box.
 > &mdash; Paraphrased from instructions at [QuantumScattering2D.html](https://physics.weber.edu/schroeder/software/QuantumScattering2D.html)
 
-
-#### How the interference pattern is generated
-
-The intensity is given by:
-
-$$
-I = \cos^2\left(\frac{\pi , \Delta r}{\lambda}\right)
-$$
-
-This is easily translated in code as follows:
-
-```js
-this._position.set(x, y, 0);
-const r1 = this._position.distanceTo(this._slit1);
-const r2 = this._position.distanceTo(this._slit2);
-const pathDiff = Math.abs(r1 - r2);
-const rAverage = (r1 + r2) * 0.5;
-const envelope = 1 / (1 + 0.1 * rAverage);
-
-const brightness = Math.pow(Math.cos(Math.PI * pathDiff / this._wavelength), 2) * envelope;
-```
 
 ## Background information
 <div class="header_line"><br/></div>
