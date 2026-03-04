@@ -53,7 +53,7 @@
 👉 Use the controls at right for more careful adjustments<br/>
 
 <div id="freeWavePacketDiv" style="position:relative;">
-    <canvas id="freeWavePacketCanvas" width="720" height="300" style="position:relative; z-index:1;">Canvas not supported! Please update your browser.</canvas>
+    <canvas id="freeWavePacketCanvas" style="aspect-ratio: 2/1; width: 100%; position:relative; z-index:1;">Canvas not supported! Please update your browser.</canvas>
 </div>
 <div class="buttonRow">
     <label for="speedSlider">Speed:

@@ -291,9 +291,9 @@ function resize() {
     ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
     axesController.resize();
 }
-window.addEventListener("resize", resize);
+canvas.addEventListener("resize", resize);
 resize();
-window.addEventListener("click", () => {
+canvas.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
         running = true;
