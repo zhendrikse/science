@@ -60,6 +60,8 @@ in the simulation, so that the difference in the behavior of particles and waves
 <div class="buttonRow">
     <label for="speedSlider">Speed:</label><input type="range" id="speedSlider" min="1" max="100" step="1" value="15"/>
     <span id="spsReadout">0</span>
+</div>
+<div class="buttonRow">
     <label for="brightnessSlider">Brightness:</label>
     <input type="range" id="brightnessSlider" min="0.1" max="10" step="0.1" value="1.6"/>
 </div>
@@ -80,14 +82,16 @@ in the simulation, so that the difference in the behavior of particles and waves
 <div class="buttonRow">
     <label for="eSlider">Packet energy = <span id="eReadout">0.050</span></label>
     <input type="range" id="eSlider" min="0" max="0.100" step="0.001" value="0.05"/>
-
+</div>
+<div class="buttonRow">
     <label for="bEnergySlider">Strength = <span id="bEnergyReadout">0.100</span></label>
     <input type="range" id="bEnergySlider" min="-0.1" max="0.1" step="0.001" value="0.1"/>
 </div>
 <div class="buttonRow">
     <label for="bSizeSlider">Size = <span id="bSizeReadout">40</span></label>
     <input type="range" id="bSizeSlider" min="0" max="50" step="1" value="40"/>
-
+</div>
+<div class="buttonRow">
     <label for="bSoftnessSlider">Softness = <span id="bSoftnessReadout">0</span></label>
     <input type="range" id="bSoftnessSlider" min="0" max="20" step="1" value="0"/>
 </div>

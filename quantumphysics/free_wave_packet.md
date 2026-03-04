@@ -68,15 +68,23 @@
     <input type="checkbox" id="gridCheck"/><label for="gridCheck">Grid</label>
     <button id="clearButton">Clear</button>
     <button id="pauseButton">Pause</button>
-</div>
-<div class="buttonRow">
-    <label for="posSlider">Position:</label><input type="range" id="posSlider" min="80" max="640" step="1" value="100"/>
-    <label for="heightSlider">Height:</label><input type="range" id="heightSlider" min="0" max="1.5" step="0.01" value="1.0"/>
-</div>
-<div class="buttonRow">
-    <label for="widthSlider">Width:</label><input type="range" id="widthSlider" min="5" max="100" step="1" value="40"/>
-    <label for="momentumSlider">Momentum:</label><input type="range" id="momentumSlider" min="-0.5" max="0.5" step="0.01" value=".25"/>
     <button id="addButton">Add packet</button>
+</div>
+<div class="buttonRow">
+    <label for="posSlider">Position:</label>
+    <input type="range" id="posSlider" min="80" max="640" step="1" value="100"/>
+</div>
+<div class="buttonRow">
+    <label for="heightSlider">Height:</label>
+    <input type="range" id="heightSlider" min="0" max="1.5" step="0.01" value="1.0"/>
+</div>
+<div class="buttonRow">
+    <label for="widthSlider">Width:</label>
+    <input type="range" id="widthSlider" min="5" max="100" step="1" value="40"/>
+</div>
+<div class="buttonRow">
+    <label for="momentumSlider">Momentum:</label>
+    <input type="range" id="momentumSlider" min="-0.5" max="0.5" step="0.01" value=".25"/>
 </div>
 
 <script type="module" src="free_wave_packet_2d.js"></script>
