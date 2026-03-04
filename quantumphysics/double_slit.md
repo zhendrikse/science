@@ -25,6 +25,78 @@ in the simulation, so that the difference in the behavior of particles and waves
 <script type="module" src="double_slit.js"></script>
 <p style="clear: both;"></p>
 
+
+## Additional two-dimensional simulation
+<div class="header_line"><br/></div>
+
+🔧 This [double_slit_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/double_slit_2d.js) is 100% JavaScript<br/>
+⭐ Based on [QuantumScattering2D.html](https://physics.weber.edu/schroeder/software/QuantumScattering2D.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
+🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
+⭐ More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
+
+
+<div style="aspect-ratio: 1/1; width:400px;">
+    <canvas id="vCanvas" width="400" height="400" style="display:block; position:absolute; z-index:1;">Canvas not supported!</canvas>
+    <canvas id="theCanvas" width="400" height="400" style="display:block; position:relative; z-index:0;">Canvas not supported!</canvas>
+</div>
+
+<div class="buttonRow">
+    <label for="speedSlider">Speed:</label><input type="range" id="speedSlider" min="1" max="100" step="1" value="15"/>
+    <span id="spsReadout">0</span>
+    <label for="brightnessSlider">Brightness:</label>
+    <input type="range" id="brightnessSlider" min="0.1" max="10" step="0.1" value="1.6"/>
+</div>
+<div class="buttonRow">
+    <button id="pauseButton">Run</button>
+    <button id="resetButton">Reset</button>
+    <label for="barrierType">Barrier type:</label>
+    <select id="barrierType">
+        <option value="line">Line</option>
+        <option value="step">Step</option>
+        <option value="singleHole">Single hole</option>
+        <option value="doubleHole" selected>Double hole</option>
+        <option value="grating">Grating</option>
+        <option value="circle">Circle</option>
+        <option value="square">Square</option>
+    </select>
+</div>
+<div class="buttonRow">
+    <label for="eSlider">Packet energy = <span id="eReadout">0.050</span></label>
+    <input type="range" id="eSlider" min="0" max="0.100" step="0.001" value="0.05"/>
+
+    <label for="bEnergySlider">Strength = <span id="bEnergyReadout">0.100</span></label>
+    <input type="range" id="bEnergySlider" min="-0.1" max="0.1" step="0.001" value="0.1"/>
+</div>
+<div class="buttonRow">
+    <label for="bSizeSlider">Size = <span id="bSizeReadout">40</span></label>
+    <input type="range" id="bSizeSlider" min="0" max="50" step="1" value="40"/>
+
+    <label for="bSoftnessSlider">Softness = <span id="bSoftnessReadout">0</span></label>
+    <input type="range" id="bSoftnessSlider" min="0" max="20" step="1" value="0"/>
+</div>
+<script type="module" src="double_slit_2d.js"></script>
+<p style="clear: both;"></p>
+
+
+> This program simulates scattering of a quantum particle from a stationary barrier in two 
+> dimensions.  The particle&rsquo;s initial state is a Gaussian wavepacket, whose average energy 
+> you can adjust.  You can choose from seven different barrier shapes, and adjust their 
+> properties.  Try a variety of settings to explore reflection, transmission, tunneling, and interference.
+>
+> The brightness of the wavefunction image indicates the wavefunction&rsquo;s magnitude, while 
+> the color hue indicates the phase, going from red (pure real and positive) to light green (pure 
+> imaginary and positive) to cyan (pure real and negative) to purple (pure imaginary and negative)
+> and finally back to red.  Use the slider to adjust the overall brightness.
+> 
+> The simulation uses natural units in which the particle&rsquo;s mass, Planck&rsquo;s 
+> constant &hbar;, and the (nominal) screen pixel width are all equal to 1.  It works by 
+> integrating a discretized version of the time-dependent Schrödinger equation, with a grid 
+> spacing of one unit and a grid size of 400 &times; 400.  The wavefunction is always zero 
+> along all edges of the square grid, so the particle is effectively trapped inside a 400 &times; 
+> 400 box.
+> &mdash; Paraphrased from instructions at [QuantumScattering2D.html](https://physics.weber.edu/schroeder/software/QuantumScattering2D.html)
+
+
 #### How the interference pattern is generated
 
 The intensity is given by:
