@@ -147,7 +147,7 @@ function resize() {
     ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
     axesController.resize();
 }
-window.addEventListener("resize", resize);
+canvas.addEventListener("resize", resize);
 resize();
 
 const plotData = [

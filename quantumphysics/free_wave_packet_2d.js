@@ -29,8 +29,8 @@ document.getElementById("addButton")
     .addEventListener("click", () => { setPsiTemp(); addPacket(); });
 
 
-const xMax = theCanvas.clientWidth;
-const cHeight = theCanvas.clientHeight;
+let xMax = theCanvas.clientWidth;
+let cHeight = theCanvas.clientHeight;
 
 class FreeWavePacket2D {
     constructor(iMax, dt=0.2) {
@@ -77,8 +77,6 @@ class FreeWavePacket2D {
     }
 }
 
-const psi = new FreeWavePacket2D(xMax);
-const psiTemp = {re:(new Array(xMax+1)), im:(new Array(xMax+1))}	// for potential next wavepacket
 const nColors = 360;
 const phaseColor = new Array(nColors+1);
 for (let c=0; c<=nColors; c++)
@@ -96,12 +94,6 @@ const psi2PixPerUnit = (cHeight - plotMarginHeight) * 0.55;	// scale for plottin
 // Add mouse/touch handlers:
 theCanvas.addEventListener('mousedown', mouseDown, false);
 theCanvas.addEventListener('touchstart', touchStart, false);
-
-// Start up the physics:
-clearPsi();
-setPsiTemp();
-addPacket();
-startStop();
 
 function startStop() {
     running = !running;
@@ -207,12 +199,9 @@ function getCanvasCoordinates(event) {
     const clientX = event.touches ? event.touches[0].clientX : event.clientX;
     const clientY = event.touches ? event.touches[0].clientY : event.clientY;
 
-    const scaleX = theCanvas.width / rect.width;
-    const scaleY = theCanvas.height / rect.height;
-
     return {
-        x: (clientX - rect.left) * scaleX,
-        y: (clientY - rect.top) * scaleY
+        x: clientX - rect.left,
+        y: clientY - rect.top
     };
 }
 
@@ -260,6 +249,36 @@ function mouseOrTouchMove(canvasX, canvasY, e) {
     psiTempParams.width = packetArea / psiTempParams.height;
     setPsiTemp(psiTempParams.position, psiTempParams.height, psiTempParams.width, psiTempParams.momentum);
 }
+
+let psi;
+let psiTemp;
+function initPhysics() {
+    psi = new FreeWavePacket2D(xMax);
+    psiTemp = { re: new Array(xMax + 1), im: new Array(xMax + 1) };
+
+    clearPsi();
+    setPsiTemp();
+    addPacket();
+}
+
+function resizeCanvas() {
+    const rect = theCanvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    theCanvas.width  = rect.width  * dpr;
+    theCanvas.height = rect.height * dpr;
+    theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Update globals
+    xMax = Math.floor(rect.width);
+    cHeight = Math.floor(rect.height);
+
+    initPhysics();
+    paintCanvas();
+}
+theCanvas.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+startStop();
 
 function drawGrid(delta, gridBase, gridOffset) {
     if (!gridCheck.checked) return;
@@ -364,7 +383,7 @@ function plotDensityPhase(baselineY) {
 }
 
 function paintCanvas() {
-    theContext.clearRect(0, 0, theCanvas.clientWidth, theCanvas.clientHeight);
+    theContext.clearRect(0, 0, xMax, cHeight);
     theContext.lineWidth = 2;
 
     const baselineY = realImag.checked ? cHeight * 0.5 : cHeight - plotMarginHeight;
