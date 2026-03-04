@@ -44,10 +44,13 @@
 <div class="header_line"><br/></div>
 
 🔧 This [free_wave_packet_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/free_wave_packet_2d.js) is 100% JavaScript<br/>
-👉 Based on [Wavepackets.html](https://physics.weber.edu/schroeder/software/Wavepackets.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
+⭐ Based on [Wavepackets.html](https://physics.weber.edu/schroeder/software/Wavepackets.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
 🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
-👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
+⭐ More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
 
+👉 Click/tap to add a new wavepacket <br/>
+👉 Drag vertically to change its shape and horizontally to change its momentum <br/>
+👉 Use the controls at right for more careful adjustments<br/>
 
 <div id="freeWavePacketDiv" style="position:relative;">
     <canvas id="freeWavePacketCanvas" width="720" height="300" style="position:relative; z-index:1;">Canvas not supported! Please update your browser.</canvas>
@@ -76,14 +79,30 @@
     <button id="addButton">Add packet</button>
 </div>
 
-<p style="text-align:left; margin-top:12px; margin-left:20px; -webkit-text-size-adjust: 100%;">
-    Click/tap to add a new wavepacket. Drag vertically to change its shape
-    and horizontally to change its momentum. Or use the controls at right
-    for more careful adjustments.
-</p>
-
 <script type="module" src="free_wave_packet_2d.js"></script>
 <p style="clear: both;"></p>
+
+> This simulation shows the time evolution of a one-dimensional, nonrelativistic quantum 
+> wavefunction that is built out of Gaussian wave packets. There are no forces acting on the particle 
+> within the region shown. However, the wavefunction is always zero at the edges of the region, 
+> so the particle is effectively trapped in an infinitely deep potential well. 
+> When a wavepacket hits an edge it will reflect.
+>
+> You can select either the real and imaginary parts of the wavefunction
+> (shown in orange and blue, respectively), or the probability density and phase.
+> The phase is represented by hues going from red (pure real and positive)
+> to light green (pure imaginary and positive) to cyan (pure real and negative)
+> to purple (pure imaginary and negative) and finally back to red.
+>
+> **What to look for**: Notice how a wavepacket moves in the direction of increasing phase, 
+> although the phase velocity (of the individual waves within a packet) differs from the group 
+> velocity (of the packet as a whole). Notice how packets of different widths spread out at 
+> different rates. Notice how after this spreading, the wavelength is no longer uniform within the packet. 
+> Notice the interference patterns produced when packets overlap or reflect off the edges.
+>
+> The simulation works by solving a discretized version of the time-dependent Schrödinger equation, 
+> as you can see by looking at the source code.
+> &mdash; Paraphrased from instructions at [Wavepackets.html](https://physics.weber.edu/schroeder/software/Wavepackets.html)
 
 {% include share_buttons.html %}
 

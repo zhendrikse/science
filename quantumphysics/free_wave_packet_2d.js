@@ -169,10 +169,26 @@ function clearPsi() {
 }
 
 // Mouse/touch interaction code:
-function mouseDown(e) { mouseOrTouchStart(e.pageX, e.pageY, e, false); }
-function touchStart(e) { mouseOrTouchStart(e.targetTouches[0].pageX, e.targetTouches[0].pageY, e, true); }
-function mouseMove(e) { mouseOrTouchMove(e.pageX, e.pageY, e); }
-function touchMove(e) { mouseOrTouchMove(e.targetTouches[0].pageX, e.targetTouches[0].pageY, e); }
+function mouseDown(e) {
+    const pos = getCanvasCoordinates(e);
+    mouseOrTouchStart(pos.x, pos.y, e, false);
+}
+
+function touchStart(e) {
+    const pos = getCanvasCoordinates(e);
+    mouseOrTouchStart(pos.x, pos.y, e, true);
+}
+
+function mouseMove(e) {
+    const pos = getCanvasCoordinates(e);
+    mouseOrTouchMove(pos.x, pos.y, e);
+}
+
+function touchMove(e) {
+    const pos = getCanvasCoordinates(e);
+    mouseOrTouchMove(pos.x, pos.y, e);
+}
+
 function mouseUp(e) {
     document.body.onmousemove = null;	// quit listening for mousemove events until next mousedown
     document.body.onmouseup = null;
@@ -186,13 +202,27 @@ function touchEnd(e) {
     //mouseOrTouchEnd(e.changedTouches[0].pageX, e.changedTouches[0].pageY, e);
 }
 
-function mouseOrTouchStart(pageX, pageY, e, touch) {
-    var canvasX = pageX-theCanvas.offsetLeft-canvasDiv.offsetLeft;
-    var canvasY = pageY-theCanvas.offsetTop-canvasDiv.offsetTop;
+function getCanvasCoordinates(event) {
+    const rect = theCanvas.getBoundingClientRect();
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+    const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+    const scaleX = theCanvas.width / rect.width;
+    const scaleY = theCanvas.height / rect.height;
+
+    return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+    };
+}
+
+function mouseOrTouchStart(canvasX, canvasY, e, touch) {
     if ((canvasX < Number(posSlider.min)) || (canvasX > Number(posSlider.max))) return;
-    var pxAboveAxis = cHeight - plotMarginHeight - canvasY;
+
+    let pxAboveAxis = cHeight - plotMarginHeight - canvasY;
     if (realImag.checked) pxAboveAxis = cHeight/2 - canvasY;
     if (pxAboveAxis <= 0) return;
+
     e.preventDefault();
     if (touch) {
         document.body.ontouchmove = touchMove;
@@ -203,26 +233,24 @@ function mouseOrTouchStart(pageX, pageY, e, touch) {
     }
     psiTempParams.position = canvasX;
     psiTempParams.momentum = 0;
-    if (realImag.checked) {
+    if (realImag.checked)
         psiTempParams.height = pxAboveAxis / psiPixPerUnit;
-    } else {
+    else
         psiTempParams.height = Math.sqrt(pxAboveAxis / psi2PixPerUnit);
-    }
+
     psiTempParams.width = 40;
     setPsiTemp(psiTempParams.position, psiTempParams.height, psiTempParams.width, psiTempParams.momentum);
 }
 
-function mouseOrTouchMove(pageX, pageY, e) {
-    var canvasX = pageX-theCanvas.offsetLeft-canvasDiv.offsetLeft;
-    var canvasY = pageY-theCanvas.offsetTop-canvasDiv.offsetTop;
-    var maxk = Number(momentumSlider.max);
+function mouseOrTouchMove(canvasX, canvasY, e) {
+    const maxk = Number(momentumSlider.max);
     psiTempParams.momentum = (canvasX - psiTempParams.position) * maxk / 100;
     if (psiTempParams.momentum > maxk) psiTempParams.momentum = maxk;
     if (psiTempParams.momentum < -maxk) psiTempParams.momentum = -maxk;
-    var pxAboveAxis = cHeight - plotMarginHeight - canvasY;
+    let pxAboveAxis = cHeight - plotMarginHeight - canvasY;
     if (realImag.checked) pxAboveAxis = cHeight/2 - canvasY;
     if (pxAboveAxis === 0) return;
-    var packetArea = psiTempParams.height * psiTempParams.width;
+    const packetArea = psiTempParams.height * psiTempParams.width;
     if (realImag.checked) {
         psiTempParams.height = pxAboveAxis / psiPixPerUnit;
     } else {
@@ -244,6 +272,7 @@ function drawGrid(delta, gridBase, gridOffset) {
         theContext.lineTo(x, gridBase);
         theContext.stroke();
     }
+
     for (let y = gridBase - gridOffset; y > 0; y -= delta) {	// draw horizontal grid lines
         theContext.beginPath();
         theContext.moveTo(0, y);
@@ -252,109 +281,101 @@ function drawGrid(delta, gridBase, gridOffset) {
     }
 }
 
-// Draw the canvas:
-function paintCanvas() {
-    theContext.clearRect(0, 0, theCanvas.clientWidth, theCanvas.clientHeight);
-
+function drawHorizontalAxis(baselineY) {
+    theContext.strokeStyle = "#c0c0c0";
+    theContext.lineWidth = 1;
+    theContext.beginPath();
+    theContext.moveTo(0, baselineY);
+    theContext.lineTo(xMax, baselineY);
+    theContext.stroke();
     theContext.lineWidth = 2;
-    var baselineY, pxPerY, gridBase, gridOffset;
-    const delta = 20;		// grid spacing in pixels
+}
 
-    if (realImag.checked) {
-        baselineY = cHeight * 0.5;
-        gridBase = cHeight;
-        gridOffset = (cHeight/2) % delta;	// lowest horizontal grid line is this far above bottom
-        pxPerY = psiPixPerUnit;
+function plotRealImaginary(baselineY) {
+    const pxPerY = psiPixPerUnit;
+    drawHorizontalAxis(baselineY);
 
-        // Draw the horizontal axis:
-        theContext.strokeStyle = "#c0c0c0";
-        theContext.lineWidth = 1;
+    // Plot the real part of psi:
+    theContext.beginPath();
+    theContext.moveTo(0, baselineY - psi.re[0] * pxPerY);
+    for (let x=1; x<=xMax; x++)
+        theContext.lineTo(x, baselineY - psi.re[x] * pxPerY);
+
+    theContext.strokeStyle = "#ffc000";
+    theContext.stroke();
+
+    // Plot the imaginary part of psi:
+    theContext.beginPath();
+    theContext.moveTo(0, baselineY - psi.im[0] * pxPerY);
+    for (let x=1; x<=xMax; x++)
+        theContext.lineTo(x, baselineY - psi.im[x] * pxPerY);
+
+    theContext.strokeStyle = "#00d0ff";
+    theContext.stroke();
+
+    // Now draw the wavepacket we might add next, with transparency:
+    if (psiTempAlpha <= 0.001) return;
+    theContext.globalAlpha = psiTempAlpha;
+    theContext.beginPath();
+    theContext.moveTo(0, baselineY - psiTemp.re[0]*pxPerY);
+    for (let x=1; x<=xMax; x++)
+        theContext.lineTo(x, baselineY - psiTemp.re[x]*pxPerY);
+
+    theContext.strokeStyle = "#ffc000";
+    theContext.stroke();
+    theContext.beginPath();
+    theContext.moveTo(0, baselineY - psiTemp.im[0]*pxPerY);
+    for (let x=1; x<=xMax; x++)
+        theContext.lineTo(x, baselineY - psiTemp.im[x]*pxPerY);
+
+    theContext.strokeStyle = "#00d0ff";
+    theContext.stroke();
+    theContext.globalAlpha = 1.0;
+}
+
+function plotDensityPhase(baselineY) {
+    const pxPerY = psi2PixPerUnit;
+    drawHorizontalAxis(baselineY);
+
+    for (let x = 0; x <= xMax; x++) {
         theContext.beginPath();
-        theContext.moveTo(0, baselineY);
-        theContext.lineTo(xMax, baselineY);
+        theContext.moveTo(x, baselineY);
+        theContext.lineTo(x, baselineY - pxPerY*(psi.re[x]*psi.re[x] + psi.im[x]*psi.im[x]));
+        let localPhase = Math.atan2(psi.im[x], psi.re[x]);
+        if (localPhase < 0) localPhase += 2 * Math.PI;
+        theContext.strokeStyle = phaseColor[Math.round(localPhase * nColors / (2 * Math.PI))];
         theContext.stroke();
-
-        theContext.lineWidth = 2;
-
-        // Plot the real part of psi:
-        theContext.beginPath();
-        theContext.moveTo(0, baselineY - psi.re[0]*pxPerY);
-        for (let x=1; x<=xMax; x++)
-            theContext.lineTo(x, baselineY - psi.re[x]*pxPerY);
-
-        theContext.strokeStyle = "#ffc000";
-        theContext.stroke();
-
-        // Plot the imaginary part of psi:
-        theContext.beginPath();
-        theContext.moveTo(0, baselineY - psi.im[0]*pxPerY);
-        for (let x=1; x<=xMax; x++)
-            theContext.lineTo(x, baselineY - psi.im[x]*pxPerY);
-
-        theContext.strokeStyle = "#00d0ff";
-        theContext.stroke();
-
-        // Now draw the wavepacket we might add next, with transparency:
-        if (psiTempAlpha > 0.001) {
-            theContext.globalAlpha = psiTempAlpha;
-            theContext.beginPath();
-            theContext.moveTo(0, baselineY - psiTemp.re[0]*pxPerY);
-            for (let x=1; x<=xMax; x++)
-                theContext.lineTo(x, baselineY - psiTemp.re[x]*pxPerY);
-
-            theContext.strokeStyle = "#ffc000";
-            theContext.stroke();
-            theContext.beginPath();
-            theContext.moveTo(0, baselineY - psiTemp.im[0]*pxPerY);
-            for (let x=1; x<=xMax; x++) {
-                theContext.lineTo(x, baselineY - psiTemp.im[x]*pxPerY);
-            }
-            theContext.strokeStyle = "#00d0ff";
-            theContext.stroke();
-            theContext.globalAlpha = 1.0;
-        }
-
-    } else {	// "Density/phase" is checked
-        // Plot the probability distribution with phase as color:
-        baselineY = cHeight - plotMarginHeight;
-        gridBase = baselineY;
-        gridOffset = delta;
-        pxPerY = psi2PixPerUnit;
-
-        // Draw the horizontal axis:
-        theContext.strokeStyle = "#c0c0c0";
-        theContext.lineWidth = 1;
-        theContext.beginPath();
-        theContext.moveTo(0, baselineY);
-        theContext.lineTo(xMax, baselineY);
-        theContext.stroke();
-
-        theContext.lineWidth = 2;
-        for (let x=0; x<=xMax; x++) {
-            theContext.beginPath();
-            theContext.moveTo(x, baselineY);
-            theContext.lineTo(x, baselineY - pxPerY*(psi.re[x]*psi.re[x] + psi.im[x]*psi.im[x]));
-            let localPhase = Math.atan2(psi.im[x], psi.re[x]);
-            if (localPhase < 0) localPhase += 2 * Math.PI;
-            theContext.strokeStyle = phaseColor[Math.round(localPhase * nColors / (2 * Math.PI))];
-            theContext.stroke();
-        }
-        // Now draw the wavepacket we might add next, with transparency:
-        if (psiTempAlpha > 0.001) {
-            theContext.globalAlpha = psiTempAlpha;
-            for (let x=0; x<=xMax; x++) {
-                theContext.beginPath();
-                theContext.moveTo(x, baselineY);
-                theContext.lineTo(x, baselineY - pxPerY*(psiTemp.re[x]*psiTemp.re[x] + psiTemp.im[x]*psiTemp.im[x]));
-                let localPhase = Math.atan2(psiTemp.im[x], psiTemp.re[x]);
-                if (localPhase < 0) localPhase += 2 * Math.PI;
-                theContext.strokeStyle = phaseColor[Math.round(localPhase * nColors / (2*Math.PI))];
-                theContext.stroke();
-            }
-            theContext.globalAlpha = 1.0;
-        }
     }
 
+    // Now draw the wavepacket we might add next, with transparency:
+    if (psiTempAlpha <= 0.001) return;
+
+    theContext.globalAlpha = psiTempAlpha;
+    for (let x = 0; x <= xMax; x++) {
+        theContext.beginPath();
+        theContext.moveTo(x, baselineY);
+        theContext.lineTo(x, baselineY - pxPerY*(psiTemp.re[x]*psiTemp.re[x] + psiTemp.im[x]*psiTemp.im[x]));
+        let localPhase = Math.atan2(psiTemp.im[x], psiTemp.re[x]);
+        if (localPhase < 0) localPhase += 2 * Math.PI;
+        theContext.strokeStyle = phaseColor[Math.round(localPhase * nColors / (2*Math.PI))];
+        theContext.stroke();
+    }
+    theContext.globalAlpha = 1.0;
+}
+
+function paintCanvas() {
+    theContext.clearRect(0, 0, theCanvas.clientWidth, theCanvas.clientHeight);
+    theContext.lineWidth = 2;
+
+    const baselineY = realImag.checked ? cHeight * 0.5 : cHeight - plotMarginHeight;
+    if (realImag.checked)
+        plotRealImaginary(baselineY);
+    else
+        plotDensityPhase(baselineY);
+
+    const delta = 20;		// grid spacing in pixels
+    const gridBase = realImag.checked ? cHeight : baselineY;
+    const gridOffset = realImag.checked ? (cHeight / 2) % delta : delta;
     drawGrid(delta, gridBase, gridOffset);
 }
 
