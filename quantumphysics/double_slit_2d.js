@@ -1,3 +1,5 @@
+import { hsvToRgb } from "../js/canvas-extensions.js";
+
 const theCanvas = document.getElementById("theCanvas");
 const theContext = theCanvas.getContext("2d");
 const vCanvas = document.getElementById("vCanvas");
@@ -160,7 +162,7 @@ function nextFrame() {
 
     const stepsPerFrame = Number(speedSlider.value);
     for (let step=0; step < stepsPerFrame; step++)
-        doStep();
+        doStep(dt);
     stepCount += stepsPerFrame;
     paintCanvas();
     const currentTime = (new Date()).getTime();
@@ -170,7 +172,7 @@ function nextFrame() {
 
 // Integrate the TDSE for a double time step (centered-difference time integration):
 // (Remember that psi.im is one time step earlier than psi.re; same for psiNext.im and psiNext.re.)
-function doStep() {
+function doStep(dt) {
     for (let y=1; y<xMaxm1; y++)
         for (let x=1; x<xMaxm1; x++) {
             const i = y*xMax + x;
@@ -234,36 +236,12 @@ function paintCanvas() {
             if (brightness > 1.0) brightness = 1.0;
             let localPhase = Math.atan2(psi.im[psiIndex], psi.re[psiIndex]) / (2*Math.PI);
             if (localPhase < 0) localPhase += 1.0;
-            const rgb = HSVtoRGB(localPhase, 1.0, brightness);
+            const rgb = hsvToRgb(localPhase, 1.0, brightness);
             image.data[imageIndex] = rgb.r;
             image.data[imageIndex+1] = rgb.g;
             image.data[imageIndex+2] = rgb.b;
             image.data[imageIndex+3] = Math.round(brightness * 255);        }
     theContext.putImageData(image, 0, 0);   // blast the image to the screen
-}
-
-// From http://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
-// h, s, and v must all be in the range 0 to 1
-function HSVtoRGB(h, s, v) {
-    let r, g, b, i, f, p, q, t;
-    i = Math.floor(h * 6);
-    f = h * 6 - i;
-    p = v * (1 - s);
-    q = v * (1 - f * s);
-    t = v * (1 - (1 - f) * s);
-    switch (i % 6) {
-        case 0: r = v, g = t, b = p; break;
-        case 1: r = q, g = v, b = p; break;
-        case 2: r = p, g = v, b = t; break;
-        case 3: r = p, g = q, b = v; break;
-        case 4: r = t, g = p, b = v; break;
-        case 5: r = v, g = p, b = q; break;
-    }
-    return {
-        r: Math.round(r * 255),
-        g: Math.round(g * 255),
-        b: Math.round(b * 255)
-    };
 }
 
 function setupArrays() {
