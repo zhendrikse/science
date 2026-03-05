@@ -3,6 +3,11 @@ import { Scene, Color, PerspectiveCamera, WebGLRenderer, BufferAttribute, Canvas
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import { SkyDome } from '../js/astro-extensions.js';
 
+// TODO
+// Press button to start
+// Reset simulation
+// Spiral galaxies
+
 const G = 6.673e-11;
 const SOLAR_MASS = 2e30;
 
@@ -112,7 +117,6 @@ class Galaxy {
 
             const localPosition = localPositions[i];
             const absolutePos = localPosition.clone().add(this._position);
-
             absolutePos.toArray(positions, 3 * index);
 
             masses[index] = localMasses[i];
@@ -123,7 +127,6 @@ class Galaxy {
 
             const absoluteVelocity =
                 orbitalDir.multiplyScalar(speed).add(this._velocity);
-
             absoluteVelocity.toArray(velocities, 3 * index);
 
             colors.set([color.r, color.g, color.b], 3 * index);

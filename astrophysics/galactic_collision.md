@@ -18,8 +18,55 @@ circular velocities are $v=\sqrt{GM/r}$<br/>
 
 <canvas class="applicationCanvas" id="galacticCollisionCanvas" style="aspect-ratio: 19/12"></canvas>
 <script type="module" src="galactic_collision.js"></script>
-
 <p style="clear:both;"></p>
+
+### 🌌 What am I looking at
+<div class="header_line"><br/></div>
+
+In this model we use:
+
+$$\begin{equation}
+a = \frac{GM}{r^2}
+\end{equation}$$
+
+As a consequence
+
+* Inner stars → small $r$ → strong bonding
+* Outer stars → big $r$ → weak bonding
+
+The **bonding energy** of a star in a point mass potentiaal is:
+
+$$\begin{equation}
+E = -\frac{GMm}{2r}
+\end{equation}$$
+
+So as $r$ increases, the energy becomes less negative ⇒ stars are less tightly bound and easier to be slurred away.
+
+#### 💥 During collision
+
+When to two cores approach:
+
+1. Outer stars experience a strong **differential gravitational field**
+2. The other galaxy pulls relatively stronger on the outside
+3. Tidal forces are being created
+
+This causes:
+
+* Tidal tails
+* Material that is being pulled apart
+* Thin strands that wind far away.
+
+And since this simulation is based on a 
+
+* A point mass model
+* Does not have star-star interaction
+* Lacks a dark matter halo 
+
+We observe this effect even stronger than in realistic simulations.
+
+In reality a dark matter halo leads to $v(r) \approx \text{constant}$.
+Instead, in this model we have $v(r) \sim \frac{1}{\sqrt{r}}$.
+As a consequence, the outer stars are relatively even weaker bound.
 
 ## Additional information
 <div class="header_line"><br/></div>
