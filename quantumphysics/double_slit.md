@@ -75,8 +75,8 @@ const brightness = Math.pow(Math.cos(Math.PI * pathDiff / this._wavelength), 2) 
 </style>
 <div id="simContainer">
   <div style="aspect-ratio: 1/1; width:400px;">
-    <canvas id="vCanvas" width="400" height="400" style="display:block; position:absolute; z-index:1;">Canvas not supported!</canvas>
-    <canvas id="theCanvas" width="400" height="400" style="display:block; position:relative; z-index:0;">Canvas not supported!</canvas>
+    <canvas id="vCanvas" width="400" height="400" style="z-index:1;">Canvas not supported!</canvas>
+    <canvas id="theCanvas" width="400" height="400" style="z-index:0;">Canvas not supported!</canvas>
   </div>
 </div>
 
