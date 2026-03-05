@@ -252,11 +252,6 @@ function drawSierpinskiTriangle(turtle) {
     sierpinskiTriangle(turtle, 400, 5);
 }
 
-function resetButtons() {
-    for (const [key, value] of radioButtons)
-        document.getElementById(key).checked = false;
-}
-
 function redraw() {
     const turtle = createTurtle();
     currentFractal(turtle);
@@ -285,8 +280,6 @@ const createTurtle = () =>
 
 for (const [key, value] of radioButtons)
     document.getElementById(key).onclick = function() {
-        resetButtons();
-        this.checked = true;
         currentFractal = value;
         redraw();
     };

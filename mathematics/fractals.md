@@ -11,15 +11,13 @@
     <canvas class="applicationCanvas2D" id="fractalsCanvas"></canvas>
 </div>
 <div class="buttonRow">
-  <input type="radio" id="kochSnowflake"/><label for="kochSnowflake">&nbsp;Koch snowflake ❄️</label>
-  <label for="cesaroFractal"><input type="radio" id="cesaroFractal"/>&nbsp;Cesaro fractal 🏛️</label>
+  <button id="kochSnowflake">Koch snowflake ❄️</button>
+  <button id="cesaroFractal">Cesaro fractal 🏛️</button>
+  <button id="sierpinskiTriangle">Sierpinski triangle ⚠️</button>
 </div>
 <div class="buttonRow">
-  <input type="radio" id="sierpinskiTriangle"/><label for="sierpinskiTriangle">&nbsp;Sierpinski triangle ⚠️</label>
-  <input type="radio" id="tSquareFractal"/><label for="tSquareFractal">&nbsp;T-square fractal 🔶</label>
-</div>
-<div class="buttonRow">
-  <input type="radio" id="dragonCurve"/><label for="dragonCurve">&nbsp;Dragon curve 🐦‍🔥</label>
+  <button id="tSquareFractal">T-square fractal 🔶</button>
+  <button id="dragonCurve">Dragon curve 🐦‍🔥</button>
 </div>
 <script type="module" src="fractals.js"></script>
 <p style="clear: both;"></p>
