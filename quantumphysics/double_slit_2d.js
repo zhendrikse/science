@@ -232,30 +232,28 @@ class Psi2D {
 
     // Initialize the wavefunction to a Gaussian wavepacket:
     reset() {
-        for (let x=0; x<xMax; x++) {
-            const centerX = Math.floor(xMax*0.22);
-            const centerY = xMax/2;
-            const e = Number(eSlider.value);
-            const kx = Math.sqrt(2*e);
-            const ky = 0;
-            for (let y=0; y<xMax; y++)
-                for (let x=0; x<xMax; x++) {
-                    const i = y*xMax + x;
-                    const envelope = Math.exp(-(x-centerX)*(x-centerX)/(pWidth*pWidth)) *
-                        Math.exp(-(y-centerY)*(y-centerY)/(pWidth*pWidth));
-                    this._psi.re[i] = envelope * (Math.cos(kx*x)*Math.cos(ky*y) - Math.sin(kx*x)*Math.sin(ky*y));
-                    this._psi.im[i] = envelope * (Math.cos(kx*x)*Math.sin(ky*y) + Math.sin(kx*x)*Math.cos(ky*y));
-                    this._psiNext.re[i] = 0.0;
-                    this._psiNext.im[i] = 0.0;	// These lines may not be needed but edges must be zero
-                }
+        const centerX = Math.floor(xMax*0.22);
+        const centerY = xMax/2;
+        const e = Number(eSlider.value);
+        const kx = Math.sqrt(2*e);
+        const ky = 0;
+        for (let y=0; y<xMax; y++)
+            for (let x=0; x<xMax; x++) {
+                const i = y*xMax + x;
+                const envelope = Math.exp(-(x-centerX)*(x-centerX)/(pWidth*pWidth)) *
+                    Math.exp(-(y-centerY)*(y-centerY)/(pWidth*pWidth));
+                this._psi.re[i] = envelope * (Math.cos(kx*x)*Math.cos(ky*y) - Math.sin(kx*x)*Math.sin(ky*y));
+                this._psi.im[i] = envelope * (Math.cos(kx*x)*Math.sin(ky*y) + Math.sin(kx*x)*Math.cos(ky*y));
+                this._psiNext.re[i] = 0.0;
+                this._psiNext.im[i] = 0.0;	// These lines may not be needed but edges must be zero
+            }
 
-            // Now bump the imaginary part of psi back by one time step:
-            for (let y=1; y<xMax-1; y++)
-                for (let x=1; x<xMax-1; x++) {
-                    const i = y*xMax + x;
-                    this._psi.im[i] = this.im[i] + 0.5*dt * (-this.re[i+1] - this.re[i-1] - this.re[i+xMax] - this.re[i-xMax] + 2*(2+barrier.at(i))*this.re[i]);
-                }
-        }
+        // Now bump the imaginary part of psi back by one time step:
+        for (let y=1; y<xMax-1; y++)
+            for (let x=1; x<xMax-1; x++) {
+                const i = y*xMax + x;
+                this._psi.im[i] = this.im[i] + 0.5*dt * (-this.re[i+1] - this.re[i-1] - this.re[i+xMax] - this.re[i-xMax] + 2*(2+barrier.at(i))*this.re[i]);
+            }
     }
 }
 
