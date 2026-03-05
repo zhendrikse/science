@@ -6,7 +6,7 @@
 <div class="header_line"><br/></div>
 
 <canvas id="atomCanvas" class="applicationCanvas"></canvas>
-<script type="text/javascript" src="./orbital_scatter_plot_2d.js"></script>
+<script type="module" src="./orbital_scatter_plot_2d.js"></script>
 <p style="clear: both;"></p>
 
 

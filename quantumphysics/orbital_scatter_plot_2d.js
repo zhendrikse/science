@@ -292,6 +292,18 @@ scene.add(cloud);
 
 // --- Render loop ---
 function animate(){
+    for (let i = 0; i < blotMax;i++) {
+        // distance from center
+        const r = Math.sqrt(pointsArray[i*3]*pointsArray[i*3] + pointsArray[i*3+1]*pointsArray[i*3+1]);
+        const fade = Math.exp(-r*r/50);  // cloud fading factor
+        colorsArray[i*3] = orbitalColors[doingOrbital][0] * fade;
+        colorsArray[i*3+1] = orbitalColors[doingOrbital][1] * fade;
+        colorsArray[i*3+2] = orbitalColors[doingOrbital][2] * fade;
+    }
+
+    geometry.attributes.position.needsUpdate = true;
+    geometry.attributes.color.needsUpdate = true;
+
     controls.update();
     renderer.render(scene, camera);
 }
