@@ -13,7 +13,7 @@ document.getElementById("resetButton").addEventListener("click", () => reset());
 document.getElementById("pauseButton").addEventListener("click", () => startStop());
 document.getElementById("barrierType").addEventListener("click", () => barrier.adjust());
 speedSlider.addEventListener("input", () => resetTimer());
-brightnessSlider.addEventListener("input", () => paintCanvas(psi));
+brightnessSlider.addEventListener("input", () => paintCanvas(psi, imgData));
 eSlider.addEventListener("input", () => wpEnergyAdjust());
 document.getElementById("bEnergySlider").addEventListener("input", () => barrier.adjust());
 document.getElementById("bSizeSlider").addEventListener("input", () => barrier.adjust());
@@ -21,8 +21,6 @@ document.getElementById("bSoftnessSlider").addEventListener("input", () => barri
 
 let xMax = Number(theCanvas.width);
 let xMaxm1 = xMax - 1;
-let image = theContext.createImageData(xMax, xMax);		// for pixel manipulation
-
 
 const pWidth = 48;	// initial wavepacket width
 // Here are the wavefunction arrays.  Note that times are staggered, with the imaginary parts always
@@ -172,7 +170,7 @@ function nextFrame() {
     for (let step=0; step < stepsPerFrame; step++)
         psi.doStep(dt, barrier);
     stepCount += stepsPerFrame;
-    paintCanvas(psi);
+    paintCanvas(psi, imgData);
     const currentTime = (new Date()).getTime();
     spsReadout.innerHTML = "" + Math.round(1000 * stepCount / (currentTime-startTime));
     requestAnimationFrame(nextFrame);
@@ -181,8 +179,14 @@ function nextFrame() {
 class Psi2D {
     constructor(xMax) {
         this._xMax = xMax;
-        this._psi = {re:(new Array(xMax*xMax)), im:(new Array(xMax*xMax))};
-        this._psiNext = {re:(new Array(xMax*xMax)), im:(new Array(xMax*xMax))};	// psiNext is actually 2*dt later than psi
+        this._psi = {
+            re: new Float32Array(xMax*xMax),
+            im: new Float32Array(xMax*xMax)
+        };
+        this._psiNext = {
+            re: new Float32Array(xMax*xMax),
+            im: new Float32Array(xMax*xMax)
+        };
     }
 
     get re() { return this._psi.re; }
@@ -191,23 +195,38 @@ class Psi2D {
     // Integrate the TDSE for a double time step (centered-difference time integration):
     // (Remember that psi.im is one time step earlier than psi.re; same for psiNext.im and psiNext.re.)
     doStep(dt, barrier) {
+        const re = this._psi.re;
+        const im = this._psi.im;
+        const reNext = this._psiNext.re;
+        const imNext = this._psiNext.im;
+        const vmax = barrier._v;
+        const w = this._xMax;
+
         for (let y=1; y<xMaxm1; y++)
             for (let x=1; x<xMaxm1; x++) {
-                const i = y*this._xMax + x;
-                this._psiNext.im[i] = this.im[i] - dt * (-this.re[i+1] - this.re[i-1] - this.re[i+this._xMax] - this.re[i-this._xMax] + 2*(2+barrier.at(i))*this.re[i]);
+                const i = y*w + x;
+
+                imNext[i] = im[i] - dt * (
+                    -re[i+1] - re[i-1] - re[i+w] - re[i-w]
+                    + 2*(2+vmax[i])*re[i]
+                );
             }
 
         for (let y=1; y<xMaxm1; y++)
             for (let x=1; x<xMaxm1; x++) {
-                const i = y*this._xMax + x;
-                this._psiNext.re[i] = this.re[i] + dt * (-this._psiNext.im[i+1] - this._psiNext.im[i-1] - this._psiNext.im[i+this._xMax] - this._psiNext.im[i-this._xMax] + 2*(2+barrier.at(i))*this._psiNext.im[i]);
+                const i = y*w + x;
+
+                reNext[i] = re[i] + dt * (
+                    -imNext[i+1] - imNext[i-1] - imNext[i+w] - imNext[i-w]
+                    + 2*(2+vmax[i])*imNext[i]
+                );
             }
 
-        for (let y=1; y<this._xMax-1; y++)			// now copy next to current
+        for (let y=1; y<w-1; y++)
             for (let x=1; x<xMaxm1; x++) {
-                const i = y*this._xMax + x;
-                this._psi.re[i] = this._psiNext.re[i];
-                this._psi.im[i] = this._psiNext.im[i];
+                const i = y*w + x;
+                re[i] = reNext[i];
+                im[i] = imNext[i];
             }
     }
 
@@ -243,14 +262,13 @@ class Psi2D {
 // Initialize the wavefunction to a Gaussian wavepacket:
 function reset() {
     psi.reset();
-    paintCanvas(psi);
+    paintCanvas(psi, imgData);
     if (!running) pauseButton.innerHTML = "Run";
 }
 
-function paintCanvas(psi) {
+function paintCanvas(psi, imageData) {
     const brightSetting = Number(brightnessSlider.value);
     const size = xMax; // use actual canvas size
-    const imgData = theContext.createImageData(size, size);
 
     for (let y = 0; y < size; y++)
         for (let x = 0; x < size; x++) {
@@ -264,17 +282,20 @@ function paintCanvas(psi) {
 
             const rgb = hsvToRgb(phase, 1.0, brightness);
             const imageIndex = (x + (size - y - 1) * size) * 4;
-            imgData.data[imageIndex] = rgb.r;
-            imgData.data[imageIndex + 1] = rgb.g;
-            imgData.data[imageIndex + 2] = rgb.b;
-            imgData.data[imageIndex + 3] = Math.round(brightness * 255); // alpha based on brightness
+            imageData.data[imageIndex] = rgb.r;
+            imageData.data[imageIndex + 1] = rgb.g;
+            imageData.data[imageIndex + 2] = rgb.b;
+            imageData.data[imageIndex + 3] = Math.round(brightness * 255); // alpha based on brightness
         }
 
     theContext.putImageData(imgData, 0, 0);
 }
 
+let imgData;
+let image;
 function setupArrays() {
     image = theContext.createImageData(xMax, xMax);
+    imgData = theContext.createImageData(xMax, xMax);
     psi = new Psi2D(xMax);
 }
 
