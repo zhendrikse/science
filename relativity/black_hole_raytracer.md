@@ -9,7 +9,25 @@
 🔥 Refactored and extended with realistic colour coding by [Zeger Hendrikse](https://www.hendrikse.name/).<br/>
 👉 A [VPython](https://www.vpython.org/) version is also available as [black_hole_raytracer.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/black_hole_raytracer.py).
 
-{% include_relative code/black_hole_raytracer.html %}
+<style>
+    .blackhole-container {
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+        aspect-ratio: 2 / 1;
+        background: black; /* letterbox */
+    }
+
+    .blackhole-container canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+</style>
+<div class="blackhole-container">
+    <canvas id="blackHoleCanvas" width="600" height="300"></canvas>
+</div>
+<script src="./black_hole_raytracer.js"></script>
 
 <p style="clear: both;"></p>
 

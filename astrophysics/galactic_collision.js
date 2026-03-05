@@ -181,7 +181,7 @@ const andromeda = new Galaxy({
     start: NUM_STARS_MW,
     num_stars: NUM_STARS_AND,
     position: new Vector3(10, 0, 0).multiplyScalar(DIST_SCALE),
-    velocity: new Vector3(0, 9, 0),
+    velocity: new Vector3(0, 9, 0),  /// TODO Make velocity configurable and simulation reset-able + frame rate.
     radius: MAX_ORBITAL_RADIUS,
     thickness: ANDROMEDA_THICKNESS,
     color: new Color(0.0, 0.5, 1.0)
