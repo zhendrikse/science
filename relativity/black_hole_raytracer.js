@@ -6,7 +6,7 @@ context.fillStyle = "black";
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 // Prepare the worker with the ray tracing logic
-const worker = new Worker("black-hole-raytrace-webworker.js");
+const worker = new Worker("black_hole_raytrace_webworker.js");
 
 // Receive the image data to be displayed
 worker.onmessage = (event) => {
