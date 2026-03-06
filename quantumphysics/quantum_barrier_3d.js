@@ -2,9 +2,9 @@ import { Group, Vector3, Color, Scene, Box3, BoxGeometry, Mesh, MeshBasicMateria
 import { Arrow, AxesController, AxesParameters, Plot3DView, ThreeJsUtils } from '../js/three-js-extensions.js';
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
-const canvasContainer = document.getElementById("freePacketWrapper");
-const canvas = document.getElementById("freePacketCanvas");
-const overlay = document.getElementById("overlayText");
+const canvasContainer = document.getElementById("barrier3dWrapper");
+const canvas = document.getElementById("barrier3dCanvas");
+const overlay = document.getElementById("barrier3dOverlayText");
 const scene = new Scene();
 const worldGroup = new Group();
 scene.add(worldGroup);
@@ -100,12 +100,12 @@ class FFT {
 
 class FreeWavePacket extends Group {
     constructor({
-                    numPoints = 256,
-                    L = 30,
-                    k0Factor = 25, // k0 → determines group velocity
-                    a = 1,         // a → determines start width
-                    x0 = -L / 4       // Start left of the barrier, not _in_ the barrier!
-                } = {}) {
+        numPoints = 256,
+        L = 30,
+        k0Factor = 25, // k0 → determines group velocity
+        a = 1,         // a → determines start width
+        x0 = -L / 4       // Start left of the barrier, not _in_ the barrier!
+    } = {}) {
         super();
         this._k0Factor = k0Factor;
         this._a = a;
@@ -117,9 +117,9 @@ class FreeWavePacket extends Group {
         this._arrows = [];
         this._values = [];
         this._V = new Array(this._N).fill(0); // Potential energy
-        this._psi = {re: new Array(numPoints), im: new Array(numPoints)};
-        this._phi = {re: new Array(numPoints), im: new Array(numPoints)};
-        this._phi0 = {re: new Array(numPoints), im: new Array(numPoints)};
+        this._psi = { re: new Array(numPoints), im: new Array(numPoints) };
+        this._phi = { re: new Array(numPoints), im: new Array(numPoints) };
+        this._phi0 = { re: new Array(numPoints), im: new Array(numPoints) };
 
         // t = 0
         // → P_left ≈ 1
@@ -151,7 +151,7 @@ class FreeWavePacket extends Group {
         this._buildBarrier();
     }
 
-    _buildBarrier({ V0 = 10, a = 1 }={}) {
+    _buildBarrier({ V0 = 10, a = 1 } = {}) {
         const halfWidth = a;
         for (let i = 0; i < this._N; i++) {
             const x = this._arrows[i].position.x;
@@ -183,7 +183,7 @@ class FreeWavePacket extends Group {
 
         for (let i = 0; i < this._N; i++) {
             const x = this._arrows[i].position.x;
-            const gauss = Math.exp(-1 * ((x - this._x0) / (2 * this._a))**2 );
+            const gauss = Math.exp(-1 * ((x - this._x0) / (2 * this._a)) ** 2);
             const phase = k0 * x;
 
             this._psi.re[i] = gauss * Math.cos(phase);
@@ -210,7 +210,7 @@ class FreeWavePacket extends Group {
         const real = this._psi.re[index];
         const imag = this._psi.im[index];
 
-        this._values[index] = {real, imag};
+        this._values[index] = { real, imag };
         const direction = new Vector3(0, imag, real);
         const length = direction.length();
         direction.normalize();
@@ -231,8 +231,7 @@ class FreeWavePacket extends Group {
         this._buildBarrier();
     }
 
-    step(dt) {
-        // 1️⃣ halve potentiaal stap
+    _halfPotentialStep(dt) {
         for (let i = 0; i < this._N; i++) {
             const phase = -this._V[i] * dt / 2;
             const cos = Math.cos(phase);
@@ -244,12 +243,9 @@ class FreeWavePacket extends Group {
             this._psi.re[i] = re * cos - im * sin;
             this._psi.im[i] = re * sin + im * cos;
         }
+    }
 
-        // 2️⃣ naar k-ruimte
-        this._fft.transform(this._phi.re, this._phi.im,
-            this._psi.re, this._psi.im);
-
-        // 3️⃣ kinetische stap
+    _kineticStep(dt) {
         for (let i = 0; i < this._N; i++) {
             const phase = -this._omega[i] * dt;
             const cos = Math.cos(phase);
@@ -261,34 +257,22 @@ class FreeWavePacket extends Group {
             this._phi.re[i] = re * cos - im * sin;
             this._phi.im[i] = re * sin + im * cos;
         }
+    }
 
-        // 4️⃣ terug naar x-ruimte
-        this._fft.inverseTransform(this._psi.re, this._psi.im,
-            this._phi.re, this._phi.im);
-
-        // 5️⃣ tweede halve potentiaal stap
-        for (let i = 0; i < this._N; i++) {
-            const phase = -this._V[i] * dt / 2;
-            const cos = Math.cos(phase);
-            const sin = Math.sin(phase);
-
-            const re = this._psi.re[i];
-            const im = this._psi.im[i];
-
-            this._psi.re[i] = re * cos - im * sin;
-            this._psi.im[i] = re * sin + im * cos;
-        }
+    step(dt) {
+        this._halfPotentialStep(dt);
+        this._fft.transform(this._phi.re, this._phi.im, this._psi.re, this._psi.im);
+        this._kineticStep(dt);
+        this._fft.inverseTransform(this._psi.re, this._psi.im, this._phi.re, this._phi.im);
+        this._halfPotentialStep(dt);
 
         for (let i = 0; i < this._N; i++)
             this.#updateArrowAt(i);
 
         let pLeft = 0;
         let pRight = 0;
-
         for (let i = 0; i < this._N; i++) {
-
-            const prob = this._psi.re[i]**2 + this._psi.im[i]**2;
-
+            const prob = this._psi.re[i] ** 2 + this._psi.im[i] ** 2;
             if (this._arrows[i].position.x < 0)
                 pLeft += prob * this._dx;
             else
@@ -308,12 +292,7 @@ class FreeWavePacket extends Group {
 const barrierHalfWidth = 1;
 const V0 = 10;
 
-const geometry = new BoxGeometry(
-    2 * barrierHalfWidth,
-    V0,
-    0.5
-);
-
+const geometry = new BoxGeometry(2 * barrierHalfWidth, V0, 0.5);
 const material = new MeshBasicMaterial({
     color: 0x0000ff,
     transparent: true,
@@ -322,7 +301,6 @@ const material = new MeshBasicMaterial({
 
 const barrier = new Mesh(geometry, material);
 barrier.position.set(0, V0 / 2, 0);
-
 worldGroup.add(barrier);
 
 const wave = new FreeWavePacket({
@@ -339,7 +317,7 @@ const axesController = new AxesController({
 });
 
 const boundingBox = new Box3();
-boundingBox.setFromObject( worldGroup );
+boundingBox.setFromObject(worldGroup);
 axesController.createFromBoundingBox(boundingBox);
 
 const plot3D = new Plot3DView(scene, canvas, boundingBox);
@@ -356,7 +334,7 @@ function resetWave() {
 }
 
 const gui = new GUI({ width: "100%", autoPlace: false });
-document.getElementById("freePacketGui").appendChild(gui.domElement);
+document.getElementById("barrier3dGui").appendChild(gui.domElement);
 gui.add(params, "k0Factor", 0, 40, 1)
     .name("k₀ factor")
     .onChange(() => resetWave());
@@ -376,6 +354,7 @@ function resize() {
 }
 window.addEventListener("resize", resize);
 resize();
+
 window.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
