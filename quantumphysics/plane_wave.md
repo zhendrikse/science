@@ -31,7 +31,7 @@ This visualization helps build intuition for complex waves, phase propagation,
 and the role of $k$ and $\omega$.
 
 <div class="canvasWrapper" id="planeWaveContainer">
-    <canvas class="applicationCanvas" id="planeWaveCanvas"></canvas><br/>
+    <canvas class="applicationCanvas" id="planeWaveCanvas"></canvas>
 </div>
 <div class="guiContainer" id="gui-container"></div>
 <script type="module" src="plane_wave_3d.js"></script>

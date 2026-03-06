@@ -309,31 +309,32 @@ function animate(){
 }
 
 // --- Orbital switcher ---
-function switchOrbital(orb){
-    doingOrbital = orb;
+function switchOrbital(action){
+    doingOrbital = action.name;
     rIdx.value = aIdx.value = 0;
-    if(orb==='1s') init_1s_table();
-    if(orb==='2s') init_2s_table();
-    if(orb==='2p') init_2p_table();
-    if(orb==='2py') init_2py_table();
-    if(orb==='3s') init_3s_table();
-    if(orb==='3p') init_3p_table();
-    if(orb==='3d') init_3d_table();
-    if(orb==='sp') init_sp_table();
-    if(orb==='sp2') init_sp2_table();
-    if(orb==='sp3') init_sp3_table();
+    action.func();
     generatePoints();
     geometry.attributes.position.needsUpdate = true;
 }
 
 // --- Start ---
-switchOrbital('1s');
+switchOrbital({ 'name': '1s', 'func': init_1s_table });
 
 // --- Example buttons ---
-['1s', '2s', '2p', '2py', '3s', '3p', '3d', 'sp', 'sp2', 'sp3'].forEach(name=>{
-    const button = document.createElement('button');
+[
+    { 'name': '1s', 'func': init_1s_table },
+    { 'name': '2s', 'func': init_2s_table },
+    { 'name': '2p', 'func': init_2p_table },
+    { 'name': '2py', 'func': init_2py_table },
+    { 'name': '3s', 'func': init_3s_table },
+    { 'name': '3p', 'func': init_3p_table },
+    { 'name': '3d', 'func': init_3d_table },
+    { 'name': 'sp', 'func': init_sp_table },
+    { 'name': 'sp2', 'func': init_sp2_table },
+    { 'name': 'sp3', 'func': init_sp3_table }
+].forEach(action=> {
+    const button = document.getElementById(action.name);
     button.innerText = name;
-    button.onclick = ()=> switchOrbital(name);
-    document.body.appendChild(button);
+    button.onclick = ()=> switchOrbital(action);
     controls.update();
 });
