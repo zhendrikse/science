@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import {ThreeJsUtils} from "../js/three-js-extensions.js";
 
 const canvas = document.getElementById('atomCanvas');
 
@@ -9,8 +10,8 @@ const camera = new THREE.OrthographicCamera(-12.5, 12.5, 12.5, -12.5, 0.1, 100);
 camera.position.z = 10;
 
 const renderer = new THREE.WebGLRenderer({ canvas, alpha:true });
-renderer.setSize(canvas.width, canvas.height);
 renderer.setAnimationLoop( animate );
+ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 
 // --- OrbitControls voor pan/zoom ---
 const controls = new OrbitControls(camera, renderer.domElement);

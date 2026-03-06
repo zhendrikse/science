@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import {ThreeJsUtils} from "../js/three-js-extensions.js";
 
 const canvasContainer = document.getElementById("orbitalCanvasContainer");
 const canvas = document.getElementById("orbitalCanvas");
@@ -14,19 +15,18 @@ function init(){
     camera=new THREE.PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
     camera.position.z = 40;
 
-    renderer=new THREE.WebGLRenderer({ canvas: canvas, antialias:true });
+    renderer=new THREE.WebGLRenderer({ canvas: canvas, antialias:true, alpha: true });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     renderer.setAnimationLoop( animate );
+    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 
     controls=new OrbitControls(camera, renderer.domElement);
 
-    window.addEventListener("resize",resize);
+    window.addEventListener("resize", resize);
 }
 
 function resize(){
-    camera.aspect=window.innerWidth/window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth,window.innerHeight);
+    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 }
 
 function setOrbital(func){
