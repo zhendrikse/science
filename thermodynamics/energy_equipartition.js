@@ -1,6 +1,5 @@
-import { Group, Scene, Vector3, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight,
-    MeshStandardMaterial, Mesh, BoxGeometry, Color, EdgesGeometry, LineBasicMaterial, LineSegments
-}  from "three";
+import {
+    Group, Scene, Vector3, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight} from "three";
 import { CarbonMonoxide, Bond, Aquarium } from "../js/three-js-extensions.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
@@ -10,7 +9,7 @@ const MOLECULES_COUNT = 80;
 const one_third = 1. / 3.;
 const L = ((24.4E-3 / 6E23) * MOLECULES_COUNT) ** one_third / 50; // 2L is the length of the cubic container box
 
-console.clear( );
+console.clear();
 const scene = new Scene();
 const vector = Vector3;
 
@@ -19,25 +18,25 @@ canvas.focus();
 const canvasWidth = canvas.clientWidth;
 const canvasHeight = canvas.clientHeight;
 
-const camera = new PerspectiveCamera(60, canvasWidth/canvasHeight, 0.1, 1000);
+const camera = new PerspectiveCamera(60, canvasWidth / canvasHeight, 0.1, 1000);
 camera.position.set(4.25, 1.25, 7.25);
 camera.updateProjectionMatrix();
 
-const renderer = new WebGLRenderer( {antialias: true, canvas: canvas, alpha: true} );
-renderer.setSize( canvasWidth, canvasHeight );
-renderer.setAnimationLoop( animationLoop );
+const renderer = new WebGLRenderer({ antialias: true, canvas: canvas, alpha: true });
+renderer.setSize(canvasWidth, canvasHeight);
+renderer.setAnimationLoop(animationLoop);
 
-const controls = new OrbitControls( camera, canvas );
+const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
 const light = new DirectionalLight(0xffffff, 1);
 light.position.set(0, 4 * L * SCALE, 0);
 scene.add(light);
 scene.add(new AmbientLight(0xffffff, .5));
-new Aquarium(scene, {size: 2 * L * SCALE});
+new Aquarium(scene, { size: 2 * L * SCALE });
 
 class CarbonMonoxideGas extends Group {
-    constructor(moleculeCount=MOLECULES_COUNT, temperature=298, boxSize=L) {
+    constructor(moleculeCount = MOLECULES_COUNT, temperature = 298, boxSize = L) {
         super();
         this._molecules = [];
         this._boxSize = boxSize;
@@ -45,7 +44,7 @@ class CarbonMonoxideGas extends Group {
         const mass = 14E-3 / 6E23; // Average mass of Oxygen and Carbon
         const k = 1.38E-23; // Boltzmann constant
         for (let i = 0; i < moleculeCount; i++) {
-            const pos = new vector(Math.random() -.5, Math.random() -.5, Math.random() -.5).multiplyScalar(boxSize);
+            const pos = new vector(Math.random() - .5, Math.random() - .5, Math.random() - .5).multiplyScalar(boxSize);
             const molecule = new CarbonMonoxide(pos, Math.sqrt(3 * k * temperature / mass), SCALE);
             this._molecules.push(molecule);
             this.add(molecule);
@@ -93,13 +92,13 @@ const opts = {
         {
             stroke: "#ff0",
             font: "12px Arial",
-            grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1},
-            label: "Time [ps]", values: (u, values) => values.map(value=> value.toFixed(2))
+            grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
+            label: "Time [ps]", values: (u, values) => values.map(value => value.toFixed(2))
         },
         {
             stroke: "#ff0",
             font: "12px Arial",
-            grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1},
+            grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
             label: "KE [J]", values: (u, values) => values.map(value => value.toExponential(2))
         }
     ],
