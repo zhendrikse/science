@@ -83,11 +83,15 @@ function sample2p(){
 }
 
 function sample3d(){
-    const radius=-Math.log(Math.random())*5;
-    const theta=Math.acos(2 * Math.random() - 1);
-    const phi=2 * Math.PI * Math.random();
+    const radius = -Math.log(Math.random()) * 8;
+    const theta = Math.acos(2*Math.random()-1);
+    const phi = 2*Math.PI*Math.random();
 
-    const weight=(Math.sin(theta)**4) * (Math.cos(2 * phi)**2);
+    const weight =
+        Math.pow(radius,4) *
+        Math.exp(-2*radius/3) *
+        Math.sin(theta)**4 *
+        Math.cos(2*phi)**2;
 
     if(Math.random()>weight) return null;
 
