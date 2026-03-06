@@ -319,7 +319,7 @@ function switchOrbital(action){
 }
 
 // --- Start ---
-switchOrbital({ 'name': '1s', 'func': init_1s_table });
+switchOrbital({ 'name': '2py', 'func': init_2py_table });
 
 // --- Example buttons ---
 [
@@ -335,7 +335,6 @@ switchOrbital({ 'name': '1s', 'func': init_1s_table });
     { 'name': 'sp3', 'func': init_sp3_table }
 ].forEach(action=> {
     const button = document.getElementById(action.name);
-    button.innerText = name;
     button.onclick = ()=> switchOrbital(action);
     controls.update();
 });

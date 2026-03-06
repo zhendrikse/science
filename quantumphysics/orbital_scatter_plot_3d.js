@@ -1,13 +1,13 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import {ThreeJsUtils} from "../js/three-js-extensions.js";
+import {Axes, ThreeJsUtils} from "../js/three-js-extensions.js";
 
 const canvasContainer = document.getElementById("orbitalCanvasContainer");
 const canvas = document.getElementById("orbitalCanvas");
 let scene, camera, renderer, controls, cloud;
 
 init();
-setOrbital(sample1s);
+setOrbital(sample3d);
 animate();
 
 function init(){
@@ -64,11 +64,8 @@ function sample1s() {
     const theta=Math.acos(2*Math.random()-1);
     const phi=2*Math.PI*Math.random();
 
-    const x=r*Math.sin(theta)*Math.cos(phi);
-    const y=r*Math.sin(theta)*Math.sin(phi);
-    const z=r*Math.cos(theta);
-
-    return [x,y,z];
+    const xyz = Axes.toCartesian(radius, theta, phi);
+    return [xyz.x, xyz.y, xyz.z];
 }
 
 function sample2p(){
@@ -80,14 +77,10 @@ function sample2p(){
 
     const weight=Math.cos(theta)**2;
 
-    if(Math.random()>weight) return null;
+    if(Math.random() > weight) return null;
 
-    const x=r*Math.sin(theta)*Math.cos(phi);
-    const y=r*Math.sin(theta)*Math.sin(phi);
-    const z=r*Math.cos(theta);
-
-    return[x,y,z];
-
+    const xyz = Axes.toCartesian(radius, theta, phi);
+    return [xyz.x, xyz.y, xyz.z];
 }
 
 function sample3d(){
@@ -100,11 +93,8 @@ function sample3d(){
 
     if(Math.random()>weight) return null;
 
-    const x=r*Math.sin(theta)*Math.cos(phi);
-    const y=r*Math.sin(theta)*Math.sin(phi);
-    const z=r*Math.cos(theta);
-
-    return[x,y,z];
+    const xyz = Axes.toCartesian(radius, theta, phi);
+    return [xyz.x, xyz.y, xyz.z];
 }
 
 function animate(){
@@ -129,7 +119,6 @@ function animate(){
     { 'name': 'sp3_3d', 'func': sample1s }
 ].forEach(action=> {
     const button = document.getElementById(action.name);
-    button.innerText = name;
     button.onclick = ()=> setOrbital(action.func);
     controls.update();
 });
