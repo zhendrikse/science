@@ -3,12 +3,12 @@
 # Atomic orbital scatter plots
 <div class="header_line"><br/></div>
 
-- 2s orbital: $\psi_{2s} \propto (2-r)e^{-r/2} \Rightarrow |\psi|^2 \propto (2-r)^2 e^{-r}$
-- 2p orbital: $\psi_{2p} \propto r e^{-r/2} \cos\theta \Rightarrow |\psi|^2 \propto r^2 e^{-r} \cos^2\theta$
-- 2py orbital: $|\psi|^2 \propto r^2 e^{-r} \sin^2\theta \sin^2\phi$
+- 2s orbital: $\psi_{2s} \propto (2-r)e^{-r/2} \Rightarrow \|\psi\|^2 \propto (2-r)^2 e^{-r}$
+- 2p orbital: $\psi_{2p} \propto r e^{-r/2} \cos\theta \Rightarrow \|\psi\|^2 \propto r^2 e^{-r} \cos^2\theta$
+- 2py orbital: $\|\psi\|^2 \propto r^2 e^{-r} \sin^2\theta \sin^2\phi$
 - 3s orbital: $\psi_{3s} \propto (27 - 18r + 2r^2)e^{-r/3}$
 - 3p orbital: $\psi_{3p} \propto r(6-r)e^{-r/3}\cos\theta$
-- 3d orbital: $|\psi|^2 \propto r^4 e^{-2r/3} \sin^4\theta \cos^2(2\phi)$
+- 3d orbital: $\|\psi\|^2 \propto r^4 e^{-2r/3} \sin^4\theta \cos^2(2\phi)$
 
 
 ## Two-dimensional orbitals
