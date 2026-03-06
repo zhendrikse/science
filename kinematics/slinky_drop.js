@@ -29,7 +29,7 @@ window.addEventListener("click", () => {
 });
 
 const light = new DirectionalLight(0xffffff, 2);
-light.position.set(-5, 0, 15);
+light.position.set(-5, 10, 15);
 scene.add(light);
 scene.add(new AmbientLight(0x404040, 0.7));
 
