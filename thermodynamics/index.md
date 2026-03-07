@@ -69,4 +69,23 @@
 </div>
 <p style="clear: both;"></p>
 
+
+### 3D Brownian motion &amp; gas of CO molecules
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="laval_nozzle.html">
+    <img alt="Laval nozzle" src="images/laval_nozzle.png" title="Click to animate"/>
+  </a>
+  <figcaption>2D visualization of a 
+    <a href="https://en.wikipedia.org/wiki/De_Laval_nozzle">de Laval nozzle</a>.
+  </figcaption>
+</figure>
+<figure class="right_image">
+    <!-- RESERVED FOR FUTURE APPLICATION
+      -->
+</figure>
+</div>
+<p style="clear: both;"></p>
 {% include share_buttons.html %}

@@ -1,0 +1,224 @@
+import { Group, Color, Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight,
+    AmbientLight, Mesh, MeshPhongMaterial, CylinderGeometry
+ } from "three";
+import { ThreeJsUtils } from '../js/three-js-extensions.js';
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+const canvas = document.getElementById("iswWaveCanvas");
+const scene = new Scene();
+scene.background = new Color(0xffffff);
+
+const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientWidthHeight, 0.1, 1000);
+camera.position.set(10, 15, 10);
+camera.lookAt(0, 0, 0);
+
+const renderer = new WebGLRenderer({ alpha: true, antialias: true, canvas: canvas });
+ThreeJsUtils.resizeRendererToCanvas(renderer, canvas);
+renderer.setAnimationLoop(animate);
+const controls = new OrbitControls(camera, renderer.domElement);
+
+scene.add(new DirectionalLight(0xffffff, 1));
+scene.add(new AmbientLight(0x404040));
+
+/* physics parameters */
+const hbar = 1;
+const m = 1;
+
+const NX = [1, 2, 3, 5, 6, 7, 9, 10];
+const NY = [1, 2, 3, 5, 6, 7, 9, 10];
+
+class Complex {
+    constructor(re, im) {
+        this.re = re;
+        this.im = im;
+    }
+
+    static multiplyScalar = (a, scalar) => new Complex(a.re * scalar, a.im * scalar);
+    static exp = (theta) => new Complex(Math.cos(theta), Math.sin(theta));
+    static abs = (z) => Math.sqrt(z.re * z.re + z.im * z.im);
+    static add = (a, b) => new Complex(a.re + b.re, a.im + b.im);
+    static multiply = (a, b) => new Complex(
+        a.re * b.re - a.im * b.im,
+        a.re * b.im + a.im * b.re
+    );
+}
+
+class Lattice extends Group {
+    constructor(size = 20, spacing = 10, cylinderScale = 20) {
+        super();
+        this._x = [], this._y = [];
+        this._spacing = spacing;
+        this._size = size;
+        this._cylinderScale = cylinderScale;
+
+        for (let i = 0; i < size; i++) {
+            this._x[i] = [];
+            this._y[i] = [];
+
+            for (let j = 0; j < size; j++) {
+                this._x[i][j] = spacing * i / (size - 1);
+                this._y[i][j] = spacing * j / (size - 1);
+            }
+        }
+
+        this._cylinders = this._createCylinders(size, spacing);
+    }
+
+    get spacing() { return this._spacing; }
+    get size() { return this._size; }
+
+    updateCylinder(psi, i, j) {
+        const complexNumber = Complex.multiplyScalar(new Complex(psi.re, psi.im), this._cylinderScale);
+        const mesh = this._cylinders[i][j];
+        const height = complexNumber.re;
+        const mag = Complex.abs(complexNumber);
+        const radius = Math.max(0.05 * mag, Math.abs(complexNumber.im) / 6);
+        const phase = Math.atan2(complexNumber.im, complexNumber.re) / (2 * Math.PI);
+
+        mesh.scale.set(radius, Math.abs(height), radius);
+        mesh.position.y = height / 2;
+        mesh.material.color.setHSL(phase, 1, 0.5);
+    }
+
+    _createCylinders(size, spacing) {
+        const cylinders = [];
+        const geometry = new CylinderGeometry(1, 1, 1, 12);
+
+        for (let i = 0; i < size; i++) {
+            cylinders[i] = [];
+            for (let j = 0; j < size; j++) {
+                const mesh = this._createCylinder(i, j, spacing, geometry);
+                this.add(mesh);
+                cylinders[i][j] = mesh;
+            }
+        }
+
+        return cylinders;
+    }
+
+    _createCylinder(i, j, spacing, geometry) {
+        const material = new MeshPhongMaterial({ color: 0xff0000 });
+        const mesh = new Mesh(geometry, material);
+
+        mesh.position.set(
+            this._x[i][j] - spacing / 2,
+            0,
+            this._y[i][j] - spacing / 2,
+        );
+        return mesh;
+    }
+}
+
+class EigenStates {
+    constructor(lattice) {
+        this._eigenstates = {};
+        this._coefs = {}
+        this._omegas = {}
+
+        const size = lattice.size;
+        const NA2 = Math.floor(size / 2);
+        this._computeEigenstates(size);
+        this._computeCoefficients(this._computePsi0(size, NA2), NA2, lattice.spacing);
+    }
+
+    _computePsi0(size, NA2) {
+        const psi0 = [];
+        let norm0 = 0;
+
+        for (let i = 0; i < size; i++) {
+            psi0[i] = []
+
+            for (let j = 0; j < size; j++) {
+                const val = (i < NA2 && j < NA2) ? 1 : 0;
+                psi0[i][j] = val;
+                norm0 += val * val;
+            }
+        }
+
+        norm0 = Math.sqrt(norm0)
+        for (let i = 0; i < size; i++)
+            for (let j = 0; j < size; j++)
+                psi0[i][j] /= norm0;
+
+        return psi0;
+    }
+
+    _computeCoefficients(psi0, NA2, spacing) {
+        const omega0 = hbar * Math.PI * Math.PI / (2 * m * spacing * spacing);
+        for (let key in this._eigenstates) {
+            const [nx, ny] = key.split(",").map(Number)
+            const basis = this._eigenstates[key]
+
+            let c = 0
+            for (let i = 0; i < NA2; i++)
+                for (let j = 0; j < NA2; j++)
+                    c += psi0[i][j] * basis[i][j];
+
+            this._coefs[key] = c;
+            this._omegas[key] = omega0 * (nx * nx + ny * ny);
+        }
+    }
+
+    _computeEigenstates(size) {
+        for (let nx of NX) {
+            for (let ny of NY) {
+                const psi = [];
+                let norm = 0;
+
+                for (let i = 0; i < size; i++) {
+                    psi[i] = [];
+
+                    for (let j = 0; j < size; j++) {
+                        let val =
+                            Math.sin(nx * Math.PI * lattice._x[i][j] / lattice.spacing) *
+                            Math.sin(ny * Math.PI * lattice._y[i][j] / lattice.spacing)
+
+                        psi[i][j] = val
+                        norm += val * val
+                    }
+                }
+
+                norm = Math.sqrt(norm);
+                for (let i = 0; i < size; i++)
+                    for (let j = 0; j < size; j++)
+                        psi[i][j] /= norm;
+
+                this._eigenstates[nx + "," + ny] = psi
+            }
+        }
+    }
+}
+
+
+const lattice = new Lattice();
+scene.add(lattice);
+const eigenstates = new EigenStates(lattice);
+
+let running = false
+document.getElementById("btn").onclick = () => running = !running
+
+let t = 0;
+const size = lattice.size;
+
+function step(t) {
+    let psi = new Complex(0, 0);
+    for (let key in eigenstates._eigenstates) {
+        const basis = eigenstates._eigenstates[key][i][j]
+        const phase = Complex.exp(eigenstates._omegas[key] * t)
+        const term = Complex.multiply(new Complex(eigenstates._coefs[key] * basis, 0), phase)
+        psi = Complex.add(psi, term)
+    }
+
+    lattice.updateCylinder(psi, i, j);
+}
+
+function animate() {
+    renderer.render(scene, camera);
+    controls.update();
+    if (!running) return;
+
+    t += 0.03
+    for (let i = 0; i < lattice.size; i++)
+        for (let j = 0; j < size; j++)
+            step(t);
+}
