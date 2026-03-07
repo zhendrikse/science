@@ -204,7 +204,7 @@ window.addEventListener("click", () => {
 let t = 0;
 const size = lattice.size;
 
-function step(t) {
+function step(i, j, t) {
     let psi = new Complex(0, 0);
     for (let key in eigenstates._eigenstates) {
         const basis = eigenstates._eigenstates[key][i][j]
@@ -224,7 +224,7 @@ function animate() {
     t += 0.03
     for (let i = 0; i < lattice.size; i++)
         for (let j = 0; j < size; j++)
-            step(t);
+            step(i, j, t);
 }
 
 // Init screen
