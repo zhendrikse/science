@@ -7,25 +7,28 @@
 > If you think you understand quantum mechanics, you don't understand quantum mechanics.
 &mdash; [Richard P. Feynman](https://en.wikipedia.org/wiki/Richard_Feynman)
 
-###  Plane waves &amp; the particle in a box
+
+### [Young&apos;s interference experiment](https://en.wikipedia.org/wiki/Double-slit_experiment)
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
+  <a href="double_slit.html">
+    <img alt="Dynamic double slit" src="images/double_slit.png" title="Click to animate"/>
+  </a>
+  <figcaption>The double slit experiment, stressing the <em>wave-particle duality</em>. 
+  The interference pattern is generated statically.</figcaption>
+</figure> 
+<figure class="right_image">
   <a href="plane_wave.html">
     <img alt="Complex wave" src="images/plane_wave.png" title="Click to animate"/>
   </a>
   <figcaption>Visualizing plane waves, which 
   play a pivotal role in quantum mechanics!</figcaption>
 </figure>
-<figure class="right_image">
-  <a href="infinite_square_well.html">
-    <img alt="Particle in a box" src="images/infinite_square_well.png" title="Click to animate"/>
-  </a>
-  <figcaption>One-dimensional quantum particle bound by an infinite square well.</figcaption>
-</figure>
 </div>
 <p style="clear: both;"></p>
+
 
 <details>
   <summary><a>&dArr; For a plane wave, we can easily derive the Schr&#246;dinger equation &uArr;</a></summary>
@@ -61,6 +64,26 @@ i\hbar\dfrac{\partial}{\partial t}\Psi(\vec{r}, t) = \left(-\frac{\hbar^2}{2m}\n
 \end{equation}$$
 
 </details>
+
+###  The particle in a box
+<div style="border-top: 1px solid #999999"><br/></div>
+
+<div class="double_image">
+<figure class="left_image">
+  <a href="infinite_square_well.html">
+    <img alt="Particle in a box" src="images/infinite_square_well.png" title="Click to animate"/>
+  </a>
+  <figcaption>One-dimensional quantum particle bound by an infinite square well.</figcaption>
+</figure>
+<figure class="right_image">
+  <a href="2d_infinite_square_well_3d.html">
+    <img alt="Particle in a box" src="images/2d_infinite_square_well.png" title="Click to animate"/>
+  </a>
+  <figcaption>Two-dimensional quantum particle bound by an infinite square well.</figcaption>
+</figure>
+</div>
+<p style="clear: both;"></p>
+
 
 <details>
 <summary><a>&dArr; Background: particle in a box, i.e. confined by a infinite square well &uArr;</a></summary>
@@ -114,22 +137,21 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 </div>
 <p style="clear: both;"></p>
 
-### [Young&apos;s interference experiment](https://en.wikipedia.org/wiki/Double-slit_experiment)
+### Quantum barrier scattering
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="orbital_scatter_plot.html">
-    <img alt="Hydrogen orbitals" src="images/orbital_scatter_plot.png" title="Click to animate"/>
+  <a href="quantum_barrier.html">
+    <img alt="Quantum barrier scattering" src="images/quantum_barrier_scattering.png" title="Click to animate"/>
   </a>
-  <figcaption>Visualization of the orbitals of a hydrogen atom.</figcaption>
+  <figcaption>Visualization of the scattering of a one-dimensional wave function.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="double_slit.html">
-    <img alt="Dynamic double slit" src="images/double_slit.png" title="Click to animate"/>
+  <a href="orbitals.html">
+    <img alt="Hydrogen orbitals" src="images/orbitals.png" title="Click to animate"/>
   </a>
-  <figcaption>The double slit experiment, stressing the <em>wave-particle duality</em>. 
-  The interference pattern is generated statically.</figcaption>
+  <figcaption>Visualization of the orbitals of a hydrogen atom.</figcaption>
 </figure> 
 </div>
 <p style="clear: both;"></p>

@@ -11,7 +11,7 @@
 - 3d orbital: $\|\psi\|^2 \propto r^4 e^{-2r/3} \sin^4\theta \cos^2(2\phi)$
 
 
-## Two-dimensional orbitals
+## 2D scatter plots
 <div class="header_line"><br/></div>
 
 <div class="buttonRow">
@@ -35,7 +35,7 @@
 <p style="clear: both;"></p>
 
 
-## Three-dimensional orbitals
+## 3D scatter plots
 <div class="header_line"><br/></div>
 
 The 3D-version uses **Monte-Carlo sampling + rejection sampling** based on the probability density $|\psi|^2$,
