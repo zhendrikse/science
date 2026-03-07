@@ -12,6 +12,7 @@ let running = false;
 
 const axesParams = new AxesParameters({
     layoutType: 0,
+    frame: false,
     xyPlane: false,
     xzPlane: true,
     yzPlane: false,
@@ -125,15 +126,14 @@ class FreeWavePacket extends Group {
         // → P_left ≈ 1
         // → P_right ≈ 0
         //
-        // Tijdens botsing
-        // → beide variëren
+        // During collision with the barrier → both vary
         //
         // Na lange tijd
-        // → P_left → reflectiecoëfficiënt R
-        // → P_right → transmissiecoëfficiënt T
+        // → P_left → reflection coefficient R
+        // → P_right → transmission coefficient T
         // → R + T ≈ 1
         //
-        // Als dat niet ≈ 1 blijft, dan is je dt te groot.
+        // If it doensn't stay around ≈ 1, dt is too big.
         this._pLeft = 0;
         this._pRight = 0;
 
@@ -292,15 +292,15 @@ class FreeWavePacket extends Group {
 const barrierHalfWidth = 1;
 const V0 = 10;
 
-const geometry = new BoxGeometry(2 * barrierHalfWidth, V0, 0.5);
+const geometry = new BoxGeometry(2 * barrierHalfWidth, V0, 5);
 const material = new MeshBasicMaterial({
     color: 0x0000ff,
     transparent: true,
-    opacity: 0.3
+    opacity: 0.5
 });
 
 const barrier = new Mesh(geometry, material);
-barrier.position.set(0, V0 / 2, 0);
+barrier.position.set(0, 0, 0);
 worldGroup.add(barrier);
 
 const wave = new FreeWavePacket({
@@ -322,7 +322,7 @@ axesController.createFromBoundingBox(boundingBox);
 
 const plot3D = new Plot3DView(scene, canvas, boundingBox);
 plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, 0.3), {
-    viewDirection: new Vector3(.25, 1, 1),
+    viewDirection: new Vector3(.25, 0.5, 1),
     padding: 0.9
 });
 

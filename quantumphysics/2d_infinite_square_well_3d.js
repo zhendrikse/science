@@ -15,7 +15,7 @@ camera.lookAt(0, 0, 0);
 const renderer = new WebGLRenderer({ alpha: true, antialias: true, canvas: canvas });
 ThreeJsUtils.resizeRendererToCanvas(renderer, canvas);
 renderer.setAnimationLoop(animate);
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, canvas);
 
 scene.add(new DirectionalLight(0xffffff, 1));
 scene.add(new AmbientLight(0x404040));

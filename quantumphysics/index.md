@@ -119,8 +119,10 @@ These energy eigenstates (and superpositions thereof) are used in the visualizat
 
 <div class="double_image">
 <figure class="left_image">
-  <!-- RESERVED FOR FUTURE APPLICATION 
-    -->
+  <a href="orbital_scatter_plot.html">
+    <img alt="Hydrogen orbitals" src="images/orbital_scatter_plot.png" title="Click to animate"/>
+  </a>
+  <figcaption>Visualization of the orbitals of a hydrogen atom.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="double_slit.html">

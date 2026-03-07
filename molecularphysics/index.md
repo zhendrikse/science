@@ -59,13 +59,13 @@
 <div class="double_image">
 <figure class="left_image">
   <a href="carbon_dioxide.html">
-    <img alt="Carbon atom" src="images/carbon_dioxide.png" title="Click to animate"/>
+    <img alt="Carbon dioxide vibrations" src="images/carbon_dioxide.png" title="Click to animate"/>
   </a>
   <figcaption>Carbon dioxide molecule, showing the two main resonances in response to an alternating electric field.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="water.html">
-    <img alt="Water molecule" src="images/water.png" title="Click to animate"/>
+    <img alt="Water molecule vibrations" src="images/water.png" title="Click to animate"/>
   </a>
   <figcaption>Water molecule, showing its response to an alternating electric field.</figcaption>
 </figure>
@@ -84,8 +84,8 @@
   <figcaption>Lattice vibrations in a cubic lattice.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="orbitals.html">
-    <img alt="Hydrogen orbitals" src="images/orbitals.png" title="Click to animate"/>
+  <a href="orbital_scatter_plot.html">
+    <img alt="Hydrogen orbitals" src="images/orbital_scatter_plot.png" title="Click to animate"/>
   </a>
   <figcaption>Visualization of the orbitals of a hydrogen atom.</figcaption>
 </figure>
