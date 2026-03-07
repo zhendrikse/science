@@ -5,8 +5,8 @@ import { ThreeJsUtils } from '../js/three-js-extensions.js';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const canvas = document.getElementById("iswWaveCanvas");
+const overlay = document.getElementById("isw3dOverlayText");
 const scene = new Scene();
-scene.background = new Color(0xffffff);
 
 const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
 camera.position.set(10, 15, 10);
@@ -189,13 +189,17 @@ class EigenStates {
     }
 }
 
-
 const lattice = new Lattice();
 scene.add(lattice);
 const eigenstates = new EigenStates(lattice);
 
 let running = false
-document.getElementById("btn").onclick = () => running = !running
+window.addEventListener("click", () => {
+    if (!running) {
+        ThreeJsUtils.showOverlayMessage(overlay, "Started");
+        running = true;
+    }
+});
 
 let t = 0;
 const size = lattice.size;
@@ -222,3 +226,7 @@ function animate() {
         for (let j = 0; j < size; j++)
             step(t);
 }
+
+// Init screen
+step(0);
+renderer.render(scene, camera);

@@ -15,8 +15,11 @@
 
 <div class="canvasWrapper" id="iswWaveContainer">
     <canvas class="applicationCanvas" id="iswWaveCanvas"></canvas>
+    <div class="overlayText" id="isw3dOverlayText">Click to start the animation!</div>
 </div>
 <script type="module" src="2d_infinite_square_well_3d.js"></script>
+
+<p style="clear: both;"></p>
 
 > A 2D Infinite Square Well (ISW) is a potential well that has zero potential energy over
 > a finite domain in two directions, say the $x$- and $y$-directions, and is infinite outside that
