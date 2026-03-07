@@ -8,12 +8,12 @@ const canvas = document.getElementById("iswWaveCanvas");
 const scene = new Scene();
 scene.background = new Color(0xffffff);
 
-const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientWidthHeight, 0.1, 1000);
+const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
 camera.position.set(10, 15, 10);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({ alpha: true, antialias: true, canvas: canvas });
-ThreeJsUtils.resizeRendererToCanvas(renderer, canvas);
+ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 renderer.setAnimationLoop(animate);
 const controls = new OrbitControls(camera, canvas);
 
