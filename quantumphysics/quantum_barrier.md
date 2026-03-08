@@ -18,6 +18,45 @@
 ## Additional two-dimensional simulation
 <div class="header_line"><br/></div>
 
+🔧 This [quantum_barrier_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/quantum_barrier_2d.js) is 100% JavaScript<br/>
+⭐ Based on [BarrierScattering.html](https://physics.weber.edu/schroeder/software/BarrierScattering.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
+🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
+⭐ More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
+
+<div id="barrierWrapper2D" style="width: 100%; aspect-ratio: 19/12">
+    <canvas id="barrierCanvas2D" style="width: 100%; aspect-ratio: 19/12"></canvas>
+</div>
+<div class="buttonRow">
+		<button id="pauseButton">Run</button>
+		<label for="speedSlider">Speed:</label>
+		<input type="range" id="speedSlider" min="1" max="100" step="1" value="20"/>
+		<input type="radio" name="plotType" id="realImag"/><label for="realImag">Real/imag</label>
+		<input type="radio" name="plotType" checked/><label for="densityPhase">Density/phase</label>
+		<input type="checkbox" id="gridCheck" /><label for="gridCheck">Grid</label>
+</div>
+<div class="buttonRow">
+		<button id="resetButton">Reset</button>
+		<label for="wpEnergySlider">Wavepacket energy = <span id="wpEnergyReadout">0.030 &plusmn; 0.005</span></label>
+		<input type="range" id="wpEnergySlider" min="0" max="0.100" step="0.001" value="0.030"/>
+</div>
+<div class="buttonRow">
+		<label for="barrierEnergySlider">Barrier energy = 
+		<span id="barrierEnergyReadout">0.030</span>
+		<input type="range" id="barrierEnergySlider" min="-0.1" max="0.1" step="0.001" value="0.040"/>
+</div>
+<div class="buttonRow">
+		<label for="barrierWidthSlider">Barrier width = 
+		<span id="widthOrStep">Width =</span></label>
+		<span id="barrierWidthReadout">20</span>
+		<input type="range" id="barrierWidthSlider" min="0" max="51" step="1" value="10"/>
+</div>
+<div class="buttonRow">
+		<label for="barrierRampSlider">Ramp:	
+		<span id="barrierRampReadout">0</span></label>
+		<input type="range" id="barrierRampSlider" min="0" max="50" step="1" value="0"/>
+</div>
+<script type="module" src="quantum_barrier_2d.js"></script>
+<p style="clear: both;"></p>
 
 
 > This simulation shows a quantum mechanical wavepacket hitting a barrier. 

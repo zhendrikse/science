@@ -1,6 +1,7 @@
-import { Group, Color, Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight,
+import {
+    Group, Color, Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight,
     AmbientLight, Mesh, MeshPhongMaterial, CylinderGeometry
- } from "three";
+} from "three";
 import { ThreeJsUtils } from '../js/three-js-extensions.js';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
@@ -159,33 +160,34 @@ class EigenStates {
         }
     }
 
-    _computeEigenstates(size) {
-        for (let nx of NX) {
-            for (let ny of NY) {
-                const psi = [];
-                let norm = 0;
+    _computeEigenstate(nx, ny, lattice, size) {
+        const psi = [];
+        let norm = 0;
+        for (let i = 0; i < size; i++) {
+            psi[i] = [];
 
-                for (let i = 0; i < size; i++) {
-                    psi[i] = [];
+            for (let j = 0; j < size; j++) {
+                const val =
+                    Math.sin(nx * Math.PI * lattice._x[i][j] / lattice.spacing) *
+                    Math.sin(ny * Math.PI * lattice._y[i][j] / lattice.spacing)
 
-                    for (let j = 0; j < size; j++) {
-                        let val =
-                            Math.sin(nx * Math.PI * lattice._x[i][j] / lattice.spacing) *
-                            Math.sin(ny * Math.PI * lattice._y[i][j] / lattice.spacing)
-
-                        psi[i][j] = val
-                        norm += val * val
-                    }
-                }
-
-                norm = Math.sqrt(norm);
-                for (let i = 0; i < size; i++)
-                    for (let j = 0; j < size; j++)
-                        psi[i][j] /= norm;
-
-                this._eigenstates[nx + "," + ny] = psi
+                psi[i][j] = val
+                norm += val * val
             }
         }
+
+        norm = Math.sqrt(norm);
+        for (let i = 0; i < size; i++)
+            for (let j = 0; j < size; j++)
+                psi[i][j] /= norm;
+
+        return psi;
+    }
+
+    _computeEigenstates(size) {
+        for (let nx of NX) 
+            for (let ny of NY) 
+                this._eigenstates[nx + "," + ny] = this._computeEigenstate(nx, ny, lattice, size);
     }
 }
 
