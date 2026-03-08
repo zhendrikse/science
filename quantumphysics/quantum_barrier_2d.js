@@ -1,23 +1,23 @@
 import { toColorString } from "./2d-quantum-extensions.js";
 
 // DOM elements:
-var theCanvas = document.getElementById("barrierCanvas2D");
-var theContext = theCanvas.getContext("2d");
-var leftPercent = document.getElementById("leftPercent");
-var rightPercent = document.getElementById("rightPercent");
-var pauseButton = document.getElementById("pauseButton");
-var speedSlider = document.getElementById("speedSlider");
-var realImag = document.getElementById("realImag");
-var gridCheck = document.getElementById("gridCheck");
-var wpEnergySlider = document.getElementById("wpEnergySlider");
-var wpEnergyReadout = document.getElementById("wpEnergyReadout");
-var barrierEnergySlider = document.getElementById("barrierEnergySlider");
-var barrierEnergyReadout = document.getElementById("barrierEnergyReadout");
-var barrierWidthSlider = document.getElementById("barrierWidthSlider");
-var barrierWidthReadout = document.getElementById("barrierWidthReadout");
-var widthOrStep = document.getElementById("widthOrStep");
-var barrierRampSlider = document.getElementById("barrierRampSlider");
-var barrierRampReadout = document.getElementById("barrierRampReadout");
+const theCanvas = document.getElementById("barrierCanvas2D");
+const theContext = theCanvas.getContext("2d");
+const leftPercent = document.getElementById("leftPercent");
+const rightPercent = document.getElementById("rightPercent");
+const pauseButton = document.getElementById("pauseButton");
+const speedSlider = document.getElementById("speedSlider");
+const realImag = document.getElementById("realImag");
+const gridCheck = document.getElementById("gridCheck");
+const wpEnergySlider = document.getElementById("wpEnergySlider");
+const wpEnergyReadout = document.getElementById("wpEnergyReadout");
+const barrierEnergySlider = document.getElementById("barrierEnergySlider");
+const barrierEnergyReadout = document.getElementById("barrierEnergyReadout");
+const barrierWidthSlider = document.getElementById("barrierWidthSlider");
+const barrierWidthReadout = document.getElementById("barrierWidthReadout");
+const widthOrStep = document.getElementById("widthOrStep");
+const barrierRampSlider = document.getElementById("barrierRampSlider");
+const barrierRampReadout = document.getElementById("barrierRampReadout");
 //var debug = document.getElementById("debug");
 
 gridCheck.addEventListener("change", paintCanvas);
@@ -39,20 +39,20 @@ psiNext.re[0] = psiNext.re[xMax] = psiNext.im[0] = psiNext.im[xMax] = 0.0;
 var v = new Array(xMax+1);
 var nColors = 360;
 var phaseColor = new Array(nColors+1);
-for (var c=0; c<=nColors; c++) {
+for (let c=0; c<=nColors; c++) {
 	phaseColor[c] = toColorString(c/nColors);		// initialize array of colors
 }
 var nBarrierShades = 100;
 var plusBarrierShade = new Array(nBarrierShades+1);
 var minusBarrierShade = new Array(nBarrierShades+1);
-for (var c=0; c<=nBarrierShades; c++) {
+for (let c=0; c<=nBarrierShades; c++) {
 	plusBarrierShade[c] = "hsl(0,0%," + Math.round(12 + 40*c/nBarrierShades) + "%)";
 	minusBarrierShade[c] = "hsl(240,15%," + Math.round(14 + 40*c/nBarrierShades) + "%)";
 }
-var bEmax = Number(barrierEnergySlider.max);
-var bEmin = Number(barrierEnergySlider.min);
-var dt = 0.45;		// anything less than 0.50 seems to be stable
-var running = false;
+let bEmax = Number(barrierEnergySlider.max);
+let bEmin = Number(barrierEnergySlider.min);
+const dt = 0.45;		// anything less than 0.50 seems to be stable
+let running = false;
 barrierAdjust();
 reset();
 

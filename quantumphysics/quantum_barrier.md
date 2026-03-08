@@ -24,14 +24,16 @@
 ⭐ More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
 
 <div id="barrierWrapper2D" style="width: 100%; aspect-ratio: 19/12">
-    <canvas id="barrierCanvas2D" style="width: 100%; aspect-ratio: 19/12"></canvas>
+  <div id="leftPercent" style="position:absolute; bottom:0; z-index:2; color:#b8b8b8; margin:5px; font-family:monospace">100.0%</div>
+  <div id="rightPercent" style="position:absolute; bottom:0; right:0; z-index:2; color:#b8b8b8; margin:5px; font-family:monospace;">0.0%</div>
+  <canvas id="barrierCanvas2D" style="width: 100%; aspect-ratio: 19/12"></canvas>
 </div>
 <div class="buttonRow">
 		<button id="pauseButton">Run</button>
 		<label for="speedSlider">Speed:</label>
 		<input type="range" id="speedSlider" min="1" max="100" step="1" value="20"/>
 		<input type="radio" name="plotType" id="realImag"/><label for="realImag">Real/imag</label>
-		<input type="radio" name="plotType" checked/><label for="densityPhase">Density/phase</label>
+		<input type="radio" name="plotType" id="densityPhase" checked/><label for="densityPhase">Density/phase</label>
 		<input type="checkbox" id="gridCheck" /><label for="gridCheck">Grid</label>
 </div>
 <div class="buttonRow">
@@ -41,7 +43,7 @@
 </div>
 <div class="buttonRow">
 		<label for="barrierEnergySlider">Barrier energy = 
-		<span id="barrierEnergyReadout">0.030</span>
+		<span id="barrierEnergyReadout">0.030</span></label>
 		<input type="range" id="barrierEnergySlider" min="-0.1" max="0.1" step="0.001" value="0.040"/>
 </div>
 <div class="buttonRow">
@@ -58,9 +60,8 @@
 <script type="module" src="quantum_barrier_2d.js"></script>
 <p style="clear: both;"></p>
 
-
 > This simulation shows a quantum mechanical wavepacket hitting a barrier. 
-> You can adjust the wavepacket’s nominal energy, the barrier energy, the barrier width, 
+> You can adjust the wave packet’s nominal energy, the barrier energy, the barrier width, 
 > and the width of a “ramp” on either side of the barrier, to see how these affect the amount 
 > of the wavepacket that gets through (i.e., the tunneling probability). 
 > Drag the width slider all the way to the right to make a step instead of a barrier.
