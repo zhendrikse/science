@@ -1,3 +1,19 @@
+export class Complex {
+    constructor(re, im) {
+        this.re = re;
+        this.im = im;
+    }
+
+    static multiplyScalar = (a, scalar) => new Complex(a.re * scalar, a.im * scalar);
+    static exp = (theta) => new Complex(Math.cos(theta), Math.sin(theta));
+    static abs = (z) => Math.sqrt(z.re * z.re + z.im * z.im);
+    static add = (a, b) => new Complex(a.re + b.re, a.im + b.im);
+    static multiply = (a, b) => new Complex(
+        a.re * b.re - a.im * b.im,
+        a.re * b.im + a.im * b.re
+    );
+}
+
 /** Utility function to convert a number to a two-digit hex string (from stackoverflow): */
 function numberToTwoDigitHexString(numberToConvert) {
     const hex = numberToConvert.toString(16); // 16 is necessary for conversion to hex string!
@@ -34,7 +50,75 @@ export function toColorString(hue) {
     return "#" + numberToTwoDigitHexString(r) + numberToTwoDigitHexString(g) + numberToTwoDigitHexString(b);
 }
 
-export class Display {
+export class WavePacket {
+    constructor(iMax, packetWidth=49) {
+        this._iMax = iMax;
+        this._packetWidth = packetWidth;
+        this._psi = { re: new Float32Array(iMax + 1), im: new Float32Array(iMax + 1) };
+        this._psiLast = { re: new Float32Array(iMax + 1), im: new Float32Array(iMax + 1) };
+        this._psiNext = {re: new Float32Array(iMax + 1), im: new Float32Array(iMax + 1) };
+    }
+
+    get im() { return this._psi.im; }
+    get re() { return this._psi.re; }
+
+    clear() {
+        for (let i = 0; i <= this._iMax; i++) {
+            this._psi.re[i] = 0;
+            this._psi.im[i] = 0;
+            this._psiLast.re[i] = 0;
+            this._psiLast.im[i] = 0;
+        }
+    }
+
+    reset(packetEnergy, dt, potential=null) {
+        for (let x = 0; x <= this._iMax; x++) {
+            const v_x  = potential ? potential[x] : 0;
+            const center = 150;
+            const k = Math.sqrt(2 * packetEnergy);
+            for (let x = 0; x <= this._iMax; x++) {
+                const envelope = Math.exp(-(x - center) * (x - center) / (this._packetWidth * this._packetWidth));
+                this._psi.re[x] = envelope * Math.cos(k * x);	// set current wavefunction values
+                this._psi.im[x] = envelope * Math.sin(k * x);
+            }
+            for (let x = 1; x < this._iMax; x++) {	// integrate backwards to get past wavefunction values
+                this._psiLast.re[x] = this._psi.re[x] - 0.5 * dt * (-this._psi.im[x + 1] - this._psi.im[x - 1] + 2 * (1 + v_x) * this._psi.im[x]);
+                this._psiLast.im[x] = this._psi.im[x] + 0.5 * dt * (-this._psi.re[x + 1] - this._psi.re[x - 1] + 2 * (1 + v_x) * this._psi.re[x]);
+            }
+        }
+    }
+
+    addPacket(psiTemp, dt) {
+        for (let x=0; x <= this._iMax; x++) {
+            this._psi.re[x] += psiTemp.re[x];
+            this._psi.im[x] += psiTemp.im[x];
+        }
+        for (let x=1; x < this._iMax; x++) {	// integrate backwards to get previous wavefunction values
+            this._psiLast.re[x] = this.re[x] - 0.5 * dt * (-this.im[x+1] - this.im[x-1] + 2 * this.im[x]);
+            this._psiLast.im[x] = this.im[x] + 0.5 * dt * (-this.re[x+1] - this.re[x-1] + 2 * this.re[x]);
+        }
+    }
+
+    // Integrate the time-dependent Schrödinger equation for a single time step (leapfrog algorithm):
+    step(dt, potential=null) {
+        for (let x = 1; x < this._iMax; x++) {
+            const v_x  = potential ? potential[x] : 0;
+            this._psiNext.re[x] = this._psiLast.re[x] + dt * (-this._psi.im[x + 1] - this._psi.im[x - 1] + 2 * (1 + v_x) * this._psi.im[x]);
+            this._psiNext.im[x] = this._psiLast.im[x] - dt * (-this._psi.re[x + 1] - this._psi.re[x - 1] + 2 * (1 + v_x) * this._psi.re[x]);
+        }
+        for (let x = 1; x < this._iMax; x++) {	// now copy current to past, future to current
+            this._psiLast.re[x] = this.re[x];
+            this._psiLast.im[x] = this.im[x];
+            this._psi.re[x] = this._psiNext.re[x];
+            this._psi.im[x] = this._psiNext.im[x];
+        }
+    }
+
+    squaredAt = (x) => this._psi.re[x] * this._psi.re[x] + this._psi.im[x] * this._psi.im[x];
+    phaseAt = (x) => Math.atan2(this._psi.im[x], this._psi.re[x]);
+}
+
+export class DisplayWithClocks {
     constructor(canvas, context, totalClocks=8, nColors=360) {
         this._canvas = canvas;
         this._context = context;
@@ -146,6 +230,12 @@ export class Display {
             this._context.strokeStyle = this._phaseColor[Math.round(localPhase * this._nColors / (2 * Math.PI))];
             this._context.stroke();
         }
+    }
+}
+
+export class WavePacketDisplay {
+    constructor(context) {
+        this._context = context;
     }
 }
 

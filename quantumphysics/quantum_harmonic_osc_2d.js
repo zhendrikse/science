@@ -1,4 +1,4 @@
-import { Display, Wave2D, Mouse } from "./2d-quantum-extensions.js"
+import { DisplayWithClocks, Wave2D, Mouse } from "./2d-quantum-extensions.js"
 
 const theCanvas = document.getElementById("shoCanvas2D");
 const theContext = theCanvas.getContext("2d");
@@ -61,7 +61,7 @@ export class HarmonicOscillatorWave2D extends Wave2D{
     }
 }
 
-const display = new Display(theCanvas, theContext);
+const display = new DisplayWithClocks(theCanvas, theContext);
 const mouse = new Mouse(theCanvas, display);
 let psi = new HarmonicOscillatorWave2D(theCanvas.clientWidth);
 let running = true;

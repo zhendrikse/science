@@ -1,4 +1,4 @@
-import {Display, Mouse, Wave2D} from "./2d-quantum-extensions.js"
+import {DisplayWithClocks, Mouse, Wave2D} from "./2d-quantum-extensions.js"
 
 const theCanvas = document.getElementById("infiniteSquareWellCanvas2D");
 const theContext = theCanvas.getContext("2d");
@@ -28,7 +28,7 @@ export class InfiniteWellWave2D extends Wave2D {
     }
 }
 
-const display = new Display(theCanvas, theContext);
+const display = new DisplayWithClocks(theCanvas, theContext);
 const mouse = new Mouse(theCanvas, display);
 let psi = new InfiniteWellWave2D(theCanvas.clientWidth);
 let running = true;

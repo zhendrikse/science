@@ -1,4 +1,4 @@
-import { toColorString } from "./2d-quantum-extensions.js";
+import { toColorString, WavePacket } from "./2d-quantum-extensions.js";
 
 const theCanvas = document.getElementById("freeWavePacketCanvas");
 const theContext = theCanvas.getContext("2d");
@@ -156,51 +156,6 @@ document.getElementById("addButton")
 
 let xMax = theCanvas.clientWidth;
 let cHeight = theCanvas.clientHeight;
-
-class FreeWavePacket2D {
-    constructor(iMax, dt=0.2) {
-        this._iMax = iMax;
-        this._psi = { re: new Array(iMax + 1), im: new Array(iMax + 1) };
-        this._psiLast = { re: new Array(iMax + 1), im: new Array(iMax + 1) };
-        this._psiNext = {re: new Array(iMax + 1), im: new Array(iMax + 1) };
-    }
-
-    get im() { return this._psi.im; }
-    get re() { return this._psi.re; }
-
-    clear() {
-        for (let i = 0; i <= this._iMax; i++) {
-            this._psi.re[i] = 0;
-            this._psi.im[i] = 0;
-            this._psiLast.re[i] = 0;
-            this._psiLast.im[i] = 0;
-        }
-    }
-
-    addPacket(psiTemp, dt) {
-        for (let x=0; x <= this._iMax; x++) {
-            this._psi.re[x] += psiTemp.re[x];
-            this._psi.im[x] += psiTemp.im[x];
-        }
-        for (let x=1; x < this._iMax; x++) {	// integrate backwards to get previous wavefunction values
-            this._psiLast.re[x] = this.re[x] - 0.5 * dt * (-this.im[x+1] - this.im[x-1] + 2 * this.im[x]);
-            this._psiLast.im[x] = this.im[x] + 0.5 * dt * (-this.re[x+1] - this.re[x-1] + 2 * this.re[x]);
-        }
-    }
-
-    step(dt) {
-        for (let x = 1; x < this._iMax; x++) {
-            this._psiNext.re[x] = this._psiLast.re[x] + dt * (-this.im[x+1] - this.im[x-1] + 2 * this.im[x]);
-            this._psiNext.im[x] = this._psiLast.im[x] - dt * (-this.re[x+1] - this.re[x-1] + 2 * this.re[x]);
-        }
-        for (let x = 1; x < this._iMax; x++) {	// now copy current to past, future to current
-            this._psiLast.re[x] = this.re[x];
-            this._psiLast.im[x] = this.im[x];
-            this._psi.re[x] = this._psiNext.re[x];
-            this._psi.im[x] = this._psiNext.im[x];
-        }
-    }
-}
 
 const nColors = 360;
 const phaseColor = new Array(nColors+1);
@@ -374,9 +329,9 @@ function mouseOrTouchMove(canvasX, canvasY, e) {
     if (realImag.checked) pxAboveAxis = cHeight/2 - canvasY;
     if (pxAboveAxis === 0) return;
     const packetArea = psiTempParams.height * psiTempParams.width;
-    if (realImag.checked) {
+    if (realImag.checked)
         psiTempParams.height = pxAboveAxis / psiPixPerUnit;
-    } else {
+    else {
         if (pxAboveAxis < 0) return;
         psiTempParams.height = Math.sqrt(pxAboveAxis / psi2PixPerUnit);
     }
@@ -387,7 +342,7 @@ function mouseOrTouchMove(canvasX, canvasY, e) {
 let psi;
 let psiTemp;
 function initPhysics() {
-    psi = new FreeWavePacket2D(xMax);
+    psi = new WavePacket(xMax);
     psiTemp = { re: new Array(xMax + 1), im: new Array(xMax + 1) };
 
     clearPsi();
