@@ -4,7 +4,7 @@
 <div class="header_line"><br/></div>
 
 ⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-📌 Ported to JavaScript and [Three.js](https://threejs.org/) in [quantum_barrier.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/quantum_barrier.js)<br/>
+📌 Ported to JavaScript and [Three.js](https://threejs.org/) in [quantum_barrier_3d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/quantum_barrier_3d.js)<br/>
 
 <link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet"/>
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
