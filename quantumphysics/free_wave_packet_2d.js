@@ -1,4 +1,4 @@
-import { toColorString, WavePacket } from "./2d-quantum-extensions.js";
+import {toColorString, WavePacket, WavePacketDisplay} from "./2d-quantum-extensions.js";
 
 const theCanvas = document.getElementById("freeWavePacketCanvas");
 const theContext = theCanvas.getContext("2d");
@@ -13,110 +13,31 @@ const heightSlider = document.getElementById("heightSlider");
 const widthSlider = document.getElementById("widthSlider");
 const momentumSlider = document.getElementById("momentumSlider");
 
-class Display {
-    constructor(context) {
-        this._context = context;
-    }
+let xMax = theCanvas.clientWidth;
+let cHeight = theCanvas.clientHeight;
 
-    _drawGrid(delta, gridBase, gridOffset) {
-        if (!gridCheck.checked) return;
-        this._context.strokeStyle = "hsl(0,0%,60%)";
-        this._context.lineWidth = 1;
-
-        for (let x = delta; x < xMax; x += delta) {	// draw vertical grid lines
-            this._context.beginPath();
-            this._context.moveTo(x, 0);
-            this._context.lineTo(x, gridBase);
-            this._context.stroke();
-        }
-
-        for (let y = gridBase - gridOffset; y > 0; y -= delta) {	// draw horizontal grid lines
-            this._context.beginPath();
-            this._context.moveTo(0, y);
-            this._context.lineTo(xMax, y);
-            this._context.stroke();
-        }
-    }
-
-    _drawHorizontalAxis(baselineY) {
-        this._context.strokeStyle = "#c0c0c0";
-        this._context.lineWidth = 1;
-        this._context.beginPath();
-        this._context.moveTo(0, baselineY);
-        this._context.lineTo(xMax, baselineY);
-        this._context.stroke();
-        this._context.lineWidth = 2;
+class Display extends WavePacketDisplay {
+    constructor(theContext, xMax, cHeight) {
+        super(theContext, xMax, cHeight);
     }
 
     _plotRealImaginary(psi, baselineY) {
-        const pxPerY = psiPixPerUnit;
-        this._drawHorizontalAxis(baselineY);
-
-        // Plot the real part of psi:
-        this._context.beginPath();
-        this._context.moveTo(0, baselineY - psi.re[0] * pxPerY);
-        for (let x=1; x<=xMax; x++)
-            this._context.lineTo(x, baselineY - psi.re[x] * pxPerY);
-
-        this._context.strokeStyle = "#ffc000";
-        this._context.stroke();
-
-        // Plot the imaginary part of psi:
-        this._context.beginPath();
-        this._context.moveTo(0, baselineY - psi.im[0] * pxPerY);
-        for (let x=1; x<=xMax; x++)
-            theContext.lineTo(x, baselineY - psi.im[x] * pxPerY);
-
-        this._context.strokeStyle = "#00d0ff";
-        this._context.stroke();
+        super._plotRealImaginary(psi, baselineY);
 
         // Now draw the wavepacket we might add next, with transparency:
         if (psiTempAlpha <= 0.001) return;
         this._context.globalAlpha = psiTempAlpha;
-        this._context.beginPath();
-        this._context.moveTo(0, baselineY - psiTemp.re[0]*pxPerY);
-        for (let x=1; x<=xMax; x++)
-            this._context.lineTo(x, baselineY - psiTemp.re[x]*pxPerY);
-
-        this._context.strokeStyle = "#ffc000";
-        this._context.stroke();
-        this._context.beginPath();
-        this._context.moveTo(0, baselineY - psiTemp.im[0]*pxPerY);
-        for (let x=1; x<=xMax; x++)
-            this._context.lineTo(x, baselineY - psiTemp.im[x]*pxPerY);
-
-        this._context.strokeStyle = "#00d0ff";
-        this._context.stroke();
+        super._plotRealImaginary(psiTemp, baselineY);
         this._context.globalAlpha = 1.0;
     }
 
     _plotDensityPhase(psi, baselineY) {
-        const pxPerY = psi2PixPerUnit;
-        this._drawHorizontalAxis(baselineY);
-
-        for (let x = 0; x <= xMax; x++) {
-            theContext.beginPath();
-            theContext.moveTo(x, baselineY);
-            theContext.lineTo(x, baselineY - pxPerY*(psi.re[x]*psi.re[x] + psi.im[x]*psi.im[x]));
-            let localPhase = Math.atan2(psi.im[x], psi.re[x]);
-            if (localPhase < 0) localPhase += 2 * Math.PI;
-            theContext.strokeStyle = phaseColor[Math.round(localPhase * nColors / (2 * Math.PI))];
-            theContext.stroke();
-        }
+        super._plotDensityPhase(psi, baselineY);
 
         // Now draw the wavepacket we might add next, with transparency:
         if (psiTempAlpha <= 0.001) return;
-
         theContext.globalAlpha = psiTempAlpha;
-        for (let x = 0; x <= xMax; x++) {
-            theContext.beginPath();
-            theContext.moveTo(x, baselineY);
-            theContext.lineTo(x, baselineY - pxPerY*(psiTemp.re[x]*psiTemp.re[x] + psiTemp.im[x]*psiTemp.im[x]));
-            let localPhase = Math.atan2(psiTemp.im[x], psiTemp.re[x]);
-            if (localPhase < 0) localPhase += 2 * Math.PI;
-            theContext.strokeStyle = phaseColor[Math.round(localPhase * nColors / (2*Math.PI))];
-            theContext.stroke();
-        }
+        super._plotDensityPhase(psiTemp, baselineY);
         theContext.globalAlpha = 1.0;
     }
 
@@ -124,20 +45,22 @@ class Display {
         this._context.clearRect(0, 0, xMax, cHeight);
         this._context.lineWidth = 2;
 
+        const delta = 20;		// grid spacing in pixels
         const baselineY = realImag.checked ? cHeight * 0.5 : cHeight - plotMarginHeight;
+        const gridBase = realImag.checked ? cHeight : baselineY;
+        const gridOffset = realImag.checked ? (cHeight / 2) % delta : delta;
+        this._drawHorizontalAxis(xMax, baselineY);
         if (realImagChecked)
             this._plotRealImaginary(psi, baselineY);
         else
             this._plotDensityPhase(psi, baselineY);
 
-        const delta = 20;		// grid spacing in pixels
-        const gridBase = realImag.checked ? cHeight : baselineY;
-        const gridOffset = realImag.checked ? (cHeight / 2) % delta : delta;
-        this._drawGrid(delta, gridBase, gridOffset);
+        if (gridCheck.checked)
+            this._drawGrid(xMax, delta, gridBase, gridOffset);
     }
 }
 
-const display = new Display(theContext);
+const display = new Display(theContext, xMax, cHeight);
 
 pauseButton.addEventListener("click", () => startStop());
 document.getElementById("clearButton").addEventListener("click", () => clearPsi());
@@ -152,15 +75,6 @@ function updateSpeedDisplay() {
 speedSlider.addEventListener("input", updateSpeedDisplay);
 document.getElementById("addButton")
     .addEventListener("click", () => { setPsiTemp(); addPacket(); });
-
-
-let xMax = theCanvas.clientWidth;
-let cHeight = theCanvas.clientHeight;
-
-const nColors = 360;
-const phaseColor = new Array(nColors+1);
-for (let c=0; c<=nColors; c++)
-    phaseColor[c] = toColorString(c/nColors);		// initialize array of colors
 
 const dt = 0.45;		// anything less than 0.50 seems to be stable
 let running = false;
@@ -222,13 +136,7 @@ function setPsiTemp(center, pHeight, pWidth, k) {
         pWidth = Number(widthSlider.value);
         k = Number(momentumSlider.value);
     }
-    for (let x = 1; x < xMax; x++) {
-        const scaledX = (x - center) / pWidth;
-        const envelope = pHeight * Math.exp(-scaledX * scaledX);
-        psiTemp.re[x] = envelope * Math.cos(k * (x - center));	// add new wavepacket to existing wavefunction
-        psiTemp.im[x] = envelope * Math.sin(k * (x - center));
-    }
-    psiTemp.re[0] = psiTemp.im[0] = psiTemp.re[xMax] = psiTemp.im[xMax] = 0.0;
+    psiTemp = new WavePacket(xMax).with(center, pHeight, pWidth, k);
     psiTempAlpha = 0.5;
 
     setTimeout(() => { startFadePsiTemp(); }, 2000);
@@ -343,7 +251,7 @@ let psi;
 let psiTemp;
 function initPhysics() {
     psi = new WavePacket(xMax);
-    psiTemp = { re: new Array(xMax + 1), im: new Array(xMax + 1) };
+    psiTemp = new WavePacket(xMax);
 
     clearPsi();
     setPsiTemp();

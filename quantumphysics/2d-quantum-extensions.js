@@ -59,6 +59,17 @@ export class WavePacket {
         this._psiNext = {re: new Float32Array(iMax + 1), im: new Float32Array(iMax + 1) };
     }
 
+    with(center, height, width, k) {
+        for (let x = 1; x < this._iMax; x++) {
+            const scaledX = (x - center) / width;
+            const envelope = height * Math.exp(-scaledX * scaledX);
+            this._psi.re[x] = envelope * Math.cos(k * (x - center));	// add new wavepacket to existing wavefunction
+            this._psi.im[x] = envelope * Math.sin(k * (x - center));
+        }
+        this._psi.re[0] = this._psi.im[0] = this._psi.re[this._iMax] = this._psi.im[this._iMax] = 0.0;
+        return this;
+    }
+
     get im() { return this._psi.im; }
     get re() { return this._psi.re; }
 
@@ -234,8 +245,84 @@ export class DisplayWithClocks {
 }
 
 export class WavePacketDisplay {
-    constructor(context) {
+    constructor(context, xMax, canvasHeight, nColors=360) {
         this._context = context;
+        this._xMax = xMax;
+        this._canvasHeight = canvasHeight;
+
+        this._psiPixPerUnit = canvasHeight / 3;	// scale for plotting psi (real and imag parts)
+        const plotMarginHeight = canvasHeight * 0.07;	// margin at bottom of density/phase plot
+        this._psi2PixPerUnit = (canvasHeight - plotMarginHeight) * 0.55;	// scale for plotting psi squared
+
+        this._nColors = nColors;
+        this._phaseColor = new Array(nColors + 1);
+        for (let c = 0; c <= nColors; c++)
+            this._phaseColor[c] = toColorString(c / nColors);		// initialize array of colors
+    }
+
+    _drawHorizontalAxis(xEnd, baselineY) {
+        this._context.strokeStyle = "#c0c0c0";
+        this._context.lineWidth = 1;
+        this._context.beginPath();
+        this._context.moveTo(0, baselineY);
+        this._context.lineTo(xEnd, baselineY);
+        this._context.stroke();
+        this._context.lineWidth = 2;
+    }
+
+    _drawGrid(xMax, delta, gridBase, gridOffset) {
+        this._context.strokeStyle = "hsl(0, 0%, 60%)";
+        this._context.lineWidth = 1;
+
+        for (let x = delta; x < this._xMax; x += delta) {	// draw vertical grid lines
+            this._context.beginPath();
+            this._context.moveTo(x, 0);
+            this._context.lineTo(x, gridBase);
+            this._context.stroke();
+        }
+
+        for (let y = gridBase - gridOffset; y > 0; y -= delta) {	// draw horizontal grid lines
+            this._context.beginPath();
+            this._context.moveTo(0, y);
+            this._context.lineTo(this._xMax, y);
+            this._context.stroke();
+        }
+    }
+
+    _plotRealImaginary(psi, baselineY) {
+        const pxPerY = this._psiPixPerUnit;
+
+        // Plot the real part of psi:
+        this._context.beginPath();
+        this._context.moveTo(0, baselineY - psi.re[0] * pxPerY);
+        for (let x = 1; x <= this._xMax; x++)
+            this._context.lineTo(x, baselineY - psi.re[x] * pxPerY);
+
+        this._context.strokeStyle = "#ffc000";
+        this._context.stroke();
+
+        // Plot the imaginary part of psi:
+        this._context.beginPath();
+        this._context.moveTo(0, baselineY - psi.im[0] * pxPerY);
+        for (let x = 1; x <= this._xMax; x++)
+            this._context.lineTo(x, baselineY - psi.im[x] * pxPerY);
+
+        this._context.strokeStyle = "#00d0ff";
+        this._context.stroke();
+    }
+
+    _plotDensityPhase(psi, baselineY) {
+        const pxPerY = this._psi2PixPerUnit;
+
+        for (let x = 0; x <= this._xMax; x++) {
+            this._context.beginPath();
+            this._context.moveTo(x, baselineY);
+            this._context.lineTo(x, baselineY - pxPerY * psi.squaredAt(x));
+            let localPhase = psi.phaseAt(x);
+            if (localPhase < 0) localPhase += 2 * Math.PI;
+            this._context.strokeStyle = this._phaseColor[Math.round(localPhase * this._nColors / (2 * Math.PI))];
+            this._context.stroke();
+        }
     }
 }
 

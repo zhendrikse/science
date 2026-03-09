@@ -23,10 +23,10 @@
 🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 ⭐ More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
 
-<div id="barrierWrapper2D" style="width: 100%; aspect-ratio: 2/1">
-  <div id="leftPercent" style="position:absolute; bottom:0; z-index:2; color:#b8b8b8; margin:5px; font-family:monospace">100.0%</div>
-  <div id="rightPercent" style="position:absolute; bottom:0; right:0; z-index:2; color:#b8b8b8; margin:5px; font-family:monospace;">0.0%</div>
-  <canvas id="barrierCanvas2D" style="width: 100%; aspect-ratio: 2/1"></canvas>
+<div class="canvasWrapper" id="barrierWrapper2D" style="aspect-ratio: 2/1">
+    <div id="leftPercent" style="position:absolute; bottom:0; z-index:2; color:#b8b8b8; margin:5px; font-family:monospace">100.0%</div>
+    <div id="rightPercent" style="position:absolute; bottom:0; right:0; z-index:2; color:#b8b8b8; margin:5px; font-family:monospace;">0.0%</div>
+    <canvas id="barrierCanvas2D" class="applicationCanvas" style="aspect-ratio: 2/1"></canvas>
 </div>
 <div class="buttonRow">
 		<button id="pauseButton">Run</button>

@@ -3,6 +3,7 @@ import { toColorString, WavePacket, WavePacketDisplay, Complex } from "./2d-quan
 // DOM elements:
 const theCanvas = document.getElementById("barrierCanvas2D");
 const theContext = theCanvas.getContext("2d");
+theContext.fillStyle = "transparent";
 const leftPercent = document.getElementById("leftPercent");
 const rightPercent = document.getElementById("rightPercent");
 const pauseButton = document.getElementById("pauseButton");
@@ -19,43 +20,18 @@ const widthOrStep = document.getElementById("widthOrStep");
 const barrierRampSlider = document.getElementById("barrierRampSlider");
 const barrierRampReadout = document.getElementById("barrierRampReadout");
 
-gridCheck.addEventListener("change", paintCanvas);
-realImag.addEventListener("change", paintCanvas);
-document.getElementById("resetButton").addEventListener("click", reset);
-wpEnergySlider.addEventListener("input", wpEnergyAdjust);
-barrierEnergySlider.addEventListener("input", barrierAdjust);
-barrierRampSlider.addEventListener("input", barrierAdjust);
-barrierWidthSlider.addEventListener("input", barrierAdjust);
-
 // Other global variables:
 let xMax = Number(theCanvas.clientWidth);
 let cHeight = Number(theCanvas.clientHeight);
 
-const display = new WavePacketDisplay();
-
-const pWidth = 49;	// initial wavepacket width (chosen so uncertainty in energy always rounds to at least 0.001)
-const v = new Float32Array(xMax + 1);
-const nColors = 360;
-const phaseColor = new Array(nColors + 1);
-for (let c = 0; c <= nColors; c++)
-	phaseColor[c] = toColorString(c / nColors);		// initialize array of colors
-
-const nBarrierShades = 100;
-const plusBarrierShade = new Array(nBarrierShades + 1);
-const minusBarrierShade = new Array(nBarrierShades + 1);
-for (let c = 0; c <= nBarrierShades; c++) {
-	plusBarrierShade[c] = "hsl(0,0%," + Math.round(12 + 40 * c / nBarrierShades) + "%)";
-	minusBarrierShade[c] = "hsl(240,15%," + Math.round(14 + 40 * c / nBarrierShades) + "%)";
-}
 let bEmax = Number(barrierEnergySlider.max);
 let bEmin = Number(barrierEnergySlider.min);
 const dt = 0.45;		// anything less than 0.50 seems to be stable
 let running = false;
 
+const pWidth = 49;	// initial wavepacket width (chosen so uncertainty in energy always rounds to at least 0.001)
+const v = new Float32Array(xMax + 1);
 const psi = new WavePacket(xMax, pWidth);
-
-barrierAdjust();
-reset();
 
 // Respond to user clicking Run/Pause/Resume button:
 pauseButton.addEventListener("click", () => {
@@ -77,6 +53,108 @@ function wpEnergyAdjust() {
 	// the a/2 term is the offset between the k^2/2 and the actual average energy.
 	wpEnergyReadout.innerHTML = Number(energy).toFixed(3) + " &plusmn; " + Number(sigma).toFixed(3);
 	if (!running) reset();
+}
+
+class Display extends WavePacketDisplay {
+	constructor(context, xMax, cHeight) {
+		super(context, xMax, cHeight);
+		this._nBarrierShades = 100;
+		this._plusBarrierShade = new Array(this._nBarrierShades + 1);
+		this._minusBarrierShade = new Array(this._nBarrierShades + 1);
+		for (let c = 0; c <= this._nBarrierShades; c++) {
+			this._plusBarrierShade[c] = "hsl(0,0%," + Math.round(12 + 40 * c / this._nBarrierShades) + "%)";
+			this._minusBarrierShade[c] = "hsl(240,15%," + Math.round(14 + 40 * c / this._nBarrierShades) + "%)";
+		}
+	}
+
+	_drawBarrier(v) {
+		for (let x = 1; x < this._xMax; x++) {
+			if (v[x] === 0) continue;
+
+			if (v[x] > 0)
+				this._context.strokeStyle = this._plusBarrierShade[Math.round(this._nBarrierShades * v[x] / bEmax)];
+			else
+				this._context.strokeStyle = this._minusBarrierShade[Math.round(this._nBarrierShades * v[x] / bEmin)];
+
+			this._context.beginPath();
+			this._context.moveTo(x, 0);
+			this._context.lineTo(x, this._canvasHeight);		// not optimized
+			this._context.stroke();
+		}
+	}
+
+	_showLeftRightPercentages(psi) {
+		let leftIntegral = 0.0;
+		let rightIntegral = 0.0;
+		for (let x = 0; x < this._xMax / 2; x++)
+			leftIntegral += psi.squaredAt(x);
+		for (let x = (this._xMax / 2) + 1; x <= this._xMax; x++)
+			rightIntegral += psi.squaredAt(x);
+		const mid = psi.squaredAt(this._xMax / 2);
+		leftIntegral += mid / 2;
+		rightIntegral += mid / 2;	// middle value gets split 50-50 between left and right
+		leftPercent.innerHTML = Number(100 * leftIntegral / (leftIntegral + rightIntegral)).toFixed(1) + "%";
+		rightPercent.innerHTML = Number(100 * rightIntegral / (leftIntegral + rightIntegral)).toFixed(1) + "%";
+	}
+
+	paintCanvas(psi, v) {
+		this._context.fillRect(0, 0, this._xMax, this._canvasHeight);
+		this._context.lineWidth = 2;
+		this._drawBarrier(v);
+
+		const delta = 20;		// grid spacing in pixels
+		const baselineY = realImag.checked ? cHeight * 0.5 : cHeight * 0.93;
+		const gridBase = realImag.checked ? cHeight : baselineY;
+		const gridOffset = realImag.checked ? (cHeight / 2) % delta : delta;
+
+		display._drawHorizontalAxis(this._xMax, baselineY);
+		if (realImag.checked)
+			display._plotRealImaginary(psi, baselineY);
+		else
+			display._plotDensityPhase(psi, baselineY);
+
+		if (gridCheck.checked)
+			display._drawGrid(this._xMax, delta, gridBase, gridOffset);
+
+		this._showLeftRightPercentages(psi);
+	}
+}
+const display = new Display(theContext, xMax, cHeight);
+
+// Calculate and draw the next animation frame:
+function nextFrame() {
+	if (!running) return;
+
+	const stepsPerFrame = Number(speedSlider.value);
+	for (let step = 0; step < stepsPerFrame; step++)
+		psi.step(dt, v);
+	display.paintCanvas(psi, v);
+	requestAnimationFrame(nextFrame);
+}
+
+
+// Initialize the wavefunction to a Gaussian wavepacket:
+function reset() {
+	psi.reset(Number(wpEnergySlider.value), dt, v);
+	display.paintCanvas(psi, v);
+	if (!running) pauseButton.innerHTML = "Run";
+}
+
+function resizeCanvas() {
+	const rect = theCanvas.getBoundingClientRect();
+	const dpr = window.devicePixelRatio || 1;
+
+	theCanvas.width  = rect.width  * dpr;
+	theCanvas.height = rect.height * dpr;
+	theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+	// Update globals
+	xMax = Math.floor(rect.width);
+	cHeight = Math.floor(rect.height);
+
+	// initPhysics();
+	//display.paintCanvas(psi, realImag.checked);
+	display.paintCanvas(psi, v);
 }
 
 // Respond to user adjusting barrier energy or width:
@@ -109,157 +187,17 @@ function barrierAdjust() {
 		for (let dx = 1; dx <= bRamp; dx++)
 			v[barrierLeft - dx] = bEnergy * (1 - dx / (bRamp + 1));
 	}
-	paintCanvas(psi);
+	display.paintCanvas(psi, v);
 }
 
-// Calculate and draw the next animation frame:
-function nextFrame() {
-	if (!running) return;
-
-	const stepsPerFrame = Number(speedSlider.value);
-	for (let step = 0; step < stepsPerFrame; step++) 
-		psi.step(dt, v);
-	paintCanvas(psi);
-	requestAnimationFrame(nextFrame);
-}
-
-
-// Initialize the wavefunction to a Gaussian wavepacket:
-function reset() {
-	psi.reset(Number(wpEnergySlider.value), dt, v);
-	paintCanvas(psi);
-	if (!running) pauseButton.innerHTML = "Run";
-}
-
-// Draw the canvas:
-function paintCanvas(psi) {
-	theContext.fillRect(0, 0, xMax, cHeight);
-	theContext.lineWidth = 2;
-
-	for (let x = 1; x < xMax; x++) {
-		if (v[x] === 0) continue;
-
-		if (v[x] > 0)
-			theContext.strokeStyle = plusBarrierShade[Math.round(nBarrierShades * v[x] / bEmax)];
-		else
-			theContext.strokeStyle = minusBarrierShade[Math.round(nBarrierShades * v[x] / bEmin)];
-
-		theContext.beginPath();
-		theContext.moveTo(x, 0);
-		theContext.lineTo(x, cHeight);		// not optimized
-		theContext.stroke();
-	}
-
-	var baselineY, pxPerY, gridBase, gridOffset;
-	const delta = 20;		// grid spacing in pixels
-
-	if (realImag.checked) {
-		baselineY = cHeight * 0.5;
-		gridBase = cHeight;
-		gridOffset = (cHeight / 2) % delta;	// lowest horizontal grid line is this far above bottom
-		pxPerY = baselineY * 0.8;
-
-		// Draw the horizontal axis:
-		theContext.strokeStyle = "#c0c0c0";
-		theContext.lineWidth = 1;
-		theContext.beginPath();
-		theContext.moveTo(0, baselineY);
-		theContext.lineTo(xMax, baselineY);
-		theContext.stroke();
-
-		theContext.lineWidth = 2;
-
-		// Plot the real part of psi:
-		theContext.beginPath();
-		theContext.moveTo(0, baselineY - psi.re[0] * pxPerY);
-		for (let x = 1; x <= xMax; x++)
-			theContext.lineTo(x, baselineY - psi.re[x] * pxPerY);
-
-		theContext.strokeStyle = "#ffc000";
-		theContext.stroke();
-
-		// Plot the imaginary part of psi:
-		theContext.beginPath();
-		theContext.moveTo(0, baselineY - psi.im[0] * pxPerY);
-		for (let x = 1; x <= xMax; x++)
-			theContext.lineTo(x, baselineY - psi.im[x] * pxPerY);
-
-		theContext.strokeStyle = "#00d0ff";
-		theContext.stroke();
-
-	} else {	// "Density/phase" is checked
-
-		// Plot the probability distribution with phase as color:
-		baselineY = cHeight * 0.93;
-		gridBase = baselineY;
-		gridOffset = delta;
-		pxPerY = baselineY * 0.55;
-
-		// Draw the horizontal axis:
-		theContext.strokeStyle = "#c0c0c0";
-		theContext.lineWidth = 1;
-		theContext.beginPath();
-		theContext.moveTo(0, baselineY);
-		theContext.lineTo(xMax, baselineY);
-		theContext.stroke();
-
-		theContext.lineWidth = 2;
-		for (let x = 0; x <= xMax; x++) {
-			theContext.beginPath();
-			theContext.moveTo(x, baselineY);
-			theContext.lineTo(x, baselineY - pxPerY * psi.squaredAt(x));
-			let localPhase = psi.phaseAt(x);
-			if (localPhase < 0) localPhase += 2 * Math.PI;
-			theContext.strokeStyle = phaseColor[Math.round(localPhase * nColors / (2 * Math.PI))];
-			theContext.stroke();
-		}
-	}
-
-	if (gridCheck.checked) {
-		theContext.strokeStyle = "hsl(0,0%,60%)";
-		theContext.lineWidth = 1;
-		for (let x = delta; x < xMax; x += delta) {	// draw vertical grid lines
-			theContext.beginPath();
-			theContext.moveTo(x, 0);
-			theContext.lineTo(x, gridBase);
-			theContext.stroke();
-		}
-		for (let y = gridBase - gridOffset; y > 0; y -= delta) {	// draw horizontal grid lines
-			theContext.beginPath();
-			theContext.moveTo(0, y);
-			theContext.lineTo(xMax, y);
-			theContext.stroke();
-		}
-	}
-
-	// Calculate and show left/right percentages:
-	let leftIntegral = 0.0;
-	let rightIntegral = 0.0;
-	for (let x = 0; x < xMax / 2; x++) leftIntegral += psi.re[x] * psi.re[x] + psi.im[x] * psi.im[x];
-	for (let x = (xMax / 2) + 1; x <= xMax; x++) rightIntegral += psi.re[x] * psi.re[x] + psi.im[x] * psi.im[x];
-	const mid = psi.re[xMax / 2] * psi.re[xMax / 2] + psi.im[xMax / 2] * psi.im[xMax / 2];
-	leftIntegral += mid / 2;
-	rightIntegral += mid / 2;	// middle value gets split 50-50 between left and right
-	leftPercent.innerHTML = Number(100 * leftIntegral / (leftIntegral + rightIntegral)).toFixed(1) + "%";
-	rightPercent.innerHTML = Number(100 * rightIntegral / (leftIntegral + rightIntegral)).toFixed(1) + "%";
-}
-
-
-function resizeCanvas() {
-	const rect = theCanvas.getBoundingClientRect();
-	const dpr = window.devicePixelRatio || 1;
-
-	theCanvas.width  = rect.width  * dpr;
-	theCanvas.height = rect.height * dpr;
-	theContext.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-	// Update globals
-	xMax = Math.floor(rect.width);
-	cHeight = Math.floor(rect.height);
-
-	// initPhysics();
-	//display.paintCanvas(psi, realImag.checked);
-	paintCanvas(psi);
-}
+gridCheck.addEventListener("change", () => display.paintCanvas(psi, v));
+realImag.addEventListener("change", () => display.paintCanvas(psi, v));
+document.getElementById("resetButton").addEventListener("click", reset);
+wpEnergySlider.addEventListener("input", wpEnergyAdjust);
+barrierEnergySlider.addEventListener("input", barrierAdjust);
+barrierRampSlider.addEventListener("input", barrierAdjust);
+barrierWidthSlider.addEventListener("input", barrierAdjust);
 window.addEventListener("resize", resizeCanvas);
+barrierAdjust();
+reset();
 resizeCanvas();
