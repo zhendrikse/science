@@ -3,6 +3,9 @@
 ## Quantum barrier scattering
 <div class="header_line"><br/></div>
 
+⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
+📌 Ported to JavaScript and [Three.js](https://threejs.org/) in [quantum_barrier.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/quantum_barrier.js)<br/>
+
 <link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet"/>
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
@@ -47,9 +50,8 @@
 		<input type="range" id="barrierEnergySlider" min="-0.1" max="0.1" step="0.001" value="0.040"/>
 </div>
 <div class="buttonRow">
-		<label for="barrierWidthSlider">Barrier width = 
-		<span id="widthOrStep">Width =</span></label>
-		<span id="barrierWidthReadout">20</span>
+		<label for="barrierWidthSlider"><span id="widthOrStep">Width =</span>
+		<span id="barrierWidthReadout">20</span></label>
 		<input type="range" id="barrierWidthSlider" min="0" max="51" step="1" value="10"/>
 </div>
 <div class="buttonRow">
