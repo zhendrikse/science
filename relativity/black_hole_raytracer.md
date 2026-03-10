@@ -5,7 +5,18 @@
 
 ### Space-time ray tracing
 
-⭐ Based on [Simulating a Schwarzschild Black Hole: Part 1 — The Background and Raytracer](https://medium.com/@cadenmarinozzi/simulating-a-schwarzschild-black-hole-part-1-the-background-and-raytracer-7de436a56b7e) by [Caden Marenozzi](https://medium.com/@cadenmarinozzi)
+⭐ Based on [Simulating a Schwarzschild Black Hole: Part 1 — The Background and Raytracer](https://medium.com/@cadenmarinozzi/simulating-a-schwarzschild-black-hole-part-1-the-background-and-raytracer-7de436a56b7e) by [Caden Marenozzi](https://medium.com/@cadenmarinozzi)<br/>
+👉 Extended with the relativistic formula used for real-time black hole shaders (null geodesic approximation van de Schwarzschild metric):
+
+$$
+\frac{d\vec v}{ds} = -\frac{3GM}{r^3}\left(\vec v \times (\vec r \times \vec v)\right) \text{ where}  
+\begin{cases} \vec{v} = \text{ray direction} \\ 
+\vec{r} = \text{position with respect to the black hole} \\
+GM = \text{gravitational parameter} 
+\end{cases}
+$$
+👉 Result: correct photon orbit behavior, stronger bending near the hole and realistic Einstein ring
+
 
 <canvas id="spaceTimeBendingCanvas" class="applicationCanvas2D" style="aspect-ratio: 2/1;"></canvas>
 <script type="module" src="./black_hole_space_time.js"></script>
