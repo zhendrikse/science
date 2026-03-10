@@ -17,8 +17,7 @@ GM = \text{gravitational parameter}
 $$
 👉 Result: correct photon orbit behavior, stronger bending near the hole and realistic Einstein ring
 
-
-<canvas id="spaceTimeBendingCanvas" class="applicationCanvas2D" style="aspect-ratio: 2/1;"></canvas>
+<canvas id="spaceTimeBendingCanvas" style="width: 100%; aspect-ratio: 2/1;"></canvas>
 <script type="module" src="./black_hole_space_time.js"></script>
 <p style="clear: both;"></p>
 
