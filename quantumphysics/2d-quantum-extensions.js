@@ -277,10 +277,13 @@ export class WavePacketDisplay {
         this._context.lineWidth = 2;
     }
 
-    _drawGrid(delta, gridBase, gridOffset) {
+    _drawGrid(realImagEnabled) {
         this._context.strokeStyle = "hsl(0, 0%, 60%)";
         this._context.lineWidth = 1;
 
+        const delta = 20;		// grid spacing in pixels
+        const gridBase = realImagEnabled ? this._canvasHeight : this._baselineY(realImagEnabled);
+        const gridOffset = realImagEnabled ? (this._canvasHeight / 2) % delta : delta;
         for (let x = delta; x < this._xMax; x += delta) {	// draw vertical grid lines
             this._context.beginPath();
             this._context.moveTo(x, 0);
@@ -332,23 +335,8 @@ export class WavePacketDisplay {
         }
     }
 
-    plotPsi(psi, realImagEnabled, gridEnabled) {
-        this._context.clearRect(0, 0, this._xMax, this._canvasHeight);
-        this._context.lineWidth = 2;
-
-        const delta = 20;		// grid spacing in pixels
-        const baselineY = realImagEnabled ? this._canvasHeight * 0.5 : this._canvasHeight - this._plotMarginHeight;
-        const gridBase = realImagEnabled ? this._canvasHeight : baselineY;
-        const gridOffset = realImagEnabled ? (this._canvasHeight / 2) % delta : delta;
-        this._drawHorizontalAxis(baselineY);
-        if (realImagEnabled)
-            this._plotRealImaginary(psi, baselineY);
-        else
-            this._plotDensityPhase(psi, baselineY);
-
-        if (gridEnabled)
-            this._drawGrid(delta, gridBase, gridOffset);
-    }
+    _baselineY = (realImagEnabled) =>
+        realImagEnabled ? this._canvasHeight * 0.5 : this._canvasHeight - this._plotMarginHeight;
 }
 
 export class Wave2D {
