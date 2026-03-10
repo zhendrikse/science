@@ -97,7 +97,7 @@ class Display extends WavePacketDisplay {
 	}
 
 	paintCanvas(psi, v, realImagEnabled, gridEnabled) {
-		this._context.fillRect(0, 0, this._xMax, this._canvasHeight);
+		this._context.clearRect(0, 0, this._xMax, this._canvasHeight);
 		this._context.lineWidth = 2;
 		this._drawBarrier(v);
 
