@@ -221,8 +221,8 @@ function resizeCanvas() {
     // Update globals
     xMax = Math.floor(rect.width);
     canvasHeight = Math.floor(rect.height);
-    initPhysics();
     display = new WavePacketDisplay(theContext, xMax, canvasHeight)
+    initPhysics();
     display.plotPsi(psi, realImag.checked, gridCheck.checked);
 }
 window.addEventListener("resize", resizeCanvas);

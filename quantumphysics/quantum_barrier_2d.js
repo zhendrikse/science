@@ -183,6 +183,6 @@ barrierEnergySlider.addEventListener("input", barrierAdjust);
 barrierRampSlider.addEventListener("input", barrierAdjust);
 barrierWidthSlider.addEventListener("input", barrierAdjust);
 window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 barrierAdjust();
 reset();
-resizeCanvas();
