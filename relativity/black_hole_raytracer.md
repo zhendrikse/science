@@ -7,7 +7,7 @@
 <div class="header_line"><br/></div>
 
 ⭐ Based on [Simulating a Schwarzschild Black Hole: Part 1 — The Background and Raytracer](https://medium.com/@cadenmarinozzi/simulating-a-schwarzschild-black-hole-part-1-the-background-and-raytracer-7de436a56b7e) by [Caden Marenozzi](https://medium.com/@cadenmarinozzi)<br/>
-👉 Extended with the relativistic formula used for real-time black hole shaders (null geodesic approximation van de Schwarzschild metric):
+👉 Extended with the relativistic formula used for real-time black hole shaders (null geodesic approximation of the Schwarzschild metric):
 
 $$
 \frac{d\vec v}{ds} = -\frac{3GM}{r^3}\left(\vec v \times (\vec r \times \vec v)\right) \text{,}
@@ -25,7 +25,7 @@ $$
 <canvas id="spaceTimeBendingCanvas" style="width: 100%; aspect-ratio: 2/1;"></canvas>
 <div class="buttonRow">
     <label for="massSlider">Mass:&nbsp;</label>
-    <input type="range" id="massSlider" style="width: 55%;" min="0.01" max="0.25" step="0.01" value="0.025" />
+    <input type="range" id="massSlider" style="width: 55%;" min="0.01" max="0.25" step="0.01" value="0.1" />
 </div>
 <script type="module" src="./black_hole_space_time.js"></script>
 <p style="clear: both;"></p>

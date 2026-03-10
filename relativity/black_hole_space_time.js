@@ -75,7 +75,7 @@ const fragmentShader = `
 const canvasGeometry = new PlaneGeometry(yFov * camera.aspect, yFov);
 const canvasMaterial = new ShaderMaterial({
     uniforms: {
-        uGM: { value: 0.025 },
+        uGM: { value: 0.1 },
         uSpaceTexture: { value: spaceTexture },
         uResolution: { value: new Vector2(width, height) },
         uBlackholePos: { value: new Vector3(0, 0, 0) }
