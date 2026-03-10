@@ -23,6 +23,10 @@ $$
 👉 Result: correct photon orbit behavior, stronger bending near the hole and realistic Einstein ring
 
 <canvas id="spaceTimeBendingCanvas" style="width: 100%; aspect-ratio: 2/1;"></canvas>
+<div class="buttonRow">
+    <label for="massSlider">Mass:&nbsp;</label>
+    <input type="range" id="massSlider" min="0.01" max="0.25" step="0.01" value="0.1" />
+</div>
 <script type="module" src="./black_hole_space_time.js"></script>
 <p style="clear: both;"></p>
 

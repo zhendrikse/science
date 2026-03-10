@@ -2,6 +2,7 @@ import { Scene, PerspectiveCamera, WebGLRenderer, TextureLoader, PlaneGeometry, 
     Vector2, Vector3, Mesh, MathUtils } from "three";
 
 const canvas = document.getElementById("spaceTimeBendingCanvas");
+const massSlider = document.getElementById("massSlider");
 const scene = new Scene();
 
 const width = canvas.clientWidth;
@@ -19,8 +20,9 @@ renderer.setAnimationLoop( animate );
 const fovRadians = MathUtils.degToRad(camera.fov);
 const yFov = camera.position.z * Math.tan(fovRadians / 2) * 2;
 const spaceTexture = new TextureLoader()
+    //.load("images/andromeda.jpeg",
     .load("https://www.hendrikse.name/science/astrophysics/images/background.jpg",
-        // .load("https://i.imgur.com/1nVWbbd.jpg",
+        //.load("https://i.imgur.com/1nVWbbd.jpg",
         () => renderer.render(scene, camera)
     );
 
@@ -37,20 +39,19 @@ const fragmentShader = `
     varying vec2 vUv;
     uniform sampler2D uSpaceTexture;
     uniform vec2 uResolution;
+    uniform vec3 uBlackholePos;
+    uniform float uGM;
     #define MAX_ITERATIONS 160
     #define STEP_SIZE 0.04
 
-    const float GM = 0.15;
-
     vec3 camPos = vec3(0, 0, -3.0);
-    uniform vec3 uBlackholePos;
     vec4 raytrace(vec3 rayDir, vec3 rayPos) {
       vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
       for (int i = 0; i < MAX_ITERATIONS; i++) {
         float dist = length(rayPos - uBlackholePos);
         vec3 r = rayPos - uBlackholePos;
         float r3 = dist * dist * dist;
-        vec3 accel =-3.0 * GM * cross(rayDir, cross(r, rayDir)) / r3;
+        vec3 accel =-3.0 * uGM * cross(rayDir, cross(r, rayDir)) / r3;
 
         rayDir += accel * STEP_SIZE;
         rayDir = normalize(rayDir);
@@ -75,6 +76,7 @@ const fragmentShader = `
 const canvasGeometry = new PlaneGeometry(yFov * camera.aspect, yFov);
 const canvasMaterial = new ShaderMaterial({
     uniforms: {
+        uGM: { value: 0.05 },
         uSpaceTexture: { value: spaceTexture },
         uResolution: { value: new Vector2(width, height) },
         uBlackholePos: { value: new Vector3(0, 0, 0) }
@@ -86,6 +88,10 @@ const canvasMaterial = new ShaderMaterial({
 const canvasMesh = new Mesh(canvasGeometry, canvasMaterial);
 scene.add(canvasMesh);
 
+massSlider.addEventListener('change', (event) =>
+    canvasMaterial.uniforms.uGM.value = event.target.value
+);
+
 let time = 0;
 function animate() {
     time += 0.01;
@@ -96,4 +102,3 @@ function animate() {
     );
     renderer.render(scene, camera);
 }
-
