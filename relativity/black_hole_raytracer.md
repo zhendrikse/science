@@ -4,6 +4,7 @@
 <div class="header_line"><br/></div>
 
 ### Space-time ray tracing
+<div class="header_line"><br/></div>
 
 ⭐ Based on [Simulating a Schwarzschild Black Hole: Part 1 — The Background and Raytracer](https://medium.com/@cadenmarinozzi/simulating-a-schwarzschild-black-hole-part-1-the-background-and-raytracer-7de436a56b7e) by [Caden Marenozzi](https://medium.com/@cadenmarinozzi)<br/>
 👉 Extended with the relativistic formula used for real-time black hole shaders (null geodesic approximation van de Schwarzschild metric):
@@ -15,6 +16,7 @@ $$
 GM = \text{gravitational parameter} 
 \end{cases}
 $$
+
 👉 Result: correct photon orbit behavior, stronger bending near the hole and realistic Einstein ring
 
 <canvas id="spaceTimeBendingCanvas" style="width: 100%; aspect-ratio: 2/1;"></canvas>
@@ -22,6 +24,7 @@ $$
 <p style="clear: both;"></p>
 
 ### Black hole ray tracing
+<div class="header_line"><br/></div>
 
 🔧 Based on the [blackhole_raytracer](https://github.com/silvaan/blackhole_raytracer/tree/master) project by Arman T, Casper Y, Lulu W.<br/>
 ⭐ See their accompanying [GitHub pages](https://cyang2020.github.io/BlackHoleRayTracer/) and [video](https://www.youtube.com/watch?v=VTodu1YTURY), where they explain the code.<br/>
@@ -62,7 +65,7 @@ $$
 
 <p style="clear: both;"></p>
 
-### Real images of black holes
+## Real images of black holes
 <div style="border-top: 1px solid #999999"><br/></div>
 
 For comparison, below are some real images of black holes, 
@@ -112,7 +115,7 @@ showing a bright ring formed as light bends in the intense gravity around a blac
 
 <p style="clear: both;"></p>
 
-## Time dilation near gravity
+### Time dilation near gravity
 <div class="header_line"><br/></div>
 
 ![Time dilation](./images/time_near_black_hole.jpg)
