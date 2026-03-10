@@ -21,8 +21,8 @@ const fovRadians = MathUtils.degToRad(camera.fov);
 const yFov = camera.position.z * Math.tan(fovRadians / 2) * 2;
 const spaceTexture = new TextureLoader()
     //.load("images/andromeda.jpeg",
-    .load("https://www.hendrikse.name/science/astrophysics/images/background.jpg",
-        //.load("https://i.imgur.com/1nVWbbd.jpg",
+    //.load("https://www.hendrikse.name/science/astrophysics/images/background.jpg",
+    .load("https://i.imgur.com/1nVWbbd.jpg",
         () => renderer.render(scene, camera)
     );
 
@@ -72,11 +72,10 @@ const fragmentShader = `
       gl_FragColor = raytrace(rayDir, rayPos);
     }
 `;
-
 const canvasGeometry = new PlaneGeometry(yFov * camera.aspect, yFov);
 const canvasMaterial = new ShaderMaterial({
     uniforms: {
-        uGM: { value: 0.05 },
+        uGM: { value: 0.025 },
         uSpaceTexture: { value: spaceTexture },
         uResolution: { value: new Vector2(width, height) },
         uBlackholePos: { value: new Vector3(0, 0, 0) }
