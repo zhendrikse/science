@@ -21,10 +21,8 @@ const barrierRampSlider = document.getElementById("barrierRampSlider");
 const barrierRampReadout = document.getElementById("barrierRampReadout");
 
 // Other global variables:
-let xMax;
-let canvasHeight;
-let display;
-let psi;
+let xMax = Number(theCanvas.clientWidth);
+let canvasHeight = Number(theCanvas.clientHeight);
 
 let bEmax = Number(barrierEnergySlider.max);
 let bEmin = Number(barrierEnergySlider.min);
@@ -32,6 +30,7 @@ const dt = 0.45;		// anything less than 0.50 seems to be stable
 let running = false;
 
 const v = new Float32Array(xMax + 1);
+let psi;
 
 // Respond to user clicking Run/Pause/Resume button:
 pauseButton.addEventListener("click", () => {
@@ -47,9 +46,9 @@ pauseButton.addEventListener("click", () => {
 // Respond to user adjusting wavepacket energy:
 function wpEnergyAdjust() {
 	const energy = Number(wpEnergySlider.value);
-	const a = 1 / (psi.packetWidth * psi.packetWidth);				// so envelope is exp(-ax^2)
+	const a = 1 / (display.packetWidth * display.packetWidth);						// so envelope is exp(-ax^2)
 	const sigma = Math.sqrt(2 * energy * a + a * a / 2) + a / 2;	// uncertainty in energy (more or less)
-	// The square root term is the actual sigma and dominates for most energy values; 
+	// The square root term is the actual sigma and dominates for most energy values;
 	// the a/2 term is the offset between the k^2/2 and the actual average energy.
 	wpEnergyReadout.innerHTML = Number(energy).toFixed(3) + " &plusmn; " + Number(sigma).toFixed(3);
 	if (!running) reset();
@@ -101,10 +100,20 @@ class Display extends WavePacketDisplay {
 		this._context.fillRect(0, 0, this._xMax, this._canvasHeight);
 		this._context.lineWidth = 2;
 		this._drawBarrier(v);
-		this.plotPsi(psi, realImagEnabled, gridEnabled);
+
+		display._drawHorizontalAxis(this._baselineY(realImagEnabled));
+		if (realImagEnabled)
+			display._plotRealImaginary(psi, this._baselineY(realImagEnabled));
+		else
+			display._plotDensityPhase(psi, this._baselineY(realImagEnabled));
+
+		if (gridEnabled)
+			display._drawGrid(realImagEnabled);
+
 		this._showLeftRightPercentages(psi);
 	}
 }
+let display;
 
 // Calculate and draw the next animation frame:
 function nextFrame() {
@@ -137,7 +146,6 @@ function resizeCanvas() {
 	xMax = Math.floor(rect.width);
 	canvasHeight = Math.floor(rect.height);
 	psi = new WavePacket(xMax);
-
 	display = new Display(theContext, xMax, canvasHeight);
 	display.paintCanvas(psi, v, realImag.checked, gridCheck.checked);
 }
