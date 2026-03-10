@@ -21,17 +21,17 @@ const barrierRampSlider = document.getElementById("barrierRampSlider");
 const barrierRampReadout = document.getElementById("barrierRampReadout");
 
 // Other global variables:
-let xMax = Number(theCanvas.clientWidth);
-let cHeight = Number(theCanvas.clientHeight);
+let xMax;
+let canvasHeight;
+let display;
+let psi;
 
 let bEmax = Number(barrierEnergySlider.max);
 let bEmin = Number(barrierEnergySlider.min);
 const dt = 0.45;		// anything less than 0.50 seems to be stable
 let running = false;
 
-const pWidth = 49;	// initial wavepacket width (chosen so uncertainty in energy always rounds to at least 0.001)
 const v = new Float32Array(xMax + 1);
-const psi = new WavePacket(xMax, pWidth);
 
 // Respond to user clicking Run/Pause/Resume button:
 pauseButton.addEventListener("click", () => {
@@ -47,7 +47,7 @@ pauseButton.addEventListener("click", () => {
 // Respond to user adjusting wavepacket energy:
 function wpEnergyAdjust() {
 	const energy = Number(wpEnergySlider.value);
-	const a = 1 / (pWidth * pWidth);						// so envelope is exp(-ax^2)
+	const a = 1 / (psi.packetWidth * psi.packetWidth);				// so envelope is exp(-ax^2)
 	const sigma = Math.sqrt(2 * energy * a + a * a / 2) + a / 2;	// uncertainty in energy (more or less)
 	// The square root term is the actual sigma and dominates for most energy values; 
 	// the a/2 term is the offset between the k^2/2 and the actual average energy.
@@ -56,8 +56,8 @@ function wpEnergyAdjust() {
 }
 
 class Display extends WavePacketDisplay {
-	constructor(context, xMax, cHeight) {
-		super(context, xMax, cHeight);
+	constructor(context, xMax, canvasHeight) {
+		super(context, xMax, canvasHeight);
 		this._nBarrierShades = 100;
 		this._plusBarrierShade = new Array(this._nBarrierShades + 1);
 		this._minusBarrierShade = new Array(this._nBarrierShades + 1);
@@ -97,29 +97,14 @@ class Display extends WavePacketDisplay {
 		rightPercent.innerHTML = Number(100 * rightIntegral / (leftIntegral + rightIntegral)).toFixed(1) + "%";
 	}
 
-	paintCanvas(psi, v) {
+	paintCanvas(psi, v, realImagEnabled, gridEnabled) {
 		this._context.fillRect(0, 0, this._xMax, this._canvasHeight);
 		this._context.lineWidth = 2;
 		this._drawBarrier(v);
-
-		const delta = 20;		// grid spacing in pixels
-		const baselineY = realImag.checked ? cHeight * 0.5 : cHeight * 0.93;
-		const gridBase = realImag.checked ? cHeight : baselineY;
-		const gridOffset = realImag.checked ? (cHeight / 2) % delta : delta;
-
-		display._drawHorizontalAxis(this._xMax, baselineY);
-		if (realImag.checked)
-			display._plotRealImaginary(psi, baselineY);
-		else
-			display._plotDensityPhase(psi, baselineY);
-
-		if (gridCheck.checked)
-			display._drawGrid(this._xMax, delta, gridBase, gridOffset);
-
+		this.plotPsi(psi, realImagEnabled, gridEnabled);
 		this._showLeftRightPercentages(psi);
 	}
 }
-const display = new Display(theContext, xMax, cHeight);
 
 // Calculate and draw the next animation frame:
 function nextFrame() {
@@ -128,7 +113,7 @@ function nextFrame() {
 	const stepsPerFrame = Number(speedSlider.value);
 	for (let step = 0; step < stepsPerFrame; step++)
 		psi.step(dt, v);
-	display.paintCanvas(psi, v);
+	display.paintCanvas(psi, v, realImag.checked, gridCheck.checked);
 	requestAnimationFrame(nextFrame);
 }
 
@@ -136,7 +121,7 @@ function nextFrame() {
 // Initialize the wavefunction to a Gaussian wavepacket:
 function reset() {
 	psi.reset(Number(wpEnergySlider.value), dt, v);
-	display.paintCanvas(psi, v);
+	display.paintCanvas(psi, v, realImag.checked, gridCheck.checked);
 	if (!running) pauseButton.innerHTML = "Run";
 }
 
@@ -150,11 +135,11 @@ function resizeCanvas() {
 
 	// Update globals
 	xMax = Math.floor(rect.width);
-	cHeight = Math.floor(rect.height);
+	canvasHeight = Math.floor(rect.height);
+	psi = new WavePacket(xMax);
 
-	// initPhysics();
-	//display.paintCanvas(psi, realImag.checked);
-	display.paintCanvas(psi, v);
+	display = new Display(theContext, xMax, canvasHeight);
+	display.paintCanvas(psi, v, realImag.checked, gridCheck.checked);
 }
 
 // Respond to user adjusting barrier energy or width:
@@ -187,11 +172,11 @@ function barrierAdjust() {
 		for (let dx = 1; dx <= bRamp; dx++)
 			v[barrierLeft - dx] = bEnergy * (1 - dx / (bRamp + 1));
 	}
-	display.paintCanvas(psi, v);
+	display.paintCanvas(psi, v, realImag.checked, gridCheck.checked);
 }
 
-gridCheck.addEventListener("change", () => display.paintCanvas(psi, v));
-realImag.addEventListener("change", () => display.paintCanvas(psi, v));
+gridCheck.addEventListener("change", () => display.paintCanvas(psi, v, realImag.checked, gridCheck.checked));
+realImag.addEventListener("change", () => display.paintCanvas(psi, v, realImag.checked, gridCheck.checked));
 document.getElementById("resetButton").addEventListener("click", reset);
 wpEnergySlider.addEventListener("input", wpEnergyAdjust);
 barrierEnergySlider.addEventListener("input", barrierAdjust);

@@ -53,11 +53,14 @@ export function toColorString(hue) {
 export class WavePacket {
     constructor(iMax, packetWidth=49) {
         this._iMax = iMax;
-        this._packetWidth = packetWidth;
+        this._packetWidth = packetWidth; // initial wavepacket width (chosen so uncertainty in energy always rounds to at least 0.001)
+
         this._psi = { re: new Float32Array(iMax + 1), im: new Float32Array(iMax + 1) };
         this._psiLast = { re: new Float32Array(iMax + 1), im: new Float32Array(iMax + 1) };
         this._psiNext = {re: new Float32Array(iMax + 1), im: new Float32Array(iMax + 1) };
     }
+
+    get packetWidth() { return this._packetWidth; }
 
     with(center, height, width, k) {
         for (let x = 1; x < this._iMax; x++) {
@@ -251,8 +254,8 @@ export class WavePacketDisplay {
         this._canvasHeight = canvasHeight;
 
         this._psiPixPerUnit = canvasHeight / 3;	// scale for plotting psi (real and imag parts)
-        const plotMarginHeight = canvasHeight * 0.07;	// margin at bottom of density/phase plot
-        this._psi2PixPerUnit = (canvasHeight - plotMarginHeight) * 0.55;	// scale for plotting psi squared
+        this._plotMarginHeight = canvasHeight * 0.07;	// margin at bottom of density/phase plot
+        this._psi2PixPerUnit = (canvasHeight - this._plotMarginHeight) * 0.55;	// scale for plotting psi squared
 
         this._nColors = nColors;
         this._phaseColor = new Array(nColors + 1);
@@ -260,17 +263,21 @@ export class WavePacketDisplay {
             this._phaseColor[c] = toColorString(c / nColors);		// initialize array of colors
     }
 
-    _drawHorizontalAxis(xEnd, baselineY) {
+    get plotMarginHeight() { return this._plotMarginHeight; }
+    get psi2PixPerUnit() { return this._psi2PixPerUnit; }
+    get psiPixPerUnit() { return this._psi2PixPerUnit; }
+
+    _drawHorizontalAxis(baselineY) {
         this._context.strokeStyle = "#c0c0c0";
         this._context.lineWidth = 1;
         this._context.beginPath();
         this._context.moveTo(0, baselineY);
-        this._context.lineTo(xEnd, baselineY);
+        this._context.lineTo(this._xMax, baselineY);
         this._context.stroke();
         this._context.lineWidth = 2;
     }
 
-    _drawGrid(xMax, delta, gridBase, gridOffset) {
+    _drawGrid(delta, gridBase, gridOffset) {
         this._context.strokeStyle = "hsl(0, 0%, 60%)";
         this._context.lineWidth = 1;
 
@@ -323,6 +330,24 @@ export class WavePacketDisplay {
             this._context.strokeStyle = this._phaseColor[Math.round(localPhase * this._nColors / (2 * Math.PI))];
             this._context.stroke();
         }
+    }
+
+    plotPsi(psi, realImagEnabled, gridEnabled) {
+        this._context.clearRect(0, 0, this._xMax, this._canvasHeight);
+        this._context.lineWidth = 2;
+
+        const delta = 20;		// grid spacing in pixels
+        const baselineY = realImagEnabled ? this._canvasHeight * 0.5 : this._canvasHeight - this._plotMarginHeight;
+        const gridBase = realImagEnabled ? this._canvasHeight : baselineY;
+        const gridOffset = realImagEnabled ? (this._canvasHeight / 2) % delta : delta;
+        this._drawHorizontalAxis(baselineY);
+        if (realImagEnabled)
+            this._plotRealImaginary(psi, baselineY);
+        else
+            this._plotDensityPhase(psi, baselineY);
+
+        if (gridEnabled)
+            this._drawGrid(delta, gridBase, gridOffset);
     }
 }
 
