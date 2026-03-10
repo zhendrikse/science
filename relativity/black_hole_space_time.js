@@ -1,5 +1,5 @@
 import { Scene, PerspectiveCamera, WebGLRenderer, TextureLoader, PlaneGeometry, ShaderMaterial,
-    Vector2, Mesh, MathUtils } from "three";
+    Vector2, Vector3, Mesh, MathUtils } from "three";
 
 const canvas = document.getElementById("spaceTimeBendingCanvas");
 const scene = new Scene();
@@ -14,12 +14,13 @@ camera.position.z = 1;
 const renderer = new WebGLRenderer({antialias: true, canvas: canvas});
 renderer.setSize(width, height);
 renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setAnimationLoop( animate );
 
 const fovRadians = MathUtils.degToRad(camera.fov);
 const yFov = camera.position.z * Math.tan(fovRadians / 2) * 2;
 const spaceTexture = new TextureLoader()
-    //.load("https://www.hendrikse.name/science/astrophysics/images/background.jpg",
-    .load("https://i.imgur.com/1nVWbbd.jpg",
+    .load("https://www.hendrikse.name/science/astrophysics/images/background.jpg",
+        // .load("https://i.imgur.com/1nVWbbd.jpg",
         () => renderer.render(scene, camera)
     );
 
@@ -30,7 +31,7 @@ const vertexShader = `
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         vUv = uv;
     }
-    `;
+`;
 
 const fragmentShader = `
     varying vec2 vUv;
@@ -42,12 +43,12 @@ const fragmentShader = `
     const float GM = 0.15;
 
     vec3 camPos = vec3(0, 0, -3.0);
-    vec3 blackholePos = vec3(0, 0, 0);
+    uniform vec3 uBlackholePos;
     vec4 raytrace(vec3 rayDir, vec3 rayPos) {
       vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
       for (int i = 0; i < MAX_ITERATIONS; i++) {
-        float dist = length(rayPos - blackholePos);
-        vec3 r = rayPos - blackholePos;
+        float dist = length(rayPos - uBlackholePos);
+        vec3 r = rayPos - uBlackholePos;
         float r3 = dist * dist * dist;
         vec3 accel =-3.0 * GM * cross(rayDir, cross(r, rayDir)) / r3;
 
@@ -75,7 +76,8 @@ const canvasGeometry = new PlaneGeometry(yFov * camera.aspect, yFov);
 const canvasMaterial = new ShaderMaterial({
     uniforms: {
         uSpaceTexture: { value: spaceTexture },
-        uResolution: { value: new Vector2(width, height) }
+        uResolution: { value: new Vector2(width, height) },
+        uBlackholePos: { value: new Vector3(0, 0, 0) }
     },
     vertexShader,
     fragmentShader
@@ -84,5 +86,14 @@ const canvasMaterial = new ShaderMaterial({
 const canvasMesh = new Mesh(canvasGeometry, canvasMaterial);
 scene.add(canvasMesh);
 
-renderer.render(scene, camera);
+let time = 0;
+function animate() {
+    time += 0.01;
+    canvasMaterial.uniforms.uBlackholePos.value.set(
+        Math.sin(time) * 0.9,
+        Math.cos(time * 0.7) * 0.2,
+        0
+    );
+    renderer.render(scene, camera);
+}
 
