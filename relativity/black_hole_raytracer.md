@@ -8,7 +8,7 @@
 ⭐ Based on [Simulating a Schwarzschild Black Hole: Part 1 — The Background and Raytracer](https://medium.com/@cadenmarinozzi/simulating-a-schwarzschild-black-hole-part-1-the-background-and-raytracer-7de436a56b7e) by [Caden Marenozzi](https://medium.com/@cadenmarinozzi)
 
 <canvas id="spaceTimeBendingCanvas" class="applicationCanvas2D" style="aspect-ratio: 2/1;"></canvas>
-<script src="./black_hole_space_time.js"></script>
+<script type="module" src="./black_hole_space_time.js"></script>
 <p style="clear: both;"></p>
 
 ### Black hole ray tracing
