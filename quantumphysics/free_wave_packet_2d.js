@@ -17,9 +17,49 @@ let xMax;
 let canvasHeight;
 let display;
 
+class Display extends WavePacketDisplay {
+    constructor(context, xMax, canvasHeight) {
+        super(context, xMax, canvasHeight);
+    }
+
+    _plotRealImaginary(psi, psiTemp, baselineY) {
+        super._plotRealImaginary(psi, baselineY);
+
+        // Now draw the wavepacket we might add next, with transparency:
+        if (psiTempAlpha <= 0.001) return;
+        this._context.globalAlpha = psiTempAlpha;
+        super._plotRealImaginary(psiTemp, baselineY);
+        this._context.globalAlpha = 1.0;
+    }
+
+    _plotDensityPhase(psi, psiTemp, baselineY) {
+        super._plotDensityPhase(psi, baselineY);
+
+        // Now draw the wavepacket we might add next, with transparency:
+        if (psiTempAlpha <= 0.001) return;
+        theContext.globalAlpha = psiTempAlpha;
+        super._plotDensityPhase(psiTemp, baselineY);
+        theContext.globalAlpha = 1.0;
+    }
+
+    plotPsi(psi, psiTemp, realImagEnabled, gridEnabled) {
+        this._context.clearRect(0, 0, this._xMax, this._canvasHeight);
+        this._context.lineWidth = 2;
+
+        this._drawHorizontalAxis(this._baselineY(realImagEnabled));
+        if (realImagEnabled)
+            this._plotRealImaginary(psi, psiTemp, this._baselineY(realImagEnabled));
+        else
+            this._plotDensityPhase(psi, psiTemp, this._baselineY(realImagEnabled));
+
+        if (gridEnabled)
+            this._drawGrid(realImagEnabled);
+    }
+}
+
 pauseButton.addEventListener("click", () => startStop());
 document.getElementById("clearButton").addEventListener("click", () => clearPsi());
-gridCheck.addEventListener("click",  () => display.plotPsi(psi, realImag.checked, gridCheck.checked));
+gridCheck.addEventListener("click",  () => display.plotPsi(psi, psiTemp, realImag.checked, gridCheck.checked));
 posSlider.addEventListener("input", () => setPsiTemp());
 heightSlider.addEventListener("input", () => setPsiTemp());
 widthSlider.addEventListener("input", () => setPsiTemp());
@@ -55,7 +95,7 @@ function nextFrame() {
     const stepsPerFrame = Number(speedSlider.value);
     for (let step= 0; step < stepsPerFrame; step++)
         psi.step(dt); //psi.step();
-    display.plotPsi(psi, realImag.checked, gridCheck.checked);
+    display.plotPsi(psi, psiTemp, realImag.checked, gridCheck.checked);
     if (running) requestAnimationFrame(nextFrame);
 }
 
@@ -72,11 +112,11 @@ function fadePsiTemp() {
     if (psiTempAlpha <= 0.005) {
         psiTempAlpha = 0.0;
         fading = false;
-        display.plotPsi(psi, realImag.checked, gridCheck.checked);
+        display.plotPsi(psi, psiTemp, realImag.checked, gridCheck.checked);
         return;
     }
 
-    display.plotPsi(psi, realImag.checked, gridCheck.checked);
+    display.plotPsi(psi, psiTemp, realImag.checked, gridCheck.checked);
     requestAnimationFrame(fadePsiTemp);
 }
 
@@ -92,21 +132,21 @@ function setPsiTemp(center, pHeight, pWidth, k) {
     psiTempAlpha = 0.5;
 
     setTimeout(() => { startFadePsiTemp(); }, 2000);
-    display.plotPsi(psi, realImag.checked, gridCheck.checked);
+    display.plotPsi(psi, psiTemp, realImag.checked, gridCheck.checked);
 }
 
 // Add a new Gaussian wavepacket:
 function addPacket() {
     psi.addPacket(psiTemp, dt);
     psiTempAlpha = 0.0;
-    display.plotPsi(psi, realImag.checked, gridCheck.checked);
+    display.plotPsi(psi, psiTemp, realImag.checked, gridCheck.checked);
     if (!running) pauseButton.innerHTML = "Run";
 }
 
 // Set the wavefunction to zero:
 function clearPsi() {
     psi.clear();
-    display.plotPsi(psi, realImag.checked, gridCheck.checked);
+    display.plotPsi(psi, psiTemp, realImag.checked, gridCheck.checked);
 }
 
 // Mouse/touch interaction code:
@@ -221,9 +261,9 @@ function resizeCanvas() {
     // Update globals
     xMax = Math.floor(rect.width);
     canvasHeight = Math.floor(rect.height);
-    display = new WavePacketDisplay(theContext, xMax, canvasHeight)
+    display = new Display(theContext, xMax, canvasHeight)
     initPhysics();
-    display.plotPsi(psi, realImag.checked, gridCheck.checked);
+    display.plotPsi(psi, psiTemp, realImag.checked, gridCheck.checked);
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
