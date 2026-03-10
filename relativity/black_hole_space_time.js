@@ -18,8 +18,9 @@ renderer.setPixelRatio(window.devicePixelRatio);
 const fovRadians = MathUtils.degToRad(camera.fov);
 const yFov = camera.position.z * Math.tan(fovRadians / 2) * 2;
 const spaceTexture = new TextureLoader()
-    .load("https://upload.wikimedia.org/wikipedia/commons/8/85/Solarsystemscope_texture_8k_stars_milky_way.jpg", () =>
-    renderer.render(scene, camera)
+    //.load("https://www.hendrikse.name/science/astrophysics/images/background.jpg",
+    .load("https://i.imgur.com/1nVWbbd.jpg",
+        () => renderer.render(scene, camera)
     );
 
 const vertexShader = `

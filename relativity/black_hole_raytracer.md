@@ -10,7 +10,9 @@
 👉 Extended with the relativistic formula used for real-time black hole shaders (null geodesic approximation van de Schwarzschild metric):
 
 $$
-\frac{d\vec v}{ds} = -\frac{3GM}{r^3}\left(\vec v \times (\vec r \times \vec v)\right) \text{ where}  
+\frac{d\vec v}{ds} = -\frac{3GM}{r^3}\left(\vec v \times (\vec r \times \vec v)\right) \text{,}
+$$
+$$
 \begin{cases} \vec{v} = \text{ray direction} \\ 
 \vec{r} = \text{position with respect to the black hole} \\
 GM = \text{gravitational parameter} 
