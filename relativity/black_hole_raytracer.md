@@ -6,7 +6,7 @@
 ### Space-time ray tracing
 <div class="header_line"><br/></div>
 
-⭐ Based on [Simulating a Schwarzschild Black Hole: Part 1 — The Background and Raytracer](https://medium.com/@cadenmarinozzi/simulating-a-schwarzschild-black-hole-part-1-the-background-and-raytracer-7de436a56b7e) by [Caden Marenozzi](https://medium.com/@cadenmarinozzi)<br/>
+⭐ This [black_hole_space_time.js](https://github.com/zhendrikse/science/blob/main/relativity/black_hole_space_time.js) is based on [Simulating a Schwarzschild Black Hole: Part 1 — The Background and Raytracer](https://medium.com/@cadenmarinozzi/simulating-a-schwarzschild-black-hole-part-1-the-background-and-raytracer-7de436a56b7e) by [Caden Marenozzi](https://medium.com/@cadenmarinozzi)<br/>
 👉 Extended with the relativistic formula used for real-time black hole shaders (null geodesic approximation of the Schwarzschild metric):
 
 $$
@@ -20,7 +20,8 @@ GM &= \text{gravitational parameter}
 \end{cases}
 $$
 
-👉 Result: correct photon orbit behavior, stronger bending near the hole and realistic Einstein ring
+👉 Result: correct photon orbit behavior, stronger bending near the hole and realistic 
+[Einstein ring](https://en.wikipedia.org/wiki/Einstein_ring).
 
 <canvas id="spaceTimeBendingCanvas" style="width: 100%; aspect-ratio: 2/1;"></canvas>
 <div class="buttonRow">
