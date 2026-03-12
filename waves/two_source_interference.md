@@ -7,7 +7,7 @@ In this visualization, the interference pattern is generated "dynamically", i.e.
 the propagation of the waves using a [finite difference method](https://pythonnumericalmethods.studentorg.berkeley.edu/notebooks/chapter23.03-Finite-Difference-Method.html).
 
 🔧 Original [double slit experiment.py](https://github.com/NelsonHackerman/Random_python_ideas/blob/main/double%20slit%20experiment.py) by [Nelson Hackerman](https://github.com/NelsonHackerman) <br/>
-🔧 Ported to Javascript and [three.js](https://threejs.org/) by [Zeger Hendrikse](https://github.com/zhendrikse/), see [double_slit_interference.js](https://github.com/zhendrikse/science/blob/main/waves/double_slit_interference.js) <br/>
+🔧 Ported to Javascript and [three.js](https://threejs.org/) by [Zeger Hendrikse](https://github.com/zhendrikse/), see [two_slit_interference_3d.js](https://github.com/zhendrikse/science/blob/main/waves/two_slit_interference_3d.js)<br/>
 👉 [VPython](https://vpython.org/) version available as [dynamic_double_slit.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/dynamic_double_slit.py), but significantly slower!
 
 <div class="canvasWrapper" id="canvas-wrapper">
@@ -17,26 +17,26 @@ the propagation of the waves using a [finite difference method](https://pythonnu
     <button id="resetButton">🔄 Reset View</button>&nbsp;&nbsp;
     <label for="slitSizeSlider"><input type="range" min="3" max="25" value="6" class="slider" id="slitSizeSlider"/> Slit size</label>
 </div>
-<script type="module" src="double_slit_interference.js"></script>
+<script type="module" src="two_slit_interference_3d.js"></script>
 <p style="clear: both;"></p>
 
 ## 3D interference of two oscillating sources
 <div class="header_line"><br/></div>
 
-🔧 This [3d-two-source-interference.js](https://github.com/zhendrikse/science/blob/main/waves/3d-two-source-interference.js) uses [Three.js](https://threejs.org/)<br/>
+🔧 This [two_source_interference_3d.js](https://github.com/zhendrikse/science/blob/main/waves/two_source_interference_3d.js) uses [Three.js](https://threejs.org/)<br/>
 
 <div class="canvasWrapper" id="3dInterferenceWrapper">
     <canvas class="applicationCanvas" id="3dInterferenceCanvas"></canvas><br/>
 </div>
 <div id="gui-container"></div>
-<script type="module" src="3d-two-source-interference.js"></script>
+<script type="module" src="two_source_interference_3d.js"></script>
 
 <p style="clear: both;"></p>
 
 ## 2D interference of two oscillating sources
 <div class="header_line"><br/></div>
 
-🔧 This [2d-two-source-interference.js](https://github.com/zhendrikse/science/blob/main/waves/2d-two-source-interference.js) is 100% JavaScript<br/>
+🔧 This [two_source_interference.js](https://github.com/zhendrikse/science/blob/main/waves/two_source_interference_2d.js) is 100% JavaScript<br/>
 👉 Based on [interference.html](https://physics.weber.edu/schroeder/software/Interference.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/)  (Weber State University)<br/>
 🔑 Updated, refactored and extended by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 
@@ -58,7 +58,7 @@ the propagation of the waves using a [finite difference method](https://pythonnu
     </label><br><br>
     <button id="pauseButton">Start</button>
 </div>
-<script type="module" src="2d-two-source-interference.js"></script>
+<script type="module" src="two_source_interference_2d.js"></script>
 
 <p style="clear: both;"></p>
 
