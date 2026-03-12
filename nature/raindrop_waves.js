@@ -153,13 +153,11 @@ function centralFiniteDifferenceMethodTimestep() {
         for (let r = 1; r < dim_y - 1; r++) {
             u[0][c][r] = alpha[c][r] * (u[1][c - 1][r] + u[1][c + 1][r] + u[1][c][r - 1] + u[1][c][r + 1] - 4 * u[1][c][r]);
             u[0][c][r] += 2 * u[1][c][r] - u[2][c][r];
-        }
 
-    // Not part of the wave equation, but we need to remove energy from the system.
-    // The boundary conditions are closed. Energy cannot leave and the simulation keeps adding energy.
-    for (let i = 1; i < dim_x - 1; i++)
-        for (let j = 1; j < dim_y - 1; j++)
-            u[0][i][j] *= 0.995;
+            // Not part of the wave equation, but we need to remove energy from the system.
+            // The boundary conditions are closed. Energy cannot leave and the simulation keeps adding energy.
+            u[0][c][r] *= 0.995;
+        }
 }
 
 function placeRaindrops() {
