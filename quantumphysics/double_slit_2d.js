@@ -1,7 +1,6 @@
 import { hsvToRgb } from "../js/canvas-extensions.js";
 
 const theCanvas = document.getElementById("theCanvas");
-const theContext = theCanvas.getContext("2d");
 const vCanvas = document.getElementById("vCanvas");
 const pauseButton = document.getElementById("pauseButton");
 const speedSlider = document.getElementById("speedSlider");
@@ -18,6 +17,18 @@ eSlider.addEventListener("input", () => wpEnergyAdjust());
 document.getElementById("bEnergySlider").addEventListener("input", () => barrier.adjust());
 document.getElementById("bSizeSlider").addEventListener("input", () => barrier.adjust());
 document.getElementById("bSoftnessSlider").addEventListener("input", () => barrier.adjust());
+
+import * as THREE from "three";
+import {ThreeJsUtils} from "../js/three-js-extensions.js";
+
+const renderer = new THREE.WebGLRenderer({ canvas: theCanvas, antialias: true, alpha: true });
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+//ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+
+const scene = new THREE.Scene();
+
+
+const geometry = new THREE.PlaneGeometry(1, 1);
 
 let xMax = Number(theCanvas.width);
 let xMaxm1 = xMax - 1;
@@ -192,6 +203,9 @@ class Psi2D {
     get re() { return this._psi.re; }
     get im() { return this._psi.im; }
 
+    squaredAt = (index) =>  this._psi.re[index] * this._psi.re[index] + this._psi.im[index] * this._psi.im[index];
+    phaseAt = (index) =>  Math.atan2(this._psi.im[index], this._psi.re[index]) / (2 * Math.PI);
+
     // Integrate the TDSE for a double time step (centered-difference time integration):
     // (Remember that psi.im is one time step earlier than psi.re; same for psiNext.im and psiNext.re.)
     doStep(dt, barrier) {
@@ -264,46 +278,77 @@ function reset() {
     if (!running) pauseButton.innerHTML = "Run";
 }
 
-function paintCanvas(psi, imageData) {
+function paintCanvas(psi) {
     const brightSetting = Number(brightnessSlider.value);
-    const size = xMax; // use actual canvas size
+    const size = xMax;
 
     for (let y = 0; y < size; y++)
         for (let x = 0; x < size; x++) {
             const i = y * size + x;
-            const psi2 = psi.re[i] * psi.re[i] + psi.im[i] * psi.im[i];
-            let brightness = Math.sqrt(psi2) * brightSetting;
+            let brightness = Math.sqrt(psi.squaredAt(i)) * brightSetting;
             if (brightness > 1.0) brightness = 1.0;
 
-            let phase = Math.atan2(psi.im[i], psi.re[i]) / (2 * Math.PI);
-            if (phase < 0) phase += 1.0;
+            let phase = psi.phaseAt(i);
+            if (phase < 0) phase += 1;
 
-            const rgb = hsvToRgb(phase, 1.0, brightness);
-            const imageIndex = (x + (size - y - 1) * size) * 4;
-            imageData.data[imageIndex] = rgb.r;
-            imageData.data[imageIndex + 1] = rgb.g;
-            imageData.data[imageIndex + 2] = rgb.b;
-            imageData.data[imageIndex + 3] = Math.round(brightness * 255); // alpha based on brightness
+            const rgb = hsvToRgb(phase, 1, brightness);
+            const idx = (x + (size - y - 1) * size) * 4;
+
+            imgData.data[idx] = rgb.r;
+            imgData.data[idx+1] = rgb.g;
+            imgData.data[idx+2] = rgb.b;
+            imgData.data[idx+3] = brightness * 255;
         }
 
-    theContext.putImageData(imgData, 0, 0);
+    texture.needsUpdate = true;
+
+    renderer.render(scene, camera);
 }
 
 let imgData;
 let image;
+let texture;
+let material;
+let mesh;
 function setupArrays() {
-    image = theContext.createImageData(xMax, xMax);
-    imgData = theContext.createImageData(xMax, xMax);
+    image = {
+        data: new Uint8Array(xMax * xMax * 4)
+    };
+    imgData = {
+        data: new Uint8Array(xMax * xMax * 4)
+    };
     psi = new Psi2D(xMax);
-}
+    texture = new THREE.DataTexture(
+        imgData.data,
+        xMax,
+        xMax,
+        THREE.RGBAFormat
+    );
 
+    texture.needsUpdate = true;
+    texture.magFilter = THREE.NearestFilter;
+    texture.minFilter = THREE.NearestFilter;
+}
 function initSimulation(size) {
+
     xMax = size;
     xMaxm1 = xMax - 1;
 
     setupArrays();
+
+    material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true
+    });
+
+    mesh = new THREE.Mesh(geometry, material);
+
+    scene.clear();      // voorkomt dubbele planes
+    scene.add(mesh);
+
     barrier = new Barrier(xMax, vCanvas.getContext("2d"));
     barrier.adjust();
+
     reset();
 }
 
@@ -319,5 +364,8 @@ function resizeCanvas() {
     initSimulation(size);
 }
 
+
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
+ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+
