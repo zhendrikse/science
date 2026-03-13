@@ -1330,6 +1330,8 @@ export class RenderableSurface extends Object3D {
         this._colorMapper = colorMapper;
     }
 
+    _isEdge = (i, j) => i === 0 || j === 0 || i === this.numX - 1 || j === this.numY - 1;
+
     get amplitudes(){ return this._wave.amplitudes; }
     get numX(){ return this._wave.numVerticesX; }
     get numY(){ return this._wave.numVerticesY; }
@@ -1349,8 +1351,8 @@ export class RenderableSurface extends Object3D {
     }
 
     update(){
-        for(let i = 1; i < this.numX - 1; i++)
-            for(let j = 1; j < this.numY - 1; j++){
+        for(let i = 0; i < this.numX; i++)
+            for(let j = 0; j < this.numY; j++){
                 const h = this.amplitudes[i][j];
                 const t = this.normalizeHeight(h);
 
@@ -1385,8 +1387,6 @@ export class InstanceSurface extends RenderableSurface {
             for(let j=0;j<this.numY;j++)
                 this.updateVertex(i, j, 0, 0);
     }
-
-    _isEdge = (i, j) => i === 0 || j === 0 || i === this.numX - 1 || j === this.numY - 1;
 
     updateVertex(i,j,h,t){
         const index = i*this.numY+j;
@@ -1591,12 +1591,13 @@ export class CubesSurface extends InstanceSurface {
         super(wave, colorMapper, new BoxGeometry(blockSize, blockSize, blockSize));
     }
 
-    orientInstance(i,j) {
+    _orientInstance(i,j) {
+        if (this._isEdge(i, j)) return;
         this._dummy.quaternion.setFromUnitVectors(this._up, this._wave.normalAt(i,j));
     }
 
     updateVertex(i, j, h, t) {
-        this.orientInstance(i, j);
+        this._orientInstance(i, j);
         super.updateVertex(i, j, h, t);
     }
 }
@@ -1622,23 +1623,13 @@ export class ConesSurface extends InstanceSurface {
         super(wave, colorMapper, new ConeGeometry(radius, height, radialSegments, heightSegments));
     }
 
-
-    updateVertex(i, j, h, t) {
-        const index = i * this.numY + j;
-        this._dummy.position.set(
-            (i / this.numX - 0.5) * this.size,
-            h,
-            (j / this.numY - 0.5) * this.size
-        );
-
-        this.orientInstance(i, j);
-
-        this._dummy.updateMatrix();
-        this._mesh.setMatrixAt(index, this._dummy.matrix);
-        this._colorMapper.getColor(t, this._colorArray, index * 3);
+    _orientInstance(i,j) {
+        if (this._isEdge(i, j)) return;
+        this._dummy.quaternion.setFromUnitVectors(this._up, this._wave.normalAt(i,j));
     }
 
-    orientInstance(i,j){
-        this._dummy.quaternion.setFromUnitVectors(this._up, this._wave.normalAt(i,j));
+    updateVertex(i, j, h, t) {
+        this._orientInstance(i, j);
+        super.updateVertex(i, j, h, t);
     }
 }
