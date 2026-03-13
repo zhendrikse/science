@@ -54,9 +54,9 @@ class Wave {
     get maxHeight() { return this._disturbanceIntensity * .5; }
 
     _init(numVerticesX, numVerticesY) {
-        this._old = [new Float32Array(numVerticesX), new Float32Array(numVerticesY)];
-        this._next = [new Float32Array(numVerticesX), new Float32Array(numVerticesY)];
-        this._current = [new Float32Array(numVerticesX), new Float32Array(numVerticesY)];
+        this._old = Array.from({length: numVerticesX}, () => new Float32Array(numVerticesY));
+        this._current = Array.from({length: numVerticesX}, () => new Float32Array(numVerticesY));
+        this._next = Array.from({length: numVerticesX}, () => new Float32Array(numVerticesY));
     }
 
     update(damping=0.995) {
@@ -69,10 +69,10 @@ class Wave {
             }
 
         // shift buffers
-        for(let i=0;i< this._numVerticesX;i++) {
-            this._old[i] = this._current[i].slice();
-            this._current[i] = this._next[i].slice();
-        }
+        let temp = this._old;
+        this._old = this._current;
+        this._current = this._next;
+        this._next = temp;
     }
 
     normalAt(i, j) {
@@ -108,7 +108,7 @@ class Wave {
 const params = {
     frequency: 5,
     intensity: .5,
-    colorMap: SurfaceColorMapper.Mode.WATER,
+    colorMap: SurfaceColorMapper.Mode.WATER_ALTERNATIVE,
     surfaceType: RenderableSurface.Type.PLANE
 };
 class ControlsGui {
