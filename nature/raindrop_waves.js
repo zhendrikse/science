@@ -54,13 +54,12 @@ class Wave {
     get maxHeight() { return this._disturbanceIntensity * .5; }
 
     _init() {
-        const Array2D = (r, c) => [...Array(r)].map(_ => Array(c).fill(0));
-        this._old = Array2D(this._numVerticesX, this._numVerticesY);
-        this._next = Array2D(this._numVerticesX, this._numVerticesY);
-        this._current = Array2D(this._numVerticesX, this._numVerticesY);
+        this._old = [new Float32Array(wave.numVerticesX), new Float32Array(wave.numVerticesY)];
+        this._next = [new Float32Array(wave.numVerticesX), new Float32Array(wave.numVerticesY)];
+        this._current = [new Float32Array(wave.numVerticesX), new Float32Array(wave.numVerticesY)];
     }
 
-    update(damping=0.9975) {
+    update(damping=0.995) {
         for(let i=1;i< this._numVerticesX-1;i++)
             for(let j=1;j< this._numVerticesY-1;j++) {
                 this._next[i][j] = 2 * this._current[i][j] - this._old[i][j] + this._r * (
