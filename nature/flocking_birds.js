@@ -165,6 +165,7 @@ const flock = new Flock(250);
 function animationLoop() {
     flock.update(dt);
     renderer.render( scene, camera );
+    controls.update();
 }
 
 // GUI controls

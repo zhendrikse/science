@@ -1492,7 +1492,7 @@ export class ShaderSurface extends RenderableSurface {
 }
 
 export class PointsSurface extends RenderableSurface {
-    constructor(wave, colorMapper, radius=.15) {
+    constructor(wave, colorMapper, {radius=.15} = {}) {
         super(wave, colorMapper);
         const count = wave.numVerticesX * wave.numVerticesY;
         const geometry = new BufferGeometry();
@@ -1567,13 +1567,17 @@ export class PlaneSurface extends RenderableSurface {
 }
 
 export class SpheresSurface extends InstanceSurface {
-    constructor(wave, colorMapper, radius = 0.075) {
-        super(wave, colorMapper, new SphereGeometry(radius, 8, 8));
+    constructor(wave, colorMapper, {
+        radius = 0.075,
+        widthSegments = 8,
+        heightSegments = 8
+    } = {}) {
+        super(wave, colorMapper, new SphereGeometry(radius, widthSegments, heightSegments));
     }
 }
 
 export class CubesSurface extends InstanceSurface {
-    constructor(wave, colorMapper, blockSize = 0.075) {
+    constructor(wave, colorMapper, {blockSize = 0.075} = {}) {
         super(wave, colorMapper, new BoxGeometry(blockSize, blockSize, blockSize));
     }
 
@@ -1598,14 +1602,40 @@ export class CubesSurface extends InstanceSurface {
 }
 
 export class CapsulesSurface extends InstanceSurface {
-    constructor(wave,colorMapper){
-        super(wave, colorMapper, new CapsuleGeometry(0.05,0.1,4,8));
+    constructor(wave, colorMapper, {
+        radius=0.05,
+        height=0.1,
+        radialSegments=4,
+        heightSegments=8
+    } = {}){
+        super(wave, colorMapper, new CapsuleGeometry(radius, height, radialSegments, heightSegments));
     }
 }
 
 export class ConesSurface extends InstanceSurface {
-    constructor(wave,colorMapper){
-        super(wave, colorMapper, new ConeGeometry(0.05,0.1,8));
+    constructor(wave, colorMapper, {
+        radius = 0.05,
+        height=0.1,
+        radialSegments=8,
+        heightSegments=1
+    } = {}){
+        super(wave, colorMapper, new ConeGeometry(radius, height, radialSegments, heightSegments));
+    }
+
+
+    updateVertex(i, j, h, t) {
+        const index = i * this.numY + j;
+        this._dummy.position.set(
+            (i / this.numX - 0.5) * this.size,
+            h,
+            (j / this.numY - 0.5) * this.size
+        );
+
+        this.orientInstance(i, j);
+
+        this._dummy.updateMatrix();
+        this._mesh.setMatrixAt(index, this._dummy.matrix);
+        this._colorMapper.getColor(t, this._colorArray, index * 3);
     }
 
     orientInstance(i,j){

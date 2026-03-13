@@ -1,8 +1,9 @@
 import { DirectionalLight, AmbientLight, Scene, PerspectiveCamera, WebGLRenderer, Color, Vector3 } from "three";
 import { CubesSurface, SurfaceColorMapper, RenderableSurface, PointsSurface, SpheresSurface, CapsulesSurface,
     ConesSurface, ShaderSurface, PlaneSurface } from "../js/3d-surface-components.js";
+import {ThreeJsUtils} from "../js/three-js-extensions.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import {ThreeJsUtils} from "../js/three-js-extensions";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const canvas = document.getElementById("raindropsCanvas");
 const scene = new Scene();
@@ -13,7 +14,9 @@ camera.position.set(10, 5, 5);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({antialias: true, alpha: true, canvas: canvas});
+renderer.setAnimationLoop(animate);
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+const controls = new OrbitControls( camera, canvas );
 
 const light = new DirectionalLight(0xffffff, 2);
 light.position.set(10, 5, 5);
@@ -22,8 +25,8 @@ scene.add(new AmbientLight(0xffffff, 0.4));
 
 class Wave {
     constructor({
-                    numVerticesX=300,
-                    numVerticesY=300,
+                    numVerticesX=250,
+                    numVerticesY=250,
                     vertexDistance=10,
                     disturbanceIntensity=0.5
                 } = {}) {
@@ -127,13 +130,13 @@ class ControlsGui {
             scene.remove(surface);
             switch (value) {
                 case RenderableSurface.Type.SPHERES:
-                    surface = new SpheresSurface(wave, colorMapper);
+                    surface = new SpheresSurface(wave, colorMapper, {radius: 0.02});
                     break;
                 case RenderableSurface.Type.CAPSULES:
                     surface = new CapsulesSurface(wave, colorMapper);
                     break;
                 case RenderableSurface.Type.POINTS:
-                    surface = new PointsSurface(wave, colorMapper);
+                    surface = new PointsSurface(wave, colorMapper, {radius: 0.01});
                     break;
                 case RenderableSurface.Type.SHADER:
                     surface = new ShaderSurface(wave, colorMapper);
@@ -166,8 +169,10 @@ function animate(){
         if (subStep % 3 === 0) surface.update();
     }
 
+    surface.update();
     if (Math.random() < params.frequency * .01)
         wave.placeRaindrop(params.intensity);
 
     renderer.render(scene, camera);
+    controls.update();
 }
