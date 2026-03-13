@@ -1261,6 +1261,16 @@ export class SurfaceColorMapper {
         this._mode = mode;
         this._colorMap = colors255[mode];
         this._tmp = new Color();
+
+        const needsDynamicColorArray = !colors255[mode];
+        if (needsDynamicColorArray) {
+            this._colorMap = new Array(256).fill(0).map((_, i) => {
+                const t = i / 255;
+                const out = [0, 0, 0];
+                this.getColor(t, out, 0);
+                return out;
+            });
+        }
     }
 
     get colorMap() { return this._colorMap; }

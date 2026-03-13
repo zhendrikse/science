@@ -25,11 +25,10 @@ class ControlsGui {
         const gui = new GUI({width: "100%", autoPlace: false});
         this._membrane = membrane;
 
-        gui.add(params, 'colorMap', Object.keys(SurfaceColorMapper.Mode))
+        gui.add(params, 'colorMap', Object.values(SurfaceColorMapper.Mode))
             .name("Color map")
-            .onChange(key => {
-                const modeValue = SurfaceColorMapper.Mode[key];
-                colorMapper = new SurfaceColorMapper(modeValue);
+            .onChange(value => {
+                colorMapper = new SurfaceColorMapper(value);
                 surface.colorMapper = colorMapper;
             });
 
