@@ -179,6 +179,7 @@ const membrane = new Membrane({
     numVerticesX: 100,
     numVerticesY: 100
 });
+
 let colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.RDYLBU_COLOR_MAP);
 let surface = new SpheresSurface(membrane, colorMapper);
 worldGroup.add(surface);

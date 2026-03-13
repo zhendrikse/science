@@ -7,7 +7,6 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const canvas = document.getElementById("raindropsCanvas");
 const scene = new Scene();
-scene.background = new Color(0x111111);
 
 const camera = new PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
 camera.position.set(10, 5, 5);

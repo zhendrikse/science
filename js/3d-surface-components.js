@@ -1247,14 +1247,14 @@ export class SurfaceColorMapper {
     static foam = new Color(0xffffff);
 
     static Mode = Object.freeze({
-        SEISMIC_COLOR_MAP: "seismic color map",
+        SEISMIC_COLOR_MAP: "seismic",
         GRADIENT: "gradient",
         WATER: "water",
         WATER_ALTERNATIVE: "water alternative",
-        VIRIDIS_COLOR_MAP: "viridis color map",
-        JET_COLOR_MAP: "jet color map",
-        INFERNO_COLOR_MAP: "inferno color map",
-        RDYLBU_COLOR_MAP: "RdYlBu color map"
+        VIRIDIS_COLOR_MAP: "viridis",
+        JET_COLOR_MAP: "jet",
+        INFERNO_COLOR_MAP: "inferno",
+        RDYLBU_COLOR_MAP: "RdYlBu"
     });
 
     constructor(mode=SurfaceColorMapper.Mode.WATER) {
@@ -1262,8 +1262,7 @@ export class SurfaceColorMapper {
         this._colorMap = colors255[mode];
         this._tmp = new Color();
 
-        const needsDynamicColorArray = !colors255[mode];
-        if (needsDynamicColorArray) {
+        if (!this._colorMap) {
             this._colorMap = new Array(256).fill(0).map((_, i) => {
                 const t = i / 255;
                 const out = [0, 0, 0];
@@ -1376,12 +1375,23 @@ export class InstanceSurface extends RenderableSurface {
 
         this._mesh = new InstancedMesh(geometry, this._material(), wave.numVerticesX * wave.numVerticesY);
         this._mesh.instanceColor = new InstancedBufferAttribute(this._colorArray, 3);
+        this._mesh.instanceColor.needsUpdate = true;
         this.add(this._mesh);
+        this._init();
     }
+
+    _init() {
+        for(let i=0;i<this.numX;i++)
+            for(let j=0;j<this.numY;j++)
+                this.updateVertex(i, j, 0, 0);
+    }
+
+    _isEdge = (i, j) => i === 0 || j === 0 || i === this.numX - 1 || j === this.numY - 1;
 
     updateVertex(i,j,h,t){
         const index = i*this.numY+j;
 
+        this._dummy.scale.setScalar(this._isEdge(i, j) ? 0 : 1);
         this._dummy.position.set(
             (i/this.numX-.5)*this.size,
             h,
@@ -1508,8 +1518,8 @@ export class PointsSurface extends RenderableSurface {
             vertexColors: true
         });
 
-        for (let i = 0; i < wave.numVerticesX; i++)
-            for(let j = 0; j < wave.numVerticesY; j++) {
+        for (let i = 0; i < this.numX; i++)
+            for(let j = 0; j < this.numY; j++) {
                 const index = i*this.numY+j;
                 this._positions[index*3+0]=(i/this.numX-.5)*this.size;
                 this._positions[index*3+2]=(j/this.numY-.5)*this.size;
@@ -1568,7 +1578,7 @@ export class PlaneSurface extends RenderableSurface {
 
 export class SpheresSurface extends InstanceSurface {
     constructor(wave, colorMapper, {
-        radius = 0.075,
+        radius = 0.05,
         widthSegments = 8,
         heightSegments = 8
     } = {}) {
@@ -1577,7 +1587,7 @@ export class SpheresSurface extends InstanceSurface {
 }
 
 export class CubesSurface extends InstanceSurface {
-    constructor(wave, colorMapper, {blockSize = 0.075} = {}) {
+    constructor(wave, colorMapper, {blockSize = 0.07} = {}) {
         super(wave, colorMapper, new BoxGeometry(blockSize, blockSize, blockSize));
     }
 
@@ -1586,18 +1596,8 @@ export class CubesSurface extends InstanceSurface {
     }
 
     updateVertex(i, j, h, t) {
-        const index = i * this.numY + j;
-        this._dummy.position.set(
-            (i / this.numX - 0.5) * this.size,
-            h,
-            (j / this.numY - 0.5) * this.size
-        );
-
         this.orientInstance(i, j);
-
-        this._dummy.updateMatrix();
-        this._mesh.setMatrixAt(index, this._dummy.matrix);
-        this._colorMapper.getColor(t, this._colorArray, index * 3);
+        super.updateVertex(i, j, h, t);
     }
 }
 
