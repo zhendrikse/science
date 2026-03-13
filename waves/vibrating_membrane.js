@@ -21,9 +21,8 @@ const params = {
 };
 
 class ControlsGui {
-    constructor(membrane) {
+    constructor() {
         const gui = new GUI({width: "100%", autoPlace: false});
-        this._membrane = membrane;
 
         gui.add(params, 'colorMap', Object.values(SurfaceColorMapper.Mode))
             .name("Color map")
@@ -34,7 +33,7 @@ class ControlsGui {
 
         gui.add(params, 'normalMode', Object.values(Membrane.Mode))
             .name("Normal mode")
-            .onChange(value => this._membrane.normalMode = value);
+            .onChange(value => membrane.normalMode = value);
 
         gui.add(params, 'surfaceType', Object.values(RenderableSurface.Type))
             .name("Surface type")
@@ -42,25 +41,25 @@ class ControlsGui {
                 worldGroup.remove(surface);
                 switch (value) {
                     case RenderableSurface.Type.SPHERES:
-                        surface = new SpheresSurface(this._membrane, colorMapper);
+                        surface = new SpheresSurface(membrane, colorMapper);
                         break;
                     case RenderableSurface.Type.CAPSULES:
-                        surface = new CapsulesSurface(this._membrane, colorMapper);
+                        surface = new CapsulesSurface(membrane, colorMapper);
                         break;
                     case RenderableSurface.Type.POINTS:
-                        surface = new PointsSurface(this._membrane, colorMapper);
+                        surface = new PointsSurface(membrane, colorMapper);
                         break;
                     case RenderableSurface.Type.SHADER:
-                        surface = new ShaderSurface(this._membrane, colorMapper);
+                        surface = new ShaderSurface(membrane, colorMapper);
                         break;
                     case RenderableSurface.Type.PLANE:
-                        surface = new PlaneSurface(this._membrane, colorMapper);
+                        surface = new PlaneSurface(membrane, colorMapper);
                         break;
                     case RenderableSurface.Type.CONES:
-                        surface = new ConesSurface(this._membrane, colorMapper);
+                        surface = new ConesSurface(membrane, colorMapper);
                         break;
                     case RenderableSurface.Type.CUBES:
-                        surface = new CubesSurface(this._membrane, colorMapper);
+                        surface = new CubesSurface(membrane, colorMapper);
                         break;
                 }
                 worldGroup.add(surface);

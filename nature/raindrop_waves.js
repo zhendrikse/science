@@ -1,6 +1,8 @@
 import { DirectionalLight, AmbientLight, Scene, PerspectiveCamera, WebGLRenderer, Color, Vector3 } from "three";
-import { PlaneSurface, CubesSurface, SurfaceColorMapper, ShaderSurface } from "../js/3d-surface-components.js";
+import { CubesSurface, SurfaceColorMapper, RenderableSurface, PointsSurface, SpheresSurface, CapsulesSurface,
+    ConesSurface, ShaderSurface, PlaneSurface } from "../js/3d-surface-components.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+import {ThreeJsUtils} from "../js/three-js-extensions";
 
 const canvas = document.getElementById("raindropsCanvas");
 const scene = new Scene();
@@ -11,9 +13,7 @@ camera.position.set(10, 5, 5);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({antialias: true, alpha: true, canvas: canvas});
-renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-renderer.setAnimationLoop( animate );
-document.body.appendChild(renderer.domElement);
+ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 
 const light = new DirectionalLight(0xffffff, 2);
 light.position.set(10, 5, 5);
@@ -103,7 +103,12 @@ class Wave {
     }
 }
 
-const params = { frequency: 5, intensity: .5 };
+const params = {
+    frequency: 5,
+    intensity: .5,
+    colorMap: SurfaceColorMapper.Mode.WATER,
+    surfaceType: RenderableSurface.Type.PLANE
+};
 class ControlsGui {
     constructor() {
         const gui = new GUI({width: "100%", autoPlace: false});
@@ -111,13 +116,48 @@ class ControlsGui {
 
         gui.add(params, "frequency", 0, 10, 0.1).name("Frequency");
         gui.add(params, "intensity", 0.01, 1, 0.01).name("Intensity");
+        gui.add(params, 'colorMap', Object.values(SurfaceColorMapper.Mode))
+            .name("Color map")
+            .onChange(value => {
+                colorMapper = new SurfaceColorMapper(value);
+                surface.colorMapper = colorMapper;
+            });
+
+        gui.add(params, 'surfaceType', Object.values(RenderableSurface.Type)).name("Surface type").onChange(value => {
+            scene.remove(surface);
+            switch (value) {
+                case RenderableSurface.Type.SPHERES:
+                    surface = new SpheresSurface(wave, colorMapper);
+                    break;
+                case RenderableSurface.Type.CAPSULES:
+                    surface = new CapsulesSurface(wave, colorMapper);
+                    break;
+                case RenderableSurface.Type.POINTS:
+                    surface = new PointsSurface(wave, colorMapper);
+                    break;
+                case RenderableSurface.Type.SHADER:
+                    surface = new ShaderSurface(wave, colorMapper);
+                    break;
+                case RenderableSurface.Type.PLANE:
+                    surface = new PlaneSurface(wave, colorMapper);
+                    break;
+                case RenderableSurface.Type.CONES:
+                    surface = new ConesSurface(wave, colorMapper);
+                    break;
+                case RenderableSurface.Type.CUBES:
+                    surface = new CubesSurface(wave, colorMapper);
+                    break;
+            }
+            scene.add(surface);
+        });
+
     }
 }
 new ControlsGui();
 
 const wave = new Wave();
-const colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER_ALTERNATIVE);
-const surface = new PlaneSurface(wave, colorMapper);
+let colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER_ALTERNATIVE);
+let surface = new PlaneSurface(wave, colorMapper);
 scene.add(surface);
 
 function animate(){
