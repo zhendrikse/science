@@ -1,10 +1,10 @@
 import { ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 import { Arrow, Interval, ThreeJsUtils }
     from '../js/three-js-extensions.js';
-import { Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3,
-    MathUtils, Color, SphereGeometry, CapsuleGeometry, ConeGeometry,
+import { Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3, LineSegments,
+    MathUtils, Color, SphereGeometry, CapsuleGeometry, ConeGeometry, LineBasicMaterial, Line,
     Points, PointsMaterial, BufferAttribute, BufferGeometry, InstancedBufferAttribute,
-    InstancedMesh, BoxGeometry, Object3D, ShaderMaterial,
+    InstancedMesh, BoxGeometry, Object3D, ShaderMaterial, Float32BufferAttribute,
     RedFormat, DataTexture, FloatType} from "three";
 import { colors255 } from "../js/color-maps.js";
 
@@ -107,12 +107,12 @@ export class HeightColorMapper extends ColorMapper {
         let colorAttr = geometry.attributes.color;
         if (!colorAttr) {
             const colors = new Float32Array(count * 3);
-            colorAttr = new THREE.BufferAttribute(colors, 3);
+            colorAttr = new BufferAttribute(colors, 3);
             geometry.setAttribute("color", colorAttr);
         }
 
         const yRange = this.#computeYRange(posAttr);
-        const color = new THREE.Color();
+        const color = new Color();
         const hsl = {};
 
         for (let i = 0; i < count; i++) {
@@ -427,15 +427,15 @@ export class CurvatureContoursView extends SurfaceView {
             }
 
         if (points.length === 0) return;
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        this._material = new THREE.PointsMaterial({
+        const geometry = new BufferGeometry().setFromPoints(points);
+        this._material = new PointsMaterial({
             size: 0.04,
             color: color,
             opacity: opacity,
             transparent: true
         });
 
-        this._pointsObject = new THREE.Points(geometry, this._material);
+        this._pointsObject = new Points(geometry, this._material);
         this._group.add(this._pointsObject);
     }
 
@@ -465,8 +465,8 @@ export class IsoparametricContoursView extends SurfaceView {
     }
 
     #addLine(points, material) {
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const line = new THREE.Line(geometry, material);
+        const geometry = new BufferGeometry().setFromPoints(points);
+        const line = new Line(geometry, material);
         this._group.add(line);
         this._lines.push(line);
     }
@@ -477,8 +477,8 @@ export class IsoparametricContoursView extends SurfaceView {
                   segments = 100,
                   color = 0xffffff
               } = {}) {
-        const material = new THREE.LineBasicMaterial({ color: color, transparent: true, depthWrite: true, depthTest: true });
-        const target = new THREE.Vector3();
+        const material = new LineBasicMaterial({ color: color, transparent: true, depthWrite: true, depthTest: true });
+        const target = new Vector3();
 
         // u = constant, v varies
         for (let i = 0; i <= uCount; i++) {
@@ -541,7 +541,7 @@ export class MinimalSurfaceView extends SurfaceView {
         this._geometry = mathematicalSurface.createGeometryWith(resolution);
         this._material = this.material(showWireframe, 1);
         this._colorMapper = new CustomColorColorMapper(baseColor);
-        this._mesh = new THREE.Mesh(this._geometry, this._material);
+        this._mesh = new Mesh(this._geometry, this._material);
         this._group.add(this._mesh);
         this._colorMapper.apply(this._geometry);
     }
@@ -572,11 +572,11 @@ export class NormalsView extends SurfaceView {
     }
 
     #createLineSegments(positions, colors) {
-        const normalsGeometry = new THREE.BufferGeometry();
-        normalsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-        normalsGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-        const material = new THREE.LineBasicMaterial({vertexColors: true, depthTest: false});
-        return new THREE.LineSegments(normalsGeometry, material);
+        const normalsGeometry = new BufferGeometry();
+        normalsGeometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+        normalsGeometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
+        const material = new LineBasicMaterial({vertexColors: true, depthTest: false});
+        return new LineSegments(normalsGeometry, material);
     }
 
     #createNormalLines(normalScale, curvatureGain, stride) {
@@ -603,7 +603,7 @@ export class NormalsView extends SurfaceView {
             );
 
             // color encodes normal direction
-            const color = new THREE.Color(0.5 * (N.x + 1), 0.5 * (N.y + 1), 0.5 * (N.z + 1));
+            const color = new Color(0.5 * (N.x + 1), 0.5 * (N.y + 1), 0.5 * (N.z + 1));
             colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
         }
 
@@ -809,7 +809,7 @@ export class DifferentialGeometry {
         const result = this.principalDirections(u, v);
         if (!result) return null;
 
-        const position = new THREE.Vector3();
+        const position = new Vector3();
         this._surfaceDefinition.sample(u, v, position);
 
         return new PrincipalFrame({
