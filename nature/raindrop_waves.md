@@ -9,7 +9,7 @@
 👉 Also available in [VPython](https://vpython.org/) as 
   [raindrop_waves.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/raindrop_waves.py), but significantly slower!
 
-<canvas class="applicationCanvas" id="raindropsCanvas" style="aspect-ratio: 4 / 3;"></canvas>
+<canvas class="applicationCanvas" id="raindropsCanvas" style="aspect-ratio: 2 / 1;"></canvas>
 <div class="guiContainer" id="raindropsGui"></div>
 <script type="module" src="raindrop_waves.js"></script>
 <p style="clear: both;"></p>
