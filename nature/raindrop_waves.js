@@ -1,192 +1,133 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { ThreeJsUtils } from '../js/three-js-extensions.js';
+import { DirectionalLight, AmbientLight, Scene, PerspectiveCamera, WebGLRenderer, Color, Vector3 } from "three";
+import { PlaneSurface, CubesSurface, SurfaceColorMapper, ShaderSurface } from "../js/3d-surface-components.js";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
-const Array2D = (r, c, value = 0) => [...Array(r)].map(_ => Array(c).fill(value));
-const vector = THREE.Vector3;
-const raindropsScene = new THREE.Scene();
+const canvas = document.getElementById("raindropsCanvas");
+const scene = new Scene();
+scene.background = new Color(0x111111);
 
-const raindropCanvas = document.getElementById('raindropCanvas');
-raindropCanvas.focus();
+const camera = new PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+camera.position.set(10, 5, 5);
+camera.lookAt(0, 0, 0);
 
-//
-// Simulation constants
-//
-const dim_x = 400;
-const dim_y = 300;
-const dh = 1;  // spatial step width
-const dt = 1; //  time step width
-const c = 0.5  // The "original" wave propagation speed
-const wavePropagationVelocity = ((c * dt) / dh) ** 2;
-let raindropFrequency = 20 / 1000;
-let raindropIntensity = 120;
+const renderer = new WebGLRenderer({antialias: true, alpha: true, canvas: canvas});
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setAnimationLoop( animate );
+document.body.appendChild(renderer.domElement);
 
-const u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];  // The 3D simulation grid
-const alpha = Array2D(dim_x, dim_y, wavePropagationVelocity)
+const light = new DirectionalLight(0xffffff, 2);
+light.position.set(10, 5, 5);
+scene.add(light);
+scene.add(new AmbientLight(0xffffff, 0.4));
 
-//
-// Class definitions
-//
-class Surface {
-    constructor() {
-        this.colors = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
+class Wave {
+    constructor({
+                    numVerticesX=300,
+                    numVerticesY=300,
+                    vertexDistance=10,
+                    disturbanceIntensity=0.5
+                } = {}) {
+        this._numVerticesX = numVerticesX;
+        this._numVerticesY = numVerticesY;
+        this._vertexDistance = vertexDistance;
+        this._old = [];
+        this._current = [];
+        this._next = [];
+        this._disturbanceIntensity = disturbanceIntensity;
 
-        this.geometry = new THREE.PlaneGeometry(2, 2, dim_x, dim_y).toNonIndexed();
-        const material = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
-
-        const colours = [];
-        const position = this.geometry.attributes.position;
-        const numVertices = position.count;
-        for (let i = 0; i < numVertices; i++)
-            colours.push(0, 0, 0);
-        this.geometry.setAttribute('color', new THREE.Float32BufferAttribute(colours, 3));
-
-        this.surface = new THREE.Mesh(this.geometry, material);
-        raindropsScene.add(this.surface);
-
+        this._dx = vertexDistance / (this._numVerticesX - 1);
+        this._dy = vertexDistance / (this._numVerticesY - 1);
+        const c = 1.5;                      // propagation velocity
+        const dt = 0.4 * this._dx / c;      // stable timestep
+        this._r = (c * dt / this._dx) * (c * dt / this._dy);
+        this._init();
     }
 
-    colorSegmentAt(x, y, color) {
-        // Each quad has 2 triangles (6 vertices)
-        const quadIndex = y * dim_x + x;
-        const vertexStart = quadIndex * 6;
+    get numVerticesX() { return this._numVerticesX; }
+    get numVerticesY() { return this._numVerticesY; }
+    get amplitudes() { return this._current; }
+    get vertexDistance() { return this._vertexDistance; }
+    get minHeight() { return -this._disturbanceIntensity * .5; }
+    get maxHeight() { return this._disturbanceIntensity * .5; }
 
-        const colors = this.geometry.attributes.color.array;
-        for (let i = 0; i < 6; i++) {
-            const vertexIndex = vertexStart + i;
-            colors[vertexIndex * 3 + 0] = color.r;
-            colors[vertexIndex * 3 + 1] = color.g;
-            colors[vertexIndex * 3 + 2] = color.b;
+    _init() {
+        const Array2D = (r, c) => [...Array(r)].map(_ => Array(c).fill(0));
+        this._old = Array2D(this._numVerticesX, this._numVerticesY);
+        this._next = Array2D(this._numVerticesX, this._numVerticesY);
+        this._current = Array2D(this._numVerticesX, this._numVerticesY);
+    }
+
+    update(damping=0.9975) {
+        for(let i=1;i< this._numVerticesX-1;i++)
+            for(let j=1;j< this._numVerticesY-1;j++) {
+                this._next[i][j] = 2 * this._current[i][j] - this._old[i][j] + this._r * (
+                    this._current[i + 1][j] + this._current[i - 1][j] + this._current[i][j + 1] + this._current[i][j - 1] - 4 * this._current[i][j]
+                );
+                this._next[i][j] *= damping;
+            }
+
+        // shift buffers
+        for(let i=0;i< this._numVerticesX;i++) {
+            this._old[i] = this._current[i].slice();
+            this._current[i] = this._next[i].slice();
         }
-
-        this.geometry.attributes.color.needsUpdate = true;
     }
 
-    update() {
-        for (let i = 0; i < dim_x; i++)
-            for (let j = 0; j < dim_y; j++)
-                for (let k = 0; k < 3; k++) {
-                    this.colors[k][i][j] = (u[k][i][j] + 128) / 255;
-                    if (this.colors[k][i][j] < 0)
-                        this.colors[k][i][j] = 0;
-                    if (this.colors[k][i][j] > 1)
-                        this.colors[k][i][j] = 1;
-                }
+    normalAt(i, j) {
+        const hL = this._current[i-1][j];
+        const hR = this._current[i+1][j];
+        const hD = this._current[i][j-1];
+        const hU = this._current[i][j+1];
 
-        this.updatePixelsWithNewColors();
+        const dHx = (hR - hL) / (2 * this._dx);
+        const dHy = (hU - hD) / (2 * this._dy);
+
+        const normal = new Vector3(-dHx, 1.0, -dHy).normalize();
+        return normal;
     }
 
-    updatePixelsWithNewColors() {
-        for (let x = 0; x < dim_x; x++)
-            for (let y = 0; y < dim_y; y++)
-                this.colorSegmentAt(x, y, new THREE.Color(
-                    this.colors[0][x][y] * .15,
-                    this.colors[1][x][y] * .3,
-                    this.colors[2][x][y]));
-    }
+    placeRaindrop(disturbanceIntensity, sigma=0.015) {
+        this._disturbanceIntensity = disturbanceIntensity ? disturbanceIntensity : this._disturbanceIntensity;
+        const x = Math.floor(2 + Math.random() * (this._numVerticesX - 4));
+        const y = Math.floor(2 + Math.random() * (this._numVerticesY - 4));
+        const sigma2 = this._numVerticesX * sigma * this._numVerticesY * sigma;
 
-    rotateX(angle) {
-        this.surface.rotateX(angle);
-    }
-
-    translate(translationVector) {
-        this.surface.position.copy(translationVector);
+        for (let i = x - 2; i <= x + 2; i++)
+            for (let j = y - 2; j <= y + 2; j++) {
+                const dx = i - x;
+                const dy = j - y;
+                const value = this._disturbanceIntensity * Math.exp(-(dx * dx + dy * dy) / sigma2);
+                this._current[i][j] = value;
+                this._old[i][j] = value;
+            }
     }
 }
 
+const params = { frequency: 5, intensity: .5 };
 class ControlsGui {
     constructor() {
         const gui = new GUI({width: "100%", autoPlace: false});
         document.getElementById("raindropsGui").appendChild(gui.domElement);
-        const params = { frequency: 20, intensity: 120 };
 
-        gui.add(params, "frequency", 0, 100, 1)
-            .name("Frequency")
-            .onChange(() => raindropFrequency = params.frequency / 1000);
-
-        gui.add(params, "intensity", 50, 500, 1)
-            .name("Intensity")
-            .onChange(() => raindropIntensity = params.intensity);
+        gui.add(params, "frequency", 0, 10, 0.1).name("Frequency");
+        gui.add(params, "intensity", 0.01, 1, 0.01).name("Intensity");
     }
 }
 new ControlsGui();
 
-// Set up scene
-const raindropsCamera = initCamera();
-const sceneControls = new OrbitControls(raindropsCamera, raindropCanvas);
-const sceneRenderer = createRenderer();
-sceneRenderer.setAnimationLoop(animateRaindrops);
+const wave = new Wave();
+const colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER_ALTERNATIVE);
+const surface = new PlaneSurface(wave, colorMapper);
+scene.add(surface);
 
-lights();
-const surface = new Surface();
-surface.rotateX(7 * Math.PI / 8);
-surface.translate(new vector(0, 0, 0));
+function animate(){
+    for (let subStep = 0; subStep < 4; subStep++) {
+        wave.update();
+        if (subStep % 3 === 0) surface.update();
+    }
 
-function initCamera() {
-    const camera = new THREE.PerspectiveCamera(70, 1, 0.1, 10);
-    camera.position.set(0, 0, 1.8);
-    return camera;
-}
+    if (Math.random() < params.frequency * .01)
+        wave.placeRaindrop(params.intensity);
 
-
-function lights() {
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(1, 1, 1);
-    raindropsScene.add(light);
-}
-
-function createRenderer() {
-    const renderer = new THREE.WebGLRenderer({antialias: true, canvas: raindropCanvas, alpha: true});
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    return renderer;
-}
-
-function centralFiniteDifferenceMethodTimestep() {
-    for (let i = 0; i < dim_x; i++)
-        for (let j = 0; j < dim_y; j++) {
-            u[2][i][j] = u[1][i][j];
-            u[1][i][j] = u[0][i][j];
-        }
-
-    for (let c = 1; c < dim_x - 1; c++)
-        for (let r = 1; r < dim_y - 1; r++) {
-            u[0][c][r] = alpha[c][r] * (u[1][c - 1][r] + u[1][c + 1][r] + u[1][c][r - 1] + u[1][c][r + 1] - 4 * u[1][c][r]);
-            u[0][c][r] += 2 * u[1][c][r] - u[2][c][r];
-
-            // Not part of the wave equation, but we need to remove energy from the system.
-            // The boundary conditions are closed. Energy cannot leave and the simulation keeps adding energy.
-            u[0][c][r] *= 0.995;
-        }
-}
-
-function placeRaindrops() {
-    if (Math.random() > raindropFrequency)
-        return;
-
-    const x = Math.floor(5 + Math.random() * (dim_x - 10))
-    const y = Math.floor(5 + Math.random() * (dim_y - 10))
-
-    for (let i = x - 2; i < x + 2; i++)
-        for (let j = y - 2; j < y + 2; j++)
-            u[0][i][j] = raindropIntensity * Math.exp(-((i - x) ** 2 + (j - y) ** 2) / 10);
-}
-
-function update_pixels() {
-    placeRaindrops();
-    centralFiniteDifferenceMethodTimestep();
-    surface.update();
-}
-
-// Resizing for mobile devices
-function resize() {
-    ThreeJsUtils.resizeRendererToCanvas(sceneRenderer, raindropsCamera);
-}
-window.addEventListener("resize", resize);
-resize();
-
-function animateRaindrops() {
-    update_pixels();
-    sceneRenderer.render(raindropsScene, raindropsCamera);
-    sceneControls.update();
+    renderer.render(scene, camera);
 }
