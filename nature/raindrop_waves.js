@@ -43,7 +43,7 @@ class Wave {
         const c = 1.5;                      // propagation velocity
         const dt = 0.4 * this._dx / c;      // stable timestep
         this._r = (c * dt / this._dx) * (c * dt / this._dy);
-        this._init();
+        this._init(numVerticesX, numVerticesY);
     }
 
     get numVerticesX() { return this._numVerticesX; }
@@ -53,10 +53,10 @@ class Wave {
     get minHeight() { return -this._disturbanceIntensity * .5; }
     get maxHeight() { return this._disturbanceIntensity * .5; }
 
-    _init() {
-        this._old = [new Float32Array(wave.numVerticesX), new Float32Array(wave.numVerticesY)];
-        this._next = [new Float32Array(wave.numVerticesX), new Float32Array(wave.numVerticesY)];
-        this._current = [new Float32Array(wave.numVerticesX), new Float32Array(wave.numVerticesY)];
+    _init(numVerticesX, numVerticesY) {
+        this._old = [new Float32Array(numVerticesX), new Float32Array(numVerticesY)];
+        this._next = [new Float32Array(numVerticesX), new Float32Array(numVerticesY)];
+        this._current = [new Float32Array(numVerticesX), new Float32Array(numVerticesY)];
     }
 
     update(damping=0.995) {
