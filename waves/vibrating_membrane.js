@@ -1,7 +1,7 @@
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import { Scene, Group, Box3, Vector3 } from "three";
 import { CubesSurface, SurfaceColorMapper, RenderableSurface, PointsSurface, SpheresSurface, CapsulesSurface,
-    ConesSurface, ShaderSurface } from "../js/3d-surface-components.js";
+    ConesSurface, ShaderSurface, PlaneSurface } from "../js/3d-surface-components.js";
 import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters } from '../js/three-js-extensions.js';
 
 const canvasContainer = document.getElementById("membraneWrapper");
