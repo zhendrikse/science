@@ -9,7 +9,7 @@ const canvas = document.getElementById("raindropsCanvas");
 const scene = new Scene();
 
 const camera = new PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-camera.position.set(10, 5, 5);
+camera.position.set(7.75, 2, 2.25);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({antialias: true, alpha: true, canvas: canvas});
