@@ -1247,14 +1247,14 @@ export class SurfaceColorMapper {
     static foam = new Color(0xffffff);
 
     static Mode = Object.freeze({
-        SEISMIC_COLOR_MAP: "seismiccmap",
+        SEISMIC_COLOR_MAP: "seismic color map",
         GRADIENT: "gradient",
         WATER: "water",
-        WATER_ALTERNATIVE: "waterAlternative",
-        VIRIDIS_COLOR_MAP: "viridiscmap",
-        JET_COLOR_MAP: "jetcmap",
-        INFERNO_COLOR_MAP: "infernocmap",
-        RDYLBU_COLOR_MAP: "RdYlBucmap"
+        WATER_ALTERNATIVE: "water alternative",
+        VIRIDIS_COLOR_MAP: "viridis color map",
+        JET_COLOR_MAP: "jet color map",
+        INFERNO_COLOR_MAP: "inferno color map",
+        RDYLBU_COLOR_MAP: "RdYlBu color map"
     });
 
     constructor(mode=SurfaceColorMapper.Mode.WATER) {
