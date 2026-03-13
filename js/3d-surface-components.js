@@ -1350,15 +1350,13 @@ export class RenderableSurface extends Object3D {
     }
 
     update(){
-
-        for(let i=0;i<this.numX;i++)
-            for(let j=0;j<this.numY;j++){
-
+        for(let i = 1; i < this.numX - 1; i++)
+            for(let j = 1; j < this.numY - 1; j++){
                 const h = this.amplitudes[i][j];
                 const t = this.normalizeHeight(h);
 
                 if(this.updateVertex)
-                    this.updateVertex(i,j,h,t);
+                    this.updateVertex(i, j, h, t);
             }
 
         if(this.finishUpdate)
