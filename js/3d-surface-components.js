@@ -1,9 +1,12 @@
-import * as THREE from "three";
 import { ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
 import { Arrow, Interval, ThreeJsUtils }
-    from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+    from '../js/three-js-extensions.js';
 import { Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3,
-    MathUtils, Color, BufferAttribute } from "three";
+    MathUtils, Color, SphereGeometry, CapsuleGeometry, ConeGeometry,
+    Points, PointsMaterial, BufferAttribute, BufferGeometry, InstancedBufferAttribute,
+    InstancedMesh, BoxGeometry, Object3D, ShaderMaterial,
+    RedFormat, DataTexture, FloatType} from "three";
+import { colors255 } from "../js/color-maps.js";
 
 export const ContourType = Object.freeze({
     CURVATURE: "Curvature",
@@ -1234,4 +1237,370 @@ export class TangentFrameView extends Group {
     hideAxes = () => Object.values(this._axes).forEach(arrow => arrow.visible = false);
     showPrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = true);
     hidePrincipals = () => Object.values(this._principals).forEach(arrow => arrow.visible = false);
+}
+
+
+export class SurfaceColorMapper {
+    static deep = new Color(0x001a33);
+    static mid = new Color(0x0066aa);
+    static surf = new Color(0x66ccff);
+    static foam = new Color(0xffffff);
+
+    static Mode = Object.freeze({
+        SEISMIC_COLOR_MAP: "seismiccmap",
+        GRADIENT: "gradient",
+        WATER: "water",
+        WATER_ALTERNATIVE: "waterAlternative",
+        VIRIDIS_COLOR_MAP: "viridiscmap",
+        JET_COLOR_MAP: "jetcmap",
+        INFERNO_COLOR_MAP: "infernocmap",
+        RDYLBU_COLOR_MAP: "RdYlBucmap"
+    });
+
+    constructor(mode=SurfaceColorMapper.Mode.WATER) {
+        this._mode = mode;
+        this._colorMap = colors255[mode];
+        this._tmp = new Color();
+    }
+
+    get colorMap() { return this._colorMap; }
+
+    getColor(t, outArray, offset) {
+        switch (this._mode) {
+            case SurfaceColorMapper.Mode.SEISMIC_COLOR_MAP:
+            case SurfaceColorMapper.Mode.VIRIDIS_COLOR_MAP:
+            case SurfaceColorMapper.Mode.JET_COLOR_MAP:
+            case SurfaceColorMapper.Mode.INFERNO_COLOR_MAP:
+            case SurfaceColorMapper.Mode.RDYLBU_COLOR_MAP:
+                const idx = Math.max(0, Math.min(255, Math.floor(t * 255)));
+                const colour = this._colorMap[idx];
+                outArray[offset] = colour[0];
+                outArray[offset + 1] = colour[1];
+                outArray[offset + 2] = colour[2];
+                break;
+            case SurfaceColorMapper.Mode.WATER_ALTERNATIVE:
+                outArray[offset] = t * 0.15;
+                outArray[offset+1] = t * 0.3;
+                outArray[offset+2] = t;
+                break;
+            case SurfaceColorMapper.Mode.WATER:
+                if (t < 0.5)
+                    this._tmp.lerpColors(SurfaceColorMapper.deep, SurfaceColorMapper.mid, t * 2);
+                else if (t < 0.85)
+                    this._tmp.lerpColors(SurfaceColorMapper.mid, SurfaceColorMapper.surf, (t - 0.5) * 2);
+                else
+                    this._tmp.lerpColors(SurfaceColorMapper.surf, SurfaceColorMapper.foam, (t - 0.85) / 0.15);
+
+                outArray[offset] = this._tmp.r;
+                outArray[offset + 1] = this._tmp.g;
+                outArray[offset + 2] = this._tmp.b;
+                break;
+            case SurfaceColorMapper.Mode.GRADIENT:
+                outArray[offset] = t;
+                outArray[offset + 1] = 0.2;
+                outArray[offset + 2] = 1.0 - t;
+                break;
+        }
+    }
+}
+
+export class RenderableSurface extends Object3D {
+    static Type = Object.freeze({
+        SHADER: "shader",
+        POINTS: "points",
+        PLANE: "plane",
+        SPHERES: "spheres",
+        CUBES: "cubes",
+        CAPSULES: "capsules",
+        CONES: "cones"
+    });
+
+    constructor(wave, colorMapper){
+        super();
+        this._wave = wave;
+        this._colorMapper = colorMapper;
+    }
+
+    get amplitudes(){ return this._wave.amplitudes; }
+    get numX(){ return this._wave.numVerticesX; }
+    get numY(){ return this._wave.numVerticesY; }
+    get size(){ return this._wave.vertexDistance; }
+
+    get min(){ return this._wave.minHeight; }
+    get max(){ return this._wave.maxHeight; }
+
+    get range(){
+        return Math.max(this.max - this.min, 1e-6);
+    }
+
+    set colorMapper(colorMapper) { this._colorMapper = colorMapper; }
+
+    normalizeHeight(h){
+        return (h - this.min) / this.range;
+    }
+
+    update(){
+
+        for(let i=0;i<this.numX;i++)
+            for(let j=0;j<this.numY;j++){
+
+                const h = this.amplitudes[i][j];
+                const t = this.normalizeHeight(h);
+
+                if(this.updateVertex)
+                    this.updateVertex(i,j,h,t);
+            }
+
+        if(this.finishUpdate)
+            this.finishUpdate();
+    }
+}
+
+export class InstanceSurface extends RenderableSurface {
+    constructor(wave, colorMapper, geometry) {
+        super(wave, colorMapper);
+        this._wave = wave;
+        this._colorMapper = colorMapper;
+        this._colorArray = new Float32Array(wave.numVerticesX * wave.numVerticesY * 3);
+
+        this._dummy = new Object3D();
+        this._up = new Vector3(0, 1, 0);
+
+        this._mesh = new InstancedMesh(geometry, this._material(), wave.numVerticesX * wave.numVerticesY);
+        this._mesh.instanceColor = new InstancedBufferAttribute(this._colorArray, 3);
+        this.add(this._mesh);
+    }
+
+    updateVertex(i,j,h,t){
+        const index = i*this.numY+j;
+
+        this._dummy.position.set(
+            (i/this.numX-.5)*this.size,
+            h,
+            (j/this.numY-.5)*this.size
+        );
+
+        this._dummy.updateMatrix();
+        this._mesh.setMatrixAt(index,this._dummy.matrix);
+        this._colorMapper.getColor(t,this._colorArray,index*3);
+    }
+
+    _material(opacity=1) {
+        return new MeshStandardMaterial({
+            side: DoubleSide,
+            roughness: 0.25,
+            metalness: 0.0,
+            transparent: true,
+            opacity: opacity
+        });
+    }
+
+    finishUpdate() {
+        this._mesh.instanceMatrix.needsUpdate = true;
+        this._mesh.instanceColor.needsUpdate = true;
+    }
+}
+
+export class ShaderSurface extends RenderableSurface {
+    static fragmentShader = `
+        varying vec2 vUv;
+        uniform sampler2D heightMap;
+        uniform vec3 colorMap[256];
+        uniform float minHeight;
+        uniform float maxHeight;
+        
+        void main() {
+            float h = texture2D(heightMap, vUv).r;
+        
+            float normalizedH = (h - minHeight) / (maxHeight - minHeight);
+            normalizedH = clamp(normalizedH, 0.0, 1.0);
+            
+            float idx = normalizedH * 255.0;
+            int i0 = int(floor(idx));
+            int i1 = min(i0 + 1, 255);
+            float t = fract(idx);
+            vec3 c = mix(colorMap[i0], colorMap[i1], t);
+            gl_FragColor = vec4(c, 1.0);
+        }
+        `;
+    static vertexShader = `
+        uniform sampler2D heightMap;
+        varying vec2 vUv;
+
+        void main(){
+            vUv = uv;
+            float h = texture2D(heightMap, uv).r;
+            vec3 pos = position;
+            pos.y = h;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+        }
+        `;
+    constructor(wave, colorMapper) {
+        super(wave, colorMapper);
+        const geometry = new PlaneGeometry(wave.vertexDistance, wave.vertexDistance, wave.numVerticesX - 1, wave.numVerticesY - 1);
+        geometry.rotateX(-Math.PI/2);
+
+        const heightData = new Float32Array(wave.numVerticesX * wave.numVerticesY);
+        const texture = new DataTexture(heightData, wave.numVerticesX, wave.numVerticesY, RedFormat, FloatType);
+        texture.needsUpdate = true;
+
+        this._colorMap = this._colorMapper.colorMap.map(entry => new Vector3(entry[0], entry[1], entry[2]));
+        const material = new ShaderMaterial({
+            uniforms: {
+                heightMap: { value: texture },
+                colorMap: { value: this._colorMap },
+                minHeight: { value: wave.minHeight },
+                maxHeight: { value: wave.maxHeight }
+            },
+            vertexShader: ShaderSurface.vertexShader,
+            fragmentShader: ShaderSurface.fragmentShader,
+            side: DoubleSide
+        });
+
+        this.mesh = new Mesh(geometry, material);
+        this.add(this.mesh);
+
+        this._heightData = heightData;
+        this._texture = texture;
+    }
+
+    set colorMapper(colorMapper) {
+        this._colorMapper = colorMapper;
+        this._colorMap = this._colorMapper.colorMap.map(entry => new Vector3(entry[0], entry[1], entry[2]));
+
+        // update shader uniform
+        this.mesh.material.uniforms.colorMap.value = this._colorMap;
+        this.mesh.material.uniforms.colorMap.needsUpdate = true;
+    }
+
+    update(){
+        let k=0;
+        for(let i=0;i<this.numX;i++)
+            for(let j=0;j<this.numY;j++)
+                this._heightData[k++]=this.amplitudes[i][j];
+
+        this._texture.needsUpdate=true;
+    }
+}
+
+export class PointsSurface extends RenderableSurface {
+    constructor(wave, colorMapper, radius=.15) {
+        super(wave, colorMapper);
+        const count = wave.numVerticesX * wave.numVerticesY;
+        const geometry = new BufferGeometry();
+
+        this._positions = new Float32Array(count * 3);
+        this._colors = new Float32Array(count * 3);
+
+        geometry.setAttribute("position", new BufferAttribute(this._positions,3));
+        geometry.setAttribute("color", new BufferAttribute(this._colors,3));
+
+        const material = new PointsMaterial({
+            size: radius,
+            vertexColors: true
+        });
+
+        for (let i = 0; i < wave.numVerticesX; i++)
+            for(let j = 0; j < wave.numVerticesY; j++) {
+                const index = i*this.numY+j;
+                this._positions[index*3+0]=(i/this.numX-.5)*this.size;
+                this._positions[index*3+2]=(j/this.numY-.5)*this.size;
+            }
+
+        this._mesh = new Points(geometry, material);
+        this.add(this._mesh);
+    }
+
+    updateVertex(i,j,h,t){
+        const index = i*this.numY+j;
+        this._positions[index*3+1]=h;
+        this._colorMapper.getColor(t,this._colors,index*3);
+    }
+
+    finishUpdate(){
+        this._mesh.geometry.attributes.position.needsUpdate=true;
+        this._mesh.geometry.attributes.color.needsUpdate=true;
+    }
+}
+
+export class PlaneSurface extends RenderableSurface {
+    constructor(wave, colorMapper) {
+        super(wave, colorMapper);
+
+        const geometry = new PlaneGeometry(wave.vertexDistance, wave.vertexDistance, wave.numVerticesX - 1, wave.numVerticesY - 1);
+        geometry.rotateX(-Math.PI / 2);
+
+        this._mesh = new Mesh(geometry, this._material());
+        this._positions = geometry.attributes.position.array;
+        this._colors = new Float32Array(wave.numVerticesX*wave.numVerticesY*3);
+        geometry.setAttribute("color", new BufferAttribute(this._colors,3));
+        this.add(this._mesh);
+    }
+
+    _material() {
+        return new MeshStandardMaterial({
+            wireframe: false,
+            side: DoubleSide,
+            vertexColors: true
+        });
+    }
+
+    updateVertex(i, j, h, t) {
+        const index = i*this.numY+j;
+        this._positions[index*3+1]=h;
+        this._colorMapper.getColor(t,this._colors,index*3);
+    }
+
+    finishUpdate(){
+        this._mesh.geometry.attributes.position.needsUpdate=true;
+        this._mesh.geometry.attributes.color.needsUpdate=true;
+        this._mesh.geometry.computeVertexNormals();
+    }
+}
+
+export class SpheresSurface extends InstanceSurface {
+    constructor(wave, colorMapper, radius = 0.075) {
+        super(wave, colorMapper, new SphereGeometry(radius, 8, 8));
+    }
+}
+
+export class CubesSurface extends InstanceSurface {
+    constructor(wave, colorMapper, blockSize = 0.075) {
+        super(wave, colorMapper, new BoxGeometry(blockSize, blockSize, blockSize));
+    }
+
+    orientInstance(i,j) {
+        this._dummy.quaternion.setFromUnitVectors(this._up, this._wave.normalAt(i,j));
+    }
+
+    updateVertex(i, j, h, t) {
+        const index = i * this.numY + j;
+        this._dummy.position.set(
+            (i / this.numX - 0.5) * this.size,
+            h,
+            (j / this.numY - 0.5) * this.size
+        );
+
+        this.orientInstance(i, j);
+
+        this._dummy.updateMatrix();
+        this._mesh.setMatrixAt(index, this._dummy.matrix);
+        this._colorMapper.getColor(t, this._colorArray, index * 3);
+    }
+}
+
+export class CapsulesSurface extends InstanceSurface {
+    constructor(wave,colorMapper){
+        super(wave, colorMapper, new CapsuleGeometry(0.05,0.1,4,8));
+    }
+}
+
+export class ConesSurface extends InstanceSurface {
+    constructor(wave,colorMapper){
+        super(wave, colorMapper, new ConeGeometry(0.05,0.1,8));
+    }
+
+    orientInstance(i,j){
+        this._dummy.quaternion.setFromUnitVectors(this._up, this._wave.normalAt(i,j));
+    }
 }
