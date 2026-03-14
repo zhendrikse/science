@@ -185,7 +185,7 @@ class ControlsGui {
                         surface = new SpheresSurface(wave, colorMapper, { radius: 0.02 });
                         break;
                     case RenderableSurface.Type.CAPSULES:
-                        surface = new CapsulesSurface(wave, colorMapper);
+                        surface = new CapsulesSurface(wave, colorMapper, { radius: 0.0075, height: 0.025});
                         break;
                     case RenderableSurface.Type.POINTS:
                         surface = new PointsSurface(wave, colorMapper, { radius: 0.035 });
@@ -197,10 +197,10 @@ class ControlsGui {
                         surface = new PlaneSurface(wave, colorMapper);
                         break;
                     case RenderableSurface.Type.CONES:
-                        surface = new ConesSurface(wave, colorMapper);
+                        surface = new ConesSurface(wave, colorMapper, { radius: 0.015, height: 0.03});
                         break;
                     case RenderableSurface.Type.CUBES:
-                        surface = new CubesSurface(wave, colorMapper);
+                        surface = new CubesSurface(wave, colorMapper, {blockSize: 0.015});
                         break;
                 }
                 scene.add(surface);
