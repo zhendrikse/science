@@ -97,7 +97,7 @@ class Wave {
         const x = Math.floor(this._numVerticesX / 2);
         const y = Math.floor(this._numVerticesY / 2);
 
-        this._current[x][y] += 0.75;
+        this._current[x][y] += 0.95;
     }
 
     normalAt(i, j) {
@@ -154,7 +154,7 @@ class Pool extends Group {
 
 const wave = new Wave(250, 250, 4);
 let colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER);
-let surface = new PlaneSurface(wave, colorMapper);
+let surface = new PointsSurface(wave, colorMapper, { radius: 0.025 });
 scene.add(surface);
 surface.update();
 const pool = new Pool(4, 4)
@@ -182,13 +182,13 @@ class ControlsGui {
                 scene.remove(surface);
                 switch (value) {
                     case RenderableSurface.Type.SPHERES:
-                        surface = new SpheresSurface(wave, colorMapper, { radius: 0.02 });
+                        surface = new SpheresSurface(wave, colorMapper, { radius: 0.0075 });
                         break;
                     case RenderableSurface.Type.CAPSULES:
-                        surface = new CapsulesSurface(wave, colorMapper, { radius: 0.0075, height: 0.025});
+                        surface = new CapsulesSurface(wave, colorMapper, { radius: 0.0050, height: 0.025});
                         break;
                     case RenderableSurface.Type.POINTS:
-                        surface = new PointsSurface(wave, colorMapper, { radius: 0.035 });
+                        surface = new PointsSurface(wave, colorMapper, { radius: 0.025 });
                         break;
                     case RenderableSurface.Type.SHADER:
                         surface = new ShaderSurface(wave, colorMapper);
@@ -197,12 +197,13 @@ class ControlsGui {
                         surface = new PlaneSurface(wave, colorMapper);
                         break;
                     case RenderableSurface.Type.CONES:
-                        surface = new ConesSurface(wave, colorMapper, { radius: 0.015, height: 0.03});
+                        surface = new ConesSurface(wave, colorMapper, { radius: 0.0075, height: 0.03});
                         break;
                     case RenderableSurface.Type.CUBES:
-                        surface = new CubesSurface(wave, colorMapper, {blockSize: 0.015});
+                        surface = new CubesSurface(wave, colorMapper, {blockSize: 0.01});
                         break;
                 }
+                surface.update();
                 scene.add(surface);
             });
 
