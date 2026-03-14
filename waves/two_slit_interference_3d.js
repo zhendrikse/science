@@ -16,7 +16,7 @@ const doubleSlitCanvas = document.getElementById('doubleSlitCanvas');
 doubleSlitCanvas.focus();
 
 // GUI controls
-document.getElementById("resetButton").addEventListener("click", function(){
+document.getElementById("resetButton").addEventListener("click", function () {
     u = [Array2D(dim_x, dim_y), Array2D(dim_x, dim_y), Array2D(dim_x, dim_y)];
     time = 0;
 });
@@ -83,7 +83,7 @@ class Surface {
         const colors = this.geometry.attributes.color.array;
         for (let i = 0; i < 6; i++) {
             const idx = (vertexStart + i) * 3;
-            colors[idx]     = c.r;
+            colors[idx] = c.r;
             colors[idx + 1] = c.g;
             colors[idx + 2] = c.b;
         }
@@ -126,10 +126,10 @@ function lights() {
 }
 
 function createRenderer() {
-    const renderer = new THREE.WebGLRenderer({antialias: true, canvas: doubleSlitCanvas, alpha: true});
+    const renderer = new THREE.WebGLRenderer({ antialias: true, canvas: doubleSlitCanvas, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
-    renderer.setAnimationLoop( animate );
+    renderer.setAnimationLoop(animate);
     return renderer;
 }
 
@@ -187,10 +187,10 @@ function placeSlitsAt(x) {
             u[0][x + 1][n] = u[0][x + 2][n];
         }
 
-    u[0][x][inter1] =     (u[0][x - 1][inter1] +     u[0][x + 1][inter1] +     u[0][x][inter1 + 1]) / 3;
+    u[0][x][inter1] = (u[0][x - 1][inter1] + u[0][x + 1][inter1] + u[0][x][inter1 + 1]) / 3;
     u[0][x][mid_up - 1] = (u[0][x - 1][mid_up - 1] + u[0][x + 1][mid_up - 1] + u[0][x][mid_up - 2]) / 3;
-    u[0][x][mid_down] =   (u[0][x - 1][mid_down] +   u[0][x + 1][mid_down] +   u[0][x][mid_down + 1]) / 3;
-    u[0][x][inter2] =     (u[0][x - 1][inter2] +     u[0][x + 1][inter2] +     u[0][x][inter2 - 1]) / 3;
+    u[0][x][mid_down] = (u[0][x - 1][mid_down] + u[0][x + 1][mid_down] + u[0][x][mid_down + 1]) / 3;
+    u[0][x][inter2] = (u[0][x - 1][inter2] + u[0][x + 1][inter2] + u[0][x][inter2 - 1]) / 3;
 }
 
 function initialDisturbance() {

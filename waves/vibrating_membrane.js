@@ -1,7 +1,9 @@
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 import { Scene, Group, Box3, Vector3 } from "three";
-import { CubesSurface, SurfaceColorMapper, RenderableSurface, PointsSurface, SpheresSurface, CapsulesSurface,
-    ConesSurface, ShaderSurface, PlaneSurface } from "../js/3d-surface-components.js";
+import {
+    CubesSurface, SurfaceColorMapper, RenderableSurface, PointsSurface, SpheresSurface, CapsulesSurface,
+    ConesSurface, ShaderSurface, PlaneSurface
+} from "../js/3d-surface-components.js";
 import { AxesController, ThreeJsUtils, Plot3DView, AxesParameters } from '../js/three-js-extensions.js';
 
 const canvasContainer = document.getElementById("membraneWrapper");
@@ -11,7 +13,7 @@ const scene = new Scene();
 const worldGroup = new Group();
 scene.add(worldGroup);
 
-const axesParameters = new AxesParameters({annotations: false});
+const axesParameters = new AxesParameters({ annotations: false });
 const params = {
     axesParameters: axesParameters,
     omega: Math.PI,
@@ -22,7 +24,7 @@ const params = {
 
 class ControlsGui {
     constructor() {
-        const gui = new GUI({width: "100%", autoPlace: false});
+        const gui = new GUI({ width: "100%", autoPlace: false });
 
         gui.add(params, 'colorMap', Object.values(SurfaceColorMapper.Mode))
             .name("Color map")
@@ -72,16 +74,16 @@ class ControlsGui {
 
     #createAxesFolder(parentFolder) {
         const axesFolder = parentFolder.addFolder("Axes");
-        const dummyToggle = {gridPlanes: true};
+        const dummyToggle = { gridPlanes: true };
         axesFolder.add(params.axesParameters, 'frame')
             .name("Frame").onChange(value => axesController.updateSettings());
         axesFolder.add(dummyToggle, 'gridPlanes')
             .name("Layout").onChange(value => {
-            params.axesParameters.xyPlane = value;
-            params.axesParameters.xzPlane = value;
-            params.axesParameters.yzPlane = value;
-            axesController.updateSettings();
-        });
+                params.axesParameters.xyPlane = value;
+                params.axesParameters.xzPlane = value;
+                params.axesParameters.yzPlane = value;
+                axesController.updateSettings();
+            });
         axesFolder.add(params.axesParameters, 'annotations')
             .name("Annotations").onChange(value => axesController.updateSettings());
         axesFolder.close();
@@ -104,12 +106,12 @@ class Membrane {
     });
 
     constructor({
-                    numVerticesX=100,
-                    numVerticesY=100,
-                    vertexDistance=10,
-                    omega=Math.PI,
-                    amplitude=2.5
-                } = {}) {
+        numVerticesX = 100,
+        numVerticesY = 100,
+        vertexDistance = 10,
+        omega = Math.PI,
+        amplitude = 2.5
+    } = {}) {
         this._numVerticesX = numVerticesX;
         this._numVerticesY = numVerticesY;
         this._vertexDistance = vertexDistance;
@@ -163,10 +165,10 @@ class Membrane {
         const clampX = (x) => Math.max(0, Math.min(x, this._numVerticesX - 1));
         const clampY = (y) => Math.max(0, Math.min(y, this._numVerticesY - 1));
 
-        const hL = this._amplitudes[clampX(i-1)][j];
-        const hR = this._amplitudes[clampX(i+1)][j];
-        const hD = this._amplitudes[i][clampY(j-1)];
-        const hU = this._amplitudes[i][clampY(j+1)];
+        const hL = this._amplitudes[clampX(i - 1)][j];
+        const hR = this._amplitudes[clampX(i + 1)][j];
+        const hD = this._amplitudes[i][clampY(j - 1)];
+        const hU = this._amplitudes[i][clampY(j + 1)];
 
         const dHx = (hR - hL) / (2 * this._dx);
         const dHy = (hU - hD) / (2 * this._dy);
@@ -193,8 +195,8 @@ boundingBox.setFromObject(worldGroup);
 // Scale scene according to current surface
 axesController.createFromBoundingBox(boundingBox, false);
 const plot3D = new Plot3DView(scene, canvas, boundingBox);
-plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .725), {translationY: -5});
-plot3D.renderer.setAnimationLoop( animate );
+plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .725), { translationY: -5 });
+plot3D.renderer.setAnimationLoop(animate);
 const gui = new ControlsGui(membrane);
 
 // Resizing for mobile devices
@@ -207,7 +209,7 @@ resize();
 
 let t = 0;
 const dt = 0.02;
-function animate(){
+function animate() {
     plot3D.render();
     axesController.render(plot3D.camera);
     membrane.update(t);

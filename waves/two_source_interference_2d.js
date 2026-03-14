@@ -13,13 +13,13 @@ const omegaReadout = document.getElementById("omegaReadout");
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
 
-    const width  = wrapper.clientWidth;
+    const width = wrapper.clientWidth;
     const height = wrapper.clientHeight;
 
-    theCanvas.style.width  = width + "px";
+    theCanvas.style.width = width + "px";
     theCanvas.style.height = height + "px";
 
-    theCanvas.width  = Math.floor(width * dpr);
+    theCanvas.width = Math.floor(width * dpr);
     theCanvas.height = Math.floor(height * dpr);
 
     display.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -64,11 +64,11 @@ function updateImage(t) {
             const dy = y - yMid;
 
             let dx = x - (xMid - sourceOffset);
-            let r = Math.sqrt(dx*dx + dy*dy);       // distance from left source
+            let r = Math.sqrt(dx * dx + dy * dy);       // distance from left source
             const wave1 = Math.sin(k * r - tPhase);     // local amplitude of first wave
 
             dx = x - (xMid + sourceOffset);
-            r = Math.sqrt(dx*dx + dy*dy);           // distance from right source
+            r = Math.sqrt(dx * dx + dy * dy);           // distance from right source
             const wave2 = Math.sin(k * r - tPhase);     // local amplitude of second wave
 
             const waveTotal = .5 * (wave1 + wave2);    // value to plot (will be between -1 and 1)
@@ -90,7 +90,7 @@ function startStop() {
 requestAnimationFrame(() => {
     updateParameters(0);
     resizeCanvas();
-    image = new PixelImage(theCanvas.width, theCanvas.height, 1, [0,0,1]);
+    image = new PixelImage(theCanvas.width, theCanvas.height, 1, [0, 0, 1]);
     updateImage(t);
     image.render(display);
 });

@@ -9,9 +9,9 @@ const scene = new Scene();
 const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
 camera.position.set(17, 5, 17);
 
-const renderer = new WebGLRenderer({canvas, antialias:true, alpha: true});
+const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-renderer.setAnimationLoop( animationLoop );
+renderer.setAnimationLoop(animationLoop);
 
 const dirLight = new DirectionalLight(0xffffff, 0.8);
 dirLight.position.set(0, 15, 45);
@@ -24,7 +24,7 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 
 export class HarmonicOscillator extends Group {
-    constructor({ damping=0.2 } = {}) {
+    constructor({ damping = 0.2 } = {}) {
         super();
         this._masses = [];
         this._springs = [];
@@ -37,7 +37,7 @@ export class HarmonicOscillator extends Group {
         return this;
     }
 
-    withSpringBetween(i, j, k, springColor=0xface8d) {
+    withSpringBetween(i, j, k, springColor = 0xface8d) {
         const p1 = this._masses[i].position;
         const p2 = this._masses[j].position;
 
@@ -78,7 +78,7 @@ export class HarmonicOscillator extends Group {
             forces[j].add(totalForce.clone().negate());
         }
 
-        this._masses.forEach((mass, index) =>  mass.step(forces[index], dt));
+        this._masses.forEach((mass, index) => mass.step(forces[index], dt));
     }
 }
 
@@ -87,14 +87,14 @@ oscillator
     .withMassAt(new Vector3(-30, 2, 10), { mass: 1, color: 0xff0000 })
     .withMassAt(new Vector3(-20, 2, 10), { mass: 1, color: 0x3333ff })
     .withMassAt(new Vector3(-10, 2, 10), { mass: 1, color: 0x3333ff })
-    .withMassAt(new Vector3(  0, 2, 10), { mass: 1, color: 0x3333ff })
-    .withMassAt(new Vector3( 10, 2, 10), { mass: 1, color: 0xff0000 })
+    .withMassAt(new Vector3(0, 2, 10), { mass: 1, color: 0x3333ff })
+    .withMassAt(new Vector3(10, 2, 10), { mass: 1, color: 0xff0000 })
     .withSpringBetween(0, 1, 50)
     .withSpringBetween(1, 2, 50)
     .withSpringBetween(2, 3, 50)
     .withSpringBetween(3, 4, 50);
 scene.add(oscillator);
-oscillator.moveMass(0,  7);
+oscillator.moveMass(0, 7);
 oscillator.moveMass(3, -7);
 
 const opts = {
@@ -107,13 +107,13 @@ const opts = {
         {
             stroke: "#ff0",
             font: "12px Arial",
-            grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1},
+            grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
             label: "Time [s]"
         },
         {
             stroke: "#ff0",
             font: "12px Arial",
-            grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1},
+            grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
             label: "Displacement"
         }
     ],
