@@ -3,8 +3,14 @@
 ## Free wave propagation in a pool
 <div class="header_line"><br/></div>
 
-{% include_relative code/pool.html %}
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=pool.js)](https://github.com/zhendrikse/science/blob/main/waves/pool.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://typescriptlang.org/)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+[![WebGL](https://img.shields.io/badge/WebGL-990000?logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
+
+<canvas id="canvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
+<script type="module" src="pool.js"></script>
 <p style="clear: both;"></p>
 
 ## A more sophisticated simulation in pure JavaScript
