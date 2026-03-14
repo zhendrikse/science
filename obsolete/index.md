@@ -28,7 +28,7 @@
 
 <div class="double_image">
 <figure class="left_image">
-    <a href="black_hole_raytracing.html">
+    <a href="black_hole_ray_tracer.html">
       <img alt="Black hole" src="images/black_hole_raytracer.png" title="Click to animate"/>
     </a>
     <figcaption>Black hole image generated with ray tracing techniques, hence it 
