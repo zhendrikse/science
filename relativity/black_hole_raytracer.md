@@ -3,10 +3,16 @@
 ## Rendering black holes using ray tracing
 <div class="header_line"><br/></div>
 
+
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+[![WebGL](https://img.shields.io/badge/WebGL-990000?logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
+
 ### Space-time ray tracing
 <div class="header_line"><br/></div>
 
-⭐ This [black_hole_space_time.js](https://github.com/zhendrikse/science/blob/main/relativity/black_hole_space_time.js) is based on [Simulating a Schwarzschild Black Hole: Part 1 — The Background and Raytracer](https://medium.com/@cadenmarinozzi/simulating-a-schwarzschild-black-hole-part-1-the-background-and-raytracer-7de436a56b7e) by [Caden Marenozzi](https://medium.com/@cadenmarinozzi)<br/>
+🔧 Source can be found in [black_hole_space_time.js](https://github.com/zhendrikse/science/blob/main/relativity/black_hole_space_time.js)<br/>
+⭐ Based on [Simulating a Schwarzschild Black Hole: Part 1 — The Background and Raytracer](https://medium.com/@cadenmarinozzi/simulating-a-schwarzschild-black-hole-part-1-the-background-and-raytracer-7de436a56b7e) by [Caden Marinozzi](https://medium.com/@cadenmarinozzi)<br/>
 👉 Extended with the relativistic formula used for real-time black hole shaders (null geodesic approximation of the Schwarzschild metric):
 
 $$
@@ -60,6 +66,18 @@ $$
 </div>
 <script src="./black_hole_raytracer.js"></script>
 <p style="clear: both;"></p>
+
+### Black hole GPU ray tracing 
+<div style="border-top: 1px solid #999999"><br/></div>
+
+🔧 Source can be found in [black_hole_raytracer_glsl.js](https://github.com/zhendrikse/science/blob/main/relativity/black_hole_raytracer_glsl.js)<br/>
+⭐ Based on [NASA-BlackHole](https://github.com/cadenmarinozzi/NASA-BlackHole) by [Caden Marinozzi](https://medium.com/@cadenmarinozzi)<br/>
+👉 Extended with realistic accretion disk coloring
+
+<canvas class="applicationCanvas" id="glslBlackHoleCanvas" style="aspect-ratio: 16/9"></canvas>
+<script type='module' src="./black_hole_raytracer_glsl.js"></script>
+<p style="clear: both;"></p>
+
 
 ### Image rendition explained
 <div style="border-top: 1px solid #999999"><br/></div>

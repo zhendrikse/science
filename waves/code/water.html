@@ -12,56 +12,62 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-<button id = "buttonRun" onclick="run()" class="button">Run</button>
-<button onclick="restart()" class="button">Restart</button>
+<button id="buttonRun" class="button">Run</button>
+<button id="buttonRestart" class="button">Restart</button>
 
 <br><br>
 <div id="container"></div>
-
-<script src="https://unpkg.com/three@0.139.2/build/three.min.js"></script>
-<script src="https://unpkg.com/three@0.139.2/examples/js/controls/OrbitControls.js"></script>
-
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.154.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.154.0/examples/jsm/"
+      }
+    }
+</script>
 <script id="waterVertexShader" type="x-shader/x-vertex">
-    varying vec3 varNormal;
-    varying vec2 varScreenPos;
-    varying vec3 varPos;
+    varying vec3 constNormal;
+    varying vec2 constScreenPos;
+    varying vec3 constPos;
 
     void main() {
         vec4 pos = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        varScreenPos = vec2(0.5, 0.5) + 0.5 * vec2(pos) / pos.z;
-        varPos = vec3(position);
-        varNormal = normal;
+        constScreenPos = pos.xy / pos.w * 0.5 + 0.5;
+        constPos = vec3(position);
+        constNormal = normal;
         gl_Position = pos;
     }
 </script>
 
 <script id="waterFragmentShader" type="x-shader/x-fragment">
     uniform sampler2D background;
-    varying vec3 varNormal;
-    varying vec2 varScreenPos;
-    varying vec3 varPos;
+    varying vec3 constNormal;
+    varying vec2 constScreenPos;
+    varying vec3 constPos;
 
     void main() {
-        float r = 0.02;	// todo: should be distance dependent!
-        vec2 uv = varScreenPos + r * vec2(varNormal.x, varNormal.z);
+        float r = 0.02;
+        vec2 uv = constScreenPos + r * vec2(constNormal.x, constNormal.z);
         vec4 color = texture2D(background, uv);
+
         color.z = min(color.z + 0.2, 1.0);
 
-        vec3 L = normalize(vec3(10.0, 10.0, 10.0) - varPos);
-        float s = max(dot(varNormal,L), 0.0);
+        vec3 L = normalize(vec3(10.0, 10.0, 10.0) - constPos);
+        float s = max(dot(constNormal,L), 0.0);
         color *= (0.5 + 0.5 * s);
 
         gl_FragColor = color;
+
+        #include <colorspace_fragment>
     }
 </script>
 
-<script>
-
-    // ------------------------------------------------------------------
+<script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
     // physics scene
-
-    var gPhysicsScene =
+    const gPhysicsScene =
     {
         gravity : new THREE.Vector3(0.0, -10.0, 0.0),
         dt : 1.0 / 30.0,
@@ -75,23 +81,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     };
 
     // globals
-
-    var gThreeScene;
-    var gRenderer;
-    var gRenderTarget;
-    var gCamera;
-    var gCameraControl;
-    var gWaterMaterial;
-    var gGrabber;
-    var gMouseDown;
-    var gPrevTime = 0.0;
+    let gThreeScene;
+    let gRenderer;
+    let gRenderTarget;
+    let gCamera;
+    let gCameraControl;
+    let gWaterMaterial;
+    let gGrabber;
+    let gMouseDown;
+    let gPrevTime = 0.0;
 
     // ------------------------------------------------------------------
     class WaterSurface {
-        constructor(sizeX, sizeZ, depth, spacing, visMaterial)
-        {
+        constructor(sizeX, sizeZ, depth, spacing, visMaterial) {
             // physics data
-
             this.waveSpeed = 2.0;
             this.posDamping = 1.0;
             this.velDamping = 0.3;
@@ -110,9 +113,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             this.velocities.fill(0.0)
 
             // visual mesh
-
-            let positions = new Float32Array(this.numCells * 3);
-            let uvs = new Float32Array(this.numCells * 2);
+            const positions = new Float32Array(this.numCells * 3);
+            const uvs = new Float32Array(this.numCells * 2);
             let cx = Math.floor(this.numX / 2.0);
             let cz = Math.floor(this.numZ / 2.0);
 
@@ -126,7 +128,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }
             }
 
-            var index = new Uint32Array((this.numX - 1) * (this.numZ - 1) * 2 * 3);
+            const index = new Uint32Array((this.numX - 1) * (this.numZ - 1) * 2 * 3);
             let pos = 0;
             for (let i = 0; i < this.numX - 1; i++) {
                 for (let j = 0; j < this.numZ - 1; j++) {
@@ -144,9 +146,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     index[pos++] = id3;
                 }
             }
-            var geometry = new THREE.BufferGeometry();
+            const geometry = new THREE.BufferGeometry();
 
-//					var positions = new Float32Array([0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0]);
+//					const positions = new Float32Array([0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0]);
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
             geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
 
@@ -190,7 +192,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
                             let bodyMin = Math.max(pos.y - bodyHalfHeight, 0.0);
                             let bodyMax = Math.min(pos.y + bodyHalfHeight, waterHeight);
-                            var bodyHeight = Math.max(bodyMax - bodyMin, 0.0);
+                            const bodyHeight = Math.max(bodyMax - bodyMin, 0.0);
                             if (bodyHeight > 0.0) {
                                 ball.applyForce(-bodyHeight * h2 * gPhysicsScene.gravity.y);
                                 this.bodyHeights[xi * this.numZ + zi] += bodyHeight;
@@ -245,7 +247,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 }
             }
 
-            for (var i = 0; i < this.numCells; i++) {
+            for (let i = 0; i < this.numCells; i++) {
                 this.velocities[i] *= vd;		// velocity damping
                 this.heights[i] += this.velocities[i] * gPhysicsScene.dt;
             }
@@ -328,8 +330,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         }
 
-        simulate()
-        {
+        simulate() {
             if (this.grabbed)
                 return;
 
@@ -339,47 +340,38 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             let wx = 0.5 * gPhysicsScene.tankSize.x - this.radius - 0.5 * gPhysicsScene.tankBorder;
             let wz = 0.5 * gPhysicsScene.tankSize.z - this.radius - 0.5 * gPhysicsScene.tankBorder;
 
-            if (this.pos.x < -wx) {
+            if (this.pos.x < -wx)
                 this.pos.x = -wx; this.vel.x = -this.restitution * this.vel.x;
-            }
-            if (this.pos.x >  wx) {
+            if (this.pos.x >  wx)
                 this.pos.x =  wx; this.vel.x = -this.restitution * this.vel.x;
-            }
-            if (this.pos.z < -wz) {
+            if (this.pos.z < -wz)
                 this.pos.z = -wz; this.vel.z = -this.restitution * this.vel.z;
-            }
-            if (this.pos.z >  wz) {
+            if (this.pos.z >  wz)
                 this.pos.z =  wz; this.vel.z = -this.restitution * this.vel.z;
-            }
-            if (this.pos.y < this.radius) {
+            if (this.pos.y < this.radius)
                 this.pos.y = this.radius; this.vel.y = -this.restitution * this.vel.y;
-            }
 
             this.visMesh.position.copy(this.pos);
             this.visMesh.geometry.computeBoundingSphere();
         }
 
-        applyForce(force)
-        {
+        applyForce(force) {
             this.vel.y += gPhysicsScene.dt * force / this.mass;
             this.vel.multiplyScalar(0.999);
         }
 
-        startGrab(pos)
-        {
+        startGrab(pos) {
             this.grabbed = true;
             this.pos.copy(pos);
             this.visMesh.position.copy(pos);
         }
 
-        moveGrabbed(pos, vel)
-        {
+        moveGrabbed(pos, vel) {
             this.pos.copy(pos);
             this.visMesh.position.copy(pos);
         }
 
-        endGrab(pos, vel)
-        {
+        endGrab(pos, vel) {
             this.grabbed = false;
             this.vel.copy(vel);
         }
@@ -389,40 +381,37 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     function initScene(scene)
     {
         // water surface
-
         let wx = gPhysicsScene.tankSize.x;
         let wy = gPhysicsScene.tankSize.y;
         let wz = gPhysicsScene.tankSize.z;
         let b = gPhysicsScene.tankBorder;
 
-        var waterSurface = new WaterSurface(wx, wz, gPhysicsScene.waterHeight,
+        const waterSurface = new WaterSurface(wx, wz, gPhysicsScene.waterHeight,
                                 gPhysicsScene.waterSpacing, gWaterMaterial)
         gPhysicsScene.waterSurface = waterSurface;
 
         // tank
 
-        var tankMaterial = new THREE.MeshPhongMaterial({color: 0x909090});
-        var boxGeometry = new THREE.BoxGeometry(b, wy, wz);
-        var box = new THREE.Mesh(boxGeometry, tankMaterial);
+        const tankMaterial = new THREE.MeshPhongMaterial({color: 0x909090});
+        let boxGeometry = new THREE.BoxGeometry(b, wy, wz);
+        let box = new THREE.Mesh(boxGeometry, tankMaterial);
         box.position.set(-0.5 * wx, wy * 0.5, 0.0)
         gThreeScene.add(box);
-        var box = new THREE.Mesh(boxGeometry, tankMaterial);
+        box = new THREE.Mesh(boxGeometry, tankMaterial);
         box.position.set(0.5 * wx, 0.5 * wy, 0.0)
         gThreeScene.add(box);
-        var boxGeometry = new THREE.BoxGeometry(wx, wy, b);
-        var box = new THREE.Mesh(boxGeometry, tankMaterial);
+        boxGeometry = new THREE.BoxGeometry(wx, wy, b);
+        box = new THREE.Mesh(boxGeometry, tankMaterial);
         box.position.set(0.0, 0.5 * wy, - wz * 0.5)
         gThreeScene.add(box);
-        var box = new THREE.Mesh(boxGeometry, tankMaterial);
+        box = new THREE.Mesh(boxGeometry, tankMaterial);
         box.position.set(0.0, 0.5 * wy, wz * 0.5)
         gThreeScene.add(box);
 
         // ball
-
         gPhysicsScene.objects.push(new Ball({x:-0.5, y:1.0, z:-0.5}, 0.2, 2.0, 0xffff00));
         gPhysicsScene.objects.push(new Ball({x:0.5, y:1.0, z:-0.5}, 0.3, 0.7, 0xff8000));
         gPhysicsScene.objects.push(new Ball({x:0.5, y:1.0, z:0.5}, 0.25, 0.2, 0xff0000));
-
     }
 
     // ------------------------------------------------------------------
@@ -434,7 +423,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         gPhysicsScene.waterSurface.simulate();
 
         for (let i = 0; i < gPhysicsScene.objects.length; i++) {
-            obj = gPhysicsScene.objects[i]
+            let obj = gPhysicsScene.objects[i]
             obj.simulate();
             for (let j = 0; j < i; j++)
                 obj.handleCollision(gPhysicsScene.objects[j]);
@@ -452,20 +441,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         gPhysicsScene.waterSurface.setVisible(true);
         gRenderer.setRenderTarget(null);
         gRenderer.render(gThreeScene, gCamera);
+        gRenderer.setAnimationLoop(update);
     }
 
     // ------------------------------------------
 
-    function initThreeScene()
-    {
+    function initThreeScene() {
         gThreeScene = new THREE.Scene();
 
         // Lights
-
         gThreeScene.add( new THREE.AmbientLight( 0x505050 ) );
         gThreeScene.fog = new THREE.Fog( 0x000000, 0, 15 );
 
-        var spotLight = new THREE.SpotLight( 0xffffff );
+        const spotLight = new THREE.SpotLight( 0xffffff );
         spotLight.angle = Math.PI / 5;
         spotLight.penumbra = 0.2;
         spotLight.position.set( 2, 3, 3 );
@@ -476,7 +464,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         spotLight.shadow.mapSize.height = 1024;
         gThreeScene.add( spotLight );
 
-        var dirLight = new THREE.DirectionalLight( 0x55505a, 1 );
+        const dirLight = new THREE.DirectionalLight( 0x55505a, 1 );
         dirLight.position.set( 0, 3, 0 );
         dirLight.castShadow = true;
         dirLight.shadow.camera.near = 1;
@@ -492,9 +480,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         gThreeScene.add( dirLight );
 
         // Geometry
-
-        var ground = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry( 20, 20, 1, 1 ),
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry( 20, 20, 1, 1 ),
             new THREE.MeshPhongMaterial( { color: 0xa0adaf, shininess: 150 } )
         );
 
@@ -502,14 +489,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         ground.receiveShadow = true;
         gThreeScene.add( ground );
 
-        var helper = new THREE.GridHelper( 20, 20 );
+        const helper = new THREE.GridHelper( 20, 20 );
         helper.material.opacity = 1.0;
         helper.material.transparent = true;
         helper.position.set(0, 0.002, 0);
         gThreeScene.add( helper );
 
         // gRenderer
-
         gRenderer = new THREE.WebGLRenderer();
         gRenderer.shadowMap.enabled = true;
         gRenderer.setPixelRatio( window.devicePixelRatio );
@@ -533,7 +519,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
         gThreeScene.add( gCamera );
 
-        gCameraControl = new THREE.OrbitControls(gCamera, gRenderer.domElement);
+        gCameraControl = new OrbitControls(gCamera, gRenderer.domElement);
         gCameraControl.zoomSpeed = 2.0;
         gCameraControl.panSpeed = 0.4;
         gCameraControl.target.set(0.0, 0.8, 0.0)
@@ -563,7 +549,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             this.time += dt;
         }
         updateRaycaster(x, y) {
-            var rect = gRenderer.domElement.getBoundingClientRect();
+            const rect = gRenderer.domElement.getBoundingClientRect();
             this.mousePos = new THREE.Vector2();
             this.mousePos.x = ((x - rect.left) / rect.width ) * 2 - 1;
             this.mousePos.y = -((y - rect.top) / rect.height ) * 2 + 1;
@@ -572,13 +558,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         start(x, y) {
             this.physicsObject = null;
             this.updateRaycaster(x, y);
-            var intersects = this.raycaster.intersectObjects( gThreeScene.children );
+            const intersects = this.raycaster.intersectObjects( gThreeScene.children );
             if (intersects.length > 0) {
-                var obj = intersects[0].object.userData;
+                const obj = intersects[0].object.userData;
                 if (obj) {
                     this.physicsObject = obj;
                     this.distance = intersects[0].distance;
-                    var pos = this.raycaster.ray.origin.clone();
+                    const pos = this.raycaster.ray.origin.clone();
                     pos.addScaledVector(this.raycaster.ray.direction, this.distance);
                     this.physicsObject.startGrab(pos);
                     this.prevPos.copy(pos);
@@ -592,7 +578,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         move(x, y) {
             if (this.physicsObject) {
                 this.updateRaycaster(x, y);
-                var pos = this.raycaster.ray.origin.clone();
+                const pos = this.raycaster.ray.origin.clone();
                 pos.addScaledVector(this.raycaster.ray.direction, this.distance);
 
                 this.vel.copy(pos);
@@ -618,7 +604,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     function onPointer( evt )
     {
         event.preventDefault();
-        if (evt.type == "pointerdown") {
+        if (evt.type === "pointerdown") {
             gGrabber.start(evt.clientX, evt.clientY);
             gMouseDown = true;
             if (gGrabber.physicsObject) {
@@ -626,10 +612,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 gCameraControl.enabled = false;
             }
         }
-        else if (evt.type == "pointermove" && gMouseDown) {
+        else if (evt.type === "pointermove" && gMouseDown) {
             gGrabber.move(evt.clientX, evt.clientY);
         }
-        else if (evt.type == "pointerup") {
+        else if (evt.type === "pointerup") {
             if (gGrabber.physicsObject) {
                 gGrabber.end();
                 gCameraControl.reset();
@@ -647,23 +633,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         gRenderTarget.setSize(window.innerWidth, window.innerHeight);
     }
 
+    const button = document.getElementById('buttonRun');
     function run() {
-        var button = document.getElementById('buttonRun');
         if (gPhysicsScene.paused)
             button.innerHTML = "Stop";
         else
             button.innerHTML = "Run";
         gPhysicsScene.paused = !gPhysicsScene.paused;
     }
+    button.addEventListener('click', run);
 
-    function restart() {
-        location.reload();
-    }
+    document.getElementById("buttonRestart").addEventListener('click', () => location.reload());
 
-    // make browser to call us repeatedly -----------------------------------
-
-    function update()
-    {
+    function update() {
         let time = performance.now();
         let dt = (time - gPrevTime) / 1000.0;
         gPrevTime = time;
@@ -674,8 +656,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         render();
         gCameraControl.update();
         gGrabber.increaseTime(gPhysicsScene.dt);
-
-        requestAnimationFrame(update);
     }
 
     initThreeScene();

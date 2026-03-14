@@ -193,7 +193,7 @@ boundingBox.setFromObject(worldGroup);
 // Scale scene according to current surface
 axesController.createFromBoundingBox(boundingBox, false);
 const plot3D = new Plot3DView(scene, canvas, boundingBox);
-plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .8), {translationY: -5});
+plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .725), {translationY: -5});
 plot3D.renderer.setAnimationLoop( animate );
 const gui = new ControlsGui(membrane);
 
