@@ -23,31 +23,7 @@ git {% include breadcrumbs.html %}
 
 <p style="clear: both;"></p>
 
-### Rubik&apos;s cube &amp; turtle robot
-<div class="subsection_header_line"><br/></div>
-
-<div class="double_image">
-<figure class="left_image">
-  <a href="rubiks_cube.html">
-    <img alt="Rubik&apos;s cube" src="images/rubiks_cube.png" title="Click to animate"/>
-  </a>
-  <figcaption><br/>“If you are curious, you'll find the puzzles around you 
-  If you are determined, you will solve them. &mdash; Erno Rubik.” </figcaption>
-</figure>
-<figure class="right_image">
-  <a href="robot.html">
-    <img alt="Turtle robot" src="images/robot.png" title="Click to animate"/>
-  </a>
-  <figcaption><br/>
-  <a href="https://github.com/possibly-wrong/vturtle">VPython-based robot simulator and turtle graphics engine</a>
-  ported from installed VPython to the web.
-  </figcaption>
-</figure>
-</div>
-
-<p style="clear: both;"></p>
-
-### Chessboard &amp; relaxing fire
+### Chessboard &amp; turtle robot
 <div class="subsection_header_line"><br/></div>
 
 <div class="double_image">
@@ -58,10 +34,13 @@ git {% include breadcrumbs.html %}
   <figcaption>Simple chess game with moving pieces.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="fire.html">
-    <img alt="Fire simulation" src="images/fire.png" title="Click to animate"/>
+  <a href="robot.html">
+    <img alt="Turtle robot" src="images/robot.png" title="Click to animate"/>
   </a>
-  <figcaption>Simulation of a burning fire using a finite element method.</figcaption>
+  <figcaption><br/>
+  <a href="https://github.com/possibly-wrong/vturtle">VPython-based robot simulator and turtle graphics engine</a>
+  ported from installed VPython to the web.
+  </figcaption>
 </figure>
 </div>
 

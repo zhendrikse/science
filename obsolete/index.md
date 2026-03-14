@@ -35,10 +35,12 @@
     may put some serious load on your hardware!</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="disk_builder.html">
-    <img alt="Charged disk builder" src="images/charged_disk_builder.png" title="Click to animate"/>
+  <a href="snowflake.html">
+    <img alt="Snowflake" src="images/snowflake.png" title="Click to animate"/>
   </a>
-  <figcaption>Build up an electric field yourself by incrementally adding a charged rings.</figcaption>
+  <figcaption>"To appreciate the beauty of a snowflake, it is necessary to stand out in the cold." &mdash;
+  Aristotle  
+  </figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

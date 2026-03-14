@@ -102,7 +102,7 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 <p style="clear: both;"></p>
 
 <a name="cellular_automata"></a>
-## Cellular automata
+## Games
 <div class="header_line"><br/></div>
 
 <div class="double_image">
@@ -113,8 +113,11 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
   <figcaption>Conway's game of life.</figcaption>
 </figure>
 <figure class="right_image">
-  <!-- SPACE RESERVED FOR FUTURE APPLICATION
-    -->
+  <a href="rubiks_cube.html">
+    <img alt="Rubik&apos;s cube" src="images/rubiks_cube.png" title="Click to animate"/>
+  </a>
+  <figcaption><br/>“If you are curious, you'll find the puzzles around you. 
+  If you are determined, you will solve them.” &mdash; Erno Rubik. </figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>

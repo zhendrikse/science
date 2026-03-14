@@ -99,18 +99,16 @@
 </div>
 <p style="clear: both;"></p>
 
-### Snowflake &amp; parachute jump
+### Fire &amp; parachute jump
 
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="snowflake.html">
-    <img alt="Snowflake" src="images/snowflake.png" title="Click to animate"/>
+  <a href="fire.html">
+    <img alt="Fire simulation" src="images/fire.png" title="Click to animate"/>
   </a>
-  <figcaption>"To appreciate the beauty of a snowflake, it is necessary to stand out in the cold." &mdash;
-  Aristotle  
-  </figcaption>
+  <figcaption>Simulation of a burning fire using a finite element method.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="parachute.html">
