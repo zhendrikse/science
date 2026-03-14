@@ -89,8 +89,8 @@ class Wave {
 
     placeRaindrop(disturbanceIntensity, sigma=0.015) {
         this._disturbanceIntensity = disturbanceIntensity ? disturbanceIntensity : this._disturbanceIntensity;
-        const x = Math.floor(4 + Math.random() * (this._numVerticesX - 4));
-        const y = Math.floor(4 + Math.random() * (this._numVerticesY - 4));
+        const x = Math.floor(5 + Math.random() * (this._numVerticesX - 10));
+        const y = Math.floor(5 + Math.random() * (this._numVerticesY - 10));
         const sigma2 = this._numVerticesX * sigma * this._numVerticesY * sigma;
 
         for (let i = x - 2; i <= x + 2; i++)
