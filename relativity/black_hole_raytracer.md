@@ -37,7 +37,7 @@ $$
 <script type="module" src="./black_hole_space_time.js"></script>
 <p style="clear: both;"></p>
 
-### Black hole ray tracing
+### Black hole CPU ray tracing
 <div class="header_line"><br/></div>
 
 🔧 Based on the [blackhole_raytracer](https://github.com/silvaan/blackhole_raytracer/tree/master) project by Arman T, Casper Y, Lulu W.<br/>
