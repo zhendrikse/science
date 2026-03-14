@@ -107,7 +107,7 @@ class Wave {
 const params = {
     frequency: 5,
     intensity: .5,
-    colorMap: SurfaceColorMapper.Mode.WATER_ALTERNATIVE,
+    colorMap: SurfaceColorMapper.Mode.WATER,
     surfaceType: RenderableSurface.Type.PLANE
 };
 class ControlsGui {
@@ -146,7 +146,7 @@ class ControlsGui {
                     surface = new ConesSurface(wave, colorMapper);
                     break;
                 case RenderableSurface.Type.CUBES:
-                    surface = new CubesSurface(wave, colorMapper);
+                    surface = new CubesSurface(wave, colorMapper, {blockSize: 0.02});
                     break;
             }
             scene.add(surface);
@@ -157,7 +157,7 @@ class ControlsGui {
 new ControlsGui();
 
 const wave = new Wave();
-let colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER_ALTERNATIVE);
+let colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER);
 let surface = new PlaneSurface(wave, colorMapper);
 scene.add(surface);
 
