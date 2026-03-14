@@ -45,8 +45,8 @@ const blackHoleMesh = new Mesh(canvasGeometry, canvasMaterial);
 const skyDome = new SkyDome();
 scene.add(skyDome);
 scene.add(blackHoleMesh);
-// blackHoleMesh.renderOrder = 1;
-// skyDome._glowStars.renderOrder = 0;
+blackHoleMesh.renderOrder = 1;
+skyDome._glowStars.renderOrder = 0;
 
 renderer.setAnimationLoop(time => {
     skyDome.update(time, camera);

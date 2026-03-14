@@ -74,7 +74,7 @@ $$
 ⭐ Based on [NASA-BlackHole](https://github.com/cadenmarinozzi/NASA-BlackHole) by [Caden Marinozzi](https://medium.com/@cadenmarinozzi)<br/>
 👉 Extended with realistic accretion disk coloring
 
-<canvas class="applicationCanvas" id="glslBlackHoleCanvas" style="aspect-ratio: 16/9"></canvas>
+<canvas class="applicationCanvas" id="glslBlackHoleCanvas" style="background: black; aspect-ratio: 16/9"></canvas>
 <script type='module' src="./black_hole_raytracer_glsl.js"></script>
 <p style="clear: both;"></p>
 
