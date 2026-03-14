@@ -58,13 +58,13 @@ export class PixelImage {
 
     #asCanvasImageData(context) {
         const imageData = context.createImageData(this.width, this.height);
-        for (let x = 0 ; x < this.width; x++)
-            for (let y = 0 ; y < this.height; y++)
+        for (let x = 0; x < this.width; x++)
+            for (let y = 0; y < this.height; y++)
                 this.#setPixelColor(imageData.data, new Pixel(x, y, this.colours[x][y], this.pixelSize));
         return imageData;
     }
 
-    #imageIndexFrom(x, y) { return  y * (this.width * 4) + x * 4; }
+    #imageIndexFrom(x, y) { return y * (this.width * 4) + x * 4; }
 
     #setPixelColor(imageData, pixel) {
         let index = this.#imageIndexFrom(pixel.x, pixel.y);
