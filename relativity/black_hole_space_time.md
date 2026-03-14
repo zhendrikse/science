@@ -37,7 +37,7 @@ $$
 <script type="module" src="./black_hole_space_time.js"></script>
 <p style="clear: both;"></p>
 
-{% include_relative code/black_hole_background_info.md %}
+{% include_relative black_hole_background_info.md %}
 
 {% include share_buttons.html %}
 
