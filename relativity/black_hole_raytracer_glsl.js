@@ -5,7 +5,7 @@ import fragmentShader from "./black_hole_fragment_shader.js";
 import {SkyDome} from "../js/astro-extensions.js";
 
 const canvas = document.getElementById("glslBlackHoleCanvas");
-const scene = new THREE.Scene();
+const scene = new Scene();
 
 const width = canvas.clientWidth;
 const height = canvas.clientHeight;
