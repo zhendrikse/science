@@ -14,7 +14,7 @@ const aspectRatio = width / height;
 const camera = new PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 camera.position.z = 1;
 
-const renderer = new WebGLRenderer({antialias: true, canvas: canvas });
+const renderer = new WebGLRenderer({antialias: true, canvas: canvas, alpha: false });
 
 renderer.toneMapping = ACESFilmicToneMapping;
 renderer.toneMappingExposure = 2.2;
