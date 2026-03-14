@@ -3,7 +3,7 @@
 ## VPython version of Rubik&apos;s cube
 <div class="header_line"><br/></div>
 
-{% include_relative code/RubiksCube.html %}
+{% include_relative code/rubiks_cube.html %}
 
 <p style="clear: both;"></p>
 
