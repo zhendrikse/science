@@ -12,7 +12,6 @@
 ### Black hole GPU ray tracing 
 <div style="border-top: 1px solid #999999"><br/></div>
 
-🔧 Source can be found in [black_hole_raytracer_glsl.js](https://github.com/zhendrikse/science/blob/main/relativity/black_hole_raytracer_glsl.js)<br/>
 ⭐ Based on [NASA-BlackHole](https://github.com/cadenmarinozzi/NASA-BlackHole) by [Caden Marinozzi](https://medium.com/@cadenmarinozzi)<br/>
 👉 Extended with realistic accretion disk coloring<br/>
 👉 See also my previous [(_static_) black hole ray tracer](../obsolete/black_hole_ray_tracer.html)
