@@ -110,11 +110,11 @@ I do not understand it myself anymore. &mdash; Albert Einstein
     <span style="color: red">red lines</span> the time axis!</figcaption>
   </figure>
   <figure class="right_image">
-    <a href="black_hole_raytracer.html">
+    <a href="black_hole_raytracing.html">
       <img alt="Black hole" src="images/black_hole_raytracer.png" title="Click to animate"/>
     </a>
     <figcaption>Black hole image generated with ray tracing techniques, hence it 
-    may take some time for the page to render!</figcaption>
+    may put some serious load on your hardware!</figcaption>
   </figure>
 </div>
 <p style="clear: both;"></p>

@@ -23,15 +23,16 @@
 <p style="clear: both;"></p>
 
 
-### Charged disk and accompanying builder
+### Static black hole ray tracer
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="charged_disk.html">
-    <img alt="Charged disk" width="70%" src="images/charged_disk.png" title="Click to animate"/>
-  </a>
-  <figcaption>Visualization of the electric field around a disk.</figcaption>
+    <a href="black_hole_raytracing.html">
+      <img alt="Black hole" src="images/black_hole_raytracer.png" title="Click to animate"/>
+    </a>
+    <figcaption>Black hole image generated with ray tracing techniques, hence it 
+    may put some serious load on your hardware!</figcaption>
 </figure>
 <figure class="right_image">
   <a href="disk_builder.html">
