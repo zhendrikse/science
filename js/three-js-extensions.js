@@ -1,10 +1,12 @@
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { BufferGeometry, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3, Color,
+import {
+    BufferGeometry, PerspectiveCamera, WebGLRenderer, HemisphereLight, DirectionalLight, Vector3, Color,
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
     MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
     InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry, MeshBasicMaterial,
-    CircleGeometry, Vector2, EdgesGeometry, LineSegments } from "three";
+    CircleGeometry, Vector2, EdgesGeometry, LineSegments
+} from "three";
 
 export const ZeroVector = new Vector3();
 export const UnitVectorE1 = new Vector3(1, 0, 0);
@@ -94,10 +96,10 @@ export class Integrators {
             .addScaledVector(k4.dx, dt / 6);
 
         newState.velocity
-            .addScaledVector(k1.dv, dt/6)
-            .addScaledVector(k2.dv, dt/3)
-            .addScaledVector(k3.dv, dt/3)
-            .addScaledVector(k4.dv, dt/6);
+            .addScaledVector(k1.dv, dt / 6)
+            .addScaledVector(k2.dv, dt / 3)
+            .addScaledVector(k3.dv, dt / 3)
+            .addScaledVector(k4.dv, dt / 6);
 
         return newState;
     }
@@ -162,7 +164,7 @@ export class ThreeJsUtils {
         if (!w || !h) return;
 
         const pixelRatio = Math.min(window.devicePixelRatio, 2);
-        const width  = Math.floor(w * pixelRatio);
+        const width = Math.floor(w * pixelRatio);
         const height = Math.floor(h * pixelRatio);
 
         if (canvas.width !== width || canvas.height !== height) {
@@ -173,7 +175,7 @@ export class ThreeJsUtils {
         }
     }
 
-    static showOverlayMessage(overlay, message, duration=1000) {
+    static showOverlayMessage(overlay, message, duration = 1000) {
         overlay.textContent = message;
         overlay.style.display = "block";
 
@@ -211,7 +213,7 @@ export class Range {
 }
 
 export class Interval {
-    constructor(from=-Infinity, to=Infinity) {
+    constructor(from = -Infinity, to = Infinity) {
         this.from = from;
         this.to = to;
     }
@@ -221,7 +223,7 @@ export class Interval {
         if (this.to > value) this.to = value;
     }
 
-    scaleValue = (value) => this.to === this.from ? 0: (value - this.from) / this.range();
+    scaleValue = (value) => this.to === this.from ? 0 : (value - this.from) / this.range();
     range = () => (this.from === Infinity || this.to === Infinity) ? Infinity : this.to - this.from;
     /**
      * Scale a unit parameter [0, 1] up to this interval
@@ -289,17 +291,17 @@ export class MathWrapper {
 
 export class AxesParameters {
     constructor({
-                    layoutType = Axes.Type.MATLAB,
-                    divisions = 10,
-                    frame = true,
-                    annotations = true,
-                    tickLabels = true,
-                    xyPlane = true,
-                    xzPlane = true,
-                    yzPlane = true,
-                    axisLabels = ["X", "Y", "Z"],
-                    positiveXZ = false
-                } = {}) {
+        layoutType = Axes.Type.MATLAB,
+        divisions = 10,
+        frame = true,
+        annotations = true,
+        tickLabels = true,
+        xyPlane = true,
+        xzPlane = true,
+        yzPlane = true,
+        axisLabels = ["X", "Y", "Z"],
+        positiveXZ = false
+    } = {}) {
         this.layoutType = layoutType;
         this.divisions = divisions;
         this.frame = frame;
@@ -327,7 +329,7 @@ export class Axes extends Group {
         );
     }
 
-    static from(boundingBox, divisions, padding=1.1) {
+    static from(boundingBox, divisions, padding = 1.1) {
         const sizeVec = boundingBox.getSize(new Vector3());
         const maxSize = padding * Math.max(sizeVec.x, sizeVec.y, sizeVec.z);
         return new Axes(maxSize, divisions);
@@ -369,12 +371,12 @@ export class Axes extends Group {
     }
 
     withSettings({
-                     frame=true,
-                     annotations=true,
-                     xyPlane=true,
-                     xzPlane=true,
-                     yzPlane=true,
-                     tickLabels=true } = {}) {
+        frame = true,
+        annotations = true,
+        xyPlane = true,
+        xzPlane = true,
+        yzPlane = true,
+        tickLabels = true } = {}) {
         this._layout.frame.visible = frame;
         this._annotations.visible = annotations;
         this._layout.xy.visible = xyPlane;
@@ -394,21 +396,21 @@ export class Axes extends Group {
         return this;
     }
 
-    frameTo(boundingBox, bottomAlign=true) {
+    frameTo(boundingBox, bottomAlign = true) {
         this.updateMatrixWorld(true);
         const scaledBox = new Box3().setFromObject(this);
         let center = new Vector3();
         boundingBox.getCenter(center);
         // this.position.copy(center);
         const deltaY = boundingBox.min.y - scaledBox.min.y;
-        this.position.y = bottomAlign? this.position.y + deltaY : this.position.y;
+        this.position.y = bottomAlign ? this.position.y + deltaY : this.position.y;
         this.position.x = center.x;
         this.position.z = center.z;
     }
 
-    withAnnotations(container, type, axisLabels=["X", "Y", "Z"]) {
+    withAnnotations(container, type, axisLabels = ["X", "Y", "Z"]) {
         this._annotations?.dispose?.();
-        this._annotations = (type === Axes.Type.MATLAB ) ?
+        this._annotations = (type === Axes.Type.MATLAB) ?
             new MatlabAnnotations(container, this._size, this._divisions, axisLabels) :
             new ClassicalAnnotations(container, this._size, this._divisions, axisLabels);
         this.add(this._annotations);
@@ -564,15 +566,15 @@ class MatlabAxesLayout extends AxesLayout {
 }
 
 class ClassicalAnnotations extends AxesAnnotation {
-    constructor(container, size, divisions, axisLabels, positiveXZ=true) {
+    constructor(container, size, divisions, axisLabels, positiveXZ = true) {
         super(container);
 
         const step = size / divisions;
-        for (let v = -size * .5 ; v <= size * .5; v += step)
+        for (let v = -size * .5; v <= size * .5; v += step)
             this._tickLabels.push(
                 this.createLabel(v.toFixed(1), new Vector3(v, 0, 0.525 * size)),
                 this.createLabel(v.toFixed(1), new Vector3(0.525 * size, 0, v)));
-        for (let v = 0 ; v <= size * .5; v += step)
+        for (let v = 0; v <= size * .5; v += step)
             this._tickLabels.push(this.createLabel(v.toFixed(1), new Vector3(0, v, 0)));
 
         this._axesLabels.push(
@@ -590,12 +592,12 @@ class MatlabAnnotations extends AxesAnnotation {
         super(container);
 
         const step = (2 * size) / divisions;
-        for (let v = 0 ; v <= size; v += step)
+        for (let v = 0; v <= size; v += step)
             this._tickLabels.push(
                 this.createLabel(v.toFixed(1), new Vector3(-0.525 * size, v, 0.5 * size)),
                 this.createLabel(v.toFixed(1), new Vector3(0.525 * size, 0, v - 0.5 * size)));
 
-        for (let v = step ; v < size; v += step)
+        for (let v = step; v < size; v += step)
             this._tickLabels.push(
                 this.createLabel(v.toFixed(1), new Vector3(v - 0.5 * size, 0, 0.525 * size)));
 
@@ -614,11 +616,11 @@ class MatlabAnnotations extends AxesAnnotation {
  */
 export class AxesController {
     constructor({
-                    parentGroup,
-                    canvasContainer,
-                    axesParameters,
-                    scene
-                }) {
+        parentGroup,
+        canvasContainer,
+        axesParameters,
+        scene
+    }) {
         this._parentGroup = parentGroup;
         this._canvasContainer = canvasContainer;
         this._axesParameters = axesParameters;
@@ -626,7 +628,7 @@ export class AxesController {
         this._axes = null;
     }
 
-    createFromBoundingBox(boundingBox, bottomAlign=true) {
+    createFromBoundingBox(boundingBox, bottomAlign = true) {
         if (this._axes) {
             this._axes.dispose();
             this._parentGroup.remove(this._axes);
@@ -693,7 +695,7 @@ export class Plot3DView {
         let center = new Vector3();
         boundingBox.getSize(size);
         boundingBox.getCenter(center);
-        return {center, size};
+        return { center, size };
     }
 
     frame(boundingBox, {
@@ -702,7 +704,7 @@ export class Plot3DView {
         minDistance = 2,
         viewDirection = new Vector3(1, 1, 1)
     } = {}) {
-        const {center, size} = this.#calculateCenter(boundingBox);
+        const { center, size } = this.#calculateCenter(boundingBox);
 
         // distance so that bounding box is always in view
         const maxDim = Math.max(size.x, size.y, size.z);
@@ -733,14 +735,14 @@ export class Plot3DView {
 
 class TrailLine {
     constructor({
-                    maxPoints = 200,
-                    color = 0xffffff,
-                    linewidth = 1,
-        } = {}) {
+        maxPoints = 200,
+        color = 0xffffff,
+        linewidth = 1,
+    } = {}) {
         this._maxPoints = maxPoints;
         this._positions = [];
         this._geometry = new BufferGeometry();
-        this._material = new LineBasicMaterial({color, linewidth});
+        this._material = new LineBasicMaterial({ color, linewidth });
         this._line = new Line(this._geometry, this._material);
     }
 
@@ -753,7 +755,7 @@ class TrailLine {
 
         const array = new Float32Array(this._positions.length * 3);
         this._positions.forEach((pos, i) => {
-            array[3 * i]     = pos.x;
+            array[3 * i] = pos.x;
             array[3 * i + 1] = pos.y;
             array[3 * i + 2] = pos.z;
         });
@@ -776,7 +778,7 @@ export class Trail {
         this._trail = null;
     }
 
-    update(increment=1) {
+    update(increment = 1) {
         if (!this._trail) return;
         this._trailAccumulator += increment;
         if (this._trailAccumulator >= this._trailStep) {
@@ -786,10 +788,10 @@ export class Trail {
     }
 
     enable({
-           maxPoints = 200,
-           color = 0xffffff,
-           trailStep = 10,
-           linewidth = 1
+        maxPoints = 200,
+        color = 0xffffff,
+        trailStep = 10,
+        linewidth = 1
     } = {}) {
         this._trail = new TrailLine({ maxPoints, color, linewidth });
         this._trailAccumulator = 0;
@@ -820,7 +822,7 @@ const headGeometryRound = new ConeGeometry(1, 1, 16);
 const headGeometrySquare = new ConeGeometry(1, 1, 4);
 
 export class VectorField {
-    constructor() {}
+    constructor() { }
 
     range(positions) {
         let min = Infinity;
@@ -852,11 +854,11 @@ export class VectorField {
 
         const Fz1 = this.sample(position.clone().add(dz));
         const Fz0 = this.sample(position.clone().sub(dz));
-        return {Fx0, Fy0, Fz0, Fx1, Fy1, Fz1};
+        return { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 };
     }
 
     divergence(position, h = 1e-2) {
-        const {Fx0, Fy0, Fz0, Fx1, Fy1, Fz1} = this.#centralDifferences(position, h);
+        const { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 } = this.#centralDifferences(position, h);
 
         return (
             (Fx1.x - Fx0.x) +
@@ -866,7 +868,7 @@ export class VectorField {
     }
 
     curl(position, h = 1e-2) {
-        const {Fx0, Fy0, Fz0, Fx1, Fy1, Fz1} = this.#centralDifferences(position, h);
+        const { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 } = this.#centralDifferences(position, h);
 
         return new Vector3(
             (Fy1.z - Fy0.z - (Fz1.y - Fz0.y)) / (2 * h),
@@ -875,7 +877,7 @@ export class VectorField {
         );
     }
 
-    curlMagnitude(position, h=1e-2) {
+    curlMagnitude(position, h = 1e-2) {
         return this.curl(position, h).length();
     }
 }
@@ -889,11 +891,11 @@ export class ArrowField extends Group {
 
     constructor(xRange, yRange, zRange, vectorField, {
         scaleFactor = 0.3,
-        shaftWidth  = 0.08,  // relative to axis length
-        headWidth   = 2.0,   // times shaft width
-        headLength  = 4.0,   // times shaft width
-        colorMode    = ArrowField.ColorMode.MAGNITUDE,
-        round       = false
+        shaftWidth = 0.08,  // relative to axis length
+        headWidth = 2.0,   // times shaft width
+        headLength = 4.0,   // times shaft width
+        colorMode = ArrowField.ColorMode.MAGNITUDE,
+        round = false
     } = {}) {
         super();
         this.positions = [];
@@ -904,32 +906,32 @@ export class ArrowField extends Group {
         this.vectorField = vectorField;
         this.colorMode = colorMode;
         this._shaftWidth = shaftWidth;
-        this._headWidth  = headWidth;
+        this._headWidth = headWidth;
         this._headLength = headLength;
 
         const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
-        const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
+        const headGeometry = round ? headGeometryRound : headGeometrySquare;
         const shaftMaterial = new MeshStandardMaterial();
-        const headMaterial  = new MeshStandardMaterial();
+        const headMaterial = new MeshStandardMaterial();
 
         this.#initializePositions();
 
         this._shaftMesh = new InstancedMesh(shaftGeometry, shaftMaterial, this.positions.length);
-        this._headMesh  = new InstancedMesh(headGeometry,  headMaterial,  this.positions.length);
+        this._headMesh = new InstancedMesh(headGeometry, headMaterial, this.positions.length);
         this.add(this._shaftMesh, this._headMesh);
 
         // per-instance color
         const colors = new Float32Array(this.positions.length * 3);
         this._shaftMesh.instanceColor = new InstancedBufferAttribute(colors, 3);
-        this._headMesh.instanceColor  = this._shaftMesh.instanceColor;
+        this._headMesh.instanceColor = this._shaftMesh.instanceColor;
 
         // temp objects (no allocations per frame)
         this.tmpMatrix = new Matrix4();
         this.tmpQuaternion = new Quaternion();
-        this.tmpScale      = new Vector3();
-        this.tmpPosition   = new Vector3();
-        this.tmpAxis       = new Vector3();
-        this.tmpDirection  = new Vector3();
+        this.tmpScale = new Vector3();
+        this.tmpPosition = new Vector3();
+        this.tmpAxis = new Vector3();
+        this.tmpDirection = new Vector3();
 
         // initial build
         this.updateFieldWith(vectorField);
@@ -945,9 +947,9 @@ export class ArrowField extends Group {
     #arrowSizes(axis) {
         const length = axis.length();
         const shaftRadius = length * this._shaftWidth;
-        const headLength  = this._headLength * shaftRadius;
+        const headLength = this._headLength * shaftRadius;
         const shaftLength = Math.max(length - headLength, 1e-6);
-        return {shaftRadius, shaftLength, headLength};
+        return { shaftRadius, shaftLength, headLength };
     }
 
     #initializePositions() {
@@ -1001,7 +1003,7 @@ export class ArrowField extends Group {
     }
 
     #updateShaft(index, position, axis) {
-        const {shaftRadius, shaftLength} = this.#arrowSizes(axis);
+        const { shaftRadius, shaftLength } = this.#arrowSizes(axis);
         this.tmpScale.set(shaftRadius, shaftLength, shaftRadius);
         this.tmpPosition.copy(position).addScaledVector(axis, 0.5);
 
@@ -1010,7 +1012,7 @@ export class ArrowField extends Group {
     }
 
     #updateHead(index, position, axis) {
-        const {shaftRadius, headLength} = this.#arrowSizes(axis);
+        const { shaftRadius, headLength } = this.#arrowSizes(axis);
         this.tmpScale.set(
             this._headWidth * shaftRadius,
             headLength,
@@ -1029,7 +1031,7 @@ export class ArrowField extends Group {
             case ArrowField.ColorMode.CURL:
                 if (scalarRange.to - scalarRange.from < 1e-12) {
                     scalarRange.from -= 1;
-                    scalarRange.to   += 1;
+                    scalarRange.to += 1;
                 }
                 const t = MathUtils.clamp(scalarRange.scaleValue(scalars[index]), 0, 1);
                 const hue = (1 - t) * 0.66;
@@ -1080,7 +1082,7 @@ export class ArrowField extends Group {
                 Math.abs(scalarRange.to)
             );
             scalarRange.from = -maxAbs;
-            scalarRange.to   =  maxAbs;
+            scalarRange.to = maxAbs;
         }
 
         this.positions.forEach((position, index) => {
@@ -1092,31 +1094,31 @@ export class ArrowField extends Group {
         });
 
         this._shaftMesh.instanceMatrix.needsUpdate = true;
-        this._headMesh.instanceMatrix.needsUpdate  = true;
-        this._shaftMesh.instanceColor.needsUpdate  = true;
+        this._headMesh.instanceMatrix.needsUpdate = true;
+        this._shaftMesh.instanceColor.needsUpdate = true;
     }
 }
 
 export class Sphere {
     constructor(group, {
-            position=new Vector3(0, 0, 0),
-            radius=1,
-            color=0xffff00,
-            makeTrail=false,
-            visible=true,
-            scale=1,
-            segments=24,
-            opacity=1,
-            wireframe=false
-        } = {}) {
+        position = new Vector3(0, 0, 0),
+        radius = 1,
+        color = 0xffff00,
+        makeTrail = false,
+        visible = true,
+        scale = 1,
+        segments = 24,
+        opacity = 1,
+        wireframe = false
+    } = {}) {
         const material = new MeshStandardMaterial({
             color: color,
             opacity: opacity,
             transparent: true,
             wireframe: wireframe,
-            metalness:0.7,
+            metalness: 0.7,
             visible: visible,
-            roughness:0.2
+            roughness: 0.2
         })
 
         this._mesh = new Mesh(new SphereGeometry(radius * scale, segments, segments), material);
@@ -1129,15 +1131,15 @@ export class Sphere {
         this._group = group;
         this._group.add(this._mesh);
         this._trail = null;
-        if (makeTrail) this.enableTrail({color: color});
+        if (makeTrail) this.enableTrail({ color: color });
     }
 
     enableTrail({
-                    maxPoints = 200,
-                    color = 0xaaaaaa,
-                    trailStep = 10,
-                    linewidth = 1
-                } = {}) {
+        maxPoints = 200,
+        color = 0xaaaaaa,
+        trailStep = 10,
+        linewidth = 1
+    } = {}) {
 
         this._trail = new Trail(this._mesh);
         this._trail.enable({ maxPoints, color, trailStep, linewidth });
@@ -1164,11 +1166,11 @@ export class Sphere {
 }
 
 export class Cylinder {
-    constructor(group, position=new Vector3(0, 0, 0), axis=new Vector3(0, 1, 0), {
+    constructor(group, position = new Vector3(0, 0, 0), axis = new Vector3(0, 1, 0), {
         radius = 1,
         scale = 1,
-        color= new Color(0xffff00)
-    } = {} ) {
+        color = new Color(0xffff00)
+    } = {}) {
         const height = axis.length(),
             radialSegments = 24,
             heightSegments = 1,
@@ -1202,7 +1204,7 @@ export class Cylinder {
 
     get position() { return this._position; }
     get axis() { return this._axis; }
-    get displacement() {return this._restLength - this.axis.length(); }
+    get displacement() { return this._restLength - this.axis.length(); }
     show() { this._mesh.visible = true; }
     hide() { this._mesh.visible = false; }
 
@@ -1243,7 +1245,7 @@ export class Arrow extends Group {
         this._axis = axis;
 
         const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
-        const headGeometry  = round ? headGeometryRound  : headGeometrySquare;
+        const headGeometry = round ? headGeometryRound : headGeometrySquare;
         const material = new MeshStandardMaterial({
             color: color,
             opacity: opacity,
@@ -1266,9 +1268,9 @@ export class Arrow extends Group {
     get axis() { return this._axis.clone(); }
 
 
-    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+    enableTrail({ maxPoints = 1000, color = 0xffff00, lineWidth = 1, trailStep = 10 } = {}) {
         this._trail = new Trail(this);
-        this._trail.enable({maxPoints, color, lineWidth, trailStep });
+        this._trail.enable({ maxPoints, color, lineWidth, trailStep });
     }
 
     updateTrail(dt) { this._trail?.update(dt); }
@@ -1328,7 +1330,7 @@ export class Arrow extends Group {
 }
 
 class Helix extends Curve {
-    constructor(position, axis, coils=25, radius=0.4, waveAmp=0.05, wavePhase=0){
+    constructor(position, axis, coils = 25, radius = 0.4, waveAmp = 0.05, wavePhase = 0) {
         super();
         this.start = position.clone();
         this.coils = coils;
@@ -1340,7 +1342,7 @@ class Helix extends Curve {
 
     updateAxis = (newAxis) => this._axis.copy(newAxis);
 
-    getPoint(t){
+    getPoint(t) {
         const length = this._axis.length();
         const angle = t * this.coils * Math.PI * 2;
         const x = Math.cos(angle) * this.radius;
@@ -1359,7 +1361,7 @@ class Helix extends Curve {
 }
 
 class Body {
-    constructor(position=new Vector3(0, 0, 0), velocity=new Vector3(0, 0, 0), mass=1, charge=0) {
+    constructor(position = new Vector3(0, 0, 0), velocity = new Vector3(0, 0, 0), mass = 1, charge = 0) {
         this.position = position;
         this.velocity = velocity;
         this.mass = mass;
@@ -1374,18 +1376,17 @@ class Body {
 export class Ball {
     constructor(parent, {
         position = new Vector3(0, 0, 0),
-        radius=1,
+        radius = 1,
         velocity = new Vector3(0, 0, 0),
-        mass=1,
+        mass = 1,
         opacity = 1,
         wireframe = false,
-        color=0xffff00,
-        scale=1,
-        visible=true,
-        makeTrail=false,
-        elasticity=1.0,
-        segments = 24} = {})
-    {
+        color = 0xffff00,
+        scale = 1,
+        visible = true,
+        makeTrail = false,
+        elasticity = 1.0,
+        segments = 24 } = {}) {
         this._sphere = new Sphere(parent,
             {
                 position, radius, color, makeTrail, visible, scale, segments, opacity, wireframe
@@ -1398,7 +1399,7 @@ export class Ball {
 
     appendNeighbor(ball) { this._neighbors.push(ball); }
 
-    step(force, dt=0.01, integrator=Integrators.symplecticEulerStep) {
+    step(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
         const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
         const updatedBody = integrator(this.body, dt, accelerationFn);
 
@@ -1407,7 +1408,7 @@ export class Ball {
         this._sphere.moveTo(this.position);
     }
 
-    liesOnFloor({floorLevel=0, epsilon=1e-1} = {}) {
+    liesOnFloor({ floorLevel = 0, epsilon = 1e-1 } = {}) {
         return this.position.y - this.radius <= epsilon + floorLevel;
     }
 
@@ -1432,12 +1433,12 @@ export class Ball {
 
     disableTrail() { this._sphere.disableTrail(); }
     enableTrail({
-                    maxPoints = 200,
-                    color = 0xaaaaaa,
-                    trailStep = 10,
-                    linewidth = 1
-                } = {}) {
-        this._sphere.enableTrail({maxPoints, color, trailStep, linewidth });
+        maxPoints = 200,
+        color = 0xaaaaaa,
+        trailStep = 10,
+        linewidth = 1
+    } = {}) {
+        this._sphere.enableTrail({ maxPoints, color, trailStep, linewidth });
     }
 
     kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
@@ -1457,15 +1458,15 @@ export class Ball {
 
 export class Spring {
     constructor(parent, position, axis, {
-        k=200,
-        color=0x00ffff,
-        coils=30,
-        longitudinalOscillation=false,
-        tubularSegments=400,
-        radialSegments=12,
-        radius=0.5,
-        thickness=0.075,
-        visible=true
+        k = 200,
+        color = 0x00ffff,
+        coils = 30,
+        longitudinalOscillation = false,
+        tubularSegments = 400,
+        radialSegments = 12,
+        radius = 0.5,
+        thickness = 0.075,
+        visible = true
     } = {}) {
         this._longitudinalOscillation = longitudinalOscillation;
         this._radius = radius;
@@ -1482,8 +1483,8 @@ export class Spring {
         const material = new MeshStandardMaterial({
             color: color,
             visible: visible,
-            metalness:0.3,
-            roughness:0.4
+            metalness: 0.3,
+            roughness: 0.4
         });
         this._mesh = new Mesh(this._geometry, material);
         parent.add(this._mesh);
@@ -1532,7 +1533,7 @@ export class Spring {
     get k() { return this._k; }
     get force() { return this.axis.clone().normalize().multiplyScalar(-this._k * this.displacement); }
 
-    get displacement() {return this._restLength - this.axis.length(); }
+    get displacement() { return this._restLength - this.axis.length(); }
 
     set color(value) { this._mesh.material.color = value; }
     set visible(value) { this._mesh.material.visible = value; }
@@ -1540,7 +1541,7 @@ export class Spring {
 }
 
 class Particle {
-    constructor(position, velocity, radius, mass=1, scale=1) {
+    constructor(position, velocity, radius, mass = 1, scale = 1) {
         this._position = position;
         this._velocity = velocity;
         this._radius = radius;
@@ -1567,9 +1568,9 @@ class Particle {
     distanceToSquared(other) { return this.position.distanceToSquared(other.position); }
     distanceTo(other) { return this.position.distanceTo(other.position); }
 
-    updateMesh() { throw new Error("Method to be implemented by concrete subclass")}
-    confineToBox() { throw new Error("Method to be implemented by concrete subclass")}
-    radialWallForce() { throw new Error("Method to be implemented by concrete subclass")}
+    updateMesh() { throw new Error("Method to be implemented by concrete subclass") }
+    confineToBox() { throw new Error("Method to be implemented by concrete subclass") }
+    radialWallForce() { throw new Error("Method to be implemented by concrete subclass") }
 
     reset(position, velocity) {
         this._position.copy(position);
@@ -1635,7 +1636,7 @@ class Particle {
         this.confineToBox(boxSize);
     }
 
-    confineToSphere(radius, restitution=1) {
+    confineToSphere(radius, restitution = 1) {
         const rVector = this._position.clone();
         const distance = rVector.length();
         const maxDist = radius - this.radius;
@@ -1671,17 +1672,17 @@ export class Particle2D extends Particle {
         color = "0xffff00",
         mass = 1,
         scale = 1
-    } ={}) {
+    } = {}) {
         super(position, velocity, radius, mass, scale);
 
         const geometry = new CircleGeometry(radius * scale, 24);
-        const material = new MeshBasicMaterial({color});
+        const material = new MeshBasicMaterial({ color });
         this._mesh = new Mesh(geometry, material);
         this.updateMesh();
         parent.add(this._mesh);
     }
 
-    radialWallForce(wallRadius, kWall=1e4) {
+    radialWallForce(wallRadius, kWall = 1e4) {
         const r = this.position.length();
         if (r < wallRadius) return new Vector3(0, 0, 0);
 
@@ -1694,13 +1695,13 @@ export class Particle2D extends Particle {
 
     updateMesh() { this._mesh.position.set(this.position.x, this.position.y, 0).multiplyScalar(this._scale); }
 
-    reset(position=new Vector2(0, 0), velocity=new Vector2(0, 0)) { super.reset(position, velocity); }
+    reset(position = new Vector2(0, 0), velocity = new Vector2(0, 0)) { super.reset(position, velocity); }
 
     confineToBox(size) {
         const half = size / 2;
-        ["x","y"].forEach(axis => {
+        ["x", "y"].forEach(axis => {
             if (this.position[axis] > half - this.radius) this._velocity[axis] = -Math.abs(this.velocity[axis]);
-            if (this.position[axis] < -half + this.radius) this._velocity[axis] =  Math.abs(this.velocity[axis]);
+            if (this.position[axis] < -half + this.radius) this._velocity[axis] = Math.abs(this.velocity[axis]);
         });
     }
 }
@@ -1715,7 +1716,7 @@ export class ParticleTrail2D {
             this._dust[i] = new Vector2(0, 0);
 
         this._positions = new Float32Array(nPath * 3);
-        this._colors    = new Float32Array(nPath * 3);
+        this._colors = new Float32Array(nPath * 3);
 
         this._geometry = new BufferGeometry();
         this._geometry.setAttribute("position", new BufferAttribute(this._positions, 3));
@@ -1746,19 +1747,19 @@ export class ParticleTrail2D {
         this._dust[this._pushIndex].copy(ball.position);
     }
 
-    draw(fadeLength=1000) {
+    draw(fadeLength = 1000) {
         if (this._pushIndex <= -1) return;
 
         const startIndex = Math.max(0, this._pushIndex - fadeLength);
         for (let i = startIndex; i <= this._pushIndex; i++) {
             const pos = this._dust[i];
-            this._positions[i * 3]     = pos.x;
+            this._positions[i * 3] = pos.x;
             this._positions[i * 3 + 1] = pos.y;
             this._positions[i * 3 + 2] = 0;
 
             // fade factor: 0 = old, 1 = new
             const t = (i - startIndex) / (this._pushIndex - startIndex);
-            this._colors[i * 3]     = 0.8 * t;  // R
+            this._colors[i * 3] = 0.8 * t;  // R
             this._colors[i * 3 + 1] = 0.0;      // G
             this._colors[i * 3 + 2] = 1.0 * t;  // B
         }
@@ -1767,7 +1768,8 @@ export class ParticleTrail2D {
         this._geometry.attributes.position.needsUpdate = true;
         this._geometry.attributes.color.needsUpdate = true;
 
-        this._pushIndex = (this._pushIndex + 1) % this._dust.length;        }
+        this._pushIndex = (this._pushIndex + 1) % this._dust.length;
+    }
 }
 
 export class Particle3D extends Particle {
@@ -1778,25 +1780,25 @@ export class Particle3D extends Particle {
         color = "0xffff00",
         mass = 1,
         scale = 1
-    } ={}) {
+    } = {}) {
         super(position, velocity, radius, mass, scale);
 
         const geometry = new SphereGeometry(radius * scale, 16, 16);
-        const material =  new MeshStandardMaterial({
-                side: DoubleSide,
-                color: color,
-                wireframe: false,
-                transparent: true,
-                metalness: 0.4,
-                roughness: 0.2,
-                opacity: 1,
-            });
+        const material = new MeshStandardMaterial({
+            side: DoubleSide,
+            color: color,
+            wireframe: false,
+            transparent: true,
+            metalness: 0.4,
+            roughness: 0.2,
+            opacity: 1,
+        });
         this._mesh = new Mesh(geometry, material);
         this.updateMesh();
         parent.add(this._mesh);
     }
 
-    radialWallForce(wallRadius, kWall=1e4) {
+    radialWallForce(wallRadius, kWall = 1e4) {
         const r = this.position.length();
         if (r < wallRadius) return new Vector2(0, 0);
 
@@ -1809,33 +1811,33 @@ export class Particle3D extends Particle {
 
     updateMesh() { this._mesh.position.copy(this.position).multiplyScalar(this._scale); }
 
-    reset(position=new Vector3(0, 0, 0), velocity=new Vector3(0, 0, 0)) { super.reset(position, velocity); }
+    reset(position = new Vector3(0, 0, 0), velocity = new Vector3(0, 0, 0)) { super.reset(position, velocity); }
 
     confineToBox(size) {
         const half = size / 2;
-        ["x","y","z"].forEach(axis => {
+        ["x", "y", "z"].forEach(axis => {
             if (this._position[axis] > half - this.radius) this._velocity[axis] = -Math.abs(this.velocity[axis]);
-            if (this._position[axis] < -half + this.radius) this._velocity[axis] =  Math.abs(this.velocity[axis]);
+            if (this._position[axis] < -half + this.radius) this._velocity[axis] = Math.abs(this.velocity[axis]);
         });
     }
 }
 
 export class ParticleTrail3D {
-    constructor(parent, nPath=20000){
-        this._dust = new Array(nPath).fill().map(_=>new Vector3());
-        this._positions = new Float32Array(nPath*3);
-        this._colors = new Float32Array(nPath*3);
-        this._pushIndex=-1; this._index=-1;
+    constructor(parent, nPath = 20000) {
+        this._dust = new Array(nPath).fill().map(_ => new Vector3());
+        this._positions = new Float32Array(nPath * 3);
+        this._colors = new Float32Array(nPath * 3);
+        this._pushIndex = -1; this._index = -1;
 
         this._geometry = new BufferGeometry();
-        this._geometry.setAttribute("position", new BufferAttribute(this._positions,3));
-        this._geometry.setAttribute("color", new BufferAttribute(this._colors,3));
+        this._geometry.setAttribute("position", new BufferAttribute(this._positions, 3));
+        this._geometry.setAttribute("color", new BufferAttribute(this._colors, 3));
 
         this._material = new LineBasicMaterial({
-            vertexColors:true,
-            transparent:true,
-            opacity:1,
-            depthWrite:false
+            vertexColors: true,
+            transparent: true,
+            opacity: 1,
+            depthWrite: false
         });
         this._line = new Line(this._geometry, this._material);
         parent.add(this._line);
@@ -1855,19 +1857,19 @@ export class ParticleTrail3D {
         this._dust[this._pushIndex].copy(ball.position);
     }
 
-    draw(fadeLength=1000) {
+    draw(fadeLength = 1000) {
         if (this._pushIndex <= -1) return;
 
         const startIndex = Math.max(0, this._pushIndex - fadeLength);
         for (let i = startIndex; i <= this._pushIndex; i++) {
             const pos = this._dust[i];
-            this._positions[i * 3]     = pos.x;
+            this._positions[i * 3] = pos.x;
             this._positions[i * 3 + 1] = pos.y;
             this._positions[i * 3 + 2] = pos.z;
 
             // fade factor: 0 = old, 1 = new
             const t = (i - startIndex) / (this._pushIndex - startIndex);
-            this._colors[i * 3]     = 0.8 * t;  // R
+            this._colors[i * 3] = 0.8 * t;  // R
             this._colors[i * 3 + 1] = 0.0;      // G
             this._colors[i * 3 + 2] = 1.0 * t;  // B
         }
@@ -1887,10 +1889,10 @@ export class Gas extends Group {
     });
 
     constructor({
-                    numBalls=20,
-                    k=1,
-                    containerSize=1,
-                    containerType=Gas.Type.IN_BOX
+        numBalls = 20,
+        k = 1,
+        containerSize = 1,
+        containerType = Gas.Type.IN_BOX
     } = {}) {
         super();
         this._balls = [];
@@ -1907,7 +1909,7 @@ export class Gas extends Group {
             ball.show();
     }
 
-    hide(hideTracer=true) {
+    hide(hideTracer = true) {
         for (let ball of this._balls)
             ball.hide();
         if (!hideTracer)
@@ -1936,7 +1938,7 @@ export class Gas extends Group {
         const binSize = maxSpeed / binCount;
 
         let sumV2 = 0;
-        for(let ball of this._balls.slice(1)) { // skip tracer
+        for (let ball of this._balls.slice(1)) { // skip tracer
             const v = ball.speed();
             sumV2 += v * v;
             const index = Math.min(Math.floor(v / binSize), binCount - 1);
@@ -1970,7 +1972,7 @@ export class Gas extends Group {
 
     averageKE() {
         let totalKineticEnergy = 0;
-        for(const particle of this._balls.slice(1))
+        for (const particle of this._balls.slice(1))
             totalKineticEnergy += particle.kineticEnergy();
 
         return totalKineticEnergy;
@@ -1986,17 +1988,17 @@ export class Gas extends Group {
 
 export class Gas2D extends Gas {
     constructor({
-                    containerSize=1,
-                    containerType=Gas.Type.IN_BOX,
-                    currentTemperature=.5,
-                    numBalls=200,
-                    particleRadius=5,
-                    particleColor="yellow",
-                    particleMass=1,
-                    tracerRadius=5,
-                    tracerColor="red",
-                    tracerTrail=true,
-                    tracerMass=1} = {}) {
+        containerSize = 1,
+        containerType = Gas.Type.IN_BOX,
+        currentTemperature = .5,
+        numBalls = 200,
+        particleRadius = 5,
+        particleColor = "yellow",
+        particleMass = 1,
+        tracerRadius = 5,
+        tracerColor = "red",
+        tracerTrail = true,
+        tracerMass = 1 } = {}) {
         super({
             numBalls: numBalls,
             containerSize: containerSize,
@@ -2019,11 +2021,11 @@ export class Gas2D extends Gas {
         this.setTemperature(currentTemperature);
     }
 
-    addParticles({numberOfParticles=50,
-                 radius=5,
-                 mass=1,
-                 scale=1,
-                 color="cyan"
+    addParticles({ numberOfParticles = 50,
+        radius = 5,
+        mass = 1,
+        scale = 1,
+        color = "cyan"
     } = {}) {
         for (let i = 0; i < numberOfParticles; i++)
             this._balls.push(new Particle2D(this, {
@@ -2039,14 +2041,14 @@ export class Gas2D extends Gas {
 
     setTemperature(newTemperature) {
         const scale = Math.sqrt(newTemperature / this.#currentTemperature());
-        for(let ball of this._balls.slice(1))  // skip tracer
+        for (let ball of this._balls.slice(1))  // skip tracer
             ball.scaleVelocity(scale);
     }
 
     #currentTemperature() {
         // calculate current effective T via mean kinetic energy
         let sumV2 = 0;
-        for(let ball of this._balls.slice(1))  // skip tracer
+        for (let ball of this._balls.slice(1))  // skip tracer
             sumV2 += ball.velocity.lengthSq();
 
         return sumV2 / (2 * (this._balls.length - 1)); // 2D
@@ -2061,13 +2063,13 @@ export class Gas2D extends Gas {
 
     reset(temperature) {
         this._trail?.reset();
-        while(this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
+        while (this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
             const ball = this._balls.pop();
             this.remove(ball._mesh);
         }
 
         this._balls[0].reset(); // Tracer
-        for(let i = 1; i <= 200; i++) {
+        for (let i = 1; i <= 200; i++) {
             this._balls[i].reset(new Vector2(0, 0), this.#newInitialVelocity(temperature, this._balls[i].mass));
         }
 
@@ -2108,17 +2110,17 @@ export class Gas2D extends Gas {
 
 export class Gas3D extends Gas {
     constructor({
-                    containerSize=1,
-                    containerType=Gas.Type.IN_BOX,
-                    currentTemperature=.5,
-                    numBalls=200,
-                    particleRadius=5,
-                    particleColor="yellow",
-                    particleMass=1,
-                    tracerRadius=5,
-                    tracerColor="red",
-                    tracerTrail=true,
-                    tracerMass=1} = {}) {
+        containerSize = 1,
+        containerType = Gas.Type.IN_BOX,
+        currentTemperature = .5,
+        numBalls = 200,
+        particleRadius = 5,
+        particleColor = "yellow",
+        particleMass = 1,
+        tracerRadius = 5,
+        tracerColor = "red",
+        tracerTrail = true,
+        tracerMass = 1 } = {}) {
         super({
             numBalls: numBalls,
             containerSize: containerSize,
@@ -2141,12 +2143,12 @@ export class Gas3D extends Gas {
         this.setTemperature(currentTemperature);
     }
 
-    addParticles({numberOfParticles=50,
-                 radius=5,
-                 mass=1,
-                 scale=1,
-                 color="cyan"
-        } = {}) {
+    addParticles({ numberOfParticles = 50,
+        radius = 5,
+        mass = 1,
+        scale = 1,
+        color = "cyan"
+    } = {}) {
         for (let i = 0; i < numberOfParticles; i++)
             this._balls.push(new Particle3D(this, {
                 radius: radius,
@@ -2162,7 +2164,7 @@ export class Gas3D extends Gas {
     #currentTemperature() {
         // calculate current effective T via mean kinetic energy
         let sumV2 = 0;
-        for(let ball of this._balls.slice(1))  // skip tracer
+        for (let ball of this._balls.slice(1))  // skip tracer
             sumV2 += ball.velocity.lengthSq();
 
         return sumV2 / (3 * (this._balls.length - 1)); // 3D
@@ -2170,7 +2172,7 @@ export class Gas3D extends Gas {
 
     setTemperature(newTemp) {
         const scale = Math.sqrt(newTemp / this.#currentTemperature());
-        for(let ball of this._balls.slice(1))  // skip tracer
+        for (let ball of this._balls.slice(1))  // skip tracer
             ball.scaleVelocity(scale);
     }
 
@@ -2187,13 +2189,13 @@ export class Gas3D extends Gas {
 
     reset(temperature) {
         this._trail?.reset();
-        while(this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
+        while (this._balls.length > 201) { // Remove balls that have been added with the add-button, if any
             const ball = this._balls.pop();
             this.remove(ball._mesh);
         }
 
         this._balls[0].reset(); // Tracer
-        for(let i = 1; i <= 200; i++)
+        for (let i = 1; i <= 200; i++)
             this._balls[i].reset(new Vector3(0, 0, 0), this.#newInitialVelocity(temperature, this._balls[i].mass));
 
         this._numBalls = 200;
@@ -2207,13 +2209,13 @@ export class Bond {
         CYLINDER: "cylinder"
     });
     constructor(parent, object1, object2, {
-        scale=1,
-        color=new Color(0xface8d),
-        coils=15,
-        radius=0.2,
-        thickness=0.02,
-        k_bond=18600.0,
-        type=Bond.Type.CYLINDER
+        scale = 1,
+        color = new Color(0xface8d),
+        coils = 15,
+        radius = 0.2,
+        thickness = 0.02,
+        k_bond = 18600.0,
+        type = Bond.Type.CYLINDER
     } = {}) {
         this._object1 = object1;
         this._object2 = object2;
@@ -2222,14 +2224,15 @@ export class Bond {
         this._bondConstant = k_bond;
 
         const geometry = new CylinderGeometry(radius * .5 * scale, radius * .5 * scale, 1);
-        const material = new MeshStandardMaterial({color: color});
+        const material = new MeshStandardMaterial({ color: color });
         this._rod = new Mesh(geometry, material);
         this._spring = new Spring(parent, new Vector3(0, 0, 0), new Vector3(0, 1, 0), {
             coils: coils,
             radius: radius * .5 * scale,
             thickness: thickness,
             k: k_bond,
-            color: color});
+            color: color
+        });
         this._mesh = this._rod;
         parent.add(this._mesh);
 
@@ -2256,7 +2259,7 @@ export class Bond {
         const direction = p2.clone().sub(p1);
         const length = direction.length();
 
-        this._mesh.position.copy(this._bondType === Bond.Type.SPRING ? p1 :mid).multiplyScalar(this._scale);
+        this._mesh.position.copy(this._bondType === Bond.Type.SPRING ? p1 : mid).multiplyScalar(this._scale);
         this._mesh.scale.set(1, length * this._scale, 1); // Cylinder/bond length (is one high by default)
 
         // orientation: rotate Y-axes to bond vectord
@@ -2266,12 +2269,12 @@ export class Bond {
 }
 
 export class CarbonMonoxide extends Group {
-    constructor(pos, initialSpeed, scale=1) {
+    constructor(pos, initialSpeed, scale = 1) {
         super();
         const radius = 31E-12;
         const distance = 2.5 * radius;
         const axis = new Vector3(distance, 0, 0);
-        const oxygenMass=16E-23, carbonMass=12E-23;
+        const oxygenMass = 16E-23, carbonMass = 12E-23;
         this._oxygen = new Particle3D(this, {
             position: pos,
             velocity: new Vector3().random().multiplyScalar(initialSpeed),
@@ -2289,7 +2292,7 @@ export class CarbonMonoxide extends Group {
             scale: scale
         });
         this._bond = new Bond(this, this._oxygen, this._carbon,
-            {scale: scale, radius: 1.25 * radius});
+            { scale: scale, radius: 1.25 * radius });
         this._restLength = 2.5 * radius;
     }
 
@@ -2437,30 +2440,30 @@ export class Aquarium {
     hide() { this._cube.visible = false; }
 }
 
-export class HarmonicOscillator extends Group  {
+export class HarmonicOscillator extends Group {
     constructor({
-                    position = new Vector3(0, 0, 0),
-                    length = 10,
-                    springConstant = 10,
-                    ballRadius = 0.3,
-                    ballMass = 3,
-                    ballColor = "cyan"
-                } = {}) {
+        position = new Vector3(0, 0, 0),
+        length = 10,
+        springConstant = 10,
+        ballRadius = 0.3,
+        ballMass = 3,
+        ballColor = "cyan"
+    } = {}) {
         super();
         this._center = position.clone();
         this._k = springConstant;
 
-        const leftPos  = position.clone().add(new Vector3(-length, 0, 0));
+        const leftPos = position.clone().add(new Vector3(-length, 0, 0));
         const rightPos = position.clone().add(new Vector3(length, 0, 0));
 
-        this._left = new Ball(this,{
+        this._left = new Ball(this, {
             position: leftPos,
             radius: ballRadius,
             mass: ballMass,
             color: ballColor
         });
 
-        this._right = new Ball(this,{
+        this._right = new Ball(this, {
             position: rightPos,
             radius: ballRadius,
             mass: ballMass,
@@ -2481,7 +2484,7 @@ export class HarmonicOscillator extends Group  {
         this._restLength = axis.length();
     }
 
-    update(dt){
+    update(dt) {
         const delta = this._right.position.clone().sub(this._left.position);
         const length = delta.length();
         const direction = delta.clone().normalize();
@@ -2496,15 +2499,15 @@ export class HarmonicOscillator extends Group  {
         this._spring.updateAxis(delta);
     }
 
-    compress(amount){
-        this._left.shiftBy(new Vector3(amount/2, 0, 0));
-        this._right.shiftBy(new Vector3(-amount/2, 0, 0));
+    compress(amount) {
+        this._left.shiftBy(new Vector3(amount / 2, 0, 0));
+        this._right.shiftBy(new Vector3(-amount / 2, 0, 0));
     }
 
-    reset(){
+    reset() {
         const halfLength = this._restLength / 2;
-        this._left.moveTo(this._center.clone().add(new Vector3(-halfLength,0,0)));
-        this._right.moveTo(this._center.clone().add(new Vector3(halfLength,0,0)));
+        this._left.moveTo(this._center.clone().add(new Vector3(-halfLength, 0, 0)));
+        this._right.moveTo(this._center.clone().add(new Vector3(halfLength, 0, 0)));
         this._left.accelerateTo(new Vector3());
         this._right.accelerateTo(new Vector3());
     }
@@ -2512,10 +2515,10 @@ export class HarmonicOscillator extends Group  {
 
 export class Ceiling {
     constructor(parent, {
-        position=new Vector(0, 0, 0),
-        size=12,
-        thickness=0.75,
-        color=0x8a8a8a
+        position = new Vector(0, 0, 0),
+        size = 12,
+        thickness = 0.75,
+        color = 0x8a8a8a
     } = {}) {
         const ceilingGeometry = new BoxGeometry(size, size, thickness);
         const ceilingMaterial = new MeshStandardMaterial({
@@ -2534,18 +2537,18 @@ export class Ceiling {
 
 export class MassSpringSystem extends Group {
     constructor({
-                    suspensionPoint=new Vector3(0, 30, 0),
-                    axis=new Vector3(0, 25, 0),
-                    massPosition=axis.clone(),
-                    massRadius=2,
-                    massMass=10,
-                    massColor= "orange",
-                    springConstant=200,
-                    gravity = 0,
-                    horizontalK = 0,
-                    coils=40,
-                    makeTrail=false
-                } = {}) {
+        suspensionPoint = new Vector3(0, 30, 0),
+        axis = new Vector3(0, 25, 0),
+        massPosition = axis.clone(),
+        massRadius = 2,
+        massMass = 10,
+        massColor = "orange",
+        springConstant = 200,
+        gravity = 0,
+        horizontalK = 0,
+        coils = 40,
+        makeTrail = false
+    } = {}) {
         super();
         this._suspensionPoint = suspensionPoint;
         this._gravity = gravity;
@@ -2569,7 +2572,7 @@ export class MassSpringSystem extends Group {
         this._spring.update(0);
     }
 
-    force(damping=0) { // horizontal spring constant
+    force(damping = 0) { // horizontal spring constant
         const force = this.mass.velocity.clone().multiplyScalar(-damping);
         return force.add(this._spring.force);
     }
@@ -2609,7 +2612,7 @@ export class MassSpringSystem extends Group {
         this._mass.accelerateTo(new Vector3(0, 0, 0));
     }
 
-    step(dt, integrator, damping=0, time=0) {
+    step(dt, integrator, damping = 0, time = 0) {
         const body = this._mass.body;
 
         const accelerationFn = (body) =>
@@ -2624,7 +2627,7 @@ export class MassSpringSystem extends Group {
     }
 
     get mass() { return this._mass; }
-    get omega() { return Math.sqrt( this._spring.k / this.mass.mass ); }
+    get omega() { return Math.sqrt(this._spring.k / this.mass.mass); }
     kineticEnergy() { return this._mass.kineticEnergy(); }
     potentialEnergy() { return this._spring.potentialEnergy(); }
 }

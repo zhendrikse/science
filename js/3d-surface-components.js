@@ -1,11 +1,13 @@
-import { ParametricGeometry} from "three/addons/geometries/ParametricGeometry";
+import { ParametricGeometry } from "three/addons/geometries/ParametricGeometry";
 import { Arrow, Interval, ThreeJsUtils }
     from '../js/three-js-extensions.js';
-import { Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3, LineSegments,
+import {
+    Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3, LineSegments,
     MathUtils, Color, SphereGeometry, CapsuleGeometry, ConeGeometry, LineBasicMaterial, Line,
     Points, PointsMaterial, BufferAttribute, BufferGeometry, InstancedBufferAttribute,
     InstancedMesh, BoxGeometry, Object3D, ShaderMaterial, Float32BufferAttribute,
-    RedFormat, DataTexture, FloatType} from "three";
+    RedFormat, DataTexture, FloatType
+} from "three";
 import { colors255 } from "../js/color-maps.js";
 
 export const ContourType = Object.freeze({
@@ -35,7 +37,7 @@ export class ColorMapper {
         }
 
         const pos = geometry.attributes.position;
-        const uv  = geometry.attributes.uv;
+        const uv = geometry.attributes.uv;
         const color = new Color();
 
         let colorAttr = geometry.attributes.color;
@@ -52,7 +54,7 @@ export class ColorMapper {
                 v = uv.getY(i);
             }
             this.colorFor(u, v, color);
-            colorAttr.array[3 * i]     = color.r;
+            colorAttr.array[3 * i] = color.r;
             colorAttr.array[3 * i + 1] = color.g;
             colorAttr.array[3 * i + 2] = color.b;
         }
@@ -72,7 +74,7 @@ export class GaussianCurvatureColorMapper extends ColorMapper {
         const { K } = this._curvature.normalMeanGaussian(u, v);
         const t = Math.tanh(K * this._scale);
         if (t > 0) color.setHSL(0.0, 0.85, 0.5 + 0.2 * t);
-        else       color.setHSL(0.6, 0.85, 0.5 - 0.2 * t);
+        else color.setHSL(0.6, 0.85, 0.5 - 0.2 * t);
     }
 }
 
@@ -124,9 +126,9 @@ export class HeightColorMapper extends ColorMapper {
             hsl.l = 0.4 + 0.3 * (1 - t);
 
             color.setHSL(hsl.h, hsl.s, hsl.l);
-            colorAttr.array[3*i]     = color.r;
-            colorAttr.array[3*i + 1] = color.g;
-            colorAttr.array[3*i + 2] = color.b;
+            colorAttr.array[3 * i] = color.r;
+            colorAttr.array[3 * i + 1] = color.g;
+            colorAttr.array[3 * i + 2] = color.b;
         }
 
         colorAttr.needsUpdate = true;
@@ -373,10 +375,10 @@ export class SurfaceView {
             side: DoubleSide,
             wireframe: showWireframe,
             transparent: true,
-            metalness:0.7,
-            roughness:0.2,
+            metalness: 0.7,
+            roughness: 0.2,
             opacity: opacity,
-       });
+        });
     position() { return this._group.position.clone(); }
     rotateBy = (delta) => this._group.rotation.y += delta;
     show() { this._group.visible = true; }
@@ -405,12 +407,12 @@ export class CurvatureContoursView extends SurfaceView {
     }
 
     buildWith({
-                  threshold = 0.05,
-                  uCount = 100,
-                  vCount = 100,
-                  color = 0xffaa00,
-                  opacity = 0.8
-              } = {}) {
+        threshold = 0.05,
+        uCount = 100,
+        vCount = 100,
+        color = 0xffaa00,
+        opacity = 0.8
+    } = {}) {
         this.clear();
 
         const points = [];
@@ -418,7 +420,7 @@ export class CurvatureContoursView extends SurfaceView {
             for (let j = 0; j <= vCount; j++) {
                 const u = i / uCount;
                 const v = j / vCount;
-                const {N, K, H} = this._diffGeometry.normalMeanGaussian(u, v);
+                const { N, K, H } = this._diffGeometry.normalMeanGaussian(u, v);
                 if (Math.abs(H) <= threshold) continue;
 
                 const point = new Vector3();
@@ -472,11 +474,11 @@ export class IsoparametricContoursView extends SurfaceView {
     }
 
     buildWith({
-                  uCount = 20,
-                  vCount = 20,
-                  segments = 100,
-                  color = 0xffffff
-              } = {}) {
+        uCount = 20,
+        vCount = 20,
+        segments = 100,
+        color = 0xffffff
+    } = {}) {
         const material = new LineBasicMaterial({ color: color, transparent: true, depthWrite: true, depthTest: true });
         const target = new Vector3();
 
@@ -535,7 +537,7 @@ export class IsoparametricContoursView extends SurfaceView {
 }
 
 export class MinimalSurfaceView extends SurfaceView {
-    constructor(parentGroup, mathematicalSurface, {showWireframe=true, resolution=20, baseColor="#4f6"}) {
+    constructor(parentGroup, mathematicalSurface, { showWireframe = true, resolution = 20, baseColor = "#4f6" }) {
         super(parentGroup, mathematicalSurface);
         this._baseColor = baseColor;
         this._geometry = mathematicalSurface.createGeometryWith(resolution);
@@ -549,11 +551,13 @@ export class MinimalSurfaceView extends SurfaceView {
     onSelect = () => {
         this._material.wireframe = false;
         this._colorMapper.onChangeColor("#f90");
-        this._colorMapper.apply(this._geometry); }
+        this._colorMapper.apply(this._geometry);
+    }
     onDeselect = () => {
         this._material.wireframe = true;
         this._colorMapper.onChangeColor(this._baseColor);
-        this._colorMapper.apply(this._geometry); }
+        this._colorMapper.apply(this._geometry);
+    }
     selectableObject = () => this._mesh;
 }
 
@@ -567,7 +571,7 @@ export class NormalsView extends SurfaceView {
     #deriveScaleFromMesh(k, curvatureGain, normalScale) {
         this._geometry.computeBoundingSphere();
         const baseScale = this._geometry.boundingSphere.radius * normalScale;
-        const maxScale  = baseScale * 2.5;
+        const maxScale = baseScale * 2.5;
         return Math.min(baseScale * (1 + curvatureGain * k), maxScale); // Scale with clamp
     }
 
@@ -575,17 +579,17 @@ export class NormalsView extends SurfaceView {
         const normalsGeometry = new BufferGeometry();
         normalsGeometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
         normalsGeometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
-        const material = new LineBasicMaterial({vertexColors: true, depthTest: false});
+        const material = new LineBasicMaterial({ vertexColors: true, depthTest: false });
         return new LineSegments(normalsGeometry, material);
     }
 
     #createNormalLines(normalScale, curvatureGain, stride) {
         const pos = this._geometry.attributes.position;
-        const uv  = this._geometry.attributes.uv;
+        const uv = this._geometry.attributes.uv;
         const curvature = new DifferentialGeometry(this._surface.definition());
 
         const positions = [];
-        const colors    = [];
+        const colors = [];
         for (let i = 0; i < pos.count; i += stride) {
             const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
             const u = uv.getX(i), v = uv.getY(i);
@@ -690,12 +694,12 @@ export class StandardSurfaceView extends SurfaceView {
  */
 export class ShapeOperator {
     constructor({
-                    matrix,     // 2×2 matrix in tangent basis
-                    basis,      // { Xu, Xv }
-                    normal
-                }) {
+        matrix,     // 2×2 matrix in tangent basis
+        basis,      // { Xu, Xv }
+        normal
+    }) {
         this.matrix = matrix;
-        this.basis  = basis;
+        this.basis = basis;
         this.normal = normal;
         Object.freeze(this);
     }
@@ -703,13 +707,13 @@ export class ShapeOperator {
 
 export class PrincipalFrame {
     constructor({
-                    position,
-                    normal,
-                    k1, k2,
-                    d1, d2
-                }) {
+        position,
+        normal,
+        k1, k2,
+        d1, d2
+    }) {
         this.position = position; // Vector3
-        this.normal   = normal;   // Vector3
+        this.normal = normal;   // Vector3
         this.k1 = k1;
         this.k2 = k2;
         this.d1 = d1;             // tangent direction
@@ -847,8 +851,8 @@ export class SurfaceSelector extends Group {
         ringRadius = 2,
         verticalOffset = -1,
         activeCategory = Category.MISC,
-        rotationSpeed=0.01,
-        selectionLerp=0.08
+        rotationSpeed = 0.01,
+        selectionLerp = 0.08
     } = {}) {
         super();
         this._surfaces = [];
@@ -912,7 +916,7 @@ export class SurfaceSelector extends Group {
                 selectorSurface.group,
                 selectorSurface.boundingBox(),
                 this._boundingBox,
-                {alignY: "min", padding: 1.1}
+                { alignY: "min", padding: 1.1 }
             );
             this._surfaces.push(selectorSurface);
         });
@@ -939,7 +943,7 @@ export class SurfaceSelector extends Group {
 }
 
 export class SurfaceController {
-    constructor(parentGroup, mathematicalSurface, surfaceParams, colorMapper, contoursView=null) {
+    constructor(parentGroup, mathematicalSurface, surfaceParams, colorMapper, contoursView = null) {
         this._rootGroup = new Group();
         parentGroup.add(this._rootGroup);
         this._surface = null;
@@ -1038,7 +1042,7 @@ export class SurfaceController {
 
             if (contourParams.contourType === ContourType.ISO_PARAMETRIC)
                 newContours = new IsoparametricContoursView(this._surface.group, this._surface);
-            else  if (contourParams.contourType === ContourType.CURVATURE)
+            else if (contourParams.contourType === ContourType.CURVATURE)
                 newContours = new CurvatureContoursView(this._surface.group, this._surface);
 
             this.onContoursViewChange(newContours, contourParams);
@@ -1101,16 +1105,16 @@ export class Utils {
 
 export class ViewParameters {
     constructor({
-                    autoRotate = false,
-                    baseColor = "#4cf",
-                    colorMode = ColorMapper.ColorMode.HEIGHT,
-                    contourParameters = new ContourParameters(),
-                    normals = false,
-                    opacity = 0.9,
-                    resolution = 75,
-                    tangentFrameParameters = new TangentFrameParameters(),
-                    wireframe = false
-                } ={}) {
+        autoRotate = false,
+        baseColor = "#4cf",
+        colorMode = ColorMapper.ColorMode.HEIGHT,
+        contourParameters = new ContourParameters(),
+        normals = false,
+        opacity = 0.9,
+        resolution = 75,
+        tangentFrameParameters = new TangentFrameParameters(),
+        wireframe = false
+    } = {}) {
         this.autoRotate = autoRotate;
         this.baseColor = baseColor;
         this.colorMode = colorMode;
@@ -1125,16 +1129,16 @@ export class ViewParameters {
 
 export class TangentFrameParameters {
     constructor({
-                    u=0.25,
-                    v=0.5,
-                    showAxes=true,
-                    showPrincipals=false,
-                    wireframe=false,
-                    scale = 0.7,
-                    opacity = 0.5,
-                    color = 0x8888ff,
-                    visible = true
-                } = {}) {
+        u = 0.25,
+        v = 0.5,
+        showAxes = true,
+        showPrincipals = false,
+        wireframe = false,
+        scale = 0.7,
+        opacity = 0.5,
+        color = 0x8888ff,
+        visible = true
+    } = {}) {
         this.u = u;
         this.v = v;
         this.color = color;
@@ -1257,7 +1261,7 @@ export class SurfaceColorMapper {
         RDYLBU_COLOR_MAP: "RdYlBu"
     });
 
-    constructor(mode=SurfaceColorMapper.Mode.WATER) {
+    constructor(mode = SurfaceColorMapper.Mode.WATER) {
         this._mode = mode;
         this._colorMap = colors255[mode];
         this._tmp = new Color();
@@ -1289,8 +1293,8 @@ export class SurfaceColorMapper {
                 break;
             case SurfaceColorMapper.Mode.WATER_ALTERNATIVE:
                 outArray[offset] = t * 0.15;
-                outArray[offset+1] = t * 0.3;
-                outArray[offset+2] = t;
+                outArray[offset + 1] = t * 0.3;
+                outArray[offset + 2] = t;
                 break;
             case SurfaceColorMapper.Mode.WATER:
                 if (t < 0.5)
@@ -1324,7 +1328,7 @@ export class RenderableSurface extends Object3D {
         CONES: "cones"
     });
 
-    constructor(wave, colorMapper){
+    constructor(wave, colorMapper) {
         super();
         this._wave = wave;
         this._colorMapper = colorMapper;
@@ -1332,35 +1336,35 @@ export class RenderableSurface extends Object3D {
 
     _isEdge = (i, j) => i === 0 || j === 0 || i === this.numX - 1 || j === this.numY - 1;
 
-    get amplitudes(){ return this._wave.amplitudes; }
-    get numX(){ return this._wave.numVerticesX; }
-    get numY(){ return this._wave.numVerticesY; }
-    get size(){ return this._wave.vertexDistance; }
+    get amplitudes() { return this._wave.amplitudes; }
+    get numX() { return this._wave.numVerticesX; }
+    get numY() { return this._wave.numVerticesY; }
+    get size() { return this._wave.vertexDistance; }
 
-    get min(){ return this._wave.minHeight; }
-    get max(){ return this._wave.maxHeight; }
+    get min() { return this._wave.minHeight; }
+    get max() { return this._wave.maxHeight; }
 
-    get range(){
+    get range() {
         return Math.max(this.max - this.min, 1e-6);
     }
 
     set colorMapper(colorMapper) { this._colorMapper = colorMapper; }
 
-    normalizeHeight(h){
+    normalizeHeight(h) {
         return (h - this.min) / this.range;
     }
 
-    update(){
-        for(let i = 0; i < this.numX; i++)
-            for(let j = 0; j < this.numY; j++){
+    update() {
+        for (let i = 0; i < this.numX; i++)
+            for (let j = 0; j < this.numY; j++) {
                 const h = this.amplitudes[i][j];
                 const t = this.normalizeHeight(h);
 
-                if(this.updateVertex)
+                if (this.updateVertex)
                     this.updateVertex(i, j, h, t);
             }
 
-        if(this.finishUpdate)
+        if (this.finishUpdate)
             this.finishUpdate();
     }
 }
@@ -1383,27 +1387,27 @@ export class InstanceSurface extends RenderableSurface {
     }
 
     _init() {
-        for(let i=0;i<this.numX;i++)
-            for(let j=0;j<this.numY;j++)
+        for (let i = 0; i < this.numX; i++)
+            for (let j = 0; j < this.numY; j++)
                 this.updateVertex(i, j, 0, 0);
     }
 
-    updateVertex(i,j,h,t){
-        const index = i*this.numY+j;
+    updateVertex(i, j, h, t) {
+        const index = i * this.numY + j;
 
         this._dummy.scale.setScalar(this._isEdge(i, j) ? 0 : 1);
         this._dummy.position.set(
-            (i/this.numX-.5)*this.size,
+            (i / this.numX - .5) * this.size,
             h,
-            (j/this.numY-.5)*this.size
+            (j / this.numY - .5) * this.size
         );
 
         this._dummy.updateMatrix();
-        this._mesh.setMatrixAt(index,this._dummy.matrix);
-        this._colorMapper.getColor(t,this._colorArray,index*3);
+        this._mesh.setMatrixAt(index, this._dummy.matrix);
+        this._colorMapper.getColor(t, this._colorArray, index * 3);
     }
 
-    _material(opacity=1) {
+    _material(opacity = 1) {
         return new MeshStandardMaterial({
             side: DoubleSide,
             roughness: 0.25,
@@ -1456,7 +1460,7 @@ export class ShaderSurface extends RenderableSurface {
     constructor(wave, colorMapper) {
         super(wave, colorMapper);
         const geometry = new PlaneGeometry(wave.vertexDistance, wave.vertexDistance, wave.numVerticesX - 1, wave.numVerticesY - 1);
-        geometry.rotateX(-Math.PI/2);
+        geometry.rotateX(-Math.PI / 2);
 
         const heightData = new Float32Array(wave.numVerticesX * wave.numVerticesY);
         const texture = new DataTexture(heightData, wave.numVerticesX, wave.numVerticesY, RedFormat, FloatType);
@@ -1491,18 +1495,18 @@ export class ShaderSurface extends RenderableSurface {
         this.mesh.material.uniforms.colorMap.needsUpdate = true;
     }
 
-    update(){
-        let k=0;
-        for(let i=0;i<this.numX;i++)
-            for(let j=0;j<this.numY;j++)
-                this._heightData[k++]=this.amplitudes[i][j];
+    update() {
+        let k = 0;
+        for (let i = 0; i < this.numX; i++)
+            for (let j = 0; j < this.numY; j++)
+                this._heightData[k++] = this.amplitudes[i][j];
 
-        this._texture.needsUpdate=true;
+        this._texture.needsUpdate = true;
     }
 }
 
 export class PointsSurface extends RenderableSurface {
-    constructor(wave, colorMapper, {radius=.15} = {}) {
+    constructor(wave, colorMapper, { radius = .15 } = {}) {
         super(wave, colorMapper);
         const count = wave.numVerticesX * wave.numVerticesY;
         const geometry = new BufferGeometry();
@@ -1510,8 +1514,8 @@ export class PointsSurface extends RenderableSurface {
         this._positions = new Float32Array(count * 3);
         this._colors = new Float32Array(count * 3);
 
-        geometry.setAttribute("position", new BufferAttribute(this._positions,3));
-        geometry.setAttribute("color", new BufferAttribute(this._colors,3));
+        geometry.setAttribute("position", new BufferAttribute(this._positions, 3));
+        geometry.setAttribute("color", new BufferAttribute(this._colors, 3));
 
         const material = new PointsMaterial({
             size: radius,
@@ -1519,25 +1523,25 @@ export class PointsSurface extends RenderableSurface {
         });
 
         for (let i = 0; i < this.numX; i++)
-            for(let j = 0; j < this.numY; j++) {
-                const index = i*this.numY+j;
-                this._positions[index*3+0]=(i/this.numX-.5)*this.size;
-                this._positions[index*3+2]=(j/this.numY-.5)*this.size;
+            for (let j = 0; j < this.numY; j++) {
+                const index = i * this.numY + j;
+                this._positions[index * 3 + 0] = (i / this.numX - .5) * this.size;
+                this._positions[index * 3 + 2] = (j / this.numY - .5) * this.size;
             }
 
         this._mesh = new Points(geometry, material);
         this.add(this._mesh);
     }
 
-    updateVertex(i,j,h,t){
-        const index = i*this.numY+j;
-        this._positions[index*3+1]=h;
-        this._colorMapper.getColor(t,this._colors,index*3);
+    updateVertex(i, j, h, t) {
+        const index = i * this.numY + j;
+        this._positions[index * 3 + 1] = h;
+        this._colorMapper.getColor(t, this._colors, index * 3);
     }
 
-    finishUpdate(){
-        this._mesh.geometry.attributes.position.needsUpdate=true;
-        this._mesh.geometry.attributes.color.needsUpdate=true;
+    finishUpdate() {
+        this._mesh.geometry.attributes.position.needsUpdate = true;
+        this._mesh.geometry.attributes.color.needsUpdate = true;
     }
 }
 
@@ -1550,8 +1554,8 @@ export class PlaneSurface extends RenderableSurface {
 
         this._mesh = new Mesh(geometry, this._material());
         this._positions = geometry.attributes.position.array;
-        this._colors = new Float32Array(wave.numVerticesX*wave.numVerticesY*3);
-        geometry.setAttribute("color", new BufferAttribute(this._colors,3));
+        this._colors = new Float32Array(wave.numVerticesX * wave.numVerticesY * 3);
+        geometry.setAttribute("color", new BufferAttribute(this._colors, 3));
         this.add(this._mesh);
     }
 
@@ -1564,14 +1568,14 @@ export class PlaneSurface extends RenderableSurface {
     }
 
     updateVertex(i, j, h, t) {
-        const index = i*this.numY+j;
-        this._positions[index*3+1]=h;
-        this._colorMapper.getColor(t,this._colors,index*3);
+        const index = i * this.numY + j;
+        this._positions[index * 3 + 1] = h;
+        this._colorMapper.getColor(t, this._colors, index * 3);
     }
 
-    finishUpdate(){
-        this._mesh.geometry.attributes.position.needsUpdate=true;
-        this._mesh.geometry.attributes.color.needsUpdate=true;
+    finishUpdate() {
+        this._mesh.geometry.attributes.position.needsUpdate = true;
+        this._mesh.geometry.attributes.color.needsUpdate = true;
         this._mesh.geometry.computeVertexNormals();
     }
 }
@@ -1587,13 +1591,13 @@ export class SpheresSurface extends InstanceSurface {
 }
 
 export class CubesSurface extends InstanceSurface {
-    constructor(wave, colorMapper, {blockSize = 0.07} = {}) {
+    constructor(wave, colorMapper, { blockSize = 0.07 } = {}) {
         super(wave, colorMapper, new BoxGeometry(blockSize, blockSize, blockSize));
     }
 
-    _orientInstance(i,j) {
+    _orientInstance(i, j) {
         if (this._isEdge(i, j)) return;
-        this._dummy.quaternion.setFromUnitVectors(this._up, this._wave.normalAt(i,j));
+        this._dummy.quaternion.setFromUnitVectors(this._up, this._wave.normalAt(i, j));
     }
 
     updateVertex(i, j, h, t) {
@@ -1604,11 +1608,11 @@ export class CubesSurface extends InstanceSurface {
 
 export class CapsulesSurface extends InstanceSurface {
     constructor(wave, colorMapper, {
-        radius=0.05,
-        height=0.1,
-        radialSegments=4,
-        heightSegments=8
-    } = {}){
+        radius = 0.05,
+        height = 0.1,
+        radialSegments = 4,
+        heightSegments = 8
+    } = {}) {
         super(wave, colorMapper, new CapsuleGeometry(radius, height, radialSegments, heightSegments));
     }
 }
@@ -1616,16 +1620,16 @@ export class CapsulesSurface extends InstanceSurface {
 export class ConesSurface extends InstanceSurface {
     constructor(wave, colorMapper, {
         radius = 0.05,
-        height=0.1,
-        radialSegments=8,
-        heightSegments=1
-    } = {}){
+        height = 0.1,
+        radialSegments = 8,
+        heightSegments = 1
+    } = {}) {
         super(wave, colorMapper, new ConeGeometry(radius, height, radialSegments, heightSegments));
     }
 
-    _orientInstance(i,j) {
+    _orientInstance(i, j) {
         if (this._isEdge(i, j)) return;
-        this._dummy.quaternion.setFromUnitVectors(this._up, this._wave.normalAt(i,j));
+        this._dummy.quaternion.setFromUnitVectors(this._up, this._wave.normalAt(i, j));
     }
 
     updateVertex(i, j, h, t) {

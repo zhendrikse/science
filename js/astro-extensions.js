@@ -1,26 +1,28 @@
-import { Group, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial, PointsMaterial,
-    Vector3, BackSide, AdditiveBlending,    DoubleSide, Quaternion, BufferGeometry, BufferAttribute, Points,
-    MeshBasicMaterial, FrontSide, LineDashedMaterial, LineBasicMaterial, LineLoop, Line, PlaneGeometry } from "three";
+import {
+    Group, SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader, Color, ShaderMaterial, PointsMaterial,
+    Vector3, BackSide, AdditiveBlending, DoubleSide, Quaternion, BufferGeometry, BufferAttribute, Points,
+    MeshBasicMaterial, FrontSide, LineDashedMaterial, LineBasicMaterial, LineLoop, Line, PlaneGeometry
+} from "three";
 import { Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
 
 export const EARTH_SEMI_MAJOR_AXIS = 149598261.;
 export const PLANET_SCALE = 0.25E7;  // meters → render units (radius), planet sizes are shrunk by this factor
 export const SUN_SCALE = 100 * PLANET_SCALE;
 export const AU = 1.496 * 1E11;   // astronomical unit
-export const ORBIT_SCALE  = 40;    // additional orbit compression factor for nice visual representation
+export const ORBIT_SCALE = 40;    // additional orbit compression factor for nice visual representation
 export const DISTANCE_SCALE = AU / ORBIT_SCALE;
-export const SCALE_MOON = 275 ; // scaling factor for semi major axes of some moons
+export const SCALE_MOON = 275; // scaling factor for semi major axes of some moons
 
 const toRenderUnits = (vector) => vector.clone().multiplyScalar(1000 / DISTANCE_SCALE);
 
 export class SkyDome extends Group {
     constructor({
-                    skyRadius = 5000,
-                    starDensity = 5,
-                    glowStarCount = 2000,
-                    pointSize = 4,
-                    blinkSpeed = 5
-                } = {}) {
+        skyRadius = 5000,
+        starDensity = 5,
+        glowStarCount = 2000,
+        pointSize = 4,
+        blinkSpeed = 5
+    } = {}) {
         super();
 
         this._stars = this.#createStars(skyRadius / starDensity); // Non-blinking stars
@@ -139,7 +141,7 @@ export class SkyDome extends Group {
 }
 
 export class Orbit {
-    constructor(timescale, meanAnomaly, eccentricity, semiMajorAxis, inclination, ascension, accuracy=1E2, nPoints=10000) {
+    constructor(timescale, meanAnomaly, eccentricity, semiMajorAxis, inclination, ascension, accuracy = 1E2, nPoints = 10000) {
         this._nPoints = nPoints; // number of orbit coordinates generated
         this._timescale = timescale;
         const range = this._linSpace(meanAnomaly, 2 * Math.PI + meanAnomaly, nPoints);
@@ -209,13 +211,13 @@ export class Orbit {
     }
 
     draw({
-             color = 0x666666,
-             linewidth = 1,
-             opacity = 0.9,
-             closed = true,
-             scale = 1,
-             dashed = false
-         } = {}) {
+        color = 0x666666,
+        linewidth = 1,
+        opacity = 0.9,
+        closed = true,
+        scale = 1,
+        dashed = false
+    } = {}) {
         const positions = new Float32Array(this._points.length * 3);
 
         this._points.forEach((p, i) => {
@@ -229,9 +231,9 @@ export class Orbit {
 
         let material;
         if (dashed)
-            material = new LineDashedMaterial({color, linewidth, dashSize: 3, gapSize: 2, transparent: true, opacity});
+            material = new LineDashedMaterial({ color, linewidth, dashSize: 3, gapSize: 2, transparent: true, opacity });
         else
-            material = new LineBasicMaterial({color, linewidth, transparent: true, opacity});
+            material = new LineBasicMaterial({ color, linewidth, transparent: true, opacity });
 
         const line = closed
             ? new LineLoop(geometry, material)
@@ -250,7 +252,7 @@ export const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/co
 const textureLoader = new TextureLoader();
 textureLoader.setCrossOrigin("anonymous");
 export class CelestialBody extends Group {
-    constructor(bodyData, scale, {bumpScale=0.005, identicalBumpMap=false, resolution=32} = {}) {
+    constructor(bodyData, scale, { bumpScale = 0.005, identicalBumpMap = false, resolution = 32 } = {}) {
         super();
         this._name = bodyData.name;
         this._radius = bodyData.radius;
@@ -281,9 +283,9 @@ export class CelestialBody extends Group {
 
     updateRotation(tHours) { this._body.rotation.y = this._spin * tHours; } // Spin the body along the axis with tilt
 
-    enableTrail({ maxPoints=1000, color=0xffff00, lineWidth=1, trailStep=10 } = {}) {
+    enableTrail({ maxPoints = 1000, color = 0xffff00, lineWidth = 1, trailStep = 10 } = {}) {
         this._trail = new Trail(this);
-        this._trail.enable({maxPoints, color, lineWidth, trailStep });
+        this._trail.enable({ maxPoints, color, lineWidth, trailStep });
     }
 
     updateTrail(dt) { this._trail?.update(dt); }
@@ -291,8 +293,8 @@ export class CelestialBody extends Group {
 }
 
 export class Planet extends CelestialBody {
-    constructor(planetData, {scale=PLANET_SCALE, bumpScale=0.005, identicalBumpMap=false} = {}) {
-        super(planetData, scale, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
+    constructor(planetData, { scale = PLANET_SCALE, bumpScale = 0.005, identicalBumpMap = false } = {}) {
+        super(planetData, scale, { bumpScale: bumpScale, identicalBumpMap: identicalBumpMap });
         this._body.castShadow = true;
         this._body.receiveShadow = false;
 
@@ -317,11 +319,13 @@ export class Planet extends CelestialBody {
     }
 
     coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
-    renderOrbit(color) { return this._orbit.draw({
-        color: color,
-        opacity: 0.4,
-        scale: 1000 / DISTANCE_SCALE
-    }); }
+    renderOrbit(color) {
+        return this._orbit.draw({
+            color: color,
+            opacity: 0.4,
+            scale: 1000 / DISTANCE_SCALE
+        });
+    }
 
     update(t) {
         this.updateTrail();
@@ -331,7 +335,7 @@ export class Planet extends CelestialBody {
 
 export class Satellite extends CelestialBody {
     constructor(moonData, planet, scale) {
-        super(moonData, scale, {resolution: 32});
+        super(moonData, scale, { resolution: 32 });
         this._planet = planet;
         this._angle = 0;
         this._a = moonData.a; // semi-major axis
@@ -409,8 +413,8 @@ export class PlanetMoonSystem extends Group {
 }
 
 export class Sun extends CelestialBody {
-    constructor(bodyData, scale=SUN_SCALE) {
-        super(bodyData, scale, {resolution: 64});
+    constructor(bodyData, scale = SUN_SCALE) {
+        super(bodyData, scale, { resolution: 64 });
 
         this._body.castShadow = false;
         this._body.receiveShadow = false;
@@ -450,7 +454,7 @@ export class Sun extends CelestialBody {
             4.0 + 0.3 * Math.sin(t * 0.015);
     }
 
-    _createAtmosphereMaterial(depthTest=true, depthWrite=false, glowColor = 0xffff00, coef = 0.5, power = 2.0) {
+    _createAtmosphereMaterial(depthTest = true, depthWrite = false, glowColor = 0xffff00, coef = 0.5, power = 2.0) {
         return new ShaderMaterial({
             uniforms: {
                 glowColor: { value: new Color(glowColor) },
@@ -490,7 +494,7 @@ export class Sun extends CelestialBody {
 }
 
 export class Moon extends Satellite {
-    constructor(moonData, planet, scale=PLANET_SCALE) {
+    constructor(moonData, planet, scale = PLANET_SCALE) {
         super(moonData, planet, scale);
     }
 
@@ -556,7 +560,7 @@ export class EarthEquatorialPlane extends Mesh {
 }
 
 export class Earth extends Planet {
-    constructor({opacity=1, scale=PLANET_SCALE, clouds=false} = {}) {
+    constructor({ opacity = 1, scale = PLANET_SCALE, clouds = false } = {}) {
         super({
             "name": "earth",
             "a": EARTH_SEMI_MAJOR_AXIS,
@@ -568,7 +572,7 @@ export class Earth extends Planet {
             "mass": 5.97219e+24,
             "spin": 2 * Math.PI / 24.,
             "tilt": 23 * Math.PI / 180
-        }, {scale: scale});
+        }, { scale: scale });
         this._timescale = 1; // rotation period w.r.t. Earth
         this._clouds = new EarthClouds(this._geometry.parameters.radius, this._spin);
         this._clouds.visible = clouds;
@@ -608,16 +612,16 @@ export class Earth extends Planet {
 // Port to new Three.js from https://github.com/jeromeetienne/threex.planets/blob/master/threex.planets.js
 const PlanetRingGeometry = function (innerRadius, outerRadius, thetaSegments) {
 
-    innerRadius   = innerRadius || 0;
-    outerRadius   = outerRadius || 1;
+    innerRadius = innerRadius || 0;
+    outerRadius = outerRadius || 1;
     thetaSegments = Math.max(3, Math.floor(thetaSegments || 8));
 
     // number of vertices = 4 per segment
     const vertexCount = thetaSegments * 4;
     const positionArray = new Float32Array(vertexCount * 3);
-    const normalArray   = new Float32Array(vertexCount * 3);
-    const uvArray       = new Float32Array(vertexCount * 2);
-    const indexArray    = new Uint16Array(thetaSegments * 6);
+    const normalArray = new Float32Array(vertexCount * 3);
+    const uvArray = new Float32Array(vertexCount * 2);
+    const indexArray = new Uint16Array(thetaSegments * 6);
 
     let pPos = 0, pNorm = 0, pUV = 0, pIdx = 0;
     let vertexIndex = 0;
@@ -661,9 +665,9 @@ const PlanetRingGeometry = function (innerRadius, outerRadius, thetaSegments) {
             positionArray[pPos++] = positions[j * 3 + 1];
             positionArray[pPos++] = positions[j * 3 + 2];
 
-            normalArray[pNorm++]   = normals[j * 3 + 0];
-            normalArray[pNorm++]   = normals[j * 3 + 1];
-            normalArray[pNorm++]   = normals[j * 3 + 2];
+            normalArray[pNorm++] = normals[j * 3 + 0];
+            normalArray[pNorm++] = normals[j * 3 + 1];
+            normalArray[pNorm++] = normals[j * 3 + 2];
 
             uvArray[pUV++] = uvs[j * 2 + 0];
             uvArray[pUV++] = uvs[j * 2 + 1];
@@ -684,8 +688,8 @@ const PlanetRingGeometry = function (innerRadius, outerRadius, thetaSegments) {
     // Create geometry
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new BufferAttribute(positionArray, 3));
-    geometry.setAttribute('normal',   new BufferAttribute(normalArray, 3));
-    geometry.setAttribute('uv',       new BufferAttribute(uvArray, 2));
+    geometry.setAttribute('normal', new BufferAttribute(normalArray, 3));
+    geometry.setAttribute('uv', new BufferAttribute(uvArray, 2));
     geometry.setIndex(new BufferAttribute(indexArray, 1));
     geometry.computeBoundingSphere();
 
@@ -693,7 +697,7 @@ const PlanetRingGeometry = function (innerRadius, outerRadius, thetaSegments) {
 };
 
 export class Saturn extends Planet {
-    constructor(planetData={
+    constructor(planetData = {
         "name": "saturn",
         'a': 1433449370.,
         'e': 0.055723219,
@@ -703,8 +707,9 @@ export class Saturn extends Planet {
         'radius': 60000. * 1e3,
         "mass": 5.68319e+26,
         'tilt': 27 * Math.PI / 180.,
-        'spin': 2 * Math.PI / 10.66 }) {
-        super(planetData, {bumpScale: 0.05, identicalBumpMap: true});
+        'spin': 2 * Math.PI / 10.66
+    }) {
+        super(planetData, { bumpScale: 0.05, identicalBumpMap: true });
 
         const innerRingRadius = 1.11 * planetData.radius;
         const outerRingRadius = 2.1 * planetData.radius;
@@ -732,7 +737,7 @@ export class Saturn extends Planet {
 }
 
 export class Uranus extends Planet {
-    constructor(planetData={
+    constructor(planetData = {
         "name": "uranus",
         'a': 2876679082.,
         'e': 0.044405586,
@@ -742,8 +747,9 @@ export class Uranus extends Planet {
         'radius': 25600. * 1E3,
         "mass": 8.68103E25,
         'tilt': 98 * Math.PI / 180.,
-        'spin': -2 * Math.PI / 17.24}) {
-        super(planetData, {identicalBumpMap: true, bumpScale: 0.05});
+        'spin': -2 * Math.PI / 17.24
+    }) {
+        super(planetData, { identicalBumpMap: true, bumpScale: 0.05 });
 
         const inner = 1.5 * planetData.radius / PLANET_SCALE;
         const outer = 1.8 * planetData.radius / PLANET_SCALE;
