@@ -20,9 +20,9 @@ renderer.setAnimationLoop( animate );
 const fovRadians = MathUtils.degToRad(camera.fov);
 const yFov = camera.position.z * Math.tan(fovRadians / 2) * 2;
 const spaceTexture = new TextureLoader()
-    //.load("images/andromeda.jpeg",
+    .load("../astrophysics/images/space_pano.jpg",
     //.load("https://www.hendrikse.name/science/astrophysics/images/background.jpg",
-    .load("https://i.imgur.com/1nVWbbd.jpg",
+    //.load("https://i.imgur.com/1nVWbbd.jpg",
         () => renderer.render(scene, camera)
     );
 
@@ -75,7 +75,7 @@ const fragmentShader = `
 const canvasGeometry = new PlaneGeometry(yFov * camera.aspect, yFov);
 const canvasMaterial = new ShaderMaterial({
     uniforms: {
-        uGM: { value: 0.1 },
+        uGM: { value: Number(massSlider.value) },
         uSpaceTexture: { value: spaceTexture },
         uResolution: { value: new Vector2(width, height) },
         uBlackholePos: { value: new Vector3(0, 0, 0) }

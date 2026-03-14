@@ -102,12 +102,10 @@ I do not understand it myself anymore. &mdash; Albert Einstein
 
 <div class="double_image">
   <figure class="left_image">
-    <a href="local_space_time.html">
-      <img alt="Local space-time" src="images/local_space_time.png" title="Click to animate"/>
+    <a href="black_hole_space_time.html">
+      <img alt="Black hole space-time" src="images/black_hole_space_time.png" title="Click to animate"/>
     </a>
-    <figcaption>Local space-time near Earth. This really is space-<em>time</em>, i.e.  
-    the black lines represent a spatial coordinate, whereas the
-    <span style="color: red">red lines</span> the time axis!</figcaption>
+    <figcaption>Deformation of space-time due to the gravitational pull of a black hole.</figcaption>
   </figure>
   <figure class="right_image">
     <a href="black_hole_raytracing.html">
@@ -153,7 +151,12 @@ I do not understand it myself anymore. &mdash; Albert Einstein
     <figcaption>Visualization of a comet moving in Schwarzschild space-time.</figcaption>
   </figure>
   <figure class="right_image">
-    <!-- RESERVED FOR FUTURE APPLICATION -->
+    <a href="local_space_time.html">
+      <img alt="Local space-time" src="images/local_space_time.png" title="Click to animate"/>
+    </a>
+    <figcaption>Local space-time near Earth. This really is space-<em>time</em>, i.e.  
+    the black lines represent a spatial coordinate, whereas the
+    <span style="color: red">red lines</span> the time axis!</figcaption>
   </figure>
 </div>
 <p style="clear: both;"></p>
