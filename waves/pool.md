@@ -9,7 +9,7 @@
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 [![WebGL](https://img.shields.io/badge/WebGL-990000?logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
 
-<div class="canvasWrapper" id="poolContainer">
+<div class="canvasWrapper" id="poolContainer" style="aspect-ratio: 19/12;">
     <canvas id="canvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
     <div class="overlayText" id="poolOverlayText">Click to start the animation!</div>
 </div>
