@@ -42,7 +42,8 @@ const canvasMaterial = new ShaderMaterial({
 });
 
 const blackHoleMesh = new Mesh(canvasGeometry, canvasMaterial);
-scene.add(new SkyDome());
+const skyDome = new SkyDome();
+scene.add(skyDome);
 scene.add(blackHoleMesh);
 // blackHoleMesh.renderOrder = 1;
 // skyDome._glowStars.renderOrder = 0;
