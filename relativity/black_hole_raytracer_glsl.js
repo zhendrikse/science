@@ -1,5 +1,5 @@
 import { PerspectiveCamera, WebGLRenderer, ACESFilmicToneMapping, SRGBColorSpace, MathUtils, PlaneGeometry,
-    ShaderMaterial, Vector2, Vector3, Mesh}  from "three";
+    ShaderMaterial, Vector2, Vector3, Mesh, Scene }  from "three";
 import vertexShader from "./black_hole_vertex_shader.js";
 import fragmentShader from "./black_hole_fragment_shader.js";
 import {SkyDome} from "../js/astro-extensions.js";
