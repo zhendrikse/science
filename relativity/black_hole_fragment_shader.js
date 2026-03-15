@@ -70,47 +70,47 @@ export default `
 
   vec4 raytrace(vec3 rayDir, vec3 rayPos) {
     vec4 color = vec4(0);
-    float h2 = pow(length(cross(rayPos, rayDir)), 2.0);
+    vec3 h = cross(rayPos, rayDir);
+    float h2 = dot(h, h);
     float deltaDiskRadius = outerDiskRadius - innerDiskRadius;
     float flowToDisk = (flowRate / TAU / deltaDiskRadius);
 
     for (int i = 0; i < MAX_ITERATIONS; i++) {
         float dist2 = dot(rayPos, rayPos);
         float dist = sqrt(dist2);
-        
+
         if (dist < 1.0) {
-          return color;
+            return color;
         }
         if (dist > 40.0) {
             break; // early escape for rays far away
         }
-        if (h2 > 6.75 && dist > 5.0) {
-            break; // stop rays that can never reach the photon sphere
-        }
-        
+
         float dist5 = dist2 * dist2 * dist;
         rayDir += -1.5 * h2 * rayPos / dist5 * STEP_SIZE;
         vec3 steppedRayPos = rayPos + rayDir * STEP_SIZE;
 
-        float diskDist = dist - innerDiskRadius;
-        float invSqrtDist = inversesqrt(dist);
-        float diskDistOverDeltaDiskRadius = diskDist / deltaDiskRadius;
-        vec3 uvw = vec3(
-          (atan(steppedRayPos.z, abs(steppedRayPos.x)) / TAU) - diskTwist * invSqrtDist, 
-          diskDistOverDeltaDiskRadius * diskDistOverDeltaDiskRadius + flowToDisk, 
-          steppedRayPos.y * 0.5 + 0.5
-        );
 
-        float diskDensity = 1.0 - length(steppedRayPos / vec3(outerDiskRadius, 1.0, outerDiskRadius));
-        diskDensity *= smoothstep(innerDiskRadius, innerDiskRadius + 1.0, dist);
+        if (dist > innerDiskRadius && dist < outerDiskRadius && rayPos.y * steppedRayPos.y < 0.0) {
+          float diskDist = dist - innerDiskRadius;
+          float distDiskDivDiskRadius = diskDist / deltaDiskRadius;
+          float theta = atan(steppedRayPos.z, abs(steppedRayPos.x));
+          vec3 uvw = vec3(
+            theta / TAU - (diskTwist / sqrt(dist)), 
+            distDiskDivDiskRadius * distDiskDivDiskRadius + flowToDisk, 
+            steppedRayPos.y * 0.5 + 0.5
+          );
 
-        float densityVariation = fbm(uvw - 0.5, 3, 2.0, 1.0, 7.0);
-        diskDensity *= densityVariation * invSqrtDist * invSqrtDist + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * inversesqrt(diskDist * diskDist) * 2.0, 0)), 3, 5.0, 0.1, 0.5); 
+          float diskDensity = 1.0 - length(steppedRayPos / vec3(outerDiskRadius, 1.0, outerDiskRadius));
+          diskDensity *= smoothstep(innerDiskRadius, innerDiskRadius + 1.0, dist);
 
-        float opticalDepth = STEP_SIZE * 100.0 * diskDensity;
-        opticalDepth = pow(opticalDepth, 0.9);
+          float invSqrtDist = inversesqrt(dist);
+          float densityVariation = fbm(uvw - 0.5, 3, 2.0, 1.0, 7.0);
+          diskDensity *= densityVariation * invSqrtDist * invSqrtDist + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * 2.0 / abs(diskDist), 0)), 3, 5.0, 0.1, 0.5); 
 
-        if (dist > innerDiskRadius && dist < outerDiskRadius && rayPos.y * steppedRayPos.y < 0) {
+          float opticalDepth = STEP_SIZE * 100.0 * diskDensity;
+          opticalDepth = pow(opticalDepth, 0.9);
+
           vec3 shiftVector = 0.6 * cross(normalize(steppedRayPos), vec3(0.0, 1.0, 0.0));
           float velocity = dot(rayDir, shiftVector);
           
