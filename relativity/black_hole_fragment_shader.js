@@ -81,9 +81,10 @@ export default `
           return color;
         }
 
-        rayDir += -1.5 * h2 * rayPos / pow(pow(dist, 2.0), 2.5) * STEP_SIZE;  
+        float dist2 = dist * dist;
+        float dist5 = dist2 * dist2 * dist;
+        rayDir += -1.5 * h2 * rayPos / dist5 * STEP_SIZE;
         vec3 steppedRayPos = rayPos + rayDir * STEP_SIZE;
-
 
         float diskDist = dist - innerDiskRadius;
 
@@ -96,13 +97,13 @@ export default `
         float diskDensity = 1.0 - length(steppedRayPos / vec3(outerDiskRadius, 1.0, outerDiskRadius));
         diskDensity *= smoothstep(innerDiskRadius, innerDiskRadius + 1.0, dist);
 
-        float densityVariation = fbm(uvw - 0.5, 5, 2.0, 1.0, 7.0);
-        diskDensity *= densityVariation * pow(inversesqrt(dist), 2.0) + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * inversesqrt(pow(diskDist, 2.0)) * 2.0, 0)), 5, 5.0, 0.1, 0.5); 
+        float densityVariation = fbm(uvw - 0.5, 3, 2.0, 1.0, 7.0);
+        diskDensity *= densityVariation * pow(inversesqrt(dist), 2.0) + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * inversesqrt(diskDist * diskDist)) * 2.0, 0)), 5, 5.0, 0.1, 0.5); 
 
         float opticalDepth = STEP_SIZE * 100.0 * diskDensity;
         opticalDepth = pow(opticalDepth, 0.9);
 
-        if (dist > innerDiskRadius && dist < outerDiskRadius && rayPos.y * steppedRayPos.y < pow(STEP_SIZE, 3.0)) {
+        if (dist > innerDiskRadius && dist < outerDiskRadius && rayPos.y * steppedRayPos.y < STEP_SIZE * STEP_SIZE * STEP_SIZE) {
           vec3 shiftVector = 0.6 * cross(normalize(steppedRayPos), vec3(0.0, 1.0, 0.0));
           float velocity = dot(rayDir, shiftVector);
           
@@ -121,11 +122,11 @@ export default `
             mix(
                 mix(outerColor, midColor, temp),
                 innerColor,
-                pow(temp, 3.0)
+                temp * temp * temp
             );
             
             // --- PHOTON RING ---
-            float photonRadius = 1.0; // radius of the ring (near event horizon)
+            float photonRadius = 1.5; // radius of the ring (near event horizon)
             float photonThickness = 0.03; // ring thickness
             
             float ringDist = abs(dist - photonRadius);

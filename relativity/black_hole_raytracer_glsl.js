@@ -2,7 +2,6 @@ import { PerspectiveCamera, WebGLRenderer, ACESFilmicToneMapping, SRGBColorSpace
     ShaderMaterial, Vector2, Vector3, Mesh, Scene }  from "three";
 import vertexShader from "./black_hole_vertex_shader.js";
 import fragmentShader from "./black_hole_fragment_shader.js";
-import {SkyDome} from "../js/astro-extensions.js";
 
 const canvas = document.getElementById("glslBlackHoleCanvas");
 const scene = new Scene();
@@ -40,11 +39,7 @@ const canvasMaterial = new ShaderMaterial({
 });
 
 const blackHoleMesh = new Mesh(canvasGeometry, canvasMaterial);
-const skyDome = new SkyDome();
-scene.add(skyDome);
 scene.add(blackHoleMesh);
-blackHoleMesh.renderOrder = 1;
-skyDome._glowStars.renderOrder = 0;
 
 // FPS throttling ---
 let lastTime = 0;
@@ -60,7 +55,6 @@ function renderLoop(time) {
     }
     lastTime = time;
 
-    skyDome.update(time, camera);
     canvasMaterial.uniforms.uTime.value = time * 0.001;
     renderer.render(scene, camera);
 
