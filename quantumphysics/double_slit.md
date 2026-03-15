@@ -68,8 +68,6 @@ const brightness = Math.pow(Math.cos(Math.PI * pathDiff / this._wavelength), 2) 
     #simContainer canvas {
         position: absolute;
         inset: 0;
-        width: 100%;
-        height: 100%;
         display: block;
     }
 </style>
