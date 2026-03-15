@@ -94,10 +94,10 @@ export default `
 
         float diskDist = dist - innerDiskRadius;
         float invSqrtDist = inversesqrt(dist);
-
+        float diskDistOverDeltaDiskRadius = diskDist / deltaDiskRadius;
         vec3 uvw = vec3(
-          (atan(steppedRayPos.z, abs(steppedRayPos.x)) / TAU) - diskTwist * invSqrtDist), 
-          pow(diskDist / deltaDiskRadius, 2.0) + flowToDisk, 
+          (atan(steppedRayPos.z, abs(steppedRayPos.x)) / TAU) - diskTwist * invSqrtDist, 
+          diskDistOverDeltaDiskRadius * diskDistOverDeltaDiskRadius + flowToDisk, 
           steppedRayPos.y * 0.5 + 0.5
         );
 
