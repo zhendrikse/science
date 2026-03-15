@@ -98,7 +98,7 @@ export default `
         diskDensity *= smoothstep(innerDiskRadius, innerDiskRadius + 1.0, dist);
 
         float densityVariation = fbm(uvw - 0.5, 3, 2.0, 1.0, 7.0);
-        diskDensity *= densityVariation * pow(inversesqrt(dist), 2.0) + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * inversesqrt(diskDist * diskDist)) * 2.0, 0)), 5, 5.0, 0.1, 0.5); 
+        diskDensity *= densityVariation * pow(inversesqrt(dist), 2.0) + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * inversesqrt(diskDist * diskDist) * 2.0, 0)), 5, 5.0, 0.1, 0.5); 
 
         float opticalDepth = STEP_SIZE * 100.0 * diskDensity;
         opticalDepth = pow(opticalDepth, 0.9);
