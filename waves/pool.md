@@ -1,21 +1,47 @@
 {% include breadcrumbs.html %}
 
-## Free wave propagation in a pool
+# Wave propagation in a pool 🌊
 <div class="header_line"><br/></div>
-
 
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=pool.js)](https://github.com/zhendrikse/science/blob/main/waves/pool.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 [![WebGL](https://img.shields.io/badge/WebGL-990000?logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
 
-<div class="canvasWrapper" id="poolContainer" style="aspect-ratio: 19/12;">
-    <canvas id="canvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
-    <div class="overlayText" id="poolOverlayText">Click to start the animation!</div>
+## Free wave propagation in empty pool
+<div class="header_line"><br/></div>
+
+<div class="canvasWrapper" id="emptyPoolContainer" style="aspect-ratio: 19/12;">
+    <canvas id="emptyPoolCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
+    <div class="overlayText" id="emptyPoolOverlayText">Click to start the animation!</div>
 </div>
-<div class="guiContainer" id="poolControls"></div>
+<div class="guiContainer" id="emptyPoolControls"></div>
 <script type="module" src="pool.js"></script>
 <p style="clear: both;"></p>
+
+## Pool with obstacle
+<div class="header_line"><br/></div>
+
+<div class="canvasWrapper" id="poolWithObstacleContainer">
+    <canvas id="poolWithObstacleCanvas" class="applicationCanvas" style="width: 600px; aspect-ratio: 19/12;"></canvas>
+    <div class="overlayText" id="poolWithObstacleOverlayText">Click to start the animation!</div>
+</div>
+<div class="guiContainer" id="poolWithObstacleControls"></div>
+<script type="module" src="pool_with_obstacle.js"></script>
+<p style="clear: both;"></p>
+
+
+## Pool with moving obstacle
+<div class="header_line"><br/></div>
+
+<div class="canvasWrapper" id="poolWithMovingObstacleContainer">
+    <canvas id="poolWithMovingObstacleCanvas" class="applicationCanvas" style="width: 600px; aspect-ratio: 19/12;"></canvas>
+    <div class="overlayText" id="poolWithMovingObstacleOverlayText">Click to start the animation!</div>
+</div>
+<div class="guiContainer" id="poolWithMovingObstacleControls"></div>
+<script type="module" src="pool_with_moving_obstacle.js"></script>
+<p style="clear: both;"></p>
+
 
 ## A more sophisticated simulation
 <div class="header_line"><br/></div>

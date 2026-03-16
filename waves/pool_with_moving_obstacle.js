@@ -11,8 +11,8 @@ import {
     ConesSurface, ShaderSurface, PlaneSurface
 } from "../js/3d-surface-components.js";
 
-const canvas = document.getElementById("poolWithObstacleCanvas");
-const overlay = document.getElementById("poolWithObstacleOverlayText");
+const canvas = document.getElementById("poolWithMovingObstacleCanvas");
+const overlay = document.getElementById("poolWithMovingObstacleOverlayText");
 const scene = new Scene();
 
 const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
@@ -44,7 +44,7 @@ const light = new DirectionalLight(0xffffff, 1);
 light.position.set(5, 5, 5);
 scene.add(light);
 
-const obstacle = new Obstacle({size: 4});
+const obstacle = new Obstacle({size: 4, speed: 0.8});
 scene.add(obstacle);
 
 const wave = new Wave(250, 250, 4, obstacle);
@@ -80,7 +80,7 @@ class ControlsGui {
                 scene.add(surface);
             });
 
-        document.getElementById("poolWithObstacleControls").appendChild(gui.domElement);
+        document.getElementById("poolWithMovingObstacleControls").appendChild(gui.domElement);
     }
 
     #changeSurfaceTo(surfaceType) {
@@ -119,10 +119,8 @@ renderer.setAnimationLoop(() => {
     if (!running)
         return;
 
+    obstacle.move();
     wave.update(); wave.update(); wave.update();
-
-    if (Math.abs(time - .25) < .01)
-        wave.disturbAt(0.75, 0.75);
 
     surface.update();
     time += .01;
