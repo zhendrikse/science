@@ -47,25 +47,14 @@ const targetFPS = 15; // mobielvriendelijk
 const interval = 1000 / targetFPS;
 let animate = true;
 
-function renderLoop(time) {
+renderer.setAnimationLoop((time) => {
     if (!animate) return;
-    if (time - lastTime < interval) {
-        requestAnimationFrame(renderLoop);
+    if (time - lastTime < interval)
         return;
-    }
     lastTime = time;
 
     canvasMaterial.uniforms.uTime.value = time * 0.001;
     renderer.render(scene, camera);
-
-    requestAnimationFrame(renderLoop);
-}
-requestAnimationFrame(renderLoop);
-
-// Pause animation if tab is not visible
-document.addEventListener('visibilitychange', () => {
-    animate = !document.hidden;
-    if (animate) requestAnimationFrame(renderLoop);
 });
 
 const downloadButton = document.createElement("button");

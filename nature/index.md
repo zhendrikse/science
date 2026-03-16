@@ -132,13 +132,9 @@
   <a href="https://rhettallain.com/2019/11/12/modeling-a-spinning-sprinkler/Simulation">
   Modelling a spinning Sprinkler</a> by <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
 </figure>
-<figure class="left_image">
-  <a href="catenary.html">
-    <img alt="Overhead power lines" src="images/catenary.png" title="Click to animate"/>
-  </a>
-  <figcaption>Modelling a catenary shape, based on the original 
-  <a href="https://www.youtube.com/watch?v=BdskNTgzpAo">video</a> by 
-  <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
+<figure class="right_image">
+<!-- RESERVED FOR FUTURE APPLICATION
+  -->
 </figure>
 </div>
 <p style="clear: both;"></p>

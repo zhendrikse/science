@@ -12,21 +12,18 @@
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="pool_with_obstacle.html">
+  <a href="pool.html">
     <img alt="Swimming pool" src="images/pool_with_obstacle.png" title="Click to animate"/>
   </a>
-  <figcaption><br/>
-  <a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">Central finite difference method</a> 
-  used to model wave propagation in a pool with an obstruction. 
+  <figcaption>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
+  <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
   </figcaption>
 </figure>
 <figure class="right_image">
-  <a href="pool_with_moving_obstacle.html">
-    <img alt="Swimming pool" src="images/pool_with_moving_obstacle.png" title="Click to animate"/>
+  <a href="pendulum_wave.html">
+    <img alt="Pendulum wave" src="images/pendulum_wave.png" title="Click to animate"/>
   </a>
-  <figcaption><a href="https://en.wikipedia.org/wiki/Central_differencing_scheme">Finite difference method</a> 
-  applied to wave propagation in case of a moving obstruction. 
-  </figcaption>
+  <figcaption>A simulation of a wave with pendulums.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -140,10 +137,12 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="pendulum_wave.html">
-    <img alt="Pendulum wave" src="images/pendulum_wave.png" title="Click to animate"/>
+  <a href="catenary.html">
+    <img alt="Overhead power lines" src="images/catenary.png" title="Click to animate"/>
   </a>
-  <figcaption>A simulation of a wave with pendulums.</figcaption>
+  <figcaption>Modelling a catenary shape, based on the original 
+  <a href="https://www.youtube.com/watch?v=BdskNTgzpAo">video</a> by 
+  <a href="https://rhettallain.com/">Rhett Allain</a>.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="suspended_spring.html">
@@ -159,12 +158,10 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="pool.html">
-    <img alt="Swimming pool" src="images/pool.png" title="Click to animate"/>
+  <a href="vibrating_membrane.html">
+    <img alt="Vibrating membrane" src="images/vibrating_membrane.png" title="Click to animate"/>
   </a>
-  <figcaption>"[...] the light that comes out is … is waves, just like in the swimming pool" &mdash; 
-  <a href="https://www.youtube.com/watch?v=1qQQXTMih1A">Richard P. Feynman</a>.
-  </figcaption>
+  <figcaption>Visualization of the normal modes of a vibrating membrane.</figcaption>
 </figure>
 <figure class="right_image">
   <a href="two_source_interference.html">
@@ -187,10 +184,8 @@ t^2} \left(f(x,t+h) - 2f(x,t) + f(x,t-h\right))$$
   <figcaption>Longitudinal and transversal waves.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="vibrating_membrane.html">
-    <img alt="Vibrating membrane" src="images/vibrating_membrane.png" title="Click to animate"/>
-  </a>
-  <figcaption>Visualization of the normal modes of a vibrating membrane.</figcaption>
+    <!-- RESERVED FOR FUTURE APPLICATION
+      -->
 </figure>
 </div>
 <p style="clear: both;"></p>

@@ -13,6 +13,9 @@ export class Pool extends Group {
 
         const depth = .3;
         const thickness = .05;
+        this._wallThickness = thickness;
+        this._width = width;
+        this._length = length;
 
         const water = new Mesh(new BoxGeometry(length, depth, width), waterMaterial);
         water.position.y = -depth / 2;
@@ -34,6 +37,10 @@ export class Pool extends Group {
         bottom.position.y = -depth;
         this.add(bottom);
     }
+
+    get wallThickness() { return this._wallThickness; }
+    get length() { return this._length; }
+    get width() { return this._width; }
 }
 
 export class Wave {
@@ -92,9 +99,13 @@ export class Wave {
                 return;
             }
 
-            const front = b.start;
-            if (Math.abs(x - front) < this._dx && y >= b.yStart && y <= b.yEnd && this._obstacle.isMoving()) {
-                this._next[i][j] = 0.05 * this._obstacle.speed;
+            const front = b.start + b.width; // right side of box
+            if (Math.abs(x - front) < 5 * this._dx && y >= b.yStart && y <= b.yEnd && this._obstacle.isMoving()) {
+                const dist = x - front;
+                const sigma = 0.1 * this._size;  // aan te passen
+                const amplitude = 0.25 * this._obstacle.speed;
+                const waveShape = Math.exp(-0.05 * (dist / sigma) * (dist / sigma));  // Gaussian
+                this._next[i][j] = amplitude * waveShape;
                 return;
             }
         }
@@ -142,19 +153,20 @@ export class Wave {
 
 export class Obstacle extends Group {
     constructor({
-                    size = 4,
+                    pool = null,
                     speed = 0,
                     opacity = 0.8,
+                    start = -1 / 6,
                     color = 0x00ff00
                 } = {}) {
         super();
 
-        this._poolSize = size;
-        this._width = size / 3;
-        this._yStart = -size / 6;
-        this._yEnd = size / 6;
+        this._pool = pool;
+        this._width = pool.width / 3;
+        this._yStart = -pool.width / 6;
+        this._yEnd = pool.width / 6;
 
-        this._start = -size / 6;
+        this._start = start * pool.width + pool.wallThickness;
         this._initialStart = this._start;
 
         this._speed = speed;
@@ -172,6 +184,8 @@ export class Obstacle extends Group {
         this.add(this.mesh);
     }
 
+    get speed() { return this._speed; }
+
     boundaries(){
         return {
             start: this._start,
@@ -184,11 +198,10 @@ export class Obstacle extends Group {
     move(dt=0.01){
         if(this._reachedEnd) return;
 
-        this._start -= this._speed * dt;
+        this._start += this._speed * dt;
         this.mesh.position.x = this._start + this._width / 2;
 
-        if(this._start <= -this._poolSize/2)
-            this._reachedEnd = true;
+        this._reachedEnd = this._start + this._width + this._pool.wallThickness * .5 >= this._pool.width / 2;
     }
 
     isMoving() {
@@ -198,6 +211,6 @@ export class Obstacle extends Group {
     reset(){
         this._start = this._initialStart;
         this._reachedEnd = false;
-        this.mesh.position.x = this._start + this._width / 2;
+        this.mesh.position.set(this._start + this._width / 2, 0.3, (this._yStart + this._yEnd) / 2);
     }
 }

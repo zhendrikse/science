@@ -22,8 +22,8 @@
 ## Pool with obstacle
 <div class="header_line"><br/></div>
 
-<div class="canvasWrapper" id="poolWithObstacleContainer">
-    <canvas id="poolWithObstacleCanvas" class="applicationCanvas" style="width: 600px; aspect-ratio: 19/12;"></canvas>
+<div class="canvasWrapper" id="poolWithObstacleContainer" style="aspect-ratio: 19/12;">
+    <canvas id="poolWithObstacleCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
     <div class="overlayText" id="poolWithObstacleOverlayText">Click to start the animation!</div>
 </div>
 <div class="guiContainer" id="poolWithObstacleControls"></div>
@@ -34,8 +34,8 @@
 ## Pool with moving obstacle
 <div class="header_line"><br/></div>
 
-<div class="canvasWrapper" id="poolWithMovingObstacleContainer">
-    <canvas id="poolWithMovingObstacleCanvas" class="applicationCanvas" style="width: 600px; aspect-ratio: 19/12;"></canvas>
+<div class="canvasWrapper" id="poolWithMovingObstacleContainer" style="aspect-ratio: 19/12;">
+    <canvas id="poolWithMovingObstacleCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
     <div class="overlayText" id="poolWithMovingObstacleOverlayText">Click to start the animation!</div>
 </div>
 <div class="guiContainer" id="poolWithMovingObstacleControls"></div>

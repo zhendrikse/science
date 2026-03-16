@@ -44,13 +44,13 @@ const light = new DirectionalLight(0xffffff, 1);
 light.position.set(5, 5, 5);
 scene.add(light);
 
+const pool = new Pool(4, 4)
+scene.add(pool)
 const wave = new Wave(250, 250, 4);
 let colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER);
 let surface = new PointsSurface(wave, colorMapper, { radius: 0.025 });
 scene.add(surface);
 surface.update();
-const pool = new Pool(4, 4)
-scene.add(pool)
 
 class ControlsGui {
     constructor() {

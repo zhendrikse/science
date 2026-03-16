@@ -35,6 +35,7 @@ canvas.addEventListener("click", () => {
     } else {
         ThreeJsUtils.showOverlayMessage(overlay, "Reset");
         wave.reset();
+        obstacle.reset();
         time = 0;
     }
 });
@@ -44,7 +45,13 @@ const light = new DirectionalLight(0xffffff, 1);
 light.position.set(5, 5, 5);
 scene.add(light);
 
-const obstacle = new Obstacle({size: 4, speed: 0.8});
+const pool = new Pool(4, 4)
+scene.add(pool)
+const obstacle = new Obstacle({
+    pool: pool,
+    start: -0.5,
+    speed: 0.8
+});
 scene.add(obstacle);
 
 const wave = new Wave(250, 250, 4, obstacle);
@@ -52,11 +59,9 @@ let colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER);
 let surface = new PointsSurface(wave, colorMapper, { radius: 0.025 });
 scene.add(surface);
 surface.update();
-const pool = new Pool(4, 4)
-scene.add(pool)
 
 class ControlsGui {
-    constructor(surface) {
+    constructor() {
         const gui = new GUI({ width: "100%", autoPlace: false });
 
         const params = {
