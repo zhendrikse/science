@@ -6,7 +6,7 @@ export default `
   uniform vec3 uBlackHolePos;
   uniform vec3 uRotation;
   uniform int uMaxIterations;
-  
+
   #define STEP_SIZE 0.02
   #define PI 3.1415926535897932384626433832795
   #define TAU 6.283185307179586476925286766559
@@ -77,7 +77,7 @@ export default `
     float camDist = length(uCamPos);
 
     for (int i = 0; i < 2000; i++) {
-        if (i >= uMaxIterations) break;
+        if (i > uMaxIterations) break;
         
         float dist2 = dot(rayPos, rayPos);
         float dist = sqrt(dist2);
@@ -120,6 +120,7 @@ export default `
           float dopplerShift = sqrt((1.0 - velocity) / (1.0 + velocity)); 
           float gravitationalShift = sqrt((1.0 - 2.0 / dist) / (1.0 - 2.0 / camDist));
 
+          float brightness = 1.5;
         
           float temp = 1.0 - clamp((dist - innerDiskRadius) / (outerDiskRadius - innerDiskRadius), 0.0, 1.0);
         
@@ -134,8 +135,7 @@ export default `
                 temp * temp * temp
             );
             
-          // --- PHOTON RING ---
-          if (dist < 3.0) { // Photon ring calculation only needed near horizon
+            // --- PHOTON RING ---
             float photonRadius = 1.5; // radius of the ring (near event horizon)
             float photonThickness = 0.03; // ring thickness
             
@@ -144,9 +144,7 @@ export default `
   
             vec3 ringColor = vec3(1.0, 0.9, 0.7); // white/yellowish photon ring            
             color.rgb += ringColor * ringIntensity;
-          }
             
-          float brightness = 1.5;
           return vec4(diskColor * brightness * gravitationalShift * dopplerShift * opticalDepth, 1.0);
         }
       
