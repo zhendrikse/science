@@ -10,17 +10,6 @@ const width = canvas.clientWidth;
 const height = canvas.clientHeight;
 const aspectRatio = width / height;
 
-let maxIterations = 1200;
-
-const MIN_ITER = 300;
-const MAX_ITER = 2000;
-
-const TARGET_FPS = 15;
-const FPS_TOLERANCE = 3;
-
-let frameCount = 0;
-let fpsTimer = 0;
-
 const camera = new PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 camera.position.z = 1;
 
@@ -44,7 +33,6 @@ const canvasMaterial = new ShaderMaterial({
         uCamPos:       { value: new Vector3(0, 0, -8)},
         uBlackHolePos: { value: new Vector3(0, 0, 0)},
         uRotation:     { value: new Vector3(MathUtils.degToRad(-4), 0, MathUtils.degToRad(-15))},
-        uMaxIterations: { value: maxIterations }
     },
     vertexShader,
     fragmentShader,
@@ -59,38 +47,13 @@ const targetFPS = 15; // mobielvriendelijk
 const interval = 1000 / targetFPS;
 let animate = true;
 
-function adjustQuality(fps) {
-    if (fps < TARGET_FPS - FPS_TOLERANCE)
-        maxIterations *= 0.8;
-    else if (fps > TARGET_FPS + FPS_TOLERANCE)
-        maxIterations *= 1.15;
-
-    maxIterations = Math.round(Math.min(MAX_ITER, Math.max(MIN_ITER, maxIterations)));
-    canvasMaterial.uniforms.uMaxIterations.value = maxIterations;
-}
-
 renderer.setAnimationLoop((time) => {
     if (!animate) return;
+    if (time - lastTime < interval) return;
 
-    if (time - lastTime < interval)
-        return;
-
-    const delta = time - lastTime;
     lastTime = time;
-
     canvasMaterial.uniforms.uTime.value = time * 0.001;
     renderer.render(scene, camera);
-
-    // --- FPS measurement ---
-    frameCount++;
-    fpsTimer += delta;
-    if (fpsTimer > 1000) {
-        const fps = frameCount;
-        adjustQuality(fps);
-
-        frameCount = 0;
-        fpsTimer = 0;
-    }
 });
 
 const downloadButton = document.createElement("button");
