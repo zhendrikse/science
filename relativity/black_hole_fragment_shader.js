@@ -74,6 +74,7 @@ export default `
     float h2 = dot(h, h);
     float deltaDiskRadius = outerDiskRadius - innerDiskRadius;
     float flowToDisk = (flowRate / TAU / deltaDiskRadius);
+    float camDist = length(uCamPos);
 
     for (int i = 0; i < MAX_ITERATIONS; i++) {
         float dist2 = dot(rayPos, rayPos);
@@ -95,8 +96,9 @@ export default `
           float diskDist = dist - innerDiskRadius;
           float distDiskDivDiskRadius = diskDist / deltaDiskRadius;
           float theta = atan(steppedRayPos.z, abs(steppedRayPos.x));
+          float invSqrtDist = inversesqrt(dist);
           vec3 uvw = vec3(
-            theta / TAU - (diskTwist / sqrt(dist)), 
+            theta / TAU - diskTwist * invSqrtDist, 
             distDiskDivDiskRadius * distDiskDivDiskRadius + flowToDisk, 
             steppedRayPos.y * 0.5 + 0.5
           );
@@ -104,7 +106,6 @@ export default `
           float diskDensity = 1.0 - length(steppedRayPos / vec3(outerDiskRadius, 1.0, outerDiskRadius));
           diskDensity *= smoothstep(innerDiskRadius, innerDiskRadius + 1.0, dist);
 
-          float invSqrtDist = inversesqrt(dist);
           float densityVariation = fbm(uvw - 0.5, 3, 2.0, 1.0, 7.0);
           diskDensity *= densityVariation * invSqrtDist * invSqrtDist + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * 2.0 / abs(diskDist), 0)), 3, 5.0, 0.1, 0.5); 
 
@@ -115,7 +116,7 @@ export default `
           float velocity = dot(rayDir, shiftVector);
           
           float dopplerShift = sqrt((1.0 - velocity) / (1.0 + velocity)); 
-          float gravitationalShift = sqrt((1.0 - 2.0 / dist) / (1.0 - 2.0 / length(uCamPos)));
+          float gravitationalShift = sqrt((1.0 - 2.0 / dist) / (1.0 - 2.0 / camDist));
 
           float brightness = 1.5;
         
@@ -138,7 +139,7 @@ export default `
             
             float ringDist = abs(dist - photonRadius);
             float ringIntensity = smoothstep(photonThickness, 0.0, ringDist); // stronger near ring
-            
+  
             vec3 ringColor = vec3(1.0, 0.9, 0.7); // white/yellowish photon ring            
             color.rgb += ringColor * ringIntensity;
             
