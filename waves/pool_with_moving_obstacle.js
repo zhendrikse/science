@@ -55,7 +55,7 @@ const obstacle = new Obstacle({
 scene.add(obstacle);
 
 const wave = new Wave(250, 250, 4, obstacle);
-let colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER);
+let colorMapper = new SurfaceColorMapper(SurfaceColorMapper.Mode.WATER_ALTERNATIVE);
 let surface = new PointsSurface(wave, colorMapper, { radius: 0.025 });
 scene.add(surface);
 surface.update();
@@ -65,7 +65,7 @@ class ControlsGui {
         const gui = new GUI({ width: "100%", autoPlace: false });
 
         const params = {
-            colorMap: SurfaceColorMapper.Mode.WATER,
+            colorMap: SurfaceColorMapper.Mode.WATER_ALTERNATIVE,
             surfaceType: RenderableSurface.Type.POINTS
         }
 

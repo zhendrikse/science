@@ -3,13 +3,14 @@
 # Wave propagation in a pool 🌊
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=pool.js)](https://github.com/zhendrikse/science/blob/main/waves/pool.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 [![WebGL](https://img.shields.io/badge/WebGL-990000?logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
 
 ## Free wave propagation in empty pool
 <div class="header_line"><br/></div>
+
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=pool.js)](https://github.com/zhendrikse/science/blob/main/waves/pool.js)&nbsp;&nbsp;
 
 <div class="canvasWrapper" id="emptyPoolContainer" style="aspect-ratio: 19/12;">
     <canvas id="emptyPoolCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
@@ -22,6 +23,8 @@
 ## Pool with obstacle
 <div class="header_line"><br/></div>
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=pool_with_obstacle.js)](https://github.com/zhendrikse/science/blob/main/waves/pool_with_obstacle.js)&nbsp;&nbsp;
+
 <div class="canvasWrapper" id="poolWithObstacleContainer" style="aspect-ratio: 19/12;">
     <canvas id="poolWithObstacleCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
     <div class="overlayText" id="poolWithObstacleOverlayText">Click to start the animation!</div>
@@ -33,6 +36,8 @@
 
 ## Pool with moving obstacle
 <div class="header_line"><br/></div>
+
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=pool_with_moving_obstacle.js)](https://github.com/zhendrikse/science/blob/main/waves/pool_with_moving_obstacle.js)&nbsp;&nbsp;
 
 <div class="canvasWrapper" id="poolWithMovingObstacleContainer" style="aspect-ratio: 19/12;">
     <canvas id="poolWithMovingObstacleCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
