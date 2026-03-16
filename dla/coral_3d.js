@@ -21,7 +21,8 @@ const vector = THREE.Vector3;
 
 lights();
 const camera = initCamera();
-const box = new Aquarium(scene, {size: cubeSize});
+const box = new Aquarium({size: cubeSize});
+scene.add(box);
 const controls = new OrbitControls( camera, canvas );
 
 // Resizing for mobile devices

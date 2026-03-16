@@ -5,7 +5,7 @@ import {
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
     MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
     InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry, MeshBasicMaterial,
-    CircleGeometry, Vector2, EdgesGeometry, LineSegments
+    CircleGeometry, Vector2, EdgesGeometry, LineSegments, GreaterDepth
 } from "three";
 
 export const ZeroVector = new Vector3();
@@ -2404,40 +2404,36 @@ export class CarbonMonoxide extends Group {
     get mass() { return this._carbon.mass + this._oxygen.mass; }
 }
 
-export class Aquarium {
-    constructor(parent, {
+export class Aquarium extends Group {
+    constructor({
         size = 1,
         opacity = 0.35,
-        contentColor = new Color(.1, .3, .78),
+        contentColor = 0x77bbff,
         frameColor = 0xaa9900,
         frameWidth = 1
     } = {}) {
-        // --- Box ---
-        const geometry = new BoxGeometry(size, size, size);
+        super();
+        // base geometry
+        const geometry = new BoxGeometry( size, size, size ).toNonIndexed();
+        const material = new MeshBasicMaterial( { color: contentColor } );
+        const mesh = new Mesh( geometry, material );
+        this.add( mesh );
 
-        const material = new MeshStandardMaterial({
-            color: contentColor,
-            transparent: true,
-            opacity: opacity,
-            depthWrite: false
-        });
-
-        this._cube = new Mesh(geometry, material);
-        parent.add(this._cube);
-
-        // --- Edges ---
-        const edges = new EdgesGeometry(geometry);
-        const lineMaterial = new LineBasicMaterial({
+        // line segments
+        const lineGeometry = new EdgesGeometry( geometry );
+        const foregroundLines = new LineSegments( lineGeometry, new LineBasicMaterial( {
+            color: 0,
+        } ) );
+        foregroundLines.renderOrder = 2;
+        const backgroundLines = new LineSegments( lineGeometry, new LineBasicMaterial( {
             color: frameColor,
+            depthFunc: GreaterDepth,
+            depthWrite: false,
             linewidth: frameWidth
-        });
-
-        const wireframe = new LineSegments(edges, lineMaterial);
-        this._cube.add(wireframe); // make it an integral part of the cube
+        } ) );
+        backgroundLines.renderOrder = 1;
+        this.add( foregroundLines, backgroundLines );
     }
-
-    show() { this._cube.visible = true; }
-    hide() { this._cube.visible = false; }
 }
 
 export class HarmonicOscillator extends Group {
