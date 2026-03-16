@@ -1499,7 +1499,7 @@ export class ShaderSurface extends RenderableSurface {
         let k = 0;
         for (let i = 0; i < this.numX; i++)
             for (let j = 0; j < this.numY; j++)
-                this._heightData[k++] = this.amplitudes[i][j];
+                this._heightData[k++] = this.amplitudes[j][i];
 
         this._texture.needsUpdate = true;
     }
@@ -1568,7 +1568,7 @@ export class PlaneSurface extends RenderableSurface {
     }
 
     updateVertex(i, j, h, t) {
-        const index = i * this.numY + j;
+        const index = j * this.numY + i;
         this._positions[index * 3 + 1] = h;
         this._colorMapper.getColor(t, this._colors, index * 3);
     }
