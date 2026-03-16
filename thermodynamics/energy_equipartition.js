@@ -33,7 +33,7 @@ const light = new DirectionalLight(0xffffff, 1);
 light.position.set(0, 4 * L * SCALE, 0);
 scene.add(light);
 scene.add(new AmbientLight(0xffffff, .5));
-new Aquarium(scene, { size: 2 * L * SCALE });
+scene.add(new Aquarium({ size: 2 * L * SCALE }));
 
 class CarbonMonoxideGas extends Group {
     constructor(moleculeCount = MOLECULES_COUNT, temperature = 298, boxSize = L) {

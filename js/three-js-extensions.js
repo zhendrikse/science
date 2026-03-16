@@ -5,7 +5,7 @@ import {
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
     MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
     InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry, MeshBasicMaterial,
-    CircleGeometry, Vector2, EdgesGeometry, LineSegments, GreaterDepth
+    CircleGeometry, Vector2, EdgesGeometry, LineSegments
 } from "three";
 
 export const ZeroVector = new Vector3();
@@ -2408,32 +2408,36 @@ export class Aquarium extends Group {
     constructor({
         size = 1,
         opacity = 0.35,
-        contentColor = 0x77bbff,
+        contentColor = new Color(.1, .3, .78),
         frameColor = 0xaa9900,
         frameWidth = 1
     } = {}) {
         super();
-        // base geometry
-        const geometry = new BoxGeometry( size, size, size ).toNonIndexed();
-        const material = new MeshBasicMaterial( { color: contentColor } );
-        const mesh = new Mesh( geometry, material );
-        this.add( mesh );
 
-        // line segments
-        const lineGeometry = new EdgesGeometry( geometry );
-        const foregroundLines = new LineSegments( lineGeometry, new LineBasicMaterial( {
-            color: 0,
-        } ) );
-        foregroundLines.renderOrder = 2;
-        const backgroundLines = new LineSegments( lineGeometry, new LineBasicMaterial( {
+        const geometry = new BoxGeometry(size, size, size);
+        const material = new MeshStandardMaterial({
+            color: contentColor,
+            transparent: true,
+            opacity: opacity,
+            depthWrite: false
+        });
+
+        this._cube = new Mesh(geometry, material);
+        this.add(this._cube);
+
+        // --- Edges ---
+        const edges = new EdgesGeometry(geometry);
+        const lineMaterial = new LineBasicMaterial({
             color: frameColor,
-            depthFunc: GreaterDepth,
-            depthWrite: false,
             linewidth: frameWidth
-        } ) );
-        backgroundLines.renderOrder = 1;
-        this.add( foregroundLines, backgroundLines );
+        });
+
+        const wireframe = new LineSegments(edges, lineMaterial);
+        this._cube.add(wireframe); // make it an integral part of the cube
     }
+
+    show() { this._cube.visible = true; }
+    hide() { this._cube.visible = false; }
 }
 
 export class HarmonicOscillator extends Group {

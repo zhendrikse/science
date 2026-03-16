@@ -28,7 +28,7 @@ light.position.set(0, 1.5 * boxSize, 0);
 scene.add(light);
 scene.add(new AmbientLight(0xffffff, .5));
 
-new Aquarium(scene, { size: boxSize });
+scene.add(new Aquarium({ size: boxSize }));
 const gas = new Gas3D({
     temperature: Number(temperatureSlider.value),
     tracerRadius: 20,

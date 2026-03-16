@@ -21,7 +21,7 @@ const vector = THREE.Vector3;
 
 lights();
 const camera = initCamera();
-const box = new Aquarium({size: cubeSize});
+const box = new Aquarium({size: cubeSize, contentColor: 0x77bbff});
 scene.add(box);
 const controls = new OrbitControls( camera, canvas );
 

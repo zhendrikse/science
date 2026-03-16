@@ -34,7 +34,7 @@ const gas = new Gas3D({
     containerType: Gas.Type.IN_BOX
 });
 scene.add(gas);
-new Aquarium(scene, {size: boxSize});
+scene.add(new Aquarium({size: boxSize}));
 
 // --- Histogram (2D plot for speed) ---
 const binCount = 30;
