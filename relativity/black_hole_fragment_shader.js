@@ -6,7 +6,7 @@ export default `
   uniform vec3 uBlackHolePos;
   uniform vec3 uRotation;
   uniform int uMaxIterations;
-
+  
   #define STEP_SIZE 0.02
   #define PI 3.1415926535897932384626433832795
   #define TAU 6.283185307179586476925286766559
@@ -80,16 +80,19 @@ export default `
         if (i >= uMaxIterations) break;
         
         float dist2 = dot(rayPos, rayPos);
-
-        if (dist2 < 1.0) return color;
-        if (dist2 > 1600.0) break; // early escape for rays far away
-        
         float dist = sqrt(dist2);
+
+        if (dist < 1.0) {
+            return color;
+        }
+        if (dist > 40.0) {
+            break; // early escape for rays far away
+        }
+
         float dist5 = dist2 * dist2 * dist;
         rayDir += -1.5 * h2 * rayPos / dist5 * STEP_SIZE;
-        
-        float step = STEP_SIZE * clamp(dist * 0.2, 1.0, 5.0); // rays far away from bh may uses bigger steps
-        vec3 steppedRayPos = rayPos + rayDir * step;
+        vec3 steppedRayPos = rayPos + rayDir * STEP_SIZE;
+
 
         if (dist > innerDiskRadius && dist < outerDiskRadius && rayPos.y * steppedRayPos.y < 0.0) {
           float diskDist = dist - innerDiskRadius;
@@ -107,20 +110,18 @@ export default `
 
           float densityVariation = fbm(uvw - 0.5, 3, 2.0, 1.0, 7.0);
           diskDensity *= densityVariation * invSqrtDist * invSqrtDist + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * 2.0 / abs(diskDist), 0)), 3, 5.0, 0.1, 0.5); 
-          
+
           float opticalDepth = STEP_SIZE * 100.0 * diskDensity;
           opticalDepth = pow(opticalDepth, 0.9);
 
-          float v = clamp(inversesqrt(dist), 0.0, 0.6);
-          vec3 shiftVector = v * cross(normalize(steppedRayPos), vec3(0.0, 1.0, 0.0));
-          float velocity = dot(-rayDir, shiftVector);
+          vec3 shiftVector = 0.6 * cross(normalize(steppedRayPos), vec3(0.0, 1.0, 0.0));
+          float velocity = dot(rayDir, shiftVector);
           
+          float dopplerShift = sqrt((1.0 - velocity) / (1.0 + velocity)); 
           float gravitationalShift = sqrt((1.0 - 2.0 / dist) / (1.0 - 2.0 / camDist));
-          float brightness = 1.5;
+
         
-          // Temperature: T(r)∝r−3/4
-          float temp = pow(dist / innerDiskRadius, -0.75); 
-          temp = clamp(temp, 0.0, 1.0);
+          float temp = 1.0 - clamp((dist - innerDiskRadius) / (outerDiskRadius - innerDiskRadius), 0.0, 1.0);
         
           vec3 innerColor = vec3(2.0, 1.6, 1.1);   // hot while/yellow
           vec3 midColor   = vec3(1.2, 0.6, 0.15);  // orange
@@ -132,12 +133,6 @@ export default `
                 innerColor,
                 temp * temp * temp
             );
-            
-          // Relativistic beaming I_obs = I_emit ⋅ δ^3
-          float dopplerShift = sqrt((1.0 - velocity) / (1.0 + velocity));
-          float dopplerFactor = 1.0 / dopplerShift;
-            
-          diskColor *= dopplerFactor * dopplerFactor * dopplerFactor;
             
           // --- PHOTON RING ---
           if (dist < 3.0) { // Photon ring calculation only needed near horizon
@@ -151,7 +146,8 @@ export default `
             color.rgb += ringColor * ringIntensity;
           }
             
-          return vec4(diskColor * brightness * gravitationalShift * opticalDepth, 1.0);
+          float brightness = 1.5;
+          return vec4(diskColor * brightness * gravitationalShift * dopplerShift * opticalDepth, 1.0);
         }
       
         rayPos = steppedRayPos;
