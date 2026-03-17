@@ -42,6 +42,7 @@ class Chain extends Group {
 
         this.#initBalls(amountHanging, length, mass, totalBalls);
         this.#initBonds();
+        this.reset();
         this._initialPositions = this._balls.map(ball => ball.position.clone());
     }
 

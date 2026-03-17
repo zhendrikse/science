@@ -7,7 +7,7 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)
 
-⭐ Based on [original](https://trinket.io/glowscript/bbe791bbfe7d) by Rhett Allain</a><br/>
+⭐ Based on [original](https://trinket.io/glowscript/bbe791bbfe7d) by Rhett Allain<br/>
 👉 Belongs to this [accompanying video](https://www.youtube.com/watch?v=vXp1hW_t-bo)
 
 <link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
