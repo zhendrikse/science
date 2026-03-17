@@ -13,8 +13,8 @@
 <link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
-<div class="canvasWrapper" id="floatingBlockContainer" style="width: 600px; height: 600px;">
-    <canvas id="floatingBlockCanvas" class="applicationCanvas" style="width: 600px; height: 600px;"></canvas>
+<div class="canvasWrapper" id="floatingBlockContainer">
+    <canvas id="floatingBlockCanvas" class="applicationCanvas"></canvas>
     <div class="overlayText" id="floatingBlockOverlayText">Click to start the animation!</div>
 </div>
 <div id="forceChart" style="margin:auto;"></div>
