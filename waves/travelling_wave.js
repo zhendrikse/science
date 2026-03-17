@@ -151,7 +151,7 @@ let uplotData = [
 const uplotOpts = {
     title: "Crest of wave",
     width: canvas.clientWidth,
-    height: canvas.clientHeight * .5,
+    height: canvas.clientHeight,
     bg: "transparent",
     scales: { x: { auto: true }, y: { auto: true } },
     axes: [
