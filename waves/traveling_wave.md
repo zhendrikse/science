@@ -11,8 +11,8 @@
 👉 An elaborate explanation is given in [his video](https://www.youtube.com/watch?v=DpfnIh3oEGk)
 
 
-<div class="canvasWrapper" id="travellingWaveContainer" style="width: 600px; aspect-ratio: 19/12;">
-    <canvas id="travellingWaveCanvas" class="applicationCanvas" style="width: 600px; aspect-ratio: 19/12;"></canvas>
+<div class="canvasWrapper" id="travellingWaveContainer" style="aspect-ratio: 2/1;">
+    <canvas id="travellingWaveCanvas" class="applicationCanvas" style="aspect-ratio: 2/1;"></canvas>
     <div class="overlayText" id="travellingWaveOverlayText">Click to start the animation!</div>
 </div>
 <!--div class="guiContainer" id="travellingWaveControls"></div-->

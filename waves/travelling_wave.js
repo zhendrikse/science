@@ -12,7 +12,7 @@ const overlay = document.getElementById("travellingWaveOverlayText");
 const scene = new Scene();
 
 const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-camera.position.set(-5, 2, 8);
+camera.position.copy(new Vector3(-5, 2, 8).multiplyScalar(0.8));
 
 const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
