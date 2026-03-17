@@ -3,7 +3,6 @@
 ## Floating block movement in water
 <div class="header_line"><br/></div>
 
-
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=floating_block.js)](https://github.com/zhendrikse/science/blob/main/kinematics/floating_block.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)
