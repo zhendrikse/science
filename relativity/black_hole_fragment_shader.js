@@ -12,7 +12,7 @@ export default `
   #define TAU 6.283185307179586476925286766559
 
   float innerDiskRadius = 2.5;
-  float outerDiskRadius = 7.5;
+  float outerDiskRadius = 7.0;
   float diskTwist = 10.0;
   float flowRate = 0.6;
 
@@ -82,18 +82,19 @@ export default `
         if (dist2 < 1.0) return color;
         if (dist2 > 1600.0) break; // early escape for rays far away
         
-        float dist = sqrt(dist2);
+        float dist = sqrt(dist2); // taking the sqrt is expensive, so we postponed it till the last moment
+        float step = STEP_SIZE * clamp(dist * 0.2, 1.0, 5.0);
         float dist5 = dist2 * dist2 * dist;
-        rayDir += -1.5 * h2 * rayPos / dist5 * STEP_SIZE;
-        
-        float step = STEP_SIZE * clamp(dist * 0.2, 1.0, 5.0); // rays far away from bh may uses bigger steps
+        rayDir += -1.5 * h2 * rayPos / dist5 * step;
         vec3 steppedRayPos = rayPos + rayDir * step;
 
         if (dist > innerDiskRadius && dist < outerDiskRadius && rayPos.y * steppedRayPos.y < 0.0) {
           float diskDist = dist - innerDiskRadius;
+          float invDist = inversesqrt(dist2);
+          float invSqrtDist = sqrt(invDist);
+        
           float distDiskDivDiskRadius = diskDist / deltaDiskRadius;
-          float theta = atan(steppedRayPos.z, abs(steppedRayPos.x));
-          float invSqrtDist = inversesqrt(dist);
+          float theta = atan(steppedRayPos.z, steppedRayPos.x);
           vec3 uvw = vec3(
             theta / TAU - diskTwist * invSqrtDist, 
             distDiskDivDiskRadius * distDiskDivDiskRadius + flowToDisk, 
@@ -102,20 +103,13 @@ export default `
 
           float diskDensity = 1.0 - length(steppedRayPos / vec3(outerDiskRadius, 1.0, outerDiskRadius));
           diskDensity *= smoothstep(innerDiskRadius, innerDiskRadius + 1.0, dist);
+          // if (diskDensity < 0.001) continue; // skip noise generation for empty parts of disk
 
           float densityVariation = fbm(uvw - 0.5, 3, 2.0, 1.0, 7.0);
-          diskDensity *= densityVariation * invSqrtDist * invSqrtDist + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * 2.0 / abs(diskDist), 0)), 3, 5.0, 0.1, 0.5); 
+          float angularVelocity = 1.0 / sqrt(dist);
+          diskDensity *= densityVariation * invSqrtDist * invSqrtDist + 0.5 * fbm(rotate(rayPos, vec3(0, -uTime * angularVelocity, 0)), 3, 5.0, 0.1, 0.5); 
+          float opticalDepth = step * 80.0 * diskDensity;
           
-          float opticalDepth = STEP_SIZE * 100.0 * diskDensity;
-          opticalDepth = pow(opticalDepth, 0.9);
-
-          float v = clamp(inversesqrt(dist), 0.0, 0.6);
-          vec3 shiftVector = v * cross(normalize(steppedRayPos), vec3(0.0, 1.0, 0.0));
-          float velocity = dot(rayDir, shiftVector);
-          
-          float gravitationalShift = sqrt((1.0 - 2.0 / dist) / (1.0 - 2.0 / camDist));
-          float brightness = 1.5;
-        
           // Temperature: T(r)∝r−3/4
           float temp = pow(dist / innerDiskRadius, -0.75); 
           temp = clamp(temp, 0.0, 1.0);
@@ -130,26 +124,23 @@ export default `
                 innerColor,
                 temp * temp * temp
             );
-            
-          // Relativistic beaming I_obs = I_emit ⋅ δ^3
-          float dopplerShift = sqrt((1.0 - velocity) / (1.0 + velocity));
-          float dopplerFactor = 1.0 / dopplerShift;
-            
-          diskColor *= dopplerFactor * dopplerFactor * dopplerFactor;
-            
-          // --- PHOTON RING ---
-          if (dist < 3.0) { // Photon ring calculation only needed near horizon
-            float photonRadius = 1.5; // radius of the ring (near event horizon)
-            float photonThickness = 0.03; // ring thickness
-            
-            float ringDist = abs(dist - photonRadius);
-            float ringIntensity = smoothstep(photonThickness, 0.0, ringDist); // stronger near ring
-  
-            vec3 ringColor = vec3(1.0, 0.9, 0.7); // white/yellowish photon ring            
-            color.rgb += ringColor * ringIntensity;
-          }
-            
-          return vec4(diskColor * brightness * gravitationalShift * opticalDepth, 1.0);
+          // Should make inner disk glow more, but it is barely visible?
+          // float emission = pow(1.0 / dist, 1.5);
+          // diskColor += vec3(1.0, 0.8, 0.6) * emission * 0.5;
+          
+          // Add bloom without loosing too much performance
+          float glow = smoothstep(3.0, 1.5, dist);
+          diskColor += vec3(1.0, 0.7, 0.4) * glow * 0.3;
+
+          vec3 tangent = normalize(vec3(-steppedRayPos.z, 0.0, steppedRayPos.x));
+          float speed = 0.6 * inversesqrt(dist);
+          vec3 velocityVec = tangent * speed;   
+          float velocity = dot(rayDir, velocityVec);
+          float dopplerShift = sqrt((1.0 - velocity) / (1.0 + velocity)); 
+          float gravitationalShift = sqrt((1.0 - 2.0 / dist) / (1.0 - 2.0 / camDist));
+
+          float brightness = 2.0;
+          return vec4(diskColor * brightness * gravitationalShift * dopplerShift * opticalDepth, 1.0);
         }
       
         rayPos = steppedRayPos;
