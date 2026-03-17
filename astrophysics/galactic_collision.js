@@ -2,6 +2,7 @@ import { Scene, Color, PerspectiveCamera, WebGLRenderer, BufferAttribute, Canvas
     BufferGeometry, PointsMaterial, AdditiveBlending, Points, Vector3 } from "three";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import { SkyDome } from '../js/astro-extensions.js';
+import {ThreeJsUtils} from "../js/three-js-extensions.js";
 
 // TODO
 // Press button to start
@@ -148,6 +149,7 @@ class Galaxy {
    Scene setup
 ======================= */
 const canvas = document.getElementById("galacticCollisionCanvas");
+const overlay = document.getElementById("galacticCollisionOverlayText");
 
 const renderer = new WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -273,14 +275,22 @@ function nextSimulationStep(time, dt=1e16, substeps=10) {
 }
 
 window.addEventListener("resize", resize);
+let running = false;
+canvas.addEventListener("click", () => {
+    if (!running) {
+        ThreeJsUtils.showOverlayMessage(overlay, "Started");
+        running = true;
+    }
+});
 
 const frame_rate = 20; // updates per second
 let lastTime = 0;
 function animate(time) {
-    if (time - lastTime >= 1000 / frame_rate)
-        lastTime = nextSimulationStep(time);
-
     controls.update();
     skyDome.update(time * .001, camera);
     renderer.render(scene, camera);
+
+    if (!running) return;
+    if (time - lastTime >= 1000 / frame_rate)
+        lastTime = nextSimulationStep(time);
 }

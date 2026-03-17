@@ -137,7 +137,6 @@ document.getElementById("alphaTerm").onclick = () => mercury.toggleAlpha();
 document.getElementById("betaTerm").onclick = () => mercury.toggleBeta();
 
 const baseDt = 2. * orbitSpeed / c_a / 20;  // Time step
-let time = 0;                      // Current simulation time
 let turns = 0;
 let vec_r_last = initial_position; // Previous position of Mercury
 const perihelion_list = [];        // List of perihelion locations
@@ -178,9 +177,9 @@ function checkPerihelion() {
 }
 
 const plotData = [
-    [], // turns
-    [], // delta angle
-    [], // cumulative angle
+    [0], // turns
+    [0], // delta angle
+    [0], // cumulative angle
 ];
 
 const plot = new uPlot({

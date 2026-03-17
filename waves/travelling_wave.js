@@ -145,8 +145,8 @@ scene.add(string);
 // ---- uPlot setup ----
 const MAX_POINTS = 500;
 let uplotData = [
-    [], // time
-    []  // max Y
+    [0], // time
+    [0]  // max Y
 ];
 const uplotOpts = {
     title: "Crest of wave",
