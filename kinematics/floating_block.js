@@ -144,7 +144,7 @@ renderer.setAnimationLoop( () => {
 
     if (!running) return;
 
-    for (let subStep = 0; subStep < 10; subStep++) {
+    for (let subStep = 0; subStep < 20; subStep++) {
         block.step(water, dt);
         t += dt;
     }
