@@ -84,7 +84,7 @@ class Chain extends Group {
                 this._balls[i + 1],
                 {
                     k_bond: this._springK,
-                    radius: this.ballRadius * 0.75,
+                    radius: this.ballRadius * 0.6,
                     thickness: this.ballRadius * 0.4,
                     color: "yellow",
                     type: Bond.Type.SPRING
@@ -93,7 +93,7 @@ class Chain extends Group {
         }
     }
 
-    get ballRadius() { return this._length / 50; }
+    get ballRadius() { return this._length / 40; }
 
     reset() {
         for (let i = 0; i < this._balls.length; i++) {
@@ -202,7 +202,7 @@ function resetPlot() {
 const plotOpts = {
     title: "Acceleration of chain end",
     width: canvas.clientWidth,
-    height: canvas.clientHeight * 0.5,
+    height: canvas.clientHeight * 0.75,
     transparent: true,
     scales: { x: { auto: true }, y: { auto: true } },
     axes: [

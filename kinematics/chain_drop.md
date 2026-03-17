@@ -13,8 +13,8 @@
 <link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
-<div class="canvasWrapper" id="chainDropWrapper">
-    <canvas class="applicationCanvas" id="chainDropCanvas"></canvas>
+<div class="canvasWrapper" id="chainDropWrapper" style="aspect-ratio: 19/12">
+    <canvas class="applicationCanvas" id="chainDropCanvas" style="aspect-ratio: 19/12"></canvas>
     <div class="overlayText" id="chainDropOverlayText">Click to start the animation!</div>
 </div>
 <div id="chainPlot"></div>
