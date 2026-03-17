@@ -2249,8 +2249,6 @@ export class Bond {
         this._spring._mesh.visible = this._bondType === Bond.Type.SPRING;
     }
 
-    get k() { return this._bondConstant; }
-
     update() {
         const p1 = this._object1.position.clone();
         const p2 = this._object2.position.clone();
