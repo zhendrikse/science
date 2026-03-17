@@ -1452,6 +1452,7 @@ export class Ball {
     get rayCastHandle() { return this._sphere.rayCastHandle; }
     get body() { return this._state; }
 
+    set position(newPosition) { this.moveTo(newPosition); }
     distanceTo(other) { return this._sphere.distanceTo(other) }
     positionVectorTo(other) { return this._sphere.positionVectorTo(other); }
 }
@@ -1537,6 +1538,7 @@ export class Spring {
 
     set color(value) { this._mesh.material.color = value; }
     set visible(value) { this._mesh.material.visible = value; }
+    set position(newPosition) { this.moveTo(newPosition); }
     get visible() { this._mesh.material.visible; }
 }
 

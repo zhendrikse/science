@@ -94,7 +94,7 @@ function iterate(dt) {
     ball2.step(forceOnBall2, dt);
     ball3.step(g.clone().multiplyScalar(ball3.mass), dt);
 
-    spring.moveTo(ball1.position);
+    spring.position = ball1.position;
     spring.updateAxis(ball1.positionVectorTo(ball2));
 }
 

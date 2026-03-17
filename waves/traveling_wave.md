@@ -10,12 +10,14 @@
 ⭐ Based on [original code](https://trinket.io/glowscript/7aa45bb79b) by Rhett Allain<br/>
 👉 An elaborate explanation is given in [his video](https://www.youtube.com/watch?v=DpfnIh3oEGk)
 
+<link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
+<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
 <div class="canvasWrapper" id="travellingWaveContainer" style="aspect-ratio: 2/1;">
     <canvas id="travellingWaveCanvas" class="applicationCanvas" style="aspect-ratio: 2/1;"></canvas>
     <div class="overlayText" id="travellingWaveOverlayText">Click to start the animation!</div>
 </div>
-<!--div class="guiContainer" id="travellingWaveControls"></div-->
+<div id="waveChart" style="margin:auto;"></div>
 <script type="module" src="travelling_wave.js"></script>
 <p style="clear: both;"></p>
 

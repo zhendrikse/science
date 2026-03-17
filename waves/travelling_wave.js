@@ -30,10 +30,13 @@ class String1D extends Group {
     constructor({
         count = 80,
         length = 10,
-        totalMass = 0.025
-    } = {}) {
+        totalMass = 0.025,
+        amplitude = 0.8,
+        omega = 45 } = {})
+    {
         super();
-
+        this._amplitude = amplitude;
+        this._omega = omega;
         this._balls = [];
         this._forces = [];
         this._bonds = [];
@@ -77,16 +80,13 @@ class String1D extends Group {
     }
 
     #driveFirstBall(t) {
-        const omega = 45;
-        const halfWaveTime = 2 * Math.PI / omega;
-        const amplitude = 0.8;
-
         const firstBall = this._balls[0];
         const x = -this._length / 2;
-        firstBall.moveTo(new Vector3(x, 0, 0));
+        firstBall.position = new Vector3(x, 0, 0);
 
+        const halfWaveTime = 2 * Math.PI / this._omega;
         if (t < halfWaveTime)
-            firstBall.moveTo(new Vector3(x, amplitude * Math.sin(omega * t), 0));
+            firstBall.position = new Vector3(x, this._amplitude * Math.sin(this._omega * t), 0);
     }
 
     #updateForces() {
@@ -109,7 +109,7 @@ class String1D extends Group {
     }
 
     #integrate(dt) {
-        for (let i = 1; i < this._count; i++)
+        for (let i = 1; i < this._count - 1; i++)
             this._balls[i].step(this._forces[i], dt);
     }
 
@@ -142,6 +142,39 @@ const string = new String1D({
 });
 scene.add(string);
 
+// ---- uPlot setup ----
+const MAX_POINTS = 500;
+let uplotData = [
+    [], // time
+    []  // max Y
+];
+const uplotOpts = {
+    title: "Crest of wave",
+    width: canvas.clientWidth,
+    height: canvas.clientHeight * .5,
+    bg: "transparent",
+    scales: { x: { auto: true }, y: { auto: true } },
+    axes: [
+        {
+            stroke: "#ff0",
+            font: "12px Arial",
+            grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
+            label: "Time [s]"
+        },
+        {
+            stroke: "#ff0",
+            font: "12px Arial",
+            grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
+            label: "y [m]"
+        }
+    ],
+    series: [
+        { label:"t [s]" },
+        { label:"y max", stroke:"red" }
+    ]
+};
+const uplotChart = new uPlot(uplotOpts, uplotData, document.getElementById("waveChart"));
+
 let running = false;
 canvas.addEventListener("click", () => {
     if (!running) {
@@ -149,8 +182,15 @@ canvas.addEventListener("click", () => {
         running = true;
     } else {
         ThreeJsUtils.showOverlayMessage(overlay, "Reset");
-        string.reset();
-        time = 0;
+        string.reset();      // zet snaar terug naar rustpositie
+        time = 0;            // reset simulatie-tijd
+
+        // reset uPlot data
+        uplotData[0] = [];
+        uplotData[1] = [];
+        uplotChart.setData(uplotData);
+
+        running = false;
     }
 });
 
@@ -166,4 +206,16 @@ renderer.setAnimationLoop( () => {
         string.update(time, dt);
         time += dt;
     }
+
+    const yMax = Math.max(...string._balls.map(ball => ball.position.y));
+
+    uplotData[0].push(time);
+    uplotData[1].push(yMax);
+
+    if(uplotData[0].length > MAX_POINTS){
+        uplotData[0].shift();
+        uplotData[1].shift();
+    }
+
+    uplotChart.setData(uplotData);
 });
