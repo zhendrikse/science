@@ -19,6 +19,12 @@ document.getElementById("bEnergySlider").addEventListener("input", () => barrier
 document.getElementById("bSizeSlider").addEventListener("input", () => barrier.adjust());
 document.getElementById("bSoftnessSlider").addEventListener("input", () => barrier.adjust());
 
+const TWO_PI = 2 * Math.PI;
+const PHASE_STEPS = 256;
+const hsvTable = new Array(PHASE_STEPS);
+for (let i = 0; i < PHASE_STEPS; i++)
+    hsvTable[i] = hsvToRgb(i / PHASE_STEPS, 1.0, 1.0); // V=1, saturation=1
+
 let xMax = Number(theCanvas.width);
 let xMaxm1 = xMax - 1;
 
@@ -122,9 +128,9 @@ class Barrier {
         const bSize = Number(document.getElementById("bSizeSlider").value);
         const softness = Number(document.getElementById("bSoftnessSlider").value);
 
-        document.getElementById("bSoftnessReadout").innerText = softness;
+        document.getElementById("bSoftnessReadout").innerText = "" + softness;
         document.getElementById("bEnergyReadout").innerText = bEnergy.toFixed(3).replace("-", "−");
-        document.getElementById("bSizeReadout").innerText = bSize;
+        document.getElementById("bSizeReadout").innerText = "" + bSize;
 
         this._clear();
         this._setPotentialFor(barrierType, bSize, bEnergy);
@@ -170,6 +176,7 @@ function nextFrame() {
     for (let step=0; step < stepsPerFrame; step++)
         psi.doStep(dt, barrier);
     stepCount += stepsPerFrame;
+
     paintCanvas(psi, imgData);
     const currentTime = (new Date()).getTime();
     spsReadout.innerHTML = "" + Math.round(1000 * stepCount / (currentTime-startTime));
@@ -230,6 +237,9 @@ class Psi2D {
             }
     }
 
+    squaredAt = (i) => this._psi.re[i] * this._psi.re[i] + this._psi.im[i] * this._psi.im[i];
+    phaseAt = (i) => Math.atan2(psi.im[i], psi.re[i]) / TWO_PI;
+
     // Initialize the wavefunction to a Gaussian wavepacket:
     reset() {
         const centerX = Math.floor(xMax*0.22);
@@ -271,18 +281,18 @@ function paintCanvas(psi, imageData) {
     for (let y = 0; y < size; y++)
         for (let x = 0; x < size; x++) {
             const i = y * size + x;
-            const psi2 = psi.re[i] * psi.re[i] + psi.im[i] * psi.im[i];
-            let brightness = Math.sqrt(psi2) * brightSetting;
+            let brightness = Math.sqrt(psi.squaredAt(i)) * brightSetting;
             if (brightness > 1.0) brightness = 1.0;
 
-            let phase = Math.atan2(psi.im[i], psi.re[i]) / (2 * Math.PI);
-            if (phase < 0) phase += 1.0;
+            let phaseIndex = Math.floor(PHASE_STEPS * psi.phaseAt(i) );
+            if (phaseIndex < 0) phaseIndex += PHASE_STEPS;
+            if (phaseIndex >= PHASE_STEPS) phaseIndex = PHASE_STEPS-1;
 
-            const rgb = hsvToRgb(phase, 1.0, brightness);
+            const rgb = hsvTable[phaseIndex];
             const imageIndex = (x + (size - y - 1) * size) * 4;
-            imageData.data[imageIndex] = rgb.r;
-            imageData.data[imageIndex + 1] = rgb.g;
-            imageData.data[imageIndex + 2] = rgb.b;
+            imageData.data[imageIndex] = Math.round(rgb.r * brightness);
+            imageData.data[imageIndex + 1] = Math.round(rgb.g * brightness);
+            imageData.data[imageIndex + 2] = Math.round(rgb.b * brightness);
             imageData.data[imageIndex + 3] = Math.round(brightness * 255); // alpha based on brightness
         }
 
@@ -290,9 +300,7 @@ function paintCanvas(psi, imageData) {
 }
 
 let imgData;
-let image;
 function setupArrays() {
-    image = theContext.createImageData(xMax, xMax);
     imgData = theContext.createImageData(xMax, xMax);
     psi = new Psi2D(xMax);
 }
