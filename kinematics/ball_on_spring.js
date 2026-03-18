@@ -78,12 +78,13 @@ canvas.addEventListener('mousemove', e => {
 
 canvas.addEventListener('mouseup', () => dragging = false);
 
+const potentialGravity = () => massSpringSystem.mass.mass * g * massSpringSystem.mass.position.y;
 const plotData = [
-    [], // x-axis = time
-    [], // KE
-    [], // PE
-    [], // E
-    []  // Y
+    [0], // x-axis = time
+    [massSpringSystem.kineticEnergy()],
+    [massSpringSystem.potentialEnergy() + potentialGravity()],
+    [massSpringSystem.kineticEnergy() + massSpringSystem.potentialEnergy() + potentialGravity()],
+    [(5 + massSpringSystem.mass.position.y) * 100]
 ];
 
 const plot = new uPlot({
@@ -116,11 +117,10 @@ function animate() {
     if (!dragging)
         massSpringSystem.step(dt, Integrators.rk4Step, 1, time);
 
-    const potentialGravity = massSpringSystem.mass.mass * g * massSpringSystem.mass.position.y;
     plotData[0].push(time); // x-axis = time
     plotData[1].push(massSpringSystem.kineticEnergy());
-    plotData[2].push(massSpringSystem.potentialEnergy() + potentialGravity);
-    plotData[3].push(massSpringSystem.kineticEnergy() + massSpringSystem.potentialEnergy() + potentialGravity);
+    plotData[2].push(massSpringSystem.potentialEnergy() + potentialGravity());
+    plotData[3].push(massSpringSystem.kineticEnergy() + massSpringSystem.potentialEnergy() + potentialGravity());
     plotData[4].push((5 + massSpringSystem.mass.position.y) * 100);
 
     if (plotData[0].length > maxPoints)

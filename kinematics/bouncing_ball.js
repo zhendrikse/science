@@ -54,10 +54,10 @@ window.addEventListener("click", () => {
     }
 });
 
-let timeData = [];
-let positionData = [];
-let kineticData = [];
-let potentialData = [];
+let timeData = [0];
+let positionData = [ball.position.y];
+let kineticData = [ball.kineticEnergy()];
+let potentialData = [ball.mass * g * ball.position.y];
 
 let simTime = 0;
 const g = 9.8;
