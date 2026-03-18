@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Pendulums - Three.js</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="main.css"></link>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JPYTNF6MB4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-JPYTNF6MB4');
+    </script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                     "three": "https://cdn.jsdelivr.net/npm/three@0.161/build/three.module.js",
+            "jsm/": "https://cdn.jsdelivr.net/npm/three@0.161/examples/jsm/"
+            }
+        }
+    </script>
+    <script src="pendulum_wave.js" type="module"></script>
+</head>
+
+<body>
+
+    <div id="easycamhud" class="hud">
+
+        <div id="info">
+            <p>
+                <span style="font-size:18px">
+                    ❤️ <a href="https://www.dynamicmath.xyz/" target="_blank">dynamicmath.xyz <i
+                            class="fa fa-info-circle" aria-hidden="true"></i></a>
+                </span>
+            </p>
+
+        </div>
+    </div>
+
+
+    <canvas id="sceneCanvas"></canvas>
+</body>
+
+</html>

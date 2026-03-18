@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="alternate" hreflang="en" href="../ants/">
+  <link rel="alternate" hreflang="x-default" href="../ants/">
+  <title>Ant Colony — Pheromones</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    canvas { display:block; }
+    .stat-row { display:flex; justify-content:space-between; color:#9ca3af; font-size:0.76rem; margin-top:4px; }
+    .stat-val  { color:#34d399; font-weight:600; }
+    .panel label span { min-width:32px; text-align:right; font-size:0.75rem; color:#60a5fa; }
+    #legend {
+      position:absolute; bottom:60px; left:16px;
+      background:rgba(0,0,0,0.6); backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,0.1); border-radius:10px;
+      padding:10px 14px; font-size:0.75rem; color:#9ca3af; z-index:10;
+    }
+    #legend div { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+    #legend span.sq { display:inline-block; width:12px; height:12px; border-radius:2px; }
+  </style>
+  <meta property="og:title" content="Ant Colony — 3D Simulations">
+  <meta property="og:description" content="Stigmergic simulation: ants find food via pheromone trails. Self-organisation from simple rules.">
+  <meta property="og:image" content="https://www.mysimulator.uk/preview/ants.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.mysimulator.uk/preview/ants.jpg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Ant Colony",
+    "description": "Stigmergic simulation: ants find food via pheromone trails. Self-organisation from simple rules.",
+    "url": "https://www.mysimulator.uk/ants/",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web Browser",
+    "inLanguage": "en",
+    "image": "https://www.mysimulator.uk/preview/ants.jpg",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <meta property="og:url" content="https://www.mysimulator.uk/ants/">
+  <meta property="og:site_name" content="3D Simulations">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:title" content="Ant Colony — 3D Simulations">
+  <meta name="twitter:description" content="Stigmergic simulation: ants find food via pheromone trails. Self-organisation from simple rules.">
+  <meta name="author" content="3D Simulations">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.mysimulator.uk/ants/">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.mysimulator.uk/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Algorithms",
+      "item": "https://www.mysimulator.uk/categories/algorithms/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Ant Colony",
+      "item": "https://www.mysimulator.uk/ants/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<div class="sim-page">
+<a class="back-btn" href="../categories/life/">← 🧬 Biology & Life</a>
+
+  <div class="panel">
+    <h3>🐜 Ant Colony</h3>
+    <label>Ants
+      <input type="range" id="slAnts" min="10" max="300" step="5" value="80" aria-valuemin="10" aria-valuemax="300" aria-valuenow="80" aria-describedby="valAnts">
+      <span id="valAnts">80</span>
+    </label>
+    <label>Food (sources)
+      <input type="range" id="slFood" min="1" max="8" step="1" value="3" aria-valuemin="1" aria-valuemax="8" aria-valuenow="3" aria-describedby="valFood">
+      <span id="valFood">3</span>
+    </label>
+    <label>Pheromone decay
+      <input type="range" id="slDecay" min="0.9" max="0.999" step="0.001" value="0.985" aria-valuemin="0.9" aria-valuemax="0.999" aria-valuenow="0.985" aria-describedby="valDecay">
+      <span id="valDecay">0.985</span>
+    </label>
+    <label>Speed
+      <input type="range" id="slSpeed" min="0.5" max="4" step="0.1" value="1.5" aria-valuemin="0.5" aria-valuemax="4" aria-valuenow="1.5" aria-describedby="valSpeed">
+      <span id="valSpeed">1.5</span>
+    </label>
+    <label>View angle °
+      <input type="range" id="slView" min="10" max="120" step="5" value="45" aria-valuemin="10" aria-valuemax="120" aria-valuenow="45" aria-describedby="valView">
+      <span id="valView">45</span>
+    </label>
+    <hr style="border-color:rgba(255,255,255,0.1);margin:8px 0">
+    <label style="cursor:pointer;user-select:none">
+      <input type="checkbox" id="chkMulti" style="accent-color:#f97316"> Two colonies
+    </label>
+    <div class="stat-row">Food collected: <span class="stat-val" id="statFood">0</span></div>
+    <div id="statMultiRow" style="display:none">
+      <div class="stat-row">🟡 Colony A: <span class="stat-val" id="statA">0</span></div>
+      <div class="stat-row">🟠 Colony B: <span class="stat-val" id="statB">0</span></div>
+    </div>
+    <div class="stat-row">Ants: <span class="stat-val" id="statAnts">80</span></div>
+    <div class="stat-row">FPS: <span class="stat-val" id="statFps">—</span></div>
+    <button id="btnReset">↺ Restart</button>
+  </div>
+
+  <div id="legend">
+    <div><span class="sq" style="background:#ffcc00"></span> Nest A</div>
+    <div><span class="sq" style="background:#ff6622"></span> Nest B (multi)</div>
+    <div><span class="sq" style="background:#44ff44"></span> Food</div>
+    <div><span class="sq" style="background:#ff6600aa"></span> Pheromone "to food"</div>
+    <div><span class="sq" style="background:#0088ffaa"></span> Pheromone "home"</div>
+  </div>
+
+  <div class="controls-hint">Click — add food · Right-click — remove</div>
+</div>
+
+<script>
+  const container = document.querySelector('.sim-page');
+  const canvas = document.createElement('canvas');
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  /* ── HiDPI / Retina display (devicePixelRatio) fix ── */
+  (function () {
+    var _dpr = window.devicePixelRatio || 1;
+    if (_dpr <= 1) return;
+    var _pd = HTMLCanvasElement.prototype;
+    var _wd = Object.getOwnPropertyDescriptor(_pd, 'width');
+    var _hd = Object.getOwnPropertyDescriptor(_pd, 'height');
+    function _rescale() { ctx.setTransform(_dpr, 0, 0, _dpr, 0, 0); }
+    Object.defineProperty(canvas, 'width', {
+      configurable: true,
+      get: function () { return this._lw || 0; },
+      set: function (v) { this._lw = v; _wd.set.call(this, Math.round(v * _dpr)); canvas.style.width  = v + 'px'; _rescale(); }
+    });
+    Object.defineProperty(canvas, 'height', {
+      configurable: true,
+      get: function () { return this._lh || 0; },
+      set: function (v) { this._lh = v; _hd.set.call(this, Math.round(v * _dpr)); canvas.style.height = v + 'px'; _rescale(); }
+    });
+  })();
+
+  let W, H;
+  function resize() {
+    W = canvas.width  = innerWidth;
+    H = canvas.height = innerHeight;
+    init();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let params = { ants:80, food:3, decay:0.985, speed:1.5, viewAngle:45 };
+  let multiColony = false;
+
+  // ─── Pheromone grids ─────────────────────────────────────────
+  const CELL = 4; // pixels per pheromone cell
+  let GW, GH;
+  let pheHome, pheFood;   // colony A
+  let pheHomeB, pheFoodB; // colony B (only used in multi mode)
+
+  function makeGrid() {
+    GW = Math.ceil(W / CELL);
+    GH = Math.ceil(H / CELL);
+    pheHome  = new Float32Array(GW * GH);
+    pheFood  = new Float32Array(GW * GH);
+    pheHomeB = new Float32Array(GW * GH);
+    pheFoodB = new Float32Array(GW * GH);
+  }
+
+  function gIdx(x, y) {
+    const gx = Math.floor(x / CELL), gy = Math.floor(y / CELL);
+    if (gx < 0 || gy < 0 || gx >= GW || gy >= GH) return -1;
+    return gy * GW + gx;
+  }
+
+  // ─── Colony / food ───────────────────────────────────────────
+  let colony, colonyB, foods, ants;
+  let collectedFood = 0, collectedA = 0, collectedB = 0;
+
+  function spawnFoods(n) {
+    foods = [];
+    for (let i = 0; i < n; i++) {
+      foods.push({
+        x: 80 + Math.random() * (W - 160),
+        y: 80 + Math.random() * (H - 160),
+        amount: 40 + Math.floor(Math.random() * 60),
+      });
+    }
+  }
+
+  function makeAnt(col, colId) {
+    const angle = Math.random() * Math.PI * 2;
+    return {
+      x: col.x + (Math.random()-0.5)*20,
+      y: col.y + (Math.random()-0.5)*20,
+      angle,
+      hasFood: false,
+      steer: 0,
+      colony: colId,  // 'A' or 'B'
+    };
+  }
+
+  function init() {
+    makeGrid();
+    collectedFood = 0; collectedA = 0; collectedB = 0;
+    colony  = { x: W * 0.3, y: H / 2 };
+    colonyB = { x: W * 0.7, y: H / 2 };
+    spawnFoods(params.food);
+    ants = [];
+    const nA = multiColony ? Math.ceil(params.ants / 2) : params.ants;
+    const nB = multiColony ? Math.floor(params.ants / 2) : 0;
+    for (let i = 0; i < nA; i++) ants.push(makeAnt(colony,  'A'));
+    for (let i = 0; i < nB; i++) ants.push(makeAnt(colonyB, 'B'));
+    document.getElementById('statAnts').textContent = params.ants;
+    document.getElementById('statFood').textContent = 0;
+    document.getElementById('statA').textContent = 0;
+    document.getElementById('statB').textContent = 0;
+  }
+
+  // ─── Ant update ───────────────────────────────────────────────
+  const TWO_PI = Math.PI * 2;
+
+  function senseAt(grid, x, y, dx, dy) {
+    const idx = gIdx(x + dx*12, y + dy*12);
+    return idx >= 0 ? grid[idx] : 0;
+  }
+
+  function stepAnt(ant, dt) {
+    const spd = params.speed * 60 * dt;
+    const va  = params.viewAngle * Math.PI / 180;
+    const fwd = [Math.cos(ant.angle), Math.sin(ant.angle)];
+    const lft = [Math.cos(ant.angle-va), Math.sin(ant.angle-va)];
+    const rgt = [Math.cos(ant.angle+va), Math.sin(ant.angle+va)];
+
+    // Pick correct pheromone grids based on colony
+    const isB = ant.colony === 'B';
+    const homeGrid = isB ? pheHomeB : pheHome;
+    const foodGrid = isB ? pheFoodB : pheFood;
+
+    // Pick correct pheromone to follow
+    const followGrid = ant.hasFood ? homeGrid : foodGrid;
+    const sF = senseAt(followGrid, ant.x, ant.y, fwd[0], fwd[1]);
+    const sL = senseAt(followGrid, ant.x, ant.y, lft[0], lft[1]);
+    const sR = senseAt(followGrid, ant.x, ant.y, rgt[0], rgt[1]);
+
+    if (sL > sF && sL > sR)      ant.angle -= va * 0.5;
+    else if (sR > sF && sR > sL) ant.angle += va * 0.5;
+    else if (sL === sR)          ant.angle += (Math.random()-0.5) * 0.4;
+
+    // Random wander
+    ant.angle += (Math.random()-0.5) * 0.35;
+
+    // Move
+    ant.x += Math.cos(ant.angle) * spd;
+    ant.y += Math.sin(ant.angle) * spd;
+
+    // Boundary bounce
+    if (ant.x < 2)     { ant.x = 2;   ant.angle = Math.PI - ant.angle; }
+    if (ant.x > W - 2) { ant.x = W-2; ant.angle = Math.PI - ant.angle; }
+    if (ant.y < 2)     { ant.y = 2;   ant.angle = -ant.angle; }
+    if (ant.y > H - 2) { ant.y = H-2; ant.angle = -ant.angle; }
+
+    // Deposit pheromone — each colony uses its own grids
+    const isB = ant.colony === 'B';
+    const depositGrid = ant.hasFood ? (isB ? pheFoodB : pheFood) : (isB ? pheHomeB : pheHome);
+    const di = gIdx(ant.x, ant.y);
+    if (di >= 0) depositGrid[di] = Math.min(depositGrid[di] + (ant.hasFood ? 4 : 2), 255);
+
+    // Check reach food
+    if (!ant.hasFood) {
+      for (let i = foods.length - 1; i >= 0; i--) {
+        const f = foods[i];
+        const dx = ant.x - f.x, dy = ant.y - f.y;
+        if (Math.sqrt(dx*dx+dy*dy) < 12) {
+          ant.hasFood = true;
+          ant.angle += Math.PI; // turn back
+          f.amount--;
+          if (f.amount <= 0) foods.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    // Check reach colony
+    if (ant.hasFood) {
+      const homeCol = isB ? colonyB : colony;
+      const dx = ant.x - homeCol.x, dy = ant.y - homeCol.y;
+      if (Math.sqrt(dx*dx+dy*dy) < 18) {
+        ant.hasFood = false;
+        ant.angle += Math.PI;
+        collectedFood++;
+        if (isB) { collectedB++; document.getElementById('statB').textContent = collectedB; }
+        else     { collectedA++; document.getElementById('statA').textContent = collectedA; }
+        document.getElementById('statFood').textContent = collectedFood;
+      }
+    }
+  }
+
+  // ─── Pheromone decay ──────────────────────────────────────────
+  function decayPheromones() {
+    const d = params.decay;
+    for (let i = 0; i < pheHome.length; i++) {
+      pheHome[i]  *= d;
+      pheFood[i]  *= d;
+      pheHomeB[i] *= d;
+      pheFoodB[i] *= d;
+    }
+  }
+
+  // ─── Draw ──────────────────────────────────────────────────────
+  let pheroCanvas, pheroCtx, pheroImg;
+  function ensurePheroCanvas() {
+    if (!pheroCanvas || pheroCanvas.width !== GW || pheroCanvas.height !== GH) {
+      pheroCanvas = document.createElement('canvas');
+      pheroCanvas.width  = GW;
+      pheroCanvas.height = GH;
+      pheroCtx = pheroCanvas.getContext('2d');
+      pheroImg = pheroCtx.createImageData(GW, GH);
+    }
+  }
+
+  function drawPheromones() {
+    ensurePheroCanvas();
+    const data = pheroImg.data;
+    for (let i = 0; i < GW * GH; i++) {
+      // Colony A — orange/blue channel
+      const hA = Math.min(pheHome[i],  200);
+      const fA = Math.min(pheFood[i],  200);
+      // Colony B — magenta/teal channel (only visible in multi mode)
+      const hB = Math.min(pheHomeB[i], 200);
+      const fB = Math.min(pheFoodB[i], 200);
+      data[i*4]   = Math.floor(fA * 0.6 + 20 + fB * 0.25);  // R
+      data[i*4+1] = Math.floor(hA * 0.2 + fA * 0.3 + fB * 0.5); // G
+      data[i*4+2] = Math.floor(hA * 0.9 + hB * 0.5);        // B
+      data[i*4+3] = Math.min(Math.floor(hA + fA + hB + fB), 180);
+    }
+    pheroCtx.putImageData(pheroImg, 0, 0);
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+    ctx.globalAlpha = 0.85;
+    ctx.drawImage(pheroCanvas, 0, 0, W, H);
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.fillStyle = 'rgba(8,14,6,0.4)';
+    ctx.fillRect(0, 0, W, H);
+
+    drawPheromones();
+
+    // Colony A
+    ctx.beginPath();
+    ctx.arc(colony.x, colony.y, 16, 0, Math.PI*2);
+    ctx.fillStyle = '#ffcc00';
+    ctx.fill();
+    ctx.fillStyle = '#000';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('A', colony.x, colony.y + 4);
+
+    // Colony B (only in multi mode)
+    if (multiColony) {
+      ctx.beginPath();
+      ctx.arc(colonyB.x, colonyB.y, 16, 0, Math.PI*2);
+      ctx.fillStyle = '#ff6622';
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('B', colonyB.x, colonyB.y + 4);
+    }
+
+    // Food
+    for (const f of foods) {
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, 5 + f.amount*0.08, 0, Math.PI*2);
+      ctx.fillStyle = '#44ff44';
+      ctx.globalAlpha = 0.85;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#fff3';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(f.amount, f.x, f.y - 10);
+    }
+
+    // Re-spawn food if empty
+    if (foods.length === 0) spawnFoods(params.food);
+
+    // Ants — colour by colony
+    for (const ant of ants) {
+      ctx.save();
+      ctx.translate(ant.x, ant.y);
+      ctx.rotate(ant.angle);
+      const isB = ant.colony === 'B';
+      ctx.fillStyle = ant.hasFood ? (isB ? '#ff9944' : '#ff8800') : (isB ? '#cc5500' : '#cc2200');
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 5, 2.5, 0, 0, Math.PI*2);
+      ctx.fill();
+      // Head
+      ctx.fillStyle = ant.hasFood ? (isB ? '#ffcc44' : '#ffaa00') : (isB ? '#aa3300' : '#991100');
+      ctx.beginPath();
+      ctx.arc(5, 0, 2, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // ─── Controls ─────────────────────────────────────────────────
+  canvas.addEventListener('click', e => {
+    if (e.button !== 0) return;
+    foods.push({ x: e.clientX, y: e.clientY, amount: 60 });
+  });
+  canvas.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    for (let i = foods.length-1; i >= 0; i--) {
+      const f = foods[i];
+      const dx=f.x-e.clientX, dy=f.y-e.clientY;
+      if (dx*dx+dy*dy < 400) { foods.splice(i,1); break; }
+    }
+  });
+
+  function bind(id, valId, key, cb) {
+    const el=document.getElementById(id), vl=document.getElementById(valId);
+    el.addEventListener('input', () => { params[key]=parseFloat(el.value); vl.textContent=el.value; if(cb) cb(); });
+  }
+  bind('slAnts',  'valAnts',  'ants',       () => { init(); });
+  bind('slFood',  'valFood',  'food',       () => { spawnFoods(params.food); });
+  bind('slDecay', 'valDecay', 'decay');
+  bind('slSpeed', 'valSpeed', 'speed');
+  bind('slView',  'valView',  'viewAngle');
+  document.getElementById('btnReset').addEventListener('click', init);
+  document.getElementById('chkMulti').addEventListener('change', e => {
+    multiColony = e.target.checked;
+    document.getElementById('statMultiRow').style.display = multiColony ? '' : 'none';
+    init();
+  });
+
+  // ─── Animate ──────────────────────────────────────────────────
+  let lastTime = performance.now();
+  let frames = 0, fpsTime = 0;
+  const fpsEl = document.getElementById('statFps');
+
+  function animate(now) {
+    requestAnimationFrame(animate);
+    const dt = Math.min((now - lastTime) / 1000, 0.05);
+    lastTime = now;
+    fpsTime += dt; frames++;
+    if (fpsTime >= 0.5) { fpsEl.textContent = Math.round(frames/fpsTime); frames=0; fpsTime=0; }
+
+    decayPheromones();
+    for (const ant of ants) stepAnt(ant, dt);
+    draw();
+  }
+
+  requestAnimationFrame(animate);
+
+
+  // A11y: label the canvas for screen readers
+  (function() {
+    const _c = document.querySelector('canvas');
+    if (_c) { _c.setAttribute('role', 'img'); _c.setAttribute('aria-label', 'Interactive Ant Colony simulation'); }
+  })();
+
+
+  // A11y: keep aria-valuenow in sync for range inputs
+  document.querySelectorAll('input[type="range"]').forEach(function(r) {
+    r.addEventListener('input', function() { r.setAttribute('aria-valuenow', r.value); });
+  });
+</script>
+</body>
+</html>
+
