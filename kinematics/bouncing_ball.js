@@ -54,13 +54,13 @@ window.addEventListener("click", () => {
     }
 });
 
-let timeData = [0];
+let simTime = 0;
+const g = 9.8;
+let timeData = [simTime];
 let positionData = [ball.position.y];
 let kineticData = [ball.kineticEnergy()];
 let potentialData = [ball.mass * g * ball.position.y];
 
-let simTime = 0;
-const g = 9.8;
 
 const opts = {
     title: "Bouncing Ball",
