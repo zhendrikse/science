@@ -21,7 +21,8 @@ $$\begin{equation}
 ⭐ Based on the VPython [PendulumWave](https://glowscript.org/#/user/yizhe/folder/Public/program/PendulumWave) and inspired by [www.dynamicmath.xyz](https://www.dynamicmath.xyz/)<br/>
 👉 Related to [Newton&apos;s cradle](https://www.hendrikse.name/science/kinematics/newtons_cradle.html) simulation<br/>
 
-###  Why the pendulum wave re-synchronizes 🧠
+### 🧠 Pendulum wave synchronization 
+<div class="header_line"><br/></div>
 
 At first glance the pendulum wave looks chaotic, but it is actually a **perfectly designed periodic motion**!
 
