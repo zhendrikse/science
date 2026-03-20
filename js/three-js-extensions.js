@@ -2426,9 +2426,9 @@ export class Floor extends Mesh {
 
         const loader = new TextureLoader();
         const imageType = type === Floor.Type.PAVING ? "jpg" : "png";
-        this.material.map = this._loadTexture(loader, './textures/' + type + '_color.' + imageType);
-        this.material.roughnessMap = this._loadTexture(loader, './textures/' + type + '_roughness.' + imageType);
-        this.material.normalMap = this._loadTexture(loader, './textures/' + type + '_normal.' + imageType);
+        this.material.map = this._loadTexture(loader, '../js/textures/' + type + '_color.' + imageType);
+        this.material.roughnessMap = this._loadTexture(loader, '../js/textures/' + type + '_roughness.' + imageType);
+        this.material.normalMap = this._loadTexture(loader, '../js/textures/' + type + '_normal.' + imageType);
     }
 
     _loadTexture(loader, url) {

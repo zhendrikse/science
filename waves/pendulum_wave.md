@@ -16,6 +16,7 @@ $$\begin{equation}
     <div class="overlayText" id="pendulumOverlay">Click to start the animation!</div>
 </div>
 <script type="module" src="pendulum_wave.js"></script>
+<p style="clear: both;"></p>
 
 ⭐ Based on the VPython [PendulumWave](https://glowscript.org/#/user/yizhe/folder/Public/program/PendulumWave) and inspired by [www.dynamicmath.xyz](https://www.dynamicmath.xyz/)<br/>
 👉 Related to [Newton&apos;s cradle](https://www.hendrikse.name/science/kinematics/newtons_cradle.html) simulation<br/>
