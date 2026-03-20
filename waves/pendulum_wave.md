@@ -90,7 +90,7 @@ $$\begin{equation}
 \theta_i(t) = A \cos\left(\frac{2\pi}{T_i} t\right)
 \end{equation}$$
 
-Because all (T_i) are chosen as:
+Because all $T_i$ are chosen as:
 
 $$\begin{equation}
 T_i = \frac{T_{pw}}{N+i}
