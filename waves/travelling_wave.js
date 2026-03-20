@@ -195,12 +195,11 @@ const uplotOpts = {
 };
 const uplotChart = new uPlot(uplotOpts, uplotData, document.getElementById("waveChart"));
 
-let running = false;
+let paused = false;
 canvas.addEventListener("click", () => {
-    if (!running) {
+    if (paused)
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
-        running = true;
-    } else {
+    else {
         ThreeJsUtils.showOverlayMessage(overlay, "Reset");
         string.reset();      // zet snaar terug naar rustpositie
         time = 0;            // reset simulatie-tijd
@@ -209,9 +208,8 @@ canvas.addEventListener("click", () => {
         uplotData[0] = [];
         uplotData[1] = [];
         uplotChart.setData(uplotData);
-
-        running = false;
     }
+    paused = !paused;
 });
 
 const dt = 0.0001;
@@ -220,7 +218,7 @@ renderer.setAnimationLoop( () => {
     controls.update();
     renderer.render(scene, camera);
 
-    if (!running) return;
+    if (paused) return;
 
     for (let subStep = 0; subStep < 40; subStep++) {
         string.update(time, dt);
