@@ -141,6 +141,19 @@
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
+  let params = { ants:80, food:3, decay:0.985, speed:1.5, viewAngle:45 };
+  let multiColony = false;
+
+  // ─── Colony / food ───────────────────────────────────────────
+  let colony, colonyB, foods, ants;
+  let collectedFood = 0, collectedA = 0, collectedB = 0;
+
+  // ─── Pheromone grids ─────────────────────────────────────────
+  const CELL = 4; // pixels per pheromone cell
+  let GW, GH;
+  let pheHome, pheFood;   // colony A
+  let pheHomeB, pheFoodB; // colony B (only used in multi mode)
+
   /* ── HiDPI / Retina display (devicePixelRatio) fix ── */
   (function () {
     var _dpr = window.devicePixelRatio || 1;
@@ -170,15 +183,6 @@
   resize();
   window.addEventListener('resize', resize);
 
-  let params = { ants:80, food:3, decay:0.985, speed:1.5, viewAngle:45 };
-  let multiColony = false;
-
-  // ─── Pheromone grids ─────────────────────────────────────────
-  const CELL = 4; // pixels per pheromone cell
-  let GW, GH;
-  let pheHome, pheFood;   // colony A
-  let pheHomeB, pheFoodB; // colony B (only used in multi mode)
-
   function makeGrid() {
     GW = Math.ceil(W / CELL);
     GH = Math.ceil(H / CELL);
@@ -193,10 +197,6 @@
     if (gx < 0 || gy < 0 || gx >= GW || gy >= GH) return -1;
     return gy * GW + gx;
   }
-
-  // ─── Colony / food ───────────────────────────────────────────
-  let colony, colonyB, foods, ants;
-  let collectedFood = 0, collectedA = 0, collectedB = 0;
 
   function spawnFoods(n) {
     foods = [];
@@ -282,8 +282,8 @@
     if (ant.y > H - 2) { ant.y = H-2; ant.angle = -ant.angle; }
 
     // Deposit pheromone — each colony uses its own grids
-    const isB = ant.colony === 'B';
-    const depositGrid = ant.hasFood ? (isB ? pheFoodB : pheFood) : (isB ? pheHomeB : pheHome);
+    const isBcolony = ant.colony === 'B';
+    const depositGrid = ant.hasFood ? (isBcolony ? pheFoodB : pheFood) : (isBcolony ? pheHomeB : pheHome);
     const di = gIdx(ant.x, ant.y);
     if (di >= 0) depositGrid[di] = Math.min(depositGrid[di] + (ant.hasFood ? 4 : 2), 255);
 

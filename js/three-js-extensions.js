@@ -5,7 +5,7 @@ import {
     MathUtils, CylinderGeometry, BoxGeometry, ConeGeometry, Group, AxesHelper, GridHelper, Mesh, PlaneGeometry,
     MeshPhongMaterial, DoubleSide, Box3, MeshStandardMaterial, Quaternion, Matrix4, Curve, SphereGeometry, Line,
     InstancedMesh, InstancedBufferAttribute, BufferAttribute, LineBasicMaterial, TubeGeometry, MeshBasicMaterial,
-    CircleGeometry, Vector2, EdgesGeometry, LineSegments
+    CircleGeometry, Vector2, EdgesGeometry, LineSegments, TextureLoader, RepeatWrapping
 } from "three";
 
 export const ZeroVector = new Vector3();
@@ -2402,6 +2402,42 @@ export class CarbonMonoxide extends Group {
     }
 
     get mass() { return this._carbon.mass + this._oxygen.mass; }
+}
+
+export class Floor extends Mesh {
+    static Type = Object.freeze({
+        PAVING: "paving",
+        WOOD_WICKER: "Wood_Wicker_011"  // https://3dtextures.me/2024/06/22/wood-wicker-011/
+    });
+    constructor({type=Floor.Type.PAVING, positionY = 0} = {}) {
+        const planeGeometry = new PlaneGeometry(1000, 100);
+        const planeMaterial = new MeshStandardMaterial({
+            normalScale: new Vector2(3, 3),
+            roughness: 1,
+            //occlusionMap: textureAmbientOcclusion,
+            //alphaMap: textureOpacity,
+            //aoMap: textureAmbientOcclusion,
+            //aoMapIntensity: 0,
+        });
+        super(planeGeometry, planeMaterial);
+        this.receiveShadow = true;
+        this.rotation.x = -Math.PI / 2;
+        this.position.y = positionY;
+
+        const loader = new TextureLoader();
+        const imageType = type === Floor.Type.PAVING ? "jpg" : "png";
+        this.material.map = this._loadTexture(loader, './textures/' + type + '_color.' + imageType);
+        this.material.roughnessMap = this._loadTexture(loader, './textures/' + type + '_roughness.' + imageType);
+        this.material.normalMap = this._loadTexture(loader, './textures/' + type + '_normal.' + imageType);
+    }
+
+    _loadTexture(loader, url) {
+        const texture = loader.load(url);
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(100, 10);
+        return texture;
+    }
 }
 
 export class Aquarium extends Group {
