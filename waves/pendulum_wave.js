@@ -16,7 +16,7 @@ class Pendulum extends Group {
         this._theta = theta0;
         this._mass = mass;
         this._pivotY = pivotY;
-        this._inertia = mass * self._length ** 2
+        this._inertia = mass * this._length ** 2
 
         const ballGeometry = new SphereGeometry(0.1);
         const ballMaterial = new MeshStandardMaterial({
