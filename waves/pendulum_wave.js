@@ -78,7 +78,7 @@ controls.update();
 
 let paused = true;
 canvas.addEventListener("click", () => {
-    ThreeJsUtils.showOverlayMessage(overlay, paused ? "Paused" : "Started");
+    ThreeJsUtils.showOverlayMessage(overlay, paused ? "Started" : "Paused");
     paused = !paused;
 });
 
