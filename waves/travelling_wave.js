@@ -27,9 +27,22 @@ let colorSky = 0x0088ff;
 scene.background = new Color(colorSky);
 
 const light = new DirectionalLight(0xffffff, 5);
-light.position.set(0, 2, 8);
+light.position.set(2, 5, 2);
+// Adjust shadow camera settings
+light.shadow.camera.near = 0.5; // Default is 0.5
+light.shadow.camera.far = 50; // Default is 500
+light.shadow.camera.top = 20;
+light.shadow.camera.right = 20;
+light.shadow.camera.bottom = -20;
+light.shadow.camera.left = -20;
+light.castShadow = true;
+
+// Adjust shadow map settings
+light.shadow.mapSize.width = 2048; // Default is 512
+light.shadow.mapSize.height = 2048; // Default is 512
+
 scene.add(light);
-scene.add(new Floor({type: Floor.Type.WOOD_WICKER, positionY: -2}))
+scene.add(new Floor({type: Floor.Type.WOOD_WICKER, positionY: -1.5}))
 scene.fog = new Fog(colorSky, 1, 60);
 
 class String1D extends Group {
@@ -38,8 +51,8 @@ class String1D extends Group {
         length = 10,
         totalMass = 0.025,
         amplitude = 0.8,
-        omega = 45 } = {})
-    {
+        omega = 45
+    } = {}) {
         super();
         this._amplitude = amplitude;
         this._omega = omega;
@@ -63,7 +76,7 @@ class String1D extends Group {
 
         for (let i = 0; i < count; i++)
             this._balls.push(new Ball(this, {
-                radius: 0.035,
+                radius: 0.04,
                 color: "yellow",
                 mass: mass,
                 castShadow: true,
@@ -148,7 +161,6 @@ const string = new String1D({
     length: 12
 });
 scene.add(string);
-
 
 // ---- uPlot setup ----
 const MAX_POINTS = 500;
