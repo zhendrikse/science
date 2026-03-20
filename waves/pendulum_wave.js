@@ -1,4 +1,5 @@
-import * as THREE from 'three';
+import { Group, SphereGeometry, MeshStandardMaterial, CylinderGeometry, Mesh, Vector3, PerspectiveCamera,
+    WebGLRenderer, Color, Scene, DirectionalLight, AmbientLight, PCFShadowMap, Fog } from 'three';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { ThreeJsUtils, Floor } from "../js/three-js-extensions.js";
 
@@ -6,7 +7,7 @@ const g = 9.8; // gravitational constant
 const canvas = document.getElementById('pendulumCanvas');
 const overlay = document.getElementById('pendulumOverlay');
 
-class Pendulum extends THREE.Group {
+class Pendulum extends Group {
     constructor({T, position, color, theta0 = Math.PI / 6, mass = 1, pivotY=1} = {}) {
         super();
         this._xPosition = position;
@@ -16,22 +17,22 @@ class Pendulum extends THREE.Group {
         this._mass = mass;
         this._pivotY = pivotY;
 
-        const ballGeometry = new THREE.SphereGeometry(0.1);
-        const ballMaterial = new THREE.MeshStandardMaterial({
+        const ballGeometry = new SphereGeometry(0.1);
+        const ballMaterial = new MeshStandardMaterial({
             color: color,
             roughness: 0.2,
             metalness: 0.8
         });
-        this._ball = new THREE.Mesh(ballGeometry, ballMaterial);
+        this._ball = new Mesh(ballGeometry, ballMaterial);
         this._ball.castShadow = true;
 
-        const ropeGeometry = new THREE.CylinderGeometry(0.01, 0.01, this._length);
-        const ropeMaterial = new THREE.MeshStandardMaterial({
+        const ropeGeometry = new CylinderGeometry(0.01, 0.01, this._length);
+        const ropeMaterial = new MeshStandardMaterial({
             color: 0xeeeeee,
             roughness: 0,
             metalness: 0.2
         });
-        this._rope = new THREE.Mesh(ropeGeometry, ropeMaterial);
+        this._rope = new Mesh(ropeGeometry, ropeMaterial);
 
         this.add(this._ball, this._rope);
         this.updatePosition();
@@ -51,24 +52,24 @@ class Pendulum extends THREE.Group {
         const z = this._length * Math.sin(this._theta);
         this._ball.position.set(x, y, z);
 
-        const top = new THREE.Vector3(x, this._pivotY, 0); // rope attachment
-        const axis = new THREE.Vector3().subVectors(this._ball.position, top);
+        const top = new Vector3(x, this._pivotY, 0); // rope attachment
+        const axis = new Vector3().subVectors(this._ball.position, top);
 
         this._rope.scale.set(1, axis.length() / this._length, 1);
         this._rope.position.copy(top).add(axis.clone().multiplyScalar(0.5));
-        this._rope.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), axis.clone().normalize());
+        this._rope.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), axis.clone().normalize());
     }
 }
 
-const scene = new THREE.Scene();
+const scene = new Scene();
 let colorBack = 0x0088ff;
-scene.background = new THREE.Color(colorBack);
+scene.background = new Color(colorBack);
 scene.add(new Floor({positionY: -5}));
 
-const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+const camera = new PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
 camera.position.set(-5.5, -3.15, 1.8);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
+const renderer = new WebGLRenderer({ antialias: true, canvas: canvas });
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0.2, -3.3, -0.4);
@@ -80,9 +81,9 @@ canvas.addEventListener("click", () => {
     paused = !paused;
 });
 
-const light = new THREE.AmbientLight(0xffffff, 0.4);
+const light = new AmbientLight(0xffffff, 0.4);
 scene.add(light);
-const directionalLight = new THREE.DirectionalLight(0xffffff, 4);
+const directionalLight = new DirectionalLight(0xffffff, 4);
 directionalLight.position.set(2, 5, 2);
 
 // Adjust shadow camera settings
@@ -100,11 +101,11 @@ directionalLight.shadow.mapSize.height = 2048; // Default is 512
 
 // Set shadow map type
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFShadowMap;
+renderer.shadowMap.type = PCFShadowMap;
 
 scene.add(directionalLight);
 scene.add(new Floor());
-scene.fog = new THREE.Fog(colorBack, 1, 60);
+scene.fog = new Fog(colorBack, 1, 60);
 
 const pendulums = [];
 
@@ -121,7 +122,7 @@ for (let i = 0; i < total_balls; i++) {
     const T = Tpw / (N + i);
     const loc = width * (-0.5 + i / (total_balls - 1));
 
-    const color = new THREE.Color(); // Generate color from HSV using THREE.Color
+    const color = new Color();
     color.setHSL(i / (total_balls - 1), 1, 0.5); // HSV with full saturation and 50% lightness
     const pendulum = new Pendulum({
         T: T,
