@@ -16,6 +16,7 @@ class Pendulum extends Group {
         this._theta = theta0;
         this._mass = mass;
         this._pivotY = pivotY;
+        this._inertia = mass * self._length ** 2
 
         const ballGeometry = new SphereGeometry(0.1);
         const ballMaterial = new MeshStandardMaterial({
@@ -39,7 +40,7 @@ class Pendulum extends Group {
     }
 
     update(dt) {
-        const alpha = -(g / this._length) * Math.sin(this._theta);
+        const alpha = -this._mass * g * this._ball.position.z / this._inertia;
         this._omega += alpha * dt;
         this._theta += this._omega * dt;
 
