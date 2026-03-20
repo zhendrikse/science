@@ -8,16 +8,16 @@
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
 $$\begin{equation}
-\theta(t)=\theta_0 \cos \bigg( \sqrt{  \dfrac {g} {L}} t \bigg)\text{, where }L = \frac{g T^2}{4\pi^2}
+\theta(t)=\theta_0 \cos \bigg( \sqrt{  \frac {g} {L}} t \bigg)\text{, where }L = \frac{g T^2}{4\pi^2}
 \end{equation}$$
-
 
 <div class="canvasWrapper" id="poolWithMovingObstacleContainer">
     <canvas id="pendulumCanvas" class="applicationCanvas"></canvas>
     <div class="overlayText" id="pendulumOverlay">Click to start the animation!</div>
 </div>
+<script type="module" src="pendulum_wave.js"></script>
 
-⭐ Based on the VPython [PendulumWave](https://glowscript.org/#/user/yizhe/folder/Public/program/PendulumWave) and inspired by [www.dynamicmath.xyz](https://www.dynamicmath.xyz/)</br>
+⭐ Based on the VPython [PendulumWave](https://glowscript.org/#/user/yizhe/folder/Public/program/PendulumWave) and inspired by [www.dynamicmath.xyz](https://www.dynamicmath.xyz/)<br/>
 👉 Related to [Newton&apos;s cradle](https://www.hendrikse.name/science/kinematics/newtons_cradle.html) simulation<br/>
 
 ###  Why the pendulum wave re-synchronizes 🧠
