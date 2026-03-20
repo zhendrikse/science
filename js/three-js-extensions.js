@@ -1109,6 +1109,7 @@ export class Sphere {
         scale = 1,
         segments = 24,
         opacity = 1,
+        castShadow = false,
         wireframe = false
     } = {}) {
         const material = new MeshStandardMaterial({
@@ -1116,15 +1117,15 @@ export class Sphere {
             opacity: opacity,
             transparent: true,
             wireframe: wireframe,
-            metalness: 0.7,
             visible: visible,
-            roughness: 0.2
+            roughness: 0.2,
+            metalness: 0.8
         })
 
         this._mesh = new Mesh(new SphereGeometry(radius * scale, segments, segments), material);
         this._mesh.position.copy(position.clone().multiplyScalar(scale));
         this._mesh.visible = visible;
-        this._mesh.castShadow = true;
+        this._mesh.castShadow = castShadow;
         this._radius = radius;
         this._position = position;
         this._scale = scale;
@@ -1386,10 +1387,11 @@ export class Ball {
         visible = true,
         makeTrail = false,
         elasticity = 1.0,
+        castShadow = false,
         segments = 24 } = {}) {
         this._sphere = new Sphere(parent,
             {
-                position, radius, color, makeTrail, visible, scale, segments, opacity, wireframe
+                position, radius, color, makeTrail, visible, scale, segments, opacity, wireframe, castShadow
             });
         this._state = new Body(position, velocity, mass);
         this._radius = radius;

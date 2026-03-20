@@ -62,8 +62,8 @@ class Pendulum extends Group {
 }
 
 const scene = new Scene();
-let colorBack = 0x0088ff;
-scene.background = new Color(colorBack);
+let colorSky = 0x0088ff;
+scene.background = new Color(colorSky);
 scene.add(new Floor({positionY: -5}));
 
 const camera = new PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
@@ -105,7 +105,7 @@ renderer.shadowMap.type = PCFShadowMap;
 
 scene.add(directionalLight);
 scene.add(new Floor());
-scene.fog = new Fog(colorBack, 1, 60);
+scene.fog = new Fog(colorSky, 1, 60);
 
 const pendulums = [];
 

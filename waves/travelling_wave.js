@@ -1,10 +1,10 @@
 import {
-    Scene, Color, Vector3, PerspectiveCamera, Group,
-    WebGLRenderer, DirectionalLight, AmbientLight
+    Scene, Color, Vector3, PerspectiveCamera, Group, Fog,
+    WebGLRenderer, DirectionalLight, AmbientLight, PCFShadowMap
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import {Ball, Bond, ThreeJsUtils} from "../js/three-js-extensions.js";
+import {Ball, Bond, ThreeJsUtils, Floor} from "../js/three-js-extensions.js";
 
 console.clear();
 const canvas = document.getElementById("travellingWaveCanvas");
@@ -15,16 +15,22 @@ const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeigh
 camera.position.copy(new Vector3(-5, 2, 8).multiplyScalar(0.8));
 
 const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = PCFShadowMap;
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
 scene.add(new AmbientLight(0xffffff, 1));
+let colorSky = 0x0088ff;
+scene.background = new Color(colorSky);
 
 const light = new DirectionalLight(0xffffff, 5);
 light.position.set(0, 2, 8);
 scene.add(light);
+scene.add(new Floor({type: Floor.Type.WOOD_WICKER, positionY: -2}))
+scene.fog = new Fog(colorSky, 1, 60);
 
 class String1D extends Group {
     constructor({
@@ -58,8 +64,9 @@ class String1D extends Group {
         for (let i = 0; i < count; i++)
             this._balls.push(new Ball(this, {
                 radius: 0.035,
-                color: new Color(0xffcc11),
+                color: "yellow",
                 mass: mass,
+                castShadow: true,
                 position: new Vector3(left + i * dx, 0, 0)
             }));
     }
@@ -72,8 +79,8 @@ class String1D extends Group {
                 this._balls[i + 1],
                 {
                     k_bond: 1.64 * (count - 1),
-                    radius: 0.02,
-                    color: "red",
+                    radius: 0.025,
+                    color: "green",
                     type: Bond.Type.CYLINDER
                 })
             );
@@ -141,6 +148,7 @@ const string = new String1D({
     length: 12
 });
 scene.add(string);
+
 
 // ---- uPlot setup ----
 const MAX_POINTS = 500;

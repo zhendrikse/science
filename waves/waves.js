@@ -4,7 +4,7 @@ import {
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import {Ball, Bond, ThreeJsUtils} from "../js/three-js-extensions.js";
+import {Ball, Spring, ThreeJsUtils} from "../js/three-js-extensions.js";
 
 class TransverseWave extends Group {
     constructor({
