@@ -195,7 +195,7 @@ const uplotOpts = {
 };
 const uplotChart = new uPlot(uplotOpts, uplotData, document.getElementById("waveChart"));
 
-let paused = false;
+let paused = true;
 canvas.addEventListener("click", () => {
     if (paused)
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
