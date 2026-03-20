@@ -156,12 +156,12 @@ const opts = {
 };
 
 const positionData = [
-    [], // time
-    [], // ball 1
-    [], // ball 2
-    [], // ball 3
-    [], // ball 4
-    [] // ball 5
+    [0], // time
+    [oscillator._masses[0].position.x], // ball 1
+    [oscillator._masses[1].position.x], // ball 2
+    [oscillator._masses[2].position.x], // ball 3
+    [oscillator._masses[3].position.x], // ball 4
+    [oscillator._masses[4].position.x]  // ball 5
 ];
 
 const uplotChart = new uPlot(opts, positionData, document.getElementById("oscillatorPlot"));
