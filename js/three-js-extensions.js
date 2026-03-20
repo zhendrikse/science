@@ -1469,7 +1469,8 @@ export class Spring {
         radialSegments = 12,
         radius = 0.5,
         thickness = 0.075,
-        visible = true
+        visible = true,
+        castShadow = false
     } = {}) {
         this._longitudinalOscillation = longitudinalOscillation;
         this._radius = radius;
@@ -1487,9 +1488,10 @@ export class Spring {
             color: color,
             visible: visible,
             metalness: 0.3,
-            roughness: 0.4
+            roughness: 0.4,
         });
         this._mesh = new Mesh(this._geometry, material);
+        this._mesh.castShadow = castShadow;
         parent.add(this._mesh);
     }
 

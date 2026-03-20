@@ -1,23 +1,44 @@
-import { Group, Vector3, Scene, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight } from "three";
-import { Spring, Ball } from '../js/three-js-extensions.js';
+import { Group, Vector3, Scene, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight,
+    PCFShadowMap, Fog, Color } from "three";
+import {Spring, Ball, Floor, ThreeJsUtils} from '../js/three-js-extensions.js';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 // --- Scene setup ---
-const canvas = document.getElementById("myCanvas");
+const canvas = document.getElementById("oscillatorCanvas");
+const overlay = document.getElementById("oscillatorOverlayText");
+
 const scene = new Scene();
+const colorSky = 0x0088ff;
+scene.background = new Color(colorSky);
 
 const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
 camera.position.set(17, 5, 17);
 
 const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-renderer.setAnimationLoop(animationLoop);
-
-const dirLight = new DirectionalLight(0xffffff, 0.8);
-dirLight.position.set(0, 15, 45);
-scene.add(dirLight);
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = PCFShadowMap;
+
+const directionalLight = new DirectionalLight(0xffffff, 2);
+directionalLight.position.set(0, 3, 0);
+scene.add(directionalLight);
+
+// Adjust shadow camera settings
+directionalLight.shadow.camera.near = 0.5; // Default is 0.5
+directionalLight.shadow.camera.far = 50; // Default is 500
+directionalLight.shadow.camera.top = 20;
+directionalLight.shadow.camera.right = 20;
+directionalLight.shadow.camera.bottom = -20;
+directionalLight.shadow.camera.left = -20;
+directionalLight.castShadow = true;
+
+// Adjust shadow map settings
+directionalLight.shadow.mapSize.width = 2048; // Default is 512
+directionalLight.shadow.mapSize.height = 2048; // Default is 512
+
 scene.add(new AmbientLight(0xffffff, 0.8));
+scene.add(new Floor({type: Floor.Type.WOOD_WICKER}));
+scene.fog = new Fog(colorSky, 1, 60);
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
@@ -37,14 +58,15 @@ export class HarmonicOscillator extends Group {
         return this;
     }
 
-    withSpringBetween(i, j, k, springColor = 0xface8d) {
+    withSpringBetween(i, j, k, springColor = 0xffff4d) {
         const p1 = this._masses[i].position;
         const p2 = this._masses[j].position;
 
         const axis = p2.clone().sub(p1);
         const spring = new Spring(this, p1.clone(), axis, {
             k: k,
-            color: springColor
+            color: springColor,
+            castShadow: true
         });
         this._springs.push({ spring, i, j });
 
@@ -82,13 +104,19 @@ export class HarmonicOscillator extends Group {
     }
 }
 
+let paused = true;
+canvas.addEventListener("click", () => {
+    ThreeJsUtils.showOverlayMessage(overlay, paused ? "Started" : "Paused");
+    paused = !paused;
+});
+
 const oscillator = new HarmonicOscillator({ damping: 0.05 });
 oscillator
-    .withMassAt(new Vector3(-30, 2, 10), { mass: 1, color: 0xff0000 })
-    .withMassAt(new Vector3(-20, 2, 10), { mass: 1, color: 0x3333ff })
-    .withMassAt(new Vector3(-10, 2, 10), { mass: 1, color: 0x3333ff })
-    .withMassAt(new Vector3(0, 2, 10), { mass: 1, color: 0x3333ff })
-    .withMassAt(new Vector3(10, 2, 10), { mass: 1, color: 0xff0000 })
+    .withMassAt(new Vector3(-30, 2, 10), { mass: 1, color: 0xff0000, castShadow: true })
+    .withMassAt(new Vector3(-20, 2, 10), { mass: 1, color: 0x3333ff, castShadow: true })
+    .withMassAt(new Vector3(-10, 2, 10), { mass: 1, color: 0x3333ff, castShadow: true })
+    .withMassAt(new Vector3(0, 2, 10), { mass: 1, color: 0x3333ff, castShadow: true })
+    .withMassAt(new Vector3(10, 2, 10), { mass: 1, color: 0xff0000, castShadow: true })
     .withSpringBetween(0, 1, 50)
     .withSpringBetween(1, 2, 50)
     .withSpringBetween(2, 3, 50)
@@ -140,8 +168,13 @@ const uplotChart = new uPlot(opts, positionData, document.getElementById("oscill
 
 const maxPoints = 500;
 const dt = 0.005;
-function animationLoop(time) {
-    for (let i = 0; i < 3; ++i) {
+renderer.setAnimationLoop(time => {
+    controls.update();
+    renderer.render(scene, camera);
+
+    if (paused) return;
+
+    for (let subStep = 0; subStep < 3; subStep++) {
         oscillator.update(dt);
 
         positionData[0].push(time * 0.001);
@@ -152,11 +185,8 @@ function animationLoop(time) {
         positionData[5].push(oscillator._masses[4].position.x);
     }
 
-    controls.update();
-    renderer.render(scene, camera);
-
     if (positionData[0].length > maxPoints)
         positionData.forEach(arr => arr.shift());
     uplotChart.setData(positionData);
-}
+});
 

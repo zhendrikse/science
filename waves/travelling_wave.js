@@ -23,7 +23,7 @@ const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
 scene.add(new AmbientLight(0xffffff, 1));
-let colorSky = 0x0088ff;
+const colorSky = 0x0088ff;
 scene.background = new Color(colorSky);
 
 const light = new DirectionalLight(0xffffff, 5);

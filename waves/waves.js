@@ -1,10 +1,23 @@
-import {
-    Scene, Color, Vector3, PerspectiveCamera, Group,
-    WebGLRenderer, DirectionalLight, AmbientLight
-} from "three";
-
+import { Group, SphereGeometry, MeshStandardMaterial, CylinderGeometry, Mesh, Vector3, PerspectiveCamera,
+    WebGLRenderer, Color, Scene, DirectionalLight, AmbientLight, PCFShadowMap, Fog } from 'three';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import {Ball, Spring, ThreeJsUtils} from "../js/three-js-extensions.js";
+import { ThreeJsUtils, Ball, Spring } from "../js/three-js-extensions.js";
+
+console.clear();
+const canvas = document.getElementById("wavesCanvas");
+const overlay = document.getElementById("wavesOverlayText");
+const scene = new Scene();
+
+const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+camera.position.copy(new Vector3(-5, 2, 8).multiplyScalar(0.8));
+
+const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = PCFShadowMap;
+ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
 
 class TransverseWave extends Group {
     constructor({
@@ -122,26 +135,21 @@ class LongitudinalWave extends Group {
             if (phase <= (time - t0)) {
                 const dx = this.amplitude * Math.sin(omega * (time - phase));
 
-                for (const bead of row) {
+                for (const bead of row)
                     bead.moveTo(new Vector3(x0 + dx, bead.position.y, 0));
-                }
             }
         }
     }
 
     reset() {
-        for (let i = 0; i < this._beads.length; i++) {
+        for (let i = 0; i < this._beads.length; i++)
             for (let j = 0; j < this._beads[i].length; j++) {
                 const bead = this._beads[i][j];
                 bead.moveTo(new Vector3(i * 0.2, j * 0.15 + 1, 0));
             }
-        }
     }
 }
 
-let t = 0;
-let t0 = 0;
-let running = true;
 
 const transverse = new TransverseWave();
 const longitudinal = new LongitudinalWave();
@@ -149,11 +157,24 @@ const longitudinal = new LongitudinalWave();
 scene.add(transverse);
 scene.add(longitudinal);
 
+let paused = true;
+canvas.addEventListener("click", () => {
+    ThreeJsUtils.showOverlayMessage(overlay, paused ? "Started" : "Paused");
+    paused = !paused;
+});
+
+let t = 0;
+let t0 = 0;
 renderer.setAnimationLoop((time) => {
     controls.update();
     renderer.render(scene, camera);
 
-    if (!running) return;
+    if (paused) return;
+
+    // console.log("camera.position:", camera.position);
+    // console.log("controls.target:", controls.target);
+    // camera.position: Vector3 { x: -6.12, y: 3.45, z: 8.91 }
+    // controls.target: Vector3 { x: 0.2, y: 1.1, z: -2.3 }
 
     const dt = 0.01;
 
