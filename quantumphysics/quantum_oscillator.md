@@ -1,10 +1,13 @@
 {% include breadcrumbs.html %}
 
-## Quantum Harmonic Oscillator
+# Harmonic oscillator
 <div class="header_line"><br/></div>
 
-> It’s not terribly difficult to apply a similar approach of the 
-> [simulation of the infinite square well](./infinite_square_well.html) 
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+
+> It’s not terribly difficult to apply a similar approach of the
+> [simulation of the infinite square well](./infinite_square_well.html)
 > to the simple harmonic oscillator (SHO). What’s the same? There are still energy
 > eigenstates (stationary states) that have definite energy (frequency). You can still form
 > superpositions of these stationary states to produce more general states that “slosh” in
@@ -12,13 +15,19 @@
 > in various situations. What’s different? Well, the potential energy function is pretty different,
 > rather than a piecewise constant potential like the infinite square well, or the finite square
 > well, the SHO potential is $V (x) = \frac{1}{2}m\omega^2 x^2$.
-> This results in quantitatively different eigenstate energies 
+> This results in quantitatively different eigenstate energies
 > and wavefunctions. &mdash; [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)
 
 <p style="clear: both;"></p>
 
+📌 **Highly recommended background information**: [Simulating quantum mechanics with Python](https://ben.land/post/2022/03/09/quantum-mechanics-simulation/)<br/>
+
+## Quantum Harmonic Oscillator
+<div class="header_line"><br/></div>
+
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=infinite_squarewell_3d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_squarewell_3d.js)&nbsp;&nbsp;
+
 ⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-📌 Ported to JavaScript and [Three.js](https://threejs.org/) in [infinite_squarewell_3d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_squarewell_3d.js)<br/>
 
 <div class="canvasWrapper" id="shoContainer">
     <canvas id="shoCanvas" class="applicationCanvas"></canvas>
@@ -33,7 +42,8 @@
 ## Additional two-dimensional simulation
 <div class="header_line"><br/></div>
 
-🔧 This [quantum_harmonic_osc_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/quantum_harmonic_osc_2d.js) is 100% JavaScript<br/>
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=quantum_harmonic_osc_2d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/quantum_harmonic_osc_2d.js)&nbsp;&nbsp;
+
 👉 Based on [HarmonicOscillator.html](https://physics.weber.edu/schroeder/software/HarmonicOscillator.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
 🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)

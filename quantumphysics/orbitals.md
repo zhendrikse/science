@@ -3,6 +3,12 @@
 ## Hydrogen orbitals ⚛︎
 <div class="header_line"><br/></div>
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=orbitals.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/orbitals.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+
+📌 **Recommended background information**: [LibreTexts Chemistry](https://chem.libretexts.org/Bookshelves/General_Chemistry/Map%3A_General_Chemistry_(Petrucci_et_al.)/08%3A_Electrons_in_Atoms)<br/>
+
 ### What are you looking at?
 
 This is a **3D visualization of atomic orbitals**: mathematical shapes arising from the solutions of 
@@ -11,7 +17,6 @@ the Schrödinger equation for a hydrogen-like atom.
 Each surface represents a region of constant probability density. Colors show the **sign (phase)** of the 
 wavefunction, and transparency reveals its **relative magnitude**.
 
-🔧 Written with [Three.js](https://threejs.org/), see [orbitals.js](https://github.com/zhendrikse/science/blob/main/molecularphysics/orbitals.js)<br/>
 👉 Use the controls to explore how orbital shape and symmetry change.
 
 <div class="canvasWrapper" id="orbitalsContainer">

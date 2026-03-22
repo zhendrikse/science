@@ -3,11 +3,14 @@
 ## A 2D square well visualized in 3D
 <div class="header_line"><br/></div>
 
-⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-📌 Ported to from [VPython](https://vpython.org/) to JavaScript and [Three.js](https://threejs.org/)<br/> 
-🔧 Source code in [2d_infinite_square_well_3d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/2d_infinite_square_well_3d.js)<br/>
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=2d_infinite_square_well_3d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/2d_infinite_square_well_3d.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
-👉 vertical cylinders represent the complex value of the wavefunctio <br/>
+⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
+📌 **Highly recommended background information**: [Visualizing complex numbers and wavefunctions in one and two dimensions](https://ben.land/post/2022/03/17/complex-wavefunction-visualization/)<br/>
+
+👉 vertical cylinders represent the complex value of the wave function<br/>
 👉 height $\propto$ to the real part of the wavefunction <br/>
 👉 radius $\propto$ to the imaginary part <br/>
 👉 the color represents the value of the phase factor <br/>

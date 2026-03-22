@@ -3,6 +3,11 @@
 # Atomic orbital scatter plots
 <div class="header_line"><br/></div>
 
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+
+📌 **Recommended background information**: [LibreTexts Chemistry](https://chem.libretexts.org/Bookshelves/General_Chemistry/Map%3A_General_Chemistry_(Petrucci_et_al.)/08%3A_Electrons_in_Atoms)<br/>
+
 - 2s orbital: $\psi_{2s} \propto (2-r)e^{-r/2} \Rightarrow \|\psi\|^2 \propto (2-r)^2 e^{-r}$
 - 2p orbital: $\psi_{2p} \propto r e^{-r/2} \cos\theta \Rightarrow \|\psi\|^2 \propto r^2 e^{-r} \cos^2\theta$
 - 2py orbital: $\|\psi\|^2 \propto r^2 e^{-r} \sin^2\theta \sin^2\phi$
@@ -13,6 +18,8 @@
 
 ## 2D scatter plots
 <div class="header_line"><br/></div>
+
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=orbital_scatter_plot_2d.js)](https://github.com/zhendrikse/science/blob/main/molecularphysics/orbital_scatter_plot_2d.js)&nbsp;&nbsp;
 
 <div class="buttonRow">
     <button id="1s">&nbsp;1s&nbsp;</button>
@@ -37,6 +44,8 @@
 
 ## 3D scatter plots
 <div class="header_line"><br/></div>
+
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=orbital_scatter_plot_3d.js)](https://github.com/zhendrikse/science/blob/main/molecularphysics/orbital_scatter_plot_3d.js)&nbsp;&nbsp;
 
 The 3D-version uses **Monte-Carlo sampling + rejection sampling** based on the probability density $|\psi|^2$,
 so per orbital a radial distribution and angular weight is generated.

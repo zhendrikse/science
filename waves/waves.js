@@ -1,5 +1,5 @@
-import { Group, SphereGeometry, MeshStandardMaterial, CylinderGeometry, Mesh, Vector3, PerspectiveCamera,
-    WebGLRenderer, Color, Scene, DirectionalLight, AmbientLight, PCFShadowMap, Fog } from 'three';
+import { Group, SphereGeometry, MeshStandardMaterial, CylinderGeometry, Mesh, Vector3, OrthographicCamera,
+    WebGLRenderer, Color, Scene, DirectionalLight, AmbientLight } from 'three';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { ThreeJsUtils, Ball, Spring } from "../js/three-js-extensions.js";
 
@@ -8,16 +8,45 @@ const canvas = document.getElementById("wavesCanvas");
 const overlay = document.getElementById("wavesOverlayText");
 const scene = new Scene();
 
-const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-camera.position.copy(new Vector3(-5, 2, 8).multiplyScalar(0.8));
+const aspect = canvas.clientWidth / canvas.clientHeight;
+const viewSize = 5; // bepaalt hoe “ingezoomd” je bent
+
+const camera = new OrthographicCamera(
+    -viewSize * aspect,
+    viewSize * aspect,
+    viewSize,
+    -viewSize,
+    0.1,
+    100
+);
+
+// recht van voren kijken (echte 2D projectie)
+camera.position.set(0, 0, 10);
+camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = PCFShadowMap;
-ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+function updateOrthoCamera() {
+    const aspect = canvas.clientWidth / canvas.clientHeight;
+    const viewSize = 5;
+
+    camera.left = -viewSize * aspect;
+    camera.right = viewSize * aspect;
+    camera.top = viewSize;
+    camera.bottom = -viewSize;
+
+    camera.updateProjectionMatrix();
+}
+updateOrthoCamera();
 
 const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
+controls.enableRotate = false;   // geen draaien
+controls.enablePan = true;       // wel schuiven
+controls.enableZoom = true;      // zoomen blijft fijn
+
+const light = new DirectionalLight(0xffffff, 1);
+light.position.set(0, 0, 10); //
+scene.add(light);
+scene.add(new AmbientLight(0xffffff, 0.6));
 
 class TransverseWave extends Group {
     constructor({

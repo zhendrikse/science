@@ -1,8 +1,17 @@
 {% include breadcrumbs.html %}
 
+# Double slit experiment
+<div class="header_line"><br/></div>
+
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+
+📌 **Highly recommended background information**: [Simulating and visualizing the double slit experiment with Python](https://ben.land/post/2026/01/31/double-slit-simulation/)<br/>
 
 ### Wave-particle duality
 <div class="header_line"><br/></div>
+
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=double_slit.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/double_slit.js)&nbsp;&nbsp;
 
 In this visualization, the interference pattern is generated "statically", i.e. by calculating
 the path difference between the beams originating from each source and setting the (pixel) color 
@@ -12,7 +21,6 @@ The two slits are represented by the two cylinders that also now firing particle
 in the simulation, so that the difference in the behavior of particles and waves can be clearly seen.
 
 🔧 [Original VPython version](https://www.glowscript.org/#/user/wlane/folder/Modern-Physics/program/Double-Slit) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
-🔧 Refactored and ported to [double_slit.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/double_slit.js) <br/>
 👉 See also [his accompanying video](https://www.youtube.com/watch?v=Zjmg6n7Wc8I)<br/>
 👉 [VPython](https://vpython.org/) version available as [double_slit.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/double_slit.py)
 
@@ -30,9 +38,9 @@ in the simulation, so that the difference in the behavior of particles and waves
 
 The intensity is given by:
 
-$$
+$$\begin{equation}
 I = \cos^2\left(\frac{\pi , \Delta r}{\lambda}\right)
-$$
+\end{equation}$$
 
 This is easily translated in code as follows:
 
@@ -50,11 +58,11 @@ const brightness = Math.pow(Math.cos(Math.PI * pathDiff / this._wavelength), 2) 
 ## Additional two-dimensional simulation
 <div class="header_line"><br/></div>
 
-🔧 This [double_slit_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/double_slit_2d.js) is 100% JavaScript<br/>
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=double_slit_2d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/double_slit_2d.js)&nbsp;&nbsp;
+
 ⭐ Based on [QuantumScattering2D.html](https://physics.weber.edu/schroeder/software/QuantumScattering2D.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
 🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 ⭐ More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
-
 
 <style>
     #simContainer {

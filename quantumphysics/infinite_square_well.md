@@ -1,22 +1,29 @@
 {% include breadcrumbs.html %}
 
-## A one-dimensional particle in a box
+# Particle in a box
 <div class="header_line"><br/></div>
+
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
 > The Infinite Square Well (ISW) is an idealization of a physical system that strictly prohibits
 > the particle from straying beyond a certain range of x-values, but exerts no influence over
 > the particle within those limits. So the particle is “free” to roam, but only over a prescribed
-> range on the x-axis. &mdash; [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247) 
+> range on the x-axis. &mdash; [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)
 
 <p style="clear: both;"></p>
 
-⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-📌 Ported to JavaScript and [Three.js](https://threejs.org/) in [infinite_square_well_3d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_square_well_3d.js)<br/>
-📌 A [VPython](https://www.vpython.org/) version is also available as [infinite_squarewell.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/infinite_squarewell.py)
-
+📌 **Highly recommended background information**: [Simulating quantum mechanics with Python](https://ben.land/post/2022/03/09/quantum-mechanics-simulation/)<br/>
 👉 Note that the energy of the eigenstates go like $n^2$. For example, we observe that the $n = 2$
 state has four times the energy, and therefore four times the frequency of the ground state $n = 1$.
 
+## A one-dimensional particle in a box
+<div class="header_line"><br/></div>
+
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=infinite_square_well_3d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_square_well_3d.js)&nbsp;&nbsp;
+
+⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
+👉 A [VPython](https://www.vpython.org/) version is also available as [infinite_squarewell.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/infinite_squarewell.py)
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
@@ -54,7 +61,8 @@ $$\begin{equation}
 ## Additional two-dimensional simulation
 <div class="header_line"><br/></div>
 
-🔧 This [infinite_square_well_2d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_square_well_2d.js) is 100% JavaScript<br/>
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=infinite_square_well_2d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/infinite_square_well_2d.js)&nbsp;&nbsp;
+
 👉 Based on [SquareWell.html](https://physics.weber.edu/schroeder/software/SquareWell.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
 🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
