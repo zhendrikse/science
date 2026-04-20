@@ -458,7 +458,7 @@ export class Sun extends CelestialBody {
         return new ShaderMaterial({
             uniforms: {
                 glowColor: { value: new Color(glowColor) },
-                coeficient: { value: coef },
+                coefficient: { value: coef },
                 power: { value: power }
             },
             vertexShader: `
@@ -473,7 +473,7 @@ export class Sun extends CelestialBody {
         `,
             fragmentShader: `
             uniform vec3 glowColor;
-            uniform float coeficient;
+            uniform float coefficient;
             uniform float power;
             varying vec3 vVertexNormal;
             varying vec3 vVertexWorldPosition;
@@ -481,7 +481,7 @@ export class Sun extends CelestialBody {
                 vec3 worldCameraToVertex = vVertexWorldPosition - cameraPosition;
                 vec3 viewCameraToVertex = (viewMatrix * vec4(worldCameraToVertex, 0.0)).xyz;
                 viewCameraToVertex = normalize(viewCameraToVertex);
-                float intensity = pow(coeficient + dot(vVertexNormal, viewCameraToVertex), power);
+                float intensity = pow(coefficient + dot(vVertexNormal, viewCameraToVertex), power);
                 intensity = clamp(intensity, 0.0, 0.5); // maximaal 0.5 voor subtiele halo
                 gl_FragColor = vec4(glowColor, intensity);
             }
