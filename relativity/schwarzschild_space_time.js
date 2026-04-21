@@ -16,7 +16,7 @@ scene.add(new AmbientLight(0xffffff));
 
 const camera = new PerspectiveCamera(
     60,
-    canvas.clientWidth / canvas.clientHeight,
+    canvas.width / canvas.height,
     0.1,
     1000
 );
