@@ -20,7 +20,7 @@
     <label for="massSlider">Mass:&nbsp;</label>
     <input type="range" id="massSlider" style="width: 55%;" min="0.001" max="0.1" step="0.001" value="0.025" />
 </div-->
-<script type="module" src="./black_hole_space_time.js"></script>
+<script type="module" src="./schwarzschild_space_time.js"></script>
 <p style="clear: both;"></p>
 
 
