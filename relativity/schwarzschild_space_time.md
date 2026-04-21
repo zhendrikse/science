@@ -10,7 +10,7 @@
 ⭐ Original [idea and code](https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram) by M. Ryston (Department of Physics Education)<br/>
 👉 Described in [Interactive animations as a tool in teaching general relativity [...]](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049)
 
-<div class="canvasWrapper" id="spaceTimeCanvasWrapper">
+<div class="canvasWrapper" id="spaceTimeCanvasWrapper"  style="aspect-ratio: 3/2">
     <canvas id="spaceTimeCanvas" style="aspect-ratio: 3/2"></canvas>
     <div class="overlayText" id="spaceTimeOverlayText">Click to start the animation!</div>
 </div>
