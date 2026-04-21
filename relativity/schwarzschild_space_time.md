@@ -12,7 +12,9 @@
 
 <div class="canvasWrapper" id="spaceTimeCanvasWrapper"  style="aspect-ratio: 3/2">
   <canvas id="spaceTimeCanvas" class="applicationCanvas" style="aspect-ratio: 3/2"></canvas>
-  <div class="overlayText" id="spaceTimeOverlayText">Click to start the animation!</div>
+  <div class="overlayText" id="spaceTimeOverlayText">
+    <span style="color: white">Click to start the animation!</span>
+</div>
 </div>
 
 <div class="buttonRow">
