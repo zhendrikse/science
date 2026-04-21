@@ -7,7 +7,6 @@ import { SkyDome, Sun } from '../js/astro-extensions.js';
 import { Ball, ThreeJsUtils } from "../js/three-js-extensions.js"
 
 const yOffset = -10;
-let running = false;
 
 const canvas = document.getElementById("spaceTimeCanvas");
 const overlay = document.getElementById("spaceTimeOverlayText");
@@ -115,6 +114,7 @@ class Comet extends Ball {
     }
 
     get r() { return Math.sqrt(this.position.x * this.position.x + this.position.z * this.position.z); }
+    get isMoving() { return this._isMoving; }
 
     start() { this._isMoving = true; }
     stop() { this._isMoving = false; }
@@ -334,17 +334,16 @@ const realComet = new RealComet(scene, {
 window.addEventListener('resize', () => {
     ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 });
-document.getElementById('gridButton').addEventListener('click', () => grid.visible = !grid.visible );
-document.getElementById('coneButton').addEventListener('click', () => surface.visible = !surface.visible );
+document.getElementById('gridButton').addEventListener('click', (e) => grid.visible = !grid.visible );
+document.getElementById('coneButton').addEventListener('click', (e) => surface.visible = !surface.visible );
 window.addEventListener("click", () => {
-    if (running) {
-        running = false;
+    if (comet.isMoving) {
+        realComet.stop();
+        comet.stop();
         realComet.reset(Number(distanceSlider.value));
         comet.reset(Number(distanceSlider.value));
         flatComet.reset(Number(distanceSlider.value));
-        ThreeJsUtils.showOverlayMessage(overlay, "Reset");
     } else {
-        running = true;
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
         realComet.start();
         comet.start();
