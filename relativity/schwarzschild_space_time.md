@@ -3,9 +3,26 @@
 ## A comet moving in Schwarzschild space-time
 <div class="header_line"><br/></div>
 
-{% include_relative code/schwarzschild_space_time.html %}
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=schwarzschild_space_time.js)](https://github.com/zhendrikse/science/blob/main/relativity/schwarzschild_space_time.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
+⭐ Original [idea and code](https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram) by M. Ryston (Department of Physics Education)<br/>
+👉 Described in [Interactive animations as a tool in teaching general relativity [...]](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049)
+
+- <span style="color: cyan">cyan</span> → geodetic motion on embedding surface
+- <span style="color: red">cyan</span> → flat motion (Newtonian projected trail)
+- <span style="color: orange">orange</span> → real motion (4D geodesic in Schwarzschild coordinates)
+
+
+<canvas id="spaceTimeCanvas" class="applicationCanvas" style="aspect-ratio: 3/2"></canvas>
+<!--div class="buttonRow">
+    <label for="massSlider">Mass:&nbsp;</label>
+    <input type="range" id="massSlider" style="width: 55%;" min="0.001" max="0.1" step="0.001" value="0.025" />
+</div-->
+<script type="module" src="./black_hole_space_time.js"></script>
 <p style="clear: both;"></p>
+
 
 ### Visualization explained
 <div style="border-top: 1px solid #999999"><br/></div>
@@ -103,16 +120,15 @@ Now, according to [Ryston&apos;s article](https://iopscience.iop.org/article/10.
 
 This is the quintessential formula that is used in this visualization:
 
-```python
-class SchwarzschildSpaceTime:
-    def __init__(self, mass, grid_y_offset=-10):
-        self._mass = mass
-        # ...
-    
-    # ...
+```js
+class SchwarzschildSurface extends Group {
+    static zAsFunctionOf = (r, M) => Math.sqrt(Math.max(0, 8 * M * r - 16 * M * M));
 
-    def z_as_function_of(self, r):
-        return sqrt(8 * self._mass * r - 16 * self._mass * self._mass)
+    constructor(M) {
+        super();
+        this._mass = M;
 
-
+        // Code
+    }
+}
 ```

@@ -1,5 +1,9 @@
 {% include breadcrumbs.html %}
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=perihelion_mercury.js)](https://github.com/zhendrikse/science/blob/main/relativity/perihelion_mercury.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+
 > It is an entirely wonderful thing, that from one so abstract an idea comes
 out such a conclusive clarification of the Mercury anomaly. &mdash; 
 [Letter from K Schwarzschild to A Einstein](https://etienneklein.fr/wp-content/uploads/2016/01/Relativit%C3%A9-g%C3%A9n%C3%A9rale.pdf),
@@ -33,7 +37,6 @@ the checkboxes.
 <script type="module" src="perihelion_mercury.js"></script>
 <p style="clear: both;"></p>
 
-🔧 [perihelion_mercury.js](https://github.com/zhendrikse/science/blob/main/relativity/perihelion_mercury.js) refactored and ported to JavaScript by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 👉 Based on [base_solution.py](https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py) by [Christopher Körber](https://github.com/ckoerber)<br/>
 👉 See also his [accompanying slides](https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf) and [article on arXiv](https://arxiv.org/abs/1803.01678)<br/>
 🔑 Values are computed using the [NASA fact sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet)

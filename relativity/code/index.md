@@ -7,6 +7,5 @@
 - [`inertial_observers.py` source code](inertial_observers.py)
 - [`length_contraction.py` source code](length_contraction.py)
 - [`local_space_time.py` source code](local_space_time.py)
-- [`schwarzschild_space_time.py` source code](schwarzschild_space_time.py)
 
 
