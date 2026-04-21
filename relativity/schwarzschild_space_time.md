@@ -10,19 +10,32 @@
 ⭐ Original [idea and code](https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram) by M. Ryston (Department of Physics Education)<br/>
 👉 Described in [Interactive animations as a tool in teaching general relativity [...]](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049)
 
-- <span style="color: cyan">cyan</span> → geodetic motion on embedding surface
-- <span style="color: red">cyan</span> → flat motion (Newtonian projected trail)
-- <span style="color: orange">orange</span> → real motion (4D geodesic in Schwarzschild coordinates)
+<div class="canvasWrapper" id="spaceTimeCanvasWrapper">
+    <canvas id="spaceTimeCanvas" style="aspect-ratio: 3/2"></canvas>
+    <div class="overlayText" id="spaceTimeOverlayText">Click to start the animation!</div>
+</div>
 
+<div class="buttonRow">
+    <label for="gridButton">Grid: </label><input type="checkbox" checked id="gridButton"/>
+    <label for="coneButton">Cone: </label><input type="checkbox" checked id="coneButton"/>
+</div>
 
-<canvas id="spaceTimeCanvas" class="applicationCanvas" style="aspect-ratio: 3/2"></canvas>
 <!--div class="buttonRow">
-    <label for="massSlider">Mass:&nbsp;</label>
-    <input type="range" id="massSlider" style="width: 55%;" min="0.001" max="0.1" step="0.001" value="0.025" />
+<label for="massSlider">Mass:&nbsp;</label>
+<input type="range" id="massSlider" min="0.001" max="0.1" step="0.001" value="0.025">
 </div-->
+
+<div class="buttonRow">
+<label for="distanceSlider">Distance:&nbsp;</label>
+<input type="range" id="distanceSlider" min="20" max="64" step="1" value="31">
+</div>
+
 <script type="module" src="./schwarzschild_space_time.js"></script>
 <p style="clear: both;"></p>
 
+- <span style="color: cyan">cyan</span> → geodetic motion on embedding surface
+- <span style="color: red">cyan</span> → flat motion (Newtonian projected trail)
+- <span style="color: orange">orange</span> → real motion (4D geodesic in Schwarzschild coordinates)
 
 ### Visualization explained
 <div style="border-top: 1px solid #999999"><br/></div>

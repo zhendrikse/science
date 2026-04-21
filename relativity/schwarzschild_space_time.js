@@ -7,7 +7,12 @@ import { SkyDome, Sun } from '../js/astro-extensions.js';
 import { Ball, ThreeJsUtils } from "../js/three-js-extensions.js"
 
 const yOffset = -10;
+let running = false;
+
 const canvas = document.getElementById("spaceTimeCanvas");
+const overlay = document.getElementById("spaceTimeOverlayText");
+const distanceSlider = document.getElementById("distanceSlider");
+
 const scene = new Scene();
 const light = new DirectionalLight(0xffffff, 2)
 light.position.set(5, 5, 5)
@@ -28,9 +33,6 @@ const renderer = new WebGLRenderer({ antialias: true, canvas: canvas });
 renderer.setAnimationLoop( animate );
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
-window.addEventListener('resize', () => {
-    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
-});
 
 const controls = new OrbitControls(camera, canvas);
 controls.target.set(0, 0, 0);
@@ -47,29 +49,32 @@ const sun = new Sun({
 sun.position.set(0, yOffset, 0);
 
 class Comet extends Ball {
+    static initialPosition = (distance) =>
+        new Vector3(distance, SchwarzschildSurface.zAsFunctionOf(distance, sun.mass), 0);
     constructor(parent, {
-        position,
+        distance,
         radius = 1.25,
         color = new Color(0xffff00),
-        sour = null
+        stateVector = null
     } = {}) {
         super(parent, {
-            position: position,
+            position: stateVector ? Comet.initialPosition(distance) : new Vector3(distance, yOffset, 0),
             radius: radius,
             color: color,
             makeTrail: true
         });
 
-        this._sour = sour ? [...sour] : null;
-        this._startSour = sour ? [...sour] : null;
-        this._startPosition = position.clone();
+        this._stateVector = stateVector ? [...stateVector] : null;
+        this._startStateVector = stateVector ? [...stateVector] : null;
+        this._color = color;
 
         this._isMoving = false;
+        this.enableTrail({ color: color, maxPoints: 1000 });
     }
 
     _updateMeshFromSour(M) {
-        const r = this._sour[0];
-        const phi = this._sour[1];
+        const r = this._stateVector[0];
+        const phi = this._stateVector[1];
 
         const x = r * Math.cos(phi);
         const z = r * Math.sin(phi);
@@ -79,12 +84,12 @@ class Comet extends Ball {
     }
 
     update(M, dt) {
-        if (!this._isMoving || !this._sour) return;
+        if (!this._isMoving || !this._stateVector) return;
 
-        const r = this._sour[0];
-        const rDot = this._sour[2];
-        const phi = this._sour[1];
-        const phiDot = this._sour[3];
+        const r = this._stateVector[0];
+        const rDot = this._stateVector[2];
+        const phi = this._stateVector[1];
+        const phiDot = this._stateVector[3];
         const bracket = r - 2.0 * M;
         const buff = [0, 0, 0, 0];
 
@@ -101,48 +106,48 @@ class Comet extends Ball {
         const phi_b = buff[1];
         const bracket_b = r_b - 2.0 * M;
 
-        this._sour[0] += dt * buff[2];
-        this._sour[1] += dt * buff[3];
-        this._sour[2] += dt * (M / r_b / (bracket_b * bracket_b) * buff[2] * buff[2] + bracket_b * buff[3] * buff[3]);
-        this._sour[3] += -dt * (2.0 / r_b * buff[2] * buff[3]);
+        this._stateVector[0] += dt * buff[2];
+        this._stateVector[1] += dt * buff[3];
+        this._stateVector[2] += dt * (M / r_b / (bracket_b * bracket_b) * buff[2] * buff[2] + bracket_b * buff[3] * buff[3]);
+        this._stateVector[3] += -dt * (2.0 / r_b * buff[2] * buff[3]);
 
         this._updateMeshFromSour(M);
     }
 
     get r() { return Math.sqrt(this.position.x * this.position.x + this.position.z * this.position.z); }
 
-    start() {
-        this._isMoving = true;
-    }
-
-    stop() {
-        this._isMoving = false;
-    }
-
-    reset() {
-        this.moveTo(this._startPosition.clone());
-        this._sour = this._startSour ? [...this._startSour] : null;
+    start() { this._isMoving = true; }
+    stop() { this._isMoving = false; }
+    reset(distance) {
+        this.moveTo(Comet.initialPosition(distance));
+        this.disableTrail();
+        this.enableTrail({ color: this._color, maxPoints: 1000 });
+        this._stateVector = this._startStateVector ? [...this._startStateVector] : null;
+        if (this._stateVector)
+            this._stateVector[0] = distance;
     }
 }
 
 class RealComet extends Ball {
-    constructor(parent, { position, radius = 1.25, color = 0xff8800, sour = null } = {}) {
-        super(parent, { position, radius, color, makeTrail: true });
+    constructor(parent, { distance, radius = 1.25, color = 0xff8800, stateVector = null } = {}) {
+        super(parent, { position: new Vector3(distance, yOffset, 0), radius, color, makeTrail: true });
 
         // [r, phi, t_dot, r_dot, phi_dot]
-        this._sour = sour ? [...sour] : null;
-        this._startSour = sour ? [...sour] : null;
+        this._stateVector = [...stateVector];
+        this._startStateVector = [...stateVector];
         this._isMoving = false;
+        this._color = color;
+        this.enableTrail({ color: color, maxPoints: 1000 });
     }
 
     updateReal(M, dt) {
-        if (!this._isMoving || !this._sour) return;
+        if (!this._isMoving || !this._stateVector) return;
 
-        const r = this._sour[0];
-        const phi = this._sour[1];
-        const tDot = this._sour[2];
-        const rDot = this._sour[3];
-        const phiDot = this._sour[4];
+        const r = this._stateVector[0];
+        const phi = this._stateVector[1];
+        const tDot = this._stateVector[2];
+        const rDot = this._stateVector[3];
+        const phiDot = this._stateVector[4];
 
         const bracket = r - 2.0 * M;
         const buff = [0, 0, 0, 0, 0];
@@ -162,22 +167,22 @@ class RealComet extends Ball {
         const r_b = buff[0];
         const bracket_b = r_b - 2.0 * M;
 
-        this._sour[0] += dt * buff[3];
-        this._sour[1] += dt * buff[4];
-        this._sour[2] += dt * (-M / r_b / (bracket_b * bracket_b) * buff[2] * buff[3]);
-        this._sour[3] += dt * (
+        this._stateVector[0] += dt * buff[3];
+        this._stateVector[1] += dt * buff[4];
+        this._stateVector[2] += dt * (-M / r_b / (bracket_b * bracket_b) * buff[2] * buff[3]);
+        this._stateVector[3] += dt * (
             -M * bracket_b / (r_b ** 3) * buff[2] ** 2 +
             M / r_b / bracket_b * buff[3] ** 2 +
             bracket_b * buff[4] ** 2
         );
 
-        this._sour[4] += dt * (-2.0 / r_b * buff[3] * buff[4]);
+        this._stateVector[4] += dt * (-2.0 / r_b * buff[3] * buff[4]);
         this.updateMesh();
     }
 
     updateMesh() {
-        const r = this._sour[0];
-        const phi = this._sour[1];
+        const r = this._stateVector[0];
+        const phi = this._stateVector[1];
 
         const x = r * Math.cos(phi);
         const z = r * Math.sin(phi);
@@ -187,6 +192,13 @@ class RealComet extends Ball {
 
     start() { this._isMoving = true; }
     stop() { this._isMoving = false; }
+    reset(distance) {
+        this.moveTo(Comet.initialPosition(distance));
+        this.disableTrail();
+        this.enableTrail({ color: this._color, maxPoints: 1000 });
+        this._stateVector = this._startStateVector ? [...this._startStateVector] : null;
+        this._stateVector[0] = distance;
+    }
 }
 
 class SchwarzschildSurface extends Group {
@@ -283,56 +295,65 @@ class Grid extends Group {
     }
 }
 
-scene.add(new Grid());
+// Scenery
+const grid = new Grid();
+scene.add(grid);
 const surface = new SchwarzschildSurface(sun.mass);
 scene.add(surface);
 scene.add(sun);
 const skyDome = new SkyDome({starDensity: 1, skyRadius: 500, glowStarCount: 500});
 scene.add(skyDome);
 
-const startR = 31;
-const startPos = new Vector3(startR, SchwarzschildSurface.zAsFunctionOf(startR, sun.mass), 0);
-
+// Comets
 const phi = 0;
 const rDot = -25.2;
 const phiDot = 0.49;
 const comet = new Comet(scene, {
-    position: startPos,
-    radius: 1.25,
+    distance: Number(distanceSlider.value),
+    radius: 1.75,
     color: new Color(0x00ffff),
-    sour: [startR, phi, rDot, phiDot]
+    stateVector: [Number(distanceSlider.value), phi, rDot, phiDot]
 });
 
 const flatComet = new Comet(scene, {
-    position: new Vector3(startR, yOffset, 0),
-    radius: 1.25,
+    distance: Number(distanceSlider.value),
+    radius: 1.75,
     color: new Color(0xff0000),
-    sour: null // important: no own dynamics, just projected motion onto plane
+    stateVector: null // important: no own dynamics, just projected motion onto plane
 });
 
+const tDot = 1;
 const realComet = new RealComet(scene, {
-    position: new Vector3(startR, yOffset, 0),
-    radius: 1.25,
+    distance: Number(distanceSlider.value),
+    radius: 1.75,
     color: new Color(0xff8800),
-    sour: [startR, 0, 1, -25.2, 0.49]
+    stateVector: [Number(distanceSlider.value), phi, tDot, rDot, phiDot]
 });
 
-realComet.enableTrail({
-    color: 0xff8800,
-    maxPoints: 1000
+// Event listeners
+window.addEventListener('resize', () => {
+    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 });
-comet.enableTrail({
-    color: 0x00ffff,
-    maxPoints: 1000
+document.getElementById('gridButton').addEventListener('click', () => grid.visible = !grid.visible );
+document.getElementById('coneButton').addEventListener('click', () => surface.visible = !surface.visible );
+window.addEventListener("click", () => {
+    if (running) {
+        running = false;
+        realComet.reset(Number(distanceSlider.value));
+        comet.reset(Number(distanceSlider.value));
+        flatComet.reset(Number(distanceSlider.value));
+        ThreeJsUtils.showOverlayMessage(overlay, "Reset");
+    } else {
+        running = true;
+        ThreeJsUtils.showOverlayMessage(overlay, "Started");
+        realComet.start();
+        comet.start();
+    }
 });
-
-realComet.start();
-comet.start();
-scene.add(comet._sphere._mesh);
 
 function updateFlatMotion() {
-    const r = comet._sour[0];
-    const phi = comet._sour[1];
+    const r = comet._stateVector[0];
+    const phi = comet._stateVector[1];
 
     const x = r * Math.cos(phi);
     const z = r * Math.sin(phi);

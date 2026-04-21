@@ -17,13 +17,13 @@ the stretching and compression are so powerful that no object can resist it.
 Within a small region, the horizontal compression balances the vertical stretching 
 so that a small object being spaghettified experiences no net change in volume. &mdash; [Wikipedia](https://en.wikipedia.org/wiki/Spaghettification)
 
-👉 Based on [spaghettification.py](https://www.mso.anu.edu.au/pfrancis/simulations/spaghettification.py) by [Paul Francis](http://www.mso.anu.edu.au/pfrancis/simulations/)<br/>
-
 <canvas class="applicationCanvas" id="planetsCanvas" style="aspect-ratio: 19 / 12;"></canvas>
 <p style="clear:both;"></p>
 
 <script type="module" src="spaghettification.js"></script>
 <p style="clear:both;"></p>
+
+👉 Based on [spaghettification.py](https://www.mso.anu.edu.au/pfrancis/simulations/spaghettification.py) by [Paul Francis](http://www.mso.anu.edu.au/pfrancis/simulations/)<br/>
 
 ### Visualization by the Science Museum of Virginia
 <div style="border-top: 1px solid #999999"><br/></div>
