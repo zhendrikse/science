@@ -75,7 +75,7 @@ Now, according to [Ryston&apos;s article](https://iopscience.iop.org/article/10.
 
 <figure>
 <img alt="" src="images/The-exterior-t-const-equatorial-plane-of-a-Schwarzschild-Black-Hole.png"/>
-<figcaption><b>Figure 1:</b>The-exterior t=const equatorial plane of a Schwarzschild Black Hole from 
+<figcaption><b>Figure 1:</b>The exterior t=const equatorial plane of a Schwarzschild Black Hole from 
 <a href="https://www.researchgate.net/publication/1977049_Spacetime_Embedding_Diagrams_for_Black_Holes">Spacetime Embedding Diagrams for Black Holes</a>.
 </figcaption>
 </figure>

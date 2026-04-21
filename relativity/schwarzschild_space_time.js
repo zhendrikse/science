@@ -25,7 +25,7 @@ const camera = new PerspectiveCamera(
     1000
 );
 
-camera.position.set(90, 90, 120);
+camera.position.set(70, 70, 90);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({ antialias: true, canvas: canvas });
