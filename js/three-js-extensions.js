@@ -803,15 +803,14 @@ export class Trail {
 
     dispose() {
         if (!this._trail) return;
-        this._parent.parent.remove(this._trail._line);
 
         if (this._trail._line) {
             if (this._trail._line.geometry)
                 this._trail._line.geometry.dispose();
             if (this._trail._line.material)
                 this._trail._line.material.dispose();
-            this.remove(this._trail._line);
         }
+        this._parent.parent.remove(this._trail._line);
         this._trail = null;
     }
 }
