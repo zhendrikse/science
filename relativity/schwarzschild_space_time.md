@@ -13,21 +13,19 @@
 <div class="canvasWrapper" id="spaceTimeCanvasWrapper"  style="aspect-ratio: 3/2">
   <canvas id="spaceTimeCanvas" class="applicationCanvas" style="aspect-ratio: 3/2"></canvas>
   <div class="overlayText" id="spaceTimeOverlayText">Click to start the animation!</div>
+</div>
 
-  <div class="buttonRow">
-    <label for="gridButton">Grid: </label><input type="checkbox" checked id="gridButton"/>
-    <label for="coneButton">Cone: </label><input type="checkbox" checked id="coneButton"/>
-  </div>
-  
-  <!--div class="buttonRow">
+<div class="buttonRow">
+  <label for="gridButton">Grid: </label><input type="checkbox" checked id="gridButton"/>
+  <label for="coneButton">Cone: </label><input type="checkbox" checked id="coneButton"/>
+
+  <!--
   <label for="massSlider">Mass:&nbsp;</label>
   <input type="range" id="massSlider" min="0.001" max="0.1" step="0.001" value="0.025">
-  </div-->
-  
-  <div class="buttonRow">
-    <label for="distanceSlider">Distance:&nbsp;</label>
-    <input type="range" id="distanceSlider" min="20" max="64" step="1" value="31">
-  </div>
+  -->
+
+  <label for="distanceSlider">Distance:&nbsp;</label>
+  <input type="range" id="distanceSlider" min="20" max="64" step="1" value="31">
 </div>
 
 <script type="module" src="./schwarzschild_space_time.js"></script>
