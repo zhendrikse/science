@@ -26,7 +26,7 @@ const camera = new PerspectiveCamera(
     1000
 );
 
-camera.position.set(70, 70, 90);
+camera.position.set(-45, 63, 135);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({ antialias: true, canvas: canvas });
@@ -318,6 +318,7 @@ orbitButton.addEventListener('click', (e) => {
     comet.reset(Number(distanceSlider.value));
     comet._stateVector = createStateVector(orbitButton.checked);
     flatComet.reset(Number(distanceSlider.value));
+    distanceSlider.disabled = orbitButton.checked;
 });
 window.addEventListener("click", () => {
     if (comet.isMoving) {
