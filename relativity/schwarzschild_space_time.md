@@ -148,8 +148,7 @@ $$\begin{equation}
 -1 = -(1 - 2M/r) {\dot t}^2 + r^2 \frac{M}{r^3} {\dot t}^2 = -(1 - 2M/r) {\dot t}^2 + \frac{M}{r} {\dot t}^2
 \end{equation}$$
 
-
-Pulling $$ out of the brackets we get:
+Pulling ${\dot t}^2$ out of the brackets we get:
 
 $$\begin{equation}
 -1 = -{\dot t}^2 (1 - \frac{2M}{r} - \frac{M}{r} ) = -{\dot t}^2 (1 - \frac{3M}{r} ) 
