@@ -72,52 +72,53 @@ class Comet extends Ball {
     }
 
     updateRealMotion(M, dt) {
-        if (!this._isMoving || !this._stateVector) return;
+        if (!this._isMoving) return;
 
-        const r = this._stateVector[0];
-        const phi = this._stateVector[1];
-        const tDot = this._stateVector[2];
-        const rDot = this._stateVector[3];
-        const phiDot = this._stateVector[4];
-
+        const t     = this._stateVector[0];
+        const r     = this._stateVector[1];
+        const phi   = this._stateVector[2];
+        const tDot  = this._stateVector[3];
+        const rDot  = this._stateVector[4];
+        const phiDot= this._stateVector[5];
         const bracket = r - 2.0 * M;
-        const buff = [0, 0, 0, 0, 0];
+        const buff = [0, 0, 0, 0, 0, 0];
 
-        // ───── HALF STEP ─────
-        buff[0] = r + 0.5 * dt * rDot;
-        buff[1] = phi + 0.5 * dt * phiDot;
-        buff[2] = tDot + 0.5 * dt * (-M / r / (bracket * bracket) * tDot * rDot);
-        buff[3] = rDot + 0.5 * dt * (
-            -M * bracket / (r * r * r) * tDot * tDot +
-            M / r / bracket * rDot * rDot +
-            bracket * phiDot * phiDot
+        // HALF STEP
+        buff[1] = r   + 0.5 * dt * rDot;
+        buff[2] = phi + 0.5 * dt * phiDot;
+        buff[3] = tDot + 0.5 * dt * (-M / r / (bracket*bracket) * tDot * rDot);
+        buff[4] = rDot + 0.5 * dt * (
+            -M * bracket / (r*r*r) * tDot*tDot +
+            M / r / bracket * rDot*rDot +
+            bracket * phiDot*phiDot
         );
-        buff[4] = phiDot + 0.5 * dt * (-2.0 / r * rDot * phiDot);
+        buff[5] = phiDot + 0.5 * dt * (-2.0 / r * rDot * phiDot);
 
-        // ───── FULL STEP ─────
-        const r_b = buff[0];
+        const r_b = buff[1];
         const bracket_b = r_b - 2.0 * M;
 
-        this._stateVector[0] += dt * buff[3];
-        this._stateVector[1] += dt * buff[4];
-        this._stateVector[2] += dt * (-M / r_b / (bracket_b * bracket_b) * buff[2] * buff[3]);
-        this._stateVector[3] += dt * (
-            -M * bracket_b / (r_b * r_b * r_b) * (buff[2] * buff[2]) +
-            M / r_b / bracket_b * (buff[3] * buff[3]) +
-            bracket_b * (buff[4] * buff[4])
+        // FULL STEP
+        this._stateVector[0] += dt * buff[3]; // t
+        this._stateVector[1] += dt * buff[4]; // r
+        this._stateVector[2] += dt * buff[5]; // phi
+        this._stateVector[3] += -dt * (M / r_b / (bracket_b*bracket_b) * buff[3] * buff[4]);
+        this._stateVector[4] += dt * (
+            -M * bracket_b / (r_b*r_b*r_b) * buff[3]*buff[3] +
+            M / r_b / bracket_b * buff[4]*buff[4] +
+            bracket_b * buff[5]*buff[5]
         );
-
-        this._stateVector[4] += dt * (-2.0 / r_b * buff[3] * buff[4]);
-        this.moveTo(SchwarzschildSurface.gridPointAt(this._stateVector[0], this._stateVector[1]));
+        this._stateVector[5] += -dt * (2.0 / r_b * buff[4] * buff[5]);
+        this.moveTo(SchwarzschildSurface.gridPointAt(this._stateVector[1], this._stateVector[2]));
     }
 
     update(M, dt) {
-        if (!this._isMoving || !this._stateVector) return;
+        if (!this._isMoving) return;
 
-        const r = this._stateVector[0];
-        const rDot = this._stateVector[2];
-        const phi = this._stateVector[1];
-        const phiDot = this._stateVector[3];
+        // const t = this._stateVector[0] is not used here!
+        const r = this._stateVector[1];
+        const rDot = this._stateVector[3];
+        const phi = this._stateVector[2];
+        const phiDot = this._stateVector[4];
         const bracket = r - 2.0 * M;
         const buff = [0, 0, 0, 0];
 
@@ -132,12 +133,12 @@ class Comet extends Ball {
         // ───── FULL STEP ─────
         const r_b = buff[0];
         const bracket_b = r_b - 2.0 * M;
-        this._stateVector[0] += dt * buff[2];
-        this._stateVector[1] += dt * buff[3];
-        this._stateVector[2] += dt * (M / r_b / (bracket_b * bracket_b) * buff[2] * buff[2] + bracket_b * buff[3] * buff[3]);
-        this._stateVector[3] += -dt * (2.0 / r_b * buff[2] * buff[3]);
+        this._stateVector[1] += dt * buff[2];
+        this._stateVector[2] += dt * buff[3];
+        this._stateVector[3] += dt * (M / r_b / (bracket_b * bracket_b) * buff[2] * buff[2] + bracket_b * buff[3] * buff[3]);
+        this._stateVector[4] += -dt * (2.0 / r_b * buff[2] * buff[3]);
 
-        this.moveTo(SchwarzschildSurface.surfacePointAt(this._stateVector[0], this._stateVector[1], M));
+        this.moveTo(SchwarzschildSurface.surfacePointAt(this._stateVector[1], this._stateVector[2], M));
     }
 
     get r() { return Math.sqrt(this.position.x * this.position.x + this.position.z * this.position.z); }
@@ -151,7 +152,7 @@ class Comet extends Ball {
         this.enableTrail({ color: this._color, maxPoints: 1000 });
         this._stateVector = this._startStateVector ? [...this._startStateVector] : null;
         if (this._stateVector)
-            this._stateVector[0] = distance;
+            this._stateVector[1] = distance;
     }
 }
 
@@ -252,29 +253,34 @@ const skyDome = new SkyDome({starDensity: 1, skyRadius: 500, glowStarCount: 500}
 scene.add(skyDome);
 
 // Comets
+const t = 0;
+const r = Number(distanceSlider.value);
 const phi = 0;
 const rDot = -25.2;
 const phiDot = 0.49;
 const comet = new Comet(scene, {
-    position: Comet.initialPosition(Number(distanceSlider.value)),
+    position: Comet.initialPosition(r),
     radius: 1.75,
     color: new Color(0x00ffff),
-    stateVector: [Number(distanceSlider.value), phi, rDot, phiDot]
+    stateVector: [t, r, phi, rDot, phiDot]
 });
 
 const flatComet = new Comet(scene, {
-    position: new Vector3(Number(distanceSlider.value), yOffset, 0),
+    position: new Vector3(r, yOffset, 0),
     radius: 1.75,
     color: new Color(0xff0000),
     stateVector: null // important: no own dynamics, just follows comet
 });
 
-const tDot = 1;
+const tDot = Math.sqrt(
+    (1 + (rDot * rDot) / (1 - 2 * sun.mass / r) + r * r * phiDot * phiDot) /
+    (1 - 2 * sun.mass / r)
+);
 const realComet = new Comet(scene, {
-    position: new Vector3(Number(distanceSlider.value), yOffset, 0),
+    position: new Vector3(r, yOffset, 0),
     radius: 1.75,
     color: new Color(0xff8800),
-    stateVector: [Number(distanceSlider.value), phi, tDot, rDot, phiDot]
+    stateVector: [t, r, phi, tDot, rDot, phiDot]
 });
 
 // Event listeners
