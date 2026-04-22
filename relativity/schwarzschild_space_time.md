@@ -9,10 +9,16 @@
 
 ⭐ Original [idea and code](https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram) by M. Ryston (Department of Physics Education)<br/>
 👉 Described in [Interactive animations as a tool in teaching general relativity [...]](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049)<br/>
-👉 The closer to the sun, the greater the difference between the Newtonian and relativistic trajectories
+
+- <span style="color: cyan">cyan</span> → geodetic motion on embedding surface
+- <span style="color: red">red</span> → flat motion (Newtonian projected trail)
+- <span style="color: orange">orange</span> → real motion (4D geodesic in Schwarzschild coordinates)
+
+👉 The closer to the sun, the greater the difference between 
+<span style="color: red">red</span> and <span style="color: orange">orange</span>!
 
 <div class="canvasWrapper" id="spaceTimeCanvasWrapper"  style="aspect-ratio: 3/2">
-    <canvas id="spaceTimeCanvas" class="applicationCanvas" style="width: 800px; aspect-ratio: 3/2;"></canvas>
+    <canvas id="spaceTimeCanvas" class="applicationCanvas" style="aspect-ratio: 3/2;"></canvas>
     <div class="overlayText" id="spaceTimeOverlayText">
         <span style="color: white">Click to start the animation!</span>
     </div>
@@ -21,7 +27,7 @@
 <div class="buttonRow">
     <label for="gridButton">Grid: </label><input type="checkbox" checked id="gridButton"/>
     <label for="coneButton">Cone: </label><input type="checkbox" checked id="coneButton"/>
-    <label for="orbitButton">Make orbit: </label><input type="checkbox" id="orbitButton"/>
+    <label for="orbitButton">Circular orbit: </label><input type="checkbox" id="orbitButton"/>
 </div>
 <div class="buttonRow">
     <!--
@@ -35,10 +41,6 @@
 
 <script type="module" src="./schwarzschild_space_time.js"></script>
 <p style="clear: both;"></p>
-
-- <span style="color: cyan">cyan</span> → geodetic motion on embedding surface
-- <span style="color: red">cyan</span> → flat motion (Newtonian projected trail)
-- <span style="color: orange">orange</span> → real motion (4D geodesic in Schwarzschild coordinates)
 
 ## Theoretical background
 <div style="border-top: 1px solid #999999"><br/></div>
