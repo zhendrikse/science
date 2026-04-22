@@ -9,7 +9,6 @@ import { Ball, ThreeJsUtils } from "../js/three-js-extensions.js"
 const yOffset = -10;
 
 const canvas = document.getElementById("spaceTimeCanvas");
-const overlay = document.getElementById("spaceTimeOverlayText");
 const distanceSlider = document.getElementById("distanceSlider");
 
 const scene = new Scene();
@@ -82,6 +81,11 @@ class Comet extends Ball {
         const phiDot= this._stateVector[5];
         const bracket = r - 2.0 * M;
         const buff = [0, 0, 0, 0, 0, 0];
+
+        if (r <= 2.0 * M + 0.01) {
+            this.stop();
+            return;
+        }
 
         // HALF STEP
         buff[1] = r   + 0.5 * dt * rDot;
@@ -287,17 +291,22 @@ const realComet = new Comet(scene, {
 window.addEventListener('resize', () => {
     ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 });
-document.getElementById('gridButton').addEventListener('click', (e) => grid.visible = !grid.visible );
-document.getElementById('coneButton').addEventListener('click', (e) => surface.visible = !surface.visible );
+document.getElementById('gridButton').addEventListener('click',
+    (e) => grid.visible = !grid.visible );
+document.getElementById('coneButton').addEventListener('click',
+    (e) => surface.visible = !surface.visible );
+document.getElementById('distanceSlider').addEventListener('input',
+    () => document.getElementById('distanceSliderValue').textContent = distanceSlider.value);
+document.getElementById('distanceSlider').addEventListener('input', () => {
+    realComet.reset(Number(distanceSlider.value));
+    comet.reset(Number(distanceSlider.value));
+    flatComet.reset(Number(distanceSlider.value));
+});
 window.addEventListener("click", () => {
     if (comet.isMoving) {
         realComet.stop();
         comet.stop();
-        realComet.reset(Number(distanceSlider.value));
-        comet.reset(Number(distanceSlider.value));
-        flatComet.reset(Number(distanceSlider.value));
     } else {
-        ThreeJsUtils.showOverlayMessage(overlay, "Started");
         realComet.start();
         comet.start();
     }

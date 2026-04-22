@@ -27,7 +27,8 @@
   -->
 
   <label for="distanceSlider">Distance:&nbsp;</label>
-  <input type="range" id="distanceSlider" min="20" max="64" step="1" value="31">
+  <input type="range" id="distanceSlider" min="20" max="64" step=".1" value="33">
+  <span id="distanceSliderValue">33</span>
 </div>
 
 <script type="module" src="./schwarzschild_space_time.js"></script>
