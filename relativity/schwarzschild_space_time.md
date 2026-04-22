@@ -12,24 +12,25 @@
 👉 The closer to the sun, the greater the difference between the Newtonian and relativistic trajectories
 
 <div class="canvasWrapper" id="spaceTimeCanvasWrapper"  style="aspect-ratio: 3/2">
-  <canvas id="spaceTimeCanvas" class="applicationCanvas" style="aspect-ratio: 3/2"></canvas>
-  <div class="overlayText" id="spaceTimeOverlayText">
-    <span style="color: white">Click to start the animation!</span>
-</div>
+    <canvas id="spaceTimeCanvas" class="applicationCanvas" style="width: 800px; aspect-ratio: 3/2;"></canvas>
+    <div class="overlayText" id="spaceTimeOverlayText">
+        <span style="color: white">Click to start the animation!</span>
+    </div>
 </div>
 
 <div class="buttonRow">
-  <label for="gridButton">Grid: </label><input type="checkbox" checked id="gridButton"/>
-  <label for="coneButton">Cone: </label><input type="checkbox" checked id="coneButton"/>
-
-  <!--
-  <label for="massSlider">Mass:&nbsp;</label>
-  <input type="range" id="massSlider" min="0.001" max="0.1" step="0.001" value="0.025">
-  -->
-
-  <label for="distanceSlider">Distance:&nbsp;</label>
-  <input type="range" id="distanceSlider" min="20" max="64" step=".1" value="32.85">
-  <span id="distanceSliderValue">32.85</span>
+    <label for="gridButton">Grid: </label><input type="checkbox" checked id="gridButton"/>
+    <label for="coneButton">Cone: </label><input type="checkbox" checked id="coneButton"/>
+    <label for="orbitButton">Make orbit: </label><input type="checkbox" id="orbitButton"/>
+</div>
+<div class="buttonRow">
+    <!--
+    <label for="massSlider">Mass:&nbsp;</label>
+    <input type="range" id="massSlider" min="0.001" max="0.1" step="0.001" value="0.025">
+    -->
+    <label for="distanceSlider">Distance:&nbsp;</label>
+    <input type="range" id="distanceSlider" min="25.1" max="64" step=".1" value="33">
+    <span id="distanceSliderValue">33</span>
 </div>
 
 <script type="module" src="./schwarzschild_space_time.js"></script>
@@ -88,7 +89,8 @@ This is the quintessential formula that is used in this visualization:
 
 ```js
 class SchwarzschildSurface extends Group {
-    static zAsFunctionOf = (r, M) => Math.sqrt(Math.max(0, 8 * M * r - 16 * M * M));
+    static zAsFunctionOf = (r, M) => 
+            Math.sqrt(Math.max(0, 8 * M * r - 16 * M * M));
 
     constructor(M) {
         super();
@@ -173,7 +175,7 @@ $$\begin{equation}
 }
 \end{equation}$$
 
-#### Important result
+### Important result
 
 A stable circular orbit only exists if $r > 3M$!
 
@@ -182,12 +184,13 @@ For:
 * $ r = 3M $ → photon sphere (instable light orbit)
 * $ r < 3M $ → no stable circular orbit possible
 
-#### In the code
+### In the code
 
 ```js 
 const tDot = 1 / Math.sqrt(1 - 3 * sun.mass / r);
 const rDot = 0;
-const phiDot = Math.sqrt(sun.mass) / (r ** 1.5 * Math.sqrt(1 - 3 * sun.mass / r));
+const phiDot = Math.sqrt(sun.mass) / 
+        (r ** 1.5 * Math.sqrt(1 - 3 * sun.mass / r));
 ```
 
 ## How gravity shapes the universe
