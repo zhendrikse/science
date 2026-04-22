@@ -10,6 +10,8 @@ const yOffset = -10;
 
 const canvas = document.getElementById("spaceTimeCanvas");
 const distanceSlider = document.getElementById("distanceSlider");
+const orbitButton = document.getElementById("orbitButton");
+const overlay = document.getElementById("spaceTimeOverlayText");
 
 const scene = new Scene();
 const light = new DirectionalLight(0xffffff, 2)
@@ -78,23 +80,16 @@ class Comet extends Ball {
         const rDot  = state[4];
         const phiDot= state[5];
 
-        const bracket = r - 2*M;
-
-        if (bracket <= 0.01) {
-            return [0,0,0,0,0,0]; // of clamp
-        }
+        const bracket = r - 2 * M;
+        if (bracket <= 0.01)
+            return [0, 0, 0, 0, 0, 0]; // of clamp
 
         return [
             tDot,
             rDot,
             phiDot,
-
             (-M / (r * bracket * bracket)) * tDot * rDot,
-
-            (-M * bracket / (r*r*r)) * tDot*tDot +
-            (M / (r * bracket)) * rDot*rDot +
-            bracket * phiDot*phiDot,
-
+            (-M * bracket / (r*r*r)) * tDot*tDot + (M / (r * bracket)) * rDot*rDot + bracket * phiDot*phiDot,
             (-2 / r) * rDot * phiDot
         ];
     }
@@ -104,18 +99,16 @@ class Comet extends Ball {
 
         const k1 = f(state);
 
-        const s2 = state.map((v,i) => v + 0.5*dt*k1[i]);
+        const s2 = state.map((v,i) => v + 0.5 * dt * k1[i]);
         const k2 = f(s2);
 
-        const s3 = state.map((v,i) => v + 0.5*dt*k2[i]);
+        const s3 = state.map((v,i) => v + 0.5 * dt * k2[i]);
         const k3 = f(s3);
 
-        const s4 = state.map((v,i) => v + dt*k3[i]);
+        const s4 = state.map((v,i) => v + dt * k3[i]);
         const k4 = f(s4);
 
-        return state.map((v,i) =>
-            v + (dt/6)*(k1[i] + 2*k2[i] + 2*k3[i] + k4[i])
-        );
+        return state.map((v,i) => v + (dt / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
     }
 
     updateRealMotion(M, dt) {
@@ -127,7 +120,6 @@ class Comet extends Ball {
         }
 
         this._stateVector = this._rk4Step(this._stateVector, M, dt);
-        this.moveTo(SchwarzschildSurface.gridPointAt(this._stateVector[1], this._stateVector[2]));
     }
 
     update(M, dt) {
@@ -135,9 +127,10 @@ class Comet extends Ball {
 
         // const t = this._stateVector[0] is not used here!
         const r = this._stateVector[1];
-        const rDot = this._stateVector[3];
         const phi = this._stateVector[2];
-        const phiDot = this._stateVector[4];
+        // const tDot = this._stateVector[3] is not used here!
+        const rDot = this._stateVector[4];
+        const phiDot = this._stateVector[5];
         const bracket = r - 2.0 * M;
         const buff = [0, 0, 0, 0];
 
@@ -154,13 +147,13 @@ class Comet extends Ball {
         const bracket_b = r_b - 2.0 * M;
         this._stateVector[1] += dt * buff[2];
         this._stateVector[2] += dt * buff[3];
-        this._stateVector[3] += dt * (M / r_b / (bracket_b * bracket_b) * buff[2] * buff[2] + bracket_b * buff[3] * buff[3]);
-        this._stateVector[4] += -dt * (2.0 / r_b * buff[2] * buff[3]);
-
-        this.moveTo(SchwarzschildSurface.surfacePointAt(this._stateVector[1], this._stateVector[2], M));
+        this._stateVector[4] += dt * (M / r_b / (bracket_b * bracket_b) * buff[2] * buff[2] + bracket_b * buff[3] * buff[3]);
+        this._stateVector[5] += -dt * (2.0 / r_b * buff[2] * buff[3]);
     }
 
-    get r() { return Math.sqrt(this.position.x * this.position.x + this.position.z * this.position.z); }
+    get r() { return this._stateVector[1]; }
+    get phi() { return this._stateVector[2]; }
+    get distance() { return Math.sqrt(this.position.x * this.position.x + this.position.z * this.position.z); }
     get isMoving() { return this._isMoving; }
 
     start() { this._isMoving = true; }
@@ -170,8 +163,9 @@ class Comet extends Ball {
         this.disableTrail();
         this.enableTrail({ color: this._color, maxPoints: 1000 });
         this._stateVector = this._startStateVector ? [...this._startStateVector] : null;
-        if (this._stateVector)
+        if (this._stateVector) {
             this._stateVector[1] = distance;
+        }
     }
 }
 
@@ -271,38 +265,36 @@ scene.add(sun);
 const skyDome = new SkyDome({starDensity: 1, skyRadius: 500, glowStarCount: 500});
 scene.add(skyDome);
 
+function createStateVector(isOrbit) {
+    const t = 0;
+    const r = Number(distanceSlider.value);
+    const phi = 0;
+    const tDot = 1 / Math.sqrt(1 - 3 * sun.mass / r);
+    const phiDot = isOrbit ? Math.sqrt(sun.mass) / (r ** 1.5 * Math.sqrt(1 - 3 * sun.mass / r)) : 0.489374;
+    const rDot = isOrbit ? 0 : -25.2;
+    return [t, r, phi, tDot, rDot, phiDot];
+}
+
 // Comets
-const t = 0;
-const r = Number(distanceSlider.value);
-const phi = 0;
-
-const rDot = -25.2;
-const phiDot = 0.489374;
-
 const comet = new Comet(scene, {
-    position: Comet.initialPosition(r),
+    position: Comet.initialPosition(Number(distanceSlider.value)),
     radius: 1.75,
     color: new Color(0x00ffff),
-    stateVector: [t, r, phi, rDot, phiDot]
+    stateVector: createStateVector(orbitButton.checked)
 });
 
 const flatComet = new Comet(scene, {
-    position: new Vector3(r, yOffset, 0),
+    position: new Vector3(Number(distanceSlider.value), yOffset, 0),
     radius: 1.75,
     color: new Color(0xff0000),
     stateVector: null // important: no own dynamics, just follows comet
 });
 
-const f = Math.max(1e-3, 1 - 2 * sun.mass / r);
-
-const tDot = Math.sqrt(
-    (1 + (rDot * rDot) / f + r * r * phiDot * phiDot) / f
-);
 const realComet = new Comet(scene, {
-    position: new Vector3(r, yOffset, 0),
+    position: new Vector3(Number(distanceSlider.value), yOffset, 0),
     radius: 1.75,
     color: new Color(0xff8800),
-    stateVector: [t, r, phi, tDot, rDot, phiDot]
+    stateVector: createStateVector(orbitButton.checked)
 });
 
 // Event listeners
@@ -320,13 +312,22 @@ document.getElementById('distanceSlider').addEventListener('input', () => {
     comet.reset(Number(distanceSlider.value));
     flatComet.reset(Number(distanceSlider.value));
 });
+orbitButton.addEventListener('click', (e) => {
+    realComet.reset(Number(distanceSlider.value));
+    realComet._stateVector = createStateVector(orbitButton.checked);
+    comet.reset(Number(distanceSlider.value));
+    comet._stateVector = createStateVector(orbitButton.checked);
+    flatComet.reset(Number(distanceSlider.value));
+});
 window.addEventListener("click", () => {
     if (comet.isMoving) {
         realComet.stop();
         comet.stop();
+        ThreeJsUtils.showOverlayMessage(overlay, "Stopped", 500);
     } else {
         realComet.start();
         comet.start();
+        ThreeJsUtils.showOverlayMessage(overlay, "Started", 500);
     }
 });
 
@@ -335,12 +336,14 @@ function animate(now) {
     skyDome.update(now * .001, camera);
     renderer.render(scene, camera);
 
-    if (surface.rMin > comet.r || comet.r > surface.rMax)
-        return;
-
-    for (let subStep = 0; subStep < 20; subStep++) {
-        comet.update(sun.mass, 0.001); // 3D geodesic
+    const subSteps = orbitButton.checked ? 1000 : 20;
+    for (let subStep = 0; subStep < subSteps; subStep++) {
+        if (surface.rMin < comet.distance && comet.distance < surface.rMax) {
+            comet.update(sun.mass, 0.001); // 3D geodesic
+        }
         realComet.updateRealMotion(sun.mass, 0.001);
-        flatComet.moveTo(new Vector3(comet.position.x, yOffset, comet.position.z));
     }
+    comet.moveTo(SchwarzschildSurface.surfacePointAt(comet.r, comet.phi, sun.mass));
+    realComet.moveTo(SchwarzschildSurface.gridPointAt(realComet.r, realComet.phi));
+    flatComet.moveTo(new Vector3(comet.position.x, yOffset, comet.position.z));
 }

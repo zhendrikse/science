@@ -39,7 +39,7 @@
 - <span style="color: red">cyan</span> → flat motion (Newtonian projected trail)
 - <span style="color: orange">orange</span> → real motion (4D geodesic in Schwarzschild coordinates)
 
-### Theoretical background
+## Theoretical background
 <div style="border-top: 1px solid #999999"><br/></div>
 
 The Schwarzschild metric describes a gravitational field of a non-rotating 
@@ -99,8 +99,97 @@ class SchwarzschildSurface extends Group {
 }
 ```
 
+### Circular orbit conditions
+<div class="header_line"><br/></div>
 
-### How gravity shapes the universe
+A real circular orbit implies:
+
+* $ r = \text{constant} $
+* $ \dot r = 0 $
+* $ \ddot r = 0 $
+
+So:
+
+* No radiale drift
+* centripetal balance exact
+
+We only need one equation: **radiale acceleration = 0**
+
+The following equation is used:
+
+$$\begin{equation}
+\ddot r = -\frac{M}{r^3}(r-2M) {\dot t}^2 + \frac{M}{r(r-2M)} {\dot r}^2 + (r-2M) {\dot \phi}^2
+\end{equation}$$
+
+For a circular orbit we have $\dot r = 0$, so all terms with $\dot r$ vanish:
+
+$$\begin{equation}
+0 = -\frac{M}{r^3}(r-2M) {\dot t}^2 + (r-2M) {\dot \phi}^2
+\end{equation}$$
+
+Factor $(r-2M) \neq 0$:
+
+
+$$\begin{equation}
+0 = -\frac{M}{r^3} {\dot t}^2 + {\dot \phi}^2 \Rightarrow
+\frac{M}{r^3} {\dot t}^2 = {\dot \phi}^2 \Rightarrow
+\boxed{{\dot \phi} = \frac{\dot t}{r^{3/2}} \sqrt{M}}
+\end{equation}$$
+
+In order to obtain $\dot t$, we note that in Schwarzschild we have the normalization:
+
+$$\begin{equation}
+-1 = -(1 - 2M/r) {\dot t}^2 + r^2 {\dot \phi}^2
+\end{equation}$$
+
+Substitution of $\dot \phi$ gives us:
+
+$$\begin{equation}
+-1 = -(1 - 2M/r) {\dot t}^2 + r^2 \frac{M}{r^3} {\dot t}^2 = -(1 - 2M/r) {\dot t}^2 + \frac{M}{r} {\dot t}^2
+\end{equation}$$
+
+
+Pulling $$ out of the brackets we get:
+
+$$\begin{equation}
+-1 = -{\dot t}^2 (1 - \frac{2M}{r} - \frac{M}{r} ) = -{\dot t}^2 (1 - \frac{3M}{r} ) 
+\end{equation}$$
+
+The solution for $\dot t$ is therefore:
+
+$$\begin{equation}
+\boxed{
+\dot t = \frac{1}{\sqrt{1 - 3M/r}}
+}
+\end{equation}$$
+
+As a consequence, for $\dot \phi$ we obtain:
+
+$$\begin{equation}
+\boxed{
+\dot \phi =
+\frac{\sqrt{M}}{r^{3/2} \sqrt{1 - 3M/r}}
+}
+\end{equation}$$
+
+#### Important result
+
+A stable circular orbit only exists if $r > 3M$!
+
+For:
+
+* $ r = 3M $ → photon sphere (instable light orbit)
+* $ r < 3M $ → no stable circular orbit possible
+
+#### In the code
+
+```js 
+const tDot = 1 / Math.sqrt(1 - 3 * sun.mass / r);
+const rDot = 0;
+const phiDot = Math.sqrt(sun.mass) / (r ** 1.5 * Math.sqrt(1 - 3 * sun.mass / r));
+```
+
+## How gravity shapes the universe
 <div class="header_line"><br/></div>
 
 <div class="double_image">
