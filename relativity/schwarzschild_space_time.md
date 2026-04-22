@@ -104,12 +104,12 @@ class SchwarzschildSurface extends Group {
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="images/star_evolution.jpg">
+  <a href="images/elasticity_of_spacetime.jpg">
     <img alt="Evolution of stars" src="images/elasticity_of_spacetime.jpg"/>
   </a>
 </figure>
 <figure class="right_image">
-  <a href="images/size_of_black_hole.png">
+  <a href="images/time_near_black_hole.jpg">
     <img alt="Black hole size comparison" src="images/time_near_black_hole.jpg"/>
   </a>
 </figure>
