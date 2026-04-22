@@ -81,7 +81,6 @@ class Comet extends Ball {
         const phiDot= this._stateVector[5];
         const bracket = r - 2.0 * M;
         const buff = [0, 0, 0, 0, 0, 0];
-
         if (r <= 2.0 * M + 0.01) {
             this.stop();
             return;
@@ -98,20 +97,26 @@ class Comet extends Ball {
         );
         buff[5] = phiDot + 0.5 * dt * (-2.0 / r * rDot * phiDot);
 
-        const r_b = buff[1];
-        const bracket_b = r_b - 2.0 * M;
-
         // FULL STEP
-        this._stateVector[0] += dt * buff[3]; // t
-        this._stateVector[1] += dt * buff[4]; // r
-        this._stateVector[2] += dt * buff[5]; // phi
-        this._stateVector[3] += -dt * (M / r_b / (bracket_b*bracket_b) * buff[3] * buff[4]);
-        this._stateVector[4] += dt * (
+        const t_b = this._stateVector[0] + dt * buff[3];
+        const r_b = this._stateVector[1] + dt * buff[4];
+        const phi_b = this._stateVector[2] + dt * buff[5];
+        const bracket_b = r_b - 2.0 * M;
+        const tDot_b = this._stateVector[3] + -dt * (M / r_b / (bracket_b*bracket_b) * buff[3] * buff[4]);
+        const rDot_b = this._stateVector[4] + dt * (
             -M * bracket_b / (r_b*r_b*r_b) * buff[3]*buff[3] +
             M / r_b / bracket_b * buff[4]*buff[4] +
             bracket_b * buff[5]*buff[5]
         );
-        this._stateVector[5] += -dt * (2.0 / r_b * buff[4] * buff[5]);
+        const phiDot_b = this._stateVector[5] + -dt * (2.0 / r_b * buff[4] * buff[5]);
+
+        this._stateVector[0] = t_b;
+        this._stateVector[1] = r_b;
+        this._stateVector[2] = phi_b;
+        this._stateVector[3] = tDot_b;
+        this._stateVector[4] = rDot_b;
+        this._stateVector[5] = phiDot_b;
+
         this.moveTo(SchwarzschildSurface.gridPointAt(this._stateVector[1], this._stateVector[2]));
     }
 
@@ -260,8 +265,10 @@ scene.add(skyDome);
 const t = 0;
 const r = Number(distanceSlider.value);
 const phi = 0;
+
 const rDot = -25.2;
-const phiDot = 0.49;
+const phiDot = 0.4892349265;
+
 const comet = new Comet(scene, {
     position: Comet.initialPosition(r),
     radius: 1.75,
@@ -276,9 +283,10 @@ const flatComet = new Comet(scene, {
     stateVector: null // important: no own dynamics, just follows comet
 });
 
+const f = Math.max(1e-3, 1 - 2 * sun.mass / r);
+
 const tDot = Math.sqrt(
-    (1 + (rDot * rDot) / (1 - 2 * sun.mass / r) + r * r * phiDot * phiDot) /
-    (1 - 2 * sun.mass / r)
+    (1 + (rDot * rDot) / f + r * r * phiDot * phiDot) / f
 );
 const realComet = new Comet(scene, {
     position: new Vector3(r, yOffset, 0),
@@ -313,14 +321,16 @@ window.addEventListener("click", () => {
 });
 
 function animate(now) {
-    for (let subStep = 0; subStep < 20; subStep++)
-        if (surface.rMin < comet.r && comet.r < surface.rMax) {
-            comet.update(sun.mass, 0.001); // 3D geodesic
-            realComet.updateRealMotion(sun.mass, 0.001);
-            flatComet.moveTo(new Vector3(comet.position.x, yOffset, comet.position.z));
-        }
-
     sun.update(now * .025);
     skyDome.update(now * .001, camera);
     renderer.render(scene, camera);
+
+    if (surface.rMin > comet.r || comet.r > surface.rMax)
+        return;
+
+    for (let subStep = 0; subStep < 20; subStep++) {
+        comet.update(sun.mass, 0.001); // 3D geodesic
+        realComet.updateRealMotion(sun.mass, 0.001);
+        flatComet.moveTo(new Vector3(comet.position.x, yOffset, comet.position.z));
+    }
 }
