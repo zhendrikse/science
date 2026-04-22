@@ -133,7 +133,9 @@ Factor $(r-2M) \neq 0$:
 $$\begin{equation}
 0 = -\frac{M}{r^3} {\dot t}^2 + {\dot \phi}^2 \Rightarrow
 \frac{M}{r^3} {\dot t}^2 = {\dot \phi}^2 \Rightarrow
-\boxed{{\dot \phi} = \frac{\dot t}{r^{3/2}} \sqrt{M}}
+\boxed{
+  \dot\phi = \frac{\dot t}{r^{3/2}} \sqrt{M}
+}
 \end{equation}$$
 
 In order to obtain $\dot t$, we note that in Schwarzschild we have the normalization:
