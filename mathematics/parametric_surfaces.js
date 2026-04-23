@@ -282,7 +282,7 @@ class ControlsGui {
 function updateViewForSurface() {
     const boundingBox = surfaceController.surfaceBoundingBox();
     axesController.createFromBoundingBox(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.9));
-    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.7));
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.7), {padding: 1.0});
 }
 
 const surfaceDefinitions = [{
@@ -683,7 +683,7 @@ const surfaceController = new SurfaceController(
     mathSurface,
     surfaceParams,
     new HeightColorMapper({useBaseColor: false}),
-    new IsoparametricContoursView(worldGroup, mathSurface)
+    new IsoparametricContoursView(mathSurface)
 );
 worldGroup.add(SurfaceController);
 const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
