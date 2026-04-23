@@ -57,8 +57,8 @@ class ComplexColorMapper extends ColorMapper {
 }
 
 class ComplexSurfaceView extends SurfaceView {
-    constructor(parentGroup, surface, {showWireframe=false, resolution=100, baseColor="#4f6"} = {}) {
-        super(parentGroup, surface);
+    constructor(surface, {showWireframe=false, resolution=100, baseColor="#4f6"} = {}) {
+        super(surface);
         this._baseColor = baseColor;
         this._geometry = surface.createGeometryWith(resolution);
         this._material = this.material(showWireframe, 1);
@@ -295,7 +295,8 @@ class ControlsGui {
 
     #updateSurface(definition) {
         surface.dispose();
-        surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(definition));
+        surface = new ComplexSurfaceView(new ComplexSurface(definition));
+        worldGroup.add(surface);
         axesController.createFromBoundingBox(surface.boundingBox());
         plot3D.frame(surface.boundingBox());
     }
@@ -313,7 +314,8 @@ const axesController = new AxesController({
     scene: scene
 });
 
-let surface = new ComplexSurfaceView(worldGroup, new ComplexSurface(zCubed), {showWireframe: false});
+let surface = new ComplexSurfaceView(new ComplexSurface(zCubed), {showWireframe: false});
+worldGroup.add(surface);
 
 const boundingBox = surface.boundingBox();
 axesController.createFromBoundingBox(boundingBox);

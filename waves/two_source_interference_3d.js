@@ -117,7 +117,8 @@ const axesController = new AxesController({
 const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
 const defaultSurfaceDef = new DefaultSurfaceDefinition(defaultSurfaceSpec);
 const mathSurface = new Surface(defaultSurfaceDef);
-const surfaceController = new SurfaceController(worldGroup, mathSurface, surfaceParams, new HeightColorMapper({useBaseColor: false}));
+const surfaceController = new SurfaceController(mathSurface, surfaceParams, new HeightColorMapper({useBaseColor: false}));
+worldGroup.add(surfaceController);
 
 // Scale scene according to current surface
 axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox(), false);
