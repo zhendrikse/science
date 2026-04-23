@@ -343,7 +343,7 @@ const surfaceController = new SurfaceController(
     mathSurface,
     surfaceParams,
     new HeightColorMapper({useBaseColor: false}),
-    new IsoparametricContoursView(worldGroup, mathSurface)
+    new IsoparametricContoursView(mathSurface)
 );
 worldGroup.add(surfaceController);
 const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
