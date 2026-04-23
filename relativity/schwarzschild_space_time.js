@@ -134,7 +134,7 @@ class Comet extends Ball {
         const bracket = r - 2.0 * M;
         const buff = [0, 0, 0, 0];
 
-        // symmetrische midpoint integration (kick-drift-kick structure)
+        // symmetric midpoint integration (kick-drift-kick structure)
 
         // ───── HALF STEP ─────
         buff[0] = r + 0.5 * dt * rDot;
@@ -302,12 +302,12 @@ window.addEventListener('resize', () => {
     ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 });
 document.getElementById('gridButton').addEventListener('click',
-    (e) => grid.visible = !grid.visible );
+    () => grid.visible = !grid.visible );
 document.getElementById('coneButton').addEventListener('click',
-    (e) => surface.visible = !surface.visible );
-document.getElementById('distanceSlider').addEventListener('input',
+    () => surface.visible = !surface.visible );
+distanceSlider.addEventListener('input',
     () => document.getElementById('distanceSliderValue').textContent = distanceSlider.value);
-document.getElementById('distanceSlider').addEventListener('input', () => {
+distanceSlider.addEventListener('input', () => {
     realComet.reset(Number(distanceSlider.value));
     comet.reset(Number(distanceSlider.value));
     flatComet.reset(Number(distanceSlider.value));
@@ -339,9 +339,9 @@ function animate(now) {
 
     const subSteps = orbitButton.checked ? 1000 : 20;
     for (let subStep = 0; subStep < subSteps; subStep++) {
-        if (surface.rMin < comet.distance && comet.distance < surface.rMax) {
+        if (surface.rMin < comet.distance && comet.distance < surface.rMax)
             comet.update(sun.mass, 0.001); // 3D geodesic
-        }
+
         realComet.updateRealMotion(sun.mass, 0.001);
     }
     comet.moveTo(SchwarzschildSurface.surfacePointAt(comet.r, comet.phi, sun.mass));
