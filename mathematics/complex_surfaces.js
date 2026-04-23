@@ -298,7 +298,7 @@ class ControlsGui {
         surface = new ComplexSurfaceView(new ComplexSurface(definition));
         worldGroup.add(surface);
         axesController.createFromBoundingBox(surface.boundingBox());
-        plot3D.frame(surface.boundingBox(), {padding: 1.0});
+        plot3D.frame(surface.boundingBox(), {padding: 0.9, translationY: -2});
     }
 }
 
