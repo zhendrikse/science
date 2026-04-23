@@ -896,7 +896,7 @@ export class SurfaceSelector extends Group {
     #rotationToTargetSurfaceIsNeeded = () => this._ringTargetRotation !== null;
 
     #setTargetRotation(selectedSurface) {
-        const local = selectedSurface.position();
+        const local = selectedSurface.position;
         const angle = Math.atan2(local.x, local.z);
         this._ringTargetRotation = -angle + Math.PI * .25;
     }
@@ -905,7 +905,7 @@ export class SurfaceSelector extends Group {
         surfaces.forEach(surfaceDataAsString => {
             const surfaceSpecification = new SurfaceSpecification(surfaceDataAsString);
             const surfaceDefinition = new LiteralStringBasedSurfaceDefinition(surfaceSpecification);
-            const selectorSurface = new MinimalSurfaceView(this, new Surface(surfaceDefinition), {});
+            const selectorSurface = new MinimalSurfaceView(new Surface(surfaceDefinition), {});
             ThreeJsUtils.fitGroupToBox(
                 selectorSurface,
                 selectorSurface.boundingBox(),
@@ -1019,7 +1019,8 @@ export class SurfaceController extends Group {
     }
 
     #createNormals() {
-        this._normals = new NormalsView(this, new Surface(this._surface.definition()));
+        this._normals = new NormalsView(new Surface(this._surface.definition()));
+        this.add(this._normals);
     }
 
     #createTangentFrameFrom(surfaceParams) {
@@ -1038,6 +1039,7 @@ export class SurfaceController extends Group {
             else if (contourParams.contourType === ContourType.CURVATURE)
                 newContours = new CurvatureContoursView(this._surface);
 
+            this.add(newContours);
             this.onContoursViewChange(newContours, contourParams);
         }
     }
@@ -1048,12 +1050,12 @@ export class SurfaceController extends Group {
         this.#disposeCurrentSurface();
 
         this._surface = new StandardSurfaceView(
-            this,
             mathematicalSurface,
             surfaceParams,
             this._colorMapper,
             null // temporarily no contours
         );
+        this.add(this._surface);
 
         this.#createContours(oldContours, surfaceParams.contourParameters);
         this.#createNormals();

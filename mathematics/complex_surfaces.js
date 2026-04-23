@@ -64,7 +64,7 @@ class ComplexSurfaceView extends SurfaceView {
         this._material = this.material(showWireframe, 1);
         this._colorMapper = new ComplexColorMapper();
         this._mesh = new Mesh(this._geometry, this._material);
-        this._group.add(this._mesh);
+        this.add(this._mesh);
         this._colorMapper.apply(this._geometry);
     }
 
