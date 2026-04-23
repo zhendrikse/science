@@ -1063,6 +1063,7 @@ export class SurfaceController extends Group {
     }
 
     get surface() { return this._surface; }
+    get contours() { return this._contours; }
 
     updateTangentFrame(tangentFrameParameters) {
         this._tangentFrame.visible = tangentFrameParameters.visible;

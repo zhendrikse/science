@@ -274,8 +274,10 @@ resize();
 window.addEventListener("resize", resize);
 document.getElementById('gridButton').addEventListener('click',
     () => grid.visible = !grid.visible );
-document.getElementById('coneButton').addEventListener('click',
-    () => surfaceController.surface.visible = !surfaceController.surface.visible );
+document.getElementById('coneButton').addEventListener('click', () => {
+    surfaceController.surface.visible = !surfaceController.surface.visible;
+    surfaceController.contours.visible = ! surfaceController.contours.visible;
+});
 distanceSlider.addEventListener('input',
     () => document.getElementById('distanceSliderValue').textContent = distanceSlider.value);
 distanceSlider.addEventListener('input', () => {
