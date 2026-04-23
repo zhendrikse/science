@@ -1,6 +1,5 @@
 import { ParametricGeometry } from "three/addons/geometries/ParametricGeometry";
-import { Arrow, Interval, ThreeJsUtils }
-    from '../js/three-js-extensions.js';
+import { Arrow, Interval, ThreeJsUtils } from '../js/three-js-extensions.js';
 import {
     Mesh, Vector3, Group, DoubleSide, MeshStandardMaterial, PlaneGeometry, Box3, LineSegments,
     MathUtils, Color, SphereGeometry, CapsuleGeometry, ConeGeometry, LineBasicMaterial, Line,
@@ -365,7 +364,6 @@ export class SurfaceView extends Group {
 
     boundingBox() { this.updateMatrixWorld(true); return new Box3().setFromObject(this).clone(); }
     definition() { return this._surface.definition(); }
-    hide() { this.visible = false; }
     moveTo(positionAsVector) { this.position.copy(positionAsVector); }
     material = (showWireframe, opacity) => new MeshStandardMaterial({
             vertexColors: true,
@@ -378,7 +376,6 @@ export class SurfaceView extends Group {
         });
     position() { return this.position.clone(); }
     rotateBy = (delta) => this.rotation.y += delta;
-    show() { this.visible = true; }
 }
 
 export class ContourParameters {
@@ -449,8 +446,8 @@ export class CurvatureContoursView extends SurfaceView {
     }
 
     dispose() {
-        this.clear();       // eigen GPU resources
-        super.dispose();    // group uit parent + refs los
+        this.clear();       // own GPU resources
+        super.dispose();    // group from parent + refs
         this._geometry = null;
         this._surface = null;
     }
@@ -527,8 +524,8 @@ export class IsoparametricContoursView extends SurfaceView {
     }
 
     dispose() {
-        this.clear();        // eigen GPU-resources
-        super.dispose();     // group uit parent + refs los
+        this.clear();        // own GPU-resources
+        super.dispose();     // group from parent + refs
         this._surfaceDefinition = null;
     }
 }
@@ -627,8 +624,8 @@ export class NormalsView extends SurfaceView {
     }
 
     dispose() {
-        this.clear();       // alleen eigen resources
-        super.dispose();    // verwijdert group uit parent
+        this.clear();       // only own resources
+        super.dispose();    // removes group from parent
         this._geometry = null;
         this._surface = null;
     }
@@ -677,7 +674,7 @@ export class StandardSurfaceView extends SurfaceView {
     rotateBy = (delta) => {
         this.rotation.y += delta;
         if (this._contours)
-            this._contours.group.rotation.y += delta;
+            this._contours.rotation.y += delta;
     }
 }
 
@@ -875,11 +872,11 @@ export class SurfaceSelector extends Group {
         const position = new Vector3(
             this._ringRadius * Math.cos(angle), this._verticalOffset, this._ringRadius * Math.sin(angle));
         surface.moveTo(position);
-        surface.show();
+        surface.visible = true;
     };
 
     #redistribute() {
-        this._surfaces.forEach(surface => surface.hide());
+        this._surfaces.forEach(surface => surface.visible = false);
         this.visibleRingItems().forEach((surface, index) => this.#placeAndShowSurface(surface, index));
     }
 
@@ -1005,10 +1002,10 @@ export class SurfaceController extends Group {
             case ContourType.NONE:
                 break;
             case ContourType.CURVATURE:
-                contoursView = new CurvatureContoursView(this._surface.group, this._surface);
+                contoursView = new CurvatureContoursView(this._surface);
                 break;
             case ContourType.ISO_PARAMETRIC:
-                contoursView = new IsoparametricContoursView(this._surface.group, this._surface);
+                contoursView = new IsoparametricContoursView(this._surface);
                 break;
         }
 
@@ -1037,9 +1034,9 @@ export class SurfaceController extends Group {
             let newContours = null;
 
             if (contourParams.contourType === ContourType.ISO_PARAMETRIC)
-                newContours = new IsoparametricContoursView(this._surface.group, this._surface);
+                newContours = new IsoparametricContoursView(this._surface);
             else if (contourParams.contourType === ContourType.CURVATURE)
-                newContours = new CurvatureContoursView(this._surface.group, this._surface);
+                newContours = new CurvatureContoursView(this._surface);
 
             this.onContoursViewChange(newContours, contourParams);
         }
@@ -1068,8 +1065,8 @@ export class SurfaceController extends Group {
     updateTangentFrame(tangentFrameParameters) {
         this._tangentFrame.visible = tangentFrameParameters.visible;
         this._tangentFrame.update(tangentFrameParameters);
-        this._tangentFrame.position.copy(this._surface.group.position);
-        this._tangentFrame.scale.set(this._surface.group.scale.x, this._surface.group.scale.y, this._surface.group.scale.z);
+        this._tangentFrame.position.copy(this._surface.position);
+        this._tangentFrame.scale.set(this._surface.scale.x, this._surface.scale.y, this._surface.scale.z);
     }
 
     changeBaseColorTo = (color) => this._surface.changeBaseColorTo(color);
