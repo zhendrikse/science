@@ -937,14 +937,14 @@ export class SurfaceSelector extends Group {
         surface => surface.definition().specification().meta.category === this._activeCategory);
 }
 
-export class SurfaceController extends Group {
-    constructor(mathematicalSurface, surfaceParams, colorMapper, contoursView = null) {
-        super();
+export class SurfaceController {
+    constructor(parent, mathematicalSurface, surfaceParams, colorMapper, contoursView = null) {
         this._surface = null;
         this._tangentFrame = null;
         this._normals = null;
         this._colorMapper = colorMapper;
         this._contours = contoursView;
+        this._group = parent;
 
         this.onSurfaceChange(mathematicalSurface, surfaceParams);
         this.onColorMapperChange(colorMapper);
@@ -1056,7 +1056,7 @@ export class SurfaceController extends Group {
             this._colorMapper,
             null // temporarily no contours
         );
-        this.add(this._surface);
+        this._group.add(this._surface);
 
         this.#createContours(oldContours, surfaceParams.contourParameters);
         this.#createNormals();
@@ -1085,7 +1085,7 @@ export class SurfaceController extends Group {
             this._surface.updateOpacity(surfaceParams.opacity);
         }
     }
-    rotateBy = (value) => this.rotation.y += value;
+    rotateBy = (value) => this._surface.rotation.y += value;
     resampleWith = (resolution) => this._surface.resampleWith(resolution);
 }
 

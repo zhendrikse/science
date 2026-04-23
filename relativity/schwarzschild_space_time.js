@@ -302,12 +302,12 @@ const surfaceParams = new ViewParameters({
     opacity: 0.2
 });
 const surfaceController = new SurfaceController(
+    worldGroup,
     mathSurface,
     surfaceParams,
     new CustomColorColorMapper(),
     new IsoparametricContoursView(mathSurface)
 );
-worldGroup.add(surfaceController);
 const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox(), {
     translationY: -75,
     padding: 0.7

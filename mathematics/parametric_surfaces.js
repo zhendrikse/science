@@ -680,12 +680,13 @@ const surfaceParams = new ViewParameters({
 const defaultSurfaceSpec = new SurfaceSpecification(surfaceData);
 const mathSurface = new Surface(new LiteralStringBasedSurfaceDefinition(defaultSurfaceSpec));
 const surfaceController = new SurfaceController(
+    worldGroup,
     mathSurface,
     surfaceParams,
     new HeightColorMapper({useBaseColor: false}),
     new IsoparametricContoursView(mathSurface)
 );
-worldGroup.add(SurfaceController);
+
 const plot3D = new Plot3DView(surfacePlotScene, mainCanvas, surfaceController.surfaceBoundingBox());
 plot3D.renderer.setAnimationLoop(animate);
 updateViewForSurface();

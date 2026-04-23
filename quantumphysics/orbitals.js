@@ -278,8 +278,7 @@ const axesController = new AxesController({
 const defaultSurfaceSpec = new OrbitalSurfaceSpecification(surfaceData[9]);
 const surfaceDef = new OrbitalSurfaceDefinition(defaultSurfaceSpec);
 const orbitalColorMapper = new SignedOpacityColorMapper(defaultSurfaceSpec.signedFieldFunction);
-const surfaceController = new SurfaceController(new Surface(surfaceDef), surfaceParams, orbitalColorMapper);
-worldGroup.add(surfaceController);
+const surfaceController = new SurfaceController(worldGroup, new Surface(surfaceDef), surfaceParams, orbitalColorMapper);
 
 // Scale scene according to current surface
 axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());

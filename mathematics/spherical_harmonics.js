@@ -237,8 +237,12 @@ const axesController = new AxesController({
 const defaultSurfaceSpec = new SphericalHarmonicsSurfaceSpecification(surfaceData[0]);
 const defaultSurfaceDef = new SphericalHarmonicsSurfaceDefinition(defaultSurfaceSpec);
 const mathSurface = new Surface(defaultSurfaceDef);
-const surfaceController = new SurfaceController(mathSurface, surfaceParams, new HeightColorMapper({useBaseColor: false}));
-worldGroup.add(surfaceController);
+const surfaceController = new SurfaceController(
+    worldGroup,
+    mathSurface,
+    surfaceParams,
+    new HeightColorMapper({useBaseColor: false})
+);
 
 // Scale scene according to current surface
 axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
