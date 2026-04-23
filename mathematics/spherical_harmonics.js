@@ -161,7 +161,7 @@ class ControlsGui {
         const surfaceDef = new SphericalHarmonicsSurfaceDefinition(surfaceSpecification);
         this._surfaceController.onSurfaceChange(new Surface(surfaceDef), surfaceParams);
         this._axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
-        this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {translationY: -2});
+        this._plot3d.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {padding: 0.9, translationY: -2});
         this._factor.setValue(surfaceSpecification.parametrization.r);
         this.#updateSurfaceDataTitleBox(surfaceSpecification);
     }
