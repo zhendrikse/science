@@ -913,6 +913,7 @@ export class SurfaceSelector extends Group {
                 { alignY: "min", padding: 1.1 }
             );
             this._surfaces.push(selectorSurface);
+            this.add(selectorSurface);
         });
         this.#redistribute();
     }
