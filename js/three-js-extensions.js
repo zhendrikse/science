@@ -1168,7 +1168,7 @@ export class Sphere extends Mesh {
     distanceTo(other) { return this.positionVectorTo(other).length() }
 }
 
-export class Cylinder {
+export class Cylinder extends Mesh {
     constructor(group, position = new Vector3(0, 0, 0), axis = new Vector3(0, 1, 0), {
         radius = 1,
         scale = 1,
@@ -1186,7 +1186,7 @@ export class Cylinder {
             metalness: 0.7,
             roughness: 0.2
         });
-        this._mesh = new Mesh(
+        super(
             new CylinderGeometry(
                 radius * scale,
                 radius * scale,
@@ -1198,21 +1198,16 @@ export class Cylinder {
         );
         this._scale = scale;
         this._restLength = axis.length();
-        this._position = position;
         this._axis = axis;
-        this._mesh.position.copy(position);
-        group.add(this._mesh);
+        this.position.copy(position);
+        group.add(this);
         this.updateAxis(axis);
     }
 
-    get position() { return this._position; }
     get axis() { return this._axis; }
     get displacement() { return this._restLength - this.axis.length(); }
-    show() { this._mesh.visible = true; }
-    hide() { this._mesh.visible = false; }
 
     moveTo(newPosition) {
-        this._position.copy(newPosition);
         this.updateAxis(this._axis); // herbereken positie
     }
 
@@ -1221,11 +1216,11 @@ export class Cylinder {
 
         const length = this._axis.length();
         const direction = this._axis.clone().normalize();
-        this._mesh.scale.set(1, length / this._restLength, 1);
-        this._mesh.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
+        this.scale.set(1, length / this._restLength, 1);
+        this.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
 
         const midpoint = this._position.clone().addScaledVector(direction, length / 2);
-        this._mesh.position.copy(midpoint);
+        this.position.copy(midpoint);
     }
 }
 
@@ -1365,8 +1360,8 @@ class Helix extends Curve {
 
 class Body {
     constructor(position = new Vector3(0, 0, 0), velocity = new Vector3(0, 0, 0), mass = 1, charge = 0) {
-        this.position = position;
-        this.velocity = velocity;
+        this.position = position.clone();
+        this.velocity = velocity.clone();
         this.mass = mass;
         this.charge = charge;
     }
