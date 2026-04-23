@@ -246,7 +246,7 @@ class ControlsGui {
 function updateViewForSurface() {
     const boundingBox = surfaceController.surfaceBoundingBox();
     axesController.createFromBoundingBox(ThreeJsUtils.scaleBox3(boundingBox.clone(), 1.05));
-    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.9));
+    plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox.clone(), 0.9), {padding: 1.0});
 }
 
 const surfaceDefinitions = [{
