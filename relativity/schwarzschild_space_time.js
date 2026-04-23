@@ -261,8 +261,8 @@ const surfaceController = new SurfaceController(
 );
 worldGroup.add(surfaceController);
 const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox(), {
-    translationY: -100,
-    padding: 0.8
+    translationY: -75,
+    padding: 0.7
 });
 // const gui = new ControlsGui();
 
@@ -275,7 +275,7 @@ window.addEventListener("resize", resize);
 document.getElementById('gridButton').addEventListener('click',
     () => grid.visible = !grid.visible );
 document.getElementById('coneButton').addEventListener('click',
-    () => surface.visible = !surface.visible );
+    () => surfaceController.surface.visible = !surfaceController.surface.visible );
 distanceSlider.addEventListener('input',
     () => document.getElementById('distanceSliderValue').textContent = distanceSlider.value);
 distanceSlider.addEventListener('input', () => {
