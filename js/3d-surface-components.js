@@ -968,7 +968,7 @@ export class SurfaceController extends Group {
     }
 
     onColorModeChange = (surfaceParams) => {
-        let colorMapper = null;
+        let colorMapper;
         switch (surfaceParams.colorMode) {
             case ColorMapper.ColorMode.HEIGHT:
                 colorMapper = new HeightColorMapper();
@@ -1132,7 +1132,7 @@ export class TangentFrameParameters {
         scale = 0.7,
         opacity = 0.5,
         color = 0x8888ff,
-        visible = true
+        visible = false
     } = {}) {
         this.u = u;
         this.v = v;

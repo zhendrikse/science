@@ -46,6 +46,10 @@
 ## Theoretical background
 <div style="border-top: 1px solid #999999"><br/></div>
 
+
+### Flamm's paraboloid
+<div class="header_line"><br/></div>
+
 The Schwarzschild metric describes a gravitational field of a non-rotating 
 spherical mass (and without electric charge), see [Wikipedia](https://en.wikipedia.org/wiki/Schwarzschild_metric):
 
@@ -80,10 +84,13 @@ Now, according to [Ryston&apos;s article](https://iopscience.iop.org/article/10.
 > simpler form: $$z(r) = \sqrt{8Mr - 16M^2}$$
 
 <figure>
-<img alt="" src="images/The-exterior-t-const-equatorial-plane-of-a-Schwarzschild-Black-Hole.png"/>
-<figcaption><b>Figure 1:</b>The exterior t=const equatorial plane of a Schwarzschild Black Hole from 
-<a href="https://www.researchgate.net/publication/1977049_Spacetime_Embedding_Diagrams_for_Black_Holes">Spacetime Embedding Diagrams for Black Holes</a>.
-</figcaption>
+  <img alt="Flamm paraboloid" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flamm.svg/1280px-Flamm.svg.png"/>
+  <figcaption>
+    <b>Figure 1:</b>
+    <a href="https://en.wikipedia.org/wiki/Schwarzschild_metric#Flamm.27s_paraboloid">Flamm's paraboloid</a>:
+    the exterior t=const equatorial plane of a Schwarzschild Black Hole &mdash; 
+    <a href="https://en.wikipedia.org/wiki/Schwarzschild_metric#Flamm.27s_paraboloid">Wikipedia</a>
+  </figcaption>
 </figure>
 
 <p style="clear:both;"></p>
@@ -91,16 +98,22 @@ Now, according to [Ryston&apos;s article](https://iopscience.iop.org/article/10.
 This is the quintessential formula that is used in this visualization:
 
 ```js
-class SchwarzschildSurface extends Group {
-    static zAsFunctionOf = (r, M) => 
-            Math.sqrt(Math.max(0, 8 * M * r - 16 * M * M));
+class SchwarzschildSurfaceDefinition extends SurfaceDefinition {
+  static zAsFunctionOf = (r, M) => Math.sqrt(Math.max(0, 8 * M * r - 16 * M * M));
 
-    constructor(M) {
-        super();
-        this._mass = M;
+  // ...
+  
+  sample(u, v, target) {
+    const epsilon = 0.01;
+    const r = this.rMin + u * (this.rMax - (this.rMin + epsilon));
+    const phi = v * 2 * Math.PI;
 
-        // Code
-    }
+    target.set(
+            r * Math.cos(phi),
+            SchwarzschildSurfaceDefinition.zAsFunctionOf(r, this.M),
+            r * Math.sin(phi)
+    );
+  }
 }
 ```
 

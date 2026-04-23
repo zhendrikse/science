@@ -1,56 +1,64 @@
+import { Vector3, Line, Scene, Color, Group, AmbientLight, DirectionalLight, Box3, Mesh,
+    LineBasicMaterial, BufferGeometry } from "three";
+import { Plot3DView, ThreeJsUtils, Ball } from '../js/three-js-extensions.js';
 import {
-    Scene, Color, PerspectiveCamera, WebGLRenderer, Vector3, BufferGeometry, LineBasicMaterial, Line, Group,
-    AmbientLight, DirectionalLight
-} from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    SurfaceDefinition, SurfaceController, IsoparametricContoursView, Surface,
+    CustomColorColorMapper, ViewParameters
+} from "../js/3d-surface-components.js";
 import { SkyDome, Sun } from '../js/astro-extensions.js';
-import { Ball, ThreeJsUtils } from "../js/three-js-extensions.js"
 
-const yOffset = -10;
-
+const canvasContainer = document.getElementById("spaceTimeCanvasWrapper");
 const canvas = document.getElementById("spaceTimeCanvas");
 const distanceSlider = document.getElementById("distanceSlider");
 const orbitButton = document.getElementById("orbitButton");
 const overlay = document.getElementById("spaceTimeOverlayText");
 
 const scene = new Scene();
-const light = new DirectionalLight(0xffffff, 2)
-light.position.set(5, 5, 5)
-scene.add(light);
-scene.add(new AmbientLight(0xffffff));
+const worldGroup = new Group();
+scene.add(worldGroup);
+// const light = new DirectionalLight(0xffffff, 2)
+// light.position.set(5, 5, 5)
+// scene.add(light);
+// scene.add(new AmbientLight(0xffffff));
 
-const camera = new PerspectiveCamera(
-    60,
-    canvas.width / canvas.height,
-    0.1,
-    1000
-);
+class SchwarzschildSurfaceDefinition extends SurfaceDefinition {
+    static yOffset = -10;
+    static zAsFunctionOf = (r, M) => Math.sqrt(Math.max(0, 8 * M * r - 16 * M * M));
+    static surfacePointAt = (r, phi, M) => new Vector3(
+        r * Math.cos(phi),
+        SchwarzschildSurfaceDefinition.zAsFunctionOf(r, M),
+        r * Math.sin(phi)
+    );
+    static gridPointAt = (r, phi) => new Vector3(
+        r * Math.cos(phi),
+        SchwarzschildSurfaceDefinition.yOffset,
+        r * Math.sin(phi)
+    );
 
-camera.position.set(-45, 63, 135);
-camera.lookAt(0, 0, 0);
+    constructor(M) {
+        super();
+        this.M = M;
+    }
 
-const renderer = new WebGLRenderer({ antialias: true, canvas: canvas });
-renderer.setAnimationLoop( animate );
-// Resizing for mobile devices
-ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
+    get rMin() { return 2 * this.M }
+    get rMax() { return 13 * this.M; }
 
-const controls = new OrbitControls(camera, canvas);
-controls.target.set(0, 0, 0);
-controls.update();
+    sample(u, v, target) {
+        const eps = 0.01;
+        const r = this.rMin + u * (this.rMax - (this.rMin + eps));
+        const phi = v * 2 * Math.PI;
 
-const sunRadius = 7;
-const sun = new Sun({
-    "name": "sun",
-    "radius": 1,
-    "mass": 5.0,
-    "spin": 3600 * 2.8653290845717256e-06,
-    "tilt": 0.1265363707695889
-}, 1 / sunRadius);
-sun.position.set(0, yOffset, 0);
+        target.set(
+            r * Math.cos(phi),
+            SchwarzschildSurfaceDefinition.zAsFunctionOf(r, this.M),
+            r * Math.sin(phi)
+        );
+    }
+}
 
 class Comet extends Ball {
     static initialPosition = (distance) =>
-        new Vector3(distance, SchwarzschildSurface.zAsFunctionOf(distance, sun.mass), 0);
+        new Vector3(distance, SchwarzschildSurfaceDefinition.zAsFunctionOf(distance, sun.mass), 0);
     constructor(parent, {
         position,
         radius = 1.25,
@@ -169,73 +177,8 @@ class Comet extends Ball {
     }
 }
 
-class SchwarzschildSurface extends Group {
-    static zAsFunctionOf = (r, M) => Math.sqrt(Math.max(0, 8 * M * r - 16 * M * M));
-    static surfacePointAt = (r, phi, M) => new Vector3(
-        r * Math.cos(phi),
-        SchwarzschildSurface.zAsFunctionOf(r, M),
-        r * Math.sin(phi)
-    );
-    static gridPointAt = (r, phi) => new Vector3(
-        r * Math.cos(phi),
-        yOffset,
-        r * Math.sin(phi)
-    );
-
-    constructor(M) {
-        super();
-        this._mass = M;
-
-        const createCircleAt = (i) => {
-            const r = this.rMin + (i / 14) * (this.rMax - this.rMin);
-            this.add(this.#createCircle(r));
-        }
-
-        const createRadialLineAt = (i) => {
-            const phi = (i / 12) * Math.PI * 2;
-            this.add(this.#createRadialLine(phi, this.rMin, this.rMax));
-        }
-
-        for (let i = 0; i < 15; i++)
-            createCircleAt(i);
-
-        for (let i = 0; i < 12; i++)
-            createRadialLineAt(i);
-    }
-
-    get mass() { return this._mass; }
-    get rMin() { return 2 * this._mass + 0.1; }
-    get rMax() { return 13 * this._mass; }
-
-    #createCircle(r, segments = 200) {
-        const points = [];
-
-        for (let i = 0; i <= segments; i++) {
-            const phi = (i / segments) * Math.PI * 2;
-            points.push(SchwarzschildSurface.surfacePointAt(r, phi, this._mass));
-        }
-
-        const geometry = new BufferGeometry().setFromPoints(points);
-        const material = new LineBasicMaterial({ color: 0xffff00 });
-        return new Line(geometry, material);
-    }
-
-    #createRadialLine(phi, rMin, rMax, segments = 100) {
-        const points = [];
-
-        for (let i = 0; i <= segments; i++) {
-            const r = rMin + (i / segments) * (rMax - rMin);
-            points.push(SchwarzschildSurface.surfacePointAt(r, phi, this._mass));
-        }
-
-        const geometry = new BufferGeometry().setFromPoints(points);
-        const material = new LineBasicMaterial({ color: 0xffff00 });
-        return new Line(geometry, material);
-    }
-}
-
 class Grid extends Group {
-    constructor(size = 80, divisions = 20, y = yOffset, color = 0x00ff00) {
+    constructor(size = 80, divisions = 20, y = SchwarzschildSurfaceDefinition.yOffset, color = 0x00ff00) {
         super();
 
         const step = (size * 2) / divisions;
@@ -258,12 +201,20 @@ class Grid extends Group {
 
 // Scenery
 const grid = new Grid();
-scene.add(grid);
-const surface = new SchwarzschildSurface(sun.mass);
-scene.add(surface);
-scene.add(sun);
+worldGroup.add(grid);
 const skyDome = new SkyDome({starDensity: 1, skyRadius: 500, glowStarCount: 500});
-scene.add(skyDome);
+worldGroup.add(skyDome);
+
+const sunRadius = 7;
+const sun = new Sun({
+    "name": "sun",
+    "radius": 1,
+    "mass": 5.0,
+    "spin": 3600 * 2.8653290845717256e-06,
+    "tilt": 0.1265363707695889
+}, 1 / sunRadius);
+sun.position.set(0, SchwarzschildSurfaceDefinition.yOffset, 0);
+worldGroup.add(sun);
 
 function createStateVector(isOrbit) {
     const t = 0;
@@ -284,23 +235,37 @@ const comet = new Comet(scene, {
 });
 
 const flatComet = new Comet(scene, {
-    position: new Vector3(Number(distanceSlider.value), yOffset, 0),
+    position: new Vector3(Number(distanceSlider.value), SchwarzschildSurfaceDefinition.yOffset, 0),
     radius: 1.75,
     color: new Color(0xff0000),
     stateVector: null // important: no own dynamics, just follows comet
 });
 
 const realComet = new Comet(scene, {
-    position: new Vector3(Number(distanceSlider.value), yOffset, 0),
+    position: new Vector3(Number(distanceSlider.value), SchwarzschildSurfaceDefinition.yOffset, 0),
     radius: 1.75,
     color: new Color(0xff8800),
     stateVector: createStateVector(orbitButton.checked)
 });
 
+const mathSurface = new Surface(new SchwarzschildSurfaceDefinition(5));
+const surfaceParams = new ViewParameters();
+const surfaceController = new SurfaceController(
+    mathSurface,
+    surfaceParams,
+    new CustomColorColorMapper(),
+    new IsoparametricContoursView(mathSurface)
+);
+worldGroup.add(surfaceController);
+const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox());
+// const gui = new ControlsGui();
+
+// Resizing for mobile devices
+const resize = () => ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
+resize();
+
 // Event listeners
-window.addEventListener('resize', () => {
-    ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
-});
+window.addEventListener("resize", resize);
 document.getElementById('gridButton').addEventListener('click',
     () => grid.visible = !grid.visible );
 document.getElementById('coneButton').addEventListener('click',
@@ -332,19 +297,19 @@ window.addEventListener("click", () => {
     }
 });
 
-function animate(now) {
+plot3D.renderer.setAnimationLoop( (now) => {
     sun.update(now * .025);
-    skyDome.update(now * .001, camera);
-    renderer.render(scene, camera);
+    skyDome.update(now * .001, plot3D.camera);
+    plot3D.render();
 
     const subSteps = orbitButton.checked ? 1000 : 20;
     for (let subStep = 0; subStep < subSteps; subStep++) {
-        if (surface.rMin < comet.distance && comet.distance < surface.rMax)
+        if (mathSurface.definition().rMin < comet.distance && comet.distance < mathSurface.definition().rMax)
             comet.update(sun.mass, 0.001); // 3D geodesic
 
         realComet.updateRealMotion(sun.mass, 0.001);
     }
-    comet.moveTo(SchwarzschildSurface.surfacePointAt(comet.r, comet.phi, sun.mass));
-    realComet.moveTo(SchwarzschildSurface.gridPointAt(realComet.r, realComet.phi));
-    flatComet.moveTo(new Vector3(comet.position.x, yOffset, comet.position.z));
-}
+    comet.moveTo(SchwarzschildSurfaceDefinition.surfacePointAt(comet.r, comet.phi, sun.mass));
+    realComet.moveTo(SchwarzschildSurfaceDefinition.gridPointAt(realComet.r, realComet.phi));
+    flatComet.moveTo(new Vector3(comet.position.x, SchwarzschildSurfaceDefinition.yOffset, comet.position.z));
+});
