@@ -844,7 +844,7 @@ export class SurfaceSelector extends Group {
     constructor(boundingBox, {
         ringRadius = 2,
         verticalOffset = -1,
-        activeCategory = Category.MISC,
+        activeCategory = "Miscellaneous",
         rotationSpeed = 0.01,
         selectionLerp = 0.08
     } = {}) {
