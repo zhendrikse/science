@@ -362,10 +362,12 @@ plot3D.renderer.setAnimationLoop( (now) => {
 
     const subSteps = orbitButton.checked ? 1000 : 20;
     for (let subStep = 0; subStep < subSteps; subStep++) {
-        if (mathSurface.definition().rMin < comet.distance && comet.distance < mathSurface.definition().rMax)
+        const cometInsideCone =
+            mathSurface.definition().rMin < comet.distance && comet.distance < mathSurface.definition().rMax;
+        if (cometInsideCone)
             comet.update(sun.mass, 0.001); // 3D geodesic
-
-        realComet.updateRealMotion(sun.mass, 0.001);
+        if (cometInsideCone || orbitButton.checked)
+            realComet.updateRealMotion(sun.mass, 0.001);
     }
     comet.moveTo(SchwarzschildSurfaceDefinition.surfacePointAt(comet.r, comet.phi, sun.mass));
     realComet.moveTo(SchwarzschildSurfaceDefinition.gridPointAt(realComet.r, realComet.phi));
