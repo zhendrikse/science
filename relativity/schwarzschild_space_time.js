@@ -247,6 +247,7 @@ function createPhotonSphere(M, segments = 300) {
     return new Line(geometry, material);
 }
 const photonRing = createPhotonSphere(sun.mass);
+photonRing.visible = false;
 worldGroup.add(photonRing);
 
 // Comets
