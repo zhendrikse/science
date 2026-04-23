@@ -3,6 +3,10 @@
 ## Complex functions $\phi: \mathbb{C} \rightarrow \mathbb{C}$
 <div class="header_line"><br/></div>
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=complex_surfaces.js)](https://github.com/zhendrikse/science/blob/main/mathematics/complex_surfaces.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+
 ### What are you looking at?
 
 You are looking at a **3D visualization of complex-valued functions**
@@ -22,7 +26,7 @@ $$
 
 🔴↔🔵 **Full color cycles** indicate a complete $2\pi$ phase rotation
 
-Height &amp; color reveal how the function **stretches, twists, and folds** the complex plane.
+📌 Height &amp; color reveal how the function **stretches, twists, and folds** the complex plane.
 
 <div class="equationDiv" id="surface-equation"></div>
 <div class="canvasWrapper" id="complexPlotContainer">
@@ -32,7 +36,5 @@ Height &amp; color reveal how the function **stretches, twists, and folds** the 
 <script type="module" src="complex_surfaces.js"></script>
 
 <p style="clear: both;"></p>
-
-📌 [complex_surfaces.js](https://github.com/zhendrikse/science/blob/main/mathematics/complex_surfaces.js) is written by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
 
 {% include share_buttons.html %}
