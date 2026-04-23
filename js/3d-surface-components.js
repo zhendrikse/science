@@ -1021,14 +1021,14 @@ export class SurfaceController {
 
     #createNormals() {
         this._normals = new NormalsView(new Surface(this._surface.definition()));
-        this.add(this._normals);
+        this._group.add(this._normals);
     }
 
     #createTangentFrameFrom(surfaceParams) {
         surfaceParams.tangentFrameParameters.scale = this._surface.boundingBox().max.length() * .4;
         this._tangentFrame = new TangentFrameView(this._surface.definition(), surfaceParams.tangentFrameParameters);
         this.updateTangentFrame(surfaceParams.tangentFrameParameters);
-        this.add(this._tangentFrame);
+        this._group.add(this._tangentFrame);
     }
 
     #createContours(oldContours, contourParams) {
@@ -1040,7 +1040,7 @@ export class SurfaceController {
             else if (contourParams.contourType === ContourType.CURVATURE)
                 newContours = new CurvatureContoursView(this._surface);
 
-            this.add(newContours);
+            this._group.add(newContours);
             this.onContoursViewChange(newContours, contourParams);
         }
     }
