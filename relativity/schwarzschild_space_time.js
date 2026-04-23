@@ -73,96 +73,94 @@ class Comet extends Ball {
             makeTrail: true
         });
 
-        this._stateVector = stateVector ? [...stateVector] : null;
-        this._startStateVector = stateVector ? [...stateVector] : null;
+        this._stateVector = stateVector  ? stateVector.clone() : null;
+        this._startStateVector = stateVector ? stateVector.clone() : null;
         this._color = color;
 
         this._isMoving = false;
         this.enableTrail({ color: color, maxPoints: 1000 });
     }
 
-    _derivative(state, M) {
-        const t     = state[0];
-        const r     = state[1];
-        const phi   = state[2];
-        const tDot  = state[3];
-        const rDot  = state[4];
-        const phiDot= state[5];
+    _derivativeSurface(state, M) {
+        const bracket = state.r - 2 * M;
 
-        const bracket = r - 2 * M;
         if (bracket <= 0.01)
-            return [0, 0, 0, 0, 0, 0]; // of clamp
+            return new StateVector(0,0,0,0,0,0);
 
-        return [
-            tDot,
-            rDot,
-            phiDot,
-            (-M / (r * bracket * bracket)) * tDot * rDot,
-            (-M * bracket / (r*r*r)) * tDot*tDot + (M / (r * bracket)) * rDot*rDot + bracket * phiDot*phiDot,
-            (-2 / r) * rDot * phiDot
-        ];
+        // This is the "embedding dynamics"
+        return new StateVector(
+            0,
+            state.rDot,
+            state.phiDot,
+            // radial acceleration on surface
+            0,
+            (M / (state.r * bracket * bracket)) * state.rDot * state.rDot + bracket * state.phiDot * state.phiDot,
+            (-2 / state.r) * state.rDot * state.phiDot
+        );
     }
 
-    _rk4Step(state, M, dt) {
-        const f = (s) => this._derivative(s, M);
+    _derivativeGeodesic(state, M) {
+        const bracket = state.r - 2 * M;
 
-        const k1 = f(state);
+        if (bracket <= 0.01)
+            return new StateVector(0,0,0,0,0,0);
 
-        const s2 = state.map((v,i) => v + 0.5 * dt * k1[i]);
-        const k2 = f(s2);
+        return new StateVector(
+            state.tDot,
+            state.rDot,
+            state.phiDot,
+            (-M / (state.r * bracket * bracket)) * state.tDot * state.rDot,
+            (-M * bracket / (state.r * state.r * state.r)) * state.tDot * state.tDot +
+            (M / (state.r * bracket)) * state.rDot * state.rDot +
+            bracket * state.phiDot * state.phiDot,
+            (-2 / state.r) * state.rDot * state.phiDot
+        );
+    }
 
-        const s3 = state.map((v,i) => v + 0.5 * dt * k2[i]);
-        const k3 = f(s3);
+    _rk4Step(state, derivativeFn, M, dt) {
+        const derivativeOf = (s) => derivativeFn(s, M);
+        const k1 = derivativeOf(state);
 
-        const s4 = state.map((v,i) => v + dt * k3[i]);
-        const k4 = f(s4);
+        const s2 = state.clone().addScaled(k1, 0.5 * dt);
+        const k2 = derivativeOf(s2, M);
 
-        return state.map((v,i) => v + (dt / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
+        const s3 = state.clone().addScaled(k2, 0.5 * dt);
+        const k3 = derivativeOf(s3, M);
+
+        const s4 = state.clone().addScaled(k3, dt);
+        const k4 = derivativeOf(s4, M);
+
+        // combine IN PLACE
+        state.t     += (dt/6)*(k1.t     + 2*k2.t     + 2*k3.t     + k4.t);
+        state.r     += (dt/6)*(k1.r     + 2*k2.r     + 2*k3.r     + k4.r);
+        state.phi   += (dt/6)*(k1.phi   + 2*k2.phi   + 2*k3.phi   + k4.phi);
+        state.tDot  += (dt/6)*(k1.tDot  + 2*k2.tDot  + 2*k3.tDot  + k4.tDot);
+        state.rDot  += (dt/6)*(k1.rDot  + 2*k2.rDot  + 2*k3.rDot  + k4.rDot);
+        state.phiDot+= (dt/6)*(k1.phiDot+ 2*k2.phiDot+ 2*k3.phiDot+ k4.phiDot);
+
+        return state;
     }
 
     updateRealMotion(M, dt) {
         if (!this._isMoving) return;
 
-        if (this._stateVector[1] <= 2*M + 0.01) {
+        if (this._stateVector.r <= 2*M + 0.01) {
             this.stop();
             this.visible = false;
             return;
         }
 
-        this._stateVector = this._rk4Step(this._stateVector, M, dt);
+        this._stateVector = this._rk4Step(this._stateVector, this._derivativeGeodesic, M, dt);
     }
 
     update(M, dt) {
         if (!this._isMoving) return;
 
-        // const t = this._stateVector[0] is not used here!
-        const r = this._stateVector[1];
-        const phi = this._stateVector[2];
-        // const tDot = this._stateVector[3] is not used here!
-        const rDot = this._stateVector[4];
-        const phiDot = this._stateVector[5];
-        const bracket = r - 2.0 * M;
-        const buff = [0, 0, 0, 0];
-
-        // symmetric midpoint integration (kick-drift-kick structure)
-
-        // ───── HALF STEP ─────
-        buff[0] = r + 0.5 * dt * rDot;
-        buff[1] = phi + 0.5 * dt * phiDot;
-        buff[2] = rDot + 0.5 * dt * (M / r / (bracket * bracket) * rDot * rDot + bracket * phiDot * phiDot);
-        buff[3] = phiDot - 0.5 * dt * (2.0 / r * rDot * phiDot);
-
-        // ───── FULL STEP ─────
-        const r_b = buff[0];
-        const bracket_b = r_b - 2.0 * M;
-        this._stateVector[1] += dt * buff[2];
-        this._stateVector[2] += dt * buff[3];
-        this._stateVector[4] += dt * (M / r_b / (bracket_b * bracket_b) * buff[2] * buff[2] + bracket_b * buff[3] * buff[3]);
-        this._stateVector[5] += -dt * (2.0 / r_b * buff[2] * buff[3]);
+        this._stateVector = this._rk4Step(this._stateVector, this._derivativeSurface, M, dt);
     }
 
-    get r() { return this._stateVector[1]; }
-    get phi() { return this._stateVector[2]; }
+    get r() { return this._stateVector.r; }
+    get phi() { return this._stateVector.phi; }
     get distance() { return Math.sqrt(this.position.x * this.position.x + this.position.z * this.position.z); }
     get isMoving() { return this._isMoving; }
 
@@ -171,10 +169,11 @@ class Comet extends Ball {
     reset(distance) {
         this.moveTo(Comet.initialPosition(distance));
         this.disableTrail();
+        this.visible = true;
         this.enableTrail({ color: this._color, maxPoints: 1000 });
-        this._stateVector = this._startStateVector ? [...this._startStateVector] : null;
+        this._stateVector = this._startStateVector ? this._startStateVector.clone() : null;
         if (this._stateVector) {
-            this._stateVector[1] = distance;
+            this._stateVector.r = distance;
         }
     }
 }
@@ -218,14 +217,45 @@ const sun = new Sun({
 sun.position.set(0, SchwarzschildSurfaceDefinition.yOffset, 0);
 worldGroup.add(sun);
 
-function createStateVector(isOrbit) {
-    const t = 0;
-    const r = Number(distanceSlider.value);
-    const phi = 0;
-    const tDot = 1 / Math.sqrt(1 - 3 * sun.mass / r);
-    const phiDot = isOrbit ? Math.sqrt(sun.mass) / (r ** 1.5 * Math.sqrt(1 - 3 * sun.mass / r)) : 0.489374;
-    const rDot = isOrbit ? 0 : -25.2;
-    return [t, r, phi, tDot, rDot, phiDot];
+class StateVector {
+    constructor(t, r, phi, tDot, rDot, phiDot) {
+        this.t = t;
+        this.r = r;
+        this.phi = phi;
+        this.tDot = tDot;
+        this.rDot = rDot;
+        this.phiDot = phiDot;
+    }
+
+    static initial(isOrbit=false) {
+        const r = Number(distanceSlider.value);
+        const t = 0;
+        const phi = 0;
+        const tDot = 1 / Math.sqrt(1 - 3 * sun.mass / r);
+        const phiDot = isOrbit
+            ? Math.sqrt(sun.mass) / (r ** 1.5 * Math.sqrt(1 - 3 * sun.mass / r))
+            : 0.489374;
+        const rDot = isOrbit ? 0 : -25.2;
+
+        return new StateVector(t, r, phi, tDot, rDot, phiDot);
+    }
+
+    clone() {
+        return new StateVector(
+            this.t, this.r, this.phi,
+            this.tDot, this.rDot, this.phiDot
+        );
+    }
+
+    addScaled(other, scale) {
+        this.t     += scale * other.t;
+        this.r     += scale * other.r;
+        this.phi   += scale * other.phi;
+        this.tDot  += scale * other.tDot;
+        this.rDot  += scale * other.rDot;
+        this.phiDot+= scale * other.phiDot;
+        return this;
+    }
 }
 
 function createPhotonSphere(M, segments = 300) {
@@ -234,16 +264,11 @@ function createPhotonSphere(M, segments = 300) {
 
     for (let i = 0; i <= segments; i++) {
         const phi = (i / segments) * 2 * Math.PI;
-        points.push(
-            SchwarzschildSurfaceDefinition.gridPointAt(r, phi, M)
-        );
+        points.push(SchwarzschildSurfaceDefinition.gridPointAt(r, phi, M));
     }
 
     const geometry = new BufferGeometry().setFromPoints(points);
-    const material = new LineBasicMaterial({
-        color: 0x00aaff
-    });
-
+    const material = new LineBasicMaterial({ color: 0x00aaff });
     return new Line(geometry, material);
 }
 const photonRing = createPhotonSphere(sun.mass);
@@ -255,7 +280,7 @@ const comet = new Comet(scene, {
     position: Comet.initialPosition(Number(distanceSlider.value)),
     radius: 1.75,
     color: new Color(0x00ffff),
-    stateVector: createStateVector(orbitButton.checked)
+    stateVector: StateVector.initial(orbitButton.checked)
 });
 
 const flatComet = new Comet(scene, {
@@ -269,7 +294,7 @@ const realComet = new Comet(scene, {
     position: new Vector3(Number(distanceSlider.value), SchwarzschildSurfaceDefinition.yOffset, 0),
     radius: 1.75,
     color: new Color(0xff8800),
-    stateVector: createStateVector(orbitButton.checked)
+    stateVector: StateVector.initial(orbitButton.checked)
 });
 
 const mathSurface = new Surface(new SchwarzschildSurfaceDefinition(5));
@@ -311,9 +336,9 @@ distanceSlider.addEventListener('input', () => {
 });
 orbitButton.addEventListener('click', (e) => {
     realComet.reset(Number(distanceSlider.value));
-    realComet._stateVector = createStateVector(orbitButton.checked);
+    realComet._stateVector = StateVector.initial(orbitButton.checked);
     comet.reset(Number(distanceSlider.value));
-    comet._stateVector = createStateVector(orbitButton.checked);
+    comet._stateVector = StateVector.initial(orbitButton.checked);
     flatComet.reset(Number(distanceSlider.value));
     distanceSlider.disabled = orbitButton.checked;
 });

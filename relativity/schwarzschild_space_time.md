@@ -7,9 +7,9 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
-- <span style="color: cyan">cyan</span> → geodetic motion on embedded equatorial surface
-- <span style="color: red">red</span> → flat motion (Newtonian projected trail)
-- <span style="color: orange">orange</span> → real motion (4D geodesic in Schwarzschild coordinates)
+- <span style="color: orange">orange</span> → real motion: geodesic flow in 4D $(t, r, \phi)$
+- <span style="color: cyan">cyan</span> → Geodesic-projection on embedded equatorial surface
+- <span style="color: red">red</span> → flat motion (Newtonian/Euclidian projected trail)
 
 👉 The closer to the sun, the greater the difference between 
 <span style="color: red">red</span> and <span style="color: orange">orange</span>!
