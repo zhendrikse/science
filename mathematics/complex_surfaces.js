@@ -298,7 +298,7 @@ class ControlsGui {
         surface = new ComplexSurfaceView(new ComplexSurface(definition));
         worldGroup.add(surface);
         axesController.createFromBoundingBox(surface.boundingBox());
-        plot3D.frame(surface.boundingBox());
+        plot3D.frame(surface.boundingBox(), {padding: 1.0});
     }
 }
 
@@ -321,8 +321,7 @@ const boundingBox = surface.boundingBox();
 axesController.createFromBoundingBox(boundingBox);
 
 const plot3D = new Plot3DView(scene, canvas, boundingBox);
-plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9));
-plot3D.renderer.setAnimationLoop(animate);
+plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .9), {padding: 1.0});
 const gui = new ControlsGui();
 
 // Resizing for mobile devices
@@ -333,8 +332,8 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-function animate() {
+plot3D.renderer.setAnimationLoop(() => {
     plot3D.render();
     axesController.render(plot3D.camera);
-}
+});
 

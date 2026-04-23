@@ -247,7 +247,7 @@ const surfaceController = new SurfaceController(
 // Scale scene according to current surface
 axesController.createFromBoundingBox(surfaceController.surfaceBoundingBox());
 const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox());
-plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {translationY: -2});
+plot3D.frame(ThreeJsUtils.scaleBox3(surfaceController.surfaceBoundingBox(), .9), {padding: 0.9, translationY: -2});
 plot3D.renderer.setAnimationLoop(animate);
 const gui = new ControlsGui(surfaceController, axesController, plot3D);
 
