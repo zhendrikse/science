@@ -14,6 +14,7 @@ const orbitButton = document.getElementById("orbitButton");
 const overlay = document.getElementById("spaceTimeOverlayText");
 
 const scene = new Scene();
+scene.background = new Color(0, 0, 0);
 const worldGroup = new Group();
 scene.add(worldGroup);
 // const light = new DirectionalLight(0xffffff, 2)
@@ -44,8 +45,8 @@ class SchwarzschildSurfaceDefinition extends SurfaceDefinition {
     get rMax() { return 13 * this.M; }
 
     sample(u, v, target) {
-        const eps = 0.01;
-        const r = this.rMin + u * (this.rMax - (this.rMin + eps));
+        const epsilon = 0.01;
+        const r = (this.rMin + epsilon) + u * (this.rMax - (this.rMin + epsilon));
         const phi = v * 2 * Math.PI;
 
         target.set(
@@ -227,6 +228,27 @@ function createStateVector(isOrbit) {
     return [t, r, phi, tDot, rDot, phiDot];
 }
 
+function createPhotonSphere(M, segments = 300) {
+    const r = 3 * M;
+    const points = [];
+
+    for (let i = 0; i <= segments; i++) {
+        const phi = (i / segments) * 2 * Math.PI;
+        points.push(
+            SchwarzschildSurfaceDefinition.gridPointAt(r, phi, M)
+        );
+    }
+
+    const geometry = new BufferGeometry().setFromPoints(points);
+    const material = new LineBasicMaterial({
+        color: 0x00aaff
+    });
+
+    return new Line(geometry, material);
+}
+const photonRing = createPhotonSphere(sun.mass);
+worldGroup.add(photonRing);
+
 // Comets
 const comet = new Comet(scene, {
     position: Comet.initialPosition(Number(distanceSlider.value)),
@@ -278,6 +300,7 @@ document.getElementById('coneButton').addEventListener('click', () => {
     surfaceController.surface.visible = !surfaceController.surface.visible;
     surfaceController.contours.visible = ! surfaceController.contours.visible;
 });
+document.getElementById('photonSphereButton').addEventListener('click', () => photonRing.visible = !photonRing.visible);
 distanceSlider.addEventListener('input',
     () => document.getElementById('distanceSliderValue').textContent = distanceSlider.value);
 distanceSlider.addEventListener('input', () => {
@@ -308,6 +331,7 @@ window.addEventListener("click", () => {
 plot3D.renderer.setAnimationLoop( (now) => {
     sun.update(now * .025);
     skyDome.update(now * .001, plot3D.camera);
+    photonRing.material.color.offsetHSL(0, 0, Math.sin(now * 0.002) * 0.1);
     plot3D.render();
 
     const subSteps = orbitButton.checked ? 1000 : 20;

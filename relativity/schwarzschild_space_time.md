@@ -25,6 +25,7 @@
     <label for="gridButton">Grid: </label><input type="checkbox" checked id="gridButton"/>
     <label for="coneButton">Cone: </label><input type="checkbox" checked id="coneButton"/>
     <label for="orbitButton">Circular orbit: </label><input type="checkbox" id="orbitButton"/>
+    <label for="photonSphereButton">Photon ring: </label><input type="checkbox" id="photonSphereButton"/>
 </div>
 <div class="buttonRow">
     <!--
@@ -104,8 +105,8 @@ class SchwarzschildSurfaceDefinition extends SurfaceDefinition {
   // ...
   
   sample(u, v, target) {
-    const epsilon = 0.01;
-    const r = this.rMin + u * (this.rMax - (this.rMin + epsilon));
+    const eps = 0.01;
+    const r = (this.rMin + eps) + u * (this.rMax - (this.rMin + eps));
     const phi = v * 2 * Math.PI;
 
     target.set(
