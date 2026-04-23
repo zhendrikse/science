@@ -1208,7 +1208,8 @@ export class Cylinder extends Mesh {
     get displacement() { return this._restLength - this.axis.length(); }
 
     moveTo(newPosition) {
-        this.updateAxis(this._axis); // herbereken positie
+        this.position.copy(newPosition);
+        this.updateAxis(this._axis);
     }
 
     updateAxis(newAxis) {
@@ -1219,7 +1220,7 @@ export class Cylinder extends Mesh {
         this.scale.set(1, length / this._restLength, 1);
         this.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
 
-        const midpoint = this._position.clone().addScaledVector(direction, length / 2);
+        const midpoint = this.position.clone().addScaledVector(direction, length / 2);
         this.position.copy(midpoint);
     }
 }
