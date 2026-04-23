@@ -669,7 +669,12 @@ export class AxesController {
 }
 
 export class Plot3DView {
-    constructor(scene, canvas, boundingBox) {
+    constructor(scene, canvas, boundingBox, {
+        padding = 1.2,
+        translationY = 0,
+        minDistance = 2,
+        viewDirection = new Vector3(1, 1, 1)
+    } = {}) {
         this._scene = scene;
         this._camera = new PerspectiveCamera(45, 1, 0.1, 100);
         this._renderer = new WebGLRenderer({ alpha: true, antialias: true, canvas: canvas });
@@ -680,7 +685,7 @@ export class Plot3DView {
         //this.controls.maxPolarAngle = Math.PI * 0.95;
 
         this.#setupLights();
-        this.frame(boundingBox);
+        this.frame(boundingBox, {padding, translationY, minDistance, viewDirection});
     }
 
     #setupLights() {
@@ -1098,7 +1103,7 @@ export class ArrowField extends Group {
     }
 }
 
-export class Sphere {
+export class Sphere extends Mesh {
     constructor(group, {
         position = new Vector3(0, 0, 0),
         radius = 1,
@@ -1121,15 +1126,15 @@ export class Sphere {
             metalness: 0.8
         })
 
-        this._mesh = new Mesh(new SphereGeometry(radius * scale, segments, segments), material);
-        this._mesh.position.copy(position.clone().multiplyScalar(scale));
-        this._mesh.visible = visible;
-        this._mesh.castShadow = castShadow;
+        super(new SphereGeometry(radius * scale, segments, segments), material);
+        this.position.copy(position.clone().multiplyScalar(scale));
+        this.visible = visible;
+        this.castShadow = castShadow;
         this._radius = radius;
         this._position = position;
         this._scale = scale;
         this._group = group;
-        this._group.add(this._mesh);
+        this._group.add(this);
         this._trail = null;
         if (makeTrail) this.enableTrail({ color: color });
     }
@@ -1141,7 +1146,7 @@ export class Sphere {
         linewidth = 1
     } = {}) {
 
-        this._trail = new Trail(this._mesh);
+        this._trail = new Trail(this);
         this._trail.enable({ maxPoints, color, trailStep, linewidth });
     }
 
@@ -1153,14 +1158,12 @@ export class Sphere {
 
     moveTo(newPosition) {
         this._position.copy(newPosition);
-        this._mesh.position.copy(newPosition.clone().multiplyScalar(this._scale));
+        this.position.copy(newPosition.clone().multiplyScalar(this._scale));
         this._trail?.update();
     }
 
-    get visible() { return this._mesh.visible; }
     get position() { return this._position; }
     get radius() { return this._radius; }
-    get rayCastHandle() { return this._mesh }
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceTo(other) { return this.positionVectorTo(other).length() }
 }
@@ -1450,10 +1453,11 @@ export class Ball {
     get visible() { return this._sphere.visible; }
     get neighbors() { return this._neighbors; }
     get elasticity() { return this._elasticity; }
-    get rayCastHandle() { return this._sphere.rayCastHandle; }
+    get rayCastHandle() { return this._sphere; }
     get body() { return this._state; }
 
     set position(newPosition) { this.moveTo(newPosition); }
+    set visible(value) { this._sphere.visible = value; }
     distanceTo(other) { return this._sphere.distanceTo(other) }
     positionVectorTo(other) { return this._sphere.positionVectorTo(other); }
 }

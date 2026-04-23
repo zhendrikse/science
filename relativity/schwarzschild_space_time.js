@@ -124,6 +124,7 @@ class Comet extends Ball {
 
         if (this._stateVector[1] <= 2*M + 0.01) {
             this.stop();
+            this.visible = false;
             return;
         }
 
@@ -205,7 +206,7 @@ worldGroup.add(grid);
 const skyDome = new SkyDome({starDensity: 1, skyRadius: 500, glowStarCount: 500});
 worldGroup.add(skyDome);
 
-const sunRadius = 7;
+const sunRadius = 9;
 const sun = new Sun({
     "name": "sun",
     "radius": 1,
@@ -249,7 +250,9 @@ const realComet = new Comet(scene, {
 });
 
 const mathSurface = new Surface(new SchwarzschildSurfaceDefinition(5));
-const surfaceParams = new ViewParameters();
+const surfaceParams = new ViewParameters({
+    opacity: 0.2
+});
 const surfaceController = new SurfaceController(
     mathSurface,
     surfaceParams,
@@ -257,7 +260,10 @@ const surfaceController = new SurfaceController(
     new IsoparametricContoursView(mathSurface)
 );
 worldGroup.add(surfaceController);
-const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox());
+const plot3D = new Plot3DView(scene, canvas, surfaceController.surfaceBoundingBox(), {
+    translationY: -100,
+    padding: 0.8
+});
 // const gui = new ControlsGui();
 
 // Resizing for mobile devices
