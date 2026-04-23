@@ -47,9 +47,7 @@ class ControlsGui {
         const controls = new GUI({width: "100%", autoPlace: false});
         document.getElementById("gui-container").appendChild(controls.domElement);
 
-        this._xFunction = null;
         this._yFunction = null;
-        this._zFunction = null;
         this._uInterval = null;
         this._vInterval = null;
         this._intervalInputs = {
