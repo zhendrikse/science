@@ -133,6 +133,22 @@ export class PixelImage {
         }
     }
 
+    renderToCanvas(context, scale = true) {
+        const imageData = this.#asCanvasImageData(context);
+
+        if (!scale) {
+            context.putImageData(imageData, 0, 0);
+            return;
+        }
+
+        // draw direct scaled imageData via offscreen canvas
+        const off = new OffscreenCanvas(this.width, this.height);
+        off.getContext("2d").putImageData(imageData, 0, 0);
+
+        context.imageSmoothingEnabled = false;
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.drawImage(off, 0, 0, context.canvas.width, context.canvas.height);
+    }
 
     render(context) {
         context.clearRect(0, 0, this.width, this.height);

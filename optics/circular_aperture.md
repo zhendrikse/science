@@ -9,8 +9,30 @@ Since the resulting diffraction pattern is too faint to be discerned on a comput
 a 'fake' intensity image of the diffraction pattern is shown as well, where the intensity
 is calculated by using the absolute value of the amplitude of the electric field instead.
 
-{% include_relative code/CircularAperture.html %}
+<h3>Square of field amplitude</h3>
+<div style="margin: 0 auto; text-align: center;">
+    <canvas id="canvas1" width="300" height="300"></canvas>
+</div>
 
+<h3>Absolute value of field amplitude</h3>
+<div style="margin: 0 auto; text-align: center;">
+    <canvas id="canvas2" width="300" height="300"></canvas>
+</div>
+
+<div class="buttonRow">
+  <label for="logScale"><input type="checkbox" id="logScale"> Log scale</label>
+  <label for="color"><input type="checkbox" id="color"> Color coding</label>
+</div>
+<div class="buttonRow">
+  <label for="diameterSlider">Aperture:
+  <input type="range" id="diameterSlider" min="20" max="200" value="200">
+  </label><span id="diameterValue">200</span> µm
+  <label for="popFactorSlider">Pop-out factor:
+  <input type="range" id="popFactorSlider" min=".3" max="1" value=".3" step="0.01">
+  </label>
+</div>
+
+<script type="module" src="circular_aperture.js"></script>
 <p style="clear:both;"></p>
 
 ## Instructions given in the video
