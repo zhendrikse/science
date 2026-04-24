@@ -1,7 +1,12 @@
 {% include breadcrumbs.html %}
 
-## Diffraction pattern of a circular aperture 
+## Circular aperture diffraction pattern 
 <div class="header_line"><br/></div>
+
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=circular_aperture.js)](https://github.com/zhendrikse/science/blob/main/optics/circular_aperture.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+
+📌 Based on code shown in [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang
 
 Below you'll find a diffraction pattern of a circular aperture far away from a screen. 
 The intensity is calculated as the square of the amplitude of the electric field. 
@@ -10,16 +15,18 @@ a 'fake' intensity image of the diffraction pattern is shown as well, where the 
 is calculated by using the absolute value of the amplitude of the electric field instead.
 
 <div style="margin: 0 auto; text-align: center;">
-  <canvas id="canvas1" width="200" height="200"></canvas>
-  <canvas id="canvas2" width="200" height="200"></canvas>
+  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas1" width="250" height="250"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas2" width="250" height="250"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
+<div class="buttonRow">
+  <label for="logScale"><input type="checkbox" id="logScale"> Log scale</label>
+  <label for="color"><input type="checkbox" id="color"> Color coding</label>
+</div>
 <div class="buttonRow">
   <label for="popFactorSlider">Pop-out factor:
   <input type="range" id="popFactorSlider" min=".3" max="1" value=".3" step="0.01">
   </label>
-  <label for="logScale"><input type="checkbox" id="logScale"> Log scale</label>
-  <label for="color"><input type="checkbox" id="color"> Color coding</label>
 </div>
 <div class="buttonRow">
   <label for="diameterSlider">Aperture:
