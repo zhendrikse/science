@@ -31,8 +31,8 @@ is calculated by using the absolute value of the amplitude of the electric field
 <div class="buttonRow">
   <label for="diameterSlider">Aperture:
   <input type="range" id="diameterSlider" min="20" max="200" value="200">
-  </label>
   <span id="diameterValue">200</span> µm
+  </label>
 </div>
 
 <script type="module" src="circular_aperture.js"></script>
