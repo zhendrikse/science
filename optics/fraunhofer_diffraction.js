@@ -138,7 +138,7 @@ function wavelengthColor(value) {
         base.r * value,
         base.g * value,
         base.b * value,
-        Math.pow(value, 0.75)
+        Math.pow(value, popFactor)
     ];
 }
 
@@ -147,7 +147,7 @@ function drawToImage(image, data, isAmplitude, useLog=false, useSpectralColor=tr
         for (let j = 0; j < resolution; j++) {
             const value = toColorValue(data[i][j], useLog, isAmplitude);
             image.setColourAt(i, j,
-                useSpectralColor ? wavelengthColor(value) : [value, value, value, Math.pow(value, .75)]);
+                useSpectralColor ? wavelengthColor(value) : [value, value, value, Math.pow(value, popFactor)]);
         }
 }
 
@@ -249,8 +249,7 @@ wavelengthSlider.addEventListener("change", () => {
 });
 
 popFactorSlider.addEventListener("input", () => {
-    // .3 ... 1 => 1 ... .3
-    popFactor = Number(1 - popFactorSlider.value + .3);
+    popFactor = Number(1 - popFactorSlider.value + .5);
     render();
 })
 
