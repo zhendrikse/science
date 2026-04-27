@@ -3,7 +3,7 @@ import { Scene, Color, PerspectiveCamera, WebGLRenderer, BufferAttribute, Canvas
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import { SkyDome } from '../js/astro-extensions.js';
 import {ThreeJsUtils} from "../js/three-js-extensions.js";
-import { normalDistribution } from "../js/math-utils";
+import { normalDistribution } from "../js/math-utils.js";
 
 // TODO
 // Press button to start

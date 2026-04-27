@@ -14,7 +14,7 @@
     <button id="zoomOutButton">➖ Zoom Out</button>
 </div>
 <div class="canvasWrapper2D" id="canvas-wrapper" style="aspect-ratio: 13 / 8;">
-    <canvas class="applicationCanvas2D" id="mandelbrotCanvas"></canvas>
+    <canvas class="applicationCanvas2D" id="mandelbrotCanvas" style="aspect-ratio: 13/8;"></canvas>
 </div>
 <div style="margin-top: 2px;">
     <label>Colors:</label><button id="colorSchemeButton1">scheme 1</button>

@@ -1,5 +1,5 @@
 import { Pixel, PixelImage } from '../js/canvas-extensions.js';
-import { FireColorMap } from '../js/color-maps.js';
+import { BurningShipColorMap } from '../js/color-maps.js';
 
 const mandelbrotCanvas = document.getElementById("mandelbrotCanvas");
 const display = mandelbrotCanvas.getContext("2d");
@@ -35,7 +35,7 @@ function colorPalette(z, i, maxIterations) {
     else if (mu > maxIterations || isNaN(mu))
         mu = 11 * maxIterations / 12;
     const colourMapIndex = 255 - Math.floor((mu) * 255 / maxIterations);
-    return [FireColorMap[colourMapIndex][0] / 255, [FireColorMap[colourMapIndex][1] / 255], [FireColorMap[colourMapIndex][2] / 255]];
+    return [BurningShipColorMap[colourMapIndex][0] / 255, [BurningShipColorMap[colourMapIndex][1] / 255], [BurningShipColorMap[colourMapIndex][2] / 255]];
 }
 
 class FractalRange {

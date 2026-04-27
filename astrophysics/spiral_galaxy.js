@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { ThreeJsUtils } from '../js/three-js-extensions.js';
 import { SkyDome } from '../js/astro-extensions.js';
-import { normalDistribution, randomArbitrary, randomInt } from "../js/math-utils";
+import { normalDistribution, randomArbitrary, randomInt } from "../js/math-utils.js";
 
 const vector = THREE.Vector3,
     color = THREE.Color;

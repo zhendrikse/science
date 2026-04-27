@@ -91,7 +91,6 @@ figcaption {
     aspect-ratio: 1/1;
     margin: 10px auto;
     max-width: 600px;
-    pointer-events: none;  /* Allow mouse interactions */
 }
 
 .applicationCanvas {
