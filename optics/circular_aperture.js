@@ -67,14 +67,22 @@ function recompute(diameterValue) {
 //
 // De facto, this amounts to a numerical version of the Fraunhofer diffraction integral
 //
-function sumRaysAt(i, j, inAperture, X, Y, dx_dy) {
-    let sum = 0;
+function sumRaysAt(i, j, circleMask, squareMask, X, Y, dx_dy) {
+    let Ec = 0;
+    let Es = 0;
 
     for (let m = 0; m < N; m++)
-        for (let n = 0; n < N; n++)
-            if (inAperture[m][n])
-                sum += Math.cos(k * (x[i][j] * X[m][n] + y[i][j] * Y[m][n])) * dx_dy;
-    return sum;
+        for (let n = 0; n < N; n++) {
+            const phase = Math.cos(k * (x[i][j] * X[m][n] + y[i][j] * Y[m][n]));
+
+            if (circularCheckBox.checked && circleMask[m][n])
+                Ec += phase * dx_dy;
+
+            if (squareCheckBox.checked && squareMask[m][n])
+                Es += phase * dx_dy;
+        }
+
+    return Ec + Es;
 }
 
 const circularAperture = (x, y, diameter) => x * x + y * y < (.5 * diameter) * (.5 * diameter);
@@ -83,17 +91,16 @@ const squareAperture = (x, y, size) => Math.abs(x) <= size * .5 && Math.abs(y) <
 function computeElectricField(diameter, dx_dy) {
     const side_ap = linspace(-diameter *.5, diameter *.5, N);
     const [X, Y] = meshgrid(side_ap, side_ap);
-    const inAperture = Array.from({length:N}, (_,i) =>
-        Array.from({length:N}, (_,j) => {
-            const inCircle = circularAperture(X[i][j], Y[i][j], diameter) && circularCheckBox.checked;
-            const inSquare = squareAperture(X[i][j], Y[i][j], diameter) && squareCheckBox.checked;
-            return inCircle || inSquare;
-        })
-    );
+
+    const circleMask = Array.from({length:N}, (_, i) =>
+        Array.from({length:N}, (_, j) => circularAperture(X[i][j], Y[i][j], diameter)));
+
+    const squareMask = Array.from({length:N}, (_, i) =>
+        Array.from({length:N}, (_, j) => squareAperture(X[i][j], Y[i][j], diameter)));
 
     for (let i = 0; i < N; i++)
         for (let j = 0; j < N; j++)
-            electricField[i][j] = sumRaysAt(i, j, inAperture, X, Y, dx_dy) / R;
+            electricField[i][j] = sumRaysAt(i, j, circleMask, squareMask, X, Y, dx_dy) / R;
 }
 
 const scaleFactor = 1000;
