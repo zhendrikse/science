@@ -11,7 +11,7 @@ const overlay = document.getElementById("isw3dOverlayText");
 const scene = new Scene();
 
 const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-camera.position.set(10, 15, 10);
+camera.position.set(8, 12, 8);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({ alpha: true, antialias: true, canvas: canvas });
