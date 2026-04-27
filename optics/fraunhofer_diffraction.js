@@ -8,15 +8,13 @@ const wavelengthValue = document.getElementById("wavelengthValue");
 const wavelengthProbe = document.getElementById("wavelengthProbe");
 const circularCheckBox = document.getElementById("circle");
 const squareCheckBox = document.getElementById("square");
-const context1 = document.getElementById("canvas1").getContext("2d");
-const context2 = document.getElementById("canvas2").getContext("2d");
+const screenContext = document.getElementById("screen").getContext("2d");
 
 const resolution = 100;
 const R = 1.0;
 
 let popFactor = 1;
 const intensityImage = new PixelImage(resolution, resolution);
-const amplitudeImage = new PixelImage(resolution, resolution);
 
 function linspace(start, stop, num) {
     const linSpace = [];
@@ -52,22 +50,16 @@ class ElectricField {
         this._field = Array.from({length:N}, () => Array(N).fill(0));
         this._N = N;
         this._intensity = null;
-        this._amplitude = null;
         this._maxIntensity = 0;
-        this._maxAmplitude = 0;
         this._update();
     }
 
     get intensity() { return this._intensity; }
-    get amplitude() { return this._amplitude; }
     get maxIntensity() { return this._maxIntensity;}
-    get maxAmplitude() { return this._maxAmplitude; }
 
     _update() {
         this._intensity = this._field.map(row => row.map(v => v * v));
-        this._amplitude = this._field.map(row => row.map(v => Math.abs(v)));
         this._maxIntensity = Math.max(...this._intensity.flat());
-        this._maxAmplitude = Math.max(...this._amplitude.flat());
     }
 
     recompute(diameterValue, lambdaInNanoMeter) {
@@ -117,16 +109,11 @@ class ElectricField {
     }
 }
 
-const scaleFactor = 1000;
-function toColorValue(dataValue, useLogScale, isAmplitude) {
-    const maxValue =  isAmplitude ? electricField.maxAmplitude : electricField.maxIntensity;
-    let val = useLogScale ?
-        Math.log(1 + scaleFactor * dataValue) / Math.log(1 + scaleFactor * maxValue) :
-        dataValue / maxValue;
+function toneMap(val, useLog) {
+    if (useLog)
+        return Math.log(1 + 1000 * val) / Math.log(1001);
 
-    // clamp (safe)
-    val = Math.max(0, Math.min(1, val));
-    return val;
+    return Math.pow(val, popFactor);
 }
 
 function wavelengthColor(value) {
@@ -141,11 +128,10 @@ function wavelengthColor(value) {
     ];
 }
 
-function drawToImage(image, data, isAmplitude, useLog=false, useSpectralColor=true) {
+function drawToImage(image, data, useLog=false, useSpectralColor=true) {
     for (let i = 0; i < resolution; i++)
         for (let j = 0; j < resolution; j++) {
-            const colorValue = toColorValue(data[i][j], useLog, isAmplitude);
-            const value = Math.pow(colorValue, popFactor);
+            const value = toneMap(data[i][j] / electricField.maxIntensity, useLog);
             image.setColourAt(i, j, useSpectralColor ? wavelengthColor(value) : [value, value, value]);
         }
 }
@@ -198,16 +184,19 @@ function render() {
     const useLog = document.getElementById("logScale").checked;
     const spectralColor = document.getElementById("laserColor").checked;
 
-    drawToImage(intensityImage, electricField.intensity, false, useLog, spectralColor);
-    drawToImage(amplitudeImage, electricField.amplitude, true, useLog, spectralColor);
-
-    intensityImage.renderToCanvas(context1);
-    amplitudeImage.renderToCanvas(context2);
+    drawToImage(intensityImage, electricField.intensity, useLog, spectralColor);
+    intensityImage.renderToCanvas(screenContext);
 }
 
+//
 // Event listeners
-document.getElementById("logScale").addEventListener("change", render);
+//
 document.getElementById("laserColor").addEventListener("change", render);
+
+document.getElementById("logScale").addEventListener("change", () => {
+    render();
+    popFactorSlider.disabled = document.getElementById("logScale").checked;
+});
 
 function updateWavelengthUI() {
     const wl = Number(wavelengthSlider.value);
@@ -248,7 +237,7 @@ wavelengthSlider.addEventListener("change", () => {
 });
 
 popFactorSlider.addEventListener("input", () => {
-    popFactor = Number(1 - popFactorSlider.value + .4);
+    popFactor = Number(1 - popFactorSlider.value + .3);
     render();
 })
 

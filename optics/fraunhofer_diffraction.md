@@ -17,8 +17,7 @@ a 'fake' intensity image of the diffraction pattern is shown as well, where the 
 is calculated by using the absolute value of the amplitude of the electric field instead.
 
 <div style="margin: 0 auto; text-align: center;">
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas1" style="aspect-ratio: 1/1"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas2" style="aspect-ratio: 1/1"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="screen" class="applicationCanvas2D"></canvas>
 </div>
 
 <div class="buttonRow">
@@ -29,7 +28,7 @@ is calculated by using the absolute value of the amplitude of the electric field
 </div>
 <div class="buttonRow">
   <label for="popFactorSlider">Pop factor:
-    <input type="range" id="popFactorSlider" min=".4" max="1" value=".4" step="0.01">
+    <input type="range" id="popFactorSlider" min=".3" max="1" value=".3" step="0.01">
   </label>
 </div>
 <div class="buttonRow">
