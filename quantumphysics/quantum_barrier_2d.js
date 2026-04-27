@@ -1,4 +1,4 @@
-import { toColorString, WavePacket, WavePacketDisplay, Complex } from "./2d-quantum-extensions.js";
+import { WavePacket, WavePacketDisplay } from "./2d-quantum-extensions.js";
 
 // DOM elements:
 const theCanvas = document.getElementById("barrierCanvas2D");

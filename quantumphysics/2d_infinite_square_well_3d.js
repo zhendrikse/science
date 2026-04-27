@@ -3,7 +3,7 @@ import {
     AmbientLight, Mesh, MeshPhongMaterial, CylinderGeometry
 } from "three";
 import { ThreeJsUtils } from '../js/three-js-extensions.js';
-import { Complex }  from "./2d-quantum-extensions.js";
+import { Complex } from "../js/math-utils.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const canvas = document.getElementById("iswWaveCanvas");
@@ -196,7 +196,7 @@ function step(i, j, t) {
     let psi = new Complex(0, 0);
     for (let key in eigenstates._eigenstates) {
         const basis = eigenstates._eigenstates[key][i][j]
-        const phase = Complex.exp(eigenstates._omegas[key] * t)
+        const phase = Complex.fromPhase(eigenstates._omegas[key] * t)
         const term = Complex.multiply(new Complex(eigenstates._coefs[key] * basis, 0), phase)
         psi = Complex.add(psi, term)
     }

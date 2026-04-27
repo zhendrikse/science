@@ -1,19 +1,3 @@
-export class Complex {
-    constructor(re, im) {
-        this.re = re;
-        this.im = im;
-    }
-
-    static multiplyScalar = (a, scalar) => new Complex(a.re * scalar, a.im * scalar);
-    static exp = (theta) => new Complex(Math.cos(theta), Math.sin(theta));
-    static abs = (z) => Math.sqrt(z.re * z.re + z.im * z.im);
-    static add = (a, b) => new Complex(a.re + b.re, a.im + b.im);
-    static multiply = (a, b) => new Complex(
-        a.re * b.re - a.im * b.im,
-        a.re * b.im + a.im * b.re
-    );
-}
-
 /** Utility function to convert a number to a two-digit hex string (from stackoverflow): */
 function numberToTwoDigitHexString(numberToConvert) {
     const hex = numberToConvert.toString(16); // 16 is necessary for conversion to hex string!

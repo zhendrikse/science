@@ -1,5 +1,6 @@
 import { Pixel, PixelImage } from '../js/canvas-extensions.js';
-import { BurningShipColorMap } from '../js/color-maps.js';
+import { FireColorMap } from '../js/color-maps.js';
+import { Complex } from "../js/math-utils.js";
 
 const mandelbrotCanvas = document.getElementById("mandelbrotCanvas");
 const display = mandelbrotCanvas.getContext("2d");
@@ -29,13 +30,13 @@ function rgbColor(brightness) {
 }
 
 function colorPalette(z, i, maxIterations) {
-    let mu = i + 1 - Math.log(Math.log(z[0] * z[0] + z[1] * z[1])) / Math.log(2);
+    let mu = i + 1 - Math.log(Math.log(Complex.absSquared(z))) / Math.log(2);
     if (mu < 0)
         mu = 0;
     else if (mu > maxIterations || isNaN(mu))
         mu = 11 * maxIterations / 12;
     const colourMapIndex = 255 - Math.floor((mu) * 255 / maxIterations);
-    return [BurningShipColorMap[colourMapIndex][0] / 255, [BurningShipColorMap[colourMapIndex][1] / 255], [BurningShipColorMap[colourMapIndex][2] / 255]];
+    return [FireColorMap[colourMapIndex][0] / 255, FireColorMap[colourMapIndex][1] / 255, FireColorMap[colourMapIndex][2] / 255];
 }
 
 class FractalRange {
@@ -84,7 +85,7 @@ class Fractal {
     mapXyToComplexPlane(x, y) {
         const re = this.range.re_min + (x / this.image.width) * this.range.realRange();
         const im = this.range.im_min + (y / this.image.height) * this.range.imaginaryRange();
-        return this.complex(re, im);
+        return new Complex(re, im);
     }
 
     setPixelColorAt(x, y) {
@@ -115,32 +116,16 @@ class Fractal {
     recenter(x, y) {
         const c = this.mapXyToComplexPlane(x, y);
         this.range = new FractalRange(
-            c[0] - .5 * this.range.realRange(),
-            c[0] + .5 * this.range.realRange(),
-            c[1] - .5 * this.range.imaginaryRange(),
-            c[1] + .5 * this.range.imaginaryRange());
+            c.re - .5 * this.range.realRange(),
+            c.re + .5 * this.range.realRange(),
+            c.im - .5 * this.range.imaginaryRange(),
+            c.im + .5 * this.range.imaginaryRange());
         this.render();
     }
 
     setColorFunctionTo(newColorFunction) {
         this.colorFunction = newColorFunction;
         this.render();
-    }
-
-    complex(re_, im_) {
-        return [re_, im_];
-    }
-
-    abs_z_squared_plus_c(z_, c_) {
-        return [z_[0] * z_[0] - z_[1] * z_[1] + c_[0], Math.abs(2 * z_[0] * z_[1]) + c_[1]];
-    }
-
-    z_squared_plus_c(z_, c_) {
-        return [z_[0] * z_[0] - z_[1] * z_[1] + c_[0], 2 * z_[0] * z_[1] + c_[1]];
-    }
-
-    abs_z_squared(z_) {
-        return z_[0] * z_[0] + z_[1] * z_[1];
     }
 }
 
@@ -151,11 +136,11 @@ class Mandelbrot extends Fractal {
 
     setPixelColorAt(x, y) {
         const c = this.mapXyToComplexPlane(x, y);
-        let z = this.complex(0, 0);
+        let z = new Complex(0, 0);
 
         let n = 0;
-        while (this.abs_z_squared(z) <= 4 && n < this.maxIter) {
-            z = this.z_squared_plus_c(z, c);
+        while (Complex.absSquared(z) <= 4 && n < this.maxIter) {
+            z = Complex.squaredPlusC(z, c);
             n += 1;
         }
 
@@ -175,8 +160,8 @@ class Julia extends Fractal {
         let z = this.mapXyToComplexPlane(x, y);
 
         let n = 0;
-        while (this.abs_z_squared(z) <= 4 && n < this.maxIter) {
-            z = this.z_squared_plus_c(z, c);
+        while (Complex.absSquared(z) <= 4 && n < this.maxIter) {
+            z = Complex.squaredPlusC(z, c);
             n += 1;
         }
 
@@ -193,11 +178,11 @@ class BurningShip extends Fractal {
 
     setPixelColorAt(x, y) {
         const c = this.mapXyToComplexPlane(x, y);
-        let z = this.complex(0, 0);
+        let z = new Complex(0, 0);
 
         let n = 0;
-        while (this.abs_z_squared(z) <= 16 && n < this.maxIter) {
-            z = this.abs_z_squared_plus_c(z, c);
+        while (Complex.absSquared(z) <= 16 && n < this.maxIter) {
+            z = Complex.absSquaredPlusC(z, c);
             n += 1;
         }
 
@@ -214,39 +199,39 @@ mandelbrotCanvas.addEventListener("mousedown", function(event) {
     fractal.recenter(event.clientX - rect.left, event.clientY - rect.top);
 });
 
-document.getElementById("zoomInButton").addEventListener("click", function(event) {
+document.getElementById("zoomInButton").addEventListener("click", () => {
     fractal.zoomIn();
 });
 
-document.getElementById("zoomOutButton").addEventListener("click", function(event) {
+document.getElementById("zoomOutButton").addEventListener("click", () => {
     fractal.zoomOut();
 });
 
-document.getElementById("resetViewButton").addEventListener("click", function(event) {
+document.getElementById("resetViewButton").addEventListener("click", () => {
     fractal.reset();
 });
 
-document.getElementById("colorSchemeButton1").addEventListener("click", function(event) {
+document.getElementById("colorSchemeButton1").addEventListener("click", () => {
     fractal.setColorFunctionTo(rgbColor);
 });
 
-document.getElementById("colorSchemeButton2").addEventListener("click", function(event) {
+document.getElementById("colorSchemeButton2").addEventListener("click", () => {
     fractal.setColorFunctionTo(hueColor);
 });
 
-document.getElementById("canvasSizeButton1").addEventListener("click", function(event) {
+document.getElementById("canvasSizeButton1").addEventListener("click", () => {
     mandelbrotCanvas.width = 600;
     mandelbrotCanvas.height = 400;
     fractal.render();
 });
 
-document.getElementById("canvasSizeButton2").addEventListener("click", function(event) {
+document.getElementById("canvasSizeButton2").addEventListener("click", () => {
     mandelbrotCanvas.width = 1200;
     mandelbrotCanvas.height = 800;
     fractal.render();
 });
 
-document.getElementById("canvasSizeButton3").addEventListener("click", function(event) {
+document.getElementById("canvasSizeButton3").addEventListener("click", () => {
     mandelbrotCanvas.width = 1800;
     mandelbrotCanvas.height = 1200;
     fractal.render();
@@ -263,9 +248,7 @@ function resizeCanvasToWrapper() {
 }
 
 resizeCanvasToWrapper();
-window.addEventListener('resize', () => {
-    resizeCanvasToWrapper();
-});
+window.addEventListener('resize', () => resizeCanvasToWrapper());
 
 for (const [key, value] of juliaButtons)
     document.getElementById(key).onclick = function() {

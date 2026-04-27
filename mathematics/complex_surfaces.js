@@ -1,9 +1,8 @@
 import { Scene, Color, Group, BufferGeometry, Vector3, Mesh, Float32BufferAttribute, BufferAttribute } from "three";
-import { AxesController, Interval, ThreeJsUtils, Plot3DView, AxesParameters, MathWrapper, ComplexNumber }
-    from '../js/three-js-extensions.js';
+import { AxesController, Interval, ThreeJsUtils, Plot3DView, AxesParameters } from '../js/three-js-extensions.js';
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import {  ColorMapper, Surface, SurfaceView, SurfaceDefinition }
-    from '../js/3d-surface-components.js';
+import {  ColorMapper, Surface, SurfaceView, SurfaceDefinition } from '../js/3d-surface-components.js';
+import { Complex } from '../js/math-utils.js';
 
 const canvasContainer = document.getElementById("complexPlotContainer");
 const canvas = document.getElementById("complexPlotCanvas");
@@ -158,65 +157,64 @@ export class ComplexSurface extends Surface {
     }
 }
 
-const math = new MathWrapper();
 const zSquaredPlusTwo = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
-    (z) => math.add(math.multiply(z, z), math.complex(2, 0)),
+    (z) => Complex.add(Complex.multiply(z, z), new Complex(2, 0)),
     new Interval(-2, 2),
     new Interval(-2, 2),
     "$$\\psi(z) = \\big(z^2 + 2\\big)$$",
     "z * z + 2"
 ));
 const zAbsSquared = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
-    (z) => math.multiply(z, new ComplexNumber(z.re, -z.im)),
+    (z) => Complex.multiply(z, new Complex(z.re, -z.im)),
     new Interval(-2, 2),
     new Interval(-2, 2),
     "$$\\psi(z) = z\\bar{z}$$",
     "z * z_bar"
 ));
 const zCubed = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
-    (z) => math.add(math.multiply(z, math.multiply(z, z)), new ComplexNumber(2, 0)),
+    (z) => Complex.add(Complex.multiply(z, Complex.multiply(z, z)), new Complex(2, 0)),
     new Interval(-2, 2),
     new Interval(-2, 2),
     "$$\\psi(z) = \\big(z^3 + 2\\big)$$",
     "z * z * z + 2"
 ));
 const sqrtZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
-    (z) => math.sqrt(math.add(z, math.complex(0.0001, 0.0001))),
+    (z) => Complex.sqrt(Complex.add(z, new Complex(0.0001, 0.0001))),
     new Interval(-1, 1),
     new Interval(-1, 1),
     "$$\\psi(z) = \\sqrt(z)$$",
     "sqrt(z)"
 ));
 const expZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
-    (z) => math.exp(math.multiply(z, z)),
+    (z) => Complex.exp(Complex.multiply(z, z)),
     new Interval(-1, 1),
     new Interval(-1, 1),
     "$$\\psi(z) = \\exp(z * z)$$",
     "exp(z * z)"
 ));
 const logZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
-    (z) => math.log(math.add(z, math.complex(0.0001, 0.0001))),
+    (z) => Complex.log(Complex.add(z, new Complex(0.0001, 0.0001))),
     new Interval(-Math.PI, Math.PI),
     new Interval(-Math.PI, Math.PI),
     "$$\\psi(z) = \\log(z)$$",
     "log(z)"
 ));
 const sinZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
-    (z) => math.sin(z),
+    (z) => Complex.sin(z),
     new Interval(-Math.PI, Math.PI),
     new Interval(-Math.PI, Math.PI),
     "$$\\psi(z) = \\sin(z)$$",
     "sin(z)"
 ));
 const zPlusOneOverZMinusOne = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
-    (z) => math.divide(math.add(math.complex(1, 0), z), math.add(math.complex(-1, 0), z)),
+    (z) => Complex.divide(Complex.add(new Complex(1, 0), z), Complex.add(new Complex(-1, 0), z)),
     new Interval(-4, 4),
     new Interval(-4, 4),
     "$$\\psi(z) = \\bigg(\\dfrac{z + 1}{z - 1} \\bigg)$$",
     "(z + 1) / (z - 1)"
 ));
 const zPlusOneOverZ = new ComplexSurfaceDefinition(new ComplexSurfaceSpecification(
-    (z) => math.add(z, math.divide(math.complex(1, 0), math.add(z, math.complex(0.01, 0)))),
+    (z) => Complex.add(z, Complex.divide(new Complex(1, 0), Complex.add(z, new Complex(0.01, 0)))),
     new Interval(-3, 3),
     new Interval(-3, 3),
     "$$\\psi(z) = z + \\bigg(\\dfrac{1}{z}\\bigg)$$",

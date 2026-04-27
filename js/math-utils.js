@@ -32,6 +32,50 @@ export function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export class Complex {
+    constructor(re, im) {
+        this.re = re;
+        this.im = im;
+    }
+
+    static multiplyScalar = (a, scalar) => new Complex(a.re * scalar, a.im * scalar);
+    static fromPhase = (theta) => new Complex(Math.cos(theta), Math.sin(theta));
+    static abs = (z) => Math.sqrt(Complex.absSquared(z));
+    static add = (a, b) => new Complex(a.re + b.re, a.im + b.im);
+    static subtract = (a, b) => new Complex(a.re - b.re, a.im - b.im);
+    static multiply = (a, b) => new Complex(
+        a.re * b.re - a.im * b.im,
+        a.re * b.im + a.im * b.re
+    );
+    static log = (z) => new Complex(Math.log(Complex.abs(z)), Math.atan2(z.im, z.re));
+    static exp = (z) => new Complex(Math.exp(z.re) * Math.cos(z.im), Math.exp(z.re) * Math.sin(z.im))
+    static sin(z) {
+        const a = Complex.exp(new Complex(-z.im, z.re));
+        const b = Complex.exp(new Complex(z.im, -z.re));
+        return new Complex((a.im - b.im) / 2, (b.re - a.re) / 2);
+    }
+    static divide = (z1, z2) => {
+        const denominator = z2.re * z2.re + z2.im * z2.im;
+        const re = z1.re * z2.re + z1.im * z2.im;
+        const im = z1.im * z2.re - z1.re * z2.im;
+        return new Complex(re / denominator, im / denominator);
+    }
+    static sqrt(z) {
+        const r = Complex.abs(z);
+        const real = Math.sqrt((r + z.re) / 2);
+        const imag = Math.sign(z.im || 1) * Math.sqrt((r - z.re) / 2);
+        return new Complex(real, imag);
+    }
+
+    static absSquaredPlusC(z_, c_) {
+        return new Complex(z_.re * z_.re - z_.im * z_.im + c_.re, Math.abs(2 * z_.re * z_.im) + c_.im);
+    }
+    static squaredPlusC(z_, c_) {
+        return new Complex(z_.re * z_.re - z_.im * z_.im + c_.re, 2 * z_.re * z_.im + c_.im);
+    }
+    static absSquared(z_) { return z_.re * z_.re + z_.im * z_.im; }
+}
+
 // js/fft-esm.js
 // ESM-versie van fft.js suitable for browser
 export class FFT {
