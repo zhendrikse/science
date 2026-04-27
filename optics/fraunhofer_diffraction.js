@@ -200,12 +200,12 @@ document.getElementById("laserColor").addEventListener("change", render);
 
 document.getElementById("squareButton").addEventListener("click", () => {
     aperture.isCircular = false;
-    recomputeAndRender(aperture);
+    recomputeAndRender(aperture).then();
 });
 
 document.getElementById("circleButton").addEventListener("click", () => {
     aperture.isCircular = true;
-    recomputeAndRender(aperture);
+    recomputeAndRender(aperture).then();
 });
 
 function updateWavelengthUI() {
@@ -229,7 +229,7 @@ diameterSlider.addEventListener("change", () => {
     const diameter = Number(diameterSlider.value);
     diameterLabel.textContent = `${diameter} µm`;
     aperture.diameter = diameter;
-    recomputeAndRender(aperture);
+    recomputeAndRender(aperture).then();
 });
 
 popFactorSlider.addEventListener("input", () => {
@@ -240,4 +240,4 @@ popFactorSlider.addEventListener("input", () => {
 const aperture = new Aperture(Number(diameterSlider.value), resolution);
 const electricField = new ElectricField(resolution);
 updateWavelengthUI();
-recomputeAndRender(aperture);
+recomputeAndRender(aperture).then();
