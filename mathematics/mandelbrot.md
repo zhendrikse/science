@@ -3,9 +3,10 @@
 ## Generating Mandelbrot images
 <div class="header_line"><br/></div>
 
-🔧 Code in [mandelbrot.html](https://github.com/zhendrikse/science/blob/main/mathematics/code/mandelbrot.html) written by [Zeger Hendrikse](https://www.hendrikse.name/).<br/>
-👉 Implemented in 100% Javascript, but also ported to [VPython](https://vpython.org), see [mandelbrot.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/mandelbrot.py).<br/>
-🎯 Click anywhere on the fractal to re-center
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=mandelbrot.js)](https://github.com/zhendrikse/science/blob/main/mathematics/mandelbrot.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+
+👉 Click anywhere on the fractal to re-center
 
 <div style="margin-bottom: 5px;">
     <label>Action:</label>
