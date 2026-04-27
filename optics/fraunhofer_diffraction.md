@@ -6,7 +6,7 @@
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=fraunhofer_diffraction.js)](https://github.com/zhendrikse/science/blob/main/optics/fraunhofer_diffraction.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 
-📌 Based on code shown in [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang
+📌 Inspired by [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang
 
 Below you'll find a diffraction pattern of an aperture (circular or rectangular) 
 far away from a screen, also known as [Fraunhofer diffraction](https://en.wikipedia.org/wiki/Fraunhofer_diffraction). 
