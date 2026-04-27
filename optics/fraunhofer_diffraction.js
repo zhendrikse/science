@@ -36,10 +36,6 @@ function meshgrid(x, y) {
     return [X, Y];
 }
 
-function colorMap(val, useColor) {
-    return [val, val, val, Math.pow(val, 0.6)];
-}
-
 const side = linspace(-0.01 * Math.PI, 0.01 * Math.PI, resolution);
 const [x, y] = meshgrid(side, side);
 const circularAperture = (x, y, diameter) => x * x + y * y < (.5 * diameter) * (.5 * diameter);
@@ -186,17 +182,17 @@ function render() {
 document.getElementById("laserColor").addEventListener("change", render);
 
 function updateWavelengthUI() {
-    const wl = Number(wavelengthSlider.value);
-    const c = wavelengthToRGBNormalized(wl);
+    const wavelength = Number(wavelengthSlider.value);
+    const color = wavelengthToRGBNormalized(wl);
 
     const intensity = 1;
 
     wavelengthProbe.style.backgroundColor =
-        `rgb(${c.r * intensity * 255},
-             ${c.g * intensity * 255},
-             ${c.b * intensity * 255})`;
+        `rgb(${color.r * intensity * 255},
+             ${color.g * intensity * 255},
+             ${color.b * intensity * 255})`;
 
-    wavelengthValue.textContent = `${wl} nm`;
+    wavelengthValue.textContent = `${wavelength} nm`;
 }
 wavelengthSlider.addEventListener("input", updateWavelengthUI);
 
@@ -213,8 +209,9 @@ apertureGroup.forEach(cb => {
 });
 
 diameterSlider.addEventListener("change", () => {
-    diameterLabel.textContent = diameterSlider.value;
-    electricField.recompute(Number(diameterSlider.value), Number(wavelengthSlider.value));
+    const diameter = Number(diameterSlider.value);
+    diameterLabel.textContent = `${diameter} µm`;
+    electricField.recompute(diameter, Number(wavelengthSlider.value));
     render();
 });
 

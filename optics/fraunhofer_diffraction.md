@@ -29,14 +29,14 @@ calculated as the square of the amplitude of the electric field.
 <div class="buttonRow">
   <label for="diameterSlider">Aperture:
     <input type="range" id="diameterSlider" min="20" max="200" value="200">
-    <span id="diameterValue">200</span> µm
+    <span id="diameterValue">200 µm</span>
   </label>
 </div>
 <div class="buttonRow">
   <label for="wavelengthSlider">Wavelength:
     &nbsp;<span id="wavelengthProbe">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
     <input type="range" id="wavelengthSlider" min="380" max="700" value="500">
-    <span id="wavelengthValue">500</span> nm
+    <span id="wavelengthValue">500 nm</span>
   </label>
 </div>
 
