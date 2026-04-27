@@ -9,19 +9,14 @@
 📌 Inspired by [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang
 
 Below you'll find a diffraction pattern of an aperture (circular or rectangular) 
-far away from a screen, also known as [Fraunhofer diffraction](https://en.wikipedia.org/wiki/Fraunhofer_diffraction). 
-
-The intensity is calculated as the square of the amplitude of the electric field. 
-Since the resulting diffraction pattern is too faint to be discerned on a computer screen, 
-a 'fake' intensity image of the diffraction pattern is shown as well, where the intensity
-is calculated by using the absolute value of the amplitude of the electric field instead.
+far away from a screen, also known as [Fraunhofer diffraction](https://en.wikipedia.org/wiki/Fraunhofer_diffraction). The intensity is 
+calculated as the square of the amplitude of the electric field. 
 
 <div style="margin: 0 auto; text-align: center;">
   &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="screen" class="applicationCanvas2D"></canvas>
 </div>
 
 <div class="buttonRow">
-  <label for="logScale"><input type="checkbox" id="logScale"> Log scale</label>
   <label for="laserColor"><input type="checkbox" id="laserColor" checked> Laser color</label>
   <label for="square"><input type="checkbox" name="aperture" id="square"> Square</label>
   <label for="circle"><input type="checkbox" name="aperture" checked id="circle"> Circle</label>

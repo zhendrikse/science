@@ -109,16 +109,9 @@ class ElectricField {
     }
 }
 
-function toneMap(val, useLog) {
-    if (useLog)
-        return Math.log(1 + 1000 * val) / Math.log(1001);
-
-    return Math.pow(val, popFactor);
-}
-
 function wavelengthColor(value) {
-    const wl = Number(wavelengthSlider.value);
-    const base = wavelengthToRGBNormalized(wl);
+    const wavelength = Number(wavelengthSlider.value);
+    const base = wavelengthToRGBNormalized(wavelength);
 
     // intensity → brightness modulation only
     return [
@@ -129,10 +122,10 @@ function wavelengthColor(value) {
     ];
 }
 
-function drawToImage(image, data, useLog=false, useSpectralColor=true) {
+function drawToImage(image, data, useSpectralColor=true) {
     for (let i = 0; i < resolution; i++)
         for (let j = 0; j < resolution; j++) {
-            const value = toneMap(data[i][j] / electricField.maxIntensity, useLog);
+            const value = Math.pow(data[i][j] / electricField.maxIntensity, popFactor);
             image.setColourAt(i, j, useSpectralColor ? wavelengthColor(value) : [1, 1, 1, Math.pow(value, 0.5)]);
         }
 }
@@ -182,10 +175,8 @@ function wavelengthToRGBNormalized(wavelength) {
 }
 
 function render() {
-    const useLog = document.getElementById("logScale").checked;
     const spectralColor = document.getElementById("laserColor").checked;
-
-    drawToImage(intensityImage, electricField.intensity, useLog, spectralColor);
+    drawToImage(intensityImage, electricField.intensity, spectralColor);
     intensityImage.renderToCanvas(screenContext);
 }
 
@@ -193,11 +184,6 @@ function render() {
 // Event listeners
 //
 document.getElementById("laserColor").addEventListener("change", render);
-
-document.getElementById("logScale").addEventListener("change", () => {
-    render();
-    popFactorSlider.disabled = document.getElementById("logScale").checked;
-});
 
 function updateWavelengthUI() {
     const wl = Number(wavelengthSlider.value);
