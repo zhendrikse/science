@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Fraunhofer diffraction]
+## Fraunhofer diffraction
 <div class="header_line"><br/></div>
 
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=fraunhofer_diffraction.js)](https://github.com/zhendrikse/science/blob/main/optics/fraunhofer_diffraction.js)&nbsp;&nbsp;
@@ -17,13 +17,13 @@ a 'fake' intensity image of the diffraction pattern is shown as well, where the 
 is calculated by using the absolute value of the amplitude of the electric field instead.
 
 <div style="margin: 0 auto; text-align: center;">
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas1" width="250" height="250"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas2" width="250" height="250"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas1"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas2"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
 <div class="buttonRow">
   <label for="logScale"><input type="checkbox" id="logScale"> Log scale</label>
-  <label for="color"><input type="checkbox" id="color"> Color coding</label>
+  <label for="color"><input type="checkbox" id="color"> Color </label>
   <label for="square"><input type="checkbox" name="aperture" id="square"> Square</label>
   <label for="circle"><input type="checkbox" name="aperture" checked id="circle"> Circle</label>
 </div>
