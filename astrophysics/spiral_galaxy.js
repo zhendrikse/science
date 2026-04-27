@@ -17,15 +17,14 @@ const galaxyCamera = new THREE.PerspectiveCamera(25, 1, 1, 10000);
 const cameraBase = new vector(100, -1200, 400);
 galaxyCamera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
 
-const galaxyRenderer = new THREE.WebGLRenderer( {antialias: true, canvas: galaxyCanvas, alpha: true} );
+const galaxyRenderer = new THREE.WebGLRenderer( {antialias: true, canvas: galaxyCanvas, alpha: false} );
 galaxyRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 galaxyRenderer.shadowMap.enabled = false;
 
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(galaxyRenderer, galaxyCamera);
-window.addEventListener('resize', () => {
-    ThreeJsUtils.resizeRendererToCanvas(galaxyRenderer, galaxyCamera);
-});
+window.addEventListener('resize', () =>
+    ThreeJsUtils.resizeRendererToCanvas(galaxyRenderer, galaxyCamera));
 
 const controls = new OrbitControls(galaxyCamera, galaxyCanvas);
 controls.target.set(0, 0, 0);
