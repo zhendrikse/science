@@ -1,6 +1,7 @@
 import { Group, Vector3, Color, Scene, Box3 } from "three";
 import { Arrow, AxesController, AxesParameters, Plot3DView, ThreeJsUtils } from '../js/three-js-extensions.js';
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+import { FFT } from "../js/math-utils.js";
 
 const canvasContainer = document.getElementById("freePacketWrapper");
 const canvas = document.getElementById("freePacketCanvas");
@@ -27,76 +28,6 @@ const params = {
     a: 1,         // a → determines start width
     x0: 0
 };
-
-// js/fft-esm.js
-// ESM-versie van fft.js suitable for browser
-class FFT {
-    constructor(size) {
-        this.size = size | 0;
-        if (this.size <= 1) throw new Error("Size must be > 1");
-
-        this._twiddles = new Array(this.size);
-        for (let i = 0; i < this.size; i++) {
-            const phase = -2 * Math.PI * i / this.size;
-            this._twiddles[i] = [Math.cos(phase), Math.sin(phase)];
-        }
-
-        this._bitReverse = new Array(this.size);
-        const n = this.size;
-        const bits = Math.floor(Math.log2(n));
-        for (let i = 0; i < n; i++) {
-            let x = i;
-            let y = 0;
-            for (let j = 0; j < bits; j++) {
-                y = (y << 1) | (x & 1);
-                x >>= 1;
-            }
-            this._bitReverse[i] = y;
-        }
-    }
-
-    transform(outRe, outIm, inRe, inIm) {
-        const n = this.size;
-        for (let i = 0; i < n; i++) {
-            outRe[i] = inRe[this._bitReverse[i]];
-            outIm[i] = inIm[this._bitReverse[i]];
-        }
-
-        for (let size = 2; size <= n; size <<= 1) {
-            const half = size >> 1;
-            const step = n / size;
-            for (let i = 0; i < n; i += size) {
-                for (let j = 0; j < half; j++) {
-                    const k = j * step;
-                    const [twRe, twIm] = this._twiddles[k];
-                    const l = i + j;
-                    const r = i + j + half;
-
-                    const tRe = outRe[r] * twRe - outIm[r] * twIm;
-                    const tIm = outRe[r] * twIm + outIm[r] * twRe;
-
-                    outRe[r] = outRe[l] - tRe;
-                    outIm[r] = outIm[l] - tIm;
-                    outRe[l] += tRe;
-                    outIm[l] += tIm;
-                }
-            }
-        }
-    }
-
-    inverseTransform(outRe, outIm, inRe, inIm) {
-        const n = this.size;
-        // conjugate
-        const tempRe = inRe.slice();
-        const tempIm = inIm.map(x => -x);
-        this.transform(outRe, outIm, tempRe, tempIm);
-        // normalize and conjugate back
-        for (let i = 0; i < n; i++) {
-            outRe[i] /= n;
-            outIm[i] = -outIm[i] / n;
-        }
-    }
-}
 
 class FreeWavePacket extends Group {
     constructor({

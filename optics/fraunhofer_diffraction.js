@@ -183,7 +183,7 @@ document.getElementById("laserColor").addEventListener("change", render);
 
 function updateWavelengthUI() {
     const wavelength = Number(wavelengthSlider.value);
-    const color = wavelengthToRGBNormalized(wl);
+    const color = wavelengthToRGBNormalized(wavelength);
 
     const intensity = 1;
 

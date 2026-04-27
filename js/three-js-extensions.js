@@ -13,15 +13,6 @@ export const UnitVectorE1 = new Vector3(1, 0, 0);
 export const UnitVectorE2 = new Vector3(0, 1, 0);
 export const UnitVectorE3 = new Vector3(0, 0, 1);
 
-// Box-Muller Transform To Create a Normal Distribution
-export function normalMuSigma(average, standard_deviation) {
-    const u1 = Math.random();
-    const u2 = Math.random();
-    let vt = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-    vt = vt * standard_deviation + average;
-    return vt;
-}
-
 export class Integrators {
     static eulerStep(state, dt, accelerationFn) {
         const acceleration = accelerationFn(state);

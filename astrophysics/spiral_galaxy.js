@@ -1,14 +1,14 @@
 import * as THREE from "three";
-import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { ThreeJsUtils } from '../js/three-js-extensions.js';
 import { SkyDome } from '../js/astro-extensions.js';
+import { normalDistribution, randomArbitrary, randomInt } from "../js/math-utils";
 
 const vector = THREE.Vector3,
     color = THREE.Color;
 
 const galaxyCanvas = document.getElementById('galaxyCanvas');
 galaxyCanvas.focus();
-
 console.clear();
 
 const galaxyScene = new THREE.Scene();
@@ -20,7 +20,6 @@ galaxyCamera.position.set(cameraBase.x, cameraBase.y, cameraBase.z);
 const galaxyRenderer = new THREE.WebGLRenderer( {antialias: true, canvas: galaxyCanvas, alpha: true} );
 galaxyRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 galaxyRenderer.shadowMap.enabled = false;
-galaxyRenderer.setAnimationLoop( animate );
 
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(galaxyRenderer, galaxyCamera);
@@ -96,37 +95,6 @@ const starMaterial = new THREE.ShaderMaterial({
     }
 `
 });
-
-/**
- * Box-Muller transform to create a normal distribution
- */
-function gauss(mu, sigma) {
-    const u1 = Math.random()
-    const u2 = Math.random()
-    let vt = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
-    vt *= sigma + mu
-    return vt;
-}
-
-/**
- * Returns a random number between min (inclusive) and max (exclusive)
- */
-function randomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
-}
-
-/**
- * Returns a random integer between min (inclusive) and max (inclusive).
- * The value is no lower than min (or the next integer greater than min
- * if min isn't an integer) and no greater than max (or the next integer
- * lower than max if max isn't an integer).
- * Using Math.round() will give you a non-uniform distribution!
- */
-function randomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 class PointCloud {
     constructor(positions, radii, colours) {
@@ -213,7 +181,10 @@ class SpiralGalaxy {
     static createCoreStars(numRimStars, coreRadius) {
         const coreStars = [];
         for (let i = 0; i < numRimStars; i++)
-            coreStars.push(new vector(gauss(0, 1), gauss(0, 1), gauss(0, 1)).multiplyScalar(coreRadius));
+            coreStars.push(new vector(
+                normalDistribution(0, 1),
+                normalDistribution(0, 1),
+                normalDistribution(0, 1)).multiplyScalar(coreRadius));
         return coreStars;
     }
 
@@ -284,9 +255,9 @@ const skyDome = new SkyDome({skyRadius: 7500});
 galaxyScene.add(skyDome);
 const galaxy = new SpiralGalaxy();
 
-function animate(time) {
+galaxyRenderer.setAnimationLoop( (time) => {
     time *= 0.001;
     galaxy.rotateZ();
     skyDome.update(time, galaxyCamera);
     galaxyRenderer.render(galaxyScene, galaxyCamera);
-}
+});

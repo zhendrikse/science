@@ -3,6 +3,7 @@ import { Scene, Color, PerspectiveCamera, WebGLRenderer, BufferAttribute, Canvas
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import { SkyDome } from '../js/astro-extensions.js';
 import {ThreeJsUtils} from "../js/three-js-extensions.js";
+import { normalDistribution } from "../js/math-utils";
 
 // TODO
 // Press button to start
@@ -36,13 +37,6 @@ const STAR_SIZE = 0.03;
 // Limit x between lower and upper
 function clamp(x, lower, upper) {
     return Math.max(lower, Math.min(upper, x));
-}
-
-// Box–Muller
-function normalDistribution(mu, sigma) {
-    const u1 = Math.random();
-    const u2 = Math.random();
-    return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2) * sigma + mu;
 }
 
 // Return the acceleration due to gravity on an object.
