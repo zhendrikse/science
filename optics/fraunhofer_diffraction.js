@@ -138,9 +138,6 @@ function drawToImage(image, data, isAmplitude, useLog=false, useColor=false) {
 const context1 = document.getElementById("canvas1").getContext("2d");
 const context2 = document.getElementById("canvas2").getContext("2d");
 
-const electricField = new ElectricField(resolution);
-electricField.recompute(Number(diameterSlider.value));
-
 function render() {
     const useLog = document.getElementById("logScale").checked;
     const useColor = document.getElementById("color").checked;
@@ -180,4 +177,6 @@ popFactorSlider.addEventListener("input", () => {
     render();
 })
 
+const electricField = new ElectricField(resolution);
+electricField.recompute(Number(diameterSlider.value));
 render();
