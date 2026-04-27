@@ -137,17 +137,16 @@ function wavelengthColor(value) {
     return [
         base.r * value,
         base.g * value,
-        base.b * value,
-        Math.pow(value, popFactor)
+        base.b * value
     ];
 }
 
 function drawToImage(image, data, isAmplitude, useLog=false, useSpectralColor=true) {
     for (let i = 0; i < resolution; i++)
         for (let j = 0; j < resolution; j++) {
-            const value = toColorValue(data[i][j], useLog, isAmplitude);
-            image.setColourAt(i, j,
-                useSpectralColor ? wavelengthColor(value) : [value, value, value, Math.pow(value, popFactor)]);
+            const colorValue = toColorValue(data[i][j], useLog, isAmplitude);
+            const value = Math.pow(colorValue, popFactor);
+            image.setColourAt(i, j, useSpectralColor ? wavelengthColor(value) : [value, value, value]);
         }
 }
 
@@ -239,7 +238,7 @@ apertureGroup.forEach(cb => {
 
 diameterSlider.addEventListener("change", () => {
     diameterLabel.textContent = diameterSlider.value;
-    electricField.recompute(Number(diameterSlider.value));
+    electricField.recompute(Number(diameterSlider.value), Number(wavelengthSlider.value));
     render();
 });
 
@@ -249,7 +248,7 @@ wavelengthSlider.addEventListener("change", () => {
 });
 
 popFactorSlider.addEventListener("input", () => {
-    popFactor = Number(1 - popFactorSlider.value + .5);
+    popFactor = Number(1 - popFactorSlider.value + .4);
     render();
 })
 

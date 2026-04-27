@@ -29,7 +29,7 @@ is calculated by using the absolute value of the amplitude of the electric field
 </div>
 <div class="buttonRow">
   <label for="popFactorSlider">Pop factor:
-    <input type="range" id="popFactorSlider" min=".5" max="1" value=".5" step="0.01">
+    <input type="range" id="popFactorSlider" min=".4" max="1" value=".4" step="0.01">
   </label>
 </div>
 <div class="buttonRow">
