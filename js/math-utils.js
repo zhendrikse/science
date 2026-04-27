@@ -38,8 +38,13 @@ export class Complex {
         this.im = im;
     }
 
+    absSquared() { return Complex.absSquared(this); }
+    abs() { return Complex.abs(this); }
+    phase = () => Math.atan2(this.im, this.re);
+
     static multiplyScalar = (a, scalar) => new Complex(a.re * scalar, a.im * scalar);
     static fromPhase = (theta) => new Complex(Math.cos(theta), Math.sin(theta));
+    static absSquared(z_) { return z_.re * z_.re + z_.im * z_.im; }
     static abs = (z) => Math.sqrt(Complex.absSquared(z));
     static add = (a, b) => new Complex(a.re + b.re, a.im + b.im);
     static subtract = (a, b) => new Complex(a.re - b.re, a.im - b.im);

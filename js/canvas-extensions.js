@@ -133,6 +133,12 @@ export class PixelImage {
         }
     }
 
+    clear(color = null) {
+        for (let x = 0; x < this.dimX(); x++)
+            for (let y = 0; y < this.dimY(); y++)
+                this.colours[x][y] = color;
+    }
+
     renderToCanvas(context, scale = true) {
         const imageData = this.#asCanvasImageData(context);
 
@@ -151,7 +157,7 @@ export class PixelImage {
     }
 
     render(context) {
-        context.clearRect(0, 0, this.width, this.height);
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         context.putImageData(this.#asCanvasImageData(context), 0, 0);
     }
 }

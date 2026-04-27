@@ -46,7 +46,6 @@ function absSquaredPlusC(z_, c_) {
 function squaredPlusC(z_, c_) {
     return new Complex(z_.re * z_.re - z_.im * z_.im + c_.re, 2 * z_.re * z_.im + c_.im);
 }
-function absSquared(z_) { return z_.re * z_.re + z_.im * z_.im; }
 
 class FractalRange {
     constructor(re_min, re_max, im_min, im_max) {
@@ -166,14 +165,13 @@ class Mandelbrot extends Fractal {
         let z = new Complex(0, 0);
 
         let n = 0;
-        while (absSquared(z) <= 4 && n < this.maxIter) {
+        while (z.absSquared() <= 4 && n < this.maxIter) {
             z = squaredPlusC(z, c);
             n += 1;
         }
 
         const brightness = n / this.maxIter;
-        if (brightness < 1)
-            this.image.setColourAt(x, y, this.colorFunction(brightness));
+        this.image.setColourAt(x, y, this.colorFunction(brightness));
     }
 }
 
@@ -194,7 +192,7 @@ class Julia extends Fractal {
         let z = this.mapXyToComplexPlane(x, y);
 
         let n = 0;
-        while (absSquared(z) <= 4 && n < this.maxIter) {
+        while (z.absSquared() <= 4 && n < this.maxIter) {
             z = squaredPlusC(z, c);
             n += 1;
         }
@@ -215,7 +213,7 @@ class BurningShip extends Fractal {
         let z = new Complex(0, 0);
 
         let n = 0;
-        while (absSquared(z) <= 16 && n < this.maxIter) {
+        while (z.absSquared() <= 16 && n < this.maxIter) {
             z = absSquaredPlusC(z, c);
             n += 1;
         }

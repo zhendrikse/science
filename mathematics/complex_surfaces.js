@@ -121,7 +121,7 @@ class ComplexSurfaceDefinition extends SurfaceDefinition {
     sample(u, v, target) {
         const re = this._specification.reInterval.scaleUnitParameter(u);
         const im = this._specification.imInterval.scaleUnitParameter(v);
-        const z = new ComplexNumber(re, im);
+        const z = new Complex(re, im);
         const value = this._specification.func(z);
         target.set(re, Math.log1p(value.abs()), im); // Log scale for complex functions
         return value.phase();
