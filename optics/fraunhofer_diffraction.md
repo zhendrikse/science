@@ -17,8 +17,8 @@ a 'fake' intensity image of the diffraction pattern is shown as well, where the 
 is calculated by using the absolute value of the amplitude of the electric field instead.
 
 <div style="margin: 0 auto; text-align: center;">
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas1" width="250" height="250"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas2" width="250" height="250"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas1" style="aspect-ratio: 1/1"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas2" style="aspect-ratio: 1/1"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
 <div class="buttonRow">
@@ -28,21 +28,14 @@ is calculated by using the absolute value of the amplitude of the electric field
   <label for="circle"><input type="checkbox" name="aperture" checked id="circle"> Circle</label>
 </div>
 <div class="buttonRow">
-  <label for="popFactorSlider">Pop factor:
-    <input type="range" id="popFactorSlider" min=".2" max="1" value=".2" step="0.01">
+  <label for="popFactorSlider">Pop-out factor:
+  <input type="range" id="popFactorSlider" min=".3" max="1" value=".3" step="0.01">
   </label>
 </div>
 <div class="buttonRow">
   <label for="diameterSlider">Aperture:
-    <input type="range" id="diameterSlider" min="20" max="200" value="200">
-    <span id="diameterValue">200</span> µm
-  </label>
-</div>
-<div class="buttonRow">
-  <label for="wavelengthSlider">Wavelength:
-    &nbsp;<span id="wavelengthProbe">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
-    <input type="range" id="wavelengthSlider" min="380" max="700" value="500">
-    <span id="wavelengthValue">500</span> nm
+  <input type="range" id="diameterSlider" min="20" max="200" value="200">
+  <span id="diameterValue">200</span> µm
   </label>
 </div>
 

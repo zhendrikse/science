@@ -39,10 +39,7 @@ function meshgrid(x, y) {
 }
 
 function colorMap(val, useColor) {
-    // blue → red scale
-    const hue = (1 - val) * 0.7; // 0.7 ~ blue, 0 ~ red
-    const {r, g, b} = hsvToRgb(hue, 1, val * 1.25);
-    return useColor ? [r/255, g/255, b/255] : [val, val, val];
+    return [val, val, val, Math.pow(val, 0.6)];
 }
 
 const side = linspace(-0.01 * Math.PI, 0.01 * Math.PI, resolution);
@@ -125,31 +122,32 @@ function toColorValue(dataValue, useLogScale, isAmplitude) {
     const maxValue =  isAmplitude ? electricField.maxAmplitude : electricField.maxIntensity;
     let val = useLogScale ?
         Math.log(1 + scaleFactor * dataValue) / Math.log(1 + scaleFactor * maxValue) :
-        2 * dataValue / maxValue;
+        dataValue / maxValue;
 
     // clamp (safe)
-    val = isAmplitude ? val : Math.pow(val, popFactor);
     val = Math.max(0, Math.min(1, val));
     return val;
 }
 
-function wavelengthColor(val) {
+function wavelengthColor(value) {
     const wl = Number(wavelengthSlider.value);
     const base = wavelengthToRGBNormalized(wl);
 
     // intensity → brightness modulation only
     return [
-        base.r * val,
-        base.g * val,
-        base.b * val
+        base.r * value,
+        base.g * value,
+        base.b * value,
+        Math.pow(value, 0.75)
     ];
 }
 
 function drawToImage(image, data, isAmplitude, useLog=false, useSpectralColor=true) {
     for (let i = 0; i < resolution; i++)
         for (let j = 0; j < resolution; j++) {
-            const colorValue = toColorValue(data[i][j], useLog, isAmplitude);
-            image.setColourAt(i, j, useSpectralColor ? wavelengthColor(colorValue) : colorMap(colorValue));
+            const value = toColorValue(data[i][j], useLog, isAmplitude);
+            image.setColourAt(i, j,
+                useSpectralColor ? wavelengthColor(value) : [value, value, value, Math.pow(value, .75)]);
         }
 }
 
@@ -199,9 +197,10 @@ function wavelengthToRGBNormalized(wavelength) {
 
 function render() {
     const useLog = document.getElementById("logScale").checked;
+    const spectralColor = document.getElementById("laserColor").checked;
 
-    drawToImage(intensityImage, electricField.intensity, false, useLog);
-    drawToImage(amplitudeImage, electricField.amplitude, true, useLog);
+    drawToImage(intensityImage, electricField.intensity, false, useLog, spectralColor);
+    drawToImage(amplitudeImage, electricField.amplitude, true, useLog, spectralColor);
 
     intensityImage.renderToCanvas(context1);
     amplitudeImage.renderToCanvas(context2);
@@ -209,7 +208,7 @@ function render() {
 
 // Event listeners
 document.getElementById("logScale").addEventListener("change", render);
-
+document.getElementById("laserColor").addEventListener("change", render);
 
 function updateWavelengthUI() {
     const wl = Number(wavelengthSlider.value);

@@ -77,7 +77,7 @@ export class PixelImage {
         imageData[index++] = pixel.color[0] * 255;
         imageData[index++] = pixel.color[1] * 255;
         imageData[index++] = pixel.color[2] * 255;
-        imageData[index++] = 255;
+        imageData[index++] = (pixel.color[3] ?? 1) * 255;
     }
 
     getPixelColourAt(x, y) { return this.colours[x][y]; }
