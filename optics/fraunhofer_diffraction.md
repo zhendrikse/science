@@ -17,26 +17,25 @@ calculated as the square of the amplitude of the electric field.
 </div>
 
 <div class="buttonRow">
-  <label for="laserColor"><input type="checkbox" id="laserColor" checked> Laser color</label>
-  <label for="square"><input type="checkbox" name="aperture" id="square"> Square</label>
-  <label for="circle"><input type="checkbox" name="aperture" checked id="circle"> Circle</label>
-</div>
-<div class="buttonRow">
-  <label for="popFactorSlider">Pop factor:
-    <input type="range" id="popFactorSlider" min=".3" max="1" value=".3" step="0.01">
-  </label>
-</div>
-<div class="buttonRow">
-  <label for="diameterSlider">Aperture:
+  <b>Aperture:</b>
+  <label for="square">🟩 Square <input type="checkbox" name="aperture" id="square"/></label>
+  <label for="circle">🟢 Circle <input type="checkbox" name="aperture" checked id="circle"/></label>
+  <label for="diameterSlider">Size:
     <input type="range" id="diameterSlider" min="20" max="200" value="200">
     <span id="diameterValue">200 µm</span>
   </label>
 </div>
 <div class="buttonRow">
-  <label for="wavelengthSlider">Wavelength:
-    &nbsp;<span id="wavelengthProbe">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
+  <label for="popFactorSlider"><b>Pop factor:</b>
+    <input type="range" id="popFactorSlider" min=".3" max="1" value=".3" step="0.01">
+  </label>
+</div>
+<div class="buttonRow">
+  <label for="wavelengthSlider"><b>Wavelength:</b>
     <input type="range" id="wavelengthSlider" min="380" max="700" value="500">
-    <span id="wavelengthValue">500 nm</span>
+    &nbsp;<span id="wavelengthProbe">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
+    <span id="wavelengthValue">500 nm</span>&nbsp;
+    <label for="laserColor">🎨 <input type="checkbox" id="laserColor" checked/></label>
   </label>
 </div>
 
