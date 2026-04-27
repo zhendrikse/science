@@ -3,9 +3,13 @@
 ## Spiral galaxy visualization ✨
 <div class="header_line"><br/></div>
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=spiral_galaxy.js)](https://github.com/zhendrikse/science/blob/main/astrophysics/spiral_galaxy.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+[![WebGL](https://img.shields.io/badge/WebGL-990000?logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
+
 🔧 Original [galaxy_3d_Medium.py](https://gist.github.com/rlvaugh/a49bf875890581f338a000c2b5c3a2bb) by [Lee Vaughan](https://towardsdatascience.com/author/lee_vaughan/) <br/>
 ⭐ The (theory behind the) code is thoroughly explained in his [accompanying article](https://towardsdatascience.com/create-3-d-galactic-art-with-matplotlib-a7534148a319/) <br/>
-👉 [spiral_galaxy.js](https://github.com/zhendrikse/science/blob/main/astrophysics/spiral_galaxy.js) is a port to JavaScript and [Three.js](https://threejs.org/) <br/>
 🔥 JavaScript version has been extended with coloring and fading ([Zeger Hendrikse](https://www.hendrikse.name/))
 
 <canvas class="applicationCanvas" id="galaxyCanvas" style="aspect-ratio: 19 / 12"></canvas>
