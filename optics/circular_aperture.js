@@ -3,6 +3,8 @@ import { hsvToRgb, PixelImage } from "../js/canvas-extensions.js"
 const diameterSlider = document.getElementById("diameterSlider");
 const diameterLabel = document.getElementById("diameterValue");
 const popFactorSlider = document.getElementById("popFactorSlider");
+const circularCheckBox = document.getElementById("circle");
+const squareCheckBox = document.getElementById("square");
 
 const N = 100;
 const R = 1.0;
@@ -62,6 +64,9 @@ function recompute(diameterValue) {
     };
 }
 
+//
+// De facto, this amounts to a numerical version of the Fraunhofer diffraction integral
+//
 function sumRaysAt(i, j, inAperture, X, Y, dx_dy) {
     let sum = 0;
 
@@ -72,12 +77,18 @@ function sumRaysAt(i, j, inAperture, X, Y, dx_dy) {
     return sum;
 }
 
+const circularAperture = (x, y, diameter) => x * x + y * y < (.5 * diameter) * (.5 * diameter);
+const squareAperture = (x, y, size) => Math.abs(x) <= size * .5 && Math.abs(y) <= size *.5;
+
 function computeElectricField(diameter, dx_dy) {
     const side_ap = linspace(-diameter *.5, diameter *.5, N);
     const [X, Y] = meshgrid(side_ap, side_ap);
     const inAperture = Array.from({length:N}, (_,i) =>
-        Array.from({length:N}, (_,j) =>
-            (X[i][j] * X[i][j] + Y[i][j] * Y[i][j] <= (.5 * diameter) * (.5 * diameter)) ? 1 : 0)
+        Array.from({length:N}, (_,j) => {
+            const inCircle = circularAperture(X[i][j], Y[i][j], diameter) && circularCheckBox.checked;
+            const inSquare = squareAperture(X[i][j], Y[i][j], diameter) && squareCheckBox.checked;
+            return inCircle || inSquare;
+        })
     );
 
     for (let i = 0; i < N; i++)
@@ -122,6 +133,18 @@ function render() {
 // Event listeners
 document.getElementById("logScale").addEventListener("change", render);
 document.getElementById("color").addEventListener("change", render);
+
+const apertureGroup = document.querySelectorAll('input[name="aperture"]');
+apertureGroup.forEach(cb => {
+    cb.addEventListener('change', function() {
+        const checked = document.querySelectorAll('input[name="aperture"]:checked');
+        if (checked.length === 0)
+            this.checked = true; // At least one aperture type needs to be selected
+
+        ({ intensity, amplitude, maxIntensity, maxAmplitude } = recompute(Number(diameterSlider.value)));
+        render();
+    });
+});
 
 diameterSlider.addEventListener("change", () => {
     diameterLabel.textContent = diameterSlider.value;

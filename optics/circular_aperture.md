@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Circular aperture diffraction pattern 
+## Fraunhofer diffraction]
 <div class="header_line"><br/></div>
 
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=circular_aperture.js)](https://github.com/zhendrikse/science/blob/main/optics/circular_aperture.js)&nbsp;&nbsp;
@@ -8,7 +8,9 @@
 
 📌 Based on code shown in [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang
 
-Below you'll find a diffraction pattern of a circular aperture far away from a screen. 
+Below you'll find a diffraction pattern of an aperture (circular or rectangular) 
+far away from a screen, also known as [Fraunhofer diffraction](https://en.wikipedia.org/wiki/Fraunhofer_diffraction). 
+
 The intensity is calculated as the square of the amplitude of the electric field. 
 Since the resulting diffraction pattern is too faint to be discerned on a computer screen, 
 a 'fake' intensity image of the diffraction pattern is shown as well, where the intensity
@@ -22,6 +24,8 @@ is calculated by using the absolute value of the amplitude of the electric field
 <div class="buttonRow">
   <label for="logScale"><input type="checkbox" id="logScale"> Log scale</label>
   <label for="color"><input type="checkbox" id="color"> Color coding</label>
+  <label for="square"><input type="checkbox" name="aperture" id="square"> Square</label>
+  <label for="circle"><input type="checkbox" name="aperture" checked id="circle"> Circle</label>
 </div>
 <div class="buttonRow">
   <label for="popFactorSlider">Pop-out factor:
@@ -55,7 +59,7 @@ For a small aperture we have $X^2+Y^2 \ll  R^2$, so we can write
 
 $\begin{equation}r \approx R\sqrt{1-\dfrac{2xY+2yY}{R^2}} \approx R\left(1-\dfrac{2xY+2yY}{R^2}\right)\end{equation}$
 
-### I. Introduction
+### I. Original homework assignment
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <img style="float: left; margin-right: 15px;" alt="Aperture grid" src="images/aperture_grid.png"/>
