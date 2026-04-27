@@ -28,14 +28,21 @@ is calculated by using the absolute value of the amplitude of the electric field
   <label for="circle"><input type="checkbox" name="aperture" checked id="circle"> Circle</label>
 </div>
 <div class="buttonRow">
-  <label for="popFactorSlider">Pop-out factor:
-  <input type="range" id="popFactorSlider" min=".5" max="1" value=".5" step="0.01">
+  <label for="popFactorSlider">Pop factor:
+    <input type="range" id="popFactorSlider" min=".5" max="1" value=".5" step="0.01">
   </label>
 </div>
 <div class="buttonRow">
   <label for="diameterSlider">Aperture:
-  <input type="range" id="diameterSlider" min="20" max="200" value="200">
-  <span id="diameterValue">200</span> µm
+    <input type="range" id="diameterSlider" min="20" max="200" value="200">
+    <span id="diameterValue">200</span> µm
+  </label>
+</div>
+<div class="buttonRow">
+  <label for="wavelengthSlider">Wavelength:
+    &nbsp;<span id="wavelengthProbe">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
+    <input type="range" id="wavelengthSlider" min="380" max="700" value="500">
+    <span id="wavelengthValue">500</span> nm
   </label>
 </div>
 
