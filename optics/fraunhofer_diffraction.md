@@ -17,8 +17,8 @@ calculated as the square of the amplitude of the electric field.
 </div>
 
 <div class="buttonRow">
-  <label for="square">🟩 Square <input type="checkbox" name="aperture" id="square"/></label>
-  <label for="circle">🟢 Circle <input type="checkbox" name="aperture" checked id="circle"/></label>
+  <button id="squareButton">🟩 Square</button>
+  <button id="circleButton">🟢 Circle </button>
   <label for="diameterSlider">Size:
     <input type="range" id="diameterSlider" min="20" max="200" value="200">
     <span id="diameterValue">200 µm</span>

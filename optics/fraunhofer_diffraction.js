@@ -6,8 +6,6 @@ const popFactorSlider = document.getElementById("popFactorSlider");
 const wavelengthSlider = document.getElementById("wavelengthSlider");
 const wavelengthValue = document.getElementById("wavelengthValue");
 const wavelengthProbe = document.getElementById("wavelengthProbe");
-const circularCheckBox = document.getElementById("circle");
-const squareCheckBox = document.getElementById("square");
 const screenContext = document.getElementById("screen").getContext("2d");
 
 const resolution = 100;
@@ -36,10 +34,47 @@ function meshgrid(x, y) {
     return [X, Y];
 }
 
-const side = linspace(-0.01 * Math.PI, 0.01 * Math.PI, resolution);
-const [x, y] = meshgrid(side, side);
-const circularAperture = (x, y, diameter) => x * x + y * y < (.5 * diameter) * (.5 * diameter);
-const squareAperture = (x, y, size) => Math.abs(x) <= size * .5 && Math.abs(y) <= size *.5;
+class Aperture {
+    static circularAperture = (x, y, diameter) => x * x + y * y < (.5 * diameter) * (.5 * diameter);
+    static squareAperture = (x, y, size) => Math.abs(x) <= size * .5 && Math.abs(y) <= size * .5;
+
+    static circleMask = (X, Y, diameter, N) => Array.from({length: N}, (_, i) =>
+        Array.from({length: N}, (_, j) => Aperture.circularAperture(X[i][j], Y[i][j], diameter)));
+    static squareMask = (X, Y, diameter, N) => Array.from({length: N}, (_, i) =>
+        Array.from({length: N}, (_, j) => Aperture.squareAperture(X[i][j], Y[i][j], diameter)));
+
+    constructor(diameterInMicroMeter, N) {
+        const side = linspace(-0.01 * Math.PI, 0.01 * Math.PI, N);
+        const [x, y] = meshgrid(side, side);
+        this._x = x;
+        this._y = y;
+        this._N = N;
+        this._isCircular = true;
+        this._diameter = diameterInMicroMeter * 1e-6;
+    }
+
+    get diameter() { return this._diameter; }
+    set diameter(newDiameter) { this._diameter = newDiameter * 1e-6; }
+    set isCircular(circularBoolean) { this._isCircular = circularBoolean; }
+    get isCircular() { return this._isCircular; }
+
+    //
+    // De facto, this amounts to a numerical version of the Fraunhofer diffraction integral
+    //
+    sumRaysAt(k, mask, i, j, X, Y) {
+        let field = 0;
+        const dx = this._diameter / this._N;
+        const dy = this._diameter / this._N;
+
+        for (let m = 0; m < this._N; m++)
+            for (let n = 0; n < this._N; n++) {
+                const phase = Math.cos(k * (this._x[i][j] * X[m][n] + this._y[i][j] * Y[m][n]));
+                if (mask[m][n]) field += phase * dx * dy;
+            }
+
+        return field;
+    }
+}
 
 class ElectricField {
     constructor(N) {
@@ -58,50 +93,21 @@ class ElectricField {
         this._maxIntensity = Math.max(...this._intensity.flat());
     }
 
-    recompute(diameterValue, lambdaInNanoMeter) {
-        const diameter = diameterValue * 1e-6;
-        const dx = diameter / this._N;
-        const dy = diameter / this._N;
-
-        this._computeElectricField(diameter, lambdaInNanoMeter,dx * dy);
+    recompute(aperture, lambdaInNanoMeter) {
+        this._computeElectricField(aperture, lambdaInNanoMeter);
         this._update();
     }
 
-    //
-    // De facto, this amounts to a numerical version of the Fraunhofer diffraction integral
-    //
-    _sumRaysAt(k, circleMask, squareMask, x, y, X, Y, dx_dy) {
-        let Ec = 0;
-        let Es = 0;
-
-        for (let m = 0; m < this._N; m++)
-            for (let n = 0; n < this._N; n++) {
-                const phase = Math.cos(k * (x * X[m][n] + y * Y[m][n]));
-
-                if (circularCheckBox.checked && circleMask[m][n])
-                    Ec += phase * dx_dy;
-
-                if (squareCheckBox.checked && squareMask[m][n])
-                    Es += phase * dx_dy;
-            }
-
-        return Ec + Es;
-    }
-
-    _computeElectricField(diameter, lambdaInNanoMeter, dx_dy) {
-        const side_ap = linspace(-diameter *.5, diameter *.5, this._N);
-        const [X, Y] = meshgrid(side_ap, side_ap);
-
-        const circleMask = Array.from({length: this._N}, (_, i) =>
-            Array.from({length: this._N}, (_, j) => circularAperture(X[i][j], Y[i][j], diameter)));
-
-        const squareMask = Array.from({length: this._N}, (_, i) =>
-            Array.from({length: this._N}, (_, j) => squareAperture(X[i][j], Y[i][j], diameter)));
-
+    _computeElectricField(aperture, lambdaInNanoMeter) {
         const k = 2 * Math.PI / (lambdaInNanoMeter * 1e-9);
+        const side_ap = linspace(-aperture.diameter *.5, aperture.diameter *.5, this._N);
+        const [X, Y] = meshgrid(side_ap, side_ap);
+        const mask = aperture.isCircular ?
+            Aperture.circleMask(X, Y, aperture.diameter, this._N) :
+            Aperture.squareMask(X, Y, aperture.diameter, this._N);
         for (let i = 0; i < this._N; i++)
             for (let j = 0; j < this._N; j++)
-                this._field[i][j] = this._sumRaysAt(k, circleMask, squareMask, x[i][j], y[i][j], X, Y, dx_dy) / R;
+                this._field[i][j] = aperture.sumRaysAt(k, mask, i, j, X, Y) / R;
     }
 }
 
@@ -170,6 +176,17 @@ function wavelengthToRGBNormalized(wavelength) {
     };
 }
 
+async function recomputeAndRender(aperture) {
+    document.body.style.cursor = "wait";
+
+    await new Promise(requestAnimationFrame);
+
+    electricField.recompute(aperture, Number(wavelengthSlider.value));
+    render();
+
+    document.body.style.cursor = "default";
+}
+
 function render() {
     const spectralColor = document.getElementById("laserColor").checked;
     drawToImage(intensityImage, electricField.intensity, spectralColor);
@@ -180,6 +197,16 @@ function render() {
 // Event listeners
 //
 document.getElementById("laserColor").addEventListener("change", render);
+
+document.getElementById("squareButton").addEventListener("click", () => {
+    aperture.isCircular = false;
+    recomputeAndRender(aperture);
+});
+
+document.getElementById("circleButton").addEventListener("click", () => {
+    aperture.isCircular = true;
+    recomputeAndRender(aperture);
+});
 
 function updateWavelengthUI() {
     const wavelength = Number(wavelengthSlider.value);
@@ -195,29 +222,14 @@ function updateWavelengthUI() {
     wavelengthValue.textContent = `${wavelength} nm`;
 }
 wavelengthSlider.addEventListener("input", updateWavelengthUI);
+wavelengthSlider.addEventListener("change", () => recomputeAndRender(aperture));
 
-const apertureGroup = document.querySelectorAll('input[name="aperture"]');
-apertureGroup.forEach(cb => {
-    cb.addEventListener('change', function() {
-        const checked = document.querySelectorAll('input[name="aperture"]:checked');
-        if (checked.length === 0)
-            this.checked = true; // At least one aperture type needs to be selected
-
-        electricField.recompute(Number(diameterSlider.value), Number(wavelengthSlider.value));
-        render();
-    });
-});
 
 diameterSlider.addEventListener("change", () => {
     const diameter = Number(diameterSlider.value);
     diameterLabel.textContent = `${diameter} µm`;
-    electricField.recompute(diameter, Number(wavelengthSlider.value));
-    render();
-});
-
-wavelengthSlider.addEventListener("change", () => {
-    electricField.recompute(Number(diameterSlider.value), Number(wavelengthSlider.value));
-    render();
+    aperture.diameter = diameter;
+    recomputeAndRender(aperture);
 });
 
 popFactorSlider.addEventListener("input", () => {
@@ -225,7 +237,7 @@ popFactorSlider.addEventListener("input", () => {
     render();
 })
 
+const aperture = new Aperture(Number(diameterSlider.value), resolution);
 const electricField = new ElectricField(resolution);
-electricField.recompute(Number(diameterSlider.value), Number(wavelengthSlider.value));
 updateWavelengthUI();
-render();
+recomputeAndRender(aperture);
