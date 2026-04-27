@@ -30,7 +30,7 @@ function rgbColor(brightness) {
 }
 
 function colorPalette(z, i, maxIterations) {
-    let mu = i + 1 - Math.log(Math.log(absSquared(z))) / Math.log(2);
+    let mu = i + 1 - Math.log(Math.log(z.absSquared())) / Math.log(2);
     if (mu < 0)
         mu = 0;
     else if (mu > maxIterations || isNaN(mu))
