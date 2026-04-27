@@ -1,4 +1,4 @@
-import { Pixel, PixelImage } from '../js/canvas-extensions.js';
+import { Colors, Pixel, PixelImage } from '../js/canvas-extensions.js';
 import { FireColorMap } from '../js/color-maps.js';
 import { Complex } from "../js/math-utils.js";
 
@@ -16,17 +16,20 @@ juliaButtons.set("juliaToggle5", new Complex(-0.8, .156));
 juliaButtons.set("juliaToggle6", new Complex(0, 0.8));
 juliaButtons.set("juliaToggle7", new Complex(-0.70176, -0.3842));
 
-function hsv2rgb(h,s,v) {
-    let f= (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k , 1), 0);
+function hueColor(z, i, maxIterations) {
+    const brightness = i / maxIterations;
+    const hue = brightness * 5 * 360;
+    const saturation = 1;
+    const value = 1;
+
+    // hsv -> rgb
+    const f= (n, k = (n + hue / 60) % 6) => value - value * saturation * Math.max(Math.min(k, 4 - k , 1), 0);
     return [f(5), f(3), f(1)];
 }
 
-function hueColor(brightness) {
-    return hsv2rgb(brightness * 5 * 360, 1, 1);
-}
-
-function rgbColor(brightness) {
-    return [brightness, Math.sqrt(brightness), brightness ** 0.2];
+function rgbColor(z, i, maxIterations) {
+    const brightness = i / maxIterations;
+    return (i === maxIterations) ? Colors.BLACK : [brightness, Math.sqrt(brightness), brightness ** 0.2];
 }
 
 function colorPalette(z, i, maxIterations) {
@@ -36,7 +39,9 @@ function colorPalette(z, i, maxIterations) {
     else if (mu > maxIterations || isNaN(mu))
         mu = 11 * maxIterations / 12;
     const colourMapIndex = 255 - Math.floor((mu) * 255 / maxIterations);
-    return [FireColorMap[colourMapIndex][0] / 255, FireColorMap[colourMapIndex][1] / 255, FireColorMap[colourMapIndex][2] / 255];
+    return (i === maxIterations) ?
+        Colors.BLACK :
+        [FireColorMap[colourMapIndex][0] / 255, FireColorMap[colourMapIndex][1] / 255, FireColorMap[colourMapIndex][2] / 255];
 }
 
 // Utility functions
@@ -170,8 +175,7 @@ class Mandelbrot extends Fractal {
             n += 1;
         }
 
-        const brightness = n / this.maxIter;
-        this.image.setColourAt(x, y, this.colorFunction(brightness));
+        this.image.setColourAt(x, y, this.colorFunction(z, n, this.maxIter));
     }
 }
 
@@ -197,9 +201,7 @@ class Julia extends Fractal {
             n += 1;
         }
 
-        const brightness = n / this.maxIter;
-        if (brightness < 1)
-            this.image.setColour(new Pixel(x, y, this.colorFunction(brightness)));
+        this.image.setColour(new Pixel(x, y, this.colorFunction(z, n, this.maxIter)));
     }
 }
 
