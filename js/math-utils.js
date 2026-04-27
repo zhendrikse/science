@@ -66,14 +66,6 @@ export class Complex {
         const imag = Math.sign(z.im || 1) * Math.sqrt((r - z.re) / 2);
         return new Complex(real, imag);
     }
-
-    static absSquaredPlusC(z_, c_) {
-        return new Complex(z_.re * z_.re - z_.im * z_.im + c_.re, Math.abs(2 * z_.re * z_.im) + c_.im);
-    }
-    static squaredPlusC(z_, c_) {
-        return new Complex(z_.re * z_.re - z_.im * z_.im + c_.re, 2 * z_.re * z_.im + c_.im);
-    }
-    static absSquared(z_) { return z_.re * z_.re + z_.im * z_.im; }
 }
 
 // js/fft-esm.js

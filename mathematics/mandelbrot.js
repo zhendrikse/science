@@ -7,14 +7,14 @@ const display = mandelbrotCanvas.getContext("2d");
 mandelbrotCanvas.focus();
 
 const juliaButtons = new Map();
-juliaButtons.set("juliaToggle0", [0.325, .417]);
-juliaButtons.set("juliaToggle1", [0.4, .4]);
-juliaButtons.set("juliaToggle2", [-0.4, 0.6]);
-juliaButtons.set("juliaToggle3", [-0.5251993, -0.5251993]);
-juliaButtons.set("juliaToggle4", [0.285, 0.001]);
-juliaButtons.set("juliaToggle5", [-0.8, .156]);
-juliaButtons.set("juliaToggle6", [0, 0.8]);
-juliaButtons.set("juliaToggle7", [-0.70176, -0.3842]);
+juliaButtons.set("juliaToggle0", new Complex(0.325, .417));
+juliaButtons.set("juliaToggle1", new Complex(0.4, .4));
+juliaButtons.set("juliaToggle2", new Complex(-0.4, 0.6));
+juliaButtons.set("juliaToggle3", new Complex(-0.5251993, -0.5251993));
+juliaButtons.set("juliaToggle4", new Complex(0.285, 0.001));
+juliaButtons.set("juliaToggle5", new Complex(-0.8, .156));
+juliaButtons.set("juliaToggle6", new Complex(0, 0.8));
+juliaButtons.set("juliaToggle7", new Complex(-0.70176, -0.3842));
 
 function hsv2rgb(h,s,v) {
     let f= (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k , 1), 0);
@@ -30,7 +30,7 @@ function rgbColor(brightness) {
 }
 
 function colorPalette(z, i, maxIterations) {
-    let mu = i + 1 - Math.log(Math.log(Complex.absSquared(z))) / Math.log(2);
+    let mu = i + 1 - Math.log(Math.log(absSquared(z))) / Math.log(2);
     if (mu < 0)
         mu = 0;
     else if (mu > maxIterations || isNaN(mu))
@@ -38,6 +38,15 @@ function colorPalette(z, i, maxIterations) {
     const colourMapIndex = 255 - Math.floor((mu) * 255 / maxIterations);
     return [FireColorMap[colourMapIndex][0] / 255, FireColorMap[colourMapIndex][1] / 255, FireColorMap[colourMapIndex][2] / 255];
 }
+
+// Utility functions
+function absSquaredPlusC(z_, c_) {
+    return new Complex(z_.re * z_.re - z_.im * z_.im + c_.re, Math.abs(2 * z_.re * z_.im) + c_.im);
+}
+function squaredPlusC(z_, c_) {
+    return new Complex(z_.re * z_.re - z_.im * z_.im + c_.re, 2 * z_.re * z_.im + c_.im);
+}
+function absSquared(z_) { return z_.re * z_.re + z_.im * z_.im; }
 
 class FractalRange {
     constructor(re_min, re_max, im_min, im_max) {
@@ -68,36 +77,54 @@ class FractalRange {
 }
 
 class Fractal {
-    constructor(max_iter, range, constantC, colorFunction) {
+    constructor(maxIter, range, constantC, colorFunction) {
         this.constantC = constantC;
-        this.maxIter = max_iter;
-        this.colorFunction = colorFunction;
+        this.maxIter = maxIter;
         this.range = range;
-        this.initialRange = new FractalRange(range.re_min, range.re_max, range.im_min, range.im_max);
-        this.image = new PixelImage(display.canvas.width, display.canvas.height);
+        this.colorFunction = colorFunction;
+
+        this.canvas = display.canvas;
+        this.ctx = display;
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
+
+        this.image = new PixelImage(this.width, this.height);
+        this.initialRange = range.clone?.() ?? range;
+    }
+
+    resize() {
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
+        this.image = new PixelImage(this.width, this.height);
+    }
+
+    render() {
+        for (let x = 0; x < this.width; x++)
+            for (let y = 0; y < this.height; y++)
+                this.setPixelColorAt(x, y);
+
+        this.image.render(this.ctx);
     }
 
     reset() {
-        this.range = this.initialRange;
+        this.range = new FractalRange(
+            this.initialRange.re_min,
+            this.initialRange.re_max,
+            this.initialRange.im_min,
+            this.initialRange.im_max
+        );
         this.render();
     }
 
     mapXyToComplexPlane(x, y) {
-        const re = this.range.re_min + (x / this.image.width) * this.range.realRange();
-        const im = this.range.im_min + (y / this.image.height) * this.range.imaginaryRange();
-        return new Complex(re, im);
+        return new Complex(
+            this.range.re_min + (x / (this.width - 1)) * this.range.realRange(),
+            this.range.im_min + (y / (this.height - 1)) * this.range.imaginaryRange()
+        );
     }
 
     setPixelColorAt(x, y) {
         throw new Error('You have invoked setPixelColorAt() in the Fractal abstract base class!');
-    }
-
-    render() {
-        this.image = new PixelImage(display.canvas.width, display.canvas.height);
-        for (let x = 0; x < this.image.width; x++)
-            for (let y = 0; y < this.image.height; y++)
-                this.setPixelColorAt(x, y);
-        this.image.render(display);
     }
 
     zoom(zoomOut) {
@@ -139,20 +166,27 @@ class Mandelbrot extends Fractal {
         let z = new Complex(0, 0);
 
         let n = 0;
-        while (Complex.absSquared(z) <= 4 && n < this.maxIter) {
-            z = Complex.squaredPlusC(z, c);
+        while (absSquared(z) <= 4 && n < this.maxIter) {
+            z = squaredPlusC(z, c);
             n += 1;
         }
 
         const brightness = n / this.maxIter;
         if (brightness < 1)
-            this.image.setColour(new Pixel(x, y, this.colorFunction(brightness)));
+            this.image.setColourAt(x, y, this.colorFunction(brightness));
     }
 }
 
 class Julia extends Fractal {
     constructor(cConstant, maxIter=500, colorFunction=rgbColor) {
-        super(maxIter, new FractalRange(-1.5, 1.5, -1.5, 1.5), cConstant, colorFunction);
+        const aspect = display.canvas.width / display.canvas.height;
+        const range = new FractalRange(
+            -1.5 * aspect,
+            1.5 * aspect,
+            -1.5,
+            1.5
+        );
+        super(maxIter, range, cConstant, colorFunction);
     }
 
     setPixelColorAt(x, y) {
@@ -160,8 +194,8 @@ class Julia extends Fractal {
         let z = this.mapXyToComplexPlane(x, y);
 
         let n = 0;
-        while (Complex.absSquared(z) <= 4 && n < this.maxIter) {
-            z = Complex.squaredPlusC(z, c);
+        while (absSquared(z) <= 4 && n < this.maxIter) {
+            z = squaredPlusC(z, c);
             n += 1;
         }
 
@@ -181,8 +215,8 @@ class BurningShip extends Fractal {
         let z = new Complex(0, 0);
 
         let n = 0;
-        while (Complex.absSquared(z) <= 16 && n < this.maxIter) {
-            z = Complex.absSquaredPlusC(z, c);
+        while (absSquared(z) <= 16 && n < this.maxIter) {
+            z = absSquaredPlusC(z, c);
             n += 1;
         }
 
@@ -244,6 +278,7 @@ function resizeCanvasToWrapper() {
     canvas.width = canvasWrapper.clientWidth;
     canvas.height = canvasWrapper.clientHeight;
 
+    fractal.resize();
     fractal.render();
 }
 
