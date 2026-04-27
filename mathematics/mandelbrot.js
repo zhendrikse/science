@@ -232,6 +232,14 @@ mandelbrotCanvas.addEventListener("mousedown", function(event) {
     const rect = mandelbrotCanvas.getBoundingClientRect();
     fractal.recenter(event.clientX - rect.left, event.clientY - rect.top);
 });
+mandelbrotCanvas.addEventListener("wheel", function(event) {
+    event.preventDefault(); // prevent page scrolling
+
+    if (event.deltaY < 0) // wheel up
+        fractal.zoomIn();
+    else // wheel down
+        fractal.zoomOut();
+});
 
 document.getElementById("zoomInButton").addEventListener("click", () => {
     fractal.zoomIn();
