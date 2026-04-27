@@ -3,7 +3,7 @@
 ## Fraunhofer diffraction]
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=circular_aperture.js)](https://github.com/zhendrikse/science/blob/main/optics/circular_aperture.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=fraunhofer_diffraction.js)](https://github.com/zhendrikse/science/blob/main/optics/fraunhofer_diffraction.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 
 📌 Based on code shown in [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang
@@ -39,7 +39,7 @@ is calculated by using the absolute value of the amplitude of the electric field
   </label>
 </div>
 
-<script type="module" src="circular_aperture.js"></script>
+<script type="module" src="fraunhofer_diffraction.js"></script>
 <p style="clear:both;"></p>
 
 ## Instructions given in the video

@@ -11,7 +11,7 @@
     <figcaption><a href="https://en.wikipedia.org/wiki/Snell%27s_law">Snell&apos;s law.</a></figcaption>
   </figure>
   <figure class="right_image">
-    <a href="circular_aperture.html">
+    <a href="fraunhofer_diffraction.html">
       <img alt="Circular aperture diffraction" src="images/circular_aperture.png" title="Click to animate"/>
     </a>
     <figcaption>Diffraction of light going through a
