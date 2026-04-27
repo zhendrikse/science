@@ -17,8 +17,8 @@ a 'fake' intensity image of the diffraction pattern is shown as well, where the 
 is calculated by using the absolute value of the amplitude of the electric field instead.
 
 <div style="margin: 0 auto; text-align: center;">
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas1"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas2"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas1" style="aspect-ratio: 1/1"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="canvas2" style="aspect-ratio: 1/1"></canvas>&nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
 <div class="buttonRow">
