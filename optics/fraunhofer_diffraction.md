@@ -17,7 +17,6 @@ calculated as the square of the amplitude of the electric field.
 </div>
 
 <div class="buttonRow">
-  <b>Aperture:</b>
   <label for="square">🟩 Square <input type="checkbox" name="aperture" id="square"/></label>
   <label for="circle">🟢 Circle <input type="checkbox" name="aperture" checked id="circle"/></label>
   <label for="diameterSlider">Size:
@@ -26,17 +25,17 @@ calculated as the square of the amplitude of the electric field.
   </label>
 </div>
 <div class="buttonRow">
-  <label for="popFactorSlider"><b>Pop factor:</b>
+  <label for="popFactorSlider">Pop factor:
     <input type="range" id="popFactorSlider" min=".3" max="1" value=".3" step="0.01">
   </label>
 </div>
 <div class="buttonRow">
-  <label for="wavelengthSlider"><b>Wavelength:</b>
+  <label for="wavelengthSlider">Color:
     <input type="range" id="wavelengthSlider" min="380" max="700" value="500">
     &nbsp;<span id="wavelengthProbe">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
     <span id="wavelengthValue">500 nm</span>&nbsp;
-    <label for="laserColor">🎨 <input type="checkbox" id="laserColor" checked/></label>
   </label>
+  <label for="laserColor">🎨 <input type="checkbox" id="laserColor" checked/></label>
 </div>
 
 <script type="module" src="fraunhofer_diffraction.js"></script>
