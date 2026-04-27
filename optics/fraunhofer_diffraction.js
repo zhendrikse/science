@@ -122,9 +122,10 @@ function wavelengthColor(value) {
 
     // intensity → brightness modulation only
     return [
-        base.r * value,
-        base.g * value,
-        base.b * value
+        base.r,
+        base.g,
+        base.b,
+        Math.pow(value, 0.5)
     ];
 }
 
@@ -132,7 +133,7 @@ function drawToImage(image, data, useLog=false, useSpectralColor=true) {
     for (let i = 0; i < resolution; i++)
         for (let j = 0; j < resolution; j++) {
             const value = toneMap(data[i][j] / electricField.maxIntensity, useLog);
-            image.setColourAt(i, j, useSpectralColor ? wavelengthColor(value) : [value, value, value]);
+            image.setColourAt(i, j, useSpectralColor ? wavelengthColor(value) : [1, 1, 1, Math.pow(value, 0.5)]);
         }
 }
 
