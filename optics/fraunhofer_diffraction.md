@@ -140,9 +140,11 @@ class Aperture {
 
     sumRaysAt(i, j, k) {
         let field = 0;
+        const kx = k * this._kX[i][j];
+        const ky = k * this._kY[i][j];
 
         for (const [m, n] of this._aperture)
-            field += Math.cos(k * (this._kX[i][j] * this._X[m][n] + this._kY[i][j] * this._Y[m][n])) * this._dx_dy;
+            field += Math.cos(kx * this._X[m][n] + ky * this._Y[m][n]) * this._dx_dy;
 
         return field;
     }
