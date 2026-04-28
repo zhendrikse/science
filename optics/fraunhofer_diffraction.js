@@ -44,33 +44,52 @@ class Aperture {
         Array.from({length: N}, (_, j) => Aperture.squareAperture(X[i][j], Y[i][j], diameter)));
 
     constructor(diameterInMicroMeter, N) {
+        this._isCircular = true;
+        this._N = N;
+        this.setDiameter(diameterInMicroMeter, N);
+
         const side = linspace(-0.01 * Math.PI, 0.01 * Math.PI, N);
         const [x, y] = meshgrid(side, side);
-        this._x = x;
-        this._y = y;
-        this._N = N;
-        this._isCircular = true;
-        this._diameter = diameterInMicroMeter * 1e-6;
+        this._kX = x;
+        this._kY = y;
     }
 
-    get diameter() { return this._diameter; }
-    set diameter(newDiameter) { this._diameter = newDiameter * 1e-6; }
-    set isCircular(circularBoolean) { this._isCircular = circularBoolean; }
-    get isCircular() { return this._isCircular; }
+    setDiameter(diameterInMicroMeter, N) {
+        this._diameterInMicroMeter = diameterInMicroMeter;
+        const diameter = this._diameterInMicroMeter * 1e-6;
+
+        const dx = diameter / N;
+        const dy = diameter / N;
+        this._dx_dy = dx * dy;
+
+        const side_ap = linspace(-diameter *.5, diameter *.5, N);
+        const [X, Y] = meshgrid(side_ap, side_ap);
+        this._X = X;
+        this._Y = Y;
+
+        const mask = this._isCircular ?
+            Aperture.circleMask(X, Y, diameter, N) :
+            Aperture.squareMask(X, Y, diameter, N);
+
+        this._aperture = [];
+        for (let m = 0; m < N; m++)
+            for (let n = 0; n < N; n++)
+                if (mask[m][n]) this._aperture.push([m, n]);
+    }
+
+    set isCircular(circularBoolean) {
+        this._isCircular = circularBoolean;
+        this.setDiameter(this._diameterInMicroMeter, this._N);
+    }
 
     //
     // De facto, this amounts to a numerical version of the Fraunhofer diffraction integral
     //
-    sumRaysAt(k, mask, i, j, X, Y) {
+    sumRaysAt(i, j, k) {
         let field = 0;
-        const dx = this._diameter / this._N;
-        const dy = this._diameter / this._N;
 
-        for (let m = 0; m < this._N; m++)
-            for (let n = 0; n < this._N; n++) {
-                const phase = Math.cos(k * (this._x[i][j] * X[m][n] + this._y[i][j] * Y[m][n]));
-                if (mask[m][n]) field += phase * dx * dy;
-            }
+        for (const [m, n] of this._aperture)
+            field += Math.cos(k * (this._kX[i][j] * this._X[m][n] + this._kY[i][j] * this._Y[m][n])) * this._dx_dy;
 
         return field;
     }
@@ -90,7 +109,11 @@ class ElectricField {
 
     _update() {
         this._intensity = this._field.map(row => row.map(v => v * v));
-        this._maxIntensity = Math.max(...this._intensity.flat());
+        let max = 0;
+        for (let i = 0; i < this._N; i++)
+            for (let j = 0; j < this._N; j++)
+                if (this._intensity[i][j] > max) max = this._intensity[i][j];
+        this._maxIntensity = max;
     }
 
     recompute(aperture, lambdaInNanoMeter) {
@@ -100,14 +123,9 @@ class ElectricField {
 
     _computeElectricField(aperture, lambdaInNanoMeter) {
         const k = 2 * Math.PI / (lambdaInNanoMeter * 1e-9);
-        const side_ap = linspace(-aperture.diameter *.5, aperture.diameter *.5, this._N);
-        const [X, Y] = meshgrid(side_ap, side_ap);
-        const mask = aperture.isCircular ?
-            Aperture.circleMask(X, Y, aperture.diameter, this._N) :
-            Aperture.squareMask(X, Y, aperture.diameter, this._N);
         for (let i = 0; i < this._N; i++)
             for (let j = 0; j < this._N; j++)
-                this._field[i][j] = aperture.sumRaysAt(k, mask, i, j, X, Y) / R;
+                this._field[i][j] = aperture.sumRaysAt(i, j, k) / R;
     }
 }
 
@@ -224,11 +242,10 @@ function updateWavelengthUI() {
 wavelengthSlider.addEventListener("input", updateWavelengthUI);
 wavelengthSlider.addEventListener("change", () => recomputeAndRender(aperture));
 
-
 diameterSlider.addEventListener("change", () => {
     const diameter = Number(diameterSlider.value);
     diameterLabel.textContent = `${diameter} µm`;
-    aperture.diameter = diameter;
+    aperture.setDiameter(diameter);
     recomputeAndRender(aperture).then();
 });
 

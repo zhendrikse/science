@@ -110,7 +110,9 @@ due to the symmetry of the integration on the "circular" aperture
 (between quotes, since we
 have approximated it by a square area in our code), we get
 
-$\begin{equation}E(\theta_x, \theta_y) \approx \sin(\omega t -kR)\int\int \frac{1}{R}\cos(k_x X + k_y Y)dXdY = A \cdot \sin(\omega t -kR)\end{equation}$
+$\begin{equation}
+E(\theta_x, \theta_y) \approx \sin(\omega t -kR)\int\int \frac{1}{R}\cos(k_x X + k_y Y)dXdY = A \cdot \sin(\omega t -kR)
+\end{equation}$
 
 where
 
@@ -118,6 +120,34 @@ $A = \int\int_\text{aperture} \frac{1}{R}\cos(k_x X + k_y Y)dXdY$
 
 is the amplitude of the electric field on the spherical screen, which is 
 the one you should calculate by summation over all the grid points on the aperture.
+
+This formula for the aperture $A$ can then directly be translated into code:
+
+```javascript
+class ElectricField {
+    // ...
+    
+    _computeElectricField(aperture, lambdaInNanoMeter) {
+        const k = 2 * Math.PI / (lambdaInNanoMeter * 1e-9);
+        for (let i = 0; i < this._N; i++)
+            for (let j = 0; j < this._N; j++)
+                this._field[i][j] = aperture.sumRaysAt(i, j, k) / R;
+    }
+}
+
+class Aperture {
+    // ...
+
+    sumRaysAt(i, j, k) {
+        let field = 0;
+
+        for (const [m, n] of this._aperture)
+            field += Math.cos(k * (this._kX[i][j] * this._X[m][n] + this._kY[i][j] * this._Y[m][n])) * this._dx_dy;
+
+        return field;
+    }
+}
+```
 
 <p style="clear: both;"></p>
 
