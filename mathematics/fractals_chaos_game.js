@@ -1,4 +1,4 @@
-import { Pixel, PixelImage, Colors } from '../js/canvas-extensions.js';
+import { PixelImage, Colors } from '../js/canvas-extensions.js';
 
 const canvas = document.getElementById("chaosGameCanvas");
 const display = canvas.getContext("2d");
@@ -34,11 +34,11 @@ function barnsleyFern(image) {
         if (r < 0.01) {
             xNew = 0;
             yNew = 0.16 * y;
-            color = [0, 0.4, 0]; // stem color
+            color = [0, 102, 0]; // stem color
         } else if (r < 0.86) {
             xNew = 0.85 * x + 0.04 * y;
             yNew = -0.04 * x + 0.85 * y + 1.6;
-            color = [0, 0.9, 0]; // leaf color
+            color = [0, 230, 0]; // leaf color
         } else if (r < 0.93) {
             xNew = 0.20 * x - 0.26 * y;
             yNew = 0.23 * x + 0.22 * y + 1.6;
@@ -50,7 +50,7 @@ function barnsleyFern(image) {
         x = xNew;
         y = yNew;
 
-        // Schalen naar canvas
+        // Scale to canvas
         const px = Math.trunc(width  * (x + 2.5) / 5);
         const py = Math.trunc(height - height * y / 10);
 
@@ -202,8 +202,7 @@ function tSquare(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1) {
         x = .5 * (x + jump_points[currentVertex][0] * scale);
         y = .5 * (y + jump_points[currentVertex][1] * scale);
 
-        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[currentVertex]);
-        image.setColourAt(pixel);
+        image.setColourAt(Math.trunc(x + scale), Math.trunc(y + scale), colors[currentVertex]);
 
         const sample = [0, 1, 2, 3]
         if (currentVertex === 0)
