@@ -12,6 +12,9 @@ out such a conclusive clarification of the Mercury anomaly. &mdash;
 [Letter from K Schwarzschild to A Einstein](https://etienneklein.fr/wp-content/uploads/2016/01/Relativit%C3%A9-g%C3%A9n%C3%A9rale.pdf),
 22 December 1915.
 
+🎯 Explanation of one of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) of general relativity<br/>
+🧠 Based on [base_solution.py](https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py) by [Christopher Körber](https://github.com/ckoerber)<br/>
+📌 See also his [accompanying slides](https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf) and [article on arXiv](https://arxiv.org/abs/1803.01678)<br/>
 
 This code simulates the movement of Mercury and displays its position and
 trajectory at regular intervals. The gravitational force and relativistic correction
@@ -37,12 +40,6 @@ the checkboxes.
 <div id="plot" style="margin:auto;"></div>
 <script type="module" src="perihelion_mercury.js"></script>
 <p style="clear: both;"></p>
-
-
-🎯 Explanation of one of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) of general relativity<br/>
-🧠 Based on [base_solution.py](https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py) by [Christopher Körber](https://github.com/ckoerber)<br/>
-📌 See also his [accompanying slides](https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf) and [article on arXiv](https://arxiv.org/abs/1803.01678)<br/>
-📌 Values are computed using the [NASA fact sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet)
 
 ### Definitions of aphelion and perihelion
 <div style="border-top: 1px solid #999999"><br/></div>
