@@ -245,7 +245,7 @@ wavelengthSlider.addEventListener("change", () => recomputeAndRender(aperture));
 diameterSlider.addEventListener("change", () => {
     const diameter = Number(diameterSlider.value);
     diameterLabel.textContent = `${diameter} µm`;
-    aperture.setDiameter(diameter);
+    aperture.setDiameter(diameter, resolution);
     recomputeAndRender(aperture).then();
 });
 
