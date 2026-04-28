@@ -7,7 +7,8 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 
 🎯 Proving the wave-like nature of light<br/>
-🧠 Simulation inspired by [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang
+🧠 Simulation inspired by [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang<br/>
+👉 Related to [fourier transformation](../mathematics/fourier_transform.html)
 
 Below you'll find a diffraction pattern of an aperture (circular or rectangular) 
 far away from a screen, also known as [Fraunhofer diffraction](https://en.wikipedia.org/wiki/Fraunhofer_diffraction). The intensity is 

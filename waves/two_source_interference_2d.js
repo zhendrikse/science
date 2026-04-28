@@ -73,9 +73,9 @@ function updateImage(t) {
 
             const waveTotal = .5 * (wave1 + wave2);    // value to plot (will be between -1 and 1)
             if (waveTotal > 0)
-                image.setColourAt(x, y, [0, waveTotal, 0]);
+                image.setColourAt(x, y, [0, waveTotal * 255, 0]);
             else
-                image.setColourAt(x, y, [-waveTotal * .5, 0, waveTotal]);
+                image.setColourAt(x, y, [-waveTotal * .5 * 255, 0, waveTotal * 255]);
         }
 }
 

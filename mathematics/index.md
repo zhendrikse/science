@@ -149,16 +149,17 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 <div class="double_image">
 <figure class="left_image">
   <a href="fractals.html">
-    <img alt="Dragon curve fractal" src="./images/dragon_curve.png" title="Click to animate"/>
-  </a>
-  <figcaption>Generation of two-dimensional fractal shapes.</figcaption>
-</figure>
-<figure class="right_image">
-  <a href="chaos_game.html">
     <img alt="Vicsek fractal" src="./images/chaos_game.png" title="Click to animate"/>
   </a>
   <figcaption>The <a href="https://en.wikipedia.org/wiki/Vicsek_fractal">Vicsek fractal</a> 
-  generated using a <a href="https://en.wikipedia.org/wiki/Chaos_game">chaos game</a>.</figcaption>
+  generated using a <a href="https://en.wikipedia.org/wiki/Chaos_game">chaos game</a>.
+  </figcaption>
+</figure>
+<figure class="left_image">
+  <a href="fractal_terrain.html">
+    <img alt="Fractal terrain" src="images/fractal_terrain_surface.png" title="Click to animate"/>
+  </a>&nbsp;&nbsp;&nbsp;
+  <figcaption>Fractal terrain surface.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -210,23 +211,20 @@ in a room), the latter a vector (e.g. the force and direction of the wind).
 </div>
 <p style="clear: both;"></p>
 
-
-<a name="fractal_terrains"></a>
-## Fractal terrains
+<a name="fourier_transform"></a>
+## Fourier transform
 <div class="header_line"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="fractal_terrain_surface.html">
-    <img alt="Fractal terrain" src="images/fractal_terrain_surface.png" title="Click to animate"/>
+  <a href="fourier_transform.html">
+    <img alt="Fourier transform" src="images/fourier_transform.png" title="Click to animate"/>
   </a>&nbsp;&nbsp;&nbsp;
-  <figcaption>Fractal terrain surface.</figcaption>
+  <figcaption>2D Fourier transformation.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="fractal_terrain_contour.html">
-    <img alt="Fractal terrain" src="images/fractal_terrain_contour.png" title="Click to animate"/>
-  </a>
-  <figcaption>Fractal terrain contour plot.</figcaption>
+  <!-- SPACE RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>

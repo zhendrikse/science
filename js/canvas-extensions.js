@@ -23,16 +23,16 @@ export function hsvToRgb(h, s, v) {
 }
 
 export const Colors = Object.freeze({
-    RED: [1, 0, 0],
-    GREEN: [0, 1, 0],
-    BLUE: [0, 0, 1],
-    CYAN: [0, 1, 1],
-    MAGENTA: [1, 0, 1],
-    YELLOW: [1, 1, 0],
-    ORANGE: [1, .6, 0],
-    PURPLE: [0.4, 0.2, 0.6],
-    GRAY: [.5, .5, .5],
-    WHITE: [1, 1, 1],
+    RED: [255, 0, 0],
+    GREEN: [0, 255, 0],
+    BLUE: [0, 0, 255],
+    CYAN: [0, 255, 255],
+    MAGENTA: [255, 0, 255],
+    YELLOW: [255, 255, 0],
+    ORANGE: [255, .6, 0],
+    PURPLE: [2 * 51, 51, 3 * 51],
+    GRAY: [127, 127, 127],
+    WHITE: [255, 255, 255],
     BLACK: [0, 0, 0],
 });
 
@@ -74,10 +74,10 @@ export class PixelImage {
             return;
         }
 
-        imageData[index++] = pixel.color[0] * 255;
-        imageData[index++] = pixel.color[1] * 255;
-        imageData[index++] = pixel.color[2] * 255;
-        imageData[index++] = (pixel.color[3] ?? 1) * 255;
+        imageData[index++] = pixel.color[0];
+        imageData[index++] = pixel.color[1];
+        imageData[index++] = pixel.color[2];
+        imageData[index++] = (pixel.color[3] ?? 1);
     }
 
     getPixelColourAt(x, y) { return this.colours[x][y]; }
@@ -121,7 +121,7 @@ export class PixelImage {
             const r = fromPixel.color[0] + dr * step;
             const g = fromPixel.color[1] + dg * step;
             const b = fromPixel.color[2] + db * step;
-            this.setColour(new Pixel(x0, y0, [r, g, b]));
+            this.setColour(new Pixel(x0, y0, [r * 255, g * 255, b * 255]));
 
             if (x0 === x1 && y0 === y1) break;
 

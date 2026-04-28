@@ -24,12 +24,14 @@ function hueColor(z, i, maxIterations) {
 
     // hsv -> rgb
     const f= (n, k = (n + hue / 60) % 6) => value - value * saturation * Math.max(Math.min(k, 4 - k , 1), 0);
-    return [f(5), f(3), f(1)];
+    return [f(5) * 255, f(3) * 255, f(1) * 255];
 }
 
 function rgbColor(z, i, maxIterations) {
     const brightness = i / maxIterations;
-    return (i === maxIterations) ? Colors.BLACK : [brightness, Math.sqrt(brightness), brightness ** 0.2];
+    return (i === maxIterations) ?
+        Colors.BLACK :
+        [brightness * 255, Math.sqrt(brightness) * 255, 255 * brightness ** 0.2];
 }
 
 function colorPalette(z, i, maxIterations) {
@@ -41,7 +43,7 @@ function colorPalette(z, i, maxIterations) {
     const colourMapIndex = 255 - Math.floor((mu) * 255 / maxIterations);
     return (i === maxIterations) ?
         Colors.BLACK :
-        [FireColorMap[colourMapIndex][0] / 255, FireColorMap[colourMapIndex][1] / 255, FireColorMap[colourMapIndex][2] / 255];
+        [FireColorMap[colourMapIndex][0], FireColorMap[colourMapIndex][1], FireColorMap[colourMapIndex][2]];
 }
 
 // Utility functions
