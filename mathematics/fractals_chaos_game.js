@@ -14,8 +14,8 @@ radioButtons.set("cantorDust", cantorDust);
 radioButtons.set("fractal1", fractal1);
 radioButtons.set("fractal2", fractal2);
 radioButtons.set("sierpinskiCarpet", sierpinskiCarpet);
-radioButtons.set("sierpinskiTriangle", sierpinskiTriangle);
-radioButtons.set("tSquareFractal", tSquare);
+radioButtons.set("sierpinskiTriangle2", sierpinskiTriangle);
+radioButtons.set("tSquareFractal2", tSquare);
 radioButtons.set("vicsekFractal", vicsekFractal);
 radioButtons.set("barnsleyFern", barnsleyFern);
 

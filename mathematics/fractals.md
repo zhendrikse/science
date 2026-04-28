@@ -16,7 +16,7 @@
 <div class="buttonRow">
   <button id="kochSnowflake">Koch snowflake ❄️</button>
   <button id="cesaroFractal">Cesaro fractal 🏛️</button>
-  <button id="sierpinskiTriangle">Sierpinski triangle ⚠️</button>
+  <button id="sierpinskiTriangle">Sierpinski triangle 🔺️️</button>
 </div>
 <div class="buttonRow">
   <button id="tSquareFractal">T-square fractal 🔶</button>
@@ -47,8 +47,8 @@
   <button id="sierpinskiCarpet"><label for="sierpinskiCarpet">Sierpinski carpet 🧶</label></button>
 </div>
 <div class="buttonRow">        
-  <button id="sierpinskiTriangle"><label for="sierpinskiTriangle">Sierpinski triangle ⚠️</label></button>
-  <button id="tSquareFractal"><label for="tSquareFractal">T-square fractal 🏻</label></button>
+  <button id="sierpinskiTriangle"><label for="sierpinskiTriangle2">Sierpinski triangle ⚠️</label></button>
+  <button id="tSquareFractal"><label for="tSquareFractal2">T-square fractal 🏻</label></button>
   <button id="vicsekFractal"><label for="vicsekFractal">Vicsek fractal 🌀</label></button>
   <button id="barnsleyFern"><label for="barnsleyFern">Barnsley fern 🌿</label></button>
 </div>
