@@ -1,5 +1,8 @@
 {% include breadcrumbs.html %}
 
+## [Precession of the perihelion of Mercury](https://en.wikipedia.org/wiki/Tests_of_general_relativity)
+<div class="header_line"><br/></div>
+
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=perihelion_mercury.js)](https://github.com/zhendrikse/science/blob/main/relativity/perihelion_mercury.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
@@ -9,8 +12,6 @@ out such a conclusive clarification of the Mercury anomaly. &mdash;
 [Letter from K Schwarzschild to A Einstein](https://etienneklein.fr/wp-content/uploads/2016/01/Relativit%C3%A9-g%C3%A9n%C3%A9rale.pdf),
 22 December 1915.
 
-## [Precession of the perihelion of Mercury](https://en.wikipedia.org/wiki/Tests_of_general_relativity) 
-<div class="header_line"><br/></div>
 
 This code simulates the movement of Mercury and displays its position and
 trajectory at regular intervals. The gravitational force and relativistic correction
@@ -37,9 +38,11 @@ the checkboxes.
 <script type="module" src="perihelion_mercury.js"></script>
 <p style="clear: both;"></p>
 
-👉 Based on [base_solution.py](https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py) by [Christopher Körber](https://github.com/ckoerber)<br/>
-👉 See also his [accompanying slides](https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf) and [article on arXiv](https://arxiv.org/abs/1803.01678)<br/>
-🔑 Values are computed using the [NASA fact sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet)
+
+🎯 Explanation of one of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) of general relativity<br/>
+🧠 Based on [base_solution.py](https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py) by [Christopher Körber](https://github.com/ckoerber)<br/>
+📌 See also his [accompanying slides](https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf) and [article on arXiv](https://arxiv.org/abs/1803.01678)<br/>
+📌 Values are computed using the [NASA fact sheet](https://nssdc.gsfc.nasa.gov/planetary/factsheet)
 
 ### Definitions of aphelion and perihelion
 <div style="border-top: 1px solid #999999"><br/></div>

@@ -7,12 +7,11 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
+🎯 Visualization of space-time curvature
+
 - <span style="color: orange">orange</span> → real motion: geodesic flow in 4D $(t, r, \phi)$
 - <span style="color: cyan">cyan</span> → Geodesic-projection on embedded equatorial surface
 - <span style="color: red">red</span> → flat motion (Newtonian/Euclidian projected trail)
-
-👉 The closer to the sun, the greater the difference between 
-<span style="color: red">red</span> and <span style="color: orange">orange</span>!
 
 <div class="canvasWrapper" id="spaceTimeCanvasWrapper">
     <canvas id="spaceTimeCanvas" class="applicationCanvas"></canvas>
@@ -40,9 +39,11 @@
 <script type="module" src="./schwarzschild_space_time.js"></script>
 <p style="clear: both;"></p>
 
-⭐ Original [idea and code](https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram) by M. Ryston (Department of Physics Education)<br/>
-👉 Described in [Interactive animations as a tool in teaching general relativity [...]](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049)<br/>
-👉 See also [Spacetime Embedding Diagrams for Black Holes](https://arxiv.org/pdf/gr-qc/9806123)
+🧠 Original [idea and code](https://www.glowscript.org/#/user/Luinthoron/folder/English/program/embedding-diagram) by M. Ryston (Department of Physics Education)<br/>
+📌 Described in [Interactive animations as a tool in teaching general relativity [...]](https://iopscience.iop.org/article/10.1088/1742-6596/1286/1/012049)<br/>
+📌 See also [Spacetime Embedding Diagrams for Black Holes](https://arxiv.org/pdf/gr-qc/9806123)<br/>
+👉 The closer to the sun, the greater the difference between
+<span style="color: red">red</span> and <span style="color: orange">orange</span>!
 
 ## Theoretical background
 <div style="border-top: 1px solid #999999"><br/></div>

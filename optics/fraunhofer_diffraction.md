@@ -6,7 +6,8 @@
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=fraunhofer_diffraction.js)](https://github.com/zhendrikse/science/blob/main/optics/fraunhofer_diffraction.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 
-📌 Inspired by [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang
+🎯 Proving the wave-like nature of light<br/>
+🧠 Simulation inspired by [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang
 
 Below you'll find a diffraction pattern of an aperture (circular or rectangular) 
 far away from a screen, also known as [Fraunhofer diffraction](https://en.wikipedia.org/wiki/Fraunhofer_diffraction). The intensity is 
@@ -44,7 +45,8 @@ calculated as the square of the amplitude of the electric field.
 ## Instructions given in the video
 <div class="header_line"><br/></div>
 
-Below you find a copy of the original set of instructions that accompany the video.
+Since the original video is in Chinese, you can find a copy of the original 
+set of instructions that accompany the video below.
 
 ![Aperture notes](images/aperture_notes.png)
 
