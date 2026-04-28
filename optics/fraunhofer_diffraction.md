@@ -8,7 +8,7 @@
 
 🎯 Proving the wave-like nature of light<br/>
 🧠 Simulation inspired by [this video](https://www.youtube.com/watch?v=TZhMeYcDCyo) by Jordan Huang<br/>
-🐍 A [VPython](https://vpython.org) version is available as well, see [chaos_game.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/circular_aperture.py)<br/>
+🐍 A [VPython](https://vpython.org) version is available as well, see [circular_aperture.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/circular_aperture.py)<br/>
 👉 Related to [fourier transformation](../mathematics/fourier_transform.html)
 
 Below you'll find a diffraction pattern of an aperture (circular or rectangular) 
