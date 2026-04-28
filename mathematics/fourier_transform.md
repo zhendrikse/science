@@ -6,7 +6,7 @@
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=fourier_transform.js)](https://github.com/zhendrikse/science/blob/main/mathematics/fourier_transform.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 
-🎯 Proving the wave-like nature of light<br/>
+🎯 Illustration of 2D numerical Fourier transformation<br/>
 🧠 Inspired by [this application](https://www.falstad.com/fft/) by [Pual Falstad](https://www.falstad.com/)<br>
 👉 Related to [Fraunhofer diffraction](../optics/fraunhofer_diffraction.html)
 
