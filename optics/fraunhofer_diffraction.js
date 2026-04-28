@@ -121,7 +121,7 @@ function wavelengthColor(value) {
         base.r * 255,
         base.g * 255,
         base.b * 255,
-        Math.pow(value, 0.5) * 255
+        Math.sqrt(value) * 255
     ];
 }
 
@@ -129,7 +129,7 @@ function drawToImage(image, data, useSpectralColor=true) {
     for (let i = 0; i < resolution; i++)
         for (let j = 0; j < resolution; j++) {
             const value = Math.pow(data[i][j] / electricField.maxIntensity, popFactor);
-            image.setColourAt(i, j, useSpectralColor ? wavelengthColor(value) : [255, 255, 255, Math.sqrt(value)]);
+            image.setColourAt(i, j, useSpectralColor ? wavelengthColor(value) : [255, 255, 255, 255 * Math.sqrt(value)]);
         }
 }
 
