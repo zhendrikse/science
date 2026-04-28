@@ -1,4 +1,5 @@
-import { hsvToRgb, PixelImage } from "../js/canvas-extensions.js"
+import { PixelImage } from "../js/canvas-extensions.js"
+import { linspace, meshgrid } from "../js/math-utils.js"
 
 const diameterSlider = document.getElementById("diameterSlider");
 const diameterLabel = document.getElementById("diameterValue");
@@ -13,26 +14,6 @@ const R = 1.0;
 
 let popFactor = 1;
 const intensityImage = new PixelImage(resolution, resolution);
-
-function linspace(start, stop, num) {
-    const linSpace = [];
-    const step = (stop - start) / (num - 1);
-    for (let i = 0; i < num; i++)
-        linSpace.push(start + i * step);
-    return linSpace;
-}
-
-function meshgrid(x, y) {
-    const X = [];
-    const Y = [];
-
-    for (let i = 0; i < y.length; i++) {
-        X.push(x.slice());
-        Y.push(Array(x.length).fill(y[i]));
-    }
-
-    return [X, Y];
-}
 
 class Aperture {
     static circularAperture = (x, y, diameter) => x * x + y * y < (.5 * diameter) * (.5 * diameter);

@@ -32,6 +32,26 @@ export function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function linspace(start, stop, num) {
+    const linSpace = [];
+    const step = (stop - start) / (num - 1);
+    for (let i = 0; i < num; i++)
+        linSpace.push(start + i * step);
+    return linSpace;
+}
+
+export function meshgrid(x, y) {
+    const X = [];
+    const Y = [];
+
+    for (let i = 0; i < y.length; i++) {
+        X.push(x.slice());
+        Y.push(Array(x.length).fill(y[i]));
+    }
+
+    return [X, Y];
+}
+
 export class Complex {
     constructor(re, im) {
         this.re = re;
