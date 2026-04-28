@@ -3,6 +3,9 @@
 ## Divergence and curl demo
 <div class="header_line"><br/></div>
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=div_curl_demo.js)](https://github.com/zhendrikse/science/blob/main/mathematics/div_curl_demo.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+
 ### What are you looking at?
 
 This is a dynamic particle and vector field simulation where points interact with 
@@ -18,10 +21,9 @@ Click on the canvas to start the animation and watch the field come alive!
 <script type="module" src="div_curl_demo.js"></script>
 <p style="clear: both;"></p>
 
-⭐ [Original idea](https://www.glowscript.org/#/user/wlane/folder/Physicsin3D/program/water-flow-curl) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
-📌  Ported to JavaScript as [div_curl_demo.js](https://github.com/zhendrikse/science/blob/main/mathematics/div_curl_demo.js)<br/>
-👉 A [VPython](https://www.vpython.org/) version is also available as [div_curl_demo.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/div_curl_demo.py).
-
+🎯 Intuitive understanding of the divergence and curl<br/>
+🧠 [Original idea](https://www.glowscript.org/#/user/wlane/folder/Physicsin3D/program/water-flow-curl) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
+🐍 A [VPython](https://www.vpython.org/) version is also available as [div_curl_demo.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/div_curl_demo.py).
 
 ### Scalar vis-à-vis vector quantities
 <div class="header_line"><br/></div>
