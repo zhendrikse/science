@@ -18,7 +18,7 @@ const renderer = new WebGLRenderer({ antialias: true, canvas: canvas, alpha: tru
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 
 function scale(length) {
-    let scale_factor = 5.0;
+    let scale_factor = 6.0;
     let a1, a2, max;
     while (true) {
         a1 = randomInt(-mx, mx);

@@ -8,7 +8,7 @@
 
 🎯 All work and no play makes Jack a dull boy<br/>
 🧠 Inspired by [Harmonograph3D](https://www.glowscript.org/#/user/Mandrian/folder/My_Programs/program/Harmonograph3D) found on [prettymathpics.com](https://prettymathpics.com/online-3d-spectral-harmonograph/)<br>
-🐍 A [VPython](https://vpython.org) version is available as well, see [chaos_game.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/harmonograph.py)
+🐍 A [VPython](https://vpython.org) version is available as well, see [chaos_game.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/harmonograph.py)<br/>
 👉 Click with mouse to create another harmonograph!
 
 > A harmonograph is a mechanical apparatus that employs 
