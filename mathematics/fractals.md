@@ -116,5 +116,3 @@ In a certain sense, the fractal itself is a kind of
 <p style="clear: both;"></p>
 
 {% include share_buttons.html %}
-
-{% include share_buttons.html %}

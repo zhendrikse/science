@@ -203,7 +203,7 @@ class Julia extends Fractal {
             n += 1;
         }
 
-        this.image.setColour(new Pixel(x, y, this.colorFunction(z, n, this.maxIter)));
+        this.image.setColourAt(x, y, this.colorFunction(z, n, this.maxIter));
     }
 }
 
@@ -222,7 +222,7 @@ class BurningShip extends Fractal {
             n += 1;
         }
 
-        this.image.setColour(new Pixel(x, y, colorPalette(z, n, this.maxIter)));
+        this.image.setColourAt(x, y, colorPalette(z, n, this.maxIter));
     }
 }
 

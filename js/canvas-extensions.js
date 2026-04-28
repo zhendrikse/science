@@ -77,18 +77,10 @@ export class PixelImage {
         imageData[index++] = pixel.color[0];
         imageData[index++] = pixel.color[1];
         imageData[index++] = pixel.color[2];
-        imageData[index++] = (pixel.color[3] ?? 1);
+        imageData[index++] = (pixel.color[3] ?? 255);
     }
 
-    getPixelColourAt(x, y) { return this.colours[x][y]; }
-
-    setColour = (pixel) => {
-        if (pixel.x < 0 || pixel.y < 0 || pixel.x >= this.dimX() || pixel.y >= this.dimY()) return;
-        this.colours[pixel.x][pixel.y] = pixel.color;
-    }
-
-    // Faster version than setColour(), since it does not involve creation of a Pixel object
-    setColourAt = (x, y, color) => {
+    setColourAt(x, y, color) {
         if (x < 0 || y < 0 || x >= this.dimX() || y >= this.dimY()) return;
         this.colours[x][y] = color;
     }
@@ -121,7 +113,7 @@ export class PixelImage {
             const r = fromPixel.color[0] + dr * step;
             const g = fromPixel.color[1] + dg * step;
             const b = fromPixel.color[2] + db * step;
-            this.setColour(new Pixel(x0, y0, [r * 255, g * 255, b * 255]));
+            this.setColourAt(x0, y0, [r * 255, g * 255, b * 255]);
 
             if (x0 === x1 && y0 === y1) break;
 

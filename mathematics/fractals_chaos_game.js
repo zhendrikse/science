@@ -54,7 +54,7 @@ function barnsleyFern(image) {
         const px = Math.trunc(width  * (x + 2.5) / 5);
         const py = Math.trunc(height - height * y / 10);
 
-        image.setColour(new Pixel(px, py, color));
+        image.setColourAt(px, py, color);
     }
 }
 
@@ -78,8 +78,7 @@ function cantorDust(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1) {
         const index = Math.trunc(Math.random() * 4);
         x = .45 * (x + jump_points[index][0] * scale);
         y = .45 * (y + jump_points[index][1] * scale);
-        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[index]);
-        image.setColour(pixel);
+        image.setColourAt(Math.trunc(x + scale), Math.trunc(y + scale), colors[index]);
     }
 }
 
@@ -95,8 +94,7 @@ function fractal1(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1) {
     for (let i = 0; i < 1E6; i++) {
         x = .5 * (x + jump_points[currentVertex][0] * scale);
         y = .5 * (y + jump_points[currentVertex][1] * scale);
-        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[currentVertex]);
-        image.setColour(pixel);
+        image.setColourAt(Math.trunc(x + scale), Math.trunc(y + scale), colors[currentVertex]);
 
         const sample = [0, 1, 2, 3];
         sample.splice(currentVertex, 1);
@@ -123,8 +121,7 @@ function fractal2(image) {
     for (let i = 0; i < 1E6; i++) {
         x = .5 * (x + jump_points[currentVertex][0] * scale);
         y = .5 * (y + jump_points[currentVertex][1] * scale);
-        const pixel = new Pixel(Math.trunc(x + scale * .01), Math.trunc(y + scale * .01), colors[currentVertex]);
-        image.setColour(pixel);
+        image.setColourAt(Math.trunc(x + scale * .01), Math.trunc(y + scale * .01), colors[currentVertex]);
 
         const sample = [0, 1, 2, 3, 4];
         sample.splice(currentVertex, 1);
@@ -153,8 +150,7 @@ function sierpinskiCarpet(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4
         const index = Math.trunc(Math.random() * 8);
         x = (x + 2 * jump_points[index][0] * scale) / 3;
         y = (y + 2 * jump_points[index][1] * scale) / 3;
-        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[index]);
-        image.setColour(pixel);
+        image.setColourAt(Math.trunc(x + scale), Math.trunc(y + scale), colors[index]);
     }
 }
 
@@ -180,8 +176,7 @@ function sierpinskiTriangle(image, a1=-.5, b1=-.433, a2=.5, b2=-.433, a3=0, b3=.
         const index = Math.trunc(Math.random() * 3);
         x = .5 * (x + jump_points[index][0] * scale);
         y = .5 * (y + jump_points[index][1] * scale);
-        const pixel = new Pixel(Math.trunc(x + scale * .5), Math.trunc(scale * .5 - y), colors[index]);
-        image.setColour(pixel);
+        image.setColourAt(Math.trunc(x + scale * .5), Math.trunc(scale * .5 - y), colors[index]);
     }
 }
 
@@ -208,7 +203,7 @@ function tSquare(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1) {
         y = .5 * (y + jump_points[currentVertex][1] * scale);
 
         const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[currentVertex]);
-        image.setColour(pixel);
+        image.setColourAt(pixel);
 
         const sample = [0, 1, 2, 3]
         if (currentVertex === 0)
@@ -235,8 +230,7 @@ function vicsekFractal(image, a1=-1, b1=-1, a2=-1, b2=1, a3=1, b3=1, a4=1, b4=-1
         const index = Math.trunc(Math.random() * 5);
         x = (x + 2 * jump_points[index][0] * scale) / 3;
         y = (y + 2 * jump_points[index][1] * scale) / 3;
-        const pixel = new Pixel(Math.trunc(x + scale), Math.trunc(y + scale), colors[index]);
-        image.setColour(pixel);
+        image.setColourAt(Math.trunc(x + scale), Math.trunc(y + scale), colors[index]);
     }
 }
 

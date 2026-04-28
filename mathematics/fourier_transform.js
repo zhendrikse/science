@@ -74,7 +74,7 @@ class FourierTransform {
             for (let j = 0; j < N; j++) {
                 const re = real[i][j];
                 const im = imag[i][j];
-                const value = re * re + im * im;
+                const value = Math.sqrt(re * re + im * im);
                 const phase = Math.atan2(im, re); // [-π, π]
                 intensity[i][j] = value;
                 phaseArray[i][j] = phase;
@@ -114,8 +114,8 @@ function drawToImage(image, magnitude, phase, max) {
             const hue = (ph + Math.PI) / (2 * Math.PI);
             const {r, g, b} = hsvToRgb(hue, 1, 1);
             const brightness = Math.pow(mag, 0.3);
-            const alpha = Math.log(1 + 100 * mag);
-            image.setColourAt(i, j,[r * brightness, g * brightness, b * brightness, alpha]);
+            const alpha = Math.log(1 + 10 * mag);
+            image.setColourAt(i, j,[r * brightness, g * brightness, b * brightness, alpha * 255]);
         }
 }
 
