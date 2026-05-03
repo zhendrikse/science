@@ -1039,7 +1039,7 @@ export class ArrowField extends Group {
 }
 
 export class Sphere extends Mesh {
-    constructor(group, {
+    constructor({
         position = new Vector3(0, 0, 0),
         radius = 1,
         color = 0xffff00,
@@ -1068,8 +1068,6 @@ export class Sphere extends Mesh {
         this._radius = radius;
         this._position = position;
         this._scale = scale;
-        this._group = group;
-        this._group.add(this);
         this._trail = null;
         if (makeTrail) this.enableTrail({ color: color });
     }
@@ -1097,7 +1095,6 @@ export class Sphere extends Mesh {
         this._trail?.update();
     }
 
-    get position() { return this._position; }
     get radius() { return this._radius; }
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceTo(other) { return this.positionVectorTo(other).length() }
@@ -1295,16 +1292,53 @@ class Helix extends Curve {
 }
 
 class Body {
-    constructor(position = new Vector3(0, 0, 0), velocity = new Vector3(0, 0, 0), mass = 1, charge = 0) {
-        this.position = position.clone();
-        this.velocity = velocity.clone();
-        this.mass = mass;
-        this.charge = charge;
+    constructor({
+                    position = new Vector3(0, 0, 0),
+                    velocity = new Vector3(0, 0, 0),
+                    mass = 1,
+                    charge = 0} = {}) {
+        this._position = position.clone();
+        this._velocity = velocity.clone();
+        this._mass = mass;
+        this._charge = charge;
     }
 
     clone() {
-        return new Body(this.position.clone(), this.velocity.clone(), this.mass, this.charge);
+        return new Body({
+            position: this._position.clone(),
+            velocity: this._velocity.clone(),
+            mass: this._mass,
+            charge: this._charge
+        });
     }
+
+    fieldAt(point) {
+        const rVec = point.clone().sub(this._position);
+        const distanceSquared = rVec.dot(rVec);
+
+        if (distanceSquared < 1e-12)
+            return new Vector3(0, 0, 0); // avoid singularity
+
+        return distanceSquared < 1e-12 ?
+            new Vector3(0, 0, 0) :
+            rVec.normalize().multiplyScalar(this._charge / distanceSquared);
+    }
+
+}
+
+export class Charge extends Sphere {
+    constructor({
+                    position = new Vector3(0, 0, 0),
+                    charge = 0,
+                    velocity = new Vector3(0, 0, 0),
+                    mass = 1,
+                    scale = 1,
+                    radius = 1} = {}) {
+        super({position, radius, scale});
+        this._body = new Body({position, velocity, mass, charge});
+    }
+
+    fieldAt(point) { return this._body.fieldAt(point); }
 }
 
 export class Ball {
@@ -1313,6 +1347,7 @@ export class Ball {
         radius = 1,
         velocity = new Vector3(0, 0, 0),
         mass = 1,
+        charge = 0,
         opacity = 1,
         wireframe = false,
         color = 0xffff00,
@@ -1322,15 +1357,17 @@ export class Ball {
         elasticity = 1.0,
         castShadow = false,
         segments = 24 } = {}) {
-        this._sphere = new Sphere(parent,
-            {
+        this._sphere = new Sphere({
                 position, radius, color, makeTrail, visible, scale, segments, opacity, wireframe, castShadow
             });
-        this._state = new Body(position, velocity, mass);
+        parent.add(this._sphere);
+        this._state = new Body({position, velocity, mass, charge});
         this._radius = radius;
         this._elasticity = elasticity;
         this._neighbors = [];
     }
+
+    fieldAt(point) { return this._state.fieldAt(point); }
 
     appendNeighbor(ball) { this._neighbors.push(ball); }
 

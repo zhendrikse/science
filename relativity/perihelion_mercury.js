@@ -151,7 +151,7 @@ function angleBetween(v1, v2) {
 }
 
 function markPerihelion() {
-    new Sphere(planetaryScene, {position: vec_r_last, radius: 0.2});
+    planetaryScene.add(new Sphere({position: vec_r_last, radius: 0.2}));
     const prev = perihelion_list[perihelion_list.length - 2];
     const curr = perihelion_list[perihelion_list.length - 1];
 

@@ -27,11 +27,12 @@ class Particle {
         velocity=new Vector3(0, 1, 0),
         radius=0.06,
         color=0x00ff00 } = {}) {
-        this._sphere = new Sphere(group, {
+        this._sphere = new Sphere({
             position: position.clone(),
             radius,
             color
         });
+        group.add(this._sphere);
         this.velocity = velocity.clone();
         this.alive = true;
     }

@@ -59,7 +59,8 @@ class Ball {
         radius=1,
         color=0xffff00,
     } = {}) {
-        this._sphere = new Sphere(parent, {position, radius, color});
+        this._sphere = new Sphere({position, radius, color});
+        parent.add(this._sphere);
         this._position = position.clone();
         this._velocity = velocity.clone();
         this._rVector = new Vector3();
@@ -141,7 +142,7 @@ class Person {
 }
 
 const person = new Person(planetaryScene);
-new Sphere(planetaryScene, {position: blackHolePos, radius: 1.0, color: new Color(0.3, 0.3, 0.3)});
+planetaryScene.add(new Sphere({position: blackHolePos, radius: 1.0, color: new Color(0.3, 0.3, 0.3)}));
 
 let lastTime = performance.now() * .001;
 function animate(now) {
