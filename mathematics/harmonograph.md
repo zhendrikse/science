@@ -24,6 +24,10 @@ is commonly believed to be the official inventor. &mdash;
 > [Wikipedia](https://en.wikipedia.org/wiki/Harmonograph)
 
 <canvas id="harmonographCanvas" class="applicationCanvas" style="aspect-ratio: 1/1;"></canvas>
+<div class="buttonRow">
+    <label for="rotateButton">Auto-rotate: </label><input type="checkbox" id="rotateButton"/>
+    <button id="generateButton">Generate</button>
+</div>
 <script type="module" src="harmonograph.js"></script>
 <p style="clear: both;"></p>
 
