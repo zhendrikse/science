@@ -1316,14 +1316,10 @@ class Body {
         const rVec = point.clone().sub(this._position);
         const distanceSquared = rVec.dot(rVec);
 
-        if (distanceSquared < 1e-12)
-            return new Vector3(0, 0, 0); // avoid singularity
-
-        return distanceSquared < 1e-12 ?
+        return distanceSquared < 1e-40 ?
             new Vector3(0, 0, 0) :
             rVec.normalize().multiplyScalar(this._charge / distanceSquared);
     }
-
 }
 
 export class Charge extends Sphere {
@@ -1333,9 +1329,11 @@ export class Charge extends Sphere {
                     velocity = new Vector3(0, 0, 0),
                     mass = 1,
                     scale = 1,
+                    color = 0xffff00,
                     radius = 1} = {}) {
-        super({position, radius, scale});
+        super({position, radius, scale, color});
         this._body = new Body({position, velocity, mass, charge});
+        this._scale = scale;
     }
 
     fieldAt(point) { return this._body.fieldAt(point); }
@@ -1415,9 +1413,9 @@ export class Ball {
 
     kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
     get radius() { return this._radius }
-    get position() { return this._state.position; }
-    get velocity() { return this._state.velocity; }
-    get mass() { return this._state.mass; }
+    get position() { return this._state._position; }
+    get velocity() { return this._state._velocity; }
+    get mass() { return this._state._mass; }
     get visible() { return this._sphere.visible; }
     get neighbors() { return this._neighbors; }
     get elasticity() { return this._elasticity; }
