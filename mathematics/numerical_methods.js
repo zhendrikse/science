@@ -16,7 +16,6 @@ camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({canvas, antialias:true, alpha: true});
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-renderer.setAnimationLoop(animate);
 
 const controls = new OrbitControls( camera, canvas );
 
@@ -105,7 +104,7 @@ let time = 0;
 const maxPoints = 500;
 const dt = 0.0025;
 const phi = 0;
-function animate() {
+renderer.setAnimationLoop(() => {
     renderer.render(scene, camera);
     controls.update();
     if (!running) return;
@@ -128,7 +127,6 @@ function animate() {
     if (plotData[0].length > maxPoints)
         plotData.forEach(arr => arr.shift());
     plot.setData(plotData);
-}
+});
 
-animate();
 
