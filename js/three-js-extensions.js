@@ -1303,28 +1303,28 @@ class Body {
                     velocity = new Vector3(0, 0, 0),
                     mass = 1,
                     charge = 0} = {}) {
-        this._position = position.clone();
-        this._velocity = velocity.clone();
-        this._mass = mass;
-        this._charge = charge;
+        this.position = position.clone();
+        this.velocity = velocity.clone();
+        this.mass = mass;
+        this.charge = charge;
     }
 
     clone() {
         return new Body({
-            position: this._position.clone(),
-            velocity: this._velocity.clone(),
-            mass: this._mass,
-            charge: this._charge
+            position: this.position.clone(),
+            velocity: this.velocity.clone(),
+            mass: this.mass,
+            charge: this.charge
         });
     }
 
     fieldAt(point) {
-        const rVec = point.clone().sub(this._position);
+        const rVec = point.clone().sub(this.position);
         const distanceSquared = rVec.dot(rVec);
 
         return distanceSquared < 1e-40 ?
             new Vector3(0, 0, 0) :
-            rVec.normalize().multiplyScalar(this._charge / distanceSquared);
+            rVec.normalize().multiplyScalar(this.charge / distanceSquared);
     }
 }
 
