@@ -19,8 +19,7 @@ $$
 <script type="module" src="dipole_field.js"></script>
 <p style="clear: both;"></p>
 
-🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/MyPrograms/program/CircularAperture) is available as well, see [circular_aperture.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/circular_aperture.py)<br/>
-
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Electricdipolefield) is available as well, see [dipole_field.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/circular_aperture.py)<br/>
 
 ### Understanding electric fields
 <div class="header_line"><br/></div>
