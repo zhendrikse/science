@@ -10,7 +10,8 @@ scene.add(worldGroup);
 
 const renderer = new WebGLRenderer({
     canvas: canvas,
-    antialias: true
+    antialias: true,
+    alpha: true
 });
 
 const x_max = 2,
