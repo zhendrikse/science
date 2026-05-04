@@ -14,7 +14,7 @@ invisible forces around it, tracing the flow of this small, colorful universe.
 
 🎯 Intuitive understanding of the divergence and curl<br/>
 🧠 [Original idea](https://www.glowscript.org/#/user/wlane/folder/Physicsin3D/program/water-flow-curl) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
-👉 Klik on canvas to activate another vector field!<br/>
+👉 Click on canvas to activate another vector field!<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Math/program/DivCurlDemo) is available as well, see [dipole_field.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/div_curl_demo.py)<br/>
 
 <div class="canvasWrapper" id="canvasWrapper">
