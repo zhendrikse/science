@@ -915,8 +915,10 @@ export class ArrowField extends Group {
             switch (this._colorMode) {
                 case ArrowField.ColorMode.DIVERGENCE:
                     length = this._vectorField.divergence(position);
+                    break;
                 case ArrowField.ColorMode.CURL:
                     length = this._vectorField.curlMagnitude(position);
+                    break;
                 default:
                     length = this._vectorField.sample(position).length();
             }
