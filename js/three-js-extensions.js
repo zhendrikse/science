@@ -736,8 +736,8 @@ export class Trail {
         this._trailAccumulator = 0;
         this._trailStep = trailStep;
 
-        if (this._parent)
-            this._parent.add(this._trail._line);
+        const container = parent ?? this._parent.parent;
+        container.add(this._trail._line);
     }
 
     dispose() {
@@ -749,7 +749,7 @@ export class Trail {
             if (this._trail._line.material)
                 this._trail._line.material.dispose();
         }
-        this._parent.remove(this._trail._line);
+        this._parent.parent.remove(this._trail._line);
         this._trail = null;
     }
 }
