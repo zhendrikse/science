@@ -283,14 +283,6 @@ export class CelestialBody extends Group {
     _material(bumpScale, identicalBumpMap) { throw new Error("Abstract class: implement material!"); }
 
     updateRotation(tHours) { this._body.rotation.y = this._spin * tHours; } // Spin the body along the axis with tilt
-
-    enableTrail({ maxPoints = 1000, color = 0xffff00, lineWidth = 1, trailStep = 10 } = {}) {
-        this._trail = new Trail(this);
-        this._trail.enable({ maxPoints, color, lineWidth, trailStep });
-    }
-
-    updateTrail(dt) { this._trail?.update(dt); }
-    disposeTrail() { this._trail?.dispose(); }
 }
 
 export class Planet extends CelestialBody {
@@ -329,7 +321,7 @@ export class Planet extends CelestialBody {
     }
 
     update(t) {
-        this.updateTrail();
+        this._trail.update(toRenderUnits(this._orbit.coordinatesAt(t)));
         this.updateRotation(t);
     }
 }
@@ -359,7 +351,6 @@ export class Satellite extends CelestialBody {
     coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
 
     update(t) {
-        this.updateTrail();
         if (this._lock) {
             const planetWorldPos = this._planet.getWorldPosition(new Vector3());
             this.lookAt(planetWorldPos);

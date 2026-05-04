@@ -73,8 +73,7 @@ class RelativisticMercury extends CelestialBody {
 
     coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
 
-    update_by(t, dt) {
-        this.updateTrail(dt);
+    updateBy(t, dt) {
         this.updateRotation(t);
 
         const current_pos = this.position.clone();
@@ -89,6 +88,7 @@ class RelativisticMercury extends CelestialBody {
 
         this._velocity.addScaledVector(acceleration_vector, dt);
         this.position.addScaledVector(this._velocity, dt);
+        this._trail.update(this.position);
     }
 
     toggleAlpha() { this._alpha = this._alpha === 0 ? 1e6 : 0; } // Strength of 1/r**3 term
@@ -127,8 +127,8 @@ const mercury = new RelativisticMercury({
 }, PLANET_SCALE * orbitRadius * .4);
 mercury.position.copy(initial_position);
 planetaryScene.add(mercury);
-const trail = new Trail(planetaryScene, {maxPoints: 130, color: 0xaaff00, trailStep: 1});
-trail.attachTo(mercury);
+const mercuryTrail = new Trail(planetaryScene, {maxPoints: 5000, color: 0xaaff00, trailStep: 1});
+mercuryTrail.attachTo(mercury);
 
 document.getElementById("alphaTerm").onclick = () => mercury.toggleAlpha();
 document.getElementById("betaTerm").onclick = () => mercury.toggleBeta();
@@ -232,7 +232,7 @@ function animate(now) {
     while (accumulator > baseDt) {
         vec_r_last = mercury.position.clone();
 
-        mercury.update_by(tPhys, baseDt);
+        mercury.updateBy(tPhys, baseDt);
         checkPerihelion();
 
         tPhys += baseDt;
