@@ -911,16 +911,16 @@ export class ArrowField extends Group {
 
     #scalarField() {
         return this._positions.map(position => {
+            let length = 0;
             switch (this._colorMode) {
                 case ArrowField.ColorMode.DIVERGENCE:
-                    return this._vectorField.divergence(position);
+                    length = this._vectorField.divergence(position);
                 case ArrowField.ColorMode.CURL:
-                    return this._vectorField.curlMagnitude(position);
+                    length = this._vectorField.curlMagnitude(position);
                 default:
-                    const field = this._vectorField.sample(position);
-                    const length = field.length();
-                    return length / (length + 1 / this._arrowScale);
+                    length = this._vectorField.sample(position).length();
             }
+            return length / (length + 1 / this._arrowScale);
         });
     }
 
