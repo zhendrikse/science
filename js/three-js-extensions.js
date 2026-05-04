@@ -686,8 +686,7 @@ class TrailLine {
     }
 
     addPoint(position) {
-        const localPos = this._line.worldToLocal(position.clone());
-        this._positions.push(localPos);
+        this._positions.push(position.clone());
 
         if (this._positions.length > this._maxPoints)
             this._positions.shift();
@@ -710,34 +709,40 @@ class TrailLine {
 }
 
 export class Trail {
-    constructor(attachedToObject) {
-        this._parent = attachedToObject;
-        this._trailStep = 10;
-        this._trailAccumulator = 0;
+    constructor(parentGroup, {
+        maxPoints = 200,
+        trailStep = 10,
+        lineWidth = 1,
+        color = null // By default, try to obtain the color from the object that is followed
+    } = {}) {
+        this._parent = null;
+        this._color = color;
+        this._container = parentGroup;
+        this._maxPoints = maxPoints;
+        this._lineWidth = lineWidth;
         this._trail = null;
+        this._trailAccumulator = 0;
+        this._trailStep = trailStep;
     }
 
     update(increment = 1) {
         if (!this._trail) return;
         this._trailAccumulator += increment;
         if (this._trailAccumulator >= this._trailStep) {
-            this._trail.addPoint(this._parent.getWorldPosition(new Vector3()));
+            this._trail.addPoint(this._parent.position);
             this._trailAccumulator = 0;
         }
     }
 
-    enable({
-        maxPoints = 200,
-        color = 0xffffff,
-        trailStep = 10,
-        linewidth = 1
-    } = {}) {
-        this._trail = new TrailLine({ maxPoints, color, linewidth });
-        this._trailAccumulator = 0;
-        this._trailStep = trailStep;
-
-        const container = parent ?? this._parent.parent;
-        container.add(this._trail._line);
+    attachTo(object) {
+        object.trail = this; // <== pass in trail
+        this._parent = object;
+        this._trail = new TrailLine({
+            maxPoints: this._maxPoints,
+            color: this._color ? this._color: object.color,
+            linewidth: this._lineWidth
+        });
+        this._container.add(this._trail._line);
     }
 
     dispose() {
@@ -749,7 +754,7 @@ export class Trail {
             if (this._trail._line.material)
                 this._trail._line.material.dispose();
         }
-        this._parent.parent.remove(this._trail._line);
+        this._container.remove(this._trail._line);
         this._trail = null;
     }
 }
@@ -1049,7 +1054,6 @@ export class Sphere extends Mesh {
         position = new Vector3(0, 0, 0),
         radius = 1,
         color = 0xffff00,
-        makeTrail = false,
         visible = true,
         scale = 1,
         segments = 24,
@@ -1075,24 +1079,6 @@ export class Sphere extends Mesh {
         this._position = position;
         this._scale = scale;
         this._trail = null;
-        if (makeTrail) this.enableTrail({ color: color });
-    }
-
-    enableTrail({
-        maxPoints = 200,
-        color = 0xaaaaaa,
-        trailStep = 10,
-        linewidth = 1
-    } = {}) {
-
-        this._trail = new Trail(this);
-        this._trail.enable({ maxPoints, color, trailStep, linewidth });
-    }
-
-    disableTrail() {
-        if (!this._trail) return;
-        this._trail.dispose();
-        this._trail = null;
     }
 
     moveTo(newPosition) {
@@ -1102,6 +1088,7 @@ export class Sphere extends Mesh {
     }
 
     get radius() { return this._radius; }
+    set trail(newTrail) { this._trail = newTrail; }
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceTo(other) { return this.positionVectorTo(other).length() }
 }
@@ -1357,12 +1344,11 @@ export class Ball {
         color = 0xffff00,
         scale = 1,
         visible = true,
-        makeTrail = false,
         elasticity = 1.0,
         castShadow = false,
         segments = 24 } = {}) {
         this._sphere = new Sphere({
-                position, radius, color, makeTrail, visible, scale, segments, opacity, wireframe, castShadow
+                position, radius, color, visible, scale, segments, opacity, wireframe, castShadow
             });
         parent.add(this._sphere);
         this._state = new Body({position, velocity, mass, charge});
@@ -1371,7 +1357,8 @@ export class Ball {
         this._neighbors = [];
     }
 
-    fieldAt(point) { return this._state.fieldAt(point); }
+    set trail(newTrail) { this._sphere.trail = newTrail; }
+    get color() { return this._sphere.material.color; }
 
     appendNeighbor(ball) { this._neighbors.push(ball); }
 
@@ -1381,7 +1368,6 @@ export class Ball {
 
         this.moveTo(updatedBody.position);
         this.accelerateTo(updatedBody.velocity);
-        this._sphere.moveTo(this.position);
     }
 
     liesOnFloor({ floorLevel = 0, epsilon = 1e-1 } = {}) {
@@ -1406,16 +1392,6 @@ export class Ball {
     accelerateTo(newVelocity) { this._state.velocity.copy(newVelocity); }
 
     shiftBy(displacement) { this.moveTo(this.position.clone().add(displacement)); }
-
-    disableTrail() { this._sphere.disableTrail(); }
-    enableTrail({
-        maxPoints = 200,
-        color = 0xaaaaaa,
-        trailStep = 10,
-        linewidth = 1
-    } = {}) {
-        this._sphere.enableTrail({ maxPoints, color, trailStep, linewidth });
-    }
 
     kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
     get radius() { return this._radius }

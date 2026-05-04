@@ -1,5 +1,5 @@
-import {Box3, Scene, Color, Group, Vector3 } from "three";
-import { Ball, Axes, AxesController, AxesParameters, ThreeJsUtils, Plot3DView } from '../js/three-js-extensions.js';
+import {Box3, Scene, Group, Vector3 } from "three";
+import { Ball, Axes, AxesController, AxesParameters, ThreeJsUtils, Plot3DView, Trail } from '../js/three-js-extensions.js';
 
 const canvasContainer = document.getElementById("bouncingBallWrapper");
 const canvas = document.getElementById("bouncingBallCanvas");
@@ -34,8 +34,9 @@ const ball = new Ball(worldGroup, {
     color: "cyan",
     radius: 0.1,
     elasticity: 0.9,
-    makeTrail: true
 });
+const trail = new Trail(worldGroup);
+trail.attachTo(ball);
 
 const boundingBox = new Box3(new Vector3(0, 0, 0), new Vector3(3.25, 3.25, 3.25));
 axesController.createFromBoundingBox(boundingBox);

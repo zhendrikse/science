@@ -1,7 +1,7 @@
 import { MeshPhongMaterial, TextureLoader, Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight,
     PointLight, ACESFilmicToneMapping, SRGBColorSpace, MathUtils } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { ThreeJsUtils, Sphere } from '../js/three-js-extensions.js';
+import { ThreeJsUtils, Sphere, Trail } from '../js/three-js-extensions.js';
 import { SkyDome, Sun, TEXTURES_PATH, DISTANCE_SCALE, PLANET_SCALE, SUN_SCALE, CelestialBody }
     from '../js/astro-extensions.js';
 
@@ -72,11 +72,6 @@ class RelativisticMercury extends CelestialBody {
     }
 
     coordinatesAt(t) { return this._orbit.coordinatesAt(t); }
-    renderOrbit(color) { return this._orbit.draw({
-        color: color,
-        opacity: 0.4,
-        scale: 1000 / DISTANCE_SCALE
-    }); }
 
     update_by(t, dt) {
         this.updateTrail(dt);
@@ -132,7 +127,9 @@ const mercury = new RelativisticMercury({
 }, PLANET_SCALE * orbitRadius * .4);
 mercury.position.copy(initial_position);
 planetaryScene.add(mercury);
-mercury.enableTrail({maxPoints: 130, color: 0xaaff00, trailStep: 1});
+const trail = new Trail(planetaryScene, {maxPoints: 130, color: 0xaaff00, trailStep: 1});
+trail.attachTo(mercury);
+
 document.getElementById("alphaTerm").onclick = () => mercury.toggleAlpha();
 document.getElementById("betaTerm").onclick = () => mercury.toggleBeta();
 

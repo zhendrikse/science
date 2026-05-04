@@ -272,6 +272,7 @@ export class CelestialBody extends Group {
         this._trail = null;
     }
 
+    set trail(newTrail) { this._trail = newTrail; }
     get scaledRadius() { return this._scaledRadius; }
     get tilt() { return this._tilt; }
     get radius() { return this._radius; }

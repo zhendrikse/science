@@ -5,6 +5,7 @@
 
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=div_curl_demo.js)](https://github.com/zhendrikse/science/blob/main/mathematics/div_curl_demo.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
 ### What are you looking at?
 
@@ -15,7 +16,7 @@ invisible forces around it, tracing the flow of this small, colorful universe.
 🎯 Intuitive understanding of the divergence and curl<br/>
 🧠 [Original idea](https://www.glowscript.org/#/user/wlane/folder/Physicsin3D/program/water-flow-curl) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
 👉 Click on canvas to activate another vector field!<br/>
-🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Math/program/DivCurlDemo) is available as well, see [dipole_field.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/div_curl_demo.py)<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Math/program/DivCurlDemo) is available as well, see [div_curl_demo.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/div_curl_demo.py)<br/>
 
 <div class="canvasWrapper" id="canvasWrapper">
     <canvas id="divCurlCanvas" class="applicationCanvas"></canvas>

@@ -6,6 +6,7 @@
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=perihelion_mercury.js)](https://github.com/zhendrikse/science/blob/main/relativity/perihelion_mercury.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+[![WebGL](https://img.shields.io/badge/WebGL-990000?logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
 
 > It is an entirely wonderful thing, that from one so abstract an idea comes
 out such a conclusive clarification of the Mercury anomaly. &mdash; 
@@ -15,6 +16,7 @@ out such a conclusive clarification of the Mercury anomaly. &mdash;
 🎯 Explanation of one of the [three classic tests](https://en.wikipedia.org/wiki/Tests_of_general_relativity) of general relativity<br/>
 🧠 Based on [base_solution.py](https://github.com/ckoerber/perihelion-mercury/blob/master/py-scripts/base_solution.py) by [Christopher Körber](https://github.com/ckoerber)<br/>
 📌 See also his [accompanying slides](https://www.ckoerber.com/media/professional/CKoerber-APS-April-2019.pdf) and [article on arXiv](https://arxiv.org/abs/1803.01678)<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Relativity/program/PerihelionMercury) is available as well, see [perihelion_mercury.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/perihelion_mercury.py)<br/>
 
 This code simulates the movement of Mercury and displays its position and
 trajectory at regular intervals. The gravitational force and relativistic correction
