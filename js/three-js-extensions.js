@@ -725,11 +725,11 @@ export class Trail {
         this._trailStep = trailStep;
     }
 
-    update(increment = 1) {
+    update(position, increment = 1) {
         if (!this._trail) return;
         this._trailAccumulator += increment;
         if (this._trailAccumulator >= this._trailStep) {
-            this._trail.addPoint(this._parent.position);
+            this._trail.addPoint(position);
             this._trailAccumulator = 0;
         }
     }
@@ -1083,8 +1083,9 @@ export class Sphere extends Mesh {
 
     moveTo(newPosition) {
         this._position.copy(newPosition);
-        this.position.copy(newPosition.clone().multiplyScalar(this._scale));
-        this._trail?.update();
+        const scaledPosition = newPosition.clone().multiplyScalar(this._scale);
+        this.position.copy(scaledPosition);
+        this._trail?.update(scaledPosition);
     }
 
     get radius() { return this._radius; }
