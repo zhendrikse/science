@@ -1,6 +1,5 @@
-import { Vector3, Line, Scene, Color, Group, AmbientLight, DirectionalLight, Box3, Mesh,
-    LineBasicMaterial, BufferGeometry } from "three";
-import { Plot3DView, ThreeJsUtils, Ball } from '../js/three-js-extensions.js';
+import { Vector3, Line, Scene, Color, Group, LineBasicMaterial, BufferGeometry } from "three";
+import { Plot3DView, ThreeJsUtils, Ball, Trail } from '../js/three-js-extensions.js';
 import {
     SurfaceDefinition, SurfaceController, IsoparametricContoursView, Surface,
     CustomColorColorMapper, ViewParameters
@@ -78,7 +77,6 @@ class Comet extends Ball {
         this._color = color;
 
         this._isMoving = false;
-        this.enableTrail({ color: color, maxPoints: 1000 });
     }
 
     _derivativeSurface(state, M) {
@@ -282,6 +280,8 @@ const comet = new Comet(scene, {
     color: new Color(0x00ffff),
     stateVector: StateVector.initial(orbitButton.checked)
 });
+const cometTrail = new Trail(scene, { maxPoints: 1000 });
+cometTrail.attachTo(comet);
 
 const flatComet = new Comet(scene, {
     position: new Vector3(Number(distanceSlider.value), SchwarzschildSurfaceDefinition.yOffset, 0),
@@ -289,6 +289,8 @@ const flatComet = new Comet(scene, {
     color: new Color(0xff0000),
     stateVector: null // important: no own dynamics, just follows comet
 });
+const flatCometTrail = new Trail(scene, { maxPoints: 1000 });
+flatCometTrail.attachTo(flatComet);
 
 const realComet = new Comet(scene, {
     position: new Vector3(Number(distanceSlider.value), SchwarzschildSurfaceDefinition.yOffset, 0),
@@ -296,6 +298,8 @@ const realComet = new Comet(scene, {
     color: new Color(0xff8800),
     stateVector: StateVector.initial(orbitButton.checked)
 });
+const realCometTrail = new Trail(scene, { maxPoints: 1000 });
+realCometTrail.attachTo(realComet);
 
 const mathSurface = new Surface(new SchwarzschildSurfaceDefinition(5));
 const surfaceParams = new ViewParameters({
