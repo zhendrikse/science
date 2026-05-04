@@ -1,29 +1,24 @@
-import * as THREE from "three";
-import { VectorField, Arrow, Ball}
-    from '../js/three-js-extensions.js';
+import { OrthographicCamera, AmbientLight, DirectionalLight, Vector3, WebGLRenderer, Scene, Group } from "three";
+import {VectorField, Arrow, Ball, ThreeJsUtils} from '../js/three-js-extensions.js';
 
 const canvas = document.getElementById("divCurlCanvas");
 const overlay = document.getElementById("overlayText");
 
-const scene = new THREE.Scene();
-const worldGroup = new THREE.Group();
+const scene = new Scene();
+const worldGroup = new Group();
 scene.add(worldGroup);
 
-const renderer = new THREE.WebGLRenderer({
+const renderer = new WebGLRenderer({
     canvas: canvas,
     antialias: true
 });
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setAnimationLoop(animate);
-
-const aspect = canvas.clientWidth / canvas.clientHeight;
 
 const x_max = 2,
     x_min = -x_max,
     y_max = 0.75 * x_max,
     y_min = -y_max;
 
-const camera = new THREE.OrthographicCamera(
+const camera = new OrthographicCamera(
     x_min, x_max,
     y_max, y_min,
     -10, 10
@@ -31,9 +26,10 @@ const camera = new THREE.OrthographicCamera(
 
 camera.position.set(0, 0, 5);
 camera.lookAt(0, 0, 0);
+ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 
-scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+scene.add(new AmbientLight(0xffffff, 0.6));
+const dir = new DirectionalLight(0xffffff, 0.8);
 dir.position.set(1, 3, 2);
 scene.add(dir);
 
@@ -46,23 +42,23 @@ class DemoVectorField extends VectorField {
     }
 
     sample(position) {
-        let vector = new THREE.Vector3(0, 0, 0);
+        let vector = new Vector3(0, 0, 0);
 
         // Source: repelling
-        const radiusToSource = position.clone().sub(this.source.position());
+        const radiusToSource = position.clone().sub(this.source.position);
         const distanceToSource = Math.max(radiusToSource.length(), 0.05);
         vector.add(radiusToSource.multiplyScalar(1 / (distanceToSource * distanceToSource)));
 
         // Sink: attracting
-        const radiusToSink = this.sink.position().clone().sub(position);
+        const radiusToSink = this.sink.position.clone().sub(position);
         const distanceToSink = Math.max(radiusToSink.length(), 0.05);
         vector.add(radiusToSink.multiplyScalar(1 / (distanceToSink * distanceToSink)));
 
         // Curl effect (optional)
         if (this.curl) {
-            const radiusToCurl = position.clone().sub(this.curl.position());
+            const radiusToCurl = position.clone().sub(this.curl.position);
             const curlV =
-                new THREE.Vector3(-radiusToCurl.y, radiusToCurl.x, 0).multiplyScalar(0.3 / (radiusToCurl.length() + 0.1));
+                new Vector3(-radiusToCurl.y, radiusToCurl.x, 0).multiplyScalar(0.3 / (radiusToCurl.length() + 0.1));
             vector.add(curlV);
         }
 
@@ -82,44 +78,44 @@ class OriginalDemoVectorField extends VectorField {
         this.curl = curl;     // Ball object or null
     }
 
-    sample(position, radius=.75, a=new THREE.Vector3(1, .5, 0), b=new THREE.Vector3(-1, -.5, 0), c=new THREE.Vector3(-1, .5, 0)) {
+    sample(position, radius=.75, a=new Vector3(1, .5, 0), b=new Vector3(-1, -.5, 0), c=new Vector3(-1, .5, 0)) {
         if (a.x - radius <= position.x &&
             position.x <= a.x + radius &&
             a.y - radius <= position.y &&
             position.y <= a.y + radius)
         {
             const theta = Math.atan2((position.y - a.y), (position.x - a.x));
-            return new THREE.Vector3(-Math.sin(theta), Math.cos(theta), 0);
+            return new Vector3(-Math.sin(theta), Math.cos(theta), 0);
         } else if (b.x - radius <= position.x &&
             position.x <= b.x + radius &&
             b.y - radius <= position.y &&
             position.y <= b.y + radius)
         {
             const theta = Math.atan2((position.y - b.y), (position.x - b.x));
-            return new THREE.Vector3(-Math.cos(theta), -Math.sin(theta), 0);
+            return new Vector3(-Math.cos(theta), -Math.sin(theta), 0);
         } else if (c.x - radius <= position.x &&
             position.x <= c.x + radius &&
             c.y - radius <= position.y &&
             position.y <= c.y + radius)
         {
             const theta = Math.atan2((position.y - c.y), (position.x - c.x));
-            return new THREE.Vector3(Math.cos(theta), Math.sin(theta), 0);
+            return new Vector3(Math.cos(theta), Math.sin(theta), 0);
         } else if ((x_max - position.x <= 0.2 || position.x - x_min <= 0.2) &&
             (y_max - position.y <= 0.2 || position.y - y_min <= 0.2))
         {
             const vx = (x_max - position.x <= 0.2) ? -1 : 1;
             const vy = (y_max - position.y <= 0.2) ? -1 : 1;
-            return new THREE.Vector3(vx, vy, 0)
+            return new Vector3(vx, vy, 0)
         } else if (x_max - position.x <= 0.2)
-            return new THREE.Vector3(0, 1, 0);
+            return new Vector3(0, 1, 0);
         else if (position.x - x_min <= 0.2)
-            return new THREE.Vector3(0, -1, 0);
+            return new Vector3(0, -1, 0);
         else if (y_max - position.y <= 0.2)
-            return new THREE.Vector3(-1, 0, 0);
+            return new Vector3(-1, 0, 0);
         else if (position.y - y_min <= 0.2)
-            return new THREE.Vector3(1, 0, 0);
+            return new Vector3(1, 0, 0);
         else
-            return new THREE.Vector3(0.5, 1.5, 0);
+            return new Vector3(0.5, 1.5, 0);
     }
 }
 
@@ -127,7 +123,7 @@ function createParticles() {
     const particles = [];
     for (let x = x_min; x <= x_max; x += 0.25)
         for (let y = y_min; y <= y_max; y += 0.25)
-            particles.push(new Ball(worldGroup, {position: new THREE.Vector3(x, y, 0), radius: 0.05, color: "orange"}));
+            particles.push(new Ball(worldGroup, {position: new Vector3(x, y, 0), radius: 0.05, color: "orange"}));
     return particles;
 }
 
@@ -135,9 +131,9 @@ function createArrows() {
     const arrows = [];
     for (let x = x_min; x <= x_max; x += 0.25)
         for (let y = y_min; y <= y_max; y += 0.25) {
-            const axis = vectorField.sample(new THREE.Vector3(x, y, 0)).multiplyScalar(.2),
+            const axis = vectorField.sample(new Vector3(x, y, 0)).multiplyScalar(.2),
                 shift = axis.clone().multiplyScalar(-0.1),
-                position = new THREE.Vector3(x, y, 0).add(shift),
+                position = new Vector3(x, y, 0).add(shift),
                 arrow = new Arrow(position, axis, {color: "yellow", opacity: 0, round: true, shaftWidth: 0.05});
             arrows.push(arrow);
             worldGroup.add(arrow);
@@ -147,7 +143,7 @@ function createArrows() {
 
 function resetSimulation(particles, arrows) {
     for (const particle of particles)
-        worldGroup.remove(particle._sphere._sphere);
+        worldGroup.remove(particle._sphere);
     for (const arrow of arrows)
         worldGroup.remove(arrow);
 
@@ -170,10 +166,10 @@ function onResize() {
     const viewHeight = y_max - y_min;
     const viewWidth  = viewHeight * aspect;
 
-    camera.top    =  viewHeight / 1.75;
-    camera.bottom = -viewHeight / 1.75;
-    camera.right  =  viewWidth / 1.75;
-    camera.left   = -viewWidth / 1.75;
+    camera.top    =  viewHeight / 1.4;
+    camera.bottom = -viewHeight / 1.4;
+    camera.right  =  viewWidth / 1.4;
+    camera.left   = -viewWidth / 1.4;
 
     camera.updateProjectionMatrix();
 }
@@ -186,9 +182,9 @@ function showOverlayMessage(message, duration=1000) {
     }, duration);
 }
 
-const source = new Ball(worldGroup, {position: new THREE.Vector3(-1, 0.5, 0), radius: 0.25, opacity: 0.4, color: "red"});
-const sink = new Ball(worldGroup, {position:  new THREE.Vector3(-1, -0.5, 0), radius: 0.25, opacity: 0.4, color: "green"});
-const curl = new Ball(worldGroup, {position:  new THREE.Vector3(1, 0.5, 0), radius: 0.25, opacity: 0.4, color: "cyan"});
+const source = new Ball(worldGroup, {position: new Vector3(-1, 0.5, 0), radius: 0.25, opacity: 0.4, color: "red"});
+const sink = new Ball(worldGroup, {position:  new Vector3(-1, -0.5, 0), radius: 0.25, opacity: 0.4, color: "green"});
+const curl = new Ball(worldGroup, {position:  new Vector3(1, 0.5, 0), radius: 0.25, opacity: 0.4, color: "cyan"});
 
 let vectorField = new OriginalDemoVectorField(source, sink, curl);
 let particles = createParticles();
@@ -201,7 +197,6 @@ window.addEventListener("click", () => {
     if (!started) {
         showOverlayMessage("Start");
         started = true;
-        animate();
     } else {
         showOverlayMessage("Restart with the other vector field!");
         resetSimulation(particles, arrows); // reset animation with extra click
@@ -221,7 +216,7 @@ const dt = 0.0025;
 const d_o = 0.0025;
 
 renderer.render(scene, camera);
-function animate() {
+renderer.setAnimationLoop( () => {
     if(!started) {
         overlay.style.display = "block";
         return;
@@ -245,4 +240,4 @@ function animate() {
     }
 
     renderer.render(scene, camera);
-}
+});
