@@ -5,6 +5,7 @@
 
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=dipole_field.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/dipole_field.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
 🎯 Visualization of electric dipole field:
 
