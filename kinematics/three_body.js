@@ -1,5 +1,5 @@
 import {Scene, PerspectiveCamera, DirectionalLight, WebGLRenderer, Vector3 } from "three";
-import {Ball, Integrators, ThreeJsUtils} from '../js/three-js-extensions.js';
+import {Ball, Integrators, ThreeJsUtils, Trail } from '../js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 //const canvasContainer = document.getElementById("threeBodyWrapper");
@@ -66,9 +66,12 @@ const sphereC = new Ball(scene, {
     scale: scale
 });
 
-sphereA.enableTrail({maxPoints: 1000, trailStep: 20, lineWidth: 3, color: "yellow"});
-sphereB.enableTrail({maxPoints: 1000, trailStep: 20, lineWidth: 3, color: "cyan"});
-sphereC.enableTrail({maxPoints: 1000, trailStep: 20, lineWidth: 3, color: "magenta"});
+const trailA = new Trail(scene, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
+const trailB = new Trail(scene, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
+const trailC = new Trail(scene, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
+trailA.attachTo(sphereA);
+trailB.attachTo(sphereB);
+trailC.attachTo(sphereC);
 
 function forceBetween(self, other) {
     const radius = other.position.clone().sub(self.position);
