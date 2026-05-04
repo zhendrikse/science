@@ -1,4 +1,4 @@
-import {Scene, PerspectiveCamera, DirectionalLight, WebGLRenderer, Vector3 } from "three";
+import {Scene, PerspectiveCamera, DirectionalLight, WebGLRenderer, Vector3, Group } from "three";
 import {Ball, Integrators, ThreeJsUtils, Trail } from '../js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
@@ -17,6 +17,8 @@ const sphereRadius = 190e7;
 const scale = 1E-9;
 
 const scene = new Scene();
+const worldGroup = new Group();
+scene.add(worldGroup);
 
 const camera = new PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 200);
 camera.position.set(30, 30, 30);
@@ -39,7 +41,7 @@ const light = new DirectionalLight(0xffffff, 1);
 light.position.set(30, 30, 30);
 scene.add(light);
 
-const sphereA = new Ball(scene, {
+const sphereA = new Ball(worldGroup, {
     position: new Vector3(rA, 0, 0),
     velocity: new Vector3(0, vA, 0),
     radius: sphereRadius,
@@ -48,7 +50,7 @@ const sphereA = new Ball(scene, {
     scale: scale
 });
 
-const sphereB = new Ball(scene, {
+const sphereB = new Ball(worldGroup, {
     position: new Vector3(-rB, 0, 0),
     velocity: new Vector3(0, -vA / 0.8, 0),
     radius: sphereRadius,
@@ -57,7 +59,7 @@ const sphereB = new Ball(scene, {
     scale: scale
 });
 
-const sphereC = new Ball(scene, {
+const sphereC = new Ball(worldGroup, {
     position: new Vector3(0, 0, rA),
     velocity: new Vector3(0, 0, 0),
     radius: sphereRadius,
@@ -66,9 +68,9 @@ const sphereC = new Ball(scene, {
     scale: scale
 });
 
-const trailA = new Trail(scene, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
-const trailB = new Trail(scene, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
-const trailC = new Trail(scene, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
+const trailA = new Trail(worldGroup, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
+const trailB = new Trail(worldGroup, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
+const trailC = new Trail(worldGroup, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
 trailA.attachTo(sphereA);
 trailB.attachTo(sphereB);
 trailC.attachTo(sphereC);
