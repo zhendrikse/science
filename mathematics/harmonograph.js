@@ -21,7 +21,7 @@ ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 const controls = new OrbitControls( camera, canvas );
 
 function scale(length) {
-    let scale_factor = 3.0;
+    let scale_factor = 4.0;
     let a1, a2, max;
     while (true) {
         a1 = randomInt(-mx, mx);
