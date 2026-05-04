@@ -1303,10 +1303,10 @@ class Body {
                     velocity = new Vector3(0, 0, 0),
                     mass = 1,
                     charge = 0} = {}) {
-        this.position = position.clone();
-        this.velocity = velocity.clone();
-        this.mass = mass;
-        this.charge = charge;
+        this.position = position.clone(); // Intentionally public
+        this.velocity = velocity.clone(); // Intentionally public
+        this.mass = mass;                 // Intentionally public
+        this.charge = charge;             // Intentionally public
     }
 
     clone() {
@@ -1419,9 +1419,9 @@ export class Ball {
 
     kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
     get radius() { return this._radius }
-    get position() { return this._state._position; }
-    get velocity() { return this._state._velocity; }
-    get mass() { return this._state._mass; }
+    get position() { return this._state.position; }
+    get velocity() { return this._state.velocity; }
+    get mass() { return this._state.mass; }
     get visible() { return this._sphere.visible; }
     get neighbors() { return this._neighbors; }
     get elasticity() { return this._elasticity; }

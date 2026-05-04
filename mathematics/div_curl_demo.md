@@ -12,18 +12,16 @@ This is a dynamic particle and vector field simulation where points interact wit
 sources, sinks, and swirling currents. Every particle moves according to the 
 invisible forces around it, tracing the flow of this small, colorful universe. 
 
-Click on the canvas to start the animation and watch the field come alive!
+🎯 Intuitive understanding of the divergence and curl<br/>
+🧠 [Original idea](https://www.glowscript.org/#/user/wlane/folder/Physicsin3D/program/water-flow-curl) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Math/program/DivCurlDemo) is available as well, see [dipole_field.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/div_curl_demo.py)<br/>
 
 <div class="canvasWrapper" id="canvasWrapper">
     <canvas id="divCurlCanvas" class="applicationCanvas"></canvas>
-    <div id="overlayText">Click to bring the flow to life!</div>
+    <div class="overlayText" id="overlayText">Click to start the animation!</div>
 </div>
 <script type="module" src="div_curl_demo.js"></script>
 <p style="clear: both;"></p>
-
-🎯 Intuitive understanding of the divergence and curl<br/>
-🧠 [Original idea](https://www.glowscript.org/#/user/wlane/folder/Physicsin3D/program/water-flow-curl) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
-🐍 A [VPython](https://www.vpython.org/) version is also available as [div_curl_demo.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/div_curl_demo.py).
 
 ### Scalar vis-à-vis vector quantities
 <div class="header_line"><br/></div>
