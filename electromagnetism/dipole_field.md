@@ -3,7 +3,7 @@
 ## Electric dipole field
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=quiver_plot.js)](https://github.com/zhendrikse/science/blob/main/mathematics/quiver_plot.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=dipole_field.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/dipole_field.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 
 🎯 Visualization of electric dipole field:

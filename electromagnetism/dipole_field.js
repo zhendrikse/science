@@ -76,7 +76,7 @@ const arrowField = new ArrowField(
     new DipoleField(dipole),
     {
         scale: scale,
-        arrowScale: 5e-10,
+        arrowScale: 1e-9,
         round: false
     }
 );
