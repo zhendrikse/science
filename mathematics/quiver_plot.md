@@ -3,6 +3,11 @@
 ## Vector fields &amp; implied flow
 <div class="header_line"><br/></div>
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=quiver_plot.js)](https://github.com/zhendrikse/science/blob/main/mathematics/quiver_plot.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+
+🎯 Dynamic visualization of vector fields $\phi: \mathbb{R}^3 \rightarrow \mathbb{R}^3$
+
 <div class="equationDiv" id="vectorFieldEquation"></div>
 <div class="canvasWrapper" id="quiverContainer">
     <canvas class="applicationCanvas" id="quiverCanvas"></canvas><br/>

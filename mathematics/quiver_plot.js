@@ -106,9 +106,11 @@ class ControlsGui {
 const vectorField1 = new VectorField1();
 const vectorField2 = new VectorField2();
 const arrowField = new ArrowField(
-    new Range(-1, 0.8, .2), new Range(-1, 0.8, .1), new Range(-1, 0.8, .2),
+    new Range(-1, 0.8, .2),
+    new Range(-1, 0.8, .1),
+    new Range(-1, 0.8, .2),
     vectorField1,
-    { scaleFactor: 0.2 }
+    { arrowScale: 0.25}
 );
 worldGroup.add(arrowField);
 

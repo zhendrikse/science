@@ -32,6 +32,13 @@ export function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function factorial(n) {
+    let result = 1;
+    for (let i=2; i<=n; i++)
+        result *= i;
+    return result;
+}
+
 export function linspace(start, stop, num) {
     const linSpace = [];
     const step = (stop - start) / (num - 1);

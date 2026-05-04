@@ -3,9 +3,24 @@
 ## Electric dipole field
 <div class="header_line"><br/></div>
 
-{% include_relative code/dipole_field.html %}
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=quiver_plot.js)](https://github.com/zhendrikse/science/blob/main/mathematics/quiver_plot.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 
+🎯 Visualization of electric dipole field:
+
+$$
+\vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r}  \cdot \vec{p}} {r^3} \bigg),\quad \vec{p}=+q(\vec{r}_+) + -q(\vec{r}_-)
+$$
+
+<canvas id="dipoleCanvas" class="applicationCanvas"></canvas>
+<div class="buttonRow">
+    <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
+</div>
+<script type="module" src="dipole_field.js"></script>
 <p style="clear: both;"></p>
+
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/MyPrograms/program/CircularAperture) is available as well, see [circular_aperture.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/circular_aperture.py)<br/>
+
 
 ### Understanding electric fields
 <div class="header_line"><br/></div>
