@@ -15,7 +15,7 @@ light.position.set(5, 5, 5)
 scene.add(light);
 scene.add(new AmbientLight(0xffffff));
 
-const R = 100;
+const R = 50;
 const camera = new PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 500);
 camera.position.set(0, 0, R);
 camera.lookAt(0, 0, 0);
