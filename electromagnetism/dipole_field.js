@@ -4,6 +4,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const canvas = document.getElementById("dipoleCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
+const fieldStrength = document.getElementById("fieldStrength");
 const scale = 1e15;
 const ec = 1.6e-19;
 
@@ -59,21 +60,26 @@ export class DipoleField extends VectorField {
     constructor(dipole) {
         super();
         this._dipole = dipole;
+        this._fieldStrength = 1;
     }
 
+    set fieldStrength(strength) { this._fieldStrength = strength; }
+
     sample(position) {
-        return this._dipole.fieldAt(position.clone());
+        return this._dipole.fieldAt(position.clone()).multiplyScalar(this._fieldStrength);
     }
 }
 
 const dipole = new Dipole(1e-14);
 worldGroup.add(dipole);
 
+const dipoleField = new DipoleField(dipole);
+dipoleField.fieldStrength = Number(fieldStrength.value);
 const arrowField = new ArrowField(
     new Range(-22 / scale, 22 / scale, 2 / scale),
     new Range(-12 / scale, 12 / scale, 2 / scale),
     new Range(-12 / scale, 12 / scale, 2 / scale),
-    new DipoleField(dipole),
+    dipoleField,
     {
         scale: scale,
         arrowScale: 1e-9,
@@ -95,6 +101,11 @@ function autoRotate() {
         R * Math.sin(theta) * Math.cos(phi)
     );
 }
+
+fieldStrength.addEventListener("input", () => {
+    dipoleField.fieldStrength = Number(fieldStrength.value);
+    arrowField.updateFieldWith(dipoleField);
+});
 
 renderer.setAnimationLoop( () => {
     controls.update();
