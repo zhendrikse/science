@@ -75,6 +75,7 @@ class Comet extends Ball {
         this._stateVector = stateVector  ? stateVector.clone() : null;
         this._startStateVector = stateVector ? stateVector.clone() : null;
         this._color = color;
+        this._parent = parent;
 
         this._isMoving = false;
         this._trail = new Trail(parent, { maxPoints: 1000 });
@@ -169,7 +170,8 @@ class Comet extends Ball {
     reset(distance) {
         this.moveTo(Comet.initialPosition(distance));
         this._trail?.dispose();
-        this._trail = new Trail(parent, { maxPoints: 1000 });
+        this._trail = new Trail(this._parent, { maxPoints: 1000 });
+        this._trail.attachTo(this);
         this.visible = true;
         this._stateVector = this._startStateVector ? this._startStateVector.clone() : null;
         if (this._stateVector)
