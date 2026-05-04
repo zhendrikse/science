@@ -55,8 +55,8 @@ You may be surprised though to find out what happens when you drop such a simple
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="newtons_pendulum.html">
-    <img alt="Newton's cradle" src="images/newtons_cradle.png" title="Click to animate" align="top"/>
+  <a href="newtons_cradle.html">
+    <img alt="Newton's cradle" src="images/newtons_cradle.png" title="Click to animate"/>
   </a>
   <figcaption>"[...] and to every action there is always an equal and opposite or contrary, reaction”
   &mdash; <a href="https://en.wikipedia.org/wiki/Isaac_Newton">Isaac Newton</a>.</figcaption>
