@@ -1,4 +1,4 @@
-import { VectorField, Range, ArrowField, ThreeJsUtils, Charge } from '../js/three-js-extensions.js';
+import { VectorField, Range, ArrowField, ThreeJsUtils, Sphere } from '../js/three-js-extensions.js';
 import { Vector3, Scene, DirectionalLight, Group, PerspectiveCamera, AmbientLight, WebGLRenderer, Color } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
@@ -30,14 +30,14 @@ export class Dipole extends Group {
     constructor(distance = 1.2e-14, charge = ec) {
         super();
 
-        this._positiveCharge = new Charge({
+        this._positiveCharge = new Sphere({
             position: new Vector3(distance, 0, 0),
             charge: +charge,
             radius: distance * .05,
             color: new Color("red"),
             scale: scale
         });
-        this._negativeCharge = new Charge({
+        this._negativeCharge = new Sphere({
             position: new Vector3(-distance, 0, 0),
             charge: -charge,
             radius: distance * .05,
