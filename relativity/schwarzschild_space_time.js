@@ -1,5 +1,5 @@
 import { Vector3, Line, Scene, Color, Group, LineBasicMaterial, BufferGeometry } from "three";
-import { Plot3DView, ThreeJsUtils, Ball, Trail } from '../js/three-js-extensions.js';
+import { Plot3DView, ThreeJsUtils, Sphere, Trail } from '../js/three-js-extensions.js';
 import {
     SurfaceDefinition, SurfaceController, IsoparametricContoursView, Surface,
     CustomColorColorMapper, ViewParameters
@@ -56,7 +56,7 @@ class SchwarzschildSurfaceDefinition extends SurfaceDefinition {
     }
 }
 
-class Comet extends Ball {
+class Comet extends Sphere {
     static initialPosition = (distance) =>
         new Vector3(distance, SchwarzschildSurfaceDefinition.zAsFunctionOf(distance, sun.mass), 0);
     constructor(parent, {
@@ -65,12 +65,13 @@ class Comet extends Ball {
         color = new Color(0xffff00),
         stateVector = null
     } = {}) {
-        super(parent, {
+        super({
             position: position,
             radius: radius,
             color: color,
             makeTrail: true
         });
+        parent.add(this);
 
         this._stateVector = stateVector  ? stateVector.clone() : null;
         this._startStateVector = stateVector ? stateVector.clone() : null;
@@ -370,7 +371,7 @@ plot3D.renderer.setAnimationLoop( (now) => {
         if (cometInsideCone || orbitButton.checked)
             realComet.updateRealMotion(sun.mass, 0.001);
     }
-    comet.moveTo(SchwarzschildSurfaceDefinition.surfacePointAt(comet.r, comet.phi, sun.mass));
-    realComet.moveTo(SchwarzschildSurfaceDefinition.gridPointAt(realComet.r, realComet.phi));
-    flatComet.moveTo(new Vector3(comet.position.x, SchwarzschildSurfaceDefinition.yOffset, comet.position.z));
+    comet.physicsPosition = SchwarzschildSurfaceDefinition.surfacePointAt(comet.r, comet.phi, sun.mass);
+    realComet.physicsPosition = SchwarzschildSurfaceDefinition.gridPointAt(realComet.r, realComet.phi);
+    flatComet.physicsPosition = new Vector3(comet.position.x, SchwarzschildSurfaceDefinition.yOffset, comet.position.z);
 });

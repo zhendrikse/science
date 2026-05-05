@@ -825,227 +825,34 @@ export class VectorField {
     }
 }
 
-export class ArrowField extends Group {
-    static ColorMode = Object.freeze({
-        MAGNITUDE: "magnitude",
-        DIVERGENCE: "divergence",
-        CURL: "curl"
-    });
-
-    constructor(xRange, yRange, zRange, vectorField, {
-        arrowScale = 0.3,
-        scale = 1.0,
-        shaftWidth = 0.08,  // relative to axis length
-        headWidth = 2.0,   // times shaft width
-        headLength = 4.0,   // times shaft width
-        colorMode = ArrowField.ColorMode.MAGNITUDE,
-        round = false
-    } = {}) {
-        super();
-        this._positions = [];
-        this._xRange = xRange;
-        this._yRange = yRange;
-        this._zRange = zRange;
-        this._scale = scale;
-        this._arrowScale = arrowScale;
-        this._vectorField = vectorField;
-        this._colorMode = colorMode;
-        this._shaftWidth = shaftWidth;
-        this._headWidth = headWidth;
-        this._headLength = headLength;
-
-        const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
-        const headGeometry = round ? headGeometryRound : headGeometrySquare;
-        const shaftMaterial = new MeshStandardMaterial();
-        const headMaterial = new MeshStandardMaterial();
-
-        this.#initializePositions();
-
-        this._shaftMesh = new InstancedMesh(shaftGeometry, shaftMaterial, this._positions.length);
-        this._headMesh = new InstancedMesh(headGeometry, headMaterial, this._positions.length);
-        this.add(this._shaftMesh, this._headMesh);
-
-        // per-instance color
-        const colors = new Float32Array(this._positions.length * 3);
-        this._shaftMesh.instanceColor = new InstancedBufferAttribute(colors, 3);
-        this._headMesh.instanceColor = this._shaftMesh.instanceColor;
-
-        // temp objects (no allocations per frame)
-        this._tmpMatrix = new Matrix4();
-        this._tmpQuaternion = new Quaternion();
-        this._tmpScale = new Vector3();
-        this._tmpPosition = new Vector3();
-        this._tmpAxis = new Vector3();
-        this._tmpDirection = new Vector3();
-
-        // initial build
-        this.updateFieldWith(vectorField);
+class PhysicalBody {
+    constructor({
+                    position = new Vector3(0, 0, 0),
+                    velocity = new Vector3(0, 0, 0),
+                    mass = 1,
+                    charge = 0} = {}) {
+        this.position = position.clone(); // Intentionally public
+        this.velocity = velocity.clone(); // Intentionally public
+        this.mass = mass;                 // Intentionally public
+        this.charge = charge;             // Intentionally public
     }
 
-    #collapseArrow(index, position) {
-        this._tmpScale.set(0, 0, 0);
-        this._tmpMatrix.compose(position, new Quaternion(), this._tmpScale);
-        this._shaftMesh.setMatrixAt(index, this._tmpMatrix);
-        this._headMesh.setMatrixAt(index, this._tmpMatrix);
-    }
-
-    #arrowSizes(axis) {
-        const length = axis.length();
-        const shaftRadius = length * this._shaftWidth;
-        const headLength = this._headLength * shaftRadius;
-        const shaftLength = Math.max(length - headLength, 1e-6);
-        return { shaftRadius, shaftLength, headLength };
-    }
-
-    #initializePositions() {
-        this._positions = [];
-        for (const x of this._xRange)
-            for (const y of this._yRange)
-                for (const z of this._zRange)
-                    this._positions.push(new Vector3(x, z, y));
-    }
-
-    #magnitudeToColor(magnitude, scalarRange) {
-        if (scalarRange.to <= scalarRange.from) return new Color(0x00ffff);
-
-        const t = MathUtils.clamp(scalarRange.scaleValue(magnitude), 0, 1);
-        const hue = (1 - t) * 0.66; // Hue: 0.66 (blue) → 0.0 (red)
-
-        return new Color().setHSL(hue, 1.0, 0.5);
-    }
-
-    #scalarField() {
-        return this._positions.map(position => {
-            let length = 0;
-            switch (this._colorMode) {
-                case ArrowField.ColorMode.DIVERGENCE:
-                    length = this._vectorField.divergence(position);
-                    break;
-                case ArrowField.ColorMode.CURL:
-                    length = this._vectorField.curlMagnitude(position);
-                    break;
-                default:
-                    length = this._vectorField.sample(position).length();
-            }
-            return length / (length + 1 / this._arrowScale);
+    clone() {
+        return new PhysicalBody({
+            position: this.position.clone(),
+            velocity: this.velocity.clone(),
+            mass: this.mass,
+            charge: this.charge
         });
     }
 
-    #scalarToColor(value, scalarRange) {
-        const t = MathUtils.clamp(
-            scalarRange.scaleValue(value) * 2 - 1,
-            -1, 1
-        );
+    fieldAt(point) {
+        const rVec = point.clone().sub(this.position);
+        const distanceSquared = rVec.dot(rVec);
 
-        if (t < 0) // blue → white
-            return new Color().lerpColors(
-                new Color(0x0000ff),
-                new Color(0xffffff),
-                1 + t
-            );
-        else // white → red
-            return new Color().lerpColors(
-                new Color(0xffffff),
-                new Color(0xff0000),
-                t
-            );
-    }
-
-    #updateShaft(index, position, axis) {
-        const { shaftRadius, shaftLength } = this.#arrowSizes(axis);
-        this._tmpScale.set(shaftRadius, shaftLength, shaftRadius);
-        this._tmpPosition.copy(position).multiplyScalar(this._scale).addScaledVector(axis, 0.5);
-
-        this._tmpMatrix.compose(this._tmpPosition, this._tmpQuaternion, this._tmpScale);
-        this._shaftMesh.setMatrixAt(index, this._tmpMatrix);
-    }
-
-    #updateHead(index, position, axis) {
-        const { shaftRadius, headLength } = this.#arrowSizes(axis);
-        this._tmpScale.set(
-            this._headWidth * shaftRadius,
-            headLength,
-            this._headWidth * shaftRadius
-        );
-        this._tmpPosition.copy(position).multiplyScalar(this._scale).addScaledVector(axis, 1.0);
-        this._tmpMatrix.compose(this._tmpPosition, this._tmpQuaternion, this._tmpScale);
-        this._headMesh.setMatrixAt(index, this._tmpMatrix);
-    }
-
-    #updateArrowColor(index, axis, scalars, scalarRange) {
-        switch (this._colorMode) {
-            case ArrowField.ColorMode.DIVERGENCE:
-                this._shaftMesh.setColorAt(index, this.#scalarToColor(scalars[index], scalarRange));
-                break;
-            case ArrowField.ColorMode.CURL:
-                if (scalarRange.to - scalarRange.from < 1e-12) {
-                    scalarRange.from -= 1;
-                    scalarRange.to += 1;
-                }
-                const t = MathUtils.clamp(scalarRange.scaleValue(scalars[index]), 0, 1);
-                const hue = (1 - t) * 0.66;
-                this._shaftMesh.setColorAt(index, new Color().setHSL(hue, 1, 0.5));
-                break;
-            default:
-                const mag = axis.length();
-                this._shaftMesh.setColorAt(index, this.#magnitudeToColor(mag, scalarRange));
-        }
-    }
-
-    #updateArrowInstance(index, position, axis, scalars, scalarRange) {
-        const length = axis.length();
-        if (length < 1e-6) {
-            this.#collapseArrow(index, position);
-            return;
-        }
-
-        // rotation: Y-axis → axis direction
-        this._tmpDirection.copy(axis).normalize();
-        this._tmpQuaternion.setFromUnitVectors(UnitVectorE2, this._tmpDirection);
-
-        this.#updateShaft(index, position, axis);
-        this.#updateHead(index, position, axis);
-        this.#updateArrowColor(index, axis, scalars, scalarRange);
-    }
-
-    changeColorModeTo = (newColorMode) => this._colorMode = newColorMode;
-
-    euler(dt = 0.01) {
-        this._positions.forEach(position => position.addScaledVector(this._vectorField.sample(position), dt));
-        this.updateFieldWith(this._vectorField);
-    }
-
-    reset() {
-        this.#initializePositions();
-        this.updateFieldWith(this._vectorField);
-    }
-
-    updateFieldWith(newVectorField) {
-        this._vectorField = newVectorField;
-
-        const scalars = this.#scalarField();
-        const scalarRange = new Interval(Math.min(...scalars), Math.max(...scalars));
-        if (this._colorMode === ArrowField.ColorMode.DIVERGENCE) {
-            const maxAbs = Math.max(
-                Math.abs(scalarRange.from),
-                Math.abs(scalarRange.to)
-            );
-            scalarRange.from = -maxAbs;
-            scalarRange.to = maxAbs;
-        }
-
-        this._positions.forEach((position, index) => {
-            this._tmpAxis
-                .copy(newVectorField.sample(position))
-                .normalize()
-                .multiplyScalar(scalars[index]);
-
-            this.#updateArrowInstance(index, position, this._tmpAxis, scalars, scalarRange);
-        });
-
-        this._shaftMesh.instanceMatrix.needsUpdate = true;
-        this._headMesh.instanceMatrix.needsUpdate = true;
-        this._shaftMesh.instanceColor.needsUpdate = true;
+        return distanceSquared < 1e-40 ?
+            new Vector3(0, 0, 0) :
+            rVec.normalize().multiplyScalar(this.charge / distanceSquared);
     }
 }
 
@@ -1298,6 +1105,230 @@ export class Arrow extends Group {
     distanceToSquared = (other) => this.position.distanceToSquared(other.position);
 }
 
+export class ArrowField extends Group {
+    static ColorMode = Object.freeze({
+        MAGNITUDE: "magnitude",
+        DIVERGENCE: "divergence",
+        CURL: "curl"
+    });
+
+    constructor(xRange, yRange, zRange, vectorField, {
+        arrowScale = 0.3,
+        scale = 1.0,
+        shaftWidth = 0.08,  // relative to axis length
+        headWidth = 2.0,   // times shaft width
+        headLength = 4.0,   // times shaft width
+        colorMode = ArrowField.ColorMode.MAGNITUDE,
+        round = false
+    } = {}) {
+        super();
+        this._positions = [];
+        this._xRange = xRange;
+        this._yRange = yRange;
+        this._zRange = zRange;
+        this._scale = scale;
+        this._arrowScale = arrowScale;
+        this._vectorField = vectorField;
+        this._colorMode = colorMode;
+        this._shaftWidth = shaftWidth;
+        this._headWidth = headWidth;
+        this._headLength = headLength;
+
+        const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
+        const headGeometry = round ? headGeometryRound : headGeometrySquare;
+        const shaftMaterial = new MeshStandardMaterial();
+        const headMaterial = new MeshStandardMaterial();
+
+        this.#initializePositions();
+
+        this._shaftMesh = new InstancedMesh(shaftGeometry, shaftMaterial, this._positions.length);
+        this._headMesh = new InstancedMesh(headGeometry, headMaterial, this._positions.length);
+        this.add(this._shaftMesh, this._headMesh);
+
+        // per-instance color
+        const colors = new Float32Array(this._positions.length * 3);
+        this._shaftMesh.instanceColor = new InstancedBufferAttribute(colors, 3);
+        this._headMesh.instanceColor = this._shaftMesh.instanceColor;
+
+        // temp objects (no allocations per frame)
+        this._tmpMatrix = new Matrix4();
+        this._tmpQuaternion = new Quaternion();
+        this._tmpScale = new Vector3();
+        this._tmpPosition = new Vector3();
+        this._tmpAxis = new Vector3();
+        this._tmpDirection = new Vector3();
+
+        // initial build
+        this.updateFieldWith(vectorField);
+    }
+
+    #collapseArrow(index, position) {
+        this._tmpScale.set(0, 0, 0);
+        this._tmpMatrix.compose(position, new Quaternion(), this._tmpScale);
+        this._shaftMesh.setMatrixAt(index, this._tmpMatrix);
+        this._headMesh.setMatrixAt(index, this._tmpMatrix);
+    }
+
+    #arrowSizes(axis) {
+        const length = axis.length();
+        const shaftRadius = length * this._shaftWidth;
+        const headLength = this._headLength * shaftRadius;
+        const shaftLength = Math.max(length - headLength, 1e-6);
+        return { shaftRadius, shaftLength, headLength };
+    }
+
+    #initializePositions() {
+        this._positions = [];
+        for (const x of this._xRange)
+            for (const y of this._yRange)
+                for (const z of this._zRange)
+                    this._positions.push(new Vector3(x, z, y));
+    }
+
+    #magnitudeToColor(magnitude, scalarRange) {
+        if (scalarRange.to <= scalarRange.from) return new Color(0x00ffff);
+
+        const t = MathUtils.clamp(scalarRange.scaleValue(magnitude), 0, 1);
+        const hue = (1 - t) * 0.66; // Hue: 0.66 (blue) → 0.0 (red)
+
+        return new Color().setHSL(hue, 1.0, 0.5);
+    }
+
+    #scalarField() {
+        return this._positions.map(position => {
+            let length = 0;
+            switch (this._colorMode) {
+                case ArrowField.ColorMode.DIVERGENCE:
+                    length = this._vectorField.divergence(position);
+                    break;
+                case ArrowField.ColorMode.CURL:
+                    length = this._vectorField.curlMagnitude(position);
+                    break;
+                default:
+                    length = this._vectorField.sample(position).length();
+            }
+            return length / (length + 1 / this._arrowScale);
+        });
+    }
+
+    #scalarToColor(value, scalarRange) {
+        const t = MathUtils.clamp(
+            scalarRange.scaleValue(value) * 2 - 1,
+            -1, 1
+        );
+
+        if (t < 0) // blue → white
+            return new Color().lerpColors(
+                new Color(0x0000ff),
+                new Color(0xffffff),
+                1 + t
+            );
+        else // white → red
+            return new Color().lerpColors(
+                new Color(0xffffff),
+                new Color(0xff0000),
+                t
+            );
+    }
+
+    #updateShaft(index, position, axis) {
+        const { shaftRadius, shaftLength } = this.#arrowSizes(axis);
+        this._tmpScale.set(shaftRadius, shaftLength, shaftRadius);
+        this._tmpPosition.copy(position).multiplyScalar(this._scale).addScaledVector(axis, 0.5);
+
+        this._tmpMatrix.compose(this._tmpPosition, this._tmpQuaternion, this._tmpScale);
+        this._shaftMesh.setMatrixAt(index, this._tmpMatrix);
+    }
+
+    #updateHead(index, position, axis) {
+        const { shaftRadius, headLength } = this.#arrowSizes(axis);
+        this._tmpScale.set(
+            this._headWidth * shaftRadius,
+            headLength,
+            this._headWidth * shaftRadius
+        );
+        this._tmpPosition.copy(position).multiplyScalar(this._scale).addScaledVector(axis, 1.0);
+        this._tmpMatrix.compose(this._tmpPosition, this._tmpQuaternion, this._tmpScale);
+        this._headMesh.setMatrixAt(index, this._tmpMatrix);
+    }
+
+    #updateArrowColor(index, axis, scalars, scalarRange) {
+        switch (this._colorMode) {
+            case ArrowField.ColorMode.DIVERGENCE:
+                this._shaftMesh.setColorAt(index, this.#scalarToColor(scalars[index], scalarRange));
+                break;
+            case ArrowField.ColorMode.CURL:
+                if (scalarRange.to - scalarRange.from < 1e-12) {
+                    scalarRange.from -= 1;
+                    scalarRange.to += 1;
+                }
+                const t = MathUtils.clamp(scalarRange.scaleValue(scalars[index]), 0, 1);
+                const hue = (1 - t) * 0.66;
+                this._shaftMesh.setColorAt(index, new Color().setHSL(hue, 1, 0.5));
+                break;
+            default:
+                const mag = axis.length();
+                this._shaftMesh.setColorAt(index, this.#magnitudeToColor(mag, scalarRange));
+        }
+    }
+
+    #updateArrowInstance(index, position, axis, scalars, scalarRange) {
+        const length = axis.length();
+        if (length < 1e-6) {
+            this.#collapseArrow(index, position);
+            return;
+        }
+
+        // rotation: Y-axis → axis direction
+        this._tmpDirection.copy(axis).normalize();
+        this._tmpQuaternion.setFromUnitVectors(UnitVectorE2, this._tmpDirection);
+
+        this.#updateShaft(index, position, axis);
+        this.#updateHead(index, position, axis);
+        this.#updateArrowColor(index, axis, scalars, scalarRange);
+    }
+
+    changeColorModeTo = (newColorMode) => this._colorMode = newColorMode;
+
+    euler(dt = 0.01) {
+        this._positions.forEach(position => position.addScaledVector(this._vectorField.sample(position), dt));
+        this.updateFieldWith(this._vectorField);
+    }
+
+    reset() {
+        this.#initializePositions();
+        this.updateFieldWith(this._vectorField);
+    }
+
+    updateFieldWith(newVectorField) {
+        this._vectorField = newVectorField;
+
+        const scalars = this.#scalarField();
+        const scalarRange = new Interval(Math.min(...scalars), Math.max(...scalars));
+        if (this._colorMode === ArrowField.ColorMode.DIVERGENCE) {
+            const maxAbs = Math.max(
+                Math.abs(scalarRange.from),
+                Math.abs(scalarRange.to)
+            );
+            scalarRange.from = -maxAbs;
+            scalarRange.to = maxAbs;
+        }
+
+        this._positions.forEach((position, index) => {
+            this._tmpAxis
+                .copy(newVectorField.sample(position))
+                .normalize()
+                .multiplyScalar(scalars[index]);
+
+            this.#updateArrowInstance(index, position, this._tmpAxis, scalars, scalarRange);
+        });
+
+        this._shaftMesh.instanceMatrix.needsUpdate = true;
+        this._headMesh.instanceMatrix.needsUpdate = true;
+        this._shaftMesh.instanceColor.needsUpdate = true;
+    }
+}
+
 class Helix extends Curve {
     constructor(position, axis, coils = 25, radius = 0.4, waveAmp = 0.05, wavePhase = 0) {
         super();
@@ -1327,99 +1358,6 @@ class Helix extends Curve {
 
         return point.add(this.start);
     }
-}
-
-class PhysicalBody {
-    constructor({
-                    position = new Vector3(0, 0, 0),
-                    velocity = new Vector3(0, 0, 0),
-                    mass = 1,
-                    charge = 0} = {}) {
-        this.position = position.clone(); // Intentionally public
-        this.velocity = velocity.clone(); // Intentionally public
-        this.mass = mass;                 // Intentionally public
-        this.charge = charge;             // Intentionally public
-    }
-
-    clone() {
-        return new PhysicalBody({
-            position: this.position.clone(),
-            velocity: this.velocity.clone(),
-            mass: this.mass,
-            charge: this.charge
-        });
-    }
-
-    fieldAt(point) {
-        const rVec = point.clone().sub(this.position);
-        const distanceSquared = rVec.dot(rVec);
-
-        return distanceSquared < 1e-40 ?
-            new Vector3(0, 0, 0) :
-            rVec.normalize().multiplyScalar(this.charge / distanceSquared);
-    }
-}
-
-export class Ball {
-    constructor({
-        position = new Vector3(0, 0, 0),
-        radius = 1,
-        velocity = new Vector3(0, 0, 0),
-        mass = 1,
-        charge = 0,
-        opacity = 1,
-        wireframe = false,
-        color = 0xffff00,
-        scale = 1,
-        visible = true,
-        elasticity = 1.0,
-        castShadow = false,
-        segments = 24 } = {}) {
-        this._sphere = new Sphere({
-                position, radius, color, visible, scale, segments, opacity, wireframe, castShadow
-            });
-        this._state = new PhysicalBody({position, velocity, mass, charge});
-        this._radius = radius;
-        this._elasticity = elasticity;
-        this._neighbors = [];
-    }
-
-    set trail(newTrail) { this._sphere.trail = newTrail; }
-
-    appendNeighbor(ball) { this._neighbors.push(ball); }
-
-    step(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
-        const updatedBody = integrator(this.body, dt, accelerationFn);
-
-        this.moveTo(updatedBody.position);
-        this.accelerateTo(updatedBody.velocity);
-    }
-
-    moveTo(newPosition) {
-        this._state.position.copy(newPosition);
-        this._sphere.physicsPosition = newPosition;
-    }
-
-    accelerateTo(newVelocity) { this._state.velocity.copy(newVelocity); }
-
-    shiftBy(displacement) { this.moveTo(this.position.clone().add(displacement)); }
-
-    kineticEnergy = () => 0.5 * this.mass * this.velocity.dot(this.velocity);
-    get radius() { return this._radius }
-    get position() { return this._state.position; }
-    get velocity() { return this._state.velocity; }
-    get mass() { return this._state.mass; }
-    get visible() { return this._sphere.visible; }
-    get neighbors() { return this._neighbors; }
-    get elasticity() { return this._elasticity; }
-    get rayCastHandle() { return this._sphere; }
-    get body() { return this._state; }
-
-    set position(newPosition) { this.moveTo(newPosition); }
-    set visible(value) { this._sphere.visible = value; }
-    distanceTo(other) { return this._sphere.distanceTo(other) }
-    positionVectorTo(other) { return this._sphere.positionVectorTo(other); }
 }
 
 export class Spring {
@@ -2406,6 +2344,28 @@ export class Floor extends Mesh {
     }
 }
 
+export class Ceiling {
+    constructor(parent, {
+        position = new Vector(0, 0, 0),
+        size = 12,
+        thickness = 0.75,
+        color = 0x8a8a8a
+    } = {}) {
+        const ceilingGeometry = new BoxGeometry(size, size, thickness);
+        const ceilingMaterial = new MeshStandardMaterial({
+            color: color,
+            metalness: 0.05,
+            roughness: 0.95,
+            side: DoubleSide
+        });
+        ceilingMaterial.bumpScale = 0.05;
+        const ceiling = new Mesh(ceilingGeometry, ceilingMaterial);
+        ceiling.rotation.x = Math.PI / 2;
+        ceiling.position.copy(position);
+        parent.add(ceiling);
+    }
+}
+
 export class Aquarium extends Group {
     constructor({
         size = 1,
@@ -2512,28 +2472,6 @@ export class HarmonicOscillator extends Group {
         this._right.moveTo(this._center.clone().add(new Vector3(halfLength, 0, 0)));
         this._left.accelerateTo(new Vector3());
         this._right.accelerateTo(new Vector3());
-    }
-}
-
-export class Ceiling {
-    constructor(parent, {
-        position = new Vector(0, 0, 0),
-        size = 12,
-        thickness = 0.75,
-        color = 0x8a8a8a
-    } = {}) {
-        const ceilingGeometry = new BoxGeometry(size, size, thickness);
-        const ceilingMaterial = new MeshStandardMaterial({
-            color: color,
-            metalness: 0.05,
-            roughness: 0.95,
-            side: DoubleSide
-        });
-        ceilingMaterial.bumpScale = 0.05;
-        const ceiling = new Mesh(ceilingGeometry, ceilingMaterial);
-        ceiling.rotation.x = Math.PI / 2;
-        ceiling.position.copy(position);
-        parent.add(ceiling);
     }
 }
 
