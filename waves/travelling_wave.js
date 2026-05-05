@@ -4,7 +4,7 @@ import {
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import {Ball, Bond, ThreeJsUtils, Floor} from "../js/three-js-extensions.js";
+import {Sphere, Bond, ThreeJsUtils, Floor} from "../js/three-js-extensions.js";
 
 console.clear();
 const canvas = document.getElementById("travellingWaveCanvas");
@@ -75,13 +75,14 @@ class String1D extends Group {
         const left = -this._length / 2;
 
         for (let i = 0; i < count; i++)
-            this._balls.push(new Ball(this, {
+            this._balls.push(new Sphere({
                 radius: 0.04,
                 color: "yellow",
                 mass: mass,
                 castShadow: true,
                 position: new Vector3(left + i * dx, 0, 0)
             }));
+        this._balls.forEach((ball) => this.add(ball));
     }
 
     #createBonds(count) {
@@ -102,11 +103,11 @@ class String1D extends Group {
     #driveFirstBall(t) {
         const firstBall = this._balls[0];
         const x = -this._length / 2;
-        firstBall.position = new Vector3(x, 0, 0);
+        firstBall.physicsPosition = new Vector3(x, 0, 0);
 
         const halfWaveTime = 2 * Math.PI / this._omega;
         if (t < halfWaveTime)
-            firstBall.position = new Vector3(x, this._amplitude * Math.sin(this._omega * t), 0);
+            firstBall.physicsPosition = new Vector3(x, this._amplitude * Math.sin(this._omega * t), 0);
     }
 
     #updateForces() {
@@ -146,8 +147,7 @@ class String1D extends Group {
         const dx = this._length / (this._count - 1);
         const left = -this._length / 2;
         for (let i = 0; i < this._count; i++) {
-            this._balls[i].moveTo(new Vector3(left + i * dx, 0, 0));
-            this._balls[i].accelerateTo(new Vector3(0, 0, 0));
+            this._balls[i].reset();
             this._forces[i].set(0, 0, 0);
         }
 

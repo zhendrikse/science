@@ -7,8 +7,10 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)
 
-⭐ Based on [original code](https://trinket.io/glowscript/7aa45bb79b) by Rhett Allain<br/>
-👉 An elaborate explanation is given in [his video](https://www.youtube.com/watch?v=DpfnIh3oEGk)
+🎯 A traveling wave on a string modeled as a mass-spring system<br/>
+🧠 Based on [original code](https://trinket.io/glowscript/7aa45bb79b) by Rhett Allain<br/>
+👉 An elaborate explanation is given in [his video](https://www.youtube.com/watch?v=DpfnIh3oEGk)<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/MyPrograms/program/TravelingWave) is available as well, see [traveling_wave.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/travleing_wave.py)<br/>
 
 <link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>

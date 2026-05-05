@@ -20,7 +20,6 @@ const camera = new OrthographicCamera(
     100
 );
 
-// recht van voren kijken (echte 2D projectie)
 camera.position.set(0, 0, 10);
 camera.lookAt(0, 0, 0);
 
