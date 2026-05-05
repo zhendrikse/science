@@ -1,6 +1,6 @@
 import { Group, Vector3, Scene, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight,
     PCFShadowMap, Fog, Color } from "three";
-import {Spring, Ball, Floor, ThreeJsUtils} from '../js/three-js-extensions.js';
+import {Spring, Sphere, Floor, ThreeJsUtils} from '../js/three-js-extensions.js';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 // --- Scene setup ---
@@ -53,7 +53,8 @@ export class HarmonicOscillator extends Group {
     }
 
     withMassAt(position, options = {}) {
-        const ball = new Ball(this, { position, ...options });
+        const ball = new Sphere({ position, ...options });
+        this.add(ball);
         this._masses.push(ball);
         return this;
     }

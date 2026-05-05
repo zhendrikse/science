@@ -7,6 +7,9 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)
 
+🎯 Modeling an $N$-body mass-spring system<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/N-bodycoupledoscillator) is available as well, see [n_body_oscillator.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/n_body_oscillator)<br/>
+
 <link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
 
