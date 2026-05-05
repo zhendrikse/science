@@ -7,9 +7,10 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)
 
-⭐ Ported from on [this original code snippet](https://trinket.io/glowscript/e5f14ebee1) by Rhett Allain<br/>
-⭐ His code belongs to [his article](https://rhettallain.com/2019/02/06/modeling-a-falling-slinky/)<br/>
-👉 Also available in [VPython](https://vpython.org) as [slinky_drop.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/slinky_drop.py)
+🎯 Understanding the free fall of a slinky spring<br/>
+🧠 Based on [this original code snippet](https://trinket.io/glowscript/e5f14ebee1) by Rhett Allain<br/>
+⭐ His code belongs to [this article](https://rhettallain.com/2019/02/06/modeling-a-falling-slinky/)<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Slinkydrop) is available as well, see [slinky_drop.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/slinky_drop.py)<br/>
 
 <div class="canvasWrapper" id="slinkyWrapper">
     <canvas class="applicationCanvas" id="slinkyCanvas"></canvas>

@@ -16,7 +16,6 @@ camera.lookAt(0, 10, 0);
 
 const renderer = new WebGLRenderer({canvas, antialias:true, alpha: true});
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-renderer.setAnimationLoop(animate);
 
 scene.add(new AmbientLight(0xffffff, 0.6));
 const dirLight = new DirectionalLight(0xffffff, 1);
@@ -26,10 +25,13 @@ scene.add(dirLight);
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(renderer, camera));
-window.addEventListener("click", () => {
+canvas.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
         running = true;
+    } else {
+        ThreeJsUtils.showOverlayMessage(overlay, "Stopped");
+        running = false;
     }
 });
 
@@ -61,7 +63,7 @@ function mousePos(event) {
 canvas.addEventListener('mousedown', (e) => {
     mousePos(e);
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObject(massSpringSystem.mass.rayCastHandle);
+    const intersects = raycaster.intersectObject(massSpringSystem.mass);
     dragging = intersects.length > 0;
 });
 
@@ -78,12 +80,12 @@ canvas.addEventListener('mousemove', e => {
 
 canvas.addEventListener('mouseup', () => dragging = false);
 
-const potentialGravity = () => massSpringSystem.mass.mass * g * massSpringSystem.mass.position.y;
+const potentialGravity = massSpringSystem.mass.mass * g * massSpringSystem.mass.position.y;
 const plotData = [
     [0], // x-axis = time
-    [massSpringSystem.kineticEnergy()],
-    [massSpringSystem.potentialEnergy() + potentialGravity()],
-    [massSpringSystem.kineticEnergy() + massSpringSystem.potentialEnergy() + potentialGravity()],
+    [massSpringSystem.kineticEnergy],
+    [massSpringSystem.potentialEnergy + potentialGravity],
+    [massSpringSystem.kineticEnergy + massSpringSystem.potentialEnergy + potentialGravity],
     [(5 + massSpringSystem.mass.position.y) * 100]
 ];
 
@@ -109,23 +111,24 @@ const plot = new uPlot({
 let time = 0;
 const maxPoints = 500;
 const dt = 0.02;
-function animate() {
+renderer.setAnimationLoop(() => {
     renderer.render(scene, camera);
     if (!running) return;
 
     time += dt;
-    if (!dragging)
-        massSpringSystem.step(dt, Integrators.rk4Step, 1, time);
+    if (!dragging) {
+        // Two steps for animation speed
+        massSpringSystem.step(dt, Integrators.symplecticEulerStep, 1, time);
+        massSpringSystem.step(dt, Integrators.symplecticEulerStep, 1, time);
+    }
 
     plotData[0].push(time); // x-axis = time
-    plotData[1].push(massSpringSystem.kineticEnergy());
-    plotData[2].push(massSpringSystem.potentialEnergy() + potentialGravity());
-    plotData[3].push(massSpringSystem.kineticEnergy() + massSpringSystem.potentialEnergy() + potentialGravity());
+    plotData[1].push(massSpringSystem.kineticEnergy);
+    plotData[2].push(massSpringSystem.potentialEnergy + potentialGravity);
+    plotData[3].push(massSpringSystem.kineticEnergy + massSpringSystem.potentialEnergy + potentialGravity);
     plotData[4].push((5 + massSpringSystem.mass.position.y) * 100);
 
     if (plotData[0].length > maxPoints)
         plotData.forEach(arr => arr.shift());
     plot.setData(plotData);
-}
-
-requestAnimationFrame(animate);
+});

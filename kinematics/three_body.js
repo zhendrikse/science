@@ -1,5 +1,5 @@
 import {Scene, PerspectiveCamera, DirectionalLight, WebGLRenderer, Vector3, Group } from "three";
-import {Ball, Integrators, ThreeJsUtils, Trail } from '../js/three-js-extensions.js';
+import {Sphere, Integrators, ThreeJsUtils, Trail } from '../js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 //const canvasContainer = document.getElementById("threeBodyWrapper");
@@ -25,7 +25,6 @@ camera.position.set(30, 30, 30);
 
 const controls = new OrbitControls( camera, canvas );
 const renderer = new WebGLRenderer({antialias: true, canvas: canvas, alpha: true});
-renderer.setAnimationLoop( animate );
 
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
@@ -41,7 +40,7 @@ const light = new DirectionalLight(0xffffff, 1);
 light.position.set(30, 30, 30);
 scene.add(light);
 
-const sphereA = new Ball(worldGroup, {
+const sphereA = new Sphere({
     position: new Vector3(rA, 0, 0),
     velocity: new Vector3(0, vA, 0),
     radius: sphereRadius,
@@ -50,7 +49,7 @@ const sphereA = new Ball(worldGroup, {
     scale: scale
 });
 
-const sphereB = new Ball(worldGroup, {
+const sphereB = new Sphere({
     position: new Vector3(-rB, 0, 0),
     velocity: new Vector3(0, -vA / 0.8, 0),
     radius: sphereRadius,
@@ -59,7 +58,7 @@ const sphereB = new Ball(worldGroup, {
     scale: scale
 });
 
-const sphereC = new Ball(worldGroup, {
+const sphereC = new Sphere({
     position: new Vector3(0, 0, rA),
     velocity: new Vector3(0, 0, 0),
     radius: sphereRadius,
@@ -67,6 +66,7 @@ const sphereC = new Ball(worldGroup, {
     color: "magenta",
     scale: scale
 });
+worldGroup.add(sphereA, sphereB, sphereC);
 
 const trailA = new Trail(worldGroup, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
 const trailB = new Trail(worldGroup, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
@@ -76,10 +76,9 @@ trailB.attachTo(sphereB);
 trailC.attachTo(sphereC);
 
 function forceBetween(self, other) {
-    const radius = other.position.clone().sub(self.position);
-    const r2 = radius.lengthSq();
-    const r = Math.sqrt(r2);
-    return radius.multiplyScalar(G * self.mass * other.mass / (r2 * r));
+    const radius = self.physicsPositionVectorTo(other);
+    const r = self.physicsDistanceTo(other);
+    return radius.multiplyScalar(G * self.mass * other.mass / (r * r * r));
 }
 
 function iterate(subSteps, dt) {
@@ -96,10 +95,10 @@ function iterate(subSteps, dt) {
 
 const dt = 5000;
 const subSteps = 50;
-function animate(time) {
+renderer.setAnimationLoop( (time) => {
     for (let i = 0; i < subSteps; i++)
     iterate(subSteps, dt);
 
     renderer.render(scene, camera);
     controls.update();
-}
+});

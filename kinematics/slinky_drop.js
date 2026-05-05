@@ -1,6 +1,6 @@
 import { Scene, Vector3, Group, AmbientLight, PerspectiveCamera, WebGLRenderer, DirectionalLight,
     BoxGeometry, Mesh, MeshLambertMaterial, DoubleSide } from "three";
-import { Cylinder, Ball, Spring, ThreeJsUtils} from '../js/three-js-extensions.js';
+import { Cylinder, Sphere, Spring, ThreeJsUtils} from '../js/three-js-extensions.js';
 
 const canvas = document.getElementById("slinkyCanvas");
 const overlay = document.getElementById("overlayText");
@@ -16,15 +16,23 @@ camera.position.set(-5, 0, 15);
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer({antialias:true, alpha: true, canvas: canvas});
-renderer.setAnimationLoop( animate );
 
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(renderer, camera));
-window.addEventListener("click", () => {
+canvas.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
         running = true;
+    } else {
+        ThreeJsUtils.showOverlayMessage(overlay, "Reset");
+        ball1.reset();
+        ball2.reset();
+        ball3.reset();
+        spring.position = ball1.position;
+        spring.updateAxis(ball1.positionVectorTo(ball2));
+        t = 0;
+        running = false;
     }
 });
 
@@ -44,24 +52,25 @@ const floor = new Mesh(floorGeometry, floorMaterial);
 floor.position.set(0, -3.5 * L0, 0);
 experimentGroup.add(floor);
 
-const ball1 = new Ball(experimentGroup, {
+const ball1 = new Sphere({
     position: new Vector3(0, L0 / 2, 0),
     mass: 5,
     radius: 0.3,
     color: 0xff0000
 });
-const ball2 = new Ball(experimentGroup, {
+const ball2 = new Sphere({
     position: new Vector3(0, L0 / 2 - L0 - ball1.mass * g.length() / k, 0),
     mass: 5,
     radius: 0.3,
     color: 0x00ffff
 });
-const ball3 = new Ball(experimentGroup, {
+const ball3 = new Sphere({
     position: ball2.position.clone().add(new Vector3(L0, 0, 0)),
     mass: 5,
     radius: 0.3,
     color: 0xffff00
 });
+experimentGroup.add(ball1, ball2, ball3);
 
 // Spring
 const spring = new Spring(experimentGroup, ball1.position, ball1.positionVectorTo(ball2), {
@@ -84,7 +93,9 @@ experimentGroup.position.y = 2 * L0;
 experimentGroup.position.x -= 1.5 * L0;
 
 function iterate(dt) {
-    if (ball2.liesOnFloor({floorLevel: -3.5 * L0}) || ball3.liesOnFloor({floorLevel: -3.5 * L0})) return;
+    if (ball2.liesOnFloor({floorLevel: -3.5 * L0}) || ball3.liesOnFloor({floorLevel: -3.5 * L0}))
+        return;
+
     const springLength = ball1.positionVectorTo(ball2);
     const springForce = springLength.clone().normalize().multiplyScalar(-k * (springLength.length() - L0));
     const forceOnBall1 = g.clone().multiplyScalar(ball1.mass).sub(springForce);
@@ -98,12 +109,12 @@ function iterate(dt) {
     spring.updateAxis(ball1.positionVectorTo(ball2));
 }
 
-// Animatie loop
 let t = 0;
 const dt = 0.005;
-function animate() {
+renderer.setAnimationLoop(() => {
     if (running)
-        iterate(dt);
+        for (let substep = 0; substep < 2; substep++)
+            iterate(dt);
     renderer.render(scene, camera);
     t += dt;
-}
+});

@@ -1,6 +1,6 @@
 import { Scene, Color, Vector3, PerspectiveCamera, SphereGeometry, MeshStandardMaterial, Mesh, WebGLRenderer, BoxGeometry, AmbientLight, DirectionalLight, Group } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { Ball, Bond, ThreeJsUtils } from "../js/three-js-extensions.js";
+import { Sphere, Bond, ThreeJsUtils } from "../js/three-js-extensions.js";
 
 // --- Scene setup ---
 const canvas = document.getElementById("chainDropCanvas");
@@ -51,12 +51,13 @@ class Chain extends Group {
         let pos = new Vector3(-length + amountHanging, 0, 0);
         for (let i = 0; i < totalBalls; i++) {
             if (pos.x > 0) break;
-            const ball = new Ball(this, {
+            const ball = new Sphere({
                 radius: this.ballRadius,
                 color: new Color(0x00ffff),
                 mass: mass / totalBalls,
                 position: pos.clone()
             });
+            this.add(ball);
             this._balls.push(ball);
             this._forces.push(new Vector3());
             pos.x += this._interBallLength;
@@ -66,12 +67,13 @@ class Chain extends Group {
         pos = this._balls[this._balls.length - 1].position.clone();
         while (pos.y > -amountHanging) {
             pos.y -= this._interBallLength;
-            const ball = new Ball(this, {
+            const ball = new Sphere({
                 radius: this.ballRadius,
                 color: new Color(0x00ffff),
                 mass: mass / totalBalls,
                 position: pos.clone()
             });
+            this.add(ball);
             this._balls.push(ball);
             this._forces.push(new Vector3());
         }
@@ -98,10 +100,7 @@ class Chain extends Group {
 
     reset() {
         for (let i = 0; i < this._balls.length; i++) {
-            const ball = this._balls[i];
-            ball.position = this._initialPositions[i].clone();
-            ball.accelerateTo(new Vector3());
-
+            this._balls[i].reset();
             this._forces[i].set(0, 0, 0);
         }
 

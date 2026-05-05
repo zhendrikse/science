@@ -1052,6 +1052,9 @@ export class ArrowField extends Group {
 export class Sphere extends Mesh {
     constructor({
         position = new Vector3(0, 0, 0),
+        velocity = new Vector3(0, 0, 0),
+        mass = 1,
+        charge = 0,
         radius = 1,
         color = 0xffff00,
         visible = true,
@@ -1073,25 +1076,63 @@ export class Sphere extends Mesh {
 
         super(new SphereGeometry(radius * scale, segments, segments), material);
         this.position.copy(position.clone().multiplyScalar(scale));
+        this._body = new PhysicalBody({ position, velocity, mass, charge });
+        this._initialState = this._body.clone();
         this.visible = visible;
         this.castShadow = castShadow;
         this._radius = radius;
-        this._position = position;
         this._scale = scale;
         this._trail = null;
     }
 
-    moveTo(newPosition) {
-        this._position.copy(newPosition);
+    reset() {
+        this._body = this._initialState.clone();
+        this.physicsPosition = this._body.position;
+    }
+
+    step(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
+        const updatedBody = integrator(this._body, dt, accelerationFn);
+        this.physicsPosition = updatedBody.position;
+        this._body.velocity = updatedBody.velocity;
+    }
+
+    get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
+    get physicsPosition() { return this._body.position; }
+    get mass() { return this._body.mass; }
+    get velocity() { return this._body.velocity; }
+    get charge() { return this._body.charge; }
+    get radius() { return this._radius; }
+    get color() { return this.material.color; }
+    get body() { return this._body; }
+
+    set trail(newTrail) { this._trail = newTrail; }
+    set physicsPosition(newPosition) {
         const scaledPosition = newPosition.clone().multiplyScalar(this._scale);
+        this._body.position.copy(newPosition);
         this.position.copy(scaledPosition);
         this._trail?.update(scaledPosition);
     }
+    accelerateTo(newVelocity) { this._body.velocity.copy(newVelocity); }
 
-    get radius() { return this._radius; }
-    set trail(newTrail) { this._trail = newTrail; }
+    liesOnFloor({ floorLevel = 0, epsilon = 1e-1 } = {}) {
+        return this.physicsPosition.y - this.radius <= epsilon + floorLevel;
+    }
+
+    bounceOffOfFloor(dt, elasticity=1, epsilon=1e-1) {
+        this._body.velocity.y *= -elasticity;
+        this._body.position.addScaledVector(this.velocity, dt);
+        this.physicsPosition = this._body.position;
+
+        // if the velocity is too slow, stay on the ground
+        if (this.velocity.y <= epsilon)
+            this._body.velocity.y = this.radius + this.radius * epsilon;
+    }
+
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceTo(other) { return this.positionVectorTo(other).length() }
+    physicsPositionVectorTo(other) { return other.physicsPosition.clone().sub(this.physicsPosition); }
+    physicsDistanceTo(other) { return this.physicsPositionVectorTo(other).length(); }
 }
 
 export class Cylinder extends Mesh {
@@ -1285,7 +1326,7 @@ class Helix extends Curve {
     }
 }
 
-class Body {
+class PhysicalBody {
     constructor({
                     position = new Vector3(0, 0, 0),
                     velocity = new Vector3(0, 0, 0),
@@ -1298,7 +1339,7 @@ class Body {
     }
 
     clone() {
-        return new Body({
+        return new PhysicalBody({
             position: this.position.clone(),
             velocity: this.velocity.clone(),
             mass: this.mass,
@@ -1316,7 +1357,7 @@ class Body {
     }
 }
 
-export class Charge extends Sphere {
+export class Charge extends Sphere { // TODO Incorporate into Sphere
     constructor({
                     position = new Vector3(0, 0, 0),
                     charge = 0,
@@ -1326,7 +1367,7 @@ export class Charge extends Sphere {
                     color = 0xffff00,
                     radius = 1} = {}) {
         super({position, radius, scale, color});
-        this._body = new Body({position, velocity, mass, charge});
+        this._body = new PhysicalBody({position, velocity, mass, charge});
         this._scale = scale;
     }
 
@@ -1334,7 +1375,7 @@ export class Charge extends Sphere {
 }
 
 export class Ball {
-    constructor(parent, {
+    constructor({
         position = new Vector3(0, 0, 0),
         radius = 1,
         velocity = new Vector3(0, 0, 0),
@@ -1351,15 +1392,13 @@ export class Ball {
         this._sphere = new Sphere({
                 position, radius, color, visible, scale, segments, opacity, wireframe, castShadow
             });
-        parent.add(this._sphere);
-        this._state = new Body({position, velocity, mass, charge});
+        this._state = new PhysicalBody({position, velocity, mass, charge});
         this._radius = radius;
         this._elasticity = elasticity;
         this._neighbors = [];
     }
 
     set trail(newTrail) { this._sphere.trail = newTrail; }
-    get color() { return this._sphere.material.color; }
 
     appendNeighbor(ball) { this._neighbors.push(ball); }
 
@@ -1371,23 +1410,9 @@ export class Ball {
         this.accelerateTo(updatedBody.velocity);
     }
 
-    liesOnFloor({ floorLevel = 0, epsilon = 1e-1 } = {}) {
-        return this.position.y - this.radius <= epsilon + floorLevel;
-    }
-
-    bounceOffOfFloor(dt, epsilon = 1e-1) {
-        this._state.velocity.y *= -this._elasticity;
-        this._state.position.addScaledVector(this.velocity, dt);
-        this._sphere.moveTo(this.position);
-
-        // if the velocity is too slow, stay on the ground
-        if (this.velocity.y <= epsilon)
-            this._state.velocity.y = this.radius + this.radius * epsilon;
-    }
-
     moveTo(newPosition) {
         this._state.position.copy(newPosition);
-        this._sphere.moveTo(this.position);
+        this._sphere.physicsPosition = newPosition;
     }
 
     accelerateTo(newVelocity) { this._state.velocity.copy(newVelocity); }
@@ -1483,8 +1508,7 @@ export class Spring {
         this.#regenerateTube();
     }
 
-    potentialEnergy() { return 0.5 * this.k * this.displacement * this.displacement; }
-
+    get potentialEnergy() { return 0.5 * this.k * this.displacement * this.displacement; }
     get position() { return this._position; }
     get axis() { return this._axis; }
     get k() { return this._k; }
@@ -2553,13 +2577,14 @@ export class MassSpringSystem extends Group {
             thickness: 0.125
         });
 
-        this._mass = new Ball(this, {
+        this._mass = new Sphere({
             position: massPosition,
             radius: massRadius,
             mass: massMass,
             color: massColor,
             makeTrail: makeTrail
         });
+        this.add(this._mass);
         this._spring.updateAxis(this._mass.position.clone().sub(suspensionPoint));
         this._spring.update(0);
     }
@@ -2600,26 +2625,20 @@ export class MassSpringSystem extends Group {
     }
 
     moveMassTo(newPosition) {
-        this._mass.moveTo(newPosition);
+        this._mass.physicsPosition = newPosition;
         this._mass.accelerateTo(new Vector3(0, 0, 0));
+        this._spring.updateAxis(this._mass.position.clone().sub(this._suspensionPoint));
     }
 
     step(dt, integrator, damping = 0, time = 0) {
-        const body = this._mass.body;
+        this._mass.step(this.computeTotalForce(this._mass.body, damping));
 
-        const accelerationFn = (body) =>
-            this.computeTotalForce(body, damping).multiplyScalar(1 / body.mass);
-        const updatedBody = integrator(body, dt, accelerationFn);
-
-        this._mass.moveTo(updatedBody.position);
-        this._mass.accelerateTo(updatedBody.velocity);
-
-        this._spring.updateAxis(updatedBody.position.clone().sub(this._suspensionPoint));
+        this._spring.updateAxis(this._mass.position.clone().sub(this._suspensionPoint));
         this._spring.update(time);
     }
 
     get mass() { return this._mass; }
     get omega() { return Math.sqrt(this._spring.k / this.mass.mass); }
-    kineticEnergy() { return this._mass.kineticEnergy(); }
-    potentialEnergy() { return this._spring.potentialEnergy(); }
+    get kineticEnergy() { return this._mass.kineticEnergy; }
+    get potentialEnergy() { return this._spring.potentialEnergy; }
 }

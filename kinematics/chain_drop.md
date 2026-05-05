@@ -7,8 +7,10 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)
 
-⭐ Based on [original](https://trinket.io/glowscript/bbe791bbfe7d) by Rhett Allain<br/>
-👉 Belongs to this [accompanying video](https://www.youtube.com/watch?v=vXp1hW_t-bo)
+🎯 How to model a chain as a mass-spring system<br/>
+🧠 Based on [original](https://trinket.io/glowscript/bbe791bbfe7d) by Rhett Allain<br/>
+👉 Belongs to this [accompanying video](https://www.youtube.com/watch?v=vXp1hW_t-bo)<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Chainfromtable) is available as well, see [chain_drop.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/chain_drop.py)<br/>
 
 <link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
 <script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>

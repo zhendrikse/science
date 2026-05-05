@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.min.css">
 <script src="https://cdn.jsdelivr.net/npm/uplot@1.6.24/dist/uPlot.iife.min.js"></script>
 
-<div class="canvasWrapper" id="slinkyWrapper">
+<div class="canvasWrapper" id="springWrapper">
     <canvas class="applicationCanvas" id="springCanvas" style="aspect-ratio: 1 /1;"></canvas>
     <div class="overlayText" id="overlayText">Click to start the animation!</div>
 </div>
