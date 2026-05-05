@@ -3,19 +3,13 @@ import {Vector3, Color, PerspectiveCamera, WebGLRenderer, DirectionalLight, Grou
 import {ThreeJsUtils, Arrow, Sphere} from "../js/three-js-extensions.js";
 
 const canvas = document.getElementById("inertiaCanvas");
+const scene = new Scene();
 
-let scene, camera, renderer;
-let cylinderGroup;
-let omega = new Vector3(0, 0, 0);
-
-scene = new Scene();
-scene.background = new Color(0x111111);
-
-camera = new PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+const camera = new PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
 camera.position.set(2, 2, 4);
 camera.lookAt(0, 0, 0);
 
-renderer = new WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
+const renderer = new WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
 
 const light = new DirectionalLight(0xffffff, 3);
@@ -84,11 +78,12 @@ const forceArrow = new Arrow(
         }
     );
 
-cylinderGroup = new Cylinder();
+const cylinderGroup = new Cylinder();
 scene.add(cylinderGroup, forceArrow);
 
 let t = 0;
 const dt = 0.05;
+let omega = new Vector3(0, 0, 0);
 renderer.setAnimationLoop(() => {
     const R = 1;
     const forceLocation = new Vector3(R, 0, 0);
