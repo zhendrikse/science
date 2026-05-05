@@ -115,7 +115,7 @@ renderer.setAnimationLoop(() => {
     const arrowPos = new Vector3().addVectors(forceLocation, new Vector3(0, 0, zAverage));
     forceArrow.moveTo(arrowPos);
 
-    const scaleFactor = 1; // tweak dit indien nodig
+    const scaleFactor = 1;
     const axis = force.clone().multiplyScalar(scaleFactor);
     forceArrow.updateAxis(axis);
 });
