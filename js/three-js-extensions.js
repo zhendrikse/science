@@ -1129,6 +1129,7 @@ export class Sphere extends Mesh {
             this._body.velocity.y = this.radius + this.radius * epsilon;
     }
 
+    fieldAt(point) { return this._body.fieldAt(point); }
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceTo(other) { return this.positionVectorTo(other).length() }
     physicsPositionVectorTo(other) { return other.physicsPosition.clone().sub(this.physicsPosition); }
@@ -1355,23 +1356,6 @@ class PhysicalBody {
             new Vector3(0, 0, 0) :
             rVec.normalize().multiplyScalar(this.charge / distanceSquared);
     }
-}
-
-export class Charge extends Sphere { // TODO Incorporate into Sphere
-    constructor({
-                    position = new Vector3(0, 0, 0),
-                    charge = 0,
-                    velocity = new Vector3(0, 0, 0),
-                    mass = 1,
-                    scale = 1,
-                    color = 0xffff00,
-                    radius = 1} = {}) {
-        super({position, radius, scale, color});
-        this._body = new PhysicalBody({position, velocity, mass, charge});
-        this._scale = scale;
-    }
-
-    fieldAt(point) { return this._body.fieldAt(point); }
 }
 
 export class Ball {

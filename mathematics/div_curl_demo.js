@@ -1,5 +1,5 @@
 import { OrthographicCamera, AmbientLight, DirectionalLight, Vector3, WebGLRenderer, Scene, Group } from "three";
-import {VectorField, Arrow, Ball, ThreeJsUtils} from '../js/three-js-extensions.js';
+import {VectorField, Arrow, Sphere, ThreeJsUtils} from '../js/three-js-extensions.js';
 
 const canvas = document.getElementById("divCurlCanvas");
 const overlay = document.getElementById("overlayText");
@@ -124,7 +124,8 @@ function createParticles() {
     const particles = [];
     for (let x = x_min; x <= x_max; x += 0.25)
         for (let y = y_min; y <= y_max; y += 0.25)
-            particles.push(new Ball(worldGroup, {position: new Vector3(x, y, 0), radius: 0.05, color: "orange"}));
+            particles.push(new Sphere({position: new Vector3(x, y, 0), radius: 0.05, color: "orange"}));
+    particles.forEach((particle) => worldGroup.add(particle));
     return particles;
 }
 
@@ -144,7 +145,7 @@ function createArrows() {
 
 function resetSimulation(particles, arrows) {
     for (const particle of particles)
-        worldGroup.remove(particle._sphere);
+        worldGroup.remove(particle);
     for (const arrow of arrows)
         worldGroup.remove(arrow);
 
@@ -183,9 +184,10 @@ function showOverlayMessage(message, duration=1000) {
     }, duration);
 }
 
-const source = new Ball(worldGroup, {position: new Vector3(-1, 0.5, 0), radius: 0.25, opacity: 0.4, color: "red"});
-const sink = new Ball(worldGroup, {position:  new Vector3(-1, -0.5, 0), radius: 0.25, opacity: 0.4, color: "green"});
-const curl = new Ball(worldGroup, {position:  new Vector3(1, 0.5, 0), radius: 0.25, opacity: 0.4, color: "cyan"});
+const source = new Sphere({position: new Vector3(-1, 0.5, 0), radius: 0.25, opacity: 0.4, color: "red"});
+const sink = new Sphere({position:  new Vector3(-1, -0.5, 0), radius: 0.25, opacity: 0.4, color: "green"});
+const curl = new Sphere({position:  new Vector3(1, 0.5, 0), radius: 0.25, opacity: 0.4, color: "cyan"});
+worldGroup.add(source, sink, curl);
 
 let vectorField = new OriginalDemoVectorField(source, sink, curl);
 let particles = createParticles();
@@ -194,7 +196,7 @@ let arrows = createArrows();
 let started = false;
 let clickCounter = 0;
 window.addEventListener("resize", onResize);
-window.addEventListener("click", () => {
+canvas.addEventListener("click", () => {
     if (!started) {
         showOverlayMessage("Start");
         started = true;
@@ -230,7 +232,7 @@ renderer.setAnimationLoop( () => {
         const position = particle.position;
         const velocity = vectorField.sample(position);
         position.addScaledVector(velocity, dt);
-        particle.moveTo(position);
+        particle.physicsPosition.copy(position);
     }
 
     // Fading effect for arrows
