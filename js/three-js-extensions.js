@@ -1090,6 +1090,8 @@ export class Sphere extends Mesh {
         this.physicsPosition = this._body.position;
     }
 
+    shiftBy(displacement) { this.physicsPosition = this.physicsPosition.clone().add(displacement); }
+
     step(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
         const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
         const updatedBody = integrator(this._body, dt, accelerationFn);
@@ -2456,19 +2458,19 @@ export class HarmonicOscillator extends Group {
         const leftPos = position.clone().add(new Vector3(-length, 0, 0));
         const rightPos = position.clone().add(new Vector3(length, 0, 0));
 
-        this._left = new Ball(this, {
+        this._left = new Sphere({
             position: leftPos,
             radius: ballRadius,
             mass: ballMass,
             color: ballColor
         });
-
-        this._right = new Ball(this, {
+        this._right = new Sphere({
             position: rightPos,
             radius: ballRadius,
             mass: ballMass,
             color: ballColor
         });
+        this.add(this._right, this._left);
 
         const axis = rightPos.clone().sub(leftPos);
         this._spring = new Spring(this, leftPos, axis,
@@ -2485,7 +2487,7 @@ export class HarmonicOscillator extends Group {
     }
 
     update(dt) {
-        const delta = this._right.position.clone().sub(this._left.position);
+        const delta = this._left.positionVectorTo(this._right);
         const length = delta.length();
         const direction = delta.clone().normalize();
 

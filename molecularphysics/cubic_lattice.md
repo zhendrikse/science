@@ -3,9 +3,13 @@
 ## Cubic lattice model
 <div class="header_line"><br/></div>
 
-🔧 [Original code](https://www.glowscript.org/#/user/wlane/folder/Let'sCodePhysics/program/atoms-array) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
-🛠  Refactored and ported to [cubic_lattice.js](https://github.com/zhendrikse/science/blob/main/molecularphysics/cubic_lattice.js) with [Three.js](https://threejs.org/)<br/>
-👉 A similar [VPython](https://vpython.org/) version is available as [molecules.py](https://github.com/zhendrikse/pysics-in-python/blob/main/vpython/cubic_lattice.py).
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=cubic_lattic.js)](https://github.com/zhendrikse/science/blob/main/molecularphysics/cubic_lattice.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
+
+🎯 Vibrations in a cubic lattice<br/>
+🧠 [Original code](https://www.glowscript.org/#/user/wlane/folder/Let'sCodePhysics/program/atoms-array) by [Let&apos;s code physics](https://www.youtube.com/@LetsCodePhysics)<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/MyPrograms/program/CubicLattice) is available as well, see [molecules.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/molecules.py)<br/>
 
 <canvas class="applicationCanvas" id="simulationCanvas" style="aspect-ratio: 1/1"></canvas><br/>
 <p style="clear: both;"></p>

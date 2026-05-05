@@ -5,6 +5,7 @@
 
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=harmonogrpah.js)](https://github.com/zhendrikse/science/blob/main/mathematics/harmonogrpah.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
 🎯 All work and no play makes Jack a dull boy<br/>
 🧠 Inspired by [Harmonograph3D](https://www.glowscript.org/#/user/Mandrian/folder/My_Programs/program/Harmonograph3D) found on [prettymathpics.com](https://prettymathpics.com/online-3d-spectral-harmonograph/)<br>

@@ -1,5 +1,5 @@
 import { Scene, Color, Vector3, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight }  from "three";
-import { Ball, Bond } from "../js/three-js-extensions.js";
+import { Sphere, Bond } from "../js/three-js-extensions.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 console.clear( );
@@ -26,6 +26,23 @@ light.position.set(0, 4, 0);
 scene.add(light);
 scene.add(new AmbientLight(0xffffff, .75));
 
+class Atom extends Sphere {
+    constructor(x, y, z, visible) {
+        super({
+            radius: 0.175,
+            color: new Color(0xffcc11),
+            visible: visible,
+            mass: 1,
+            position: new Vector3(x, y, z)
+        });
+        this._neighbors = [];
+    }
+
+    appendNeighbor(ball) { this._neighbors.push(ball); }
+
+    get neighbors() { return this._neighbors; }
+}
+
 class Lattice {
     constructor(parent, nrows=3) {
         this._atoms = [];
@@ -41,13 +58,8 @@ class Lattice {
             Math.abs(y) !== half &&
             Math.abs(z) !== half;
 
-        const atom = new Ball(parent, {
-            radius: 0.175,
-            color: new Color(0xffcc11),
-            visible: visible,
-            mass: 1,
-            position: new Vector3(x, y, z)
-        });
+        const atom = new Atom(x, y, z, visible);
+        parent.add(atom);
         this._atoms.push({atom: atom, force: new Vector3(0, 0, 0)});
     }
 
