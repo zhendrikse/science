@@ -36,13 +36,13 @@ class ControlsGui {
         const gui = new GUI({width: "100%", autoPlace: false});
         gui.add(params, "amplitude", 1, 6, 0.1)
             .name("Amplitude")
-            .onChange(value => planeWave.set_amplitude_to(value));
+            .onChange(value => planeWave.amplitude = value);
         gui.add(params, "omega", 0, 6, 0.1)
             .name("Omega")
-            .onChange(value => planeWave.set_omega_to(value * Math.PI));
+            .onChange(value => planeWave.omega = value * Math.PI);
         gui.add(params, "waveNumber", -2/3, 2/3, 0.01)
             .name("Wave number k")
-            .onChange(value => planeWave.set_k_to(value * Math.PI));
+            .onChange(value => planeWave.k = value * Math.PI);
 
 
         const axesFolder = gui.addFolder("Axes");
@@ -72,27 +72,27 @@ class PlaneWave extends Group {
         this._arrows.forEach(arrow => this.add(arrow));
     }
 
-    set_k_to = (value) => this._k = value;
+    set k(value) { this._k = value; }
+    set omega(value) { this._omega = value; }
+    set amplitude(value) { this._amplitude = value; }
 
-    set_omega_to = (value) => this._omega = value;
+    _updateArrow(arrow, t) {
+        const x = arrow.position.x;
+        const k = this._k;
+        const w = this._omega;
+        const phase = k * x - w * t;
+        let cycles = phase / (2 * Math.PI);
+        cycles -= Math.floor(cycles);
+        const cphase = 2 * Math.PI * cycles;
 
-    set_amplitude_to = (value) => this._amplitude = value;
+        const y = -Math.sin(phase) * this._amplitude;
+        const z = -Math.cos(phase) * this._amplitude;
+        arrow.updateAxis(new Vector3(arrow.axis.x, y, z));
+        arrow.updateColor(new Color().setHSL(1.0 - cphase / (2 * Math.PI), 1.0, 0.5));
+    }
 
     update(t) {
-        this._arrows.forEach(arrow => {
-            const x = arrow.position.x;
-            const k = this._k;
-            const w = this._omega;
-            const phase = k * x - w * t;
-            let cycles = phase / (2 * Math.PI);
-            cycles -= Math.floor(cycles);
-            const cphase = 2 * Math.PI * cycles;
-
-            const y = -Math.sin(phase) * this._amplitude;
-            const z = -Math.cos(phase) * this._amplitude;
-            arrow.updateAxis(new Vector3(arrow.axis.x, y, z));
-            arrow.updateColor(new Color().setHSL(1.0 - cphase / (2 * Math.PI), 1.0, 0.5));
-        });
+        this._arrows.forEach(arrow => this._updateArrow(arrow, t));
     }
 }
 
@@ -101,27 +101,18 @@ worldGroup.add(planeWave);
 
 const boundingBox = new Box3();
 boundingBox.setFromObject( worldGroup );
-
 axesController.createFromBoundingBox(boundingBox);
 
 const plot3D = new Plot3DView(scene, canvas, boundingBox);
 plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .5));
-plot3D.renderer.setAnimationLoop(animate);
+ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
 const gui = new ControlsGui(planeWave);
-
-// Resizing for mobile devices
-function resize() {
-    ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
-    axesController.resize();
-}
-window.addEventListener("resize", resize);
-resize();
 
 let time = 0;
 const dt = 0.01;
-function animate() {
+plot3D.renderer.setAnimationLoop(() => {
     planeWave.update(time);
     plot3D.render();
     axesController.render(plot3D.camera);
     time += dt;
-}
+});
