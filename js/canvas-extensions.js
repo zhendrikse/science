@@ -113,7 +113,7 @@ export class PixelImage {
             const r = fromPixel.color[0] + dr * step;
             const g = fromPixel.color[1] + dg * step;
             const b = fromPixel.color[2] + db * step;
-            this.setColourAt(x0, y0, [r * 255, g * 255, b * 255]);
+            this.setColourAt(x0, y0, [r, g, b]);
 
             if (x0 === x1 && y0 === y1) break;
 
