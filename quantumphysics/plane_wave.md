@@ -3,32 +3,22 @@
 ## Visualizing a Complex Plane wave 
 <div class="header_line"><br/></div>
 
-### What are you looking at?
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
-This animation shows one of the most frequently encountered
-complex functions in quantum mechanics, namely a one-dimensional **complex plane wave**.
-Mathematically, the wave is described by
+🎯 Improved understanding of a one-dimensional **complex plane wave**:
 
 $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
 
-where
-
-- $A$ is the amplitude
-- $k$ is the wave number
-- $\omega$ is the angular frequency
-
-Each arrow represents the complex value of the wave function at a fixed position $x$.
-The arrow rotates in the complex plane as time evolves:
-
-- **z-direction**: real part of $\psi$
-- **y-direction**: imaginary part of $\psi$
-
-The **length of the arrows is constant**, showing that the magnitude $|\psi|$ 
-of a plane wave does not change in space or time.
-The **color encodes the phase**, making the spatial and temporal phase structure visible.
-
-This visualization helps build intuition for complex waves, phase propagation, 
+These visualizations help to build intuition for complex waves, phase propagation, 
 and the role of $k$ and $\omega$.
+
+### 3D visualization
+
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=plane_wave_3d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave_3d.js)&nbsp;&nbsp;
+
+🧠 Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Quantum/program/Planewave) is available as well, see [plane_wave.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/plane_wave.py)<br/>
 
 <div class="canvasWrapper" id="planeWaveContainer">
     <canvas class="applicationCanvas" id="planeWaveCanvas"></canvas>
@@ -36,14 +26,55 @@ and the role of $k$ and $\omega$.
 <div class="guiContainer" id="gui-container"></div>
 <script type="module" src="plane_wave_3d.js"></script>
 
+Each arrow represents the complex value of the wave function at a fixed position $x$.
+The arrow rotates in the complex plane as time evolves:
+
+- **z-direction**: real part of $\psi$
+- **y-direction**: imaginary part of $\psi$
+
+The **length of the arrows is constant**, showing that the magnitude $|\psi|$
+of a plane wave does not change in space or time.
+The **color encodes the phase**, making the spatial and temporal phase structure visible.
+
 <p style="clear: both;"></p>
 
-⭐ Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-🔧 Ported to JavaScript and [Three.js](https://threejs.org/) in [plane_wave_3d.js](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave_3d.js)<br/>
-👉 A [VPython](https://www.vpython.org/) version is also available as [plane_wave.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/plane_wave.py).
+### 2D visualization
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=plane_wave_2d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave_2d.js)&nbsp;&nbsp;
 
-### Guided Exploration
+🧠 Based on [SinusoidalWave.html](https://physics.weber.edu/schroeder/software/SinusoidalWave.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
+🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
+👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
+
+<canvas id="theCanvas" width="600" height="200" style="aspect-ratio: 3/1" class="applicationCanvas"></canvas>
+
+<div class="buttonRow">
+    <button id="pauseButton">Pause</button>
+    <label for="momentumSlider">&nbsp;Momentum: </label>
+    <input type="range" id="momentumSlider" min="-0.3" max="0.3" step="0.01" value="0.1"/>
+    <label for="realImag"></label><input type="radio" name="plotType" id="realImag"/>
+    <label for="realImag">Real/imag&nbsp;</label>
+    <input type="radio" name="plotType" checked/>Density/phase
+</div>
+
+<script type="module" src="plane_wave_2d.js"></script>
+
+> This is an animated visualization of the behavior of a pure sinusoidal wavefunction in one
+> dimension, representing a free quantum particle with a precise momentum that is inversely proportional
+> to the wavelength. There is no potential energy and the particle is nonrelativistic, so the
+> phase velocity is directly proportional to the momentum.
+> 
+> The real part is shown in orange, the imaginary part in blue. Alternatively,
+> the probability density and phase are drawn, with the phase represented by hues going from
+> - red (pure real and positive) to 
+> -  light green (pure imaginary and positive) to 
+> -  cyan (pure real and negative) to 
+> - purple (pure imaginary and negative) and finally back to red.
+> 
+> For a pure sinusoidal wavefunction, the probability density is the same everywhere.
+> &mdash; Paraphrased from instructions at [SinusoidalWave.html](https://physics.weber.edu/schroeder/software/SinusoidalWave.html)
+
+## Guided Exploration
 <div class="header_line"><br/></div>
 
 Use the controls to explore the properties of the plane wave.

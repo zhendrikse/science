@@ -21,6 +21,7 @@ $$
 <script type="module" src="dipole_field.js"></script>
 <p style="clear: both;"></p>
 
+🧠 Inspired by [7_Dipole.py](https://github.com/Physics-Morris/Physics-Vpython/blob/master/7_Dipole.py)<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Electricdipolefield) is available as well, see [dipole_field.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/circular_aperture.py)<br/>
 
 ### Understanding electric fields
