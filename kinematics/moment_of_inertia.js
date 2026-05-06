@@ -21,11 +21,15 @@ class Cylinder extends Group {
         super();
 
         this._atoms = [];
+        this._omega = new Vector3(0, 0, 0);
         for (let z = zMin; z <= zMax; z += 0.1)
             this._createRing(z, R);
 
         this._momentOfInertia = this._calculateMomentOfInertia(1);
         this._atoms.forEach(atom => this.add(atom));
+
+        // Mark one atom with a different color
+        this._atoms[this._atoms.length - 1].material.color = new Color(0xffff00);
 
         const axisGeom = new CylinderGeometry(0.02, 0.02, 3);
         const axisMat = new MeshStandardMaterial({color: 0x22ff22, roughness: 0.2, metalness: 0.8});
@@ -49,7 +53,6 @@ class Cylinder extends Group {
             }));
             theta += ds / R;
         }
-        this._atoms[this._atoms.length - 1].material.color = new Color(0xff6600);
     }
 
     _calculateMomentOfInertia(mass) {
@@ -60,57 +63,46 @@ class Cylinder extends Group {
         return momentOfInertia;
     }
 
-    getForce(t) {
-        return new Vector3(0, Math.cos(t), 0);
+    _rotate(dt) {
+        const angle = this._omega.length() * dt;
+        if (angle <= 0)
+            return
+
+        const axis = this._omega.clone().normalize();
+        this.rotateOnAxis(axis, angle);
     }
 
-    get momentOfInertia() { return this._momentOfInertia; }
+    update(torque, dt) {
+        this._omega.add(torque.clone().multiplyScalar(dt / this._momentOfInertia));
+        this._rotate(dt);
+    }
 }
 
+const cylinderRadius = 1
+const forceLocation = new Vector3(cylinderRadius, 0, 0);
 const forceArrow = new Arrow(
-        new Vector3(0, 0, 0),
-        new Vector3(0, 1, 0),
-        {
-            color: 0x00ffff,
-            shaftWidth: 0.05,
-            headWidth: 3,
-            headLength: 4
-        }
-    );
+    new Vector3().addVectors(forceLocation, new Vector3(0, 0, cylinderRadius * .5)),
+    new Vector3(0, 1, 0),{
+        color: 0x00ffff,
+        shaftWidth: 0.05,
+        headWidth: 3,
+        headLength: 4
+    }
+);
 
-const cylinderGroup = new Cylinder();
+const cylinderGroup = new Cylinder(cylinderRadius);
 scene.add(cylinderGroup, forceArrow);
 
 let t = 0;
-const dt = 0.05;
-let omega = new Vector3(0, 0, 0);
+const dt = 0.05; // animation speed
+const force = (t) => new Vector3(0, Math.cos(t), 0);
 renderer.setAnimationLoop(() => {
-    const R = 1;
-    const forceLocation = new Vector3(R, 0, 0);
-    const force = cylinderGroup.getForce(t);
-
-    // torque = r x F
-    const torque = new Vector3().crossVectors(forceLocation, force);
-
-    // update omega
-    omega.add(torque.clone().multiplyScalar(dt / cylinderGroup.momentOfInertia));
-
-    // rotate object
-    const angle = omega.length() * dt;
-    if (angle > 0) {
-        const axis = omega.clone().normalize();
-        cylinderGroup.rotateOnAxis(axis, angle);
-    }
-
-    t += dt;
-
     renderer.render(scene, camera);
 
-    const zAverage = 0.5;
-    const arrowPos = new Vector3().addVectors(forceLocation, new Vector3(0, 0, zAverage));
-    forceArrow.moveTo(arrowPos);
+    // torque = r x F
+    const torque = new Vector3().crossVectors(forceLocation, force(t));
+    cylinderGroup.update(torque, dt);
+    t += dt;
 
-    const scaleFactor = 1;
-    const axis = force.clone().multiplyScalar(scaleFactor);
-    forceArrow.updateAxis(axis);
+    forceArrow.updateAxis(force(t));
 });
