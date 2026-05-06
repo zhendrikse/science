@@ -14,6 +14,7 @@ These visualizations help to build intuition for complex waves, phase propagatio
 and the role of $k$ and $\omega$.
 
 ### 3D visualization
+<div class="header_line"><br/></div>
 
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=plane_wave_3d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave_3d.js)&nbsp;&nbsp;
 
@@ -25,6 +26,7 @@ and the role of $k$ and $\omega$.
 </div>
 <div class="guiContainer" id="gui-container"></div>
 <script type="module" src="plane_wave_3d.js"></script>
+<p style="clear: both;"></p>
 
 Each arrow represents the complex value of the wave function at a fixed position $x$.
 The arrow rotates in the complex plane as time evolves:
@@ -39,6 +41,7 @@ The **color encodes the phase**, making the spatial and temporal phase structure
 <p style="clear: both;"></p>
 
 ### 2D visualization
+<div class="header_line"><br/></div>
 
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=plane_wave_2d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave_2d.js)&nbsp;&nbsp;
 
@@ -58,6 +61,7 @@ The **color encodes the phase**, making the spatial and temporal phase structure
 </div>
 
 <script type="module" src="plane_wave_2d.js"></script>
+<p style="clear: both;"></p>
 
 > This is an animated visualization of the behavior of a pure sinusoidal wavefunction in one
 > dimension, representing a free quantum particle with a precise momentum that is inversely proportional
