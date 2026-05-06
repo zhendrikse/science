@@ -99,10 +99,7 @@ function paintCanvas() {
 
 document.getElementById("pauseButton").addEventListener("click", () => {
     running = !running;
-    if (running)
-        pauseButton.innerHTML = "Pause";
-    else
-        pauseButton.innerHTML = "Resume";
+    pauseButton.innerHTML = running ? "Pause" : "Resume";
     animate();
 });
 
