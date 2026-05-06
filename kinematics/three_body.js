@@ -40,6 +40,7 @@ const light = new DirectionalLight(0xffffff, 1);
 light.position.set(30, 30, 30);
 scene.add(light);
 
+const subSteps = 50;
 const sphereA = new Sphere({
     position: new Vector3(rA, 0, 0),
     velocity: new Vector3(0, vA, 0),
@@ -47,7 +48,7 @@ const sphereA = new Sphere({
     mass: mass,
     color: "yellow",
     scale: scale,
-    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 1000, trailStep: 20, lineWidth: 3}),
+    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 500, trailStep: subSteps}),
 });
 
 const sphereB = new Sphere({
@@ -57,7 +58,7 @@ const sphereB = new Sphere({
     mass: mass * 0.8,
     color: "cyan",
     scale: scale,
-    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 1000, trailStep: 20, lineWidth: 3}),
+    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 500, trailStep: subSteps}),
 });
 
 const sphereC = new Sphere({
@@ -67,7 +68,7 @@ const sphereC = new Sphere({
     mass: mass * 0.5,
     color: "magenta",
     scale: scale,
-    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 1000, trailStep: 20, lineWidth: 3}),
+    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 500, trailStep: subSteps}),
 });
 worldGroup.add(sphereA, sphereB, sphereC);
 
@@ -90,7 +91,6 @@ function iterate(subSteps, dt) {
 }
 
 const dt = 5000;
-const subSteps = 50;
 renderer.setAnimationLoop( (time) => {
     for (let i = 0; i < subSteps; i++)
        iterate(subSteps, dt);
