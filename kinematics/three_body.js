@@ -1,5 +1,5 @@
 import {Scene, PerspectiveCamera, DirectionalLight, WebGLRenderer, Vector3, Group } from "three";
-import {Sphere, Integrators, ThreeJsUtils, Trail } from '../js/three-js-extensions.js';
+import {Sphere, Integrators, ThreeJsUtils, TrailProperties} from '../js/three-js-extensions.js';
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
 //const canvasContainer = document.getElementById("threeBodyWrapper");
@@ -46,7 +46,8 @@ const sphereA = new Sphere({
     radius: sphereRadius,
     mass: mass,
     color: "yellow",
-    scale: scale
+    scale: scale,
+    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 1000, trailStep: 20, lineWidth: 3}),
 });
 
 const sphereB = new Sphere({
@@ -55,7 +56,8 @@ const sphereB = new Sphere({
     radius: sphereRadius,
     mass: mass * 0.8,
     color: "cyan",
-    scale: scale
+    scale: scale,
+    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 1000, trailStep: 20, lineWidth: 3}),
 });
 
 const sphereC = new Sphere({
@@ -64,16 +66,10 @@ const sphereC = new Sphere({
     radius: sphereRadius,
     mass: mass * 0.5,
     color: "magenta",
-    scale: scale
+    scale: scale,
+    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 1000, trailStep: 20, lineWidth: 3}),
 });
 worldGroup.add(sphereA, sphereB, sphereC);
-
-const trailA = new Trail(worldGroup, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
-const trailB = new Trail(worldGroup, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
-const trailC = new Trail(worldGroup, {maxPoints: 1000, trailStep: 20, lineWidth: 3});
-trailA.attachTo(sphereA);
-trailB.attachTo(sphereB);
-trailC.attachTo(sphereC);
 
 function forceBetween(self, other) {
     const radius = self.physicsPositionVectorTo(other);
@@ -97,7 +93,7 @@ const dt = 5000;
 const subSteps = 50;
 renderer.setAnimationLoop( (time) => {
     for (let i = 0; i < subSteps; i++)
-    iterate(subSteps, dt);
+       iterate(subSteps, dt);
 
     renderer.render(scene, camera);
     controls.update();

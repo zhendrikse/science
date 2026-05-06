@@ -84,7 +84,7 @@ const boundingBox = new Box3(new Vector3(0, 0, 0), new Vector3(3.25, 3.25, 3.25)
 axesController.createFromBoundingBox(boundingBox);
 
 const plot3D = new Plot3DView(scene, canvas, boundingBox);
-plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .4), {translationY: -1, padding: 0.7});
+plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .4), {translationY: -1, padding: 0.9});
 
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
