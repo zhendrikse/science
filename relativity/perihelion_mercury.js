@@ -1,9 +1,8 @@
 import { MeshPhongMaterial, TextureLoader, Scene, PerspectiveCamera, Vector3, WebGLRenderer, AmbientLight,
     PointLight, ACESFilmicToneMapping, SRGBColorSpace, MathUtils } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { ThreeJsUtils, Sphere, Trail } from '../js/three-js-extensions.js';
-import { SkyDome, Sun, TEXTURES_PATH, DISTANCE_SCALE, PLANET_SCALE, SUN_SCALE, CelestialBody }
-    from '../js/astro-extensions.js';
+import { ThreeJsUtils, Sphere, TrailProperties } from '../js/three-js-extensions.js';
+import { SkyDome, Sun, TEXTURES_PATH, PLANET_SCALE, SUN_SCALE, CelestialBody } from '../js/astro-extensions.js';
 
 const planetsCanvas = document.getElementById('planetsCanvas');
 planetsCanvas.focus();
@@ -26,7 +25,7 @@ textureLoader.setCrossOrigin("anonymous");
 const planetaryScene = new Scene();
 // --- CAMERA ---
 const cameraStart = {
-    position: new Vector3(-3 * orbitRadius, 1.5 * orbitRadius, 0),
+    position: new Vector3(-3 * orbitRadius, 1.25 * orbitRadius, 0).multiplyScalar(0.875),
     target: new Vector3(0, 0, 0)
 };
 const planetCamera = new PerspectiveCamera(40, 1, .05 * orbitRadius, 20 * orbitRadius);
@@ -52,7 +51,16 @@ controls.dampingFactor = 0.05;
 
 class RelativisticMercury extends CelestialBody {
     constructor(planetData, scaleFactor, {bumpScale=0.005, identicalBumpMap=false} = {}) {
-        super(planetData, scaleFactor, {bumpScale: bumpScale, identicalBumpMap: identicalBumpMap});
+        super(planetData, scaleFactor, {
+            bumpScale: bumpScale,
+            identicalBumpMap: identicalBumpMap,
+            trailProperties: new TrailProperties({
+                makeTrail: true,
+                maxPoints: 5000,
+                color: 0xaaff00,
+                trailStep: 1
+            })
+        });
         this._body.castShadow = true;
         this._body.receiveShadow = false;
         this._orbit = [];
@@ -88,7 +96,7 @@ class RelativisticMercury extends CelestialBody {
 
         this._velocity.addScaledVector(acceleration_vector, dt);
         this.position.addScaledVector(this._velocity, dt);
-        this._trail.update(this.position);
+        this._trail?.update(this.position);
     }
 
     toggleAlpha() { this._alpha = this._alpha === 0 ? 1e6 : 0; } // Strength of 1/r**3 term
@@ -127,8 +135,6 @@ const mercury = new RelativisticMercury({
 }, PLANET_SCALE * orbitRadius * .4);
 mercury.position.copy(initial_position);
 planetaryScene.add(mercury);
-const mercuryTrail = new Trail(planetaryScene, {maxPoints: 5000, color: 0xaaff00, trailStep: 1});
-mercuryTrail.attachTo(mercury);
 
 document.getElementById("alphaTerm").onclick = () => mercury.toggleAlpha();
 document.getElementById("betaTerm").onclick = () => mercury.toggleBeta();
@@ -148,7 +154,11 @@ function angleBetween(v1, v2) {
 }
 
 function markPerihelion() {
-    planetaryScene.add(new Sphere({position: vec_r_last, radius: 0.2}));
+    planetaryScene.add(new Sphere({
+        position: vec_r_last,
+        color: 0x00ff00,
+        radius: 0.2
+    }));
     const prev = perihelion_list[perihelion_list.length - 2];
     const curr = perihelion_list[perihelion_list.length - 1];
 

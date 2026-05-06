@@ -3,7 +3,7 @@ import {
     Vector3, BackSide, AdditiveBlending, DoubleSide, Quaternion, BufferGeometry, BufferAttribute, Points,
     MeshBasicMaterial, FrontSide, LineDashedMaterial, LineBasicMaterial, LineLoop, Line, PlaneGeometry
 } from "three";
-import { Trail } from 'https://www.hendrikse.name/science/js/three-js-extensions.js';
+import { Trail, TrailProperties } from "./three-js-extensions.js";
 
 export const EARTH_SEMI_MAJOR_AXIS = 149598261.;
 export const PLANET_SCALE = 0.25E7;  // meters → render units (radius), planet sizes are shrunk by this factor
@@ -252,7 +252,7 @@ export const TEXTURES_PATH = "https://www.hendrikse.name/science/astrophysics/co
 const textureLoader = new TextureLoader();
 textureLoader.setCrossOrigin("anonymous");
 export class CelestialBody extends Group {
-    constructor(bodyData, scale, { bumpScale = 0.005, identicalBumpMap = false, resolution = 32 } = {}) {
+    constructor(bodyData, scale, { bumpScale = 0.005, identicalBumpMap = false, resolution = 32, trailProperties = new TrailProperties() } = {}) {
         super();
         this._name = bodyData.name;
         this._radius = bodyData.radius;
@@ -270,6 +270,16 @@ export class CelestialBody extends Group {
         this._body.castShadow = true;
         this._body.receiveShadow = false;
         this._trail = null;
+        this._trailProperties = trailProperties;
+        this.addEventListener('added', this._newTrail);
+    }
+
+    _newTrail() {
+        this._trail?.dispose();
+        if (this._trailProperties.makeTrail) {
+            this._trail = new Trail(this.parent, this._trailProperties);
+            this._trail.attachTo(this);
+        }
     }
 
     set trail(newTrail) { this._trail = newTrail; }
@@ -282,12 +292,18 @@ export class CelestialBody extends Group {
 
     _material(bumpScale, identicalBumpMap) { throw new Error("Abstract class: implement material!"); }
 
-    updateRotation(tHours) { this._body.rotation.y = this._spin * tHours; } // Spin the body along the axis with tilt
+    update(t) {
+        this._trail.update(toRenderUnits(this._orbit.coordinatesAt(t)));
+    }
+
+    updateRotation(tHours) {
+        this._body.rotation.y = this._spin * tHours; // Spin the body along the axis with tilt
+    }
 }
 
 export class Planet extends CelestialBody {
-    constructor(planetData, { scale = PLANET_SCALE, bumpScale = 0.005, identicalBumpMap = false } = {}) {
-        super(planetData, scale, { bumpScale: bumpScale, identicalBumpMap: identicalBumpMap });
+    constructor(planetData, { scale = PLANET_SCALE, bumpScale = 0.005, identicalBumpMap = false, trailProperties = new TrailProperties() } = {}) {
+        super(planetData, scale, { bumpScale: bumpScale, identicalBumpMap: identicalBumpMap, trailProperties: trailProperties });
         this._body.castShadow = true;
         this._body.receiveShadow = false;
 
@@ -321,8 +337,8 @@ export class Planet extends CelestialBody {
     }
 
     update(t) {
-        this._trail.update(toRenderUnits(this._orbit.coordinatesAt(t)));
-        this.updateRotation(t);
+        super.update(t);
+        super.updateRotation(t);
     }
 }
 
@@ -564,7 +580,10 @@ export class Earth extends Planet {
             "mass": 5.97219e+24,
             "spin": 2 * Math.PI / 24.,
             "tilt": 23 * Math.PI / 180
-        }, { scale: scale });
+        }, {
+            scale: scale,
+            trailProperties: new TrailProperties({ makeTrail: true, maxPoints: 400, color: 0x00bbff, trailStep: 125})
+        });
         this._timescale = 1; // rotation period w.r.t. Earth
         this._clouds = new EarthClouds(this._geometry.parameters.radius, this._spin);
         this._clouds.visible = clouds;
@@ -701,7 +720,11 @@ export class Saturn extends Planet {
         'tilt': 27 * Math.PI / 180.,
         'spin': 2 * Math.PI / 10.66
     }) {
-        super(planetData, { bumpScale: 0.05, identicalBumpMap: true });
+        super(planetData, {
+            bumpScale: 0.05,
+            identicalBumpMap: true,
+            trailProperties: new TrailProperties({ makeTrail: true, maxPoints: 1600, color: 0xffff00, trailStep: 500})
+        });
 
         const innerRingRadius = 1.11 * planetData.radius;
         const outerRingRadius = 2.1 * planetData.radius;
@@ -741,7 +764,11 @@ export class Uranus extends Planet {
         'tilt': 98 * Math.PI / 180.,
         'spin': -2 * Math.PI / 17.24
     }) {
-        super(planetData, { identicalBumpMap: true, bumpScale: 0.05 });
+        super(planetData, {
+            identicalBumpMap: true,
+            bumpScale: 0.05,
+            trailProperties: new TrailProperties({ makeTrail: true, maxPoints: 1600, color: 0xaaaaaa, trailStep: 500})
+        });
 
         const inner = 1.5 * planetData.radius / PLANET_SCALE;
         const outer = 1.8 * planetData.radius / PLANET_SCALE;

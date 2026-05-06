@@ -708,21 +708,31 @@ class TrailLine {
     }
 }
 
-export class Trail {
-    constructor(parentGroup, {
+export class TrailProperties {
+    constructor({
+        makeTrail = false,
         maxPoints = 200,
         trailStep = 10,
         lineWidth = 1,
         color = null // By default, try to obtain the color from the object that is followed
     } = {}) {
-        this._parent = null;
-        this._color = color;
-        this._container = parentGroup;
-        this._maxPoints = maxPoints;
-        this._lineWidth = lineWidth;
+        this.makeTrail = makeTrail;
+        this.maxPoints = maxPoints;
+        this.lineWidth = lineWidth;
+        this.color = color;
+        this.trailStep = trailStep;
+    }
+}
+
+export class Trail {
+    constructor(parentGroup, trailProperties) {
+        this._parentGroup = parentGroup; // Parent group of the object that is followed
+        this._color = trailProperties.color ? trailProperties.color : null;
+        this._maxPoints = trailProperties.maxPoints;
+        this._lineWidth = trailProperties.lineWidth;
         this._trail = null;
         this._trailAccumulator = 0;
-        this._trailStep = trailStep;
+        this._trailStep = trailProperties.trailStep;
     }
 
     update(position, increment = 1) {
@@ -735,14 +745,14 @@ export class Trail {
     }
 
     attachTo(object) {
-        object.trail = this; // <== pass in trail
-        this._parent = object;
+        object.trail = this; // <== pass in trail to object so that it can update it
+        this._color = this._color ? this._color : object.material.color;
         this._trail = new TrailLine({
             maxPoints: this._maxPoints,
             color: this._color ? this._color: object.color,
             linewidth: this._lineWidth
         });
-        this._container.add(this._trail._line);
+        this._parentGroup.add(this._trail._line);
     }
 
     dispose() {
@@ -754,7 +764,7 @@ export class Trail {
             if (this._trail._line.material)
                 this._trail._line.material.dispose();
         }
-        this._container.remove(this._trail._line);
+        this._parentGroup.remove(this._trail._line);
         this._trail = null;
     }
 }
@@ -869,7 +879,8 @@ export class Sphere extends Mesh {
         segments = 24,
         opacity = 1,
         castShadow = false,
-        wireframe = false
+        wireframe = false,
+        trailProperties = new TrailProperties()
     } = {}) {
         const material = new MeshStandardMaterial({
             color: color,
@@ -890,11 +901,22 @@ export class Sphere extends Mesh {
         this._radius = radius;
         this._scale = scale;
         this._trail = null;
+        this._trailProperties = trailProperties;
+        this.addEventListener('added', this._newTrail);
+    }
+
+    _newTrail() {
+        this._trail?.dispose();
+        if (this._trailProperties.makeTrail) {
+            this._trail = new Trail(this.parent, this._trailProperties);
+            this._trail.attachTo(this);
+        }
     }
 
     reset() {
         this._body = this._initialState.clone();
         this.physicsPosition = this._body.position;
+        this._newTrail();
     }
 
     shiftBy(displacement) { this.physicsPosition = this.physicsPosition.clone().add(displacement); }
@@ -923,20 +945,6 @@ export class Sphere extends Mesh {
         this._trail?.update(scaledPosition);
     }
     accelerateTo(newVelocity) { this._body.velocity.copy(newVelocity); }
-
-    liesOnFloor({ floorLevel = 0, epsilon = 1e-1 } = {}) {
-        return this.physicsPosition.y - this.radius <= epsilon + floorLevel;
-    }
-
-    bounceOffOfFloor(dt, elasticity=1, epsilon=1e-1) {
-        this._body.velocity.y *= -elasticity;
-        this._body.position.addScaledVector(this.velocity, dt);
-        this.physicsPosition = this._body.position;
-
-        // if the velocity is too slow, stay on the ground
-        if (this.velocity.y <= epsilon)
-            this._body.velocity.y = this.radius + this.radius * epsilon;
-    }
 
     fieldAt(point) { return this._body.fieldAt(point); }
     positionVectorTo(other) { return other.position.clone().sub(this.position); }

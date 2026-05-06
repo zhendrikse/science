@@ -1,12 +1,11 @@
 import { Vector3, Line, Scene, Color, Group, LineBasicMaterial, BufferGeometry } from "three";
-import { Plot3DView, ThreeJsUtils, Sphere, Trail } from '../js/three-js-extensions.js';
+import {Plot3DView, ThreeJsUtils, Sphere, Trail, TrailProperties} from '../js/three-js-extensions.js';
 import {
     SurfaceDefinition, SurfaceController, IsoparametricContoursView, Surface,
     CustomColorColorMapper, ViewParameters
 } from "../js/3d-surface-components.js";
 import { SkyDome, Sun } from '../js/astro-extensions.js';
 
-const canvasContainer = document.getElementById("spaceTimeCanvasWrapper");
 const canvas = document.getElementById("spaceTimeCanvas");
 const distanceSlider = document.getElementById("distanceSlider");
 const orbitButton = document.getElementById("orbitButton");
@@ -59,7 +58,7 @@ class SchwarzschildSurfaceDefinition extends SurfaceDefinition {
 class Comet extends Sphere {
     static initialPosition = (distance) =>
         new Vector3(distance, SchwarzschildSurfaceDefinition.zAsFunctionOf(distance, sun.mass), 0);
-    constructor(parent, {
+    constructor({
         position,
         radius = 1.25,
         color = new Color(0xffff00),
@@ -69,18 +68,12 @@ class Comet extends Sphere {
             position: position,
             radius: radius,
             color: color,
-            makeTrail: true
+            trailProperties: new TrailProperties({makeTrail: true, trailStep: 1})
         });
-        parent.add(this);
 
         this._stateVector = stateVector  ? stateVector.clone() : null;
         this._startStateVector = stateVector ? stateVector.clone() : null;
-        this._color = color;
-        this._parent = parent;
-
         this._isMoving = false;
-        this._trail = new Trail(parent, { maxPoints: 1000 });
-        this._trail.attachTo(this);
     }
 
     _derivativeSurface(state, M) {
@@ -169,14 +162,12 @@ class Comet extends Sphere {
     start() { this._isMoving = true; }
     stop() { this._isMoving = false; }
     reset(distance) {
-        this.moveTo(Comet.initialPosition(distance));
-        this._trail?.dispose();
-        this._trail = new Trail(this._parent, { maxPoints: 1000 });
-        this._trail.attachTo(this);
+        this.physicsPosition = Comet.initialPosition(distance);
         this.visible = true;
         this._stateVector = this._startStateVector ? this._startStateVector.clone() : null;
         if (this._stateVector)
             this._stateVector.r = distance;
+        super.reset();
     }
 }
 
@@ -278,26 +269,27 @@ photonRing.visible = false;
 worldGroup.add(photonRing);
 
 // Comets
-const comet = new Comet(scene, {
+const comet = new Comet({
     position: Comet.initialPosition(Number(distanceSlider.value)),
     radius: 1.75,
     color: new Color(0x00ffff),
     stateVector: StateVector.initial(orbitButton.checked)
 });
 
-const flatComet = new Comet(scene, {
+const flatComet = new Comet({
     position: new Vector3(Number(distanceSlider.value), SchwarzschildSurfaceDefinition.yOffset, 0),
     radius: 1.75,
     color: new Color(0xff0000),
     stateVector: null // important: no own dynamics, just follows comet
 });
 
-const realComet = new Comet(scene, {
+const realComet = new Comet({
     position: new Vector3(Number(distanceSlider.value), SchwarzschildSurfaceDefinition.yOffset, 0),
     radius: 1.75,
     color: new Color(0xff8800),
     stateVector: StateVector.initial(orbitButton.checked)
 });
+scene.add(comet, flatComet, realComet);
 
 const mathSurface = new Surface(new SchwarzschildSurfaceDefinition(5));
 const surfaceParams = new ViewParameters({
@@ -322,20 +314,25 @@ resize();
 
 // Event listeners
 window.addEventListener("resize", resize);
+
 document.getElementById('gridButton').addEventListener('click',
     () => grid.visible = !grid.visible );
+
 document.getElementById('coneButton').addEventListener('click', () => {
     surfaceController.surface.visible = !surfaceController.surface.visible;
     surfaceController.contours.visible = ! surfaceController.contours.visible;
 });
+
 document.getElementById('photonSphereButton').addEventListener('click', () => photonRing.visible = !photonRing.visible);
+
 distanceSlider.addEventListener('input',
     () => document.getElementById('distanceSliderValue').textContent = distanceSlider.value);
 distanceSlider.addEventListener('input', () => {
-    realComet.reset(Number(distanceSlider.value));
     comet.reset(Number(distanceSlider.value));
     flatComet.reset(Number(distanceSlider.value));
+    realComet.reset(Number(distanceSlider.value));
 });
+
 orbitButton.addEventListener('click', (e) => {
     realComet.reset(Number(distanceSlider.value));
     realComet._stateVector = StateVector.initial(orbitButton.checked);
@@ -344,7 +341,8 @@ orbitButton.addEventListener('click', (e) => {
     flatComet.reset(Number(distanceSlider.value));
     distanceSlider.disabled = orbitButton.checked;
 });
-window.addEventListener("click", () => {
+
+canvas.addEventListener("click", () => {
     if (comet.isMoving) {
         realComet.stop();
         comet.stop();
@@ -356,6 +354,8 @@ window.addEventListener("click", () => {
     }
 });
 
+const cometInsideCone = () =>
+    mathSurface.definition().rMin < comet.distance && comet.distance < mathSurface.definition().rMax;
 plot3D.renderer.setAnimationLoop( (now) => {
     sun.update(now * .025);
     skyDome.update(now * .001, plot3D.camera);
@@ -364,13 +364,12 @@ plot3D.renderer.setAnimationLoop( (now) => {
 
     const subSteps = orbitButton.checked ? 1000 : 20;
     for (let subStep = 0; subStep < subSteps; subStep++) {
-        const cometInsideCone =
-            mathSurface.definition().rMin < comet.distance && comet.distance < mathSurface.definition().rMax;
-        if (cometInsideCone)
+        if (cometInsideCone())
             comet.update(sun.mass, 0.001); // 3D geodesic
-        if (cometInsideCone || orbitButton.checked)
+        if (cometInsideCone() || orbitButton.checked)
             realComet.updateRealMotion(sun.mass, 0.001);
     }
+
     comet.physicsPosition = SchwarzschildSurfaceDefinition.surfacePointAt(comet.r, comet.phi, sun.mass);
     realComet.physicsPosition = SchwarzschildSurfaceDefinition.gridPointAt(realComet.r, realComet.phi);
     flatComet.physicsPosition = new Vector3(comet.position.x, SchwarzschildSurfaceDefinition.yOffset, comet.position.z);

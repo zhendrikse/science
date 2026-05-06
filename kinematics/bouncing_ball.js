@@ -1,5 +1,13 @@
 import {Box3, Scene, Group, Vector3 } from "three";
-import { Sphere, Axes, AxesController, AxesParameters, ThreeJsUtils, Plot3DView, Trail } from '../js/three-js-extensions.js';
+import {
+    Sphere,
+    Axes,
+    AxesController,
+    AxesParameters,
+    ThreeJsUtils,
+    Plot3DView,
+    TrailProperties
+} from '../js/three-js-extensions.js';
 
 const canvasContainer = document.getElementById("bouncingBallWrapper");
 const canvas = document.getElementById("bouncingBallCanvas");
@@ -28,21 +36,55 @@ const axesController = new AxesController({
     scene
 });
 
-const ball = new Sphere({
+class Ball extends Sphere {
+    constructor({
+                    position = new Vector3(0, 0, 0),
+                    velocity = new Vector3(0, 0, 0),
+                    mass = 1,
+                    charge = 0,
+                    radius = 1,
+                    color = 0xffff00,
+                    visible = true,
+                    scale = 1,
+                    segments = 24,
+                    opacity = 1,
+                    castShadow = false,
+                    wireframe = false,
+                    trailProperties = new TrailProperties(),
+                } = {}) {
+        super({position, velocity, mass, charge, radius, color, visible, scale, segments, opacity, castShadow, wireframe, trailProperties});
+    }
+
+    liesOnFloor({ floorLevel = 0, epsilon = 1e-1 } = {}) {
+        return this.physicsPosition.y - this.radius <= epsilon + floorLevel;
+    }
+
+    bounceOffOfFloor(dt, elasticity=1, epsilon=1e-1) {
+        this._body.velocity.y *= -elasticity;
+        this._body.position.addScaledVector(this.velocity, dt);
+        this.physicsPosition = this._body.position;
+
+        // if the velocity is too slow, stay on the ground
+        if (this.velocity.y <= epsilon)
+            this._body.velocity.y = this.radius + this.radius * epsilon;
+    }
+}
+
+const ball = new Ball({
     position: new Vector3(-1.5, 1, 1.5),
     velocity: new Vector3(.5, 0, -.4),
     color: "cyan",
-    radius: 0.1
+    radius: 0.1,
+    trailProperties: new TrailProperties({makeTrail: true})
 });
+
 worldGroup.add(ball);
-const trail = new Trail(worldGroup);
-trail.attachTo(ball);
 
 const boundingBox = new Box3(new Vector3(0, 0, 0), new Vector3(3.25, 3.25, 3.25));
 axesController.createFromBoundingBox(boundingBox);
 
 const plot3D = new Plot3DView(scene, canvas, boundingBox);
-plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .4), {translationY: -1});
+plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .4), {translationY: -1, padding: 0.7});
 
 // Resizing for mobile devices
 ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
@@ -51,6 +93,14 @@ canvas.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
         running = true;
+    } else {
+        ThreeJsUtils.showOverlayMessage(overlay, "Reset");
+        ball.reset();
+        running = false;
+        timeData = [simTime];
+        positionData = [ball.position.y];
+        kineticData = [ball.kineticEnergy];
+        potentialData = [ball.mass * g * ball.position.y];
     }
 });
 
