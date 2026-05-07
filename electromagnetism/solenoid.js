@@ -12,7 +12,7 @@ scene.add(worldGroup);
 
 const renderer = new WebGLRenderer({canvas, antialias: true, alpha: true});
 const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-camera.position.set(0, 20, 60);
+camera.position.copy(new Vector3(40, 20, 60).multiplyScalar(0.8));
 
 const controls = new OrbitControls(camera, canvas);
 ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
