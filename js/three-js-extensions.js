@@ -1382,7 +1382,6 @@ export class Spring extends Group {
         this._thickness = thickness;
         this._restLength = axis.length();
         this._k = k;
-        this._position = position;
 
         this._geometry = new TubeGeometry(this._curve, tubularSegments, thickness, radialSegments, false);
         const material = new MeshStandardMaterial({
@@ -1405,8 +1404,7 @@ export class Spring extends Group {
         );
     }
 
-    moveTo(newPosition) {
-        this._position.copy(newPosition);
+    set physicsPosition(newPosition) {
         this._curve.start.copy(newPosition);
     }
 
@@ -1427,16 +1425,12 @@ export class Spring extends Group {
     }
 
     get potentialEnergy() { return 0.5 * this.k * this.displacement * this.displacement; }
-    get position() { return this._position; }
     get axis() { return this._axis; }
     get k() { return this._k; }
     get force() { return this.axis.clone().normalize().multiplyScalar(-this._k * this.displacement); }
     get displacement() { return this._restLength - this.axis.length(); }
-    get visible() { this._mesh.material.visible; }
 
     set color(value) { this._mesh.material.color = value; }
-    set visible(value) { this._mesh.material.visible = value; }
-    set position(newPosition) { this.moveTo(newPosition); }
     set axis(newAxis) {
         this._axis.copy(newAxis);
         this._curve.updateAxis(this._axis);
@@ -2462,7 +2456,7 @@ export class HarmonicOscillator extends Group {
         this._right.step(force.clone().negate(), dt);
         this._left.step(force, dt);
 
-        this._spring.moveTo(this._left.position);
+        this._spring.position = this._left.position;
         this._spring.axis = delta;
     }
 

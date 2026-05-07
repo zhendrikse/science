@@ -98,8 +98,11 @@ experimentGroup.add(stick, stick2, spring);
 experimentGroup.position.y = 2 * L0;
 experimentGroup.position.x -= 1.5 * L0;
 
+const onFloor = (ball, floorLevel = 0, epsilon = 1e-1) =>
+    ball.physicsPosition.y - ball.radius <= epsilon + floorLevel;
+
 function iterate(dt) {
-    if (ball2.liesOnFloor({floorLevel: -3.5 * L0}) || ball3.liesOnFloor({floorLevel: -3.5 * L0}))
+    if (onFloor(ball2, -3.5 * L0) || onFloor(ball3, -3.5 * L0))
         return;
 
     const springLength = ball1.positionVectorTo(ball2);
@@ -111,7 +114,7 @@ function iterate(dt) {
     ball2.step(forceOnBall2, dt);
     ball3.step(g.clone().multiplyScalar(ball3.mass), dt);
 
-    spring.position = ball1.position;
+    spring.physicsPosition = ball1.position;
     spring.axis = ball1.positionVectorTo(ball2);
 }
 
