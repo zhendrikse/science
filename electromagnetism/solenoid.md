@@ -11,7 +11,7 @@
 🧠 Inspired by [25-4.Bsolenoid](https://glowscript.org/#/user/yizhe/folder/Public/program/25-4.Bsolenoid)<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Solenoid) is available as well, see [solenoid.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/solenoid.py)<br/>
 
-<canvas id="solenoidCanvas" class="applicationCanvas" style="width: 800px; aspect-ratio: 2/1;"></canvas>
+<canvas id="solenoidCanvas" class="applicationCanvas" style="aspect-ratio: 2/1;"></canvas>
 <div class="buttonRow">
     <label for="fieldStrength">Field </label><input type="range" id="fieldStrength" min="0.1" max="2" step="0.01" value=".5"/>
     <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
