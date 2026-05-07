@@ -1199,19 +1199,19 @@ export class TangentFrameView extends Group {
         if (!frame) return;
 
         this._axes.uArrow.axis = frame.d1.clone().multiplyScalar(this._scaleFactor * .5);
-        this._axes.uArrow.position = frame.position;
+        this._axes.uArrow.position.set(frame.position);
 
         this._axes.vArrow.axis = frame.d2.clone().multiplyScalar(this._scaleFactor * .5);
-        this._axes.vArrow.position = frame.position;
+        this._axes.vArrow.position.set(frame.position);
 
         this._axes.normalArrow.axis = frame.normal.clone().multiplyScalar(this._scaleFactor * .5);
-        this._axes.normalArrow.postion = frame.position;
+        this._axes.normalArrow.position.set(frame.position);
 
         this._principals.k1Arrow.axis =frame.d1.clone().multiplyScalar(this._scaleFactor * .5);
-        this._principals.k1Arrow.position = frame.position;
+        this._principals.k1Arrow.position.set(frame.position);
 
         this._principals.k2Arrow.axis = frame.d2.clone().multiplyScalar(this._scaleFactor * .5);
-        this._principals.k2Arrow.position = frame.position;
+        this._principals.k2Arrow.position.set(frame.position);
 
         this._tangentPlane.position.copy(frame.position);
         this._tangentPlane.lookAt(frame.position.clone().add(frame.normal));

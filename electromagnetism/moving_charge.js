@@ -10,11 +10,13 @@ const speedSlider = document.getElementById("speedSlider");
 const chargeSlider = document.getElementById("chargeSlider");
 const chargeSliderValue = document.getElementById("chargeSliderValue");
 const speedSliderValue = document.getElementById("speedSliderValue");
+const overlay = document.getElementById("movingChargeOverlayText");
 const scene = new Scene();
 
 const EC = 1.6e-19;
 const scaleFactor = 1e14;
 const K = 9E9;
+let running = false;
 
 class Field extends Group {
     constructor(charges = []) {
@@ -98,7 +100,7 @@ class Capacitor extends Group {
 }
 
 const camera = new PerspectiveCamera(60, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-camera.position.copy(new Vector3(-50, 0, 75).multiplyScalar(0.55));
+camera.position.copy(new Vector3(-50, 0, 75).multiplyScalar(0.5));
 
 const controls = new OrbitControls(camera, canvas);
 const renderer = new WebGLRenderer({antialias: true, alpha: true, canvas: canvas});
@@ -110,7 +112,7 @@ scene.add(dirLight);
 scene.add(new AmbientLight(0xffffff, 0.8));
 
 const movingCharge = new Sphere({
-    position: new Vector3(-35, 4, 0).divideScalar(scaleFactor),
+    position: new Vector3(-30, 4, 0).divideScalar(scaleFactor),
     velocity: new Vector3(15, 0, 0).divideScalar(scaleFactor),
     mass: 1.6e-27,
     charge: 5e-42 * EC,
@@ -129,7 +131,7 @@ renderer.setAnimationLoop( () => {
     controls.update();
     renderer.render(scene, camera);
 
-    if (movingCharge.physicsPosition.x > 60 / scaleFactor)
+    if (movingCharge.physicsPosition.x > 60 / scaleFactor || !running)
         return;
 
     for (let substep = 0; substep < 3; substep++) {
@@ -140,9 +142,24 @@ renderer.setAnimationLoop( () => {
 });
 
 canvas.addEventListener("click", () => {
+});
+
+function reset() {
     movingCharge.reset();
     movingCharge.velocity = new Vector3(parseFloat(speedSlider.value) / scaleFactor, 0, 0);
     movingCharge.charge = parseFloat(chargeSlider.value) * 5e-42 * EC;
+}
+
+canvas.addEventListener("click", () => {
+    if (!running) {
+        ThreeJsUtils.showOverlayMessage(overlay, "Started");
+        reset();
+        running = true;
+    } else {
+        ThreeJsUtils.showOverlayMessage(overlay, "Reset");
+        reset();
+        running = false;
+    }
 });
 
 speedSlider.addEventListener("input", e => {

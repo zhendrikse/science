@@ -40,40 +40,32 @@ const size = 1;   // length of a bird vector
 const threshold = (5 * size) ** 2
 const dt = 0.02;
 
-class Bird {
+class Bird extends Arrow {
     constructor(velocity, initialPhysicalFlockRadius=3) {
         const pos = new THREE.Vector3().random().multiplyScalar(initialPhysicalFlockRadius);
-        this._position = pos;
-        this._velocity = velocity;
-        this._bird = new Arrow(pos, this.velocity().normalize().multiplyScalar(speed * .2), {
+        super({
+            position: pos,
+            axis: velocity.clone().normalize().multiplyScalar(speed * .2),
             round: true,
             color: new THREE.Color(.5, 1, .5)
         });
-        scene.add(this._bird);
+        this._velocity = velocity;
+        scene.add(this);
     }
 
     update(acceleration, dt) {
         this._velocity.add(acceleration.multiplyScalar(dt));
-        this._position.add(this.velocity().multiplyScalar(dt));
+        this.position.add(this._velocity.clone().multiplyScalar(dt));
         this.render();
     }
 
-    position = () => this._position.clone();
-
-    velocity = () => this._velocity.clone();
+    get velocity() { return this._velocity; }
 
     startle = () => this._velocity = new THREE.Vector3().random().multiplyScalar(2 * speed);
 
     render() {
-        this._bird.position = this.position();
-        this._bird.axis = this.velocity().normalize().multiplyScalar(size);
+        this.axis = this.velocity.clone().normalize().multiplyScalar(size);
     }
-
-    positionVectorTo = (other) => this._bird.positionVectorTo(other._bird);
-
-    distanceToSquared = (other) => this._bird.distanceToSquared(other._bird);
-
-    distanceTo = (other) => this._bird.distanceTo(other._bird);
 }
 
 class Flock {
@@ -110,13 +102,13 @@ class Flock {
         for (let count = 0; count < this._bird_count; count++) {
             let acceleration = new THREE.Vector3().randomDirection().multiplyScalar(this._random_weight);
 
-            let diff = new THREE.Vector3().copy(center).sub(this._birds[count].position());
+            let diff = new THREE.Vector3().copy(center).sub(this._birds[count].position);
             acceleration.add(diff.multiplyScalar(this._center_weight));
 
-            diff = new THREE.Vector3().copy(direction).sub(this._birds[count].velocity());
+            diff = new THREE.Vector3().copy(direction).sub(this._birds[count].velocity);
             acceleration.add(diff.multiplyScalar(this._direction_weight));
 
-            diff = new THREE.Vector3().copy(avoid[count]).normalize().sub(this._birds[count].position());
+            diff = new THREE.Vector3().copy(avoid[count]).normalize().sub(this._birds[count].position);
             acceleration.add(diff.multiplyScalar(this._avoid_weight));
 
             this._birds[count].update(acceleration, dt)
@@ -129,8 +121,8 @@ class Flock {
         let direction = new THREE.Vector3(0, 0, 0);
         for (let i = 0; i < this._bird_count; i++) {
             const bird = this._birds[i];
-            center.add(bird.position());
-            direction.add(bird.velocity());
+            center.add(bird.position);
+            direction.add(bird.velocity);
         }
 
         center.divideScalar(this._bird_count);
@@ -139,21 +131,10 @@ class Flock {
         this.updateBirds(this.avoidNearestBirds(), center, direction, dt);
     }
 
-    setRandomWeightTo(value) {
-        this._random_weight = value;
-    }
-
-    setCenteringWeightTo(value) {
-        this._center_weight = value;
-    }
-
-    setDirectionWeightTo(number) {
-        this._direction_weight = number;
-    }
-
-    setAvoidWeightTo(number) {
-        this._avoid_weight = number;
-    }
+    set randomWeight(value) { this._random_weight = value; }
+    set centeringWeight(value) { this._center_weight = value; }
+    set directionWeight(number) { this._direction_weight = number; }
+    set avoidWeight(number) { this._avoid_weight = number; }
 
     startleBirds() {
         for (let i = 0; i < this._bird_count; i++)
@@ -169,26 +150,16 @@ function animationLoop() {
 }
 
 // GUI controls
-const randomSlider = document.getElementById('randomWeightSlider');
-randomSlider.oninput = function() {
-    flock.setRandomWeightTo(this.value);
-};
+document.getElementById('randomWeightSlider').addEventListener("input", (e) =>
+    flock.randomWeight = e.target.value);
 
-const centeringSlider = document.getElementById('centerWeightSlider');
-centeringSlider.oninput = function() {
-    flock.setCenteringWeightTo(this.value /10);
-};
+document.getElementById('centerWeightSlider').addEventListener("input", (e) =>
+    flock.centeringWeight = e.target.value / 10);
 
-const directionSlider = document.getElementById('directionWeightSlider');
-directionSlider.oninput = function() {
-    flock.setDirectionWeightTo(this.value /10);
-};
+document.getElementById('directionWeightSlider').addEventListener("input", (e) =>
+    flock.directionWeight = e.target.value / 10);
 
-const avoidSlider = document.getElementById('avoidWeightSlider');
-avoidSlider.oninput = function() {
-    flock.setAvoidWeightTo(this.value /10);
-};
+document.getElementById('avoidWeightSlider').addEventListener("input", (e) =>
+    flock.avoidWeight = e.target.value / 10);
 
-document.getElementById("startleButton").addEventListener("click", () => {
-    flock.startleBirds();
-});
+document.getElementById("startleButton").addEventListener("click", () => flock.startleBirds());

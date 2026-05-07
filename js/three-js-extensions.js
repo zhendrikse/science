@@ -1383,7 +1383,6 @@ export class Spring extends Group {
         this._restLength = axis.length();
         this._k = k;
         this._position = position;
-        this._axis = axis;
 
         this._geometry = new TubeGeometry(this._curve, tubularSegments, thickness, radialSegments, false);
         const material = new MeshStandardMaterial({
@@ -1395,6 +1394,8 @@ export class Spring extends Group {
         this._mesh = new Mesh(this._geometry, material);
         this._mesh.castShadow = castShadow;
         this.add(this._mesh);
+        this._axis = new Vector3();
+        this.axis = axis;
     }
 
     #regenerateTube() {
