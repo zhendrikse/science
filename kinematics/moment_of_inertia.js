@@ -80,9 +80,9 @@ class Cylinder extends Group {
 
 const cylinderRadius = 1
 const forceLocation = new Vector3(cylinderRadius, 0, 0);
-const forceArrow = new Arrow(
-    new Vector3().addVectors(forceLocation, new Vector3(0, 0, cylinderRadius * .5)),
-    new Vector3(0, 1, 0),{
+const forceArrow = new Arrow({
+        position: new Vector3().addVectors(forceLocation, new Vector3(0, 0, cylinderRadius * .5)),
+        axis: new Vector3(0, 1, 0),
         color: 0x00ffff,
         shaftWidth: 0.05,
         headWidth: 3,
