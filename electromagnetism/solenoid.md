@@ -1,6 +1,6 @@
 {% include breadcrumbs.html %}
 
-## Electric field around a [solenoiid](https://en.wikipedia.org/wiki/Solenoid)
+## Electric field around a [solenoid](https://en.wikipedia.org/wiki/Solenoid)
 <div class="header_line"><br/></div>
 
 [![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=solenoid.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/solenoid.js)&nbsp;&nbsp;
