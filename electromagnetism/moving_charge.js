@@ -122,7 +122,7 @@ const movingCharge = new Sphere({
     trailProperties: new TrailProperties({ makeTrail: true })
 });
 
-const capacitor = new Capacitor(scene);
+const capacitor = new Capacitor();
 scene.add(movingCharge, capacitor);
 capacitor.showField();
 
@@ -139,9 +139,6 @@ renderer.setAnimationLoop( () => {
         const force = field.clone().multiplyScalar(movingCharge.charge);
         movingCharge.step(force, dt);
     }
-});
-
-canvas.addEventListener("click", () => {
 });
 
 function reset() {
