@@ -49,27 +49,27 @@ class Lattice extends Group {
         this._atoms = [];
         this._bonds = [];
 
-        this.#createLattice(parent, nrows + 2);
-        this.#determineNeighbors(parent);
+        this.#createLattice(nrows + 2);
+        this.#determineNeighbors();
     }
 
-    #createAtom(parent, x, y, z, half) {
+    #createAtom(x, y, z, half) {
         const visible =
             Math.abs(x) !== half &&
             Math.abs(y) !== half &&
             Math.abs(z) !== half;
 
         const atom = new Atom(x, y, z, visible);
-        parent.add(atom);
+        this.add(atom);
         this._atoms.push({atom: atom, force: new Vector3(0, 0, 0)});
     }
 
-    #createLattice(parent, nrows) {
+    #createLattice(nrows) {
         const half = (nrows - 1) / 2;
         for (let z = -half; z < half; z++)
             for (let y = -half; y < half; y++)
                 for (let x = -half; x < half; x++)
-                    this.#createAtom(parent, x, y, z, half);
+                    this.#createAtom(x, y, z, half);
     }
 
     #isNeighbor(atom, other) {
@@ -82,7 +82,7 @@ class Lattice extends Group {
             delta.equals(new Vector3(0, 0, -1));
     }
 
-    #createBond(parent, atom, other) {
+    #createBond(atom, other) {
         const bond = new Bond(atom, other, {
             k: 1000,
             color: "white",
@@ -92,16 +92,16 @@ class Lattice extends Group {
             thickness: 0.1 * 0.05 // TODO atomA.ball._sphere.radius * 0.5
         });
         this._bonds.push(bond);
-        parent.add(bond);
+        this.add(bond);
     }
 
-    #determineNeighbors(parent) {
+    #determineNeighbors() {
         for (const atomData of this._atoms)
             for (const other of this._atoms)
                 if (this.#isNeighbor(atomData.atom, other.atom)) {
                     atomData.atom.appendNeighbor(other.atom);
                     if (atomData.atom.visible && other.atom.visible)
-                        this.#createBond(parent, atomData.atom, other.atom);
+                        this.#createBond(atomData.atom, other.atom);
                 }
     }
 
