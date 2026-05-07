@@ -35,7 +35,9 @@ class InfiniteWellWave extends Group {
         const dx = L / numPoints;
         for (let i = 0; i < numPoints; i++) {
             const x = i * dx;
-            const arrow = new Arrow(new Vector3(x, 0, 0), new Vector3(0, 1, 0), {
+            const arrow = new Arrow({
+                position: new Vector3(x, 0, 0),
+                axis: new Vector3(0, 1, 0),
                 color: 0xff0000,
                 shaftWidth: 0.05
             });
@@ -86,12 +88,12 @@ class InfiniteWellWave extends Group {
     updateValueFor(index, t) {
         const arrow = this._arrows[index];
         const {real, imag} = this._computePsiAt(arrow.position.x, t);
-        arrow.updateAxis(new Vector3(0, imag * this._amplitude, real * this._amplitude));
+        arrow.axis = new Vector3(0, imag * this._amplitude, real * this._amplitude);
         this._values[index] = {real: real, imag: imag};
 
         const phase = Math.atan2(imag, real);
         const hue = 1 - ((phase + Math.PI) / (2 * Math.PI));
-        arrow.updateColor(new Color().setHSL(hue, 1.0, 0.5));
+        arrow.color = new Color().setHSL(hue, 1.0, 0.5);
     }
 
     update(t) {

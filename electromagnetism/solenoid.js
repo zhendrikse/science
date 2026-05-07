@@ -137,7 +137,7 @@ const arrowField = new ArrowField(
     magneticField,
     {
         scale: SCALE,
-        arrowScale: 1,
+        arrowScale: 3,
         round: false
     }
 );

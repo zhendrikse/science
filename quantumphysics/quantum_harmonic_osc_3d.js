@@ -47,10 +47,9 @@ class HarmonicOscillatorWave extends Group {
             const x = -L / 2 + i * dx;
             this._xValues.push(x);
 
-            const arrow = new Arrow(
-                new Vector3(x, 0, 0),
-                new Vector3(0, 1, 0),
-                {
+            const arrow = new Arrow({
+                    position: new Vector3(x, 0, 0),
+                    axis: new Vector3(0, 1, 0),
                     color: 0xff0000,
                     shaftWidth: 0.05
                 }
@@ -138,11 +137,11 @@ class HarmonicOscillatorWave extends Group {
             const imag = temp[i].imag / norm;
 
             const arrow = this._arrows[i];
-            arrow.updateAxis(new Vector3(0, imag * this._amplitude, real * this._amplitude));
+            arrow.axis = new Vector3(0, imag * this._amplitude, real * this._amplitude);
 
             const phase = Math.atan2(imag, real);
             const hue = 1 - ((phase + Math.PI)/(2*Math.PI));
-            arrow.updateColor(new Color().setHSL(hue,1,0.5));
+            arrow.color = new Color().setHSL(hue,1,0.5);
         }
 
         // expectation value <x>

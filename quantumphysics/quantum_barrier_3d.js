@@ -93,10 +93,9 @@ class FreeWavePacket extends Group {
     _buildArrows(L) {
         for (let i = 0; i < this._N; i++) {
             const x = -L / 2 + i * this._dx;
-            const arrow = new Arrow(
-                new Vector3(x, 0, 0),
-                new Vector3(0, .01, 0),
-                {
+            const arrow = new Arrow({
+                    position: new Vector3(x, 0, 0),
+                    axis: new Vector3(0, .01, 0),
                     color: 0xff0000,
                     shaftWidth: 0.05
                 }
@@ -145,11 +144,11 @@ class FreeWavePacket extends Group {
         const direction = new Vector3(0, imag, real);
         const length = direction.length();
         direction.normalize();
-        this._arrows[index].updateAxis(direction.multiplyScalar(length * this._arrowScale));
+        this._arrows[index].aAxis = direction.multiplyScalar(length * this._arrowScale);
 
         const phase = Math.atan2(imag, real);
         const hue = 1 - ((phase + Math.PI) / (2 * Math.PI));
-        this._arrows[index].updateColor(new Color().setHSL(hue, 1.0, 0.5));
+        this._arrows[index].color = new Color().setHSL(hue, 1.0, 0.5);
 
         return real * real + imag * imag;
     }

@@ -72,7 +72,7 @@ export class HarmonicOscillator extends Group {
             castShadow: true
         });
         this._springs.push({ spring, i, j });
-        this.add(this._spring);
+        this.add(spring);
         return this;
     }
 
@@ -90,8 +90,8 @@ export class HarmonicOscillator extends Group {
             const axis = m2.position.clone().sub(m1.position);
             const direction = axis.clone().normalize();
 
-            spring.moveTo(m1.position);
-            spring.updateAxis(axis);
+            spring.physicsPosition = m1.position;
+            spring.axis = axis;
 
             const relativeVelocity = m2.velocity.clone().sub(m1.velocity);
             const dampingForce = relativeVelocity

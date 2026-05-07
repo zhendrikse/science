@@ -91,8 +91,8 @@ class PlaneWave extends Group {
 
         const y = -Math.sin(phase) * this._amplitude;
         const z = -Math.cos(phase) * this._amplitude;
-        arrow.updateAxis(new Vector3(arrow.axis.x, y, z));
-        arrow.updateColor(new Color().setHSL(1.0 - cphase / (2 * Math.PI), 1.0, 0.5));
+        arrow.axis = new Vector3(arrow.axis.x, y, z);
+        arrow.color = new Color().setHSL(1.0 - cphase / (2 * Math.PI), 1.0, 0.5);
     }
 
     update(t) {

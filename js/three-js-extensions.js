@@ -1170,26 +1170,39 @@ export class ArrowField extends Group {
     #magnitudeToColor(magnitude, scalarRange) {
         if (scalarRange.to <= scalarRange.from) return new Color(0x00ffff);
 
-        const t = MathUtils.clamp(scalarRange.scaleValue(magnitude), 0, 1);
+        const t = MathUtils.clamp(scalarRange.scaleValue(magnitude) * 40, 0, 1);
         const hue = (1 - t) * 0.66; // Hue: 0.66 (blue) → 0.0 (red)
 
         return new Color().setHSL(hue, 1.0, 0.5);
     }
 
-    #scalarField() {
+    #rawScalarField() {
         return this._positions.map(position => {
-            let length = 0;
             switch (this._colorMode) {
                 case ArrowField.ColorMode.DIVERGENCE:
-                    length = this._vectorField.divergence(position);
-                    break;
+                    return this._vectorField.divergence(position);
+
                 case ArrowField.ColorMode.CURL:
-                    length = this._vectorField.curlMagnitude(position);
-                    break;
+                    return this._vectorField.curlMagnitude(position);
+
                 default:
-                    length = this._vectorField.sample(position).length();
+                    return this._vectorField.sample(position).length();
             }
-            return 2 * length / (length + 1 / this._arrowScale);
+        });
+    }
+
+    #displayScalarField(rawScalars) {
+        const max = Math.max(...rawScalars.map(v => Math.abs(v)));
+        if (max < 1e-12)
+            return rawScalars.map(() => 0);
+
+        const minArrow = 0.15;
+        const maxArrow = 1.0;
+        const gamma = 0.5;
+
+        return rawScalars.map(value => {
+            const normalized = Math.abs(value) / max;
+            return minArrow + Math.pow(normalized, gamma) * (maxArrow - minArrow);
         });
     }
 
@@ -1285,8 +1298,10 @@ export class ArrowField extends Group {
     updateFieldWith(newVectorField) {
         this._vectorField = newVectorField;
 
-        const scalars = this.#scalarField();
-        const scalarRange = new Interval(Math.min(...scalars), Math.max(...scalars));
+        const rawScalars = this.#rawScalarField();
+        const displayScalars = this.#displayScalarField(rawScalars);
+        const scalarRange = new Interval(Math.min(...rawScalars), Math.max(...rawScalars));
+
         if (this._colorMode === ArrowField.ColorMode.DIVERGENCE) {
             const maxAbs = Math.max(
                 Math.abs(scalarRange.from),
@@ -1300,9 +1315,9 @@ export class ArrowField extends Group {
             this._tmpAxis
                 .copy(newVectorField.sample(position))
                 .normalize()
-                .multiplyScalar(scalars[index]);
+                .multiplyScalar(displayScalars[index] * this._arrowScale);
 
-            this.#updateArrowInstance(index, position, this._tmpAxis, scalars, scalarRange);
+            this.#updateArrowInstance(index, position, this._tmpAxis, displayScalars, scalarRange);
         });
 
         this._shaftMesh.instanceMatrix.needsUpdate = true;

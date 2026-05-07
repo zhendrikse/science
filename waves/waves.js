@@ -101,8 +101,8 @@ class TransverseWave extends Group {
 
                 // spring update
                 const anchor = new Vector3(x, y > 0 ? -0.05 : 0.05, 0);
-                spring.moveTo(anchor);
-                spring.updateAxis(bead.position.clone().sub(anchor));
+                spring.physicsPosition = anchor;
+                spring.axis = bead.position.clone().sub(anchor);
                 spring.visible = this._springsVisible;
             }
         }
