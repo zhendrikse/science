@@ -11,8 +11,6 @@
 - [`electromagnetic_wave_quiver.py` source code](electromagnetic_wave_quiver.py)
 - [`faradays_law.py` source code](faradays_law.py)
 - [`helical_motion.py` source code](helical_motion.py)
-- [`moving_charge.py` source code](moving_charge.py)
 - [`proton_in_magnetic_field.py` source code](proton_in_magnetic_field.py)
-- [`solenoid.py` source code](solenoid.py)
 
 

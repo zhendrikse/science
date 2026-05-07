@@ -71,8 +71,6 @@ export class DipoleField extends VectorField {
 }
 
 const dipole = new Dipole(1e-14);
-worldGroup.add(dipole);
-
 const dipoleField = new DipoleField(dipole);
 dipoleField.fieldStrength = Number(fieldStrength.value);
 const arrowField = new ArrowField(
@@ -87,7 +85,7 @@ const arrowField = new ArrowField(
     }
 );
 
-worldGroup.add(arrowField);
+worldGroup.add(arrowField, dipole);
 
 let theta = Math.PI / 2;
 let phi = 0;
