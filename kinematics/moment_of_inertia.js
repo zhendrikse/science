@@ -104,5 +104,5 @@ renderer.setAnimationLoop(() => {
     cylinderGroup.update(torque, dt);
     t += dt;
 
-    forceArrow.updateAxis(force(t));
+    forceArrow.axis = force(t);
 });

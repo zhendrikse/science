@@ -65,8 +65,8 @@ class Bird {
     startle = () => this._velocity = new THREE.Vector3().random().multiplyScalar(2 * speed);
 
     render() {
-        this._bird.moveTo(this.position());
-        this._bird.updateAxis(this.velocity().normalize().multiplyScalar(size));
+        this._bird.position = this.position();
+        this._bird.axis = this.velocity().normalize().multiplyScalar(size);
     }
 
     positionVectorTo = (other) => this._bird.positionVectorTo(other._bird);

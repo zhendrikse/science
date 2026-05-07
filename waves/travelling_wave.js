@@ -88,7 +88,6 @@ class String1D extends Group {
     #createBonds(count) {
         for (let i = 0; i < count - 1; i++)
             this._bonds.push(new Bond(
-                this,
                 this._balls[i],
                 this._balls[i + 1],
                 {
@@ -98,6 +97,7 @@ class String1D extends Group {
                     type: Bond.Type.CYLINDER
                 })
             );
+        this._bonds.forEach((bond) => this.add(bond));
     }
 
     #driveFirstBall(t) {

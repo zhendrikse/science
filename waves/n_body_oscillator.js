@@ -64,13 +64,15 @@ export class HarmonicOscillator extends Group {
         const p2 = this._masses[j].position;
 
         const axis = p2.clone().sub(p1);
-        const spring = new Spring(this, p1.clone(), axis, {
+        const spring = new Spring({
+            position: p1.clone(),
+            axis: axis,
             k: k,
             color: springColor,
             castShadow: true
         });
         this._springs.push({ spring, i, j });
-
+        this.add(this._spring);
         return this;
     }
 

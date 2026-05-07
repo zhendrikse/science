@@ -944,7 +944,8 @@ export class Sphere extends Mesh {
         this.position.copy(scaledPosition);
         this._trail?.update(scaledPosition);
     }
-    accelerateTo(newVelocity) { this._body.velocity.copy(newVelocity); }
+    set velocity(newVelocity) { this._body.velocity.copy(newVelocity); }
+    set charge(newCharge) { this._body.charge = newCharge; }
 
     fieldAt(point) { return this._body.fieldAt(point); }
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
@@ -954,10 +955,13 @@ export class Sphere extends Mesh {
 }
 
 export class Cylinder extends Mesh {
-    constructor(group, position = new Vector3(0, 0, 0), axis = new Vector3(0, 1, 0), {
+    constructor({
+        position = new Vector3(0, 0, 0),
+        axis = new Vector3(0, 1, 0),
         radius = 1,
         scale = 1,
-        color = new Color(0xffff00)
+        color = new Color(0xffff00),
+        opacity = 1
     } = {}) {
         const height = axis.length(),
             radialSegments = 24,
@@ -965,7 +969,7 @@ export class Cylinder extends Mesh {
             openEnded = false;
         const material = new MeshStandardMaterial({
             color: color,
-            opacity: 1,
+            opacity: opacity,
             transparent: true,
             wireframe: false,
             metalness: 0.7,
@@ -985,7 +989,6 @@ export class Cylinder extends Mesh {
         this._restLength = axis.length();
         this._axis = axis;
         this.position.copy(position);
-        group.add(this);
         this.updateAxis(axis);
     }
 
@@ -1011,22 +1014,22 @@ export class Cylinder extends Mesh {
 }
 
 export class Arrow extends Group {
-    constructor(position, axis, {
+    constructor({
+        position = new Vector3(0, 0, 0),
+        axis = new Vector3(0, 1, 0),
         color = 0xff0000,
         shaftWidth = 0.1, // times the length of the axis
         headWidth = 2,    // times the width of the shaft
         headLength = 5,   // times the width of the shaft
         opacity = 1,
         round = false,
-        visible = true,
-        makeTrail = false
+        visible = true
     } = {}) {
         super();
 
         this._headLength = headLength;
         this._shaftWidth = shaftWidth;
         this._headWidth = headWidth;
-        this._axis = axis;
 
         const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
         const headGeometry = round ? headGeometryRound : headGeometrySquare;
@@ -1043,26 +1046,14 @@ export class Arrow extends Group {
 
         this.add(this._shaft, this._head);
         this.position.copy(position);
-        this.updateAxis(axis);
         this.visible = visible;
-        this._trail = null;
-        if (makeTrail) this.enableTrail();
+
+        // Make sure the axis setter is called, so that proper initialization takes place
+        this._axis = new Vector3(0, 0, 0);
+        this.axis = axis;
     }
-
-    get axis() { return this._axis.clone(); }
-
-
-    enableTrail({ maxPoints = 1000, color = 0xffff00, lineWidth = 1, trailStep = 10 } = {}) {
-        this._trail = new Trail(this);
-        this._trail.enable({ maxPoints, color, lineWidth, trailStep });
-    }
-
-    updateTrail(dt) { this._trail?.update(dt); }
-    disposeTrail() { this._trail?.dispose(); }
 
     dispose() {
-        this.disposeTrail();
-
         // DO NOT dispose shared geometries
         if (this._shaft) {
             if (this._shaft.material)
@@ -1080,7 +1071,8 @@ export class Arrow extends Group {
         this._axis = null;
     }
 
-    updateAxis(newAxis) {
+    get axis() { return this._axis; }
+    set axis(newAxis) {
         this._axis.copy(newAxis);
         const totalLength = newAxis.length();
         if (totalLength < 1e-6)
@@ -1102,13 +1094,11 @@ export class Arrow extends Group {
         this._head.position.y = shaftLength + headLength * 0.5;
     }
 
-    updateOpacity = (opacity) => {
+    set opacity(opacity) {
         this._shaft.material.opacity = opacity;
         this._head.material.opacity = opacity;
     }
-
-    updateColor = (color) => this._shaft.material.color = color;
-    moveTo(newPositionVector) { this.position.copy(newPositionVector); }
+    set color(color) { this._shaft.material.color = color; }
     positionVectorTo = (other) => other.position.clone().sub(this.position);
     distanceToSquared = (other) => this.position.distanceToSquared(other.position);
 }
@@ -1368,8 +1358,10 @@ class Helix extends Curve {
     }
 }
 
-export class Spring {
-    constructor(parent, position, axis, {
+export class Spring extends Group {
+    constructor({
+        position,
+        axis,
         k = 200,
         color = 0x00ffff,
         coils = 30,
@@ -1381,6 +1373,7 @@ export class Spring {
         visible = true,
         castShadow = false
     } = {}) {
+        super();
         this._longitudinalOscillation = longitudinalOscillation;
         this._radius = radius;
         this._curve = new Helix(position, axis, coils, radius, longitudinalOscillation ? 0.05 : 0);
@@ -1401,7 +1394,7 @@ export class Spring {
         });
         this._mesh = new Mesh(this._geometry, material);
         this._mesh.castShadow = castShadow;
-        parent.add(this._mesh);
+        this.add(this._mesh);
     }
 
     #regenerateTube() {
@@ -1414,14 +1407,6 @@ export class Spring {
     moveTo(newPosition) {
         this._position.copy(newPosition);
         this._curve.start.copy(newPosition);
-    }
-
-    updateAxis(newAxis) {
-        this._axis.copy(newAxis);
-        this._curve.updateAxis(this._axis);
-        this._longitudinalOscillation ?
-            this.#updateWithLongitudinal() :
-            this.#updateWithoutLongitudinal();
     }
 
     update(time) {
@@ -1445,13 +1430,19 @@ export class Spring {
     get axis() { return this._axis; }
     get k() { return this._k; }
     get force() { return this.axis.clone().normalize().multiplyScalar(-this._k * this.displacement); }
-
     get displacement() { return this._restLength - this.axis.length(); }
+    get visible() { this._mesh.material.visible; }
 
     set color(value) { this._mesh.material.color = value; }
     set visible(value) { this._mesh.material.visible = value; }
     set position(newPosition) { this.moveTo(newPosition); }
-    get visible() { this._mesh.material.visible; }
+    set axis(newAxis) {
+        this._axis.copy(newAxis);
+        this._curve.updateAxis(this._axis);
+        this._longitudinalOscillation ?
+            this.#updateWithLongitudinal() :
+            this.#updateWithoutLongitudinal();
+    }
 }
 
 class Particle {
@@ -2117,12 +2108,12 @@ export class Gas3D extends Gas {
     }
 }
 
-export class Bond {
+export class Bond extends Group {
     static Type = Object.freeze({
         SPRING: "spring",
         CYLINDER: "cylinder"
     });
-    constructor(parent, object1, object2, {
+    constructor(object1, object2, {
         scale = 1,
         color = new Color(0xface8d),
         coils = 15,
@@ -2131,6 +2122,7 @@ export class Bond {
         k_bond = 18600.0,
         type = Bond.Type.CYLINDER
     } = {}) {
+        super();
         this._object1 = object1;
         this._object2 = object2;
         this._scale = scale;
@@ -2140,7 +2132,9 @@ export class Bond {
         const geometry = new CylinderGeometry(radius * .5 * scale, radius * .5 * scale, 1);
         const material = new MeshStandardMaterial({ color: color });
         this._rod = new Mesh(geometry, material);
-        this._spring = new Spring(parent, new Vector3(0, 0, 0), new Vector3(0, 1, 0), {
+        this._spring = new Spring({
+            position: new Vector3(0, 0, 0),
+            axis: new Vector3(0, 1, 0),
             coils: coils,
             radius: radius * .5 * scale,
             thickness: thickness,
@@ -2148,7 +2142,7 @@ export class Bond {
             color: color
         });
         this._mesh = this._rod;
-        parent.add(this._mesh);
+        this.add(this._mesh, this._spring);
 
         this.changeBondType(type);
         this.update();
@@ -2203,8 +2197,9 @@ export class CarbonMonoxide extends Group {
             color: "blue",
             scale: scale
         });
-        this._bond = new Bond(this, this._oxygen, this._carbon,
+        this._bond = new Bond(this._oxygen, this._carbon,
             { scale: scale, radius: 1.25 * radius });
+        this.add(this._bond);
         this._restLength = 2.5 * radius;
     }
 
@@ -2441,8 +2436,9 @@ export class HarmonicOscillator extends Group {
         this.add(this._right, this._left);
 
         const axis = rightPos.clone().sub(leftPos);
-        this._spring = new Spring(this, leftPos, axis,
-            {
+        this._spring = new Spring({
+                position: leftPos,
+                axis: axis,
                 k: springConstant,
                 color: 0xffffff,
                 coils: 20,
@@ -2450,7 +2446,7 @@ export class HarmonicOscillator extends Group {
                 thickness: 0.05
             }
         );
-
+        this.add(this._spring);
         this._restLength = axis.length();
     }
 
@@ -2466,7 +2462,7 @@ export class HarmonicOscillator extends Group {
         this._left.step(force, dt);
 
         this._spring.moveTo(this._left.position);
-        this._spring.updateAxis(delta);
+        this._spring.axis = delta;
     }
 
     compress(amount) {
@@ -2476,10 +2472,10 @@ export class HarmonicOscillator extends Group {
 
     reset() {
         const halfLength = this._restLength / 2;
-        this._left.moveTo(this._center.clone().add(new Vector3(-halfLength, 0, 0)));
-        this._right.moveTo(this._center.clone().add(new Vector3(halfLength, 0, 0)));
-        this._left.accelerateTo(new Vector3());
-        this._right.accelerateTo(new Vector3());
+        this._left.physicsPosition = this._center.clone().add(new Vector3(-halfLength, 0, 0));
+        this._right.physicsPosition = this._center.clone().add(new Vector3(halfLength, 0, 0));
+        this._left.velocity = new Vector3();
+        this._right.velocity = new Vector3();
     }
 }
 
@@ -2501,7 +2497,9 @@ export class MassSpringSystem extends Group {
         this._suspensionPoint = suspensionPoint;
         this._gravity = gravity;
         this._horizontalK = horizontalK;
-        this._spring = new Spring(this, suspensionPoint, axis, {
+        this._spring = new Spring({
+            position: suspensionPoint,
+            axis: axis,
             radius: 1,
             k: springConstant,
             coils: coils,
@@ -2516,8 +2514,8 @@ export class MassSpringSystem extends Group {
             color: massColor,
             makeTrail: makeTrail
         });
-        this.add(this._mass);
-        this._spring.updateAxis(this._mass.position.clone().sub(suspensionPoint));
+        this.add(this._mass, this._spring);
+        this._spring.axis = this._mass.position.clone().sub(suspensionPoint);
         this._spring.update(0);
     }
 
@@ -2558,14 +2556,13 @@ export class MassSpringSystem extends Group {
 
     moveMassTo(newPosition) {
         this._mass.physicsPosition = newPosition;
-        this._mass.accelerateTo(new Vector3(0, 0, 0));
-        this._spring.updateAxis(this._mass.position.clone().sub(this._suspensionPoint));
+        this._mass.velocity = new Vector3(0, 0, 0);
+        this._spring.axis = this._mass.position.clone().sub(this._suspensionPoint);
     }
 
     step(dt, integrator, damping = 0, time = 0) {
         this._mass.step(this.computeTotalForce(this._mass.body, damping));
-
-        this._spring.updateAxis(this._mass.position.clone().sub(this._suspensionPoint));
+        this._spring.axis = this._mass.position.clone().sub(this._suspensionPoint);
         this._spring.update(time);
     }
 

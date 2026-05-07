@@ -63,9 +63,13 @@ class PlaneWave extends Group {
         super();
         this._arrows = [];
         for (let x = -10; x < 10; x += 0.3)
-            this._arrows.push(
-                new Arrow(new Vector3(x, 0, 0), new Vector3(0, amplitude, 0),
-                    {color: 0xff0000, shaftWidth: 0.03, headLength: 6}));
+            this._arrows.push(new Arrow({
+                position: new Vector3(x, 0, 0),
+                axis: new Vector3(0, amplitude, 0),
+                color: 0xff0000,
+                shaftWidth: 0.03,
+                headLength: 6
+            }));
         this._amplitude = amplitude;
         this._k = k;
         this._omega = omega;

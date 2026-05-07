@@ -126,9 +126,9 @@ function animate(time) {
     gas.update();
 
     shell.scale.setScalar(R / sphereRadius);
-    expansionX.updateAxis(new Vector3(R - sphereRadius, 0, 0));
-    expansionY.updateAxis(new Vector3(0, R - sphereRadius, 0));
-    expansionZ.updateAxis(new Vector3(0, 0, R - sphereRadius));
+    expansionX.axis = new Vector3(R - sphereRadius, 0, 0);
+    expansionY.axis = new Vector3(0, R - sphereRadius, 0);
+    expansionZ.axis = new Vector3(0, 0, R - sphereRadius);
 
     P += gas.pressure(R);
     KE += gas.averageKE();

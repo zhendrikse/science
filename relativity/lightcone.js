@@ -81,7 +81,8 @@ class LightCone extends Group {
 
 class Photon {
     constructor(parent) {
-        this._photon = new Arrow(new Vector3(0, 0, 0), new Vector3(1, 1, 0), {
+        this._photon = new Arrow({
+            axis: new Vector3(1, 1, 0),
             color: 0xffff00,
             shaftWidth: .01,
             headLength: 5,
@@ -91,7 +92,7 @@ class Photon {
     }
 
     render(time) {
-        this._photon.updateAxis(new Vector3(1, 1, 0).multiplyScalar(time * 2.25 * Math.sqrt(2)));
+        this._photon.axis = new Vector3(1, 1, 0).multiplyScalar(time * 2.25 * Math.sqrt(2));
     }
 }
 
@@ -102,17 +103,19 @@ worldGroup.add( lightcone );
 const boostedAxes = new Group();
 worldGroup.add(boostedAxes);
 
-const xPrimeAxis = new Arrow(
-    new Vector3(0, 0, 0),
-    new Vector3(1, 0, 0),  // start richting
-    { color: 0x00ffff, shaftWidth: 0.02 }
-);
+const xPrimeAxis = new Arrow({
+    position: new Vector3(0, 0, 0),
+    axis: new Vector3(1, 0, 0),
+    color: 0x00ffff,
+    shaftWidth: 0.02
+    });
 
-const tPrimeAxis = new Arrow(
-    new Vector3(0, 0, 0),
-    new Vector3(0, 1, 0),
-    { color: 0xff8800, shaftWidth: 0.02 }
-);
+const tPrimeAxis = new Arrow({
+    position: new Vector3(0, 0, 0),
+    axis: new Vector3(1, 0, 0),
+    color: 0xff8800,
+    shaftWidth: 0.02
+    });
 
 boostedAxes.add(xPrimeAxis, tPrimeAxis);
 
@@ -131,8 +134,8 @@ function updateBoostedAxes() {
         .normalize()
         .multiplyScalar(scale);
 
-    tPrimeAxis.updateAxis(tDir);
-    xPrimeAxis.updateAxis(xDir);
+    tPrimeAxis.axis = tDir;
+    xPrimeAxis.axis = xDir;
 }
 
 const boundingBox = new Box3();

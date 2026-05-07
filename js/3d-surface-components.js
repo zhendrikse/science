@@ -1085,7 +1085,13 @@ export class SurfaceController {
             this._surface.updateOpacity(surfaceParams.opacity);
         }
     }
-    rotateBy = (value) => this._surface.rotation.y += value;
+    rotateBy = (value) => {
+        this._surface.rotation.y += value;
+        if (this._contours)
+            this._contours.rotation.y += value;
+        if (this._normals)
+            this._normals.rotation.y += value;
+    }
     resampleWith = (resolution) => this._surface.resampleWith(resolution);
 }
 
@@ -1155,14 +1161,14 @@ export class TangentFrameView extends Group {
         this._scaleFactor = tangentFrameParameters.scale;
 
         this._axes = { // Arrows in (u, v) directions + normal vector
-            uArrow: new Arrow(new Vector3(), new Vector3(), { color: 0xff0000 }),
-            vArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00ff00 }),
-            normalArrow: new Arrow(new Vector3(), new Vector3(), { color: 0x00aaff })
+            uArrow: new Arrow({ position: new Vector3(), axis: new Vector3(), color: 0xff0000 }),
+            vArrow: new Arrow({ position: new Vector3(), axis: new Vector3(), color: 0x00ff00 }),
+            normalArrow: new Arrow({ position: new Vector3(), axis: new Vector3(), color: 0x00aaff })
         }
 
         this._principals = { // Principal direction vectors
-            k1Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xffaa00 }),
-            k2Arrow: new Arrow(new Vector3(), new Vector3(), { color: 0xaa00ff })
+            k1Arrow: new Arrow({ position: new Vector3(), axis: new Vector3(), color: 0xffaa00 }),
+            k2Arrow: new Arrow({ position: new Vector3(), axis: new Vector3(), color: 0xaa00ff })
         }
 
         this._tangentPlane = new Mesh(
@@ -1192,20 +1198,20 @@ export class TangentFrameView extends Group {
         const frame = this._diffGeometry.principalFrame(tangentFrameParameters.u, tangentFrameParameters.v);
         if (!frame) return;
 
-        this._axes.uArrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
-        this._axes.uArrow.moveTo(frame.position);
+        this._axes.uArrow.axis = frame.d1.clone().multiplyScalar(this._scaleFactor * .5);
+        this._axes.uArrow.position = frame.position;
 
-        this._axes.vArrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
-        this._axes.vArrow.moveTo(frame.position);
+        this._axes.vArrow.axis = frame.d2.clone().multiplyScalar(this._scaleFactor * .5);
+        this._axes.vArrow.position = frame.position;
 
-        this._axes.normalArrow.updateAxis(frame.normal.clone().multiplyScalar(this._scaleFactor * .5));
-        this._axes.normalArrow.moveTo(frame.position);
+        this._axes.normalArrow.axis = frame.normal.clone().multiplyScalar(this._scaleFactor * .5);
+        this._axes.normalArrow.postion = frame.position;
 
-        this._principals.k1Arrow.updateAxis(frame.d1.clone().multiplyScalar(this._scaleFactor * .5));
-        this._principals.k1Arrow.moveTo(frame.position);
+        this._principals.k1Arrow.axis =frame.d1.clone().multiplyScalar(this._scaleFactor * .5);
+        this._principals.k1Arrow.position = frame.position;
 
-        this._principals.k2Arrow.updateAxis(frame.d2.clone().multiplyScalar(this._scaleFactor * .5));
-        this._principals.k2Arrow.moveTo(frame.position);
+        this._principals.k2Arrow.axis = frame.d2.clone().multiplyScalar(this._scaleFactor * .5);
+        this._principals.k2Arrow.position = frame.position;
 
         this._tangentPlane.position.copy(frame.position);
         this._tangentPlane.lookAt(frame.position.clone().add(frame.normal));
@@ -1216,7 +1222,7 @@ export class TangentFrameView extends Group {
     }
 
     dispose() {
-        this.diffGeometry = null;
+        this._diffGeometry = null;
 
         Object.values(this._axes).forEach(arrow => arrow?.dispose());
         Object.values(this._principals).forEach(arrow => arrow?.dispose());

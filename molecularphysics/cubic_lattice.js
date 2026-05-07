@@ -1,4 +1,4 @@
-import { Scene, Color, Vector3, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight }  from "three";
+import { Scene, Group, Color, Vector3, PerspectiveCamera, WebGLRenderer, DirectionalLight, AmbientLight }  from "three";
 import { Sphere, Bond } from "../js/three-js-extensions.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
@@ -43,8 +43,9 @@ class Atom extends Sphere {
     get neighbors() { return this._neighbors; }
 }
 
-class Lattice {
-    constructor(parent, nrows=3) {
+class Lattice extends Group {
+    constructor(nrows=3) {
+        super();
         this._atoms = [];
         this._bonds = [];
 
@@ -82,14 +83,16 @@ class Lattice {
     }
 
     #createBond(parent, atom, other) {
-        this._bonds.push(new Bond(parent, atom, other, {
+        const bond = new Bond(atom, other, {
             k: 1000,
             color: "white",
             radius: 0.175,
             coils: 25,
             type: Bond.Type.CYLINDER,
             thickness: 0.1 * 0.05 // TODO atomA.ball._sphere.radius * 0.5
-        }));
+        });
+        this._bonds.push(bond);
+        parent.add(bond);
     }
 
     #determineNeighbors(parent) {
@@ -152,7 +155,8 @@ bondTypeButton.onclick = () => {
     lattice.changeBondType(bondType);
 }
 
-const lattice = new Lattice(scene, 3);
+const lattice = new Lattice(3);
+scene.add(lattice);
 lattice.moveAtom(3 * 3 + 1, new Vector3(0, 0, 0.1));
 const dt = 0.005;
 function animationLoop(time) {

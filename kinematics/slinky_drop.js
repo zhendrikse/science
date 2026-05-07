@@ -30,7 +30,7 @@ canvas.addEventListener("click", () => {
         ball2.reset();
         ball3.reset();
         spring.position = ball1.position;
-        spring.updateAxis(ball1.positionVectorTo(ball2));
+        spring.axis = ball1.positionVectorTo(ball2);
         t = 0;
         running = false;
     }
@@ -72,23 +72,29 @@ const ball3 = new Sphere({
 });
 experimentGroup.add(ball1, ball2, ball3);
 
-// Spring
-const spring = new Spring(experimentGroup, ball1.position, ball1.positionVectorTo(ball2), {
+const spring = new Spring({
+    position: ball1.position,
+    axis: ball1.positionVectorTo(ball2),
     k,
     coils: 15,
     radius: 0.2,
     thickness: 0.025
 });
 
-// Stick
-const stick = new Cylinder(experimentGroup, ball2.position.clone().sub(new Vector3(L0, 2.75 * L0, 0)), new Vector3(0, 3 * L0, 0), {
+// Sticks
+const stick = new Cylinder({
+    position: ball2.position.clone().sub(new Vector3(L0, 2.75 * L0, 0)),
+    axis: new Vector3(0, 3 * L0, 0),
     radius: L0/15,
     color: 0x00ffff
 });
-const stick2 = new Cylinder(experimentGroup, ball2.position.clone().sub(new Vector3(L0, 0, 0)), new Vector3(L0/2, 0, 0), {
+const stick2 = new Cylinder({
+    position: ball2.position.clone().sub(new Vector3(L0, 0, 0)),
+    axis: new Vector3(L0/2, 0, 0),
     radius: L0/15,
     color: 0x00ffff
 });
+experimentGroup.add(stick, stick2, spring);
 experimentGroup.position.y = 2 * L0;
 experimentGroup.position.x -= 1.5 * L0;
 
@@ -106,7 +112,7 @@ function iterate(dt) {
     ball3.step(g.clone().multiplyScalar(ball3.mass), dt);
 
     spring.position = ball1.position;
-    spring.updateAxis(ball1.positionVectorTo(ball2));
+    spring.axis = ball1.positionVectorTo(ball2);
 }
 
 let t = 0;

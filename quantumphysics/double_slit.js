@@ -87,8 +87,19 @@ class InterferencePattern extends Group {
 
     _addSlits() {
         const axisVec = new Vector3(0,0.5,0); // cylinder axis in XY-plane
-        this._slit1Cyl = new Cylinder(this, this._slit1.clone(), axisVec.clone(), { radius: 0.15, color: 0xffffff });
-        this._slit2Cyl = new Cylinder(this, this._slit2.clone(), axisVec.clone(), { radius: 0.15, color: 0xffffff });
+        this._slit1Cyl = new Cylinder({
+            position: this._slit1.clone(),
+            axis: axisVec.clone(),
+            radius: 0.15,
+            color: 0xffffff
+        });
+        this._slit2Cyl = new Cylinder({
+            position: this._slit2.clone(),
+            axis: axisVec.clone(),
+            radius: 0.15,
+            color: 0xffffff
+        });
+        this.add(this._slit1Cyl, this._slit2Cyl);
     }
 
     #updatePixelAt(x, y, index) {

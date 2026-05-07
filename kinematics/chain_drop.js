@@ -80,9 +80,8 @@ class Chain extends Group {
     }
 
     #initBonds() {
-        for (let i = 0; i < this._balls.length - 1; i++) {
+        for (let i = 0; i < this._balls.length - 1; i++)
             this._bonds.push(new Bond(
-                this,
                 this._balls[i],
                 this._balls[i + 1],
                 {
@@ -93,7 +92,7 @@ class Chain extends Group {
                     type: Bond.Type.SPRING
                 }
             ));
-        }
+        this._bonds.forEach(bond => this.add(bond));
     }
 
     get ballRadius() { return this._length / 40; }

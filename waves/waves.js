@@ -72,12 +72,12 @@ class TransverseWave extends Group {
 
             this._beads.push(ball);
 
-            const spring = new Spring(this,
-                ball.position.clone(),
-                new Vector3(0, 0, 0),
-                { visible: false }
-            );
-
+            const spring = new Spring({
+                position: ball.position.clone(),
+                axis: new Vector3(0, 0, 0),
+                visible: false
+            });
+            this.add(spring);
             this._springs.push(spring);
         }
 
