@@ -960,60 +960,40 @@ export class Sphere extends Mesh {
 
 export class Cylinder extends Mesh {
     constructor({
-        position = new Vector3(0, 0, 0),
-        axis = new Vector3(0, 1, 0),
-        radius = 1,
-        scale = 1,
-        color = new Color(0xffff00),
-        opacity = 1
-    } = {}) {
-        const height = axis.length(),
-            radialSegments = 24,
-            heightSegments = 1,
-            openEnded = false;
+                    position = new Vector3(),
+                    axis = new Vector3(0, 1, 0),
+                    radius = 1,
+                    color = 0xffff00,
+                    opacity = 1
+                } = {}) {
+
+        const geometry = new CylinderGeometry(radius, radius, 1, 24);
         const material = new MeshStandardMaterial({
-            color: color,
-            opacity: opacity,
-            transparent: true,
-            wireframe: false,
-            metalness: 0.7,
-            roughness: 0.2
+            color,
+            opacity,
+            transparent: opacity < 1
         });
-        super(
-            new CylinderGeometry(
-                radius * scale,
-                radius * scale,
-                height,
-                radialSegments,
-                heightSegments,
-                openEnded
-            ), material
-        );
-        this._scale = scale;
-        this._restLength = axis.length();
-        this._axis = axis;
+        super(geometry, material);
+
+        this._axis = new Vector3();
         this.position.copy(position);
-        this.updateAxis(axis);
+        this.axis = axis;
     }
 
     get axis() { return this._axis; }
-    get displacement() { return this._restLength - this.axis.length(); }
-
-    moveTo(newPosition) {
-        this.position.copy(newPosition);
-        this.updateAxis(this._axis);
-    }
-
-    updateAxis(newAxis) {
+    set axis(newAxis) {
         this._axis.copy(newAxis);
+        const length = newAxis.length();
 
-        const length = this._axis.length();
-        const direction = this._axis.clone().normalize();
-        this.scale.set(1, length / this._restLength, 1);
+        if (length < 1e-9)
+            return;
+
+        this.scale.set(1, length, 1);
+        const direction = newAxis.clone().normalize();
         this.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
 
-        const midpoint = this.position.clone().addScaledVector(direction, length / 2);
-        this.position.copy(midpoint);
+        // Three.js cylinders are centered around the origin so have to be repositioned by half a length
+        this.position.addVectors(this.position.clone(), direction.clone().multiplyScalar(length / 2));
     }
 }
 
