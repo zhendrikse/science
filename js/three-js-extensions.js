@@ -946,12 +946,16 @@ export class Sphere extends Mesh {
     }
     set velocity(newVelocity) { this._body.velocity.copy(newVelocity); }
     set charge(newCharge) { this._body.charge = newCharge; }
+    set radius(newRadius) { this._radius = newRadius; }
+    set color(newColor) { return this.material.color.set(newColor); }
 
     fieldAt(point) { return this._body.fieldAt(point); }
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
+    distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
     distanceTo(other) { return this.positionVectorTo(other).length() }
     physicsPositionVectorTo(other) { return other.physicsPosition.clone().sub(this.physicsPosition); }
     physicsDistanceTo(other) { return this.physicsPositionVectorTo(other).length(); }
+    physicsDistanceToSquared(other) { return this.physicsPositionVectorTo(other).dot(this.physicsPositionVectorTo(other)); }
 }
 
 export class Cylinder extends Mesh {
