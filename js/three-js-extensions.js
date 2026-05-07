@@ -1205,7 +1205,7 @@ export class ArrowField extends Group {
                 default:
                     length = this._vectorField.sample(position).length();
             }
-            return length / (length + 1 / this._arrowScale);
+            return 2 * length / (length + 1 / this._arrowScale);
         });
     }
 
