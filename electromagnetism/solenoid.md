@@ -9,6 +9,7 @@
 
 🎯 Electric field around a solenoid<br/>
 🧠 Inspired by [25-4.Bsolenoid](https://glowscript.org/#/user/yizhe/folder/Public/program/25-4.Bsolenoid)<br/>
+👉 Field vectors are rendered on a logarithmic scale<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Solenoid) is available as well, see [solenoid.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/solenoid.py)<br/>
 
 <canvas id="solenoidCanvas" class="applicationCanvas" style="aspect-ratio: 2/1;"></canvas>
