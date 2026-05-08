@@ -1,100 +1,81 @@
-import {Scene, PerspectiveCamera, DirectionalLight, WebGLRenderer, Vector3, Group } from "three";
-import {Sphere, Integrators, ThreeJsUtils, TrailProperties} from '../js/three-js-extensions.js';
-import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import {ThreeSim, Sphere, TrailProperties, Integrators, Body} from "../js/threesim.js";
+import { Vector3 } from "three";
 
-//const canvasContainer = document.getElementById("threeBodyWrapper");
 const canvas = document.getElementById("threeBodyCanvas");
 const overlay = document.getElementById("overlayText");
-let running = false;
-
-const G = 6.67e-11
-const astronomical_unit = 1.49e11
-const mass = 1e30
-const rA = 0.1 * astronomical_unit
-const rB = rA / 0.8
-const vA = Math.sqrt(G * 0.8 * mass * rA) / (rA + rB)
-const sphereRadius = 190e7;
-const scale = 1E-9;
-
-const scene = new Scene();
-const worldGroup = new Group();
-scene.add(worldGroup);
-
-const camera = new PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 200);
-camera.position.set(30, 30, 30);
-
-const controls = new OrbitControls( camera, canvas );
-const renderer = new WebGLRenderer({antialias: true, canvas: canvas, alpha: true});
-
-// Resizing for mobile devices
-ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
-window.addEventListener('resize', () => ThreeJsUtils.resizeRendererToCanvas(renderer, camera));
-window.addEventListener("click", () => {
-    if (!running) {
-        ThreeJsUtils.showOverlayMessage(overlay, "Started");
-        running = true;
-    }
-});
-
-const light = new DirectionalLight(0xffffff, 1);
-light.position.set(30, 30, 30);
-scene.add(light);
+const scale = 1e-9;
+const simulation = new ThreeSim({ canvas, overlay, scale });
 
 const subSteps = 50;
+const G = 6.67e-11;
+const astronomical_unit = 1.49e11;
+const mass = 1e30;
+
+const radiusA = 0.1 * astronomical_unit;
+const radiusB = radiusA / 0.8;
+const velocityA = Math.sqrt(G * 0.8 * mass * radiusA) / (radiusA + radiusB);
+
+const bodyA = new Body({
+    position: new Vector3(radiusA, 0, 0),
+    velocity: new Vector3(0, velocityA, 0),
+    mass
+});
+
+const bodyB = new Body({
+    position: new Vector3(-radiusB, 0, 0),
+    velocity: new Vector3(0, -velocityA / 0.8, 0),
+    mass: mass * 0.8
+});
+
+const bodyC = new Body({
+    position: new Vector3(0, 0, radiusA),
+    velocity: new Vector3(0, 0, 0),
+    mass: mass * 0.5
+});
+
+const trailProperties = new TrailProperties({ makeTrail: true, maxPoints: 500 })
+const sphereRadius = 1.9e9;
 const sphereA = new Sphere({
-    position: new Vector3(rA, 0, 0),
-    velocity: new Vector3(0, vA, 0),
+    body: bodyA,
     radius: sphereRadius,
-    mass: mass,
     color: "yellow",
-    scale: scale,
-    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 500, trailStep: subSteps}),
+    trailProperties
 });
 
 const sphereB = new Sphere({
-    position: new Vector3(-rB, 0, 0),
-    velocity: new Vector3(0, -vA / 0.8, 0),
+    body: bodyB,
     radius: sphereRadius,
-    mass: mass * 0.8,
     color: "cyan",
-    scale: scale,
-    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 500, trailStep: subSteps}),
+    trailProperties
 });
 
 const sphereC = new Sphere({
-    position: new Vector3(0, 0, rA),
-    velocity: new Vector3(0, 0, 0),
+    body: bodyC,
     radius: sphereRadius,
-    mass: mass * 0.5,
     color: "magenta",
-    scale: scale,
-    trailProperties: new TrailProperties({makeTrail: true, maxPoints: 500, trailStep: subSteps}),
+    trailProperties
 });
-worldGroup.add(sphereA, sphereB, sphereC);
+
+simulation.add(sphereA, sphereB, sphereC);
 
 function forceBetween(self, other) {
-    const radius = self.physicsPositionVectorTo(other);
-    const r = self.physicsDistanceTo(other);
+    const radius = self.positionVectorTo(other);
+    const r = self.distanceTo(other);
     return radius.multiplyScalar(G * self.mass * other.mass / (r * r * r));
 }
 
 function iterate(subSteps, dt) {
-    if(!running) return;
+    const force_BA = forceBetween(bodyA, bodyB);
+    const force_CB = forceBetween(bodyB, bodyC);
+    const force_AC = forceBetween(bodyC, bodyA);
 
-    const force_BA = forceBetween(sphereA, sphereB);
-    const force_CB = forceBetween(sphereB, sphereC);
-    const force_AC = forceBetween(sphereC, sphereA);
-
-    sphereA.step(force_BA.clone().sub(force_AC), dt / subSteps, Integrators.symplecticEulerStep);
-    sphereB.step(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.symplecticEulerStep);
-    sphereC.step(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.symplecticEulerStep);
+    bodyA.step(force_BA.clone().sub(force_AC), dt / subSteps, Integrators.symplecticEulerStep);
+    bodyB.step(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.symplecticEulerStep);
+    bodyC.step(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.symplecticEulerStep);
 }
 
 const dt = 5000;
-renderer.setAnimationLoop( (time) => {
+simulation.run(() => {
     for (let i = 0; i < subSteps; i++)
-       iterate(subSteps, dt);
-
-    renderer.render(scene, camera);
-    controls.update();
+        iterate(subSteps, dt);
 });
