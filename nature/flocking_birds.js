@@ -1,10 +1,7 @@
 import {Vector3, Color} from "three";
 import {Arrow, Body, ThreeSim} from '../js/threesim.js';
 
-console.clear( );
-
 const canvas = document.getElementById('birdsCanvas');
-const overlay = document.getElementById('overlayText');
 
 // Simulation parameters
 const speed = 6;  // initial horizontal speed
@@ -13,9 +10,8 @@ const threshold = (5 * size) ** 2
 const dt = 0.02;
 
 class Flock {
-    constructor(bird_count, simulation) {
+    constructor(bird_count) {
         this._birds = [];
-        this._arrows = [];
         this._bird_count = bird_count;
         this._random_weight = 5;
         this._center_weight = 0.1;
@@ -23,21 +19,11 @@ class Flock {
         this._avoid_weight = 0.5;
 
         const initialPhysicalFlockRadius= 3;
-        for (let i = 0; i < bird_count; i++) {
-            const position = new Vector3().random().multiplyScalar(initialPhysicalFlockRadius);
-            const velocity = new Vector3(speed, 0, 0).add(new Vector3().random().multiplyScalar(speed));
-            const birdBody = new Body({ position, velocity });
-
-            this._birds.push(birdBody);
-            this._arrows.push(new Arrow({
-                body: birdBody,
-                axis: velocity.clone().normalize().multiplyScalar(speed * .2),
-                round: true,
-                color: new Color(.5, 1, .5),
-                size: .2
+        for (let i = 0; i < bird_count; i++)
+            this._birds.push(new Body({
+                position: new Vector3().random().multiplyScalar(initialPhysicalFlockRadius),
+                velocity: new Vector3(speed, 0, 0).add(new Vector3().random().multiplyScalar(speed))
             }));
-        }
-        this._arrows.forEach((arrow) => simulation.add(arrow));
     }
 
     // avoid nearest birds (A BETTER VERSION WOULD ANTICIPATE COLLISIONS)
@@ -71,7 +57,6 @@ class Flock {
         acceleration.add(diff.multiplyScalar(this._avoid_weight));
 
         bird.step(acceleration, dt)
-        this._arrows[count].axis = bird.velocity;
     }
 
     updateBirds(avoid, center, direction, dt) {
@@ -100,6 +85,8 @@ class Flock {
     set directionWeight(number) { this._direction_weight = number; }
     set avoidWeight(number) { this._avoid_weight = number; }
 
+    bird(i) { return this._birds[i]; }
+
     startleBirds() {
         for (let i = 0; i < this._bird_count; i++)
             this._birds[i].velocity = new Vector3().random().multiplyScalar(2 * speed);
@@ -121,10 +108,30 @@ document.getElementById('avoidWeightSlider').addEventListener("input", (e) =>
 
 document.getElementById("startleButton").addEventListener("click", () => flock.startleBirds());
 
+const birdCount = 250;
+const flock = new Flock(birdCount);
+
 const simulation = new ThreeSim({
     canvas,
     cameraPosition: new Vector3(15, 0, 30),
     fieldOfView: 30
 });
-const flock = new Flock(250, simulation);
-simulation.run(() => flock.update(dt));
+
+const birdArrows = [];
+for (let i = 0; i < birdCount; i++) {
+    const arrow = new Arrow({
+        body: flock.bird(i),
+        axis: flock.bird(i).velocity,
+        round: true,
+        color: new Color(.5, 1, .5),
+        size: .2
+    });
+    birdArrows.push(arrow);
+    simulation.add(arrow);
+}
+
+simulation.run(() => {
+    flock.update(dt);
+    for (let i = 0; i < birdCount; i++)
+        birdArrows[i].axis = flock.bird(i).velocity;
+});
