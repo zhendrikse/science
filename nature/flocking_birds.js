@@ -126,7 +126,6 @@ const simulation = new ThreeSim({
 
 for (let i = 0; i < birdCount; i++) {
     simulation.attach(flock.bird(i), to(new Arrow({
-        body: flock.bird(i),
         round: true,
         color: new Color(.5, 1, .5),
         size: .2
