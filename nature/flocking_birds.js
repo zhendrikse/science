@@ -44,9 +44,9 @@ class Flock {
     }
 
     updateBird(count, avoid, center, direction) {
-        let acceleration = new Vector3().randomDirection().multiplyScalar(this._random_weight);
         const bird = this._birds[count];
 
+        let acceleration = new Vector3().randomDirection().multiplyScalar(this._random_weight);
         let diff = center.clone().sub(bird.position);
         acceleration.add(diff.multiplyScalar(this._center_weight));
 
@@ -57,11 +57,6 @@ class Flock {
         acceleration.add(diff.multiplyScalar(this._avoid_weight));
 
         bird.step(acceleration, dt)
-    }
-
-    updateBirds(avoid, center, direction, dt) {
-        for (let count = 0; count < this._bird_count; count++)
-            this.updateBird(count, avoid, center, direction);
     }
 
     update(dt) {
@@ -77,7 +72,8 @@ class Flock {
         center.divideScalar(this._bird_count);
         direction.divideScalar(this._bird_count);
 
-        this.updateBirds(this.avoidNearestBirds(), center, direction, dt);
+        for (let count = 0; count < this._bird_count; count++)
+            this.updateBird(count, this.avoidNearestBirds(), center, direction);
     }
 
     set randomWeight(value) { this._random_weight = value; }
