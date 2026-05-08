@@ -286,13 +286,11 @@ export class Body {
 
 export class TrailProperties {
     constructor({
-                    makeTrail = false,
                     maxPoints = 200,
                     trailStep = 1,
                     lineWidth = 1,
                     color = null // By default, try to obtain the color from the object that is followed
                 } = {}) {
-        this.makeTrail = makeTrail;
         this.maxPoints = maxPoints;
         this.lineWidth = lineWidth;
         this.color = color;
@@ -416,7 +414,7 @@ export class Sphere extends Mesh {
 
     _newTrail() {
         this._trail?.dispose();
-        if (this._trailProperties.makeTrail) {
+        if (this._trailProperties) {
             this._trail = new Trail(this.parent, this._trailProperties);
             this._trail.attachTo(this);
         }

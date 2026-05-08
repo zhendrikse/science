@@ -93,12 +93,7 @@ class Solenoid extends Group {
 
             const contribution = segment.axis.clone()
                 .cross(r.clone().normalize())
-                .multiplyScalar(
-                    MU0 * CURRENT /
-                    (4 * Math.PI) *
-                    segment.axis.length() /
-                    r2
-                );
+                .multiplyScalar(MU0 * CURRENT / (4 * Math.PI) * segment.axis.length() / r2);
 
             field.add(contribution);
         }

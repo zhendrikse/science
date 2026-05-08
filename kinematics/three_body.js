@@ -30,7 +30,7 @@ const bodyC = new Body({
     mass: mass * 0.5
 });
 
-const trailProperties = new TrailProperties({ makeTrail: true, maxPoints: 500 })
+const trailProperties = new TrailProperties({ maxPoints: 500 })
 const sphereRadius = 1.9e9;
 const sphereA = new Sphere({
     body: bodyA,
