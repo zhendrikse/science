@@ -10,7 +10,8 @@
 
 import {
     Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, Group, Vector3, BufferAttribute,
-    MeshStandardMaterial, SphereGeometry, Mesh, BufferGeometry, LineBasicMaterial, Line
+    MeshStandardMaterial, SphereGeometry, Mesh, BufferGeometry, LineBasicMaterial, Line, Quaternion,
+    CylinderGeometry, ConeGeometry, BoxGeometry
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -20,12 +21,13 @@ export const G = 6.67e-11; // Gravitational constant
 export class ThreeSim {
     constructor({
         canvas,
-        overlay,
-        background = null,
+        overlay = null, // If overlay is not defined, the simulation won't wait for a mouse click
+        scale = 1,
+        background = null, // If background is not defined, it defaults to transparent
         controls = true,
         light = true,
         cameraPosition = new Vector3(30, 30, 30),
-        scale = 1
+        fieldOfView = 50
     }) {
         this._canvas = canvas;
         this._transform = new Transform(scale);
@@ -36,14 +38,10 @@ export class ThreeSim {
         this._world = new Group();
         this._scene.add(this._world);
 
-        this._camera = new PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1e6);
+        this._camera = new PerspectiveCamera(fieldOfView, canvas.clientWidth / canvas.clientHeight, 0.1, 1e6);
         this._camera.position.copy(cameraPosition);
 
-        this._renderer = new WebGLRenderer({
-            antialias: true,
-            canvas,
-            alpha: background === null
-        });
+        this._renderer = new WebGLRenderer({antialias: true, canvas, alpha: background === null});
 
         if (background)
             this._scene.background = background;
@@ -53,7 +51,7 @@ export class ThreeSim {
 
         if (light) {
             const directionalLight = new DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(30, 30, 30);
+            directionalLight.position.copy(cameraPosition);
             this._scene.add(directionalLight);
         }
 
@@ -64,12 +62,15 @@ export class ThreeSim {
     _initEventHandlers(overlay) {
         window.addEventListener("resize", () => this._resizeRendererToCanvas());
 
-        window.addEventListener("click", () => {
-            if (!this._running) {
-                this._showOverlayMessage(overlay, "Started");
-                this._running = true;
-            }
-        });
+        if (overlay)
+            window.addEventListener("click", () => {
+                if (!this._running) {
+                    this._showOverlayMessage(overlay, "Started");
+                    this._running = true;
+                }
+            });
+        else
+            this._running = true;
     }
 
     _showOverlayMessage(overlay, message, duration = 1000) {
@@ -422,7 +423,6 @@ export class Sphere extends Mesh {
 
     reset() {
         this._body = this._initialState.clone();
-        this.physicsPosition = this._body.position;
         this._newTrail();
     }
 
@@ -438,9 +438,100 @@ export class Sphere extends Mesh {
 
     get radius() { return this._radius; }
     get color() { return this.material.color; }
-    get body() { return this._body; }
 
     set trail(newTrail) { this._trail = newTrail; }
     set radius(newRadius) { this._radius = newRadius; }
     set color(newColor) { return this.material.color.set(newColor); }
+}
+
+const shaftGeometryRound = new CylinderGeometry(1, 1, 1, 16);
+const shaftGeometrySquare = new BoxGeometry(1, 1, 1);
+const headGeometryRound = new ConeGeometry(1, 1, 16);
+const headGeometrySquare = new ConeGeometry(1, 1, 4);
+export class Arrow extends Group {
+    static HEAD_RATIO = 0.35;   // part of total length
+    static SHAFT_RATIO = 1 - Arrow.HEAD_RATIO;
+    static UP = new Vector3(0, 1, 0);
+    constructor({
+        body = new Body(),
+        axis = new Vector3(0, 1, 0),
+        color = 0xff0000,
+        size = 1,
+        opacity = 1,
+        round = false,
+        visible = true
+    } = {}) {
+        super();
+
+        const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
+        const headGeometry = round ? headGeometryRound : headGeometrySquare;
+        const material = new MeshStandardMaterial({
+            color: color,
+            opacity: opacity,
+            transparent: true
+        });
+
+        this._shaft = new Mesh(shaftGeometry, material);
+        this._head = new Mesh(headGeometry, material);
+        if (!round)
+            this._head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
+
+        this.add(this._shaft, this._head);
+        this._initialState = body.clone();
+        this.visible = visible;
+        this._body = body;
+        this._size = size;
+
+        // Make sure the axis setter is called, so that proper initialization takes place
+        this._axis = new Vector3(0, 0, 0);
+        this.axis = axis;
+    }
+
+    dispose() {
+        // DO NOT dispose shared geometries
+        if (this._shaft) {
+            if (this._shaft.material)
+                this._shaft.material.dispose();
+            this.remove(this._shaft);
+            this._shaft = null;
+        }
+
+        if (this._head) { // head.material is the same object as share.material, so has already been disposed
+            this.remove(this._head);
+            this._head = null;
+        }
+
+        this.clear();
+        this._axis = null;
+    }
+
+    get axis() { return this._axis; }
+    set axis(newAxis) { this._axis = newAxis; }
+
+    syncVisual(transform) {
+        const pos = transform.physicsToRender(this._body.position);
+        this.position.copy(pos);
+
+        const length = this._axis.length() * this._size;
+        if (length < 1e-6) return;
+
+        const direction = this._axis.clone().normalize();
+        this.quaternion.setFromUnitVectors(Arrow.UP, direction);
+
+        const shaftLength = length * Arrow.SHAFT_RATIO;
+        const headLength = length * Arrow.HEAD_RATIO;
+        const shaftRadius = length * 0.075;
+
+        this._shaft.scale.set(shaftRadius, shaftLength, shaftRadius);
+        this._shaft.position.y = shaftLength * 0.5;
+
+        this._head.scale.set(shaftRadius * 2, headLength, shaftRadius * 2);
+        this._head.position.y = shaftLength + headLength * 0.5;
+    }
+
+    set opacity(opacity) {
+        this._shaft.material.opacity = opacity;
+        this._head.material.opacity = opacity;
+    }
+    set color(color) { this._shaft.material.color = color; }
 }
