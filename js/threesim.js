@@ -1,5 +1,5 @@
 /**
- * An interactive simulation environment with clear separation between model and visualization.
+ * An educational/scientific simulation environment with clear separation between model and visualization.
  *
  * Core ideas:
  *
@@ -14,6 +14,8 @@ import {
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+export const G = 6.67e-11; // Gravitational constant
 
 export class ThreeSim {
     constructor({
@@ -230,6 +232,12 @@ export class Integrators {
 }
 
 export class Body {
+    static gravitationalForceBetween(self, other) {
+        const radius = self.positionVectorTo(other);
+        const rSquared = self.distanceToSquared(other);
+        return radius.normalize().multiplyScalar(G * self.mass * other.mass / rSquared);
+    }
+
     constructor({
                     position = new Vector3(0, 0, 0),
                     velocity = new Vector3(0, 0, 0),

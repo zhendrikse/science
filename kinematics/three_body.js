@@ -1,13 +1,10 @@
-import {ThreeSim, Sphere, TrailProperties, Integrators, Body} from "../js/threesim.js";
+import {ThreeSim, Sphere, TrailProperties, Integrators, Body, G} from "../js/threesim.js";
 import { Vector3 } from "three";
 
 const canvas = document.getElementById("threeBodyCanvas");
 const overlay = document.getElementById("overlayText");
 const scale = 1e-9;
-const simulation = new ThreeSim({ canvas, overlay, scale });
 
-const subSteps = 50;
-const G = 6.67e-11;
 const astronomical_unit = 1.49e11;
 const mass = 1e30;
 
@@ -56,25 +53,21 @@ const sphereC = new Sphere({
     trailProperties
 });
 
-simulation.add(sphereA, sphereB, sphereC);
-
-function forceBetween(self, other) {
-    const radius = self.positionVectorTo(other);
-    const r = self.distanceTo(other);
-    return radius.multiplyScalar(G * self.mass * other.mass / (r * r * r));
-}
-
 function iterate(subSteps, dt) {
-    const force_BA = forceBetween(bodyA, bodyB);
-    const force_CB = forceBetween(bodyB, bodyC);
-    const force_AC = forceBetween(bodyC, bodyA);
+    const force_BA = Body.gravitationalForceBetween(bodyA, bodyB);
+    const force_CB = Body.gravitationalForceBetween(bodyB, bodyC);
+    const force_AC = Body.gravitationalForceBetween(bodyC, bodyA);
 
     bodyA.step(force_BA.clone().sub(force_AC), dt / subSteps, Integrators.symplecticEulerStep);
     bodyB.step(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.symplecticEulerStep);
     bodyC.step(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.symplecticEulerStep);
 }
 
+const simulation = new ThreeSim({ canvas, overlay, scale });
+simulation.add(sphereA, sphereB, sphereC);
+
 const dt = 5000;
+const subSteps = 50;
 simulation.run(() => {
     for (let i = 0; i < subSteps; i++)
         iterate(subSteps, dt);
