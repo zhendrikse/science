@@ -126,7 +126,8 @@ for (let x = -20; x <= 20; x += 4)
             simulation.attach(new LogarithmicVectorBody(magneticField, new Vector3(x, y, z)), to(new Arrow({
                 color: 0x00ffff,
                 size: 1,
-                round: false
+                round: false,
+                colorMap: magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
             })));
 
 

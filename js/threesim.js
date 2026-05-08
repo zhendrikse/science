@@ -607,7 +607,8 @@ export class Arrow extends Group {
         size = 1,
         opacity = 1,
         round = false,
-        visible = true
+        visible = true,
+        colorMap = null
     } = {}) {
         super();
 
@@ -629,6 +630,8 @@ export class Arrow extends Group {
         this.visible = visible;
         this._body = null;
         this._size = size;
+        this._colorMap = colorMap;
+        this._baseColor = color;
     }
 
     set body(body) {
@@ -659,6 +662,12 @@ export class Arrow extends Group {
         const axis = this._body.direction();
         const length = axis.length() * this._size;
         if (length < 1e-6) return;
+
+        if (this._colorMap) {
+            const color = this._colorMap(length);
+            this._shaft.material.color.copy(color);
+            this._head.material.color.copy(color);
+        }
 
         this.quaternion.setFromUnitVectors(Arrow.UP, axis.normalize());
 
