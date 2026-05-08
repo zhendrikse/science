@@ -32,25 +32,25 @@ const bodyC = new Body({
 
 const trailProperties = new TrailProperties({ maxPoints: 500 })
 const sphereRadius = 1.9e9;
-const sphereA = new Sphere({
+
+const simulation = new ThreeSim({ canvas, overlay, scale });
+simulation.attach(bodyA, to(new Sphere({
     radius: sphereRadius,
     color: "yellow",
     trailProperties
-});
-
-const sphereB = new Sphere({
+})));
+simulation.attach(bodyB, to(new Sphere({
     radius: sphereRadius,
     color: "cyan",
     trailProperties
-});
-
-const sphereC = new Sphere({
+})));
+simulation.attach(bodyC, to(new Sphere({
     radius: sphereRadius,
     color: "magenta",
     trailProperties
-});
+})));
 
-function iterate(subSteps, dt) {
+function make(subSteps, dt) {
     const force_BA = Body.gravitationalForceBetween(bodyA, bodyB);
     const force_CB = Body.gravitationalForceBetween(bodyB, bodyC);
     const force_AC = Body.gravitationalForceBetween(bodyC, bodyA);
@@ -60,14 +60,9 @@ function iterate(subSteps, dt) {
     bodyC.step(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.symplecticEulerStep);
 }
 
-const simulation = new ThreeSim({ canvas, overlay, scale });
-simulation.attach(bodyA, to(sphereA));
-simulation.attach(bodyB, to(sphereB));
-simulation.attach(bodyC, to(sphereC));
-
 const dt = 5000;
 const subSteps = 50;
 simulation.run(() => {
     for (let i = 0; i < subSteps; i++)
-        iterate(subSteps, dt);
+        make(subSteps, dt);
 });
