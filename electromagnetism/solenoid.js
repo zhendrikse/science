@@ -137,4 +137,5 @@ fieldStrengthSlider.addEventListener("input", () =>
 
 autoRotateCheckbox.addEventListener("input", () => simulation.autoRotate = autoRotateCheckbox.checked);
 
+simulation.autoRotate = autoRotateCheckbox.checked;
 simulation.run(() => {});

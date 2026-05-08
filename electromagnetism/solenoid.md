@@ -15,7 +15,7 @@
 <canvas id="solenoidCanvas" class="applicationCanvas"></canvas>
 <div class="buttonRow">
     <label for="fieldStrength">Field </label><input type="range" id="fieldStrength" min="0.1" max="2" step="0.01" value=".75"/>
-    <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
+    <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate" checked/>
 </div>
 <script type="module" src="solenoid.js"></script>
 <p style="clear: both;"></p>
