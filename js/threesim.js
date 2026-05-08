@@ -1,12 +1,14 @@
 /**
  * An educational/scientific simulation environment with clear separation between model and visualization.
+ * The simulation physics are realized independently of the view objects. These view objects are synchronized
+ * transparently by the simulation environment.
  *
  * Core ideas:
  *
  * - clear separation of responsibilities
  * - low cognitive load
  * - code reveals (scientific) intention
- */
+ **/
 
 import {
     Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, Group, Vector3, BufferAttribute,
@@ -20,6 +22,9 @@ export const G = 6.67e-11; // Gravitational constant
 
 export const to = (view) => view;
 
+/**
+ * S I M U L A T I O N  E N V I R O N M E N T
+ */
 export class ThreeSim {
     constructor({
         canvas,
@@ -32,6 +37,11 @@ export class ThreeSim {
         fieldOfView = 50
     }) {
         this._canvas = canvas;
+
+        this._autoRotate = false;
+        this._autoRotateTheta = Math.PI / 2;
+        this._autoRotatePhi = 0;
+
         this._transform = new Transform(scale);
         this._objects = [];
         this._scene = new Scene();
@@ -60,6 +70,20 @@ export class ThreeSim {
         this._resizeRendererToCanvas();
         this._initEventHandlers(overlay);
     }
+
+    _doAutoRotate(distance) {
+        this._autoRotateTheta += -Math.PI / (7.5 * 100);
+        this._autoRotatePhi +=  Math.PI / (7.5 * 100) * 2;
+
+        this._camera.position.set(
+            distance * Math.sin(this._autoRotateTheta) * Math.sin(this._autoRotatePhi),
+            distance * Math.cos(this._autoRotateTheta),
+            distance * Math.sin(this._autoRotateTheta) * Math.cos(this._autoRotatePhi)
+        );
+
+        this._camera.lookAt(0, 0, 0);
+    }
+
 
     _initEventHandlers(overlay) {
         window.addEventListener("resize", () => this._resizeRendererToCanvas());
@@ -134,8 +158,13 @@ export class ThreeSim {
             this._sync();
             this._renderer.render(this._scene, this._camera);
             this._controls?.update();
+
+            if (this._autoRotate)
+                this._doAutoRotate(this._camera.position.length());
         });
     }
+
+    set autoRotate(autoRotate) { this._autoRotate = autoRotate; }
 }
 
 class Transform {
@@ -155,6 +184,156 @@ class Transform {
         return radius * this._scale;
     }
 }
+
+/**
+ * P H Y S I C S
+ **/
+
+export class VectorField {
+    constructor() { }
+
+    range(positions) {
+        let min = Infinity;
+        let max = -Infinity;
+
+        for (const position of positions) {
+            const mag = this.sample(position).length();
+            min = Math.min(min, mag);
+            max = Math.max(max, mag);
+        }
+
+        return { min, max };
+    }
+
+    sample(positionVector) {
+        throw new Error("You invoked the method of an abstract base class. Please create a subclass first.");
+    }
+
+    #centralDifferences(position, h) {
+        const dx = new Vector3(h, 0, 0);
+        const dy = new Vector3(0, h, 0);
+        const dz = new Vector3(0, 0, h);
+
+        const Fx1 = this.sample(position.clone().add(dx));
+        const Fx0 = this.sample(position.clone().sub(dx));
+
+        const Fy1 = this.sample(position.clone().add(dy));
+        const Fy0 = this.sample(position.clone().sub(dy));
+
+        const Fz1 = this.sample(position.clone().add(dz));
+        const Fz0 = this.sample(position.clone().sub(dz));
+        return { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 };
+    }
+
+    divergence(position, h = 1e-2) {
+        const { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 } = this.#centralDifferences(position, h);
+
+        return (
+            (Fx1.x - Fx0.x) +
+            (Fy1.y - Fy0.y) +
+            (Fz1.z - Fz0.z)
+        ) / (2 * h);
+    }
+
+    curl(position, h = 1e-2) {
+        const { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 } = this.#centralDifferences(position, h);
+
+        return new Vector3(
+            (Fy1.z - Fy0.z - (Fz1.y - Fz0.y)) / (2 * h),
+            (Fz1.x - Fz0.x - (Fx1.z - Fx0.z)) / (2 * h),
+            (Fx1.y - Fx0.y - (Fy1.x - Fy0.x)) / (2 * h)
+        );
+    }
+
+    curlMagnitude(position, h = 1e-2) {
+        return this.curl(position, h).length();
+    }
+}
+
+export class Body {
+    static gravitationalForceBetween(self, other) {
+        const radius = self.positionVectorTo(other);
+        const rSquared = self.distanceToSquared(other);
+        return radius.normalize().multiplyScalar(G * self.mass * other.mass / rSquared);
+    }
+
+    static FieldAt = (body, point) => {
+        const rVec = point.clone().sub(body.position);
+        const distanceSquared = rVec.dot(rVec);
+
+        return distanceSquared < 1e-40 ?
+            new Vector3(0, 0, 0) :
+            rVec.normalize().multiplyScalar(body.charge / distanceSquared);
+    }
+
+    constructor({
+                    position = new Vector3(0, 0, 0),
+                    velocity = new Vector3(0, 0, 0),
+                    mass = 1,
+                    charge = 0
+                } = {}) {
+        this.position = position.clone(); // Intentionally public
+        this.velocity = velocity.clone(); // Intentionally public
+        this.mass = mass;                 // Intentionally public
+        this.charge = charge;             // Intentionally public
+    }
+
+    /**
+     * View objects that use an axis to align themselves invoke this method.
+     * Can/should be overridden in subclasses to obtain a different behavior.
+     *
+     * @returns A vector3 that represents the axis (size and direction).
+     * By default, it returns the velocity of the body.
+     */
+    direction() { return this.velocity.clone() }
+
+    clone() {
+        return new Body({
+            position: this.position.clone(),
+            velocity: this.velocity.clone(),
+            mass: this.mass,
+            charge: this.charge
+        });
+    }
+
+    shiftBy(displacement) { this.physicsPosition = this.physicsPosition.clone().add(displacement); }
+
+    step(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
+        const updatedBody = integrator(this, dt, accelerationFn);
+        this.position = updatedBody.position;
+        this.velocity = updatedBody.velocity;
+    }
+
+    fieldAt(point) { return Body.FieldAt(this, point); }
+    get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
+
+    positionVectorTo(other) { return other.position.clone().sub(this.position); }
+    distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
+    distanceTo(other) { return this.positionVectorTo(other).length() }
+}
+
+export class LogarithmicVectorBody extends Body {
+    constructor(field, position) {
+        super({ position });
+        this._field = field;
+    }
+
+    direction() {
+        const vector = this._field.sample(this.position);
+        const magnitude = vector.length();
+
+        if (magnitude < 1e-9)
+            return new Vector3();
+
+        const scaled = Math.log(1 + magnitude);
+        return vector.normalize().multiplyScalar(scaled);
+    }
+}
+
+/**
+ * M A T H E M A T I C S
+ **/
 
 export class Integrators {
     static eulerStep(state, dt, accelerationFn) {
@@ -239,59 +418,13 @@ export class Integrators {
     }
 }
 
-export class Body {
-    static gravitationalForceBetween(self, other) {
-        const radius = self.positionVectorTo(other);
-        const rSquared = self.distanceToSquared(other);
-        return radius.normalize().multiplyScalar(G * self.mass * other.mass / rSquared);
-    }
+/**
+ * V I E W S
+ */
 
-    constructor({
-                    position = new Vector3(0, 0, 0),
-                    velocity = new Vector3(0, 0, 0),
-                    mass = 1,
-                    charge = 0
-    } = {}) {
-        this.position = position.clone(); // Intentionally public
-        this.velocity = velocity.clone(); // Intentionally public
-        this.mass = mass;                 // Intentionally public
-        this.charge = charge;             // Intentionally public
-    }
-
-    clone() {
-        return new Body({
-            position: this.position.clone(),
-            velocity: this.velocity.clone(),
-            mass: this.mass,
-            charge: this.charge
-        });
-    }
-
-    shiftBy(displacement) { this.physicsPosition = this.physicsPosition.clone().add(displacement); }
-
-    step(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
-        const updatedBody = integrator(this, dt, accelerationFn);
-        this.position = updatedBody.position;
-        this.velocity = updatedBody.velocity;
-    }
-
-    fieldAt(point) {
-        const rVec = point.clone().sub(this.position);
-        const distanceSquared = rVec.dot(rVec);
-
-        return distanceSquared < 1e-40 ?
-            new Vector3(0, 0, 0) :
-            rVec.normalize().multiplyScalar(this.charge / distanceSquared);
-    }
-
-    get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
-
-    positionVectorTo(other) { return other.position.clone().sub(this.position); }
-    distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
-    distanceTo(other) { return this.positionVectorTo(other).length() }
-}
-
+//
+// T R A I L
+//
 export class TrailProperties {
     constructor({
                     maxPoints = 200,
@@ -387,6 +520,9 @@ export class Trail {
     }
 }
 
+//
+// Sphere
+//
 export class Sphere extends Mesh {
     constructor({
         radius = 1,
@@ -455,14 +591,17 @@ export class Sphere extends Mesh {
     set color(newColor) { return this.material.color.set(newColor); }
 }
 
-const shaftGeometryRound = new CylinderGeometry(1, 1, 1, 16);
-const shaftGeometrySquare = new BoxGeometry(1, 1, 1);
-const headGeometryRound = new ConeGeometry(1, 1, 16);
-const headGeometrySquare = new ConeGeometry(1, 1, 4);
+//
+// Arrow
+//
 export class Arrow extends Group {
     static HEAD_RATIO = 0.35;   // part of total length
     static SHAFT_RATIO = 1 - Arrow.HEAD_RATIO;
     static UP = new Vector3(0, 1, 0);
+    static ShaftGeometryRound = new CylinderGeometry(1, 1, 1, 16);
+    static ShaftGeometrySquare = new BoxGeometry(1, 1, 1);
+    static HeadGeometryRound = new ConeGeometry(1, 1, 16);
+    static HeadGeometrySquare = new ConeGeometry(1, 1, 4);
     constructor({
         color = 0xff0000,
         size = 1,
@@ -472,8 +611,8 @@ export class Arrow extends Group {
     } = {}) {
         super();
 
-        const shaftGeometry = round ? shaftGeometryRound : shaftGeometrySquare;
-        const headGeometry = round ? headGeometryRound : headGeometrySquare;
+        const shaftGeometry = round ? Arrow.ShaftGeometryRound : Arrow.ShaftGeometrySquare;
+        const headGeometry = round ? Arrow.HeadGeometryRound : Arrow.HeadGeometrySquare;
         const material = new MeshStandardMaterial({
             color: color,
             opacity: opacity,
@@ -515,14 +654,13 @@ export class Arrow extends Group {
     }
 
     syncVisual(transform) {
-        const pos = transform.physicsToRender(this._body.position);
-        this.position.copy(pos);
+        this.position.copy(transform.physicsToRender(this._body.position));
 
-        const axis = this._body.velocity;
+        const axis = this._body.direction();
         const length = axis.length() * this._size;
         if (length < 1e-6) return;
 
-        this.quaternion.setFromUnitVectors(Arrow.UP, axis.clone().normalize());
+        this.quaternion.setFromUnitVectors(Arrow.UP, axis.normalize());
 
         const shaftLength = length * Arrow.SHAFT_RATIO;
         const headLength = length * Arrow.HEAD_RATIO;
@@ -540,4 +678,49 @@ export class Arrow extends Group {
         this._head.material.opacity = opacity;
     }
     set color(color) { this._shaft.material.color = color; }
+}
+
+//
+// Cylinder
+//
+export class Cylinder extends Mesh {
+    constructor({
+        radius = 1,
+        color = 0xffff00,
+        opacity = 1
+    } = {}) {
+
+        const geometry = new CylinderGeometry(radius, radius, 1, 24);
+        const material = new MeshStandardMaterial({
+            color,
+            opacity,
+            transparent: opacity < 1
+        });
+        super(geometry, material);
+
+        this._body = null;
+        this._initialState = null;
+    }
+
+    set body(body) {
+        this._body = body;
+        this._initialState = body.clone();
+    }
+
+    syncVisual(transform) {
+        const pos = transform.physicsToRender(this._body.position);
+        this.position.copy(pos);
+
+        const axis = this._body.direction();
+        const length = axis.length();
+        if (length < 1e-6)
+            return;
+
+        this.scale.set(1, length, 1);
+
+        const direction = axis.clone().normalize();
+        this.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
+
+        this.position.add(direction.multiplyScalar(length / 2));
+    }
 }
