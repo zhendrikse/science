@@ -18,6 +18,8 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export const G = 6.67e-11; // Gravitational constant
 
+export const to = (view) => view;
+
 export class ThreeSim {
     constructor({
         canvas,
@@ -109,13 +111,18 @@ export class ThreeSim {
                 anObject.syncVisual(this._transform);
     }
 
-    add(...objects) {
+    _add(...objects) {
         for (const anObject of objects) {
             this._objects.push(anObject);
             this._world.add(anObject);
 
-            anObject.syncVisual?.(this._transform);
+            anObject.syncVisual?.(this._transform); // Initial sync before render loop
         }
+    }
+
+    attach(body, toView) {
+        toView.body = body;
+        this._add(toView);
     }
 
     run(updateFunction = null) {
@@ -382,7 +389,6 @@ export class Trail {
 
 export class Sphere extends Mesh {
     constructor({
-        body,
         radius = 1,
         color = 0xffff00,
         visible = true,
@@ -403,14 +409,19 @@ export class Sphere extends Mesh {
         })
 
         super(new SphereGeometry(1, segments, segments), material);
-        this._body = body;
-        this._initialState = body.clone();
+        this._body = null;
+        this._initialState = null;
         this.visible = visible;
         this.castShadow = castShadow;
         this._radius = radius;
         this._trail = null;
         this._trailProperties = trailProperties;
         this.addEventListener('added', this._newTrail);
+    }
+
+    set body(body) {
+        this._body = body;
+        this._initialState = body.clone();
     }
 
     _newTrail() {
@@ -453,8 +464,6 @@ export class Arrow extends Group {
     static SHAFT_RATIO = 1 - Arrow.HEAD_RATIO;
     static UP = new Vector3(0, 1, 0);
     constructor({
-        body = new Body(),
-        axis = new Vector3(0, 1, 0),
         color = 0xff0000,
         size = 1,
         opacity = 1,
@@ -477,14 +486,15 @@ export class Arrow extends Group {
             this._head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
 
         this.add(this._shaft, this._head);
-        this._initialState = body.clone();
+        this._initialState = null;
         this.visible = visible;
-        this._body = body;
+        this._body = null;
         this._size = size;
+    }
 
-        // Make sure the axis setter is called, so that proper initialization takes place
-        this._axis = new Vector3(0, 0, 0);
-        this.axis = axis;
+    set body(body) {
+        this._body = body;
+        this._initialState = body.clone();
     }
 
     dispose() {
@@ -502,21 +512,17 @@ export class Arrow extends Group {
         }
 
         this.clear();
-        this._axis = null;
     }
-
-    get axis() { return this._axis; }
-    set axis(newAxis) { this._axis = newAxis; }
 
     syncVisual(transform) {
         const pos = transform.physicsToRender(this._body.position);
         this.position.copy(pos);
 
-        const length = this._axis.length() * this._size;
+        const axis = this._body.velocity;
+        const length = axis.length() * this._size;
         if (length < 1e-6) return;
 
-        const direction = this._axis.clone().normalize();
-        this.quaternion.setFromUnitVectors(Arrow.UP, direction);
+        this.quaternion.setFromUnitVectors(Arrow.UP, axis.clone().normalize());
 
         const shaftLength = length * Arrow.SHAFT_RATIO;
         const headLength = length * Arrow.HEAD_RATIO;

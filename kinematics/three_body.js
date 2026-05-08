@@ -1,4 +1,4 @@
-import {ThreeSim, Sphere, TrailProperties, Integrators, Body, G} from "../js/threesim.js";
+import { ThreeSim, Sphere, TrailProperties, Integrators, Body, G, to } from "../js/threesim.js";
 import { Vector3 } from "three";
 
 const canvas = document.getElementById("threeBodyCanvas");
@@ -33,21 +33,18 @@ const bodyC = new Body({
 const trailProperties = new TrailProperties({ maxPoints: 500 })
 const sphereRadius = 1.9e9;
 const sphereA = new Sphere({
-    body: bodyA,
     radius: sphereRadius,
     color: "yellow",
     trailProperties
 });
 
 const sphereB = new Sphere({
-    body: bodyB,
     radius: sphereRadius,
     color: "cyan",
     trailProperties
 });
 
 const sphereC = new Sphere({
-    body: bodyC,
     radius: sphereRadius,
     color: "magenta",
     trailProperties
@@ -64,7 +61,9 @@ function iterate(subSteps, dt) {
 }
 
 const simulation = new ThreeSim({ canvas, overlay, scale });
-simulation.add(sphereA, sphereB, sphereC);
+simulation.attach(bodyA, to(sphereA));
+simulation.attach(bodyB, to(sphereB));
+simulation.attach(bodyC, to(sphereC));
 
 const dt = 5000;
 const subSteps = 50;
