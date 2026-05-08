@@ -65,6 +65,9 @@ export class ThreeSim {
             const directionalLight = new DirectionalLight(0xffffff, 1);
             directionalLight.position.copy(cameraPosition);
             this._scene.add(directionalLight);
+            const directionalLight2 = new DirectionalLight(0xffffff, 1);
+            directionalLight2.position.copy(cameraPosition.clone().multiplyScalar(-1));
+            this._scene.add(directionalLight2);
         }
 
         this._resizeRendererToCanvas();
