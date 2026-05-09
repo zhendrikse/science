@@ -41,7 +41,8 @@ export class ThreeSim {
         this._autoRotatePhi = 0;
 
         this._transform = new Transform(scale);
-        this._objects = [];
+        this._staticObjects = [];  // Are static during the whole simulation hence do NOT need to be synchronized
+        this._dynamicObjects = []; // Need to be synchronized every update
         this._scene = new Scene();
         this._running = false;
 
@@ -84,7 +85,6 @@ export class ThreeSim {
 
         this._camera.lookAt(0, 0, 0);
     }
-
 
     _initEventHandlers(overlay) {
         window.addEventListener("resize", () => this._resizeRendererToCanvas());
@@ -131,27 +131,26 @@ export class ThreeSim {
     }
 
     _sync() {
-        for (const anObject of this._objects)
+        for (const anObject of this._dynamicObjects)
             if (anObject.render)
                 anObject.render(this._transform);
     }
 
-    addThreeJsObject(...objects) {
-        for (const anObject of objects) {
-            this._objects.push(anObject);
-            this._world.add(anObject);
-
-            anObject.render?.(this._transform); // Initial sync before render loop
-        }
+    addThreeJsObject(anObject, dynamic) {
+        this._world.add(anObject);
+        anObject.render?.(this._transform); // Initial sync before render loop
+        if (dynamic)
+            this._dynamicObjects.push(anObject);
+        else
+            this._staticObjects.push(anObject);
     }
 
-    attach(bodyAndView) {
+    attach(bodyAndView, dynamic=true) {
         bodyAndView.view.body = bodyAndView.body;
-        this.addThreeJsObject(bodyAndView.view);
+        this.addThreeJsObject(bodyAndView.view, dynamic);
     }
 
     run(updateFunction = null) {
-        console.clear();
         this._renderer.setAnimationLoop((time) => {
             if (this._running && updateFunction)
                 updateFunction(time);
