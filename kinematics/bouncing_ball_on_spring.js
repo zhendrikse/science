@@ -1,31 +1,32 @@
 import { Vector3 } from "three";
-import {Helix, Spring, ThreeSim, Body, Sphere, Floor, Ceiling} from "../js/threesim.js";
+import {Helix, Spring, ThreeSim, Body, Sphere, Floor } from "../js/threesim.js";
 
 const canvas = document.getElementById("ballSpringCanvas");
-const overlay = document.getElementById("ballSpringOverlayText");
+const overlay = document.getElementById("overlayText");
 
 //
 // Physics
 //
 const spring = new Spring({
-    position: new Vector3(0, 0, 0),
+    position: new Vector3(0, -1, 0),
     direction: new Vector3(0, 0.6, 0),
     k: 450
 });
+const springTopAtRest = spring.endPosition;
 
 const ball = new Body({
-    position: new Vector3(0, 2.5, 0),
+    position: new Vector3(0, 1.5, 0),
     mass: 1.5
 });
 
+const ballHitsSpring = (epsilon=1e-2) => springTopAtRest.clone().sub(ball.position).length() < epsilon;
 const gravitationalForce = new Vector3(0, -9.8 * ball.mass, 0);
-const ballHitsSpring = () => ball.distanceTo(spring) < spring.restLength;
 
 function timeStep(dt) {
     const totalForce = gravitationalForce.clone().add(spring.force);
     ball.apply(totalForce, dt);
     if (ballHitsSpring() || spring.isCompressed)
-        spring.axis = ball.position.clone();
+        spring.axis = ball.position.clone().sub(spring.position);
 }
 
 //
@@ -47,12 +48,10 @@ simulation.attach(ball.to(new Sphere({
     color: "red"
 })));
 
-simulation.addThreeJsObject(new Floor({repeat: false}))
+simulation.addThreeJsObject(new Floor({repeat: false, positionY: -1}))
 
 const dt = 1e-3;
 simulation.run(() => {
     for (let subStep = 0; subStep < 20; subStep++)
         timeStep(dt);
 });
-
-

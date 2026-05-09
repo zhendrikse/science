@@ -23,7 +23,7 @@
 ## Bouncing ball on spring
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=bounding_ball_on_spring.js)](https://github.com/zhendrikse/science/blob/main/kinematics/bouncing_ball_on_spring.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=bouncing_ball_on_spring.js)](https://github.com/zhendrikse/science/blob/main/kinematics/bouncing_ball_on_spring.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)
 
@@ -36,6 +36,6 @@
     <canvas class="applicationCanvas" id="ballSpringCanvas"></canvas>
     <div class="overlayText" id="ballSpringOverlayText">Click to start the animation!</div>
 </div>
-<script type="module" src="bounding_ball_on_spring.js"></script>
+<script type="module" src="bouncing_ball_on_spring.js"></script>
 
 {% include share_buttons.html %}

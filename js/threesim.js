@@ -405,6 +405,7 @@ export class Spring extends Body {
     get force() { return this._direction.clone().normalize().multiplyScalar(-this._k * this.displacement); }
     get displacement() { return  this._direction.length() - this._restLength; }
     get isCompressed() { return this._direction.length() < this._restLength; }
+    get endPosition() { return this.position.clone().add(this._direction); }
 }
 
 /*************************
