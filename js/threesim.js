@@ -7,7 +7,7 @@
  *
  * - clear separation of responsibilities
  * - low cognitive load
- * - code reveals (scientific) intention
+ * - code reveals (scientific) intention, so you can literally use: simulation.attach(physics.to(view))
  **/
 
 import {
@@ -362,13 +362,13 @@ export class Particle extends Body {
 }
 
 export class LogarithmicFieldVector extends Body {
-    constructor({position = new Vector(), direction = new Vector()} = {}) {
+    constructor({position, sampleFunction} = {}) {
         super({ position });
-        this._direction = direction;
+        this._sampleFunction = sampleFunction;
     }
 
     direction() {
-        const vector = this._direction.clone();
+        const vector = this._sampleFunction(this.position);
         const magnitude = vector.length();
 
         if (magnitude < 1e-9)
@@ -770,24 +770,28 @@ export class ArrowField extends Group{
     constructor({
         xRange,
         yRange,
-        zRange
+        zRange,
+        scaleFactor = 1,
+        round = false
     } = {}) {
         super();
         this._xRange = xRange;
         this._yRange = yRange;
         this._zRange = zRange;
+        this._scaleFactor = scaleFactor;
+        this._round = round;
         this._fieldArrows = [];
         this._vectorField = null;
     }
 
     _createArrowAt(x, y, z) {
         const position = new Vector3(x, y, z);
-        const direction = this._vectorField.sample(position);
-        const fieldVector = new LogarithmicFieldVector({position, direction});
+        const sampleFunction = (position) => this._vectorField.sample(position);
+        const fieldVector = new LogarithmicFieldVector({position, sampleFunction});
         const fieldArrow = new Arrow({
             color: 0x00ffff,
-            size: 1,
-            round: false,
+            size: this._scaleFactor,
+            round: this._round,
             colorMap: magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
         });
         fieldArrow.body = fieldVector;

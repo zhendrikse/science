@@ -69,7 +69,7 @@ class SolenoidField extends VectorField {
     constructor(solenoid) {
         super();
         this._solenoid = solenoid;
-        this._fieldStrength = Number(fieldStrengthSlider.value);
+        this._fieldStrength = 1;
     }
 
     sample(position) {
@@ -90,6 +90,7 @@ const solenoid = new Solenoid({
     turns: 10
 });
 const magneticField = new SolenoidField(solenoid);
+magneticField.fieldStrength = Number(fieldStrengthSlider.value);
 
 //
 // Simulation
@@ -100,20 +101,17 @@ const simulation = new ThreeSim({
     fieldOfView: 45
 });
 
-// Solenoid view
 for (const segment of solenoid.segments)
     simulation.attach(segment.to(new Cylinder({
             radius: 0.4,
             color: new Color("yellow")
         })));
 
-// Magnetic field view
-const arrowField = new ArrowField({
+simulation.attach(magneticField.to(new ArrowField({
     xRange: new Range(-20, 20, 4),
     yRange: new Range(-20, 20, 4),
     zRange: new Range(-20, 20, 4)
-});
-simulation.attach(magneticField.to(arrowField))
+})));
 
 fieldStrengthSlider.addEventListener("input", () =>
     magneticField.fieldStrength = Number(fieldStrengthSlider.value));
