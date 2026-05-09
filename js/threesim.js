@@ -90,10 +90,14 @@ export class ThreeSim {
         window.addEventListener("resize", () => this._resizeRendererToCanvas());
 
         if (overlay)
-            window.addEventListener("click", () => {
+            this._canvas.addEventListener("click", () => {
                 if (!this._running) {
                     this.showOverlayMessage("Started");
                     this._running = true;
+                } else {
+                    this.showOverlayMessage("Reset");
+                    this._running = false;
+                    this.reset();
                 }
             });
         else
@@ -169,6 +173,12 @@ export class ThreeSim {
         });
     }
 
+    reset() {
+        for (const anObject of this._dynamicObjects)
+            if (anObject.reset)
+                anObject.reset();
+    }
+
     set autoRotate(autoRotate) { this._autoRotate = autoRotate; }
 }
 
@@ -240,7 +250,7 @@ export class Body {
 
     shiftBy(displacement) { this.position.add(displacement); }
 
-    step(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
         const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
         const updatedBody = integrator(this, dt, accelerationFn);
         this.position = updatedBody.position;
@@ -639,7 +649,8 @@ export class Sphere extends Mesh {
     }
 
     reset() {
-        this._body = this._initialState.clone();
+        this._body.position = this._initialState.position;
+        this._body.velocity = this._initialState.velocity;
         this._newTrail();
     }
 

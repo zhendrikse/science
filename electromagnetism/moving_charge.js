@@ -127,7 +127,7 @@ simulation.run(() => {
     for (let i = 0; i < subSteps; i++) {
         const field = capacitor.fieldAt(movingCharge.position)
         const force = field.multiplyScalar(movingCharge.charge);
-        movingCharge.step(force, dt);
+        movingCharge.apply(force, dt);
     }
 });
 

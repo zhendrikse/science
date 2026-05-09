@@ -55,9 +55,9 @@ function make(subSteps, dt) {
     const force_CB = gravitationalForceBetween(bodyB.and(bodyC));
     const force_AC = gravitationalForceBetween(bodyC.and(bodyA));
 
-    bodyA.step(force_BA.clone().sub(force_AC), dt / subSteps, Integrators.symplecticEulerStep);
-    bodyB.step(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.symplecticEulerStep);
-    bodyC.step(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.symplecticEulerStep);
+    bodyA.apply(force_BA.clone().sub(force_AC), dt / subSteps, Integrators.symplecticEulerStep);
+    bodyB.apply(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.symplecticEulerStep);
+    bodyC.apply(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.symplecticEulerStep);
 }
 
 const dt = 5000;
