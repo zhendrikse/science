@@ -35,7 +35,7 @@ function timeStep(dt) {
 const simulation = new ThreeSim({
     canvas,
     overlay,
-    cameraPosition: new Vector3(4, 2, 4)
+    cameraPosition: new Vector3(4, 2, 4).multiplyScalar(0.7),
 });
 
 simulation.attach(spring.to(new Helix({
