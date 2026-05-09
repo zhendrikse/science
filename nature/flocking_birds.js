@@ -1,5 +1,5 @@
 import {Vector3, Color} from "three";
-import {Arrow, Vector, ThreeSim } from '../js/threesim.js';
+import {Arrow, VelocityVector, ThreeSim } from '../js/threesim.js';
 
 const canvas = document.getElementById('birdsCanvas');
 
@@ -24,7 +24,7 @@ class Flock {
 
         const initialPhysicalFlockRadius= 3;
         for (let i = 0; i < bird_count; i++)
-            this._birds.push(new Vector({
+            this._birds.push(new VelocityVector({
                 position: new Vector3().random().multiplyScalar(initialPhysicalFlockRadius),
                 velocity: new Vector3(speed, 0, 0).add(new Vector3().random().multiplyScalar(speed))
             }));

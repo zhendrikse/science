@@ -203,6 +203,9 @@ export function gravitationalForceBetween(twoBodies) {
     return radius.normalize().multiplyScalar(G * twoBodies[0].mass * twoBodies[1].mass / rSquared);
 }
 
+//
+// Bodies to do physics with
+//
 export class Body {
     constructor({
                     position = new Vector3(0, 0, 0),
@@ -246,12 +249,21 @@ export class Body {
     distanceTo(other) { return this.positionVectorTo(other).length() }
 }
 
-export class Vector extends Body {
+export class PlainVector extends Body {
+    constructor({position = new Vector(), direction = new Vector()} = {}) {
+        super({ position });
+        this._direction = direction;
+    }
+
+    direction() { return this._direction; }
+}
+
+export class VelocityVector extends Body {
     constructor({position = new Vector(), velocity = new Vector()} = {}) {
         super({ position, velocity });
     }
 
-    direction() { return this.velocity.clone() }
+    direction() { return this.velocity.clone(); }
 }
 
 export class VectorField {
@@ -317,7 +329,7 @@ export class VectorField {
     }
 }
 
-export class Particle extends Vector {
+export class Particle extends Body {
     static fieldAt(body, point) {
         const rVec = point.clone().sub(body.position);
         const distanceSquared = rVec.dot(rVec);

@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { ThreeSim, Arrow, VectorField, Cylinder, Body, ArrowField, Range } from "../js/threesim.js";
+import { ThreeSim, PlainVector, VectorField, Cylinder, Body, ArrowField, Range } from "../js/threesim.js";
 
 const canvas = document.getElementById("solenoidCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
@@ -32,10 +32,9 @@ class Solenoid {
         for (let i = 0; i < points.length - 1; i++) {
             const p1 = points[i];
             const p2 = points[i + 1];
-            segments.push({
-                position: p1.clone().add(p2).multiplyScalar(0.5),
-                axis: direct ? p2.clone().sub(p1) : p1.clone().sub(p2)
-            });
+            const position = p1.clone().add(p2).multiplyScalar(0.5);
+            const direction = direct ? p2.clone().sub(p1) : p1.clone().sub(p2);
+            segments.push(new PlainVector({position, direction}));
         }
 
         return segments;
@@ -51,12 +50,12 @@ class Solenoid {
             if (r2 < 1e-6)
                 continue;
 
-            const contribution = segment.axis.clone()
+            const contribution = segment.direction().clone()
                 .cross(r.clone().normalize())
                 .multiplyScalar(
                     MU0 * CURRENT /
                     (4 * Math.PI) *
-                    segment.axis.length() / r2
+                    segment.direction().length() / r2
                 );
 
             field.add(contribution);
@@ -84,15 +83,6 @@ class SolenoidField extends VectorField {
     set fieldStrength(value) { this._fieldStrength = value; }
 }
 
-class SegmentBody extends Body {
-    constructor(segment) {
-        super({ position: segment.position});
-        this._axis = segment.axis;
-    }
-
-    direction() { return this._axis; }
-}
-
 //
 // Physics
 //
@@ -114,7 +104,7 @@ const simulation = new ThreeSim({
 
 // Solenoid view
 for (const segment of solenoid.segments)
-    simulation.attach(new SegmentBody(segment).to(new Cylinder({
+    simulation.attach(segment.to(new Cylinder({
             radius: 0.4,
             color: new Color("yellow")
         })));
