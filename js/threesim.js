@@ -362,13 +362,13 @@ export class Particle extends Body {
 }
 
 export class LogarithmicFieldVector extends Body {
-    constructor(field, position) {
+    constructor({position = new Vector(), direction = new Vector()} = {}) {
         super({ position });
-        this._field = field;
+        this._direction = direction;
     }
 
     direction() {
-        const vector = this._field.sample(this.position);
+        const vector = this._direction.clone();
         const magnitude = vector.length();
 
         if (magnitude < 1e-9)
@@ -777,23 +777,30 @@ export class ArrowField extends Group{
         this._yRange = yRange;
         this._zRange = zRange;
         this._fieldArrows = [];
+        this._vectorField = null;
     }
 
-    set body(body) {
+    _createArrowAt(x, y, z) {
+        const position = new Vector3(x, y, z);
+        const direction = this._vectorField.sample(position);
+        const fieldVector = new LogarithmicFieldVector({position, direction});
+        const fieldArrow = new Arrow({
+            color: 0x00ffff,
+            size: 1,
+            round: false,
+            colorMap: magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
+        });
+        fieldArrow.body = fieldVector;
+        this._fieldArrows.push(fieldArrow);
+        this.add(fieldArrow);
+    }
+
+    set body(vectorField) {
+        this._vectorField = vectorField;
         for (let x of this._xRange)
             for (let y of this._yRange)
-                for (let z of this._zRange) {
-                    const fieldVector = new LogarithmicFieldVector(body, new Vector3(x, y, z));
-                    const fieldArrow = new Arrow({
-                        color: 0x00ffff,
-                        size: 1,
-                        round: false,
-                        colorMap: magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
-                    });
-                    fieldArrow.body = fieldVector;
-                    this._fieldArrows.push(fieldArrow);
-                    this.add(fieldArrow);
-                }
+                for (let z of this._zRange)
+                    this._createArrowAt(x, y, z);
     }
 
     render(transform) {
