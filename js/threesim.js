@@ -34,6 +34,7 @@ export class ThreeSim {
         fieldOfView = 50
     }) {
         this._canvas = canvas;
+        this._overlay = overlay;
 
         this._autoRotate = false;
         this._autoRotateTheta = Math.PI / 2;
@@ -91,7 +92,7 @@ export class ThreeSim {
         if (overlay)
             window.addEventListener("click", () => {
                 if (!this._running) {
-                    this._showOverlayMessage(overlay, "Started");
+                    this.showOverlayMessage("Started");
                     this._running = true;
                 }
             });
@@ -99,12 +100,12 @@ export class ThreeSim {
             this._running = true;
     }
 
-    _showOverlayMessage(overlay, message, duration = 1000) {
-        overlay.textContent = message;
-        overlay.style.display = "block";
+    showOverlayMessage(message, duration = 1000) {
+        this._overlay.textContent = message;
+        this._overlay.style.display = "block";
 
         setTimeout(() => {
-            overlay.style.display = "none";
+            this._overlay.style.display = "none";
         }, duration);
     }
 
@@ -769,7 +770,9 @@ export class ArrowField extends Group{
         zRange,
         scaleFactor = 1,
         round = false,
-        magnitudeMap = magnitude => Math.log(1 + magnitude)
+        magnitudeMap = magnitude => Math.log(1 + magnitude),
+        colorMap = magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
+
 } = {}) {
         super();
         this._xRange = xRange;
@@ -777,6 +780,7 @@ export class ArrowField extends Group{
         this._zRange = zRange;
         this._scaleFactor = scaleFactor;
         this._magnitudeMap = magnitudeMap;
+        this._colorMap = colorMap;
         this._round = round;
         this._fieldArrows = [];
     }
@@ -789,7 +793,7 @@ export class ArrowField extends Group{
             size: this._scaleFactor,
             round: this._round,
             magnitudeMap: this._magnitudeMap,
-            colorMap: magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
+            colorMap: this._colorMap,
         });
         fieldArrow.body = fieldVector;
         this._fieldArrows.push(fieldArrow);

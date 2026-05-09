@@ -120,7 +120,7 @@ const flock = new Flock(birdCount);
 
 const simulation = new ThreeSim({
     canvas,
-    cameraPosition: new Vector3(15, 0, 30),
+    cameraPosition: new Vector3(15, 0, 30).multiplyScalar(1.5),
     fieldOfView: 30
 });
 
