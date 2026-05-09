@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { ThreeSim, Arrow, VectorField, Cylinder, Body, LogarithmicVectorBody, to } from "../js/threesim.js";
+import { ThreeSim, Arrow, VectorField, Cylinder, Body, ArrowField, Range } from "../js/threesim.js";
 
 const canvas = document.getElementById("solenoidCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
@@ -108,29 +108,24 @@ const magneticField = new SolenoidField(solenoid);
 //
 const simulation = new ThreeSim({
     canvas,
-    cameraPosition: new Vector3(32, 16, 48),
+    cameraPosition: new Vector3(32, 16, 48).multiplyScalar(1.25),
     fieldOfView: 45
 });
 
 // Solenoid view
 for (const segment of solenoid.segments)
-    simulation.attach(new SegmentBody(segment), to(new Cylinder({
+    simulation.attach(new SegmentBody(segment).to(new Cylinder({
             radius: 0.4,
             color: new Color("yellow")
         })));
 
 // Magnetic field view
-for (let x = -20; x <= 20; x += 4)
-    for (let y = -20; y <= 20; y += 4)
-        for (let z = -20; z <= 20; z += 4)
-            simulation.attach(new LogarithmicVectorBody(magneticField, new Vector3(x, y, z)), to(new Arrow({
-                color: 0x00ffff,
-                size: 1,
-                round: false,
-                colorMap: magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
-            })));
-
-
+const arrowField = new ArrowField({
+    xRange: new Range(-20, 20, 4),
+    yRange: new Range(-20, 20, 4),
+    zRange: new Range(-20, 20, 4)
+});
+simulation.attach(magneticField.to(arrowField))
 
 fieldStrengthSlider.addEventListener("input", () =>
     magneticField.fieldStrength = Number(fieldStrengthSlider.value));

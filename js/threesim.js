@@ -13,18 +13,15 @@
 import {
     Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, Group, Vector3, BufferAttribute,
     MeshStandardMaterial, SphereGeometry, Mesh, BufferGeometry, LineBasicMaterial, Line, Quaternion,
-    CylinderGeometry, ConeGeometry, BoxGeometry
+    CylinderGeometry, ConeGeometry, BoxGeometry, Color
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-export const G = 6.67e-11; // Gravitational constant
+/**********************************************
+ * S I M U L A T I O N  E N V I R O N M E N T *
+ **********************************************/
 
-export const to = (view) => view;
-
-/**
- * S I M U L A T I O N  E N V I R O N M E N T
- */
 export class ThreeSim {
     constructor({
         canvas,
@@ -134,22 +131,22 @@ export class ThreeSim {
 
     _sync() {
         for (const anObject of this._objects)
-            if (anObject.syncVisual)
-                anObject.syncVisual(this._transform);
+            if (anObject.render)
+                anObject.render(this._transform);
     }
 
-    _add(...objects) {
+    addThreeJsObject(...objects) {
         for (const anObject of objects) {
             this._objects.push(anObject);
             this._world.add(anObject);
 
-            anObject.syncVisual?.(this._transform); // Initial sync before render loop
+            anObject.render?.(this._transform); // Initial sync before render loop
         }
     }
 
-    attach(body, toView) {
-        toView.body = body;
-        this._add(toView);
+    attach(bodyAndView) {
+        bodyAndView.view.body = bodyAndView.body;
+        this.addThreeJsObject(bodyAndView.view);
     }
 
     run(updateFunction = null) {
@@ -188,12 +185,79 @@ class Transform {
     }
 }
 
-/**
- * P H Y S I C S
- **/
+/*****************
+ * P H Y S I C S *
+ *****************/
+
+//
+// Constants
+//
+export const G = 6.67e-11; // Gravitational constant
+
+//
+// Functions
+//
+export function gravitationalForceBetween(twoBodies) {
+    const radius = twoBodies[0].positionVectorTo(twoBodies[1]);
+    const rSquared = twoBodies[0].distanceToSquared(twoBodies[1]);
+    return radius.normalize().multiplyScalar(G * twoBodies[0].mass * twoBodies[1].mass / rSquared);
+}
+
+export class Body {
+    constructor({
+                    position = new Vector3(0, 0, 0),
+                    velocity = new Vector3(0, 0, 0),
+                    mass = 1,
+                } = {}) {
+        this.position = position.clone(); // Intentionally public
+        this.velocity = velocity.clone(); // Intentionally public
+        this.mass = mass;                 // Intentionally public
+    }
+
+    direction() {
+        throw new Error("This body type does not implement direction(), hence it cannot be rendered with this view.");
+    }
+
+    clone() {
+        return new Body({
+            position: this.position.clone(),
+            velocity: this.velocity.clone(),
+            mass: this.mass,
+        });
+    }
+
+    and = (otherBody) => [this, otherBody];
+
+    to(view) { return { body: this, view: view}; };
+
+    shiftBy(displacement) { this.position.add(displacement); }
+
+    step(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
+        const updatedBody = integrator(this, dt, accelerationFn);
+        this.position = updatedBody.position;
+        this.velocity = updatedBody.velocity;
+    }
+
+    get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
+
+    positionVectorTo(other) { return other.position.clone().sub(this.position); }
+    distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
+    distanceTo(other) { return this.positionVectorTo(other).length() }
+}
+
+export class Vector extends Body {
+    constructor({position = new Vector(), velocity = new Vector()} = {}) {
+        super({ position, velocity });
+    }
+
+    direction() { return this.velocity.clone() }
+}
 
 export class VectorField {
     constructor() { }
+
+    to(view) { return { body: this, view: view}; };
 
     range(positions) {
         let min = Infinity;
@@ -253,14 +317,8 @@ export class VectorField {
     }
 }
 
-export class Body {
-    static gravitationalForceBetween(self, other) {
-        const radius = self.positionVectorTo(other);
-        const rSquared = self.distanceToSquared(other);
-        return radius.normalize().multiplyScalar(G * self.mass * other.mass / rSquared);
-    }
-
-    static FieldAt = (body, point) => {
+export class Particle extends Vector {
+    static fieldAt(body, point) {
         const rVec = point.clone().sub(body.position);
         const distanceSquared = rVec.dot(rVec);
 
@@ -270,25 +328,14 @@ export class Body {
     }
 
     constructor({
-                    position = new Vector3(0, 0, 0),
-                    velocity = new Vector3(0, 0, 0),
-                    mass = 1,
-                    charge = 0
-                } = {}) {
-        this.position = position.clone(); // Intentionally public
-        this.velocity = velocity.clone(); // Intentionally public
-        this.mass = mass;                 // Intentionally public
-        this.charge = charge;             // Intentionally public
+        position = new Vector3(0, 0, 0),
+        velocity = new Vector3(0, 0, 0),
+        mass = 1,
+        charge = 0
+    } = {}) {
+        super( {position, velocity, mass})
+        this.charge = charge;
     }
-
-    /**
-     * View objects that use an axis to align themselves invoke this method.
-     * Can/should be overridden in subclasses to obtain a different behavior.
-     *
-     * @returns A vector3 that represents the axis (size and direction).
-     * By default, it returns the velocity of the body.
-     */
-    direction() { return this.velocity.clone() }
 
     clone() {
         return new Body({
@@ -299,24 +346,10 @@ export class Body {
         });
     }
 
-    shiftBy(displacement) { this.physicsPosition = this.physicsPosition.clone().add(displacement); }
-
-    step(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
-        const updatedBody = integrator(this, dt, accelerationFn);
-        this.position = updatedBody.position;
-        this.velocity = updatedBody.velocity;
-    }
-
-    fieldAt(point) { return Body.FieldAt(this, point); }
-    get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
-
-    positionVectorTo(other) { return other.position.clone().sub(this.position); }
-    distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
-    distanceTo(other) { return this.positionVectorTo(other).length() }
+    fieldAt(point) { return Particle.fieldAt(this, point); }
 }
 
-export class LogarithmicVectorBody extends Body {
+export class LogarithmicFieldVector extends Body {
     constructor(field, position) {
         super({ position });
         this._field = field;
@@ -339,85 +372,111 @@ export class LogarithmicVectorBody extends Body {
  **/
 
 export class Integrators {
-    static eulerStep(state, dt, accelerationFn) {
-        const acceleration = accelerationFn(state);
-        const newState = state.clone();
+    static eulerStep(body, dt, accelerationFn) {
+        const acceleration = accelerationFn(body);
+        const newBody = body.clone();
 
-        newState.velocity.addScaledVector(acceleration, dt);
-        newState.position.addScaledVector(state.velocity, dt);
+        newBody.velocity.addScaledVector(acceleration, dt);
+        newBody.position.addScaledVector(body.velocity, dt);
 
-        return newState;
+        return newBody;
     }
 
-    static symplecticEulerStep(state, dt, accelerationFn) {
-        const acceleration = accelerationFn(state);
-        const newState = state.clone();
+    static symplecticEulerStep(body, dt, accelerationFn) {
+        const acceleration = accelerationFn(body);
+        const newBody = body.clone();
 
-        newState.velocity.addScaledVector(acceleration, dt);
-        newState.position.addScaledVector(newState.velocity, dt);
+        newBody.velocity.addScaledVector(acceleration, dt);
+        newBody.position.addScaledVector(newBody.velocity, dt);
 
-        return newState;
+        return newBody;
     }
 
-    static rk2Step(state, dt, accelerationFn) {
-        const derivative = (state) => ({
-            dx: state.velocity.clone(),
-            dv: accelerationFn(state)
+    static rk2Step(body, dt, accelerationFn) {
+        const derivative = (body) => ({
+            dx: body.velocity.clone(),
+            dv: accelerationFn(body)
         });
 
-        const k1 = derivative(state);
+        const k1 = derivative(body);
 
-        const mid = state.clone();
+        const mid = body.clone();
         mid.position.addScaledVector(k1.dx, dt);
         mid.velocity.addScaledVector(k1.dv, dt);
 
         const k2 = derivative(mid);
 
-        const newState = state.clone();
-        newState.position.addScaledVector(k1.dx.clone().add(k2.dx), dt / 2);
-        newState.velocity.addScaledVector(k1.dv.clone().add(k2.dv), dt / 2);
+        const newBody = body.clone();
+        newBody.position.addScaledVector(k1.dx.clone().add(k2.dx), dt / 2);
+        newBody.velocity.addScaledVector(k1.dv.clone().add(k2.dv), dt / 2);
 
-        return newState;
+        return newBody;
     }
 
-    static rk4Step(state, dt, accelerationFn) {
-        const derivative = (state) => ({
-            dx: state.velocity.clone(),
-            dv: accelerationFn(state)
+    static rk4Step(body, dt, accelerationFn) {
+        const derivative = (body) => ({
+            dx: body.velocity.clone(),
+            dv: accelerationFn(body)
         });
 
-        const k1 = derivative(state);
+        const k1 = derivative(body);
 
-        const s2 = state.clone();
+        const s2 = body.clone();
         s2.position.addScaledVector(k1.dx, dt / 2);
         s2.velocity.addScaledVector(k1.dv, dt / 2);
         const k2 = derivative(s2);
 
-        const s3 = state.clone();
+        const s3 = body.clone();
         s3.position.addScaledVector(k2.dx, dt / 2);
         s3.velocity.addScaledVector(k2.dv, dt / 2);
         const k3 = derivative(s3);
 
-        const s4 = state.clone();
+        const s4 = body.clone();
         s4.position.addScaledVector(k3.dx, dt);
         s4.velocity.addScaledVector(k3.dv, dt);
         const k4 = derivative(s4);
 
-        const newState = state.clone();
+        const newBody = body.clone();
 
-        newState.position
+        newBody.position
             .addScaledVector(k1.dx, dt / 6)
             .addScaledVector(k2.dx, dt / 3)
             .addScaledVector(k3.dx, dt / 3)
             .addScaledVector(k4.dx, dt / 6);
 
-        newState.velocity
+        newBody.velocity
             .addScaledVector(k1.dv, dt / 6)
             .addScaledVector(k2.dv, dt / 3)
             .addScaledVector(k3.dv, dt / 3)
             .addScaledVector(k4.dv, dt / 6);
 
-        return newState;
+        return newBody;
+    }
+}
+
+export class Range {
+    constructor(from, to, stepSize) {
+        this.from = from;
+        this.to = to;
+        this.stepSize = stepSize || 0.1;
+    }
+
+    /**
+     * Use:
+     *   for (const x of range)
+     *     console.log(x);
+     *
+     * @returns {Generator<*, void, *>}
+     */
+    *[Symbol.iterator]() {
+        if (!isFinite(this.from) || !isFinite(this.to))
+            throw new Error("Cannot iterate over an infinite interval.");
+        if (this.stepSize <= 0)
+            throw new Error("stepSize must be > 0");
+
+        const n = Math.floor((this.to - this.from) / this.stepSize);
+        for (let i = 0; i <= n; i++)
+            yield this.from + i * this.stepSize;
     }
 }
 
@@ -576,7 +635,7 @@ export class Sphere extends Mesh {
         this._newTrail();
     }
 
-    syncVisual(transform) {
+    render(transform) {
         const renderPosition = transform.physicsToRender(this._body.position);
         this.position.copy(renderPosition);
 
@@ -659,7 +718,7 @@ export class Arrow extends Group {
         this.clear();
     }
 
-    syncVisual(transform) {
+    render(transform) {
         this.position.copy(transform.physicsToRender(this._body.position));
 
         const axis = this._body.direction();
@@ -693,6 +752,45 @@ export class Arrow extends Group {
 }
 
 //
+// ArrowField
+//
+export class ArrowField extends Group{
+    constructor({
+        xRange,
+        yRange,
+        zRange
+    } = {}) {
+        super();
+        this._xRange = xRange;
+        this._yRange = yRange;
+        this._zRange = zRange;
+        this._fieldArrows = [];
+    }
+
+    set body(body) {
+        for (let x of this._xRange)
+            for (let y of this._yRange)
+                for (let z of this._zRange) {
+                    const fieldVector = new LogarithmicFieldVector(body, new Vector3(x, y, z));
+                    const fieldArrow = new Arrow({
+                        color: 0x00ffff,
+                        size: 1,
+                        round: false,
+                        colorMap: magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
+                    });
+                    fieldArrow.body = fieldVector;
+                    this._fieldArrows.push(fieldArrow);
+                    this.add(fieldArrow);
+                }
+    }
+
+    render(transform) {
+        for (let fieldArrow of this._fieldArrows)
+            fieldArrow.render(transform);
+    }
+}
+
+//
 // Cylinder
 //
 export class Cylinder extends Mesh {
@@ -719,7 +817,7 @@ export class Cylinder extends Mesh {
         this._initialState = body.clone();
     }
 
-    syncVisual(transform) {
+    render(transform) {
         const pos = transform.physicsToRender(this._body.position);
         this.position.copy(pos);
 

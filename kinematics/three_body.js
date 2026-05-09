@@ -1,4 +1,4 @@
-import { ThreeSim, Sphere, TrailProperties, Integrators, Body, G, to } from "../js/threesim.js";
+import { ThreeSim, Sphere, TrailProperties, Integrators, Body, G, gravitationalForceBetween } from "../js/threesim.js";
 import { Vector3 } from "three";
 
 const canvas = document.getElementById("threeBodyCanvas");
@@ -34,26 +34,26 @@ const trailProperties = new TrailProperties({ maxPoints: 500 })
 const sphereRadius = 1.9e9;
 
 const simulation = new ThreeSim({ canvas, overlay, scale });
-simulation.attach(bodyA, to(new Sphere({
+simulation.attach(bodyA.to(new Sphere({
     radius: sphereRadius,
     color: "yellow",
     trailProperties
 })));
-simulation.attach(bodyB, to(new Sphere({
+simulation.attach(bodyB.to(new Sphere({
     radius: sphereRadius,
     color: "cyan",
     trailProperties
 })));
-simulation.attach(bodyC, to(new Sphere({
+simulation.attach(bodyC.to(new Sphere({
     radius: sphereRadius,
     color: "magenta",
     trailProperties
 })));
 
 function make(subSteps, dt) {
-    const force_BA = Body.gravitationalForceBetween(bodyA, bodyB);
-    const force_CB = Body.gravitationalForceBetween(bodyB, bodyC);
-    const force_AC = Body.gravitationalForceBetween(bodyC, bodyA);
+    const force_BA = gravitationalForceBetween(bodyA.and(bodyB));
+    const force_CB = gravitationalForceBetween(bodyB.and(bodyC));
+    const force_AC = gravitationalForceBetween(bodyC.and(bodyA));
 
     bodyA.step(force_BA.clone().sub(force_AC), dt / subSteps, Integrators.symplecticEulerStep);
     bodyB.step(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.symplecticEulerStep);
