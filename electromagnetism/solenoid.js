@@ -40,26 +40,24 @@ class Solenoid {
         return segments;
     }
 
+    _contributionFrom(segment, position) {
+        const r = position.clone().sub(segment.position);
+        const r2 = r.lengthSq();
+
+        return (r2 < 1e-6) ? new Vector3() : segment.direction().clone()
+            .cross(r.clone().normalize())
+            .multiplyScalar(
+                MU0 * CURRENT /
+                (4 * Math.PI) *
+                segment.direction().length() / r2
+            );
+    }
+
     fieldAt(position) {
         const field = new Vector3();
 
-        for (const segment of this._segments) {
-            const r = position.clone().sub(segment.position);
-            const r2 = r.lengthSq();
-
-            if (r2 < 1e-6)
-                continue;
-
-            const contribution = segment.direction().clone()
-                .cross(r.clone().normalize())
-                .multiplyScalar(
-                    MU0 * CURRENT /
-                    (4 * Math.PI) *
-                    segment.direction().length() / r2
-                );
-
-            field.add(contribution);
-        }
+        for (const segment of this._segments)
+            field.add(this._contributionFrom(segment, position));
 
         return field;
     }
