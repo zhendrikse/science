@@ -1009,7 +1009,6 @@ export class Helix extends Mesh {
 //
 // Floor and ceiling
 //
-
 export class Floor extends Mesh {
     static Type = Object.freeze({
         PAVING: "paving",

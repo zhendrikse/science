@@ -48,7 +48,7 @@ simulation.attach(ball.to(new Sphere({
     color: "red"
 })));
 
-simulation.addThreeJsObject(new Floor({repeat: false, positionY: -1}))
+simulation.addThreeJsObject(new Floor({positionY: -1}))
 
 const dt = 1e-3;
 simulation.run(() => {
