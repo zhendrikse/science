@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import {Helix, Spring, ThreeSim, Body, Sphere, Floor } from "../js/threesim.js";
 
 const canvas = document.getElementById("ballSpringCanvas");
-const overlay = document.getElementById("overlayText");
+const overlay = document.getElementById("ballSpringOverlayText");
 
 //
 // Physics
