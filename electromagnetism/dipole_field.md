@@ -13,13 +13,12 @@ $$
 \vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r}  \cdot \vec{p}} {r^3} \bigg),\quad \vec{p}=+q(\vec{r}_+) + -q(\vec{r}_-)
 $$
 
-<canvas id="dipoleCanvas" class="applicationCanvas" style="aspect-ratio: 2/1;"></canvas>
+<canvas id="dipoleCanvas" class="applicationCanvas" style="width: 800px; aspect-ratio: 2/1;"></canvas>
 <div class="buttonRow">
-    <label for="fieldStrength">Field </label><input type="range" id="fieldStrength" min="0.1" max="2" step="0.01" value="0.5"/>
+    <label for="fieldStrength">Field </label><input type="range" id="fieldStrength" min="0" max="1" step="0.01" value="0.5"/>
     <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
 </div>
 <script type="module" src="dipole_field.js"></script>
-<p style="clear: both;"></p>
 
 🧠 Inspired by [7_Dipole.py](https://github.com/Physics-Morris/Physics-Vpython/blob/master/7_Dipole.py)<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Electricdipolefield) is available as well, see [dipole_field.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/circular_aperture.py)<br/>

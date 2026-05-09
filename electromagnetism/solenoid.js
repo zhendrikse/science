@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { ThreeSim, PlainVector, VectorField, Cylinder, Body, ArrowField, Range } from "../js/threesim.js";
+import { ThreeSim, PlainVector, VectorField, Cylinder, ArrowField, Range } from "../js/threesim.js";
 
 const canvas = document.getElementById("solenoidCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");

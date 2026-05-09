@@ -361,22 +361,13 @@ export class Particle extends Body {
     fieldAt(point) { return Particle.fieldAt(this, point); }
 }
 
-export class LogarithmicFieldVector extends Body {
-    constructor({position, sampleFunction} = {}) {
+class VectorFieldVector extends Body {
+    constructor({position, vectorField} = {}) {
         super({ position });
-        this._sampleFunction = sampleFunction;
+        this._vectorField = vectorField;
     }
 
-    direction() {
-        const vector = this._sampleFunction(this.position);
-        const magnitude = vector.length();
-
-        if (magnitude < 1e-9)
-            return new Vector3();
-
-        const scaled = Math.log(1 + magnitude);
-        return vector.normalize().multiplyScalar(scaled);
-    }
+    direction() { return this._vectorField.sample(this.position); }
 }
 
 /**
@@ -682,7 +673,8 @@ export class Arrow extends Group {
         opacity = 1,
         round = false,
         visible = true,
-        colorMap = null
+        magnitudeMap = magnitude => magnitude, // identity mapping by default
+        colorMap = null  // use the unmodified base color by default
     } = {}) {
         super();
 
@@ -705,6 +697,7 @@ export class Arrow extends Group {
         this._body = null;
         this._size = size;
         this._colorMap = colorMap;
+        this._magnitudeMap = magnitudeMap;
         this._baseColor = color;
     }
 
@@ -734,7 +727,10 @@ export class Arrow extends Group {
         this.position.copy(transform.physicsToRender(this._body.position));
 
         const axis = this._body.direction();
-        const length = axis.length() * this._size;
+        const rawMagnitude = axis.length();
+        const visualMagnitude = this._magnitudeMap(rawMagnitude);
+        const length = visualMagnitude * this._size;
+
         if (length < 1e-6) return;
 
         if (this._colorMap) {
@@ -772,26 +768,27 @@ export class ArrowField extends Group{
         yRange,
         zRange,
         scaleFactor = 1,
-        round = false
-    } = {}) {
+        round = false,
+        magnitudeMap = magnitude => Math.log(1 + magnitude)
+} = {}) {
         super();
         this._xRange = xRange;
         this._yRange = yRange;
         this._zRange = zRange;
         this._scaleFactor = scaleFactor;
+        this._magnitudeMap = magnitudeMap;
         this._round = round;
         this._fieldArrows = [];
-        this._vectorField = null;
     }
 
-    _createArrowAt(x, y, z) {
+    _createArrowAt(x, y, z, vectorField) {
         const position = new Vector3(x, y, z);
-        const sampleFunction = (position) => this._vectorField.sample(position);
-        const fieldVector = new LogarithmicFieldVector({position, sampleFunction});
+        const fieldVector = new VectorFieldVector({position, vectorField});
         const fieldArrow = new Arrow({
             color: 0x00ffff,
             size: this._scaleFactor,
             round: this._round,
+            magnitudeMap: this._magnitudeMap,
             colorMap: magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
         });
         fieldArrow.body = fieldVector;
@@ -800,11 +797,10 @@ export class ArrowField extends Group{
     }
 
     set body(vectorField) {
-        this._vectorField = vectorField;
         for (let x of this._xRange)
             for (let y of this._yRange)
                 for (let z of this._zRange)
-                    this._createArrowAt(x, y, z);
+                    this._createArrowAt(x, y, z, vectorField);
     }
 
     render(transform) {

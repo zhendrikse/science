@@ -49,7 +49,7 @@ class DipoleField extends VectorField {
 //
 const dipole = new Dipole(1e-14);
 const dipoleField = new DipoleField(dipole);
-dipoleField.fieldStrength = Number(fieldStrengthSlider.value);
+dipoleField.fieldStrength = Number(fieldStrengthSlider.value) * .5;
 
 //
 // Simulation
@@ -74,11 +74,12 @@ simulation.attach(dipole.negative.to(new Sphere({
 );
 
 simulation.attach(dipoleField.to(new ArrowField({
-        xRange: new Range(-20 / scale, 20 / scale, 4 / scale),
-        yRange: new Range(-12 / scale, 12 / scale, 4 / scale),
-        zRange: new Range(-12 / scale, 12 / scale, 4 / scale),
-        scaleFactor: .1,
-        round: false
+        xRange: new Range(-20 / scale, 20 / scale, 2 / scale),
+        yRange: new Range(-12 / scale, 12 / scale, 2 / scale),
+        zRange: new Range(-12 / scale, 12 / scale, 2 / scale),
+        scaleFactor: 3e-5,
+        round: false,
+        magnitudeMap: magnitude => Math.sqrt(magnitude),
     }))
 );
 
@@ -86,7 +87,7 @@ simulation.attach(dipoleField.to(new ArrowField({
 // Event listeners
 //
 fieldStrengthSlider.addEventListener("input", () =>
-    dipoleField.fieldStrength = Number(fieldStrengthSlider.value));
+    dipoleField.fieldStrength = Number(fieldStrengthSlider.value) * .5);
 
 autoRotateCheckbox.addEventListener("input", () =>
     simulation.autoRotate = autoRotateCheckbox.checked);
