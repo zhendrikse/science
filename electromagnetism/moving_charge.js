@@ -77,10 +77,10 @@ simulation.addThreeJsObject(dirLight);
 simulation.addThreeJsObject(new AmbientLight(0xffffff, 0.8));
 
 for (const charge of capacitor.charges)
-    simulation.attach(charge.to(new Sphere({
+    simulation.attachStatically(charge.to(new Sphere({
         radius: 1e-14,
         color: charge.charge > 0 ? new Color(0x4444ff) : new Color(0xff0000)
-    })), false);
+    })));
 
 simulation.attach(movingCharge.to(new Sphere({
     radius: 1.2e-14,
@@ -88,7 +88,7 @@ simulation.attach(movingCharge.to(new Sphere({
     trailProperties: new TrailProperties({ maxPoints: 400 })
 })));
 
-simulation.attach(capacitorField.to(new ArrowField({
+simulation.attachStatically(capacitorField.to(new ArrowField({
         xRange: new Range(-18 / scale, 18 / scale, 8 / scale),
         yRange: new Range(-9 / scale, 9 / scale, 4 / scale),
         zRange: new Range(-18 / scale, 18 / scale, 8 / scale),
@@ -96,7 +96,7 @@ simulation.attach(capacitorField.to(new ArrowField({
         round: false,
         magnitudeMap: magnitude => Math.sqrt(magnitude),
         colorMap: magnitude => new Color(1, .25 * magnitude, 0)
-    })), false);
+    })));
 
 //
 // Event listeners

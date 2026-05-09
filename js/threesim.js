@@ -136,7 +136,7 @@ export class ThreeSim {
                 anObject.render(this._transform);
     }
 
-    addThreeJsObject(anObject, dynamic) {
+    addThreeJsObject(anObject, dynamic=false) {
         this._world.add(anObject);
         anObject.render?.(this._transform); // Initial sync before render loop
         if (dynamic)
@@ -145,9 +145,14 @@ export class ThreeSim {
             this._staticObjects.push(anObject);
     }
 
-    attach(bodyAndView, dynamic=true) {
+    attach(bodyAndView) {
         bodyAndView.view.body = bodyAndView.body;
-        this.addThreeJsObject(bodyAndView.view, dynamic);
+        this.addThreeJsObject(bodyAndView.view, true);
+    }
+
+    attachStatically(bodyAndView) {
+        bodyAndView.view.body = bodyAndView.body;
+        this.addThreeJsObject(bodyAndView.view, false);
     }
 
     run(updateFunction = null) {
