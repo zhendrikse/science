@@ -12,8 +12,9 @@
 
 import {
     Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, Group, Vector3, BufferAttribute,
-    MeshStandardMaterial, SphereGeometry, Mesh, BufferGeometry, LineBasicMaterial, Line, Quaternion,
-    CylinderGeometry, ConeGeometry, BoxGeometry, Color
+    MeshStandardMaterial, SphereGeometry, Mesh, BufferGeometry, LineBasicMaterial, Line, TubeGeometry,
+    CylinderGeometry, ConeGeometry, BoxGeometry, Color, Curve, Quaternion, RepeatWrapping, DoubleSide,
+    TextureLoader, Vector2, PlaneGeometry
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -208,6 +209,7 @@ class Transform {
 // Constants
 //
 export const G = 6.67e-11; // Gravitational constant
+export const EC = 1.6e-19; // Coulomb charge
 
 //
 // Functions
@@ -232,7 +234,7 @@ export class Body {
         this.mass = mass;                 // Intentionally public
     }
 
-    direction() {
+    get direction() {
         throw new Error("This body type does not implement direction(), hence it cannot be rendered with this view.");
     }
 
@@ -258,6 +260,7 @@ export class Body {
     }
 
     get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
+    get momentum() { return this.mass * this.velocity; }
 
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
@@ -270,7 +273,7 @@ export class PlainVector extends Body {
         this._direction = direction;
     }
 
-    direction() { return this._direction; }
+    get direction() { return this._direction; }
 }
 
 export class VelocityVector extends Body {
@@ -278,7 +281,7 @@ export class VelocityVector extends Body {
         super({ position, velocity });
     }
 
-    direction() { return this.velocity.clone(); }
+    get direction() { return this.velocity.clone(); }
 }
 
 export class VectorField {
@@ -382,12 +385,31 @@ class VectorFieldVector extends Body {
         this._vectorField = vectorField;
     }
 
-    direction() { return this._vectorField.sample(this.position); }
+    get direction() { return this._vectorField.sample(this.position); }
 }
 
-/**
- * M A T H E M A T I C S
- **/
+export class Spring extends Body {
+    constructor({position = new Vector3(), direction = new Vector3(0, 1, 0), k=100} = {}) {
+        super({ position });
+        this._direction = direction;
+        this._restLength = direction.length();
+        this._k = k; // spring constant
+    }
+
+    get direction() { return this._direction; }
+    get restLength() { return this._restLength; }
+    get potentialEnergy() { return 0.5 * this.k * this.displacement * this.displacement; }
+    get k() { return this._k; }
+    get axis() { return this._direction; }
+    set axis(newAxis) { this._direction = newAxis; }
+    get force() { return this._direction.clone().normalize().multiplyScalar(-this._k * this.displacement); }
+    get displacement() { return  this._direction.length() - this._restLength; }
+    get isCompressed() { return this._direction.length() < this._restLength; }
+}
+
+/*************************
+ * M A T H E M A T I C S *
+ *************************/
 
 export class Integrators {
     static eulerStep(body, dt, accelerationFn) {
@@ -498,9 +520,9 @@ export class Range {
     }
 }
 
-/**
- * V I E W S
- */
+/*************
+ * V I E W S *
+ *************/
 
 //
 // T R A I L
@@ -612,7 +634,7 @@ export class Sphere extends Mesh {
         opacity = 1,
         castShadow = false,
         wireframe = false,
-        trailProperties = new TrailProperties()
+        trailProperties = null
     } = {}) {
         const material = new MeshStandardMaterial({
             color: color,
@@ -742,7 +764,7 @@ export class Arrow extends Group {
     render(transform) {
         this.position.copy(transform.physicsToRender(this._body.position));
 
-        const axis = this._body.direction();
+        const axis = this._body.direction;
         const rawMagnitude = axis.length();
         const visualMagnitude = this._magnitudeMap(rawMagnitude);
         const length = visualMagnitude * this._size;
@@ -859,7 +881,7 @@ export class Cylinder extends Mesh {
         const pos = transform.physicsToRender(this._body.position);
         this.position.copy(pos);
 
-        const axis = this._body.direction();
+        const axis = this._body.direction;
         const length = axis.length();
         if (length < 1e-6)
             return;
@@ -870,5 +892,182 @@ export class Cylinder extends Mesh {
         this.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
 
         this.position.add(direction.multiplyScalar(length / 2));
+    }
+}
+
+//
+// Spring
+//
+class Coils extends Curve {
+    constructor(position, axis, coils = 25, radius = 0.4, waveAmp = 0.05, wavePhase = 0) {
+        super();
+        this.start = position.clone();
+        this.coils = coils;
+        this._axis = axis;
+        this.radius = radius;
+        this.waveAmp = waveAmp;
+        this.wavePhase = wavePhase;
+    }
+
+    updateAxis = (newAxis) => this._axis.copy(newAxis);
+
+    getPoint(t) {
+        const length = this._axis.length();
+        const angle = t * this.coils * Math.PI * 2;
+        const x = Math.cos(angle) * this.radius;
+        const y = Math.sin(angle) * this.radius;
+
+        // Longitudinal wave across spring
+        const z = t * length + this.waveAmp * Math.sin(Math.PI * t) * Math.sin(2 * Math.PI * t * 3 - this.wavePhase);
+
+        const point = new Vector3(x, y, z);
+        const quaternion = new Quaternion();
+        quaternion.setFromUnitVectors(new Vector3(0, 0, 1), this._axis.clone().normalize());
+        point.applyQuaternion(quaternion);
+
+        return point.add(this.start);
+    }
+}
+
+export class Helix extends Mesh {
+    constructor({
+        color = 0x00ffff,
+        coils = 20,
+        longitudinalOscillation = false,
+        tubularSegments = 400,
+        radialSegments = 16,
+        radius = 0.125,
+        thickness = 0.01,
+        visible = true,
+        castShadow = false
+    } = {}) {
+        const curve = new Coils(new Vector3(), new Vector3(), coils, radius, longitudinalOscillation ? 0.05 : 0);
+        const geometry = new TubeGeometry(curve, tubularSegments, thickness, radialSegments, false);
+        const material = new MeshStandardMaterial({
+            color: color,
+            visible: visible,
+            metalness: 0.3,
+            roughness: 0.4,
+        });
+        super(geometry, material);
+        this._curve = curve;
+        this._longitudinalOscillation = longitudinalOscillation;
+        this._radius = radius;
+        this._tubularSegments = tubularSegments;
+        this._radialSegments = radialSegments;
+        this._thickness = thickness;
+        this.castShadow = castShadow;
+
+        this._body = null;
+        this._initialState = null;
+    }
+
+    set body(body) {
+        this._body = body;
+        this._initialState = body.clone();
+    }
+
+    #regenerateTube() {
+        this.geometry.dispose();
+        this.geometry = new TubeGeometry(
+            this._curve, this._tubularSegments, this._thickness, this._radialSegments, false
+        );
+    }
+
+    update(time) {
+        if (this._longitudinalOscillation)
+            this._curve.wavePhase = time * 4;
+    }
+
+    #updateWithoutLongitudinal() {
+        this.#regenerateTube();
+    }
+
+    #updateWithLongitudinal(time) {
+        // Longitudinal wave amplitude coupled to spring elongation
+        const displacement = this._axis.y - this._curve.start.y;
+        this._curve.waveAmp = Math.min(Math.abs(displacement) / 10, 0.3); // max amplitude 0.3
+        this.#regenerateTube();
+    }
+
+    render(transform) {
+        const pos = transform.physicsToRender(this._body.position);
+        this.position.copy(pos);
+
+        const axis = this._body.direction;
+        if (axis.length() < 1e-6)
+            return;
+
+        this._curve.updateAxis(axis);
+        this._longitudinalOscillation ?
+            this.#updateWithLongitudinal() :
+            this.#updateWithoutLongitudinal();
+    }
+}
+
+//
+// Floor and ceiling
+//
+
+export class Floor extends Mesh {
+    static Type = Object.freeze({
+        PAVING: "paving",
+        WOOD_WICKER: "Wood_Wicker_011"  // https://3dtextures.me/2024/06/22/wood-wicker-011/
+    });
+    constructor({
+        type= Floor.Type.PAVING,
+        positionY = 0,
+        planeSize = new Vector2(3, 3),
+        granularity = 2
+    } = {}) {
+        const planeGeometry = new PlaneGeometry(planeSize.x, planeSize.y);
+        const planeMaterial = new MeshStandardMaterial({
+            normalScale: new Vector2(3, 3),
+            roughness: 1,
+            //occlusionMap: textureAmbientOcclusion,
+            //alphaMap: textureOpacity,
+            //aoMap: textureAmbientOcclusion,
+            //aoMapIntensity: 0,
+        });
+        super(planeGeometry, planeMaterial);
+        this.receiveShadow = true;
+        this.rotation.x = -Math.PI / 2;
+        this.position.y = positionY;
+        this._granularity = granularity;
+
+        const loader = new TextureLoader();
+        const imageType = type === Floor.Type.PAVING ? "jpg" : "png";
+        this.material.map = this._loadTexture(loader, '../js/textures/' + type + '_color.' + imageType);
+        this.material.roughnessMap = this._loadTexture(loader, '../js/textures/' + type + '_roughness.' + imageType);
+        this.material.normalMap = this._loadTexture(loader, '../js/textures/' + type + '_normal.' + imageType);
+    }
+
+    _loadTexture(loader, url) {
+        const texture = loader.load(url);
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(this._granularity, this._granularity);
+        return texture;
+    }
+}
+
+export class Ceiling extends Mesh {
+    constructor({
+        position = new Vector3(0, 0, 0),
+        size = 12,
+        thickness = 0.75,
+        color = 0x8a8a8a
+    } = {}) {
+        const ceilingGeometry = new BoxGeometry(size, size, thickness);
+        const ceilingMaterial = new MeshStandardMaterial({
+            color: color,
+            metalness: 0.05,
+            roughness: 0.95,
+            side: DoubleSide
+        });
+        ceilingMaterial.bumpScale = 0.05;
+        super(ceilingGeometry, ceilingMaterial);
+        this.rotation.x = Math.PI / 2;
+        this.position.copy(position);
     }
 }
