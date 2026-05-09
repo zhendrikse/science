@@ -29,7 +29,7 @@ class Solenoid {
             ));
 
         const segments = [];
-        for (let i = 0; i < points.length - 1; i++) {
+        for (let i = 0; i < totalSegments - 1; i++) {
             const p1 = points[i];
             const p2 = points[i + 1];
             const position = p1.clone().add(p2).multiplyScalar(0.5);
