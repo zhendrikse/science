@@ -26,7 +26,7 @@ function timeStep(dt) {
     const totalForce = gravitationalForce.clone().add(spring.force);
     ball.apply(totalForce, dt);
     if (ballHitsSpring() || spring.isCompressed)
-        spring.axis = ball.position.clone().sub(spring.position);
+        spring.axis = spring.positionVectorTo(ball);
 }
 
 //
