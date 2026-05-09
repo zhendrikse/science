@@ -13,7 +13,7 @@ $$
 \vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r}  \cdot \vec{p}} {r^3} \bigg),\quad \vec{p}=+q(\vec{r}_+) + -q(\vec{r}_-)
 $$
 
-<canvas id="dipoleCanvas" class="applicationCanvas" style="width: 800px; aspect-ratio: 2/1;"></canvas>
+<canvas id="dipoleCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
 <div class="buttonRow">
     <label for="fieldStrength">Field </label><input type="range" id="fieldStrength" min="0" max="1" step="0.01" value="0.5"/>
     <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
