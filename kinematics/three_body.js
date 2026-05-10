@@ -37,18 +37,9 @@ const bodyC = new Ball({
 const trailProperties = new TrailProperties({ maxPoints: 500 })
 
 const simulation = new ThreeSim({ canvas, overlay, scale });
-simulation.attach(bodyA.to(new Sphere({
-    color: "yellow",
-    trailProperties
-})));
-simulation.attach(bodyB.to(new Sphere({
-    color: "cyan",
-    trailProperties
-})));
-simulation.attach(bodyC.to(new Sphere({
-    color: "magenta",
-    trailProperties
-})));
+simulation.attach(bodyA.to(new Sphere({ color: "yellow", trailProperties })));
+simulation.attach(bodyB.to(new Sphere({ color: "cyan", trailProperties })));
+simulation.attach(bodyC.to(new Sphere({ color: "magenta", trailProperties })));
 
 function make(subSteps, dt) {
     const force_BA = gravitationalForceBetween(bodyA.and(bodyB));
