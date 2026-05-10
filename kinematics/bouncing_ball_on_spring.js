@@ -47,11 +47,7 @@ const simulation = new ThreeSim({
     cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7),
 });
 
-const helix = new Helix({
-    coils: 15,
-    color: "yellow"
-});
-
+const helix = new Helix({ coils: 15, color: "yellow" });
 const sphere = new Sphere({ color: "orange" });
 const velocityArrow = new Arrow({ color: "cyan", size: .1 });
 const forceArrow = new Arrow({ color: "red", size: .03 });
