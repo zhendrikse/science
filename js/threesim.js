@@ -1049,7 +1049,7 @@ export class Helix extends Mesh {
 export class Floor extends Mesh {
     static Type = Object.freeze({
         NONE: "None",
-        PAVING: "Paving",
+        PAVING: "paving",
         WOOD_WICKER: "Wood_Wicker_011"  // https://3dtextures.me/2024/06/22/wood-wicker-011/
     });
     constructor({
