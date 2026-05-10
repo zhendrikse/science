@@ -1,4 +1,4 @@
-import { Vector3, Color } from "three";
+import { Vector3 } from "three";
 import {Helix, Spring, ThreeSim, Ball, Sphere, Floor, Arrow, PlainVector} from "../js/threesim.js";
 
 const canvas = document.getElementById("ballSpringCanvas");
