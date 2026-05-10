@@ -27,7 +27,7 @@ const ball = new Ball({
 
 const ballHitsSpring = (epsilon=1e-2) => springTopAtRest.clone().sub(ball.position).length() < epsilon;
 const gravitationalForce = new Vector3(0, -9.8 * ball.mass, 0);
-const totalForce = new PlainVector();
+const totalForce = new PlainVector({ position: ball.position, direction: ball.acceleration });
 
 function timeStep(dt) {
     const netForce = gravitationalForce.clone().add(spring.force);
@@ -47,11 +47,7 @@ const simulation = new ThreeSim({
     cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7),
 });
 
-const helix = new Helix({
-    coils: 15,
-    color: "yellow"
-});
-
+const helix = new Helix({ coils: 15, color: "yellow" });
 const sphere = new Sphere({ color: "orange" });
 const velocityArrow = new Arrow({ color: "cyan", size: .1 });
 const forceArrow = new Arrow({ color: "red", size: .03 });
