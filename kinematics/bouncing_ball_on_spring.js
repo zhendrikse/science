@@ -1,21 +1,26 @@
-import { Vector3 } from "three";
-import {Helix, Spring, ThreeSim, Body, Sphere, Floor } from "../js/threesim.js";
+import { Vector3, Color } from "three";
+import {Helix, Spring, ThreeSim, Ball, Sphere, Floor, Arrow } from "../js/threesim.js";
 
 const canvas = document.getElementById("ballSpringCanvas");
-const overlay = document.getElementById("ballSpringOverlayText");
+const overlay = document.getElementById("overlayText");
 
 //
 // Physics
 //
-const spring = new Spring({
+const floor = new Floor({
     position: new Vector3(0, -1, 0),
-    direction: new Vector3(0, 0.6, 0),
+    type: Floor.Type.PAVING,
+});
+const spring = new Spring({
+    position: new Vector3(0, floor.level, 0),
+    axis: new Vector3(0, 0.6, 0),
     k: 450
 });
 const springTopAtRest = spring.endPosition;
 
-const ball = new Body({
+const ball = new Ball({
     position: new Vector3(0, 1.5, 0),
+    radius: 0.15,
     mass: 1.5
 });
 
@@ -35,23 +40,23 @@ function timeStep(dt) {
 const simulation = new ThreeSim({
     canvas,
     overlay,
-    cameraPosition: new Vector3(4, 2, 4).multiplyScalar(0.7),
+    cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7),
 });
 
-simulation.attach(spring.to(new Helix({
+const helix = new Helix({
     coils: 15,
     color: "yellow"
-})));
+});
 
-simulation.attach(ball.to(new Sphere({
-    radius: 0.15,
-    color: "red"
-})));
-
-simulation.addThreeJsObject(new Floor({positionY: -1}))
+const sphere = new Sphere({ color: "red" });
+const arrow = new Arrow({ Color: "red", size: .1 });
+simulation.attach(ball.to(sphere));
+simulation.attach(ball.to(arrow));
+simulation.attach(spring.to(helix));
+simulation.addThreeJsObject(floor);
 
 const dt = 1e-3;
 simulation.run(() => {
-    for (let subStep = 0; subStep < 20; subStep++)
+    for (let subStep = 0; subStep < 15; subStep++)
         timeStep(dt);
 });

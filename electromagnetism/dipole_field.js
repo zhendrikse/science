@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { ThreeSim, VectorField, ArrowField, Sphere, Body, Range, Particle } from "../js/threesim.js";
+import { ThreeSim, VectorField, ArrowField, Sphere, Range, Particle } from "../js/threesim.js";
 
 const canvas = document.getElementById("dipoleCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
@@ -12,10 +12,12 @@ class Dipole {
     constructor(distance = 1.2e-14, charge = ec) {
         this.positive = new Particle({
             position: new Vector3(distance, 0, 0),
+            radius: .1e-14,
             charge: +charge
         });
         this.negative = new Particle({
             position: new Vector3(-distance, 0, 0),
+            radius: 1e-14 * 0.05,
             charge: -charge
         });
     }
@@ -61,27 +63,20 @@ const simulation = new ThreeSim({
     fieldOfView: 40
 });
 
-simulation.attach(dipole.positive.to(new Sphere({
-        radius: .1e-14,
-        color: new Color("red")
-    }))
-);
+const positiveSphere = new Sphere({ color: new Color("red") });
+const negativeSphere = new Sphere({color: new Color("blue" )});
+const arrowField = new ArrowField({
+    xRange: new Range(-20 / scale, 20 / scale, 2 / scale),
+    yRange: new Range(-12 / scale, 12 / scale, 2 / scale),
+    zRange: new Range(-12 / scale, 12 / scale, 2 / scale),
+    scaleFactor: 3e-5,
+    round: false,
+    magnitudeMap: magnitude => Math.sqrt(magnitude),
+});
 
-simulation.attach(dipole.negative.to(new Sphere({
-        radius: 1e-14 * 0.05,
-        color: new Color("blue")
-    }))
-);
-
-simulation.attach(dipoleField.to(new ArrowField({
-        xRange: new Range(-20 / scale, 20 / scale, 2 / scale),
-        yRange: new Range(-12 / scale, 12 / scale, 2 / scale),
-        zRange: new Range(-12 / scale, 12 / scale, 2 / scale),
-        scaleFactor: 3e-5,
-        round: false,
-        magnitudeMap: magnitude => Math.sqrt(magnitude),
-    }))
-);
+simulation.attach(dipole.positive.to(positiveSphere));
+simulation.attach(dipole.negative.to(negativeSphere));
+simulation.attach(dipoleField.to(arrowField));
 
 //
 // Event listeners

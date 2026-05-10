@@ -223,44 +223,27 @@ export function gravitationalForceBetween(twoBodies) {
 //
 // Bodies to do physics with
 //
-export class Body {
+class Body {  // INTENTIONALLY NOT EXPORTED TO THE OUTSIDE WORLD !!!
     constructor({
                     position = new Vector3(0, 0, 0),
-                    velocity = new Vector3(0, 0, 0),
-                    mass = 1,
+                    velocity = new Vector3(0, 0, 0)
                 } = {}) {
         this.position = position.clone(); // Intentionally public
         this.velocity = velocity.clone(); // Intentionally public
-        this.mass = mass;                 // Intentionally public
-    }
-
-    get direction() {
-        throw new Error("This body type does not implement direction(), hence it cannot be rendered with this view.");
     }
 
     clone() {
         return new Body({
             position: this.position.clone(),
             velocity: this.velocity.clone(),
-            mass: this.mass,
         });
     }
 
-    and = (otherBody) => [this, otherBody];
+    and(otherBody) { return [this, otherBody] };
 
     to(view) { return { body: this, view: view}; };
 
     shiftBy(displacement) { this.position.add(displacement); }
-
-    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
-        const updatedBody = integrator(this, dt, accelerationFn);
-        this.position = updatedBody.position;
-        this.velocity = updatedBody.velocity;
-    }
-
-    get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
-    get momentum() { return this.mass * this.velocity; }
 
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
@@ -270,10 +253,8 @@ export class Body {
 export class PlainVector extends Body {
     constructor({position = new Vector(), direction = new Vector()} = {}) {
         super({ position });
-        this._direction = direction;
+        this.direction = direction.clone();
     }
-
-    get direction() { return this._direction; }
 }
 
 export class VelocityVector extends Body {
@@ -281,7 +262,7 @@ export class VelocityVector extends Body {
         super({ position, velocity });
     }
 
-    get direction() { return this.velocity.clone(); }
+    get direction() { return this.velocity; }
 }
 
 export class VectorField {
@@ -347,6 +328,39 @@ export class VectorField {
     }
 }
 
+export class Ball extends Body {
+    constructor({
+        position = new Vector3(0, 0, 0),
+        velocity = new Vector3(0, 0, 0),
+        mass = 1,
+        radius = 1
+    } = {}) {
+        super( {position, velocity})
+        this.mass = mass;
+        this.radius = radius;
+    }
+
+    clone() {
+        return new Body({
+            position: this.position.clone(),
+            velocity: this.velocity.clone(),
+            radius: this.radius,
+            mass: this.mass
+        });
+    }
+
+    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
+        const updatedBody = integrator(this, dt, accelerationFn);
+        this.position = updatedBody.position;
+        this.velocity = updatedBody.velocity;
+    }
+
+    get direction() { return this.velocity; }
+    get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
+    get momentum() { return this.mass * this.velocity; }
+}
+
 export class Particle extends Body {
     static fieldAt(body, point) {
         const rVec = point.clone().sub(body.position);
@@ -361,22 +375,37 @@ export class Particle extends Body {
         position = new Vector3(0, 0, 0),
         velocity = new Vector3(0, 0, 0),
         mass = 1,
+        radius = 1,
         charge = 0
     } = {}) {
-        super( {position, velocity, mass})
+        super( {position, velocity})
         this.charge = charge;
+        this.mass = mass;
+        this.radius = radius;
     }
 
     clone() {
         return new Body({
             position: this.position.clone(),
             velocity: this.velocity.clone(),
+            radius: this.radius,
             mass: this.mass,
-            charge: this.charge
+            char: this.charge
         });
     }
 
+    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
+        const updatedBody = integrator(this, dt, accelerationFn);
+        this.position = updatedBody.position;
+        this.velocity = updatedBody.velocity;
+    }
+
     fieldAt(point) { return Particle.fieldAt(this, point); }
+
+    get direction() { return this.velocity; }
+    get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
+    get momentum() { return this.mass * this.velocity; }
 }
 
 class VectorFieldVector extends Body {
@@ -389,23 +418,19 @@ class VectorFieldVector extends Body {
 }
 
 export class Spring extends Body {
-    constructor({position = new Vector3(), direction = new Vector3(0, 1, 0), k=100} = {}) {
+    constructor({position = new Vector3(), axis = new Vector3(0, 1, 0), k=100} = {}) {
         super({ position });
-        this._direction = direction;
-        this._restLength = direction.length();
-        this._k = k; // spring constant
+        this.axis = axis;
+        this.restLength = axis.length();
+        this.k = k; // spring constant
     }
 
-    get direction() { return this._direction; }
-    get restLength() { return this._restLength; }
+    get direction() { return this.axis; }
     get potentialEnergy() { return 0.5 * this.k * this.displacement * this.displacement; }
-    get k() { return this._k; }
-    get axis() { return this._direction; }
-    set axis(newAxis) { this._direction = newAxis; }
-    get force() { return this._direction.clone().normalize().multiplyScalar(-this._k * this.displacement); }
-    get displacement() { return  this._direction.length() - this._restLength; }
-    get isCompressed() { return this._direction.length() < this._restLength; }
-    get endPosition() { return this.position.clone().add(this._direction); }
+    get force() { return this.axis.clone().normalize().multiplyScalar(-this.k * this.displacement); }
+    get displacement() { return  this.axis.length() - this.restLength; }
+    get isCompressed() { return this.axis.length() < this.restLength; }
+    get endPosition() { return this.position.clone().add(this.axis); }
 }
 
 /*************************
@@ -628,7 +653,6 @@ export class Trail {
 //
 export class Sphere extends Mesh {
     constructor({
-        radius = 1,
         color = 0xffff00,
         visible = true,
         segments = 24,
@@ -652,13 +676,16 @@ export class Sphere extends Mesh {
         this._initialState = null;
         this.visible = visible;
         this.castShadow = castShadow;
-        this._radius = radius;
         this._trail = null;
         this._trailProperties = trailProperties;
         this.addEventListener('added', this._newTrail);
     }
 
     set body(body) {
+        // Sanity checks
+        if (!body.radius)
+            throw new Error("This body type does not have a radius, hence it cannot be attached to this view.");
+
         this._body = body;
         this._initialState = body.clone();
     }
@@ -681,7 +708,7 @@ export class Sphere extends Mesh {
         const renderPosition = transform.physicsToRender(this._body.position);
         this.position.copy(renderPosition);
 
-        const renderRadius = transform.scaleRadius(this._radius);
+        const renderRadius = transform.scaleRadius(this._body.radius);
         this.scale.setScalar(renderRadius);
 
         this._trail?.update(renderPosition);
@@ -741,7 +768,11 @@ export class Arrow extends Group {
     }
 
     set body(body) {
-        this._body = body;
+        // Sanity checks
+        if (!body.direction)
+            throw new Error("This body type does not have a direction, hence it cannot be attached to this view.");
+
+            this._body = body;
         this._initialState = body.clone();
     }
 
@@ -765,7 +796,7 @@ export class Arrow extends Group {
     render(transform) {
         this.position.copy(transform.physicsToRender(this._body.position));
 
-        const axis = this._body.direction;
+        const axis = this._body.direction.clone();
         const rawMagnitude = axis.length();
         const visualMagnitude = this._magnitudeMap(rawMagnitude);
         const length = visualMagnitude * this._size;
@@ -874,6 +905,10 @@ export class Cylinder extends Mesh {
     }
 
     set body(body) {
+        // Sanity checks
+        if (!body.direction)
+            throw new Error("This body type does not have a direction, hence it cannot be attached to this view.");
+
         this._body = body;
         this._initialState = body.clone();
     }
@@ -882,14 +917,14 @@ export class Cylinder extends Mesh {
         const pos = transform.physicsToRender(this._body.position);
         this.position.copy(pos);
 
-        const axis = this._body.direction;
+        const axis = transform.physicsToRender(this._body.direction.clone());
         const length = axis.length();
         if (length < 1e-6)
             return;
 
         this.scale.set(1, length, 1);
 
-        const direction = axis.clone().normalize();
+        const direction = axis.normalize();
         this.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
 
         this.position.add(direction.multiplyScalar(length / 2));
@@ -964,6 +999,10 @@ export class Helix extends Mesh {
     }
 
     set body(body) {
+        // Sanity checks
+        if (!body.direction)
+            throw new Error("This body type does not have a direction, hence it cannot be attached to this view.");
+
         this._body = body;
         this._initialState = body.clone();
     }
@@ -995,7 +1034,7 @@ export class Helix extends Mesh {
         const pos = transform.physicsToRender(this._body.position);
         this.position.copy(pos);
 
-        const axis = this._body.direction;
+        const axis = transform.physicsToRender(this._body.direction.clone());
         if (axis.length() < 1e-6)
             return;
 
@@ -1011,18 +1050,20 @@ export class Helix extends Mesh {
 //
 export class Floor extends Mesh {
     static Type = Object.freeze({
-        PAVING: "paving",
+        NONE: "None",
+        PAVING: "Paving",
         WOOD_WICKER: "Wood_Wicker_011"  // https://3dtextures.me/2024/06/22/wood-wicker-011/
     });
     constructor({
-        type= Floor.Type.PAVING,
-        positionY = 0,
-        planeSize = new Vector2(3, 3),
-        granularity = 2
+        type= Floor.Type.NONE,
+        position = new Vector3(),
+        planeSizeXy = new Vector2(2, 2),
+        granularity = .5,
+        color = null
     } = {}) {
-        const planeGeometry = new PlaneGeometry(planeSize.x, planeSize.y);
+        const planeGeometry = new PlaneGeometry(planeSizeXy.x, planeSizeXy.y);
         const planeMaterial = new MeshStandardMaterial({
-            normalScale: new Vector2(3, 3),
+            normalScale: planeSizeXy,
             roughness: 1,
             //occlusionMap: textureAmbientOcclusion,
             //alphaMap: textureOpacity,
@@ -1032,8 +1073,13 @@ export class Floor extends Mesh {
         super(planeGeometry, planeMaterial);
         this.receiveShadow = true;
         this.rotation.x = -Math.PI / 2;
-        this.position.y = positionY;
+        this.position.copy(position);
         this._granularity = granularity;
+
+        if (color)
+            this.material.color.set(color);
+        if (type === Floor.Type.NONE)
+            return;
 
         const loader = new TextureLoader();
         const imageType = type === Floor.Type.PAVING ? "jpg" : "png";
@@ -1049,6 +1095,8 @@ export class Floor extends Mesh {
         texture.repeat.set(this._granularity, this._granularity);
         return texture;
     }
+
+    get level() { return this.position.y; }
 }
 
 export class Ceiling extends Mesh {

@@ -44,12 +44,12 @@ class Solenoid {
         const r = position.clone().sub(segment.position);
         const r2 = r.lengthSq();
 
-        return (r2 < 1e-6) ? new Vector3() : segment.direction().clone()
+        return (r2 < 1e-6) ? new Vector3() : segment.direction.clone()
             .cross(r.clone().normalize())
             .multiplyScalar(
                 MU0 * CURRENT /
                 (4 * Math.PI) *
-                segment.direction().length() / r2
+                segment.direction.length() / r2
             );
     }
 

@@ -1,4 +1,4 @@
-import { ThreeSim, Sphere, TrailProperties, Integrators, Body, G, gravitationalForceBetween } from "../js/threesim.js";
+import { ThreeSim, Sphere, TrailProperties, Integrators, Ball, G, gravitationalForceBetween } from "../js/threesim.js";
 import { Vector3 } from "three";
 
 const canvas = document.getElementById("threeBodyCanvas");
@@ -12,40 +12,40 @@ const radiusA = 0.1 * astronomical_unit;
 const radiusB = radiusA / 0.8;
 const velocityA = Math.sqrt(G * 0.8 * mass * radiusA) / (radiusA + radiusB);
 
-const bodyA = new Body({
+const radius = 1.9e9;
+const bodyA = new Ball({
     position: new Vector3(radiusA, 0, 0),
     velocity: new Vector3(0, velocityA, 0),
+    radius,
     mass
 });
 
-const bodyB = new Body({
+const bodyB = new Ball({
     position: new Vector3(-radiusB, 0, 0),
     velocity: new Vector3(0, -velocityA / 0.8, 0),
+    radius,
     mass: mass * 0.8
 });
 
-const bodyC = new Body({
+const bodyC = new Ball({
     position: new Vector3(0, 0, radiusA),
     velocity: new Vector3(0, 0, 0),
+    radius,
     mass: mass * 0.5
 });
 
 const trailProperties = new TrailProperties({ maxPoints: 500 })
-const sphereRadius = 1.9e9;
 
 const simulation = new ThreeSim({ canvas, overlay, scale });
 simulation.attach(bodyA.to(new Sphere({
-    radius: sphereRadius,
     color: "yellow",
     trailProperties
 })));
 simulation.attach(bodyB.to(new Sphere({
-    radius: sphereRadius,
     color: "cyan",
     trailProperties
 })));
 simulation.attach(bodyC.to(new Sphere({
-    radius: sphereRadius,
     color: "magenta",
     trailProperties
 })));

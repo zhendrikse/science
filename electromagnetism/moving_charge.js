@@ -22,6 +22,7 @@ class Capacitor {
                 for (const y of [topY, bottomY])
                     this.charges.push(new Particle({
                         position: new Vector3(x / scale, y, z / scale),
+                        radius: 1e-14,
                         charge: EC * (y > 0 ? 1 : -1)
                     }));
     }
@@ -55,6 +56,7 @@ const movingCharge = new Particle({
     position: new Vector3(-30, 4, 0).divideScalar(scale),
     velocity: new Vector3(15, 0, 0).divideScalar(scale),
     mass: 1.6e-27,
+    radius: 1.2e-14,
     charge: 5e-42 * EC
 });
 
@@ -77,25 +79,24 @@ simulation.addThreeJsObject(new AmbientLight(0xffffff, 0.8));
 
 for (const charge of capacitor.charges)
     simulation.attachStatically(charge.to(new Sphere({
-        radius: 1e-14,
         color: charge.charge > 0 ? new Color(0x4444ff) : new Color(0xff0000)
     })));
 
 simulation.attach(movingCharge.to(new Sphere({
-    radius: 1.2e-14,
     color: new Color(0x44ff44),
     trailProperties: new TrailProperties({ maxPoints: 400 })
 })));
 
-simulation.attachStatically(capacitorField.to(new ArrowField({
-        xRange: new Range(-18 / scale, 18 / scale, 8 / scale),
-        yRange: new Range(-9 / scale, 9 / scale, 4 / scale),
-        zRange: new Range(-18 / scale, 18 / scale, 8 / scale),
-        scaleFactor: 8e-10,
-        round: false,
-        magnitudeMap: magnitude => Math.sqrt(magnitude),
-        colorMap: magnitude => new Color(1, .25 * magnitude, 0)
-    })));
+const arrowField = new ArrowField({
+    xRange: new Range(-18 / scale, 18 / scale, 8 / scale),
+    yRange: new Range(-9 / scale, 9 / scale, 4 / scale),
+    zRange: new Range(-18 / scale, 18 / scale, 8 / scale),
+    scaleFactor: 8e-10,
+    round: false,
+    magnitudeMap: magnitude => Math.sqrt(magnitude),
+    colorMap: magnitude => new Color(1, .25 * magnitude, 0)
+});
+simulation.attachStatically(capacitorField.to(arrowField));
 
 //
 // Event listeners
