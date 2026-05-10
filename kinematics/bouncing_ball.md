@@ -36,6 +36,9 @@
     <canvas class="applicationCanvas" id="ballSpringCanvas"></canvas>
     <div class="overlayText" id="ballSpringOverlayText">Click to start the animation!</div>
 </div>
+<div class="buttonRow">
+    <label for="velocityArrow">Velocity arrow: </label><input type="checkbox" id="velocityArrow" checked/>
+</div>
 <script type="module" src="bouncing_ball_on_spring.js"></script>
 
 {% include share_buttons.html %}

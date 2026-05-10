@@ -2,8 +2,8 @@ import { Vector3, Color } from "three";
 import {Helix, Spring, ThreeSim, Ball, Sphere, Floor, Arrow } from "../js/threesim.js";
 
 const canvas = document.getElementById("ballSpringCanvas");
-const overlay = document.getElementById("overlayText");
-
+const overlay = document.getElementById("ballSpringOverlayText");
+const velocityArrowButton = document.getElementById("velocityArrow");
 //
 // Physics
 //
@@ -49,11 +49,13 @@ const helix = new Helix({
 });
 
 const sphere = new Sphere({ color: "red" });
-const arrow = new Arrow({ Color: "red", size: .1 });
+const arrow = new Arrow({ color: "cyan", size: .1 });
 simulation.attach(ball.to(sphere));
 simulation.attach(ball.to(arrow));
 simulation.attach(spring.to(helix));
 simulation.addThreeJsObject(floor);
+
+velocityArrowButton.addEventListener("click", () => arrow.visible = velocityArrowButton.checked);
 
 const dt = 1e-3;
 simulation.run(() => {

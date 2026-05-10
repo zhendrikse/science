@@ -801,8 +801,6 @@ export class Arrow extends Group {
         const visualMagnitude = this._magnitudeMap(rawMagnitude);
         const length = visualMagnitude * this._size;
 
-        if (length < 1e-6) return;
-
         if (this._colorMap) {
             const color = this._colorMap(length);
             this._shaft.material.color.copy(color);
