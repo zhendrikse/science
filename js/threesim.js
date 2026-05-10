@@ -225,11 +225,12 @@ export function gravitationalForceBetween(twoBodies) {
 //
 class Body {  // INTENTIONALLY NOT EXPORTED TO THE OUTSIDE WORLD !!!
     constructor({
-                    position = new Vector3(0, 0, 0),
-                    velocity = new Vector3(0, 0, 0)
+                    position = new Vector3(),
+                    velocity = new Vector3()
                 } = {}) {
-        this.position = position.clone(); // Intentionally public
-        this.velocity = velocity.clone(); // Intentionally public
+        this.acceleration = new Vector3();  // Intentionally public
+        this.position = position.clone();   // Intentionally public
+        this.velocity = velocity.clone();   // Intentionally public
     }
 
     clone() {
@@ -251,7 +252,7 @@ class Body {  // INTENTIONALLY NOT EXPORTED TO THE OUTSIDE WORLD !!!
 }
 
 export class PlainVector extends Body {
-    constructor({position = new Vector(), direction = new Vector()} = {}) {
+    constructor({position = new Vector3(), direction = new Vector3()} = {}) {
         super({ position });
         this.direction = direction.clone();
     }
@@ -354,6 +355,7 @@ export class Ball extends Body {
         const updatedBody = integrator(this, dt, accelerationFn);
         this.position = updatedBody.position;
         this.velocity = updatedBody.velocity;
+        this.acceleration = updatedBody.acceleration;
     }
 
     get direction() { return this.velocity; }
@@ -399,6 +401,7 @@ export class Particle extends Body {
         const updatedBody = integrator(this, dt, accelerationFn);
         this.position = updatedBody.position;
         this.velocity = updatedBody.velocity;
+        this.acceleration = updatedBody.acceleration;
     }
 
     fieldAt(point) { return Particle.fieldAt(this, point); }
@@ -444,6 +447,7 @@ export class Integrators {
 
         newBody.velocity.addScaledVector(acceleration, dt);
         newBody.position.addScaledVector(body.velocity, dt);
+        newBody.acceleration = acceleration;
 
         return newBody;
     }
@@ -454,14 +458,17 @@ export class Integrators {
 
         newBody.velocity.addScaledVector(acceleration, dt);
         newBody.position.addScaledVector(newBody.velocity, dt);
+        newBody.acceleration = acceleration;
 
         return newBody;
     }
 
     static rk2Step(body, dt, accelerationFn) {
+        const acceleration = accelerationFn(body);
+
         const derivative = (body) => ({
             dx: body.velocity.clone(),
-            dv: accelerationFn(body)
+            dv: acceleration
         });
 
         const k1 = derivative(body);
@@ -475,14 +482,17 @@ export class Integrators {
         const newBody = body.clone();
         newBody.position.addScaledVector(k1.dx.clone().add(k2.dx), dt / 2);
         newBody.velocity.addScaledVector(k1.dv.clone().add(k2.dv), dt / 2);
+        newBody.acceleration = acceleration;
 
         return newBody;
     }
 
     static rk4Step(body, dt, accelerationFn) {
+        const acceleration = accelerationFn(body);
+
         const derivative = (body) => ({
             dx: body.velocity.clone(),
-            dv: accelerationFn(body)
+            dv: acceleration
         });
 
         const k1 = derivative(body);
@@ -515,6 +525,8 @@ export class Integrators {
             .addScaledVector(k2.dv, dt / 3)
             .addScaledVector(k3.dv, dt / 3)
             .addScaledVector(k4.dv, dt / 6);
+
+        newBody.acceleration = acceleration;
 
         return newBody;
     }

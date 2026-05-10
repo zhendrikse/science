@@ -37,7 +37,8 @@
     <div class="overlayText" id="ballSpringOverlayText">Click to start the animation!</div>
 </div>
 <div class="buttonRow">
-    <label for="velocityArrow">Velocity arrow: </label><input type="checkbox" id="velocityArrow" checked/>
+    <label for="velocityArrow">Velocity: </label><input type="checkbox" id="velocityArrow" checked/>
+    <label for="forceArrow">Force: </label><input type="checkbox" id="forceArrow" checked/>
 </div>
 <script type="module" src="bouncing_ball_on_spring.js"></script>
 
