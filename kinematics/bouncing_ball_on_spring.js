@@ -27,7 +27,7 @@ const ball = new Ball({
 
 const ballHitsSpring = (epsilon=1e-2) => springTopAtRest.clone().sub(ball.position).length() < epsilon;
 const gravitationalForce = new Vector3(0, -9.8 * ball.mass, 0);
-const totalForce = new PlainVector();
+const totalForce = new PlainVector({ position: ball.position, direction: ball.acceleration });
 
 function timeStep(dt) {
     const netForce = gravitationalForce.clone().add(spring.force);
