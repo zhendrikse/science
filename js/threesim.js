@@ -262,6 +262,14 @@ export class VelocityVector extends Body {
     constructor({position = new Vector(), velocity = new Vector()} = {}) {
         super({ position, velocity });
     }
+    
+    accelerateWith(acceleration, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        const accelerationFn = (body) => acceleration;
+        const updatedBody = integrator(this, dt, accelerationFn);
+        this.position = updatedBody.position;
+        this.velocity = updatedBody.velocity;
+        this.acceleration = updatedBody.acceleration;
+    }
 
     get direction() { return this.velocity; }
 }

@@ -64,7 +64,7 @@ class Flock {
         diff = avoid[count].clone().normalize().sub(bird.position);
         this._acceleration.add(diff.multiplyScalar(this._avoid_weight));
 
-        bird.step(this._acceleration, dt)
+        bird.accelerateWith(this._acceleration, dt);
     }
 
     update(dt) {
