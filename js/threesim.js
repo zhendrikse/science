@@ -31,6 +31,7 @@ export class ThreeSim {
         background = null, // If background is not defined, it defaults to transparent
         controls = true,
         light = true,
+        resetFunction = null,
         cameraPosition = new Vector3(30, 30, 30),
         fieldOfView = 50
     }) {
@@ -46,6 +47,7 @@ export class ThreeSim {
         this._dynamicObjects = []; // Need to be synchronized every update
         this._scene = new Scene();
         this._running = false;
+        this._onReset = resetFunction;
 
         this._world = new Group();
         this._scene.add(this._world);
@@ -178,9 +180,13 @@ export class ThreeSim {
         for (const anObject of this._dynamicObjects)
             if (anObject.reset)
                 anObject.reset();
+
+        if ( this._onReset)
+            this._onReset();
     }
 
     set autoRotate(autoRotate) { this._autoRotate = autoRotate; }
+    set resetFunction(resetFunction) { this._onReset = resetFunction; }
 }
 
 class Transform {
@@ -262,7 +268,7 @@ export class VelocityVector extends Body {
     constructor({position = new Vector(), velocity = new Vector()} = {}) {
         super({ position, velocity });
     }
-    
+
     accelerateWith(acceleration, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
         const accelerationFn = (body) => acceleration;
         const updatedBody = integrator(this, dt, accelerationFn);
@@ -342,11 +348,13 @@ export class Ball extends Body {
         position = new Vector3(0, 0, 0),
         velocity = new Vector3(0, 0, 0),
         mass = 1,
-        radius = 1
+        radius = 1,
+        elasticity = 1
     } = {}) {
         super( {position, velocity})
         this.mass = mass;
         this.radius = radius;
+        this.elasticity = elasticity;
     }
 
     clone() {
@@ -368,6 +376,7 @@ export class Ball extends Body {
 
     get direction() { return this.velocity; }
     get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
+    get potentialEnergy() { return this.mass * G * this.position.y; }
     get momentum() { return this.mass * this.velocity; }
 }
 
@@ -1066,51 +1075,99 @@ export class Helix extends Mesh {
 //
 // Floor and ceiling
 //
-export class Floor extends Mesh {
+class Grid extends Group {
+    constructor({
+        size = 1,
+        granularity = 20,
+        y = 0,
+        color = 0x00ff00
+    } = {}) {
+        super();
+
+        const step = (size * 2) / granularity;
+        const material = new LineBasicMaterial({ color: color });
+        for (let i = 0; i <= granularity; i++) {
+            const x = -size + i * step;
+            this.add(new Line(this.#verticalLine(x, y, size), material));
+            this.add(new Line(this.#horizontalLine(x, y, size), material));
+        }
+    }
+
+    #verticalLine(x, y, size) {
+        return new BufferGeometry().setFromPoints([new Vector3(x, y, -size), new Vector3(x, y, size)]);
+    }
+
+    #horizontalLine(x, y, size) {
+        return new BufferGeometry().setFromPoints([new Vector3(-size, y, x), new Vector3(size, y, x)]);
+    }
+}
+
+export class Floor extends Group {
     static Type = Object.freeze({
-        NONE: "None",
-        PAVING: "paving",
-        WOOD_WICKER: "Wood_Wicker_011"  // https://3dtextures.me/2024/06/22/wood-wicker-011/
+        PLAIN: "PLAIN",
+        GRID: "Grid",
+        PAVING: "Paving",
+        WOOD_WICKER: "WoodWicker"  // https://3dtextures.me/2024/06/22/wood-wicker-011/
     });
     constructor({
-        type= Floor.Type.NONE,
+        type= Floor.Type.PLAIN,
         position = new Vector3(),
         planeSizeXy = new Vector2(2, 2),
-        granularity = .5,
-        color = null
+        granularity = 1,
+        color = 0x00ff00,
+        opacity = null
     } = {}) {
+        super();
         const planeGeometry = new PlaneGeometry(planeSizeXy.x, planeSizeXy.y);
         const planeMaterial = new MeshStandardMaterial({
             normalScale: planeSizeXy,
             roughness: 1,
+            transparent: opacity !== null,
+            opacity: opacity ? opacity : 1,
+            side: DoubleSide
             //occlusionMap: textureAmbientOcclusion,
             //alphaMap: textureOpacity,
             //aoMap: textureAmbientOcclusion,
             //aoMapIntensity: 0,
         });
-        super(planeGeometry, planeMaterial);
-        this.receiveShadow = true;
-        this.rotation.x = -Math.PI / 2;
-        this.position.copy(position);
-        this._granularity = granularity;
+        this._mesh = new Mesh(planeGeometry, planeMaterial);
+        this._mesh.receiveShadow = true;
+        this._mesh.rotation.x = -Math.PI / 2;
 
-        if (color)
-            this.material.color.set(color);
-        if (type === Floor.Type.NONE)
-            return;
+        this.position.copy(position);
+        this.add(this._mesh);
 
         const loader = new TextureLoader();
-        const imageType = type === Floor.Type.PAVING ? "jpg" : "png";
-        this.material.map = this._loadTexture(loader, '../js/textures/' + type + '_color.' + imageType);
-        this.material.roughnessMap = this._loadTexture(loader, '../js/textures/' + type + '_roughness.' + imageType);
-        this.material.normalMap = this._loadTexture(loader, '../js/textures/' + type + '_normal.' + imageType);
+        const path = '../js/textures/';
+        switch (type) {
+            case Floor.Type.PLAIN:
+                this._mesh.material.color.set(color);
+                break;
+            case Floor.Type.GRID:
+                this.add(new Grid({
+                    color,
+                    size: planeSizeXy.x * .5, // TODO enable rectangular formats
+                    granularity: granularity
+                }));
+                break;
+            case Floor.Type.PAVING:
+                this._mesh.material.map = this._loadTexture(loader, path + '/paving_color.jpg', granularity);
+                this._mesh.material.roughnessMap = this._loadTexture(loader, path + '/paving_roughness.jpg', granularity);
+                this._mesh.material.normalMap = this._loadTexture(loader, path + '/paving_normal.jpg', granularity);
+                break;
+            case Floor.Type.WOOD_WICKER:
+                this._mesh.material.map = this._loadTexture(loader, path + '/Wood_Wicker_011_color.png', granularity);
+                this._mesh.material.roughnessMap = this._loadTexture(loader, path + '/Wood_Wicker_011_roughness.png', granularity);
+                this._mesh.material.normalMap = this._loadTexture(loader, path + '/Wood_Wicker_011_normal.png', granularity);
+                break;
+        }
     }
 
-    _loadTexture(loader, url) {
+    _loadTexture(loader, url, granularity) {
         const texture = loader.load(url);
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
-        texture.repeat.set(this._granularity, this._granularity);
+        texture.repeat.set(granularity, granularity);
         return texture;
     }
 

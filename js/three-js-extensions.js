@@ -351,9 +351,6 @@ export class Axes extends Group {
         return this;
     }
 
-    get annotations() { return this._annotations; }
-    get layout() { return this._layout; }
-
     onWindowResize = () => this._annotations?.onWindowResize()
     render = (scene, camera) => this._annotations?.render(scene, camera);
 
@@ -410,10 +407,6 @@ class AxesAnnotation extends Group {
     render(scene, camera) {
         this._renderer.render(scene, camera);
     }
-
-    shiftBy(translationVector) {
-        this._labels.forEach((label) => label.position.add(translationVector));
-    }
 }
 
 class AxesLayout extends Group {
@@ -457,18 +450,11 @@ class AxesLayout extends Group {
         return [grid, plane];
     }
 
-    get divisions() { return this._divisions; }
     get size() { return this._size; }
     get frame() { return this._frame; }
     get xy() { return this._xy; }
     get xz() { return this._xz; }
     get yz() { return this._yz; }
-
-    shiftBy(translationVector) {
-        this._xy.position.add(translationVector);
-        this._xz.position.add(translationVector);
-        this._yz.position.add(translationVector);
-    }
 }
 
 class ClassicalAxesLayout extends AxesLayout {
