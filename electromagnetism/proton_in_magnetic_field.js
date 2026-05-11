@@ -37,7 +37,7 @@ const proton = new Particle({
 const magneticField = new MagneticField(Number(strengthSlider.value) * .1);
 
 function timeStep(dt) {
-    const fieldVector = magneticField.sample(proton.position);
+    const fieldVector = magneticField.sampleAt(proton.position);
     const force = fieldVector.cross(proton.velocity).multiplyScalar(proton.charge);
     proton.apply(force, dt);
 }

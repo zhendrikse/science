@@ -296,7 +296,7 @@ export class VectorField {
         let max = -Infinity;
 
         for (const position of positions) {
-            const mag = this.sample(position).length();
+            const mag = this.sampleAt(position).length();
             min = Math.min(min, mag);
             max = Math.max(max, mag);
         }
@@ -304,7 +304,7 @@ export class VectorField {
         return { min, max };
     }
 
-    sample(positionVector) {
+    sampleAt(positionVector) {
         throw new Error("You invoked the method of an abstract base class. Please create a subclass first.");
     }
 
@@ -313,14 +313,14 @@ export class VectorField {
         const dy = new Vector3(0, h, 0);
         const dz = new Vector3(0, 0, h);
 
-        const Fx1 = this.sample(position.clone().add(dx));
-        const Fx0 = this.sample(position.clone().sub(dx));
+        const Fx1 = this.sampleAt(position.clone().add(dx));
+        const Fx0 = this.sampleAt(position.clone().sub(dx));
 
-        const Fy1 = this.sample(position.clone().add(dy));
-        const Fy0 = this.sample(position.clone().sub(dy));
+        const Fy1 = this.sampleAt(position.clone().add(dy));
+        const Fy0 = this.sampleAt(position.clone().sub(dy));
 
-        const Fz1 = this.sample(position.clone().add(dz));
-        const Fz0 = this.sample(position.clone().sub(dz));
+        const Fz1 = this.sampleAt(position.clone().add(dz));
+        const Fz0 = this.sampleAt(position.clone().sub(dz));
         return { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 };
     }
 
