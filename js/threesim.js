@@ -145,7 +145,6 @@ export class ThreeSim {
 
     addThreeJsObject(anObject, dynamic=false) {
         this._world.add(anObject);
-        anObject.render?.(this._transform); // Initial sync before render loop
         if (dynamic)
             this._dynamicObjects.push(anObject);
         else
@@ -153,8 +152,12 @@ export class ThreeSim {
     }
 
     attach(bodyAndView) {
-        bodyAndView.view.body = bodyAndView.body;
-        this.addThreeJsObject(bodyAndView.view, true);
+        const viewObject = bodyAndView.view;
+        this.addThreeJsObject(viewObject, true);
+        viewObject.body = bodyAndView.body;
+
+        // Initial render before entering render loop
+        viewObject.render?.(this._transform);
     }
 
     attachStatically(bodyAndView) {
@@ -582,19 +585,6 @@ export class Range {
 //
 // T R A I L
 //
-export class TrailProperties {
-    constructor({
-                    maxPoints = 200,
-                    trailStep = 1,
-                    lineWidth = 1,
-                    color = null // By default, try to obtain the color from the object that is followed
-                } = {}) {
-        this.maxPoints = maxPoints;
-        this.lineWidth = lineWidth;
-        this.color = color;
-        this.trailStep = trailStep;
-    }
-}
 
 class TrailLine {
     constructor({
@@ -632,35 +622,58 @@ class TrailLine {
     }
 }
 
-export class Trail {
-    constructor(parentGroup, trailProperties) {
-        this._parentGroup = parentGroup; // Parent group of the object that is followed
-        this._color = trailProperties.color ? trailProperties.color : null;
-        this._maxPoints = trailProperties.maxPoints;
-        this._lineWidth = trailProperties.lineWidth;
-        this._trail = null;
+export class Trail extends Group {
+    constructor({
+        maxPoints = 200,
+        trailStep = 1,
+        lineWidth = 1,
+        color = 0xffff00
+    } = {}) {
+        super();
+        this._color = color;
+        this._maxPoints = maxPoints;
+        this._lineWidth = lineWidth;
         this._trailAccumulator = 0;
-        this._trailStep = trailProperties.trailStep;
+        this._trailStep = trailStep;
+        this._body = null;
+        this._initialState = null;
+        this._previousPosition = null;
     }
 
-    update(position, increment = 1) {
-        if (!this._trail) return;
+    set body(body) {
+        this._body = body;
+        this._initialState = body.clone();
+        this._previousPosition = body.position.clone();
+        this._renew();
+    }
+
+    reset() {
+        this.dispose();
+        this._renew();
+    }
+
+    render(transform, increment = 1) {
+        const newPosition = transform.physicsToRender(this._body.position);
+        if (this._previousPosition.x === newPosition.x &&
+            this._previousPosition.y === newPosition.y &&
+            this._previousPosition.z === newPosition.z)
+            return; // When body's position remains unchanged, do NOT update the trail
+
         this._trailAccumulator += increment;
         if (this._trailAccumulator >= this._trailStep) {
-            this._trail.addPoint(position);
+            this._trail.addPoint(newPosition);
+            this._previousPosition = newPosition;
             this._trailAccumulator = 0;
         }
     }
 
-    attachTo(object) {
-        object.trail = this; // <== pass in trail to object so that it can update it
-        this._color = this._color ? this._color : object.material.color;
+    _renew() {
         this._trail = new TrailLine({
             maxPoints: this._maxPoints,
-            color: this._color ? this._color: object.color,
+            color: this._color,
             linewidth: this._lineWidth
         });
-        this._parentGroup.add(this._trail._line);
+        this.add(this._trail._line);
     }
 
     dispose() {
@@ -672,7 +685,7 @@ export class Trail {
             if (this._trail._line.material)
                 this._trail._line.material.dispose();
         }
-        this._parentGroup.remove(this._trail._line);
+        this.remove(this._trail._line);
         this._trail = null;
     }
 }
@@ -687,8 +700,7 @@ export class Sphere extends Mesh {
         segments = 24,
         opacity = 1,
         castShadow = false,
-        wireframe = false,
-        trailProperties = null
+        wireframe = false
     } = {}) {
         const material = new MeshStandardMaterial({
             color: color,
@@ -705,9 +717,6 @@ export class Sphere extends Mesh {
         this._initialState = null;
         this.visible = visible;
         this.castShadow = castShadow;
-        this._trail = null;
-        this._trailProperties = trailProperties;
-        this.addEventListener('added', this._newTrail);
     }
 
     set body(body) {
@@ -716,21 +725,12 @@ export class Sphere extends Mesh {
             throw new Error("This body type does not have a radius, hence it cannot be attached to this view.");
 
         this._body = body;
-        this._initialState = body.clone();
-    }
-
-    _newTrail() {
-        this._trail?.dispose();
-        if (this._trailProperties) {
-            this._trail = new Trail(this.parent, this._trailProperties);
-            this._trail.attachTo(this);
-        }
+        this._initialState = body.clone(body);
     }
 
     reset() {
         this._body.position = this._initialState.position;
         this._body.velocity = this._initialState.velocity;
-        this._newTrail();
     }
 
     render(transform) {
@@ -740,13 +740,12 @@ export class Sphere extends Mesh {
         const renderRadius = transform.scaleRadius(this._body.radius);
         this.scale.setScalar(renderRadius);
 
-        this._trail?.update(renderPosition);
+        this._trail?.render(transform);
     }
 
     get radius() { return this._radius; }
     get color() { return this.material.color; }
 
-    set trail(newTrail) { this._trail = newTrail; }
     set radius(newRadius) { this._radius = newRadius; }
     set color(newColor) { return this.material.color.set(newColor); }
 }
