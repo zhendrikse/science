@@ -11,10 +11,10 @@
  **/
 
 import {
-    Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, Group, Vector3, BufferAttribute,
+    Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, Group, Vector3, BufferAttribute, Fog,
     MeshStandardMaterial, SphereGeometry, Mesh, BufferGeometry, LineBasicMaterial, Line, TubeGeometry,
     CylinderGeometry, ConeGeometry, BoxGeometry, Color, Curve, Quaternion, RepeatWrapping, DoubleSide,
-    TextureLoader, Vector2, PlaneGeometry
+    TextureLoader, Vector2, PlaneGeometry, PCFShadowMap, AmbientLight
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -24,15 +24,23 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
  **********************************************/
 
 export class ThreeSim {
+    static Background = Object.freeze({
+        PLAIN: "Plain",
+        FOG: "Fog",
+        TRANSPARENT: "Transparent"
+    });
+
     constructor({
         canvas,
         overlay = null, // If overlay is not defined, the simulation won't wait for a mouse click
         scale = 1,
-        background = null, // If background is not defined, it defaults to transparent
+        background = ThreeSim.Background.TRANSPARENT,
+        backgroundColor = 0x0088ff,
         controls = true,
         light = true,
         resetFunction = null,
         cameraPosition = new Vector3(30, 30, 30),
+        shadowsEnabled = false,
         fieldOfView = 50
     }) {
         this._canvas = canvas;
@@ -56,24 +64,53 @@ export class ThreeSim {
         this._camera.position.copy(cameraPosition);
 
         this._renderer = new WebGLRenderer({antialias: true, canvas, alpha: background === null});
-
-        if (background)
-            this._scene.background = background;
-
-        if (controls)
-            this._controls = new OrbitControls(this._camera, canvas);
-
-        if (light) {
-            const directionalLight = new DirectionalLight(0xffffff, 1);
-            directionalLight.position.copy(cameraPosition);
-            this._scene.add(directionalLight);
-            const directionalLight2 = new DirectionalLight(0xffffff, 1);
-            directionalLight2.position.copy(cameraPosition.clone().multiplyScalar(-1));
-            this._scene.add(directionalLight2);
+        this._resizeRendererToCanvas();
+        if (shadowsEnabled) {
+            this._renderer.shadowMap.enabled = true;
+            this._renderer.shadowMap.type = PCFShadowMap;
         }
 
-        this._resizeRendererToCanvas();
+        if (controls) this._controls = new OrbitControls(this._camera, canvas);
+
+        if (light) this._initLights(shadowsEnabled);
+
+        this._initBackground(background);
         this._initEventHandlers(overlay);
+    }
+
+    _initBackground(background) {
+        switch (background) {
+            case ThreeSim.Background.TRANSPARENT:
+                break;
+            case ThreeSim.Background.PLAIN:
+                this._scene.background = backgroundColor;
+                break;
+            case ThreeSim.Background.FOG:
+                this._scene.fog = new Fog(backgroundColor, 1, 60);
+        }
+    }
+
+    _initLights(shadowsEnabled) {
+        const directionalLight = new DirectionalLight(0xffffff, 2);
+        directionalLight.position.set(0, 5, 0);
+        this.addThreeJsObject(directionalLight);
+
+        if (shadowsEnabled) {
+            // Adjust shadow camera settings
+            directionalLight.shadow.camera.near = 0.5; // Default is 0.5
+            directionalLight.shadow.camera.far = 50; // Default is 500
+            directionalLight.shadow.camera.top = 20;
+            directionalLight.shadow.camera.right = 20;
+            directionalLight.shadow.camera.bottom = -20;
+            directionalLight.shadow.camera.left = -20;
+            directionalLight.castShadow = true;
+
+            // Adjust shadow map settings
+            directionalLight.shadow.mapSize.width = 2048; // Default is 512
+            directionalLight.shadow.mapSize.height = 2048; // Default is 512
+
+            this.addThreeJsObject(new AmbientLight(0xffffff, 0.8));
+        }
     }
 
     _doAutoRotate(distance) {
@@ -445,9 +482,9 @@ class VectorFieldVector extends Body {
 }
 
 export class Spring extends Body {
-    static between(twoBodies, k = 100) {
+    static between(twoBodies, k = 200) {
         const axis = twoBodies.body1.positionVectorTo(twoBodies.body2);
-        const position = twoBodies.body1.position.clone();
+        const position = twoBodies.body1.position;
         return new Spring({position, axis, k});
     }
 
@@ -482,14 +519,15 @@ class TwoBodies {
 }
 
 export class HarmonicOscillator {
-    static between = (twoBodies) => {
-        return new HarmonicOscillator(twoBodies.body1, twoBodies.body2);
+    static between = (twoBodies, k=200, damping=0.2) => {
+        return new HarmonicOscillator(twoBodies.body1, twoBodies.body2, k, damping);
     }
 
-    constructor(body1, body2) {
+    constructor(body1, body2, k, damping) {
+        this.bond = Spring.between(body1.and(body2), k);
         this.body1 = body1;
         this.body2 = body2;
-        this.bond = Spring.between(body1.and(body2), 200);
+        this._damping = damping;
     }
 
     to(view) { return { body: this.bond, view: view}; };
@@ -501,6 +539,12 @@ export class HarmonicOscillator {
 
         const forceMagnitude = -this.bond.k * (length - this.bond.restLength);
         const force = direction.multiplyScalar(forceMagnitude);
+
+        const relativeVelocity = this.body1.velocity.clone().sub(this.body2.velocity);
+        const dampingForce = relativeVelocity
+            .projectOnVector(direction)
+            .multiplyScalar(this._damping);
+        force.add(dampingForce);
 
         this.body1.apply(force.clone().negate(), dt, integrator);
         this.body2.apply(force, dt, integrator);
@@ -793,6 +837,7 @@ export class Sphere extends Mesh {
     reset() {
         this._body.position = this._initialState.position;
         this._body.velocity = this._initialState.velocity;
+        this._body.radius = this._initialState.radius;
     }
 
     render(transform) {
@@ -829,6 +874,7 @@ export class Arrow extends Group {
         opacity = 1,
         round = false,
         visible = true,
+        castShadow = false,
         magnitudeMap = magnitude => magnitude, // identity mapping by default
         colorMap = null  // use the unmodified base color by default
     } = {}) {
@@ -843,7 +889,9 @@ export class Arrow extends Group {
         });
 
         this._shaft = new Mesh(shaftGeometry, material);
+        this._shaft.castShadow = castShadow;
         this._head = new Mesh(headGeometry, material);
+        this._head.castShadow = castShadow;
         if (!round)
             this._head.rotation.y = Math.PI / 4; // By default, the rotation of square-shaped head is 45 degrees off
 
@@ -977,7 +1025,8 @@ export class Cylinder extends Mesh {
     constructor({
         radius = 1,
         color = 0xffff00,
-        opacity = 1
+        opacity = 1,
+        castShadow = false
     } = {}) {
 
         const geometry = new CylinderGeometry(radius, radius, 1, 24);
@@ -987,6 +1036,7 @@ export class Cylinder extends Mesh {
             transparent: opacity < 1
         });
         super(geometry, material);
+        this.castShadow = castShadow;
 
         this._body = null;
         this._initialState = null;
@@ -1181,7 +1231,8 @@ export class Floor extends Group {
         planeSizeXy = new Vector2(2, 2),
         granularity = 1,
         color = 0x00ff00,
-        opacity = null
+        opacity = null,
+        receiveShadow = true
     } = {}) {
         super();
         const planeGeometry = new PlaneGeometry(planeSizeXy.x, planeSizeXy.y);
@@ -1197,7 +1248,7 @@ export class Floor extends Group {
             //aoMapIntensity: 0,
         });
         this._mesh = new Mesh(planeGeometry, planeMaterial);
-        this._mesh.receiveShadow = true;
+        this._mesh.receiveShadow = receiveShadow;
         this._mesh.rotation.x = -Math.PI / 2;
 
         this.position.copy(position);
