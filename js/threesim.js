@@ -482,7 +482,7 @@ class VectorFieldVector extends Body {
         this._vectorField = vectorField;
     }
 
-    get direction() { return this._vectorField.sample(this.position); }
+    get direction() { return this._vectorField.sampleAt(this.position); }
 }
 
 export class Spring extends Body {

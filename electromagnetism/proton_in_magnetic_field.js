@@ -16,7 +16,7 @@ class MagneticField extends VectorField {
     
     set magnitude(newValue) { this._strength = newValue; }
 
-    sample(position) {
+    sampleAt(position) {
         const yComponent = Math.sqrt(position.x * position.x + position.z * position.z);
         // b_z = 5 if (abs(abs(position.x)-1) < 0.2 and abs(abs(position.y)-1) < 0.2) else 0
         return new Vector3(0, yComponent, 0).multiplyScalar(this._strength);
