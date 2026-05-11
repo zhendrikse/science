@@ -70,7 +70,7 @@ let positionData = [ball.position.y];
 let kineticData = [ball.kineticEnergy];
 let potentialData = [ball.potentialEnergy];
 const data = [timeData, positionData, kineticData, potentialData];
-simulation.resetFunction = () => {
+simulation.onReset = () => {
     timeData = [simTime];
     positionData = [ball.position.y];
     kineticData = [ball.kineticEnergy];

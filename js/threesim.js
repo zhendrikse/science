@@ -192,7 +192,7 @@ export class ThreeSim {
     }
 
     set autoRotate(autoRotate) { this._autoRotate = autoRotate; }
-    set resetFunction(resetFunction) { this._onReset = resetFunction; }
+    set onReset(resetFunction) { this._onReset = resetFunction; }
 }
 
 class Transform {
