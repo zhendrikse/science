@@ -1,4 +1,4 @@
-import { Vector3, Color, AmbientLight, PointLight } from "three";
+import { Vector3, Color } from "three";
 import { ThreeSim, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail } from "../js/threesim.js";
 
 const canvas = document.getElementById("protonInFieldCanvas");
@@ -48,7 +48,7 @@ function timeStep(dt) {
 const simulation = new ThreeSim({
     canvas,
     overlay,
-    cameraPosition: new Vector3(0, 8, -9)
+    cameraPosition: new Vector3(0, 5, -10)
 });
 
 const sphere = new Sphere({ color: new Color("red")});
@@ -79,8 +79,8 @@ strengthSlider.addEventListener("input", () => {
 
 simulation.onReset = () => proton.velocity.x = Number(speedSlider.value) * .01;
 
-const dt = 0.01;
-const subSteps = 25;
+const dt = 2.5e-3;
+const subSteps = 100;
 simulation.run(() => {
     for (let i = 0; i < subSteps; i++)
         timeStep(dt);
