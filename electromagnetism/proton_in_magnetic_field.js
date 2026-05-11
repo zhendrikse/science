@@ -8,16 +8,13 @@ const strengthSlider = document.getElementById("protonInFieldStrengthSlider");
 const speedSliderReadout = document.getElementById("protonInFieldSpeedSliderValue");
 const strengthSliderReadout = document.getElementById("protonInFieldStrengthSliderValue");
 
-
 class MagneticField extends VectorField {
     constructor(fieldStrength) {
         super();
         this._strength = fieldStrength;
     }
     
-    set magnitude(newValue) {
-        this._strength = newValue;
-    }
+    set magnitude(newValue) { this._strength = newValue; }
 
     sample(position) {
         const yComponent = Math.sqrt(position.x * position.x + position.z * position.z);
@@ -27,7 +24,7 @@ class MagneticField extends VectorField {
 }
 
 //
-// Physics objects
+// Physics
 //
 const proton = new Particle({
     position: new Vector3(0, 1, 0),
@@ -51,7 +48,7 @@ function timeStep(dt) {
 const simulation = new ThreeSim({
     canvas,
     overlay,
-    cameraPosition: new Vector3(0, 4, -4.5).multiplyScalar(2)
+    cameraPosition: new Vector3(0, 8, -9)
 });
 
 const sphere = new Sphere({ color: new Color("red")});
@@ -77,12 +74,10 @@ speedSlider.addEventListener("input", () => {
 
 strengthSlider.addEventListener("input", () => {
     magneticField.magnitude = Number(strengthSlider.value) * .1;
-    strengthSlider.textContent = strengthSlider.value;
+    strengthSliderReadout.textContent = strengthSlider.value;
 });
 
-simulation.onReset = () => {
-    proton.velocity.x = Number(speedSlider.value) * .01;
-}
+simulation.onReset = () => proton.velocity.x = Number(speedSlider.value) * .01;
 
 const dt = 0.01;
 const subSteps = 25;
