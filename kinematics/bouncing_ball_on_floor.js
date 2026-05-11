@@ -56,9 +56,7 @@ const simulation = new ThreeSim({
     cameraPosition: new Vector3(2, 1, 0.5).multiplyScalar(2.25),
 });
 
-const sphere = new Sphere({
-    color: "cyan"
-});
+const sphere = new Sphere({ color: "cyan" });
 simulation.attach(ball.to(sphere));
 simulation.attach(ball.to(new Trail({ color: sphere.color})));
 simulation.addThreeJsObject(floor);
