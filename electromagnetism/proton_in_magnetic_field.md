@@ -12,7 +12,7 @@
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/ProtonInMagneticField) is available as well, see [proton_in_magnetic_field.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/proton_in_magnetic_field.py)<br/>
 
 <div class="canvasWrapper" id="protonInFieldWrapper" style="aspect-ratio: 19/12">
-    <canvas id="protonInFieldCanvas" class="applicationCanvas" style="width: 600px; aspect-ratio: 19/12;"></canvas>
+    <canvas id="protonInFieldCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
     <div class="overlayText" id="protonInFieldOverlayText">Click to start the animation!</div>
 </div>
 <div class="buttonRow">
