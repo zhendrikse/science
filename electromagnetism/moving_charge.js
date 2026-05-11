@@ -1,5 +1,15 @@
 import { Vector3, Color, AmbientLight, PointLight } from "three";
-import { ThreeSim, VectorField, ArrowField, Sphere, Particle, Range, TrailProperties, EC } from "../js/threesim.js";
+import {
+    ThreeSim,
+    VectorField,
+    ArrowField,
+    Sphere,
+    Particle,
+    Range,
+    TrailProperties,
+    EC,
+    Trail
+} from "../js/threesim.js";
 
 const canvas = document.getElementById("capacitorCanvas");
 const speedSlider = document.getElementById("speedSlider");
@@ -82,10 +92,9 @@ for (const charge of capacitor.charges)
         color: charge.charge > 0 ? new Color(0x4444ff) : new Color(0xff0000)
     })));
 
-simulation.attach(movingCharge.to(new Sphere({
-    color: new Color(0x44ff44),
-    trailProperties: new TrailProperties({ maxPoints: 400 })
-})));
+const sphere = new Sphere({ color: new Color(0x44ff44)});
+simulation.attach(movingCharge.to(sphere));
+simulation.attach(movingCharge.to(new Trail({ maxPoints: 400, color: sphere.color })));
 
 const arrowField = new ArrowField({
     xRange: new Range(-18 / scale, 18 / scale, 8 / scale),

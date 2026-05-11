@@ -1,4 +1,4 @@
-import { ThreeSim, Sphere, TrailProperties, Integrators, Ball, G, gravitationalForceBetween } from "../js/threesim.js";
+import { ThreeSim, Sphere, Integrators, Ball, G, gravitationalForceBetween, Trail } from "../js/threesim.js";
 import { Vector3 } from "three";
 
 const canvas = document.getElementById("threeBodyCanvas");
@@ -34,12 +34,14 @@ const bodyC = new Ball({
     mass: mass * 0.5
 });
 
-const trailProperties = new TrailProperties({ maxPoints: 500 })
-
 const simulation = new ThreeSim({ canvas, overlay, scale });
-simulation.attach(bodyA.to(new Sphere({ color: "yellow", trailProperties })));
-simulation.attach(bodyB.to(new Sphere({ color: "cyan", trailProperties })));
-simulation.attach(bodyC.to(new Sphere({ color: "magenta", trailProperties })));
+
+simulation.attach(bodyA.to(new Sphere({ color: "yellow" })));
+simulation.attach(bodyA.to(new Trail({ maxPoints: 500, color: "yellow" })));
+simulation.attach(bodyB.to(new Sphere({ color: "cyan" })));
+simulation.attach(bodyB.to(new Trail({ maxPoints: 500, color: "cyan" })));
+simulation.attach(bodyC.to(new Sphere({ color: "magenta" })));
+simulation.attach(bodyC.to(new Trail({ maxPoints: 500, color: "magenta"})));
 
 function make(subSteps, dt) {
     const force_BA = gravitationalForceBetween(bodyA.and(bodyB));
