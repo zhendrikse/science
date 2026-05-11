@@ -481,9 +481,9 @@ class TwoBodies {
     }
 }
 
-export class Oscillator {
+export class HarmonicOscillator {
     static between = (twoBodies) => {
-        return new Oscillator(twoBodies.body1, twoBodies.body2);
+        return new HarmonicOscillator(twoBodies.body1, twoBodies.body2);
     }
 
     constructor(body1, body2) {
