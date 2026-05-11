@@ -168,18 +168,21 @@ export class ThreeSim {
         this.addThreeJsObject(bodyAndView.view, false);
     }
 
+    _animationStep(time) {
+        if (this._running && this._updateFunction)
+            this._updateFunction(time);
+
+        this._sync();
+        this._renderer.render(this._scene, this._camera);
+        this._controls?.update();
+
+        if (this._autoRotate)
+            this._doAutoRotate(this._camera.position.length());
+    }
+
     run(updateFunction = null) {
-        this._renderer.setAnimationLoop((time) => {
-            if (this._running && updateFunction)
-                updateFunction(time);
-
-            this._sync();
-            this._renderer.render(this._scene, this._camera);
-            this._controls?.update();
-
-            if (this._autoRotate)
-                this._doAutoRotate(this._camera.position.length());
-        });
+        this._updateFunction = updateFunction;
+        this._renderer.setAnimationLoop((time) => this._animationStep(time));
     }
 
     reset() {
@@ -227,9 +230,9 @@ export const EC = 1.6e-19; // Coulomb charge
 // Functions
 //
 export function gravitationalForceBetween(twoBodies) {
-    const radius = twoBodies[0].positionVectorTo(twoBodies[1]);
-    const rSquared = twoBodies[0].distanceToSquared(twoBodies[1]);
-    return radius.normalize().multiplyScalar(G * twoBodies[0].mass * twoBodies[1].mass / rSquared);
+    const radius = twoBodies.body1.positionVectorTo(twoBodies.body2);
+    const rSquared = twoBodies.body1.distanceToSquared(twoBodies.body2);
+    return radius.normalize().multiplyScalar(G * twoBodies.body1.mass * twoBodies.body2.mass / rSquared);
 }
 
 //
@@ -252,11 +255,9 @@ class Body {  // INTENTIONALLY NOT EXPORTED TO THE OUTSIDE WORLD !!!
         });
     }
 
-    and(otherBody) { return [this, otherBody] };
+    and(otherBody) { return new TwoBodies(this, otherBody) };
 
     to(view) { return { body: this, view: view}; };
-
-    shiftBy(displacement) { this.position.add(displacement); }
 
     positionVectorTo(other) { return other.position.clone().sub(this.position); }
     distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
@@ -364,7 +365,7 @@ export class Ball extends Body {
     }
 
     clone() {
-        return new Body({
+        return new Ball({
             position: this.position.clone(),
             velocity: this.velocity.clone(),
             radius: this.radius,
@@ -410,7 +411,7 @@ export class Particle extends Body {
     }
 
     clone() {
-        return new Body({
+        return new Particle({
             position: this.position.clone(),
             velocity: this.velocity.clone(),
             radius: this.radius,
@@ -444,11 +445,25 @@ class VectorFieldVector extends Body {
 }
 
 export class Spring extends Body {
+    static between(twoBodies, k = 100) {
+        const axis = twoBodies.body1.positionVectorTo(twoBodies.body2);
+        const position = twoBodies.body1.position.clone();
+        return new Spring({position, axis, k});
+    }
+
     constructor({position = new Vector3(), axis = new Vector3(0, 1, 0), k=100} = {}) {
         super({ position });
         this.axis = axis;
         this.restLength = axis.length();
         this.k = k; // spring constant
+    }
+
+    clone() {
+        return new Spring({
+            position: this.position.clone(),
+            axis: this.axis.clone(),
+            k: this.k
+        });
     }
 
     get direction() { return this.axis; }
@@ -457,6 +472,51 @@ export class Spring extends Body {
     get displacement() { return  this.axis.length() - this.restLength; }
     get isCompressed() { return this.axis.length() < this.restLength; }
     get endPosition() { return this.position.clone().add(this.axis); }
+}
+
+class TwoBodies {
+    constructor(body1, body2) {
+        this.body1 = body1;
+        this.body2 = body2;
+    }
+}
+
+export class Oscillator {
+    static between = (twoBodies) => {
+        return new Oscillator(twoBodies.body1, twoBodies.body2);
+    }
+
+    constructor(body1, body2) {
+        this.body1 = body1;
+        this.body2 = body2;
+        this.bond = Spring.between(body1.and(body2), 200);
+    }
+
+    to(view) { return { body: this.bond, view: view}; };
+
+    oscillate(dt, integrator = Integrators.symplecticEulerStep) {
+        const delta = this.body1.positionVectorTo(this.body2);
+        const length = delta.length();
+        const direction = delta.clone().normalize();
+
+        const forceMagnitude = -this.bond.k * (length - this.bond.restLength);
+        const force = direction.multiplyScalar(forceMagnitude);
+
+        this.body1.apply(force.clone().negate(), dt, integrator);
+        this.body2.apply(force, dt, integrator);
+
+        this.bond.position.copy(this.body1.position);
+        this.bond.axis = delta;
+    }
+
+    decompress(amount) { this.compress(-amount); }
+
+    compress(amount) {
+        this.body1.position.add(new Vector3(amount, 0, 0));
+        this.body2.position.sub(new Vector3(amount, 0, 0));
+        this.bond.position.copy(this.body1.position);
+        this.bond.axis = this.body1.positionVectorTo(this.body2);
+    }
 }
 
 /*************************
@@ -1024,6 +1084,11 @@ export class Helix extends Mesh {
 
         this._body = null;
         this._initialState = null;
+    }
+
+    reset() {
+        this._body.position.copy(this._initialState.position);
+        this._body.axis.copy(this._initialState.axis);
     }
 
     set body(body) {
