@@ -136,7 +136,14 @@ function createArrows() {
             const axis = vectorField.sample(new Vector3(x, y, 0)).multiplyScalar(.2),
                 shift = axis.clone().multiplyScalar(-0.1),
                 position = new Vector3(x, y, 0).add(shift),
-                arrow = new Arrow(position, axis, {color: "yellow", opacity: 0, round: true, shaftWidth: 0.05});
+                arrow = new Arrow( {
+                    position: position,
+                    axis: axis,
+                    color: "yellow",
+                    opacity: 0,
+                    round: true,
+                    shaftWidth: 0.05
+                });
             arrows.push(arrow);
             worldGroup.add(arrow);
         }
@@ -153,7 +160,7 @@ function resetSimulation(particles, arrows) {
     opacity = 0;
 
     for (const arrow of arrows)
-        arrow.updateOpacity(0);
+        arrow.opacity = 0;
 }
 
 function onResize() {
@@ -239,7 +246,7 @@ renderer.setAnimationLoop( () => {
     if (opacity < 1 && time > 0.1) {
         opacity += d_o;
         for (const arrow of arrows)
-            arrow.updateOpacity(opacity);
+            arrow.opacity = opacity;
     }
 
     renderer.render(scene, camera);
