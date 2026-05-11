@@ -1,15 +1,5 @@
 import { Vector3, Color, AmbientLight, PointLight } from "three";
-import {
-    ThreeSim,
-    VectorField,
-    ArrowField,
-    Sphere,
-    Particle,
-    Range,
-    TrailProperties,
-    EC,
-    Trail
-} from "../js/threesim.js";
+import { ThreeSim, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail } from "../js/threesim.js";
 
 const canvas = document.getElementById("capacitorCanvas");
 const speedSlider = document.getElementById("speedSlider");
@@ -22,10 +12,8 @@ const K = 9e9;
 const scale = 1e14;
 
 class Capacitor {
-    constructor() {
+    constructor(topY = 10e-14, bottomY = -10e-14) {
         this.charges = [];
-        const topY = 10e-14;
-        const bottomY = -10e-14;
 
         for (let x = -20; x <= 20; x += 2)
             for (let z = -20; z <= 20; z += 2)
@@ -64,10 +52,10 @@ const capacitor = new Capacitor();
 const capacitorField = new CapacitorField(capacitor);
 const movingCharge = new Particle({
     position: new Vector3(-30, 4, 0).divideScalar(scale),
-    velocity: new Vector3(15, 0, 0).divideScalar(scale),
+    velocity: new Vector3(Number(speedSlider.value), 0, 0).divideScalar(scale),
     mass: 1.6e-27,
     radius: 1.2e-14,
-    charge: 5e-42 * EC
+    charge: Number(chargeSlider.value) * 5e-42 * EC
 });
 
 //
@@ -87,10 +75,12 @@ dirLight.position.set(0, 0, 0);
 simulation.addThreeJsObject(dirLight);
 simulation.addThreeJsObject(new AmbientLight(0xffffff, 0.8));
 
-for (const charge of capacitor.charges)
-    simulation.attachStatically(charge.to(new Sphere({
+for (const charge of capacitor.charges) {
+    const sphere = new Sphere({
         color: charge.charge > 0 ? new Color(0x4444ff) : new Color(0xff0000)
-    })));
+    });
+    simulation.attachStatically(charge.to(sphere)); // Important: attach statically to prevent unnecessary updates!
+}
 
 const sphere = new Sphere({ color: new Color(0x44ff44)});
 simulation.attach(movingCharge.to(sphere));
@@ -110,12 +100,6 @@ simulation.attachStatically(capacitorField.to(arrowField));
 //
 // Event listeners
 //
-function reset() {
-    movingCharge.position.copy(new Vector3(-30, 4, 0).divideScalar(scale));
-    movingCharge.velocity.copy(new Vector3(Number(speedSlider.value), 0, 0).divideScalar(scale));
-    movingCharge.charge = Number(chargeSlider.value) * 5e-42 * EC;
-}
-
 speedSlider.addEventListener("input", () => {
     movingCharge.velocity.copy(new Vector3(Number(speedSlider.value), 0, 0).divideScalar(scale));
     speedSliderValue.innerText = speedSlider.value + " x 1E-14 m/s";
@@ -139,5 +123,3 @@ simulation.run(() => {
         movingCharge.apply(force, dt);
     }
 });
-
-reset();

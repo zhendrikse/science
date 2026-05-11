@@ -161,7 +161,10 @@ export class ThreeSim {
     }
 
     attachStatically(bodyAndView) {
-        bodyAndView.view.body = bodyAndView.body;
+        const viewObject = bodyAndView.view;
+        this.addThreeJsObject(viewObject, true);
+        viewObject.body = bodyAndView.body;
+
         this.addThreeJsObject(bodyAndView.view, false);
     }
 
@@ -585,7 +588,6 @@ export class Range {
 //
 // T R A I L
 //
-
 class TrailLine {
     constructor({
                     maxPoints = 200,
