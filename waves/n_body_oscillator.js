@@ -13,7 +13,7 @@ function createBallsAndSprings(numBalls = 5, k = 300) {
 
     for (let i = 0; i < numBalls; i++) {
         balls.push(new Ball({
-            position: new Vector3(i * 10 - 30, 2, 0),
+            position: new Vector3(i * 10 - 30, 5, 0),
             radius: 1,
             mass: 1.5
         }));
@@ -34,7 +34,7 @@ initialDisturbance();
 
 const floor = new Floor({
     type: Floor.Type.WOOD_WICKER,
-    planeSizeXy: new Vector2(100, 100),
+    planeSizeXy: new Vector2(200, 200),
     granularity: 5
 });
 
@@ -44,9 +44,11 @@ const floor = new Floor({
 const simulation = new ThreeSim({
     canvas,
     overlay,
-    cameraPosition: new Vector3(17, 5, 17),
+    cameraPosition: new Vector3(17, 9, 5).multiplyScalar(1.15),
     light: true,
-    shadowsEnabled: true
+    shadowsEnabled: true,
+    fieldOfView: 60,
+    background: ThreeSim.Background.FOG
 });
 simulation.addThreeJsObject(floor);
 

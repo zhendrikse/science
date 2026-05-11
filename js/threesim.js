@@ -63,7 +63,11 @@ export class ThreeSim {
         this._camera = new PerspectiveCamera(fieldOfView, canvas.clientWidth / canvas.clientHeight, 0.1, 1e6);
         this._camera.position.copy(cameraPosition);
 
-        this._renderer = new WebGLRenderer({antialias: true, canvas, alpha: background === null});
+        this._renderer = new WebGLRenderer({
+            antialias: true,
+            canvas: this._canvas,
+            alpha: background === ThreeSim.Background.TRANSPARENT
+        });
         this._resizeRendererToCanvas();
         if (shadowsEnabled) {
             this._renderer.shadowMap.enabled = true;
@@ -86,14 +90,14 @@ export class ThreeSim {
                 this._scene.background = backgroundColor;
                 break;
             case ThreeSim.Background.FOG:
-                this._scene.fog = new Fog(backgroundColor, 1, 60);
+                this._scene.fog = new Fog(backgroundColor, 1, 100);
         }
     }
 
     _initLights(shadowsEnabled) {
         const directionalLight = new DirectionalLight(0xffffff, 2);
-        directionalLight.position.set(0, 5, 0);
-        this.addThreeJsObject(directionalLight);
+        directionalLight.position.set(0, this._camera.position.y, 0);
+        this._scene.add(directionalLight);
 
         if (shadowsEnabled) {
             // Adjust shadow camera settings
@@ -109,7 +113,7 @@ export class ThreeSim {
             directionalLight.shadow.mapSize.width = 2048; // Default is 512
             directionalLight.shadow.mapSize.height = 2048; // Default is 512
 
-            this.addThreeJsObject(new AmbientLight(0xffffff, 0.8));
+            this._scene.add(new AmbientLight(0xffffff, 0.8));
         }
     }
 
