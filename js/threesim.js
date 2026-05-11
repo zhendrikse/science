@@ -74,11 +74,11 @@ export class ThreeSim {
 
         if (light) this._initLights(shadowsEnabled);
 
-        this._initBackground(background);
+        this._initBackground(background, backgroundColor);
         this._initEventHandlers(overlay);
     }
 
-    _initBackground(background) {
+    _initBackground(background, backgroundColor) {
         switch (background) {
             case ThreeSim.Background.TRANSPARENT:
                 break;
@@ -854,7 +854,7 @@ export class Sphere extends Mesh {
     get color() { return this.material.color; }
 
     set radius(newRadius) { this._radius = newRadius; }
-    set color(newColor) { return this.material.color.set(newColor); }
+    set color(newColor) { this.material.color.set(newColor); }
 }
 
 //

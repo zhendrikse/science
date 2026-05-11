@@ -1,132 +1,73 @@
-import { Group, Vector3, Scene, PerspectiveCamera, WebGLRenderer, AmbientLight, DirectionalLight,
-    PCFShadowMap, Fog, Color } from "three";
-import {Spring, Sphere, Floor, ThreeJsUtils} from '../js/three-js-extensions.js';
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { Vector3, Vector2 } from "three";
+import {Helix, ThreeSim, Ball, Sphere, HarmonicOscillator, Floor} from "../js/threesim.js";
 
-// --- Scene setup ---
 const canvas = document.getElementById("oscillatorCanvas");
 const overlay = document.getElementById("oscillatorOverlayText");
 
-const scene = new Scene();
-const colorSky = 0x0088ff;
-scene.background = new Color(colorSky);
+//
+// Physics
+//
+function createBallsAndSprings(numBalls = 5, k = 300) {
+    const balls = [];
+    const springs = [];
 
-const camera = new PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-camera.position.set(17, 5, 17);
-
-const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = PCFShadowMap;
-
-const directionalLight = new DirectionalLight(0xffffff, 2);
-directionalLight.position.set(0, 3, 0);
-scene.add(directionalLight);
-
-// Adjust shadow camera settings
-directionalLight.shadow.camera.near = 0.5; // Default is 0.5
-directionalLight.shadow.camera.far = 50; // Default is 500
-directionalLight.shadow.camera.top = 20;
-directionalLight.shadow.camera.right = 20;
-directionalLight.shadow.camera.bottom = -20;
-directionalLight.shadow.camera.left = -20;
-directionalLight.castShadow = true;
-
-// Adjust shadow map settings
-directionalLight.shadow.mapSize.width = 2048; // Default is 512
-directionalLight.shadow.mapSize.height = 2048; // Default is 512
-
-scene.add(new AmbientLight(0xffffff, 0.8));
-scene.add(new Floor({type: Floor.Type.WOOD_WICKER}));
-scene.fog = new Fog(colorSky, 1, 60);
-
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-
-export class HarmonicOscillator extends Group {
-    constructor({ damping = 0.2 } = {}) {
-        super();
-        this._masses = [];
-        this._springs = [];
-        this._damping = damping;
+    for (let i = 0; i < numBalls; i++) {
+        balls.push(new Ball({
+            position: new Vector3(i * 10 - 30, 2, 0),
+            radius: 1,
+            mass: 1.5
+        }));
+        if (i !== 0)
+            springs.push(HarmonicOscillator.between(balls[i - 1].and(balls[i]), k));
     }
 
-    withMassAt(position, options = {}) {
-        const ball = new Sphere({ position, ...options });
-        this.add(ball);
-        this._masses.push(ball);
-        return this;
-    }
-
-    withSpringBetween(i, j, k, springColor = 0xffff4d) {
-        const p1 = this._masses[i].position;
-        const p2 = this._masses[j].position;
-
-        const axis = p2.clone().sub(p1);
-        const spring = new Spring({
-            position: p1.clone(),
-            axis: axis,
-            k: k,
-            color: springColor,
-            castShadow: true
-        });
-        this._springs.push({ spring, i, j });
-        this.add(spring);
-        return this;
-    }
-
-    moveMass(index, dx) {
-        this._masses[index].shiftBy(new Vector3(dx, 0, 0));
-    }
-
-    update(dt = 0.01) {
-        const forces = this._masses.map(() => new Vector3(0, 0, 0)); // force accumulator
-
-        for (const { spring, i, j } of this._springs) {
-            const m1 = this._masses[i];
-            const m2 = this._masses[j];
-
-            const axis = m2.position.clone().sub(m1.position);
-            const direction = axis.clone().normalize();
-
-            spring.physicsPosition = m1.position;
-            spring.axis = axis;
-
-            const relativeVelocity = m2.velocity.clone().sub(m1.velocity);
-            const dampingForce = relativeVelocity
-                .projectOnVector(direction)
-                .multiplyScalar(this._damping);
-
-            const totalForce = spring.force.add(dampingForce);
-            forces[i].add(totalForce);
-            forces[j].add(totalForce.clone().negate());
-        }
-
-        this._masses.forEach((mass, index) => mass.step(forces[index], dt));
-    }
+    return {balls, springs};
 }
 
-let paused = true;
-canvas.addEventListener("click", () => {
-    ThreeJsUtils.showOverlayMessage(overlay, paused ? "Started" : "Paused");
-    paused = !paused;
+function initialDisturbance(displacement=5) {
+    balls[0].position.add(new Vector3(displacement, 0, 0));
+    springs[0].bond.position.copy(balls[0].position);
+}
+
+const {balls, springs} = createBallsAndSprings();
+initialDisturbance();
+
+const floor = new Floor({
+    type: Floor.Type.WOOD_WICKER,
+    planeSizeXy: new Vector2(100, 100),
+    granularity: 5
 });
 
-const oscillator = new HarmonicOscillator({ damping: 0.05 });
-oscillator
-    .withMassAt(new Vector3(-30, 2, 10), { mass: 1, color: 0xff0000, castShadow: true })
-    .withMassAt(new Vector3(-20, 2, 10), { mass: 1, color: 0x3333ff, castShadow: true })
-    .withMassAt(new Vector3(-10, 2, 10), { mass: 1, color: 0x3333ff, castShadow: true })
-    .withMassAt(new Vector3(0, 2, 10), { mass: 1, color: 0x3333ff, castShadow: true })
-    .withMassAt(new Vector3(10, 2, 10), { mass: 1, color: 0xff0000, castShadow: true })
-    .withSpringBetween(0, 1, 50)
-    .withSpringBetween(1, 2, 50)
-    .withSpringBetween(2, 3, 50)
-    .withSpringBetween(3, 4, 50);
-scene.add(oscillator);
-oscillator.moveMass(0, 7);
-oscillator.moveMass(3, -7);
+//
+// Simulation
+//
+const simulation = new ThreeSim({
+    canvas,
+    overlay,
+    cameraPosition: new Vector3(17, 5, 17),
+    light: true,
+    shadowsEnabled: true
+});
+simulation.addThreeJsObject(floor);
+
+// Attach spheres and helices to balls and springs
+for (let i = 0; i < balls.length; i++) {
+    const sphere = new Sphere({ color: 0x3333ff, castShadow: true });
+    simulation.attach(balls[i].to(sphere));
+    if (i === 0)
+        continue;
+
+    const helix = new Helix({
+        radius: 0.5,
+        thickness: 0.075,
+        coils: 30,
+        color: 0xffff4d,
+        castShadow: true
+    });
+    simulation.attach(springs[i - 1].to(helix));
+}
+balls[0].color = 0xff0000;
+balls[balls.length - 1].color = 0xff0000;
 
 const opts = {
     title: "Kinetic Energy vs Time",
@@ -160,32 +101,20 @@ const opts = {
 
 const positionData = [
     [0], // time
-    [oscillator._masses[0].position.x], // ball 1
-    [oscillator._masses[1].position.x], // ball 2
-    [oscillator._masses[2].position.x], // ball 3
-    [oscillator._masses[3].position.x], // ball 4
-    [oscillator._masses[4].position.x]  // ball 5
 ];
+for (let ball of balls) positionData.push([ball.position.x]);
 
 const uplotChart = new uPlot(opts, positionData, document.getElementById("oscillatorPlot"));
-
 const maxPoints = 500;
-const dt = 0.005;
-renderer.setAnimationLoop(time => {
-    controls.update();
-    renderer.render(scene, camera);
-
-    if (paused) return;
-
-    for (let subStep = 0; subStep < 3; subStep++) {
-        oscillator.update(dt);
+const dt = 1e-3;
+simulation.run((time) => {
+    for (let substep = 0; substep < 10; substep++) {
+        for (let i = 0; i < balls.length - 1; i++)
+            springs[i].oscillate(dt);
 
         positionData[0].push(time * 0.001);
-        positionData[1].push(oscillator._masses[0].position.x);
-        positionData[2].push(oscillator._masses[1].position.x);
-        positionData[3].push(oscillator._masses[2].position.x);
-        positionData[4].push(oscillator._masses[3].position.x);
-        positionData[5].push(oscillator._masses[4].position.x);
+        for (let i = 0; i < balls.length; i++)
+            positionData[i + 1].push(balls[i].position.x);
     }
 
     if (positionData[0].length > maxPoints)
