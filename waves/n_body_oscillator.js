@@ -69,42 +69,52 @@ for (let i = 0; i < balls.length; i++) {
 balls[0].color = 0xff0000;
 balls[balls.length - 1].color = 0xff0000;
 
-const opts = {
-    title: "Kinetic Energy vs Time",
-    width: canvas.clientWidth,
-    height: canvas.clientHeight * 1.5,
-    bg: "transparent",
-    scales: { x: { auto: true }, y: { auto: true } },
-    axes: [
-        {
-            stroke: "#ff0",
-            font: "12px Arial",
-            grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
-            label: "Time [s]"
-        },
-        {
-            stroke: "#ff0",
-            font: "12px Arial",
-            grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
-            label: "Displacement"
-        }
-    ],
-    series: [
-        { label: "t" },
-        { label: "ball 1", stroke: "red" },
-        { label: "ball 2", stroke: "blue" },
-        { label: "ball 3", stroke: "blue" },
-        { label: "ball 4", stroke: "blue" },
-        { label: "ball 5", stroke: "red" }
-    ]
+function uPlotData() {
+    const uPlotOptions = {
+        title: "Kinetic Energy vs Time",
+        width: canvas.clientWidth,
+        height: canvas.clientHeight * 1.5,
+        bg: "transparent",
+        scales: { x: { auto: true }, y: { auto: true } },
+        axes: [
+            {
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
+                label: "Time [s]"
+            },
+            {
+                stroke: "#ff0",
+                font: "12px Arial",
+                grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
+                label: "Displacement"
+            }
+        ],
+        series: [
+            { label: "t" },
+            { label: "ball 1", stroke: "red" },
+            { label: "ball 2", stroke: "blue" },
+            { label: "ball 3", stroke: "blue" },
+            { label: "ball 4", stroke: "blue" },
+            { label: "ball 5", stroke: "red" }
+        ]
+    };
+
+    const graphData = [
+        [0] // time
+    ];
+    for (let ball of balls) graphData.push([ball.position.x]);
+
+    return {uPlotOptions, graphData};
+}
+
+let {uPlotOptions, graphData} = uPlotData();
+simulation.onReset = () => {
+    graphData = [[0]];
+    for (let ball of balls) graphData.push([ball.position.x]);
 };
 
-const positionData = [
-    [0], // time
-];
-for (let ball of balls) positionData.push([ball.position.x]);
-
-const uplotChart = new uPlot(opts, positionData, document.getElementById("oscillatorPlot"));
+const uplotChart = new uPlot(uPlotOptions, graphData, document.getElementById("oscillatorPlot"));
 const maxPoints = 500;
 const dt = 1e-3;
 simulation.run((time) => {
@@ -112,13 +122,13 @@ simulation.run((time) => {
         for (let i = 0; i < balls.length - 1; i++)
             springs[i].oscillate(dt);
 
-        positionData[0].push(time * 0.001);
+        graphData[0].push(time * 0.001);
         for (let i = 0; i < balls.length; i++)
-            positionData[i + 1].push(balls[i].position.x);
+            graphData[i + 1].push(balls[i].position.x);
     }
 
-    if (positionData[0].length > maxPoints)
-        positionData.forEach(arr => arr.shift());
-    uplotChart.setData(positionData);
+    if (graphData[0].length > maxPoints)
+        graphData.forEach(arr => arr.shift());
+    uplotChart.setData(graphData);
 });
 

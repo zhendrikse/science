@@ -17,6 +17,7 @@
     <canvas id="oscillatorCanvas" class="applicationCanvas" style="aspect-ratio: 2 / 1;"></canvas>
     <div class="overlayText" id="oscillatorOverlayText">Click to start the animation!</div>
 </div>
+<p style="clear: both;"></p>
 
 <div id="oscillatorPlot" style="margin:auto;"></div>
 <script type="module" src="n_body_oscillator.js"></script>
