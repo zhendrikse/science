@@ -39,7 +39,7 @@ export class ThreeSim {
         controls = true,
         light = true,
         resetFunction = null,
-        cameraPosition = new Vector3(30, 30, 30),
+        cameraPosition = new Vector3(3, 3, 3),
         shadowsEnabled = false,
         fieldOfView = 50
     }) {
@@ -283,6 +283,14 @@ export function gravitationalForceBetween(twoBodies) {
 // Bodies to do physics with
 //
 class Body {  // INTENTIONALLY NOT EXPORTED TO THE OUTSIDE WORLD !!!
+    static integrationStep = (body, force, dt = 0.01, integrator = Integrators.symplecticEulerStep) => {
+        const accelerationFn = (bodyParam) => force.clone().multiplyScalar(1 / bodyParam.mass);
+        const updatedBody = integrator(body, dt, accelerationFn);
+        body.position = updatedBody.position;
+        body.velocity = updatedBody.velocity;
+        body.acceleration = updatedBody.acceleration;
+    }
+
     constructor({
                     position = new Vector3(),
                     velocity = new Vector3()
@@ -457,16 +465,38 @@ export class Ball extends Body {
     }
 
     apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
-        const updatedBody = integrator(this, dt, accelerationFn);
-        this.position = updatedBody.position;
-        this.velocity = updatedBody.velocity;
-        this.acceleration = updatedBody.acceleration;
+        Body.integrationStep(this, force, dt, integrator);
     }
 
     get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
     get potentialEnergy() { return this.mass * G * this.position.y; }
     get momentum() { return this.mass * this.velocity; }
+}
+
+export class Block extends Body {
+    constructor({
+        position = new Vector3(0, 0, 0),
+        velocity = new Vector3(0, 0, 0),
+        size = new Vector3(1, 1, 1),
+        mass = 1,
+    } = {}) {
+        super({position, velocity});
+        this.size = size;
+        this.mass = mass;
+    }
+
+    clone() {
+        return new Block({
+            position: this.position.clone(),
+            velocity: this.velocity.clone(),
+            size: this.size.clone(),
+            mass: this.mass
+        });
+    }
+
+    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        Body.integrationStep(this, force, dt, integrator);
+    }
 }
 
 export class Particle extends Body {
@@ -503,11 +533,7 @@ export class Particle extends Body {
     }
 
     apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
-        const updatedBody = integrator(this, dt, accelerationFn);
-        this.position = updatedBody.position;
-        this.velocity = updatedBody.velocity;
-        this.acceleration = updatedBody.acceleration;
+        Body.integrationStep(this, force, dt, integrator);
     }
 
     fieldAt(point) { return Particle.fieldAt(this, point); }
@@ -1115,6 +1141,45 @@ export class Cylinder extends Mesh {
         this.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
 
         this.position.add(direction.multiplyScalar(length / 2));
+    }
+}
+
+//
+// Box
+//
+export class Box extends Mesh {
+    constructor({
+            color = 0xff0000,
+            opacity = 1,
+            visible = true,
+            castShadow = false
+        } = {}) {
+        super(
+            new BoxGeometry(1, 1, 1),
+            new MeshStandardMaterial({
+                color: color,
+                transparent: true,
+                opacity: opacity,
+                depthTest: false
+            }));
+        this.visible = visible;
+        this.castShadow = castShadow;
+        this._initialState = null;
+        this._body = null;
+    }
+
+    reset() {
+        this._body.position.copy(this._initialState.position);
+    }
+
+    set body(body) {
+        this._body = body;
+        this._initialState = body.clone();
+        this.scale.set(body.size.x, body.size.y, body.size.z);
+    }
+
+    render(transform) {
+        this.position.copy(transform.physicsToRender(this._body.position));
     }
 }
 
