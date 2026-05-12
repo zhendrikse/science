@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { ThreeSim, AxisVector, VectorField, Cylinder, ArrowField, Range } from "../js/threesim.js";
+import { ThreeSim, AxialSymmetricBody, VectorField, Cylinder, ArrowField, Range } from "../js/threesim.js";
 
 const canvas = document.getElementById("solenoidCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
@@ -34,7 +34,7 @@ class Solenoid {
             const p2 = points[i + 1];
             const position = p1.clone().add(p2).multiplyScalar(0.5);
             const axis = direct ? p2.clone().sub(p1) : p1.clone().sub(p2);
-            segments.push(new AxisVector({position, axis}));
+            segments.push(new AxialSymmetricBody({position, axis, radius: 0.5 }));
         }
 
         return segments;
@@ -102,10 +102,7 @@ const simulation = new ThreeSim({
 });
 
 for (const segment of solenoid.segments)
-    simulation.attach(segment.to(new Cylinder({
-            radius: 0.4,
-            color: new Color("yellow")
-        })));
+    simulation.attach(segment.to(new Cylinder({ color: new Color("yellow") })));
 
 simulation.attach(magneticField.to(new ArrowField({
     xRange: new Range(-20, 20, 4),

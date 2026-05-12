@@ -1,10 +1,10 @@
 import { Vector3, Vector2 } from "three";
-import {ThreeSim, Ball, Sphere, Floor, Trail, UPlotGraph } from "../js/threesim.js";
+import {ThreeSim, RadialSymmetricBody, Sphere, Floor, Trail, UPlotGraph } from "../js/threesim.js";
 
 const canvas = document.getElementById("bouncingBallOnFloorCanvas");
 const overlay = document.getElementById("bouncingBallOnFloorOverlayText");
 
-class BouncingBall extends Ball {
+class BouncingBall extends RadialSymmetricBody {
     constructor({position, velocity, radius, mass}) {
         super({position, velocity, radius, mass});
     }

@@ -1,4 +1,4 @@
-import { ThreeSim, Sphere, Integrators, Ball, G, gravitationalForceBetween, Trail } from "../js/threesim.js";
+import { ThreeSim, Sphere, Integrators, RadialSymmetricBody, G, gravitationalForceBetween, Trail } from "../js/threesim.js";
 import { Vector3 } from "three";
 
 const canvas = document.getElementById("threeBodyCanvas");
@@ -13,21 +13,21 @@ const radiusB = radiusA / 0.8;
 const velocityA = Math.sqrt(G * 0.8 * mass * radiusA) / (radiusA + radiusB);
 
 const radius = 1.9e9;
-const bodyA = new Ball({
+const bodyA = new RadialSymmetricBody({
     position: new Vector3(radiusA, 0, 0),
     velocity: new Vector3(0, velocityA, 0),
     radius,
     mass
 });
 
-const bodyB = new Ball({
+const bodyB = new RadialSymmetricBody({
     position: new Vector3(-radiusB, 0, 0),
     velocity: new Vector3(0, -velocityA / 0.8, 0),
     radius,
     mass: mass * 0.8
 });
 
-const bodyC = new Ball({
+const bodyC = new RadialSymmetricBody({
     position: new Vector3(0, 0, radiusA),
     velocity: new Vector3(0, 0, 0),
     radius,

@@ -1,5 +1,5 @@
 import { Vector3, Vector2 } from "three";
-import {Helix, ThreeSim, Ball, Sphere, HarmonicOscillator, Floor, UPlotGraph} from "../js/threesim.js";
+import {Helix, ThreeSim, RadialSymmetricBody, Sphere, HarmonicOscillator, Floor, UPlotGraph} from "../js/threesim.js";
 
 const canvas = document.getElementById("oscillatorCanvas");
 const overlay = document.getElementById("oscillatorOverlayText");
@@ -12,13 +12,13 @@ function createBallsAndSprings(numBalls = 5, k = 300) {
     const springs = [];
 
     for (let i = 0; i < numBalls; i++) {
-        balls.push(new Ball({
+        balls.push(new RadialSymmetricBody({
             position: new Vector3(i * 10 - 30, 3, 0),
             radius: 1,
             mass: 1.5
         }));
         if (i !== 0)
-            springs.push(HarmonicOscillator.between(balls[i - 1].and(balls[i]), k));
+            springs.push(HarmonicOscillator.between(balls[i - 1].and(balls[i]), k, 0.5));
     }
 
     return { balls, springs };
@@ -61,7 +61,6 @@ for (let i = 0; i < balls.length; i++) {
         continue;
 
     const helix = new Helix({
-        radius: 0.5,
         thickness: 0.075,
         coils: 30,
         color: 0xffff4d,

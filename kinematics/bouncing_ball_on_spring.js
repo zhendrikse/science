@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import {Helix, Spring, ThreeSim, Ball, Sphere, Floor, Arrow} from "../js/threesim.js";
+import {Helix, Spring, ThreeSim, RadialSymmetricBody, Sphere, Floor, Arrow} from "../js/threesim.js";
 
 const canvas = document.getElementById("ballSpringCanvas");
 const overlay = document.getElementById("ballSpringOverlayText");
@@ -17,11 +17,12 @@ const floor = new Floor({
 const spring = new Spring({
     position: new Vector3(0, floor.level, 0),
     axis: new Vector3(0, 0.75, 0),
+    radius: 0.125,
     k: 225
 });
 const springTopAtRest = spring.endPosition;
 
-const ball = new Ball({
+const ball = new RadialSymmetricBody({
     position: new Vector3(0, 1.5, 0),
     radius: 0.15,
     mass: 1.5

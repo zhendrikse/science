@@ -320,32 +320,25 @@ class Body {  // INTENTIONALLY NOT EXPORTED TO THE OUTSIDE WORLD !!!
     distanceTo(other) { return this.positionVectorTo(other).length() }
 }
 
-export class MasslessBody extends Body {
+export class AxialSymmetricBody extends Body {
     constructor({
-        position = new Vector3(),
-        velocity = new Vector3()
-    } = {}) {
-        super({position, velocity});
-    }
-
-    timeStep(acceleration, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        const updatedBody = integrator(this, dt, () => acceleration);
-        this.position = updatedBody.position;
-        this.velocity = updatedBody.velocity;
-        this.acceleration = updatedBody.acceleration;
-    }
-}
-
-export class AxisVector extends Body {
-    constructor({position = new Vector(), axis = new Vector()} = {}) {
+        position = new Vector(),
+        axis = new Vector(),
+        radius = 1,
+        mass = 1
+    } = {})  {
         super({ position });
+        this.radius = radius;
         this.axis = axis.clone();
+        this.mass = mass;
     }
 
     clone() {
-        return new AxisVector({
+        return new AxialSymmetricBody({
             position: this.position.clone(),
-            axis: this.axis.clone()
+            axis: this.axis.clone(),
+            radius: this.radius,
+            mass: this.mass
         });
     }
 }
@@ -445,7 +438,7 @@ export class VectorField {
     }
 }
 
-export class Ball extends Body {
+export class RadialSymmetricBody extends Body {
     constructor({
         position = new Vector3(0, 0, 0),
         velocity = new Vector3(0, 0, 0),
@@ -460,7 +453,7 @@ export class Ball extends Body {
     }
 
     clone() {
-        return new Ball({
+        return new RadialSymmetricBody({
             position: this.position.clone(),
             velocity: this.velocity.clone(),
             radius: this.radius,
@@ -556,15 +549,21 @@ class VectorFieldVector extends Body {
 }
 
 export class Spring extends Body {
-    static between(twoBodies, k = 200) {
+    static between(twoBodies, k = 200, radius = 1) {
         const axis = twoBodies.body1.positionVectorTo(twoBodies.body2);
         const position = twoBodies.body1.position;
-        return new Spring({position, axis, k});
+        return new Spring({position, axis, k, radius});
     }
 
-    constructor({position = new Vector3(), axis = new Vector3(0, 1, 0), k=100} = {}) {
+    constructor({
+        position = new Vector3(),
+        axis = new Vector3(0, 1, 0),
+        radius = 1,
+        k=100
+    } = {}) {
         super({ position });
         this.axis = axis;
+        this.radius = radius;
         this.restLength = axis.length();
         this.k = k; // spring constant
     }
@@ -573,7 +572,8 @@ export class Spring extends Body {
         return new Spring({
             position: this.position.clone(),
             axis: this.axis.clone(),
-            k: this.k
+            k: this.k,
+            radius: this.radius
         });
     }
 
@@ -593,14 +593,14 @@ class TwoBodies {
 }
 
 export class HarmonicOscillator {
-    static between = (twoBodies, k=200, damping=0.2) => {
-        return new HarmonicOscillator(twoBodies.body1, twoBodies.body2, k, damping);
+    static between = (twoBodies, k=200, radius=1, damping=0.2) => {
+        return new HarmonicOscillator(twoBodies.body1, twoBodies.body2, k, radius, damping);
     }
 
-    constructor(body1, body2, k, damping) {
-        this.bond = Spring.between(body1.and(body2), k);
+    constructor(body1, body2, k, radius, damping) {
         this.body1 = body1;
         this.body2 = body2;
+        this.bond = Spring.between(body1.and(body2), k, radius);
         this._damping = damping;
     }
 
@@ -1102,13 +1102,13 @@ export class ArrowField extends Group{
 //
 export class Cylinder extends Mesh {
     constructor({
-        radius = 1,
         color = 0xffff00,
         opacity = 1,
+        segments = 24,
         castShadow = false
     } = {}) {
 
-        const geometry = new CylinderGeometry(radius, radius, 1, 24);
+        const geometry = new CylinderGeometry(1, 1, 1, segments);
         const material = new MeshStandardMaterial({
             color,
             opacity,
@@ -1121,10 +1121,18 @@ export class Cylinder extends Mesh {
         this._initialState = null;
     }
 
+    reset() {
+        this._body.position.copy(this._initialState.position);
+        this._body.axis.copy(this._initialState.axis);
+        this._body.radius = this._initialState.radius;
+    }
+
     set body(body) {
         // Sanity checks
         if (!body.axis)
             throw new Error("This body type does not have an axis, hence it cannot be attached to this view.");
+        if (!body.radius)
+            throw new Error("This body type does not have a radius, hence it cannot be attached to this view.");
 
         this._body = body;
         this._initialState = body.clone();
@@ -1134,12 +1142,10 @@ export class Cylinder extends Mesh {
         const pos = transform.physicsToRender(this._body.position);
         this.position.copy(pos);
 
-        const axis = transform.physicsToRender(this._body.axis.clone());
+        const axis = transform.physicsToRender(this._body.axis);
+        const radius = transform.scaleRadius(this._body.radius);
         const length = axis.length();
-        if (length < 1e-6)
-            return;
-
-        this.scale.set(1, length, 1);
+        this.scale.set(radius, length, radius);
 
         const direction = axis.normalize();
         this.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
@@ -1261,12 +1267,15 @@ export class Helix extends Mesh {
     reset() {
         this._body.position.copy(this._initialState.position);
         this._body.axis.copy(this._initialState.axis);
+        this._body.radius = this._initialState.radius;
     }
 
     set body(body) {
         // Sanity checks
         if (!body.axis)
             throw new Error("This body type does not have an axis, hence it cannot be attached to this view.");
+        if (!body.radius)
+            throw new Error("This body type does not have a radius, hence it cannot be attached to this view.");
 
         this._body = body;
         this._initialState = body.clone();
@@ -1299,10 +1308,9 @@ export class Helix extends Mesh {
         const pos = transform.physicsToRender(this._body.position);
         this.position.copy(pos);
 
-        const axis = transform.physicsToRender(this._body.axis.clone());
-        if (axis.length() < 1e-6)
-            return;
+        this._curve.radius = transform.scaleRadius(this._body.radius);
 
+        const axis = transform.physicsToRender(this._body.axis.clone());
         this._curve.updateAxis(axis);
         this._longitudinalOscillation ?
             this.#updateWithLongitudinal() :
