@@ -1,5 +1,5 @@
 import {Vector3, Color} from "three";
-import {Arrow, VelocityVector, ThreeSim } from '../js/threesim.js';
+import {Arrow, ThreeSim, MasslessBody, Ball, Sphere} from '../js/threesim.js';
 
 const canvas = document.getElementById('birdsCanvas');
 
@@ -24,9 +24,10 @@ class Flock {
 
         const initialPhysicalFlockRadius= 3;
         for (let i = 0; i < bird_count; i++)
-            this._birds.push(new VelocityVector({
+            this._birds.push(new Ball({
                 position: new Vector3().random().multiplyScalar(initialPhysicalFlockRadius),
-                velocity: new Vector3(speed, 0, 0).add(new Vector3().random().multiplyScalar(speed))
+                velocity: new Vector3(speed, 0, 0).add(new Vector3().random().multiplyScalar(speed)),
+                radius: 0.3
             }));
     }
 
@@ -64,7 +65,7 @@ class Flock {
         diff = avoid[count].clone().normalize().sub(bird.position);
         this._acceleration.add(diff.multiplyScalar(this._avoid_weight));
 
-        bird.accelerateWith(this._acceleration, dt);
+        bird.apply(this._acceleration, dt);
     }
 
     update(dt) {
@@ -124,12 +125,11 @@ const simulation = new ThreeSim({
     fieldOfView: 30
 });
 
-for (let i = 0; i < birdCount; i++) {
-    simulation.attach(flock.bird(i).to(new Arrow({
+for (let i = 0; i < birdCount; i++)
+    simulation.attach(flock.bird(i).velocityVector.to(new Arrow({
         round: true,
         color: new Color(.5, 1, .5),
         size: .2
     })));
-}
 
 simulation.run(() => flock.update(dt));

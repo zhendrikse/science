@@ -1,10 +1,12 @@
 import { Vector3 } from "three";
-import {Helix, Spring, ThreeSim, Ball, Sphere, Floor, Arrow, PlainVector} from "../js/threesim.js";
+import {Helix, Spring, ThreeSim, Ball, Sphere, Floor, Arrow} from "../js/threesim.js";
 
 const canvas = document.getElementById("ballSpringCanvas");
 const overlay = document.getElementById("ballSpringOverlayText");
 const velocityArrowButton = document.getElementById("velocityArrow");
 const forceArrowButton = document.getElementById("forceArrow");
+const dampingSlider = document.getElementById("dampingSlider");
+
 //
 // Physics
 //
@@ -27,13 +29,13 @@ const ball = new Ball({
 
 const ballHitsSpring = (epsilon=1e-2) => springTopAtRest.clone().sub(ball.position).length() < epsilon;
 const gravitationalForce = new Vector3(0, -9.8 * ball.mass, 0);
-const totalForce = new PlainVector({ position: ball.position, direction: ball.acceleration });
+const netForce = new Vector3();
 
 function timeStep(dt) {
-    const netForce = gravitationalForce.clone().add(spring.force);
+    netForce.y = spring.force.y + gravitationalForce.y;
+    netForce.y -= Number(dampingSlider.value) * ball.velocity.y;
     ball.apply(netForce, dt);
-    totalForce.position = ball.position;
-    totalForce.direction = ball.acceleration;
+
     if (ballHitsSpring() || spring.isCompressed)
         spring.axis = spring.positionVectorTo(ball);
 }
@@ -52,15 +54,15 @@ const sphere = new Sphere({ color: "orange" });
 const velocityArrow = new Arrow({ color: "cyan", size: .1 });
 const forceArrow = new Arrow({ color: "red", size: .03 });
 simulation.attach(ball.to(sphere));
-simulation.attach(ball.to(velocityArrow));
+simulation.attach(ball.velocityVector.to(velocityArrow));
+simulation.attach(ball.accelerationVector.to(forceArrow));
 simulation.attach(spring.to(helix));
 simulation.addThreeJsObject(floor);
-simulation.attach(totalForce.to(forceArrow));
 
 velocityArrowButton.addEventListener("click", () => velocityArrow.visible = velocityArrowButton.checked);
 forceArrowButton.addEventListener("click", () => forceArrow.visible = forceArrowButton.checked);
 
-const dt = 1e-3;
+const dt = 1.5e-3;
 simulation.run(() => {
     for (let subStep = 0; subStep < 10; subStep++)
         timeStep(dt);
