@@ -23,6 +23,10 @@
     <label for="velocityArrow"><span style="color: cyan">Velocity: </span></label><input type="checkbox" id="velocityArrow" checked/>
     <label for="forceArrow"><span style="color: red">Force: </span></label><input type="checkbox" id="forceArrow" checked/>
 </div>
+<div class="buttonRow">
+    <label for="dampingSlider">🍃 Air resistance: </label>
+    <input type="range" id="dampingSlider" min="0" max="1" step="0.1" value=".2"/>
+</div>
 <script type="module" src="bouncing_ball_on_spring.js"></script>
 <p style="clear: both;"></p>
 
