@@ -30,7 +30,7 @@ function initialDisturbance(displacement=5) {
 }
 
 const {balls, springs} = createBallsAndSprings();
-initialDisturbance();
+initialDisturbance(7);
 
 const floor = new Floor({
     type: Floor.Type.WOOD_WICKER,
@@ -44,7 +44,7 @@ const floor = new Floor({
 const simulation = new ThreeSim({
     canvas,
     overlay,
-    cameraPosition: new Vector3(17, 9, 5).multiplyScalar(1.15),
+    cameraPosition: new Vector3(17, 9, 13).multiplyScalar(1.1),
     light: true,
     shadowsEnabled: true,
     fieldOfView: 60,
