@@ -13,7 +13,7 @@ function createBallsAndSprings(numBalls = 5, k = 300) {
 
     for (let i = 0; i < numBalls; i++) {
         balls.push(new Ball({
-            position: new Vector3(i * 10 - 30, 5, 0),
+            position: new Vector3(i * 10 - 30, 3, 0),
             radius: 1,
             mass: 1.5
         }));
@@ -38,10 +38,10 @@ initialDisturbance(7);
 const simulation = new ThreeSim({
     canvas,
     overlay,
-    cameraPosition: new Vector3(17, 9, 13).multiplyScalar(1.1),
+    cameraPosition: new Vector3(17, 6, 17),
     light: true,
     shadowsEnabled: true,
-    fieldOfView: 60,
+    fieldOfView: 45,
     background: ThreeSim.Background.FOG
 });
 

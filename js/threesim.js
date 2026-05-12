@@ -84,20 +84,24 @@ export class ThreeSim {
 
     _initBackground(background, backgroundColor) {
         switch (background) {
-            case ThreeSim.Background.TRANSPARENT:
-                break;
             case ThreeSim.Background.PLAIN:
-                this._scene.background = backgroundColor;
+                this._scene.background = new Color(backgroundColor);
                 break;
             case ThreeSim.Background.FOG:
+                this._scene.background = new Color(backgroundColor);
                 this._scene.fog = new Fog(backgroundColor, 1, 100);
+                break;
+            case ThreeSim.Background.TRANSPARENT:
+            default:
+                break;
         }
     }
 
     _initLights(shadowsEnabled) {
-        const directionalLight = new DirectionalLight(0xffffff, 2);
+        const directionalLight = new DirectionalLight(0xffffff, 1);
         directionalLight.position.set(0, this._camera.position.y, 0);
         this._scene.add(directionalLight);
+        this._scene.add(new AmbientLight(0xffffff, 0.8));
 
         if (shadowsEnabled) {
             // Adjust shadow camera settings
@@ -113,7 +117,6 @@ export class ThreeSim {
             directionalLight.shadow.mapSize.width = 2048; // Default is 512
             directionalLight.shadow.mapSize.height = 2048; // Default is 512
 
-            this._scene.add(new AmbientLight(0xffffff, 0.8));
         }
     }
 
