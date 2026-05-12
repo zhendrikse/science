@@ -320,13 +320,22 @@ export class MasslessBody extends Body {
         super({position, velocity});
     }
 
-    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        const accelerationFn = (body) => force.clone().multiplyScalar(1 / body.mass);
-        const updatedBody = integrator(this, dt, accelerationFn);
+    timeStep(acceleration, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        const updatedBody = integrator(this, dt, () => acceleration);
         this.position = updatedBody.position;
         this.velocity = updatedBody.velocity;
         this.acceleration = updatedBody.acceleration;
     }
+}
+
+export class PlainVector extends Body {
+    constructor({position = new Vector(), direction = new Vector()} = {}) {
+        super({ position });
+        this.direction = direction.clone();
+    }
+
+    get axis() { return this.direction; }
+    set axis(newAxis) { this.direction = newAxis; }
 }
 
 class AccelerationVector {

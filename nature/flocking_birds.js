@@ -24,10 +24,9 @@ class Flock {
 
         const initialPhysicalFlockRadius= 3;
         for (let i = 0; i < bird_count; i++)
-            this._birds.push(new Ball({
+            this._birds.push(new MasslessBody({
                 position: new Vector3().random().multiplyScalar(initialPhysicalFlockRadius),
                 velocity: new Vector3(speed, 0, 0).add(new Vector3().random().multiplyScalar(speed)),
-                radius: 0.3
             }));
     }
 
@@ -48,7 +47,7 @@ class Flock {
         return avoid;
     }
 
-    updateBird(count, avoid) {
+    updateBird(count, avoid, dt) {
         const bird = this._birds[count];
 
         this._acceleration.set(
@@ -65,7 +64,7 @@ class Flock {
         diff = avoid[count].clone().normalize().sub(bird.position);
         this._acceleration.add(diff.multiplyScalar(this._avoid_weight));
 
-        bird.apply(this._acceleration, dt);
+        bird.timeStep(this._acceleration, dt);
     }
 
     update(dt) {
@@ -85,7 +84,7 @@ class Flock {
         const avoid = this.avoidNearestBirds();
 
         for (let count = 0; count < this._bird_count; count++)
-            this.updateBird(count, avoid);
+            this.updateBird(count, avoid, dt);
     }
 
     set randomWeight(value) { this._random_weight = value; }
