@@ -1,5 +1,5 @@
 import { Vector3, Vector2 } from "three";
-import {ThreeSim, Ball, Sphere, Floor, Trail } from "../js/threesim.js";
+import {ThreeSim, Ball, Sphere, Floor, Trail, UPlotGraph } from "../js/threesim.js";
 
 const canvas = document.getElementById("bouncingBallOnFloorCanvas");
 const overlay = document.getElementById("bouncingBallOnFloorOverlayText");
@@ -64,58 +64,31 @@ simulation.addThreeJsObject(floor);
 //
 // Graph
 //
-let simTime = 0;
-let timeData = [simTime];
-let positionData = [ball.position.y];
-let kineticData = [ball.kineticEnergy];
-let potentialData = [ball.potentialEnergy];
-const data = [timeData, positionData, kineticData, potentialData];
-simulation.onReset = () => {
-    timeData = [simTime];
-    positionData = [ball.position.y];
-    kineticData = [ball.kineticEnergy];
-    potentialData = [ball.potentialEnergy];
-};
-
-const opts = {
-    title: "Bouncing Ball",
-    width: canvas.clientWidth,
-    height: canvas.clientHeight * .5,
-    background: "transparent",
-    scales: {
-        x: { time: false },
-        y: { auto: true }
-    },
-    axes: [
-        {
-            stroke: "#ff0",
-            font: "12px Arial",
-            grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1}
-        },
-        {
-            stroke: "#ff0",
-            font: "12px Arial",
-            grid: {stroke: "rgba(255, 255, 255, 0.2)", width: 1}
-        }
+const plot = new UPlotGraph({
+    plotDiv: document.getElementById("chart"),
+    dataDefinition: [
+        {label: "t"}, {label: "ball1", color: "blue"},
+        { label: "Y-position", color: "cyan" },
+        { label: "Kinetic Energy", color: "red" },
+        { label: "Potential Energy", color: "green" }
     ],
-    series: [
-        {},                         // x (time)
-        { label: "Y-position", stroke: "cyan" },
-        { label: "Kinetic Energy", stroke: "red" },
-        { label: "Potential Energy", stroke: "green" }
-    ]
-};
+    width: canvas.clientWidth,
+    height: canvas.clientHeight * 0.5,
+    title: "Bouncing ball",
+    xLabel: "Simulation time",
+    yLabel: "Displacement"
+});
 
+let simTime = 0;
 function updateGraph(dt) {
     simTime += dt;
 
-    timeData.push(simTime);
-    positionData.push(ball.position.y);
-    kineticData.push(ball.kineticEnergy);
-    potentialData.push(ball.potentialEnergy);
+    plot.graphData[0].push(simTime);
+    plot.graphData[1].push(ball.position.y);
+    plot.graphData[2].push(ball.kineticEnergy);
+    plot.graphData[3].push(ball.potentialEnergy);
+    plot.update();
 }
-
-const uplot = new uPlot(opts, data, document.getElementById("chart"));
 
 const dt = 2.5e-3;
 simulation.run(() => {
@@ -125,6 +98,5 @@ simulation.run(() => {
     for (let subStep = 0; subStep < 10; subStep++)
         ballStep(dt);
 
-    uplot.setData([timeData, positionData, kineticData, potentialData]);
     updateGraph(dt);
 });
