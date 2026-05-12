@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { ThreeSim, PlainVector, VectorField, Cylinder, ArrowField, Range } from "../js/threesim.js";
+import { ThreeSim, AxisVector, VectorField, Cylinder, ArrowField, Range } from "../js/threesim.js";
 
 const canvas = document.getElementById("solenoidCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
@@ -33,8 +33,8 @@ class Solenoid {
             const p1 = points[i];
             const p2 = points[i + 1];
             const position = p1.clone().add(p2).multiplyScalar(0.5);
-            const direction = direct ? p2.clone().sub(p1) : p1.clone().sub(p2);
-            segments.push(new PlainVector({position, direction}));
+            const axis = direct ? p2.clone().sub(p1) : p1.clone().sub(p2);
+            segments.push(new AxisVector({position, axis}));
         }
 
         return segments;
@@ -44,12 +44,12 @@ class Solenoid {
         const r = position.clone().sub(segment.position);
         const r2 = r.lengthSq();
 
-        return (r2 < 1e-6) ? new Vector3() : segment.direction.clone()
+        return (r2 < 1e-6) ? new Vector3() : segment.axis.clone()
             .cross(r.clone().normalize())
             .multiplyScalar(
                 MU0 * CURRENT /
                 (4 * Math.PI) *
-                segment.direction.length() / r2
+                segment.axis.length() / r2
             );
     }
 

@@ -336,14 +336,18 @@ export class MasslessBody extends Body {
     }
 }
 
-export class PlainVector extends Body {
-    constructor({position = new Vector(), direction = new Vector()} = {}) {
+export class AxisVector extends Body {
+    constructor({position = new Vector(), axis = new Vector()} = {}) {
         super({ position });
-        this.direction = direction.clone();
+        this.axis = axis.clone();
     }
 
-    get axis() { return this.direction; }
-    set axis(newAxis) { this.direction = newAxis; }
+    clone() {
+        return new AxisVector({
+            position: this.position.clone(),
+            axis: this.axis.clone()
+        });
+    }
 }
 
 class AccelerationVector {
@@ -1173,6 +1177,10 @@ export class Box extends Mesh {
     }
 
     set body(body) {
+        // Sanity checks
+        if (!body.size || !body.size.x)
+            throw new Error("This body type does not have size vector, hence it cannot be attached to this view.");
+
         this._body = body;
         this._initialState = body.clone();
         this.scale.set(body.size.x, body.size.y, body.size.z);
