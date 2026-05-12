@@ -39,12 +39,10 @@ class WoodenBlock extends Block {
         return dragCoefficient * this.velocity.y;
     }
 
-    get force() { return this._force; }
-
     netForce(water) {
         const Fg = this.mass * g;
-        this.force.y = Fg + this.buoyancyForce(water) + this.dragForce();
-        return this.force;
+        this._force.y = Fg + this.buoyancyForce(water) + this.dragForce();
+        return this._force;
     }
 }
 
