@@ -26,13 +26,6 @@ class BouncingBall extends RadialSymmetricBody {
 //
 // Physics
 //
-const floor = new Floor({
-    type: Floor.Type.GRID,
-    planeSizeXy: new Vector2(5, 5),
-    opacity: 0.3,
-    granularity: 20
-});
-
 const ball = new BouncingBall({
     position: new Vector3(-1.5, 1.5, 1.5),
     velocity: new Vector3(.5, 0, -.4),
@@ -59,7 +52,12 @@ const simulation = new ThreeSim({
 const sphere = new Sphere({ color: "cyan" });
 simulation.attach(ball.to(sphere));
 simulation.attach(ball.to(new Trail({ color: sphere.color})));
-simulation.addThreeJsObject(floor);
+simulation.addThreeJsObject(new Floor({
+    type: Floor.Type.GRID,
+    planeSizeXy: new Vector2(5, 5),
+    opacity: 0.3,
+    granularity: 20
+}));
 
 //
 // Graph
@@ -73,7 +71,7 @@ const plot = new UPlotGraph({
         { label: "Potential Energy", color: "green" }
     ],
     width: canvas.clientWidth,
-    height: canvas.clientHeight * 0.5,
+    height: canvas.clientHeight,
     title: "Bouncing ball",
     xLabel: "Simulation time",
     yLabel: "Displacement"

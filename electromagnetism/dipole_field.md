@@ -16,7 +16,7 @@ $$
 <canvas id="dipoleCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
 <div class="buttonRow">
     <label for="fieldStrength">Field </label><input type="range" id="fieldStrength" min="0" max="1" step="0.01" value="0.5"/>
-    <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
+    <label for="autoRotate">Auto-rotate </label><input type="checkbox" checked id="autoRotate"/>
 </div>
 <script type="module" src="dipole_field.js"></script>
 
