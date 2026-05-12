@@ -78,14 +78,6 @@ plot.graphData[0] = [0]; // time
 plot.graphData[1] = [woodenBlock.buoyancyForce(water)];
 plot.graphData[2] = [woodenBlock.dragForce()];
 
-let running = false;
-canvas.addEventListener("click", () => {
-    if (!running) {
-        ThreeJsUtils.showOverlayMessage(overlay, "Started");
-        running = true;
-    }
-});
-
 let t = 0;
 const dt = 0.001;
 simulation.run( () => {
