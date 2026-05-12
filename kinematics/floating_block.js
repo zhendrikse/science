@@ -1,6 +1,5 @@
-import { Color, Vector3, BoxGeometry, MeshStandardMaterial, Mesh } from "three";
-import {ThreeJsUtils} from "../js/three-js-extensions.js";
-import {UPlotGraph, Box, Block, ThreeSim} from "../js/threesim.js";
+import { Vector3 } from "three";
+import {UPlotGraph, Box, Block, ThreeSim, Aquarium} from "../js/threesim.js";
 
 const overlay = document.getElementById('floatingBlockOverlayText');
 const canvas = document.getElementById('floatingBlockCanvas');
@@ -46,16 +45,16 @@ class WoodenBlock extends Block {
     }
 }
 
-const water = new Block({size: new Vector3(2, 2, 0.75) });
 const woodenBlock = new WoodenBlock( {size: new Vector3(0.4, 0.4, 0.1) });
+const water = new Aquarium({
+    color: 0x1e90ff,
+    size: new Vector3(2, 2, 0.75)
+});
 
-const simulation = new ThreeSim({
-    canvas,
-    overlay
-})
+const simulation = new ThreeSim({ canvas, overlay });
 
-simulation.attachStatically(water.to(new Box({ color: 0x1e90ff, transparent: true, opacity: 0.4 })));
 simulation.attach(woodenBlock.to(new Box({ color: 0xdeb887 })));
+simulation.addThreeJsObject(water);
 
 //
 // Graph

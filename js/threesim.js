@@ -14,7 +14,7 @@ import {
     Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, Group, Vector3, BufferAttribute, Fog,
     MeshStandardMaterial, SphereGeometry, Mesh, BufferGeometry, LineBasicMaterial, Line, TubeGeometry,
     CylinderGeometry, ConeGeometry, BoxGeometry, Color, Curve, Quaternion, RepeatWrapping, DoubleSide,
-    TextureLoader, Vector2, PlaneGeometry, PCFShadowMap, AmbientLight
+    TextureLoader, Vector2, PlaneGeometry, PCFShadowMap, AmbientLight, EdgesGeometry, LineSegments
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -320,26 +320,10 @@ class Body {  // INTENTIONALLY NOT EXPORTED TO THE OUTSIDE WORLD !!!
     distanceTo(other) { return this.positionVectorTo(other).length() }
 }
 
-export class AxialSymmetricBody extends Body {
-    constructor({
-        position = new Vector(),
-        axis = new Vector(),
-        radius = 1,
-        mass = 1
-    } = {})  {
-        super({ position });
-        this.radius = radius;
-        this.axis = axis.clone();
-        this.mass = mass;
-    }
-
-    clone() {
-        return new AxialSymmetricBody({
-            position: this.position.clone(),
-            axis: this.axis.clone(),
-            radius: this.radius,
-            mass: this.mass
-        });
+class TwoBodies {
+    constructor(body1, body2) {
+        this.body1 = body1;
+        this.body2 = body2;
     }
 }
 
@@ -373,6 +357,38 @@ class VelocityVector {
     get acceleration() { return this._parent.acceleration; }
     get axis() { return this._parent.velocity; }
     set axis(newAxis) { this._parent.velocity.copy(newAxis); }
+}
+
+class VectorFieldVector extends Body {
+    constructor({position, vectorField} = {}) {
+        super({ position });
+        this._vectorField = vectorField;
+    }
+
+    get axis() { return this._vectorField.sampleAt(this.position); }
+}
+
+export class AxialSymmetricBody extends Body {
+    constructor({
+        position = new Vector(),
+        axis = new Vector(),
+        radius = 1,
+        mass = 1
+    } = {})  {
+        super({ position });
+        this.radius = radius;
+        this.axis = axis.clone();
+        this.mass = mass;
+    }
+
+    clone() {
+        return new AxialSymmetricBody({
+            position: this.position.clone(),
+            axis: this.axis.clone(),
+            radius: this.radius,
+            mass: this.mass
+        });
+    }
 }
 
 export class VectorField {
@@ -539,15 +555,6 @@ export class Particle extends Body {
     get momentum() { return this.mass * this.velocity; }
 }
 
-class VectorFieldVector extends Body {
-    constructor({position, vectorField} = {}) {
-        super({ position });
-        this._vectorField = vectorField;
-    }
-
-    get axis() { return this._vectorField.sampleAt(this.position); }
-}
-
 export class Spring extends Body {
     static between(twoBodies, k = 200, radius = 1) {
         const axis = twoBodies.body1.positionVectorTo(twoBodies.body2);
@@ -583,13 +590,6 @@ export class Spring extends Body {
     get displacement() { return  this.axis.length() - this.restLength; }
     get isCompressed() { return this.axis.length() < this.restLength; }
     get endPosition() { return this.position.clone().add(this.axis); }
-}
-
-class TwoBodies {
-    constructor(body1, body2) {
-        this.body1 = body1;
-        this.body2 = body2;
-    }
 }
 
 export class HarmonicOscillator {
@@ -1318,9 +1318,10 @@ export class Helix extends Mesh {
     }
 }
 
-//
-// Floor and ceiling
-//
+/*******************************************
+ * Floor, Grid, Ceiling, Aquarium          *
+ *******************************************/
+
 class Grid extends Group {
     constructor({
         size = 1,
@@ -1440,6 +1441,41 @@ export class Ceiling extends Mesh {
         this.rotation.x = Math.PI / 2;
         this.position.copy(position);
     }
+}
+
+export class Aquarium extends Mesh {
+    constructor({
+        position = new Vector3(0, 0, 0),
+        size = new Vector3(1, 1, 1),
+        opacity = 0.35,
+        contentColor = new Color(.1, .3, .78),
+        frameColor = 0xaa9900,
+        frameWidth = 1
+    } = {}) {
+        const geometry = new BoxGeometry(size.x, size.y, size.z);
+        const material = new MeshStandardMaterial({
+            color: contentColor,
+            transparent: true,
+            opacity: opacity,
+            depthWrite: false
+        });
+
+        super(geometry, material);
+        this.position.copy(position);
+        this._size = size;
+
+        // --- Edges ---
+        const edges = new EdgesGeometry(geometry);
+        const lineMaterial = new LineBasicMaterial({
+            color: frameColor,
+            linewidth: frameWidth
+        });
+
+        const wireframe = new LineSegments(edges, lineMaterial);
+        this.add(wireframe); // make it an integral part of the cube
+    }
+
+    get size() { return this._size;}
 }
 
 /*******************************************
