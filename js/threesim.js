@@ -345,7 +345,7 @@ class AccelerationVector {
 
     clone() { return new AccelerationVector(this._parent); }
 
-    to(view) { return { body: this._parent, view: view}; };
+    to(view) { return { body: this, view: view}; };
 
     get position() { return this._parent.position; }
     get velocity() { return this._parent.velocity; }
