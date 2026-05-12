@@ -51,7 +51,7 @@ const simulation = new ThreeSim({
 
 const helix = new Helix({ coils: 15, color: "yellow" });
 const sphere = new Sphere({ color: "orange" });
-const velocityArrow = new Arrow({ color: "cyan", size: .1 });
+const velocityArrow = new Arrow({ color: "cyan", size: .125 });
 const forceArrow = new Arrow({ color: "red", size: .03 });
 simulation.attach(ball.to(sphere));
 simulation.attach(ball.velocityVector.to(velocityArrow));
