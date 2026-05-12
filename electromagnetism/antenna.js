@@ -31,34 +31,37 @@ class ElectromagneticWave {
         for (let theta = 0; theta < 2 * Math.PI; theta += dtheta)
             range.push(new Vector3(R * Math.cos(theta), 0, R * Math.sin(theta)));
 
-        for (let r1 of range) {
-            const dr1 = r1.clone().normalize().multiplyScalar(ds);
-            let rr1 = slit1.clone().add(dr1.clone().multiplyScalar(10)); //vector(0,0,0) ## current loc along wave 1
-            for (let ct = 0; ct < 120; ct++) {
-                const y = this._E0 * Math.cos(rr1.clone().sub(slit1).length() * 2 * Math.PI) / lambda_;
-                const axis = new Vector3(0, y, 0);
-                const electric_arrow = new AxialSymmetricBody({
-                    position: rr1.clone(),
-                    axis: axis
-                });
-                const magnetic_arrow = new AxialSymmetricBody({
-                    position: rr1.clone(),
-                    axis: new Vector3()
-                });
-                this._magnetic_field.push(magnetic_arrow);
-                this._electric_field.push(electric_arrow);
-                rr1.add(dr1);
-            }
+        for (let r1 of range) 
+            this._createEmWave(r1);
+    }
+
+    _createEmWave(r1) {
+        const dr1 = r1.normalize().multiplyScalar(ds);
+        let rr1 = slit1.clone().add(dr1.clone().multiplyScalar(10)); //vector(0,0,0) ## current loc along wave 1
+        for (let ct = 0; ct < 120; ct++) {
+            const y = this._E0 * Math.cos(rr1.clone().sub(slit1).length() * 2 * Math.PI) / lambda_;
+            const axis = new Vector3(0, y, 0);
+            const electric_arrow = new AxialSymmetricBody({
+                position: rr1.clone(),
+                axis: axis
+            });
+            const magnetic_arrow = new AxialSymmetricBody({
+                position: rr1.clone(),
+                axis: new Vector3()
+            });
+            this._magnetic_field.push(magnetic_arrow);
+            this._electric_field.push(electric_arrow);
+            rr1.add(dr1);
         }
     }
 
     update(t) {
         for (let index = 0; index < this._electric_field.length; index++) {
-            const field_arrow = this._electric_field[index]
+            const field_arrow = this._electric_field[index];
             const decrease = show_decrease ? 1 / (field_arrow.position.length()+ lambda_ / 20) : 1.0;
-            field_arrow.axis = new Vector3(0, decrease * this._E0 * Math.cos(
-                omega * t - 2 * Math.PI * (field_arrow.position.clone().sub(slit1).length()) / lambda_), 0)
-            this._magnetic_field[index].axis = field_arrow.axis.clone().cross(i_hat).multiplyScalar(-.7);
+            field_arrow.axis.y = decrease * this._E0 * Math.cos(
+                omega * t - 2 * Math.PI * (field_arrow.position.clone().sub(slit1).length()) / lambda_);
+            this._magnetic_field[index].axis.copy(field_arrow.axis.clone().cross(i_hat).multiplyScalar(-.7));
         }
     }
 
@@ -75,13 +78,13 @@ const simulation = new ThreeSim({
 });
 
 for (let axialBody of emWave.electricField)
-    simulation.attach(axialBody.to(new Arrow({
+    simulation.attachStatically(axialBody.to(new Arrow({
         color: new Color("orange"),
         size: .5
     })));
 
 for (let axialBody of emWave.magneticField)
-    simulation.attach(axialBody.to(new Arrow({
+    simulation.attachStatically(axialBody.to(new Arrow({
         color: new Color("cyan"),
         size: .5
     })));
