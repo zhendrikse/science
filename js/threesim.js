@@ -1399,11 +1399,19 @@ export class ElectromagneticWave extends Group {
 
     _updateFieldVectorAt(index) {
         const fieldVector = this._electricFieldArrows[index].body;
-        const slit = new Vector3(0, 0, -this._plainWave.lambda); // TODO
-        const scaling = this._scalingFunction(fieldVector.position, this._plainWave.lambda);
-        const x = this._tempPosition.copy(fieldVector.position).sub(slit).length();
+
+        // x = distance along wave
+        const x = this._tempPosition.copy(fieldVector.position)
+            .sub(this._plainWave.position)
+            .length();
+
+        const scaling = this._scalingFunction(fieldVector.position);
         fieldVector.axis.y = scaling * this._plainWave.valueAt(x);
-        this._magneticFieldArrows[index].body.axis.copy(this._tempAxis.copy(fieldVector.axis).cross(this._i_hat));
+
+        // Magnetic field (orthogonal)
+        this._magneticFieldArrows[index].body.axis.copy(
+            this._tempAxis.copy(fieldVector.axis).cross(this._i_hat)
+        );
     }
 
     render(transform) {
@@ -1417,10 +1425,8 @@ export class ElectromagneticWave extends Group {
 
     _createEmWaveFor(plainWave) {
         const ds = plainWave.lambda / 10.0;
-        const slit = new Vector3(0, 0, -this._plainWave.lambda); // TODO
-        this._tempPosition.copy(plainWave.position);
-        const dr1 = this._tempPosition.normalize().multiplyScalar(ds);
-        const position = slit.add(dr1.clone().multiplyScalar(10));
+        const dr1 = plainWave.position.clone().normalize().multiplyScalar(ds);
+        const position = plainWave.position.clone();
         for (let ct = 0; ct < this._length; ct++) {
             const electricFieldArrow = new Arrow({
                 color: this._eletricFieldColor,
@@ -1441,8 +1447,6 @@ export class ElectromagneticWave extends Group {
             position.add(dr1);
         }
     }
-
-    set scalingFunction(scalingFunction) { this._scalingFunction = scalingFunction; }
 }
 
 

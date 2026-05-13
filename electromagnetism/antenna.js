@@ -8,9 +8,8 @@ const fieldStrengthSliderValue = document.getElementById("antennaFieldStrengthSl
 const lambda = 2.0;  // 1e-10
 
 const range = [];
-const R = 4.0 * lambda; // distanceToScreen;
 for (let theta = 0; theta < 2 * Math.PI; theta += Math.PI / 3)
-    range.push(new Vector3(R * Math.cos(theta), 0, R * Math.sin(theta)));
+    range.push(new Vector3(Math.cos(theta), 0, Math.sin(theta)).multiplyScalar(lambda));
 
 const plainWaves = [];
 for (let position of range)
@@ -20,13 +19,14 @@ for (let position of range)
         amplitude: Number(fieldStrengthSlider.value)
     }));
 
-const simulation = new ThreeSim({ canvas, cameraPosition: new Vector3(-1.5, 6, -13.5), });
+const simulation = new ThreeSim({ canvas, cameraPosition: new Vector3(-1, 4, -9), });
 
+const slit = new Vector3(0, 0, lambda)
 for (let wave of plainWaves)
     simulation.attachStatically(wave.to(new ElectromagneticWave({
         length: 120,
         arrowSize: 0.5,
-        scalingFunction: (position, lambda) => 1 / (position.length() + lambda / 10)
+        scalingFunction: position => 1 / (position.clone().sub(slit).length() + lambda / 10)
     })));
 
 const antenna = new AxialSymmetricBody({
