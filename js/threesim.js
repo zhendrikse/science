@@ -1207,7 +1207,7 @@ export class ArrowField extends Group{
             colorMap: this._colorMap,
         });
         const position = new Vector3(x, y, z);
-        arrow.body = new VectorFieldVector({ position, axis: vectorField.vectorAt(position) });
+        arrow.attachTo(new VectorFieldVector({ position, axis: vectorField.vectorAt(position) }));
         this._fieldArrows.push(arrow);
         this.add(arrow);
     }
