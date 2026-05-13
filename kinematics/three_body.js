@@ -1,4 +1,4 @@
-import { ThreeSim, Sphere, Integrators, RadialSymmetricBody, G, gravitationalForceBetween, Trail } from "../js/threesim.js";
+import { Simulation, Sphere, Integrators, RadialSymmetricBody, G, gravitationalForceBetween, Trail } from "../js/simulation.js";
 import { Vector3 } from "three";
 
 const canvas = document.getElementById("threeBodyCanvas");
@@ -34,7 +34,7 @@ const bodyC = new RadialSymmetricBody({
     mass: mass * 0.5
 });
 
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas, overlay, scale,
     cameraPosition: new Vector3(30, 30, 30),
 });

@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { ThreeSim, AxialSymmetricBody, VectorField, Cylinder, ArrowField, Range } from "../js/threesim.js";
+import { Simulation, AxialSymmetricBody, VectorField, Cylinder, ArrowField, Range } from "../js/simulation.js";
 
 const canvas = document.getElementById("solenoidCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
@@ -95,7 +95,7 @@ magneticField.fieldStrength = Number(fieldStrengthSlider.value);
 //
 // Simulation
 //
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas,
     cameraPosition: new Vector3(32, 16, 48).multiplyScalar(1.25),
     fieldOfView: 45

@@ -1,6 +1,6 @@
 import { Vector3 } from "three";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { OneDimensionalComplexPlaneWave, ThreeSim, OneDimensionalComplexPlaneWave3D } from "../js/threesim.js";
+import { OneDimensionalComplexPlaneWave, Simulation, OneDimensionalComplexPlaneWave3D } from "../js/simulation.js";
 
 const canvasContainer = document.getElementById("planeWaveContainer");
 const canvas = document.getElementById("planeWaveCanvas");
@@ -39,7 +39,7 @@ const planeWave = new OneDimensionalComplexPlaneWave({
     lambda: 15
 });
 
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas,
     cameraPosition: new Vector3(0, 0, 50)
 });

@@ -1,5 +1,5 @@
 import { Vector3, Color, AmbientLight, PointLight } from "three";
-import { ThreeSim, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail } from "../js/threesim.js";
+import { Simulation, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail } from "../js/simulation.js";
 
 const canvas = document.getElementById("capacitorCanvas");
 const speedSlider = document.getElementById("speedSlider");
@@ -61,7 +61,7 @@ const movingCharge = new Particle({
 //
 // Simulation
 //
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas,
     overlay,
     scale,

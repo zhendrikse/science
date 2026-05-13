@@ -1,5 +1,5 @@
 import {Vector3, Color} from "three";
-import {Arrow, ThreeSim, Body } from '../js/threesim.js';
+import {Arrow, Simulation, Body } from '../js/simulation.js';
 
 const canvas = document.getElementById('birdsCanvas');
 
@@ -118,7 +118,7 @@ document.getElementById("startleButton").addEventListener("click", () => flock.s
 const birdCount = 250;
 const flock = new Flock(birdCount);
 
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas,
     cameraPosition: new Vector3(15, 0, 30).multiplyScalar(1.5),
     fieldOfView: 30

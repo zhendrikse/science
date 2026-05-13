@@ -1,5 +1,5 @@
 import { Vector3, Vector2 } from "three";
-import {ThreeSim, RadialSymmetricBody, Sphere, Floor, Trail, UPlotGraph } from "../js/threesim.js";
+import {Simulation, RadialSymmetricBody, Sphere, Floor, Trail, UPlotGraph } from "../js/simulation.js";
 
 const canvas = document.getElementById("bouncingBallOnFloorCanvas");
 const overlay = document.getElementById("bouncingBallOnFloorOverlayText");
@@ -43,7 +43,7 @@ function ballStep(dt) {
 //
 // Simulation
 //
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas,
     overlay,
     cameraPosition: new Vector3(2, 1, 0.5).multiplyScalar(2.25),

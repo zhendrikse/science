@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import {UPlotGraph, Box, Block, ThreeSim, Aquarium} from "../js/threesim.js";
+import {UPlotGraph, Box, Block, Simulation, Aquarium} from "../js/simulation.js";
 
 const overlay = document.getElementById('floatingBlockOverlayText');
 const canvas = document.getElementById('floatingBlockCanvas');
@@ -51,7 +51,7 @@ const water = new Aquarium({
     size: new Vector3(2, 2, 0.75)
 });
 
-const simulation = new ThreeSim({ canvas, overlay });
+const simulation = new Simulation({ canvas, overlay });
 
 simulation.attach(woodenBlock.to(new Box({ color: 0xdeb887 })));
 simulation.addThreeJsObject(water);

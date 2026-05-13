@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { AxialSymmetricBody, ThreeSim, Cylinder, OneDimensionalPlaneWave, ElectromagneticWave } from "../js/threesim.js";
+import { AxialSymmetricBody, Simulation, Cylinder, OneDimensionalPlaneWave, ElectromagneticWave } from "../js/simulation.js";
 
 const canvas = document.getElementById("antennaCanvas");
 const fieldStrengthSlider = document.getElementById("antennaFieldStrengthSlider");
@@ -25,7 +25,7 @@ for (let position of range)
 //
 // Simulation
 //
-const simulation = new ThreeSim({ canvas, cameraPosition: new Vector3(-1, 4, -9) });
+const simulation = new Simulation({ canvas, cameraPosition: new Vector3(-1, 4, -9) });
 
 const slit = new Vector3(0, 0, lambda)
 for (let wave of planeWaves)

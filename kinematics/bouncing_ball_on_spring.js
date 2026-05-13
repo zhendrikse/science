@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import {Helix, Spring, ThreeSim, RadialSymmetricBody, Sphere, Floor, Arrow} from "../js/threesim.js";
+import {Helix, Spring, Simulation, RadialSymmetricBody, Sphere, Floor, Arrow} from "../js/simulation.js";
 
 const canvas = document.getElementById("ballSpringCanvas");
 const overlay = document.getElementById("ballSpringOverlayText");
@@ -44,7 +44,7 @@ function timeStep(dt) {
 //
 // Simulation
 //
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas,
     overlay,
     cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7),

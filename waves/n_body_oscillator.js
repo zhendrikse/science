@@ -1,5 +1,5 @@
 import { Vector3, Vector2 } from "three";
-import {Helix, ThreeSim, RadialSymmetricBody, Sphere, HarmonicOscillator, Floor, UPlotGraph} from "../js/threesim.js";
+import {Helix, Simulation, RadialSymmetricBody, Sphere, HarmonicOscillator, Floor, UPlotGraph} from "../js/simulation.js";
 
 const canvas = document.getElementById("oscillatorCanvas");
 const overlay = document.getElementById("oscillatorOverlayText");
@@ -35,14 +35,14 @@ initialDisturbance(7);
 //
 // Simulation
 //
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas,
     overlay,
     cameraPosition: new Vector3(17, 6, 17),
     light: true,
     shadowsEnabled: true,
     fieldOfView: 45,
-    background: ThreeSim.Background.FOG
+    background: Simulation.Background.FOG
 });
 
 // Floor

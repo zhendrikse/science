@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { ThreeSim, VectorField, ArrowField, Sphere, Range, Particle } from "../js/threesim.js";
+import { Simulation, VectorField, ArrowField, Sphere, Range, Particle } from "../js/simulation.js";
 
 const canvas = document.getElementById("dipoleCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
@@ -56,7 +56,7 @@ dipoleField.fieldStrength = Number(fieldStrengthSlider.value) * .5;
 //
 // Simulation
 //
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas,
     scale,
     cameraPosition: new Vector3(32, 16, 48).multiplyScalar(0.75),

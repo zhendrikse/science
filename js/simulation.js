@@ -23,7 +23,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
  * S I M U L A T I O N  E N V I R O N M E N T *
  **********************************************/
 
-export class ThreeSim {
+export class Simulation {
     static Background = Object.freeze({
         PLAIN: "Plain",
         FOG: "Fog",
@@ -34,7 +34,7 @@ export class ThreeSim {
         canvas,
         overlay = null, // If overlay is not defined, the simulation won't wait for a mouse click
         scale = 1,
-        background = ThreeSim.Background.TRANSPARENT,
+        background = Simulation.Background.TRANSPARENT,
         backgroundColor = 0x0088ff,
         controls = true,
         light = true,
@@ -66,7 +66,7 @@ export class ThreeSim {
         this._renderer = new WebGLRenderer({
             antialias: true,
             canvas: this._canvas,
-            alpha: background === ThreeSim.Background.TRANSPARENT
+            alpha: background === Simulation.Background.TRANSPARENT
         });
         this._resizeRendererToCanvas();
         if (shadowsEnabled) {
@@ -84,14 +84,14 @@ export class ThreeSim {
 
     _initBackground(background, backgroundColor) {
         switch (background) {
-            case ThreeSim.Background.PLAIN:
+            case Simulation.Background.PLAIN:
                 this._scene.background = new Color(backgroundColor);
                 break;
-            case ThreeSim.Background.FOG:
+            case Simulation.Background.FOG:
                 this._scene.background = new Color(backgroundColor);
                 this._scene.fog = new Fog(backgroundColor, 1, 100);
                 break;
-            case ThreeSim.Background.TRANSPARENT:
+            case Simulation.Background.TRANSPARENT:
             default:
                 break;
         }

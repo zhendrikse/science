@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { ThreeSim, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail } from "../js/threesim.js";
+import { Simulation, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail } from "../js/simulation.js";
 
 const canvas = document.getElementById("helicalProtonCanvas");
 const overlay = document.getElementById("helicalProtonOverlayText");
@@ -41,7 +41,7 @@ function timeStep(dt) {
 //
 // Simulation
 //
-const simulation = new ThreeSim({
+const simulation = new Simulation({
     canvas,
     overlay,
     cameraPosition: new Vector3(0, 8, -9)
