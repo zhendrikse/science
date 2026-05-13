@@ -1,91 +1,32 @@
 import { Vector3, Color } from "three";
-import {AxialSymmetricBody, ThreeSim, Arrow, Cylinder, VectorFieldVector} from "../js/threesim.js";
+import { AxialSymmetricBody, ThreeSim, Cylinder, OneDimensionalPlainWave, ElectromagneticWave} from "../js/threesim.js";
 
 const canvas = document.getElementById("antennaCanvas");
 const fieldStrengthSlider = document.getElementById("antennaFieldStrengthSlider");
 const fieldStrengthSliderValue = document.getElementById("antennaFieldStrengthSliderValue");
-const decreaseButton = document.getElementById("decreaseButton");
 
 const lambda = 2.0;  // 1e-10
-const k = 2 * Math.PI / lambda;
-const c = 3e8;
-const omega = 2 * Math.PI * c / lambda;
-const i_hat = new Vector3(1, 0, 0);
 
-const ds = lambda / 10.0;
-const dt = lambda / c / 100.0;
-const distanceToScreen = 4.0 * lambda;
+const range = [];
+const R = 4.0 * lambda; // distanceToScreen;
+for (let theta = 0; theta < 2 * Math.PI; theta += Math.PI / 3)
+    range.push(new Vector3(R * Math.cos(theta), 0, R * Math.sin(theta)));
 
-const d = 2 * lambda;
-const slit = new Vector3(0, 0, -d / 2);
+const plainWaves = [];
+for (let position of range)
+    plainWaves.push(new OneDimensionalPlainWave({
+        position,
+        lambda,
+        amplitude: Number(fieldStrengthSlider.value)
+    }));
 
-class ElectromagneticWave {
-    constructor(E0) {
-        this._E0 = E0;
-        this._electricField = [];
-        this._magneticField = [];
+const simulation = new ThreeSim({ canvas, cameraPosition: new Vector3(-1.5, 6, -13.5), });
 
-        const range = [];
-        const R = distanceToScreen;
-        for (let theta = 0; theta < 2 * Math.PI; theta += Math.PI / 3)
-            range.push(new Vector3(R * Math.cos(theta), 0, R * Math.sin(theta)));
-
-        for (let position of range)
-            this._createEmWaveAt(position);
-
-        this._tempPosition = new Vector3();
-        this._tempAxis = new Vector3();
-    }
-
-    _createEmWaveAt(wavePosition) {
-        const dr1 = wavePosition.normalize().multiplyScalar(ds);
-        const position = slit.clone().add(dr1.clone().multiplyScalar(10));
-        for (let ct = 0; ct < 120; ct++) {
-            this._magneticField.push(new VectorFieldVector({position, axis: new Vector3()}));
-            this._electricField.push(new VectorFieldVector({position, axis: new Vector3()}));
-            position.add(dr1);
-        }
-    }
-
-    _plainWave(amplitude, k, x, omega, t) {
-        return amplitude * Math.cos(k * x - omega * t);
-    }
-
-    update(t) {
-        for (let index = 0; index < this._electricField.length; index++) {
-            const fieldArrow = this._electricField[index];
-            const scaling = decreaseButton.checked ? 1 / (fieldArrow.position.length() + lambda / 10) : 0.25;
-            const amplitude = this._E0 * scaling;
-            const x = this._tempPosition.copy(fieldArrow.position).sub(slit).length();
-            fieldArrow.axis.y = this._plainWave(amplitude, k, x, omega, t);
-            this._magneticField[index].axis.copy(this._tempAxis.copy(fieldArrow.axis).cross(i_hat));
-        }
-    }
-
-    set magnitude(strength) { this._E0 = strength; }
-    get electricField() { return this._electricField; }
-    get magneticField() { return this._magneticField; }
-}
-
-const emWave = new ElectromagneticWave(Number(fieldStrengthSlider.value));
-
-const simulation = new ThreeSim({
-    canvas,
-    cameraPosition: new Vector3(-1, 4, -9).multiplyScalar(1.4),
-});
-
-for (let fieldVector of emWave.electricField)
-    simulation.attachStatically(fieldVector.to(new Arrow({
-        color: new Color("orange"),
-        size: .5,
-        round: true
-    })));
-
-for (let fieldVector of emWave.magneticField)
-    simulation.attachStatically(fieldVector.to(new Arrow({
-        color: new Color("cyan"),
-        size: .5,
-        round: true
+for (let wave of plainWaves)
+    simulation.attachStatically(wave.to(new ElectromagneticWave({
+        length: 120,
+        arrowSize: 0.5,
+        scalingFunction: (position, lambda) => 1 / (position.length() + lambda / 10)
     })));
 
 const antenna = new AxialSymmetricBody({
@@ -96,14 +37,17 @@ const antenna = new AxialSymmetricBody({
 simulation.attachStatically(antenna.to(new Cylinder({color: new Color(0.7, 0.7, 0.7)})));
 
 fieldStrengthSlider.addEventListener("input", () => {
-    emWave.magnitude = Number(fieldStrengthSlider.value);
+    for (let wave of plainWaves)
+        wave.amplitude = Number(fieldStrengthSlider.value);
     fieldStrengthSliderValue.textContent = fieldStrengthSlider.value;
 });
 
 let time = 0;
+const dt = lambda / OneDimensionalPlainWave.c / 100.0;
 simulation.run(() => {
     for (let substeps = 0; substeps < 2; substeps++) {
-        emWave.update(time);
+        for (let wave of plainWaves)
+            wave.update(time);
         time += dt;
     }
 });

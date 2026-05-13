@@ -558,6 +558,37 @@ export class HarmonicOscillator {
     }
 }
 
+export class OneDimensionalPlainWave {
+    static c = 3e8;
+
+    constructor({
+        position = new Vector3(),
+        amplitude = 1,
+        lambda = 2,
+        omega = 2 * Math.PI * OneDimensionalPlainWave.c / lambda
+    } = {}) {
+        this.position = position.clone();
+        this.amplitude = amplitude;
+        this.omega = omega;
+        this._lambda = lambda;
+        this._time = 0;
+        this._k = 2 * Math.PI / lambda;
+    }
+
+    set lambda(lambdaValue) {this._lambda = lambdaValue; this._k = 2 * Math.PI / lambdaValue; }
+    set k(kValue) { this._k = kValue; this._lambda = kValue / 2 * Math.PI; }
+    get lambda() { return this._lambda; }
+    get k() { return this._k; }
+
+    to(view) { return { body: this, view: view}; };
+
+    update(t) { this._time = t; }
+
+    valueAt(x) {
+        return this.amplitude * Math.cos(this.k * x - this.omega * this._time);
+    }
+}
+
 /*************************
  * M A T H E M A T I C S *
  *************************/
@@ -1000,6 +1031,7 @@ export class Arrow extends Group {
         this._body = body;
         this._initialState = body.clone();
     }
+    get body() { return this._body; }
 
     dispose() {
         // DO NOT dispose shared geometries
@@ -1326,6 +1358,93 @@ export class Helix extends Mesh {
             this.#updateWithoutLongitudinal();
     }
 }
+
+//
+// Electromagnetic wave
+//
+export class ElectromagneticWave extends Group {
+    constructor({
+        electricFieldColor = new Color("orange"),
+        magneticFieldColor = new Color("cyan"),
+        arrowSize = 1,
+        length = 100,
+        scalingFunction = (position, lambda) => .5, // default: fixed scaling with increasing distance
+    } = {}) {
+        super();
+        this._electricFieldArrows = [];
+        this._magneticFieldArrows = [];
+        this._length = length;
+        this._eletricFieldColor = electricFieldColor;
+        this._magneticFieldColor = magneticFieldColor;
+        this._arrowSize = arrowSize;
+        this._scalingFunction = scalingFunction;
+
+        // Optimization for vector calculations
+        this._tempPosition = new Vector3();
+        this._tempAxis = new Vector3();
+        this._tempPosition = new Vector3();
+        this._i_hat = new Vector3(1, 0, 0);
+
+        this._plainWave = null;
+    }
+
+    set body(plainWave) {
+        // Sanity checks
+        if (!plainWave.valueAt)
+            throw new Error("Body does not implement valueAt(), hence it cannot be attached to this view.");
+
+        this._plainWave = plainWave;
+        this._createEmWaveFor(plainWave);
+    }
+
+    _updateFieldVectorAt(index) {
+        const fieldVector = this._electricFieldArrows[index].body;
+        const slit = new Vector3(0, 0, -this._plainWave.lambda); // TODO
+        const scaling = this._scalingFunction(fieldVector.position, this._plainWave.lambda);
+        const x = this._tempPosition.copy(fieldVector.position).sub(slit).length();
+        fieldVector.axis.y = scaling * this._plainWave.valueAt(x);
+        this._magneticFieldArrows[index].body.axis.copy(this._tempAxis.copy(fieldVector.axis).cross(this._i_hat));
+    }
+
+    render(transform) {
+        for (let index = 0; index < this._electricFieldArrows.length; index++)
+            this._updateFieldVectorAt(index);
+        for (let arrow of this._electricFieldArrows)
+            arrow.render(transform);
+        for (let arrow of this._magneticFieldArrows)
+            arrow.render(transform);
+    }
+
+    _createEmWaveFor(plainWave) {
+        const ds = plainWave.lambda / 10.0;
+        const slit = new Vector3(0, 0, -this._plainWave.lambda); // TODO
+        this._tempPosition.copy(plainWave.position);
+        const dr1 = this._tempPosition.normalize().multiplyScalar(ds);
+        const position = slit.add(dr1.clone().multiplyScalar(10));
+        for (let ct = 0; ct < this._length; ct++) {
+            const electricFieldArrow = new Arrow({
+                color: this._eletricFieldColor,
+                size: this._arrowSize,
+                round: true
+            });
+            const magneticFieldArrow = new Arrow({
+                color: this._magneticFieldColor,
+                size: this._arrowSize,
+                round: true
+            });
+            electricFieldArrow.body = new VectorFieldVector({position, axis: new Vector3()});
+            magneticFieldArrow.body = new VectorFieldVector({position, axis: new Vector3()});
+            this._magneticFieldArrows.push(magneticFieldArrow);
+            this._electricFieldArrows.push(electricFieldArrow);
+            this.add(electricFieldArrow, magneticFieldArrow);
+
+            position.add(dr1);
+        }
+    }
+
+    set scalingFunction(scalingFunction) { this._scalingFunction = scalingFunction; }
+}
+
 
 /*******************************************
  * Floor, Grid, Ceiling, Aquarium          *
