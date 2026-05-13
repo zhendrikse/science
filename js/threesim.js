@@ -594,7 +594,7 @@ export class OneDimensionalComplexPlaneWave extends OneDimensionalPlaneWave {
         position = new Vector3(),
         amplitude = 1,
         lambda = 2,
-        omega = 2 * Math.PI * OneDimensionalPlaneWave.c / lambda
+        omega = 3 * Math.PI
     } = {}) {
         super({position, amplitude, lambda, omega });
     }

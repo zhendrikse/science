@@ -5,6 +5,9 @@ const canvas = document.getElementById("antennaCanvas");
 const fieldStrengthSlider = document.getElementById("antennaFieldStrengthSlider");
 const fieldStrengthSliderValue = document.getElementById("antennaFieldStrengthSliderValue");
 
+//
+// Physics
+//
 const lambda = 2.0;  // 1e-10
 
 const range = [];
@@ -19,6 +22,9 @@ for (let position of range)
         amplitude: Number(fieldStrengthSlider.value)
     }));
 
+//
+// Simulation
+//
 const simulation = new ThreeSim({ canvas, cameraPosition: new Vector3(-1, 4, -9) });
 
 const slit = new Vector3(0, 0, lambda)
@@ -36,6 +42,9 @@ const antenna = new AxialSymmetricBody({
 });
 simulation.attachStatically(antenna.to(new Cylinder({color: new Color(0.7, 0.7, 0.7)})));
 
+//
+// Even listeners
+//
 fieldStrengthSlider.addEventListener("input", () => {
     for (let wave of planeWaves)
         wave.amplitude = Number(fieldStrengthSlider.value);

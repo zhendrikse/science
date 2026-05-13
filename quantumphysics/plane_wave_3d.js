@@ -1,7 +1,6 @@
-import {Box3, Scene, Color, Group, Vector3} from "three";
-import { Axes } from '../js/three-js-extensions.js';
+import { Vector3 } from "three";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import {OneDimensionalComplexPlaneWave, ThreeSim, OneDimensionalComplexPlaneWave3D} from "../js/threesim.js";
+import { OneDimensionalComplexPlaneWave, ThreeSim, OneDimensionalComplexPlaneWave3D } from "../js/threesim.js";
 
 const canvasContainer = document.getElementById("planeWaveContainer");
 const canvas = document.getElementById("planeWaveCanvas");
@@ -36,7 +35,7 @@ class ControlsGui {
 const planeWave = new OneDimensionalComplexPlaneWave({
     position: new Vector3(-25, 0, 0),
     amplitude: 5,
-    omega: 2 * Math.PI,
+    omega: -3 * Math.PI,
     lambda: 15
 });
 
@@ -47,13 +46,11 @@ const simulation = new ThreeSim({
 
 simulation.attach(planeWave.to(new OneDimensionalComplexPlaneWave3D({size: .8, numArrows: 100})));
 
-
 //
 // const gui = new ControlsGui(planeWave);
 
 let time = 0;
 const dt = 0.01;
-
 simulation.run(() => {
     planeWave.propagate(time);
     time += dt;
