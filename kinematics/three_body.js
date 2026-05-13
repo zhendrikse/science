@@ -34,7 +34,10 @@ const bodyC = new RadialSymmetricBody({
     mass: mass * 0.5
 });
 
-const simulation = new ThreeSim({ canvas, overlay, scale });
+const simulation = new ThreeSim({
+    canvas, overlay, scale,
+    cameraPosition: new Vector3(30, 30, 30),
+});
 
 simulation.attach(bodyA.to(new Sphere({ color: "yellow" })));
 simulation.attach(bodyA.to(new Trail({ maxPoints: 500, color: "yellow" })));
