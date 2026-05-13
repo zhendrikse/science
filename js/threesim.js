@@ -198,7 +198,7 @@ export class ThreeSim {
     attach(bodyAndView) {
         const viewObject = bodyAndView.view;
         this.addThreeJsObject(viewObject, true);
-        viewObject.body = bodyAndView.body;
+        viewObject.attachTo(bodyAndView.body);
 
         // Initial render before entering render loop
         viewObject.render?.(this._transform);
@@ -207,7 +207,7 @@ export class ThreeSim {
     attachStatically(bodyAndView) {
         const viewObject = bodyAndView.view;
         this.addThreeJsObject(viewObject, true);
-        viewObject.body = bodyAndView.body;
+        viewObject.attachTo(bodyAndView.body);
 
         this.addThreeJsObject(bodyAndView.view, false);
     }
@@ -858,7 +858,7 @@ export class Trail extends Group {
         this._previousPosition = null;
     }
 
-    set body(body) {
+    attachTo(body) {
         this._body = body;
         this._initialState = body.clone();
         this._previousPosition = body.position.clone();
@@ -937,7 +937,7 @@ export class Sphere extends Mesh {
         this.castShadow = castShadow;
     }
 
-    set body(body) {
+    attachTo(body) {
         // Sanity checks
         if (!body.radius)
             throw new Error("Body does not have a radius, hence it cannot be attached to this view.");
@@ -1023,7 +1023,7 @@ export class Arrow extends Group {
         this._body.axis.copy(this._initialState.axis);
     }
 
-    set body(body) {
+    attachTo(body) {
         // Sanity checks
         if (!body.axis)
             throw new Error("Body does not have an axis, hence it cannot be attached to this view.");
@@ -1121,7 +1121,7 @@ export class ArrowField extends Group{
 
     // TODO implement reset()
 
-    set body(vectorField) {
+    attachTo(vectorField) {
         // Sanity checks
         if (!vectorField.vectorAt)
             throw new Error("Body does not implement vectorAt(), hence it cannot be attached to this view.");
@@ -1168,7 +1168,7 @@ export class Cylinder extends Mesh {
         this._body.radius = this._initialState.radius;
     }
 
-    set body(body) {
+    attachTo(body) {
         // Sanity checks
         if (!body.axis)
             throw new Error("Body does not have an axis, hence it cannot be attached to this view.");
@@ -1223,7 +1223,7 @@ export class Box extends Mesh {
         this._body.position.copy(this._initialState.position);
     }
 
-    set body(body) {
+    attachTo(body) {
         // Sanity checks
         if (!body.size || !body.size.x)
             throw new Error("Body does not have size (vector), hence it cannot be attached to this view.");
@@ -1311,7 +1311,7 @@ export class Helix extends Mesh {
         this._body.radius = this._initialState.radius;
     }
 
-    set body(body) {
+    attachTo(body) {
         // Sanity checks
         if (!body.axis)
             throw new Error("Body does not have an axis, hence it cannot be attached to this view.");
@@ -1388,7 +1388,7 @@ export class ElectromagneticWave extends Group {
         this._plainWave = null;
     }
 
-    set body(plainWave) {
+    attachTo(plainWave) {
         // Sanity checks
         if (!plainWave.valueAt)
             throw new Error("Body does not implement valueAt(), hence it cannot be attached to this view.");
@@ -1438,8 +1438,8 @@ export class ElectromagneticWave extends Group {
                 size: this._arrowSize,
                 round: true
             });
-            electricFieldArrow.body = new VectorFieldVector({position});
-            magneticFieldArrow.body = new VectorFieldVector({position});
+            electricFieldArrow.attachTo(new VectorFieldVector({position}));
+            magneticFieldArrow.attachTo(new VectorFieldVector({position}));
             this._magneticFieldArrows.push(magneticFieldArrow);
             this._electricFieldArrows.push(electricFieldArrow);
             this.add(electricFieldArrow, magneticFieldArrow);
