@@ -695,6 +695,12 @@ export class VectorFieldVector {
             axis: this.axis.clone(),
         });
     }
+
+    to(view) { return { body: this, view: view}; };
+
+    positionVectorTo(other) { return other.position.clone().sub(this.position); }
+    distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
+    distanceTo(other) { return this.positionVectorTo(other).length() }
 }
 
 export class VectorField {
