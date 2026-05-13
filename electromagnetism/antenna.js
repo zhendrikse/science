@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { AxialSymmetricBody, ThreeSim, Cylinder, OneDimensionalPlaneWave, ElectromagneticWave} from "../js/threesim.js";
+import { AxialSymmetricBody, ThreeSim, Cylinder, OneDimensionalPlaneWave, ElectromagneticWave } from "../js/threesim.js";
 
 const canvas = document.getElementById("antennaCanvas");
 const fieldStrengthSlider = document.getElementById("antennaFieldStrengthSlider");
@@ -11,20 +11,20 @@ const range = [];
 for (let theta = 0; theta < 2 * Math.PI; theta += Math.PI / 3)
     range.push(new Vector3(Math.cos(theta), 0, Math.sin(theta)).multiplyScalar(lambda));
 
-const plainWaves = [];
+const planeWaves = [];
 for (let position of range)
-    plainWaves.push(new OneDimensionalPlaneWave({
+    planeWaves.push(new OneDimensionalPlaneWave({
         position,
         lambda,
         amplitude: Number(fieldStrengthSlider.value)
     }));
 
-const simulation = new ThreeSim({ canvas, cameraPosition: new Vector3(-1, 4, -9), });
+const simulation = new ThreeSim({ canvas, cameraPosition: new Vector3(-1, 4, -9) });
 
 const slit = new Vector3(0, 0, lambda)
-for (let wave of plainWaves)
-    simulation.attachStatically(wave.to(new ElectromagneticWave({
-        length: 120,
+for (let wave of planeWaves)
+    simulation.attach(wave.to(new ElectromagneticWave({
+        numArrows: 120,
         arrowSize: 0.5,
         scalingFunction: position => 1 / (position.clone().sub(slit).length() + lambda / 10)
     })));
@@ -37,17 +37,17 @@ const antenna = new AxialSymmetricBody({
 simulation.attachStatically(antenna.to(new Cylinder({color: new Color(0.7, 0.7, 0.7)})));
 
 fieldStrengthSlider.addEventListener("input", () => {
-    for (let wave of plainWaves)
+    for (let wave of planeWaves)
         wave.amplitude = Number(fieldStrengthSlider.value);
     fieldStrengthSliderValue.textContent = fieldStrengthSlider.value;
 });
 
 let time = 0;
-const dt = lambda / OneDimensionalPlainWave.c / 100.0;
+const dt = lambda / OneDimensionalPlaneWave.c / 100.0;
 simulation.run(() => {
     for (let substeps = 0; substeps < 2; substeps++) {
-        for (let wave of plainWaves)
-            wave.update(time);
+        for (let wave of planeWaves)
+            wave.propagate(time);
         time += dt;
     }
 });

@@ -575,17 +575,33 @@ export class OneDimensionalPlaneWave {
         this._k = 2 * Math.PI / lambda;
     }
 
-    set lambda(lambdaValue) {this._lambda = lambdaValue; this._k = 2 * Math.PI / lambdaValue; }
+    set lambda(lambdaValue) { this._lambda = lambdaValue; this._k = 2 * Math.PI / lambdaValue; }
     set k(kValue) { this._k = kValue; this._lambda = kValue / 2 * Math.PI; }
     get lambda() { return this._lambda; }
     get k() { return this._k; }
 
     to(view) { return { body: this, view: view}; };
 
-    update(t) { this._time = t; }
+    propagate(t) { this._time = t; }
 
     valueAt(x) {
         return this.amplitude * Math.cos(this.k * x - this.omega * this._time);
+    }
+}
+
+export class OneDimensionalComplexPlaneWave extends OneDimensionalPlaneWave {
+    constructor({
+        position = new Vector3(),
+        amplitude = 1,
+        lambda = 2,
+        omega = 2 * Math.PI * OneDimensionalPlaneWave.c / lambda
+    } = {}) {
+        super({position, amplitude, lambda, omega });
+    }
+
+    valueAt(x) {
+        const phase = this.k * x - this.omega * this._time;
+        return new Complex( Math.cos(phase) * this.amplitude, Math.sin(phase) * this.amplitude);
     }
 }
 
@@ -711,7 +727,7 @@ export class Range {
     }
 }
 
-export class VectorFieldVector {
+class VectorFieldVector {
     constructor({
                     position = new Vector3(),
                     axis = new Vector3()
@@ -728,10 +744,44 @@ export class VectorFieldVector {
     }
 
     to(view) { return { body: this, view: view}; };
+}
 
-    positionVectorTo(other) { return other.position.clone().sub(this.position); }
-    distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
-    distanceTo(other) { return this.positionVectorTo(other).length() }
+class ScalarFieldValue {
+    constructor({
+        position = new Vector3(),
+        value = 0
+    } = {})  {
+        this.position = position.clone();
+        this.value = value;
+    }
+
+    clone() {
+        return new VectorFieldVector({
+            position: this.position.clone(),
+            value: this.value,
+        });
+    }
+
+    to(view) { return { body: this, view: view}; };
+}
+
+class ComplexScalarFieldValue {
+    constructor({
+        position = new Vector3(),
+        value = new Complex(0, 0)
+    } = {})  {
+        this.position = position.clone();
+        this.value = value;
+    }
+
+    clone() {
+        return new VectorFieldVector({
+            position: this.position.clone(),
+            value: this.value.clone(),
+        });
+    }
+
+    get axis() { return new Vector3(0, this.value.re, this.value.im); }
 }
 
 export class VectorField {
@@ -794,6 +844,49 @@ export class VectorField {
 
     curlMagnitude(position, h = 1e-2) {
         return this.curl(position, h).length();
+    }
+}
+
+export class Complex {
+    constructor(re, im) {
+        this.re = re;
+        this.im = im;
+    }
+
+    clone() { return new Complex(this.re, this.im); }
+
+    absSquared() { return Complex.absSquared(this); }
+    abs() { return Complex.abs(this); }
+    phase = () => Math.atan2(this.im, this.re);
+
+    static multiplyScalar = (a, scalar) => new Complex(a.re * scalar, a.im * scalar);
+    static fromPhase = (theta) => new Complex(Math.cos(theta), Math.sin(theta));
+    static absSquared(z_) { return z_.re * z_.re + z_.im * z_.im; }
+    static abs = (z) => Math.sqrt(Complex.absSquared(z));
+    static add = (a, b) => new Complex(a.re + b.re, a.im + b.im);
+    static subtract = (a, b) => new Complex(a.re - b.re, a.im - b.im);
+    static multiply = (a, b) => new Complex(
+        a.re * b.re - a.im * b.im,
+        a.re * b.im + a.im * b.re
+    );
+    static log = (z) => new Complex(Math.log(Complex.abs(z)), Math.atan2(z.im, z.re));
+    static exp = (z) => new Complex(Math.exp(z.re) * Math.cos(z.im), Math.exp(z.re) * Math.sin(z.im))
+    static sin(z) {
+        const a = Complex.exp(new Complex(-z.im, z.re));
+        const b = Complex.exp(new Complex(z.im, -z.re));
+        return new Complex((a.im - b.im) / 2, (b.re - a.re) / 2);
+    }
+    static divide = (z1, z2) => {
+        const denominator = z2.re * z2.re + z2.im * z2.im;
+        const re = z1.re * z2.re + z1.im * z2.im;
+        const im = z1.im * z2.re - z1.re * z2.im;
+        return new Complex(re / denominator, im / denominator);
+    }
+    static sqrt(z) {
+        const r = Complex.abs(z);
+        const real = Math.sqrt((r + z.re) / 2);
+        const imag = Math.sign(z.im || 1) * Math.sqrt((r - z.re) / 2);
+        return new Complex(real, imag);
     }
 }
 
@@ -1058,7 +1151,7 @@ export class Arrow extends Group {
         const length = visualMagnitude * this._size;
 
         if (this._colorMap) {
-            const color = this._colorMap(length);
+            const color = this._colorMap(this._tempAxisVector);
             this._shaft.material.color.copy(color);
             this._head.material.color.copy(color);
         }
@@ -1091,7 +1184,7 @@ export class ArrowField extends Group{
         scaleFactor = 1,
         round = false,
         magnitudeMap = magnitude => Math.log(1 + magnitude),
-        colorMap = magnitude => new Color().setHSL(Math.log(1 + magnitude), 2, 0.5)
+        colorMap = axis => new Color().setHSL(Math.log(1 + axis.length()), 2, 0.5)
 
 } = {}) {
         super();
@@ -1360,20 +1453,20 @@ export class Helix extends Mesh {
 }
 
 //
-// Electromagnetic wave
+// Plane waves
 //
 export class ElectromagneticWave extends Group {
     constructor({
         electricFieldColor = new Color("orange"),
         magneticFieldColor = new Color("cyan"),
         arrowSize = 1,
-        length = 100,
+        numArrows = 100,
         scalingFunction = (position, lambda) => .5, // default: fixed scaling with increasing distance
     } = {}) {
         super();
         this._electricFieldArrows = [];
         this._magneticFieldArrows = [];
-        this._length = length;
+        this._numArrows = numArrows;
         this._eletricFieldColor = electricFieldColor;
         this._magneticFieldColor = magneticFieldColor;
         this._arrowSize = arrowSize;
@@ -1385,16 +1478,16 @@ export class ElectromagneticWave extends Group {
         this._tempPosition = new Vector3();
         this._i_hat = new Vector3(1, 0, 0);
 
-        this._plainWave = null;
+        this._planeWave = null;
     }
 
-    attachTo(plainWave) {
+    attachTo(planeWave) {
         // Sanity checks
-        if (!plainWave.valueAt)
+        if (!planeWave.valueAt)
             throw new Error("Body does not implement valueAt(), hence it cannot be attached to this view.");
 
-        this._plainWave = plainWave;
-        this._createEmWaveFor(plainWave);
+        this._planeWave = planeWave;
+        this._createEmWaveFor(planeWave);
     }
 
     _updateFieldVectorAt(index) {
@@ -1402,11 +1495,11 @@ export class ElectromagneticWave extends Group {
 
         // x = distance along wave
         const x = this._tempPosition.copy(fieldVector.position)
-            .sub(this._plainWave.position)
+            .sub(this._planeWave.position)
             .length();
 
         const scaling = this._scalingFunction(fieldVector.position);
-        fieldVector.axis.y = scaling * this._plainWave.valueAt(x);
+        fieldVector.axis.y = scaling * this._planeWave.valueAt(x);
 
         // Magnetic field (orthogonal)
         this._magneticFieldArrows[index].body.axis.copy(
@@ -1423,11 +1516,11 @@ export class ElectromagneticWave extends Group {
             arrow.render(transform);
     }
 
-    _createEmWaveFor(plainWave) {
-        const ds = plainWave.lambda / 10.0;
-        const dr1 = plainWave.position.clone().normalize().multiplyScalar(ds);
-        const position = plainWave.position.clone();
-        for (let ct = 0; ct < this._length; ct++) {
+    _createEmWaveFor(planeWave) {
+        const ds = planeWave.lambda / 10.0;
+        const dr1 = planeWave.position.clone().normalize().multiplyScalar(ds);
+        const position = planeWave.position.clone();
+        for (let ct = 0; ct < this._numArrows; ct++) {
             const electricFieldArrow = new Arrow({
                 color: this._eletricFieldColor,
                 size: this._arrowSize,
@@ -1449,6 +1542,54 @@ export class ElectromagneticWave extends Group {
     }
 }
 
+export class OneDimensionalComplexPlaneWave3D extends Group {
+    constructor({
+        size = 1,
+        numArrows = 70,
+        round = false
+    } = {}) {
+        super();
+        this._arrows = [];
+
+        this._numArrows = numArrows;
+        this._round = round;
+        this._size = size;
+        this._complexPlaneWave = null;
+    }
+    
+    attachTo(complexPlaneWave) {
+        // Sanity checks
+        if (!complexPlaneWave.valueAt)
+            throw new Error("Body does not implement valueAt(), hence it cannot be attached to this view.");
+
+        this._complexPlaneWave = complexPlaneWave;
+
+        const position = new Vector3().copy(complexPlaneWave.position);
+        for (let i = 0; i < this._numArrows; i++)
+            this._createArrowAt(position, i);
+    }
+
+    _createArrowAt(position, index) {
+        const x = position.x + index * 0.5;
+        const arrow = new Arrow({
+            round: this._round,
+            size: this._size,
+            colorMap: (axis) => new Color().setHSL(1.0 - new Complex(axis.z, axis.y).phase() / (2 * Math.PI), 1.0, 0.5)
+        });
+
+        arrow.attachTo(new ComplexScalarFieldValue({ position: new Vector3(x, position.y, position.z) }));
+        this._arrows.push(arrow);
+        this.add(arrow);
+    }
+
+    render(transform) {
+        for (let arrow of this._arrows)
+            arrow.body.value = this._complexPlaneWave.valueAt(arrow.body.position.x);
+
+        for (let arrow of this._arrows)
+            arrow.render(transform);
+    }
+}
 
 /*******************************************
  * Floor, Grid, Ceiling, Aquarium          *

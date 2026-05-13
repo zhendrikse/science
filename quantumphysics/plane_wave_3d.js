@@ -1,35 +1,10 @@
 import {Box3, Scene, Color, Group, Vector3} from "three";
-import { Arrow, Axes, AxesController, AxesParameters, ThreeJsUtils, Plot3DView } from '../js/three-js-extensions.js';
+import { Axes } from '../js/three-js-extensions.js';
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
+import {OneDimensionalComplexPlaneWave, ThreeSim, OneDimensionalComplexPlaneWave3D} from "../js/threesim.js";
 
 const canvasContainer = document.getElementById("planeWaveContainer");
 const canvas = document.getElementById("planeWaveCanvas");
-
-const scene = new Scene();
-const worldGroup = new Group();
-scene.add(worldGroup);
-
-const params = {
-    amplitude: 3,
-    omega: 2,
-    waveNumber: 0.4,
-    axesParameters: new AxesParameters({
-        layoutType: Axes.Type.CLASSICAL,
-        xyPlane: false,
-        yzPlane: false,
-        divisions: 10,
-        axisLabels: ["x", "Im(Ψ)", "Re(Ψ)"],
-        annotations: true,
-        tickLabels: false
-    })
-};
-
-const axesController = new AxesController({
-    parentGroup: worldGroup,
-    canvasContainer,
-    axesParameters: params.axesParameters,
-    scene
-});
 
 class ControlsGui {
     constructor(planeWave) {
@@ -58,65 +33,29 @@ class ControlsGui {
     }
 }
 
-class PlaneWave extends Group {
-    constructor(k=2 * Math.PI / 5, omega=2 * Math.PI, amplitude=3) {
-        super();
-        this._arrows = [];
-        for (let x = -10; x < 10; x += 0.3)
-            this._arrows.push(new Arrow({
-                position: new Vector3(x, 0, 0),
-                axis: new Vector3(0, amplitude, 0),
-                color: 0xff0000,
-                shaftWidth: 0.03,
-                headLength: 6
-            }));
-        this._amplitude = amplitude;
-        this._k = k;
-        this._omega = omega;
-        this._arrows.forEach(arrow => this.add(arrow));
-    }
+const planeWave = new OneDimensionalComplexPlaneWave({
+    position: new Vector3(-25, 0, 0),
+    amplitude: 5,
+    omega: 2 * Math.PI,
+    lambda: 15
+});
 
-    set k(value) { this._k = value; }
-    set omega(value) { this._omega = value; }
-    set amplitude(value) { this._amplitude = value; }
+const simulation = new ThreeSim({
+    canvas,
+    cameraPosition: new Vector3(0, 0, 50)
+});
 
-    _updateArrow(arrow, t) {
-        const x = arrow.position.x;
-        const k = this._k;
-        const w = this._omega;
-        const phase = k * x - w * t;
-        let cycles = phase / (2 * Math.PI);
-        cycles -= Math.floor(cycles);
-        const cphase = 2 * Math.PI * cycles;
+simulation.attach(planeWave.to(new OneDimensionalComplexPlaneWave3D({size: .8, numArrows: 100})));
 
-        const y = -Math.sin(phase) * this._amplitude;
-        const z = -Math.cos(phase) * this._amplitude;
-        arrow.axis = new Vector3(arrow.axis.x, y, z);
-        arrow.color = new Color().setHSL(1.0 - cphase / (2 * Math.PI), 1.0, 0.5);
-    }
 
-    update(t) {
-        this._arrows.forEach(arrow => this._updateArrow(arrow, t));
-    }
-}
-
-const planeWave = new PlaneWave();
-worldGroup.add(planeWave);
-
-const boundingBox = new Box3();
-boundingBox.setFromObject( worldGroup );
-axesController.createFromBoundingBox(boundingBox);
-
-const plot3D = new Plot3DView(scene, canvas, boundingBox);
-plot3D.frame(ThreeJsUtils.scaleBox3(boundingBox, .5));
-ThreeJsUtils.resizeRendererToCanvas(plot3D.renderer, plot3D.camera);
-const gui = new ControlsGui(planeWave);
+//
+// const gui = new ControlsGui(planeWave);
 
 let time = 0;
 const dt = 0.01;
-plot3D.renderer.setAnimationLoop(() => {
-    planeWave.update(time);
-    plot3D.render();
-    axesController.render(plot3D.camera);
+
+simulation.run(() => {
+    planeWave.propagate(time);
     time += dt;
 });
+
