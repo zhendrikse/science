@@ -76,13 +76,15 @@ const simulation = new ThreeSim({
 for (let fieldVector of emWave.electricField)
     simulation.attachStatically(fieldVector.to(new Arrow({
         color: new Color("orange"),
-        size: .5
+        size: .5,
+        round: true
     })));
 
 for (let fieldVector of emWave.magneticField)
     simulation.attachStatically(fieldVector.to(new Arrow({
         color: new Color("cyan"),
-        size: .5
+        size: .5,
+        round: true
     })));
 
 const antenna = new AxialSymmetricBody({
