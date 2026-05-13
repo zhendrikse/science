@@ -1,5 +1,5 @@
 import {Vector3, Color} from "three";
-import {Arrow, ThreeSim, AxialSymmetricBody } from '../js/threesim.js';
+import {Arrow, ThreeSim, Body } from '../js/threesim.js';
 
 const canvas = document.getElementById('birdsCanvas');
 
@@ -24,9 +24,9 @@ class Flock {
 
         const initialPhysicalFlockRadius= 3;
         for (let i = 0; i < bird_count; i++)
-            this._birds.push(new AxialSymmetricBody({
+            this._birds.push(new Body({
                 position: new Vector3().random().multiplyScalar(initialPhysicalFlockRadius),
-                axis: new Vector3(speed, 0, 0).add(new Vector3().random().multiplyScalar(speed)),
+                velocity: new Vector3(speed, 0, 0).add(new Vector3().random().multiplyScalar(speed)),
             }));
     }
 
@@ -82,8 +82,9 @@ class Flock {
         this._center.divideScalar(this._bird_count);
         this._direction.divideScalar(this._bird_count);
 
+        const avoid = this.avoidNearestBirds();
         for (let count = 0; count < this._bird_count; count++)
-            this.updateBird(count, this.avoidNearestBirds(), dt);
+            this.updateBird(count, avoid, dt);
     }
 
     set randomWeight(value) { this._random_weight = value; }
@@ -124,7 +125,7 @@ const simulation = new ThreeSim({
 });
 
 for (let i = 0; i < birdCount; i++)
-    simulation.attach(flock.bird(i).to(new Arrow({
+    simulation.attach(flock.bird(i).velocityVector.to(new Arrow({
         round: true,
         color: new Color(.5, 1, .5),
         size: .2

@@ -282,43 +282,6 @@ export function gravitationalForceBetween(twoBodies) {
 //
 // Bodies to do physics with
 //
-class Body {  // INTENTIONALLY NOT EXPORTED TO THE OUTSIDE WORLD !!!
-    static integrationStep = (body, force, dt = 0.01, integrator = Integrators.symplecticEulerStep) => {
-        const accelerationFn = (bodyParam) => force.clone().multiplyScalar(1 / bodyParam.mass);
-        const updatedBody = integrator(body, dt, accelerationFn);
-        body.position = updatedBody.position;
-        body.velocity = updatedBody.velocity;
-        body.acceleration = updatedBody.acceleration;
-    }
-
-    constructor({
-                    position = new Vector3(),
-                    velocity = new Vector3()
-                } = {}) {
-        this.acceleration = new Vector3();  // Intentionally public
-        this.position = position.clone();   // Intentionally public
-        this.velocity = velocity.clone();   // Intentionally public
-        this.velocityVector = new VelocityVector(this);
-        this.accelerationVector = new AccelerationVector(this);
-    }
-
-    clone() {
-        return new Body({
-            position: this.position.clone(),
-            velocity: this.velocity.clone(),
-            velocityVector: this.velocityVector.clone(),
-            accelerationVector: this.accelerationVector.clone()
-        });
-    }
-
-    and(otherBody) { return new TwoBodies(this, otherBody) };
-
-    to(view) { return { body: this, view: view}; };
-
-    positionVectorTo(other) { return other.position.clone().sub(this.position); }
-    distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
-    distanceTo(other) { return this.positionVectorTo(other).length() }
-}
 
 class TwoBodies {
     constructor(body1, body2) {
@@ -359,110 +322,69 @@ class VelocityVector {
     set axis(newAxis) { this._parent.velocity.copy(newAxis); }
 }
 
-export class VectorFieldVector extends Body {
+export class Body {
     constructor({
-        position = new Vector(),
-        axis = new Vector()
-    } = {})  {
-        super({ position });
-        this.axis = axis;
+        position = new Vector3(),
+        velocity = new Vector3(),
+        mass = 1
+    } = {}) {
+        this.acceleration = new Vector3();  // Intentionally public
+        this.position = position.clone();   // Intentionally public
+        this.velocity = velocity.clone();   // Intentionally public
+        this.mass = mass;                   // Intentionally public
+        this.velocityVector = new VelocityVector(this);
+        this.accelerationVector = new AccelerationVector(this);
+    }
+
+    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        const accelerationFn = (bodyParam) => force.clone().multiplyScalar(1 / bodyParam.mass);
+        const updatedBody = integrator(this, dt, accelerationFn);
+        this.position = updatedBody.position;
+        this.velocity = updatedBody.velocity;
+        this.acceleration = updatedBody.acceleration;
     }
 
     clone() {
-        return new AxialSymmetricBody({
+        return new Body({
             position: this.position.clone(),
-            axis: this.axis.clone(),
+            velocity: this.velocity.clone(),
+            acceleration: this.acceleration.clone(),
+            mass: this.mass,
+            velocityVector: this.velocityVector.clone(),
+            accelerationVector: this.accelerationVector.clone()
         });
     }
+
+    and(otherBody) { return new TwoBodies(this, otherBody) };
+
+    to(view) { return { body: this, view: view}; };
+
+    positionVectorTo(other) { return other.position.clone().sub(this.position); }
+    distanceToSquared(other) { return this.positionVectorTo(other).dot(this.positionVectorTo(other)); }
+    distanceTo(other) { return this.positionVectorTo(other).length() }
 }
 
 export class AxialSymmetricBody extends Body {
     constructor({
-        position = new Vector(),
-        axis = new Vector(),
+        position = new Vector3(),
+        velocity = new Vector3(),
+        axis = new Vector3(),
         radius = 1,
         mass = 1
     } = {})  {
-        super({ position });
+        super({ position, velocity, mass });
         this.radius = radius;
         this.axis = axis.clone();
-        this.mass = mass;
-    }
-
-    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        Body.integrationStep(this, force, dt, integrator);
     }
 
     clone() {
         return new AxialSymmetricBody({
             position: this.position.clone(),
+            velocity: this.velocity.clone(),
             axis: this.axis.clone(),
             radius: this.radius,
             mass: this.mass
         });
-    }
-}
-
-export class VectorField {
-    constructor() { }
-
-    to(view) { return { body: this, view: view}; };
-
-    range(positions) {
-        let min = Infinity;
-        let max = -Infinity;
-
-        for (const position of positions) {
-            const mag = this.vectorAt(position).length();
-            min = Math.min(min, mag);
-            max = Math.max(max, mag);
-        }
-
-        return { min, max };
-    }
-
-    vectorAt(positionVector) {
-        throw new Error("You invoked the method of an abstract base class. Please create a subclass first.");
-    }
-
-    #centralDifferences(position, h) {
-        const dx = new Vector3(h, 0, 0);
-        const dy = new Vector3(0, h, 0);
-        const dz = new Vector3(0, 0, h);
-
-        const Fx1 = this.vectorAt(position.clone().add(dx));
-        const Fx0 = this.vectorAt(position.clone().sub(dx));
-
-        const Fy1 = this.vectorAt(position.clone().add(dy));
-        const Fy0 = this.vectorAt(position.clone().sub(dy));
-
-        const Fz1 = this.vectorAt(position.clone().add(dz));
-        const Fz0 = this.vectorAt(position.clone().sub(dz));
-        return { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 };
-    }
-
-    divergence(position, h = 1e-2) {
-        const { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 } = this.#centralDifferences(position, h);
-
-        return (
-            (Fx1.x - Fx0.x) +
-            (Fy1.y - Fy0.y) +
-            (Fz1.z - Fz0.z)
-        ) / (2 * h);
-    }
-
-    curl(position, h = 1e-2) {
-        const { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 } = this.#centralDifferences(position, h);
-
-        return new Vector3(
-            (Fy1.z - Fy0.z - (Fz1.y - Fz0.y)) / (2 * h),
-            (Fz1.x - Fz0.x - (Fx1.z - Fx0.z)) / (2 * h),
-            (Fx1.y - Fx0.y - (Fy1.x - Fy0.x)) / (2 * h)
-        );
-    }
-
-    curlMagnitude(position, h = 1e-2) {
-        return this.curl(position, h).length();
     }
 }
 
@@ -474,10 +396,8 @@ export class RadialSymmetricBody extends Body {
         radius = 1,
         elasticity = 1
     } = {}) {
-        super( {position, velocity})
-        this.mass = mass;
+        super( {position, velocity, mass})
         this.radius = radius;
-        this.elasticity = elasticity;
     }
 
     clone() {
@@ -485,12 +405,8 @@ export class RadialSymmetricBody extends Body {
             position: this.position.clone(),
             velocity: this.velocity.clone(),
             radius: this.radius,
-            mass: this.mass
+            mass: this.mass,
         });
-    }
-
-    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        Body.integrationStep(this, force, dt, integrator);
     }
 
     get kineticEnergy() { return 0.5 * this.mass * this.velocity.dot(this.velocity); }
@@ -505,9 +421,8 @@ export class Block extends Body {
         size = new Vector3(1, 1, 1),
         mass = 1,
     } = {}) {
-        super({position, velocity});
+        super({position, velocity, mass});
         this.size = size;
-        this.mass = mass;
     }
 
     clone() {
@@ -517,10 +432,6 @@ export class Block extends Body {
             size: this.size.clone(),
             mass: this.mass
         });
-    }
-
-    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        Body.integrationStep(this, force, dt, integrator);
     }
 }
 
@@ -541,9 +452,8 @@ export class Particle extends Body {
         radius = 1,
         charge = 0
     } = {}) {
-        super( {position, velocity})
+        super( {position, velocity, mass})
         this.charge = charge;
-        this.mass = mass;
         this.radius = radius;
     }
 
@@ -553,12 +463,8 @@ export class Particle extends Body {
             velocity: this.velocity.clone(),
             radius: this.radius,
             mass: this.mass,
-            char: this.charge
+            charge: this.charge
         });
-    }
-
-    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
-        Body.integrationStep(this, force, dt, integrator);
     }
 
     fieldAt(point) { return Particle.fieldAt(this, point); }
@@ -576,11 +482,13 @@ export class Spring extends Body {
 
     constructor({
         position = new Vector3(),
+        velocity = new Vector3(),
         axis = new Vector3(0, 1, 0),
+        mass = 1,
         radius = 1,
         k=100
     } = {}) {
-        super({ position });
+        super({ position, velocity, mass });
         this.axis = axis;
         this.radius = radius;
         this.restLength = axis.length();
@@ -592,7 +500,8 @@ export class Spring extends Body {
             position: this.position.clone(),
             axis: this.axis.clone(),
             k: this.k,
-            radius: this.radius
+            radius: this.radius,
+            mass: this.mass
         });
     }
 
@@ -768,6 +677,86 @@ export class Range {
         const n = Math.floor((this.to - this.from) / this.stepSize);
         for (let i = 0; i <= n; i++)
             yield this.from + i * this.stepSize;
+    }
+}
+
+export class VectorFieldVector {
+    constructor({
+                    position = new Vector3(),
+                    axis = new Vector3()
+                } = {})  {
+        this.position = position;
+        this.axis = axis;
+    }
+
+    clone() {
+        return new VectorFieldVector({
+            position: this.position.clone(),
+            axis: this.axis.clone(),
+        });
+    }
+}
+
+export class VectorField {
+    constructor() { }
+
+    to(view) { return { body: this, view: view}; };
+
+    range(positions) {
+        let min = Infinity;
+        let max = -Infinity;
+
+        for (const position of positions) {
+            const mag = this.vectorAt(position).length();
+            min = Math.min(min, mag);
+            max = Math.max(max, mag);
+        }
+
+        return { min, max };
+    }
+
+    vectorAt(positionVector) {
+        throw new Error("You invoked the method of an abstract base class. Please create a subclass first.");
+    }
+
+    #centralDifferences(position, h) {
+        const dx = new Vector3(h, 0, 0);
+        const dy = new Vector3(0, h, 0);
+        const dz = new Vector3(0, 0, h);
+
+        const Fx1 = this.vectorAt(position.clone().add(dx));
+        const Fx0 = this.vectorAt(position.clone().sub(dx));
+
+        const Fy1 = this.vectorAt(position.clone().add(dy));
+        const Fy0 = this.vectorAt(position.clone().sub(dy));
+
+        const Fz1 = this.vectorAt(position.clone().add(dz));
+        const Fz0 = this.vectorAt(position.clone().sub(dz));
+        return { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 };
+    }
+
+    divergence(position, h = 1e-2) {
+        const { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 } = this.#centralDifferences(position, h);
+
+        return (
+            (Fx1.x - Fx0.x) +
+            (Fy1.y - Fy0.y) +
+            (Fz1.z - Fz0.z)
+        ) / (2 * h);
+    }
+
+    curl(position, h = 1e-2) {
+        const { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 } = this.#centralDifferences(position, h);
+
+        return new Vector3(
+            (Fy1.z - Fy0.z - (Fz1.y - Fz0.y)) / (2 * h),
+            (Fz1.x - Fz0.x - (Fx1.z - Fx0.z)) / (2 * h),
+            (Fx1.y - Fx0.y - (Fy1.x - Fy0.x)) / (2 * h)
+        );
+    }
+
+    curlMagnitude(position, h = 1e-2) {
+        return this.curl(position, h).length();
     }
 }
 
