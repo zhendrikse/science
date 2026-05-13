@@ -984,6 +984,7 @@ export class Arrow extends Group {
         this._colorMap = colorMap;
         this._magnitudeMap = magnitudeMap;
         this._baseColor = color;
+        this._tempAxisVector = new Vector3();
     }
 
     reset() {
@@ -1020,9 +1021,8 @@ export class Arrow extends Group {
     render(transform) {
         this.position.copy(transform.physicsToRender(this._body.position));
 
-        const axis = this._body.axis.clone();
-        const rawMagnitude = axis.length();
-        const visualMagnitude = this._magnitudeMap(rawMagnitude);
+        this._tempAxisVector.copy(this._body.axis);
+        const visualMagnitude = this._magnitudeMap(this._tempAxisVector.length());
         const length = visualMagnitude * this._size;
 
         if (this._colorMap) {
@@ -1031,7 +1031,7 @@ export class Arrow extends Group {
             this._head.material.color.copy(color);
         }
 
-        this.quaternion.setFromUnitVectors(Arrow.UP, axis.normalize());
+        this.quaternion.setFromUnitVectors(Arrow.UP, this._tempAxisVector.normalize());
 
         const shaftLength = length * Arrow.SHAFT_RATIO;
         const headLength = length * Arrow.HEAD_RATIO;
@@ -1044,10 +1044,7 @@ export class Arrow extends Group {
         this._head.position.y = shaftLength + headLength * 0.5;
     }
 
-    set opacity(opacity) {
-        this._shaft.material.opacity = opacity;
-        this._head.material.opacity = opacity;
-    }
+    set opacity(opacity) { this._shaft.material.opacity = opacity; }
     set color(color) { this._shaft.material.color = color; }
 }
 
