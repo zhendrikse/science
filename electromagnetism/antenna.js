@@ -37,13 +37,13 @@ class ElectromagneticWave {
         this._tempAxis = new Vector3();
     }
 
-    _createEmWaveAt(position) {
-        const dr1 = position.normalize().multiplyScalar(ds);
-        const rr1 = slit.clone().add(dr1.clone().multiplyScalar(10)); //vector(0,0,0) ## current loc along wave 1
+    _createEmWaveAt(wavePosition) {
+        const dr1 = wavePosition.normalize().multiplyScalar(ds);
+        const position = slit.clone().add(dr1.clone().multiplyScalar(10));
         for (let ct = 0; ct < 120; ct++) {
-            this._magneticField.push(new VectorFieldVector({position: rr1, axis: new Vector3()}));
-            this._electricField.push(new VectorFieldVector({position: rr1, axis: new Vector3()}));
-            rr1.add(dr1);
+            this._magneticField.push(new VectorFieldVector({position, axis: new Vector3()}));
+            this._electricField.push(new VectorFieldVector({position, axis: new Vector3()}));
+            position.add(dr1);
         }
     }
 
