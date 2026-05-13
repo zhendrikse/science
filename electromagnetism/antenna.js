@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import { AxialSymmetricBody, ThreeSim, Cylinder, OneDimensionalPlainWave, ElectromagneticWave} from "../js/threesim.js";
+import { AxialSymmetricBody, ThreeSim, Cylinder, OneDimensionalPlaneWave, ElectromagneticWave} from "../js/threesim.js";
 
 const canvas = document.getElementById("antennaCanvas");
 const fieldStrengthSlider = document.getElementById("antennaFieldStrengthSlider");
@@ -13,7 +13,7 @@ for (let theta = 0; theta < 2 * Math.PI; theta += Math.PI / 3)
 
 const plainWaves = [];
 for (let position of range)
-    plainWaves.push(new OneDimensionalPlainWave({
+    plainWaves.push(new OneDimensionalPlaneWave({
         position,
         lambda,
         amplitude: Number(fieldStrengthSlider.value)

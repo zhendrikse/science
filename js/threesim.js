@@ -558,14 +558,14 @@ export class HarmonicOscillator {
     }
 }
 
-export class OneDimensionalPlainWave {
+export class OneDimensionalPlaneWave {
     static c = 3e8;
 
     constructor({
         position = new Vector3(),
         amplitude = 1,
         lambda = 2,
-        omega = 2 * Math.PI * OneDimensionalPlainWave.c / lambda
+        omega = 2 * Math.PI * OneDimensionalPlaneWave.c / lambda
     } = {}) {
         this.position = position.clone();
         this.amplitude = amplitude;
