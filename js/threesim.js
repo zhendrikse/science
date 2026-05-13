@@ -1438,8 +1438,8 @@ export class ElectromagneticWave extends Group {
                 size: this._arrowSize,
                 round: true
             });
-            electricFieldArrow.body = new VectorFieldVector({position, axis: new Vector3()});
-            magneticFieldArrow.body = new VectorFieldVector({position, axis: new Vector3()});
+            electricFieldArrow.body = new VectorFieldVector({position});
+            magneticFieldArrow.body = new VectorFieldVector({position});
             this._magneticFieldArrows.push(magneticFieldArrow);
             this._electricFieldArrows.push(electricFieldArrow);
             this.add(electricFieldArrow, magneticFieldArrow);
