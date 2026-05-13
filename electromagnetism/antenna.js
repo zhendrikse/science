@@ -40,8 +40,8 @@ class ElectromagneticWave {
         for (let ct = 0; ct < 120; ct++) {
             const y = this._plainWave(this._E0, k, rr1.clone().sub(slit).length(), omega, 0);
             const axis = new Vector3(0, y, 0);
-            this._magneticField.push(new VectorFieldVector({position: rr1.clone(), axis: axis }));
-            this._electricField.push(new VectorFieldVector({position: rr1.clone(), axis: new Vector3()}));
+            this._magneticField.push(new VectorFieldVector({position: rr1, axis: axis }));
+            this._electricField.push(new VectorFieldVector({position: rr1, axis: new Vector3()}));
             rr1.add(dr1);
         }
     }
@@ -51,13 +51,15 @@ class ElectromagneticWave {
     }
 
     update(t) {
+        const position = new Vector3();
+        const axis = new Vector3();
         for (let index = 0; index < this._electricField.length; index++) {
             const fieldArrow = this._electricField[index];
             const scaling = decreaseButton.checked ? 1 / (fieldArrow.position.length() + lambda / 10) : 0.25;
             const amplitude = this._E0 * scaling;
-            const x = fieldArrow.position.clone().sub(slit).length();
+            const x = position.copy(fieldArrow.position).sub(slit).length();
             fieldArrow.axis.y = this._plainWave(amplitude, k, x, omega, t);
-            this._magneticField[index].axis.copy(fieldArrow.axis.clone().cross(i_hat));
+            this._magneticField[index].axis.copy(axis.copy(fieldArrow.axis).cross(i_hat));
         }
     }
 

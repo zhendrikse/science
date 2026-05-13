@@ -685,8 +685,8 @@ export class VectorFieldVector {
                     position = new Vector3(),
                     axis = new Vector3()
                 } = {})  {
-        this.position = position;
-        this.axis = axis;
+        this.position = position.clone();
+        this.axis = axis.clone();
     }
 
     clone() {
