@@ -41,9 +41,7 @@ class ElectromagneticWave {
         const dr1 = position.normalize().multiplyScalar(ds);
         const rr1 = slit.clone().add(dr1.clone().multiplyScalar(10)); //vector(0,0,0) ## current loc along wave 1
         for (let ct = 0; ct < 120; ct++) {
-            const y = this._plainWave(this._E0, k, rr1.clone().sub(slit).length(), omega, 0);
-            const axis = new Vector3(0, y, 0);
-            this._magneticField.push(new VectorFieldVector({position: rr1, axis: axis }));
+            this._magneticField.push(new VectorFieldVector({position: rr1, axis: new Vector3()}));
             this._electricField.push(new VectorFieldVector({position: rr1, axis: new Vector3()}));
             rr1.add(dr1);
         }
