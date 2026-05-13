@@ -40,7 +40,7 @@ class CapacitorField extends VectorField {
         this._capacitor = capacitor;
     }
 
-    sampleAt(position) {
+    vectorAt(position) {
         return this._capacitor.fieldAt(position);
     }
 }

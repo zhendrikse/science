@@ -72,7 +72,7 @@ class SolenoidField extends VectorField {
         this._fieldStrength = 1;
     }
 
-    sampleAt(position) {
+    vectorAt(position) {
         return this._solenoid
             .fieldAt(position)
             .multiplyScalar(this._fieldStrength);

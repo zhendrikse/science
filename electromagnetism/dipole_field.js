@@ -37,7 +37,7 @@ class DipoleField extends VectorField {
         this._fieldStrength = 1;
     }
 
-    sampleAt(position) {
+    vectorAt(position) {
         return this._dipole
             .fieldAt(position)
             .multiplyScalar(this._fieldStrength);

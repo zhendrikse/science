@@ -6,7 +6,7 @@ const canvas = document.getElementById('birdsCanvas');
 // Simulation parameters
 const speed = 6;  // initial horizontal speed
 const size = 1;   // length of a bird vector
-const threshold = (5 * size) ** 2
+const threshold = (5 * size) ** 2;
 const dt = 0.02;
 
 class Flock {
@@ -64,7 +64,8 @@ class Flock {
         diff = avoid[count].clone().normalize().sub(bird.position);
         this._acceleration.add(diff.multiplyScalar(this._avoid_weight));
 
-        bird.timeStep(this._acceleration, dt);
+        const force = this._acceleration; // Since the bird mass = 1, the force F = m a = a!
+        bird.apply(force, dt);
     }
 
     update(dt) {
@@ -81,10 +82,8 @@ class Flock {
         this._center.divideScalar(this._bird_count);
         this._direction.divideScalar(this._bird_count);
 
-        const avoid = this.avoidNearestBirds();
-
         for (let count = 0; count < this._bird_count; count++)
-            this.updateBird(count, avoid, dt);
+            this.updateBird(count, this.avoidNearestBirds(), dt);
     }
 
     set randomWeight(value) { this._random_weight = value; }
@@ -125,7 +124,7 @@ const simulation = new ThreeSim({
 });
 
 for (let i = 0; i < birdCount; i++)
-    simulation.attach(flock.bird(i).velocityVector.to(new Arrow({
+    simulation.attach(flock.bird(i).to(new Arrow({
         round: true,
         color: new Color(.5, 1, .5),
         size: .2

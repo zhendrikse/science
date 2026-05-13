@@ -359,13 +359,21 @@ class VelocityVector {
     set axis(newAxis) { this._parent.velocity.copy(newAxis); }
 }
 
-class VectorFieldVector extends Body {
-    constructor({position, vectorField} = {}) {
+export class VectorFieldVector extends Body {
+    constructor({
+        position = new Vector(),
+        axis = new Vector()
+    } = {})  {
         super({ position });
-        this._vectorField = vectorField;
+        this.axis = axis;
     }
 
-    get axis() { return this._vectorField.sampleAt(this.position); }
+    clone() {
+        return new AxialSymmetricBody({
+            position: this.position.clone(),
+            axis: this.axis.clone(),
+        });
+    }
 }
 
 export class AxialSymmetricBody extends Body {
@@ -379,6 +387,10 @@ export class AxialSymmetricBody extends Body {
         this.radius = radius;
         this.axis = axis.clone();
         this.mass = mass;
+    }
+
+    apply(force, dt = 0.01, integrator = Integrators.symplecticEulerStep) {
+        Body.integrationStep(this, force, dt, integrator);
     }
 
     clone() {
@@ -401,7 +413,7 @@ export class VectorField {
         let max = -Infinity;
 
         for (const position of positions) {
-            const mag = this.sampleAt(position).length();
+            const mag = this.vectorAt(position).length();
             min = Math.min(min, mag);
             max = Math.max(max, mag);
         }
@@ -409,7 +421,7 @@ export class VectorField {
         return { min, max };
     }
 
-    sampleAt(positionVector) {
+    vectorAt(positionVector) {
         throw new Error("You invoked the method of an abstract base class. Please create a subclass first.");
     }
 
@@ -418,14 +430,14 @@ export class VectorField {
         const dy = new Vector3(0, h, 0);
         const dz = new Vector3(0, 0, h);
 
-        const Fx1 = this.sampleAt(position.clone().add(dx));
-        const Fx0 = this.sampleAt(position.clone().sub(dx));
+        const Fx1 = this.vectorAt(position.clone().add(dx));
+        const Fx0 = this.vectorAt(position.clone().sub(dx));
 
-        const Fy1 = this.sampleAt(position.clone().add(dy));
-        const Fy0 = this.sampleAt(position.clone().sub(dy));
+        const Fy1 = this.vectorAt(position.clone().add(dy));
+        const Fy0 = this.vectorAt(position.clone().sub(dy));
 
-        const Fz1 = this.sampleAt(position.clone().add(dz));
-        const Fz0 = this.sampleAt(position.clone().sub(dz));
+        const Fz1 = this.vectorAt(position.clone().add(dz));
+        const Fz0 = this.vectorAt(position.clone().sub(dz));
         return { Fx0, Fy0, Fz0, Fx1, Fy1, Fz1 };
     }
 
@@ -902,7 +914,7 @@ export class Sphere extends Mesh {
     set body(body) {
         // Sanity checks
         if (!body.radius)
-            throw new Error("This body type does not have a radius, hence it cannot be attached to this view.");
+            throw new Error("Body does not have a radius, hence it cannot be attached to this view.");
 
         this._body = body;
         this._initialState = body.clone(body);
@@ -987,7 +999,7 @@ export class Arrow extends Group {
     set body(body) {
         // Sanity checks
         if (!body.axis)
-            throw new Error("This body type does not have an axis, hence it cannot be attached to this view.");
+            throw new Error("Body does not have an axis, hence it cannot be attached to this view.");
 
         this._body = body;
         this._initialState = body.clone();
@@ -1070,21 +1082,26 @@ export class ArrowField extends Group{
     }
 
     _createArrowAt(x, y, z, vectorField) {
-        const position = new Vector3(x, y, z);
-        const fieldVector = new VectorFieldVector({position, vectorField});
-        const fieldArrow = new Arrow({
+        const arrow = new Arrow({
             color: 0x00ffff,
             size: this._scaleFactor,
             round: this._round,
             magnitudeMap: this._magnitudeMap,
             colorMap: this._colorMap,
         });
-        fieldArrow.body = fieldVector;
-        this._fieldArrows.push(fieldArrow);
-        this.add(fieldArrow);
+        const position = new Vector3(x, y, z);
+        arrow.body = new VectorFieldVector({ position, axis: vectorField.vectorAt(position) });
+        this._fieldArrows.push(arrow);
+        this.add(arrow);
     }
 
+    // TODO implement reset()
+
     set body(vectorField) {
+        // Sanity checks
+        if (!vectorField.vectorAt)
+            throw new Error("Body does not implement vectorAt(), hence it cannot be attached to this view.");
+
         for (let x of this._xRange)
             for (let y of this._yRange)
                 for (let z of this._zRange)
@@ -1130,9 +1147,9 @@ export class Cylinder extends Mesh {
     set body(body) {
         // Sanity checks
         if (!body.axis)
-            throw new Error("This body type does not have an axis, hence it cannot be attached to this view.");
+            throw new Error("Body does not have an axis, hence it cannot be attached to this view.");
         if (!body.radius)
-            throw new Error("This body type does not have a radius, hence it cannot be attached to this view.");
+            throw new Error("Body does not have a radius, hence it cannot be attached to this view.");
 
         this._body = body;
         this._initialState = body.clone();
@@ -1185,7 +1202,7 @@ export class Box extends Mesh {
     set body(body) {
         // Sanity checks
         if (!body.size || !body.size.x)
-            throw new Error("This body type does not have size vector, hence it cannot be attached to this view.");
+            throw new Error("Body does not have size (vector), hence it cannot be attached to this view.");
 
         this._body = body;
         this._initialState = body.clone();
@@ -1273,9 +1290,9 @@ export class Helix extends Mesh {
     set body(body) {
         // Sanity checks
         if (!body.axis)
-            throw new Error("This body type does not have an axis, hence it cannot be attached to this view.");
+            throw new Error("Body does not have an axis, hence it cannot be attached to this view.");
         if (!body.radius)
-            throw new Error("This body type does not have a radius, hence it cannot be attached to this view.");
+            throw new Error("Body does not have a radius, hence it cannot be attached to this view.");
 
         this._body = body;
         this._initialState = body.clone();

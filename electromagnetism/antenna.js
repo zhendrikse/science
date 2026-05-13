@@ -1,5 +1,5 @@
 import { Vector3, Color } from "three";
-import {AxialSymmetricBody, ThreeSim, Arrow, Cylinder} from "../js/threesim.js";
+import {AxialSymmetricBody, ThreeSim, Arrow, Cylinder, VectorFieldVector} from "../js/threesim.js";
 
 const canvas = document.getElementById("antennaCanvas");
 
@@ -22,8 +22,8 @@ const slit1 = new Vector3(0, 0, -d / 2);
 class ElectromagneticWave {
     constructor(E0= lambda_ * 5) {
         this._E0 = E0;
-        this._electric_field = [];
-        this._magnetic_field = [];
+        this._electricField = [];
+        this._magneticField = [];
 
         const dtheta = Math.PI / 3;
         const range = [];
@@ -31,43 +31,35 @@ class ElectromagneticWave {
         for (let theta = 0; theta < 2 * Math.PI; theta += dtheta)
             range.push(new Vector3(R * Math.cos(theta), 0, R * Math.sin(theta)));
 
-        for (let r1 of range) 
-            this._createEmWave(r1);
+        for (let position of range)
+            this._createEmWaveAt(position);
     }
 
-    _createEmWave(r1) {
-        const dr1 = r1.normalize().multiplyScalar(ds);
-        let rr1 = slit1.clone().add(dr1.clone().multiplyScalar(10)); //vector(0,0,0) ## current loc along wave 1
+    _createEmWaveAt(position) {
+        const dr1 = position.normalize().multiplyScalar(ds);
+        const rr1 = slit1.clone().add(dr1.clone().multiplyScalar(10)); //vector(0,0,0) ## current loc along wave 1
         for (let ct = 0; ct < 120; ct++) {
             const y = this._E0 * Math.cos(rr1.clone().sub(slit1).length() * 2 * Math.PI) / lambda_;
             const axis = new Vector3(0, y, 0);
-            const electric_arrow = new AxialSymmetricBody({
-                position: rr1.clone(),
-                axis: axis
-            });
-            const magnetic_arrow = new AxialSymmetricBody({
-                position: rr1.clone(),
-                axis: new Vector3()
-            });
-            this._magnetic_field.push(magnetic_arrow);
-            this._electric_field.push(electric_arrow);
+            this._magneticField.push(new VectorFieldVector({position: rr1.clone(), axis: axis }));
+            this._electricField.push(new VectorFieldVector({position: rr1.clone(), axis: new Vector3()}));
             rr1.add(dr1);
         }
     }
 
     update(t) {
-        for (let index = 0; index < this._electric_field.length; index++) {
-            const field_arrow = this._electric_field[index];
-            const decrease = show_decrease ? 1 / (field_arrow.position.length()+ lambda_ / 20) : 1.0;
-            field_arrow.axis.y = decrease * this._E0 * Math.cos(
-                omega * t - 2 * Math.PI * (field_arrow.position.clone().sub(slit1).length()) / lambda_);
-            this._magnetic_field[index].axis.copy(field_arrow.axis.clone().cross(i_hat).multiplyScalar(-.7));
+        for (let index = 0; index < this._electricField.length; index++) {
+            const fieldArrow = this._electricField[index];
+            const decrease = show_decrease ? 1 / (fieldArrow.position.length() + lambda_ / 10) : 1.0;
+            fieldArrow.axis.y = decrease * this._E0 * Math.cos(
+                omega * t - 2 * Math.PI * (fieldArrow.position.clone().sub(slit1).length()) / lambda_);
+            this._magneticField[index].axis.copy(fieldArrow.axis.clone().cross(i_hat));
         }
     }
 
     set fieldStrength(strength) { this._E0 = strength; }
-    get electricField() { return this._electric_field; }
-    get magneticField() { return this._magnetic_field; }
+    get electricField() { return this._electricField; }
+    get magneticField() { return this._magneticField; }
 }
 
 const emWave = new ElectromagneticWave();
@@ -77,14 +69,14 @@ const simulation = new ThreeSim({
     cameraPosition: new Vector3(-1, 4, -9).multiplyScalar(1.4),
 });
 
-for (let axialBody of emWave.electricField)
-    simulation.attachStatically(axialBody.to(new Arrow({
+for (let fieldVector of emWave.electricField)
+    simulation.attachStatically(fieldVector.to(new Arrow({
         color: new Color("orange"),
         size: .5
     })));
 
-for (let axialBody of emWave.magneticField)
-    simulation.attachStatically(axialBody.to(new Arrow({
+for (let fieldVector of emWave.magneticField)
+    simulation.attachStatically(fieldVector.to(new Arrow({
         color: new Color("cyan"),
         size: .5
     })));

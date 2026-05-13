@@ -16,7 +16,7 @@ class MagneticField extends VectorField {
 
     set magnitude(newValue) { this._strength = newValue; }
 
-    sampleAt(position) { return new Vector3(0, -this._strength, 0); }
+    vectorAt(position) { return new Vector3(0, -this._strength, 0); }
 }
 
 //
@@ -33,7 +33,7 @@ const proton = new Particle({
 const magneticField = new MagneticField(Number(strengthSlider.value) * .1);
 
 function timeStep(dt) {
-    const fieldVector = magneticField.sampleAt(proton.position);
+    const fieldVector = magneticField.vectorAt(proton.position);
     const force = fieldVector.cross(proton.velocity).multiplyScalar(proton.charge);
     proton.apply(force, dt);
 }
