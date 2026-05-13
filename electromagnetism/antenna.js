@@ -32,6 +32,9 @@ class ElectromagneticWave {
 
         for (let position of range)
             this._createEmWaveAt(position);
+
+        this._tempPosition = new Vector3();
+        this._tempAxis = new Vector3();
     }
 
     _createEmWaveAt(position) {
@@ -51,15 +54,13 @@ class ElectromagneticWave {
     }
 
     update(t) {
-        const position = new Vector3();
-        const axis = new Vector3();
         for (let index = 0; index < this._electricField.length; index++) {
             const fieldArrow = this._electricField[index];
             const scaling = decreaseButton.checked ? 1 / (fieldArrow.position.length() + lambda / 10) : 0.25;
             const amplitude = this._E0 * scaling;
-            const x = position.copy(fieldArrow.position).sub(slit).length();
+            const x = this._tempPosition.copy(fieldArrow.position).sub(slit).length();
             fieldArrow.axis.y = this._plainWave(amplitude, k, x, omega, t);
-            this._magneticField[index].axis.copy(axis.copy(fieldArrow.axis).cross(i_hat));
+            this._magneticField[index].axis.copy(this._tempAxis.copy(fieldArrow.axis).cross(i_hat));
         }
     }
 
