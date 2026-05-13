@@ -181,7 +181,7 @@ export class ThreeSim {
         this._camera.updateProjectionMatrix();
     }
 
-    _sync() {
+    _synchronizePhysicsAndView() {
         for (const anObject of this._dynamicObjects)
             if (anObject.render)
                 anObject.render(this._transform);
@@ -216,7 +216,7 @@ export class ThreeSim {
         if (this._running && this._updateFunction)
             this._updateFunction(time);
 
-        this._sync();
+        this._synchronizePhysicsAndView();
         this._renderer.render(this._scene, this._camera);
         this._controls?.update();
 
