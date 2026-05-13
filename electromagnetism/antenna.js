@@ -104,6 +104,8 @@ fieldStrengthSlider.addEventListener("input", () => {
 
 let time = 0;
 simulation.run(() => {
-    emWave.update(time);
-    time += dt;
+    for (let substeps = 0; substeps < 2; substeps++) {
+        emWave.update(time);
+        time += dt;
+    }
 });
