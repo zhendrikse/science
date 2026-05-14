@@ -36,7 +36,7 @@ and the role of $k$ and $\omega$.
     <label for="waveNumberSlider">&nbsp;Wave number: </label>
     <input type="range" id="waveNumberSlider"/>
 </div>
-<script type="module" src="plane_wave_2d.js"></script>
+<script type="module" src="plane_wave.js"></script>
 
 <canvas id="planeWaveCanvas3d" width="600" height="200" style="aspect-ratio: 3/1" class="applicationCanvas"></canvas>
 
