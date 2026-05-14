@@ -17,7 +17,7 @@ and the role of $k$ and $\omega$<br/>
 
 $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
 
-<canvas id="planeWaveCanvas3d" style="aspect-ratio: 3/1" class="applicationCanvas"></canvas>
+<canvas id="planeWaveCanvas3d" style="aspect-ratio: 2/1" class="applicationCanvas"></canvas>
 
 <div class="buttonRow">
     <label for="amplitudeSlider">&nbsp;Amplitude: </label>
