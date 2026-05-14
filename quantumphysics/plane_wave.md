@@ -3,30 +3,47 @@
 ## Visualizing a Complex Plane wave 
 <div class="header_line"><br/></div>
 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=plane_wave.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
-🎯 Improved understanding of a one-dimensional **complex plane wave**:
-
-$$\psi(x, t) = Ae^{i(k x - \omega t)}$$
+🎯 Understanding a complex plane wave $\psi(x, t) = Ae^{i(k x - \omega t)}$<br/>
+🎯 Demonstration of multiple views on one and the same object ($\psi$)<br/>
+🧠 3D visualization found in [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
+🧠 2D visualization based on [SinusoidalWave.html](https://physics.weber.edu/schroeder/software/SinusoidalWave.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/)<br/>
+🐍 A 3D [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Quantum/program/Planewave) is available as well, see [plane_wave.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/plane_wave.py)<br/>
+👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
 
 These visualizations help to build intuition for complex waves, phase propagation, 
 and the role of $k$ and $\omega$.
 
-### 3D visualization
-<div class="header_line"><br/></div>
+<canvas id="planeWaveCanvas2d" width="600" height="200" style="aspect-ratio: 3/1" class="applicationCanvas2d"></canvas>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=plane_wave_3d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave_3d.js)&nbsp;&nbsp;
-
-🧠 Idea taken from the book [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
-🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Quantum/program/Planewave) is available as well, see [plane_wave.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/plane_wave.py)<br/>
-
-<div class="canvasWrapper" id="planeWaveContainer">
-    <canvas class="applicationCanvas" id="planeWaveCanvas"></canvas>
+<div class="buttonRow">
+    <button id="pauseButton">Pause</button>
+    <label for="realImag">Real/imag&nbsp;</label><input type="radio" name="plotType" id="realImag"/>
+    <label for="densityPhase">Density/phase</label><input type="radio" name="plotType" checked id="densityPhase"/>
 </div>
-<div class="guiContainer" id="gui-container"></div>
-<script type="module" src="plane_wave_3d.js"></script>
+<div class="buttonRow">
+    <label for="amplitudeSlider">&nbsp;Amplitude: </label>
+    <input type="range" id="amplitudeSlider"/>
+</div>
+<div class="buttonRow">
+    <label for="omegaSlider">&nbsp;Omega: </label>
+    <input type="range" id="omegaSlider"/>
+</div>
+<div class="buttonRow">
+    <label for="waveNumberSlider">&nbsp;Wave number: </label>
+    <input type="range" id="waveNumberSlider"/>
+</div>
+<script type="module" src="plane_wave_2d.js"></script>
+
+<canvas id="planeWaveCanvas3d" width="600" height="200" style="aspect-ratio: 3/1" class="applicationCanvas"></canvas>
+
 <p style="clear: both;"></p>
+
+### About the 3D visualization
+<div class="header_line"><br/></div>
 
 Each arrow represents the complex value of the wave function at a fixed position $x$.
 The arrow rotates in the complex plane as time evolves:
@@ -38,30 +55,8 @@ The **length of the arrows is constant**, showing that the magnitude $|\psi|$
 of a plane wave does not change in space or time.
 The **color encodes the phase**, making the spatial and temporal phase structure visible.
 
-<p style="clear: both;"></p>
-
-### 2D visualization
+### About the 2D visualization
 <div class="header_line"><br/></div>
-
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=plane_wave_2d.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave_2d.js)&nbsp;&nbsp;
-
-🧠 Based on [SinusoidalWave.html](https://physics.weber.edu/schroeder/software/SinusoidalWave.html) by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/), [Weber State University](https://www.weber.edu/)<br/>
-🔑 Updated and refactored and by [Zeger Hendrikse](https://www.hendrikse.name/)<br/>
-👉 More physics software by [Daniel V. Schroeder](https://physics.weber.edu/schroeder/) can be found [here](https://physics.weber.edu/schroeder/software/)
-
-<canvas id="theCanvas" width="600" height="200" style="aspect-ratio: 3/1" class="applicationCanvas"></canvas>
-
-<div class="buttonRow">
-    <button id="pauseButton">Pause</button>
-    <label for="momentumSlider">&nbsp;Momentum: </label>
-    <input type="range" id="momentumSlider" min="-0.3" max="0.3" step="0.01" value="0.1"/>
-    <label for="realImag"></label><input type="radio" name="plotType" id="realImag"/>
-    <label for="realImag">Real/imag&nbsp;</label>
-    <input type="radio" name="plotType" checked/>Density/phase
-</div>
-
-<script type="module" src="plane_wave_2d.js"></script>
-<p style="clear: both;"></p>
 
 > This is an animated visualization of the behavior of a pure sinusoidal wavefunction in one
 > dimension, representing a free quantum particle with a precise momentum that is inversely proportional

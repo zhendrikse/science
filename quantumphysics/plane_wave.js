@@ -1,7 +1,3 @@
-// const pauseButton = document.getElementById("pauseButton");
-// const momentumSlider = document.getElementById("momentumSlider");
-// const realImag = document.getElementById("realImag");
-
 import { Vector3 } from "three";
 import {Simulation, Canvas, CompositeRenderer} from "../js/simulation.js";
 import { Canvas2DRenderer, OneDimensionalComplexPlaneWave2D } from "../js/renderers/canvas2d/canvassim.js";
@@ -14,14 +10,12 @@ import {OneDimensionalComplexPlaneWave3D, ThreeJsRenderer, ThreeJsRenderOptions 
 const planeWave = new OneDimensionalComplexPlaneWave({
     amplitude: 5,
     omega: -3 * Math.PI,
-    lambda: 5
+    lambda: 2 * Math.PI
 });
 
 //
-// Simulation and rendering
-//
-
 // Renderer for 2D canvas
+//
 const canvas2d = new Canvas("planeWaveCanvas2d");
 const renderer2d = Canvas2DRenderer.on(canvas2d);
 const waveView2d = new OneDimensionalComplexPlaneWave2D({
@@ -31,10 +25,12 @@ const waveView2d = new OneDimensionalComplexPlaneWave2D({
 });
 renderer2d.add(planeWave.to(waveView2d));
 
+//
 // Renderer for 3D canvas
+//
 const canvas3d = new Canvas("planeWaveCanvas3d");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
-    cameraPosition: new Vector3(0, 0, 50)
+    cameraPosition: new Vector3(0, 0, 40)
 });
 const renderer3d = ThreeJsRenderer.on(canvas3d).and(threeJsRendererOptions);
 renderer3d.add(planeWave.to(new OneDimensionalComplexPlaneWave3D({size: .8, numArrows: 100})));
@@ -43,13 +39,24 @@ renderer3d.add(planeWave.to(new OneDimensionalComplexPlaneWave3D({size: .8, numA
 const renderer = new CompositeRenderer([renderer2d, renderer3d]);
 const simulation = Simulation.on(canvas2d).with(renderer);
 
-// Toggle mode
+//
+// Event listeners
+//
 document.getElementById("realImag").addEventListener("click", () =>
     waveView2d.mode = OneDimensionalComplexPlaneWave2D.Mode.REAL_IMAG
 );
 document.getElementById("densityPhase").addEventListener("click", () =>
     waveView2d.mode = OneDimensionalComplexPlaneWave2D.Mode.DENSITY_PHASE
 );
+document.getElementById("waveNumberSlider").addEventListener("input", function () {
+     planeWave.k = (Number(this.value) - 50) / 100 * Math.PI;
+});
+document.getElementById("amplitudeSlider").addEventListener("input", function () {
+    planeWave.amplitude = .5 + Number(this.value) * 7 / 100;
+});
+document.getElementById("omegaSlider").addEventListener("input", function () {
+    planeWave.omega = Number(this.value) * 6 / 100 * Math.PI;
+});
 
 let time = 0;
 const dt = 0.01;
