@@ -37,6 +37,10 @@ export function toColorString(hue) {
 }
 
 export class Canvas2DRenderer extends Renderer {
+    static on = (canvas) => {
+        return new Canvas2DRenderer(canvas);
+    }
+
     constructor({ canvas }) {
         super();
         this._canvas = canvas;
@@ -49,14 +53,23 @@ export class Canvas2DRenderer extends Renderer {
         this._staticObjects.forEach(obj => obj.render?.(this._context));
     }
 
-    add(viewObject) {
-        this._dynamicObjects.push(viewObject);
-        viewObject.reset?.();
+
+    add(bodyAndView) {
+        this._dynamicObjects.push(bodyAndView.view);
+
+        // Tie the body state to its associated view
+        if (!bodyAndView.view.attachTo)
+            throw new Error("body does not implement attachTo(), hence it cannot be attached to view");
+        bodyAndView.view.attachTo(bodyAndView.body);
     }
 
-    asyncAdd(viewObject) {
-        this._staticObjects.push(viewObject);
-        viewObject.reset?.();
+    asyncAdd(bodyAndView) {
+        this._staticObjects.push(bodyAndView.view);
+
+        // Tie the body state to its associated view
+        if (!bodyAndView.view.attachTo)
+            throw new Error("body does not implement attachTo(), hence it cannot be attached to view");
+        bodyAndView.view.attachTo(bodyAndView.body);
     }
 
     render(transform) {

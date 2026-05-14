@@ -43,12 +43,55 @@ export class Canvas {
 }
 
 export class Renderer {
+    /**
+     * Add objects to simulation with synchronization of the physics state.
+     */
     add(object) {}
+
+    /**
+     * Add objects to simulation _without_ synchronization of the physics state.
+     */
     asyncAdd(object) {}
     initialize() {}
     render(transform) {}
     resize() {}
     reset() {}
+}
+
+export class CompositeRenderer extends Renderer {
+    constructor(renderers = [] = {}) {
+        super();
+        this._renderers = renderers; // array van Renderer-instanties
+    }
+
+    addRenderer(renderer) {
+        this._renderers.push(renderer);
+    }
+
+    initialize(transform) {
+        for (const renderer of this._renderers)
+            renderer.initialize?.(transform);
+    }
+
+    add(viewObject) {
+        for (const renderer of this._renderers)
+            renderer.add?.(viewObject);
+    }
+
+    asyncAdd(viewObject) {
+        for (const renderer of this._renderers)
+            renderer.asyncAdd?.(viewObject);
+    }
+
+    render(transform) {
+        for (const renderer of this._renderers)
+            renderer.render?.(transform);
+    }
+
+    reset() {
+        for (const renderer of this._renderers)
+            renderer.reset?.();
+    }
 }
 
 export class Simulation {

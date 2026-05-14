@@ -7,7 +7,7 @@ import {
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { Renderer } from "../../simulation.js"
-import { VectorFieldVector, ComplexScalarFieldValue } from "../../math/math.js";
+import { VectorFieldVector, ComplexScalarFieldValue, Complex } from "../../math/math.js";
 
 export class ThreeJsRenderOptions {
     constructor({
@@ -186,9 +186,6 @@ export class ThreeJsRenderer extends Renderer {
         this._world.add(threeJsObject);
     }
 
-    /**
-     * Add objects to simulation with synchronization of the physics state.
-     */
     add(bodyAndView) {
         this._world.add(bodyAndView.view);
         this._dynamicObjects.push(bodyAndView.view);
@@ -199,9 +196,6 @@ export class ThreeJsRenderer extends Renderer {
         bodyAndView.view.attachTo(bodyAndView.body);
     }
 
-    /**
-     * Add objects to simulation _without_ synchronization of the physics state.
-     */
     asyncAdd(bodyAndView) {
         this._world.add(bodyAndView.view);
         this._staticObjects.push(bodyAndView.view);
