@@ -55,7 +55,7 @@ const sphere = new Sphere({ color: "cyan" });
 renderer.add(ball.to(sphere));
 renderer.add(ball.to(new Trail({ color: sphere.color})));
 
-renderer.add(new Floor({
+renderer.addPlainObject(new Floor({
     type: Floor.Type.GRID,
     planeSizeXy: new Vector2(5, 5),
     opacity: 0.3,
