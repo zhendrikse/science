@@ -100,7 +100,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     fieldOfView: 45
 });
 const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas).and(renderer);
+const simulation = Simulation.on(canvas).with(renderer);
 
 for (const segment of solenoid.segments)
     renderer.asyncAdd(segment.to(new Cylinder({ color: new Color("yellow") })));

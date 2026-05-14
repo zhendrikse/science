@@ -164,7 +164,7 @@ export class ThreeJsRenderer extends Renderer {
         }
     }
 
-    renderStaticObjects(transform) {
+    initialize(transform) {
         // Sync new physics state with view
         for (const anObject of this._staticObjects)
             anObject.render?.(transform);
@@ -924,83 +924,6 @@ export class OneDimensionalComplexPlaneWave3D extends Group {
 
         for (let arrow of this._arrows)
             arrow.render(transform);
-    }
-}
-
-export class OneDimensionalComplexPlaneWave2D {
-    static Mode = Object.freeze({
-        DENSITY: "Density",
-        PHASE: "Phase"
-    });
-    constructor({
-        width = 800,
-        height = 400,
-        scaleY = 100,
-        mode = OneDimensionalComplexPlaneWave2D.Mode.DENSITY,
-        showImaginary = true
-    } = {}) {
-        this._wave = null;
-
-        this._width = width;
-        this._height = height;
-        this._scaleY = scaleY;
-
-        this._showImaginary = showImaginary;
-    }
-
-    attachTo(wave) {
-        this._wave = wave;
-    }
-
-    render(ctx) {
-        const centerY = this._height / 2;
-
-        // achtergrond
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, this._width, this._height);
-
-        // x-as
-        ctx.strokeStyle = "gray";
-        ctx.beginPath();
-        ctx.moveTo(0, centerY);
-        ctx.lineTo(this._width, centerY);
-        ctx.stroke();
-
-        // real part
-        ctx.strokeStyle = "#ffc000";
-        ctx.beginPath();
-
-        for (let x = 0; x < this._width; x++) {
-            const psi = this._wave.valueAt(x * 0.02);
-
-            const y = centerY - psi.re * this._scaleY;
-
-            if (x === 0)
-                ctx.moveTo(x, y);
-            else
-                ctx.lineTo(x, y);
-        }
-
-        ctx.stroke();
-
-        // imaginary part
-        if (this._showImaginary) {
-            ctx.strokeStyle = "#00d0ff";
-            ctx.beginPath();
-
-            for (let x = 0; x < this._width; x++) {
-                const psi = this._wave.valueAt(x * 0.02);
-
-                const y = centerY - psi.im * this._scaleY;
-
-                if (x === 0)
-                    ctx.moveTo(x, y);
-                else
-                    ctx.lineTo(x, y);
-            }
-
-            ctx.stroke();
-        }
     }
 }
 

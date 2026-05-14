@@ -70,7 +70,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     fieldOfView: 60
 });
 const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
+const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
 simulation.scale = scale;
 
 const dirLight = new PointLight(0xffffff, 2e3);

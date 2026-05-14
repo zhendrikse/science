@@ -55,7 +55,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(30, 30, 30)
 });
 const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
+const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
 simulation.scale = 1e-9;
 
 renderer.add(bodyA.to(new Sphere({ color: "yellow" })));

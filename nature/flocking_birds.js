@@ -124,7 +124,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     fieldOfView: 30
 });
 const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas).and(renderer);
+const simulation = Simulation.on(canvas).with(renderer);
 
 for (let i = 0; i < birdCount; i++)
     renderer.add(flock.bird(i).velocityVector.to(new Arrow({

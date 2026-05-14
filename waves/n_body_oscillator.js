@@ -45,7 +45,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     background: ThreeJsRenderer.Background.FOG
 });
 const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
+const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
 
 // Floor
 renderer.addPlainObject(new Floor({

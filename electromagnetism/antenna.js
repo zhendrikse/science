@@ -31,7 +31,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(-1, 4, -9)
 });
 const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas).and(renderer);
+const simulation = Simulation.on(canvas).with(renderer);
 
 const slit = new Vector3(0, 0, lambda)
 for (let wave of planeWaves)

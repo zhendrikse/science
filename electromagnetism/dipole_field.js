@@ -64,7 +64,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     fieldOfView: 40
 });
 const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas).and(renderer);
+const simulation = Simulation.on(canvas).with(renderer);
 simulation.scale = scale;
 
 const positiveSphere = new Sphere({ color: new Color("red") });

@@ -50,7 +50,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7)
 });
 const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
+const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
 
 const helix = new Helix({ coils: 15, color: "yellow" });
 const sphere = new Sphere({ color: "orange" });

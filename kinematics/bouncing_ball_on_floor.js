@@ -49,7 +49,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(2, 1, 0.5).multiplyScalar(2.25)
 });
 const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
+const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
 
 const sphere = new Sphere({ color: "cyan" });
 renderer.add(ball.to(sphere));

@@ -9,7 +9,7 @@
  * - code expresses scientific intent directly
  *
  * Example:
- *   simulation = Simulation.on(canvas.with(overlay)).and(renderer);
+ *   simulation = Simulation.on(canvas).with(renderer);
  *   renderer.add(body.to(view))
  */
 
@@ -45,36 +45,10 @@ export class Canvas {
 export class Renderer {
     add(object) {}
     asyncAdd(object) {}
-    remove(object) {}
+    initialize() {}
     render(transform) {}
     resize() {}
     reset() {}
-}
-
-export class Canvas2DRenderer extends Renderer {
-    constructor({ canvas }) {
-        super();
-        this._canvas = canvas;
-        this._context = canvas.getContext("2d");
-    }
-
-    clear() {
-        this._context.fillStyle = "transparent";
-        this._context.fillRect(
-            0,
-            0,
-            this._canvas.width,
-            this._canvas.height
-        );
-    }
-
-    render() {
-        this.clear();
-    }
-
-    get context() {
-        return this._context;
-    }
 }
 
 export class Simulation {
@@ -130,7 +104,7 @@ export class Simulation {
         }, duration);
     }
 
-    and(renderer) {
+    with(renderer) {
         this._renderer = renderer;
         return this;
     }
@@ -138,8 +112,8 @@ export class Simulation {
     run(updateFunction = null) {
         this._updateFunction = updateFunction;
 
-        // Render static objects once
-        this._renderer.renderStaticObjects(this._transform);
+        // For rendering static objects once
+        this._renderer.initialize(this._transform);
 
         const animate = (time) => {
             // Physics update

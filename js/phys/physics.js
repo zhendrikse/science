@@ -3,7 +3,7 @@
  *****************/
 
 import { Vector3 } from  "three";
-import { Integrators } from "../math/math.js";
+import { Integrators, Complex } from "../math/math.js";
 
 //
 // Constants
@@ -133,8 +133,7 @@ export class RadialSymmetricBody extends Body {
                     position = new Vector3(0, 0, 0),
                     velocity = new Vector3(0, 0, 0),
                     mass = 1,
-                    radius = 1,
-                    elasticity = 1
+                    radius = 1
                 } = {}) {
         super( {position, velocity, mass})
         this.radius = radius;
