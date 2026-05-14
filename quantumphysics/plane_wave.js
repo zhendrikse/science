@@ -68,10 +68,5 @@ simulation.run(() => {
     time += dt;
 });
 
-// document.getElementById("pauseButton").addEventListener("click", () => {
-//     running = !running;
-//     pauseButton.innerHTML = running ? "Pause" : "Resume";
-//     animate();
-// });
 
 
