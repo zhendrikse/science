@@ -58,12 +58,12 @@ const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOpt
 const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 simulation.scale = 1e-9;
 
-simulation.add(bodyA.to(new Sphere({ color: "yellow" })));
-simulation.add(bodyA.to(new Trail({ maxPoints: 500, color: "yellow" })));
-simulation.add(bodyB.to(new Sphere({ color: "cyan" })));
-simulation.add(bodyB.to(new Trail({ maxPoints: 500, color: "cyan" })));
-simulation.add(bodyC.to(new Sphere({ color: "magenta" })));
-simulation.add(bodyC.to(new Trail({ maxPoints: 500, color: "magenta"})));
+renderer.add(bodyA.to(new Sphere({ color: "yellow" })));
+renderer.add(bodyA.to(new Trail({ maxPoints: 500, color: "yellow" })));
+renderer.add(bodyB.to(new Sphere({ color: "cyan" })));
+renderer.add(bodyB.to(new Trail({ maxPoints: 500, color: "cyan" })));
+renderer.add(bodyC.to(new Sphere({ color: "magenta" })));
+renderer.add(bodyC.to(new Trail({ maxPoints: 500, color: "magenta"})));
 
 const dt = 5000;
 const subSteps = 50;
