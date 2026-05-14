@@ -37,7 +37,7 @@ $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
     <label for="densityPhase">Density/phase</label><input type="radio" name="plotType" checked id="densityPhase"/>
 </div>
 
-<canvas id="planeWaveCanvas2d" style="aspect-ratio: 3/1" class="applicationCanvas2d"></canvas>
+<canvas id="planeWaveCanvas2d" style="aspect-ratio: 3/1" class="applicationCanvas"></canvas>
 <script type="module" src="plane_wave.js"></script>
 <p style="clear: both;"></p>
 
