@@ -54,8 +54,8 @@ const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOpt
 const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 
 const sphere = new Sphere({ color: new Color("red")});
-simulation.add(proton.to(sphere));
-simulation.add(proton.to(new Trail({ maxPoints: 300, color: sphere.color })));
+renderer.add(proton.to(sphere));
+renderer.add(proton.to(new Trail({ maxPoints: 300, color: sphere.color })));
 
 const arrowField = new ArrowField({
     xRange: new Range(-6, 6, .5),
@@ -64,7 +64,7 @@ const arrowField = new ArrowField({
     scaleFactor: .9,
     round: false
 });
-simulation.addStatic(magneticField.to(arrowField));
+renderer.add(magneticField.to(arrowField));
 
 //
 // Event listeners

@@ -75,19 +75,19 @@ simulation.scale = scale;
 
 const dirLight = new PointLight(0xffffff, 2e3);
 dirLight.position.set(0, 0, 0);
-renderer.add(dirLight);
-renderer.add(new AmbientLight(0xffffff, 0.8));
+renderer.addPlainObject(dirLight);
+renderer.addPlainObject(new AmbientLight(0xffffff, 0.8));
 
 for (const charge of capacitor.charges) {
     const sphere = new Sphere({
         color: charge.charge > 0 ? new Color(0x4444ff) : new Color(0xff0000)
     });
-    simulation.addStatic(charge.to(sphere)); // Important: attach statically to prevent unnecessary updates!
+    renderer.asyncAdd(charge.to(sphere)); // Prevent unnecessary updates!
 }
 
 const sphere = new Sphere({ color: new Color(0x44ff44)});
-simulation.add(movingCharge.to(sphere));
-simulation.add(movingCharge.to(new Trail({ maxPoints: 400, color: sphere.color })));
+renderer.add(movingCharge.to(sphere));
+renderer.add(movingCharge.to(new Trail({ maxPoints: 400, color: sphere.color })));
 
 const arrowField = new ArrowField({
     xRange: new Range(-18 / scale, 18 / scale, 8 / scale),
@@ -98,7 +98,7 @@ const arrowField = new ArrowField({
     magnitudeMap: magnitude => Math.sqrt(magnitude),
     colorMap: (axis, magnitude) => new Color(1, 0.25 * magnitude, 0)
 });
-simulation.addStatic(capacitorField.to(arrowField));
+renderer.add(capacitorField.to(arrowField));
 
 //
 // Event listeners

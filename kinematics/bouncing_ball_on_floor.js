@@ -50,8 +50,8 @@ const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOpt
 const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 
 const sphere = new Sphere({ color: "cyan" });
-simulation.add(ball.to(sphere));
-simulation.add(ball.to(new Trail({ color: sphere.color})));
+renderer.add(ball.to(sphere));
+renderer.add(ball.to(new Trail({ color: sphere.color})));
 
 renderer.add(new Floor({
     type: Floor.Type.GRID,

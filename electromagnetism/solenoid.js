@@ -102,9 +102,9 @@ const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
 const simulation = Simulation.on(canvas).and(renderer);
 
 for (const segment of solenoid.segments)
-    simulation.add(segment.to(new Cylinder({ color: new Color("yellow") })));
+    renderer.asyncAdd(segment.to(new Cylinder({ color: new Color("yellow") })));
 
-simulation.add(magneticField.to(new ArrowField({
+renderer.add(magneticField.to(new ArrowField({
     xRange: new Range(-20, 20, 4),
     yRange: new Range(-20, 20, 4),
     zRange: new Range(-20, 20, 4),

@@ -10,7 +10,7 @@
  *
  * Example:
  *   simulation = Simulation.on(canvas.with(overlay)).and(renderer);
- *   simulation.add(body.to(view))
+ *   renderer.add(body.to(view))
  */
 
 import {
@@ -52,16 +52,17 @@ export class Canvas {
 }
 
 class Renderer {
-    addStatic(object) {}
-    addDynamic(object) {}
+    add(object) {}
+    asyncAdd(object) {}
     remove(object) {}
     render(transform) {}
     resize() {}
     reset() {}
 }
 
-export class Canvas2DRenderer {
+export class Canvas2DRenderer extends Renderer {
     constructor({ canvas }) {
+        super();
         this._canvas = canvas;
         this._context = canvas.getContext("2d");
     }
@@ -156,13 +157,13 @@ export class ThreeJsRenderer extends Renderer {
 
         this._initBackground(options.background, options.backgroundColor);
 
-        this._resize();
-        window.addEventListener("resize", () => this._resize());
+        this.resize();
+        window.addEventListener("resize", () => this.resize());
 
         return this;
     }
 
-    _resize() {
+    resize() {
         const canvas = this._renderer.domElement;
         const canvasWidth = canvas.clientWidth;
         const canvasHeight = canvas.clientHeight;
@@ -240,6 +241,12 @@ export class ThreeJsRenderer extends Renderer {
         }
     }
 
+    renderStaticObjects(transform) {
+        // Sync new physics state with view
+        for (const anObject of this._staticObjects)
+            anObject.render?.(transform);
+    }
+
     render(transform) {
         // Sync new physics state with view
         for (const anObject of this._dynamicObjects)
@@ -252,20 +259,34 @@ export class ThreeJsRenderer extends Renderer {
             this._doAutoRotate(this._camera.position.length());
     }
 
-    /**
-     * Add objects to simulation _without_ synchronization of the physics state.
-     */
-    add(object) {
-        this._world.add(object);
-        this._staticObjects.push(object);
+    addPlainObject(threeJsObject) {
+        this._world.add(threeJsObject);
     }
 
     /**
      * Add objects to simulation with synchronization of the physics state.
      */
-    addDynamic(object) {
-        this._world.add(object);
-        this._dynamicObjects.push(object);
+    add(bodyAndView) {
+        this._world.add(bodyAndView.view);
+        this._dynamicObjects.push(bodyAndView.view);
+
+        // Tie the body state to its associated view
+        if (!bodyAndView.view.attachTo)
+            throw new Error("Use addPlainObject() to attach regular Three.js objects!");
+        bodyAndView.view.attachTo(bodyAndView.body);
+    }
+
+    /**
+     * Add objects to simulation _without_ synchronization of the physics state.
+     */
+    asyncAdd(bodyAndView) {
+        this._world.add(bodyAndView.view);
+        this._staticObjects.push(bodyAndView.view);
+
+        // Tie the body state to its associated view
+        if (!bodyAndView.view.attachTo)
+            throw new Error("Use addPlainObject() to attach regular Three.js objects!");
+        bodyAndView.view.attachTo(bodyAndView.body);
     }
 
     remove(anObject) {
@@ -333,36 +354,11 @@ export class Simulation {
         return this;
     }
 
-    /**
-     * Add objects to simulation with synchronization of the physics state.
-     */
-    add(bodyAndView) {
-        const viewObject = bodyAndView.view;
-        this._renderer.addDynamic(viewObject);
-
-        // Tie the body state to its associated view
-        viewObject.attachTo(bodyAndView.body);
-
-        // Initial render before entering render loop
-        viewObject.render?.(this._transform);
-    }
-
-    /**
-     * Add objects to simulation _without_ synchronization of the physics state.
-     */
-    addStatic(bodyAndView) {
-        const viewObject = bodyAndView.view;
-        this._renderer.add(viewObject);
-
-        // Tie the body state to its associated view
-        viewObject.attachTo(bodyAndView.body);
-
-        // Initial render before entering render loop
-        viewObject.render?.(this._transform);
-    }
-
     run(updateFunction = null) {
         this._updateFunction = updateFunction;
+
+        // Render static objects once
+        this._renderer.renderStaticObjects(this._transform);
 
         const animate = (time) => {
             // Physics update
@@ -1330,7 +1326,7 @@ export class ArrowField extends Group{
         this._fieldArrows = [];
     }
 
-    _createArrowAt(x, y, z, vectorField) {
+    _createArrowAt(x, y, z) {
         const arrow = new Arrow({
             color: 0x00ffff,
             size: this._scaleFactor,
@@ -1339,7 +1335,7 @@ export class ArrowField extends Group{
             colorMap: this._colorMap,
         });
         const position = new Vector3(x, y, z);
-        arrow.attachTo(new VectorFieldVector({ position, axis: vectorField.vectorAt(position) }));
+        arrow.attachTo(new VectorFieldVector({ position }));
         this._fieldArrows.push(arrow);
         this.add(arrow);
     }
@@ -1351,15 +1347,21 @@ export class ArrowField extends Group{
         if (!vectorField.vectorAt)
             throw new Error("Body does not implement vectorAt(), hence it cannot be attached to this view.");
 
+        this._vectorField = vectorField;
         for (let x of this._xRange)
             for (let y of this._yRange)
                 for (let z of this._zRange)
-                    this._createArrowAt(x, y, z, vectorField);
+                    this._createArrowAt(x, y, z);
     }
 
     render(transform) {
-        for (let fieldArrow of this._fieldArrows)
+        for (let fieldArrow of this._fieldArrows) {
+            // Field vectors haven't been added to the renderer by the application, so we need to sync state here:
+            const fieldVector = fieldArrow.body;
+            const newVector = this._vectorField.vectorAt(fieldVector.position);
+            fieldVector.axis.copy(newVector);
             fieldArrow.render(transform);
+        }
     }
 }
 
@@ -1630,6 +1632,7 @@ export class ElectromagneticWave extends Group {
             .sub(this._planeWave.position)
             .length();
 
+        // Field vectors haven't been added to the renderer by the application, so we need to sync state here:
         const scaling = this._scalingFunction(fieldVector.position);
         fieldVector.axis.y = scaling * this._planeWave.valueAt(x);
 
@@ -1642,9 +1645,9 @@ export class ElectromagneticWave extends Group {
     render(transform) {
         for (let index = 0; index < this._electricFieldArrows.length; index++)
             this._updateFieldVectorAt(index);
-        for (let arrow of this._electricFieldArrows)
+        for (const arrow of this._electricFieldArrows)
             arrow.render(transform);
-        for (let arrow of this._magneticFieldArrows)
+        for (const arrow of this._magneticFieldArrows)
             arrow.render(transform);
     }
 

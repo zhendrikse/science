@@ -41,7 +41,7 @@ const simulation = Simulation.on(canvas).and(renderer);
 
 const slit = new Vector3(0, 0, lambda)
 for (let wave of planeWaves)
-    simulation.add(wave.to(new ElectromagneticWave({
+    renderer.add(wave.to(new ElectromagneticWave({
         numArrows: 120,
         arrowSize: 0.5,
         scalingFunction: position => 1 / (position.clone().sub(slit).length() + lambda / 10)
@@ -52,7 +52,7 @@ const antenna = new AxialSymmetricBody({
     axis: new Vector3(0, 2 * lambda, 0),
     radius: 0.5
 });
-simulation.addStatic(antenna.to(new Cylinder({color: new Color(0.7, 0.7, 0.7)})));
+renderer.asyncAdd(antenna.to(new Cylinder({color: new Color(0.7, 0.7, 0.7)})));
 
 //
 // Even listeners

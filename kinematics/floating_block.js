@@ -57,8 +57,8 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
 const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
 const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 
-simulation.add(woodenBlock.to(new Box({ color: 0xdeb887 })));
-renderer.add(water);
+renderer.add(woodenBlock.to(new Box({ color: 0xdeb887 })));
+renderer.addPlainObject(water);
 
 //
 // Graph

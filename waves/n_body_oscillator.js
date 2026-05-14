@@ -46,7 +46,7 @@ const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOpt
 const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 
 // Floor
-renderer.add(new Floor({
+renderer.addPlainObject(new Floor({
     type: Floor.Type.WOOD_WICKER,
     planeSizeXy: new Vector2(200, 200),
     granularity: 5
@@ -56,7 +56,7 @@ renderer.add(new Floor({
 for (let i = 0; i < balls.length; i++) {
     const color = i ===0 || i === balls.length - 1 ? 0x3333ff : 0xff0000;
     const sphere = new Sphere({ color, castShadow: true });
-    simulation.add(balls[i].to(sphere));
+    renderer.add(balls[i].to(sphere));
     if (i === 0)
         continue;
 
@@ -66,7 +66,7 @@ for (let i = 0; i < balls.length; i++) {
         color: 0xffff4d,
         castShadow: true
     });
-    simulation.add(springs[i - 1].to(helix));
+    renderer.add(springs[i - 1].to(helix));
 }
 
 //

@@ -45,7 +45,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
 const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
 const simulation = Simulation.on(canvas).and(renderer);
 
-simulation.add(planeWave.to(new OneDimensionalComplexPlaneWave3D({size: .8, numArrows: 100})));
+renderer.add(planeWave.to(new OneDimensionalComplexPlaneWave3D({size: .8, numArrows: 100})));
 
 //
 // const gui = new ControlsGui(planeWave);

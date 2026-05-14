@@ -84,9 +84,9 @@ const arrowField = new ArrowField({
     magnitudeMap: magnitude => Math.sqrt(magnitude),
 });
 
-simulation.add(dipole.positive.to(positiveSphere));
-simulation.add(dipole.negative.to(negativeSphere));
-simulation.add(dipoleField.to(arrowField));
+renderer.add(dipole.positive.to(positiveSphere));
+renderer.add(dipole.negative.to(negativeSphere));
+renderer.add(dipoleField.to(arrowField));
 
 //
 // Event listeners

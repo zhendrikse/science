@@ -64,11 +64,11 @@ const helix = new Helix({ coils: 15, color: "yellow" });
 const sphere = new Sphere({ color: "orange" });
 const velocityArrow = new Arrow({ color: "cyan", size: .125 });
 const forceArrow = new Arrow({ color: "red", size: .03 });
-simulation.add(ball.to(sphere));
-simulation.add(ball.velocityVector.to(velocityArrow));
-simulation.add(ball.accelerationVector.to(forceArrow));
-simulation.add(spring.to(helix));
-renderer.add(floor);
+renderer.add(ball.to(sphere));
+renderer.add(ball.velocityVector.to(velocityArrow));
+renderer.add(ball.accelerationVector.to(forceArrow));
+renderer.add(spring.to(helix));
+renderer.addPlainObject(floor);
 
 velocityArrowButton.addEventListener("click", () => velocityArrow.visible = velocityArrowButton.checked);
 forceArrowButton.addEventListener("click", () => forceArrow.visible = forceArrowButton.checked);
