@@ -7,7 +7,7 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
-🎯 build intuition for complex waves, phase propagation,
+🎯 Build intuition for complex waves, phase propagation,
 and the role of $k$ and $\omega$<br/>
 🎯 Demonstration of multiple views on one and the same object ($\psi(x,t)$)<br/>
 🧠 3D visualization found in [Visualizing Quantum Mechanics with Python](https://www.amazon.com/Visualizing-Quantum-Mechanics-Python-Spicklemire/dp/1032569247)<br/>
