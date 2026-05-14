@@ -8,6 +8,7 @@ import {OneDimensionalComplexPlaneWave3D, ThreeJsRenderer, ThreeJsRenderOptions 
 // Physics: definition of plane wave
 //
 const planeWave = new OneDimensionalComplexPlaneWave({
+    position: new Vector3(-25, 0, 0),
     amplitude: 5,
     omega: -3 * Math.PI,
     lambda: 2 * Math.PI
@@ -30,14 +31,15 @@ renderer2d.add(planeWave.to(waveView2d));
 //
 const canvas3d = new Canvas("planeWaveCanvas3d");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
-    cameraPosition: new Vector3(0, 0, 40)
+    cameraPosition: new Vector3(75, 75, 75),
+    fieldOfView: 10
 });
 const renderer3d = ThreeJsRenderer.on(canvas3d).and(threeJsRendererOptions);
 renderer3d.add(planeWave.to(new OneDimensionalComplexPlaneWave3D({size: .8, numArrows: 100})));
 
 // Composite renderer and simulation
 const renderer = new CompositeRenderer([renderer2d, renderer3d]);
-const simulation = Simulation.on(canvas2d).with(renderer);
+const simulation = Simulation.on(canvas3d).with(renderer);
 
 //
 // Event listeners
