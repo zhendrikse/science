@@ -1,12 +1,13 @@
 import { Vector3, Color, AmbientLight, PointLight } from "three";
-import { Simulation, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail } from "../js/simulation.js";
+import {
+    Simulation, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail, Canvas,
+    ThreeJsRenderOptions, ThreeJsRenderer, Overlay
+} from "../js/simulation.js";
 
-const canvas = document.getElementById("capacitorCanvas");
 const speedSlider = document.getElementById("speedSlider");
 const chargeSlider = document.getElementById("chargeSlider");
 const speedSliderValue = document.getElementById("speedSliderValue");
 const chargeSliderValue = document.getElementById("chargeSliderValue");
-const overlay = document.getElementById("movingChargeOverlayText");
 
 const K = 9e9;
 const scale = 1e14;
@@ -61,30 +62,32 @@ const movingCharge = new Particle({
 //
 // Simulation
 //
-const simulation = new Simulation({
-    canvas,
-    overlay,
-    scale,
-    light: false,
+const canvas = new Canvas("capacitorCanvas");
+const overlay = new Overlay("movingChargeOverlayText");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
+    light: false, // setting our own lights
     cameraPosition: new Vector3(-50, 0, 75).multiplyScalar(0.5),
     fieldOfView: 60
 });
+const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
+simulation.scale = scale;
 
 const dirLight = new PointLight(0xffffff, 2e3);
 dirLight.position.set(0, 0, 0);
-simulation.addThreeJsObject(dirLight);
-simulation.addThreeJsObject(new AmbientLight(0xffffff, 0.8));
+renderer.add(dirLight);
+renderer.add(new AmbientLight(0xffffff, 0.8));
 
 for (const charge of capacitor.charges) {
     const sphere = new Sphere({
         color: charge.charge > 0 ? new Color(0x4444ff) : new Color(0xff0000)
     });
-    simulation.attachStatically(charge.to(sphere)); // Important: attach statically to prevent unnecessary updates!
+    simulation.addStatic(charge.to(sphere)); // Important: attach statically to prevent unnecessary updates!
 }
 
 const sphere = new Sphere({ color: new Color(0x44ff44)});
-simulation.attach(movingCharge.to(sphere));
-simulation.attach(movingCharge.to(new Trail({ maxPoints: 400, color: sphere.color })));
+simulation.add(movingCharge.to(sphere));
+simulation.add(movingCharge.to(new Trail({ maxPoints: 400, color: sphere.color })));
 
 const arrowField = new ArrowField({
     xRange: new Range(-18 / scale, 18 / scale, 8 / scale),
@@ -93,9 +96,9 @@ const arrowField = new ArrowField({
     scaleFactor: 8e-10,
     round: false,
     magnitudeMap: magnitude => Math.sqrt(magnitude),
-    colorMap: magnitude => new Color(1, .25 * magnitude, 0)
+    colorMap: (axis, magnitude) => new Color(1, 0.25 * magnitude, 0)
 });
-simulation.attachStatically(capacitorField.to(arrowField));
+simulation.addStatic(capacitorField.to(arrowField));
 
 //
 // Event listeners

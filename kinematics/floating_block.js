@@ -1,8 +1,6 @@
 import { Vector3 } from "three";
-import {UPlotGraph, Box, Block, Simulation, Aquarium} from "../js/simulation.js";
-
-const overlay = document.getElementById('floatingBlockOverlayText');
-const canvas = document.getElementById('floatingBlockCanvas');
+import {UPlotGraph, Box, Block, Simulation, Aquarium, ThreeJsRenderer, Canvas, Overlay, ThreeJsRenderOptions
+} from "../js/simulation.js";
 
 const liquidDensity = 1000;
 const g = -9.8;
@@ -51,10 +49,16 @@ const water = new Aquarium({
     size: new Vector3(2, 2, 0.75)
 });
 
-const simulation = new Simulation({ canvas, overlay });
+const canvas = new Canvas("floatingBlockCanvas");
+const overlay = new Overlay("floatingBlockOverlayText");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
+    cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7)
+});
+const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 
-simulation.attach(woodenBlock.to(new Box({ color: 0xdeb887 })));
-simulation.addThreeJsObject(water);
+simulation.add(woodenBlock.to(new Box({ color: 0xdeb887 })));
+renderer.add(water);
 
 //
 // Graph

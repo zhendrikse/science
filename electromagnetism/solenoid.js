@@ -1,7 +1,8 @@
 import { Vector3, Color } from "three";
-import { Simulation, AxialSymmetricBody, VectorField, Cylinder, ArrowField, Range } from "../js/simulation.js";
+import { Simulation, AxialSymmetricBody, VectorField, Cylinder,
+    ArrowField, Range, Canvas, ThreeJsRenderOptions, ThreeJsRenderer
+} from "../js/simulation.js";
 
-const canvas = document.getElementById("solenoidCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
 const fieldStrengthSlider = document.getElementById("fieldStrength");
 
@@ -20,9 +21,8 @@ class Solenoid {
     }
 
     _createSegments(radius, totalSegments, turns, direct) {
-        const points = [];
-        for (let i = 0; i < totalSegments; i++)
-            points.push(new Vector3(
+        const points = Array.from({ length: totalSegments }, (_, i) =>
+            new Vector3(
                 L / 2 - i * L / totalSegments,
                 radius * Math.cos(2 * Math.PI / totalSegments * turns * i),
                 radius * Math.sin(2 * Math.PI / totalSegments * turns * i)
@@ -73,9 +73,7 @@ class SolenoidField extends VectorField {
     }
 
     vectorAt(position) {
-        return this._solenoid
-            .fieldAt(position)
-            .multiplyScalar(this._fieldStrength);
+        return this._solenoid.fieldAt(position).multiplyScalar(this._fieldStrength);
     }
 
     set fieldStrength(value) { this._fieldStrength = value; }
@@ -95,25 +93,28 @@ magneticField.fieldStrength = Number(fieldStrengthSlider.value);
 //
 // Simulation
 //
-const simulation = new Simulation({
-    canvas,
+const canvas = new Canvas("solenoidCanvas");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(32, 16, 48).multiplyScalar(1.25),
     fieldOfView: 45
 });
+const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas).and(renderer);
 
 for (const segment of solenoid.segments)
-    simulation.attach(segment.to(new Cylinder({ color: new Color("yellow") })));
+    simulation.add(segment.to(new Cylinder({ color: new Color("yellow") })));
 
-simulation.attach(magneticField.to(new ArrowField({
+simulation.add(magneticField.to(new ArrowField({
     xRange: new Range(-20, 20, 4),
     yRange: new Range(-20, 20, 4),
-    zRange: new Range(-20, 20, 4)
+    zRange: new Range(-20, 20, 4),
+    scaleFactor:  1.25
 })));
 
 fieldStrengthSlider.addEventListener("input", () =>
     magneticField.fieldStrength = Number(fieldStrengthSlider.value));
 
-autoRotateCheckbox.addEventListener("input", () => simulation.autoRotate = autoRotateCheckbox.checked);
+autoRotateCheckbox.addEventListener("input", () => renderer.autoRotate = autoRotateCheckbox.checked);
 
-simulation.autoRotate = autoRotateCheckbox.checked;
+renderer.autoRotate = autoRotateCheckbox.checked;
 simulation.run(() => {});

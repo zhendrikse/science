@@ -1,10 +1,11 @@
-import { Simulation, Sphere, Integrators, RadialSymmetricBody, G, gravitationalForceBetween, Trail } from "../js/simulation.js";
+import {Simulation, Sphere, Integrators, RadialSymmetricBody, G, gravitationalForceBetween, Trail,
+    ThreeJsRenderer, Canvas, Overlay, ThreeJsRenderOptions
+} from "../js/simulation.js";
 import { Vector3 } from "three";
 
-const canvas = document.getElementById("threeBodyCanvas");
-const overlay = document.getElementById("overlayText");
-const scale = 1e-9;
-
+//
+// Physics
+//
 const astronomical_unit = 1.49e11;
 const mass = 1e30;
 
@@ -34,18 +35,6 @@ const bodyC = new RadialSymmetricBody({
     mass: mass * 0.5
 });
 
-const simulation = new Simulation({
-    canvas, overlay, scale,
-    cameraPosition: new Vector3(30, 30, 30),
-});
-
-simulation.attach(bodyA.to(new Sphere({ color: "yellow" })));
-simulation.attach(bodyA.to(new Trail({ maxPoints: 500, color: "yellow" })));
-simulation.attach(bodyB.to(new Sphere({ color: "cyan" })));
-simulation.attach(bodyB.to(new Trail({ maxPoints: 500, color: "cyan" })));
-simulation.attach(bodyC.to(new Sphere({ color: "magenta" })));
-simulation.attach(bodyC.to(new Trail({ maxPoints: 500, color: "magenta"})));
-
 function make(subSteps, dt) {
     const force_BA = gravitationalForceBetween(bodyA.and(bodyB));
     const force_CB = gravitationalForceBetween(bodyB.and(bodyC));
@@ -55,6 +44,25 @@ function make(subSteps, dt) {
     bodyB.apply(force_CB.clone().sub(force_BA), dt / subSteps, Integrators.symplecticEulerStep);
     bodyC.apply(force_AC.clone().sub(force_CB), dt / subSteps, Integrators.symplecticEulerStep);
 }
+
+//
+// Simulation
+//
+const canvas = new Canvas("threeBodyCanvas");
+const overlay = new Overlay("overlayText");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
+    cameraPosition: new Vector3(30, 30, 30)
+});
+const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
+simulation.scale = 1e-9;
+
+simulation.add(bodyA.to(new Sphere({ color: "yellow" })));
+simulation.add(bodyA.to(new Trail({ maxPoints: 500, color: "yellow" })));
+simulation.add(bodyB.to(new Sphere({ color: "cyan" })));
+simulation.add(bodyB.to(new Trail({ maxPoints: 500, color: "cyan" })));
+simulation.add(bodyC.to(new Sphere({ color: "magenta" })));
+simulation.add(bodyC.to(new Trail({ maxPoints: 500, color: "magenta"})));
 
 const dt = 5000;
 const subSteps = 50;

@@ -1,7 +1,5 @@
 import {Vector3, Color} from "three";
-import {Arrow, Simulation, Body } from '../js/simulation.js';
-
-const canvas = document.getElementById('birdsCanvas');
+import {Arrow, Simulation, Body, Canvas, ThreeJsRenderOptions, ThreeJsRenderer} from '../js/simulation.js';
 
 // Simulation parameters
 const speed = 6;  // initial horizontal speed
@@ -118,14 +116,16 @@ document.getElementById("startleButton").addEventListener("click", () => flock.s
 const birdCount = 250;
 const flock = new Flock(birdCount);
 
-const simulation = new Simulation({
-    canvas,
+const canvas = new Canvas("birdsCanvas");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(15, 0, 30).multiplyScalar(1.5),
     fieldOfView: 30
 });
+const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas).and(renderer);
 
 for (let i = 0; i < birdCount; i++)
-    simulation.attach(flock.bird(i).velocityVector.to(new Arrow({
+    simulation.add(flock.bird(i).velocityVector.to(new Arrow({
         round: true,
         color: new Color(.5, 1, .5),
         size: .2

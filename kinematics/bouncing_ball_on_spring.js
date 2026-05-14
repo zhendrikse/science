@@ -1,8 +1,16 @@
 import { Vector3 } from "three";
-import {Helix, Spring, Simulation, RadialSymmetricBody, Sphere, Floor, Arrow} from "../js/simulation.js";
+import {
+    Helix,
+    Spring,
+    Simulation,
+    RadialSymmetricBody,
+    Sphere,
+    Floor,
+    Arrow,
+    Canvas,
+    Overlay, ThreeJsRenderOptions, ThreeJsRenderer
+} from "../js/simulation.js";
 
-const canvas = document.getElementById("ballSpringCanvas");
-const overlay = document.getElementById("ballSpringOverlayText");
 const velocityArrowButton = document.getElementById("velocityArrow");
 const forceArrowButton = document.getElementById("forceArrow");
 const dampingSlider = document.getElementById("dampingSlider");
@@ -44,21 +52,23 @@ function timeStep(dt) {
 //
 // Simulation
 //
-const simulation = new Simulation({
-    canvas,
-    overlay,
-    cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7),
+const canvas = new Canvas("ballSpringCanvas");
+const overlay = new Overlay("ballSpringOverlayText");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
+    cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7)
 });
+const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 
 const helix = new Helix({ coils: 15, color: "yellow" });
 const sphere = new Sphere({ color: "orange" });
 const velocityArrow = new Arrow({ color: "cyan", size: .125 });
 const forceArrow = new Arrow({ color: "red", size: .03 });
-simulation.attach(ball.to(sphere));
-simulation.attach(ball.velocityVector.to(velocityArrow));
-simulation.attach(ball.accelerationVector.to(forceArrow));
-simulation.attach(spring.to(helix));
-simulation.addThreeJsObject(floor);
+simulation.add(ball.to(sphere));
+simulation.add(ball.velocityVector.to(velocityArrow));
+simulation.add(ball.accelerationVector.to(forceArrow));
+simulation.add(spring.to(helix));
+renderer.add(floor);
 
 velocityArrowButton.addEventListener("click", () => velocityArrow.visible = velocityArrowButton.checked);
 forceArrowButton.addEventListener("click", () => forceArrow.visible = forceArrowButton.checked);

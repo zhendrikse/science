@@ -1,8 +1,6 @@
 import { Vector3, Vector2 } from "three";
-import {Simulation, RadialSymmetricBody, Sphere, Floor, Trail, UPlotGraph } from "../js/simulation.js";
-
-const canvas = document.getElementById("bouncingBallOnFloorCanvas");
-const overlay = document.getElementById("bouncingBallOnFloorOverlayText");
+import { Simulation, RadialSymmetricBody, Sphere, Floor, Overlay, ThreeJsRenderOptions,
+    Trail, UPlotGraph, ThreeJsRenderer, Canvas } from "../js/simulation.js";
 
 class BouncingBall extends RadialSymmetricBody {
     constructor({position, velocity, radius, mass}) {
@@ -43,16 +41,19 @@ function ballStep(dt) {
 //
 // Simulation
 //
-const simulation = new Simulation({
-    canvas,
-    overlay,
-    cameraPosition: new Vector3(2, 1, 0.5).multiplyScalar(2.25),
+const canvas = new Canvas("bouncingBallOnFloorCanvas");
+const overlay = new Overlay("bouncingBallOnFloorOverlayText");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
+    cameraPosition: new Vector3(2, 1, 0.5).multiplyScalar(2.25)
 });
+const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 
 const sphere = new Sphere({ color: "cyan" });
-simulation.attach(ball.to(sphere));
-simulation.attach(ball.to(new Trail({ color: sphere.color})));
-simulation.addThreeJsObject(new Floor({
+simulation.add(ball.to(sphere));
+simulation.add(ball.to(new Trail({ color: sphere.color})));
+
+renderer.add(new Floor({
     type: Floor.Type.GRID,
     planeSizeXy: new Vector2(5, 5),
     opacity: 0.3,

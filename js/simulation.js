@@ -1,14 +1,17 @@
 /**
- * An educational/scientific simulation environment with clear separation between model and visualization.
- * The simulation physics are realized independently of the view objects. These view objects are synchronized
- * transparently by the simulation environment.
+ * Simulation environment for educational and scientific visualizations.
  *
- * Core ideas:
+ * Simulation state and rendering are decoupled and synchronized by the engine.
  *
- * - clear separation of responsibilities
- * - low cognitive load
- * - code reveals (scientific) intention, so you can literally use: simulation.attach(physics.to(view))
- **/
+ * Design goals:
+ * - lightweight ECS-inspired architecture
+ * - low cognitive overhead
+ * - code expresses scientific intent directly
+ *
+ * Example:
+ *   simulation = Simulation.on(canvas.with(overlay)).and(renderer);
+ *   simulation.add(body.to(view))
+ */
 
 import {
     Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, Group, Vector3, BufferAttribute, Fog,
@@ -23,144 +26,143 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
  * S I M U L A T I O N  E N V I R O N M E N T *
  **********************************************/
 
-export class Simulation {
+export class Overlay {
+    constructor(elementId) {
+        this._overlay = document.getElementById(elementId);
+    }
+
+    get overlay() { return this._overlay; }
+}
+
+export class Canvas {
+    constructor(elementId) {
+        this._canvas = document.getElementById(elementId);
+        this._overlay = null;
+    }
+
+    with(overlay) {
+        this._overlay = overlay.overlay;
+        return this;
+    }
+
+    get overlay() { return this._overlay; }
+    get canvas() { return this._canvas; }
+    get clientHeight() { return this._canvas.clientHeight; }
+    get clientWidth() { return this._canvas.clientWidth; }
+}
+
+class Renderer {
+    addStatic(object) {}
+    addDynamic(object) {}
+    remove(object) {}
+    render(transform) {}
+    resize() {}
+    reset() {}
+}
+
+export class Canvas2DRenderer {
+    constructor({ canvas }) {
+        this._canvas = canvas;
+        this._context = canvas.getContext("2d");
+    }
+
+    clear() {
+        this._context.fillStyle = "transparent";
+        this._context.fillRect(
+            0,
+            0,
+            this._canvas.width,
+            this._canvas.height
+        );
+    }
+
+    render() {
+        this.clear();
+    }
+
+    get context() {
+        return this._context;
+    }
+}
+
+export class ThreeJsRenderOptions {
+    constructor({
+        background = ThreeJsRenderer.Background.TRANSPARENT,
+        backgroundColor = 0x0088ff,
+        controls = true,
+        light = true,
+        cameraPosition = new Vector3(3, 3, 3),
+        shadowsEnabled = false,
+        fieldOfView = 50
+    } = {}) {
+        this.background = background;
+        this.backgroundColor = backgroundColor;
+        this.controls = controls;
+        this.light = light;
+        this.cameraPosition = cameraPosition;
+        this.shadows = shadowsEnabled;
+        this.fieldOfView = fieldOfView;
+    }
+}
+
+export class ThreeJsRenderer extends Renderer {
     static Background = Object.freeze({
         PLAIN: "Plain",
         FOG: "Fog",
         TRANSPARENT: "Transparent"
     });
+    static on = (canvas) => {
+        return new ThreeJsRenderer(canvas.canvas, canvas.overlay);
+    }
 
-    constructor({
-        canvas,
-        overlay = null, // If overlay is not defined, the simulation won't wait for a mouse click
-        scale = 1,
-        background = Simulation.Background.TRANSPARENT,
-        backgroundColor = 0x0088ff,
-        controls = true,
-        light = true,
-        resetFunction = null,
-        cameraPosition = new Vector3(3, 3, 3),
-        shadowsEnabled = false,
-        fieldOfView = 50
-    }) {
+    constructor(canvas, overlay) {
+        super();
         this._canvas = canvas;
-        this._overlay = overlay;
 
         this._autoRotate = false;
         this._autoRotateTheta = Math.PI / 2;
         this._autoRotatePhi = 0;
 
-        this._transform = new Transform(scale);
-        this._staticObjects = [];  // Are static during the whole simulation hence do NOT need to be synchronized
-        this._dynamicObjects = []; // Need to be synchronized every update
         this._scene = new Scene();
-        this._running = false;
-        this._onReset = resetFunction;
-
         this._world = new Group();
         this._scene.add(this._world);
+    }
 
-        this._camera = new PerspectiveCamera(fieldOfView, canvas.clientWidth / canvas.clientHeight, 0.1, 1e6);
-        this._camera.position.copy(cameraPosition);
+    and(options) {
+        const canvas = this._canvas;
 
         this._renderer = new WebGLRenderer({
             antialias: true,
             canvas: this._canvas,
-            alpha: background === Simulation.Background.TRANSPARENT
+            alpha: options.background === ThreeJsRenderer.Background.TRANSPARENT
         });
-        this._resizeRendererToCanvas();
-        if (shadowsEnabled) {
+
+        if (options.shadowsEnabled) {
             this._renderer.shadowMap.enabled = true;
             this._renderer.shadowMap.type = PCFShadowMap;
         }
 
-        if (controls) this._controls = new OrbitControls(this._camera, canvas);
+        this._camera = new PerspectiveCamera(options.fieldOfView, canvas.clientWidth / canvas.clientHeight, 0.1, 1e6);
+        this._camera.position.copy(options.cameraPosition);
 
-        if (light) this._initLights(shadowsEnabled);
+        this._staticObjects = [];  // Are static during the whole simulation hence do NOT need to be synchronized
+        this._dynamicObjects = []; // Need to be synchronized every update
 
-        this._initBackground(background, backgroundColor);
-        this._initEventHandlers(overlay);
+        if (options.controls)
+            this._controls = new OrbitControls(this._camera, canvas);
+
+        if (options.light)
+            this._initLights(options.shadowsEnabled);
+
+        this._initBackground(options.background, options.backgroundColor);
+
+        this._resize();
+        window.addEventListener("resize", () => this._resize());
+
+        return this;
     }
 
-    _initBackground(background, backgroundColor) {
-        switch (background) {
-            case Simulation.Background.PLAIN:
-                this._scene.background = new Color(backgroundColor);
-                break;
-            case Simulation.Background.FOG:
-                this._scene.background = new Color(backgroundColor);
-                this._scene.fog = new Fog(backgroundColor, 1, 100);
-                break;
-            case Simulation.Background.TRANSPARENT:
-            default:
-                break;
-        }
-    }
-
-    _initLights(shadowsEnabled) {
-        const directionalLight = new DirectionalLight(0xffffff, shadowsEnabled ? 2 : 1);
-        directionalLight.position.set(0, this._camera.position.y, 0);
-        this._scene.add(directionalLight);
-        this._scene.add(new AmbientLight(0xffffff, 0.8));
-
-        if (shadowsEnabled) {
-            // Adjust shadow camera settings
-            directionalLight.shadow.camera.near = 0.5; // Default is 0.5
-            directionalLight.shadow.camera.far = 50; // Default is 500
-            directionalLight.shadow.camera.top = 20;
-            directionalLight.shadow.camera.right = 20;
-            directionalLight.shadow.camera.bottom = -20;
-            directionalLight.shadow.camera.left = -20;
-            directionalLight.castShadow = true;
-
-            // Adjust shadow map settings
-            directionalLight.shadow.mapSize.width = 2048; // Default is 512
-            directionalLight.shadow.mapSize.height = 2048; // Default is 512
-
-        }
-    }
-
-    _doAutoRotate(distance) {
-        this._autoRotateTheta += -Math.PI / (7.5 * 100);
-        this._autoRotatePhi +=  Math.PI / (7.5 * 100) * 2;
-
-        this._camera.position.set(
-            distance * Math.sin(this._autoRotateTheta) * Math.sin(this._autoRotatePhi),
-            distance * Math.cos(this._autoRotateTheta),
-            distance * Math.sin(this._autoRotateTheta) * Math.cos(this._autoRotatePhi)
-        );
-
-        this._camera.lookAt(0, 0, 0);
-    }
-
-    _initEventHandlers(overlay) {
-        window.addEventListener("resize", () => this._resizeRendererToCanvas());
-
-        if (overlay)
-            this._canvas.addEventListener("click", () => {
-                if (!this._running) {
-                    this.showOverlayMessage("Started");
-                    this._running = true;
-                } else {
-                    this.showOverlayMessage("Reset");
-                    this._running = false;
-                    this.reset();
-                }
-            });
-        else
-            this._running = true;
-    }
-
-    showOverlayMessage(message, duration = 1000) {
-        this._overlay.textContent = message;
-        this._overlay.style.display = "block";
-
-        setTimeout(() => {
-            this._overlay.style.display = "none";
-        }, duration);
-    }
-
-    _resizeRendererToCanvas() {
+    _resize() {
         const canvas = this._renderer.domElement;
         const canvasWidth = canvas.clientWidth;
         const canvasHeight = canvas.clientHeight;
@@ -181,42 +183,68 @@ export class Simulation {
         this._camera.updateProjectionMatrix();
     }
 
-    _synchronizePhysicsAndView() {
+    reset() {
         for (const anObject of this._dynamicObjects)
-            if (anObject.render)
-                anObject.render(this._transform);
+            if (anObject.reset)
+                anObject.reset();
     }
 
-    addThreeJsObject(anObject, dynamic=false) {
-        this._world.add(anObject);
-        if (dynamic)
-            this._dynamicObjects.push(anObject);
-        else
-            this._staticObjects.push(anObject);
+    _doAutoRotate(distance) {
+        this._autoRotateTheta += -Math.PI / (7.5 * 100);
+        this._autoRotatePhi +=  Math.PI / (7.5 * 100) * 2;
+
+        this._camera.position.set(
+            distance * Math.sin(this._autoRotateTheta) * Math.sin(this._autoRotatePhi),
+            distance * Math.cos(this._autoRotateTheta),
+            distance * Math.sin(this._autoRotateTheta) * Math.cos(this._autoRotatePhi)
+        );
+
+        this._camera.lookAt(0, 0, 0);
     }
 
-    attach(bodyAndView) {
-        const viewObject = bodyAndView.view;
-        this.addThreeJsObject(viewObject, true);
-        viewObject.attachTo(bodyAndView.body);
+    _initLights(shadowsEnabled) {
+        const directionalLight = new DirectionalLight(0xffffff, shadowsEnabled ? 2 : 1);
+        directionalLight.position.set(0, this._camera.position.y, 0);
+        this._scene.add(directionalLight);
+        this._scene.add(new AmbientLight(0xffffff, 0.8));
 
-        // Initial render before entering render loop
-        viewObject.render?.(this._transform);
+        if (!shadowsEnabled)
+            return;
+
+        // Adjust shadow camera settings
+        directionalLight.shadow.camera.near = 0.5; // Default is 0.5
+        directionalLight.shadow.camera.far = 50; // Default is 500
+        directionalLight.shadow.camera.top = 20;
+        directionalLight.shadow.camera.right = 20;
+        directionalLight.shadow.camera.bottom = -20;
+        directionalLight.shadow.camera.left = -20;
+        directionalLight.castShadow = true;
+
+        // Adjust shadow map settings
+        directionalLight.shadow.mapSize.width = 2048; // Default is 512
+        directionalLight.shadow.mapSize.height = 2048; // Default is 512
     }
 
-    attachStatically(bodyAndView) {
-        const viewObject = bodyAndView.view;
-        this.addThreeJsObject(viewObject, true);
-        viewObject.attachTo(bodyAndView.body);
-
-        this.addThreeJsObject(bodyAndView.view, false);
+    _initBackground(background, backgroundColor) {
+        switch (background) {
+            case ThreeJsRenderer.Background.PLAIN:
+                this._scene.background = new Color(backgroundColor);
+                break;
+            case ThreeJsRenderer.Background.FOG:
+                this._scene.background = new Color(backgroundColor);
+                this._scene.fog = new Fog(backgroundColor, 1, 100);
+                break;
+            case ThreeJsRenderer.Background.TRANSPARENT:
+            default:
+                break;
+        }
     }
 
-    _animationStep(time) {
-        if (this._running && this._updateFunction)
-            this._updateFunction(time);
+    render(transform) {
+        // Sync new physics state with view
+        for (const anObject of this._dynamicObjects)
+            anObject.render?.(transform);
 
-        this._synchronizePhysicsAndView();
         this._renderer.render(this._scene, this._camera);
         this._controls?.update();
 
@@ -224,21 +252,138 @@ export class Simulation {
             this._doAutoRotate(this._camera.position.length());
     }
 
-    run(updateFunction = null) {
-        this._updateFunction = updateFunction;
-        this._renderer.setAnimationLoop((time) => this._animationStep(time));
+    /**
+     * Add objects to simulation _without_ synchronization of the physics state.
+     */
+    add(object) {
+        this._world.add(object);
+        this._staticObjects.push(object);
     }
 
-    reset() {
-        for (const anObject of this._dynamicObjects)
-            if (anObject.reset)
-                anObject.reset();
+    /**
+     * Add objects to simulation with synchronization of the physics state.
+     */
+    addDynamic(object) {
+        this._world.add(object);
+        this._dynamicObjects.push(object);
+    }
 
-        if ( this._onReset)
-            this._onReset();
+    remove(anObject) {
+        throw new Error("Remove() method not implemented.");
     }
 
     set autoRotate(autoRotate) { this._autoRotate = autoRotate; }
+}
+
+export class Simulation {
+    static on = (canvas) => {
+        return new Simulation({
+            canvas: canvas.canvas,
+            overlay: canvas.overlay
+        });
+    }
+
+    constructor({
+        canvas,
+        renderer,
+        overlay = null, // If overlay is not defined, the simulation won't wait for a mouse click
+        scale = 1,
+        resetFunction = null
+    }) {
+        this._overlay = overlay;
+        this._renderer = renderer;
+        this._onReset = resetFunction;
+
+        this._transform = new Transform(scale);
+        this._running = false;
+        this._initEventHandlers(canvas, overlay);
+    }
+
+    set scale(scale) { this._transform = new Transform(scale); }
+
+    _initEventHandlers(canvas, overlay) {
+        if (!overlay) {
+            this._running = true;
+            return;
+        }
+
+        canvas.addEventListener("click", () => {
+            if (!this._running) {
+                this.showOverlayMessage("Started");
+                this._running = true;
+            } else {
+                this.showOverlayMessage("Reset");
+                this._running = false;
+                this.reset();
+            }
+        });
+    }
+
+    showOverlayMessage(message, duration = 1000) {
+        this._overlay.textContent = message;
+        this._overlay.style.display = "block";
+
+        setTimeout(() => {
+            this._overlay.style.display = "none";
+        }, duration);
+    }
+
+    and(renderer) {
+        this._renderer = renderer;
+        return this;
+    }
+
+    /**
+     * Add objects to simulation with synchronization of the physics state.
+     */
+    add(bodyAndView) {
+        const viewObject = bodyAndView.view;
+        this._renderer.addDynamic(viewObject);
+
+        // Tie the body state to its associated view
+        viewObject.attachTo(bodyAndView.body);
+
+        // Initial render before entering render loop
+        viewObject.render?.(this._transform);
+    }
+
+    /**
+     * Add objects to simulation _without_ synchronization of the physics state.
+     */
+    addStatic(bodyAndView) {
+        const viewObject = bodyAndView.view;
+        this._renderer.add(viewObject);
+
+        // Tie the body state to its associated view
+        viewObject.attachTo(bodyAndView.body);
+
+        // Initial render before entering render loop
+        viewObject.render?.(this._transform);
+    }
+
+    run(updateFunction = null) {
+        this._updateFunction = updateFunction;
+
+        const animate = (time) => {
+            // Physics update
+            if (this._running && this._updateFunction)
+                this._updateFunction(time);
+
+            this._renderer.render(this._transform);
+
+            requestAnimationFrame(animate);
+        };
+
+        requestAnimationFrame(animate);
+    }
+
+    reset() {
+        this._renderer.reset();
+
+        if (this._onReset)
+            this._onReset();
+    }
+
     set onReset(resetFunction) { this._onReset = resetFunction; }
 }
 
@@ -282,7 +427,6 @@ export function gravitationalForceBetween(twoBodies) {
 //
 // Bodies to do physics with
 //
-
 class TwoBodies {
     constructor(body1, body2) {
         this.body1 = body1;
@@ -789,19 +933,6 @@ export class VectorField {
 
     to(view) { return { body: this, view: view}; };
 
-    range(positions) {
-        let min = Infinity;
-        let max = -Infinity;
-
-        for (const position of positions) {
-            const mag = this.vectorAt(position).length();
-            min = Math.min(min, mag);
-            max = Math.max(max, mag);
-        }
-
-        return { min, max };
-    }
-
     vectorAt(positionVector) {
         throw new Error("You invoked the method of an abstract base class. Please create a subclass first.");
     }
@@ -1147,11 +1278,13 @@ export class Arrow extends Group {
         this.position.copy(transform.physicsToRender(this._body.position));
 
         this._tempAxisVector.copy(this._body.axis);
-        const visualMagnitude = this._magnitudeMap(this._tempAxisVector.length());
+        const magnitude = this._tempAxisVector.length();
+
+        const visualMagnitude = this._magnitudeMap(magnitude);
         const length = visualMagnitude * this._size;
 
         if (this._colorMap) {
-            const color = this._colorMap(this._tempAxisVector);
+            const color = this._colorMap(this._tempAxisVector, magnitude);
             this._shaft.material.color.copy(color);
             this._head.material.color.copy(color);
         }
@@ -1184,8 +1317,7 @@ export class ArrowField extends Group{
         scaleFactor = 1,
         round = false,
         magnitudeMap = magnitude => Math.log(1 + magnitude),
-        colorMap = axis => new Color().setHSL(Math.log(1 + axis.length()), 2, 0.5)
-
+        colorMap = (axis, magnitude) => new Color().setHSL(Math.min(Math.log(1 + magnitude)/5, 1), 0.7, 0.5)
 } = {}) {
         super();
         this._xRange = xRange;
@@ -1588,6 +1720,83 @@ export class OneDimensionalComplexPlaneWave3D extends Group {
 
         for (let arrow of this._arrows)
             arrow.render(transform);
+    }
+}
+
+export class OneDimensionalComplexPlaneWave2D {
+    static Mode = Object.freeze({
+        DENSITY: "Density",
+        PHASE: "Phase"
+    });
+    constructor({
+            width = 800,
+            height = 400,
+            scaleY = 100,
+            mode = OneDimensionalComplexPlaneWave2D.Mode.DENSITY,
+            showImaginary = true
+        } = {}) {
+        this._wave = null;
+
+        this._width = width;
+        this._height = height;
+        this._scaleY = scaleY;
+
+        this._showImaginary = showImaginary;
+    }
+
+    attachTo(wave) {
+        this._wave = wave;
+    }
+
+    render(ctx) {
+        const centerY = this._height / 2;
+
+        // achtergrond
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, this._width, this._height);
+
+        // x-as
+        ctx.strokeStyle = "gray";
+        ctx.beginPath();
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(this._width, centerY);
+        ctx.stroke();
+
+        // real part
+        ctx.strokeStyle = "#ffc000";
+        ctx.beginPath();
+
+        for (let x = 0; x < this._width; x++) {
+            const psi = this._wave.valueAt(x * 0.02);
+
+            const y = centerY - psi.re * this._scaleY;
+
+            if (x === 0)
+                ctx.moveTo(x, y);
+            else
+                ctx.lineTo(x, y);
+        }
+
+        ctx.stroke();
+
+        // imaginary part
+        if (this._showImaginary) {
+            ctx.strokeStyle = "#00d0ff";
+            ctx.beginPath();
+
+            for (let x = 0; x < this._width; x++) {
+                const psi = this._wave.valueAt(x * 0.02);
+
+                const y = centerY - psi.im * this._scaleY;
+
+                if (x === 0)
+                    ctx.moveTo(x, y);
+                else
+                    ctx.lineTo(x, y);
+            }
+
+            ctx.stroke();
+        }
     }
 }
 

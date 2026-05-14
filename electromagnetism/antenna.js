@@ -1,7 +1,13 @@
 import { Vector3, Color } from "three";
-import { AxialSymmetricBody, Simulation, Cylinder, OneDimensionalPlaneWave, ElectromagneticWave } from "../js/simulation.js";
+import {
+    AxialSymmetricBody,
+    Simulation,
+    Cylinder,
+    OneDimensionalPlaneWave,
+    ElectromagneticWave,
+    Canvas, ThreeJsRenderOptions, ThreeJsRenderer
+} from "../js/simulation.js";
 
-const canvas = document.getElementById("antennaCanvas");
 const fieldStrengthSlider = document.getElementById("antennaFieldStrengthSlider");
 const fieldStrengthSliderValue = document.getElementById("antennaFieldStrengthSliderValue");
 
@@ -25,11 +31,17 @@ for (let position of range)
 //
 // Simulation
 //
-const simulation = new Simulation({ canvas, cameraPosition: new Vector3(-1, 4, -9) });
+
+const canvas = new Canvas("antennaCanvas");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
+    cameraPosition: new Vector3(-1, 4, -9)
+});
+const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas).and(renderer);
 
 const slit = new Vector3(0, 0, lambda)
 for (let wave of planeWaves)
-    simulation.attach(wave.to(new ElectromagneticWave({
+    simulation.add(wave.to(new ElectromagneticWave({
         numArrows: 120,
         arrowSize: 0.5,
         scalingFunction: position => 1 / (position.clone().sub(slit).length() + lambda / 10)
@@ -40,7 +52,7 @@ const antenna = new AxialSymmetricBody({
     axis: new Vector3(0, 2 * lambda, 0),
     radius: 0.5
 });
-simulation.attachStatically(antenna.to(new Cylinder({color: new Color(0.7, 0.7, 0.7)})));
+simulation.addStatic(antenna.to(new Cylinder({color: new Color(0.7, 0.7, 0.7)})));
 
 //
 // Even listeners

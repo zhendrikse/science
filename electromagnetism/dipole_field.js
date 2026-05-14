@@ -1,7 +1,15 @@
 import { Vector3, Color } from "three";
-import { Simulation, VectorField, ArrowField, Sphere, Range, Particle } from "../js/simulation.js";
+import {
+    Simulation,
+    VectorField,
+    ArrowField,
+    Sphere,
+    Range,
+    Particle,
+    Canvas,
+    ThreeJsRenderOptions, ThreeJsRenderer
+} from "../js/simulation.js";
 
-const canvas = document.getElementById("dipoleCanvas");
 const autoRotateCheckbox = document.getElementById("autoRotate");
 const fieldStrengthSlider = document.getElementById("fieldStrength");
 
@@ -56,12 +64,14 @@ dipoleField.fieldStrength = Number(fieldStrengthSlider.value) * .5;
 //
 // Simulation
 //
-const simulation = new Simulation({
-    canvas,
-    scale,
+const canvas = new Canvas("dipoleCanvas");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(32, 16, 48).multiplyScalar(0.75),
     fieldOfView: 40
 });
+const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas).and(renderer);
+simulation.scale = scale;
 
 const positiveSphere = new Sphere({ color: new Color("red") });
 const negativeSphere = new Sphere({color: new Color("blue" )});
@@ -74,9 +84,9 @@ const arrowField = new ArrowField({
     magnitudeMap: magnitude => Math.sqrt(magnitude),
 });
 
-simulation.attach(dipole.positive.to(positiveSphere));
-simulation.attach(dipole.negative.to(negativeSphere));
-simulation.attach(dipoleField.to(arrowField));
+simulation.add(dipole.positive.to(positiveSphere));
+simulation.add(dipole.negative.to(negativeSphere));
+simulation.add(dipoleField.to(arrowField));
 
 //
 // Event listeners
@@ -85,7 +95,7 @@ fieldStrengthSlider.addEventListener("input", () =>
     dipoleField.fieldStrength = Number(fieldStrengthSlider.value) * .5);
 
 autoRotateCheckbox.addEventListener("input", () =>
-    simulation.autoRotate = autoRotateCheckbox.checked);
+    renderer.autoRotate = autoRotateCheckbox.checked);
 
 simulation.autoRotate = autoRotateCheckbox.checked;
 simulation.run(() => {});

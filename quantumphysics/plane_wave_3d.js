@@ -1,9 +1,8 @@
 import { Vector3 } from "three";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { OneDimensionalComplexPlaneWave, Simulation, OneDimensionalComplexPlaneWave3D } from "../js/simulation.js";
-
-const canvasContainer = document.getElementById("planeWaveContainer");
-const canvas = document.getElementById("planeWaveCanvas");
+import { OneDimensionalComplexPlaneWave, Simulation, OneDimensionalComplexPlaneWave3D,
+    ThreeJsRenderer, Canvas, Overlay, ThreeJsRenderOptions
+} from "../js/simulation.js";
 
 class ControlsGui {
     constructor(planeWave) {
@@ -39,12 +38,14 @@ const planeWave = new OneDimensionalComplexPlaneWave({
     lambda: 15
 });
 
-const simulation = new Simulation({
-    canvas,
+const canvas = new Canvas("planeWaveCanvas");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(0, 0, 50)
 });
+const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas).and(renderer);
 
-simulation.attach(planeWave.to(new OneDimensionalComplexPlaneWave3D({size: .8, numArrows: 100})));
+simulation.add(planeWave.to(new OneDimensionalComplexPlaneWave3D({size: .8, numArrows: 100})));
 
 //
 // const gui = new ControlsGui(planeWave);

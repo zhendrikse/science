@@ -1,8 +1,8 @@
 import { Vector3, Color } from "three";
-import { Simulation, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail } from "../js/simulation.js";
+import { Simulation, VectorField, ArrowField, Sphere, Particle, Range, EC,
+    Trail, Canvas, Overlay, ThreeJsRenderOptions, ThreeJsRenderer
+} from "../js/simulation.js";
 
-const canvas = document.getElementById("protonInFieldCanvas");
-const overlay = document.getElementById("protonInFieldOverlayText");
 const speedSlider = document.getElementById("protonInFieldSpeedSlider");
 const strengthSlider = document.getElementById("protonInFieldStrengthSlider");
 const speedSliderReadout = document.getElementById("protonInFieldSpeedSliderValue");
@@ -45,15 +45,17 @@ function timeStep(dt) {
 //
 // Simulation
 //
-const simulation = new Simulation({
-    canvas,
-    overlay,
+const canvas = new Canvas("protonInFieldCanvas");
+const overlay = new Overlay("protonInFieldOverlayText");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(0, 5, -10)
 });
+const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 
 const sphere = new Sphere({ color: new Color("red")});
-simulation.attach(proton.to(sphere));
-simulation.attach(proton.to(new Trail({ maxPoints: 300, color: sphere.color })));
+simulation.add(proton.to(sphere));
+simulation.add(proton.to(new Trail({ maxPoints: 300, color: sphere.color })));
 
 const arrowField = new ArrowField({
     xRange: new Range(-6, 6, .5),
@@ -62,7 +64,7 @@ const arrowField = new ArrowField({
     scaleFactor: .9,
     round: false
 });
-simulation.attachStatically(magneticField.to(arrowField));
+simulation.addStatic(magneticField.to(arrowField));
 
 //
 // Event listeners
