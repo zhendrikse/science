@@ -1,8 +1,6 @@
 import { Vector3, Vector2 } from "three";
-import {Helix, Simulation, RadialSymmetricBody, Sphere, HarmonicOscillator, Floor, UPlotGraph} from "../js/simulation.js";
-
-const canvas = document.getElementById("oscillatorCanvas");
-const overlay = document.getElementById("oscillatorOverlayText");
+import {Helix, Simulation, RadialSymmetricBody, Sphere, HarmonicOscillator, Floor, UPlotGraph,
+    ThreeJsRenderOptions, Canvas, Overlay, ThreeJsRenderer } from "../js/simulation.js";
 
 //
 // Physics
@@ -35,18 +33,20 @@ initialDisturbance(7);
 //
 // Simulation
 //
-const simulation = new Simulation({
-    canvas,
-    overlay,
+const canvas = new Canvas("oscillatorCanvas");
+const overlay = new Overlay("oscillatorOverlayText");
+const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(17, 6, 17),
     light: true,
     shadowsEnabled: true,
     fieldOfView: 45,
-    background: Simulation.Background.FOG
+    background: ThreeJsRenderer.Background.FOG
 });
+const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
+const simulation = Simulation.on(canvas.with(overlay)).and(renderer);
 
 // Floor
-simulation.addThreeJsObject(new Floor({
+renderer.add(new Floor({
     type: Floor.Type.WOOD_WICKER,
     planeSizeXy: new Vector2(200, 200),
     granularity: 5
@@ -56,7 +56,7 @@ simulation.addThreeJsObject(new Floor({
 for (let i = 0; i < balls.length; i++) {
     const color = i ===0 || i === balls.length - 1 ? 0x3333ff : 0xff0000;
     const sphere = new Sphere({ color, castShadow: true });
-    simulation.attach(balls[i].to(sphere));
+    simulation.add(balls[i].to(sphere));
     if (i === 0)
         continue;
 
@@ -66,7 +66,7 @@ for (let i = 0; i < balls.length; i++) {
         color: 0xffff4d,
         castShadow: true
     });
-    simulation.attach(springs[i - 1].to(helix));
+    simulation.add(springs[i - 1].to(helix));
 }
 
 //

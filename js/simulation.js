@@ -100,7 +100,7 @@ export class ThreeJsRenderOptions {
         this.controls = controls;
         this.light = light;
         this.cameraPosition = cameraPosition;
-        this.shadows = shadowsEnabled;
+        this.shadowsEnabled = shadowsEnabled;
         this.fieldOfView = fieldOfView;
     }
 }
