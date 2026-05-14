@@ -1,5 +1,7 @@
 import {Vector3, Color} from "three";
-import {Arrow, Simulation, Body, Canvas, ThreeJsRenderOptions, ThreeJsRenderer} from '../js/simulation.js';
+import { Body } from "../js/phys/physics.js";
+import { Simulation, Canvas } from "../js/simulation.js";
+import { Arrow, ThreeJsRenderOptions, ThreeJsRenderer } from "../js/renderers/three/threesim.js";
 
 // Simulation parameters
 const speed = 6;  // initial horizontal speed

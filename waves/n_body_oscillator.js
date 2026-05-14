@@ -1,6 +1,8 @@
+import { UPlotGraph } from "../js/simulation.js";
 import { Vector3, Vector2 } from "three";
-import {Helix, Simulation, RadialSymmetricBody, Sphere, HarmonicOscillator, Floor, UPlotGraph,
-    ThreeJsRenderOptions, Canvas, Overlay, ThreeJsRenderer } from "../js/simulation.js";
+import { RadialSymmetricBody, HarmonicOscillator } from "../js/phys/physics.js";
+import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import { Sphere, ThreeJsRenderOptions, ThreeJsRenderer, Helix, Floor } from "../js/renderers/three/threesim.js";
 
 //
 // Physics

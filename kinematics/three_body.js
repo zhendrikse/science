@@ -1,7 +1,8 @@
-import {Simulation, Sphere, Integrators, RadialSymmetricBody, G, gravitationalForceBetween, Trail,
-    ThreeJsRenderer, Canvas, Overlay, ThreeJsRenderOptions
-} from "../js/simulation.js";
 import { Vector3 } from "three";
+import { Integrators } from "../js/math/math.js";
+import { RadialSymmetricBody, G, gravitationalForceBetween } from "../js/phys/physics.js";
+import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import { Sphere, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
 
 //
 // Physics

@@ -1,14 +1,8 @@
 import { Vector3, Color } from "three";
-import {
-    Simulation,
-    VectorField,
-    ArrowField,
-    Sphere,
-    Range,
-    Particle,
-    Canvas,
-    ThreeJsRenderOptions, ThreeJsRenderer
-} from "../js/simulation.js";
+import { Particle } from "../js/phys/physics.js";
+import { VectorField, Range } from "../js/math/math.js";
+import { Simulation, Canvas } from "../js/simulation.js";
+import { Sphere, ArrowField, ThreeJsRenderOptions, ThreeJsRenderer } from "../js/renderers/three/threesim.js";
 
 const autoRotateCheckbox = document.getElementById("autoRotate");
 const fieldStrengthSlider = document.getElementById("fieldStrength");

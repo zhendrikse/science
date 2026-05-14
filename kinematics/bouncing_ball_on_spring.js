@@ -1,15 +1,7 @@
 import { Vector3 } from "three";
-import {
-    Helix,
-    Spring,
-    Simulation,
-    RadialSymmetricBody,
-    Sphere,
-    Floor,
-    Arrow,
-    Canvas,
-    Overlay, ThreeJsRenderOptions, ThreeJsRenderer
-} from "../js/simulation.js";
+import { RadialSymmetricBody, Spring } from "../js/phys/physics.js";
+import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import { Arrow, Sphere, ThreeJsRenderOptions, ThreeJsRenderer, Floor, Helix } from "../js/renderers/three/threesim.js";
 
 const velocityArrowButton = document.getElementById("velocityArrow");
 const forceArrowButton = document.getElementById("forceArrow");

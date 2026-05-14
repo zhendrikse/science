@@ -1,7 +1,8 @@
 import { Vector3, Color } from "three";
-import { Simulation, AxialSymmetricBody, VectorField, Cylinder,
-    ArrowField, Range, Canvas, ThreeJsRenderOptions, ThreeJsRenderer
-} from "../js/simulation.js";
+import { AxialSymmetricBody } from "../js/phys/physics.js";
+import { VectorField, Range } from "../js/math/math.js";
+import { Simulation, Canvas } from "../js/simulation.js";
+import { Cylinder, ArrowField, ThreeJsRenderOptions, ThreeJsRenderer } from "../js/renderers/three/threesim.js";
 
 const autoRotateCheckbox = document.getElementById("autoRotate");
 const fieldStrengthSlider = document.getElementById("fieldStrength");

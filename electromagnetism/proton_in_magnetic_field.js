@@ -1,7 +1,8 @@
 import { Vector3, Color } from "three";
-import { Simulation, VectorField, ArrowField, Sphere, Particle, Range, EC,
-    Trail, Canvas, Overlay, ThreeJsRenderOptions, ThreeJsRenderer
-} from "../js/simulation.js";
+import { Particle } from "../js/phys/physics.js";
+import { VectorField, Range } from "../js/math/math.js";
+import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import { Sphere, ArrowField, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
 
 const speedSlider = document.getElementById("protonInFieldSpeedSlider");
 const strengthSlider = document.getElementById("protonInFieldStrengthSlider");

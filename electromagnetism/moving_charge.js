@@ -1,8 +1,8 @@
 import { Vector3, Color, AmbientLight, PointLight } from "three";
-import {
-    Simulation, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail, Canvas,
-    ThreeJsRenderOptions, ThreeJsRenderer, Overlay
-} from "../js/simulation.js";
+import { Particle, EC } from "../js/phys/physics.js";
+import { VectorField, Range } from "../js/math/math.js";
+import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import { Sphere, ArrowField, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
 
 const speedSlider = document.getElementById("speedSlider");
 const chargeSlider = document.getElementById("chargeSlider");

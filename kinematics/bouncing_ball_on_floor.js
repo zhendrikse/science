@@ -1,6 +1,8 @@
+import { UPlotGraph } from "../js/simulation.js";
 import { Vector3, Vector2 } from "three";
-import { Simulation, RadialSymmetricBody, Sphere, Floor, Overlay, ThreeJsRenderOptions,
-    Trail, UPlotGraph, ThreeJsRenderer, Canvas } from "../js/simulation.js";
+import { RadialSymmetricBody } from "../js/phys/physics.js";
+import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import { Sphere, Floor, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
 
 class BouncingBall extends RadialSymmetricBody {
     constructor({position, velocity, radius, mass}) {

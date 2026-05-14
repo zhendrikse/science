@@ -1,6 +1,8 @@
 import { Vector3 } from "three";
-import {UPlotGraph, Box, Block, Simulation, Aquarium, ThreeJsRenderer, Canvas, Overlay, ThreeJsRenderOptions
-} from "../js/simulation.js";
+import { UPlotGraph } from "../js/simulation.js";
+import { Block } from "../js/phys/physics.js";
+import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import { Box, ThreeJsRenderOptions, ThreeJsRenderer, Aquarium } from "../js/renderers/three/threesim.js";
 
 const liquidDensity = 1000;
 const g = -9.8;

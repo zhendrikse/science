@@ -1,12 +1,7 @@
 import { Vector3, Color } from "three";
-import {
-    AxialSymmetricBody,
-    Simulation,
-    Cylinder,
-    OneDimensionalPlaneWave,
-    ElectromagneticWave,
-    Canvas, ThreeJsRenderOptions, ThreeJsRenderer
-} from "../js/simulation.js";
+import { AxialSymmetricBody, OneDimensionalPlaneWave } from "../js/phys/physics.js";
+import { Simulation, Canvas } from "../js/simulation.js";
+import { Cylinder, ElectromagneticWave, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
 
 const fieldStrengthSlider = document.getElementById("antennaFieldStrengthSlider");
 const fieldStrengthSliderValue = document.getElementById("antennaFieldStrengthSliderValue");
@@ -31,7 +26,6 @@ for (let position of range)
 //
 // Simulation
 //
-
 const canvas = new Canvas("antennaCanvas");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(-1, 4, -9)
