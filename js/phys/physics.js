@@ -110,9 +110,11 @@ export class AxialSymmetricBody extends Body {
                     velocity = new Vector3(),
                     axis = new Vector3(),
                     radius = 1,
-                    mass = 1
+                    mass = 1,
+                    charge = 0
                 } = {})  {
         super({ position, velocity, mass });
+        this.charge = charge;
         this.radius = radius;
         this.axis = axis.clone();
     }
@@ -123,7 +125,8 @@ export class AxialSymmetricBody extends Body {
             velocity: this.velocity.clone(),
             axis: this.axis.clone(),
             radius: this.radius,
-            mass: this.mass
+            mass: this.mass,
+            charge: this.charge
         });
     }
 }
