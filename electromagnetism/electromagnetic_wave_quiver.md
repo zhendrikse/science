@@ -1,38 +1,22 @@
 {% include breadcrumbs.html %}
 
-## Electromagnetic wave
+## Electromagnetic wave of oscillating charges
 <div class="header_line"><br/></div>
 
-$\bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{E} = 0, \bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{B} = 0, v=\dfrac {1} {\sqrt {\mu \epsilon}}$ 
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=electromagnetic_wave_quiver.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/electromagnetic_wave_quiver.js)&nbsp;&nbsp;
+[![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
+[![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
-where $v$ is the speed of light (i.e. phase velocity) in a medium with permeability $\mu$, and permittivity $\epsilon$.
+🎯 Visualization of the Liénard–Wiechert field of two oscillating charges<br/>
+🧠 Based on [this tutorial](Taken from [this tutorial](https://bphilhour.trinket.io/physics-through-glowscript-an-introductory-course#/5-vectors-fields-and-functions-electricity-and-magnetism/law-of-biot-savart-magnetism-playground) by Byron Philhour<br/>
+🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/ElectromagneticQuiverWave) is available as well, see [electromagnetic_wave_quiver.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/electromagnetic_wave_quiver.py)<br/>
+👉 Read more on [electromagnetic interactions](https://ocw.mit.edu/courses/22-105-electromagnetic-interactions-fall-2005/pages/readings/chap4.pdf) on MIT OpenCourseWare
 
-{% include_relative code/electromagnetic_wave_quiver.html %}
-
+<div class="canvasWrapper" id="electromagneticWaveWrapper">
+    <canvas class="applicationCanvas" id="electromagneticWaveCanvas" ></canvas>
+</div>
+<script type="module" src="electromagnetic_wave_quiver.js"></script>
 <p style="clear: both;"></p>
-
-Electric Field vectors are orange. Magnetic Field vectors are cyan.
-The thick green vector representing $\partial \vec{E}/\partial t$ 
-is associated with the spatial arrangement of the magnetic field according to
-the Ampere-Maxwell law (as evaluated on the green loop).
-The sense of circulation on the green loop (by the right-hand rule) determines
-the direction of change of the electric field (thumb-direction).
-
-The thick magenta vector representing $\partial \vec{B}/\partial t$
-is associated with the spatial arrangement of the electric field according to
-the Faraday&apos;s Law (as evaluated on the magenta loop).
-The sense of circulation on the magenta loop (by the right-hand rule) determines
-the direction of change of the magnetic field (opposite to thumb direction).
-
-Intuitively, $\partial \vec{E}/\partial t$  tells the current value of 
-$\vec{E}$ at that point to look like the value of $\vec{E}$ at the point to its left (in this example).
-In other words, the pattern of the electric field moves to the **right**.
-  
-Similarly, $\partial \vec{B}/\partial t$  tells the current value of 
-$\vec{B}$ at that point to look like
-the value of $\vec{B}$ at the point to its left (in this example).
-In other words, the pattern of the magnetic field moves to the **right**.
-Thus, this electromagnetic plane wave moves to the right.
 
 <p style="clear: both;"></p>
 
