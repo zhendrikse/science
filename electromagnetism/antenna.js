@@ -28,7 +28,8 @@ for (let position of range)
 //
 const canvas = new Canvas("antennaCanvas");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
-    cameraPosition: new Vector3(-1, 4, -9)
+    cameraPosition: new Vector3(-1, 4, -9).multiplyScalar(2.5),
+    fieldOfView: 25
 });
 const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
 const simulation = Simulation.on(canvas).with(renderer);
