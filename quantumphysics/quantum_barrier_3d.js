@@ -1,7 +1,7 @@
-import { Group, Vector3, Color, Scene, Box3, BoxGeometry, Mesh, MeshBasicMaterial } from "three";
-import { Arrow, AxesController, AxesParameters, Plot3DView, ThreeJsUtils } from '../js/three-js-extensions.js';
-import { GUI } from "three/addons/libs/lil-gui.module.min.js";
-import { FFT } from "../js/math-utils.js";
+import {Box3, BoxGeometry, Color, Group, Mesh, MeshBasicMaterial, Scene, Vector3} from "three";
+import {Arrow, AxesController, AxesParameters, Plot3DView, ThreeJsUtils} from '../js/three-js-extensions.js';
+import {GUI} from "three/addons/libs/lil-gui.module.min.js";
+import {FFT} from "../js/math-utils.js";
 
 const canvasContainer = document.getElementById("barrier3dWrapper");
 const canvas = document.getElementById("barrier3dCanvas");
@@ -83,10 +83,9 @@ class FreeWavePacket extends Group {
     }
 
     _buildBarrier({ V0 = 10, a = 1 } = {}) {
-        const halfWidth = a;
         for (let i = 0; i < this._N; i++) {
             const x = this._arrows[i].position.x;
-            this._V[i] = Math.abs(x) < halfWidth ? V0 : 0;
+            this._V[i] = Math.abs(x) < a ? V0 : 0;
         }
     }
 
@@ -284,7 +283,7 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-window.addEventListener("click", () => {
+canvas.addEventListener("click", () => {
     if (!running) {
         ThreeJsUtils.showOverlayMessage(overlay, "Started");
         running = true;

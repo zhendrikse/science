@@ -35,7 +35,6 @@ let psi;
 // Respond to user clicking Run/Pause/Resume button:
 pauseButton.addEventListener("click", () => {
 	running = !running;
-	console.log("running:", running);
 	if (running) {
 		pauseButton.innerHTML = "Pause";
 		nextFrame();
