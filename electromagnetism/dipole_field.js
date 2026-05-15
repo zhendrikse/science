@@ -75,7 +75,8 @@ const arrowField = new ArrowField({
     zRange: new Range(-12 / scale, 12 / scale, 2 / scale),
     scaleFactor: 3e-5,
     round: false,
-    magnitudeMap: magnitude => Math.sqrt(magnitude),
+    magnitudeMap: magnitude => Math.sqrt(1 + magnitude),
+    colorMap: (axis, magnitude) => new Color().setHSL(Math.min(Math.sqrt(1 + magnitude) * 5e-6, 1), 1, 0.5)
 });
 
 renderer.add(dipole.positive.to(positiveSphere));
@@ -91,5 +92,5 @@ fieldStrengthSlider.addEventListener("input", () =>
 autoRotateCheckbox.addEventListener("input", () =>
     renderer.autoRotate = autoRotateCheckbox.checked);
 
-simulation.autoRotate = autoRotateCheckbox.checked;
+renderer.autoRotate = autoRotateCheckbox.checked;
 simulation.run(() => {});
