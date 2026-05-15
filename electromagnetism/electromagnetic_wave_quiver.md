@@ -12,6 +12,7 @@
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/ElectromagneticQuiverWave) is available as well, see [electromagnetic_wave_quiver.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/electromagnetic_wave_quiver.py)<br/>
 👉 Read more on [electromagnetic interactions](https://ocw.mit.edu/courses/22-105-electromagnetic-interactions-fall-2005/pages/readings/chap4.pdf) on MIT OpenCourseWare<br/>
 👉 Maxwell's equations:
+
 $$\bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{E} = 0,\quad \bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{B} = 0,\quad v=\dfrac {1} {\sqrt {\mu \epsilon}}$$
 
 <div class="canvasWrapper" id="electromagneticWaveWrapper">
