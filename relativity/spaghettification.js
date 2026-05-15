@@ -68,7 +68,7 @@ class Ball {
 
     update(dt, blackHolePos) {
         this._position.addScaledVector(this._velocity, dt);
-        this._sphere.moveTo(this._position);
+        this._sphere.physicsPosition = this._position;
         this._rVector.subVectors(this._position, blackHolePos);
         const r2 = this._rVector.lengthSq();
         this._rVector.normalize().multiplyScalar(-15.0 / r2);
