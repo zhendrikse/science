@@ -1,11 +1,8 @@
 import { Vector3, Color } from "three";
 import { AxialSymmetricBody } from "../js/phys/physics.js";
 import { VectorField, Range } from "../js/math/math.js";
-import { Simulation, Canvas } from "../js/simulation.js";
+import {Simulation, Canvas, HtmlDiv, Overlay, EventController, HtmlControl} from "../js/simulation.js";
 import { Cylinder, ArrowField, ThreeJsRenderOptions, ThreeJsRenderer } from "../js/renderers/three/threesim.js";
-
-const autoRotateCheckbox = document.getElementById("autoRotate");
-const fieldStrengthSlider = document.getElementById("fieldStrength");
 
 const MU0 = 4 * Math.PI * 1e-7;
 const CURRENT = 1e8;
@@ -81,7 +78,7 @@ class SolenoidField extends VectorField {
 }
 
 //
-// Physics
+// Physics model
 //
 const solenoid = new Solenoid({
     radius: 10,
@@ -89,18 +86,18 @@ const solenoid = new Solenoid({
     turns: 10
 });
 const magneticField = new SolenoidField(solenoid);
-magneticField.fieldStrength = Number(fieldStrengthSlider.value);
 
 //
-// Simulation
+// View
 //
-const canvas = Canvas.withElementId("solenoidCanvas");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(32, 16, 48).multiplyScalar(1.25),
     fieldOfView: 45
 });
-const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas).with(renderer);
+const canvas = Canvas.withElementId("solenoidCanvas");
+const renderer = ThreeJsRenderer
+    .on(HtmlDiv.withElementId("solenoidCanvasWrapper").contains(canvas))
+    .with(threeJsRendererOptions);
 
 for (const segment of solenoid.segments)
     renderer.asyncAdd(segment.to(new Cylinder({ color: new Color("yellow") })));
@@ -112,10 +109,21 @@ renderer.add(magneticField.to(new ArrowField({
     scaleFactor:  1.25
 })));
 
-fieldStrengthSlider.addEventListener("input", () =>
-    magneticField.fieldStrength = Number(fieldStrengthSlider.value));
+const simulation = Simulation
+    .with(renderer)
+    .run((realTime, simulatedTime) => {});
 
-autoRotateCheckbox.addEventListener("input", () => renderer.autoRotate = autoRotateCheckbox.checked);
+const eventController = EventController.for(simulation);
 
-renderer.autoRotate = autoRotateCheckbox.checked;
-simulation.run(() => {});
+eventController.attach(HtmlControl
+    .withElementId("fieldStrength")
+    .forType("input")
+    .withValueSpanId("fieldStrengthSliderValue")
+    .to(magneticField)
+    .withProperty("fieldStrength"));
+
+eventController.attach(HtmlControl
+    .withElementId("autoRotate")
+    .forType("click")
+    .to(renderer)
+    .withProperty("autoRotate"));
