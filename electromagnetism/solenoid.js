@@ -94,7 +94,7 @@ magneticField.fieldStrength = Number(fieldStrengthSlider.value);
 //
 // Simulation
 //
-const canvas = new Canvas("solenoidCanvas");
+const canvas = Canvas.withElementId("solenoidCanvas");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(32, 16, 48).multiplyScalar(1.25),
     fieldOfView: 45

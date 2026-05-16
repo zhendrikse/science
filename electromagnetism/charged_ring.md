@@ -13,10 +13,9 @@
 
 <div class="canvasWrapper" id="chargedRingWrapper">
     <canvas class="applicationCanvas" id="chargedRingCanvas"></canvas>
+    <div class="overlayText" id="chargedRingOverlay">Click to start the animation!</div>
 </div>
 <script type="module" src="charged_ring.js"></script>
-<p style="clear: both;"></p>
-
 <p style="clear: both;"></p>
 
 {% include share_buttons.html %}

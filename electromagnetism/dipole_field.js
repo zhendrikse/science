@@ -50,7 +50,6 @@ class DipoleField extends VectorField {
 //
 const dipole = new Dipole(1e-14);
 const dipoleField = new DipoleField(dipole);
-dipoleField.fieldStrength = Number(fieldStrengthSlider.value) * .5;
 
 //
 // View

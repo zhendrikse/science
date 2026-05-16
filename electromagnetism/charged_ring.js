@@ -1,7 +1,7 @@
 import { Vector3, Color } from "three";
 import { Particle, AxialSymmetricBody } from "../js/phys/physics.js";
 import { VectorField, Range } from "../js/math/math.js";
-import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import {Simulation, Canvas, Overlay, EventController, HtmlDiv} from "../js/simulation.js";
 import { Sphere, Cylinder, ArrowField, ThreeJsRenderer, ThreeJsRenderOptions, Trail } from "../js/renderers/three/threesim.js";
 
 //
@@ -9,9 +9,6 @@ import { Sphere, Cylinder, ArrowField, ThreeJsRenderer, ThreeJsRenderOptions, Tr
 //
 const Q = 1.6e-19;
 const K = 9e9;
-
-const canvas = new Canvas("chargedRingCanvas");
-const overlay = new Overlay("chargedRingOverlay");
 
 class ChargedRing {
     constructor({
@@ -106,19 +103,18 @@ function timeStep(dt) {
 }
 
 //
-// Simulation
+// View model
 //
+const threeJsRendererOptions = new ThreeJsRenderOptions({
+    cameraPosition: new Vector3(15, 5, 20),
+    fieldOfView: 45
+});
+const canvas= Canvas.withElementId("chargedRingCanvas");
 const renderer = ThreeJsRenderer
-    .on(canvas.with(overlay))
-    .and(new ThreeJsRenderOptions({
-        cameraPosition: new Vector3(5.5, 6.5, 5.5).multiplyScalar(1.25),
-        fieldOfView: 45
-    }));
-
-const simulation = Simulation
-    .on(canvas.with(overlay))
-    .with(renderer);
-simulation.scale = 5e10;
+    .on(HtmlDiv
+        .withElementId("chargedRingWrapper")
+        .containsBoth(canvas.and(Overlay.withElementId("chargedRingOverlay"))))
+    .with(threeJsRendererOptions);
 
 // Ring rendering
 for (const segment of ring.segments)
@@ -151,9 +147,13 @@ renderer.asyncAdd(electricField.to(new ArrowField({
 })));
 
 // Run simulation
-const dt = 1e-19;
+const dt = 2e-19;
 const subSteps = 20;
-simulation.run(() => {
-    for (let i = 0; i < subSteps; i++)
-        timeStep(dt);
-});
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt)
+    .onScale(5e10)
+    .run((realTime, simulatedTime) => timeStep(dt), subSteps);
+
+const eventController = EventController.for(simulation);
+eventController.addStartStopMouseClickEventListenerTo(canvas);

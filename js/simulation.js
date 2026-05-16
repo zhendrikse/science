@@ -199,6 +199,8 @@ export class CallbackFunction {
 }
 
 export class EventController {
+    static for = (simulation) => new EventController(simulation);
+
     constructor(simulation = null) {
         this._simulation = simulation;
     }

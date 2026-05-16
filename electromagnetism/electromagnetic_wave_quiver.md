@@ -13,13 +13,15 @@
 👉 Read more on [electromagnetic interactions](https://ocw.mit.edu/courses/22-105-electromagnetic-interactions-fall-2005/pages/readings/chap4.pdf) on MIT OpenCourseWare<br/>
 👉 Maxwell's equations:
 
+<p style="clear: both;"></p>
+
 $$\bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{E} = 0,\quad \bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{B} = 0,\quad v=\dfrac {1} {\sqrt {\mu \epsilon}}$$
 
 <div class="canvasWrapper" id="electromagneticWaveWrapper">
-    <canvas class="applicationCanvas" id="electromagneticWaveCanvas" ></canvas>
+    <canvas class="applicationCanvas" id="electromagneticWaveCanvas"></canvas>
+    <div class="overlayText" id="electromagneticWaveOverlay">Click to start the animation!</div>
 </div>
 <script type="module" src="electromagnetic_wave_quiver.js"></script>
-<p style="clear: both;"></p>
 
 <p style="clear: both;"></p>
 

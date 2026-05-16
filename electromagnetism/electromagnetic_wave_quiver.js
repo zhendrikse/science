@@ -1,15 +1,9 @@
 import { Vector3, Color } from "three";
-import { Particle } from "../js/phys/physics.js";
+import {OneDimensionalPlaneWave, Particle} from "../js/phys/physics.js";
 import { VectorField, Range } from "../js/math/math.js";
-import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import {Simulation, Canvas, Overlay, HtmlDiv, EventController} from "../js/simulation.js";
 import { Sphere, ArrowField, ThreeJsRenderer, ThreeJsRenderOptions} from "../js/renderers/three/threesim.js";
 
-const canvas = new Canvas("electromagneticWaveCanvas");
-const overlay = new Overlay("electromagneticWaveOverlay");
-
-//
-// Constants
-//
 const Q = 1.6e-19;
 const K = 9e9;
 const C = 3e8;
@@ -18,9 +12,6 @@ let frequency = 8e16;
 let amplitude = 1e-10;
 function omega() { return 2 * Math.PI * frequency; }
 
-//
-// Oscillating charge
-//
 class OscillatingCharge extends Particle {
     constructor(charge) {
         super({mass: 1, charge, radius: 0.25 * 1e-10});
@@ -94,9 +85,6 @@ class ElectromagneticWaveField extends VectorField {
     }
 }
 
-//
-// Charges
-//
 const electron = new OscillatingCharge(-Q);
 const proton = new OscillatingCharge(Q);
 
@@ -131,13 +119,16 @@ const magneticField = new CombinedField([
 //
 // Renderer
 //
-const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(new ThreeJsRenderOptions({
+const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(15, 5, 20),
     fieldOfView: 45
-}));
-
-const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
-simulation.scale = 1e10;
+});
+const canvas= Canvas.withElementId("electromagneticWaveCanvas");
+const renderer = ThreeJsRenderer
+    .on(HtmlDiv
+        .withElementId("electromagneticWaveWrapper")
+        .containsBoth(canvas.and(Overlay.withElementId("electromagneticWaveOverlay"))))
+    .with(threeJsRendererOptions);
 
 //
 // Charge rendering
@@ -166,17 +157,21 @@ renderer.add(magneticField.to(new ArrowField({
 //
 // Animation
 //
-let time = 0;
 const dt = 2e-19;
-simulation.run(() => {
-    time += dt;
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt)
+    .onScale(1e10)
+    .run((realTime, simulatedTime) => {
+        electron.updateAt(simulatedTime);
+        proton.updateAt(simulatedTime);
 
-    electron.updateAt(time);
-    proton.updateAt(time);
+        for (const field of electricField._fields)
+            field.time = simulatedTime;
 
-    for (const field of electricField._fields)
-        field.time = time;
+        for (const field of magneticField._fields)
+            field.time = simulatedTime;
+    });
 
-    for (const field of magneticField._fields)
-        field.time = time;
-});
+const eventController = EventController.for(simulation);
+eventController.addStartStopMouseClickEventListenerTo(canvas);
