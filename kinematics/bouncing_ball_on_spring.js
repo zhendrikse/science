@@ -1,14 +1,10 @@
 import { Vector3 } from "three";
 import { RadialSymmetricBody, Spring } from "../js/phys/physics.js";
-import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import {Simulation, Canvas, Overlay, HtmlDiv, EventController, HtmlControl} from "../js/simulation.js";
 import { Arrow, Sphere, ThreeJsRenderOptions, ThreeJsRenderer, Floor, Helix } from "../js/renderers/three/threesim.js";
 
-const velocityArrowButton = document.getElementById("velocityArrow");
-const forceArrowButton = document.getElementById("forceArrow");
-const dampingSlider = document.getElementById("dampingSlider");
-
 //
-// Physics
+// Physics model
 //
 const floor = new Floor({
     position: new Vector3(0, -1, 0),
@@ -32,25 +28,36 @@ const ballHitsSpring = (epsilon=1e-2) => springTopAtRest.clone().sub(ball.positi
 const gravitationalForce = new Vector3(0, -9.8 * ball.mass, 0);
 const netForce = new Vector3();
 
-function timeStep(dt) {
-    netForce.y = spring.force.y + gravitationalForce.y;
-    netForce.y -= Number(dampingSlider.value) * ball.velocity.y;
-    ball.apply(netForce, dt);
+class PhysicsWorld {
+    constructor(ball) {
+        this._ball = ball;
+        this._damping = 0;
+    }
 
-    if (ballHitsSpring() || spring.isCompressed)
-        spring.axis = spring.positionVectorTo(ball);
+    timeStep(dt) {
+        netForce.y = spring.force.y + gravitationalForce.y;
+        netForce.y -= this._damping * ball.velocity.y;
+        ball.apply(netForce, dt);
+
+        if (ballHitsSpring() || spring.isCompressed)
+            spring.axis = spring.positionVectorTo(ball);
+    }
+
+    set damping(value) { this._damping = value; }
 }
 
+
 //
-// Simulation
+// View objects
 //
-const canvas = new Canvas("ballSpringCanvas");
-const overlay = new Overlay("ballSpringOverlayText");
-const threeJsRendererOptions = new ThreeJsRenderOptions({
+const canvas = Canvas.withElementId("bouncingBallOnSpringCanvas");
+const overlay = Overlay.withElementId("bouncingBallOnSpringOverlay");
+const canvasWrapper = HtmlDiv.withElementId("bouncingBallOnSpringWrapper").containsBoth(canvas.and(overlay));
+const renderer = ThreeJsRenderer
+    .on(canvasWrapper)
+    .with(new ThreeJsRenderOptions({
     cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7)
-});
-const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
+}));
 
 const helix = new Helix({ coils: 15, color: "yellow" });
 const sphere = new Sphere({ color: "orange" });
@@ -62,11 +69,35 @@ renderer.add(ball.accelerationVector.to(forceArrow));
 renderer.add(spring.to(helix));
 renderer.addPlainObject(floor);
 
-velocityArrowButton.addEventListener("click", () => velocityArrow.visible = velocityArrowButton.checked);
-forceArrowButton.addEventListener("click", () => forceArrow.visible = forceArrowButton.checked);
-
 const dt = 1.5e-3;
-simulation.run(() => {
-    for (let subStep = 0; subStep < 10; subStep++)
-        timeStep(dt);
-});
+const subSteps = 10;
+const world = new PhysicsWorld(ball);
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt)
+    .run((realTime, simulatedTime) => world.timeStep(dt), subSteps);
+
+//
+// Event controller
+//
+const eventController = new EventController(simulation);
+eventController.addStartStopMouseClickEventListenerTo(canvas); // Controller passes event on to simulation and renderers
+
+eventController.attach(HtmlControl
+    .withElementId("velocityArrow")
+    .forType("click")
+    .to(velocityArrow)
+    .withProperty("visible"));
+
+eventController.attach(HtmlControl
+    .withElementId("forceArrow")
+    .forType("click")
+    .to(forceArrow)
+    .withProperty("visible"));
+
+eventController.attach(HtmlControl
+    .withElementId("dampingSlider")
+    .forType("input")
+    .to(world)
+    .withProperty("damping"));
+

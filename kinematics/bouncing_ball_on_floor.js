@@ -48,13 +48,11 @@ function ballStep(dt) {
 const canvas = Canvas.withElementId("bouncingBallOnFloorCanvas");
 const overlay = Overlay.withElementId("bouncingBallOnFloorOverlayText");
 const canvasWrapper = HtmlDiv.withElementId("bouncingBallOnFloorWrapper").containsBoth(canvas.and(overlay));
-const threeJsRendererOptions = new ThreeJsRenderOptions({
-    cameraPosition: new Vector3(2, 1, 0.5).multiplyScalar(2.25)
-});
-
 const renderer = ThreeJsRenderer
     .on(canvasWrapper)
-    .with(threeJsRendererOptions);
+    .with(new ThreeJsRenderOptions({
+        cameraPosition: new Vector3(2, 1, 0.5).multiplyScalar(2.25)
+    }));
 
 const sphere = new Sphere({ color: "cyan" });
 renderer.add(ball.to(sphere));
