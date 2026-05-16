@@ -1,4 +1,4 @@
-import { UPlotGraph } from "../js/simulation.js";
+import {EventController, HtmlDiv, UPlotGraph} from "../js/simulation.js";
 import { Vector3, Vector2 } from "three";
 import { RadialSymmetricBody } from "../js/phys/physics.js";
 import { Simulation, Canvas, Overlay } from "../js/simulation.js";
@@ -8,6 +8,8 @@ class BouncingBall extends RadialSymmetricBody {
     constructor({position, velocity, radius, mass}) {
         super({position, velocity, radius, mass});
     }
+
+    reachedEnd = () => this.position.x > 2.5;
 
     liesOnFloor({ floorLevel = 0, epsilon = 1e-1 } = {}) {
         return this.position.y - this.radius <= epsilon + floorLevel;
@@ -24,7 +26,7 @@ class BouncingBall extends RadialSymmetricBody {
 }
 
 //
-// Physics
+// Physics model
 //
 const ball = new BouncingBall({
     position: new Vector3(-1.5, 1.5, 1.5),
@@ -41,15 +43,18 @@ function ballStep(dt) {
 }
 
 //
-// Simulation
+// Attach view models
 //
-const canvas = new Canvas("bouncingBallOnFloorCanvas");
-const overlay = new Overlay("bouncingBallOnFloorOverlayText");
+const canvas = Canvas.withElementId("bouncingBallOnFloorCanvas");
+const overlay = Overlay.withElementId("bouncingBallOnFloorOverlayText");
+const canvasWrapper = HtmlDiv.withElementId("bouncingBallOnFloorWrapper").containsBoth(canvas.and(overlay));
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(2, 1, 0.5).multiplyScalar(2.25)
 });
-const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
+
+const renderer = ThreeJsRenderer
+    .on(canvasWrapper)
+    .with(threeJsRendererOptions);
 
 const sphere = new Sphere({ color: "cyan" });
 renderer.add(ball.to(sphere));
@@ -80,11 +85,10 @@ const plot = new UPlotGraph({
     yLabel: "Displacement"
 });
 
-let simTime = 0;
-function updateGraph(dt) {
-    simTime += dt;
-
-    plot.graphData[0].push(simTime);
+function updateGraph(simulatedTime) {
+    if (ball.reachedEnd())
+        return;
+    plot.graphData[0].push(simulatedTime);
     plot.graphData[1].push(ball.position.y);
     plot.graphData[2].push(ball.kineticEnergy);
     plot.graphData[3].push(ball.potentialEnergy);
@@ -92,12 +96,22 @@ function updateGraph(dt) {
 }
 
 const dt = 2.5e-3;
-simulation.run(() => {
-    if (ball.position.x > 2.5)
-        return;
+const subSteps = 10;
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt)
+    .run((realTime, simulatedTime) => {
+        if (ball.reachedEnd())
+            return;
 
-    for (let subStep = 0; subStep < 10; subStep++)
         ballStep(dt);
+    }, subSteps);
 
-    updateGraph(dt);
-});
+// Update graph not inside simulation loop, as we do not want to update it with every physics update substep
+simulation.onPhysicsUpdateComplete = (time, simulatedTime) => updateGraph(simulatedTime);
+
+//
+// Event controller
+//
+const eventController = new EventController(simulation);
+eventController.addStartStopMouseClickEventListenerTo(canvas); // Controller passes event on to simulation and renderers

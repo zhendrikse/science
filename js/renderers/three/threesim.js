@@ -67,11 +67,11 @@ export class ThreeJsRenderer extends Renderer {
         }, duration);
     }
 
-    onCanvasClicked(currentSimulationRunningState) {
+    onRunStatusChanged(currentSimulationRunningState) {
         if (currentSimulationRunningState)
-            this._showOverlayMessage("Reset"); // Canvas clicked during execution ==> we need to reset the simulation
-        else
             this._showOverlayMessage("Started");
+        else
+            this._showOverlayMessage("Reset"); // Canvas clicked during execution ==> we need to reset the simulation
     }
 
     with(options) {

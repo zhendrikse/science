@@ -5,7 +5,7 @@ import {Simulation, Canvas, Overlay, HtmlDiv, EventController} from "../js/simul
 import { Sphere, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
 
 //
-// Physics
+// Physics model
 //
 const astronomical_unit = 1.49e11;
 const mass = 1e30;
@@ -47,7 +47,7 @@ function updateForces(dt) {
 }
 
 //
-// Simulation
+// Attach view models
 //
 const canvas = new Canvas("threeBodyCanvas");
 const overlay = new Overlay("overlayText");
@@ -75,9 +75,8 @@ const simulation = Simulation
     .onScale(1e-9)
     .run((realTime, simulatedTime) => updateForces(dt), subSteps);
 
-
 //
 // Event controller
 //
 const eventController = new EventController(simulation);
-eventController.addClickEventListenerTo(canvas);
+eventController.addStartStopMouseClickEventListenerTo(canvas); // Controller passes event on to simulation and renderers

@@ -203,7 +203,8 @@ export class EventController {
         this._simulation = simulation;
     }
 
-    addClickEventListenerTo(canvas) {
+    addStartStopMouseClickEventListenerTo(canvas) {
+        // Pass a mouse click on the canvas on to the simulation:
         canvas.htmlCanvas.addEventListener("click", (event) => this._simulation.onCanvasClicked())
     }
 
@@ -249,10 +250,10 @@ export class Renderer {
     asyncAdd(object) {}
 
     /**
-     * A renderer gets notified from the simulation when the user has clicked on the canvas.
-     * The renderer may then need to display certain information about what has happened to the user.
+     * A renderer gets notified from the simulation when the run status changes.
+     * The renderer may then need to display certain information about that event to the user.
      */
-    onCanvasClicked() {}
+    onRunStatusChanged() {}
     initialize() {}
     render(transform) {}
     resize() {}
@@ -296,6 +297,7 @@ export class Simulation {
     constructor(renderer) {
         this._renderer = renderer;
         this._onReset = (dummy) => (dummy);
+        this._onPhysicsUpdateComplete = (dummy) => (dummy);
         this._transform = new Transform(1);
         this._running = false;
         this._simulatedTime = 0;
@@ -327,6 +329,7 @@ export class Simulation {
 
         const animate = (time) => {
             this._updatePhysics(substepsCount, time);
+            this._onPhysicsUpdateComplete(time, this._simulatedTime);
             this._renderer.render(this._transform);
             requestAnimationFrame(animate);
         };
@@ -341,19 +344,28 @@ export class Simulation {
         this._onReset?.();
     }
 
+    // When the user has clicked on the canvas, the running state of the application needs to be updated
     onCanvasClicked() {
-        this._renderer.onCanvasClicked(this._running);
-
         if (this._running)
             this.reset(); // Canvas clicked during execution ==> we need to reset the simulation
 
         this._running = !this._running;
+        this._renderer.onRunStatusChanged(this._running);
     }
 
-    start() { this._running = true; }
-    stop() { this._running = false; }
+    start() {
+        this._running = true;
+        this._renderer.onRunStatusChanged(this._running);
+    }
+
+    stop() {
+        this._running = false;
+        this._renderer.onRunStatusChanged(this._running);
+    }
+
     get isRunning() { return this._running; }
 
+    set onPhysicsUpdateComplete(customFunction) { this._onPhysicsUpdateComplete = customFunction; }
     set onReset(resetFunction) { this._onReset = resetFunction; }
 }
 
