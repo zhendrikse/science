@@ -37,14 +37,12 @@ export function toColorString(hue) {
 }
 
 export class Canvas2DRenderer extends Renderer {
-    static on = (canvas) => {
-        return new Canvas2DRenderer(canvas);
-    }
+    static on = (canvasWrapperDiv) => new Canvas2DRenderer(canvasWrapperDiv);
 
-    constructor({ canvas }) {
-        super();
-        this._canvas = canvas;
-        this._context = canvas.getContext("2d");
+    constructor(canvasWrapperDiv) {
+        super(canvasWrapperDiv);
+        this._canvas = canvasWrapperDiv.canvas;
+        this._context = this._canvasWrapperDiv.canvas.htmlCanvas.getContext("2d");
         this._dynamicObjects = [];
         this._staticObjects = [];
     }
@@ -73,7 +71,7 @@ export class Canvas2DRenderer extends Renderer {
     }
 
     render(transform) {
-        this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        this._context.clearRect(0, 0, this._canvas.clientWidth, this._canvas.clientHeight);
         this._dynamicObjects.forEach(obj => obj.render?.(this._context));
     }
 

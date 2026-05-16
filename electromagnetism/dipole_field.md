@@ -13,10 +13,13 @@ $$
 \vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r}  \cdot \vec{p}} {r^3} \bigg),\quad \vec{p}=+q(\vec{r}_+) + -q(\vec{r}_-)
 $$
 
-<canvas id="dipoleCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
+<div class="applicationCanvasWrapper" id="dipoleCanvasWrapper">
+    <canvas id="dipoleCanvas" class="applicationCanvas" style="width: 800px; aspect-ratio: 2/1;"></canvas>
+</div>
 <div class="buttonRow">
-    <label for="fieldStrength">Field </label><input type="range" id="fieldStrength" min="0" max="1" step="0.01" value="0.5"/>
-    <label for="autoRotate">Auto-rotate </label><input type="checkbox" checked id="autoRotate"/>
+    <label for="fieldStrengthSlider">Field </label><input type="range" id="fieldStrengthSlider" min="0" max=".5" step="any" value="0.25"/>
+    <span id="fieldStrengthSliderValue">0.25</span>
+    <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
 </div>
 <script type="module" src="dipole_field.js"></script>
 

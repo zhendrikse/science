@@ -1,7 +1,7 @@
 import { Vector3 } from "three";
 import { Integrators } from "../js/math/math.js";
 import { RadialSymmetricBody, G, gravitationalForceBetween } from "../js/phys/physics.js";
-import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import {Simulation, Canvas, Overlay, HtmlDiv, EventController} from "../js/simulation.js";
 import { Sphere, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
 
 //
@@ -36,7 +36,7 @@ const bodyC = new RadialSymmetricBody({
     mass: mass * 0.5
 });
 
-function make(subSteps, dt) {
+function updateForces(dt) {
     const force_BA = gravitationalForceBetween(bodyA.and(bodyB));
     const force_CB = gravitationalForceBetween(bodyB.and(bodyC));
     const force_AC = gravitationalForceBetween(bodyC.and(bodyA));
@@ -51,12 +51,14 @@ function make(subSteps, dt) {
 //
 const canvas = new Canvas("threeBodyCanvas");
 const overlay = new Overlay("overlayText");
+const canvasWrapper = HtmlDiv.withElementId("threeBodyWrapper").containsBoth(canvas.and(overlay));
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(30, 30, 30)
 });
-const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
-simulation.scale = 1e-9;
+
+const renderer = ThreeJsRenderer
+    .on(canvasWrapper)
+    .with(threeJsRendererOptions);
 
 renderer.add(bodyA.to(new Sphere({ color: "yellow" })));
 renderer.add(bodyA.to(new Trail({ maxPoints: 500, color: "yellow" })));
@@ -67,7 +69,15 @@ renderer.add(bodyC.to(new Trail({ maxPoints: 500, color: "magenta"})));
 
 const dt = 5000;
 const subSteps = 50;
-simulation.run(() => {
-    for (let i = 0; i < subSteps; i++)
-        make(subSteps, dt);
-});
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt / subSteps)
+    .onScale(1e-9)
+    .run((realTime, simulatedTime) => updateForces(dt), subSteps);
+
+
+//
+// Event controller
+//
+const eventController = new EventController(simulation);
+eventController.addClickEventListenerTo(canvas);

@@ -35,13 +35,16 @@ export class ThreeJsRenderer extends Renderer {
         FOG: "Fog",
         TRANSPARENT: "Transparent"
     });
-    static on = (canvas) => {
-        return new ThreeJsRenderer(canvas.canvas, canvas.overlay);
-    }
 
-    constructor(canvas, overlay) {
-        super();
-        this._canvas = canvas;
+    static on = (canvasWrapperDiv) => new ThreeJsRenderer(canvasWrapperDiv);
+
+    constructor(canvasWrapperDiv) {
+        super(canvasWrapperDiv);
+        this._canvas = this._canvasWrapperDiv.canvas.htmlCanvas;
+        this._overlay = this._canvasWrapperDiv.overlay?.htmlOverlay;
+
+        this._staticObjects = [];  // Are static during the whole simulation hence do NOT need to be synchronized
+        this._dynamicObjects = []; // Need to be synchronized every update
 
         this._autoRotate = false;
         this._autoRotateTheta = Math.PI / 2;
@@ -52,7 +55,26 @@ export class ThreeJsRenderer extends Renderer {
         this._scene.add(this._world);
     }
 
-    and(options) {
+    _showOverlayMessage(message, duration = 1000) {
+        if (!this._overlay)
+            return; // No overlay has been specified by the user, so we cannot render our information
+
+        this._overlay.textContent = message;
+        this._overlay.style.display = "block";
+
+        setTimeout(() => {
+            this._overlay.style.display = "none";
+        }, duration);
+    }
+
+    onCanvasClicked(currentSimulationRunningState) {
+        if (currentSimulationRunningState)
+            this._showOverlayMessage("Reset"); // Canvas clicked during execution ==> we need to reset the simulation
+        else
+            this._showOverlayMessage("Started");
+    }
+
+    with(options) {
         const canvas = this._canvas;
 
         this._renderer = new WebGLRenderer({
@@ -68,9 +90,6 @@ export class ThreeJsRenderer extends Renderer {
 
         this._camera = new PerspectiveCamera(options.fieldOfView, canvas.clientWidth / canvas.clientHeight, 0.1, 1e6);
         this._camera.position.copy(options.cameraPosition);
-
-        this._staticObjects = [];  // Are static during the whole simulation hence do NOT need to be synchronized
-        this._dynamicObjects = []; // Need to be synchronized every update
 
         if (options.controls)
             this._controls = new OrbitControls(this._camera, canvas);

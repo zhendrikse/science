@@ -1,11 +1,8 @@
 import { Vector3, Color } from "three";
-import { Particle } from "../js/phys/physics.js";
+import { Particle} from "../js/phys/physics.js";
 import { VectorField, Range } from "../js/math/math.js";
-import { Simulation, Canvas } from "../js/simulation.js";
+import {Simulation, Canvas, HtmlDiv, EventController, HtmlControl} from "../js/simulation.js";
 import { Sphere, ArrowField, ThreeJsRenderOptions, ThreeJsRenderer } from "../js/renderers/three/threesim.js";
-
-const autoRotateCheckbox = document.getElementById("autoRotate");
-const fieldStrengthSlider = document.getElementById("fieldStrength");
 
 const scale = 1e15;
 const ec = 1.6e-19;
@@ -49,23 +46,23 @@ class DipoleField extends VectorField {
 }
 
 //
-//  Physics objects
+//  Physics model
 //
 const dipole = new Dipole(1e-14);
 const dipoleField = new DipoleField(dipole);
 dipoleField.fieldStrength = Number(fieldStrengthSlider.value) * .5;
 
 //
-// Simulation
+// View
 //
-const canvas = new Canvas("dipoleCanvas");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(32, 16, 48).multiplyScalar(0.75),
     fieldOfView: 40
 });
-const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas).with(renderer);
-simulation.scale = scale;
+
+const renderer = ThreeJsRenderer
+    .on(HtmlDiv.withElementId("dipoleCanvasWrapper").contains(Canvas.withElementId("dipoleCanvas")))
+    .with(threeJsRendererOptions);
 
 const positiveSphere = new Sphere({ color: new Color("red") });
 const negativeSphere = new Sphere({color: new Color("blue" )});
@@ -84,13 +81,23 @@ renderer.add(dipole.negative.to(negativeSphere));
 renderer.add(dipoleField.to(arrowField));
 
 //
-// Event listeners
+// Event controller
 //
-fieldStrengthSlider.addEventListener("input", () =>
-    dipoleField.fieldStrength = Number(fieldStrengthSlider.value) * .5);
+const eventController = new EventController();
+eventController.attach(HtmlControl
+    .withElementId("fieldStrengthSlider")
+    .forType("input")
+    .withValueSpanId("fieldStrengthSliderValue")
+    .to(dipoleField)
+    .withProperty("fieldStrength"));
 
-autoRotateCheckbox.addEventListener("input", () =>
-    renderer.autoRotate = autoRotateCheckbox.checked);
+eventController.attach(HtmlControl
+    .withElementId("autoRotate")
+    .forType("click")
+    .to(renderer)
+    .withProperty("autoRotate"));
 
-renderer.autoRotate = autoRotateCheckbox.checked;
-simulation.run(() => {});
+Simulation
+    .with(renderer)
+    .onScale(scale)
+    .run((realTime, simulatedTime) => {});

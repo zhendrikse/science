@@ -1,13 +1,10 @@
 import { Vector3, Color } from "three";
 import { AxialSymmetricBody, OneDimensionalPlaneWave } from "../js/phys/physics.js";
-import { Simulation, Canvas } from "../js/simulation.js";
-import { Cylinder, ElectromagneticWave, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
-
-const fieldStrengthSlider = document.getElementById("antennaFieldStrengthSlider");
-const fieldStrengthSliderValue = document.getElementById("antennaFieldStrengthSliderValue");
+import {Simulation, Canvas, HtmlDiv, EventController, HtmlControl} from "../js/simulation.js";
+import { Cylinder, ElectromagneticWave, ThreeJsRenderOptions, ThreeJsRenderer } from "../js/renderers/three/threesim.js";
 
 //
-// Physics
+// Physics model
 //
 const lambda = 2.0;  // 1e-10
 
@@ -20,19 +17,19 @@ for (let position of range)
     planeWaves.push(new OneDimensionalPlaneWave({
         position,
         lambda,
-        amplitude: Number(fieldStrengthSlider.value)
+        amplitude: 7.5
     }));
 
 //
-// Simulation
+// View
 //
-const canvas = new Canvas("antennaCanvas");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(-1, 4, -9).multiplyScalar(2.5),
     fieldOfView: 25
 });
-const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas).with(renderer);
+const renderer = ThreeJsRenderer
+    .on(HtmlDiv.withElementId("antennaCanvasWrapper").contains(Canvas.withElementId("antennaCanvas")))
+    .with(threeJsRendererOptions);
 
 const slit = new Vector3(0, 0, lambda)
 for (let wave of planeWaves)
@@ -50,20 +47,22 @@ const antenna = new AxialSymmetricBody({
 renderer.asyncAdd(antenna.to(new Cylinder({color: new Color(0.7, 0.7, 0.7)})));
 
 //
-// Even listeners
+// Event controller
 //
-fieldStrengthSlider.addEventListener("input", () => {
-    for (let wave of planeWaves)
-        wave.amplitude = Number(fieldStrengthSlider.value);
-    fieldStrengthSliderValue.textContent = fieldStrengthSlider.value;
-});
+const eventController = new EventController();
+for (let wave of planeWaves)
+    eventController.attach(HtmlControl
+        .withElementId("antennaFieldStrengthSlider")
+        .forType("input")
+        .withValueSpanId("antennaFieldStrengthSliderValue")
+        .to(wave)
+        .withProperty("amplitude"));
 
-let time = 0;
-const dt = lambda / OneDimensionalPlaneWave.c / 100.0;
-simulation.run(() => {
-    for (let substeps = 0; substeps < 2; substeps++) {
+Simulation
+    .with(renderer)
+    .incrementsTimeBy(lambda / OneDimensionalPlaneWave.c / 100.0)
+    .onScale(1)
+    .run((realTime, simulatedTime) => {
         for (let wave of planeWaves)
-            wave.propagate(time);
-        time += dt;
-    }
-});
+            wave.propagate(simulatedTime);
+    }, 2);
