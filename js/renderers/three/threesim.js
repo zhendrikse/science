@@ -206,7 +206,7 @@ export class ThreeJsRenderer extends Renderer {
 
         this._renderer.render(this._scene, this._camera);
         this._controls?.update();
-        this._skydome.update(time, this._camera);
+        this._skydome?.update(time, this._camera);
 
         if (this._autoRotate)
             this._doAutoRotate(this._camera.position.length());
