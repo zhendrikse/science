@@ -2,7 +2,7 @@ import {
     Scene, PerspectiveCamera, WebGLRenderer, DirectionalLight, Group, Vector3, BufferAttribute, Fog,
     MeshStandardMaterial, SphereGeometry, Mesh, BufferGeometry, LineBasicMaterial, Line, TubeGeometry,
     CylinderGeometry, ConeGeometry, BoxGeometry, Color, Curve, Quaternion, RepeatWrapping, DoubleSide,
-    TextureLoader, Vector2, PlaneGeometry, PCFShadowMap, AmbientLight, EdgesGeometry, LineSegments
+    TextureLoader, Vector2, PlaneGeometry, PCFShadowMap, AmbientLight, EdgesGeometry, LineSegments, TorusGeometry
 } from "three";
 
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -411,6 +411,7 @@ export class Arrow extends Group {
     static HEAD_RATIO = 0.35;   // part of total length
     static SHAFT_RATIO = 1 - Arrow.HEAD_RATIO;
     static UP = new Vector3(0, 1, 0);
+    static FORWARD = new Vector3(0, 0, 1);
     static ShaftGeometryRound = new CylinderGeometry(1, 1, 1, 16);
     static ShaftGeometrySquare = new BoxGeometry(1, 1, 1);
     static HeadGeometryRound = new ConeGeometry(1, 1, 16);
@@ -430,11 +431,15 @@ export class Arrow extends Group {
         const shaftGeometry = round ? Arrow.ShaftGeometryRound : Arrow.ShaftGeometrySquare;
         const headGeometry = round ? Arrow.HeadGeometryRound : Arrow.HeadGeometrySquare;
         const material = new MeshStandardMaterial({
-            color: color,
+            color,
+            roughness: 0.25,
+            metalness: 0.35,
+            emissive: new Color(0x333),
             opacity: opacity,
-            transparent: true
+            transparent: true,
+            emissiveIntensity: 0.2,
+            envMapIntensity: 1.2
         });
-
         this._shaft = new Mesh(shaftGeometry, material);
         this._shaft.castShadow = castShadow;
         this._head = new Mesh(headGeometry, material);
@@ -630,7 +635,7 @@ export class Cylinder extends Mesh {
         this.scale.set(radius, length, radius);
 
         const direction = axis.normalize();
-        this.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction);
+        this.quaternion.setFromUnitVectors(Arrow.UP, direction);
 
         this.position.add(direction.multiplyScalar(length / 2));
     }
@@ -671,11 +676,61 @@ export class Box extends Mesh {
 
         this._body = body;
         this._initialState = body.clone();
-        this.scale.set(body.size.x, body.size.y, body.size.z);
     }
 
     render(transform) {
         this.position.copy(transform.physicsToRender(this._body.position));
+        const sizeVector = transform.physicsToRender(this._body.size);
+        this.scale.set(sizeVector.x, sizeVector.y, sizeVector.z);
+    }
+}
+
+//
+// Ring
+//
+export class Ring extends Mesh {
+    constructor({
+        color = 0xffff00,
+        thickness = 0.1,
+        radialSegments = 16,
+        tubularSegments = 32
+    } = {}) {
+        const geometry = new TorusGeometry(1, thickness, 16, 100);
+        const material = new MeshStandardMaterial({
+            color: color,
+            roughness: 0.4,
+            metalness: 0.75
+        });
+        super(geometry, material);
+    }
+
+    reset() {
+        this._body.position.copy(this._initialState.position);
+    }
+
+    attachTo(body) {
+        // Sanity checks
+        if (!body.axis)
+            throw new Error("Body does not have an axis, hence it cannot be attached to this view.");
+        if (!body.radius)
+            throw new Error("Body does not have a radius, hence it cannot be attached to this view.");
+
+        this._body = body;
+        this._initialState = body.clone();
+    }
+
+    render(transform) {
+        const pos = transform.physicsToRender(this._body.position);
+        this.position.copy(pos);
+
+        const axis = transform.physicsToRender(this._body.axis);
+        const radius = transform.scaleRadius(this._body.radius);
+        this.scale.setScalar(radius);
+
+        const direction = axis.normalize();
+        this.quaternion.setFromUnitVectors(Arrow.FORWARD, direction);
+
+        //this.position.add(direction.multiplyScalar(length / 2));
     }
 }
 

@@ -27,7 +27,7 @@
 <p style="clear: both;"></p>
 
 
-### Helical motion of proton in magnetic field
+### Charged particle motion in electric and magnetic fields
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
@@ -38,10 +38,10 @@
   <figcaption>Movement of proton in magnetic field.</figcaption>
 </figure>
 <figure class="right_image">
-  <a href="helical_motion.html">
-    <img alt="Helical motion" src="images/helical_motion.png" title="Click to animate"/>
+  <a href="moving_charge.html">
+    <img alt="Particle in electric field" src="images/particle_in_electric_field.png" title="Click to animate"/>
   </a>
-  <figcaption>Playfully discover how a charged particle behaves in a magnetic field.</figcaption>
+  <figcaption>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>
 </figure>
 </div>
 <p style="clear: both;"></p>
@@ -107,21 +107,19 @@
 <p style="clear: both;"></p>
 
 
-### Charged particle in electric field & moving charged rod
+### Moving charged rod
 <div style="border-top: 1px solid #999999"><br/></div>
 
 <div class="double_image">
 <figure class="left_image">
-  <a href="moving_charge.html">
-    <img alt="Particle in electric field" src="images/particle_in_electric_field.png" title="Click to animate"/>
-  </a>
-  <figcaption>Discover how a particle&apos;s velocity and the electric field strength influence one another.</figcaption>
-</figure>
-<figure class="right_image">
   <a href="charged_rod.html">
     <img alt="Charged rod" src="images/charged_rod.png" title="Click to animate"/>
   </a>
   <figcaption>Electric and magnetic fields around a moving charged rod.</figcaption>
+</figure>
+<figure class="right_image">
+  <!-- RESERVED FOR FUTURE APPLICATION
+    -->
 </figure>
 </div>
 <p style="clear: both;"></p>

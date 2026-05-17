@@ -70,7 +70,7 @@ const arrowField = new ArrowField({
     yRange: new Range(-12 / scale, 12 / scale, 2 / scale),
     zRange: new Range(-12 / scale, 12 / scale, 2 / scale),
     scaleFactor: 3e-5,
-    round: false,
+    round: true,
     magnitudeMap: magnitude => Math.sqrt(1 + magnitude),
     colorMap: (axis, magnitude) => new Color().setHSL(Math.min(Math.sqrt(1 + magnitude) * 5e-6, 1), 1, 0.5)
 });

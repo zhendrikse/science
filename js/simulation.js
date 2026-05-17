@@ -122,6 +122,9 @@ export class HtmlControl {
     }
 
     withProperty(propertyName) {
+        if (!propertyName in this.objectToModify)
+            throw new Error("Property with name '" + propertyName + "' does not exist on " + this.objectToModify);
+
         this.objectPropertyName = propertyName;
         return this;
     }
@@ -212,7 +215,21 @@ export class EventController {
 
     // Adds a custom event listener (callback function) to a control
     add(control) {
-        control.htmlElement.addEventListener(control.actionType, (event) => control.callbackFunction(event));
+        control.htmlElement.addEventListener(control.actionType, (event) => {
+            if (control.htmlSpanElement)
+                this._updateValueInReadOut(control, event.target.value);
+            control.callbackFunction(event);
+        });
+    }
+
+    _updateValueInReadOut(control, value) {
+        const numberValue = Number(value);
+        if (typeof value === 'boolean')
+            control.htmlSpanElement.innerText = value ? 'true' : 'false';
+        else if (Number.isNaN(numberValue))
+            control.htmlSpanElement.innerText = value;
+        else
+            control.htmlSpanElement.innerText = numberValue.toFixed(2);
     }
 
     // Sets a value from the control for a property an any type of object, as long as it exposes the property name
@@ -222,17 +239,8 @@ export class EventController {
             const value = target.type === 'checkbox' ? target.checked : target.value;
             control.objectToModify[control.objectPropertyName] = value;
 
-            if (!control.htmlSpanElement)
-                return;
-
-            // Here we know we have an additional <span> element that displays the current value
-            const numberValue = Number(value);
-            if (typeof value === 'boolean')
-                control.htmlSpanElement.innerText = value ? 'true' : 'false';
-            else if (Number.isNaN(numberValue))
-                control.htmlSpanElement.innerText = value;
-            else
-                control.htmlSpanElement.innerText = numberValue.toFixed(2);
+            if (control.htmlSpanElement)
+                this._updateValueInReadOut(control, value);
         });
     }
 }

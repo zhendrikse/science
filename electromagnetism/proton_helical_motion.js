@@ -1,83 +1,120 @@
 import { Vector3, Color } from "three";
-import { Simulation, VectorField, ArrowField, Sphere, Particle, Range, EC, Trail } from "../js/simulation.js";
+import { Particle } from "../js/phys/physics.js";
+import { VectorField, Range } from "../js/math/math.js";
+import {Sphere, Trail, ArrowField, ThreeJsRenderer, ThreeJsRenderOptions} from "../js/renderers/three/threesim.js";
+import {
+    CallbackFunction,
+    Canvas,
+    EventController,
+    HtmlControl,
+    HtmlDiv,
+    Overlay,
+    Simulation
+} from "../js/simulation.js";
 
-const canvas = document.getElementById("helicalProtonCanvas");
-const overlay = document.getElementById("helicalProtonOverlayText");
-const speedSlider = document.getElementById("helicalProtonSpeedSlider");
-const strengthSlider = document.getElementById("helicalProtonSpeedSliderValue");
-const speedSliderReadout = document.getElementById("helicalProtonFieldStrengthSlider");
-const strengthSliderReadout = document.getElementById("helicalProtonFieldStrengthSliderValue");
+const initialSspeed = 50;
+const angle = 10 * Math.PI / 180;
+const boxSize = 40;
 
-class MagneticField extends VectorField {
-    constructor(fieldStrength) {
+//
+// Physics model
+//
+class UniformMagneticField extends VectorField {
+    constructor(field = new Vector3(0, -5, 0), strength = 1) {
         super();
-        this._strength = fieldStrength;
+        this._field = field;
+        this._fieldStrength = strength;
     }
 
-    set magnitude(newValue) { this._strength = newValue; }
-
-    vectorAt(position) { return new Vector3(0, -this._strength, 0); }
+    vectorAt(position) { return this._field.clone().multiplyScalar(this._fieldStrength); }
+    get field() { return this._field; }
+    get fieldStrength() { return this._fieldStrength; }
+    set fieldStrength(strength) { this._fieldStrength = strength; }
 }
 
-//
-// Physics
-//
+const magneticField = new UniformMagneticField();
 const proton = new Particle({
-    position: new Vector3(0, 1, 0),
-    velocity: new Vector3(Number(speedSlider.value) * .01, 0, 0),
+    position: new Vector3(0, -boxSize, boxSize * .5),
+    velocity: new Vector3(initialSspeed * Math.cos(angle), initialSspeed * Math.sin(angle), 0),
     mass: 1,
-    radius: .125,
-    charge: 1
+    charge: 0.8,
+    radius: 1.5
 });
 
-const magneticField = new MagneticField(Number(strengthSlider.value) * .1);
+//
+// View with renderer
+//
+const threeJsRendererOptions = new ThreeJsRenderOptions({
+    cameraPosition: new Vector3(7, 4, 4.5).multiplyScalar(25),
+    fieldOfView: 30
+});
+const canvas= Canvas.withElementId("helicalProtonCanvas");
+const renderer = ThreeJsRenderer
+    .on(HtmlDiv
+        .withElementId("helicalProtonCanvasWrapper")
+        .containsBoth(canvas.and(Overlay.withElementId("helicalProtonCanvasOverlay"))))
+    .with(threeJsRendererOptions);
 
-function timeStep(dt) {
-    const fieldVector = magneticField.vectorAt(proton.position);
-    const force = fieldVector.cross(proton.velocity).multiplyScalar(proton.charge);
-    proton.apply(force, dt);
-}
+const protonSphere = new Sphere({ color: 0xff0000 });
+renderer.add(proton.to(protonSphere));
+renderer.add(proton.to(new Trail({ maxPoints: 2000, color: protonSphere.color })));
+renderer.add(magneticField.to(new ArrowField({
+    xRange: new Range(-boxSize, boxSize, 10),
+    yRange: new Range(-boxSize, boxSize, 10),
+    zRange: new Range(-boxSize, boxSize, 10),
+    scaleFactor: 3,
+    magnitudeMap: m => .25 + Math.sqrt(m * .1),
+    colorMap: (axis, m) => {
+        const normalized = (m - 0.5) / (5 - 0.5);
+        const hue = 0.65 - normalized * 0.55; // blue -> cyan -> green -> yellow
+        return new Color().setHSL(hue, 1, 0.5);
+    },
+    round: true
+})));
 
 //
 // Simulation
 //
-const simulation = new Simulation({
-    canvas,
-    overlay,
-    cameraPosition: new Vector3(0, 8, -9)
-});
+const dt = 5e-4;
+const outOfBox= (pos) => pos.y > boxSize || pos.x < -boxSize || pos.x > boxSize || pos.z < -boxSize || pos.z > boxSize;
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt)
+    .onScale(1)
+    .run((realTime, simulatedTime) => timeStep(), 25);
 
-const sphere = new Sphere({ color: new Color("red")});
-simulation.attach(proton.to(sphere));
-simulation.attach(proton.to(new Trail({ maxPoints: 300, color: sphere.color })));
+function timeStep() {
+    if (outOfBox(proton.position))
+        return;
 
-const arrowField = new ArrowField({
-    xRange: new Range(-6, 6, 1),
-    yRange: new Range(-6, 6, 1),
-    zRange: new Range(-6, 6, 1),
-    scaleFactor: .9,
-    round: false
-});
-simulation.attachStatically(magneticField.to(arrowField));
+    // Lorentz force: F = q v × B
+    const force = proton.velocity
+        .clone()
+        .cross(magneticField.vectorAt(proton.position))
+        .multiplyScalar(proton.charge);
 
-//
-// Event listeners
-//
-// speedSlider.addEventListener("input", () => {
-//     proton.velocity.x = Number(speedSlider.value) * .01;
-//     speedSliderReadout.textContent = speedSlider.value;
-// });
-//
-// strengthSlider.addEventListener("input", () => {
-//     magneticField.magnitude = Number(strengthSlider.value) * .1;
-//     strengthSliderReadout.textContent = strengthSlider.value;
-// });
-//
-// simulation.onReset = () => proton.velocity.x = Number(speedSlider.value) * .01;
+    proton.apply(force, dt);
+}
 
-const dt = 0.01;
-const subSteps = 25;
-simulation.run(() => {
-    for (let i = 0; i < subSteps; i++)
-        timeStep(dt);
-});
+const eventController = EventController.for(simulation);
+eventController.addStartStopMouseClickEventListenerTo(canvas);
+
+eventController.attach(HtmlControl
+    .withElementId("helicalProtonChargeSlider")
+    .forType("input")
+    .to(proton)
+    .withValueSpanId("helicalProtonChargeSliderValue")
+    .withProperty("charge"));
+
+eventController.attach(HtmlControl
+    .withElementId("helicalProtonFieldStrengthSlider")
+    .forType("input")
+    .to(magneticField)
+    .withValueSpanId("helicalProtonFieldStrengthSliderValue")
+    .withProperty("fieldStrength"));
+
+const speedToVelocity = (speed, direction) => direction.clone().normalize().multiplyScalar(speed);
+const speedCallback = new CallbackFunction((event) =>
+    proton.velocity = speedToVelocity(event.target.value, proton.velocity));
+eventController.add(speedCallback
+    .to(HtmlControl.withElementId("helicalProtonSpeedSlider").forType("input").withValueSpanId("helicalProtonSpeedSliderValue")));

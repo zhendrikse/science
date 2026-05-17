@@ -162,9 +162,11 @@ export class Block extends Body {
                     velocity = new Vector3(0, 0, 0),
                     size = new Vector3(1, 1, 1),
                     mass = 1,
+                    charge = 0
                 } = {}) {
         super({position, velocity, mass});
         this.size = size;
+        this.charge = charge;
     }
 
     clone() {
@@ -172,7 +174,8 @@ export class Block extends Body {
             position: this.position.clone(),
             velocity: this.velocity.clone(),
             size: this.size.clone(),
-            mass: this.mass
+            mass: this.mass,
+            charge: this.charge
         });
     }
 }
