@@ -15,9 +15,9 @@
 ⭐ Coding this problem is explained in [this video](https://www.youtube.com/watch?v=ExxDuRTIe0E)<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Ballonspringdrop) is available as well<br/>
 
-<div class="canvasWrapper" id="ballSpringWrapper">
-    <canvas class="applicationCanvas" id="ballSpringCanvas"></canvas>
-    <div class="overlayText" id="ballSpringOverlayText">Click to start the animation!</div>
+<div class="canvasWrapper" id="bouncingBallOnSpringWrapper">
+    <canvas class="applicationCanvas" id="bouncingBallOnSpringCanvas" width="600" height="600"></canvas>
+    <div class="overlayText" id="bouncingBallOnSpringOverlay">Click to start the animation!</div>
 </div>
 <div class="buttonRow">
     <label for="velocityArrow"><span style="color: cyan">Velocity: </span></label><input type="checkbox" id="velocityArrow" checked/>
@@ -28,7 +28,6 @@
     <input type="range" id="dampingSlider" min="0" max="1" step="0.1" value=".2"/>
 </div>
 <script type="module" src="bouncing_ball_on_spring.js"></script>
-<p style="clear: both;"></p>
 
 ## Bouncing ball
 <div class="header_line"><br/></div>
