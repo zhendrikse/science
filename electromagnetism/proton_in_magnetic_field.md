@@ -35,7 +35,7 @@
 ## Helical motion
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=proton_helical_motion.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/proton_in_magnetic_field.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=proton_helical_motion.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/proton_helical_motion.js)&nbsp;&nbsp;
 
 🎯 Circular motion of a proton in a magnetic field<br/>
 🧠 Based on [Simple Physics Animations Using VPython](https://towardsdatascience.com/simple-physics-animations-using-vpython-1fce0284606) by Zhiheng Jiang<br/>
