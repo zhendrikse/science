@@ -131,8 +131,7 @@ const renderer = ThreeJsRenderer.on(HtmlDiv.withElementId("chargedRodWrapper")
     .containsBoth(Canvas.withElementId("chargedRodCanvas").and(Overlay.withElementId("chargedRodOverlay"))))
     .with(new ThreeJsRenderOptions({
         cameraPosition: new Vector3(2, 1.5, 2.5),
-        fieldOfView: 25,
-        background: ThreeJsRenderer.Background.STARS
+        fieldOfView: 25
     }));
 
 for (const charge of rod.charges) {
