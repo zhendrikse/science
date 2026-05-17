@@ -17,7 +17,7 @@ and the role of $k$ and $\omega$<br/>
 
 $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
 
-<div class="canvasWrapper" id="planeWaveCanvasWrapper3d">
+<div class="canvasWrapper" id="planeWaveCanvasWrapper3d" style="aspect-ratio: 2/1" >
     <canvas id="planeWaveCanvas3d" style="aspect-ratio: 2/1" class="applicationCanvas"></canvas>
 </div>
 
@@ -35,8 +35,8 @@ $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
 </div>
 <script type="module" src="plane_wave.js"></script>
 
-<div class="canvasWrapper" id="planeWaveCanvasWrapper2d">
-    <canvas id="planeWaveCanvas2d" style="aspect-ratio: 3/1" class="applicationCanvas2d"></canvas>
+<div class="canvasWrapper" id="planeWaveCanvasWrapper" style="aspect-ratio: 3/1" >
+    <canvas id="planeWaveCanvas2d" style="aspect-ratio: 3/1" class="applicationCanvas"></canvas>
 </div>
 <div class="buttonRow">
     <button id="pauseButton">Pause</button>
