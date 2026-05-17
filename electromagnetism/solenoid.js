@@ -109,10 +109,6 @@ renderer.add(magneticField.to(new ArrowField({
     scaleFactor:  1.25
 })));
 
-const simulation = Simulation
-    .with(renderer)
-    .run((realTime, simulatedTime) => {});
-
 const eventController = EventController.for(simulation);
 
 eventController.attach(HtmlControl
@@ -127,3 +123,8 @@ eventController.attach(HtmlControl
     .forType("click")
     .to(renderer)
     .withProperty("autoRotate"));
+
+Simulation
+    .with(renderer)
+    .onScale(1)
+    .run((realTime, simulatedTime) => {});
