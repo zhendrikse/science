@@ -58,7 +58,7 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
 });
 const canvas = Canvas.withElementId("starClusterCanvas");
 const renderer = ThreeJsRenderer
-    .on(HtmlDiv.withElementId("starClusterCanvas").contains(canvas))
+    .on(HtmlDiv.withElementId("startClusterCanvasWrapper").contains(canvas))
     .with(threeJsRendererOptions);
 const starCluster = new StarCluster(canvas.htmlCanvas);
 renderer.addPlainObject(starCluster);
