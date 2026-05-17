@@ -1,31 +1,12 @@
-import { Scene, Color, PerspectiveCamera, WebGLRenderer, BufferAttribute, CanvasTexture,
+import { Group, Color, BufferAttribute, CanvasTexture,
     BufferGeometry, PointsMaterial, AdditiveBlending, Points, Vector3 } from "three";
-import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import {ImprovedNoise} from 'three/addons/math/ImprovedNoise.js';
-import { ThreeJsUtils } from '../js/three-js-extensions.js';
-import { SkyDome } from '../js/astro-extensions.js';
+import {ThreeJsRenderer, ThreeJsRenderOptions} from "../js/renderers/three/threesim.js";
+import {Canvas, HtmlDiv, Simulation} from "../js/simulation.js";
 
-const canvas = document.getElementById('starClusterCanvas');
-const scene = new Scene();
-scene.background = new Color(0x131313);
-
-const camera = new PerspectiveCamera(30, 1, 0.1, 3000);
-camera.position.set(10, 20, 30);
-camera.lookAt(scene.position);
-camera.updateProjectionMatrix();
-
-const renderer = new WebGLRenderer({ antialias: true, canvas: canvas, alpha: true });
-renderer.setAnimationLoop( animationLoop );
-console.clear();
-
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.autoRotate = true;
-
-ThreeJsUtils.resizeRendererToCanvas(renderer, camera);
-
-class StarCluster {
-    constructor(N=40000) {
+class StarCluster extends Group {
+    constructor(htmlCanvas, N=40000) {
+        super();
         const positions = new BufferAttribute(new Float32Array(3 * N), 3),
             colors = new BufferAttribute(new Float32Array(3 * N), 3),
             perlin = new ImprovedNoise();
@@ -35,7 +16,7 @@ class StarCluster {
             if (this.starCreated(count, positions, colors, perlin))
                 count++;
 
-        const texture = new CanvasTexture(canvas);
+        const texture = new CanvasTexture(htmlCanvas);
         const geometry = new BufferGeometry();
         geometry.setAttribute('position', positions);
         geometry.setAttribute('color', colors);
@@ -50,7 +31,7 @@ class StarCluster {
             depthTest: false,
         });
         const cloud = new Points(geometry, material);
-        scene.add(cloud);
+        this.add(cloud);
     }
 
     starCreated(i, position, color, perlin) {
@@ -70,12 +51,24 @@ class StarCluster {
     }
 }
 
-new StarCluster();
-const skyDome = new SkyDome({skyRadius: 750});
-scene.add(skyDome);
+// const camera = new PerspectiveCamera(30, 1, 0.1, 3000);
+// camera.position.set(10, 20, 30);
+// camera.lookAt(scene.position);
 
-function animationLoop(time) {
-    controls.update();
-    renderer.render(scene, camera);
-    skyDome.update(time * 0.001, camera);
-}
+const threeJsRendererOptions = new ThreeJsRenderOptions({
+    cameraPosition: new Vector3(10, 20, 30),
+    fieldOfView: 30,
+    background: ThreeJsRenderer.Background.STARS
+});
+const canvas = Canvas.withElementId("starClusterCanvas");
+const renderer = ThreeJsRenderer
+    .on(HtmlDiv.withElementId("starClusterCanvas").contains(canvas))
+    .with(threeJsRendererOptions);
+const starCluster = new StarCluster(canvas.htmlCanvas);
+renderer.addPlainObject(starCluster);
+
+Simulation
+    .with(renderer)
+    .onScale(1)
+    .run((realTime, simulatedTime) => {starCluster.rotation.y += 2.5e-3})
+    .start();
