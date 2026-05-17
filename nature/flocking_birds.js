@@ -1,13 +1,20 @@
 import {Vector3, Color} from "three";
 import { Body } from "../js/phys/physics.js";
-import { Simulation, Canvas } from "../js/simulation.js";
+import {
+    Simulation,
+    Canvas,
+    Overlay,
+    HtmlDiv,
+    EventController,
+    HtmlControl,
+    CallbackFunction
+} from "../js/simulation.js";
 import { Arrow, ThreeJsRenderOptions, ThreeJsRenderer } from "../js/renderers/three/threesim.js";
 
 // Simulation parameters
 const speed = 6;  // initial horizontal speed
 const size = 1;   // length of a bird vector
 const threshold = (5 * size) ** 2;
-const dt = 0.02;
 
 class Flock {
     constructor(bird_count) {
@@ -100,31 +107,16 @@ class Flock {
     }
 }
 
-// GUI controls
-document.getElementById('randomWeightSlider').addEventListener("input", (e) =>
-    flock.randomWeight = e.target.value);
-
-document.getElementById('centerWeightSlider').addEventListener("input", (e) =>
-    flock.centeringWeight = e.target.value / 10);
-
-document.getElementById('directionWeightSlider').addEventListener("input", (e) =>
-    flock.directionWeight = e.target.value / 10);
-
-document.getElementById('avoidWeightSlider').addEventListener("input", (e) =>
-    flock.avoidWeight = e.target.value / 10);
-
-document.getElementById("startleButton").addEventListener("click", () => flock.startleBirds());
-
 const birdCount = 250;
 const flock = new Flock(birdCount);
 
-const canvas = new Canvas("birdsCanvas");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(15, 0, 30).multiplyScalar(1.5),
     fieldOfView: 30
 });
-const renderer = ThreeJsRenderer.on(canvas).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas).with(renderer);
+const canvas = Canvas.withElementId("birdsCanvas");
+const canvasWrapper = HtmlDiv.withElementId("birdsCanvasWrapper").contains(canvas);
+const renderer = ThreeJsRenderer.on(canvasWrapper).with(threeJsRendererOptions);
 
 for (let i = 0; i < birdCount; i++)
     renderer.add(flock.bird(i).velocityVector.to(new Arrow({
@@ -133,4 +125,40 @@ for (let i = 0; i < birdCount; i++)
         size: .2
     })));
 
-simulation.run(() => flock.update(dt));
+const dt = 0.02;
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt)
+    .run( () => flock.update(dt));
+
+//
+// Event listeners
+//
+const eventController = EventController.for(simulation);
+eventController.addStartStopMouseClickEventListenerTo(canvas);
+
+eventController.attach(HtmlControl
+    .withElementId("randomWeightSlider")
+    .forType("input")
+    .to(flock)
+    .withProperty("randomWeight"));
+eventController.attach(HtmlControl
+    .withElementId("centerWeightSlider")
+    .forType("input")
+    .to(flock)
+    .withProperty("centeringWeight"));
+eventController.attach(HtmlControl
+    .withElementId("directionWeightSlider")
+    .forType("input")
+    .to(flock)
+    .withProperty("directionWeight"));
+eventController.attach(HtmlControl
+    .withElementId("avoidWeightSlider")
+    .forType("input")
+    .to(flock)
+    .withProperty("avoidWeight"));
+
+const startStopCallback = new CallbackFunction(() => flock.startleBirds());
+eventController.add(startStopCallback.to(HtmlControl.withElementId("startleButton").forType("click")));
+
+simulation.start();
