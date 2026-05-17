@@ -1,15 +1,7 @@
 import { Vector3, Color, AmbientLight, PointLight } from "three";
 import { Particle, EC } from "../js/phys/physics.js";
 import { VectorField, Range } from "../js/math/math.js";
-import {
-    Simulation,
-    Canvas,
-    Overlay,
-    HtmlDiv,
-    EventController,
-    HtmlControl,
-    CallbackFunction
-} from "../js/simulation.js";
+import { Simulation, Canvas, Overlay, HtmlDiv, EventController, HtmlControl, CallbackFunction} from "../js/simulation.js";
 import { Sphere, ArrowField, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
 
 const K = 9e9;
@@ -44,9 +36,7 @@ class CapacitorField extends VectorField {
         this._capacitor = capacitor;
     }
 
-    vectorAt(position) {
-        return this._capacitor.fieldAt(position);
-    }
+    vectorAt(position) { return this._capacitor.fieldAt(position); }
 }
 
 //
