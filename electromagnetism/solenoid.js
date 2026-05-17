@@ -109,7 +109,7 @@ renderer.add(magneticField.to(new ArrowField({
     scaleFactor:  1.25
 })));
 
-const eventController = EventController.for(simulation);
+const eventController = new EventController();
 
 eventController.attach(HtmlControl
     .withElementId("fieldStrength")
