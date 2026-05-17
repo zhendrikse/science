@@ -51,10 +51,6 @@ class StarCluster extends Group {
     }
 }
 
-// const camera = new PerspectiveCamera(30, 1, 0.1, 3000);
-// camera.position.set(10, 20, 30);
-// camera.lookAt(scene.position);
-
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(10, 20, 30),
     fieldOfView: 30,
