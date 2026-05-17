@@ -265,7 +265,7 @@ export class Renderer {
      */
     onRunStatusChanged() {}
     initialize() {}
-    render(transform) {}
+    render(transform, time) {}
     resize() {}
     reset() {}
 }
@@ -340,7 +340,7 @@ export class Simulation {
         const animate = (time) => {
             this._updatePhysics(substepsCount, time);
             this._onPhysicsUpdateComplete(time, this._simulatedTime);
-            this._renderer.render(this._transform);
+            this._renderer.render(this._transform, time);
             requestAnimationFrame(animate);
         };
 
