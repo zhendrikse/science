@@ -89,7 +89,7 @@ const renderer = ThreeJsRenderer.on(
         .containsBoth(Canvas.withElementId("chargedSheetCanvas").and(Overlay.withElementId("chargedSheetOverlay"))))
     .with(new ThreeJsRenderOptions({
         cameraPosition: new Vector3(12, 8, 16),
-        fieldOfView: 25
+        fieldOfView: 22
     }));
 
 //

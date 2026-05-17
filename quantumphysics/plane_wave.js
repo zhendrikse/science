@@ -85,6 +85,7 @@ eventController.attach(HtmlControl
     .forType("click")
     .to(waveView2d).withProperty("mode"));
 
+simulation.start();
 
 
 

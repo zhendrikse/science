@@ -26,7 +26,7 @@ $$\text{In integral form:}\quad \oint \vec{E}\cdot d\vec{l} = -\frac{d\Phi_B}{dt
 These green arrows do **not** necessarily represent the physical electric field direction itself.
 Instead, they define the positive circulation direction according to the right-hand rule:
 
-<div class="canvasWrapper" id="faradayLawCanvasWrapper">
+<div class="canvasWrapper" id="faradayLawCanvasWrapper" style="aspect-ratio: 19 / 12;">
     <canvas class="applicationCanvas" id="faradayLawCanvas" style="aspect-ratio: 19/12"></canvas>
     <div class="overlayText" id="faradayLawCanvasOverlay">Click to start the animation!</div>
 </div>

@@ -107,7 +107,7 @@ function timeStep(dt) {
 //
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(15, 5, 20),
-    fieldOfView: 45
+    fieldOfView: 22
 });
 const canvas= Canvas.withElementId("chargedRingCanvas");
 const renderer = ThreeJsRenderer

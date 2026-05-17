@@ -65,4 +65,5 @@ Simulation
     .run((realTime, simulatedTime) => {
         for (let wave of planeWaves)
             wave.propagate(simulatedTime);
-    }, 2);
+    }, 2)
+    .start();
