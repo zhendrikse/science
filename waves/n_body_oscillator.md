@@ -10,6 +10,9 @@
 🎯 Modeling an $N$-body mass-spring system<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/N-bodycoupledoscillator) is available as well, see [n_body_oscillator.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/n_body_oscillator)<br/>
 
+<link href="https://unpkg.com/uplot/dist/uPlot.min.css" rel="stylesheet">
+<script src="https://unpkg.com/uplot/dist/uPlot.iife.min.js"></script>
+
 <div class="canvasWrapper" id="oscillatorCanvasWrapper"  style="aspect-ratio: 19 / 12;">
     <canvas id="oscillatorCanvas" class="applicationCanvas" style="aspect-ratio: 19 / 12;"></canvas>
     <div class="overlayText" id="oscillatorOverlay">Click to start the animation!</div>
