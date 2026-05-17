@@ -136,20 +136,20 @@ const renderer = ThreeJsRenderer
 renderer.add(electron.to(new Sphere({color: new Color("red")})));
 renderer.add(proton.to(new Sphere({color: new Color("yellow") })));
 renderer.add(electricField.to(new ArrowField({
-        xRange: new Range(-6e-10, 6e-10, 1.5e-10),
-        yRange: new Range(-6e-10, 6e-10, 1.5e-10),
-        zRange: new Range(-6e-10, 6e-10, 1.5e-10),
+        xRange: new Range(-6e-10, 6e-10, 1.25e-10),
+        yRange: new Range(-6e-10, 6e-10, 1.25e-10),
+        zRange: new Range(-6e-10, 6e-10, 1.25e-10),
         scaleFactor: 1.5e-2,
-        magnitudeMap: magnitude => Math.sqrt(magnitude * 1e-6),
+        magnitudeMap: magnitude => Math.sqrt(magnitude * 3e-7),
         colorMap: (axis, magnitude) => new Color().setHSL(0.15, 1, Math.min(Math.sqrt(magnitude * 0.25e-6), 0.6)),
         round: true
 })));
 renderer.add(magneticField.to(new ArrowField({
-        xRange: new Range(-6e-10, 6e-10, 1.5e-10),
-        yRange: new Range(-6e-10, 6e-10, 1.5e-10),
-        zRange: new Range(-6e-10, 6e-10, 1.5e-10),
+        xRange: new Range(-6e-10, 6e-10, 1.25e-10),
+        yRange: new Range(-6e-10, 6e-10, 1.25e-10),
+        zRange: new Range(-6e-10, 6e-10, 1.25e-10),
         scaleFactor: .35,
-        magnitudeMap: magnitude => Math.sqrt(magnitude),
+        magnitudeMap: magnitude => Math.sqrt(magnitude * .3),
         colorMap: () => new Color("cyan"),
         round: true
 })));
@@ -171,7 +171,7 @@ const simulation = Simulation
 
         for (const field of magneticField._fields)
             field.time = simulatedTime;
-    });
+    }, 2);
 
 const eventController = EventController.for(simulation);
 eventController.addStartStopMouseClickEventListenerTo(canvas);
