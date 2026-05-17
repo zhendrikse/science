@@ -657,7 +657,7 @@ export class Box extends Mesh {
                 color: color,
                 transparent: true,
                 opacity: opacity,
-                depthTest: false
+                depthTest: true
             }));
         this.visible = visible;
         this.castShadow = castShadow;
@@ -1134,7 +1134,8 @@ export class Aquarium extends Mesh {
             color: contentColor,
             transparent: true,
             opacity: opacity,
-            depthWrite: false
+            depthWrite: false,
+            depthTest: true,
         });
 
         super(geometry, material);
@@ -1145,7 +1146,8 @@ export class Aquarium extends Mesh {
         const edges = new EdgesGeometry(geometry);
         const lineMaterial = new LineBasicMaterial({
             color: frameColor,
-            linewidth: frameWidth
+            linewidth: frameWidth,
+            depthTest: true
         });
 
         const wireframe = new LineSegments(edges, lineMaterial);

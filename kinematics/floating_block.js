@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import { UPlotGraph } from "../js/simulation.js";
+import {EventController, HtmlControl, HtmlDiv, UPlotGraph} from "../js/simulation.js";
 import { Block } from "../js/phys/physics.js";
 import { Simulation, Canvas, Overlay } from "../js/simulation.js";
 import { Box, ThreeJsRenderOptions, ThreeJsRenderer, Aquarium } from "../js/renderers/three/threesim.js";
@@ -48,16 +48,17 @@ class WoodenBlock extends Block {
 const woodenBlock = new WoodenBlock( {size: new Vector3(0.4, 0.4, 0.1) });
 const water = new Aquarium({
     color: 0x1e90ff,
-    size: new Vector3(2, 2, 0.75)
+    size: new Vector3(2, 2, 0.75),
+    frameColor: 0xffff00,
 });
 
-const canvas = new Canvas("floatingBlockCanvas");
-const overlay = new Overlay("floatingBlockOverlayText");
+const canvas = Canvas.withElementId("floatingBlockCanvas");
+const overlay = Overlay.withElementId("floatingBlockOverlayText");
+const canvasWrapper = HtmlDiv.withElementId("floatingBlockContainer").containsBoth(canvas.and(overlay));
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(1, 0.4, 2).multiplyScalar(1.7)
 });
-const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
+const renderer = ThreeJsRenderer.on(canvasWrapper).with(threeJsRendererOptions);
 
 renderer.add(woodenBlock.to(new Box({ color: 0xdeb887 })));
 renderer.addPlainObject(water);
@@ -85,14 +86,21 @@ plot.graphData[2] = [woodenBlock.dragForce()];
 
 let t = 0;
 const dt = 0.001;
-simulation.run( () => {
-    for (let subStep = 0; subStep < 20; subStep++) {
+const substeps = 20;
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt)
+    .run( () => {
         woodenBlock.apply(woodenBlock.netForce(water), dt);
-        t += dt;
-    }
 
-    plot.graphData[0].push(t);
-    plot.graphData[1].push(woodenBlock.buoyancyForce(water));
-    plot.graphData[2].push(woodenBlock.dragForce());
-    plot.update();
-});
+        plot.graphData[0].push(t);
+        plot.graphData[1].push(woodenBlock.buoyancyForce(water));
+        plot.graphData[2].push(woodenBlock.dragForce());
+        plot.update();
+}, substeps);
+
+//
+// Event controller
+//
+const eventController = new EventController(simulation);
+eventController.addStartStopMouseClickEventListenerTo(canvas); // Controller passes event on to simulation and renderers
