@@ -33,7 +33,8 @@ export class ThreeJsRenderer extends Renderer {
     static Background = Object.freeze({
         PLAIN: "Plain",
         FOG: "Fog",
-        TRANSPARENT: "Transparent"
+        TRANSPARENT: "Transparent",
+        STARS: "Stars"
     });
 
     static on = (canvasWrapperDiv) => new ThreeJsRenderer(canvasWrapperDiv);
@@ -176,6 +177,8 @@ export class ThreeJsRenderer extends Renderer {
             case ThreeJsRenderer.Background.FOG:
                 this._scene.background = new Color(backgroundColor);
                 this._scene.fog = new Fog(backgroundColor, 1, 100);
+                break;
+            case ThreeJsRenderer.Background.STARS:
                 break;
             case ThreeJsRenderer.Background.TRANSPARENT:
             default:

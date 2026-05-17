@@ -35,7 +35,7 @@ $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
 </div>
 <script type="module" src="plane_wave.js"></script>
 
-<div class="canvasWrapper" id="planeWaveCanvasWrapper" style="aspect-ratio: 3/1" >
+<div class="canvasWrapper" id="planeWaveCanvasWrapper2d" style="aspect-ratio: 3/1" >
     <canvas id="planeWaveCanvas2d" style="aspect-ratio: 3/1" class="applicationCanvas"></canvas>
 </div>
 <div class="buttonRow">
