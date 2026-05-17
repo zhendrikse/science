@@ -21,12 +21,12 @@
 </div>
 <div class="buttonRow">
     <label for="protonInFieldStrengthSlider">🧲 Field: </label>
-    <input type="range" id="protonInFieldStrengthSlider" min="1" max="10" step="0.1" value="2"/>
+    <input type="range" id="protonInFieldStrengthSlider" min=".1" max="1" step="any" value=".2"/>
     <span id="protonInFieldStrengthSliderValue">10</span>
 </div>
 <div class="buttonRow">
     <label for="protonInFieldSpeedSlider" >🚀 Speed: </label>
-    <input type="range" id="protonInFieldSpeedSlider" min="1" max="100" step="1" value="50"/>
+    <input type="range" id="protonInFieldSpeedSlider" min="1" max="100" step="any" value="50"/>
     <span id="protonInFieldSpeedSliderValue">50</span>
 </div>
 <script type="module" src="proton_in_magnetic_field.js"></script>

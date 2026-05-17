@@ -1,13 +1,8 @@
 import { Vector3, Color } from "three";
 import { Particle } from "../js/phys/physics.js";
 import { VectorField, Range } from "../js/math/math.js";
-import { Simulation, Canvas, Overlay } from "../js/simulation.js";
+import {Simulation, Canvas, Overlay, HtmlDiv, EventController, HtmlControl, CallbackFunction} from "../js/simulation.js";
 import { Sphere, ArrowField, ThreeJsRenderOptions, ThreeJsRenderer, Trail } from "../js/renderers/three/threesim.js";
-
-const speedSlider = document.getElementById("protonInFieldSpeedSlider");
-const strengthSlider = document.getElementById("protonInFieldStrengthSlider");
-const speedSliderReadout = document.getElementById("protonInFieldSpeedSliderValue");
-const strengthSliderReadout = document.getElementById("protonInFieldStrengthSliderValue");
 
 class MagneticField extends VectorField {
     constructor(fieldStrength) {
@@ -29,13 +24,13 @@ class MagneticField extends VectorField {
 //
 const proton = new Particle({
     position: new Vector3(0, 1, 0),
-    velocity: new Vector3(Number(speedSlider.value) * .01, 0, 0),
+    velocity: new Vector3(.5, 0, 0),
     mass: 1,
     radius: .125,
     charge: 1
 });
 
-const magneticField = new MagneticField(Number(strengthSlider.value) * .1);
+const magneticField = new MagneticField(.2);
 
 function timeStep(dt) {
     const fieldVector = magneticField.vectorAt(proton.position);
@@ -46,13 +41,14 @@ function timeStep(dt) {
 //
 // Simulation
 //
-const canvas = new Canvas("protonInFieldCanvas");
-const overlay = new Overlay("protonInFieldOverlayText");
+const canvas = Canvas.withElementId("protonInFieldCanvas");
+const overlay = Overlay.withElementId("protonInFieldOverlayText");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(0, 5, -10)
 });
-const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
+const renderer = ThreeJsRenderer.on(
+    HtmlDiv.withElementId("protonInFieldWrapper").containsBoth(canvas.and(overlay)))
+    .with(threeJsRendererOptions);
 
 const sphere = new Sphere({ color: new Color("red")});
 renderer.add(proton.to(sphere));
@@ -63,28 +59,37 @@ const arrowField = new ArrowField({
     yRange: new Range(0, 0, .5),
     zRange: new Range(-6, 6, .5),
     scaleFactor: .9,
-    round: false
+    round: true,
+    magnitudeMap: (magnitude) => .5 * Math.sqrt(magnitude),
+    colorMap: (axis, magnitude) => new Color().setHSL(.5 * Math.sqrt(magnitude), 1, 0.5)
 });
 renderer.add(magneticField.to(arrowField));
+
+const dt = 2.5e-3;
+const subSteps = 100;
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt)
+    .run(() => timeStep(dt), subSteps);
 
 //
 // Event listeners
 //
-speedSlider.addEventListener("input", () => {
-    proton.velocity.x = Number(speedSlider.value) * .01;
-    speedSliderReadout.textContent = speedSlider.value;
-});
+const eventController = EventController.for(simulation);
+eventController.addStartStopMouseClickEventListenerTo(canvas);
 
-strengthSlider.addEventListener("input", () => {
-    magneticField.magnitude = Number(strengthSlider.value) * .1;
-    strengthSliderReadout.textContent = strengthSlider.value;
-});
+eventController.attach(HtmlControl
+    .withElementId("protonInFieldStrengthSlider")
+    .forType("input")
+    .withValueSpanId("protonInFieldStrengthSliderValue")
+    .to(magneticField)
+    .withProperty("magnitude"));
 
-simulation.onReset = () => proton.velocity.x = Number(speedSlider.value) * .01;
+const speedToVelocity = (speed, direction) => direction.clone().normalize().multiplyScalar(speed);
+const speedCallback = new CallbackFunction((event) =>
+    proton.velocity = speedToVelocity(event.target.value * .01, proton.velocity));
+eventController.add(speedCallback
+    .to(HtmlControl.withElementId("protonInFieldSpeedSlider")
+        .forType("input")
+        .withValueSpanId("protonInFieldSpeedSliderValue")));
 
-const dt = 2.5e-3;
-const subSteps = 100;
-simulation.run(() => {
-    for (let i = 0; i < subSteps; i++)
-        timeStep(dt);
-});

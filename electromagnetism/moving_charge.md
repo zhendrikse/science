@@ -12,14 +12,16 @@
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Movingcharge) is available as well, see [moving_charge.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/moving_charge.py)<br/>
 
 <div class="canvasWrapper" id="movingChargeWrapper" style="aspect-ratio: 19/12">
-    <canvas id="capacitorCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
+    <canvas id="movingChargeCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
     <div class="overlayText" id="movingChargeOverlayText">Click to start the animation!</div>
 </div>
 <div class="buttonRow">
-    <label for="chargeSlider">🪫Charge: </label><input type="range" id="chargeSlider" min="0" max="5" step="0.1" value="1"/><span id="chargeSliderValue">1 electron charge(s)</span>
+    <label for="chargeSlider">🪫Charge: </label><input type="range" id="chargeSlider" min="0" max="5" step="0.1" value="1"/>
+    <span id="chargeSliderValue">1</span> electron charge(s)
 </div>
 <div class="buttonRow">
-    <label for="speedSlider" >🚀 Speed: </label><input type="range" id="speedSlider" min="1" max="50" step="1" value="15"/><span id="speedSliderValue">15 x 1E-14 m/s</span>
+    <label for="speedSlider" >🚀 Speed: </label><input type="range" id="speedSlider" min="1" max="50" step="1" value="15"/>
+    <span id="speedSliderValue">15</span> x 1E-14 m/s
 </div>
 <script type="module" src="moving_charge.js"></script>
 

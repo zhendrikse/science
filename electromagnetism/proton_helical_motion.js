@@ -117,4 +117,6 @@ const speedToVelocity = (speed, direction) => direction.clone().normalize().mult
 const speedCallback = new CallbackFunction((event) =>
     proton.velocity = speedToVelocity(event.target.value, proton.velocity));
 eventController.add(speedCallback
-    .to(HtmlControl.withElementId("helicalProtonSpeedSlider").forType("input").withValueSpanId("helicalProtonSpeedSliderValue")));
+    .to(HtmlControl.withElementId("helicalProtonSpeedSlider")
+        .forType("input")
+        .withValueSpanId("helicalProtonSpeedSliderValue")));
