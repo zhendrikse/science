@@ -1,4 +1,4 @@
-import { UPlotGraph } from "../js/simulation.js";
+import {EventController, HtmlDiv, UPlotGraph} from "../js/simulation.js";
 import { Vector3, Vector2 } from "three";
 import { RadialSymmetricBody, HarmonicOscillator } from "../js/phys/physics.js";
 import { Simulation, Canvas, Overlay } from "../js/simulation.js";
@@ -35,8 +35,8 @@ initialDisturbance(7);
 //
 // Simulation
 //
-const canvas = new Canvas("oscillatorCanvas");
-const overlay = new Overlay("oscillatorOverlayText");
+const canvas = Canvas.withElementId("oscillatorCanvas");
+const overlay = Overlay.withElementId("oscillatorOverlay");
 const threeJsRendererOptions = new ThreeJsRenderOptions({
     cameraPosition: new Vector3(17, 6, 17),
     light: true,
@@ -44,8 +44,10 @@ const threeJsRendererOptions = new ThreeJsRenderOptions({
     fieldOfView: 45,
     background: ThreeJsRenderer.Background.FOG
 });
-const renderer = ThreeJsRenderer.on(canvas.with(overlay)).and(threeJsRendererOptions);
-const simulation = Simulation.on(canvas.with(overlay)).with(renderer);
+const renderer = ThreeJsRenderer.on(
+    HtmlDiv.withElementId("oscillatorCanvasWrapper")
+        .containsBoth(canvas.and(overlay)))
+    .with(threeJsRendererOptions);
 
 // Floor
 renderer.addPlainObject(new Floor({
@@ -91,15 +93,20 @@ const plot = new UPlotGraph({
 });
 
 const dt = 1e-3;
-simulation.run((time) => {
-    for (let substep = 0; substep < 10; substep++) {
+const subSteps = 10;
+const simulation = Simulation
+    .with(renderer)
+    .incrementsTimeBy(dt)
+    .run((realTime, simulatedTime) => {
         for (let i = 0; i < balls.length - 1; i++)
             springs[i].oscillate(dt);
 
-        plot.graphData[0].push(time * 0.001);
+        plot.graphData[0].push(realTime * 0.001);
         for (let i = 0; i < balls.length; i++)
             plot.graphData[i + 1].push(balls[i].position.x);
-    }
-    plot.update();
-});
+    }, subSteps);
+simulation.onPhysicsUpdateComplete = () => plot.update();
+
+const eventController = EventController.for(simulation);
+eventController.addStartStopMouseClickEventListenerTo(canvas);
 
