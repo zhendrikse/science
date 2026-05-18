@@ -1,12 +1,14 @@
 /**
- * Simulation environment for educational and scientific visualizations.
- *
- * Simulation state and rendering are decoupled and synchronized by the engine.
+ * Simulation environment for educational and scientific visualizations:
+ *  - browser-based
+ *  - realtime
+ *  - educational
+ *  - interactive
+ *  - physics and mathematics first, i.e.simulation state and rendering are decoupled and synchronized by the engine.
  *
  * Design goals:
- * - lightweight ECS-inspired architecture
- * - low cognitive overhead
- * - code expresses scientific intent directly
+ *  - low cognitive overhead
+ *  - code expresses scientific intent directly
  *
  * Example:
  *     // 1. Define your renderer of choice
@@ -14,17 +16,15 @@
  *         .on(HtmlDiv.withElementId("canvasWrapper").contains(Canvas.withElementId("canvas")))
  *         .with(threeJsRendererOptions);
  *
- *     // 2. Attach view to physics
- *     renderer.add(body.to(view))
+ *     // 2. Attach view to physics or mathematics object
+ *     renderer.add(physicsBody.to(new Sphere()));
+ *     renderer.add(coneGeometry.to(new IsoparametricContoursSurface()));
  *
- *     // 3. Run simulation
+ *     // 3. Run the simulation
  *     Simulation
  *         .with(renderer)
  *         .onScale(1e-10)
- *         .run((clockTime, simulatedTime) => {
- *         // ...
- *     });
- *
+ *         .run((clockTime, simulatedTime) => (...));
  */
 
 /**********************************************

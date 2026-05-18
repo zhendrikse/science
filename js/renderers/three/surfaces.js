@@ -1,71 +1,181 @@
-import { Group, Vector3, LineBasicMaterial, Line, BufferGeometry } from "three";
-import { ParametricGeometry } from "three/addons/geometries/ParametricGeometry";
+import { Group, Vector3, LineBasicMaterial, Line, BufferGeometry, DoubleSide, PlaneGeometry,
+    Object3D, Mesh, SphereGeometry, MeshStandardMaterial, InstancedMesh } from "three";
 
-/**
- * Abstract base class for parametric surfaces, with which various SurfaceView (sub)types can be realized.
- */
-export class ParametricSurfaceGeometry {
-    constructor(surfaceDefinition) {
-        this._definition = surfaceDefinition;
-    }
-
-    createGeometryWith(resolution) {
-        return new ParametricGeometry(
-            (u, v, target) => this._definition.sample(u, v, target),
-            resolution,
-            resolution
-        );
-    }
-
-    get definition() { return this._definition; }
-}
-
-export class IsoparametricContoursSurfaceView extends Group {
+export class IsoparametricContoursSurface extends Group {
     constructor({
-        surfaceGeometry,
         uCount = 20,
         vCount = 20,
         segments = 100,
         color = 0xffffff
     } = {}) {
         super();
-        this._lines = [];
-        const material = new LineBasicMaterial({ color: color, transparent: true, depthWrite: true, depthTest: true });
-        const target = new Vector3();
+        this._surface = null;
+        this._uCount = uCount;
+        this._vCount = vCount;
+        this._segments = segments;
+        this._material = new LineBasicMaterial({
+            color,
+            transparent: true,
+            depthWrite: true,
+            depthTest: true
+        });
 
-        // u = constant, v varies
-        for (let i = 0; i <= uCount; i++) {
-            const u = i / uCount;
-            const points = [];
+        this._uLines = [];
+        this._vLines = [];
+    }
 
-            for (let j = 0; j <= segments; j++) {
-                const v = j / segments;
-                surfaceGeometry.definition.sample(u, v, target);
-                points.push(target.clone());
-            }
+    attachTo(mathSurfaceDefinition) {
+        // Sanity checks
+        if (!mathSurfaceDefinition.sample)
+            throw new Error("Surface does not implement sample(), hence it cannot be attached to this view.");
 
-            this.#addLine(points, material);
+        this._surface = mathSurfaceDefinition;
+        this.#build();
+    }
+
+    #build() {
+        // u = constant
+        for (let i = 0; i <= this._uCount; i++) {
+            const geometry = new BufferGeometry();
+            const line = new Line(geometry, this._material);
+            this.add(line);
+            this._uLines.push({ line, u: i / this._uCount });
         }
 
-        // v = constant, u varies
-        for (let i = 0; i <= vCount; i++) {
-            const v = i / vCount;
-            const points = [];
-
-            for (let j = 0; j <= segments; j++) {
-                const u = j / segments;
-                surfaceGeometry.definition.sample(u, v, target);
-                points.push(target.clone());
-            }
-
-            this.#addLine(points, material);
+        // v = constant
+        for (let i = 0; i <= this._vCount; i++) {
+            const geometry = new BufferGeometry();
+            const line = new Line(geometry, this._material);
+            this.add(line);
+            this._vLines.push({ line, v: i / this._vCount });
         }
     }
 
-    #addLine(points, material) {
-        const geometry = new BufferGeometry().setFromPoints(points);
-        const line = new Line(geometry, material);
-        this.add(line);
-        this._lines.push(line);
+    render(transform) {
+        const target = new Vector3();
+
+        // u lines
+        for (const entry of this._uLines) {
+            const points = [];
+            for (let j = 0; j <= this._segments; j++) {
+                const v = j / this._segments;
+                this._surface.sample(entry.u, v, target);
+                points.push(target.clone());
+            }
+
+            entry.line.geometry.dispose();
+            entry.line.geometry = new BufferGeometry().setFromPoints(points);
+        }
+
+        // v lines
+        for (const entry of this._vLines) {
+            const points = [];
+            for (let j = 0; j <= this._segments; j++) {
+                const u = j / this._segments;
+                this._surface.sample(u, entry.v, target);
+                points.push(target.clone());
+            }
+
+            entry.line.geometry.dispose();
+            entry.line.geometry = new BufferGeometry().setFromPoints(points);
+        }
+    }
+}
+
+export class SphereSurfaceView extends Group {
+    constructor({
+        uSegments = 40,
+        vSegments = 40,
+        radius = 0.08,
+        color = 0x00ffff
+    } = {}) {
+        super();
+
+        this._surface = null;
+        this._uSegments = uSegments;
+        this._vSegments = vSegments;
+        this._target = new Vector3();
+        this._dummy = new Object3D();
+
+        const geometry = new SphereGeometry(radius, 8, 8);
+        const material = new MeshStandardMaterial({ color });
+
+        const count = (uSegments + 1) * (vSegments + 1);
+        this._mesh = new InstancedMesh(geometry, material, count);
+        this.add(this._mesh);
+    }
+
+    attachTo(mathSurfaceDefinition) {
+        // Sanity checks
+        if (!mathSurfaceDefinition.sample)
+            throw new Error("Surface does not implement sample(), hence it cannot be attached to this view.");
+
+        this._surface = mathSurfaceDefinition;
+    }
+
+    render(transform) {
+        let index = 0;
+
+        for (let i = 0; i <= this._uSegments; i++) {
+            const u = i / this._uSegments;
+            for (let j = 0; j <= this._vSegments; j++) {
+                const v = j / this._vSegments;
+                this._surface.sample(u, v, this._target);
+                this._dummy.position.copy(this._target);
+                this._dummy.updateMatrix();
+                this._mesh.setMatrixAt(index++, this._dummy.matrix);
+            }
+        }
+
+        this._mesh.instanceMatrix.needsUpdate = true;
+    }
+}
+
+export class PlaneSurfaceView extends Group {
+    constructor({
+        uSegments = 100,
+        vSegments = 100,
+        color = 0x00ffff,
+        wireframe = false
+    } = {}) {
+        super();
+
+        this._surface = null;
+        this._uSegments = uSegments;
+        this._vSegments = vSegments;
+
+        const geometry = new PlaneGeometry(1, 1, uSegments, vSegments);
+        const material = new MeshStandardMaterial({color, side: DoubleSide, wireframe});
+
+        this._mesh = new Mesh(geometry, material);
+        this.add(this._mesh);
+
+        this._positions = geometry.attributes.position.array;
+        this._target = new Vector3();
+    }
+
+    attachTo(surface) {
+        if (!surface.sample)
+            throw new Error("Surface must implement sample(u,v,target)");
+
+        this._surface = surface;
+    }
+
+    render() {
+        let k = 0;
+
+        for (let i = 0; i <= this._uSegments; i++) {
+            const u = i / this._uSegments;
+            for (let j = 0; j <= this._vSegments; j++) {
+                const v = j / this._vSegments;
+                this._surface.sample(u, v, this._target);
+                this._positions[k++] = this._target.x;
+                this._positions[k++] = this._target.y;
+                this._positions[k++] = this._target.z;
+            }
+        }
+
+        this._mesh.geometry.attributes.position.needsUpdate = true;
+        this._mesh.geometry.computeVertexNormals();
     }
 }

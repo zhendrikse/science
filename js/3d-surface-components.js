@@ -1347,15 +1347,11 @@ export class RenderableSurface extends Object3D {
     get min() { return this._wave.minHeight; }
     get max() { return this._wave.maxHeight; }
 
-    get range() {
-        return Math.max(this.max - this.min, 1e-6);
-    }
+    get range() { return Math.max(this.max - this.min, 1e-6); }
 
     set colorMapper(colorMapper) { this._colorMapper = colorMapper; }
 
-    normalizeHeight(h) {
-        return (h - this.min) / this.range;
-    }
+    normalizeHeight(h) { return (h - this.min) / this.range; }
 
     update() {
         for (let i = 0; i < this.numX; i++)
@@ -1399,12 +1395,7 @@ export class InstanceSurface extends RenderableSurface {
         const index = i * this.numY + j;
 
         this._dummy.scale.setScalar(this._isEdge(i, j) ? 0 : 1);
-        this._dummy.position.set(
-            (i / this.numX - .5) * this.size,
-            h,
-            (j / this.numY - .5) * this.size
-        );
-
+        this._dummy.position.set((i / this.numX - .5) * this.size, h, (j / this.numY - .5) * this.size);
         this._dummy.updateMatrix();
         this._mesh.setMatrixAt(index, this._dummy.matrix);
         this._colorMapper.getColor(t, this._colorArray, index * 3);
