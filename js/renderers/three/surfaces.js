@@ -1,7 +1,22 @@
 import { Group, Vector3, LineBasicMaterial, Line, BufferGeometry, DoubleSide, PlaneGeometry,
     Object3D, Mesh, SphereGeometry, MeshStandardMaterial, InstancedMesh } from "three";
 
-export class IsoparametricContoursSurface extends Group {
+export class SurfaceCView extends Group {
+    constructor() {
+        super();
+        this._surface = null;
+    }
+
+    attachTo(mathSurfaceDefinition) {
+        // Sanity checks
+        if (!mathSurfaceDefinition.sample)
+            throw new Error("Surface does not implement sample(), hence it cannot be attached to this view.");
+
+        this._surface = mathSurfaceDefinition;
+    }
+}
+
+export class IsoparametricContoursSurface extends SurfaceCView {
     constructor({
         uCount = 20,
         vCount = 20,
@@ -9,7 +24,6 @@ export class IsoparametricContoursSurface extends Group {
         color = 0xffffff
     } = {}) {
         super();
-        this._surface = null;
         this._uCount = uCount;
         this._vCount = vCount;
         this._segments = segments;
@@ -25,11 +39,7 @@ export class IsoparametricContoursSurface extends Group {
     }
 
     attachTo(mathSurfaceDefinition) {
-        // Sanity checks
-        if (!mathSurfaceDefinition.sample)
-            throw new Error("Surface does not implement sample(), hence it cannot be attached to this view.");
-
-        this._surface = mathSurfaceDefinition;
+        super.attachTo(mathSurfaceDefinition);
         this.#build();
     }
 
@@ -82,7 +92,7 @@ export class IsoparametricContoursSurface extends Group {
     }
 }
 
-export class SphereSurfaceView extends Group {
+export class SphereSurfaceView extends SurfaceCView {
     constructor({
         uSegments = 40,
         vSegments = 40,
@@ -91,7 +101,6 @@ export class SphereSurfaceView extends Group {
     } = {}) {
         super();
 
-        this._surface = null;
         this._uSegments = uSegments;
         this._vSegments = vSegments;
         this._target = new Vector3();
@@ -103,14 +112,6 @@ export class SphereSurfaceView extends Group {
         const count = (uSegments + 1) * (vSegments + 1);
         this._mesh = new InstancedMesh(geometry, material, count);
         this.add(this._mesh);
-    }
-
-    attachTo(mathSurfaceDefinition) {
-        // Sanity checks
-        if (!mathSurfaceDefinition.sample)
-            throw new Error("Surface does not implement sample(), hence it cannot be attached to this view.");
-
-        this._surface = mathSurfaceDefinition;
     }
 
     render(transform) {
@@ -131,7 +132,7 @@ export class SphereSurfaceView extends Group {
     }
 }
 
-export class PlaneSurfaceView extends Group {
+export class PlaneSurfaceView extends SurfaceCView {
     constructor({
         uSegments = 100,
         vSegments = 100,
@@ -140,7 +141,6 @@ export class PlaneSurfaceView extends Group {
     } = {}) {
         super();
 
-        this._surface = null;
         this._uSegments = uSegments;
         this._vSegments = vSegments;
 
@@ -152,13 +152,6 @@ export class PlaneSurfaceView extends Group {
 
         this._positions = geometry.attributes.position.array;
         this._target = new Vector3();
-    }
-
-    attachTo(surface) {
-        if (!surface.sample)
-            throw new Error("Surface must implement sample(u,v,target)");
-
-        this._surface = surface;
     }
 
     render() {
