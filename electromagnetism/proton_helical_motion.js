@@ -81,7 +81,7 @@ const simulation = Simulation
     .with(renderer)
     .incrementsTimeBy(dt)
     .onScale(1)
-    .run((realTime, simulatedTime) => timeStep(), 25);
+    .run((clockTime, simulatedTime) => timeStep(), 25);
 
 function timeStep() {
     if (outOfBox(proton.position))

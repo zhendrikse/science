@@ -47,7 +47,7 @@ const simulation = Simulation
     .with(new CompositeRenderer([renderer2d, renderer3d]))
     .incrementsTimeBy(0.01)
     .onScale(1)
-    .run((realTime, simulatedTime) => planeWave.propagate(simulatedTime));
+    .run((clockTime, simulatedTime) => planeWave.propagate(simulatedTime));
 
 //
 // Event controller

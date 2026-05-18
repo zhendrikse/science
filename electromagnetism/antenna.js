@@ -62,7 +62,7 @@ Simulation
     .with(renderer)
     .incrementsTimeBy(lambda / OneDimensionalPlaneWave.c / 100.0)
     .onScale(1)
-    .run((realTime, simulatedTime) => {
+    .run((clockTime, simulatedTime) => {
         for (let wave of planeWaves)
             wave.propagate(simulatedTime);
     }, 2)

@@ -73,7 +73,7 @@ const simulation = Simulation
     .with(renderer)
     .incrementsTimeBy(dt / subSteps)
     .onScale(1e-9)
-    .run((realTime, simulatedTime) => updateForces(dt), subSteps);
+    .run((clockTime, simulatedTime) => updateForces(dt), subSteps);
 
 //
 // Event controller

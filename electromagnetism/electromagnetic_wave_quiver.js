@@ -162,7 +162,7 @@ const simulation = Simulation
     .with(renderer)
     .incrementsTimeBy(dt)
     .onScale(1e10)
-    .run((realTime, simulatedTime) => {
+    .run((clockTime, simulatedTime) => {
         electron.updateAt(simulatedTime);
         proton.updateAt(simulatedTime);
 

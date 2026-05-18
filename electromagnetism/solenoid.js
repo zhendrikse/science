@@ -127,4 +127,4 @@ eventController.attach(HtmlControl
 Simulation
     .with(renderer)
     .onScale(1)
-    .run((realTime, simulatedTime) => {});
+    .run();

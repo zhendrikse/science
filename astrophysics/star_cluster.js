@@ -66,5 +66,5 @@ renderer.addPlainObject(starCluster);
 Simulation
     .with(renderer)
     .onScale(1)
-    .run((realTime, simulatedTime) => {starCluster.rotation.y += 2.5e-3})
+    .run((clockTime, simulatedTime) => {starCluster.rotation.y += 2.5e-3})
     .start();

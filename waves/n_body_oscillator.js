@@ -97,15 +97,15 @@ const subSteps = 10;
 const simulation = Simulation
     .with(renderer)
     .incrementsTimeBy(dt)
-    .run((realTime, simulatedTime) => {
+    .run((clockTime, _) => {
         for (let i = 0; i < balls.length - 1; i++)
             springs[i].oscillate(dt);
 
-        plot.graphData[0].push(realTime * 0.001);
+        plot.graphData[0].push(clockTime * 0.001);
         for (let i = 0; i < balls.length; i++)
             plot.graphData[i + 1].push(balls[i].position.x);
     }, subSteps);
-simulation.onPhysicsUpdateComplete = () => plot.update();
+simulation.onAfterPhysicsUpdate((clockTime, simulatedTime) => plot.update());
 
 const eventController = EventController.for(simulation);
 eventController.addStartStopMouseClickEventListenerTo(canvas);

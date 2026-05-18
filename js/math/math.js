@@ -271,3 +271,12 @@ export class Complex {
         return new Complex(real, imag);
     }
 }
+
+/**
+ * This class contains a function F(u, v) => (x, y, z) used to create a parametric surface instance.
+ */
+export class ParametricSurfaceDefinition {
+    sample(u, v, target) {
+        throw new Error("Abstract class: sample() not implemented!");
+    }
+}

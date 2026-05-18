@@ -98,7 +98,7 @@ const subSteps = 10;
 const simulation = Simulation
     .with(renderer)
     .incrementsTimeBy(dt)
-    .run((realTime, simulatedTime) => {
+    .run((clockTime, simulatedTime) => {
         if (ball.reachedEnd())
             return;
 
@@ -106,7 +106,7 @@ const simulation = Simulation
     }, subSteps);
 
 // Update graph not inside simulation loop, as we do not want to update it with every physics update substep
-simulation.onPhysicsUpdateComplete = (time, simulatedTime) => updateGraph(simulatedTime);
+simulation.onAfterPhysicsUpdate((clockTime, simulatedTime) => updateGraph(simulatedTime));
 
 //
 // Event controller

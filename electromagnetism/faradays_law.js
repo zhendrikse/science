@@ -128,7 +128,7 @@ const simulation = Simulation
     .with(renderer)
     .incrementsTimeBy(dt)
     .onScale(1)
-    .run((realTime, simulatedTime) => {
+    .run((clockTime, simulatedTime) => {
         const fieldLength = (simulatedTime % 20) / 10 + 0.001;
 
         for (const vec of magneticVectors)

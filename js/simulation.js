@@ -21,7 +21,7 @@
  *     Simulation
  *         .with(renderer)
  *         .onScale(1e-10)
- *         .run((realTime, simulatedTime) => {
+ *         .run((clockTime, simulatedTime) => {
  *         // ...
  *     });
  *
@@ -208,12 +208,19 @@ export class EventController {
         this._simulation = simulation;
     }
 
-    addStartStopMouseClickEventListenerTo(canvas) {
+    /**
+     * Add a mouse-click event listener to a simulation canvas. It defaults to start/stop.
+     * When calling this function with a custom callback, the default start/stop functionality is
+     * lost and needs to be re-added if needed!!
+     */
+    addStartStopMouseClickEventListenerTo(canvas, callback = (event) => this._simulation.toggleRunStatus()) {
         // Pass a mouse click on the canvas on to the simulation:
-        canvas.htmlCanvas.addEventListener("click", (event) => this._simulation.onCanvasClicked())
+        canvas.htmlCanvas.addEventListener("click", (event) => callback(event) );
     }
 
-    // Adds a custom event listener (callback function) to a control
+    /**
+     * Adds a custom event listener (callback function) to a control.
+     */
     add(control) {
         control.htmlElement.addEventListener(control.actionType, (event) => {
             if (control.htmlSpanElement)
@@ -232,7 +239,9 @@ export class EventController {
             control.htmlSpanElement.innerText = numberValue.toFixed(2);
     }
 
-    // Sets a value from the control for a property an any type of object, as long as it exposes the property name
+    /**
+     * Sets a value from the control for a property an any type of object, as long as it exposes the property name.
+     */
     attach(control) {
         control.htmlElement.addEventListener(control.actionType, (event) => {
             const target = event.target;
@@ -306,12 +315,14 @@ export class Simulation {
     static with = (renderer) => new Simulation(renderer);
     constructor(renderer) {
         this._renderer = renderer;
-        this._onReset = (dummy) => (dummy);
-        this._onPhysicsUpdateComplete = (dummy) => (dummy);
+        this._onReset = () => {};
+        this._onBeforePhysicsUpdate = () => {};
+        this._onAfterPhysicsUpdate = () => {};
         this._transform = new Transform(1);
         this._running = false;
         this._simulatedTime = 0;
         this._dt = 0.01;
+        this._substepsCount = 1;
     }
 
     onScale(scale) { this._transform = new Transform(scale); return this; }
@@ -321,26 +332,31 @@ export class Simulation {
         return this;
     }
 
-    _updatePhysics(substepsCount, time) {
+    _updatePhysics(clockTime) {
         if (!this._running || !this._updateFunction)
             return;
 
-        for (let substeps = 0; substeps < substepsCount; substeps++) {
-            this._updateFunction(time, this._simulatedTime);
+        for (let substeps = 0; substeps < this._substepsCount; substeps++) {
+            this._updateFunction(clockTime, this._simulatedTime);
             this._simulatedTime += this._dt;
         }
     }
 
-    run(updateFunction = null, substepsCount = 1) {
+    run(updateFunction = () => {}, substepsCount = 1) {
         this._updateFunction = updateFunction;
+        this._substepsCount = substepsCount;
 
         // For rendering static objects once
         this._renderer.initialize(this._transform);
 
-        const animate = (time) => {
-            this._updatePhysics(substepsCount, time);
-            this._onPhysicsUpdateComplete(time, this._simulatedTime);
-            this._renderer.render(this._transform, time);
+        const animate = (clockTime) => {
+            // Physics update
+            this._onBeforePhysicsUpdate(clockTime, this._simulatedTime);
+            this._updatePhysics(clockTime);
+            this._onAfterPhysicsUpdate(clockTime, this._simulatedTime);
+
+            // Rendering
+            this._renderer.render(this._transform, clockTime);
             requestAnimationFrame(animate);
         };
 
@@ -355,9 +371,9 @@ export class Simulation {
     }
 
     // When the user has clicked on the canvas, the running state of the application needs to be updated
-    onCanvasClicked() {
+    toggleRunStatus() {
         if (this._running)
-            this.reset(); // Canvas clicked during execution ==> we need to reset the simulation
+            this.reset(); // This function is called during execution ==> we need to reset the simulation
 
         this._running = !this._running;
         this._renderer.onRunStatusChanged(this._running);
@@ -375,8 +391,17 @@ export class Simulation {
 
     get isRunning() { return this._running; }
 
-    set onPhysicsUpdateComplete(customFunction) { this._onPhysicsUpdateComplete = customFunction; }
-    set onReset(resetFunction) { this._onReset = resetFunction; }
+    onBeforePhysicsUpdate(customFunction = (clockTime, simulatedTime) => {}) {
+        this._onBeforePhysicsUpdate = customFunction;
+    }
+
+    onAfterPhysicsUpdate(customFunction = (clockTime, simulatedTime) => {}) {
+        this._onAfterPhysicsUpdate = customFunction;
+    }
+
+    onReset(resetFunction = () => {}) { this._onReset = resetFunction; }
+
+    set substepsCount(substepsCount) { this._substepsCount = substepsCount; }
 }
 
 class Transform {
