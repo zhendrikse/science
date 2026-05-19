@@ -706,7 +706,7 @@ export class Ring extends Mesh {
         radialSegments = 16,
         tubularSegments = 32
     } = {}) {
-        const geometry = new TorusGeometry(1, thickness, 16, 100);
+        const geometry = new TorusGeometry(1, thickness, radialSegments, tubularSegments);
         const material = new MeshStandardMaterial({
             color: color,
             roughness: 0.4,
