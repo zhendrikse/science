@@ -22,8 +22,4 @@
 <script type="module" src="n_body_oscillator.js"></script>
 <p style="clear: both;"></p>
 
-<div id="oscillatorPlot" style="margin:auto;"></div>
-<script type="module" src="n_body_oscillator.js"></script>
-<p style="clear: both;"></p>
-
 {% include share_buttons.html %}
