@@ -3,7 +3,7 @@
 ## Movement of charged particle in electric field 
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=moving_charge.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/moving_charge.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=moving_charge.js)](https://github.com/zhendrikse/helion/blob/main/examples/electromagnetism/scenes/moving_charge.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
@@ -23,7 +23,7 @@
     <label for="speedSlider" >🚀 Speed: </label><input type="range" id="speedSlider" min="1" max="50" step="1" value="15"/>
     <span id="speedSliderValue">15</span> x 1E-14 m/s
 </div>
-<script type="module" src="moving_charge.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/moving_charge.js"></script>
 
 <p style="clear: both;"></p>
 

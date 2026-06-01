@@ -3,7 +3,7 @@
 ## Flocking birds 🦅
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=flocking_birds.js)](https://github.com/zhendrikse/science/blob/main/nature/flocking_birds.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=flocking_birds.js)](https://github.com/zhendrikse/helion/blob/main/examples/nature/scenes/flocking_birds.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
@@ -23,7 +23,7 @@
 <label for="directionWeightSlider">Direction behavior: <input type="range" min="0" max="2" value=".1" step="any" class="slider" id="directionWeightSlider"/></label>
 <label for="avoidWeightSlider">Avoidance behavior: <input type="range" min="0" max="2" value="1" step="any" class="slider" id="avoidWeightSlider"/></label>
 <button class="button" id="startleButton">Startle birds</button>
-<script type="module" src="flocking_birds.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/flocking_birds.js"></script>
 <p style="clear: both;"></p>
 
 {% include share_buttons.html %}

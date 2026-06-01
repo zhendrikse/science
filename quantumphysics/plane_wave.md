@@ -3,7 +3,7 @@
 ## Visualizing a Complex Plane wave 
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=plane_wave.js)](https://github.com/zhendrikse/science/blob/main/quantumphysics/plane_wave.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=plane_wave.js)](https://github.com/zhendrikse/helion/blob/main/examples/quantumphysics/scenes/plane_wave.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
@@ -44,7 +44,7 @@ $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
     <label for="densityPhaseButton">Density/phase</label>
     <input type="radio" name="plotType" checked id="densityPhaseButton" value="densityPhase"/>
 </div>
-<script type="module" src="plane_wave.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/plane_wave.js"></script>
 <p style="clear: both;"></p>
 
 ### About the 3D visualization

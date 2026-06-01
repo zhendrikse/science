@@ -3,7 +3,7 @@
 ## Faraday&apos;s law of induction
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=faradays_law.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/faradays_law.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=faradays_law.js)](https://github.com/zhendrikse/helion/blob/main/examples/electromagnetism/scenes/faradays_law.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
@@ -33,7 +33,7 @@ Instead, they define the positive circulation direction according to the right-h
 <div class="buttonRow">
     <label for="faradayLoopButton">Show Faraday loop <input type="checkbox" id="faradayLoopButton"></label>
 </div>
-<script type="module" src="faradays_law.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/faradays_law.js"></script>
 <p style="clear: both;"></p>
 
 ### Important conceptual points

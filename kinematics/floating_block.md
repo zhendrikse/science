@@ -16,7 +16,7 @@
     <div class="overlayText" id="floatingBlockOverlayText">Click to start the animation!</div>
 </div>
 <div id="forceChart" style="margin:auto;"></div>
-<script type="module" src="https://www.hendrikse.name/helion/examples/three_body.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/floating_block.js"></script>
 <p style="clear: both;"></p>
 
 {% include share_buttons.html %}

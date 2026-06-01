@@ -3,7 +3,7 @@
 ## Electromagnetic waves emanating from an antenna
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=antenna.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/antenna.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=antenna.js)](https://github.com/zhendrikse/helion/blob/main/examples/electromagnetism/scenes/antenna.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
@@ -19,7 +19,7 @@
     <input type="range" id="antennaFieldStrengthSlider" min="1" max="20" step="0.1" value="10"/>
     <span id="antennaFieldStrengthSliderValue">10</span>
 </div>
-<script type="module" src="antenna.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/antenna.js"></script>
 
 <p style="clear: both;"></p>
 

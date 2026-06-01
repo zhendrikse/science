@@ -3,7 +3,7 @@
 ## Spiral galaxy visualization ✨
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=spiral_galaxy.js)](https://github.com/zhendrikse/science/blob/main/astrophysics/spiral_galaxy.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=spiral_galaxy.js)](https://github.com/zhendrikse/helion/blob/main/examples/astrophysics/scenes/spiral_galaxy.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 [![WebGL](https://img.shields.io/badge/WebGL-990000?logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
@@ -13,7 +13,7 @@
 🔥 JavaScript version has been extended with coloring and fading ([Zeger Hendrikse](https://www.hendrikse.name/))
 
 <canvas class="applicationCanvas" id="galaxyCanvas" style="aspect-ratio: 19 / 12"></canvas>
-<script type="module" src="spiral_galaxy.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/spiral_galaxy.js"></script>
 <p style="clear:both;"></p>
 
 👉 **Core / Bulge (Central Region)**<br/>
@@ -40,7 +40,7 @@ Click on the image below to activate this demo!
 
 <figure style="text-align: center;">
   <a href="spiral_galaxy_renderer.html">
-    <img alt="Daylight variations" src="images/spiral_galaxy_renderer.png" title="Click to go to demo"/>
+    <img alt="Spiral galaxy renderer" src="images/spiral_galaxy_renderer.png" title="Click to go to demo"/>
   </a>
   <figcaption>Click on the image to play with a live demo of a way more advanced 2D spiral galaxy renderer!
   </figcaption>

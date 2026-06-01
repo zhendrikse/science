@@ -3,7 +3,7 @@
 ## Electromagnetic wave of oscillating charges
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=electromagnetic_wave_quiver.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/electromagnetic_wave_quiver.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=electromagnetic_wave_quiver.js)](https://github.com/zhendrikse/helion/blob/main/examples/electromagnetism/scenes/electromagnetic_wave_quiver.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
@@ -21,7 +21,7 @@ $$\bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{E} = 0,\qu
     <canvas class="applicationCanvas" id="electromagneticWaveCanvas"></canvas>
     <div class="overlayText" id="electromagneticWaveOverlay">Click to start the animation!</div>
 </div>
-<script type="module" src="electromagnetic_wave_quiver.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/electromagnetic_wave_quiver.js"></script>
 
 <p style="clear: both;"></p>
 

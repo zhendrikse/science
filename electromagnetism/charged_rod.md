@@ -3,7 +3,7 @@
 ## Fields around a moving charged rod
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=charged_rod.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/charged_rod.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=charged_rod.js)](https://github.com/zhendrikse/helion/blob/main/examples/electromagnetism/scenes/charged_rod.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
@@ -17,7 +17,7 @@
     <canvas id="chargedRodCanvas" class="applicationCanvas" style="aspect-ratio: 3/4"></canvas>
     <div class="overlayText" id="chargedRodOverlay">Click to start the animation!</div>
 </div>
-<script type="module" src="charged_rod.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/charged_rod.js"></script>
 
 <p style="clear: both;"></p>
 

@@ -3,7 +3,7 @@
 ## Electric dipole field
 <div class="header_line"><br/></div>
 
-[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=dipole_field.js)](https://github.com/zhendrikse/science/blob/main/electromagnetism/dipole_field.js)&nbsp;&nbsp;
+[![Source](https://img.shields.io/badge/github-repo-green?logo=github&label=dipole_field.js)](https://github.com/zhendrikse/helion/blob/main/examples/electromagnetism/scenes/dipole_field.js)&nbsp;&nbsp;
 [![JavaScript](https://img.shields.io/badge/JavaScript-007ACC?logo=javascript&logoColor=white)](https://en.wikipedia.org/wiki/JavaScript)&nbsp;&nbsp;
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 
@@ -21,7 +21,7 @@ $$
     <span id="fieldStrengthSliderValue">0.25</span>
     <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
 </div>
-<script type="module" src="dipole_field.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/dipole_field.js"></script>
 
 🧠 Inspired by [7_Dipole.py](https://github.com/Physics-Morris/Physics-Vpython/blob/master/7_Dipole.py)<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Electricdipolefield) is available as well, see [dipole_field.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/circular_aperture.py)<br/>
