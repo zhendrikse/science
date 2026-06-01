@@ -16,7 +16,7 @@
     <canvas class="applicationCanvas" id="threeBodyCanvas"></canvas>
     <div class="overlayText" id="overlayText">Click to start the animation!</div>
 </div>
-<script type="module" src="three_body.js"></script>
+<script type="module" src="https://www.hendrikse.name/helion/examples/three_body.js"></script>
 
 <p style="clear:both;"></p>
 
