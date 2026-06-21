@@ -12,15 +12,7 @@
 👉 Field vectors are rendered on a logarithmic scale<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Solenoid) is available as well, see [solenoid.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/solenoid.py)<br/>
 
-<div class="applicationCanvasWrapper" id="solenoidCanvasWrapper">
-    <canvas id="solenoidCanvas" class="applicationCanvas"></canvas>
-</div>
-<div class="buttonRow">
-    <label for="fieldStrength">Field </label>
-    <input type="range" id="fieldStrength" min="0.1" max="2" step="0.01" value=".75"/>
-    <span id="fieldStrengthSliderValue">.75</span>
-    <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
-</div>
+<div id="solenoidContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/solenoid.js"></script>
 <p style="clear: both;"></p>
 

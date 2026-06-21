@@ -11,10 +11,7 @@
 🧠 Inspired by [this demo](https://trinket.io/glowscript/38fbc7b2d01d) Byron Philhour<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/ChargedSheet) is available as well, see [charged_sheet.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/charged_sheet.py)<br/>
 
-<div class="canvasWrapper" id="chargedSheetWrapper">
-    <canvas class="applicationCanvas" id="chargedSheetCanvas"></canvas>
-    <div class="overlayText" id="chargedSheetOverlay">Click to start the animation!</div>
-</div>
+<div id="chargedSheetContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/charged_sheet.js"></script>
 <p style="clear: both;"></p>
 

@@ -13,14 +13,7 @@ $$
 \vec{E} ( \vec{r} ) = -\dfrac {1} {4\pi\epsilon_0} \nabla \bigg( \dfrac{\vec{r}  \cdot \vec{p}} {r^3} \bigg),\quad \vec{p}=+q(\vec{r}_+) + -q(\vec{r}_-)
 $$
 
-<div class="applicationCanvasWrapper" id="dipoleCanvasWrapper" style="aspect-ratio: 19 / 12;">
-    <canvas id="dipoleCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
-</div>
-<div class="buttonRow">
-    <label for="fieldStrengthSlider">Field </label><input type="range" id="fieldStrengthSlider" min="0" max=".5" step="any" value="0.25"/>
-    <span id="fieldStrengthSliderValue">0.25</span>
-    <label for="autoRotate">Auto-rotate </label><input type="checkbox" id="autoRotate"/>
-</div>
+<div id="dipoleContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/dipole_field.js"></script>
 
 🧠 Inspired by [7_Dipole.py](https://github.com/Physics-Morris/Physics-Vpython/blob/master/7_Dipole.py)<br/>

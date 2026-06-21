@@ -17,10 +17,7 @@
 
 $$\bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{E} = 0,\quad \bigg ( v^2\nabla^2 - \dfrac {\partial^2}{\partial t^2} \bigg) \vec{B} = 0,\quad v=\dfrac {1} {\sqrt {\mu \epsilon}}$$
 
-<div class="canvasWrapper" id="electromagneticWaveWrapper">
-    <canvas class="applicationCanvas" id="electromagneticWaveCanvas"></canvas>
-    <div class="overlayText" id="electromagneticWaveOverlay">Click to start the animation!</div>
-</div>
+<div id="electromagneticWaveContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/electromagnetic_wave_quiver.js"></script>
 
 <p style="clear: both;"></p>

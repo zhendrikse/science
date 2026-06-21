@@ -13,10 +13,6 @@ from the procedure is not a deterministic, but rather a random surface that exhi
 <a href="https://en.wikipedia.org/wiki/Fractal_landscape">Wikipedia</a>
 </blockquote>
 
-<p style="clear: both;"></p>
-
-{% include_relative code/fractal_terrain.html %}
-
-<p style="clear: both;"></p>
+<div id="terrainContainer"></div>
 
 {% include share_buttons.html %}

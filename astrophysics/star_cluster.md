@@ -11,9 +11,7 @@
 🧠 Inspired on an example in [Creating Clouds of Stars](https://discourse.threejs.org/t/creating-clouds-of-stars/62925)<br/>
 👉 Field vectors are rendered on a logarithmic scale<br/>
 
-<div class="canvasWrapper" id="startClusterCanvasWrapper">
-    <canvas class="applicationCanvas" id="starClusterCanvas" ></canvas>
-</div>
+<div id="starClusterContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/star_cluster.js"></script>
 <p style="clear:both;"></p>
 

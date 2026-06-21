@@ -11,14 +11,7 @@
 🧠 Inspired by [23_antenna.py](https://lectdemo.github.io/virtual/23_antenna.html) by Ruth Chabay, Spring 2001<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Antenna) is available as well, see [antenna.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/antenna.py)<br/>
 
-<div class="applicationCanvasWrapper" id="antennaCanvasWrapper">
-    <canvas id="antennaCanvas" class="applicationCanvas" style="aspect-ratio: 19/12;"></canvas>
-</div>
-<div class="buttonRow">
-    <label for="antennaFieldStrengthSlider">🧲 Field strength: </label>
-    <input type="range" id="antennaFieldStrengthSlider" min="1" max="20" step="0.1" value="10"/>
-    <span id="antennaFieldStrengthSliderValue">10</span>
-</div>
+<div id="antennaContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/antenna.js"></script>
 
 <p style="clear: both;"></p>

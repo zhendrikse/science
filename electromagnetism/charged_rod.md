@@ -13,10 +13,7 @@
 👉 The rod is modeled as a collection of point charges<br/>
 👉 Electric field arrows are <span style="color: red">red</span>, magnetic field arrows are <span style="color: blue">blue</span>
 
-<div class="applicationCanvasWrapper" id="chargedRodWrapper" style="aspect-ratio: 3/4">
-    <canvas id="chargedRodCanvas" class="applicationCanvas" style="aspect-ratio: 3/4"></canvas>
-    <div class="overlayText" id="chargedRodOverlay">Click to start the animation!</div>
-</div>
+<div id="chargedRodContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/charged_rod.js"></script>
 
 <p style="clear: both;"></p>

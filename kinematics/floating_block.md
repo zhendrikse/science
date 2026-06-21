@@ -11,11 +11,7 @@
 🧠 Based on [buoyancy.py](https://github.com/gcschmit/vpython-physics/blob/master/buoyancy/buoyancy.py)<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Floatingblock) is available as well, see [floating_block.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/floating_block.py)<br/>
 
-<div class="canvasWrapper" id="floatingBlockContainer">
-    <canvas id="floatingBlockCanvas" class="applicationCanvas"></canvas>
-    <div class="overlayText" id="floatingBlockOverlayText">Click to start the animation!</div>
-</div>
-<div id="forceChart" style="margin:auto;"></div>
+<div id="floatingBlockContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/floating_block.js"></script>
 <p style="clear: both;"></p>
 

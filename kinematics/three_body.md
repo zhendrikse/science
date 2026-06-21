@@ -12,10 +12,7 @@
 ⭐ Coding this problem is explained in [this video](https://www.youtube.com/watch?v=Ye2wIV8-SB8)<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Astrophysics/program/ThreeBody) is available as well, see [three_body.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/three_body.py)<br/>
 
-<div class="canvasWrapper" id="threeBodyWrapper">
-    <canvas class="applicationCanvas" id="threeBodyCanvas"></canvas>
-    <div class="overlayText" id="overlayText">Click to start the animation!</div>
-</div>
+<div class="canvasWrapper" id="threeBodyContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/three_body.js"></script>
 
 <p style="clear:both;"></p>

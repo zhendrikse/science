@@ -14,16 +14,8 @@
   &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="screen" class="applicationCanvas2D"></canvas>
 </div>
 
-<div class="buttonRow">
-  <button id="squareButton">🟩 Square</button>
-  <button id="circleButton">🟢 Circle </button>
-  <label for="diameterSlider">Size:
-    <input type="range" id="diameterSlider" min="20" max="50" value="30">
-    <span id="diameterValue">30 pixels</span>
-  </label>
-</div>
-
-<script type="module" src="fourier_transform.js"></script>
+<div id="fourierTransformContainer"></div>
+<script type="module" src="https://www.hendrikse.name/helion/examples/fourier_transform.js"></script>
 <p style="clear:both;"></p>
 
 {% include share_buttons.html %}

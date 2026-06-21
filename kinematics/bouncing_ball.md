@@ -15,18 +15,7 @@
 ⭐ Coding this problem is explained in [this video](https://www.youtube.com/watch?v=ExxDuRTIe0E)<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Kinematics/program/Ballonspringdrop) is available as well<br/>
 
-<div class="canvasWrapper" id="bouncingBallOnSpringWrapper">
-    <canvas class="applicationCanvas" id="bouncingBallOnSpringCanvas"></canvas>
-    <div class="overlayText" id="bouncingBallOnSpringOverlay">Click to start the animation!</div>
-</div>
-<div class="buttonRow">
-    <label for="velocityArrow"><span style="color: cyan">Velocity: </span></label><input type="checkbox" id="velocityArrow" checked/>
-    <label for="forceArrow"><span style="color: red">Force: </span></label><input type="checkbox" id="forceArrow" checked/>
-</div>
-<div class="buttonRow">
-    <label for="dampingSlider">🍃 Air resistance: </label>
-    <input type="range" id="dampingSlider" min="0" max="1" step="0.1" value=".2"/>
-</div>
+<div class="canvasWrapper" id="bouncingBallContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/bouncing_ball_on_spring.js"></script>
 
 ## Bouncing ball

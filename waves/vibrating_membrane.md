@@ -8,11 +8,8 @@
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)&nbsp;&nbsp;
 [![WebGL](https://img.shields.io/badge/WebGL-990000?logo=webgl&logoColor=white)](https://www.khronos.org/webgl/)
 
-<div class="canvasWrapper" id="membraneWrapper">
-    <canvas class="applicationCanvas" id="membraneCanvas"></canvas><br/>
-</div>
-<div id="membraneControls"></div>
-<script type="module" src="vibrating_membrane.js"></script>
+<div id="membraneContainer" style="aspect-ratio: 19/12"></div>
+<script type="module" src="https://www.hendrikse.name/helion/examples/vibrating_membrane.js"></script>
 
 <p style="clear: both;"></p>
 

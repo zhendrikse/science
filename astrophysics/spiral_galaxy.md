@@ -12,7 +12,7 @@
 ⭐ The (theory behind the) code is thoroughly explained in his [accompanying article](https://towardsdatascience.com/create-3-d-galactic-art-with-matplotlib-a7534148a319/) <br/>
 🔥 JavaScript version has been extended with coloring and fading ([Zeger Hendrikse](https://www.hendrikse.name/))
 
-<canvas class="applicationCanvas" id="galaxyCanvas" style="aspect-ratio: 19 / 12"></canvas>
+<div id="galaxyContainer" style="aspect-ratio: 4/3" ></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/spiral_galaxy.js"></script>
 <p style="clear:both;"></p>
 

@@ -15,33 +15,8 @@ Below you'll find a diffraction pattern of an aperture (circular or rectangular)
 far away from a screen, also known as [Fraunhofer diffraction](https://en.wikipedia.org/wiki/Fraunhofer_diffraction). The intensity is 
 calculated as the square of the amplitude of the electric field. 
 
-<div style="margin: 0 auto; text-align: center;">
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="screen" class="applicationCanvas2D"></canvas>
-</div>
-
-<div class="buttonRow">
-  <button id="squareButton">🟩 Square</button>
-  <button id="circleButton">🟢 Circle </button>
-  <label for="diameterSlider">Size:
-    <input type="range" id="diameterSlider" min="20" max="200" value="200">
-    <span id="diameterValue">200 µm</span>
-  </label>
-</div>
-<div class="buttonRow">
-  <label for="popFactorSlider">Pop factor:
-    <input type="range" id="popFactorSlider" min=".3" max="1" value=".3" step="0.01">
-  </label>
-</div>
-<div class="buttonRow">
-  <label for="wavelengthSlider">Color:
-    <input type="range" id="wavelengthSlider" min="380" max="700" value="500">
-    &nbsp;<span id="wavelengthProbe">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;
-    <span id="wavelengthValue">500 nm</span>&nbsp;
-  </label>
-  <label for="laserColor">🎨 <input type="checkbox" id="laserColor" checked/></label>
-</div>
-
-<script type="module" src="fraunhofer_diffraction.js"></script>
+<div id="fraunhoferContainer"></div>
+<script type="module" src="https://www.hendrikse.name/helion/examples/fraunhofer_diffraction.js"></script>
 <p style="clear:both;"></p>
 
 ## Instructions given in the video

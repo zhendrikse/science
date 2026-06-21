@@ -11,10 +11,7 @@
 🧠 Based on [this example](https://www.glowscript.org/#/user/wlane/folder/PHYS152/program/magnetic-field) by Byron Philhour<br/>
 🐍 A [VPython demo](https://www.glowscript.org/#/user/zeger.hendrikse/folder/Electromagnetism/program/Chargedring) is available as well, see [charged_ring.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/charged_ring.py)<br/>
 
-<div class="canvasWrapper" id="chargedRingWrapper">
-    <canvas class="applicationCanvas" id="chargedRingCanvas"></canvas>
-    <div class="overlayText" id="chargedRingOverlay">Click to start the animation!</div>
-</div>
+<div id="chargedRingContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/charged_ring.js"></script>
 <p style="clear: both;"></p>
 
