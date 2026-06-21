@@ -10,10 +10,6 @@
 🧠 Inspired by [this application](https://www.falstad.com/fft/) by [Pual Falstad](https://www.falstad.com/)<br>
 👉 Related to [Fraunhofer diffraction](../optics/fraunhofer_diffraction.html)
 
-<div style="margin: 0 auto; text-align: center;">
-  &nbsp;&nbsp;&nbsp;&nbsp;<canvas id="screen" class="applicationCanvas2D"></canvas>
-</div>
-
 <div id="fourierTransformContainer"></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/fourier_transform.js"></script>
 <p style="clear:both;"></p>

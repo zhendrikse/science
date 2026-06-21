@@ -17,33 +17,7 @@ and the role of $k$ and $\omega$<br/>
 
 $$\psi(x, t) = Ae^{i(k x - \omega t)}$$
 
-<div class="canvasWrapper" id="planeWaveCanvasWrapper3d" style="aspect-ratio: 2/1" >
-    <canvas id="planeWaveCanvas3d" style="aspect-ratio: 2/1" class="applicationCanvas"></canvas>
-</div>
-
-<div class="buttonRow">
-    <label for="amplitudeSlider">&nbsp;Amplitude: </label>
-    <input type="range" id="amplitudeSlider" min="0.5" max="10" step="any" value="5"/>
-</div>
-<div class="buttonRow">
-    <label for="omegaSlider">&nbsp;Omega: </label>
-    <input type="range" id="omegaSlider" min="0" max="25" step="any" value="3.2"/>
-</div>
-<div class="buttonRow">
-    <label for="waveNumberSlider">&nbsp;Wave number: </label>
-    <input type="range" id="waveNumberSlider" min="-1" max="1" step="any" value="0"/>
-</div>
-
-<div class="canvasWrapper" id="planeWaveCanvasWrapper2d" style="aspect-ratio: 3/1" >
-    <canvas id="planeWaveCanvas2d" style="aspect-ratio: 3/1" class="applicationCanvas"></canvas>
-</div>
-<div class="buttonRow">
-    <button id="pauseButton">Pause</button>
-    <label for="realImagButton">Real/imag&nbsp;</label>
-    <input type="radio" name="plotType" id="realImagButton" value="realImag"/>
-    <label for="densityPhaseButton">Density/phase</label>
-    <input type="radio" name="plotType" checked id="densityPhaseButton" value="densityPhase"/>
-</div>
+<div id="planeWaveContainer3d" style="aspect-ratio: 2/1" ></div>
 <script type="module" src="https://www.hendrikse.name/helion/examples/plane_wave.js"></script>
 <p style="clear: both;"></p>
 

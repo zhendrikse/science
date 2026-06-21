@@ -10,14 +10,8 @@ the propagation of the waves using a [finite difference method](https://pythonnu
 🔧 Ported to Javascript and [three.js](https://threejs.org/) by [Zeger Hendrikse](https://github.com/zhendrikse/), see [two_slit_interference_3d.js](https://github.com/zhendrikse/science/blob/main/waves/two_slit_interference_3d.js)<br/>
 👉 [VPython](https://vpython.org/) version available as [dynamic_double_slit.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/dynamic_double_slit.py), but significantly slower!
 
-<div class="canvasWrapper" id="canvas-wrapper">
-    <canvas class="applicationCanvas" id="doubleSlitCanvas"></canvas>
-</div>
-<div class="buttonRow">
-    <button id="resetButton">🔄 Reset View</button>&nbsp;&nbsp;
-    <label for="slitSizeSlider"><input type="range" min="3" max="25" value="6" class="slider" id="slitSizeSlider"/> Slit size</label>
-</div>
-<script type="module" src="two_slit_interference_3d.js"></script>
+<div id="waveScatteringContainer" style="aspect-ratio: 19/12"></div>
+<script type="module" src="https://www.hendrikse.name/helion/examples/wave_scattering.js"></script>
 <p style="clear: both;"></p>
 
 ## 3D interference of two oscillating sources

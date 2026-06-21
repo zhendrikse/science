@@ -24,13 +24,8 @@ in the simulation, so that the difference in the behavior of particles and waves
 👉 See also [his accompanying video](https://www.youtube.com/watch?v=Zjmg6n7Wc8I)<br/>
 👉 [VPython](https://vpython.org/) version available as [double_slit.py](https://github.com/zhendrikse/physics-in-python/blob/main/vpython/double_slit.py)
 
-<canvas id="slitExperimentCanvas" class="applicationCanvas" style="aspect-ratio: 2/1"></canvas>
-<div>
-    <label for="wavelengthSlider">Wavelength:</label>
-    <input type="range" id="wavelengthSlider" min="0.1" max="2" step="0.01" value="0.5">
-    <span id="wavelengthValue">0.5</span>
-</div>
-<script type="module" src="double_slit.js"></script>
+<div id="doubleSlitContainer" style="aspect-ratio: 2/1" ></div>
+<script type="module" src="https://www.hendrikse.name/helion/examples/double_slit.js"></script>
 <p style="clear: both;"></p>
 
 
