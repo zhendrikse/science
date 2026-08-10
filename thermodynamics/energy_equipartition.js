@@ -93,13 +93,15 @@ const opts = {
             stroke: "#ff0",
             font: "12px Arial",
             grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
-            label: "Time [ps]", values: (u, values) => values.map(value => value.toFixed(2))
+            label: "Time [ps]",
+            values: (u, values) => values.map(value => value.toFixed(2))
         },
         {
             stroke: "#ff0",
             font: "12px Arial",
             grid: { stroke: "rgba(255, 255, 255, 0.2)", width: 1 },
-            label: "KE [J]", values: (u, values) => values.map(value => value.toExponential(2))
+            label: "KE [J]",
+            values: (u, values) => values.map(value => value.toExponential(2))
         }
     ],
     series: [

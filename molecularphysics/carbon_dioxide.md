@@ -9,8 +9,8 @@ The global warming / greenhouse effect is mainly due to particular resonance of 
 In this animation, a carbon dioxide molecule is exposed to an alternating electric field. 
 Discover which frequencies the molecule responds to and if so, how.
 
-{% include_relative code/carbon_dioxide.html %}
-
+<div id="carbonDioxideContainer"></div>
+<script type="module" src="https://www.hendrikse.name/helion/examples/carbon_dioxide.js"></script>
 <p style="clear: both;"></p>
 
 {% include share_buttons.html %}
